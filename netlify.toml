@@ -1,0 +1,8 @@
+[build]
+  command = "nx build tia-frontend --configuration=production"
+  publish = "dist/apps/tia-frontend/browser"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
