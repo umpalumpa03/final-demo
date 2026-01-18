@@ -23,6 +23,7 @@ export default defineConfig(() => ({
     coverage: {
       reportsDirectory: '../../coverage/apps/tia-frontend',
       provider: 'v8' as const,
+      reporter: ['text', 'html', 'lcov', 'json'],
       exclude: [
         '**/*.html',
         '**/*.scss',
@@ -31,6 +32,7 @@ export default defineConfig(() => ({
         '**/*.spec.ts',
         '**/*.config.*',
         '**/node_modules/**',
+        'scripts/**'
       ],
     },
   },

@@ -1,0 +1,109 @@
+workflow:
+  rules:
+    # Only allow manual pipeline runs
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    # Allow pipelines on merge requests to main
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  NODE_VERSION: "22.12.0"
+  PUBLISH_DIR: "dist/apps/tia-frontend/browser"
+
+# Cache npm dependencies for faster builds
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - node_modules/
+    - .npm/
+
+# ====================
+# TEST STAGE
+# ====================
+
+test:
+  stage: test
+  image: node:${NODE_VERSION}
+  script:
+    - npm ci --cache .npm --prefer-offline
+    - npm run test
+  artifacts:
+    reports:
+      junit: test-results.xml
+    when: always
+
+# Coverage check for merge requests only
+test:coverage:
+  stage: test
+  image: node:${NODE_VERSION}
+  rules:
+    # Only run on merge requests to main
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+  before_script:
+    - npm ci --cache .npm --prefer-offline
+    # Fetch main branch for comparison
+    - git fetch origin main:main
+  script:
+    - echo "🧪 Running tests with coverage..."
+    - npx nx reset  # Clear Nx cache
+    - npm run test:coverage -- --skip-nx-cache  # Force fresh run
+    - echo "📁 Listing coverage files..."
+    - find . -name "lcov.info" -type f
+    - echo "📊 Checking coverage on changed files..."
+    - node scripts/check-coverage.js
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+  artifacts:
+    paths:
+      - coverage/apps/tia-frontend/
+    expire_in: 1 week
+    when: always
+
+# ====================
+# BUILD STAGE
+# ====================
+
+build:
+  stage: build
+  image: node:${NODE_VERSION}
+  rules:
+    # Run on merge requests to main
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+    # Run on manual pipelines
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+  needs:
+    - test
+  script:
+    - npm ci --cache .npm --prefer-offline
+    - npx nx build tia-frontend
+    - echo "✅ Build successful! Application is ready."
+  artifacts:
+    paths:
+      - ${PUBLISH_DIR}
+    expire_in: 1 day
+
+# ====================
+# DEPLOYMENT STAGE
+# ====================
+
+deploy:netlify:
+  stage: deploy
+  image: node:${NODE_VERSION}
+  needs:
+    - build
+  rules:
+    # Only run when manually triggered (not on MR)
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+  script:
+    - echo "🚀 Starting deployment to Netlify..."
+    - npm install -g netlify-cli
+    - netlify deploy --prod --dir=${PUBLISH_DIR} --site=${NETLIFY_SITE_ID} --auth=${NETLIFY_AUTH_TOKEN}
+    - echo "✅ Deployment successful!"
+  environment:
+    name: production
+    url: https://your-site-name.netlify.app
