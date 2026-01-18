@@ -105,5 +105,6 @@
     "@nx/angular:component": {
       "style": "css"
     }
-  }
+  },
+  "defaultProject": "tia-frontend"
 }
