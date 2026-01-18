@@ -23,6 +23,15 @@ export default defineConfig(() => ({
     coverage: {
       reportsDirectory: '../../coverage/apps/tia-frontend',
       provider: 'v8' as const,
+      exclude: [
+        '**/*.html',
+        '**/*.scss',
+        '**/*.css',
+        '**/test-setup.ts',
+        '**/*.spec.ts',
+        '**/*.config.*',
+        '**/node_modules/**',
+      ],
     },
   },
 }));
