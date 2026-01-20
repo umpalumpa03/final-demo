@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { Navigation } from '../shared/navigation';
+import { Navigation } from '../shared/navigation/navigation';
 
 @Component({
   selector: 'app-library-container',
