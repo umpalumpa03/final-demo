@@ -1,14 +1,16 @@
+@use '../../../styles/palette';
+@use '../../../styles/mixins';
 
 .basic-alert {
   max-width: 105.3rem;
   min-height: 6.76rem;
   width: 100%;
   background: #ffffff;
-  border: 0.8px solid #0ea5e9;
+  border: 0.8px solid palette.$blue-400;
   border-radius: 10px;
   display: flex;
   gap: 1.4rem;
-  padding: 1.28rem 1.68rem;
+  padding: 1.28rem 1.48rem;
 
   @media (max-width: 768px) {
     padding: 1rem;
@@ -18,20 +20,18 @@
 
   > .alert-icon-div {
     flex-shrink: 0;
-    width: 1.33rem;
-    height: 1.33rem;
-    object-fit: cover;
+    img {
+      width: 1.6rem;
+      height: 1.6rem;
+      object-fit: cover;
+    }
   }
 
   .alert-info-div {
-    display: flex;
-    flex-direction: column;
     justify-content: center;
-
+    @include mixins.display-flex(column, nowrap);
     > div {
-      font-family: 'Arimo', sans-serif;
-      font-weight: 400;
-      font-size: 1.4rem;
+      @include mixins.font-arimo(400, 1.4rem, 2rem);
       line-height: 2rem;
     }
 
@@ -42,14 +42,14 @@
 
     > div:last-child {
       letter-spacing: 0;
-      color: #0369a1;
+      color: palette.$blue-600;
     }
   }
 
   &.error {
     .alert-info-div {
       > div:first-child {
-        color: #dc2626;
+        color: palette.$red-600;
       }
       > div:last-child {
         color: #dc2626e5;
