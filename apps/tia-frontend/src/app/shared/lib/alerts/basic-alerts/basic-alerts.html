@@ -1,0 +1,10 @@
+<div [class]="'basic-alert' + (alertType() === 'error' ? ' error' : '')">
+    <div class="alert-icon-div">
+        <img [src]="'/img/alert-icons/base-alert-' + alertType() + '.png'" alt="info icon">
+    </div>
+    <div class="alert-info-div">
+        <div>{{effectiveTitle()}}</div>
+        <div>{{effectiveMessage()}}</div>
+    </div>
+</div>
+
