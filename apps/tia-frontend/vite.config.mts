@@ -36,7 +36,8 @@ export default defineConfig(() => ({
         '**/node_modules/**',
         'scripts/**',
         '**/src/main.ts',
-        '**/*.routes.ts'
+        '**/*.routes.ts',
+        '**/nx-welcome.ts'
       ],
     },
   },
