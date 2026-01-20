@@ -1,0 +1,28 @@
+@use './variables' as *;
+
+@mixin flex-center($direction: row, $justify: center, $align: center) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin font-inter($weight: 400, $size: 1.6rem, $line-height: 1.5) {
+  font-family: $primary-font;
+  font-weight: $weight;
+  font-size: $size;
+  line-height: $line-height;
+}
+
+@mixin font-arimo($weight: 400, $size: 1.6rem, $line-height: 1.5) {
+  font-family: $secondary-font;
+  font-weight: $weight;
+  font-size: $size;
+  line-height: $line-height;
+}
+
+@mixin display-flex($direction: row, $wrap: nowrap) {
+  display: flex;
+  flex-direction: $direction;
+  flex-wrap: $wrap;
+}
