@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { Navigation } from '../shared/navigation';
 
 @Component({
   selector: 'app-library-container',
-  imports: [],
+  imports: [RouterModule, Navigation],
   templateUrl: './library-container.html',
   styleUrl: './library-container.scss',
 })
