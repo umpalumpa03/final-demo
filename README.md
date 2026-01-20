@@ -97,7 +97,7 @@ The API project includes Docker support with automated targets and release manag
 # Build Docker image
 npx nx docker:build api
 
-# Run Docker container
+# Run Docker containers
 npx nx docker:run api
 
 # Release with automatic Docker image versioning
@@ -214,7 +214,7 @@ npx nx affected -t test                        # Test only affected projects
 
 # Docker operations
 npx nx docker:build api                        # Build Docker image
-npx nx docker:run api                          # Run Docker container
+npx nx docker:run api                          # Run Docker containers
 ```
 
 ## 🎯 Adding New Features
