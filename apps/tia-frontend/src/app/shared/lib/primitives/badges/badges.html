@@ -1,1 +1,8 @@
-<p>badges works!</p>
+<span 
+  class="badge" 
+  [class.badge--default]="variant === 'default'"
+  [class.badge--secondary]="variant === 'secondary'"
+  [class.badge--destructive]="variant === 'destructive'"
+  [class.badge--outline]="variant === 'outline'">
+  {{ text }}
+</span>

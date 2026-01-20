@@ -1,4 +1,4 @@
-import { Component, Input ,Output, EventEmitter} from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 export type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline';
 
@@ -10,5 +10,5 @@ export type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline';
 })
 export class Badges {
   @Input() variant: BadgeVariant = 'default';
-  @Output() onClick = new EventEmitter<void>();
+  @Input() text: string = '';
 }
