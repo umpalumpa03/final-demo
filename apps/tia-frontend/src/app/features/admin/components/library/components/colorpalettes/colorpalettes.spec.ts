@@ -12,10 +12,18 @@ describe('Colorpalettes', () => {
 
     fixture = TestBed.createComponent(Colorpalettes);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render component content', () => {
+    const compiled = fixture.nativeElement;
+    expect(compiled.querySelector('p')).toBeTruthy();
+    expect(compiled.querySelector('p').textContent).toContain(
+      'colorpalettes works!',
+    );
   });
 });
