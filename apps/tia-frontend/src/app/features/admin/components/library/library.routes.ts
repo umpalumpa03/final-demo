@@ -4,7 +4,7 @@ export const libraryRoutes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./container/library-container').then((m) => m.LibraryContainer),
+      import('./container/library-container').then((c) => c.LibraryContainer),
     children: [
       {
         path: '',
@@ -15,7 +15,14 @@ export const libraryRoutes: Routes = [
         path: 'colorpalettes',
         loadComponent: () =>
           import('./components/colorpalettes/colorpalettes').then(
-            (m) => m.Colorpalettes,
+            (c) => c.Colorpalettes,
+          ),
+      },
+      {
+        path: 'draganddrop',
+        loadComponent: () =>
+          import('./components/drag-and-drop/drag-and-drop').then(
+            (c) => c.DragAndDropContainer,
           ),
       },
       {
