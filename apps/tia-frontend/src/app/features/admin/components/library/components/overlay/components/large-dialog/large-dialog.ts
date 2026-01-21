@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { UiModal } from '../../../../../../../../shared/lib/overlay/ui-modal/ui-modal';
 
 @Component({
@@ -6,6 +6,7 @@ import { UiModal } from '../../../../../../../../shared/lib/overlay/ui-modal/ui-
   imports: [UiModal],
   templateUrl: './large-dialog.html',
   styleUrl: './large-dialog.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LargeDialog {
   public isOpen = signal(false);

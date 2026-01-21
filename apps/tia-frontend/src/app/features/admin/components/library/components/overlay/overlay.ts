@@ -1,4 +1,9 @@
-import { Component, signal, WritableSignal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { LibraryTitle } from '../../shared/library-title/library-title';
 import { ShowcaseCard } from './components/showcase-card/showcase-card';
 import { EditProfileDialog } from './components/edit-profile-dialog/edit-profile-dialog';
@@ -16,6 +21,7 @@ import { LargeDialog } from './components/large-dialog/large-dialog';
   ],
   templateUrl: './overlay.html',
   styleUrls: ['./overlay.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Overlay {
   public pageTitle = 'Overlay Components';
