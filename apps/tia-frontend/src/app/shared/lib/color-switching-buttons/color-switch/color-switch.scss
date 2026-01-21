@@ -20,17 +20,17 @@ button {
     transform: scale(1.1);
   }
   &.ocean-blue {
-    background: #0284c7;
+    background: $blue-ocean;
   }
   &.royal-blue {
-    background: #2563eb;
+    background: $blue-royal;
   }
   &.deep-blue {
-    background: #1e40af;
+    background: $blue-deep;
   }
   &.active {
     width: 4.4rem;
     height: 4.4rem;
-    border-color: #0284c7;
+    border-color: $blue-ocean;
   }
 }
