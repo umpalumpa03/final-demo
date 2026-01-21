@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ColorSwitch } from 'apps/tia-frontend/src/app/shared/lib/color-switching-buttons/color-switch/color-switch';
+import { ColorSwitch } from '@tia/shared/lib/color-switching-buttons/color-switch/color-switch';
+
+
 
 @Component({
   selector: 'app-library-header',
