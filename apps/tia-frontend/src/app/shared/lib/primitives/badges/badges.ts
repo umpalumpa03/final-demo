@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { BadgeSize, BadgeStatus, BadgeVariant } from './models/badges.models';
+import { statusClassMap, statusIconMap, statusAltTextMap } from './config/badges.constants';
 
 
 @Component({
@@ -16,47 +17,29 @@ export class Badges {
   readonly size = input<BadgeSize>('small');
   readonly label = input<string>('');
   readonly badgeClass = computed(() => {
-    const sizeClass = `badge__${this.size()}`;
+    const sizeClass = `badge--${this.size()}`;
     const statusClass = this.badgeStatus();
     if (statusClass) {
       return `badge ${sizeClass} ${statusClass}`;
     }
-    return `badge ${sizeClass} badge__${this.variant()}`;
+    return `badge ${sizeClass} badge--${this.variant()}`;
   });
 
   readonly badgeStatus = computed(() => {
     const currentStatus = this.status();
-    if (!currentStatus) return '';
-    
-    switch (currentStatus) {
-      case 'active':
-        return 'badge__active';
-      case 'pending':
-        return 'badge__pending';
-      case 'inactive':
-        return 'badge__inactive';
-      case 'in-progress':
-        return 'badge__in-progress';
-      case 'featured':
-        return 'badge__featured';
-      case 'premium':
-        return 'badge__premium';
-    }
+    return currentStatus ? statusClassMap[currentStatus] : '';
   });
 
   readonly iconPath = computed(() => {
     const status = this.status();
     if (!status) return '';
-    
-    const iconMap: Record<BadgeStatus, string> = {
-      'active': 'images/svg/badges/badges-active.svg',
-      'pending': 'images/svg/badges/badges-pending.svg',
-      'inactive': 'images/svg/badges/badges-inactive.svg',
-      'in-progress': 'images/svg/badges/badges-inProgress.svg',
-      'featured': 'images/svg/badges/badges-featured.svg',
-      'premium': 'images/svg/badges/badges-premium.svg',
-    };
-    return iconMap[status];
+    return statusIconMap[status];
+  });
+
+  readonly iconAlt = computed(() => {
+    const status = this.status();
+    if (!status) return '';
+    return statusAltTextMap[status];
   });
 
   readonly shouldShowIcon = computed(() => {

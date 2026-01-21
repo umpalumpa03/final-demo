@@ -37,7 +37,14 @@ describe('BadgeComponent', () => {
     );
     expect(titles).toContain('Status Badges');
 
-    const statusBadges = compiled.querySelectorAll('app-badges[status]');
+
+    const statusBadgeTexts = ['Active', 'Pending', 'Inactive', 'In Progress', 'Featured', 'Premium'];
+    const allBadges = compiled.querySelectorAll('app-badges');
+    const statusBadges = Array.from(allBadges).filter((badge) => {
+      const textContent = (badge.textContent ?? '').trim();
+      return statusBadgeTexts.some((statusText) => textContent.includes(statusText));
+    });
+    
     expect(statusBadges.length).toBeGreaterThan(0);
   });
 
@@ -49,7 +56,14 @@ describe('BadgeComponent', () => {
     );
     expect(titles).toContain('Sizes');
 
-    const sizes = compiled.querySelectorAll('app-badges[size]');  
-    expect(sizes.length).toBeGreaterThan(0);
+  
+    const sizeBadgeTexts = ['Small', 'Medium', 'Large'];
+    const allBadges = compiled.querySelectorAll('app-badges');
+    const sizeBadges = Array.from(allBadges).filter((badge) => {
+      const textContent = (badge.textContent ?? '').trim();
+      return sizeBadgeTexts.some((sizeText) => textContent.includes(sizeText));
+    });
+    
+    expect(sizeBadges.length).toBeGreaterThan(0);
   });
 });

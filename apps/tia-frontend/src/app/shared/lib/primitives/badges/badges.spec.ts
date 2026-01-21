@@ -24,7 +24,7 @@ describe('Badges', () => {
     fixture.detectChanges();
     const el: HTMLElement = fixture.nativeElement.querySelector('span');
     expect(el).toBeTruthy();
-    expect(el.className).toContain('badge__secondary');
+    expect(el.className).toContain('badge--secondary');
   });
 
   it('should render provided text', () => {
@@ -41,7 +41,7 @@ describe('Badges', () => {
 
     const el: HTMLElement = fixture.nativeElement.querySelector('span');
     expect(el).toBeTruthy();
-    expect(el.className).toContain('badge__active');
+    expect(el.className).toContain('badge--active');
   });
 
   it('should render status icon when status is provided', () => {
@@ -68,7 +68,7 @@ describe('Badges', () => {
 
     const el: HTMLElement = fixture.nativeElement.querySelector('span');
     expect(el).toBeTruthy();
-    expect(el.className).toContain('badge__medium');
+    expect(el.className).toContain('badge--medium');
   });
 
   it('should default to small size', () => {
@@ -76,6 +76,6 @@ describe('Badges', () => {
 
     const el: HTMLElement = fixture.nativeElement.querySelector('span');
     expect(el).toBeTruthy();
-    expect(el.className).toContain('badge__small');
+    expect(el.className).toContain('badge--small');
   });
 });

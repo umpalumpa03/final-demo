@@ -1,54 +1,53 @@
-
+<div class="badge-demo">
+  <h3 class="badge-demo__title">Variants</h3>
+  
+  <div class="badge-demo__row">
+    @for (item of variants(); track $index) {
+      <app-badges 
+        [variant]="item.variant" 
+        [text]="item.text">
+      </app-badges>
+    }
+  </div>
+</div>
 
 <div class="badge-demo">
-    <h3 class="badge-demo__title">Variants</h3>
-  
-    <div class="badge-demo__row">
-      <app-badges variant="default" text="Default"></app-badges>
-      <app-badges variant="secondary" text="Secondary"></app-badges>
-      <app-badges variant="destructive" text="Destructive"></app-badges>
-      <app-badges variant="outline" text="Outline"></app-badges>
-    </div>
-
-  </div>
-
-  
-  <div class="badge-demo">
   <h3 class="badge-demo__title">Status Badges</h3>
   
   <div class="badge-demo__row">
-    <app-badges status="active" text="Active"></app-badges>
-    <app-badges status="pending" text="Pending"></app-badges>
-    <app-badges status="inactive" text="Inactive"></app-badges>
-    <app-badges status="in-progress" text="In Progress"></app-badges>
-    <app-badges status="featured" text="Featured"></app-badges>
-    <app-badges status="premium" text="Premium"></app-badges>
+    @for (item of statuses(); track $index) {
+      <app-badges 
+        [status]="item.status" 
+        [text]="item.text">
+      </app-badges>
+    }
   </div>
-
 </div>
 
 <div class="badge-demo">
   <h3 class="badge-demo__title">Sizes</h3>
   
   <div class="badge-demo__row">
-    <app-badges size="small" variant="default" text="Small"></app-badges>
-    <app-badges size="medium" variant="default" text="Medium"></app-badges>
-    <app-badges size="large" variant="default" text="Large"></app-badges>
+    @for (item of sizes(); track $index) {
+      <app-badges 
+        [size]="item.size" 
+        [variant]="item.variant" 
+        [text]="item.text">
+      </app-badges>
+    }
   </div>
-
-
-
 </div>
 
 <div class="badge-demo">
   <h3 class="badge-demo__title">Count Badges</h3>
   
   <div class="badge-demo__list">
-    <app-badges label="Messages" variant="default" text="3"></app-badges>
-    <app-badges label="Notifications" variant="destructive" text="12"></app-badges>
-    <app-badges label="Updates" variant="secondary" text="New"></app-badges>
-    <app-badges label="Cart Items" variant="default" text="5"></app-badges>
-    <app-badges label="Unread" variant="destructive" text="99+"></app-badges>
+    @for (item of countBadges(); track $index) {
+      <app-badges 
+        [label]="item.label" 
+        [variant]="item.variant" 
+        [text]="item.text">
+      </app-badges>
+    }
   </div>
-
 </div>

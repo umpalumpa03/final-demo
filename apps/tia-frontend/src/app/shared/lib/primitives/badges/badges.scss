@@ -35,7 +35,7 @@
     line-height: 1.2;
   }
 
-  &__small {
+  &--small {
     padding: 0.4rem 0.6rem;
     font-size: 1rem;
     gap: 0.3rem;
@@ -46,7 +46,7 @@
     }
   }
 
-  &__medium {
+  &--medium {
     padding: 0.6rem 0.8rem;
     font-size: 1.2rem;
     gap: 0.4rem;
@@ -57,7 +57,7 @@
     }
   }
 
-  &__large {
+  &--large {
     padding: 0.8rem 1rem;
     font-size: 1.4rem;
     gap: 0.5rem;
@@ -68,58 +68,58 @@
     }
   }
 
-  &__default {
+  &--default {
     background-color: $blue-500;
     color: $white;
   }
 
  
-  &__secondary {
+  &--secondary {
     background-color: $gray-50;
     color: $blue-600;
-    border: 1px solid $blue-200;
+    border: 0.1rem solid $blue-200;
   }
 
 
-  &__destructive {
+  &--destructive {
     background-color: $red-500;
     color: $white;
   }
 
 
-  &__outline {
+  &--outline {
     background-color: $white;
     color: $blue-600;
-    border: 1px solid $blue-300;
+    border: 0.1rem solid $blue-300;
   }
 
 
-  &__active {
+  &--active {
     background-color: $green-500;
     color: $white;
   }
 
-  &__pending {
+  &--pending {
     background-color: $yellow-400;
     color: $white;
   }
 
-  &__inactive {
+  &--inactive {
     background-color: $red-500;
     color: $white;
   }
 
-  &__in-progress {
+  &--in-progress {
     background-color: $blue-500;
     color: $white;
   }
 
-  &__featured {
+  &--featured {
     background-color: $purple-500;
     color: $white;
   }
 
-  &__premium {
+  &--premium {
     background-color: $orange-500;
     color: $white;
   }
