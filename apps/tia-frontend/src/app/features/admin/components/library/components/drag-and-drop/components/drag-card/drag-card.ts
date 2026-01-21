@@ -16,15 +16,15 @@ import { items } from '../../config/draggable-data';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DragCard {
-  items: DraggableItemType[] = [...items];
+  public items: DraggableItemType[] = [...items];
 
-  draggingId = signal<string | null>(null);
-  startX = 0;
-  startY = 0;
-  currentX = signal(0);
-  currentY = signal(0);
+  public draggingId = signal<string | null>(null);
+  public startX = 0;
+  public startY = 0;
+  public currentX = signal(0);
+  public currentY = signal(0);
 
-  draggingStyle = computed(() => ({
+  public draggingStyle = computed(() => ({
     transform: `translate(${this.currentX()}px, ${this.currentY()}px)`,
     zIndex: 100,
   }));

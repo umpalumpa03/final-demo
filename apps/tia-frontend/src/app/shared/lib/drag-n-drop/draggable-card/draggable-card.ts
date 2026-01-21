@@ -14,11 +14,11 @@ import { DraggableItemType } from '../model/drag.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DraggableCard {
-  itemData = input<DraggableItemType>();
-  isDragging = input<boolean>(false);
+  public itemData = input.required<DraggableItemType>();
+  public isDragging = input<boolean>(false);
 
-  dragStart = output<PointerEvent>();
-  remove = output<void>();
+  public dragStart = output<PointerEvent>();
+  public remove = output<void>();
 
   public onDragStartPoint(event: PointerEvent): void {
     event.preventDefault();
