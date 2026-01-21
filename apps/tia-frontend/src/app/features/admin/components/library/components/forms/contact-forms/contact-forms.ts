@@ -1,4 +1,4 @@
-import { Component, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IContactForm } from '../models/contact-forms.model';
 
@@ -7,6 +7,7 @@ import { IContactForm } from '../models/contact-forms.model';
   imports: [ReactiveFormsModule],
   templateUrl: './contact-forms.html',
   styleUrl: './contact-forms.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContactForms {
   private fb = inject(FormBuilder);
