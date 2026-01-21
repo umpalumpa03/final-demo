@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { LibraryHeader } from './library-header';
+import { LibraryTitle } from './library-title';
 import { expect, describe, it, beforeEach } from 'vitest';
 
-describe('LibraryHeader', () => {
-  let component: LibraryHeader;
-  let fixture: ComponentFixture<LibraryHeader>;
+describe('LibraryTitle', () => {
+  let component: LibraryTitle;
+  let fixture: ComponentFixture<LibraryTitle>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LibraryHeader],
+      imports: [LibraryTitle],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LibraryHeader);
+    fixture = TestBed.createComponent(LibraryTitle);
     component = fixture.componentInstance;
   });
 
