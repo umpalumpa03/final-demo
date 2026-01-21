@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { UiModal } from 'apps/tia-frontend/src/app/shared/lib/layout/ui-modal';
+import { UiModal } from '../../../../../../../../shared/lib/layout/ui-modal';
 
 @Component({
   selector: 'app-large-dialog',
