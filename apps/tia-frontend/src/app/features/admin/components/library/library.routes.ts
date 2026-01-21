@@ -26,9 +26,16 @@ export const libraryRoutes: Routes = [
           ),
       },
       {
+        path: 'cards',
+        loadComponent: () =>
+          import('./components/cards/cards').then((c) => c.Cards),
+      },
+      {
         path: 'badges',
         loadComponent: () =>
-          import('./components/badges/badge-component').then((m) => m.BadgeComponent),
+          import('./components/badges/badge-component').then(
+            (m) => m.BadgeComponent,
+          ),
       },
       {
         path: '**',
