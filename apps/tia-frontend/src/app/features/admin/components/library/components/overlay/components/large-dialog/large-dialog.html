@@ -1,0 +1,68 @@
+<button class="large-dialog-trigger" (click)="toggle()">Large Dialog</button>
+
+<app-ui-modal [isOpen]="isOpen()" (closed)="toggle()">
+  <div class="large-dialog">
+    <header class="large-dialog__header">
+      <h2 class="large-dialog__title">Terms and Conditions</h2>
+      <p class="large-dialog__description">
+        Please read and accept our terms and conditions.
+      </p>
+    </header>
+
+    <div class="large-dialog__body">
+      <section class="large-dialog__section">
+        <h4 class="large-dialog__section-title">Section 1</h4>
+        <p class="large-dialog__section-text">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+      </section>
+
+      <section class="large-dialog__section">
+        <h4 class="large-dialog__section-title">Section 2</h4>
+        <p class="large-dialog__section-text">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+      </section>
+
+      <section class="large-dialog__section">
+        <h4 class="large-dialog__section-title">Section 3</h4>
+        <h4 class="large-dialog__section-title">Section 3</h4>
+        <p class="large-dialog__section-text">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+      </section>
+
+      <section class="large-dialog__section">
+        <h4 class="large-dialog__section-title">Section 4</h4>
+        <p class="large-dialog__section-text">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+      </section>
+
+      <section class="large-dialog__section">
+        <h4 class="large-dialog__section-title">Section 5</h4>
+        <p class="large-dialog__section-text">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+      </section>
+    </div>
+
+    <footer class="large-dialog__footer">
+      <button
+        type="button"
+        class="large-dialog__btn-decline"
+        (click)="toggle()"
+      >
+        Decline
+      </button>
+      <button type="button" class="large-dialog__btn-accept" (click)="toggle()">
+        Accept
+      </button>
+    </footer>
+  </div>
+</app-ui-modal>

@@ -1,23 +1,16 @@
 <div class="showcase-container">
   <header class="showcase-header">
-    <h1>Overlay Components</h1>
-    <p>Modal dialogs, sheets, popovers, and dropdown menu</p>
+    <app-library-title
+      [title]="pageTitle"
+      [subtitle]="pageSubtitle"
+    ></app-library-title>
   </header>
 
-  <section class="component-section">
-    <h3>Dialogs</h3>
-    <div class="button-group">
-      <button class="btn-primary" (click)="toggle(isEditProfileOpen)">
-        Open Dialog
-      </button>
-      <button class="btn-secondary" (click)="toggle(isFormDialogOpen)">
-        Dialog with Form
-      </button>
-      <button class="btn-outline" (click)="toggle(isLargeDialogOpen)">
-        Large Dialog
-      </button>
-    </div>
-  </section>
+  <app-showcase-card title="Dialogs">
+    <app-edit-profile-dialog></app-edit-profile-dialog>
+    <app-form-dialog></app-form-dialog>
+    <app-large-dialog></app-large-dialog>
+  </app-showcase-card>
 
   <section class="component-section">
     <h3>Alert Dialogs</h3>
