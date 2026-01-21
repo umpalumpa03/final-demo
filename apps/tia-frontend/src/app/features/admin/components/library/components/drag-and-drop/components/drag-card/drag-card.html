@@ -1,0 +1,17 @@
+<div class="drag-card-frame">
+  <div class="drag-card-frame__header">
+    <h2>Draggable Cards</h2>
+    <p>Drag Cards to reorder them in a grid layout</p>
+  </div>
+  <div class="draggable-cards">
+    @for (item of items; track item.id) {
+    <app-draggable-card
+      [itemData]="item"
+      [isDragging]="draggingId() === item.id"
+      [style]="draggingId() === item.id ? draggingStyle() : null"
+      (dragStart)="onDragStart(item.id, $event)"
+      (remove)="onRemove(item.id)"
+    />
+    }
+  </div>
+</div>
