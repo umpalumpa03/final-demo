@@ -13,6 +13,11 @@ describe('DraggableCard', () => {
 
     fixture = TestBed.createComponent(DraggableCard);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('itemData', {
+      id: '1',
+      title: 'Test',
+      subtitle: 'Test subtitle',
+    });
     await fixture.whenStable();
   });
 
