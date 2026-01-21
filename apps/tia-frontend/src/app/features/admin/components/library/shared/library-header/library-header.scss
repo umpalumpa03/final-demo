@@ -28,6 +28,9 @@
       }
     }
     &__color-switch {
+      @include m.display-flex();
+      align-items: center;
+      gap: 0.6rem;
       div {
         @include m.display-flex();
         gap: 0.6rem;
