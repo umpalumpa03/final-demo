@@ -1,9 +1,13 @@
-import { Route } from '@angular/router';
-import { AppB } from './app-b';
+import { Routes } from '@angular/router';
+import { libraryRoutes } from './features/admin/components/library/library.routes';
 
-export const appRoutes: Route[] = [
+export const appRoutes: Routes = [
   {
-    path: 'library',
-    loadComponent: () => import('./features/admin/components/library/container/library-container').then(m => m.LibraryContainer),
-  }
+    path: 'admin/library',
+    children: libraryRoutes,
+  },
+  {
+    path: '**',
+    redirectTo: '/admin/library',
+  },
 ];
