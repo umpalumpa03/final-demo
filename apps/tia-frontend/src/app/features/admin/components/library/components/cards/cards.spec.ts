@@ -21,12 +21,12 @@ describe('Cards', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize pageTitle signal', () => {
-    expect(component.pageTitle()).toBe('Cards');
+  it('should have pageTitle property', () => {
+    expect(component.pageTitle).toBe('Cards');
   });
 
-  it('should initialize pageSubtitle signal', () => {
-    expect(component.pageSubtitle()).toBe('Card components with various layouts and content types');
+  it('should have pageSubtitle property', () => {
+    expect(component.pageSubtitle).toBe('Card components with various layouts and content types');
   });
 
   it('should initialize basicCards signal with two cards', () => {

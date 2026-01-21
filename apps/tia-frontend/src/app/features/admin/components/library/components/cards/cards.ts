@@ -11,10 +11,8 @@ import { CardData } from '../../../../../../shared/lib/cards/models/card.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Cards {
-  readonly pageTitle = signal('Cards');
-  readonly pageSubtitle = signal(
-    'Card components with various layouts and content types',
-  );
+  readonly pageTitle = 'Cards';
+  readonly pageSubtitle = 'Card components with various layouts and content types';
 
   readonly basicCards = signal<CardData[]>([
     {
