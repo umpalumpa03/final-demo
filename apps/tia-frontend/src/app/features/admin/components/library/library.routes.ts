@@ -50,6 +50,11 @@ export const libraryRoutes: Routes = [
           import('./components/forms/forms').then((c) => c.Forms),
       },
       {
+        path: 'overlay',
+        loadComponent: () =>
+          import('./components/overlay/overlay').then((c) => c.Overlay),
+      },
+      {
         path: '**',
         redirectTo: 'colorpalettes',
       },
