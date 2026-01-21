@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { FirstUpperPipe } from '../../../pipes/first-upper/first-upper-pipe';
-export type AlertType = 'information' | 'success' | 'error' | 'warning';
+import { FirstUpperPipe } from '../../../../pipes/first-upper/first-upper-pipe';
+import { AlertType } from '../../shared/models/alert.models';
+
 
 @Component({
   selector: 'app-alert-types-with-icons',
