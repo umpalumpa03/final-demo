@@ -2,7 +2,7 @@
 @use '../../../../../../shared/styles/palette' as *;
 
 .lib-header {
-  max-width: 1102.4px;
+  max-width: 1102px;
   width: 100%;
   min-height: 6.4rem;
   @include display-flex(column);
