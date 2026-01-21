@@ -1,23 +1,41 @@
-<form class="contact__form">
+<form class="contact__form" [formGroup]="contactForm" (ngSubmit)="submit()">
   <div>
-    <label for="">Name *</label>
-    <input type="text" placeholder="Your name" />
+    <label [class.invalid]="showError('name')" for="name">Name *</label>
+    <input formControlName="name" type="text" placeholder="Your name" />
+    @if (showError('name')) {
+        <span class="error">
+            {{ name.hasError('required') ? 'name is required' :
+            'min length of name is' + name.errors?.['minlength']?.requiredLength }}
+      </span>
+    }
   </div>
 
   <div>
-    <label for="">Email *</label>
-    <input type="text" placeholder="your.email@example.com" />
+    <label [class.invalid]="showError('email')" for="email">Email *</label>
+    <input formControlName="email" type="email" placeholder="your.email@example.com" />
+    @if (showError('email')) {
+      <span class="error">
+        {{ email.hasError('required') ? 'Email is required' :
+         'Invalid email format' }}
+      </span>
+    }
   </div>
 
   <div>
-    <label>Message *</label>
-    <textarea placeholder="Type your message here..."></textarea>
+    <label [class.invalid]="showError('message')" for="message">Message *</label>
+    <textarea formControlName="message" placeholder="Type your message here..."></textarea>
+    @if (showError('message')) {
+      <span class="error">
+        {{ message.hasError('required') ? 'message is required' :
+         'min length of message is' + message.errors?.['minlength']?.requiredLength }}
+      </span>
+    }
   </div>
 
   <div class="contact__form__subscribe">
-    <input type="checkbox" name="" />
-    <label for="">Subscribe to newsletter</label>
+    <input formControlName="subscribe" type="checkbox" id="subscribe" />
+    <label [class.invalid]="showError('subscribe')" for="subscribe">Subscribe to newsletter *</label>
   </div>
 
-  <button>Submit</button>
+  <button type="submit">Submit</button>
 </form>

@@ -1,6 +1,5 @@
 @use '../../../../../../../shared/styles/mixins' as *;
 @use '../../../../../../../shared/styles/palette' as *;
-@use '../../../../../../../shared/styles/themes' as *;
 
 .contact__form {
   @include flex-center(column, center, start);
@@ -61,5 +60,14 @@
     color: $white;
     border: none;
     cursor: pointer;
+  }
+
+  label.invalid {
+    color: $red-500;
+  }
+
+  .error {
+    color: $red-500;
+    font-size: 1.2rem;
   }
 }
