@@ -103,7 +103,7 @@
       "unitTestRunner": "vitest-analog"
     },
     "@nx/angular:component": {
-      "style": "css"
+      "style": "scss"
     }
   },
   "defaultProject": "tia-frontend"

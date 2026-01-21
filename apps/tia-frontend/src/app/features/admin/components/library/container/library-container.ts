@@ -8,4 +8,6 @@ import { Navigation } from '../shared/navigation/navigation';
   templateUrl: './library-container.html',
   styleUrl: './library-container.scss',
 })
-export class LibraryContainer {}
+export class LibraryContainer {
+  
+}
