@@ -1,10 +1,11 @@
-import { Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 @Component({
   selector: 'app-basic-alerts',
   imports: [],
   templateUrl: './basic-alerts.html',
   styleUrl: './basic-alerts.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BasicAlerts {
   alertType = input<'default' | 'error'>('default');
