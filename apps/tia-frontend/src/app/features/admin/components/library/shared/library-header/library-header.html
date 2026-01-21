@@ -12,12 +12,12 @@
         alt="color switch icon"
       />
       <div>
+        @for (item of colorConfigs; track item.color) {
         <app-color-switch
-          [color]="'ocean-blue'"
-          [isActive]="true"
+          [color]="item.color"
+          [isActive]="item.isActive"
         ></app-color-switch>
-        <app-color-switch [color]="'royal-blue'"></app-color-switch>
-        <app-color-switch [color]="'deep-blue'"></app-color-switch>
+        }
       </div>
     </div>
   </div>
