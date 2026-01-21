@@ -1,12 +1,12 @@
-@use '../../../styles/palette';
-@use '../../../styles/mixins';
+@use '../../../styles/palette' as *;
+@use '../../../styles/mixins' as *;
 
 .basic-alert {
   max-width: 105.3rem;
   min-height: 6.76rem;
   width: 100%;
   background: #EFF6FF;
-  border: 0.8px solid palette.$blue-200;
+  border: 0.8px solid $blue-200;
   border-radius: 10px;
   display: flex;
   gap: 1.4rem;
@@ -29,57 +29,57 @@
 
   .alert-info-div {
     justify-content: center;
-    @include mixins.display-flex(column, nowrap);
+    @include display-flex(column, nowrap);
     > div {
-      @include mixins.font-arimo(400, 1.4rem, 2rem);
+      @include font-arimo(400, 1.4rem, 2rem);
     }
 
     > div:first-child {
       letter-spacing: -0.35px;
-      color: palette.$blue-950;
+      color: $blue-950;
     }
 
     > div:last-child {
       letter-spacing: 0;
-      color: palette.$blue-900;
+      color: $blue-900;
     }
   }
 
   &.error {
-    background: palette.$red-50;
-    border: 0.8px solid palette.$red-200;
+    background: $red-50;
+    border: 0.8px solid $red-200;
     .alert-info-div {
       > div:first-child {
-        color: palette.$red-900;
+        color: $red-900;
       }
       > div:last-child {
-        color: palette.$red-950;;
+        color: $red-950;;
       }
     }
   }
 
   &.success {
-    background: palette.$green-50;
-    border: 0.8px solid palette.$green-200;
+    background: $green-50;
+    border: 0.8px solid $green-200;
     .alert-info-div {
       > div:first-child {
-        color: palette.$green-900;
+        color: $green-900;
       }
       > div:last-child {
-        color: palette.$green-950;
+        color: $green-950;
       }
     }
   }
 
   &.warning {
-    background: palette.$yellow-50;
-    border: 0.8px solid palette.$yellow-200;
+    background: $yellow-50;
+    border: 0.8px solid $yellow-200;
     .alert-info-div {
       > div:first-child {
-        color: palette.$brown-800;
+        color: $brown-800;
       }
       > div:last-child {
-        color: palette.$brown-700;
+        color: $brown-700;
       }
     }
   }

@@ -1,12 +1,12 @@
-@use '../../../styles/palette';
-@use '../../../styles/mixins';
+@use '../../../styles/palette' as *;
+@use '../../../styles/mixins' as *;
 
 .basic-alert {
   max-width: 105.3rem;
   min-height: 6.76rem;
   width: 100%;
   background: #ffffff;
-  border: 0.8px solid palette.$blue-400;
+  border: 0.8px solid $blue-400;
   border-radius: 10px;
   display: flex;
   gap: 1.4rem;
@@ -29,9 +29,9 @@
 
   .alert-info-div {
     justify-content: center;
-    @include mixins.display-flex(column, nowrap);
+    @include display-flex(column, nowrap);
     > div {
-      @include mixins.font-arimo(400, 1.4rem, 2rem);
+      @include font-arimo(400, 1.4rem, 2rem);
       line-height: 2rem;
     }
 
@@ -42,14 +42,14 @@
 
     > div:last-child {
       letter-spacing: 0;
-      color: palette.$blue-600;
+      color: $blue-600;
     }
   }
 
   &.error {
     .alert-info-div {
       > div:first-child {
-        color: palette.$red-600;
+        color: $red-600;
       }
       > div:last-child {
         color: #dc2626e5;
