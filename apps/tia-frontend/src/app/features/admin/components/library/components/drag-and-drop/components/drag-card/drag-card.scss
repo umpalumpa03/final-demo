@@ -1,0 +1,32 @@
+@use '../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../shared/styles/palette' as *;
+
+.drag-card-frame {
+  @include display-flex(column);
+  border: 0.18rem solid $blue-400;
+  background-color: $white;
+  width: 100%;
+  max-width: 123.2rem;
+  border-radius: 1rem;
+  padding: 2.5rem;
+  gap: 1.6rem;
+  &__header {
+    @include display-flex(column);
+    gap: 0.8rem;
+    width: 100%;
+    h2 {
+      @include font-inter(600, 1.8rem, 2.7rem);
+      color: var(--color-fg);
+    }
+    p {
+      @include font-inter(400, 1.4rem, 2rem);
+      color: $gray-700;
+    }
+  }
+  .draggable-cards {
+    gap: 1.1rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}

@@ -1,6 +1,6 @@
 @use '../../../../../../shared/styles/mixins' as *;
 @use '../../../../../../shared/styles/palette' as *;
-@use '../../../../../../shared/styles/themes' as *;
+
 
 .drag-frame {
   @include flex-center();
@@ -8,8 +8,10 @@
   max-width: 192rem;
   background-color: var(--color-bg);
   height: auto;
+  padding-top: 3rem;
 
   &__container {
+    @include display-flex(column);
     width: 100%;
     max-width: 123.2rem;
     height: auto;
@@ -23,21 +25,20 @@
 
       .drag-frame__title {
         @include font-inter(600, 2.4rem, 3.2rem);
+        color: var(--color-fg);
       }
 
       .drag-frame__description {
         @include font-inter(400, 1.6rem, 2.4rem);
+        color: $gray-700;
       }
     }
 
     .drag-frame__content {
       @include display-flex(column);
 
-      .draggable-cards {
-        gap: 1.1rem;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-      }
+
+
     }
   }
 }
