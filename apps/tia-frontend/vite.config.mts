@@ -21,7 +21,7 @@ export default defineConfig(() => ({
     setupFiles: ['src/test-setup.ts'],
     reporters: ['default'],
     coverage: {
-      all: true,
+      all: false,
       include: ['src/**/*.ts'],
       reportsDirectory: '../../coverage/apps/tia-frontend',
       provider: 'v8' as const,
@@ -37,7 +37,9 @@ export default defineConfig(() => ({
         'scripts/**',
         '**/src/main.ts',
         '**/*.routes.ts',
-        '**/nx-welcome.ts'
+        '**/nx-welcome.ts',
+        '**/environment.ts',
+        '**/environment.prod.ts',
       ],
     },
   },
