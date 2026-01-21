@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { DragAndDropContainer } from "./features/admin/components/library/components/drag-and-drop/drag-and-drop";
 
 @Component({
-  imports: [RouterModule, DragAndDropContainer],
+  imports: [RouterModule],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
