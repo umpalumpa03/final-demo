@@ -26,6 +26,11 @@ export const libraryRoutes: Routes = [
           ),
       },
       {
+        path: 'badges',
+        loadComponent: () =>
+          import('./components/badges/badge-component').then((m) => m.BadgeComponent),
+      },
+      {
         path: '**',
         redirectTo: 'colorpalettes',
       },

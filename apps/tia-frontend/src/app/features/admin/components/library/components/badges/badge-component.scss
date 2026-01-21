@@ -1,0 +1,21 @@
+@use '../../../../../../shared/styles/palette' as palette;
+
+.badge-demo {
+  padding: 2.4rem;
+  border: 1px solid palette.$blue-400;
+  border-radius: 1.2rem;
+  background-color: palette.$white;
+  margin-top: 1.6rem;
+
+  &__title {
+    margin: 0 0 1.2rem 0;
+    font-weight: 600;
+    color: palette.$blue-900;
+  }
+
+  &__row {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+  }
+}
