@@ -55,6 +55,11 @@ export const libraryRoutes: Routes = [
           import('./components/overlay/overlay').then((c) => c.Overlay),
       },
       {
+        path: 'feedback',
+        loadComponent: () =>
+          import('./components/feedback/feedback').then((c) => c.Feedback),
+      },
+      {
         path: '**',
         redirectTo: 'colorpalettes',
       },
