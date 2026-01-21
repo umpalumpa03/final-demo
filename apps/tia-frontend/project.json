@@ -39,7 +39,6 @@
           "optimization": true,
           "aot": true,
           "sourceMap": false,
-          "extractCss": true,
           "namedChunks": false,
           "vendorChunk": false,
           "buildOptimizer": true,
