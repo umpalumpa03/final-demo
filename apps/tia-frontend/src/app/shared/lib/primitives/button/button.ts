@@ -1,5 +1,5 @@
 import { Component, input, ChangeDetectionStrategy } from '@angular/core';
-import { ButtonVariant, ButtonSize } from './button.types';
+import { ButtonVariant, ButtonSize } from './button.model';
 
 @Component({
   selector: 'app-button', 
