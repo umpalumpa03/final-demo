@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, WritableSignal } from '@angular/core';
 import { UiModal } from 'apps/tia-frontend/src/app/shared/lib/layout/ui-modal';
 
 @Component({
@@ -9,19 +9,20 @@ import { UiModal } from 'apps/tia-frontend/src/app/shared/lib/layout/ui-modal';
   styleUrls: ['./overlay.scss'],
 })
 export class Overlay {
-  public isDialogOpen = signal<boolean>(false);
+  public isEditProfileOpen = signal<boolean>(false);
   public isFormDialogOpen = signal<boolean>(false);
   public isLargeDialogOpen = signal<boolean>(false);
-
   public isDeleteAlertOpen = signal<boolean>(false);
   public isConfirmAlertOpen = signal<boolean>(false);
-
   public isRightSheetOpen = signal<boolean>(false);
   public isLeftSheetOpen = signal<boolean>(false);
   public isTopSheetOpen = signal<boolean>(false);
   public isBottomSheetOpen = signal<boolean>(false);
-
   public isDrawerOpen = signal<boolean>(false);
+
+  public toggle(state: WritableSignal<boolean>): void {
+    state.update((current) => !current);
+  }
 
   public onContextMenu(event: MouseEvent): void {
     event.preventDefault();

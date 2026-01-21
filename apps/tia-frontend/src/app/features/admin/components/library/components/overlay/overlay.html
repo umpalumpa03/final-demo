@@ -7,13 +7,13 @@
   <section class="component-section">
     <h3>Dialogs</h3>
     <div class="button-group">
-      <button class="btn-primary" (click)="isDialogOpen.set(true)">
+      <button class="btn-primary" (click)="toggle(isEditProfileOpen)">
         Open Dialog
       </button>
-      <button class="btn-secondary" (click)="isFormDialogOpen.set(true)">
+      <button class="btn-secondary" (click)="toggle(isFormDialogOpen)">
         Dialog with Form
       </button>
-      <button class="btn-outline" (click)="isLargeDialogOpen.set(true)">
+      <button class="btn-outline" (click)="toggle(isLargeDialogOpen)">
         Large Dialog
       </button>
     </div>
@@ -22,10 +22,10 @@
   <section class="component-section">
     <h3>Alert Dialogs</h3>
     <div class="button-group">
-      <button class="btn-danger" (click)="isDeleteAlertOpen.set(true)">
+      <button class="btn-danger" (click)="toggle(isDeleteAlertOpen)">
         Delete Account
       </button>
-      <button class="btn-outline" (click)="isConfirmAlertOpen.set(true)">
+      <button class="btn-outline" (click)="toggle(isConfirmAlertOpen)">
         Confirm Action
       </button>
     </div>
@@ -34,16 +34,16 @@
   <section class="component-section">
     <h3>Sheets (Side Panels)</h3>
     <div class="button-group">
-      <button class="btn-primary" (click)="isRightSheetOpen.set(true)">
+      <button class="btn-primary" (click)="toggle(isRightSheetOpen)">
         Open Right Sheet
       </button>
-      <button class="btn-secondary" (click)="isLeftSheetOpen.set(true)">
+      <button class="btn-secondary" (click)="toggle(isLeftSheetOpen)">
         Left Sheet
       </button>
-      <button class="btn-outline" (click)="isTopSheetOpen.set(true)">
+      <button class="btn-outline" (click)="toggle(isTopSheetOpen)">
         Top Sheet
       </button>
-      <button class="btn-outline" (click)="isBottomSheetOpen.set(true)">
+      <button class="btn-outline" (click)="toggle(isBottomSheetOpen)">
         Bottom Sheet
       </button>
     </div>
@@ -52,7 +52,7 @@
   <section class="component-section">
     <h3>Drawers</h3>
     <div class="button-group">
-      <button class="btn-primary" (click)="isDrawerOpen.set(true)">
+      <button class="btn-primary" (click)="toggle(isDrawerOpen)">
         Open Drawer
       </button>
     </div>
@@ -91,9 +91,39 @@
   </section>
 </div>
 
-<app-ui-modal [isOpen]="isDialogOpen()" (closed)="isDialogOpen.set(false)">
-  <div class="modal-content-demo">
-    <h2>Standard Dialog</h2>
-    <p>This is a basic blank canvas modal.</p>
+<app-ui-modal
+  [isOpen]="isEditProfileOpen()"
+  (closed)="toggle(isEditProfileOpen)"
+>
+  <div class="edit-profile-container">
+    <header class="modal-header">
+      <h2 class="title">Edit Profile</h2>
+      <p class="description">
+        Make changes to your profile here. Click save when you're done.
+      </p>
+    </header>
+
+    <form class="modal-form">
+      <div class="input-group">
+        <label for="name">Name</label>
+        <input id="name" type="text" placeholder="John Doe" />
+      </div>
+
+      <div class="input-group">
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="john@example.com" />
+      </div>
+    </form>
+
+    <footer class="modal-footer">
+      <button
+        type="button"
+        class="btn-outline"
+        (click)="toggle(isEditProfileOpen)"
+      >
+        Cancel
+      </button>
+      <button type="submit" class="btn-primary">Save changes</button>
+    </footer>
   </div>
 </app-ui-modal>
