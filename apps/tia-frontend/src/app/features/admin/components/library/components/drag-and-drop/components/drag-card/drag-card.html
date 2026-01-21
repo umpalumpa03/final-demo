@@ -4,15 +4,13 @@
     <p>Drag Cards to reorder them in a grid layout</p>
   </div>
   <div class="draggable-cards">
-    @for (item of items; track $index) {
+    @for (item of items; track item.id) {
     <app-draggable-card
       [itemData]="item"
-      [index]="$index"
-      [isDragging]="draggingIndex() === $index"
-      [style.transform]="draggingIndex() === $index ? 'translate(' + currentX() + 'px, ' + currentY() + 'px)' : ''"
-      [style.z-index]="draggingIndex() === $index ? 100 : 0"
-      (dragStart)="onDragStart($event.index, $event.event)"
-      (remove)="onRemove($event)"
+      [isDragging]="draggingId() === item.id"
+      [style]="draggingId() === item.id ? draggingStyle() : null"
+      (dragStart)="onDragStart(item.id, $event)"
+      (remove)="onRemove(item.id)"
     />
     }
   </div>

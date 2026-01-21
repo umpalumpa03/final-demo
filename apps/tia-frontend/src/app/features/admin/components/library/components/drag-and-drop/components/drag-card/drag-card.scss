@@ -3,7 +3,7 @@
 
 .drag-card-frame {
   @include display-flex(column);
-  border: 1.88px solid $blue-400;
+  border: 0.18rem solid $blue-400;
   background-color: $white;
   width: 100%;
   max-width: 123.2rem;

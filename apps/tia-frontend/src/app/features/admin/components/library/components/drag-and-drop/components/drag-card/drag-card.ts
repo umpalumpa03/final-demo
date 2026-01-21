@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  signal,
+  computed,
+} from '@angular/core';
 import { DraggableCard } from 'apps/tia-frontend/src/app/shared/lib/drag-n-drop/draggable-card/draggableCard';
 import { DraggableItemType } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 import { items } from '../../config/draggable-data';
@@ -13,14 +18,19 @@ import { items } from '../../config/draggable-data';
 export class DragCard {
   items: DraggableItemType[] = [...items];
 
-  draggingIndex = signal<number | null>(null);
+  draggingId = signal<string | null>(null);
   startX = 0;
   startY = 0;
   currentX = signal(0);
   currentY = signal(0);
 
-  public onDragStart(index: number, event: PointerEvent): void {
-    this.draggingIndex.set(index);
+  draggingStyle = computed(() => ({
+    transform: `translate(${this.currentX()}px, ${this.currentY()}px)`,
+    zIndex: 100,
+  }));
+
+  public onDragStart(id: string, event: PointerEvent): void {
+    this.draggingId.set(id);
     this.startX = event.clientX;
     this.startY = event.clientY;
 
@@ -34,7 +44,7 @@ export class DragCard {
   };
 
   public onPointerUp = (): void => {
-    this.draggingIndex.set(null);
+    this.draggingId.set(null);
     this.currentX.set(0);
     this.currentY.set(0);
 
@@ -42,7 +52,7 @@ export class DragCard {
     document.removeEventListener('pointerup', this.onPointerUp);
   };
 
-  public onRemove(index: number): void {
-    this.items.splice(index, 1);
+  public onRemove(id: string): void {
+    this.items = this.items.filter((item) => item.id !== id);
   }
 }

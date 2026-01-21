@@ -15,16 +15,17 @@ import { DraggableItemType } from '../model/drag.model';
 })
 export class DraggableCard {
   itemData = input<DraggableItemType>();
-  index = input.required<number>();
   isDragging = input<boolean>(false);
-  dragStart = output<{ index: number; event: PointerEvent }>();
-  remove = output<number>();
+
+  dragStart = output<PointerEvent>();
+  remove = output<void>();
 
   public onDragStartPoint(event: PointerEvent): void {
     event.preventDefault();
-    this.dragStart.emit({ index: this.index(), event });
+    this.dragStart.emit(event);
   }
+
   public onRemove(): void {
-    this.remove.emit(this.index());
+    this.remove.emit();
   }
 }
