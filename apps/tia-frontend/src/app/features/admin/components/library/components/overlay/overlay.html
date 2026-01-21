@@ -1,1 +1,99 @@
-<p>overlay works!</p>
+<div class="showcase-container">
+  <header class="showcase-header">
+    <h1>Overlay Components</h1>
+    <p>Modal dialogs, sheets, popovers, and dropdown menu</p>
+  </header>
+
+  <section class="component-section">
+    <h3>Dialogs</h3>
+    <div class="button-group">
+      <button class="btn-primary" (click)="isDialogOpen.set(true)">
+        Open Dialog
+      </button>
+      <button class="btn-secondary" (click)="isFormDialogOpen.set(true)">
+        Dialog with Form
+      </button>
+      <button class="btn-outline" (click)="isLargeDialogOpen.set(true)">
+        Large Dialog
+      </button>
+    </div>
+  </section>
+
+  <section class="component-section">
+    <h3>Alert Dialogs</h3>
+    <div class="button-group">
+      <button class="btn-danger" (click)="isDeleteAlertOpen.set(true)">
+        Delete Account
+      </button>
+      <button class="btn-outline" (click)="isConfirmAlertOpen.set(true)">
+        Confirm Action
+      </button>
+    </div>
+  </section>
+
+  <section class="component-section">
+    <h3>Sheets (Side Panels)</h3>
+    <div class="button-group">
+      <button class="btn-primary" (click)="isRightSheetOpen.set(true)">
+        Open Right Sheet
+      </button>
+      <button class="btn-secondary" (click)="isLeftSheetOpen.set(true)">
+        Left Sheet
+      </button>
+      <button class="btn-outline" (click)="isTopSheetOpen.set(true)">
+        Top Sheet
+      </button>
+      <button class="btn-outline" (click)="isBottomSheetOpen.set(true)">
+        Bottom Sheet
+      </button>
+    </div>
+  </section>
+
+  <section class="component-section">
+    <h3>Drawers</h3>
+    <div class="button-group">
+      <button class="btn-primary" (click)="isDrawerOpen.set(true)">
+        Open Drawer
+      </button>
+    </div>
+  </section>
+
+  <section class="component-section context-section">
+    <h3>Context Menu</h3>
+    <p>Right-click on the area below to open the context</p>
+    <div class="context-area" (contextmenu)="onContextMenu($event)">
+      <span>Right-click here</span>
+    </div>
+  </section>
+
+  <section class="component-section palette-section">
+    <h3>Command Palette</h3>
+    <div class="command-palette-mock">
+      <div class="command-input">
+        <span class="search-icon"></span>
+        <input type="text" placeholder="Type a command or search..." readonly />
+      </div>
+      <div class="command-results">
+        <div class="result-group">
+          <label>Suggestions</label>
+          <div class="result-item active">View Profile</div>
+          <div class="result-item">Settings</div>
+          <div class="result-item">Messages</div>
+        </div>
+        <div class="result-group">
+          <label>Actions</label>
+          <div class="result-item">Create New</div>
+          <div class="result-item">Copy</div>
+          <div class="result-item">Delete</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<app-ui-modal [isOpen]="isDialogOpen()" (closed)="isDialogOpen.set(false)">
+  <div class="modal-content-demo">
+    <h2>Standard Dialog</h2>
+    <p>This is a basic blank canvas modal.</p>
+  </div>
+</app-ui-modal>
