@@ -1,35 +1,22 @@
 @use '../../../../../../shared/styles/mixins' as *;
 @use '../../../../../../shared/styles/palette' as *;
-@use '../../../../../../shared/styles/themes' as *;
 
 .cards-page {
-  padding: 2.4rem;
+  padding: 24px;
+}
 
-  h1 {
-    @include font-inter(600, 3.2rem, 4rem);
+.cards-section {
+  margin-bottom: 40px;
+
+  &__title {
+    @include font-inter(600, 24px, 32px);
     color: $gray-800;
-    margin-bottom: 0.8rem;
+    margin-bottom: 16px;
   }
 
-  .description {
-    @include font-arimo(400, 1.6rem, 2.4rem);
-    color: $gray-600;
-    margin-bottom: 3.2rem;
-  }
-
-  .cards-section {
-    margin-bottom: 4rem;
-
-    h2 {
-      @include font-inter(600, 2.4rem, 3.2rem);
-      color: $gray-800;
-      margin-bottom: 1.6rem;
-    }
-
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
-      gap: 2.4rem;
-    }
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
   }
 }

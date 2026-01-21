@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Cards } from './cards';
 import { BasicCard } from '../../../../../../shared/lib/cards/basic-card/basic-card';
+import { LibraryTitle } from '../../shared/library-title/library-title';
 
 describe('Cards', () => {
   let component: Cards;
@@ -8,7 +9,7 @@ describe('Cards', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Cards, BasicCard],
+      imports: [Cards, BasicCard, LibraryTitle],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Cards);
@@ -20,6 +21,14 @@ describe('Cards', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should initialize pageTitle signal', () => {
+    expect(component.pageTitle()).toBe('Cards');
+  });
+
+  it('should initialize pageSubtitle signal', () => {
+    expect(component.pageSubtitle()).toBe('Card components with various layouts and content types');
+  });
+
   it('should initialize basicCardData signal with correct values', () => {
     const data = component.basicCardData();
     expect(data.title).toBe('Card Title');
@@ -27,22 +36,20 @@ describe('Cards', () => {
     expect(data.content).toBe('This is the main content area of the card. You can put any content here.');
   });
 
-  it('should render page title', () => {
-    const h1 = fixture.nativeElement.querySelector('h1');
-    expect(h1.textContent).toBe('Cards');
+  it('should initialize hoverCardData signal with correct values', () => {
+    const data = component.hoverCardData();
+    expect(data.title).toBe('Hover Effect');
+    expect(data.subtitle).toBe('Hover over this card');
+    expect(data.content).toBe('This card has hover effects applied.');
   });
 
-it('should render page description', () => {
-  const description = fixture.nativeElement.querySelector('.description');
-  expect(description.textContent.trim()).toBe('Card components with various layouts and content types');
-});
-  it('should render Basic Cards section header', () => {
-    const h2 = fixture.nativeElement.querySelector('h2');
-    expect(h2.textContent).toBe('Basic Cards');
+  it('should render LibraryTitle component', () => {
+    const libraryTitle = fixture.nativeElement.querySelector('app-library-title');
+    expect(libraryTitle).toBeTruthy();
   });
 
-  it('should render BasicCard component', () => {
-    const basicCard = fixture.nativeElement.querySelector('app-basic-card');
-    expect(basicCard).toBeTruthy();
+  it('should render two BasicCard components', () => {
+    const basicCards = fixture.nativeElement.querySelectorAll('app-basic-card');
+    expect(basicCards.length).toBe(2);
   });
 });

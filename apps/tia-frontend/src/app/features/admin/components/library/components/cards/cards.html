@@ -1,16 +1,21 @@
 <div class="cards-page">
-  <h1>Cards</h1>
-  <p class="description">
-    Card components with various layouts and content types
-  </p>
+  <app-library-title
+    [title]="pageTitle()"
+    [subtitle]="pageSubtitle()"
+  />
 
   <section class="cards-section">
-    <h2>Basic Cards</h2>
-    <div class="cards-grid">
+    <h2 class="cards-section__title">Basic Cards</h2>
+    <div class="cards-section__grid">
       <app-basic-card
         [title]="basicCardData().title"
         [subtitle]="basicCardData().subtitle"
         [content]="basicCardData().content"
+      />
+      <app-basic-card
+        [title]="hoverCardData().title"
+        [subtitle]="hoverCardData().subtitle"
+        [content]="hoverCardData().content"
       />
     </div>
   </section>
