@@ -9,6 +9,10 @@ export const appRoutes: Routes = [
   {
     path: 'library',
     redirectTo: '/admin/library',
-    pathMatch: 'full'
-  }
+    pathMatch: 'full',
+  },
+  {
+    path: '**',
+    redirectTo: '/admin/library',
+  },
 ];
