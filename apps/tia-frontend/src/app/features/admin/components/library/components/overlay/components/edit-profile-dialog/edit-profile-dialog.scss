@@ -7,13 +7,13 @@
   padding: 0.8rem 1.6rem;
   gap: 0.8rem;
   max-width: 12rem;
-  min-height: 3.6rem;
+  height: 3.6rem;
   background: var(--color-primary);
   border-radius: 0.8rem;
-  border: none;
   @include font-arimo(400, 1.4rem, 2rem);
   color: $white;
   cursor: pointer;
+  font-size: 1.2rem;
 }
 
 .btn-outline {
@@ -21,14 +21,13 @@
   @include flex-center(row, center, center);
   padding: 0.8rem 1.6rem;
   gap: 0.8rem;
-  width: 7.545rem;
+  width: 7.5rem;
   height: 3.6rem;
   background: var(--color-bg);
   border: 0.08rem solid var(--color-primary);
   border-radius: 0.8rem;
   @include font-arimo(400, 1.4rem, 2rem);
   color: var(--color-fg);
-  cursor: pointer;
 }
 
 .edit-profile {
@@ -89,7 +88,7 @@
     margin-top: 2.4rem;
 
     .btn-primary {
-      width: 11.734rem;
+      width: 11.7rem;
     }
   }
 }

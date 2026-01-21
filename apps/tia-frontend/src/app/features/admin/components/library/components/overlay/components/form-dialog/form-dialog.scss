@@ -15,6 +15,35 @@
   cursor: pointer;
 }
 
+.btn-primary {
+  @include display-flex;
+  @include flex-center(row, center, center);
+  padding: 0.8rem 1.6rem;
+  gap: 0.8rem;
+  max-width: 12rem;
+  height: 3.6rem;
+  background: var(--color-primary);
+  border-radius: 0.8rem;
+  @include font-arimo(400, 1.4rem, 2rem);
+  color: $white;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.btn-outline {
+  @include display-flex;
+  @include flex-center(row, center, center);
+  padding: 0.8rem 1.6rem;
+  gap: 0.8rem;
+  width: 7.5rem;
+  height: 3.6rem;
+  background: var(--color-bg);
+  border: 0.08rem solid var(--color-primary);
+  border-radius: 0.8rem;
+  @include font-arimo(400, 1.4rem, 2rem);
+  color: var(--color-fg);
+}
+
 .project-form {
   @include display-flex(column);
   padding: 2.48rem;
@@ -53,14 +82,13 @@
     @include display-flex;
     align-items: center;
     padding: 0.4rem 1.2rem;
-    width: 46.24rem;
+    width: 100%;
     height: 3.6rem;
     background: $white;
     border: 0.16rem solid var(--color-primary);
     border-radius: 0.8rem;
     @include font-arimo(400, 1.4rem, 2rem);
     color: var(--color-fg);
-    outline: none;
   }
 
   &__textarea {
