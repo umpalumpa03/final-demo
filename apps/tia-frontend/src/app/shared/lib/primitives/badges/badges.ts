@@ -11,4 +11,8 @@ export type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline';
 export class Badges {
   @Input() variant: BadgeVariant = 'default';
   @Input() text: string = '';
+
+  get badgeClass(): string {
+    return `badge badge--${this.variant}`;
+  }
 }

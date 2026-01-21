@@ -1,0 +1,22 @@
+@use '../../../../../../shared/styles/palette' as palette;
+
+.badge-demo {
+    padding: 2.4rem;
+    border: 1px solid #7cc2ff;
+    border-radius: 1.2rem;
+    background-color: #f5fbff;
+    margin-top: 1.6rem;
+
+  }
+  
+  .badge-demo__title {
+    margin: 0 0 1.2rem 0;
+    font-weight: 600;
+    color: palette.$blue-900;
+  }
+  
+  .badge-demo__row {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+  }
