@@ -1,4 +1,4 @@
-import { Component, input, computed } from '@angular/core';
+import { Component, input, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export type ButtonVariant = 'default' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link';
@@ -15,7 +15,8 @@ export type ButtonSize = 'small' | 'default' | 'large' | 'icon';
     '[attr.disabled]': 'isDisabled() || isLoading() ? "" : null',
     '[attr.aria-disabled]': 'isDisabled() || isLoading()',
     '[class.tia-btn--disabled]': 'isDisabled() || isLoading()',
-  }
+  },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonComponent {
   variant = input<ButtonVariant>('default');

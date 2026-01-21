@@ -31,9 +31,10 @@ describe('ButtonComponent', () => {
     expect(buttonDebugElement).toBeTruthy();
   });
 
-  it('should apply variant classes correctly', () => {
+  it('should apply variant classes correctly', async () => {
     component.variant = 'destructive';
     fixture.detectChanges();
+    await fixture.whenStable();
     
     const buttonElement: HTMLElement = fixture.nativeElement.querySelector('button');
     expect(buttonElement.classList).toContain('tia-btn--destructive');
@@ -55,6 +56,6 @@ describe('ButtonComponent', () => {
     fixture.detectChanges();
 
     const buttonElement: HTMLButtonElement = fixture.nativeElement.querySelector('button');
-    expect(buttonElement.disabled).toBeTrue();
+    expect(buttonElement.disabled).toBeTruthy();
   });
 });
