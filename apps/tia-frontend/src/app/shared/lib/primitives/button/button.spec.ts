@@ -35,13 +35,16 @@ describe('ButtonComponent', () => {
     component.variant = 'destructive';
     fixture.detectChanges();
     await fixture.whenStable();
-    
+    fixture.detectChanges(); 
+
     const buttonElement: HTMLElement = fixture.nativeElement.querySelector('button');
     expect(buttonElement.classList).toContain('tia-btn--destructive');
   });
 
-  it('should show spinner when isLoading is true', () => {
+  it('should show spinner when isLoading is true', async () => {
     component.isLoading = true;
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
 
     const spinner = fixture.nativeElement.querySelector('.tia-btn__spinner');
@@ -51,8 +54,10 @@ describe('ButtonComponent', () => {
     expect(buttonElement.classList).toContain('tia-btn--loading');
   });
 
-  it('should disable the button when isLoading is true', () => {
+  it('should disable the button when isLoading is true', async () => {
     component.isLoading = true;
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
 
     const buttonElement: HTMLButtonElement = fixture.nativeElement.querySelector('button');
