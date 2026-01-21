@@ -24,7 +24,7 @@ describe('Badges', () => {
     fixture.detectChanges();
     const el: HTMLElement = fixture.nativeElement.querySelector('span');
     expect(el).toBeTruthy();
-    expect(el.className).toContain('badge--secondary');
+    expect(el.className).toContain('badge__secondary');
   });
 
   it('should render provided text', () => {
@@ -33,5 +33,32 @@ describe('Badges', () => {
 
     const el: HTMLElement = fixture.nativeElement.querySelector('span');
     expect(el.textContent ?? '').toContain('Test badge');
+  });
+
+  it('should apply status class when status is provided', () => {
+    fixture.componentRef.setInput('status', 'active');
+    fixture.detectChanges();
+
+    const el: HTMLElement = fixture.nativeElement.querySelector('span');
+    expect(el).toBeTruthy();
+    expect(el.className).toContain('badge__active');
+  });
+
+  it('should render status icon when status is provided', () => {
+    fixture.componentRef.setInput('status', 'pending');
+    fixture.detectChanges();
+
+    const icon: HTMLImageElement | null = fixture.nativeElement.querySelector('.badge__icon');
+    expect(icon).not.toBeNull();
+    expect(icon?.src).toContain('images/svg/badges/badges-pending.svg');
+  });
+
+  it('should return empty iconPath when status is not provided', () => {
+    
+    fixture.detectChanges();
+
+   
+    const iconPath = (component as any).iconPath();
+    expect(iconPath).toBe('');
   });
 });
