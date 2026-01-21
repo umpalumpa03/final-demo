@@ -1,0 +1,23 @@
+@use '../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../shared/styles/palette' as *;
+@use '../../../../../../shared/styles/themes' as *;
+
+.forms__lib {
+  @include flex-center(column);
+  @include font-arimo(400, 1.4rem, 2rem);
+  width: 100%;
+  max-width: 192rem;
+  background-color: var(--color-bg);
+  height: auto;
+  gap: 3.2rem;
+
+  div {
+    @include display-flex(column);
+    max-width: 110.2rem;
+    width: 100%;
+    background-color: $white;
+    padding: 2.5rem;
+    border: 1px solid var(--color-primary);
+    border-radius: 1rem;
+  }
+}
