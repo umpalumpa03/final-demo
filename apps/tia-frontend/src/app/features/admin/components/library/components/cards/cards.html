@@ -7,16 +7,13 @@
   <section class="cards-section">
     <h2 class="cards-section__title">Basic Cards</h2>
     <div class="cards-section__grid">
-      <app-basic-card
-        [title]="basicCardData().title"
-        [subtitle]="basicCardData().subtitle"
-        [content]="basicCardData().content"
-      />
-      <app-basic-card
-        [title]="hoverCardData().title"
-        [subtitle]="hoverCardData().subtitle"
-        [content]="hoverCardData().content"
-      />
+      @for (card of basicCards(); track card.title) {
+        <app-basic-card
+          [title]="card.title"
+          [subtitle]="card.subtitle"
+          [content]="card.content"
+        />
+      }
     </div>
   </section>
 </div>

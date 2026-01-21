@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { BasicCard } from '../../../../../../shared/lib/cards/basic-card/basic-card';
 import { LibraryTitle } from '../../shared/library-title/library-title';
+import { CardData } from '../../../../../../shared/lib/cards/models/card.model';
 
 @Component({
   selector: 'app-cards',
@@ -15,15 +16,16 @@ export class Cards {
     'Card components with various layouts and content types',
   );
 
-  readonly basicCardData = signal({
-    title: 'Card Title',
-    subtitle: 'Card description goes here',
-    content:
-      'This is the main content area of the card. You can put any content here.',
-  });
-  readonly hoverCardData = signal({
-    title: 'Hover Effect',
-    subtitle: 'Hover over this card',
-    content: 'This card has hover effects applied.',
-  });
+  readonly basicCards = signal<CardData[]>([
+    {
+      title: 'Card Title',
+      subtitle: 'Card description goes here',
+      content: 'This is the main content area of the card. You can put any content here.',
+    },
+    {
+      title: 'Hover Effect',
+      subtitle: 'Hover over this card',
+      content: 'This card has hover effects applied.',
+    },
+  ]);
 }
