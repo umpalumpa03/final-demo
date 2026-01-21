@@ -22,18 +22,6 @@ describe('Colorpalettes', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should import LibraryTitle component', () => {
-    const compiled = fixture.nativeElement;
-    const header = compiled.querySelector('app-library-title');
-    expect(header).toBeTruthy();
-  });
-
-  it('should import OceanblueTheme component', () => {
-    const compiled = fixture.nativeElement;
-    const theme = compiled.querySelector('app-oceanblue-theme');
-    expect(theme).toBeTruthy();
-  });
-
   it('should render both header and theme components', () => {
     const compiled = fixture.nativeElement;
     const header = compiled.querySelector('app-library-title');
