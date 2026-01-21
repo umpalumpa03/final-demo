@@ -6,10 +6,10 @@ import { Component, input, output, HostListener } from '@angular/core';
   styleUrls: ['./ui-modal.scss'],
 })
 export class UiModal {
-  isOpen = input.required<boolean>();
-  closed = output<void>();
+  public isOpen = input.required<boolean>();
+  public closed = output<void>();
 
-  close(): void {
+  public close(): void {
     this.closed.emit();
   }
 

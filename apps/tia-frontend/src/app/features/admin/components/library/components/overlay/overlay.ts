@@ -1,5 +1,4 @@
 import { Component, signal, WritableSignal } from '@angular/core';
-import { UiModal } from '../../../../../../shared/lib/layout/ui-modal';
 import { LibraryTitle } from '../../shared/library-title/library-title';
 import { ShowcaseCard } from './components/showcase-card/showcase-card';
 import { EditProfileDialog } from './components/edit-profile-dialog/edit-profile-dialog';
@@ -9,7 +8,6 @@ import { LargeDialog } from './components/large-dialog/large-dialog';
 @Component({
   selector: 'app-overlay',
   imports: [
-    UiModal,
     LibraryTitle,
     ShowcaseCard,
     EditProfileDialog,

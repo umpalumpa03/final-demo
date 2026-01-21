@@ -1,0 +1,46 @@
+@use '../../../styles/palette' as *;
+@use '../../../styles/mixins' as *;
+
+.ui-modal-overlay {
+  @include flex-center;
+  position: fixed;
+  inset: 0;
+  background: rgba($black, 0.5);
+  z-index: 1000;
+  cursor: default;
+}
+
+.ui-modal-card {
+  @include display-flex(column);
+  position: relative;
+  width: 51rem;
+  min-height: 33rem;
+  background: var(--color-bg);
+  border: 0.1rem solid $blue-400;
+  border-radius: 1rem;
+  padding: 2.5rem;
+  box-shadow: 0 1rem 1.5rem -0.3rem rgba($black, 0.1);
+  outline: none;
+
+  &:focus-visible {
+    outline: 0.2rem solid var(--color-primary);
+    outline-offset: 0.2rem;
+  }
+}
+
+.ui-modal-close-btn {
+  position: absolute;
+  top: 1.7rem;
+  right: 1.6rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
+}
