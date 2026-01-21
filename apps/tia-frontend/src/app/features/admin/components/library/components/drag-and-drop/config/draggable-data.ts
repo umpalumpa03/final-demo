@@ -1,4 +1,4 @@
-import { DraggableItemType } from 'apps/tia-frontend/src/app/shared/lib/drag-n-drop/model/dragTypes';
+import { DraggableItemType } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 
 export const items: DraggableItemType[] = [
   { title: 'Item 1', subtitle: 'drag to reorder' },

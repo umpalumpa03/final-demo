@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { DraggableCard } from 'apps/tia-frontend/src/app/shared/lib/drag-n-drop/draggable-card/draggableCard';
-import { DraggableItemType } from 'apps/tia-frontend/src/app/shared/lib/drag-n-drop/model/dragTypes';
+import { DraggableItemType } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 import { items } from '../../config/draggable-data';
 
 @Component({
