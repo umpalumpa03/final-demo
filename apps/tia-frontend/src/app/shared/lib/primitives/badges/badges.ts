@@ -20,7 +20,7 @@ export class Badges {
     if (statusClass) {
       return `badge ${statusClass}`;
     }
-    return `badge badge--${this.variant()}`;
+    return `badge badge__${this.variant()}`;
   });
 
   readonly badgeStatus = computed(() => {
@@ -29,17 +29,17 @@ export class Badges {
     
     switch (currentStatus) {
       case 'active':
-        return 'badge--active';
+        return 'badge__active';
       case 'pending':
-        return 'badge--pending';
+        return 'badge__pending';
       case 'inactive':
-        return 'badge--inactive';
+        return 'badge__inactive';
       case 'in-progress':
-        return 'badge--in-progress';
+        return 'badge__in-progress';
       case 'featured':
-        return 'badge--featured';
+        return 'badge__featured';
       case 'premium':
-        return 'badge--premium';
+        return 'badge__premium';
     }
   });
 

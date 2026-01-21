@@ -23,58 +23,58 @@
     line-height: 1.2;
   }
 
-  &--default {
+  &__default {
     background-color: $blue-500;
     color: $white;
   }
 
  
-  &--secondary {
+  &__secondary {
     background-color: $gray-50;
     color: $blue-600;
     border: 1px solid $blue-200;
   }
 
 
-  &--destructive {
+  &__destructive {
     background-color: $red-500;
     color: $white;
   }
 
 
-  &--outline {
+  &__outline {
     background-color: $white;
     color: $blue-600;
     border: 1px solid $blue-300;
   }
 
 
-  &--active {
+  &__active {
     background-color: $green-500;
     color: $white;
   }
 
-  &--pending {
+  &__pending {
     background-color: $yellow-400;
     color: $white;
   }
 
-  &--inactive {
+  &__inactive {
     background-color: $red-500;
     color: $white;
   }
 
-  &--in-progress {
+  &__in-progress {
     background-color: $blue-500;
     color: $white;
   }
 
-  &--featured {
+  &__featured {
     background-color: $purple-500;
     color: $white;
   }
 
-  &--premium {
+  &__premium {
     background-color: $orange-500;
     color: $white;
   }
