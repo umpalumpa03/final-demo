@@ -8,5 +8,5 @@ import { Component, computed, input } from '@angular/core';
 })
 export class ColorSwitch {
   public isActive = input<boolean>(false);
-  public color = input<string>('');
+  public color = input.required<string>();
 }
