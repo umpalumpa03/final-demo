@@ -18,22 +18,13 @@ describe('Colorpalettes', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should render component content', () => {
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('p')).toBeTruthy();
-    expect(compiled.querySelector('p').textContent).toContain(
-      'colorpalettes works!',
-    );
-  });
-
   it('should be a valid component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should import LibraryHeader component', () => {
+  it('should import LibraryTitle component', () => {
     const compiled = fixture.nativeElement;
-    const header = compiled.querySelector('app-library-header');
+    const header = compiled.querySelector('app-library-title');
     expect(header).toBeTruthy();
   });
 
@@ -45,7 +36,7 @@ describe('Colorpalettes', () => {
 
   it('should render both header and theme components', () => {
     const compiled = fixture.nativeElement;
-    const header = compiled.querySelector('app-library-header');
+    const header = compiled.querySelector('app-library-title');
     const theme = compiled.querySelector('app-oceanblue-theme');
     expect(header).toBeTruthy();
     expect(theme).toBeTruthy();
