@@ -4,7 +4,7 @@ import {
   signal,
   computed,
 } from '@angular/core';
-import { DraggableCard } from 'apps/tia-frontend/src/app/shared/lib/drag-n-drop/draggable-card/draggableCard';
+import { DraggableCard } from '@tia/shared/lib/drag-n-drop/draggable-card/draggable-card';
 import { DraggableItemType } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 import { items } from '../../config/draggable-data';
 

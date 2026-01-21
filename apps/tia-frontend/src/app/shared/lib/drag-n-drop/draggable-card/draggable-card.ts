@@ -9,8 +9,8 @@ import { DraggableItemType } from '../model/drag.model';
 @Component({
   selector: 'app-draggable-card',
   imports: [],
-  templateUrl: './draggableCard.html',
-  styleUrl: './draggableCard.scss',
+  templateUrl: './draggable-card.html',
+  styleUrl: './draggable-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DraggableCard {

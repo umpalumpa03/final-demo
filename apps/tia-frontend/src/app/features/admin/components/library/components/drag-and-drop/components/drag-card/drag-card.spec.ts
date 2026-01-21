@@ -25,9 +25,9 @@ describe('DragCard', () => {
       const addSpy = vi.spyOn(document, 'addEventListener');
       const event = { clientX: 100, clientY: 200 } as PointerEvent;
 
-      component.onDragStart(2, event);
+      component.onDragStart('1', event);
 
-      expect(component.draggingIndex()).toBe(2);
+      expect(component.draggingId()).toBe('1');
       expect(component.startX).toBe(100);
       expect(component.startY).toBe(200);
       expect(addSpy).toHaveBeenCalledWith(
@@ -54,13 +54,13 @@ describe('DragCard', () => {
   describe('onPointerUp', () => {
     it('should reset state and remove listeners', () => {
       const removeSpy = vi.spyOn(document, 'removeEventListener');
-      component.draggingIndex.set(2);
+      component.draggingId.set('1');
       component.currentX.set(50);
       component.currentY.set(50);
 
       component.onPointerUp();
 
-      expect(component.draggingIndex()).toBeNull();
+      expect(component.draggingId()).toBeNull();
       expect(component.currentX()).toBe(0);
       expect(component.currentY()).toBe(0);
       expect(removeSpy).toHaveBeenCalledWith(
@@ -75,12 +75,16 @@ describe('DragCard', () => {
   });
 
   describe('onRemove', () => {
-    it('should remove item at index', () => {
+    it('should remove item by id', () => {
       const initialLength = component.items.length;
+      const firstItemId = component.items[0].id;
 
-      component.onRemove(0);
+      component.onRemove(firstItemId);
 
       expect(component.items.length).toBe(initialLength - 1);
+      expect(
+        component.items.find((item) => item.id === firstItemId),
+      ).toBeUndefined();
     });
   });
 });
