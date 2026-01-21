@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { DraggableCard } from "apps/tia-frontend/src/app/shared/lib/drag-n-drop/draggable-card/draggable";
-
+import { DraggableCard } from '../../../../../../shared/lib/drag-n-drop/draggable-card/draggable';
 @Component({
   selector: 'app-drag-and-drop-container',
   imports: [DraggableCard],
