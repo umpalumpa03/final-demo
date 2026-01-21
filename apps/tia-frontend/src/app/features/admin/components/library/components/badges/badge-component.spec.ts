@@ -21,9 +21,11 @@ describe('BadgeComponent', () => {
 
   it('should render component content', () => {
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('p')).toBeTruthy();
-    expect(compiled.querySelector('p').textContent).toContain(
-      'badge-component works!',
-    );
+    const title = compiled.querySelector('.badge-demo__title');
+    expect(title).toBeTruthy();
+    expect(title.textContent).toContain('Variants');
+
+    const badges = compiled.querySelectorAll('app-badges');
+    expect(badges.length).toBeGreaterThan(0);
   });
 });
