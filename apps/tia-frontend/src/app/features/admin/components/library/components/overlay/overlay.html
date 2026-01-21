@@ -75,13 +75,13 @@
       </div>
       <div class="command-results">
         <div class="result-group">
-          <label>Suggestions</label>
+          <label for="name">Suggestions</label>
           <div class="result-item active">View Profile</div>
           <div class="result-item">Settings</div>
           <div class="result-item">Messages</div>
         </div>
         <div class="result-group">
-          <label>Actions</label>
+          <label for="actions">Actions</label>
           <div class="result-item">Create New</div>
           <div class="result-item">Copy</div>
           <div class="result-item">Delete</div>
@@ -128,16 +128,11 @@
   </div>
 </app-ui-modal>
 
-<app-ui-modal
-  [isOpen]="isFormDialogOpen()"
-  (closed)="toggle(isFormDialogOpen)"
->
+<app-ui-modal [isOpen]="isFormDialogOpen()" (closed)="toggle(isFormDialogOpen)">
   <div class="edit-profile-container">
     <header class="modal-header">
-      <h2 class="title">Edit Profile</h2>
-      <p class="description">
-        Make changes to your profile here. Click save when you're done.
-      </p>
+      <h2 class="title">Create New Project</h2>
+      <p class="description">Enter the details for your new project.</p>
     </header>
 
     <form class="modal-form">
@@ -148,7 +143,11 @@
 
       <div class="input-group">
         <label for="description">Description</label>
-        <textarea id="description" type="email" placeholder="Brief description..."></textarea>
+        <textarea
+          id="description"
+          type="email"
+          placeholder="Brief description..."
+        ></textarea>
       </div>
     </form>
 

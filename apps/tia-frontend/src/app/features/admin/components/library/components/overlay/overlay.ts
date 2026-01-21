@@ -1,9 +1,8 @@
 import { Component, signal, WritableSignal } from '@angular/core';
-import { UiModal } from 'apps/tia-frontend/src/app/shared/lib/layout/ui-modal';
+import { UiModal } from '../../../../../../shared/lib/layout/ui-modal';
 
 @Component({
   selector: 'app-overlay',
-  standalone: true,
   imports: [UiModal],
   templateUrl: './overlay.html',
   styleUrls: ['./overlay.scss'],

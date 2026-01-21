@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Overlay } from '../overlay';
+import { Overlay } from '../overlay/overlay';
 
 describe('Overlay', () => {
   let component: Overlay;
