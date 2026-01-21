@@ -1,0 +1,42 @@
+<button class="edit-profile-trigger btn-primary" (click)="toggle()">
+  Open Dialog
+</button>
+
+<app-ui-modal [isOpen]="isOpen()" (closed)="toggle()">
+  <div class="edit-profile">
+    <header class="edit-profile__header">
+      <h2 class="edit-profile__title">Edit Profile</h2>
+      <p class="edit-profile__description">
+        Make changes to your profile here. Click save when you're done.
+      </p>
+    </header>
+
+    <form class="edit-profile__form">
+      <div class="edit-profile__input-group">
+        <label class="edit-profile__label" for="name">Name</label>
+        <input
+          class="edit-profile__input"
+          id="name"
+          type="text"
+          placeholder="John Doe"
+        />
+      </div>
+      <div class="edit-profile__input-group">
+        <label class="edit-profile__label" for="email">Email</label>
+        <input
+          class="edit-profile__input"
+          id="email"
+          type="email"
+          placeholder="john@example.com"
+        />
+      </div>
+    </form>
+
+    <footer class="edit-profile__footer">
+      <button type="button" class="btn-outline" (click)="toggle()">
+        Cancel
+      </button>
+      <button type="submit" class="btn-primary">Save changes</button>
+    </footer>
+  </div>
+</app-ui-modal>
