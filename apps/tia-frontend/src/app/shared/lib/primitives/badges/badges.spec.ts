@@ -24,7 +24,7 @@ describe('Badges', () => {
     fixture.detectChanges();
     const el: HTMLElement = fixture.nativeElement.querySelector('span');
     expect(el).toBeTruthy();
-    expect(el.className).toContain('badge--secondary');
+    expect(el.className).toContain('badge__secondary');
   });
 
   it('should render provided text', () => {
@@ -41,7 +41,7 @@ describe('Badges', () => {
 
     const el: HTMLElement = fixture.nativeElement.querySelector('span');
     expect(el).toBeTruthy();
-    expect(el.className).toContain('badge--active');
+    expect(el.className).toContain('badge__active');
   });
 
   it('should render status icon when status is provided', () => {
