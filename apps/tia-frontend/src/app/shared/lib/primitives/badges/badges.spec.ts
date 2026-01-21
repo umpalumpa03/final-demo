@@ -61,4 +61,21 @@ describe('Badges', () => {
     const iconPath = (component as any).iconPath();
     expect(iconPath).toBe('');
   });
+
+  it('should apply size class when size is provided', () => {
+    fixture.componentRef.setInput('size', 'medium');
+    fixture.detectChanges();
+
+    const el: HTMLElement = fixture.nativeElement.querySelector('span');
+    expect(el).toBeTruthy();
+    expect(el.className).toContain('badge__medium');
+  });
+
+  it('should default to small size', () => {
+    fixture.detectChanges();
+
+    const el: HTMLElement = fixture.nativeElement.querySelector('span');
+    expect(el).toBeTruthy();
+    expect(el.className).toContain('badge__small');
+  });
 });

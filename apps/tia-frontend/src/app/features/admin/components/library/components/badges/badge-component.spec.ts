@@ -40,5 +40,16 @@ describe('BadgeComponent', () => {
     const statusBadges = compiled.querySelectorAll('app-badges[status]');
     expect(statusBadges.length).toBeGreaterThan(0);
   });
-  
+
+  it('should render sizes section', () => {
+    const compiled: HTMLElement = fixture.nativeElement;
+
+    const titles = Array.from(compiled.querySelectorAll('.badge-demo__title')).map((t) =>
+      (t.textContent ?? '').trim()
+    );
+    expect(titles).toContain('Sizes');
+
+    const sizes = compiled.querySelectorAll('app-badges[size]');  
+    expect(sizes.length).toBeGreaterThan(0);
+  });
 });

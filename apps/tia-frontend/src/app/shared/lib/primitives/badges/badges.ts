@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { BadgeStatus, BadgeVariant } from './models/badges.models';
+import { BadgeSize, BadgeStatus, BadgeVariant } from './models/badges.models';
 
 
 @Component({
@@ -13,14 +13,14 @@ export class Badges {
   readonly variant = input<BadgeVariant>('default');
   readonly text = input<string>('');
   readonly status = input<BadgeStatus | undefined>(undefined);
-
+  readonly size = input<BadgeSize>('small');
   readonly badgeClass = computed(() => {
- 
+    const sizeClass = `badge__${this.size()}`;
     const statusClass = this.badgeStatus();
     if (statusClass) {
-      return `badge ${statusClass}`;
+      return `badge ${sizeClass} ${statusClass}`;
     }
-    return `badge badge__${this.variant()}`;
+    return `badge ${sizeClass} badge__${this.variant()}`;
   });
 
   readonly badgeStatus = computed(() => {
