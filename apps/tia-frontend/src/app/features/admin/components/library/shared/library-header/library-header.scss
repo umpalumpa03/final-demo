@@ -14,6 +14,7 @@
     width: min(110.2rem, 100%);
     @include m.display-flex();
     justify-content: space-between;
+    align-items: center;
     &__heading {
       @include m.display-flex($direction: column);
       gap: 0.4rem;
@@ -24,6 +25,13 @@
       p {
         @include m.font-arimo($size: 1.6rem, $line-height: 2.4rem);
         color: p.$blue-600;
+      }
+    }
+    &__color-switch {
+      div {
+        @include m.display-flex();
+        gap: 0.6rem;
+        align-items: center;
       }
     }
   }

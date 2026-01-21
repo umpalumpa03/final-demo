@@ -1,0 +1,29 @@
+@use '../../../styles/palette' as p;
+
+button {
+  width: 4rem;
+  height: 4rem;
+  transition: all 0.2s;
+  background-color: black;
+  border: 0.16rem solid p.$blue-400;
+  border-radius: 1rem;
+  box-shadow: 0 0.4rem 0.6rem -0.4rem #0000001a 0 1rem 1.5rem -0.3rem #0000001a;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+  &.ocean-blue {
+    background: #0284c7;
+  }
+  &.royal-blue {
+    background: #2563eb;
+  }
+  &.deep-blue {
+    background: #1e40af;
+  }
+  &.active {
+    width: 4.4rem;
+    height: 4.4rem;
+    border-color: #0284c7;
+  }
+}
