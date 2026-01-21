@@ -1,0 +1,28 @@
+.tia-button-group {
+  display: inline-flex;
+  vertical-align: middle;
+
+  ::ng-deep {
+    button[app-button], a[app-button] {
+      border-radius: 0; 
+      
+      &:not(:first-child) {
+        margin-left: -1px; 
+      }
+
+      &:first-child {
+        border-top-left-radius: 6px;
+        border-bottom-left-radius: 6px;
+      }
+
+      &:last-child {
+        border-top-right-radius: 6px;
+        border-bottom-right-radius: 6px;
+      }
+      
+      &:hover {
+        z-index: 1;
+      }
+    }
+  }
+}
