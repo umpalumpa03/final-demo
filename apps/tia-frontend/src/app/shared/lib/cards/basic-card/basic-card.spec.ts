@@ -24,7 +24,7 @@ describe('BasicCard', () => {
     fixture.componentRef.setInput('title', 'Test Title');
     fixture.detectChanges();
     
-    const title = fixture.nativeElement.querySelector('.card-title');
+    const title = fixture.nativeElement.querySelector('.card__title');
     expect(title.textContent).toBe('Test Title');
   });
 
@@ -33,7 +33,7 @@ describe('BasicCard', () => {
     fixture.componentRef.setInput('subtitle', 'Test Subtitle');
     fixture.detectChanges();
     
-    const subtitle = fixture.nativeElement.querySelector('.card-subtitle');
+    const subtitle = fixture.nativeElement.querySelector('.card__subtitle');
     expect(subtitle).toBeTruthy();
     expect(subtitle.textContent).toBe('Test Subtitle');
   });
@@ -42,7 +42,7 @@ describe('BasicCard', () => {
     fixture.componentRef.setInput('title', 'Test Title');
     fixture.detectChanges();
     
-    const subtitle = fixture.nativeElement.querySelector('.card-subtitle');
+    const subtitle = fixture.nativeElement.querySelector('.card__subtitle');
     expect(subtitle).toBeFalsy();
   });
 
@@ -51,7 +51,7 @@ describe('BasicCard', () => {
     fixture.componentRef.setInput('content', 'Test Content');
     fixture.detectChanges();
     
-    const content = fixture.nativeElement.querySelector('.card-content p');
+    const content = fixture.nativeElement.querySelector('.card__content p');
     expect(content).toBeTruthy();
     expect(content.textContent).toBe('Test Content');
   });
@@ -60,7 +60,7 @@ describe('BasicCard', () => {
     fixture.componentRef.setInput('title', 'Test Title');
     fixture.detectChanges();
     
-    const content = fixture.nativeElement.querySelector('.card-content');
+    const content = fixture.nativeElement.querySelector('.card__content');
     expect(content).toBeFalsy();
   });
 });
