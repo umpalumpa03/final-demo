@@ -24,4 +24,22 @@
     align-items: center;
     flex-wrap: wrap;
   }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+  }
+
+  &__label {
+    font-weight: 400;
+    color: palette.$blue-900;
+  }
 }

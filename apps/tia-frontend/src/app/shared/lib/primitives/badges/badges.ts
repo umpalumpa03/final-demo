@@ -14,6 +14,7 @@ export class Badges {
   readonly text = input<string>('');
   readonly status = input<BadgeStatus | undefined>(undefined);
   readonly size = input<BadgeSize>('small');
+  readonly label = input<string>('');
   readonly badgeClass = computed(() => {
     const sizeClass = `badge__${this.size()}`;
     const statusClass = this.badgeStatus();
