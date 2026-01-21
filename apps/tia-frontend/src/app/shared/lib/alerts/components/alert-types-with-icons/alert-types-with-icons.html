@@ -1,10 +1,20 @@
-<div class="alert-types-icons" [class]="'alert-types-icons--' + alertType()">
-    <div class="alert-types-icons__alert-icon-div">
-        <img [src]="'/images/img/alert-icons/base-alert-' + effectiveImgName() + '.png'" alt="info icon">
-    </div>
-    <div class="alert-types-icons__alert-info-div">
-        <div>{{alertType() | firstUpper}}</div>
-        <div>{{alertMessage() | firstUpper}}</div>
-    </div>
+<div
+  class="alert-types-icons"
+  [ngClass]="{
+    'alert-types-icons--error': alertType() === 'error',
+    'alert-types-icons--success': alertType() === 'success',
+    'alert-types-icons--warning': alertType() === 'warning',
+    'alert-types-icons--information': alertType() === 'information'
+  }"
+>
+  <div class="alert-types-icons__alert-icon-div">
+    <img
+      [src]="'/images/img/alert-icons/base-alert-' + effectiveImgName() + '.png'"
+      alt="info icon"
+    />
+  </div>
+  <div class="alert-types-icons__alert-info-div">
+    <div>{{alertType() | firstUpper}}</div>
+    <div>{{alertMessage() | firstUpper}}</div>
+  </div>
 </div>
-
