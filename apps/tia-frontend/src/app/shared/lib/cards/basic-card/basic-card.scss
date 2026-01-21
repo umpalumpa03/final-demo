@@ -1,0 +1,32 @@
+@use '../../../styles/mixins' as *;
+@use '../../../styles/palette' as *;
+
+.card {
+  background-color: $white;
+  border: 1px solid $blue-400;
+  border-radius: 0.8rem;
+  padding: 2rem;
+  transition: all 0.2s ease-in-out;
+
+  .card-header {
+    margin-bottom: 1.2rem;
+
+    .card-title {
+      @include font-inter(600, 1.8rem, 2.4rem);
+      color: $blue-900;
+      margin-bottom: 0.4rem;
+    }
+
+    .card-subtitle {
+      @include font-arimo(400, 1.4rem, 2rem);
+      color: $blue-400;
+    }
+  }
+
+  .card-content {
+    p {
+      @include font-arimo(400, 1.4rem, 2rem);
+      color: $gray-700;
+    }
+  }
+}
