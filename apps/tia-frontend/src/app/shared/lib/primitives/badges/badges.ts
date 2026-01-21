@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { BadgeVariant } from './models/badges.models';
 
 
@@ -7,12 +7,11 @@ import { BadgeVariant } from './models/badges.models';
   imports: [],
   templateUrl: './badges.html',
   styleUrl: './badges.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Badges {
-  @Input() variant: BadgeVariant = 'default';
-  @Input() text: string = '';
+  readonly variant = input<BadgeVariant>('default');
+  readonly text = input<string>('');
 
-  get badgeClass(): string {
-    return `badge badge--${this.variant}`;
-  }
+  readonly badgeClass = computed(() => `badge badge--${this.variant()}`);
 }

@@ -20,7 +20,7 @@ describe('Badges', () => {
   });
 
   it('should apply provided variant to class', () => {
-    component.variant = 'secondary';
+    fixture.componentRef.setInput('variant', 'secondary');
     fixture.detectChanges();
     const el: HTMLElement = fixture.nativeElement.querySelector('span');
     expect(el).toBeTruthy();
@@ -28,7 +28,7 @@ describe('Badges', () => {
   });
 
   it('should render provided text', () => {
-    component.text = 'Test badge';
+    fixture.componentRef.setInput('text', 'Test badge');
     fixture.detectChanges();
 
     const el: HTMLElement = fixture.nativeElement.querySelector('span');

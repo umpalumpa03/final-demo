@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Badges } from '../../../../../../shared/lib/primitives/badges/badges';
 
 @Component({
@@ -6,5 +6,6 @@ import { Badges } from '../../../../../../shared/lib/primitives/badges/badges';
   imports: [Badges],
   templateUrl: './badge-component.html',
   styleUrl: './badge-component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BadgeComponent {}
