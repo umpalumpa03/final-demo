@@ -18,7 +18,7 @@
     max-width: 100%;
   }
 
-  > .alert-icon-div {
+  &__alert-icon-div {
     flex-shrink: 0;
     img {
       width: 1.6rem;
@@ -27,7 +27,7 @@
     }
   }
 
-  .alert-info-div {
+  &__alert-info-div {
     justify-content: center;
     @include display-flex(column, nowrap);
     > div {
@@ -46,8 +46,8 @@
     }
   }
 
-  &.error {
-    .alert-info-div {
+  &--error {
+    .basic-alert__alert-info-div {
       > div:first-child {
         color: $red-600;
       }
