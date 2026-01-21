@@ -1,1 +1,6 @@
-<p>library-header works!</p>
+<div class="lib-header">
+  <h2 class="lib-header__title">{{ title() }}</h2>
+  @if (subtitle()) {
+  <p class="lib-header__subtitle">{{ subtitle() }}</p>
+  }
+</div>
