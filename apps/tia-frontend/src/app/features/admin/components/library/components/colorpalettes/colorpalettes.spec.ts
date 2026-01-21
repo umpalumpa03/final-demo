@@ -26,4 +26,28 @@ describe('Colorpalettes', () => {
       'colorpalettes works!',
     );
   });
+
+  it('should be a valid component', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should import LibraryHeader component', () => {
+    const compiled = fixture.nativeElement;
+    const header = compiled.querySelector('app-library-header');
+    expect(header).toBeTruthy();
+  });
+
+  it('should import OceanblueTheme component', () => {
+    const compiled = fixture.nativeElement;
+    const theme = compiled.querySelector('app-oceanblue-theme');
+    expect(theme).toBeTruthy();
+  });
+
+  it('should render both header and theme components', () => {
+    const compiled = fixture.nativeElement;
+    const header = compiled.querySelector('app-library-header');
+    const theme = compiled.querySelector('app-oceanblue-theme');
+    expect(header).toBeTruthy();
+    expect(theme).toBeTruthy();
+  });
 });
