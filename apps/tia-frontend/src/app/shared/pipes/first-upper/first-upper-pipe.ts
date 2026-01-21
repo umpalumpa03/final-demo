@@ -5,7 +5,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class FirstUpperPipe implements PipeTransform {
   transform(value: string | undefined | null): string {
-    if (!value) return '';
-    return value.charAt(0).toUpperCase() + value.slice(1);
+    const trimmed = value?.trim();
+    if (!trimmed) return '';
+    return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
   }
 }
