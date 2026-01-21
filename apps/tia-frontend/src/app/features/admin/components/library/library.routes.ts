@@ -29,7 +29,7 @@ export const libraryRoutes: Routes = [
       //   path: 'buttons',
       //   loadComponent: () =>
       //     import('./components/button/button-library').then(
-      //       (c) => c.ButtonLibraryComponent,
+      //       (c) => c.ButtonLibrary,
       //     ),
       // },
       {

@@ -8,9 +8,9 @@ import { ButtonVariant, ButtonSize } from './button.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonComponent {
-  variant = input<ButtonVariant>('default');
-  size = input<ButtonSize>('default');
-  isLoading = input<boolean>(false);
-  isDisabled = input<boolean>(false);
-  fullWidth = input<boolean>(false);
+  public readonly variant = input<ButtonVariant>('default');
+  public readonly size = input<ButtonSize>('default');
+  public readonly isLoading = input<boolean>(false);
+  public readonly isDisabled = input<boolean>(false);
+  public readonly fullWidth = input<boolean>(false);
 }
