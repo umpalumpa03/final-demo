@@ -1,13 +1,13 @@
 @use './reset' as *;
 @use './app/shared/styles/variables' as *;
+@use './app/shared/styles/themes' as *;
 
 @import url('https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
 
 html {
   font-size: 62.5%;
 }
 
-body{
+body {
   font-family: $primary-font;
 }
