@@ -163,3 +163,68 @@
     </footer>
   </div>
 </app-ui-modal>
+
+<app-ui-modal
+  [isOpen]="isLargeDialogOpen()"
+  (closed)="toggle(isLargeDialogOpen)"
+>
+  <div class="terms-container">
+    <header class="modal-header">
+      <h2 class="title">Terms and Conditions</h2>
+      <p class="description">
+        Please read and accept our terms and conditions.
+      </p>
+    </header>
+
+    <div class="modal-body-scroll">
+      <section class="terms-section">
+        <h3>Section 1</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+      </section>
+
+      <section class="terms-section">
+        <h3>Section 2</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+      </section>
+
+      <section class="terms-section">
+        <h3>Section 3</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+      </section>
+
+      <section class="terms-section">
+        <h3>Section 4</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+      </section>
+    </div>
+
+    <footer class="modal-footer">
+      <button
+        type="button"
+        class="btn-outline"
+        (click)="toggle(isLargeDialogOpen)"
+      >
+        Close
+      </button>
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="toggle(isLargeDialogOpen)"
+      >
+        Accept Terms
+      </button>
+    </footer>
+  </div>
+</app-ui-modal>
