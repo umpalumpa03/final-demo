@@ -28,7 +28,7 @@ function getExcludePatternsFromConfig() {
     const excludeArrayStr = excludeMatch[1];
     const patterns = excludeArrayStr
       .split(',')
-      .map(line => {
+      .map((line) => {
         const match = line.match(/['"`](.*?)['"`]/);
         return match ? match[1] : null;
       })
@@ -43,7 +43,7 @@ function getExcludePatternsFromConfig() {
 
 // Check if a file matches any exclude pattern
 function isFileExcluded(filePath, excludePatterns) {
-  return excludePatterns.some(pattern => {
+  return excludePatterns.some((pattern) => {
     // Convert glob pattern to regex (handle ** before * to avoid conflicts)
     let regexPattern = pattern
       .replace(/\./g, '\\.') // Escape dots first
@@ -66,21 +66,22 @@ function parseCoverageJson(jsonPath) {
   const coverageData = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
   const files = {};
 
-  Object.keys(coverageData).forEach(filePath => {
+  Object.keys(coverageData).forEach((filePath) => {
     const fileData = coverageData[filePath];
     const statements = fileData.s || {};
 
     const statementValues = Object.values(statements);
     const totalStatements = statementValues.length;
-    const hitStatements = statementValues.filter(count => count > 0).length;
+    const hitStatements = statementValues.filter((count) => count > 0).length;
 
     // Normalize path (remove absolute path, keep relative)
-    const normalizedPath = filePath.replace(/\\/g, '/').split('/apps/tia-frontend/').pop() ||
+    const normalizedPath =
+      filePath.replace(/\\/g, '/').split('/apps/tia-frontend/').pop() ||
       filePath.replace(/\\/g, '/').split('/src/').pop() ||
       filePath;
 
     files[normalizedPath] = {
-      statements: { hit: hitStatements, found: totalStatements }
+      statements: { hit: hitStatements, found: totalStatements },
     };
   });
 
@@ -90,15 +91,24 @@ function parseCoverageJson(jsonPath) {
 // Get changed files from git diff
 function getChangedFiles(baseBranch = 'origin/main') {
   try {
-    const diffOutput = execSync(`git diff --name-only ${baseBranch}...HEAD`, { encoding: 'utf8' });
+    const diffOutput = execSync(`git diff --name-only ${baseBranch}...HEAD`, {
+      encoding: 'utf8',
+    });
     return diffOutput
       .split('\n')
-      .filter(file => file.endsWith('.ts') || file.endsWith('.tsx') || file.endsWith('.js') || file.endsWith('.jsx'))
-      .filter(file => !file.includes('.spec.') && !file.includes('.test.'))
-      .filter(file => !file.startsWith('scripts/')) // Exclude scripts folder
-      .filter(file => !file.includes('node_modules'))
-      .map(file => file.trim())
-      .filter(Boolean);
+      .filter(
+        (file) =>
+          file.endsWith('.ts') ||
+          file.endsWith('.tsx') ||
+          file.endsWith('.js') ||
+          file.endsWith('.jsx'),
+      )
+      .filter((file) => !file.includes('.spec.') && !file.includes('.test.'))
+      .filter((file) => !file.startsWith('scripts/')) // Exclude scripts folder
+      .filter((file) => !file.includes('node_modules'))
+      .map((file) => file.trim())
+      .filter(Boolean)
+      .filter((file) => fs.existsSync(file));
   } catch (error) {
     console.error('Error getting changed files:', error.message);
     return [];
@@ -122,9 +132,13 @@ function calculateCoverage(fileData) {
 function checkCoverage() {
   // Get exclude patterns from vitest config
   const excludePatterns = getExcludePatternsFromConfig();
-  console.log('📋 Exclude patterns from config:', excludePatterns.join(', '), '\n');
+  console.log(
+    '📋 Exclude patterns from config:',
+    excludePatterns.join(', '),
+    '\n',
+  );
 
-  const coveragePath = './coverage/apps/tia-frontend/coverage-final.json'
+  const coveragePath = './coverage/apps/tia-frontend/coverage-final.json';
 
   if (fs.existsSync(coveragePath)) {
     console.log(`✅ Found coverage file at: ${coveragePath}\n`);
@@ -132,7 +146,7 @@ function checkCoverage() {
 
   if (!coveragePath) {
     console.error('❌ Coverage file not found in any of these locations:');
-    possiblePaths.forEach(path => console.error(`   - ${path}`));
+    possiblePaths.forEach((path) => console.error(`   - ${path}`));
     console.error('\nPlease check your coverage output directory.');
     process.exit(1);
   }
@@ -140,7 +154,7 @@ function checkCoverage() {
   const coverageData = parseCoverageJson(coveragePath);
   const changedFiles = getChangedFiles();
 
-  changedFiles.forEach(file => console.log(`   - ${file}`));
+  changedFiles.forEach((file) => console.log(`   - ${file}`));
 
   if (changedFiles.length === 0) {
     console.log('✅ No source files changed. Skipping coverage check.');
@@ -151,7 +165,9 @@ function checkCoverage() {
 
   // Debug: show coverage file paths
   console.log('📁 Coverage files found:');
-  Object.keys(coverageData).slice(0, 5).forEach(key => console.log(`   ${key}`));
+  Object.keys(coverageData)
+    .slice(0, 5)
+    .forEach((key) => console.log(`   ${key}`));
   // if (Object.keys(coverageData).length > 5) {
   //   console.log(`   ... and ${Object.keys(coverageData).length - 5} more\n`);
   // } else {
@@ -161,7 +177,7 @@ function checkCoverage() {
   let failedFiles = [];
   let passedFiles = [];
 
-  changedFiles.forEach(file => {
+  changedFiles.forEach((file) => {
     // First check if file should be excluded
     const isExcluded = isFileExcluded(file, excludePatterns);
 
@@ -172,14 +188,16 @@ function checkCoverage() {
 
     // Try to find the file in coverage data (normalize paths)
     // Match by filename or path segments
-    const coverageFile = Object.keys(coverageData).find(key => {
+    const coverageFile = Object.keys(coverageData).find((key) => {
       const normalizedKey = key.replace(/\\/g, '/');
       const normalizedFile = file.replace(/\\/g, '/');
 
       // Check if paths match
-      return normalizedKey === normalizedFile ||
+      return (
+        normalizedKey === normalizedFile ||
         normalizedKey.endsWith(normalizedFile) ||
-        normalizedFile.endsWith(normalizedKey);
+        normalizedFile.endsWith(normalizedKey)
+      );
     });
 
     if (!coverageFile) {
@@ -205,7 +223,9 @@ function checkCoverage() {
 
     // Handle files with no executable statements
     if (coverage === null) {
-      console.log(`ℹ️  ${file} - No executable statements (template-only component or types-only file)`);
+      console.log(
+        `ℹ️  ${file} - No executable statements (template-only component or types-only file)`,
+      );
       // Don't fail for files with no statements, but they must be in coverage (have spec file)
       passedFiles.push({ file, coverage: 0 });
       return;
@@ -221,19 +241,27 @@ function checkCoverage() {
   });
 
   console.log('\n' + '='.repeat(60));
-  console.log(`📈 Summary: ${passedFiles.length} passed, ${failedFiles.length} failed`);
+  console.log(
+    `📈 Summary: ${passedFiles.length} passed, ${failedFiles.length} failed`,
+  );
   console.log('='.repeat(60) + '\n');
 
   if (failedFiles.length > 0) {
-    console.error(`❌ Coverage check failed! The following files have less than ${COVERAGE_THRESHOLD}% coverage:\n`);
+    console.error(
+      `❌ Coverage check failed! The following files have less than ${COVERAGE_THRESHOLD}% coverage:\n`,
+    );
     failedFiles.forEach(({ file, coverage }) => {
       console.error(`   ${file}: ${coverage.toFixed(2)}%`);
     });
-    console.error(`\n💡 Tip: Add tests for the changed/new code to reach ${COVERAGE_THRESHOLD}% coverage.\n`);
+    console.error(
+      `\n💡 Tip: Add tests for the changed/new code to reach ${COVERAGE_THRESHOLD}% coverage.\n`,
+    );
     process.exit(1);
   }
 
-  console.log(`✅ All changed files have at least ${COVERAGE_THRESHOLD}% coverage!\n`);
+  console.log(
+    `✅ All changed files have at least ${COVERAGE_THRESHOLD}% coverage!\n`,
+  );
   process.exit(0);
 }
 

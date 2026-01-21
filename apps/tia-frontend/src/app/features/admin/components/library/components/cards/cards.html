@@ -1,0 +1,17 @@
+<div class="cards-page">
+  <h1>Cards</h1>
+  <p class="description">
+    Card components with various layouts and content types
+  </p>
+
+  <section class="cards-section">
+    <h2>Basic Cards</h2>
+    <div class="cards-grid">
+      <app-basic-card
+        [title]="basicCardData().title"
+        [subtitle]="basicCardData().subtitle"
+        [content]="basicCardData().content"
+      />
+    </div>
+  </section>
+</div>
