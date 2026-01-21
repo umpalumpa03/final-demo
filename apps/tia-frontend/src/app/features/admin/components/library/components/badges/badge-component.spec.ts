@@ -28,4 +28,17 @@ describe('BadgeComponent', () => {
     const badges = compiled.querySelectorAll('app-badges');
     expect(badges.length).toBeGreaterThan(0);
   });
+
+  it('should render status badges section', () => {
+    const compiled: HTMLElement = fixture.nativeElement;
+
+    const titles = Array.from(compiled.querySelectorAll('.badge-demo__title')).map((t) =>
+      (t.textContent ?? '').trim()
+    );
+    expect(titles).toContain('Status Badges');
+
+    const statusBadges = compiled.querySelectorAll('app-badges[status]');
+    expect(statusBadges.length).toBeGreaterThan(0);
+  });
+  
 });
