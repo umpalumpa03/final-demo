@@ -9,4 +9,6 @@ import { LibraryHeader } from "../shared/library-header/library-header";
   templateUrl: './library-container.html',
   styleUrl: './library-container.scss',
 })
-export class LibraryContainer {}
+export class LibraryContainer {
+  
+}
