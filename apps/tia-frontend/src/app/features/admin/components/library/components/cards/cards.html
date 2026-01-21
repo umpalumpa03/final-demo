@@ -1,17 +1,19 @@
 <div class="cards-page">
-  <h1>Cards</h1>
-  <p class="description">
-    Card components with various layouts and content types
-  </p>
+  <app-library-title
+    [title]="pageTitle"
+    [subtitle]="pageSubtitle"
+  />
 
   <section class="cards-section">
-    <h2>Basic Cards</h2>
-    <div class="cards-grid">
-      <app-basic-card
-        [title]="basicCardData().title"
-        [subtitle]="basicCardData().subtitle"
-        [content]="basicCardData().content"
-      />
+    <h2 class="cards-section__title">Basic Cards</h2>
+    <div class="cards-section__grid">
+      @for (card of basicCards(); track card.title) {
+        <app-basic-card
+          [title]="card.title"
+          [subtitle]="card.subtitle"
+          [content]="card.content"
+        />
+      }
     </div>
   </section>
 </div>

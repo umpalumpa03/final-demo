@@ -1,0 +1,39 @@
+@use '../../../styles/palette' as *;
+@use '../../../styles/themes' as *;
+
+
+.button-group {
+  display: inline-flex;
+  vertical-align: middle;
+
+  & > app-button {
+    display: inline-flex;
+    position: relative;
+
+    .button {
+      border-radius: 0; 
+      margin-left: 0.1rem; 
+      
+      
+      &:hover {
+        z-index: 1;
+        border-color: var(--color-primary);
+      }
+    }
+
+    &:first-child {
+      .button {
+        margin-left: 0;
+        border-top-left-radius: 0.8rem;
+        border-bottom-left-radius: 0.8rem;
+      }
+    }
+
+    &:last-child {
+      .button {
+        border-top-right-radius: 0.8rem;
+        border-bottom-right-radius: 0.8rem;
+      }
+    }
+  }
+}
