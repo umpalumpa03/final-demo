@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
-import { DraggableCard } from '../../../../../../shared/lib/drag-n-drop/draggable-card/draggable';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { DragCard } from './components/drag-card/drag-card';
 @Component({
   selector: 'app-drag-and-drop-container',
-  imports: [DraggableCard],
+  imports: [DragCard],
   templateUrl: './drag-and-drop.html',
   styleUrl: './drag-and-drop.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DragAndDropContainer {}

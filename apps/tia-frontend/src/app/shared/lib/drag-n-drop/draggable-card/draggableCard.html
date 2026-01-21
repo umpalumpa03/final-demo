@@ -1,13 +1,14 @@
-<div class="draggable-card">
+<div class="draggable-card" [class.dragging]="isDragging()">
   <div class="draggable-card__draggable">
     <img
       class="draggable-card__icon"
       src="images/svg/drag-and-drop/draggable.svg"
       alt="draggable icon"
+      (pointerdown)="onDragStartPoint($event)"
     />
     <div class="draggable-card__content">
-      <p>item 1</p>
-      <p>drag to reorder</p>
+      <p>{{ itemData()?.title }}</p>
+      <p>{{ itemData()?.subtitle }}</p>
     </div>
   </div>
 
@@ -15,5 +16,6 @@
     class="draggable-card__remove"
     src="images/svg/drag-and-drop/can.svg"
     alt="can svg"
+    (click)="onRemove()"
   />
 </div>
