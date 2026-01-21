@@ -30,6 +30,8 @@ cache:
 test:
   stage: test
   image: node:${NODE_VERSION}
+  tags:
+    - vultr
   script:
     - npm ci --cache .npm --prefer-offline
     - npm run test
@@ -42,6 +44,8 @@ test:
 test:coverage:
   stage: test
   image: node:${NODE_VERSION}
+  tags:
+    - vultr
   rules:
     # Only run on merge requests to main
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
@@ -71,6 +75,8 @@ test:coverage:
 build:
   stage: build
   image: node:${NODE_VERSION}
+  tags:
+    - vultr
   rules:
     # Run on merge requests to main
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
@@ -94,6 +100,8 @@ build:
 deploy:netlify:
   stage: deploy
   image: node:${NODE_VERSION}
+  tags:
+    - vultr
   needs:
     - build
   rules:
@@ -106,4 +114,4 @@ deploy:netlify:
     - echo "✅ Deployment successful!"
   environment:
     name: production
-    url: https://your-site-name.netlify.app
+    url: https://tia-frontend.netlify.app/
