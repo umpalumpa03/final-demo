@@ -1,0 +1,9 @@
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-colorpalettes',
+  imports: [],
+  templateUrl: './colorpalettes.html',
+  styleUrl: './colorpalettes.scss',
+})
+export class Colorpalettes {}
