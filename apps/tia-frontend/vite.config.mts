@@ -41,7 +41,8 @@ export default defineConfig(() => ({
         '**/environment.ts',
         '**/environment.prod.ts',
         '**/*.model.ts',
-        '**/*.models.ts'
+        '**/*.models.ts',
+        '**/config/**',
       ],
     },
   },

@@ -22,7 +22,9 @@
         "libs/shop/feature-product-detail/src/index.ts"
       ],
       "@org/shop/feature-products": ["libs/shop/feature-products/src/index.ts"],
-      "@org/shop/shared-ui": ["libs/shop/shared-ui/src/index.ts"]
+      "@org/shop/shared-ui": ["libs/shop/shared-ui/src/index.ts"],
+      "@tia/shared/*": ["apps/tia-frontend/src/app/shared/*"],
+      "apps/tia-frontend/src/app/*": ["apps/tia-frontend/src/app/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]
