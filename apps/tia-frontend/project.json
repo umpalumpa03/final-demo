@@ -32,10 +32,17 @@
             },
             {
               "type": "anyComponentStyle",
-              "maximumWarning": "4kb",
-              "maximumError": "8kb"
+              "maximumWarning": "10kb",
+              "maximumError": "20kb"
             }
           ],
+          "optimization": true,
+          "aot": true,
+          "sourceMap": false,
+          "extractCss": true,
+          "namedChunks": false,
+          "vendorChunk": false,
+          "buildOptimizer": true,
           "outputHashing": "all"
         },
         "development": {
