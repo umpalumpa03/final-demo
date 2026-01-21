@@ -22,28 +22,28 @@
     border-radius: 0.5rem;
     min-height: 12rem;
 
-    &__primary {
+    &--primary {
       background-color: var(--color-primary);
     }
 
-    &__secondary {
+    &--secondary {
       background-color: var(--color-secondary);
     }
 
-    &__accent {
+    &--accent {
       background-color: var(--color-accent);
     }
 
-    &__muted {
+    &--muted {
       background-color: var(--color-muted);
     }
 
-    &__background {
+    &--background {
       background-color: var(--color-bg);
       border: 0.1rem solid var(--color-primary);
     }
 
-    &__foreground {
+    &--foreground {
       background-color: var(--color-fg);
     }
   }
@@ -51,15 +51,15 @@
   &__label {
     @include font-arimo(400, 1.4rem, 2rem);
 
-    .palette__swatch__primary &,
-    .palette__swatch__foreground & {
+    .palette__swatch--primary &,
+    .palette__swatch--foreground & {
       color: $white;
     }
 
-    .palette__swatch__secondary &,
-    .palette__swatch__accent &,
-    .palette__swatch__muted &,
-    .palette__swatch__background & {
+    .palette__swatch--secondary &,
+    .palette__swatch--accent &,
+    .palette__swatch--muted &,
+    .palette__swatch--background & {
       color: $gray-700;
     }
   }
@@ -68,15 +68,15 @@
     font-size: 0.75rem;
     opacity: 0.8;
 
-    .palette__swatch__primary &,
-    .palette__swatch__foreground & {
+    .palette__swatch--primary &,
+    .palette__swatch--foreground & {
       color: #ffffffcc;
     }
 
-    .palette__swatch__secondary &,
-    .palette__swatch__accent &,
-    .palette__swatch__muted &,
-    .palette__swatch__background & {
+    .palette__swatch--secondary &,
+    .palette__swatch--accent &,
+    .palette__swatch--muted &,
+    .palette__swatch--background & {
       color: $gray-500;
     }
   }
