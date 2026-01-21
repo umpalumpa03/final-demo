@@ -1,7 +1,15 @@
-@if (isLoading()) {
-  <span class="tia-btn__spinner"></span>
-}
+<button
+  type="button"
+  [class]="'button button--' + variant() + ' button--' + size()"
+  [class.button--loading]="isLoading()"
+  [class.button--full-width]="fullWidth()"
+  [disabled]="isDisabled() || isLoading()"
+>
+  @if (isLoading()) {
+    <span class="button__spinner"></span>
+  }
 
-<span class="tia-btn__content">
-  <ng-content></ng-content>
-</span>
+  <span class="button__content">
+    <ng-content></ng-content>
+  </span>
+</button>

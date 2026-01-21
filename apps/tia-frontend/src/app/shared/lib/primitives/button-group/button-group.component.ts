@@ -1,12 +1,11 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'app-button-group',
-  standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './button-group.component.html',
   styleUrls: ['./button-group.component.scss'],
+  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonGroupComponent {}

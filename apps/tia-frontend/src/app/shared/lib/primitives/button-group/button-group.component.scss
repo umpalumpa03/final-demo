@@ -1,27 +1,32 @@
-.tia-button-group {
+.button-group {
   display: inline-flex;
   vertical-align: middle;
 
-  ::ng-deep {
-    button[app-button], a[app-button] {
+  & > app-button {
+    display: inline-flex;
+    position: relative;
+
+    .button {
       border-radius: 0; 
-      
-      &:not(:first-child) {
-        margin-left: -1px; 
-      }
+      margin-left: -0.1rem;
+    }
 
-      &:first-child {
-        border-top-left-radius: 6px;
-        border-bottom-left-radius: 6px;
-      }
+    &:hover {
+      z-index: 1;
+    }
 
-      &:last-child {
-        border-top-right-radius: 6px;
-        border-bottom-right-radius: 6px;
+    &:first-child {
+      .button {
+        margin-left: 0;
+        border-top-left-radius: 0.8rem;
+        border-bottom-left-radius: 0.8rem;
       }
-      
-      &:hover {
-        z-index: 1;
+    }
+
+    &:last-child {
+      .button {
+        border-top-right-radius: 0.8rem;
+        border-bottom-right-radius: 0.8rem;
       }
     }
   }
