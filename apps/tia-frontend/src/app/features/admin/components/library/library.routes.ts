@@ -26,6 +26,23 @@ export const libraryRoutes: Routes = [
           ),
       },
       {
+        path: 'cards',
+        loadComponent: () =>
+          import('./components/cards/cards').then((c) => c.Cards),
+      },
+      {
+        path: 'badges',
+        loadComponent: () =>
+          import('./components/badges/badge-component').then(
+            (c) => c.BadgeComponent,
+          ),
+      },
+      {
+        path: 'forms',
+        loadComponent: () =>
+          import('./components/forms/forms').then((c) => c.Forms),
+      },
+      {
         path: 'overlay',
         loadComponent: () =>
           import('./components/overlay/overlay').then((c) => c.Overlay),
