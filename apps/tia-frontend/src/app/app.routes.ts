@@ -7,11 +7,6 @@ export const appRoutes: Routes = [
     children: libraryRoutes,
   },
   {
-    path: 'library',
-    redirectTo: '/admin/library',
-    pathMatch: 'full',
-  },
-  {
     path: '**',
     redirectTo: '/admin/library',
   },
