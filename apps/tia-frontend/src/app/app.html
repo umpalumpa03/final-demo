@@ -5,3 +5,26 @@
 <router-outlet></router-outlet>
 
 
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; padding: 2rem;">
+
+  <lib-text-input type="email" [config]="{ label: 'Email Address' }"></lib-text-input>
+
+  <lib-text-input type="password" [config]="{ label: 'Password' }">
+  </lib-text-input>
+
+  <lib-text-input type="search" [config]="{ label: 'Search' }">
+  </lib-text-input>
+
+  <lib-text-input type="tel" [config]="{ label: 'Phone Number' }">
+  </lib-text-input>
+
+  <lib-text-input type="date" [config]="{ label: 'Birth Date' }">
+  </lib-text-input>
+
+  <lib-text-input type="file" [config]="{ label: 'Upload Document' }">
+  </lib-text-input>
+
+  <lib-text-input type="url" [config]="{ label: 'Website URL' }">
+  </lib-text-input>
+
+</div>

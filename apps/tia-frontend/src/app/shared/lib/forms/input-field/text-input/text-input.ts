@@ -32,6 +32,22 @@ export class TextInput extends BaseInput {
 
   protected readonly uniqueId: string = `text-input-${++TextInput.idCounter}`;
 
+  protected readonly prefixIconUrl = computed(() => {
+    const iconPath = this.mergedConfig().icon;
+    return iconPath ? `url('/${iconPath}')` : null;
+  });
+
+  protected readonly suffixIconUrl = computed(() => {
+    const iconPath = this.showPasswordVisibility()
+      ? this.icons.EYE_OFF
+      : this.icons.EYE;
+    return `url('/${iconPath}')`;
+  });
+
+  protected readonly isPasswordType = computed<boolean>(
+    () => this.type() === 'password',
+  );
+
   protected readonly mergedConfig = computed<
     Required<TextInputTypeConfig> & InputConfig
   >(() => {
@@ -79,7 +95,7 @@ export class TextInput extends BaseInput {
     return null;
   });
 
-  togglePasswordVisibility(): void {
+  protected togglePasswordVisibility(): void {
     this.showPasswordVisibility.update((v) => !v);
   }
 }
