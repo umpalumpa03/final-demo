@@ -17,30 +17,32 @@
         gap: 1.2rem;
     }
 
-    .tabs__item {
+    &__item {
         cursor: pointer;
         font-weight: 400;
         font-size: 1.4rem;
         line-height: 2rem;
 
-        .tabs__link {
+        &--link {
             display: flex;
             align-items: center;
             color: var(--color-fg);
             border-radius: 1.4rem;
             padding: 0.4rem 0.8rem;
             transition: background 0.2s, color 0.2s;
+            
         }
 
-        .tabs__link--active {
+        &--active {
             background: $white;
         }
-        .tabs__icon {
+
+        &--icon {
             display: flex;
             align-items: center;
             margin-right: 0.5rem;
 
-            .tabs__icon-img {
+            &-img {
                 width: 1.6em;
                 height: 1.6em;
                 display: inline-block;

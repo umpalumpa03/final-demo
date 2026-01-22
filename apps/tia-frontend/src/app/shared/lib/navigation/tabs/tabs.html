@@ -8,15 +8,13 @@
   <li class="tabs__item">
     <a
       [routerLink]="tab.route"
-      class="tabs__link"
-      routerLinkActive="tabs__link--active"
+      class="tabs__item--link"
+      routerLinkActive="tabs__item--active"
       [routerLinkActiveOptions]="{ exact: true }"
     >
       @if (tab.icon) {
-        <span class="tabs__icon">
-          @if (isImageIcon(tab.icon)) {
-          <img class="tabs__icon-img" [src]="tab.icon" alt="icon" />
-          }
+        <span class="tabs__item--icon">
+          <img class="tabs__item--icon-img" [src]="tab.icon" alt="icon" />
         </span>
       }
       <span>{{ tab.label }}</span>

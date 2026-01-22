@@ -10,10 +10,6 @@ import { TabItem } from '../models/tab.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Tabs {
-  readonly tabs = input<TabItem[]>();
-  readonly orientation = input<'horizontal' | 'vertical'>('horizontal');
-
-  isImageIcon(icon: string): boolean {
-    return icon.endsWith('.svg') || icon.endsWith('.png');
-  }
+  public readonly tabs = input<TabItem[]>();
+  public readonly orientation = input<'horizontal' | 'vertical'>('horizontal');
 }

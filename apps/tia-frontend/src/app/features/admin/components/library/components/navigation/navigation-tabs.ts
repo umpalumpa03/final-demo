@@ -13,6 +13,6 @@ import { TABS, TABS2 } from './config/tabs-data';
 
 })
 export class Navigation {
-  tabs = signal(TABS);
-  tabs2 = signal(TABS2);
+  public tabs = signal(TABS);
+  public tabs2 = signal(TABS2);
 }
