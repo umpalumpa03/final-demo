@@ -41,7 +41,7 @@ describe('UiModal', () => {
     expect(emitSpy).toHaveBeenCalled();
   });
 
-  it('should emit closed event when Escape key is pressed', () => {
+  it('should this case emit closed event when Escape key is pressed', () => {
     fixture.componentRef.setInput('isOpen', true);
     fixture.detectChanges();
 
