@@ -10,7 +10,7 @@ import { UiModal } from '../../../../../../../../shared/lib/overlay/ui-modal/ui-
 })
 export class FormDialog {
   public isOpen = signal(false);
-  public toggle() {
+  public toggle(): void {
     this.isOpen.update((v) => !v);
   }
 }

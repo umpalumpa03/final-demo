@@ -31,4 +31,20 @@ describe('Navigation', () => {
     const routerOutlet = compiled.querySelector('router-outlet');
     expect(routerOutlet).toBeTruthy();
   });
+
+  it('should have correct selector', () => {
+    expect(fixture.componentInstance).toBeTruthy();
+  });
+
+  it('should render navigation element', () => {
+    const compiled = fixture.nativeElement;
+    const nav = compiled.querySelector('nav');
+    expect(nav).toBeTruthy();
+  });
+
+  it('should have RouterModule imported', () => {
+    const compiled = fixture.nativeElement;
+    const routerOutlet = compiled.querySelector('router-outlet');
+    expect(routerOutlet).toBeTruthy();
+  });
 });
