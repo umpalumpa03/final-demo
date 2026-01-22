@@ -1,94 +1,75 @@
 <div class="button-library">
-  <h2 class="button-library__title">Buttons Showcase</h2>
+  
+  <app-library-title [title]="title" [subtitle]="subtitle"> </app-library-title>
 
-  <section class="button-library__section">
-    <h3 class="button-library__section-title">Variants</h3>
-    <div class="button-library__row">
-      @for (v of variants(); track v) {
-        <app-button [variant]="v">{{ v | titlecase }}</app-button>
-      }
+  <app-showcase-card title="Variants">
+    @for (v of variants(); track v) {
+    <app-button [variant]="v">{{ v | titlecase }}</app-button>
+    }
+  </app-showcase-card>
+
+  <app-showcase-card title="Sizes">
+    @for (s of sizes(); track s) {
+    <app-button [size]="s">{{ s | titlecase }}</app-button>
+    }
+    <app-button size="icon">X</app-button>
+  </app-showcase-card>
+
+  <app-showcase-card title="States">
+    <div class="button-library__state-item">
+      <span class="button-library__state-label">Default:</span>
+      <app-button>Click Me</app-button>
     </div>
-  </section>
+  </app-showcase-card>
 
-  <section class="button-library__section">
-    <h3 class="button-library__section-title">Sizes</h3>
+  <app-showcase-card title="Disabled">
+    @for (btn of stateExamples().disabled; track btn.label) {
+    <app-button [variant]="btn.variant" [isDisabled]="true">
+      {{ btn.label }}
+    </app-button>
+    }
+  </app-showcase-card>
+
+  <app-showcase-card title="Loading:">
     <div class="button-library__row">
-      @for (s of sizes(); track s) {
-        <app-button [size]="s">{{ s | titlecase }}</app-button>
-      }
-      <app-button size="icon">
-        <span class="button-library__icon">★</span>
+      <app-button [isLoading]="true">Loading...</app-button>
+      <app-button
+        variant="secondary"
+        [isLoading]="isInteractiveLoading()"
+        (click)="toggleLoading()"
+      >
+        {{ isInteractiveLoading() ? 'Loading...' : 'Click to Load' }}
       </app-button>
     </div>
-  </section>
+  </app-showcase-card>
 
-  <section class="button-library__section">
-    <h3 class="button-library__section-title">States</h3>
-    <div class="button-library__column">
-      <div class="button-library__state-item">
-        <span class="button-library__state-label">Default:</span>
-        <app-button>Click Me</app-button>
-      </div>
+  <app-showcase-card title="With Icons">
+    @for (btn of iconButtons(); track btn.label) {
+    <app-button [variant]="btn.variant">
+      <span class="button-library__icon">{{ btn.icon }}</span>{{ btn.label }}
+    </app-button>
+    }
+  </app-showcase-card>
 
-      <div class="button-library__state-item">
-        <span class="button-library__state-label">Disabled:</span>
-        <div class="button-library__row">
-          @for (btn of stateExamples().disabled; track btn.label) {
-            <app-button [variant]="btn.variant" [isDisabled]="true">
-              {{ btn.label }}
-            </app-button>
-          }
-        </div>
-      </div>
+  <app-showcase-card title="Icon Only">
+    @for (btn of iconOnlyButtons(); track btn.variant) {
+    <app-button [variant]="btn.variant" size="icon">
+      <span class="button-library__icon button-library__icon--centered"
+        >{{ btn.icon }}</span
+      >
+    </app-button>
+    }
+  </app-showcase-card>
 
-      <div class="button-library__state-item">
-        <span class="button-library__state-label">Loading:</span>
-        <div class="button-library__row">
-          <app-button [isLoading]="true">Loading...</app-button>
-          <app-button 
-            variant="secondary" 
-            [isLoading]="isInteractiveLoading()" 
-            (click)="toggleLoading()">
-            {{ isInteractiveLoading() ? 'Loading...' : 'Click to Load' }}
-          </app-button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="button-library__section">
-    <h3 class="button-library__section-title">With Icons</h3>
-    <div class="button-library__row">
-      @for (btn of iconButtons(); track btn.label) {
-        <app-button [variant]="btn.variant">
-          <span class="button-library__icon">{{ btn.icon }}</span>{{ btn.label }}
-        </app-button>
-      }
-    </div>
-  </section>
-
-  <section class="button-library__section">
-    <h3 class="button-library__section-title">Icon Only</h3>
-    <div class="button-library__row">
-      @for (btn of iconOnlyButtons(); track btn.variant) {
-        <app-button [variant]="btn.variant" size="icon">
-          <span class="button-library__icon button-library__icon--centered">{{ btn.icon }}</span>
-        </app-button>
-      }
-    </div>
-  </section>
-
-  <section class="button-library__section">
-    <h3 class="button-library__section-title">Full Width</h3>
+  <app-showcase-card title="Full Width">
     <div class="button-library__full-width-wrapper">
       <app-button variant="default" [fullWidth]="true">
         Full Width Button
       </app-button>
     </div>
-  </section>
+  </app-showcase-card>
 
-  <section class="button-library__section">
-    <h3 class="button-library__section-title">Button Groups</h3>
+  <app-showcase-card title="Button Groups">
     <div class="button-library__row">
       <app-button-group>
         <app-button variant="outline">Left</app-button>
@@ -96,5 +77,5 @@
         <app-button variant="outline">Right</app-button>
       </app-button-group>
     </div>
-  </section>
+  </app-showcase-card>
 </div>

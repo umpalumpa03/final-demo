@@ -27,6 +27,8 @@ export const ICON_BUTTONS = [
 
 export const ICON_ONLY_BUTTONS = [
   { variant: 'default' as ButtonVariant, icon: '+' },
-  { variant: 'secondary' as ButtonVariant, icon: '⚙' },
-  { variant: 'outline' as ButtonVariant, icon: '📥' },
+  { variant: 'outline' as ButtonVariant, icon: '⚙' },
+  { variant: 'secondary' as ButtonVariant, icon: '📥' },
+  { variant: 'ghost' as ButtonVariant, icon: '✉' },
+  { variant: 'destructive' as ButtonVariant, icon: '🗑' }
 ];
