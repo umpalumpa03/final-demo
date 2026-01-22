@@ -1,13 +1,13 @@
-<div class="avatars-page">
-  <div class="avatars-card">
+<div class="avatars">
+  <div class="avatars__card">
     <app-library-title
       [title]="pageTitle"
       [subtitle]="pageSubtitle"
     />
 
-    <section class="avatars-section">
-      <p class="avatars-section__label">Sizes:</p>
-      <div class="avatars-section__row">
+    <section class="avatars__section">
+      <p class="avatars__label">Sizes:</p>
+      <div class="avatars__row">
         @for (item of sizes(); track item.size) {
           <app-avatar
             [size]="item.size"
@@ -17,9 +17,9 @@
       </div>
     </section>
 
-    <section class="avatars-section">
-      <p class="avatars-section__label">With Initials:</p>
-      <div class="avatars-section__row">
+    <section class="avatars__section">
+      <p class="avatars__label">With Initials:</p>
+      <div class="avatars__row">
         @for (avatar of initialsAvatars(); track avatar.initials + $index) {
           <app-avatar
             [size]="'md'"
@@ -31,9 +31,9 @@
       </div>
     </section>
 
-    <section class="avatars-section">
-      <p class="avatars-section__label">With Colors:</p>
-      <div class="avatars-section__row">
+    <section class="avatars__section">
+      <p class="avatars__label">With Colors:</p>
+      <div class="avatars__row">
         @for (avatar of colorAvatars(); track avatar.initials) {
           <app-avatar
             [size]="'md'"
@@ -45,9 +45,9 @@
       </div>
     </section>
 
-    <section class="avatars-section">
-      <p class="avatars-section__label">Avatar Group:</p>
-      <div class="avatars-section__row">
+    <section class="avatars__section">
+      <p class="avatars__label">Avatar Group:</p>
+      <div class="avatars__row">
         <app-avatar-group
           [avatars]="groupAvatars()"
           [size]="'md'"
@@ -58,9 +58,9 @@
       </div>
     </section>
 
-    <section class="avatars-section">
-      <p class="avatars-section__label">With Status:</p>
-      <div class="avatars-section__row">
+    <section class="avatars__section">
+      <p class="avatars__label">With Status:</p>
+      <div class="avatars__row">
         @for (avatar of statusAvatars(); track avatar.initials) {
           <app-avatar
             [size]="'md'"

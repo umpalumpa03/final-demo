@@ -1,6 +1,5 @@
 @use '../../../styles/mixins' as *;
 @use '../../../styles/palette' as *;
-@use 'sass:color';
 
 .avatar {
   @include flex-center(row, center, center);
@@ -53,7 +52,7 @@
       background-color: $green-200;
     }
 
-     &.avatar--purple {
+    &.avatar--purple {
       background-color: $purple-500;
     }
 
@@ -62,7 +61,7 @@
     }
 
     &.avatar--pink {
-      background-color:$pink-400;
+      background-color: $pink-400;
     }
 
     &.avatar--gray {

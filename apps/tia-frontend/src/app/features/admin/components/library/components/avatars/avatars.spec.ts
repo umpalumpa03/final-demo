@@ -38,7 +38,7 @@ describe('Avatars', () => {
   });
 
   it('should render section labels', () => {
-    const labels = fixture.nativeElement.querySelectorAll('.avatars-section__label');
+    const labels = fixture.nativeElement.querySelectorAll('.avatars__label');
     expect(labels.length).toBe(5);
   });
 

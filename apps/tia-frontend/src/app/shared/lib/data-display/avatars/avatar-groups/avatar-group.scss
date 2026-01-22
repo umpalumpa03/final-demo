@@ -5,14 +5,14 @@
   @include flex-center(row, center, center);
 }
 
-.avatar-group app-avatar {
+.avatar-group__item {
   border-radius: 50%;
 }
 
-.avatar-group app-avatar:not(:first-child) {
+.avatar-group__item:not(:first-child) {
   margin-left: -0.8rem;
 }
 
-.avatar-group app-avatar .avatar {
+.avatar-group__item .avatar {
   box-shadow: 0 0 0 0.2rem $white;
 }
