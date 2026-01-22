@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ButtonLibraryComponent } from '../button/button-library';
+import { ButtonLibraryComponent } from './button-library';
 
 describe('ButtonLibraryComponent', () => {
   let component: ButtonLibraryComponent;
