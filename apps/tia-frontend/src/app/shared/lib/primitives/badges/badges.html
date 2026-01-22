@@ -1,13 +1,18 @@
-<span
-  [class]="badgeClass()"
-  [attr.data-status]="status()"
->
-  @if (shouldShowIcon()) {
-    <img 
-      [src]="iconPath()" 
-      alt="" 
-      class="badge__icon"
-    />
+<div class="badge-wrapper">
+  @if (label()) {
+    <span class="badge-wrapper__label">{{ label() }}</span>
   }
-  <span class="badge__text">{{ text() }}</span>
-</span>
+  <span
+    [class]="badgeClass()"
+    [attr.data-status]="status()"
+  >
+    @if (shouldShowIcon()) {
+      <img 
+        [src]="iconPath()" 
+        [alt]="iconAlt()" 
+        class="badge__icon"
+      />
+    }
+    <span class="badge__text">{{ text() }}</span>
+  </span>
+</div>
