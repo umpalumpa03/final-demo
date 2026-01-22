@@ -1,29 +1,27 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { BasicCard } from '../../../../../../shared/lib/cards/basic-card/basic-card';
+import { BasicCard } from 'apps/tia-frontend/src/app/shared/lib/cards/basic-card/basic-card';
+import { StatisticCard } from 'apps/tia-frontend/src/app/shared/lib/cards/statistic-card/statistic-card';
+import {
+  CardData,
+  StatisticCardData,
+} from 'apps/tia-frontend/src/app/shared/lib/cards/models/card.model';
 import { LibraryTitle } from '../../shared/library-title/library-title';
-import { CardData } from '../../../../../../shared/lib/cards/models/card.model';
+import { BASIC_CARDS_DATA, STATISTICS_CARDS_DATA } from './config/cards-data';
 
 @Component({
   selector: 'app-cards',
-  imports: [BasicCard, LibraryTitle],
+  imports: [BasicCard, LibraryTitle, StatisticCard],
   templateUrl: './cards.html',
   styleUrl: './cards.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Cards {
-  readonly pageTitle = 'Cards';
-  readonly pageSubtitle = 'Card components with various layouts and content types';
+  public readonly pageTitle = 'Cards';
+  public readonly pageSubtitle =
+    'Card components with various layouts and content types';
 
-  readonly basicCards = signal<CardData[]>([
-    {
-      title: 'Card Title',
-      subtitle: 'Card description goes here',
-      content: 'This is the main content area of the card. You can put any content here.',
-    },
-    {
-      title: 'Hover Effect',
-      subtitle: 'Hover over this card',
-      content: 'This card has hover effects applied.',
-    },
-  ]);
+  public readonly basicCards = signal<CardData[]>(BASIC_CARDS_DATA);
+  public readonly statisticsCards = signal<StatisticCardData[]>(
+    STATISTICS_CARDS_DATA,
+  );
 }
