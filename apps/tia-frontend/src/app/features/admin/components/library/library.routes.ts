@@ -21,7 +21,7 @@ export const libraryRoutes: Routes = [
       {
         path: 'draganddrop',
         loadComponent: () =>
-          import('./components/drag-and-drop/drag-and-drop').then(
+          import('./components/drag-and-drop/container/drag-and-drop').then(
             (c) => c.DragAndDropContainer,
           ),
       },
