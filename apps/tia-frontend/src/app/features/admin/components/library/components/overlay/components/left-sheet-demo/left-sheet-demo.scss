@@ -23,7 +23,6 @@
 
 .nav-sheet {
   @include display-flex(column);
-  width: 38.32rem;
   height: 100%;
 
   &__header {
