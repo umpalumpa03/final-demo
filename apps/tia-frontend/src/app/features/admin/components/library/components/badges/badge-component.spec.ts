@@ -66,4 +66,17 @@ describe('BadgeComponent', () => {
     
     expect(sizeBadges.length).toBeGreaterThan(0);
   });
+
+  describe('Interactive Badges (Dismissible)', () => {
+    it('should remove badge when onDismissBadge is called', () => {
+      const initialCount = component.dismissibleBadges().length;
+      const firstBadgeId = component.dismissibleBadges()[0].id;
+
+      component.onDismissBadge(firstBadgeId);
+      fixture.detectChanges();
+
+      expect(component.dismissibleBadges().length).toBe(initialCount - 1);
+      expect(component.dismissibleBadges().find(badge => badge.id === firstBadgeId)).toBeUndefined();
+    });
+  });
 });

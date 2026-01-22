@@ -8,4 +8,6 @@ export type BadgeStatus =
   | 'featured'
   | 'premium';
 
-  export type BadgeSize = 'small' | 'medium' | 'large';
+export type BadgeSize = 'small' | 'medium' | 'large';
+
+export type BadgeShape = 'default' | 'rounded' | 'pill';

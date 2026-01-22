@@ -14,5 +14,19 @@
       />
     }
     <span class="badge__text">{{ text() }}</span>
+    @if (dismissible()) {
+      <button
+        type="button"
+        class="badge__dismiss"
+        (click)="onDismiss()"
+        aria-label="Dismiss"
+      >
+        <img 
+          src="images/svg/badges/badges-inactive.svg" 
+          alt="Dismiss" 
+          class="badge__dismiss-icon"
+        />
+      </button>
+    }
   </span>
 </div>
