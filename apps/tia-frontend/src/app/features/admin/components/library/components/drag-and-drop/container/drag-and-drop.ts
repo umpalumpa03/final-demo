@@ -12,6 +12,7 @@ import { items } from 'apps/tia-frontend/src/app/features/admin/components/libra
 })
 export class DragAndDropContainer {
   public items: DraggableItemType[] = [...items];
+  public canDelete = true;
 
   public onItemRemoved(id: string): void {}
 }

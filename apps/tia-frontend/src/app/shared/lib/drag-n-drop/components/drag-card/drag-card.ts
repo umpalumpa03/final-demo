@@ -22,6 +22,9 @@ export class DragCard implements OnDestroy {
   public items = input.required<DraggableItemType[]>();
   public itemsChange = output<DraggableItemType[]>();
   public itemRemoved = output<string>();
+  public canDelete = input<boolean>(false);
+  public layout = input<'grid' | 'list'>('grid');
+  public columns = input<number>(2);
 
   public draggingId = signal<string | null>(null);
   public dropTargetId = signal<string | null>(null);
@@ -30,6 +33,14 @@ export class DragCard implements OnDestroy {
   public currentX = signal(0);
   public currentY = signal(0);
   public internalItems: DraggableItemType[] = [];
+
+  protected readonly containerClasses = computed(
+    () => `draggable-cards draggable-cards--${this.layout()}`,
+  );
+
+  protected readonly containerStyles = computed(() =>
+    this.layout() === 'grid' ? `--columns: ${this.columns()}` : null,
+  );
 
   constructor() {
     effect(() => {

@@ -12,6 +12,9 @@
         [items]="items"
         (itemsChange)="items = $event"
         (itemRemoved)="onItemRemoved($event)"
+        [canDelete]="canDelete"
+        layout="grid"
+        [columns]="3"
       />
     </div>
   </div>
