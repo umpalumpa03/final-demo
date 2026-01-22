@@ -11,16 +11,3 @@
     margin-bottom: 3.2rem;
   }
 }
-
-// should be deleted after Card component is finished
-.card--component {
-  padding: 2.4rem;
-  border: 1px solid $blue-400;
-  border-radius: 1rem;
-
-  h2 {
-    @include font-arimo(700, 1.8rem, 2.7rem);
-    color: var(--color-fg);
-    margin-bottom: 1.6rem;
-  }
-}
