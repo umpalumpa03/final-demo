@@ -3,25 +3,28 @@
 
 .palette {
   @include display-flex(row, wrap);
-  @include flex-center();
   padding: 2rem 0;
   gap: 1rem;
   width: 100%;
   max-width: 192rem;
 
+  &__item {
+    @include display-flex(column, nowrap);
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+
   &__swatch {
-    @include display-flex(column, wrap);
-    @include flex-center(column);
-    gap: 0.5rem;
-    min-width: 14rem;
-    padding: 2rem 1rem;
-    border-radius: 0.5rem;
-    min-height: 12rem;
+    width: 14.5rem;
+    height: 8rem;
+    border-radius: 0.8rem;
     border: 0.1rem solid $gray-200;
 
     &--primary {
       background-color: $blue-deep;
       border-color: $blue-400;
+      @include display-flex(row, nowrap);
+      @include flex-center();
     }
 
     &--secondary {
@@ -43,39 +46,22 @@
     &--foreground {
       background-color: $blue-deep-foreground;
       border-color: $blue-400;
+      @include display-flex(row, nowrap);
+      @include flex-center();
     }
   }
 
   &__label {
     @include font-arimo(400, 1.4rem, 2rem);
+    color: $blue-ocean-foreground;
 
-    .palette__swatch--primary &,
-    .palette__swatch--foreground & {
+    &--inside {
       color: $white;
-    }
-
-    .palette__swatch--secondary &,
-    .palette__swatch--accent &,
-    .palette__swatch--muted &,
-    .palette__swatch--background & {
-      color: $gray-700;
     }
   }
 
   &__code {
-    font-size: 0.75rem;
-    opacity: 0.8;
-
-    .palette__swatch--primary &,
-    .palette__swatch--foreground & {
-      color: $white;
-    }
-
-    .palette__swatch--secondary &,
-    .palette__swatch--accent &,
-    .palette__swatch--muted &,
-    .palette__swatch--background & {
-      color: $gray-500;
-    }
+    font-size: 1.2rem;
+    color: $gray-600;
   }
 }
