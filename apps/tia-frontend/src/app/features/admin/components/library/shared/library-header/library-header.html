@@ -12,10 +12,11 @@
         alt="color switch icon"
       />
       <div>
-        @for (item of colorConfigs; track item.color) {
+        @for (item of colorConfigs(); track item.color) {
         <app-color-switch
           [color]="item.color"
           [isActive]="item.isActive"
+          (selected)="setActiveColor($event)"
         ></app-color-switch>
         }
       </div>

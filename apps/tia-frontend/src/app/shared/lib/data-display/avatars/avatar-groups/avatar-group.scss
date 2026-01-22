@@ -1,0 +1,18 @@
+@use '../../../../styles/palette' as *;
+@use '../../../../styles/mixins' as *;
+
+.avatar-group {
+  @include flex-center(row, center, center);
+}
+
+.avatar-group__item {
+  border-radius: 50%;
+}
+
+.avatar-group__item:not(:first-child) {
+  margin-left: -0.8rem;
+}
+
+.avatar-group__item .avatar {
+  box-shadow: 0 0 0 0.2rem $white;
+}
