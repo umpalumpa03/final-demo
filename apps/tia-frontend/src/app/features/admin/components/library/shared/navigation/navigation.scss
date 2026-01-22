@@ -2,29 +2,40 @@
 @use '../../../../../../shared/styles/palette' as *;
 @use '../../../../../../shared/styles/mixins' as *;
 
-nav {
+.navigation-container {
   @include display-flex(row, wrap);
   @include flex-center;
   width: 100%;
   margin: 0 auto;
-  max-width: 110rem;
-  padding: 0.4rem;
-  background-color: $white;
-  border: 0.1rem solid $blue-400;
-  border-radius: 1rem;
-  margin-left: 2.4rem;
+  padding: 0.4rem 0.16rem;
+  max-width: 110.2rem;
+  min-height: 3.6rem;
 
-  a {
-    @include font-arimo(400, 1.4rem, 2rem);
-    padding: 0.4rem 0.8rem;
-    text-decoration: none;
-    color: $blue-900;
-    border-radius: 0.375rem;
-    transition: all 0.2s ease-in-out;
+  nav {
+    @include display-flex(row, wrap);
+    background-color: $white;
+    border: 0.1rem solid $blue-400;
+    border-radius: 1rem;
+    padding: 0.4rem 0.16rem;
 
-    &:hover {
+    a {
+      @include font-arimo(400, 1.4rem, 2rem);
+      padding: 0.4rem 0.8rem;
+      text-decoration: none;
       color: $blue-900;
-      border-bottom: 0.1rem solid $blue-400;
+      border-radius: 0.8rem;
+      transition: all 0.2s ease-in-out;
+      background-color: transparent;
+
+      &:hover {
+        color: $blue-900;
+        background-color: $blue-100;
+      }
+
+      &.active {
+        color: $blue-400;
+        border-bottom: 0.1rem solid $blue-400;
+      }
     }
   }
 }
