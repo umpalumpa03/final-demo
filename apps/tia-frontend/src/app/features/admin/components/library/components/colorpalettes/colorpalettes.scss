@@ -5,7 +5,9 @@
   max-width: 110rem;
   padding: 2rem;
   width: 100%;
-  background-color: $blue-100;
+  min-height: 6.4rem;
+  margin: 0 auto;
+  @include display-flex(column);
 
   .colorpalettes-content {
     max-width: 1102.4px;
