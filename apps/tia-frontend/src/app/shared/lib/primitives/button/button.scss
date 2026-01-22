@@ -6,7 +6,7 @@
   @include font-inter(500, 1.4rem);
   @include flex-center(row, center, center);
 
-  width: 100%;
+  width: max-content;
   display: inline-flex;
   position: relative;
   gap: 0.8rem;
@@ -101,7 +101,9 @@
   }
 
   &--full-width {
-    width: 100%;
+    display: flex;
+    width: 100%;     
+    min-width: 100%;
   }
 }
 

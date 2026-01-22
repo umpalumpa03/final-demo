@@ -1,0 +1,78 @@
+@use '../../../../../../shared/styles/themes' as *;
+@use '../../../../../../shared/styles/palette' as *;
+@use '../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../shared/styles/variables' as *;
+
+.button-library {
+  padding: 4.0rem;
+  max-width: 192.0rem;
+  margin: 0 auto;
+  background-color: var(--color-bg);
+
+  &__title {
+    color: $blue-900;
+    @include font-inter(700, 2.2rem, 1.2); 
+    padding-bottom: 1.0rem;
+  }
+
+  &__section {
+    background: $white;
+    padding: 2.4rem;    
+    border: 0.1rem solid $gray-200;
+    border-radius: 1.2rem;
+    margin-bottom: 3.2rem;
+  }
+
+  &__section-title {
+    margin: 0 0 2.0rem 0;
+    color: $blue-900;
+    @include font-inter(600, 1.5rem, 1.2);
+  }
+
+  &__row {
+    @include display-flex(row, wrap);
+    gap: 1.2rem;
+    align-items: center;
+  }
+
+  &__column {
+    @include display-flex(column, nowrap);
+    gap: 2.0rem;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  &__state-item {
+    @include flex-center(row, flex-start, center);
+    gap: 1.6rem;
+  }
+
+  &__state-label {
+    width: 8.0rem;
+    color: $gray-600;
+    @include font-inter(400, 1.2rem, 1);
+    flex-shrink: 0;
+  }
+
+  &__icon {
+    margin-right: 0.8rem;
+    font-size: 1.6rem;
+    line-height: 1;
+
+    &--centered {
+      margin-right: 0;
+      @include flex-center(row, center, center);
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__full-width-wrapper {
+    width: 100%;
+
+    app-button {
+      display: block;
+      width: 100%;
+    }
+  }
+}

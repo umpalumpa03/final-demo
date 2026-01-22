@@ -25,13 +25,13 @@ export const libraryRoutes: Routes = [
             (c) => c.DragAndDropContainer,
           ),
       },
-      // {
-      //   path: 'buttons',
-      //   loadComponent: () =>
-      //     import('./components/button/button-library').then(
-      //       (c) => c.ButtonLibrary,
-      //     ),
-      // },
+      {
+        path: 'buttons',
+        loadComponent: () =>
+          import('./components/button/button-library').then(
+            (c) => c.ButtonLibraryComponent,
+          ),
+      },
       {
         path: 'cards',
         loadComponent: () =>
