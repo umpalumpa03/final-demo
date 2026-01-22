@@ -9,7 +9,7 @@
   background: $white;
   border: 0.08rem solid $blue-400;
   border-radius: 1rem;
-  display: flex;
+  @include display-flex(row, nowrap);
   gap: 1.2rem;
   padding: 1.48rem 1.68rem;
 

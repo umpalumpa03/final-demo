@@ -9,7 +9,7 @@
   background: var(--color-bg);
   border: 0.08rem solid $blue-200;
   border-radius: 1rem;
-  display: flex;
+  @include display-flex(row, nowrap);
   gap: 1.2rem;
   padding: 1.48rem 1.68rem;
 
@@ -52,9 +52,8 @@
     position: absolute;
     right: 0;
     top: 0;
-    // background-color: red;
 
-    display: flex;
+    @include display-flex(row, nowrap);
     justify-content: center;
     align-items: center;
 
