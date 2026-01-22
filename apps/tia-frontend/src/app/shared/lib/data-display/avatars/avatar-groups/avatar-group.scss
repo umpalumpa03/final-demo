@@ -1,0 +1,19 @@
+@use '../../../../styles/palette' as *;
+//! აქ მგონი რაღაც patch უნდა შემეცვალა იმპორტისას
+
+.avatar-group {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-group app-avatar {
+  border-radius: 50%;
+}
+
+.avatar-group app-avatar:not(:first-child) {
+  margin-left: -0.8rem;
+}
+
+.avatar-group app-avatar .avatar {
+  box-shadow: 0 0 0 0.2rem $white;
+}

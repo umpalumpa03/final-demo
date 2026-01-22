@@ -48,6 +48,11 @@ export const libraryRoutes: Routes = [
           import('./components/overlay/overlay').then((c) => c.Overlay),
       },
       {
+        path: 'datadisplay',
+        loadComponent: () =>
+          import('./components/avatars/avatars').then((c) => c.Avatars),
+      },
+      {
         path: '**',
         redirectTo: 'colorpalettes',
       },

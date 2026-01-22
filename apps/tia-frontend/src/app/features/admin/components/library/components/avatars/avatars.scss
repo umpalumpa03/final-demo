@@ -1,0 +1,36 @@
+@use '../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../shared/styles/palette' as *;
+
+.avatars-page {
+  padding: 2.4rem;
+}
+
+.avatars-card {
+  border: 0.1rem solid $blue-300;
+  border-radius: 1.6rem;
+  background-color: $white;
+  padding: 2.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+  max-width: 120rem;
+}
+
+.avatars-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+
+  &__label {
+    @include font-arimo(600, 1.6rem, 2.4rem);
+    color: $gray-700;
+    margin: 0;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+    flex-wrap: wrap;
+  }
+}
