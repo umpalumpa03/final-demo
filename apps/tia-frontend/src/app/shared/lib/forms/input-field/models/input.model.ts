@@ -13,6 +13,13 @@ export type TextInputType =
 
 export type InputFieldValue = string | number | boolean | FileList | null;
 
+export interface FormStatus {
+  valid: boolean;
+  invalid: boolean;
+  touched: boolean;
+  dirty: boolean;
+}
+
 export type InputSize = 'small' | 'medium' | 'large';
 
 export type InputVariant = 'outlined' | 'filled' | 'standard';

@@ -3,11 +3,13 @@ import {
   output,
   signal,
   computed,
-  effect,
   inject,
   Directive,
+  OnInit,
+  DestroyRef,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   InputConfig,
   InputState,
@@ -17,83 +19,84 @@ import {
   InputFieldValue,
 } from '../models/input.model';
 import { ValidationResult, InputError } from '../models/input.model';
+import { getValidationErrorMessage } from '@tia/shared/lib/forms/input-field/base/utils/input.util';
 
 @Directive()
-export abstract class BaseInput implements ControlValueAccessor {
-  protected ngControl = inject(NgControl, { self: true, optional: true });
-
-  config = input<InputConfig>({});
-  state = input<InputState>('default');
-  size = input<InputSize>('small');
-  variant = input<InputVariant>('outlined');
-  type = input<TextInputType>('text');
-
-  valueChange = output<InputFieldValue>();
-  blur = output<FocusEvent>();
-  focus = output<FocusEvent>();
-  validationChange = output<ValidationResult>();
-
-  protected value = signal<InputFieldValue>('');
-  protected touched = signal(false);
-  protected focused = signal(false);
-  protected internalDisabled = signal(false);
-  protected internalValidationErrors = signal<InputError[]>([]);
-
-  protected formStatus = computed(() => {
-    const control = this.ngControl?.control;
-    if (!control) return null;
-
-    return {
-      valid: control.valid,
-      invalid: control.invalid,
-      touched: control.touched,
-      dirty: control.dirty,
-    };
+export abstract class BaseInput implements ControlValueAccessor, OnInit {
+  protected readonly ngControl = inject(NgControl, {
+    self: true,
+    optional: true,
   });
+
+  public readonly config = input<InputConfig>({});
+  public readonly state = input<InputState>('default');
+  public readonly size = input<InputSize>('small');
+  public readonly variant = input<InputVariant>('outlined');
+  public readonly type = input<TextInputType>('text');
+
+  public readonly valueChange = output<InputFieldValue>();
+  public readonly blur = output<FocusEvent>();
+  public readonly focus = output<FocusEvent>();
+  public readonly validationChange = output<ValidationResult>();
+
+  protected readonly value = signal<InputFieldValue>('');
+  protected readonly touched = signal(false);
+  protected readonly focused = signal(false);
+  protected readonly internalDisabled = signal(false);
+  protected readonly internalValidationErrors = signal<InputError[]>([]);
+
+  protected statusChanges = signal<string | null>(null);
+
+  protected readonly destroyRef = inject(DestroyRef);
 
   constructor() {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
-
-    effect(() => {
-      const errors = this.internalValidationErrors();
-      const result =
-        errors.length > 0
-          ? ValidationResult.invalid(errors)
-          : ValidationResult.valid();
-      this.validationChange.emit(result);
-    });
   }
 
-  protected hasError = computed(() => {
+  public ngOnInit(): void {
+    if (this.ngControl?.control) {
+      this.statusChanges.set(this.ngControl.control.status);
+
+      this.ngControl.control.statusChanges
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((status) => {
+          this.statusChanges.set(status);
+        });
+    }
+  }
+
+  protected readonly hasError = computed<boolean>(() => {
+    this.statusChanges();
+
     if (this.state() === 'error') return true;
 
     const control = this.ngControl?.control;
     if (!control) return false;
 
-    this.formStatus();
-
     return control.invalid && (control.touched || control.dirty);
   });
+  protected readonly hasSuccess = computed<boolean>(() => {
+    this.statusChanges();
 
-  protected hasSuccess = computed(() => {
-    if (this.state() === 'success') return true;
+    const hasValue = this.value() !== '' && this.value() !== null;
+
+    if (this.state() === 'success') {
+      return hasValue;
+    }
 
     const control = this.ngControl?.control;
     if (!control) return false;
 
-    this.formStatus();
-
-    const hasValue = this.value() !== '';
     return control.valid && (control.touched || control.dirty) && hasValue;
   });
 
-  protected containerClasses = computed(
+  protected readonly containerClasses = computed<string>(
     () => `text-input text-input--${this.size()}`,
   );
 
-  protected fieldClasses = computed(() => {
+  protected readonly fieldClasses = computed<string>(() => {
     const error = this.hasError();
     const success = this.hasSuccess();
 
@@ -108,61 +111,54 @@ export abstract class BaseInput implements ControlValueAccessor {
       .join(' ');
   });
 
-  protected maxCharacters = computed(
+  protected readonly maxCharacters = computed<number>(
     () => this.config().validation?.maxLength || 0,
   );
 
-  protected errorMessage = computed(() => {
-    if (this.config().errorMessage) {
-      return this.config().errorMessage;
+  protected readonly errorMessage = computed<string>(() => {
+    this.statusChanges();
+
+    const customError = this.config().errorMessage;
+    if (customError) {
+      return customError;
     }
 
     const control = this.ngControl?.control;
     if (!control?.errors) {
-      return this.internalValidationErrors()[0]?.message || '';
+      const internalErrors = this.internalValidationErrors();
+      return internalErrors.length > 0 ? internalErrors[0].message : '';
     }
 
-    const errors = control.errors;
-
-    const errorMessages: Record<string, string> = {
-      required: 'This field is required',
-      email: 'Invalid email address',
-      pattern: 'Invalid format',
-    };
-
-    if (errors['minlength']) {
-      return `Min length is ${errors['minlength'].requiredLength}`;
-    }
-    if (errors['maxlength']) {
-      return `Max length is ${errors['maxlength'].requiredLength}`;
-    }
-    if (errors['min']) {
-      return `Minimum value is ${errors['min'].min}`;
-    }
-    if (errors['max']) {
-      return `Maximum value is ${errors['max'].max}`;
-    }
-
-    const firstError = Object.keys(errors)[0];
-    return errorMessages[firstError] || '';
+    return getValidationErrorMessage(control.errors);
   });
+
+  protected setValidationErrors(errors: InputError[]): void {
+    this.internalValidationErrors.set(errors);
+
+    const result =
+      errors.length > 0
+        ? ValidationResult.invalid(errors)
+        : ValidationResult.valid();
+
+    this.validationChange.emit(result);
+  }
 
   protected onChange: (value: InputFieldValue) => void = () => {};
   protected onTouched: () => void = () => {};
 
-  writeValue(value: InputFieldValue): void {
+  public writeValue(value: InputFieldValue): void {
     this.value.set(value ?? '');
   }
 
-  registerOnChange(fn: (value: InputFieldValue) => void): void {
+  public registerOnChange(fn: (value: InputFieldValue) => void): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: () => void): void {
+  public registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
-  setDisabledState(isDisabled: boolean): void {
+  public setDisabledState(isDisabled: boolean): void {
     this.internalDisabled.set(isDisabled);
   }
 
@@ -174,7 +170,7 @@ export abstract class BaseInput implements ControlValueAccessor {
 
     switch (inputType) {
       case 'number':
-        if (rawValue === '') return '';
+        if (rawValue === '' || rawValue === null) return null;
         const num = Number(rawValue);
         return isNaN(num) ? rawValue : num;
       case 'file':
@@ -212,11 +208,11 @@ export abstract class BaseInput implements ControlValueAccessor {
     this.focus.emit(event);
   }
 
-  protected isDisabled = computed(
+  protected readonly isDisabled = computed<boolean>(
     () => this.internalDisabled() || this.state() === 'disabled',
   );
 
-  protected isReadonly = computed(
+  protected readonly isReadonly = computed<boolean>(
     () => this.config().readonly || this.state() === 'readonly',
   );
 }
