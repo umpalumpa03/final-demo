@@ -55,7 +55,6 @@ describe('BaseInput', () => {
     component['handleInput'](mockInputEvent('42', 'number'));
     expect(changeSpy).toHaveBeenCalledWith(42);
 
-    // 3. Number Input (Empty)
     component['handleInput'](mockInputEvent('', 'number'));
     expect(component['value']()).toBeNull();
 
