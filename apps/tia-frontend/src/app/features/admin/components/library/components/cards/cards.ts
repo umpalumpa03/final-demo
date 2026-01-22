@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { BasicCard } from '../../../../../../shared/lib/cards/basic-card/basic-card';
+import { BasicCard } from 'apps/tia-frontend/src/app/shared/lib/cards/basic-card/basic-card';
+import { CardData } from 'apps/tia-frontend/src/app/shared/lib/cards/models/card.model';
 import { LibraryTitle } from '../../shared/library-title/library-title';
-import { CardData } from '../../../../../../shared/lib/cards/models/card.model';
+
 
 @Component({
   selector: 'app-cards',

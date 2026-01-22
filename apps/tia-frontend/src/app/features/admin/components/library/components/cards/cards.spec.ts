@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Cards } from './cards';
-import { BasicCard } from '../../../../../../shared/lib/cards/basic-card/basic-card';
+import { BasicCard } from 'apps/tia-frontend/src/app/shared/lib/cards/basic-card/basic-card';
 import { LibraryTitle } from '../../shared/library-title/library-title';
 
 describe('Cards', () => {
@@ -26,7 +26,9 @@ describe('Cards', () => {
   });
 
   it('should have pageSubtitle property', () => {
-    expect(component.pageSubtitle).toBe('Card components with various layouts and content types');
+    expect(component.pageSubtitle).toBe(
+      'Card components with various layouts and content types',
+    );
   });
 
   it('should initialize basicCards signal with two cards', () => {
@@ -38,7 +40,9 @@ describe('Cards', () => {
     const firstCard = component.basicCards()[0];
     expect(firstCard.title).toBe('Card Title');
     expect(firstCard.subtitle).toBe('Card description goes here');
-    expect(firstCard.content).toBe('This is the main content area of the card. You can put any content here.');
+    expect(firstCard.content).toBe(
+      'This is the main content area of the card. You can put any content here.',
+    );
   });
 
   it('should have correct second card data', () => {
@@ -49,7 +53,8 @@ describe('Cards', () => {
   });
 
   it('should render LibraryTitle component', () => {
-    const libraryTitle = fixture.nativeElement.querySelector('app-library-title');
+    const libraryTitle =
+      fixture.nativeElement.querySelector('app-library-title');
     expect(libraryTitle).toBeTruthy();
   });
 
