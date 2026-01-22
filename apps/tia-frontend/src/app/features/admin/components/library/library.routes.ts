@@ -19,9 +19,16 @@ export const libraryRoutes: Routes = [
           ),
       },
       {
+        path: 'navigation',
+        loadChildren: () =>
+          import('./components/navigation/navigation-tabs.routes').then(
+            (c) => c.navRoutes,
+          ),
+      },
+      {
         path: 'draganddrop',
         loadComponent: () =>
-          import('./components/drag-and-drop/drag-and-drop').then(
+          import('./components/drag-and-drop/container/drag-and-drop').then(
             (c) => c.DragAndDropContainer,
           ),
       },
