@@ -19,12 +19,26 @@ export const libraryRoutes: Routes = [
           ),
       },
       {
+        path: 'navigation',
+        loadChildren: () =>
+          import('./components/navigation/navigation-tabs.routes').then(
+            (c) => c.navRoutes,
+          ),
+      },
+      {
         path: 'draganddrop',
         loadComponent: () =>
-          import('./components/drag-and-drop/drag-and-drop').then(
+          import('./components/drag-and-drop/container/drag-and-drop').then(
             (c) => c.DragAndDropContainer,
           ),
       },
+      // {
+      //   path: 'buttons',
+      //   loadComponent: () =>
+      //     import('./components/button/button-library').then(
+      //       (c) => c.ButtonLibrary,
+      //     ),
+      // },
       {
         path: 'cards',
         loadComponent: () =>
@@ -46,6 +60,23 @@ export const libraryRoutes: Routes = [
         path: 'overlay',
         loadComponent: () =>
           import('./components/overlay/overlay').then((c) => c.Overlay),
+      },
+      {
+        path: 'datadisplay',
+        loadComponent: () =>
+          import('./components/avatars/avatars').then((c) => c.Avatars),
+      },
+      {
+        path: 'feedback',
+        loadComponent: () =>
+          import('./components/feedback/feedback').then((c) => c.Feedback),
+      },
+      {
+        path: 'tables',
+        loadComponent: () =>
+          import('./components/tables/container/tables-container').then(
+            (c) => c.TablesContainer,
+          ),
       },
       {
         path: '**',

@@ -1,0 +1,10 @@
+<button
+  [class]="color()"
+  [class.active]="isActive()"
+  (click)="onSelect()"
+  [attr.aria-label]="'Select Color ' + color()"
+>
+  @if(isActive()){
+  <div></div>
+  }
+</button>

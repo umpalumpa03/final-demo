@@ -1,14 +1,18 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  signal,
-  WritableSignal,
 } from '@angular/core';
 import { LibraryTitle } from '../../shared/library-title/library-title';
-import { ShowcaseCard } from './components/showcase-card/showcase-card';
+import { ShowcaseCard } from '../../shared/showcase-card/showcase-card';
 import { EditProfileDialog } from './components/edit-profile-dialog/edit-profile-dialog';
 import { FormDialog } from './components/form-dialog/form-dialog';
 import { LargeDialog } from './components/large-dialog/large-dialog';
+import { DeleteAccountDialog } from './components/delete-account-dialog/delete-account-dialog';
+import { ConfirmAccountDialog } from './components/confirm-account-dialog/confirm-account-dialog';
+import { RightSheetDemo } from "./components/right-sheet-demo/right-sheet-demo";
+import { LeftSheetDemo } from "./components/left-sheet-demo/left-sheet-demo";
+import { TopSheetModal } from "./components/top-sheet-modal/top-sheet-modal";
+import { BottomSheetModal } from "./components/bottom-sheet-modal/bottom-sheet-modal";
 
 @Component({
   selector: 'app-overlay',
@@ -18,7 +22,13 @@ import { LargeDialog } from './components/large-dialog/large-dialog';
     EditProfileDialog,
     FormDialog,
     LargeDialog,
-  ],
+    DeleteAccountDialog,
+    ConfirmAccountDialog,
+    RightSheetDemo,
+    LeftSheetDemo,
+    TopSheetModal,
+    BottomSheetModal
+],
   templateUrl: './overlay.html',
   styleUrls: ['./overlay.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,20 +36,4 @@ import { LargeDialog } from './components/large-dialog/large-dialog';
 export class Overlay {
   public pageTitle = 'Overlay Components';
   public pageSubtitle = 'Modal dialogs, sheets, popovers, and dropdown menu';
-
-  public isDeleteAlertOpen = signal<boolean>(false);
-  public isConfirmAlertOpen = signal<boolean>(false);
-  public isRightSheetOpen = signal<boolean>(false);
-  public isLeftSheetOpen = signal<boolean>(false);
-  public isTopSheetOpen = signal<boolean>(false);
-  public isBottomSheetOpen = signal<boolean>(false);
-  public isDrawerOpen = signal<boolean>(false);
-
-  public toggle(state: WritableSignal<boolean>): void {
-    state.update((current) => !current);
-  }
-
-  public onContextMenu(event: MouseEvent): void {
-    event.preventDefault();
-  }
 }

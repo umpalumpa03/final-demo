@@ -1,0 +1,19 @@
+@if (!isDismissed()) {
+<div class="dismissible-alerts" [class]="iconAlertClass()">
+  <div class="dismissible-alerts__alert-icon-div">
+    <img
+      [src]="'/images/img/alert-icons/base-alert-' + effectiveImgName() + '.png'"
+      alt="info icon"
+    />
+  </div>
+  <div class="dismissible-alerts__alert-info-div">
+    <div class="dismissible-alerts__title">{{alertType() | firstUpper}}</div>
+    <div class="dismissible-alerts__message">
+      {{alertMessage() | firstUpper}}
+    </div>
+  </div>
+  <button class="dismissible-alerts__close-button" (click)="onDismiss()">
+    <img src="images/svg/alerts/close.svg" alt="close icon" />
+  </button>
+</div>
+}
