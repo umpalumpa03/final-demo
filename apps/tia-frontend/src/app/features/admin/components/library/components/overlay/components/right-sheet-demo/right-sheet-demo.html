@@ -1,0 +1,44 @@
+<button class="btn btn__primary btn__trigger" (click)="toggle()">
+  Right Sheet
+</button>
+
+<app-ui-sheet-modal [isOpen]="isOpen()" direction="right" (closed)="toggle()">
+  <div class="sheet-demo">
+    <header class="sheet-demo__header">
+      <app-library-title
+        [title]="sheetTitle"
+        [subtitle]="sheetSubtitle"
+      ></app-library-title>
+    </header>
+
+    <div class="sheet-demo__form">
+      <div class="sheet-demo__field">
+        <label class="sheet-demo__label" for="username">Username</label>
+        <input
+          class="sheet-demo__input"
+          id="username"
+          type="text"
+          placeholder="@johndoe"
+        />
+      </div>
+
+      <div class="sheet-demo__field">
+        <label class="sheet-demo__label" for="bio">Bio</label>
+        <textarea
+          class="sheet-demo__textarea"
+          id="bio"
+          placeholder="Tell us about yourself"
+        ></textarea>
+      </div>
+    </div>
+
+    <footer class="sheet-demo__footer">
+      <button class="btn btn__outline" type="button" (click)="toggle()">
+        Cancel
+      </button>
+      <button class="btn btn__primary" type="button" (click)="toggle()">
+        Save
+      </button>
+    </footer>
+  </div>
+</app-ui-sheet-modal>

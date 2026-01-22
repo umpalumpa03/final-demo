@@ -1,0 +1,24 @@
+<button class="btn btn__outline btn__bottom-trigger" (click)="toggle()">
+  Bottom Sheet
+</button>
+
+<app-ui-sheet-modal [isOpen]="isOpen()" direction="bottom" (closed)="toggle()">
+  <div class="bottom-sheet-demo">
+    <header class="bottom-sheet-demo__header">
+      <app-library-title
+        [title]="sheetTitle"
+        [subtitle]="sheetSubtitle"
+      ></app-library-title>
+    </header>
+
+    <div class="bottom-sheet-demo__grid">
+      @for (action of navConfig(); track action.label) {
+      <app-bottom-action-card
+        [label]="action.label"
+        [icon]="action.icon"
+        (click)="toggle()"
+      ></app-bottom-action-card>
+      }
+    </div>
+  </div>
+</app-ui-sheet-modal>

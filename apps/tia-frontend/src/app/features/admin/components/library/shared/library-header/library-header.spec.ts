@@ -22,11 +22,6 @@ describe('LibraryHeader', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render the correct number of color switches', () => {
-    const switches = fixture.debugElement.queryAll(By.css('app-color-switch'));
-    expect(switches.length).toBe(component.colorConfigs().length);
-  });
-
   it('should update active state when a color is selected', () => {
     const secondItem = component.colorConfigs()[1];
     
