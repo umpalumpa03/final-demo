@@ -54,19 +54,64 @@ describe('DragCard', () => {
     expect(itemRemovedSpy).toHaveBeenCalledWith('1');
   });
 
-  it('should return correct container classes', () => {
+  it('should return correct container classes for grid', () => {
     fixture.componentRef.setInput('layout', 'grid');
     fixture.detectChanges();
 
     expect(component['containerClasses']()).toBe(
       'draggable-cards draggable-cards--grid',
     );
+  });
 
+  it('should return correct container classes for list', () => {
     fixture.componentRef.setInput('layout', 'list');
     fixture.detectChanges();
 
     expect(component['containerClasses']()).toBe(
       'draggable-cards draggable-cards--list',
     );
+  });
+
+  it('should return container styles for grid layout', () => {
+    fixture.componentRef.setInput('layout', 'grid');
+    fixture.componentRef.setInput('columns', 3);
+    fixture.detectChanges();
+
+    expect(component['containerStyles']()).toBe('--columns: 3');
+  });
+
+  it('should return null container styles for list layout', () => {
+    fixture.componentRef.setInput('layout', 'list');
+    fixture.detectChanges();
+
+    expect(component['containerStyles']()).toBeNull();
+  });
+
+  it('should have default input values', () => {
+    expect(component.canDelete()).toBe(false);
+    expect(component.layout()).toBe('grid');
+    expect(component.columns()).toBe(2);
+    expect(component.cardTitle()).toBe('Draggable Cards');
+    expect(component.cardDescription()).toBe(
+      'Drag Cards to reorder them in a grid layout',
+    );
+  });
+
+  it('should emit orderChange after reorder', () => {
+    const itemsChangeSpy = vi.spyOn(component.itemsChange, 'emit');
+    const orderChangeSpy = vi.spyOn(component.orderChange, 'emit');
+
+    component['handleDrop']('1', '3');
+
+    expect(itemsChangeSpy).toHaveBeenCalled();
+    expect(orderChangeSpy).toHaveBeenCalled();
+  });
+
+  it('should reorder items correctly on handleDrop', () => {
+    component['handleDrop']('1', '3');
+
+    expect(component.internalItems[0].id).toBe('2');
+    expect(component.internalItems[1].id).toBe('3');
+    expect(component.internalItems[2].id).toBe('1');
   });
 });
