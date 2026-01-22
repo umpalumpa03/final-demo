@@ -14,6 +14,10 @@ export class LibraryHeader {
   public colorConfigs = signal<ColorSwitchType[]>(COLOR_SWITCH_DATA);
 
   public setActiveColor(selectedColor: string): void {
+    if (!selectedColor) {
+      return;
+    }
+
     this.colorConfigs.update((buttons) =>
       buttons.map((button) => ({
         ...button,
