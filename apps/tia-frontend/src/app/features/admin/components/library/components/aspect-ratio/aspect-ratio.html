@@ -1,0 +1,16 @@
+<div class="aspect-ratio-page">
+  <app-library-title
+    [title]="title"
+    subtitle="Preview common aspect ratios for media and layouts"
+  >
+  </app-library-title>
+
+  @if (ratios().length > 0) {
+    <app-aspect-ratio-list
+      [items]="ratios()"
+      (selected)="onRatioSelected($event)"
+    ></app-aspect-ratio-list>
+  } @else {
+    <p class="aspect-ratio-page__empty">No aspect ratios available.</p>
+  }
+</div>

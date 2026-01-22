@@ -1,0 +1,19 @@
+<div class="aspect-ratio">
+  @for (item of items(); track item.id) {
+    <div class="aspect-ratio__group">
+      <span class="aspect-ratio__label">{{ item.label }} ({{ item.description }})</span>
+      <button
+        class="aspect-ratio-card"
+        type="button"
+        [style.background-color]="item.background"
+        [style.aspect-ratio]="item.ratio"
+        [style.width]="item.width"
+        (click)="onSelect(item)"
+      >
+        <span class="aspect-ratio-card__text">
+          {{ item.label }} Aspect Ratio
+        </span>
+      </button>
+    </div>
+  }
+</div>
