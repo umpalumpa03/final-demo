@@ -1,15 +1,23 @@
 @use '../../../styles/palette' as *;
 @use '../../../styles/mixins' as *;
 
+.badge-wrapper {
+  @include display-flex(row, center);
+  gap: 0.8rem;
+  
+  &__label {
+    @include font-inter(400, 1.2rem, 1.2);
+    color: $blue-900;
+  }
+}
+
 .badge {
   @include font-inter(500, 1.2rem, 1.2);
   @include flex-center(row, flex-start, center);
   gap: 0.4rem;
-
-  padding: 0.6rem 0.8rem;
+  padding: 0.7rem 0.9rem;
   border-radius: 0.9rem;
   border: none;
-  transition: all 0.2s ease;
   color: $white;
 
   &__icon {
@@ -23,58 +31,91 @@
     line-height: 1.2;
   }
 
-  &__default {
+  &--small {
+    padding: 0.4rem 0.6rem;
+    font-size: 1rem;
+    gap: 0.3rem;
+
+    .badge__icon {
+      width: 0.9rem;
+      height: 0.9rem;
+    }
+  }
+
+  &--medium {
+    padding: 0.6rem 0.8rem;
+    font-size: 1.2rem;
+    gap: 0.4rem;
+
+    .badge__icon {
+      width: 1.1rem;
+      height: 1.1rem;
+    }
+  }
+
+  &--large {
+    padding: 0.8rem 1rem;
+    font-size: 1.4rem;
+    gap: 0.5rem;
+
+    .badge__icon {
+      width: 1.3rem;
+      height: 1.3rem;
+    }
+  }
+
+  &--default {
     background-color: $blue-500;
     color: $white;
   }
 
  
-  &__secondary {
+  &--secondary {
     background-color: $gray-50;
     color: $blue-600;
     border: 0.1rem solid $blue-200;
   }
 
 
-  &__destructive {
+  &--destructive {
     background-color: $red-500;
     color: $white;
   }
 
 
-  &__outline {
+  &--outline {
     background-color: $white;
     color: $blue-600;
     border: 0.1rem solid $blue-300;
   }
 
 
-  &__active {
+  &--active {
     background-color: $green-500;
     color: $white;
   }
 
-  &__pending {
+  &--pending {
     background-color: $yellow-400;
     color: $white;
   }
 
-  &__inactive {
+  &--inactive {
     background-color: $red-500;
     color: $white;
   }
 
-  &__in-progress {
+  &--in-progress {
     background-color: $blue-500;
     color: $white;
   }
 
-  &__featured {
+  &--featured {
     background-color: $purple-500;
     color: $white;
   }
 
-  &__premium {
+  &--premium {
     background-color: $orange-500;
     color: $white;
   }

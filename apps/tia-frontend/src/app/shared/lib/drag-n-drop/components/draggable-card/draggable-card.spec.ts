@@ -25,7 +25,15 @@ describe('DraggableCard', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit dragStart on pointer down', () => {
+  it('should call preventDefault on drag start', () => {
+    const event = { preventDefault: vi.fn() } as unknown as PointerEvent;
+
+    component.onDragStartPoint(event);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+  });
+
+  it('should emit dragStart with event', () => {
     const event = { preventDefault: vi.fn() } as unknown as PointerEvent;
     const spy = vi.spyOn(component.dragStart, 'emit');
 

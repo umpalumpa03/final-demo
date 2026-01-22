@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { BadgeStatus, BadgeVariant } from './models/badges.models';
+import { BadgeSize, BadgeStatus, BadgeVariant } from './models/badges.models';
+import { statusClassMap, statusIconMap, statusAltTextMap } from './config/badges.constants';
 
 
 @Component({
@@ -13,49 +14,27 @@ export class Badges {
   readonly variant = input<BadgeVariant>('default');
   readonly text = input<string>('');
   readonly status = input<BadgeStatus | undefined>(undefined);
-
+  readonly size = input<BadgeSize>('small');
+  readonly label = input<string>('');
   readonly badgeClass = computed(() => {
- 
+    const sizeClass = `badge--${this.size()}`;
     const statusClass = this.badgeStatus();
     if (statusClass) {
-      return `badge ${statusClass}`;
+      return `badge ${sizeClass} ${statusClass}`;
     }
-    return `badge badge__${this.variant()}`;
+    return `badge ${sizeClass} badge--${this.variant()}`;
   });
 
   readonly badgeStatus = computed(() => {
-    const currentStatus = this.status();
-    if (!currentStatus) return '';
-    
-    switch (currentStatus) {
-      case 'active':
-        return 'badge__active';
-      case 'pending':
-        return 'badge__pending';
-      case 'inactive':
-        return 'badge__inactive';
-      case 'in-progress':
-        return 'badge__in-progress';
-      case 'featured':
-        return 'badge__featured';
-      case 'premium':
-        return 'badge__premium';
-    }
+    return this.status() ? statusClassMap[this.status()!] : '';
   });
 
   readonly iconPath = computed(() => {
-    const status = this.status();
-    if (!status) return '';
-    
-    const iconMap: Record<BadgeStatus, string> = {
-      'active': 'images/svg/badges/badges-active.svg',
-      'pending': 'images/svg/badges/badges-pending.svg',
-      'inactive': 'images/svg/badges/badges-inactive.svg',
-      'in-progress': 'images/svg/badges/badges-inProgress.svg',
-      'featured': 'images/svg/badges/badges-featured.svg',
-      'premium': 'images/svg/badges/badges-premium.svg',
-    };
-    return iconMap[status];
+    return this.status() ? statusIconMap[this.status()!] : '';
+  });
+
+  readonly iconAlt = computed(() => {
+    return this.status() ? statusAltTextMap[this.status()!] : '';
   });
 
   readonly shouldShowIcon = computed(() => {
