@@ -4,7 +4,7 @@ import {
   computed,
   input,
 } from '@angular/core';
-import { baseAlertType } from '../../shared/models/alert.models';
+import { BaseAlertType } from '../../shared/models/alert.models';
 
 @Component({
   selector: 'app-basic-alerts',
@@ -14,7 +14,7 @@ import { baseAlertType } from '../../shared/models/alert.models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BasicAlerts {
-  public alertType = input<baseAlertType>('default');
+  public alertType = input<BaseAlertType>('default');
   public alertTitle = input<string>('Default Alert');
   public alertMessage = input<string>(
     'This is a default alert with important information.',

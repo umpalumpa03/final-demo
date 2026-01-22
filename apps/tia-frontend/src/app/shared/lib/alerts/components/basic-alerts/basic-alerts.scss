@@ -11,7 +11,7 @@
   border-radius: 1rem;
   @include display-flex(row, nowrap);
   gap: 1.2rem;
-  padding: 1.48rem 1.68rem;
+  padding: 1rem 1.64rem;
 
   @media (max-width: 128rem) {
     width: 90%;
@@ -26,6 +26,7 @@
   &__alert-icon-div {
     flex-shrink: 0;
     img {
+      margin: 0.4rem 0rem;
       width: 1.6rem;
       height: 1.6rem;
       object-fit: cover;
@@ -35,6 +36,7 @@
   &__alert-info-div {
     justify-content: center;
     @include display-flex(column, nowrap);
+    gap: 0.2rem;
   }
 
   &__title {

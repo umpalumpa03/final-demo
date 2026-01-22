@@ -1,15 +1,15 @@
 @use '../../../../styles/palette' as *;
 @use '../../../../styles/mixins' as *;
 
-.alert-types-icons {
+.alerts-with-actions {
   max-width: 105.3rem;
   min-height: 6.76rem;
   width: 100%;
   background: var(--color-bg);
   border: 0.08rem solid $blue-200;
   border-radius: 1rem;
-  @include display-flex(row, nowrap);
-  gap: 1.2rem;
+  @include display-flex(column, wrap);
+  gap: 1.8rem;
   padding: 1rem 1.64rem;
 
   @media (max-width: 128rem) {
@@ -20,6 +20,16 @@
     padding: 1rem;
     gap: 0.8rem;
     width: 95%;
+  }
+
+  &__alert-content {
+    @include display-flex(row, nowrap);
+    gap: 1.2rem;
+  }
+
+  &__button-flex {
+    @include display-flex(row, nowrap);
+    gap: 0.8rem;
   }
 
   &__alert-icon-div {
@@ -33,8 +43,9 @@
   }
 
   &__alert-info-div {
-    justify-content: center;
     @include display-flex(column, nowrap);
+    justify-content: center;
+    gap: 0.2rem
   }
 
   &__title {
@@ -48,35 +59,13 @@
     color: $blue-900;
   }
 
-  &--error {
-    background: $red-50;
-    border: 0.08rem solid $red-200;
-    .alert-types-icons__title {
-      color: $red-900;
-    }
-    .alert-types-icons__message {
-      color: $red-950;
-    }
-  }
-
-  &--success {
-    background: $green-50;
-    border: 0.08rem solid $green-200;
-    .alert-types-icons__title {
-      color: $green-900;
-    }
-    .alert-types-icons__message {
-      color: $green-950;
-    }
-  }
-
   &--warning {
     background: $yellow-50;
     border: 0.08rem solid $yellow-200;
-    .alert-types-icons__title {
+    .alerts-with-actions__title {
       color: $brown-800;
     }
-    .alert-types-icons__message {
+    .alerts-with-actions__message {
       color: $brown-700;
     }
   }
