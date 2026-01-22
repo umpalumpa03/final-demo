@@ -21,6 +21,9 @@ export class ButtonLibraryComponent {
   protected readonly stateExamples = signal(CONFIG.STATE_EXAMPLES); 
   protected readonly iconButtons = signal(CONFIG.ICON_BUTTONS);
   protected readonly iconOnlyButtons = signal(CONFIG.ICON_ONLY_BUTTONS);
+  protected readonly interactiveItems = signal(CONFIG.INTERACTIVE_EXAMPLES);
+
+  
 
   public readonly title:string = "Buttons";
   public readonly subtitle:string = "A comprehensive showcase of all components with their various states"

@@ -46,7 +46,7 @@
   }
 
   &--outline {
-    background-color: transparent;
+    background-color: var(--color-bg);
     border: 0.1rem solid var(--color-primary);
     color: var(--color-fg);
     &:hover:not(:disabled) {
@@ -60,6 +60,43 @@
     &:hover:not(:disabled) {
       background-color: var(--color-muted);
     }
+  }
+
+  &--icon {
+    padding: 0;
+    width: 4rem;
+    height: 4rem;
+    flex-shrink: 0;
+    @include flex-center(row, center, center);
+    .button__content {
+      gap: 0; 
+      @include flex-center(row, center, center);
+    }
+
+    .button__icon {
+      margin: 0;
+    }
+  }
+
+  .button__content {
+    @include flex-center(row, center, center);
+    gap: 0.8rem;
+    width: 100%;
+  }
+
+  .button__icon {
+    width: 1.8rem;
+    height: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
   }
 
   &--link {
@@ -99,10 +136,28 @@
   }
 
   &--full-width {
-    display: flex;
+    @include display-flex;
     width: 100%;     
     min-width: 100%;
   }
+
+  .button__content {
+  @include flex-center(row, center, center);
+  gap: 0.8rem; 
+  width: 100%;
+}
+
+.button__icon {
+  width: 1.8rem;
+  height: 1.8rem;
+  display: block;
+  object-fit: contain;
+  flex-shrink: 0; 
+}
+
+.button__label {
+ @include flex-center(row, flex-start, center);
+}
 }
 
 .button__spinner {
@@ -114,6 +169,7 @@
   animation: rotate 0.8s linear infinite;
   flex-shrink: 0;
 }
+
 
 @keyframes rotate {
   from {

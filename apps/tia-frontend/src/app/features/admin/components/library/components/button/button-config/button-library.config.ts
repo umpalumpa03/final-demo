@@ -1,4 +1,7 @@
-import {ButtonVariant,ButtonSize} from '../../../../../../../shared/lib/primitives/button/button.model';
+import {
+  ButtonVariant,
+  ButtonSize,
+} from '../../../../../../../shared/lib/primitives/button/button.model';
 
 export const BUTTON_VARIANTS: ButtonVariant[] = [
   'default',
@@ -19,16 +22,75 @@ export const STATE_EXAMPLES = {
 };
 
 export const ICON_BUTTONS = [
-  { variant: 'default' as ButtonVariant, icon: '✉', label: 'Send Email' },
-  { variant: 'secondary' as ButtonVariant, icon: '↓', label: 'Download' },
-  { variant: 'destructive' as ButtonVariant, icon: '🗑', label: 'Delete' },
-  { variant: 'outline' as ButtonVariant, icon: '✓', label: 'Confirm' },
+  {
+    variant: 'default' as ButtonVariant,
+    label: 'Send Email',
+    icon: 'email-icon.svg',
+  },
+  {
+    variant: 'secondary' as ButtonVariant,
+    label: 'Download',
+    icon: 'download-icon.svg',
+  },
+  {
+    variant: 'destructive' as ButtonVariant,
+    label: 'Delete',
+    icon: 'trash-icon.svg',
+  },
+  {
+    variant: 'outline' as ButtonVariant,
+    label: 'Confirm',
+    icon: 'confirm-icon.svg',
+  },
+  {
+    variant: 'default' as ButtonVariant,
+    label: 'Add New',
+    icon: 'plus-icon.svg',
+  },
+  {
+    variant: 'ghost' as ButtonVariant,
+    label: 'Settings',
+    icon: 'set-icon.svg',
+  },
 ];
 
 export const ICON_ONLY_BUTTONS = [
-  { variant: 'default' as ButtonVariant, icon: '+' },
-  { variant: 'outline' as ButtonVariant, icon: '⚙' },
-  { variant: 'secondary' as ButtonVariant, icon: '📥' },
-  { variant: 'ghost' as ButtonVariant, icon: '✉' },
-  { variant: 'destructive' as ButtonVariant, icon: '🗑' }
+  {
+    variant: 'default' as ButtonVariant,
+    label: 'Add new item',
+    icon: 'plus-icon.svg',
+  },
+  {
+    variant: 'outline' as ButtonVariant,
+    label: 'Open settings',
+    icon: 'set-icon.svg',
+  },
+  {
+    variant: 'secondary' as ButtonVariant,
+    label: 'Download',
+    icon: 'download-icon.svg',
+  },
+  {
+    variant: 'ghost' as ButtonVariant,
+    label: 'Inbox',
+    icon: 'white-email-icon.svg',
+  },
+  {
+    variant: 'destructive' as ButtonVariant,
+    label: 'Delete',
+    icon: 'trash-icon.svg',
+  },
+];
+
+export const INTERACTIVE_EXAMPLES = [
+  {
+    variant: 'outline' as ButtonVariant,
+    label: 'Like (42)',
+    icon: 'hearth-icon.svg',
+  },
+  {
+    variant: 'default' as ButtonVariant,
+    label: 'Download File',
+    icon: 'download-icon.svg',
+  },
 ];

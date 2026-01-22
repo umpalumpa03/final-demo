@@ -1,5 +1,4 @@
 <div class="button-library">
-  
   <app-library-title [title]="title" [subtitle]="subtitle"> </app-library-title>
 
   <app-showcase-card title="Variants">
@@ -16,7 +15,7 @@
   </app-showcase-card>
 
   <app-showcase-card title="States">
-    <div class="button-library__state-item">
+    <div>
       <span class="button-library__state-label">Default:</span>
       <app-button>Click Me</app-button>
     </div>
@@ -24,14 +23,14 @@
 
   <app-showcase-card title="Disabled">
     @for (btn of stateExamples().disabled; track btn.label) {
-    <app-button [variant]="btn.variant" [isDisabled]="true">
+    <app-button [variant]="btn.variant" [isDisabled]="true" [title]="btn.label">
       {{ btn.label }}
     </app-button>
     }
   </app-showcase-card>
 
   <app-showcase-card title="Loading:">
-    <div class="button-library__row">
+    <div>
       <app-button [isLoading]="true">Loading...</app-button>
       <app-button
         variant="secondary"
@@ -45,28 +44,30 @@
 
   <app-showcase-card title="With Icons">
     @for (btn of iconButtons(); track btn.label) {
-    <app-button [variant]="btn.variant">
-      <span class="button-library__icon">{{ btn.icon }}</span>{{ btn.label }}
+    <app-button [variant]="btn.variant" [icon]="btn.icon" [title]="btn.label">
+      {{ btn.label }}
     </app-button>
     }
   </app-showcase-card>
 
   <app-showcase-card title="Icon Only">
-    @for (btn of iconOnlyButtons(); track btn.variant) {
-    <app-button [variant]="btn.variant" size="icon">
-      <span class="button-library__icon button-library__icon--centered"
-        >{{ btn.icon }}</span
-      >
+    @for (btn of iconOnlyButtons(); track btn.label) {
+    <app-button
+      [variant]="btn.variant"
+      size="icon"
+      [icon]="btn.icon"
+      [title]="btn.label"
+    >
     </app-button>
     }
   </app-showcase-card>
 
-  <app-showcase-card title="Full Width">
-    <div class="button-library__full-width-wrapper">
-      <app-button variant="default" [fullWidth]="true">
-        Full Width Button
-      </app-button>
-    </div>
+  <app-showcase-card title="Interactive Examples">
+    @for (example of interactiveItems(); track example.label) {
+    <app-button [variant]="example.variant" [icon]="example.icon" [title]="example.label">
+      {{ example.label }}
+    </app-button>
+    }
   </app-showcase-card>
 
   <app-showcase-card title="Button Groups">
@@ -76,6 +77,14 @@
         <app-button variant="outline">Middle</app-button>
         <app-button variant="outline">Right</app-button>
       </app-button-group>
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="Full Width">
+    <div>
+      <app-button variant="default" [fullWidth]="true">
+        Full Width Button
+      </app-button>
     </div>
   </app-showcase-card>
 </div>
