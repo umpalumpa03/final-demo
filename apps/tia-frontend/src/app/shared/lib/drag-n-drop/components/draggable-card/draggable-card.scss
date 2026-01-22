@@ -1,6 +1,5 @@
-@use '../../../styles/mixins' as *;
-@use '../../../styles/palette' as *;
-
+@use '../../../../styles/mixins' as *;
+@use '../../../../styles/palette' as *;
 .draggable-card {
   @include flex-center(row, space-between);
   width: 100%;
@@ -27,5 +26,10 @@
       @include flex-center();
       @include font-inter(400, 1.6rem, 2.4rem);
     }
+  }
+  &.drop-target {
+    border: 0.2rem dashed var(--color-primary);
+    opacity: 0.7;
+    background: rgba(var(--color-primary-rgb), 0.05);
   }
 }
