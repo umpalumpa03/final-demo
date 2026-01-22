@@ -1,1 +1,26 @@
-<p>tables works!</p>
+<table class="table">
+  <thead class="table__header">
+    <tr class="table__header__row">
+      @for (item of tableConfig().headers; track $index) {
+      <th
+        class="table__header__row__item"
+        [style.text-align]="item.align"
+        [style.width]="item.width"
+      >
+        {{item.title}}
+      </th>
+      }
+    </tr>
+  </thead>
+  <tbody class="table__body">
+    @for (row of tableConfig().rows; track $index) {
+    <tr class="table__body__row">
+      @for (item of row; track $index) {
+      <td class="table__body__row__item" [style.text-align]="item.align">
+        {{ item.value }}
+      </td>
+      }
+    </tr>
+    }
+  </tbody>
+</table>

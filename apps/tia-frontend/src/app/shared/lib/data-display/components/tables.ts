@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { TableConfig } from '../models/table.model';
 
 @Component({
   selector: 'app-tables',
@@ -7,4 +8,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrl: './tables.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Tables {}
+export class Tables {
+  public tableConfig = input.required<TableConfig>();
+}
