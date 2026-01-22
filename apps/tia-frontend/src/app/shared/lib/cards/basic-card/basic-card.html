@@ -1,4 +1,6 @@
-<div class="card">
+<div class="card"
+     [style.width]="width()"
+     [style.height]="height()">
   <div class="card__header">
     <h3 class="card__title">{{ title() }}</h3>
     @if (subtitle()) {
@@ -10,4 +12,5 @@
       <p>{{ content() }}</p>
     </div>
   }
+  <ng-content></ng-content>
 </div>
