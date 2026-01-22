@@ -11,4 +11,6 @@ export class BasicCard {
   readonly title = input.required<string>();
   readonly subtitle = input<string>('');
   readonly content = input<string>('');
+  readonly width = input<string>();
+  readonly height = input<string>();
 }

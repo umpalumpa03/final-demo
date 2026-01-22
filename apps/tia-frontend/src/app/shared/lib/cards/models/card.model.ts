@@ -11,3 +11,4 @@ export interface StatisticCardData {
   changeType: 'positive' | 'negative';
   icon: string;
 }
+

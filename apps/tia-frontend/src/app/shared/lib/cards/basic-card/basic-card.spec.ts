@@ -1,88 +1,76 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Cards } from 'apps/tia-frontend/src/app/features/admin/components/library/components/cards/cards';
-import { BasicCard } from 'apps/tia-frontend/src/app/shared/lib/cards/basic-card/basic-card';
-import { StatisticCard } from '../statistic-card/statistic-card';
-import { LibraryTitle } from 'apps/tia-frontend/src/app/features/admin/components/library/shared/library-title/library-title';
+import { BasicCard } from './basic-card';
 
-
-describe('Cards', () => {
-  let component: Cards;
-  let fixture: ComponentFixture<Cards>;
+describe('BasicCard', () => {
+  let component: BasicCard;
+  let fixture: ComponentFixture<BasicCard>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Cards, BasicCard, StatisticCard, LibraryTitle],
+      imports: [BasicCard],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Cards);
+    fixture = TestBed.createComponent(BasicCard);
     component = fixture.componentInstance;
+  });
+
+  it('should render title', () => {
+    fixture.componentRef.setInput('title', 'Test Title');
     fixture.detectChanges();
+    
+    const title = fixture.nativeElement.querySelector('.card__title');
+    expect(title.textContent).toBe('Test Title');
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should render subtitle when provided', () => {
+    fixture.componentRef.setInput('title', 'Test');
+    fixture.componentRef.setInput('subtitle', 'Test Subtitle');
+    fixture.detectChanges();
+    
+    const subtitle = fixture.nativeElement.querySelector('.card__subtitle');
+    expect(subtitle.textContent).toBe('Test Subtitle');
   });
 
-  it('should have pageTitle property', () => {
-    expect(component.pageTitle).toBe('Cards');
+  it('should not render subtitle when not provided', () => {
+    fixture.componentRef.setInput('title', 'Test');
+    fixture.detectChanges();
+    
+    const subtitle = fixture.nativeElement.querySelector('.card__subtitle');
+    expect(subtitle).toBeFalsy();
   });
 
-  it('should have pageSubtitle property', () => {
-    expect(component.pageSubtitle).toBe(
-      'Card components with various layouts and content types',
-    );
+  it('should render content when provided', () => {
+    fixture.componentRef.setInput('title', 'Test');
+    fixture.componentRef.setInput('content', 'Test Content');
+    fixture.detectChanges();
+    
+    const content = fixture.nativeElement.querySelector('.card__content p');
+    expect(content.textContent).toBe('Test Content');
   });
 
-  it('should initialize basicCards signal with two cards', () => {
-    const cards = component.basicCards();
-    expect(cards.length).toBe(2);
+  it('should not render content when not provided', () => {
+    fixture.componentRef.setInput('title', 'Test');
+    fixture.detectChanges();
+    
+    const content = fixture.nativeElement.querySelector('.card__content');
+    expect(content).toBeFalsy();
   });
 
-  it('should initialize statisticsCards signal with four cards', () => {
-    const cards = component.statisticsCards();
-    expect(cards.length).toBe(4);
+  it('should apply custom width', () => {
+    fixture.componentRef.setInput('title', 'Test');
+    fixture.componentRef.setInput('width', '40rem');
+    fixture.detectChanges();
+    
+    const card = fixture.nativeElement.querySelector('.card');
+    expect(card.style.width).toBe('40rem');
   });
 
-  it('should have correct first basic card data', () => {
-    const firstCard = component.basicCards()[0];
-    expect(firstCard.title).toBe('Card Title');
-    expect(firstCard.subtitle).toBe('Card description goes here');
-    expect(firstCard.content).toBe(
-      'This is the main content area of the card. You can put any content here.',
-    );
-  });
-
-  it('should have correct first statistics card data', () => {
-    const firstCard = component.statisticsCards()[0];
-    expect(firstCard.label).toBe('Total Revenue');
-    expect(firstCard.value).toBe('$45,231.89');
-    expect(firstCard.change).toBe('+20.1% from last month');
-    expect(firstCard.changeType).toBe('positive');
-    expect(firstCard.icon).toBe('$');
-  });
-
-  it('should render LibraryTitle component', () => {
-    const libraryTitle = fixture.nativeElement.querySelector('app-library-title');
-    expect(libraryTitle).toBeTruthy();
-  });
-
-  it('should render two BasicCard components', () => {
-    const basicCards = fixture.nativeElement.querySelectorAll('app-basic-card');
-    expect(basicCards.length).toBe(2);
-  });
-
-  it('should render four StatisticCard components', () => {
-    const statisticCards = fixture.nativeElement.querySelectorAll('app-statistic-card');
-    expect(statisticCards.length).toBe(4);
-  });
-
-  it('should render Basic Cards section title', () => {
-    const sections = fixture.nativeElement.querySelectorAll('.cards-section__title');
-    expect(sections[0].textContent).toBe('Basic Cards');
-  });
-
-  it('should render Statistics Cards section title', () => {
-    const sections = fixture.nativeElement.querySelectorAll('.cards-section__title');
-    expect(sections[1].textContent).toBe('Statistics Cards');
+  it('should apply custom height', () => {
+    fixture.componentRef.setInput('title', 'Test');
+    fixture.componentRef.setInput('height', '30rem');
+    fixture.detectChanges();
+    
+    const card = fixture.nativeElement.querySelector('.card');
+    expect(card.style.height).toBe('30rem');
   });
 });

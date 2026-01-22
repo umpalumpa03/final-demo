@@ -1,11 +1,11 @@
-import { Component, input } from '@angular/core';
-import { StatisticCardData } from '../models/card.model';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-statistic-card',
   imports: [],
   templateUrl: './statistic-card.html',
   styleUrl: './statistic-card.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatisticCard {
   readonly label = input.required<string>();
