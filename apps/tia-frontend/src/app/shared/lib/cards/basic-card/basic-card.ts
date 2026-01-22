@@ -8,9 +8,9 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BasicCard {
-  readonly title = input.required<string>();
-  readonly subtitle = input<string>('');
-  readonly content = input<string>('');
-  readonly width = input<string>();
-  readonly height = input<string>();
+ public readonly title = input.required<string>();
+ public readonly subtitle = input<string>('');
+ public readonly content = input<string>('');
+ public readonly width = input<string>();
+ public readonly height = input<string>();
 }

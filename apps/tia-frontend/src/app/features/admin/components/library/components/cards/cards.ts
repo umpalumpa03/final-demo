@@ -10,16 +10,18 @@ import { BASIC_CARDS_DATA, STATISTICS_CARDS_DATA } from './config/cards-data';
 
 @Component({
   selector: 'app-cards',
-  imports: [BasicCard, LibraryTitle,StatisticCard],
+  imports: [BasicCard, LibraryTitle, StatisticCard],
   templateUrl: './cards.html',
   styleUrl: './cards.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Cards {
-  readonly pageTitle = 'Cards';
-  readonly pageSubtitle =
+  public readonly pageTitle = 'Cards';
+  public readonly pageSubtitle =
     'Card components with various layouts and content types';
 
-  readonly basicCards = signal<CardData[]>(BASIC_CARDS_DATA);
-  readonly statisticsCards = signal<StatisticCardData[]>(STATISTICS_CARDS_DATA);
+  public readonly basicCards = signal<CardData[]>(BASIC_CARDS_DATA);
+  public readonly statisticsCards = signal<StatisticCardData[]>(
+    STATISTICS_CARDS_DATA,
+  );
 }

@@ -50,18 +50,16 @@ describe('Cards', () => {
     });
   });
 
-  describe('Statistics Cards Data', () => {
-    it('should have correct first card data', () => {
-      const card = component.statisticsCards()[0];
-      expect(card).toEqual({
-        label: 'Total Revenue',
-        value: '$45,231.89',
-        change: '+20.1% from last month',
-        changeType: 'positive',
-        icon: '$',
-      });
-    });
+it('should have correct first card data', () => {
+  const card = component.statisticsCards()[0];
+  expect(card).toEqual({
+    label: 'Total Revenue',
+    value: '$45,231.89',
+    change: '+20.1% from last month',
+    changeType: 'positive',
+    icon: 'images/svg/cards/dolar.svg',
   });
+});
 
   describe('Template Rendering', () => {
     it('should render all required components', () => {

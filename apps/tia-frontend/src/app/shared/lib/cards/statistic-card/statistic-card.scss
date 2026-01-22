@@ -6,7 +6,7 @@
   border: 0.1rem solid $blue-400;
   border-radius: 0.8rem;
   padding: 2rem;
-  height: 16rem;
+  min-height: 16rem;
   transition: all 0.2s ease-in-out;
 
   &__header {
@@ -22,7 +22,9 @@
   }
 
   &__icon {
-    @include font-inter(400, 2rem, 2.4rem);
+    width: 2.4rem;
+    height: 2.4rem;
+    display: block;
     color: $gray-600;
   }
 
@@ -41,11 +43,11 @@
     @include font-arimo(400, 1.2rem, 1.6rem);
     margin: 0;
 
-    &[data-type="positive"] {
+    &[data-type='positive'] {
       color: $green-500;
     }
 
-    &[data-type="negative"] {
+    &[data-type='negative'] {
       color: $red-500;
     }
   }
