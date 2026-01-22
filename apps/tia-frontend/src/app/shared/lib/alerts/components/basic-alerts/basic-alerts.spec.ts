@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { BasicAlerts } from './basic-alerts';
 
 describe('BasicAlerts', () => {
@@ -20,41 +19,48 @@ describe('BasicAlerts', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('Custom Input Overrides', () => {
+  describe('Signal Logic (Unit)', () => {
     it('should show default title and message initially', () => {
       expect(component.effectiveTitle()).toBe('Default Alert');
-      expect(component.effectiveMessage()).toBe(
-        'This is a default alert with important information.',
-      );
+      expect(component.effectiveMessage()).toBe('This is a default alert with important information.');
     });
 
     it('should swap to error defaults when alertType is "error"', () => {
       fixture.componentRef.setInput('alertType', 'error');
-
       expect(component.effectiveTitle()).toBe('Error Alert');
-      expect(component.effectiveMessage()).toBe(
-        'This is an error alert with important information.',
-      );
+      expect(component.effectiveMessage()).toBe('This is an error alert with important information.');
     });
 
-    it('should use custom title and message when provided', () => {
+    it('should calculate the correct BEM class', () => {
       fixture.componentRef.setInput('alertType', 'error');
-      fixture.componentRef.setInput('alertTitle', 'Custom Error Title');
-      fixture.componentRef.setInput(
-        'alertMessage',
-        'Custom error message content.',
-      );
+      expect(component.alertClass()).toBe('basic-alert--error');
+    });
+  });
 
-      expect(component.effectiveTitle()).toBe('Custom Error Title');
-      expect(component.effectiveMessage()).toBe(
-        'Custom error message content.',
-      );
+  describe('DOM Integration (Rendering)', () => {
+    it('should apply the BEM class to the host element', () => {
+      fixture.componentRef.setInput('alertType', 'error');
+      fixture.detectChanges();
+
+      const host = fixture.nativeElement.querySelector('.basic-alert');
+      expect(host.classList).toContain('basic-alert--error');
     });
 
-    it('should show custom title even when type is default', () => {
-      fixture.componentRef.setInput('alertTitle', 'Just a heads up');
-      
-      expect(component.effectiveTitle()).toBe('Just a heads up');
+    it('should render the effective title in the UI', () => {
+      fixture.componentRef.setInput('alertType', 'error');
+      fixture.detectChanges();
+
+      const titleElement = fixture.nativeElement.querySelector('.basic-alert__title');
+      expect(titleElement.textContent).toBe('Error Alert');
+    });
+
+    it('should render custom message when provided', () => {
+      const customMsg = 'User saved successfully';
+      fixture.componentRef.setInput('alertMessage', customMsg);
+      fixture.detectChanges();
+
+      const msgElement = fixture.nativeElement.querySelector('.basic-alert__message');
+      expect(msgElement.textContent).toBe(customMsg);
     });
   });
 });
