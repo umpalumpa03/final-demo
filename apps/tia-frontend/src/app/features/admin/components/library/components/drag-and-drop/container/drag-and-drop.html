@@ -12,10 +12,17 @@
         [items]="items"
         (itemsChange)="items = $event"
         (itemRemoved)="onItemRemoved($event)"
-        [canDelete]="canDelete"
         layout="grid"
-        [columns]="3"
         (orderChange)="onOrderChange($event)"
+      />
+      <app-drag-card
+        [items]="listItems"
+        (itemsChange)="listItems = $event"
+        (itemRemoved)="onItemRemoved($event)"
+        [canDelete]="canDelete"
+        layout="list"
+        [columns]="3"
+        (orderChange)="onOrderChangeList($event)"
       />
     </div>
   </div>

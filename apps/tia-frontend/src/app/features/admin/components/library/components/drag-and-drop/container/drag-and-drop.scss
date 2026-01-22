@@ -36,6 +36,7 @@
 
     .drag-frame__content {
       @include display-flex(column);
+      gap: 3.2rem;
     }
   }
 }

@@ -12,11 +12,17 @@ import { items } from 'apps/tia-frontend/src/app/features/admin/components/libra
 })
 export class DragAndDropContainer {
   public items: DraggableItemType[] = [...items];
+  public listItems: DraggableItemType[] = [...items];
+
   public canDelete = true;
 
   public onItemRemoved(id: string): void {}
   public onOrderChange(ids: string[]): void {
     localStorage.setItem('card-order', JSON.stringify(ids));
+    console.log(ids);
+  }
+  public onOrderChangeList(ids: string[]): void {
+    localStorage.setItem('card-order list', JSON.stringify(ids));
     console.log(ids);
   }
 }
