@@ -8,3 +8,12 @@ export const OCEANBLUE_PALETTE_DATA: Palette[] = [
   { name: 'Background', code: '#f0f9ff', modifier: 'background' },
   { name: 'Foreground', code: '#0c4a6e', modifier: 'foreground' },
 ];
+
+export const ROYALBLUE_PALETTE_DATA: Palette[] = [
+  { name: 'Primary', code: '#2563EB', modifier: 'primary' },
+  { name: 'Secondary', code: '#DBEAFE', modifier: 'secondary' },
+  { name: 'Accent', code: '#93C5FD', modifier: 'accent' },
+  { name: 'Muted', code: '#BFDBFE', modifier: 'muted' },
+  { name: 'Background', code: '#EFF6FF', modifier: 'background' },
+  { name: 'Foreground', code: '#1E3A8A', modifier: 'foreground' },
+];
