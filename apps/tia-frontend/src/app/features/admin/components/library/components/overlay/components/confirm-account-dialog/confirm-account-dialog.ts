@@ -2,14 +2,15 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { UiModal } from '../../../../../../../../shared/lib/overlay/ui-modal/ui-modal';
 
 @Component({
-  selector: 'app-form-dialog',
+  selector: 'app-confirm-account-dialog',
   imports: [UiModal],
-  templateUrl: './form-dialog.html',
-  styleUrl: './form-dialog.scss',
+  templateUrl: './confirm-account-dialog.html',
+  styleUrl: './confirm-account-dialog.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormDialog {
-  public isOpen = signal(false);
+export class ConfirmAccountDialog {
+  public isOpen = signal<boolean>(false);
+
   public toggle(): void {
     this.isOpen.update((v) => !v);
   }
