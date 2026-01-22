@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ContactForms } from "./contact-forms/contact-forms";
-import { RegistrationForm } from "./registration-forms/Registration-form";
+import { RegistrationForm } from "./registration-form/registration-form";
 
 @Component({
   selector: 'app-forms',

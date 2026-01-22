@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  input,
+  output,
+} from '@angular/core';
+import { getErrorMessage } from '../../../../../../../core/utils/form-validations';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IContactForm } from '../models/contact-forms.model';
 
@@ -7,7 +14,7 @@ import { IContactForm } from '../models/contact-forms.model';
   imports: [ReactiveFormsModule],
   templateUrl: './contact-forms.html',
   styleUrl: './contact-forms.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContactForms {
   private fb = inject(FormBuilder);
@@ -21,6 +28,10 @@ export class ContactForms {
     subscribe: [false, [Validators.requiredTrue]],
   });
 
+  public readonly nameError = getErrorMessage(this.name, 'name');
+  public readonly emailError = getErrorMessage(this.email, 'email');
+  public readonly messageError = getErrorMessage(this.message, 'message');
+
   public get name() {
     return this.contactForm.controls.name;
   }
@@ -32,6 +43,22 @@ export class ContactForms {
   }
   public get subscribe() {
     return this.contactForm.controls.subscribe;
+  }
+
+  public get isNameError() {
+    return this.showError('name');
+  }
+
+  public get isEmailError() {
+    return this.showError('email');
+  }
+
+  public get isMessageError() {
+    return this.showError('message');
+  }
+
+  public get isSubscribeError() {
+    return this.showError('subscribe');
   }
 
   public showError(controlName: string): boolean {
