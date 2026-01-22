@@ -1,0 +1,56 @@
+@use '../../../../styles/mixins' as *;
+@use '../../../../styles/palette' as *;
+
+.kanban-frame {
+  @include display-flex(column);
+  border: 0.18rem solid $blue-400;
+  background-color: $white;
+  width: 100%;
+  max-width: 123.2rem;
+  border-radius: 1rem;
+  padding: 2.5rem;
+  gap: 1.6rem;
+
+  &__header {
+    @include display-flex(column);
+    gap: 0.8rem;
+    width: 100%;
+  }
+
+  &__header-title {
+    @include font-inter(600, 1.8rem, 2.7rem);
+    color: var(--color-fg);
+  }
+
+  &__header-subtitle {
+    @include font-inter(400, 1.4rem, 2rem);
+    color: $gray-700;
+  }
+
+  &__boards {
+    display: flex;
+    gap: 1.6rem;
+    width: 100%;
+  }
+
+  &__board {
+    @include display-flex(column);
+    flex: 1;
+    min-width: 0;
+    padding: 1.6rem;
+    gap: 1.1rem;
+    background: $gray-25;
+    border-radius: 0.8rem;
+  }
+
+  &__board-title {
+    @include font-inter(600, 1.8rem, 2.7rem);
+    color: var(--color-fg);
+  }
+
+  &__board-cards {
+    @include display-flex(column);
+    gap: 1.1rem;
+    min-height: 10rem;
+  }
+}

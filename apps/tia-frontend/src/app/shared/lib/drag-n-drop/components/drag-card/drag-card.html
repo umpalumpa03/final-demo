@@ -1,7 +1,7 @@
 <div class="drag-card-frame">
   <div class="drag-card-frame__header">
-    <h2>Draggable Cards</h2>
-    <p>Drag Cards to reorder them in a grid layout</p>
+    <h2>{{ cardTitle() }}</h2>
+    <p>{{ cardDescription() }}</p>
   </div>
   <div [class]="containerClasses()" [style]="containerStyles()">
     @for (item of internalItems; track item.id) {

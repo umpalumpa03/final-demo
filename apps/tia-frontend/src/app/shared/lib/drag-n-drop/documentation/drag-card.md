@@ -32,6 +32,8 @@ subtitle: -> subtitle
 
 INPUTS
 [canDelete] -> true or false (you want removable card or not) false by default
+[cardTitle] -> h2 of the card wrapper itself
+[cardDescription] =>  p of the card wrapper itself
 
 for layout change
 layout = grid / list

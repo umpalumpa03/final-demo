@@ -14,6 +14,8 @@
         (itemRemoved)="onItemRemoved($event)"
         layout="grid"
         (orderChange)="onOrderChange($event)"
+        cardTitle="Draggable Cards"
+        cardDescription="Drag cards to reorder them in a grid layout"
       />
       <app-drag-card
         [items]="listItems"
@@ -23,7 +25,10 @@
         layout="list"
         [columns]="3"
         (orderChange)="onOrderChangeList($event)"
+        cardTitle="Sortable List"
+        cardDescription="Drag cards to reorder them in a grid layout"
       />
+      <app-kanban-board></app-kanban-board>
     </div>
   </div>
 </div>

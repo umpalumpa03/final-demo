@@ -22,6 +22,10 @@ export class DragCard extends DragBase {
   public canDelete = input<boolean>(false);
   public layout = input<'grid' | 'list'>('grid');
   public columns = input<number>(2);
+  public cardTitle = input<string>('Draggable Cards');
+  public cardDescription = input<string>(
+    'Drag Cards to reorder them in a grid layout',
+  );
 
   public itemsChange = output<DraggableItemType[]>();
   public orderChange = output<string[]>();
