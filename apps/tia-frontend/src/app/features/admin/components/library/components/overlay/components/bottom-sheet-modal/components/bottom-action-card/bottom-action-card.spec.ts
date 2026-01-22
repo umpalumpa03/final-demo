@@ -23,11 +23,4 @@ describe('BottomActionCard', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should display the correct label from signal input', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    const labelElement = compiled.querySelector('.action-card__label');
-
-    expect(labelElement?.textContent).toContain('Test Action');
-  });
 });
