@@ -2,7 +2,7 @@
   <div class="contact__form__fields">
     <label [class.invalid]="isNameError" for="name">Name *</label>
     <input formControlName="name" type="text" placeholder="Your name" />
-    @if (showError('email')) {
+    @if (isNameError) {
     <span class="error"> {{ nameError() }} </span>
     }
   </div>
