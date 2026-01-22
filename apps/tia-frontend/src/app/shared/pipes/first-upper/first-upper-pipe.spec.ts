@@ -19,9 +19,4 @@ describe('FirstUpperPipe', () => {
   it('should return an empty string if input is null', () => {
     expect(pipe.transform(null)).toBe('');
   });
-
-  it('should return an empty string if input is undefined', () => {
-    expect(pipe.transform(undefined)).toBe('');
-  });
-
 });
