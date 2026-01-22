@@ -62,4 +62,40 @@ describe('UiSheetModal', () => {
     expect(spy).toHaveBeenCalled();
     expect(emitSpy).not.toHaveBeenCalled();
   });
+
+  it('should emit closed when Escape key is pressed and sheet is open', () => {
+    fixture.componentRef.setInput('isOpen', true);
+    fixture.detectChanges();
+
+    const emitSpy = vi.spyOn(component.closed, 'emit');
+
+    const event = new KeyboardEvent('keydown', { key: 'Escape' });
+    document.dispatchEvent(event);
+
+    expect(emitSpy).toHaveBeenCalled();
+  });
+
+  it('should NOT emit closed when Escape key is pressed and sheet is closed', () => {
+    fixture.componentRef.setInput('isOpen', false);
+    fixture.detectChanges();
+
+    const emitSpy = vi.spyOn(component.closed, 'emit');
+
+    const event = new KeyboardEvent('keydown', { key: 'Escape' });
+    document.dispatchEvent(event);
+
+    expect(emitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should emit closed when Escape key is pressed and sheet is open (Branch: True)', () => {
+    fixture.componentRef.setInput('isOpen', true);
+    fixture.detectChanges();
+    const emitSpy = vi.spyOn(component.closed, 'emit');
+
+    const event = new KeyboardEvent('keydown', { key: 'Escape' });
+    document.dispatchEvent(event);
+
+    expect(emitSpy).toHaveBeenCalled();
+  });
+
 });
