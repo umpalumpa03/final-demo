@@ -4,7 +4,6 @@ import {
   signal,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { BaseInput } from '../base/base-input';
 import { TEXT_INPUT_CONFIGS } from './config/text-input.config';
 import { TextInputTypeConfig } from './models/text-input.model';
