@@ -4,14 +4,14 @@
 .ui-sheet-overlay {
   position: fixed;
   inset: 0;
-  background: rgba($black, 0.5);
+  background-color: rgba($black, 0.5);
   z-index: 1000;
   cursor: default;
 }
 
 .ui-sheet {
   position: fixed;
-  background: #f0f9ff;
+  background-color: var(--color-bg);
   box-shadow:
     0 1rem 1.5rem -0.3rem rgba($black, 0.1),
     0 0.4rem 0.6rem -0.4rem rgba($black, 0.1);
@@ -23,7 +23,7 @@
     right: 0;
     width: 38.4rem;
     height: 100%;
-    border-left: 0.08rem solid #0ea5e9;
+    border-left: 0.08rem solid var(--color-accent);
   }
 
   &__left {
@@ -31,7 +31,7 @@
     left: 0;
     width: 38.4rem;
     height: 100%;
-    border-right: 0.08rem solid #0ea5e9;
+    border-left: 0.08rem solid var(--color-accent);
   }
 
   &__top {
@@ -39,7 +39,7 @@
     left: 0;
     width: 100%;
     height: 38.4rem;
-    border-bottom: 0.08rem solid #0ea5e9;
+    border-left: 0.08rem solid var(--color-accent);
   }
 
   &__bottom {
@@ -47,7 +47,7 @@
     left: 0;
     width: 100%;
     height: 38.4rem;
-    border-top: 0.08rem solid #0ea5e9;
+    border-left: 0.08rem solid var(--color-accent);
   }
 
   &__close {
@@ -80,7 +80,7 @@
       left: 50%;
       width: 100%;
       height: 0.13333rem;
-      background-color: #0c4a6e;
+      background-color: var(--color-fg);
     }
 
     &::before {
@@ -98,6 +98,6 @@
     padding: 1.6rem;
     overflow-y: auto;
     @include font-arimo(400, 1.4rem, 2rem);
-    color: #0c4a6e;
+    color: var(--color-fg);
   }
 }
