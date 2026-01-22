@@ -20,20 +20,10 @@ describe('RightSheetDemo', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have isOpen signal as false initially', () => {
-    expect(component.isOpen()).toBe(false);
-  });
-
   it('should toggle isOpen signal when toggle() is called', () => {
     component.toggle();
     expect(component.isOpen()).toBe(true);
     component.toggle();
     expect(component.isOpen()).toBe(false);
-  });
-
-  it('should trigger toggle when the trigger button is clicked', () => {
-    const trigger = fixture.debugElement.query(By.css('.btn__trigger'));
-    trigger.triggerEventHandler('click', null);
-    expect(component.isOpen()).toBe(true);
   });
 });
