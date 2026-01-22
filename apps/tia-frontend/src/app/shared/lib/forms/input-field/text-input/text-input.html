@@ -1,0 +1,56 @@
+@if (config().label) {
+<label [for]="mergedConfig().id" class="text-input__label">
+    {{ config().label }}
+    @if (config().required) {
+    <span class="text-input__required-star" aria-hidden="true">*</span> }
+</label>
+}
+
+<div class="text-input__wrapper" [class.text-input__wrapper--has-icon]="mergedConfig().icon"
+    [class.text-input__wrapper--disabled]="isDisabled()" [class.text-input__wrapper--readonly]="isReadonly()">
+
+    @if (mergedConfig().icon) {
+    <div class="text-input__icon text-input__icon--prefix" [class.text-input__icon--error]="hasError()"
+        [class.text-input__icon--success]="hasSuccess()">
+        <svg aria-hidden="true" class="text-input__icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path [attr.d]="mergedConfig().icon" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    </div>
+    }
+
+    <input [id]="mergedConfig().id" [type]="inputType()" [value]="getDisplayValue()"
+        [placeholder]="mergedConfig().placeholder" [disabled]="isDisabled()" [readOnly]="isReadonly()"
+        [name]="config().name || ''" [autocomplete]="mergedConfig().autocomplete || 'off'"
+        [attr.aria-required]="config().required" [attr.aria-invalid]="hasError()"
+        [attr.aria-describedby]="ariaDescribedBy()" [class]="fieldClasses()" (input)="handleInput($event)"
+        (blur)="handleBlur($event)" (focus)="handleFocus($event)" />
+
+    @if (type() === 'password') {
+    <button type="button" class="text-input__icon text-input__icon--suffix"
+        [attr.aria-label]="showPasswordVisibility() ? 'Hide password' : 'Show password'"
+        (click)="togglePasswordVisibility()">
+        <svg aria-hidden="true" class="text-input__icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path [attr.d]="showPasswordVisibility() ? icons.EYE_OFF : icons.EYE" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </svg>
+    </button>
+    }
+</div>
+
+<div aria-live="polite">
+    @if (hasError()) {
+    <span [id]="messageId()" class="text-input__message text-input__message--error">
+        {{ errorMessage() }}
+    </span>
+    } @else if (hasSuccess() && config().successMessage) {
+    <span [id]="messageId()" class="text-input__message text-input__message--success">
+        {{ config().successMessage }}
+    </span>
+    } @else if (config().helperText) {
+    <span [id]="messageId()" class="text-input__message text-input__message--helper">
+        {{ config().helperText }}
+    </span>
+    }
+</div>
