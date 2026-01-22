@@ -1,23 +1,23 @@
 <table class="table">
   <thead class="table__header">
     <tr class="table__header__row">
-      @for (item of tableConfig().headers; track $index) {
+      @for (header of tableConfig().headers; track header.title) {
       <th
         class="table__header__row__item"
-        [style.text-align]="item.align"
-        [style.width]="item.width"
+        [style.text-align]="header.align"
+        [style.width]="header.width"
       >
-        {{item.title}}
+        {{header.title}}
       </th>
       }
     </tr>
   </thead>
   <tbody class="table__body">
-    @for (row of tableConfig().rows; track $index) {
+    @for (row of tableConfig().rows; track row[0].value) {
     <tr class="table__body__row">
-      @for (item of row; track $index) {
-      <td class="table__body__row__item" [style.text-align]="item.align">
-        {{ item.value }}
+      @for (cell of row; track cell.value) {
+      <td class="table__body__row__item" [style.text-align]="cell.align">
+        {{ cell.value }}
       </td>
       }
     </tr>
