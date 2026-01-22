@@ -16,4 +16,19 @@
       }
     </div>
   </section>
+
+  <section class="cards-section">
+    <h2 class="cards-section__title">Statistics Cards</h2>
+    <div class="cards-section__grid cards-section__grid--stats">
+      @for (card of statisticsCards(); track $index) {
+        <app-statistic-card 
+          [label]="card.label"
+          [value]="card.value"
+          [change]="card.change"
+          [changeType]="card.changeType"
+          [icon]="card.icon"
+        />
+      }
+    </div>
+  </section>
 </div>
