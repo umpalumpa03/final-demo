@@ -19,6 +19,13 @@ export const libraryRoutes: Routes = [
           ),
       },
       {
+        path: 'navigation',
+        loadChildren: () =>
+          import('./components/navigation/navigation-tabs.routes').then(
+            (c) => c.navRoutes,
+          ),
+      },
+      {
         path: '**',
         redirectTo: 'colorpalettes',
       },

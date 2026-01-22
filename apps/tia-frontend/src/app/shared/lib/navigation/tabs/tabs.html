@@ -1,0 +1,27 @@
+@if (tabs()?.length) {
+<ul
+  class="tabs"
+  [class.horizontal]="orientation() === 'horizontal'"
+  [class.vertical]="orientation() === 'vertical'"
+>
+  @for (tab of tabs(); track tab.label) {
+  <li class="tabs__item">
+    <a
+      [routerLink]="tab.route"
+      class="tabs__link"
+      routerLinkActive="tabs__link--active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      @if (tab.icon) {
+        <span class="tabs__icon">
+          @if (isImageIcon(tab.icon)) {
+          <img class="tabs__icon-img" [src]="tab.icon" alt="icon" />
+          }
+        </span>
+      }
+      <span>{{ tab.label }}</span>
+    </a>
+  </li>
+  }
+</ul>
+}

@@ -1,0 +1,31 @@
+<div class="navigation">
+  <div class="navigation__title">
+    <h1 class="navigation__heading">Navigation Components</h1>
+    <p class="navigation__desc">
+      Navigation components including tabs, breadcrumbs, and pagination
+    </p>
+  </div>
+
+  <div class="navigation__card">
+    <h3 class="navigation__card-heading">Tabs</h3>
+    <app-tabs [tabs]="tabs()" [orientation]="'horizontal'"></app-tabs>
+    <div class="navigation__card-title">
+      <h4 class="navigation__card-title-heading">Overview Content</h4>
+      <p class="navigation__card-title-desc">
+        This is the overview tab content. It displays general information.
+      </p>
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+  <div class="navigation__card">
+    <h3 class="navigation__card-heading">Vertical Tabs</h3>
+    <app-tabs [tabs]="tabs2()" [orientation]="'vertical'"></app-tabs>
+    <div class="navigation__card-title">
+      <h4 class="navigation__card-title-heading">Account Settings</h4>
+      <p class="navigation__card-title-desc">
+        Manage your account settings and preferences.
+      </p>
+    </div>
+  </div>
+</div>
