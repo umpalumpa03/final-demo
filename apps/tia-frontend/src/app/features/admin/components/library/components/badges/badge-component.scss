@@ -19,10 +19,7 @@
   }
 
   &__row {
-    display: flex;
+    @include display-flex(row, wrap);
     gap: 0.8rem;
-    align-items: center;
-    flex-wrap: wrap;
   }
-
 }

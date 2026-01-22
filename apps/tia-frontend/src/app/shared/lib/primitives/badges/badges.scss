@@ -2,13 +2,11 @@
 @use '../../../styles/mixins' as *;
 
 .badge-wrapper {
-  display: flex;
-  align-items: center;
- 
+  @include display-flex(row, center);
   gap: 0.8rem;
-
+  
   &__label {
-    font-weight: 400;
+    @include font-inter(400, 1.2rem, 1.2);
     color: $blue-900;
   }
 }
@@ -17,11 +15,9 @@
   @include font-inter(500, 1.2rem, 1.2);
   @include flex-center(row, flex-start, center);
   gap: 0.4rem;
-
   padding: 0.7rem 0.9rem;
   border-radius: 0.9rem;
   border: none;
-  transition: all 0.2s ease;
   color: $white;
 
   &__icon {

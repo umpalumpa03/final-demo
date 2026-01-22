@@ -26,20 +26,15 @@ export class Badges {
   });
 
   readonly badgeStatus = computed(() => {
-    const currentStatus = this.status();
-    return currentStatus ? statusClassMap[currentStatus] : '';
+    return this.status() ? statusClassMap[this.status()!] : '';
   });
 
   readonly iconPath = computed(() => {
-    const status = this.status();
-    if (!status) return '';
-    return statusIconMap[status];
+    return this.status() ? statusIconMap[this.status()!] : '';
   });
 
   readonly iconAlt = computed(() => {
-    const status = this.status();
-    if (!status) return '';
-    return statusAltTextMap[status];
+    return this.status() ? statusAltTextMap[this.status()!] : '';
   });
 
   readonly shouldShowIcon = computed(() => {
