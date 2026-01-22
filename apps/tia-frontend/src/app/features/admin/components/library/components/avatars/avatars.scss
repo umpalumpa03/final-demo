@@ -15,8 +15,7 @@
   }
 
   &__section {
-    display: flex;
-    flex-direction: column;
+    @include display-flex(column);
     gap: 1.6rem;
   }
 
@@ -27,8 +26,7 @@
   }
 
   &__row {
-    display: flex;
-    align-items: center;
+    @include flex-center(row, flex-start, center);
     gap: 1.6rem;
     flex-wrap: wrap;
   }
