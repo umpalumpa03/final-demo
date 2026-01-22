@@ -1,0 +1,24 @@
+<div class="gallery">
+    <header class="gallery__header">
+        <h1 class="gallery__title">Input Components</h1>
+        <p class="gallery__description">Form input components with various types and states</p>
+    </header>
+
+    <section class="gallery__section">
+        <h2 class="gallery__section-title">Text Inputs</h2>
+        <div class="gallery__input-stack">
+            @for (input of basicInputs(); track input.config.label) {
+            <lib-text-input [state]="input.state || 'default'" [type]="input.type || 'text'" [config]="input.config" />
+            }
+        </div>
+    </section>
+
+    <section class="gallery__section">
+        <h2 class="gallery__section-title">Special Input Types</h2>
+        <div class="gallery__input-stack">
+            @for (input of specialInputTypes(); track input.type) {
+            <lib-text-input [type]="input.type" [config]="{ label: input.label, placeholder: 'Type here...' }" />
+            }
+        </div>
+    </section>
+</div>
