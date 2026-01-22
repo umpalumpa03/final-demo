@@ -18,6 +18,10 @@ class TestDragComponent extends DragBase {
     this.onDragStart(id, event);
   }
 
+  public triggerPointerMove(event: PointerEvent): void {
+    this.onPointerMove(event);
+  }
+
   public triggerPointerUp(): void {
     this.onPointerUp();
   }
@@ -59,6 +63,21 @@ describe('DragBase', () => {
     expect(component.draggingId()).toBe('1');
     expect(addSpy).toHaveBeenCalledWith('pointermove', expect.any(Function));
     expect(addSpy).toHaveBeenCalledWith('pointerup', expect.any(Function));
+  });
+
+  it('should update position on pointer move', () => {
+    component.triggerDragStart('1', {
+      clientX: 100,
+      clientY: 200,
+    } as PointerEvent);
+
+    component.triggerPointerMove({
+      clientX: 150,
+      clientY: 250,
+    } as PointerEvent);
+
+    expect(component['currentX']()).toBe(50);
+    expect(component['currentY']()).toBe(50);
   });
 
   it('should call handleDrop when valid drop target exists', () => {
