@@ -34,7 +34,7 @@ describe('Avatars', () => {
   });
 
   it('should compute initials for the logged in user', () => {
-    expect(component.loggedInInitials()).toBe('JD');
+    expect(component.loggedInInitials()).toBe('NM');
   });
 
   it('should render section labels', () => {
