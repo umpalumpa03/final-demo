@@ -7,3 +7,5 @@ export type BadgeStatus =
   | 'in-progress'
   | 'featured'
   | 'premium';
+
+  export type BadgeSize = 'small' | 'medium' | 'large';
