@@ -1,12 +1,9 @@
 @use '../../../../../../../shared/styles/mixins' as *;
 @use '../../../../../../../shared/styles/palette' as *;
 
-
 .drag-frame {
   @include flex-center();
   width: 100%;
-  max-width: 192rem;
-  background-color: var(--color-bg);
   height: auto;
   padding: 3rem 0;
 
