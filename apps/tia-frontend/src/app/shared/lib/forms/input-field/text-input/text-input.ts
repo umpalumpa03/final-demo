@@ -7,7 +7,11 @@ import {
 import { BaseInput } from '../base/base-input';
 import { TEXT_INPUT_CONFIGS } from './config/text-input.config';
 import { TextInputTypeConfig } from './models/text-input.model';
-import { InputConfig, TextInputType } from '../models/input.model';
+import {
+  InputConfig,
+  InputFieldValue,
+  TextInputType,
+} from '../models/input.model';
 import { INPUT_ICONS } from './config/text-input.icons';
 
 @Component({
@@ -22,7 +26,7 @@ import { INPUT_ICONS } from './config/text-input.icons';
 export class TextInput extends BaseInput {
   protected readonly showPasswordVisibility = signal<boolean>(false);
 
-  private static idCounter = 0;
+  private static idCounter: number = 0;
 
   protected readonly icons = INPUT_ICONS;
 
@@ -58,7 +62,7 @@ export class TextInput extends BaseInput {
     () => `${this.mergedConfig().id}-msg`,
   );
 
-  protected readonly getDisplayValue = computed(() => {
+  protected readonly getDisplayValue = computed<InputFieldValue>(() => {
     if (this.inputType() === 'file') return '';
     const val = this.value();
     return val ?? '';
