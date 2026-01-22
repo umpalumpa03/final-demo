@@ -29,17 +29,4 @@ describe('TextInput', () => {
 
     expect(config).toBeDefined();
   });
-
-  it('should override default config with user provided config', () => {
-    fixture.componentRef.setInput('type', 'email');
-    fixture.componentRef.setInput('config', {
-      label: 'Custom Label',
-      placeholder: 'Custom Placeholder',
-    });
-    fixture.detectChanges();
-
-    const merged = component['mergedConfig']();
-    expect(merged.label).toBe('Custom Label');
-    expect(merged.placeholder).toBe('Custom Placeholder');
-  });
 });

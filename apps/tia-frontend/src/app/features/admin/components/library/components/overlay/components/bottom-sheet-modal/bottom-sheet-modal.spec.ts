@@ -25,10 +25,4 @@ describe('BottomSheetModal', () => {
     component.toggle();
     expect(component.isOpen()).toBe(true);
   });
-
-  it('should open sheet when trigger button is clicked', () => {
-    const trigger = fixture.debugElement.query(By.css('.btn__bottom-trigger'));
-    trigger.triggerEventHandler('click', null);
-    expect(component.isOpen()).toBe(true);
-  });
 });

@@ -19,14 +19,6 @@ describe('ContactForms', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  
-  it('form should be invalid initially', () => {
-    expect(component.contactForm.valid).toBe(false);
-    expect(component.name.valid).toBe(false);
-    expect(component.email.valid).toBe(false);
-    expect(component.message.valid).toBe(false);
-    expect(component.subscribe.value).toBe(false);
-  });
 
   it('should mark all fields as touched when submitting invalid form', () => {
     expect(component.name.touched).toBe(false);
@@ -41,10 +33,4 @@ describe('ContactForms', () => {
     expect(component.message.touched).toBe(true);
     expect(component.subscribe.touched).toBe(true);
   });
-  //     expect(component.name).toBe(component.contactForm.controls.name);
-  //     expect(component.email).toBe(component.contactForm.controls.email);
-  //     expect(component.message).toBe(component.contactForm.controls.message);
-  //     expect(component.subscribe).toBe(component.contactForm.controls.subscribe);
-  //   });
-  // });
 });

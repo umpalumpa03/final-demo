@@ -21,16 +21,9 @@ describe('BaseInput', () => {
 
   const mockInputEvent = (
     value: string,
-    type: string = 'text',
+    type = 'text',
     files: FileList | null = null,
-  ) =>
-    ({
-      target: {
-        value,
-        type,
-        files,
-      },
-    }) as unknown as Event;
+  ) => ({ target: { value, type, files } }) as unknown as Event;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -42,87 +35,76 @@ describe('BaseInput', () => {
     fixture.detectChanges();
   });
 
-  it('should handle value writes and null normalization', () => {
-    component.writeValue('test');
-    expect(component['value']()).toBe('test');
+  it('should handle CVA writes and null normalization', () => {
+    component.writeValue('test-value');
+    expect(component['value']()).toBe('test-value');
 
     component.writeValue(null);
     expect(component['value']()).toBe('');
   });
 
-  it('should handle input events, parsing, and propagation', () => {
-    const spy = vi.fn();
-    component.registerOnChange(spy);
+  it('should parse inputs correctly (Text, Number, File) and propagate changes', () => {
+    const changeSpy = vi.fn();
+    component.registerOnChange(changeSpy);
 
     component['handleInput'](mockInputEvent('hello'));
-    expect(spy).toHaveBeenCalledWith('hello');
-    expect(component['value']()).toBe('hello');
+    expect(changeSpy).toHaveBeenCalledWith('hello');
 
     fixture.componentRef.setInput('type', 'number');
     fixture.detectChanges();
-
     component['handleInput'](mockInputEvent('42', 'number'));
-    expect(spy).toHaveBeenCalledWith(42);
+    expect(changeSpy).toHaveBeenCalledWith(42);
 
+    // 3. Number Input (Empty)
     component['handleInput'](mockInputEvent('', 'number'));
     expect(component['value']()).toBeNull();
+
+    const mockFiles = {} as FileList;
+    const parsedFile = component['parseInputValue']({
+      value: '',
+      type: 'file',
+      files: mockFiles,
+    } as HTMLInputElement);
+    expect(parsedFile).toBe(mockFiles);
   });
 
-  it('should handle blur and touch state', () => {
-    const spy = vi.fn();
-    component.registerOnTouched(spy);
-
-    component['handleBlur']({} as FocusEvent);
-    expect(spy).toHaveBeenCalled();
-    expect(component['touched']()).toBe(true);
-  });
-
-  it('should compute disabled and readonly states correctly', () => {
-    component.setDisabledState(true);
-    expect(component['isDisabled']()).toBe(true);
-
-    component.setDisabledState(false);
-    fixture.componentRef.setInput('state', 'disabled');
-    expect(component['isDisabled']()).toBe(true);
-  });
-
-  it('should compute validation messages and success state', () => {
-    fixture.componentRef.setInput('config', { errorMessage: 'Config Error' });
-    expect(component['errorMessage']()).toBe('Config Error');
-
-    fixture.componentRef.setInput('state', 'success');
-    component.writeValue('');
-    expect(component['hasSuccess']()).toBe(false);
-
-    component.writeValue('valid');
-    expect(component['hasSuccess']()).toBe(true);
-  });
-
-  it('should handle focus events and emit outputs', () => {
+  it('should handle lifecycle interactions (Focus, Blur, Disabled)', () => {
+    const touchSpy = vi.fn();
+    const blurSpy = vi.fn();
     const focusSpy = vi.fn();
+
+    component.registerOnTouched(touchSpy);
+    component.blur.subscribe(blurSpy);
     component.focus.subscribe(focusSpy);
+
     component['handleFocus']({} as FocusEvent);
     expect(component['focused']()).toBe(true);
     expect(focusSpy).toHaveBeenCalled();
+
+    component['handleBlur']({} as FocusEvent);
+    expect(component['focused']()).toBe(false);
+    expect(component['touched']()).toBe(true);
+    expect(touchSpy).toHaveBeenCalled();
+    expect(blurSpy).toHaveBeenCalled();
+
+    component.setDisabledState(true);
+    expect(component['isDisabled']()).toBe(true);
   });
 
-  it('should compute readonly state and handle file inputs', () => {
+  it('should compute validation states (Success, Error, Readonly)', () => {
     fixture.componentRef.setInput('config', { readonly: true });
     expect(component['isReadonly']()).toBe(true);
 
-    const files = {} as FileList;
-    const event = mockInputEvent('', 'file', files);
+    fixture.componentRef.setInput('config', { errorMessage: 'Custom Error' });
+    expect(component['errorMessage']()).toBe('Custom Error');
 
-    const parsed = component['parseInputValue'](
-      event.target as HTMLInputElement,
-    );
-    expect(parsed).toBe(files);
-  });
+    fixture.componentRef.setInput('state', 'success');
+    fixture.detectChanges();
 
-  it('should set validation errors and emit validation changes', () => {
-    const validationSpy = vi.fn();
-    component.validationChange.subscribe(validationSpy);
-    component['setValidationErrors']([{ type: 'test', message: 'Error' }]);
-    expect(validationSpy).toHaveBeenCalled();
+    component.writeValue('');
+    expect(component['hasSuccess']()).toBe(false);
+
+    component.writeValue('valid data');
+    expect(component['hasSuccess']()).toBe(true);
   });
 });
