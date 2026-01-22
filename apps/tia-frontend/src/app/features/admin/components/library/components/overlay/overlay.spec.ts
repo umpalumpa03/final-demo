@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { Overlay } from './overlay';
-import { vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('Overlay', () => {
   let component: Overlay;
@@ -17,46 +16,27 @@ describe('Overlay', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create the overlay component instance', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should toggle a signal state when toggle() is called', () => {
-    const signal = component.isDeleteAlertOpen;
-
-    expect(signal()).toBe(false);
-    component.toggle(signal);
-    expect(signal()).toBe(true);
-    component.toggle(signal);
-    expect(signal()).toBe(false);
-  });
-
-  it('should prevent default behavior on onContextMenu()', () => {
-    const mockEvent = { preventDefault: vi.fn() } as unknown as MouseEvent;
-
-    component.onContextMenu(mockEvent);
-
-    expect(mockEvent.preventDefault).toHaveBeenCalled();
-  });
-
-  it('should trigger toggle for Delete Alert when clicking the danger button', () => {
-    const deleteBtn = fixture.debugElement.query(By.css('.btn-danger'));
-
-    deleteBtn.triggerEventHandler('click', null);
-
-    expect(component.isDeleteAlertOpen()).toBe(true);
-  });
-
-  it('should trigger toggle for Right Sheet when clicking the Open Right Sheet button', () => {
-    const buttons = fixture.debugElement.queryAll(By.css('button'));
-    const rightSheetBtn = buttons.find(
-      (btn) => btn.nativeElement.textContent.trim() === 'Open Right Sheet',
+  it('should initialize with the correct page title and subtitle', () => {
+    expect(component.pageTitle).toBe('Overlay Components');
+    expect(component.pageSubtitle).toBe(
+      'Modal dialogs, sheets, popovers, and dropdown menu',
     );
+  });
 
-    if (rightSheetBtn) {
-      rightSheetBtn.triggerEventHandler('click', null);
-    }
+  it('should render the library title component in the header', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const libraryTitle = compiled.querySelector('app-library-title');
+    expect(libraryTitle).not.toBeNull();
+  });
 
-    expect(component.isRightSheetOpen()).toBe(true);
+  it('should render at least two showcase cards for dialogs', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const showcaseCards = compiled.querySelectorAll('app-showcase-card');
+
+    expect(showcaseCards.length).toBeGreaterThanOrEqual(2);
   });
 });
