@@ -67,6 +67,13 @@ export const libraryRoutes: Routes = [
           import('./components/feedback/feedback').then((c) => c.Feedback),
       },
       {
+        path: 'tables',
+        loadComponent: () =>
+          import('./components/tables/container/tables-container').then(
+            (c) => c.TablesContainer,
+          ),
+      },
+      {
         path: '**',
         redirectTo: 'colorpalettes',
       },
