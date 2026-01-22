@@ -3,11 +3,13 @@
 
 .badge-wrapper {
   @include display-flex(row, center);
-  gap: 0.8rem;
+  align-items: center;
+  gap: 1rem;
   
   &__label {
     @include font-inter(400, 1.2rem, 1.2);
     color: $blue-900;
+    
   }
 }
 
@@ -16,9 +18,17 @@
   @include flex-center(row, flex-start, center);
   gap: 0.4rem;
   padding: 0.7rem 0.9rem;
-  border-radius: 0.9rem;
+  border-radius: 0;
   border: none;
   color: $white;
+
+  &--rounded {
+    border-radius: 0.9rem;
+  }
+
+  &--pill {
+    border-radius: 9999px;
+  }
 
   &__icon {
     width: 1.1rem;
@@ -31,6 +41,51 @@
     line-height: 1.2;
   }
 
+  &__dismiss {
+    @include flex-center;
+    margin-left: 0.4rem;
+    width: 1.4rem;
+    height: 1.4rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &:focus-visible {
+      outline: 0.2rem solid currentColor;
+      outline-offset: 0.1rem;
+      border-radius: 0.2rem;
+    }
+  }
+
+  &__dismiss-icon {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+  }
+
+  &--secondary,
+  &--outline {
+    .badge__dismiss-icon {
+      filter: brightness(0) saturate(100%) invert(30%) sepia(100%) saturate(2000%) hue-rotate(200deg) brightness(0.65);
+      opacity: 0.8;
+    }
+
+    .badge__dismiss {
+      &:hover .badge__dismiss-icon {
+        opacity: 1;
+      }
+    }
+  }
+
   &--small {
     padding: 0.4rem 0.6rem;
     font-size: 1rem;
@@ -39,6 +94,12 @@
     .badge__icon {
       width: 0.9rem;
       height: 0.9rem;
+    }
+
+    .badge__dismiss {
+      width: 1.2rem;
+      height: 1.2rem;
+      margin-left: 0.3rem;
     }
   }
 
@@ -62,6 +123,12 @@
       width: 1.3rem;
       height: 1.3rem;
     }
+
+    .badge__dismiss {
+      width: 1.6rem;
+      height: 1.6rem;
+      margin-left: 0.5rem;
+    }
   }
 
   &--default {
@@ -71,7 +138,7 @@
 
  
   &--secondary {
-    background-color: $gray-50;
+    background-color: $gray-200;
     color: $blue-600;
     border: 0.1rem solid $blue-200;
   }
