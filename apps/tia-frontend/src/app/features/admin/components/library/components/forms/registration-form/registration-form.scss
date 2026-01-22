@@ -1,0 +1,69 @@
+@use '../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../shared/styles/palette' as *;
+@use '../styles/forms-shared' as *;
+
+.registration {
+  @extend %flex-stack;
+  width: 44.8rem;
+
+  &__row {
+    @include display-flex();
+    width: 44.8rem;
+    gap: 1.6rem;
+
+    & > .registration__field {
+      flex: 1 1 0;
+    }
+  }
+
+  &__field {
+    @include display-flex(column);
+    width: 44.8rem;
+    gap: 0.8rem;
+  }
+
+  &__label {
+    font-size: 1.4rem;
+    color: var(--color-fg-muted);
+  }
+
+  &__input {
+    @extend %input;
+  }
+
+  &__select {
+    color: $blue-600;
+  }
+
+  &__birth-date-field {
+    position: relative;
+  }
+
+  &__birth-date-icon {
+    position: absolute;
+    left: 1.4rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.8rem;
+    height: 1.8rem;
+    pointer-events: none;
+  }
+
+  &__birth-date {
+    padding-left: 4.4rem;
+    background-color: $blue-100;
+
+    &::-webkit-calendar-picker-indicator {
+      opacity: 0;
+      cursor: pointer;
+    }
+  }
+
+  &__agree-terms {
+    @extend %checkbox;
+  }
+
+  button {
+    @extend %one-button;
+  }
+}

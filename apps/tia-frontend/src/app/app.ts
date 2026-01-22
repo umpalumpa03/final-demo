@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { TextInput } from './shared/lib/forms/input-field/text-input/text-input';
 
 @Component({
-  imports: [RouterModule, TextInput],
+  imports: [RouterModule],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
