@@ -1,0 +1,65 @@
+<form class="registration">
+  <div class="registration__row">
+    <div class="registration__field">
+      <label class="registration__label">First name</label>
+      <input type="text" placeholder="John" class="registration__input" />
+    </div>
+
+    <div class="registration__field">
+      <label class="registration__label">Last name</label>
+      <input type="text" placeholder="Doe" class="registration__input" />
+    </div>
+  </div>
+
+  <div class="registration__field">
+    <label class="registration__label">Email</label>
+    <input
+      type="email"
+      placeholder="john@example.com"
+      class="registration__input"
+    />
+  </div>
+
+  <div class="registration__field">
+    <label class="registration__label">Password</label>
+    <input type="password" placeholder="••••••••" class="registration__input" />
+  </div>
+
+  <div class="registration__field">
+    <label class="registration__label">Confirm Password</label>
+    <input type="password" placeholder="••••••••" class="registration__input" />
+  </div>
+
+  <div class="registration__field">
+    <label class="registration__label" for="country">Country</label>
+    <select id="country" class="registration__input registration__select">
+      <option disabled selected>Select country</option>
+      @for(country of countries; track $index) {
+         <option>{{ country.label }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="registration__field">
+    <label class="registration__label">Birth Date</label>
+    <div class="registration__birth-date-field">
+      <img
+        src=""
+        alt="Calendar"
+        class="registration__birth-date-icon"
+      />
+      <input
+        type="date"
+        class="registration__input registration__birth-date"
+        placeholder="Pick a date"
+      />
+    </div>
+  </div>
+
+  <div class="registration__agree-terms">
+    <input type="checkbox" />
+    <label>Subscribe to newsletter *</label>
+  </div>
+
+  <button type="submit">Create Account</button>
+</form>
