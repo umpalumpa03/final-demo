@@ -1,5 +1,5 @@
 <form class="contact__form" [formGroup]="contactForm" (ngSubmit)="submit()">
-  <div class="contact__form__fields">
+  <div class="contact__form--fields">
     <label [class.invalid]="isNameError" for="name">Name *</label>
     <input formControlName="name" type="text" placeholder="Your name" />
     @if (isNameError) {
@@ -7,7 +7,7 @@
     }
   </div>
 
-  <div class="contact__form__fields">
+  <div class="contact__form--fields">
     <label [class.invalid]="isEmailError" for="email">Email *</label>
     <input
       formControlName="email"
@@ -19,7 +19,7 @@
     }
   </div>
 
-  <div class="contact__form__fields">
+  <div class="contact__form--fields">
     <label [class.invalid]="isMessageError" for="message"
       >Message *</label
     >
@@ -32,7 +32,7 @@
     }
   </div>
 
-  <div class="contact__form__subscribe">
+  <div class="contact__form--subscribe">
     <input formControlName="subscribe" type="checkbox" />
     <label [class.invalid]="isSubscribeError"
       >Subscribe to newsletter *</label

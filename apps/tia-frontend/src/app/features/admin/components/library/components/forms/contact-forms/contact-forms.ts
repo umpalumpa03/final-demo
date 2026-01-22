@@ -18,7 +18,6 @@ import { IContactForm } from '../models/contact-forms.model';
 })
 export class ContactForms {
   private fb = inject(FormBuilder);
-  public firstFildName = input<string>();
   public submitForm = output<IContactForm>();
 
   public contactForm = this.fb.nonNullable.group({
