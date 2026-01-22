@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { Badges } from '../../../../../../shared/lib/primitives/badges/badges';
-import { variantsData , statusesData, sizesData, countBadgesData } from './config/badge-data';
+import { VARIANTS, STATUSES, SIZES, COUNT_BADGES } from './config/badge-data';
 
 @Component({
   selector: 'app-badge-component',
@@ -10,8 +10,8 @@ import { variantsData , statusesData, sizesData, countBadgesData } from './confi
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BadgeComponent {
-  readonly variants = signal(variantsData());
-  readonly statuses = signal(statusesData());
-  readonly sizes = signal(sizesData());
-  readonly countBadges = signal(countBadgesData());
+  public readonly variants = signal(VARIANTS);
+  public readonly statuses = signal(STATUSES);
+  public readonly sizes = signal(SIZES);
+  public readonly countBadges = signal(COUNT_BADGES);
 }

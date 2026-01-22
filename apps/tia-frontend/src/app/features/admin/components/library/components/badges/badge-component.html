@@ -2,7 +2,7 @@
   <h3 class="badge-demo__title">Variants</h3>
   
   <div class="badge-demo__row">
-    @for (item of variants(); track $index) {
+    @for (item of variants(); track item.variant) {
       <app-badges 
         [variant]="item.variant" 
         [text]="item.text">
@@ -15,7 +15,7 @@
   <h3 class="badge-demo__title">Status Badges</h3>
   
   <div class="badge-demo__row">
-    @for (item of statuses(); track $index) {
+    @for (item of statuses(); track item.status) {
       <app-badges 
         [status]="item.status" 
         [text]="item.text">
@@ -28,7 +28,7 @@
   <h3 class="badge-demo__title">Sizes</h3>
   
   <div class="badge-demo__row">
-    @for (item of sizes(); track $index) {
+    @for (item of sizes(); track item.size) {
       <app-badges 
         [size]="item.size" 
         [variant]="item.variant" 
@@ -42,7 +42,7 @@
   <h3 class="badge-demo__title">Count Badges</h3>
   
   <div class="badge-demo__list">
-    @for (item of countBadges(); track $index) {
+    @for (item of countBadges(); track item.label) {
       <app-badges 
         [label]="item.label" 
         [variant]="item.variant" 
