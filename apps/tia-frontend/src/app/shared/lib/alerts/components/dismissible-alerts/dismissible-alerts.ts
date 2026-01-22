@@ -22,7 +22,7 @@ export class DismissibleAlerts {
     return useDefault ? 'default' : this.alertType();
   });
 
-  public onDismiss() {
+  public onDismiss():void {
     this.isDismissed.set(true)
   }
 }

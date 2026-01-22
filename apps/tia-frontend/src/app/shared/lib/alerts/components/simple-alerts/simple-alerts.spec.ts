@@ -12,10 +12,23 @@ describe('SimpleAlerts', () => {
 
     fixture = TestBed.createComponent(SimpleAlerts);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('Computed Logic', () => {
+    it('should apply the correct modifier class in the DOM', () => {
+      fixture.componentRef.setInput('alertType', 'warning');
+      fixture.detectChanges();
+      expect(component.iconAlertClass).toBe('simple-alerts--warning')
+    });
+
+    it('should map information type to default image name', () => {
+      fixture.componentRef.setInput('alertType', 'information');
+      expect(component.effectiveImgName()).toBe('default');
+    });
   });
 });
