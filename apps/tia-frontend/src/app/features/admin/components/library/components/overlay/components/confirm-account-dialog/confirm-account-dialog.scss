@@ -8,19 +8,18 @@
   height: 4rem;
   border-radius: 1rem;
   @include font-arimo(400, 1rem, 2rem);
-  cursor: pointer;
-  border: none;
 
-  &__danger {
-    background: #dc2626;
-    color: $white;
+  &__trigger {
+    background: #f0f9ff;
+    border: 1px solid #0ea5e9;
+    color: #0c4a6e;
     width: 13rem;
   }
 
-  &__destructive {
-    background: #e7000b;
+  &__primary {
+    background: #0284c7;
     color: $white;
-    width: 13rem;
+    width: 9rem;
   }
 
   &__outline {
@@ -31,7 +30,7 @@
   }
 }
 
-.delete-account {
+.confirm-content {
   @include display-flex(column);
   width: 45rem;
 
