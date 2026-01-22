@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Colorpalettes } from './colorpalettes';
+import { Input } from './input';
 
-describe('Colorpalettes', () => {
-  let component: Colorpalettes;
-  let fixture: ComponentFixture<Colorpalettes>;
+describe('Input', () => {
+  let component: Input;
+  let fixture: ComponentFixture<Input>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Colorpalettes],
+      imports: [Input],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Colorpalettes);
+    fixture = TestBed.createComponent(Input);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
   });
 
   it('should create', () => {

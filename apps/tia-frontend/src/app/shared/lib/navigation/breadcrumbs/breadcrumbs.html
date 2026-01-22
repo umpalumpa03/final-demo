@@ -1,0 +1,29 @@
+@if (breadcrumbs()?.length) { 
+    @let crumbs = breadcrumbs();
+<ul class="breadcrumbs">
+  @for (crumb of crumbs; track crumb.label) {
+  <li class="breadcrumbs__item">
+    <a
+      [routerLink]="crumb.route"
+      class="breadcrumbs__item__link"
+    >
+      @if (crumb.icon) {
+      <img
+        [src]="crumb.icon"
+        [alt]="crumb.label + ' icon'"
+      />
+      }
+      <span [class.breadcrumbs__item__link--last]="crumb === lastCrumb()">
+        {{ crumb.label }}
+      </span>
+    </a>
+    @if (crumb !== lastCrumb()) {
+    <img
+      src="images/svg/notification-icons/arrow.svg"
+      alt="breadcrumb separator"
+    />
+    }
+  </li>
+  }
+</ul>
+}
