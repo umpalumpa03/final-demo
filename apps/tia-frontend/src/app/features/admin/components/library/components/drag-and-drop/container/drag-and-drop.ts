@@ -15,4 +15,8 @@ export class DragAndDropContainer {
   public canDelete = true;
 
   public onItemRemoved(id: string): void {}
+  public onOrderChange(ids: string[]): void {
+    localStorage.setItem('card-order', JSON.stringify(ids));
+    console.log(ids);
+  }
 }

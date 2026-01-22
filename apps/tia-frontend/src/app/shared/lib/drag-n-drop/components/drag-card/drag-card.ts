@@ -19,12 +19,14 @@ import { DraggableCard } from '../draggable-card/draggable-card';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DragCard implements OnDestroy {
-  public items = input.required<DraggableItemType[]>();
-  public itemsChange = output<DraggableItemType[]>();
-  public itemRemoved = output<string>();
   public canDelete = input<boolean>(false);
   public layout = input<'grid' | 'list'>('grid');
   public columns = input<number>(2);
+
+  public items = input.required<DraggableItemType[]>();
+  public itemsChange = output<DraggableItemType[]>();
+  public orderChange = output<string[]>();
+  public itemRemoved = output<string>();
 
   public draggingId = signal<string | null>(null);
   public dropTargetId = signal<string | null>(null);
@@ -128,6 +130,7 @@ export class DragCard implements OnDestroy {
     newItems.splice(dropIndex, 0, removed);
     this.internalItems = newItems;
     this.itemsChange.emit(this.internalItems);
+    this.orderChange.emit(this.internalItems.map((item) => item.id));
   }
 
   public ngOnDestroy(): void {

@@ -33,3 +33,4 @@ in case of grid
 
 OUTPUTS
 (itemRemoved)="onItemRemoved($event)" -> remove
+(orderChange)="onOrderChange($event)"-> track order you will get array of ids, in a new order on each drag and drop
