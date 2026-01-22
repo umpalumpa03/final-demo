@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { FirstUpperPipe } from '../../../../pipes/first-upper/first-upper-pipe';
+import { FirstUpperPipe } from '@tia/shared/pipes/first-upper/first-upper-pipe';
 import { AlertType } from '../../shared/models/alert.models';
 
 @Component({

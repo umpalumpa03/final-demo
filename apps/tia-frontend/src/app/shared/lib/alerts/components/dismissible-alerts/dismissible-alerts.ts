@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 import { AlertType } from '../../shared/models/alert.models';
-// import { FirstUpperPipe } from '@tia/shared/pipes/first-upper/first-upper-pipe';
-import { FirstUpperPipe } from '../../../../pipes/first-upper/first-upper-pipe';
+import { FirstUpperPipe } from '@tia/shared/pipes/first-upper/first-upper-pipe';
 
 @Component({
   selector: 'app-dismissible-alerts',
@@ -14,10 +13,16 @@ export class DismissibleAlerts {
   public alertType = input<AlertType>('information');
   public alertMessage = input<string>('Default Alert Message');
 
-  public iconAlertClass = computed(() => `alert-types-icons--${this.alertType()}`);
+  public iconAlertClass = computed(() => `dismissible-alerts--${this.alertType()}`);
+
+  public isDismissed = signal<boolean>(false)
 
   public effectiveImgName = computed(() => {
     const useDefault = ['error', 'information'].includes(this.alertType());
     return useDefault ? 'default' : this.alertType();
   });
+
+  onDismiss() {
+    this.isDismissed.set(true)
+  }
 }
