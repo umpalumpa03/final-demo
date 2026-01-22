@@ -2,6 +2,8 @@
 @use '../../../../../../shared/styles/palette' as *;
 
 .colorpalettes-container {
+  max-width: 110rem;
+  padding: 2rem;
   width: 100%;
   background-color: $blue-100;
 

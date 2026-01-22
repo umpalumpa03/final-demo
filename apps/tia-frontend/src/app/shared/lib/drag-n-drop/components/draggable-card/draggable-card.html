@@ -15,11 +15,12 @@
       <p>{{ itemData().subtitle }}</p>
     </div>
   </div>
-
+  @if(canDelete()) {
   <img
     class="draggable-card__remove"
     src="images/svg/drag-and-drop/can.svg"
     alt="can svg"
     (click)="onRemove()"
   />
+  }
 </div>

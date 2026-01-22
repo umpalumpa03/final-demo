@@ -3,7 +3,8 @@
 
 .navigation {
     padding: 3.2rem 2.4rem;
-    max-width: 192rem;
+    max-width: 110rem;
+    margin:0 auto;
     width: 100%;
     @include display-flex(column);
     gap: 2.4rem;
