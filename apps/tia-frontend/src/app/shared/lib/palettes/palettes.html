@@ -1,5 +1,5 @@
-<div class="palette palette--oceanblue">
-  @for (swatch of swatches; track swatch.modifier) {
+<div class="palette theme-{{ theme() }}">
+  @for (swatch of swatches(); track swatch.modifier) {
   <div class="palette__item">
     <div
       class="palette__swatch"

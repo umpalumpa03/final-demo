@@ -7,28 +7,14 @@
       />
     </header>
 
+    @for (palette of colorPalettes; track palette.title) {
     <app-showcase-card
-      title="Ocean Blue"
-      subtitle="Light and refreshing theme perfect for modern applications"
-      class="ocean-blue-theme"
+      [title]="palette.title"
+      [subtitle]="palette.subtitle"
+      [class]="palette.scssClass"
     >
-      <app-oceanblue-theme></app-oceanblue-theme>
+      <app-palettes [theme]="palette.theme"></app-palettes>
     </app-showcase-card>
-
-    <app-showcase-card
-      title="Royal Blue"
-      subtitle="Rich and elegant theme with vibrant blue tones"
-      class="royal-blue-theme"
-    >
-      <app-royalblue-theme></app-royalblue-theme>
-    </app-showcase-card>
-
-    <app-showcase-card
-      title="Deep Blue"
-      subtitle="Rich and elegant theme with vibrant blue tones"
-      class="deep-blue-theme"
-    >
-      <app-deepblue-theme></app-deepblue-theme>
-    </app-showcase-card>
+    }
   </div>
 </div>

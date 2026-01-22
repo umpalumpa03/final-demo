@@ -1,18 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { OceanblueTheme } from './oceanblue-theme';
-import { OCEANBLUE_PALETTE_DATA } from '../../../../features/admin/components/library/components/colorpalettes/config/palette-data.config';
+import { Palettes } from './palettes';
+import { OCEANBLUE_PALETTE_DATA } from '../../../features/admin/components/library/components/colorpalettes/config/palette-data.config';
 
-describe('OceanblueTheme', () => {
-  let component: OceanblueTheme;
-  let fixture: ComponentFixture<OceanblueTheme>;
+describe('Palettes', () => {
+  let component: Palettes;
+  let fixture: ComponentFixture<Palettes>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OceanblueTheme],
+      imports: [Palettes],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(OceanblueTheme);
+    fixture = TestBed.createComponent(Palettes);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('theme', 'oceanblue');
+    fixture.detectChanges();
     await fixture.whenStable();
   });
 
@@ -21,11 +23,11 @@ describe('OceanblueTheme', () => {
   });
 
   it('should load OCEANBLUE_PALETTE_DATA', () => {
-    expect(component.swatches).toEqual(OCEANBLUE_PALETTE_DATA);
+    expect(component.swatches()).toEqual(OCEANBLUE_PALETTE_DATA);
   });
 
   it('should have 6 color swatches', () => {
-    expect(component.swatches.length).toBe(6);
+    expect(component.swatches().length).toBe(6);
   });
 
   it('should render palette with correct swatches', () => {
@@ -37,9 +39,8 @@ describe('OceanblueTheme', () => {
 
   it('should render palette container with oceanblue class', () => {
     fixture.detectChanges();
-    const paletteContainer = fixture.nativeElement.querySelector(
-      '.palette--oceanblue',
-    );
+    const paletteContainer =
+      fixture.nativeElement.querySelector('.theme-oceanblue');
     expect(paletteContainer).toBeTruthy();
   });
 });

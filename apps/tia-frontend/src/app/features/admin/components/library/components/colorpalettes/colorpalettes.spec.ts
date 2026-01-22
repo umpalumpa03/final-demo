@@ -30,14 +30,16 @@ describe('Colorpalettes', () => {
     expect(container).toBeTruthy();
   });
 
-  it('should render all three theme components', () => {
+  it('should render all three palette components', () => {
     const oceanblue = fixture.nativeElement.querySelector(
-      'app-oceanblue-theme',
+      'app-palettes[theme="oceanblue"]',
     );
     const royalblue = fixture.nativeElement.querySelector(
-      'app-royalblue-theme',
+      'app-palettes[theme="royalblue"]',
     );
-    const deepblue = fixture.nativeElement.querySelector('app-deepblue-theme');
+    const deepblue = fixture.nativeElement.querySelector(
+      'app-palettes[theme="deepblue"]',
+    );
     expect(oceanblue && royalblue && deepblue).toBeTruthy();
   });
 

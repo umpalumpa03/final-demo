@@ -1,4 +1,5 @@
 import { Palette } from '../../../../../../../shared/lib/palettes/model/palette.model';
+import { ColorPalette } from '../model/palette.model';
 
 export const OCEANBLUE_PALETTE_DATA: Palette[] = [
   { name: 'Primary', code: '#0284c7', modifier: 'primary' },
@@ -26,3 +27,30 @@ export const DEEPBLUE_PALETTE_DATA: Palette[] = [
   { name: 'Background', code: '#F8FAFC', modifier: 'background' },
   { name: 'Foreground', code: '#0F172A', modifier: 'foreground' },
 ];
+
+export const colorPalettes: ColorPalette[] = [
+  {
+    title: 'Ocean Blue',
+    subtitle: 'Light and refreshing theme perfect for modern applications',
+    theme: 'oceanblue',
+    scssClass: 'ocean-blue-theme',
+  },
+  {
+    title: 'Royal Blue',
+    subtitle: 'Rich and elegant theme with vibrant blue tones',
+    theme: 'royalblue',
+    scssClass: 'royal-blue-theme',
+  },
+  {
+    title: 'Deep Blue',
+    subtitle: 'Rich and elegant theme with vibrant blue tones',
+    theme: 'deepblue',
+    scssClass: 'deep-blue-theme',
+  },
+];
+
+export const palettesData = {
+  oceanblue: OCEANBLUE_PALETTE_DATA,
+  royalblue: ROYALBLUE_PALETTE_DATA,
+  deepblue: DEEPBLUE_PALETTE_DATA,
+} as const;
