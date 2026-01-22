@@ -5,7 +5,9 @@
     @for (item of variants(); track item.variant) {
       <app-badges 
         [variant]="item.variant" 
-        [text]="item.text">
+        [text]="item.text"
+        [size]="item.size"
+        [shape]="item.shape">
       </app-badges>
     }
   </div>
@@ -18,7 +20,9 @@
     @for (item of statuses(); track item.status) {
       <app-badges 
         [status]="item.status" 
-        [text]="item.text">
+        [text]="item.text"
+        [size]="item.size"
+        [shape]="item.shape">
       </app-badges>
     }
   </div>
@@ -32,7 +36,8 @@
       <app-badges 
         [size]="item.size" 
         [variant]="item.variant" 
-        [text]="item.text">
+        [text]="item.text"
+        [shape]="item.shape">
       </app-badges>
     }
   </div>
@@ -46,7 +51,44 @@
       <app-badges 
         [label]="item.label" 
         [variant]="item.variant" 
-        [text]="item.text">
+        [text]="item.text"
+        [size]="item.size"
+        [shape]="item.shape">
+      </app-badges>
+    }
+  </div>
+</div>
+
+<div class="badge-demo">
+  <h3 class="badge-demo__title">Interactive Badges (Dismissible)</h3>
+  
+  <div class="badge-demo__row">
+    @for (item of dismissibleBadges(); track item.id) {
+      <app-badges 
+        [variant]="item.variant" 
+        [status]="item.status"
+        [size]="item.size"
+        [shape]="item.shape"
+       [text]="item.text"
+        [dismissible]="true"
+        (dismissed)="onDismissBadge(item.id)">
+      </app-badges>
+    }
+  </div>
+</div>
+
+<div class="badge-demo">
+  <h3 class="badge-demo__title">Rounded/Pill Badges</h3>
+  
+  <div class="badge-demo__row">
+    @for (item of pillBadges(); track item.text) {
+      <app-badges 
+        [variant]="item.variant" 
+        [status]="item.status"
+        [size]="item.size"
+        [text]="item.text"
+        [showIcon]="false"
+        [shape]="item.shape">
       </app-badges>
     }
   </div>
