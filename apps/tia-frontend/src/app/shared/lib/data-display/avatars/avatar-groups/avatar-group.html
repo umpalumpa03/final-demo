@@ -1,0 +1,22 @@
+<div class="avatar-group">
+  @for (avatar of visibleAvatars(); track avatar.initials + $index) {
+    <app-avatar
+      class="avatar-group__item"
+      [size]="size()"
+      [tone]="avatar.tone ?? 'soft'"
+      [color]="avatar.color ?? 'blue'"
+      [initials]="avatar.initials"
+      [status]="avatar.status ?? null"
+    ></app-avatar>
+  }
+
+  @if (overflowCount() > 0) {
+    <app-avatar
+      class="avatar-group__item"
+      [size]="size()"
+      [tone]="overflowTone()"
+      [color]="overflowColor()"
+      [initials]="'+' + overflowCount()"
+    ></app-avatar>
+  }
+</div>

@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { BadgeStatus, BadgeVariant } from './models/badges.models';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { BadgeSize, BadgeStatus, BadgeVariant, BadgeShape } from './models/badges.models';
+import { statusClassMap, statusIconMap, statusAltTextMap } from './config/badges.constants';
 
 
 @Component({
@@ -10,56 +11,50 @@ import { BadgeStatus, BadgeVariant } from './models/badges.models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Badges {
-  readonly variant = input<BadgeVariant>('default');
+  readonly variant = input<BadgeVariant | undefined>(undefined);
   readonly text = input<string>('');
   readonly status = input<BadgeStatus | undefined>(undefined);
-
+  readonly size = input<BadgeSize | undefined>(undefined);
+  readonly shape = input<BadgeShape | undefined>(undefined);
+  readonly label = input<string>('');
+  readonly dismissible = input<boolean>(false);
+  readonly showIcon = input<boolean>(true);
+  readonly dismissed = output<void>();
   readonly badgeClass = computed(() => {
- 
+    const size = this.size() ?? 'small';
+    const sizeClass = `badge--${size}`;
+    const shape = this.shape() ?? 'default';
+    let shapeClass = '';
+    if (shape === 'pill') {
+      shapeClass = 'badge--pill';
+    } else if (shape === 'rounded') {
+      shapeClass = 'badge--rounded';
+    }
     const statusClass = this.badgeStatus();
     if (statusClass) {
-      return `badge ${statusClass}`;
+      return `badge ${sizeClass} ${statusClass} ${shapeClass}`.trim();
     }
-    return `badge badge__${this.variant()}`;
+    const variant = this.variant() ?? 'default';
+    return `badge ${sizeClass} badge--${variant} ${shapeClass}`.trim();
   });
 
   readonly badgeStatus = computed(() => {
-    const currentStatus = this.status();
-    if (!currentStatus) return '';
-    
-    switch (currentStatus) {
-      case 'active':
-        return 'badge__active';
-      case 'pending':
-        return 'badge__pending';
-      case 'inactive':
-        return 'badge__inactive';
-      case 'in-progress':
-        return 'badge__in-progress';
-      case 'featured':
-        return 'badge__featured';
-      case 'premium':
-        return 'badge__premium';
-    }
+    return this.status() ? statusClassMap[this.status()!] : '';
   });
 
   readonly iconPath = computed(() => {
-    const status = this.status();
-    if (!status) return '';
-    
-    const iconMap: Record<BadgeStatus, string> = {
-      'active': 'images/svg/badges/badges-active.svg',
-      'pending': 'images/svg/badges/badges-pending.svg',
-      'inactive': 'images/svg/badges/badges-inactive.svg',
-      'in-progress': 'images/svg/badges/badges-inProgress.svg',
-      'featured': 'images/svg/badges/badges-featured.svg',
-      'premium': 'images/svg/badges/badges-premium.svg',
-    };
-    return iconMap[status];
+    return this.status() ? statusIconMap[this.status()!] : '';
+  });
+
+  readonly iconAlt = computed(() => {
+    return this.status() ? statusAltTextMap[this.status()!] : '';
   });
 
   readonly shouldShowIcon = computed(() => {
-   
-    return this.status() !== undefined;
+    return this.status() !== undefined && this.showIcon();
   });
+
+  onDismiss(): void {
+    this.dismissed.emit();
+  }
 }

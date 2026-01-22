@@ -1,0 +1,25 @@
+<div
+  class="draggable-card"
+  [class.dragging]="isDragging()"
+  [class.drop-target]="isDropTarget()"
+>
+  <div class="draggable-card__draggable">
+    <img
+      class="draggable-card__icon"
+      src="images/svg/drag-and-drop/draggable.svg"
+      alt="draggable icon"
+      (pointerdown)="onDragStartPoint($event)"
+    />
+    <div class="draggable-card__content">
+      <p>{{ itemData().title }}</p>
+      <p>{{ itemData().subtitle }}</p>
+    </div>
+  </div>
+
+  <img
+    class="draggable-card__remove"
+    src="images/svg/drag-and-drop/can.svg"
+    alt="can svg"
+    (click)="onRemove()"
+  />
+</div>

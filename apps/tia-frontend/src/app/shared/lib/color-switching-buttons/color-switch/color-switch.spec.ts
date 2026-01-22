@@ -53,4 +53,18 @@ describe('ColorSwitch', () => {
     expect(button.nativeElement.classList).not.toContain('active');
     expect(innerDiv).toBeNull();
   });
+
+  it('should emit selected color when clicked', () => {
+    const testColor = 'red';
+    fixture.componentRef.setInput('color', testColor);
+    fixture.detectChanges();
+
+    let emittedValue: string | undefined;
+    component.selected.subscribe((value) => (emittedValue = value));
+
+    const button = fixture.debugElement.query(By.css('button'));
+    button.triggerEventHandler('click', null);
+
+    expect(emittedValue).toBe(testColor);
+  });
 });

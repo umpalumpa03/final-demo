@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+} from '@angular/core';
 
 @Component({
   selector: 'app-color-switch',
@@ -10,4 +15,11 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 export class ColorSwitch {
   public isActive = input<boolean>(false);
   public color = input.required<string>();
+
+  public selected = output<string>();
+
+  public onSelect(): void {
+    this.selected.emit(this.color());
+    
+  }
 }
