@@ -1,28 +1,22 @@
 <form class="contact__form" [formGroup]="contactForm" (ngSubmit)="submit()">
   <div class="contact__form--fields">
-    <label [class.invalid]="isNameError" for="name">Name *</label>
-    <input formControlName="name" type="text" placeholder="Your name" />
-    @if (isNameError) {
-    <span class="error"> {{ nameError() }} </span>
-    }
+    <lib-text-input
+      type="text"
+      formControlName="name"
+      [config]="nameConfig"
+    ></lib-text-input>
   </div>
 
   <div class="contact__form--fields">
-    <label [class.invalid]="isEmailError" for="email">Email *</label>
-    <input
+    <lib-text-input
+      type="text"
       formControlName="email"
-      type="email"
-      placeholder="your.email@example.com"
-    />
-    @if (isEmailError) {
-    <span class="error"> {{ emailError() }} </span>
-    }
+      [config]="emailConfig"
+    ></lib-text-input>
   </div>
 
   <div class="contact__form--fields">
-    <label [class.invalid]="isMessageError" for="message"
-      >Message *</label
-    >
+    <label [class.invalid]="isMessageError" for="message">Message *</label>
     <textarea
       formControlName="message"
       placeholder="Type your message here..."
@@ -34,9 +28,7 @@
 
   <div class="contact__form--subscribe">
     <input formControlName="subscribe" type="checkbox" />
-    <label [class.invalid]="isSubscribeError"
-      >Subscribe to newsletter *</label
-    >
+    <label [class.invalid]="isSubscribeError">Subscribe to newsletter *</label>
   </div>
 
   <button type="submit">Submit</button>

@@ -2,16 +2,16 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  input,
   output,
 } from '@angular/core';
 import { getErrorMessage } from '../../../../../../../core/utils/form-validations';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IContactForm } from '../models/contact-forms.model';
+import { TextInput } from '@tia/shared/lib/forms/input-field/text-input/text-input';
 
 @Component({
   selector: 'app-contact-forms',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TextInput],
   templateUrl: './contact-forms.html',
   styleUrl: './contact-forms.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -74,4 +74,17 @@ export class ContactForms {
     this.submitForm.emit(this.contactForm.getRawValue());
     this.contactForm.reset();
   }
+
+  //this is temporary configs
+  public nameConfig = {
+    label: 'Name',
+    required: true,
+    placeholder: 'Your Name',
+  };
+
+  public emailConfig = {
+    label: 'Email',
+    required: true,
+    placeholder: 'your.email@example.com',
+  };
 }
