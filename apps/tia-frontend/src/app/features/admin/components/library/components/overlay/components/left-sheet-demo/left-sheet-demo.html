@@ -1,0 +1,23 @@
+<button class="btn btn__secondary btn__left-trigger" (click)="toggle()">
+  Left Sheet
+</button>
+
+<app-ui-sheet-modal [isOpen]="isOpen()" direction="left" (closed)="toggle()">
+  <nav class="nav-sheet">
+    <header class="nav-sheet__header">
+      <app-library-title [title]="sheetTitle" [subtitle]="sheetSubtitle"></app-library-title>
+    </header>
+
+    <div class="nav-sheet__list">
+      @for (item of libraryNavItems(); track item.label) {
+      <button class="nav-sheet__item" (click)="toggle()">
+        <span
+          class="nav-sheet__icon"
+          [class]="'nav-sheet__icon-' + item.icon"
+        ></span>
+        <span class="nav-sheet__label">{{ item.label }}</span>
+      </button>
+      }
+    </div>
+  </nav>
+</app-ui-sheet-modal>

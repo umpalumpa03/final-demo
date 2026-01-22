@@ -54,11 +54,11 @@ export abstract class BaseInput implements ControlValueAccessor, DoCheck {
     }
   }
 
-  ngDoCheck(): void {
+  public ngDoCheck(): void {
     if (this.ngControl?.control) {
-      this._controlTouched.set(this.ngControl.control.touched);
-      this._controlDirty.set(this.ngControl.control.dirty);
-      this._controlStatus.set(this.ngControl.control.status);
+      this._controlTouched.set(this.ngControl.control.touched ?? false);
+      this._controlDirty.set(this.ngControl.control.dirty ?? false);
+      this._controlStatus.set(this.ngControl.control.status ?? '');
     }
   }
 
@@ -158,29 +158,24 @@ export abstract class BaseInput implements ControlValueAccessor, DoCheck {
     this.internalDisabled.set(isDisabled);
   }
 
-  protected parseInputValue(
-    rawValue: string,
-    files: FileList | null,
-  ): InputFieldValue {
-    const inputType = this.type();
+  protected parseInputValue(target: HTMLInputElement): InputFieldValue {
+    const { value, type, files } = target;
 
-    switch (inputType) {
+    switch (type) {
       case 'number':
-        if (rawValue === '' || rawValue === null) return null;
-        const num = Number(rawValue);
-        return isNaN(num) ? rawValue : num;
+        return value === '' ? null : Number(value);
       case 'file':
         return files;
       default:
-        return rawValue;
+        return value;
     }
   }
 
   protected handleInput(event: Event): void {
     const target = event.target as HTMLInputElement;
-    const rawValue = target.value;
-    const files = target.files;
-    const parsedValue = this.parseInputValue(rawValue, files);
+    if (!target) return;
+
+    const parsedValue = this.parseInputValue(target);
 
     this.value.set(parsedValue);
     this.onChange(parsedValue);

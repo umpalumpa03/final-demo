@@ -19,8 +19,18 @@ describe('BaseInput', () => {
   let component: TestInput;
   let fixture: ComponentFixture<TestInput>;
 
-  const mockEvent = (val: string) =>
-    ({ target: { value: val, files: null } }) as any;
+  const mockInputEvent = (
+    value: string,
+    type: string = 'text',
+    files: FileList | null = null,
+  ) =>
+    ({
+      target: {
+        value,
+        type,
+        files,
+      },
+    }) as unknown as Event;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -44,17 +54,17 @@ describe('BaseInput', () => {
     const spy = vi.fn();
     component.registerOnChange(spy);
 
-    component['handleInput'](mockEvent('hello'));
+    component['handleInput'](mockInputEvent('hello'));
     expect(spy).toHaveBeenCalledWith('hello');
     expect(component['value']()).toBe('hello');
 
     fixture.componentRef.setInput('type', 'number');
     fixture.detectChanges();
 
-    component['handleInput'](mockEvent('42'));
+    component['handleInput'](mockInputEvent('42', 'number'));
     expect(spy).toHaveBeenCalledWith(42);
 
-    component['handleInput'](mockEvent(''));
+    component['handleInput'](mockInputEvent('', 'number'));
     expect(component['value']()).toBeNull();
   });
 
@@ -100,9 +110,12 @@ describe('BaseInput', () => {
     fixture.componentRef.setInput('config', { readonly: true });
     expect(component['isReadonly']()).toBe(true);
 
-    fixture.componentRef.setInput('type', 'file');
     const files = {} as FileList;
-    const parsed = component['parseInputValue']('', files);
+    const event = mockInputEvent('', 'file', files);
+
+    const parsed = component['parseInputValue'](
+      event.target as HTMLInputElement,
+    );
     expect(parsed).toBe(files);
   });
 

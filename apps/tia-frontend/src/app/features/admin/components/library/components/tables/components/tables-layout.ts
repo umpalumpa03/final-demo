@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LibraryTitle } from '../../../shared/library-title/library-title';
-import { Tables } from '@tia/shared/lib/data-display/components/tables';
-import { TableConfig } from '@tia/shared/lib/data-display/models/table.model';
+import { Tables } from '@tia/shared/lib/tables/components/tables';
+import { TableConfig } from '@tia/shared/lib/tables/models/table.model';
 import { ShowcaseCard } from '../../../shared/showcase-card/showcase-card';
 
 @Component({

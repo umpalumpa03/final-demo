@@ -1,0 +1,39 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { LeftSheetDemo } from './left-sheet-demo';
+import { describe, it, expect, beforeEach } from 'vitest';
+
+describe('LeftSheetDemo', () => {
+  let component: LeftSheetDemo;
+  let fixture: ComponentFixture<LeftSheetDemo>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [LeftSheetDemo],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(LeftSheetDemo);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create the component', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should update signal state when toggle() is called', () => {
+    expect(component.isOpen()).toBe(false);
+    component.toggle();
+    expect(component.isOpen()).toBe(true);
+  });
+
+  it('should close when the internal sheet modal emits closed event', () => {
+    component.isOpen.set(true);
+    fixture.detectChanges();
+
+    const modal = fixture.debugElement.query(By.css('app-ui-sheet-modal'));
+    modal.triggerEventHandler('closed', null);
+
+    expect(component.isOpen()).toBe(false);
+  });
+});
