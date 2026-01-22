@@ -10,8 +10,7 @@
   border-radius: 1.6rem;
   background-color: $white;
   padding: 2.4rem;
-  display: flex;
-  flex-direction: column;
+  @include display-flex(column);
   gap: 2.4rem;
   max-width: 120rem;
 }

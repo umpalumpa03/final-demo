@@ -1,9 +1,7 @@
 @use '../../../../styles/palette' as *;
-//! აქ მგონი რაღაც patch უნდა შემეცვალა იმპორტისას
 
 .avatar-group {
-  display: flex;
-  align-items: center;
+  @include flex-center(row, center, center);
 }
 
 .avatar-group app-avatar {
