@@ -22,7 +22,7 @@
   @media (max-width: 76.8rem) {
     padding: 1rem;
     gap: 0.8rem;
-    width: 95%
+    width: 95%;
   }
 
   &__alert-icon-div {
@@ -37,30 +37,25 @@
   &__alert-info-div {
     justify-content: center;
     @include display-flex(column, nowrap);
-    > div {
-      @include font-arimo(400, 1.4rem, 2rem);
-    }
+  }
 
-    > div:first-child {
-      letter-spacing: -0.035rem;
-      color: var(--color-fg);
-    }
+  &__title {
+    @include font-arimo(400, 1.4rem, 2rem);
+    color: var(--color-fg);
+  }
 
-    > div:last-child {
-      letter-spacing: 0;
-      color: $blue-600;
-    }
+  &__message {
+    @include font-arimo(400, 1.4rem, 2rem);
+    color: $blue-600;
   }
 
   &--error {
-    .basic-alert__alert-info-div {
-      > div:first-child {
-        color: $red-600;
-      }
-      > div:last-child {
-        color: $red-600;
-        opacity: 0.9;
-      }
+    .basic-alert__title {
+      color: $red-600;
+    }
+    .basic-alert__message {
+      opacity: 0.9;
+      color: $red-600;
     }
   }
 }
