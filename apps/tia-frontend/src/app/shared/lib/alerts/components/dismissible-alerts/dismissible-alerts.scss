@@ -1,7 +1,8 @@
 @use '../../../../styles/palette' as *;
 @use '../../../../styles/mixins' as *;
 
-.alert-types-icons {
+.dismissible-alerts {
+  position: relative;
   max-width: 105.3rem;
   min-height: 6.76rem;
   width: 100%;
@@ -35,6 +36,7 @@
   &__alert-info-div {
     justify-content: center;
     @include display-flex(column, nowrap);
+    gap: 0.2rem;
   }
 
   &__title {
@@ -48,13 +50,29 @@
     color: $blue-900;
   }
 
+  &__close-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    @include display-flex(row, nowrap);
+    justify-content: center;
+    align-items: center;
+
+    width: 3.6rem;
+    height: 3.6rem;
+    top: 8.8px;
+    left: 1008px;
+    border-radius: 8px;
+  }
+
   &--error {
     background: $red-50;
     border: 0.08rem solid $red-200;
-    .alert-types-icons__title {
+    .dismissible-alerts__title {
       color: $red-900;
     }
-    .alert-types-icons__message {
+    .dismissible-alerts__message {
       color: $red-950;
     }
   }
@@ -62,10 +80,10 @@
   &--success {
     background: $green-50;
     border: 0.08rem solid $green-200;
-    .alert-types-icons__title {
+    .dismissible-alerts__title {
       color: $green-900;
     }
-    .alert-types-icons__message {
+    .dismissible-alerts__message {
       color: $green-950;
     }
   }
@@ -73,10 +91,10 @@
   &--warning {
     background: $yellow-50;
     border: 0.08rem solid $yellow-200;
-    .alert-types-icons__title {
+    .dismissible-alerts__title {
       color: $brown-800;
     }
-    .alert-types-icons__message {
+    .dismissible-alerts__message {
       color: $brown-700;
     }
   }
