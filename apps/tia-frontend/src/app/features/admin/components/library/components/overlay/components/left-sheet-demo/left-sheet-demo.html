@@ -5,8 +5,7 @@
 <app-ui-sheet-modal [isOpen]="isOpen()" direction="left" (closed)="toggle()">
   <nav class="nav-sheet">
     <header class="nav-sheet__header">
-      <h2 class="nav-sheet__title">Navigation</h2>
-      <p class="nav-sheet__subtitle">Quick access to main sections</p>
+      <app-library-title [title]="sheetTitle" [subtitle]="sheetSubtitle"></app-library-title>
     </header>
 
     <div class="nav-sheet__list">

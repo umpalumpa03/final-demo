@@ -11,6 +11,8 @@ import { DeleteAccountDialog } from './components/delete-account-dialog/delete-a
 import { ConfirmAccountDialog } from './components/confirm-account-dialog/confirm-account-dialog';
 import { RightSheetDemo } from "./components/right-sheet-demo/right-sheet-demo";
 import { LeftSheetDemo } from "./components/left-sheet-demo/left-sheet-demo";
+import { TopSheetModal } from "./components/top-sheet-modal/top-sheet-modal";
+import { BottomSheetModal } from "./components/bottom-sheet-modal/bottom-sheet-modal";
 
 @Component({
   selector: 'app-overlay',
@@ -23,7 +25,9 @@ import { LeftSheetDemo } from "./components/left-sheet-demo/left-sheet-demo";
     DeleteAccountDialog,
     ConfirmAccountDialog,
     RightSheetDemo,
-    LeftSheetDemo
+    LeftSheetDemo,
+    TopSheetModal,
+    BottomSheetModal
 ],
   templateUrl: './overlay.html',
   styleUrls: ['./overlay.scss'],

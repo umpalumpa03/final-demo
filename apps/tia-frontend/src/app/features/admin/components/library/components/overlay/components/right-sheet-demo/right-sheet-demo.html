@@ -5,8 +5,10 @@
 <app-ui-sheet-modal [isOpen]="isOpen()" direction="right" (closed)="toggle()">
   <div class="sheet-demo">
     <header class="sheet-demo__header">
-      <h2 class="sheet-demo__title">Edit Settings</h2>
-      <p class="sheet-demo__subtitle">Make changes to your settings here.</p>
+      <app-library-title
+        [title]="sheetTitle"
+        [subtitle]="sheetSubtitle"
+      ></app-library-title>
     </header>
 
     <div class="sheet-demo__form">
