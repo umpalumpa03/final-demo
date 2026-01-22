@@ -2,19 +2,10 @@ import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/c
 import { Avatar } from '../../../../../../shared/lib/data-display/avatars/avatar';
 import { AvatarGroup } from '../../../../../../shared/lib/data-display/avatars/avatar-groups/avatar-group';
 import {
-  AvatarColor,
   AvatarGroupItem,
-  AvatarSize,
-  AvatarStatus,
-  AvatarTone,
 } from '../../../../../../shared/lib/data-display/models/avatar.model';
 import { LibraryTitle } from '../../shared/library-title/library-title';
 import { ADDITIONAL_USERS, AVATAR_SIZES, AvatarUserProfile, COLOR_AVATARS, GROUP_AVATARS, LOGGED_IN_USER, STATUS_AVATARS } from './config/avatars-data.config';
-
-interface UserProfile {
-  firstName: string;
-  lastName: string;
-}
 
 @Component({
   selector: 'app-avatars',
