@@ -4,8 +4,8 @@ import { COUNTRIES } from '../models/contact-forms.model';
 @Component({
   selector: 'app-registration-form',
   imports: [],
-  templateUrl: './Registration-form.html',
-  styleUrl: './Registration-form.scss',
+  templateUrl: './registration-form.html',
+  styleUrl: './registration-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RegistrationForm {
