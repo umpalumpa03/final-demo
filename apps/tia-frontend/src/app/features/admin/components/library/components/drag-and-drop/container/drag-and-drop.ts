@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { DragCard } from './components/drag-card/drag-card';
+import { DragCard } from '@tia/shared/lib/drag-n-drop/components/drag-card/drag-card';
 @Component({
   selector: 'app-drag-and-drop-container',
   imports: [DragCard],

@@ -4,9 +4,9 @@ import {
   signal,
   computed,
 } from '@angular/core';
-import { DraggableCard } from '@tia/shared/lib/drag-n-drop/draggable-card/draggable-card';
 import { DraggableItemType } from '@tia/shared/lib/drag-n-drop/model/drag.model';
-import { items } from '../../config/draggable-data';
+import { items } from '../../config/draggable-data.config';
+import { DraggableCard } from '../draggable-card/draggable-card';
 
 @Component({
   selector: 'app-drag-card',

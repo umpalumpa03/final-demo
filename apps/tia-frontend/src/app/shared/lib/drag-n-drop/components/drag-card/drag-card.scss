@@ -1,5 +1,5 @@
-@use '../../../../../../../../shared/styles/mixins' as *;
-@use '../../../../../../../../shared/styles/palette' as *;
+@use '../../../../styles/mixins' as *;
+@use '../../../../styles/palette' as *;
 
 .drag-card-frame {
   @include display-flex(column);
@@ -28,5 +28,4 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
   }
-
 }

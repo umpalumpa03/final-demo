@@ -4,7 +4,7 @@ import {
   input,
   output,
 } from '@angular/core';
-import { DraggableItemType } from '../model/drag.model';
+import { DraggableItemType } from '../../model/drag.model';
 
 @Component({
   selector: 'app-draggable-card',

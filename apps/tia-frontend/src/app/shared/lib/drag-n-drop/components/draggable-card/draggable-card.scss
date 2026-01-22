@@ -1,6 +1,5 @@
-@use '../../../styles/mixins' as *;
-@use '../../../styles/palette' as *;
-
+@use '../../../../styles/mixins' as *;
+@use '../../../../styles/palette' as *;
 .draggable-card {
   @include flex-center(row, space-between);
   width: 100%;
