@@ -1,4 +1,10 @@
-import { Component, HostListener, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  input,
+  output,
+} from '@angular/core';
 import { SheetDirection } from './types/sheet.model';
 
 @Component({
@@ -6,6 +12,7 @@ import { SheetDirection } from './types/sheet.model';
   imports: [],
   templateUrl: './ui-sheet-modal.html',
   styleUrl: './ui-sheet-modal.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UiSheetModal {
   public isOpen = input.required<boolean>();

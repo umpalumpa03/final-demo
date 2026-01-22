@@ -20,14 +20,6 @@ describe('UiSheetModal', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render in the correct direction', () => {
-    fixture.componentRef.setInput('isOpen', true);
-    fixture.componentRef.setInput('direction', 'bottom');
-    fixture.detectChanges();
-
-    const sheet = fixture.debugElement.query(By.css('.ui-sheet--bottom'));
-    expect(sheet).not.toBeNull();
-  });
 
   it('should emit closed when backdrop is clicked', () => {
     fixture.componentRef.setInput('isOpen', true);

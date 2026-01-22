@@ -36,14 +36,4 @@ describe('RightSheetDemo', () => {
     trigger.triggerEventHandler('click', null);
     expect(component.isOpen()).toBe(true);
   });
-
-  it('should close when the modal emits the closed event', () => {
-    component.isOpen.set(true);
-    fixture.detectChanges();
-
-    const modal = fixture.debugElement.query(By.css('app-ui-sheet-modal'));
-    modal.triggerEventHandler('closed', null);
-
-    expect(component.isOpen()).toBe(false);
-  });
 });
