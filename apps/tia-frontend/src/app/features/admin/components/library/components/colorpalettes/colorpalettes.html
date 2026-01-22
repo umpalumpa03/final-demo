@@ -1,15 +1,26 @@
 <div class="colorpalettes-container">
-  <app-library-title
-    [title]="title"
-    subtitle="Three beautiful blue color schemes for your components"
-  >
-  </app-library-title>
-  <div class="oceanblue-theme-container">
-    <h2 class="oceanblue-theme-container__title ta-title">Ocean Blue</h2>
-    <p class="oceanblue-theme-container__subtitle ta-subtitle">
-      Light and refreshing theme perfect for modern applications
-    </p>
-  </div>
+  <header class="colorpalettes-header">
+    <app-library-title
+      [title]="title"
+      subtitle="Three beautiful blue color schemes for your components"
+    />
+  </header>
 
-  <app-oceanblue-theme></app-oceanblue-theme>
+  <div class="theme-container">
+    <app-showcase-card
+      title="Ocean Blue"
+      subtitle="Light and refreshing theme perfect for modern applications"
+      class="ocean-blue-theme"
+    >
+      <app-oceanblue-theme></app-oceanblue-theme>
+    </app-showcase-card>
+
+    <app-showcase-card
+      title="Royal Blue"
+      subtitle="Rich and elegant theme with vibrant blue tones"
+      class="royal-blue-theme"
+    >
+      <app-royalblue-theme></app-royalblue-theme>
+    </app-showcase-card>
+  </div>
 </div>

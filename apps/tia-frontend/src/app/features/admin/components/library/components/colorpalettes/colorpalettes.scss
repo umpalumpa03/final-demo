@@ -8,7 +8,12 @@
   min-height: 6.4rem;
   @include display-flex(column);
 
-  .oceanblue-theme-container {
+  .colorpalettes-header {
+    margin-bottom: 2rem;
+    padding: 0 2rem;
+  }
+
+  .theme-container {
     padding: 2rem;
     @include display-flex(column);
     gap: 0.8rem;
