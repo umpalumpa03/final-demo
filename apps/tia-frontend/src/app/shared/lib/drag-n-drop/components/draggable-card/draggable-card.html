@@ -1,4 +1,8 @@
-<div class="draggable-card" [class.dragging]="isDragging()">
+<div
+  class="draggable-card"
+  [class.dragging]="isDragging()"
+  [class.drop-target]="isDropTarget()"
+>
   <div class="draggable-card__draggable">
     <img
       class="draggable-card__icon"
