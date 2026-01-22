@@ -13,5 +13,5 @@ import { colorPalettes } from './config/palette-data.config';
 })
 export class Colorpalettes {
   public readonly title = 'Color Palettes';
-  public readonly colorPalettes = colorPalettes;
+  public readonly colorPalettesData = colorPalettes;
 }

@@ -22,4 +22,11 @@ export class Palettes {
       palettesData[this.theme() as keyof typeof palettesData] ??
       palettesData.oceanblue,
   );
+
+  public showInsideLabels = computed<boolean[]>(() =>
+    this.swatches().map(
+      (swatch) =>
+        swatch.modifier === 'primary' || swatch.modifier === 'foreground',
+    ),
+  );
 }

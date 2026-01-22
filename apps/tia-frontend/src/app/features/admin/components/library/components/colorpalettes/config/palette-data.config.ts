@@ -8,7 +8,7 @@ export const OCEANBLUE_PALETTE_DATA: Palette[] = [
   { name: 'Muted', code: '#bae6fd', modifier: 'muted' },
   { name: 'Background', code: '#f0f9ff', modifier: 'background' },
   { name: 'Foreground', code: '#0c4a6e', modifier: 'foreground' },
-];
+] as const;
 
 export const ROYALBLUE_PALETTE_DATA: Palette[] = [
   { name: 'Primary', code: '#2563EB', modifier: 'primary' },
@@ -17,7 +17,7 @@ export const ROYALBLUE_PALETTE_DATA: Palette[] = [
   { name: 'Muted', code: '#BFDBFE', modifier: 'muted' },
   { name: 'Background', code: '#EFF6FF', modifier: 'background' },
   { name: 'Foreground', code: '#1E3A8A', modifier: 'foreground' },
-];
+] as const;
 
 export const DEEPBLUE_PALETTE_DATA: Palette[] = [
   { name: 'Primary', code: '#1E40AF', modifier: 'primary' },
@@ -26,7 +26,7 @@ export const DEEPBLUE_PALETTE_DATA: Palette[] = [
   { name: 'Muted', code: '#CBD5E1', modifier: 'muted' },
   { name: 'Background', code: '#F8FAFC', modifier: 'background' },
   { name: 'Foreground', code: '#0F172A', modifier: 'foreground' },
-];
+] as const;
 
 export const colorPalettes: ColorPalette[] = [
   {
@@ -47,7 +47,7 @@ export const colorPalettes: ColorPalette[] = [
     theme: 'deepblue',
     scssClass: 'deep-blue-theme',
   },
-];
+] as const;
 
 export const palettesData = {
   oceanblue: OCEANBLUE_PALETTE_DATA,

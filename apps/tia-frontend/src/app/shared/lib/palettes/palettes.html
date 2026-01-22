@@ -1,11 +1,11 @@
 <div class="palette theme-{{ theme() }}">
-  @for (swatch of swatches(); track swatch.modifier) {
+  @for (swatch of swatches(); track swatch.modifier; let index = $index) {
   <div class="palette__item">
     <div
       class="palette__swatch"
       [class]="'palette__swatch--' + swatch.modifier"
     >
-      @if (swatch.modifier === 'primary' || swatch.modifier === 'foreground') {
+      @if (showInsideLabels()[index]) {
       <span class="palette__label palette__label--inside"
         >{{ swatch.name }}</span
       >

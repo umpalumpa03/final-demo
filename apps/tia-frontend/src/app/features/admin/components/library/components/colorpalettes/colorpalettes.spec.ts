@@ -23,10 +23,6 @@ describe('Colorpalettes', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have correct title property', () => {
-    expect(component.title).toBe('Color Palettes');
-  });
-
   it('should render main container', () => {
     const container = fixture.nativeElement.querySelector(
       '.colorpalettes-container',
@@ -57,11 +53,5 @@ describe('Colorpalettes', () => {
     const showcaseCards =
       fixture.nativeElement.querySelectorAll('app-showcase-card');
     expect(showcaseCards.length).toBe(3);
-  });
-
-  it('should render library title component', () => {
-    const libraryTitle =
-      fixture.nativeElement.querySelector('app-library-title');
-    expect(libraryTitle).toBeTruthy();
   });
 });

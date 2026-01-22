@@ -7,7 +7,7 @@
       />
     </header>
 
-    @for (palette of colorPalettes; track palette.title) {
+    @for (palette of colorPalettesData; track palette.title) {
     <app-showcase-card
       [title]="palette.title"
       [subtitle]="palette.subtitle"
