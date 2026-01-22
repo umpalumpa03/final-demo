@@ -2,10 +2,11 @@
 @use '../../../../../../shared/styles/palette' as *;
 
 .colorpalettes-container {
-  max-width: 192rem;
+  max-width: 110rem;
   padding: 2rem;
   width: 100%;
   min-height: 6.4rem;
+  margin: 0 auto;
   @include display-flex(column);
 
   .oceanblue-theme-container {

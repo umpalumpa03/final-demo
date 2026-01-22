@@ -3,3 +3,26 @@ export interface DraggableItemType {
   title: string;
   subtitle: string;
 }
+
+export interface KanbanItem extends DraggableItemType {
+  boardId: string;
+  order: number;
+}
+
+export interface BoardConfig {
+  id: string;
+  title: string;
+}
+
+export interface CardMovedEvent {
+  cardId: string;
+  fromBoardId: string;
+  toBoardId: string;
+  newOrder: number;
+}
+
+export interface CardReorderedEvent {
+  cardId: string;
+  boardId: string;
+  newOrder: number;
+}

@@ -1,14 +1,11 @@
 @use '../../../../../../../shared/styles/mixins' as *;
 @use '../../../../../../../shared/styles/palette' as *;
 
-
 .drag-frame {
   @include flex-center();
   width: 100%;
-  max-width: 192rem;
-  background-color: var(--color-bg);
   height: auto;
-  padding-top: 3rem;
+  padding: 3rem 0;
 
   &__container {
     @include display-flex(column);
@@ -36,6 +33,7 @@
 
     .drag-frame__content {
       @include display-flex(column);
+      gap: 3.2rem;
     }
   }
 }

@@ -1,0 +1,29 @@
+@use "../../../../shared/styles/palette" as *;
+@use "../../../../shared/styles/mixins" as *;
+
+.breadcrumbs {
+    @include display-flex(row, nowrap);
+    gap: 0.8rem;
+    font-size: 1.4rem;
+    color: $gray-600;
+
+    &__item {
+        @include display-flex(row, center);
+        gap: 1rem;
+
+        &__link {
+            color: $blue-600;
+            transition: color 0.2s;
+            @include flex-center();
+            gap: 0.8rem;
+
+            &:hover {
+                color: var(--color-primary);
+            }
+
+            &--last {
+                color: var(--color-fg);
+            }
+        }
+    }
+}
