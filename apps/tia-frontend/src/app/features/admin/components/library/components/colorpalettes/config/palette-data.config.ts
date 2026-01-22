@@ -17,3 +17,12 @@ export const ROYALBLUE_PALETTE_DATA: Palette[] = [
   { name: 'Background', code: '#EFF6FF', modifier: 'background' },
   { name: 'Foreground', code: '#1E3A8A', modifier: 'foreground' },
 ];
+
+export const DEEPBLUE_PALETTE_DATA: Palette[] = [
+  { name: 'Primary', code: '#1E40AF', modifier: 'primary' },
+  { name: 'Secondary', code: '#E2E8F0', modifier: 'secondary' },
+  { name: 'Accent', code: '#94A3B8', modifier: 'accent' },
+  { name: 'Muted', code: '#CBD5E1', modifier: 'muted' },
+  { name: 'Background', code: '#F8FAFC', modifier: 'background' },
+  { name: 'Foreground', code: '#0F172A', modifier: 'foreground' },
+];

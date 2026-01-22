@@ -1,1 +1,8 @@
-<p>deepblue-theme works!</p>
+<div class="palette palette--deepblue">
+  @for (swatch of swatches; track swatch.modifier) {
+  <div class="palette__swatch" [class]="'palette__swatch--' + swatch.modifier">
+    <span class="palette__label">{{ swatch.name }}</span>
+    <span class="palette__code">{{ swatch.code }}</span>
+  </div>
+  }
+</div>
