@@ -15,7 +15,41 @@ describe('Colorpalettes', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have correct title property', () => {
+    expect(component.title).toBe('Color Palettes');
+  });
+
+  it('should render main container', () => {
+    const container = fixture.nativeElement.querySelector(
+      '.colorpalettes-container',
+    );
+    expect(container).toBeTruthy();
+  });
+
+  it('should render all three theme components', () => {
+    const oceanblue = fixture.nativeElement.querySelector(
+      'app-oceanblue-theme',
+    );
+    const royalblue = fixture.nativeElement.querySelector(
+      'app-royalblue-theme',
+    );
+    const deepblue = fixture.nativeElement.querySelector('app-deepblue-theme');
+    expect(oceanblue && royalblue && deepblue).toBeTruthy();
+  });
+
+  it('should render three showcase cards', () => {
+    const showcaseCards =
+      fixture.nativeElement.querySelectorAll('app-showcase-card');
+    expect(showcaseCards.length).toBe(3);
+  });
+
+  it('should render library title component', () => {
+    const libraryTitle =
+      fixture.nativeElement.querySelector('app-library-title');
+    expect(libraryTitle).toBeTruthy();
   });
 });
