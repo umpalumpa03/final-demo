@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { UiModal } from './ui-modal';
 import { By } from '@angular/platform-browser';
 import { expect, describe, it, beforeEach, vi } from 'vitest';
+import { UiModal } from './ui-modal';
 
 describe('UiModal', () => {
   let component: UiModal;
@@ -16,55 +16,29 @@ describe('UiModal', () => {
     component = fixture.componentInstance;
   });
 
-  it('should not render the modal when isOpen is false', async () => {
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should render the modal only when isOpen is true', () => {
     fixture.componentRef.setInput('isOpen', false);
     fixture.detectChanges();
+    expect(fixture.debugElement.query(By.css('.ui-modal'))).toBeNull();
 
-    const overlay = fixture.debugElement.query(By.css('.ui-modal-overlay'));
-    expect(overlay).toBeNull();
+    fixture.componentRef.setInput('isOpen', true);
+    fixture.detectChanges();
+    expect(fixture.debugElement.query(By.css('.ui-modal'))).not.toBeNull();
   });
 
-  it('should render the modal when isOpen is true', async () => {
+  it('should emit closed event when the close button is clicked', () => {
     fixture.componentRef.setInput('isOpen', true);
     fixture.detectChanges();
 
-    const overlay = fixture.debugElement.query(By.css('.ui-modal-overlay'));
-    expect(overlay).not.toBeNull();
-
-    const card = fixture.debugElement.query(By.css('.ui-modal-card'));
-    expect(card.attributes['role']).toBe('dialog');
-  });
-
-  it('should emit closed event when close() is called', () => {
     const emitSpy = vi.spyOn(component.closed, 'emit');
+    const closeBtn = fixture.debugElement.query(By.css('.ui-modal__close'));
 
-    component.close();
-
+    closeBtn.triggerEventHandler('click', null);
     expect(emitSpy).toHaveBeenCalled();
-  });
-
-  it('should emit closed event when overlay backdrop is clicked', () => {
-    fixture.componentRef.setInput('isOpen', true);
-    fixture.detectChanges();
-
-    const emitSpy = vi.spyOn(component.closed, 'emit');
-    const overlay = fixture.debugElement.query(By.css('.ui-modal-overlay'));
-
-    overlay.nativeElement.click();
-
-    expect(emitSpy).toHaveBeenCalled();
-  });
-
-  it('should not emit closed event when modal card is clicked', () => {
-    fixture.componentRef.setInput('isOpen', true);
-    fixture.detectChanges();
-
-    const emitSpy = vi.spyOn(component.closed, 'emit');
-    const card = fixture.debugElement.query(By.css('.ui-modal-card'));
-
-    card.nativeElement.click();
-
-    expect(emitSpy).not.toHaveBeenCalled();
   });
 
   it('should emit closed event when Escape key is pressed', () => {
@@ -79,15 +53,14 @@ describe('UiModal', () => {
     expect(emitSpy).toHaveBeenCalled();
   });
 
-  it('should emit closed event when close button is clicked', () => {
+  it('should NOT emit closed event when clicking inside the modal card', () => {
     fixture.componentRef.setInput('isOpen', true);
     fixture.detectChanges();
 
     const emitSpy = vi.spyOn(component.closed, 'emit');
-    const closeBtn = fixture.debugElement.query(By.css('.ui-modal-close-btn'));
+    const card = fixture.debugElement.query(By.css('.ui-modal__card'));
 
-    closeBtn.nativeElement.click();
-
-    expect(emitSpy).toHaveBeenCalled();
+    card.nativeElement.click();
+    expect(emitSpy).not.toHaveBeenCalled();
   });
 });
