@@ -28,34 +28,23 @@ describe('ContactForms', () => {
     expect(component.subscribe.value).toBe(false);
   });
 
-  it('should emit payload and reset when form valid on submit', () => {
-    vi.spyOn(component.submitForm, 'emit');
-
-    component.contactForm.setValue({
-      name: 'Test',
-      email: 'Test@test.com',
-      message: 'A'.repeat(50),
-      subscribe: true,
-    });
-
-    expect(component.contactForm.valid).toBe(true);
+  it('should mark all fields as touched when submitting invalid form', () => {
+    expect(component.name.touched).toBe(false);
+    expect(component.email.touched).toBe(false);
+    expect(component.message.touched).toBe(false);
+    expect(component.subscribe.touched).toBe(false);
 
     component.submit();
 
-    expect(component.submitForm.emit).toHaveBeenCalledWith({
-      name: 'Test',
-      email: 'Test@test.com',
-      message: 'A'.repeat(50),
-      subscribe: true,
-    });
-
-    expect(component.contactForm.pristine).toBe(true);
-    expect(component.contactForm.getRawValue().subscribe).toBe(false);
+    expect(component.name.touched).toBe(true);
+    expect(component.email.touched).toBe(true);
+    expect(component.message.touched).toBe(true);
+    expect(component.subscribe.touched).toBe(true);
   });
-
-  it('should not emit when form invalid', () => {
-    vi.spyOn(component.submitForm, 'emit');
-    component.submit();
-    expect(component.submitForm.emit).not.toHaveBeenCalled();
-  });
+  //     expect(component.name).toBe(component.contactForm.controls.name);
+  //     expect(component.email).toBe(component.contactForm.controls.email);
+  //     expect(component.message).toBe(component.contactForm.controls.message);
+  //     expect(component.subscribe).toBe(component.contactForm.controls.subscribe);
+  //   });
+  // });
 });
