@@ -9,6 +9,7 @@ import { ShowcaseCard } from './components/showcase-card/showcase-card';
 import { EditProfileDialog } from './components/edit-profile-dialog/edit-profile-dialog';
 import { FormDialog } from './components/form-dialog/form-dialog';
 import { LargeDialog } from './components/large-dialog/large-dialog';
+import { DeleteAccountDialog } from "./components/delete-account-dialog/delete-account-dialog";
 
 @Component({
   selector: 'app-overlay',
@@ -18,7 +19,8 @@ import { LargeDialog } from './components/large-dialog/large-dialog';
     EditProfileDialog,
     FormDialog,
     LargeDialog,
-  ],
+    DeleteAccountDialog
+],
   templateUrl: './overlay.html',
   styleUrls: ['./overlay.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
