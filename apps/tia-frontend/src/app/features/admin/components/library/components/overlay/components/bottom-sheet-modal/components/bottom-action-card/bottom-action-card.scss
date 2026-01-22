@@ -1,0 +1,51 @@
+@use '../../../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../../../shared/styles/palette' as *;
+
+.action-card {
+  @include display-flex(column);
+  justify-content: center;
+  align-items: center;
+  gap: 1.2rem;
+  width: 27.98rem;
+  height: 8rem;
+  background-color: var(--color-bg);
+  border: 0.08rem solid var(--color-accent);
+  border-radius: 0.8rem;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    background-color 0.2s;
+
+  &:hover {
+    background-color: var(--color-secondary);
+    transform: translateY(-0.2rem);
+
+    .action-card__icon {
+      background-color: var(--color-primary);
+    }
+  }
+
+  &__label {
+    @include font-arimo(400, 1.2rem, 1.6rem);
+    color: var(--color-fg);
+    text-align: center;
+    pointer-events: none;
+  }
+
+  &__icon {
+    width: 2rem;
+    height: 2rem;
+    background-color: var(--color-fg);
+    transition: background-color 0.2s;
+
+    mask-image: var(--icon-mask);
+    -webkit-mask-image: var(--icon-mask);
+
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+  }
+}

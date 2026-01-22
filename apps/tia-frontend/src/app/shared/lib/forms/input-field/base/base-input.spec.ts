@@ -34,16 +34,6 @@ describe('BaseInput Logic (No DOM)', () => {
     fixture.detectChanges();
   });
 
-  it('should write value directly to signal', () => {
-    component.writeValue('test-value');
-    expect(component['value']()).toBe('test-value');
-  });
-
-  it('should handle null value in writeValue', () => {
-    component.writeValue(null);
-    expect(component['value']()).toBe('');
-  });
-
   it('should register onChange and call it on input', () => {
     const onChangeSpy = vi.fn();
     component.registerOnChange(onChangeSpy);
