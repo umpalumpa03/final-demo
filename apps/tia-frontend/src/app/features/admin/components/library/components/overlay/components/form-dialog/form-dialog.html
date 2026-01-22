@@ -1,0 +1,43 @@
+<button class="form-dialog-trigger btn-secondary" (click)="toggle()">
+  Dialog with Form
+</button>
+
+<app-ui-modal [isOpen]="isOpen()" (closed)="toggle()">
+  <div class="project-form">
+    <header class="project-form__header">
+      <h2 class="project-form__title">Create New Project</h2>
+      <p class="project-form__description">
+        Fill in the details below to start a new project.
+      </p>
+    </header>
+
+    <form class="project-form__form">
+      <div class="project-form__input-group">
+        <label class="project-form__label" for="project-name"
+          >Project Name</label
+        >
+        <input
+          class="project-form__input"
+          id="project-name"
+          type="text"
+          placeholder="My Awesome Project"
+        />
+      </div>
+      <div class="project-form__input-group">
+        <label class="project-form__label" for="description">Description</label>
+        <textarea
+          class="project-form__textarea"
+          id="description"
+          placeholder="Describe your project..."
+        ></textarea>
+      </div>
+    </form>
+
+    <footer class="project-form__footer">
+      <button type="button" class="btn-outline" (click)="toggle()">
+        Cancel
+      </button>
+      <button type="submit" class="btn-primary">Create</button>
+    </footer>
+  </div>
+</app-ui-modal>

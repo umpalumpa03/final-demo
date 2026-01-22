@@ -1,6 +1,24 @@
-<div class="lib-header">
-  <h2 class="lib-header__title ta-title">{{ title() }}</h2>
-  @if (subtitle()) {
-  <p class="lib-header__subtitle ta-subtitle">{{ subtitle() }}</p>
-  }
-</div>
+<header class="header">
+  <div class="container">
+    <div class="container__heading">
+      <h1>Component Library</h1>
+      <p>
+        A comprehensive showcase of all components with their various states
+      </p>
+    </div>
+    <div class="container__color-switch">
+      <img
+        src="images/svg/library-header/color-switch.svg"
+        alt="color switch icon"
+      />
+      <div>
+        @for (item of colorConfigs; track item.color) {
+        <app-color-switch
+          [color]="item.color"
+          [isActive]="item.isActive"
+        ></app-color-switch>
+        }
+      </div>
+    </div>
+  </div>
+</header>

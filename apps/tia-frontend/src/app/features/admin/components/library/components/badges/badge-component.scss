@@ -2,10 +2,12 @@
 
 .badge-demo {
   padding: 2.4rem;
-  border: 1px solid palette.$blue-400;
+  border: 0.1rem solid palette.$blue-400;
   border-radius: 1.2rem;
   background-color: palette.$white;
-  margin-top: 1.6rem;
+ 
+  max-width: 150rem;
+  margin: 2rem auto;
 
   &__title {
     margin: 0 0 1.2rem 0;

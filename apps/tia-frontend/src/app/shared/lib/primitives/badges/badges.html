@@ -1,5 +1,13 @@
 <span
   [class]="badgeClass()"
+  [attr.data-status]="status()"
 >
-  {{ text() }}
+  @if (shouldShowIcon()) {
+    <img 
+      [src]="iconPath()" 
+      alt="" 
+      class="badge__icon"
+    />
+  }
+  <span class="badge__text">{{ text() }}</span>
 </span>

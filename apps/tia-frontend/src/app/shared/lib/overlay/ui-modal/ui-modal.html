@@ -1,0 +1,30 @@
+@if (isOpen()) {
+<div
+  class="ui-modal"
+  (click)="close()"
+  (keydown.escape)="close()"
+  role="button"
+  tabindex="-1"
+  aria-label="Close modal overlay"
+>
+  <div
+    class="ui-modal__card"
+    (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
+    role="dialog"
+    aria-modal="true"
+    tabindex="0"
+  >
+    <button
+      type="button"
+      class="ui-modal__close"
+      (click)="close()"
+      aria-label="Close"
+    >
+      <span class="ui-modal__close-icon"></span>
+    </button>
+
+    <ng-content></ng-content>
+  </div>
+</div>
+}

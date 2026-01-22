@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DraggableCard } from './draggable';
+import { Feedback } from './feedback';
 
-describe('DraggableCard', () => {
-  let component: DraggableCard;
-  let fixture: ComponentFixture<DraggableCard>;
+describe('Feedback', () => {
+  let component: Feedback;
+  let fixture: ComponentFixture<Feedback>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DraggableCard],
+      imports: [Feedback],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DraggableCard);
+    fixture = TestBed.createComponent(Feedback);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
