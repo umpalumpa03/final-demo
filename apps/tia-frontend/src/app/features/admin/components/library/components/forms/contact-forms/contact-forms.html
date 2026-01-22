@@ -1,5 +1,5 @@
 <form class="contact__form" [formGroup]="contactForm" (ngSubmit)="submit()">
-  <div>
+  <div class="contact__form__fields">
     <label [class.invalid]="showError('name')" for="name">Name *</label>
     <input formControlName="name" type="text" placeholder="Your name" />
     @if (showError('name')) {
@@ -10,7 +10,7 @@
     }
   </div>
 
-  <div>
+  <div class="contact__form__fields">
     <label [class.invalid]="showError('email')" for="email">Email *</label>
     <input formControlName="email" type="email" placeholder="your.email@example.com" />
     @if (showError('email')) {
@@ -21,7 +21,7 @@
     }
   </div>
 
-  <div>
+  <div class="contact__form__fields">
     <label [class.invalid]="showError('message')" for="message">Message *</label>
     <textarea formControlName="message" placeholder="Type your message here..."></textarea>
     @if (showError('message')) {
@@ -33,8 +33,8 @@
   </div>
 
   <div class="contact__form__subscribe">
-    <input formControlName="subscribe" type="checkbox" id="subscribe" />
-    <label [class.invalid]="showError('subscribe')" for="subscribe">Subscribe to newsletter *</label>
+    <input formControlName="subscribe" type="checkbox" />
+    <label [class.invalid]="showError('subscribe')">Subscribe to newsletter *</label>
   </div>
 
   <button type="submit">Submit</button>

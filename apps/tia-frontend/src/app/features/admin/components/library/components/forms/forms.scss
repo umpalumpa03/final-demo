@@ -10,7 +10,7 @@
   height: auto;
   gap: 3.2rem;
 
-  div {
+  &__forms {
     @include display-flex(column);
     max-width: 110.2rem;
     width: 100%;
