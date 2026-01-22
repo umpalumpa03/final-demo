@@ -1,8 +1,4 @@
-import { AvatarGroupItem } from '../../../../../../../shared/lib/data-display/models/avatar.model';
-export interface AvatarUserProfile {
-  firstName: string;
-  lastName: string;
-}
+import { AvatarGroupItem, AvatarUserProfile } from '../../../../../../../shared/lib/data-display/models/avatar.model';
 
 export const AVATAR_SIZES = [
   { size: 'xs', label: 'XS' },

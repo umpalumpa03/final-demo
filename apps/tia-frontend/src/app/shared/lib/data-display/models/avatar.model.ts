@@ -1,3 +1,8 @@
+export interface AvatarUserProfile {
+  firstName: string;
+  lastName: string;
+}
+
 export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 export type AvatarTone = 'soft' | 'solid';
