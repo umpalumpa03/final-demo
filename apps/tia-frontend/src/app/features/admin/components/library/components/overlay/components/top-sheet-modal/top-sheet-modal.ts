@@ -9,8 +9,8 @@ import { LibraryTitle } from '../../../../shared/library-title/library-title';
   styleUrl: './top-sheet-modal.scss',
 })
 export class TopSheetModal {
-  public readonly modalTitle = 'Notification Banner';
-  public readonly modalSubtitle = 'Important announcements and update=s';
+  public modalTitle = 'Notification Banner';
+  public modalSubtitle = 'Important announcements and update=s';
   public isOpen = signal<boolean>(false);
 
   public toggle(): void {

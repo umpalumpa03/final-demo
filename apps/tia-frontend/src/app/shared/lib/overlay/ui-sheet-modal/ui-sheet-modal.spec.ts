@@ -14,43 +14,52 @@ describe('UiSheetModal', () => {
 
     fixture = TestBed.createComponent(UiSheetModal);
     component = fixture.componentInstance;
+
+    fixture.componentRef.setInput('isOpen', false);
+    fixture.componentRef.setInput('direction', 'top');
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-
-  it('should emit closed when backdrop is clicked', () => {
+  it('should emit closed when Enter key is pressed on the backdrop', () => {
     fixture.componentRef.setInput('isOpen', true);
     fixture.detectChanges();
 
     const emitSpy = vi.spyOn(component.closed, 'emit');
     const overlay = fixture.debugElement.query(By.css('.ui-sheet-overlay'));
 
-    overlay.nativeElement.click();
+    const event = new KeyboardEvent('keydown', { key: 'Enter' });
+    overlay.nativeElement.dispatchEvent(event);
+    fixture.detectChanges();
+
     expect(emitSpy).toHaveBeenCalled();
   });
 
-  it('should emit closed when close button is clicked', () => {
+  it('should emit closed when Space key is pressed on the backdrop', () => {
     fixture.componentRef.setInput('isOpen', true);
     fixture.detectChanges();
 
     const emitSpy = vi.spyOn(component.closed, 'emit');
-    const closeBtn = fixture.debugElement.query(By.css('.ui-sheet__close'));
+    const overlay = fixture.debugElement.query(By.css('.ui-sheet-overlay'));
 
-    closeBtn.triggerEventHandler('click', null);
+    const event = new KeyboardEvent('keydown', { key: ' ' });
+    overlay.nativeElement.dispatchEvent(event);
+    fixture.detectChanges();
+
     expect(emitSpy).toHaveBeenCalled();
   });
 
-  it('should not emit closed when content is clicked', () => {
+  it('should stop propagation on keydown inside the modal content', () => {
     fixture.componentRef.setInput('isOpen', true);
     fixture.detectChanges();
 
     const emitSpy = vi.spyOn(component.closed, 'emit');
     const sheet = fixture.debugElement.query(By.css('.ui-sheet'));
 
-    sheet.nativeElement.click();
+    const event = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true });
+    const spy = vi.spyOn(event, 'stopPropagation');
+
+    sheet.nativeElement.dispatchEvent(event);
+
+    expect(spy).toHaveBeenCalled();
     expect(emitSpy).not.toHaveBeenCalled();
   });
 });
