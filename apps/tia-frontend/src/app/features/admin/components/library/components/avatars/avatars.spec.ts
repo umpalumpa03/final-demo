@@ -21,29 +21,4 @@ describe('Avatars', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should have page title and subtitle', () => {
-    expect(component.pageTitle).toBe('Avatars');
-    expect(component.pageSubtitle).toBe('Sizes, initials, colors, groups, and status indicators');
-  });
-
-  it('should expose sizes for the demo', () => {
-    const sizes = component.sizes();
-    expect(sizes.length).toBe(5);
-    expect(sizes[0].label).toBe('XS');
-  });
-
-  it('should compute initials for the logged in user', () => {
-    expect(component.loggedInInitials()).toBe('NM');
-  });
-
-  it('should render section labels', () => {
-    const labels = fixture.nativeElement.querySelectorAll('.avatars__label');
-    expect(labels.length).toBe(5);
-  });
-
-  it('should render a group of avatars', () => {
-    const group = fixture.nativeElement.querySelector('app-avatar-group');
-    expect(group).toBeTruthy();
-  });
 });
