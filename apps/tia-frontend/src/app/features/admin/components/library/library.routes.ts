@@ -25,6 +25,13 @@ export const libraryRoutes: Routes = [
             (c) => c.DragAndDropContainer,
           ),
       },
+      // {
+      //   path: 'buttons',
+      //   loadComponent: () =>
+      //     import('./components/button/button-library').then(
+      //       (c) => c.ButtonLibrary,
+      //     ),
+      // },
       {
         path: 'cards',
         loadComponent: () =>
@@ -51,6 +58,11 @@ export const libraryRoutes: Routes = [
         path: 'datadisplay',
         loadComponent: () =>
           import('./components/avatars/avatars').then((c) => c.Avatars),
+      },
+      {
+        path: 'feedback',
+        loadComponent: () =>
+          import('./components/feedback/feedback').then((c) => c.Feedback),
       },
       {
         path: '**',
