@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 
 
 @Component({
-    selector: 'app-test',
+    selector: 'app-report',
     template: `<p>Report works!</p>`,
 })
 
