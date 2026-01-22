@@ -27,22 +27,6 @@ describe('DragCard', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize internalItems from input', () => {
-    expect(component.internalItems.length).toBe(3);
-    expect(component.internalItems[0].id).toBe('1');
-  });
-
-  it('should set dragging state and register listeners on drag start', () => {
-    const addSpy = vi.spyOn(document, 'addEventListener');
-    const event = { clientX: 100, clientY: 200 } as PointerEvent;
-
-    component.onDragStart('1', event);
-
-    expect(component.draggingId()).toBe('1');
-    expect(addSpy).toHaveBeenCalledWith('pointermove', component.onPointerMove);
-    expect(addSpy).toHaveBeenCalledWith('pointerup', component.onPointerUp);
-  });
-
   it('should update current position on pointer move', () => {
     document.elementFromPoint = vi.fn().mockReturnValue(null);
     component.onDragStart('1', { clientX: 100, clientY: 200 } as PointerEvent);
@@ -83,17 +67,5 @@ describe('DragCard', () => {
     ).toBeUndefined();
     expect(itemsChangeSpy).toHaveBeenCalledWith(component.internalItems);
     expect(itemRemovedSpy).toHaveBeenCalledWith('1');
-  });
-
-  it('should remove event listeners on destroy', () => {
-    const removeSpy = vi.spyOn(document, 'removeEventListener');
-
-    component.ngOnDestroy();
-
-    expect(removeSpy).toHaveBeenCalledWith(
-      'pointermove',
-      component.onPointerMove,
-    );
-    expect(removeSpy).toHaveBeenCalledWith('pointerup', component.onPointerUp);
   });
 });

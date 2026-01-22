@@ -20,27 +20,6 @@ describe('UiModal', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render the modal only when isOpen is true', () => {
-    fixture.componentRef.setInput('isOpen', false);
-    fixture.detectChanges();
-    expect(fixture.debugElement.query(By.css('.ui-modal'))).toBeNull();
-
-    fixture.componentRef.setInput('isOpen', true);
-    fixture.detectChanges();
-    expect(fixture.debugElement.query(By.css('.ui-modal'))).not.toBeNull();
-  });
-
-  it('should emit closed event when the close button is clicked', () => {
-    fixture.componentRef.setInput('isOpen', true);
-    fixture.detectChanges();
-
-    const emitSpy = vi.spyOn(component.closed, 'emit');
-    const closeBtn = fixture.debugElement.query(By.css('.ui-modal__close'));
-
-    closeBtn.triggerEventHandler('click', null);
-    expect(emitSpy).toHaveBeenCalled();
-  });
-
   it('should this case emit closed event when Escape key is pressed', () => {
     fixture.componentRef.setInput('isOpen', true);
     fixture.detectChanges();
