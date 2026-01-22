@@ -6,11 +6,11 @@ import { UiModal } from '../../../../../../../../shared/lib/overlay/ui-modal/ui-
   imports: [UiModal],
   templateUrl: './edit-profile-dialog.html',
   styleUrl: './edit-profile-dialog.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditProfileDialog {
   public isOpen = signal<boolean>(false);
-  public toggle() {
+  public toggle(): void {
     this.isOpen.update((v) => !v);
   }
 }
