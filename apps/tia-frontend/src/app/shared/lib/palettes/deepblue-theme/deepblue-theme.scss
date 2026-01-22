@@ -1,0 +1,81 @@
+@use '../../../../shared/styles/mixins' as *;
+@use '../../../../shared/styles/palette' as *;
+
+.palette {
+  @include display-flex(row, wrap);
+  @include flex-center();
+  padding: 2rem 0;
+  gap: 1rem;
+  width: 100%;
+  max-width: 192rem;
+
+  &__swatch {
+    @include display-flex(column, wrap);
+    @include flex-center(column);
+    gap: 0.5rem;
+    min-width: 14rem;
+    padding: 2rem 1rem;
+    border-radius: 0.5rem;
+    min-height: 12rem;
+    border: 0.1rem solid $gray-200;
+
+    &--primary {
+      background-color: $blue-deep;
+      border-color: $blue-400;
+    }
+
+    &--secondary {
+      background-color: $blue-deep-secondary;
+    }
+
+    &--accent {
+      background-color: $blue-deep-accent;
+    }
+
+    &--muted {
+      background-color: $blue-deep-muted;
+    }
+
+    &--background {
+      background-color: $blue-deep-background;
+    }
+
+    &--foreground {
+      background-color: $blue-deep-foreground;
+      border-color: $blue-400;
+    }
+  }
+
+  &__label {
+    @include font-arimo(400, 1.4rem, 2rem);
+
+    .palette__swatch--primary &,
+    .palette__swatch--foreground & {
+      color: $white;
+    }
+
+    .palette__swatch--secondary &,
+    .palette__swatch--accent &,
+    .palette__swatch--muted &,
+    .palette__swatch--background & {
+      color: $gray-700;
+    }
+  }
+
+  &__code {
+    font-size: 0.75rem;
+    opacity: 0.8;
+
+    .palette__swatch--primary &,
+    .palette__swatch--foreground & {
+      color: $white;
+    }
+
+    .palette__swatch--secondary &,
+    .palette__swatch--accent &,
+    .palette__swatch--muted &,
+    .palette__swatch--background & {
+      color: $gray-500;
+    }
+  }
+}

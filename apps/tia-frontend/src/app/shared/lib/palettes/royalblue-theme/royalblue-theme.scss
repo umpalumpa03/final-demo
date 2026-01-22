@@ -1,10 +1,9 @@
 @use '../../../../shared/styles/mixins' as *;
 @use '../../../../shared/styles/palette' as *;
-@use '../../../../shared/styles/themes' as *;
 
 .palette {
   @include display-flex(row, wrap);
-  @include flex-center(row, center, center);
+  @include flex-center();
   padding: 2rem 0;
   gap: 1rem;
   width: 100%;
@@ -18,30 +17,32 @@
     padding: 2rem 1rem;
     border-radius: 0.5rem;
     min-height: 12rem;
+    border: 0.1rem solid $gray-200;
 
     &--primary {
       background-color: $blue-royal;
+      border-color: $blue-400;
     }
 
     &--secondary {
-      background-color: var(--color-secondary);
+      background-color: $blue-royal-secondary;
     }
 
     &--accent {
-      background-color: var(--color-accent);
+      background-color: $blue-royal-accent;
     }
 
     &--muted {
-      background-color: var(--color-muted);
+      background-color: $blue-royal-muted;
     }
 
     &--background {
-      background-color: var(--color-bg);
-      border: 0.1rem solid var(--color-primary);
+      background-color: $blue-royal-background;
     }
 
     &--foreground {
-      background-color: var(--color-fg);
+      background-color: $blue-royal-foreground;
+      border-color: $blue-400;
     }
   }
 

@@ -8,14 +8,13 @@
   .colorpalettes-content {
     max-width: 1102.4px;
     padding: 2rem;
-    margin: 0 auto;
-
+    margin: 0 auto 2rem;
     padding: 0.4rem 1.6rem;
     width: 100%;
     background-color: $blue-100;
     @include display-flex();
     @include flex-center(column, center, flex-start);
-    gap: 2.4rem;
+    gap: 3.2rem;
 
     .colorpalettes-header {
       margin: 2rem 0;
