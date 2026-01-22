@@ -7,9 +7,6 @@
   @include flex-center(row, center, center);
   padding: 2rem 0;
   gap: 1rem;
-  border: 0.08rem solid $blue-400;
-  border-radius: 0.5rem;
-  background-color: $white;
   width: 100%;
   max-width: 192rem;
 
@@ -70,7 +67,7 @@
 
     .palette__swatch--primary &,
     .palette__swatch--foreground & {
-      color: #ffffffcc;
+      color: $white;
     }
 
     .palette__swatch--secondary &,
