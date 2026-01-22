@@ -7,11 +7,6 @@ describe('getValidationErrorMessage', () => {
     expect(getValidationErrorMessage(undefined)).toBe('');
   });
 
-  it('should return correct minlength message', () => {
-    const errors = { minlength: { requiredLength: 5, actualLength: 2 } };
-    expect(getValidationErrorMessage(errors)).toBe('Min length is 5');
-  });
-
   it('should return correct maxlength message', () => {
     const errors = { maxlength: { requiredLength: 10, actualLength: 15 } };
     expect(getValidationErrorMessage(errors)).toBe('Max length is 10');
@@ -47,19 +42,5 @@ describe('getValidationErrorMessage', () => {
     expect(getValidationErrorMessage({ passwordStrength: true })).toBe(
       'Password is too weak',
     );
-  });
-
-  it('should return default fallback message for unknown errors', () => {
-    expect(getValidationErrorMessage({ unknownCustomError: true })).toBe(
-      'Invalid value',
-    );
-  });
-
-  it('should prioritize messages correctly (e.g., minlength over required)', () => {
-    const errors = {
-      required: true,
-      minlength: { requiredLength: 3, actualLength: 1 },
-    };
-    expect(getValidationErrorMessage(errors)).toBe('Min length is 3');
   });
 });

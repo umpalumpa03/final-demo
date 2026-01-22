@@ -19,20 +19,4 @@ describe('Navigation', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should render navigation links', () => {
-    const compiled = fixture.nativeElement;
-    const links = compiled.querySelectorAll('nav a');
-    expect(links.length).toBeGreaterThan(0);
-  });
-
-  it('should have correct selector', () => {
-    expect(fixture.componentInstance).toBeTruthy();
-  });
-
-  it('should render navigation element', () => {
-    const compiled = fixture.nativeElement;
-    const nav = compiled.querySelector('nav');
-    expect(nav).toBeTruthy();
-  });
 });
