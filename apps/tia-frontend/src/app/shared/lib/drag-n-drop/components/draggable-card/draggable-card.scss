@@ -27,4 +27,9 @@
       @include font-inter(400, 1.6rem, 2.4rem);
     }
   }
+  &.drop-target {
+    border: 0.2rem dashed var(--color-primary);
+    opacity: 0.7;
+    background: rgba(var(--color-primary-rgb), 0.05);
+  }
 }

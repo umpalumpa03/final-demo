@@ -8,7 +8,11 @@
       </p>
     </div>
     <div class="drag-frame__content">
-      <app-drag-card></app-drag-card>
+      <app-drag-card
+        [items]="items"
+        (itemsChange)="items = $event"
+        (itemRemoved)="onItemRemoved($event)"
+      />
     </div>
   </div>
 </div>

@@ -15,7 +15,8 @@ import { DraggableItemType } from '../../model/drag.model';
 })
 export class DraggableCard {
   public itemData = input.required<DraggableItemType>();
-  public isDragging = input<boolean>(false);
+  public isDragging = input(false);
+  public isDropTarget = input(false);
 
   public dragStart = output<PointerEvent>();
   public remove = output<void>();

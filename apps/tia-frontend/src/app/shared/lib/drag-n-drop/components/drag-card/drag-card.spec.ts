@@ -6,6 +6,12 @@ describe('DragCard', () => {
   let component: DragCard;
   let fixture: ComponentFixture<DragCard>;
 
+  const mockItems = [
+    { id: '1', title: 'Item 1', subtitle: 'Subtitle 1' },
+    { id: '2', title: 'Item 2', subtitle: 'Subtitle 2' },
+    { id: '3', title: 'Item 3', subtitle: 'Subtitle 3' },
+  ];
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DragCard],
@@ -13,6 +19,7 @@ describe('DragCard', () => {
 
     fixture = TestBed.createComponent(DragCard);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('items', mockItems);
     await fixture.whenStable();
   });
 
@@ -20,71 +27,73 @@ describe('DragCard', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('onDragStart', () => {
-    it('should set dragging state and register listeners', () => {
-      const addSpy = vi.spyOn(document, 'addEventListener');
-      const event = { clientX: 100, clientY: 200 } as PointerEvent;
-
-      component.onDragStart('1', event);
-
-      expect(component.draggingId()).toBe('1');
-      expect(component.startX).toBe(100);
-      expect(component.startY).toBe(200);
-      expect(addSpy).toHaveBeenCalledWith(
-        'pointermove',
-        component.onPointerMove,
-      );
-      expect(addSpy).toHaveBeenCalledWith('pointerup', component.onPointerUp);
-    });
+  it('should initialize internalItems from input', () => {
+    expect(component.internalItems.length).toBe(3);
+    expect(component.internalItems[0].id).toBe('1');
   });
 
-  describe('onPointerMove', () => {
-    it('should update current position relative to start', () => {
-      component.startX = 100;
-      component.startY = 200;
-      const event = { clientX: 150, clientY: 250 } as PointerEvent;
+  it('should set dragging state and register listeners on drag start', () => {
+    const addSpy = vi.spyOn(document, 'addEventListener');
+    const event = { clientX: 100, clientY: 200 } as PointerEvent;
 
-      component.onPointerMove(event);
+    component.onDragStart('1', event);
 
-      expect(component.currentX()).toBe(50);
-      expect(component.currentY()).toBe(50);
-    });
+    expect(component.draggingId()).toBe('1');
+    expect(addSpy).toHaveBeenCalledWith('pointermove', component.onPointerMove);
+    expect(addSpy).toHaveBeenCalledWith('pointerup', component.onPointerUp);
   });
 
-  describe('onPointerUp', () => {
-    it('should reset state and remove listeners', () => {
-      const removeSpy = vi.spyOn(document, 'removeEventListener');
-      component.draggingId.set('1');
-      component.currentX.set(50);
-      component.currentY.set(50);
+  it('should update current position on pointer move', () => {
+    document.elementFromPoint = vi.fn().mockReturnValue(null);
+    component.onDragStart('1', { clientX: 100, clientY: 200 } as PointerEvent);
 
-      component.onPointerUp();
+    component.onPointerMove({ clientX: 150, clientY: 250 } as PointerEvent);
 
-      expect(component.draggingId()).toBeNull();
-      expect(component.currentX()).toBe(0);
-      expect(component.currentY()).toBe(0);
-      expect(removeSpy).toHaveBeenCalledWith(
-        'pointermove',
-        component.onPointerMove,
-      );
-      expect(removeSpy).toHaveBeenCalledWith(
-        'pointerup',
-        component.onPointerUp,
-      );
-    });
+    expect(component.currentX()).toBe(50);
+    expect(component.currentY()).toBe(50);
   });
 
-  describe('onRemove', () => {
-    it('should remove item by id', () => {
-      const initialLength = component.items.length;
-      const firstItemId = component.items[0].id;
+  it('should reset state and remove listeners on pointer up', () => {
+    const removeSpy = vi.spyOn(document, 'removeEventListener');
+    component.draggingId.set('1');
+    component.currentX.set(50);
+    component.currentY.set(50);
 
-      component.onRemove(firstItemId);
+    component.onPointerUp();
 
-      expect(component.items.length).toBe(initialLength - 1);
-      expect(
-        component.items.find((item) => item.id === firstItemId),
-      ).toBeUndefined();
-    });
+    expect(component.draggingId()).toBeNull();
+    expect(component.currentX()).toBe(0);
+    expect(component.currentY()).toBe(0);
+    expect(removeSpy).toHaveBeenCalledWith(
+      'pointermove',
+      component.onPointerMove,
+    );
+    expect(removeSpy).toHaveBeenCalledWith('pointerup', component.onPointerUp);
+  });
+
+  it('should remove item and emit events on remove', () => {
+    const itemsChangeSpy = vi.spyOn(component.itemsChange, 'emit');
+    const itemRemovedSpy = vi.spyOn(component.itemRemoved, 'emit');
+
+    component.onRemove('1');
+
+    expect(component.internalItems.length).toBe(2);
+    expect(
+      component.internalItems.find((item) => item.id === '1'),
+    ).toBeUndefined();
+    expect(itemsChangeSpy).toHaveBeenCalledWith(component.internalItems);
+    expect(itemRemovedSpy).toHaveBeenCalledWith('1');
+  });
+
+  it('should remove event listeners on destroy', () => {
+    const removeSpy = vi.spyOn(document, 'removeEventListener');
+
+    component.ngOnDestroy();
+
+    expect(removeSpy).toHaveBeenCalledWith(
+      'pointermove',
+      component.onPointerMove,
+    );
+    expect(removeSpy).toHaveBeenCalledWith('pointerup', component.onPointerUp);
   });
 });
