@@ -35,30 +35,36 @@ export abstract class DragBase implements OnDestroy {
   protected onPointerMove = (event: PointerEvent): void => {
     this.currentX.set(event.clientX - this.startX);
     this.currentY.set(event.clientY - this.startY);
-    
+
     const draggedElement = this.containerRef.nativeElement.querySelector(
       `[data-card-id="${this.draggingId()}"]`,
     ) as HTMLElement | null;
     if (draggedElement) {
       draggedElement.style.pointerEvents = 'none';
     }
-
-    const elementBelow = document.elementFromPoint(
-      event.clientX,
-      event.clientY,
-    );
-
+    
+    const elementBelow = document.elementFromPoint(event.clientX, event.clientY);
+  
     const cardBelow = elementBelow?.closest('[data-card-id]');
-    const isWithinContainer =
+    const isCardWithinContainer =
       cardBelow && this.containerRef.nativeElement.contains(cardBelow);
-    const targetId = isWithinContainer
-      ? cardBelow.getAttribute('data-card-id')
-      : null;
-
+  
+    const boardBelow = elementBelow?.closest('[data-board-id]');
+    const isBoardWithinContainer =
+      boardBelow && this.containerRef.nativeElement.contains(boardBelow);
+  
+    let targetId: string | null = null;
+  
+    if (isCardWithinContainer) {
+      targetId = cardBelow.getAttribute('data-card-id');
+    } else if (isBoardWithinContainer) {
+      targetId = `board:${boardBelow.getAttribute('data-board-id')}`;
+    }
+  
     if (draggedElement) {
       draggedElement.style.pointerEvents = '';
     }
-
+  
     if (targetId !== this.draggingId()) {
       this.dropTargetId.set(targetId);
     } else {

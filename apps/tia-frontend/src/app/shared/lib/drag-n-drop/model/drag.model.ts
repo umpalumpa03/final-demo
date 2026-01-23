@@ -26,3 +26,4 @@ export interface CardReorderedEvent {
   boardId: string;
   newOrder: number;
 }
+export type LayoutType = 'grid' | 'list';
