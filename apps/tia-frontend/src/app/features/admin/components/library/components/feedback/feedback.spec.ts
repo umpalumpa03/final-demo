@@ -3,7 +3,7 @@ import { Feedback } from './feedback';
 import {
   IMAGE_SKELETONS, LIST_ITEMS,
   LOADING_CARDS, TEXT_SKELETONS
-} from 'apps/tia-frontend/src/app/features/admin/components/library/components/feedback/config/feedback.config';
+} from './config/feedback.config';
 
 describe('Feedback', () => {
   let component: Feedback;
