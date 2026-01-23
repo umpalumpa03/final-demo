@@ -41,7 +41,7 @@
 
   &__change {
     @include font-arimo(400, 1.2rem, 1.6rem);
-    margin: 0;
+    margin-top: 1rem;
 
     &[data-type='positive'] {
       color: $green-500;

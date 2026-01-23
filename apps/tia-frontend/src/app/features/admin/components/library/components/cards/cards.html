@@ -9,7 +9,13 @@
         [title]="card.title"
         [subtitle]="card.subtitle"
         [content]="card.content"
-      />
+        [hasFooter]="card.hasFooter ?? false"
+      >
+        <div class="card-footer" card-footer>
+          <app-button size="default" variant="outline">Cancel</app-button>
+          <app-button size="default" variant="default">Submit</app-button>
+        </div>
+      </app-basic-card>
       }
     </div>
   </section>
