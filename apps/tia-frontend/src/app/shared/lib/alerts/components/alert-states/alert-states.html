@@ -1,6 +1,6 @@
 <div class="alert-states" [class]="effectiveAlertState()">
     <div class="alert-states__alert-icon-div">
-        <img [src]="'/images/img/alert-icons/base-alert-' + alertType() + '.png'" [alt]="alertType() + ' icon'">
+        <img [src]="effectiveImgPath()" [alt]="effectiveAltName()">
     </div>
     <div class="alert-states__alert-info-div">
        <div class="alert-states__title">{{alertTitle()}}</div>
