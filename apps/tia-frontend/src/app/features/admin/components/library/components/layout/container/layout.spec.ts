@@ -13,7 +13,6 @@ describe('Layout', () => {
     fixture = TestBed.createComponent(Layout);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    await fixture.whenStable();
   });
 
   it('should create', () => {
