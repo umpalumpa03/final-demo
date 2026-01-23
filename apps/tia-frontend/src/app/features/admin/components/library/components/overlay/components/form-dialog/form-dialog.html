@@ -1,43 +1,28 @@
-<button class="form-dialog-trigger btn-secondary" (click)="toggle()">
+<app-button [variant]="'secondary'" (click)="toggle()">
   Dialog with Form
-</button>
+</app-button>
 
 <app-ui-modal [isOpen]="isOpen()" (closed)="toggle()">
   <div class="project-form">
     <header class="project-form__header">
-      <h2 class="project-form__title">Create New Project</h2>
-      <p class="project-form__description">
-        Fill in the details below to start a new project.
-      </p>
+      <app-library-title
+        [title]="projectTitle"
+        [subtitle]="projectSubtitle"
+      ></app-library-title>
     </header>
 
     <form class="project-form__form">
       <div class="project-form__input-group">
-        <label class="project-form__label" for="project-name"
-          >Project Name</label
-        >
-        <input
-          class="project-form__input"
-          id="project-name"
-          type="text"
-          placeholder="My Awesome Project"
-        />
+        <lib-text-input [config]="projectNameInput"></lib-text-input>
       </div>
       <div class="project-form__input-group">
-        <label class="project-form__label" for="description">Description</label>
-        <textarea
-          class="project-form__textarea"
-          id="description"
-          placeholder="Describe your project..."
-        ></textarea>
+        <lib-textarea [config]="projectDescriptionInput"></lib-textarea>
       </div>
     </form>
 
     <footer class="project-form__footer">
-      <button type="button" class="btn-outline" (click)="toggle()">
-        Cancel
-      </button>
-      <button type="submit" class="btn-primary">Create</button>
+      <app-button variant="outline" (click)="toggle()"> Cancel </app-button>
+      <app-button (click)="toggle()"> Create Project </app-button>
     </footer>
   </div>
 </app-ui-modal>

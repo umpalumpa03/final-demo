@@ -1,14 +1,22 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { UiModal } from '../../../../../../../../shared/lib/overlay/ui-modal/ui-modal';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { LibraryTitle } from '../../../../shared/library-title/library-title';
+import { TermsSection } from './models/dialog.model';
+import { TERMS_AND_CONDITIONS } from './config/dialog.config';
 @Component({
   selector: 'app-large-dialog',
-  imports: [UiModal],
+  imports: [UiModal, ButtonComponent, LibraryTitle],
   templateUrl: './large-dialog.html',
   styleUrl: './large-dialog.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LargeDialog {
-  public isOpen = signal(false);
+  public isOpen = signal<boolean>(false);
+  public readonly pageTitle = 'Terms and Conditions';
+  public readonly pageSubtitle =
+    'Please read and accept our terms and conditions.';
+  public readonly sections: TermsSection[] = TERMS_AND_CONDITIONS;
   public toggle(): void {
     this.isOpen.update((v) => !v);
   }

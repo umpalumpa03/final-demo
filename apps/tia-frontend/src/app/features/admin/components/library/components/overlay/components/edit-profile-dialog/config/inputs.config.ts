@@ -1,11 +1,14 @@
-  export const modalNameInput = {
-    label: 'Name',
-    required: true,
-    placeholder: 'John Doe',
-  } as const;
+export const modalNameInput = {
+  label: 'Name',
+  placeholder: 'John Doe',
+} as const;
 
-    export const modalEmailInput = {
-    label: 'Email',
-    required: true,
-    placeholder: 'john@example.com',
-  } as const;
+export const modalEmailInput = {
+  label: 'Email',
+  placeholder: 'john@example.com',
+} as const;
+
+export const modalDescriptionInput = {
+  label: 'Description',
+  placeholder: 'Brief description...',
+};
