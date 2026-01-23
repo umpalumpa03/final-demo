@@ -1,10 +1,20 @@
-import { CardData, StatisticCardData } from 'apps/tia-frontend/src/app/shared/lib/cards/models/card.model';
+import {
+  CardData,
+  StatisticCardData,
+} from 'apps/tia-frontend/src/app/shared/lib/cards/models/card.model';
 
 export const BASIC_CARDS_DATA: CardData[] = [
   {
     title: 'Card Title',
     subtitle: 'Card description goes here',
-    content: 'This is the main content area of the card. You can put any content here.',
+    content:
+      'This is the main content area of the card. You can put any content here.',
+  },
+  {
+    title: 'With Footer',
+    subtitle: 'Card with action buttons',
+    content: 'This card includes a footer with action buttons.',
+    hasFooter: true,
   },
   {
     title: 'Hover Effect',
