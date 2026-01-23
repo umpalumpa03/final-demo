@@ -32,6 +32,20 @@
     gap: 1.6rem;
     width: 100%;
   }
+  &__board-empty {
+    @include display-flex;
+    @include flex-center(row, center, center);
+    min-height: 8rem;
+    border: 0.2rem dashed $gray-200;
+    border-radius: 0.8rem;
+    color: $gray-500;
+    @include font-arimo(400, 1.4rem, 2rem);
+    &--active {
+      border-color: $blue-400;
+      background-color: $blue-100;
+      color: $blue-600;
+    }
+  }
 
   &__board {
     @include display-flex(column);

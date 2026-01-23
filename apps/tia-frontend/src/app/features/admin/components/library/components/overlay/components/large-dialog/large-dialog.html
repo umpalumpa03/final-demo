@@ -1,55 +1,28 @@
-<button class="btn btn--outline" (click)="toggle()">Large Dialog</button>
+<app-button [variant]="'outline'" (click)="toggle()"> Large Dialog </app-button>
 
 <app-ui-modal [isOpen]="isOpen()" (closed)="toggle()">
   <div class="terms-content">
     <header class="terms-content__header">
-      <h2 class="terms-content__title">Terms and Conditions</h2>
-      <p class="terms-content__subtitle">
-        Please read and accept our terms and conditions.
-      </p>
+      <app-library-title
+        [title]="pageTitle"
+        [subtitle]="pageSubtitle"
+      ></app-library-title>
     </header>
 
     <div class="terms-content__body">
+      @for (section of sections; track section.title) {
       <section class="terms-content__section">
-        <p class="terms-content__section-title">Section 1</p>
-        <p class="terms-content__text">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
+        <h3 class="terms-content__section-title">{{ section.title }}</h3>
+        <p class="terms-content__text">{{ section.content }}</p>
       </section>
-
-      <section class="terms-content__section">
-        <p class="terms-content__section-title">Section 2</p>
-        <p class="terms-content__text">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-      </section>
-
-      <section class="terms-content__section">
-        <p class="terms-content__section-title">Section 3</p>
-        <p class="terms-content__text">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-      </section>
-
-      <section class="terms-content__section">
-        <p class="terms-content__section-title">Section 4</p>
-        <p class="terms-content__text">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-      </section>
+      }
     </div>
 
     <footer class="terms-content__footer">
-      <button type="button" class="btn btn--outline" (click)="toggle()">
+      <app-button [variant]="'outline'" (click)="toggle()">
         Decline
-      </button>
-      <button type="button" class="btn btn--primary" (click)="toggle()">
-        Accept
-      </button>
+      </app-button>
+      <app-button (click)="toggle()"> Accept </app-button>
     </footer>
   </div>
 </app-ui-modal>

@@ -1,76 +1,25 @@
 @use '../../../../../../../../shared/styles/mixins' as *;
 @use '../../../../../../../../shared/styles/palette' as *;
 
-.btn {
-  @include flex-center;
-  padding: 0.8rem 1.6rem;
-  gap: 0.8rem;
-  height: 3.6rem;
-  border-radius: 0.8rem;
-  @include font-arimo(400, 1.4rem, 2rem);
-  text-align: center;
-  cursor: pointer;
-
-  &__primary {
-    background-color: var(--color-primary);
-    color: $white;
-  }
-
-  &__outline {
-    background-color: var(--color-bg);
-    border: 0.08rem solid var(--color-accent);
-    color: var(--color-fg);
-  }
-
-  &__drawer__trigger {
-    width: 11.6rem;
-  }
-
-  &__full {
-    width: 100%;
-    max-width: 113.5rem;
-  }
-}
-
 .drawer-content {
   @include display-flex(column);
   width: 100%;
   max-width: 116.7rem;
   margin: 0 auto;
+  padding: 2.4rem;
 
   &__header {
-    @include display-flex(column);
-    padding: 1.6rem 0 1.6rem 1.6rem;
-    gap: 0.6rem;
-  }
-
-  &__title {
-    @include font-arimo(700, 2rem, 3rem);
-    color: var(--color-fg);
-    margin: 0;
-  }
-
-  &__subtitle {
-    @include font-arimo(400, 1.4rem, 2rem);
-    color: $blue-600;
-    margin: 0;
+    margin-bottom: 3.2rem;
   }
 
   &__form {
     @include display-flex(column);
-    padding: 1.6rem;
-    gap: 1.6rem;
+    gap: 2.4rem;
+    margin-bottom: 3.2rem;
   }
 
-  &__field {
-    @include display-flex(column);
-    gap: 0.8rem;
-    width: 100%;
-    max-width: 113.52rem;
-  }
   &__footer {
-    @include display-flex(column);
-    padding: 1.6rem;
-    gap: 0.8rem;
+    @include display-flex(row);
+    gap: 1rem;
   }
 }
