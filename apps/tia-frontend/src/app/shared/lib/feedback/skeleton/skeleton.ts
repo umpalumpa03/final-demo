@@ -9,19 +9,19 @@ import { SkeletonVariant } from '../models/skeleton.model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Skeleton {
-  width = input<string>('100%');
-  height = input<string>('2rem');
-  variant = input<SkeletonVariant>('text');
+  public readonly width = input<string>('100%');
+  public readonly height = input<string>('2rem');
+  public readonly variant = input<SkeletonVariant>('text');
 
-  classes = computed(() => `skeleton skeleton--${this.variant()}`);
+  public readonly classes = computed(() => `skeleton skeleton--${this.variant()}`);
 
-  computedWidth = computed(() => {
+  public readonly computedWidth = computed(() => {
     return this.variant() === 'circle'
       ? this.height()
       : this.width();
   });
 
-  computedHeight = computed(() => {
+  public readonly computedHeight = computed(() => {
     return this.height();
   });
 }

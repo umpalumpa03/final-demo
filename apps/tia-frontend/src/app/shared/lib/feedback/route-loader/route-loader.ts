@@ -4,17 +4,16 @@ import { RouteLoaderVariant, RouteLoaderVariants } from '../models/route-loader.
 
 @Component({
   selector: 'app-route-loader',
-  standalone: true,
   imports: [Spinner],
   templateUrl: './route-loader.html',
   styleUrl: './route-loader.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RouteLoader {
-  variant = input<RouteLoaderVariant>(RouteLoaderVariants.TopBar);
-  text = input<string>('Loading page content...');
+  public readonly variant = input<RouteLoaderVariant>(RouteLoaderVariants.TopBar);
+  public readonly text = input<string>('Loading page content...');
 
-  loaderClass = computed(() => `route-loader route-loader--${this.variant()}`);
+  public readonly loaderClass = computed(() => `route-loader route-loader--${this.variant()}`);
 
-  readonly RouteLoaderVariants = RouteLoaderVariants;
+  protected readonly RouteLoaderVariants = RouteLoaderVariants;
 }
