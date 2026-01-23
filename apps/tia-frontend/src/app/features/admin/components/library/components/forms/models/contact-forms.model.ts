@@ -5,7 +5,7 @@ export interface IContactForm {
     subscribe: boolean
 }
 
-export interface IRegitrationForm {
+export interface IRegistrationForm {
     firstName: string;
     lastName: string;
     password: string;
