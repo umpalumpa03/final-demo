@@ -1,3 +1,6 @@
+@use '../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../shared/styles/palette' as *;
+
 .cards-page {
   padding: 2.4rem;
   width: 100%;
