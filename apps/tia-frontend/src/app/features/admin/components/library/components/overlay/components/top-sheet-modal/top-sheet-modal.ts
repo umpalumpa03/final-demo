@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { UiSheetModal } from '../../../../../../../../shared/lib/overlay/ui-sheet-modal/ui-sheet-modal';
 import { LibraryTitle } from '../../../../shared/library-title/library-title';
 
@@ -7,6 +7,7 @@ import { LibraryTitle } from '../../../../shared/library-title/library-title';
   imports: [UiSheetModal, LibraryTitle],
   templateUrl: './top-sheet-modal.html',
   styleUrl: './top-sheet-modal.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TopSheetModal {
   public modalTitle = 'Notification Banner';

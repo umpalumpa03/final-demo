@@ -9,6 +9,10 @@ import { ValidationForm } from "./validation-form/validation-form";
   imports: [ContactForms, RegistrationForm, InlineForm, ValidationForm],
   templateUrl: './forms.html',
   styleUrl: './forms.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Forms {}
+export class Forms {
+  public readonly title = 'Forms';
+  public readonly subtitle =
+    'Complete form examples with various input types and layouts';
+}

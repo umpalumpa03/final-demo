@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { BaseAlertType } from '../../shared/models/alert.models';
 import { FirstUpperPipe } from '@tia/shared/pipes/first-upper/first-upper-pipe';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -8,6 +8,7 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
   imports: [FirstUpperPipe, ButtonComponent],
   templateUrl: './alerts-with-actions.html',
   styleUrl: './alerts-with-actions.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AlertsWithActions {
   public alertType = input<BaseAlertType>('default');

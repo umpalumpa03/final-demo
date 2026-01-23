@@ -1,6 +1,8 @@
 <section class="showcase-card">
   @if (title()) {
   <h3 class="showcase-card__title">{{ title() }}</h3>
+  } @if (subtitle()) {
+  <p class="showcase-card__subtitle">{{ subtitle() }}</p>
   }
   <div class="showcase-card__content">
     <ng-content></ng-content>
