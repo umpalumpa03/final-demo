@@ -5,11 +5,12 @@
     <p class="wildcard__description">
       We're sorry, the requested page could not be found or is no longer available.
     </p>
+    
     <app-button 
       variant="default" 
       size="large" 
-      (click)="navigateToLibrary()">
-      Back to Home
+      [routerLink]="['/admin/library']">
+      Back To Library
     </app-button>
   </div>
 </div>
