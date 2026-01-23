@@ -1,5 +1,5 @@
 import { computed } from '@angular/core';
-import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export const getErrorMessage = (
   control: AbstractControl | null,
@@ -17,27 +17,26 @@ export const getErrorMessage = (
     if (control.hasError('minlength')) {
       return `min length of ${label} is ${control.errors?.['minlength']?.requiredLength}`;
     }
+    
+    if (control.hasError('passwordStrength')) {
+      return 'Password must contain uppercase, lowercase, number, and special character';
+    }
+    if (control.hasError('PasswordNoMatch')) {
+      return 'Passwords do not match';
+    }
 
-    return '';
+    return 'Invalid field';
   });
 
-export const confirmPasswordValidator: ValidatorFn = (control) => {
-  const password = control.get('password')?.value;
-  const confirmPassword = control.get('confirmPassword')?.value;
-  const child = control.get('confirmPassword');
+export const passwordMatchValidator: ValidatorFn = (
+  control: AbstractControl,
+): ValidationErrors | null => {
+  const form = control as FormGroup;
+  const password = form.get('password')?.value;
+  const confirmPassword = form.get('confirmPassword')?.value;
 
-  if (password && confirmPassword && password !== confirmPassword) {
-    child?.setErrors({
-      ...(child.errors || { message: 'password not matched' }),
-      PasswordNoMatch: true,
-    });
-    return { PasswordNoMatch: true };
-  }
-
-  if (child?.hasError('PasswordNoMatch')) {
-    const errs = { ...(child.errors || {}) };
-    delete errs['PasswordNoMatch'];
-    child.setErrors(Object.keys(errs).length ? errs : null);
+  if (password !== confirmPassword) {
+    return { passwordMismatch: true };
   }
   return null;
 };

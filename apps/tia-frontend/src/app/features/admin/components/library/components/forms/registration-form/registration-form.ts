@@ -7,9 +7,9 @@ import {
 import { COUNTRIES, IRegistrationForm } from '../models/contact-forms.model';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
-  confirmPasswordValidator,
+  passwordMatchValidator,
   passwordValidator,
-} from 'apps/tia-frontend/src/app/core/utils/form-validations';
+} from '@tia/shared/utils/form-validations';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input/text-input';
 import { InputState } from '@tia/shared/lib/forms/input-field/models/input.model';
 
@@ -40,7 +40,7 @@ export class RegistrationForm {
       termsAndConditions: [false, Validators.requiredTrue],
     },
     {
-      validators: confirmPasswordValidator,
+      validators: passwordMatchValidator,
     },
   );
 

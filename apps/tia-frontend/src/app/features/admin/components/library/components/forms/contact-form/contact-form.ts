@@ -4,7 +4,7 @@ import {
   inject,
   output,
 } from '@angular/core';
-import { getErrorMessage } from '../../../../../../../core/utils/form-validations';
+import { getErrorMessage } from '../../../../../../../shared/utils/form-validations';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IContactForm } from '../models/contact-forms.model';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input/text-input';
@@ -12,8 +12,8 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input/text-inp
 @Component({
   selector: 'app-contact-forms',
   imports: [ReactiveFormsModule, TextInput],
-  templateUrl: './contact-forms.html',
-  styleUrl: './contact-forms.scss',
+  templateUrl: './contact-form.html',
+  styleUrl: './contact-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContactForms {
@@ -26,8 +26,6 @@ export class ContactForms {
     message: ['', [Validators.required, Validators.minLength(50)]],
     subscribe: [false, [Validators.requiredTrue]],
   });
-
-  public readonly messageError = getErrorMessage(this.message, 'message');
 
   public get message() {
     return this.contactForm.controls.message;
@@ -43,6 +41,8 @@ export class ContactForms {
   public get isSubscribeError() {
     return this.showError('subscribe');
   }
+
+  public readonly messageError = getErrorMessage(this.message, 'message');
 
   public showError(controlName: string): boolean {
     const control = this.contactForm.get(controlName);

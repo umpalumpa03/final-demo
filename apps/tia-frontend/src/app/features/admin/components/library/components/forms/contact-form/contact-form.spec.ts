@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
-import { ContactForms } from './contact-forms';
+import { ContactForms } from './contact-form';
 
 describe('ContactForms', () => {
   let component: ContactForms;
