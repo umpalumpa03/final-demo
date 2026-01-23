@@ -22,7 +22,6 @@ describe('Separator', () => {
   });
 
   it('should switch to vertical class when orientation is set', () => {
-    // Setting signal input via componentRef
     fixture.componentRef.setInput('orientation', 'vertical');
     fixture.detectChanges();
 
@@ -51,7 +50,6 @@ describe('Separator', () => {
     fixture.detectChanges();
 
     const container = fixture.nativeElement.querySelector('.separator-container');
-    // Using getPropertyValue to check the CSS Variables set via [ngStyle]
     const styles = getComputedStyle(container);
     expect(styles.getPropertyValue('--sep-color')).toBe('red');
     expect(styles.getPropertyValue('--sep-thickness')).toBe('5px');

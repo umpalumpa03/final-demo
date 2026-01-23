@@ -1,10 +1,13 @@
+@use '../../../../styles/mixins' as mixins;
+
 :host {
   display: flex;
   width: 100%;
 }
 
 :host.horizontal {
-  flex-direction: row;
+  @include mixins.flex-center(row, flex-start, stretch);
+  
   .line {
     margin: var(--sep-margin) 0;
   }
@@ -23,9 +26,7 @@
 }
 
 .separator-container {
-  display: flex;
-  align-items: stretch;
-  flex-direction: inherit;
+  @include mixins.flex-center(inherit, flex-start, stretch);
   width: 100%;
   height: 100%;
 }
@@ -34,13 +35,11 @@
   background-color: var(--sep-color);
 }
 
-/* Horizontal Line Logic */
 :host.horizontal .line {
   height: var(--sep-thickness);
   flex-grow: 1;
 }
 
-/* Vertical Line Logic */
 :host.vertical .line {
   width: var(--sep-thickness);
   flex-grow: 1;
@@ -50,17 +49,13 @@
   color: #666;
   font-size: 0.875rem;
   white-space: nowrap;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include mixins.flex-center(row, center, center);
 }
 
-/* Horizontal: Space on the Left and Right */
 :host.horizontal .label {
   padding: 0 1rem;
 }
 
-/* Vertical: Space on the Top and Bottom */
 :host.vertical .label {
   padding: 1rem 0;
 }
