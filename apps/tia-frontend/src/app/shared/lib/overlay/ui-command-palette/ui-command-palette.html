@@ -1,0 +1,60 @@
+<div class="ui-palette" aria-expanded="true">
+  <div class="ui-palette__search">
+    <span class="ui-palette__search-icon" aria-hidden="true"></span>
+    <input
+      #searchInput
+      type="text"
+      class="ui-palette__input"
+      [placeholder]="config().placeholder"
+      [value]="searchQuery()"
+      (input)="handleInput($event)"
+    />
+  </div>
+
+  <div class="ui-palette__content" role="listbox">
+    @if (suggestions().length > 0) {
+    <div class="ui-palette__group">
+      <span class="ui-palette__group-title">Suggestions</span>
+      @for (item of suggestions(); track item.id) {
+      <button
+        type="button"
+        class="ui-palette__item"
+        [class.ui-palette__item--active]="activeIndex() === $index"
+        (click)="onSelect(item)"
+        (mouseenter)="activeIndex.set($index)"
+        role="option"
+        aria-selected="false"
+      >
+        <span
+          class="ui-palette__item-icon"
+          [style.--icon-mask]="item.fullIconPath"
+        ></span>
+        <span class="ui-palette__item-label">{{ item.label }}</span>
+      </button>
+      }
+    </div>
+    } 
+    @if (otherActions().length > 0) {
+    <div class="ui-palette__group">
+      <span class="ui-palette__group-title">Actions</span>
+      @for (item of otherActions(); track item.id) {
+      <button
+        type="button"
+        class="ui-palette__item"
+        [class.ui-palette__item--active]="activeIndex() === (suggestions().length + $index)"
+        (click)="onSelect(item)"
+        (mouseenter)="activeIndex.set(suggestions().length + $index)"
+        role="option"
+        aria-selected="false"
+      >
+        <span
+          class="ui-palette__item-icon"
+          [style.--icon-mask]="item.fullIconPath"
+        ></span>
+        <span class="ui-palette__item-label">{{ item.label }}</span>
+      </button>
+      }
+    </div>
+    }
+  </div>
+</div>
