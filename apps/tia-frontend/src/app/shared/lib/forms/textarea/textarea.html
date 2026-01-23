@@ -1,0 +1,37 @@
+<div [class]="containerClasses()">
+    @let cfg = mergedConfig();
+    @if (cfg.label) {
+    <label [for]="cfg.id" class="text-input__label">
+        {{ cfg.label }}
+        @if (cfg.required) {
+        <span class="text-input__required-star" aria-hidden="true">*</span>
+        }
+    </label>
+    }
+
+    <div class="text-input__wrapper">
+        <textarea #textareaRef [id]="cfg.id" [value]="value() ?? ''" [rows]="cfg.rows" [placeholder]="cfg.placeholder"
+            [style.resize]="cfg.resizable" [disabled]="isDisabled()" [readOnly]="isReadonly()"
+            (input)="handleInput($event)" (blur)="handleBlur($event)" (focus)="handleFocus($event)"
+            class="text-input__field" [class.text-input__field--error]="hasError()"
+            [class.text-input__field--success]="hasSuccess()" [class.text-input__field--disabled]="isDisabled()">
+        </textarea>
+    </div>
+
+    <div class="text-input__footer">
+        <div class="text-input__messages">
+            @if (hasError()) {
+            <span class="text-input__message text-input__message--error">
+                {{ errorMessage() }}
+            </span>
+            }
+        </div>
+
+        @if (cfg.showCharacterCount) {
+        <span class="text-input__counter"
+            [class.text-input__counter--error]="maxCharacters() > 0 && currentLength() > maxCharacters()">
+            {{ counterText() }}
+        </span>
+        }
+    </div>
+</div>

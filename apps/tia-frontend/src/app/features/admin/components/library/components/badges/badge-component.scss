@@ -1,29 +1,42 @@
 @use '../../../../../../shared/styles/palette' as palette;
 @use '../../../../../../shared/styles/mixins' as *;
 
-.badge-demo {
-  @include font-inter(600, 2rem, 1.2);
-  padding: 2.4rem;
-  border: 0.1rem solid palette.$blue-400;
-  border-radius: 1.2rem;
-  background-color: palette.$white;
-  max-width: 100rem;
-  margin: 2rem auto;
-
+.badge-wrapper {
+  @include flex-center(column, center, flex-start);
+  gap: 3.2rem;
+  width: 100%;
+  max-width: 110rem;
+  padding: 1.6rem;
+  margin: 0 auto;
 
   &__title {
-    margin: 0 0 1.2rem 0;
-    color: palette.$blue-900;
+    margin: 2rem 0;
   }
 
-  &__row {
-    @include display-flex(row, wrap);
-    gap: 2rem;
-  }
-
-  &__list {
-    @include display-flex(column);
+  .badge-demo {
+    padding: 2.56rem;
+    border: 0.16rem solid palette.$blue-400;
+    border-radius: 1rem;
+    background-color: palette.$white;
+    max-width: 110.2rem;
+    width: 100%;
     gap: 1.6rem;
-   
+    @include display-flex(column);
+
+    &__title {
+      @include font-arimo(700, 1.8rem, 2.7rem);
+      color: var(--color-fg);
+      margin: 0;
+    }
+
+    &__row {
+      @include display-flex(row, wrap);
+      gap: 2rem;
+    }
+
+    &__list {
+      @include display-flex(column);
+      gap: 1.6rem;
+    }
   }
 }

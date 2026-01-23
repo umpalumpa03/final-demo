@@ -12,6 +12,7 @@ describe('AlertTypesWithIcons', () => {
 
     fixture = TestBed.createComponent(AlertTypesWithIcons);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -34,9 +35,7 @@ describe('AlertTypesWithIcons', () => {
       fixture.detectChanges();
 
       const img: HTMLImageElement = fixture.nativeElement.querySelector('img');
-      expect(img.src).toContain(
-        '/images/img/alert-icons/base-alert-success.png',
-      );
+      expect(img.src).toContain('/images/svg/alerts/base-alert-success.svg');
     });
   });
 });

@@ -4,7 +4,7 @@ export const navRoutes: Routes = [
     {
         path: '',
         loadComponent: () =>
-            import("./navigation-tabs").then((c) => c.Navigation),
+            import("./container/navigation-tabs").then((c) => c.Navigation),
 
         children: [
             {

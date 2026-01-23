@@ -2,8 +2,8 @@
 <div class="dismissible-alerts" [class]="iconAlertClass()">
   <div class="dismissible-alerts__alert-icon-div">
     <img
-      [src]="'/images/img/alert-icons/base-alert-' + effectiveImgName() + '.png'"
-      alt="info icon"
+      [src]="effectiveImgPath()"
+      [alt]="effectiveAltName()"
     />
   </div>
   <div class="dismissible-alerts__alert-info-div">
