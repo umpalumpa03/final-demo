@@ -1,0 +1,39 @@
+@use '../../../styles/palette' as *;
+
+.skeleton {
+  --skeleton-base: var(--color-accent);
+
+  display: block;
+  background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--skeleton-base) 20%, transparent) 0%,
+      var(--skeleton-base) 50%,
+      color-mix(in srgb, var(--skeleton-base) 20%, transparent) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 0.4rem;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+
+  &--text{
+    border-radius: 0.8rem;
+  }
+
+  &--circle {
+    border-radius: 50%;
+    width: 4rem;
+    height: 4rem;
+  }
+
+  &--rectangle {
+    border-radius: 0.8rem;
+  }
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
