@@ -10,4 +10,5 @@ export const appRoutes: Routes = [
     path: '**',
     redirectTo: '/admin/library',
   },
+
 ];
