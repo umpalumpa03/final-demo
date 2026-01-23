@@ -1,2 +1,108 @@
 <div class="alerts-page">
+  <div class="alerts-page__title">
+    <app-library-title [title]="pageTitle" [subtitle]="pageSubtitle" />
+  </div>
+
+  <app-showcase-card title="Basic Alerts">
+    <!-- ConfigShi gavitano data -->
+    <div class="alerts-page__group">
+      <app-basic-alerts></app-basic-alerts>
+      <app-basic-alerts alertType="error"></app-basic-alerts>
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="Alert Types with Icons">
+    <div class="alerts-page__group">
+      <app-alert-types-with-icons
+        alertType="information"
+        alertMessage="This is an informational message to provide additional context."
+      ></app-alert-types-with-icons>
+      <app-alert-types-with-icons
+        alertType="success"
+        alertMessage="Your changes have been saved successfully!"
+      ></app-alert-types-with-icons>
+      <app-alert-types-with-icons
+        alertType="warning"
+        alertMessage="Please review your input before proceeding."
+      ></app-alert-types-with-icons>
+      <app-alert-types-with-icons
+        alertType="error"
+        alertMessage="An error occurred while processing your request."
+      ></app-alert-types-with-icons>
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="Dismissible Alerts">
+    <div class="alerts-page__group">
+      <app-dismissible-alerts
+        alertTitle="New Feature Available"
+        alertMessage="Check out our latest updates and improvements."
+      ></app-dismissible-alerts>
+      <app-dismissible-alerts
+        alertType="success"
+        alertTitle="Profile Updated"
+        alertMessage="Your profile information has been updated successfully."
+      ></app-dismissible-alerts>
+      <app-dismissible-alerts
+        alertType="warning"
+        alertTitle="Payment Due Soon"
+        alertMessage="Your subscription will renew in 3 days."
+      ></app-dismissible-alerts>
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="Alerts with Actions">
+    <div class="alerts-page__group">
+      <app-alerts-with-actions
+        alertType="default"
+        alertTitle="Update Available"
+        alertMessage="A new version of the application is available."
+        buttonOneText="Update Now"
+        buttonTwoText="Remind Me Later"
+      ></app-alerts-with-actions>
+      <app-alerts-with-actions
+        alertType="error"
+        alertTitle="Confirm Action"
+        alertMessage="This action cannot be undone. Are you sure you want to continue?"
+        buttonOneText="Confirm"
+        buttonTwoText="Cancel"
+      ></app-alerts-with-actions>
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="Simple Alerts (No Title)">
+    <div class="alerts-page__group">
+      <app-simple-alerts
+        alertMessage="This is a simple informational message without a title."
+      ></app-simple-alerts>
+      <app-simple-alerts
+        alertType="success"
+        alertMessage="Operation completed successfully."
+      ></app-simple-alerts>
+      <app-simple-alerts
+        alertType="warning"
+        alertMessage="Please save your work before closing."
+      ></app-simple-alerts>
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="Alert States">
+    <div class="alerts-page__group">
+      <app-alert-states
+        alertState="default"
+        alertTitle="Normal State"
+        lertMessage="This is the normal state of an alert."
+      ></app-alert-states>
+      <app-alert-states
+        alertState="inactive"
+        alertTitle="Dimmed/Inactive State"
+        lertMessage="This alert appears dimmed or inactive."
+      ></app-alert-states>
+      <app-alert-states
+        alertState="active"
+        alertTitle="Emphasized Statee"
+        lertMessage="This alert is emphasized with stronger borders and shadow."
+      ></app-alert-states>
+    </div>
+  </app-showcase-card>
 </div>

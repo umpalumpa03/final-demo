@@ -1,0 +1,19 @@
+.alerts-page {
+  display: flex;
+  flex-direction: column;
+  gap: 3.2rem;
+  width: 100%;
+  max-width: 110rem;
+  margin: 0 auto;
+  
+  &__title {
+    margin: 3.2rem 0rem 0rem 0rem;
+  }
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    width: 100%;
+  }
+}
