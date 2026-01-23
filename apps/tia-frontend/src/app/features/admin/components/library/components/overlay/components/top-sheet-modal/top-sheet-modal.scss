@@ -10,12 +10,6 @@
   cursor: pointer;
   border: none;
 
-  &__outline {
-    background-color: var(--color-bg);
-    border: 0.08rem solid var(--color-accent);
-    color: var(--color-fg);
-  }
-
   &__bottom-trigger {
     width: 12rem;
   }

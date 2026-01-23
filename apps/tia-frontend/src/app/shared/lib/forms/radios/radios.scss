@@ -1,0 +1,91 @@
+@use "../../../styles/palette" as *;
+@use "../../../styles/mixins" as *;
+
+.radio-group {
+    @include display-flex(column);
+    gap: 1.2rem;
+
+    &--row {
+        @include display-flex(row, wrap);
+        gap: 2rem;
+    }
+
+    &__label {
+        @include font-arimo(500, 1.4rem, 1);
+        color: var(--color-fg);
+        margin-bottom: 0.4rem;
+    }
+
+    &__error {
+        @include font-arimo(400, 1.2rem, 1);
+        color: $red-600;
+        margin-top: 0.4rem;
+    }
+    .radio-option {
+        @include flex-center(row, flex-start);
+        gap: 0.8rem;
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+
+        &--disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+
+            .radio-option__text {
+                color: $gray-500;
+            }
+        }
+
+        &__input {
+            position: absolute;
+            width: 0.01rem;
+            height: 0.01rem;
+            padding: 0;
+            margin: -0.01rem;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+
+            &:focus-visible + .radio-option__circle {
+                box-shadow: 0 0 0 0.3rem rgba($blue-ocean, 0.2);
+            }
+        }
+
+        &__circle {
+            @include flex-center();
+            width: 2rem;
+            height: 2rem;
+            border: 0.16rem solid $blue-ocean;
+            border-radius: 50%;
+            background-color: $white;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+
+            &::after {
+                content: "";
+                width: 1rem;
+                height: 1rem;
+                background-color: $blue-ocean;
+                border-radius: 50%;
+                transform: scale(0);
+                transition: transform 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46);
+            }
+        }
+
+        &--selected {
+            .radio-option__circle {
+                border-color: $blue-ocean;
+
+                &::after {
+                    transform: scale(1);
+                }
+            }
+        }
+
+        &__text {
+            @include font-arimo(400, 1.4rem, 1.4);
+            color: $gray-800;
+        }
+    }
+}
