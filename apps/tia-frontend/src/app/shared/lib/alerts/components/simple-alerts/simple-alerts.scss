@@ -1,0 +1,61 @@
+@use '../../../../styles/palette' as *;
+@use '../../../../styles/mixins' as *;
+
+.simple-alerts {
+  max-width: 105.3rem;
+  width: 100%;
+  background: var(--color-bg);
+  border: 0.08rem solid $blue-200;
+  border-radius: 1rem;
+  @include display-flex(row, nowrap);
+  gap: 1.2rem;
+  padding: 1rem 1.64rem;
+
+  @media (max-width: 128rem) {
+    width: 90%;
+  }
+
+  @media (max-width: 76.8rem) {
+    padding: 1rem;
+    gap: 0.8rem;
+    width: 95%;
+  }
+
+  &__alert-icon-div {
+    flex-shrink: 0;
+    @include display-flex(row, nowrap);
+    align-items: center;
+    img {
+      margin: 0.4rem 0rem;
+      width: 1.6rem;
+      height: 1.6rem;
+      object-fit: cover;
+    }
+  }
+
+  &__alert-info-div {
+    justify-content: center;
+    @include display-flex(column, nowrap);
+  }
+
+  &__message {
+    @include font-arimo(400, 1.4rem, 2rem);
+    color: $blue-900;
+  }
+
+  &--success {
+    background: $green-50;
+    border: 0.08rem solid $green-200;
+    .simple-alerts__message {
+      color: $green-950;
+    }
+  }
+
+  &--warning {
+    background: $yellow-50;
+    border: 0.08rem solid $yellow-200;
+    .simple-alerts__message {
+      color: $brown-700;
+    }
+  }
+}

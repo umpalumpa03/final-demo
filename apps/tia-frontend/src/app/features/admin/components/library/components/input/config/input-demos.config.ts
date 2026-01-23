@@ -1,5 +1,5 @@
-import { TextInputType } from '@tia/shared/lib/forms/input-field/models/input.model';
-import { InputDemo } from '../models/input-demos.model';
+import { TextInputType } from '@tia/shared/lib/forms/models/input.model';
+import { InputDemo, TextareaDemo } from '../models/input-demos.model';
 
 export const BASIC_INPUT_DEMOS: InputDemo[] = [
   {
@@ -51,4 +51,32 @@ export const SPECIAL_INPUT_DEMOS: { type: TextInputType; label: string }[] = [
   { type: 'file', label: 'File Input' },
   { type: 'url', label: 'URL Input' },
   { type: 'tel', label: 'Phone Input' },
+] as const;
+
+export const TEXTAREA_DEMOS: TextareaDemo[] = [
+  {
+    config: {
+      label: 'Default Textarea',
+      placeholder: 'Type your message here...',
+      showCharacterCount: true,
+      rows: 2,
+    },
+  },
+  {
+    state: 'disabled',
+    config: {
+      label: 'Disabled Textarea',
+      placeholder: 'Cannot edit this',
+      rows: 2,
+    },
+  },
+  {
+    config: {
+      label: 'Textarea with Max Length',
+      placeholder: 'Maximum 100 characters',
+      validation: { maxLength: 100 },
+      showCharacterCount: true,
+      rows: 2,
+    },
+  },
 ] as const;

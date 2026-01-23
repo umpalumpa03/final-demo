@@ -21,4 +21,14 @@
             }
         </div>
     </section>
+
+    <section class="gallery__section">
+        <h2 class="gallery__section-title">Textarea</h2>
+        <div class="gallery__input-stack">
+            @for (area of textareaDemos(); track area.config.label) {
+            <lib-textarea [state]="area.state || 'default'" [config]="area.config">
+            </lib-textarea>
+            }
+        </div>
+    </section>
 </div>
