@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import {
@@ -13,7 +12,7 @@ import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
 
 @Component({
   selector: 'app-input',
-  imports: [CommonModule, LibraryTitle, TextInput, Textarea, Checkboxes],
+  imports: [LibraryTitle, TextInput, Textarea, Checkboxes],
   templateUrl: './input.html',
   styleUrl: './input.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

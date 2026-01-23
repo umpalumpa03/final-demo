@@ -45,15 +45,14 @@
     &__input-stack {
         @include display-flex(column);
         gap: 1.6rem;
+    }
 
-        lib-text-input,
-        lib-textarea {
-            width: 100%;
-            max-width: 44.8rem;
-        }
+    &__input-wrapper {
+        width: 100%;
+        max-width: 44.8rem;
 
-        lib-checkboxes {
-            width: fit-content;
+        &--checkbox {
+            max-width: fit-content;
         }
     }
 }
