@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-navigation',
-  imports: [RouterModule],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './navigation.html',
   styleUrl: './navigation.scss',
 })
-export class Navigation {
-}
+export class Navigation {}

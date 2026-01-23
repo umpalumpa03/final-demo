@@ -32,13 +32,13 @@ export const libraryRoutes: Routes = [
             (c) => c.DragAndDropContainer,
           ),
       },
-      // {
-      //   path: 'buttons',
-      //   loadComponent: () =>
-      //     import('./components/button/button-library').then(
-      //       (c) => c.ButtonLibrary,
-      //     ),
-      // },
+      {
+        path: 'buttons',
+        loadComponent: () =>
+          import('./components/button/button-library').then(
+            (c) => c.ButtonLibraryComponent,
+          ),
+      },
       {
         path: 'cards',
         loadComponent: () =>
@@ -77,6 +77,11 @@ export const libraryRoutes: Routes = [
           import('./components/tables/container/tables-container').then(
             (c) => c.TablesContainer,
           ),
+      },
+      {
+        path: 'inputs',
+        loadComponent: () =>
+          import('./components/input/input').then((c) => c.Input),
       },
       {
         path: '**',

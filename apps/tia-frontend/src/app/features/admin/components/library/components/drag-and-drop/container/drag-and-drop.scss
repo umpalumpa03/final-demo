@@ -1,41 +1,27 @@
 @use '../../../../../../../shared/styles/mixins' as *;
 @use '../../../../../../../shared/styles/palette' as *;
 
-
 .drag-frame {
-  @include flex-center();
+  @include flex-center(column, center, flex-start);
+  max-width: 110rem;
   width: 100%;
-  max-width: 192rem;
-  background-color: var(--color-bg);
-  height: auto;
-  padding-top: 3rem;
+  margin: 0 auto;
+  padding: 1.6rem;
+  gap: 3.2rem;
 
   &__container {
     @include display-flex(column);
     width: 100%;
-    max-width: 123.2rem;
-    height: auto;
     gap: 3.2rem;
+  }
 
-    .drag-frame__header {
-      @include display-flex(column);
-      width: 100%;
-      height: auto;
-      gap: 0.8rem;
+  &__header {
+    margin: 2rem 0;
+  }
 
-      .drag-frame__title {
-        @include font-inter(600, 2.4rem, 3.2rem);
-        color: var(--color-fg);
-      }
-
-      .drag-frame__description {
-        @include font-inter(400, 1.6rem, 2.4rem);
-        color: $gray-700;
-      }
-    }
-
-    .drag-frame__content {
-      @include display-flex(column);
-    }
+  &__content {
+    @include display-flex(column);
+    gap: 3.2rem;
+    width: 100%;
   }
 }

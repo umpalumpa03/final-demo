@@ -1,4 +1,6 @@
-<div class="card">
+<div class="card"
+     [style.width]="width()"
+     [style.height]="height()">
   <div class="card__header">
     <h3 class="card__title">{{ title() }}</h3>
     @if (subtitle()) {
@@ -8,6 +10,12 @@
   @if (content()) {
     <div class="card__content">
       <p>{{ content() }}</p>
+    </div>
+  }
+  <ng-content></ng-content>
+  @if (hasFooter()) {
+    <div class="card__footer">
+      <ng-content select="[card-footer]"></ng-content>
     </div>
   }
 </div>

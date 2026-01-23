@@ -54,16 +54,13 @@
     position: absolute;
     right: 0;
     top: 0;
+    width: 3.6rem;
+    height: 3.6rem;
+    border-radius: 0.8rem;
 
     @include display-flex(row, nowrap);
     justify-content: center;
     align-items: center;
-
-    width: 3.6rem;
-    height: 3.6rem;
-    top: 8.8px;
-    left: 1008px;
-    border-radius: 8px;
   }
 
   &--error {

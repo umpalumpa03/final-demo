@@ -1,18 +1,33 @@
 <div class="drag-frame">
   <div class="drag-frame__container">
     <div class="drag-frame__header">
-      <h1 class="drag-frame__title">Drag & Drop Components</h1>
-      <p class="drag-frame__description">
-        Interactive drag-and-drop interfaces for reordering and organizing
-        content
-      </p>
+      <app-library-title
+        [title]="'Drag & Drop Components'"
+        [subtitle]="'Interactive drag-and-drop interfaces for reordering and organizing content'"
+      ></app-library-title>
     </div>
     <div class="drag-frame__content">
       <app-drag-card
         [items]="items"
         (itemsChange)="items = $event"
         (itemRemoved)="onItemRemoved($event)"
+        layout="grid"
+        (orderChange)="onOrderChange($event)"
+        cardTitle="Draggable Cards"
+        cardDescription="Drag cards to reorder them in a grid layout"
       />
+      <app-drag-card
+        [items]="listItems"
+        (itemsChange)="listItems = $event"
+        (itemRemoved)="onItemRemoved($event)"
+        [canDelete]="canDelete"
+        layout="list"
+        [columns]="3"
+        (orderChange)="onOrderChangeList($event)"
+        cardTitle="Sortable List"
+        cardDescription="Drag cards to reorder them in a grid layout"
+      />
+      <app-kanban-board></app-kanban-board>
     </div>
   </div>
 </div>

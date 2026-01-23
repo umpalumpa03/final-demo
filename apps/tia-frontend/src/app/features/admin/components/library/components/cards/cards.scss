@@ -2,21 +2,43 @@
 @use '../../../../../../shared/styles/palette' as *;
 
 .cards-page {
-  padding: 2.4rem;
-}
-
-.cards-section {
-  margin-bottom: 4rem;
-
+  padding: 1.6rem;
+  width: 100%;
+  max-width: 110rem;
+  margin: 0 auto;
   &__title {
-    @include font-inter(600, 2.4rem, 3.2rem);
-    color: $gray-800;
-    margin-bottom: 1.6rem;
+    margin: 2rem 0;
   }
 
-  &__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
-    gap: 2.4rem;
+  .cards-section {
+    margin: 4rem 0;
+    border: 0.18rem solid $blue-400;
+    background-color: $white;
+    width: 100%;
+    border-radius: 1rem;
+    padding: 2.5rem;
+
+    &__title {
+      @include font-inter(600, 2.4rem, 3.2rem);
+      color: $gray-800;
+      margin-bottom: 1.6rem;
+    }
+
+    &__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
+      gap: 2.4rem;
+
+      &--stats {
+        grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+      }
+    }
+  }
+
+  .card-footer {
+    @include display-flex(row);
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1.2rem;
   }
 }
