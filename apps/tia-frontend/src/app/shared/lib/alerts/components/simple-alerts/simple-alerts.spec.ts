@@ -23,7 +23,7 @@ describe('SimpleAlerts', () => {
     it('should apply the correct modifier class in the DOM', () => {
       fixture.componentRef.setInput('alertType', 'warning');
       fixture.detectChanges();
-      expect(component.iconAlertClass).toBe('simple-alerts--warning')
+      expect(component.iconAlertClass()).toBe('simple-alerts--warning')
     });
 
     it('should map information type to default image name', () => {
