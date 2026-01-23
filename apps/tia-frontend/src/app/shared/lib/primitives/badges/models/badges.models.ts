@@ -11,3 +11,5 @@ export type BadgeStatus =
 export type BadgeSize = 'small' | 'medium' | 'large';
 
 export type BadgeShape = 'default' | 'rounded' | 'pill';
+
+export type BadgeDotType = 'online' | 'away' | 'offline' | 'live';

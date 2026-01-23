@@ -1,5 +1,7 @@
 <div class="cards-page">
-  <app-library-title [title]="pageTitle" [subtitle]="pageSubtitle" />
+  <div class="cards-page__title">
+    <app-library-title [title]="pageTitle" [subtitle]="pageSubtitle" />
+  </div>
 
   <section class="cards-section">
     <h2 class="cards-section__title">Basic Cards</h2>
@@ -9,7 +11,13 @@
         [title]="card.title"
         [subtitle]="card.subtitle"
         [content]="card.content"
-      />
+        [hasFooter]="card.hasFooter ?? false"
+      >
+        <div class="card-footer" card-footer>
+          <app-button size="default" variant="outline">Cancel</app-button>
+          <app-button size="default" variant="default">Submit</app-button>
+        </div>
+      </app-basic-card>
       }
     </div>
   </section>

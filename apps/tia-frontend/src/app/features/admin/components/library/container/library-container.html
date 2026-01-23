@@ -1,5 +1,11 @@
 <app-library-header></app-library-header>
-<div class="library-container">
-  <app-navigation></app-navigation>
-  <router-outlet></router-outlet>
+
+<div class="library">
+  <div class="library__container">
+    <app-navigation></app-navigation>
+
+    <main class="library__main">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
 </div>

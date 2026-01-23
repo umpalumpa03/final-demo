@@ -79,4 +79,34 @@ describe('BadgeComponent', () => {
       expect(component.dismissibleBadges().find(badge => badge.id === firstBadgeId)).toBeUndefined();
     });
   });
+
+  describe('Dot Badges', () => {
+    it('should render dot badges section', () => {
+      const compiled: HTMLElement = fixture.nativeElement;
+
+      const titles = Array.from(compiled.querySelectorAll('.badge-demo__title')).map((t) =>
+        (t.textContent ?? '').trim()
+      );
+      expect(titles).toContain('With Dot Indicators');
+    });
+
+    it('should render dot badges', () => {
+      fixture.detectChanges();
+
+      const allBadges = fixture.nativeElement.querySelectorAll('app-badges');
+      const dotBadges = [...allBadges].filter((badge) => {
+        const badgeElement = badge.querySelector('span[data-dot]');
+        return badgeElement !== null;
+      });
+      
+      expect(dotBadges.length).toBeGreaterThan(0);
+    });
+
+    it('should have dot indicators with correct class', () => {
+      fixture.detectChanges();
+
+      const dotElements = fixture.nativeElement.querySelectorAll('.badge__dot');
+      expect(dotElements.length).toBeGreaterThan(0);
+    });
+  });
 });

@@ -9,4 +9,5 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 })
 export class ShowcaseCard {
   public title = input<string>();
+  public subtitle = input<string>();
 }
