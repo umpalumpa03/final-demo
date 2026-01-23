@@ -35,39 +35,7 @@
     color: $blue-600;
   }
 
-  &__birth-date-field {
-    position: relative;
-  }
-
-  &__birth-date-icon {
-    position: absolute;
-    left: 1.4rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 1.8rem;
-    height: 1.8rem;
-    pointer-events: none;
-  }
-
-  &__birth-date {
-    padding-left: 4.4rem;
-    background-color: $blue-100;
-
-    &::-webkit-calendar-picker-indicator {
-      opacity: 0;
-      cursor: pointer;
-    }
-  }
-
-  &__agree-terms {
-    @extend %checkbox;
-
-    label.invalid {
-      color: $red-500;
-    }
-  }
-
-  button {
-    @extend %one-button;
+  &__submit {
+    width: 100%;
   }
 }
