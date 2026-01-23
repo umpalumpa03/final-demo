@@ -2,6 +2,7 @@ export interface CardData {
   title: string;
   subtitle: string;
   content: string;
+  hasFooter?: boolean; 
 }
 
 export interface StatisticCardData {

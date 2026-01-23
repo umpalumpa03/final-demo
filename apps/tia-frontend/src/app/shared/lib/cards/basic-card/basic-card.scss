@@ -32,4 +32,11 @@
       color: $gray-700;
     }
   }
+
+  &__footer {
+    @include display-flex;
+    align-items: center;
+    gap: 1.2rem;
+    
+  }
 }
