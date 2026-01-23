@@ -6,19 +6,18 @@
     gap: 1.2rem;
 
     &--row {
-        flex-direction: row;
+        @include display-flex(row, wrap);
         gap: 2rem;
-        flex-wrap: wrap;
     }
 
     &__label {
-        @include font-inter(500, 1.4rem, 1);
+        @include font-arimo(500, 1.4rem, 1);
         color: var(--color-fg);
         margin-bottom: 0.4rem;
     }
 
     &__error {
-        @include font-inter(400, 1.2rem, 1);
+        @include font-arimo(400, 1.2rem, 1);
         color: $red-600;
         margin-top: 0.4rem;
     }
