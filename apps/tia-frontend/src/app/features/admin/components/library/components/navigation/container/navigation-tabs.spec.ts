@@ -1,5 +1,5 @@
 import { Navigation } from './navigation-tabs';
-import { BREADCRUMBS, BREADCRUMBS2, TABS, TABS2 } from './config/tabs-data';
+import { BREADCRUMBS, BREADCRUMBS2, TABS, TABS2 } from '../config/tabs-data';
 
 describe('Navigation', () => {
   let component: Navigation;
