@@ -1,84 +1,63 @@
 <div class="container">
     <header>
-        <h2>Layout Components</h2>
-        <p>Structural components for organizing content</p>
+        <app-library-title title="Layout Components" subtitle="Structural components for organizing content" />
     </header>
     <main>
-        <section class="section-separators">
-            <h3>Separators</h3>
-            <div class="subsection">
-                <h4>Horizontal Separator:</h4>
-                <div class="example">
-                    <span>Content above</span>
-                    <app-separator orientation="horizontal" thickness="1px" color="#0EA5E9" margin="12px" />
-                    <span>Content below</span>
+        <app-showcase-card title="Separators">
+            <div class="section-wrapper">
+                <div class="section-wrapper__subsection">
+                    <h4>Horizontal Separator:</h4>
+                    <div class="example">
+                        <span>Content above</span>
+                        <app-separator orientation="horizontal" thickness="1px" color="#0EA5E9" margin="12px" />
+                        <span>Content below</span>
+                    </div>
+                </div>
+                <div class="section-wrapper__subsection">
+                    <h4>Vertical Separator:</h4>
+                    <div class="example-vertical">
+                        <span>Left</span>
+                        <app-separator orientation="vertical" thickness="0.1rem" [color]="color" margin="1.2rem" />
+                        <span>Center</span>
+                        <app-separator orientation="vertical" thickness="0.1rem" [color]="color" margin="1.2rem" />
+                        <span>Right</span>
+                    </div>
+                </div>
+                <div class="section-wrapper__subsection">
+                    <h4>With Text:</h4>
+                    <div class="example-with-text">
+                        <app-separator orientation="horizontal" thickness="1px" label="OR" color="#0EA5E9"
+                            margin="12px" />
+                    </div>
                 </div>
             </div>
-            <div class="subsection">
-                <h4>Vertical Separator:</h4>
-                <div class="example-vertical">
-                    <span>Left</span>
-                    <app-separator orientation="vertical" thickness="1px" color="#0EA5E9" margin="12px" />
-                    <span>Center</span>
-                    <app-separator orientation="vertical" thickness="1px" color="#0EA5E9" margin="12px" />
-                    <span>Right</span>
+        </app-showcase-card>
+
+        <app-showcase-card title="Accrodion">
+            <section class="section-wrapper">
+                <div class="section-wrapper__subsection">
+                    <app-accordion [multi]="false">
+                        @for(item of accordionContent; track item.id) {
+                            <app-accordion-item [title]="item.title">
+                                <p>{{item.content}}</p>
+                            </app-accordion-item>
+                        }
+                    </app-accordion>
                 </div>
-            </div>
-            <div class="subsection">
-                <h4>With Text:</h4>
-                <div class="example-with-text">
-                    <app-separator orientation="horizontal" thickness="1px" label="OR" color="#0EA5E9" margin="12px" />
+            </section>
+        </app-showcase-card>
+        <app-showcase-card title="Multiple Accordion (Multiple Open)">
+            <section class="section-wrapper">
+                <div class="section-wrapper__subsection">
+                    <app-accordion [multi]="true">
+                        @for(item of multiAccordionContent; track item.id) {
+                            <app-accordion-item [title]="item.title">
+                                <p>{{item.content}}</p>
+                            </app-accordion-item>
+                        }
+                    </app-accordion>
                 </div>
-            </div>
-        </section>
-        <section class="section-separators">
-            <h3>Accordion</h3>
-            <div class="subsection">
-                <app-accordion [multi]="false">
-                    <app-accordion-item title="What is this component library?">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cum
-                            corporis rem nemo dolorum velit ipsam officia, quibusdam eaque quas sapiente necessitatibus
-                            tenetur vero repellat. Atque, distinctio incidunt.</p>
-                    </app-accordion-item>
-                    <app-accordion-item title="How do I use these components?">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cum
-                            corporis rem nemo dolorum velit ipsam officia, quibusdam eaque quas sapiente necessitatibus
-                            tenetur vero repellat. Atque, distinctio incidunt.</p>
-                    </app-accordion-item>
-                    <app-accordion-item title="Are these components accessible?">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cum
-                            corporis rem nemo dolorum velit ipsam officia, quibusdam eaque quas sapiente necessitatibus
-                            tenetur vero repellat. Atque, distinctio incidunt.</p>
-                    </app-accordion-item>
-                    <app-accordion-item title="Can I customize the styling?">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cum
-                            corporis rem nemo dolorum velit ipsam officia, quibusdam eaque quas sapiente necessitatibus
-                            tenetur vero repellat. Atque, distinctio incidunt.</p>
-                    </app-accordion-item>
-                </app-accordion>
-            </div>
-        </section>
-        <section class="section-separators">
-            <h3>Multiple Accordion (Multiple Open)</h3>
-            <div class="subsection">
-                <app-accordion [multi]="true">
-                    <app-accordion-item title="Features">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cum
-                            corporis rem nemo dolorum velit ipsam officia, quibusdam eaque quas sapiente necessitatibus
-                            tenetur vero repellat. Atque, distinctio incidunt.</p>
-                    </app-accordion-item>
-                    <app-accordion-item title="Installation">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cum
-                            corporis rem nemo dolorum velit ipsam officia, quibusdam eaque quas sapiente necessitatibus
-                            tenetur vero repellat. Atque, distinctio incidunt.</p>
-                    </app-accordion-item>
-                    <app-accordion-item title="Documentation">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cum
-                            corporis rem nemo dolorum velit ipsam officia, quibusdam eaque quas sapiente necessitatibus
-                            tenetur vero repellat. Atque, distinctio incidunt.</p>
-                    </app-accordion-item>
-                </app-accordion>
-            </div>
-        </section>
+            </section>
+        </app-showcase-card>
     </main>
 </div>
