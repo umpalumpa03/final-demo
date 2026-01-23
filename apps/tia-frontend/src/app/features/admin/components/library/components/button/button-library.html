@@ -1,5 +1,10 @@
 <div class="button-library">
-  <app-library-title [title]="title" [subtitle]="subtitle"></app-library-title>
+  <div class="button-library__title">
+    <app-library-title
+      [title]="title"
+      [subtitle]="subtitle"
+    ></app-library-title>
+  </div>
 
   <app-showcase-card title="Variants">
     @for (v of variants(); track v) {
