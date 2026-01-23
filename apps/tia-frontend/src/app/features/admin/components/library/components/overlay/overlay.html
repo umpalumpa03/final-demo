@@ -28,31 +28,11 @@
     <app-drawer-modal></app-drawer-modal>
   </app-showcase-card>
 
-<app-showcase-card>
-  <app-context-demo></app-context-demo>
-</app-showcase-card>
+  <app-showcase-card>
+    <app-context-demo></app-context-demo>
+  </app-showcase-card>
 
-  <section class="component-section palette-section">
-    <h3>Command Palette</h3>
-    <div class="command-palette-mock">
-      <div class="command-input">
-        <span class="search-icon"></span>
-        <input type="text" placeholder="Type a command or search..." readonly />
-      </div>
-      <div class="command-results">
-        <div class="result-group">
-          <label for="name">Suggestions</label>
-          <div class="result-item active">View Profile</div>
-          <div class="result-item">Settings</div>
-          <div class="result-item">Messages</div>
-        </div>
-        <div class="result-group">
-          <label for="actions">Actions</label>
-          <div class="result-item">Create New</div>
-          <div class="result-item">Copy</div>
-          <div class="result-item">Delete</div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <app-showcase-card title="Command Palette">
+    <app-command-palette-demo></app-command-palette-demo>
+  </app-showcase-card>
 </div>
