@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { FormBuilder, Validators, ɵInternalFormsSharedModule, ReactiveFormsModule } from '@angular/forms';
-import { TextInput } from '@tia/shared/lib/forms/input-field/text-input/text-input';
+import { TextInput } from "@tia/shared/lib/forms/input-field/text-input";
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 
 @Component({

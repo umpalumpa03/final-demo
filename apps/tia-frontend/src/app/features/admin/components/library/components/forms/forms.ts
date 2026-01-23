@@ -3,10 +3,11 @@ import { ContactForms } from "./contact-form/contact-form";
 import { RegistrationForm } from './registration-form/registration-form';
 import { InlineForm } from "./inline-form/inline-form";
 import { ValidationForm } from "./validation-form/validation-form";
+import { LibraryTitle } from "../../shared/library-title/library-title";
 
 @Component({
   selector: 'app-forms',
-  imports: [ContactForms, RegistrationForm, InlineForm, ValidationForm],
+  imports: [ContactForms, RegistrationForm, InlineForm, ValidationForm, LibraryTitle],
   templateUrl: './forms.html',
   styleUrl: './forms.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

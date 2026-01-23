@@ -4,7 +4,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { TextInput } from '@tia/shared/lib/forms/input-field/text-input/text-input';
+import { TextInput } from "@tia/shared/lib/forms/input-field/text-input";
 
 @Component({
   selector: 'app-validation-form',

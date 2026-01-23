@@ -10,8 +10,8 @@ import {
   passwordMatchValidator,
   passwordValidator,
 } from '@tia/shared/utils/form-validations';
-import { TextInput } from '@tia/shared/lib/forms/input-field/text-input/text-input';
-import { InputState } from '@tia/shared/lib/forms/input-field/models/input.model';
+import { TextInput } from "@tia/shared/lib/forms/input-field/text-input";
+import { InputState } from '@tia/shared/lib/forms/models/input.model';
 
 @Component({
   selector: 'app-registration-form',

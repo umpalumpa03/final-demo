@@ -7,10 +7,10 @@ import {
 import { getErrorMessage } from '../../../../../../../shared/utils/form-validations';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IContactForm } from '../models/contact-forms.model';
-import { TextInput } from '@tia/shared/lib/forms/input-field/text-input/text-input';
+import { TextInput } from "@tia/shared/lib/forms/input-field/text-input";
 
 @Component({
-  selector: 'app-contact-forms',
+  selector: 'app-contact-form',
   imports: [ReactiveFormsModule, TextInput],
   templateUrl: './contact-form.html',
   styleUrl: './contact-form.scss',
