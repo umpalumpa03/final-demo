@@ -22,7 +22,7 @@ export class AccordionItem {
 
   public isOpen = model<boolean>(false);
 
-  toggle(): void {
+  public toggle(): void {
     const nextState = !this.isOpen();
     this.isOpen.set(nextState);
 

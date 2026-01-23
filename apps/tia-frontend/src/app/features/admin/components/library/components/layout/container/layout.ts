@@ -14,6 +14,6 @@ import { accordionContent, multiAccordionContent } from '../config/layout.config
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Layout {
-  accordionContent = accordionContent;
-  multiAccordionContent = multiAccordionContent;
+  public readonly accordionContent = accordionContent;
+  public readonly multiAccordionContent = multiAccordionContent;
 }

@@ -19,7 +19,7 @@ export class Accordion {
 
   private items = contentChildren(forwardRef(() => AccordionItem));
 
-  notifyOpen(openedItem: AccordionItem): void {
+  public notifyOpen(openedItem: AccordionItem): void {
     if (this.multi()) return;
 
     this.items().forEach((item) => {
