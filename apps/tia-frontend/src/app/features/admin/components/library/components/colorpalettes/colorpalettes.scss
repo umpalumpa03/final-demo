@@ -3,21 +3,23 @@
 
 .colorpalettes-container {
   max-width: 110rem;
-  padding: 2rem;
   width: 100%;
   min-height: 6.4rem;
   margin: 0 auto;
+  padding: 1.6rem;
   @include display-flex(column);
 
   .colorpalettes-content {
     max-width: 110.2rem;
-    padding: 2rem;
-    margin: 0 auto 2rem;
-    padding: 0.4rem 1.6rem;
+    margin: 0 auto;
     width: 100%;
     @include display-flex();
     @include flex-center(column, center, flex-start);
     gap: 3.2rem;
+    app-showcase-card {
+      display: block;
+      width: 100%;
+    }
 
     .colorpalettes-header {
       margin: 2rem 0;
