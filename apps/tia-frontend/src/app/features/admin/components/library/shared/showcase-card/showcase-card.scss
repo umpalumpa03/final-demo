@@ -17,6 +17,11 @@
     color: var(--color-fg);
   }
 
+  &__subtitle {
+    @include font-arimo(400, 1.4rem, 2rem);
+    color: $gray-700;
+  }
+
   &__content {
     @include display-flex(row, wrap);
     gap: 1.2rem;

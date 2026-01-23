@@ -1,4 +1,4 @@
-import { VariantBadgeItem, StatusBadgeItem, SizeBadgeItem, CountBadgeItem, DismissibleBadgeItem, PillBadgeItem } from "../models/badge-component.models";
+import { VariantBadgeItem, StatusBadgeItem, SizeBadgeItem, CountBadgeItem, DismissibleBadgeItem, PillBadgeItem, DotBadgeItem } from "../models/badge-component.models";
 
 export const VARIANTS: VariantBadgeItem[] = [
   { variant: 'default', text: 'Default', size:'medium' , shape:'rounded' },
@@ -8,13 +8,12 @@ export const VARIANTS: VariantBadgeItem[] = [
 ] as const;
 
 export const STATUSES: StatusBadgeItem[] = [
-  { status: 'active', text: 'Active', size:'medium' , shape:'rounded'  },
-  { status: 'pending', text: 'Pending', size:'medium' , shape:'rounded' },
-  { status: 'inactive', text: 'Inactive', size:'medium' , shape:'rounded' },
-  { status: 'in-progress', text: 'In Progress', size:'medium' , shape:'rounded' },
-  { status: 'featured', text: 'Featured', size:'medium' , shape:'rounded' },
-  { status: 'premium', text: 'Premium', size:'medium' , shape:'rounded' },
-
+  { status: 'active', size: 'medium' },
+  { status: 'pending', size: 'medium' },
+  { status: 'inactive', size: 'medium' },
+  { status: 'in-progress', size: 'medium' },
+  { status: 'featured', size: 'medium' },
+  { status: 'premium', size: 'medium' },
 ] as const;
 
 export const SIZES: SizeBadgeItem[] = [
@@ -44,7 +43,14 @@ export const PILL_BADGES: PillBadgeItem[] = [
   { variant: 'secondary', text: 'Category', size: 'medium' , shape:'pill' },
   { variant: 'outline', text: 'Tag', size: 'medium' , shape:'pill' },
   { variant: 'default', text: 'React', size: 'medium' , shape:'pill' },
-  { status: 'active', text: 'TypeScript', size: 'medium' , shape:'pill' },
-  { status: 'featured', text: 'CSS', size: 'medium' , shape:'pill' },
-  { status: 'premium', text: 'JavaScript', size: 'medium' , shape:'pill' },
+  { variant: 'destructive', text: 'TypeScript', size: 'medium' , shape:'pill' },
+  { variant: 'secondary', text: 'CSS', size: 'medium' , shape:'pill' },
+  { variant: 'default', text: 'JavaScript', size: 'medium' , shape:'pill' },
+] as const;
+
+export const DOT_BADGES: DotBadgeItem[] = [
+  { dot: 'online', size: 'medium' },
+  { dot: 'away', variant: 'secondary', size: 'medium' },
+  { dot: 'offline', variant: 'secondary', size: 'medium' },
+  { dot: 'live', size: 'medium' },
 ] as const;

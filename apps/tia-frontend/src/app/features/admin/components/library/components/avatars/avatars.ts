@@ -5,12 +5,13 @@ import {
   AvatarGroupItem,
   AvatarUserProfile,
 } from '../../../../../../shared/lib/data-display/models/avatar.model';
+import { AspectRatioComponent } from '../aspect-ratio/aspect-ratio';
 import { LibraryTitle } from '../../shared/library-title/library-title';
 import { ADDITIONAL_USERS, AVATAR_SIZES, COLOR_AVATARS, GROUP_AVATARS, LOGGED_IN_USER, STATUS_AVATARS } from './config/avatars-data.config';
 
 @Component({
   selector: 'app-avatars',
-  imports: [LibraryTitle, Avatar, AvatarGroup],
+  imports: [LibraryTitle, Avatar, AvatarGroup, AspectRatioComponent],
   templateUrl: './avatars.html',
   styleUrl: './avatars.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
