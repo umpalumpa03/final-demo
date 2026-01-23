@@ -6,7 +6,6 @@
   inset: 0;
   background-color: rgba($black, 0.5);
   z-index: 1000;
-  cursor: default;
 }
 
 .ui-sheet {
@@ -17,39 +16,45 @@
     0 0.4rem 0.6rem -0.4rem rgba($black, 0.1);
   transition: transform 0.3s ease-in-out;
   outline: none;
+  z-index: 1001;
 
+  &__left,
   &__right {
     top: 0;
-    right: 0;
-    max-width: 38.4rem;
-    width: 100%;
     height: 100%;
+    width: 100%;
+    max-width: 38.4rem;
+
+    @media (max-width: 48rem) {
+      max-width: 100%;
+    }
+  }
+
+  &__top,
+  &__bottom {
+    left: 0;
+    width: 100%;
+    min-height: 18rem;
+  }
+
+  &__right {
+    right: 0;
     border-left: 0.08rem solid var(--color-accent);
   }
 
   &__left {
-    top: 0;
     left: 0;
-    max-width: 38.4rem;
-    width: 100%;
-    height: 100%;
-    border-left: 0.08rem solid var(--color-accent);
+    border-right: 0.08rem solid var(--color-accent);
   }
 
   &__top {
     top: 0;
-    left: 0;
-    width: 100%;
-    min-height: 18rem;
-    border-left: 0.08rem solid var(--color-accent);
+    border-bottom: 0.08rem solid var(--color-accent);
   }
 
   &__bottom {
     bottom: 0;
-    left: 0;
-    width: 100%;
-    min-height: 18rem;
-    border-left: 0.08rem solid var(--color-accent);
+    border-top: 0.08rem solid var(--color-accent);
   }
 
   &__close {
@@ -57,49 +62,39 @@
     position: absolute;
     top: 1.6rem;
     right: 1.6rem;
-    width: 1.6rem;
-    height: 1.6rem;
+    width: 3.2rem;
+    height: 3.2rem;
+    background: transparent;
+    border: none;
     cursor: pointer;
-    opacity: 0.7;
     z-index: 10;
+    transition: opacity 0.2s;
 
     &:hover {
       opacity: 1;
     }
-  }
 
-  &__close-icon {
-    position: relative;
-    display: block;
-    width: 100%;
-    height: 100%;
-
-    &::before,
-    &::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 100%;
-      height: 0.13333rem;
+    &-icon {
+      width: 1.6rem;
+      height: 1.6rem;
       background-color: var(--color-fg);
-    }
-
-    &::before {
-      transform: translate(-50%, -50%) rotate(45deg);
-    }
-
-    &::after {
-      transform: translate(-50%, -50%) rotate(-45deg);
+      opacity: 0.7;
+      mask: url('/images/svg/close.svg') no-repeat center / contain;
+      -webkit-mask: url('/images/svg/close.svg') no-repeat center / contain;
     }
   }
 
   &__content {
-    @include display-flex(column);
+    padding: 2.4rem;
     height: 100%;
-    padding: 1.6rem;
     overflow-y: auto;
-    @include font-arimo(400, 1.4rem, 2rem);
-    color: var(--color-fg);
+  }
+}
+
+@media (max-width: 640px) {
+  .ui-sheet {
+    &__bottom {
+      @include flex-center($justify: center);
+    }
   }
 }

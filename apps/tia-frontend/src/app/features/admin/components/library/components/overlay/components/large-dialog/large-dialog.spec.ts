@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { LargeDialog } from './large-dialog';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('LargeDialog', () => {
   let component: LargeDialog;
@@ -16,15 +17,17 @@ describe('LargeDialog', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should toggle the isOpen signal state when toggle() is called', () => {
+    expect(component.isOpen()).toBe(false);
+    component.toggle();
+    expect(component.isOpen()).toBe(true);
+    component.toggle();
+    expect(component.isOpen()).toBe(false);
   });
 
-  it('should call toggle when the main trigger button is clicked', () => {
-    const triggerBtn = fixture.debugElement.query(By.css('.btn--outline'));
-
+  it('should invoke toggle() when the trigger button is clicked', () => {
+    const triggerBtn = fixture.debugElement.query(By.css('app-button'));
     triggerBtn.triggerEventHandler('click', null);
-
     expect(component.isOpen()).toBe(true);
   });
 });

@@ -4,9 +4,9 @@ import {
   computed,
   input,
   output,
-  effect,
+  linkedSignal,
 } from '@angular/core';
-import { DraggableItemType } from '../../model/drag.model';
+import { DraggableItemType, LayoutType } from '../../model/drag.model';
 import { DraggableCard } from '../draggable-card/draggable-card';
 import { DragBase } from '../../base/base';
 
@@ -18,20 +18,26 @@ import { DragBase } from '../../base/base';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DragCard extends DragBase {
-  public items = input.required<DraggableItemType[]>();
-  public canDelete = input<boolean>(false);
-  public layout = input<'grid' | 'list'>('grid');
-  public columns = input<number>(2);
-  public cardTitle = input<string>('Draggable Cards');
-  public cardDescription = input<string>(
+  public readonly items = input.required<DraggableItemType[]>();
+  public readonly canDelete = input(false);
+  public readonly layout = input<LayoutType>('grid');
+  public readonly columns = input(2);
+  public readonly cardTitle = input('Draggable Cards');
+  public readonly cardDescription = input<string>(
     'Drag Cards to reorder them in a grid layout',
   );
 
-  public itemsChange = output<DraggableItemType[]>();
-  public orderChange = output<string[]>();
-  public itemRemoved = output<string>();
+  public readonly itemsChange = output<DraggableItemType[]>();
+  public readonly orderChange = output<string[]>();
+  public readonly itemRemoved = output<string>();
 
-  public internalItems: DraggableItemType[] = [];
+  public readonly internalItems = linkedSignal<
+    DraggableItemType[],
+    DraggableItemType[]
+  >({
+    source: this.items,
+    computation: (newItems) => [...newItems],
+  });
 
   protected readonly containerClasses = computed(
     () => `draggable-cards draggable-cards--${this.layout()}`,
@@ -41,37 +47,30 @@ export class DragCard extends DragBase {
     this.layout() === 'grid' ? `--columns: ${this.columns()}` : null,
   );
 
-  constructor() {
-    super();
-    effect(() => {
-      this.internalItems = [...this.items()];
-    });
-  }
-
   public onDragStartHandler(id: string, event: PointerEvent): void {
     this.onDragStart(id, event);
   }
 
   protected override handleDrop(dragId: string, dropId: string): void {
-    const dragIndex = this.internalItems.findIndex(
-      (item) => item.id === dragId,
-    );
-    const dropIndex = this.internalItems.findIndex(
-      (item) => item.id === dropId,
-    );
+    const currentItems = this.internalItems();
+    const dragIndex = currentItems.findIndex((item) => item.id === dragId);
+    const dropIndex = currentItems.findIndex((item) => item.id === dropId);
 
-    const newItems = [...this.internalItems];
+    if (dragIndex === -1 || dropIndex === -1) return;
+
+    const newItems = [...currentItems];
     const [removed] = newItems.splice(dragIndex, 1);
     newItems.splice(dropIndex, 0, removed);
 
-    this.internalItems = newItems;
-    this.itemsChange.emit(this.internalItems);
-    this.orderChange.emit(this.internalItems.map((item) => item.id));
+    this.internalItems.set(newItems);
+    this.itemsChange.emit(newItems);
+    this.orderChange.emit(newItems.map((item) => item.id));
   }
 
   public onRemove(id: string): void {
-    this.internalItems = this.internalItems.filter((item) => item.id !== id);
-    this.itemsChange.emit(this.internalItems);
+    const updated = this.internalItems().filter((item) => item.id !== id);
+    this.internalItems.set(updated);
+    this.itemsChange.emit(updated);
     this.itemRemoved.emit(id);
   }
 }

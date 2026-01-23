@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { UiSheetModal } from '../../../../../../../../shared/lib/overlay/ui-sheet-modal/ui-sheet-modal';
 import { LibraryTitle } from '../../../../shared/library-title/library-title';
+import { ButtonComponent } from "@tia/shared/lib/primitives/button/button";
 
 @Component({
   selector: 'app-top-sheet-modal',
-  imports: [UiSheetModal, LibraryTitle],
+  imports: [UiSheetModal, LibraryTitle, ButtonComponent],
   templateUrl: './top-sheet-modal.html',
   styleUrl: './top-sheet-modal.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
