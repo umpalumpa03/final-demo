@@ -33,7 +33,9 @@ export class UiContext {
 
       return {
         ...item,
-        iconPath: item.icon ? `url(images/svg/context/${item.icon}.svg)` : undefined,
+        iconPath: item.icon
+          ? `url(images/svg/context/${item.icon}.svg)`
+          : undefined,
       } as ContextMenuViewModel;
     });
   });

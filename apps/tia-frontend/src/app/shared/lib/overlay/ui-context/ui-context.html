@@ -7,7 +7,7 @@
   role="menu"
   tabindex="-1"
 >
-  @for (item of processedItems(); track $index) { @if (item === 'divider') {
+  @for (item of processedItems(); track item) { @if (item === 'divider') {
   <div class="ui-context__divider" role="separator"></div>
   } @else {
   <button
