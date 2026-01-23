@@ -57,12 +57,19 @@
             }
           }
         }
+
+        &__actions {
+          @include flex-center($justify: flex-end);
+          gap: 2.8rem;
+
+          img {
+            cursor: pointer;
+          }
+        }
       }
 
       &__badges {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        @include flex-center();
       }
     }
   }
