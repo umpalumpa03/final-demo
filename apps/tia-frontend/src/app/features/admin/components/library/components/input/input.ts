@@ -7,10 +7,11 @@ import {
   TEXTAREA_DEMOS,
 } from './config/input-demos.config';
 import { Textarea } from '@tia/shared/lib/forms/textarea/textarea';
+import { LibraryTitle } from "../../shared/library-title/library-title";
 
 @Component({
   selector: 'app-input',
-  imports: [CommonModule, TextInput, Textarea],
+  imports: [CommonModule, TextInput, Textarea, LibraryTitle],
   templateUrl: './input.html',
   styleUrl: './input.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

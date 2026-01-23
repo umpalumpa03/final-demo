@@ -19,22 +19,25 @@
     </div>
   </section>
 
-    <section class="gallery__section">
-        <h2 class="gallery__section-title">Special Input Types</h2>
-        <div class="gallery__input-stack">
-            @for (input of specialInputTypes(); track input.type) {
-            <lib-text-input [type]="input.type" [config]="{ label: input.label, placeholder: 'Type here...' }" />
-            }
-        </div>
-    </section>
+  <section class="gallery__section">
+    <h2 class="gallery__section-title">Special Input Types</h2>
+    <div class="gallery__input-stack">
+      @for (input of specialInputTypes(); track input.type) {
+      <lib-text-input
+        [type]="input.type"
+        [config]="{ label: input.label, placeholder: 'Type here...' }"
+      />
+      }
+    </div>
+  </section>
 
-    <section class="gallery__section">
-        <h2 class="gallery__section-title">Textarea</h2>
-        <div class="gallery__input-stack">
-            @for (area of textareaDemos(); track area.config.label) {
-            <lib-textarea [state]="area.state || 'default'" [config]="area.config">
-            </lib-textarea>
-            }
-        </div>
-    </section>
+  <section class="gallery__section">
+    <h2 class="gallery__section-title">Textarea</h2>
+    <div class="gallery__input-stack">
+      @for (area of textareaDemos(); track area.config.label) {
+      <lib-textarea [state]="area.state || 'default'" [config]="area.config">
+      </lib-textarea>
+      }
+    </div>
+  </section>
 </div>
