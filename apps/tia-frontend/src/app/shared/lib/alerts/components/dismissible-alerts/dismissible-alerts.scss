@@ -58,20 +58,7 @@
     height: 3.6rem;
     border-radius: 0.8rem;
 
-    @include display-flex(row, nowrap);
-    justify-content: center;
-    align-items: center;
-  }
-
-  &--error {
-    background: $red-50;
-    border: 0.08rem solid $red-200;
-    .dismissible-alerts__title {
-      color: $red-900;
-    }
-    .dismissible-alerts__message {
-      color: $red-950;
-    }
+    @include flex-center();
   }
 
   &--success {
