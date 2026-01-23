@@ -1,6 +1,16 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+} from '@angular/core';
 import { Avatar } from '../avatar';
-import { AvatarColor, AvatarGroupItem, AvatarSize, AvatarTone } from '../../models/avatar.model';
+import {
+  AvatarColor,
+  AvatarGroupItem,
+  AvatarSize,
+  AvatarTone,
+} from '../models/avatar.model';
 
 @Component({
   selector: 'app-avatar-group',
@@ -16,6 +26,13 @@ export class AvatarGroup {
   public readonly overflowTone = input<AvatarTone>('soft');
   public readonly overflowColor = input<AvatarColor>('gray');
 
-  public readonly visibleAvatars = computed(() => this.avatars().slice(0, this.max()));
-  public readonly overflowCount = computed(() => Math.max(this.avatars().length - this.max(), 0));
+  public readonly visibleAvatars = computed(() =>
+    this.avatars().slice(0, this.max()),
+  );
+  public readonly hasVisibleAvatars = computed(
+    () => this.visibleAvatars().length > 0,
+  );
+  public readonly overflowCount = computed(() =>
+    Math.max(this.avatars().length - this.max(), 0),
+  );
 }

@@ -15,24 +15,33 @@ const DEFAULT_MESSAGE = 'This is a default alert with important information.';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BasicAlerts {
+  public readonly alertType = input<BaseAlertType>('default');
+  public readonly alertTitle = input<string>('Default Alert');
+  public readonly alertMessage = input<string>(
+    'This is a default alert with important information.',
+  );
 
-  public alertType = input<BaseAlertType>('default');
-  public alertTitle = input<string>('Default Alert');
-  public readonly alertMessage = input<string>(DEFAULT_MESSAGE);
+  public readonly alertClass = computed(() => `basic-alert--${this.alertType()}`);
 
-  public alertClass = computed(() => `basic-alert--${this.alertType()}`);
-
-  public effectiveTitle = computed(() => {
-    if (this.alertType() === 'error' && this.alertTitle() === 'Default Alert') {
-      return 'Error Alert';
-    }
-    return this.alertTitle();
+  public readonly effectiveTitle = computed(() => {
+    const isDefault = this.alertTitle() === 'Default Alert';
+    return (this.alertType() === 'error' && isDefault) 
+      ? 'Error Alert' 
+      : this.alertTitle();
   });
 
-  public effectiveMessage = computed(() => {
-    if (this.alertType() === 'error' && this.alertMessage() === DEFAULT_MESSAGE) {
+  public readonly effectiveMessage = computed(() => {
+    if (this.alertType() === 'error' && this.alertMessage() === 'This is a default alert with important information.') {
       return 'This is an error alert with important information.';
     }
     return this.alertMessage();
   });
+
+  public readonly effectiveImgPath = computed(
+    () => `/images/svg/alerts/base-alert-${this.alertType()}.svg`,
+  );
+
+  public readonly effectiveAltName = computed(
+    () => `${this.alertType()} icon`
+  );
 }

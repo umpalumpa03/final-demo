@@ -1,0 +1,12 @@
+@use '../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../shared/styles/palette' as *;
+@use '../styles/forms-shared' as *;
+
+.validation__form {
+  @extend %flex-stack;
+  width: 44.8rem;
+
+  &--fields {
+    width: 100%;
+  }
+}

@@ -1,0 +1,21 @@
+<div
+  class="hover-card"
+  (mouseenter)="open()"
+  (mouseleave)="close()"
+>
+  <div class="hover-card__trigger">
+    <ng-content select="[hover-card-trigger]"></ng-content>
+  </div>
+
+  @if (isOpen()) {
+    <div
+      class="hover-card__content"
+      [class.hover-card__content--top]="placement() === 'top'"
+      [class.hover-card__content--bottom]="placement() === 'bottom'"
+      [class.hover-card__content--left]="placement() === 'left'"
+      [class.hover-card__content--right]="placement() === 'right'"
+    >
+      <ng-content select="[hover-card-content]"></ng-content>
+    </div>
+  }
+</div>
