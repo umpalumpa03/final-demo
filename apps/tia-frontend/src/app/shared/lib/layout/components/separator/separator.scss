@@ -11,10 +11,10 @@
   }
 
   &__label {
-    color: #666;
+    color: $gray-200;
     font-size: 0.875rem;
     white-space: nowrap;
-    @include flex-center(row, center, center);
+    @include flex-center(row);
   }
 
   &--horizontal {
