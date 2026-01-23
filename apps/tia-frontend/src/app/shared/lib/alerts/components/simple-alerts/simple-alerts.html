@@ -1,8 +1,8 @@
 <div class="simple-alerts" [class]="iconAlertClass()">
   <div class="simple-alerts__alert-icon-div">
     <img
-      [src]="'/images/img/alert-icons/base-alert-' + effectiveImgName() + '.png'"
-      [alt]="alertType() + ' icon'"
+      [src]="effectiveImgPath()"
+      [alt]="effectiveAltName()"
     />
   </div>
   <div class="simple-alerts__alert-info-div">
