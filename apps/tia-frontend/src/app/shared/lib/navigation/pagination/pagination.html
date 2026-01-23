@@ -1,0 +1,53 @@
+<nav aria-label="Pagination Navigation" class="pagination">
+  <ul class="pagination__list">
+    <li class="pagination__item" [class.pagination__item--disabled]="currentPage() === 1">
+      <button
+        class="pagination__link"
+        (click)="onPageChange(currentPage() - 1)"
+        [disabled]="currentPage() === 1"
+        [attr.aria-label]="config().previousLabel || 'Previous page'"
+      >
+        <img
+          src="images/svg/notification-icons/arrow-left.svg"
+          alt="Previous"
+        />
+        {{ config().previousLabel || 'Previous' }}
+      </button>
+    </li>
+
+    @for (page of visiblePages(); track $index) { 
+      @if (page === ELLIPSIS) {
+    <li class="pagination__item pagination__item--ellipsis">
+      <div class="pagination__link">
+        <img src="images/svg/notification-icons/ellipsis.svg" alt="Ellipsis" />
+      </div>
+    </li>
+    } @else {
+    <li class="pagination__item" [class.pagination__item--active]="page === currentPage()">
+      <button
+        class="pagination__link pagination__link--page"
+        (click)="onPageChange(page)"
+        [attr.aria-label]="'Go to page ' + page"
+        [attr.aria-current]="page === currentPage() ? 'page' : null"
+      >
+        {{ page }}
+      </button>
+    </li>
+    } }
+
+    <li
+      class="pagination__item"
+      [class.pagination__item--disabled]="currentPage() === totalPages()"
+    >
+      <button
+        class="pagination__link"
+        (click)="onPageChange(currentPage() + 1)"
+        [disabled]="currentPage() === totalPages()"
+        [attr.aria-label]="config().nextLabel || 'Next page'"
+      >
+        {{ config().nextLabel || 'Next' }}
+        <img src="images/svg/notification-icons/arrow.svg" alt="Next" />
+      </button>
+    </li>
+  </ul>
+</nav>
