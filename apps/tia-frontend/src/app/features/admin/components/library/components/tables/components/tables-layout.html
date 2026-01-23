@@ -5,9 +5,16 @@
       subtitle="Table components for displaying structured data"
     ></app-library-title>
   </header>
-  <section class="tables__basic">
-    <app-showcase-card title="Basic Table">
-      <app-tables [tableConfig]="tableConfig"></app-tables>
-    </app-showcase-card>
-  </section>
+  <div class="tables__section__wrapper">
+    <section class="tables__basic">
+      <app-showcase-card title="Basic Table">
+        <app-tables [tableConfig]="basicConfig"></app-tables>
+      </app-showcase-card>
+    </section>
+    <section class="tables__row--selection">
+      <app-showcase-card title="Table with Row Selection">
+        <app-tables [tableConfig]="rowConfig"> </app-tables>
+      </app-showcase-card>
+    </section>
+  </div>
 </div>

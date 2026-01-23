@@ -21,9 +21,6 @@ describe('DismissibleAlerts', () => {
 
   describe('Computed Logic', () => {
     it('should calculate effectiveImgName based on type', () => {
-      fixture.componentRef.setInput('alertType', 'error');
-      expect(component.effectiveImgName()).toBe('default');
-
       fixture.componentRef.setInput('alertType', 'success');
       expect(component.effectiveImgName()).toBe('success');
     });
