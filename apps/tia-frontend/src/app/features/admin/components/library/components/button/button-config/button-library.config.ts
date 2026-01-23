@@ -50,7 +50,7 @@ export const ICON_BUTTONS = [
   {
     variant: 'ghost' as ButtonVariant,
     label: 'Settings',
-    icon: 'set-icon.svg',
+    icon: 'set-arrow.svg',
   },
 ];
 

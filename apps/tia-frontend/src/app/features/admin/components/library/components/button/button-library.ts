@@ -22,7 +22,7 @@ export class ButtonLibraryComponent {
   protected readonly iconButtons = signal(CONFIG.ICON_BUTTONS);
   protected readonly iconOnlyButtons = signal(CONFIG.ICON_ONLY_BUTTONS);
   protected readonly interactiveItems = signal(CONFIG.INTERACTIVE_EXAMPLES);
-
+  public readonly groupLabels = signal<string[]>(['Left', 'Middle', 'Right']);
   
 
   public readonly title:string = "Buttons";

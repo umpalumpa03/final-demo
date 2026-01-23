@@ -1,5 +1,5 @@
 <button
-  type="button"
+  [type]="type()"
   [class]="'button button--' + variant() + ' button--' + size()"
   [class.button--loading]="isLoading()"
   [class.button--full-width]="fullWidth()"

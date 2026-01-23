@@ -14,4 +14,5 @@ export class ButtonComponent {
   public readonly isDisabled = input<boolean>(false);
   public readonly fullWidth = input<boolean>(false);
   public readonly icon = input<string | null>('');
+  public readonly type = input<'button' | 'submit' | 'reset'>('button');
 }
