@@ -1,5 +1,5 @@
 import { computed } from '@angular/core';
-import { AbstractControl } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export const getErrorMessage = (
   control: AbstractControl | null,
@@ -20,3 +20,40 @@ export const getErrorMessage = (
 
     return '';
   });
+
+export const confirmPasswordValidator: ValidatorFn = (control) => {
+  const password = control.get('password')?.value;
+  const confirmPassword = control.get('confirmPassword')?.value;
+  const child = control.get('confirmPassword');
+
+  if (password && confirmPassword && password !== confirmPassword) {
+    child?.setErrors({
+      ...(child.errors || { message: 'password not matched' }),
+      PasswordNoMatch: true,
+    });
+    return { PasswordNoMatch: true };
+  }
+
+  if (child?.hasError('PasswordNoMatch')) {
+    const errs = { ...(child.errors || {}) };
+    delete errs['PasswordNoMatch'];
+    child.setErrors(Object.keys(errs).length ? errs : null);
+  }
+  return null;
+};
+
+export function passwordValidator(
+  control: AbstractControl,
+): ValidationErrors | null {
+  if (!control.value) {
+    return null;
+  }
+
+  const valid =
+    /[A-Z]/.test(control.value) &&
+    /[a-z]/.test(control.value) &&
+    /[0-9]/.test(control.value) &&
+    /[!@#$%^&*(),.?":{}|<>]/.test(control.value);
+
+  return !valid ? { passwordStrength: true } : null;
+}

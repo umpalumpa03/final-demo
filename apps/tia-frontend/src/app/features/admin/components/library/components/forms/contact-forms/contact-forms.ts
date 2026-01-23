@@ -27,29 +27,13 @@ export class ContactForms {
     subscribe: [false, [Validators.requiredTrue]],
   });
 
-  public readonly nameError = getErrorMessage(this.name, 'name');
-  public readonly emailError = getErrorMessage(this.email, 'email');
   public readonly messageError = getErrorMessage(this.message, 'message');
 
-  public get name() {
-    return this.contactForm.controls.name;
-  }
-  public get email() {
-    return this.contactForm.controls.email;
-  }
   public get message() {
     return this.contactForm.controls.message;
   }
   public get subscribe() {
     return this.contactForm.controls.subscribe;
-  }
-
-  public get isNameError() {
-    return this.showError('name');
-  }
-
-  public get isEmailError() {
-    return this.showError('email');
   }
 
   public get isMessageError() {
