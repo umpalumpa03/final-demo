@@ -20,10 +20,7 @@
   }
 
   &--full-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    @include flex-center(column);
     gap: 2rem;
     background: rgba(255, 255, 255, 0.95);
     z-index: 9999;
@@ -32,13 +29,11 @@
   &__text {
     margin: 0;
     color: $gray-600;
-    font-size: 1.6rem;
+    @include font-arimo(400, 1.6rem, 1.5);
   }
 
   &--pulsing {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include flex-center(row);
     gap: 0.8rem;
   }
 
