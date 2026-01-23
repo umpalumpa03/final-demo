@@ -10,15 +10,15 @@ import {
   input,
   effect,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { BaseInput } from '../base/base-input';
 import { TEXTAREA_DEFAULTS } from '../config/textarea.config';
 import { TextareaConfig } from '../models/textarea.model';
+import { generateUniqueId } from '../base/utils/input.util';
 
 @Component({
   selector: 'lib-textarea',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './textarea.html',
   styleUrls: ['./textarea.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,9 +31,7 @@ export class Textarea extends BaseInput implements AfterViewInit {
 
   private readonly renderer = inject(Renderer2);
 
-  private uniqueIdCounter = 0;
-
-  private readonly defaultId = `lib-textarea-${this.uniqueIdCounter++}`;
+  private readonly defaultId = generateUniqueId('lib-textarea');
 
   protected readonly mergedConfig = computed<TextareaConfig>(() => ({
     ...TEXTAREA_DEFAULTS,

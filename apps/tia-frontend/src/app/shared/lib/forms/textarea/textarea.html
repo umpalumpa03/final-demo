@@ -10,10 +10,10 @@
     }
 
     <div class="text-input__wrapper">
-        <textarea #textareaRef [id]="cfg.id || ''" [value]="value() ?? ''" [rows]="cfg.rows"
-            [placeholder]="cfg.placeholder" [style.resize]="cfg.resizable" [disabled]="isDisabled()"
-            [readOnly]="isReadonly()" (input)="handleInput($event)" (blur)="handleBlur($event)"
-            (focus)="handleFocus($event)" class="text-input__field" [class.text-input__field--error]="hasError()"
+        <textarea #textareaRef [id]="cfg.id" [value]="value() ?? ''" [rows]="cfg.rows" [placeholder]="cfg.placeholder"
+            [style.resize]="cfg.resizable" [disabled]="isDisabled()" [readOnly]="isReadonly()"
+            (input)="handleInput($event)" (blur)="handleBlur($event)" (focus)="handleFocus($event)"
+            class="text-input__field" [class.text-input__field--error]="hasError()"
             [class.text-input__field--success]="hasSuccess()" [class.text-input__field--disabled]="isDisabled()">
         </textarea>
     </div>
