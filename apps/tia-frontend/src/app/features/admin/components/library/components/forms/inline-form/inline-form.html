@@ -1,0 +1,9 @@
+<form class="inline__form" [formGroup]="inlineForm" (ngSubmit)="submit()">
+  <lib-text-input
+    type="email"
+    formControlName="email"
+    [config]="emailConfigs"
+    class="inline__form--email"
+  ></lib-text-input>
+  <app-button>Subscribe</app-button>
+</form>
