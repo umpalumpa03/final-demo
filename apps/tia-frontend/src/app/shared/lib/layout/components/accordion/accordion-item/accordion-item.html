@@ -1,16 +1,12 @@
-<div class="accordion-item" [class.is-open]="isOpen()">
-  <button 
-    type="button" 
-    class="accordion-item__trigger" 
-    (click)="toggle()" 
-    [attr.aria-expanded]="isOpen()">
-    <span class="title">{{ title() }}</span>
-    <span class="chevron-icon"></span>
+<div class="accordion-item" [class.accordion-item--open]="isOpen()" [class.accordion-item--last]="isLast()">
+  <button type="button" class="accordion-item__trigger" (click)="toggle()" [attr.aria-expanded]="isOpen()">
+    <span class="accordion-item__title">{{ title() }}</span>
+    <span class="accordion-item__icon"></span>
   </button>
 
-  <div class="content-wrapper" [attr.aria-hidden]="!isOpen()">
-    <div class="content-inner">
-      <div class="content-padding">
+  <div class="accordion-item__content" [attr.aria-hidden]="!isOpen()">
+    <div class="accordion-item__inner">
+      <div class="accordion-item__body">
         <ng-content />
       </div>
     </div>

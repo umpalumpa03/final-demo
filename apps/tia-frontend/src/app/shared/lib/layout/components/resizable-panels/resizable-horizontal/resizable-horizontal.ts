@@ -1,6 +1,7 @@
 import {
   Component,
   signal,
+  computed,
   ElementRef,
   viewChild,
   input,
@@ -14,7 +15,7 @@ import {
   imports: [],
   templateUrl: './resizable-horizontal.html',
   styleUrl: './resizable-horizontal.scss',
-  changeDetection:  ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '(document:mousemove)': 'onMouseMove($event)',
     '(document:mouseup)': 'onMouseUp()',
@@ -22,6 +23,10 @@ import {
 })
 export class ResizableHorizontal {
   public panelSize = input<2 | 3>(2);
+
+  protected panelIndices = computed(() =>
+    Array.from({ length: this.panelSize() }, (_, i) => i),
+  );
 
   public initialWidths = input<number[]>([300]);
 

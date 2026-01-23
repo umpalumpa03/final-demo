@@ -23,7 +23,9 @@ describe('AccordionItem', () => {
 
   it('should be closed by default', () => {
     expect(component.isOpen()).toBeFalsy();
-    const content = fixture.nativeElement.querySelector('.is-open');
+    const content = fixture.nativeElement.querySelector(
+      '.accordion-item--open',
+    );
     expect(content).toBeNull();
   });
 
@@ -33,7 +35,7 @@ describe('AccordionItem', () => {
 
     fixture.detectChanges();
     const element = fixture.nativeElement.querySelector('.accordion-item');
-    expect(element.classList).toContain('is-open');
+    expect(element.classList).toContain('accordion-item--open');
   });
 
   it('should close others if parent accordion notifyOpen is called (Integration logic)', () => {

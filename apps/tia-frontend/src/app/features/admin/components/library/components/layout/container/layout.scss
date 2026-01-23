@@ -1,90 +1,69 @@
-@use '../../../../../../../shared/styles/mixins' as mixins;
+@use '../../../../../../../shared/styles/mixins' as *;
 @use '../../../../../../../shared/styles/palette' as *;
 
-.container {
+.layout {
     max-width: 110rem;
     margin: 0 auto;
     padding-top: 3.2rem;
-    @include mixins.flex-center(column, flex-start, stretch);
-    gap: 3.2rem;
-}
-
-
-header {
-    @include mixins.flex-center(column, center, flex-start);
-    
-    h2 {
-        @include mixins.font-inter(600, 2.4rem, 3.2rem);
-        color: var(--color-fg);
-    }
-    p {
-        margin-top: 0.8rem;
-        @include mixins.font-inter(400, 1.6rem, 2.4rem);
-        letter-spacing: -0.031rem;
-        color: $gray-700;
-    }
-}
-
-main {
-    @include mixins.flex-center(column, flex-start, stretch);
+    @include flex-center(column, flex-start, stretch);
     gap: 3.2rem;
 
-    .wrapper {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-    }
+    &__header {
+        @include flex-center(column, center, flex-start);
 
-    .section-wrapper {
-        @include mixins.flex-center(column, flex-start, stretch);
-        width: 100%;
-
-        h3 {
-            @include mixins.font-inter(600, 1.8rem, 2.7rem);
+        h2 {
+            @include font-inter(600, 2.4rem, 3.2rem);
             color: var(--color-fg);
-            margin-bottom: 1.6rem;
         }
 
-        .section-separators {
-            span {
-                @include mixins.font-inter(400, 1.4rem, 2rem);
-                color: var(--color-fg);
-            }
+        p {
+            margin-top: 0.8rem;
+            @include font-inter(400, 1.6rem, 2.4rem);
+            color: $gray-700;
         }
+    }
 
+    &__main {
+        @include flex-center(column, flex-start, stretch);
+        gap: 3.2rem;
+    }
+}
 
-        &__subsection {
-            @include mixins.flex-center(column, flex-start, stretch);
-            gap: 1.6rem;
-            margin-bottom: 2.4rem;
-            h4 {
-                @include mixins.font-inter(400, 1.4rem, 2rem);
-                color: $gray-700;
-            }
-        }
-        .subsection:last-of-type {
+.section {
+    @include flex-center(column, flex-start, stretch);
+    width: 100%;
+
+    &__item {
+        @include flex-center(column, flex-start, stretch);
+        gap: 1.6rem;
+        margin-bottom: 2.4rem;
+
+        &:last-of-type {
             margin-bottom: 0;
         }
-
-        .example {
-            @include mixins.flex-center(column, flex-start, stretch);
-
-            span {
-                @include mixins.font-inter(400, 1.4rem, 2.1rem);
-                color: var(--color-fg);
-            }
-        }
     }
-}
 
+    &__title {
+        @include font-inter(400, 1.4rem, 2rem);
+        color: $gray-700;
+    }
 
+    &__example {
+        @include flex-center(column, flex-start, stretch);
 
-.example-vertical {
-    @include mixins.flex-center(row, flex-start, center);
-    height: 4.8rem;
-    
-    span {
-        @include mixins.font-inter(400, 1.4rem, 2.1rem);
-        color: var(--color-fg)
+        span {
+            @include font-inter(400, 1.4rem, 2.1rem);
+            color: var(--color-fg);
+        }
+
+        &--vertical {
+            @include flex-center(row, flex-start, stretch);
+            gap: 1.6rem;
+            height: 4.8rem;
+        }
+
+        &--horizontal {
+            @include flex-center(column, flex-start, stretch);
+        }
     }
 }

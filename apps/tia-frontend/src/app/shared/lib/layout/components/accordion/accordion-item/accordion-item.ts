@@ -18,6 +18,7 @@ export class AccordionItem {
   private accordion = inject(Accordion, { optional: true });
 
   public title = input.required<string>();
+  public isLast = input<boolean>(false);
 
   public isOpen = model<boolean>(false);
 

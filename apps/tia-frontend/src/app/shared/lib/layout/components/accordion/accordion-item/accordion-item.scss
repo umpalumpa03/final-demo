@@ -1,67 +1,73 @@
 @use '../../../../../../shared/styles/palette' as *;
-@use '../../../../../../shared/styles/mixins' as mixins;
+@use '../../../../../../shared/styles/mixins' as *;
 
-:host {
+.accordion-item {
   display: block;
   border-bottom: 0.07rem solid $black;
   border-radius: 0.8rem;
-}
-
-:host:last-child {
-  border-bottom: none;
-}
-.accordion-item {
 
   &__trigger {
     width: 100%;
     padding: 1.25rem;
-    @include mixins.flex-center(row, space-between, center);
+    @include flex-center(row, space-between, center);
     background: none;
     border: none;
     cursor: pointer;
-    @include mixins.font-inter(500, 1.4rem, 2rem);
+    @include font-inter(500, 1.4rem, 2rem);
     color: $blue-600;
     transition: background-color 0.2s;
+
+    &:hover {
+      background-color: $blue-deep-background;
+    }
   }
-}
 
-.accordion-trigger:hover {
-  background-color: $blue-deep-background;
-}
+  &__title {
+    text-align: left;
+  }
 
-.content-wrapper {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
-}
+  &__icon {
+    &::after {
+      content: '';
+      width: 0.8rem;
+      height: 0.8rem;
+      border-right: 0.2rem solid $blue-600;
+      border-bottom: 0.2rem solid $blue-600;
+      display: inline-block;
+      transform: rotate(45deg);
+      transition: transform 0.3s;
+      margin-right: 0.4rem;
+    }
+  }
 
-.is-open .content-wrapper {
-  grid-template-rows: 1fr;
-}
+  &__content {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
 
-.content-inner {
-  min-height: 0;
-}
+  &__inner {
+    min-height: 0;
+  }
 
-.content-padding {
-  padding: 0 1.25rem 1.25rem 1.25rem;
-  color: #475569;
-  line-height: 1.6;
-}
+  &__body {
+    padding: 0 1.25rem 1.25rem 1.25rem;
+    color: $blue-400;
+    line-height: 1.6;
+  }
 
-.chevron-icon::after {
-  content: '';
-  width: 0.8rem;
-  height: 0.8rem;
-  border-right: 0.2rem solid $blue-600;
-  border-bottom: 0.2rem solid $blue-600;
-  display: inline-block;
-  transform: rotate(45deg);
-  transition: transform 0.3s;
-  margin-right: 0.4rem;
-}
+  &--open {
+    .accordion-item__content {
+      grid-template-rows: 1fr;
+    }
 
-.is-open .chevron-icon::after {
-  transform: rotate(-135deg);
+    .accordion-item__icon::after {
+      transform: rotate(-135deg);
+    }
+  }
+
+  &--last {
+    border-bottom: none;
+  }
 }
