@@ -26,10 +26,6 @@ export class Radios extends BaseInput {
   public override readonly config = input<RadioGroupConfig>({});
   public readonly options = input.required<RadioOption[]>();
 
-  public readonly initialValue = input<RadioValue>();
-
-  public readonly valueChangeSignal = output<RadioValue>();
-
   protected readonly groupName = generateUniqueId('radio-group');
 
   protected readonly mergedConfig = computed<RadioGroupConfig>(() => ({
@@ -43,7 +39,6 @@ export class Radios extends BaseInput {
     this.value.set(optionValue);
     this.onChange(optionValue);
     this.valueChange.emit(optionValue);
-    this.valueChangeSignal.emit(optionValue);
   }
   constructor() {
     super();
