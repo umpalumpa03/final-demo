@@ -1,0 +1,87 @@
+@use '../../../styles/palette' as *;
+
+.route-loader {
+
+  &--top-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: $gray-200;
+    z-index: 9999;
+  }
+
+  &__bar {
+    height: 100%;
+    background: linear-gradient(90deg, $blue-500, $blue-ocean, $blue-royal);
+    animation: route-loader-progress 2s ease-in-out infinite;
+    transform-origin: left;
+  }
+
+  &--full-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    z-index: 9999;
+  }
+
+  &__text {
+    margin: 0;
+    color: $gray-600;
+    font-size: 1.6rem;
+  }
+
+  &--pulsing {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+  }
+
+  &__dot {
+    width: 1.2rem;
+    height: 1.2rem;
+    background: $blue-500;
+    border-radius: 50%;
+    animation: route-loader-pulse 1.4s ease-in-out infinite;
+
+    &:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    &:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+  }
+}
+
+@keyframes route-loader-progress {
+  0% {
+    transform: scaleX(0);
+  }
+  50% {
+    transform: scaleX(0.6);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes route-loader-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
