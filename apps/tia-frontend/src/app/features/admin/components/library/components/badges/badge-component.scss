@@ -38,5 +38,14 @@
       @include display-flex(column);
       gap: 1.6rem;
     }
+    &__group {
+      @include display-flex(column);
+      gap: 1.6rem;
+    }
+    &__subtitle {
+      @include font-arimo(700, 1.8rem, 2.7rem);
+      color: var(--color-fg);
+      margin: 0;
+    }
   }
 }
