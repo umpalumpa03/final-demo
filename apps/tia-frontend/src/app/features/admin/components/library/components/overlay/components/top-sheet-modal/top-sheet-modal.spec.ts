@@ -14,14 +14,23 @@ describe('TopSheetModal', () => {
 
     fixture = TestBed.createComponent(TopSheetModal);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
-  it('should call toggle() when the trigger button is clicked', () => {
-    fixture.detectChanges();
-    const toggleSpy = vi.spyOn(component, 'toggle');
-    const button = fixture.debugElement.query(By.css('.btn__bottom-trigger'));
+  it('should update the isOpen signal state when toggle is called', () => {
+    expect(component.isOpen()).toBe(false);
+    component.toggle();
+    expect(component.isOpen()).toBe(true);
+    component.toggle();
+    expect(component.isOpen()).toBe(false);
+  });
 
-    button.nativeElement.click();
+  it('should call the toggle method when the app-button trigger is clicked', () => {
+    const toggleSpy = vi.spyOn(component, 'toggle');
+    const triggerBtn = fixture.debugElement.query(By.css('app-button'));
+
+    triggerBtn.triggerEventHandler('click', null);
+
     expect(toggleSpy).toHaveBeenCalled();
   });
 });

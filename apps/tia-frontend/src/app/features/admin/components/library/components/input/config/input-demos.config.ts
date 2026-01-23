@@ -2,6 +2,8 @@ import { TextInputType } from '@tia/shared/lib/forms/models/input.model';
 import {
   CheckboxDemo,
   InputDemo,
+  RadioDemo,
+  SwitchDemo,
   TextareaDemo,
 } from '../models/input-demos.model';
 
@@ -102,6 +104,51 @@ export const CHECKBOX_DEMOS: CheckboxDemo[] = [
     checked: false,
     config: {
       label: 'Disabled Checkbox',
+      disabled: true,
+    },
+  },
+  {
+    checked: true,
+    config: {
+      label: 'Disabled & Checked',
+      disabled: true,
+    },
+  },
+] as const;
+
+export const RADIO_DEMOS: RadioDemo[] = [
+  {
+    config: {
+      label: 'Radio Buttons',
+      layout: 'column',
+      initialValue: 1,
+    },
+    options: [
+      { label: 'Option 1 (Selected)', value: 1 },
+      { label: 'Option 2', value: 2 },
+      { label: 'Option 3', value: 3 },
+      { label: 'Disabled Option', value: 4, disabled: true },
+    ],
+  },
+] as const;
+
+export const SWITCH_DEMOS: SwitchDemo[] = [
+  {
+    checked: false,
+    config: {
+      label: 'Toggle Feature (State: OFF)',
+    },
+  },
+  {
+    checked: true,
+    config: {
+      label: 'Default Enabled',
+    },
+  },
+  {
+    checked: false,
+    config: {
+      label: 'Disabled Switch',
       disabled: true,
     },
   },

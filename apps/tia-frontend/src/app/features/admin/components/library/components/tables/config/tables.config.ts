@@ -97,3 +97,62 @@ export const rowTable: TableConfig = {
     },
   ],
 };
+
+export const actionsTable: TableConfig = {
+  type: 'actions',
+  paginationType: 'scroll',
+  headers: [
+    { title: 'Name', align: 'left', width: '21rem' },
+    { title: 'Email', align: 'left', width: '29rem' },
+    { title: 'Role', align: 'left', width: '11rem' },
+    { title: 'Status', align: 'left', width: '15rem' },
+    { title: 'Actions', align: 'right', width: '27rem' },
+  ],
+  rows: [
+    {
+      id: '1',
+      info: [
+        { type: 'text', value: 'John Doe', align: 'left' },
+        { type: 'text', value: 'john@example.com', align: 'left' },
+        { type: 'text', value: 'Admin', align: 'left' },
+        { type: 'badge', value: 'active', align: 'left' },
+      ],
+    },
+    {
+      id: '2',
+      info: [
+        { type: 'text', value: 'Jane Smith', align: 'left' },
+        { type: 'text', value: 'jane@example.com', align: 'left' },
+        { type: 'text', value: 'User', align: 'left' },
+        { type: 'badge', value: 'active', align: 'left' },
+      ],
+    },
+    {
+      id: '3',
+      info: [
+        { type: 'text', value: 'Bob Johnson', align: 'left' },
+        { type: 'text', value: 'bob@example.com', align: 'left' },
+        { type: 'text', value: 'Editor', align: 'left' },
+        { type: 'badge', value: 'pending', align: 'left' },
+      ],
+    },
+    {
+      id: '4',
+      info: [
+        { type: 'text', value: 'Alice Brown', align: 'left' },
+        { type: 'text', value: 'alice@example.com', align: 'left' },
+        { type: 'text', value: 'User', align: 'left' },
+        { type: 'badge', value: 'inactive', align: 'left' },
+      ],
+    },
+    {
+      id: '5',
+      info: [
+        { type: 'text', value: 'Charlie Wilson', align: 'left' },
+        { type: 'text', value: 'charlie@example.com', align: 'left' },
+        { type: 'text', value: 'Admin', align: 'left' },
+        { type: 'badge', value: 'active', align: 'left' },
+      ],
+    },
+  ],
+};
