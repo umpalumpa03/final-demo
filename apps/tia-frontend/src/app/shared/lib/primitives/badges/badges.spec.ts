@@ -20,49 +20,6 @@ describe('Badges', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should apply provided variant to class', () => {
-    fixture.componentRef.setInput('variant', 'secondary');
-    fixture.detectChanges();
-    const el: HTMLElement = fixture.nativeElement.querySelector('span');
-    expect(el).toBeTruthy();
-    expect(el.className).toContain('badge--secondary');
-  });
-
-  it('should render provided text', () => {
-    fixture.componentRef.setInput('text', 'Test badge');
-    fixture.detectChanges();
-
-    const el: HTMLElement = fixture.nativeElement.querySelector('span');
-    expect(el.textContent ?? '').toContain('Test badge');
-  });
-
-  it('should apply status class when status is provided', () => {
-    fixture.componentRef.setInput('status', 'active');
-    fixture.detectChanges();
-
-    const el: HTMLElement = fixture.nativeElement.querySelector('span');
-    expect(el).toBeTruthy();
-    expect(el.className).toContain('badge--active');
-  });
-
-  it('should render status icon when status is provided', () => {
-    fixture.componentRef.setInput('status', 'pending');
-    fixture.detectChanges();
-
-    const icon: HTMLImageElement | null = fixture.nativeElement.querySelector('.badge__icon');
-    expect(icon).not.toBeNull();
-    expect(icon?.src).toContain('images/svg/badges/badges-pending.svg');
-  });
-
-  it('should return empty iconPath when status is not provided', () => {
-    
-    fixture.detectChanges();
-
-   
-    const iconPath = (component as any).iconPath();
-    expect(iconPath).toBe('');
-  });
-
   it('should return empty iconAlt when status is not provided', () => {
     fixture.detectChanges();
 

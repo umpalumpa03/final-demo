@@ -5,11 +5,9 @@ import {
   computed,
   inject,
   Directive,
-  OnInit,
-  DestroyRef,
+  DoCheck,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   InputConfig,
   InputState,
@@ -17,12 +15,13 @@ import {
   InputVariant,
   TextInputType,
   InputFieldValue,
+  ValidationResult,
+  InputError,
 } from '../models/input.model';
-import { ValidationResult, InputError } from '../models/input.model';
-import { getValidationErrorMessage } from '@tia/shared/lib/forms/input-field/base/utils/input.util';
+import { getValidationErrorMessage } from './utils/input.util';
 
 @Directive()
-export abstract class BaseInput implements ControlValueAccessor, OnInit {
+export abstract class BaseInput implements ControlValueAccessor, DoCheck {
   protected readonly ngControl = inject(NgControl, {
     self: true,
     optional: true,
@@ -40,14 +39,14 @@ export abstract class BaseInput implements ControlValueAccessor, OnInit {
   public readonly validationChange = output<ValidationResult>();
 
   protected readonly value = signal<InputFieldValue>('');
-  protected readonly touched = signal(false);
-  protected readonly focused = signal(false);
-  protected readonly internalDisabled = signal(false);
+  protected readonly touched = signal<boolean>(false);
+  protected readonly focused = signal<boolean>(false);
+  protected readonly internalDisabled = signal<boolean>(false);
   protected readonly internalValidationErrors = signal<InputError[]>([]);
 
-  protected statusChanges = signal<string | null>(null);
-
-  protected readonly destroyRef = inject(DestroyRef);
+  protected readonly _controlTouched = signal<boolean>(false);
+  protected readonly _controlDirty = signal<boolean>(false);
+  protected readonly _controlStatus = signal<string>('');
 
   constructor() {
     if (this.ngControl) {
@@ -55,41 +54,38 @@ export abstract class BaseInput implements ControlValueAccessor, OnInit {
     }
   }
 
-  public ngOnInit(): void {
+  public ngDoCheck(): void {
     if (this.ngControl?.control) {
-      this.statusChanges.set(this.ngControl.control.status);
-
-      this.ngControl.control.statusChanges
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe((status) => {
-          this.statusChanges.set(status);
-        });
+      this._controlTouched.set(this.ngControl.control.touched ?? false);
+      this._controlDirty.set(this.ngControl.control.dirty ?? false);
+      this._controlStatus.set(this.ngControl.control.status ?? '');
     }
   }
 
   protected readonly hasError = computed<boolean>(() => {
-    this.statusChanges();
+    const status = this._controlStatus();
+    const isTouched = this._controlTouched();
+    const isDirty = this._controlDirty();
 
     if (this.state() === 'error') return true;
+    if (!this.ngControl?.control) return false;
 
-    const control = this.ngControl?.control;
-    if (!control) return false;
-
-    return control.invalid && (control.touched || control.dirty);
+    return status === 'INVALID' && (isTouched || isDirty);
   });
-  protected readonly hasSuccess = computed<boolean>(() => {
-    this.statusChanges();
 
+  protected readonly hasSuccess = computed<boolean>(() => {
+    const status = this._controlStatus();
+    const isTouched = this._controlTouched();
+    const isDirty = this._controlDirty();
     const hasValue = this.value() !== '' && this.value() !== null;
 
     if (this.state() === 'success') {
       return hasValue;
     }
 
-    const control = this.ngControl?.control;
-    if (!control) return false;
+    if (!this.ngControl?.control) return false;
 
-    return control.valid && (control.touched || control.dirty) && hasValue;
+    return status === 'VALID' && (isTouched || isDirty) && hasValue;
   });
 
   protected readonly containerClasses = computed<string>(
@@ -116,7 +112,7 @@ export abstract class BaseInput implements ControlValueAccessor, OnInit {
   );
 
   protected readonly errorMessage = computed<string>(() => {
-    this.statusChanges();
+    this._controlStatus();
 
     const customError = this.config().errorMessage;
     if (customError) {
@@ -162,29 +158,24 @@ export abstract class BaseInput implements ControlValueAccessor, OnInit {
     this.internalDisabled.set(isDisabled);
   }
 
-  protected parseInputValue(
-    rawValue: string,
-    files: FileList | null,
-  ): InputFieldValue {
-    const inputType = this.type();
+  protected parseInputValue(target: HTMLInputElement): InputFieldValue {
+    const { value, type, files } = target;
 
-    switch (inputType) {
+    switch (type) {
       case 'number':
-        if (rawValue === '' || rawValue === null) return null;
-        const num = Number(rawValue);
-        return isNaN(num) ? rawValue : num;
+        return value === '' ? null : Number(value);
       case 'file':
         return files;
       default:
-        return rawValue;
+        return value;
     }
   }
 
   protected handleInput(event: Event): void {
     const target = event.target as HTMLInputElement;
-    const rawValue = target.value;
-    const files = target.files;
-    const parsedValue = this.parseInputValue(rawValue, files);
+    if (!target) return;
+
+    const parsedValue = this.parseInputValue(target);
 
     this.value.set(parsedValue);
     this.onChange(parsedValue);
@@ -195,11 +186,6 @@ export abstract class BaseInput implements ControlValueAccessor, OnInit {
     this.focused.set(false);
     this.touched.set(true);
     this.onTouched();
-
-    if (this.ngControl?.control) {
-      this.ngControl.control.markAsTouched();
-    }
-
     this.blur.emit(event);
   }
 

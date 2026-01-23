@@ -32,43 +32,12 @@ describe('DragCard', () => {
     expect(component.internalItems[0].id).toBe('1');
   });
 
-  it('should set dragging state and register listeners on drag start', () => {
-    const addSpy = vi.spyOn(document, 'addEventListener');
+  it('should set dragging state on drag start', () => {
     const event = { clientX: 100, clientY: 200 } as PointerEvent;
 
-    component.onDragStart('1', event);
+    component.onDragStartHandler('1', event);
 
     expect(component.draggingId()).toBe('1');
-    expect(addSpy).toHaveBeenCalledWith('pointermove', component.onPointerMove);
-    expect(addSpy).toHaveBeenCalledWith('pointerup', component.onPointerUp);
-  });
-
-  it('should update current position on pointer move', () => {
-    document.elementFromPoint = vi.fn().mockReturnValue(null);
-    component.onDragStart('1', { clientX: 100, clientY: 200 } as PointerEvent);
-
-    component.onPointerMove({ clientX: 150, clientY: 250 } as PointerEvent);
-
-    expect(component.currentX()).toBe(50);
-    expect(component.currentY()).toBe(50);
-  });
-
-  it('should reset state and remove listeners on pointer up', () => {
-    const removeSpy = vi.spyOn(document, 'removeEventListener');
-    component.draggingId.set('1');
-    component.currentX.set(50);
-    component.currentY.set(50);
-
-    component.onPointerUp();
-
-    expect(component.draggingId()).toBeNull();
-    expect(component.currentX()).toBe(0);
-    expect(component.currentY()).toBe(0);
-    expect(removeSpy).toHaveBeenCalledWith(
-      'pointermove',
-      component.onPointerMove,
-    );
-    expect(removeSpy).toHaveBeenCalledWith('pointerup', component.onPointerUp);
   });
 
   it('should remove item and emit events on remove', () => {
@@ -85,15 +54,64 @@ describe('DragCard', () => {
     expect(itemRemovedSpy).toHaveBeenCalledWith('1');
   });
 
-  it('should remove event listeners on destroy', () => {
-    const removeSpy = vi.spyOn(document, 'removeEventListener');
+  it('should return correct container classes for grid', () => {
+    fixture.componentRef.setInput('layout', 'grid');
+    fixture.detectChanges();
 
-    component.ngOnDestroy();
-
-    expect(removeSpy).toHaveBeenCalledWith(
-      'pointermove',
-      component.onPointerMove,
+    expect(component['containerClasses']()).toBe(
+      'draggable-cards draggable-cards--grid',
     );
-    expect(removeSpy).toHaveBeenCalledWith('pointerup', component.onPointerUp);
+  });
+
+  it('should return correct container classes for list', () => {
+    fixture.componentRef.setInput('layout', 'list');
+    fixture.detectChanges();
+
+    expect(component['containerClasses']()).toBe(
+      'draggable-cards draggable-cards--list',
+    );
+  });
+
+  it('should return container styles for grid layout', () => {
+    fixture.componentRef.setInput('layout', 'grid');
+    fixture.componentRef.setInput('columns', 3);
+    fixture.detectChanges();
+
+    expect(component['containerStyles']()).toBe('--columns: 3');
+  });
+
+  it('should return null container styles for list layout', () => {
+    fixture.componentRef.setInput('layout', 'list');
+    fixture.detectChanges();
+
+    expect(component['containerStyles']()).toBeNull();
+  });
+
+  it('should have default input values', () => {
+    expect(component.canDelete()).toBe(false);
+    expect(component.layout()).toBe('grid');
+    expect(component.columns()).toBe(2);
+    expect(component.cardTitle()).toBe('Draggable Cards');
+    expect(component.cardDescription()).toBe(
+      'Drag Cards to reorder them in a grid layout',
+    );
+  });
+
+  it('should emit orderChange after reorder', () => {
+    const itemsChangeSpy = vi.spyOn(component.itemsChange, 'emit');
+    const orderChangeSpy = vi.spyOn(component.orderChange, 'emit');
+
+    component['handleDrop']('1', '3');
+
+    expect(itemsChangeSpy).toHaveBeenCalled();
+    expect(orderChangeSpy).toHaveBeenCalled();
+  });
+
+  it('should reorder items correctly on handleDrop', () => {
+    component['handleDrop']('1', '3');
+
+    expect(component.internalItems[0].id).toBe('2');
+    expect(component.internalItems[1].id).toBe('3');
+    expect(component.internalItems[2].id).toBe('1');
   });
 });

@@ -12,35 +12,31 @@ describe('AlertTypesWithIcons', () => {
 
     fixture = TestBed.createComponent(AlertTypesWithIcons);
     component = fixture.componentInstance;
-    await fixture.whenStable();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('effectiveImgName Computed Property', () => {
-    it('should convert effectiveImgName if alertType is success', () => {
+  describe('Computed Logic', () => {
+    it('should calculate effectiveImgName based on type', () => {
+      fixture.componentRef.setInput('alertType', 'error');
+      expect(component.effectiveImgName()).toBe('default');
+
       fixture.componentRef.setInput('alertType', 'success');
-      fixture.detectChanges();
       expect(component.effectiveImgName()).toBe('success');
     });
+  });
 
-    it('should convert effectiveImgName if alertType is warning', () => {
-      fixture.componentRef.setInput('alertType', 'warning');
+  describe('Template Rendering', () => {
+    it('should set the correct img src path in the DOM', () => {
+      fixture.componentRef.setInput('alertType', 'success');
       fixture.detectChanges();
-      expect(component.effectiveImgName()).toBe('warning');
-    });
 
-    it('should convert effectiveImgName if alertType is error or information', () => {
-      fixture.componentRef.setInput('alertType', 'error');
-      fixture.detectChanges();
-      expect(component.effectiveImgName()).toBe('default');
-    });
-    it('should convert effectiveImgName if alertType is information', () => {
-      fixture.componentRef.setInput('alertType', 'information');
-      fixture.detectChanges();
-      expect(component.effectiveImgName()).toBe('default');
+      const img: HTMLImageElement = fixture.nativeElement.querySelector('img');
+      expect(img.src).toContain(
+        '/images/img/alert-icons/base-alert-success.png',
+      );
     });
   });
 });

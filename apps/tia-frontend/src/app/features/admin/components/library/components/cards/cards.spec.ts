@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Cards } from './cards';
-import { BasicCard } from '../../../../../../shared/lib/cards/basic-card/basic-card';
+import { BasicCard } from 'apps/tia-frontend/src/app/shared/lib/cards/basic-card/basic-card';
+import { StatisticCard } from 'apps/tia-frontend/src/app/shared/lib/cards/statistic-card/statistic-card';
 import { LibraryTitle } from '../../shared/library-title/library-title';
 
 describe('Cards', () => {
@@ -9,7 +10,7 @@ describe('Cards', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Cards, BasicCard, LibraryTitle],
+      imports: [Cards, BasicCard, StatisticCard, LibraryTitle],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Cards);
@@ -17,44 +18,60 @@ describe('Cards', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  describe('Component Properties', () => {
+    it('should have correct page metadata', () => {
+      expect(component.pageTitle).toBe('Cards');
+      expect(component.pageSubtitle).toBe('Card components with various layouts and content types');
+    });
+
+    it('should initialize signals with correct data', () => {
+      expect(component.basicCards().length).toBe(2);
+      expect(component.statisticsCards().length).toBe(4);
+    });
   });
 
-  it('should have pageTitle property', () => {
-    expect(component.pageTitle).toBe('Cards');
+  describe('Basic Cards Data', () => {
+    it('should have correct first card data', () => {
+      const card = component.basicCards()[0];
+      expect(card).toEqual({
+        title: 'Card Title',
+        subtitle: 'Card description goes here',
+        content: 'This is the main content area of the card. You can put any content here.',
+      });
+    });
+
+    it('should have correct second card data', () => {
+      const card = component.basicCards()[1];
+      expect(card).toEqual({
+        title: 'Hover Effect',
+        subtitle: 'Hover over this card',
+        content: 'This card has hover effects applied.',
+      });
+    });
   });
 
-  it('should have pageSubtitle property', () => {
-    expect(component.pageSubtitle).toBe('Card components with various layouts and content types');
+it('should have correct first card data', () => {
+  const card = component.statisticsCards()[0];
+  expect(card).toEqual({
+    label: 'Total Revenue',
+    value: '$45,231.89',
+    change: '+20.1% from last month',
+    changeType: 'positive',
+    icon: 'images/svg/cards/dolar.svg',
   });
+});
 
-  it('should initialize basicCards signal with two cards', () => {
-    const cards = component.basicCards();
-    expect(cards.length).toBe(2);
-  });
+  describe('Template Rendering', () => {
+    it('should render all required components', () => {
+      expect(fixture.nativeElement.querySelector('app-library-title')).toBeTruthy();
+      expect(fixture.nativeElement.querySelectorAll('app-basic-card').length).toBe(2);
+      expect(fixture.nativeElement.querySelectorAll('app-statistic-card').length).toBe(4);
+    });
 
-  it('should have correct first card data', () => {
-    const firstCard = component.basicCards()[0];
-    expect(firstCard.title).toBe('Card Title');
-    expect(firstCard.subtitle).toBe('Card description goes here');
-    expect(firstCard.content).toBe('This is the main content area of the card. You can put any content here.');
-  });
-
-  it('should have correct second card data', () => {
-    const secondCard = component.basicCards()[1];
-    expect(secondCard.title).toBe('Hover Effect');
-    expect(secondCard.subtitle).toBe('Hover over this card');
-    expect(secondCard.content).toBe('This card has hover effects applied.');
-  });
-
-  it('should render LibraryTitle component', () => {
-    const libraryTitle = fixture.nativeElement.querySelector('app-library-title');
-    expect(libraryTitle).toBeTruthy();
-  });
-
-  it('should render two BasicCard components', () => {
-    const basicCards = fixture.nativeElement.querySelectorAll('app-basic-card');
-    expect(basicCards.length).toBe(2);
+    it('should render section titles', () => {
+      const sections = fixture.nativeElement.querySelectorAll('.cards-section__title');
+      expect(sections[0].textContent).toBe('Basic Cards');
+      expect(sections[1].textContent).toBe('Statistics Cards');
+    });
   });
 });

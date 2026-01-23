@@ -1,0 +1,13 @@
+<button class="btn btn__outline btn__bottom-trigger" (click)="toggle()">
+  Top Sheet
+</button>
+
+<app-ui-sheet-modal [isOpen]="isOpen()" direction="top" (closed)="toggle()">
+  <app-library-title
+    [title]="modalTitle"
+    [subtitle]="modalSubtitle"
+  ></app-library-title>
+  <span class="ui__subtitle"
+    >We've updated our privacy policy. Please review the changes.</span
+  >
+</app-ui-sheet-modal>
