@@ -1,0 +1,67 @@
+@use '../../../../../../shared/styles/palette' as *;
+@use '../../../../../../shared/styles/mixins' as mixins;
+
+:host {
+  display: block;
+  border-bottom: 0.07rem solid $black;
+  border-radius: 0.8rem;
+}
+
+:host:last-child {
+  border-bottom: none;
+}
+
+.accordion-trigger {
+  width: 100%;
+  padding: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  @include mixins.font-inter(500, 1.4rem, 2rem);
+  color: $blue-600;
+  transition: background-color 0.2s;
+}
+
+.accordion-trigger:hover {
+  background-color: #f8fafc;
+}
+
+.content-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.is-open .content-wrapper {
+  grid-template-rows: 1fr;
+}
+
+.content-inner {
+  min-height: 0;
+}
+
+.content-padding {
+  padding: 0 1.25rem 1.25rem 1.25rem;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.chevron-icon::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid $blue-600;
+  border-bottom: 2px solid $blue-600;
+  display: inline-block;
+  transform: rotate(45deg);
+  transition: transform 0.3s;
+  margin-right: 4px;
+}
+
+.is-open .chevron-icon::after {
+  transform: rotate(-135deg);
+}
