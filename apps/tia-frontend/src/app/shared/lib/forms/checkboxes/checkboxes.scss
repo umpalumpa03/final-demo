@@ -1,0 +1,70 @@
+@use "../../../styles/palette" as *;
+@use "../../../styles/mixins" as *;
+
+.checkbox-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+
+    &--disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+
+        .checkbox {
+            cursor: not-allowed;
+        }
+    }
+    .checkbox {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        cursor: pointer;
+        user-select: none;
+
+        &__input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+
+            &:checked + .checkbox__box {
+                background-image: url("/images/svg/library-input/checkbox-checked.svg");
+                border: none;
+            }
+
+            &:focus-visible + .checkbox__box {
+                outline: 2px solid $blue-ocean;
+                outline-offset: 2px;
+            }
+        }
+
+        &__box {
+            display: block;
+            width: 2rem;
+            height: 2rem;
+
+            background-image: url("/images/svg/library-input/checkbox.svg");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+
+            flex-shrink: 0;
+            transition: background-image 0.1s ease-in-out;
+        }
+
+        &__label {
+            @include font-arimo(400, 1.4rem, 1.4);
+            color: $gray-700;
+        }
+
+        &__error {
+            @include font-arimo(400, 1.2rem, 1);
+            color: $red-600;
+            padding-left: 3.2rem;
+        }
+    }
+}
