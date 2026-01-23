@@ -1,7 +1,8 @@
+@let cfg = mergedConfig();
 <div class="switch__wrapper" [class.switch__wrapper--disabled]="isDisabled()">
-    <label [for]="mergedConfig().id" class="switch">
+    <label [for]="cfg.id" class="switch">
 
-        <input type="checkbox" [id]="mergedConfig().id" [checked]="!!value()" [disabled]="isDisabled()"
+        <input type="checkbox" [id]="cfg.id" [checked]="!!value()" [disabled]="isDisabled()"
             (change)="handleInput($event)" (blur)="handleBlur($event)" (focus)="handleFocus($event)"
             class="switch__input visually--hidden" />
 
@@ -9,9 +10,9 @@
             <span class="switch__thumb"></span>
         </span>
 
-        @if (mergedConfig().label) {
+        @if (cfg.label) {
         <span class="switch__label">
-            {{ mergedConfig().label }}
+            {{ cfg.label }}
         </span>
         }
     </label>
