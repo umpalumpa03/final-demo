@@ -15,9 +15,6 @@ import { BaseInput } from '../base/base-input';
 import { TEXTAREA_DEFAULTS } from '../config/textarea.config';
 import { TextareaConfig } from '../models/textarea.model';
 
-// Simple unique ID generator
-let uniqueIdCounter = 0;
-
 @Component({
   selector: 'lib-textarea',
   standalone: true,
@@ -34,7 +31,9 @@ export class Textarea extends BaseInput implements AfterViewInit {
 
   private readonly renderer = inject(Renderer2);
 
-  private readonly defaultId = `lib-textarea-${uniqueIdCounter++}`;
+  private uniqueIdCounter = 0;
+
+  private readonly defaultId = `lib-textarea-${this.uniqueIdCounter++}`;
 
   protected readonly mergedConfig = computed<TextareaConfig>(() => ({
     ...TEXTAREA_DEFAULTS,

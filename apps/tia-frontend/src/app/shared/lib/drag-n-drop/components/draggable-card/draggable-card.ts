@@ -17,6 +17,7 @@ export class DraggableCard {
   public itemData = input.required<DraggableItemType>();
   public isDragging = input(false);
   public isDropTarget = input(false);
+  public canDelete = input(false);
 
   public dragStart = output<PointerEvent>();
   public remove = output<void>();
