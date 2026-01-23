@@ -13,3 +13,14 @@ export type BadgeSize = 'small' | 'medium' | 'large';
 export type BadgeShape = 'default' | 'rounded' | 'pill';
 
 export type BadgeDotType = 'online' | 'away' | 'offline' | 'live';
+
+// Preset-based badge keys used for skills and categories
+export type BadgeSkill =
+  | 'javascript'
+  | 'react'
+  | 'nodejs'
+  | 'typescript'
+  | 'css'
+  | 'html';
+
+export type BadgeCategory = 'technology' | 'design' | 'marketing';

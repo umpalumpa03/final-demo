@@ -111,6 +111,29 @@
   </div>
 </div>
 
+<div class="badge-demo">
+  <h3 class="badge-demo__title">Badge Groups</h3>
 
+  <div class="badge-demo__group">
+    <p class="badge-demo__subtitle">Skills:</p>
+    <div class="badge-demo__row">
+      @for (item of skillBadges(); track item.skill) {
+        <app-badges
+          [skill]="item.skill"
+          [size]="item.size">
+        </app-badges>
+      }
+    </div>
 
-
+    <p class="badge-demo__subtitle">Categories:</p>
+    <div class="badge-demo__row">
+      @for (item of categoryBadges(); track item.category) {
+        <app-badges
+          [category]="item.category"
+          [size]="item.size">
+        </app-badges>
+      }
+    </div>
+  </div>
+ 
+ </div>

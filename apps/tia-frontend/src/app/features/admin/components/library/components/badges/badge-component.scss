@@ -16,6 +16,12 @@
     color: palette.$blue-900;
   }
 
+  &__subtitle {
+    @include font-inter(500, 1.4rem, 1.4);
+    margin: 1.6rem 0 0.8rem;
+    color: palette.$blue-700;
+  }
+
   &__row {
     @include display-flex(row, wrap);
     gap: 2rem;
@@ -24,6 +30,10 @@
   &__list {
     @include display-flex(column);
     gap: 1.6rem;
-   
+  }
+
+  &__group {
+    @include display-flex(column);
+    gap: 0.8rem;
   }
 }
