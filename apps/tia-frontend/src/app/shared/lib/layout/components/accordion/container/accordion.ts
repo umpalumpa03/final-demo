@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   contentChildren,
+  forwardRef,
   input,
 } from '@angular/core';
 import { AccordionItem } from '../accordion-item/accordion-item';
@@ -16,7 +17,7 @@ import { AccordionItem } from '../accordion-item/accordion-item';
 export class Accordion {
   public multi = input<boolean>(false);
 
-  private items = contentChildren(AccordionItem);
+  private items = contentChildren(forwardRef(() => AccordionItem));
 
   notifyOpen(openedItem: AccordionItem): void {
     if (this.multi()) return;
