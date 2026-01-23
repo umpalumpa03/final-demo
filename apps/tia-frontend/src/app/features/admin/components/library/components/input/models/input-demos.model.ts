@@ -1,3 +1,4 @@
+import { CheckboxConfig } from '@tia/shared/lib/forms/models/checkbox.model';
 import {
   TextInputType,
   InputState,
@@ -14,4 +15,9 @@ export interface InputDemo {
 export interface TextareaDemo {
   state?: InputState;
   config: TextareaConfig;
+}
+
+export interface CheckboxDemo {
+  checked: boolean;
+  config: CheckboxConfig;
 }
