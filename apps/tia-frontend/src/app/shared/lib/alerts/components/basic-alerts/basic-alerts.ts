@@ -17,21 +17,24 @@ const DEFAULT_MESSAGE = 'This is a default alert with important information.';
 export class BasicAlerts {
   public readonly alertType = input<BaseAlertType>('default');
   public readonly alertTitle = input<string>('Default Alert');
-  public readonly alertMessage = input<string>(
-    'This is a default alert with important information.',
-  );
+  public readonly alertMessage = input<string>(DEFAULT_MESSAGE);
 
-  public readonly alertClass = computed(() => `basic-alert--${this.alertType()}`);
+  public readonly alertClass = computed(
+    () => `basic-alert--${this.alertType()}`,
+  );
 
   public readonly effectiveTitle = computed(() => {
     const isDefault = this.alertTitle() === 'Default Alert';
-    return (this.alertType() === 'error' && isDefault) 
-      ? 'Error Alert' 
+    return this.alertType() === 'error' && isDefault
+      ? 'Error Alert'
       : this.alertTitle();
   });
 
   public readonly effectiveMessage = computed(() => {
-    if (this.alertType() === 'error' && this.alertMessage() === 'This is a default alert with important information.') {
+    if (
+      this.alertType() === 'error' &&
+      this.alertMessage() === DEFAULT_MESSAGE
+    ) {
       return 'This is an error alert with important information.';
     }
     return this.alertMessage();
@@ -41,7 +44,5 @@ export class BasicAlerts {
     () => `/images/svg/alerts/base-alert-${this.alertType()}.svg`,
   );
 
-  public readonly effectiveAltName = computed(
-    () => `${this.alertType()} icon`
-  );
+  public readonly effectiveAltName = computed(() => `${this.alertType()} icon`);
 }

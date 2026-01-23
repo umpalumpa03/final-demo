@@ -22,7 +22,7 @@ describe('AlertsWithActions', () => {
   describe('Computed Logic', () => {
     it('should map "error" type to "warning" class and "destructive" button variant', () => {
       fixture.componentRef.setInput('alertType', 'error');
-      expect(component.iconAlertClass()).toBe('alerts-with-actions--warning');
+      expect(component.iconAlertClass()).toBe('alerts-actions--warning');
       expect(component.effectiveButtonVariant()).toBe('destructive');
       expect(component.effectiveImgName()).toBe('warning');
     });
