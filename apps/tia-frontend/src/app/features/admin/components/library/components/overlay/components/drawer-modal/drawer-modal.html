@@ -5,32 +5,14 @@
 <app-ui-drawer [isOpen]="isOpen()" (closed)="toggle()">
   <div class="drawer-content">
     <header class="drawer-content__header">
-      <h2 class="drawer-content__title">Drawer Title</h2>
-      <p class="drawer-content__subtitle">
-        This is a drawer component optimized for mobile.
-      </p>
+      <app-library-title
+        [title]="drawerTitle"
+        [subtitle]="drawerSubtitle"
+      ></app-library-title>
     </header>
-
     <div class="drawer-content__form">
-      <div class="drawer-content__field">
-        <label class="drawer-content__label" for="drawer-name">Name</label>
-        <input
-          class="drawer-content__input"
-          id="drawer-name"
-          type="text"
-          placeholder="Enter your name"
-        />
-      </div>
-
-      <div class="drawer-content__field">
-        <label class="drawer-content__label" for="drawer-email">Email</label>
-        <input
-          class="drawer-content__input"
-          id="drawer-email"
-          type="email"
-          placeholder="Enter your email"
-        />
-      </div>
+      <lib-text-input [config]="nameConfig"></lib-text-input>
+      <lib-text-input [config]="emailConfig"></lib-text-input>
     </div>
 
     <footer class="drawer-content__footer">
