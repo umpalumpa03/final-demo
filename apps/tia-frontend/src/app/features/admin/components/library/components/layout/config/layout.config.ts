@@ -29,7 +29,7 @@ export const accordionContent = [
     content:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?',
   },
-];
+] as const;
 
 export const multiAccordionContent = [
   {
@@ -50,4 +50,4 @@ export const multiAccordionContent = [
     content:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?',
   },
-];
+] as const;

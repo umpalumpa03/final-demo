@@ -4,7 +4,7 @@ import { Accordion } from '@tia/shared/lib/layout/components/accordion/container
 import { AccordionItem } from '@tia/shared/lib/layout/components/accordion/accordion-item/accordion-item';
 import { LibraryTitle } from '../../../shared/library-title/library-title';
 import { ShowcaseCard } from '../../../shared/showcase-card/showcase-card';
-import { accordionContent, multiAccordionContent } from './layout.config';
+import { accordionContent, multiAccordionContent } from '../config/layout.config';
 
 @Component({
   selector: 'app-layout',

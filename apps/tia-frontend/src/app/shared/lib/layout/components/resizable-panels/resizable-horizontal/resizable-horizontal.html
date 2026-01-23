@@ -1,17 +1,18 @@
-<div class="resizable" #container>
-    <div class="resizable__content" #contentWrapper style="display: none;">
+<div class="resizable ta-resizable" #container>
+    <div class="resizable__content ta-resizable-content" #contentWrapper style="display: none;">
         <ng-content></ng-content>
     </div>
 
-    <div class="resizable__panels" #panelsContainer>
+    <div class="resizable__panels ta-resizable-panels" #panelsContainer>
         @for (i of panelIndices(); track i) {
-        <div class="resizable__panel" [class.resizable__panel--flex]="isLastPanel(i)" [style.width]="getPanelWidth(i)">
+        <div class="resizable__panel ta-resizable-panel" [class.resizable__panel--flex]="isLastPanel(i)"
+            [style.width]="getPanelWidth(i)">
         </div>
 
         @if (!isLastPanel(i)) {
-        <div class="resizable__resizer" [class.resizable__resizer--dragging]="isResizerDragging(i)"
+        <div class="resizable__resizer ta-resizable-resizer" [class.resizable__resizer--dragging]="isResizerDragging(i)"
             (mousedown)="onMouseDown($event, i)">
-            <span class="resizable__handle"></span>
+            <span class="resizable__handle ta-resizable-handle"></span>
         </div>
         }
         }
