@@ -1,9 +1,9 @@
-<div class="radio-group" [class.radio-group--row]="mergedConfig().layout === 'row'" role="radiogroup">
-
-    @if (mergedConfig().label) {
+@let cfg = mergedConfig();
+<div class="radio-group" [class.radio-group--row]="cfg.layout === 'row'" role="radiogroup">
+    @if (cfg.label) {
     <label class="radio-group__label">
-        {{ mergedConfig().label }}
-        @if (mergedConfig().required) {
+        {{ cfg.label }}
+        @if (cfg.required) {
         <span class="required-star">*</span>
         }
     </label>

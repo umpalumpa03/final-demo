@@ -1,4 +1,11 @@
-import { Component, computed, effect, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  input,
+  output,
+} from '@angular/core';
 import { BaseInput } from '../base/base-input';
 import { generateUniqueId } from '../base/utils/input.util';
 import { RADIO_DEFAULTS } from '../config/radios.config';
@@ -13,14 +20,11 @@ import {
   imports: [],
   templateUrl: './radios.html',
   styleUrl: './radios.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Radios extends BaseInput {
   public override readonly config = input<RadioGroupConfig>({});
   public readonly options = input.required<RadioOption[]>();
-
-  public readonly initialValue = input<RadioValue>();
-
-  public readonly valueChangeSignal = output<RadioValue>();
 
   protected readonly groupName = generateUniqueId('radio-group');
 
@@ -35,7 +39,6 @@ export class Radios extends BaseInput {
     this.value.set(optionValue);
     this.onChange(optionValue);
     this.valueChange.emit(optionValue);
-    this.valueChangeSignal.emit(optionValue);
   }
   constructor() {
     super();

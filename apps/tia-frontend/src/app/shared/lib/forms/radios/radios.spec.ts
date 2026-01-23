@@ -23,7 +23,7 @@ describe('Radios', () => {
 
   it('should update value and emit signal when valid option selected', () => {
     let emittedVal: any;
-    component.valueChangeSignal.subscribe((v) => (emittedVal = v));
+    component.valueChange.subscribe((v) => (emittedVal = v));
 
     component['selectOption'](1);
 
