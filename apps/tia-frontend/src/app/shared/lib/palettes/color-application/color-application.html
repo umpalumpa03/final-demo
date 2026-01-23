@@ -1,0 +1,29 @@
+<div class="color-application">
+  <div class="color-application__group theme-{{ theme() }}">
+    <h3 class="color-application__theme-title">{{ themeLabel() }}</h3>
+
+    <div class="color-application__row">
+      @for (application of applications(); track application.modifier) {
+      <div class="color-application__item">
+        <div
+          class="color-application__header"
+          [class]="'color-application__header--' + application.modifier"
+        >
+          <span class="color-application__title">
+            {{ application.title }}
+          </span>
+        </div>
+
+        <div
+          class="color-application__content"
+          [class]="'color-application__content--' + application.modifier"
+        >
+          <span class="color-application__description">
+            {{ application.description }}
+          </span>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,89 @@
+@use '../shared/styles/palette-styles' as *;
+@use '../../../../shared/styles/palette' as *;
+@use '../../../../shared/styles/mixins' as *;
+
+.color-application {
+  @include display-flex(column, nowrap);
+  width: 100%;
+  padding: 2rem 0;
+  gap: 3rem;
+  max-width: 110.2rem;
+
+  &__group {
+    @include display-flex(column, nowrap);
+    gap: 1.2rem;
+    width: 100%;
+  }
+
+  &__theme-title {
+    @include font-arimo(600, 1.4rem, 2rem);
+    color: var(--foreground);
+  }
+
+  &__row {
+    @include display-flex(row, nowrap);
+    gap: 1.5rem;
+    width: 100%;
+    align-items: stretch;
+  }
+
+  &__item {
+    @include display-flex(column, nowrap);
+    flex: 1;
+    min-height: 16rem;
+    border-radius: 0.8rem;
+    box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.05);
+    border: 0.15rem solid $blue-ocean;
+    background: $white;
+  }
+
+  &__header {
+    padding: 1.2rem;
+    color: $white;
+    @include font-arimo(500, 1.4rem, 2rem);
+    border-top-left-radius: 0.67rem;
+    border-top-right-radius: 0.67rem;
+
+    &--primary {
+      background-color: var(--primary);
+    }
+
+    &--secondary {
+      background-color: var(--secondary);
+      color: var(--foreground);
+    }
+
+    &--muted {
+      background-color: var(--muted);
+      color: var(--foreground);
+    }
+  }
+
+  &__content {
+    padding: 1.2rem;
+    flex: 1;
+    @include display-flex(column, nowrap);
+    justify-content: center;
+    border-bottom-left-radius: 0.8rem;
+    border-bottom-right-radius: 0.8rem;
+
+    &--primary {
+      background-color: $blue-100;
+    }
+
+    &--secondary {
+      background-color: $white;
+      color: var(--foreground);
+    }
+
+    &--muted {
+      background-color: var(--muted);
+      color: var(--foreground);
+    }
+  }
+
+  &__description {
+    @include font-arimo(400, 1.3rem, 1.8rem);
+    color: var(--foreground);
+  }
+}
