@@ -13,6 +13,7 @@ import { RightSheetDemo } from "./components/right-sheet-demo/right-sheet-demo";
 import { LeftSheetDemo } from "./components/left-sheet-demo/left-sheet-demo";
 import { TopSheetModal } from "./components/top-sheet-modal/top-sheet-modal";
 import { BottomSheetModal } from "./components/bottom-sheet-modal/bottom-sheet-modal";
+import { DrawerModal } from "./components/drawer-modal/drawer-modal";
 
 @Component({
   selector: 'app-overlay',
@@ -27,7 +28,8 @@ import { BottomSheetModal } from "./components/bottom-sheet-modal/bottom-sheet-m
     RightSheetDemo,
     LeftSheetDemo,
     TopSheetModal,
-    BottomSheetModal
+    BottomSheetModal,
+    DrawerModal
 ],
   templateUrl: './overlay.html',
   styleUrls: ['./overlay.scss'],
