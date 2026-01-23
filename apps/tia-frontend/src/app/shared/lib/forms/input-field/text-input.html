@@ -30,7 +30,7 @@
     @if (isPasswordType()) {
     <button type="button" class="text-input__icon text-input__icon--suffix" (click)="togglePasswordVisibility()">
 
-        <div class="text-input__icon-svg" aria-hidden="true" [style.mask-image]="suffixIconUrl()"
+        <div class="text-input__icon-svg" aria-hidden="true" [style.background-image]="suffixIconUrl()"
             [style.-webkit-mask-image]="suffixIconUrl()">
         </div>
     </button>
