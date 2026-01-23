@@ -26,3 +26,9 @@ export function getValidationErrorMessage(
 
   return 'Invalid value';
 }
+
+export function generateUniqueId(prefix: string = 'field'): string {
+  const random = Math.floor(Math.random() * 1000000);
+
+  return `${prefix}-${random}`;
+}
