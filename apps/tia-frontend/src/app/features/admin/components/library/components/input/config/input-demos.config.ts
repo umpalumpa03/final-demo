@@ -1,5 +1,9 @@
 import { TextInputType } from '@tia/shared/lib/forms/models/input.model';
-import { InputDemo, TextareaDemo } from '../models/input-demos.model';
+import {
+  CheckboxDemo,
+  InputDemo,
+  TextareaDemo,
+} from '../models/input-demos.model';
 
 export const BASIC_INPUT_DEMOS: InputDemo[] = [
   {
@@ -77,6 +81,35 @@ export const TEXTAREA_DEMOS: TextareaDemo[] = [
       validation: { maxLength: 100 },
       showCharacterCount: true,
       rows: 2,
+    },
+  },
+] as const;
+
+export const CHECKBOX_DEMOS: CheckboxDemo[] = [
+  {
+    checked: false,
+    config: {
+      label: 'Accept terms and conditions (State: Unchecked)',
+    },
+  },
+  {
+    checked: true,
+    config: {
+      label: 'Default Checked',
+    },
+  },
+  {
+    checked: false,
+    config: {
+      label: 'Disabled Checkbox',
+      disabled: true,
+    },
+  },
+  {
+    checked: true,
+    config: {
+      label: 'Disabled & Checked',
+      disabled: true,
     },
   },
 ] as const;
