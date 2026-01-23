@@ -9,10 +9,10 @@ import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaginationComponent {
-  public readonly defaultCurrentPage = signal(1);
-  public readonly defaultTotalPages = signal(3);
-  public readonly ellipsisCurrentPage = signal(10);
-  public readonly ellipsisTotalPages = signal(20);
+  public readonly defaultCurrentPage = signal<number>(1);
+  public readonly defaultTotalPages = signal<number>(3);
+  public readonly ellipsisCurrentPage = signal<number>(10);
+  public readonly ellipsisTotalPages = signal<number>(20);
 
 
   // ეს არის მონაცემები pagination-ისთვის 
@@ -25,7 +25,7 @@ export class PaginationComponent {
 
   // დეფოლტ პაგინაციისას შესაბამისი გვერდის დატა რომ წამოიღოთ
   public readonly currentItems = signal(this.allItems().slice(0, 10));
-  public ellipsisItems = signal(this.allItems().slice(90, 100));
+  public readonly ellipsisItems = signal(this.allItems().slice(90, 100));
 
   public onDefaultPageChange(page: number): void {
     this.defaultCurrentPage.set(page);

@@ -1,10 +1,11 @@
+@let current = currentPage();
 <nav aria-label="Pagination Navigation" class="pagination">
   <ul class="pagination__list">
-    <li class="pagination__item" [class.pagination__item--disabled]="currentPage() === 1">
+    <li class="pagination__item" [class.pagination__item--disabled]="current === 1">
       <button
         class="pagination__link"
-        (click)="onPageChange(currentPage() - 1)"
-        [disabled]="currentPage() === 1"
+        (click)="onPageChange(current - 1)"
+        [disabled]="current === 1"
         [attr.aria-label]="config().previousLabel || 'Previous page'"
       >
         <img
@@ -23,12 +24,12 @@
       </div>
     </li>
     } @else {
-    <li class="pagination__item" [class.pagination__item--active]="page === currentPage()">
+    <li class="pagination__item" [class.pagination__item--active]="page === current">
       <button
         class="pagination__link pagination__link--page"
         (click)="onPageChange(page)"
         [attr.aria-label]="'Go to page ' + page"
-        [attr.aria-current]="page === currentPage() ? 'page' : null"
+        [attr.aria-current]="page === current ? 'page' : null"
       >
         {{ page }}
       </button>
@@ -37,12 +38,12 @@
 
     <li
       class="pagination__item"
-      [class.pagination__item--disabled]="currentPage() === totalPages()"
+      [class.pagination__item--disabled]="current === totalPages()"
     >
       <button
         class="pagination__link"
-        (click)="onPageChange(currentPage() + 1)"
-        [disabled]="currentPage() === totalPages()"
+        (click)="onPageChange(current + 1)"
+        [disabled]="current === totalPages()"
         [attr.aria-label]="config().nextLabel || 'Next page'"
       >
         {{ config().nextLabel || 'Next' }}
