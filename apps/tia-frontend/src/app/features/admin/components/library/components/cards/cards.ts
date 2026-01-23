@@ -7,10 +7,11 @@ import {
 } from 'apps/tia-frontend/src/app/shared/lib/cards/models/card.model';
 import { LibraryTitle } from '../../shared/library-title/library-title';
 import { BASIC_CARDS_DATA, STATISTICS_CARDS_DATA } from './config/cards-data';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 
 @Component({
   selector: 'app-cards',
-  imports: [BasicCard, LibraryTitle, StatisticCard],
+  imports: [BasicCard, LibraryTitle, StatisticCard,ButtonComponent],
   templateUrl: './cards.html',
   styleUrl: './cards.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

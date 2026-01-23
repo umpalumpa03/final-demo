@@ -1,39 +1,36 @@
 @use '../../../styles/palette' as *;
 @use '../../../styles/themes' as *;
-
+@use '../../../styles/mixins' as *;
 
 .button-group {
   display: inline-flex;
   vertical-align: middle;
 
-  & > app-button {
-    display: inline-flex;
-    position: relative;
+  &__items {
+    @include flex-center(row, flex-start, center);
+  }
 
-    .button {
-      border-radius: 0; 
+  &__item {
+    position: relative;
+    
+    border-radius: 0;
+
+    &:not(:first-child) {
       margin-left: 0.1rem; 
-      
-      
-      &:hover {
-        z-index: 1;
-        border-color: var(--color-primary);
-      }
     }
 
     &:first-child {
-      .button {
-        margin-left: 0;
-        border-top-left-radius: 0.8rem;
-        border-bottom-left-radius: 0.8rem;
-      }
+      border-top-left-radius: 2rem; 
+      border-bottom-left-radius: 2rem;
     }
 
     &:last-child {
-      .button {
-        border-top-right-radius: 0.8rem;
-        border-bottom-right-radius: 0.8rem;
-      }
+      border-top-right-radius: 2rem;
+      border-bottom-right-radius: 2rem;
+    }
+
+    &:hover {
+      z-index: 1; 
     }
   }
 }
