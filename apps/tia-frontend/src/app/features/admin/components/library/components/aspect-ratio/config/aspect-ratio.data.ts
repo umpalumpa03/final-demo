@@ -1,4 +1,4 @@
-import { AspectRatioItem } from "@tia/shared/lib/data-display/aspect-ratio/models/aspect-ratio.models";
+import { AspectRatioItem } from '../../../../../../../shared/lib/data-display/aspect-ratio/models/aspect-ratio.models';
 
 export const ASPECT_RATIO_ITEMS: AspectRatioItem[] = [
   {
@@ -7,7 +7,7 @@ export const ASPECT_RATIO_ITEMS: AspectRatioItem[] = [
     description: 'Video',
     ratio: '16 / 9',
     width: '44.8rem',
-    background: '#BAE6FD',
+    background: 'var(--color-muted)',
   },
   {
     id: 'standard',
@@ -15,7 +15,7 @@ export const ASPECT_RATIO_ITEMS: AspectRatioItem[] = [
     description: 'Standard',
     ratio: '4 / 3',
     width: '33.6rem',
-    background: '#E0F2FE',
+    background: 'var(--color-secondary)',
   },
   {
     id: 'square',
@@ -23,7 +23,7 @@ export const ASPECT_RATIO_ITEMS: AspectRatioItem[] = [
     description: 'Square',
     ratio: '1 / 1',
     width: '25.2rem',
-    background: '#7DD3FC',
+    background: 'var(--color-accent)',
   },
   {
     id: 'ultrawide',
@@ -31,6 +31,6 @@ export const ASPECT_RATIO_ITEMS: AspectRatioItem[] = [
     description: 'Ultrawide',
     ratio: '21 / 9',
     width: '58.8rem',
-    background: '#0284C733',
+    background: 'var(--color-primary)',
   },
 ];

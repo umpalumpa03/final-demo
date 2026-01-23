@@ -1,5 +1,5 @@
 <div class="avatar-group">
-  @for (avatar of visibleAvatars(); track avatar.initials + $index; let index = $index) {
+  @for (avatar of visibleAvatars(); track avatar.initials; let index = $index) {
     <app-avatar
       class="avatar-group__item"
       [class.avatar-group__item--overlap]="index > 0"
