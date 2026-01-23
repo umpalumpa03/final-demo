@@ -1,0 +1,32 @@
+<div class="pagination">
+  <h4 class="pagination__title">Default Pagination:</h4>
+  <app-pagination
+    [currentPage]="defaultCurrentPage()"
+    [totalPages]="defaultTotalPages()"
+    (pageChange)="onDefaultPageChange($event)"
+  ></app-pagination>
+</div>
+
+<!-- ეს კომენტარი არის იმისთვის, რომ დაინახოთ როგორ ემუშავება პაგინაციის კომპონენტი 
+დატას html-ში -->
+
+<!-- <div>
+  @for (item of ellipsisItems(); track item.id) {
+  <div>{{ item.name }}</div>
+  }
+</div> -->
+
+<div class="pagination">
+  <h4 class="pagination__title">With Ellipsis:</h4>
+  <app-pagination
+    [currentPage]="ellipsisCurrentPage()"
+    [totalPages]="ellipsisTotalPages()"
+    [config]="{
+          showEllipsis: true,
+          maxVisiblePages: 7,
+          previousLabel: 'Previous',
+          nextLabel: 'Next'
+        }"
+    (pageChange)="onEllipsisPageChange($event)"
+  ></app-pagination>
+</div>

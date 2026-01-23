@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ContactForms } from './contact-forms/contact-forms';
+import { ContactForms } from "./contact-form/contact-form";
 import { RegistrationForm } from './registration-form/registration-form';
-import { LibraryTitle } from '../../shared/library-title/library-title';
+import { InlineForm } from "./inline-form/inline-form";
+import { ValidationForm } from "./validation-form/validation-form";
+import { LibraryTitle } from "../../shared/library-title/library-title";
 
 @Component({
   selector: 'app-forms',
-  imports: [ContactForms, RegistrationForm, LibraryTitle],
+  imports: [ContactForms, RegistrationForm, InlineForm, ValidationForm, LibraryTitle],
   templateUrl: './forms.html',
   styleUrl: './forms.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

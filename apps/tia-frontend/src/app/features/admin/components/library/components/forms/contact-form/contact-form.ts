@@ -2,23 +2,22 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  input,
   output,
 } from '@angular/core';
-import { getErrorMessage } from '../../../../../../../core/utils/form-validations';
+import { getErrorMessage } from '../../../../../../../shared/utils/form-validations';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IContactForm } from '../models/contact-forms.model';
+import { TextInput } from "@tia/shared/lib/forms/input-field/text-input";
 
 @Component({
-  selector: 'app-contact-forms',
-  imports: [ReactiveFormsModule],
-  templateUrl: './contact-forms.html',
-  styleUrl: './contact-forms.scss',
+  selector: 'app-contact-form',
+  imports: [ReactiveFormsModule, TextInput],
+  templateUrl: './contact-form.html',
+  styleUrl: './contact-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContactForms {
   private fb = inject(FormBuilder);
-  public firstFildName = input<string>();
   public submitForm = output<IContactForm>();
 
   public contactForm = this.fb.nonNullable.group({
@@ -28,29 +27,11 @@ export class ContactForms {
     subscribe: [false, [Validators.requiredTrue]],
   });
 
-  public readonly nameError = getErrorMessage(this.name, 'name');
-  public readonly emailError = getErrorMessage(this.email, 'email');
-  public readonly messageError = getErrorMessage(this.message, 'message');
-
-  public get name() {
-    return this.contactForm.controls.name;
-  }
-  public get email() {
-    return this.contactForm.controls.email;
-  }
   public get message() {
     return this.contactForm.controls.message;
   }
   public get subscribe() {
     return this.contactForm.controls.subscribe;
-  }
-
-  public get isNameError() {
-    return this.showError('name');
-  }
-
-  public get isEmailError() {
-    return this.showError('email');
   }
 
   public get isMessageError() {
@@ -60,6 +41,8 @@ export class ContactForms {
   public get isSubscribeError() {
     return this.showError('subscribe');
   }
+
+  public readonly messageError = getErrorMessage(this.message, 'message');
 
   public showError(controlName: string): boolean {
     const control = this.contactForm.get(controlName);
@@ -75,4 +58,17 @@ export class ContactForms {
     this.submitForm.emit(this.contactForm.getRawValue());
     this.contactForm.reset();
   }
+
+  //this is temporary configs
+  public nameConfig = {
+    label: 'Name',
+    required: true,
+    placeholder: 'Your Name',
+  };
+
+  public emailConfig = {
+    label: 'Email',
+    required: true,
+    placeholder: 'your.email@example.com',
+  };
 }

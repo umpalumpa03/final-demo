@@ -6,13 +6,13 @@
   @extend %flex-stack;
   width: 44.8rem;
 
-  &__fields {
+  &--fields {
     @include display-flex(column);
     width: 100%;
     gap: 0.8rem;
   }
 
-  &__subscribe {
+  &--subscribe {
     @extend %checkbox;
   }
 

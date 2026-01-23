@@ -213,4 +213,33 @@ describe('Badges', () => {
       expect(dotColor).toBe('');
     });
   });
+
+ 
+  it('should use preset shape from skillPresetMap when skill shape is undefined', () => {
+  
+    fixture.componentRef.setInput('skill', 'react');
+ 
+    fixture.componentRef.setInput('shape', undefined);
+    fixture.detectChanges();
+    
+    const badgeClass = (component as any).badgeClass();
+    expect(badgeClass).toContain('badge--pill');
+    expect(badgeClass).toContain('badge--outline');
+  });
+
+  it('should use preset shape from categoryPresetMap when category shape is undefined', () => {
+
+    fixture.componentRef.setInput('category', 'design');
+   
+    fixture.componentRef.setInput('shape', undefined);
+    fixture.detectChanges();
+    
+    const badgeClass = (component as any).badgeClass();
+    expect(badgeClass).toContain('badge--pill');
+  });
+
+  it('should return empty string for iconPath when status is not provided', () => {
+    const iconPath = (component as any).iconPath();
+    expect(iconPath).toBe('');
+  });
 });
