@@ -61,6 +61,10 @@
 
   &__agree-terms {
     @extend %checkbox;
+
+    label.invalid {
+      color: $red-500;
+    }
   }
 
   button {

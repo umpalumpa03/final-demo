@@ -1,7 +1,16 @@
+@let config = tableConfig(); @if(config) {
 <table class="table">
   <thead class="table__header">
     <tr class="table__header__row">
-      @for (header of tableConfig().headers; track header.title) {
+      @if(isSelectable()) {
+      <th class="table__header__row__item table__header__row__checkbox">
+        <input
+          type="checkbox"
+          (checked)="allSelected()"
+          (change)="toggleSelectAll()"
+        />
+      </th>
+      } @for (header of config.headers; track header.title) {
       <th
         class="table__header__row__item"
         [style.text-align]="header.align"
@@ -13,14 +22,44 @@
     </tr>
   </thead>
   <tbody class="table__body">
-    @for (row of tableConfig().rows; track row[0].value) {
+    @for (row of config.rows; track row.id) {
     <tr class="table__body__row">
-      @for (cell of row; track cell.value) {
-      <td class="table__body__row__item" [style.text-align]="cell.align">
-        {{ cell.value }}
+      @if(isSelectable()) {
+      <td class="table__body__row__item">
+        <input
+          type="checkbox"
+          [checked]="allSelected()"
+          (change)="onIndividualSelect(row)"
+        />
       </td>
-      }
+      } @for (cell of row.info; track cell.value) { @if(cell.type === 'badge') {
+      <td>
+        <app-badges [status]="cell.value" size="small"></app-badges>
+      </td>
+      }@else {
+      <td class="table__body__row__item" [style.text-align]="cell.align">
+        @if(cell.category || cell.accountName || cell.date) {
+        <div class="table__body__row__item__container">
+          <div class="table__body__row__item__container__header">
+            <h3>{{ cell.value }}</h3>
+            <span>
+              <img src="images/svg/transactions/tag.svg" alt="tag" />
+              {{ cell.category}}
+            </span>
+          </div>
+          <div class="table__body__row__item__container__desc">
+            <span>{{ cell.accountName }}</span>
+            <span>{{ cell.date | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+        }@else { {{ cell.value }} }
+      </td>
+      }}
+    </tr>
+    <tr>
+      <ng-content></ng-content>
     </tr>
     }
   </tbody>
 </table>
+}

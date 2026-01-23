@@ -1,0 +1,11 @@
+@use "../../../../../../../../shared/styles/mixins" as *;
+@use "../../../../../../../../shared/styles/palette" as *;
+
+.pagination {
+    @include display-flex(column);
+    gap: 2.4rem;
+    &__title {
+        @include font-arimo(400, 1.4rem, 2rem);
+        color: $gray-700;
+    }
+}

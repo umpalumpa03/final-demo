@@ -1,5 +1,10 @@
-import { BadgeStatus } from '../models/badges.models';
-import { BadgeDotType } from '../models/badges.models';
+import {
+  BadgeStatus,
+  BadgeDotType,
+  BadgeSkill,
+  BadgeCategory,
+  BadgeVariant,
+ } from '../models/badges.models';
 
 export const statusClassMap: Record<BadgeStatus, string> = {
   'active': 'badge--active',
@@ -51,4 +56,28 @@ export const dotTextMap: Record<BadgeDotType, string> = {
   'away': 'Away',
   'offline': 'Offline',
   'live': 'Live',
+};
+
+interface BadgePresetConfig {
+  text: string;
+  variant: BadgeVariant;
+}
+
+interface CategoryPresetConfig {
+  text: string;
+}
+
+export const skillPresetMap: Record<BadgeSkill, BadgePresetConfig> = {
+  javascript: { text: 'JavaScript', variant: 'outline' },
+  react: { text: 'React', variant: 'outline' },
+  nodejs: { text: 'Node.js', variant: 'outline' },
+  typescript: { text: 'TypeScript', variant: 'outline' },
+  css: { text: 'CSS', variant: 'outline' },
+  html: { text: 'HTML', variant: 'outline' },
+};
+
+export const categoryPresetMap: Record<BadgeCategory, CategoryPresetConfig> = {
+  technology: { text: 'Technology' },
+  design: { text: 'Design' },
+  marketing: { text: 'Marketing' },
 };
