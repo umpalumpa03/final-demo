@@ -10,14 +10,21 @@ import { AlertType } from '../../shared/models/alert.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AlertTypesWithIcons {
-  public alertType = input<AlertType>('information');
-  public alertMessage = input<string>('Default Alert Message');
+  public readonly alertType = input<AlertType>('information');
+  public readonly alertMessage = input<string>('Default Alert Message');
 
-  public iconAlertClass = computed(() => `alert-types-icons--${this.alertType()}`);
+  public readonly iconAlertClass = computed(() => `alert-types-icons--${this.alertType()}`);
 
-  public effectiveImgName = computed(() => {
+  public readonly effectiveImgName = computed(() => {
     const useDefault = ['error', 'information'].includes(this.alertType());
     return useDefault ? 'default' : this.alertType();
   });
 
+  public readonly effectiveImgPath = computed(
+    () => `/images/svg/alerts/base-alert-${this.effectiveImgName()}.svg`,
+  );
+
+  public readonly effectiveAltName = computed(
+    () => `${this.alertType()} icon`
+  );
 }
