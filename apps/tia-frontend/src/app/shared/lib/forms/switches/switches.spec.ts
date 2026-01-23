@@ -22,7 +22,7 @@ describe('Switches', () => {
 
   it('should update value and emit output on user interaction', () => {
     let emittedValue: boolean | undefined;
-    component.checkedChange.subscribe((val) => (emittedValue = val));
+    component.checked.subscribe((val) => (emittedValue = val));
 
     const inputEl = fixture.debugElement.query(By.css('input')).nativeElement;
     inputEl.checked = true;

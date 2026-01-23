@@ -4,6 +4,7 @@ import {
   computed,
   effect,
   input,
+  model,
   output,
 } from '@angular/core';
 import { BaseInput } from '../base/base-input';
@@ -21,8 +22,7 @@ import { SwitchConfig } from '../models/switches.model';
 export class Switches extends BaseInput {
   public override readonly config = input<SwitchConfig>({});
 
-  public readonly checked = input<boolean>(false);
-  public readonly checkedChange = output<boolean>();
+  public readonly checked = model<boolean>(false);
 
   private readonly defaultId = generateUniqueId('lib-switch');
 
@@ -57,9 +57,9 @@ export class Switches extends BaseInput {
     const newValue = target.checked;
 
     this.value.set(newValue);
+    this.checked.set(newValue);
     this.onChange(newValue);
     this.valueChange.emit(newValue);
-    this.checkedChange.emit(newValue);
   }
 
   protected override parseInputValue(target: HTMLInputElement): boolean {
