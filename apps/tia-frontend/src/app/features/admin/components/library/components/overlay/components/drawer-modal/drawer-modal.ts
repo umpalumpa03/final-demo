@@ -3,10 +3,11 @@ import { UiDrawer } from '../../../../../../../../shared/lib/overlay/ui-drawer/u
 import { TextInput } from '../../../../../../../../shared/lib/forms/input-field/text-input';
 import { emailConfig, nameConfig } from './config/inputs.config';
 import { LibraryTitle } from '../../../../shared/library-title/library-title';
+import { ButtonComponent } from "@tia/shared/lib/primitives/button/button";
 
 @Component({
   selector: 'app-drawer-modal',
-  imports: [UiDrawer, TextInput, LibraryTitle],
+  imports: [UiDrawer, TextInput, LibraryTitle, ButtonComponent],
   templateUrl: './drawer-modal.html',
   styleUrl: './drawer-modal.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
