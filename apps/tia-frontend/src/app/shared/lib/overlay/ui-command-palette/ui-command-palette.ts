@@ -15,11 +15,10 @@ import {
   CommandPaletteConfig,
   ProcessedCommandAction,
 } from './models/palette.model';
-import { getPaletteIconPath } from './utils/ui-command-palette.util';
+import { getPaletteIconPath } from './utils/ui-command-palette.config';
 
 @Component({
   selector: 'app-ui-command-palette',
-  standalone: true,
   templateUrl: './ui-command-palette.html',
   styleUrl: './ui-command-palette.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
