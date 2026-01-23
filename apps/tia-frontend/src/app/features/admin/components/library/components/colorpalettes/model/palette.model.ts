@@ -3,4 +3,5 @@ export interface ColorPalette {
   subtitle: string;
   theme: string;
   scssClass: string;
+  themeLabel?: string;
 }
