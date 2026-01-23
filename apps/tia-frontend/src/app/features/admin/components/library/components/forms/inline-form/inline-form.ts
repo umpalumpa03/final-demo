@@ -5,7 +5,7 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 
 @Component({
   selector: 'app-inline-form',
-  imports: [TextInput, ButtonComponent, ɵInternalFormsSharedModule, ReactiveFormsModule],
+  imports: [TextInput, ButtonComponent, ReactiveFormsModule],
   templateUrl: './inline-form.html',
   styleUrl: './inline-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
