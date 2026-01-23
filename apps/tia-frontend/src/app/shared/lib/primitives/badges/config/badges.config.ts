@@ -1,4 +1,5 @@
 import { BadgeStatus } from '../models/badges.models';
+import { BadgeDotType } from '../models/badges.models';
 
 export const statusClassMap: Record<BadgeStatus, string> = {
   'active': 'badge--active',
@@ -25,4 +26,29 @@ export const statusAltTextMap: Record<BadgeStatus, string> = {
   'in-progress': 'In progress status icon',
   'featured': 'Featured status icon',
   'premium': 'Premium status icon',
+};
+
+export const statusTextMap: Record<BadgeStatus, string> = {
+  'active': 'Active',
+  'pending': 'Pending',
+  'inactive': 'Inactive',
+  'in-progress': 'In Progress',
+  'featured': 'Featured',
+  'premium': 'Premium',
+};
+
+
+
+export const dotColorMap: Record<BadgeDotType, string> = {
+  'online': 'green-400',
+  'away': 'yellow-400',
+  'offline': 'red-500',
+  'live': 'blue-200',
+};
+
+export const dotTextMap: Record<BadgeDotType, string> = {
+  'online': 'Online',
+  'away': 'Away',
+  'offline': 'Offline',
+  'live': 'Live',
 };

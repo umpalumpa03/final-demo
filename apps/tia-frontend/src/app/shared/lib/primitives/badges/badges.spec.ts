@@ -129,22 +129,19 @@ describe('Badges', () => {
     expect(label).toBeNull();
   });
 
-  it('should hide icon when showIcon is false', () => {
+  it('should show icon when status is provided', () => {
     fixture.componentRef.setInput('status', 'active');
-    fixture.componentRef.setInput('showIcon', false);
-    fixture.detectChanges();
-
-    const icon: HTMLImageElement | null = fixture.nativeElement.querySelector('.badge__icon');
-    expect(icon).toBeNull();
-  });
-
-  it('should show icon when showIcon is true and status is provided', () => {
-    fixture.componentRef.setInput('status', 'active');
-    fixture.componentRef.setInput('showIcon', true);
     fixture.detectChanges();
 
     const icon: HTMLImageElement | null = fixture.nativeElement.querySelector('.badge__icon');
     expect(icon).toBeTruthy();
+  });
+
+  it('should not show icon when status is not provided', () => {
+    fixture.detectChanges();
+
+    const icon: HTMLImageElement | null = fixture.nativeElement.querySelector('.badge__icon');
+    expect(icon).toBeNull();
   });
 
   describe('Interactive Badges (Dismissible)', () => {
@@ -211,6 +208,52 @@ describe('Badges', () => {
       const dismissButton: HTMLButtonElement | null = fixture.nativeElement.querySelector('.badge__dismiss');
       expect(dismissButton).toBeTruthy();
       expect(dismissButton?.type).toBe('button');
+    });
+  });
+
+  describe('Dot Badges', () => {
+    it('should show dot indicator when dot is provided', () => {
+      fixture.componentRef.setInput('dot', 'online');
+      fixture.detectChanges();
+
+      const dotElement: HTMLElement | null = fixture.nativeElement.querySelector('.badge__dot');
+      expect(dotElement).toBeTruthy();
+    });
+
+
+
+    it('should apply correct dot color class for online dot', () => {
+      fixture.componentRef.setInput('dot', 'online');
+      fixture.detectChanges();
+
+      const dotElement: HTMLElement | null = fixture.nativeElement.querySelector('.badge__dot');
+      expect(dotElement).toBeTruthy();
+      expect(dotElement?.className).toContain('badge__dot--green-400');
+    });
+
+    it('should apply data-dot attribute when dot is provided', () => {
+      fixture.componentRef.setInput('dot', 'away');
+      fixture.detectChanges();
+
+      const badgeElement: HTMLElement | null = fixture.nativeElement.querySelector('span[data-dot]');
+      expect(badgeElement).toBeTruthy();
+      expect(badgeElement?.getAttribute('data-dot')).toBe('away');
+    });
+
+    it('should render correct text for dot badge', () => {
+      fixture.componentRef.setInput('dot', 'online');
+      fixture.detectChanges();
+
+      const textElement: HTMLElement | null = fixture.nativeElement.querySelector('.badge__text');
+      expect(textElement).toBeTruthy();
+      expect(textElement?.textContent).toContain('Online');
+    });
+
+    it('should return empty string for dotColor when dot is not provided', () => {
+      fixture.detectChanges();
+
+      const dotColor = (component as any).dotColor();
+      expect(dotColor).toBe('');
     });
   });
 });
