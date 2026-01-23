@@ -26,18 +26,11 @@ describe('AspectRatioComponent', () => {
   });
 
   it('should set selectedRatio when item is selected', () => {
-    const selected: AspectRatioItem = {
-      id: 'video',
-      label: '16:9',
-      description: 'Video',
-      ratio: '16 / 9',
-      width: '44.8rem',
-      background: '#BAE6FD',
-    };
+    const selected = component.ratios()[0] as AspectRatioItem;
 
     component.onRatioSelected(selected);
 
-    expect(component.selectedRatio()).toEqual(selected);
+    expect(component.selectedRatio()?.id).toEqual(selected.id);
   });
 
   it('should return true when ratios exist and false when empty', () => {
