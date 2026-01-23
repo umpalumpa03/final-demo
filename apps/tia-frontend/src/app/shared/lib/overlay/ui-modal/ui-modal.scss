@@ -12,7 +12,7 @@
   &__card {
     @include display-flex(column);
     position: relative;
-    width: 51.2rem;
+    max-width: 54.2rem;
     background: var(--color-bg);
     border: 0.08rem solid $blue-400;
     border-radius: 1rem;

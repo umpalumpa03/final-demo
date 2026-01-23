@@ -3,7 +3,6 @@
 
 .terms-content {
   @include display-flex(column);
-  padding: 2.48rem;
   width: 50rem;
   max-height: 80vh;
 
@@ -12,9 +11,6 @@
   }
 
   &__body {
-    flex: 1;
-    overflow-y: auto;
-    padding-right: 1.2rem;
     @include display-flex(column);
     gap: 2rem;
   }
