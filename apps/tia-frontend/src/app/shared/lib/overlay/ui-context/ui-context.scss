@@ -1,0 +1,82 @@
+@use '../../../../shared/styles/mixins' as *;
+@use '../../../../shared/styles/palette' as *;
+
+.ui-context {
+  position: fixed;
+  z-index: 3000;
+  width: 12.8rem;
+  background-color: $white;
+  border: 0.08rem solid $blue-400;
+  border-radius: 0.8rem;
+  padding: 0.48rem;
+  box-shadow:
+    0 0.4rem 0.6rem -0.1rem rgba(0, 0, 0, 0.1),
+    0 0.2rem 0.4rem -0.2rem rgba(0, 0, 0, 0.1);
+  @include display-flex(column);
+
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 2999;
+    background: transparent;
+  }
+
+  &__divider {
+    height: 0.1rem;
+    background-color: $blue-400;
+    margin: 0.4rem -0.48rem;
+    width: calc(100% + 0.96rem);
+  }
+
+  &__item {
+    @include display-flex(row);
+    align-items: center;
+    width: 100%;
+    height: 3.2rem;
+    padding: 0 0.8rem;
+    gap: 0.8rem;
+    border-radius: 0.6rem;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: $blue-100;
+    }
+
+    &__default {
+      .ui-context__label {
+        color: var(--color-fg);
+      }
+      .ui-context__icon {
+        background-color: #0369a1;
+      }
+    }
+
+    &__danger {
+      .ui-context__label {
+        color: #e7000b;
+      }
+      .ui-context__icon {
+        background-color: #e7000b;
+      }
+    }
+  }
+
+  &__icon {
+    width: 1.6rem;
+    height: 1.6rem;
+    mask-image: var(--icon-mask);
+    -webkit-mask-image: var(--icon-mask);
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    background-color: currentColor;
+  }
+
+  &__label {
+    @include font-arimo(400, 1.4rem, 2rem);
+    white-space: nowrap;
+  }
+}

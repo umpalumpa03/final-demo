@@ -2,13 +2,13 @@
 @use '../../../../../../shared/styles/palette' as *;
 
 .showcase-card {
-  max-width: 110.24rem;
+  max-width: 110.2rem;
   width: 100%;
-  min-height: 13.02rem;
+  min-height: 13rem;
   background: $white;
-  border: 0.16rem solid $blue-400;
+  border: 0.08rem solid $blue-400;
   border-radius: 1rem;
-  padding: 2.56rem;
+  padding: 2.48rem;
   @include display-flex(column);
   gap: 1.6rem;
 

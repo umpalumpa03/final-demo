@@ -1,0 +1,37 @@
+<div
+  class="ui-context"
+  [style.top]="menuStyle().top"
+  [style.left]="menuStyle().left"
+  (click)="$event.stopPropagation()"
+  (keydown)="$event.stopPropagation()"
+  role="menu"
+  tabindex="-1"
+>
+  @for (item of processedItems(); track item) { @if (item === 'divider') {
+  <div class="ui-context__divider" role="separator"></div>
+  } @else {
+  <button
+    type="button"
+    class="ui-context__item"
+    [class]="'ui-context__item__' + (item.variant || 'default')"
+    (click)="handleAction(item.action)"
+    role="menuitem"
+  >
+    @if (item.iconPath) {
+    <span class="ui-context__icon" [style.--icon-mask]="item.iconPath"></span>
+    }
+    <span class="ui-context__label">{{ item.label }}</span>
+  </button>
+  } }
+</div>
+
+<div
+  class="ui-context__backdrop"
+  (click)="menuClose.emit()"
+  (keydown.enter)="menuClose.emit()"
+  (keydown.space)="menuClose.emit()"
+  (contextmenu)="$event.preventDefault(); menuClose.emit()"
+  role="button"
+  aria-label="Close context menu"
+  tabindex="-1"
+></div>
