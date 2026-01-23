@@ -1,5 +1,5 @@
-import { TextInputType } from '../../models/input.model';
-import { TextInputTypeConfig } from '../models/text-input.model';
+import { TextInputType } from '../models/input.model';
+import { TextInputTypeConfig } from '../input-field/models/text-input.model';
 import { INPUT_ICONS } from './text-input.icons';
 
 export const TEXT_INPUT_CONFIGS: Record<TextInputType, TextInputTypeConfig> = {
