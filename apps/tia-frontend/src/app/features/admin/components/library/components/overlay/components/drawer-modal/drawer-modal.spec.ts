@@ -18,4 +18,17 @@ describe('DrawerModal', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+  it('should toggle the isOpen signal state when toggle() is called', () => {
+    expect(component.isOpen()).toBe(false);
+    component.toggle();
+    expect(component.isOpen()).toBe(true);
+    component.toggle();
+    expect(component.isOpen()).toBe(false);
+  });
+
+  it('should close the drawer via toggle() when onSubmit() is triggered', () => {
+    component.isOpen.set(true);
+    component.onSubmit();
+    expect(component.isOpen()).toBe(false);
+  });
 });
