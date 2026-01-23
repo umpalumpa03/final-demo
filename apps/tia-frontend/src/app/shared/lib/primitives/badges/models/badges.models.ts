@@ -1,4 +1,4 @@
-export type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline';  
+export type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline';
 
 export type BadgeStatus =
   | 'active'
@@ -6,7 +6,8 @@ export type BadgeStatus =
   | 'inactive'
   | 'in-progress'
   | 'featured'
-  | 'premium';
+  | 'premium'
+  | (string & {});
 
 export type BadgeSize = 'small' | 'medium' | 'large';
 
