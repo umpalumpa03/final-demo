@@ -12,6 +12,7 @@ describe('AlertTypesWithIcons', () => {
 
     fixture = TestBed.createComponent(AlertTypesWithIcons);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {

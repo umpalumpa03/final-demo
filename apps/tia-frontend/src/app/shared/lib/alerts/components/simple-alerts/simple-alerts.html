@@ -1,0 +1,13 @@
+<div class="simple-alerts" [class]="iconAlertClass()">
+  <div class="simple-alerts__alert-icon-div">
+    <img
+      [src]="'/images/img/alert-icons/base-alert-' + effectiveImgName() + '.png'"
+      [alt]="alertType() + ' icon'"
+    />
+  </div>
+  <div class="simple-alerts__alert-info-div">
+    <div class="simple-alerts__message">
+      {{alertMessage() | firstUpper}}
+    </div>
+  </div>
+</div>

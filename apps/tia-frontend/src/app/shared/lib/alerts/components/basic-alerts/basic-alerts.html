@@ -1,6 +1,6 @@
 <div class="basic-alert" [class]="alertClass()">
     <div class="basic-alert__alert-icon-div">
-        <img [src]="'/images/img/alert-icons/base-alert-' + alertType() + '.png'" alt="info icon">
+        <img [src]="'/images/img/alert-icons/base-alert-' + alertType() + '.png'" [alt]="alertType() + ' icon'">
     </div>
     <div class="basic-alert__alert-info-div">
        <div class="basic-alert__title">{{effectiveTitle()}}</div>

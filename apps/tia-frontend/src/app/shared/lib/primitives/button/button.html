@@ -1,15 +1,20 @@
 <button
-  type="button"
+  [type]="type()"
   [class]="'button button--' + variant() + ' button--' + size()"
   [class.button--loading]="isLoading()"
   [class.button--full-width]="fullWidth()"
   [disabled]="isDisabled() || isLoading()"
 >
   @if (isLoading()) {
-    <span class="button__spinner"></span>
+  <span class="button__spinner"></span>
   }
 
   <span class="button__content">
+      @if (icon()) {
+      <div class="button__icon">
+        <img [src]="'/images/svg/button-icons/' + icon()" alt="icon" />
+      </div>
+    }
     <ng-content></ng-content>
   </span>
 </button>
