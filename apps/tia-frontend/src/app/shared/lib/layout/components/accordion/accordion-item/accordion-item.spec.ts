@@ -37,7 +37,6 @@ describe('AccordionItem', () => {
   });
 
   it('should close others if parent accordion notifyOpen is called (Integration logic)', () => {
-    // This tests the set(false) capability of the model signal
     component.isOpen.set(true);
     expect(component.isOpen()).toBeTruthy();
 

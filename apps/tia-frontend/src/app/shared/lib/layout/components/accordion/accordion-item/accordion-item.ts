@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -10,7 +9,7 @@ import { Accordion } from '../container/accordion';
 
 @Component({
   selector: 'app-accordion-item',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './accordion-item.html',
   styleUrl: './accordion-item.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,11 +17,11 @@ import { Accordion } from '../container/accordion';
 export class AccordionItem {
   private accordion = inject(Accordion, { optional: true });
 
-  title = input.required<string>();
+  public title = input.required<string>();
 
-  isOpen = model<boolean>(false);
+  public isOpen = model<boolean>(false);
 
-  toggle() {
+  toggle(): void {
     const nextState = !this.isOpen();
     this.isOpen.set(nextState);
 
