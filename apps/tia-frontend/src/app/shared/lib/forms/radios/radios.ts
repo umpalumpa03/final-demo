@@ -1,4 +1,11 @@
-import { Component, computed, effect, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  input,
+  output,
+} from '@angular/core';
 import { BaseInput } from '../base/base-input';
 import { generateUniqueId } from '../base/utils/input.util';
 import { RADIO_DEFAULTS } from '../config/radios.config';
@@ -13,6 +20,7 @@ import {
   imports: [],
   templateUrl: './radios.html',
   styleUrl: './radios.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Radios extends BaseInput {
   public override readonly config = input<RadioGroupConfig>({});
