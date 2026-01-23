@@ -23,7 +23,15 @@ describe('Avatar', () => {
     fixture.componentRef.setInput('status', 'online');
     fixture.detectChanges();
 
-    const status: HTMLElement = fixture.nativeElement.querySelector('.avatar__status--online');
+    const status: HTMLElement = fixture.nativeElement.querySelector(
+      '.avatar__status--online',
+    );
     expect(status).toBeTruthy();
+  });
+
+  it('should use default status class when missing', () => {
+    fixture.detectChanges();
+
+    expect(component.statusClass()).toBe('avatar__status');
   });
 });

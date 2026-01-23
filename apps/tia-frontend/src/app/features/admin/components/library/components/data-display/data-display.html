@@ -1,0 +1,149 @@
+<div class="data-display">
+  <app-library-title
+    [title]="title"
+    [subtitle]="subtitle"
+  ></app-library-title>
+
+  <app-showcase-card title="Avatars">
+    <div class="data-display__card">
+      <div class="avatars">
+        <section class="avatars__section">
+          <p class="avatars__label">Sizes:</p>
+          <div class="avatars__row">
+            @for (item of sizes(); track item.size) {
+              <app-avatar
+                [size]="item.size"
+                [initials]="item.label"
+              ></app-avatar>
+            }
+          </div>
+        </section>
+
+        <section class="avatars__section">
+          <p class="avatars__label">With Initials:</p>
+          <div class="avatars__row">
+            @for (avatar of initialsAvatars(); track avatar.initials) {
+              <app-avatar
+                [size]="'md'"
+                [tone]="avatar.tone ?? 'soft'"
+                [color]="avatar.color ?? 'blue'"
+                [initials]="avatar.initials"
+              ></app-avatar>
+            }
+          </div>
+        </section>
+
+        <section class="avatars__section">
+          <p class="avatars__label">With Colors:</p>
+          <div class="avatars__row">
+            @for (avatar of colorAvatars(); track avatar.initials) {
+              <app-avatar
+                [size]="'md'"
+                [tone]="avatar.tone ?? 'solid'"
+                [color]="avatar.color ?? 'blue'"
+                [initials]="avatar.initials"
+              ></app-avatar>
+            }
+          </div>
+        </section>
+
+        <section class="avatars__section">
+          <p class="avatars__label">Avatar Group:</p>
+          <div class="avatars__row">
+            <app-avatar-group
+              [avatars]="groupAvatars()"
+              [size]="'md'"
+              [max]="4"
+              [overflowTone]="'soft'"
+              [overflowColor]="'gray'"
+            ></app-avatar-group>
+          </div>
+        </section>
+
+        <section class="avatars__section">
+          <p class="avatars__label">With Status:</p>
+          <div class="avatars__row">
+            @for (avatar of statusAvatars(); track avatar.initials) {
+              <app-avatar
+                [size]="'md'"
+                [tone]="avatar.tone ?? 'soft'"
+                [color]="avatar.color ?? 'blue'"
+                [initials]="avatar.initials"
+                [status]="avatar.status ?? null"
+              ></app-avatar>
+            }
+          </div>
+        </section>
+      </div>
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="Aspect Ratio">
+    <div class="data-display__card">
+      @if (hasRatios()) {
+        <app-aspect-ratio-list
+          [items]="ratios()"
+          (selected)="onRatioSelected($event)"
+        ></app-aspect-ratio-list>
+      } @else {
+        <p class="data-display__empty">No aspect ratios available.</p>
+      }
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="Tooltips">
+    <div class="data-display__card">
+      <div class="tooltip-demo">
+        <div class="tooltip-demo__row">
+          @for (item of tooltipItems(); track item.label) {
+            <app-tooltip
+              [content]="item.content"
+              [placement]="item.placement"
+            >
+              <button
+                class="tooltip-demo__chip"
+                type="button"
+                [class.tooltip-demo__chip--circle]="item.variant === 'circle'"
+                [class.tooltip-demo__chip--solid]="item.variant === 'solid'"
+              >
+                {{ item.label }}
+              </button>
+            </app-tooltip>
+          }
+        </div>
+      </div>
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="Hover Cards">
+    <div class="data-display__card">
+      <div class="hover-cards">
+        <div class="hover-cards__row">
+          @for (item of hoverCardItems(); track item.handle) {
+            <app-hover-card>
+              <span
+                hover-card-trigger
+                class="hover-cards__trigger"
+                [class.hover-cards__trigger--button]="item.variant === 'button'"
+              >
+                {{ item.handle }}
+              </span>
+
+              <div
+                hover-card-content
+                class="hover-cards__content"
+              >
+                <div class="hover-cards__avatar">{{ item.initials }}</div>
+                <div class="hover-cards__text">
+                  <p class="hover-cards__name">{{ item.name }}</p>
+                  <p class="hover-cards__role">{{ item.role }}</p>
+                  <p class="hover-cards__detail">{{ item.detail }}</p>
+                </div>
+              </div>
+            </app-hover-card>
+          }
+        </div>
+      </div>
+    </div>
+  </app-showcase-card>
+</div>
