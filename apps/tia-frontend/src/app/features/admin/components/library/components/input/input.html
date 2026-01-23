@@ -55,9 +55,10 @@
         <h2 class="gallery__section-title">Radio Buttons</h2>
 
         <div class="gallery__input-stack">
-            @for (demo of radioDemos(); track demo.config.label) {
+            @for (radio of radioDemos(); track radio.config.label) {
             <div class="gallery__input-wrapper--checkbox">
-                <lib-radios [options]="demo.options" [config]="demo.config" [initialValue]="demo.config.initialValue">
+                <lib-radios [options]="radio.options" [config]="radio.config"
+                    [initialValue]="radio.config.initialValue">
                 </lib-radios>
             </div>
             }

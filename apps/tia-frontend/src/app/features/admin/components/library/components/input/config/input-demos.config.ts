@@ -129,4 +129,4 @@ export const RADIO_DEMOS: RadioDemo[] = [
       { label: 'Disabled Option', value: 4, disabled: true },
     ],
   },
-];
+] as const;

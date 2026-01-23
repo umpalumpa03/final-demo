@@ -7,7 +7,6 @@ import {
 import {
   RadioGroupConfig,
   RadioOption,
-  RadioValue,
 } from '@tia/shared/lib/forms/models/radios.model';
 import { TextareaConfig } from '@tia/shared/lib/forms/models/textarea.model';
 

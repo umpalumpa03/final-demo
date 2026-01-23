@@ -29,7 +29,7 @@ export class Radios extends BaseInput {
     ...this.config(),
   }));
 
-  selectOption(optionValue: RadioValue): void {
+  protected selectOption(optionValue: RadioValue): void {
     if (this.isDisabled()) return;
 
     this.value.set(optionValue);
@@ -54,7 +54,7 @@ export class Radios extends BaseInput {
     });
   }
 
-  isOptionDisabled(option: RadioOption): boolean {
+  protected isOptionDisabled(option: RadioOption): boolean {
     return this.isDisabled() || !!option.disabled;
   }
 }
