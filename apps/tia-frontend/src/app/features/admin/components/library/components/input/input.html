@@ -1,43 +1,43 @@
 <div class="gallery">
-  <header class="gallery__header">
-    <app-library-title
-      [title]="title"
-      [subtitle]="subtitle"
-    ></app-library-title>
-  </header>
+    <header class="gallery__header">
+        <app-library-title [title]="title" [subtitle]="subtitle"></app-library-title>
+    </header>
 
-  <section class="gallery__section">
-    <h2 class="gallery__section-title">Text Inputs</h2>
-    <div class="gallery__input-stack">
-      @for (input of basicInputs(); track input.config.label) {
-      <lib-text-input
-        [state]="input.state || 'default'"
-        [type]="input.type || 'text'"
-        [config]="input.config"
-      />
-      }
-    </div>
-  </section>
+    <section class="gallery__section">
+        <h2 class="gallery__section-title">Text Inputs</h2>
+        <div class="gallery__input-stack">
+            @for (input of basicInputs(); track input.config.label) {
+            <lib-text-input [state]="input.state || 'default'" [type]="input.type || 'text'" [config]="input.config" />
+            }
+        </div>
+    </section>
 
-  <section class="gallery__section">
-    <h2 class="gallery__section-title">Special Input Types</h2>
-    <div class="gallery__input-stack">
-      @for (input of specialInputTypes(); track input.type) {
-      <lib-text-input
-        [type]="input.type"
-        [config]="{ label: input.label, placeholder: 'Type here...' }"
-      />
-      }
-    </div>
-  </section>
+    <section class="gallery__section">
+        <h2 class="gallery__section-title">Special Input Types</h2>
+        <div class="gallery__input-stack">
+            @for (input of specialInputTypes(); track input.type) {
+            <lib-text-input [type]="input.type" [config]="{ label: input.label, placeholder: 'Type here...' }" />
+            }
+        </div>
+    </section>
 
-  <section class="gallery__section">
-    <h2 class="gallery__section-title">Textarea</h2>
-    <div class="gallery__input-stack">
-      @for (area of textareaDemos(); track area.config.label) {
-      <lib-textarea [state]="area.state || 'default'" [config]="area.config">
-      </lib-textarea>
-      }
-    </div>
-  </section>
+    <section class="gallery__section">
+        <h2 class="gallery__section-title">Textarea</h2>
+        <div class="gallery__input-stack">
+            @for (area of textareaDemos(); track area.config.label) {
+            <lib-textarea [state]="area.state || 'default'" [config]="area.config">
+            </lib-textarea>
+            }
+        </div>
+    </section>
+
+    <section class="gallery__section">
+        <h2 class="gallery__section-title">Checkboxes</h2>
+        <div class="gallery__input-stack">
+            @for (checkbox of checkboxDemos(); track checkbox.config.label) {
+            <lib-checkboxes [checked]="checkbox.checked" [config]="checkbox.config">
+            </lib-checkboxes>
+            }
+        </div>
+    </section>
 </div>

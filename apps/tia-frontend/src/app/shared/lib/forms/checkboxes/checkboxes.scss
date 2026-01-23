@@ -59,11 +59,9 @@
             @include font-arimo(400, 1.4rem, 1.4);
             color: $gray-700;
         }
-
-        &__error {
-            @include font-arimo(400, 1.2rem, 1);
-            color: $red-600;
-            padding-left: 3.2rem;
-        }
+    }
+    .checkbox__error {
+        @include font-arimo(400, 1.2rem, 1);
+        color: $red-600;
     }
 }

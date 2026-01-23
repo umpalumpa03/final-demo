@@ -6,7 +6,6 @@ import {
   effect,
   output,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { BaseInput } from '../base/base-input';
 import { CheckboxConfig } from '../models/checkbox.model';
 import { CHECKBOX_DEFAULTS } from '../config/checkbox.config';
@@ -14,8 +13,7 @@ import { generateUniqueId } from '../base/utils/input.util';
 
 @Component({
   selector: 'lib-checkboxes',
-  standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './checkboxes.html',
   styleUrls: ['./checkboxes.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
