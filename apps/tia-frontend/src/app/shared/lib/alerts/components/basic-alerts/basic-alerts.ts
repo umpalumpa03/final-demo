@@ -35,7 +35,7 @@ export class BasicAlerts {
       this.alertType() === 'error' &&
       this.alertMessage() === DEFAULT_MESSAGE
     ) {
-      return 'This is an error alert with important information.';
+      return 'This is an error alert indicating something went wrong.';
     }
     return this.alertMessage();
   });

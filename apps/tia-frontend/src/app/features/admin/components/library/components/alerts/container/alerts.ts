@@ -26,6 +26,5 @@ import { AlertStates } from '@tia/shared/lib/alerts/components/alert-states/aler
 })
 export class Alerts {
   public readonly pageTitle = 'Alerts & Notifications';
-  public readonly pageSubtitle =
-    'Alert components for displaying important messages to users';
+  public readonly pageSubtitle = 'Alert components for displaying important messages to users';
 }
