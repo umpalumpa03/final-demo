@@ -5,14 +5,14 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { BaseInput } from '../base/base-input';
-import { TEXT_INPUT_CONFIGS } from './config/text-input.config';
+import { TEXT_INPUT_CONFIGS } from '../config/text-input.config';
 import { TextInputTypeConfig } from './models/text-input.model';
 import {
   InputConfig,
   InputFieldValue,
   TextInputType,
 } from '../models/input.model';
-import { INPUT_ICONS } from './config/text-input.icons';
+import { INPUT_ICONS } from '../config/text-input.icons';
 
 @Component({
   selector: 'lib-text-input',
