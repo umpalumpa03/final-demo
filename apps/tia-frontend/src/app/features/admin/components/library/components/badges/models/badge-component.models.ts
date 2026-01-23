@@ -6,6 +6,7 @@ import {
   BadgeDotType,
   BadgeSkill,
   BadgeCategory,
+  BadgeCustomColor,
 } from '../../../../../../../shared/lib/primitives/badges/models/badges.models';
 
 export interface VariantBadgeItem {
@@ -43,6 +44,7 @@ export interface DismissibleBadgeItem {
   status?: BadgeStatus;
   size?: BadgeSize;
   shape?: BadgeShape;
+  customColor?: BadgeCustomColor;
   text: string;
 }
 
@@ -52,6 +54,7 @@ export interface PillBadgeItem {
   text: string;
   size?: BadgeSize;
   shape?: BadgeShape;
+  customColor?: BadgeCustomColor;
 }
 
 export interface DotBadgeItem {
@@ -70,4 +73,23 @@ export interface SkillBadgeItem {
 export interface CategoryBadgeItem {
   category: BadgeCategory;
   size?: BadgeSize;
+}
+
+export interface BadgeStateItem {
+  id: string;
+  text: string;
+  size?: BadgeSize;
+  shape?: BadgeShape;
+  disabled?: boolean;
+  selected?: boolean;
+  variant?: BadgeVariant;
+  customColor?: BadgeCustomColor;
+  hoverable?: boolean;
+}
+
+export interface CustomColorBadgeItem {
+  customColor: BadgeCustomColor;
+  text: string;
+  size?: BadgeSize;
+  shape?: BadgeShape;
 }

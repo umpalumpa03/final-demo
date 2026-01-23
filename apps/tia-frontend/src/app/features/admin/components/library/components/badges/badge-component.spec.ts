@@ -109,4 +109,17 @@ describe('BadgeComponent', () => {
       expect(dotElements.length).toBeGreaterThan(0);
     });
   });
+
+  it('should update badge state when onSelectedChange is called', () => {
+    const badgeId = component.badgeStates()[0].id;
+    component.onSelectedChange(badgeId, true);
+    
+    const updatedBadge = component.badgeStates().find(state => state.id === badgeId);
+    expect(updatedBadge?.selected).toBe(true);
+  });
+
+  it('should update simpleBadgeSelected when onSimpleBadgeSelectedChange is called', () => {
+    component.onSimpleBadgeSelectedChange(true);
+    expect(component.simpleBadgeSelected()).toBe(true);
+  });
 });

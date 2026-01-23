@@ -7,21 +7,30 @@
   gap: 1rem;
   
   &__label {
-    @include font-inter(400, 1.2rem, 1.2);
+    @include font-arimo(400, 1.2rem, 1.2);
     color: $blue-900;
     
   }
 }
 
 .badge {
-  @include font-inter(500, 1.2rem, 1.2);
+  @include font-arimo(500, 1.2rem, 1.2);
   @include flex-center(row, flex-start, center);
   gap: 0.4rem;
   padding: 0.7rem 0.9rem;
   border-radius: 0;
   border: none;
   color: $white;
-  
+  transition: filter 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+
+  &[data-hoverable],
+  &[data-clickable] {
+    cursor: pointer;
+    
+    &:hover:not([data-disabled]):not([data-selected]) {
+      filter: brightness(0.9);
+    }
+  }
 
   &--rounded {
     border-radius: 0.9rem;
@@ -177,6 +186,17 @@
     color: $white;
   }
 
+  &--disabled {
+    background-color: $blue-200;
+    color: $gray-500;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  &--selected {
+    border: 0.3rem solid $blue-200;
+  }
+
  
   &--secondary {
     background-color: $gray-200;
@@ -186,7 +206,7 @@
 
 
   &--destructive {
-    background-color: $red-500;
+    background-color: $red-600;
     color: $white;
   }
 
@@ -263,5 +283,53 @@
   &[data-dot="offline"] {
     background-color: $white;
     color: $blue-700;
+  }
+
+  &[data-custom-color="pink"] {
+    background-color: $pink-400;
+    color: $white;
+    border: none;
+  }
+
+  &[data-custom-color="indigo"] {
+    background-color: $indigo-400;
+    color: $white;
+    border: none;
+  }
+
+  &[data-custom-color="teal"] {
+    background-color: $teal-400;
+    color: $white;
+    border: none;
+  }
+
+  &[data-custom-color="rose"] {
+    background-color: $red-500;
+    color: $white;
+    border: none;
+  }
+
+  &[data-custom-color="cyan"] {
+    background-color: $cyan-400;
+    color: $white;
+    border: none;
+  }
+
+  &[data-custom-color="amber"] {
+    background-color: $yellow-500;
+    color: $white;
+    border: none;
+  }
+
+  &[data-custom-color="lime"] {
+    background-color: $lime-400;
+    color: $white;
+    border: none;
+  }
+
+  &[data-custom-color="slate"] {
+    background-color: $gray-700;
+    color: $white;
+    border: none;
   }
 }

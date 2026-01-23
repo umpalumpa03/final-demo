@@ -10,6 +10,8 @@ import {
   DOT_BADGES,
   SKILL_BADGES,
   CATEGORY_BADGES,
+  BADGE_STATES,
+  CUSTOM_COLORS,
 } from './config/badge-data.config';
 import { DismissibleBadgeItem } from './models/badge-component.models';
 import { LibraryTitle } from '../../shared/library-title/library-title';
@@ -32,6 +34,9 @@ export class BadgeComponent {
   public readonly dotBadges = signal(DOT_BADGES);
   public readonly skillBadges = signal(SKILL_BADGES);
   public readonly categoryBadges = signal(CATEGORY_BADGES);
+  public readonly badgeStates = signal(BADGE_STATES);
+  public readonly customColors = signal(CUSTOM_COLORS);
+  public readonly simpleBadgeSelected = signal(false);
   public readonly title = 'Badges';
   public readonly subtitle =
     'Badge components for labels, status indicators, and counts';
@@ -40,5 +45,17 @@ export class BadgeComponent {
     this.dismissibleBadges.update((badges) =>
       badges.filter((badge) => badge.id !== id),
     );
+  }
+
+  public onSelectedChange(id: string, selected: boolean): void {
+    this.badgeStates.update((states) =>
+      states.map((state) =>
+        state.id === id ? { ...state, selected } : state
+      )
+    );
+  }
+
+  public onSimpleBadgeSelectedChange(selected: boolean): void {
+    this.simpleBadgeSelected.set(selected);
   }
 }
