@@ -1,10 +1,9 @@
 <div class="resizable-container" #container>
-    <!-- wrapper to capture projected content -->
     <div #contentWrapper style="display: none;">
         <ng-content></ng-content>
     </div>
 
-    <div class="panels-container" #panelsContainer>
+    <div class="resizable-container__panels-container" #panelsContainer>
         @for (i of [].constructor(panelSize()); track $index) {
         <div class="panel" [class.flex-panel]="isLastPanel($index)" [style.width]="getPanelWidth($index)"></div>
 

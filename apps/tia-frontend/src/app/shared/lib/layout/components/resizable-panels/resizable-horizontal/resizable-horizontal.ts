@@ -6,6 +6,7 @@ import {
   input,
   effect,
   afterNextRender,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 @Component({
@@ -13,22 +14,20 @@ import {
   imports: [],
   templateUrl: './resizable-horizontal.html',
   styleUrl: './resizable-horizontal.scss',
+  changeDetection:  ChangeDetectionStrategy.OnPush,
   host: {
     '(document:mousemove)': 'onMouseMove($event)',
     '(document:mouseup)': 'onMouseUp()',
   },
 })
 export class ResizableHorizontal {
-  panelSize = input<2 | 3>(2);
+  public panelSize = input<2 | 3>(2);
 
-  /** Initial widths of resizable panels in pixels [leftWidth] or [leftWidth, middleWidth] */
-  initialWidths = input<number[]>([300]);
+  public initialWidths = input<number[]>([300]);
 
-  /** Minimum width for any panel */
-  minWidth = input<number>(100);
+  public minWidth = input<number>(100);
 
-  /** Maximum width for any panel */
-  maxWidth = input<number>(800);
+  public maxWidth = input<number>(800);
 
   protected containerRef = viewChild<ElementRef<HTMLElement>>('container');
   protected contentRef = viewChild<ElementRef<HTMLElement>>('contentWrapper');
@@ -37,14 +36,12 @@ export class ResizableHorizontal {
 
   protected panelWidths = signal<number[]>([300]);
 
-  // Track which resizer is being dragged (0 = first, 1 = second)
   protected activeResizer = signal<number | null>(null);
 
   private startX = 0;
   private startWidths: number[] = [];
 
   constructor() {
-    // Sync initial widths input with the signal
     effect(() => {
       const widths = this.initialWidths();
       const size = this.panelSize();
@@ -56,7 +53,6 @@ export class ResizableHorizontal {
       }
     });
 
-    // Distribute content after render
     afterNextRender(() => {
       this.distributeContent();
     });
@@ -68,31 +64,9 @@ export class ResizableHorizontal {
 
     if (!contentWrapper || !panelsContainer) return;
 
-    // Get all direct element children from the content wrapper
     const children = Array.from(contentWrapper.children) as HTMLElement[];
     const expectedPanels = this.panelSize();
 
-    if (children.length < expectedPanels) {
-      throw new Error(
-        `[ResizableHorizontal] Requires exactly ${expectedPanels} child elements.\n` +
-          `Found: ${children.length} element(s).\n` +
-          `Example:\n` +
-          `<app-resizable-horizontal [panelSize]="${expectedPanels}">\n` +
-          `  <div>Panel 1 content</div>\n` +
-          `  <div>Panel 2 content</div>\n` +
-          (expectedPanels === 3 ? `  <div>Panel 3 content</div>\n` : '') +
-          `</app-resizable-horizontal>`,
-      );
-    }
-
-    if (children.length > expectedPanels) {
-      console.warn(
-        `[ResizableHorizontal] Expected ${expectedPanels} child elements, found ${children.length}. ` +
-          `Only the first ${expectedPanels} elements will be used.`,
-      );
-    }
-
-    // Get panel elements and distribute content
     const panels = panelsContainer.querySelectorAll('.panel');
     for (let i = 0; i < expectedPanels; i++) {
       if (panels[i] && children[i]) {
@@ -105,7 +79,6 @@ export class ResizableHorizontal {
     const widths = this.panelWidths();
     const size = this.panelSize();
 
-    // Last panel is always flex
     if (index === size - 1) {
       return 'auto';
     }
@@ -131,10 +104,8 @@ export class ResizableHorizontal {
     const deltaX = event.clientX - this.startX;
     const newWidths = [...this.startWidths];
 
-    // Calculate new width for the panel being resized
     const newWidth = this.startWidths[activeIndex] + deltaX;
 
-    // Clamp the width between min and max
     const clampedWidth = Math.max(
       this.minWidth(),
       Math.min(this.maxWidth(), newWidth),
