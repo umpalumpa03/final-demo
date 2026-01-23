@@ -1,0 +1,8 @@
+<div class="separator-container" [ngStyle]="separatorStyles()">
+  <div class="line side-a"></div>
+  
+  @if (label()) {
+    <span class="label">{{ label() }}</span>
+    <div class="line side-b"></div>
+  }
+</div>
