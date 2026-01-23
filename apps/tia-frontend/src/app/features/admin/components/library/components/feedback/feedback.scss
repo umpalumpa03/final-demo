@@ -1,0 +1,95 @@
+@use '../../../../../../shared/styles/palette' as *;
+@use '../../../../../../shared/styles/mixins' as *;
+
+.showcase {
+  padding: 2rem;
+  @include display-flex(column);
+  gap: 3.2rem;
+
+  &__cards {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  &__label {
+    @include font-arimo(400, 1.4rem, 2rem);
+    color: $gray-700;
+  }
+
+  &__skels,
+  &__loaders {
+    @include display-flex(column);
+    gap: 2.4rem;
+    width: 100%;
+  }
+
+  &__group {
+    @include display-flex(column);
+    gap: 1.6rem;
+  }
+
+  &__imgs {
+    display: flex;
+    gap: 1.6rem;
+  }
+
+  &__bar {
+    position: relative;
+    height: 0.4rem;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 999rem;
+  }
+
+  &__page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 23.8rem;
+    position: relative;
+  }
+
+  &__pulse {
+    @include display-flex(column);
+    align-items: center;
+    padding: 2.4rem;
+  }
+}
+
+.loader {
+  @include display-flex(column);
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 1.6rem;
+
+  &__text {
+    margin: 0;
+    color: $gray-500;
+    font-size: 1.4rem;
+  }
+}
+
+.skel {
+  @include display-flex(column);
+  gap: 3rem;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+  }
+
+  &__creds,
+  &__body {
+    @include display-flex(column);
+    gap: 0.8rem;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+  }
+}
