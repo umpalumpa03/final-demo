@@ -33,7 +33,7 @@ describe('AspectRatio', () => {
     let emitted: AspectRatioItem | undefined;
     component.selected.subscribe((value) => (emitted = value));
 
-    const card = fixture.debugElement.query(By.css('.aspect-ratio-card'));
+    const card = fixture.debugElement.query(By.css('.aspect-ratio__card'));
     card.triggerEventHandler('click', null);
 
     expect(emitted).toEqual(items[0]);

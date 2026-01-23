@@ -1,4 +1,14 @@
-import { VariantBadgeItem, StatusBadgeItem, SizeBadgeItem, CountBadgeItem, DismissibleBadgeItem, PillBadgeItem, DotBadgeItem } from "../models/badge-component.models";
+import {
+  VariantBadgeItem,
+  StatusBadgeItem,
+  SizeBadgeItem,
+  CountBadgeItem,
+  DismissibleBadgeItem,
+  PillBadgeItem,
+  DotBadgeItem,
+  SkillBadgeItem,
+  CategoryBadgeItem,
+} from "../models/badge-component.models";
 
 export const VARIANTS: VariantBadgeItem[] = [
   { variant: 'default', text: 'Default', size:'medium' , shape:'rounded' },
@@ -53,4 +63,19 @@ export const DOT_BADGES: DotBadgeItem[] = [
   { dot: 'away', variant: 'secondary', size: 'medium' },
   { dot: 'offline', variant: 'secondary', size: 'medium' },
   { dot: 'live', size: 'medium' },
+] as const;
+
+export const SKILL_BADGES: SkillBadgeItem[] = [
+  { skill: 'javascript', size: 'medium' },
+  { skill: 'react', size: 'medium' },
+  { skill: 'nodejs', size: 'medium' },
+  { skill: 'typescript', size: 'medium' },
+  { skill: 'css', size: 'medium' },
+  { skill: 'html', size: 'medium' },
+] as const;
+
+export const CATEGORY_BADGES: CategoryBadgeItem[] = [
+  { category: 'technology', size: 'medium' },
+  { category: 'design', size: 'medium' },
+  { category: 'marketing', size: 'medium' },
 ] as const;

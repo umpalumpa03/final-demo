@@ -20,7 +20,9 @@
   label="Label"
   dismissible="true"
   dot="online"
- > </app-badges>
+  skill="javascript"
+  category="technology"
+> </app-badges>
 
 ```
 
@@ -103,6 +105,10 @@ Default: `small`
 
  **წერტილის (dot) გამოჩენა**: წერტილი გამოჩნდება, როცა არის განსაზღვრული `dot`. წერტილის ფერი განისაზღვრება `dotColorMap`-ის მიხედვით.
 
+ 8) `badge groups` 
+
+ როგორც სტატუს და დოთ badge მუშაობს , მსგავსად გენერირდება badge groupe ებიდან როგორც skill ასევე category badge , თქვენგან მხოლოდ საჭიროა მიუთითო თუ რომელი skill ან category badge  გსურთ ტექსტი და დიზანი  ავტომატურად წამოვა, სურვილისამებრ შეგიძლიათ შეცვალოთ ზომა . (small,medium,large)
+
 
 ................................................ მაგალითები ................................................................
 
@@ -166,6 +172,21 @@ Default: `small`
   shape="rounded" 
 />
 ```
+
+
+### სხვადასხვა skill, category badges 
+
+  <app-badges
+    skill="javascript"
+    size="large">
+  </app-badges>
+
+  <app-badges
+    category="technology"
+    size="large">
+  </app-badges>
+
+
 
 
 

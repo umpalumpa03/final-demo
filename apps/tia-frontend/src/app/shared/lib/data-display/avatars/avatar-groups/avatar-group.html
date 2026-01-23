@@ -1,7 +1,7 @@
 <div class="avatar-group">
   @for (avatar of visibleAvatars(); track avatar.initials; let index = $index) {
     <app-avatar
-      class="avatar-group__item"
+      class="avatar-group__item avatar-group__item--ring"
       [class.avatar-group__item--overlap]="index > 0"
       [size]="size()"
       [tone]="avatar.tone ?? 'soft'"
@@ -13,8 +13,8 @@
 
   @if (overflowCount() > 0) {
     <app-avatar
-      class="avatar-group__item"
-      [class.avatar-group__item--overlap]="visibleAvatars().length > 0"
+      class="avatar-group__item avatar-group__item--ring"
+      [class.avatar-group__item--overlap]="hasVisibleAvatars()"
       [size]="size()"
       [tone]="overflowTone()"
       [color]="overflowColor()"

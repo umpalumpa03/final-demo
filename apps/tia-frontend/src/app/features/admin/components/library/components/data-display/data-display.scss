@@ -1,0 +1,135 @@
+@use '../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../shared/styles/palette' as *;
+
+.data-display {
+  padding: 3.2rem 2.4rem;
+  max-width: 110rem;
+  margin: 0 auto;
+  width: 100%;
+  @include display-flex(column);
+  gap: 2.4rem;
+
+  &__card {
+    @include display-flex(column);
+    gap: 1.6rem;
+  }
+}
+
+.data-display__empty {
+  @include font-arimo(400, 1.3rem, 2rem);
+  color: $gray-600;
+}
+
+.avatars {
+  &__section {
+    @include display-flex(column);
+    gap: 1.6rem;
+  }
+
+  &__label {
+    @include font-arimo(600, 1.6rem, 2.4rem);
+    color: $gray-700;
+    margin: 0;
+  }
+
+  &__row {
+    @include flex-center(row, flex-start, center);
+    gap: 1.6rem;
+    flex-wrap: wrap;
+  }
+}
+
+.tooltip-demo {
+  &__row {
+    @include flex-center(row, flex-start, center);
+    gap: 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  &__chip {
+    border: 0.1rem solid $blue-200;
+    background-color: $blue-100;
+    color: $blue-700;
+    border-radius: 1.2rem;
+    padding: 0.6rem 1.4rem;
+    @include font-arimo(600, 1.2rem, 1.6rem);
+    cursor: pointer;
+
+    &--circle {
+      border-radius: 50%;
+      width: 3.6rem;
+      height: 3.6rem;
+      padding: 0;
+      background-color: $blue-100;
+      color: $blue-700;
+    }
+
+    &--solid {
+      background-color: $blue-600;
+      border-color: $blue-600;
+      color: $white;
+    }
+  }
+}
+
+.hover-cards {
+  &__row {
+    @include flex-center(row, flex-start, center);
+    gap: 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  &__trigger {
+    @include font-arimo(600, 1.2rem, 1.6rem);
+    color: $blue-700;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+
+    &--button {
+      text-decoration: none;
+      background-color: $blue-600;
+      color: $white;
+      border-radius: 1.2rem;
+      padding: 0.4rem 1rem;
+    }
+  }
+
+  &__content {
+    @include flex-center(row, flex-start, flex-start);
+    gap: 1.2rem;
+  }
+
+  &__avatar {
+    width: 3.6rem;
+    height: 3.6rem;
+    border-radius: 50%;
+    background-color: $blue-100;
+    color: $blue-700;
+    @include flex-center(row, center, center);
+    @include font-arimo(600, 1.2rem, 1.6rem);
+  }
+
+  &__text {
+    @include display-flex(column);
+    gap: 0.2rem;
+  }
+
+  &__name {
+    margin: 0;
+    @include font-arimo(600, 1.4rem, 2rem);
+    color: $gray-800;
+  }
+
+  &__role {
+    margin: 0;
+    @include font-arimo(500, 1.2rem, 1.6rem);
+    color: $gray-600;
+  }
+
+  &__detail {
+    margin: 0.4rem 0 0;
+    @include font-arimo(400, 1.2rem, 1.6rem);
+    color: $gray-700;
+  }
+}
