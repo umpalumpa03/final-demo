@@ -1,0 +1,26 @@
+@if (isOpen()) {
+<div
+  class="ui-drawer-overlay"
+  (click)="close()"
+  (keydown.enter)="close()"
+  (keydown.space)="close()"
+  role="button"
+  tabindex="0"
+  aria-label="Close drawer overlay"
+>
+  <div
+    class="ui-sheet"
+    (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
+    role="dialog"
+    aria-modal="true"
+    tabindex="0"
+  >
+    <div class="ui-drawer__handle"></div>
+
+    <div class="ui-drawer__container">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>
+}
