@@ -3,6 +3,7 @@ import {
   CheckboxDemo,
   InputDemo,
   RadioDemo,
+  SwitchDemo,
   TextareaDemo,
 } from '../models/input-demos.model';
 
@@ -128,5 +129,34 @@ export const RADIO_DEMOS: RadioDemo[] = [
       { label: 'Option 3', value: 3 },
       { label: 'Disabled Option', value: 4, disabled: true },
     ],
+  },
+] as const;
+
+export const SWITCH_DEMOS: SwitchDemo[] = [
+  {
+    checked: false,
+    config: {
+      label: 'Toggle Feature (State: OFF)',
+    },
+  },
+  {
+    checked: true,
+    config: {
+      label: 'Default Enabled',
+    },
+  },
+  {
+    checked: false,
+    config: {
+      label: 'Disabled Switch',
+      disabled: true,
+    },
+  },
+  {
+    checked: true,
+    config: {
+      label: 'Disabled & Checked',
+      disabled: true,
+    },
   },
 ] as const;
