@@ -2,10 +2,13 @@
 @use '../../../../../../shared/styles/palette' as *;
 
 .cards-page {
-  padding: 2.4rem;
+  padding: 1.6rem;
   width: 100%;
   max-width: 110rem;
   margin: 0 auto;
+  &__title {
+    margin: 2rem 0;
+  }
 
   .cards-section {
     margin: 4rem 0;
