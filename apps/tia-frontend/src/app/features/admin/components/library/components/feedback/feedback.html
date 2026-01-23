@@ -1,1 +1,91 @@
-<p>feedback works!</p>
+<div class="showcase">
+  <app-library-title title="Feedback Components" subtitle="Loading states and skeleton loaders" />
+
+  <app-showcase-card title="Loading Cards">
+    <div class = 'showcase__cards'>
+      <app-basic-card height="23.8rem" width="32.8rem">
+        <div class="loader">
+          <app-spinner size="4rem" />
+          <p class="loader__text">Loading content...</p>
+        </div>
+      </app-basic-card>
+
+      @for (card of loadingCards; track trackById($index, card)) {
+        <app-basic-card [height]="card.height" [width]="card.width">
+          <div class="skel">
+            <div class="skel__head">
+              @if (card.avatar) {
+                <app-skeleton [variant]="card.avatar.variant" [height]="card.avatar.height" />
+              }
+              <div class="skel__creds">
+                @for (cred of card.credentials; track trackById($index, cred)) {
+                  <app-skeleton [width]="cred.width" [height]="cred.height" />
+                }
+              </div>
+            </div>
+            <div class="skel__body">
+              @for (item of card.content; track trackById($index, item)) {
+                <app-skeleton [width]="item.width" [height]="item.height" />
+              }
+            </div>
+          </div>
+        </app-basic-card>
+      }
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="Skeleton Loaders">
+    <div class="showcase__skels">
+      <div class="showcase__group">
+        <span class="showcase__label">Text Skeleton:</span>
+        @for (s of textSkeletons; track trackById($index, s)) {
+          <app-skeleton [width]="s.width" [height]="s.height" />
+        }
+      </div>
+
+      <div class="showcase__group">
+        <span class="showcase__label">List Skeleton:</span>
+        @for (item of listItems; track trackById($index, item)) {
+          <div class="skel__row">
+            <app-skeleton [variant]="item.avatar.variant" [height]="item.avatar.height" />
+            <div class="skel__creds">
+              @for (cred of item.credentials; track trackById($index, cred)) {
+                <app-skeleton [width]="cred.width" [height]="cred.height" />
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="showcase__group">
+        <span class="showcase__label">Image Skeleton:</span>
+        <div class="showcase__imgs">
+          @for (img of imageSkeletons; track trackById($index, img)) {
+            <app-skeleton [width]="img.width" [height]="img.height" />
+          }
+        </div>
+      </div>
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="Route Loader">
+    <div class="showcase__loaders">
+      <span class="showcase__label">Top Bar Loader:</span>
+      <div class="showcase__bar">
+        <app-route-loader variant="top-bar" />
+      </div>
+
+      <span class="showcase__label">Full Page Loader:</span>
+      <app-basic-card>
+        <div class="showcase__page">
+          <app-route-loader variant="full-page" text="Loading page content..." />
+        </div>
+      </app-basic-card>
+
+      <span class="showcase__label">Pulsing Loader:</span>
+      <div class="showcase__pulse">
+        <app-route-loader variant="pulsing" />
+      </div>
+    </div>
+  </app-showcase-card>
+</div>

@@ -1,0 +1,48 @@
+@use '../../../styles/mixins' as *;
+@use '../../../styles/palette' as *;
+
+.hover-card {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+
+  &__trigger {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  &__content {
+    position: absolute;
+    z-index: 10;
+    padding: 1.2rem 1.6rem;
+    border-radius: 1.2rem;
+    background-color: $white;
+    border: 0.1rem solid $blue-200;
+    box-shadow: 0 1.2rem 2.4rem rgba($black, 0.12);
+    min-width: 20rem;
+  }
+
+  &__content--top {
+    bottom: calc(100% + 0.8rem);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &__content--bottom {
+    top: calc(100% + 0.8rem);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &__content--left {
+    right: calc(100% + 0.8rem);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &__content--right {
+    left: calc(100% + 0.8rem);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
