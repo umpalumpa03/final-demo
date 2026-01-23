@@ -4,24 +4,26 @@
     <p class="kanban-frame__header-subtitle">{{ boardDescription() }}</p>
   </div>
   <div class="kanban-frame__boards">
-    @for (board of boards(); track board.id) {
+    @let boardItems = itemsByBoard(); @for (board of boards(); track board.id) {
+    @let currentBoardItems = boardItems[board.id];
     <div class="kanban-frame__board" [attr.data-board-id]="board.id">
       <h3 class="kanban-frame__board-title">{{ board.title }}</h3>
       <div class="kanban-frame__board-cards">
-        @if (itemsByBoard()[board.id].length === 0) {
+        @if (currentBoardItems.length === 0) {
         <div
           class="kanban-frame__board-empty"
           [class.kanban-frame__board-empty--active]="dropTargetId() === 'board:' + board.id"
         >
           Drop items here
         </div>
-        } @else { @for (item of itemsByBoard()[board.id]; track item.id) {
+        } @else { @for (item of currentBoardItems; track item.id) { @let
+        isDragging = draggingId() === item.id;
         <app-draggable-card
           [attr.data-card-id]="item.id"
           [itemData]="item"
-          [isDragging]="draggingId() === item.id"
+          [isDragging]="isDragging"
           [isDropTarget]="dropTargetId() === item.id"
-          [style]="draggingId() === item.id ? draggingStyle() : null"
+          [style]="isDragging ? draggingStyle() : null"
           [canDelete]="canDelete()"
           (dragStart)="onDragStartHandler(item.id, $event)"
           (remove)="onRemove(item.id)"

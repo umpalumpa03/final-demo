@@ -6,7 +6,7 @@ import {
   output,
   linkedSignal,
 } from '@angular/core';
-import { DraggableItemType } from '../../model/drag.model';
+import { DraggableItemType, LayoutType } from '../../model/drag.model';
 import { DraggableCard } from '../draggable-card/draggable-card';
 import { DragBase } from '../../base/base';
 
@@ -20,7 +20,7 @@ import { DragBase } from '../../base/base';
 export class DragCard extends DragBase {
   public readonly items = input.required<DraggableItemType[]>();
   public readonly canDelete = input(false);
-  public readonly layout = input<'grid' | 'list'>('grid');
+  public readonly layout = input<LayoutType>('grid');
   public readonly columns = input(2);
   public readonly cardTitle = input('Draggable Cards');
   public readonly cardDescription = input<string>(

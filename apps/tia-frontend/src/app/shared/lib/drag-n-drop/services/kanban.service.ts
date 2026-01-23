@@ -32,16 +32,21 @@ export class KanbanService {
     const dragIndex = allItems.findIndex((i) => i.id === dragId);
     if (dragIndex === -1) return items;
 
-    const [dragItem] = allItems.splice(dragIndex, 1);
-    const updatedDragItem = { ...dragItem, boardId: toBoardId };
+    const dragItem = allItems[dragIndex];
 
-    if (dropId) {
-      const dropIndex = allItems.findIndex((i) => i.id === dropId);
-      if (dropIndex !== -1) {
-        allItems.splice(dropIndex, 0, updatedDragItem);
-      } else {
-        allItems.push(updatedDragItem);
+    let dropIndex = dropId ? allItems.findIndex((i) => i.id === dropId) : -1;
+
+    const [removed] = allItems.splice(dragIndex, 1);
+    const updatedDragItem = { ...removed, boardId: toBoardId };
+
+    if (dropId && dropIndex !== -1) {
+      const isSameBoard = dragItem.boardId === toBoardId;
+
+      if (isSameBoard && dragIndex < dropIndex) {
+        dropIndex = dropIndex - 1;
       }
+
+      allItems.splice(dropIndex + 1, 0, updatedDragItem);
     } else {
       allItems.push(updatedDragItem);
     }

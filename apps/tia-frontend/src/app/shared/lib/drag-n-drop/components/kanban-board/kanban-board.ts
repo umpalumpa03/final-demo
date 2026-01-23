@@ -78,7 +78,7 @@ export class KanbanBoard extends DragBase {
       toBoardId,
       targetItemId,
     );
-
+    const newOrder = updatedItems.find((i) => i.id === dragId)?.order ?? 0;
     this.internalItems.set(updatedItems);
     this.itemsChange.emit(updatedItems);
 
@@ -86,14 +86,14 @@ export class KanbanBoard extends DragBase {
       this.cardMoved.emit({
         cardId: dragId,
         fromBoardId: dragItem.boardId,
-        toBoardId: toBoardId,
-        newOrder: updatedItems.find((i) => i.id === dragId)?.order ?? 0,
+        toBoardId,
+        newOrder,
       });
     } else {
       this.cardReordered.emit({
         cardId: dragId,
         boardId: toBoardId,
-        newOrder: updatedItems.find((i) => i.id === dragId)?.order ?? 0,
+        newOrder,
       });
     }
   }

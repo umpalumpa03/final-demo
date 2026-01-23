@@ -4,13 +4,14 @@
     <p>{{ cardDescription() }}</p>
   </div>
   <div [class]="containerClasses()" [style]="containerStyles()">
-    @for (item of internalItems(); track item.id) {
+    @for (item of internalItems(); track item.id) { @let isDragging =
+    draggingId() === item.id;
     <app-draggable-card
       [attr.data-card-id]="item.id"
       [itemData]="item"
-      [isDragging]="draggingId() === item.id"
+      [isDragging]="isDragging"
       [isDropTarget]="dropTargetId() === item.id"
-      [style]="draggingId() === item.id ? draggingStyle() : null"
+      [style]="isDragging ? draggingStyle() : null"
       [canDelete]="canDelete()"
       (dragStart)="onDragStartHandler(item.id, $event)"
       (remove)="onRemove(item.id)"

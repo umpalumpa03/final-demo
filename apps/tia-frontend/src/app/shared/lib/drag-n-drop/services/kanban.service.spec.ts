@@ -53,7 +53,7 @@ describe('KanbanService', () => {
       expect(item2?.order).toBe(0);
     });
 
-    it('should insert an item at a specific position', () => {
+    it('should insert item after drop target when dragging from bottom to top', () => {
       const items: KanbanItem[] = [
         { id: '1', title: 'A', subtitle: 'S1', boardId: 'todo', order: 0 },
         { id: '2', title: 'B', subtitle: 'S2', boardId: 'todo', order: 1 },
@@ -62,10 +62,32 @@ describe('KanbanService', () => {
 
       const result = service.reorderItems(items, '3', 'todo', '1');
 
-      expect(result[0].id).toBe('3');
+      expect(result[0].id).toBe('1');
+      expect(result[0].order).toBe(0);
+      expect(result[1].id).toBe('3');
+      expect(result[1].order).toBe(1);
+      expect(result[2].id).toBe('2');
+      expect(result[2].order).toBe(2);
+    });
+
+    it('should swap adjacent items when dragging from top to bottom', () => {
+      const items: KanbanItem[] = [
+        { id: '1', title: 'A', subtitle: 'S1', boardId: 'todo', order: 0 },
+        { id: '2', title: 'B', subtitle: 'S2', boardId: 'todo', order: 1 },
+      ];
+      const result = service.reorderItems(items, '1', 'todo', '2');
+
+      expect(result[0].id).toBe('2');
       expect(result[0].order).toBe(0);
       expect(result[1].id).toBe('1');
       expect(result[1].order).toBe(1);
+    });
+
+    it('should move item to empty board at the end', () => {
+      const result = service.reorderItems(mockItems, '1', 'done');
+
+      const item1 = result.find((i) => i.id === '1');
+      expect(item1?.boardId).toBe('done');
     });
   });
 
