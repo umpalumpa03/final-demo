@@ -1,8 +1,10 @@
 import { InputConfig } from './input.model';
 
+export type RadioValue = string | number | boolean;
+
 export interface RadioOption {
   label: string;
-  value: any;
+  value: RadioValue;
   disabled?: boolean;
 }
 
