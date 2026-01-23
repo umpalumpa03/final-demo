@@ -4,7 +4,7 @@ import {
   computed,
   input,
 } from '@angular/core';
-import { Palette } from './shared/model/palette.model';
+import { Palette } from './model/palette.model';
 import { palettesData } from '../../../features/admin/components/library/components/colorpalettes/config/palette-data.config';
 
 @Component({

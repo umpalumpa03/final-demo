@@ -1,6 +1,6 @@
 @use '../../../shared/styles/mixins' as *;
 @use '../../../shared/styles/palette' as *;
-@use './shared/styles/palette-styles' as *;
+@use './styles/palette-styles' as *;
 
 .palette {
   @include display-flex(row, wrap);
@@ -8,6 +8,7 @@
   gap: 1rem;
   width: 100%;
   max-width: 192rem;
+  @include apply-themes;
 
   &__item {
     @include display-flex(column, nowrap);

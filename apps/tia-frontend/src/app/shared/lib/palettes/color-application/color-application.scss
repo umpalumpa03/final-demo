@@ -1,4 +1,4 @@
-@use '../shared/styles/palette-styles' as *;
+@use '../styles/palette-styles' as *;
 @use '../../../../shared/styles/palette' as *;
 @use '../../../../shared/styles/mixins' as *;
 
@@ -13,6 +13,7 @@
     @include display-flex(column, nowrap);
     gap: 1.2rem;
     width: 100%;
+    @include apply-themes;
   }
 
   &__theme-title {
@@ -68,7 +69,7 @@
     border-bottom-right-radius: 0.8rem;
 
     &--primary {
-      background-color: $blue-100;
+      background-color: var(--background);
     }
 
     &--secondary {

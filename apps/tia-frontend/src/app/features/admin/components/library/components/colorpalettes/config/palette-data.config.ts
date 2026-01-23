@@ -1,4 +1,4 @@
-import { Palette } from '../../../../../../../shared/lib/palettes/shared/model/palette.model';
+import { Palette } from '../../../../../../../shared/lib/palettes/model/palette.model';
 import { ColorPalette } from '../model/palette.model';
 
 export const OCEANBLUE_PALETTE_DATA: Palette[] = [
