@@ -3,12 +3,17 @@ import { libraryRoutes } from './features/admin/components/library/library.route
 
 export const appRoutes: Routes = [
   {
+    path: '',
+    redirectTo: 'admin/library',
+    pathMatch: 'full',
+  },
+  {
     path: 'admin/library',
     children: libraryRoutes,
   },
   {
     path: '**',
-    redirectTo: '/admin/library',
+    loadComponent: () =>
+      import('./features/wild-card/wild-card').then((c) => c.WildCardComponent),
   },
-
 ];

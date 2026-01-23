@@ -82,11 +82,8 @@ export const libraryRoutes: Routes = [
         path: 'inputs',
         loadComponent: () =>
           import('./components/input/input').then((c) => c.Input),
-      },
-      {
-        path: '**',
-        redirectTo: 'colorpalettes',
-      },
+      }
+  
     ],
   },
 ];
