@@ -1,4 +1,5 @@
 import { Palette } from '../../../../../../../shared/lib/palettes/model/palette.model';
+import { ColorPalette } from '../model/palette.model';
 
 export const OCEANBLUE_PALETTE_DATA: Palette[] = [
   { name: 'Primary', code: '#0284c7', modifier: 'primary' },
@@ -7,4 +8,49 @@ export const OCEANBLUE_PALETTE_DATA: Palette[] = [
   { name: 'Muted', code: '#bae6fd', modifier: 'muted' },
   { name: 'Background', code: '#f0f9ff', modifier: 'background' },
   { name: 'Foreground', code: '#0c4a6e', modifier: 'foreground' },
-];
+] as const;
+
+export const ROYALBLUE_PALETTE_DATA: Palette[] = [
+  { name: 'Primary', code: '#2563EB', modifier: 'primary' },
+  { name: 'Secondary', code: '#DBEAFE', modifier: 'secondary' },
+  { name: 'Accent', code: '#93C5FD', modifier: 'accent' },
+  { name: 'Muted', code: '#BFDBFE', modifier: 'muted' },
+  { name: 'Background', code: '#EFF6FF', modifier: 'background' },
+  { name: 'Foreground', code: '#1E3A8A', modifier: 'foreground' },
+] as const;
+
+export const DEEPBLUE_PALETTE_DATA: Palette[] = [
+  { name: 'Primary', code: '#1E40AF', modifier: 'primary' },
+  { name: 'Secondary', code: '#E2E8F0', modifier: 'secondary' },
+  { name: 'Accent', code: '#94A3B8', modifier: 'accent' },
+  { name: 'Muted', code: '#CBD5E1', modifier: 'muted' },
+  { name: 'Background', code: '#F8FAFC', modifier: 'background' },
+  { name: 'Foreground', code: '#0F172A', modifier: 'foreground' },
+] as const;
+
+export const colorPalettes: ColorPalette[] = [
+  {
+    title: 'Ocean Blue',
+    subtitle: 'Light and refreshing theme perfect for modern applications',
+    theme: 'oceanblue',
+    scssClass: 'ocean-blue-theme',
+  },
+  {
+    title: 'Royal Blue',
+    subtitle: 'Rich and elegant theme with vibrant blue tones',
+    theme: 'royalblue',
+    scssClass: 'royal-blue-theme',
+  },
+  {
+    title: 'Deep Blue',
+    subtitle: 'Rich and elegant theme with vibrant blue tones',
+    theme: 'deepblue',
+    scssClass: 'deep-blue-theme',
+  },
+] as const;
+
+export const palettesData = {
+  oceanblue: OCEANBLUE_PALETTE_DATA,
+  royalblue: ROYALBLUE_PALETTE_DATA,
+  deepblue: DEEPBLUE_PALETTE_DATA,
+} as const;
