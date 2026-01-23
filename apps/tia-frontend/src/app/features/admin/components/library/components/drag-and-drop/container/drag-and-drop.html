@@ -12,7 +12,23 @@
         [items]="items"
         (itemsChange)="items = $event"
         (itemRemoved)="onItemRemoved($event)"
+        layout="grid"
+        (orderChange)="onOrderChange($event)"
+        cardTitle="Draggable Cards"
+        cardDescription="Drag cards to reorder them in a grid layout"
       />
+      <app-drag-card
+        [items]="listItems"
+        (itemsChange)="listItems = $event"
+        (itemRemoved)="onItemRemoved($event)"
+        [canDelete]="canDelete"
+        layout="list"
+        [columns]="3"
+        (orderChange)="onOrderChangeList($event)"
+        cardTitle="Sortable List"
+        cardDescription="Drag cards to reorder them in a grid layout"
+      />
+      <app-kanban-board></app-kanban-board>
     </div>
   </div>
 </div>

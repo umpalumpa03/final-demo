@@ -9,6 +9,7 @@
   background-color: var(--color-bg);
   height: auto;
   gap: 3.2rem;
+  padding-top: 3.2rem;
 
   &__forms {
     @include display-flex(column);

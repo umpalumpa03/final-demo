@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { OceanblueTheme } from './oceanblue-theme';
+import { KanbanBoard } from './kanban-board';
 
-describe('OceanblueTheme', () => {
-  let component: OceanblueTheme;
-  let fixture: ComponentFixture<OceanblueTheme>;
+describe('KanbanBoard', () => {
+  let component: KanbanBoard;
+  let fixture: ComponentFixture<KanbanBoard>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OceanblueTheme],
+      imports: [KanbanBoard],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(OceanblueTheme);
+    fixture = TestBed.createComponent(KanbanBoard);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

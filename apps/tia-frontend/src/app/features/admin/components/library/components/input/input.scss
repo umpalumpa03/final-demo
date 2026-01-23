@@ -1,0 +1,54 @@
+@use '../../../../../../shared/styles/palette' as *;
+@use '../../../../../../shared/styles/mixins' as *;
+
+.gallery {
+  padding: 4rem;
+  @include display-flex(column);
+  min-height: 100vh;
+  margin: 0 auto;
+  max-width:110rem ;
+
+  &__header {
+    margin-bottom: 3rem;
+  }
+
+  &__title {
+    @include font-inter(700, 2.4rem);
+    color: $blue-700;
+    margin-bottom: 0.8rem;
+  }
+
+  &__description {
+    @include font-inter(400, 1.6rem);
+    color: $gray-600;
+  }
+
+  &__section {
+    @include display-flex(column);
+    gap: 1.5rem;
+    background: $white;
+    border: 0.1rem solid $blue-200;
+    border-radius: 1.2rem;
+    padding: 2.4rem;
+    width: 100%;
+    margin-bottom: 2.4rem;
+  }
+
+  &__section-title {
+    @include font-inter(700, 1.8rem);
+    color: $blue-700;
+    margin-bottom: 2rem;
+    border-bottom: 0.1rem solid $gray-50;
+    padding-bottom: 1rem;
+  }
+
+  &__input-stack {
+    @include display-flex(column);
+    gap: 2rem;
+
+    lib-text-input {
+      width: 100%;
+      max-width: 44.8rem;
+    }
+  }
+}
