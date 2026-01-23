@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UiContext } from './ui-context';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('UiContext', () => {
   let component: UiContext;
@@ -12,10 +13,19 @@ describe('UiContext', () => {
 
     fixture = TestBed.createComponent(UiContext);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+
+    fixture.componentRef.setInput('position', { x: 100, y: 200 });
+    fixture.componentRef.setInput('items', [
+      { label: 'Delete', action: 'delete', variant: 'danger' },
+    ]);
+
+    fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should correctly compute menu styles from position signal', () => {
+    expect(component.menuStyle()).toEqual({
+      top: '200px',
+      left: '100px',
+    });
   });
 });
