@@ -20,12 +20,12 @@
     @for (item of statuses(); track item.status) {
       <app-badges 
         [status]="item.status" 
-        [text]="item.text"
-        [size]="item.size"
-        [shape]="item.shape">
+        [size]="item.size">
       </app-badges>
     }
   </div>
+
+
 </div>
 
 <div class="badge-demo">
@@ -40,6 +40,7 @@
         [shape]="item.shape">
       </app-badges>
     }
+  
   </div>
 </div>
 
@@ -57,6 +58,8 @@
       </app-badges>
     }
   </div>
+
+
 </div>
 
 <div class="badge-demo">
@@ -75,6 +78,7 @@
       </app-badges>
     }
   </div>
+
 </div>
 
 <div class="badge-demo">
@@ -87,9 +91,26 @@
         [status]="item.status"
         [size]="item.size"
         [text]="item.text"
-        [showIcon]="false"
         [shape]="item.shape">
       </app-badges>
     }
   </div>
 </div>
+
+<div class="badge-demo">
+  <h3 class="badge-demo__title">With Dot Indicators</h3>
+  
+  <div class="badge-demo__row">
+    @for (item of dotBadges(); track item.dot) {
+      <app-badges 
+        [dot]="item.dot"
+        [variant]="item.variant"
+        [size]="item.size">
+      </app-badges>
+    }
+  </div>
+</div>
+
+
+
+
