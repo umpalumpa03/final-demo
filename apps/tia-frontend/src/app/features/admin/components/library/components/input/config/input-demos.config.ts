@@ -1,4 +1,4 @@
-import { TextInputType } from '@tia/shared/lib/forms/input-field/models/input.model';
+import { TextInputType } from '@tia/shared/lib/forms/models/input.model';
 import { InputDemo } from '../models/input-demos.model';
 
 export const BASIC_INPUT_DEMOS: InputDemo[] = [

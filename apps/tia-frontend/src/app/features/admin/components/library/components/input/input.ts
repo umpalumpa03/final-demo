@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { TextInput } from 'apps/tia-frontend/src/app/shared/lib/forms/input-field/text-input/text-input';
+import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import {
   BASIC_INPUT_DEMOS,
   SPECIAL_INPUT_DEMOS,
