@@ -7,7 +7,7 @@ import {
   modalDescriptionInput,
   modalNameInput,
 } from '../edit-profile-dialog/config/inputs.config';
-import { Textarea } from "@tia/shared/lib/forms/textarea/textarea";
+import { Textarea } from '@tia/shared/lib/forms/textarea/textarea';
 
 @Component({
   selector: 'app-form-dialog',
