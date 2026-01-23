@@ -14,10 +14,11 @@ import {
 } from 'apps/tia-frontend/src/app/features/admin/components/library/components/drag-and-drop/config/draggable-data.config';
 import { KanbanBoard } from '@tia/shared/lib/drag-n-drop/components/kanban-board/kanban-board';
 import { LibraryTitle } from '../../../shared/library-title/library-title';
+import { InstructionsCard } from "../instructions-card/instructions-card";
 
 @Component({
   selector: 'app-drag-and-drop-container',
-  imports: [DragCard, KanbanBoard, LibraryTitle],
+  imports: [DragCard, KanbanBoard, LibraryTitle, InstructionsCard],
   templateUrl: './drag-and-drop.html',
   styleUrl: './drag-and-drop.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
