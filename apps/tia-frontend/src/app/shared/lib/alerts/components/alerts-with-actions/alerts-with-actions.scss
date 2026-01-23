@@ -1,7 +1,7 @@
 @use '../../../../styles/palette' as *;
 @use '../../../../styles/mixins' as *;
 
-.alerts-with-actions {
+.alerts-actions {
   max-width: 105.3rem;
   min-height: 6.76rem;
   width: 100%;
@@ -62,10 +62,10 @@
   &--warning {
     background: $yellow-50;
     border: 0.08rem solid $yellow-200;
-    .alerts-with-actions__title {
+    .alerts-actions__title {
       color: $brown-800;
     }
-    .alerts-with-actions__message {
+    .alerts-actions__message {
       color: $brown-700;
     }
   }

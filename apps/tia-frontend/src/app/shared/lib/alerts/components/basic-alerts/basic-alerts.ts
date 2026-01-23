@@ -5,6 +5,7 @@ import {
   input,
 } from '@angular/core';
 import { BaseAlertType } from '../../shared/models/alert.models';
+const DEFAULT_MESSAGE = 'This is a default alert with important information.';
 
 @Component({
   selector: 'app-basic-alerts',
@@ -14,11 +15,10 @@ import { BaseAlertType } from '../../shared/models/alert.models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BasicAlerts {
+
   public alertType = input<BaseAlertType>('default');
   public alertTitle = input<string>('Default Alert');
-  public alertMessage = input<string>(
-    'This is a default alert with important information.',
-  );
+  public readonly alertMessage = input<string>(DEFAULT_MESSAGE);
 
   public alertClass = computed(() => `basic-alert--${this.alertType()}`);
 
@@ -30,7 +30,7 @@ export class BasicAlerts {
   });
 
   public effectiveMessage = computed(() => {
-    if (this.alertType() === 'error' && this.alertMessage() === 'This is a default alert with important information.') {
+    if (this.alertType() === 'error' && this.alertMessage() === DEFAULT_MESSAGE) {
       return 'This is an error alert with important information.';
     }
     return this.alertMessage();

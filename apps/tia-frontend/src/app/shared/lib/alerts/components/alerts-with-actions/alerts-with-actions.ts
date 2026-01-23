@@ -20,10 +20,10 @@ export class AlertsWithActions {
 
   public iconAlertClass = computed(() => {
     const type = this.alertType();
-    if (type === 'error') return 'alerts-with-actions--warning';
+    if (type === 'error') return 'alerts-actions--warning';
     if (type === 'default') return '';
     
-    return `alerts-with-actions--${type}`;
+    return `alerts-actions--${type}`;
   });
 
   public effectiveImgName = computed(() => {

@@ -1,21 +1,21 @@
-<div class="alerts-with-actions" [class]="iconAlertClass()">
-  <div class="alerts-with-actions__alert-content">
-    <div class="alerts-with-actions__alert-icon-div">
+<div class="alerts-actions" [class]="iconAlertClass()">
+  <div class="alerts-actions__alert-content">
+    <div class="alerts-actions__alert-icon-div">
       <img
         [src]="'/images/img/alert-icons/base-alert-' + effectiveImgName() + '.png'"
         [alt]="alertType() + ' icon'"
       />
     </div>
-    <div class="alerts-with-actions__alert-info-div">
-      <div class="alerts-with-actions__title">
+    <div class="alerts-actions__alert-info-div">
+      <div class="alerts-actions__title">
         {{alertTitle() | firstUpper}}
       </div>
-      <div class="alerts-with-actions__message">
+      <div class="alerts-actions__message">
         {{alertMessage() | firstUpper}}
       </div>
     </div>
   </div>
-  <div class="alerts-with-actions__button-flex">
+  <div class="alerts-actions__button-flex">
     <app-button size="small" [variant]="effectiveButtonVariant()"
       >{{ buttonOneText() }}</app-button
     >
