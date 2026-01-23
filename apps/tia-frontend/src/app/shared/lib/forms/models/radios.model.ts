@@ -10,4 +10,5 @@ export interface RadioOption {
 
 export interface RadioGroupConfig extends InputConfig {
   layout?: 'column' | 'row';
+  initialValue?: RadioValue;
 }

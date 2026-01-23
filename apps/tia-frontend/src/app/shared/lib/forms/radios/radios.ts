@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, effect, input, output } from '@angular/core';
 import { BaseInput } from '../base/base-input';
 import { generateUniqueId } from '../base/utils/input.util';
 import { RADIO_DEFAULTS } from '../config/radios.config';
@@ -18,6 +18,8 @@ export class Radios extends BaseInput {
   public override readonly config = input<RadioGroupConfig>({});
   public readonly options = input.required<RadioOption[]>();
 
+  public readonly initialValue = input<RadioValue>();
+
   public readonly valueChangeSignal = output<RadioValue>();
 
   protected readonly groupName = generateUniqueId('radio-group');
@@ -34,6 +36,22 @@ export class Radios extends BaseInput {
     this.onChange(optionValue);
     this.valueChange.emit(optionValue);
     this.valueChangeSignal.emit(optionValue);
+  }
+  constructor() {
+    super();
+    effect(() => {
+      const initial = this.mergedConfig().initialValue;
+      const currentValue = this.value();
+
+      if (
+        initial !== undefined &&
+        (currentValue === null ||
+          currentValue === undefined ||
+          currentValue === '')
+      ) {
+        this.value.set(initial);
+      }
+    });
   }
 
   isOptionDisabled(option: RadioOption): boolean {
