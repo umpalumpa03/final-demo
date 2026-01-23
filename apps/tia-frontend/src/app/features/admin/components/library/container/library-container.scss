@@ -10,11 +10,9 @@
     max-width: 110rem;
     width: 100%;
     margin: 0 auto;
-    padding: 3.2rem 1.6rem;
 
     @include display-flex(column);
     justify-content: center;
-    gap: 4rem;
   }
 
   &__main {

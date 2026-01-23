@@ -1,18 +1,13 @@
 <div class="avatars">
+  <div class="avatars__title">
+    <app-library-title [title]="pageTitle" [subtitle]="pageSubtitle" />
+  </div>
   <div class="avatars__card">
-    <app-library-title
-      [title]="pageTitle"
-      [subtitle]="pageSubtitle"
-    />
-
     <section class="avatars__section">
       <p class="avatars__label">Sizes:</p>
       <div class="avatars__row">
         @for (item of sizes(); track item.size) {
-          <app-avatar
-            [size]="item.size"
-            [initials]="item.label"
-          ></app-avatar>
+        <app-avatar [size]="item.size" [initials]="item.label"></app-avatar>
         }
       </div>
     </section>
@@ -21,12 +16,12 @@
       <p class="avatars__label">With Initials:</p>
       <div class="avatars__row">
         @for (avatar of initialsAvatars(); track avatar.initials + $index) {
-          <app-avatar
-            [size]="'md'"
-            [tone]="avatar.tone ?? 'soft'"
-            [color]="avatar.color ?? 'blue'"
-            [initials]="avatar.initials"
-          ></app-avatar>
+        <app-avatar
+          [size]="'md'"
+          [tone]="avatar.tone ?? 'soft'"
+          [color]="avatar.color ?? 'blue'"
+          [initials]="avatar.initials"
+        ></app-avatar>
         }
       </div>
     </section>
@@ -35,12 +30,12 @@
       <p class="avatars__label">With Colors:</p>
       <div class="avatars__row">
         @for (avatar of colorAvatars(); track avatar.initials) {
-          <app-avatar
-            [size]="'md'"
-            [tone]="avatar.tone ?? 'solid'"
-            [color]="avatar.color ?? 'blue'"
-            [initials]="avatar.initials"
-          ></app-avatar>
+        <app-avatar
+          [size]="'md'"
+          [tone]="avatar.tone ?? 'solid'"
+          [color]="avatar.color ?? 'blue'"
+          [initials]="avatar.initials"
+        ></app-avatar>
         }
       </div>
     </section>
@@ -62,13 +57,13 @@
       <p class="avatars__label">With Status:</p>
       <div class="avatars__row">
         @for (avatar of statusAvatars(); track avatar.initials) {
-          <app-avatar
-            [size]="'md'"
-            [tone]="avatar.tone ?? 'soft'"
-            [color]="avatar.color ?? 'blue'"
-            [initials]="avatar.initials"
-            [status]="avatar.status ?? null"
-          ></app-avatar>
+        <app-avatar
+          [size]="'md'"
+          [tone]="avatar.tone ?? 'soft'"
+          [color]="avatar.color ?? 'blue'"
+          [initials]="avatar.initials"
+          [status]="avatar.status ?? null"
+        ></app-avatar>
         }
       </div>
     </section>
