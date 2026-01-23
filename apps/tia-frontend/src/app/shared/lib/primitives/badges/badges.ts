@@ -1,6 +1,23 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
-import { BadgeSize, BadgeStatus, BadgeVariant, BadgeShape, BadgeDotType } from './models/badges.models';
-import { statusClassMap, statusIconMap, statusAltTextMap, statusTextMap, dotColorMap, dotTextMap } from './config/badges.config';
+import {
+  BadgeSize,
+  BadgeStatus,
+  BadgeVariant,
+  BadgeShape,
+  BadgeDotType,
+  BadgeSkill,
+  BadgeCategory,
+} from './models/badges.models';
+import {
+  statusClassMap,
+  statusIconMap,
+  statusAltTextMap,
+  statusTextMap,
+  dotColorMap,
+  dotTextMap,
+  skillPresetMap,
+  categoryPresetMap,
+} from './config/badges.config';
 
 
 @Component({
@@ -16,6 +33,8 @@ export class Badges {
   public readonly status = input<BadgeStatus>();
   public readonly size = input<BadgeSize>();
   public readonly shape = input<BadgeShape>();
+  public readonly skill = input<BadgeSkill>();
+  public readonly category = input<BadgeCategory>();
   public readonly label = input<string>('');
   public readonly dismissible = input<boolean>(false);
   public readonly dot = input<BadgeDotType>();
@@ -35,7 +54,19 @@ export class Badges {
     const statusClass = this.badgeStatus();
     const hasDot = !!this.dot();
     const defaultShape = (statusClass || hasDot) ? 'pill' : 'default';
-    const shape = this.shape() ?? defaultShape;
+    
+    const skillKey = this.skill();
+    const categoryKey = this.category();
+    
+    let variant: BadgeVariant = this.variant() ?? 'default';
+    
+    if (skillKey) {
+      const preset = skillPresetMap[skillKey];
+      variant = this.variant() ?? preset.variant;
+    }
+    
+    const shape = this.shape() ?? (skillKey || categoryKey ? 'pill' : defaultShape);
+    
     let shapeClass = '';
     if (shape === 'pill') {
       shapeClass = 'badge--pill';
@@ -46,7 +77,11 @@ export class Badges {
     if (statusClass) {
       return `badge ${sizeClass} ${statusClass} ${shapeClass}`.trim();
     }
-    const variant = this.variant() ?? 'default';
+
+    if (categoryKey) {
+      return `badge ${sizeClass} ${shapeClass}`.trim();
+    }
+
     return `badge ${sizeClass} badge--${variant} ${shapeClass}`.trim();
   });
 
@@ -70,10 +105,22 @@ export class Badges {
     if (currentStatus) {
       return statusTextMap[currentStatus];
     }
+
     const currentDot = this.dot();
     if (currentDot) {
       return dotTextMap[currentDot];
     }
+
+    const skillKey = this.skill();
+    if (skillKey) {
+      return skillPresetMap[skillKey].text;
+    }
+
+    const categoryKey = this.category();
+    if (categoryKey) {
+      return categoryPresetMap[categoryKey].text;
+    }
+
     return this.text();
   });
 

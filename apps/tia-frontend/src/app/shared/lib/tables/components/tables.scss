@@ -9,11 +9,61 @@
   th,
   td {
     padding: 0.5rem;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  &__header {
+    &__row {
+      &__checkbox {
+        width: 4.8rem;
+      }
+    }
   }
 
   &__body {
     &__row {
       border-top: 1px solid $blue-400;
+
+      &__item {
+        &__container {
+          &__header {
+            @include display-flex();
+            gap: 0.8rem;
+            margin-bottom: 0.4rem;
+
+            h3 {
+              @include font-inter(500, 1.6rem, 2.4rem);
+              color: $blue-1000;
+              letter-spacing: -0.031rem;
+            }
+
+            span {
+              @include font-inter(500, 1.2rem, 1.6rem);
+              @include display-flex();
+              gap: 0.8rem;
+              border: 0.06rem solid $blue-400;
+              padding: 0.4rem 0.8rem;
+              border-radius: 0.8rem;
+            }
+          }
+          &__desc {
+            @include font-inter(400, 1.4rem, 2rem);
+            color: $gray-600;
+            letter-spacing: -0.015rem;
+
+            span:first-of-type {
+              margin-right: 0.8rem;
+            }
+          }
+        }
+      }
+
+      &__badges {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
     }
   }
 }

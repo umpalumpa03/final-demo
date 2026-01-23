@@ -1,4 +1,12 @@
-import { BadgeStatus, BadgeSize, BadgeVariant, BadgeShape, BadgeDotType } from '../../../../../../../shared/lib/primitives/badges/models/badges.models';
+import {
+  BadgeStatus,
+  BadgeSize,
+  BadgeVariant,
+  BadgeShape,
+  BadgeDotType,
+  BadgeSkill,
+  BadgeCategory,
+} from '../../../../../../../shared/lib/primitives/badges/models/badges.models';
 
 export interface VariantBadgeItem {
   variant: BadgeVariant;
@@ -52,4 +60,14 @@ export interface DotBadgeItem {
   variant?: BadgeVariant;
   size?: BadgeSize;
   shape?: BadgeShape;
+}
+
+export interface SkillBadgeItem {
+  skill: BadgeSkill;
+  size?: BadgeSize;
+}
+
+export interface CategoryBadgeItem {
+  category: BadgeCategory;
+  size?: BadgeSize;
 }

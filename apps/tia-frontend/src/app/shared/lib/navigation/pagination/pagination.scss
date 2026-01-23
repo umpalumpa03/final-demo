@@ -1,0 +1,46 @@
+@use "../../../../shared/styles/palette" as *;
+@use "../../../../shared/styles/mixins" as *;
+
+.pagination {
+    @include flex-center();
+
+    &__list {
+        @include flex-center();
+        gap: 0.4rem;
+    }
+
+    &__item {
+        display: flex;
+
+        &--ellipsis {
+            pointer-events: none;
+            text-align: center;
+        }
+    }
+
+    &__link {
+        @include font-arimo(400, 1.4rem, 2rem);
+        color: var(--color-fg);
+        cursor: pointer;
+        padding: 1.2rem;
+        gap: 1rem;
+        @include flex-center();
+    }
+
+    &__link--page {
+        height: 3.6rem;
+        width: 3.6rem;
+        border-radius: 0.8rem;
+    }
+
+    &__item--active &__link--page {
+        border: 0.08rem solid $blue-400;
+        background-color: var(--color-bg);
+        cursor: default;
+    }
+
+    &__item--disabled &__link {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}

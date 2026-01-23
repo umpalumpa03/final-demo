@@ -229,6 +229,24 @@
   }
 
 
+  &[data-category="technology"] {
+    background-color: $blue-500;
+    color: $white;
+    border: none;
+  }
+
+  &[data-category="design"] {
+    background-color: $green-500;
+    color: $white;
+    border: none;
+  }
+
+  &[data-category="marketing"] {
+    background-color: $purple-500;
+    color: $white;
+    border: none;
+  }
+
   &[data-dot="online"] {
     background-color: $blue-royal;
     color: $white;

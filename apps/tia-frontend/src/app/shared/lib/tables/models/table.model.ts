@@ -1,3 +1,4 @@
+import { BadgeStatus } from '../../primitives/badges/models/badges.models';
 type tableVariant =
   | 'basic'
   | 'row-selection'
@@ -8,21 +9,33 @@ type tableVariant =
 
 type paginationVariant = 'scroll' | 'page';
 
+type alignment = 'left' | 'right' | 'center';
+
+type infoType = 'text' | 'badge';
+
 interface TableHeader {
   title: string;
-  align: 'left' | 'right' | 'center';
+  align: alignment;
   width: string;
 }
 
-interface TableRowCell {
-  type: string;
-  value: string;
-  align: 'left' | 'right' | 'center';
+interface PrintedData {
+  type: infoType;
+  value: BadgeStatus;
+  align: alignment;
+  category?: string;
+  accountName?: string;
+  date?: string;
+}
+
+export interface TableRowCell {
+  id: string;
+  info: PrintedData[];
 }
 
 export interface TableConfig {
   type: tableVariant;
   paginationType: paginationVariant;
   headers: TableHeader[];
-  rows: TableRowCell[][];
+  rows: TableRowCell[];
 }
