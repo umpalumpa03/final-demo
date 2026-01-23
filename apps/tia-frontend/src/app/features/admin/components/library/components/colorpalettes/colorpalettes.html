@@ -17,4 +17,16 @@
     </app-showcase-card>
     }
   </div>
+  <div class="colorpalettes-content">
+    <app-showcase-card title="Color Application Examples">
+      <div class="color-application">
+        @for (palette of colorPalettesData; track palette.title) {
+        <app-color-application
+          [theme]="palette.theme"
+          [themeLabel]="palette.themeLabel"
+        ></app-color-application>
+        }
+      </div>
+    </app-showcase-card>
+  </div>
 </div>
