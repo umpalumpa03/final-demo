@@ -1,20 +1,20 @@
 <div [class]="containerClasses()">
-    @if (mergedConfig().label) {
-    <label [for]="mergedConfig().id" class="text-input__label">
-        {{ mergedConfig().label }}
-        @if (mergedConfig().required) {
+    @let cfg = mergedConfig();
+    @if (cfg.label) {
+    <label [for]="cfg.id" class="text-input__label">
+        {{ cfg.label }}
+        @if (cfg.required) {
         <span class="text-input__required-star" aria-hidden="true">*</span>
         }
     </label>
     }
 
     <div class="text-input__wrapper">
-        <textarea #textareaRef [id]="mergedConfig().id || ''" [value]="value() ?? ''" [rows]="mergedConfig().rows"
-            [placeholder]="mergedConfig().placeholder" [style.resize]="mergedConfig().resizable"
-            [disabled]="isDisabled()" [readOnly]="isReadonly()" (input)="handleInput($event)"
-            (blur)="handleBlur($event)" (focus)="handleFocus($event)" class="text-input__field"
-            [class.text-input__field--error]="hasError()" [class.text-input__field--success]="hasSuccess()"
-            [class.text-input__field--disabled]="isDisabled()">
+        <textarea #textareaRef [id]="cfg.id || ''" [value]="value() ?? ''" [rows]="cfg.rows"
+            [placeholder]="cfg.placeholder" [style.resize]="cfg.resizable" [disabled]="isDisabled()"
+            [readOnly]="isReadonly()" (input)="handleInput($event)" (blur)="handleBlur($event)"
+            (focus)="handleFocus($event)" class="text-input__field" [class.text-input__field--error]="hasError()"
+            [class.text-input__field--success]="hasSuccess()" [class.text-input__field--disabled]="isDisabled()">
         </textarea>
     </div>
 
@@ -27,7 +27,7 @@
             }
         </div>
 
-        @if (mergedConfig().showCharacterCount) {
+        @if (cfg.showCharacterCount) {
         <span class="text-input__counter"
             [class.text-input__counter--error]="maxCharacters() > 0 && currentLength() > maxCharacters()">
             {{ counterText() }}

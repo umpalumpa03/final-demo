@@ -5,4 +5,4 @@ export const TEXTAREA_DEFAULTS: TextareaConfig = {
   resizable: 'none',
   showCharacterCount: true,
   placeholder: 'Type your message here...',
-};
+} as const;
