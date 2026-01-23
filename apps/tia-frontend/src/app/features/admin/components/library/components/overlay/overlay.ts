@@ -14,6 +14,7 @@ import { LeftSheetDemo } from "./components/left-sheet-demo/left-sheet-demo";
 import { TopSheetModal } from "./components/top-sheet-modal/top-sheet-modal";
 import { BottomSheetModal } from "./components/bottom-sheet-modal/bottom-sheet-modal";
 import { DrawerModal } from "./components/drawer-modal/drawer-modal";
+import { ContextDemo } from "./components/context-demo/context-demo";
 
 @Component({
   selector: 'app-overlay',
@@ -29,7 +30,8 @@ import { DrawerModal } from "./components/drawer-modal/drawer-modal";
     LeftSheetDemo,
     TopSheetModal,
     BottomSheetModal,
-    DrawerModal
+    DrawerModal,
+    ContextDemo
 ],
   templateUrl: './overlay.html',
   styleUrls: ['./overlay.scss'],

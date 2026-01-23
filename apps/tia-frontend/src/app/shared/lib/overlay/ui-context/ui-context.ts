@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  HostListener,
   input,
   output,
 } from '@angular/core';
@@ -32,10 +33,17 @@ export class UiContext {
 
       return {
         ...item,
-        iconPath: item.icon ? `url(/assets/icons/${item.icon}.svg)` : undefined,
+        iconPath: item.icon ? `url(images/svg/context/${item.icon}.svg)` : undefined,
       } as ContextMenuViewModel;
     });
   });
+
+  @HostListener('window:scroll')
+  @HostListener('window:resize')
+  @HostListener('document:wheel')
+  public onGlobalInteraction(): void {
+    this.menuClose.emit();
+  }
 
   public handleAction(action: string): void {
     this.itemClick.emit(action);
