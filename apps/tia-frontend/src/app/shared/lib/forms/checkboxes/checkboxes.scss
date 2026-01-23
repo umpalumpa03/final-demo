@@ -1,9 +1,9 @@
+@use "../../../../../reset" as *;
 @use "../../../styles/palette" as *;
 @use "../../../styles/mixins" as *;
 
 .checkbox-wrapper {
-    display: flex;
-    flex-direction: column;
+    @include display-flex(column);
     gap: 0.4rem;
 
     &--disabled {
@@ -15,18 +15,17 @@
         }
     }
     .checkbox {
-        display: flex;
-        align-items: center;
+        @include flex-center(row, flex-start, center);
         gap: 0.8rem;
         cursor: pointer;
         user-select: none;
 
         &__input {
             position: absolute;
-            width: 1px;
-            height: 1px;
+            width: 0.01rem;
+            height: 0.01rem;
             padding: 0;
-            margin: -1px;
+            margin: -0.01rem;
             overflow: hidden;
             clip: rect(0, 0, 0, 0);
             border: 0;
@@ -37,8 +36,8 @@
             }
 
             &:focus-visible + .checkbox__box {
-                outline: 2px solid $blue-ocean;
-                outline-offset: 2px;
+                outline: 0.02rem solid $blue-ocean;
+                outline-offset: 0.02rem;
             }
         }
 
