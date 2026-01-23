@@ -3,7 +3,7 @@
   <div class="dismissible-alerts__alert-icon-div">
     <img
       [src]="'/images/img/alert-icons/base-alert-' + effectiveImgName() + '.png'"
-      alt="info icon"
+      [alt]="alertType() + ' icon'"
     />
   </div>
   <div class="dismissible-alerts__alert-info-div">

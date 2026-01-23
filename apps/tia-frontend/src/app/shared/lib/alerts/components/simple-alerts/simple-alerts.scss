@@ -1,10 +1,8 @@
 @use '../../../../styles/palette' as *;
 @use '../../../../styles/mixins' as *;
 
-.dismissible-alerts {
-  position: relative;
+.simple-alerts {
   max-width: 105.3rem;
-  min-height: 6.76rem;
   width: 100%;
   background: var(--color-bg);
   border: 0.08rem solid $blue-200;
@@ -25,6 +23,8 @@
 
   &__alert-icon-div {
     flex-shrink: 0;
+    @include display-flex(row, nowrap);
+    align-items: center;
     img {
       margin: 0.4rem 0rem;
       width: 1.6rem;
@@ -36,13 +36,6 @@
   &__alert-info-div {
     justify-content: center;
     @include display-flex(column, nowrap);
-    gap: 0.2rem;
-  }
-
-  &__title {
-    @include font-arimo(400, 1.4rem, 2rem);
-    letter-spacing: -0.035rem;
-    color: $blue-950;
   }
 
   &__message {
@@ -50,37 +43,10 @@
     color: $blue-900;
   }
 
-  &__close-button {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 3.6rem;
-    height: 3.6rem;
-    border-radius: 0.8rem;
-
-    @include display-flex(row, nowrap);
-    justify-content: center;
-    align-items: center;
-  }
-
-  &--error {
-    background: $red-50;
-    border: 0.08rem solid $red-200;
-    .dismissible-alerts__title {
-      color: $red-900;
-    }
-    .dismissible-alerts__message {
-      color: $red-950;
-    }
-  }
-
   &--success {
     background: $green-50;
     border: 0.08rem solid $green-200;
-    .dismissible-alerts__title {
-      color: $green-900;
-    }
-    .dismissible-alerts__message {
+    .simple-alerts__message {
       color: $green-950;
     }
   }
@@ -88,10 +54,7 @@
   &--warning {
     background: $yellow-50;
     border: 0.08rem solid $yellow-200;
-    .dismissible-alerts__title {
-      color: $brown-800;
-    }
-    .dismissible-alerts__message {
+    .simple-alerts__message {
       color: $brown-700;
     }
   }
