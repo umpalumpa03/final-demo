@@ -3,7 +3,7 @@
 
 .navigation {
   @include flex-center(column, center, flex-start);
-  padding: 1.6rem 0;
+  padding: 1.6rem;
   max-width: 110rem;
   margin: 0 auto;
   width: 100%;
