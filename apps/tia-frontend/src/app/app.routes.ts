@@ -8,6 +8,6 @@ export const appRoutes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '/admin/library',
+    loadComponent: () => import('./features/wild-card/wild-card').then(c=>c.WildCardComponent)
   },
 ];

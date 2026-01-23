@@ -1,0 +1,41 @@
+@use '../../shared/styles/themes' as *; 
+@use '../../shared/styles/mixins' as *;
+
+.wildcard {
+  @include flex-center(column, center, center);
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  text-align: center;
+  padding: 2rem;
+
+  &__content {
+    @include flex-center(column, center, center);
+    gap: 2.4rem;
+    max-width: 50rem;
+  }
+
+  &__title {
+    font-size: 12rem;
+    font-weight: 800;
+    line-height: 1;
+    margin: 0;
+    color: var(--color-primary); 
+    letter-spacing: -0.05em;
+  }
+
+  &__subtitle {
+    font-size: 3.2rem;
+    font-weight: 600;
+    color: var(--color-fg);
+    margin: 0;
+  }
+
+  &__description {
+    font-size: 1.6rem;
+    color: var(--color-primary); 
+    line-height: 1.6;
+    margin: 0 0 1.2rem 0;
+  }
+}
