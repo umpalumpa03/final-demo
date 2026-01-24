@@ -12,6 +12,7 @@ export interface IContactForm {
 }
 
 export interface IRegistrationForm extends ICommonForm {
+  lastName: string;
   password: string;
   country: string;
   birthDate: string;
