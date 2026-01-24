@@ -23,7 +23,12 @@
     position: relative;
 
     &__field {
-      width: 79%;
+      width: 80%;
     }
+  }
+
+  &__flex {
+    @include display-flex(column);
+    @include custom-width(100%, 1.2rem);
   }
 }

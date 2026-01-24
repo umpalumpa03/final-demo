@@ -1,17 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { vi } from 'vitest';
-import { ContactForms } from './contact-form';
+import { SettingsForm } from './settings-form';
 
-describe('ContactForms', () => {
-  let component: ContactForms;
-  let fixture: ComponentFixture<ContactForms>;
+describe('SettingsForm', () => {
+  let component: SettingsForm;
+  let fixture: ComponentFixture<SettingsForm>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ContactForms],
+      imports: [SettingsForm],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ContactForms);
+    fixture = TestBed.createComponent(SettingsForm);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

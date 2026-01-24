@@ -76,7 +76,7 @@ export class LayoutForm {
       placeholder: 'jonh@example.com',
     },
     phone: {
-      label: 'phone',
+      label: 'Phone',
       placeholder: '+1 (555) 000-0000',
     },
   } as const;

@@ -25,6 +25,13 @@ export interface IHorizontalLayout extends ICommonForm {
   message: string;
 }
 
+export interface ISettingsForm {
+  plan: string;
+  email: boolean;
+  push: boolean;
+  sms: boolean;
+}
+
 export const COUNTRIES = [
   { code: 'us', label: 'United States' },
   { code: 'ca', label: 'Canada' },

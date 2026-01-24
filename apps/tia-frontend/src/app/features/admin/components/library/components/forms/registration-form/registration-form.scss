@@ -21,6 +21,7 @@
     color: var(--color-fg-muted);
   }
 
+  //TODO should be deleted after dropdown component is created
   &__input {
     @extend %input;
   }
