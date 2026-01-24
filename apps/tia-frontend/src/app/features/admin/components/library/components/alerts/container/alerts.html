@@ -1,0 +1,72 @@
+<div class="alerts-page">
+  <div class="alerts-page__title">
+    <app-library-title [title]="pageTitle" [subtitle]="pageSubtitle" />
+  </div>
+  @for (section of alertSections; track section) {
+  <app-showcase-card [title]="section">
+    <div class="alerts-page__group">
+     @switch (section) { 
+        @case (titles.BASIC) { 
+          @for (item of alertBasicData; track item.id) {
+            <app-basic-alerts 
+                [alertType]="item.type" 
+                [alertState]="item.state"
+                [alertTitle]="item.title!" 
+                [alertMessage]="item.message!"
+              /> 
+          }
+        }
+
+        @case(titles.ICONS) {
+          @for(item of alertIconsData; track item.id) {
+            <app-alert-types-with-icons 
+            [alertType]="item.type" 
+            [alertMessage]="item.message" />
+          }
+        }
+
+        @case(titles.DISMISSIBLE) {
+          @for(item of alertDismissibleData; track item.id) {
+            <app-dismissible-alerts
+            [alertTitle]="item.title"
+            [alertType]="item.type" 
+            [alertMessage]="item.message" />
+          }
+        }
+
+        @case(titles.ACTIONS) {
+          @for(item of alertActionsData; track item.id) {
+            <app-alerts-with-actions
+            [alertType]="item.type" 
+            [alertTitle]="item.title"
+            [alertMessage]="item.message" 
+            [buttonOneText]="item.btnOneText"
+            [buttonTwoText]="item.btnTwoText"
+            />
+          }
+        }
+
+        @case(titles.SIMPLE) {
+          @for(item of alertSimpleData; track item.id) {
+            <app-simple-alerts
+            [alertType]="item.type" 
+            [alertMessage]="item.message" 
+            />
+          }
+        }
+
+        @case(titles.STATES) {
+          @for(item of alertStateData; track item.id) {
+            <app-basic-alerts
+            [alertType]="item.type"
+            [alertState]="item.state"
+            [alertTitle]="item.title" 
+            [alertMessage]="item.message" 
+            />
+          }
+        }
+     }
+    </div>
+  </app-showcase-card>
+  }
+</div>
