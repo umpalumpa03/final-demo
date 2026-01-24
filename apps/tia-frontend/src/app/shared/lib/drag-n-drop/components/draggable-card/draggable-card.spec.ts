@@ -27,14 +27,36 @@ describe('DraggableCard', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit dragStart and prevent default browser behavior', () => {
-    const event = { preventDefault: vi.fn() } as unknown as PointerEvent;
+  it('should emit dragStart only if target is the drag icon', () => {
+    const dragIcon = document.createElement('div');
+    dragIcon.classList.add('draggable-card__icon');
+
+    const event = {
+      target: dragIcon,
+      preventDefault: vi.fn(),
+    } as unknown as PointerEvent;
+
     const spy = vi.spyOn(component.dragStart, 'emit');
 
     component.onDragStartPoint(event);
 
     expect(event.preventDefault).toHaveBeenCalled();
     expect(spy).toHaveBeenCalledWith(event);
+  });
+
+  it('should not emit dragStart if target is not the drag icon', () => {
+    const otherElement = document.createElement('div');
+    const event = {
+      target: otherElement,
+      preventDefault: vi.fn(),
+    } as unknown as PointerEvent;
+
+    const spy = vi.spyOn(component.dragStart, 'emit');
+
+    component.onDragStartPoint(event);
+
+    expect(event.preventDefault).not.toHaveBeenCalled();
+    expect(spy).not.toHaveBeenCalled();
   });
 
   it('should emit remove, edit, and add events', () => {
@@ -51,14 +73,15 @@ describe('DraggableCard', () => {
     expect(addSpy).toHaveBeenCalled();
   });
 
-  it('should toggle isViewable signal and emit change', () => {
-    const spy = vi.spyOn(component.viewOptionChange, 'emit');
-    const initialState = component.isViewable();
+  it('should toggle expanded model and emit event', () => {
+    const spy = vi.spyOn(component.expandedChange, 'emit');
+    const event = { stopPropagation: vi.fn() } as unknown as Event;
 
-    component.onToggleView();
+    component.onToggleExpanded(event);
 
-    expect(component.isViewable()).toBe(!initialState);
-    expect(spy).toHaveBeenCalledWith(!initialState);
+    expect(component.expanded()).toBe(true);
+    expect(event.stopPropagation).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith(true);
   });
 
   it('should update selectedPagination signal and emit value', () => {
