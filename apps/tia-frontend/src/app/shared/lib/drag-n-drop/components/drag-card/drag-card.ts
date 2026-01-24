@@ -72,21 +72,17 @@ export class DragCard extends DragBase {
   }
 
   protected override handleDrop(dragId: string, dropId: string): void {
-    const currentItems = this.internalItems();
-    const dragIndex = currentItems.findIndex((item) => item.id === dragId);
-    const dropIndex = currentItems.findIndex((item) => item.id === dropId);
+    const newItems = this.calculateReorderedItems(
+      this.internalItems(),
+      dragId,
+      dropId,
+    );
 
-    if (dragIndex === -1 || dropIndex === -1) return;
-
-    const newItems = [...currentItems];
-    [newItems[dragIndex], newItems[dropIndex]] = [
-      newItems[dropIndex],
-      newItems[dragIndex],
-    ];
-
-    this.internalItems.set(newItems);
-    this.itemsChange.emit(newItems);
-    this.orderChange.emit(newItems.map((item) => item.id));
+    if (newItems !== this.internalItems()) {
+      this.internalItems.set(newItems);
+      this.itemsChange.emit(newItems);
+      this.orderChange.emit(newItems.map((item) => item.id));
+    }
   }
 
   public onRemove(id: string): void {

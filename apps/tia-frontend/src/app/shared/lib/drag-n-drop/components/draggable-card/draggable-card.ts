@@ -14,7 +14,6 @@ import { DRAG_CONTAINER } from '../../model/drag.provider';
 
 @Component({
   selector: 'app-draggable-card',
-  standalone: true,
   imports: [ButtonComponent],
   templateUrl: './draggable-card.html',
   styleUrl: './draggable-card.scss',

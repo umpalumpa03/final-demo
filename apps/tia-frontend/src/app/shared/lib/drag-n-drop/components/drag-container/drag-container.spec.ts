@@ -9,6 +9,7 @@ describe('DragContainer', () => {
   const mockItems = [
     { id: '1', title: 'Item 1', subtitle: 'S1' },
     { id: '2', title: 'Item 2', subtitle: 'S2' },
+    { id: '3', title: 'Item 3', subtitle: 'S3' },
   ];
 
   beforeEach(async () => {
@@ -49,15 +50,18 @@ describe('DragContainer', () => {
     expect(component['containerStyles']()).toBeNull();
   });
 
-  it('should swap items and emit changes on handleDrop', () => {
+  it('should reorder items using directional push and emit changes', () => {
     const itemsSpy = vi.spyOn(component.itemsChange, 'emit');
     const orderSpy = vi.spyOn(component.orderChange, 'emit');
 
     component['handleDrop']('1', '2');
 
-    const expectedItems = [mockItems[1], mockItems[0]];
-    expect(itemsSpy).toHaveBeenCalledWith(expectedItems);
-    expect(orderSpy).toHaveBeenCalledWith(['2', '1']);
+    expect(itemsSpy).toHaveBeenCalledWith([
+      mockItems[1],
+      mockItems[0],
+      mockItems[2],
+    ]);
+    expect(orderSpy).toHaveBeenCalledWith(['2', '1', '3']);
   });
 
   it('should not emit if dragId or dropId is not found in items', () => {

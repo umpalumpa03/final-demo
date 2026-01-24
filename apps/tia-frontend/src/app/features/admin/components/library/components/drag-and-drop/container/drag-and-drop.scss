@@ -33,23 +33,19 @@
   padding-top: 0.4rem;
 
   &__tag {
-    font-size: 1rem;
-    font-weight: 700;
+    @include font-inter(700, 1rem);
     color: $blue-500;
     text-transform: uppercase;
     letter-spacing: 0.05rem;
   }
 
   &__text {
-    font-size: 1.4rem;
-    line-height: 1.5;
+    @include font-inter(500, 1.4rem, 1.5rem);
     color: $blue-1000;
     margin: 0;
-    font-weight: 500;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 
   &__meta {
@@ -57,12 +53,11 @@
     gap: 0.8rem;
     margin-top: 0.4rem;
     padding-top: 0.8rem;
-    border-top: 1px solid $gray-200;
+    border-top: 0.1rem solid $gray-200;
   }
 
   &__id {
-    font-size: 1.2rem;
-    font-weight: 600;
+    @include font-inter(600, 1.2rem);
     color: $gray-400;
   }
 
@@ -74,8 +69,7 @@
   }
 
   &__date {
-    font-size: 1.2rem;
-    font-weight: 500;
+    @include font-inter(500, 1.2rem);
     color: $gray-500;
   }
 }

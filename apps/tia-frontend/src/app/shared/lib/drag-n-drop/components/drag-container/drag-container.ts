@@ -39,10 +39,8 @@ export class DragContainer extends DragBase {
 
   constructor() {
     super();
-    // onCleanup is used instead of takeUntilDestroyed because we need to unsubscribe when cards() changes, not just on component destroy
     effect((onCleanup) => {
       const allCards = this.cards();
-
       const subscription = merge(
         ...allCards.map((card) =>
           outputToObservable(card.dragStart).pipe(
@@ -64,20 +62,11 @@ export class DragContainer extends DragBase {
   );
 
   protected override handleDrop(dragId: string, dropId: string): void {
-    const currentItems = this.items();
-    const dragIndex = currentItems.findIndex((item) => item.id === dragId);
-    const dropIndex = currentItems.findIndex((item) => item.id === dropId);
-
-    if (dragIndex === -1 || dropIndex === -1) return;
-
-    const newItems = [...currentItems];
-
-    [newItems[dragIndex], newItems[dropIndex]] = [
-      newItems[dropIndex],
-      newItems[dragIndex],
-    ];
-
-    this.itemsChange.emit(newItems);
-    this.orderChange.emit(newItems.map((item) => item.id));
+    const newItems = this.calculateReorderedItems(this.items(), dragId, dropId);
+    
+    if (newItems !== this.items()) {
+      this.itemsChange.emit(newItems);
+      this.orderChange.emit(newItems.map((item) => item.id));
+    }
   }
 }

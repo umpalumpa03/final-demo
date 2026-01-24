@@ -60,15 +60,16 @@ describe('DragCard', () => {
     expect(itemRemovedSpy).toHaveBeenCalledWith('1');
   });
 
-  it('should reorder items correctly on handleDrop swap', () => {
+  it('should reorder items correctly on handleDrop using directional push', () => {
     const orderChangeSpy = vi.spyOn(component.orderChange, 'emit');
-    component['handleDrop']('1', '3');
+
+    component['handleDrop']('3', '1');
 
     const items = component.internalItems();
     expect(items[0].id).toBe('3');
-    expect(items[1].id).toBe('2');
-    expect(items[2].id).toBe('1');
-    expect(orderChangeSpy).toHaveBeenCalledWith(['3', '2', '1']);
+    expect(items[1].id).toBe('1');
+    expect(items[2].id).toBe('2');
+    expect(orderChangeSpy).toHaveBeenCalledWith(['3', '1', '2']);
   });
 
   it('should exit early on invalid handleDrop IDs', () => {
