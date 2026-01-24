@@ -7,9 +7,16 @@ import { ShowcaseCard } from '../../../shared/showcase-card/showcase-card';
 import {
   accordionContent,
   collapsibleConfig,
+  flexWrapContent,
   multiAccordionContent,
+  scrollAreaContent,
+  scrollAreaContent2,
 } from '../config/layout.config';
 import { Collapsible } from '@tia/shared/lib/layout/components/collapsible/collapsible';
+import { ScrollArea } from "@tia/shared/lib/layout/components/scroll-area/container/scroll-area";
+import { ResizableHorizontal } from '@tia/shared/lib/layout/components/resizable-panels/resizable-horizontal/resizable-horizontal';
+import { GridLayout } from '@tia/shared/lib/layout/components/grid-layout/container/grid-layout';
+import { FlexLayout } from '@tia/shared/lib/layout/components/flex-layout/container/flex-layout';
 
 @Component({
   selector: 'app-layout',
@@ -20,13 +27,20 @@ import { Collapsible } from '@tia/shared/lib/layout/components/collapsible/colla
     LibraryTitle,
     ShowcaseCard,
     Collapsible,
-  ],
+    ScrollArea,
+    ResizableHorizontal,
+    GridLayout,
+    FlexLayout
+],
   templateUrl: './layout.html',
   styleUrls: ['./layout.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Layout {
-  public readonly accordionContent = accordionContent;
-  public readonly multiAccordionContent = multiAccordionContent;
+  public readonly accordionContent = signal(accordionContent);
+  public readonly multiAccordionContent = signal(multiAccordionContent);
   public readonly collapsibleData = signal(collapsibleConfig);
+  public readonly scrollAreaContent = signal(scrollAreaContent);
+  public readonly scrollAreaContent2 = signal(scrollAreaContent2);
+  public readonly flexWrapContent = signal(flexWrapContent);
 }
