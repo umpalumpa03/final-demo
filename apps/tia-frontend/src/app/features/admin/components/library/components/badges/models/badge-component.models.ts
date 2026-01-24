@@ -9,60 +9,51 @@ import {
   BadgeCustomColor,
 } from '../../../../../../../shared/lib/primitives/badges/models/badges.models';
 
-export interface VariantBadgeItem {
-  variant: BadgeVariant;
-  text: string;
-  size?: BadgeSize;
-  shape?: BadgeShape;
-}
-
-export interface StatusBadgeItem {
-  status: BadgeStatus;
+export interface BaseBadgeItem {
   text?: string;
   size?: BadgeSize;
   shape?: BadgeShape;
 }
 
-export interface SizeBadgeItem {
+export interface VariantBadgeItem extends BaseBadgeItem {
+  variant: BadgeVariant;
+  text: string;
+}
+
+export interface StatusBadgeItem extends BaseBadgeItem {
+  status: BadgeStatus;
+}
+
+export interface SizeBadgeItem extends BaseBadgeItem {
   size: BadgeSize;
   variant: BadgeVariant;
   text: string;
-  shape?: BadgeShape;
 }
 
-export interface CountBadgeItem {
+export interface CountBadgeItem extends BaseBadgeItem {
   label: string;
   variant: BadgeVariant;
   text: string;
-  size?: BadgeSize;
-  shape?: BadgeShape;
 }
 
-export interface DismissibleBadgeItem {
+export interface DismissibleBadgeItem extends BaseBadgeItem {
   id: string;
   variant?: BadgeVariant;
   status?: BadgeStatus;
-  size?: BadgeSize;
-  shape?: BadgeShape;
   customColor?: BadgeCustomColor;
   text: string;
 }
 
-export interface PillBadgeItem {
+export interface PillBadgeItem extends BaseBadgeItem {
   variant?: BadgeVariant;
   status?: BadgeStatus;
-  text: string;
-  size?: BadgeSize;
-  shape?: BadgeShape;
   customColor?: BadgeCustomColor;
+  text: string;
 }
 
-export interface DotBadgeItem {
+export interface DotBadgeItem extends BaseBadgeItem {
   dot: BadgeDotType;
-  text?: string; 
   variant?: BadgeVariant;
-  size?: BadgeSize;
-  shape?: BadgeShape;
 }
 
 export interface SkillBadgeItem {
@@ -75,11 +66,9 @@ export interface CategoryBadgeItem {
   size?: BadgeSize;
 }
 
-export interface BadgeStateItem {
+export interface BadgeStateItem extends BaseBadgeItem {
   id: string;
   text: string;
-  size?: BadgeSize;
-  shape?: BadgeShape;
   disabled?: boolean;
   selected?: boolean;
   variant?: BadgeVariant;
@@ -88,9 +77,7 @@ export interface BadgeStateItem {
   clickable?: boolean;
 }
 
-export interface CustomColorBadgeItem {
+export interface CustomColorBadgeItem extends BaseBadgeItem {
   customColor: BadgeCustomColor;
   text: string;
-  size?: BadgeSize;
-  shape?: BadgeShape;
 }

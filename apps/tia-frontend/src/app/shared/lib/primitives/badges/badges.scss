@@ -46,27 +46,22 @@
   }
 
   &__dot {
-   width: 0.8rem;
+    width: 0.8rem;
     height: 0.8rem;
     border-radius: 50%;
     margin-right: 0.7rem;
-    
-    
 
-    &--green-400 {
-      background-color: $green-400;
-    }
+    $dot-colors: (
+      'green-400': $green-400,
+      'yellow-400': $yellow-400,
+      'red-500': $red-400,
+      'blue-200': $blue-100
+    );
 
-    &--yellow-400 {
-      background-color: $yellow-400;
-    }
-
-    &--red-500 {
-      background-color: $red-400;
-    }
-
-    &--blue-200 {
-      background-color: $blue-100;
+    @each $name, $color in $dot-colors {
+      &--#{$name} {
+        background-color: $color;
+      }
     }
   }
 
@@ -223,107 +218,68 @@
   }
 
 
-  &--active {
-    background-color: $green-500;
-    color: $white;
-  }
+  $statuses: (
+    'active': $green-500,
+    'pending': $yellow-400,
+    'inactive': $red-500,
+    'in-progress': $blue-500,
+    'featured': $purple-500,
+    'premium': $orange-500
+  );
 
-  &--pending {
-    background-color: $yellow-400;
-    color: $white;
-  }
-
-  &--inactive {
-    background-color: $red-500;
-    color: $white;
-  }
-
-  &--in-progress {
-    background-color: $blue-500;
-    color: $white;
-  }
-
-  &--featured {
-    background-color: $purple-500;
-    color: $white;
-  }
-
-  &--premium {
-    background-color: $orange-500;
-    color: $white;
+  @each $name, $bg-color in $statuses {
+    &--#{$name} {
+      background-color: $bg-color;
+      color: $white;
+    }
   }
 
 
-  &[data-category="technology"] {
-    background-color: $blue-500;
-    @include badge-style;
+
+  $categories: (
+    'technology': $blue-500,
+    'design': $green-500,
+    'marketing': $purple-500
+  );
+
+  @each $name, $bg-color in $categories {
+    &[data-category='#{$name}'] {
+      background-color: $bg-color;
+      @include badge-style;
+    }
   }
 
-  &[data-category="design"] {
-    background-color: $green-500;
-    @include badge-style;
+
+  $dots: (
+    'online': ($blue-royal, $white),
+    'live': ($blue-500, $white),
+    'away': ($blue-200, $blue-700),
+    'offline': ($white, $blue-700)
+  );
+
+  @each $name, $colors in $dots {
+    &[data-dot='#{$name}'] {
+      background-color: nth($colors, 1);
+      @include badge-style($color: nth($colors, 2));
+    }
   }
 
-  &[data-category="marketing"] {
-    background-color: $purple-500;
-    @include badge-style;
-  }
 
-  &[data-dot="online"] {
-    background-color: $blue-royal;
-    @include badge-style;
-  }
+  $custom-colors: (
+    'pink': $pink-400,
+    'indigo': $indigo-400,
+    'teal': $teal-400,
+    'rose': $red-500,
+    'cyan': $cyan-400,
+    'amber': $yellow-500,
+    'lime': $lime-400,
+    'slate': $gray-700
+  );
 
-  &[data-dot="live"] {
-    background-color: $blue-500;
-    @include badge-style;
-  }
-  &[data-dot="away"] {
-    background-color: $blue-200;
-    @include badge-style($color: $blue-700);
-  }
-  &[data-dot="offline"] {
-    background-color: $white;
-    @include badge-style($color: $blue-700);
-  }
-
-  &[data-custom-color="pink"] {
-    background-color: $pink-400;
-    @include badge-style;
-  }
-
-  &[data-custom-color="indigo"] {
-    background-color: $indigo-400;
-    @include badge-style;
-  }
-
-  &[data-custom-color="teal"] {
-    background-color: $teal-400;
-    @include badge-style;
-  }
-
-  &[data-custom-color="rose"] {
-    background-color: $red-500;
-    @include badge-style;
-  }
-
-  &[data-custom-color="cyan"] {
-    background-color: $cyan-400;
-    @include badge-style;
-  }
-
-  &[data-custom-color="amber"] {
-    background-color: $yellow-500;
-    @include badge-style;
-  }
-
-  &[data-custom-color="lime"] {
-    background-color: $lime-400;
-    @include badge-style;
-  }
-
-  &[data-custom-color="slate"] {
-    background-color: $gray-700;
-    @include badge-style;
+  @each $name, $bg-color in $custom-colors {
+    &[data-custom-color='#{$name}'] {
+      background-color: $bg-color;
+      @include badge-style;
+    }
   }
 }
