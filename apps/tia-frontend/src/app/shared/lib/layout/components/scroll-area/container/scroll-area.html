@@ -1,0 +1,8 @@
+<div 
+    class="scroll-area ta-scroll-area" 
+    [class.horizontal]="direction() === 'horizontal'" 
+    [class.vertical]="direction() === 'vertical'"
+    [style.height]="height()"
+>
+    <ng-content />
+</div>
