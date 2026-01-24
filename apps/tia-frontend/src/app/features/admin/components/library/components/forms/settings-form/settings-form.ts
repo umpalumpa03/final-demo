@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
   styleUrl: './settings-form.scss',
 })
 export class SettingsForm {
+  //will be deleted
   public planOptions = [
     {
       label: 'Free Basic features',
