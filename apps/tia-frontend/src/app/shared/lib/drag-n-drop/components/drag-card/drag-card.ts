@@ -22,14 +22,19 @@ import { NgTemplateOutlet } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DragCard extends DragBase {
+  // data
   public readonly items = input.required<DraggableItemType[]>();
-  public readonly canDelete = input(false);
   public readonly layout = input<LayoutType>('grid');
   public readonly columns = input(2);
   public readonly cardTitle = input('Draggable Cards');
   public readonly cardDescription = input<string>(
     'Drag Cards to reorder them in a grid layout',
   );
+  public cardContentTemplate =
+    contentChild<TemplateRef<unknown>>('cardContent');
+
+  // draggable card inputs
+  public readonly canDelete = input(false);
   public readonly editable = input(false);
   public readonly hasButton = input(false);
   public readonly buttonVariant = input<ButtonVariant>('ghost');
@@ -38,10 +43,13 @@ export class DragCard extends DragBase {
   public readonly hasViewOption = input(false);
   public readonly hasPagination = input(false);
   public readonly paginationVariants = input<number[]>([10, 20, 40]);
-  public cardContentTemplate = contentChild<TemplateRef<any>>('cardContent');
+  public readonly hasCheckbox = input(false);
 
+  // data outputs
   public readonly itemsChange = output<DraggableItemType[]>();
   public readonly orderChange = output<string[]>();
+
+  // draggable card outputs
   public readonly itemRemoved = output<string>();
   public readonly itemEdited = output<string>();
   public readonly itemAdded = output<string>();
@@ -50,6 +58,8 @@ export class DragCard extends DragBase {
     isViewable: boolean;
   }>();
   public readonly paginationChanged = output<{ id: string; value: number }>();
+  public readonly buttonClicked = output<string>();
+  public readonly checkedChanged = output<{ id: string; checked: boolean }>();
 
   public readonly internalItems = linkedSignal<
     DraggableItemType[],
@@ -106,5 +116,13 @@ export class DragCard extends DragBase {
 
   public onPaginationChange(id: string, value: number): void {
     this.paginationChanged.emit({ id, value });
+  }
+
+  public onButtonClick(id: string): void {
+    this.buttonClicked.emit(id);
+  }
+
+  public onCheckedChange(id: string, checked: boolean): void {
+    this.checkedChanged.emit({ id, checked });
   }
 }

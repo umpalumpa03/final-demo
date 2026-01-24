@@ -59,18 +59,21 @@ describe('DraggableCard', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('should emit remove, edit, and add events', () => {
+  it('should emit remove, edit, add, and buttonClick events', () => {
     const removeSpy = vi.spyOn(component.remove, 'emit');
     const editSpy = vi.spyOn(component.edit, 'emit');
     const addSpy = vi.spyOn(component.add, 'emit');
+    const buttonSpy = vi.spyOn(component.buttonClick, 'emit');
 
     component.onRemove();
     component.onEdit();
     component.onAdd();
+    component.onButtonClick();
 
     expect(removeSpy).toHaveBeenCalled();
     expect(editSpy).toHaveBeenCalled();
     expect(addSpy).toHaveBeenCalled();
+    expect(buttonSpy).toHaveBeenCalled();
   });
 
   it('should toggle expanded model and emit event', () => {
@@ -84,14 +87,33 @@ describe('DraggableCard', () => {
     expect(spy).toHaveBeenCalledWith(true);
   });
 
+  it('should update checked model and emit change', () => {
+    const spy = vi.spyOn(component.checkedChange, 'emit');
+    
+    component.onCheckedChange(true);
+    
+    expect(component.checked()).toBe(true);
+    expect(spy).toHaveBeenCalledWith(true);
+  });
+
   it('should update selectedPagination signal and emit value', () => {
     const spy = vi.spyOn(component.paginationChange, 'emit');
-    const mockEvent = { target: { value: '40' } } as unknown as Event;
+    
+    const mockValue = '40'; 
 
-    component.onPaginationChange(mockEvent);
+    component.onPaginationChange(mockValue);
 
     expect(component.selectedPagination()).toBe(40);
     expect(spy).toHaveBeenCalledWith(40);
+  });
+
+  it('should not update pagination if value is invalid', () => {
+    const spy = vi.spyOn(component.paginationChange, 'emit');
+    
+    component.onPaginationChange(null as any);
+    component.onPaginationChange(true as any);
+
+    expect(spy).not.toHaveBeenCalled();
   });
 
   it('should compute dragging state from input fallback', () => {

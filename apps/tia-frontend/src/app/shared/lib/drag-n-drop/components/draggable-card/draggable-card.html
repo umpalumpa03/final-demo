@@ -5,6 +5,14 @@
 >
   <div class="draggable-card__default-content">
     <div class="draggable-card__draggable">
+      @if (hasCheckbox()) {
+      <lib-checkboxes
+        class="draggable-card__checkbox"
+        [checked]="checked()"
+        (checkedChange)="onCheckedChange($event)"
+        (click)="$event.stopPropagation()"
+      />
+      }
       <img
         class="draggable-card__icon"
         src="images/svg/drag-and-drop/draggable.svg"
@@ -36,19 +44,10 @@
         class="draggable-card__pagination-wrapper"
         (click)="$event.stopPropagation()"
       >
-        <select
-          class="draggable-card__pagination"
+        <lib-select
+          [options]="paginationOptions()"
           [value]="selectedPagination()"
-          (change)="onPaginationChange($event)"
-        >
-          @for (variant of paginationVariants(); track variant) {
-          <option [value]="variant">{{ variant }}</option>
-          }
-        </select>
-        <img
-          class="draggable-card__pagination-arrow"
-          src="images/svg/drag-and-drop/downArrow.svg"
-          alt="arrow"
+          (valueChange)="onPaginationChange($event)"
         />
       </div>
       } @if (hasViewOption()) {

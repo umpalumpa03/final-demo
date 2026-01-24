@@ -84,6 +84,7 @@
         [items]="treeItems"
         [canDelete]="true"
         [editable]="true"
+        [hasCheckbox]="true"
         containerTitle="Tree View"
         containerDescription="Drag items to reorder or move between groups"
         (groupsChange)="onTreeGroupsChange($event)"
@@ -91,6 +92,7 @@
         (itemMoved)="onTreeItemMoved($event)"
         (itemReordered)="onTreeItemReordered($event)"
         (expandedChange)="onTreeExpandedChange($event)"
+        (checkedItemsChange)="onCheckedItemsChange($event)"
       />
       <app-instructions-card></app-instructions-card>
     </div>

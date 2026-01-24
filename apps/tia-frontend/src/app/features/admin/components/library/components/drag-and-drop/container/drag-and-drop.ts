@@ -43,69 +43,48 @@ import { TreeContainer } from '@tia/shared/lib/drag-n-drop/components/tree-conta
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DragAndDropContainer {
-  // grid layout items
   public items: DraggableItemType[] = [...items];
-  // list layout items
   public listItems: DraggableItemType[] = [...items];
-
-  // kanban board columns
   public boards: BoardConfig[] = [...boards];
-  // kanban cards
   public kanbanItems: KanbanItem[] = [...kanbanItems];
-
-  // drag container items
   public myItems: DraggableItemType[] = [...items];
-
-  // tree
   public treeGroups: TreeGroupConfig[] = [...treeGroups];
   public treeItems: TreeItem[] = [...treeItems];
-
   public canDelete = true;
 
-  // grid card deleted
   public onItemRemoved(id: string): void {}
 
-  // grid order changed
   public onOrderChange(ids: string[]): void {}
 
-  // list order changed
   public onOrderChangeList(ids: string[]): void {}
 
-  // card moved to different board
   public onCardMoved(event: CardMovedEvent): void {}
 
-  // card reordered within same board
   public onCardReordered(event: CardReorderedEvent): void {}
 
-  // kanban card deleted
   public onCardRemoved(id: string): void {}
 
-  // edit button clicked
   public onItemEdited(id: string): void {}
 
-  // add button clicked
   public onItemAdded(id: string): void {}
 
-  // eye toggle clicked
   public onViewOptionChanged(event: {
     id: string;
     isViewable: boolean;
   }): void {}
 
-  // pagination dropdown changed
   public onPaginationChanged(event: { id: string; value: number }): void {}
 
-  // drag container
   public onItemsChange(items: DraggableItemType[]): void {
     this.myItems = items;
   }
 
-  // outputs directly from draggable card
   public onRemove(id: string): void {}
+
   public onEdit(id: string): void {}
+
   public onContainerOrderChange(ids: string[]): void {}
 
-  // tree
   public onTreeGroupsChange(groups: TreeGroupConfig[]): void {
     this.treeGroups = groups;
   }
@@ -114,15 +93,11 @@ export class DragAndDropContainer {
     this.treeItems = items;
   }
 
-  public onTreeItemMoved(event: TreeItemMovedEvent): void {
-    console.log('Item moved:', event);
-  }
+  public onTreeItemMoved(event: TreeItemMovedEvent): void {}
 
-  public onTreeItemReordered(event: TreeItemReorderedEvent): void {
-    console.log('Item reordered:', event);
-  }
+  public onTreeItemReordered(event: TreeItemReorderedEvent): void {}
 
-  public onTreeExpandedChange(event: { id: string; expanded: boolean }): void {
-    console.log('Expanded changed:', event);
-  }
+  public onTreeExpandedChange(event: { id: string; expanded: boolean }): void {}
+
+  public onCheckedItemsChange(itemIds: string[]): void {}
 }

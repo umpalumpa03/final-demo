@@ -31,7 +31,7 @@ export class TreeService {
     dragId: string,
     toGroupId: string,
     targetItemId?: string,
-    reorderFn?: (list: any[], dId: string, tId: string) => any[],
+    reorderFn?: (list: TreeItem[], dId: string, tId: string) => TreeItem[],
   ): TreeItem[] {
     const dragItem = items.find((i) => i.id === dragId);
     if (!dragItem) return items;
@@ -88,5 +88,69 @@ export class TreeService {
       groups: filteredGroups,
       items: items.filter((i) => i.groupId !== groupId),
     };
+  }
+
+  // Checkbox methods
+  public toggleGroupChecked(
+    groupId: string,
+    checked: boolean,
+    items: TreeItem[],
+    checkedItemIds: Set<string>,
+  ): Set<string> {
+    const newSet = new Set(checkedItemIds);
+    const groupItems = items.filter((i) => i.groupId === groupId);
+
+    for (const item of groupItems) {
+      if (checked) {
+        newSet.add(item.id);
+      } else {
+        newSet.delete(item.id);
+      }
+    }
+
+    return newSet;
+  }
+
+  public toggleItemChecked(
+    itemId: string,
+    checked: boolean,
+    checkedItemIds: Set<string>,
+  ): Set<string> {
+    const newSet = new Set(checkedItemIds);
+
+    if (checked) {
+      newSet.add(itemId);
+    } else {
+      newSet.delete(itemId);
+    }
+
+    return newSet;
+  }
+
+  public isGroupFullyChecked(
+    groupId: string,
+    items: TreeItem[],
+    checkedItemIds: Set<string>,
+  ): boolean {
+    const groupItems = items.filter((i) => i.groupId === groupId);
+    if (groupItems.length === 0) return false;
+    return groupItems.every((i) => checkedItemIds.has(i.id));
+  }
+
+  public isGroupPartiallyChecked(
+    groupId: string,
+    items: TreeItem[],
+    checkedItemIds: Set<string>,
+  ): boolean {
+    const groupItems = items.filter((i) => i.groupId === groupId);
+    if (groupItems.length === 0) return false;
+    const checkedCount = groupItems.filter((i) =>
+      checkedItemIds.has(i.id),
+    ).length;
+    return checkedCount > 0 && checkedCount < groupItems.length;
+  }
+
+  public getCheckedItemIds(checkedItemIds: Set<string>): string[] {
+    return Array.from(checkedItemIds);
   }
 }

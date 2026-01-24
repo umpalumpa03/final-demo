@@ -12,10 +12,14 @@ import { DraggableItemType } from '../../model/drag.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ButtonVariant } from '@tia/shared/lib/primitives/button/button.model';
 import { DRAG_CONTAINER } from '../../model/drag.provider';
+import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
+import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
+import { SelectOption } from '@tia/shared/lib/forms/models/dropdowns.model';
+import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
 
 @Component({
   selector: 'app-draggable-card',
-  imports: [ButtonComponent],
+  imports: [ButtonComponent, Checkboxes, Dropdowns],
   templateUrl: './draggable-card.html',
   styleUrl: './draggable-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,6 +41,8 @@ export class DraggableCard {
   public paginationVariants = input<number[]>([10, 20, 40]);
   public expandable = input(false);
   public expanded = model(false);
+  public hasCheckbox = input(false);
+  public checked = model(false);
 
   public dragStart = output<PointerEvent>();
   public remove = output<void>();
@@ -45,9 +51,18 @@ export class DraggableCard {
   public viewOptionChange = output<boolean>();
   public paginationChange = output<number>();
   public expandedChange = output<boolean>();
+  public checkedChange = output<boolean>();
+  public buttonClick = output<void>();
 
   public isViewable = signal(true);
-  public selectedPagination = signal(10);
+  public selectedPagination = signal<number>(10);
+
+  protected readonly paginationOptions = computed<SelectOption[]>(() =>
+    this.paginationVariants().map((v) => ({
+      value: v,
+      label: String(v),
+    })),
+  );
 
   protected readonly computedIsDragging = computed(() => {
     if (this.container) {
@@ -66,7 +81,6 @@ export class DraggableCard {
   public onDragStartPoint(event: PointerEvent): void {
     const target = event.target as HTMLElement;
 
-
     if (target.classList.contains('draggable-card__icon')) {
       event.preventDefault();
       this.dragStart.emit(event);
@@ -84,21 +98,34 @@ export class DraggableCard {
   public onAdd(): void {
     this.add.emit();
   }
-
+  public onButtonClick(): void {
+    this.buttonClick.emit();
+  }
   public onToggleView(): void {
     this.isViewable.update((v) => !v);
     this.viewOptionChange.emit(this.isViewable());
   }
 
   public onToggleExpanded(event: Event): void {
-    event.stopPropagation(); 
+    event.stopPropagation();
     this.expanded.update((v) => !v);
     this.expandedChange.emit(this.expanded());
   }
 
-  public onPaginationChange(event: Event): void {
-    const value = +(event.target as HTMLSelectElement).value;
-    this.selectedPagination.set(value);
-    this.paginationChange.emit(value);
+  public onCheckedChange(value: boolean): void {
+    this.checked.set(value);
+    this.checkedChange.emit(value);
+  }
+
+  public onPaginationChange(value: InputFieldValue): void {
+    if (
+      value === null ||
+      typeof value === 'boolean' ||
+      value instanceof FileList
+    )
+      return;
+    const numValue = Number(value);
+    this.selectedPagination.set(numValue);
+    this.paginationChange.emit(numValue);
   }
 }

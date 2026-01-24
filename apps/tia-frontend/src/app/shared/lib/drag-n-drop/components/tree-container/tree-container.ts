@@ -6,6 +6,7 @@ import {
   input,
   output,
   linkedSignal,
+  signal,
 } from '@angular/core';
 import { DragBase } from '../../base/base';
 import {
@@ -16,6 +17,7 @@ import {
 } from '../../model/drag.model';
 import { DraggableCard } from '../draggable-card/draggable-card';
 import { TreeService } from '../../services/tree.service';
+import { ButtonVariant } from '@tia/shared/lib/primitives/button/button.model';
 
 @Component({
   selector: 'app-tree-container',
@@ -27,30 +29,44 @@ import { TreeService } from '../../services/tree.service';
 export class TreeContainer extends DragBase {
   private readonly treeService = inject(TreeService);
 
+  // data
   public readonly groups = input.required<TreeGroupConfig[]>();
   public readonly items = input.required<TreeItem[]>();
   public readonly containerTitle = input('Tree View');
   public readonly containerDescription = input(
     'Drag items to reorder or move between groups',
   );
+
+  // draggable card inputs
   public readonly canDelete = input(false);
   public readonly editable = input(false);
   public readonly hasButton = input(false);
+  public readonly buttonVariant = input<ButtonVariant>('ghost');
+  public readonly buttonContent = input('Play');
   public readonly hasAddOption = input(false);
   public readonly hasViewOption = input(false);
   public readonly hasPagination = input(false);
+  public readonly paginationVariants = input<number[]>([10, 20, 40]);
+  public readonly hasCheckbox = input(false);
 
+  // data outputs
   public readonly groupsChange = output<TreeGroupConfig[]>();
   public readonly itemsChange = output<TreeItem[]>();
   public readonly orderChange = output<string[]>();
   public readonly itemMoved = output<TreeItemMovedEvent>();
   public readonly itemReordered = output<TreeItemReorderedEvent>();
+  public readonly expandedChange = output<{ id: string; expanded: boolean }>();
+  public readonly checkedItemsChange = output<string[]>();
+
+  // draggable card outputs
   public readonly itemRemoved = output<string>();
   public readonly itemEdited = output<string>();
   public readonly itemAdded = output<string>();
   public readonly groupRemoved = output<string>();
   public readonly groupEdited = output<string>();
-  public readonly expandedChange = output<{ id: string; expanded: boolean }>();
+  public readonly viewOptionChanged = output<{ id: string; isViewable: boolean }>();
+  public readonly paginationChanged = output<{ id: string; value: number }>();
+  public readonly buttonClicked = output<string>();
 
   public readonly internalGroups = linkedSignal<
     TreeGroupConfig[],
@@ -64,6 +80,8 @@ export class TreeContainer extends DragBase {
     source: this.items,
     computation: (newItems) => [...newItems],
   });
+
+  public readonly checkedItemIds = signal<Set<string>>(new Set());
 
   public readonly itemsByGroup = computed(() =>
     this.treeService.groupItemsByGroup(
@@ -168,7 +186,69 @@ export class TreeContainer extends DragBase {
     this.groupRemoved.emit(id);
   }
 
-  public onEditItem = (id: string) => this.itemEdited.emit(id);
-  public onEditGroup = (id: string) => this.groupEdited.emit(id);
-  public onAddItem = (id: string) => this.itemAdded.emit(id);
+  // checkbox methods
+  public onGroupCheckedChange(groupId: string, checked: boolean): void {
+    const updated = this.treeService.toggleGroupChecked(
+      groupId,
+      checked,
+      this.internalItems(),
+      this.checkedItemIds(),
+    );
+    this.checkedItemIds.set(updated);
+    this.checkedItemsChange.emit(this.treeService.getCheckedItemIds(updated));
+  }
+
+  public onItemCheckedChange(itemId: string, checked: boolean): void {
+    const updated = this.treeService.toggleItemChecked(
+      itemId,
+      checked,
+      this.checkedItemIds(),
+    );
+    this.checkedItemIds.set(updated);
+    this.checkedItemsChange.emit(this.treeService.getCheckedItemIds(updated));
+  }
+
+  public isGroupChecked(groupId: string): boolean {
+    return this.treeService.isGroupFullyChecked(
+      groupId,
+      this.internalItems(),
+      this.checkedItemIds(),
+    );
+  }
+
+  public isGroupIndeterminate(groupId: string): boolean {
+    return this.treeService.isGroupPartiallyChecked(
+      groupId,
+      this.internalItems(),
+      this.checkedItemIds(),
+    );
+  }
+
+  public isItemChecked(itemId: string): boolean {
+    return this.checkedItemIds().has(itemId);
+  }
+
+  public onEditItem(id: string): void {
+    this.itemEdited.emit(id);
+  }
+
+  public onEditGroup(id: string): void {
+    this.groupEdited.emit(id);
+  }
+
+  public onAddItem(id: string): void {
+    this.itemAdded.emit(id);
+  }
+
+  public onViewOptionChange(id: string, isViewable: boolean): void {
+    this.viewOptionChanged.emit({ id, isViewable });
+  }
+
+  public onPaginationChange(id: string, value: number): void {
+    this.paginationChanged.emit({ id, value });
+  }
+
+  public onButtonClick(id: string): void {
+    this.buttonClicked.emit(id);
+  }
 }
