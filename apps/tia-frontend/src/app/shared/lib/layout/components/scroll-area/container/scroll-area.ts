@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 import { TDirection } from './scroll-area.model';
 
@@ -12,4 +12,7 @@ import { TDirection } from './scroll-area.model';
 export class ScrollArea {
   public direction = input<TDirection>('vertical');
   public height = input<string>('20rem');
+
+  public readonly isHorizontal = computed(() => this.direction() === 'horizontal');
+  public readonly isVertical = computed(() => this.direction() === 'vertical');
 }
