@@ -15,7 +15,6 @@ import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
 import { Radios } from '@tia/shared/lib/forms/radios/radios';
 import { Switches } from '@tia/shared/lib/forms/switches/switches';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-input',
@@ -27,7 +26,6 @@ import { FormsModule } from '@angular/forms';
     Radios,
     Switches,
     Dropdowns,
-    FormsModule,
   ],
   templateUrl: './input.html',
   styleUrl: './input.scss',

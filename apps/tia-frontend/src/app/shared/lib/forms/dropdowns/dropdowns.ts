@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   ElementRef,
@@ -20,6 +21,7 @@ import { SelectOption } from '../models/dropdowns.model';
   imports: [],
   templateUrl: './dropdowns.html',
   styleUrl: './dropdowns.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Dropdowns extends BaseInput implements OnInit {
   private readonly elementRef = inject(ElementRef);
