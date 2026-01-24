@@ -1,1 +1,20 @@
-<p>collapsible works!</p>
+<div class="ui-collapsible" [class.ui-collapsible--open]="isOpen()">
+  <button
+    type="button"
+    class="ui-collapsible__header"
+    (click)="toggle()"
+    [aria-expanded]="isOpen()"
+    aria-controls="collapsible-content"
+  >
+    <span class="ui-collapsible__title">{{ config().title }}</span>
+    <span class="ui-collapsible__icon" aria-hidden="true"></span>
+  </button>
+
+  @if (isOpen()) {
+  <div id="collapsible-content" class="ui-collapsible__content" role="region">
+    <div class="ui-collapsible__inner">
+      <ng-content></ng-content>
+    </div>
+  </div>
+  }
+</div>
