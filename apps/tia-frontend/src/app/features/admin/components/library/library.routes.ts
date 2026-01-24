@@ -45,6 +45,12 @@ export const libraryRoutes: Routes = [
           import('./components/cards/cards').then((c) => c.Cards),
       },
       {
+        path: 'alerts',
+        loadComponent: () => import('./components/alerts/container/alerts').then(
+          (c) => c.Alerts
+        )
+      },
+      {
         path: 'badges',
         loadComponent: () =>
           import('./components/badges/badge-component').then(

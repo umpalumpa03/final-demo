@@ -1,26 +1,87 @@
 <div
   class="draggable-card"
-  [class.dragging]="isDragging()"
-  [class.drop-target]="isDropTarget()"
+  [class.dragging]="computedIsDragging()"
+  [class.drop-target]="computedIsDropTarget()"
 >
-  <div class="draggable-card__draggable">
-    <img
-      class="draggable-card__icon"
-      src="images/svg/drag-and-drop/draggable.svg"
-      alt="draggable icon"
-      (pointerdown)="onDragStartPoint($event)"
-    />
-    <div class="draggable-card__content">
-      <p>{{ itemData().title }}</p>
-      <p>{{ itemData().subtitle }}</p>
+  <div class="draggable-card__default-content">
+    <div class="draggable-card__draggable">
+      <img
+        class="draggable-card__icon"
+        src="images/svg/drag-and-drop/draggable.svg"
+        alt="draggable icon"
+        (pointerdown)="onDragStartPoint($event)"
+      />
+      <div class="draggable-card__content">
+        @if(itemData().icon){
+        <img [src]="itemData().icon" alt="content icon" />
+        }
+        <p>{{ itemData().title }}</p>
+        <p>{{ itemData().subtitle }}</p>
+      </div>
+    </div>
+    <div class="draggable-card__icons">
+      <!-- pagination otpions -->
+      @if(hasPagination()) {
+      <div class="draggable-card__pagination-wrapper">
+        <select
+          class="draggable-card__pagination"
+          [value]="selectedPagination()"
+          (change)="onPaginationChange($event)"
+        >
+          @for(variant of paginationVariants(); track variant) {
+          <option [value]="variant">{{ variant }}</option>
+          }
+        </select>
+        <img
+          class="draggable-card__pagination-arrow"
+          src="images/svg/drag-and-drop/downArrow.svg"
+          alt="arrow"
+        />
+      </div>
+      }
+      <!-- view option -->
+      @if(hasViewOption()) {
+      <img
+        class="draggable-card__view"
+        [src]="isViewable() ? 'images/svg/drag-and-drop/openEye.svg' : 'images/svg/drag-and-drop/crossedEye.svg'"
+        [alt]="isViewable() ? 'visible' : 'hidden'"
+        (click)="onToggleView()"
+      />
+      }
+      <!-- add option -->
+      @if(hasAddOption()){
+      <img
+        class="draggable-card__add"
+        src="images/svg/drag-and-drop/plus.svg"
+        alt="plus svg"
+        (click)="onAdd()"
+      />
+      }
+      <!-- button option -->
+      @if(hasButton()) {
+      <app-button [variant]="buttonVariant()">
+        {{ buttonContent() }}
+      </app-button>
+      }
+      <!-- edit option -->
+      @if(editable()) {
+      <img
+        class="draggable-card__edit"
+        src="images/svg/drag-and-drop/edit.svg"
+        alt="can svg"
+        (click)="onEdit()"
+      />
+      }
+      <!-- delete option -->
+      @if(canDelete()) {
+      <img
+        class="draggable-card__remove"
+        src="images/svg/drag-and-drop/can.svg"
+        alt="can svg"
+        (click)="onRemove()"
+      />
+      }
     </div>
   </div>
-  @if(canDelete()) {
-  <img
-    class="draggable-card__remove"
-    src="images/svg/drag-and-drop/can.svg"
-    alt="can svg"
-    (click)="onRemove()"
-  />
-  }
+  <ng-content></ng-content>
 </div>

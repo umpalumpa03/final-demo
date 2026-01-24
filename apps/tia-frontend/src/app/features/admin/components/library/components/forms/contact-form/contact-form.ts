@@ -7,11 +7,20 @@ import {
 import { getErrorMessage } from '../../../../../../../shared/utils/form-validations';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IContactForm } from '../models/contact-forms.model';
-import { TextInput } from "@tia/shared/lib/forms/input-field/text-input";
+import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
+import { Textarea } from '@tia/shared/lib/forms/textarea/textarea';
+import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 
 @Component({
   selector: 'app-contact-form',
-  imports: [ReactiveFormsModule, TextInput],
+  imports: [
+    ReactiveFormsModule,
+    TextInput,
+    Textarea,
+    Checkboxes,
+    ButtonComponent,
+  ],
   templateUrl: './contact-form.html',
   styleUrl: './contact-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,28 +35,6 @@ export class ContactForms {
     message: ['', [Validators.required, Validators.minLength(50)]],
     subscribe: [false, [Validators.requiredTrue]],
   });
-
-  public get message() {
-    return this.contactForm.controls.message;
-  }
-  public get subscribe() {
-    return this.contactForm.controls.subscribe;
-  }
-
-  public get isMessageError() {
-    return this.showError('message');
-  }
-
-  public get isSubscribeError() {
-    return this.showError('subscribe');
-  }
-
-  public readonly messageError = getErrorMessage(this.message, 'message');
-
-  public showError(controlName: string): boolean {
-    const control = this.contactForm.get(controlName);
-    return control ? control.invalid && control.touched : false;
-  }
 
   public submit() {
     if (this.contactForm.invalid) {
@@ -71,4 +58,15 @@ export class ContactForms {
     required: true,
     placeholder: 'your.email@example.com',
   };
+
+  public messageConfig = {
+    label: 'Message',
+    required: true,
+    placeholder: 'Type your message here...',
+  };
+
+  public checkboxConfig = {
+    label: 'Subscribe to newsletter',
+    required: true,
+  }
 }
