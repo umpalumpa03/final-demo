@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  input,
+  output,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Radios } from '@tia/shared/lib/forms/radios/radios';
 import { Switches } from '@tia/shared/lib/forms/switches/switches';
@@ -11,30 +17,32 @@ import { Router } from '@angular/router';
   imports: [Radios, Switches, ReactiveFormsModule, ButtonComponent],
   templateUrl: './settings-form.html',
   styleUrl: './settings-form.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsForm {
   //will be deleted
   public planOptions = [
     {
-      label: 'Free Basic features',
+      label: 'Free',
       value: 'free',
+      description: 'Basic features',
       initialValue: true,
     },
     {
-      label: 'Advanced features - $9.99/month',
+      label: 'Pro',
       value: 'pro',
+      description: 'Advanced features - $9.99/month',
     },
     {
-      label: 'Enterprise All features - $29.99/month',
+      label: 'Enterprise',
       value: 'enterprise',
+      description: 'All features - $29.99/month',
     },
   ];
 
-
-  private readonly router = inject(Router)
+  private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
-  public readonly navigateRoute = input.required<string>()
+  public readonly navigateRoute = input.required<string>();
   public readonly twoColumnLayoutForm = output<ISettingsForm>();
 
   public settingControl = this.fb.nonNullable.group({
@@ -57,7 +65,7 @@ export class SettingsForm {
   }
 
   public get plan() {
-    return { initialValue: this.settingControl.value.plan };
+    return { initialValue: this.settingControl.value.plan, hasBorder: true };
   }
 
   public cancel(route: string) {
