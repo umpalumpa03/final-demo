@@ -48,14 +48,13 @@ export const kanbanItems = [
   { id: '6', title: 'Task 6', subtitle: '', boardId: 'done', order: 0 },
 ] as const satisfies readonly KanbanItem[];
 
-
-export const treeGroups: TreeGroupConfig[] = [
+export const treeGroups = [
   { id: 'g1', title: 'Group 1', subtitle: 'First group', expanded: true },
   { id: 'g2', title: 'Group 2', subtitle: 'Second group', expanded: true },
   { id: 'g3', title: 'Group 3', subtitle: 'Third group', expanded: false },
-];
+] as const satisfies readonly TreeGroupConfig[];
 
-export const treeItems: TreeItem[] = [
+export const treeItems = [
   {
     id: 'c1',
     title: 'Child 1',
@@ -98,4 +97,4 @@ export const treeItems: TreeItem[] = [
     groupId: 'g3',
     order: 0,
   },
-];
+] as const satisfies readonly TreeItem[];
