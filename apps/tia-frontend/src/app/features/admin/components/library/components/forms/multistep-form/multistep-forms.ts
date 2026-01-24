@@ -1,11 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { StepperHeader } from './stepper-header/stepper-header';
-import { IStepConfig } from '../models/contact-forms.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Textarea } from '@tia/shared/lib/forms/textarea/textarea';
-import { ContactForms } from '../contact-form/contact-form';
 import { MULTI_FORM, STEP_FORM } from '../models/configs';
 
 @Component({
@@ -19,7 +23,7 @@ import { MULTI_FORM, STEP_FORM } from '../models/configs';
   ],
   templateUrl: './multistep-forms.html',
   styleUrl: './multistep-forms.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MultistepForms {
   public stepsConfig = STEP_FORM;
@@ -31,6 +35,13 @@ export class MultistepForms {
 
   public currentStepConfig = computed(
     () => this.stepsConfig[this.currentStep() - 1],
+  );
+  public readonly canBack = computed(() => this.currentStep() > 1);
+  public readonly canNext = computed(
+    () => this.currentStep() < this.totalSteps,
+  );
+  public readonly isLastStep = computed(
+    () => this.currentStep() === this.totalSteps,
   );
 
   public form = this.fb.nonNullable.group({
@@ -62,5 +73,17 @@ export class MultistepForms {
 
   public submit() {
     console.log(this.form.value);
+  }
+
+  public isFrom(config: { key: string }): boolean {
+    return config?.key === 'from';
+  }
+
+  public isTo(config: { key: string }): boolean {
+    return config?.key === 'to';
+  }
+
+  public isAmount(config: { key: string }): boolean {
+    return config?.key === 'amount';
   }
 }

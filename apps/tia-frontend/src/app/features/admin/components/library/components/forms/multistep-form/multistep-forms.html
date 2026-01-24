@@ -7,7 +7,7 @@
 
   @for (config of stepsConfig; track config.key) { @if (config === activeStep) {
   <form class="multi-step__field" [formGroupName]="config.key">
-    @if (config.key === 'from') {
+    @if (isFrom(config)) {
     <lib-text-input
       type="text"
       formControlName="name"
@@ -15,6 +15,7 @@
     ></lib-text-input>
     <lib-textarea formControlName="bio" [config]="multiConfig.bio"></lib-textarea>
     } @if (config.key === 'to') {
+    } @if (isTo(config)) {
     <lib-text-input
       type="text"
       formControlName="name"
@@ -22,6 +23,7 @@
     ></lib-text-input>
     <lib-textarea formControlName="bio" [config]="multiConfig.bio"></lib-textarea>
     } @if (config.key === 'amount') {
+    } @if (isAmount(config)) {
     <lib-text-input
       type="text"
       formControlName="name"
@@ -34,7 +36,7 @@
 
   <div class="multi-step__btn-section">
     <div class="multi-step__row">
-      @if (step > 1) {
+      @if (canBack()) {
       <div class="multi-step__field">
         <app-button
           [fullWidth]="true"
@@ -44,14 +46,13 @@
           >Back</app-button
         >
       </div>
-      } @if (step < totalSteps) {
+      } @if (canNext()) {
       <div class="multi-step__field">
         <app-button [fullWidth]="true" (click)="next()" type="button">
           Next Step
         </app-button>
       </div>
-
-      } @else if (step === totalSteps) {
+      } @else if (isLastStep()) {
       <div class="multi-step__field">
         <app-button [fullWidth]="true" type="submit">Finish</app-button>
       </div>
