@@ -1,0 +1,63 @@
+<form
+  class="settings-form"
+  [formGroup]="settingControl"
+  (ngSubmit)="saveChange()"
+>
+  <div class="settings-form__section">
+    <h3 class="settings-form__title">Plan Selection</h3>
+
+    <div class="settings-form__field">
+      <lib-radios
+        class="settings-form__radios"
+        [options]="planOptions"
+        [config]="plan"
+        formControlName="plan"
+      >
+      </lib-radios>
+    </div>
+  </div>
+
+  <div class="settings-form__section">
+    <h3 class="settings-form__title">Plan Selection</h3>
+
+    <div class="settings-form__field">
+      <div class="settings-form__horizontal">
+        <span>Email Notifications:</span>
+        <div class="settings-form__field settings-form__horizontal__field">
+          <lib-switches
+            formControlName="email"
+            [checked]="email"
+          ></lib-switches>
+        </div>
+      </div>
+
+      <div class="settings-form__horizontal">
+        <span>Push Notifications:</span>
+        <div class="settings-form__field settings-form__horizontal__field">
+          <lib-switches formControlName="push" [checked]="push"></lib-switches>
+        </div>
+      </div>
+
+      <div class="settings-form__horizontal">
+        <span>SMS Notifications:</span>
+        <div class="settings-form__field settings-form__horizontal__field">
+          <lib-switches formControlName="sms"></lib-switches>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-form__btn-section">
+    <div class="settings-form__row">
+      <div class="settings-form__field">
+        <app-button (click)="cancel(navigateRoute())"  type="button" variant="outline" [fullWidth]="true"
+          >Cancel</app-button
+        >
+      </div>
+
+      <div class="settings-form__field">
+        <app-button [fullWidth]="true" type="submit">Save Changes</app-button>
+      </div>
+    </div>
+  </div>
+</form>

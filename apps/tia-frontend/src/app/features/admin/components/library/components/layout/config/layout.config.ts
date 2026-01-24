@@ -51,3 +51,19 @@ export const multiAccordionContent = [
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?',
   },
 ] as const;
+
+export const collapsibleConfig = [
+  {
+    id: 1,
+    title: 'Click To Expand',
+    content:
+      'This content is dynamic and passed from the parent configuration.',
+  },
+  {
+    id: 2,
+    title: 'Default Open',
+    isOpenDefault: true,
+    content:
+      'This collapsible section is open by default and contains specific project details.',
+  },
+] as const;
