@@ -1,0 +1,182 @@
+@use '../../../styles/mixins' as *;
+@use '../../../styles/palette' as *;
+
+.key-value-display {
+  &__card {
+    box-sizing: border-box;
+    width: 44.8rem;
+    height: 33.158rem;
+    background-color: $white;
+    border: 0.16rem solid $blue-400;
+    box-shadow:
+      0 0.1rem 0.3rem rgba($black, 0.1),
+      0 0.1rem 0.2rem -0.1rem rgba($black, 0.1);
+    border-radius: 1.4rem;
+    padding: 2rem;
+    max-width: 100%;
+  }
+
+  &__title {
+    margin: 0 0 1.6rem 0;
+    @include font-arimo(600, 1.4rem, 2rem);
+    color: $blue-700;
+  }
+
+  &__rows {
+    @include display-flex(column);
+  }
+
+  &__row {
+    @include flex-center(row, space-between, center);
+    gap: 2.4rem;
+    border-bottom: 0.08rem solid $blue-400;
+    padding: 1.6rem 0;
+  }
+
+  &__row--last {
+    border-bottom: 0;
+  }
+
+  &__label {
+    @include font-arimo(400, 1.4rem, 2rem);
+    color: $gray-700;
+  }
+
+  &__value {
+    @include font-arimo(600, 1.4rem, 2rem);
+    color: $blue-700;
+    text-align: right;
+  }
+
+  &__badge {
+    border-radius: 1.2rem;
+    padding: 0.4rem 1rem;
+    @include font-arimo(600, 1.1rem, 1.4rem);
+    background-color: $blue-600;
+    color: $white;
+  }
+
+  &__badge--blue {
+    background-color: $blue-600;
+    color: $white;
+  }
+
+  &__badge--green {
+    background-color: $green-600;
+    color: $white;
+  }
+
+  &__badge--orange {
+    background-color: $orange-500;
+    color: $white;
+  }
+
+  &__badge--gray {
+    background-color: $gray-200;
+    color: $gray-700;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .key-value-display__card {
+    width: 40rem;
+    height: 30rem;
+    padding: 1.8rem;
+  }
+
+  .key-value-display__row {
+    padding: 1.2rem 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .key-value-display__card {
+    width: 34rem;
+    height: 28rem;
+    padding: 1.6rem;
+  }
+
+  .key-value-display__row {
+    padding: 1rem 0;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .key-value-display__card {
+    width: 30rem;
+    height: 26rem;
+    padding: 1.2rem;
+  }
+
+  .key-value-display__title {
+    margin-bottom: 1.2rem;
+  }
+
+  .key-value-display__row {
+    padding: 0.8rem 0;
+  }
+}
+
+@media screen and (max-width: 370px) {
+  .key-value-display__card {
+    width: 26rem;
+    height: 24rem;
+    padding: 1rem;
+  }
+
+  .key-value-display__row {
+    padding: 0.6rem 0;
+  }
+
+  .key-value-display__title {
+    @include font-arimo(600, 1.2rem, 1.8rem);
+  }
+
+  .key-value-display__label {
+    @include font-arimo(400, 1.2rem, 1.8rem);
+  }
+
+  .key-value-display__value {
+    @include font-arimo(600, 1.2rem, 1.8rem);
+  }
+
+  .key-value-display__badge {
+    @include font-arimo(600, 0.9rem, 1.2rem);
+  }
+}
+
+@media screen and (max-width: 350px) {
+  .key-value-display__card {
+    width: 23rem;
+    height: 22rem;
+    padding: 0.9rem;
+  }
+
+  .key-value-display__row {
+    padding: 0.5rem 0;
+  }
+}
+
+@media screen and (max-width: 310px) {
+  .key-value-display__card {
+    width: 18rem;
+    height: 20rem;
+    padding: 0.8rem;
+  }
+
+  .key-value-display__row {
+    padding: 0.5rem 0;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .key-value-display__card {
+    width: 18rem;
+    height: 20rem;
+    padding: 0.8rem;
+  }
+
+  .key-value-display__row {
+    padding: 0.5rem 0;
+  }
+}

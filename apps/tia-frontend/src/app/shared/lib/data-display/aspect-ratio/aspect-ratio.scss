@@ -19,6 +19,7 @@
     @include flex-center(column);
     border-radius: 0.8rem;
     padding: 1.2rem;
+    width: var(--aspect-card-width, 28rem);
     max-width: 100%;
     min-width: 18rem;
     color: $blue-700;
@@ -29,5 +30,24 @@
       text-align: center;
     }
 
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .aspect-ratio__card {
+    width: 24rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .aspect-ratio__card {
+    width: 20rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .aspect-ratio__card {
+    width: 18rem;
+    padding: 1rem;
   }
 }

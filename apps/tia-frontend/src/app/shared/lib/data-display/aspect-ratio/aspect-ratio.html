@@ -7,7 +7,7 @@
         type="button"
         [style.background-color]="item.background"
         [style.aspect-ratio]="item.ratio"
-        [style.width]="item.width"
+      [style.--aspect-card-width]="item.width"
         (click)="onSelect(item)"
       >
         <span class="aspect-ratio__card-text">

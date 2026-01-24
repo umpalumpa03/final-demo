@@ -7,7 +7,7 @@ export const ASPECT_RATIO_ITEMS: AspectRatioItem[] = [
     description: 'Video',
     ratio: '16 / 9',
     width: '44.8rem',
-    background: 'var(--color-muted)',
+    background: 'color-mix(in srgb, var(--color-primary) 20%, transparent)',
   },
   {
     id: 'standard',
@@ -31,6 +31,6 @@ export const ASPECT_RATIO_ITEMS: AspectRatioItem[] = [
     description: 'Ultrawide',
     ratio: '21 / 9',
     width: '58.8rem',
-    background: 'var(--color-primary)',
+    background: 'var(--color-muted)',
   },
 ];
