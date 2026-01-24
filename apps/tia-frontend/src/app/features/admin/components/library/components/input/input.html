@@ -95,9 +95,9 @@
         <h2 class="gallery__section-title">Sliders</h2>
 
         <div class="gallery__input-stack">
-            @for (demo of sliderDemos(); track demo.config.label) {
+            @for (slider of sliderDemos(); track slider.config.label) {
             <div class="gallery__input-wrapper">
-                <lib-slider [config]="demo.config" [(value)]="demo.initialValue">
+                <lib-slider [config]="slider.config" [value]="slider.initialValue">
                 </lib-slider>
             </div>
             }

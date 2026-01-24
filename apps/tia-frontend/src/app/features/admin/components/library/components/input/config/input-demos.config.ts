@@ -189,6 +189,7 @@ export const SLIDER_DEMOS: SliderDemo[] = [
     initialValue: 50,
   },
 ] as const;
+
 export const SELECT_DEMOS: SelectDemo[] = [
   {
     config: {
@@ -211,4 +212,4 @@ export const SELECT_DEMOS: SelectDemo[] = [
     initialValue: null,
     options: [],
   },
-];
+] as const;

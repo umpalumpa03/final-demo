@@ -6,4 +6,4 @@ export const SLIDER_DEFAULTS: SliderConfig = {
   step: 1,
   showValueLabel: true,
   valueSuffix: '',
-};
+} as const;
