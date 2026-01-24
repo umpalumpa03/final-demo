@@ -58,9 +58,7 @@
   }
 
   &__close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include flex-center;
     position: absolute;
     top: 1.6rem;
     right: 1.6rem;
