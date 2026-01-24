@@ -1,6 +1,13 @@
 @use '../../../styles/palette' as *;
 @use '../../../styles/mixins' as *;
 
+
+
+@mixin badge-style($color: $white, $border: none) {
+  color: $color;
+  border: $border;
+}
+
 .badge-wrapper {
   @include display-flex(row, center);
   align-items: center;
@@ -16,13 +23,11 @@
 .badge {
   @include font-arimo(500, 1.2rem, 1.2);
   @include flex-center(row, flex-start, center);
+  @include badge-style;
   gap: 0.4rem;
   padding: 0.7rem 0.9rem;
   border-radius: 0;
-  border: none;
-  color: $white;
   transition: filter 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
-
   &[data-hoverable],
   &[data-clickable] {
     cursor: pointer;
@@ -251,85 +256,74 @@
 
   &[data-category="technology"] {
     background-color: $blue-500;
-    color: $white;
-    border: none;
+    @include badge-style;
   }
 
   &[data-category="design"] {
     background-color: $green-500;
-    color: $white;
-    border: none;
+    @include badge-style;
   }
 
   &[data-category="marketing"] {
     background-color: $purple-500;
-    color: $white;
-    border: none;
+    @include badge-style;
   }
 
   &[data-dot="online"] {
     background-color: $blue-royal;
-    color: $white;
+    @include badge-style;
   }
 
   &[data-dot="live"] {
     background-color: $blue-500;
-    color: $white;
+    @include badge-style;
   }
   &[data-dot="away"] {
     background-color: $blue-200;
-    color: $blue-700;
+    @include badge-style($color: $blue-700);
   }
   &[data-dot="offline"] {
     background-color: $white;
-    color: $blue-700;
+    @include badge-style($color: $blue-700);
   }
 
   &[data-custom-color="pink"] {
     background-color: $pink-400;
-    color: $white;
-    border: none;
+    @include badge-style;
   }
 
   &[data-custom-color="indigo"] {
     background-color: $indigo-400;
-    color: $white;
-    border: none;
+    @include badge-style;
   }
 
   &[data-custom-color="teal"] {
     background-color: $teal-400;
-    color: $white;
-    border: none;
+    @include badge-style;
   }
 
   &[data-custom-color="rose"] {
     background-color: $red-500;
-    color: $white;
-    border: none;
+    @include badge-style;
   }
 
   &[data-custom-color="cyan"] {
     background-color: $cyan-400;
-    color: $white;
-    border: none;
+    @include badge-style;
   }
 
   &[data-custom-color="amber"] {
     background-color: $yellow-500;
-    color: $white;
-    border: none;
+    @include badge-style;
   }
 
   &[data-custom-color="lime"] {
     background-color: $lime-400;
-    color: $white;
-    border: none;
+    @include badge-style;
   }
 
   &[data-custom-color="slate"] {
     background-color: $gray-700;
-    color: $white;
-    border: none;
+    @include badge-style;
   }
 }

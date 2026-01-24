@@ -146,17 +146,7 @@
     <div class="badge-demo__states-list">
       @for (item of badgeStates(); track item.id) {
       <div class="badge-demo__state-item">
-        <span class="badge-demo__state-label">
-          @if (item.disabled) {
-            Disabled:
-          } @else if (item.selected) {
-            Selected:
-          } @else if (item.text === 'Hover Me') {
-            Hovered:
-          } @else {
-            Default:
-          }
-        </span>
+        <span class="badge-demo__state-label">{{ getStateLabel(item) }}</span>
         <app-badges
           [variant]="item.variant"
           [text]="item.text"
@@ -164,9 +154,9 @@
           [shape]="item.shape"
           [disabled]="item.disabled ?? false"
           [selected]="item.selected ?? false"
-          [hoverable]="item.id === 'hover'"
-          [clickable]="item.id === 'selected'"
-          (selectedChange)="item.id === 'selected' ? onSelectedChange(item.id, $event) : null"
+          [hoverable]="item.hoverable ?? false"
+          [clickable]="item.clickable ?? false"
+          (selectedChange)="onSelectedChange(item.id, $event)"
           [customColor]="item.customColor"
         >
         </app-badges>

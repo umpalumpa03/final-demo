@@ -84,9 +84,9 @@ export const CATEGORY_BADGES: CategoryBadgeItem[] = [
 
 export const BADGE_STATES: BadgeStateItem[] = [
   { id: 'default', text: 'Normal Badge', size: 'medium', shape: 'rounded' },
-  { id: 'hover', text: 'Hover Me', size: 'medium', shape: 'rounded' },
+  { id: 'hover', text: 'Hover Me', size: 'medium', shape: 'rounded', hoverable: true },
   { id: 'disabled', text: 'Disabled', size: 'medium', shape: 'rounded', disabled: true },
-  { id: 'selected', text: 'Selected', size: 'medium', shape: 'pill', selected: true },
+  { id: 'selected', text: 'Selected', size: 'medium', shape: 'pill', selected: true, clickable: true },
 ] as const;
 
 export const CUSTOM_COLORS: CustomColorBadgeItem[] = [

@@ -83,15 +83,13 @@ export class Badges {
       shapeClass = 'badge--rounded';
     }
 
-    const isDisabled = this.disabled();
-    const isSelected = this.selected();
     const hasSpecialState = !!statusClass || hasDot || !!skillKey || !!categoryKey || !!customColorKey;
     
     let stateClass = '';
     if (!hasSpecialState) {
-      if (isDisabled) {
+      if (this.disabled()) {
         stateClass = 'badge--disabled';
-      } else if (isSelected) {
+      } else if (this.selected()) {
         stateClass = 'badge--selected';
       }
     }

@@ -58,4 +58,11 @@ export class BadgeComponent {
   public onSimpleBadgeSelectedChange(selected: boolean): void {
     this.simpleBadgeSelected.set(selected);
   }
+
+  public getStateLabel(item: { disabled?: boolean; selected?: boolean; text?: string }): string {
+    if (item.disabled) return 'Disabled:';
+    if (item.selected) return 'Selected:';
+    if (item.text === 'Hover Me') return 'Hovered:';
+    return 'Default:';
+  }
 }

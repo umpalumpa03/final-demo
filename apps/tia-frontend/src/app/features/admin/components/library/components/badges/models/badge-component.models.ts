@@ -85,6 +85,7 @@ export interface BadgeStateItem {
   variant?: BadgeVariant;
   customColor?: BadgeCustomColor;
   hoverable?: boolean;
+  clickable?: boolean;
 }
 
 export interface CustomColorBadgeItem {
