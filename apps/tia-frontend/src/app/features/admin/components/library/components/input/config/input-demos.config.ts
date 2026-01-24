@@ -4,6 +4,7 @@ import {
   InputDemo,
   RadioDemo,
   SliderDemo,
+  SelectDemo,
   SwitchDemo,
   TextareaDemo,
 } from '../models/input-demos.model';
@@ -188,3 +189,26 @@ export const SLIDER_DEMOS: SliderDemo[] = [
     initialValue: 50,
   },
 ] as const;
+export const SELECT_DEMOS: SelectDemo[] = [
+  {
+    config: {
+      label: 'Select an Option',
+      placeholder: 'Choose an option...',
+    },
+    initialValue: null,
+    options: [
+      { label: 'Option 1', value: 1 },
+      { label: 'Option 2', value: 2 },
+      { label: 'Option 3', value: 3 },
+    ],
+  },
+  {
+    config: {
+      label: 'Disabled Select',
+      placeholder: 'Disabled select',
+      disabled: true,
+    },
+    initialValue: null,
+    options: [],
+  },
+];

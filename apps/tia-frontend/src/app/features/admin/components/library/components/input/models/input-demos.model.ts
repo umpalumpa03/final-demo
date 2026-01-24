@@ -1,5 +1,10 @@
 import { CheckboxConfig } from '@tia/shared/lib/forms/models/checkbox.model';
 import {
+  SelectConfig,
+  SelectOption,
+  SelectValue,
+} from '@tia/shared/lib/forms/models/dropdowns.model';
+import {
   TextInputType,
   InputState,
   InputConfig,
@@ -41,4 +46,10 @@ export interface SwitchDemo {
 export interface SliderDemo {
   config: SliderConfig;
   initialValue: number;
+}
+
+export interface SelectDemo {
+  config: SelectConfig;
+  options: SelectOption[];
+  initialValue: SelectValue | null;
 }
