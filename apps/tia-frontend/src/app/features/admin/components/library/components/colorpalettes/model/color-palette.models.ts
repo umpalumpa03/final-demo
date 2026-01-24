@@ -10,3 +10,10 @@ export interface ColorPalette {
   scssClass: string;
   themeLabel?: string;
 }
+
+export interface Note {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+}

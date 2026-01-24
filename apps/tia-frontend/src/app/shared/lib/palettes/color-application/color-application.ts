@@ -5,7 +5,7 @@ import {
   input,
 } from '@angular/core';
 import { colorApplication } from '../../../../features/admin/components/library/components/colorpalettes/config/palette-data.config';
-import { ThemeType } from '../../../../features/admin/components/library/components/colorpalettes/model/palette.model';
+import { ThemeType } from '../../../../features/admin/components/library/components/colorpalettes/model/color-palette.models';
 
 @Component({
   selector: 'app-color-application',

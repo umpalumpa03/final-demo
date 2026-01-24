@@ -216,3 +216,144 @@ OUTPUTS
 (paginationChange) -> emits selected number when dropdown changed
 
 NG-CONTENT: any content placed between <app-draggable-card>...</app-draggable-card> tags renders below the default card content
+
+---
+
+TREE CONTAINER (expandable groups with draggable items)
+
+USE WHEN: you need hierarchical structure with expandable parent groups and draggable child items
+
+USAGE example
+
+    <app-tree-container
+      [groups]="treeGroups"
+      [items]="treeItems"
+      [canDelete]="true"
+      [editable]="true"
+      containerTitle="Tree View"
+      containerDescription="Drag items to reorder or move between groups"
+      (groupsChange)="treeGroups = $event"
+      (itemsChange)="treeItems = $event"
+      (itemMoved)="onTreeItemMoved($event)"
+      (itemReordered)="onTreeItemReordered($event)"
+      (expandedChange)="onTreeExpandedChange($event)"
+    />
+
+REQUIRED:
+[groups] -> array of group configs
+{
+id: -> unique group id
+title: -> group title
+subtitle: -> optional group subtitle
+icon: -> optional icon path
+expanded: -> true or false (initial expanded state)
+}
+
+[items] -> array of tree items
+{
+id: -> unique item id
+title: -> card title
+subtitle: -> card subtitle
+groupId: -> which group this item belongs to
+order: -> position in the group
+}
+
+(groupsChange)="treeGroups = $event" -> is a MUST for parent to know how to update groups
+(itemsChange)="treeItems = $event" -> is a MUST for parent to know how to update items
+
+INPUTS
+[canDelete] -> true or false (show trash icon) false by default
+[editable] -> true or false (show edit icon) false by default
+[hasButton] -> true or false (show button) false by default
+[hasAddOption] -> true or false (show plus icon) false by default
+[hasViewOption] -> true or false (show eye toggle icon) false by default
+[hasPagination] -> true or false (show pagination dropdown) false by default
+[containerTitle] -> h2 of the tree wrapper itself
+[containerDescription] -> p of the tree wrapper itself
+
+OUTPUTS
+(itemMoved)="onTreeItemMoved($event)" -> when item moves between groups, returns:
+{
+itemId: -> which item moved
+fromGroupId: -> from which group
+toGroupId: -> to which group
+newOrder: -> new position in target group
+}
+
+(itemReordered)="onTreeItemReordered($event)" -> when item reorders within same group, returns:
+{
+itemId: -> which item reordered
+groupId: -> in which group
+newOrder: -> new position
+}
+
+(itemRemoved)="onItemRemoved($event)" -> returns removed item id
+(itemEdited)="onItemEdited($event)" -> returns edited item id
+(itemAdded)="onItemAdded($event)" -> returns item id when plus icon clicked
+(groupRemoved)="onGroupRemoved($event)" -> returns removed group id (also removes all items in that group)
+(groupEdited)="onGroupEdited($event)" -> returns edited group id
+(expandedChange)="onExpandedChange($event)" -> when group expanded/collapsed, returns:
+{
+id: -> which group
+expanded: -> true or false
+}
+
+NOTE:
+
+- groups are draggable and can be reordered
+- items can be dragged between groups or reordered within same group
+- expand icon only shows when group has children
+- when group is empty, drop zone shows "Drop items here" message
+- expand/collapse has smooth CSS animation
+
+DATA CONFIG example
+
+    export const treeGroups: TreeGroupConfig[] = [
+      { id: 'g1', title: 'Group 1', subtitle: 'First group', expanded: true },
+      { id: 'g2', title: 'Group 2', subtitle: 'Second group', expanded: true },
+      { id: 'g3', title: 'Group 3', subtitle: 'Third group', expanded: false },
+    ];
+
+    export const treeItems: TreeItem[] = [
+      { id: 'c1', title: 'Child 1', subtitle: 'Drag to reorder', groupId: 'g1', order: 0 },
+      { id: 'c2', title: 'Child 2', subtitle: 'Drag to reorder', groupId: 'g1', order: 1 },
+      { id: 'c3', title: 'Child 3', subtitle: 'Drag to reorder', groupId: 'g1', order: 2 },
+      { id: 'c4', title: 'Child 4', subtitle: 'Drag to reorder', groupId: 'g2', order: 0 },
+      { id: 'c5', title: 'Child 5', subtitle: 'Drag to reorder', groupId: 'g2', order: 1 },
+      { id: 'c6', title: 'Child 6', subtitle: 'Drag to reorder', groupId: 'g3', order: 0 },
+    ];
+
+---
+
+DRAGGABLE CARD (updated)
+
+INPUTS
+[itemData] -> required, card data object
+{
+title: -> title
+subtitle: -> subtitle
+icon: -> optional icon path
+}
+[canDelete] -> true or false (show trash icon) false by default
+[editable] -> true or false (show edit icon) false by default
+[hasButton] -> true or false (show button) false by default
+[buttonVariant] -> button style variant
+[buttonContent] -> text inside button
+[hasAddOption] -> true or false (show plus icon) false by default
+[hasViewOption] -> true or false (show eye toggle icon) false by default
+[hasPagination] -> true or false (show pagination dropdown) false by default
+[paginationVariants] -> array of numbers for dropdown options
+[expandable] -> true or false (show expand/collapse arrow) false by default
+[expanded] -> true or false (current expanded state) false by default
+
+OUTPUTS
+(dragStart) -> emits PointerEvent when drag handle clicked
+(remove) -> emits when trash icon clicked
+(edit) -> emits when edit icon clicked
+(add) -> emits when plus icon clicked
+(viewOptionChange) -> emits boolean when eye icon toggled (true = visible, false = hidden)
+(paginationChange) -> emits selected number when dropdown changed
+(expandedChange) -> emits boolean when expand arrow clicked
+
+NOTE: expand arrow appears between drag icon and content, rotates 180deg when expanded
+
