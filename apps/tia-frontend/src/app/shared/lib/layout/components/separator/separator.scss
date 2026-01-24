@@ -1,0 +1,51 @@
+@use '../../../../styles/mixins' as *;
+@use '../../../../styles/palette' as *;
+
+.separator {
+  width: 100%;
+  @include flex-center(inherit, flex-start, stretch);
+  height: 100%;
+
+  &__line {
+    background-color: $blue-400;
+  }
+
+  &__label {
+    color: $gray-200;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    @include flex-center(row);
+  }
+
+  &--horizontal {
+    @include flex-center(row, flex-start, stretch);
+
+    .separator__line {
+      height: var(--sep-thickness);
+      flex-grow: 1;
+      margin: var(--sep-margin) 0;
+    }
+
+    .separator__label {
+      padding: 0 1rem;
+    }
+  }
+
+  &--vertical {
+    flex-direction: column;
+    width: var(--sep-thickness);
+    min-height: 1.2em;
+    height: 100%;
+    display: inline-flex;
+
+    .separator__line {
+      width: var(--sep-thickness);
+      flex-grow: 1;
+      margin: 0 var(--sep-margin);
+    }
+
+    .separator__label {
+      padding: 1rem 0;
+    }
+  }
+}

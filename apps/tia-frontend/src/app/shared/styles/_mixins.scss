@@ -37,3 +37,19 @@
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
+
+@mixin slider-track($height: 1.6rem, $bg-color: $blue-ocean-muted, $border-radius: 10rem) {
+  width: 100%;
+  height: $height;
+  border-radius: $border-radius;
+  background-color: $bg-color;
+}
+
+@mixin slider-thumb($size: 2.2rem, $bg-color: $white, $border-color: $blue-ocean, $border-width: 0.15rem) {
+  height: $size;
+  width: $size;
+  border-radius: 50%;
+  background: $bg-color;
+  border: $border-width solid $border-color;
+  box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.1);
+}

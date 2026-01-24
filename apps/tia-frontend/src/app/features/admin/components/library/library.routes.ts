@@ -84,8 +84,12 @@ export const libraryRoutes: Routes = [
         path: 'inputs',
         loadComponent: () =>
           import('./components/input/input').then((c) => c.Input),
-      }
-  
+      },
+      {
+        path: 'layout',
+        loadComponent: () =>
+          import('./components/layout/container/layout').then((c) => c.Layout),
+      },
     ],
   },
 ];

@@ -76,4 +76,32 @@
             }
         </div>
     </section>
+
+    <section class="gallery__section">
+        <h2 class="gallery__section-title">Select Dropdown</h2>
+
+        <div class="gallery__input-stack">
+            @for (select of selectDemos(); track select.config.label) {
+            <div class="gallery__input-wrapper">
+                <lib-select [options]="select.options" [config]="select.config">
+                </lib-select>
+            </div>
+            }
+        </div>
+    </section>
+
+
+    <section class="gallery__section">
+        <h2 class="gallery__section-title">Sliders</h2>
+
+        <div class="gallery__input-stack">
+            @for (slider of sliderDemos(); track slider.config.label) {
+            <div class="gallery__input-wrapper">
+                <lib-slider [config]="slider.config" [value]="slider.initialValue">
+                </lib-slider>
+            </div>
+            }
+        </div>
+    </section>
+
 </div>
