@@ -2,6 +2,7 @@ export interface DraggableItemType {
   id: string;
   title: string;
   subtitle: string;
+  icon?: string;
 }
 
 export interface KanbanItem extends DraggableItemType {
