@@ -47,4 +47,8 @@ export class Layout {
   public readonly flexLayoutConfig = signal(flexLayoutConfig);
   public readonly gridLayoutConfig = signal(gridLayoutConfig);
   public readonly resizablePanelsConfig = signal(resizablePanelsConfig);
+
+  public getFlexItemClass(wrap: boolean): string {
+    return wrap ? 'flex-wrap-item' : 'flex-item';
+  }
 }

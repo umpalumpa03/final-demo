@@ -132,7 +132,7 @@
                     <h4 class="section__title">{{ config.title }}</h4>
                     <app-flex-layout [variant]="config.variant" [wrap]="config.wrap" gap="1.6rem">
                         @for (item of config.items; track item.id) {
-                        <div [class]="config.wrap ? 'flex-wrap-item' : 'flex-item'">{{ item.label }}</div>
+                        <div [class]="getFlexItemClass(config.wrap)">{{ item.label }}</div>
                         }
                     </app-flex-layout>
                 </div>
