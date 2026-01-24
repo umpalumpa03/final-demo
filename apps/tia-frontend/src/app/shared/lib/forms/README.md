@@ -8,48 +8,47 @@ Components:
 
    Supported Types: text | email | password | search | number | date | time | color | file | url | tel
 
-<lib-text-input
-  [(value)]="username"
-  [type]="'email'"
-  [config]="{
-    label: 'Email Address',
-    placeholder: 'Enter your email',
-    required: true,
-    prefixIcon: 'assets/icons/email.svg',
-    helperText: 'We will never share your email'
-  }">
-</lib-text-input>
+   <lib-text-input
+      [(value)]="username"
+      [type]="'email'"
+      [config]="{
+         label: 'Email Address',
+         placeholder: 'Enter your email',
+         required: true,
+         prefixIcon: 'assets/icons/email.svg',
+         helperText: 'We will never share your email'
+      }">
+   </lib-text-input>
 
 
    Reactive forms usage:
 
-   // TS FILE
    searchForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]]
    });
 
-<form [formGroup]="searchForm">
+   <form [formGroup]="searchForm">
 
-  <lib-text-input
-    formControlName="email"
-    [type]="'email'"
-    [config]="{
-      label: 'Email',
-      successMessage: 'Valid email address'
-    }">
-  </lib-text-input>
+      <lib-text-input
+         formControlName="email"
+         [type]="'email'"
+         [config]="{
+            label: 'Email',
+            successMessage: 'Valid email address'
+         }">
+      </lib-text-input>
 
-  <lib-text-input
-    formControlName="password"
-    [type]="'password'"
-    [config]="{
-      label: 'Password',
-      showPasswordToggle: true
-    }">
-  </lib-text-input>
+      <lib-text-input
+         formControlName="password"
+         [type]="'password'"
+         [config]="{
+            label: 'Password',
+            showPasswordToggle: true
+         }">
+      </lib-text-input>
 
-</form>
+   </form>
 
 ---
 
@@ -71,27 +70,27 @@ Components:
    </lib-textarea>
 
 
-Reactive Forms Usage:
+   Reactive Forms Usage:
 
-form = this.fb.group({
-  bio: ['', [Validators.maxLength(500)]]
-});
+   form = this.fb.group({
+      bio: ['', [Validators.maxLength(500)]]
+   });
 
-<lib-textarea
-  formControlName="bio"
-  [config]="{
-    label: 'Biography',
-    resizable: 'vertical',
-    showCharacterCount: true
-  }">
-</lib-textarea>
+   <lib-textarea
+      formControlName="bio"
+      [config]="{
+         label: 'Biography',
+         resizable: 'vertical',
+         showCharacterCount: true
+      }">
+   </lib-textarea>
 
 
-interface TextareaConfig {
-  rows?: number; // Default: 2
-  resizable?: 'none' | 'both' | 'horizontal' | 'vertical'; // Default: 'none'
-  showCharacterCount?: boolean; // Default: true
-}
+   interface TextareaConfig {
+      rows?: number; // Default: 2
+      resizable?: 'none' | 'both' | 'horizontal' | 'vertical'; // Default: 'none'
+      showCharacterCount?: boolean; // Default: true
+   }
 
 
 ---
@@ -110,13 +109,13 @@ interface TextareaConfig {
 
 
    <lib-select
-   [(value)]="selectedCountry"
-   [options]="countries"
-   [config]="{
-      label: 'Country',
-      placeholder: 'Select your country',
-      required: true
-   }">
+      [(value)]="selectedCountry"
+      [options]="countries"
+      [config]="{
+         label: 'Country',
+         placeholder: 'Select your country',
+         required: true
+      }">
    </lib-select>
 
 
@@ -181,7 +180,7 @@ interface TextareaConfig {
 
 
 
-Reactive Forms Usage:
+   Reactive Forms Usage:
 
    form = this.fb.group({
       subscription: ['basic', Validators.required]
@@ -189,12 +188,12 @@ Reactive Forms Usage:
 
 
    <lib-radios
-   formControlName="subscription"
-   [options]="plans"
-   [config]="{
-      label: 'Subscription Plan',
-      layout: 'row'
-   }">
+      formControlName="subscription"
+      [options]="plans"
+      [config]="{
+         label: 'Subscription Plan',
+         layout: 'row'
+      }">
    </lib-radios>
 
    interface RadioGroupConfig {
@@ -219,16 +218,17 @@ Reactive Forms Usage:
    Selector: lib-slider
 
    Standalone Usage:
+
    <lib-slider
-   [(value)]="volume"
-   [config]="{
-      label: 'Volume',
-      min: 0,
-      max: 100,
-      step: 5,
-      showValueLabel: true,
-      valueSuffix: '%'
-   }">
+      [(value)]="volume"
+      [config]="{
+         label: 'Volume',
+         min: 0,
+         max: 100,
+         step: 5,
+         showValueLabel: true,
+         valueSuffix: '%'
+      }">
    </lib-slider>
 
    Reactive Forms Usage:
@@ -238,24 +238,25 @@ Reactive Forms Usage:
    });
 
    <lib-slider
-   formControlName="price"
-   [config]="{
-      label: 'Price Range',
-      min: 0,
-      max: 1000,
-      step: 10,
-      valueSuffix: '$'
-   }">
+      formControlName="price"
+      [config]="{
+         label: 'Price Range',
+         min: 0,
+         max: 1000,
+         step: 10,
+         valueSuffix: '$'
+      }">
    </lib-slider>
 
    Configuration Options:
-      interface SliderConfig {
-         min?: number; // Default: 0
-         max?: number; // Default: 100
-         step?: number; // Default: 1
-         showValueLabel?: boolean; // Default: true
-         valueSuffix?: string; // Default: '' (e.g., '%', 'px', '$')
-      }
+
+   interface SliderConfig {
+      min?: number; // Default: 0
+      max?: number; // Default: 100
+      step?: number; // Default: 1
+      showValueLabel?: boolean; // Default: true
+      valueSuffix?: string; // Default: '' (e.g., '%', 'px', '$')
+   }
 
 ---
 
@@ -293,6 +294,40 @@ Reactive Forms Usage:
    </lib-switches>
 
 ---
+
+7. OTP
+
+   Selector: <lib-otp>
+
+   Standalone Usage:
+   <lib-otp
+      [(value)]="otpCode"
+      [config]="{
+            label: 'Enter Verification Code',
+            length: 6,
+            inputType: 'number',
+            placeholder: '-'
+      }">
+   </lib-otp>
+
+   Reactive Forms Usage:
+   
+   form = this.fb.group({
+      verificationCode: ['', [Validators.required, Validators.minLength(6)]]
+   });
+
+   <lib-otp
+      formControlName="verificationCode"
+      [config]="{
+            label: 'Security Code',
+            length: 6,
+            inputType: 'number',
+            required: true
+      }">
+   </lib-otp>
+
+---
+
 
 Configuration System
 Base Configuration (All Components):

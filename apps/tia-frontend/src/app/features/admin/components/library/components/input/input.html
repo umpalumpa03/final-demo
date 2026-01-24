@@ -106,11 +106,9 @@
 
     <section class="gallery__section">
         <h2 class="gallery__section-title">OTP Input</h2>
-
         <div class="gallery__input-stack">
             @for (otp of otpDemos(); track otp.title) {
             <div class="gallery__input-wrapper">
-                <h4 class="otp__title">{{ otp.title }}</h4>
                 <lib-otp [config]="otp.config" [value]="otp.initialValue">
                 </lib-otp>
             </div>

@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Otp } from './otp';
 
 describe('Otp', () => {
@@ -12,10 +14,88 @@ describe('Otp', () => {
 
     fixture = TestBed.createComponent(Otp);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+
+  it('should handle numeric input, filter non-digits, and move focus', () => {
+    fixture.componentRef.setInput('config', { length: 6, inputType: 'number' });
+    fixture.detectChanges();
+
+    const inputs = fixture.debugElement.queryAll(By.css('input'));
+    const firstInput = inputs[0].nativeElement;
+    const secondInput = inputs[1].nativeElement;
+    
+    const focusSpy = vi.spyOn(secondInput, 'focus');
+
+    firstInput.value = 'a';
+    firstInput.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    
+    expect(component.value()).toBe('');
+
+    firstInput.value = '5';
+    firstInput.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    
+    expect(component.value()).toBe('5');
+    expect(focusSpy).toHaveBeenCalled(); 
+  });
+it('should handle keyboard navigation (Arrows & Backspace)', () => {
+    fixture.componentRef.setInput('value', '12');
+    fixture.detectChanges();
+
+    const inputs = fixture.debugElement.queryAll(By.css('input'));
+    const input0 = inputs[0].nativeElement; 
+    const input1 = inputs[1].nativeElement;
+    const input2 = inputs[2].nativeElement;
+
+    const spy0 = vi.spyOn(input0, 'focus');
+    const spy1 = vi.spyOn(input1, 'focus');
+
+    inputs[0].triggerEventHandler('keydown', { 
+        key: 'ArrowRight', 
+        target: input0, 
+        preventDefault: () => {} 
+    });
+    expect(spy1).toHaveBeenCalled();
+
+    inputs[1].triggerEventHandler('keydown', { 
+        key: 'ArrowLeft', 
+        target: input1, 
+        preventDefault: () => {} 
+    });
+    expect(spy0).toHaveBeenCalled();
+
+    inputs[2].triggerEventHandler('keydown', { 
+        key: 'Backspace', 
+        target: input2, 
+        preventDefault: () => {} 
+    });
+    
+    expect(component.value()).toBe('1'); 
+    expect(spy1).toHaveBeenCalledTimes(2); 
+  });
+
+  it('should handle pasting data', async () => {
+    const inputs = fixture.debugElement.queryAll(By.css('input'));
+    const input0 = inputs[0];
+
+    const mockPreventDefault = vi.fn();
+
+    const mockClipboardEvent = {
+      preventDefault: mockPreventDefault,
+      clipboardData: {
+        getData: () => '123456'
+      }
+    };
+
+    input0.triggerEventHandler('paste', mockClipboardEvent);
+    fixture.detectChanges();
+
+    await fixture.whenStable(); 
+
+    expect(component.value()).toBe('123456');
+    expect(mockPreventDefault).toHaveBeenCalled();
   });
 });
