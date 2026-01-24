@@ -4,8 +4,8 @@ import {
   computed,
   ElementRef,
   viewChild,
+  viewChildren,
   input,
-  effect,
   afterNextRender,
   ChangeDetectionStrategy,
 } from '@angular/core';
@@ -38,6 +38,7 @@ export class ResizableHorizontal {
   protected contentRef = viewChild<ElementRef<HTMLElement>>('contentWrapper');
   protected panelsContainerRef =
     viewChild<ElementRef<HTMLElement>>('panelsContainer');
+  protected panelRefs = viewChildren<ElementRef<HTMLElement>>('panel');
 
   protected panelWidths = signal<number[]>([300]);
 
@@ -87,17 +88,15 @@ export class ResizableHorizontal {
 
   private distributeContent(): void {
     const contentWrapper = this.contentRef()?.nativeElement;
-    const panelsContainer = this.panelsContainerRef()?.nativeElement;
+    const panels = this.panelRefs();
 
-    if (!contentWrapper || !panelsContainer) return;
+    if (!contentWrapper || panels.length === 0) return;
 
     const children = Array.from(contentWrapper.children) as HTMLElement[];
-    const expectedPanels = this.panelSize();
 
-    const panels = panelsContainer.querySelectorAll('.ta-resizable-panel');
-    for (let i = 0; i < expectedPanels; i++) {
+    for (let i = 0; i < panels.length; i++) {
       if (panels[i] && children[i]) {
-        panels[i].appendChild(children[i]);
+        panels[i].nativeElement.appendChild(children[i]);
       }
     }
   }
