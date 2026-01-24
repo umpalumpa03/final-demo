@@ -1,4 +1,4 @@
-import { ListDisplayItem } from '../../../../../../../shared/lib/data-display/list-display/models/models';
+import { ListDisplayItem } from '../../../../../../../shared/lib/data-display/models/list-display.models';
 
 export const LIST_DISPLAY_ITEMS: ListDisplayItem[] = [
   {

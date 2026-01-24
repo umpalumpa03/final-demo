@@ -1,5 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { TimelineDisplayItem, TimelineDisplayTone } from './models/models';
+import {
+  TimelineDisplayItem,
+  TimelineDisplayTone,
+} from '../models/timeline-display.models';
 
 @Component({
   selector: 'app-timeline-display',

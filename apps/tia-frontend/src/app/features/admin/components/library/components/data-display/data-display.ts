@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { AspectRatio } from '../../../../../../shared/lib/data-display/aspect-ratio/aspect-ratio';
-import { AspectRatioItem } from '../../../../../../shared/lib/data-display/aspect-ratio/models/aspect-ratio.models';
+import { AspectRatioItem } from '../../../../../../shared/lib/data-display/models/aspect-ratio.models';
 import { Avatar } from '../../../../../../shared/lib/data-display/avatars/avatar';
 import { AvatarGroup } from '../../../../../../shared/lib/data-display/avatars/avatar-groups/avatar-group';
 import { StatisticCard } from '../../../../../../shared/lib/cards/statistic-card/statistic-card';
 import {
   AvatarGroupItem,
   AvatarUserProfile,
-} from '../../../../../../shared/lib/data-display/avatars/models/avatar.model';
+} from '../../../../../../shared/lib/data-display/models/avatar.model';
 import { HoverCard } from '../../../../../../shared/lib/data-display/hover-card/hover-card';
 import { KeyValueDisplay } from '../../../../../../shared/lib/data-display/key-value-display/key-value-display';
 import { ListDisplay } from '../../../../../../shared/lib/data-display/list-display/list-display';

@@ -1,5 +1,8 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { ListDisplayItem, ListDisplayTone } from './models/models';
+import {
+  ListDisplayItem,
+  ListDisplayTone,
+} from '../models/list-display.models';
 
 @Component({
   selector: 'app-list-display',

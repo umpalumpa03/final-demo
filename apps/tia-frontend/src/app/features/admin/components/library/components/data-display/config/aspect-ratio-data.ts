@@ -1,4 +1,4 @@
-import { AspectRatioItem } from '../../../../../../../shared/lib/data-display/aspect-ratio/models/aspect-ratio.models';
+import { AspectRatioItem } from '../../../../../../../shared/lib/data-display/models/aspect-ratio.models';
 
 export const ASPECT_RATIO_ITEMS: AspectRatioItem[] = [
   {

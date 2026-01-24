@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { KeyValueDisplay } from './key-value-display';
-import { KeyValueDisplayItem } from './models/models';
+import { KeyValueDisplayItem } from '../models/key-value-display.models';
 
 describe('KeyValueDisplay', () => {
   let component: KeyValueDisplay;

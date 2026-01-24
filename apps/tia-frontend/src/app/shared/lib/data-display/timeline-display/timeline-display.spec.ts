@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TimelineDisplay } from './timeline-display';
-import { TimelineDisplayItem } from './models/models';
+import { TimelineDisplayItem } from '../models/timeline-display.models';
 
 describe('TimelineDisplay', () => {
   let component: TimelineDisplay;

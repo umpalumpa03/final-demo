@@ -1,4 +1,4 @@
-import { TimelineDisplayItem } from '../../../../../../../shared/lib/data-display/timeline-display/models/models';
+import { TimelineDisplayItem } from '../../../../../../../shared/lib/data-display/models/timeline-display.models';
 
 export const TIMELINE_ITEMS: TimelineDisplayItem[] = [
   {

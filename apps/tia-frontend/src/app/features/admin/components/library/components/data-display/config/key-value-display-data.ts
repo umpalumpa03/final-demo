@@ -1,4 +1,4 @@
-import { KeyValueDisplayItem } from '../../../../../../../shared/lib/data-display/key-value-display/models/models';
+import { KeyValueDisplayItem } from '../../../../../../../shared/lib/data-display/models/key-value-display.models';
 
 export const KEY_VALUE_TITLE = 'User Information';
 

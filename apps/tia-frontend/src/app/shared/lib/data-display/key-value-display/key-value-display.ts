@@ -1,5 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { KeyValueDisplayBadgeTone, KeyValueDisplayItem } from './models/models';
+import {
+  KeyValueDisplayBadgeTone,
+  KeyValueDisplayItem,
+} from '../models/key-value-display.models';
 
 @Component({
   selector: 'app-key-value-display',
