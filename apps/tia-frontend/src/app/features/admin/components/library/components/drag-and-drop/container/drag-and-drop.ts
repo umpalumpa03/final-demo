@@ -6,11 +6,17 @@ import {
   KanbanItem,
   CardMovedEvent,
   CardReorderedEvent,
+  TreeItem,
+  TreeGroupConfig,
+  TreeItemMovedEvent,
+  TreeItemReorderedEvent,
 } from '@tia/shared/lib/drag-n-drop/model/drag.model';
-import { items } from 'apps/tia-frontend/src/app/features/admin/components/library/components/drag-and-drop/config/draggable-data.config';
 import {
+  items,
   boards,
   kanbanItems,
+  treeGroups,
+  treeItems,
 } from 'apps/tia-frontend/src/app/features/admin/components/library/components/drag-and-drop/config/draggable-data.config';
 import { KanbanBoard } from '@tia/shared/lib/drag-n-drop/components/kanban-board/kanban-board';
 import { LibraryTitle } from '../../../shared/library-title/library-title';
@@ -18,6 +24,7 @@ import { InstructionsCard } from '../instructions-card/instructions-card';
 import { DraggableCard } from '@tia/shared/lib/drag-n-drop/components/draggable-card/draggable-card';
 import { DragContainer } from '@tia/shared/lib/drag-n-drop/components/drag-container/drag-container';
 import { DragItemDirective } from '@tia/shared/lib/drag-n-drop/directives/drag-item.directive';
+import { TreeContainer } from '@tia/shared/lib/drag-n-drop/components/tree-container/tree-container';
 
 @Component({
   selector: 'app-drag-and-drop-container',
@@ -29,6 +36,7 @@ import { DragItemDirective } from '@tia/shared/lib/drag-n-drop/directives/drag-i
     DraggableCard,
     DragContainer,
     DragItemDirective,
+    TreeContainer,
   ],
   templateUrl: './drag-and-drop.html',
   styleUrl: './drag-and-drop.scss',
@@ -45,7 +53,13 @@ export class DragAndDropContainer {
   // kanban cards
   public kanbanItems: KanbanItem[] = [...kanbanItems];
 
+  // drag container items
   public myItems: DraggableItemType[] = [...items];
+
+  // tree
+  public treeGroups: TreeGroupConfig[] = [...treeGroups];
+  public treeItems: TreeItem[] = [...treeItems];
+
   public canDelete = true;
 
   // grid card deleted
@@ -81,12 +95,34 @@ export class DragAndDropContainer {
   // pagination dropdown changed
   public onPaginationChanged(event: { id: string; value: number }): void {}
 
-  //drag container
+  // drag container
   public onItemsChange(items: DraggableItemType[]): void {
     this.myItems = items;
   }
+
   // outputs directly from draggable card
   public onRemove(id: string): void {}
   public onEdit(id: string): void {}
   public onContainerOrderChange(ids: string[]): void {}
+
+  // tree
+  public onTreeGroupsChange(groups: TreeGroupConfig[]): void {
+    this.treeGroups = groups;
+  }
+
+  public onTreeItemsChange(items: TreeItem[]): void {
+    this.treeItems = items;
+  }
+
+  public onTreeItemMoved(event: TreeItemMovedEvent): void {
+    console.log('Item moved:', event);
+  }
+
+  public onTreeItemReordered(event: TreeItemReorderedEvent): void {
+    console.log('Item reordered:', event);
+  }
+
+  public onTreeExpandedChange(event: { id: string; expanded: boolean }): void {
+    console.log('Expanded changed:', event);
+  }
 }

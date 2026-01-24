@@ -6,6 +6,7 @@ import {
   input,
   output,
   signal,
+  model,
 } from '@angular/core';
 import { DraggableItemType } from '../../model/drag.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -34,6 +35,8 @@ export class DraggableCard {
   public hasViewOption = input(false);
   public hasPagination = input(false);
   public paginationVariants = input<number[]>([10, 20, 40]);
+  public expandable = input(false);
+  public expanded = model(false);
 
   public dragStart = output<PointerEvent>();
   public remove = output<void>();
@@ -41,18 +44,17 @@ export class DraggableCard {
   public add = output<void>();
   public viewOptionChange = output<boolean>();
   public paginationChange = output<number>();
+  public expandedChange = output<boolean>();
 
   public isViewable = signal(true);
   public selectedPagination = signal(10);
 
-  
   protected readonly computedIsDragging = computed(() => {
     if (this.container) {
       return this.container.draggingId() === this.itemData().id;
     }
     return this.isDragging();
   });
-
 
   protected readonly computedIsDropTarget = computed(() => {
     if (this.container) {
@@ -62,8 +64,13 @@ export class DraggableCard {
   });
 
   public onDragStartPoint(event: PointerEvent): void {
-    event.preventDefault();
-    this.dragStart.emit(event);
+    const target = event.target as HTMLElement;
+
+
+    if (target.classList.contains('draggable-card__icon')) {
+      event.preventDefault();
+      this.dragStart.emit(event);
+    }
   }
 
   public onRemove(): void {
@@ -81,6 +88,12 @@ export class DraggableCard {
   public onToggleView(): void {
     this.isViewable.update((v) => !v);
     this.viewOptionChange.emit(this.isViewable());
+  }
+
+  public onToggleExpanded(event: Event): void {
+    event.stopPropagation(); 
+    this.expanded.update((v) => !v);
+    this.expandedChange.emit(this.expanded());
   }
 
   public onPaginationChange(event: Event): void {

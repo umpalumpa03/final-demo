@@ -2,6 +2,8 @@ import {
   BoardConfig,
   DraggableItemType,
   KanbanItem,
+  TreeGroupConfig,
+  TreeItem,
 } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 
 export const items = [
@@ -45,3 +47,55 @@ export const kanbanItems = [
   { id: '5', title: 'Task 5', subtitle: '', boardId: 'in-progress', order: 1 },
   { id: '6', title: 'Task 6', subtitle: '', boardId: 'done', order: 0 },
 ] as const satisfies readonly KanbanItem[];
+
+
+export const treeGroups: TreeGroupConfig[] = [
+  { id: 'g1', title: 'Group 1', subtitle: 'First group', expanded: true },
+  { id: 'g2', title: 'Group 2', subtitle: 'Second group', expanded: true },
+  { id: 'g3', title: 'Group 3', subtitle: 'Third group', expanded: false },
+];
+
+export const treeItems: TreeItem[] = [
+  {
+    id: 'c1',
+    title: 'Child 1',
+    subtitle: 'Drag to reorder',
+    groupId: 'g1',
+    order: 0,
+  },
+  {
+    id: 'c2',
+    title: 'Child 2',
+    subtitle: 'Drag to reorder',
+    groupId: 'g1',
+    order: 1,
+  },
+  {
+    id: 'c3',
+    title: 'Child 3',
+    subtitle: 'Drag to reorder',
+    groupId: 'g1',
+    order: 2,
+  },
+  {
+    id: 'c4',
+    title: 'Child 4',
+    subtitle: 'Drag to reorder',
+    groupId: 'g2',
+    order: 0,
+  },
+  {
+    id: 'c5',
+    title: 'Child 5',
+    subtitle: 'Drag to reorder',
+    groupId: 'g2',
+    order: 1,
+  },
+  {
+    id: 'c6',
+    title: 'Child 6',
+    subtitle: 'Drag to reorder',
+    groupId: 'g3',
+    order: 0,
+  },
+];
