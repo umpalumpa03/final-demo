@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   QueryList,
+  viewChildren,
   ViewChildren,
 } from '@angular/core';
 import { LibraryTitle } from '../../../shared/library-title/library-title';
@@ -60,19 +61,15 @@ export class Alerts {
 
   public readonly alertStateData = ALERTS_STATES_DATA;
 
-  @ViewChildren(DismissibleAlerts)
-  alertComponents!: QueryList<DismissibleAlerts>;
+  readonly alertComponents = viewChildren(DismissibleAlerts);
 
   public onResetAll(): void {
-    this.alertComponents.forEach((alert) => {
+    this.alertComponents().forEach((alert) => {
       alert.isDismissed.set(false);
     });
   }
 
   public effectiveTitle(section: string): string {
-    if (section === this.titles.DISMISSIBLE) {
-      return '';
-    }
-    return section;
+    return section === this.titles.DISMISSIBLE ? '' : section;
   }
 }
