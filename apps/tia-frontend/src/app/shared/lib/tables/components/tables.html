@@ -1,5 +1,5 @@
 @let config = tableConfig(); @if(config) {
-<table class="table">
+<table class="table" [class.table--striped]="isStriped()">
   <thead class="table__header">
     <tr class="table__header__row">
       @if(isSelectable()) {
@@ -15,7 +15,15 @@
         [style.text-align]="header.align"
         [style.width]="header.width"
       >
-        {{header.title}}
+        @if(header.sortable) {
+        <div
+          (click)="onSortClick(header.title)"
+          class="table__header__row__item--sortable"
+        >
+          {{header.title}}
+          <img src="images/svg/crud/sort.svg" alt="sort icon" />
+        </div>
+        }@else { {{header.title}} }
       </th>
       }
     </tr>

@@ -8,6 +8,8 @@ import {
   DotBadgeItem,
   SkillBadgeItem,
   CategoryBadgeItem,
+  BadgeStateItem,
+  CustomColorBadgeItem,
 } from "../models/badge-component.models";
 
 export const VARIANTS: VariantBadgeItem[] = [
@@ -44,7 +46,7 @@ export const DISMISSIBLE_BADGES: DismissibleBadgeItem[] = [
   { id: '1', variant: 'default', text: 'Tag 1' , size:'medium' , shape:'rounded' },
   { id: '2', variant: 'secondary', text: 'Tag 2' , size:'medium' , shape:'rounded' },
   { id: '3', variant: 'default', text: 'Tag 3' , size:'medium' , shape:'rounded' },
-  { id: '4', variant: 'outline', text: 'Tag 4' , size:'medium' , shape:'rounded' },
+  { id: '4', customColor: 'indigo', text: 'Tag 4' , size:'medium' , shape:'rounded' },
 
 ] as const;
 
@@ -53,9 +55,9 @@ export const PILL_BADGES: PillBadgeItem[] = [
   { variant: 'secondary', text: 'Category', size: 'medium' , shape:'pill' },
   { variant: 'outline', text: 'Tag', size: 'medium' , shape:'pill' },
   { variant: 'default', text: 'React', size: 'medium' , shape:'pill' },
-  { variant: 'destructive', text: 'TypeScript', size: 'medium' , shape:'pill' },
-  { variant: 'secondary', text: 'CSS', size: 'medium' , shape:'pill' },
-  { variant: 'default', text: 'JavaScript', size: 'medium' , shape:'pill' },
+  { customColor: 'lime', text: 'TypeScript', size: 'medium' , shape:'pill' },
+  { customColor: 'indigo', text: 'CSS', size: 'medium' , shape:'pill' },
+  { customColor: 'amber', text: 'JavaScript', size: 'medium' , shape:'pill' },
 ] as const;
 
 export const DOT_BADGES: DotBadgeItem[] = [
@@ -78,4 +80,22 @@ export const CATEGORY_BADGES: CategoryBadgeItem[] = [
   { category: 'technology', size: 'medium' },
   { category: 'design', size: 'medium' },
   { category: 'marketing', size: 'medium' },
+] as const;
+
+export const BADGE_STATES: BadgeStateItem[] = [
+  { id: 'default', text: 'Normal Badge', size: 'medium', shape: 'rounded' },
+  { id: 'hover', text: 'Hover Me', size: 'medium', shape: 'rounded', hoverable: true },
+  { id: 'disabled', text: 'Disabled', size: 'medium', shape: 'rounded', disabled: true },
+  { id: 'selected', text: 'Selected', size: 'medium', shape: 'pill', selected: true, clickable: true },
+] as const;
+
+export const CUSTOM_COLORS: CustomColorBadgeItem[] = [
+  { customColor: 'pink', text: 'Pink', size: 'medium', shape: 'rounded' },
+  { customColor: 'indigo', text: 'Indigo', size: 'medium', shape: 'rounded' },
+  { customColor: 'teal', text: 'Teal', size: 'medium', shape: 'rounded' },
+  { customColor: 'rose', text: 'Rose', size: 'medium', shape: 'rounded' },
+  { customColor: 'cyan', text: 'Cyan', size: 'medium', shape: 'rounded' },
+  { customColor: 'amber', text: 'Amber', size: 'medium', shape: 'rounded' },
+  { customColor: 'lime', text: 'Lime', size: 'medium', shape: 'rounded' },
+  { customColor: 'slate', text: 'Slate', size: 'medium', shape: 'rounded' },
 ] as const;

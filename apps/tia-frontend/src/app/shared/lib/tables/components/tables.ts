@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   input,
   output,
   signal,
@@ -37,11 +36,16 @@ export class Tables {
     () => this.tableConfig().type === 'select-actions',
   );
 
+  public readonly isStriped = computed(
+    () => this.tableConfig().type === 'striped',
+  );
+
   public allSelected = signal<boolean>(false);
   public readonly selectedItems = signal<TableRowCell[]>([]);
 
   // Output
   public actionClickedOutput = output<TableActionEvent>();
+  public sortClickedOutput = output<string>();
 
   public toggleSelectAll(): void {
     this.allSelected.update((val) => !val);
@@ -61,5 +65,9 @@ export class Tables {
       rowId,
       selectedItems: this.selectedItems(),
     });
+  }
+
+  public onSortClick(title: string) {
+    this.sortClickedOutput.emit(title);
   }
 }

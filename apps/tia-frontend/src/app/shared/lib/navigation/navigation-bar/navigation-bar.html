@@ -1,0 +1,26 @@
+<nav class="navigation navigation--{{ orientation() }}">
+  <ul class="navigation__list">
+    @for (item of routeWithActive(); track item.label) {
+    <li
+      class="navigation__item"
+      [class.navigation__item--disabled]="item.disabled"
+    >
+      <a
+        class="navigation__link"
+        [routerLink]="item.route"
+        routerLinkActive="navigation__item--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        @if (item.icon) {
+        <img
+          [src]="item.icon"
+          [attr.alt]="item.label"
+          class="navigation__img"
+        />
+        }
+        <span>{{ item.label }}</span>
+      </a>
+    </li>
+    }
+  </ul>
+</nav>

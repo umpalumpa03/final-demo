@@ -4,6 +4,8 @@ import {
   BASIC_INPUT_DEMOS,
   CHECKBOX_DEMOS,
   RADIO_DEMOS,
+  SLIDER_DEMOS,
+  SELECT_DEMOS,
   SPECIAL_INPUT_DEMOS,
   SWITCH_DEMOS,
   TEXTAREA_DEMOS,
@@ -13,10 +15,21 @@ import { LibraryTitle } from '../../shared/library-title/library-title';
 import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
 import { Radios } from '@tia/shared/lib/forms/radios/radios';
 import { Switches } from '@tia/shared/lib/forms/switches/switches';
+import { Slider } from '@tia/shared/lib/forms/sliders/slider';
+import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 
 @Component({
   selector: 'app-input',
-  imports: [LibraryTitle, TextInput, Textarea, Checkboxes, Radios, Switches],
+  imports: [
+    LibraryTitle,
+    TextInput,
+    Textarea,
+    Checkboxes,
+    Radios,
+    Switches,
+    Slider,
+    Dropdowns,
+  ],
   templateUrl: './input.html',
   styleUrl: './input.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,6 +41,8 @@ export class Input {
   protected readonly checkboxDemos = signal(CHECKBOX_DEMOS);
   protected readonly radioDemos = signal(RADIO_DEMOS);
   protected readonly switchDemos = signal(SWITCH_DEMOS);
+  protected readonly selectDemos = signal(SELECT_DEMOS);
+  protected readonly sliderDemos = signal(SLIDER_DEMOS);
 
   public readonly title = 'Input Components';
   public readonly subtitle =

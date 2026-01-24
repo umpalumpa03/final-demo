@@ -30,22 +30,28 @@ export const DEEPBLUE_PALETTE_DATA: Palette[] = [
 
 export const colorPalettes: ColorPalette[] = [
   {
+    id: '1',
     title: 'Ocean Blue',
     subtitle: 'Light and refreshing theme perfect for modern applications',
     theme: 'oceanblue',
     scssClass: 'ocean-blue-theme',
+    themeLabel: 'Ocean Blue Theme',
   },
   {
+    id: '2',
     title: 'Royal Blue',
     subtitle: 'Rich and elegant theme with vibrant blue tones',
     theme: 'royalblue',
     scssClass: 'royal-blue-theme',
+    themeLabel: 'Royal Blue Theme',
   },
   {
+    id: '3',
     title: 'Deep Blue',
     subtitle: 'Rich and elegant theme with vibrant blue tones',
     theme: 'deepblue',
     scssClass: 'deep-blue-theme',
+    themeLabel: 'Deep Blue Theme',
   },
 ] as const;
 
@@ -53,4 +59,64 @@ export const palettesData = {
   oceanblue: OCEANBLUE_PALETTE_DATA,
   royalblue: ROYALBLUE_PALETTE_DATA,
   deepblue: DEEPBLUE_PALETTE_DATA,
+} as const;
+
+export const OCEANBLUE_APPLICATION_DATA = [
+  {
+    title: 'Ocean Primary',
+    description: 'Clean and refreshing design with excellent readability',
+    modifier: 'primary',
+  },
+  {
+    title: 'Ocean Accent',
+    description: 'Soft accents for secondary elements',
+    modifier: 'secondary',
+  },
+  {
+    title: 'Ocean Muted',
+    description: 'Perfect for backgrounds and subtle elements',
+    modifier: 'muted',
+  },
+] as const;
+
+export const ROYALBLUE_APPLICATION_DATA = [
+  {
+    title: 'Royal Primary',
+    description: 'Bold and elegant with strong visual presence',
+    modifier: 'primary',
+  },
+  {
+    title: 'Royal Accent',
+    description: 'Vibrant accents for emphasis',
+    modifier: 'secondary',
+  },
+  {
+    title: 'Royal Muted',
+    description: 'Gentle backgrounds for content areas',
+    modifier: 'muted',
+  },
+] as const;
+
+export const DEEPBLUE_APPLICATION_DATA = [
+  {
+    title: 'Deep Primary',
+    description: 'Professional and sophisticated appearance',
+    modifier: 'primary',
+  },
+  {
+    title: 'Deep Accent',
+    description: 'Neutral accents for modern interfaces',
+    modifier: 'secondary',
+  },
+  {
+    title: 'Deep Muted',
+    description: 'Subtle backgrounds for corporate design',
+    modifier: 'muted',
+  },
+] as const;
+
+export const colorApplication = {
+  oceanblue: OCEANBLUE_APPLICATION_DATA,
+  royalblue: ROYALBLUE_APPLICATION_DATA,
+  deepblue: DEEPBLUE_APPLICATION_DATA,
 } as const;
