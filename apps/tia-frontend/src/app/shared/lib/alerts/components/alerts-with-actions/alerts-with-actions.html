@@ -1,12 +1,13 @@
 <div class="alerts-actions" [class]="iconAlertClass()">
-  <div class="alerts-actions__alert-content">
-    <div class="alerts-actions__alert-icon-div">
+  <div class="alerts-actions__content">
+    <div class="alerts-actions__icon">
       <img
+        class="alerts-actions__image"
         [src]="effectiveImgPath()"
         [alt]="effectiveAltName()"
       />
     </div>
-    <div class="alerts-actions__alert-info-div">
+    <div class="alerts-actions__info">
       <div class="alerts-actions__title">
         {{alertTitle() | firstUpper}}
       </div>
@@ -15,7 +16,7 @@
       </div>
     </div>
   </div>
-  <div class="alerts-actions__button-flex">
+  <div class="alerts-actions__flex">
     <ng-content></ng-content>
   </div>
 </div>

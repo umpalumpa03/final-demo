@@ -20,19 +20,20 @@
     gap: 0.8rem;
   }
 
-  &__alert-icon-div {
+  &__icon {
     flex-shrink: 0;
     @include display-flex(row, nowrap);
     align-items: center;
-    img {
-      margin: 0.4rem 0rem;
-      width: 1.6rem;
-      height: 1.6rem;
-      object-fit: cover;
-    }
   }
 
-  &__alert-info-div {
+  &__image {
+    margin: 0.4rem 0rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    object-fit: cover;
+  }
+
+  &__info {
     justify-content: center;
     @include display-flex(column, nowrap);
   }

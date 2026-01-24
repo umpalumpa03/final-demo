@@ -1,7 +1,7 @@
 @use '../../../../styles/palette' as *;
 @use '../../../../styles/mixins' as *;
 
-.alert-types-icons {
+.alert-icons {
   max-width: 105.3rem;
   min-height: 6.76rem;
   width: 100%;
@@ -21,19 +21,21 @@
     gap: 0.8rem;
   }
 
-  &__alert-icon-div {
+  &__wrapper {
     flex-shrink: 0;
-    img {
-      margin: 0.4rem 0rem;
-      width: 1.6rem;
-      height: 1.6rem;
-      object-fit: cover;
-    }
   }
 
-  &__alert-info-div {
-    justify-content: center;
+  &__image {
+    margin: 0.4rem 0;
+    width: 1.6rem;
+    height: 1.6rem;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__content {
     @include display-flex(column, nowrap);
+    justify-content: center;
   }
 
   &__title {
@@ -50,10 +52,10 @@
   &--error {
     background: $red-50;
     border: 0.08rem solid $red-200;
-    .alert-types-icons__title {
+    .alert-icons__title {
       color: $red-900;
     }
-    .alert-types-icons__message {
+    .alert-icons__message {
       color: $red-950;
     }
   }
@@ -61,10 +63,10 @@
   &--success {
     background: $green-50;
     border: 0.08rem solid $green-200;
-    .alert-types-icons__title {
+    .alert-icons__title {
       color: $green-900;
     }
-    .alert-types-icons__message {
+    .alert-icons__message {
       color: $green-950;
     }
   }
@@ -72,10 +74,10 @@
   &--warning {
     background: $yellow-50;
     border: 0.08rem solid $yellow-200;
-    .alert-types-icons__title {
+    .alert-icons__title {
       color: $brown-800;
     }
-    .alert-types-icons__message {
+    .alert-icons__message {
       color: $brown-700;
     }
   }

@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   QueryList,
-  signal,
   ViewChildren,
 } from '@angular/core';
 import { LibraryTitle } from '../../../shared/library-title/library-title';
