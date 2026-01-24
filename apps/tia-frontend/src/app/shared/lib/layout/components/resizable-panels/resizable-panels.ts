@@ -9,30 +9,35 @@ import {
   afterNextRender,
   ChangeDetectionStrategy,
 } from '@angular/core';
+import { ResizableOrientation } from './resizable-panels.model';
 
 @Component({
-  selector: 'app-resizable-horizontal',
+  selector: 'app-resizable-panels',
   imports: [],
-  templateUrl: './resizable-horizontal.html',
-  styleUrl: './resizable-horizontal.scss',
+  templateUrl: './resizable-panels.html',
+  styleUrl: './resizable-panels.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '(document:mousemove)': 'onMouseMove($event)',
     '(document:mouseup)': 'onMouseUp()',
   },
 })
-export class ResizableHorizontal {
+export class ResizablePanels {
+  public orientation = input<ResizableOrientation>('horizontal');
+
   public panelSize = input<2 | 3>(2);
 
   protected panelIndices = computed(() =>
     Array.from({ length: this.panelSize() }, (_, i) => i),
   );
 
-  public initialWidths = input<number[] | undefined>(undefined);
+  public initialSizes = input<number[] | undefined>(undefined);
 
-  public minWidth = input<number>(100);
+  public minSize = input<number>(100);
 
-  public maxWidth = input<number>(800);
+  public maxSize = input<number>(800);
+
+  protected isVertical = computed(() => this.orientation() === 'vertical');
 
   protected containerRef = viewChild<ElementRef<HTMLElement>>('container');
   protected contentRef = viewChild<ElementRef<HTMLElement>>('contentWrapper');
@@ -40,49 +45,49 @@ export class ResizableHorizontal {
     viewChild<ElementRef<HTMLElement>>('panelsContainer');
   protected panelRefs = viewChildren<ElementRef<HTMLElement>>('panel');
 
-  protected panelWidths = signal<number[]>([300]);
+  protected panelSizes = signal<number[]>([300]);
 
   protected activeResizer = signal<number | null>(null);
 
-  private startX = 0;
-  private startWidths: number[] = [];
+  private startPosition = 0;
+  private startSizes: number[] = [];
 
   constructor() {
     afterNextRender(() => {
       this.distributeContent();
-      this.initializePanelWidths();
+      this.initializePanelSizes();
     });
   }
 
-  private initializePanelWidths(): void {
+  private initializePanelSizes(): void {
     const container = this.containerRef()?.nativeElement;
     if (!container) return;
 
-    const containerWidth = container.offsetWidth;
+    const isVertical = this.isVertical();
+    const containerDimension = isVertical
+      ? container.offsetHeight
+      : container.offsetWidth;
     const size = this.panelSize();
-    const customWidths = this.initialWidths();
+    const customSizes = this.initialSizes();
 
-    if (customWidths && customWidths.length > 0) {
+    if (customSizes && customSizes.length > 0) {
       if (size === 2) {
-        this.panelWidths.set([customWidths[0]]);
+        this.panelSizes.set([customSizes[0]]);
       } else {
-        this.panelWidths.set([
-          customWidths[0],
-          customWidths[1] || customWidths[0],
-        ]);
+        this.panelSizes.set([customSizes[0], customSizes[1] || customSizes[0]]);
       }
       return;
     }
 
-    const resizerWidth = 40;
-    const totalResizerWidth = (size - 1) * resizerWidth;
-    const availableWidth = containerWidth - totalResizerWidth;
-    const panelWidth = Math.floor(availableWidth / size);
+    const resizerSize = 40;
+    const totalResizerSize = (size - 1) * resizerSize;
+    const availableDimension = containerDimension - totalResizerSize;
+    const panelSize = Math.floor(availableDimension / size);
 
     if (size === 2) {
-      this.panelWidths.set([panelWidth]);
+      this.panelSizes.set([panelSize]);
     } else {
-      this.panelWidths.set([panelWidth, panelWidth]);
+      this.panelSizes.set([panelSize, panelSize]);
     }
   }
 
@@ -101,15 +106,15 @@ export class ResizableHorizontal {
     }
   }
 
-  protected getPanelWidth(index: number): string {
-    const widths = this.panelWidths();
+  protected getPanelSize(index: number): string {
+    const sizes = this.panelSizes();
     const size = this.panelSize();
 
     if (index === size - 1) {
       return 'auto';
     }
 
-    return `${widths[index] || 300}px`;
+    return `${sizes[index] || 300}px`;
   }
 
   protected isLastPanel(index: number): boolean {
@@ -119,26 +124,27 @@ export class ResizableHorizontal {
   protected onMouseDown(event: MouseEvent, resizerIndex: number): void {
     event.preventDefault();
     this.activeResizer.set(resizerIndex);
-    this.startX = event.clientX;
-    this.startWidths = [...this.panelWidths()];
+    this.startPosition = this.isVertical() ? event.clientY : event.clientX;
+    this.startSizes = [...this.panelSizes()];
   }
 
   protected onMouseMove(event: MouseEvent): void {
     const activeIndex = this.activeResizer();
     if (activeIndex === null) return;
 
-    const deltaX = event.clientX - this.startX;
-    const newWidths = [...this.startWidths];
+    const currentPosition = this.isVertical() ? event.clientY : event.clientX;
+    const delta = currentPosition - this.startPosition;
+    const newSizes = [...this.startSizes];
 
-    const newWidth = this.startWidths[activeIndex] + deltaX;
+    const newSize = this.startSizes[activeIndex] + delta;
 
-    const clampedWidth = Math.max(
-      this.minWidth(),
-      Math.min(this.maxWidth(), newWidth),
+    const clampedSize = Math.max(
+      this.minSize(),
+      Math.min(this.maxSize(), newSize),
     );
 
-    newWidths[activeIndex] = clampedWidth;
-    this.panelWidths.set(newWidths);
+    newSizes[activeIndex] = clampedSize;
+    this.panelSizes.set(newSizes);
   }
 
   protected onMouseUp(): void {

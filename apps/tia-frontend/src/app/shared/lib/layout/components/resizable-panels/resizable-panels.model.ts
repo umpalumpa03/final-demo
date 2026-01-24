@@ -1,0 +1,1 @@
+export type ResizableOrientation = 'horizontal' | 'vertical';
