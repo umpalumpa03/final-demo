@@ -1,8 +1,10 @@
 import { InputConfig } from './input.model';
 
+export type SelectValue = string | number | boolean;
+
 export interface SelectOption {
   label: string;
-  value: any;
+  value: SelectValue;
   disabled?: boolean;
 }
 

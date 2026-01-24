@@ -1,1 +1,38 @@
-<p>dropdowns works!</p>
+<div class="select-wrapper" [class.select-wrapper--disabled]="isDisabled()" [class.select-wrapper--open]="isOpen()">
+    @let cfg = mergedConfig();
+
+    @if (cfg.label) {
+    <label [for]="cfg.id" class="select-label">
+        {{ cfg.label }}
+        @if (cfg.required) { <span class="required">*</span> }
+    </label>
+    }
+
+    <div class="select">
+        <div class="select__trigger" [id]="cfg.id" (click)="toggleDropdown()" tabindex="0">
+
+            <span class="select__value" [class.select__value--placeholder]="!value()">
+                {{ displayValue() }}
+            </span>
+
+            <span class="select__arrow"></span>
+        </div>
+
+        @if (isOpen()) {
+        <ul class="select__dropdown">
+            @for (option of options(); track option.value) {
+            <li class="select__option" [class.select__option--selected]="value() === option.value"
+                [class.select__option--disabled]="option.disabled" (click)="selectOption(option)">
+                {{ option.label }}
+            </li>
+            }
+        </ul>
+        }
+    </div>
+
+    @if (hasError()) {
+    <div class="select--error">
+        {{ errorMessage() }}
+    </div>
+    }
+</div>
