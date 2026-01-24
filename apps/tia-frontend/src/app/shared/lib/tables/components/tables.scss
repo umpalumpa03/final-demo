@@ -4,7 +4,15 @@
 .table {
   @include font-arimo(400, 1.4rem, 2rem);
   color: var(--color-fg);
-  width: 100%;
+  min-width: 70rem;
+
+  &--striped {
+    tbody {
+      tr:nth-child(odd) {
+        background-color: $gray-25;
+      }
+    }
+  }
 
   th,
   td {
@@ -17,6 +25,14 @@
     &__row {
       &__checkbox {
         width: 4.8rem;
+      }
+
+      &__item {
+        &--sortable {
+          display: flex;
+          gap: 0.8rem;
+          cursor: pointer;
+        }
       }
     }
   }

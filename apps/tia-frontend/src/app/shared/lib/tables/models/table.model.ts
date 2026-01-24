@@ -4,7 +4,7 @@ type tableVariant =
   | 'row-selection'
   | 'actions'
   | 'sortable'
-  | 'stripped'
+  | 'striped'
   | 'compact'
   | 'select-actions';
 
@@ -18,6 +18,7 @@ interface TableHeader {
   title: string;
   align: alignment;
   width: string;
+  sortable?: boolean;
 }
 
 interface PrintedData {
