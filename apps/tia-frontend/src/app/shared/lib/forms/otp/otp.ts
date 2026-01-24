@@ -35,20 +35,25 @@ export class Otp extends BaseInput {
     ...this.config(),
   }));
 
-protected readonly valuesArray = computed<OtpDigit[]>(() => {
+  protected readonly valuesArray = computed<OtpDigit[]>(() => {
     const len = this.mergedConfig().length!;
     const val = this.value() || '';
     const chars = val.split('').slice(0, len);
-    
+
     return Array.from({ length: len }, (_, i) => ({
-      id: i,             
-      value: chars[i] || '' 
+      id: i,
+      value: chars[i] || '',
     }));
   });
 
   constructor() {
     super();
   }
+
+  protected readonly inputType = computed(() => {
+    const type = this.mergedConfig().inputType;
+    return type === 'number' ? 'tel' : type;
+  });
 
   protected onDigitInput(event: Event, index: number): void {
     const inputEl = event.target as HTMLInputElement;

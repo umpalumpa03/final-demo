@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import {
   BASIC_INPUT_DEMOS,
@@ -31,7 +31,7 @@ import { Otp } from '@tia/shared/lib/forms/otp/otp';
     Switches,
     Slider,
     Dropdowns,
-    Otp
+    Otp,
   ],
   templateUrl: './input.html',
   styleUrl: './input.scss',
@@ -46,7 +46,7 @@ export class Input {
   protected readonly switchDemos = signal(SWITCH_DEMOS);
   protected readonly selectDemos = signal(SELECT_DEMOS);
   protected readonly sliderDemos = signal(SLIDER_DEMOS);
-  protected readonly otpDemos = signal(OTP_DEMOS)
+  protected readonly otpDemos = signal(OTP_DEMOS);
 
   public readonly title = 'Input Components';
   public readonly subtitle =
