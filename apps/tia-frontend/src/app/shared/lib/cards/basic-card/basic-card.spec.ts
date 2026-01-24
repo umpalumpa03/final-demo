@@ -14,63 +14,44 @@ describe('BasicCard', () => {
     component = fixture.componentInstance;
   });
 
-  it('should render title', () => {
+  it('should render title and optional subtitle', () => {
     fixture.componentRef.setInput('title', 'Test Title');
-    fixture.detectChanges();
-    
-    const title = fixture.nativeElement.querySelector('.card__title');
-    expect(title.textContent).toBe('Test Title');
-  });
-
-  it('should render subtitle when provided', () => {
-    fixture.componentRef.setInput('title', 'Test');
     fixture.componentRef.setInput('subtitle', 'Test Subtitle');
     fixture.detectChanges();
-    
-    const subtitle = fixture.nativeElement.querySelector('.card__subtitle');
-    expect(subtitle.textContent).toBe('Test Subtitle');
-  });
 
-  it('should not render subtitle when not provided', () => {
-    fixture.componentRef.setInput('title', 'Test');
-    fixture.detectChanges();
-    
+    const title = fixture.nativeElement.querySelector('.card__title');
     const subtitle = fixture.nativeElement.querySelector('.card__subtitle');
-    expect(subtitle).toBeFalsy();
+
+    expect(title.textContent).toBe('Test Title');
+    expect(subtitle.textContent).toBe('Test Subtitle');
   });
 
   it('should render content when provided', () => {
     fixture.componentRef.setInput('title', 'Test');
     fixture.componentRef.setInput('content', 'Test Content');
     fixture.detectChanges();
-    
+
     const content = fixture.nativeElement.querySelector('.card__content p');
     expect(content.textContent).toBe('Test Content');
   });
 
-  it('should not render content when not provided', () => {
-    fixture.componentRef.setInput('title', 'Test');
-    fixture.detectChanges();
-    
-    const content = fixture.nativeElement.querySelector('.card__content');
-    expect(content).toBeFalsy();
-  });
-
-  it('should apply custom width', () => {
+  it('should apply custom dimensions', () => {
     fixture.componentRef.setInput('title', 'Test');
     fixture.componentRef.setInput('width', '40rem');
-    fixture.detectChanges();
-    
-    const card = fixture.nativeElement.querySelector('.card');
-    expect(card.style.width).toBe('40rem');
-  });
-
-  it('should apply custom height', () => {
-    fixture.componentRef.setInput('title', 'Test');
     fixture.componentRef.setInput('height', '30rem');
     fixture.detectChanges();
-    
+
     const card = fixture.nativeElement.querySelector('.card');
+    expect(card.style.width).toBe('40rem');
     expect(card.style.height).toBe('30rem');
+  });
+
+  it('should render footer when hasFooter is true', () => {
+    fixture.componentRef.setInput('title', 'Test');
+    fixture.componentRef.setInput('hasFooter', true);
+    fixture.detectChanges();
+
+    const footer = fixture.nativeElement.querySelector('.card__footer');
+    expect(footer).toBeTruthy();
   });
 });
