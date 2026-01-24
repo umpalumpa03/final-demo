@@ -5,10 +5,10 @@ export const basicTable: TableConfig = {
   paginationType: 'page',
   itemPerPage: 3,
   headers: [
-    { title: 'Invoice', align: 'left', width: '10rem' },
-    { title: 'Status', align: 'left', width: '27rem' },
-    { title: 'Method', align: 'left', width: '40rem' },
-    { title: 'Amount', align: 'right', width: '27rem' },
+    { title: 'Invoice', align: 'left', width: '10%' },
+    { title: 'Status', align: 'left', width: '26%' },
+    { title: 'Method', align: 'left', width: '38%' },
+    { title: 'Amount', align: 'right', width: '26%' },
   ],
   rows: [
     {
@@ -73,10 +73,10 @@ export const rowTable: TableConfig = {
   paginationType: 'scroll',
   itemPerPage: 5,
   headers: [
-    { title: 'Name', align: 'left', width: '27rem' },
-    { title: 'Email', align: 'left', width: '38rem' },
-    { title: 'Role', align: 'left', width: '14rem' },
-    { title: 'Status', align: 'left', width: '20rem' },
+    { title: 'Name', align: 'left', width: '27%' },
+    { title: 'Email', align: 'left', width: '38%' },
+    { title: 'Role', align: 'left', width: '14%' },
+    { title: 'Status', align: 'left', width: '21%' },
   ],
   rows: [
     {
@@ -132,11 +132,11 @@ export const actionsTable: TableConfig = {
   paginationType: 'scroll',
   itemPerPage: 5,
   headers: [
-    { title: 'Name', align: 'left', width: '21rem' },
-    { title: 'Email', align: 'left', width: '29rem' },
-    { title: 'Role', align: 'left', width: '11rem' },
-    { title: 'Status', align: 'left', width: '15rem' },
-    { title: 'Actions', align: 'right', width: '27rem' },
+    { title: 'Name', align: 'left', width: '20%' },
+    { title: 'Email', align: 'left', width: '28%' },
+    { title: 'Role', align: 'left', width: '11%' },
+    { title: 'Status', align: 'left', width: '15%' },
+    { title: 'Actions', align: 'right', width: '26%' },
   ],
   rows: [
     {
@@ -192,10 +192,10 @@ export const sortableTable: TableConfig = {
   paginationType: 'scroll',
   itemPerPage: 5,
   headers: [
-    { title: 'Name', sortable: true, align: 'left', width: '26rem' },
-    { title: 'Email', align: 'left', width: '37rem' },
-    { title: 'Role', sortable: true, align: 'left', width: '22rem' },
-    { title: 'Status', align: 'left', width: '19rem' },
+    { title: 'Name', sortable: true, align: 'left', width: '25%' },
+    { title: 'Email', align: 'left', width: '36%' },
+    { title: 'Role', sortable: true, align: 'left', width: '21%' },
+    { title: 'Status', align: 'left', width: '18%' },
   ],
   rows: [
     {
@@ -251,10 +251,10 @@ export const strippedTable: TableConfig = {
   paginationType: 'scroll',
   itemPerPage: 5,
   headers: [
-    { title: 'Product', align: 'left', width: '41rem' },
-    { title: 'Category', align: 'left', width: '23rem' },
-    { title: 'Price', align: 'left', width: '15rem' },
-    { title: 'Stock', align: 'left', width: '25rem' },
+    { title: 'Product', align: 'left', width: '39%' },
+    { title: 'Category', align: 'left', width: '22%' },
+    { title: 'Price', align: 'left', width: '14%' },
+    { title: 'Stock', align: 'left', width: '25%' },
   ],
   rows: [
     {
@@ -309,10 +309,10 @@ export const compactTable: TableConfig = {
   type: 'compact',
   itemPerPage: 3,
   headers: [
-    { title: 'ID', align: 'left', width: '12rem' },
-    { title: 'Task', align: 'left', width: '42rem' },
-    { title: 'Assignee', align: 'left', width: '25rem' },
-    { title: 'Status', align: 'left', width: '25rem' },
+    { title: 'ID', align: 'left', width: '12%' },
+    { title: 'Task', align: 'left', width: '40%' },
+    { title: 'Assignee', align: 'left', width: '24%' },
+    { title: 'Status', align: 'left', width: '24%' },
   ],
   rows: [
     {
@@ -346,9 +346,9 @@ export const rowStates: TableConfig = {
   type: 'basic',
   itemPerPage: 5,
   headers: [
-    { title: 'Name', align: 'left', width: '31rem' },
-    { title: 'Description', align: 'left', width: '52rem' },
-    { title: 'State', align: 'left', width: '28rem' },
+    { title: 'Name', align: 'left', width: '28%' },
+    { title: 'Description', align: 'left', width: '47%' },
+    { title: 'State', align: 'left', width: '25%' },
   ],
   rows: [
     {

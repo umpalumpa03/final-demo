@@ -1,10 +1,33 @@
 @use '../../../../shared/styles/mixins' as *;
 @use '../../../../shared/styles/palette' as *;
 
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+
+  // Optional: nice scrollbar
+  &::-webkit-scrollbar {
+    height: 0.6rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $gray-400;
+    border-radius: 0.3rem;
+  }
+}
+
 .table {
   @include font-arimo(400, 1.4rem, 2rem);
   color: var(--color-fg);
-  min-width: 70rem;
+  width: max-content;
+  min-width: 100%;
 
   &--striped {
     tbody {
