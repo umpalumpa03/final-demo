@@ -21,7 +21,7 @@
   }
 
   &__row {
-    @include display-flex(row, nowrap);
+    @include display-flex(row, wrap);
     gap: 1.5rem;
     width: 100%;
     align-items: stretch;
