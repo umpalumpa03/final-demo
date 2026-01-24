@@ -1,4 +1,3 @@
-import { TextInputType } from '@tia/shared/lib/forms/models/input.model';
 import {
   CheckboxDemo,
   InputDemo,
@@ -7,6 +6,8 @@ import {
   SelectDemo,
   SwitchDemo,
   TextareaDemo,
+  OtpDemo,
+  SpecialInputDemo,
 } from '../models/input-demos.model';
 
 export const BASIC_INPUT_DEMOS: InputDemo[] = [
@@ -48,8 +49,10 @@ export const BASIC_INPUT_DEMOS: InputDemo[] = [
   },
 ] as const;
 
-export const SPECIAL_INPUT_DEMOS: { type: TextInputType; label: string }[] = [
-  { type: 'email', label: 'Email Input' },
+export const SPECIAL_INPUT_DEMOS: SpecialInputDemo[] = [
+  { type: 'email', label: 'Email Input', validation: {
+    email: true
+  } },
   { type: 'password', label: 'Password Input' },
   { type: 'search', label: 'Search Input' },
   { type: 'number', label: 'Number Input' },
@@ -212,4 +215,15 @@ export const SELECT_DEMOS: SelectDemo[] = [
     initialValue: null,
     options: [],
   },
+] as const;
+
+export const OTP_DEMOS: OtpDemo[] = [
+    {
+        initialValue: '',
+        config: { 
+            label: 'Security PIN', 
+            length: 6,
+            inputType: 'number',
+        }
+    },
 ] as const;

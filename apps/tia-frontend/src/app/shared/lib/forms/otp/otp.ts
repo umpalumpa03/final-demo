@@ -54,6 +54,10 @@ protected readonly valuesArray = computed<OtpDigit[]>(() => {
     const inputEl = event.target as HTMLInputElement;
     let val: string = inputEl.value;
 
+    if (this.mergedConfig().inputType === 'number') {
+      val = val.replace(/[^0-9]/g, '');
+    }
+
     if (val.length > 1) {
       val = val.slice(-1);
     }

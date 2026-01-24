@@ -10,8 +10,8 @@
         pointer-events: none;
     }
 
-    &--label {
-        @include font-arimo(500, 1.4rem, 1);
+    &__label {
+        @include font-arimo(400, 1.4rem, 1.4);
         color: var(--color-fg);
     }
 
@@ -21,7 +21,7 @@
     }
 
     &__inputs {
-        @include display-flex();
+        @include display-flex(row, wrap);
         gap: 0.8rem;
     }
 
@@ -51,12 +51,12 @@
             margin: 0;
         }
 
-        &:nth-child(1) {
+        &:first-child {
             border-top-left-radius: 0.8rem;
             border-bottom-left-radius: 0.8rem;
         }
 
-        &:nth-last-child(1) {
+        &:last-child {
             border-top-right-radius: 0.8rem;
             border-bottom-right-radius: 0.8rem;
         }
