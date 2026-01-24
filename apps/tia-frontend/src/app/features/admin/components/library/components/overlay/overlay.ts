@@ -40,6 +40,6 @@ import { CommandPaletteDemo } from "./components/command-palette-demo/command-pa
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Overlay {
-  public pageTitle = 'Overlay Components';
-  public pageSubtitle = 'Modal dialogs, sheets, popovers, and dropdown menu';
+  public readonly pageTitle = 'Overlay Components';
+  public readonly pageSubtitle = 'Modal dialogs, sheets, popovers, and dropdown menu';
 }
