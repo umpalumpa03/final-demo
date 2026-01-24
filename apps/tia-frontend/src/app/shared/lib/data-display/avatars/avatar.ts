@@ -1,5 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { AvatarColor, AvatarSize, AvatarStatus, AvatarTone } from '../models/avatar.model';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+} from '@angular/core';
+import {
+  AvatarColor,
+  AvatarSize,
+  AvatarStatus,
+  AvatarTone,
+} from './models/avatar.model';
 
 @Component({
   selector: 'app-avatar',
@@ -15,10 +25,13 @@ export class Avatar {
   public readonly status = input<AvatarStatus | null>(null);
 
   public readonly avatarClass = computed(
-    () => `avatar avatar--${this.size()} avatar--${this.tone()} avatar--${this.color()}`,
+    () =>
+      `avatar avatar--${this.size()} avatar--${this.tone()} avatar--${this.color()}`,
   );
 
-  public readonly showStatus = computed(() => this.status() !== null && this.status() !== undefined);
+  public readonly showStatus = computed(
+    () => this.status() !== null && this.status() !== undefined,
+  );
 
   public readonly statusClass = computed(() => {
     const status = this.status();

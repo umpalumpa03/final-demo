@@ -64,7 +64,9 @@ export const libraryRoutes: Routes = [
       {
         path: 'datadisplay',
         loadComponent: () =>
-          import('./components/avatars/avatars').then((c) => c.Avatars),
+          import('./components/data-display/data-display').then(
+            (c) => c.DataDisplay,
+          ),
       },
       {
         path: 'feedback',
@@ -82,11 +84,8 @@ export const libraryRoutes: Routes = [
         path: 'inputs',
         loadComponent: () =>
           import('./components/input/input').then((c) => c.Input),
-      },
-      {
-        path: '**',
-        redirectTo: 'colorpalettes',
-      },
+      }
+  
     ],
   },
 ];

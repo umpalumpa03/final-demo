@@ -2,7 +2,7 @@
 @use '../../../../styles/mixins' as *;
 
 .avatar-group {
-  @include flex-center(row, center, center);
+  @include flex-center(row, flex-start, center);
 }
 
 .avatar-group__item {
@@ -10,9 +10,9 @@
 }
 
 .avatar-group__item--overlap {
-  margin-left: -0.8rem;
+  margin-left: -1.2rem;
 }
 
-.avatar-group__item .avatar {
-  box-shadow: 0 0 0 0.2rem $white;
+.avatar-group__item--ring .avatar {
+  box-shadow: 0 0 0 0.3rem $white;
 }

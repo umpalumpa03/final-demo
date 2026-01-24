@@ -2,25 +2,25 @@
 @use "../../../../../../shared/styles/mixins" as *;
 
 .gallery {
-  padding: 1.6rem;
-  @include display-flex(column);
-  min-height: 100vh;
-  margin: 0 auto;
-  max-width: 110rem;
-  gap: 3.2rem;
+    padding: 1.6rem;
+    @include display-flex(column);
+    min-height: 100vh;
+    margin: 0 auto;
+    max-width: 110rem;
+    gap: 3.2rem;
 
-  &__header {
-    margin: 2rem 0;
-  }
+    &__header {
+        margin: 2rem 0;
+    }
 
     &__title {
-        @include font-inter(700, 2.4rem);
+        @include font-arimo(700, 2.4rem);
         color: $blue-700;
         margin-bottom: 0.8rem;
     }
 
     &__description {
-        @include font-inter(400, 1.6rem);
+        @include font-arimo(400, 1.6rem);
         color: $gray-600;
     }
 
@@ -36,21 +36,23 @@
     }
 
     &__section-title {
-        @include font-inter(700, 1.8rem);
+        @include font-arimo(700, 1.8rem);
         color: $blue-700;
-        margin-bottom: 2rem;
         border-bottom: 0.1rem solid $gray-50;
         padding-bottom: 1rem;
     }
 
     &__input-stack {
         @include display-flex(column);
-        gap: 2rem;
+        gap: 1.6rem;
+    }
 
-        lib-text-input,
-        lib-textarea {
-            width: 100%;
-            max-width: 44.8rem;
+    &__input-wrapper {
+        width: 100%;
+        max-width: 44.8rem;
+
+        &--checkbox {
+            max-width: fit-content;
         }
     }
 }

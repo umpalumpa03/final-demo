@@ -3,14 +3,14 @@
     <div class="aspect-ratio__group">
       <span class="aspect-ratio__label">{{ item.label }} ({{ item.description }})</span>
       <button
-        class="aspect-ratio-card"
+        class="aspect-ratio__card"
         type="button"
         [style.background-color]="item.background"
         [style.aspect-ratio]="item.ratio"
         [style.width]="item.width"
         (click)="onSelect(item)"
       >
-        <span class="aspect-ratio-card__text">
+        <span class="aspect-ratio__card-text">
           {{ item.label }} Aspect Ratio
         </span>
       </button>
