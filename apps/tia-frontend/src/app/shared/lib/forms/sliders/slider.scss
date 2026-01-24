@@ -1,0 +1,104 @@
+@use "../../../styles/palette" as *;
+@use "../../../styles/mixins" as *;
+
+$track-height: 1.6rem;
+$thumb-size: 2.2rem;
+
+.slider-wrapper {
+    @include display-flex(column);
+    gap: 0.8rem;
+    width: 100%;
+    .slider-header {
+        @include flex-center(row, space-between);
+        margin-bottom: -0.4rem;
+
+        .slider-label {
+            @include font-arimo(500, 1.4rem, 1);
+            color: $gray-900;
+        }
+
+        .slider-value-text {
+            @include font-arimo(400, 1.4rem, 1);
+            color: $gray-600;
+        }
+    }
+
+    .slider-input {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: $track-height;
+        background: transparent;
+        cursor: pointer;
+        margin: 0;
+
+        &:focus {
+            outline: none;
+        }
+
+        &::-webkit-slider-runnable-track {
+            width: 100%;
+            height: $track-height;
+            border-radius: 10rem;
+
+            background-image: linear-gradient($blue-ocean, $blue-ocean);
+            background-size: var(--slider-fill, 0%) 100%;
+            background-repeat: no-repeat;
+            background-color: $blue-ocean-muted;
+        }
+
+        &::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: $thumb-size;
+            width: $thumb-size;
+            border-radius: 50%;
+            background: $white;
+            border: 0.15rem solid $blue-ocean;
+
+            margin-top: ($track-height - $thumb-size) * 0.5;
+
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.1s ease;
+        }
+
+        &:active:not(:disabled)::-webkit-slider-thumb {
+            transform: scale(1.1);
+        }
+
+        &::-moz-range-track {
+            width: 100%;
+            height: $track-height;
+            border-radius: 10rem;
+            background-color: $blue-ocean-muted;
+        }
+
+        &::-moz-range-progress {
+            background-color: $blue-ocean;
+            height: $track-height;
+            border-radius: 10rem 0 0 10rem;
+        }
+
+        &::-moz-range-thumb {
+            height: $thumb-size;
+            width: $thumb-size;
+            border: 0.15rem solid $blue-ocean;
+            border-radius: 50%;
+            background: $white;
+            box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    .slider--error {
+        @include font-arimo(400, 1.2rem, 1);
+        color: $red-600;
+    }
+
+    &--disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+
+        .slider-input {
+            cursor: not-allowed;
+        }
+    }
+}

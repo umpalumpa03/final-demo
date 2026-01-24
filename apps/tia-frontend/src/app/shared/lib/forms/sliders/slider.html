@@ -1,1 +1,31 @@
-<p>slider works!</p>
+<div class="slider-wrapper" [class.slider-wrapper--disabled]="isDisabled()">
+    @let cfg = mergedConfig();
+
+    @if (cfg.label || cfg.showValueLabel) {
+    <div class="slider-header">
+        @if (cfg.label) {
+        <label [for]="cfg.id" class="slider-label">
+            {{ cfg.label }}
+        </label>
+        }
+
+        @if (cfg.showValueLabel) {
+        <span class="slider-value-text">
+            {{ value() }}{{ cfg.valueSuffix }}
+        </span>
+        }
+    </div>
+    }
+
+    <div class="slider-container">
+        <input type="range" [id]="cfg.id" [min]="cfg.min" [max]="cfg.max" [step]="cfg.step" [disabled]="isDisabled()"
+            [value]="value()" (input)="onInput($event)" class="slider-input"
+            [style.--slider-fill]="fillPercentage() + '%'" />
+    </div>
+
+    @if (hasError()) {
+    <div class="slider--error">
+        {{ errorMessage() }}
+    </div>
+    }
+</div>

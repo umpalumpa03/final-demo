@@ -75,12 +75,6 @@ export interface SelectOption {
   disabled?: boolean;
 }
 
-export interface SliderConfig extends InputConfig {
-  showValue?: boolean;
-  showTicks?: boolean;
-  tickInterval?: number;
-}
-
 export class InputError {
   constructor(
     public type: string,
