@@ -1,5 +1,10 @@
 import { CheckboxConfig } from '@tia/shared/lib/forms/models/checkbox.model';
 import {
+  SelectConfig,
+  SelectOption,
+  SelectValue,
+} from '@tia/shared/lib/forms/models/dropdowns.model';
+import {
   TextInputType,
   InputState,
   InputConfig,
@@ -8,6 +13,7 @@ import {
   RadioGroupConfig,
   RadioOption,
 } from '@tia/shared/lib/forms/models/radios.model';
+import { SliderConfig } from '@tia/shared/lib/forms/models/slider.model';
 import { SwitchConfig } from '@tia/shared/lib/forms/models/switches.model';
 import { TextareaConfig } from '@tia/shared/lib/forms/models/textarea.model';
 
@@ -35,4 +41,15 @@ export interface RadioDemo {
 export interface SwitchDemo {
   checked: boolean;
   config: SwitchConfig;
+}
+
+export interface SliderDemo {
+  config: SliderConfig;
+  initialValue: number;
+}
+
+export interface SelectDemo {
+  config: SelectConfig;
+  options: SelectOption[];
+  initialValue: SelectValue | null;
 }
