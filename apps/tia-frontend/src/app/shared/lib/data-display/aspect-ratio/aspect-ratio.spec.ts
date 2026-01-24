@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { AspectRatio } from './aspect-ratio';
-import { AspectRatioItem } from './models/aspect-ratio.models';
+import { AspectRatioItem } from '../models/aspect-ratio.models';
 
 describe('AspectRatio', () => {
   let component: AspectRatio;

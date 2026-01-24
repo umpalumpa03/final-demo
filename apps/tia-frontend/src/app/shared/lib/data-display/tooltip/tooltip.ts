@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
-import { TooltipPlacement } from './models/tooltip.models';
+import { TooltipPlacement } from '../models/tooltip.models';
 
 @Component({
   selector: 'app-tooltip',

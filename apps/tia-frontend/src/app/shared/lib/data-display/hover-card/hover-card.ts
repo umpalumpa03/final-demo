@@ -4,7 +4,7 @@ import {
   input,
   signal,
 } from '@angular/core';
-import { HoverCardPlacement } from './models/hover-card.models';
+import { HoverCardPlacement } from '../models/hover-card.models';
 
 @Component({
   selector: 'app-hover-card',

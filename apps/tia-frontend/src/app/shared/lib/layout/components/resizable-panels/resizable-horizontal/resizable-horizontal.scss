@@ -1,4 +1,5 @@
 @use '../../../../../styles/mixins.scss' as *;
+@use '../../../../../styles/palette.scss' as *;
 
 .resizable {
   display: block;
@@ -6,6 +7,8 @@
   height: 100%;
   min-height: 20rem;
   overflow: hidden;
+  border: 0.0625rem solid $blue-400;
+  border-radius: 1rem;
 
   &__content {
     display: none;
