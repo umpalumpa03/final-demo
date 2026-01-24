@@ -44,7 +44,10 @@
 
   <div class="registration__field">
     <label class="registration__label" for="country">Country</label>
-    <select formControlName="country" class="registration__input registration__select">
+    <select
+      formControlName="country"
+      class="registration__input registration__select"
+    >
       <option disabled selected>Select country</option>
       @for(country of countries; track country.code) {
       <option>{{ country.label }}</option>
@@ -53,22 +56,21 @@
   </div>
 
   <div class="registration__field">
-    <label class="registration__label">Birth Date</label>
-    <div class="registration__birth-date-field">
-      <img src="" alt="Calendar" class="registration__birth-date-icon" />
-      <input
-        type="date"
-        formControlName="birthDate"
-        class="registration__input registration__birth-date"
-        placeholder="Pick a date"
-      />
-    </div>
+    <lib-text-input
+      type="date"
+      formControlName="birthDate"
+      [config]="inputConfigs.birthDate"
+    ></lib-text-input>
   </div>
 
   <div class="registration__agree-terms">
-    <input formControlName="termsAndConditions" type="checkbox" />
-    <label [class.invalid]="isTermsError">Subscribe to newsletter *</label>
+    <lib-checkboxes
+      formControlName="termsAndConditions"
+      [config]="inputConfigs.termsAndConditions"
+    ></lib-checkboxes>
   </div>
 
-  <button type="submit">Create Account</button>
+  <div class="registration__field">
+    <app-button type="submit" [fullWidth]="true">Create Account</app-button>
+  </div>
 </form>

@@ -5,23 +5,28 @@
       [subtitle]="subtitle"
     ></app-library-title>
   </header>
-  <div class="forms__lib__forms">
-    <h1>Contact Form</h1>
+
+  <app-showcase-card title="Contact Form">
     <app-contact-form></app-contact-form>
-  </div>
+  </app-showcase-card>
 
-  <div class="forms__lib__forms">
-    <h1>Registration Form</h1>
+  <app-showcase-card title="Settings Form">
+    <app-settings-form navigateRoute=""></app-settings-form>
+  </app-showcase-card>
+
+  <app-showcase-card title="Registration Form">
     <app-registration-form></app-registration-form>
-  </div>
+  </app-showcase-card>
 
-  <div class="forms__lib__forms">
-    <h1>Inline Form</h1>
-  <app-inline-form></app-inline-form>
-  </div>
+  <app-showcase-card title="Inline Form">
+    <app-inline-form></app-inline-form>
+  </app-showcase-card>
 
-  <div class="forms__lib__forms">
-    <h1>Form with Validation</h1>
-  <app-validation-form></app-validation-form>
-  </div>
+  <app-showcase-card title="Form with Validation">
+    <app-validation-form></app-validation-form>
+  </app-showcase-card>
+
+  <app-showcase-card title="Form Layout">
+    <app-layout-form></app-layout-form>
+  </app-showcase-card>
 </div>
