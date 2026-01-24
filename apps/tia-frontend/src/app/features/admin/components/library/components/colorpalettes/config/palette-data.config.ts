@@ -30,6 +30,7 @@ export const DEEPBLUE_PALETTE_DATA: Palette[] = [
 
 export const colorPalettes: ColorPalette[] = [
   {
+    id: 1,
     title: 'Ocean Blue',
     subtitle: 'Light and refreshing theme perfect for modern applications',
     theme: 'oceanblue',
@@ -37,6 +38,7 @@ export const colorPalettes: ColorPalette[] = [
     themeLabel: 'Ocean Blue Theme',
   },
   {
+    id: 2,
     title: 'Royal Blue',
     subtitle: 'Rich and elegant theme with vibrant blue tones',
     theme: 'royalblue',
@@ -44,6 +46,7 @@ export const colorPalettes: ColorPalette[] = [
     themeLabel: 'Royal Blue Theme',
   },
   {
+    id: 3,
     title: 'Deep Blue',
     subtitle: 'Rich and elegant theme with vibrant blue tones',
     theme: 'deepblue',
