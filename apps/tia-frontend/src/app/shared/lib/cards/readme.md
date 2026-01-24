@@ -11,6 +11,7 @@ app/shared/lib/cards/
 [subtitle]="'აღწერა'"
 [content]="'კონტენტი '"
 [hasFooter]="ღილაკები იყოს თუ არა, boolean"
+[hasHover]="ჰოვერი ჰქონდეს თუ არა, boolean"
 [width]="'სიგანე რამდენიც გინდათ'"
 [height]="'სიმაღლე რამდენიც გინდათ'">
   <div card-footer>
@@ -24,6 +25,7 @@ title - (optional)
 subtitle - (optional)
 content - (optional)
 hasFooter - (default: false)
+hasHover(-default:false)
 width - (optional)
 height - (optional)
 
