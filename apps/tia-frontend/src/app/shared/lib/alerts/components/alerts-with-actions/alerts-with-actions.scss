@@ -1,7 +1,7 @@
 @use '../../../../styles/palette' as *;
 @use '../../../../styles/mixins' as *;
 
-.alerts-with-actions {
+.alerts-actions {
   max-width: 105.3rem;
   min-height: 6.76rem;
   width: 100%;
@@ -12,23 +12,22 @@
   gap: 1.8rem;
   padding: 1rem 1.64rem;
 
-  @media (max-width: 128rem) {
-    width: 90%;
+  @media (max-width: 108rem) {
+    width: 95%;
   }
 
   @media (max-width: 76.8rem) {
     padding: 1rem;
     gap: 0.8rem;
-    width: 95%;
   }
 
   &__alert-content {
-    @include display-flex(row, nowrap);
+    @include display-flex(row, wrap);
     gap: 1.2rem;
   }
 
   &__button-flex {
-    @include display-flex(row, nowrap);
+    @include display-flex(row, wrap);
     gap: 0.8rem;
   }
 
@@ -43,7 +42,7 @@
   }
 
   &__alert-info-div {
-    @include display-flex(column, nowrap);
+    @include display-flex(column, wrap);
     justify-content: center;
     gap: 0.2rem
   }
@@ -62,10 +61,10 @@
   &--warning {
     background: $yellow-50;
     border: 0.08rem solid $yellow-200;
-    .alerts-with-actions__title {
+    .alerts-actions__title {
       color: $brown-800;
     }
-    .alerts-with-actions__message {
+    .alerts-actions__message {
       color: $brown-700;
     }
   }
