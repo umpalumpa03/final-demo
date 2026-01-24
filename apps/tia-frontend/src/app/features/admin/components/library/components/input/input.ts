@@ -19,6 +19,7 @@ import { Switches } from '@tia/shared/lib/forms/switches/switches';
 import { Slider } from '@tia/shared/lib/forms/sliders/slider';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { Otp } from '@tia/shared/lib/forms/otp/otp';
+import { ShowcaseCard } from '../../shared/showcase-card/showcase-card';
 
 @Component({
   selector: 'app-input',
@@ -32,6 +33,7 @@ import { Otp } from '@tia/shared/lib/forms/otp/otp';
     Slider,
     Dropdowns,
     Otp,
+    ShowcaseCard,
   ],
   templateUrl: './input.html',
   styleUrl: './input.scss',

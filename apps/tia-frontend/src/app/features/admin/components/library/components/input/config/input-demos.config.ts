@@ -50,9 +50,13 @@ export const BASIC_INPUT_DEMOS: InputDemo[] = [
 ] as const;
 
 export const SPECIAL_INPUT_DEMOS: SpecialInputDemo[] = [
-  { type: 'email', label: 'Email Input', validation: {
-    email: true
-  } },
+  {
+    type: 'email',
+    label: 'Email Input',
+    validation: {
+      email: true,
+    },
+  },
   { type: 'password', label: 'Password Input' },
   { type: 'search', label: 'Search Input' },
   { type: 'number', label: 'Number Input' },
@@ -218,12 +222,12 @@ export const SELECT_DEMOS: SelectDemo[] = [
 ] as const;
 
 export const OTP_DEMOS: OtpDemo[] = [
-    {
-        initialValue: '',
-        config: { 
-            label: 'Security PIN', 
-            length: 6,
-            inputType: 'number',
-        }
+  {
+    initialValue: '',
+    config: {
+      label: 'Security PIN',
+      length: 6,
+      inputType: 'number',
     },
+  },
 ] as const;

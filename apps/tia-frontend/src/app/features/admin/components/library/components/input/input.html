@@ -3,8 +3,7 @@
         <app-library-title [title]="title" [subtitle]="subtitle"></app-library-title>
     </header>
 
-    <section class="gallery__section">
-        <h2 class="gallery__section-title">Text Inputs</h2>
+    <app-showcase-card title="Text Inputs">
         <div class="gallery__input-stack">
             @for (input of basicInputs(); track input.config.label) {
             <div class="gallery__input-wrapper">
@@ -13,10 +12,9 @@
             </div>
             }
         </div>
-    </section>
+    </app-showcase-card>
 
-    <section class="gallery__section">
-        <h2 class="gallery__section-title">Special Input Types</h2>
+    <app-showcase-card title='Special Input Types'>
         <div class="gallery__input-stack">
             @for (input of specialInputTypes(); track input.type) {
             <div class="gallery__input-wrapper">
@@ -25,10 +23,9 @@
             }
 
         </div>
-    </section>
+    </app-showcase-card>
 
-    <section class="gallery__section">
-        <h2 class="gallery__section-title">Textarea</h2>
+    <app-showcase-card title='Textarea'>
         <div class="gallery__input-stack">
             @for (area of textareaDemos(); track area.config.label) {
             <div class="gallery__input-wrapper">
@@ -37,10 +34,9 @@
             </div>
             }
         </div>
-    </section>
+    </app-showcase-card>
 
-    <section class="gallery__section">
-        <h2 class="gallery__section-title">Checkboxes</h2>
+    <app-showcase-card title="Checkboxes">
         <div class="gallery__input-stack">
             @for (checkbox of checkboxDemos(); track checkbox.config.label) {
             <div class="gallery__input-wrapper--checkbox">
@@ -49,11 +45,9 @@
             </div>
             }
         </div>
-    </section>
+    </app-showcase-card>
 
-    <section class="gallery__section">
-        <h2 class="gallery__section-title">Radio Buttons</h2>
-
+    <app-showcase-card title="Radio Buttons">
         <div class="gallery__input-stack">
             @for (radio of radioDemos(); track radio.config.label) {
             <div class="gallery__input-wrapper--checkbox">
@@ -62,11 +56,9 @@
             </div>
             }
         </div>
-    </section>
+    </app-showcase-card>
 
-    <section class="gallery__section">
-        <h2 class="gallery__section-title">Switches</h2>
-
+    <app-showcase-card title="Switches">
         <div class="gallery__input-stack">
             @for (switch of switchDemos(); track switch.config.label) {
             <div class="gallery__input-wrapper--checkbox">
@@ -75,11 +67,9 @@
             </div>
             }
         </div>
-    </section>
+    </app-showcase-card>
 
-    <section class="gallery__section">
-        <h2 class="gallery__section-title">Select Dropdown</h2>
-
+    <app-showcase-card title="Select Dropdown">
         <div class="gallery__input-stack">
             @for (select of selectDemos(); track select.config.label) {
             <div class="gallery__input-wrapper">
@@ -88,12 +78,10 @@
             </div>
             }
         </div>
-    </section>
+    </app-showcase-card>
 
 
-    <section class="gallery__section">
-        <h2 class="gallery__section-title">Sliders</h2>
-
+    <app-showcase-card title="Sliders">
         <div class="gallery__input-stack">
             @for (slider of sliderDemos(); track slider.config.label) {
             <div class="gallery__input-wrapper">
@@ -102,10 +90,9 @@
             </div>
             }
         </div>
-    </section>
+    </app-showcase-card>
 
-    <section class="gallery__section">
-        <h2 class="gallery__section-title">OTP Input</h2>
+    <app-showcase-card title="OTP Input">
         <div class="gallery__input-stack">
             @for (otp of otpDemos(); track otp.title) {
             <div class="gallery__input-wrapper">
@@ -114,6 +101,6 @@
             </div>
             }
         </div>
-    </section>
+    </app-showcase-card>
 
 </div>
