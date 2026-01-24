@@ -1,32 +1,6 @@
 @use '../../../shared/styles/mixins' as *;
 @use '../../../shared/styles/palette' as *;
-
-.theme-oceanblue {
-  --primary: #{$blue-ocean};
-  --secondary: #{$blue-ocean-secondary};
-  --accent: #{$blue-ocean-accent};
-  --muted: #{$blue-ocean-muted};
-  --background: #{$blue-100};
-  --foreground: #{$blue-ocean-foreground};
-}
-
-.theme-royalblue {
-  --primary: #{$blue-royal};
-  --secondary: #{$blue-royal-secondary};
-  --accent: #{$blue-royal-accent};
-  --muted: #{$blue-royal-muted};
-  --background: #{$blue-royal-background};
-  --foreground: #{$blue-royal-foreground};
-}
-
-.theme-deepblue {
-  --primary: #{$blue-deep};
-  --secondary: #{$blue-deep-secondary};
-  --accent: #{$blue-deep-accent};
-  --muted: #{$blue-deep-muted};
-  --background: #{$blue-deep-background};
-  --foreground: #{$blue-deep-foreground};
-}
+@use './styles/palette-styles' as *;
 
 .palette {
   @include display-flex(row, wrap);
@@ -34,6 +8,7 @@
   gap: 1rem;
   width: 100%;
   max-width: 192rem;
+  @include apply-themes;
 
   &__item {
     @include display-flex(column, nowrap);
