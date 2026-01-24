@@ -10,6 +10,7 @@
           @for (item of alertBasicData; track item.id) {
             <app-basic-alerts 
                 [alertType]="item.type" 
+                [alertState]="item.state"
                 [alertTitle]="item.title!" 
                 [alertMessage]="item.message!"
               /> 
@@ -33,7 +34,7 @@
         }
 
         @case(titles.ACTIONS) {
-          @for(item of alertActionseData; track item.id) {
+          @for(item of alertActionsData; track item.id) {
             <app-alerts-with-actions
             [alertType]="item.type" 
             [alertTitle]="item.title"
@@ -55,7 +56,8 @@
 
         @case(titles.STATES) {
           @for(item of alertStateData; track item.id) {
-            <app-alert-states
+            <app-basic-alerts
+            [alertType]="item.type"
             [alertState]="item.state"
             [alertTitle]="item.title" 
             [alertMessage]="item.message" 

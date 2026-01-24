@@ -6,7 +6,6 @@ import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-typ
 import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
 import { AlertsWithActions } from '@tia/shared/lib/alerts/components/alerts-with-actions/alerts-with-actions';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
-import { AlertStates } from '@tia/shared/lib/alerts/components/alert-states/alert-states';
 import { ALERTS_ACTIONS_DATA, ALERTS_BASIC_DATA, ALERTS_CONFIG, ALERTS_DISMISSIBLE_DATA, ALERTS_ICONS_DATA, ALERTS_SIMPLE_DATA, ALERTS_STATES_DATA, ALERTS_TITLES } from '../config/alerts-data.config';
 
 @Component({
@@ -19,7 +18,6 @@ import { ALERTS_ACTIONS_DATA, ALERTS_BASIC_DATA, ALERTS_CONFIG, ALERTS_DISMISSIB
     DismissibleAlerts,
     AlertsWithActions,
     SimpleAlerts,
-    AlertStates,
   ],
   templateUrl: './alerts.html',
   styleUrl: './alerts.scss',
@@ -39,10 +37,9 @@ export class Alerts {
 
   public readonly alertDismissibleData = ALERTS_DISMISSIBLE_DATA;
 
-  public readonly alertActionseData = ALERTS_ACTIONS_DATA;
+  public readonly alertActionsData = ALERTS_ACTIONS_DATA;
 
   public readonly alertSimpleData = ALERTS_SIMPLE_DATA;
 
   public readonly alertStateData = ALERTS_STATES_DATA;
-
 }

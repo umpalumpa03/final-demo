@@ -1,4 +1,4 @@
-import { AlertActionItem, AlertBasicItem, AlertDismissibleItem, AlertIconItem, AlertSimpleItem, AlertStateItem } from "../models/alert.model";
+import { AlertActionItem, AlertBasicItem, AlertDismissibleItem, AlertIconItem, AlertSimpleItem } from "../models/alert.model";
 
 export const ALERTS_TITLES = {
   BASIC: 'Basic Alerts',
@@ -15,16 +15,18 @@ export const ALERTS_BASIC_DATA: AlertBasicItem[] = [
   { 
     id: 1, 
     type: 'default', 
+    state: 'default',
     title: 'Default Alert', 
     message: 'This is a default alert with important information.' 
   },
   { 
     id: 2, 
     type: 'error', 
+    state: 'default',
     title: 'Error Alert', 
     message: 'This is an error alert indicating something went wrong.' 
   }
-];
+] as const;
 
 export const ALERTS_ICONS_DATA: AlertIconItem[] = [
   { 
@@ -47,7 +49,7 @@ export const ALERTS_ICONS_DATA: AlertIconItem[] = [
     type: 'error', 
     message: 'An error occurred while processing your request.' 
   }
-]
+] as const;
 
 export const ALERTS_DISMISSIBLE_DATA: AlertDismissibleItem[] = [ 
    { 
@@ -68,7 +70,7 @@ export const ALERTS_DISMISSIBLE_DATA: AlertDismissibleItem[] = [
     title: 'Payment Due Soon', 
     message: 'Your subscription will renew in 3 days.' 
   }
-]
+] as const;
 
 export const ALERTS_ACTIONS_DATA:AlertActionItem[] = [
    { 
@@ -87,7 +89,7 @@ export const ALERTS_ACTIONS_DATA:AlertActionItem[] = [
     btnOneText: 'Confirm', 
     btnTwoText: 'Cancel'
   },
-] 
+] as const; 
 
 export const ALERTS_SIMPLE_DATA:AlertSimpleItem[] = [
    { 
@@ -105,25 +107,28 @@ export const ALERTS_SIMPLE_DATA:AlertSimpleItem[] = [
     type: 'warning', 
     message: 'Please save your work before closing. ', 
   },
-] 
+] as const; 
 
-export const ALERTS_STATES_DATA: AlertStateItem[] = [
+export const ALERTS_STATES_DATA: AlertBasicItem[] = [
   { 
-    id: 1, 
+    id: 1,
+    type: 'default', 
     state: 'default', 
     title: 'Normal State',
     message: 'This is the normal state of an alert.', 
   },
   { 
     id: 2, 
+    type: 'default', 
     state: 'inactive', 
     title: 'Dimmed/Inactive State',
     message: 'This alert appears dimmed or inactive.', 
   },
   { 
     id: 3, 
+    type: 'default', 
     state: 'active', 
     title: 'Emphasized State',
     message: 'This alert is emphasized with stronger borders and shadow.', 
   }
-]; 
+] as const;
