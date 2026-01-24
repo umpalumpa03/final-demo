@@ -8,9 +8,9 @@
   background: $white;
   border: 0.08rem solid $blue-400;
   border-radius: 1rem;
-  padding: var(--showcase-card-padding, 2.48rem);
+  padding: 2.48rem;
   @include display-flex(column);
-  gap: var(--showcase-card-gap, 1.6rem);
+  gap: 1.6rem;
 
   &__title {
     @include font-arimo(700, 1.8rem, 2.7rem);
@@ -24,6 +24,6 @@
 
   &__content {
     @include display-flex(row, wrap);
-    gap: var(--showcase-card-content-gap, 1.2rem);
+    gap: 1.2rem;
   }
 }
