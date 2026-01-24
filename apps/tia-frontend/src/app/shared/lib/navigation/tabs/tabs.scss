@@ -1,4 +1,5 @@
 @use "../../../../shared/styles/palette" as *;
+@use "../../../../shared/styles/mixins" as *;
 
 .tabs {
     display: flex;
@@ -8,7 +9,7 @@
     max-width: fit-content;
 
     &.horizontal {
-        flex-direction: row;
+        @include display-flex(row, wrap);
         gap: 0.8rem;
     }
 
@@ -19,13 +20,11 @@
 
     &__item {
         cursor: pointer;
-        font-weight: 400;
-        font-size: 1.4rem;
-        line-height: 2rem;
+        @include font-arimo(400, 1.4rem, 2rem);
+        color: var(--color-fg);
 
         &--link {
-            display: flex;
-            align-items: center;
+            @include display-flex();
             color: var(--color-fg);
             border-radius: 1.4rem;
             padding: 0.4rem 0.8rem;
@@ -38,8 +37,7 @@
         }
 
         &--icon {
-            display: flex;
-            align-items: center;
+            @include flex-center();
             margin-right: 0.5rem;
 
             &-img {
