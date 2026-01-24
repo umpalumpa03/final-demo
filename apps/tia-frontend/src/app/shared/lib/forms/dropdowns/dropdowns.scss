@@ -9,7 +9,7 @@
 
     &__label {
         @include font-arimo(500, 1.4rem, 1);
-        color: $blue-ocean;
+        color: $blue-ocean-foreground;
         margin-bottom: 0.2rem;
     }
 

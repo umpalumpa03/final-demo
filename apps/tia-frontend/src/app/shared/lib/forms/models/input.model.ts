@@ -69,10 +69,10 @@ export interface InputConfig {
   multiple?: boolean;
 }
 
-export interface SliderConfig extends InputConfig {
-  showValue?: boolean;
-  showTicks?: boolean;
-  tickInterval?: number;
+export interface SelectOption {
+  value: string | number;
+  label: string;
+  disabled?: boolean;
 }
 
 export class InputError {

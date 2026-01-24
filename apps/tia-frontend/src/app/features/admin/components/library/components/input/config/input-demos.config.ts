@@ -3,6 +3,7 @@ import {
   CheckboxDemo,
   InputDemo,
   RadioDemo,
+  SliderDemo,
   SelectDemo,
   SwitchDemo,
   TextareaDemo,
@@ -162,6 +163,33 @@ export const SWITCH_DEMOS: SwitchDemo[] = [
   },
 ] as const;
 
+export const SLIDER_DEMOS: SliderDemo[] = [
+  {
+    config: {
+      label: 'Volume',
+      valueSuffix: '%',
+      min: 0,
+      max: 100,
+    },
+    initialValue: 50,
+  },
+  {
+    config: {
+      label: 'Disabled Slider',
+      disabled: true,
+    },
+    initialValue: 50,
+  },
+  {
+    config: {
+      label: 'Step Slider (25% increments)',
+      step: 25,
+      valueSuffix: '%',
+    },
+    initialValue: 50,
+  },
+] as const;
+
 export const SELECT_DEMOS: SelectDemo[] = [
   {
     config: {
@@ -184,4 +212,4 @@ export const SELECT_DEMOS: SelectDemo[] = [
     initialValue: null,
     options: [],
   },
-];
+] as const;
