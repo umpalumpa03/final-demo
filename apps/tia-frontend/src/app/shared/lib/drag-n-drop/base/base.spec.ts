@@ -25,6 +25,14 @@ class TestDragComponent extends DragBase {
   public triggerPointerUp(): void {
     this.onPointerUp();
   }
+
+  public testCalculateReorder<T extends { id: string }>(
+    items: T[],
+    dragId: string,
+    dropId: string,
+  ): T[] {
+    return this.calculateReorderedItems(items, dragId, dropId);
+  }
 }
 
 describe('DragBase', () => {
@@ -45,6 +53,16 @@ describe('DragBase', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should correctly calculate reordered items', () => {
+    const items = [{ id: '1' }, { id: '2' }, { id: '3' }];
+
+    const forward = component.testCalculateReorder(items, '1', '2');
+    expect(forward.map((i) => i.id)).toEqual(['2', '1', '3']);
+
+    const backward = component.testCalculateReorder(items, '3', '1');
+    expect(backward.map((i) => i.id)).toEqual(['3', '1', '2']);
   });
 
   it('should have initial null drag state', () => {
