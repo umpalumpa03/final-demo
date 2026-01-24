@@ -1,0 +1,9 @@
+<div 
+    class="flex-layout ta-flex-layout" 
+    [class.flex-layout--space-between]="variant() === 'space-between'"
+    [class.flex-layout--center]="variant() === 'center'" 
+    [class.flex-layout--wrap]="variant() === 'flex-wrap'"
+    [style.gap]="gap()"
+>
+    <ng-content />
+</div>
