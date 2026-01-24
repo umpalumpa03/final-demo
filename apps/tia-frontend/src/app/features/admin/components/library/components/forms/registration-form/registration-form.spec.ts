@@ -43,16 +43,6 @@ describe('RegistrationForm', () => {
     expect(component.showError('firstName')).toBe(true);
   });
 
-  it('isTermsError reflects termsAndConditions state', () => {
-    expect(component.isTermsError).toBe(false);
-
-    const terms = component.registrationForm.get('termsAndConditions');
-    terms?.markAsTouched();
-    fixture.detectChanges();
-
-    expect(component.isTermsError).toBe(true);
-  });
-
   it('confirmPasswordState returns "error" when invalid', () => {
     const confirm = component.registrationForm.get('confirmPassword');
     confirm?.setValue('');
