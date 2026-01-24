@@ -3,6 +3,8 @@ import {
   CheckboxDemo,
   InputDemo,
   RadioDemo,
+  SliderDemo,
+  SelectDemo,
   SwitchDemo,
   TextareaDemo,
 } from '../models/input-demos.model';
@@ -158,5 +160,56 @@ export const SWITCH_DEMOS: SwitchDemo[] = [
       label: 'Disabled & Checked',
       disabled: true,
     },
+  },
+] as const;
+
+export const SLIDER_DEMOS: SliderDemo[] = [
+  {
+    config: {
+      label: 'Volume',
+      valueSuffix: '%',
+      min: 0,
+      max: 100,
+    },
+    initialValue: 50,
+  },
+  {
+    config: {
+      label: 'Disabled Slider',
+      disabled: true,
+    },
+    initialValue: 50,
+  },
+  {
+    config: {
+      label: 'Step Slider (25% increments)',
+      step: 25,
+      valueSuffix: '%',
+    },
+    initialValue: 50,
+  },
+] as const;
+
+export const SELECT_DEMOS: SelectDemo[] = [
+  {
+    config: {
+      label: 'Select an Option',
+      placeholder: 'Choose an option...',
+    },
+    initialValue: null,
+    options: [
+      { label: 'Option 1', value: 1 },
+      { label: 'Option 2', value: 2 },
+      { label: 'Option 3', value: 3 },
+    ],
+  },
+  {
+    config: {
+      label: 'Disabled Select',
+      placeholder: 'Disabled select',
+      disabled: true,
+    },
+    initialValue: null,
+    options: [],
   },
 ] as const;

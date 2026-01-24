@@ -1,18 +1,9 @@
 <div class="navigation-container">
   <nav>
-    <a routerLink="colorpalettes" routerLinkActive="active">Color Pallettes</a>
-    <a routerLink="buttons" routerLinkActive="active">Buttons</a>
-    <a routerLink="inputs" routerLinkActive="active">Inputs</a>
-    <a routerLink="forms" routerLinkActive="active">Forms</a>
-    <a routerLink="cards" routerLinkActive="active">Cards</a>
-    <a routerLink="alerts" routerLinkActive="active">Alerts</a>
-    <a routerLink="badges" routerLinkActive="active">Badges</a>
-    <a routerLink="tables" routerLinkActive="active">Tables</a>
-    <a routerLink="navigation" routerLinkActive="active">Navigation</a>
-    <a routerLink="feedback" routerLinkActive="active">Feedback</a>
-    <a routerLink="layout" routerLinkActive="active">Layout</a>
-    <a routerLink="datadisplay" routerLinkActive="active">Data Display</a>
-    <a routerLink="overlay" routerLinkActive="active">Overlays</a>
-    <a routerLink="draganddrop" routerLinkActive="active">Drag And Drop</a>
+    @for (item of navigationItems; track item.id) {
+    <a [routerLink]="item.routerLink" [routerLinkActive]="item.activeLink"
+      >{{ item.link }}</a
+    >
+    }
   </nav>
 </div>

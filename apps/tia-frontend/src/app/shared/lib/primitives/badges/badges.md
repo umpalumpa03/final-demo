@@ -3,6 +3,12 @@
 - კომპონენტი იყენებს `ChangeDetectionStrategy.OnPush`-ს 
 - ყველა input არის `readonly` და იყენებს Angular signals-ს
 - აიკონების გზები მოთავსებულია `images/svg/badges/` დირექტორიაში
+- type -ები მოთავსებულია 
+  '@app/shared/lib/primitives/badges/models/badges.models'
+- პირველ რიგში აუცილებელია დააიმპორტოთ badge.ts თვქენს კომპონენტში 
+import { Badges } from '@app/shared/lib/primitives/badges/badges';
+
+მაგალითები არის ბოლოს სექციეში 
 
 ` მიმოხილვა`
 
@@ -11,17 +17,21 @@
 **badge component- ის გამოყენება**
 
 ```html
-<app-badges
+  <app-badges
   variant="default"
   text="Custom Text"
   status="active"
   size="medium"
   shape="pill"
   label="Label"
-  dismissible="true"
+  [dismissible]="true"
   dot="online"
   skill="javascript"
   category="technology"
+ [disabled]="true"
+[selected]="true"
+ [hoverable]="true"
+ customColor="indigo"
 > </app-badges>
 
 ```
@@ -41,7 +51,7 @@
 
 2) `text` (string)
 
-ბეიჯის შიგნით გამოსაჩენი ტექსტი. გამოიყენება მხოლოდ მაშინ, როცა არ არის განსაზღვრული `status` ან `dot` (რადგან `status` და `dot` ავტომატურად აგენერირებენ ტექსტს). 
+ბეიჯის შიგნით გამოსაჩენი ტექსტი. გამოიყენება მხოლოდ მაშინ, როცა არ არის განსაზღვრული `status` , `dot` ,`badge-groups` (რადგან `status` , `dot` ,`badge groups` ავტომატურად აგენერირებენ ტექსტს). 
 
 **Default:** `''`
 
@@ -110,6 +120,53 @@ Default: `small`
  როგორც სტატუს და დოთ badge მუშაობს , მსგავსად გენერირდება badge groupe ებიდან როგორც skill ასევე category badge , თქვენგან მხოლოდ საჭიროა მიუთითო თუ რომელი skill ან category badge  გსურთ ტექსტი და დიზანი  ავტომატურად წამოვა, სურვილისამებრ შეგიძლიათ შეცვალოთ ზომა . (small,medium,large)
 
 
+ 9) `badge states` 
+
+ არსებობს 4 სახის : 
+
+ Default : სტანდარტული ბეიჯი 
+
+ hovered :  [hoverable]="true"  
+
+ disabled :  [disabled]="true" 
+
+ selected :  [selected]="true"  თუ მას მონიშნავთ ბეიჯი ვიზუალურად იქნება სულ მონიშნული. იმისთვის რომ ის დაუბრუნდეს დეფოლტ ქცევას და დინამიურად იმუშაოს, საჭიროა გამოიყენოთ signal ან ფუნქცია `[selected]`-ისთვის, `[clickable]="true"` და `(selectedChange)` event handler-ი, როგორც ნაჩვენებია ქვემოთ:
+
+  <app-badges
+text="NIKA"
+shape="pill"
+size="large"
+[selected]="simpleBadgeSelected()"
+[clickable]="true"
+(selectedChange)="onSimpleBadgeSelectedChange($event)"
+>
+
+
+10) CUSTOM-COLORS 
+
+ფერების შეცვლა თუ დაყენება  ნებისმიერი ბეიჯისთვის არის შესაძლებელი სურვილისამებრ. გამოიყენება `customColor` პარამეტრი:
+
+
+customColor="indigo"
+
+
+სულ არის 8 ფერი მოცემული:
+- `pink`
+- `indigo` 
+- `teal` 
+- `rose` 
+- `cyan` 
+- `amber` 
+- `lime` 
+- `slate` 
+
+**Default:** `undefined` 
+
+
+
+  </app-badges>
+
+........................................................................................................................................................
 ................................................ მაგალითები ................................................................
 
 ### მარტივი ბეიჯი
@@ -187,9 +244,104 @@ Default: `small`
   </app-badges>
 
 
+### badge states  
+```html
+
+ <app-badges 
+  text="Disabled" 
+  size="medium" 
+  shape="rounded"
+  [disabled]="true"
+></app-badges>
 
 
+<app-badges
+  text="Selected" 
+  size="medium" 
+  shape="pill"
+  [selected]="true"
+></app-badges>
 
+
+ <app-badges
+text="NIKA"
+shape="pill"
+size="large"
+[selected]="simpleBadgeSelected()"
+[clickable]="true"
+(selectedChange)="onSimpleBadgeSelectedChange($event)"
+></app-badges>
+
+
+  <app-badges 
+  text="Hover Me" 
+  size="medium" 
+  shape="rounded"
+  [hoverable]="true"
+>  </app-badges>
+
+```
+
+
+#### custom colors 
+
+```html
+<app-badges 
+  text="Pink Badge" 
+  customColor="pink"
+  size="medium" 
+  shape="pill"
+></app-badges>
+
+<app-badges 
+  text="Indigo Badge" 
+  customColor="indigo"
+  size="medium" 
+  shape="pill"
+></app-badges>
+
+<app-badges 
+  text="Teal Badge" 
+  customColor="teal"
+  size="medium" 
+  shape="pill"
+></app-badges>
+
+<app-badges 
+  text="Rose Badge" 
+  customColor="rose"
+  size="medium" 
+  shape="pill"
+></app-badges>
+
+<app-badges 
+  text="Cyan Badge" 
+  customColor="cyan"
+  size="medium" 
+  shape="pill"
+></app-badges>
+
+<app-badges 
+  text="Amber Badge" 
+  customColor="amber"
+  size="medium" 
+  shape="pill"
+></app-badges>
+
+<app-badges 
+  text="Lime Badge" 
+  customColor="lime"
+  size="medium" 
+  shape="pill"
+></app-badges>
+
+<app-badges 
+  text="Slate Badge" 
+  customColor="slate"
+  size="medium" 
+  shape="pill"
+></app-badges>
+```
 
 
 
