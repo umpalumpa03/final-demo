@@ -11,9 +11,24 @@ export const items: DraggableItemType[] = [
     subtitle: 'drag to reorder',
     icon: 'images/svg/drag-and-drop/card.svg',
   },
-  { id: '2', title: 'Item 2', subtitle: 'drag to reorder' },
-  { id: '3', title: 'Item 3', subtitle: 'drag to reorder' },
-  { id: '4', title: 'Item 4', subtitle: 'drag to reorder' },
+  {
+    id: '2',
+    title: 'Item 2',
+    subtitle: 'drag to reorder',
+    icon: 'images/svg/drag-and-drop/exchange.svg',
+  },
+  {
+    id: '3',
+    title: 'Item 3',
+    subtitle: 'drag to reorder',
+    icon: 'images/svg/drag-and-drop/folder.svg',
+  },
+  {
+    id: '4',
+    title: 'Item 4',
+    subtitle: 'drag to reorder',
+    icon: 'images/svg/drag-and-drop/dollar.svg',
+  },
 ];
 export const boards: BoardConfig[] = [
   { id: 'todo', title: 'To Do' },

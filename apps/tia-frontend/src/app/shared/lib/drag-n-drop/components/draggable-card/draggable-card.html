@@ -1,7 +1,7 @@
 <div
   class="draggable-card"
-  [class.dragging]="isDragging()"
-  [class.drop-target]="isDropTarget()"
+  [class.dragging]="computedIsDragging()"
+  [class.drop-target]="computedIsDropTarget()"
 >
   <div class="draggable-card__default-content">
     <div class="draggable-card__draggable">

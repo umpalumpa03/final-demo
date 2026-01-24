@@ -15,11 +15,21 @@ import {
 import { KanbanBoard } from '@tia/shared/lib/drag-n-drop/components/kanban-board/kanban-board';
 import { LibraryTitle } from '../../../shared/library-title/library-title';
 import { InstructionsCard } from '../instructions-card/instructions-card';
-import { DraggableCard } from "@tia/shared/lib/drag-n-drop/components/draggable-card/draggable-card";
+import { DraggableCard } from '@tia/shared/lib/drag-n-drop/components/draggable-card/draggable-card';
+import { DragContainer } from '@tia/shared/lib/drag-n-drop/components/drag-container/drag-container';
+import { DragItemDirective } from '@tia/shared/lib/drag-n-drop/directives/drag-item.directive';
 
 @Component({
   selector: 'app-drag-and-drop-container',
-  imports: [DragCard, KanbanBoard, LibraryTitle, InstructionsCard, DraggableCard],
+  imports: [
+    DragCard,
+    KanbanBoard,
+    LibraryTitle,
+    InstructionsCard,
+    DraggableCard,
+    DragContainer,
+    DragItemDirective,
+  ],
   templateUrl: './drag-and-drop.html',
   styleUrl: './drag-and-drop.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,6 +45,7 @@ export class DragAndDropContainer {
   // kanban cards
   public kanbanItems: KanbanItem[] = [...kanbanItems];
 
+  public myItems: DraggableItemType[] = [...items];
   public canDelete = true;
 
   // grid card deleted
@@ -69,4 +80,13 @@ export class DragAndDropContainer {
 
   // pagination dropdown changed
   public onPaginationChanged(event: { id: string; value: number }): void {}
+
+  //drag container
+  public onItemsChange(items: DraggableItemType[]): void {
+    this.myItems = items;
+  }
+  // outputs directly from draggable card
+  public onRemove(id: string): void {}
+  public onEdit(id: string): void {}
+  public onContainerOrderChange(ids: string[]): void {}
 }

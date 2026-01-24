@@ -45,17 +45,38 @@
         (cardReordered)="onCardReordered($event)"
         (cardRemoved)="onCardRemoved($event)"
       />
-      <app-draggable-card [itemData]="items[0]">
-        <div class="custom-content">
-          <p>This is custom content rendered below the card header.</p>
-          <ul>
-            <li>Feature 1</li>
-            <li>Feature 2</li>
-            <li>Feature 3</li>
-          </ul>
-          <button>Click me</button>
-        </div>
-      </app-draggable-card>
+
+      <app-drag-container
+        [items]="myItems"
+        [layout]="'grid'"
+        [columns]="3"
+        [containerTitle]="'Add Content of Your Choice'"
+        (itemsChange)="onItemsChange($event)"
+        (orderChange)="onContainerOrderChange($event)"
+      >
+        @for (item of myItems; track item.id) {
+        <app-draggable-card
+          [itemData]="item"
+          [canDelete]="true"
+          [editable]="true"
+          (remove)="onRemove(item.id)"
+          (edit)="onEdit(item.id)"
+          appDragItem
+        >
+          <!-- your custom content here -->
+          <div class="my-custom-layout">
+            <span class="my-custom-layout__tag">Content of your choice</span>
+            <p class="my-custom-layout__text">{{ item.subtitle }}</p>
+       
+            <div class="my-custom-layout__meta">
+              <span class="my-custom-layout__id">#{{ item.id }}</span>
+              <div class="my-custom-layout__dot"></div>
+              <span class="my-custom-layout__date">Jan 2026</span>
+            </div>
+          </div>
+        </app-draggable-card>
+        }
+      </app-drag-container>
       <app-instructions-card></app-instructions-card>
     </div>
   </div>

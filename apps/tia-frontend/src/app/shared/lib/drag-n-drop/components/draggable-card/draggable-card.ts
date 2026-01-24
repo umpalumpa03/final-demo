@@ -1,6 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
+  inject,
   input,
   output,
   signal,
@@ -8,15 +10,19 @@ import {
 import { DraggableItemType } from '../../model/drag.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ButtonVariant } from '@tia/shared/lib/primitives/button/button.model';
+import { DRAG_CONTAINER } from '../../model/drag.provider';
 
 @Component({
   selector: 'app-draggable-card',
+  standalone: true,
   imports: [ButtonComponent],
   templateUrl: './draggable-card.html',
   styleUrl: './draggable-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DraggableCard {
+  private readonly container = inject(DRAG_CONTAINER, { optional: true });
+
   public itemData = input.required<DraggableItemType>();
   public isDragging = input(false);
   public isDropTarget = input(false);
@@ -37,9 +43,25 @@ export class DraggableCard {
   public viewOptionChange = output<boolean>();
   public paginationChange = output<number>();
 
-  //
   public isViewable = signal(true);
   public selectedPagination = signal(10);
+
+  
+  protected readonly computedIsDragging = computed(() => {
+    if (this.container) {
+      return this.container.draggingId() === this.itemData().id;
+    }
+    return this.isDragging();
+  });
+
+
+  protected readonly computedIsDropTarget = computed(() => {
+    if (this.container) {
+      return this.container.dropTargetId() === this.itemData().id;
+    }
+    return this.isDropTarget();
+  });
+
   public onDragStartPoint(event: PointerEvent): void {
     event.preventDefault();
     this.dragStart.emit(event);
@@ -61,6 +83,7 @@ export class DraggableCard {
     this.isViewable.update((v) => !v);
     this.viewOptionChange.emit(this.isViewable());
   }
+
   public onPaginationChange(event: Event): void {
     const value = +(event.target as HTMLSelectElement).value;
     this.selectedPagination.set(value);

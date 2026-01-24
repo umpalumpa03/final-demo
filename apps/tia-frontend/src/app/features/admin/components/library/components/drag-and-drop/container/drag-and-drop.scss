@@ -25,3 +25,57 @@
     width: 100%;
   }
 }
+
+.my-custom-layout {
+  @include display-flex(column);
+  gap: 0.8rem;
+  width: 100%;
+  padding-top: 0.4rem;
+
+  &__tag {
+    font-size: 1rem;
+    font-weight: 700;
+    color: $blue-500;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+  }
+
+  &__text {
+    font-size: 1.4rem;
+    line-height: 1.5;
+    color: $blue-1000;
+    margin: 0;
+    font-weight: 500;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &__meta {
+    @include display-flex(row, center);
+    gap: 0.8rem;
+    margin-top: 0.4rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid $gray-200;
+  }
+
+  &__id {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: $gray-400;
+  }
+
+  &__dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background-color: $gray-200;
+  }
+
+  &__date {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: $gray-500;
+  }
+}

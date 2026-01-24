@@ -125,13 +125,77 @@ NOTE: when board is empty, drop zone shows "Drop items here" message with visual
 
 ---
 
-DRAGGABLE CARD (child component, used inside drag-card and kanban-board)
+DRAG CONTAINER (flexible wrapper for custom card content)
+
+USE WHEN: you need different content inside each card, full control over card rendering
+
+USAGE example
+
+    <app-drag-container
+      layout="grid"
+      [columns]="2"
+      (orderChange)="onSwap($event)"
+    >
+      @for(item of items(); track item.id) {
+        <app-draggable-card
+          [attr.data-card-id]="item.id"
+          [itemData]="item"
+          (dragStart)="onDragStart(item.id, $event)"
+        >
+          <!-- any custom content here -->
+          @if(item.id === '1') {
+            <div>Unique content for first card</div>
+          } @else {
+            <p>Different content for other cards</p>
+          }
+        </app-draggable-card>
+      }
+    </app-drag-container>
+
+REQUIRED:
+[attr.data-card-id]="item.id" -> MUST be set on each draggable-card for drag detection
+(dragStart)="onDragStart(item.id, $event)" -> MUST connect to container's drag handler
+
+INPUTS
+layout -> 'grid' or 'list', 'grid' by default
+[columns] -> number of columns for grid layout, 2 by default
+
+OUTPUTS
+(orderChange)="onSwap($event)" -> when cards swapped, returns:
+{
+dragId: -> id of dragged card
+dropId: -> id of drop target card
+}
+
+PARENT COMPONENT SETUP:
+
+    // signal for items
+    items = signal<DraggableItemType[]>([...]);
+
+    // swap handler
+    onSwap(event: { dragId: string; dropId: string }): void {
+      const current = this.items();
+      const dragIndex = current.findIndex(i => i.id === event.dragId);
+      const dropIndex = current.findIndex(i => i.id === event.dropId);
+
+      const newItems = [...current];
+      [newItems[dragIndex], newItems[dropIndex]] = [newItems[dropIndex], newItems[dragIndex]];
+
+      this.items.set(newItems);
+    }
+
+NOTE: use drag-container when you need full flexibility over card content. use drag-card when all cards have same structure.
+
+---
+
+DRAGGABLE CARD (child component, used inside drag-card, kanban-board, and drag-container)
 
 INPUTS
 [itemData] -> required, card data object
 {
 title: -> title
 subtitle: -> subtitle
+icon: -> optional icon path
 }
 [canDelete] -> true or false (show trash icon) false by default
 [editable] -> true or false (show edit icon) false by default
@@ -144,8 +208,11 @@ subtitle: -> subtitle
 [paginationVariants] -> array of numbers for dropdown options
 
 OUTPUTS
+(dragStart) -> emits PointerEvent when drag handle clicked
 (remove) -> emits when trash icon clicked
 (edit) -> emits when edit icon clicked
 (add) -> emits when plus icon clicked
 (viewOptionChange) -> emits boolean when eye icon toggled (true = visible, false = hidden)
 (paginationChange) -> emits selected number when dropdown changed
+
+NG-CONTENT: any content placed between <app-draggable-card>...</app-draggable-card> tags renders below the default card content
