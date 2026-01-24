@@ -34,6 +34,14 @@ INPUTS
 [canDelete] -> true or false (you want removable card or not) false by default
 [cardTitle] -> h2 of the card wrapper itself
 [cardDescription] => p of the card wrapper itself
+[editable] -> true or false (show edit icon) false by default
+[hasButton] -> true or false (show button) false by default
+[buttonVariant] -> button style variant, 'ghost' by default
+[buttonContent] -> text inside button, 'Play' by default
+[hasAddOption] -> true or false (show plus icon) false by default
+[hasViewOption] -> true or false (show eye icon toggle) false by default
+[hasPagination] -> true or false (show pagination dropdown) false by default
+[paginationVariants] -> array of numbers for dropdown options, [10, 20, 40] by default
 
 for layout change
 layout = grid / list
@@ -41,8 +49,20 @@ in case of grid
 [columns]="3" (how many you want)
 
 OUTPUTS
-(itemRemoved)="onItemRemoved($event)" -> remove
+(itemRemoved)="onItemRemoved($event)" -> remove, returns id
 (orderChange)="onOrderChange($event)"-> track order you will get array of ids, in a new order on each drag and drop, when using several app cards in one component, of course separate methods should be called, i mean this one -> onOrderChange(), same with onItemRemoved()
+(itemEdited)="onItemEdited($event)" -> when edit icon clicked, returns id
+(itemAdded)="onItemAdded($event)" -> when plus icon clicked, returns id
+(viewOptionChanged)="onViewOptionChanged($event)" -> when eye icon toggled, returns:
+{
+  id: -> which card
+  isViewable: -> true or false
+}
+(paginationChanged)="onPaginationChanged($event)" -> when pagination dropdown changed, returns:
+{
+id: -> which card
+value: -> selected number
+}
 
 ---
 
@@ -103,19 +123,29 @@ newOrder: -> new position
 
 NOTE: when board is empty, drop zone shows "Drop items here" message with visual highlight on drag over
 
-draggable card:
+---
 
-## DraggableCard Component
+DRAGGABLE CARD (child component, used inside drag-card and kanban-board)
 
-### Inputs
-
-itemData (required, DraggableItemType) - Card data object containing title and subtitle to display. (Data which will be displayed)
+INPUTS
+[itemData] -> required, card data object
 {
 title: -> title
 subtitle: -> subtitle
 }
-canDelete -> pass true if you want trash can icon
+[canDelete] -> true or false (show trash icon) false by default
+[editable] -> true or false (show edit icon) false by default
+[hasButton] -> true or false (show button) false by default
+[buttonVariant] -> button style variant
+[buttonContent] -> text inside button
+[hasAddOption] -> true or false (show plus icon) false by default
+[hasViewOption] -> true or false (show eye toggle icon) false by default
+[hasPagination] -> true or false (show pagination dropdown) false by default
+[paginationVariants] -> array of numbers for dropdown options
 
-### Outputs
-
-remove (void) - Emits when user clicks the delete button.
+OUTPUTS
+(remove) -> emits when trash icon clicked
+(edit) -> emits when edit icon clicked
+(add) -> emits when plus icon clicked
+(viewOptionChange) -> emits boolean when eye icon toggled (true = visible, false = hidden)
+(paginationChange) -> emits selected number when dropdown changed

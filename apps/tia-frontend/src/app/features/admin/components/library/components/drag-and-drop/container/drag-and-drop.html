@@ -15,6 +15,13 @@
         (orderChange)="onOrderChange($event)"
         cardTitle="Draggable Cards"
         cardDescription="Drag cards to reorder them in a grid layout"
+        [editable]="true"
+        [hasButton]="true"
+        [hasAddOption]="true"
+        (itemEdited)="onItemEdited($event)"
+        (itemAdded)="onItemAdded($event)"
+        (viewOptionChanged)="onViewOptionChanged($event)"
+        (paginationChanged)="onPaginationChanged($event)"
       />
       <app-drag-card
         [items]="listItems"
@@ -26,6 +33,8 @@
         (orderChange)="onOrderChangeList($event)"
         cardTitle="Sortable List"
         cardDescription="Drag cards to reorder them in a grid layout"
+        [hasViewOption]="true"
+        [hasPagination]="true"
       />
       <app-kanban-board
         [boards]="boards"
@@ -36,6 +45,17 @@
         (cardReordered)="onCardReordered($event)"
         (cardRemoved)="onCardRemoved($event)"
       />
+      <app-draggable-card [itemData]="items[0]">
+        <div class="custom-content">
+          <p>This is custom content rendered below the card header.</p>
+          <ul>
+            <li>Feature 1</li>
+            <li>Feature 2</li>
+            <li>Feature 3</li>
+          </ul>
+          <button>Click me</button>
+        </div>
+      </app-draggable-card>
       <app-instructions-card></app-instructions-card>
     </div>
   </div>
