@@ -1,12 +1,19 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ContactForms } from "./contact-forms/contact-forms";
+import { ContactForms } from "./contact-form/contact-form";
 import { RegistrationForm } from './registration-form/registration-form';
+import { InlineForm } from "./inline-form/inline-form";
+import { ValidationForm } from "./validation-form/validation-form";
+import { LibraryTitle } from "../../shared/library-title/library-title";
 
 @Component({
   selector: 'app-forms',
-  imports: [ContactForms, RegistrationForm],
+  imports: [ContactForms, RegistrationForm, InlineForm, ValidationForm, LibraryTitle],
   templateUrl: './forms.html',
   styleUrl: './forms.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Forms {}
+export class Forms {
+  public readonly title = 'Forms';
+  public readonly subtitle =
+    'Complete form examples with various input types and layouts';
+}

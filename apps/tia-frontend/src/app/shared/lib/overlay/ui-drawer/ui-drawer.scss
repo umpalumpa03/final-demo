@@ -1,0 +1,55 @@
+@use '../../../../shared/styles/mixins' as *;
+@use '../../../../shared/styles/palette' as *;
+
+.ui-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba($black, 0.5);
+  z-index: 2000;
+  @include flex-center;
+  align-items: flex-end;
+}
+
+.ui-drawer {
+  position: relative;
+  width: 100%;
+  max-width: 116.72rem;
+  min-height: 38.88rem;
+
+  background-color: var(--color-bg);
+  border-top: 0.08rem solid var(--color-accent);
+  border-radius: 1rem 1rem 0 0;
+
+  padding-top: 2.48rem;
+  box-sizing: border-box;
+  outline: none;
+
+  animation: drawer-slide-up 0.3s ease-out;
+
+  &__handle {
+    position: absolute;
+    top: 1.68rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10rem;
+    height: 0.8rem;
+    background-color: var(--color-muted);
+    border-radius: 10rem;
+  }
+
+  &__container {
+    @include display-flex(column);
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+  }
+}
+
+@keyframes drawer-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}

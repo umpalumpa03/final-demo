@@ -1,0 +1,49 @@
+@use '../../../styles/mixins' as *;
+@use '../../../styles/palette' as *;
+
+.tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+
+  &__trigger {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  &__content {
+    position: absolute;
+    z-index: 10;
+    padding: 0.6rem 1rem;
+    border-radius: 0.8rem;
+    background-color: $blue-700;
+    color: $white;
+    @include font-arimo(500, 1.2rem, 1.6rem);
+    white-space: nowrap;
+    box-shadow: 0 0.6rem 1.2rem rgba($black, 0.15);
+  }
+
+  &__content--top {
+    bottom: calc(100% + 0.8rem);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &__content--bottom {
+    top: calc(100% + 0.8rem);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &__content--left {
+    right: calc(100% + 0.8rem);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &__content--right {
+    left: calc(100% + 0.8rem);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}

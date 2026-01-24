@@ -13,4 +13,9 @@
     </div>
   }
   <ng-content></ng-content>
+  @if (hasFooter()) {
+    <div class="card__footer">
+      <ng-content select="[card-footer]"></ng-content>
+    </div>
+  }
 </div>

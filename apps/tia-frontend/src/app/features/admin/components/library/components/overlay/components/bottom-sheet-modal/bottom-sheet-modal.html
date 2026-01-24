@@ -1,6 +1,4 @@
-<button class="btn btn__outline btn__bottom-trigger" (click)="toggle()">
-  Bottom Sheet
-</button>
+<app-button variant="outline" (click)="toggle()"> Bottom Sheet </app-button>
 
 <app-ui-sheet-modal [isOpen]="isOpen()" direction="bottom" (closed)="toggle()">
   <div class="bottom-sheet-demo">

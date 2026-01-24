@@ -54,27 +54,11 @@
     position: absolute;
     right: 0;
     top: 0;
-
-    @include display-flex(row, nowrap);
-    justify-content: center;
-    align-items: center;
-
     width: 3.6rem;
     height: 3.6rem;
-    top: 8.8px;
-    left: 1008px;
-    border-radius: 8px;
-  }
+    border-radius: 0.8rem;
 
-  &--error {
-    background: $red-50;
-    border: 0.08rem solid $red-200;
-    .dismissible-alerts__title {
-      color: $red-900;
-    }
-    .dismissible-alerts__message {
-      color: $red-950;
-    }
+    @include flex-center();
   }
 
   &--success {

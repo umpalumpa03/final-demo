@@ -1,4 +1,4 @@
-<div class="showcase-container">
+<section class="showcase-container">
   <header class="showcase-header">
     <app-library-title
       [title]="pageTitle"
@@ -24,42 +24,15 @@
     <app-bottom-sheet-modal></app-bottom-sheet-modal>
   </app-showcase-card>
 
-  <section class="component-section">
-    <h3>Drawers</h3>
-    <div class="button-group">
-      <button class="btn-primary">Open Drawer</button>
-    </div>
-  </section>
+  <app-showcase-card title="Drawers">
+    <app-drawer-modal></app-drawer-modal>
+  </app-showcase-card>
 
-  <section class="component-section context-section">
-    <h3>Context Menu</h3>
-    <p>Right-click on the area below to open the context</p>
-    <div class="context-area">
-      <span>Right-click here</span>
-    </div>
-  </section>
+  <app-showcase-card>
+    <app-context-demo></app-context-demo>
+  </app-showcase-card>
 
-  <section class="component-section palette-section">
-    <h3>Command Palette</h3>
-    <div class="command-palette-mock">
-      <div class="command-input">
-        <span class="search-icon"></span>
-        <input type="text" placeholder="Type a command or search..." readonly />
-      </div>
-      <div class="command-results">
-        <div class="result-group">
-          <label for="name">Suggestions</label>
-          <div class="result-item active">View Profile</div>
-          <div class="result-item">Settings</div>
-          <div class="result-item">Messages</div>
-        </div>
-        <div class="result-group">
-          <label for="actions">Actions</label>
-          <div class="result-item">Create New</div>
-          <div class="result-item">Copy</div>
-          <div class="result-item">Delete</div>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
+  <app-showcase-card title="Command Palette">
+    <app-command-palette-demo></app-command-palette-demo>
+  </app-showcase-card>
+</section>

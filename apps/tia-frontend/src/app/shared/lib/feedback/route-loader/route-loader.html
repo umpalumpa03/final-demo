@@ -1,0 +1,16 @@
+<div [class]="loaderClass()">
+  @switch (variant()) {
+    @case (RouteLoaderVariants.TopBar) {
+      <div class="route-loader__bar"></div>
+    }
+    @case (RouteLoaderVariants.FullPage) {
+      <app-spinner size="4.8rem" />
+      <p class="route-loader__text">{{ text() }}</p>
+    }
+    @case (RouteLoaderVariants.Pulsing) {
+      <div class="route-loader__dot"></div>
+      <div class="route-loader__dot"></div>
+      <div class="route-loader__dot"></div>
+    }
+  }
+</div>

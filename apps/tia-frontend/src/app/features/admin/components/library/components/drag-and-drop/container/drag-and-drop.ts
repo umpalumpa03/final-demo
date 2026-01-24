@@ -2,13 +2,23 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DragCard } from '@tia/shared/lib/drag-n-drop/components/drag-card/drag-card';
 import {
   DraggableItemType,
+  BoardConfig,
+  KanbanItem,
+  CardMovedEvent,
+  CardReorderedEvent,
 } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 import { items } from 'apps/tia-frontend/src/app/features/admin/components/library/components/drag-and-drop/config/draggable-data.config';
+import {
+  boards,
+  kanbanItems,
+} from 'apps/tia-frontend/src/app/features/admin/components/library/components/drag-and-drop/config/draggable-data.config';
 import { KanbanBoard } from '@tia/shared/lib/drag-n-drop/components/kanban-board/kanban-board';
+import { LibraryTitle } from '../../../shared/library-title/library-title';
+import { InstructionsCard } from "../instructions-card/instructions-card";
 
 @Component({
   selector: 'app-drag-and-drop-container',
-  imports: [DragCard, KanbanBoard],
+  imports: [DragCard, KanbanBoard, LibraryTitle, InstructionsCard],
   templateUrl: './drag-and-drop.html',
   styleUrl: './drag-and-drop.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,14 +27,23 @@ export class DragAndDropContainer {
   public items: DraggableItemType[] = [...items];
   public listItems: DraggableItemType[] = [...items];
 
+  public boards: BoardConfig[] = [...boards];
+  public kanbanItems: KanbanItem[] = [...kanbanItems];
 
   public canDelete = true;
 
   public onItemRemoved(id: string): void {}
-  public onOrderChange(ids: string[]): void {
-  }
-  public onOrderChangeList(ids: string[]): void {
+
+  public onOrderChange(ids: string[]): void {}
+
+  public onOrderChangeList(ids: string[]): void {}
+
+  public onCardMoved(event: CardMovedEvent): void {
   }
 
+  public onCardReordered(event: CardReorderedEvent): void {
+  }
 
+  public onCardRemoved(id: string): void {
+  }
 }

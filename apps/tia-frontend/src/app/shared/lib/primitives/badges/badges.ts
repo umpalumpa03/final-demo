@@ -1,6 +1,23 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { BadgeSize, BadgeStatus, BadgeVariant, BadgeShape } from './models/badges.models';
-import { statusClassMap, statusIconMap, statusAltTextMap } from './config/badges.constants';
+import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import {
+  BadgeSize,
+  BadgeStatus,
+  BadgeVariant,
+  BadgeShape,
+  BadgeDotType,
+  BadgeSkill,
+  BadgeCategory,
+} from './models/badges.models';
+import {
+  statusClassMap,
+  statusIconMap,
+  statusAltTextMap,
+  statusTextMap,
+  dotColorMap,
+  dotTextMap,
+  skillPresetMap,
+  categoryPresetMap,
+} from './config/badges.config';
 
 
 @Component({
@@ -11,50 +28,117 @@ import { statusClassMap, statusIconMap, statusAltTextMap } from './config/badges
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Badges {
-  readonly variant = input<BadgeVariant | undefined>(undefined);
-  readonly text = input<string>('');
-  readonly status = input<BadgeStatus | undefined>(undefined);
-  readonly size = input<BadgeSize | undefined>(undefined);
-  readonly shape = input<BadgeShape | undefined>(undefined);
-  readonly label = input<string>('');
-  readonly dismissible = input<boolean>(false);
-  readonly showIcon = input<boolean>(true);
-  readonly dismissed = output<void>();
-  readonly badgeClass = computed(() => {
+  public readonly variant = input<BadgeVariant>();
+  public readonly text = input<string>('');
+  public readonly status = input<BadgeStatus>();
+  public readonly size = input<BadgeSize>();
+  public readonly shape = input<BadgeShape>();
+  public readonly skill = input<BadgeSkill>();
+  public readonly category = input<BadgeCategory>();
+  public readonly label = input<string>('');
+  public readonly dismissible = input<boolean>(false);
+  public readonly dot = input<BadgeDotType>();
+  public readonly dismissed = output<void>();
+  private readonly isVisible = signal(true);
+
+  public readonly visible = computed(() => {
+    if (!this.dismissible()) {
+      return true;
+    }
+    return this.isVisible();
+  });
+
+  public readonly badgeClass = computed(() => {
     const size = this.size() ?? 'small';
     const sizeClass = `badge--${size}`;
-    const shape = this.shape() ?? 'default';
+    const statusClass = this.badgeStatus();
+    const hasDot = !!this.dot();
+    const defaultShape = (statusClass || hasDot) ? 'pill' : 'default';
+    
+    const skillKey = this.skill();
+    const categoryKey = this.category();
+    
+    let variant: BadgeVariant = this.variant() ?? 'default';
+    
+    if (skillKey) {
+      const preset = skillPresetMap[skillKey];
+      variant = this.variant() ?? preset.variant;
+    }
+    
+    const shape = this.shape() ?? (skillKey || categoryKey ? 'pill' : defaultShape);
+    
     let shapeClass = '';
     if (shape === 'pill') {
       shapeClass = 'badge--pill';
     } else if (shape === 'rounded') {
       shapeClass = 'badge--rounded';
     }
-    const statusClass = this.badgeStatus();
+    
     if (statusClass) {
       return `badge ${sizeClass} ${statusClass} ${shapeClass}`.trim();
     }
-    const variant = this.variant() ?? 'default';
+
+    if (categoryKey) {
+      return `badge ${sizeClass} ${shapeClass}`.trim();
+    }
+
     return `badge ${sizeClass} badge--${variant} ${shapeClass}`.trim();
   });
 
-  readonly badgeStatus = computed(() => {
-    return this.status() ? statusClassMap[this.status()!] : '';
+  public readonly badgeStatus = computed(() => {
+    const currentStatus = this.status();
+    return currentStatus ? statusClassMap[currentStatus] : '';
   });
 
-  readonly iconPath = computed(() => {
-    return this.status() ? statusIconMap[this.status()!] : '';
+  public readonly iconPath = computed(() => {
+    const currentStatus = this.status();
+    return currentStatus ? statusIconMap[currentStatus] : '';
   });
 
-  readonly iconAlt = computed(() => {
-    return this.status() ? statusAltTextMap[this.status()!] : '';
+  public readonly iconAlt = computed(() => {
+    const currentStatus = this.status();
+    return currentStatus ? statusAltTextMap[currentStatus] : '';
   });
 
-  readonly shouldShowIcon = computed(() => {
-    return this.status() !== undefined && this.showIcon();
+  public readonly badgeText = computed(() => {
+    const currentStatus = this.status();
+    if (currentStatus) {
+      return statusTextMap[currentStatus];
+    }
+
+    const currentDot = this.dot();
+    if (currentDot) {
+      return dotTextMap[currentDot];
+    }
+
+    const skillKey = this.skill();
+    if (skillKey) {
+      return skillPresetMap[skillKey].text;
+    }
+
+    const categoryKey = this.category();
+    if (categoryKey) {
+      return categoryPresetMap[categoryKey].text;
+    }
+
+    return this.text();
   });
 
-  onDismiss(): void {
+  public readonly shouldShowIcon = computed(() => {
+    return !!this.status();
+  });
+
+  public readonly dotColor = computed(() => {
+    const dotType = this.dot();
+    return dotType ? dotColorMap[dotType] : '';
+  });
+
+  public readonly shouldShowDot = computed(() => {
+    return !!this.dot();
+  });
+
+  public onDismiss(): void {
+    this.isVisible.set(false);
     this.dismissed.emit();
   }
 }

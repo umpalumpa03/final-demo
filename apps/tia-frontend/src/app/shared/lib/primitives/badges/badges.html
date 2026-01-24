@@ -1,11 +1,20 @@
-<div class="badge-wrapper">
-  @if (label()) {
-    <span class="badge-wrapper__label">{{ label() }}</span>
-  }
-  <span
-    [class]="badgeClass()"
-    [attr.data-status]="status()"
-  >
+@if (visible()) {
+  <div class="badge-wrapper">
+    @if (label()) {
+      <span class="badge-wrapper__label">{{ label() }}</span>
+    }
+    <span
+      [class]="badgeClass()"
+      [attr.data-status]="status()"
+      [attr.data-dot]="dot()"
+      [attr.data-category]="category()"
+    >
+    @if (shouldShowDot()) {
+      <span 
+        class="badge__dot"
+        [class]="'badge__dot--' + dotColor()">
+      </span>
+    }
     @if (shouldShowIcon()) {
       <img 
         [src]="iconPath()" 
@@ -13,7 +22,7 @@
         class="badge__icon"
       />
     }
-    <span class="badge__text">{{ text() }}</span>
+    <span class="badge__text">{{ badgeText() }}</span>
     @if (dismissible()) {
       <button
         type="button"
@@ -29,4 +38,5 @@
       </button>
     }
   </span>
-</div>
+  </div>
+}

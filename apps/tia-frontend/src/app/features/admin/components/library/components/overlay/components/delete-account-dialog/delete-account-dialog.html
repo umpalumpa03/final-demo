@@ -1,22 +1,21 @@
-<button class="btn btn__danger" (click)="toggle()">Delete Account</button>
+<app-button variant="destructive" (click)="toggle()">
+  Delete Account
+</app-button>
 
 <app-ui-modal [isOpen]="isOpen()" (closed)="toggle()">
   <div class="delete-account">
     <header class="delete-account__header">
-      <h2 class="delete-account__title">Are you absolutely sure?</h2>
-      <p class="delete-account__description">
-        This action cannot be undone. This will permanently delete your account
-        and remove your data from our servers.
-      </p>
+      <app-library-title
+        [title]="dialogTitle"
+        [subtitle]="dialogSubtitle"
+      ></app-library-title>
     </header>
 
     <footer class="delete-account__footer">
-      <button type="button" class="btn btn__outline" (click)="toggle()">
-        Cancel
-      </button>
-      <button type="button" class="btn btn__destructive" (click)="toggle()">
+      <app-button variant="outline" (click)="toggle()"> Cancel </app-button>
+      <app-button variant="destructive" (click)="toggle()">
         Delete Account
-      </button>
+      </app-button>
     </footer>
   </div>
 </app-ui-modal>

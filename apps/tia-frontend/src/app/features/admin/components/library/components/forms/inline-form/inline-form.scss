@@ -1,0 +1,10 @@
+@use '../../../../../../../shared/styles/mixins' as *;
+
+.inline__form {
+   @include display-flex;
+   gap: 0.8rem;
+
+   &--email {
+    width: 90%;
+   }
+}
