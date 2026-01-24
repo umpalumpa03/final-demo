@@ -1,4 +1,4 @@
-import { Component, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Radios } from '@tia/shared/lib/forms/radios/radios';
 import { Switches } from '@tia/shared/lib/forms/switches/switches';
@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
   imports: [Radios, Switches, ReactiveFormsModule, ButtonComponent],
   templateUrl: './settings-form.html',
   styleUrl: './settings-form.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsForm {
   //will be deleted
