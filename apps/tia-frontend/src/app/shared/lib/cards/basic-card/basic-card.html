@@ -1,7 +1,14 @@
 <div class="card"
-[class.card--hover]="hasHover()"
+ [class.card--hover]="hasHover()"
      [style.width]="width()"
-     [style.height]="height()">
+     [style.height]="height()"
+     [style.flex]="flex()"
+     [style.min-width]="minWidth()"
+     [style.max-width]="maxWidth()"
+     [style.display]="display()"
+     [style.flex-direction]="flexDirection()"
+     [style.align-items]="alignItems()"
+     [style.justify-content]="justifyContent()">
   <div class="card__header">
     <h3 class="card__title">{{ title() }}</h3>
     @if (subtitle()) {

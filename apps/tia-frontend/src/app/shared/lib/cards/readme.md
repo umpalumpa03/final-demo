@@ -1,5 +1,4 @@
 app/shared/lib/cards/  
-
 ├── basic-card/ - basic ბარათი
 ├── statistic-card/ - statistic ბარათი
 └── models/ - ინტერფეისები
@@ -7,17 +6,26 @@ app/shared/lib/cards/
                                                                 Basic Card - გამოყენება
 
 <app-basic-card
-[title]="სათაური'"
+[title]="'სათაური'"
 [subtitle]="'აღწერა'"
 [content]="'კონტენტი '"
-[hasFooter]="ღილაკები იყოს თუ არა, boolean"
+[hasFooter]="true ან false"  
 [hasHover]="ჰოვერი ჰქონდეს თუ არა, boolean"
 [width]="'სიგანე რამდენიც გინდათ'"
 [height]="'სიმაღლე რამდენიც გინდათ'">
+[flex]="'grow/shrink/basic'"
+[minWidth]="'minwidth-ის ზომა'"
+[maxWidth]="'maxwidth -ის ზომა'"
+[display]="'flex ან grid'" 
+[flexDirection]="'მიმართულება'"
+[alignItems]="'y ღერძე განლაგება'"
+[justifyContent]="'x ღერძე განლაგება'"
   <div card-footer>
     <app-button>Action</app-button>
   </div>
 </app-basic-card>
+
+
 
 Inputs:
 
@@ -28,9 +36,17 @@ hasFooter - (default: false)
 hasHover(-default:false)
 width - (optional)
 height - (optional)
+flex - (optional)
+minWidth - (optional)
+maxWidth - (optional)
+ display    - (optional)                                                             
+flexDirection - (optional)
+alignItems - (optional)
+justifyContent - (optional)
 
-                                                                 Statistic Card - გამოყენება
+ 
 
+                                                                           Statistic Card - გამოყენება
 
 <app-statistic-card
 [label]="'სულ Revenue'"
@@ -46,3 +62,6 @@ value - (required)
 change - (required)
 changeType - 'positive' ან 'negative' (required)
 icon - აიქონის ურლ (required)
+
+
+
