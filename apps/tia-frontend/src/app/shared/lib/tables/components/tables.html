@@ -4,11 +4,10 @@
     <tr class="table__header__row">
       @if(isSelectable()) {
       <th class="table__header__row__item table__header__row__checkbox">
-        <input
-          type="checkbox"
+        <lib-checkboxes
           (checked)="allSelected()"
           (change)="toggleSelectAll()"
-        />
+        ></lib-checkboxes>
       </th>
       } @for (header of config.headers; track header.title) {
       <th
@@ -24,13 +23,12 @@
   <tbody class="table__body">
     @for (row of config.rows; track row.id) {
     <tr class="table__body__row">
-      @if(isSelectable()) {
+      @if(isSelectable() || isSelectAndAction()) {
       <td class="table__body__row__item">
-        <input
-          type="checkbox"
+        <lib-checkboxes
           [checked]="allSelected()"
           (change)="onIndividualSelect(row)"
-        />
+        ></lib-checkboxes>
       </td>
       } @for (cell of row.info; track cell.value) { @if(cell.type === 'badge') {
       <td>
@@ -54,10 +52,17 @@
         </div>
         }@else { {{ cell.value }} }
       </td>
-      }}
-    </tr>
-    <tr>
-      <ng-content></ng-content>
+      }} @if(isAction() || isSelectAndAction()) {
+      <td class="table__body__row__item table__body__row__item__actions">
+        @for (icon of crudConfig; track icon.id) {
+        <img
+          (click)="onCrudClick(icon.alt, row.id)"
+          [src]="icon.path"
+          [alt]="icon.alt"
+        />
+        }
+      </td>
+      }
     </tr>
     }
   </tbody>

@@ -1,5 +1,6 @@
 @use '../../../../styles/mixins' as *;
 @use '../../../../styles/palette' as *;
+
 .draggable-card {
   @include flex-center(row, space-between);
   width: 100%;
@@ -9,27 +10,39 @@
   border: 0.1rem solid $blue-400;
   border-radius: 1rem;
   padding: 0 1.9rem;
+  background: $white;
+
   &.dragging {
     opacity: 0.8;
     box-shadow: 0 0.8rem 0.16rem rgba(0, 0, 0, 0.2);
     cursor: grabbing;
   }
-  img {
+
+  &.drop-target {
+    border: 0.2rem dashed $blue-400;
+    opacity: 0.7;
+    background: $blue-100;
+  }
+
+  &__icon {
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  &__remove {
     cursor: pointer;
   }
 
   &__draggable {
     @include flex-center();
     gap: 0.8rem;
-
-    .draggable-card__content {
-      @include flex-center();
-      @include font-inter(400, 1.6rem, 2.4rem);
-    }
   }
-  &.drop-target {
-    border: 0.2rem dashed var(--color-primary);
-    opacity: 0.7;
-    background: rgba(var(--color-primary-rgb), 0.05);
+
+  &__content {
+    @include flex-center();
+    @include font-inter(400, 1.6rem, 2.4rem);
   }
 }

@@ -4,6 +4,11 @@ import {
   InputState,
   InputConfig,
 } from '@tia/shared/lib/forms/models/input.model';
+import {
+  RadioGroupConfig,
+  RadioOption,
+} from '@tia/shared/lib/forms/models/radios.model';
+import { SwitchConfig } from '@tia/shared/lib/forms/models/switches.model';
 import { TextareaConfig } from '@tia/shared/lib/forms/models/textarea.model';
 
 export interface InputDemo {
@@ -20,4 +25,14 @@ export interface TextareaDemo {
 export interface CheckboxDemo {
   checked: boolean;
   config: CheckboxConfig;
+}
+
+export interface RadioDemo {
+  config: RadioGroupConfig;
+  options: RadioOption[];
+}
+
+export interface SwitchDemo {
+  checked: boolean;
+  config: SwitchConfig;
 }

@@ -27,7 +27,16 @@
         cardTitle="Sortable List"
         cardDescription="Drag cards to reorder them in a grid layout"
       />
-      <app-kanban-board></app-kanban-board>
+      <app-kanban-board
+        [boards]="boards"
+        [items]="kanbanItems"
+        [canDelete]="true"
+        (itemsChange)="kanbanItems = $event"
+        (cardMoved)="onCardMoved($event)"
+        (cardReordered)="onCardReordered($event)"
+        (cardRemoved)="onCardRemoved($event)"
+      />
+      <app-instructions-card></app-instructions-card>
     </div>
   </div>
 </div>

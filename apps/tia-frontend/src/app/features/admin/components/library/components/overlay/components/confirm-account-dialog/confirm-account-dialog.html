@@ -1,21 +1,17 @@
-<button class="btn btn__trigger" (click)="toggle()">Confirm Action</button>
+<app-button variant="outline" (click)="toggle()"> Confirm Action </app-button>
 
 <app-ui-modal [isOpen]="isOpen()" (closed)="toggle()">
-  <div class="confirm-content">
-    <header class="confirm-content__header">
-      <h2 class="confirm-content__title">Confirm your action</h2>
-      <p class="confirm-content__description">
-        Are you sure you want to proceed with this action?
-      </p>
+  <div class="confirm-account">
+    <header class="confirm-account__header">
+      <app-library-title
+        [title]="confirmTitle"
+        [subtitle]="confirmSubtitle"
+      ></app-library-title>
     </header>
 
-    <footer class="confirm-content__footer">
-      <button type="button" class="btn btn__outline" (click)="toggle()">
-        Cancel
-      </button>
-      <button type="button" class="btn btn__primary" (click)="toggle()">
-        Continue
-      </button>
+    <footer class="confirm-account__footer">
+      <app-button variant="outline" (click)="toggle()"> Cancel </app-button>
+      <app-button (click)="toggle()"> Continue </app-button>
     </footer>
   </div>
 </app-ui-modal>

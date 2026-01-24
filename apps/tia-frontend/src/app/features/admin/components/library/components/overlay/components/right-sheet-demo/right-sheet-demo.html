@@ -1,6 +1,4 @@
-<button class="btn btn__primary btn__trigger" (click)="toggle()">
-  Right Sheet
-</button>
+<app-button (click)="toggle()"> Right Sheet </app-button>
 
 <app-ui-sheet-modal [isOpen]="isOpen()" direction="right" (closed)="toggle()">
   <div class="sheet-demo">
@@ -13,32 +11,17 @@
 
     <div class="sheet-demo__form">
       <div class="sheet-demo__field">
-        <label class="sheet-demo__label" for="username">Username</label>
-        <input
-          class="sheet-demo__input"
-          id="username"
-          type="text"
-          placeholder="@johndoe"
-        />
+        <lib-text-input [config]="usernameInput"></lib-text-input>
       </div>
 
       <div class="sheet-demo__field">
-        <label class="sheet-demo__label" for="bio">Bio</label>
-        <textarea
-          class="sheet-demo__textarea"
-          id="bio"
-          placeholder="Tell us about yourself"
-        ></textarea>
+        <lib-textarea [config]="bioInput"></lib-textarea>
       </div>
     </div>
 
     <footer class="sheet-demo__footer">
-      <button class="btn btn__outline" type="button" (click)="toggle()">
-        Cancel
-      </button>
-      <button class="btn btn__primary" type="button" (click)="toggle()">
-        Save
-      </button>
+      <app-button variant="outline" (click)="toggle()"> Cancel </app-button>
+      <app-button (click)="toggle()"> Save Changes </app-button>
     </footer>
   </div>
 </app-ui-sheet-modal>

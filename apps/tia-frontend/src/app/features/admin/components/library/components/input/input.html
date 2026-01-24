@@ -50,4 +50,30 @@
             }
         </div>
     </section>
+
+    <section class="gallery__section">
+        <h2 class="gallery__section-title">Radio Buttons</h2>
+
+        <div class="gallery__input-stack">
+            @for (radio of radioDemos(); track radio.config.label) {
+            <div class="gallery__input-wrapper--checkbox">
+                <lib-radios [options]="radio.options" [config]="radio.config">
+                </lib-radios>
+            </div>
+            }
+        </div>
+    </section>
+
+    <section class="gallery__section">
+        <h2 class="gallery__section-title">Switches</h2>
+
+        <div class="gallery__input-stack">
+            @for (switch of switchDemos(); track switch.config.label) {
+            <div class="gallery__input-wrapper--checkbox">
+                <lib-switches [checked]="switch.checked" [config]="switch.config">
+                </lib-switches>
+            </div>
+            }
+        </div>
+    </section>
 </div>

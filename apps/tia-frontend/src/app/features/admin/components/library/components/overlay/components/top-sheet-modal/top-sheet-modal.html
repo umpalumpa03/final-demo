@@ -1,6 +1,4 @@
-<button class="btn btn__outline btn__bottom-trigger" (click)="toggle()">
-  Top Sheet
-</button>
+<app-button variant="outline" (click)="toggle()"> Top Sheet </app-button>
 
 <app-ui-sheet-modal [isOpen]="isOpen()" direction="top" (closed)="toggle()">
   <app-library-title

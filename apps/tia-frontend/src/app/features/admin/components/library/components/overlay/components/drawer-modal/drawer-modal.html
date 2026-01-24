@@ -1,6 +1,4 @@
-<button class="btn btn__primary btn__drawer__trigger" (click)="toggle()">
-  Open Drawer
-</button>
+<app-button (click)="toggle()"> Open Drawer </app-button>
 
 <app-ui-drawer [isOpen]="isOpen()" (closed)="toggle()">
   <div class="drawer-content">
@@ -10,18 +8,15 @@
         [subtitle]="drawerSubtitle"
       ></app-library-title>
     </header>
+
     <div class="drawer-content__form">
       <lib-text-input [config]="nameConfig"></lib-text-input>
       <lib-text-input [config]="emailConfig"></lib-text-input>
     </div>
 
     <footer class="drawer-content__footer">
-      <button class="btn btn__primary btn__full" (click)="onSubmit()">
-        Submit
-      </button>
-      <button class="btn btn__outline btn__full" (click)="toggle()">
-        Cancel
-      </button>
+      <app-button (click)="onSubmit()"> Submit </app-button>
+      <app-button variant="outline" (click)="toggle()"> Cancel </app-button>
     </footer>
   </div>
 </app-ui-drawer>

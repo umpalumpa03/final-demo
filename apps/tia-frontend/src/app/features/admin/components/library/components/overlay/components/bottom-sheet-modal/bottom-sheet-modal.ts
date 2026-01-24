@@ -3,10 +3,11 @@ import { quickActions } from './config/navigation.config';
 import { UiSheetModal } from '../../../../../../../../shared/lib/overlay/ui-sheet-modal/ui-sheet-modal';
 import { BottomActionCard } from './components/bottom-action-card/bottom-action-card';
 import { LibraryTitle } from '../../../../shared/library-title/library-title';
+import { ButtonComponent } from "@tia/shared/lib/primitives/button/button";
 
 @Component({
   selector: 'app-bottom-sheet-modal',
-  imports: [UiSheetModal, BottomActionCard, LibraryTitle],
+  imports: [UiSheetModal, BottomActionCard, LibraryTitle, ButtonComponent],
   templateUrl: './bottom-sheet-modal.html',
   styleUrl: './bottom-sheet-modal.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
