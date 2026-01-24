@@ -158,9 +158,7 @@
               <p
                 class="cards-showcase__change"
                 [class.cards-showcase__change--negative]="card.changeType === 'negative'"
-                [class.cards-showcase__change--empty]="
-                  !card.change || card.change.trim().toLowerCase() === 'no change'
-                "
+                [class.cards-showcase__change--empty]="isChangeEmpty(card.change)"
               >
                 {{ card.change || '—' }}
               </p>

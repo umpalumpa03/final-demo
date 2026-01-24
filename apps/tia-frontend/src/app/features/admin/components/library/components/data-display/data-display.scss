@@ -27,8 +27,7 @@
   flex: 1 1 100%;
 
   &__grid {
-    @include flex-center(row, flex-start, stretch);
-    justify-content: space-between;
+    @include flex-center(row, space-between, stretch);
     gap: 1.6rem;
     flex-wrap: wrap;
     width: 100%;

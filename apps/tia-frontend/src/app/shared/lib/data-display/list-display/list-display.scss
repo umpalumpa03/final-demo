@@ -6,7 +6,7 @@
   gap: 1.2rem;
 
   &__card {
-    @include flex-center(row, flex-start, center);
+    @include flex-center(row, space-between, center);
     gap: 1.2rem;
     width: 44.8rem;
     height: 6.56rem;
@@ -14,7 +14,6 @@
     border-radius: 1.2rem;
     border: 0.1rem solid $blue-200;
     background-color: $white;
-    justify-content: space-between;
     cursor: default;
   }
 

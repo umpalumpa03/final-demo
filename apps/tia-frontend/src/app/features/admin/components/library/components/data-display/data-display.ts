@@ -104,6 +104,13 @@ export class DataDisplay {
     return this.ratios().length > 0;
   }
 
+  public isChangeEmpty(change?: string | null): boolean {
+    if (!change) {
+      return true;
+    }
+    return change.trim().toLowerCase() === 'no change';
+  }
+
   private toInitials(firstName: string, lastName: string): string {
     const first = firstName.trim().charAt(0);
     const last = lastName.trim().charAt(0);
