@@ -1,4 +1,5 @@
 @use '../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../shared/styles/themes' as *;
 @use '../../../../../../shared/styles/palette' as *;
 
 .cards-page {
@@ -6,22 +7,49 @@
   width: 100%;
   max-width: 110rem;
   margin: 0 auto;
+
+  @media (max-width: 75rem) {
+    max-width: 100%;
+    padding: 1.4rem;
+  }
+
+  @media (max-width: 30rem) {
+    padding: 1rem;
+  }
+
   &__title {
     margin: 2rem 0;
+
+    @media (max-width: 30rem) {
+      margin: 1.2rem 0;
+    }
   }
 
   .cards-section {
     margin: 4rem 0;
-    border: 0.18rem solid $blue-400;
+    border: 0.18rem solid var(--color-primary);
     background-color: $white;
     width: 100%;
     border-radius: 1rem;
     padding: 2.5rem;
 
+
+    @media (max-width: 30rem) {
+      margin: 1.6rem 0;
+      padding: 1.2rem;
+      border-radius: 0.6rem;
+    }
+
     &__title {
       @include font-inter(600, 2.4rem, 3.2rem);
       color: $gray-800;
       margin-bottom: 1.6rem;
+
+      @media (max-width: 30rem) {
+        font-size: 1.8rem;
+        line-height: 2.4rem;
+        margin-bottom: 1.2rem;
+      }
     }
 
     &__grid {
@@ -29,16 +57,36 @@
       grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
       gap: 2.4rem;
 
+      @media (max-width: 48rem) {
+        grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
+        gap: 1.6rem;
+      }
+
+      @media (max-width: 30rem) {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+      }
+
       &--stats {
         grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+
+        @media (max-width: 48rem) {
+          grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+        }
+
+        @media (max-width: 30rem) {
+          grid-template-columns: 1fr;
+        }
       }
     }
   }
 
   .card-footer {
-    @include display-flex(row);
-    justify-content: flex-end;
-    align-items: center;
-    gap: 1.2rem;
+  @include flex-center(row, flex-end, center);
+  gap: 1.2rem;
+
+  @media (max-width: 48rem) {
+    gap: 1rem;
   }
+}
 }

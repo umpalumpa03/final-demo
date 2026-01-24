@@ -1,12 +1,11 @@
 <div class="colorpalettes-container">
+  <header class="colorpalettes-header">
+    <app-library-title
+      [title]="title"
+      subtitle="Three beautiful blue color schemes for your components"
+    />
+  </header>
   <div class="colorpalettes-content">
-    <header class="colorpalettes-header">
-      <app-library-title
-        [title]="title"
-        subtitle="Three beautiful blue color schemes for your components"
-      />
-    </header>
-
     @for (palette of colorPalettesData; track palette.id) {
     <app-showcase-card
       [title]="palette.title"
@@ -19,14 +18,19 @@
   </div>
   <div class="colorpalettes-content">
     <app-showcase-card title="Color Application Examples">
+      @for (palette of colorPalettesData; track palette.id) {
       <div class="color-application">
-        @for (palette of colorPalettesData; track palette.id) {
         <app-color-application
           [theme]="palette.theme"
           [themeLabel]="palette.themeLabel"
         ></app-color-application>
-        }
       </div>
+      }
+    </app-showcase-card>
+  </div>
+  <div class="colorpalettes-content">
+    <app-showcase-card title="Accessibility & Usage Notes">
+      <app-notes></app-notes>
     </app-showcase-card>
   </div>
 </div>

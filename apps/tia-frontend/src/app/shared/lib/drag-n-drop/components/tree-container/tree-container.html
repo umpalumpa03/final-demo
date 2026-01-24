@@ -1,0 +1,82 @@
+<div class="tree-container">
+  <div class="tree-container__header">
+    <h2>{{ containerTitle() }}</h2>
+    <p>{{ containerDescription() }}</p>
+  </div>
+  <div class="tree-container__cards">
+    @for (group of internalGroups(); track group.id) { @let isDraggingGroup =
+    draggingId() === group.id; @let isDropTargetGroup = dropTargetId() ===
+    group.id;
+
+    <div
+      class="tree-container__group"
+      [class.tree-container__group--dragging]="isDraggingGroup"
+      [class.tree-container__group--drop-target]="isDropTargetGroup"
+      [attr.data-card-id]="group.id"
+      [style]="isDraggingGroup ? draggingStyle() : null"
+    >
+      <app-draggable-card
+        [itemData]="{ id: group.id, title: group.title, subtitle: group.subtitle ?? '', icon: group.icon }"
+        [isDragging]="isDraggingGroup"
+        [isDropTarget]="isDropTargetGroup"
+        [canDelete]="canDelete()"
+        [editable]="editable()"
+        [expandable]="itemsByGroup()[group.id].length > 0"
+        [expanded]="group.expanded ?? false"
+        [hasCheckbox]="hasCheckbox()"
+        [checked]="isGroupChecked(group.id)"
+        (dragStart)="onDragStartHandler(group.id, $event)"
+        (remove)="onRemoveGroup(group.id)"
+        (edit)="onEditGroup(group.id)"
+        (expandedChange)="toggleExpanded(group.id)"
+        (checkedChange)="onGroupCheckedChange(group.id, $event)"
+      />
+
+      <div
+        class="tree-container__children"
+        [class.tree-container__children--expanded]="group.expanded"
+      >
+        <div class="tree-container__children-inner">
+          @for (item of itemsByGroup()[group.id]; track item.id) { @let
+          isDraggingItem = draggingId() === item.id;
+          <app-draggable-card
+            [attr.data-card-id]="item.id"
+            [itemData]="item"
+            [isDragging]="isDraggingItem"
+            [isDropTarget]="dropTargetId() === item.id"
+            [style]="isDraggingItem ? draggingStyle() : null"
+            [canDelete]="canDelete()"
+            [editable]="editable()"
+            [hasButton]="hasButton()"
+            [buttonVariant]="buttonVariant()"
+            [buttonContent]="buttonContent()"
+            [hasAddOption]="hasAddOption()"
+            [hasViewOption]="hasViewOption()"
+            [hasPagination]="hasPagination()"
+            [paginationVariants]="paginationVariants()"
+            [hasCheckbox]="hasCheckbox()"
+            [checked]="isItemChecked(item.id)"
+            (dragStart)="onDragStartHandler(item.id, $event)"
+            (remove)="onRemoveItem(item.id)"
+            (edit)="onEditItem(item.id)"
+            (add)="onAddItem(item.id)"
+            (viewOptionChange)="onViewOptionChange(item.id, $event)"
+            (paginationChange)="onPaginationChange(item.id, $event)"
+            (buttonClick)="onButtonClick(item.id)"
+            (checkedChange)="onItemCheckedChange(item.id, $event)"
+          />
+          } @empty {
+          <div
+            class="tree-container__empty"
+            [class.tree-container__empty--active]="dropTargetId() === 'group:' + group.id"
+            [attr.data-card-id]="'group:' + group.id"
+          >
+            Drop items here
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</div>

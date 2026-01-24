@@ -5,79 +5,83 @@
 >
   <div class="draggable-card__default-content">
     <div class="draggable-card__draggable">
+      @if (hasCheckbox()) {
+      <lib-checkboxes
+        class="draggable-card__checkbox"
+        [checked]="checked()"
+        (checkedChange)="onCheckedChange($event)"
+        (click)="$event.stopPropagation()"
+      />
+      }
       <img
         class="draggable-card__icon"
         src="images/svg/drag-and-drop/draggable.svg"
         alt="draggable icon"
         (pointerdown)="onDragStartPoint($event)"
       />
+      @if (expandable()) {
+      <img
+        class="draggable-card__expand"
+        [class.draggable-card__expand--expanded]="expanded()"
+        src="images/svg/drag-and-drop/downArrow.svg"
+        alt="expand"
+        (click)="onToggleExpanded($event)"
+      />
+      }
       <div class="draggable-card__content">
-        @if(itemData().icon){
+        @if (itemData().icon) {
         <img [src]="itemData().icon" alt="content icon" />
         }
-        <p>{{ itemData().title }}</p>
-        <p>{{ itemData().subtitle }}</p>
+        <div class="draggable-card__text">
+          <p>{{ itemData().title }}</p>
+          <p>{{ itemData().subtitle }}</p>
+        </div>
       </div>
     </div>
     <div class="draggable-card__icons">
-      <!-- pagination otpions -->
-      @if(hasPagination()) {
-      <div class="draggable-card__pagination-wrapper">
-        <select
-          class="draggable-card__pagination"
+      @if (hasPagination()) {
+      <div
+        class="draggable-card__pagination-wrapper"
+        (click)="$event.stopPropagation()"
+      >
+        <lib-select
+          [options]="paginationOptions()"
           [value]="selectedPagination()"
-          (change)="onPaginationChange($event)"
-        >
-          @for(variant of paginationVariants(); track variant) {
-          <option [value]="variant">{{ variant }}</option>
-          }
-        </select>
-        <img
-          class="draggable-card__pagination-arrow"
-          src="images/svg/drag-and-drop/downArrow.svg"
-          alt="arrow"
+          (valueChange)="onPaginationChange($event)"
         />
       </div>
-      }
-      <!-- view option -->
-      @if(hasViewOption()) {
+      } @if (hasViewOption()) {
       <img
         class="draggable-card__view"
         [src]="isViewable() ? 'images/svg/drag-and-drop/openEye.svg' : 'images/svg/drag-and-drop/crossedEye.svg'"
         [alt]="isViewable() ? 'visible' : 'hidden'"
         (click)="onToggleView()"
       />
-      }
-      <!-- add option -->
-      @if(hasAddOption()){
+      } @if (hasAddOption()) {
       <img
         class="draggable-card__add"
         src="images/svg/drag-and-drop/plus.svg"
         alt="plus svg"
         (click)="onAdd()"
       />
-      }
-      <!-- button option -->
-      @if(hasButton()) {
-      <app-button [variant]="buttonVariant()">
-        {{ buttonContent() }}
-      </app-button>
-      }
-      <!-- edit option -->
-      @if(editable()) {
+      } @if (hasButton()) {
+      <div (click)="$event.stopPropagation()">
+        <app-button [variant]="buttonVariant()">
+          {{ buttonContent() }}
+        </app-button>
+      </div>
+      } @if (editable()) {
       <img
         class="draggable-card__edit"
         src="images/svg/drag-and-drop/edit.svg"
-        alt="can svg"
+        alt="edit svg"
         (click)="onEdit()"
       />
-      }
-      <!-- delete option -->
-      @if(canDelete()) {
+      } @if (canDelete()) {
       <img
         class="draggable-card__remove"
         src="images/svg/drag-and-drop/can.svg"
-        alt="can svg"
+        alt="delete svg"
         (click)="onRemove()"
       />
       }
