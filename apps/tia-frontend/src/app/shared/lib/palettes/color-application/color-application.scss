@@ -42,8 +42,7 @@
     padding: 1.2rem;
     color: $white;
     @include font-arimo(500, 1.4rem, 2rem);
-    border-top-left-radius: 0.67rem;
-    border-top-right-radius: 0.67rem;
+    border-radius: 0.67rem 0.67rem 0 0;
 
     &--primary {
       background-color: var(--primary);
@@ -65,8 +64,7 @@
     flex: 1;
     @include display-flex(column, nowrap);
     justify-content: center;
-    border-bottom-left-radius: 0.8rem;
-    border-bottom-right-radius: 0.8rem;
+    border-radius: 0 0 0.67rem 0.67rem;
 
     &--primary {
       background-color: var(--background);

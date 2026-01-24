@@ -1,0 +1,51 @@
+export const NAVIGATION_ITEMS = [
+  {
+    id: '1',
+    routerLink: 'colorpalettes',
+    activeLink: 'active',
+    link: 'Color Palettes',
+  },
+  {
+    id: '2',
+    routerLink: 'buttons',
+    activeLink: 'active',
+    link: 'Buttons',
+  },
+  { id: '3', routerLink: 'inputs', activeLink: 'active', link: 'Inputs' },
+  { id: '4', routerLink: 'forms', activeLink: 'active', link: 'Forms' },
+  { id: '5', routerLink: 'cards', activeLink: 'active', link: 'Cards' },
+  { id: '6', routerLink: 'alerts', activeLink: 'active', link: 'Alerts' },
+  { id: '7', routerLink: 'badges', activeLink: 'active', link: 'Badges' },
+  { id: '8', routerLink: 'tables', activeLink: 'active', link: 'Tables' },
+  {
+    id: '9',
+    routerLink: 'navigation',
+    activeLink: 'active',
+    link: 'Navigation',
+  },
+  {
+    id: '10',
+    routerLink: 'feedback',
+    activeLink: 'active',
+    link: 'Feedback',
+  },
+  { id: '11', routerLink: 'layout', activeLink: 'active', link: 'Layout' },
+  {
+    id: '12',
+    routerLink: 'datadisplay',
+    activeLink: 'active',
+    link: 'Data Display',
+  },
+  {
+    id: '13',
+    routerLink: 'overlay',
+    activeLink: 'active',
+    link: 'Overlays',
+  },
+  {
+    id: '14',
+    routerLink: 'draganddrop',
+    activeLink: 'active',
+    link: 'Drag And Drop',
+  },
+] as const;

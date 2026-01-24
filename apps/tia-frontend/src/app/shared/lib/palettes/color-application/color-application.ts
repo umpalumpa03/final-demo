@@ -6,6 +6,8 @@ import {
 } from '@angular/core';
 import { colorApplication } from '../../../../features/admin/components/library/components/colorpalettes/config/palette-data.config';
 
+type ThemeType = keyof typeof colorApplication;
+
 @Component({
   selector: 'app-color-application',
   imports: [],
@@ -14,11 +16,7 @@ import { colorApplication } from '../../../../features/admin/components/library/
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ColorApplication {
-  public readonly theme = input<string>();
+  public readonly theme = input<ThemeType>('oceanblue');
   public readonly themeLabel = input<string>();
-  public readonly applications = computed(
-    () =>
-      colorApplication[this.theme() as keyof typeof colorApplication] ??
-      colorApplication.oceanblue,
-  );
+  public readonly applications = computed(() => colorApplication[this.theme()]);
 }
