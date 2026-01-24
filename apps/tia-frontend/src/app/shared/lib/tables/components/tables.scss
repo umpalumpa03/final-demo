@@ -1,6 +1,8 @@
 @use '../../../../shared/styles/mixins' as *;
 @use '../../../../shared/styles/palette' as *;
 
+// This host is necessary to let know the component in this case <app-tables> how to
+// fit the content where you use it.
 :host {
   display: block;
   width: 100%;
@@ -11,16 +13,6 @@
 .table-container {
   width: 100%;
   overflow-x: auto;
-
-  // Optional: nice scrollbar
-  &::-webkit-scrollbar {
-    height: 0.6rem;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: $gray-400;
-    border-radius: 0.3rem;
-  }
 }
 
 .table {
@@ -99,11 +91,13 @@
         }
 
         &__actions {
-          @include flex-center($justify: flex-end);
-          gap: 2.8rem;
+          &__wrapper {
+            @include flex-center($justify: flex-end);
+            gap: 2.8rem;
 
-          img {
-            cursor: pointer;
+            img {
+              cursor: pointer;
+            }
           }
         }
       }

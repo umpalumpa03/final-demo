@@ -49,7 +49,7 @@
         } @for (cell of row.info; track cell.value) { @if(cell.type === 'status'
         ) {
         <td>
-          <app-badges [status]="cell.value" size="small"></app-badges>
+          <app-badges [status]="cell.value" size="medium"></app-badges>
         </td>
         }@else if (cell.type === 'state') {
         <td>
@@ -86,13 +86,16 @@
         </td>
         }} @if(isAction() || isSelectAndAction()) {
         <td class="table__body__row__item table__body__row__item__actions">
-          @for (icon of crudConfig; track icon.id) {
-          <img
-            (click)="onCrudClick(icon.alt, row.id)"
-            [src]="icon.path"
-            [alt]="icon.alt"
-          />
-          }
+          <div class="table__body__row__item__actions__wrapper">
+            @for (icon of crudConfig; track icon.id) {
+            <img
+              (click)="onCrudClick(icon.alt, row.id)"
+              [src]="icon.path"
+              [alt]="icon.alt"
+            />
+
+            }
+          </div>
         </td>
         }
       </tr>

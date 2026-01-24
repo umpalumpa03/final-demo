@@ -328,7 +328,7 @@ export const compactTable: TableConfig = {
       info: [
         { type: 'text', value: 'Fix bug in login', align: 'left' },
         { type: 'text', value: 'Jane Smith', align: 'left' },
-        { type: 'status', align: 'left', value: 'progress' },
+        { type: 'status', align: 'left', value: 'in-progress' },
       ],
     },
     {
