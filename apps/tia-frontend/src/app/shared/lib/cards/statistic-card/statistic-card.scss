@@ -1,53 +1,47 @@
 @use '../../../styles/mixins' as *;
-@use '../../../styles/themes' as *;
 @use '../../../styles/palette' as *;
 
 .statistic-card {
-  background-color: var(--color-bg);
-  border: 0.1rem solid var(--color-primary);
-  border-radius: 0.8rem;
-  padding: 2rem;
-  min-height: 16rem;
-  transition: all 0.2s ease-in-out;
+  @include display-flex(column);
+  gap: 4rem;
+  background-color: $white;
+  border: 0.16rem solid $blue-400;
+  border-radius: 1.4rem;
+  padding: 1.6rem 2.4rem ;
+  min-height: 15.5rem;
+  box-shadow: 0rem 0.1rem 0.3rem 0rem rgba(0, 0, 0, 0.1),
+  0rem 0.1rem 0.2rem -0.1rem rgba(0, 0, 0, 0.1);
+  max-width: 24.5rem;
 
-  @media (max-width: 48rem) {
-    padding: 1.6rem;
-    min-height: 14rem;
+  @media (max-width: 480px) {
+    padding: 1.4rem 2.2rem;
+    gap: 2.4rem;
+    min-height:13rem;
   }
 
 
   &__header {
-    @include display-flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.2rem;
-
-    @media (max-width: 30rem) {
-      margin-bottom: 0.8rem;
-    }
+    @include flex-center(row, space-between);
   }
 
   &__label {
     @include font-arimo(400, 1.4rem, 2rem);
-    color: $gray-700;
+    color: var(--color-fg);
 
-    @media (max-width: 48rem) {
+    @media (max-width: 480px) {
       font-size: 1.3rem;
-      line-height: 1.8rem;
     }
 
   }
 
   &__icon {
-    width: 2.4rem;
-    height: 2.4rem;
-    display: block;
-    color: $gray-600;
-    flex-shrink: 0;
+    width: 1.6rem;
+    height: 1.6rem;
+   
 
-    @media (max-width: 48rem) {
-      width: 2rem;
-      height: 2rem;
+    @media (max-width: 480px) {
+      width: 1.5rem;
+      height: 1.5rem;
     }
 
   }
@@ -58,34 +52,29 @@
   }
 
   &__value {
-    @include font-inter(700, 3rem, 3.6rem);
-    color: $gray-800;
-    margin: 0;
+    @include font-arimo(700, 2.4rem, 3.2rem);
+    color: var(--color-fg);
 
-    @media (max-width: 48rem) {
-      font-size: 2.4rem;
-      line-height: 3rem;
+    @media (max-width: 480px) {
+      font-size: 2.2rem;
     }
 
   }
 
   &__change {
     @include font-arimo(400, 1.2rem, 1.6rem);
-    margin-top: 1rem;
 
-    @media (max-width: 48rem) {
+    @media (max-width: 480px) {
       font-size: 1.1rem;
-      line-height: 1.5rem;
-      margin-top: 0.8rem;
     }
 
 
     &[data-type='positive'] {
-      color: $green-500;
+      color: $green-600;
     }
 
     &[data-type='negative'] {
-      color: $red-500;
+      color: $red-700;
     }
   }
 }

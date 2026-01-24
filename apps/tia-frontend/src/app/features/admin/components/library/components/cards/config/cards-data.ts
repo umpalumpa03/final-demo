@@ -23,8 +23,9 @@ export const BASIC_CARDS_DATA: CardData[] = [
     title: 'Hover Effect',
     subtitle: 'Hover over this card',
     content: 'This card has hover effects applied.',
+     hasHover: true,
   },
-];
+] as const;
 
 export const STATISTICS_CARDS_DATA: StatisticCardData[] = [
   {
@@ -59,4 +60,4 @@ export const STATISTICS_CARDS_DATA: StatisticCardData[] = [
     changeType: 'negative',
     icon: 'images/svg/cards/vector.svg',
   },
-];
+] as const;
