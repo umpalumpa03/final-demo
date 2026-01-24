@@ -1,0 +1,6 @@
+@use '../../../../../../../shared/styles/variables' as *;
+
+@mixin custom-width($gap: 0.8rem) {
+  width: 100%;
+  gap: $gap;
+}

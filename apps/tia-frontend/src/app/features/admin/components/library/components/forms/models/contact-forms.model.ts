@@ -1,16 +1,28 @@
-export interface IContactForm {
-    name: string;
-    email: string;
-    message: string;
-    subscribe: boolean
+export interface ICommonForm {
+  firstName: string;
+  lastName?: string;
+  email?: string;
 }
 
-export interface IRegistrationForm {
-    firstName: string;
-    lastName: string;
-    password: string;
-    country: string;
-    birthDate: string
+export interface IContactForm {
+  name: string;
+  email: string;
+  message: string;
+  subscribe: boolean;
+}
+
+export interface IRegistrationForm extends ICommonForm {
+  password: string;
+  country: string;
+  birthDate: string;
+}
+
+export interface ITwoColumnLayout extends ICommonForm {
+  phone: string;
+}
+
+export interface IHorizontalLayout extends ICommonForm {
+  message: string;
 }
 
 export const COUNTRIES = [

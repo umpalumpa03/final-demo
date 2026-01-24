@@ -1,7 +1,7 @@
 @use '../../../../../../../shared/styles/mixins' as *;
 
 .inline__form {
-   @include display-flex;
+   @include flex-center(row, start, baseline);
    gap: 0.8rem;
 
    &--email {
