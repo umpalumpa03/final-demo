@@ -3,16 +3,16 @@ type tableVariant =
   | 'basic'
   | 'row-selection'
   | 'actions'
-  | 'sortable'
   | 'striped'
   | 'compact'
-  | 'select-actions';
+  | 'select-actions'
+  | 'transactions';
 
 type paginationVariant = 'scroll' | 'page';
 
 type alignment = 'left' | 'right' | 'center';
 
-type infoType = 'text' | 'status' | 'icon' | 'state';
+type infoType = 'text' | 'status' | 'icon' | 'state' | 'money';
 
 interface TableHeader {
   title: string;
@@ -34,6 +34,7 @@ interface PrintedData {
   hover?: boolean;
   clickable?: boolean;
   customColor?: string;
+  currency?: string;
 }
 
 export interface TableRowCell {
@@ -41,6 +42,7 @@ export interface TableRowCell {
   disabled?: boolean;
   selected?: boolean;
   highlighted?: boolean;
+  transactionType?: string;
   info: PrintedData[];
 }
 

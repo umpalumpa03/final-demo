@@ -10,6 +10,8 @@
             (change)="toggleSelectAll()"
           ></lib-checkboxes>
         </th>
+        }@else if(config.type === 'transactions'){
+        <th class="table__header__row__item">Type</th>
         } @for (header of config.headers; track header.title) {
         <th
           class="table__header__row__item"
@@ -46,6 +48,18 @@
         </td>
         }@else if(isCompact()) {
         <td class="table__body__row__item">#{{ row.id }}</td>
+        }@else if (row.transactionType === "credit") {
+        <td class="table__body__row__item">
+          <span class="table__body__row__item--income">
+            <img src="images/svg/transactions/income.svg" alt="income" />
+          </span>
+        </td>
+        }@else if (row.transactionType === "debit") {
+        <td class="table__body__row__item">
+          <span class="table__body__row__item--expense">
+            <img src="images/svg/transactions/expense.svg" alt="income" />
+          </span>
+        </td>
         } @for (cell of row.info; track cell.value) { @if(cell.type === 'status'
         ) {
         <td>
@@ -66,7 +80,16 @@
             [variant]="cell.variant"
           ></app-badges>
         </td>
-        } @else {
+        }@else if (cell.type === 'money'){ @if(row.transactionType === 'debit')
+        {
+        <td class="table__body__row__item--expense__amount">
+          -{{cell.value | currency:cell.currency}}
+        </td>
+        }@else if(row.transactionType === 'credit') {
+        <td class="table__body__row__item--income__amount">
+          +{{cell.value | currency:cell.currency}}
+        </td>
+        } } @else {
         <td class="table__body__row__item" [style.text-align]="cell.align">
           @if(cell.category || cell.accountName || cell.date) {
           <div class="table__body__row__item__container">
@@ -82,7 +105,7 @@
               <span>{{ cell.date | date:'dd/MM/yyyy' }}</span>
             </div>
           </div>
-          }@else { {{ cell.value }} }
+          } @else { {{ cell.value }} }
         </td>
         }} @if(isAction() || isSelectAndAction()) {
         <td class="table__body__row__item table__body__row__item__actions">
@@ -95,6 +118,27 @@
             />
 
             }
+          </div>
+        </td>
+        }@else if(config.type === "transactions") {
+        <td class="table__body__row__item">
+          <div class="table__body__row__item__transaction">
+            <app-button
+              [variant]="'default'"
+              icon="repeat.svg"
+              size="small"
+              [variant]="'outline'"
+            >
+              Repeat
+            </app-button>
+            <app-button
+              [variant]="'default'"
+              icon="tag.svg"
+              size="small"
+              [variant]="'outline'"
+            >
+              categorize
+            </app-button>
           </div>
         </td>
         }

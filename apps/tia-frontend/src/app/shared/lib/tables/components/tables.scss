@@ -32,7 +32,6 @@
   th,
   td {
     padding: 0.5rem;
-    text-align: left;
     vertical-align: middle;
   }
 
@@ -98,6 +97,40 @@
             img {
               cursor: pointer;
             }
+          }
+        }
+
+        &__transaction {
+          @include flex-center($justify: flex-end);
+          gap: 0.8rem;
+        }
+
+        &--income,
+        &--expense {
+          @include flex-center();
+          width: 4rem;
+          height: 4rem;
+          border-radius: 50%;
+
+          &__amount {
+            @include font-inter(400, 1.8rem, 2.8rem);
+            text-align: right;
+          }
+        }
+
+        &--income {
+          background-color: $green-300;
+
+          &__amount {
+            color: $green-600;
+          }
+        }
+
+        &--expense {
+          background-color: $red-300;
+
+          &__amount {
+            color: $red-700;
           }
         }
       }

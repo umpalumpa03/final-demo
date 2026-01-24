@@ -12,14 +12,23 @@ import {
   TableRowCell,
 } from '../models/table.model';
 import { Badges } from '../../primitives/badges/badges';
-import { DatePipe, SlicePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, SlicePipe } from '@angular/common';
 import { crudConfig } from '../models/table.crud.config';
 import { Checkboxes } from '../../forms/checkboxes/checkboxes';
 import { Pagination } from '../../navigation/pagination/pagination';
+import { ButtonComponent } from '../../primitives/button/button';
 
 @Component({
   selector: 'app-tables',
-  imports: [Badges, Checkboxes, DatePipe, Pagination, SlicePipe],
+  imports: [
+    Badges,
+    Checkboxes,
+    DatePipe,
+    Pagination,
+    SlicePipe,
+    CurrencyPipe,
+    ButtonComponent,
+  ],
   templateUrl: './tables.html',
   styleUrl: './tables.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,6 +64,7 @@ export class Tables {
   public readonly isPagination = computed(
     () => this.tableConfig().paginationType === 'page',
   );
+
   // /////////////////////
 
   // Needed for Page navigation

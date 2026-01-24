@@ -406,3 +406,94 @@ export const rowStates: TableConfig = {
     },
   ],
 } as const;
+
+export const transactionsTable: TableConfig = {
+  type: 'transactions',
+  itemPerPage: 5,
+  headers: [
+    { title: 'Details', align: 'left', width: '47%' },
+    { title: 'Amount', align: 'right', width: '25%' },
+    { title: 'Actions', align: 'right', width: '28%' },
+  ],
+  rows: [
+    {
+      id: '1',
+      transactionType: 'credit',
+      info: [
+        {
+          type: 'text',
+          value: 'Salary Payment',
+          category: 'Salary',
+          accountName: 'Main Account',
+          date: '2026-01-14T00:00:00Z',
+          align: 'left',
+        },
+        {
+          type: 'money',
+          value: '5000',
+          align: 'right',
+          currency: 'USD',
+        },
+      ],
+    },
+    {
+      id: '2',
+      transactionType: 'debit',
+      info: [
+        {
+          type: 'text',
+          value: 'Grocery Shopping',
+          category: 'Shopping',
+          accountName: 'Main Account',
+          date: '2026-01-13T00:00:00Z',
+          align: 'left',
+        },
+        {
+          type: 'money',
+          value: '5000',
+          align: 'right',
+          currency: 'EUR',
+        },
+      ],
+    },
+    {
+      id: '3',
+      transactionType: 'credit',
+      info: [
+        {
+          type: 'text',
+          value: 'Electricity Bill',
+          category: 'Utilities',
+          accountName: 'Main Account',
+          date: '2026-01-12T00:00:00Z',
+          align: 'left',
+        },
+        {
+          type: 'money',
+          value: '5000',
+          align: 'right',
+          currency: 'USD',
+        },
+      ],
+    },
+    {
+      id: '4',
+      transactionType: 'credit',
+      info: [
+        {
+          type: 'text',
+          value: 'Freelance Project',
+          category: 'Freelance',
+          accountName: 'Business Account',
+          date: '2026-01-11T00:00:00Z',
+          align: 'left',
+        },
+        {
+          type: 'money',
+          value: '5000',
+          align: 'right',
+        },
+      ],
+    },
+  ],
+} as const;
