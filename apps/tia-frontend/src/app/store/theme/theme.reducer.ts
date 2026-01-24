@@ -1,9 +1,6 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { ThemeActions } from './theme.actions';
-
-export interface ThemeState {
-  activeTheme: string;
-}
+import { ThemeState } from './model/theme.reducer.models';
 
 const savedTheme = localStorage.getItem('theme');
 
