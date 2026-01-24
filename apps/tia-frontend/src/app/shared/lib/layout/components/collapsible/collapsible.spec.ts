@@ -12,7 +12,13 @@ describe('Collapsible', () => {
 
     fixture = TestBed.createComponent(Collapsible);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+
+    fixture.componentRef.setInput('config', {
+      title: 'Test Collapsible',
+      isOpenDefault: false,
+    });
+
+    fixture.detectChanges();
   });
 
   it('should create', () => {
