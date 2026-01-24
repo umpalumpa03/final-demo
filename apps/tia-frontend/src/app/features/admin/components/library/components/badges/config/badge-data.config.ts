@@ -26,6 +26,7 @@ export const STATUSES: StatusBadgeItem[] = [
   { status: 'in-progress', size: 'medium' },
   { status: 'featured', size: 'medium' },
   { status: 'premium', size: 'medium' },
+ 
 ] as const;
 
 export const SIZES: SizeBadgeItem[] = [

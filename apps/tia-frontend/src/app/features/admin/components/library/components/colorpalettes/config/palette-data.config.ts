@@ -1,5 +1,6 @@
 import { Palette } from '../../../../../../../shared/lib/palettes/model/palette.model';
-import { ColorPalette } from '../model/palette.model';
+import { ColorPalette } from '../model/color-palette.models';
+import { Note } from '../model/color-palette.models';
 
 export const OCEANBLUE_PALETTE_DATA: Palette[] = [
   { name: 'Primary', code: '#0284c7', modifier: 'primary' },
@@ -48,7 +49,7 @@ export const colorPalettes: ColorPalette[] = [
   {
     id: '3',
     title: 'Deep Blue',
-    subtitle: 'Rich and elegant theme with vibrant blue tones',
+    subtitle: 'Professional and modern theme with sophisticated blues',
     theme: 'deepblue',
     scssClass: 'deep-blue-theme',
     themeLabel: 'Deep Blue Theme',
@@ -120,3 +121,34 @@ export const colorApplication = {
   royalblue: ROYALBLUE_APPLICATION_DATA,
   deepblue: DEEPBLUE_APPLICATION_DATA,
 } as const;
+
+export const NOTES_DATA: Note[] = [
+  {
+    id: '1',
+    title: 'High Contrast',
+    description:
+      'All three themes maintain WCAG AA compliant contrast ratios for optimal readability',
+    icon: 'high-contrast',
+  },
+  {
+    id: '2',
+    title: 'Consistent Hierarchy',
+    description:
+      'Primary, secondary, and accent colors are carefully balanced for visual hierarchy',
+    icon: 'consistent-hierarchy',
+  },
+  {
+    id: '3',
+    title: 'Flexible Application',
+    description:
+      'Each palette works beautifully for dashboards, landing pages, and web applications',
+    icon: 'flexible-application',
+  },
+  {
+    id: '4',
+    title: 'Easy Switching',
+    description:
+      'Use the palette selector in the header to instantly switch between themes',
+    icon: 'easy-switching',
+  },
+] as const;

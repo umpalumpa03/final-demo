@@ -1,0 +1,13 @@
+<div class="notes">
+  <div class="notes__container theme-{{ theme() }}">
+    @for (note of notes(); track note.id) {
+    <div class="notes__item">
+      <div class="notes__icon" [class]="'notes__icon--' + note.icon"></div>
+      <div class="notes__content">
+        <h3 class="notes__item-title">{{ note.title }}</h3>
+        <p class="notes__description">{{ note.description }}</p>
+      </div>
+    </div>
+    }
+  </div>
+</div>
