@@ -8,7 +8,9 @@ import {
   accordionContent,
   collapsibleConfig,
   flexLayoutConfig,
+  gridLayoutConfig,
   multiAccordionContent,
+  resizablePanelsConfig,
   scrollAreaContent,
   scrollAreaContent2,
 } from '../config/layout.config';
@@ -43,4 +45,6 @@ export class Layout {
   public readonly scrollAreaContent = signal(scrollAreaContent);
   public readonly scrollAreaContent2 = signal(scrollAreaContent2);
   public readonly flexLayoutConfig = signal(flexLayoutConfig);
+  public readonly gridLayoutConfig = signal(gridLayoutConfig);
+  public readonly resizablePanelsConfig = signal(resizablePanelsConfig);
 }

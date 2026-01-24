@@ -139,7 +139,7 @@ export const flexLayoutConfig = [
   {
     id: 1,
     title: 'Space Between:',
-    variant: 'space-between' as const,
+    variant: 'space-between',
     wrap: false,
     items: [
       { id: 1, label: 'Left' },
@@ -150,7 +150,7 @@ export const flexLayoutConfig = [
   {
     id: 2,
     title: 'Centered:',
-    variant: 'center' as const,
+    variant: 'center',
     wrap: false,
     items: [{ id: 1, label: 'Centered Content' }],
   },
@@ -160,5 +160,69 @@ export const flexLayoutConfig = [
     variant: undefined,
     wrap: true,
     items: flexWrapContent.map((item) => ({ id: item.id, label: item.title })),
+  },
+] as const;
+
+export const gridLayoutConfig = [
+  {
+    id: 1,
+    title: 'Two Column Grid:',
+    cols: '2',
+    items: [
+      { id: 1, label: 'Column 1' },
+      { id: 2, label: 'Column 2' },
+    ],
+  },
+  {
+    id: 2,
+    title: 'Three Column Grid:',
+    cols: '3',
+    items: [
+      { id: 1, label: 'Column 1' },
+      { id: 2, label: 'Column 2' },
+      { id: 3, label: 'Column 3' },
+    ],
+  },
+  {
+    id: 3,
+    title: 'Four Column Grid:',
+    cols: '4',
+    items: [
+      { id: 1, label: 'Column 1' },
+      { id: 2, label: 'Column 2' },
+      { id: 3, label: 'Column 3' },
+      { id: 4, label: 'Column 4' },
+    ],
+  },
+  {
+    id: 4,
+    title: 'Asymmetric (2:1):',
+    cols: '2-1',
+    items: [
+      { id: 1, label: 'Wide Column (2/3)' },
+      { id: 2, label: 'Narrow (1/3)' },
+    ],
+  },
+] as const;
+
+export const resizablePanelsConfig = [
+  {
+    id: 1,
+    title: 'Horizontal Resize:',
+    panelSize: 2,
+    panels: [
+      { id: 1, label: 'Left Panel' },
+      { id: 2, label: 'Right Panel' },
+    ],
+  },
+  {
+    id: 2,
+    title: 'Three Panel Layout:',
+    panelSize: 3,
+    panels: [
+      { id: 1, label: 'Sidebar' },
+      { id: 2, label: 'Main Content' },
+      { id: 3, label: 'Details' },
+    ],
   },
 ] as const;
