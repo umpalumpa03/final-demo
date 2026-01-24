@@ -6,11 +6,13 @@ import { Breadcrumbs } from '@tia/shared/lib/navigation/breadcrumbs/breadcrumbs'
 import { ShowcaseCard } from "../../../shared/showcase-card/showcase-card";
 import { LibraryTitle } from '../../../shared/library-title/library-title';
 import { PaginationComponent } from '../components/pagination-component/pagination-component';
+import { NavBar } from "../components/nav-bar/nav-bar";
+import { HorizontalNavBar } from '../components/horizontal-nav-bar/horizontal-nav-bar';
 
 
 @Component({
   selector: 'app-navigation',
-  imports: [Tabs, RouterModule, Breadcrumbs, ShowcaseCard, LibraryTitle, PaginationComponent],
+  imports: [Tabs, RouterModule, Breadcrumbs, ShowcaseCard, LibraryTitle, PaginationComponent, NavBar, HorizontalNavBar],
   templateUrl: './navigation-tabs.html',
   styleUrl: './navigation-tabs.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

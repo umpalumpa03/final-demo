@@ -242,4 +242,20 @@ describe('Badges', () => {
     const iconPath = (component as any).iconPath();
     expect(iconPath).toBe('');
   });
+
+  it('should emit selectedChange and clicked when badge is clicked', () => {
+    fixture.componentRef.setInput('clickable', true);
+    fixture.componentRef.setInput('disabled', false);
+    fixture.detectChanges();
+
+    const selectedChangeSpy = vi.spyOn(component.selectedChange, 'emit');
+    const clickedSpy = vi.spyOn(component.clicked, 'emit');
+    
+    const badgeElement: HTMLElement = fixture.nativeElement.querySelector('span[class*="badge"]');
+    badgeElement.click();
+    fixture.detectChanges();
+
+    expect(selectedChangeSpy).toHaveBeenCalled();
+    expect(clickedSpy).toHaveBeenCalled();
+  });
 });
