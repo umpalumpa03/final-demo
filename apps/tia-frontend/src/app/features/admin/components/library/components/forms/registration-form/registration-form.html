@@ -1,65 +1,76 @@
-<form class="registration">
+<form class="registration" [formGroup]="registrationForm" (ngSubmit)="submit()">
   <div class="registration__row">
     <div class="registration__field">
-      <label class="registration__label">First name</label>
-      <input type="text" placeholder="John" class="registration__input" />
+      <lib-text-input
+        type="text"
+        formControlName="firstName"
+        [config]="inputConfigs.firstName"
+      ></lib-text-input>
     </div>
 
     <div class="registration__field">
-      <label class="registration__label">Last name</label>
-      <input type="text" placeholder="Doe" class="registration__input" />
+      <lib-text-input
+        type="text"
+        formControlName="lastName"
+        [config]="inputConfigs.lastName"
+      ></lib-text-input>
     </div>
   </div>
 
   <div class="registration__field">
-    <label class="registration__label">Email</label>
-    <input
+    <lib-text-input
       type="email"
-      placeholder="john@example.com"
-      class="registration__input"
-    />
+      formControlName="email"
+      [config]="inputConfigs.email"
+    ></lib-text-input>
   </div>
 
   <div class="registration__field">
-    <label class="registration__label">Password</label>
-    <input type="password" placeholder="••••••••" class="registration__input" />
+    <lib-text-input
+      type="password"
+      formControlName="password"
+      [config]="inputConfigs.password"
+    ></lib-text-input>
   </div>
 
   <div class="registration__field">
-    <label class="registration__label">Confirm Password</label>
-    <input type="password" placeholder="••••••••" class="registration__input" />
+    <lib-text-input
+      type="password"
+      [state]="confirmPasswordState"
+      formControlName="confirmPassword"
+      [config]="inputConfigs.confirmPassword"
+    ></lib-text-input>
   </div>
 
   <div class="registration__field">
     <label class="registration__label" for="country">Country</label>
-    <select id="country" class="registration__input registration__select">
+    <select
+      formControlName="country"
+      class="registration__input registration__select"
+    >
       <option disabled selected>Select country</option>
-      @for(country of countries; track $index) {
-         <option>{{ country.label }}</option>
+      @for(country of countries; track country.code) {
+      <option>{{ country.label }}</option>
       }
     </select>
   </div>
 
   <div class="registration__field">
-    <label class="registration__label">Birth Date</label>
-    <div class="registration__birth-date-field">
-      <img
-        src=""
-        alt="Calendar"
-        class="registration__birth-date-icon"
-      />
-      <input
-        type="date"
-        class="registration__input registration__birth-date"
-        placeholder="Pick a date"
-      />
-    </div>
+    <lib-text-input
+      type="date"
+      formControlName="birthDate"
+      [config]="inputConfigs.birthDate"
+    ></lib-text-input>
   </div>
 
   <div class="registration__agree-terms">
-    <input type="checkbox" />
-    <label>Subscribe to newsletter *</label>
+    <lib-checkboxes
+      formControlName="termsAndConditions"
+      [config]="inputConfigs.termsAndConditions"
+    ></lib-checkboxes>
   </div>
 
-  <button type="submit">Create Account</button>
+  <div class="registration__field">
+    <app-button type="submit" [fullWidth]="true">Create Account</app-button>
+  </div>
 </form>

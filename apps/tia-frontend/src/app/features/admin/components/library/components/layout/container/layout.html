@@ -1,0 +1,87 @@
+<div class="layout">
+  <header class="layout__header">
+    <app-library-title
+      title="Layout Components"
+      subtitle="Structural components for organizing content"
+    />
+  </header>
+  <main class="layout__main">
+    <app-showcase-card title="Separators">
+      <div class="section">
+        <div class="section__item">
+          <h4 class="section__title">Horizontal Separator:</h4>
+          <div class="section__example section__example--horizontal">
+            <span>Content above</span>
+            <app-separator
+              orientation="horizontal"
+              thickness="0.1rem"
+              margin="1.2rem"
+            />
+            <span>Content below</span>
+          </div>
+        </div>
+        <div class="section__item">
+          <h4 class="section__title">Vertical Separator:</h4>
+          <div class="section__example section__example--vertical">
+            <span>Left</span>
+            <app-separator orientation="vertical" thickness="0.1rem" />
+            <span>Center</span>
+            <app-separator orientation="vertical" thickness="0.1rem" />
+            <span>Right</span>
+          </div>
+        </div>
+        <div class="section__item">
+          <h4 class="section__title">With Text:</h4>
+          <div class="section__example">
+            <app-separator
+              orientation="horizontal"
+              thickness="0.1rem"
+              label="OR"
+              margin="1.2rem"
+            />
+          </div>
+        </div>
+      </div>
+    </app-showcase-card>
+
+    <app-showcase-card title="Collapsible">
+      <section class="section">
+        @for(item of collapsibleData(); track item.id){
+        <div class="section__item">
+          <app-collapsible [config]="item">
+            <p class="text-secondary">{{ item.content }}</p>
+          </app-collapsible>
+        </div>
+        }
+      </section>
+    </app-showcase-card>
+
+    <app-showcase-card title="Accordion">
+      <section class="section">
+        <div class="section__item">
+          <app-accordion [multi]="false">
+            @for(item of accordionContent; track item.id; let last = $last) {
+            <app-accordion-item [title]="item.title" [isLast]="last">
+              <p>{{item.content}}</p>
+            </app-accordion-item>
+            }
+          </app-accordion>
+        </div>
+      </section>
+    </app-showcase-card>
+    <app-showcase-card title="Multiple Accordion (Multiple Open)">
+      <section class="section">
+        <div class="section__item">
+          <app-accordion [multi]="true">
+            @for(item of multiAccordionContent; track item.id; let last = $last)
+            {
+            <app-accordion-item [title]="item.title" [isLast]="last">
+              <p>{{item.content}}</p>
+            </app-accordion-item>
+            }
+          </app-accordion>
+        </div>
+      </section>
+    </app-showcase-card>
+  </main>
+</div>

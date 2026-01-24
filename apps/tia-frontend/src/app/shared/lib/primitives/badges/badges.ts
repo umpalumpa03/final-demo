@@ -1,6 +1,24 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
-import { BadgeSize, BadgeStatus, BadgeVariant, BadgeShape, BadgeDotType } from './models/badges.models';
-import { statusClassMap, statusIconMap, statusAltTextMap, statusTextMap, dotColorMap, dotTextMap } from './config/badges.config';
+import {
+  BadgeSize,
+  BadgeStatus,
+  BadgeVariant,
+  BadgeShape,
+  BadgeDotType,
+  BadgeSkill,
+  BadgeCategory,
+  BadgeCustomColor,
+} from './models/badges.models';
+import {
+  statusClassMap,
+  statusIconMap,
+  statusAltTextMap,
+  statusTextMap,
+  dotColorMap,
+  dotTextMap,
+  skillPresetMap,
+  categoryPresetMap,
+} from './config/badges.config';
 
 
 @Component({
@@ -16,10 +34,19 @@ export class Badges {
   public readonly status = input<BadgeStatus>();
   public readonly size = input<BadgeSize>();
   public readonly shape = input<BadgeShape>();
+  public readonly skill = input<BadgeSkill>();
+  public readonly category = input<BadgeCategory>();
   public readonly label = input<string>('');
   public readonly dismissible = input<boolean>(false);
   public readonly dot = input<BadgeDotType>();
+  public readonly disabled = input<boolean>(false);
+  public readonly selected = input<boolean>(false);
+  public readonly hoverable = input<boolean>(false);
+  public readonly clickable = input<boolean>(false);
+  public readonly customColor = input<BadgeCustomColor>();
   public readonly dismissed = output<void>();
+  public readonly clicked = output<void>();
+  public readonly selectedChange = output<boolean>();
   private readonly isVisible = signal(true);
 
   public readonly visible = computed(() => {
@@ -35,19 +62,51 @@ export class Badges {
     const statusClass = this.badgeStatus();
     const hasDot = !!this.dot();
     const defaultShape = (statusClass || hasDot) ? 'pill' : 'default';
-    const shape = this.shape() ?? defaultShape;
+    
+    const skillKey = this.skill();
+    const categoryKey = this.category();
+    const customColorKey = this.customColor();
+    
+    let variant: BadgeVariant = this.variant() ?? 'default';
+    
+    if (skillKey) {
+      const preset = skillPresetMap[skillKey];
+      variant = this.variant() ?? preset.variant;
+    }
+    
+    const shape = this.shape() ?? (skillKey || categoryKey ? 'pill' : defaultShape);
+    
     let shapeClass = '';
     if (shape === 'pill') {
       shapeClass = 'badge--pill';
     } else if (shape === 'rounded') {
       shapeClass = 'badge--rounded';
     }
+
+    const hasSpecialState = !!statusClass || hasDot || !!skillKey || !!categoryKey || !!customColorKey;
+    
+    let stateClass = '';
+    if (!hasSpecialState) {
+      if (this.disabled()) {
+        stateClass = 'badge--disabled';
+      } else if (this.selected()) {
+        stateClass = 'badge--selected';
+      }
+    }
     
     if (statusClass) {
       return `badge ${sizeClass} ${statusClass} ${shapeClass}`.trim();
     }
-    const variant = this.variant() ?? 'default';
-    return `badge ${sizeClass} badge--${variant} ${shapeClass}`.trim();
+
+    if (categoryKey) {
+      return `badge ${sizeClass} ${shapeClass}`.trim();
+    }
+
+    if (customColorKey) {
+      return `badge ${sizeClass} ${shapeClass} ${stateClass}`.trim();
+    }
+
+    return `badge ${sizeClass} badge--${variant} ${shapeClass} ${stateClass}`.trim();
   });
 
   public readonly badgeStatus = computed(() => {
@@ -70,10 +129,22 @@ export class Badges {
     if (currentStatus) {
       return statusTextMap[currentStatus];
     }
+
     const currentDot = this.dot();
     if (currentDot) {
       return dotTextMap[currentDot];
     }
+
+    const skillKey = this.skill();
+    if (skillKey) {
+      return skillPresetMap[skillKey].text;
+    }
+
+    const categoryKey = this.category();
+    if (categoryKey) {
+      return categoryPresetMap[categoryKey].text;
+    }
+
     return this.text();
   });
 
@@ -93,5 +164,12 @@ export class Badges {
   public onDismiss(): void {
     this.isVisible.set(false);
     this.dismissed.emit();
+  }
+
+  public onClick(): void {
+    if (this.clickable() && !this.disabled()) {
+      this.selectedChange.emit(!this.selected());
+      this.clicked.emit();
+    }
   }
 }

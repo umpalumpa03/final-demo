@@ -1,5 +1,13 @@
+@use 'sass:list';
 @use '../../../styles/palette' as *;
 @use '../../../styles/mixins' as *;
+
+
+
+@mixin badge-style($color: $white, $border: none) {
+  color: $color;
+  border: $border;
+}
 
 .badge-wrapper {
   @include display-flex(row, center);
@@ -7,21 +15,28 @@
   gap: 1rem;
   
   &__label {
-    @include font-inter(400, 1.2rem, 1.2);
+    @include font-arimo(400, 1.2rem, 1.2);
     color: $blue-900;
     
   }
 }
 
 .badge {
-  @include font-inter(500, 1.2rem, 1.2);
+  @include font-arimo(500, 1.2rem, 1.2);
   @include flex-center(row, flex-start, center);
+  @include badge-style;
   gap: 0.4rem;
   padding: 0.7rem 0.9rem;
   border-radius: 0;
-  border: none;
-  color: $white;
-  
+  transition: filter 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  &[data-hoverable],
+  &[data-clickable] {
+    cursor: pointer;
+    
+    &:hover:not([data-disabled]):not([data-selected]) {
+      filter: brightness(0.9);
+    }
+  }
 
   &--rounded {
     border-radius: 0.9rem;
@@ -32,27 +47,22 @@
   }
 
   &__dot {
-   width: 0.8rem;
+    width: 0.8rem;
     height: 0.8rem;
     border-radius: 50%;
     margin-right: 0.7rem;
-    
-    
 
-    &--green-400 {
-      background-color: $green-400;
-    }
+    $dot-colors: (
+      'green-400': $green-400,
+      'yellow-400': $yellow-400,
+      'red-500': $red-400,
+      'blue-200': $blue-100
+    );
 
-    &--yellow-400 {
-      background-color: $yellow-400;
-    }
-
-    &--red-500 {
-      background-color: $red-400;
-    }
-
-    &--blue-200 {
-      background-color: $blue-100;
+    @each $name, $color in $dot-colors {
+      &--#{$name} {
+        background-color: $color;
+      }
     }
   }
 
@@ -177,6 +187,17 @@
     color: $white;
   }
 
+  &--disabled {
+    background-color: $blue-200;
+    color: $gray-500;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  &--selected {
+    border: 0.3rem solid $blue-200;
+  }
+
  
   &--secondary {
     background-color: $gray-200;
@@ -186,7 +207,7 @@
 
 
   &--destructive {
-    background-color: $red-500;
+    background-color: $red-600;
     color: $white;
   }
 
@@ -198,52 +219,68 @@
   }
 
 
-  &--active {
-    background-color: $green-500;
-    color: $white;
-  }
+  $statuses: (
+    'active': $green-500,
+    'pending': $yellow-400,
+    'inactive': $red-500,
+    'in-progress': $blue-500,
+    'featured': $purple-500,
+    'premium': $orange-500
+  );
 
-  &--pending {
-    background-color: $yellow-400;
-    color: $white;
-  }
-
-  &--inactive {
-    background-color: $red-500;
-    color: $white;
-  }
-
-  &--in-progress {
-    background-color: $blue-500;
-    color: $white;
-  }
-
-  &--featured {
-    background-color: $purple-500;
-    color: $white;
-  }
-
-  &--premium {
-    background-color: $orange-500;
-    color: $white;
+  @each $name, $bg-color in $statuses {
+    &--#{$name} {
+      background-color: $bg-color;
+      color: $white;
+    }
   }
 
 
-  &[data-dot="online"] {
-    background-color: $blue-royal;
-    color: $white;
+
+  $categories: (
+    'technology': $blue-500,
+    'design': $green-500,
+    'marketing': $purple-500
+  );
+
+  @each $name, $bg-color in $categories {
+    &[data-category='#{$name}'] {
+      background-color: $bg-color;
+      @include badge-style;
+    }
   }
 
-  &[data-dot="live"] {
-    background-color: $blue-500;
-    color: $white;
+
+  $dots: (
+    'online': ($blue-royal, $white),
+    'live': ($blue-500, $white),
+    'away': ($blue-200, $blue-700),
+    'offline': ($white, $blue-700)
+  );
+
+  @each $name, $colors in $dots {
+    &[data-dot='#{$name}'] {
+      background-color: list.nth($colors, 1);
+      @include badge-style($color: list.nth($colors, 2));
+    }
   }
-  &[data-dot="away"] {
-    background-color: $blue-200;
-    color: $blue-700;
-  }
-  &[data-dot="offline"] {
-    background-color: $white;
-    color: $blue-700;
+
+
+  $custom-colors: (
+    'pink': $pink-400,
+    'indigo': $indigo-400,
+    'teal': $teal-400,
+    'rose': $red-500,
+    'cyan': $cyan-400,
+    'amber': $yellow-500,
+    'lime': $lime-400,
+    'slate': $gray-700
+  );
+
+  @each $name, $bg-color in $custom-colors {
+    &[data-custom-color='#{$name}'] {
+      background-color: $bg-color;
+      @include badge-style;
+    }
   }
 }

@@ -1,5 +1,13 @@
 import { TextInputType } from '@tia/shared/lib/forms/models/input.model';
-import { InputDemo, TextareaDemo } from '../models/input-demos.model';
+import {
+  CheckboxDemo,
+  InputDemo,
+  RadioDemo,
+  SliderDemo,
+  SelectDemo,
+  SwitchDemo,
+  TextareaDemo,
+} from '../models/input-demos.model';
 
 export const BASIC_INPUT_DEMOS: InputDemo[] = [
   {
@@ -78,5 +86,130 @@ export const TEXTAREA_DEMOS: TextareaDemo[] = [
       showCharacterCount: true,
       rows: 2,
     },
+  },
+] as const;
+
+export const CHECKBOX_DEMOS: CheckboxDemo[] = [
+  {
+    checked: false,
+    config: {
+      label: 'Accept terms and conditions (State: Unchecked)',
+    },
+  },
+  {
+    checked: true,
+    config: {
+      label: 'Default Checked',
+    },
+  },
+  {
+    checked: false,
+    config: {
+      label: 'Disabled Checkbox',
+      disabled: true,
+    },
+  },
+  {
+    checked: true,
+    config: {
+      label: 'Disabled & Checked',
+      disabled: true,
+    },
+  },
+] as const;
+
+export const RADIO_DEMOS: RadioDemo[] = [
+  {
+    config: {
+      label: 'Radio Buttons',
+      layout: 'column',
+      initialValue: 1,
+    },
+    options: [
+      { label: 'Option 1 (Selected)', value: 1 },
+      { label: 'Option 2', value: 2 },
+      { label: 'Option 3', value: 3 },
+      { label: 'Disabled Option', value: 4, disabled: true },
+    ],
+  },
+] as const;
+
+export const SWITCH_DEMOS: SwitchDemo[] = [
+  {
+    checked: false,
+    config: {
+      label: 'Toggle Feature (State: OFF)',
+    },
+  },
+  {
+    checked: true,
+    config: {
+      label: 'Default Enabled',
+    },
+  },
+  {
+    checked: false,
+    config: {
+      label: 'Disabled Switch',
+      disabled: true,
+    },
+  },
+  {
+    checked: true,
+    config: {
+      label: 'Disabled & Checked',
+      disabled: true,
+    },
+  },
+] as const;
+
+export const SLIDER_DEMOS: SliderDemo[] = [
+  {
+    config: {
+      label: 'Volume',
+      valueSuffix: '%',
+      min: 0,
+      max: 100,
+    },
+    initialValue: 50,
+  },
+  {
+    config: {
+      label: 'Disabled Slider',
+      disabled: true,
+    },
+    initialValue: 50,
+  },
+  {
+    config: {
+      label: 'Step Slider (25% increments)',
+      step: 25,
+      valueSuffix: '%',
+    },
+    initialValue: 50,
+  },
+] as const;
+
+export const SELECT_DEMOS: SelectDemo[] = [
+  {
+    config: {
+      label: 'Select an Option',
+      placeholder: 'Choose an option...',
+    },
+    initialValue: null,
+    options: [
+      { label: 'Option 1', value: 1 },
+      { label: 'Option 2', value: 2 },
+      { label: 'Option 3', value: 3 },
+    ],
+  },
+  {
+    config: {
+      label: 'Disabled Select',
+      placeholder: 'Disabled select',
+      disabled: true,
+    },
+    initialValue: null,
+    options: [],
   },
 ] as const;

@@ -1,0 +1,28 @@
+<form class="validation__form" [formGroup]="contactForm">
+  <div class="validation__form--fields">
+    <lib-text-input
+      state="success"
+      type="text"
+      formControlName="valid"
+      [config]="successConfig"
+    ></lib-text-input>
+  </div>
+
+  <div class="validation__form--fields">
+    <lib-text-input
+      state="error"
+      type="text"
+      formControlName="invalid"
+      [config]="errorConfig"
+    ></lib-text-input>
+  </div>
+
+  <div class="validation__form--fields">
+    <lib-text-input
+      state="warning"
+      type="text"
+      formControlName="warning"
+      [config]="warningConfig"
+    ></lib-text-input>
+  </div>
+</form>

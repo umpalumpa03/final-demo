@@ -2,6 +2,7 @@ export interface DraggableItemType {
   id: string;
   title: string;
   subtitle: string;
+  icon?: string;
 }
 
 export interface KanbanItem extends DraggableItemType {
@@ -26,3 +27,4 @@ export interface CardReorderedEvent {
   boardId: string;
   newOrder: number;
 }
+export type LayoutType = 'grid' | 'list';

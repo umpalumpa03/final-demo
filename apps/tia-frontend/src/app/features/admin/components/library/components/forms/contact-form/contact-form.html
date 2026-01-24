@@ -1,0 +1,35 @@
+<form class="contact__form" [formGroup]="contactForm" (ngSubmit)="submit()">
+  <div class="contact__form--fields">
+    <lib-text-input
+      type="text"
+      formControlName="name"
+      [config]="nameConfig"
+    ></lib-text-input>
+  </div>
+
+  <div class="contact__form--fields">
+    <lib-text-input
+      type="email"
+      formControlName="email"
+      [config]="emailConfig"
+    ></lib-text-input>
+  </div>
+
+  <div class="contact__form--fields">
+    <lib-textarea
+      formControlName="message"
+      [config]="messageConfig"
+    ></lib-textarea>
+  </div>
+
+  <div class="contact__form--subscribe">
+    <lib-checkboxes
+      formControlName="subscribe"
+      [config]="checkboxConfig"
+    ></lib-checkboxes>
+  </div>
+
+  <div class="contact__form--submit">
+    <app-button type="submit" [fullWidth]="true">Submit</app-button>
+  </div>
+</form>

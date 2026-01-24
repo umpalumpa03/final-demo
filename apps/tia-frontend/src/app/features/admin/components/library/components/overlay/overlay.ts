@@ -15,6 +15,7 @@ import { TopSheetModal } from "./components/top-sheet-modal/top-sheet-modal";
 import { BottomSheetModal } from "./components/bottom-sheet-modal/bottom-sheet-modal";
 import { DrawerModal } from "./components/drawer-modal/drawer-modal";
 import { ContextDemo } from "./components/context-demo/context-demo";
+import { CommandPaletteDemo } from "./components/command-palette-demo/command-palette-demo";
 
 @Component({
   selector: 'app-overlay',
@@ -31,13 +32,14 @@ import { ContextDemo } from "./components/context-demo/context-demo";
     TopSheetModal,
     BottomSheetModal,
     DrawerModal,
-    ContextDemo
+    ContextDemo,
+    CommandPaletteDemo
 ],
   templateUrl: './overlay.html',
   styleUrls: ['./overlay.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Overlay {
-  public pageTitle = 'Overlay Components';
-  public pageSubtitle = 'Modal dialogs, sheets, popovers, and dropdown menu';
+  public readonly pageTitle = 'Overlay Components';
+  public readonly pageSubtitle = 'Modal dialogs, sheets, popovers, and dropdown menu';
 }

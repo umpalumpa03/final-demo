@@ -1,0 +1,35 @@
+@use '../../shared/styles/variables' as *;
+@use '../../shared/styles/mixins' as *;
+
+.wildcard {
+  @include flex-center(column, center, center);
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  text-align: center;
+  padding: 2rem;
+
+  &__content {
+    @include flex-center(column, center, center);
+    gap: 2.4rem;
+    max-width: 50rem;
+  }
+
+  &__title {
+    @include font-inter(800, 12rem, 1);
+    color: var(--color-primary);
+    letter-spacing: 0.05em;
+  }
+
+  &__subtitle {
+    @include font-inter(600, 3.2rem, 1.2);
+    color: var(--color-fg);
+  }
+
+  &__description {
+    @include font-inter(400, 1.6rem, 1.6);
+    color: var(--color-primary);
+    margin-bottom: 1.2rem;
+  }
+}

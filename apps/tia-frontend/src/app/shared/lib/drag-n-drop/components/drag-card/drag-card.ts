@@ -4,34 +4,60 @@ import {
   computed,
   input,
   output,
-  effect,
+  linkedSignal,
+  contentChild,
+  TemplateRef,
 } from '@angular/core';
-import { DraggableItemType } from '../../model/drag.model';
+import { DraggableItemType, LayoutType } from '../../model/drag.model';
 import { DraggableCard } from '../draggable-card/draggable-card';
 import { DragBase } from '../../base/base';
+import { ButtonVariant } from '@tia/shared/lib/primitives/button/button.model';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'app-drag-card',
-  imports: [DraggableCard],
+  imports: [DraggableCard, NgTemplateOutlet],
   templateUrl: './drag-card.html',
   styleUrl: './drag-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DragCard extends DragBase {
-  public items = input.required<DraggableItemType[]>();
-  public canDelete = input<boolean>(false);
-  public layout = input<'grid' | 'list'>('grid');
-  public columns = input<number>(2);
-  public cardTitle = input<string>('Draggable Cards');
-  public cardDescription = input<string>(
+  public readonly items = input.required<DraggableItemType[]>();
+  public readonly canDelete = input(false);
+  public readonly layout = input<LayoutType>('grid');
+  public readonly columns = input(2);
+  public readonly cardTitle = input('Draggable Cards');
+  public readonly cardDescription = input<string>(
     'Drag Cards to reorder them in a grid layout',
   );
+  public readonly editable = input(false);
+  public readonly hasButton = input(false);
+  public readonly buttonVariant = input<ButtonVariant>('ghost');
+  public readonly buttonContent = input('Play');
+  public readonly hasAddOption = input(false);
+  public readonly hasViewOption = input(false);
+  public readonly hasPagination = input(false);
+  public readonly paginationVariants = input<number[]>([10, 20, 40]);
+  public cardContentTemplate = contentChild<TemplateRef<any>>('cardContent');
 
-  public itemsChange = output<DraggableItemType[]>();
-  public orderChange = output<string[]>();
-  public itemRemoved = output<string>();
+  public readonly itemsChange = output<DraggableItemType[]>();
+  public readonly orderChange = output<string[]>();
+  public readonly itemRemoved = output<string>();
+  public readonly itemEdited = output<string>();
+  public readonly itemAdded = output<string>();
+  public readonly viewOptionChanged = output<{
+    id: string;
+    isViewable: boolean;
+  }>();
+  public readonly paginationChanged = output<{ id: string; value: number }>();
 
-  public internalItems: DraggableItemType[] = [];
+  public readonly internalItems = linkedSignal<
+    DraggableItemType[],
+    DraggableItemType[]
+  >({
+    source: this.items,
+    computation: (newItems) => [...newItems],
+  });
 
   protected readonly containerClasses = computed(
     () => `draggable-cards draggable-cards--${this.layout()}`,
@@ -41,37 +67,44 @@ export class DragCard extends DragBase {
     this.layout() === 'grid' ? `--columns: ${this.columns()}` : null,
   );
 
-  constructor() {
-    super();
-    effect(() => {
-      this.internalItems = [...this.items()];
-    });
-  }
-
   public onDragStartHandler(id: string, event: PointerEvent): void {
     this.onDragStart(id, event);
   }
 
   protected override handleDrop(dragId: string, dropId: string): void {
-    const dragIndex = this.internalItems.findIndex(
-      (item) => item.id === dragId,
-    );
-    const dropIndex = this.internalItems.findIndex(
-      (item) => item.id === dropId,
+    const newItems = this.calculateReorderedItems(
+      this.internalItems(),
+      dragId,
+      dropId,
     );
 
-    const newItems = [...this.internalItems];
-    const [removed] = newItems.splice(dragIndex, 1);
-    newItems.splice(dropIndex, 0, removed);
-
-    this.internalItems = newItems;
-    this.itemsChange.emit(this.internalItems);
-    this.orderChange.emit(this.internalItems.map((item) => item.id));
+    if (newItems !== this.internalItems()) {
+      this.internalItems.set(newItems);
+      this.itemsChange.emit(newItems);
+      this.orderChange.emit(newItems.map((item) => item.id));
+    }
   }
 
   public onRemove(id: string): void {
-    this.internalItems = this.internalItems.filter((item) => item.id !== id);
-    this.itemsChange.emit(this.internalItems);
+    const updated = this.internalItems().filter((item) => item.id !== id);
+    this.internalItems.set(updated);
+    this.itemsChange.emit(updated);
     this.itemRemoved.emit(id);
+  }
+
+  public onEdit(id: string): void {
+    this.itemEdited.emit(id);
+  }
+
+  public onAdd(id: string): void {
+    this.itemAdded.emit(id);
+  }
+
+  public onViewOptionChange(id: string, isViewable: boolean): void {
+    this.viewOptionChanged.emit({ id, isViewable });
+  }
+
+  public onPaginationChange(id: string, value: number): void {
+    this.paginationChanged.emit({ id, value });
   }
 }

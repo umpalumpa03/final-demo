@@ -1,0 +1,21 @@
+<div
+  class="tooltip"
+  (mouseenter)="open()"
+  (mouseleave)="close()"
+>
+  <div class="tooltip__trigger">
+    <ng-content></ng-content>
+  </div>
+
+  @if (isOpen()) {
+    <div
+      class="tooltip__content"
+      [class.tooltip__content--top]="placement() === 'top'"
+      [class.tooltip__content--bottom]="placement() === 'bottom'"
+      [class.tooltip__content--left]="placement() === 'left'"
+      [class.tooltip__content--right]="placement() === 'right'"
+    >
+      {{ content() }}
+    </div>
+  }
+</div>

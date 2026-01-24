@@ -45,6 +45,12 @@ export const libraryRoutes: Routes = [
           import('./components/cards/cards').then((c) => c.Cards),
       },
       {
+        path: 'alerts',
+        loadComponent: () => import('./components/alerts/container/alerts').then(
+          (c) => c.Alerts
+        )
+      },
+      {
         path: 'badges',
         loadComponent: () =>
           import('./components/badges/badge-component').then(
@@ -64,7 +70,9 @@ export const libraryRoutes: Routes = [
       {
         path: 'datadisplay',
         loadComponent: () =>
-          import('./components/avatars/avatars').then((c) => c.Avatars),
+          import('./components/data-display/data-display').then(
+            (c) => c.DataDisplay,
+          ),
       },
       {
         path: 'feedback',
@@ -84,8 +92,9 @@ export const libraryRoutes: Routes = [
           import('./components/input/input').then((c) => c.Input),
       },
       {
-        path: '**',
-        redirectTo: 'colorpalettes',
+        path: 'layout',
+        loadComponent: () =>
+          import('./components/layout/container/layout').then((c) => c.Layout),
       },
     ],
   },
