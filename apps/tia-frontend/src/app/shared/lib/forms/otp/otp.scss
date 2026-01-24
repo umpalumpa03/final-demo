@@ -1,7 +1,7 @@
 @use "../../../styles/palette" as *;
 @use "../../../styles/mixins" as *;
 
-.otp-wrapper {
+.otp {
     @include display-flex(column);
     gap: 0.8rem;
 
@@ -10,54 +10,59 @@
         pointer-events: none;
     }
 
-    .otp-label {
+    &--label {
         @include font-arimo(500, 1.4rem, 1);
         color: var(--color-fg);
     }
 
-    .otp-container {
+    &__required {
+        color: $red-600;
+        margin-left: 0.2rem;
+    }
+
+    &__inputs {
         @include display-flex();
         gap: 0.8rem;
+    }
 
-        .otp-input {
-            width: 3.6rem;
-            height: 3.6rem;
-            text-align: center;
-            @include font-arimo();
-            color: $blue-ocean-foreground;
-            border: 1px solid rgba($blue-ocean, 0.4);
+    &__input {
+        width: 3.6rem;
+        height: 3.6rem;
+        text-align: center;
+        @include font-arimo();
+        color: $blue-ocean-foreground;
+        border: 1px solid rgba($blue-ocean, 0.4);
 
-            transition: all 0.2s ease;
+        transition: all 0.2s ease;
 
-            &:focus {
-                outline: none;
-                border-color: $blue-ocean;
-                box-shadow: 0 0 0 3px rgba($blue-ocean, 0.1);
-            }
+        &:focus {
+            outline: none;
+            border-color: $blue-ocean;
+            box-shadow: 0 0 0 3px rgba($blue-ocean, 0.1);
+        }
 
-            &::placeholder {
-                opacity: 40%;
-            }
+        &::placeholder {
+            opacity: 40%;
+        }
 
-            &::-webkit-outer-spin-button,
-            &::-webkit-inner-spin-button {
-                -webkit-appearance: none;
-                margin: 0;
-            }
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
 
-            &:nth-child(1) {
-                border-top-left-radius: 0.8rem;
-                border-bottom-left-radius: 0.8rem;
-            }
+        &:nth-child(1) {
+            border-top-left-radius: 0.8rem;
+            border-bottom-left-radius: 0.8rem;
+        }
 
-            &:nth-last-child(1) {
-                border-top-right-radius: 0.8rem;
-                border-bottom-right-radius: 0.8rem;
-            }
+        &:nth-last-child(1) {
+            border-top-right-radius: 0.8rem;
+            border-bottom-right-radius: 0.8rem;
         }
     }
 
-    .otp--error {
+    .otp__error {
         @include font-arimo(400, 1.2rem, 1);
         color: $red-600;
     }

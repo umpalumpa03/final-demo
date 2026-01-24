@@ -11,7 +11,7 @@ import {
 import { BaseInput } from '../base/base-input';
 import { generateUniqueId } from '../base/utils/input.util';
 import { OTP_DEFAULTS } from '../config/otp.config';
-import { OtpConfig } from '../models/otp.model';
+import { OtpConfig, OtpDigit } from '../models/otp.model';
 
 @Component({
   selector: 'lib-otp',
@@ -35,11 +35,15 @@ export class Otp extends BaseInput {
     ...this.config(),
   }));
 
-  protected readonly valuesArray = computed<string[]>(() => {
-    const len: number = this.mergedConfig().length!;
-    const val: string = this.value() || '';
-    const chars: string[] = val.split('').slice(0, len);
-    return [...chars, ...new Array(len - chars.length).fill('')];
+protected readonly valuesArray = computed<OtpDigit[]>(() => {
+    const len = this.mergedConfig().length!;
+    const val = this.value() || '';
+    const chars = val.split('').slice(0, len);
+    
+    return Array.from({ length: len }, (_, i) => ({
+      id: i,             
+      value: chars[i] || '' 
+    }));
   });
 
   constructor() {
