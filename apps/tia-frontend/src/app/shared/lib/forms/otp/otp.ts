@@ -2,11 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   ElementRef,
   input,
   model,
-  QueryList,
-  ViewChildren,
+  viewChildren,
 } from '@angular/core';
 import { BaseInput } from '../base/base-input';
 import { generateUniqueId } from '../base/utils/input.util';
@@ -21,8 +21,7 @@ import { OtpConfig, OtpDigit } from '../models/otp.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Otp extends BaseInput {
-  @ViewChildren('otpBox')
-  private readonly otpBoxes!: QueryList<ElementRef<HTMLInputElement>>;
+  readonly otpBoxes = viewChildren<ElementRef<HTMLInputElement>>('otpBox');
 
   public override readonly config = input<OtpConfig>({});
   public override readonly value = model<string>('');
@@ -71,7 +70,7 @@ export class Otp extends BaseInput {
     this.updateValueAt(index, val);
 
     if (val && index < this.mergedConfig().length! - 1) {
-      this.otpBoxes.get(index + 1)?.nativeElement.focus();
+      this.otpBoxes()[index + 1]?.nativeElement.focus();
     }
   }
 
@@ -84,19 +83,18 @@ export class Otp extends BaseInput {
         event.preventDefault();
         if (!input.value && index > 0) {
           this.updateValueAt(index - 1, '');
-          this.otpBoxes.get(index - 1)?.nativeElement.focus();
+          this.otpBoxes()[index - 1]?.nativeElement.focus();
         } else {
           this.updateValueAt(index, '');
         }
         break;
       case 'ArrowLeft':
         event.preventDefault();
-        if (index > 0) this.otpBoxes.get(index - 1)?.nativeElement.focus();
+        if (index > 0) this.otpBoxes()[index - 1]?.nativeElement.focus();
         break;
       case 'ArrowRight':
         event.preventDefault();
-        if (index < len - 1)
-          this.otpBoxes.get(index + 1)?.nativeElement.focus();
+        if (index < len - 1) this.otpBoxes()[index + 1]?.nativeElement.focus();
         break;
     }
   }
@@ -115,7 +113,7 @@ export class Otp extends BaseInput {
     setTimeout(() => {
       const focusIndex: number = Math.min(cleanData.length, len) - 1;
       if (focusIndex >= 0) {
-        this.otpBoxes.get(focusIndex)?.nativeElement.focus();
+        this.otpBoxes()[focusIndex]?.nativeElement.focus();
       }
     });
   }

@@ -7,6 +7,10 @@ describe('Otp', () => {
   let component: Otp;
   let fixture: ComponentFixture<Otp>;
 
+  // Helper ფუნქცია ინპუტების მისაღებად
+  const getInputs = () => fixture.debugElement.queryAll(By.css('input'));
+  const getInputNative = (index: number) => getInputs()[index].nativeElement;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Otp],
@@ -21,9 +25,8 @@ describe('Otp', () => {
     fixture.componentRef.setInput('config', { length: 6, inputType: 'number' });
     fixture.detectChanges();
 
-    const inputs = fixture.debugElement.queryAll(By.css('input'));
-    const firstInput = inputs[0].nativeElement;
-    const secondInput = inputs[1].nativeElement;
+    const firstInput = getInputNative(0);
+    const secondInput = getInputNative(1);
 
     const focusSpy = vi.spyOn(secondInput, 'focus');
 
@@ -40,11 +43,12 @@ describe('Otp', () => {
     expect(component.value()).toBe('5');
     expect(focusSpy).toHaveBeenCalled();
   });
+
   it('should handle keyboard navigation (Arrows & Backspace)', () => {
     fixture.componentRef.setInput('value', '12');
     fixture.detectChanges();
 
-    const inputs = fixture.debugElement.queryAll(By.css('input'));
+    const inputs = getInputs();
     const input0 = inputs[0].nativeElement;
     const input1 = inputs[1].nativeElement;
     const input2 = inputs[2].nativeElement;
@@ -77,9 +81,7 @@ describe('Otp', () => {
   });
 
   it('should handle pasting data', async () => {
-    const inputs = fixture.debugElement.queryAll(By.css('input'));
-    const input0 = inputs[0];
-
+    const firstInput = getInputs()[0];
     const mockPreventDefault = vi.fn();
 
     const mockClipboardEvent = {
@@ -89,7 +91,7 @@ describe('Otp', () => {
       },
     };
 
-    input0.triggerEventHandler('paste', mockClipboardEvent);
+    firstInput.triggerEventHandler('paste', mockClipboardEvent);
     fixture.detectChanges();
 
     await fixture.whenStable();
