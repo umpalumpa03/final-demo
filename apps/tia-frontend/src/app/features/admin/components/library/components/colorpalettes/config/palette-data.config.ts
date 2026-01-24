@@ -120,3 +120,34 @@ export const colorApplication = {
   royalblue: ROYALBLUE_APPLICATION_DATA,
   deepblue: DEEPBLUE_APPLICATION_DATA,
 } as const;
+
+export const NOTES_DATA = [
+  {
+    id: '1',
+    title: 'High Contrast',
+    description:
+      'All three themes maintain WCAG AA compliant contrast ratios for optimal readability',
+    icon: 'high-contrast',
+  },
+  {
+    id: '2',
+    title: 'Consistent Hierarchy',
+    description:
+      'Primary, secondary, and accent colors are carefully balanced for visual hierarchy',
+    icon: 'consistent-hierarchy',
+  },
+  {
+    id: '3',
+    title: 'Flexible Application',
+    description:
+      'Each palette works beautifully for dashboards, landing pages, and web applications',
+    icon: 'flexible-application',
+  },
+  {
+    id: '4',
+    title: 'Easy Switching',
+    description:
+      'Use the palette selector in the header to instantly switch between themes',
+    icon: 'easy-switching',
+  },
+] as const;

@@ -4,8 +4,7 @@
 
 .palette {
   @include display-flex(row, wrap);
-  padding: 2rem 0;
-  gap: 1rem;
+  gap: 0.9rem;
   width: 100%;
   max-width: 192rem;
   @include apply-themes;
@@ -17,8 +16,8 @@
   }
 
   &__swatch {
-    width: 14.5rem;
-    height: 8rem;
+    width: 16.2rem;
+    height: 9.6rem;
     border-radius: 0.8rem;
     border: 0.1rem solid $gray-200;
 
