@@ -7,14 +7,25 @@
   max-width: 110rem;
   margin: 0 auto;
   padding-bottom: 31rem;
-  
+
   &__title {
     margin: 3.2rem 0rem 0rem;
   }
 
   &__group {
-     @include display-flex(column);
+    @include display-flex(column);
     gap: 1.6rem;
     width: 100%;
+  }
+
+  &__card {
+    @include flex-center(row, space-between, center);
+    width: 100%;
+    flex-wrap: wrap;
+    &__subtitle {
+      @include font-arimo(700, 1.8rem, 2.7rem);
+      color: var(--color-fg);
+      margin: 0; 
+    }
   }
 }

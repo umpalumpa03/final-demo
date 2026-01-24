@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  QueryList,
+  signal,
+  ViewChildren,
+} from '@angular/core';
 import { LibraryTitle } from '../../../shared/library-title/library-title';
 import { ShowcaseCard } from '../../../shared/showcase-card/showcase-card';
 import { BasicAlerts } from '@tia/shared/lib/alerts/components/basic-alerts/basic-alerts';
@@ -6,7 +12,17 @@ import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-typ
 import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
 import { AlertsWithActions } from '@tia/shared/lib/alerts/components/alerts-with-actions/alerts-with-actions';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
-import { ALERTS_ACTIONS_DATA, ALERTS_BASIC_DATA, ALERTS_CONFIG, ALERTS_DISMISSIBLE_DATA, ALERTS_ICONS_DATA, ALERTS_SIMPLE_DATA, ALERTS_STATES_DATA, ALERTS_TITLES } from '../config/alerts-data.config';
+import {
+  ALERTS_ACTIONS_DATA,
+  ALERTS_BASIC_DATA,
+  ALERTS_CONFIG,
+  ALERTS_DISMISSIBLE_DATA,
+  ALERTS_ICONS_DATA,
+  ALERTS_SIMPLE_DATA,
+  ALERTS_STATES_DATA,
+  ALERTS_TITLES,
+} from '../config/alerts-data.config';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 
 @Component({
   selector: 'app-alerts',
@@ -18,16 +34,18 @@ import { ALERTS_ACTIONS_DATA, ALERTS_BASIC_DATA, ALERTS_CONFIG, ALERTS_DISMISSIB
     DismissibleAlerts,
     AlertsWithActions,
     SimpleAlerts,
+    ButtonComponent,
   ],
   templateUrl: './alerts.html',
   styleUrl: './alerts.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Alerts {
-  public readonly pageTitle:string = 'Alerts & Notifications';
-  public readonly pageSubtitle:string = 'Alert components for displaying important messages to users';
-  
-  public readonly titles = ALERTS_TITLES; 
+  public readonly pageTitle: string = 'Alerts & Notifications';
+  public readonly pageSubtitle: string =
+    'Alert components for displaying important messages to users';
+
+  public readonly titles = ALERTS_TITLES;
 
   public readonly alertSections = ALERTS_CONFIG;
 
@@ -42,4 +60,20 @@ export class Alerts {
   public readonly alertSimpleData = ALERTS_SIMPLE_DATA;
 
   public readonly alertStateData = ALERTS_STATES_DATA;
+
+  @ViewChildren(DismissibleAlerts)
+  alertComponents!: QueryList<DismissibleAlerts>;
+
+  public onResetAll(): void {
+    this.alertComponents.forEach((alert) => {
+      alert.isDismissed.set(false);
+    });
+  }
+
+  public effectiveTitle(section: string): string {
+    if (section === this.titles.DISMISSIBLE) {
+      return '';
+    }
+    return section;
+  }
 }

@@ -23,7 +23,6 @@ describe('AlertsWithActions', () => {
     it('should map "error" type to "warning" class and "destructive" button variant', () => {
       fixture.componentRef.setInput('alertType', 'error');
       expect(component.iconAlertClass()).toBe('alerts-actions--warning');
-      expect(component.effectiveButtonVariant()).toBe('destructive');
       expect(component.effectiveImgName()).toBe('warning');
     });
 
@@ -31,7 +30,6 @@ describe('AlertsWithActions', () => {
       fixture.componentRef.setInput('alertType', 'success');
       expect(component.iconAlertClass()).toBe('alerts-actions--success');
       expect(component.effectiveImgName()).toBe('success');
-      expect(component.effectiveButtonVariant()).toBe('default');
     });
   });
 });

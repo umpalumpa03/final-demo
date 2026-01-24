@@ -16,9 +16,6 @@
     </div>
   </div>
   <div class="alerts-actions__button-flex">
-    <app-button size="small" [variant]="effectiveButtonVariant()"
-      >{{ buttonOneText() }}</app-button
-    >
-    <app-button variant="outline" size="small">{{ buttonTwoText() }}</app-button>
+    <ng-content></ng-content>
   </div>
 </div>
