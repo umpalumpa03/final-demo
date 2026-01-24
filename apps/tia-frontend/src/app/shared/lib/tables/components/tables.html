@@ -31,7 +31,12 @@
     </thead>
     <tbody class="table__body">
       @for (row of config.rows | slice:startIndex():endIndex(); track row.id) {
-      <tr class="table__body__row">
+      <tr
+        class="table__body__row"
+        [attr.data-disabled]="row.disabled ? '' : null"
+        [attr.data-selected]="row.selected ? '' : null"
+        [attr.data-highlighted]="row.highlighted ? '' : null"
+      >
         @if(isSelectable() || isSelectAndAction()) {
         <td class="table__body__row__item">
           <lib-checkboxes
@@ -41,12 +46,27 @@
         </td>
         }@else if(isCompact()) {
         <td class="table__body__row__item">#{{ row.id }}</td>
-        } @for (cell of row.info; track cell.value) { @if(cell.type === 'badge'
+        } @for (cell of row.info; track cell.value) { @if(cell.type === 'status'
         ) {
         <td>
           <app-badges [status]="cell.value" size="small"></app-badges>
         </td>
-        }@else {
+        }@else if (cell.type === 'state') {
+        <td>
+          <app-badges
+            [text]="cell.value"
+            size="medium"
+            shape="rounded"
+            [disabled]="cell.disabled ?? false"
+            [selected]="cell.selected ?? false"
+            [hoverable]="cell.hover ?? false"
+            [clickable]="cell.clickable ?? false"
+            [variant]="cell.variant"
+            [customColor]="cell.customColor"
+            [variant]="cell.variant"
+          ></app-badges>
+        </td>
+        } @else {
         <td class="table__body__row__item" [style.text-align]="cell.align">
           @if(cell.category || cell.accountName || cell.date) {
           <div class="table__body__row__item__container">

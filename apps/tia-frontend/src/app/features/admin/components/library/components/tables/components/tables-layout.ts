@@ -7,6 +7,7 @@ import {
   actionsTable,
   basicTable,
   compactTable,
+  rowStates,
   rowTable,
   sortableTable,
   strippedTable,
@@ -26,4 +27,5 @@ export class TablesLayout {
   public sortableConfig: TableConfig = sortableTable;
   public strippedConfig: TableConfig = strippedTable;
   public compactConfig: TableConfig = compactTable;
+  public rowStatesConfig: TableConfig = rowStates;
 }

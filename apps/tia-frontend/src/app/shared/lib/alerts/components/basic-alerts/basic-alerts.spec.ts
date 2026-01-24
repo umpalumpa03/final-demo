@@ -19,13 +19,25 @@ describe('BasicAlerts', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('DOM Integration (Rendering)', () => {
-    it('should render the effective title in the UI', () => {
-      fixture.componentRef.setInput('alertType', 'error');
-      fixture.detectChanges();
+  it('should apply correct UI mapping for Error state', () => {
+    fixture.componentRef.setInput('alertType', 'error');
+    fixture.componentRef.setInput('alertState', 'active');
+    fixture.detectChanges();
 
-      const titleElement = fixture.nativeElement.querySelector('.basic-alert__title');
-      expect(titleElement.textContent).toBe('Error Alert');
-    });
+    const el = fixture.nativeElement as HTMLElement;
+    const container = el.querySelector('.basic-alert');
+
+    expect(container?.classList).toContain('basic-alert--error');
+    expect(container?.classList).toContain('basic-alert--active');
+    
+    expect(el.querySelector('.basic-alert__title')?.textContent).toBe('Error Alert');
+    expect(component.effectiveMessage()).toContain('something went wrong');
+  });
+
+  it('should respect custom inputs', () => {
+    fixture.componentRef.setInput('alertTitle', 'New Title');
+    fixture.detectChanges();
+    
+    expect(component.effectiveTitle()).toBe('New Title');
   });
 });

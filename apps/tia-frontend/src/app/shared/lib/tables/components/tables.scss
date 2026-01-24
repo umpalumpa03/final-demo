@@ -40,6 +40,7 @@
   &__body {
     &__row {
       border-top: 1px solid $blue-400;
+      cursor: pointer;
 
       &__item {
         &__container {
@@ -86,6 +87,22 @@
 
       &__badges {
         @include flex-center();
+      }
+
+      &:hover:not([data-disabled]) {
+        background-color: var(--color-bg);
+      }
+
+      &[data-selected] {
+        background-color: var(--color-bg);
+      }
+
+      &[data-disabled] {
+        pointer-events: none;
+
+        .table__body__row__item {
+          color: var(--color-fg);
+        }
       }
     }
   }

@@ -16,20 +16,20 @@
   </div>
 
   <div class="contact__form--fields">
-    <label [class.invalid]="isMessageError" for="message">Message *</label>
-    <textarea
+    <lib-textarea
       formControlName="message"
-      placeholder="Type your message here..."
-    ></textarea>
-    @if (isMessageError) {
-    <span class="error"> {{ messageError() }} </span>
-    }
+      [config]="messageConfig"
+    ></lib-textarea>
   </div>
 
   <div class="contact__form--subscribe">
-    <input formControlName="subscribe" type="checkbox" />
-    <label [class.invalid]="isSubscribeError">Subscribe to newsletter *</label>
+    <lib-checkboxes
+      formControlName="subscribe"
+      [config]="checkboxConfig"
+    ></lib-checkboxes>
   </div>
 
-  <button type="submit">Submit</button>
+  <div class="contact__form--submit">
+    <app-button type="submit" [fullWidth]="true">Submit</app-button>
+  </div>
 </form>
