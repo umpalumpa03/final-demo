@@ -1,78 +1,93 @@
 @let config = tableConfig(); @if(config) {
-<table class="table" [class.table--striped]="isStriped()">
-  <thead class="table__header">
-    <tr class="table__header__row">
-      @if(isSelectable()) {
-      <th class="table__header__row__item table__header__row__checkbox">
-        <lib-checkboxes
-          (checked)="allSelected()"
-          (change)="toggleSelectAll()"
-        ></lib-checkboxes>
-      </th>
-      } @for (header of config.headers; track header.title) {
-      <th
-        class="table__header__row__item"
-        [style.text-align]="header.align"
-        [style.width]="header.width"
-      >
-        @if(header.sortable) {
-        <div
-          (click)="onSortClick(header.title)"
-          class="table__header__row__item--sortable"
+<div class="table-container">
+  <table class="table" [class.table--striped]="isStriped()">
+    <thead class="table__header">
+      <tr class="table__header__row">
+        @if(isSelectable()) {
+        <th class="table__header__row__item table__header__row__checkbox">
+          <lib-checkboxes
+            (checked)="allSelected()"
+            (change)="toggleSelectAll()"
+          ></lib-checkboxes>
+        </th>
+        } @for (header of config.headers; track header.title) {
+        <th
+          class="table__header__row__item"
+          [style.text-align]="header.align"
+          [style.width]="header.width"
         >
-          {{header.title}}
-          <img src="images/svg/crud/sort.svg" alt="sort icon" />
-        </div>
-        }@else { {{header.title}} }
-      </th>
-      }
-    </tr>
-  </thead>
-  <tbody class="table__body">
-    @for (row of config.rows; track row.id) {
-    <tr class="table__body__row">
-      @if(isSelectable() || isSelectAndAction()) {
-      <td class="table__body__row__item">
-        <lib-checkboxes
-          [checked]="allSelected()"
-          (change)="onIndividualSelect(row)"
-        ></lib-checkboxes>
-      </td>
-      } @for (cell of row.info; track cell.value) { @if(cell.type === 'badge') {
-      <td>
-        <app-badges [status]="cell.value" size="small"></app-badges>
-      </td>
-      }@else {
-      <td class="table__body__row__item" [style.text-align]="cell.align">
-        @if(cell.category || cell.accountName || cell.date) {
-        <div class="table__body__row__item__container">
-          <div class="table__body__row__item__container__header">
-            <h3>{{ cell.value }}</h3>
-            <span>
-              <img src="images/svg/transactions/tag.svg" alt="tag" />
-              {{ cell.category}}
-            </span>
+          @if(header.sortable) {
+          <div
+            (click)="onSortClick(header.title)"
+            class="table__header__row__item--sortable"
+          >
+            {{header.title}}
+            <img src="images/svg/crud/sort.svg" alt="sort icon" />
           </div>
-          <div class="table__body__row__item__container__desc">
-            <span>{{ cell.accountName }}</span>
-            <span>{{ cell.date | date:'dd/MM/yyyy' }}</span>
-          </div>
-        </div>
-        }@else { {{ cell.value }} }
-      </td>
-      }} @if(isAction() || isSelectAndAction()) {
-      <td class="table__body__row__item table__body__row__item__actions">
-        @for (icon of crudConfig; track icon.id) {
-        <img
-          (click)="onCrudClick(icon.alt, row.id)"
-          [src]="icon.path"
-          [alt]="icon.alt"
-        />
+          }@else { {{header.title}} }
+        </th>
         }
-      </td>
+      </tr>
+    </thead>
+    <tbody class="table__body">
+      @for (row of config.rows | slice:startIndex():endIndex(); track row.id) {
+      <tr class="table__body__row">
+        @if(isSelectable() || isSelectAndAction()) {
+        <td class="table__body__row__item">
+          <lib-checkboxes
+            [checked]="allSelected()"
+            (change)="onIndividualSelect(row)"
+          ></lib-checkboxes>
+        </td>
+        }@else if(isCompact()) {
+        <td class="table__body__row__item">#{{ row.id }}</td>
+        } @for (cell of row.info; track cell.value) { @if(cell.type === 'badge'
+        ) {
+        <td>
+          <app-badges [status]="cell.value" size="small"></app-badges>
+        </td>
+        }@else {
+        <td class="table__body__row__item" [style.text-align]="cell.align">
+          @if(cell.category || cell.accountName || cell.date) {
+          <div class="table__body__row__item__container">
+            <div class="table__body__row__item__container__header">
+              <h3>{{ cell.value }}</h3>
+              <span>
+                <img src="images/svg/transactions/tag.svg" alt="tag" />
+                {{ cell.category}}
+              </span>
+            </div>
+            <div class="table__body__row__item__container__desc">
+              <span>{{ cell.accountName }}</span>
+              <span>{{ cell.date | date:'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+          }@else { {{ cell.value }} }
+        </td>
+        }} @if(isAction() || isSelectAndAction()) {
+        <td class="table__body__row__item table__body__row__item__actions">
+          @for (icon of crudConfig; track icon.id) {
+          <img
+            (click)="onCrudClick(icon.alt, row.id)"
+            [src]="icon.path"
+            [alt]="icon.alt"
+          />
+          }
+        </td>
+        }
+      </tr>
       }
-    </tr>
-    }
-  </tbody>
-</table>
+    </tbody>
+  </table>
+
+  @if(isPagination()) {
+  <div class="table__pagination">
+    <app-pagination
+      (pageChange)="onPageChange($event)"
+      [currentPage]="currentPage()"
+      [totalPages]="totalPage()"
+    ></app-pagination>
+  </div>
+  }
+</div>
 }

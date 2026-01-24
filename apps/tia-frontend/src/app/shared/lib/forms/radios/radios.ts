@@ -4,7 +4,6 @@ import {
   computed,
   effect,
   input,
-  output,
 } from '@angular/core';
 import { BaseInput } from '../base/base-input';
 import { generateUniqueId } from '../base/utils/input.util';
