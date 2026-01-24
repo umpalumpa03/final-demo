@@ -7,7 +7,6 @@ describe('Otp', () => {
   let component: Otp;
   let fixture: ComponentFixture<Otp>;
 
-  // Helper ფუნქცია ინპუტების მისაღებად
   const getInputs = () => fixture.debugElement.queryAll(By.css('input'));
   const getInputNative = (index: number) => getInputs()[index].nativeElement;
 
