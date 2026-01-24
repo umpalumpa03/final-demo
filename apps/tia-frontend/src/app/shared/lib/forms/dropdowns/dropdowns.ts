@@ -5,13 +5,15 @@ import {
   HostListener,
   inject,
   input,
+  model,
+  OnInit,
   signal,
 } from '@angular/core';
 import { BaseInput } from '../base/base-input';
 import { generateUniqueId } from '../base/utils/input.util';
 import { SELECT_DEFAULTS } from '../config/dropdowns.config';
-import { SelectConfig } from '../models/dropdowns.model';
-import { SelectOption } from '../models/input.model';
+import { SelectConfig, SelectValue } from '../models/dropdowns.model';
+import { SelectOption } from '../models/dropdowns.model';
 
 @Component({
   selector: 'lib-select',
@@ -19,15 +21,34 @@ import { SelectOption } from '../models/input.model';
   templateUrl: './dropdowns.html',
   styleUrl: './dropdowns.scss',
 })
-export class Dropdowns extends BaseInput {
+export class Dropdowns extends BaseInput implements OnInit {
   private readonly elementRef = inject(ElementRef);
 
   public override readonly config = input<SelectConfig>({});
   public readonly options = input.required<SelectOption[]>();
 
-  public readonly isOpen = signal(false);
+  public override readonly value = model<SelectValue>(null);
 
+  public readonly isOpen = signal(false);
   private readonly defaultId = generateUniqueId('lib-select');
+
+  ngOnInit(): void {
+    if (!this.ngControl && this.value() === null) {
+      const configDefault = this.config().value;
+
+      if (configDefault !== undefined && configDefault !== null) {
+        this.value.set(configDefault);
+      }
+    }
+  }
+
+  protected override readonly isDisabled = computed<boolean>(() => {
+    return (
+      this.internalDisabled() ||
+      this.state() === 'disabled' ||
+      !!this.mergedConfig().disabled
+    );
+  });
 
   protected readonly mergedConfig = computed<SelectConfig>(() => ({
     ...SELECT_DEFAULTS,
@@ -55,6 +76,7 @@ export class Dropdowns extends BaseInput {
     if (option.disabled) return;
 
     this.value.set(option.value);
+
     this.onChange(option.value);
     this.valueChange.emit(option.value);
     this.isOpen.set(false);

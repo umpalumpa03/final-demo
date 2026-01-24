@@ -48,7 +48,6 @@
 
             &--placeholder {
                 color: $blue-ocean;
-                opacity: 0.8;
             }
         }
 
@@ -117,6 +116,10 @@
 
     &--disabled {
         opacity: 0.6;
-        pointer-events: none;
+        cursor: not-allowed;
+
+        .select__trigger {
+            cursor: not-allowed;
+        }
     }
 }

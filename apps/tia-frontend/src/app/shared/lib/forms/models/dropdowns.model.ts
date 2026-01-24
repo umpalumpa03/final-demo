@@ -1,6 +1,6 @@
 import { InputConfig } from './input.model';
 
-export type SelectValue = string | number | boolean;
+export type SelectValue = string | number | boolean | null;
 
 export interface SelectOption {
   label: string;
@@ -10,4 +10,5 @@ export interface SelectOption {
 
 export interface SelectConfig extends InputConfig {
   placeholder?: string;
+  value?: SelectValue;
 }
