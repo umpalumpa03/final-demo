@@ -7,6 +7,8 @@ export type BadgeStatus =
   | 'in-progress'
   | 'featured'
   | 'premium'
+  | 'done'
+  | 'todo'
   | (string & {});
 
 export type BadgeSize = 'small' | 'medium' | 'large';
