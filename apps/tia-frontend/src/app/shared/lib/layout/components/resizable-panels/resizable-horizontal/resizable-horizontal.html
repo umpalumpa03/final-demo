@@ -5,7 +5,7 @@
 
     <div class="resizable__panels ta-resizable-panels" #panelsContainer>
         @for (i of panelIndices(); track i) {
-        <div class="resizable__panel ta-resizable-panel" [class.resizable__panel--flex]="isLastPanel(i)"
+        <div #panel class="resizable__panel ta-resizable-panel" [class.resizable__panel--flex]="isLastPanel(i)"
             [style.width]="getPanelWidth(i)">
         </div>
 

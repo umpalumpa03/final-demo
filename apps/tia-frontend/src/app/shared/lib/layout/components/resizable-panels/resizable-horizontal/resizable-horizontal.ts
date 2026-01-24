@@ -4,8 +4,8 @@ import {
   computed,
   ElementRef,
   viewChild,
+  viewChildren,
   input,
-  effect,
   afterNextRender,
   ChangeDetectionStrategy,
 } from '@angular/core';
@@ -28,7 +28,7 @@ export class ResizableHorizontal {
     Array.from({ length: this.panelSize() }, (_, i) => i),
   );
 
-  public initialWidths = input<number[]>([300]);
+  public initialWidths = input<number[] | undefined>(undefined);
 
   public minWidth = input<number>(100);
 
@@ -38,6 +38,7 @@ export class ResizableHorizontal {
   protected contentRef = viewChild<ElementRef<HTMLElement>>('contentWrapper');
   protected panelsContainerRef =
     viewChild<ElementRef<HTMLElement>>('panelsContainer');
+  protected panelRefs = viewChildren<ElementRef<HTMLElement>>('panel');
 
   protected panelWidths = signal<number[]>([300]);
 
@@ -47,35 +48,55 @@ export class ResizableHorizontal {
   private startWidths: number[] = [];
 
   constructor() {
-    effect(() => {
-      const widths = this.initialWidths();
-      const size = this.panelSize();
-
-      if (size === 2) {
-        this.panelWidths.set([widths[0] || 300]);
-      } else {
-        this.panelWidths.set([widths[0] || 300, widths[1] || 300]);
-      }
-    });
-
     afterNextRender(() => {
       this.distributeContent();
+      this.initializePanelWidths();
     });
+  }
+
+  private initializePanelWidths(): void {
+    const container = this.containerRef()?.nativeElement;
+    if (!container) return;
+
+    const containerWidth = container.offsetWidth;
+    const size = this.panelSize();
+    const customWidths = this.initialWidths();
+
+    if (customWidths && customWidths.length > 0) {
+      if (size === 2) {
+        this.panelWidths.set([customWidths[0]]);
+      } else {
+        this.panelWidths.set([
+          customWidths[0],
+          customWidths[1] || customWidths[0],
+        ]);
+      }
+      return;
+    }
+
+    const resizerWidth = 40;
+    const totalResizerWidth = (size - 1) * resizerWidth;
+    const availableWidth = containerWidth - totalResizerWidth;
+    const panelWidth = Math.floor(availableWidth / size);
+
+    if (size === 2) {
+      this.panelWidths.set([panelWidth]);
+    } else {
+      this.panelWidths.set([panelWidth, panelWidth]);
+    }
   }
 
   private distributeContent(): void {
     const contentWrapper = this.contentRef()?.nativeElement;
-    const panelsContainer = this.panelsContainerRef()?.nativeElement;
+    const panels = this.panelRefs();
 
-    if (!contentWrapper || !panelsContainer) return;
+    if (!contentWrapper || panels.length === 0) return;
 
     const children = Array.from(contentWrapper.children) as HTMLElement[];
-    const expectedPanels = this.panelSize();
 
-    const panels = panelsContainer.querySelectorAll('.panel');
-    for (let i = 0; i < expectedPanels; i++) {
+    for (let i = 0; i < panels.length; i++) {
       if (panels[i] && children[i]) {
-        panels[i].appendChild(children[i]);
+        panels[i].nativeElement.appendChild(children[i]);
       }
     }
   }

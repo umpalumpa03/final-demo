@@ -45,12 +45,11 @@
     &__input-stack {
         @include display-flex(column);
         gap: 1.6rem;
+        width: 100%;
+        max-width: 44.8rem;
     }
 
     &__input-wrapper {
-        width: 100%;
-        max-width: 44.8rem;
-
         &--checkbox {
             max-width: fit-content;
         }
