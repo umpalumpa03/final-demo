@@ -149,7 +149,7 @@ export class Badges {
   });
 
   public readonly shouldShowIcon = computed(() => {
-    return !!this.status();
+    return !!this.status() && !!this.iconPath();
   });
 
   public readonly dotColor = computed(() => {
