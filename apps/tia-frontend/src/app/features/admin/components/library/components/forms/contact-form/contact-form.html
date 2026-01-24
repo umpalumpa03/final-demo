@@ -3,7 +3,7 @@
     <lib-text-input
       type="text"
       formControlName="name"
-      [config]="nameConfig"
+      [config]="nameConfig.name"
     ></lib-text-input>
   </div>
 
@@ -11,21 +11,21 @@
     <lib-text-input
       type="email"
       formControlName="email"
-      [config]="emailConfig"
+      [config]="nameConfig.message"
     ></lib-text-input>
   </div>
 
   <div class="contact__form--fields">
     <lib-textarea
       formControlName="message"
-      [config]="messageConfig"
+      [config]="nameConfig.message"
     ></lib-textarea>
   </div>
 
   <div class="contact__form--subscribe">
     <lib-checkboxes
       formControlName="subscribe"
-      [config]="checkboxConfig"
+      [config]="nameConfig.checkbox"
     ></lib-checkboxes>
   </div>
 

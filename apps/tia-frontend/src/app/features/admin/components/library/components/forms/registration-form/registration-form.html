@@ -4,7 +4,7 @@
       <lib-text-input
         type="text"
         formControlName="firstName"
-        [config]="inputConfigs.firstName"
+        [config]="inputConfig.firstName"
       ></lib-text-input>
     </div>
 
@@ -12,7 +12,7 @@
       <lib-text-input
         type="text"
         formControlName="lastName"
-        [config]="inputConfigs.lastName"
+        [config]="inputConfig.lastName"
       ></lib-text-input>
     </div>
   </div>
@@ -21,7 +21,7 @@
     <lib-text-input
       type="email"
       formControlName="email"
-      [config]="inputConfigs.email"
+      [config]="inputConfig.email"
     ></lib-text-input>
   </div>
 
@@ -29,7 +29,7 @@
     <lib-text-input
       type="password"
       formControlName="password"
-      [config]="inputConfigs.password"
+      [config]="inputConfig.password"
     ></lib-text-input>
   </div>
 
@@ -38,26 +38,30 @@
       type="password"
       [state]="confirmPasswordState"
       formControlName="confirmPassword"
-      [config]="inputConfigs.confirmPassword"
+      [config]="inputConfig.confirmPassword"
     ></lib-text-input>
   </div>
 
   <div class="registration__field">
-    <lib-select [config]="countrySelectConfig" formControlName="country" [options]="countries"></lib-select>
+    <lib-select
+      [config]="inputConfig.country"
+      formControlName="country"
+      [options]="countries"
+    ></lib-select>
   </div>
 
   <div class="registration__field">
     <lib-text-input
       type="date"
       formControlName="birthDate"
-      [config]="inputConfigs.birthDate"
+      [config]="inputConfig.birthDate"
     ></lib-text-input>
   </div>
 
   <div class="registration__agree-terms">
     <lib-checkboxes
       formControlName="termsAndConditions"
-      [config]="inputConfigs.termsAndConditions"
+      [config]="inputConfig.termsAndConditions"
     ></lib-checkboxes>
   </div>
 

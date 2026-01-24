@@ -11,6 +11,7 @@ import { Switches } from '@tia/shared/lib/forms/switches/switches';
 import { ISettingsForm } from '../models/contact-forms.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Router } from '@angular/router';
+import { PLAN_OPTION } from '../models/configs';
 
 @Component({
   selector: 'app-settings-form',
@@ -20,25 +21,7 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsForm {
-  //will be deleted
-  public planOptions = [
-    {
-      label: 'Free',
-      value: 'free',
-      description: 'Basic features',
-      initialValue: true,
-    },
-    {
-      label: 'Pro',
-      value: 'pro',
-      description: 'Advanced features - $9.99/month',
-    },
-    {
-      label: 'Enterprise',
-      value: 'enterprise',
-      description: 'All features - $29.99/month',
-    },
-  ];
+  public planOptions = PLAN_OPTION;
 
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);

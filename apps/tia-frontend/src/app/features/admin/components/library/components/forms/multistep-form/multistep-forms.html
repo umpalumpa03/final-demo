@@ -11,23 +11,23 @@
     <lib-text-input
       type="text"
       formControlName="name"
-      [config]="nameConfig"
+      [config]="multiConfig.name"
     ></lib-text-input>
-    <lib-textarea formControlName="bio" [config]="bioConfig"></lib-textarea>
+    <lib-textarea formControlName="bio" [config]="multiConfig.bio"></lib-textarea>
     } @if (config.key === 'to') {
     <lib-text-input
       type="text"
       formControlName="name"
-      [config]="nameConfig"
+      [config]="multiConfig.name"
     ></lib-text-input>
-    <lib-textarea formControlName="bio" [config]="bioConfig"></lib-textarea>
+    <lib-textarea formControlName="bio" [config]="multiConfig.bio"></lib-textarea>
     } @if (config.key === 'amount') {
     <lib-text-input
       type="text"
       formControlName="name"
-      [config]="nameConfig"
+      [config]="multiConfig.name"
     ></lib-text-input>
-    <lib-textarea formControlName="bio" [config]="bioConfig"></lib-textarea>
+    <lib-textarea formControlName="bio" [config]="multiConfig.bio"></lib-textarea>
     }
   </form>
   } }

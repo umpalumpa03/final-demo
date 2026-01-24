@@ -17,7 +17,7 @@ import { InputState } from '@tia/shared/lib/forms/models/input.model';
 import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
-import { COUNTRY_OPTIONS } from '../models/configs';
+import { COUNTRY_OPTIONS, REGISTATION_FORM } from '../models/configs';
 
 @Component({
   selector: 'app-registration-form',
@@ -34,10 +34,7 @@ import { COUNTRY_OPTIONS } from '../models/configs';
 })
 export class RegistrationForm {
   public countries = COUNTRY_OPTIONS;
-  public countrySelectConfig = {
-    label: 'Country',
-    placeholder: 'Select a country',
-  };
+  public inputConfig = REGISTATION_FORM;
   
   private readonly fb = inject(FormBuilder);
   public readonly submitRegistrationForm = output<IRegistrationForm>();
@@ -54,7 +51,7 @@ export class RegistrationForm {
       confirmPassword: ['', [Validators.required]],
       country: ['', Validators.required],
       birthDate: ['', Validators.required],
-      termsAndConditions: [false, Validators.requiredTrue],
+      termsAndConditions: [false, Validators.required],
     },
     {
       validators: passwordMatchValidator,
@@ -83,43 +80,4 @@ export class RegistrationForm {
     this.submitRegistrationForm.emit(this.registrationForm.getRawValue());
     this.registrationForm.reset();
   }
-
-  //this is temporary configs
-  public readonly inputConfigs = {
-    firstName: {
-      label: 'FirstName',
-      required: false,
-      placeholder: 'Jhon',
-    },
-    lastName: {
-      label: 'LastName',
-      required: false,
-      placeholder: 'Doe',
-    },
-    email: {
-      label: 'Email',
-      required: false,
-      placeholder: 'jonh@example.com',
-    },
-    password: {
-      label: 'Password',
-      required: false,
-      placeholder: '••••••••',
-    },
-    confirmPassword: {
-      label: 'Confirm Password',
-      required: false,
-      placeholder: '••••••••',
-    },
-    birthDate: {
-      label: 'birthDate',
-      required: false,
-      placeholder: 'Pick a date',
-    },
-    termsAndConditions: {
-      label: 'I agree to the terms and conditions',
-      required: false,
-      placeholder: 'Pick a date',
-    },
-  } as const;
 }

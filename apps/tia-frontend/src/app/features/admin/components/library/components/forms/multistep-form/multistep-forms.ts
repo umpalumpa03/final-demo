@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { StepperHeader } from './stepper-header/stepper-header';
 import { IStepConfig } from '../models/contact-forms.model';
@@ -6,6 +6,7 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Textarea } from '@tia/shared/lib/forms/textarea/textarea';
 import { ContactForms } from '../contact-form/contact-form';
+import { MULTI_FORM, STEP_FORM } from '../models/configs';
 
 @Component({
   selector: 'app-multistep-forms',
@@ -18,26 +19,11 @@ import { ContactForms } from '../contact-form/contact-form';
   ],
   templateUrl: './multistep-forms.html',
   styleUrl: './multistep-forms.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MultistepForms {
-  public stepsConfig: IStepConfig[] = [
-    { label: 'From', key: 'from' },
-    { label: 'To', key: 'to' },
-    { label: 'Amount', key: 'amount' },
-  ];
-
-  //this is temporary configs
-  public nameConfig = {
-    label: 'Name',
-    required: true,
-    placeholder: 'Your Name',
-  };
-
-  public bioConfig = {
-    label: 'Message',
-    required: true,
-    placeholder: 'Type your message here...',
-  };
+  public stepsConfig = STEP_FORM;
+  public multiConfig = MULTI_FORM;
 
   private fb = inject(FormBuilder);
   public currentStep = signal<number>(1);

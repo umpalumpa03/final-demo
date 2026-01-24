@@ -12,6 +12,7 @@ import {
   IHorizontalLayout,
   ITwoColumnLayout,
 } from '../models/contact-forms.model';
+import { HORIZONTAL_FORM, ROW_FORM } from '../models/configs';
 
 @Component({
   selector: 'app-layout-form',
@@ -24,6 +25,8 @@ export class LayoutForm {
   private readonly fb = inject(FormBuilder);
   public readonly twoColumnLayoutForm = output<ITwoColumnLayout>();
   public readonly horizontalLayoutForm = output<IHorizontalLayout>();
+  public rowConfigs = ROW_FORM;
+  public horizontalConfigs = HORIZONTAL_FORM;
 
   public twoColumnLayoutControl = this.fb.nonNullable.group({
     firstName: ['', [Validators.required, Validators.minLength(2)]],
@@ -60,36 +63,4 @@ export class LayoutForm {
     this.horizontalLayoutForm.emit(this.horizontalForm.getRawValue());
     this.horizontalForm.reset();
   }
-
-  //this is temporary configs
-  public readonly rowConfigs = {
-    firstName: {
-      label: 'First Name',
-      placeholder: 'Jhon',
-    },
-    lastName: {
-      label: 'Last Name',
-      placeholder: 'Doe',
-    },
-    email: {
-      label: 'Email',
-      placeholder: 'jonh@example.com',
-    },
-    phone: {
-      label: 'Phone',
-      placeholder: '+1 (555) 000-0000',
-    },
-  } as const;
-
-  public readonly horizontalConfigs = {
-    firstName: {
-      placeholder: 'Jhon',
-    },
-    message: {
-      placeholder: 'Doe',
-    },
-    email: {
-      placeholder: 'jonh@example.com',
-    },
-  } as const;
 }

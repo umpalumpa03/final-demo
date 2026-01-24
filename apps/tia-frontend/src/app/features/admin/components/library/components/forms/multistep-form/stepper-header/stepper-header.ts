@@ -1,4 +1,4 @@
-import { Component, computed, input, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, Input } from '@angular/core';
 import { IStepConfig } from '../../models/contact-forms.model';
 
 @Component({
@@ -6,6 +6,7 @@ import { IStepConfig } from '../../models/contact-forms.model';
   imports: [],
   templateUrl: './stepper-header.html',
   styleUrl: './stepper-header.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StepperHeader {
   public content = input.required<IStepConfig[]>();
