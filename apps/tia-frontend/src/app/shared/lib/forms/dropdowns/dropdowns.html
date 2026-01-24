@@ -1,4 +1,4 @@
-<div class="select" [class.select--disabled]="isDisabled()" [class.select--open]="isOpen()">
+<div class="select" [class.select--disabled]="isDisabled()" [class.select--open]="isOpen()" [style.z-index]="zIndex()">
     @let cfg = mergedConfig();
 
     @if (cfg.label) {
