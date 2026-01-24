@@ -1,0 +1,14 @@
+<app-pills-nav
+  [pills]="pillsData()"
+  [initialSelectedId]="'all'"
+  (pillSelected)="onPillSelected($event)"
+>
+</app-pills-nav>
+
+
+<!-- ეს არის გაფილტრული აითემების სია app-pills-nav კომპონენტის გამოყენებით -->
+<!-- @for(item of filteredItems(); track item.id) {
+  <div>
+    <h4>{{ item.name }}</h4>
+  </div>
+} -->
