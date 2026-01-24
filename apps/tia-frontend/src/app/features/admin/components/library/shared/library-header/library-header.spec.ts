@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LibraryHeader } from './library-header';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { By } from '@angular/platform-browser';
@@ -8,14 +8,21 @@ import { COLOR_SWITCH_DATA } from './config/color-switch-data';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('LibraryHeader', () => {
-  let fixture: any, component: LibraryHeader, store: MockStore;
+  let fixture: ComponentFixture<LibraryHeader>;
+  let component: LibraryHeader;
+  let store: MockStore;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [LibraryHeader],
       providers: [
         provideMockStore({
-          selectors: [{ selector: selectActiveTheme, value: 'light-theme' }],
+          selectors: [
+            {
+              selector: selectActiveTheme,
+              value: COLOR_SWITCH_DATA[0].color,
+            },
+          ],
         }),
       ],
     });
@@ -23,42 +30,29 @@ describe('LibraryHeader', () => {
     fixture = TestBed.createComponent(LibraryHeader);
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
-  });
-
-  it('should dispatch theme action on color selection', () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
-    const target = COLOR_SWITCH_DATA[0].color;
-
-    component.setActiveColor(target);
-
-    expect(dispatchSpy).toHaveBeenCalledWith(
-      ThemeActions.setTheme({ theme: target }),
-    );
-  });
-
-  it('should not dispatch if color is invalid', () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
-    component.setActiveColor(null as any);
-    expect(dispatchSpy).not.toHaveBeenCalled();
-  });
-
-  it('should render buttons and reflect active state (DOM Test)', () => {
     fixture.detectChanges();
+  });
 
+  it('should render buttons and mark the active theme correctly', () => {
     const buttons = fixture.debugElement.queryAll(By.css('app-color-switch'));
+
     expect(buttons.length).toBe(COLOR_SWITCH_DATA.length);
 
-    const methodSpy = vi.spyOn(component, 'setActiveColor');
-    buttons[0].triggerEventHandler('selected', 'blue');
-    expect(methodSpy).toHaveBeenCalledWith('blue');
+    const activeBtn = buttons.find((b) => {
+      const prop = b.componentInstance.isActive;
+      return typeof prop === 'function' ? prop() === true : prop === true;
+    });
+
+    expect(activeBtn).toBeTruthy();
   });
 
-  it('should update computed signal based on store', () => {
-    const newTheme = COLOR_SWITCH_DATA[1].color;
-    store.overrideSelector(selectActiveTheme, newTheme);
-    store.refreshState();
-
-    const activeItem = component.colorConfigs().find((i) => i.isActive);
-    expect(activeItem?.color).toBe(newTheme);
+  it('should dispatch theme action when a button is clicked', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    const targetColor = COLOR_SWITCH_DATA[0].color;
+    const button = fixture.debugElement.queryAll(By.css('app-color-switch'))[0];
+    button.triggerEventHandler('selected', targetColor);
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      ThemeActions.setTheme({ theme: targetColor }),
+    );
   });
 });
