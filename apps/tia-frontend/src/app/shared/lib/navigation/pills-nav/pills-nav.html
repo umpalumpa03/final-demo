@@ -1,0 +1,16 @@
+<nav class="pills-nav">
+  <ul class="pills-nav__list">
+    @for (pill of pills(); track trackByPillId($index, pill)) {
+    <li class="pills-nav__item">
+      <button
+        type="button"
+        class="pills-nav__button"
+        [class.pills-nav__button--active]="isSelected(pill.id)"
+        (click)="selectPill(pill)"
+      >
+        <span class="pills-nav__label">{{ pill.label }}</span>
+      </button>
+    </li>
+    }
+  </ul>
+</nav>
