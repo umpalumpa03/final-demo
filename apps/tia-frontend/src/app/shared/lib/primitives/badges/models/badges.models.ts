@@ -25,3 +25,5 @@ export type BadgeSkill =
   | 'html';
 
 export type BadgeCategory = 'technology' | 'design' | 'marketing';
+
+export type BadgeCustomColor = 'pink' | 'indigo' | 'teal' | 'rose' | 'cyan' | 'amber' | 'lime' | 'slate';
