@@ -23,4 +23,8 @@ export class StepperHeader {
   public isLineActive(index: number) {
     return index + 1 < this.step();
   }
+
+  public showLine(index: number) {
+    return index < (this.content()?.length ?? 0) - 1;
+  }
 }
