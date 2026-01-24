@@ -1,0 +1,64 @@
+@use '../styles/palette-styles' as *;
+@use '../../../../shared/styles/palette' as *;
+@use '../../../../shared/styles/mixins' as *;
+
+.notes {
+  @include display-flex(column, nowrap);
+  width: 100%;
+  max-width: 110.2rem;
+  gap: 1.5rem;
+  @include apply-themes;
+
+  &__container {
+    @include display-flex(column, nowrap);
+    gap: 1rem;
+    border-radius: 1.2rem;
+    background-color: $white;
+  }
+
+  &__item {
+    @include display-flex(row, nowrap);
+    gap: 1.2rem;
+    align-items: flex-start;
+  }
+
+  &__icon {
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 0.5rem;
+
+    &--high-contrast {
+      background-color: $green-500;
+    }
+
+    &--consistent-hierarchy {
+      background-color: $blue-500;
+    }
+
+    &--flexible-application {
+      background-color: $purple-500;
+    }
+
+    &--easy-switching {
+      background-color: $orange-500;
+    }
+  }
+
+  &__content {
+    @include display-flex(column, nowrap);
+    flex: 1;
+  }
+
+  &__item-title {
+    @include font-arimo(400, 1.4rem);
+    color: $blue-ocean-foreground;
+  }
+
+  &__description {
+    @include font-arimo(400, 1.4rem);
+    color: $gray-700;
+    margin: 0;
+  }
+}
