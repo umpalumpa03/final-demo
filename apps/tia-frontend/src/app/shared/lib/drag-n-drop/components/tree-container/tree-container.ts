@@ -8,7 +8,7 @@ import {
   linkedSignal,
   signal,
 } from '@angular/core';
-import { DragBase } from '../../base/base';
+import { DragBase } from '../../base/drag-base';
 import {
   TreeItem,
   TreeGroupConfig,
@@ -64,7 +64,10 @@ export class TreeContainer extends DragBase {
   public readonly itemAdded = output<string>();
   public readonly groupRemoved = output<string>();
   public readonly groupEdited = output<string>();
-  public readonly viewOptionChanged = output<{ id: string; isViewable: boolean }>();
+  public readonly viewOptionChanged = output<{
+    id: string;
+    isViewable: boolean;
+  }>();
   public readonly paginationChanged = output<{ id: string; value: number }>();
   public readonly buttonClicked = output<string>();
 
