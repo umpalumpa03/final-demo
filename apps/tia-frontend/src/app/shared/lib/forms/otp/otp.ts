@@ -2,12 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   ElementRef,
   input,
   model,
   QueryList,
-  signal,
   ViewChildren,
 } from '@angular/core';
 import { BaseInput } from '../base/base-input';
@@ -23,13 +21,13 @@ import { OtpConfig } from '../models/otp.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Otp extends BaseInput {
-  public override readonly config = input<OtpConfig>({});
+  @ViewChildren('otpBox')
+  private readonly otpBoxes!: QueryList<ElementRef<HTMLInputElement>>;
 
+  public override readonly config = input<OtpConfig>({});
   public override readonly value = model<string>('');
 
-  @ViewChildren('otpBox') otpBoxes!: QueryList<ElementRef<HTMLInputElement>>;
-
-  private readonly defaultId = generateUniqueId('lib-otp');
+  private readonly defaultId: string = generateUniqueId('lib-otp');
 
   protected readonly mergedConfig = computed<OtpConfig>(() => ({
     ...OTP_DEFAULTS,
@@ -37,100 +35,87 @@ export class Otp extends BaseInput {
     ...this.config(),
   }));
 
-  protected readonly valuesArray = signal<string[]>([]);
+  protected readonly valuesArray = computed<string[]>(() => {
+    const len: number = this.mergedConfig().length!;
+    const val: string = this.value() || '';
+    const chars: string[] = val.split('').slice(0, len);
+    return [...chars, ...new Array(len - chars.length).fill('')];
+  });
 
   constructor() {
     super();
-
-    effect(() => {
-      const len = this.mergedConfig().length || 6;
-      const current = this.valuesArray();
-      if (current.length !== len) {
-        this.valuesArray.set(new Array(len).fill(''));
-      }
-    });
-
-    effect(() => {
-      const val = this.value() || '';
-      const len = this.mergedConfig().length || 6;
-
-      const newArr = val.split('').slice(0, len);
-      while (newArr.length < len) newArr.push('');
-
-      if (newArr.join('') !== this.valuesArray().join('')) {
-        this.valuesArray.set(newArr);
-      }
-    });
   }
 
-  onDigitInput(event: Event, index: number): void {
-    const input = event.target as HTMLInputElement;
-    let val = input.value;
+  protected onDigitInput(event: Event, index: number): void {
+    const inputEl = event.target as HTMLInputElement;
+    let val: string = inputEl.value;
 
     if (val.length > 1) {
       val = val.slice(-1);
     }
 
-    input.value = val;
+    inputEl.value = val;
+    this.updateValueAt(index, val);
 
-    this.updateArrayAt(index, val);
-
-    if (val && index < (this.mergedConfig().length || 6) - 1) {
+    if (val && index < this.mergedConfig().length! - 1) {
       this.otpBoxes.get(index + 1)?.nativeElement.focus();
     }
   }
 
-  handleKeyDown(event: KeyboardEvent, index: number): void {
+  protected handleKeyDown(event: KeyboardEvent, index: number): void {
     const input = event.target as HTMLInputElement;
+    const len: number = this.mergedConfig().length!;
 
     switch (event.key) {
       case 'Backspace':
+        event.preventDefault();
         if (!input.value && index > 0) {
-          this.updateArrayAt(index - 1, '');
+          this.updateValueAt(index - 1, '');
           this.otpBoxes.get(index - 1)?.nativeElement.focus();
         } else {
-          this.updateArrayAt(index, '');
+          this.updateValueAt(index, '');
         }
         break;
       case 'ArrowLeft':
+        event.preventDefault();
         if (index > 0) this.otpBoxes.get(index - 1)?.nativeElement.focus();
         break;
       case 'ArrowRight':
-        if (index < (this.mergedConfig().length || 6) - 1) {
+        event.preventDefault();
+        if (index < len - 1)
           this.otpBoxes.get(index + 1)?.nativeElement.focus();
-        }
         break;
     }
   }
 
-  handlePaste(event: ClipboardEvent): void {
+  protected handlePaste(event: ClipboardEvent): void {
     event.preventDefault();
-    const pastedData = event.clipboardData?.getData('text') || '';
-    const cleanData = pastedData.trim().slice(0, this.mergedConfig().length);
+    const pastedData: string = event.clipboardData?.getData('text') || '';
+    const len: number = this.mergedConfig().length!;
+    const cleanData: string = pastedData.trim().slice(0, len);
 
     if (!cleanData) return;
 
     this.value.set(cleanData);
     this.onChange(cleanData);
-    this.valueChange.emit(cleanData);
 
     setTimeout(() => {
-      const focusIndex =
-        Math.min(cleanData.length, this.mergedConfig().length || 6) - 1;
+      const focusIndex: number = Math.min(cleanData.length, len) - 1;
       if (focusIndex >= 0) {
         this.otpBoxes.get(focusIndex)?.nativeElement.focus();
       }
     });
   }
 
-  private updateArrayAt(index: number, val: string) {
-    const arr = [...this.valuesArray()];
-    arr[index] = val;
-    this.valuesArray.set(arr);
+  private updateValueAt(index: number, val: string): void {
+    const currentVal: string = this.value() || '';
+    const len: number = this.mergedConfig().length!;
+    const arr: string[] = currentVal.padEnd(len, ' ').split('');
 
-    const finalString = arr.join('');
+    arr[index] = val || ' ';
+
+    const finalString: string = arr.join('').trimEnd();
     this.value.set(finalString);
     this.onChange(finalString);
-    this.valueChange.emit(finalString);
   }
 }
