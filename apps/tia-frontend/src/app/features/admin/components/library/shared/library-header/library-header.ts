@@ -2,13 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
-  signal,
 } from '@angular/core';
 import { ColorSwitch } from '@tia/shared/lib/color-switching-buttons/color-switch/color-switch';
 import { COLOR_SWITCH_DATA } from './config/color-switch-data';
-import { ColorSwitchType } from './model/color-switch.model';
 import { Store } from '@ngrx/store';
 import { selectActiveTheme } from 'apps/tia-frontend/src/app/store/theme/theme.selectors';
 import { ThemeActions } from 'apps/tia-frontend/src/app/store/theme/theme.actions';

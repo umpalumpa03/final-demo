@@ -5,15 +5,12 @@ import {
   ofType,
   ROOT_EFFECTS_INIT,
 } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
 import { ThemeActions } from './theme.actions';
-import { tap, withLatestFrom } from 'rxjs';
-import { selectActiveTheme } from './theme.selectors';
+import { tap } from 'rxjs';
 
 @Injectable()
 export class ThemeEffects {
   private actions$ = inject(Actions);
-  private store = inject(Store);
   private document = inject(DOCUMENT);
 
   public syncTheme$ = createEffect(
