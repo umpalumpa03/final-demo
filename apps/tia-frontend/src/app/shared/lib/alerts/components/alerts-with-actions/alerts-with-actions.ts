@@ -27,8 +27,8 @@ export class AlertsWithActions {
     const type = this.alertType();
     if (type === 'default') return '';
     return type === 'error'
-      ? 'alerts-with-actions--warning'
-      : `alerts-with-actions--${type}`;
+      ? 'alerts-actions--warning'
+      : `alerts-actions--${type}`;
   });
 
   public readonly effectiveImgName = computed(() => {
