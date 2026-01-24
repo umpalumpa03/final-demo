@@ -1,4 +1,75 @@
-export const accordionContent = [
+import { ResizableOrientation } from '@tia/shared/lib/layout/components/resizable-panels/resizable-panels.model';
+import { FlexLayoutVariant } from '@tia/shared/lib/layout/components/flex-layout/flex-layout.model';
+import { GridColumns } from '@tia/shared/lib/layout/components/grid-layout/container/grid-layout.model';
+
+export interface AccordionItem {
+  id: string;
+  title: string;
+  content: string;
+}
+
+export interface CollapsibleItem {
+  id: number;
+  title: string;
+  content: string;
+  isOpenDefault?: boolean;
+}
+
+export interface ScrollAreaItem {
+  id: number;
+  content: string;
+}
+
+export interface ScrollAreaCardItem {
+  id: number;
+  title: string;
+}
+
+export interface FlexWrapItem {
+  id: number;
+  title: string;
+}
+
+export interface FlexLayoutItem {
+  id: number;
+  label: string;
+}
+
+export interface FlexLayoutConfig {
+  id: number;
+  title: string;
+  variant: FlexLayoutVariant | undefined;
+  wrap: boolean;
+  items: FlexLayoutItem[];
+}
+
+export interface GridLayoutItem {
+  id: number;
+  label: string;
+}
+
+export interface GridLayoutConfig {
+  id: number;
+  title: string;
+  cols: GridColumns;
+  items: GridLayoutItem[];
+}
+
+export interface ResizablePanelItem {
+  id: number;
+  label: string;
+}
+
+export interface ResizablePanelConfig {
+  id: number;
+  title: string;
+  orientation: ResizableOrientation;
+  panelSize: 2 | 3;
+  panels: ResizablePanelItem[];
+}
+
+
+export const accordionContent: AccordionItem[] = [
   {
     id: '1',
     title: 'What is this component library?',
@@ -29,9 +100,9 @@ export const accordionContent = [
     content:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?',
   },
-] as const;
+];
 
-export const multiAccordionContent = [
+export const multiAccordionContent: AccordionItem[] = [
   {
     id: '1',
     title: 'Features',
@@ -50,9 +121,9 @@ export const multiAccordionContent = [
     content:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?',
   },
-] as const;
+];
 
-export const collapsibleConfig = [
+export const collapsibleConfig: CollapsibleItem[] = [
   {
     id: 1,
     title: 'Click To Expand',
@@ -66,9 +137,9 @@ export const collapsibleConfig = [
     content:
       'This collapsible section is open by default and contains specific project details.',
   },
-] as const;
+];
 
-export const scrollAreaContent = [
+export const scrollAreaContent: ScrollAreaItem[] = [
   {
     id: 1,
     content: 'Item 1 - This is a scrollable content area with many items',
@@ -93,9 +164,9 @@ export const scrollAreaContent = [
     id: 6,
     content: 'Item 6 - This is a scrollable content area with many',
   },
-] as const;
+];
 
-export const scrollAreaContent2 = [
+export const scrollAreaContent2: ScrollAreaCardItem[] = [
   {
     id: 1,
     title: 'Card 1',
@@ -120,9 +191,9 @@ export const scrollAreaContent2 = [
     id: 6,
     title: 'Card 6',
   },
-] as const;
+];
 
-export const flexWrapContent = [
+export const flexWrapContent: FlexWrapItem[] = [
   { id: 1, title: 'Item 1' },
   { id: 2, title: 'Item 2' },
   { id: 3, title: 'Item 3' },
@@ -133,9 +204,9 @@ export const flexWrapContent = [
   { id: 8, title: 'Item 8' },
   { id: 9, title: 'Item 9' },
   { id: 10, title: 'Item 10' },
-] as const;
+];
 
-export const flexLayoutConfig = [
+export const flexLayoutConfig: FlexLayoutConfig[] = [
   {
     id: 1,
     title: 'Space Between:',
@@ -161,9 +232,9 @@ export const flexLayoutConfig = [
     wrap: true,
     items: flexWrapContent.map((item) => ({ id: item.id, label: item.title })),
   },
-] as const;
+];
 
-export const gridLayoutConfig = [
+export const gridLayoutConfig: GridLayoutConfig[] = [
   {
     id: 1,
     title: 'Two Column Grid:',
@@ -203,12 +274,13 @@ export const gridLayoutConfig = [
       { id: 2, label: 'Narrow (1/3)' },
     ],
   },
-] as const;
+];
 
-export const resizablePanelsConfig = [
+export const resizablePanelsConfig: ResizablePanelConfig[] = [
   {
     id: 1,
     title: 'Horizontal Resize:',
+    orientation: 'horizontal',
     panelSize: 2,
     panels: [
       { id: 1, label: 'Left Panel' },
@@ -218,6 +290,7 @@ export const resizablePanelsConfig = [
   {
     id: 2,
     title: 'Three Panel Layout:',
+    orientation: 'horizontal',
     panelSize: 3,
     panels: [
       { id: 1, label: 'Sidebar' },
@@ -225,4 +298,14 @@ export const resizablePanelsConfig = [
       { id: 3, label: 'Details' },
     ],
   },
-] as const;
+  {
+    id: 3,
+    title: 'Vertical Resize:',
+    orientation: 'vertical',
+    panelSize: 2,
+    panels: [
+      { id: 1, label: 'Top Panel' },
+      { id: 2, label: 'Bottom Panel' },
+    ],
+  },
+];
