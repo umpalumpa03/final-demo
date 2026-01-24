@@ -1,5 +1,5 @@
-@use '../../../../../styles/mixins' as *;
-@use '../../../../../styles/palette' as *;
+@use '../../../../../shared/styles/mixins' as *;
+@use '../../../../../shared/styles/palette' as *;
 
 .flex-layout {
     @include flex-center(row, flex-start, center);
