@@ -33,12 +33,7 @@ export interface ISettingsForm {
   sms: boolean;
 }
 
-export const COUNTRIES = [
-  { code: 'us', label: 'United States' },
-  { code: 'ca', label: 'Canada' },
-  { code: 'uk', label: 'United Kingdom' },
-  { code: 'de', label: 'Germany' },
-  { code: 'fr', label: 'France' },
-  { code: 'au', label: 'Australia' },
-  { code: 'other', label: 'Other' },
-] as const;
+export interface IStepConfig {
+  label: string;
+  key: string;
+}

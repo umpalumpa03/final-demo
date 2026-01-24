@@ -1,0 +1,25 @@
+<div class="multi-step">
+  @for (label of content(); track $index) {
+
+    <div class="multi-step__step">
+      <div class="multi-step__circle"
+           [class.active]="isActive($index)"
+           [class.completed]="isCompleted($index)">
+        {{ $index + 1 }}
+      </div>
+
+      <div class="multi-step__label"
+           [class.active]="isActive($index)"
+           [class.completed]="isCompleted($index)">
+        {{ label.label }}
+      </div>
+    </div>
+
+    @if ($index < content().length - 1) {
+      <div class="multi-step__line"
+           [class.active]="isLineActive($index)"
+           [class.completed]="isCompleted($index)">
+      </div>
+    }
+  }
+</div>

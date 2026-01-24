@@ -1,0 +1,61 @@
+@let step = currentStep(); @let activeStep = currentStepConfig();
+
+<form class="multi-step" [formGroup]="form" (ngSubmit)="submit()">
+  <div class="multi-step__field">
+    <app-stepper-header [content]="stepsConfig" [step]="step" />
+  </div>
+
+  @for (config of stepsConfig; track config.key) { @if (config === activeStep) {
+  <form class="multi-step__field" [formGroupName]="config.key">
+    @if (config.key === 'from') {
+    <lib-text-input
+      type="text"
+      formControlName="name"
+      [config]="nameConfig"
+    ></lib-text-input>
+    <lib-textarea formControlName="bio" [config]="bioConfig"></lib-textarea>
+    } @if (config.key === 'to') {
+    <lib-text-input
+      type="text"
+      formControlName="name"
+      [config]="nameConfig"
+    ></lib-text-input>
+    <lib-textarea formControlName="bio" [config]="bioConfig"></lib-textarea>
+    } @if (config.key === 'amount') {
+    <lib-text-input
+      type="text"
+      formControlName="name"
+      [config]="nameConfig"
+    ></lib-text-input>
+    <lib-textarea formControlName="bio" [config]="bioConfig"></lib-textarea>
+    }
+  </form>
+  } }
+
+  <div class="multi-step__btn-section">
+    <div class="multi-step__row">
+      @if (step > 1) {
+      <div class="multi-step__field">
+        <app-button
+          [fullWidth]="true"
+          variant="outline"
+          type="button"
+          (click)="previous()"
+          >Back</app-button
+        >
+      </div>
+      } @if (step < totalSteps) {
+      <div class="multi-step__field">
+        <app-button [fullWidth]="true" (click)="next()" type="button">
+          Next Step
+        </app-button>
+      </div>
+
+      } @else if (step === totalSteps) {
+      <div class="multi-step__field">
+        <app-button [fullWidth]="true" type="submit">Finish</app-button>
+      </div>
+      }
+    </div>
+  </div>
+</form>

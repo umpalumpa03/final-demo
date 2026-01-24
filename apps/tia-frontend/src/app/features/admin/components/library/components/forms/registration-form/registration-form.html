@@ -43,16 +43,7 @@
   </div>
 
   <div class="registration__field">
-    <label class="registration__label" for="country">Country</label>
-    <select
-      formControlName="country"
-      class="registration__input registration__select"
-    >
-      <option disabled selected>Select country</option>
-      @for(country of countries; track country.code) {
-      <option>{{ country.label }}</option>
-      }
-    </select>
+    <lib-select [config]="countrySelectConfig" formControlName="country" [options]="countries"></lib-select>
   </div>
 
   <div class="registration__field">

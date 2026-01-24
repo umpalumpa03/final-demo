@@ -74,12 +74,9 @@ export class SettingsForm {
 
   public saveChange() {
     if (!this.settingControl.valid) {
-      console.log(this.settingControl.getRawValue());
       this.settingControl.markAllAsTouched();
       return;
     }
-
-    console.log(this.settingControl.getRawValue());
 
     this.twoColumnLayoutForm.emit(this.settingControl.getRawValue());
   }
