@@ -3,7 +3,7 @@
 
   <app-showcase-card title="Loading Cards">
     <div class = 'showcase__cards'>
-      <app-basic-card height="23.8rem" width="32.8rem">
+      <app-basic-card height="23.8rem" width="100%">
         <div class="loader">
           <app-spinner size="4rem" />
           <p class="loader__text">Loading content...</p>
@@ -38,9 +38,11 @@
     <div class="showcase__skels">
       <div class="showcase__group">
         <span class="showcase__label">Text Skeleton:</span>
-        @for (s of textSkeletons; track trackById($index, s)) {
-          <app-skeleton [width]="s.width" [height]="s.height" />
-        }
+        <div class="showcase__text-container">
+          @for (s of textSkeletons; track trackById($index, s)) {
+            <app-skeleton [width]="s.width" [height]="s.height" />
+          }
+        </div>
       </div>
 
       <div class="showcase__group">

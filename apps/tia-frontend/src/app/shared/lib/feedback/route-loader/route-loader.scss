@@ -23,7 +23,7 @@
   &--full-page {
     @include flex-center(column);
     gap: 2rem;
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--color-bg);
     z-index: 9999;
   }
 
