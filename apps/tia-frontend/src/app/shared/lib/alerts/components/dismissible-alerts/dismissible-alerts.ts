@@ -10,6 +10,7 @@ import { FirstUpperPipe } from '@tia/shared/pipes/first-upper/first-upper-pipe';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DismissibleAlerts {
+  public readonly alertTitle = input<string>('default title');
   public readonly alertType = input<DismissibleAlertType>('information');
   public alertMessage = input<string>('Default Alert Message');
 
