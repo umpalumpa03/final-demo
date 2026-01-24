@@ -103,8 +103,8 @@
 
 @media screen and (max-width: 480px) {
   .key-value-display__card {
-    width: 30rem;
-    height: 26rem;
+    width: 100%;
+    height: auto;
     padding: 1.2rem;
   }
 
@@ -117,17 +117,7 @@
   }
 }
 
-@media screen and (max-width: 370px) {
-  .key-value-display__card {
-    width: 26rem;
-    height: 24rem;
-    padding: 1rem;
-  }
-
-  .key-value-display__row {
-    padding: 0.6rem 0;
-  }
-
+@media screen and (max-width: 360px) {
   .key-value-display__title {
     @include font-arimo(600, 1.2rem, 1.8rem);
   }
@@ -142,41 +132,5 @@
 
   .key-value-display__badge {
     @include font-arimo(600, 0.9rem, 1.2rem);
-  }
-}
-
-@media screen and (max-width: 350px) {
-  .key-value-display__card {
-    width: 23rem;
-    height: 22rem;
-    padding: 0.9rem;
-  }
-
-  .key-value-display__row {
-    padding: 0.5rem 0;
-  }
-}
-
-@media screen and (max-width: 320px) {
-  .key-value-display__card {
-    width: 18rem;
-    height: 20rem;
-    padding: 0.8rem;
-  }
-
-  .key-value-display__row {
-    padding: 0.5rem 0;
-  }
-}
-
-@media screen and (max-width: 310px) {
-  .key-value-display__card {
-    width: 18rem;
-    height: 20rem;
-    padding: 0.8rem;
-  }
-
-  .key-value-display__row {
-    padding: 0.5rem 0;
   }
 }
