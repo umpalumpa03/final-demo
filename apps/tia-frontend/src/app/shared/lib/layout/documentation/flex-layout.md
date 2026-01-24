@@ -10,14 +10,14 @@ import { FlexLayout } from '@shared/lib/layout/components/flex-layout/container/
 
 ## Inputs
 
-- `variant` - `'space-between' | 'center' | 'flex-wrap'` - Defines the flex layout behavior
-- `gap` - `string` - Sets the gap between flex items (e.g., `'1rem'`, `'2rem'`)
+- `variant` - `'space-between' | 'center'` - Defines the justify-content behavior
+- `wrap` - `boolean` - Enables flex-wrap (default: `false`)
+- `gap` - `string` - Sets the gap between flex items (e.g., `'1rem'`, `'16px'`)
 
 ## Variant Options
 
 - `space-between` - applies `justify-content: space-between`
 - `center` - applies `justify-content: center`
-- `flex-wrap` - applies `flex-wrap: wrap`
 
 ## Usage Examples
 
@@ -33,21 +33,22 @@ import { FlexLayout } from '@shared/lib/layout/components/flex-layout/container/
   <button>Centered</button>
 </app-flex-layout>
 
-<!-- Flex wrap -->
-<app-flex-layout variant="flex-wrap">
+<!-- Wrap only -->
+<app-flex-layout [wrap]="true">
   <div>Item 1</div>
   <div>Item 2</div>
   <div>Item 3</div>
 </app-flex-layout>
 
-<!-- With gap -->
-<app-flex-layout variant="space-between" gap="1rem">
-  <span>Item 1</span>
-  <span>Item 2</span>
+<!-- Center + Wrap (combination) -->
+<app-flex-layout variant="center" [wrap]="true">
+  <div>Item 1</div>
+  <div>Item 2</div>
+  <div>Item 3</div>
 </app-flex-layout>
 
-<!-- Flex wrap with gap -->
-<app-flex-layout variant="flex-wrap" gap="2rem">
+<!-- Space-between + Wrap + Gap -->
+<app-flex-layout variant="space-between" [wrap]="true" gap="1rem">
   <div>Card 1</div>
   <div>Card 2</div>
   <div>Card 3</div>

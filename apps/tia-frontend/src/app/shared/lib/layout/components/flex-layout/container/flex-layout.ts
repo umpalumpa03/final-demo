@@ -12,4 +12,5 @@ import { FlexVariant } from '../config/flex-layout.config';
 export class FlexLayout {
   public variant = input<FlexVariant>();
   public gap = input<string>();
+  public wrap = input<boolean>(false);
 }

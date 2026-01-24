@@ -2,8 +2,7 @@
 @use '../../../../../styles/palette' as *;
 
 .flex-layout {
-    display: flex;
-    align-items: center;
+    @include flex-center(row, flex-start, center);
     border: 0.1rem solid $blue-400;
     border-radius: 1rem;
     padding: 1.6rem;
