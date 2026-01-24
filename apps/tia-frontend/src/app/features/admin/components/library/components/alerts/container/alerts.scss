@@ -1,0 +1,20 @@
+@use '../../../../../../../shared/styles/mixins' as *;
+
+.alerts-page {
+  @include display-flex(column);
+  gap: 3.2rem;
+  width: 100%;
+  max-width: 110rem;
+  margin: 0 auto;
+  padding-bottom: 31rem;
+  
+  &__title {
+    margin: 3.2rem 0rem 0rem;
+  }
+
+  &__group {
+     @include display-flex(column);
+    gap: 1.6rem;
+    width: 100%;
+  }
+}

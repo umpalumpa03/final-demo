@@ -12,7 +12,7 @@ type paginationVariant = 'scroll' | 'page';
 
 type alignment = 'left' | 'right' | 'center';
 
-type infoType = 'text' | 'badge' | 'icon';
+type infoType = 'text' | 'status' | 'icon' | 'state';
 
 interface TableHeader {
   title: string;
@@ -28,10 +28,19 @@ interface PrintedData {
   category?: string;
   accountName?: string;
   date?: string;
+  variant?: string;
+  disabled?: boolean;
+  selected?: boolean;
+  hover?: boolean;
+  clickable?: boolean;
+  customColor?: string;
 }
 
 export interface TableRowCell {
   id: string;
+  disabled?: boolean;
+  selected?: boolean;
+  highlighted?: boolean;
   info: PrintedData[];
 }
 
