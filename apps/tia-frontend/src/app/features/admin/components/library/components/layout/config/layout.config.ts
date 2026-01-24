@@ -134,3 +134,31 @@ export const flexWrapContent = [
   { id: 9, title: 'Item 9' },
   { id: 10, title: 'Item 10' },
 ] as const;
+
+export const flexLayoutConfig = [
+  {
+    id: 1,
+    title: 'Space Between:',
+    variant: 'space-between' as const,
+    wrap: false,
+    items: [
+      { id: 1, label: 'Left' },
+      { id: 2, label: 'Center' },
+      { id: 3, label: 'Right' },
+    ],
+  },
+  {
+    id: 2,
+    title: 'Centered:',
+    variant: 'center' as const,
+    wrap: false,
+    items: [{ id: 1, label: 'Centered Content' }],
+  },
+  {
+    id: 3,
+    title: 'Flex Wrap:',
+    variant: undefined,
+    wrap: true,
+    items: flexWrapContent.map((item) => ({ id: item.id, label: item.title })),
+  },
+] as const;

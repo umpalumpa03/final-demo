@@ -1,186 +1,162 @@
 <div class="layout">
-  <header class="layout__header">
-    <app-library-title
-      title="Layout Components"
-      subtitle="Structural components for organizing content"
-    />
-  </header>
-  <main class="layout__main">
-    <app-showcase-card title="Separators">
-      <div class="section">
-        <div class="section__item">
-          <h4 class="section__title">Horizontal Separator:</h4>
-          <div class="section__example section__example--horizontal">
-            <span>Content above</span>
-            <app-separator
-              orientation="horizontal"
-              thickness="0.1rem"
-              margin="1.2rem"
-            />
-            <span>Content below</span>
-          </div>
-        </div>
-        <div class="section__item">
-          <h4 class="section__title">Vertical Separator:</h4>
-          <div class="section__example section__example--vertical">
-            <span>Left</span>
-            <app-separator orientation="vertical" thickness="0.1rem" />
-            <span>Center</span>
-            <app-separator orientation="vertical" thickness="0.1rem" />
-            <span>Right</span>
-          </div>
-        </div>
-        <div class="section__item">
-          <h4 class="section__title">With Text:</h4>
-          <div class="section__example">
-            <app-separator
-              orientation="horizontal"
-              thickness="0.1rem"
-              label="OR"
-              margin="1.2rem"
-            />
-          </div>
-        </div>
-      </div>
-    </app-showcase-card>
+    <header class="layout__header">
+        <app-library-title title="Layout Components" subtitle="Structural components for organizing content" />
+    </header>
+    <main class="layout__main">
+        <app-showcase-card title="Separators">
+            <div class="section">
+                <div class="section__item">
+                    <h4 class="section__title">Horizontal Separator:</h4>
+                    <div class="section__example section__example--horizontal">
+                        <span>Content above</span>
+                        <app-separator orientation="horizontal" thickness="0.1rem" margin="1.2rem" />
+                        <span>Content below</span>
+                    </div>
+                </div>
+                <div class="section__item">
+                    <h4 class="section__title">Vertical Separator:</h4>
+                    <div class="section__example section__example--vertical">
+                        <span>Left</span>
+                        <app-separator orientation="vertical" thickness="0.1rem" />
+                        <span>Center</span>
+                        <app-separator orientation="vertical" thickness="0.1rem" />
+                        <span>Right</span>
+                    </div>
+                </div>
+                <div class="section__item">
+                    <h4 class="section__title">With Text:</h4>
+                    <div class="section__example">
+                        <app-separator orientation="horizontal" thickness="0.1rem" label="OR" margin="1.2rem" />
+                    </div>
+                </div>
+            </div>
+        </app-showcase-card>
 
-    <app-showcase-card title="Scroll Area">
-        <section class="section">
-            <div class="section__item">
-                <h4 class="section__title">Vertical Scroll:</h4>
-                <app-scroll-area height="19.6rem">
-                    @for(item of scrollAreaContent(); track item.id) {
+        <app-showcase-card title="Scroll Area">
+            <section class="section">
+                <div class="section__item">
+                    <h4 class="section__title">Vertical Scroll:</h4>
+                    <app-scroll-area height="19.6rem">
+                        @for(item of scrollAreaContent(); track item.id) {
                         <p>{{ item.content }}</p>
-                    }
-                </app-scroll-area>
-            </div>
-        </section>
-        <section class="section">
-            <div class="section__item">
-                <h4 class="section__title">Horizontal Scroll:</h4>
-                <app-scroll-area direction="horizontal" height="18rem">
-                    @for(item of scrollAreaContent2(); track item.id) {
+                        }
+                    </app-scroll-area>
+                </div>
+            </section>
+            <section class="section">
+                <div class="section__item">
+                    <h4 class="section__title">Horizontal Scroll:</h4>
+                    <app-scroll-area direction="horizontal" height="18rem">
+                        @for(item of scrollAreaContent2(); track item.id) {
                         <div class="scroll-item">{{ item.title }}</div>
-                    }
-                </app-scroll-area>
-            </div>
-        </section>
-    </app-showcase-card>
+                        }
+                    </app-scroll-area>
+                </div>
+            </section>
+        </app-showcase-card>
 
-    <app-showcase-card title="Collapsible">
-      <section class="section">
-        @for(item of collapsibleData(); track item.id){
-        <div class="section__item">
-          <app-collapsible [config]="item">
-            <p class="text-secondary">{{ item.content }}</p>
-          </app-collapsible>
-        </div>
-        }
-      </section>
-    </app-showcase-card>
+        <app-showcase-card title="Collapsible">
+            <section class="section">
+                @for(item of collapsibleData(); track item.id){
+                <div class="section__item">
+                    <app-collapsible [config]="item">
+                        <p class="text-secondary">{{ item.content }}</p>
+                    </app-collapsible>
+                </div>
+                }
+            </section>
+        </app-showcase-card>
 
-    <app-showcase-card title="Accordion">
-      <section class="section">
-        <div class="section__item">
-          <app-accordion [multi]="false">
-            @for(item of accordionContent(); track item.id; let last = $last) {
-            <app-accordion-item [title]="item.title" [isLast]="last">
-              <p>{{item.content}}</p>
-            </app-accordion-item>
-            }
-          </app-accordion>
-        </div>
-      </section>
-    </app-showcase-card>
-    <app-showcase-card title="Multiple Accordion (Multiple Open)">
-      <section class="section">
-        <div class="section__item">
-          <app-accordion [multi]="true">
-            @for(item of multiAccordionContent(); track item.id; let last = $last)
-            {
-            <app-accordion-item [title]="item.title" [isLast]="last">
-              <p>{{item.content}}</p>
-            </app-accordion-item>
-            }
-          </app-accordion>
-        </div>
-      </section>
-    </app-showcase-card>
+        <app-showcase-card title="Accordion">
+            <section class="section">
+                <div class="section__item">
+                    <app-accordion [multi]="false">
+                        @for(item of accordionContent(); track item.id; let last = $last) {
+                        <app-accordion-item [title]="item.title" [isLast]="last">
+                            <p>{{item.content}}</p>
+                        </app-accordion-item>
+                        }
+                    </app-accordion>
+                </div>
+            </section>
+        </app-showcase-card>
+        <app-showcase-card title="Multiple Accordion (Multiple Open)">
+            <section class="section">
+                <div class="section__item">
+                    <app-accordion [multi]="true">
+                        @for(item of multiAccordionContent(); track item.id; let last = $last)
+                        {
+                        <app-accordion-item [title]="item.title" [isLast]="last">
+                            <p>{{item.content}}</p>
+                        </app-accordion-item>
+                        }
+                    </app-accordion>
+                </div>
+            </section>
+        </app-showcase-card>
 
-    <app-showcase-card title="Resizable Panels">
-        <section class="section">
-            <div class="section__item">
-                <h4 class="section__title">Horizontal Resize:</h4>
-                <app-resizable-horizontal [panelSize]="2">
-                    <div class="panel">Left Panel</div>
-                    <div class="panel">Right Panel</div>
-                </app-resizable-horizontal>
-            </div>
-        </section>
-        <section class="section">
-            <div class="section__item">
-                <h4 class="section__title">Three Panel Layout:</h4>
-                <app-resizable-horizontal [panelSize]="3">
-                    <div class="panel">Sidebar</div>
-                    <div class="panel">Main Content</div>
-                    <div class="panel">Details</div>
-                </app-resizable-horizontal>
-            </div>
-        </section>
-    </app-showcase-card>
+        <app-showcase-card title="Resizable Panels">
+            <section class="section">
+                <div class="section__item">
+                    <h4 class="section__title">Horizontal Resize:</h4>
+                    <app-resizable-horizontal [panelSize]="2">
+                        <div class="panel">Left Panel</div>
+                        <div class="panel">Right Panel</div>
+                    </app-resizable-horizontal>
+                </div>
+            </section>
+            <section class="section">
+                <div class="section__item">
+                    <h4 class="section__title">Three Panel Layout:</h4>
+                    <app-resizable-horizontal [panelSize]="3">
+                        <div class="panel">Sidebar</div>
+                        <div class="panel">Main Content</div>
+                        <div class="panel">Details</div>
+                    </app-resizable-horizontal>
+                </div>
+            </section>
+        </app-showcase-card>
 
-    <app-showcase-card title="Grid Layouts">
-        <section class="section">
-            <div class="section__item">
-                <h4 class="section__title">Two Column Grid:</h4>
-                <app-grid-layout cols="2" gap="1.6rem">
-                    <div class="grid-item">Column 1</div>
-                    <div class="grid-item">Column 2</div>
-                </app-grid-layout>
-                <app-grid-layout cols="3" gap="1.6rem">
-                    <div class="grid-item">Column 1</div>
-                    <div class="grid-item">Column 2</div>
-                    <div class="grid-item">Column 3</div>
-                </app-grid-layout>
-                <app-grid-layout cols="4" gap="1.6rem">
-                    <div class="grid-item">Column 1</div>
-                    <div class="grid-item">Column 2</div>
-                    <div class="grid-item">Column 3</div>
-                    <div class="grid-item">Column 4</div>
-                </app-grid-layout>
-                <app-grid-layout cols="2-1" gap="1.6rem">
-                    <div class="grid-item">Wide Column (2/3)</div>
-                    <div class="grid-item">Narrow (1/3)</div>
-                </app-grid-layout>
-            </div>
-        </section>
-    </app-showcase-card>
+        <app-showcase-card title="Grid Layouts">
+            <section class="section">
+                <div class="section__item">
+                    <h4 class="section__title">Two Column Grid:</h4>
+                    <app-grid-layout cols="2" gap="1.6rem">
+                        <div class="grid-item">Column 1</div>
+                        <div class="grid-item">Column 2</div>
+                    </app-grid-layout>
+                    <app-grid-layout cols="3" gap="1.6rem">
+                        <div class="grid-item">Column 1</div>
+                        <div class="grid-item">Column 2</div>
+                        <div class="grid-item">Column 3</div>
+                    </app-grid-layout>
+                    <app-grid-layout cols="4" gap="1.6rem">
+                        <div class="grid-item">Column 1</div>
+                        <div class="grid-item">Column 2</div>
+                        <div class="grid-item">Column 3</div>
+                        <div class="grid-item">Column 4</div>
+                    </app-grid-layout>
+                    <app-grid-layout cols="2-1" gap="1.6rem">
+                        <div class="grid-item">Wide Column (2/3)</div>
+                        <div class="grid-item">Narrow (1/3)</div>
+                    </app-grid-layout>
+                </div>
+            </section>
+        </app-showcase-card>
 
-    <app-showcase-card title="Flex Layouts">
-        <section class="section">
-            <div class="section__item">
-                <h4 class="section__title">Space Between:</h4>
-                <app-flex-layout variant="space-between" gap="1.6rem">
-                    <div class="flex-item">Left</div>
-                    <div class="flex-item">Center</div>
-                    <div class="flex-item">Right</div>
-                </app-flex-layout>
-            </div>
-            <div class="section__item">
-                <h4 class="section__title">Centered:</h4>
-                <app-flex-layout variant="center" gap="1.6rem">
-                    <div class="flex-item">Centered Content</div>
-                </app-flex-layout>
-            </div>
-            <div class="section__item">
-                <h4 class="section__title">Flex Wrap:</h4>
-                <app-flex-layout gap="1.6rem" [wrap]="true">
-                    @for(item of flexWrapContent(); track item.id) {
-                        <div class="flex-wrap-item">{{ item.title }}</div>
-                    }
-                </app-flex-layout>
-            </div>
-        </section>
-    </app-showcase-card>
-  </main>
+        <app-showcase-card title="Flex Layouts">
+            <section class="section">
+                @for (config of flexLayoutConfig(); track config.id) {
+                <div class="section__item">
+                    <h4 class="section__title">{{ config.title }}</h4>
+                    <app-flex-layout [variant]="config.variant" [wrap]="config.wrap" gap="1.6rem">
+                        @for (item of config.items; track item.id) {
+                        <div [class]="config.wrap ? 'flex-wrap-item' : 'flex-item'">{{ item.label }}</div>
+                        }
+                    </app-flex-layout>
+                </div>
+                }
+            </section>
+        </app-showcase-card>
+    </main>
 </div>
