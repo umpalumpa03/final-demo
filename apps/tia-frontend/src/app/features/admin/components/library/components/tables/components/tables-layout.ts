@@ -6,6 +6,7 @@ import { ShowcaseCard } from '../../../shared/showcase-card/showcase-card';
 import {
   actionsTable,
   basicTable,
+  compactTable,
   rowTable,
   sortableTable,
   strippedTable,
@@ -24,4 +25,5 @@ export class TablesLayout {
   public actionsConfig: TableConfig = actionsTable;
   public sortableConfig: TableConfig = sortableTable;
   public strippedConfig: TableConfig = strippedTable;
+  public compactConfig: TableConfig = compactTable;
 }

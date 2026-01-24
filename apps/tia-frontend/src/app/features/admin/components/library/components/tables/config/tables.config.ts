@@ -2,7 +2,8 @@ import { TableConfig } from '@tia/shared/lib/tables/models/table.model';
 
 export const basicTable: TableConfig = {
   type: 'basic',
-  paginationType: 'scroll',
+  paginationType: 'page',
+  itemPerPage: 3,
   headers: [
     { title: 'Invoice', align: 'left', width: '10rem' },
     { title: 'Status', align: 'left', width: '27rem' },
@@ -37,12 +38,40 @@ export const basicTable: TableConfig = {
         { type: 'text', value: '$350.00', align: 'right' },
       ],
     },
+    {
+      id: '4',
+      info: [
+        { type: 'text', value: 'INV004', align: 'left' },
+        { type: 'text', value: 'Paid', align: 'left' },
+        { type: 'text', value: 'Credit Card', align: 'left' },
+        { type: 'text', value: '$1000.00', align: 'right' },
+      ],
+    },
+    {
+      id: '5',
+      info: [
+        { type: 'text', value: 'INV005', align: 'left' },
+        { type: 'text', value: 'Unpaid', align: 'left' },
+        { type: 'text', value: 'PayPal', align: 'left' },
+        { type: 'text', value: '$50.00', align: 'right' },
+      ],
+    },
+    {
+      id: '6',
+      info: [
+        { type: 'text', value: 'INV006', align: 'left' },
+        { type: 'text', value: 'Unpaid', align: 'left' },
+        { type: 'text', value: 'Bank Transfer', align: 'left' },
+        { type: 'text', value: '$333.00', align: 'right' },
+      ],
+    },
   ],
-};
+} as const;
 
 export const rowTable: TableConfig = {
   type: 'row-selection',
   paginationType: 'scroll',
+  itemPerPage: 5,
   headers: [
     { title: 'Name', align: 'left', width: '27rem' },
     { title: 'Email', align: 'left', width: '38rem' },
@@ -96,11 +125,12 @@ export const rowTable: TableConfig = {
       ],
     },
   ],
-};
+} as const;
 
 export const actionsTable: TableConfig = {
   type: 'actions',
   paginationType: 'scroll',
+  itemPerPage: 5,
   headers: [
     { title: 'Name', align: 'left', width: '21rem' },
     { title: 'Email', align: 'left', width: '29rem' },
@@ -155,11 +185,12 @@ export const actionsTable: TableConfig = {
       ],
     },
   ],
-};
+} as const;
 
 export const sortableTable: TableConfig = {
   type: 'basic',
   paginationType: 'scroll',
+  itemPerPage: 5,
   headers: [
     { title: 'Name', sortable: true, align: 'left', width: '26rem' },
     { title: 'Email', align: 'left', width: '37rem' },
@@ -213,11 +244,12 @@ export const sortableTable: TableConfig = {
       ],
     },
   ],
-};
+} as const;
 
 export const strippedTable: TableConfig = {
   type: 'striped',
   paginationType: 'scroll',
+  itemPerPage: 5,
   headers: [
     { title: 'Product', align: 'left', width: '41rem' },
     { title: 'Category', align: 'left', width: '23rem' },
@@ -271,4 +303,41 @@ export const strippedTable: TableConfig = {
       ],
     },
   ],
-};
+} as const;
+
+export const compactTable: TableConfig = {
+  type: 'compact',
+  itemPerPage: 3,
+  headers: [
+    { title: 'ID', align: 'left', width: '12rem' },
+    { title: 'Task', align: 'left', width: '42rem' },
+    { title: 'Assignee', align: 'left', width: '25rem' },
+    { title: 'Status', align: 'left', width: '25rem' },
+  ],
+  rows: [
+    {
+      id: '1',
+      info: [
+        { type: 'text', value: 'Update documentation', align: 'left' },
+        { type: 'text', value: 'John Doe', align: 'left' },
+        { type: 'badge', value: 'Done', align: 'left' },
+      ],
+    },
+    {
+      id: '2',
+      info: [
+        { type: 'text', value: 'Fix bug in login', align: 'left' },
+        { type: 'text', value: 'Jane Smith', align: 'left' },
+        { type: 'badge', value: 'In Progress', align: 'left' },
+      ],
+    },
+    {
+      id: '3',
+      info: [
+        { type: 'text', value: 'Design new feature', align: 'left' },
+        { type: 'text', value: 'Bob Johnson', align: 'left' },
+        { type: 'badge', value: 'Todo', align: 'left' },
+      ],
+    },
+  ],
+} as const;
