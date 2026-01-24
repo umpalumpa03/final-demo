@@ -5,13 +5,14 @@ type tableVariant =
   | 'actions'
   | 'sortable'
   | 'stripped'
-  | 'compact';
+  | 'compact'
+  | 'select-actions';
 
 type paginationVariant = 'scroll' | 'page';
 
 type alignment = 'left' | 'right' | 'center';
 
-type infoType = 'text' | 'badge';
+type infoType = 'text' | 'badge' | 'icon';
 
 interface TableHeader {
   title: string;
@@ -31,6 +32,12 @@ interface PrintedData {
 export interface TableRowCell {
   id: string;
   info: PrintedData[];
+}
+
+export interface TableActionEvent {
+  action: string;
+  rowId: string;
+  selectedItems: TableRowCell[];
 }
 
 export interface TableConfig {
