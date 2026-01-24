@@ -76,4 +76,17 @@
             }
         </div>
     </section>
+
+    <section class="gallery__section">
+        <h2 class="gallery__section-title">Sliders</h2>
+
+        <div class="gallery__input-stack">
+            @for (demo of sliderDemos(); track demo.config.label) {
+            <div class="gallery__input-wrapper">
+                <lib-slider [config]="demo.config" [(value)]="demo.initialValue">
+                </lib-slider>
+            </div>
+            }
+        </div>
+    </section>
 </div>

@@ -12,7 +12,7 @@ import { SLIDER_DEFAULTS } from '../config/slider.config';
 import { SliderConfig } from '../models/slider.model';
 
 @Component({
-  selector: 'app-slider',
+  selector: 'lib-slider',
   imports: [],
   templateUrl: './slider.html',
   styleUrl: './slider.scss',
@@ -27,8 +27,8 @@ export class Slider extends BaseInput {
 
   protected readonly mergedConfig = computed<SliderConfig>(() => ({
     ...SLIDER_DEFAULTS,
-    id: this.config().id || this.defaultId,
     ...this.config(),
+    id: this.config().id || this.defaultId,
   }));
 
   protected override readonly isDisabled = computed<boolean>(() => {
@@ -41,16 +41,18 @@ export class Slider extends BaseInput {
 
   protected readonly fillPercentage = computed(() => {
     const val = this.value() ?? 0;
-    const min = this.mergedConfig().min ?? 0;
-    const max = this.mergedConfig().max ?? 100;
+    const { min = 0, max = 100 } = this.mergedConfig();
 
     if (max === min) return 0;
+    if (val < min) return 0;
+    if (val > max) return 100;
 
-    const percent = ((val - min) / (max - min)) * 100;
-    return Math.min(Math.max(percent, 0), 100);
+    return ((val - min) / (max - min)) * 100;
   });
 
   protected onInput(event: Event): void {
+    if (this.isDisabled()) return;
+
     const target = event.target as HTMLInputElement;
     const numValue = parseFloat(target.value);
 
@@ -61,13 +63,10 @@ export class Slider extends BaseInput {
 
   constructor() {
     super();
-    effect(
-      () => {
-        if (this.value() === null) {
-          this.value.set(this.mergedConfig().min ?? 0);
-        }
-      },
-      { allowSignalWrites: true },
-    );
+    effect(() => {
+      if (this.value() === null) {
+        this.value.set(this.mergedConfig().min ?? 0);
+      }
+    });
   }
 }

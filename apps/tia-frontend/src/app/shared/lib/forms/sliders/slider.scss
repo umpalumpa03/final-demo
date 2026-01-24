@@ -4,26 +4,30 @@
 $track-height: 1.6rem;
 $thumb-size: 2.2rem;
 
-.slider-wrapper {
+.slider {
     @include display-flex(column);
     gap: 0.8rem;
     width: 100%;
-    .slider-header {
+
+    &__header {
         @include flex-center(row, space-between);
-        margin-bottom: -0.4rem;
-
-        .slider-label {
-            @include font-arimo(500, 1.4rem, 1);
-            color: $gray-900;
-        }
-
-        .slider-value-text {
-            @include font-arimo(400, 1.4rem, 1);
-            color: $gray-600;
-        }
     }
 
-    .slider-input {
+    &__label {
+        @include font-arimo(500, 1.4rem, 1);
+        color: var(--color-fg);
+    }
+
+    &__value {
+        @include font-arimo(400, 1.4rem, 1);
+        color: $gray-600;
+    }
+
+    &__control {
+        position: relative;
+    }
+
+    &__input {
         -webkit-appearance: none;
         appearance: none;
         width: 100%;
@@ -37,27 +41,16 @@ $thumb-size: 2.2rem;
         }
 
         &::-webkit-slider-runnable-track {
-            width: 100%;
-            height: $track-height;
-            border-radius: 10rem;
-
+            @include slider-track($track-height, $blue-ocean-muted);
             background-image: linear-gradient($blue-ocean, $blue-ocean);
             background-size: var(--slider-fill, 0%) 100%;
             background-repeat: no-repeat;
-            background-color: $blue-ocean-muted;
         }
 
         &::-webkit-slider-thumb {
+            @include slider-thumb($thumb-size, $white, $blue-ocean);
             -webkit-appearance: none;
-            height: $thumb-size;
-            width: $thumb-size;
-            border-radius: 50%;
-            background: $white;
-            border: 0.15rem solid $blue-ocean;
-
             margin-top: ($track-height - $thumb-size) * 0.5;
-
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             transition: transform 0.1s ease;
         }
 
@@ -66,10 +59,7 @@ $thumb-size: 2.2rem;
         }
 
         &::-moz-range-track {
-            width: 100%;
-            height: $track-height;
-            border-radius: 10rem;
-            background-color: $blue-ocean-muted;
+            @include slider-track($track-height, $blue-ocean-muted);
         }
 
         &::-moz-range-progress {
@@ -79,16 +69,12 @@ $thumb-size: 2.2rem;
         }
 
         &::-moz-range-thumb {
-            height: $thumb-size;
-            width: $thumb-size;
+            @include slider-thumb($thumb-size, $white, $blue-ocean);
             border: 0.15rem solid $blue-ocean;
-            border-radius: 50%;
-            background: $white;
-            box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.1);
         }
     }
 
-    .slider--error {
+    &__error {
         @include font-arimo(400, 1.2rem, 1);
         color: $red-600;
     }
@@ -97,7 +83,7 @@ $thumb-size: 2.2rem;
         opacity: 0.6;
         cursor: not-allowed;
 
-        .slider-input {
+        .slider__input {
             cursor: not-allowed;
         }
     }
