@@ -1,5 +1,6 @@
 import { Palette } from '../../../../../../../shared/lib/palettes/model/palette.model';
-import { ColorPalette } from '../model/palette.model';
+import { ColorPalette } from '../model/color-palette.models';
+import { Note } from '../model/color-palette.models';
 
 export const OCEANBLUE_PALETTE_DATA: Palette[] = [
   { name: 'Primary', code: '#0284c7', modifier: 'primary' },
@@ -121,7 +122,7 @@ export const colorApplication = {
   deepblue: DEEPBLUE_APPLICATION_DATA,
 } as const;
 
-export const NOTES_DATA = [
+export const NOTES_DATA: Note[] = [
   {
     id: '1',
     title: 'High Contrast',
