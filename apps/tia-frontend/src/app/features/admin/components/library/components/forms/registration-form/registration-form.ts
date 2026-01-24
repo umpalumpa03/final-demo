@@ -12,10 +12,12 @@ import {
 } from '@tia/shared/utils/form-validations';
 import { TextInput } from "@tia/shared/lib/forms/input-field/text-input";
 import { InputState } from '@tia/shared/lib/forms/models/input.model';
+import { Checkboxes } from "@tia/shared/lib/forms/checkboxes/checkboxes";
+import { ButtonComponent } from "@tia/shared/lib/primitives/button/button";
 
 @Component({
   selector: 'app-registration-form',
-  imports: [TextInput, ReactiveFormsModule],
+  imports: [TextInput, ReactiveFormsModule, Checkboxes, ButtonComponent],
   templateUrl: './registration-form.html',
   styleUrl: './registration-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -47,10 +49,6 @@ export class RegistrationForm {
   public showError(controlName: string): boolean {
     const control = this.registrationForm.get(controlName);
     return control ? control.invalid && control.touched : false;
-  }
-
-  public get isTermsError(): boolean {
-    return this.showError('termsAndConditions');
   }
 
   public get confirmPasswordState(): InputState {
@@ -97,6 +95,16 @@ export class RegistrationForm {
       label: 'Confirm Password',
       required: false,
       placeholder: '••••••••',
+    },
+    birthDate: {
+      label: 'birthDate',
+      required: false,
+      placeholder: 'Pick a date',
+    },
+    termsAndConditions: {
+      label: 'I agree to the terms and conditions',
+      required: false,
+      placeholder: 'Pick a date',
     },
   } as const;
 }
