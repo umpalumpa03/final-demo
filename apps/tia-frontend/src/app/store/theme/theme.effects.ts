@@ -7,6 +7,7 @@ import {
 } from '@ngrx/effects';
 import { ThemeActions } from './theme.actions';
 import { tap } from 'rxjs';
+import { toCamelCase } from '@tia/shared/utils/camel-case/camel-case.utils';
 
 @Injectable()
 export class ThemeEffects {
@@ -23,14 +24,11 @@ export class ThemeEffects {
               ? action.theme
               : localStorage.getItem('theme') || 'ocean-blue';
 
-          const themeName = this.toCamelCase(theme);
+          const themeName = toCamelCase(theme);
           this.document.documentElement.setAttribute('data-theme', themeName);
           localStorage.setItem('theme', theme);
         }),
       ),
     { dispatch: false },
   );
-  private toCamelCase(str: string): string {
-    return str.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
-  }
 }
