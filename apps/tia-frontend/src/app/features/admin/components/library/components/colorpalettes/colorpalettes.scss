@@ -6,9 +6,9 @@
   width: 100%;
   min-height: 6.4rem;
   margin: 0 auto;
-  padding: 1.6rem;
+  padding: 3rem 1.6rem 1.6rem;
   @include flex-center(column, center, flex-start);
-  gap: 3.2rem;
+  gap: 3.5rem;
 
   .colorpalettes-content {
     max-width: 110.2rem;
@@ -16,9 +16,13 @@
     width: 100%;
     @include flex-center(column, center, flex-start);
     gap: 3.2rem;
+
     app-showcase-card {
       display: block;
       width: 100%;
+      --showcase-card-gap: 0.9rem;
+      --showcase-card-padding: 2.48rem 2.48rem 4.2rem;
+      --showcase-card-content-gap: 2.6rem;
     }
 
     .colorpalettes-header {
@@ -42,7 +46,6 @@
     }
 
     .color-application {
-      padding: 2rem;
       width: 100%;
       max-width: 110.2rem;
     }

@@ -48,7 +48,7 @@ export const colorPalettes: ColorPalette[] = [
   {
     id: '3',
     title: 'Deep Blue',
-    subtitle: 'Rich and elegant theme with vibrant blue tones',
+    subtitle: 'Professional and modern theme with sophisticated blues',
     theme: 'deepblue',
     scssClass: 'deep-blue-theme',
     themeLabel: 'Deep Blue Theme',
