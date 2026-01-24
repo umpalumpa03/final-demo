@@ -1,5 +1,10 @@
 import { CheckboxConfig } from '@tia/shared/lib/forms/models/checkbox.model';
 import {
+  SelectConfig,
+  SelectOption,
+  SelectValue,
+} from '@tia/shared/lib/forms/models/dropdowns.model';
+import {
   TextInputType,
   InputState,
   InputConfig,
@@ -35,4 +40,10 @@ export interface RadioDemo {
 export interface SwitchDemo {
   checked: boolean;
   config: SwitchConfig;
+}
+
+export interface SelectDemo {
+  config: SelectConfig;
+  options: SelectOption[];
+  initialValue: SelectValue | null;
 }
