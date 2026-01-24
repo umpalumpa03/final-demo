@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import {
   TimelineDisplayItem,
   TimelineDisplayTone,
@@ -14,7 +14,16 @@ import {
 export class TimelineDisplay {
   public readonly items = input<TimelineDisplayItem[]>([]);
 
-  public dotClass(tone?: TimelineDisplayTone): string {
+  public readonly displayItems = computed(() => {
+    const items = this.items();
+    return items.map((item, index) => ({
+      ...item,
+      dotClass: this.dotClass(item.tone),
+      isLast: index === items.length - 1,
+    }));
+  });
+
+  private dotClass(tone?: TimelineDisplayTone): string {
     const baseClass = 'timeline-display__dot';
     if (!tone) {
       return baseClass;

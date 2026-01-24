@@ -1,11 +1,11 @@
 <div class="timeline-display">
-  @for (item of items(); track item.id; let last = $last) {
+  @for (item of displayItems(); track item.id) {
     <div class="timeline-display__item">
       <div class="timeline-display__marker">
-        <span [class]="dotClass(item.tone)"></span>
+        <span [class]="item.dotClass"></span>
         <span
           class="timeline-display__line"
-          [class.timeline-display__line--hidden]="last"
+          [class.timeline-display__line--hidden]="item.isLast"
         ></span>
       </div>
       <div class="timeline-display__content">
