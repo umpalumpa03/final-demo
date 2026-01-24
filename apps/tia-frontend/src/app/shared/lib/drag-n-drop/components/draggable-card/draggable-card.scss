@@ -23,9 +23,11 @@
   }
 
   &.drop-target {
-    border: 0.2rem dashed $blue-400;
+    outline: 0.2rem dashed $blue-400;
+    outline-offset: -0.2rem;
     opacity: 0.7;
     background: $blue-100;
+    border-color: transparent;
   }
   &__icons {
     @include display-flex();

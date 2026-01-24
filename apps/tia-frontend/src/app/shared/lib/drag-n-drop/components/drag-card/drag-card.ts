@@ -79,8 +79,10 @@ export class DragCard extends DragBase {
     if (dragIndex === -1 || dropIndex === -1) return;
 
     const newItems = [...currentItems];
-    const [removed] = newItems.splice(dragIndex, 1);
-    newItems.splice(dropIndex, 0, removed);
+    [newItems[dragIndex], newItems[dropIndex]] = [
+      newItems[dropIndex],
+      newItems[dragIndex],
+    ];
 
     this.internalItems.set(newItems);
     this.itemsChange.emit(newItems);
