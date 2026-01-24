@@ -7,7 +7,7 @@
     <div class="alerts-page__group">
      @switch (section) { 
         @case (titles.BASIC) { 
-          @for (item of basicData; track item.id) {
+          @for (item of alertBasicData; track item.id) {
             <app-basic-alerts 
                 [alertType]="item.type" 
                 [alertTitle]="item.title!" 
@@ -16,6 +16,52 @@
           }
         }
 
+        @case(titles.ICONS) {
+          @for(item of alertIconsData; track item.id) {
+            <app-alert-types-with-icons 
+            [alertType]="item.type" 
+            [alertMessage]="item.message" />
+          }
+        }
+
+        @case(titles.DISMISSIBLE) {
+          @for(item of alertDismissibleData; track item.id) {
+            <app-dismissible-alerts
+            [alertType]="item.type" 
+            [alertMessage]="item.message" />
+          }
+        }
+
+        @case(titles.ACTIONS) {
+          @for(item of alertActionseData; track item.id) {
+            <app-alerts-with-actions
+            [alertType]="item.type" 
+            [alertTitle]="item.title"
+            [alertMessage]="item.message" 
+            [buttonOneText]="item.btnOneText"
+            [buttonTwoText]="item.btnTwoText"
+            />
+          }
+        }
+
+        @case(titles.SIMPLE) {
+          @for(item of alertSimpleData; track item.id) {
+            <app-simple-alerts
+            [alertType]="item.type" 
+            [alertMessage]="item.message" 
+            />
+          }
+        }
+
+        @case(titles.STATES) {
+          @for(item of alertStateData; track item.id) {
+            <app-alert-states
+            [alertState]="item.state"
+            [alertTitle]="item.title" 
+            [alertMessage]="item.message" 
+            />
+          }
+        }
      }
     </div>
   </app-showcase-card>

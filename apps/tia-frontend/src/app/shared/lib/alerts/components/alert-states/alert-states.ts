@@ -6,7 +6,6 @@ import {
 } from '@angular/core';
 import {
   AlertStateType,
-  BaseAlertType,
 } from '../../shared/models/alert.models';
 
 @Component({
