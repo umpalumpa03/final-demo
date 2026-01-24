@@ -31,14 +31,14 @@
         text-align: center;
         @include font-arimo();
         color: $blue-ocean-foreground;
-        border: 1px solid rgba($blue-ocean, 0.4);
+        border: 0.1rem solid rgba($blue-ocean, 0.4);
 
         transition: all 0.2s ease;
 
         &:focus {
             outline: none;
             border-color: $blue-ocean;
-            box-shadow: 0 0 0 3px rgba($blue-ocean, 0.1);
+            box-shadow: 0 0 0 0.3rem rgba($blue-ocean, 0.1);
         }
 
         &::placeholder {
