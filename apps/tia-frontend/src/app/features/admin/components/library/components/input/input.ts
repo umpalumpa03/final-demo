@@ -9,6 +9,7 @@ import {
   SPECIAL_INPUT_DEMOS,
   SWITCH_DEMOS,
   TEXTAREA_DEMOS,
+  OTP_DEMOS,
 } from './config/input-demos.config';
 import { Textarea } from '@tia/shared/lib/forms/textarea/textarea';
 import { LibraryTitle } from '../../shared/library-title/library-title';
@@ -17,6 +18,8 @@ import { Radios } from '@tia/shared/lib/forms/radios/radios';
 import { Switches } from '@tia/shared/lib/forms/switches/switches';
 import { Slider } from '@tia/shared/lib/forms/sliders/slider';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
+import { Otp } from '@tia/shared/lib/forms/otp/otp';
+import { ShowcaseCard } from '../../shared/showcase-card/showcase-card';
 
 @Component({
   selector: 'app-input',
@@ -29,6 +32,8 @@ import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
     Switches,
     Slider,
     Dropdowns,
+    Otp,
+    ShowcaseCard,
   ],
   templateUrl: './input.html',
   styleUrl: './input.scss',
@@ -43,6 +48,7 @@ export class Input {
   protected readonly switchDemos = signal(SWITCH_DEMOS);
   protected readonly selectDemos = signal(SELECT_DEMOS);
   protected readonly sliderDemos = signal(SLIDER_DEMOS);
+  protected readonly otpDemos = signal(OTP_DEMOS);
 
   public readonly title = 'Input Components';
   public readonly subtitle =

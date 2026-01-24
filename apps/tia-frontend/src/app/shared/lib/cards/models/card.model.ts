@@ -4,6 +4,8 @@ export interface CardData {
   subtitle: string;
   content: string;
   hasFooter?: boolean; 
+  hasHover?: boolean;
+
 }
 
 export interface StatisticCardData {
