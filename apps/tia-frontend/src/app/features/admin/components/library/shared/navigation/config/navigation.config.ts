@@ -1,4 +1,6 @@
-export const NAVIGATION_ITEMS = [
+import { NavigationItem } from '../model/navigation.model';
+
+export const NAVIGATION_ITEMS: NavigationItem[] = [
   {
     id: '1',
     routerLink: 'colorpalettes',

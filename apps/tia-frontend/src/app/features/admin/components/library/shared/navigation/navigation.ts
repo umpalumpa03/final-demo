@@ -1,13 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { NAVIGATION_ITEMS } from './navigation.config';
-
-interface NavigationItem {
-  routerLink: string;
-  activeLink: string;
-  link: string;
-}
+import { NAVIGATION_ITEMS } from './config/navigation.config';
+import { NavigationItem } from './model/navigation.model';
 
 @Component({
   selector: 'app-navigation',
@@ -16,5 +11,5 @@ interface NavigationItem {
   styleUrl: './navigation.scss',
 })
 export class Navigation {
-  public readonly navigationItems = NAVIGATION_ITEMS;
+  public readonly navigationItems: NavigationItem[] = NAVIGATION_ITEMS;
 }

@@ -5,8 +5,7 @@ import {
   input,
 } from '@angular/core';
 import { colorApplication } from '../../../../features/admin/components/library/components/colorpalettes/config/palette-data.config';
-
-type ThemeType = keyof typeof colorApplication;
+import { ThemeType } from '../../../../features/admin/components/library/components/colorpalettes/model/palette.model';
 
 @Component({
   selector: 'app-color-application',
