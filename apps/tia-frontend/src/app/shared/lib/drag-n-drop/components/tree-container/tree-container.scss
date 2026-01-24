@@ -1,0 +1,86 @@
+@use '../../../../styles/mixins' as *;
+@use '../../../../styles/palette' as *;
+
+.tree-container {
+  @include display-flex(column);
+  border: 0.18rem solid $blue-400;
+  background-color: $white;
+  width: 100%;
+  max-width: 123.2rem;
+  border-radius: 1rem;
+  padding: 2.5rem;
+  gap: 1.6rem;
+
+  &__header {
+    @include display-flex(column);
+    gap: 0.8rem;
+    width: 100%;
+
+    h2 {
+      @include font-inter(600, 1.8rem, 2.7rem);
+      color: var(--color-fg);
+    }
+
+    p {
+      @include font-inter(400, 1.4rem, 2rem);
+      color: $gray-700;
+    }
+  }
+
+  &__cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+
+    &--dragging {
+      opacity: 0.8;
+      z-index: 100;
+    }
+
+    &--drop-target {
+      outline: 2px dashed $blue-400;
+      outline-offset: 4px;
+    }
+  }
+
+  &__children {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+      grid-template-rows 200ms ease-in-out,
+      opacity 200ms ease-in-out;
+    margin-left: 2.8rem;
+
+    &--expanded {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+  }
+
+  &__children-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    min-height: 0;
+  }
+
+  &__empty {
+    padding: 1.5rem;
+    border: 2px dashed $gray-400;
+    border-radius: 0.5rem;
+    text-align: center;
+    color: $gray-600;
+
+    &--active {
+      border-color: $blue-400;
+      background-color: rgba($blue-400, 0.1);
+    }
+  }
+}
