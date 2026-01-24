@@ -1,7 +1,7 @@
 import {
   AvatarGroupItem,
   AvatarUserProfile,
-} from '../../../../../../../shared/lib/data-display/avatars/models/avatar.model';
+} from '../../../../../../../shared/lib/data-display/models/avatar.model';
 
 export const AVATAR_SIZES = [
   { size: 'xs', label: 'XS' },

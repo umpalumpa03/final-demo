@@ -19,7 +19,7 @@
     background-color: $white;
     border: 0.1rem solid $blue-200;
     box-shadow: 0 1.2rem 2.4rem rgba($black, 0.12);
-    min-width: 20rem;
+    width: 20rem;
   }
 
   &__content--top {
@@ -44,5 +44,24 @@
     left: calc(100% + 0.8rem);
     top: 50%;
     transform: translateY(-50%);
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .hover-card__content {
+    width: 18rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .hover-card__content {
+    width: 16rem;
+    padding: 1rem 1.2rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .hover-card__content {
+    width: 14rem;
   }
 }
