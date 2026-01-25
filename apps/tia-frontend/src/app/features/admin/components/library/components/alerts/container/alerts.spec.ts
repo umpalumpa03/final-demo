@@ -34,14 +34,16 @@ describe('Alerts', () => {
 
   describe('Logic: onResetAll', () => {
     it('should set isDismissed to false for all dismissible alerts', () => {
-      component.alertComponents.forEach(alert => {
-        alert.isDismissed.set(true);
-      });
+      fixture.detectChanges();
+      expect(component.alertComponents().length).toBeGreaterThan(0);
+
+      component
+        .alertComponents()
+        .forEach((alert) => alert.isDismissed.set(true));
 
       component.onResetAll();
-      fixture.detectChanges()
 
-      component.alertComponents.forEach(alert => {
+      component.alertComponents().forEach((alert) => {
         expect(alert.isDismissed()).toBe(false);
       });
     });
