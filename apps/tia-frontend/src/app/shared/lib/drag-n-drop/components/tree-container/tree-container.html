@@ -3,6 +3,7 @@
     <h2>{{ containerTitle() }}</h2>
     <p>{{ containerDescription() }}</p>
   </div>
+  <ng-content></ng-content>
   <div class="tree-container__cards">
     @for (group of internalGroups(); track group.id) { @let isDraggingGroup =
     draggingId() === group.id; @let isDropTargetGroup = dropTargetId() ===

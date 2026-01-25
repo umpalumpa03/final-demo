@@ -3,6 +3,7 @@
     <h2 class="kanban-frame__header-title">{{ boardTitle() }}</h2>
     <p class="kanban-frame__header-subtitle">{{ boardDescription() }}</p>
   </div>
+  <ng-content></ng-content>
   <div class="kanban-frame__boards">
     @let boardItems = itemsByBoard(); @for (board of boards(); track board.id) {
     @let currentBoardItems = boardItems[board.id];

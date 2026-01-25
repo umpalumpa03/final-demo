@@ -7,7 +7,7 @@ import {
   output,
   linkedSignal,
 } from '@angular/core';
-import { DragBase } from '../../base/base';
+import { DragBase } from '../../base/drag-base';
 import {
   BoardConfig,
   KanbanItem,

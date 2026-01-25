@@ -34,6 +34,17 @@
   &--grid {
     display: grid;
     grid-template-columns: repeat(var(--columns, 2), 1fr);
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(var(--columns-md, var(--columns, 2)), 1fr);
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: repeat(
+        var(--columns-sm, var(--columns-md, var(--columns, 1))),
+        1fr
+      );
+    }
   }
 
   &--list {
