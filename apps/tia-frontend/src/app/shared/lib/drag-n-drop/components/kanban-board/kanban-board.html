@@ -3,6 +3,7 @@
     <h2 class="kanban-frame__header-title">{{ boardTitle() }}</h2>
     <p class="kanban-frame__header-subtitle">{{ boardDescription() }}</p>
   </div>
+  <ng-content></ng-content>
   <div class="kanban-frame__boards">
     @let boardItems = itemsByBoard(); @for (board of boards(); track board.id) {
     @let currentBoardItems = boardItems[board.id];
@@ -13,6 +14,7 @@
         <div
           class="kanban-frame__board-empty"
           [class.kanban-frame__board-empty--active]="dropTargetId() === 'board:' + board.id"
+          [attr.data-card-id]="'board:' + board.id"
         >
           Drop items here
         </div>
@@ -25,8 +27,23 @@
           [isDropTarget]="dropTargetId() === item.id"
           [style]="isDragging ? draggingStyle() : null"
           [canDelete]="canDelete()"
+          [editable]="editable()"
+          [hasButton]="hasButton()"
+          [buttonVariant]="buttonVariant()"
+          [buttonContent]="buttonContent()"
+          [hasAddOption]="hasAddOption()"
+          [hasViewOption]="hasViewOption()"
+          [hasPagination]="hasPagination()"
+          [paginationVariants]="paginationVariants()"
+          [hasCheckbox]="hasCheckbox()"
           (dragStart)="onDragStartHandler(item.id, $event)"
           (remove)="onRemove(item.id)"
+          (edit)="onEdit(item.id)"
+          (add)="onAdd(item.id)"
+          (viewOptionChange)="onViewOptionChange(item.id, $event)"
+          (paginationChange)="onPaginationChange(item.id, $event)"
+          (buttonClick)="onButtonClick(item.id)"
+          (checkedChange)="onCheckedChange(item.id, $event)"
         />
         } }
       </div>

@@ -5,10 +5,10 @@ export const basicTable: TableConfig = {
   paginationType: 'page',
   itemPerPage: 3,
   headers: [
-    { title: 'Invoice', align: 'left', width: '10rem' },
-    { title: 'Status', align: 'left', width: '27rem' },
-    { title: 'Method', align: 'left', width: '40rem' },
-    { title: 'Amount', align: 'right', width: '27rem' },
+    { title: 'Invoice', align: 'left', width: '10%' },
+    { title: 'Status', align: 'left', width: '26%' },
+    { title: 'Method', align: 'left', width: '38%' },
+    { title: 'Amount', align: 'right', width: '26%' },
   ],
   rows: [
     {
@@ -73,10 +73,10 @@ export const rowTable: TableConfig = {
   paginationType: 'scroll',
   itemPerPage: 5,
   headers: [
-    { title: 'Name', align: 'left', width: '27rem' },
-    { title: 'Email', align: 'left', width: '38rem' },
-    { title: 'Role', align: 'left', width: '14rem' },
-    { title: 'Status', align: 'left', width: '20rem' },
+    { title: 'Name', align: 'left', width: '27%' },
+    { title: 'Email', align: 'left', width: '38%' },
+    { title: 'Role', align: 'left', width: '14%' },
+    { title: 'Status', align: 'left', width: '21%' },
   ],
   rows: [
     {
@@ -85,7 +85,7 @@ export const rowTable: TableConfig = {
         { type: 'text', value: 'John Doe', align: 'left' },
         { type: 'text', value: 'john@example.com', align: 'left' },
         { type: 'text', value: 'Admin', align: 'left' },
-        { type: 'badge', value: 'active', category: 'salary', align: 'left' },
+        { type: 'status', value: 'active', category: 'salary', align: 'left' },
       ],
     },
     {
@@ -94,7 +94,7 @@ export const rowTable: TableConfig = {
         { type: 'text', value: 'Jane Smith', align: 'left' },
         { type: 'text', value: 'jane@example.com', align: 'left' },
         { type: 'text', value: 'User', align: 'left' },
-        { type: 'badge', value: 'active', align: 'left' },
+        { type: 'status', value: 'active', align: 'left' },
       ],
     },
     {
@@ -103,7 +103,7 @@ export const rowTable: TableConfig = {
         { type: 'text', value: 'Bob Johnson', align: 'left' },
         { type: 'text', value: 'bob@example.com', align: 'left' },
         { type: 'text', value: 'Editor', align: 'left' },
-        { type: 'badge', value: 'pending', align: 'left' },
+        { type: 'status', value: 'pending', align: 'left' },
       ],
     },
     {
@@ -112,7 +112,7 @@ export const rowTable: TableConfig = {
         { type: 'text', value: 'Alice Brown', align: 'left' },
         { type: 'text', value: 'alice@example.com', align: 'left' },
         { type: 'text', value: 'User', align: 'left' },
-        { type: 'badge', value: 'inactive', align: 'left' },
+        { type: 'status', value: 'inactive', align: 'left' },
       ],
     },
     {
@@ -121,7 +121,7 @@ export const rowTable: TableConfig = {
         { type: 'text', value: 'Charlie Wilson', align: 'left' },
         { type: 'text', value: 'charlie@example.com', align: 'left' },
         { type: 'text', value: 'Admin', align: 'left' },
-        { type: 'badge', value: 'active', align: 'left' },
+        { type: 'status', value: 'active', align: 'left' },
       ],
     },
   ],
@@ -132,11 +132,11 @@ export const actionsTable: TableConfig = {
   paginationType: 'scroll',
   itemPerPage: 5,
   headers: [
-    { title: 'Name', align: 'left', width: '21rem' },
-    { title: 'Email', align: 'left', width: '29rem' },
-    { title: 'Role', align: 'left', width: '11rem' },
-    { title: 'Status', align: 'left', width: '15rem' },
-    { title: 'Actions', align: 'right', width: '27rem' },
+    { title: 'Name', align: 'left', width: '20%' },
+    { title: 'Email', align: 'left', width: '28%' },
+    { title: 'Role', align: 'left', width: '11%' },
+    { title: 'Status', align: 'left', width: '15%' },
+    { title: 'Actions', align: 'right', width: '26%' },
   ],
   rows: [
     {
@@ -145,7 +145,7 @@ export const actionsTable: TableConfig = {
         { type: 'text', value: 'John Doe', align: 'left' },
         { type: 'text', value: 'john@example.com', align: 'left' },
         { type: 'text', value: 'Admin', align: 'left' },
-        { type: 'badge', value: 'active', align: 'left' },
+        { type: 'status', value: 'active', align: 'left' },
       ],
     },
     {
@@ -154,7 +154,7 @@ export const actionsTable: TableConfig = {
         { type: 'text', value: 'Jane Smith', align: 'left' },
         { type: 'text', value: 'jane@example.com', align: 'left' },
         { type: 'text', value: 'User', align: 'left' },
-        { type: 'badge', value: 'active', align: 'left' },
+        { type: 'status', value: 'active', align: 'left' },
       ],
     },
     {
@@ -163,7 +163,7 @@ export const actionsTable: TableConfig = {
         { type: 'text', value: 'Bob Johnson', align: 'left' },
         { type: 'text', value: 'bob@example.com', align: 'left' },
         { type: 'text', value: 'Editor', align: 'left' },
-        { type: 'badge', value: 'pending', align: 'left' },
+        { type: 'status', value: 'pending', align: 'left' },
       ],
     },
     {
@@ -172,7 +172,7 @@ export const actionsTable: TableConfig = {
         { type: 'text', value: 'Alice Brown', align: 'left' },
         { type: 'text', value: 'alice@example.com', align: 'left' },
         { type: 'text', value: 'User', align: 'left' },
-        { type: 'badge', value: 'inactive', align: 'left' },
+        { type: 'status', value: 'inactive', align: 'left' },
       ],
     },
     {
@@ -181,7 +181,7 @@ export const actionsTable: TableConfig = {
         { type: 'text', value: 'Charlie Wilson', align: 'left' },
         { type: 'text', value: 'charlie@example.com', align: 'left' },
         { type: 'text', value: 'Admin', align: 'left' },
-        { type: 'badge', value: 'active', align: 'left' },
+        { type: 'status', value: 'active', align: 'left' },
       ],
     },
   ],
@@ -192,10 +192,10 @@ export const sortableTable: TableConfig = {
   paginationType: 'scroll',
   itemPerPage: 5,
   headers: [
-    { title: 'Name', sortable: true, align: 'left', width: '26rem' },
-    { title: 'Email', align: 'left', width: '37rem' },
-    { title: 'Role', sortable: true, align: 'left', width: '22rem' },
-    { title: 'Status', align: 'left', width: '19rem' },
+    { title: 'Name', sortable: true, align: 'left', width: '25%' },
+    { title: 'Email', align: 'left', width: '36%' },
+    { title: 'Role', sortable: true, align: 'left', width: '21%' },
+    { title: 'Status', align: 'left', width: '18%' },
   ],
   rows: [
     {
@@ -204,7 +204,7 @@ export const sortableTable: TableConfig = {
         { type: 'text', value: 'John Doe', align: 'left' },
         { type: 'text', value: 'john@example.com', align: 'left' },
         { type: 'text', value: 'Admin', align: 'left' },
-        { type: 'badge', value: 'active', align: 'left' },
+        { type: 'status', value: 'active', align: 'left' },
       ],
     },
     {
@@ -213,7 +213,7 @@ export const sortableTable: TableConfig = {
         { type: 'text', value: 'Jane Smith', align: 'left' },
         { type: 'text', value: 'jane@example.com', align: 'left' },
         { type: 'text', value: 'User', align: 'left' },
-        { type: 'badge', value: 'active', align: 'left' },
+        { type: 'status', value: 'active', align: 'left' },
       ],
     },
     {
@@ -222,7 +222,7 @@ export const sortableTable: TableConfig = {
         { type: 'text', value: 'Bob Johnson', align: 'left' },
         { type: 'text', value: 'bob@example.com', align: 'left' },
         { type: 'text', value: 'Editor', align: 'left' },
-        { type: 'badge', value: 'pending', align: 'left' },
+        { type: 'status', value: 'pending', align: 'left' },
       ],
     },
     {
@@ -231,7 +231,7 @@ export const sortableTable: TableConfig = {
         { type: 'text', value: 'Alice Brown', align: 'left' },
         { type: 'text', value: 'alice@example.com', align: 'left' },
         { type: 'text', value: 'User', align: 'left' },
-        { type: 'badge', value: 'inactive', align: 'left' },
+        { type: 'status', value: 'inactive', align: 'left' },
       ],
     },
     {
@@ -240,7 +240,7 @@ export const sortableTable: TableConfig = {
         { type: 'text', value: 'Charlie Wilson', align: 'left' },
         { type: 'text', value: 'charlie@example.com', align: 'left' },
         { type: 'text', value: 'Admin', align: 'left' },
-        { type: 'badge', value: 'active', align: 'left' },
+        { type: 'status', value: 'active', align: 'left' },
       ],
     },
   ],
@@ -251,10 +251,10 @@ export const strippedTable: TableConfig = {
   paginationType: 'scroll',
   itemPerPage: 5,
   headers: [
-    { title: 'Product', align: 'left', width: '41rem' },
-    { title: 'Category', align: 'left', width: '23rem' },
-    { title: 'Price', align: 'left', width: '15rem' },
-    { title: 'Stock', align: 'left', width: '25rem' },
+    { title: 'Product', align: 'left', width: '39%' },
+    { title: 'Category', align: 'left', width: '22%' },
+    { title: 'Price', align: 'left', width: '14%' },
+    { title: 'Stock', align: 'left', width: '25%' },
   ],
   rows: [
     {
@@ -309,10 +309,10 @@ export const compactTable: TableConfig = {
   type: 'compact',
   itemPerPage: 3,
   headers: [
-    { title: 'ID', align: 'left', width: '12rem' },
-    { title: 'Task', align: 'left', width: '42rem' },
-    { title: 'Assignee', align: 'left', width: '25rem' },
-    { title: 'Status', align: 'left', width: '25rem' },
+    { title: 'ID', align: 'left', width: '12%' },
+    { title: 'Task', align: 'left', width: '40%' },
+    { title: 'Assignee', align: 'left', width: '24%' },
+    { title: 'Status', align: 'left', width: '24%' },
   ],
   rows: [
     {
@@ -320,7 +320,7 @@ export const compactTable: TableConfig = {
       info: [
         { type: 'text', value: 'Update documentation', align: 'left' },
         { type: 'text', value: 'John Doe', align: 'left' },
-        { type: 'badge', value: 'Done', align: 'left' },
+        { type: 'status', align: 'left', value: 'done' },
       ],
     },
     {
@@ -328,7 +328,7 @@ export const compactTable: TableConfig = {
       info: [
         { type: 'text', value: 'Fix bug in login', align: 'left' },
         { type: 'text', value: 'Jane Smith', align: 'left' },
-        { type: 'badge', value: 'In Progress', align: 'left' },
+        { type: 'status', align: 'left', value: 'in-progress' },
       ],
     },
     {
@@ -336,8 +336,73 @@ export const compactTable: TableConfig = {
       info: [
         { type: 'text', value: 'Design new feature', align: 'left' },
         { type: 'text', value: 'Bob Johnson', align: 'left' },
-        { type: 'badge', value: 'Todo', align: 'left' },
+        { type: 'status', align: 'left', value: 'todo' },
       ],
+    },
+  ],
+} as const;
+
+export const rowStates: TableConfig = {
+  type: 'basic',
+  itemPerPage: 5,
+  headers: [
+    { title: 'Name', align: 'left', width: '28%' },
+    { title: 'Description', align: 'left', width: '47%' },
+    { title: 'State', align: 'left', width: '25%' },
+  ],
+  rows: [
+    {
+      id: '1',
+      info: [
+        { type: 'text', value: 'Default Row', align: 'left' },
+        { type: 'text', value: 'Normal table row', align: 'left' },
+        {
+          type: 'state',
+          value: 'Default',
+          align: 'left',
+          variant: 'secondary',
+        },
+      ],
+      disabled: false,
+      selected: false,
+      highlighted: false,
+    },
+    {
+      id: '2',
+      info: [
+        { type: 'text', value: 'Selected Row', align: 'left' },
+        { type: 'text', value: 'Row with selection highlight', align: 'left' },
+        { type: 'state', value: 'Selected', align: 'left', variant: 'default' },
+      ],
+      selected: true,
+    },
+    {
+      id: '3',
+      info: [
+        { type: 'text', value: 'Hover Row', align: 'left' },
+        { type: 'text', value: 'Hover over this row', align: 'left' },
+        {
+          type: 'state',
+          value: 'Hover',
+          align: 'left',
+          hover: true,
+          variant: 'outline',
+        },
+      ],
+    },
+    {
+      id: '4',
+      info: [
+        { type: 'text', value: 'Disabled Row', align: 'left' },
+        { type: 'text', value: 'Row in disabled state', align: 'left' },
+        {
+          type: 'state',
+          value: 'Disabled',
+          align: 'left',
+          disabled: true,
+        },
+      ],
+      disabled: true,
     },
   ],
 } as const;

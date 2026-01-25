@@ -1,0 +1,57 @@
+@use '../../../../styles/mixins' as *;
+@use '../../../../styles/palette' as *;
+
+.drag-container {
+  @include display-flex(column);
+  border: 0.18rem solid $blue-400;
+  background-color: $white;
+  width: 100%;
+  max-width: 123.2rem;
+  border-radius: 1rem;
+  padding: 2.5rem;
+  gap: 1.6rem;
+
+  &__header {
+    @include display-flex(column);
+    gap: 0.8rem;
+    width: 100%;
+
+    h2 {
+      @include font-inter(600, 1.8rem, 2.7rem);
+      color: var(--color-fg);
+    }
+
+    p {
+      @include font-inter(400, 1.4rem, 2rem);
+      color: $gray-700;
+    }
+  }
+
+  &__cards {
+    gap: 1.1rem;
+
+    &--grid {
+      display: grid;
+      grid-template-columns: repeat(var(--columns, 2), 1fr);
+
+      @media (max-width: 768px) {
+        grid-template-columns: repeat(
+          var(--columns-md, var(--columns, 2)),
+          1fr
+        );
+      }
+
+      @media (max-width: 480px) {
+        grid-template-columns: repeat(
+          var(--columns-sm, var(--columns-md, var(--columns, 1))),
+          1fr
+        );
+      }
+    }
+
+    &--list {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}

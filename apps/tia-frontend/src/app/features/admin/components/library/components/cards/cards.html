@@ -6,17 +6,30 @@
   <section class="cards-section">
     <h2 class="cards-section__title">Basic Cards</h2>
     <div class="cards-section__grid">
-      @for (card of basicCards(); track $index) {
+      @for (card of basicCards(); track card.id) {
       <app-basic-card
         [title]="card.title"
-        [subtitle]="card.subtitle"
-        [content]="card.content"
+         [subtitle]="card.subtitle ?? ''"
+  [content]="card.content ?? ''"
         [hasFooter]="card.hasFooter ?? false"
+        [hasHover]="card.hasHover ?? false"
+        [width]="card.width"
+        [height]="card.height"
+        [flex]="card.flex"
+        [minWidth]="card.minWidth"
+        [maxWidth]="card.maxWidth"
+        [display]="card.display"
+        [flexDirection]="card.flexDirection"
+        [alignItems]="card.alignItems"
+        [justifyContent]="card.justifyContent"
       >
-        <div class="card-footer" card-footer>
-          <app-button size="default" variant="outline">Cancel</app-button>
-          <app-button size="default" variant="default">Submit</app-button>
-        </div>
+       
+          @if (card.hasFooter) {
+      <div class="card-footer" card-footer>
+        <app-button size="default" variant="outline">Cancel</app-button>
+        <app-button size="default" variant="default">Submit</app-button>
+      </div>
+    }
       </app-basic-card>
       }
     </div>
@@ -25,7 +38,7 @@
   <section class="cards-section">
     <h2 class="cards-section__title">Statistics Cards</h2>
     <div class="cards-section__grid cards-section__grid--stats">
-      @for (card of statisticsCards(); track $index) {
+      @for (card of statisticsCards(); track card.id) {
       <app-statistic-card
         [label]="card.label"
         [value]="card.value"

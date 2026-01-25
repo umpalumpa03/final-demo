@@ -1,4 +1,9 @@
-export type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline';
+export type BadgeVariant =
+  | 'default'
+  | 'secondary'
+  | 'destructive'
+  | 'outline'
+  | (string & {});
 
 export type BadgeStatus =
   | 'active'
@@ -7,6 +12,8 @@ export type BadgeStatus =
   | 'in-progress'
   | 'featured'
   | 'premium'
+  | 'done'
+  | 'todo'
   | (string & {});
 
 export type BadgeSize = 'small' | 'medium' | 'large';
@@ -14,7 +21,6 @@ export type BadgeSize = 'small' | 'medium' | 'large';
 export type BadgeShape = 'default' | 'rounded' | 'pill';
 
 export type BadgeDotType = 'online' | 'away' | 'offline' | 'live';
-
 
 export type BadgeSkill =
   | 'javascript'
@@ -26,4 +32,13 @@ export type BadgeSkill =
 
 export type BadgeCategory = 'technology' | 'design' | 'marketing';
 
-export type BadgeCustomColor = 'pink' | 'indigo' | 'teal' | 'rose' | 'cyan' | 'amber' | 'lime' | 'slate';
+export type BadgeCustomColor =
+  | 'pink'
+  | 'indigo'
+  | 'teal'
+  | 'rose'
+  | 'cyan'
+  | 'amber'
+  | 'lime'
+  | 'slate'
+  | (string & {});

@@ -1,0 +1,24 @@
+<div class="otp" [class.otp--disabled]="isDisabled()">
+    @let cfg = mergedConfig();
+
+    @if (cfg.label) {
+    <label class="otp__label">
+        {{ cfg.label }}
+        @if (cfg.required) { <span class="required">*</span> }
+    </label>
+    }
+
+    <div class="otp__inputs">
+        @for (val of valuesArray(); track val.id; let i = $index) {
+        <input #otpBox class="otp__input" [type]="inputType()" [value]="val.value" [disabled]="isDisabled()"
+            [placeholder]="cfg.placeholder || ''" maxlength="1" (input)="onDigitInput($event, i)"
+            (keydown)="handleKeyDown($event, i)" (paste)="handlePaste($event)" />
+        }
+    </div>
+
+    @if (hasError()) {
+    <div class="otp__error">
+        {{ errorMessage() }}
+    </div>
+    }
+</div>

@@ -1,0 +1,23 @@
+@use '../../../../../styles/mixins' as *;
+@use '../../../../../styles/palette' as *;
+
+.flex-layout {
+    @include flex-center(row, flex-start, center);
+    border: 0.1rem solid $blue-400;
+    border-radius: 1rem;
+    padding: 1.6rem;
+    color: var(--color-fg);
+    @include font-inter(400, 1.4rem, 2rem);
+
+    &--space-between {
+        justify-content: space-between;
+    }
+
+    &--center {
+        justify-content: center;
+    }
+
+    &--wrap {
+        flex-wrap: wrap;
+    }
+}

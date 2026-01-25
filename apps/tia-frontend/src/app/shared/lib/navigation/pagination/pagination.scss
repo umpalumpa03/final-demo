@@ -7,6 +7,7 @@
     &__list {
         @include flex-center();
         gap: 0.4rem;
+        overflow-x: auto;
     }
 
     &__item {
@@ -15,6 +16,8 @@
         &--ellipsis {
             pointer-events: none;
             text-align: center;
+            width: 3.6rem;
+            height: 3.6rem;
         }
     }
 

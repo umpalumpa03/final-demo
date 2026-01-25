@@ -1,13 +1,17 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { AspectRatio } from '../../../../../../shared/lib/data-display/aspect-ratio/aspect-ratio';
-import { AspectRatioItem } from '../../../../../../shared/lib/data-display/aspect-ratio/models/aspect-ratio.models';
+import { AspectRatioItem } from '../../../../../../shared/lib/data-display/models/aspect-ratio.models';
 import { Avatar } from '../../../../../../shared/lib/data-display/avatars/avatar';
 import { AvatarGroup } from '../../../../../../shared/lib/data-display/avatars/avatar-groups/avatar-group';
+import { StatisticCard } from '../../../../../../shared/lib/cards/statistic-card/statistic-card';
 import {
   AvatarGroupItem,
   AvatarUserProfile,
-} from '../../../../../../shared/lib/data-display/avatars/models/avatar.model';
+} from '../../../../../../shared/lib/data-display/models/avatar.model';
 import { HoverCard } from '../../../../../../shared/lib/data-display/hover-card/hover-card';
+import { KeyValueDisplay } from '../../../../../../shared/lib/data-display/key-value-display/key-value-display';
+import { ListDisplay } from '../../../../../../shared/lib/data-display/list-display/list-display';
+import { TimelineDisplay } from '../../../../../../shared/lib/data-display/timeline-display/timeline-display';
 import { Tooltip } from '../../../../../../shared/lib/data-display/tooltip/tooltip';
 import { LibraryTitle } from '../../shared/library-title/library-title';
 import { ShowcaseCard } from '../../shared/showcase-card/showcase-card';
@@ -21,7 +25,14 @@ import {
   STATUS_AVATARS,
 } from './config/avatars-data';
 import { HOVER_CARD_ITEMS } from './config/hover-card-data';
+import { STATISTICS_CARDS_DATA } from './config/cards-data';
+import {
+  KEY_VALUE_ITEMS,
+  KEY_VALUE_TITLE,
+} from './config/key-value-display-data';
 import { TOOLTIP_DEMO_ITEMS } from './config/tooltip-data';
+import { LIST_DISPLAY_ITEMS } from './config/list-display-data';
+import { TIMELINE_ITEMS } from './config/timeline-display-data';
 
 @Component({
   selector: 'app-data-display',
@@ -33,6 +44,9 @@ import { TOOLTIP_DEMO_ITEMS } from './config/tooltip-data';
     AspectRatio,
     Tooltip,
     HoverCard,
+    ListDisplay,
+    KeyValueDisplay,
+    TimelineDisplay,
   ],
   templateUrl: './data-display.html',
   styleUrl: './data-display.scss',
@@ -76,6 +90,11 @@ export class DataDisplay {
 
   public readonly tooltipItems = signal(TOOLTIP_DEMO_ITEMS);
   public readonly hoverCardItems = signal(HOVER_CARD_ITEMS);
+  public readonly statisticCardItems = signal(STATISTICS_CARDS_DATA);
+  public readonly listDisplayItems = signal(LIST_DISPLAY_ITEMS);
+  public readonly keyValueTitle = signal(KEY_VALUE_TITLE);
+  public readonly keyValueItems = signal(KEY_VALUE_ITEMS);
+  public readonly timelineItems = signal(TIMELINE_ITEMS);
 
   public onRatioSelected(item: AspectRatioItem): void {
     this.selectedRatioId.set(item.id);
@@ -83,6 +102,13 @@ export class DataDisplay {
 
   public hasRatios(): boolean {
     return this.ratios().length > 0;
+  }
+
+  public isChangeEmpty(change?: string | null): boolean {
+    if (!change) {
+      return true;
+    }
+    return change.trim().toLowerCase() === 'no change';
   }
 
   private toInitials(firstName: string, lastName: string): string {

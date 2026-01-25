@@ -12,9 +12,17 @@
         (itemsChange)="items = $event"
         (itemRemoved)="onItemRemoved($event)"
         layout="grid"
+        [columns]="{ default: 2, md: 1, sm: 1 }"
         (orderChange)="onOrderChange($event)"
         cardTitle="Draggable Cards"
         cardDescription="Drag cards to reorder them in a grid layout"
+        [editable]="true"
+        [hasButton]="true"
+        [hasAddOption]="true"
+        (itemEdited)="onItemEdited($event)"
+        (itemAdded)="onItemAdded($event)"
+        (viewOptionChanged)="onViewOptionChanged($event)"
+        (paginationChanged)="onPaginationChanged($event)"
       />
       <app-drag-card
         [items]="listItems"
@@ -22,10 +30,11 @@
         (itemRemoved)="onItemRemoved($event)"
         [canDelete]="canDelete"
         layout="list"
-        [columns]="3"
         (orderChange)="onOrderChangeList($event)"
         cardTitle="Sortable List"
         cardDescription="Drag cards to reorder them in a grid layout"
+        [hasViewOption]="true"
+        [hasPagination]="true"
       />
       <app-kanban-board
         [boards]="boards"
@@ -35,6 +44,55 @@
         (cardMoved)="onCardMoved($event)"
         (cardReordered)="onCardReordered($event)"
         (cardRemoved)="onCardRemoved($event)"
+      />
+
+      <app-drag-container
+        [items]="myItems"
+        [layout]="'grid'"
+        [columns]="{ default: 2, md: 1, sm: 1 }"
+        [containerTitle]="'Add Content of Your Choice'"
+        (itemsChange)="onItemsChange($event)"
+        (orderChange)="onContainerOrderChange($event)"
+      >
+        @for (item of myItems; track item.id) {
+        <app-draggable-card
+          [itemData]="item"
+          [canDelete]="true"
+          [editable]="true"
+          (remove)="onRemove(item.id)"
+          (edit)="onEdit(item.id)"
+          appDragItem
+        >
+          <!-- your custom content here -->
+          <div class="my-custom-layout">
+            <span class="my-custom-layout__tag">Content of your choice</span>
+            <p class="my-custom-layout__text">{{ item.subtitle }}</p>
+
+            <div class="my-custom-layout__meta">
+              <span class="my-custom-layout__id">#{{ item.id }}</span>
+              <div class="my-custom-layout__dot"></div>
+              <span class="my-custom-layout__date">Jan 2026</span>
+            </div>
+          </div>
+        </app-draggable-card>
+        }
+      </app-drag-container>
+
+      <!-- tree -->
+      <app-tree-container
+        [groups]="treeGroups"
+        [items]="treeItems"
+        [canDelete]="true"
+        [editable]="true"
+        [hasCheckbox]="true"
+        containerTitle="Tree View"
+        containerDescription="Drag items to reorder or move between groups"
+        (groupsChange)="onTreeGroupsChange($event)"
+        (itemsChange)="onTreeItemsChange($event)"
+        (itemMoved)="onTreeItemMoved($event)"
+        (itemReordered)="onTreeItemReordered($event)"
+        (expandedChange)="onTreeExpandedChange($event)"
+        (checkedItemsChange)="onCheckedItemsChange($event)"
       />
       <app-instructions-card></app-instructions-card>
     </div>

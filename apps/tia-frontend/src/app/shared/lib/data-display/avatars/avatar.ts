@@ -9,7 +9,7 @@ import {
   AvatarSize,
   AvatarStatus,
   AvatarTone,
-} from './models/avatar.model';
+} from '../models/avatar.model';
 
 @Component({
   selector: 'app-avatar',

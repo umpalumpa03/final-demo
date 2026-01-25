@@ -14,4 +14,13 @@ export class BasicCard {
  public readonly width = input<string>();
  public readonly height = input<string>();
 public readonly hasFooter = input<boolean>(false);
+public readonly hasHover = input<boolean>(false);
+ public readonly flex = input<string>();
+  public readonly minWidth = input<string>();
+  public readonly maxWidth = input<string>();
+  public readonly display = input<string>();
+  public readonly flexDirection = input<string>();
+  public readonly alignItems = input<string>();
+  public readonly justifyContent = input<string>();
+
 }

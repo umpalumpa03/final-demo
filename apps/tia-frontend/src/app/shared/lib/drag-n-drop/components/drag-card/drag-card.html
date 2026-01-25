@@ -3,6 +3,7 @@
     <h2>{{ cardTitle() }}</h2>
     <p>{{ cardDescription() }}</p>
   </div>
+  <ng-content></ng-content>
   <div [class]="containerClasses()" [style]="containerStyles()">
     @for (item of internalItems(); track item.id) { @let isDragging =
     draggingId() === item.id;
@@ -13,9 +14,31 @@
       [isDropTarget]="dropTargetId() === item.id"
       [style]="isDragging ? draggingStyle() : null"
       [canDelete]="canDelete()"
+      [editable]="editable()"
+      [hasButton]="hasButton()"
+      [buttonVariant]="buttonVariant()"
+      [buttonContent]="buttonContent()"
+      [hasAddOption]="hasAddOption()"
+      [hasViewOption]="hasViewOption()"
+      [hasPagination]="hasPagination()"
+      [paginationVariants]="paginationVariants()"
+      [hasCheckbox]="hasCheckbox()"
       (dragStart)="onDragStartHandler(item.id, $event)"
       (remove)="onRemove(item.id)"
-    />
+      (edit)="onEdit(item.id)"
+      (add)="onAdd(item.id)"
+      (viewOptionChange)="onViewOptionChange(item.id, $event)"
+      (paginationChange)="onPaginationChange(item.id, $event)"
+      (buttonClick)="onButtonClick(item.id)"
+      (checkedChange)="onCheckedChange(item.id, $event)"
+    >
+      @if (cardContentTemplate()) {
+      <ng-container
+        [ngTemplateOutlet]="cardContentTemplate()!"
+        [ngTemplateOutletContext]="{ $implicit: item }"
+      />
+      }
+    </app-draggable-card>
     }
   </div>
 </div>

@@ -8,7 +8,9 @@ import {
   TextInputType,
   InputState,
   InputConfig,
+  InputValidation,
 } from '@tia/shared/lib/forms/models/input.model';
+import { OtpConfig } from '@tia/shared/lib/forms/models/otp.model';
 import {
   RadioGroupConfig,
   RadioOption,
@@ -21,6 +23,12 @@ export interface InputDemo {
   type?: TextInputType;
   state?: InputState;
   config: InputConfig;
+}
+
+export interface SpecialInputDemo {
+  type: TextInputType,
+  label: string,
+  validation?: InputValidation
 }
 
 export interface TextareaDemo {
@@ -52,4 +60,11 @@ export interface SelectDemo {
   config: SelectConfig;
   options: SelectOption[];
   initialValue: SelectValue | null;
+}
+
+
+export interface OtpDemo {
+    config: OtpConfig;      
+    initialValue: string;   
+    title?: string;
 }

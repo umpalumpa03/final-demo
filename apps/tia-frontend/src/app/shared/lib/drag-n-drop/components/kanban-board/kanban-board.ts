@@ -7,7 +7,7 @@ import {
   output,
   linkedSignal,
 } from '@angular/core';
-import { DragBase } from '../../base/base';
+import { DragBase } from '../../base/drag-base';
 import {
   BoardConfig,
   KanbanItem,
@@ -16,6 +16,7 @@ import {
 } from '../../model/drag.model';
 import { DraggableCard } from '../draggable-card/draggable-card';
 import { KanbanService } from '../../services/kanban.service';
+import { ButtonVariant } from '@tia/shared/lib/primitives/button/button.model';
 
 @Component({
   selector: 'app-kanban-board',
@@ -27,18 +28,42 @@ import { KanbanService } from '../../services/kanban.service';
 export class KanbanBoard extends DragBase {
   private readonly kanbanService = inject(KanbanService);
 
+  // data
   public readonly boards = input.required<BoardConfig[]>();
   public readonly items = input.required<KanbanItem[]>();
-  public readonly canDelete = input(false);
   public readonly boardTitle = input('Kanban Board');
   public readonly boardDescription = input(
     'Manage your tasks across different stages',
   );
 
+  // draggable card inputs
+  public readonly canDelete = input(false);
+  public readonly editable = input(false);
+  public readonly hasButton = input(false);
+  public readonly buttonVariant = input<ButtonVariant>('ghost');
+  public readonly buttonContent = input('Play');
+  public readonly hasAddOption = input(false);
+  public readonly hasViewOption = input(false);
+  public readonly hasPagination = input(false);
+  public readonly paginationVariants = input<number[]>([10, 20, 40]);
+  public readonly hasCheckbox = input(false);
+
+  // data outputs
   public readonly itemsChange = output<KanbanItem[]>();
   public readonly cardMoved = output<CardMovedEvent>();
   public readonly cardReordered = output<CardReorderedEvent>();
+
+  // draggable card outputs
   public readonly cardRemoved = output<string>();
+  public readonly cardEdited = output<string>();
+  public readonly cardAdded = output<string>();
+  public readonly viewOptionChanged = output<{
+    id: string;
+    isViewable: boolean;
+  }>();
+  public readonly paginationChanged = output<{ id: string; value: number }>();
+  public readonly buttonClicked = output<string>();
+  public readonly checkedChanged = output<{ id: string; checked: boolean }>();
 
   public readonly internalItems = linkedSignal<KanbanItem[], KanbanItem[]>({
     source: this.items,
@@ -103,5 +128,29 @@ export class KanbanBoard extends DragBase {
     this.internalItems.set(updated);
     this.itemsChange.emit(updated);
     this.cardRemoved.emit(id);
+  }
+
+  public onEdit(id: string): void {
+    this.cardEdited.emit(id);
+  }
+
+  public onAdd(id: string): void {
+    this.cardAdded.emit(id);
+  }
+
+  public onViewOptionChange(id: string, isViewable: boolean): void {
+    this.viewOptionChanged.emit({ id, isViewable });
+  }
+
+  public onPaginationChange(id: string, value: number): void {
+    this.paginationChanged.emit({ id, value });
+  }
+
+  public onButtonClick(id: string): void {
+    this.buttonClicked.emit(id);
+  }
+
+  public onCheckedChange(id: string, checked: boolean): void {
+    this.checkedChanged.emit({ id, checked });
   }
 }
