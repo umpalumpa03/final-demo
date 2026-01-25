@@ -47,14 +47,14 @@ describe('ResizablePanels', () => {
       fixture.detectChanges();
     });
 
-    it('should set initial panel width from input', () => {
+    it('should set initial panel size from input', () => {
       const firstPanel = fixture.nativeElement.querySelector(
         '.ta-resizable-panel',
       );
-      expect(firstPanel.style.width).toBe('200px');
+      expect(firstPanel.style.getPropertyValue('--panel-size')).toBe('200px');
     });
 
-    it('should update width when dragging the resizer horizontally', () => {
+    it('should update panel size when dragging the resizer horizontally', () => {
       const resizer = fixture.nativeElement.querySelector(
         '.ta-resizable-resizer',
       );
@@ -69,7 +69,7 @@ describe('ResizablePanels', () => {
       const firstPanel = fixture.nativeElement.querySelector(
         '.ta-resizable-panel',
       );
-      expect(firstPanel.style.width).toBe('250px');
+      expect(firstPanel.style.getPropertyValue('--panel-size')).toBe('250px');
     });
   });
 
@@ -96,11 +96,11 @@ describe('ResizablePanels', () => {
       expect(container.classList.contains('resizable--vertical')).toBe(true);
     });
 
-    it('should set initial panel height from input', () => {
+    it('should set initial panel size from input', () => {
       const firstPanel = fixture.nativeElement.querySelector(
         '.ta-resizable-panel',
       );
-      expect(firstPanel.style.height).toBe('150px');
+      expect(firstPanel.style.getPropertyValue('--panel-size')).toBe('150px');
     });
   });
 });
