@@ -11,7 +11,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   passwordMatchValidator,
   passwordValidator,
-} from 'apps/tia-frontend/src/app/core/auth/utils/form-validations';
+} from 'apps/tia-frontend/src/app/core/auth/utils/validators/form-validations';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { InputState } from '@tia/shared/lib/forms/models/input.model';
 import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';

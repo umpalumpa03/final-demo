@@ -7,6 +7,14 @@
   @extend %flex-stack;
   @include custom-width(44.8rem, 2.4rem);
 
+  @media (max-width: 780px) {
+    width: 40rem;
+  }
+
+  @media (max-width: 480px) {
+    width: 24rem;
+  }
+
   &__field {
     @include display-flex(column);
     @include custom-width();
