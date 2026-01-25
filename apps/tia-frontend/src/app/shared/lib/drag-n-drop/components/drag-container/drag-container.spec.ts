@@ -29,11 +29,21 @@ describe('DragContainer', () => {
     expect(component.columns()).toBe(2);
   });
 
-  it('should compute correct container classes based on layout', () => {
-    fixture.componentRef.setInput('layout', 'list');
+  it('should compute responsive container styles', () => {
+    fixture.componentRef.setInput('layout', 'grid');
+    fixture.componentRef.setInput('columns', { default: 4, md: 2, sm: 1 });
     fixture.detectChanges();
-    expect(component['containerClasses']()).toBe(
-      'drag-container__cards drag-container__cards--list',
+    expect(component['containerStyles']()).toBe(
+      '--columns: 4; --columns-md: 2; --columns-sm: 1',
+    );
+  });
+
+  it('should handle partial responsive config', () => {
+    fixture.componentRef.setInput('layout', 'grid');
+    fixture.componentRef.setInput('columns', { default: 3, sm: 1 });
+    fixture.detectChanges();
+    expect(component['containerStyles']()).toBe(
+      '--columns: 3; --columns-sm: 1',
     );
   });
 
@@ -41,7 +51,7 @@ describe('DragContainer', () => {
     fixture.componentRef.setInput('layout', 'grid');
     fixture.componentRef.setInput('columns', 3);
     fixture.detectChanges();
-    expect(component['containerStyles']()).toEqual({ '--columns': 3 });
+    expect(component['containerStyles']()).toBe('--columns: 3');
   });
 
   it('should return null for container styles when layout is not grid', () => {

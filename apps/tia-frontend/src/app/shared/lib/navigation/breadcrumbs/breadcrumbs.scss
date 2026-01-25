@@ -2,7 +2,7 @@
 @use "../../../../shared/styles/mixins" as *;
 
 .breadcrumbs {
-    @include display-flex(row, nowrap);
+    @include display-flex(row, wrap);
     gap: 0.8rem;
     font-size: 1.4rem;
     color: $gray-600;

@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   ElementRef,
   HostListener,
   inject,
@@ -25,6 +26,7 @@ import { SelectOption } from '../models/dropdowns.model';
 })
 export class Dropdowns extends BaseInput implements OnInit {
   private readonly elementRef = inject(ElementRef);
+  private static currentMaxZIndex = 1000;
 
   public override readonly config = input<SelectConfig>({});
   public readonly options = input.required<SelectOption[]>();
@@ -32,7 +34,24 @@ export class Dropdowns extends BaseInput implements OnInit {
   public override readonly value = model<SelectValue>(null);
 
   public readonly isOpen = signal(false);
+  protected readonly zIndex = signal(4);
   private readonly defaultId = generateUniqueId('lib-select');
+  private assignedZIndex: number | null = null;
+
+  constructor() {
+    super();
+
+    effect(() => {
+      if (this.isOpen()) {
+        Dropdowns.currentMaxZIndex++;
+        this.assignedZIndex = Dropdowns.currentMaxZIndex;
+        this.zIndex.set(this.assignedZIndex);
+      } else {
+        this.zIndex.set(1);
+        this.assignedZIndex = null;
+      }
+    });
+  }
 
   ngOnInit(): void {
     if (!this.ngControl && this.value() === null) {

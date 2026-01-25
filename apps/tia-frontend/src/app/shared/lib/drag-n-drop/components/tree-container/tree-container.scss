@@ -36,6 +36,7 @@
   &__group {
     display: flex;
     flex-direction: column;
+    border-radius: 0.8rem;
     gap: 1.1rem;
 
     &--dragging {
@@ -72,15 +73,21 @@
   }
 
   &__empty {
-    padding: 1.5rem;
-    border: 2px dashed $gray-400;
-    border-radius: 0.5rem;
-    text-align: center;
-    color: $gray-600;
+    @include display-flex;
+    @include flex-center(row, center, center);
+    min-height: 8rem;
+    padding: 2rem;
+    border: 0.2rem dashed $gray-200;
+    border-radius: 0.8rem;
+    background-color: $gray-25;
+    color: $gray-500;
+    @include font-inter(400, 1.4rem, 2rem);
+    transition: all 200ms ease-in-out;
 
     &--active {
       border-color: $blue-400;
-      background-color: rgba($blue-400, 0.1);
+      background-color: $blue-100;
+      color: $blue-600;
     }
   }
 }

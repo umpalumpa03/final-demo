@@ -59,7 +59,7 @@
             color: $gray-700;
         }
     }
-    .checkbox__error {
+    .checkbox--error {
         @include font-arimo(400, 1.2rem, 1);
         color: $red-600;
     }

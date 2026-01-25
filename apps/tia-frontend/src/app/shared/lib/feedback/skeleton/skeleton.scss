@@ -2,6 +2,7 @@
 
 .skeleton {
   --skeleton-base: var(--color-accent);
+  min-width: 0;
 
   display: block;
   background: linear-gradient(

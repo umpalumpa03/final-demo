@@ -1,53 +1,38 @@
 @use '../../../../../../shared/styles/mixins' as *;
-@use '../../../../../../shared/styles/themes' as *;
 @use '../../../../../../shared/styles/palette' as *;
 
 .cards-page {
-  padding: 1.6rem;
-  width: 100%;
   max-width: 110rem;
+    width: 100%;
   margin: 0 auto;
+  padding: 1.6rem;
+  @include display-flex(column); 
+  gap: 3.2rem;
 
-  @media (max-width: 75rem) {
-    max-width: 100%;
-    padding: 1.4rem;
-  }
-
-  @media (max-width: 30rem) {
-    padding: 1rem;
-  }
 
   &__title {
     margin: 2rem 0;
-
-    @media (max-width: 30rem) {
-      margin: 1.2rem 0;
-    }
   }
 
   .cards-section {
-    margin: 4rem 0;
-    border: 0.18rem solid var(--color-primary);
+    border: 0.08rem solid $blue-400;
     background-color: $white;
     width: 100%;
     border-radius: 1rem;
-    padding: 2.5rem;
+    padding: 2.48rem;
 
 
-    @media (max-width: 30rem) {
-      margin: 1.6rem 0;
+    @media (max-width: 480px) {
       padding: 1.2rem;
-      border-radius: 0.6rem;
     }
 
     &__title {
-      @include font-inter(600, 2.4rem, 3.2rem);
-      color: $gray-800;
+      @include font-arimo(700, 2.4rem, 3.2rem);
+      color: var(--color-fg);
       margin-bottom: 1.6rem;
 
-      @media (max-width: 30rem) {
+      @media (max-width: 480px) {
         font-size: 1.8rem;
-        line-height: 2.4rem;
         margin-bottom: 1.2rem;
       }
     }
@@ -57,12 +42,9 @@
       grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
       gap: 2.4rem;
 
-      @media (max-width: 48rem) {
-        grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
-        gap: 1.6rem;
-      }
 
-      @media (max-width: 30rem) {
+
+      @media (max-width: 480px) {
         grid-template-columns: 1fr;
         gap: 1.2rem;
       }
@@ -70,11 +52,11 @@
       &--stats {
         grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
 
-        @media (max-width: 48rem) {
+        @media (max-width: 480px) {
           grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
         }
 
-        @media (max-width: 30rem) {
+        @media (max-width: 350px) {
           grid-template-columns: 1fr;
         }
       }
@@ -85,7 +67,7 @@
   @include flex-center(row, flex-end, center);
   gap: 1.2rem;
 
-  @media (max-width: 48rem) {
+  @media (max-width: 480px) {
     gap: 1rem;
   }
 }
