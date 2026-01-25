@@ -100,7 +100,7 @@ export const accordionContent: AccordionItem[] = [
     content:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?',
   },
-];
+] as const;
 
 export const multiAccordionContent: AccordionItem[] = [
   {
@@ -121,7 +121,7 @@ export const multiAccordionContent: AccordionItem[] = [
     content:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?',
   },
-];
+] as const;
 
 export const collapsibleConfig: CollapsibleItem[] = [
   {
@@ -137,7 +137,7 @@ export const collapsibleConfig: CollapsibleItem[] = [
     content:
       'This collapsible section is open by default and contains specific project details.',
   },
-];
+] as const;
 
 export const scrollAreaContent: ScrollAreaItem[] = [
   {
@@ -164,7 +164,7 @@ export const scrollAreaContent: ScrollAreaItem[] = [
     id: 6,
     content: 'Item 6 - This is a scrollable content area with many',
   },
-];
+] as const;
 
 export const scrollAreaContent2: ScrollAreaCardItem[] = [
   {
@@ -191,7 +191,7 @@ export const scrollAreaContent2: ScrollAreaCardItem[] = [
     id: 6,
     title: 'Card 6',
   },
-];
+] as const;
 
 export const flexWrapContent: FlexWrapItem[] = [
   { id: 1, title: 'Item 1' },
@@ -204,7 +204,7 @@ export const flexWrapContent: FlexWrapItem[] = [
   { id: 8, title: 'Item 8' },
   { id: 9, title: 'Item 9' },
   { id: 10, title: 'Item 10' },
-];
+] as const;
 
 export const flexLayoutConfig: FlexLayoutConfig[] = [
   {
@@ -232,7 +232,7 @@ export const flexLayoutConfig: FlexLayoutConfig[] = [
     wrap: true,
     items: flexWrapContent.map((item) => ({ id: item.id, label: item.title })),
   },
-];
+] as const;
 
 export const gridLayoutConfig: GridLayoutConfig[] = [
   {
@@ -274,7 +274,7 @@ export const gridLayoutConfig: GridLayoutConfig[] = [
       { id: 2, label: 'Narrow (1/3)' },
     ],
   },
-];
+] as const;
 
 export const resizablePanelsConfig: ResizablePanelConfig[] = [
   {
@@ -308,4 +308,4 @@ export const resizablePanelsConfig: ResizablePanelConfig[] = [
       { id: 2, label: 'Bottom Panel' },
     ],
   },
-];
+] as const;

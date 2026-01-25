@@ -9,7 +9,10 @@ import {
   afterNextRender,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { ResizableOrientation } from './resizable-panels.model';
+import {
+  ResizableOrientation,
+  DEFAULT_RESIZER_SIZE,
+} from './resizable-panels.model';
 
 @Component({
   selector: 'app-resizable-panels',
@@ -36,6 +39,8 @@ export class ResizablePanels {
   public minSize = input<number>(100);
 
   public maxSize = input<number>(800);
+
+  public resizerSize = input<number>(DEFAULT_RESIZER_SIZE);
 
   protected isVertical = computed(() => this.orientation() === 'vertical');
 
@@ -79,8 +84,7 @@ export class ResizablePanels {
       return;
     }
 
-    const resizerSize = 40;
-    const totalResizerSize = (size - 1) * resizerSize;
+    const totalResizerSize = (size - 1) * this.resizerSize();
     const availableDimension = containerDimension - totalResizerSize;
     const panelSize = Math.floor(availableDimension / size);
 
