@@ -146,4 +146,47 @@
       </div>
     </div>
   </app-showcase-card>
+
+  <app-showcase-card title="Cards">
+    <div class="cards-showcase">
+      <div class="cards-showcase__grid">
+        @for (card of statisticCardItems(); track card.label) {
+          <div class="cards-showcase__item">
+            <p class="cards-showcase__label">{{ card.label }}</p>
+            <div class="cards-showcase__footer">
+              <p class="cards-showcase__value">{{ card.value }}</p>
+              <p
+                class="cards-showcase__change"
+                [class.cards-showcase__change--negative]="card.changeType === 'negative'"
+                [class.cards-showcase__change--empty]="isChangeEmpty(card.change)"
+              >
+                {{ card.change || '—' }}
+              </p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="List Display">
+    <div class="data-display__card">
+      <app-list-display [items]="listDisplayItems()"></app-list-display>
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="Key-Value Display">
+    <div class="data-display__card">
+      <app-key-value-display
+        [title]="keyValueTitle()"
+        [items]="keyValueItems()"
+      ></app-key-value-display>
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="Timeline Display">
+    <div class="data-display__card">
+      <app-timeline-display [items]="timelineItems()"></app-timeline-display>
+    </div>
+  </app-showcase-card>
 </div>

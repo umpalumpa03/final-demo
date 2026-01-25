@@ -1,0 +1,24 @@
+<div class="key-value-display">
+  <div class="key-value-display__card">
+    @if (title()) {
+      <p class="key-value-display__title">{{ title() }}</p>
+    }
+    <div class="key-value-display__rows">
+      @for (item of items(); track item.id; let last = $last) {
+        <div
+          class="key-value-display__row"
+          [class.key-value-display__row--last]="last"
+        >
+          <span class="key-value-display__label">{{ item.label }}</span>
+          @if (item.valueType === 'badge') {
+            <span [class]="badgeClass(item.badgeTone)">
+              {{ item.value }}
+            </span>
+          } @else {
+            <span class="key-value-display__value">{{ item.value }}</span>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

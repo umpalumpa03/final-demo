@@ -1,4 +1,4 @@
-import { TooltipPlacement } from '../../../../../../../shared/lib/data-display/tooltip/models/tooltip.models';
+import { TooltipPlacement } from '../../../../../../../shared/lib/data-display/models/tooltip.models';
 
 export type TooltipDemoVariant = 'default' | 'circle' | 'solid';
 

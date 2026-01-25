@@ -10,7 +10,7 @@ import {
   AvatarGroupItem,
   AvatarSize,
   AvatarTone,
-} from '../models/avatar.model';
+} from '../../models/avatar.model';
 
 @Component({
   selector: 'app-avatar-group',

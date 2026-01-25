@@ -2,16 +2,16 @@
   <app-library-title title="Feedback Components" subtitle="Loading states and skeleton loaders" />
 
   <app-showcase-card title="Loading Cards">
-    <div class = 'showcase__cards'>
-      <app-basic-card height="23.8rem" width="100%">
+    <div class="showcase__cards">
+      <div class="custom-card">
         <div class="loader">
           <app-spinner size="4rem" />
           <p class="loader__text">Loading content...</p>
         </div>
-      </app-basic-card>
+      </div>
 
       @for (card of loadingCards; track trackById($index, card)) {
-        <app-basic-card [height]="card.height" [width]="card.width">
+        <div class="custom-card">
           <div class="skel">
             <div class="skel__head">
               @if (card.avatar) {
@@ -29,7 +29,7 @@
               }
             </div>
           </div>
-        </app-basic-card>
+        </div>
       }
     </div>
   </app-showcase-card>
@@ -60,6 +60,29 @@
       </div>
 
       <div class="showcase__group">
+        <span class="showcase__label">Card Skeleton:</span>
+        <div class="custom-card custom-card--large">
+          <div class="skel">
+            <div class="skel__head">
+              @if (loadingCards[1].avatar) {
+                <app-skeleton [variant]="loadingCards[1].avatar.variant" [height]="loadingCards[1].avatar.height" />
+              }
+              <div class="skel__creds">
+                @for (cred of loadingCards[1].credentials; track trackById($index, cred)) {
+                  <app-skeleton [width]="cred.width" [height]="cred.height" />
+                }
+              </div>
+            </div>
+            <div class="skel__body">
+              @for (item of loadingCards[1].content; track trackById($index, item)) {
+                <app-skeleton [width]="item.width" [height]="item.height" />
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase__group">
         <span class="showcase__label">Image Skeleton:</span>
         <div class="showcase__imgs">
           @for (img of imageSkeletons; track trackById($index, img)) {
@@ -78,7 +101,7 @@
       </div>
 
       <span class="showcase__label">Full Page Loader:</span>
-      <app-basic-card>
+      <app-basic-card width="100%" maxWidth="100%">
         <div class="showcase__page">
           <app-route-loader variant="full-page" text="Loading page content..." />
         </div>

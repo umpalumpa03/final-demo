@@ -13,15 +13,6 @@
     flex-wrap: wrap;
     gap: 1.6rem;
 
-    > app-basic-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex: 1 1 0;
-      min-width: 15rem;
-      max-width: 32.8rem;
-    }
   }
 
   &__label {
@@ -118,5 +109,45 @@
     @include display-flex(row);
     align-items: center;
     gap: 1.6rem;
+  }
+
+}
+
+.custom-card {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 32.8rem;
+  background-color: $white;
+  border: 0.16rem solid $blue-400;
+  border-radius: 1.4rem;
+  box-shadow: 0rem 0.1rem 0.3rem 0rem rgba(0, 0, 0, 0.1),
+  0rem 0.1rem 0.2rem -0.1rem rgba(0, 0, 0, 0.1);
+  padding: 2.4rem;
+  min-height: 22rem;
+  @include display-flex(column);
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1.6rem;
+    min-height: 18rem;
+  }
+
+  &--large {
+    flex: 0 0 auto;
+    width: 44.8rem;
+    max-width: 44.8rem;
+    height: 23.8rem;
+    min-height: 23.8rem;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      max-width: 100%;
+    }
   }
 }

@@ -60,9 +60,9 @@ export const LOADING_CARDS: LoadingCard[] = [
 
 
 export const TEXT_SKELETONS: SkeletonItem[] = [
-  { id: 'text-1', width: '100%', height: '1.6rem' },
-  { id: 'text-2', width: '90%', height: '1.6rem' },
-  { id: 'text-3', width: '80%', height: '1.6rem' }
+  { id: 'text-1', width: '45%', height: '1.6rem' },
+  { id: 'text-2', width: '35%', height: '1.6rem' },
+  { id: 'text-3', width: '30%', height: '1.6rem' }
 ];
 
 export const IMAGE_SKELETONS: SkeletonItem[] = [
@@ -76,24 +76,24 @@ export const LIST_ITEMS: ListItem[] = [
     id: 'list-1',
     avatar: { height: '4rem', variant: 'circle' },
     credentials: [
-      { id: 'list-cred-1-1', width: '100%', height: '1.6rem' },
-      { id: 'list-cred-1-2', width: '80%', height: '1.2rem' }
+      { id: 'list-cred-1-1', width: '30%', height: '1.6rem' },
+      { id: 'list-cred-1-2', width: '20%', height: '1.2rem' }
     ]
   },
   {
     id: 'list-2',
     avatar: { height: '4rem', variant: 'circle' },
     credentials: [
-      { id: 'list-cred-2-1', width: '100%', height: '1.6rem' },
-      { id: 'list-cred-2-2', width: '80%', height: '1.2rem' }
+      { id: 'list-cred-2-1', width: '30%', height: '1.6rem' },
+      { id: 'list-cred-2-2', width: '20%', height: '1.2rem' }
     ]
   },
   {
     id: 'list-3',
     avatar: { height: '4rem', variant: 'circle' },
     credentials: [
-      { id: 'list-cred-3-1', width: '100%', height: '1.6rem' },
-      { id: 'list-cred-3-2', width: '80%', height: '1.2rem' }
+      { id: 'list-cred-3-1', width: '30%', height: '1.6rem' },
+      { id: 'list-cred-3-2', width: '20%', height: '1.2rem' }
     ]
   }
 ];
