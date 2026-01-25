@@ -5,6 +5,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { TextInput } from "@tia/shared/lib/forms/input-field/text-input";
+import { VALIDATION_FORM } from '../models/forms.config';
 
 @Component({
   selector: 'app-validation-form',
@@ -15,25 +16,11 @@ import { TextInput } from "@tia/shared/lib/forms/input-field/text-input";
 })
 export class ValidationForm {
   private fb = inject(FormBuilder);
+  public validationConfig = VALIDATION_FORM;
 
   public contactForm = this.fb.nonNullable.group({
     valid: ['john@example.com'],
     invalid: ['invalidemail'],
     warning: ['test@temp-mail.com'],
   });
-
-  //this is temporary configs
-  public successConfig = {
-    label: 'Valid Input',
-  };
-
-  public errorConfig = {
-    label: 'Invalid Input',
-    errorMessage: 'Please enter a valid email address',
-  };
-
-  public warningConfig = {
-    label: 'Warning Input',
-    errorMessage: 'Temporary email addresses may not receive notifications',
-  };
 }
