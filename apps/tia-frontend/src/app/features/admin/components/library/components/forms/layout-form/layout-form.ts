@@ -12,7 +12,7 @@ import {
   IHorizontalLayout,
   ITwoColumnLayout,
 } from '../models/contact-forms.model';
-import { HORIZONTAL_FORM, ROW_FORM } from '../models/configs';
+import { HORIZONTAL_FORM, ROW_FORM } from '../models/forms.config';
 
 @Component({
   selector: 'app-layout-form',

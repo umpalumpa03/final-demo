@@ -11,7 +11,7 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Textarea } from '@tia/shared/lib/forms/textarea/textarea';
 import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { CONTACT_FORM } from '../models/configs';
+import { CONTACT_FORM } from '../models/forms.config';
 
 @Component({
   selector: 'app-contact-form',

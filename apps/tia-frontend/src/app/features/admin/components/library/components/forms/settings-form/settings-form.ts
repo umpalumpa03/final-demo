@@ -11,7 +11,7 @@ import { Switches } from '@tia/shared/lib/forms/switches/switches';
 import { ISettingsForm } from '../models/contact-forms.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Router } from '@angular/router';
-import { PLAN_OPTION } from '../models/configs';
+import { PLAN_OPTION } from '../models/forms.config';
 
 @Component({
   selector: 'app-settings-form',

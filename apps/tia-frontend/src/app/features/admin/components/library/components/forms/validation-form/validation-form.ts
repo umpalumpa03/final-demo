@@ -5,7 +5,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { TextInput } from "@tia/shared/lib/forms/input-field/text-input";
-import { VALIDATION_FORM } from '../models/configs';
+import { VALIDATION_FORM } from '../models/forms.config';
 
 @Component({
   selector: 'app-validation-form',

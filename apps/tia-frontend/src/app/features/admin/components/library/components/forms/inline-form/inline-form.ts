@@ -11,7 +11,7 @@ import {
 } from '@angular/forms';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { INLINE_FORM } from '../models/configs';
+import { INLINE_FORM } from '../models/forms.config';
 
 @Component({
   selector: 'app-inline-form',

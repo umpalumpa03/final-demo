@@ -17,7 +17,7 @@ import { InputState } from '@tia/shared/lib/forms/models/input.model';
 import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
-import { COUNTRY_OPTIONS, REGISTATION_FORM } from '../models/configs';
+import { COUNTRY_OPTIONS, REGISTATION_FORM } from '../models/forms.config';
 
 @Component({
   selector: 'app-registration-form',
