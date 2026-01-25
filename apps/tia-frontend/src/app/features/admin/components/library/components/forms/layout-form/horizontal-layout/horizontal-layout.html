@@ -1,0 +1,45 @@
+<form
+  class="layout"
+  [formGroup]="horizontalForm"
+  (ngSubmit)="submitHorizontalLayout()"
+>
+  <div class="layout__flex">
+    <span>Horizontal Layout</span>
+    <div class="layout__horizontal">
+      <span>Name:</span>
+      <div class="layout__field layout__horizontal__field">
+        <lib-text-input
+          type="text"
+          formControlName="firstName"
+          [config]="horizontalConfigs.firstName"
+        ></lib-text-input>
+      </div>
+    </div>
+
+    <div class="layout__horizontal">
+      <span>Email:</span>
+      <div class="layout__field layout__horizontal__field">
+        <lib-text-input
+          type="email"
+          formControlName="email"
+          [config]="horizontalConfigs.email"
+        ></lib-text-input>
+      </div>
+    </div>
+
+    <div class="layout__horizontal">
+      <span>Message:</span>
+      <div class="layout__field layout__horizontal__field">
+        <lib-textarea
+          type="text"
+          formControlName="message"
+          [config]="horizontalConfigs.message"
+        ></lib-textarea>
+      </div>
+    </div>
+
+    <div class="layout__field">
+      <app-button type="submit" [fullWidth]="true">Submit</app-button>
+    </div>
+  </div>
+</form>

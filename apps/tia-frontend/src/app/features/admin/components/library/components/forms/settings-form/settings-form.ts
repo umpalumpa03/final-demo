@@ -30,9 +30,9 @@ export class SettingsForm {
 
   public settingControl = this.fb.nonNullable.group({
     plan: [this.planOptions[0]?.value ?? null, Validators.required],
-    email: [true, Validators.requiredTrue],
-    push: [false, Validators.requiredTrue],
-    sms: [false, Validators.requiredTrue],
+    email: [true],
+    push: [false],
+    sms: [false],
   });
 
   public get email() {

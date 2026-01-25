@@ -118,12 +118,12 @@ export const STEP_FORM = [
 
 export const MULTI_FORM = {
   name: {
-    abel: 'Name',
+    label: 'Name',
     required: true,
     placeholder: 'Your Name',
   },
   bio: {
-    abel: 'Message',
+    label: 'Message',
     required: true,
     placeholder: 'Type your message here...',
   },

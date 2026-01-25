@@ -96,10 +96,11 @@ In this form the reusable component is stepper header - app-stepper-header
 
 this component takes input properties - content and the step
 
-here is usage example
+here is usage example, current step should be passed as step, stepconfig is form what labels should this stepper draw
 
+  @let step = currentStep();
   <div class="multi-step__field">
-    <app-stepper-header [content]="stepsConfig" [step]="step" />
+    <app-stepper-header [content]="stepsConfig" [step]="currentStep()" />
   </div>
 
 this is the example what configs we should use
@@ -112,15 +113,55 @@ const STEP_FORM = [
 
 const MULTI_FORM = {
   name: {
-    abel: 'Name',
+    label: 'Name',
     required: true,
     placeholder: 'Your Name',
   },
   bio: {
-    abel: 'Message',
+    label: 'Message',
     required: true,
     placeholder: 'Type your message here...',
   },
 } as const;
 
-7.
+
+the form should be be build as desired
+
+7. Layout Form
+
+in this layout form we have two forms contained
+
+- Two column Layout
+selector: app-column-layout
+
+Fields:
+
+- First name: lib-text-input (text)
+- Last name: lib-text-input (text)
+- email: lib-text-input (email)
+- Phone: lib-text-input (tel) 
+- submit: app-button
+
+Validations:
+
+- First name: required, min length 2
+- Last name: required, min length 2
+- email: required, email format
+- Phone: required
+
+- Hotizontal Layout
+
+selector: app-horizontal-layout
+
+Fields:
+
+- name: lib-text-input (text)
+- email: lib-text-input (email)
+- message: lib-text-input (tel) 
+- submit: app-button
+
+Validations:
+
+- First name: required, min length 2
+- email: required, email format
+- message: optional
