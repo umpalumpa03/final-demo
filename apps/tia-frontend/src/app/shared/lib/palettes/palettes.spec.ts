@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Palettes } from './palettes';
-import { OCEANBLUE_PALETTE_DATA } from '../../../features/admin/components/library/components/colorpalettes/config/palette-data.config';
+import { OCEANBLUE_PALETTE_DATA } from '../../../features/storybook/components/colorpalettes/config/palette-data.config';
 
 describe('Palettes', () => {
   let component: Palettes;

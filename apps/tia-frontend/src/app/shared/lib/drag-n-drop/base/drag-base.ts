@@ -21,11 +21,13 @@ export abstract class DragBase implements OnDestroy {
   protected currentY = signal(0);
   private startX = 0;
   private startY = 0;
+  private draggedElementRect: DOMRect | null = null;
 
   public readonly draggingStyle = computed(() => ({
     transform: `translate(${this.currentX()}px, ${this.currentY()}px)`,
     zIndex: 100,
   }));
+
   protected readonly containerStyles = computed(() => {
     if (this.layout() !== 'grid') return null;
 
@@ -72,13 +74,38 @@ export abstract class DragBase implements OnDestroy {
     this.startX = event.clientX;
     this.startY = event.clientY;
 
+    const draggedElement = this.containerRef.nativeElement.querySelector(
+      `[data-card-id="${id}"]`,
+    ) as HTMLElement | null;
+
+    if (draggedElement) {
+      this.draggedElementRect = draggedElement.getBoundingClientRect();
+    }
+
     document.addEventListener('pointermove', this.onPointerMove);
     document.addEventListener('pointerup', this.onPointerUp);
   }
 
   protected onPointerMove = (event: PointerEvent): void => {
-    this.currentX.set(event.clientX - this.startX);
-    this.currentY.set(event.clientY - this.startY);
+    const rawX = event.clientX - this.startX;
+    const rawY = event.clientY - this.startY;
+
+    let clampedX = rawX;
+
+    if (this.draggedElementRect) {
+      const viewportWidth = document.documentElement.clientWidth;
+      const newLeft = this.draggedElementRect.left + rawX;
+      const newRight = this.draggedElementRect.right + rawX;
+
+      if (newLeft < 0) {
+        clampedX = -this.draggedElementRect.left;
+      } else if (newRight > viewportWidth) {
+        clampedX = viewportWidth - this.draggedElementRect.right;
+      }
+    }
+
+    this.currentX.set(clampedX);
+    this.currentY.set(rawY);
 
     const draggedElement = this.containerRef.nativeElement.querySelector(
       `[data-card-id="${this.draggingId()}"]`,
@@ -138,6 +165,7 @@ export abstract class DragBase implements OnDestroy {
     this.dropTargetId.set(null);
     this.currentX.set(0);
     this.currentY.set(0);
+    this.draggedElementRect = null;
   }
 
   protected removeListeners(): void {

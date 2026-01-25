@@ -1,0 +1,20 @@
+@use '../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../shared/styles/palette' as *;
+
+.btn {
+  @include flex-center;
+  padding: 0.8rem 1.6rem;
+  height: 3.6rem;
+  border-radius: 0.8rem;
+  @include font-arimo(400, 1.4rem, 2rem);
+  cursor: pointer;
+  border: none;
+
+  &__bottom-trigger {
+    width: 12rem;
+  }
+}
+
+.ui__subtitle {
+  margin-top: 4rem;
+}

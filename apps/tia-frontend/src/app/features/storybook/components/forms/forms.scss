@@ -1,0 +1,14 @@
+@use '../../../../shared/styles/mixins' as *;
+@use '../../../../shared/styles/palette' as *;
+
+.forms__lib {
+  @include display-flex(column);
+  @include font-arimo(400, 1.4rem, 2rem);
+  width: 100%;
+  gap: 3.2rem;
+  padding: 1.6rem;
+
+  &__header {
+    margin: 2rem 0;
+  }
+}

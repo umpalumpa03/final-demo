@@ -1,0 +1,58 @@
+@use '../../../../../shared/styles/mixins' as *;
+@use '../../../../../shared/styles/palette' as *;
+@use '../styles/forms-shared' as *;
+@use '../styles/forms-mixins' as *;
+
+
+
+
+.layout {
+  @extend %flex-stack;
+  width: 67.2rem;
+  margin-bottom: 3.2rem;
+
+  @media (max-width: 780px) {
+    width: 40rem;
+  }
+
+  @media (max-width: 480px) {
+    width: 24rem;
+  }
+
+  &__row {
+    @extend %pair-fields;
+
+    @media (max-width: 780px) {
+      flex-direction: column;
+    }
+  }
+
+  &__field {
+    @include display-flex(column);
+    @include custom-width();
+  }
+
+  &__horizontal {
+    @include custom-width();
+    @include flex-center(row, space-between);
+    position: relative;
+
+    @media (max-width: 780px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    &__field {
+      width: 80%;
+
+      @media (max-width: 780px) {
+        width: 100%;
+      }
+    }
+  }
+
+  &__flex {
+    @include display-flex(column);
+    @include custom-width(100%, 1.2rem);
+  }
+}
