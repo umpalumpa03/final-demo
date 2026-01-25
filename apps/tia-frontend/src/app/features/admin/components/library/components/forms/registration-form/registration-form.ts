@@ -4,26 +4,38 @@ import {
   inject,
   output,
 } from '@angular/core';
-import { COUNTRIES, IRegistrationForm } from '../models/contact-forms.model';
+import {
+  IRegistrationForm,
+} from '../models/contact-forms.model';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   passwordMatchValidator,
   passwordValidator,
 } from '@tia/shared/utils/form-validations';
-import { TextInput } from "@tia/shared/lib/forms/input-field/text-input";
+import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { InputState } from '@tia/shared/lib/forms/models/input.model';
-import { Checkboxes } from "@tia/shared/lib/forms/checkboxes/checkboxes";
-import { ButtonComponent } from "@tia/shared/lib/primitives/button/button";
+import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
+import { COUNTRY_OPTIONS, REGISTATION_FORM } from '../models/forms.config';
 
 @Component({
   selector: 'app-registration-form',
-  imports: [TextInput, ReactiveFormsModule, Checkboxes, ButtonComponent],
+  imports: [
+    TextInput,
+    ReactiveFormsModule,
+    Checkboxes,
+    ButtonComponent,
+    Dropdowns,
+  ],
   templateUrl: './registration-form.html',
   styleUrl: './registration-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationForm {
-  public readonly countries = COUNTRIES;
+  public countries = COUNTRY_OPTIONS;
+  public inputConfig = REGISTATION_FORM;
+  
   private readonly fb = inject(FormBuilder);
   public readonly submitRegistrationForm = output<IRegistrationForm>();
 
@@ -68,43 +80,4 @@ export class RegistrationForm {
     this.submitRegistrationForm.emit(this.registrationForm.getRawValue());
     this.registrationForm.reset();
   }
-
-  //this is temporary configs
-  public readonly inputConfigs = {
-    firstName: {
-      label: 'FirstName',
-      required: false,
-      placeholder: 'Jhon',
-    },
-    lastName: {
-      label: 'LastName',
-      required: false,
-      placeholder: 'Doe',
-    },
-    email: {
-      label: 'Email',
-      required: false,
-      placeholder: 'jonh@example.com',
-    },
-    password: {
-      label: 'Password',
-      required: false,
-      placeholder: '••••••••',
-    },
-    confirmPassword: {
-      label: 'Confirm Password',
-      required: false,
-      placeholder: '••••••••',
-    },
-    birthDate: {
-      label: 'birthDate',
-      required: false,
-      placeholder: 'Pick a date',
-    },
-    termsAndConditions: {
-      label: 'I agree to the terms and conditions',
-      required: false,
-      placeholder: 'Pick a date',
-    },
-  } as const;
 }

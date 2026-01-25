@@ -32,12 +32,13 @@
         @if (itemData().icon) {
         <img [src]="itemData().icon" alt="content icon" />
         }
-        <div class="draggable-card__text">
-          <p>{{ itemData().title }}</p>
-          <p>{{ itemData().subtitle }}</p>
+        <div class="draggable-card__info">
+          <p class="draggable-card__title">{{ itemData().title }}</p>
+          <p class="draggable-card__subtitle">{{ itemData().subtitle }}</p>
         </div>
       </div>
     </div>
+
     <div class="draggable-card__icons">
       @if (hasPagination()) {
       <div
@@ -54,34 +55,31 @@
       <img
         class="draggable-card__view"
         [src]="isViewable() ? 'images/svg/drag-and-drop/openEye.svg' : 'images/svg/drag-and-drop/crossedEye.svg'"
-        [alt]="isViewable() ? 'visible' : 'hidden'"
+        alt="view"
         (click)="onToggleView()"
       />
       } @if (hasAddOption()) {
       <img
         class="draggable-card__add"
         src="images/svg/drag-and-drop/plus.svg"
-        alt="plus svg"
         (click)="onAdd()"
       />
       } @if (hasButton()) {
-      <div (click)="$event.stopPropagation()">
-        <app-button [variant]="buttonVariant()">
-          {{ buttonContent() }}
-        </app-button>
+      <div (click)="$event.stopPropagation(); onButtonClick()">
+        <app-button [variant]="buttonVariant()"
+          >{{ buttonContent() }}</app-button
+        >
       </div>
       } @if (editable()) {
       <img
         class="draggable-card__edit"
         src="images/svg/drag-and-drop/edit.svg"
-        alt="edit svg"
         (click)="onEdit()"
       />
       } @if (canDelete()) {
       <img
         class="draggable-card__remove"
         src="images/svg/drag-and-drop/can.svg"
-        alt="delete svg"
         (click)="onRemove()"
       />
       }

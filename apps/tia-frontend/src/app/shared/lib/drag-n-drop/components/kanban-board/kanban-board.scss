@@ -28,7 +28,8 @@
   }
 
   &__boards {
-    display: flex;
+    @include display-flex(row, wrap);
+
     gap: 1.6rem;
     width: 100%;
   }
@@ -49,8 +50,8 @@
 
   &__board {
     @include display-flex(column);
-    flex: 1;
-    min-width: 0;
+    flex: 1 1 25rem;
+    min-width: 25rem;
     padding: 1.6rem;
     gap: 1.1rem;
     background: $gray-25;

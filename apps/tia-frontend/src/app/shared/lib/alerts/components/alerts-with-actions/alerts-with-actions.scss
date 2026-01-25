@@ -11,37 +11,33 @@
   @include display-flex(column, wrap);
   gap: 1.8rem;
   padding: 1rem 1.64rem;
-
-  @media (max-width: 108rem) {
-    width: 95%;
-  }
-
   @media (max-width: 76.8rem) {
     padding: 1rem;
     gap: 0.8rem;
   }
 
-  &__alert-content {
+  &__content {
     @include display-flex(row, wrap);
     gap: 1.2rem;
   }
 
-  &__button-flex {
+  &__flex {
     @include display-flex(row, wrap);
     gap: 0.8rem;
   }
 
   &__alert-icon-div {
     flex-shrink: 0;
-    img {
-      margin: 0.4rem 0rem;
-      width: 1.6rem;
-      height: 1.6rem;
-      object-fit: cover;
-    }
   }
 
-  &__alert-info-div {
+  &__image {
+    margin: 0.4rem 0rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    object-fit: cover;
+  }
+
+  &__info {
     @include display-flex(column, wrap);
     justify-content: center;
     gap: 0.2rem

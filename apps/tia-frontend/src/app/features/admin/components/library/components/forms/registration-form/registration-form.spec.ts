@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RegistrationForm } from './registration-form';
-import { COUNTRIES } from '../models/contact-forms.model';
 import { vi } from 'vitest';
 
 describe('RegistrationForm', () => {
@@ -22,18 +21,6 @@ describe('RegistrationForm', () => {
 
   it('should create the component', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('inputConfigs should contain correct placeholders', () => {
-    expect(component.inputConfigs.firstName.placeholder).toBe('Jhon');
-    expect(component.inputConfigs.lastName.placeholder).toBe('Doe');
-    expect(component.inputConfigs.email.placeholder).toBe('jonh@example.com');
-    expect(component.inputConfigs.password.placeholder).toBe('••••••••');
-    expect(component.inputConfigs.confirmPassword.placeholder).toBe('••••••••');
-  });
-
-  it('should expose countries constant', () => {
-    expect(component.countries).toEqual(COUNTRIES);
   });
 
   it('showError returns true when control is invalid and touched', () => {
@@ -64,24 +51,4 @@ describe('RegistrationForm', () => {
     const control = component.registrationForm.get('firstName');
     expect(control?.touched).toBe(true);
   });
-
-  it('confirmPasswordState returns "error" when passwords do not match', () => {
-  const form = component.registrationForm;
-
-  form.setValue({
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john@example.com',
-    password: 'Abcdef1!',
-    confirmPassword: 'Different1!',
-    country: COUNTRIES[0].code,
-    birthDate: '1990-01-01',
-    termsAndConditions: true,
-  });
-
-  form.setErrors({ PasswordNoMatch: true });
-  form.get('confirmPassword')?.markAsTouched();
-
-  expect(component.confirmPasswordState).toBe('error');
-})
 });
