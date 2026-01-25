@@ -6,50 +6,45 @@
   inset: 0;
   background-color: rgba($black, 0.5);
   z-index: 2000;
-  @include flex-center;
-  align-items: flex-end;
+  display: flex;
+  @include flex-center($justify: center, $align: flex-end);
 }
 
 .ui-drawer {
-  position: relative;
   width: 100%;
   max-width: 116.72rem;
-  min-height: 38.88rem;
-
+  min-height: 40rem;
   background-color: var(--color-bg);
   border-top: 0.08rem solid var(--color-accent);
-  border-radius: 1rem 1rem 0 0;
-
-  padding-top: 2.48rem;
-  box-sizing: border-box;
+  border-radius: 2.4rem 2.4rem 0 0;
+  touch-action: none;
+  will-change: transform;
   outline: none;
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
 
-  animation: drawer-slide-up 0.3s ease-out;
+  &__handle-area {
+    width: 100%;
+    padding: 1.6rem 0 2.4rem;
+    cursor: grab;
+    @include flex-center;
+    user-select: none;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
 
   &__handle {
-    position: absolute;
-    top: 1.68rem;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 10rem;
-    height: 0.8rem;
+    width: 4rem;
+    height: 0.4rem;
     background-color: var(--color-muted);
-    border-radius: 10rem;
+    border-radius: 0.2rem;
+    opacity: 0.4;
   }
 
-  &__container {
-    @include display-flex(column);
-    width: 100%;
-    height: 100%;
+  &__content {
+    padding: 0 2.4rem 4rem;
+    max-height: 85vh;
     overflow-y: auto;
-  }
-}
-
-@keyframes drawer-slide-up {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
   }
 }
