@@ -8,6 +8,10 @@
   padding: 1.6rem;
   @include display-flex(column);
   gap: 3.2rem;
+  width: 100%;
+  max-width: 110rem;
+  margin: 0 auto;
+  padding: 0rem 1.6rem 1.6rem;
 
   &__title {
     margin: 2rem 0;
@@ -27,8 +31,14 @@
     width: 100%;
   }
 
-  app-showcase-card {
-    display: block;
+  &__card {
+    @include flex-center(row, space-between, center);
     width: 100%;
+    flex-wrap: wrap;
+    &__subtitle {
+      @include font-arimo(700, 1.8rem, 2.7rem);
+      color: var(--color-fg);
+      margin: 0; 
+    }
   }
 }

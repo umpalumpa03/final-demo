@@ -13,7 +13,7 @@ export class AlertTypesWithIcons {
   public readonly alertType = input<AlertType>('information');
   public readonly alertMessage = input<string>('Default Alert Message');
 
-  public readonly iconAlertClass = computed(() => `alert-types-icons--${this.alertType()}`);
+  public readonly iconAlertClass = computed(() => `alert-icons--${this.alertType()}`);
 
   public readonly effectiveImgName = computed(() => {
     const useDefault = ['error', 'information'].includes(this.alertType());

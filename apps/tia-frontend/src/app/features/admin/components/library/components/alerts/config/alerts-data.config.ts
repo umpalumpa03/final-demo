@@ -77,7 +77,9 @@ export const ALERTS_ACTIONS_DATA:AlertActionItem[] = [
     id: 1, 
     type: 'default', 
     title: 'Update Available', 
-    message: 'A new version of the application is available.', 
+    message: 'A new version of the application is available.',
+    btnOneType: 'default', 
+    btnTwoType: 'outline', 
     btnOneText: 'Update Now', 
     btnTwoText: 'Remind Me Later' 
   },
@@ -86,10 +88,14 @@ export const ALERTS_ACTIONS_DATA:AlertActionItem[] = [
     type: 'error', 
     title: 'Confirm Action', 
     message: 'This action cannot be undone. Are you sure you want to continue?', 
+    btnOneType: 'destructive', 
+    btnTwoType: 'outline', 
     btnOneText: 'Confirm', 
     btnTwoText: 'Cancel'
   },
 ] as const; 
+ 
+
 
 export const ALERTS_SIMPLE_DATA:AlertSimpleItem[] = [
    { 
