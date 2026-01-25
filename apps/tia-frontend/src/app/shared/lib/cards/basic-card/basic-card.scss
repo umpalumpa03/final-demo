@@ -15,6 +15,7 @@
   height: 100%;
   @include display-flex(column);
   gap:2.4rem;
+   transition: all 0.3s ease;
   
   &--hover {
     &:hover {
@@ -22,8 +23,8 @@
       transform: translateY(-0.2rem);
       border-color: $blue-500;
     
-  }
-}
+       }
+    }
 
   @media (max-width: 480px) {
     padding: 1.6rem 1.6rem 0;

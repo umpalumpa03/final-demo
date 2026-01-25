@@ -5,13 +5,13 @@
   max-width: 110rem;
     width: 100%;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 1.6rem;
   @include display-flex(column); 
   gap: 3.2rem;
 
 
   &__title {
-    margin: 3.2rem 0 0.8rem;
+    margin: 2rem 0;
   }
 
   .cards-section {
