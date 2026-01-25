@@ -8,9 +8,9 @@ import {
   contentChild,
   TemplateRef,
 } from '@angular/core';
-import { DraggableItemType, LayoutType } from '../../model/drag.model';
+import { DraggableItemType } from '../../model/drag.model';
 import { DraggableCard } from '../draggable-card/draggable-card';
-import { DragBase } from '../../base/base';
+import { DragBase } from '../../base/drag-base';
 import { ButtonVariant } from '@tia/shared/lib/primitives/button/button.model';
 import { NgTemplateOutlet } from '@angular/common';
 
@@ -24,8 +24,6 @@ import { NgTemplateOutlet } from '@angular/common';
 export class DragCard extends DragBase {
   // data
   public readonly items = input.required<DraggableItemType[]>();
-  public readonly layout = input<LayoutType>('grid');
-  public readonly columns = input(2);
   public readonly cardTitle = input('Draggable Cards');
   public readonly cardDescription = input<string>(
     'Drag Cards to reorder them in a grid layout',
@@ -71,10 +69,6 @@ export class DragCard extends DragBase {
 
   protected readonly containerClasses = computed(
     () => `draggable-cards draggable-cards--${this.layout()}`,
-  );
-
-  protected readonly containerStyles = computed(() =>
-    this.layout() === 'grid' ? `--columns: ${this.columns()}` : null,
   );
 
   public onDragStartHandler(id: string, event: PointerEvent): void {

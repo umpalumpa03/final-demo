@@ -55,3 +55,8 @@ export interface TreeItemReorderedEvent {
   groupId: string;
   newOrder: number;
 }
+export interface ResponsiveColumns {
+  default: number;
+  md?: number;
+  sm?: number;
+}
