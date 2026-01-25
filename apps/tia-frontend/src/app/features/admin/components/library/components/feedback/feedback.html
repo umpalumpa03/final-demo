@@ -3,7 +3,7 @@
 
   <app-showcase-card title="Loading Cards">
     <div class="showcase__cards">
-      <div class="custom-card">
+      <div class="showcase__card">
         <div class="loader">
           <app-spinner size="4rem" />
           <p class="loader__text">Loading content...</p>
@@ -11,7 +11,7 @@
       </div>
 
       @for (card of loadingCards; track trackById($index, card)) {
-        <div class="custom-card">
+        <div class="showcase__card">
           <div class="skel">
             <div class="skel__head">
               @if (card.avatar) {
@@ -61,7 +61,7 @@
 
       <div class="showcase__group">
         <span class="showcase__label">Card Skeleton:</span>
-        <div class="custom-card custom-card--large">
+        <div class="showcase__card showcase__card--large">
           <div class="skel">
             <div class="skel__head">
               @if (loadingCards[1].avatar) {
