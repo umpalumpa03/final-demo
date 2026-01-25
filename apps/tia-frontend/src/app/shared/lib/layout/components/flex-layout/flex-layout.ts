@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { FlexVariant } from '../config/flex-layout.config';
+import { FlexLayoutVariant } from './flex-layout.model';
 
 @Component({
   selector: 'app-flex-layout',
@@ -10,7 +10,7 @@ import { FlexVariant } from '../config/flex-layout.config';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FlexLayout {
-  public variant = input<FlexVariant>();
+  public variant = input<FlexLayoutVariant>();
   public gap = input<string>();
   public wrap = input<boolean>(false);
 }
