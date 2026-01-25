@@ -42,7 +42,9 @@ export class ResizablePanels {
 
   public resizerSize = input<number>(DEFAULT_RESIZER_SIZE);
 
-  protected isVertical = computed<boolean>(() => this.orientation() === 'vertical');
+  protected isVertical = computed<boolean>(
+    () => this.orientation() === 'vertical',
+  );
 
   protected containerRef = viewChild<ElementRef<HTMLElement>>('container');
   protected contentRef = viewChild<ElementRef<HTMLElement>>('contentWrapper');
@@ -69,29 +71,41 @@ export class ResizablePanels {
     if (!container) return;
 
     const isVertical = this.isVertical();
-    const containerDimension = isVertical
-      ? container.offsetHeight
-      : container.offsetWidth;
+
+    const rect = container.getBoundingClientRect();
+    const containerDimension = isVertical ? rect.height : rect.width;
+
     const size = this.panelSize();
     const customSizes = this.initialSizes();
+
+    const totalResizerSize = (size - 1) * this.resizerSize();
+    const availableDimension = containerDimension - totalResizerSize;
+
+    const defaultPanelSize = 300;
+    const equalPanelSize =
+      availableDimension > 0
+        ? Math.floor(availableDimension / size)
+        : defaultPanelSize;
 
     if (customSizes && customSizes.length > 0) {
       if (size === 2) {
         this.panelSizes.set([customSizes[0]]);
       } else {
-        this.panelSizes.set([customSizes[0], customSizes[1] || customSizes[0]]);
+        const panel1 = customSizes[0] || equalPanelSize;
+        const panel2 = customSizes[1] || equalPanelSize;
+        const panel3 =
+          availableDimension > 0
+            ? availableDimension - panel1 - panel2
+            : defaultPanelSize;
+        this.panelSizes.set([panel1, panel2, Math.max(this.minSize(), panel3)]);
       }
       return;
     }
 
-    const totalResizerSize = (size - 1) * this.resizerSize();
-    const availableDimension = containerDimension - totalResizerSize;
-    const panelSize = Math.floor(availableDimension / size);
-
     if (size === 2) {
-      this.panelSizes.set([panelSize]);
+      this.panelSizes.set([equalPanelSize]);
     } else {
-      this.panelSizes.set([panelSize, panelSize]);
+      this.panelSizes.set([equalPanelSize, equalPanelSize, equalPanelSize]);
     }
   }
 
@@ -114,7 +128,7 @@ export class ResizablePanels {
     const sizes = this.panelSizes();
     const size = this.panelSize();
 
-    if (index === size - 1) {
+    if (size === 2 && index === size - 1) {
       return 'auto';
     }
 
@@ -122,7 +136,15 @@ export class ResizablePanels {
   }
 
   protected isLastPanel(index: number): boolean {
-    return index === this.panelSize() - 1;
+    return this.panelSize() === 2 && index === this.panelSize() - 1;
+  }
+
+  protected isLastPanelInThreeMode(index: number): boolean {
+    return this.panelSize() === 3 && index === 2;
+  }
+
+  protected showResizerAfter(index: number): boolean {
+    return index < this.panelSize() - 1;
   }
 
   protected onMouseDown(event: MouseEvent, resizerIndex: number): void {
@@ -139,16 +161,73 @@ export class ResizablePanels {
     const currentPosition = this.isVertical() ? event.clientY : event.clientX;
     const delta = currentPosition - this.startPosition;
     const newSizes = [...this.startSizes];
+    const minSize = this.minSize();
+    const size = this.panelSize();
 
-    const newSize = this.startSizes[activeIndex] + delta;
+    if (size === 2) {
+      const newSize = this.startSizes[activeIndex] + delta;
+      const dynamicMax = this.calculateMaxSize(activeIndex, newSizes);
+      newSizes[activeIndex] = Math.max(minSize, Math.min(dynamicMax, newSize));
+    } else {
+      const leftPanelIndex = activeIndex;
+      const rightPanelIndex = activeIndex + 1;
 
-    const clampedSize = Math.max(
-      this.minSize(),
-      Math.min(this.maxSize(), newSize),
-    );
+      const leftStart = this.startSizes[leftPanelIndex];
+      const rightStart = this.startSizes[rightPanelIndex];
 
-    newSizes[activeIndex] = clampedSize;
+      let newLeftSize = leftStart + delta;
+      let newRightSize = rightStart - delta;
+
+      if (newLeftSize < minSize) {
+        newLeftSize = minSize;
+        newRightSize = leftStart + rightStart - minSize;
+      }
+      if (newRightSize < minSize) {
+        newRightSize = minSize;
+        newLeftSize = leftStart + rightStart - minSize;
+      }
+
+      const maxSize = this.maxSize();
+      if (newLeftSize > maxSize) {
+        newLeftSize = maxSize;
+        newRightSize = leftStart + rightStart - maxSize;
+      }
+      if (newRightSize > maxSize) {
+        newRightSize = maxSize;
+        newLeftSize = leftStart + rightStart - maxSize;
+      }
+
+      newSizes[leftPanelIndex] = newLeftSize;
+      newSizes[rightPanelIndex] = newRightSize;
+    }
+
     this.panelSizes.set(newSizes);
+  }
+
+  private calculateMaxSize(panelIndex: number, currentSizes: number[]): number {
+    const container = this.containerRef()?.nativeElement;
+    if (!container) return this.maxSize();
+
+    const isVertical = this.isVertical();
+
+    const containerDimension = isVertical
+      ? container.getBoundingClientRect().height
+      : container.getBoundingClientRect().width;
+
+    if (containerDimension <= 0) {
+      return this.maxSize();
+    }
+
+    const panelCount = this.panelSize();
+    const totalResizerSize = (panelCount - 1) * this.resizerSize();
+    const minSize = this.minSize();
+
+    const reservedForLastPanel = minSize;
+
+    const availableSpace =
+      containerDimension - totalResizerSize - reservedForLastPanel;
+
+    return Math.max(minSize, Math.min(this.maxSize(), availableSpace));
   }
 
   protected onMouseUp(): void {

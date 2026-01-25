@@ -5,16 +5,16 @@
 
     <div class="resizable__panels ta-resizable-panels" #panelsContainer>
         @for (i of panelIndices(); track i) {
-        <div #panel class="resizable__panel ta-resizable-panel" [class.resizable__panel--flex]="isLastPanel(i)"
-            [style.--panel-size]="getPanelSize(i)">
-        </div>
+            <div #panel class="resizable__panel ta-resizable-panel" [class.resizable__panel--flex]="isLastPanel(i)"
+                [class.resizable__panel--shrinkable]="isLastPanelInThreeMode(i)" [style.--panel-size]="getPanelSize(i)">
+            </div>
 
-        @if (!isLastPanel(i)) {
-        <div class="resizable__resizer ta-resizable-resizer" [class.resizable__resizer--dragging]="isResizerDragging(i)"
-            (mousedown)="onMouseDown($event, i)">
-            <span class="resizable__handle ta-resizable-handle"></span>
-        </div>
-        }
+            @if (showResizerAfter(i)) {
+            <div class="resizable__resizer ta-resizable-resizer" [class.resizable__resizer--dragging]="isResizerDragging(i)"
+                (mousedown)="onMouseDown($event, i)">
+                <span class="resizable__handle ta-resizable-handle"></span>
+            </div>
+            }
         }
     </div>
 </div>
