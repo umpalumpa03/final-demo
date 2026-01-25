@@ -1,25 +1,6 @@
 @use '../../../../../../../../shared/styles/mixins' as *;
 @use '../../../../../../../../shared/styles/palette' as *;
 
-.btn {
-  @include flex-center;
-  padding: 0.8rem 1.6rem;
-  height: 3.6rem;
-  border-radius: 0.8rem;
-  @include font-arimo(400, 1.4rem, 2rem);
-  cursor: pointer;
-  border: none;
-
-  &__outline {
-    background-color: var(--color-bg);
-    border: 0.08rem solid var(--color-accent);
-    color: var(--color-fg);
-  }
-
-  &__bottom-trigger {
-    width: 12rem;
-  }
-}
 
 .bottom-sheet-demo {
   @include display-flex(column);
