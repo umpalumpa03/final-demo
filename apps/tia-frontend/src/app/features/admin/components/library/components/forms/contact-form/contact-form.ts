@@ -11,6 +11,7 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Textarea } from '@tia/shared/lib/forms/textarea/textarea';
 import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { CONTACT_FORM } from '../models/forms.config';
 
 @Component({
   selector: 'app-contact-form',
@@ -28,6 +29,7 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 export class ContactForms {
   private fb = inject(FormBuilder);
   public submitForm = output<IContactForm>();
+  public nameConfig = CONTACT_FORM;
 
   public contactForm = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
@@ -44,29 +46,5 @@ export class ContactForms {
 
     this.submitForm.emit(this.contactForm.getRawValue());
     this.contactForm.reset();
-  }
-
-  //this is temporary configs
-  public nameConfig = {
-    label: 'Name',
-    required: true,
-    placeholder: 'Your Name',
-  };
-
-  public emailConfig = {
-    label: 'Email',
-    required: true,
-    placeholder: 'your.email@example.com',
-  };
-
-  public messageConfig = {
-    label: 'Message',
-    required: true,
-    placeholder: 'Type your message here...',
-  };
-
-  public checkboxConfig = {
-    label: 'Subscribe to newsletter',
-    required: true,
   }
 }

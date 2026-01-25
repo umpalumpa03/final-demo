@@ -4,8 +4,9 @@
       state="success"
       type="text"
       formControlName="valid"
-      [config]="successConfig"
+      [config]="validationConfig.success"
     ></lib-text-input>
+    <span>Email format is correct</span>
   </div>
 
   <div class="validation__form--fields">
@@ -13,7 +14,7 @@
       state="error"
       type="text"
       formControlName="invalid"
-      [config]="errorConfig"
+      [config]="validationConfig.error"
     ></lib-text-input>
   </div>
 
@@ -22,7 +23,8 @@
       state="warning"
       type="text"
       formControlName="warning"
-      [config]="warningConfig"
+      [config]="validationConfig.warning"
     ></lib-text-input>
+    <span>Temporary email addresses may not receive notifications</span>
   </div>
 </form>

@@ -5,11 +5,15 @@ import {
   Directive,
   inject,
   ElementRef,
+  input,
 } from '@angular/core';
+import { LayoutType, ResponsiveColumns } from '../model/drag.model';
 
 @Directive()
 export abstract class DragBase implements OnDestroy {
   protected containerRef = inject(ElementRef);
+  public readonly layout = input<LayoutType>('grid');
+  public readonly columns = input<number | ResponsiveColumns>(2);
 
   public draggingId = signal<string | null>(null);
   public dropTargetId = signal<string | null>(null);
@@ -22,6 +26,23 @@ export abstract class DragBase implements OnDestroy {
     transform: `translate(${this.currentX()}px, ${this.currentY()}px)`,
     zIndex: 100,
   }));
+  protected readonly containerStyles = computed(() => {
+    if (this.layout() !== 'grid') return null;
+
+    const cols = this.columns();
+
+    if (typeof cols === 'number') {
+      return `--columns: ${cols}`;
+    }
+
+    return [
+      `--columns: ${cols.default}`,
+      cols.md ? `--columns-md: ${cols.md}` : '',
+      cols.sm ? `--columns-sm: ${cols.sm}` : '',
+    ]
+      .filter(Boolean)
+      .join('; ');
+  });
 
   protected calculateReorderedItems<T extends { id: string }>(
     items: T[],

@@ -18,9 +18,11 @@
       position: absolute;
       background-color: transparent;
       padding-top: 2rem;
-      @include flex-center;
-      justify-content: center;
-      align-items: flex-start;
+      @include flex-center(
+        $direction: row,
+        $justify: center,
+        $align: flex-start
+      );
     }
 
     .ui-palette {

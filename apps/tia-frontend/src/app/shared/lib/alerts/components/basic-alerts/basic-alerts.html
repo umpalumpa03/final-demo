@@ -1,9 +1,13 @@
 <div [class]="alertClass()">
-    <div class="basic-alert__alert-icon-div">
-        <img [src]="effectiveImgPath()" [alt]="effectiveAltName()">
-    </div>
-    <div class="basic-alert__alert-info-div">
-        <div class="basic-alert__title">{{effectiveTitle()}}</div>
-        <div class="basic-alert__message">{{alertMessage()}}</div>
-    </div>
+  <div class="basic-alert__icon">
+    <img
+      class="basic-alert__image"
+      [src]="effectiveImgPath()"
+      [alt]="effectiveAltName()"
+    />
+  </div>
+  <div class="basic-alert__info">
+    <div class="basic-alert__title">{{effectiveTitle()}}</div>
+    <div class="basic-alert__message">{{alertMessage()}}</div>
+  </div>
 </div>

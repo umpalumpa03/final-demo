@@ -31,7 +31,7 @@
 
     &__label {
         @include font-arimo(500, 1.4rem, 1);
-        color: $blue-ocean-foreground;
+        color: var(--color-fg);
         margin-bottom: 0.2rem;
     }
 
@@ -181,7 +181,7 @@
         }
     }
 
-    &__error {
+    &--error {
         @include font-arimo(400, 1.2rem, 1);
         color: $red-600;
     }

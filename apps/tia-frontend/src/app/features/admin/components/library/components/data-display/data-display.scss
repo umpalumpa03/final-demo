@@ -2,12 +2,17 @@
 @use '../../../../../../shared/styles/palette' as *;
 
 .data-display {
-  padding: 2.4rem;
   max-width: 110rem;
-  margin: 0 auto;
   width: 100%;
-  @include display-flex(column);
-  gap: 2.4rem;
+  min-height: 6.4rem;
+  margin: 0 auto;
+  padding: 1.6rem;
+  @include display-flex(column, flex-start);
+  gap: 3.2rem;
+
+  &__title {
+    margin: 2rem 0;
+  }
 
   &__card {
     @include display-flex(column);

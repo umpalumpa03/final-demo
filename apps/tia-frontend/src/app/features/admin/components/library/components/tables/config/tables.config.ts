@@ -3,7 +3,7 @@ import { TableConfig } from '@tia/shared/lib/tables/models/table.model';
 export const basicTable: TableConfig = {
   type: 'basic',
   paginationType: 'page',
-  itemPerPage: 3,
+  itemsPerPage: 3,
   headers: [
     { title: 'Invoice', align: 'left', width: '10%' },
     { title: 'Status', align: 'left', width: '26%' },
@@ -71,7 +71,7 @@ export const basicTable: TableConfig = {
 export const rowTable: TableConfig = {
   type: 'row-selection',
   paginationType: 'scroll',
-  itemPerPage: 5,
+  itemsPerPage: 5,
   headers: [
     { title: 'Name', align: 'left', width: '27%' },
     { title: 'Email', align: 'left', width: '38%' },
@@ -130,7 +130,7 @@ export const rowTable: TableConfig = {
 export const actionsTable: TableConfig = {
   type: 'actions',
   paginationType: 'scroll',
-  itemPerPage: 5,
+  itemsPerPage: 5,
   headers: [
     { title: 'Name', align: 'left', width: '20%' },
     { title: 'Email', align: 'left', width: '28%' },
@@ -190,7 +190,7 @@ export const actionsTable: TableConfig = {
 export const sortableTable: TableConfig = {
   type: 'basic',
   paginationType: 'scroll',
-  itemPerPage: 5,
+  itemsPerPage: 5,
   headers: [
     { title: 'Name', sortable: true, align: 'left', width: '25%' },
     { title: 'Email', align: 'left', width: '36%' },
@@ -249,7 +249,7 @@ export const sortableTable: TableConfig = {
 export const strippedTable: TableConfig = {
   type: 'striped',
   paginationType: 'scroll',
-  itemPerPage: 5,
+  itemsPerPage: 5,
   headers: [
     { title: 'Product', align: 'left', width: '39%' },
     { title: 'Category', align: 'left', width: '22%' },
@@ -307,7 +307,7 @@ export const strippedTable: TableConfig = {
 
 export const compactTable: TableConfig = {
   type: 'compact',
-  itemPerPage: 3,
+  itemsPerPage: 3,
   headers: [
     { title: 'ID', align: 'left', width: '12%' },
     { title: 'Task', align: 'left', width: '40%' },
@@ -344,7 +344,7 @@ export const compactTable: TableConfig = {
 
 export const rowStates: TableConfig = {
   type: 'basic',
-  itemPerPage: 5,
+  itemsPerPage: 5,
   headers: [
     { title: 'Name', align: 'left', width: '28%' },
     { title: 'Description', align: 'left', width: '47%' },
@@ -403,6 +403,97 @@ export const rowStates: TableConfig = {
         },
       ],
       disabled: true,
+    },
+  ],
+} as const;
+
+export const transactionsTable: TableConfig = {
+  type: 'transactions',
+  itemsPerPage: 5,
+  headers: [
+    { title: 'Details', align: 'left', width: '47%' },
+    { title: 'Amount', align: 'right', width: '25%' },
+    { title: 'Actions', align: 'right', width: '28%' },
+  ],
+  rows: [
+    {
+      id: '1',
+      transactionType: 'credit',
+      info: [
+        {
+          type: 'text',
+          value: 'Salary Payment',
+          category: 'Salary',
+          accountName: 'Main Account',
+          date: '2026-01-14T00:00:00Z',
+          align: 'left',
+        },
+        {
+          type: 'money',
+          value: '5000',
+          align: 'right',
+          currency: 'USD',
+        },
+      ],
+    },
+    {
+      id: '2',
+      transactionType: 'debit',
+      info: [
+        {
+          type: 'text',
+          value: 'Grocery Shopping',
+          category: 'Shopping',
+          accountName: 'Main Account',
+          date: '2026-01-13T00:00:00Z',
+          align: 'left',
+        },
+        {
+          type: 'money',
+          value: '5000',
+          align: 'right',
+          currency: 'EUR',
+        },
+      ],
+    },
+    {
+      id: '3',
+      transactionType: 'credit',
+      info: [
+        {
+          type: 'text',
+          value: 'Electricity Bill',
+          category: 'Utilities',
+          accountName: 'Main Account',
+          date: '2026-01-12T00:00:00Z',
+          align: 'left',
+        },
+        {
+          type: 'money',
+          value: '5000',
+          align: 'right',
+          currency: 'USD',
+        },
+      ],
+    },
+    {
+      id: '4',
+      transactionType: 'credit',
+      info: [
+        {
+          type: 'text',
+          value: 'Freelance Project',
+          category: 'Freelance',
+          accountName: 'Business Account',
+          date: '2026-01-11T00:00:00Z',
+          align: 'left',
+        },
+        {
+          type: 'money',
+          value: '5000',
+          align: 'right',
+        },
+      ],
     },
   ],
 } as const;

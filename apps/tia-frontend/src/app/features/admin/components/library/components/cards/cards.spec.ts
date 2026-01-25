@@ -41,16 +41,18 @@ describe('Cards', () => {
     expect(basicCards.length).toBe(3);
     expect(statisticCards.length).toBe(4);
   });
-
-  it('should render section titles and footer buttons', () => {
-    const sections = fixture.nativeElement.querySelectorAll('.cards-section__title');
-    const footer = fixture.nativeElement.querySelector('.card-footer');
-    const buttons = footer.querySelectorAll('app-button');
-    
-    expect(sections[0].textContent).toBe('Basic Cards');
-    expect(sections[1].textContent).toBe('Statistics Cards');
-    expect(buttons.length).toBe(2);
-    expect(buttons[0].textContent.trim()).toBe('Cancel');
-    expect(buttons[1].textContent.trim()).toBe('Submit');
-  });
+it('should render section titles and footer buttons', () => {
+  const sections = fixture.nativeElement.querySelectorAll('.cards-section__title');
+  
+  expect(sections[0].textContent).toBe('Basic Cards');
+  expect(sections[1].textContent).toBe('Statistics Cards');
+  
+  const footers = fixture.nativeElement.querySelectorAll('.card-footer');
+  expect(footers.length).toBe(1); 
+  
+  const buttons = footers[0].querySelectorAll('app-button');
+  expect(buttons.length).toBe(2);
+  expect(buttons[0].textContent.trim()).toBe('Cancel');
+  expect(buttons[1].textContent.trim()).toBe('Submit');
+});
 });

@@ -30,7 +30,7 @@
         height: 3.6rem;
         text-align: center;
         @include font-arimo();
-        color: $blue-ocean-foreground;
+        color: var(--color-fg);
         border: 0.1rem solid rgba($blue-ocean, 0.4);
 
         transition: all 0.2s ease;

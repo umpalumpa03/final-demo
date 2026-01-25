@@ -11,6 +11,7 @@ import {
   rowTable,
   sortableTable,
   strippedTable,
+  transactionsTable,
 } from '../config/tables.config';
 
 @Component({
@@ -28,4 +29,5 @@ export class TablesLayout {
   public strippedConfig: TableConfig = strippedTable;
   public compactConfig: TableConfig = compactTable;
   public rowStatesConfig: TableConfig = rowStates;
+  public transactionsConfig: TableConfig = transactionsTable;
 }
