@@ -22,8 +22,8 @@ import { DRAWER_CONFIG } from './config/drawer.config';
 export class UiDrawer {
   @ViewChild('drawer')
   private drawerElement!: ElementRef<HTMLElement>;
-  public isOpen = input<boolean>();
-  public closed = output<void>();
+  public readonly isOpen = input<boolean>();
+  public readonly closed = output<void>();
 
   public readonly dragOffset = signal<number>(0);
   public readonly isDragging = signal<boolean>(false);
