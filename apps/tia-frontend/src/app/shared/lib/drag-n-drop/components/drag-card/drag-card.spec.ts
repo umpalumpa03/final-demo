@@ -20,98 +20,87 @@ describe('DragCard', () => {
     fixture = TestBed.createComponent(DragCard);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('items', mockItems);
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create and initialize with correct defaults', () => {
     expect(component).toBeTruthy();
+    expect(component.canDelete()).toBe(false);
+    expect(component.layout()).toBe('grid');
+    expect(component.columns()).toBe(2);
+    expect(component.internalItems().length).toBe(3);
   });
 
-  it('should initialize internalItems from input', () => {
-    expect(component.internalItems.length).toBe(3);
-    expect(component.internalItems[0].id).toBe('1');
-  });
-
-  it('should set dragging state on drag start', () => {
+  it('should handle dragging state and style computations', () => {
     const event = { clientX: 100, clientY: 200 } as PointerEvent;
-
     component.onDragStartHandler('1', event);
-
     expect(component.draggingId()).toBe('1');
+
+    fixture.componentRef.setInput('layout', 'list');
+    fixture.detectChanges();
+    expect(component['containerClasses']()).toBe(
+      'draggable-cards draggable-cards--list',
+    );
+
+    fixture.componentRef.setInput('layout', 'grid');
+    fixture.componentRef.setInput('columns', 4);
+    fixture.detectChanges();
+    expect(component['containerStyles']()).toBe('--columns: 4');
   });
 
-  it('should remove item and emit events on remove', () => {
+  it('should remove item and update state', () => {
     const itemsChangeSpy = vi.spyOn(component.itemsChange, 'emit');
     const itemRemovedSpy = vi.spyOn(component.itemRemoved, 'emit');
 
     component.onRemove('1');
 
-    expect(component.internalItems.length).toBe(2);
-    expect(
-      component.internalItems.find((item) => item.id === '1'),
-    ).toBeUndefined();
-    expect(itemsChangeSpy).toHaveBeenCalledWith(component.internalItems);
+    const updatedItems = component.internalItems();
+    expect(updatedItems.length).toBe(2);
+    expect(itemsChangeSpy).toHaveBeenCalledWith(updatedItems);
     expect(itemRemovedSpy).toHaveBeenCalledWith('1');
   });
 
-  it('should return correct container classes for grid', () => {
-    fixture.componentRef.setInput('layout', 'grid');
-    fixture.detectChanges();
-
-    expect(component['containerClasses']()).toBe(
-      'draggable-cards draggable-cards--grid',
-    );
-  });
-
-  it('should return correct container classes for list', () => {
-    fixture.componentRef.setInput('layout', 'list');
-    fixture.detectChanges();
-
-    expect(component['containerClasses']()).toBe(
-      'draggable-cards draggable-cards--list',
-    );
-  });
-
-  it('should return container styles for grid layout', () => {
-    fixture.componentRef.setInput('layout', 'grid');
-    fixture.componentRef.setInput('columns', 3);
-    fixture.detectChanges();
-
-    expect(component['containerStyles']()).toBe('--columns: 3');
-  });
-
-  it('should return null container styles for list layout', () => {
-    fixture.componentRef.setInput('layout', 'list');
-    fixture.detectChanges();
-
-    expect(component['containerStyles']()).toBeNull();
-  });
-
-  it('should have default input values', () => {
-    expect(component.canDelete()).toBe(false);
-    expect(component.layout()).toBe('grid');
-    expect(component.columns()).toBe(2);
-    expect(component.cardTitle()).toBe('Draggable Cards');
-    expect(component.cardDescription()).toBe(
-      'Drag Cards to reorder them in a grid layout',
-    );
-  });
-
-  it('should emit orderChange after reorder', () => {
-    const itemsChangeSpy = vi.spyOn(component.itemsChange, 'emit');
+  it('should reorder items correctly on handleDrop using directional push', () => {
     const orderChangeSpy = vi.spyOn(component.orderChange, 'emit');
 
-    component['handleDrop']('1', '3');
+    component['handleDrop']('3', '1');
 
-    expect(itemsChangeSpy).toHaveBeenCalled();
-    expect(orderChangeSpy).toHaveBeenCalled();
+    const items = component.internalItems();
+    expect(items[0].id).toBe('3');
+    expect(items[1].id).toBe('1');
+    expect(items[2].id).toBe('2');
+    expect(orderChangeSpy).toHaveBeenCalledWith(['3', '1', '2']);
   });
 
-  it('should reorder items correctly on handleDrop', () => {
-    component['handleDrop']('1', '3');
+  it('should exit early on invalid handleDrop IDs', () => {
+    const orderChangeSpy = vi.spyOn(component.orderChange, 'emit');
+    component['handleDrop']('non-existent', '1');
+    expect(orderChangeSpy).not.toHaveBeenCalled();
+  });
 
-    expect(component.internalItems[0].id).toBe('2');
-    expect(component.internalItems[1].id).toBe('3');
-    expect(component.internalItems[2].id).toBe('1');
+  it('should emit all auxiliary event outputs', () => {
+    const editSpy = vi.spyOn(component.itemEdited, 'emit');
+    const addSpy = vi.spyOn(component.itemAdded, 'emit');
+    const viewSpy = vi.spyOn(component.viewOptionChanged, 'emit');
+    const pageSpy = vi.spyOn(component.paginationChanged, 'emit');
+
+    component.onEdit('1');
+    component.onAdd('1');
+    component.onViewOptionChange('1', false);
+    component.onPaginationChange('1', 20);
+
+    expect(editSpy).toHaveBeenCalledWith('1');
+    expect(addSpy).toHaveBeenCalledWith('1');
+    expect(viewSpy).toHaveBeenCalledWith({ id: '1', isViewable: false });
+    expect(pageSpy).toHaveBeenCalledWith({ id: '1', value: 20 });
+  });
+
+  it('should reset internalItems via linkedSignal when input changes', () => {
+    const newMockItems = [{ id: '99', title: 'New', subtitle: 'New' }];
+    fixture.componentRef.setInput('items', newMockItems);
+    fixture.detectChanges();
+
+    expect(component.internalItems().length).toBe(1);
+    expect(component.internalItems()[0].id).toBe('99');
   });
 });

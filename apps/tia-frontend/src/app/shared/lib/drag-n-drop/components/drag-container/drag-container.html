@@ -1,0 +1,9 @@
+<div class="drag-container">
+  <div class="drag-container__header">
+    <h2>{{ containerTitle() }}</h2>
+    <p>{{ containerDescription() }}</p>
+  </div>
+  <div [class]="containerClasses()" [style]="containerStyles()">
+    <ng-content></ng-content>
+  </div>
+</div>

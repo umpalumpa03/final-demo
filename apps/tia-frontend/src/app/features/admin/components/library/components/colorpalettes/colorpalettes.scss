@@ -6,16 +6,17 @@
   width: 100%;
   min-height: 6.4rem;
   margin: 0 auto;
-  padding: 1.6rem;
-  @include display-flex(column);
+  padding: 3.9rem 1.6rem 1.6rem;
+  @include flex-center(column, center, flex-start);
+  gap: 5rem;
 
   .colorpalettes-content {
     max-width: 110.2rem;
     margin: 0 auto;
     width: 100%;
-    @include display-flex();
     @include flex-center(column, center, flex-start);
     gap: 3.2rem;
+
     app-showcase-card {
       display: block;
       width: 100%;
@@ -39,6 +40,11 @@
         @include font-arimo(400, 1.4rem, 2rem);
         color: $gray-700;
       }
+    }
+
+    .color-application {
+      width: 100%;
+      max-width: 110.2rem;
     }
   }
 }

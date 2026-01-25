@@ -7,6 +7,7 @@ import {
   BadgeDotType,
   BadgeSkill,
   BadgeCategory,
+  BadgeCustomColor,
 } from './models/badges.models';
 import {
   statusClassMap,
@@ -38,7 +39,14 @@ export class Badges {
   public readonly label = input<string>('');
   public readonly dismissible = input<boolean>(false);
   public readonly dot = input<BadgeDotType>();
+  public readonly disabled = input<boolean>(false);
+  public readonly selected = input<boolean>(false);
+  public readonly hoverable = input<boolean>(false);
+  public readonly clickable = input<boolean>(false);
+  public readonly customColor = input<BadgeCustomColor>();
   public readonly dismissed = output<void>();
+  public readonly clicked = output<void>();
+  public readonly selectedChange = output<boolean>();
   private readonly isVisible = signal(true);
 
   public readonly visible = computed(() => {
@@ -57,6 +65,7 @@ export class Badges {
     
     const skillKey = this.skill();
     const categoryKey = this.category();
+    const customColorKey = this.customColor();
     
     let variant: BadgeVariant = this.variant() ?? 'default';
     
@@ -73,6 +82,17 @@ export class Badges {
     } else if (shape === 'rounded') {
       shapeClass = 'badge--rounded';
     }
+
+    const hasSpecialState = !!statusClass || hasDot || !!skillKey || !!categoryKey || !!customColorKey;
+    
+    let stateClass = '';
+    if (!hasSpecialState) {
+      if (this.disabled()) {
+        stateClass = 'badge--disabled';
+      } else if (this.selected()) {
+        stateClass = 'badge--selected';
+      }
+    }
     
     if (statusClass) {
       return `badge ${sizeClass} ${statusClass} ${shapeClass}`.trim();
@@ -82,7 +102,11 @@ export class Badges {
       return `badge ${sizeClass} ${shapeClass}`.trim();
     }
 
-    return `badge ${sizeClass} badge--${variant} ${shapeClass}`.trim();
+    if (customColorKey) {
+      return `badge ${sizeClass} ${shapeClass} ${stateClass}`.trim();
+    }
+
+    return `badge ${sizeClass} badge--${variant} ${shapeClass} ${stateClass}`.trim();
   });
 
   public readonly badgeStatus = computed(() => {
@@ -125,7 +149,7 @@ export class Badges {
   });
 
   public readonly shouldShowIcon = computed(() => {
-    return !!this.status();
+    return !!this.status() && !!this.iconPath();
   });
 
   public readonly dotColor = computed(() => {
@@ -140,5 +164,12 @@ export class Badges {
   public onDismiss(): void {
     this.isVisible.set(false);
     this.dismissed.emit();
+  }
+
+  public onClick(): void {
+    if (this.clickable() && !this.disabled()) {
+      this.selectedChange.emit(!this.selected());
+      this.clicked.emit();
+    }
   }
 }

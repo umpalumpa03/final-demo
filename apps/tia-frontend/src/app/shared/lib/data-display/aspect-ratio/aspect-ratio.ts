@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { AspectRatioItem } from './models/aspect-ratio.models';
+import { AspectRatioItem } from '../models/aspect-ratio.models';
 
 @Component({
   selector: 'app-aspect-ratio-list',

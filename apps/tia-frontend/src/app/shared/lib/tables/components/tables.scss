@@ -1,10 +1,33 @@
 @use '../../../../shared/styles/mixins' as *;
 @use '../../../../shared/styles/palette' as *;
 
+// This host is necessary to let know the component in this case <app-tables> how to
+// fit the content where you use it.
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
 .table {
   @include font-arimo(400, 1.4rem, 2rem);
   color: var(--color-fg);
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
+
+  &--striped {
+    tbody {
+      tr:nth-child(odd) {
+        background-color: $gray-25;
+      }
+    }
+  }
 
   th,
   td {
@@ -18,12 +41,21 @@
       &__checkbox {
         width: 4.8rem;
       }
+
+      &__item {
+        &--sortable {
+          display: flex;
+          gap: 0.8rem;
+          cursor: pointer;
+        }
+      }
     }
   }
 
   &__body {
     &__row {
       border-top: 1px solid $blue-400;
+      cursor: pointer;
 
       &__item {
         &__container {
@@ -57,12 +89,37 @@
             }
           }
         }
+
+        &__actions {
+          &__wrapper {
+            @include flex-center($justify: flex-end);
+            gap: 2.8rem;
+
+            img {
+              cursor: pointer;
+            }
+          }
+        }
       }
 
       &__badges {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        @include flex-center();
+      }
+
+      &:hover:not([data-disabled]) {
+        background-color: var(--color-bg);
+      }
+
+      &[data-selected] {
+        background-color: var(--color-bg);
+      }
+
+      &[data-disabled] {
+        pointer-events: none;
+
+        .table__body__row__item {
+          color: var(--color-fg);
+        }
       }
     }
   }

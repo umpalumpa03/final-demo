@@ -1,0 +1,113 @@
+@use '../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../shared/styles/palette' as *;
+
+$gradient-card: linear-gradient(116.565deg, #51A2FF 0%, #AD46FF 100%);
+$shadow-card: 0px 1px 3px 0px rgba(0, 0, 0, 10%), 0px 1px 2px -1px rgba(0, 0, 0, 10%);
+
+.layout {
+    max-width: 110rem;
+    margin: 0 auto;
+    @include flex-center(column, flex-start, stretch);
+    gap: 3.2rem;
+    padding: 1.6rem;
+
+    &__header {
+        @include flex-center(column, center, flex-start);
+        margin: 2rem 0;
+        
+        h2 {
+            @include font-inter(600, 2.4rem, 3.2rem);
+            color: var(--color-fg);
+        }
+
+        p {
+            margin-top: 0.8rem;
+            @include font-inter(400, 1.6rem, 2.4rem);
+            color: $gray-700;
+        }
+    }
+
+    &__main {
+        @include flex-center(column, flex-start, stretch);
+        gap: 3.2rem;
+    }
+}
+
+.section {
+    @include flex-center(column, flex-start, stretch);
+    width: 100%;
+
+    &__item {
+        @include flex-center(column, flex-start, stretch);
+        gap: 1.6rem;
+        margin-bottom: 2.4rem;
+
+        &:last-of-type {
+            margin-bottom: 0;
+        }
+    }
+
+    &__title {
+        @include font-inter(400, 1.4rem, 2rem);
+        color: $gray-700;
+    }
+
+    &__example {
+        @include flex-center(column, flex-start, stretch);
+
+        span {
+            @include font-inter(400, 1.4rem, 2.1rem);
+            color: var(--color-fg);
+        }
+
+        &--vertical {
+            @include flex-center(row, flex-start, stretch);
+            gap: 1.6rem;
+            height: 4.8rem;
+        }
+
+        &--horizontal {
+            @include flex-center(column, flex-start, stretch);
+        }
+    }
+
+    .scroll-item {
+        background: $gradient-card;
+        min-width: 19rem;
+        height: 100%;
+        @include flex-center();
+        border-radius: 1rem;
+        color: $white;
+        @include font-inter(600, 1.6rem, 2.4rem);
+        letter-spacing: -0.031rem;
+    }
+
+    .panel {
+        @include flex-center();
+        height: 100%;
+        color: var(--color-fg);
+        @include font-inter(600, 1.6rem, 2.4rem);
+        letter-spacing: -0.031rem;
+    }
+
+    .grid-item {
+        @include flex-center();
+        @include font-inter(400, 1.4rem, 2rem);
+        letter-spacing: -0.015rem;
+        color: var(--color-fg);
+        padding: 2.4rem;
+        border: 0.18rem solid $blue-400;
+        box-shadow: $shadow-card;
+        border-radius: 1.4rem;
+    }
+
+    .flex-wrap-item {
+        border: 0.0625rem solid $blue-400;
+        border-radius: 0.8rem;
+        background-color: $blue-100;
+        padding: 0.6rem 1.2rem;
+        color: var(--color-fg);
+        @include font-inter(500, 1.4rem, 2rem);
+        letter-spacing: -0.015rem;
+    }
+}

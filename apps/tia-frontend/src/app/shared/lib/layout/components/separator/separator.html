@@ -1,0 +1,9 @@
+<div class="separator ta-separator" [class.separator--horizontal]="orientation() === 'horizontal'"
+  [class.separator--vertical]="orientation() === 'vertical'" [style]="separatorStyles()">
+  <div class="separator__line ta-separator-line"></div>
+
+  @if (label()) {
+  <span class="separator__label ta-separator-label">{{ label() }}</span>
+  <div class="separator__line ta-separator-line"></div>
+  }
+</div>

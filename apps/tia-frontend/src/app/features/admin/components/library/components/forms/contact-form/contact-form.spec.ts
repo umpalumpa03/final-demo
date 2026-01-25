@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { vi } from 'vitest';
 import { ContactForms } from './contact-form';
+import { vi } from 'vitest';
 
 describe('ContactForms', () => {
   let component: ContactForms;
@@ -20,13 +20,26 @@ describe('ContactForms', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should mark all fields as touched when submitting invalid form', () => {
-    expect(component.message.touched).toBe(false);
-    expect(component.subscribe.touched).toBe(false);
+  it('submit does not emit when form is invalid and marks controls touched', () => {
+    const spy = vi.spyOn(component.submitForm, 'emit');
 
+    component.contactForm.reset();
     component.submit();
 
-    expect(component.message.touched).toBe(true);
-    expect(component.subscribe.touched).toBe(true);
+    expect(spy).not.toHaveBeenCalled();
+    expect(component.contactForm.get('name')?.touched).toBe(true);
+  });
+
+  it('submit emits payload and resets the form when valid', () => {
+    component.contactForm.setValue({
+      name: 'Jane Doe',
+      email: 'jane@example.com',
+      message: 'a'.repeat(50),
+      subscribe: true,
+    });
+
+    expect(component.contactForm.valid).toBe(true);
+
+    component.submit();
   });
 });

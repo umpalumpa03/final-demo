@@ -49,9 +49,9 @@ describe('Colorpalettes', () => {
     expect(hasOceanBlue && hasRoyalBlue && hasDeepBlue).toBeTruthy();
   });
 
-  it('should render three showcase cards', () => {
+  it('should render five showcase cards', () => {
     const showcaseCards =
       fixture.nativeElement.querySelectorAll('app-showcase-card');
-    expect(showcaseCards.length).toBe(3);
+    expect(showcaseCards.length).toBe(5);
   });
 });

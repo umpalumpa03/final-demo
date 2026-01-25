@@ -1,15 +1,34 @@
 import { CheckboxConfig } from '@tia/shared/lib/forms/models/checkbox.model';
 import {
+  SelectConfig,
+  SelectOption,
+  SelectValue,
+} from '@tia/shared/lib/forms/models/dropdowns.model';
+import {
   TextInputType,
   InputState,
   InputConfig,
+  InputValidation,
 } from '@tia/shared/lib/forms/models/input.model';
+import { OtpConfig } from '@tia/shared/lib/forms/models/otp.model';
+import {
+  RadioGroupConfig,
+  RadioOption,
+} from '@tia/shared/lib/forms/models/radios.model';
+import { SliderConfig } from '@tia/shared/lib/forms/models/slider.model';
+import { SwitchConfig } from '@tia/shared/lib/forms/models/switches.model';
 import { TextareaConfig } from '@tia/shared/lib/forms/models/textarea.model';
 
 export interface InputDemo {
   type?: TextInputType;
   state?: InputState;
   config: InputConfig;
+}
+
+export interface SpecialInputDemo {
+  type: TextInputType,
+  label: string,
+  validation?: InputValidation
 }
 
 export interface TextareaDemo {
@@ -20,4 +39,32 @@ export interface TextareaDemo {
 export interface CheckboxDemo {
   checked: boolean;
   config: CheckboxConfig;
+}
+
+export interface RadioDemo {
+  config: RadioGroupConfig;
+  options: RadioOption[];
+}
+
+export interface SwitchDemo {
+  checked: boolean;
+  config: SwitchConfig;
+}
+
+export interface SliderDemo {
+  config: SliderConfig;
+  initialValue: number;
+}
+
+export interface SelectDemo {
+  config: SelectConfig;
+  options: SelectOption[];
+  initialValue: SelectValue | null;
+}
+
+
+export interface OtpDemo {
+    config: OtpConfig;      
+    initialValue: string;   
+    title?: string;
 }

@@ -1,49 +1,23 @@
 @use '../../../shared/styles/mixins' as *;
 @use '../../../shared/styles/palette' as *;
-
-.theme-oceanblue {
-  --primary: #{$blue-ocean};
-  --secondary: #{$blue-ocean-secondary};
-  --accent: #{$blue-ocean-accent};
-  --muted: #{$blue-ocean-muted};
-  --background: #{$blue-100};
-  --foreground: #{$blue-ocean-foreground};
-}
-
-.theme-royalblue {
-  --primary: #{$blue-royal};
-  --secondary: #{$blue-royal-secondary};
-  --accent: #{$blue-royal-accent};
-  --muted: #{$blue-royal-muted};
-  --background: #{$blue-royal-background};
-  --foreground: #{$blue-royal-foreground};
-}
-
-.theme-deepblue {
-  --primary: #{$blue-deep};
-  --secondary: #{$blue-deep-secondary};
-  --accent: #{$blue-deep-accent};
-  --muted: #{$blue-deep-muted};
-  --background: #{$blue-deep-background};
-  --foreground: #{$blue-deep-foreground};
-}
+@use './styles/palette-styles' as *;
 
 .palette {
   @include display-flex(row, wrap);
-  padding: 2rem 0;
-  gap: 1rem;
+  gap: 0.9rem;
   width: 100%;
   max-width: 192rem;
+  @include apply-themes;
 
   &__item {
     @include display-flex(column, nowrap);
     align-items: flex-start;
-    gap: 0.8rem;
+    gap: 0.4rem;
   }
 
   &__swatch {
-    width: 14.5rem;
-    height: 8rem;
+    width: 16.2rem;
+    height: 9.6rem;
     border-radius: 0.8rem;
     border: 0.1rem solid $gray-200;
 

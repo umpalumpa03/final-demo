@@ -1,22 +1,53 @@
 <div class="kanban-frame">
   <div class="kanban-frame__header">
-    <h2 class="kanban-frame__header-title">Kanban Board</h2>
-    <p class="kanban-frame__header-subtitle">
-      Manage your tasks across different stages
-    </p>
+    <h2 class="kanban-frame__header-title">{{ boardTitle() }}</h2>
+    <p class="kanban-frame__header-subtitle">{{ boardDescription() }}</p>
   </div>
+  <ng-content></ng-content>
   <div class="kanban-frame__boards">
-    <div class="kanban-frame__board">
-      <h3 class="kanban-frame__board-title">To Do</h3>
-      <div class="kanban-frame__board-cards"></div>
+    @let boardItems = itemsByBoard(); @for (board of boards(); track board.id) {
+    @let currentBoardItems = boardItems[board.id];
+    <div class="kanban-frame__board" [attr.data-board-id]="board.id">
+      <h3 class="kanban-frame__board-title">{{ board.title }}</h3>
+      <div class="kanban-frame__board-cards">
+        @if (currentBoardItems.length === 0) {
+        <div
+          class="kanban-frame__board-empty"
+          [class.kanban-frame__board-empty--active]="dropTargetId() === 'board:' + board.id"
+          [attr.data-card-id]="'board:' + board.id"
+        >
+          Drop items here
+        </div>
+        } @else { @for (item of currentBoardItems; track item.id) { @let
+        isDragging = draggingId() === item.id;
+        <app-draggable-card
+          [attr.data-card-id]="item.id"
+          [itemData]="item"
+          [isDragging]="isDragging"
+          [isDropTarget]="dropTargetId() === item.id"
+          [style]="isDragging ? draggingStyle() : null"
+          [canDelete]="canDelete()"
+          [editable]="editable()"
+          [hasButton]="hasButton()"
+          [buttonVariant]="buttonVariant()"
+          [buttonContent]="buttonContent()"
+          [hasAddOption]="hasAddOption()"
+          [hasViewOption]="hasViewOption()"
+          [hasPagination]="hasPagination()"
+          [paginationVariants]="paginationVariants()"
+          [hasCheckbox]="hasCheckbox()"
+          (dragStart)="onDragStartHandler(item.id, $event)"
+          (remove)="onRemove(item.id)"
+          (edit)="onEdit(item.id)"
+          (add)="onAdd(item.id)"
+          (viewOptionChange)="onViewOptionChange(item.id, $event)"
+          (paginationChange)="onPaginationChange(item.id, $event)"
+          (buttonClick)="onButtonClick(item.id)"
+          (checkedChange)="onCheckedChange(item.id, $event)"
+        />
+        } }
+      </div>
     </div>
-    <div class="kanban-frame__board">
-      <h3 class="kanban-frame__board-title">In Progress</h3>
-      <div class="kanban-frame__board-cards"></div>
-    </div>
-    <div class="kanban-frame__board">
-      <h3 class="kanban-frame__board-title">Done</h3>
-      <div class="kanban-frame__board-cards"></div>
-    </div>
+    }
   </div>
 </div>

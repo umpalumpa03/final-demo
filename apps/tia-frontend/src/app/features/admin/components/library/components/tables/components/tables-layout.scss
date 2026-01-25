@@ -27,5 +27,6 @@
   &__section__wrapper {
     @include display-flex(column);
     gap: 3.2rem;
+    width: 100%;
   }
 }

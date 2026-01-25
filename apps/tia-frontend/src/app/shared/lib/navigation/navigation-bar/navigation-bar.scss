@@ -1,0 +1,69 @@
+@use "../../../../shared/styles/palette" as *;
+@use "../../../../shared/styles/mixins" as *;
+
+.navigation {
+  max-width: fit-content;
+
+  &__list {
+    @include display-flex(row, wrap);
+  }
+
+  &__item {
+    &--disabled {
+      .navigation__link {
+        color: $gray-500;
+        cursor: not-allowed;
+        pointer-events: none;
+        opacity: 0.6;
+      }
+    }
+  }
+
+  &__link {
+    @include flex-center;
+    gap: 1.2rem;
+    padding: 1.1rem 1.6rem;
+    max-width: fit-content;
+    @include font-arimo(400, 1.4rem, 2rem);
+    cursor: pointer;
+    text-align: left;
+    color: $gray-700;
+  }
+
+  &__img {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  &--horizontal {
+    .navigation__list {
+      flex-direction: row;
+      gap: 2rem;
+      border-bottom: 0.08rem solid $blue-400;
+    }
+
+      .navigation__item {
+        &--active {
+          color: $blue-800;
+          border-bottom: 0.16rem solid $blue-800;
+        }
+      }
+
+      .navigation__link {
+        height: 3.76rem;
+      }
+  }
+
+    &--vertical {
+      .navigation__list {
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .navigation__item {
+          &--active {
+            color: $gray-800;
+          }
+      }
+    }
+}
