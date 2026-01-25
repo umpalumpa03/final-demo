@@ -124,19 +124,17 @@
         <td class="table__body__row__item">
           <div class="table__body__row__item__transaction">
             <app-button
-              [variant]="'default'"
               icon="repeat.svg"
               size="small"
-              [variant]="'outline'"
+              variant="outline"
               (click)="onTransactionActionClicked('repeat', row)"
             >
               Repeat
             </app-button>
             <app-button
-              [variant]="'default'"
               icon="tag.svg"
               size="small"
-              [variant]="'outline'"
+              variant="outline"
               (click)="onTransactionActionClicked('categorize', row)"
             >
               categorize

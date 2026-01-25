@@ -71,8 +71,7 @@
 
             span {
               @include font-inter(500, 1.2rem, 1.6rem);
-              @include display-flex();
-              flex-wrap: wrap;
+              @include display-flex($wrap: wrap);
               gap: 0.8rem;
               border: 0.06rem solid $blue-400;
               padding: 0.4rem 0.8rem;

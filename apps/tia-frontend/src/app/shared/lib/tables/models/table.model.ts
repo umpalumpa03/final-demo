@@ -55,7 +55,7 @@ export interface TableActionEvent {
 export interface TableConfig {
   type: tableVariant;
   paginationType?: paginationVariant;
-  itemPerPage: number;
+  itemsPerPage: number;
   headers: TableHeader[];
   rows: TableRowCell[];
 }

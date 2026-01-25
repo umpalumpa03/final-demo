@@ -41,7 +41,7 @@ export class Tables {
   public readonly crudConfig = crudConfig;
   public currentPage = signal<number>(1);
   public readonly totalPage = computed(() =>
-    Math.ceil(this.tableConfig().rows.length / this.tableConfig().itemPerPage),
+    Math.ceil(this.tableConfig().rows.length / this.tableConfig().itemsPerPage),
   );
 
   // Here I check for different kind of tables
@@ -71,11 +71,11 @@ export class Tables {
 
   // Needed for Page navigation
   public readonly startIndex = computed(
-    () => (this.currentPage() - 1) * this.tableConfig().itemPerPage,
+    () => (this.currentPage() - 1) * this.tableConfig().itemsPerPage,
   );
 
   public readonly endIndex = computed(
-    () => this.startIndex() + this.tableConfig().itemPerPage,
+    () => this.startIndex() + this.tableConfig().itemsPerPage,
   );
   // /////////////////
 
@@ -119,7 +119,7 @@ export class Tables {
   public onTransactionActionClicked(
     action: TransactionAction,
     row: TableRowCell,
-  ) {
+  ): void {
     this.transactionClickedOutput.emit({
       action,
       rowId: row.id,
