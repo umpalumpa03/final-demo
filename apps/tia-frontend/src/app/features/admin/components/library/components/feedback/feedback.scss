@@ -2,10 +2,12 @@
 @use '../../../../../../shared/styles/mixins' as *;
 
 .showcase {
-  padding: 2rem;
+  padding: 1.6rem;
   @include display-flex(column);
   gap: 3.2rem;
-
+  &__title {
+    margin: 2rem 0;
+  }
   &__cards {
     @include display-flex(row);
     justify-content: space-between;
