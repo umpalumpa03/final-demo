@@ -13,7 +13,9 @@ body {
   font-family: $primary-font;
 }
 .global-bank-wrapper {
-  height: 100vh;
+  height: calc(100vh - 6.5rem);
   width: 100%;
   background: $gray-25;
+  overflow-y: auto;
+  padding: 1.6rem;
 }
