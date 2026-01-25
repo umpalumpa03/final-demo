@@ -100,11 +100,11 @@
                 @for (config of resizablePanelsConfig(); track config.id) {
                 <div class="section__item">
                     <h4 class="section__title">{{ config.title }}</h4>
-                    <app-resizable-horizontal [panelSize]="config.panelSize">
+                    <app-resizable-panels [orientation]="config.orientation" [panelSize]="config.panelSize">
                         @for (panel of config.panels; track panel.id) {
                         <div class="panel">{{ panel.label }}</div>
                         }
-                    </app-resizable-horizontal>
+                    </app-resizable-panels>
                 </div>
                 }
             </section>

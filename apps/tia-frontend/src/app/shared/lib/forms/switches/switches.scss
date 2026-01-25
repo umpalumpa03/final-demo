@@ -40,7 +40,7 @@ $transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             display: block;
             width: $switch-width;
             height: $switch-height;
-            background-color: $blue-ocean-accent;
+            background-color: var(--color-accent);
             border: 0.2rem solid $blue-ocean;
             border-radius: 10rem;
             transition:
@@ -66,12 +66,6 @@ $transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             color: $gray-800;
         }
 
-        &__error {
-            @include font-inter(400, 1.2rem, 1);
-            color: $red-600;
-            padding-left: $switch-width + 1.2rem;
-        }
-
         .visually--hidden {
             @include visually-hidden;
         }
@@ -84,5 +78,11 @@ $transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: not-allowed;
             pointer-events: none;
         }
+    }
+
+    &--error {
+        @include font-inter(400, 1.2rem, 1);
+        color: $red-600;
+        padding-left: $switch-width + 1.2rem;
     }
 }

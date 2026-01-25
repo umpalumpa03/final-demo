@@ -16,9 +16,9 @@ import {
 } from '../config/layout.config';
 import { Collapsible } from '@tia/shared/lib/layout/components/collapsible/collapsible';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
-import { ResizableHorizontal } from '@tia/shared/lib/layout/components/resizable-panels/resizable-horizontal/resizable-horizontal';
+import { ResizablePanels } from '@tia/shared/lib/layout/components/resizable-panels/resizable-panels';
 import { GridLayout } from '@tia/shared/lib/layout/components/grid-layout/container/grid-layout';
-import { FlexLayout } from '@tia/shared/lib/layout/components/flex-layout/container/flex-layout';
+import { FlexLayout } from '@tia/shared/lib/layout/components/flex-layout/flex-layout';
 
 @Component({
   selector: 'app-layout',
@@ -30,7 +30,7 @@ import { FlexLayout } from '@tia/shared/lib/layout/components/flex-layout/contai
     ShowcaseCard,
     Collapsible,
     ScrollArea,
-    ResizableHorizontal,
+    ResizablePanels,
     GridLayout,
     FlexLayout,
   ],
