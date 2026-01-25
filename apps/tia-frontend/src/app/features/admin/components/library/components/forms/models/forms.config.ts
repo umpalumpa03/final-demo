@@ -151,6 +151,7 @@ export const PLAN_OPTION = [
 export const VALIDATION_FORM = {
   success: {
     label: 'Valid Input',
+    successMessage: 'Email format is correct'
   },
   error: {
     label: 'Invalid Input',
@@ -158,5 +159,6 @@ export const VALIDATION_FORM = {
   },
   warning: {
     label: 'Warning Input',
+    warningMessage: 'Temporary email addresses may not receive notifications'
   },
 };
