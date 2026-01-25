@@ -10,7 +10,7 @@
   padding: 0.4rem 0.16rem;
   max-width: 105rem;
   min-height: 3.6rem;
-  padding-top: 3.2rem;
+  padding: 3.2rem 1.6rem;
   nav {
     @include display-flex(row, wrap);
     background-color: $white;
