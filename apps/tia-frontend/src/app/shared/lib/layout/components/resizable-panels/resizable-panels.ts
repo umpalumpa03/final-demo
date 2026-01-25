@@ -42,7 +42,7 @@ export class ResizablePanels {
 
   public resizerSize = input<number>(DEFAULT_RESIZER_SIZE);
 
-  protected isVertical = computed(() => this.orientation() === 'vertical');
+  protected isVertical = computed<boolean>(() => this.orientation() === 'vertical');
 
   protected containerRef = viewChild<ElementRef<HTMLElement>>('container');
   protected contentRef = viewChild<ElementRef<HTMLElement>>('contentWrapper');

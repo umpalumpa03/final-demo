@@ -23,11 +23,13 @@
   &__panel {
     flex-shrink: 0;
     overflow: auto;
+    width: var(--panel-size, auto);
     height: 100%;
 
     &--flex {
       flex: 1;
       min-width: 0;
+      width: auto;
     }
   }
 
@@ -66,11 +68,12 @@
 
     .resizable__panel {
       width: 100%;
-      height: auto;
+      height: var(--panel-size, auto);
 
       &--flex {
         min-height: 0;
         min-width: unset;
+        height: auto;
       }
     }
 
