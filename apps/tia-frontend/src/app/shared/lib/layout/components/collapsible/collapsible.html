@@ -10,11 +10,16 @@
     <span class="ui-collapsible__icon" aria-hidden="true"></span>
   </button>
 
-  @if (isOpen()) {
-  <div id="collapsible-content" class="ui-collapsible__content" role="region">
+  <div
+    id="collapsible-content"
+    class="ui-collapsible__content"
+    role="region"
+    [class.ui-collapsible__content--open]="isOpen()"
+  >
     <div class="ui-collapsible__inner">
-      <ng-content></ng-content>
+      <div class="ui-collapsible__body">
+        <ng-content></ng-content>
+      </div>
     </div>
   </div>
-  }
 </div>

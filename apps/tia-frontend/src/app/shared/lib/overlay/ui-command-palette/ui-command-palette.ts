@@ -7,7 +7,6 @@ import {
   signal,
   ViewChild,
   ElementRef,
-  afterNextRender,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import {
@@ -36,12 +35,6 @@ export class UiCommandPalette {
 
   public searchQuery = signal<string>('');
   public activeIndex = signal<number>(0);
-
-  constructor() {
-    afterNextRender(() => {
-      this.searchInput.nativeElement.focus();
-    });
-  }
 
   private readonly filteredActions = computed<ProcessedCommandAction[]>(() => {
     const query = this.searchQuery().toLowerCase().trim();
