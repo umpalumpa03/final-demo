@@ -12,6 +12,13 @@ describe('StepperHeader', () => {
 
     fixture = TestBed.createComponent(StepperHeader);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('content', [
+      { label: 'From', key: 'from' },
+      { label: 'To', key: 'to' },
+    ]);
+    fixture.componentRef.setInput('step', 1);
+
+    fixture.detectChanges();
     await fixture.whenStable();
   });
 

@@ -11,6 +11,7 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Textarea } from '@tia/shared/lib/forms/textarea/textarea';
 import { MULTI_FORM, STEP_FORM } from '../models/configs';
+import { IStepConfig } from '../models/contact-forms.model';
 
 @Component({
   selector: 'app-multistep-forms',
@@ -33,14 +34,14 @@ export class MultistepForms {
   public currentStep = signal<number>(1);
   public totalSteps = this.stepsConfig.length;
 
-  public currentStepConfig = computed(
+  public currentStepConfig = computed<IStepConfig>(
     () => this.stepsConfig[this.currentStep() - 1],
   );
-  public readonly canBack = computed(() => this.currentStep() > 1);
-  public readonly canNext = computed(
+  public readonly canBack = computed<boolean>(() => this.currentStep() > 1);
+  public readonly canNext = computed<boolean>(
     () => this.currentStep() < this.totalSteps,
   );
-  public readonly isLastStep = computed(
+  public readonly isLastStep = computed<boolean>(
     () => this.currentStep() === this.totalSteps,
   );
 

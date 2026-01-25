@@ -35,7 +35,7 @@ export class ContactForms {
     name: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
     message: ['', [Validators.required, Validators.minLength(50)]],
-    subscribe: [false, [Validators.required]],
+    subscribe: [false, [Validators.requiredTrue]],
   });
 
   public submit() {

@@ -51,7 +51,7 @@ export class RegistrationForm {
       confirmPassword: ['', [Validators.required]],
       country: ['', Validators.required],
       birthDate: ['', Validators.required],
-      termsAndConditions: [false, Validators.required],
+      termsAndConditions: [false, Validators.requiredTrue],
     },
     {
       validators: passwordMatchValidator,
