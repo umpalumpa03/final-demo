@@ -63,6 +63,7 @@ export interface InputConfig {
   autocomplete?: string;
   ariaLabel?: string;
   showCharacterCount?: boolean;
+  labelIconUrl?: string;
   prefixIcon?: string;
   suffixIcon?: string;
   showPasswordToggle?: boolean;
