@@ -6,7 +6,6 @@
   inset: 0;
   background-color: rgba($black, 0.5);
   z-index: 2000;
-  display: flex;
   @include flex-center($justify: center, $align: flex-end);
 }
 
