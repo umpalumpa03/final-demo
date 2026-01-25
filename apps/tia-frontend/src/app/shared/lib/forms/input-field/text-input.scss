@@ -191,6 +191,15 @@ $field-height: 3.6rem;
       }
     }
 
+    &--warning {
+      border-color: $yellow-500;
+
+      &:focus {
+        box-shadow: 0 0 0 0.2rem rgba($yellow-600, 0.2);
+        border-color: $yellow-600;
+      }
+    }
+
     &--readonly {
       border-color: $blue-ocean;
       cursor: default;
@@ -229,6 +238,10 @@ $field-height: 3.6rem;
 
     &--helper {
       color: $gray-600;
+    }
+
+    &--warning {
+      color: $yellow-600;
     }
   }
 

@@ -22,10 +22,8 @@
 
     <input [id]="mergedConfig().id" [type]="inputType()" [value]="getDisplayValue()"
         [placeholder]="mergedConfig().placeholder" [disabled]="isDisabled()" [readOnly]="isReadonly()"
-        [name]="cfg.name || ''" [autocomplete]="mergedConfig().autocomplete || 'off'"
-        [attr.aria-required]="cfg.required" [attr.aria-invalid]="hasError()" [attr.aria-describedby]="ariaDescribedBy()"
-        [class]="fieldClasses()" (input)="handleInput($event)" (blur)="handleBlur($event)"
-        (focus)="handleFocus($event)" />
+        [name]="cfg.name || ''" [autocomplete]="mergedConfig().autocomplete || 'off'" [class]="fieldClasses()"
+        (input)="handleInput($event)" (blur)="handleBlur($event)" (focus)="handleFocus($event)" />
 
     @if (isPasswordType()) {
     <button type="button" class="text-input__icon text-input__icon--suffix" (click)="togglePasswordVisibility()">
@@ -42,7 +40,10 @@
     <span [id]="messageId()" class="text-input__message text-input__message--error">
         {{ errorMessage() }}
     </span>
-    } @else if (hasSuccess() && cfg.successMessage) {
+    } @else if (hasWarning()) {
+    <span [id]="messageId()" class="text-input__message text-input__message--warning">
+        {{ config().warningMessage }}
+    </span>} @else if (hasSuccess() && cfg.successMessage) {
     <span [id]="messageId()" class="text-input__message text-input__message--success">
         {{ cfg.successMessage }}
     </span>

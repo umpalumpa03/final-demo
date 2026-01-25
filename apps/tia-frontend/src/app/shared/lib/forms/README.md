@@ -20,6 +20,16 @@ Components:
       }">
    </lib-text-input>
 
+   Validation states: Error, Warning, Success
+
+   <lib-text-input
+      [state]="'warning'"
+      [config]="{
+         label: 'Password',
+         warningMessage: 'This password is weak, but acceptable'
+      }">
+   </lib-text-input>
+
 
    Reactive forms usage:
 
@@ -49,6 +59,19 @@ Components:
       </lib-text-input>
 
    </form>
+
+   Config:
+      label: string (Input Title).
+      placeholder: string.
+      helperText: string (Permanent helper text below the input).
+      errorMessage: string (Text which appears when state is 'error')
+      warningMessage: string (Text which appears when state is 'warning')
+      successMessage: string (Text which appears when state is 'success')
+      required: boolean (Makes input required and adds * on top of it)
+      disabled: boolean (Shuts down the input field)
+      readonly: boolean (Makes the input field only readable)
+      prefixIcon: string (Can change SVG icon with yours, with a path)
+
 
 ---
 

@@ -52,6 +52,7 @@ export interface InputConfig {
   label?: string;
   placeholder?: string;
   helperText?: string;
+  warningMessage?: string;
   errorMessage?: string;
   successMessage?: string;
   disabled?: boolean;
