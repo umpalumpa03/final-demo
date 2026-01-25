@@ -21,7 +21,7 @@ interface TableHeader {
   sortable?: boolean;
 }
 
-interface PrintedData {
+export interface PrintedData {
   type: infoType;
   value: BadgeStatus;
   align: alignment;
@@ -58,4 +58,12 @@ export interface TableConfig {
   itemPerPage: number;
   headers: TableHeader[];
   rows: TableRowCell[];
+}
+
+export type TransactionAction = 'repeat' | 'categorize';
+
+export interface TransactionActionEvent {
+  action: TransactionAction;
+  rowId: string;
+  rowData: PrintedData[];
 }

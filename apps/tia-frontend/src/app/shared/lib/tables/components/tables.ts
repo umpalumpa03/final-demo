@@ -10,6 +10,8 @@ import {
   TableActionEvent,
   TableConfig,
   TableRowCell,
+  TransactionAction,
+  TransactionActionEvent,
 } from '../models/table.model';
 import { Badges } from '../../primitives/badges/badges';
 import { CurrencyPipe, DatePipe, SlicePipe } from '@angular/common';
@@ -83,6 +85,7 @@ export class Tables {
   // Output
   public actionClickedOutput = output<TableActionEvent>();
   public sortClickedOutput = output<string>();
+  public transactionClickedOutput = output<TransactionActionEvent>();
 
   // Methods
   public toggleSelectAll(): void {
@@ -97,7 +100,7 @@ export class Tables {
     this.selectedItems.update((val) => [...val, row]);
   }
 
-  public onCrudClick(action: string, rowId: string) {
+  public onCrudClick(action: string, rowId: string): void {
     this.actionClickedOutput.emit({
       action,
       rowId,
@@ -105,11 +108,22 @@ export class Tables {
     });
   }
 
-  public onSortClick(title: string) {
+  public onSortClick(title: string): void {
     this.sortClickedOutput.emit(title);
   }
 
-  public onPageChange(page: number) {
+  public onPageChange(page: number): void {
     this.currentPage.set(page);
+  }
+
+  public onTransactionActionClicked(
+    action: TransactionAction,
+    row: TableRowCell,
+  ) {
+    this.transactionClickedOutput.emit({
+      action,
+      rowId: row.id,
+      rowData: row.info,
+    });
   }
 }
