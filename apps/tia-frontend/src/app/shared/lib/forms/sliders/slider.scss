@@ -41,7 +41,7 @@ $thumb-size: 2.2rem;
         }
 
         &::-webkit-slider-runnable-track {
-            @include slider-track($track-height, $blue-ocean-muted);
+            @include slider-track($track-height, var(--color-muted));
             background-image: linear-gradient($blue-ocean, $blue-ocean);
             background-size: var(--slider-fill, 0%) 100%;
             background-repeat: no-repeat;
@@ -59,7 +59,7 @@ $thumb-size: 2.2rem;
         }
 
         &::-moz-range-track {
-            @include slider-track($track-height, $blue-ocean-muted);
+            @include slider-track($track-height, var(--color-muted));
         }
 
         &::-moz-range-progress {
@@ -74,7 +74,7 @@ $thumb-size: 2.2rem;
         }
     }
 
-    &__error {
+    &--error {
         @include font-arimo(400, 1.2rem, 1);
         color: $red-600;
     }
