@@ -8,5 +8,13 @@
 
   &--fields {
     width: 100%;
+
+    &__success {
+      color: $green-600
+    }
+
+    &__warning {
+      color: $yellow-600;
+    }
   }
 }

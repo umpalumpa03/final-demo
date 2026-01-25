@@ -35,7 +35,7 @@ export const REGISTATION_FORM = {
     placeholder: '••••••••',
   },
   birthDate: {
-    label: 'birthDate',
+    label: 'Birth Date',
     required: false,
     placeholder: 'Pick a date',
   },
