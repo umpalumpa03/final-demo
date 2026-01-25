@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Notes } from './notes';
-import { NOTES_DATA } from '../../../../features/admin/components/library/components/colorpalettes/config/palette-data.config';
-
+import { NOTES_DATA } from 'apps/tia-frontend/src/app/features/storybook/components/colorpalettes/config/palette-data.config';
 describe('Notes', () => {
   let component: Notes;
   let fixture: ComponentFixture<Notes>;

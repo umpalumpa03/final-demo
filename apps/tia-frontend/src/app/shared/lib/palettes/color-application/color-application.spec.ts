@@ -5,7 +5,7 @@ import {
   OCEANBLUE_APPLICATION_DATA,
   ROYALBLUE_APPLICATION_DATA,
   DEEPBLUE_APPLICATION_DATA,
-} from '../../../../features/admin/components/library/components/colorpalettes/config/palette-data.config';
+} from 'apps/tia-frontend/src/app/features/storybook/components/colorpalettes/config/palette-data.config';
 
 describe('ColorApplication', () => {
   let component: ColorApplication;

@@ -1,0 +1,41 @@
+@use '../../../../../shared/styles/mixins' as *;
+@use '../../../../../shared/styles/palette' as *;
+@use '../styles/forms-shared' as *;
+@use '../styles/forms-mixins' as *;
+
+
+
+.multi-step {
+  @extend %flex-stack;
+  @include custom-width(44.8rem, 2.4rem);
+
+  @media (max-width: 780px) {
+    width: 40rem;
+  }
+
+  @media (max-width: 480px) {
+    width: 24rem;
+  }
+
+  &__field {
+    @include display-flex(column);
+    @include custom-width();
+  }
+
+  &__btn-section {
+    @include flex-center(row);
+    @include custom-width(100%, 0.8rem);
+
+    div {
+      width: 100%;
+    }
+  }
+
+  &__row {
+    @extend %pair-fields;
+  }
+
+  &__row {
+    @extend %pair-fields;
+  }
+}

@@ -4,8 +4,8 @@ import {
   computed,
   input,
 } from '@angular/core';
-import { colorApplication } from '../../../../features/admin/components/library/components/colorpalettes/config/palette-data.config';
-import { ThemeType } from '../../../../features/admin/components/library/components/colorpalettes/model/color-palette.models';
+import { colorApplication } from 'apps/tia-frontend/src/app/features/storybook/components/colorpalettes/config/palette-data.config';
+import { ThemeType } from 'apps/tia-frontend/src/app/features/storybook/components/colorpalettes/model/color-palette.models';
 
 @Component({
   selector: 'app-color-application',

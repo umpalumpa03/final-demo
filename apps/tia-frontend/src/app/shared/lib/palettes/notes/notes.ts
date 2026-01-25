@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
-import { NOTES_DATA } from '../../../../features/admin/components/library/components/colorpalettes/config/palette-data.config';
+import { NOTES_DATA } from 'apps/tia-frontend/src/app/features/storybook/components/colorpalettes/config/palette-data.config';
 
 @Component({
   selector: 'app-notes',
