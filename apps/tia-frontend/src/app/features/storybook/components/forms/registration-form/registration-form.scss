@@ -1,0 +1,35 @@
+@use '../../../../../shared/styles/mixins' as *;
+@use '../../../../../shared/styles/palette' as *;
+@use '../styles/forms-shared' as *;
+@use '../styles/forms-mixins' as *;
+
+.registration {
+  @extend %flex-stack;
+  width: 44.8rem;
+
+  @media (max-width: 780px) {
+    width: 40rem;
+  }
+
+  @media (max-width: 480px) {
+    width: 24rem;
+  }
+
+  &__row {
+    @extend %pair-fields;
+
+    @media (max-width: 780px) {
+      flex-direction: column;
+    }
+  }
+
+  &__field {
+    @include display-flex(column);
+    @include custom-width();
+  }
+
+  &__label {
+    font-size: 1.4rem;
+    color: var(--color-fg-muted);
+  }
+}
