@@ -3,7 +3,7 @@
     <app-library-title [title]="pageTitle" [subtitle]="pageSubtitle" />
   </div>
   @for (section of alertSections; track section) {
-  <app-showcase-card [title]="section">
+  <app-showcase-card [title]="effectiveTitle(section)">
     <div class="alerts-page__group">
      @switch (section) { 
         @case (titles.BASIC) { 
@@ -26,11 +26,20 @@
         }
 
         @case(titles.DISMISSIBLE) {
+          <section class="alerts-page__card">
+            <h3 class="alerts-page__card__subtitle">{{ section }}</h3>
+            <app-button size="small" variant="outline" (click)="onResetAll()">
+              Reset All
+            </app-button>
+          </section>
+
           @for(item of alertDismissibleData; track item.id) {
             <app-dismissible-alerts
+            [alertId]="item.id"
             [alertTitle]="item.title"
             [alertType]="item.type" 
-            [alertMessage]="item.message" />
+            [alertMessage]="item.message"
+             />
           }
         }
 
@@ -40,9 +49,13 @@
             [alertType]="item.type" 
             [alertTitle]="item.title"
             [alertMessage]="item.message" 
-            [buttonOneText]="item.btnOneText"
-            [buttonTwoText]="item.btnTwoText"
-            />
+            >
+            <app-button size="small" [variant]="item.btnOneType">
+              {{ item.btnOneText }} </app-button>
+            <app-button [variant]="item.btnTwoType" size="small">
+              {{ item.btnTwoText }}
+            </app-button>
+          </app-alerts-with-actions>
           }
         }
 

@@ -13,26 +13,23 @@
   gap: 1.2rem;
   padding: 1rem 1.64rem;
 
-  @media (max-width: 108rem) {
-    width: 95%;
-  }
-
   @media (max-width: 76.8rem) {
     padding: 1rem;
     gap: 0.8rem;
   }
 
-  &__alert-icon-div {
+  &__icon {
     flex-shrink: 0;
-    img {
-      margin: 0.4rem 0rem;
-      width: 1.6rem;
-      height: 1.6rem;
-      object-fit: cover;
-    }
   }
 
-  &__alert-info-div {
+  &__image {
+    margin: 0.4rem 0rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    object-fit: cover;
+  }
+
+  &__info {
     justify-content: center;
     @include display-flex(column, nowrap);
     gap: 0.2rem;
@@ -49,13 +46,14 @@
     color: $blue-900;
   }
 
-  &__close-button {
+  &__close-btn {
     position: absolute;
     right: 0.25rem;
     top: 0.9rem;
     width: 3.6rem;
     height: 3.6rem;
     border-radius: 0.8rem;
+    z-index: 1;
 
     @include flex-center();
   }

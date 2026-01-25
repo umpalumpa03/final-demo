@@ -5,6 +5,7 @@ import {
   DismissibleAlertType, 
   SimpleAlertType 
 } from "@tia/shared/lib/alerts/shared/models/alert.models";
+import { ButtonVariant } from "@tia/shared/lib/primitives/button/button.model";
 
 export interface BaseAlertItem {
   id: number;
@@ -29,8 +30,10 @@ export interface AlertDismissibleItem extends BaseAlertItem {
 export interface AlertActionItem extends BaseAlertItem {
   type: BaseAlertType;
   title: string;
+  btnOneType: ButtonVariant; 
+  btnTwoType: ButtonVariant;
   btnOneText: string;
-  btnTwoText: string;
+  btnTwoText: string; 
 }
 
 export interface AlertSimpleItem extends BaseAlertItem {

@@ -1,13 +1,14 @@
-<div class="alert-types-icons" [class]="iconAlertClass()">
-  <div class="alert-types-icons__alert-icon-div">
+<div class="alert-icons" [class]="iconAlertClass()">
+  <div class="alert-icons__wrapper">
     <img
+      class="alert-icons__image"
       [src]="effectiveImgPath()"
       [alt]="effectiveAltName()"
     />
   </div>
-  <div class="alert-types-icons__alert-info-div">
-    <div class="alert-types-icons__title">{{alertType() | firstUpper}}</div>
-    <div class="alert-types-icons__message">
+  <div class="alert-icons__content">
+    <div class="alert-icons__title">{{alertType() | firstUpper}}</div>
+    <div class="alert-icons__message">
       {{alertMessage() | firstUpper}}
     </div>
   </div>
