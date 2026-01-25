@@ -16,7 +16,7 @@
         margin-bottom: 0.4rem;
     }
 
-    &__error {
+    &--error {
         @include font-arimo(400, 1.2rem, 1);
         color: $red-600;
         margin-top: 0.4rem;
