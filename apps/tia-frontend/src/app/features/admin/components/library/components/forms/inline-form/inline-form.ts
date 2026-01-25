@@ -29,7 +29,7 @@ export class InlineForm {
     email: ['', [Validators.required, Validators.email]],
   });
 
-  public submit() {
+  public submit(): void {
     if (this.inlineForm.invalid) {
       this.inlineForm.markAllAsTouched();
       return;

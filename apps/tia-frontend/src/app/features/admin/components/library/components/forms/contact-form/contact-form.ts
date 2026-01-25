@@ -37,7 +37,7 @@ export class ContactForms {
     subscribe: [false, [Validators.requiredTrue]],
   });
 
-  public submit() {
+  public submit(): void {
     if (this.contactForm.invalid) {
       this.contactForm.markAllAsTouched();
       return;

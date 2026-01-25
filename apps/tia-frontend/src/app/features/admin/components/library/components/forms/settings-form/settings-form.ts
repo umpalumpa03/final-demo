@@ -51,11 +51,11 @@ export class SettingsForm {
     return { initialValue: this.settingControl.value.plan, hasBorder: true };
   }
 
-  public cancel(route: string) {
+  public cancel(route: string): void {
     this.router.navigate([`/${route}`]);
   }
 
-  public saveChange() {
+  public saveChange(): void {
     if (!this.settingControl.valid) {
       this.settingControl.markAllAsTouched();
       return;

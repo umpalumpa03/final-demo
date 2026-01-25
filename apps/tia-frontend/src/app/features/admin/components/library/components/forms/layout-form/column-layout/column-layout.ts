@@ -29,7 +29,7 @@ export class ColumnLayout {
     phone: ['', [Validators.required]],
   });
 
-  public submitTwoColomnLayout() {
+  public submitTwoColumnLayout(): void {
     if (
       this.twoColumnLayoutControl.invalid ||
       !this.twoColumnLayoutControl.value

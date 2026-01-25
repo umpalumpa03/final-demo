@@ -60,19 +60,19 @@ export class MultistepForms {
     }),
   });
 
-  public next() {
+  public next(): void {
     if (this.currentStep() < this.totalSteps) {
       this.currentStep.update((v) => v + 1);
     }
   }
 
-  public previous() {
+  public previous(): void {
     if (this.currentStep() > 1) {
       this.currentStep.update((v) => v - 1);
     }
   }
 
-  public submit() {
+  public submit(): void {
     console.log(this.form.value);
   }
 

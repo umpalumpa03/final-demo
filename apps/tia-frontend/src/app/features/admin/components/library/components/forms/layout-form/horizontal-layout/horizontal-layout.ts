@@ -29,7 +29,7 @@ export class HorizontalLayout {
     message: [''],
   });
 
-  public submitHorizontalLayout() {
+  public submitHorizontalLayout(): void {
     if (this.horizontalForm.invalid || !this.horizontalForm.value) {
       this.horizontalForm.markAllAsTouched();
       return;

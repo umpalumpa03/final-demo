@@ -26,7 +26,7 @@ describe('ColumnLayout', () => {
     };
 
     component.twoColumnLayoutControl.setValue(value);
-    component.submitTwoColomnLayout();
+    component.submitTwoColumnLayout();
 
     expect(spy).toHaveBeenCalledOnce();
     expect(spy).toHaveBeenCalledWith(value);

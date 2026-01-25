@@ -71,7 +71,7 @@ export class RegistrationForm {
     return 'default';
   }
 
-  public submit() {
+  public submit(): void {
     if (this.registrationForm.invalid || !this.registrationForm.value) {
       this.registrationForm.markAllAsTouched();
       return;
