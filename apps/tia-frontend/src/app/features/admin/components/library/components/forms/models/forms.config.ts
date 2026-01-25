@@ -35,7 +35,7 @@ export const REGISTATION_FORM = {
     placeholder: '••••••••',
   },
   birthDate: {
-    label: 'birthDate',
+    label: 'Birth Date',
     required: false,
     placeholder: 'Pick a date',
   },
@@ -118,12 +118,12 @@ export const STEP_FORM = [
 
 export const MULTI_FORM = {
   name: {
-    abel: 'Name',
+    label: 'Name',
     required: true,
     placeholder: 'Your Name',
   },
   bio: {
-    abel: 'Message',
+    label: 'Message',
     required: true,
     placeholder: 'Type your message here...',
   },
@@ -151,6 +151,7 @@ export const PLAN_OPTION = [
 export const VALIDATION_FORM = {
   success: {
     label: 'Valid Input',
+    successMessage: 'Email format is correct'
   },
   error: {
     label: 'Invalid Input',
@@ -158,5 +159,6 @@ export const VALIDATION_FORM = {
   },
   warning: {
     label: 'Warning Input',
+    warningMessage: 'Temporary email addresses may not receive notifications'
   },
 };

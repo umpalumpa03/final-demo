@@ -1,10 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import {
-  FormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { TextInput } from "@tia/shared/lib/forms/input-field/text-input";
+import { ChangeDetectionStrategy, Component, HostBinding, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { VALIDATION_FORM } from '../models/forms.config';
 
 @Component({
@@ -12,15 +8,15 @@ import { VALIDATION_FORM } from '../models/forms.config';
   imports: [TextInput, ReactiveFormsModule],
   templateUrl: './validation-form.html',
   styleUrl: './validation-form.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ValidationForm {
   private fb = inject(FormBuilder);
   public validationConfig = VALIDATION_FORM;
 
   public contactForm = this.fb.nonNullable.group({
-    valid: ['john@example.com'],
-    invalid: ['invalidemail'],
-    warning: ['test@temp-mail.com'],
+    valid: ['john@example.com', Validators.email],
+    invalid: ['invalidemail', Validators.email],
+    warning: ['test@temp-mail.com', Validators.email],
   });
 }

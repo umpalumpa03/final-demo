@@ -4,7 +4,6 @@ import {
   inject,
   output,
 } from '@angular/core';
-import { getErrorMessage } from '../../../../../../../shared/utils/form-validations';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IContactForm } from '../models/contact-forms.model';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
@@ -38,7 +37,7 @@ export class ContactForms {
     subscribe: [false, [Validators.requiredTrue]],
   });
 
-  public submit() {
+  public submit(): void {
     if (this.contactForm.invalid) {
       this.contactForm.markAllAsTouched();
       return;

@@ -30,9 +30,9 @@ export class SettingsForm {
 
   public settingControl = this.fb.nonNullable.group({
     plan: [this.planOptions[0]?.value ?? null, Validators.required],
-    email: [true, Validators.required],
-    push: [false, Validators.required],
-    sms: [false, Validators.required],
+    email: [true],
+    push: [false],
+    sms: [false],
   });
 
   public get email() {
@@ -51,11 +51,11 @@ export class SettingsForm {
     return { initialValue: this.settingControl.value.plan, hasBorder: true };
   }
 
-  public cancel(route: string) {
+  public cancel(route: string): void {
     this.router.navigate([`/${route}`]);
   }
 
-  public saveChange() {
+  public saveChange(): void {
     if (!this.settingControl.valid) {
       this.settingControl.markAllAsTouched();
       return;

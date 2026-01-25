@@ -2,29 +2,27 @@
   <div class="validation__form--fields">
     <lib-text-input
       state="success"
-      type="text"
+      type="email"
       formControlName="valid"
       [config]="validationConfig.success"
     ></lib-text-input>
-    <span>Email format is correct</span>
   </div>
 
   <div class="validation__form--fields">
     <lib-text-input
       state="error"
-      type="text"
+      type="email"
       formControlName="invalid"
       [config]="validationConfig.error"
     ></lib-text-input>
   </div>
 
-  <div class="validation__form--fields">
+  <div class="validation__form--fields validation__form--warning">
     <lib-text-input
       state="warning"
-      type="text"
+      type="email"
       formControlName="warning"
       [config]="validationConfig.warning"
     ></lib-text-input>
-    <span>Temporary email addresses may not receive notifications</span>
   </div>
 </form>

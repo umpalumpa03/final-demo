@@ -12,19 +12,19 @@ export class StepperHeader {
   public content = input.required<IStepConfig[]>();
   public step = input.required<number>();
 
-  public isCompleted(index: number) {
+  public isCompleted(index: number): boolean {
     return index + 1 < this.step();
   }
 
-  public isActive(index: number) {
+  public isActive(index: number): boolean {
     return index + 1 === this.step();
   }
 
-  public isLineActive(index: number) {
+  public isLineActive(index: number): boolean {
     return index + 1 < this.step();
   }
 
-  public showLine(index: number) {
+  public showLine(index: number): boolean {
     return index < (this.content()?.length ?? 0) - 1;
   }
 }

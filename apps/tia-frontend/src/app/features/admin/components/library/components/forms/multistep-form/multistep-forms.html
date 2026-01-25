@@ -1,11 +1,11 @@
-@let step = currentStep(); @let activeStep = currentStepConfig();
+@let step = currentStep();
 
 <form class="multi-step" [formGroup]="form" (ngSubmit)="submit()">
   <div class="multi-step__field">
-    <app-stepper-header [content]="stepsConfig" [step]="step" />
+    <app-stepper-header [content]="stepsConfig" [step]="currentStep()" />
   </div>
 
-  @for (config of stepsConfig; track config.key) { @if (config === activeStep) {
+  @for (config of stepsConfig; track config.key) { @if (config.key === stepsConfig[step - 1].key) {
   <form class="multi-step__field" [formGroupName]="config.key">
     @if (isFrom(config)) {
     <lib-text-input
