@@ -7,7 +7,7 @@ import {
 } from '@ngrx/effects';
 import { ThemeActions } from './theme.actions';
 import { tap } from 'rxjs';
-import { toCamelCase } from '@tia/shared/utils/camel-case/camel-case.utils';
+import { toCamelCase } from 'apps/tia-frontend/src/app/core/auth/utils/camel-case/camel-case.utils';
 
 @Injectable()
 export class ThemeEffects {
