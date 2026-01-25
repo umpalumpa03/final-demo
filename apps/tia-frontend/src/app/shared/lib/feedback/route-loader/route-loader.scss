@@ -8,7 +8,7 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
+    height: 0.4rem;
     background: $gray-200;
     z-index: 9999;
   }
@@ -23,7 +23,7 @@
   &--full-page {
     @include flex-center(column);
     gap: 2rem;
-    background: rgba(255, 255, 255, 0.95);
+    background: $white;
     z-index: 9999;
   }
 

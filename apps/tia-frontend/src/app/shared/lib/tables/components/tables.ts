@@ -10,16 +10,27 @@ import {
   TableActionEvent,
   TableConfig,
   TableRowCell,
+  TransactionAction,
+  TransactionActionEvent,
 } from '../models/table.model';
 import { Badges } from '../../primitives/badges/badges';
-import { DatePipe, SlicePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, SlicePipe } from '@angular/common';
 import { crudConfig } from '../models/table.crud.config';
 import { Checkboxes } from '../../forms/checkboxes/checkboxes';
 import { Pagination } from '../../navigation/pagination/pagination';
+import { ButtonComponent } from '../../primitives/button/button';
 
 @Component({
   selector: 'app-tables',
-  imports: [Badges, Checkboxes, DatePipe, Pagination, SlicePipe],
+  imports: [
+    Badges,
+    Checkboxes,
+    DatePipe,
+    Pagination,
+    SlicePipe,
+    CurrencyPipe,
+    ButtonComponent,
+  ],
   templateUrl: './tables.html',
   styleUrl: './tables.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,7 +41,7 @@ export class Tables {
   public readonly crudConfig = crudConfig;
   public currentPage = signal<number>(1);
   public readonly totalPage = computed(() =>
-    Math.ceil(this.tableConfig().rows.length / this.tableConfig().itemPerPage),
+    Math.ceil(this.tableConfig().rows.length / this.tableConfig().itemsPerPage),
   );
 
   // Here I check for different kind of tables
@@ -55,15 +66,16 @@ export class Tables {
   public readonly isPagination = computed(
     () => this.tableConfig().paginationType === 'page',
   );
+
   // /////////////////////
 
   // Needed for Page navigation
   public readonly startIndex = computed(
-    () => (this.currentPage() - 1) * this.tableConfig().itemPerPage,
+    () => (this.currentPage() - 1) * this.tableConfig().itemsPerPage,
   );
 
   public readonly endIndex = computed(
-    () => this.startIndex() + this.tableConfig().itemPerPage,
+    () => this.startIndex() + this.tableConfig().itemsPerPage,
   );
   // /////////////////
 
@@ -73,6 +85,7 @@ export class Tables {
   // Output
   public actionClickedOutput = output<TableActionEvent>();
   public sortClickedOutput = output<string>();
+  public transactionClickedOutput = output<TransactionActionEvent>();
 
   // Methods
   public toggleSelectAll(): void {
@@ -87,7 +100,7 @@ export class Tables {
     this.selectedItems.update((val) => [...val, row]);
   }
 
-  public onCrudClick(action: string, rowId: string) {
+  public onCrudClick(action: string, rowId: string): void {
     this.actionClickedOutput.emit({
       action,
       rowId,
@@ -95,11 +108,22 @@ export class Tables {
     });
   }
 
-  public onSortClick(title: string) {
+  public onSortClick(title: string): void {
     this.sortClickedOutput.emit(title);
   }
 
-  public onPageChange(page: number) {
+  public onPageChange(page: number): void {
     this.currentPage.set(page);
+  }
+
+  public onTransactionActionClicked(
+    action: TransactionAction,
+    row: TableRowCell,
+  ): void {
+    this.transactionClickedOutput.emit({
+      action,
+      rowId: row.id,
+      rowData: row.info,
+    });
   }
 }

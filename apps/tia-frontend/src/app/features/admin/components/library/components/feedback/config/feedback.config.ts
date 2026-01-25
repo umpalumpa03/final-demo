@@ -30,11 +30,11 @@ export interface ListItem {
 export const LOADING_CARDS: LoadingCard[] = [
   {
     id: 'card-1',
-    width: '32.8rem',
+    width: '100%',
     height: '23.8rem',
     credentials: [
-      { id: 'cred-1-1', width: '19.6rem', height: '1.6rem' },
-      { id: 'cred-1-2', width: '13.1rem', height: '1.2rem' }
+      { id: 'cred-1-1', width: '100%', height: '1.6rem' },
+      { id: 'cred-1-2', width: '80%', height: '1.2rem' }
     ],
     content: [
       { id: 'content-1-1', width: '100%', height: '8rem' },
@@ -43,12 +43,12 @@ export const LOADING_CARDS: LoadingCard[] = [
   },
   {
     id: 'card-2',
-    width: '32.8rem',
+    width: '100%',
     height: '23.8rem',
     avatar: { height: '4.8rem', variant: 'circle' },
     credentials: [
-      { id: 'cred-2-1', width: '19.6rem', height: '1.6rem' },
-      { id: 'cred-2-2', width: '13.1rem', height: '1.2rem' }
+      { id: 'cred-2-1', width: '100%', height: '1.6rem' },
+      { id: 'cred-2-2', width: '70%', height: '1.2rem' }
     ],
     content: [
       { id: 'content-2-1', width: '100%', height: '1.2rem' },
@@ -58,10 +58,11 @@ export const LOADING_CARDS: LoadingCard[] = [
   }
 ];
 
+
 export const TEXT_SKELETONS: SkeletonItem[] = [
-  { id: 'text-1', width: '44.8rem', height: '1.6rem' },
-  { id: 'text-2', width: '37.3rem', height: '1.6rem' },
-  { id: 'text-3', width: '30.3rem', height: '1.6rem' }
+  { id: 'text-1', width: '45%', height: '1.6rem' },
+  { id: 'text-2', width: '35%', height: '1.6rem' },
+  { id: 'text-3', width: '30%', height: '1.6rem' }
 ];
 
 export const IMAGE_SKELETONS: SkeletonItem[] = [
@@ -75,24 +76,24 @@ export const LIST_ITEMS: ListItem[] = [
     id: 'list-1',
     avatar: { height: '4rem', variant: 'circle' },
     credentials: [
-      { id: 'list-cred-1-1', width: '29.4rem', height: '1.6rem' },
-      { id: 'list-cred-1-2', width: '19.6rem', height: '1.2rem' }
+      { id: 'list-cred-1-1', width: '30%', height: '1.6rem' },
+      { id: 'list-cred-1-2', width: '20%', height: '1.2rem' }
     ]
   },
   {
     id: 'list-2',
     avatar: { height: '4rem', variant: 'circle' },
     credentials: [
-      { id: 'list-cred-2-1', width: '29.4rem', height: '1.6rem' },
-      { id: 'list-cred-2-2', width: '19.6rem', height: '1.2rem' }
+      { id: 'list-cred-2-1', width: '30%', height: '1.6rem' },
+      { id: 'list-cred-2-2', width: '20%', height: '1.2rem' }
     ]
   },
   {
     id: 'list-3',
     avatar: { height: '4rem', variant: 'circle' },
     credentials: [
-      { id: 'list-cred-3-1', width: '29.4rem', height: '1.6rem' },
-      { id: 'list-cred-3-2', width: '19.6rem', height: '1.2rem' }
+      { id: 'list-cred-3-1', width: '30%', height: '1.6rem' },
+      { id: 'list-cred-3-2', width: '20%', height: '1.2rem' }
     ]
   }
 ];
