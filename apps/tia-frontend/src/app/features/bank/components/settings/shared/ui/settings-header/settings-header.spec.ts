@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { SettingsContainer } from './settings-container';
+import { SettingsHeader } from './settings-header';
 
-describe('SettingsContainer', () => {
-  let component: SettingsContainer;
-  let fixture: ComponentFixture<SettingsContainer>;
+describe('SettingsHeader', () => {
+  let component: SettingsHeader;
+  let fixture: ComponentFixture<SettingsHeader>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SettingsContainer],
+      imports: [SettingsHeader],
       providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SettingsContainer);
+    fixture = TestBed.createComponent(SettingsHeader);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
