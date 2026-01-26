@@ -52,6 +52,7 @@ export interface InputConfig {
   label?: string;
   placeholder?: string;
   helperText?: string;
+  warningMessage?: string;
   errorMessage?: string;
   successMessage?: string;
   disabled?: boolean;
@@ -62,6 +63,7 @@ export interface InputConfig {
   autocomplete?: string;
   ariaLabel?: string;
   showCharacterCount?: boolean;
+  labelIconUrl?: string;
   prefixIcon?: string;
   suffixIcon?: string;
   showPasswordToggle?: boolean;

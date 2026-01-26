@@ -1,0 +1,22 @@
+@use '../../../../shared/styles/palette' as *;
+@use '../../../../shared/styles/mixins' as *;
+
+.sign-in {
+  font-size: 2rem;
+  margin: 5rem auto;
+  width: 40rem;
+}
+
+.sign-up__switch {
+  color: $gray-700;
+  font-size: 1.4rem;
+}
+
+.sign-up__link {
+  color: $blue-800;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

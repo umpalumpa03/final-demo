@@ -10,7 +10,7 @@
     &--open {
         .select__trigger {
             box-shadow: 0 0 0 0.3rem rgba($blue-ocean, 0.15);
-            border-color: $blue-ocean;
+            border-color: var(--color-primary);
         }
 
         .select__arrow {
@@ -49,7 +49,7 @@
         height: 4.4rem;
         padding: 0 1.6rem;
         background-color: $white;
-        border: 0.1rem solid rgba($blue-ocean, 0.4);
+        border: 0.1rem solid var(--color-primary);
         border-radius: 0.8rem;
         cursor: pointer;
         user-select: none;
@@ -73,20 +73,16 @@
 
     &__value {
         @include font-arimo(400, 1.4rem, 1.5);
-        color: $blue-600;
+        color: var(--color-fg);
         flex: 1;
         text-align: left;
-
-        &--placeholder {
-            color: rgba($blue-ocean, 0.6);
-        }
     }
 
     &__arrow {
         width: 0.8rem;
         height: 0.8rem;
-        border-right: 0.15rem solid $blue-ocean;
-        border-bottom: 0.15rem solid $blue-ocean;
+        border-right: 0.15rem solid var(--color-fg);
+        border-bottom: 0.15rem solid var(--color-fg);
         transform: rotate(45deg);
         transition: transform 0.2s ease;
         margin-top: -0.4rem;
