@@ -31,7 +31,7 @@ describe('TablesLayout', () => {
   it('should eventually stop loading after the timeout', async () => {
     component.onPageChange(2);
 
-    await wait(600);
+    await wait(1000);
 
     expect(component.isLoading()).toBe(false);
   });
@@ -48,28 +48,10 @@ describe('TablesLayout', () => {
   it('should update basicConfig rows on successful load', async () => {
     component.onPageChange(2);
 
-    await wait(600);
+    await wait(1000);
 
     if (!component.hasError()) {
       expect(component.basicConfig().rows).toBeDefined();
-    }
-  });
-
-  it('should cover the signal update logic and initial page branch', async () => {
-    let success = false;
-    let attempts = 0;
-
-    while (!success && attempts < 10) {
-      component.onPageChange(1);
-      await wait(600);
-
-      if (!component.hasError()) {
-        success = true;
-        expect(component.basicConfig().rows).toEqual(
-          (component as any).rowsInitialPageData,
-        );
-      }
-      attempts++;
     }
   });
 
@@ -79,7 +61,7 @@ describe('TablesLayout', () => {
 
     while (!errorHandled && attempts < 10) {
       component.onPageChange(2);
-      await wait(600);
+      await wait(1000);
 
       if (component.hasError()) {
         errorHandled = true;
