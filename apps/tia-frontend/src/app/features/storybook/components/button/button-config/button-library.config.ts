@@ -99,13 +99,13 @@ export const INTERACTIVE_EXAMPLES = [
 export const BUTTON_GROUPS = {
   simple: {
     count: 3,
-    labels: ['Left', 'Center', 'Right']
+    labels: ['Left', 'Center', 'Right'] // static texts
   },
 
   withActions: [
     { 
       label: 'Save', 
-      action: () => console.log('Save Function Example Runs!') 
+      action: () => console.log('Save Function Example Runs!') // function binding on groups
     },
     { 
       label: 'Delete', 
@@ -120,7 +120,7 @@ export const BUTTON_GROUPS = {
     },
     { 
       label: 'Profile', 
-      routerLink: '/profile' 
+      routerLink: '/profile'   // navigation binding on button groups
     },
     { 
       label: 'Settings', 

@@ -16,6 +16,7 @@ export class ButtonGroupComponent {
   protected readonly activeIndex = signal<number>(0);
   public readonly selectionChange = output<number>();
 
+  // Add functions for button-groups
   protected readonly finalButtons = computed((): ButtonGroupItem[] => {
     const configItems = this.items();
     
