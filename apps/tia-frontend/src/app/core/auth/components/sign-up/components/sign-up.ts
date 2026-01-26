@@ -3,6 +3,7 @@ import {
   Component,
   DestroyRef,
   inject,
+  OnInit,
   signal,
 } from '@angular/core';
 import { catchError, EMPTY, tap } from 'rxjs';
@@ -12,41 +13,44 @@ import { Router, RouterLink } from '@angular/router';
 import { RegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/registration-form/registration-form';
 import { TokenService } from '../../../services/token.service';
 import { IRegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/models/contact-forms.model';
+import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 
 @Component({
   selector: 'app-sign-up',
-  imports: [RouterLink, RegistrationForm],
+  imports: [RouterLink, RegistrationForm, Spinner],
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SignUp {
+export class SignUp implements OnInit{
   private signUpService = inject(SignUpService);
   private tokenService = inject(TokenService);
   private router = inject(Router)
   
   private destroyRef = inject(DestroyRef);
 
-  // Loading State
-  public apiResult = signal<string>('Idle');
+  public loadingState = signal<boolean>(true);
+  public errorMessage = signal<string>('');
+
+  ngOnInit(): void {
+    this.loadingState.set(false)
+  }
 
 
   public onSignUp(signUpData: IRegistrationForm): void {
-    this.apiResult.set('Checking...');
+    this.loadingState.set(true);
 
     this.signUpService
       .signUpUser(signUpData)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
-          this.apiResult.set('Complete');
           if (res)
-            // 
             this.tokenService.setSignUpToken(res.signup_token)
 
-            this.apiResult.set('Complete');
+            this.loadingState.set(false);
+            this.errorMessage.set('')
 
-            // 🚀
             this.router.navigate(['/auth/sign-up/otp']);
         }),
 
@@ -58,17 +62,16 @@ export class SignUp {
             const invalidEmailError = "email must be an email"
 
             if(messages[0] === invalidEmailError) {
-              this.apiResult.set('Invalid Email');
+              this.errorMessage.set('Invalid Email');
             } else {
-              this.apiResult.set(messages[0]);
+              this.errorMessage.set(messages[0]);
             }
           } else if (typeof messages === 'string') {
-            this.apiResult.set(messages);
+            this.errorMessage.set(messages);
           } else {
-            this.apiResult.set('An unexpected error occurred');
+            this.errorMessage.set('An unexpected error occurred');
           }
 
-          // --
           return EMPTY;
         }),
       )

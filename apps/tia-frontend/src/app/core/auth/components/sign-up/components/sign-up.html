@@ -1,7 +1,11 @@
 <section class="sign-up">
-    <app-registration-form (submitRegistrationForm)="onSignUp($event)"></app-registration-form>
-    
-    <p class="sign-up__switch">Already have an account? <span class="sign-up__link" [routerLink]="['/auth/sign-in']">Sign in</span></p>
-
-    <h2>{{apiResult()}}</h2>
+    @if(!loadingState()) {
+        <app-registration-form (submitRegistrationForm)="onSignUp($event)"></app-registration-form>
+        
+        <p class="sign-up__switch">Already have an account? <span class="sign-up__link" [routerLink]="['/auth/sign-in']">Sign in</span></p>
+        
+        <h2>{{errorMessage()}}</h2>
+    } @else {
+        <app-spinner size = '4rem'></app-spinner>
+    }
 </section>
