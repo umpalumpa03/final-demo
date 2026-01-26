@@ -5,6 +5,7 @@ import {
   effect,
   inject,
   input,
+  OnDestroy,
   output,
   signal,
 } from '@angular/core';
@@ -26,6 +27,7 @@ import {
   PASSWORD_RULE_MESSAGES,
   PASSWORD_RULES,
 } from '../models/forms.config';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-registration-form',
@@ -34,7 +36,7 @@ import {
   styleUrl: './registration-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistrationForm {
+export class RegistrationForm implements OnDestroy {
   public countries = COUNTRY_OPTIONS;
   public inputConfig = REGISTATION_FORM;
   public readonly isRegistration = input<boolean>(true);
@@ -43,17 +45,18 @@ export class RegistrationForm {
   public readonly passwordInteracted = signal<boolean>(false);
 
   private readonly fb = inject(FormBuilder);
+  private readonly destroy$ = new Subject<void>();
   public readonly submitRegistrationForm = output<IRegistrationForm>();
   private readonly ALL_PASSWORD_RULES = PASSWORD_RULES;
 
   constructor() {
-    this.passwordControl?.valueChanges.subscribe(() => {
-      this.passwordRules.set(
-        this.passwordControl?.errors?.['passwordRules'] ??
-          (this.passwordControl?.valid ? this.ALL_PASSWORD_RULES : null),
-      );
-      if (!this.passwordInteracted()) this.passwordInteracted.set(true);
-    });
+    this.passwordControl?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.onPasswordChange());
+
+    this.confirmPasswordControl?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.comparePasswords());
 
     effect(() => {
       const isRegister = this.isRegistration();
@@ -89,9 +92,50 @@ export class RegistrationForm {
     return this.registrationForm.get('password');
   }
 
+  public get confirmPasswordControl() {
+    return this.registrationForm.get('confirmPassword');
+  }
+
+  private onPasswordChange() {
+    this.passwordRules.set(
+      this.passwordControl?.errors?.['passwordRules'] ??
+        (this.passwordControl?.valid ? this.ALL_PASSWORD_RULES : null),
+    );
+    if (!this.passwordInteracted()) {
+      this.passwordInteracted.set(true);
+    }
+    this.comparePasswords();
+  }
+
   public readonly passwordRules = signal<Record<string, boolean> | null>(
     this.passwordControl?.errors?.['passwordRules'] ?? null,
   );
+
+  public readonly showPasswordRules = computed(() => {
+    const rules = this.passwordRules();
+    if (!rules) return false;
+    return this.passwordInteracted() || Object.values(rules).every(Boolean);
+  });
+
+  public readonly minLength = computed(() => {
+    const rules = this.passwordRules();
+    return !!rules && !!rules['minLength'];
+  });
+
+  public readonly uppercaseLowercase = computed(() => {
+    const rules = this.passwordRules();
+    return !!rules && !!(rules['uppercase'] && rules['lowercase']);
+  });
+
+  public readonly numberRule = computed(() => {
+    const rules = this.passwordRules();
+    return !!rules && !!rules['number'];
+  });
+
+  public readonly specialRule = computed(() => {
+    const rules = this.passwordRules();
+    return !!rules && !!rules['special'];
+  });
 
   public readonly passwordStrength = computed<PasswordStrength>(() => {
     const rules = this.passwordRules();
@@ -122,32 +166,6 @@ export class RegistrationForm {
         Object.values(rules).length) *
       100
     );
-  });
-
-  public readonly showPasswordRules = computed(() => {
-    const rules = this.passwordRules();
-    if (!rules) return false;
-    return this.passwordInteracted() || Object.values(rules).every(Boolean);
-  });
-
-  public readonly minLength = computed(() => {
-    const rules = this.passwordRules();
-    return !!rules && !!rules['minLength'];
-  });
-
-  public readonly uppercaseLowercase = computed(() => {
-    const rules = this.passwordRules();
-    return !!rules && !!(rules['uppercase'] && rules['lowercase']);
-  });
-
-  public readonly numberRule = computed(() => {
-    const rules = this.passwordRules();
-    return !!rules && !!rules['number'];
-  });
-
-  public readonly specialRule = computed(() => {
-    const rules = this.passwordRules();
-    return !!rules && !!rules['special'];
   });
 
   public readonly firstFailedRule = computed(() => {
@@ -183,15 +201,24 @@ export class RegistrationForm {
     return control ? control.invalid && control.touched : false;
   }
 
+  private comparePasswords() {
+    const confirm = this.confirmPasswordControl;
+    if (!confirm) return;
+    if (this.passwordControl?.value !== confirm.value) {
+      confirm.setErrors({ ...confirm.errors, passwordMismatch: true });
+    } else if (confirm.errors) {
+      delete confirm.errors['passwordMismatch'];
+      if (Object.keys(confirm.errors).length === 0) confirm.setErrors(null);
+    }
+  }
+
   public get confirmPasswordState(): InputState {
-    const control = this.registrationForm.get('confirmPassword');
+    const control = this.confirmPasswordControl;
     if (this.showError('confirmPassword')) {
       return 'error';
     }
-    if (
-      this.registrationForm.hasError('passwordMismatch') &&
-      control?.touched
-    ) {
+
+    if (control?.value && this.passwordControl?.value !== control?.value) {
       return 'error';
     }
 
@@ -212,5 +239,10 @@ export class RegistrationForm {
     this.passwordTouched.set(false);
     this.passwordInteracted.set(false);
     this.passwordRules.set(null);
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

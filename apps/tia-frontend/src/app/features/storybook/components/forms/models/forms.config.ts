@@ -33,6 +33,7 @@ export const REGISTATION_FORM = {
     label: 'Confirm Password',
     required: false,
     placeholder: '••••••••',
+    errorMessage: 'Passwords do not match',
   },
   username: {
     label: 'Username',

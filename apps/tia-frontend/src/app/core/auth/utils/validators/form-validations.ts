@@ -1,37 +1,9 @@
-import { computed } from '@angular/core';
 import {
   AbstractControl,
   FormGroup,
   ValidationErrors,
   ValidatorFn,
 } from '@angular/forms';
-
-export const getErrorMessage = (
-  control: AbstractControl | null,
-  label: string,
-) =>
-  computed(() => {
-    if (!control) {
-      return '';
-    }
-
-    if (control.hasError('required')) {
-      return `${label} is required`;
-    }
-
-    if (control.hasError('minlength')) {
-      return `min length of ${label} is ${control.errors?.['minlength']?.requiredLength}`;
-    }
-
-    if (control.hasError('passwordStrength')) {
-      return 'Password must contain uppercase, lowercase, number, and special character';
-    }
-    if (control.hasError('PasswordNoMatch')) {
-      return 'Passwords do not match';
-    }
-
-    return 'Invalid field';
-  });
 
 export const passwordMatchValidator: ValidatorFn = (
   control: AbstractControl,
