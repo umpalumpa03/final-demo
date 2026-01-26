@@ -3,24 +3,103 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AuthService } from './auth-service';
 import { TokenService } from './token.service';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { vi } from 'vitest';
+import { Router } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
-describe('AuthServices', () => {
+describe('AuthService (Vitest)', () => {
   let service: AuthService;
+  let httpMock: HttpTestingController;
+  let router: Router;
+  let tokenService: TokenService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        AuthService,
-        TokenService,
-        provideRouter([]),  
-        provideHttpClientTesting(),
-      ],
+      imports: [HttpClientTestingModule],
+      providers: [AuthService, TokenService, provideRouter([]), provideHttpClientTesting()],
     });
 
     service = TestBed.inject(AuthService);
+    httpMock = TestBed.inject(HttpTestingController);
+    router = TestBed.inject(Router);
+    tokenService = TestBed.inject(TokenService);
+
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    vi.spyOn(tokenService, 'setVerifyToken').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    httpMock.verify();
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should set and get challengeId', () => {
+    service.setChellangeId('123');
+    expect(service.getChallengeId()).toBe('123');
+  });
+
+  it('should set and get access token', () => {
+    service.setTokens('access123', 'refresh123');
+    expect(service.getAccessToken()).toBe('access123');
+  });
+
+  it('loginPostRequest should handle mfa_required response', (done) => {
+    const loginData = { username: 'test@test.com', password: 'password' };
+    const mockResponse = { status: 'mfa_required', challengId: 'challenge123' };
+
+    service.loginPostRequest(loginData).subscribe((res) => {
+      expect(service.getChallengeId()).toBe('challenge123');
+      expect(router.navigate).toHaveBeenCalledWith(['/auth/otp-verify']);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
+    expect(req.request.method).toBe('POST');
+    req.flush(mockResponse);
+  });
+
+  it('loginPostRequest should handle phone_verification_required response', (done) => {
+    const loginData = { username: 'test@test.com', password: 'password' } as any;
+    const mockResponse = { status: 'phone_verification_required', verification_token: 'token123' };
+
+    service.loginPostRequest(loginData).subscribe((res) => {
+      expect(tokenService.setVerifyToken).toHaveBeenCalledWith('token123');
+      expect(router.navigate).toHaveBeenCalledWith(['/auth/phone-verify']);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
+    expect(req.request.method).toBe('POST');
+    req.flush(mockResponse);
+  });
+
+  it('loginPostRequest should handle error response', (done) => {
+    const loginData = { username: 'test@test.com', password: 'password' } as any;
+    const mockError = { status: 401, statusText: 'Unauthorized', error: { message: 'Invalid credentials' } };
+
+    service.loginPostRequest(loginData).subscribe({
+      error: (err) => {
+        expect(service.loginError()).toBe('Invalid credentials');
+        expect(service.isLoginLoading()).toBe(false);
+      },
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
+    req.flush(mockError.error, { status: 401, statusText: 'Unauthorized' });
+  });
+
+  it('signUpUser should POST correct data', (done) => {
+    const signUpData = { email: 'test@test.com', password: 'password' };
+    const mockResponse = { signup_token: 'token123' };
+
+    service.signUpUser(signUpData as any).subscribe((res) => {
+      expect(res).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/signup`);
+    expect(req.request.method).toBe('POST');
+    req.flush(mockResponse);
   });
 });

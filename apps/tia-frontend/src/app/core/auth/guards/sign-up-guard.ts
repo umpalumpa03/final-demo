@@ -6,11 +6,9 @@ export const signUpGuard: CanActivateFn = (route, state) => {
   const tokenService = inject(TokenService)
   
   const currSignUpToken = tokenService.getSignUpToken;
-  // RESET LOCAL SIGNUP TOKEN
   if (currSignUpToken) {
     return true;
   }
 
-  console.warn('Guard failed, redirecting...');
   return false;
 };
