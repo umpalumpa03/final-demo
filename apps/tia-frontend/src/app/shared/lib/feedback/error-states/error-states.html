@@ -14,5 +14,5 @@
   </div>
   <h3 class = 'error-state__header'>{{ header() }}</h3>
   <p class = 'error-state__message'>{{ message() }}</p>
-  <button class = 'error-state__button'>{{ buttonMessage() }}</button>
+  <button class = 'error-state__button' (click) = 'buttonClick.emit()'>{{ buttonMessage() }}</button>
 </div>

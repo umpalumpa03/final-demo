@@ -1,9 +1,7 @@
 @use '../../../styles/palette' as *;
-
+@use '../../../styles/mixins' as *;
 .error-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include flex-center(column);
   padding: 2rem;
   text-align: center;
   justify-content: center;
@@ -12,96 +10,76 @@
   box-shadow:
     0rem 0.1rem 0.3rem 0rem rgba(0, 0, 0, 0.1),
     0rem 0.1rem 0.2rem -0.1rem rgba(0, 0, 0, 0.1);
-
   &__icon {
+    @include flex-center;
     margin-bottom: 1.6rem;
     border-radius: 50%;
     width: 4.8rem;
     height: 4.8rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
-
   &__header {
     margin-bottom: 0.8rem;
-    font-size: 1.25rem;
-    font-weight: 600;
+    @include font-inter(600, 1.6rem, 2.4rem)
   }
-
   &__message {
-    margin-bottom: 1.6rem;
-    color: var(--text-secondary, #666);
+    @include font-inter(400, 1.4rem, 2rem);
+    color: var(--text-secondary, $gray-550);
+    margin-bottom: 1rem;
   }
-
   &__button {
     padding: 0.5rem 1rem;
     cursor: pointer;
-    border: 1px solid;
+    border: 0.1rem solid;
     border-radius: 0.8rem;
-    background-color: #F0F9FF;
+    background-color: $blue-100;
+    @include font-inter(500, 1.4rem, 2rem);
   }
-
   &--connection-error {
+    border-color: $orange-200;
     .error-state__icon {
-      background-color: #FFEDD4;
+      background-color: $orange-50;
     }
-
     .error-state__header {
-      color: #7E2A0C;
+      color: $orange-800;
     }
-
     .error-state__message {
-      color: #CA3500;
+      color: $orange-600;
     }
-
-    .error-state__button{
-      color: #CA3500;
-      border-color: #FFB86A;
+    .error-state__button {
+      color: $orange-600;
+      border-color: $orange-300;
     }
-
-    border-color: #FFD6A7;
   }
-
   &--failed {
+    border-color: $red-200;
     .error-state__icon {
-      background-color: #FFE2E2;
+      background-color: $red-300;
     }
-
     .error-state__header {
-      color: #82181A;
+      color: $red-950;
     }
-
     .error-state__message {
-      color: #C10007;
+      color: $red-650;
     }
-
-    .error-state__button{
-      color: #C10007;
-      border-color: #FFA2A2;
+    .error-state__button {
+      color: $red-650;
+      border-color: $red-250;
     }
-
-    border-color: #FFC9C9;
   }
-
   &--not-found {
+    border-color: $gray-200;
     .error-state__icon {
-      background-color: #F3F4F6;
+      background-color: $gray-50;
     }
-
     .error-state__header {
-      color: #101828;
+      color: $blue-1000;
     }
-
     .error-state__message {
-      color: #4A5565;
+      color: $gray-700;
     }
-
-    .error-state__button{
-      color: #0C4A6E;
-      border-color: #0EA5E9;
+    .error-state__button {
+      color: $blue-ocean-foreground;
+      border-color: $blue-400;
     }
-
-    border-color: #E5E7EB;
   }
 }
