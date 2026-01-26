@@ -38,7 +38,7 @@ export const REGISTATION_FORM = {
     label: 'Username',
     required: false,
     placeholder: 'Pick a date',
-  }
+  },
 } as const;
 
 export const PASSWORD_RULE_MESSAGES = {
@@ -149,7 +149,7 @@ export const PLAN_OPTION = [
 export const VALIDATION_FORM = {
   success: {
     label: 'Valid Input',
-    successMessage: 'Email format is correct'
+    successMessage: 'Email format is correct',
   },
   error: {
     label: 'Invalid Input',
@@ -157,6 +157,14 @@ export const VALIDATION_FORM = {
   },
   warning: {
     label: 'Warning Input',
-    warningMessage: 'Temporary email addresses may not receive notifications'
+    warningMessage: 'Temporary email addresses may not receive notifications',
   },
 };
+
+export const PASSWORD_RULES = {
+  minLength: true,
+  uppercase: true,
+  lowercase: true,
+  number: true,
+  special: true,
+} as const;

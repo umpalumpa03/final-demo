@@ -43,44 +43,45 @@
     ></lib-text-input>
   </div>
 
-  @if (passwordInteracted() && firstFailedRule()) {
-  <div class="password-strength">
-    <h4 class="password-strength__title">
-      Password Strength: {{ passwordStrength() }}
-    </h4>
+  @if (showPasswordRules()) {
+  <div class="registration__field registration__password-strength">
+    <div class="registration__password-strength__title">
+      <p>Password Strength: </p>
+      <span>{{ passwordStrength() }}</span>
+    </div>
 
     @if (passwordRules()) {
-    <div class="password-strength__progress" aria-hidden="true">
+    <div class="registration__password-strength__progress" aria-hidden="true">
       <div
-        class="password-strength__bar"
+        class="registration__password-strength__progress__bar"
         [style.width.%]="strengthPercent()"
       ></div>
     </div>
     }
 
-    <ul class="password-strength__list">
-      @let rules = passwordRules(); @if (rules) {
+    <ul class="registration__password-strength__list">
+      @if (passwordRules()) {
       <li
-        [class.password-failed]="!rules['minLength']"
-        [class.password-passed]="rules['minLength']"
+        [class.password-failed]="!minLength()"
+        [class.password-passed]="minLength()"
       >
         x At least 8 characters
       </li>
       <li
-        [class.password-failed]="!(rules['uppercase'] && rules['lowercase'])"
-        [class.password-passed]="rules['uppercase'] && rules['lowercase']"
+        [class.password-failed]="!uppercaseLowercase()"
+        [class.password-passed]="uppercaseLowercase()"
       >
         x Uppercase & lowercase letters
       </li>
       <li
-        [class.password-failed]="!rules['number']"
-        [class.password-passed]="rules['number']"
+        [class.password-failed]="!numberRule()"
+        [class.password-passed]="numberRule()"
       >
         x At least one number
       </li>
       <li
-        [class.password-failed]="!rules['special']"
-        [class.password-passed]="rules['special']"
+        [class.password-failed]="!specialRule()"
+        [class.password-passed]="specialRule()"
       >
         x Special character (optional)
       </li>

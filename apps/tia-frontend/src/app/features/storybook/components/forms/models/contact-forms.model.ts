@@ -36,4 +36,4 @@ export interface IStepConfig {
   key: string;
 }
 
-export type PasswordStrength = 'weak' | 'fair' | 'good' | 'strong';
+export type PasswordStrength = 'Weak' | 'Fair' | 'Good' | 'Strong';

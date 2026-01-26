@@ -24,6 +24,7 @@ import {
   COUNTRY_OPTIONS,
   REGISTATION_FORM,
   PASSWORD_RULE_MESSAGES,
+  PASSWORD_RULES,
 } from '../models/forms.config';
 
 @Component({
@@ -38,14 +39,18 @@ export class RegistrationForm {
   public inputConfig = REGISTATION_FORM;
   public readonly isRegistration = input<boolean>(true);
   public readonly buttonText = input<string>('Continue');
+  public readonly passwordTouched = signal<boolean>(false);
+  public readonly passwordInteracted = signal<boolean>(false);
 
   private readonly fb = inject(FormBuilder);
   public readonly submitRegistrationForm = output<IRegistrationForm>();
+  private readonly ALL_PASSWORD_RULES = PASSWORD_RULES;
 
   constructor() {
     this.passwordControl?.valueChanges.subscribe(() => {
       this.passwordRules.set(
-        this.passwordControl?.errors?.['passwordRules'] ?? null,
+        this.passwordControl?.errors?.['passwordRules'] ??
+          (this.passwordControl?.valid ? this.ALL_PASSWORD_RULES : null),
       );
       if (!this.passwordInteracted()) this.passwordInteracted.set(true);
     });
@@ -83,8 +88,6 @@ export class RegistrationForm {
   public get passwordControl() {
     return this.registrationForm.get('password');
   }
-  public readonly passwordTouched = signal<boolean>(false);
-  public readonly passwordInteracted = signal<boolean>(false);
 
   public readonly passwordRules = signal<Record<string, boolean> | null>(
     this.passwordControl?.errors?.['passwordRules'] ?? null,
@@ -93,27 +96,58 @@ export class RegistrationForm {
   public readonly passwordStrength = computed<PasswordStrength>(() => {
     const rules = this.passwordRules();
     if (!rules) {
-      return 'weak';
+      return 'Weak';
     }
 
     const passed = Object.values(rules).filter(Boolean).length;
 
     if (passed <= 1) {
-      return 'weak';
+      return 'Weak';
     } else if (passed <= 3) {
-      return 'fair';
+      return 'Fair';
     } else if (passed <= 4) {
-      return 'good';
+      return 'Good';
     }
 
-    return 'strong';
+    return 'Strong';
   });
 
   public readonly strengthPercent = computed(() => {
     const rules = this.passwordRules();
-    if (!rules) return 0;
+    if (!rules) {
+      return 0;
+    }
+    return (
+      (Object.values(rules).filter(Boolean).length /
+        Object.values(rules).length) *
+      100
+    );
+  });
 
-    return (Object.values(rules).filter(Boolean).length / 5) * 100;
+  public readonly showPasswordRules = computed(() => {
+    const rules = this.passwordRules();
+    if (!rules) return false;
+    return this.passwordInteracted() || Object.values(rules).every(Boolean);
+  });
+
+  public readonly minLength = computed(() => {
+    const rules = this.passwordRules();
+    return !!rules && !!rules['minLength'];
+  });
+
+  public readonly uppercaseLowercase = computed(() => {
+    const rules = this.passwordRules();
+    return !!rules && !!(rules['uppercase'] && rules['lowercase']);
+  });
+
+  public readonly numberRule = computed(() => {
+    const rules = this.passwordRules();
+    return !!rules && !!rules['number'];
+  });
+
+  public readonly specialRule = computed(() => {
+    const rules = this.passwordRules();
+    return !!rules && !!rules['special'];
   });
 
   public readonly firstFailedRule = computed(() => {
