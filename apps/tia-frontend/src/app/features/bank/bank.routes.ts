@@ -18,13 +18,14 @@ export const bankRoutes: Routes = [
             (c) => c.DashboardContainer,
           ),
       },
+ 
       {
-        path: 'accounts',
-        loadComponent: () =>
-          import('./components/accounts/container/account-container').then(
-            (c) => c.AccountContainer,
-          ),
-      },
+  path: 'accounts',
+  loadChildren: () =>
+    import('./components/accounts/accounts.routes').then(
+      (c) => c.accountsRoutes
+    ),
+},
       {
         path: 'transactions',
         loadComponent: () =>
