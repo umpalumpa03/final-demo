@@ -6,25 +6,25 @@ describe('Tables', () => {
   let fixture: ComponentFixture<Tables>;
 
   const mockTableConfig = {
-    type: 'basic',
-    paginationType: 'scroll',
+    type: 'basic' as const,
+    paginationType: 'scroll' as const,
     headers: [
-      { title: 'Name', align: 'left', width: '10rem' },
-      { title: 'Status', align: 'left', width: '10rem' },
+      { title: 'Name', align: 'left' as const, width: '10rem' },
+      { title: 'Status', align: 'left' as const, width: '10rem' },
     ],
     rows: [
       {
         id: '1',
         info: [
-          { type: 'text', value: 'Test', align: 'left' },
-          { type: 'badge', value: 'active', align: 'left' },
+          { type: 'text' as const, value: 'Test', align: 'left' as const },
+          { type: 'badge' as const, value: 'active', align: 'left' as const },
         ],
       },
       {
         id: '2',
         info: [
-          { type: 'text', value: 'Test 2', align: 'left' },
-          { type: 'badge', value: 'pending', align: 'left' },
+          { type: 'text' as const, value: 'Test 2', align: 'left' as const },
+          { type: 'badge' as const, value: 'pending', align: 'left' as const },
         ],
       },
     ],
@@ -67,6 +67,56 @@ describe('Tables', () => {
       component.toggleSelectAll();
 
       expect(component.selectedItems()).toEqual([]);
+    });
+  });
+
+  describe('table type computed flags', () => {
+    it('should detect selectable table', () => {
+      fixture.componentRef.setInput('tableConfig', {
+        ...mockTableConfig,
+        type: 'row-selection',
+      });
+      fixture.detectChanges();
+
+      expect(component.isSelectable()).toBe(true);
+      expect(component.isAction()).toBe(false);
+    });
+
+    it('should detect pagination type page', () => {
+      fixture.componentRef.setInput('tableConfig', {
+        ...mockTableConfig,
+        paginationType: 'page',
+      });
+      fixture.detectChanges();
+
+      expect(component.isPagination()).toBe(true);
+    });
+
+    it('should fallback totalPage to 1', () => {
+      expect(component.totalPage()).toBe(1);
+    });
+  });
+
+  describe('onIndividualSelect branches', () => {
+    it('should add row if not selected', () => {
+      const row1 = mockTableConfig.rows[0];
+      component.onIndividualSelect(row1 as any);
+      expect(component.selectedItems()).toContain(row1);
+    });
+
+    it('should remove row if already selected', () => {
+      const row1 = mockTableConfig.rows[0];
+      component.onIndividualSelect(row1 as any);
+      component.onIndividualSelect(row1 as any);
+      expect(component.selectedItems()).not.toContain(row1);
+    });
+
+    it('should allow multiple different rows selected', () => {
+      const row1 = mockTableConfig.rows[0];
+      const row2 = mockTableConfig.rows[1];
+      component.onIndividualSelect(row1 as any);
+      component.onIndividualSelect(row2 as any);
+      expect(component.selectedItems().length).toBe(2);
     });
   });
 });
