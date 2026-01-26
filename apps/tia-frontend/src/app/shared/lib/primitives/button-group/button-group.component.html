@@ -1,3 +1,15 @@
 <div class="button-group">
-  <ng-content></ng-content>
+  <div class="button-group__wrapper">
+    @for (item of finalButtons(); track $index) {
+      <button
+        type="button"
+        class="button-group__btn"
+        [class.button-group__btn--active]="item.isActive" 
+        (click)="onSelect($index)"
+        [routerLink]="item.routerLink"
+      >
+        <span class="button-group__text">{{ item.label }}</span>
+      </button>
+    }
+  </div>
 </div>
