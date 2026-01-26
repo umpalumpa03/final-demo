@@ -1,4 +1,9 @@
-import { Component, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
@@ -6,6 +11,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   imports: [RouterLink, RouterLinkActive],
   templateUrl: './bank-header.html',
   styleUrl: './bank-header.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BankHeader {
   public hasUnread = input(false);
