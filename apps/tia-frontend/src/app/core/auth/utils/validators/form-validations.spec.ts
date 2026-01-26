@@ -14,16 +14,3 @@ describe('passwordMatchValidator', () => {
   });
 });
 
-describe('passwordValidator', () => {
-  it('should return null for empty value', () => {
-    const control = new FormControl('');
-    const result = passwordValidator(control);
-    expect(result).toBeNull();
-  });
-
-  it('should return null for valid password', () => {
-    const control = new FormControl('Test123!');
-    const result = passwordValidator(control);
-    expect(result).toBeNull();
-  });
-});

@@ -63,6 +63,7 @@ describe('TokenService', () => {
     localStorage.setItem(TokenKey.ACCESS, 'a');
     localStorage.setItem(TokenKey.REFRESH, 'r');
     localStorage.setItem(TokenKey.VERIFY, 'v');
+    localStorage.setItem(TokenKey.SIGNUP, 'v');
 
     expect(service.accessToken).toBe('a');
     expect(service.refreshToken).toBe('r');

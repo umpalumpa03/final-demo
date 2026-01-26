@@ -3,7 +3,7 @@ import { ILoginRequest, ISignUpResponse } from '../models/authResponse.models';
 import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
 import { IloginResponse } from '../models/authRequests.model';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'apps/tia-frontend/src/environments/environment';
+import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 import { TokenService } from './token.service';
 import { IRegistrationForm } from '../../../features/storybook/components/forms/models/contact-forms.model';
