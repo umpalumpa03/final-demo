@@ -10,7 +10,6 @@
 <app-navigation-bar
   [items]="verticalItems()"
   [orientation]="'vertical'"
-  [activeItem]="activeVertical()"
 >
 </app-navigation-bar>
 ```
@@ -21,12 +20,10 @@
 <app-navigation-bar
   [items]="horizontalItems()"
   [orientation]="'horizontal'"
-  [activeItem]="activeHorizontal()"
 >
 </app-navigation-bar>
 ```
 
-- `[orientation]` - გადაეცემა რომელი ტიპი გსურთ
 - `[items]` - გადავცემთ ერეის ნავიგაციების სახელებით და როუტებით. გვაქვს აიქონის ჩამატების ოფშენიც, რომელიც დატას უნდა გავაყოპლოტ:
 
 #### დატის მაგალითი:
@@ -42,12 +39,13 @@ export const VERTICALNAVBARS: NavigationItem[] = [
     label: 'Search',
     icon: 'images/svg/notification-icons/search.svg',
     route: 'test'
+    count:0
   }
 ] as const;
 ```
 
 თუ აიქონი არ გინდათ, უბრალოდ არ გაატანოთ
 
-- `[activeItem]` - აქ გადაეცით სტრინგი, რომელიც იქნება არსებული ფეიჯის როუტის სახელი, ამას აქვს განსხვავებული სტილი.
+- count:0 არის ოფშენალი, თუ გჭირდებათ ნავიგაციაში, გაატანეთ თავიდან 0 და მერე დააფდეითეთ ბექიდან მიღებული ინფოთი
 
 დატას შეგიძლიათ გაატანოთ disabled: true რომ არსებული  აითემი იყოს დისეიბლი

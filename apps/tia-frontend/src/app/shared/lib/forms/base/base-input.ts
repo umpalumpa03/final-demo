@@ -73,6 +73,10 @@ export abstract class BaseInput implements ControlValueAccessor, DoCheck {
     return status === 'INVALID' && (isTouched || isDirty);
   });
 
+  protected readonly hasWarning = computed<boolean>(() => {
+    return this.state() === 'warning';
+  });
+
   protected readonly hasSuccess = computed<boolean>(() => {
     const status = this._controlStatus();
     const isTouched = this._controlTouched();
@@ -95,11 +99,13 @@ export abstract class BaseInput implements ControlValueAccessor, DoCheck {
   protected readonly fieldClasses = computed<string>(() => {
     const error = this.hasError();
     const success = this.hasSuccess();
+    const warning = this.hasWarning();
 
     return [
       'text-input__field',
       error ? 'text-input__field--error' : '',
       success ? 'text-input__field--success' : '',
+      warning ? 'text-input__field--warning' : '',
       this.isDisabled() ? 'text-input__field--disabled' : '',
       this.isReadonly() ? 'text-input__field--readonly' : '',
     ]

@@ -14,11 +14,13 @@ import {
   TransactionActionEvent,
 } from '../models/table.model';
 import { Badges } from '../../primitives/badges/badges';
-import { CurrencyPipe, DatePipe, SlicePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { crudConfig } from '../models/table.crud.config';
 import { Checkboxes } from '../../forms/checkboxes/checkboxes';
 import { Pagination } from '../../navigation/pagination/pagination';
 import { ButtonComponent } from '../../primitives/button/button';
+import { Spinner } from '../../feedback/spinner/spinner';
+import { ErrorStates } from '../../feedback/error-states/error-states';
 
 @Component({
   selector: 'app-tables',
@@ -27,9 +29,10 @@ import { ButtonComponent } from '../../primitives/button/button';
     Checkboxes,
     DatePipe,
     Pagination,
-    SlicePipe,
     CurrencyPipe,
     ButtonComponent,
+    Spinner,
+    ErrorStates,
   ],
   templateUrl: './tables.html',
   styleUrl: './tables.scss',
@@ -38,11 +41,12 @@ import { ButtonComponent } from '../../primitives/button/button';
 export class Tables {
   // Given Inputs to draw table or change state
   public readonly tableConfig = input.required<TableConfig>();
+  public isLoading = input<boolean>(false);
+  public hasError = input<boolean>(false);
+
   public readonly crudConfig = crudConfig;
   public currentPage = signal<number>(1);
-  public readonly totalPage = computed(() =>
-    Math.ceil(this.tableConfig().rows.length / this.tableConfig().itemsPerPage),
-  );
+  public readonly totalPage = computed(() => this.tableConfig().totalPage ?? 1);
 
   // Here I check for different kind of tables
   public readonly isSelectable = computed(
@@ -69,35 +73,47 @@ export class Tables {
 
   // /////////////////////
 
-  // Needed for Page navigation
-  public readonly startIndex = computed(
-    () => (this.currentPage() - 1) * this.tableConfig().itemsPerPage,
-  );
-
-  public readonly endIndex = computed(
-    () => this.startIndex() + this.tableConfig().itemsPerPage,
-  );
-  // /////////////////
-
-  public allSelected = signal<boolean>(false);
+  // public allSelected = signal<boolean>(false);
+  public readonly allSelected = computed(() => {
+    const rows = this.tableConfig().rows;
+    const selected = this.selectedItems();
+    return (
+      rows.length > 0 &&
+      rows.every((row) => selected.some((s) => s.id === row.id))
+    );
+  });
   public readonly selectedItems = signal<TableRowCell[]>([]);
+
+  public isRowSelected(row: TableRowCell): boolean {
+    return this.selectedItems().some((item) => item.id === row.id);
+  }
 
   // Output
   public actionClickedOutput = output<TableActionEvent>();
   public sortClickedOutput = output<string>();
   public transactionClickedOutput = output<TransactionActionEvent>();
+  public pageChangeOutput = output<number>();
+  public reloadClick = output<number>();
 
   // Methods
-  public toggleSelectAll(): void {
-    this.allSelected.update((val) => !val);
 
-    this.allSelected()
-      ? this.selectedItems.set(this.tableConfig().rows)
-      : this.selectedItems.set([]);
+  public toggleSelectAll(): void {
+    if (this.allSelected()) {
+      this.selectedItems.set([]);
+    } else {
+      this.selectedItems.set([...this.tableConfig().rows]);
+    }
   }
 
   public onIndividualSelect(row: TableRowCell): void {
-    this.selectedItems.update((val) => [...val, row]);
+    this.selectedItems.update((items) => {
+      const exists = items.some((item) => item.id === row.id);
+      if (exists) {
+        return items.filter((item) => item.id !== row.id);
+      } else {
+        return [...items, row];
+      }
+    });
   }
 
   public onCrudClick(action: string, rowId: string): void {
@@ -114,6 +130,7 @@ export class Tables {
 
   public onPageChange(page: number): void {
     this.currentPage.set(page);
+    this.pageChangeOutput.emit(page);
   }
 
   public onTransactionActionClicked(
@@ -125,5 +142,9 @@ export class Tables {
       rowId: row.id,
       rowData: row.info,
     });
+  }
+
+  public onErrorReload(): void {
+    this.reloadClick.emit(this.currentPage());
   }
 }

@@ -4,11 +4,13 @@
     <li
       class="navigation__item"
       [class.navigation__item--disabled]="item.disabled"
+      [class.navigation__item--active]="rla.isActive"
     >
       <a
         class="navigation__link"
         [routerLink]="item.route"
         routerLinkActive="navigation__item--active"
+        #rla="routerLinkActive"
         [routerLinkActiveOptions]="{ exact: true }"
       >
         @if (item.icon) {
@@ -20,6 +22,12 @@
         }
         <span>{{ item.label }}</span>
       </a>
+      @if (item.count && item.count > 0) {
+      <div 
+      class="navigation__count"
+      [class.navigation__item--active]="rla.isActive"
+      >{{ item.count > 99 ? '99+' : item.count }}</div>
+      }
     </li>
     }
   </ul>

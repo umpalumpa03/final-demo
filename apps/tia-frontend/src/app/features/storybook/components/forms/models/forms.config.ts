@@ -33,21 +33,20 @@ export const REGISTATION_FORM = {
     label: 'Confirm Password',
     required: false,
     placeholder: '••••••••',
+    errorMessage: 'Passwords do not match',
   },
-  birthDate: {
-    label: 'Birth Date',
+  username: {
+    label: 'Username',
     required: false,
-    placeholder: 'Pick a date',
+    placeholder: 'Enter your username',
   },
-  termsAndConditions: {
-    label: 'I agree to the terms and conditions',
-    required: false,
-    placeholder: 'Pick a date',
-  },
-  country: {
-    label: 'Country',
-    placeholder: 'Select a country',
-  },
+} as const;
+
+export const PASSWORD_RULE_MESSAGES = {
+  minLength: 'At least 8 characters',
+  uppercaseLowercase: 'Use uppercase and lowercase letters',
+  number: 'Include at least one number',
+  special: 'Include a special character',
 } as const;
 
 export const CONTACT_FORM = {
@@ -151,7 +150,7 @@ export const PLAN_OPTION = [
 export const VALIDATION_FORM = {
   success: {
     label: 'Valid Input',
-    successMessage: 'Email format is correct'
+    successMessage: 'Email format is correct',
   },
   error: {
     label: 'Invalid Input',
@@ -159,6 +158,14 @@ export const VALIDATION_FORM = {
   },
   warning: {
     label: 'Warning Input',
-    warningMessage: 'Temporary email addresses may not receive notifications'
+    warningMessage: 'Temporary email addresses may not receive notifications',
   },
 };
+
+export const PASSWORD_RULES = {
+  minLength: true,
+  uppercase: true,
+  lowercase: true,
+  number: true,
+  special: true,
+} as const;
