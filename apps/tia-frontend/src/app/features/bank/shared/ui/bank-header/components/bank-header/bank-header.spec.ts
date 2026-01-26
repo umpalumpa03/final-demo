@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { BankHeader } from './bank-header';
 
 describe('BankHeader', () => {
@@ -8,6 +9,7 @@ describe('BankHeader', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [BankHeader],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(BankHeader);

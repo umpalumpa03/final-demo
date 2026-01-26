@@ -195,6 +195,7 @@ Use this when you need full control over the card's internal layout using `<ng-c
         [items]="myItems"
         [layout]="'grid'"
         [columns]="3"
+        [colspans]="[2, 1, 1]"
         [containerTitle]="'Add Content of Your Choice'"
         [containerDescription]="'Drag cards with custom content'"
         (itemsChange)="onContainerItemsChange($event)"
@@ -247,6 +248,8 @@ Use this when you need full control over the card's internal layout using `<ng-c
 [containerDescription] -> p description for the container wrapper.
 layout -> 'grid' | 'list'. Defines how cards are arranged. Default: 'grid'.
 [columns] -> Number of columns (e.g., 3) or responsive object { default: 3, md: 2, sm: 1 }.
+[buttonContent] -> Text inside the button. Default: 'Play'.
+[colspans] -> if diplay grid, you can pass array of each cards colspans , example [2,1,1]. if you have 3 cards it will simply give first card colspan 2 full width (if [colums] are 2)
 
 ### UTPUTS (Container)
 
@@ -300,8 +303,6 @@ DRAGGABLE CARD (child component, used inside drag-card, kanban-board, and drag-c
 
 [buttonVariant] -> Button style (e.g., 'ghost', 'primary'). Default: 'ghost'.
 
-[buttonContent] -> Text inside the button. Default: 'Play'.
-
 OUTPUTS
 **(remove)** -> Emits the card id when the trash icon is clicked.
 
@@ -331,7 +332,6 @@ Expandable groups with draggable items. Use when you need hierarchical structure
 
 ## Usage Example
 
-   
       <app-tree-container
         [groups]="treeGroups"
         [items]="treeItems"

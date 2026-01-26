@@ -17,7 +17,7 @@ import { DRAG_CONTAINER } from '../../model/drag.provider';
 
 @Component({
   selector: 'app-drag-container',
-  imports: [DraggableCard],
+  imports: [],
   providers: [{ provide: DRAG_CONTAINER, useExisting: DragContainer }],
   templateUrl: './drag-container.html',
   styleUrl: './drag-container.scss',
@@ -29,6 +29,7 @@ export class DragContainer extends DragBase {
   public readonly containerDescription = input(
     'Drag Cards to reorder them in a grid layout',
   );
+  public readonly colspans = input<number[]>([]);
 
   public readonly itemsChange = output<DraggableItemType[]>();
   public readonly orderChange = output<string[]>();
@@ -54,6 +55,16 @@ export class DragContainer extends DragBase {
   protected readonly containerClasses = computed(
     () => `drag-container__cards drag-container__cards--${this.layout()}`,
   );
+
+  public getColspanForItem(id: string): string | null {
+    if (this.layout() !== 'grid') return null;
+
+    const index = this.items().findIndex((item) => item.id === id);
+    if (index === -1) return null;
+
+    const colspan = this.colspans()[index] ?? 1;
+    return `span ${colspan}`;
+  }
 
   protected override handleDrop(dragId: string, dropId: string): void {
     const newItems = this.calculateReorderedItems(this.items(), dragId, dropId);

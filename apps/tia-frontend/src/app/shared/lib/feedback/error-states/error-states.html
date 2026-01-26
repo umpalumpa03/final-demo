@@ -1,0 +1,18 @@
+<div [class] = "errorClass()" [style.width] = 'width()' [style.height] = 'height()'>
+  <div class = 'error-state__icon'>
+    @switch (variant()){
+      @case('connection-error'){
+        <img src = '/images/svg/feedback/connection-error.svg' alt = 'connection error icon'/>
+      }
+      @case('failed'){
+        <img src = '/images/svg/feedback/failed.svg' alt = 'failed to load icon'/>
+      }
+      @case('not-found'){
+        <img src = '/images/svg/feedback/no-data.svg' alt = 'no data icon'/>
+      }
+    }
+  </div>
+  <h3 class = 'error-state__header'>{{ header() }}</h3>
+  <p class = 'error-state__message'>{{ message() }}</p>
+  <button class = 'error-state__button' (click) = 'buttonClick.emit()'>{{ buttonMessage() }}</button>
+</div>
