@@ -1,6 +1,7 @@
 <section class="sign-up">
     <app-registration-form (submitRegistrationForm)="onSignUp($event)"></app-registration-form>
-
     
-    <p>Already have an account? <span [routerLink]="['/auth/login']">Sign in</span></p>
+    <p class="sign-up__switch">Already have an account? <span class="sign-up__link" [routerLink]="['/auth/sign-in']">Sign in</span></p>
+
+    <h2>{{apiResult()}}</h2>
 </section>

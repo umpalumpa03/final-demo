@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TokenKey } from '../models/tokens.enum';
 
-Injectable({ providedIn: 'root' });
+@Injectable({ providedIn: 'root' })
 export class TokenService {
   public setAccessToken(token: string): void {
     localStorage.setItem(TokenKey.ACCESS, token);
@@ -49,6 +49,6 @@ export class TokenService {
   }
 
   public get getSignUpToken(): string | null {
-    return localStorage.getItem(TokenKey.VERIFY);
+    return localStorage.getItem(TokenKey.SIGNUP);
   }
 }

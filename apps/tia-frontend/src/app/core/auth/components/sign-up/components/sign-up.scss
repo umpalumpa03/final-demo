@@ -1,9 +1,23 @@
+@use '../../../../../shared/styles/palette' as *;
+@use '../../../../../shared/styles/mixins' as *;
+
 .sign-up {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 0.8rem;
-    width: 100%;
-    margin: 5% 0%;
+  @include flex-center(column);
+  gap: 0.8rem;
+  width: 100%;
+  margin: 5% 0%;
+
+  &__switch {
+    color: $gray-700;
+    font-size: 1.4rem;
+  }
+
+  &__link {
+    color: $blue-800;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
