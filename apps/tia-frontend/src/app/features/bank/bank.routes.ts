@@ -22,7 +22,7 @@ export const bankRoutes: Routes = [
       {
   path: 'accounts',
   loadChildren: () =>
-    import('./components/accounts/accounts.route').then(
+    import('./components/accounts/accounts.routes').then(
       (c) => c.accountsRoutes
     ),
 },
