@@ -43,7 +43,13 @@
     </section>
     <section class="tables__transactions">
       <app-showcase-card title="Transactions Table">
-        <app-tables [tableConfig]="transactionsConfig"> </app-tables>
+        <app-tables
+          [isLoading]="isLoading()"
+          [hasError]="hasError()"
+          [tableConfig]="transactionsConfig()"
+          (pageChangeOutput)="onPageChange($event)"
+        >
+        </app-tables>
       </app-showcase-card>
     </section>
   </div>

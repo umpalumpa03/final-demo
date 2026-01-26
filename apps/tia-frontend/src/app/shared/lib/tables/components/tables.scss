@@ -13,6 +13,11 @@
 .table-container {
   width: 100%;
   overflow-x: auto;
+  overflow-y: hidden;
+
+  &-spinner {
+    @include flex-center();
+  }
 }
 
 .table {
@@ -55,6 +60,10 @@
     &__row {
       border-top: 1px solid $blue-400;
       cursor: pointer;
+
+      &__spinner {
+        @include flex-center();
+      }
 
       &__item {
         &__container {

@@ -4,6 +4,7 @@ export const basicTable: TableConfig = {
   type: 'basic',
   paginationType: 'page',
   itemsPerPage: 3,
+  totalPage: 2,
   headers: [
     { title: 'Invoice', align: 'left', width: '10%' },
     { title: 'Status', align: 'left', width: '26%' },
@@ -409,7 +410,9 @@ export const rowStates: TableConfig = {
 
 export const transactionsTable: TableConfig = {
   type: 'transactions',
-  itemsPerPage: 5,
+  paginationType: 'page',
+  itemsPerPage: 2,
+  totalPage: 3,
   headers: [
     { title: 'Details', align: 'left', width: '47%' },
     { title: 'Amount', align: 'right', width: '25%' },

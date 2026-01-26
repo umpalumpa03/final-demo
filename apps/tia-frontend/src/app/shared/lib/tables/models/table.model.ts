@@ -43,7 +43,7 @@ export interface TableRowCell {
   selected?: boolean;
   highlighted?: boolean;
   transactionType?: string;
-  info: PrintedData[];
+  info?: PrintedData[];
 }
 
 export interface TableActionEvent {
@@ -56,6 +56,7 @@ export interface TableConfig {
   type: tableVariant;
   paginationType?: paginationVariant;
   itemsPerPage: number;
+  totalPage?: number;
   headers: TableHeader[];
   rows: TableRowCell[];
 }
@@ -65,5 +66,5 @@ export type TransactionAction = 'repeat' | 'categorize';
 export interface TransactionActionEvent {
   action: TransactionAction;
   rowId: string;
-  rowData: PrintedData[];
+  rowData?: PrintedData[];
 }
