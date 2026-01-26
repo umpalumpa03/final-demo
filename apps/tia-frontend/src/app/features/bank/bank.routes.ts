@@ -3,6 +3,11 @@ import { provideState } from '@ngrx/store';
 import { paybillReducer } from './paybill/store/paybill.reducer';
 import { provideEffects } from '@ngrx/effects';
 import { PaybillEffects } from './paybill/store/paybill.effects';
+import * as transactionEffects from '../../store/transactions/transactions.effects';
+import {
+  TRANSACTION_FEATURE_KEY,
+  transactionReducer,
+} from '../../store/transactions/transactions.reducer';
 
 export const bankRoutes: Routes = [
   {
@@ -24,18 +29,23 @@ export const bankRoutes: Routes = [
       },
 
       {
-  path: 'products',
-  loadChildren: () =>
-    import('./products/products.routes').then(
-      (c) => c.productsRoutes
-    ),
-},
+        path: 'products',
+        loadChildren: () =>
+          import('./products/products.routes').then((c) => c.productsRoutes),
+      },
       {
         path: 'transactions',
         loadComponent: () =>
-          import(
-            './transactions/container/transactions-container'
-          ).then((c) => c.TransactionsContainer),
+          import('./transactions/container/transactions-container').then(
+            (c) => c.TransactionsContainer,
+          ),
+        providers: [
+          provideEffects(transactionEffects),
+          provideState({
+            name: TRANSACTION_FEATURE_KEY,
+            reducer: transactionReducer,
+          }),
+        ],
       },
       {
         path: 'transfers',
@@ -61,9 +71,7 @@ export const bankRoutes: Routes = [
       {
         path: 'paybill',
         loadChildren: () =>
-          import('./paybill/paybill.routes').then(
-            (r) => r.PAYBILL_ROUTES,
-          ),
+          import('./paybill/paybill.routes').then((r) => r.PAYBILL_ROUTES),
         providers: [
           provideState({ name: 'paybill', reducer: paybillReducer }),
           provideEffects(PaybillEffects),
@@ -72,16 +80,12 @@ export const bankRoutes: Routes = [
       {
         path: 'settings',
         loadChildren: () =>
-          import('./settings/settings.routes').then(
-            (r) => r.settingsRoutes,
-          ),
+          import('./settings/settings.routes').then((r) => r.settingsRoutes),
       },
       {
         path: 'messaging',
         loadChildren: () =>
-          import('./messaging/messaging.routes').then(
-            (r) => r.messagingRoutes,
-          ),
+          import('./messaging/messaging.routes').then((r) => r.messagingRoutes),
       },
     ],
   },
