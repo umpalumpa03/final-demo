@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
 
-export const accountsRoutes: Routes = [
+export const productsRoutes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./container/account-container').then((c) => c.AccountContainer),
+      import('./container/products-container').then((c) => c.ProductsContainer),
     children: [
       {
         path: '',

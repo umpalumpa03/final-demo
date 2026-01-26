@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { AccountContainer } from './account-container';
+import { ProductsContainer } from './products-container';
 
-describe('AccountContainer', () => {
-  let component: AccountContainer;
-  let fixture: ComponentFixture<AccountContainer>;
+describe('ProductsContainer', () => {
+  let component: ProductsContainer;
+  let fixture: ComponentFixture<ProductsContainer>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccountContainer],
+      imports: [ProductsContainer],
       providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AccountContainer);
+    fixture = TestBed.createComponent(ProductsContainer);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

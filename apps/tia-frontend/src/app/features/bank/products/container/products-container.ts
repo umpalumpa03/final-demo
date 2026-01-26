@@ -2,17 +2,17 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Tabs } from '@tia/shared/lib/navigation/tabs/tabs';
-import { TABS } from '../config/account.config';
+import { TABS } from '../config/products.config';
 
 
 @Component({
-  selector: 'app-account-container',
+  selector: 'app-products-container',
   imports: [Tabs, RouterOutlet],
-  templateUrl: './account-container.html',
-  styleUrl: './account-container.scss',
+  templateUrl: './products-container.html',
+  styleUrl: './products-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountContainer {
+export class ProductsContainer {
   public readonly tabs = signal(TABS);
 
 }
