@@ -34,20 +34,18 @@ export const REGISTATION_FORM = {
     required: false,
     placeholder: '••••••••',
   },
-  birthDate: {
-    label: 'Birth Date',
+  username: {
+    label: 'Username',
     required: false,
     placeholder: 'Pick a date',
-  },
-  termsAndConditions: {
-    label: 'I agree to the terms and conditions',
-    required: false,
-    placeholder: 'Pick a date',
-  },
-  country: {
-    label: 'Country',
-    placeholder: 'Select a country',
-  },
+  }
+} as const;
+
+export const PASSWORD_RULE_MESSAGES = {
+  minLength: 'At least 8 characters',
+  uppercaseLowercase: 'Use uppercase and lowercase letters',
+  number: 'Include at least one number',
+  special: 'Include a special character',
 } as const;
 
 export const CONTACT_FORM = {

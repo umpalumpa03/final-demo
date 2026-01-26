@@ -33,3 +33,73 @@
     color: var(--color-fg-muted);
   }
 }
+
+.password-rules {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: $gray-500;
+
+    &.valid {
+      color: $green-600;
+    }
+  }
+}
+
+.password-strength {
+  margin-top: 0.8rem;
+
+  &__title {
+    font-size: 1.2rem;
+    color: $gray-700;
+    margin: 0 0 0.6rem 0;
+  }
+
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0.8rem 0;
+
+    li {
+      color: $gray-500;
+      margin: 0.25rem 0;
+    }
+
+    .password-failed {
+      color: $gray-500;
+    }
+
+    .password-passed {
+      color: $green-600;
+    }
+  }
+
+  &__progress {
+    height: 6px;
+    background: $gray-200;
+    border-radius: 3px;
+    overflow: hidden;
+
+    & .password-strength__bar {
+      height: 100%;
+      background: var(--color-primary);
+      transition: width 160ms ease-in-out;
+    }
+  }
+
+  &__bar {
+    height: 6px;
+    border-radius: 3px;
+  }
+
+  .password-error {
+    color: $red-600;
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+  }
+}

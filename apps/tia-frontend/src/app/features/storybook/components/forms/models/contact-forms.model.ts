@@ -12,10 +12,8 @@ export interface IContactForm {
 }
 
 export interface IRegistrationForm extends ICommonForm {
-  lastName: string;
   password: string;
-  country: string;
-  birthDate: string;
+  username: string;
 }
 
 export interface ITwoColumnLayout extends ICommonForm {
@@ -37,3 +35,5 @@ export interface IStepConfig {
   label: string;
   key: string;
 }
+
+export type PasswordStrength = 'weak' | 'fair' | 'good' | 'strong';

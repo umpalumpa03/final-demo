@@ -1,4 +1,5 @@
 <form class="registration" [formGroup]="registrationForm" (ngSubmit)="submit()">
+  @if (isRegistration()) {
   <div class="registration__row">
     <div class="registration__field">
       <lib-text-input
@@ -19,19 +20,79 @@
 
   <div class="registration__field">
     <lib-text-input
-      type="email"
-      formControlName="email"
-      [config]="inputConfig.email"
+      type="text"
+      formControlName="username"
+      [config]="inputConfig.username"
     ></lib-text-input>
   </div>
 
   <div class="registration__field">
     <lib-text-input
-      type="password"
-      formControlName="password"
-      [config]="inputConfig.password"
+      type="email"
+      formControlName="email"
+      [config]="inputConfig.email"
     ></lib-text-input>
   </div>
+  }
+
+  <div class="registration__field">
+    <lib-text-input
+      type="password"
+      formControlName="password"
+      [config]="passwordConfig()"
+    ></lib-text-input>
+  </div>
+
+  @if (passwordInteracted() && firstFailedRule()) {
+  <div class="password-strength">
+    <h4 class="password-strength__title">
+      Password Strength: {{ passwordStrength() }}
+    </h4>
+
+    @if (passwordRules()) {
+    <div class="password-strength__progress" aria-hidden="true">
+      <div
+        class="password-strength__bar"
+        [style.width.%]="strengthPercent()"
+      ></div>
+    </div>
+    }
+
+    <ul class="password-strength__list">
+      @let rules = passwordRules(); @if (rules) {
+      <li
+        [class.password-failed]="!rules['minLength']"
+        [class.password-passed]="rules['minLength']"
+      >
+        x At least 8 characters
+      </li>
+      <li
+        [class.password-failed]="!(rules['uppercase'] && rules['lowercase'])"
+        [class.password-passed]="rules['uppercase'] && rules['lowercase']"
+      >
+        x Uppercase & lowercase letters
+      </li>
+      <li
+        [class.password-failed]="!rules['number']"
+        [class.password-passed]="rules['number']"
+      >
+        x At least one number
+      </li>
+      <li
+        [class.password-failed]="!rules['special']"
+        [class.password-passed]="rules['special']"
+      >
+        x Special character (optional)
+      </li>
+      } @else {
+      <li class="password-failed">✕ At least 8 characters</li>
+      <li class="password-failed">✕ Uppercase & lowercase letters</li>
+      <li class="password-failed">✕ At least one number</li>
+      <li class="password-failed">✕ Special character (optional)</li>
+      }
+    </ul>
+  </div>
+  }
 
   <div class="registration__field">
     <lib-text-input
@@ -43,29 +104,6 @@
   </div>
 
   <div class="registration__field">
-    <lib-select
-      [config]="inputConfig.country"
-      formControlName="country"
-      [options]="countries"
-    ></lib-select>
-  </div>
-
-  <div class="registration__field">
-    <lib-text-input
-      type="date"
-      formControlName="birthDate"
-      [config]="inputConfig.birthDate"
-    ></lib-text-input>
-  </div>
-
-  <div class="registration__agree-terms">
-    <lib-checkboxes
-      formControlName="termsAndConditions"
-      [config]="inputConfig.termsAndConditions"
-    ></lib-checkboxes>
-  </div>
-
-  <div class="registration__field">
-    <app-button type="submit" [fullWidth]="true">Create Account</app-button>
+    <app-button type="submit" [fullWidth]="true">{{ buttonText() }}</app-button>
   </div>
 </form>

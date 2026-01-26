@@ -23,6 +23,8 @@ export function getValidationErrorMessage(
   if (errors['pattern']) return 'Invalid format';
 
   if (errors['passwordStrength']) return 'Password is too weak';
+  if (errors['passwordRules']) return 'Password does not meet requirements';
+  if (errors['passwordMismatch'] || errors['passwordMismatch'] === true) return 'Passwords do not match';
 
   return 'Invalid value';
 }
