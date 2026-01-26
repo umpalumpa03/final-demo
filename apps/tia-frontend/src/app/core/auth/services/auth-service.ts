@@ -1,11 +1,12 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { ILoginRequest } from '../models/authResponse.models';
+import { ILoginRequest, ISignUpResponse } from '../models/authResponse.models';
 import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
 import { IloginResponse } from '../models/authRequests.model';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'apps/tia-frontend/src/environments/environment';
 import { Router } from '@angular/router';
 import { TokenService } from './token.service';
+import { IRegistrationForm } from '../../../features/storybook/components/forms/models/contact-forms.model';
 
 @Injectable()
 export class AuthService {
@@ -66,5 +67,9 @@ export class AuthService {
 
   public getAccessToken(): string | null {
     return this.accessToken ?? localStorage.getItem('accessToken');
+  }
+
+  public signUpUser(userData: IRegistrationForm): Observable<ISignUpResponse> {
+    return this.http.post<any>(`${environment.apiUrl}/auth/signup`, userData);
   }
 }

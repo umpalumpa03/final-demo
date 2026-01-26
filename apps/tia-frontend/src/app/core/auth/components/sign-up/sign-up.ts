@@ -7,23 +7,24 @@ import {
   signal,
 } from '@angular/core';
 import { catchError, EMPTY, tap } from 'rxjs';
-import { SignUpService } from '../services/sign-up.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { RegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/registration-form/registration-form';
-import { TokenService } from '../../../services/token.service';
+import { TokenService } from '../../services/token.service';
 import { IRegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/models/contact-forms.model';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-sign-up',
   imports: [RouterLink, RegistrationForm, Spinner],
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.scss',
+  providers: [TokenService], 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignUp implements OnInit{
-  private signUpService = inject(SignUpService);
+  private signUpService = inject(AuthService);
   private tokenService = inject(TokenService);
   private router = inject(Router)
   

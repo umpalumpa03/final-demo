@@ -1,17 +1,25 @@
 import { Routes } from '@angular/router';
 import { signUpRoutes } from './components/sign-up/sign-up.routes';
+import { signInRoutes } from './components/sign-in/sign-in.routes';
 
 export const authRoutes: Routes = [
   {
     path: 'auth',
-    loadComponent: () => import('./container/auth-container').then((c) => c.AuthContainer),
+    loadComponent: () =>
+      import('./container/auth-container').then((c) => c.AuthContainer),
     children: [
-      { 
-        path: 'sign-in', 
-        loadComponent: () => import('./components/sign-in/sign-in').then(c => c.SignIn) 
-      }, 
+      ...signInRoutes,
       ...signUpRoutes,
-      { path: '**', redirectTo: 'sign-in' }
-    ]
-  }
+      {
+        path: 'otp-verify',
+        loadComponent: () =>
+          import('./components/shared/otp-verification/otp-verification').then(
+            (c) => c.OtpVerification,
+          ),
+      },
+      { path: '', redirectTo: 'sign-in', pathMatch: 'full' },
+
+      { path: '**', redirectTo: 'sign-in' },
+    ],
+  },
 ];

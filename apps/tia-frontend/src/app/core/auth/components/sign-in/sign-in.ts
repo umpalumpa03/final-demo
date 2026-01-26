@@ -3,12 +3,12 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AuthService } from '../../services/auth-service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-sign-in',
-  imports: [TextInput, ButtonComponent, ReactiveFormsModule],
+  imports: [TextInput, ButtonComponent, ReactiveFormsModule, RouterLink],
   templateUrl: './sign-in.html',
-  styleUrl: './sign-in.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignIn {

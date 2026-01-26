@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TokenKey } from '../models/tokens.enum';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class TokenService {
   public setAccessToken(token: string): void {
     localStorage.setItem(TokenKey.ACCESS, token);
