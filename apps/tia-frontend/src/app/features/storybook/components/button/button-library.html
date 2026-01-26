@@ -92,17 +92,16 @@
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="Button Groups">
-    <div class="button-library__row">
-      <app-button-group>
-        @for (label of groupLabels(); track label) {
-        <app-button class="button-group__item" variant="outline">
-          {{ label }}
-        </app-button>
-        }
-      </app-button-group>
-    </div>
-  </app-showcase-card>
+<app-showcase-card title="Button Groups">
+  <div class="button-library__row">
+    <app-button-group
+      [count]="buttonGroups().simple.count"
+      [labels]="buttonGroups().simple.labels" 
+    ></app-button-group>
+  </div>
+</app-showcase-card>
+<!--Choose labels and counts-->
+
 
   <app-showcase-card title="Full Width">
     <app-button variant="default" [fullWidth]="true" style="width: 100%">
