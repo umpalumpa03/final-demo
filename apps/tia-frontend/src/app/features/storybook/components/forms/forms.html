@@ -7,11 +7,19 @@
   </header>
 
   <app-showcase-card title="Contact Form">
+    @defer {
     <app-contact-form></app-contact-form>
+    } @placeholder {
+    <app-skeleton></app-skeleton>
+    }
   </app-showcase-card>
 
   <app-showcase-card title="Registration Form">
+    @defer {
     <app-registration-form [isRegistration]="false"></app-registration-form>
+    } @placeholder {
+    <app-skeleton></app-skeleton>
+    }
   </app-showcase-card>
 
   <app-showcase-card title="Settings Form">
