@@ -12,8 +12,20 @@ $field-height: 3.6rem;
   max-width: 44.8rem;
 
   &__label {
+    @include flex-center(row, flex-start);
+    gap: 0.6rem;
     @include font-inter(500, 1.4rem, 1);
     color: var(--color-fg);
+
+    &-icon {
+      width: 1.6rem;
+      height: 1.6rem;
+
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      flex-shrink: 0;
+    }
   }
 
   &__required-star {
@@ -191,6 +203,15 @@ $field-height: 3.6rem;
       }
     }
 
+    &--warning {
+      border-color: $yellow-500;
+
+      &:focus {
+        box-shadow: 0 0 0 0.2rem rgba($yellow-600, 0.2);
+        border-color: $yellow-600;
+      }
+    }
+
     &--readonly {
       border-color: $blue-ocean;
       cursor: default;
@@ -229,6 +250,10 @@ $field-height: 3.6rem;
 
     &--helper {
       color: $gray-600;
+    }
+
+    &--warning {
+      color: $yellow-600;
     }
   }
 
