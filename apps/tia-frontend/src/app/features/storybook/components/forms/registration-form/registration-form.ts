@@ -18,7 +18,6 @@ import {
   passwordValidator,
 } from 'apps/tia-frontend/src/app/core/auth/utils/validators/form-validations';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
-import { InputState } from '@tia/shared/lib/forms/models/input.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import {
   COUNTRY_OPTIONS,
@@ -92,7 +91,7 @@ export class RegistrationForm {
     return this.registrationForm.get('confirmPassword');
   }
 
-  private onPasswordChange() {
+  private onPasswordChange(): void {
     const control = this.passwordControl;
     if (!control) {
       return;
@@ -116,36 +115,34 @@ export class RegistrationForm {
     this.comparePasswords();
   }
 
-  private passwordValue = toSignal(this.passwordControl!.valueChanges, {
-    initialValue: this.passwordControl!.value,
-  });
+  private passwordValue = toSignal(this.passwordControl!.valueChanges);
 
   public readonly passwordRules = signal<Record<string, boolean> | null>(
     this.passwordControl?.errors?.['passwordRules'] ?? null,
   );
 
-  public readonly showPasswordRules = computed(() => {
+  public readonly showPasswordRules = computed<boolean>(() => {
     const rules = this.passwordRules();
     if (!rules) return false;
     return this.passwordInteracted() || Object.values(rules).every(Boolean);
   });
 
-  public readonly minLength = computed(() => {
+  public readonly minLength = computed<boolean>(() => {
     const rules = this.passwordRules();
     return !!rules && !!rules['minLength'];
   });
 
-  public readonly uppercaseLowercase = computed(() => {
+  public readonly uppercaseLowercase = computed<boolean>(() => {
     const rules = this.passwordRules();
     return !!rules && !!(rules['uppercase'] && rules['lowercase']);
   });
 
-  public readonly numberRule = computed(() => {
+  public readonly numberRule = computed<boolean>(() => {
     const rules = this.passwordRules();
     return !!rules && !!rules['number'];
   });
 
-  public readonly specialRule = computed(() => {
+  public readonly specialRule = computed<boolean>(() => {
     const rules = this.passwordRules();
     return !!rules && !!rules['special'];
   });
@@ -169,7 +166,7 @@ export class RegistrationForm {
     return 'Strong';
   });
 
-  public readonly strengthPercent = computed(() => {
+  public readonly strengthPercent = computed<number>(() => {
     const rules = this.passwordRules();
     if (!rules) {
       return 0;
@@ -181,7 +178,7 @@ export class RegistrationForm {
     );
   });
 
-  public readonly firstFailedRule = computed(() => {
+  public readonly firstFailedRule = computed<string | null>(() => {
     const rules = this.passwordRules();
     if (!rules) {
       return null;
@@ -214,34 +211,22 @@ export class RegistrationForm {
     return control ? control.invalid && control.touched : false;
   }
 
-  private comparePasswords() {
+  private comparePasswords(): void {
     const confirm = this.confirmPasswordControl;
-    if (!confirm) return;
+    if (!confirm) {
+      return;
+    }
+
     if (this.passwordControl?.value !== confirm.value) {
-      confirm.setErrors({ ...confirm.errors, passwordMismatch: true });
+      confirm.setErrors({ ...confirm.errors });
     } else if (confirm.errors) {
       delete confirm.errors['passwordMismatch'];
-      if (Object.keys(confirm.errors).length === 0) confirm.setErrors(null);
     }
   }
 
   private confirmPasswordValue = toSignal(
     this.confirmPasswordControl!.valueChanges,
-    { initialValue: this.confirmPasswordControl!.value },
   );
-
-  public get confirmPasswordState(): InputState {
-    const control = this.confirmPasswordControl;
-    if (this.showError('confirmPassword')) {
-      return 'error';
-    }
-
-    if (control?.value && this.passwordControl?.value !== control?.value) {
-      return 'error';
-    }
-
-    return 'default';
-  }
 
   public submit(): void {
     if (this.registrationForm.invalid || !this.registrationForm.value) {
