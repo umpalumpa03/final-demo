@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ButtonLibraryComponent } from './button-library';
+import { provideRouter } from '@angular/router';
 
 describe('ButtonLibraryComponent', () => {
   let component: ButtonLibraryComponent;
@@ -8,6 +9,7 @@ describe('ButtonLibraryComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ButtonLibraryComponent],
+      providers:[provideRouter([])]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ButtonLibraryComponent);
