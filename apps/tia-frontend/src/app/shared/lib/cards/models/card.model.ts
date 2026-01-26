@@ -14,6 +14,8 @@ export interface CardData {
   flexDirection?: string;
   alignItems?: string;
   justifyContent?: string;
+  minHeight?: string;
+padding?: string;
 }
 
 export interface StatisticCardData {
