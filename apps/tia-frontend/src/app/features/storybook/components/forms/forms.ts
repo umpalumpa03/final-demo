@@ -8,6 +8,7 @@ import { LayoutForm } from './layout-form/layout-form';
 import { SettingsForm } from './settings-form/settings-form';
 import { ShowcaseCard } from '../../shared/showcase-card/showcase-card';
 import { MultistepForms } from "./multistep-form/multistep-forms";
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 
 @Component({
   selector: 'app-forms',
@@ -20,7 +21,8 @@ import { MultistepForms } from "./multistep-form/multistep-forms";
     LayoutForm,
     SettingsForm,
     ShowcaseCard,
-    MultistepForms
+    MultistepForms,
+    Skeleton
 ],
   templateUrl: './forms.html',
   styleUrl: './forms.scss',
