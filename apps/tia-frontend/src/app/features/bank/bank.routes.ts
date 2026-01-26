@@ -60,7 +60,7 @@ export const bankRoutes: Routes = [
       {
         path: 'paybill',
         loadChildren: () =>
-          import('./components/paybill/paybill-routes').then(
+          import('./components/paybill/paybill.routes').then(
             (r) => r.PAYBILL_ROUTES,
           ),
         providers: [

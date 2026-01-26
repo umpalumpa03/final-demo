@@ -1,13 +1,14 @@
 import { createReducer, on } from '@ngrx/store';
-import { PaybillCategory } from '../models/paybill.model';
-import { initialPaybillState } from './paybill.state';
+import { PaybillState } from '../models/paybill.model';
 import { PaybillActions } from './paybill.actions';
 
-export interface PaybillState {
-  categories: PaybillCategory[];
-  selectedCategoryId: string | null;
-  loading: boolean;
-}
+export const initialPaybillState: PaybillState = {
+  categories: [],
+  selectedCategoryId: null,
+  selectedProviderId: null,
+  loading: false,
+  error: null,
+};
 
 export const paybillReducer = createReducer(
   initialPaybillState,

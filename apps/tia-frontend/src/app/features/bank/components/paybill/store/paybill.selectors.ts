@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { PaybillState } from './paybill.state';
+import { PaybillState } from '../models/paybill.model';
 
 export const selectPaybillState =
   createFeatureSelector<PaybillState>('paybill');
