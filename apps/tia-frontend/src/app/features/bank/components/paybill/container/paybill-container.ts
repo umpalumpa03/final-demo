@@ -4,7 +4,6 @@ import {
   computed,
   inject,
   OnInit,
-  signal,
 } from '@angular/core';
 import { Breadcrumbs } from '@tia/shared/lib/navigation/breadcrumbs/breadcrumbs';
 import { LibraryTitle } from '../../../../storybook/shared/library-title/library-title';
@@ -16,10 +15,13 @@ import {
 } from '../store/paybill.selectors';
 import { PaybillActions } from '../store/paybill.actions';
 import { PaybillCategory, PaybillProvider } from '../models/paybill.model';
+import { RouterModule } from '@angular/router';
+import { ButtonGroupComponent } from '@tia/shared/lib/primitives/button-group/button-group.component';
+import { navConfig } from '../config/paybill.config';
 
 @Component({
   selector: 'app-paybill-container',
-  imports: [Breadcrumbs, LibraryTitle],
+  imports: [Breadcrumbs, LibraryTitle, RouterModule, ButtonGroupComponent],
   templateUrl: './paybill-container.html',
   styleUrl: './paybill-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,6 +29,8 @@ import { PaybillCategory, PaybillProvider } from '../models/paybill.model';
 export class PaybillContainer implements OnInit {
   public readonly paybillTitle = 'Pay Bills';
   public readonly paybillSubtitle = 'Pay your bills quickly and securely';
+
+  public navigationConfig = navConfig;
 
   private readonly store = inject(Store);
 

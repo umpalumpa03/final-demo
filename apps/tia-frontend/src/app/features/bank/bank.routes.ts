@@ -59,9 +59,9 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'paybill',
-        loadComponent: () =>
-          import('./components/paybill/container/paybill-container').then(
-            (c) => c.PaybillContainer,
+        loadChildren: () =>
+          import('./components/paybill/paybill-routes').then(
+            (r) => r.PAYBILL_ROUTES,
           ),
         providers: [
           provideState({ name: 'paybill', reducer: paybillReducer }),
