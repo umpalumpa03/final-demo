@@ -91,6 +91,40 @@ export const INTERACTIVE_EXAMPLES = [
   {
     variant: 'default' as ButtonVariant,
     label: 'Download File',
-    icon: 'download-icon.svg',
+    icon: 'white-download.svg',
   },
 ];
+
+
+export const BUTTON_GROUPS = {
+  simple: {
+    count: 3,
+    labels: ['Left', 'Center', 'Right']
+  },
+
+  withActions: [
+    { 
+      label: 'Save', 
+      action: () => console.log('Save Function Example Runs!') 
+    },
+    { 
+      label: 'Delete', 
+      action: () => alert('Delete Function Example Runs!') 
+    }
+  ],
+
+  withNavigation: [
+    { 
+      label: 'Home', 
+      routerLink: '/home' 
+    },
+    { 
+      label: 'Profile', 
+      routerLink: '/profile' 
+    },
+    { 
+      label: 'Settings', 
+      routerLink: '/settings' 
+    }
+  ]
+};
