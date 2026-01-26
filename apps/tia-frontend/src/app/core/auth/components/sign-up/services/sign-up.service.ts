@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
-import { SignUpData, signUpResponse } from '../model/sign-up.model';
+import { signUpResponse } from '../model/sign-up.model';
+import { IRegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/models/contact-forms.model';
 
 @Injectable({
   providedIn: 'root',
@@ -9,9 +10,11 @@ import { SignUpData, signUpResponse } from '../model/sign-up.model';
 export class SignUpService {
   private apiBase = 'https://tia.up.railway.app';
 
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
-  public signUpUser(userData: SignUpData): Observable<signUpResponse> {
+  public signUpUser(userData: IRegistrationForm): Observable<signUpResponse> {
     return this.http.post<any>(`${this.apiBase}/auth/signup`, userData);
   }
+
 }
+

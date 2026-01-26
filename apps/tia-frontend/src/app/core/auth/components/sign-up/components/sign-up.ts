@@ -3,74 +3,75 @@ import {
   Component,
   DestroyRef,
   inject,
-  OnDestroy,
+  OnInit,
   signal,
 } from '@angular/core';
-import { catchError, EMPTY, Observable, Subject, takeUntil, tap } from 'rxjs';
+import { catchError, EMPTY, tap } from 'rxjs';
 import { SignUpService } from '../services/sign-up.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { SignUpData, signUpResponse } from '../model/sign-up.model';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { RegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/registration-form/registration-form';
+import { TokenService } from '../../../services/token.service';
+import { IRegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/models/contact-forms.model';
+import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 
 @Component({
   selector: 'app-sign-up',
-  imports: [RouterLink, RegistrationForm],
+  imports: [RouterLink, RegistrationForm, Spinner],
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SignUp {
+export class SignUp implements OnInit{
   private signUpService = inject(SignUpService);
+  private tokenService = inject(TokenService);
+  private router = inject(Router)
+  
   private destroyRef = inject(DestroyRef);
 
-  // Loading State
-  public apiResult = signal<string>('Idle');
+  public loadingState = signal<boolean>(true);
+  public errorMessage = signal<string>('');
 
-  public placeHolder = signal<signUpResponse>({
-    id: '',
-    email: '',
-    username: '',
-    createdAt: '',
-    signup_token: '',
-  });
+  ngOnInit(): void {
+    this.loadingState.set(false)
+  }
 
-  // SignUpData
-  public onSignUp(signUpData: any): void {
-    this.apiResult.set('Checking...');
-    /*
-      {
-          "id": "a9431998-af79-4a09-9766-af429ae1f25f",
-          "email": "misho123@gmail.com",
-          "username": "misho123gmail",
-          "createdAt": "2026-01-26T10:37:11.797Z",
-          "signup_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhOTQzMTk5OC1hZjc5LTRhMDktOTc2Ni1hZjQyOWFlMWYyNWYiLCJ1c2VybmFtZSI6Im1pc2hvMTIzZ21haWwiLCJzY29wZSI6InNpZ251cF9waG9uZSIsImF1ZCI6InNpZ251cCIsImp0aSI6IjliOTRmOTZkLTQ1MDgtNDIzOS1iZGIxLTcxODc3MjgzZTc4OSIsImlhdCI6MTc2OTQyMzgzMSwiZXhwIjoxNzY5NDI3NDMxfQ.grJ5vsxTy5T9lHu6IeRNHiw8wnPo39R3mMzmpyDKLmU"
-      }
-    */
+
+  public onSignUp(signUpData: IRegistrationForm): void {
+    this.loadingState.set(true);
 
     this.signUpService
       .signUpUser(signUpData)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
-          this.apiResult.set('Complete');
           if (res)
-            //error error message
-            // else set
-            this.apiResult.set('Complete');
-          console.log(res, '__APIRESPONSE');
+            this.tokenService.setSignUpToken(res.signup_token)
+
+            this.loadingState.set(false);
+            this.errorMessage.set('')
+
+            this.router.navigate(['/auth/sign-up/otp']);
         }),
 
         catchError((err) => {
           const messages = err.error?.message;
 
           if (Array.isArray(messages)) {
-            this.apiResult.set(messages[0]);
+            // 🚩🚩 
+            const invalidEmailError = "email must be an email"
+
+            if(messages[0] === invalidEmailError) {
+              this.errorMessage.set('Invalid Email');
+            } else {
+              this.errorMessage.set(messages[0]);
+            }
+          } else if (typeof messages === 'string') {
+            this.errorMessage.set(messages);
           } else {
-            this.apiResult.set('Registration failed');
+            this.errorMessage.set('An unexpected error occurred');
           }
 
-          // --
           return EMPTY;
         }),
       )
