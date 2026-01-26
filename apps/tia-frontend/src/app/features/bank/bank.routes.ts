@@ -62,10 +62,10 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'settings',
-        loadComponent: () =>
-          import('./components/settings/container/settings-container').then(
-            (c) => c.SettingsContainer,
-          ),
+        loadChildren: () =>
+          import('./components/settings/settings.route').then(
+            (r) => r.settingsRoutes,
+          )
       },
       {
         path: 'messaging',
