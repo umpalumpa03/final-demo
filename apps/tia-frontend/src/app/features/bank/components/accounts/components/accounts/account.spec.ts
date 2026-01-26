@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { AccountContainer } from './account-container';
+import { AccountContainer } from '../../container/account-container';
 
 describe('AccountContainer', () => {
   let component: AccountContainer;
