@@ -3,10 +3,11 @@ import { Observable, Subject, takeUntil, tap } from 'rxjs';
 import { SignUpService } from '../services/sign-up.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SignUpData } from '../model/sign-up.model';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.scss',
 })
