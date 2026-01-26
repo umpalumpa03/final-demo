@@ -21,7 +21,6 @@ import { navConfig } from '../config/paybill.config';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 import { Tabs } from '@tia/shared/lib/navigation/tabs/tabs';
-import { TabItem } from '@tia/shared/lib/navigation/models/tab.model';
 
 @Component({
   selector: 'app-paybill-container',
@@ -43,7 +42,7 @@ export class PaybillContainer implements OnInit {
   public readonly paybillTitle = 'Pay Bills';
   public readonly paybillSubtitle = 'Pay your bills quickly and securely';
 
-  public navigationConfig = navConfig;
+  public readonly navigationConfig = navConfig;
 
   public ngOnInit(): void {
     this.store.dispatch(PaybillActions.loadCategories());
