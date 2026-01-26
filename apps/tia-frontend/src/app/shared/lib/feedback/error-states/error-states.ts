@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, Component, computed, input} from '@angular/core';
-import { ErrorStateVariant } from "@tia/shared/lib/feedback/models/error-state.model";
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ErrorStateVariant } from "../models/error-state.model";
 
 @Component({
   selector: 'app-error-states',
@@ -15,6 +15,8 @@ export class ErrorStates {
   public readonly buttonMessage = input<string>('Retry');
   public readonly width = input<string>('32rem');
   public readonly height = input<string>('23.8rem');
+
+  public readonly buttonClick = output<void>();
 
   public readonly errorClass = computed(() => `error-state error-state--${this.variant()}`);
 }
