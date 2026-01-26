@@ -38,7 +38,7 @@ export const REGISTATION_FORM = {
   username: {
     label: 'Username',
     required: false,
-    placeholder: 'Pick a date',
+    placeholder: 'Enter your username',
   },
 } as const;
 
