@@ -3,7 +3,7 @@ import { SignIn } from './sign-in';
 import { of } from 'rxjs';
 import { provideRouter } from '@angular/router';
 import { signal } from '@angular/core';
-import { AuthService } from '../../services/auth-service';
+import { AuthService } from '../../services/auth.service';
 
 describe('SignIn', () => {
   let component: SignIn;

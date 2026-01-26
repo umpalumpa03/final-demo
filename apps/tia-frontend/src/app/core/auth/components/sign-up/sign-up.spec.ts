@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { SignUp } from './sign-up';
-import { AuthService } from '../../services/auth-service';
+import { AuthService } from '../../services/auth.service';
 import { TokenService } from '../../services/token.service';
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
@@ -59,7 +59,6 @@ describe('SignUp (Vitest)', () => {
     component.onSignUp({ email: 'test@example.com', password: 'password' } as any);
 
     expect(authService.signUpUser).toHaveBeenCalled();
-    // expect(tokenService.setSignUpToken).toHaveBeenCalledWith('12345');
     expect(component.loadingState()).toBe(false);
     expect(component.errorMessage()).toBe('');
     expect(navigateSpy).toHaveBeenCalledWith(['/auth/sign-up/otp']);

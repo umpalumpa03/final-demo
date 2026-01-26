@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { AuthService } from './auth-service';
+import { AuthService } from './auth.service';
 import { TokenService } from './token.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { vi } from 'vitest';

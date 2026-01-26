@@ -13,7 +13,7 @@ import { RegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/c
 import { TokenService } from '../../services/token.service';
 import { IRegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/models/contact-forms.model';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
-import { AuthService } from '../../services/auth-service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-sign-up',
