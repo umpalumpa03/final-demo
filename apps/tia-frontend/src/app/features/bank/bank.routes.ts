@@ -1,4 +1,8 @@
 import { Routes } from '@angular/router';
+import { provideState } from '@ngrx/store';
+import { paybillReducer } from './components/paybill/store/paybill.reducer';
+import { provideEffects } from '@ngrx/effects';
+import { PaybillEffects } from './components/paybill/store/paybill.effects';
 
 export const bankRoutes: Routes = [
   {
@@ -56,10 +60,14 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'paybill',
-        loadComponent: () =>
-          import('./components/paybill/container/paybill-container').then(
-            (c) => c.PaybillContainer,
+        loadChildren: () =>
+          import('./components/paybill/paybill.routes').then(
+            (r) => r.PAYBILL_ROUTES,
           ),
+        providers: [
+          provideState({ name: 'paybill', reducer: paybillReducer }),
+          provideEffects(PaybillEffects),
+        ],
       },
       {
         path: 'settings',
