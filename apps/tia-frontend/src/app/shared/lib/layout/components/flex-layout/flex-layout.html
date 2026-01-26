@@ -4,6 +4,9 @@
     [class.flex-layout--center]="variant() === 'center'" 
     [class.flex-layout--wrap]="wrap()" 
     [style.gap]="gap()"
+    [class.flex-layout--border]="border()"
+    [class.direction-row]="isRow()"
+    [class.direction-column]="isColumn()"
 >
     <ng-content />
 </div>

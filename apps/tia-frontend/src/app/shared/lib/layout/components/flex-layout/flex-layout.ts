@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-import { FlexLayoutVariant } from './flex-layout.model';
+import { FlexDirection, FlexLayoutVariant } from './flex-layout.model';
 
 @Component({
   selector: 'app-flex-layout',
@@ -13,4 +13,9 @@ export class FlexLayout {
   public variant = input<FlexLayoutVariant>();
   public gap = input<string>();
   public wrap = input<boolean>(false);
+  public border = input<boolean>(false);
+  public direction = input<FlexDirection>('row');
+
+  public isRow = computed(() => this.direction() === 'row');
+  public isColumn = computed(() => this.direction() === 'column');
 }
