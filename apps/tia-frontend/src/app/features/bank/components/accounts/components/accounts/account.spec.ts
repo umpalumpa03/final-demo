@@ -1,18 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Account } from './account';
+import { provideRouter } from '@angular/router';
+import { AccountContainer } from '../../container/account-container';
 
-describe('Account', () => {
-  let component: Account;
-  let fixture: ComponentFixture<Account>;
+describe('AccountContainer', () => {
+  let component: AccountContainer;
+  let fixture: ComponentFixture<AccountContainer>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Account],
+      imports: [AccountContainer],
+      providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Account);
+    fixture = TestBed.createComponent(AccountContainer);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {

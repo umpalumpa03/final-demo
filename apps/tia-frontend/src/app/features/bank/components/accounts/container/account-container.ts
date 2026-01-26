@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Tabs } from '@tia/shared/lib/navigation/tabs/tabs';
 import { TABS } from '../config/account.config';
@@ -8,6 +8,7 @@ import { TABS } from '../config/account.config';
   imports: [Tabs, RouterOutlet],
   templateUrl: './account-container.html',
   styleUrl: './account-container.scss',
+   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountContainer {
   public readonly tabs = signal(TABS);

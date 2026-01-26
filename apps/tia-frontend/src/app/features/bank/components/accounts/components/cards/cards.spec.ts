@@ -12,10 +12,16 @@ describe('Cards', () => {
 
     fixture = TestBed.createComponent(Cards);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render placeholder text', () => {
+    const element = fixture.nativeElement.querySelector('p');
+    expect(element).toBeTruthy();
+    expect(element.textContent).toContain('cards works!');
   });
 });
