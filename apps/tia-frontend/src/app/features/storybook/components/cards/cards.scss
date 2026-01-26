@@ -3,12 +3,11 @@
 
 .cards-page {
   max-width: 110rem;
-    width: 100%;
+  width: 100%;
   margin: 0 auto;
   padding: 1.6rem;
-  @include display-flex(column); 
+  @include display-flex(column);
   gap: 3.2rem;
-
 
   &__title {
     margin: 2rem 0;
@@ -20,7 +19,6 @@
     width: 100%;
     border-radius: 1rem;
     padding: 2.48rem;
-
 
     @media (max-width: 480px) {
       padding: 1.2rem;
@@ -42,8 +40,6 @@
       grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
       gap: 2.4rem;
 
-
-
       @media (max-width: 480px) {
         grid-template-columns: 1fr;
         gap: 1.2rem;
@@ -60,15 +56,22 @@
           grid-template-columns: 1fr;
         }
       }
+      &--category {
+        grid-template-columns: repeat(auto-fill, minmax(28rem, 1fr));
+
+        @media (max-width: 480px) {
+          grid-template-columns: 1fr;
+        }
+      }
     }
   }
 
   .card-footer {
-  @include flex-center(row, flex-end, center);
-  gap: 1.2rem;
+    @include flex-center(row, flex-end, center);
+    gap: 1.2rem;
 
-  @media (max-width: 480px) {
-    gap: 1rem;
+    @media (max-width: 480px) {
+      gap: 1rem;
+    }
   }
-}
 }

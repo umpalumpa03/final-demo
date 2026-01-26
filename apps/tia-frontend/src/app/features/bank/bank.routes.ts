@@ -1,4 +1,8 @@
 import { Routes } from '@angular/router';
+import { provideState } from '@ngrx/store';
+import { paybillReducer } from './components/paybill/store/paybill.reducer';
+import { provideEffects } from '@ngrx/effects';
+import { PaybillEffects } from './components/paybill/store/paybill.effects';
 
 export const bankRoutes: Routes = [
   {
@@ -18,13 +22,14 @@ export const bankRoutes: Routes = [
             (c) => c.DashboardContainer,
           ),
       },
+ 
       {
-        path: 'accounts',
-        loadComponent: () =>
-          import('./components/accounts/container/account-container').then(
-            (c) => c.AccountContainer,
-          ),
-      },
+  path: 'accounts',
+  loadChildren: () =>
+    import('./components/accounts/accounts.routes').then(
+      (c) => c.accountsRoutes
+    ),
+},
       {
         path: 'transactions',
         loadComponent: () =>
@@ -55,10 +60,14 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'paybill',
-        loadComponent: () =>
-          import('./components/paybill/container/paybill-container').then(
-            (c) => c.PaybillContainer,
+        loadChildren: () =>
+          import('./components/paybill/paybill.routes').then(
+            (r) => r.PAYBILL_ROUTES,
           ),
+        providers: [
+          provideState({ name: 'paybill', reducer: paybillReducer }),
+          provideEffects(PaybillEffects),
+        ],
       },
       {
         path: 'settings',
@@ -69,9 +78,9 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'messaging',
-        loadComponent: () =>
-          import('./components/messaging/container/messaging-container').then(
-            (c) => c.MessagingContainer,
+        loadChildren: () =>
+          import('./components/messaging/messaging.routes').then(
+            (r) => r.messagingRoutes,
           ),
       },
     ],

@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { BankHeader } from './bank-header';
+import { PaybillTemplates } from './paybill-templates';
 
-describe('BankHeader', () => {
-  let component: BankHeader;
-  let fixture: ComponentFixture<BankHeader>;
+describe('PaybillTemplates', () => {
+  let component: PaybillTemplates;
+  let fixture: ComponentFixture<PaybillTemplates>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BankHeader],
+      imports: [PaybillTemplates],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(BankHeader);
+    fixture = TestBed.createComponent(PaybillTemplates);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

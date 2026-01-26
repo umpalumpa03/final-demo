@@ -14,6 +14,8 @@ export interface CardData {
   flexDirection?: string;
   alignItems?: string;
   justifyContent?: string;
+  minHeight?: string;
+padding?: string;
 }
 
 export interface StatisticCardData {
@@ -23,4 +25,13 @@ export interface StatisticCardData {
   change: string;
   changeType: 'positive' | 'negative';
   icon: string;
+}
+
+export interface CategoryCardData {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: string;
+  iconBgColor: string;
+  count: number;
 }

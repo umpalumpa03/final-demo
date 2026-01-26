@@ -1,8 +1,6 @@
 import { Directive, inject, computed } from '@angular/core';
 import { DraggableCard } from '../components/draggable-card/draggable-card';
 import { DRAG_CONTAINER } from '../model/drag.provider';
-// Handles drag-related DOM bindings (classes, styles, data attributes) separately from DraggableCard to keep component focused on content only
-// Enables drag functionality for DraggableCard when used inside DragContainer with ng-content
 
 @Directive({
   selector: '[appDragItem]',
@@ -12,6 +10,7 @@ import { DRAG_CONTAINER } from '../model/drag.provider';
     '[class.is-drop-target]': 'isDropTarget()',
     '[style.transform]': 'draggingTransform()',
     '[style.z-index]': 'draggingZIndex()',
+    '[style.grid-column]': 'gridColumn()',
   },
 })
 export class DragItemDirective {
@@ -34,5 +33,9 @@ export class DragItemDirective {
 
   protected readonly draggingZIndex = computed(() =>
     this.isDragging() ? this.container.draggingStyle().zIndex : null,
+  );
+
+  protected readonly gridColumn = computed(() =>
+    this.container.getColspanForItem(this.cardId()),
   );
 }

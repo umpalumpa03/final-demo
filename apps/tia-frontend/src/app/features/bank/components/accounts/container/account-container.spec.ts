@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { AccountContainer } from './account-container';
 
 describe('AccountContainer', () => {
@@ -8,11 +9,12 @@ describe('AccountContainer', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AccountContainer],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccountContainer);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
