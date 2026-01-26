@@ -1,26 +1,33 @@
+@use '../../../styles/mixins' as *;
 @use '../../../styles/palette' as *;
 @use '../../../styles/themes' as *;
-@use '../../../styles/mixins' as *;
+
 
 .button-group {
   display: inline-flex;
-  vertical-align: middle;
 
-  &__items {
-    @include flex-center(row, flex-start, center);
+  &__wrapper {
+    @include flex-center(row, flex-start, stretch);
+    border-radius: 2rem;
   }
 
-  &__item {
+  &__btn {
+    @include font-inter(500, 1.4rem);
+    height: 3.6rem;
+    padding: 0 2.4rem;
+    background-color: transparent;
+    color: var(--color-fg);
+    border: 0.1rem solid $blue-400;
+    transition: all 0.2s ease-in-out;
     position: relative;
-    
-    border-radius: 0;
+    border-radius: 0; 
 
     &:not(:first-child) {
-      margin-left: 0.1rem; 
+      border-left: none;
     }
 
     &:first-child {
-      border-top-left-radius: 2rem; 
+      border-top-left-radius: 2rem;
       border-bottom-left-radius: 2rem;
     }
 
@@ -29,8 +36,12 @@
       border-bottom-right-radius: 2rem;
     }
 
-    &:hover {
+    &--active {
+      background-color: var(--color-primary);
+      color: $white;
       z-index: 1; 
     }
   }
 }
+
+// Refactored scss for button-groups
