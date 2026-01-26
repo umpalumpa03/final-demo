@@ -14,12 +14,13 @@ import {
   TransactionActionEvent,
 } from '../models/table.model';
 import { Badges } from '../../primitives/badges/badges';
-import { CurrencyPipe, DatePipe, SlicePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { crudConfig } from '../models/table.crud.config';
 import { Checkboxes } from '../../forms/checkboxes/checkboxes';
 import { Pagination } from '../../navigation/pagination/pagination';
 import { ButtonComponent } from '../../primitives/button/button';
 import { Spinner } from '../../feedback/spinner/spinner';
+import { ErrorStates } from '../../feedback/error-states/error-states';
 
 @Component({
   selector: 'app-tables',
@@ -31,6 +32,7 @@ import { Spinner } from '../../feedback/spinner/spinner';
     CurrencyPipe,
     ButtonComponent,
     Spinner,
+    ErrorStates,
   ],
   templateUrl: './tables.html',
   styleUrl: './tables.scss',

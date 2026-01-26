@@ -18,6 +18,9 @@
   &-spinner {
     @include flex-center();
   }
+  &-error {
+    max-width: 100%;
+  }
 }
 
 .table {
@@ -60,10 +63,6 @@
     &__row {
       border-top: 1px solid $blue-400;
       cursor: pointer;
-
-      &__spinner {
-        @include flex-center();
-      }
 
       &__item {
         &__container {

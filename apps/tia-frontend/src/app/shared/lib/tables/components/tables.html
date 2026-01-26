@@ -5,8 +5,14 @@
     <app-spinner size="15rem"></app-spinner>
   </div>
   }@else if(hasError()) {
-  <p>hello world</p>
-  <!-- აქქ იქნება ის ერრორ კომპონენტი ვახტანგა რომ ააწყობს -->
+  <div class="table-container-error">
+    <app-error-states
+      header="Failed to Load Table Data"
+      message="An error occurred while fetching the transaction history. Please try again."
+      buttonMessage="Reload Table"
+      width="100%"
+    ></app-error-states>
+  </div>
   }@else {
   <table class="table" [class.table--striped]="isStriped()">
     <thead class="table__header">
@@ -154,7 +160,7 @@
       }
     </tbody>
   </table>
-  } @if(isPagination()) {
+  } @if(isPagination() && !hasError()) {
   <div class="table__pagination">
     <app-pagination
       (pageChange)="onPageChange($event)"
