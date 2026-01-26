@@ -1,0 +1,44 @@
+<div class="forms__lib">
+  <header class="forms__lib__header">
+    <app-library-title
+      [title]="title"
+      [subtitle]="subtitle"
+    ></app-library-title>
+  </header>
+
+  <app-showcase-card title="Contact Form">
+    @defer {
+    <app-contact-form></app-contact-form>
+    } @placeholder {
+    <app-skeleton></app-skeleton>
+    }
+  </app-showcase-card>
+
+  <app-showcase-card title="Registration Form">
+    @defer {
+    <app-registration-form></app-registration-form>
+    } @placeholder {
+    <app-skeleton></app-skeleton>
+    }
+  </app-showcase-card>
+
+  <app-showcase-card title="Settings Form">
+    <app-settings-form navigateRoute=""></app-settings-form>
+  </app-showcase-card>
+
+  <app-showcase-card title="Inline Form">
+    <app-inline-form></app-inline-form>
+  </app-showcase-card>
+
+  <app-showcase-card title="Form with Validation">
+    <app-validation-form></app-validation-form>
+  </app-showcase-card>
+
+  <app-showcase-card title="Multi-step Form Progress">
+    <app-multistep-forms></app-multistep-forms>
+  </app-showcase-card>
+
+  <app-showcase-card title="Form Layout">
+    <app-layout-form></app-layout-form>
+  </app-showcase-card>
+</div>

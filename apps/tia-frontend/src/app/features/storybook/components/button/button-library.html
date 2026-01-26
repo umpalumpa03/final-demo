@@ -1,0 +1,114 @@
+<div class="button-library">
+  <div class="button-library__title">
+    <app-library-title
+      [title]="title"
+      [subtitle]="subtitle"
+    ></app-library-title>
+  </div>
+
+  <app-showcase-card title="Variants">
+    @for (v of variants(); track v) {
+    <app-button [variant]="v">{{ v | titlecase }}</app-button>
+    }
+  </app-showcase-card>
+
+  <app-showcase-card title="Sizes">
+    <div class="button-library__row">
+      @for (s of sizes(); track s) {
+      <app-button [size]="s">{{ s | titlecase }}</app-button>
+      }
+      <app-button
+        size="icon"
+        icon="white-settings.svg"
+        variant="default"
+      ></app-button>
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="States">
+    <div class="button-library__row">
+      <span class="button-library__state-label">Default:</span>
+      <app-button>Click Me</app-button>
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="Disabled">
+    <div class="button-library__row">
+      @for (btn of stateExamples().disabled; track btn.label) {
+      <app-button
+        [variant]="btn.variant"
+        [isDisabled]="true"
+        [title]="btn.label"
+      >
+        {{ btn.label }}
+      </app-button>
+      }
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="Loading">
+    <div class="button-library__row">
+      <app-button [isLoading]="true">Loading...</app-button>
+      <app-button
+        variant="secondary"
+        [isLoading]="isInteractiveLoading()"
+        (click)="toggleLoading()"
+      >
+        {{ isInteractiveLoading() ? 'Loading...' : 'Click to Load' }}
+      </app-button>
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="With Icons">
+    <div class="button-library__row">
+      @for (btn of iconButtons(); track btn.label) {
+      <app-button [variant]="btn.variant" [icon]="btn.icon">
+        {{ btn.label }}
+      </app-button>
+      }
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="Icon Only">
+    <div class="button-library__row">
+      @for (btn of iconOnlyButtons(); track btn.label) {
+      <app-button
+        [variant]="btn.variant"
+        size="icon"
+        [icon]="btn.icon"
+        [title]="btn.label"
+      ></app-button>
+      }
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="Interactive Examples">
+    <div class="button-library__row">
+      @for (example of interactiveItems(); track example.label) {
+      <app-button [variant]="example.variant" [icon]="example.icon">
+        {{ example.label }}
+      </app-button>
+      }
+    </div>
+  </app-showcase-card>
+
+<app-showcase-card title="Button Groups">
+  <div class="button-library__row">
+    <app-button-group
+      [count]="buttonGroups().simple.count"
+      [labels]="buttonGroups().simple.labels" 
+    ></app-button-group>
+  </div>
+</app-showcase-card>
+<!--Choose labels and counts-->
+
+
+  <app-showcase-card title="Full Width">
+    <app-button variant="default" [fullWidth]="true" style="width: 100%">
+      Full Width Button
+    </app-button>
+    <app-button variant="outline" [fullWidth]="true" style="width: 100%">
+      Full Width Outline
+    </app-button>
+  </app-showcase-card>
+</div>

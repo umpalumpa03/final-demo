@@ -1,0 +1,28 @@
+@use '../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../shared/styles/palette' as *;
+
+.context {
+  max-width: 110rem;
+  width: 100%;
+  &-demo {
+    @include display-flex(column);
+    gap: 1.6rem;
+    width: 100%;
+
+    &__area {
+      @include flex-center;
+      width: 100%;
+      height: 12rem;
+      background-color: var(--color-bg);
+      border: 0.16rem dashed var(--color-accent);
+      border-radius: 0.8rem;
+      cursor: context-menu;
+    }
+
+    &__hint {
+      @include font-arimo(400, 1.4rem, 2rem);
+      color: var(--color-fg);
+      opacity: 0.6;
+    }
+  }
+}

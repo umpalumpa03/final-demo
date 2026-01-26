@@ -1,0 +1,48 @@
+@use '../../../../shared/styles/variables' as *;
+@use '../../../../shared/styles/palette' as *;
+@use '../../../../shared/styles/mixins' as *;
+
+.navigation-container {
+  @include flex-center;
+  flex-wrap: wrap;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0.4rem 0.16rem;
+  max-width: 105rem;
+  min-height: 3.6rem;
+  padding: 3.2rem 1.6rem;
+  nav {
+    @include display-flex(row, wrap);
+    background-color: $white;
+    border: 0.1rem solid $blue-400;
+    border-radius: 1rem;
+    padding: 0.4rem 0.16rem;
+    width: 100%;
+    justify-content: space-around;
+
+    a {
+      @include font-arimo(400, 1.4rem, 2rem);
+      padding: 0.4rem 0.8rem;
+      text-decoration: none;
+      color: $blue-800;
+      border-radius: 0.8rem;
+      transition: all 0.2s ease-in-out;
+      background-color: transparent;
+      border-bottom: 0.1rem solid transparent;
+      position: relative;
+      white-space: nowrap;
+
+      &:hover {
+        color: $blue-900;
+        background-color: $blue-100;
+      }
+
+      &.active {
+        color: $blue-400;
+        border-bottom-color: $blue-300;
+        background-color: $blue-100;
+        font-weight: 500;
+      }
+    }
+  }
+}

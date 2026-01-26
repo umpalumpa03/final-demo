@@ -1,0 +1,242 @@
+@use '../../../../shared/styles/mixins' as *;
+@use '../../../../shared/styles/palette' as *;
+
+.showcase-container {
+  @include flex-center(column, center, flex-start);
+  max-width: 110rem;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.6rem;
+  gap: 3.2rem;
+
+  app-showcase-card {
+    display: block;
+    width: 100%;
+  }
+}
+
+.showcase-header {
+  margin: 2rem 0;
+}
+
+.component-section {
+  max-width: 110.2rem;
+  width: 100%;
+  min-height: 13.02rem;
+  background: $white;
+  border: 0.16rem solid $blue-400;
+  border-radius: 1rem;
+  padding: 2.56rem;
+  @include display-flex(column);
+  gap: 1.6rem;
+
+  h3 {
+    @include font-arimo(700, 1.8rem, 2.7rem);
+    color: var(--color-fg);
+    margin: 0;
+  }
+
+  p {
+    @include font-arimo(400, 1.4rem, 2rem);
+    color: $gray-700;
+    margin: 0;
+  }
+}
+
+.button-group {
+  @include display-flex(row, wrap);
+  gap: 1.2rem;
+}
+
+button {
+  @include flex-center();
+  padding: 0.8rem 1.6rem;
+  border-radius: 0.8rem;
+  @include font-arimo(400, 1.4rem, 2rem);
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: $white;
+}
+
+.btn-secondary {
+  background: var(--color-secondary);
+  color: $blue-700;
+}
+
+.btn-outline {
+  background: var(--color-bg);
+  border: 0.08rem solid $blue-400;
+  color: var(--color-fg);
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: $white;
+}
+
+.context-area {
+  max-width: 105.12rem;
+  width: 100%;
+  min-height: 16rem;
+  border: 0.16rem solid $blue-400;
+  border-radius: 1rem;
+  @include flex-center();
+  color: $gray-600;
+  @include font-arimo(400, 1.4rem, 2rem);
+}
+
+.command-palette-mock {
+  max-width: 44.8rem;
+  width: 100%;
+  min-height: 30.318rem;
+  background: $white;
+  border: 0.16rem solid $blue-400;
+  border-radius: 1rem;
+  box-shadow: 0 0.4rem 0.6rem -0.1rem rgba($black, 0.1);
+  overflow: hidden;
+
+  .command-input {
+    @include display-flex(row);
+    align-items: center;
+    padding: 0 1.2rem;
+    height: 3.6rem;
+    border-bottom: 0.08rem solid $blue-400;
+
+    input {
+      border: none;
+      outline: none;
+      width: 100%;
+      @include font-arimo(400, 1.4rem, 2rem);
+      color: var(--color-fg);
+    }
+  }
+
+  .command-results {
+    padding: 0.4rem;
+
+    .result-group label {
+      display: block;
+      padding: 0.6rem 0.8rem;
+      @include font-arimo(400, 1.2rem, 1.6rem);
+      color: $blue-600;
+    }
+
+    .result-item {
+      padding: 0.6rem 0.8rem;
+      border-radius: 0.6rem;
+      @include font-arimo(400, 1.4rem, 2rem);
+      color: var(--color-fg);
+
+      &.active {
+        background: var(--color-accent);
+        color: $blue-700;
+      }
+    }
+  }
+}
+
+.edit-profile-container,
+.terms-container {
+  @include display-flex(column);
+  height: 100%;
+
+  .modal-header {
+    margin-bottom: 2.4rem;
+
+    .title {
+      @include font-arimo(700, 1.8rem, 1.8rem);
+      color: var(--color-fg);
+      margin: 0;
+    }
+
+    .description {
+      @include font-arimo(400, 1.4rem, 2rem);
+      color: $blue-600;
+      margin: 0.8rem 0 0;
+    }
+  }
+
+  .modal-form {
+    @include display-flex(column);
+    gap: 1.6rem;
+
+    .input-group {
+      @include display-flex(column);
+      gap: 0.8rem;
+
+      label {
+        @include font-arimo(400, 1.4rem, 1.4rem);
+        color: var(--color-fg);
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        background: $white;
+        border: 0.16rem solid $blue-400;
+        border-radius: 0.8rem;
+        padding: 0.8rem 1.2rem;
+        @include font-arimo(400, 1.4rem, 2rem);
+        color: var(--color-fg);
+        outline: none;
+
+        &::placeholder {
+          color: rgba($blue-700, 0.4);
+        }
+      }
+
+      textarea {
+        height: 7.6rem;
+      }
+    }
+  }
+
+  .modal-body-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 0.8rem;
+    @include display-flex(column);
+    gap: 2rem;
+    max-height: 60vh;
+
+    &::-webkit-scrollbar {
+      width: 0.4rem;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $blue-400;
+      border-radius: 1rem;
+    }
+  }
+
+  .terms-section {
+    h3 {
+      @include font-arimo(700, 1.6rem, 2.4rem);
+      color: var(--color-fg);
+      margin: 0 0 0.4rem 0;
+    }
+
+    p {
+      @include font-arimo(400, 1.4rem, 2rem);
+      color: $gray-700;
+      margin: 0;
+    }
+  }
+
+  .modal-footer {
+    @include display-flex(row);
+    justify-content: flex-end;
+    gap: 0.8rem;
+    margin-top: 2.4rem;
+  }
+}
