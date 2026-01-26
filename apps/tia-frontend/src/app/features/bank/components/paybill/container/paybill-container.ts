@@ -15,27 +15,56 @@ import {
 } from '../store/paybill.selectors';
 import { PaybillActions } from '../store/paybill.actions';
 import { PaybillCategory, PaybillProvider } from '../models/paybill.model';
-import { RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { ButtonGroupComponent } from '@tia/shared/lib/primitives/button-group/button-group.component';
 import { navConfig } from '../config/paybill.config';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map } from 'rxjs';
+import { Tabs } from '@tia/shared/lib/navigation/tabs/tabs';
+import { TabItem } from '@tia/shared/lib/navigation/models/tab.model';
 
 @Component({
   selector: 'app-paybill-container',
-  imports: [Breadcrumbs, LibraryTitle, RouterModule, ButtonGroupComponent],
+  imports: [
+    Breadcrumbs,
+    LibraryTitle,
+    RouterModule,
+    ButtonGroupComponent,
+    Tabs,
+  ],
   templateUrl: './paybill-container.html',
   styleUrl: './paybill-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillContainer implements OnInit {
+  private readonly store = inject(Store);
+  private readonly router = inject(Router);
+
   public readonly paybillTitle = 'Pay Bills';
   public readonly paybillSubtitle = 'Pay your bills quickly and securely';
 
   public navigationConfig = navConfig;
 
-  private readonly store = inject(Store);
+  public ngOnInit(): void {
+    this.store.dispatch(PaybillActions.loadCategories());
+  }
+
+  private readonly urlSignal = toSignal(
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map(() => this.router.url),
+    ),
+    { initialValue: this.router.url },
+  );
 
   public readonly breadcrumbs = computed(() => {
+    const currentUrl = this.urlSignal();
     const base = [{ label: 'Paybill', route: '/bank/paybill' }];
+
+    if (currentUrl.includes('templates')) {
+      return [...base, { label: 'Templates', route: '' }];
+    }
+
     const cat = this.activeCategory();
     const prov = this.activeProvider();
 
@@ -44,10 +73,6 @@ export class PaybillContainer implements OnInit {
 
     return base;
   });
-
-  public ngOnInit(): void {
-    this.store.dispatch(PaybillActions.loadCategories());
-  }
 
   public handleCategorySelect(category: PaybillCategory): void {
     this.store.dispatch(

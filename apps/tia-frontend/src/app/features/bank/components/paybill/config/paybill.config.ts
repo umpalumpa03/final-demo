@@ -1,6 +1,10 @@
-import { ButtonGroupItem } from '@tia/shared/lib/primitives/button-group/button-group.models/button-group.models';
+import { TabItem } from '@tia/shared/lib/navigation/models/tab.model';
 
-export const navConfig: ButtonGroupItem[] = [
-  { label: 'Pay Bill', routerLink: './' },
-  { label: 'Templates', routerLink: 'templates' },
+export const navConfig: TabItem[] = [
+  { label: 'Paybill', icon: 'images/svg/paybill/elva.svg', route: './' },
+  {
+    label: 'Templates',
+    icon: 'images/svg/paybill/star.svg',
+    route: './templates',
+  },
 ] as const;
