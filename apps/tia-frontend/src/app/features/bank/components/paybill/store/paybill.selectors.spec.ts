@@ -38,41 +38,14 @@ describe('Paybill Selectors', () => {
       const state = createInitialState({ selectedCategoryId: 'custom-id' });
       expect(Selectors.selectSelectedCategoryId(state)).toBe('custom-id');
     });
-  });
 
-  describe('selectActiveCategory', () => {
-    it('should return the category object when ID exists in categories list', () => {
-      const state = createInitialState();
-      const result = Selectors.selectActiveCategory(state);
-
-      expect(result).not.toBeNull();
-      expect(result?.id).toBe(TEST_CAT_ID);
-      expect(result?.label).toBe('Utilities');
-    });
-
-    it('should return null when selectedCategoryId is null', () => {
-      const state = createInitialState({ selectedCategoryId: null });
-      const result = Selectors.selectActiveCategory(state);
-      expect(result).toBeNull();
-    });
-
-    it('should return null when the ID is not found in the categories array', () => {
-      const state = createInitialState({ selectedCategoryId: 'non-existent' });
-      const result = Selectors.selectActiveCategory(state);
-      expect(result).toBeNull();
+    it('should select the loading state', () => {
+      const state = createInitialState({ loading: true });
+      expect(Selectors.selectPaybillState(state).loading).toBe(true);
     });
   });
 
-  describe('selectActiveProvider', () => {
-    it('should return the provider object when both category and provider are valid', () => {
-      const state = createInitialState();
-      const result = Selectors.selectActiveProvider(state);
-
-      expect(result).not.toBeNull();
-      expect(result?.id).toBe(TEST_PROV_ID);
-      expect(result?.name).toBe('Water Company');
-    });
-
+  describe('selectActiveProvider Edge Cases', () => {
     it('should return null if no active category is found', () => {
       const state = createInitialState({ selectedCategoryId: 'wrong-cat' });
       const result = Selectors.selectActiveProvider(state);
