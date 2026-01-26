@@ -16,7 +16,6 @@ import {
 import { PaybillActions } from '../store/paybill.actions';
 import { PaybillCategory, PaybillProvider } from '../models/paybill.model';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { ButtonGroupComponent } from '@tia/shared/lib/primitives/button-group/button-group.component';
 import { navConfig } from '../config/paybill.config';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
@@ -24,13 +23,7 @@ import { Tabs } from '@tia/shared/lib/navigation/tabs/tabs';
 
 @Component({
   selector: 'app-paybill-container',
-  imports: [
-    Breadcrumbs,
-    LibraryTitle,
-    RouterModule,
-    ButtonGroupComponent,
-    Tabs,
-  ],
+  imports: [Breadcrumbs, LibraryTitle, RouterModule, Tabs],
   templateUrl: './paybill-container.html',
   styleUrl: './paybill-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
