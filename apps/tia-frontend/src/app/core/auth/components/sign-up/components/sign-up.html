@@ -1,7 +1,6 @@
-<h2>RESPONSE</h2>
+<section class="sign-up">
+    <app-registration-form (submitRegistrationForm)="onSignUp($event)"></app-registration-form>
 
-<button (click)="onTest()">TEST EMAIL</button>
-
-<h3>{{apiResult()}}</h3>
-
-<p>Already have an account? <span [routerLink]="['/auth/login']">Sign in</span></p>
+    
+    <p>Already have an account? <span [routerLink]="['/auth/login']">Sign in</span></p>
+</section>
