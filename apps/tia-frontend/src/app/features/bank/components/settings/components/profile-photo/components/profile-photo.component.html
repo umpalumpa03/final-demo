@@ -1,3 +1,56 @@
 <div class="profile-photo">
+  <app-basic-card
+    title="Profile Photo"
+    subtitle="Upload a new profile photo or choose a default avatar"
+    [hasFooter]="true"
+    [maxWidth]="'100%'"
+    [width]="'100%'"
+  >
+    <div class="profile-photo__upload-section">
+      <h3 class="profile-photo__section-title">Upload Custom Photo</h3>
+      <div class="profile-photo__upload-content">
+        <app-avatar
+          [initials]="initials()"
+          size="xl"
+          tone="solid"
+          color="blue"
+        ></app-avatar>
+        <app-button
+          variant="default"
+          size="default"
+          icon="download-icon.svg"
+          (click)="onFileButtonClick()"
+        >
+          Choose File
+        </app-button>
+        <lib-text-input
+          #fileInput
+          [type]="'file'"
+          [config]="{
+            placeholder: 'Choose file...'
+          }"
+          (valueChange)="onFileChange($event)"
+          class="profile-photo__file-input"
+        />
+      </div>
+    </div>
 
+    <div card-footer class="profile-photo__footer">
+      <app-button
+        variant="outline"
+        size="default"
+        icon="trash-icon.svg"
+        (click)="removePhoto.emit()"
+      >
+        Remove Photo
+      </app-button>
+      <app-button
+        variant="default"
+        size="default"
+        (click)="saveChanges.emit()"
+      >
+        Save Changes
+      </app-button>
+    </div>
+  </app-basic-card>
 </div>
