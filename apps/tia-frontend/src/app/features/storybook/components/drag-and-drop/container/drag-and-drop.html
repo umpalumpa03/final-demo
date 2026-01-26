@@ -50,6 +50,7 @@
         [items]="myItems"
         [layout]="'grid'"
         [columns]="{ default: 2, md: 1, sm: 1 }"
+        [colspans]="[2, 1, 1,2]"
         [containerTitle]="'Add Content of Your Choice'"
         (itemsChange)="onItemsChange($event)"
         (orderChange)="onContainerOrderChange($event)"
