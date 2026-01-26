@@ -9,8 +9,8 @@
       @for (card of basicCards(); track card.id) {
       <app-basic-card
         [title]="card.title"
-         [subtitle]="card.subtitle ?? ''"
-  [content]="card.content ?? ''"
+        [subtitle]="card.subtitle ?? ''"
+        [content]="card.content ?? ''"
         [hasFooter]="card.hasFooter ?? false"
         [hasHover]="card.hasHover ?? false"
         [width]="card.width"
@@ -23,13 +23,12 @@
         [alignItems]="card.alignItems"
         [justifyContent]="card.justifyContent"
       >
-       
-          @if (card.hasFooter) {
-      <div class="card-footer" card-footer>
-        <app-button size="default" variant="outline">Cancel</app-button>
-        <app-button size="default" variant="default">Submit</app-button>
-      </div>
-    }
+        @if (card.hasFooter) {
+        <div class="card-footer" card-footer>
+          <app-button size="default" variant="outline">Cancel</app-button>
+          <app-button size="default" variant="default">Submit</app-button>
+        </div>
+        }
       </app-basic-card>
       }
     </div>
@@ -45,6 +44,21 @@
         [change]="card.change"
         [changeType]="card.changeType"
         [icon]="card.icon"
+      />
+      }
+    </div>
+  </section>
+  <section class="cards-section">
+    <h2 class="cards-section__title">Category Cards</h2>
+    <div class="cards-section__grid cards-section__grid--category">
+      @for (card of categoryCards(); track card.id) {
+      <app-category-card
+        [title]="card.title"
+        [subtitle]="card.subtitle"
+        [icon]="card.icon"
+        [iconBgColor]="card.iconBgColor"
+        [count]="card.count"
+        (cardClick)="handleCategoryClick(card.id)"
       />
       }
     </div>

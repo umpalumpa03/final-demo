@@ -1,0 +1,94 @@
+@use '../../../styles/mixins' as *;
+@use '../../../styles/palette' as *;
+
+.category-card {
+  background-color: $white;
+  border: 0.19rem solid $gray-200;
+  border-radius: 1.4rem;
+  padding: 2.5rem;
+  min-height: 19rem;
+  max-width: 23rem;
+  width: 100%;
+  cursor: pointer;
+  @include display-flex(column);
+  gap: 1.7rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: $blue-400;
+  }
+  &:active {
+    border-color: var(--color-primary);
+  }
+  @media (max-width: 480px) {
+    padding: 2rem;
+    min-height: 13rem;
+  }
+
+  &__header {
+    @include flex-center(row, space-between, flex-start);
+  }
+
+  &__icon {
+    width: 5.6rem;
+    height: 5.6rem;
+    border-radius: 1rem;
+    @include flex-center(row, center, center);
+
+    img {
+      width: 2.7rem;
+      height: 2.7rem;
+    }
+
+    @media (max-width: 480px) {
+      width: 4.8rem;
+      height: 4.8rem;
+
+      img {
+        width: 2rem;
+        height: 2rem;
+      }
+    }
+  }
+
+  &__count {
+    @include font-arimo(400, 1.4rem, 2rem);
+    color: $blue-deep;
+    background-color: var(--color-secondary);
+    padding: 0.2rem 0.8rem;
+    border-radius: 0.8rem;
+
+    @media (max-width: 480px) {
+      font-size: 1.2rem;
+      padding: 0.3rem 1rem;
+    }
+  }
+
+  &__body {
+    @include display-flex(column);
+    gap: 1.7rem;
+  }
+
+  &__title {
+    @include font-inter(700, 1.8rem, 2.8rem);
+    color: $blue-ocean-foreground;
+    transition: color 0.3s ease;
+
+    .category-card:hover & {
+      color: $blue-800;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 1.8rem;
+    }
+  }
+
+  &__subtitle {
+    @include font-inter(400, 1.4rem, 2rem);
+    color: $blue-ocean-foreground;
+
+    @media (max-width: 480px) {
+      font-size: 1.2rem;
+    }
+  }
+}

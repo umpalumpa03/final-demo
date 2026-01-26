@@ -24,3 +24,12 @@ export interface StatisticCardData {
   changeType: 'positive' | 'negative';
   icon: string;
 }
+
+export interface CategoryCardData {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: string;
+  iconBgColor: string;
+  count: number;
+}
