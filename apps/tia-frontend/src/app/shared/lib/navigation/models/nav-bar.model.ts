@@ -3,6 +3,7 @@ export interface NavigationItem {
     icon?: string;
     route?: string;
     disabled?: boolean;
+    count?: number;
 }
 
 export type NavigationOrientation = 'horizontal' | 'vertical';

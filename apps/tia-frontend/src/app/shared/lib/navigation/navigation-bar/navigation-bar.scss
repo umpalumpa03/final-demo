@@ -2,13 +2,13 @@
 @use "../../../../shared/styles/mixins" as *;
 
 .navigation {
-  max-width: fit-content;
-
   &__list {
     @include display-flex(row, wrap);
+    width: 100%;
   }
 
   &__item {
+    @include flex-center(row, space-between, center);
     &--disabled {
       .navigation__link {
         color: $gray-500;
@@ -20,14 +20,14 @@
   }
 
   &__link {
-    @include flex-center;
+    @include flex-center(row, start);
     gap: 1.2rem;
     padding: 1.1rem 1.6rem;
-    max-width: fit-content;
     @include font-arimo(400, 1.4rem, 2rem);
     cursor: pointer;
     text-align: left;
     color: $gray-700;
+    width: 100%;
   }
 
   &__img {
@@ -42,28 +42,51 @@
       border-bottom: 0.08rem solid $blue-400;
     }
 
-      .navigation__item {
-        &--active {
-          color: $blue-800;
-          border-bottom: 0.16rem solid $blue-800;
-        }
-      }
-
-      .navigation__link {
-        height: 3.76rem;
-      }
-  }
-
-    &--vertical {
-      .navigation__list {
-        flex-direction: column;
-        gap: 0.25rem;
-      }
-
-      .navigation__item {
-          &--active {
-            color: $gray-800;
-          }
+    .navigation__item {
+      &--active {
+        color: $blue-800;
+        border-bottom: 0.16rem solid $blue-800;
       }
     }
+
+    .navigation__link {
+      height: 3.76rem;
+    }
+  }
+
+  &--vertical {
+    .navigation__list {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .navigation__item {
+      padding-right: 1.6rem;
+
+      &--active {
+        color: $blue-800;
+        background-color: var(--color-bg);
+        border-radius: 1rem;
+      }
+    }
+    .navigation__link.navigation__item--active .navigation__img {
+      filter: invert(24%) sepia(98%) saturate(7472%) hue-rotate(210deg) brightness(97%) contrast(101%);
+    }
+
+    .navigation__count {
+      padding: 0.2rem 0.8rem;
+      @include font-inter(500, 1.2rem, 1.6rem);
+      @include flex-center();
+      text-align: center;
+      color: var(--color-fg);
+      border-radius: 0.8rem;
+      border: 0.063rem solid $blue-400;
+    }
+
+    .navigation__item--active .navigation__count {
+      background-color: $blue-800;
+      border: none;
+      color: $white;
+    }
+  }
 }
