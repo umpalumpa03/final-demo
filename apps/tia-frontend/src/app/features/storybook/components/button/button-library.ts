@@ -22,7 +22,7 @@ export class ButtonLibraryComponent {
   protected readonly iconButtons = signal(CONFIG.ICON_BUTTONS);
   protected readonly iconOnlyButtons = signal(CONFIG.ICON_ONLY_BUTTONS);
   protected readonly interactiveItems = signal(CONFIG.INTERACTIVE_EXAMPLES);
-  public readonly groupLabels = signal<string[]>(['Left', 'Middle', 'Right']);
+  protected readonly buttonGroups = signal(CONFIG.BUTTON_GROUPS); // add this for refactored group buttons
   
 
   public readonly title:string = "Buttons";
@@ -34,3 +34,4 @@ export class ButtonLibraryComponent {
     setTimeout(() => this.isInteractiveLoading.set(false), 2000);
   }
 }
+
