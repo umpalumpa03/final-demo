@@ -6,7 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { Breadcrumbs } from '@tia/shared/lib/navigation/breadcrumbs/breadcrumbs';
-import { LibraryTitle } from '../../../../storybook/shared/library-title/library-title';
+import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
 import { Store } from '@ngrx/store';
 import {
   selectActiveCategory,

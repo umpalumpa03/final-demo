@@ -1,5 +1,5 @@
-@use '../../../../../../../shared/styles/palette' as *;
-@use '../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../shared/styles/palette' as *;
+@use '../../../../../../shared/styles/mixins' as *;
 
 .header {
     @include flex-center(row, space-between, center);

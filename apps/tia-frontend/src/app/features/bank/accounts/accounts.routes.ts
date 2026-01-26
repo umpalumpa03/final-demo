@@ -1,4 +1,3 @@
-
 import { Routes } from '@angular/router';
 
 export const accountsRoutes: Routes = [
@@ -23,7 +22,7 @@ export const accountsRoutes: Routes = [
         path: 'cards',
         loadComponent: () =>
           import('./components/cards/cards').then(
-            (c) => c.Cards  
+            (c) => c.Cards
           )
       }
     ]

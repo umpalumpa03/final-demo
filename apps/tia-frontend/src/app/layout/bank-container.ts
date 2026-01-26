@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Sidebar } from '../shared/ui/sidebar/sidebar';
 import { RouterModule } from '@angular/router';
-import { BankHeaderContainer } from '../shared/ui/bank-header/container/bank-header-container';
+import { Sidebar } from 'apps/tia-frontend/src/app/layout/ui/sidebar/sidebar';
+import { BankHeaderContainer } from 'apps/tia-frontend/src/app/layout/ui/bank-header/container/bank-header-container';
 
 @Component({
   selector: 'app-bank-container',
