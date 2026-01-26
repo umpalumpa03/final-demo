@@ -18,7 +18,6 @@ export class AuthService {
   public isLoginLoading = signal<boolean>(false);
   public loginError = signal<string | null>(null);
 
-
   public loginPostRequest(user: ILoginRequest): Observable<IloginResponse> {
     this.isLoginLoading.set(true);
     return this.http
@@ -38,7 +37,7 @@ export class AuthService {
           this.isLoginLoading.set(false);
           return throwError(() => err);
         }),
-        finalize(() => this.isLoginLoading.set(false))
+        finalize(() => this.isLoginLoading.set(false)),
       );
   }
 
