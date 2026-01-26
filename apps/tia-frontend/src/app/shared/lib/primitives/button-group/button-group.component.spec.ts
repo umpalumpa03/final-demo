@@ -57,7 +57,7 @@ describe('ButtonGroupComponent', () => {
 
   it('should render items correctly from count and labels', () => {
     fixture.componentRef.setInput('labels', ['A', 'B']);
-    fixture.detectChanges();
+    fixture.detectChanges(); // Rendering Labels
 
     const buttons = fixture.debugElement.queryAll(By.css('.button-group__btn'));
     expect(buttons.length).toBe(2);
