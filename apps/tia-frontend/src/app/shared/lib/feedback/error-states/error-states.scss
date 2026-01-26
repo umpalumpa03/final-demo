@@ -1,0 +1,85 @@
+@use '../../../styles/palette' as *;
+@use '../../../styles/mixins' as *;
+.error-state {
+  @include flex-center(column);
+  padding: 2rem;
+  text-align: center;
+  justify-content: center;
+  border: 0.2rem solid;
+  border-radius: 1.4rem;
+  box-shadow:
+    0rem 0.1rem 0.3rem 0rem rgba(0, 0, 0, 0.1),
+    0rem 0.1rem 0.2rem -0.1rem rgba(0, 0, 0, 0.1);
+  &__icon {
+    @include flex-center;
+    margin-bottom: 1.6rem;
+    border-radius: 50%;
+    width: 4.8rem;
+    height: 4.8rem;
+  }
+  &__header {
+    margin-bottom: 0.8rem;
+    @include font-inter(600, 1.6rem, 2.4rem)
+  }
+  &__message {
+    @include font-inter(400, 1.4rem, 2rem);
+    color: var(--text-secondary, $gray-550);
+    margin-bottom: 1rem;
+  }
+  &__button {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border: 0.1rem solid;
+    border-radius: 0.8rem;
+    background-color: $blue-100;
+    @include font-inter(500, 1.4rem, 2rem);
+  }
+  &--connection-error {
+    border-color: $orange-200;
+    .error-state__icon {
+      background-color: $orange-50;
+    }
+    .error-state__header {
+      color: $orange-800;
+    }
+    .error-state__message {
+      color: $orange-600;
+    }
+    .error-state__button {
+      color: $orange-600;
+      border-color: $orange-300;
+    }
+  }
+  &--failed {
+    border-color: $red-200;
+    .error-state__icon {
+      background-color: $red-300;
+    }
+    .error-state__header {
+      color: $red-950;
+    }
+    .error-state__message {
+      color: $red-650;
+    }
+    .error-state__button {
+      color: $red-650;
+      border-color: $red-250;
+    }
+  }
+  &--not-found {
+    border-color: $gray-200;
+    .error-state__icon {
+      background-color: $gray-50;
+    }
+    .error-state__header {
+      color: $blue-1000;
+    }
+    .error-state__message {
+      color: $gray-700;
+    }
+    .error-state__button {
+      color: $blue-ocean-foreground;
+      border-color: $blue-400;
+    }
+  }
+}
