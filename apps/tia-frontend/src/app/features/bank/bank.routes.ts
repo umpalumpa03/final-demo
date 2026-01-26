@@ -69,9 +69,9 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'messaging',
-        loadComponent: () =>
-          import('./components/messaging/container/messaging-container').then(
-            (c) => c.MessagingContainer,
+        loadChildren: () =>
+          import('./components/messaging/messaging.routes').then(
+            (r) => r.messagingRoutes,
           ),
       },
     ],

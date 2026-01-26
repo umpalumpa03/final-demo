@@ -1,1 +1,12 @@
-<div class="global-bank-wrapper"><p>messaging-container works!</p></div>
+<div class="global-bank-wrapper messaging-container">
+  <div class="messaging-container__navbar">
+    <app-button variant="default" [icon]="'plus-icon.svg'" [fullWidth]="true">Compose</app-button>
+    <app-navigation-bar
+      [items]="messagingRoutes()"
+      [orientation]="'vertical'"
+    ></app-navigation-bar>
+  </div>
+  <div class="messaging-container__content">
+    <router-outlet></router-outlet>
+  </div>
+</div>
