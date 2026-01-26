@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-messaging-container',
   imports: [],
   templateUrl: './messaging-container.html',
   styleUrl: './messaging-container.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MessagingContainer {}
