@@ -6,19 +6,26 @@
   (keydown.space)="close()"
   role="button"
   tabindex="0"
-  aria-label="Close drawer overlay"
+  aria-label="Close drawer"
 >
   <div
+    #drawer
     class="ui-drawer"
+    [style.transform]="transformStyle()"
+    (pointerdown)="onPointerDown($event)"
+    (pointermove)="onPointerMove($event)"
+    (pointerup)="onPointerUp()"
     (click)="$event.stopPropagation()"
     (keydown)="$event.stopPropagation()"
     role="dialog"
     aria-modal="true"
     tabindex="0"
   >
-    <div class="ui-drawer__handle"></div>
+    <div class="ui-drawer__handle-area">
+      <div class="ui-drawer__handle"></div>
+    </div>
 
-    <div class="ui-drawer__container">
+    <div class="ui-drawer__content">
       <ng-content></ng-content>
     </div>
   </div>
