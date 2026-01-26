@@ -1,5 +1,5 @@
-import { Component, DestroyRef, inject, OnDestroy, signal } from '@angular/core';
-import { Observable, Subject, takeUntil, tap } from 'rxjs';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import {  tap } from 'rxjs';
 import { SignUpService } from '../services/sign-up.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SignUpData } from '../model/sign-up.model';
@@ -10,6 +10,7 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink],
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignUp {
   private signUpService = inject(SignUpService);
