@@ -1,0 +1,107 @@
+@use '../../../styles/palette' as *;
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  text-align: center;
+  justify-content: center;
+  border: 0.2rem solid;
+  border-radius: 1.4rem;
+  box-shadow:
+    0rem 0.1rem 0.3rem 0rem rgba(0, 0, 0, 0.1),
+    0rem 0.1rem 0.2rem -0.1rem rgba(0, 0, 0, 0.1);
+
+  &__icon {
+    margin-bottom: 1.6rem;
+    border-radius: 50%;
+    width: 4.8rem;
+    height: 4.8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__header {
+    margin-bottom: 0.8rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  &__message {
+    margin-bottom: 1.6rem;
+    color: var(--text-secondary, #666);
+  }
+
+  &__button {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border: 1px solid;
+    border-radius: 0.8rem;
+    background-color: #F0F9FF;
+  }
+
+  &--connection-error {
+    .error-state__icon {
+      background-color: #FFEDD4;
+    }
+
+    .error-state__header {
+      color: #7E2A0C;
+    }
+
+    .error-state__message {
+      color: #CA3500;
+    }
+
+    .error-state__button{
+      color: #CA3500;
+      border-color: #FFB86A;
+    }
+
+    border-color: #FFD6A7;
+  }
+
+  &--failed {
+    .error-state__icon {
+      background-color: #FFE2E2;
+    }
+
+    .error-state__header {
+      color: #82181A;
+    }
+
+    .error-state__message {
+      color: #C10007;
+    }
+
+    .error-state__button{
+      color: #C10007;
+      border-color: #FFA2A2;
+    }
+
+    border-color: #FFC9C9;
+  }
+
+  &--not-found {
+    .error-state__icon {
+      background-color: #F3F4F6;
+    }
+
+    .error-state__header {
+      color: #101828;
+    }
+
+    .error-state__message {
+      color: #4A5565;
+    }
+
+    .error-state__button{
+      color: #0C4A6E;
+      border-color: #0EA5E9;
+    }
+
+    border-color: #E5E7EB;
+  }
+}
