@@ -6,6 +6,7 @@ export const PaybillActions = createActionGroup({
   events: {
     'Load Categories': emptyProps(),
     'Load Categories Success': props<{ categories: PaybillCategory[] }>(),
+    'Load Categories Failure': props<{ error: string }>(),
     'Select Category': props<{ categoryId: string }>(),
     'Select Provider': props<{ providerId: string }>(),
     'Clear Selection': emptyProps(),
