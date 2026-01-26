@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
-import { AccountsComponent } from '../components/accounts.component';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+
 
 @Component({
   selector: 'app-accounts-container',
-  imports: [AccountsComponent],
+  imports: [],
   templateUrl: './accounts-container.html',
   styleUrl: './accounts-container.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountsContainer {
 }

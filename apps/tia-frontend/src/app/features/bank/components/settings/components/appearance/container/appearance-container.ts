@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
-import { AppearanceComponent } from '../components/appearance.component';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+
 
 @Component({
   selector: 'app-appearance-container',
-  imports: [AppearanceComponent],
+  imports: [],
   templateUrl: './appearance-container.html',
   styleUrl: './appearance-container.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppearanceContainer {
 }

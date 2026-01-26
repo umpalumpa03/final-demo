@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
-import { LanguageComponent } from '../components/language.component';
+import { ChangeDetectionStrategy, Component, } from '@angular/core';
+
 
 @Component({
   selector: 'app-language-container',
-  imports: [LanguageComponent],
+  imports: [],
   templateUrl: './language-container.html',
   styleUrl: './language-container.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LanguageContainer {
 }

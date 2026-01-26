@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, } from '@angular/core';
 import { SecurityComponent } from '../components/security.component';
 
 @Component({
@@ -6,6 +6,7 @@ import { SecurityComponent } from '../components/security.component';
   imports: [SecurityComponent],
   templateUrl: './security-container.html',
   styleUrl: './security-container.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SecurityContainer {
 }

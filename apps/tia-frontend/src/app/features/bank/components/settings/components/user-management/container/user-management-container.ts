@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
-import { UserManagementComponent } from '../components/user-management.component';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+
 
 @Component({
   selector: 'app-user-management-container',
-  imports: [UserManagementComponent],
+  imports: [],
   templateUrl: './user-management-container.html',
   styleUrl: './user-management-container.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserManagementContainer {
 }

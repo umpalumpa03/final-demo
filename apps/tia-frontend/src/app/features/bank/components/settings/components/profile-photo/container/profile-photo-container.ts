@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ProfilePhotoComponent } from '../components/profile-photo.component';
 
 @Component({
@@ -6,6 +6,7 @@ import { ProfilePhotoComponent } from '../components/profile-photo.component';
   imports: [ProfilePhotoComponent],
   templateUrl: './profile-photo-container.html',
   styleUrl: './profile-photo-container.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfilePhotoContainer {
 }

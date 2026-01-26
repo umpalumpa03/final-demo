@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { ApproveAccountsComponent } from '../components/approve-accounts.component';
+import { ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-approve-accounts-container',
-  imports: [ApproveAccountsComponent],
+  imports: [],
   templateUrl: './approve-accounts-container.html',
   styleUrl: './approve-accounts-container.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApproveAccountsContainer {
 }

@@ -1,15 +1,14 @@
 .settings-header-wrapper {
     display: flex;
-    flex-direction: column;
-    margin-top: 2rem;
+   
  h1{
     color: red;
  }
     .settings-header-nav {
         display: flex;
-        flex-direction: column;
-        gap: 2rem;
+        gap: 4rem;
         margin-top: 2rem;
+        margin-bottom: 4rem;
     }
 }
   

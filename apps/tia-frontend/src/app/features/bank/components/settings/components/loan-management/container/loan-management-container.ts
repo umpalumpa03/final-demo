@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
-import { LoanManagementComponent } from '../components/loan-management.component';
+import { ChangeDetectionStrategy, Component, } from '@angular/core';
+
 
 @Component({
   selector: 'app-loan-management-container',
-  imports: [LoanManagementComponent],
+  imports: [],
   templateUrl: './loan-management-container.html',
   styleUrl: './loan-management-container.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoanManagementContainer {
 }
