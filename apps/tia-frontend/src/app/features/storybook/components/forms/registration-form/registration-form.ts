@@ -218,9 +218,13 @@ export class RegistrationForm {
     }
 
     if (this.passwordControl?.value !== confirm.value) {
-      confirm.setErrors({ ...confirm.errors });
-    } else if (confirm.errors) {
-      delete confirm.errors['passwordMismatch'];
+      const errs = { ...(confirm.errors || {}), passwordMismatch: true } as Record<string, any>;
+      confirm.setErrors(errs);
+    } else if (confirm.errors && confirm.errors['passwordMismatch']) {
+      const next = { ...(confirm.errors || {}) } as Record<string, any>;
+      delete next['passwordMismatch'];
+      const hasOther = Object.keys(next).length > 0;
+      confirm.setErrors(hasOther ? next : null);
     }
   }
 

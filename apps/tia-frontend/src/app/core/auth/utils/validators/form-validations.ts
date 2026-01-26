@@ -21,7 +21,11 @@ export const passwordMatchValidator: ValidatorFn = (
 export function passwordValidator(
   control: AbstractControl,
 ): ValidationErrors | null {
-  const value = control.value || '';
+  const value = control.value ?? '';
+
+  if (!value) {
+    return null;
+  }
 
   const errors = {
     minLength: value.length >= 8,
