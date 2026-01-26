@@ -62,9 +62,9 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'settings',
-        loadComponent: () =>
-          import('./components/settings/container/settings-container').then(
-            (c) => c.SettingsContainer,
+        loadChildren: () =>
+          import('./components/settings/settings.routes').then(
+            (r) => r.settingsRoutes,
           ),
       },
       {
