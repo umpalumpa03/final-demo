@@ -3,37 +3,87 @@ import * as Selectors from './paybill.selectors';
 import { PaybillState } from '../models/paybill.model';
 
 describe('Paybill Selectors', () => {
+  const CAT_ID = 'category-123';
+  const PROV_ID = 'provider-456';
+
   const mockState: PaybillState = {
     categories: [
       {
-        id: '1',
-        label: 'Phone',
-        icon: '',
-        providers: [{ id: 'p1', name: 'Carrier X' }],
+        id: CAT_ID,
+        label: 'Utilities',
+        icon: 'utility-icon',
+        providers: [{ id: PROV_ID, name: 'Water Company' }],
       },
     ],
-    selectedCategoryId: '1',
-    selectedProviderId: 'p1',
+    selectedCategoryId: CAT_ID,
+    selectedProviderId: PROV_ID,
     loading: false,
     error: null,
   };
 
   const rootState = { paybill: mockState };
 
-  it('should select the active category object', () => {
+  it('should select the categories list', () => {
+    const result = Selectors.selectCategories(rootState);
+    expect(result).toEqual(mockState.categories);
+    expect(result.length).toBe(1);
+  });
+
+  it('should select the active category object based on ID', () => {
     const result = Selectors.selectActiveCategory(rootState);
-    expect(result?.id).toBe('1');
-    expect(result?.label).toBe('Phone');
+
+    expect(result).not.toBeNull();
+    expect(result?.id).toBe(CAT_ID);
+    expect(result?.label).toBe('Utilities');
   });
 
-  it('should select the active provider object', () => {
+  it('should select the active provider object from within the category', () => {
     const result = Selectors.selectActiveProvider(rootState);
-    expect(result?.id).toBe('p1');
+
+    expect(result).not.toBeNull();
+    expect(result?.id).toBe(PROV_ID);
+    expect(result?.name).toBe('Water Company');
   });
 
-  it('should return null if category ID is not in categories list', () => {
-    const badState = { paybill: { ...mockState, selectedCategoryId: '999' } };
-    const result = Selectors.selectActiveCategory(badState);
-    expect(result).toBeNull();
+  describe('Edge Cases & Null Safety', () => {
+    it('should return null if selectActiveCategory finds no match', () => {
+      const stateWithNoMatch = {
+        paybill: { ...mockState, selectedCategoryId: 'non-existent-id' },
+      };
+      const result = Selectors.selectActiveCategory(stateWithNoMatch);
+      expect(result).toBeNull();
+    });
+
+    it('should return null if selectedCategoryId is null', () => {
+      const stateWithNull = {
+        paybill: { ...mockState, selectedCategoryId: null },
+      };
+      const result = Selectors.selectActiveCategory(stateWithNull);
+      expect(result).toBeNull();
+    });
+
+    it('should return null for provider if category is not found', () => {
+      const stateWithNoCat = {
+        paybill: { ...mockState, selectedCategoryId: 'missing' },
+      };
+      const result = Selectors.selectActiveProvider(stateWithNoCat);
+      expect(result).toBeNull();
+    });
+
+    it('should return null if selectedProviderId is null', () => {
+      const stateWithNoProvId = {
+        paybill: { ...mockState, selectedProviderId: null },
+      };
+      const result = Selectors.selectActiveProvider(stateWithNoProvId);
+      expect(result).toBeNull();
+    });
+
+    it('should return null if provider ID does not exist in the current category', () => {
+      const stateWithWrongProv = {
+        paybill: { ...mockState, selectedProviderId: 'wrong-provider-id' },
+      };
+      const result = Selectors.selectActiveProvider(stateWithWrongProv);
+      expect(result).toBeNull();
+    });
   });
 });
