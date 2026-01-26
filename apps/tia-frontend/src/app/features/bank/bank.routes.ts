@@ -63,9 +63,9 @@ export const bankRoutes: Routes = [
       {
         path: 'settings',
         loadChildren: () =>
-          import('./components/settings/settings.route').then(
+          import('./components/settings/settings.routes').then(
             (r) => r.settingsRoutes,
-          )
+          ),
       },
       {
         path: 'messaging',
