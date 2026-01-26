@@ -46,7 +46,7 @@ export class Tables {
 
   public readonly crudConfig = crudConfig;
   public currentPage = signal<number>(1);
-  public readonly totalPage = computed(() => this.tableConfig().totalPage ?? 2);
+  public readonly totalPage = computed(() => this.tableConfig().totalPage ?? 1);
 
   // Here I check for different kind of tables
   public readonly isSelectable = computed(
@@ -93,6 +93,7 @@ export class Tables {
   public sortClickedOutput = output<string>();
   public transactionClickedOutput = output<TransactionActionEvent>();
   public pageChangeOutput = output<number>();
+  public reloadClick = output<number>();
 
   // Methods
 
@@ -141,5 +142,9 @@ export class Tables {
       rowId: row.id,
       rowData: row.info,
     });
+  }
+
+  public onErrorReload(): void {
+    this.reloadClick.emit(this.currentPage());
   }
 }

@@ -11,6 +11,7 @@
       message="An error occurred while fetching the transaction history. Please try again."
       buttonMessage="Reload Table"
       width="100%"
+      (buttonClick)="onErrorReload()"
     ></app-error-states>
   </div>
   }@else {
@@ -160,7 +161,7 @@
       }
     </tbody>
   </table>
-  } @if(isPagination() && !hasError()) {
+  } @if(isPagination() && !hasError() && !isLoading()) {
   <div class="table__pagination">
     <app-pagination
       (pageChange)="onPageChange($event)"

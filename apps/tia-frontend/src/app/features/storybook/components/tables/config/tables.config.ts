@@ -39,33 +39,6 @@ export const basicTable: TableConfig = {
         { type: 'text', value: '$350.00', align: 'right' },
       ],
     },
-    {
-      id: '4',
-      info: [
-        { type: 'text', value: 'INV004', align: 'left' },
-        { type: 'text', value: 'Paid', align: 'left' },
-        { type: 'text', value: 'Credit Card', align: 'left' },
-        { type: 'text', value: '$1000.00', align: 'right' },
-      ],
-    },
-    {
-      id: '5',
-      info: [
-        { type: 'text', value: 'INV005', align: 'left' },
-        { type: 'text', value: 'Unpaid', align: 'left' },
-        { type: 'text', value: 'PayPal', align: 'left' },
-        { type: 'text', value: '$50.00', align: 'right' },
-      ],
-    },
-    {
-      id: '6',
-      info: [
-        { type: 'text', value: 'INV006', align: 'left' },
-        { type: 'text', value: 'Unpaid', align: 'left' },
-        { type: 'text', value: 'Bank Transfer', align: 'left' },
-        { type: 'text', value: '$333.00', align: 'right' },
-      ],
-    },
   ],
 } as const;
 
@@ -410,9 +383,7 @@ export const rowStates: TableConfig = {
 
 export const transactionsTable: TableConfig = {
   type: 'transactions',
-  paginationType: 'page',
   itemsPerPage: 2,
-  totalPage: 3,
   headers: [
     { title: 'Details', align: 'left', width: '47%' },
     { title: 'Amount', align: 'right', width: '25%' },
@@ -500,3 +471,33 @@ export const transactionsTable: TableConfig = {
     },
   ],
 } as const;
+
+export const rowsForPagination: TableConfig['rows'] = [
+  {
+    id: '4',
+    info: [
+      { type: 'text', value: 'INV004', align: 'left' },
+      { type: 'text', value: 'Paid', align: 'left' },
+      { type: 'text', value: 'Credit Card', align: 'left' },
+      { type: 'text', value: '$1000.00', align: 'right' },
+    ],
+  },
+  {
+    id: '5',
+    info: [
+      { type: 'text', value: 'INV005', align: 'left' },
+      { type: 'text', value: 'Unpaid', align: 'left' },
+      { type: 'text', value: 'PayPal', align: 'left' },
+      { type: 'text', value: '$50.00', align: 'right' },
+    ],
+  },
+  {
+    id: '6',
+    info: [
+      { type: 'text', value: 'INV006', align: 'left' },
+      { type: 'text', value: 'Unpaid', align: 'left' },
+      { type: 'text', value: 'Bank Transfer', align: 'left' },
+      { type: 'text', value: '$333.00', align: 'right' },
+    ],
+  },
+];
