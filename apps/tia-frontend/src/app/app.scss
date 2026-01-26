@@ -19,13 +19,13 @@ a {
 }
 
 a:nth-of-type(1) {
-  top: 16px;
-}
-a:nth-of-type(2) {
   top: 72px;
 }
-a:nth-of-type(3) {
+a:nth-of-type(2) {
   top: 128px;
+}
+a:nth-of-type(3) {
+  top: 184px;
 }
 
 a:hover {
