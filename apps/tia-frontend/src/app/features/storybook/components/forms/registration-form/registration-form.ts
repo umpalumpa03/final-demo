@@ -5,7 +5,6 @@ import {
   effect,
   inject,
   input,
-  OnDestroy,
   output,
   signal,
 } from '@angular/core';
@@ -27,7 +26,7 @@ import {
   PASSWORD_RULE_MESSAGES,
   PASSWORD_RULES,
 } from '../models/forms.config';
-import { Subject, takeUntil } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-registration-form',
@@ -36,7 +35,7 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrl: './registration-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistrationForm implements OnDestroy {
+export class RegistrationForm {
   public countries = COUNTRY_OPTIONS;
   public inputConfig = REGISTATION_FORM;
   public readonly isRegistration = input<boolean>(true);
@@ -45,20 +44,17 @@ export class RegistrationForm implements OnDestroy {
   public readonly passwordInteracted = signal<boolean>(false);
 
   private readonly fb = inject(FormBuilder);
-  private readonly destroy$ = new Subject<void>();
   public readonly submitRegistrationForm = output<IRegistrationForm>();
   private readonly ALL_PASSWORD_RULES = PASSWORD_RULES;
 
   constructor() {
-    this.passwordControl?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.onPasswordChange());
-
-    this.confirmPasswordControl?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.comparePasswords());
-
     effect(() => {
+      this.passwordValue();
+      this.onPasswordChange();
+
+      this.confirmPasswordValue();
+      this.comparePasswords();
+
       const isRegister = this.isRegistration();
       const toggle = (name: string) => {
         const control = this.registrationForm.get(name);
@@ -97,15 +93,32 @@ export class RegistrationForm implements OnDestroy {
   }
 
   private onPasswordChange() {
+    const control = this.passwordControl;
+    if (!control) {
+      return;
+    }
+
+    const userTouched =
+      control.touched || control.dirty || this.passwordInteracted();
+    if (!userTouched && !control.valid) {
+      return;
+    }
+
     this.passwordRules.set(
-      this.passwordControl?.errors?.['passwordRules'] ??
-        (this.passwordControl?.valid ? this.ALL_PASSWORD_RULES : null),
+      control.errors?.['passwordRules'] ??
+        (control.valid ? this.ALL_PASSWORD_RULES : null),
     );
-    if (!this.passwordInteracted()) {
+
+    if (!this.passwordInteracted() && (control.touched || control.dirty)) {
       this.passwordInteracted.set(true);
     }
+
     this.comparePasswords();
   }
+
+  private passwordValue = toSignal(this.passwordControl!.valueChanges, {
+    initialValue: this.passwordControl!.value,
+  });
 
   public readonly passwordRules = signal<Record<string, boolean> | null>(
     this.passwordControl?.errors?.['passwordRules'] ?? null,
@@ -212,6 +225,11 @@ export class RegistrationForm implements OnDestroy {
     }
   }
 
+  private confirmPasswordValue = toSignal(
+    this.confirmPasswordControl!.valueChanges,
+    { initialValue: this.confirmPasswordControl!.value },
+  );
+
   public get confirmPasswordState(): InputState {
     const control = this.confirmPasswordControl;
     if (this.showError('confirmPassword')) {
@@ -239,10 +257,5 @@ export class RegistrationForm implements OnDestroy {
     this.passwordTouched.set(false);
     this.passwordInteracted.set(false);
     this.passwordRules.set(null);
-  }
-
-  public ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }
