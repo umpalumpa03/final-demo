@@ -1,0 +1,13 @@
+import { createActionGroup, emptyProps, props } from '@ngrx/store';
+import { PaybillCategory } from '../models/paybill.model';
+
+export const PaybillActions = createActionGroup({
+  source: 'Paybill API',
+  events: {
+    'Load Categories': emptyProps(),
+    'Load Categories Success': props<{ categories: PaybillCategory[] }>(),
+    'Select Category': props<{ categoryId: string }>(),
+    'Select Provider': props<{ providerId: string }>(),
+    'Clear Selection': emptyProps(),
+  },
+});

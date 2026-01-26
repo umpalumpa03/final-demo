@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { provideState } from '@ngrx/store';
+import { paybillReducer } from './components/paybill/store/paybill.reducer';
 
 export const bankRoutes: Routes = [
   {
@@ -59,6 +61,7 @@ export const bankRoutes: Routes = [
           import('./components/paybill/container/paybill-container').then(
             (c) => c.PaybillContainer,
           ),
+        providers: [provideState({ name: 'paybill', reducer: paybillReducer })],
       },
       {
         path: 'settings',

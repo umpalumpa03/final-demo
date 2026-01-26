@@ -1,1 +1,26 @@
-<div class="global-bank-wrapper"><p>paybill-container works!</p></div>
+<div class="global-bank-wrapper">
+  <app-breadcrumbs [breadcrumbs]="breadcrumbs()" />
+
+  <app-library-title
+    [title]="activeCategory()?.label ?? 'Pay Bills'"
+    [subtitle]="activeCategory() ? 'Select a provider to continue' : 'Choose a category to pay your bill'"
+  />
+
+  <!-- <main class="paybill-content">
+    @if (!activeCategory()) {
+      <app-category-list 
+        [categories]="categories()" 
+        (select)="handleCategorySelect($event)" 
+      />
+    } @else if (activeCategory() && !activeProvider()) {
+      <button class="btn-back" (click)="navigateBack()">← Back to Categories</button>
+      
+      <app-provider-list 
+        [providers]="activeCategory()!.providers" 
+        (select)="handleProviderSelect($event)" 
+      />
+    } @else {
+      <app-payment-form [provider]="activeProvider()!" />
+    }
+  </main> -->
+</div>
