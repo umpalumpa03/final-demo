@@ -1,0 +1,6 @@
+export const DRAWER_CONFIG = {
+  CLOSE_THRESHOLD: 100,
+  SNAP_DURATION: 300,
+  MAX_HEIGHT_PERCENT: 85,
+  TRANSITION_TIMING: 'cubic-bezier(0.32, 0.72, 0, 1)',
+} as const;
