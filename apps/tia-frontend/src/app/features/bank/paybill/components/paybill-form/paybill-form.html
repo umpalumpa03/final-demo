@@ -1,0 +1,46 @@
+<app-basic-card maxWidth="91.2rem" padding="2.4rem">
+  <header class="paybill-form__header">
+    <div
+      class="paybill-form__icon-box"
+      [style.background-color]="iconBgColor()"
+    >
+      @if (iconBgPath()) {
+      <img [src]="iconBgPath()" alt="" class="paybill-form__icon" />
+      } @else {
+      <span class="paybill-form__emoji">⚡</span>
+      }
+    </div>
+
+    <div class="paybill-form__text-group">
+      <h2 class="paybill-form__title">{{ provider().serviceName }}</h2>
+      <p class="paybill-form__subtitle">Enter your bill details</p>
+    </div>
+  </header>
+
+  <form
+    [formGroup]="paybillForm"
+    (ngSubmit)="onSubmit()"
+    class="paybill-form__content"
+  >
+    <div class="paybill-form__field">
+      <label for="accNum" class="paybill-form__label">
+        Account Number / Customer ID
+      </label>
+
+      <app-input
+        id="accNum"
+        formControlName="accountNumber"
+        placeholder="Enter your account number"
+      />
+
+      @if (paybillForm.controls.accountNumber.invalid &&
+      paybillForm.controls.accountNumber.touched) {
+      <span class="paybill-form__error">
+        Please enter a valid account number
+      </span>
+      }
+    </div>
+
+    <app-button type="submit" [fullWidth]="true"> Verify Account </app-button>
+  </form>
+</app-basic-card>

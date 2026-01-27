@@ -48,7 +48,7 @@ describe('Paybill Reducer', () => {
 
   it('should update providers and stop loading on loadProvidersSuccess', () => {
     const providers = [
-      { serviceId: 'p1', serviceName: 'Provider 1', category: 'cat_1' },
+      { id: 'p1', serviceName: 'Provider 1', categoryId: 'cat_1' },
     ];
     const action = PaybillActions.loadProvidersSuccess({ providers });
 

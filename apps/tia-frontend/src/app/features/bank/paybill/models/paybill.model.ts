@@ -1,8 +1,8 @@
 export interface PaybillProvider {
-  serviceId: string;
+  id: string;
   serviceName: string;
-  category: string;
-  name?:string;
+  categoryId: string;
+  name?: string;
 }
 
 export interface PaybillCategory {

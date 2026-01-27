@@ -1,13 +1,19 @@
-@let ui = activeCategoryUI(); @let category = activeCategory();
+@let ui = activeCategoryUI(); @let category = activeCategory(); @let provider =
+activeProvider();
 
 <div class="paybill-main">
   <div class="paybill-main__stage-wrapper">
-    @if (activeProvider()) {
-    <p>PLACEHOLDER FORM</p>
+    @if (provider) {
+    <app-paybill-form
+      [provider]="provider"
+      [iconBgColor]="ui?.iconBgColor!"
+      [iconBgPath]="ui?.iconBgPath"
+      (formSubmit)="verifyAccount($event)"
+    />
     } @else if (category) { @defer (on immediate) {
     <app-provider-list
       [categoryName]="category.name"
-      [providers]="category.providers"
+      [providers]="category.providers || []"
       [iconBgColor]="ui?.iconBgColor"
       [iconBgPath]="ui?.iconBgPath"
       [subtitle]="category.description"
@@ -15,11 +21,12 @@
       (selected)="selectProvider($event)"
     />
     } @placeholder {
-    <p>TEST PLACEHOLDER</p>
+    <p>TEST</p>
     } } @else { @defer (on idle) {
     <app-category-grid
       (selected)="selectCategory($event)"
       [categories]="formattedCategories()"
+      [isLoading]="isLoading()"
     />
     } }
   </div>

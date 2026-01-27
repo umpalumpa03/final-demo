@@ -10,10 +10,11 @@ import { CategoryGrid } from './components/category-grid/category-grid';
 import { CATEGORY_UI_MAP } from './components/category-grid/config/category.config';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProviderList } from './components/provider-list/provider-list';
+import { PaybillForm } from '../paybill-form/paybill-form';
 
 @Component({
   selector: 'app-paybill-main',
-  imports: [CategoryGrid, ProviderList],
+  imports: [CategoryGrid, ProviderList, PaybillForm],
   templateUrl: './paybill-main.html',
   styleUrl: './paybill-main.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -61,10 +62,14 @@ export class PaybillMain {
   }
 
   public selectProvider(providerId: string): void {
-    const categoryId = this.activeCategory()?.id.toLowerCase();
-    if (categoryId) {
-      this.router.navigate([categoryId, providerId.toLowerCase()], {
-        relativeTo: this.route,
+    const category = this.activeCategory();
+
+    if (category?.id && providerId) {
+      const catId = category.id.toLowerCase();
+      const provId = providerId.toLowerCase();
+
+      this.router.navigate([catId, provId], {
+        relativeTo: this.route.parent,
       });
     }
   }
@@ -74,4 +79,8 @@ export class PaybillMain {
     if (!cat) return null;
     return CATEGORY_UI_MAP[cat.id.toLowerCase()];
   });
+
+  public verifyAccount(data: { accountNumber: string }): void {
+    console.log('Account Number submitted:', data.accountNumber);
+  }
 }
