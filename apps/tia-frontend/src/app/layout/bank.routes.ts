@@ -17,33 +17,37 @@ export const bankRoutes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () =>
-          import('../features/bank/dashboard/container/dashboard-container').then(
-            (c) => c.DashboardContainer,
-          ),
+          import(
+            '../features/bank/dashboard/container/dashboard-container'
+          ).then((c) => c.DashboardContainer),
       },
       {
-        path: 'my-products',
+        path: 'products',
         loadChildren: () =>
-          import('../features/bank/products/products.routes').then((c) => c.productsRoutes),
+          import('../features/bank/products/products.routes').then(
+            (c) => c.productsRoutes,
+          ),
       },
       {
         path: 'transactions',
         loadComponent: () =>
-          import('../features/bank/transactions/container/transactions-container').then(
-            (c) => c.TransactionsContainer,
-          ),
+          import(
+            '../features/bank/transactions/container/transactions-container'
+          ).then((c) => c.TransactionsContainer),
       },
       {
         path: 'transfers',
         loadComponent: () =>
-          import('../features/bank/transfers/container/transfers-container').then(
-            (c) => c.TransfersContainer,
-          ),
+          import(
+            '../features/bank/transfers/container/transfers-container'
+          ).then((c) => c.TransfersContainer),
       },
       {
         path: 'loans',
         loadChildren: () =>
-          import('../features/bank/loans/loans.routes').then((c) => c.loansRoutes),
+          import('../features/bank/loans/loans.routes').then(
+            (c) => c.loansRoutes,
+          ),
       },
       {
         path: 'my-finances',
@@ -55,7 +59,9 @@ export const bankRoutes: Routes = [
       {
         path: 'paybill',
         loadChildren: () =>
-          import('../features/bank/paybill/paybill.routes').then((r) => r.PAYBILL_ROUTES),
+          import('../features/bank/paybill/paybill.routes').then(
+            (r) => r.PAYBILL_ROUTES,
+          ),
         providers: [
           provideState({ name: 'paybill', reducer: paybillReducer }),
           provideEffects(paybillEffects),
@@ -64,12 +70,16 @@ export const bankRoutes: Routes = [
       {
         path: 'settings',
         loadChildren: () =>
-          import('../features/bank/settings/settings.routes').then((r) => r.settingsRoutes),
+          import('../features/bank/settings/settings.routes').then(
+            (r) => r.settingsRoutes,
+          ),
       },
       {
         path: 'messaging',
         loadChildren: () =>
-          import('../features/bank/messaging/messaging.routes').then((r) => r.messagingRoutes),
+          import('../features/bank/messaging/messaging.routes').then(
+            (r) => r.messagingRoutes,
+          ),
       },
     ],
   },
