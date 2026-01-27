@@ -1,1 +1,10 @@
-<p>otp-verification works!</p>
+@if(!isLoading()){
+<form class="sign-in" [formGroup]="otpForm" (ngSubmit)="verifyOtp()">
+  <p>Verify Otp</p>
+  <lib-text-input formControlName="code"></lib-text-input>
+  <app-button type="submit">Verify</app-button>
+</form>
+} @else {
+<div class="sign-in sign-in-loader">
+  <app-spinner size="4rem"></app-spinner>
+</div>}
