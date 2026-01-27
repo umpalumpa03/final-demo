@@ -1,1 +1,14 @@
-<p>phone-verification works!</p>
+<section class="phone-verification">
+    <div>
+        <h1>Forgot Password</h1>
+        <p>Enter your email to reset your password</p>
+    </div>
+
+
+    <label for=""></label>
+    <!-- <lib-text-input [formControl]="phoneNumber"></lib-text-input> -->
+     <input [formControl]="phoneNumber" type="tel">
+    <button (click)="submit()" [disabled]="phoneNumber.invalid">
+     Verify
+    </button>
+</section>

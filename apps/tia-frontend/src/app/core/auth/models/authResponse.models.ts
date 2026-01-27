@@ -15,3 +15,9 @@ export interface ISignUpResponse {
   createdAt: string;
   signup_token: string;
 }
+
+export interface SendVerificationResponse {
+  message: 'string',
+  challengeId: string,
+  method: string;
+}

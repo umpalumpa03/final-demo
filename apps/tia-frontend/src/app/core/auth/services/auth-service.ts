@@ -1,8 +1,12 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { ILoginRequest, ISignUpResponse } from '../models/authResponse.models';
+import {
+  ILoginRequest,
+  ISignUpResponse,
+  SendVerificationResponse,
+} from '../models/authResponse.models';
 import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
 import { IloginResponse } from '../models/authRequests.model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 import { TokenService } from './token.service';
@@ -70,6 +74,25 @@ export class AuthService {
   }
 
   public signUpUser(userData: IRegistrationForm): Observable<ISignUpResponse> {
-    return this.http.post<any>(`${environment.apiUrl}/auth/signup`, userData);
+    return this.http.post<ISignUpResponse>(
+      `${environment.apiUrl}/auth/signup`,
+      userData,
+    );
+  }
+
+  public sendVerificationCode(
+    phoneNumber: string,
+  ): Observable<SendVerificationResponse> {
+    const token = localStorage.getItem('signup_token');
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http.post<SendVerificationResponse>(
+      `${environment.apiUrl}/auth/signup`,
+      { phone: phoneNumber }, 
+    { headers },
+    );
   }
 }

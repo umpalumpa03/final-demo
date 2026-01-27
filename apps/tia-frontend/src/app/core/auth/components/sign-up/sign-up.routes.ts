@@ -8,7 +8,7 @@ export const signUpRoutes: Routes = [
   },
   { 
     path: 'sign-up/otp',
-    canActivate: [signUpGuard],
+    // canActivate: [signUpGuard],
     loadComponent: () => import('./phone-verification/phone-verification').then(c => c.PhoneVerification)
   }
 ];

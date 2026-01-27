@@ -57,11 +57,11 @@ export class SignUp implements OnInit{
 
         catchError((err) => {
           const messages = err.error?.message;
+          this.loadingState.set(false);
 
           if (Array.isArray(messages)) {
             // 🚩🚩 
             const invalidEmailError = "email must be an email"
-
             if(messages[0] === invalidEmailError) {
               this.errorMessage.set('Invalid Email');
             } else {
