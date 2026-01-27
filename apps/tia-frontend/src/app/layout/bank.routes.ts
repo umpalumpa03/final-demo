@@ -49,10 +49,10 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'transfers',
-        loadComponent: () =>
-          import(
-            '../features/bank/transfers/container/transfers-container'
-          ).then((c) => c.TransfersContainer),
+        loadChildren: () =>
+          import('../features/bank/transfers/transfers.routes').then(
+            (r) => r.transfersRoutes,
+          ),
       },
       {
         path: 'loans',
@@ -62,7 +62,7 @@ export const bankRoutes: Routes = [
           ),
       },
       {
-        path: 'my-finances',
+        path: 'finances',
         loadComponent: () =>
           import('../features/bank/finances/container/finances-container').then(
             (c) => c.FinancesContainer,
