@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import * as Selectors from './loans.selectors';
-import { ILoan, LoansState } from '../shared/models/loan.model';
+import { ILoan, ILoansState } from '../shared/models/loan.model';
 
 describe('Loans Selectors', () => {
   const mockLoans: ILoan[] = [
@@ -45,7 +45,7 @@ describe('Loans Selectors', () => {
     },
   ];
 
-  const initialState: LoansState = {
+  const initialState: ILoansState = {
     loans: mockLoans,
     loading: true,
     error: null,

@@ -1,9 +1,9 @@
 import { createReducer, on } from '@ngrx/store';
-import { LoansState } from '../shared/models/loan.model';
+import { ILoansState } from '../shared/models/loan.model';
 import { LoansActions } from './loans.actions';
 import { toTitleCase } from '../shared/utils/titlecase.util';
 
-const initialState: LoansState = {
+const initialState: ILoansState = {
   loans: [],
   loading: false,
   error: null,

@@ -1,7 +1,7 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { LoansState } from '../shared/models/loan.model';
+import { ILoansState } from '../shared/models/loan.model';
 
-export const selectLoansState = createFeatureSelector<LoansState>('loans');
+export const selectLoansState = createFeatureSelector<ILoansState>('loans');
 
 export const selectAllLoans = createSelector(
   selectLoansState,
