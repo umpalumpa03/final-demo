@@ -1,34 +1,32 @@
 import {
   HttpEvent,
-  HttpHandler,
-  HttpInterceptor,
+  HttpHandlerFn,
+  HttpInterceptorFn,
   HttpRequest,
 } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PUBLIC_ENDPOINTS } from '../models/tokens.model';
-import { AuthService } from './auth.service';
 import { TokenService } from './token.service';
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  constructor(private tokenService: TokenService) {}
+export const authInterceptor: HttpInterceptorFn = (
+  req: HttpRequest<unknown>,
+  next: HttpHandlerFn,
+): Observable<HttpEvent<unknown>> => {
+  const tokenService = inject(TokenService);
 
-  intercept(
-    req: HttpRequest<unknown>,
-    next: HttpHandler,
-  ): Observable<HttpEvent<unknown>> {
-    const publicEndpoints = PUBLIC_ENDPOINTS;
-    const access_token = this.tokenService.accessToken;
-    const isPublic = publicEndpoints.some((url) => req.url.includes(url));
+  const accessToken = tokenService.accessToken;
+  const isPublic = PUBLIC_ENDPOINTS.some((url) => req.url.includes(url));
 
-    if (isPublic || !access_token) {
-      return next.handle(req);
-    }
-
-    const authReq = req.clone({
-      setHeaders: { Authorization: `Bearer ${access_token}` },
-    });
-    return next.handle(authReq);
+  if (isPublic || !accessToken) {
+    return next(req);
   }
-}
+
+  const authReq = req.clone({
+    setHeaders: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  return next(authReq);
+};
