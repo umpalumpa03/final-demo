@@ -9,7 +9,7 @@
   "scripts": {
     "test": "nx test tia-frontend",
     "test:coverage": "nx test tia-frontend --coverage",
-    "test:pipeline": "npx nx affected --target=test --coverage --parallel=3 && node scripts/check-coverage.js"
+    "test:pipeline": "npx nx affected --target=test --coverage --parallel=3 --skip-nx-cache && node scripts/check-coverage.js"
   },
   "private": true,
   "dependencies": {
