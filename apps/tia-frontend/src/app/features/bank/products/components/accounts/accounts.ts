@@ -14,19 +14,16 @@ import {
   selectError,
 } from '../../../../../store/accounts/accounts.selectors';
 import { AccountCardComponent } from './components/account-card/account-card';
-import { NewAccountModalComponent } from './components/new-account-modal/new-account-modal';
 import { CreateAccountRequest } from '../../models/account.model';
 import { ButtonComponent } from '../../../../../shared/lib/primitives/button/button';
 import { BasicCard } from '../../../../../shared/lib/cards/basic-card/basic-card';
 import { RouteLoader } from '../../../../../shared/lib/feedback/route-loader/route-loader';
-import { CreateAccountActions } from './store/create-account/create-account.actions';
 
 @Component({
   selector: 'app-accounts-page',
   imports: [
     CommonModule,
     AccountCardComponent,
-    NewAccountModalComponent,
     ButtonComponent,
     BasicCard,
     RouteLoader,
@@ -67,18 +64,6 @@ export class Accounts implements OnInit {
 
   ngOnInit(): void {
     this.store.dispatch(AccountsActions.loadAccounts());
-  }
-
-  public handleOpenModal(): void {
-    this.store.dispatch(CreateAccountActions.openCreateModal());
-  }
-
-  public handleCloseModal(): void {
-    this.store.dispatch(CreateAccountActions.closeCreateModal());
-  }
-
-  public handleCreateAccount(request: CreateAccountRequest): void {
-    this.store.dispatch(CreateAccountActions.createAccount({ request }));
   }
 
   public handleTransfer(accountId: string): void {

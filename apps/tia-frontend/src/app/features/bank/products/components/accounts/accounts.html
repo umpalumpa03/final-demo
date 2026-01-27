@@ -5,11 +5,7 @@
         <h1 class="accounts-page__header-title-text">My Accounts</h1>
         <p class="accounts-page__header-subtitle">Manage your bank accounts</p>
       </div>
-      <app-button
-        [variant]="'default'"
-        [icon]="'plus-icon.svg'"
-        (click)="handleOpenModal()"
-      >
+      <app-button [variant]="'default'" [icon]="'plus-icon.svg'">
         New Account
       </app-button>
     </div>
@@ -53,21 +49,10 @@
       <p class="accounts-page__empty-text">
         Create your first account to get started
       </p>
-      <app-button
-        [variant]="'default'"
-        [icon]="'plus-icon.svg'"
-        (click)="handleOpenModal()"
-      >
+      <app-button [variant]="'default'" [icon]="'plus-icon.svg'">
         Create Account
       </app-button>
     </div>
     } } }
   </div>
-
-  @if (isCreateModalOpen$ | async) {
-  <app-new-account-modal
-    (closeModal)="handleCloseModal()"
-    (create)="handleCreateAccount($event)"
-  />
-  }
 </div>
