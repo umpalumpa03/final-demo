@@ -1,10 +1,13 @@
 @use '../../../../shared/styles/palette' as *;
 @use '../../../../shared/styles/mixins' as *;
 
+//temporary styles
 .sign-in {
   font-size: 2rem;
   margin: 5rem auto;
   width: 40rem;
+  position: relative;
+  min-height: 20rem;
 }
 
 .sign-up__switch {
@@ -19,4 +22,22 @@
   &:hover {
     text-decoration: underline;
   }
+}
+
+.sign-in-loader {
+  width: 100%;
+  min-height: 20rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5rem auto 0;
+}
+
+app-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40rem;
+  min-height: 20rem;
+  margin: 5rem auto;
 }
