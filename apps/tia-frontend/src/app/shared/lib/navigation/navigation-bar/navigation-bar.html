@@ -11,7 +11,7 @@
         [routerLink]="item.route"
         routerLinkActive="navigation__item--active"
         #rla="routerLinkActive"
-        [routerLinkActiveOptions]="{ exact: true }"
+        [routerLinkActiveOptions]="{ exact: false }"
       >
         @if (item.icon) {
         <img
@@ -23,10 +23,12 @@
         <span>{{ item.label }}</span>
       </a>
       @if (item.count && item.count > 0) {
-      <div 
-      class="navigation__count"
-      [class.navigation__item--active]="rla.isActive"
-      >{{ item.count > 99 ? '99+' : item.count }}</div>
+      <div
+        class="navigation__count"
+        [class.navigation__item--active]="rla.isActive"
+      >
+        {{ item.count > 99 ? '99+' : item.count }}
+      </div>
       }
     </li>
     }
