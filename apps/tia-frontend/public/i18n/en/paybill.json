@@ -1,0 +1,20 @@
+{
+  "title": "Pay Bills",
+  "categories": {
+    "utilities": "Utilities",
+    "telecom": "Telecom",
+    "insurance": "Insurance",
+    "government": "Government",
+    "other": "Other"
+  },
+  "form": {
+    "provider": "Service Provider",
+    "accountNumber": "Account Number",
+    "amount": "Amount",
+    "dueDate": "Due Date"
+  },
+  "history": {
+    "title": "Payment History",
+    "recent": "Recent Payments"
+  }
+}

@@ -16,6 +16,10 @@ import {
 } from '@angular/common/http';
 import { authInterceptor } from './core/auth/services/auth-interceptor';
 
+import { HttpClient } from '@angular/common/http';
+import { TranslateLoader, provideTranslateService } from '@ngx-translate/core';
+import { createMultiFileTranslateLoader } from './core/i18n';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -27,6 +31,14 @@ export const appConfig: ApplicationConfig = {
     provideStoreDevtools({
       maxAge: 25,
       logOnly: environment.production,
+    }),
+    provideTranslateService({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createMultiFileTranslateLoader,
+        deps: [HttpClient],
+      },
+      fallbackLang: 'en'
     }),
   ],
 };

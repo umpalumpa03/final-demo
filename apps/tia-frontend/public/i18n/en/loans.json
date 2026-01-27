@@ -1,0 +1,10 @@
+{
+    "title": "Loans",
+    "apply": "Apply for a Loan",
+    "details": "Loan Details",
+    "types": {
+        "personal": "Personal Loan",
+        "mortgage": "Mortgage Loan",
+        "auto": "Auto Loan"
+    }
+}
