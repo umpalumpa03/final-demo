@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { ILoan } from '../models/loan.model';
 import { environment } from '../../../../../../environments/environment';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class LoansService {
   private readonly http = inject(HttpClient);
   private readonly loansApiUrl = `${environment.apiUrl}/loans`;
