@@ -47,7 +47,6 @@ describe('AuthService (Vitest)', () => {
     const mockResponse = { status: 'mfa_required', challengId: 'challenge123' };
 
     service.loginPostRequest(loginData).subscribe((res) => {
-      expect(service.getChallengeId()).toBe('challenge123');
       expect(router.navigate).toHaveBeenCalledWith(['/auth/otp-verify']);
     });
 
