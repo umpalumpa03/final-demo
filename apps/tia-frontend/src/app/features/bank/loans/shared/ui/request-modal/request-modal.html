@@ -1,1 +1,70 @@
-<p>request-modal works!</p>
+<app-ui-modal [isOpen]="isOpen()" (closed)="close.emit()">
+    <div class="modal-content" [formGroup]="form">
+
+        <header class="modal-header">
+            <div class="header-text">
+                <h3>Request New Loan</h3>
+                <p>Fill out the application form to request a new loan</p>
+            </div>
+            <button class="close-btn" (click)="close.emit()">×</button>
+        </header>
+
+        <div class="modal-body">
+
+            <section class="form-section">
+                <h4 class="section-title">
+                    <img alt=""> Loan Details
+                </h4>
+                <div class="form-grid">
+                    <lib-text-input [config]="cfg.amount" formControlName="amount"></lib-text-input>
+                    <lib-text-input [config]="cfg.term" formControlName="term"></lib-text-input>
+                    <lib-text-input [config]="cfg.purpose" formControlName="purpose"></lib-text-input>
+                    <lib-text-input [config]="cfg.date" formControlName="firstPaymentDate"></lib-text-input>
+                </div>
+            </section>
+
+            <section class="form-section" formGroupName="address">
+                <h4 class="section-title">
+                    <img alt=""> Address Information
+                </h4>
+                <div class="form-row">
+                    <lib-text-input [config]="cfg.street" formControlName="street"></lib-text-input>
+                </div>
+                <div class="form-grid">
+                    <lib-text-input [config]="cfg.city" formControlName="city"></lib-text-input>
+                    <lib-text-input [config]="cfg.region" formControlName="region"></lib-text-input>
+                    <lib-text-input [config]="cfg.postal" formControlName="postalCode"></lib-text-input>
+                </div>
+            </section>
+
+            <section class="form-section" formGroupName="contact">
+                <h4 class="section-title">
+                    <img alt=""> Emergency Contact Person
+                </h4>
+                <div class="form-grid">
+                    <lib-text-input [config]="cfg.contactName" formControlName="fullName"></lib-text-input>
+                    <lib-text-input [config]="cfg.contactRel" formControlName="relationship"></lib-text-input>
+                    <lib-text-input [config]="cfg.contactPhone" formControlName="phone"></lib-text-input>
+                    <lib-text-input [config]="cfg.contactEmail" formControlName="email"></lib-text-input>
+                </div>
+            </section>
+
+            <div class="info-box">
+                <img alt="">
+                <div>
+                    <strong>Application Review</strong>
+                    <p>Your loan application will be reviewed by our team. You'll receive a notification once processed.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="modal-footer">
+            <app-button [variant]="'outline'" (click)="close.emit()">Cancel</app-button>
+            <app-button (click)="onSave()" [isDisabled]="form.invalid && form.touched">
+                Submit Application
+            </app-button>
+        </footer>
+
+    </div>
+</app-ui-modal>
