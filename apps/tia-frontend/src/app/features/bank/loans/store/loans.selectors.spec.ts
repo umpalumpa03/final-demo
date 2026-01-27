@@ -83,4 +83,15 @@ describe('Loans Selectors', () => {
     const result = selector(rootState);
     expect(result.length).toBe(3);
   });
+
+  it('should calculate loan counts correctly', () => {
+    const result = Selectors.selectLoanCounts(rootState);
+
+    expect(result).toEqual({
+      all: 3,
+      approved: 1,
+      pending: 1,
+      declined: 1,
+    });
+  });
 });
