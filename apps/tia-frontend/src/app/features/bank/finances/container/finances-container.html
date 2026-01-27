@@ -1,2 +1,60 @@
 
-<div class="global-bank-wrapper"><p>finances-container works!</p></div>
+<div class="global-bank-wrapper">
+    <app-library-title
+      [title]="financeTitle"
+      [subtitle]="financeSubTitle"
+    ></app-library-title>
+
+    <section class="finances-filters">
+       <div class="finances-filters__container">
+
+        <div class="finances-filters__actions">
+            @for (option of filterOptions; track option.type) {
+                <app-button 
+                [icon]="option.icon"
+                [variant]="option.variant"
+                (click)="onFilterChange(option.type)">
+                {{ option.label }}
+                </app-button>
+            }
+        </div>
+
+        <div class="finances-filters__inputs">
+            <div class="finances-filters__input-group">
+                <div class="finances-filters__input-wrapper">
+                    <lib-text-input
+                        type="text"
+                        [config]="{label: activeFilter === 'month' ? 'Month:' : 'From:', placeholder: 'YYYY-MM-DD'}"
+                    ></lib-text-input>
+                </div>
+            </div>
+
+            @if (activeFilter === 'custom') {
+                <div class="finances-filters__input-group">
+                    <div class="finances-filters__input-wrapper">
+                        <lib-text-input
+                            type="text"
+                            [config]="{label: 'To:', placeholder: 'YYYY-MM-DD'}"
+                        ></lib-text-input>
+                    </div>
+                </div>
+                }
+        </div>
+
+        </div>
+    </section>
+
+    <section class="finances-summary">
+        <div class="finances-summary__grid">
+            @for (card of summaryCardsData; track card.label) {
+            <app-statistic-card
+                [label]="card.label"
+                [value]="card.value"
+                [change]="card.change"
+                [changeType]="card.changeType"
+                [icon]="card.icon"
+            ></app-statistic-card>
+            }
+        </div>
+    </section>
+</div>
