@@ -7,11 +7,12 @@ import {
 import { provideHttpClient } from '@angular/common/http';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ILoan } from '../models/loan.model';
+import { environment } from '../../../../../../environments/environment';
 
 describe('LoansService', () => {
   let service: LoansService;
   let httpMock: HttpTestingController;
-  const apiUrl = 'https://tia.up.railway.app/loans';
+  const apiUrl = environment.apiUrl + '/loans';
 
   const mockLoan: ILoan = {
     id: '1',

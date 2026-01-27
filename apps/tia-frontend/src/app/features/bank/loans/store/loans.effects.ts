@@ -22,4 +22,18 @@ export class LoansEffects {
       ),
     ),
   );
+
+  renameLoan$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.renameLoan),
+      switchMap(({ id, name }) =>
+        this.loansService.updateFriendlyName(id, name).pipe(
+          map(() => LoansActions.renameLoanSuccess({ id, name })),
+          catchError((error) =>
+            of(LoansActions.renameLoanFailure({ error: error.message })),
+          ),
+        ),
+      ),
+    ),
+  );
 }
