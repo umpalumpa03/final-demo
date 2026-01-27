@@ -22,5 +22,7 @@ public readonly hasHover = input<boolean>(false);
   public readonly flexDirection = input<string>();
   public readonly alignItems = input<string>();
   public readonly justifyContent = input<string>();
+  public readonly minHeight = input<string>(); 
+  public readonly padding = input<string>();    
 
 }

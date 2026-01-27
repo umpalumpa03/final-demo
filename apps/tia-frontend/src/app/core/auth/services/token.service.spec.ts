@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { TokenService } from './token.service';
-import { TokenKey } from '../models/tokens.enum';
+import { TokenKey } from '../models/tokens.models';
 
 describe('TokenService', () => {
   let service: TokenService;

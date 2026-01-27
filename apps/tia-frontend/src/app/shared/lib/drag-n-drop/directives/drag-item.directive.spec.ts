@@ -24,6 +24,7 @@ describe('DragItemDirective', () => {
         transform: 'translate(10px, 10px)',
         zIndex: 100,
       }),
+      getColspanForItem: () => null,
     };
 
     mockCard = {

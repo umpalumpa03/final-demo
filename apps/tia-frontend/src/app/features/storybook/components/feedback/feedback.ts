@@ -11,6 +11,7 @@ import {
   IMAGE_SKELETONS,
   LIST_ITEMS,
 } from './config/feedback.config';
+import { ErrorStates } from '../../../../shared/lib/feedback/error-states/error-states';
 
 @Component({
   selector: 'app-feedback',
@@ -21,6 +22,7 @@ import {
     Spinner,
     LibraryTitle,
     RouteLoader,
+    ErrorStates
   ],
   templateUrl: './feedback.html',
   styleUrl: './feedback.scss',

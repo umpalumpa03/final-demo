@@ -13,30 +13,29 @@ import { RegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/c
 import { TokenService } from '../../services/token.service';
 import { IRegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/models/contact-forms.model';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
-import { AuthService } from '../../services/auth-service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-sign-up',
   imports: [RouterLink, RegistrationForm, Spinner],
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.scss',
-  providers: [TokenService], 
+  providers: [TokenService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SignUp implements OnInit{
+export class SignUp implements OnInit {
   private signUpService = inject(AuthService);
   private tokenService = inject(TokenService);
-  private router = inject(Router)
-  
+  private router = inject(Router);
+
   private destroyRef = inject(DestroyRef);
 
   public loadingState = signal<boolean>(true);
   public errorMessage = signal<string>('');
 
   ngOnInit(): void {
-    this.loadingState.set(false)
+    this.loadingState.set(false);
   }
-
 
   public onSignUp(signUpData: IRegistrationForm): void {
     this.loadingState.set(true);
@@ -46,13 +45,12 @@ export class SignUp implements OnInit{
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
-          if (res)
-            this.tokenService.setSignUpToken(res.signup_token)
+          if (res) this.tokenService.setSignUpToken(res.signup_token);
 
-            this.loadingState.set(false);
-            this.errorMessage.set('')
+          this.loadingState.set(false);
+          this.errorMessage.set('');
 
-            this.router.navigate(['/auth/sign-up/otp']);
+          this.router.navigate(['/auth/sign-up/otp']);
         }),
 
         catchError((err) => {
@@ -60,9 +58,9 @@ export class SignUp implements OnInit{
           this.loadingState.set(false);
 
           if (Array.isArray(messages)) {
-            // 🚩🚩 
-            const invalidEmailError = "email must be an email"
-            if(messages[0] === invalidEmailError) {
+            const invalidEmailError = 'email must be an email';
+
+            if (messages[0] === invalidEmailError) {
               this.errorMessage.set('Invalid Email');
             } else {
               this.errorMessage.set(messages[0]);
