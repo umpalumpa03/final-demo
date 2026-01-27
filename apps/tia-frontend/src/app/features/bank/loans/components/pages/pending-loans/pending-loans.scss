@@ -1,0 +1,10 @@
+@use "../../../../../../shared/styles/mixins" as *;
+
+.loans {
+    @include display-flex(column);
+    gap: 3.2rem;
+
+    .empty-state {
+        @include font-arimo(700, 1.6rem);
+    }
+}

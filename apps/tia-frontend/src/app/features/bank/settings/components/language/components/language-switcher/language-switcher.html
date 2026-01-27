@@ -1,0 +1,34 @@
+<div class="language-switcher" (clickOutside)="closeDropdown()">
+    <button class="dropdown-trigger" (click)="toggleDropdown()" [class.open]="isOpen()">
+        <span class="current-lang">
+            <span class="flag">{{ getCurrentLanguage()?.flag }}</span>
+            <span class="label">{{ getCurrentLanguage()?.label }}</span>
+        </span>
+        <span class="chevron">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+        </span>
+    </button>
+
+    @if (isOpen()) {
+    <ul class="dropdown-menu">
+        @for (language of languages; track language.code) {
+        <li class="dropdown-item" [class.active]="language.code === currentLanguage()"
+            (click)="switchLanguage(language.code)">
+            <span class="flag">{{ language.flag }}</span>
+            <span class="label">{{ language.label }}</span>
+            @if (language.code === currentLanguage()) {
+            <span class="check">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M13.5 4.5L6 12L2.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </span>
+            }
+        </li>
+        }
+    </ul>
+    }
+</div>

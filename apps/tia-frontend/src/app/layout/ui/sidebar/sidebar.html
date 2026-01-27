@@ -1,10 +1,11 @@
 <div class="sidebar-wrapper">
-  <div class="sidebar-wrapper__header">
-    <div class="sidebar-wrapper__header__title-icon">T</div>
-    <div class="sidebar-wrapper__header__title">TIA</div>
-  </div>
-  <app-navigation-bar
-    [orientation]="'vertical'"
-    [items]="items"
-  ></app-navigation-bar>
+  <a routerLink="dashboard">{{'common.navigation.dashboard' | translate}}</a>
+  <a routerLink="my-products">{{'common.navigation.my-products' | translate}}</a>
+  <a routerLink="transactions">{{'common.navigation.transactions' | translate}}</a>
+  <a routerLink="transfers">{{'common.navigation.transfers' | translate}}</a>
+  <a routerLink="loans">{{'common.navigation.loans' | translate}}</a>
+  <a routerLink="my-finances">{{'common.navigation.my-finances' | translate}}</a>
+  <a routerLink="paybill">{{'common.navigation.paybills' | translate}}</a>
+  <a routerLink="settings">{{'common.navigation.settings' | translate}}</a>
+  <a routerLink="messaging">{{'common.navigation.messaging' | translate}}</a>
 </div>

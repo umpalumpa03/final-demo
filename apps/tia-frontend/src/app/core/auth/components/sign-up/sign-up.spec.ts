@@ -56,7 +56,7 @@ describe('SignUp (Vitest)', () => {
     expect(authService.signUpUser).toHaveBeenCalled();
     expect(component.loadingState()).toBe(false);
     expect(component.errorMessage()).toBe('');
-    expect(navigateSpy).toHaveBeenCalledWith(['/auth/sign-up/otp']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/auth/sign-up/phone']);
   });
 
   it('should handle error with array message', () => {

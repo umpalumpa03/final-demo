@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { SIDEBARDATA } from './config/routes.config';
 import { NavigationBar } from '@tia/shared/lib/navigation/navigation-bar/navigation-bar';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [NavigationBar],
+  imports: [RouterLink, TranslatePipe],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

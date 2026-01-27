@@ -22,3 +22,22 @@ export const loadCategories = createEffect(
   },
   { functional: true },
 );
+
+export const loadProviders = createEffect(
+  (actions$ = inject(Actions), paybillService = inject(PaybillService)) => {
+    return actions$.pipe(
+      ofType(PaybillActions.selectCategory),
+      mergeMap(({ categoryId }) =>
+        paybillService.getProviders(categoryId).pipe(
+          map((providers) =>
+            PaybillActions.loadProvidersSuccess({ providers }),
+          ),
+          catchError((error) =>
+            of(PaybillActions.loadProvidersFailure({ error: error.message })),
+          ),
+        ),
+      ),
+    );
+  },
+  { functional: true },
+);

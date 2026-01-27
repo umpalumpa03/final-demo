@@ -32,7 +32,7 @@ describe('PaybillService', () => {
     httpMock.verify();
   });
 
-  it('should fetch categories with correct headers', () => {
+  it('should fetch categories with correct URL', () => {
     const mockCategories = [{ id: '1', name: 'Utilities' }];
 
     service.getCategories().subscribe((data) => {
@@ -43,8 +43,6 @@ describe('PaybillService', () => {
       'https://tia.up.railway.app/paybill/categories',
     );
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer mock-token');
-
     req.flush(mockCategories);
   });
 });

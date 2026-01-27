@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { provideTranslateService } from '@ngx-translate/core';
 import { BankContainer } from './bank-container';
 import { of } from 'rxjs';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
