@@ -1,11 +1,11 @@
-<div class="global-bank-wrapper">
-  <app-breadcrumbs [breadcrumbs]="breadcrumbs()" />
+<section class="paybill-container">
+  <header class="paybill-container__header">
+    <app-breadcrumbs [breadcrumbs]="breadcrumbs()" />
+    <app-library-title [title]="paybillTitle" [subtitle]="paybillSubtitle" />
+    <app-tabs [tabs]="navigationConfig" orientation="horizontal"></app-tabs>
+  </header>
 
-  <app-library-title [title]="paybillTitle" [subtitle]="paybillSubtitle" />
-
-  <app-tabs [tabs]="navigationConfig" orientation="horizontal"></app-tabs>
-
-  <main class="paybill-content">
+  <main class="paybill-container__content">
     <router-outlet></router-outlet>
   </main>
-</div>
+</section>

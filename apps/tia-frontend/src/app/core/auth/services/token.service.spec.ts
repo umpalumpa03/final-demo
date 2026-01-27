@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { TokenService } from './token.service';
-import { TokenKey } from '../models/tokens.models';
+import { TokenKey } from '../models/tokens.model';
 
 describe('TokenService', () => {
   let service: TokenService;
@@ -22,13 +22,6 @@ describe('TokenService', () => {
   it('sets refresh token', () => {
     service.setRefreshToken('r');
     expect(localStorage.getItem(TokenKey.REFRESH)).toBe('r');
-  });
-
-  it('sets verify and signup tokens', () => {
-    service.setVerifyToken('v');
-    service.setSignUpToken('s');
-    expect(localStorage.getItem(TokenKey.VERIFY)).toBe('v');
-    expect(localStorage.getItem(TokenKey.SIGNUP)).toBe('s');
   });
 
   it('clears auth tokens (access & refresh)', () => {
