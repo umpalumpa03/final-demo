@@ -84,7 +84,7 @@ export const LOAN_FORM_CONFIG = {
     placeholder: 'john.doe@example.com',
     required: true,
   },
-};
+} as const;
 
 export const TERM_OPTIONS: SelectOption[] = [
   { label: '12 Months', value: '12' },
@@ -92,7 +92,7 @@ export const TERM_OPTIONS: SelectOption[] = [
   { label: '36 Months', value: '36' },
   { label: '48 Months', value: '48' },
   { label: '60 Months', value: '60' },
-];
+] as const;
 
 export const PURPOSE_OPTIONS: SelectOption[] = [
   { label: 'Home Improvement', value: 'home_improvement' },
@@ -100,9 +100,9 @@ export const PURPOSE_OPTIONS: SelectOption[] = [
   { label: 'Auto Purchase', value: 'auto_purchase' },
   { label: 'Education', value: 'education' },
   { label: 'Other', value: 'other' },
-];
+] as const;
 
 export const MOCK_ACCOUNT_OPTIONS: SelectOption[] = [
   { label: 'Main Checking (...8842) - $2,450.00', value: 'acc_checking_01' },
   { label: 'Savings (...9921) - $12,050.50', value: 'acc_savings_02' },
-];
+] as const;

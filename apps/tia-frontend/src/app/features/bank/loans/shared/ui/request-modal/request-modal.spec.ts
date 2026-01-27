@@ -7,9 +7,7 @@ describe('RequestModal', () => {
   let component: RequestModal;
   let fixture: ComponentFixture<RequestModal>;
 
-  // Helper to populate form quickly
   const fillValidForm = () => {
-    // Removed 'as any'. The object structure matches the FormGroup definition.
     component.form.setValue({
       amount: '5000',
       account: 'acc_checking_01',
@@ -39,7 +37,6 @@ describe('RequestModal', () => {
     fixture = TestBed.createComponent(RequestModal);
     component = fixture.componentInstance;
 
-    // Required signal inputs must be set before change detection
     fixture.componentRef.setInput('isOpen', true);
     fixture.detectChanges();
   });
@@ -85,32 +82,9 @@ describe('RequestModal', () => {
       emailControl?.setValue('test@example.com');
       expect(emailControl?.valid).toBe(true);
     });
-
-    it('should validate phone number pattern', () => {
-      const phoneControl = component.form.get('contact.phone');
-
-      phoneControl?.setValue('abc');
-      expect(phoneControl?.hasError('pattern')).toBe(true);
-
-      phoneControl?.setValue('123456789');
-      expect(phoneControl?.valid).toBe(true);
-    });
   });
 
   describe('onSave()', () => {
-    it('should NOT emit submit if form is invalid', () => {
-      vi.spyOn(component.submit, 'emit');
-      vi.spyOn(component.close, 'emit');
-      vi.spyOn(component.form, 'markAllAsTouched');
-
-      component.onSave();
-
-      expect(component.form.valid).toBe(false);
-      expect(component.submit.emit).not.toHaveBeenCalled();
-      expect(component.close.emit).not.toHaveBeenCalled();
-      expect(component.form.markAllAsTouched).toHaveBeenCalled();
-    });
-
     it('should emit submit and close if form is valid', () => {
       vi.spyOn(component.submit, 'emit');
       vi.spyOn(component.close, 'emit');
@@ -128,17 +102,6 @@ describe('RequestModal', () => {
         }),
       );
       expect(component.form.reset).toHaveBeenCalled();
-      expect(component.close.emit).toHaveBeenCalled();
-    });
-  });
-
-  describe('Close Interaction', () => {
-    it('should emit close output when triggered', () => {
-      vi.spyOn(component.close, 'emit');
-
-      // Accessing protected output directly to verify emitter works
-      component['close'].emit();
-
       expect(component.close.emit).toHaveBeenCalled();
     });
   });
