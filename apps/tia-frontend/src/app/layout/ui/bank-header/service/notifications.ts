@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import {
   HasUnreadNotifications,
   NotificationsData,
-} from '../modals/notification-modal';
+} from '../modals/notification.model';
 import { environment } from '../../../../../environments/environment';
 
 @Injectable({

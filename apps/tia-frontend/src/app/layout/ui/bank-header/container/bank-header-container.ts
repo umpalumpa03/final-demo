@@ -12,7 +12,7 @@ import { BankHeader } from '../components/bank-header/bank-header';
 import { HeaderNotifications } from '../components/header-notifications/header-notifications';
 import { Notifications } from '../service/notifications';
 import { Observable, Subject, switchMap, takeUntil, tap } from 'rxjs';
-import { NotificationsData } from '../modals/notification-modal';
+import { NotificationsData } from '../modals/notification.model';
 
 @Component({
   selector: 'app-bank-header-container',

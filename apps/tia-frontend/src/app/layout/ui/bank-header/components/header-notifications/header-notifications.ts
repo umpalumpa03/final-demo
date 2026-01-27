@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { Observable } from 'rxjs';
-import { NotificationsData } from '../../modals/notification-modal';
+import { NotificationsData } from '../../modals/notification.model';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
