@@ -1,4 +1,10 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { TabItem } from '@tia/shared/lib/navigation/models/tab.model';
 import { Tabs } from '@tia/shared/lib/navigation/tabs/tabs';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -9,15 +15,16 @@ import { selectLoanCounts } from '../../../store/loans.selectors';
   selector: 'app-loan-navigation',
   imports: [Tabs],
   templateUrl: './loan-navigation.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoanNavigation {
-  private store = inject(Store);
+  private readonly store = inject(Store);
 
-  counts = toSignal(this.store.select(selectLoanCounts), {
+  private readonly counts = toSignal(this.store.select(selectLoanCounts), {
     initialValue: { all: 0, approved: 0, pending: 0, declined: 0 },
   });
 
-  tabs = computed<TabItem[]>(() => {
+  protected readonly tabs = computed<TabItem[]>(() => {
     const c = this.counts();
     return [
       { label: `All Loans (${c.all})`, route: 'all' },

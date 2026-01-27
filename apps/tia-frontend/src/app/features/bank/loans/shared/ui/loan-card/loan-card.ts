@@ -36,7 +36,7 @@ export class LoanCard {
   public readonly cardClick = output<string>();
   public readonly rename = output<{ id: string; name: string }>();
 
-  protected readonly isEditing = signal<boolean>(false);
+  protected readonly isEditing = signal(false);
 
   protected readonly nameControl = new FormControl<string>('', {
     nonNullable: true,
