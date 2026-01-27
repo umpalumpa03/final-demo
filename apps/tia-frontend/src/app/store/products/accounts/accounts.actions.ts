@@ -1,8 +1,8 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { Account } from '../../features/bank/products/models/account.model';
+import { Account } from '../../../features/bank/products/models/account.model';
 
-export const ProductsActions = createActionGroup({
-  source: 'Products',
+export const AccountsActions = createActionGroup({
+  source: 'Accounts',
   events: {
     'Load Accounts': emptyProps(),
     'Load Accounts Success': props<{ accounts: Account[] }>(),
