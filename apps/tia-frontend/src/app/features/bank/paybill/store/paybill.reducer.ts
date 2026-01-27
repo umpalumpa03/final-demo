@@ -26,12 +26,6 @@ export const paybillReducer = createReducer(
     loading: false,
   })),
 
-  on(PaybillActions.selectCategory, (state, { categoryId }) => ({
-    ...state,
-    selectedCategoryId: categoryId,
-    selectedProviderId: null,
-  })),
-
   on(PaybillActions.selectProvider, (state, { providerId }) => ({
     ...state,
     selectedProviderId: providerId,
@@ -48,6 +42,7 @@ export const paybillReducer = createReducer(
     selectedProviderId: null,
     providers: [],
     loading: true,
+    error: null,
   })),
 
   on(PaybillActions.loadProvidersSuccess, (state, { providers }) => ({

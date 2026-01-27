@@ -1,31 +1,40 @@
-<app-basic-card maxWidth="91.2rem" padding="2.4rem 0 2.4rem 2.4rem">
+<app-basic-card maxWidth="91.2rem" padding="0rem 0 2.4rem 2.4rem">
   <div class="category-header">
     <div
       class="category-header__icon-box"
-      [style.background-color]="iconBgColor()"
+      [style.background-color]="isLoading() ? 'none' : iconBgColor()"
     >
+      @if (isLoading()) {
+      <app-skeleton variant="circle" width="6.4rem" height="6.4rem" />
+      } @else {
       <img [src]="iconBgPath()" class="category-header__img" alt="" />
+      }
     </div>
     <div class="category-header__text">
+      @if (isLoading()) {
+      <div class="skeleton__wrapper">
+        <app-skeleton variant="text" width="15rem" height="2.4rem" />
+        <app-skeleton variant="text" width="22rem" height="1.6rem" />
+      </div>
+      } @else {
       <h2 class="category-header__title">{{ categoryName() }}</h2>
       <p class="category-header__subtitle">{{ subtitle() }}</p>
+      }
     </div>
   </div>
 
   <div class="provider-list">
     <app-scroll-area height="40rem">
       <div class="providers__wrapper">
-        @for (provider of providers(); track provider.serviceId) {
-        <button
-          class="provider-item"
-          (click)="selected.emit(provider.serviceId)"
-        >
-          <div class="provider-item__content">
-            <h3 class="provider-item__label">{{ provider.name }}</h3>
-          </div>
-          <div class="provider-item__action"></div>
-        </button>
-        }
+        @if (isLoading()) { @for (item of [1,2,3,4,5,6]; track $index) {
+        <app-provider-item [isLoading]="true" />
+        } } @else { @for (provider of providers(); track provider.serviceId) {
+        <app-provider-item
+          [name]="provider.name!"
+          [indicatorColor]="iconBgColor() || ''"
+          (selected)="selected.emit(provider.serviceId)"
+        />
+        } }
       </div>
     </app-scroll-area>
   </div>

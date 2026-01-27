@@ -33,6 +33,10 @@ export class PaybillMain {
     PAYBILL_SELECTORS.selectCategories,
   );
 
+  public readonly isLoading = this.store.selectSignal(
+    PAYBILL_SELECTORS.selectLoading,
+  );
+
   public readonly formattedCategories = computed(() => {
     return this.categories().map((cat) => {
       const lookupKey = cat.id.toLowerCase();

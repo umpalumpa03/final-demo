@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { PaybillState } from '../models/paybill.model';
+import { Breadcrumb } from '@tia/shared/lib/navigation/models/breadcrumbs.model';
 
 export const selectPaybillState =
   createFeatureSelector<PaybillState>('paybill');
@@ -51,23 +52,32 @@ export const selectActiveProvider = createSelector(
 export const selectPaybillBreadcrumbs = createSelector(
   selectActiveCategory,
   selectActiveProvider,
-  (category, provider) => {
-    const base = [{ label: 'Paybill', route: '/bank/paybill' }];
+  selectSelectedCategoryId,
+  (category, provider, selectedCategoryId) => {
+    const base: Breadcrumb[] = [{ label: 'Paybill', route: '/bank/paybill' }];
+
+    if (selectedCategoryId?.toUpperCase() === 'TEMPLATES') {
+      base.push({ label: 'Templates', route: '' });
+      return base;
+    }
 
     if (category) {
       base.push({
         label: category.name,
-        route: provider ? '/bank/paybill' : '',
+        route: provider ? `/bank/paybill/${category.id.toLowerCase()}` : '',
       });
     }
 
     if (provider) {
-      base.push({ label: provider.category, route: '' });
+      const label = provider.serviceName || provider.name || '';
+      base.push({ label, route: '' });
     }
 
-    return base.map((crumb, index, arr) => ({
-      ...crumb,
-      route: index === arr.length - 1 ? '' : crumb.route,
-    }));
+    return base;
   },
+);
+
+export const selectLoading = createSelector(
+  selectPaybillState,
+  (state) => state.loading,
 );

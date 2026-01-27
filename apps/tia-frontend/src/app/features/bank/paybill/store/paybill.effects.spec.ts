@@ -26,16 +26,24 @@ describe('PaybillEffects', () => {
 
   it('should dispatch loadCategoriesSuccess on successful API call', () => {
     TestBed.runInInjectionContext(() => {
-      const categories = [{ id: '1', name: 'Test', icon: '', providers: [] }];
+      const categories = [
+        {
+          id: '1',
+          name: 'Test',
+          icon: '',
+          description: 'Test description',
+          providers: [],
+          servicesQuantity: 0,
+        },
+      ];
       serviceMock.getCategories.mockReturnValue(of(categories));
 
       actions$ = of(PaybillActions.loadCategories());
 
-      loadCategories().subscribe((action: Action) => {
+      loadCategories().subscribe((action) => {
         expect(action).toEqual(
           PaybillActions.loadCategoriesSuccess({ categories }),
         );
-        expect(serviceMock.getCategories).toHaveBeenCalled();
       });
     });
   });

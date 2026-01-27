@@ -12,7 +12,13 @@ describe('ProviderList', () => {
 
     fixture = TestBed.createComponent(ProviderList);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+
+    fixture.componentRef.setInput('categoryName', 'Test Category');
+    fixture.componentRef.setInput('providers', []);
+
+    fixture.componentRef.setInput('iconBgColor', '#ffffff');
+
+    fixture.detectChanges();
   });
 
   it('should create', () => {
