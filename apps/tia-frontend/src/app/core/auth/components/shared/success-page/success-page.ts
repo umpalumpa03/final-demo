@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { interval, Subject, takeUntil, takeWhile, tap } from 'rxjs';
@@ -9,6 +9,7 @@ import { TokenService } from '../../../services/token.service';
   imports: [RouterLink, ButtonComponent, RouterLink],
   templateUrl: './success-page.html',
   styleUrl: './success-page.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SuccessPage implements OnInit, OnDestroy{
   private router = inject(Router)
