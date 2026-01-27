@@ -9,7 +9,7 @@ export class LoansEffects {
   private actions$ = inject(Actions);
   private loansService = inject(LoansService);
 
-  loadLoans$ = createEffect(() =>
+  public loadLoans$ = createEffect(() =>
     this.actions$.pipe(
       ofType(LoansActions.loadLoans),
       switchMap(() =>
@@ -23,7 +23,7 @@ export class LoansEffects {
     ),
   );
 
-  renameLoan$ = createEffect(() =>
+  public renameLoan$ = createEffect(() =>
     this.actions$.pipe(
       ofType(LoansActions.renameLoan),
       switchMap(({ id, name }) =>
