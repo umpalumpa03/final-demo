@@ -25,15 +25,14 @@
           ></app-avatar>
           }
         </div>
-        <lib-text-input
-          #fileInput
-          [type]="'file'"
-          [config]="{
-            placeholder: 'Choose file...'
-          }"
-          (valueChange)="onFileChange($event)"
+        <app-button
+          variant="default"
+          size="default"
+          icon="white-download.svg"
+          (click)="onFileButtonClick()"
         >
-        </lib-text-input>
+          Choose File
+        </app-button>
       </div>
     </div>
 
@@ -50,7 +49,7 @@
           (click)="onDefaultAvatarClick(avatar.id)"
         >
           <img
-            [src]="avatar.imageUrl"
+            [src]="getAvatarUrl(avatar.iconUri)"
             alt="Default avatar"
             class="profile-photo__avatar-image"
           />
