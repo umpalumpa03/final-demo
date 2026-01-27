@@ -3,7 +3,7 @@ import { BankHeaderContainer } from './bank-header-container';
 import { Notifications } from '../service/notifications';
 import { of } from 'rxjs';
 import { ElementRef } from '@angular/core';
-import { expect, it, describe, beforeEach, vi, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -11,21 +11,14 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 describe('BankHeaderContainer', () => {
   let component: BankHeaderContainer;
   let fixture: ComponentFixture<BankHeaderContainer>;
-  let setItemSpy: ReturnType<typeof vi.spyOn>;
 
   const mockNotificationsService = {
-    userSignIn: vi.fn(() => of({ challengeId: 'mock-id' })),
-    mfaVerification: vi.fn(() => of({ access_token: 'mock-token' })),
     hasUnreadNotification: vi.fn(() => of({ hasUnread: true })),
-    getNotifications: vi.fn(() => of({ data: [] })),
+    getNotifications: vi.fn(() => of({ data: [], meta: {} })),
   };
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    setItemSpy = vi
-      .spyOn(Storage.prototype, 'setItem')
-      .mockImplementation(() => {});
-    vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
 
     await TestBed.configureTestingModule({
       imports: [BankHeaderContainer],
@@ -43,44 +36,59 @@ describe('BankHeaderContainer', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
-    localStorage.clear();
   });
 
   it('should create', () => {
-    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it('should run the temporary auth flow on init', () => {
+  it('should call hasUnreadNotification on init', () => {
     fixture.detectChanges();
-
-    expect(mockNotificationsService.userSignIn).toHaveBeenCalled();
-    expect(mockNotificationsService.mfaVerification).toHaveBeenCalled();
-    expect(setItemSpy).toHaveBeenCalledWith('JWT-Token', 'mock-token');
+    expect(mockNotificationsService.hasUnreadNotification).toHaveBeenCalled();
   });
 
-  it('should set hasUnread signal on init', () => {
+  it('should set hasUnread signal from service response', () => {
     fixture.detectChanges();
     expect(component.hasUnread()).toBe(true);
   });
 
-  it('should handle notification click', () => {
+  it('should set hasUnread to false when service returns false', () => {
+    mockNotificationsService.hasUnreadNotification.mockReturnValue(
+      of({ hasUnread: false }),
+    );
+    fixture.detectChanges();
+    expect(component.hasUnread()).toBe(false);
+  });
+
+  it('should set anchorEl on notification click', () => {
+    const mockEl = { nativeElement: {} } as ElementRef;
+    component.onNotificationClick(mockEl);
+    expect(component.anchorEl()).toBe(mockEl);
+  });
+
+  it('should toggle isModalOpen on notification click', () => {
     const mockEl = { nativeElement: {} } as ElementRef;
 
+    expect(component.isModalOpen()).toBe(false);
     component.onNotificationClick(mockEl);
-
-    expect(component.anchorEl()).toBe(mockEl);
     expect(component.isModalOpen()).toBe(true);
+    component.onNotificationClick(mockEl);
+    expect(component.isModalOpen()).toBe(false);
+  });
+
+  it('should call getNotifications on notification click', () => {
+    const mockEl = { nativeElement: {} } as ElementRef;
+    component.onNotificationClick(mockEl);
     expect(mockNotificationsService.getNotifications).toHaveBeenCalled();
   });
 
-  it('should cleanup on destroy', () => {
+  it('should complete destroyRef$ on destroy', () => {
     const nextSpy = vi.spyOn(component.destroyRef$, 'next');
     const completeSpy = vi.spyOn(component.destroyRef$, 'complete');
 
     component.ngOnDestroy();
 
-    expect(nextSpy).toHaveBeenCalled();
+    expect(nextSpy).toHaveBeenCalledWith(null);
     expect(completeSpy).toHaveBeenCalled();
   });
 });

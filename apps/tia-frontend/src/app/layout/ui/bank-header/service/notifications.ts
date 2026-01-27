@@ -13,28 +13,9 @@ import { environment } from '../../../../../environments/environment';
 export class Notifications {
   public http = inject(HttpClient);
 
-  // WILL BE DELETED AFTER INTERCEPTOR
-  public userSignIn(): Observable<any> {
-    return this.http.post(`https://tia.up.railway.app/auth/login`, {
-      username: 'JOHNDOE',
-      password: 'pass123123',
-    });
-  }
-
-  public mfaVerification(object: any): Observable<any> {
-    return this.http.post(`https://tia.up.railway.app/auth/mfa/verify`, object);
-  }
-
-  // ////////////////////////////
-
   public hasUnreadNotification(): Observable<HasUnreadNotifications> {
     return this.http.get<HasUnreadNotifications>(
       `${environment.apiUrl}/notifications/has-unread`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('JWT-Token')}`,
-        },
-      },
     );
   }
 
@@ -52,9 +33,6 @@ export class Notifications {
       `${environment.apiUrl}/notifications`,
       {
         params,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('JWT-Token')}`,
-        },
       },
     );
   }

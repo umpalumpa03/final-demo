@@ -31,30 +31,10 @@ export class BankHeaderContainer implements OnInit, OnDestroy {
   public isModalOpen = signal<boolean>(false);
   public notificationsItems$!: Observable<NotificationsData>;
 
-  // FOR NOW VALUE, WILL BE DELETED
-  public mfaVerification = '';
   public destroyRef$ = new Subject<null>();
 
   ngOnInit(): void {
-    // THIS PART WILL BE DELETED AFTER AUTH INTERCEPTOR
-    this.headerNotificationService
-      .userSignIn()
-      .pipe(
-        takeUntil(this.destroyRef$),
 
-        switchMap((value: any) => {
-          return this.headerNotificationService.mfaVerification({
-            challengeId: value.challengeId,
-            code: '1111',
-          });
-        }),
-
-        tap((value: any) => {
-          localStorage.setItem('JWT-Token', value['access_token']);
-        }),
-      )
-      .subscribe();
-    // //////////////////
 
     this.headerNotificationService
       .hasUnreadNotification()
