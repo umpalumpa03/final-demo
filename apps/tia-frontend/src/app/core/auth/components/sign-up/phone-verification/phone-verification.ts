@@ -35,7 +35,7 @@ export class PhoneVerification {
       .pipe(
         tap((res) => {
           this.errorMessage.set('')
-          // Challenge id localStorage --
+          // Challenge id localStorage 🚩🚩
           this.tokenService.setChallengeId(res.challengeId)
           this.router.navigate(['/auth/sign-up/otp-verify']);
 
