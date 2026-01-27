@@ -1,0 +1,23 @@
+{
+  "title": "Transfers",
+  "ragaca": "ragaca",
+  "types": {
+    "internal": "Internal Transfer",
+    "external": "External Transfer",
+    "international": "International Transfer"
+  },
+  "form": {
+    "fromAccount": "From Account",
+    "toAccount": "To Account",
+    "amount": "Amount",
+    "currency": "Currency",
+    "description": "Description",
+    "schedule": "Schedule Transfer"
+  },
+  "confirmation": {
+    "title": "Confirm Transfer",
+    "review": "Please review your transfer details",
+    "success": "Transfer completed successfully",
+    "reference": "Reference: {{ref}}"
+  }
+}

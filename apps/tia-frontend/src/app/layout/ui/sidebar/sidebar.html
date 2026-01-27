@@ -1,11 +1,22 @@
+<!-- <div class="sidebar-wrapper">
+  <a routerLink="dashboard">{{'common.navigation.dashboard' | translate}}</a>
+  <a routerLink="my-products">{{'common.navigation.my-products' | translate}}</a>
+  <a routerLink="transactions">{{'common.navigation.transactions' | translate}}</a>
+  <a routerLink="transfers">{{'common.navigation.transfers' | translate}}</a>
+  <a routerLink="loans">{{'common.navigation.loans' | translate}}</a>
+  <a routerLink="my-finances">{{'common.navigation.my-finances' | translate}}</a>
+  <a routerLink="paybill">{{'common.navigation.paybills' | translate}}</a>
+  <a routerLink="settings">{{'common.navigation.settings' | translate}}</a>
+  <a routerLink="messaging">{{'common.navigation.messaging' | translate}}</a>
+</div> -->
+
 <div class="sidebar-wrapper">
-  <a routerLink="dashboard">dashboard</a>
-  <a routerLink="products">products</a>
-  <a routerLink="transactions">transactions</a>
-  <a routerLink="transfers">transfers</a>
-  <a routerLink="loans">loans</a>
-  <a routerLink="finances">finances</a>
-  <a routerLink="paybill">paybill</a>
-  <a routerLink="settings">settings</a>
-  <a routerLink="messaging">messaging</a>
+  <div class="sidebar-wrapper__header">
+    <div class="sidebar-wrapper__header__title-icon">T</div>
+    <div class="sidebar-wrapper__header__title">TIA</div>
+  </div>
+  <app-navigation-bar
+    [orientation]="'vertical'"
+    [items]="items"
+  ></app-navigation-bar>
 </div>
