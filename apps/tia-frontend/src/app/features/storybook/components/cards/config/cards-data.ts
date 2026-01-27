@@ -1,5 +1,6 @@
 import {
   CardData,
+  CategoryCardData,
   StatisticCardData,
 } from 'apps/tia-frontend/src/app/shared/lib/cards/models/card.model';
 
@@ -59,5 +60,24 @@ export const STATISTICS_CARDS_DATA: StatisticCardData[] = [
     change: '-4% from last hour',
     changeType: 'negative',
     icon: 'images/svg/cards/vector.svg',
+  },
+] as const;
+
+export const CATEGORY_CARDS_DATA: CategoryCardData[] = [
+  {
+    id: 'category-card-1',
+    title: 'Utilities',
+    subtitle: 'Electricity, Water, Gas',
+    icon: 'images/svg/cards/lightning.svg',
+    iconBgColor: '#fdc700',
+    count: 12,
+  },
+  {
+    id: 'category-card-2',
+    title: 'Internet & TV',
+    subtitle: 'Internet, Cable TV',
+    icon: 'images/svg/cards/wifi.svg',
+    iconBgColor: '#0ea5e9',
+    count: 8,
   },
 ] as const;

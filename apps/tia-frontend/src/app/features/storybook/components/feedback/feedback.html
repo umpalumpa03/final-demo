@@ -52,17 +52,17 @@
       <div class="showcase__group">
         <span class="showcase__label">List Skeleton:</span>
         @for (item of listItems; track trackById($index, item)) {
-        <div class="skel__row">
-          <app-skeleton
-            [variant]="item.avatar.variant"
-            [height]="item.avatar.height"
-          />
-          <div class="skel__creds">
-            @for (cred of item.credentials; track trackById($index, cred)) {
-            <app-skeleton [width]="cred.width" [height]="cred.height" />
-            }
+          <div class="skel__row">
+            <app-skeleton
+              [variant]="item.avatar.variant"
+              [height]="item.avatar.height"
+            />
+            <div class="skel__creds">
+              @for (cred of item.credentials; track trackById($index, cred)) {
+                <app-skeleton [width]="cred.width" [height]="cred.height" />
+              }
+            </div>
           </div>
-        </div>
         }
       </div>
 
@@ -93,7 +93,7 @@
         <span class="showcase__label">Image Skeleton:</span>
         <div class="showcase__imgs">
           @for (img of imageSkeletons; track trackById($index, img)) {
-          <app-skeleton [width]="img.width" [height]="img.height" />
+            <app-skeleton [width]="img.width" [height]="img.height" />
           }
         </div>
       </div>
@@ -121,6 +121,33 @@
       <div class="showcase__pulse">
         <app-route-loader variant="pulsing" />
       </div>
+    </div>
+  </app-showcase-card>
+
+  <app-showcase-card title="Error States">
+    <div class="showcase__cards">
+
+      <app-error-states
+        variant="connection-error"
+        header="Connection Error"
+        message="Unable to connect to the server. Please check your internet connection."
+        buttonMessage="Retry Connection"
+      />
+
+      <app-error-states
+        variant="failed"
+        header="Loading Failed"
+        message="Failed to load the requested content. Please try again."
+        buttonMessage="Retry"
+      />
+
+      <app-error-states
+        variant="not-found"
+        header="No Data Found"
+        message="We couldn't find any data to display."
+        buttonMessage="Go Back"
+      />
+
     </div>
   </app-showcase-card>
 </div>

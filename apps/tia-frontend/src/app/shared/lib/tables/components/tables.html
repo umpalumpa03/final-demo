@@ -1,12 +1,27 @@
 @let config = tableConfig(); @if(config) {
 <div class="table-container">
+  @if(isLoading()) {
+  <div class="table-container-spinner">
+    <app-spinner size="15rem"></app-spinner>
+  </div>
+  }@else if(hasError()) {
+  <div class="table-container-error">
+    <app-error-states
+      header="Failed to Load Table Data"
+      message="An error occurred while fetching the transaction history. Please try again."
+      buttonMessage="Reload Table"
+      width="100%"
+      (buttonClick)="onErrorReload()"
+    ></app-error-states>
+  </div>
+  }@else {
   <table class="table" [class.table--striped]="isStriped()">
     <thead class="table__header">
       <tr class="table__header__row">
         @if(isSelectable()) {
         <th class="table__header__row__item table__header__row__checkbox">
           <lib-checkboxes
-            (checked)="allSelected()"
+            [checked]="allSelected()"
             (change)="toggleSelectAll()"
           ></lib-checkboxes>
         </th>
@@ -32,7 +47,7 @@
       </tr>
     </thead>
     <tbody class="table__body">
-      @for (row of config.rows | slice:startIndex():endIndex(); track row.id) {
+      @for (row of config.rows; track row.id) {
       <tr
         class="table__body__row"
         [attr.data-disabled]="row.disabled ? '' : null"
@@ -42,7 +57,7 @@
         @if(isSelectable() || isSelectAndAction()) {
         <td class="table__body__row__item">
           <lib-checkboxes
-            [checked]="allSelected()"
+            [checked]="isRowSelected(row)"
             (change)="onIndividualSelect(row)"
           ></lib-checkboxes>
         </td>
@@ -146,8 +161,7 @@
       }
     </tbody>
   </table>
-
-  @if(isPagination()) {
+  } @if(isPagination() && !hasError() && !isLoading()) {
   <div class="table__pagination">
     <app-pagination
       (pageChange)="onPageChange($event)"
