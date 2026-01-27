@@ -5,6 +5,7 @@ import { provideEffects } from '@ngrx/effects';
 import { loansReducer } from './store/loans.reducer';
 import { LoansEffects } from './store/loans.effects';
 import { LoansContainer } from './container/loans-container';
+import { LoansService } from './shared/services/loans.service';
 
 export const loansRoutes: Routes = [
   {
@@ -13,6 +14,7 @@ export const loansRoutes: Routes = [
     providers: [
       provideState('loans', loansReducer),
       provideEffects(LoansEffects),
+      LoansService,
     ],
     children: [
       { path: '', redirectTo: 'all', pathMatch: 'full' },
