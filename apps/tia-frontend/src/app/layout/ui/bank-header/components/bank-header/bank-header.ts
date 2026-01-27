@@ -1,8 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   input,
   output,
+  viewChild,
 } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -14,10 +16,16 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BankHeader {
-  public hasUnread = input(false);
+  public bellRef = viewChild<ElementRef>('bell');
 
-  public onNotificationClick = output();
+  public hasUnread = input<boolean>(false);
+
+  public onNotificationClick = output<ElementRef>();
+
   public onNotification(): void {
-    this.onNotificationClick.emit();
+    const el = this.bellRef();
+    if (el) {
+      this.onNotificationClick.emit(el);
+    }
   }
 }
