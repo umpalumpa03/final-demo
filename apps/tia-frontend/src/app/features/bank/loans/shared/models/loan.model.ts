@@ -1,3 +1,5 @@
+import { LOAN_ICONS } from '../config/loan-icons.config';
+
 export interface ILoan {
   id: string;
   loanAmount: number;
@@ -18,3 +20,11 @@ export interface ILoansState {
   error: string | null;
   filterStatus: number | null;
 }
+
+export interface LoanUiState {
+  badge: string;
+  color: string;
+  iconKey: IconKey;
+}
+
+type IconKey = keyof typeof LOAN_ICONS;
