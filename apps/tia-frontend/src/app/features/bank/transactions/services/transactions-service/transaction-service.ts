@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
   PaginatedResponse,
@@ -6,25 +6,25 @@ import {
   TransactionInterface,
 } from '../../models/transactions.models';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TransactionService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'https://tia.up.railway.app/transactions';
+  private readonly apiUrl = environment.apiUrl;
 
   public getTransactions(
     filters: TransactionFilter,
   ): Observable<PaginatedResponse<TransactionInterface>> {
-    const token = localStorage.getItem('access_token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
     const params = this.createHttpParams(filters);
-    return this.http.get<PaginatedResponse<TransactionInterface>>(this.apiUrl, {
-      headers,
-      params,
-    });
+    return this.http.get<PaginatedResponse<TransactionInterface>>(
+      `${this.apiUrl}/transactions`,
+      {
+        params,
+      },
+    );
   }
 
   private createHttpParams(filters: TransactionFilter): HttpParams {
