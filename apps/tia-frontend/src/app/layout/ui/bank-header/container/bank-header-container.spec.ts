@@ -11,8 +11,8 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 describe('BankHeaderContainer', () => {
   let component: BankHeaderContainer;
   let fixture: ComponentFixture<BankHeaderContainer>;
+  let setItemSpy: ReturnType<typeof vi.spyOn>;
 
-  // 1. Create a stable mock object
   const mockNotificationsService = {
     userSignIn: vi.fn(() => of({ challengeId: 'mock-id' })),
     mfaVerification: vi.fn(() => of({ access_token: 'mock-token' })),
@@ -21,16 +21,17 @@ describe('BankHeaderContainer', () => {
   };
 
   beforeEach(async () => {
-    // Reset mocks before each test
     vi.clearAllMocks();
+    setItemSpy = vi
+      .spyOn(Storage.prototype, 'setItem')
+      .mockImplementation(() => {});
+    vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
 
     await TestBed.configureTestingModule({
       imports: [BankHeaderContainer],
       providers: [
-        // 2. Force the mock service
         { provide: Notifications, useValue: mockNotificationsService },
         provideRouter([]),
-        // 3. These two lines prevent real HTTP calls
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
@@ -41,7 +42,7 @@ describe('BankHeaderContainer', () => {
   });
 
   afterEach(() => {
-    // Clear localStorage to prevent "leakage" between tests
+    vi.restoreAllMocks();
     localStorage.clear();
   });
 
@@ -51,9 +52,7 @@ describe('BankHeaderContainer', () => {
   });
 
   it('should run the temporary auth flow on init', () => {
-    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
-
-    fixture.detectChanges(); // Calls ngOnInit
+    fixture.detectChanges();
 
     expect(mockNotificationsService.userSignIn).toHaveBeenCalled();
     expect(mockNotificationsService.mfaVerification).toHaveBeenCalled();
