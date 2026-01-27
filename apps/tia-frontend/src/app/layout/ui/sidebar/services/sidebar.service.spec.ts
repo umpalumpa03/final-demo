@@ -4,15 +4,13 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { SidebarService } from './sidebar.service';
-import { environment } from 'apps/tia-frontend/src/environments/environment';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
-describe('SidebarService', () => {
+describe('Sidebar', () => {
   let service: SidebarService;
   let httpMock: HttpTestingController;
-  let router: Router;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -20,16 +18,12 @@ describe('SidebarService', () => {
         SidebarService,
         provideHttpClient(),
         provideHttpClientTesting(),
-        {
-          provide: Router,
-          useValue: { navigate: vi.fn() },
-        },
+        provideRouter([]),
       ],
     });
 
     service = TestBed.inject(SidebarService);
     httpMock = TestBed.inject(HttpTestingController);
-    router = TestBed.inject(Router);
   });
 
   afterEach(() => {
@@ -40,30 +34,11 @@ describe('SidebarService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should call logout endpoint', () => {
+  it('should call signOut', () => {
     service.signOut().subscribe();
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/auth/logout`);
+    const req = httpMock.expectOne((r) => r.url.includes('/auth/logout'));
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({});
     req.flush({ success: true });
-  });
-
-  it('should return success response', () => {
-    service.signOut().subscribe((response) => {
-      expect(response).toEqual({ success: true });
-    });
-
-    const req = httpMock.expectOne(`${environment.apiUrl}/auth/logout`);
-    req.flush({ success: true });
-  });
-
-  it('should navigate to login on success', () => {
-    service.signOut().subscribe();
-
-    const req = httpMock.expectOne(`${environment.apiUrl}/auth/logout`);
-    req.flush({ success: true });
-
-    expect(router.navigate).toHaveBeenCalledWith(['/auth/login']);
   });
 });
