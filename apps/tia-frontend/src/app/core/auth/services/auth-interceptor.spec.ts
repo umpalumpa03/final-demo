@@ -1,30 +1,70 @@
-import { describe, it, expect } from 'vitest';
-import { HttpRequest, HttpHandler, HttpResponse } from '@angular/common/http';
-import { of, firstValueFrom } from 'rxjs';
-import { AuthInterceptor } from './auth-interceptor';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { HttpRequest, HttpHandlerFn, HttpResponse, HttpEvent } from '@angular/common/http';
+import { firstValueFrom, of, Observable } from 'rxjs';
+import { authInterceptor } from './auth-interceptor';
+import { TokenService } from './token.service';
 import { PUBLIC_ENDPOINTS } from '../models/tokens.model';
+import { TestBed } from '@angular/core/testing';
+import { EnvironmentInjector, runInInjectionContext } from '@angular/core';
 
-describe('AuthInterceptor', () => {
-  it('adds Authorization header when token exists and endpoint is not public', async () => {
-    const mockTokenService = { accessToken: 'token-123' } as any;
-    const interceptor = new AuthInterceptor(mockTokenService);
+describe('authInterceptor', () => {
+  let tokenServiceMock: { accessToken: string | null };
+  let injector: EnvironmentInjector;
 
-    const req = new HttpRequest('GET', '/private');
+  beforeEach(() => {
+    tokenServiceMock = { accessToken: 'mock-token' };
 
-    let handledReq: HttpRequest<any> | undefined;
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: TokenService, useValue: tokenServiceMock },
+      ],
+    });
 
-    const handler: HttpHandler = {
-      handle: (r: HttpRequest<any>) => {
-        handledReq = r;
-        return of(new HttpResponse({ status: 200 }));
-      },
-    };
+    // Get the injector from the TestBed
+    injector = TestBed.inject(EnvironmentInjector);
+  });
 
-    await firstValueFrom(interceptor.intercept(req, handler));
+  // Correctly type the mock handler to return an Observable
+  const next: HttpHandlerFn = (req: HttpRequest<any>): Observable<HttpEvent<any>> => {
+    return of(new HttpResponse({ status: 200 }));
+  };
 
-    expect(handledReq).toBeDefined();
-    expect(handledReq!.headers.get('Authorization')).toBe(
-      'Bearer token-123',
+  const nextSpy = vi.fn(next);
+
+  it('adds Authorization header if token exists and endpoint is private', async () => {
+    const req = new HttpRequest('GET', '/api/private');
+
+    await firstValueFrom(
+      runInInjectionContext(injector, () => authInterceptor(req, nextSpy))
     );
+
+    const calledReq = nextSpy.mock.calls[0][0];
+    expect(calledReq.headers.get('Authorization')).toBe('Bearer mock-token');
+  });
+
+  it('does not add Authorization header for public endpoints', async () => {
+    const publicUrl = PUBLIC_ENDPOINTS[0] || '/api/public';
+    const req = new HttpRequest('GET', publicUrl);
+    nextSpy.mockClear();
+
+    await firstValueFrom(
+      runInInjectionContext(injector, () => authInterceptor(req, nextSpy))
+    );
+
+    const calledReq = nextSpy.mock.calls[0][0];
+    expect(calledReq.headers.has('Authorization')).toBe(false);
+  });
+
+  it('does not add Authorization header if token is null', async () => {
+    tokenServiceMock.accessToken = null;
+    const req = new HttpRequest('GET', '/api/private');
+    nextSpy.mockClear();
+
+    await firstValueFrom(
+      runInInjectionContext(injector, () => authInterceptor(req, nextSpy))
+    );
+
+    const calledReq = nextSpy.mock.calls[0][0];
+    expect(calledReq.headers.has('Authorization')).toBe(false);
   });
 });

@@ -9,5 +9,9 @@ export const LoansActions = createActionGroup({
     'Load Loans Failure': props<{ error: string }>(),
 
     'Set Filter': props<{ status: number | null }>(),
+
+    'Rename Loan': props<{ id: string; name: string }>(),
+    'Rename Loan Success': props<{ id: string; name: string }>(),
+    'Rename Loan Failure': props<{ error: string }>(),
   },
 });
