@@ -9,12 +9,11 @@ import * as PAYBILL_SELECTORS from '../../store/paybill.selectors';
 import { CategoryGrid } from './components/category-grid/category-grid';
 import { CATEGORY_UI_MAP } from './components/category-grid/config/category.config';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
-import { ProviderList } from "./components/provider-list/provider-list";
+import { ProviderList } from './components/provider-list/provider-list';
 
 @Component({
   selector: 'app-paybill-main',
-  imports: [CategoryGrid, BasicCard, ProviderList],
+  imports: [CategoryGrid, ProviderList],
   templateUrl: './paybill-main.html',
   styleUrl: './paybill-main.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -19,26 +19,32 @@ export const selectSelectedProviderId = createSelector(
   (state) => state.selectedProviderId,
 );
 
+export const selectProviders = createSelector(
+  selectPaybillState,
+  (state) => state.providers,
+);
+
 export const selectActiveCategory = createSelector(
   selectCategories,
   selectSelectedCategoryId,
-  (categories, selectedId) => {
+  selectProviders,
+  (categories, selectedId, providers) => {
     if (!selectedId) return null;
-    return (
-      categories.find((c) => c.id.toLowerCase() === selectedId.toLowerCase()) ??
-      null
+
+    const category = categories.find(
+      (c) => c.id.toLowerCase() === selectedId.toLowerCase(),
     );
+
+    return category ? { ...category, providers } : null;
   },
 );
 
 export const selectActiveProvider = createSelector(
-  selectActiveCategory,
+  selectProviders,
   selectSelectedProviderId,
-  (activeCategory, selectedProviderId) => {
-    if (!activeCategory || !selectedProviderId) return null;
-    return (
-      activeCategory.providers.find((p) => p.id === selectedProviderId) ?? null
-    );
+  (providers, selectedProviderId) => {
+    if (!providers || !selectedProviderId) return null;
+    return providers.find((p) => p.serviceId === selectedProviderId) ?? null;
   },
 );
 
@@ -56,7 +62,7 @@ export const selectPaybillBreadcrumbs = createSelector(
     }
 
     if (provider) {
-      base.push({ label: provider.name, route: '' });
+      base.push({ label: provider.category, route: '' });
     }
 
     return base.map((crumb, index, arr) => ({

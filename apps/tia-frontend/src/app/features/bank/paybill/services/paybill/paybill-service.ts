@@ -1,18 +1,33 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { PaybillCategory } from '../../models/paybill.model';
-import { Observable } from 'rxjs';
+import { PaybillCategory, PaybillProvider } from '../../models/paybill.model';
+import { map, Observable, tap } from 'rxjs';
+import { environment } from 'apps/tia-frontend/src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PaybillService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'https://tia.up.railway.app/paybill/categories';
+  private readonly baseUrl = `${environment.apiUrl}/paybill`;
+
+  private get headers() {
+    const token = localStorage.getItem('access_token');
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  }
 
   public getCategories(): Observable<PaybillCategory[]> {
-    const token = localStorage.getItem('access_token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<PaybillCategory[]>(this.apiUrl, { headers });
+    return this.http.get<PaybillCategory[]>(`${this.baseUrl}/categories`, {
+      headers: this.headers,
+    });
+  }
+
+  public getProviders(category: string): Observable<PaybillProvider[]> {
+    return this.http.get<PaybillProvider[]>(
+      `${this.baseUrl}/${category.toLowerCase()}`,
+      {
+        headers: this.headers,
+      },
+    );
   }
 }

@@ -13,13 +13,20 @@
   </div>
 
   <div class="provider-list">
-    @for (provider of providers(); track provider.id) {
-    <button class="provider-item" (click)="selected.emit(provider.id)">
-      <div class="provider-item__content">
-        <h3 class="provider-item__label">{{ provider.name }}</h3>
+    <app-scroll-area height="40rem">
+      <div class="providers__wrapper">
+        @for (provider of providers(); track provider.serviceId) {
+        <button
+          class="provider-item"
+          (click)="selected.emit(provider.serviceId)"
+        >
+          <div class="provider-item__content">
+            <h3 class="provider-item__label">{{ provider.name }}</h3>
+          </div>
+          <div class="provider-item__action"></div>
+        </button>
+        }
       </div>
-      <div class="provider-item__action"></div>
-    </button>
-    }
+    </app-scroll-area>
   </div>
 </app-basic-card>

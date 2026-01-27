@@ -4,7 +4,7 @@
   <div class="paybill-main__stage-wrapper">
     @if (activeProvider()) {
     <p>PLACEHOLDER PAYMENT FORM</p>
-    } @else if (activeCategory(); as category) {
+    } @else if (activeCategory()) {
 
     <app-provider-list
       [categoryName]="ui!.name"

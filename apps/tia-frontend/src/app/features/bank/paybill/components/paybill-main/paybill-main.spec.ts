@@ -53,8 +53,8 @@ describe('PaybillMain', () => {
         icon: 'icon.svg',
         description: 'giorga',
         providers: [
-          { id: 'p1', name: 'Provider 1' },
-          { id: 'p2', name: 'Provider 2' },
+          { id: 'p1', name: 'Provider 1', category: 'utilities' },
+          { id: 'p2', name: 'Provider 2', category: 'utilities' },
         ],
       },
     ];

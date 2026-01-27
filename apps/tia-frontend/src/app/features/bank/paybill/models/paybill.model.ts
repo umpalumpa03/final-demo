@@ -1,33 +1,27 @@
 export interface PaybillProvider {
-  id: string;
-  name: string;
-  logo?: string;
+  serviceId: string;
+  serviceName: string;
+  category: string;
+  name?:string;
 }
 
 export interface PaybillCategory {
   id: string;
   name: string;
   icon: string;
-  iconBgColor?: string;
   description: string;
-  providers: PaybillProvider[];
-  count?: number;
+  servicesQuantity: number;
+
+  iconBgColor?: string;
   iconBgPath?: string;
+  providers?: PaybillProvider[];
 }
 
 export interface PaybillState {
   categories: PaybillCategory[];
-
+  providers: PaybillProvider[];
   selectedCategoryId: string | null;
-
   selectedProviderId: string | null;
-
   loading: boolean;
   error: string | null;
-}
-
-export interface PaybillBreadcrumb {
-  label: string;
-  route: string;
-  command?: () => void;
 }

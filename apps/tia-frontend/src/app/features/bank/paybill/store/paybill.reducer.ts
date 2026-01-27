@@ -7,6 +7,7 @@ export const initialPaybillState: PaybillState = {
   selectedCategoryId: null,
   selectedProviderId: null,
   loading: false,
+  providers: [],
   error: null,
 };
 
@@ -40,5 +41,31 @@ export const paybillReducer = createReducer(
     ...state,
     selectedCategoryId: null,
     selectedProviderId: null,
+  })),
+  on(PaybillActions.selectCategory, (state, { categoryId }) => ({
+    ...state,
+    selectedCategoryId: categoryId,
+    selectedProviderId: null,
+    providers: [],
+    loading: true,
+  })),
+
+  on(PaybillActions.loadProvidersSuccess, (state, { providers }) => ({
+    ...state,
+    providers,
+    loading: false,
+  })),
+
+  on(PaybillActions.loadProvidersFailure, (state, { error }) => ({
+    ...state,
+    error,
+    loading: false,
+  })),
+
+  on(PaybillActions.clearSelection, (state) => ({
+    ...state,
+    selectedCategoryId: null,
+    selectedProviderId: null,
+    providers: [],
   })),
 );

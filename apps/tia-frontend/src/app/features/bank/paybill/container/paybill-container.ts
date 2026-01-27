@@ -103,7 +103,7 @@ export class PaybillContainer implements OnInit {
 
   public handleProviderSelect(provider: PaybillProvider): void {
     this.store.dispatch(
-      PaybillActions.selectProvider({ providerId: provider.id }),
+      PaybillActions.selectProvider({ providerId: provider.serviceId }),
     );
   }
 
