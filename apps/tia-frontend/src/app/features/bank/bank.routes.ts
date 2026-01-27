@@ -3,9 +3,11 @@ import { provideState } from '@ngrx/store';
 import { paybillReducer } from './paybill/store/paybill.reducer';
 import { provideEffects } from '@ngrx/effects';
 import * as paybillEffects from './paybill/store/paybill.effects';
+import { LoansService } from './loans/shared/services/loans.service';
 export const bankRoutes: Routes = [
   {
     path: 'bank',
+    providers: [LoansService],
     loadComponent: () =>
       import('../../layout/bank-container').then((c) => c.BankContainer),
     children: [
