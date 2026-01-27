@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { HttpRequest, HttpHandlerFn, HttpResponse, HttpEvent } from '@angular/common/http';
 import { firstValueFrom, of, Observable } from 'rxjs';
-import { authInterceptor } from './auth-interceptor';
-import { TokenService } from './token.service';
+import { authInterceptor } from '../services/auth-interceptor';
+import { TokenService } from '../services/token.service';
 import { PUBLIC_ENDPOINTS } from '../models/tokens.model';
 import { TestBed } from '@angular/core/testing';
 import { EnvironmentInjector, runInInjectionContext } from '@angular/core';

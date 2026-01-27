@@ -29,7 +29,15 @@ export class TokenService {
     localStorage.removeItem(TokenKey.REFRESH);
   }
 
+  public clearAccessToken(): void {
+    localStorage.removeItem(TokenKey.ACCESS);
+  }
+
   public clearRefreshToken(): void {
+    localStorage.removeItem(TokenKey.REFRESH);
+  }
+
+  public clearVerifyToken(): void {
     localStorage.removeItem(TokenKey.VERIFY);
   }
 

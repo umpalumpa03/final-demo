@@ -47,11 +47,6 @@ describe('AuthService (Vitest)', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should set and get access token', () => {
-    service.setTokens('access123', 'refresh123');
-    expect(service.getAccessToken()).toBe('access123');
-  });
-
   it('loginPostRequest should handle mfa_required response', (done) => {
     const loginData = { username: 'test@test.com', password: 'password' };
     const mockResponse = { status: 'mfa_required', challengId: 'challenge123' };

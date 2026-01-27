@@ -28,6 +28,7 @@ export class SignIn {
   private authService = inject(AuthService);
   private fb = inject(FormBuilder);
   public isLoading = computed(() => this.authService.isLoginLoading());
+  public error = computed(() => this.authService.loginError());
 
   public loginForm = this.fb.nonNullable.group({
     username: ['', [Validators.required, Validators.minLength(2)]],
@@ -35,6 +36,13 @@ export class SignIn {
   });
 
   public submit(): void {
-    this.authService.loginPostRequest(this.loginForm.getRawValue()).subscribe();
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    this.authService.loginPostRequest(this.loginForm.getRawValue()).subscribe({
+      error: () => {},
+    });
   }
 }
