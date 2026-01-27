@@ -6,9 +6,13 @@ export interface PaybillProvider {
 
 export interface PaybillCategory {
   id: string;
-  label: string;
+  name: string;
   icon: string;
+  iconBgColor?: string;
+  subtitle?: string;
   providers: PaybillProvider[];
+  count?: number;
+  iconBgPath?: string;
 }
 
 export interface PaybillState {
