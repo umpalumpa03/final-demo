@@ -3,4 +3,4 @@ export const LOAN_ICONS = {
   approve: '/images/svg/feature-loans/approve.svg',
   pending: '/images/svg/feature-loans/pending.svg',
   declined: '/images/svg/feature-loans/declined.svg',
-};
+} as const;
