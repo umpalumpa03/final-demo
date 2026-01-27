@@ -27,7 +27,9 @@ export class AuthService {
         tap((res) => {
           if (res.status === 'mfa_required') {
             this.setChellangeId(res.challengId!);
-            this.router.navigate(['/auth/otp-verify']);
+            this.router.navigate(['/auth/otp-verify'], {
+              queryParams: user?.username ? { contact: user.username } : undefined,
+            });
           } else if (res.status === 'phone_verification_required') {
             this.tokenService.setVerifyToken(res.verification_token!);
             this.router.navigate(['/auth/phone-verify']);

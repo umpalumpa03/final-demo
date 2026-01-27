@@ -1,1 +1,87 @@
-<p>otp-verification works!</p>
+<app-auth-layout>
+  <div left class="auth-panel">
+    <div class="auth-panel__header">
+      <h2 class="auth-panel__title">{{ viewData().title }}</h2>
+      <p class="auth-panel__subtitle">
+        {{ viewData().subtitlePrefix }}
+        <span class="otp-email">{{ contactValue() }}</span>
+      </p>
+    </div>
+
+    <form class="auth-form" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="otp-field">
+        <label class="otp-label">{{ viewData().otpLabel }}</label>
+        <lib-otp formControlName="otp" [config]="otpConfig()"></lib-otp>
+      </div>
+
+      @if (otpErrorMessage()) {
+        <div class="auth-error">{{ otpErrorMessage() }}</div>
+      }
+
+      <div class="auth-form__actions">
+        <app-button
+          type="submit"
+          size="large"
+          [fullWidth]="true"
+          [isLoading]="isSubmitting()"
+        >
+          {{ viewData().primaryCta }}
+        </app-button>
+
+        @if (viewData().secondaryAction) {
+          <app-button
+            type="button"
+            variant="outline"
+            size="large"
+            [fullWidth]="true"
+            [routerLink]="viewData().secondaryAction?.route"
+          >
+            {{ viewData().secondaryAction?.label }}
+          </app-button>
+        }
+      </div>
+    </form>
+
+    @if (viewData().showResend) {
+      <div class="otp-actions">
+        <button class="auth-inline-link" type="button" (click)="resendOtp()">
+          Didn't receive the code? Resend
+        </button>
+
+        @if (resendMessage()) {
+          <div
+            class="auth-feedback"
+            [class.auth-error]="resendStatus() === 'error'"
+          >
+            {{ resendMessage() }}
+          </div>
+        }
+      </div>
+    }
+
+    @if (viewData().backLink) {
+      <p class="auth-panel__footer">
+        <a class="auth-link" [routerLink]="viewData().backLink?.route">
+          {{ viewData().backLink?.label }}
+        </a>
+      </p>
+    }
+  </div>
+
+  <div right class="auth-side">
+    <h3 class="auth-side__title">{{ viewData().sideTitle }}</h3>
+    <p class="auth-side__subtitle">{{ viewData().sideSubtitle }}</p>
+
+    <div class="auth-side__list">
+      @for (item of viewData().sideItems; track item.title) {
+        <div class="auth-side__item">
+          <span class="auth-side__icon">{{ item.icon }}</span>
+          <div>
+            <p class="auth-side__item-title">{{ item.title }}</p>
+            <p class="auth-side__item-subtitle">{{ item.subtitle }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</app-auth-layout>

@@ -1,0 +1,52 @@
+<app-auth-layout>
+  <div left class="auth-panel success-panel">
+    <div class="success-icon">OK</div>
+    <div class="auth-panel__header">
+      <h2 class="auth-panel__title">Password Reset Successful!</h2>
+      <p class="auth-panel__subtitle">
+        Your password has been successfully reset.
+      </p>
+    </div>
+
+    <div class="auth-feedback">
+      Password reset successful! Redirecting to login...
+    </div>
+
+    <div class="success-countdown">
+      You will be redirected to login in
+      <span class="success-countdown__value">{{ countdown() }}</span>
+    </div>
+
+    <button class="auth-inline-link" type="button" (click)="redirectToLogin()">
+      Go to Login now
+    </button>
+  </div>
+
+  <div right class="auth-side">
+    <h3 class="auth-side__title">You're All Set!</h3>
+    <p class="auth-side__subtitle">
+      Access your dashboard and explore all available features.
+    </p>
+
+    <div class="auth-side__list">
+      <div class="auth-side__item">
+        <span class="auth-side__icon">OK</span>
+        <div>
+          <p class="auth-side__item-title">Login Successful</p>
+          <p class="auth-side__item-subtitle">
+            Welcome to your account
+          </p>
+        </div>
+      </div>
+      <div class="auth-side__item">
+        <span class="auth-side__icon">L</span>
+        <div>
+          <p class="auth-side__item-title">Secure Session</p>
+          <p class="auth-side__item-subtitle">
+            Your connection is encrypted
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-auth-layout>

@@ -50,7 +50,9 @@ export class SignUp implements OnInit {
           this.loadingState.set(false);
           this.errorMessage.set('');
 
-          this.router.navigate(['/auth/sign-up/otp']);
+          this.router.navigate(['/auth/sign-up/otp'], {
+            queryParams: signUpData.email ? { contact: signUpData.email } : undefined,
+          });
         }),
 
         catchError((err) => {

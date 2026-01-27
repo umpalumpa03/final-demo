@@ -10,13 +10,11 @@
 .sign-up__switch {
   color: $gray-700;
   font-size: 1.4rem;
-}
-
-.sign-up__link {
-  color: $blue-800;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
+  .sign-up__link {
+    color: $blue-800;
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }

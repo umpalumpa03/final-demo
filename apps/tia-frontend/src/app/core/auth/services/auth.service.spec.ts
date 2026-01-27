@@ -53,7 +53,9 @@ describe('AuthService (Vitest)', () => {
 
     service.loginPostRequest(loginData).subscribe((res) => {
       expect(service.getChallengeId()).toBe('challenge123');
-      expect(router.navigate).toHaveBeenCalledWith(['/auth/otp-verify']);
+      expect(router.navigate).toHaveBeenCalledWith(['/auth/otp-verify'], {
+        queryParams: { contact: 'test@test.com' },
+      });
     });
 
     const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
