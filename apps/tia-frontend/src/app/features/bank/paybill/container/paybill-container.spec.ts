@@ -17,7 +17,7 @@ describe('PaybillContainer', () => {
 
   const mockCategory: PaybillCategory = {
     id: 'c1',
-    label: 'Utilities',
+    name: 'Utilities',
     icon: 'icon-path',
     providers: [{ id: 'p1', name: 'Water Co' }],
   };
