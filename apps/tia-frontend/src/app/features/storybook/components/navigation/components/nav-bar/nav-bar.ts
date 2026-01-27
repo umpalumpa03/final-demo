@@ -7,9 +7,9 @@ import { NavigationItem } from '@tia/shared/lib/navigation/models/nav-bar.model'
   selector: 'app-nav-bar',
   imports: [NavigationBar],
   templateUrl: './nav-bar.html',
+  styleUrl: './nav-bar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavBar {
-  public readonly activeVertical = signal<string>('Home');
   public readonly verticalItems = signal<NavigationItem[]>(VERTICALNAVBARS);
 }

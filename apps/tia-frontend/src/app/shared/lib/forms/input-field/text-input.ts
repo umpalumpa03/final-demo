@@ -32,6 +32,11 @@ export class TextInput extends BaseInput {
 
   protected readonly uniqueId: string = `text-input-${++TextInput.idCounter}`;
 
+  protected readonly labelIconUrl = computed(() => {
+    const iconPath = this.mergedConfig().labelIconUrl;
+    return iconPath ? `url('${iconPath}')` : null;
+  });
+
   protected readonly prefixIconUrl = computed(() => {
     const iconPath = this.mergedConfig().icon;
     return iconPath ? `url('/${iconPath}')` : null;
@@ -87,6 +92,7 @@ export class TextInput extends BaseInput {
   protected readonly ariaDescribedBy = computed<string | null>(() => {
     if (
       this.hasError() ||
+      this.hasWarning() ||
       (this.hasSuccess() && this.config().successMessage) ||
       this.config().helperText
     ) {
