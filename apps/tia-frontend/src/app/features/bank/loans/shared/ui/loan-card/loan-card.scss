@@ -1,0 +1,142 @@
+@use "../../../../../../shared/styles/themes" as *;
+@use "../../../../../../shared/styles/palette" as *;
+@use "../../../../../../shared/styles/mixins" as *;
+
+.card {
+    &:hover {
+        cursor: pointer;
+    }
+    &__icon {
+        width: 4.8rem;
+        height: 4.8rem;
+        border-radius: 50%;
+        @include flex-center();
+        flex-shrink: 0;
+
+        svg,
+        img {
+            width: 2.4rem;
+            height: 2.4rem;
+        }
+
+        &--blue {
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
+        }
+        &--green {
+            background-color: $green-50;
+            color: $green-600;
+        }
+        &--yellow {
+            background-color: $yellow-50;
+            color: $yellow-600;
+        }
+        &--red {
+            background-color: $red-50;
+            color: $red-600;
+        }
+    }
+
+    &__middle {
+        flex: 1;
+        @include display-flex(column);
+        gap: 0.4rem;
+        overflow: hidden;
+    }
+
+    &__header-row {
+        @include display-flex(row, wrap);
+        align-items: center;
+        gap: 0.8rem;
+        margin: 0 0.8rem;
+    }
+
+    &__title {
+        @include font-arimo(600, 1.8rem);
+        color: $blue-1000;
+        margin: 0;
+        cursor: pointer;
+    }
+
+    &__input {
+        @include font-arimo(600, 1.8rem);
+        border: 0.1rem solid var(--color-primary);
+        border-radius: 0.4rem;
+        padding: 0 0.4rem;
+        max-width: 20rem;
+    }
+
+    &__subtitle {
+        @include font-arimo(400, 1.4rem);
+        color: $gray-700;
+        margin: 0 0 0.4rem 0;
+    }
+
+    &__details {
+        @include display-flex(row, wrap);
+        gap: 1.6rem;
+
+        @include font-arimo(400, 1.4rem);
+        color: $gray-600;
+
+        div {
+            white-space: nowrap;
+
+            strong {
+                color: $blue-1000;
+                font-weight: 600;
+                margin-left: 0.4rem;
+            }
+        }
+    }
+
+    .badge {
+        @include flex-center();
+        gap: 0.6rem;
+        padding: 0.4rem 0.8rem;
+        border-radius: 0.8rem;
+        @include font-arimo(600, 1.2rem);
+        white-space: nowrap;
+
+        img {
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+
+        &--approved {
+            background-color: $green-50;
+            color: $green-950;
+            border: 0.1rem solid $green-200;
+        }
+        &--pending {
+            background-color: $yellow-50;
+            color: $brown-700;
+            border: 0.1rem solid $yellow-200;
+        }
+        &--declined {
+            background-color: $red-50;
+            color: $red-900;
+            border: 0.1rem solid $red-200;
+        }
+        &--gray {
+            background-color: $gray-50;
+            color: $gray-700;
+        }
+    }
+
+    &__action {
+        @include flex-center();
+        color: $gray-400;
+        margin-left: auto;
+        width: 2.4rem;
+        height: 2.4rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .card__action {
+        position: absolute;
+        top: 2.4rem;
+        right: 2.4rem;
+    }
+}

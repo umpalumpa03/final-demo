@@ -1,27 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { LoansContainer } from './loans-container';
+import { LoanNavigation } from './loan-navigation';
 import { provideRouter } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
 
-describe('LoansContainer', () => {
-  let component: LoansContainer;
-  let fixture: ComponentFixture<LoansContainer>;
+describe('LoanNavigation', () => {
+  let component: LoanNavigation;
+  let fixture: ComponentFixture<LoanNavigation>;
   const initialState = {
     loans: {
       loans: [],
       loading: false,
-      error: null,
     },
   };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoansContainer],
+      imports: [LoanNavigation],
       providers: [provideRouter([]), provideMockStore({ initialState })],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LoansContainer);
+    fixture = TestBed.createComponent(LoanNavigation);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
