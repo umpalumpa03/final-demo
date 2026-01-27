@@ -20,14 +20,14 @@ import { CommonModule } from '@angular/common';
 export class ApprovedLoans implements OnInit {
   private store = inject(Store);
 
-  approvedLoans$ = this.store.select(selectFilteredLoans(2));
+  protected readonly approvedLoans$ = this.store.select(selectFilteredLoans(2));
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadLoans());
   }
 
   // ES AXLA IYOS SHEMDEG PR-ZE DAVAMATEB MODALEBS DA AMOISHLEBA
-  onCardClick(id: string) {
+  protected onCardClick(id: string) {
     console.log('Clicked', id);
   }
 }

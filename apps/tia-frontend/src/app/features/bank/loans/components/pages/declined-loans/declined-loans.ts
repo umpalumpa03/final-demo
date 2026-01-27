@@ -15,9 +15,9 @@ import { CommonModule } from '@angular/common';
 export class DeclinedLoans {
   private store = inject(Store);
 
-  declinedLoans$ = this.store.select(selectFilteredLoans(3));
+  protected readonly declinedLoans$ = this.store.select(selectFilteredLoans(3));
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadLoans());
   }
 }

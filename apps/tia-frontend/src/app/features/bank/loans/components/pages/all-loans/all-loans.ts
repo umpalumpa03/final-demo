@@ -20,18 +20,18 @@ import { selectAllLoans } from '../../../store/loans.selectors';
 export class AllLoans implements OnInit {
   private store = inject(Store);
 
-  loans$ = this.store.select(selectAllLoans);
+  protected readonly loans$ = this.store.select(selectAllLoans);
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadLoans());
   }
 
   // ES IYOS JER ASE GADAKETDEBA
-  onCardClick(id: string): void {
+  protected onCardClick(id: string): void {
     console.log('Clicked', id);
   }
 
-  onRenameLoan(event: { id: string; name: string }): void {
+  protected onRenameLoan(event: { id: string; name: string }): void {
     this.store.dispatch(
       LoansActions.renameLoan({ id: event.id, name: event.name }),
     );

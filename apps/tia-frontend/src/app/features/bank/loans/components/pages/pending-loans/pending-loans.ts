@@ -15,9 +15,9 @@ import { selectFilteredLoans } from '../../../store/loans.selectors';
 export class PendingLoans {
   private store = inject(Store);
 
-  pendingLoans$ = this.store.select(selectFilteredLoans(1));
+  protected readonly pendingLoans$ = this.store.select(selectFilteredLoans(1));
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadLoans());
   }
 }
