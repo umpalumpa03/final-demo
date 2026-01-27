@@ -43,10 +43,8 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'loans',
-        loadComponent: () =>
-          import('./loans/container/loans-container').then(
-            (c) => c.LoansContainer,
-          ),
+        loadChildren: () =>
+          import('./loans/loans.routes').then((r) => r.loansRoutes),
       },
       {
         path: 'finances',
