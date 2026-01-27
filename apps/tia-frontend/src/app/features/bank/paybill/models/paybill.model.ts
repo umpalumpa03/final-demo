@@ -25,3 +25,9 @@ export interface PaybillState {
   loading: boolean;
   error: string | null;
 }
+
+export interface PaybillBreadcrumb {
+  label: string;
+  route: string;
+  command?: () => void;
+}

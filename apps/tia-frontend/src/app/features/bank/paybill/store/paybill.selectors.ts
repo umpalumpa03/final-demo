@@ -36,3 +36,27 @@ export const selectActiveProvider = createSelector(
     );
   },
 );
+
+export const selectPaybillBreadcrumbs = createSelector(
+  selectActiveCategory,
+  selectActiveProvider,
+  (category, provider) => {
+    const base = [{ label: 'Paybill', route: '/bank/paybill' }];
+
+    if (category) {
+      base.push({
+        label: category.name,
+        route: provider ? '/bank/paybill' : '',
+      });
+    }
+
+    if (provider) {
+      base.push({ label: provider.name, route: '' });
+    }
+
+    return base.map((crumb, index, arr) => ({
+      ...crumb,
+      route: index === arr.length - 1 ? '' : crumb.route,
+    }));
+  },
+);
