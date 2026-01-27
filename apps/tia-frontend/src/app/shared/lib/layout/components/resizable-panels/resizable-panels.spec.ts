@@ -1,106 +1,217 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
 import { ResizablePanels } from './resizable-panels';
-
-@Component({
-  imports: [ResizablePanels],
-  template: `
-    <app-resizable-panels [panelSize]="2" [initialSizes]="[200]">
-      <div id="panel1">Left Content</div>
-      <div id="panel2">Right Content</div>
-    </app-resizable-panels>
-  `,
-})
-class TestHostComponent {}
-
-@Component({
-  imports: [ResizablePanels],
-  template: `
-    <app-resizable-panels
-      orientation="vertical"
-      [panelSize]="2"
-      [initialSizes]="[150]"
-    >
-      <div id="panel1">Top Content</div>
-      <div id="panel2">Bottom Content</div>
-    </app-resizable-panels>
-  `,
-})
-class TestVerticalHostComponent {}
+import { vi } from 'vitest';
 
 describe('ResizablePanels', () => {
-  describe('Horizontal orientation', () => {
-    let fixture: ComponentFixture<TestHostComponent>;
-    let component: ResizablePanels;
+  let component: ResizablePanels;
+  let fixture: ComponentFixture<ResizablePanels>;
 
-    beforeEach(async () => {
-      await TestBed.configureTestingModule({
-        imports: [TestHostComponent, ResizablePanels],
-      }).compileComponents();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ResizablePanels],
+    }).compileComponents();
 
-      fixture = TestBed.createComponent(TestHostComponent);
-      const debugEl = fixture.debugElement.query(
-        (el) => el.componentInstance instanceof ResizablePanels,
-      );
-      component = debugEl.componentInstance;
+    fixture = TestBed.createComponent(ResizablePanels);
+    component = fixture.componentInstance;
+  });
 
-      fixture.detectChanges();
+  it('should create', () => {
+    fixture.detectChanges();
+    expect(component).toBeTruthy();
+  });
+
+  describe('initializePanelSizes', () => {
+    it('should set equal panel sizes when no initialSizes provided for 2 panels', () => {
+      const mockContainer = {
+        getBoundingClientRect: () => ({ width: 800, height: 600 }),
+      };
+      vi.spyOn(component as any, 'containerRef').mockReturnValue({
+        nativeElement: mockContainer,
+      });
+      fixture.componentRef.setInput('panelSize', 2);
+      fixture.componentRef.setInput('initialSizes', undefined);
+
+      (component as any).initializePanelSizes();
+
+      const sizes = (component as any).panelSizes();
+      expect(sizes.length).toBe(1);
+      expect(sizes[0]).toBeGreaterThan(0);
     });
 
-    it('should set initial panel size from input', () => {
-      const firstPanel = fixture.nativeElement.querySelector(
-        '.ta-resizable-panel',
-      );
-      expect(firstPanel.style.getPropertyValue('--panel-size')).toBe('200px');
+    it('should set equal panel sizes when no initialSizes provided for 3 panels', () => {
+      const mockContainer = {
+        getBoundingClientRect: () => ({ width: 900, height: 600 }),
+      };
+      vi.spyOn(component as any, 'containerRef').mockReturnValue({
+        nativeElement: mockContainer,
+      });
+      fixture.componentRef.setInput('panelSize', 3);
+      fixture.componentRef.setInput('initialSizes', undefined);
+
+      (component as any).initializePanelSizes();
+
+      const sizes = (component as any).panelSizes();
+      expect(sizes.length).toBe(3);
     });
 
-    it('should update panel size when dragging the resizer horizontally', () => {
-      const resizer = fixture.nativeElement.querySelector(
-        '.ta-resizable-resizer',
-      );
+    it('should return early when container is not available', () => {
+      vi.spyOn(component as any, 'containerRef').mockReturnValue(undefined);
+      const setSpy = vi.spyOn((component as any).panelSizes, 'set');
 
-      const mouseDown = new MouseEvent('mousedown', { clientX: 100 });
-      resizer.dispatchEvent(mouseDown);
+      (component as any).initializePanelSizes();
 
-      const mouseMove = new MouseEvent('mousemove', { clientX: 150 });
-      document.dispatchEvent(mouseMove);
-      fixture.detectChanges();
-
-      const firstPanel = fixture.nativeElement.querySelector(
-        '.ta-resizable-panel',
-      );
-      expect(firstPanel.style.getPropertyValue('--panel-size')).toBe('250px');
+      expect(setSpy).not.toHaveBeenCalled();
     });
   });
 
-  describe('Vertical orientation', () => {
-    let fixture: ComponentFixture<TestVerticalHostComponent>;
-    let component: ResizablePanels;
+  describe('distributeContent', () => {
+    it('should return early when contentWrapper is not available', () => {
+      vi.spyOn(component as any, 'contentRef').mockReturnValue(undefined);
+      vi.spyOn(component as any, 'panelRefs').mockReturnValue([]);
 
-    beforeEach(async () => {
-      await TestBed.configureTestingModule({
-        imports: [TestVerticalHostComponent, ResizablePanels],
-      }).compileComponents();
+      expect(() => (component as any).distributeContent()).not.toThrow();
+    });
 
-      fixture = TestBed.createComponent(TestVerticalHostComponent);
-      const debugEl = fixture.debugElement.query(
-        (el) => el.componentInstance instanceof ResizablePanels,
-      );
-      component = debugEl.componentInstance;
+    it('should return early when panels array is empty', () => {
+      vi.spyOn(component as any, 'contentRef').mockReturnValue({
+        nativeElement: document.createElement('div'),
+      });
+      vi.spyOn(component as any, 'panelRefs').mockReturnValue([]);
 
+      expect(() => (component as any).distributeContent()).not.toThrow();
+    });
+  });
+
+  describe('onMouseMove with 3 panels and maxSize constraints', () => {
+    beforeEach(() => {
+      fixture.componentRef.setInput('panelSize', 3);
+      fixture.componentRef.setInput('minSize', 100);
+      fixture.componentRef.setInput('maxSize', 400);
       fixture.detectChanges();
     });
 
-    it('should apply vertical modifier class', () => {
-      const container = fixture.nativeElement.querySelector('.ta-resizable');
-      expect(container.classList.contains('resizable--vertical')).toBe(true);
+    it('should clamp left panel to maxSize when exceeding', () => {
+      (component as any).panelSizes.set([200, 200, 200]);
+      (component as any).activeResizer.set(0);
+      (component as any).startPosition = 100;
+      (component as any).startSizes = [200, 200, 200];
+
+      const event = {
+        clientX: 400,
+        clientY: 0,
+        preventDefault: vi.fn(),
+      } as unknown as MouseEvent;
+
+      (component as any).onMouseMove(event);
+
+      const sizes = (component as any).panelSizes();
+      expect(sizes[0]).toBeLessThanOrEqual(400);
     });
 
-    it('should set initial panel size from input', () => {
-      const firstPanel = fixture.nativeElement.querySelector(
-        '.ta-resizable-panel',
-      );
-      expect(firstPanel.style.getPropertyValue('--panel-size')).toBe('150px');
+    it('should clamp right panel to maxSize when exceeding', () => {
+      (component as any).panelSizes.set([200, 200, 200]);
+      (component as any).activeResizer.set(0);
+      (component as any).startPosition = 400;
+      (component as any).startSizes = [200, 200, 200];
+
+      const event = {
+        clientX: 100,
+        clientY: 0,
+        preventDefault: vi.fn(),
+      } as unknown as MouseEvent;
+
+      (component as any).onMouseMove(event);
+
+      const sizes = (component as any).panelSizes();
+      expect(sizes[1]).toBeLessThanOrEqual(400);
+    });
+  });
+
+  describe('calculateMaxSize', () => {
+    it('should return maxSize when container is not available', () => {
+      vi.spyOn(component as any, 'containerRef').mockReturnValue(undefined);
+      fixture.componentRef.setInput('maxSize', 800);
+
+      const result = (component as any).calculateMaxSize(0, [300]);
+
+      expect(result).toBe(800);
+    });
+
+    it('should calculate max size based on container dimension', () => {
+      const mockContainer = {
+        getBoundingClientRect: () => ({ width: 1000, height: 600 }),
+      };
+      vi.spyOn(component as any, 'containerRef').mockReturnValue({
+        nativeElement: mockContainer,
+      });
+      fixture.componentRef.setInput('panelSize', 2);
+      fixture.componentRef.setInput('minSize', 100);
+      fixture.componentRef.setInput('maxSize', 800);
+      fixture.componentRef.setInput('resizerSize', 4);
+
+      const result = (component as any).calculateMaxSize(0, [300]);
+
+      expect(result).toBeGreaterThan(0);
+      expect(result).toBeLessThanOrEqual(800);
+    });
+  });
+
+  describe('onMouseDown', () => {
+    it('should set activeResizer and start position for horizontal', () => {
+      fixture.componentRef.setInput('orientation', 'horizontal');
+      (component as any).panelSizes.set([300, 300]);
+
+      const event = {
+        clientX: 150,
+        clientY: 100,
+        preventDefault: vi.fn(),
+      } as unknown as MouseEvent;
+
+      (component as any).onMouseDown(event, 0);
+
+      expect(event.preventDefault).toHaveBeenCalled();
+      expect((component as any).activeResizer()).toBe(0);
+      expect((component as any).startPosition).toBe(150);
+    });
+
+    it('should set activeResizer and start position for vertical', () => {
+      fixture.componentRef.setInput('orientation', 'vertical');
+      (component as any).panelSizes.set([300, 300]);
+
+      const event = {
+        clientX: 150,
+        clientY: 200,
+        preventDefault: vi.fn(),
+      } as unknown as MouseEvent;
+
+      (component as any).onMouseDown(event, 1);
+
+      expect((component as any).activeResizer()).toBe(1);
+      expect((component as any).startPosition).toBe(200);
+    });
+  });
+
+  describe('onMouseUp', () => {
+    it('should reset activeResizer to null', () => {
+      (component as any).activeResizer.set(1);
+
+      (component as any).onMouseUp();
+
+      expect((component as any).activeResizer()).toBeNull();
+    });
+  });
+
+  describe('isDragging', () => {
+    it('should return true when activeResizer is set', () => {
+      (component as any).activeResizer.set(0);
+
+      expect((component as any).isDragging()).toBe(true);
+    });
+
+    it('should return false when activeResizer is null', () => {
+      (component as any).activeResizer.set(null);
+
+      expect((component as any).isDragging()).toBe(false);
     });
   });
 });

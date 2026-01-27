@@ -13,6 +13,8 @@ import { FlexLayout } from '@shared/lib/layout/components/flex-layout/container/
 - `variant` - `'space-between' | 'center'` - Defines the justify-content behavior
 - `wrap` - `boolean` - Enables flex-wrap (default: `false`)
 - `gap` - `string` - Sets the gap between flex items (e.g., `'1rem'`, `'16px'`)
+- `border` - `boolean` - Enables border around the flex container (default: `false`)
+- `direction` - `'row' | 'column'` - Sets the flex direction (default: `'row'`)
 
 ## Variant Options
 
