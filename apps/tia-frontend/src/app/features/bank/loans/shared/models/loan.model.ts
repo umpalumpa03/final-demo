@@ -11,3 +11,10 @@ export interface ILoan {
   createdAt: string;
   friendlyName: string | null;
 }
+
+export interface ILoansState {
+  loans: ILoan[];
+  loading: boolean;
+  error: string | null;
+  filterStatus: number | null;
+}

@@ -1,10 +1,10 @@
-import { loansReducer, LoansState } from './loans.reducer';
+import { loansReducer } from './loans.reducer';
 import { LoansActions } from './loans.actions';
 import { describe, it, expect } from 'vitest';
-import { ILoan } from '../shared/models/loan.model';
+import { ILoan, ILoansState } from '../shared/models/loan.model';
 
 describe('LoansReducer', () => {
-  const initialState: LoansState = {
+  const initialState: ILoansState = {
     loans: [],
     loading: false,
     error: null,
@@ -53,5 +53,31 @@ describe('LoansReducer', () => {
     const state = loansReducer(initialState, action);
 
     expect(state.filterStatus).toBe(2);
+  });
+
+  it('should handle renameLoanSuccess', () => {
+    const stateWithLoan = { ...initialState, loans: [mockLoan] };
+    const action = LoansActions.renameLoanSuccess({
+      id: '1',
+      name: 'New Name',
+    });
+    const state = loansReducer(stateWithLoan, action);
+
+    expect(state.loans[0].friendlyName).toBe('New Name');
+  });
+
+  it('should not update rename if id not found', () => {
+    const stateWithLoan = {
+      ...initialState,
+      loans: [{ ...mockLoan, friendlyName: 'Old Name' }],
+    };
+
+    const action = LoansActions.renameLoanSuccess({
+      id: '999',
+      name: 'New Name',
+    });
+    const state = loansReducer(stateWithLoan, action);
+
+    expect(state.loans[0].friendlyName).toBe('Old Name');
   });
 });
