@@ -1,0 +1,77 @@
+<div class="accounts-page">
+  <div class="accounts-page__content">
+    <div class="accounts-page__content-header">
+      <div class="accounts-page__content-header-title-section">
+        <h1 class="accounts-page__content-header-title-section-title">
+          My Accounts
+        </h1>
+        <p class="accounts-page__content-header-title-section-subtitle">
+          Manage your bank accounts
+        </p>
+      </div>
+      <app-button
+        [variant]="'default'"
+        [icon]="'plus-icon.svg'"
+        (click)="handleOpenModal()"
+      >
+        New Account
+      </app-button>
+    </div>
+
+    @if (error$ | async; as error) {
+    <div class="accounts-page__error">
+      <h3>Error Loading Accounts</h3>
+      <p>{{ error }}</p>
+      <app-button [variant]="'default'" (click)="ngOnInit()">
+        Retry
+      </app-button>
+    </div>
+    } @else if (isLoading$ | async) {
+    <app-route-loader [variant]="'full-page'" [text]="'Loading accounts...'" />
+    } @else { @if (accountsGrouped$ | async; as grouped) { @for (section of
+    accountSections; track section.key) { @if (grouped[section.key].length > 0)
+    {
+    <app-basic-card [title]="section.title" [hasHover]="false">
+      <section class="accounts-section">
+        <div class="accounts-section__header">
+          <img [src]="section.icon" alt="" class="accounts-section__icon" />
+          <h2 class="accounts-section__title">{{ section.title }}</h2>
+          <span class="accounts-section__count"
+            >{{ grouped[section.key].length }}</span
+          >
+        </div>
+        <div class="accounts-grid">
+          @for (account of grouped[section.key]; track account.id) {
+          <app-account-card
+            [account]="account"
+            (transfer)="handleTransfer($event)"
+          />
+          }
+        </div>
+      </section>
+    </app-basic-card>
+    } } @if (grouped.current.length === 0 && grouped.saving.length === 0 &&
+    grouped.card.length === 0) {
+    <div class="accounts-page__empty">
+      <h3 class="accounts-page__empty-title">No accounts yet</h3>
+      <p class="accounts-page__empty-text">
+        Create your first account to get started
+      </p>
+      <app-button
+        [variant]="'default'"
+        [icon]="'plus-icon.svg'"
+        (click)="handleOpenModal()"
+      >
+        Create Account
+      </app-button>
+    </div>
+    } } }
+  </div>
+
+  @if (isCreateModalOpen$ | async) {
+  <app-new-account-modal
+    (closeModal)="handleCloseModal()"
+    (create)="handleCreateAccount($event)"
+  />
+  }
+</div>
