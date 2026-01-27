@@ -15,29 +15,20 @@
           tone="solid"
           color="blue"
         ></app-avatar>
-        <app-button
-          variant="default"
-          size="default"
-          icon="download-icon.svg"
-          (click)="onFileButtonClick()"
-        >
-          Choose File
-        </app-button>
         <lib-text-input
-          #fileInput
-          [type]="'file'"
-          [config]="{
-            placeholder: 'Choose file...'
-          }"
-          (valueChange)="onFileChange($event)"
-          class="profile-photo__file-input"
-        />
+        [type]="'file'"
+        [config]="{
+          placeholder: 'Choose file...'
+        }"
+        (valueChange)="onFileChange($event)"
+      >
+      </lib-text-input>
       </div>
     </div>
 
     <div card-footer class="profile-photo__footer">
       <app-button
-        variant="outline"
+        variant="destructive"
         size="default"
         icon="trash-icon.svg"
         (click)="removePhoto.emit()"
@@ -54,3 +45,6 @@
     </div>
   </app-basic-card>
 </div>
+
+
+
