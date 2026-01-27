@@ -1,0 +1,9 @@
+@use "../../../../shared/styles/themes" as *;
+@use "../../../../shared/styles/palette" as *;
+@use "../../../../shared/styles/mixins" as *;
+
+.main {
+    @include display-flex(column);
+    gap: 3.2rem;
+    padding: 3.2rem;
+}

@@ -1,8 +1,17 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { ILoginRequest, ISignUpResponse } from '../models/authResponse.models';
+import {
+  ILoginRequest,
+  IMfaVerifyRequest,
+  ISignUpResponse,
+  OtpResponse,
+  SendVerificationResponse,
+} from '../models/authRequest.models';
 import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
-import { IloginResponse } from '../models/authRequests.model';
-import { HttpClient } from '@angular/common/http';
+import {
+  IloginResponse,
+  IMfaVerifyResponse,
+} from '../models/authResponse.model';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 import { TokenService } from './token.service';
@@ -19,6 +28,14 @@ export class AuthService {
   public isLoginLoading = signal<boolean>(false);
   public loginError = signal<string | null>(null);
 
+  public setChellangeId(id: string) {
+    this.challengeId = id;
+  }
+
+  public getChallengeId() {
+    return this.challengeId;
+  }
+
   public loginPostRequest(user: ILoginRequest): Observable<IloginResponse> {
     this.isLoginLoading.set(true);
     return this.http
@@ -26,10 +43,8 @@ export class AuthService {
       .pipe(
         tap((res) => {
           if (res.status === 'mfa_required') {
-            this.setChellangeId(res.challengId!);
-            this.router.navigate(['/auth/otp-verify'], {
-              queryParams: user?.username ? { contact: user.username } : undefined,
-            });
+            this.setChellangeId(res.challengeId!);
+            this.router.navigate(['/auth/otp-verify']);
           } else if (res.status === 'phone_verification_required') {
             this.tokenService.setVerifyToken(res.verification_token!);
             this.router.navigate(['/auth/phone-verify']);
@@ -44,19 +59,19 @@ export class AuthService {
       );
   }
 
-  public setChellangeId(id: string) {
-    this.challengeId = id;
-  }
-
-  public getChallengeId() {
-    return this.challengeId;
-  }
-
-  public verifyMfa(code: string): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/mfa/verify`, {
-      challengeId: this.challengeId,
-      code,
-    });
+  public verifyMfa(verify: IMfaVerifyRequest): Observable<IMfaVerifyResponse> {
+    this.isLoginLoading.set(true);
+    return this.http
+      .post<IMfaVerifyResponse>(`${environment.apiUrl}/auth/mfa/verify`, verify)
+      .pipe(
+        tap((res) => {
+          if (res.access_token && res.refresh_token) {
+            this.tokenService.setAccessToken(res.access_token);
+            this.tokenService.setRefreshToken(res.refresh_token);
+            this.router.navigate(['/bank/dashboard']);
+          }
+        }),
+      );
   }
 
   public setTokens(access: string, refresh: string) {
@@ -72,6 +87,41 @@ export class AuthService {
   }
 
   public signUpUser(userData: IRegistrationForm): Observable<ISignUpResponse> {
-    return this.http.post<any>(`${environment.apiUrl}/auth/signup`, userData);
+    return this.http.post<ISignUpResponse>(
+      `${environment.apiUrl}/auth/signup`,
+      userData,
+    );
+  }
+
+  public sendVerificationCode(
+    phoneNumber: string,
+  ): Observable<SendVerificationResponse> {
+    const token =
+      this.tokenService.getSignUpToken || this.tokenService.verifyToken;
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http.post<SendVerificationResponse>(
+      `${environment.apiUrl}/auth/phone`,
+      { phone: phoneNumber },
+      { headers },
+    );
+  }
+
+  public verifyOtpCode(code: string): Observable<OtpResponse> {
+    const token = this.tokenService.getSignUpToken;
+    const challengeId = this.tokenService.getChallengeId;
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http.post<OtpResponse>(
+      `${environment.apiUrl}/auth/phone/verify`,
+      { challengeId, code },
+      { headers },
+    );
   }
 }

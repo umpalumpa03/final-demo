@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "nx test tia-frontend",
-    "test:coverage": "nx test tia-frontend --coverage"
+    "test:coverage": "nx test tia-frontend --coverage",
+    "test:pipeline": "npx nx affected --target=test --coverage --parallel=3 --skip-nx-cache && node scripts/check-coverage.js"
   },
   "private": true,
   "dependencies": {
@@ -22,8 +23,11 @@
     "@angular/router": "21.1.0",
     "@angular/ssr": "21.1.0",
     "@ngrx/effects": "^21.0.1",
+    "@ngrx/signals": "^21.0.1",
     "@ngrx/store": "^21.0.1",
     "@ngrx/store-devtools": "^21.0.1",
+    "@ngx-translate/core": "^17.0.0",
+    "@ngx-translate/http-loader": "^17.0.0",
     "chart.js": "^4.5.1",
     "express": "^4.21.2",
     "ng2-charts": "^8.0.0",

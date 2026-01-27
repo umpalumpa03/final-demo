@@ -1,0 +1,26 @@
+@let ui = activeCategoryUI(); @let category = activeCategory();
+
+<div class="paybill-main">
+  <div class="paybill-main__stage-wrapper">
+    @if (activeProvider()) {
+    <p>PLACEHOLDER FORM</p>
+    } @else if (category) { @defer (on immediate) {
+    <app-provider-list
+      [categoryName]="category.name"
+      [providers]="category.providers"
+      [iconBgColor]="ui?.iconBgColor"
+      [iconBgPath]="ui?.iconBgPath"
+      [subtitle]="category.description"
+      [isLoading]="isLoading()"
+      (selected)="selectProvider($event)"
+    />
+    } @placeholder {
+    <p>TEST PLACEHOLDER</p>
+    } } @else { @defer (on idle) {
+    <app-category-grid
+      (selected)="selectCategory($event)"
+      [categories]="formattedCategories()"
+    />
+    } }
+  </div>
+</div>

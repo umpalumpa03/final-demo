@@ -3,7 +3,10 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AuthService } from './auth.service';
 import { TokenService } from './token.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { vi } from 'vitest';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
@@ -17,7 +20,12 @@ describe('AuthService (Vitest)', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [AuthService, TokenService, provideRouter([]), provideHttpClientTesting()],
+      providers: [
+        AuthService,
+        TokenService,
+        provideRouter([]),
+        provideHttpClientTesting(),
+      ],
     });
 
     service = TestBed.inject(AuthService);
@@ -27,6 +35,8 @@ describe('AuthService (Vitest)', () => {
 
     vi.spyOn(router, 'navigate').mockResolvedValue(true);
     vi.spyOn(tokenService, 'setVerifyToken').mockImplementation(() => {});
+    vi.spyOn(tokenService, 'setAccessToken').mockImplementation(() => {});
+    vi.spyOn(tokenService, 'setRefreshToken').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -35,11 +45,6 @@ describe('AuthService (Vitest)', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
-  });
-
-  it('should set and get challengeId', () => {
-    service.setChellangeId('123');
-    expect(service.getChallengeId()).toBe('123');
   });
 
   it('should set and get access token', () => {
@@ -52,10 +57,7 @@ describe('AuthService (Vitest)', () => {
     const mockResponse = { status: 'mfa_required', challengId: 'challenge123' };
 
     service.loginPostRequest(loginData).subscribe((res) => {
-      expect(service.getChallengeId()).toBe('challenge123');
-      expect(router.navigate).toHaveBeenCalledWith(['/auth/otp-verify'], {
-        queryParams: { contact: 'test@test.com' },
-      });
+      expect(router.navigate).toHaveBeenCalledWith(['/auth/otp-verify']);
     });
 
     const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
@@ -64,8 +66,14 @@ describe('AuthService (Vitest)', () => {
   });
 
   it('loginPostRequest should handle phone_verification_required response', (done) => {
-    const loginData = { username: 'test@test.com', password: 'password' } as any;
-    const mockResponse = { status: 'phone_verification_required', verification_token: 'token123' };
+    const loginData = {
+      username: 'test@test.com',
+      password: 'password',
+    } as any;
+    const mockResponse = {
+      status: 'phone_verification_required',
+      verification_token: 'token123',
+    };
 
     service.loginPostRequest(loginData).subscribe((res) => {
       expect(tokenService.setVerifyToken).toHaveBeenCalledWith('token123');
@@ -77,9 +85,30 @@ describe('AuthService (Vitest)', () => {
     req.flush(mockResponse);
   });
 
+  it('verifyMfa should set tokens and navigate on success', (done) => {
+    const verifyBody = { code: '1111', challengeId: 'challenge123' } as any;
+    const mockResponse = { access_token: 'access123', refresh_token: 'refresh123' } as any;
+
+    service.verifyMfa(verifyBody).subscribe((res) => {
+      expect(tokenService.setAccessToken).toHaveBeenCalledWith('access123');
+      expect(tokenService.setRefreshToken).toHaveBeenCalledWith('refresh123');
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/mfa/verify`);
+    expect(req.request.method).toBe('POST');
+    req.flush(mockResponse);
+  });
+
   it('loginPostRequest should handle error response', (done) => {
-    const loginData = { username: 'test@test.com', password: 'password' } as any;
-    const mockError = { status: 401, statusText: 'Unauthorized', error: { message: 'Invalid credentials' } };
+    const loginData = {
+      username: 'test@test.com',
+      password: 'password',
+    } as any;
+    const mockError = {
+      status: 401,
+      statusText: 'Unauthorized',
+      error: { message: 'Invalid credentials' },
+    };
 
     service.loginPostRequest(loginData).subscribe({
       error: (err) => {
@@ -103,5 +132,46 @@ describe('AuthService (Vitest)', () => {
     const req = httpMock.expectOne(`${environment.apiUrl}/auth/signup`);
     expect(req.request.method).toBe('POST');
     req.flush(mockResponse);
+  });
+
+  it('sendVerificationCode should attach the correct Bearer token to headers', () => {
+    const phone = '1234567890';
+    vi.spyOn(tokenService, 'getSignUpToken', 'get').mockReturnValue(
+      'mock-signup-token',
+    );
+
+    service.sendVerificationCode(phone).subscribe();
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/phone`);
+    expect(req.request.method).toBe('POST');
+
+    expect(req.request.headers.get('Authorization')).toBe(
+      'Bearer mock-signup-token',
+    );
+    expect(req.request.body).toEqual({ phone });
+
+    req.flush({ success: true });
+  });
+
+  it('verifyOtpCode should send challengeId and code in the body', () => {
+    const otp = '123456';
+
+    vi.spyOn(tokenService, 'getChallengeId', 'get').mockReturnValue(
+      'challenge-789',
+    );
+    vi.spyOn(tokenService, 'getSignUpToken', 'get').mockReturnValue(
+      'mock-signup-token',
+    );
+
+    service.verifyOtpCode(otp).subscribe();
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/phone/verify`);
+
+    expect(req.request.body).toEqual({
+      challengeId: 'challenge-789',
+      code: otp,
+    });
+
+    req.flush({ success: true });
   });
 });

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TokenKey } from '../models/tokens.models';
+import { TokenKey } from '../models/tokens.model';
 
 @Injectable({providedIn: 'root'})
 export class TokenService {
@@ -19,6 +19,11 @@ export class TokenService {
     localStorage.setItem(TokenKey.SIGNUP, token);
   }
 
+  //TODO will be deleted
+  public setChallengeId(code:string) {
+    localStorage.setItem(TokenKey.CHALLENGE_ID, code)
+  }
+
   public clearAuthToken(): void {
     localStorage.removeItem(TokenKey.ACCESS);
     localStorage.removeItem(TokenKey.REFRESH);
@@ -30,6 +35,11 @@ export class TokenService {
 
   public clearSignUpToken(): void {
     localStorage.removeItem(TokenKey.SIGNUP)
+  }
+
+  //TODO will be deleted
+  public clearChallengeId(code:string) {
+    localStorage.removeItem(TokenKey.CHALLENGE_ID)
   }
 
   public clearAllToken(): void {
@@ -51,4 +61,10 @@ export class TokenService {
   public get getSignUpToken(): string | null {
     return localStorage.getItem(TokenKey.SIGNUP);
   }
+
+  //TODO will be deleted
+  public get getChallengeId(): string | null {
+    return localStorage.getItem(TokenKey.CHALLENGE_ID)
+  }
+  //reg - phone // @email
 }

@@ -1,0 +1,22 @@
+@use "../../../../../../shared/styles/themes" as *;
+@use "../../../../../../shared/styles/palette" as *;
+@use "../../../../../../shared/styles/mixins" as *;
+
+.header {
+    @include flex-center(row, space-between);
+
+    &__title {
+        @include display-flex(column);
+        gap: 0.4rem;
+
+        h2 {
+            @include font-inter(700, 3rem);
+            color: var(--color-fg);
+        }
+
+        p {
+            @include font-inter(400, 1.6rem);
+            color: $gray-700;
+        }
+    }
+}

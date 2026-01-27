@@ -50,13 +50,12 @@ export class SignUp implements OnInit {
           this.loadingState.set(false);
           this.errorMessage.set('');
 
-          this.router.navigate(['/auth/sign-up/otp'], {
-            queryParams: signUpData.email ? { contact: signUpData.email } : undefined,
-          });
+          this.router.navigate(['/auth/sign-up/phone']);
         }),
 
         catchError((err) => {
           const messages = err.error?.message;
+          this.loadingState.set(false);
 
           if (Array.isArray(messages)) {
             const invalidEmailError = 'email must be an email';
@@ -75,6 +74,6 @@ export class SignUp implements OnInit {
           return EMPTY;
         }),
       )
-      .subscribe();
+    .subscribe();
   }
 }

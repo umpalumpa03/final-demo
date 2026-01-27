@@ -1,25 +1,43 @@
-@use '../auth-shared' as *;
-@use '../../../../../shared/styles/mixins' as *;
 @use '../../../../../shared/styles/palette' as *;
+@use '../../../../../shared/styles/mixins' as *;
 
-.otp-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
+//temporary styles
+.sign-in {
+  font-size: 2rem;
+  margin: 5rem auto;
+  width: 40rem;
+  position: relative;
+  min-height: 20rem;
 }
 
-.otp-label {
-  @include font-inter(500, 1.3rem, 1.4);
+.sign-up__switch {
   color: $gray-700;
+  font-size: 1.4rem;
 }
 
-.otp-email {
-  font-weight: 600;
-  color: $blue-950;
+.sign-up__link {
+  color: $blue-800;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
-.otp-actions {
+.sign-in-loader {
+  width: 100%;
+  min-height: 20rem;
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  margin: 5rem auto 0;
+}
+
+app-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40rem;
+  min-height: 20rem;
+  margin: 5rem auto;
 }

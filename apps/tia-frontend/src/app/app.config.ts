@@ -10,6 +10,15 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { themeFeature } from './store/theme/theme.reducer';
 import { ThemeEffects } from './store/theme/theme.effects';
+import {
+  provideHttpClient,
+  withInterceptors,
+} from '@angular/common/http';
+import { authInterceptor } from './core/auth/services/auth-interceptor';
+
+import { HttpClient } from '@angular/common/http';
+import { TranslateLoader, provideTranslateService } from '@ngx-translate/core';
+import { createMultiFileTranslateLoader } from './core/i18n';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,10 +26,19 @@ export const appConfig: ApplicationConfig = {
     provideRouter(appRoutes),
     provideStore({}, {}),
     provideState(themeFeature),
+    provideHttpClient(withInterceptors([authInterceptor])),
     provideEffects([ThemeEffects]),
     provideStoreDevtools({
       maxAge: 25,
       logOnly: environment.production,
+    }),
+    provideTranslateService({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createMultiFileTranslateLoader,
+        deps: [HttpClient],
+      },
+      fallbackLang: 'en'
     }),
   ],
 };

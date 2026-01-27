@@ -1,0 +1,17 @@
+import { createActionGroup, emptyProps, props } from '@ngrx/store';
+import { ILoan } from '../shared/models/loan.model';
+
+export const LoansActions = createActionGroup({
+  source: 'Loans API',
+  events: {
+    'Load Loans': emptyProps(),
+    'Load Loans Success': props<{ loans: ILoan[] }>(),
+    'Load Loans Failure': props<{ error: string }>(),
+
+    'Set Filter': props<{ status: number | null }>(),
+
+    'Rename Loan': props<{ id: string; name: string }>(),
+    'Rename Loan Success': props<{ id: string; name: string }>(),
+    'Rename Loan Failure': props<{ error: string }>(),
+  },
+});

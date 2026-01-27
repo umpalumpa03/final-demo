@@ -1,3 +1,4 @@
+@if(!isLoading()) {
 <form class="sign-in" [formGroup]="loginForm" (ngSubmit)="submit()">
   <p>Login</p>
   <lib-text-input formControlName="username"></lib-text-input>
@@ -14,3 +15,8 @@
     <span class="sign-up__link" [routerLink]="['/auth/sign-up']">Sign up</span>
   </p>
 </form>
+} @else {
+<div class="sign-in sign-in-loader">
+  <app-spinner size="4rem"></app-spinner>
+</div>
+}

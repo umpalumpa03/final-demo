@@ -1,20 +1,33 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+} from '@angular/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AuthService } from '../../services/auth.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 
 @Component({
   selector: 'app-sign-in',
-  imports: [TextInput, ButtonComponent, ReactiveFormsModule, RouterLink],
+  imports: [
+    TextInput,
+    ButtonComponent,
+    ReactiveFormsModule,
+    RouterLink,
+    Spinner,
+  ],
   templateUrl: './sign-in.html',
+  styleUrl: './sign-in.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignIn {
   private authService = inject(AuthService);
   private fb = inject(FormBuilder);
-  public isLoading = this.authService.isLoginLoading();
+  public isLoading = computed(() => this.authService.isLoginLoading());
 
   public loginForm = this.fb.nonNullable.group({
     username: ['', [Validators.required, Validators.minLength(2)]],
