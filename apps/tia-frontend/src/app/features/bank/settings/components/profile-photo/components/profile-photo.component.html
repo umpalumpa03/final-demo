@@ -9,20 +9,53 @@
     <div class="profile-photo__upload-section">
       <h3 class="profile-photo__section-title">Upload Custom Photo</h3>
       <div class="profile-photo__upload-content">
-        <app-avatar
-          [initials]="initials()"
-          size="xl"
-          tone="solid"
-          color="blue"
-        ></app-avatar>
+        <div class="profile-photo__avatar-wrapper">
+          @if (photoUrl()) {
+          <img
+            [src]="photoUrl()!"
+            alt="Profile photo"
+            class="profile-photo__avatar-main-image"
+          />
+          } @else {
+          <app-avatar
+            [initials]="initials()"
+            size="xl"
+            tone="solid"
+            color="blue"
+          ></app-avatar>
+          }
+        </div>
         <lib-text-input
-        [type]="'file'"
-        [config]="{
-          placeholder: 'Choose file...'
-        }"
-        (valueChange)="onFileChange($event)"
-      >
-      </lib-text-input>
+          #fileInput
+          [type]="'file'"
+          [config]="{
+            placeholder: 'Choose file...'
+          }"
+          (valueChange)="onFileChange($event)"
+        >
+        </lib-text-input>
+      </div>
+    </div>
+
+    <div class="profile-photo__defaults-section">
+      <h3 class="profile-photo__section-title">Or Choose a Default Avatar</h3>
+      <div class="profile-photo__defaults-list">
+        @for (avatar of defaultAvatars(); track avatar.id) {
+        <button
+          type="button"
+          class="profile-photo__avatar-button"
+          [class.profile-photo__avatar-button--selected]="
+            avatar.id === selectedAvatarId()
+          "
+          (click)="onDefaultAvatarClick(avatar.id)"
+        >
+          <img
+            [src]="avatar.imageUrl"
+            alt="Default avatar"
+            class="profile-photo__avatar-image"
+          />
+        </button>
+        }
       </div>
     </div>
 
