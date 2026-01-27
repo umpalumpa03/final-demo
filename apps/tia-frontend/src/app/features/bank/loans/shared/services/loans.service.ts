@@ -30,8 +30,8 @@ export class LoansService {
   public updateFriendlyName(
     loanId: string,
     friendlyName: string,
-  ): Observable<any> {
-    return this.http.put(
+  ): Observable<ILoan> {
+    return this.http.put<ILoan>(
       `${this.loansApiUrl}/update-friendly-name/${loanId}`,
       { friendlyName },
       { headers: this.getHeaders() },

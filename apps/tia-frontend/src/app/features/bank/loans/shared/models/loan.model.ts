@@ -12,7 +12,7 @@ export interface ILoan {
   friendlyName: string | null;
 }
 
-export interface LoansState {
+export interface ILoansState {
   loans: ILoan[];
   loading: boolean;
   error: string | null;
