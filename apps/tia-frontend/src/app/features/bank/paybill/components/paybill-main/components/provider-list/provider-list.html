@@ -1,0 +1,25 @@
+<app-basic-card maxWidth="91.2rem" padding="2.4rem 0 2.4rem 2.4rem">
+  <div class="category-header">
+    <div
+      class="category-header__icon-box"
+      [style.background-color]="iconBgColor()"
+    >
+      <img [src]="iconBgPath()" class="category-header__img" alt="" />
+    </div>
+    <div class="category-header__text">
+      <h2 class="category-header__title">{{ categoryName() }}</h2>
+      <p class="category-header__subtitle">{{ subtitle() }}</p>
+    </div>
+  </div>
+
+  <div class="provider-list">
+    @for (provider of providers(); track provider.id) {
+    <button class="provider-item" (click)="selected.emit(provider.id)">
+      <div class="provider-item__content">
+        <h3 class="provider-item__label">{{ provider.name }}</h3>
+      </div>
+      <div class="provider-item__action"></div>
+    </button>
+    }
+  </div>
+</app-basic-card>

@@ -22,8 +22,13 @@ export const selectSelectedProviderId = createSelector(
 export const selectActiveCategory = createSelector(
   selectCategories,
   selectSelectedCategoryId,
-  (categories, selectedId) =>
-    categories.find((c) => c.id === selectedId) ?? null,
+  (categories, selectedId) => {
+    if (!selectedId) return null;
+    return (
+      categories.find((c) => c.id.toLowerCase() === selectedId.toLowerCase()) ??
+      null
+    );
+  },
 );
 
 export const selectActiveProvider = createSelector(

@@ -9,7 +9,7 @@ export interface PaybillCategory {
   name: string;
   icon: string;
   iconBgColor?: string;
-  subtitle?: string;
+  description: string;
   providers: PaybillProvider[];
   count?: number;
   iconBgPath?: string;

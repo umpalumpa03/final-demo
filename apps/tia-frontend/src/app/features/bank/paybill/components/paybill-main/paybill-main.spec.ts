@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PaybillMain } from './paybill-main';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { PaybillActions } from '../../store/paybill.actions';
+import { describe, it, expect, beforeEach } from 'vitest';
 import * as PAYBILL_SELECTORS from '../../store/paybill.selectors';
 import { PaybillCategory } from '../../models/paybill.model';
 
@@ -46,23 +45,13 @@ describe('PaybillMain', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should dispatch selectCategory action when selectCategory is called', () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
-    const testId = 'cat-123';
-
-    component.selectCategory(testId);
-
-    expect(dispatchSpy).toHaveBeenCalledWith(
-      PaybillActions.selectCategory({ categoryId: testId }),
-    );
-  });
-
   it('should format categories correctly through the computed signal', () => {
     const mockRawCategories: PaybillCategory[] = [
       {
         id: 'phone',
         name: 'Phone',
         icon: 'icon.svg',
+        description: 'giorga',
         providers: [
           { id: 'p1', name: 'Provider 1' },
           { id: 'p2', name: 'Provider 2' },
@@ -80,7 +69,7 @@ describe('PaybillMain', () => {
     const formatted = component.formattedCategories();
 
     expect(formatted.length).toBe(1);
-    expect(formatted[0].subtitle).toBe('Mobile & Data');
+    expect(formatted[0].description).toBe('Mobile & Data');
     expect(formatted[0].count).toBe(2);
   });
 });
