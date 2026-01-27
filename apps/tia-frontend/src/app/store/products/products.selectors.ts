@@ -1,5 +1,5 @@
 import { createSelector } from '@ngrx/store';
-import { accountsFeature } from './accounts.reducer';
+import { productsFeature } from './products.reducer';
 import { AccountType } from '../../features/bank/products/models/account-type.enum';
 
 export const {
@@ -8,7 +8,7 @@ export const {
   selectIsLoading,
   selectError,
   selectIsCreateModalOpen,
-} = accountsFeature;
+} = productsFeature;
 
 export const selectCurrentAccounts = createSelector(
   selectAccounts,

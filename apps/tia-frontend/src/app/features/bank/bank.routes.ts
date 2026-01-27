@@ -21,9 +21,8 @@ export const bankRoutes: Routes = [
             (c) => c.DashboardContainer,
           ),
       },
-
       {
-        path: 'products',
+        path: 'my-products',
         loadChildren: () =>
           import('./products/products.routes').then((c) => c.productsRoutes),
       },

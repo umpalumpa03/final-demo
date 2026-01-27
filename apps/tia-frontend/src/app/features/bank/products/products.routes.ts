@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 import { provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
-import { accountsReducer } from '../../../store/accounts/accounts.reducer';
-import { AccountsEffects } from '../../../store/accounts/accounts.effects';
+import { productsReducer } from '../../../store/products/products.reducer';
+import { ProductsEffects } from '../../../store/products/products.effects';
 
 export const productsRoutes: Routes = [
   {
@@ -20,8 +20,8 @@ export const productsRoutes: Routes = [
         loadComponent: () =>
           import('./components/accounts/accounts').then((c) => c.Accounts),
         providers: [
-          provideState({ name: 'accounts', reducer: accountsReducer }),
-          provideEffects(AccountsEffects),
+          provideState({ name: 'products', reducer: productsReducer }),
+          provideEffects(ProductsEffects),
         ],
       },
       {

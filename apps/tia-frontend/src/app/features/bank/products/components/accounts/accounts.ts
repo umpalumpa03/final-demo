@@ -6,15 +6,14 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { AccountsActions } from '../../../../../store/accounts/accounts.actions';
+import { ProductsActions } from '../../../../../store/products/products.actions';
 import {
   selectAccountsGrouped,
   selectIsLoading,
   selectIsCreateModalOpen,
   selectError,
-} from '../../../../../store/accounts/accounts.selectors';
+} from '../../../../../store/products/products.selectors';
 import { AccountCardComponent } from './components/account-card/account-card';
-import { CreateAccountRequest } from '../../models/account.model';
 import { ButtonComponent } from '../../../../../shared/lib/primitives/button/button';
 import { BasicCard } from '../../../../../shared/lib/cards/basic-card/basic-card';
 import { RouteLoader } from '../../../../../shared/lib/feedback/route-loader/route-loader';
@@ -63,7 +62,7 @@ export class Accounts implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.store.dispatch(AccountsActions.loadAccounts());
+    this.store.dispatch(ProductsActions.loadAccounts());
   }
 
   public handleTransfer(accountId: string): void {
