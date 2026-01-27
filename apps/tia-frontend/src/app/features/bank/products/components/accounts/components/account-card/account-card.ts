@@ -5,7 +5,7 @@ import {
   output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Account } from '../../../../models/account.model';
+import { Account } from '../../../../models/accounts.model';
 import { ButtonComponent } from '../../../../../../../shared/lib/primitives/button/button';
 import { BasicCard } from '../../../../../../../shared/lib/cards/basic-card/basic-card';
 

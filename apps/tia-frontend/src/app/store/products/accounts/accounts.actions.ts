@@ -1,5 +1,5 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { Account } from '../../../features/bank/products/models/account.model';
+import { Account } from '../../../features/bank/products/models/accounts.model';
 
 export const AccountsActions = createActionGroup({
   source: 'Accounts',

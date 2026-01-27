@@ -1,4 +1,4 @@
-import { Account } from '../../../features/bank/products/models/account.model';
+import { Account } from '../../../features/bank/products/models/accounts.model';
 
 export interface AccountsState {
   accounts: Account[];

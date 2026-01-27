@@ -1,5 +1,8 @@
-import { AccountType } from './account-type.enum';
-
+export enum AccountType {
+  current = 'current',
+  saving = 'saving',
+  card = 'card',
+}
 export interface Account {
   id: string;
   accountNumber: string;

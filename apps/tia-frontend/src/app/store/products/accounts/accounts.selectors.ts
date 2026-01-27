@@ -1,6 +1,6 @@
 import { createSelector } from '@ngrx/store';
 import { accountsFeature } from './accounts.reducer';
-import { AccountType } from '../../../features/bank/products/models/account-type.enum';
+import { AccountType } from '../../../features/bank/products/models/accounts.model';
 
 export const {
   selectAccounts,
@@ -13,22 +13,24 @@ export const {
 export const selectCurrentAccounts = createSelector(
   selectAccounts,
   (accounts) =>
-    accounts.filter((account) => account.type === AccountType.current),
+    (accounts ?? []).filter((account) => account.type === AccountType.current),
 );
 
 export const selectSavingAccounts = createSelector(selectAccounts, (accounts) =>
-  accounts.filter((account) => account.type === AccountType.saving),
+  (accounts ?? []).filter((account) => account.type === AccountType.saving),
 );
 
 export const selectCardAccounts = createSelector(selectAccounts, (accounts) =>
-  accounts.filter((account) => account.type === AccountType.card),
+  (accounts ?? []).filter((account) => account.type === AccountType.card),
 );
 
 export const selectSelectedAccount = createSelector(
   selectAccounts,
   selectSelectedAccountId,
   (accounts, selectedId) =>
-    selectedId ? accounts.find((account) => account.id === selectedId) : null,
+    selectedId
+      ? (accounts ?? []).find((account) => account.id === selectedId)
+      : null,
 );
 
 export const selectAccountsGrouped = createSelector(

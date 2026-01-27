@@ -5,7 +5,7 @@ import {
   Account,
   CreateAccountRequest,
   AccountsResponse,
-} from '../../../models/account.model';
+} from '../../../models/accounts.model';
 import { environment } from '../../../../../../../environments/environment';
 
 @Injectable({
