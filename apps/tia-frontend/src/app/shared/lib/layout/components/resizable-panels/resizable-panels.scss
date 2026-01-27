@@ -31,6 +31,11 @@
       min-width: 0;
       width: auto;
     }
+
+    &--shrinkable {
+      flex-shrink: 1;
+      min-width: 0;
+    }
   }
 
   &__resizer {
@@ -62,6 +67,8 @@
   }
 
   &--vertical {
+    height: 30rem;
+
     .resizable__panels {
       flex-direction: column;
     }
@@ -69,11 +76,19 @@
     .resizable__panel {
       width: 100%;
       height: var(--panel-size, auto);
+      flex-shrink: 0;
 
       &--flex {
+        flex: 1;
+        flex-shrink: 1;
         min-height: 0;
         min-width: unset;
         height: auto;
+      }
+
+      &--shrinkable {
+        flex-shrink: 1;
+        min-height: 0;
       }
     }
 
