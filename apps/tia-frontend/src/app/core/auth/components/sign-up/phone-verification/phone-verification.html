@@ -3,12 +3,11 @@
         <h1>Forgot Password</h1>
         <p>Enter your email to reset your password</p>
     </div>
-
-
-    <label for=""></label>
-    <!-- <lib-text-input [formControl]="phoneNumber"></lib-text-input> -->
-     <input [formControl]="phoneNumber" type="tel">
-    <button (click)="submit()" [disabled]="phoneNumber.invalid">
-     Verify
-    </button>
+    
+<form class="sign-in" [formGroup]="setPhoneNumberForm" (ngSubmit)="submit()">
+    <lib-text-input formControlName="phoneNumber"></lib-text-input>
+    <h2>ERROR: {{errorMessage()}}</h2>
+    <app-button type="submit">Verify</app-button>
+    <p>Didn't receive the code? Resend <span>Resend</span></p>
+</form>
 </section>

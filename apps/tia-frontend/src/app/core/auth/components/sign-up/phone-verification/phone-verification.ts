@@ -1,28 +1,54 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
-import { tap } from 'rxjs';
+import { catchError, EMPTY, tap } from 'rxjs';
+import { Router } from '@angular/router';
+import { TokenService } from '../../../services/token.service';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 
 @Component({
   selector: 'app-phone-verification',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TextInput ,ButtonComponent],
   templateUrl: './phone-verification.html',
   styleUrl: './phone-verification.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PhoneVerification {
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router)
+  private tokenService = inject(TokenService)
 
-  private authService = inject(AuthService)
+  public setPhoneNumberForm = this.fb.nonNullable.group({
+    phoneNumber: [ '',[Validators.required],
+    ],
+  });
 
-  public phoneNumber = new FormControl('', { nonNullable: true });
+  public errorMessage = signal<string>('') 
 
-  submit() {
-    console.log(this.phoneNumber.value, "___VAL");
-    let telNumber = this.phoneNumber.value!
-    this.authService.sendVerificationCode(telNumber).pipe(
-      tap((res)=>{
-        console.log(res, "__RES")
-      })
-    ).subscribe()
+  public submit():void {
+    let telNumber = this.setPhoneNumberForm.getRawValue().phoneNumber;
+    console.log(telNumber)
+    this.authService
+      .sendVerificationCode(telNumber)
+      .pipe(
+        tap((res) => {
+          this.errorMessage.set('')
+          // Challenge id localStorage --
+          this.tokenService.setChallengeId(res.challengeId)
+          this.router.navigate(['/auth/sign-up/otp-verify']);
+
+        }),
+        catchError((err) => {
+          const messages = err.error?.message;
+
+          this.errorMessage.set(messages[0]);
+          console.error(err, '__ERR (Something went wrong)');
+
+          return EMPTY;
+        }),
+      )
+      .subscribe();
   }
 }

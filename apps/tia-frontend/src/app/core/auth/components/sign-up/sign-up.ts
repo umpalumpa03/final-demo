@@ -50,6 +50,7 @@ export class SignUp implements OnInit {
           this.loadingState.set(false);
           this.errorMessage.set('');
 
+          console.log( this.tokenService.getSignUpToken)
           this.router.navigate(['/auth/sign-up/otp']);
         }),
 
@@ -74,6 +75,6 @@ export class SignUp implements OnInit {
           return EMPTY;
         }),
       )
-      .subscribe();
+    .subscribe();
   }
 }

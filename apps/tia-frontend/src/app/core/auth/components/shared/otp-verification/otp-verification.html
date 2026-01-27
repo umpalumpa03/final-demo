@@ -1,1 +1,7 @@
-<p>otp-verification works!</p>
+<form class="sign-in" [formGroup]="smsCodeVerificationForm" (ngSubmit)="submit()">
+    <lib-text-input formControlName="verificationCode"></lib-text-input>
+    <h2>ERROR: {{errorMessage()}}</h2>
+    <app-button type="submit">Verify</app-button>
+    <p>Didn't receive the code? Resend <span>Resend</span></p>
+    <!-- <app-button>Verify</app-button> -->
+</form>

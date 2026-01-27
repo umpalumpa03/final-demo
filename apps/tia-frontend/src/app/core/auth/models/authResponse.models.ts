@@ -21,3 +21,7 @@ export interface SendVerificationResponse {
   challengeId: string,
   method: string;
 }
+
+export interface OtpResponse {
+  message: string;
+}

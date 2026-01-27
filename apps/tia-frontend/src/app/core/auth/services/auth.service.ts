@@ -2,6 +2,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import {
   ILoginRequest,
   ISignUpResponse,
+  OtpResponse,
   SendVerificationResponse,
 } from '../models/authResponse.models';
 import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
@@ -80,19 +81,31 @@ export class AuthService {
     );
   }
 
-  public sendVerificationCode(
-    phoneNumber: string,
-  ): Observable<SendVerificationResponse> {
-    const token = localStorage.getItem('signup_token');
+  public sendVerificationCode(phoneNumber: string): Observable<SendVerificationResponse> {
+    
+    const token = this.tokenService.getSignUpToken || this.tokenService.verifyToken;
 
+    console.log(token ,"__curS=_SIGNUP_TOKEN")
+    
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
 
     return this.http.post<SendVerificationResponse>(
-      `${environment.apiUrl}/auth/signup`,
+      `${environment.apiUrl}/auth/phone`,
       { phone: phoneNumber }, 
     { headers },
     );
+  }
+
+  public verifyOtpCode(code:string): Observable<OtpResponse> {
+    const token = this.tokenService.getSignUpToken
+    const challengeId = this.tokenService.getChallengeId
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http.post<OtpResponse>(`${environment.apiUrl}/auth/phone/verify`, { challengeId, code}, { headers })
   }
 }
