@@ -12,7 +12,7 @@ import { environment } from '../../../../../../environments/environment';
 describe('LoansService', () => {
   let service: LoansService;
   let httpMock: HttpTestingController;
-  const apiUrl = environment.apiUrl + '/loans';
+  const apiUrl = `${environment.apiUrl}/loans`;
 
   const mockLoan: ILoan = {
     id: '1',

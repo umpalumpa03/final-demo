@@ -4,10 +4,10 @@ import { Observable } from 'rxjs';
 import { ILoan } from '../models/loan.model';
 import { environment } from '../../../../../../environments/environment';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class LoansService {
   private http = inject(HttpClient);
-  private loansApiUrl = environment.apiUrl + '/loans';
+  private readonly loansApiUrl = `${environment.apiUrl}/loans`;
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('accessToken') || '';
@@ -17,7 +17,7 @@ export class LoansService {
     });
   }
 
-  getAllLoans(status?: number): Observable<ILoan[]> {
+  public getAllLoans(status?: number): Observable<ILoan[]> {
     let params = new HttpParams();
     if (status) params = params.set('status', status);
 
@@ -27,7 +27,10 @@ export class LoansService {
     });
   }
 
-  updateFriendlyName(loanId: string, friendlyName: string): Observable<any> {
+  public updateFriendlyName(
+    loanId: string,
+    friendlyName: string,
+  ): Observable<any> {
     return this.http.put(
       `${this.loansApiUrl}/update-friendly-name/${loanId}`,
       { friendlyName },
