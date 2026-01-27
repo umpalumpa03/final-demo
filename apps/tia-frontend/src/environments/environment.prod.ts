@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: "https://tia.up.railway.app/"
+  apiUrl: "https://tia.up.railway.app"
 }
