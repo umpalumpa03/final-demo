@@ -9,7 +9,7 @@ export class LoansEffects {
   private actions$ = inject(Actions);
   private loansService = inject(LoansService);
 
-  loadLoans$ = createEffect(() =>
+  public loadLoans$ = createEffect(() =>
     this.actions$.pipe(
       ofType(LoansActions.loadLoans),
       switchMap(() =>
@@ -17,6 +17,20 @@ export class LoansEffects {
           map((loans) => LoansActions.loadLoansSuccess({ loans })),
           catchError((error) =>
             of(LoansActions.loadLoansFailure({ error: error.message })),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  public renameLoan$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.renameLoan),
+      switchMap(({ id, name }) =>
+        this.loansService.updateFriendlyName(id, name).pipe(
+          map(() => LoansActions.renameLoanSuccess({ id, name })),
+          catchError((error) =>
+            of(LoansActions.renameLoanFailure({ error: error.message })),
           ),
         ),
       ),

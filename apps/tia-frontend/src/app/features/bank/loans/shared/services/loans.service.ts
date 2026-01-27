@@ -2,11 +2,12 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ILoan } from '../models/loan.model';
+import { environment } from '../../../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class LoansService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://tia.up.railway.app/loans';
+  private readonly loansApiUrl = `${environment.apiUrl}/loans`;
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('accessToken') || '';
@@ -16,13 +17,24 @@ export class LoansService {
     });
   }
 
-  getAllLoans(status?: number): Observable<ILoan[]> {
+  public getAllLoans(status?: number): Observable<ILoan[]> {
     let params = new HttpParams();
     if (status) params = params.set('status', status);
 
-    return this.http.get<ILoan[]>(this.apiUrl, {
+    return this.http.get<ILoan[]>(this.loansApiUrl, {
       headers: this.getHeaders(),
       params,
     });
+  }
+
+  public updateFriendlyName(
+    loanId: string,
+    friendlyName: string,
+  ): Observable<ILoan> {
+    return this.http.put<ILoan>(
+      `${this.loansApiUrl}/update-friendly-name/${loanId}`,
+      { friendlyName },
+      { headers: this.getHeaders() },
+    );
   }
 }
