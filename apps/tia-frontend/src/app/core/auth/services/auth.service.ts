@@ -4,7 +4,7 @@ import {
   IMfaVerifyRequest,
   ISignUpResponse,
 } from '../models/authRequest.models';
-import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
+import { catchError, finalize, map, Observable, tap, throwError } from 'rxjs';
 import {
   IloginResponse,
   IMfaVerifyResponse,
