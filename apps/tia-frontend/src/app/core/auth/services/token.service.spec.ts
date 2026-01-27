@@ -45,12 +45,16 @@ describe('TokenService', () => {
   });
 
   it('clears all tokens', () => {
-    localStorage.setItem(TokenKey.ACCESS, 'a');
-    localStorage.setItem(TokenKey.REFRESH, 'r');
-    service.clearAllToken();
-    expect(localStorage.getItem(TokenKey.ACCESS)).toBeNull();
-    expect(localStorage.getItem(TokenKey.REFRESH)).toBeNull();
-  });
+  localStorage.setItem(TokenKey.ACCESS, 'a');
+  localStorage.setItem(TokenKey.VERIFY, 'v');
+  localStorage.setItem(TokenKey.SIGNUP, 's');
+  
+  service.clearAllToken();
+  
+  expect(localStorage.getItem(TokenKey.ACCESS)).toBeNull();
+  expect(localStorage.getItem(TokenKey.VERIFY)).toBeNull();
+  expect(localStorage.getItem(TokenKey.SIGNUP)).toBeNull();
+});
 
   it('reads tokens via getters', () => {
     localStorage.setItem(TokenKey.ACCESS, 'a');

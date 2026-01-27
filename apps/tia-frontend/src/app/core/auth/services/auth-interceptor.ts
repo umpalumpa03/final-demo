@@ -10,13 +10,13 @@ import { PUBLIC_ENDPOINTS } from '../models/tokens.model';
 import { TokenService } from './token.service';
 
 export const authInterceptor: HttpInterceptorFn = (
-    req: HttpRequest<unknown>,
-    next: HttpHandlerFn,
-  ): Observable<HttpEvent<unknown>> => {
-const tokenService = inject(TokenService);
+  req: HttpRequest<unknown>,
+  next: HttpHandlerFn,
+): Observable<HttpEvent<unknown>> => {
+  const tokenService = inject(TokenService);
 
   const accessToken = tokenService.accessToken;
-  const isPublic = PUBLIC_ENDPOINTS.some(url => req.url.includes(url));
+  const isPublic = PUBLIC_ENDPOINTS.some((url) => req.url.includes(url));
 
   if (isPublic || !accessToken) {
     return next(req);
@@ -29,4 +29,4 @@ const tokenService = inject(TokenService);
   });
 
   return next(authReq);
-  }
+};
