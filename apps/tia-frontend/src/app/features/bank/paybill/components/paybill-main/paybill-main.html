@@ -1,1 +1,17 @@
-<p>paybill-main works!</p>
+<section class="paybill-main-container">
+  @if (activeProvider()) {
+  <!-- <app-payment-form 
+      [provider]=\"activeProvider()!\" 
+    /> -->
+  } @else if (activeCategory()) {
+  <!-- <app-provider-list 
+      [providers]=\"activeCategory()!.providers\"
+      (selected)=\"selectProvider($event)\"
+    /> -->
+  } @else {
+  <app-category-grid
+    (selected)="selectCategory($event)"
+    [categories]="formattedCategories()"
+  />
+  }
+</section>
