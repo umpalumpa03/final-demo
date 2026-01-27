@@ -1,6 +1,8 @@
 <main class="main">
-    <app-loan-header />
+    <app-loan-header (requestClick)="isModalOpen.set(true)"></app-loan-header>
 
     <app-loan-navigation />
     <router-outlet></router-outlet>
+    <app-request-modal [isOpen]="isModalOpen()" (close)="isModalOpen.set(false)">
+    </app-request-modal>
 </main>

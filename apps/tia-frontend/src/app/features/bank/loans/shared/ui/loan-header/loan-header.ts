@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, output } from '@angular/core';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 
 @Component({
@@ -8,4 +8,6 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
   styleUrl: './loan-header.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoanHeader {}
+export class LoanHeader {
+  protected requestClick = output<void>();
+}
