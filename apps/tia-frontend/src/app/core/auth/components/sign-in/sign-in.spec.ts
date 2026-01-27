@@ -12,7 +12,6 @@ describe('SignIn', () => {
   beforeEach(async () => {
     const mockAuth: Partial<AuthService> = {
       loginPostRequest: () => of({ status: 'ok' } as any),
-      // provide signal matching WritableSignal<boolean> used by component
       isLoginLoading: signal(false) as any,
     };
 

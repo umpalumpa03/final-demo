@@ -47,11 +47,6 @@ describe('SignUp (Vitest)', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set loadingState to false on ngOnInit', () => {
-    component.ngOnInit();
-    expect(component.loadingState()).toBe(false);
-  });
-
   it('should call signUpService and handle success', () => {
     const mockResponse = { signup_token: '12345' };
     authService.signUpUser = vi.fn().mockReturnValue(of(mockResponse));

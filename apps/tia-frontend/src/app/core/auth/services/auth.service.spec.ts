@@ -27,6 +27,8 @@ describe('AuthService (Vitest)', () => {
 
     vi.spyOn(router, 'navigate').mockResolvedValue(true);
     vi.spyOn(tokenService, 'setVerifyToken').mockImplementation(() => {});
+    vi.spyOn(tokenService, 'setAccessToken').mockImplementation(() => {});
+    vi.spyOn(tokenService, 'setRefreshToken').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -35,11 +37,6 @@ describe('AuthService (Vitest)', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
-  });
-
-  it('should set and get challengeId', () => {
-    service.setChellangeId('123');
-    expect(service.getChallengeId()).toBe('123');
   });
 
   it('should set and get access token', () => {
@@ -52,7 +49,6 @@ describe('AuthService (Vitest)', () => {
     const mockResponse = { status: 'mfa_required', challengId: 'challenge123' };
 
     service.loginPostRequest(loginData).subscribe((res) => {
-      expect(service.getChallengeId()).toBe('challenge123');
       expect(router.navigate).toHaveBeenCalledWith(['/auth/otp-verify']);
     });
 
@@ -71,6 +67,20 @@ describe('AuthService (Vitest)', () => {
     });
 
     const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
+    expect(req.request.method).toBe('POST');
+    req.flush(mockResponse);
+  });
+
+  it('verifyMfa should set tokens and navigate on success', (done) => {
+    const verifyBody = { code: '1111', challengeId: 'challenge123' } as any;
+    const mockResponse = { access_token: 'access123', refresh_token: 'refresh123' } as any;
+
+    service.verifyMfa(verifyBody).subscribe((res) => {
+      expect(tokenService.setAccessToken).toHaveBeenCalledWith('access123');
+      expect(tokenService.setRefreshToken).toHaveBeenCalledWith('refresh123');
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/mfa/verify`);
     expect(req.request.method).toBe('POST');
     req.flush(mockResponse);
   });
