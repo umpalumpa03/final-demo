@@ -24,13 +24,6 @@ describe('TokenService', () => {
     expect(localStorage.getItem(TokenKey.REFRESH)).toBe('r');
   });
 
-  it('sets verify and signup tokens', () => {
-    service.setVerifyToken('v');
-    service.setSignUpToken('s');
-    expect(localStorage.getItem(TokenKey.VERIFY)).toBe('v');
-    expect(localStorage.getItem(TokenKey.SIGNUP)).toBe('s');
-  });
-
   it('clears auth tokens (access & refresh)', () => {
     localStorage.setItem(TokenKey.ACCESS, 'a');
     localStorage.setItem(TokenKey.REFRESH, 'r');

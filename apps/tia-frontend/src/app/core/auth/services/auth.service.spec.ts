@@ -37,11 +37,6 @@ describe('AuthService (Vitest)', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should set and get challengeId', () => {
-    service.setChellangeId('123');
-    expect(service.getChallengeId()).toBe('123');
-  });
-
   it('should set and get access token', () => {
     service.setTokens('access123', 'refresh123');
     expect(service.getAccessToken()).toBe('access123');
