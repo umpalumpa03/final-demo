@@ -11,4 +11,6 @@ export interface SelectOption {
 export interface SelectConfig extends InputConfig {
   placeholder?: string;
   value?: SelectValue;
+
+  height?: string;
 }
