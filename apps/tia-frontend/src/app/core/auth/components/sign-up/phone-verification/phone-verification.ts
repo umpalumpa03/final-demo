@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { Router } from '@angular/router';
@@ -34,7 +34,7 @@ export class PhoneVerification {
       .pipe(
         tap((res) => {
           this.errorMessage.set('')
-          // Challenge id localStorage 🚩🚩
+          // Challenge id localStorage 🚩🚩 - ეს ეიაი არ გეგონოთ ჩვენი რედფლეგია
           this.tokenService.setChallengeId(res.challengeId)
           this.router.navigate(['/auth/sign-up/otp-verify']);
 

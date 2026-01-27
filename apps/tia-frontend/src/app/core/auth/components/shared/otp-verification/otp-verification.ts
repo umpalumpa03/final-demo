@@ -11,7 +11,6 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AuthService } from '../../../services/auth.service';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RouterLink } from '@angular/router';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 
 @Component({
