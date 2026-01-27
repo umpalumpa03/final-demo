@@ -1,13 +1,13 @@
 import { Routes } from '@angular/router';
 import { provideState } from '@ngrx/store';
-import { paybillReducer } from './paybill/store/paybill.reducer';
+import { paybillReducer } from '../features/bank/paybill/store/paybill.reducer';
 import { provideEffects } from '@ngrx/effects';
-import * as paybillEffects from './paybill/store/paybill.effects';
+import * as paybillEffects from '../features/bank/paybill/store/paybill.effects';
 export const bankRoutes: Routes = [
   {
     path: 'bank',
     loadComponent: () =>
-      import('../../layout/bank-container').then((c) => c.BankContainer),
+      import('./bank-container').then((c) => c.BankContainer),
     children: [
       {
         path: '',
@@ -17,45 +17,45 @@ export const bankRoutes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () =>
-          import('./dashboard/container/dashboard-container').then(
+          import('../features/bank/dashboard/container/dashboard-container').then(
             (c) => c.DashboardContainer,
           ),
       },
       {
-        path: 'products',
+        path: 'my-products',
         loadChildren: () =>
-          import('./products/products.routes').then((c) => c.productsRoutes),
+          import('../features/bank/products/products.routes').then((c) => c.productsRoutes),
       },
       {
         path: 'transactions',
         loadComponent: () =>
-          import('./transactions/container/transactions-container').then(
+          import('../features/bank/transactions/container/transactions-container').then(
             (c) => c.TransactionsContainer,
           ),
       },
       {
         path: 'transfers',
         loadComponent: () =>
-          import('./transfers/container/transfers-container').then(
+          import('../features/bank/transfers/container/transfers-container').then(
             (c) => c.TransfersContainer,
           ),
       },
       {
         path: 'loans',
         loadChildren: () =>
-          import('./loans/loans.routes').then((c) => c.loansRoutes),
+          import('../features/bank/loans/loans.routes').then((c) => c.loansRoutes),
       },
       {
-        path: 'finances',
+        path: 'my-finances',
         loadComponent: () =>
-          import('./finances/container/finances-container').then(
+          import('../features/bank/finances/container/finances-container').then(
             (c) => c.FinancesContainer,
           ),
       },
       {
         path: 'paybill',
         loadChildren: () =>
-          import('./paybill/paybill.routes').then((r) => r.PAYBILL_ROUTES),
+          import('../features/bank/paybill/paybill.routes').then((r) => r.PAYBILL_ROUTES),
         providers: [
           provideState({ name: 'paybill', reducer: paybillReducer }),
           provideEffects(paybillEffects),
@@ -64,12 +64,12 @@ export const bankRoutes: Routes = [
       {
         path: 'settings',
         loadChildren: () =>
-          import('./settings/settings.routes').then((r) => r.settingsRoutes),
+          import('../features/bank/settings/settings.routes').then((r) => r.settingsRoutes),
       },
       {
         path: 'messaging',
         loadChildren: () =>
-          import('./messaging/messaging.routes').then((r) => r.messagingRoutes),
+          import('../features/bank/messaging/messaging.routes').then((r) => r.messagingRoutes),
       },
     ],
   },
