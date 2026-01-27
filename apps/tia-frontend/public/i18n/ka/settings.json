@@ -1,0 +1,65 @@
+{
+    "title": "პარამეტრები",
+    "sections": {
+        "profile": "პროფილი",
+        "security": "უსაფრთხოება",
+        "notifications": "შეტყობინებები",
+        "language": "ენა",
+        "appearance": "გარეგნობა",
+        "user-management": "მომხმარებელთა მართვა",
+        "approve-accounts": "ანგარიშების დამტკიცება",
+        "approve-cards": "ბარათების დამტკიცება",
+        "loan-management": "სესხების მართვა",
+        "profile-photo": "პროფილის ფოტო",
+        "accounts": "ანგარიშები"
+    },
+    "language": {
+        "title": "ენის პარამეტრები",
+        "subtitle": "აირჩიეთ სასურველი ენა",
+        "current": "მიმდინარე ენა",
+        "available": "ხელმისაწვდომი ენები",
+        "english": "ინგლისური",
+        "georgian": "ქართული"
+    },
+    "appearance": {
+        "title": "გარეგნობა",
+        "theme": "თემა",
+        "light": "ნათელი",
+        "dark": "მუქი",
+        "system": "სისტემური"
+    },
+    "profile-photo": {
+        "title": "პროფილის ფოტო",
+        "change": "ფოტოს შეცვლა",
+        "remove": "ფოტოს წაშლა"
+    },
+    "security": {
+        "title": "უსაფრთხოების პარამეტრები",
+        "changePassword": "პაროლის შეცვლა",
+        "twoFactorAuth": "ორი ფაქტორიანი ავთენტიფიკაცია"
+    },
+    "user-management": {
+        "title": "მომხმარებელთა მართვა",
+        "addUser": "მომხმარებლის დამატება",
+        "removeUser": "მომხმარებლის წაშლა"
+    },
+    "approve-accounts": {
+        "title": "ანგარიშების დამტკიცება",
+        "pendingApprovals": "მიმდინარე დამტკიცებები"
+    },
+    "approve-cards": {
+        "title": "ბარათების დამტკიცება",
+        "pendingCards": "მიმდინარე ბარათები"
+    },
+    "loan-management": {
+        "title": "სესხების მართვა",
+        "viewLoans": "სესხების ნახვა",
+        "approveLoan": "სესხის დამტკიცება",
+        "rejectLoan": "სესხის უარყოფა"
+    },
+    "accounts": {
+        "title": "ანგარიშები",
+        "savings": "სავაჭრო ანგარიში",
+        "checking": "შემოწმების ანგარიში"
+    }
+}

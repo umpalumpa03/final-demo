@@ -1,0 +1,18 @@
+{
+  "title": "My Products",
+  "cards": {
+    "title": "Cards",
+    "credit": "Credit Cards",
+    "debit": "Debit Cards"
+  },
+  "loans": {
+    "title": "Loans",
+    "personal": "Personal Loans",
+    "mortgage": "Mortgage"
+  },
+  "accounts": {
+    "title": "Accounts",
+    "savings": "Savings Account",
+    "checking": "Checking Account"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "title": "Transactions",
+  "filters": {
+    "all": "All",
+    "incoming": "Incoming",
+    "outgoing": "Outgoing",
+    "dateRange": "Date Range",
+    "search": "Search transactions"
+  },
+  "table": {
+    "date": "Date",
+    "description": "Description",
+    "amount": "Amount",
+    "status": "Status",
+    "type": "Type"
+  },
+  "status": {
+    "completed": "Completed",
+    "pending": "Pending",
+    "failed": "Failed"
+  },
+  "details": {
+    "title": "Transaction Details",
+    "reference": "Reference Number",
+    "from": "From",
+    "to": "To"
+  }
+}
