@@ -44,6 +44,7 @@ export class Accounts implements OnInit {
   protected readonly error$ = this.store.select(selectError);
 
   protected readonly accountSections = [
+    // TODO: move to config file
     {
       key: 'current' as const,
       title: 'Current Accounts',
@@ -61,7 +62,7 @@ export class Accounts implements OnInit {
     },
   ];
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.store.dispatch(AccountsActions.loadAccounts());
   }
 

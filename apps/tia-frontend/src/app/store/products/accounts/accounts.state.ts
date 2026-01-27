@@ -6,7 +6,6 @@ export interface AccountsState {
   isLoading: boolean;
   error: string | null;
   isCreateModalOpen: boolean;
-  isAuthenticated: boolean;
 }
 
 export const initialAccountsState: AccountsState = {
@@ -15,5 +14,4 @@ export const initialAccountsState: AccountsState = {
   isLoading: false,
   error: null,
   isCreateModalOpen: false,
-  isAuthenticated: true,
 };

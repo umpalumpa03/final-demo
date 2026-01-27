@@ -3,6 +3,7 @@ import { provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { accountsReducer } from '../../../store/products/accounts/accounts.reducer';
 import { AccountsEffects } from '../../../store/products/accounts/accounts.effects';
+import { AccountsService } from './components/accounts/services/accounts.service';
 
 export const productsRoutes: Routes = [
   {
@@ -22,6 +23,7 @@ export const productsRoutes: Routes = [
         providers: [
           provideState({ name: 'accounts', reducer: accountsReducer }),
           provideEffects(AccountsEffects),
+          AccountsService,
         ],
       },
       {
