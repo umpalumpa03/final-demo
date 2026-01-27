@@ -60,7 +60,7 @@ export class PaybillContainer implements OnInit {
     const cat = this.activeCategory();
     const prov = this.activeProvider();
 
-    if (cat) base.push({ label: cat.label, route: '' });
+    if (cat) base.push({ label: cat.name, route: '' });
     if (prov) base.push({ label: prov.name, route: '' });
 
     return base;
