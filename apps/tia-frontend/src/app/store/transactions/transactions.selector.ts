@@ -3,7 +3,6 @@ import {
   TRANSACTION_FEATURE_KEY,
   TransactionState,
 } from './transactions.reducer';
-import { buildTransactionTableConfig } from '../../features/bank/transactions/utils/transactions.utils';
 
 export const selectTransactionState = createFeatureSelector<TransactionState>(
   TRANSACTION_FEATURE_KEY,
@@ -39,12 +38,4 @@ export const selectTransactionViewModel = createSelector(
   selectIsLoading,
   selectFilters,
   (items, isLoading, filters) => ({ items, isLoading, filters }),
-);
-
-export const selectTableConfig = createSelector(
-  selectItems,
-  selectFilters,
-  (items, filters) => {
-    return buildTransactionTableConfig(items, filters.pageLimit);
-  },
 );
