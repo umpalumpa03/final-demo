@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { map, catchError, switchMap, tap } from 'rxjs/operators';
 import { AccountsActions } from './accounts.actions';
-import { AccountsService } from '../../features/bank/products/services/accounts.service';
+import { AccountsService } from '../../features/bank/products/components/accounts/services/accounts.service';
 
 @Injectable()
 export class AccountsEffects {
