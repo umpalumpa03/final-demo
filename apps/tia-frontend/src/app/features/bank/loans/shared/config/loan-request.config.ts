@@ -87,11 +87,11 @@ export const LOAN_FORM_CONFIG = {
 };
 
 export const TERM_OPTIONS: SelectOption[] = [
-  { label: '12 Months', value: 12 },
-  { label: '24 Months', value: 24 },
-  { label: '36 Months', value: 36 },
-  { label: '48 Months', value: 48 },
-  { label: '60 Months', value: 60 },
+  { label: '12 Months', value: '12' },
+  { label: '24 Months', value: '24' },
+  { label: '36 Months', value: '36' },
+  { label: '48 Months', value: '48' },
+  { label: '60 Months', value: '60' },
 ];
 
 export const PURPOSE_OPTIONS: SelectOption[] = [

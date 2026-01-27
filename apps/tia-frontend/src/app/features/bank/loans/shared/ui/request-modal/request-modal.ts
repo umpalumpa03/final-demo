@@ -32,8 +32,9 @@ import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 })
 export class RequestModal {
   public isOpen = input.required<boolean>();
-  protected readonly close = output<void>();
-  protected readonly submit = output<any>();
+
+  public readonly close = output<void>();
+  public readonly submit = output<any>();
 
   protected readonly cfg = LOAN_FORM_CONFIG;
 
@@ -45,9 +46,9 @@ export class RequestModal {
 
   form = this.fb.group({
     amount: ['', [Validators.required, Validators.min(100)]],
-    account: [null, Validators.required],
-    term: [null, Validators.required],
-    purpose: [null, Validators.required],
+    account: ['', Validators.required],
+    term: ['', Validators.required],
+    purpose: ['', Validators.required],
     firstPaymentDate: ['', Validators.required],
     address: this.fb.group({
       street: ['', Validators.required],
