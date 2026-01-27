@@ -1,13 +1,9 @@
 <div class="accounts-page">
   <div class="accounts-page__content">
-    <div class="accounts-page__content-header">
-      <div class="accounts-page__content-header-title-section">
-        <h1 class="accounts-page__content-header-title-section-title">
-          My Accounts
-        </h1>
-        <p class="accounts-page__content-header-title-section-subtitle">
-          Manage your bank accounts
-        </p>
+    <div class="accounts-page__header">
+      <div class="accounts-page__header-title">
+        <h1 class="accounts-page__header-title-text">My Accounts</h1>
+        <p class="accounts-page__header-subtitle">Manage your bank accounts</p>
       </div>
       <app-button
         [variant]="'default'"
@@ -40,7 +36,7 @@
             >{{ grouped[section.key].length }}</span
           >
         </div>
-        <div class="accounts-grid">
+        <div class="accounts-section__grid">
           @for (account of grouped[section.key]; track account.id) {
           <app-account-card
             [account]="account"
