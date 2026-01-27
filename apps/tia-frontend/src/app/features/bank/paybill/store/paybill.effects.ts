@@ -1,19 +1,15 @@
-import { inject, Injectable } from '@angular/core';
+import { inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, mergeMap, of } from 'rxjs';
 import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillActions } from './paybill.actions';
 
-@Injectable()
-export class PaybillEffects {
-  private readonly actions$ = inject(Actions);
-  private readonly paybillService = inject(PaybillService);
-
-  public readonly loadCategories$ = createEffect(() =>
-    this.actions$.pipe(
+export const loadCategories = createEffect(
+  (actions$ = inject(Actions), paybillService = inject(PaybillService)) => {
+    return actions$.pipe(
       ofType(PaybillActions.loadCategories),
       mergeMap(() =>
-        this.paybillService.getCategories().pipe(
+        paybillService.getCategories().pipe(
           map((categories) =>
             PaybillActions.loadCategoriesSuccess({ categories }),
           ),
@@ -22,6 +18,26 @@ export class PaybillEffects {
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  },
+  { functional: true },
+);
+
+export const loadProviders = createEffect(
+  (actions$ = inject(Actions), paybillService = inject(PaybillService)) => {
+    return actions$.pipe(
+      ofType(PaybillActions.selectCategory),
+      mergeMap(({ categoryId }) =>
+        paybillService.getProviders(categoryId).pipe(
+          map((providers) =>
+            PaybillActions.loadProvidersSuccess({ providers }),
+          ),
+          catchError((error) =>
+            of(PaybillActions.loadProvidersFailure({ error: error.message })),
+          ),
+        ),
+      ),
+    );
+  },
+  { functional: true },
+);

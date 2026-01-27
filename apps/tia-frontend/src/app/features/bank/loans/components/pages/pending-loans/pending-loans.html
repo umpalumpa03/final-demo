@@ -1,0 +1,10 @@
+<div class="loans">
+    @for (loan of pendingLoans$ | async; track loan.id) {
+    <lib-loan-card [loan]="loan" [variant]="'colored'">
+    </lib-loan-card>
+    } @empty {
+    <div class="empty-state">
+        <p>No approved loans found.</p>
+    </div>
+    }
+</div>

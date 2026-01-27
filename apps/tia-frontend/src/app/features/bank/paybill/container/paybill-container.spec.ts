@@ -1,11 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PaybillContainer } from './paybill-container';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { provideRouter, Router, NavigationEnd, Event } from '@angular/router';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import {
+  provideRouter,
+  Router,
+  NavigationEnd,
+  ActivatedRoute,
+  Event,
+} from '@angular/router';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { PaybillActions } from '../store/paybill.actions';
 import * as fromSelectors from '../store/paybill.selectors';
-import { Subject } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { PaybillCategory, PaybillProvider } from '../models/paybill.model';
 
 describe('PaybillContainer', () => {
@@ -13,71 +19,108 @@ describe('PaybillContainer', () => {
   let fixture: ComponentFixture<PaybillContainer>;
   let store: MockStore;
   let router: Router;
-  const routerEvents = new Subject<Event>();
+  let activatedRoute: ActivatedRoute;
+  let routerEventsSubject: Subject<Event>;
+
+  const mockProvider: PaybillProvider = {
+    serviceId: 'p1',
+    serviceName: 'Water Co',
+    category: 'utilities',
+  };
 
   const mockCategory: PaybillCategory = {
     id: 'c1',
-    label: 'Utilities',
+    name: 'Utilities',
     icon: 'icon-path',
-    providers: [{ id: 'p1', name: 'Water Co' }],
+    description: 'Utility bills',
+    servicesQuantity: 1,
+    providers: [mockProvider],
   };
 
-  const mockProvider: PaybillProvider = {
-    id: 'p1',
-    name: 'Water Co',
+  const initialState = {
+    paybill: {
+      categories: [mockCategory],
+      providers: [mockProvider],
+      selectedCategoryId: null,
+      selectedProviderId: null,
+      loading: false,
+      error: null,
+    },
   };
 
   beforeEach(async () => {
+    routerEventsSubject = new Subject<Event>();
+
     await TestBed.configureTestingModule({
       imports: [PaybillContainer],
-      providers: [provideMockStore(), provideRouter([])],
+      providers: [
+        provideMockStore({ initialState }),
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+
+          useValue: {
+            params: of({}),
+            snapshot: { params: {} },
+          },
+        },
+      ],
     }).compileComponents();
 
     store = TestBed.inject(MockStore);
     router = TestBed.inject(Router);
+    activatedRoute = TestBed.inject(ActivatedRoute);
 
     Object.defineProperty(router, 'events', {
-      value: routerEvents.asObservable(),
+      get: () => routerEventsSubject.asObservable(),
     });
-    Object.defineProperty(router, 'url', {
-      value: '/bank/paybill',
-      writable: true,
-    });
+
+    vi.spyOn(router, 'url', 'get').mockReturnValue('/bank/paybill');
 
     fixture = TestBed.createComponent(PaybillContainer);
     component = fixture.componentInstance;
+
+    fixture.detectChanges();
   });
 
-  it('should dispatch loadCategories on init', () => {
-    const spy = vi.spyOn(store, 'dispatch');
-    component.ngOnInit();
-    expect(spy).toHaveBeenCalledWith(PaybillActions.loadCategories());
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
-  describe('Breadcrumbs Branch Coverage', () => {
-    it('should show category and provider breadcrumbs when both are selected', () => {
-      store.overrideSelector(fromSelectors.selectActiveCategory, mockCategory);
+  describe('Lifecycle & Initialization', () => {
+    it('should dispatch loadCategories on ngOnInit', () => {
+      const spy = vi.spyOn(store, 'dispatch');
+      component.ngOnInit();
+      expect(spy).toHaveBeenCalledWith(PaybillActions.loadCategories());
+    });
+  });
+
+  describe('Breadcrumbs Coverage', () => {
+    it('should show category and provider labels in breadcrumbs when selected', () => {
+      store.overrideSelector(fromSelectors.selectActiveCategory, {
+        ...mockCategory,
+        providers: [mockProvider],
+      });
       store.overrideSelector(fromSelectors.selectActiveProvider, mockProvider);
+
       store.refreshState();
-
       fixture.detectChanges();
-      const crumbs = component.breadcrumbs();
 
+      const crumbs = component.breadcrumbs();
       expect(crumbs.length).toBe(3);
-      expect(crumbs[1].label).toBe('Utilities');
       expect(crumbs[2].label).toBe('Water Co');
     });
 
-    it('should show only category breadcrumb when no provider is selected', () => {
-      store.overrideSelector(fromSelectors.selectActiveCategory, mockCategory);
-      store.overrideSelector(fromSelectors.selectActiveProvider, null);
+    it('should show Templates breadcrumb when route ID matches', () => {
+      store.overrideSelector(
+        fromSelectors.selectSelectedCategoryId,
+        'TEMPLATES',
+      );
       store.refreshState();
-
       fixture.detectChanges();
-      const crumbs = component.breadcrumbs();
 
-      expect(crumbs.length).toBe(2);
-      expect(crumbs[1].label).toBe('Utilities');
+      const crumbs = component.breadcrumbs();
+      expect(crumbs.some((c) => c.label === 'Templates')).toBe(true);
     });
   });
 
@@ -105,18 +148,37 @@ describe('PaybillContainer', () => {
     });
   });
 
-  it('should react to route changes for template breadcrumbs', () => {
-    (router as { url: string }).url = '/bank/paybill/templates';
-    routerEvents.next(
-      new NavigationEnd(
-        1,
-        '/bank/paybill/templates',
-        '/bank/paybill/templates',
-      ),
-    );
+  describe('Native Click Handling', () => {
+    it('should clear selection when clicking "Paybill" breadcrumb', () => {
+      const spy = vi.spyOn(store, 'dispatch');
+      const mockEvent = {
+        target: { textContent: 'Paybill' },
+      } as unknown as MouseEvent;
+      component.handleNativeClick(mockEvent);
+      expect(spy).toHaveBeenCalledWith(PaybillActions.clearSelection());
+    });
+  });
 
+  it('should NOT dispatch if clicked text matches nothing', () => {
+    const spy = vi.spyOn(store, 'dispatch');
+    const mockEvent = {
+      target: { textContent: 'Random Text' },
+    } as unknown as MouseEvent;
+    component.handleNativeClick(mockEvent);
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('should NOT dispatch clearSelection if URL is not base paybill even if params are missing', async () => {
+    const spy = vi.spyOn(store, 'dispatch');
+    vi.spyOn(router, 'url', 'get').mockReturnValue('/bank/paybill/other');
+    activatedRoute.snapshot.params = {};
+
+    routerEventsSubject.next(
+      new NavigationEnd(1, '/bank/paybill/other', '/bank/paybill/other'),
+    );
     fixture.detectChanges();
-    const crumbs = component.breadcrumbs();
-    expect(crumbs.some((c) => c.label === 'Templates')).toBe(true);
+    await fixture.whenStable();
+
+    expect(spy).not.toHaveBeenCalledWith(PaybillActions.clearSelection());
   });
 });

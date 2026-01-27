@@ -3,7 +3,6 @@
 
 .flex-layout {
     @include flex-center(row, flex-start, center);
-    border: 0.1rem solid $blue-400;
     border-radius: 1rem;
     padding: 1.6rem;
     color: var(--color-fg);
@@ -19,5 +18,17 @@
 
     &--wrap {
         flex-wrap: wrap;
+    }
+
+    &--border {
+        border: 0.1rem solid $blue-400;
+    }
+
+    &.direction-row {
+        flex-direction: row;
+    }
+
+    &.direction-column {
+        flex-direction: column;
     }
 }

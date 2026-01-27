@@ -2,13 +2,12 @@ import { Routes } from '@angular/router';
 import { provideState } from '@ngrx/store';
 import { paybillReducer } from './paybill/store/paybill.reducer';
 import { provideEffects } from '@ngrx/effects';
-import { PaybillEffects } from './paybill/store/paybill.effects';
+import * as paybillEffects from './paybill/store/paybill.effects';
 import * as transactionEffects from '../../store/transactions/transactions.effects';
 import {
   TRANSACTION_FEATURE_KEY,
   transactionReducer,
 } from '../../store/transactions/transactions.reducer';
-
 export const bankRoutes: Routes = [
   {
     path: 'bank',
@@ -56,10 +55,8 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'loans',
-        loadComponent: () =>
-          import('./loans/container/loans-container').then(
-            (c) => c.LoansContainer,
-          ),
+        loadChildren: () =>
+          import('./loans/loans.routes').then((c) => c.loansRoutes),
       },
       {
         path: 'finances',
@@ -74,7 +71,7 @@ export const bankRoutes: Routes = [
           import('./paybill/paybill.routes').then((r) => r.PAYBILL_ROUTES),
         providers: [
           provideState({ name: 'paybill', reducer: paybillReducer }),
-          provideEffects(PaybillEffects),
+          provideEffects(paybillEffects),
         ],
       },
       {

@@ -1,0 +1,15 @@
+{
+  "title": "Dashboard",
+  "welcome": "Welcome, {{name}}!",
+  "overview": {
+    "title": "Account Overview",
+    "totalBalance": "Total Balance",
+    "availableBalance": "Available Balance"
+  },
+  "quickActions": {
+    "title": "Quick Actions",
+    "transfer": "Transfer",
+    "pay": "Pay Bills",
+    "deposit": "Deposit"
+  }
+}
