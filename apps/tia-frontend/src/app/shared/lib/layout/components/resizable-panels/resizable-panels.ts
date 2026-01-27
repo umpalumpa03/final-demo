@@ -70,10 +70,8 @@ export class ResizablePanels {
     const container = this.containerRef()?.nativeElement;
     if (!container) return;
 
-    const isVertical = this.isVertical();
-
     const rect = container.getBoundingClientRect();
-    const containerDimension = isVertical ? rect.height : rect.width;
+    const containerDimension = this.isVertical() ? rect.height : rect.width;
 
     const size = this.panelSize();
     const customSizes = this.initialSizes();
@@ -208,9 +206,7 @@ export class ResizablePanels {
     const container = this.containerRef()?.nativeElement;
     if (!container) return this.maxSize();
 
-    const isVertical = this.isVertical();
-
-    const containerDimension = isVertical
+    const containerDimension = this.isVertical()
       ? container.getBoundingClientRect().height
       : container.getBoundingClientRect().width;
 
