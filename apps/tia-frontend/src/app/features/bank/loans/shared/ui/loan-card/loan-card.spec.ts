@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoanCard } from './loan-card';
 import { ILoan } from '../../models/loan.model';
 import { describe, it, expect, beforeEach } from 'vitest';
+import { LOAN_ICONS } from '../../config/loan-icons.config';
 
 describe('LoanCard', () => {
   let component: LoanCard;
@@ -51,7 +52,7 @@ describe('LoanCard', () => {
     const config = (component as any).config();
 
     expect(config.badgeClass).toBe('badge--approved');
-    expect(config.iconName).toBe('check');
+    expect(config.iconSrc).toBe(LOAN_ICONS.approve);
     expect(config.iconClass).toBe('card__icon--green');
     expect((component as any).showPaymentDetails()).toBe(true);
   });
@@ -62,16 +63,16 @@ describe('LoanCard', () => {
     const config = (component as any).config();
 
     expect(config.badgeClass).toBe('badge--gray');
-    expect(config.iconName).toBe('arrow');
+    expect(config.iconSrc).toBe(LOAN_ICONS.default);
     expect(config.iconClass).toBe('card__icon--blue');
   });
 
-  it('should force iconName to arrow when NOT colored', () => {
+  it('should force iconSrc to default when NOT colored', () => {
     updateInput({ ...baseLoan, status: 2 }, 'default');
 
     const config = (component as any).config();
 
-    expect(config.iconName).toBe('arrow');
+    expect(config.iconSrc).toBe(LOAN_ICONS.default);
     expect(config.iconClass).toBe('card__icon--blue');
   });
 
