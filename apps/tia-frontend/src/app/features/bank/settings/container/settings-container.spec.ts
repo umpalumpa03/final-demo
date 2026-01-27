@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { SettingsContainer } from './settings-container';
+import { provideTranslateService } from '@ngx-translate/core';
 
 describe('SettingsContainer', () => {
   let component: SettingsContainer;
@@ -9,7 +10,7 @@ describe('SettingsContainer', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SettingsContainer],
-      providers: [provideRouter([])],
+      providers: [provideRouter([]), provideTranslateService()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SettingsContainer);

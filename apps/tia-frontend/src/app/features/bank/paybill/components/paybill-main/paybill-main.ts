@@ -6,28 +6,35 @@ import {
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as PAYBILL_SELECTORS from '../../store/paybill.selectors';
-import { PaybillActions } from '../../store/paybill.actions';
 import { CategoryGrid } from './components/category-grid/category-grid';
 import { CATEGORY_UI_MAP } from './components/category-grid/config/category.config';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ProviderList } from './components/provider-list/provider-list';
 
 @Component({
   selector: 'app-paybill-main',
-  imports: [CategoryGrid],
+  imports: [CategoryGrid, ProviderList],
   templateUrl: './paybill-main.html',
   styleUrl: './paybill-main.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillMain {
   private readonly store = inject(Store);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
-  public readonly categories = this.store.selectSignal(
-    PAYBILL_SELECTORS.selectCategories,
-  );
   public readonly activeCategory = this.store.selectSignal(
     PAYBILL_SELECTORS.selectActiveCategory,
   );
   public readonly activeProvider = this.store.selectSignal(
     PAYBILL_SELECTORS.selectActiveProvider,
+  );
+  public readonly categories = this.store.selectSignal(
+    PAYBILL_SELECTORS.selectCategories,
+  );
+
+  public readonly isLoading = this.store.selectSignal(
+    PAYBILL_SELECTORS.selectLoading,
   );
 
   public readonly formattedCategories = computed(() => {
@@ -35,13 +42,11 @@ export class PaybillMain {
       const lookupKey = cat.id.toLowerCase();
 
       const config = CATEGORY_UI_MAP[lookupKey] || {
-        subtitle: 'Pay your bills',
         iconBgColor: '#F5F5F5',
       };
 
       return {
         ...cat,
-        subtitle: config.subtitle,
         iconBgColor: config.iconBgColor,
         iconBgPath: config.iconBgPath,
         count: cat.providers?.length || 0,
@@ -49,11 +54,24 @@ export class PaybillMain {
     });
   });
 
-  public selectCategory(id: string): void {
-    this.store.dispatch(PaybillActions.selectCategory({ categoryId: id }));
+  public selectCategory(categoryId: string): void {
+    this.router.navigate([categoryId.toLowerCase()], {
+      relativeTo: this.route,
+    });
   }
 
-  public selectProvider(id: string): void {
-    this.store.dispatch(PaybillActions.selectProvider({ providerId: id }));
+  public selectProvider(providerId: string): void {
+    const categoryId = this.activeCategory()?.id.toLowerCase();
+    if (categoryId) {
+      this.router.navigate([categoryId, providerId.toLowerCase()], {
+        relativeTo: this.route,
+      });
+    }
   }
+
+  public readonly activeCategoryUI = computed(() => {
+    const cat = this.activeCategory();
+    if (!cat) return null;
+    return CATEGORY_UI_MAP[cat.id.toLowerCase()];
+  });
 }

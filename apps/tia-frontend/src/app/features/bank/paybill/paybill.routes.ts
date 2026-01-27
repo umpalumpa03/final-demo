@@ -29,6 +29,20 @@ export const PAYBILL_ROUTES: Routes = [
             (c) => c.PaybillTemplates,
           ),
       },
+      {
+        path: ':categoryId',
+        loadComponent: () =>
+          import('./components/paybill-main/paybill-main').then(
+            (c) => c.PaybillMain,
+          ),
+      },
+      {
+        path: ':categoryId/:providerId',
+        loadComponent: () =>
+          import('./components/paybill-main/paybill-main').then(
+            (c) => c.PaybillMain,
+          ),
+      },
     ],
   },
 ];

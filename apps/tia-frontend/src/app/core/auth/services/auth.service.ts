@@ -3,13 +3,15 @@ import {
   ILoginRequest,
   IMfaVerifyRequest,
   ISignUpResponse,
+  OtpResponse,
+  SendVerificationResponse,
 } from '../models/authRequest.models';
 import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
 import {
   IloginResponse,
   IMfaVerifyResponse,
 } from '../models/authResponse.model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 import { TokenService } from './token.service';
@@ -85,6 +87,41 @@ export class AuthService {
   }
 
   public signUpUser(userData: IRegistrationForm): Observable<ISignUpResponse> {
-    return this.http.post<any>(`${environment.apiUrl}/auth/signup`, userData);
+    return this.http.post<ISignUpResponse>(
+      `${environment.apiUrl}/auth/signup`,
+      userData,
+    );
+  }
+
+  public sendVerificationCode(
+    phoneNumber: string,
+  ): Observable<SendVerificationResponse> {
+    const token =
+      this.tokenService.getSignUpToken || this.tokenService.verifyToken;
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http.post<SendVerificationResponse>(
+      `${environment.apiUrl}/auth/phone`,
+      { phone: phoneNumber },
+      { headers },
+    );
+  }
+
+  public verifyOtpCode(code: string): Observable<OtpResponse> {
+    const token = this.tokenService.getSignUpToken;
+    const challengeId = this.tokenService.getChallengeId;
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http.post<OtpResponse>(
+      `${environment.apiUrl}/auth/phone/verify`,
+      { challengeId, code },
+      { headers },
+    );
   }
 }

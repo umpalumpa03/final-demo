@@ -17,7 +17,8 @@
 }
 
 <div class="text-input__wrapper" [class.text-input__wrapper--has-icon]="mergedConfig().icon"
-    [class.text-input__wrapper--disabled]="isDisabled()" [class.text-input__wrapper--readonly]="isReadonly()">
+    [class.text-input__wrapper--disabled]="isDisabled()" [class.text-input__wrapper--readonly]="isReadonly()"
+    [style.margin]="mergedConfig().margin">
 
     @if (prefixIconUrl(); as iconUrl) {
     <div class="text-input__icon text-input__icon--prefix" [class.text-input__icon--error]="hasError()"

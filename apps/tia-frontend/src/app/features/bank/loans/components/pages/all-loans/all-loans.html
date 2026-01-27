@@ -1,0 +1,8 @@
+<section class="loans">
+    @for (loan of loans$ | async; track loan.id) {
+    <lib-loan-card [loan]="loan" (cardClick)="onCardClick($event)" (rename)="onRenameLoan($event)">
+    </lib-loan-card>
+    } @empty {
+    <p>No loans found.</p>
+    }
+</section>

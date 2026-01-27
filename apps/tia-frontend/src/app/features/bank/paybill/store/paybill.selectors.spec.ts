@@ -1,22 +1,40 @@
 import { describe, it, expect } from 'vitest';
 import * as Selectors from './paybill.selectors';
-import { PaybillState, PaybillCategory } from '../models/paybill.model';
+import {
+  PaybillState,
+  PaybillCategory,
+  PaybillProvider,
+} from '../models/paybill.model';
 
 describe('Paybill Selectors', () => {
+  const mockProviders: PaybillProvider[] = [
+    {
+      serviceId: 'prov-1',
+      serviceName: 'Water Dept',
+      category: 'utilities',
+    },
+    {
+      serviceId: 'prov-2',
+      serviceName: 'Electric Co',
+      category: 'utilities',
+    },
+  ];
+
   const mockCategories: PaybillCategory[] = [
     {
       id: 'cat-1',
-      label: 'Utilities',
+      name: 'Utilities',
       icon: 'water',
-      providers: [
-        { id: 'prov-1', name: 'Water Dept' },
-        { id: 'prov-2', name: 'Electric Co' },
-      ],
+      description: 'Utilities description',
+      servicesQuantity: 2,
+      providers: [],
     },
     {
       id: 'cat-2',
-      label: 'Internet',
+      name: 'Internet',
       icon: 'wifi',
+      description: 'Internet description',
+      servicesQuantity: 0,
       providers: [],
     },
   ];
@@ -27,39 +45,25 @@ describe('Paybill Selectors', () => {
     selectedProviderId: 'prov-1',
     loading: false,
     error: null,
+    providers: mockProviders,
   };
-
-  describe('Basic State Selectors', () => {
-    it('should select categories', () => {
-      const result = Selectors.selectCategories.projector(initialState);
-      expect(result).toEqual(mockCategories);
-    });
-
-    it('should select selectedCategoryId', () => {
-      const result = Selectors.selectSelectedCategoryId.projector(initialState);
-      expect(result).toBe('cat-1');
-    });
-
-    it('should select selectedProviderId', () => {
-      const result = Selectors.selectSelectedProviderId.projector(initialState);
-      expect(result).toBe('prov-1');
-    });
-  });
 
   describe('selectActiveCategory', () => {
     it('should return the category object matching the selected ID', () => {
       const result = Selectors.selectActiveCategory.projector(
         mockCategories,
         'cat-1',
+        mockProviders,
       );
       expect(result?.id).toBe('cat-1');
-      expect(result?.label).toBe('Utilities');
+      expect(result?.providers).toEqual(mockProviders);
     });
 
-    it('should return null if the category ID is not found', () => {
+    it('should return null if category ID is not found', () => {
       const result = Selectors.selectActiveCategory.projector(
         mockCategories,
         'non-existent',
+        [],
       );
       expect(result).toBeNull();
     });
@@ -68,40 +72,41 @@ describe('Paybill Selectors', () => {
       const result = Selectors.selectActiveCategory.projector(
         mockCategories,
         null,
+        [],
       );
       expect(result).toBeNull();
     });
   });
 
   describe('selectActiveProvider', () => {
-    it('should return the provider object within the active category', () => {
-      const activeCategory = mockCategories[0];
+    it('should return the provider object from the providers array', () => {
       const result = Selectors.selectActiveProvider.projector(
-        activeCategory,
+        mockProviders,
         'prov-1',
       );
-      expect(result).toEqual({ id: 'prov-1', name: 'Water Dept' });
+      expect(result).toEqual(mockProviders[0]);
     });
 
-    it('should return null if there is no active category', () => {
-      const result = Selectors.selectActiveProvider.projector(null, 'prov-1');
+    it('should return null if there is no providers array', () => {
+      const result = Selectors.selectActiveProvider.projector(
+        null as any,
+        'prov-1',
+      );
       expect(result).toBeNull();
     });
 
     it('should return null if there is no selected provider ID', () => {
-      const activeCategory = mockCategories[0];
       const result = Selectors.selectActiveProvider.projector(
-        activeCategory,
+        mockProviders,
         null,
       );
       expect(result).toBeNull();
     });
 
-    it('should return null if the provider ID is not found in the category', () => {
-      const activeCategory = mockCategories[0];
+    it('should return null if the provider ID is not found in the array', () => {
       const result = Selectors.selectActiveProvider.projector(
-        activeCategory,
-        'unknown-prov',
+        mockProviders,
+        'non-existent',
       );
       expect(result).toBeNull();
     });

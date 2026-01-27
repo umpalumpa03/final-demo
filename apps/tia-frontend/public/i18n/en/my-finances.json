@@ -1,0 +1,15 @@
+{
+    "title": "My Finances",
+    "description": "Track your income, expenses, and savings",
+    "overview": {
+        "income": "Total Income",
+        "expenses": "Total Expenses",
+        "savings": "Total Savings"
+    },
+    "reports": {
+        "monthly": "Monthly Report",
+        "annual": "Annual Report",
+        "custom": "Custom Report"
+    }
+
+}
