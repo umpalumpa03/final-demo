@@ -10,5 +10,5 @@ export const PUBLIC_ENDPOINTS = [
   '/auth/login',
   '/auth/mfa/verify',
   '/auth/signup',
-  '/auth/logout',
+  // '/auth/logout',
 ];
