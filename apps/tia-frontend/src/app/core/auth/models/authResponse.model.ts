@@ -11,3 +11,21 @@ export interface IMfaVerifyResponse {
     refresh_token: string
 }
 
+export interface ForgotPasswordResponse {
+  challengeId: string;
+  method: string;
+  maskedPhone: string;
+}
+
+export interface ForgotPasswordVerifyResponse {
+  access_token: string;
+}
+
+export interface CreateNewPasswordResponse {
+  success: boolean;
+}
+
+export interface ResendOtpResponse {
+  success: boolean;
+}
+

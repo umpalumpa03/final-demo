@@ -12,6 +12,7 @@ import { AuthService } from '../../../services/auth.service';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
+import { forgotPasswordSegments } from 'apps/tia-frontend/src/app/core/auth/components/forgot-password/forgot-password.routes';
 
 @Component({
   selector: 'app-otp-verification',
@@ -36,6 +37,9 @@ export class OtpVerification {
   public errorMessage = signal<string>('');
 
   private registerVerifyLogic = signal<boolean>(true);
+  private otpContext = signal<'sign-in' | 'sign-up' | 'forgot-password'>(
+    'sign-up',
+  );
 
   ///ბექააა
   public isLoading = computed(() => this.authService.isLoginLoading());
@@ -63,18 +67,32 @@ export class OtpVerification {
   });
 
   public ngOnInit() {
-    const path = this.route.snapshot.url[0].path;
+    const context = this.route.snapshot.data?.['otpContext'];
+    if (context === 'forgot-password') {
+      this.otpContext.set('forgot-password');
+      return;
+    }
+
+    const path = this.route.snapshot.url[0]?.path;
     if (path === 'sign-in') {
       this.registerVerifyLogic.set(false);
+      this.otpContext.set('sign-in');
     } else if (path === 'sign-up') {
       this.registerVerifyLogic.set(true);
+      this.otpContext.set('sign-up');
     }
   }
 
   public submit(): void {
+    const context = this.otpContext();
+    if (context === 'forgot-password') {
+      this.forgotPasswordVerification();
+      return;
+    }
+
     if (this.registerVerifyLogic()) {
       this.registerVerification();
-    } 
+    }
   }
 
   private registerVerification(): void {
@@ -88,8 +106,30 @@ export class OtpVerification {
     this.authService
       .verifyOtpCode(verificationCode)
       .pipe(
-        tap((res) => {
+        tap(() => {
           this.router.navigate(['/auth/sign-up/success']);
+        }),
+        catchError((err) => {
+          this.errorMessage.set(err);
+          return EMPTY;
+        }),
+      )
+      .subscribe();
+  }
+
+  private forgotPasswordVerification(): void {
+    if (this.smsCodeVerificationForm.invalid) {
+      this.smsCodeVerificationForm.markAllAsTouched();
+      return;
+    }
+
+    const { verificationCode } = this.smsCodeVerificationForm.getRawValue();
+
+    this.authService
+      .verifyForgotPasswordOtp(verificationCode)
+      .pipe(
+        tap(() => {
+          this.router.navigate(['/auth', ...forgotPasswordSegments.reset]);
         }),
         catchError((err) => {
           this.errorMessage.set(err);

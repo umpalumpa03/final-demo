@@ -25,3 +25,20 @@ export interface SendVerificationResponse {
 export interface OtpResponse {
   message: string;
 }
+
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ForgotPasswordVerifyRequest {
+  challengeId: string;
+  code: string;
+}
+
+export interface CreateNewPasswordRequest {
+  password: string;
+}
+
+export interface ResendOtpRequest {
+  challengeId: string;
+}

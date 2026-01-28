@@ -3,11 +3,12 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  inject,
   signal,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthLayout } from '../../../shared/auth-layout/auth-layout';
-import { ForgotPasswordService } from '../../../../services/forgot-password.service';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-reset-success',
@@ -19,11 +20,8 @@ import { ForgotPasswordService } from '../../../../services/forgot-password.serv
 export class ResetSuccess implements OnInit, OnDestroy {
   public readonly countdown = signal(5);
   private timerId: number | null = null;
-
-  constructor(
-    private readonly router: Router,
-    private readonly authService: ForgotPasswordService,
-  ) {}
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
 
   ngOnInit(): void {
     this.timerId = window.setInterval(() => {
@@ -49,7 +47,7 @@ export class ResetSuccess implements OnInit, OnDestroy {
       window.clearInterval(this.timerId);
       this.timerId = null;
     }
-    this.authService.clearState();
+    this.authService.clearForgotPasswordState();
     await this.router.navigate(['/auth/sign-in']);
   }
 }

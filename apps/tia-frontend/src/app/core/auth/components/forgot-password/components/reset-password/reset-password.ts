@@ -15,7 +15,8 @@ import { firstValueFrom } from 'rxjs';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AuthLayout } from '../../../shared/auth-layout/auth-layout';
-import { ForgotPasswordService } from '../../../../services/forgot-password.service';
+import { AuthService } from '../../../../services/auth.service';
+import { forgotPasswordSegments } from '../../forgot-password.routes';
 import { passwordValidator } from '../../../../utils/validators/form-validations';
 
 @Component({
@@ -28,7 +29,7 @@ import { passwordValidator } from '../../../../utils/validators/form-validations
 export class ResetPassword implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
-  private readonly authService = inject(ForgotPasswordService);
+  private readonly authService = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
 
   public readonly isSubmitting = signal(false);
@@ -97,8 +98,8 @@ export class ResetPassword implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    if (!this.authService.accessToken()) {
-      await this.router.navigate(['/auth/forgot-password/otp']);
+    if (!this.authService.forgotPasswordAccessToken()) {
+      await this.router.navigate(['/auth', ...forgotPasswordSegments.otp]);
     }
   }
 
@@ -133,8 +134,8 @@ export class ResetPassword implements OnInit {
 
     if (this.form.invalid) return;
 
-    if (!this.authService.accessToken()) {
-      await this.router.navigate(['/auth/forgot-password/otp']);
+    if (!this.authService.forgotPasswordAccessToken()) {
+      await this.router.navigate(['/auth', ...forgotPasswordSegments.otp]);
       return;
     }
 
@@ -149,7 +150,7 @@ export class ResetPassword implements OnInit {
         // Ignore cleanup errors
       }
 
-      await this.router.navigate(['/auth/forgot-password/success']);
+      await this.router.navigate(['/auth', ...forgotPasswordSegments.success]);
     } catch (error) {
       const httpError = error as HttpErrorResponse;
       if (httpError?.status === 400) {

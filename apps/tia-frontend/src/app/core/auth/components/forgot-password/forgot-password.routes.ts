@@ -1,20 +1,30 @@
 import { Routes } from '@angular/router';
 
+export const forgotPasswordSegments = {
+  base: ['forgot-password'],
+  otp: ['forgot-password', 'otp'],
+  reset: ['forgot-password', 'reset'],
+  success: ['forgot-password', 'success'],
+};
+
 export const forgotPasswordRoutes: Routes = [
   {
     path: 'forgot-password',
     loadComponent: () =>
-      import('./components/forgot-password-email/forgot-password-email').then(
+      import(
+        'apps/tia-frontend/src/app/core/auth/components/forgot-password/components/forgot-password-email/forgot-password-email'
+      ).then(
         (c) => c.ForgotPasswordEmail,
       ),
   },
   {
     path: 'forgot-password/otp',
     loadComponent: () =>
-      import('../shared/otp-verification/otp-verification').then(
-        (c) => c.OtpVerification,
+      import(
+        './components/forgot-password-otp/forgot-password-otp'
+      ).then(
+        (c) => c.ForgotPasswordOtp,
       ),
-    data: { otpContext: 'forgot-password' },
   },
   {
     path: 'forgot-password/reset',

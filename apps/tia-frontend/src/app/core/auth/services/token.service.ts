@@ -19,6 +19,17 @@ export class TokenService {
     localStorage.setItem(TokenKey.SIGNUP, token);
   }
 
+  public setForgotPasswordChallengeId(challengeId: string): void {
+    localStorage.setItem(TokenKey.FORGOT_PASSWORD_CHALLENGE, challengeId);
+  }
+
+  public setForgotPasswordAccessToken(token: string): void {
+    localStorage.setItem(TokenKey.FORGOT_PASSWORD_ACCESS, token);
+  }
+
+  public setForgotPasswordEmail(email: string): void {
+    localStorage.setItem(TokenKey.FORGOT_PASSWORD_EMAIL, email);
+  }
   //TODO will be deleted
   public setChallengeId(code:string) {
     localStorage.setItem(TokenKey.CHALLENGE_ID, code)
@@ -37,6 +48,17 @@ export class TokenService {
     localStorage.removeItem(TokenKey.SIGNUP)
   }
 
+  public clearForgotPasswordChallengeId(): void {
+    localStorage.removeItem(TokenKey.FORGOT_PASSWORD_CHALLENGE);
+  }
+
+  public clearForgotPasswordAccessToken(): void {
+    localStorage.removeItem(TokenKey.FORGOT_PASSWORD_ACCESS);
+  }
+
+  public clearForgotPasswordEmail(): void {
+    localStorage.removeItem(TokenKey.FORGOT_PASSWORD_EMAIL);
+  }
   //TODO will be deleted
   public clearChallengeId(code:string) {
     localStorage.removeItem(TokenKey.CHALLENGE_ID)
@@ -67,4 +89,16 @@ export class TokenService {
     return localStorage.getItem(TokenKey.CHALLENGE_ID)
   }
   //reg - phone // @email
+
+  public get forgotPasswordChallengeId(): string | null {
+    return localStorage.getItem(TokenKey.FORGOT_PASSWORD_CHALLENGE);
+  }
+
+  public get forgotPasswordAccessToken(): string | null {
+    return localStorage.getItem(TokenKey.FORGOT_PASSWORD_ACCESS);
+  }
+
+  public get forgotPasswordEmail(): string | null {
+    return localStorage.getItem(TokenKey.FORGOT_PASSWORD_EMAIL);
+  }
 }
