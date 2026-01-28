@@ -25,6 +25,7 @@ import { CommonModule } from '@angular/common';
 import { selectAccountOptions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { getTodayDate } from '../../utils/gettoday.util';
+import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
 
 @Component({
   selector: 'app-request-modal',
@@ -91,13 +92,17 @@ export class RequestModal implements OnInit {
 
   public onSave(): void {
     if (this.form.valid) {
-      console.log('Form Data:', this.form.getRawValue());
-      const formData = this.form.getRawValue() as ILoanRequest;
-      this.submit.emit(formData);
-      this.form.reset();
+      const rawData = this.form.getRawValue();
+
+      const payload: ILoanRequest = {
+        ...rawData,
+        loanAmount: Number(rawData.loanAmount),
+        months: Number(rawData.months),
+      } as ILoanRequest;
+
+      this.store.dispatch(LoansCreateActions.requestLoan({ request: payload }));
+
       this.close.emit();
-    } else {
-      this.form.markAllAsTouched();
     }
   }
 }

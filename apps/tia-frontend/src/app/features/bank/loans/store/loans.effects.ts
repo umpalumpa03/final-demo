@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, switchMap, of } from 'rxjs';
 import { LoansService } from '../shared/services/loans.service';
 import { LoansActions } from './loans.actions';
+import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
 
 @Injectable()
 export class LoansEffects {
@@ -48,6 +49,13 @@ export class LoansEffects {
           ),
         ),
       ),
+    ),
+  );
+
+  public refreshListOnCreate$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansCreateActions.requestLoanSuccess),
+      map(() => LoansActions.loadLoans()),
     ),
   );
 }
