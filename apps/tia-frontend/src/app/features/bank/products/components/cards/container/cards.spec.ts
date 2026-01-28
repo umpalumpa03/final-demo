@@ -1,5 +1,7 @@
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Cards } from '../cards';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Cards } from './cards';
 
 describe('Cards', () => {
   let component: Cards;
@@ -7,7 +9,7 @@ describe('Cards', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Cards],
+      imports: [Cards, RouterTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Cards);
@@ -17,11 +19,5 @@ describe('Cards', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should render placeholder text', () => {
-    const element = fixture.nativeElement.querySelector('p');
-    expect(element).toBeTruthy();
-    expect(element.textContent).toContain('cards works!');
   });
 });

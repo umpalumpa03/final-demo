@@ -1,1 +1,56 @@
-<p>card-list works!</p>
+<div class="card-list">
+  @if (loading$ | async) {
+    <div class="card-list__loading">Loading...</div>
+  }
+  
+  @if (error$ | async; as error) {
+    <div class="card-list__error">{{ error }}</div>
+  }
+  
+  @if (cardGroups$ | async; as cardGroups) {
+    @for (group of cardGroups; track group.account.id) {
+      <div class="card-list__group">
+        <div class="card-list__account-header">
+          <div class="card-list__account-info">
+            <span class="card-list__account-name">{{ group.account.name }}</span>
+            <span class="card-list__account-number">{{ group.account.iban }}</span>
+          </div>
+          <app-badges
+            [label]="group.cardImages.length + ' Card' + (group.cardImages.length !== 1 ? 's' : '')"
+            variant="secondary"
+            size="small"
+            shape="rounded"
+          ></app-badges>
+        </div>
+        
+        @if (group.cardImages.length > 0) {
+          <div class="card-list__cards-wrapper">
+            <div class="card-list__cards">
+              @for (cardImage of group.cardImages; track cardImage.cardId; let idx = $index) {
+                <div 
+                  class="card-list__card" 
+                  [class.card-list__card--stacked]="idx !== getCardIndex(group.account.id)"
+                  [class.card-list__card--active]="idx === getCardIndex(group.account.id)"
+                  [style.z-index]="idx === getCardIndex(group.account.id) ? 100 : group.cardImages.length - idx"
+                  (click)="handleCardClick(group, cardImage.cardId, idx)"
+                >
+                  <img 
+                    [src]="cardImage.imageBase64" 
+                    [alt]="'Card ending in ' + cardImage.cardId.slice(-4)"
+                    class="card-list__card-image"
+                  />
+                </div>
+              }
+            </div>
+            
+            @if (group.cardImages.length > 1) {
+              <div class="card-list__click-hint">Click to view all cards</div>
+            }
+          </div>
+        } @else {
+          <div class="card-list__no-cards">No cards available for this account</div>
+        }
+      </div>
+    }
+  }
+</div>

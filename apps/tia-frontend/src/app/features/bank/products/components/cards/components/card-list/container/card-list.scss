@@ -1,0 +1,170 @@
+@use "../../../../../../../../shared/styles/mixins" as *;
+@use "../../../../../../../../shared/styles/palette" as *;
+
+.card-list {
+  @include display-flex(column);
+  gap: 3.1rem;
+  padding: 2rem;
+
+  @media (max-width: 768px) {
+    padding: 1.6rem;
+    gap: 2.4rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1.2rem;
+    gap: 2rem;
+  }
+
+  &__loading {
+    @include flex-center(row, center, center);
+    @include font-inter(400, 1.6rem, 1.5);
+    padding: 4rem;
+    color: $gray-600;
+  }
+
+  &__error {
+    @include font-inter(400, 1.4rem, 1.5);
+    padding: 1.6rem;
+    background-color: $red-300;
+    color: $red-700;
+    border-radius: 0.8rem;
+  }
+
+  &__group {
+    @include display-flex(column);
+    gap: 1.6rem;
+    max-width: 91rem;
+  }
+
+  &__account-header {
+    @include flex-center(row, space-between, center);
+    gap: 1.2rem;
+
+    @media (max-width: 480px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+  }
+
+  &__account-info {
+    @include display-flex(column);
+    gap: 0.4rem;
+  }
+
+  &__account-name {
+    @include font-inter(600, 1.6rem, 1.5);
+    color: var(--color-fg);
+  }
+
+  &__account-number {
+    @include font-inter(400, 1.4rem, 1.5);
+    color: $gray-600;
+  }
+
+  &__cards-wrapper {
+    @include display-flex(column);
+    gap: 0.8rem;
+  }
+
+  &__cards {
+    position: relative;
+    width: 35rem;
+    height: 22rem;
+
+    @media (max-width: 768px) {
+      width: 30rem;
+      height: 19rem;
+    }
+
+    @media (max-width: 480px) {
+      width: 100%;
+      height: 16rem;
+    }
+  }
+
+  &__card {
+    cursor: pointer;
+    transition: transform 0.4s ease, box-shadow 0.3s ease;
+    border-radius: 1.5rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    
+    &--active {
+      z-index: 100;
+      transform: translateY(0) translateX(0);
+      
+      &:hover {
+        transform: translateY(-0.4rem) translateX(0);
+        box-shadow: 0 0.8rem 1.6rem rgba(0, 0, 0, 0.15);
+      }
+    }
+
+    &--stacked {
+      &:nth-child(2) {
+        transform: translateY(1.2rem) translateX(0.8rem);
+        z-index: 2;
+        
+        &:hover {
+          transform: translateY(0.8rem) translateX(0.8rem);
+          box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.12);
+        }
+      }
+
+      &:nth-child(3) {
+        transform: translateY(2.4rem) translateX(1.6rem);
+        z-index: 1;
+        
+        &:hover {
+          transform: translateY(2rem) translateX(1.6rem);
+          box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.12);
+        }
+      }
+
+      &:nth-child(4) {
+        transform: translateY(3.6rem) translateX(2.4rem);
+        z-index: 0;
+        
+        &:hover {
+          transform: translateY(3.2rem) translateX(2.4rem);
+          box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.12);
+        }
+      }
+    }
+  }
+
+  &__card-image {
+    display: block;
+    width: 100%;
+    max-width: 35rem;
+    height: auto;
+    border-radius: 1.5rem;
+    box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
+
+    @media (max-width: 768px) {
+      max-width: 30rem;
+    }
+
+    @media (max-width: 480px) {
+      max-width: 100%;
+    }
+  }
+
+  &__no-cards {
+    @include font-inter(400, 1.4rem, 1.5);
+    color: $gray-500;
+    padding: 2rem;
+    text-align: center;
+    background-color: $gray-50;
+    border-radius: 0.8rem;
+  }
+
+  &__click-hint {
+    @include font-inter(400, 1.2rem, 1.5);
+    color: $gray-500;
+    text-align: center;
+    margin-top: 0.8rem;
+  }
+}
