@@ -4,3 +4,4 @@ export interface IFeaturePanel {
   text: string;
   icon?: string;
 }
+

@@ -5,6 +5,7 @@ import { AuthService } from '../services/auth.service';
 import { SidePanel } from "../components/shared/side-panel/side-panel";
 import { filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { IFeaturePanel } from '../models/config.models';
 
 @Component({
   selector: 'app-auth-container',
@@ -18,7 +19,7 @@ export class AuthContainer {
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
 
-  public sidePanelData = signal<{title: string, description: string, features: any[]} | null>(null);
+  public sidePanelData = signal<{title: string, description: string, features: IFeaturePanel[]} | null>(null);
 
   constructor() {
     this.updateSidePanelData();

@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { NgForOf } from '@angular/common';
 import { IFeaturePanel } from '../../../models/config.models';
 
 @Component({
