@@ -23,7 +23,7 @@
     } @else { @if (accountsGrouped$ | async; as grouped) { @for (section of
     accountSections; track section.key) { @if (grouped[section.key].length > 0)
     {
-    <app-basic-card [title]="section.title" [hasHover]="false">
+    <div>
       <section class="accounts-section">
         <div class="accounts-section__header">
           <img [src]="section.icon" alt="" class="accounts-section__icon" />
@@ -41,7 +41,7 @@
           }
         </div>
       </section>
-    </app-basic-card>
+    </div>
     } } @if (grouped.current.length === 0 && grouped.saving.length === 0 &&
     grouped.card.length === 0) {
     <div class="accounts-page__empty">

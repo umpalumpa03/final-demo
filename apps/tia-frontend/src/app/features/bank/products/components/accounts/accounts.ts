@@ -10,23 +10,15 @@ import { AccountsActions } from '../../../../../store/products/accounts/accounts
 import {
   selectAccountsGrouped,
   selectIsLoading,
-  selectIsCreateModalOpen,
   selectError,
 } from '../../../../../store/products/accounts/accounts.selectors';
 import { AccountCardComponent } from './components/account-card/account-card';
 import { ButtonComponent } from '../../../../../shared/lib/primitives/button/button';
-import { BasicCard } from '../../../../../shared/lib/cards/basic-card/basic-card';
 import { RouteLoader } from '../../../../../shared/lib/feedback/route-loader/route-loader';
 
 @Component({
   selector: 'app-accounts-page',
-  imports: [
-    CommonModule,
-    AccountCardComponent,
-    ButtonComponent,
-    BasicCard,
-    RouteLoader,
-  ],
+  imports: [CommonModule, AccountCardComponent, ButtonComponent, RouteLoader],
   templateUrl: './accounts.html',
   styleUrl: './accounts.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,9 +30,6 @@ export class Accounts implements OnInit {
     selectAccountsGrouped,
   );
   protected readonly isLoading$ = this.store.select(selectIsLoading);
-  protected readonly isCreateModalOpen$ = this.store.select(
-    selectIsCreateModalOpen,
-  );
   protected readonly error$ = this.store.select(selectError);
 
   protected readonly accountSections = [
