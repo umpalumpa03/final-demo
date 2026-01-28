@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { map, catchError, switchMap } from 'rxjs/operators';
-import { AccountsService } from '../../../features/bank/products/components/accounts/services/accounts.service';
+import { AccountsService } from '../../../shared/services/accounts/accounts.service';
 import { AccountsActions } from './accounts.actions';
 
 @Injectable()
