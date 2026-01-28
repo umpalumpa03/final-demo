@@ -1,10 +1,11 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   ElementRef,
-  HostListener,
   inject,
   input,
   model,
@@ -16,6 +17,8 @@ import { generateUniqueId } from '../base/utils/input.util';
 import { SELECT_DEFAULTS } from '../config/dropdowns.config';
 import { SelectConfig, SelectValue } from '../models/dropdowns.model';
 import { SelectOption } from '../models/dropdowns.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { fromEvent } from 'rxjs';
 
 @Component({
   selector: 'lib-select',
@@ -26,6 +29,7 @@ import { SelectOption } from '../models/dropdowns.model';
 })
 export class Dropdowns extends BaseInput implements OnInit {
   private readonly elementRef = inject(ElementRef);
+  private readonly destroyRef = inject(DestroyRef);
   private static currentMaxZIndex = 1000;
 
   public override readonly config = input<SelectConfig>({});
@@ -50,6 +54,18 @@ export class Dropdowns extends BaseInput implements OnInit {
         this.zIndex.set(1);
         this.assignedZIndex = null;
       }
+    });
+
+    afterNextRender(() => {
+      fromEvent<MouseEvent>(document, 'click', { capture: true })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((event) => {
+          if (!this.elementRef.nativeElement.contains(event.target as Node)) {
+            if (this.isOpen()) {
+              this.isOpen.set(false);
+            }
+          }
+        });
     });
   }
 
@@ -88,7 +104,8 @@ export class Dropdowns extends BaseInput implements OnInit {
       : this.mergedConfig().placeholder;
   });
 
-  protected toggleDropdown(): void {
+  protected toggleDropdown(event: MouseEvent): void {
+    event.stopPropagation();
     if (this.isDisabled()) return;
     this.isOpen.update((v) => !v);
   }
@@ -101,12 +118,5 @@ export class Dropdowns extends BaseInput implements OnInit {
     this.onChange(option.value);
     this.valueChange.emit(option.value);
     this.isOpen.set(false);
-  }
-
-  @HostListener('document:click', ['$event'])
-  protected onDocumentClick(event: MouseEvent): void {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
-      this.isOpen.set(false);
-    }
   }
 }
