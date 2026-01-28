@@ -81,10 +81,10 @@ export const authInterceptor: HttpInterceptorFn = (
       }
 
       return refreshSubject.pipe(
-        filter((t) => t != null),
+        filter((token) => token != null),
         take(1),
-        switchMap((t) =>
-          next(req.clone({ setHeaders: { Authorization: `Bearer ${t}` } })),
+        switchMap((token) =>
+          next(req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })),
         ),
       );
     }),
