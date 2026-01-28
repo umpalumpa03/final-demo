@@ -1,17 +1,18 @@
-import { transactionReducer, initialState } from './transactions.reducer';
+import { transactionReducer } from './transactions.reducer';
 import { TransactionActions } from './transactions.actions';
 import { describe, it, expect } from 'vitest';
+import { transactionInitialState } from './config/transaction-state-config';
 
 describe('Transaction Reducer', () => {
   it('should return the default state for unknown action', () => {
     const action = { type: 'Unknown' } as any;
-    const state = transactionReducer(initialState, action);
-    expect(state).toBe(initialState);
+    const state = transactionReducer(transactionInitialState, action);
+    expect(state).toBe(transactionInitialState);
   });
 
   it('should update filters and reset items/cursor on updateFilters', () => {
     const outputState = {
-      ...initialState,
+      ...transactionInitialState,
       items: [{ id: 'old' }] as any,
       nextCursor: 'old-cursor',
     };
@@ -29,7 +30,7 @@ describe('Transaction Reducer', () => {
 
   it('should set loading to true on loadTransactions', () => {
     const action = TransactionActions.loadTransactions();
-    const state = transactionReducer(initialState, action);
+    const state = transactionReducer(transactionInitialState, action);
 
     expect(state.isLoading).toBe(true);
     expect(state.error).toBeNull();
@@ -37,7 +38,7 @@ describe('Transaction Reducer', () => {
 
   it('should append items and update cursor on loadSuccess', () => {
     const existingState = {
-      ...initialState,
+      ...transactionInitialState,
       items: [{ id: '1' }] as any,
     };
 
@@ -59,7 +60,7 @@ describe('Transaction Reducer', () => {
   it('should set error on loadFailure', () => {
     const error = 'Some Error';
     const action = TransactionActions.loadFailure({ error });
-    const state = transactionReducer(initialState, action);
+    const state = transactionReducer(transactionInitialState, action);
 
     expect(state.isLoading).toBe(false);
     expect(state.error).toBe(error);

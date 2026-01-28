@@ -3,23 +3,21 @@ import { inject, Injectable } from '@angular/core';
 import {
   PaginatedResponse,
   TransactionFilter,
-  TransactionInterface,
+  ITransactions,
 } from '../../models/transactions.models';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environments/environment';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class TransactionService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
 
   public getTransactions(
     filters: TransactionFilter,
-  ): Observable<PaginatedResponse<TransactionInterface>> {
+  ): Observable<PaginatedResponse<ITransactions>> {
     const params = this.createHttpParams(filters);
-    return this.http.get<PaginatedResponse<TransactionInterface>>(
+    return this.http.get<PaginatedResponse<ITransactions>>(
       `${this.apiUrl}/transactions`,
       {
         params,
@@ -50,12 +48,12 @@ export class TransactionService {
       'dateTo',
     ];
 
-    standardKeys.forEach((key) => {
+    for (const key of standardKeys) {
       const value = filters[key];
       if (value !== null && value !== undefined && value !== '') {
         params = params.set(key, value.toString());
       }
-    });
+    }
 
     return params;
   }

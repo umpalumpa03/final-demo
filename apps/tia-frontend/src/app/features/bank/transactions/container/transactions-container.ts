@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   OnInit,
 } from '@angular/core';
@@ -35,16 +34,11 @@ export class TransactionsContainer implements OnInit {
     rows: this.items().map(convertTransactionData),
   }));
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.store.dispatch(TransactionActions.enter());
-    console.log(this.items());
   }
 
-  constructor() {
-    effect(() => {
-      console.log(this.items());
-    });
-  }
+  constructor() {}
   public onScroll(event: Event): void {
     const el = event.target as HTMLElement;
 

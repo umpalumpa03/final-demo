@@ -2,10 +2,10 @@ import {
   PrintedData,
   TableRowCell,
 } from '@tia/shared/lib/tables/models/table.model';
-import { TransactionInterface } from '../models/transactions.models';
+import { ITransactions  } from '../models/transactions.models';
 
 export function convertTransactionData(
-  transaction: TransactionInterface,
+  transaction: ITransactions ,
 ): TableRowCell {
   const accDisplay =
     transaction.transactionType === 'debit'

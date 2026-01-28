@@ -1,11 +1,7 @@
-export type Currency = 'GEL' | 'USD' | 'EUR';
+import { Currency, TransactionCategoryInterface } from "./base.models";
 
-export interface TransactionCategoryInterface {
-  id: string;
-  categoryName: string;
-}
 
-export interface TransactionInterface {
+export interface ITransactions  {
   id: string;
   userId: string;
   amount: number;

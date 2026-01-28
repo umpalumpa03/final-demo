@@ -1,5 +1,5 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { PaginatedResponse, TransactionFilter, TransactionInterface } from '../../features/bank/transactions/models/transactions.models';
+import { PaginatedResponse, TransactionFilter, ITransactions  } from '../../features/bank/transactions/models/transactions.models';
 
 
 export const TransactionActions = createActionGroup({
@@ -11,7 +11,7 @@ export const TransactionActions = createActionGroup({
     'Load Transactions': emptyProps(),
     'Load More': emptyProps(),
     'Load Success': props<{
-      response: PaginatedResponse<TransactionInterface>;
+      response: PaginatedResponse<ITransactions >;
     }>(),
     'Load Failure': props<{ error: unknown }>(),
   },

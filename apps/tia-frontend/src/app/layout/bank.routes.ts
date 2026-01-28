@@ -8,11 +8,13 @@ import {
   TRANSACTION_FEATURE_KEY,
   transactionReducer,
 } from '../store/transactions/transactions.reducer';
+import { TransactionService } from '../features/bank/transactions/services/transactions-service/transaction-service';
 export const bankRoutes: Routes = [
   {
     path: 'bank',
     loadComponent: () =>
       import('./bank-container').then((c) => c.BankContainer),
+    providers: [{ provide: TransactionService }],
     children: [
       {
         path: '',

@@ -1,0 +1,11 @@
+import { TransactionState } from '../models/transactions-store.models';
+
+export const transactionInitialState: TransactionState = {
+  items: [],
+  nextCursor: null,
+  filters: {
+    pageLimit: 20,
+  },
+  isLoading: false,
+  error: null,
+} as const;
