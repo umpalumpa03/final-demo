@@ -49,11 +49,10 @@
       (click)="onToggleRead($event)"
       [title]="mail()?.isRead ? 'Mark as unread' : 'Mark as read'"
     >
-      @if(!mail()?.isRead){
-      <img src="/images/svg/messaging/unread.svg" alt="Unread" />
-      } @if(mail()?.isRead){
-      <img src="/images/svg/messaging/read.svg" alt="Read" />
-      }
+      <img
+        src="/images/svg/messaging/{{mail()?.isRead ? 'read' : 'unread'}}.svg"
+        [alt]="mail()?.isRead ? 'Read' : 'Unread'"
+      />
     </button>
     <button
       class="mail-card__action-btn mail-card__action-btn--delete"

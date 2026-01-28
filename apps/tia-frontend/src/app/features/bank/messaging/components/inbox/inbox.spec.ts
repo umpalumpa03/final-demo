@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Inbox } from './inbox';
 import { TranslateModule } from '@ngx-translate/core';
 import { MessagingStore } from '../../store/messaging.store';
+import { MessagingService } from '../../services/messaging-api.service.ts';
+import { of } from 'rxjs';
 
 describe('Inbox', () => {
   let component: Inbox;
@@ -13,7 +15,11 @@ describe('Inbox', () => {
         Inbox,
         TranslateModule.forRoot()
       ],
-      providers: [MessagingStore],
+      providers: [
+        MessagingStore,
+        { provide: MessagingService, useValue: { getInbox: () => of({ items: [], pagination: { hasNextPage: false, nextCursor: null } }) } }
+
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Inbox);

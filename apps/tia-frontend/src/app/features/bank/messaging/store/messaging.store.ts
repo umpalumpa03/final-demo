@@ -1,6 +1,6 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { initialState, MailType } from './messaging.state';
-import { MessagingService } from '../services/messaging-api-service';
+import { MessagingService } from '../services/messaging-api.service.ts';
 import { inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, of, pipe, switchMap, tap } from 'rxjs';
