@@ -12,7 +12,7 @@ export const forgotPasswordRoutes: Routes = [
     path: 'forgot-password',
     loadComponent: () =>
       import(
-        'apps/tia-frontend/src/app/core/auth/components/forgot-password/components/forgot-password-email/forgot-password-email'
+        './forgot-password-email/forgot-password-email'
       ).then(
         (c) => c.ForgotPasswordEmail,
       ),
@@ -20,14 +20,14 @@ export const forgotPasswordRoutes: Routes = [
   {
     path: 'forgot-password/reset',
     loadComponent: () =>
-      import('./components/reset-password/reset-password').then(
+      import('./reset-password/reset-password').then(
         (c) => c.ResetPassword,
       ),
   },
   {
     path: 'forgot-password/success',
     loadComponent: () =>
-      import('./components/reset-success/reset-success').then(
+      import('./reset-success/reset-success').then(
         (c) => c.ResetSuccess,
       ),
   },

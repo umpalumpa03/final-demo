@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { NgForOf } from '@angular/common';
 import { IFeaturePanel } from '../../../models/config.models';
 
 @Component({
   selector: 'app-side-panel',
-  standalone: true,
   imports: [],
   templateUrl: './side-panel.html',
   styleUrls: ['./side-panel.scss'],

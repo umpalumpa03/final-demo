@@ -73,13 +73,13 @@ describe('PhoneVerification', () => {
     component.submit();
 
     expect(tokenSpy).toHaveBeenCalledWith('new-challenge-123');
-    expect(navSpy).toHaveBeenCalledWith(['/auth/sign-up/otp-verify']);
+    expect(navSpy).toHaveBeenCalledWith(['/auth/otp']);
   });
 
   it('should handle error when sendVerificationCode fails', () => {
     const mockError = {
       error: {
-        message: ['Invalid phone number format'],
+        message: 'Invalid phone number format',
       },
     };
 

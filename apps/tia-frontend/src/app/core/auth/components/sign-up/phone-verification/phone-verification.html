@@ -1,13 +1,8 @@
 <section class="phone-verification">
-    <div>
-        <h1>Verify Your Phone</h1>
-        <p>Enter your phone number to receive a verification code</p>
-    </div>
-    
-<form class="sign-in" [formGroup]="setPhoneNumberForm" (ngSubmit)="submit()">
+  <form class="sign-in" [formGroup]="setPhoneNumberForm" (ngSubmit)="submit()">
     <lib-text-input formControlName="phoneNumber"></lib-text-input>
     <h2>ERROR: {{errorMessage()}}</h2>
-    <app-button type="submit">Send Code</app-button>
-    <p>Didn't receive the code? <span>Resend</span></p>
-</form>
+    <app-button type="submit">Send Verification Code</app-button>
+    <app-button type="button" variant="outline">Back</app-button>
+  </form>
 </section>

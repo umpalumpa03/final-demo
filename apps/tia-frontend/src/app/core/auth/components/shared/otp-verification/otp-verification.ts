@@ -8,8 +8,9 @@ import {
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+
 import { AuthService } from '../../../services/auth.service';
-import { catchError, EMPTY, finalize, firstValueFrom, tap } from 'rxjs';
+import { catchError, EMPTY, take, finalize, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { forgotPasswordSegments } from 'apps/tia-frontend/src/app/core/auth/components/forgot-password/forgot-password.routes';
@@ -26,7 +27,7 @@ import { Otp } from '@tia/shared/lib/forms/otp/otp';
     ReactiveFormsModule,
     ButtonComponent,
     Spinner,
-    Otp
+    Otp,
   ],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
@@ -89,7 +90,7 @@ export class OtpVerification {
     ],
   });
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     const context = this.route.snapshot.data?.['otpContext'];
     if (context === 'forgot-password') {
       this.otpContext.set('forgot-password');
@@ -133,7 +134,8 @@ export class OtpVerification {
           this.router.navigate(['/auth/success']);
         }),
         catchError((err) => {
-          this.errorMessage.set(err);
+          const messages = err.error?.message;
+          this.errorMessage.set(messages);
           return EMPTY;
         }),
       )
@@ -183,11 +185,6 @@ export class OtpVerification {
       return;
     }
 
-    // if (!this.tokenService.forgotPasswordChallengeId) {
-    //   await this.router.navigate(['/auth', ...forgotPasswordSegments.base]);
-    //   return;
-    // }
-
     this.isSubmitting.set(true);
     this.authService
       .verifyForgotPasswordOtp(otpValue)
@@ -207,16 +204,11 @@ export class OtpVerification {
       });
   }
 
-  // async resendOtp(): Promise<void> {
-  //   this.resendMessage.set(null);
-  //   this.resendStatus.set(null);
-  //   try {
-  //     await firstValueFrom(this.authService.resetPhoneOtp());
-  //     this.resendMessage.set('OTP code resent successfully.');
-  //     this.resendStatus.set('success');
-  //   } catch {
-  //     this.resendMessage.set('Unable to resend OTP. Please try again.');
-  //     this.resendStatus.set('error');
-  //   }
-  // }
+  public resendVerification(): void {
+    this.authService.resendVerificationCode().pipe(take(1)).subscribe();
+  }
+
+  public goBack(): void {
+    this.router.navigate(['auth/phone']);
+  }
 }

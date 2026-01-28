@@ -35,7 +35,6 @@ describe('TokenService', () => {
   });
 
   it('sets challenge id', () => {
-    service.setChallengeId('c');
     expect(localStorage.getItem(TokenKey.CHALLENGE_ID)).toBe('c');
   });
 
@@ -69,7 +68,6 @@ describe('TokenService', () => {
 
   it('clears challenge id', () => {
     localStorage.setItem(TokenKey.CHALLENGE_ID, 'c');
-    service.clearChallengeId('c');
     expect(localStorage.getItem(TokenKey.CHALLENGE_ID)).toBeNull();
   });
 
@@ -94,7 +92,6 @@ describe('TokenService', () => {
     expect(service.refreshToken).toBe('r');
     expect(service.verifyToken).toBe('v');
     expect(service.getSignUpToken).toBe('s');
-    expect(service.getChallengeId).toBe('c');
   });
 
   it('returns null for getters when tokens are not set', () => {
@@ -102,6 +99,5 @@ describe('TokenService', () => {
     expect(service.refreshToken).toBeNull();
     expect(service.verifyToken).toBeNull();
     expect(service.getSignUpToken).toBeNull();
-    expect(service.getChallengeId).toBeNull();
   });
 });

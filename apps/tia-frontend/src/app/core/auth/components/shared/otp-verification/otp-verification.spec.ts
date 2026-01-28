@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { of, throwError } from 'rxjs';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { OtpVerification } from './otp-verification';
 import { AuthService } from '../../../services/auth.service';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
@@ -23,12 +23,11 @@ describe('OtpVerification', () => {
 
   const createComponent = (path: 'sign-in' | 'sign-up') => {
     TestBed.overrideProvider(ActivatedRoute, {
-      useValue: { snapshot: { url: [{ path }], data: {} } }
+      useValue: { snapshot: { url: [{ path }] } },
     });
 
     fixture = TestBed.createComponent(OtpVerification);
     component = fixture.componentInstance;
-    
     authService = TestBed.inject(AuthService);
     router = TestBed.inject(Router);
 
@@ -36,18 +35,10 @@ describe('OtpVerification', () => {
   };
 
   beforeEach(async () => {
-    authServiceMock = {
-      verifyMfa: vi.fn().mockReturnValue(of({})),
-      getChallengeId: vi.fn().mockReturnValue('challenge-123'),
-      isLoginLoading: signal(false),
-      verifyOtpCode: vi.fn().mockReturnValue(of({ success: true })),
-      verifyForgotPasswordOtp: vi.fn().mockReturnValue(of({})),
-    };
-
     await TestBed.configureTestingModule({
       imports: [OtpVerification],
       providers: [
-        { provide: AuthService, useValue: authServiceMock },
+        { provide: AuthService },
         { provide: TokenService, useValue: {} },
         provideRouter([]),
         {
@@ -56,6 +47,10 @@ describe('OtpVerification', () => {
         },
       ],
     }).compileComponents();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('should initialize with sign-in logic when path is sign-in', () => {
@@ -70,8 +65,8 @@ describe('OtpVerification', () => {
 
   it('should not call API and mark form touched if verificationCode is invalid', () => {
     createComponent('sign-up');
-    const authSpy = vi.spyOn(authService, 'verifyOtpCode');
-    
+    const authSpy = vi.spyOn(authService, 'verifyMfa');
+
     component.submit();
 
     expect(component.smsCodeVerificationForm.touched).toBe(true);
@@ -80,56 +75,60 @@ describe('OtpVerification', () => {
 
   it('should navigate to success page on successful verification', () => {
     createComponent('sign-up');
-    const navigateSpy = vi.spyOn(router, 'navigate');
-    vi.spyOn(authService, 'verifyOtpCode').mockReturnValue(of({ success: true } as any));
 
-    component.smsCodeVerificationForm.controls.verificationCode.setValue('1234');
+    const navigateSpy = vi.spyOn(router, 'navigate');
+
+    vi.spyOn(authService, 'verifyOtpCode').mockReturnValue(
+      of({ success: true } as any),
+    );
+
+    component.smsCodeVerificationForm.patchValue({
+      verificationCode: '123456',
+    });
+
     component.submit();
 
     expect(navigateSpy).toHaveBeenCalledWith(['/auth/success']);
   });
 
-  it('should set OTP required error when submitReset has no value', () => {
+  it('should call verifyMfa with form values and challengeId', () => {
     createComponent('sign-up');
 
-    component.submitReset();
+    const verifySpy = vi
+      .spyOn(authService, 'verifyMfa')
+      .mockReturnValue(of({} as any));
 
-    expect(component.otpError()).toBe('OTP is required');
-    expect(authServiceMock.verifyForgotPasswordOtp).not.toHaveBeenCalled();
+    vi.spyOn(authService, 'getChallengeId').mockReturnValue('challenge-123');
+
+    component.otpForm.patchValue({ code: '123456' });
+
+    component.verifyOtp();
+
+    expect(verifySpy).toHaveBeenCalledWith({
+      code: '123456',
+      challengeId: 'challenge-123',
+    });
   });
 
-  it('should set OTP length error when submitReset has short value', () => {
+  it('should call resendVerificationCode when resend is clicked', () => {
     createComponent('sign-up');
+    const resendSpy = vi
+      .spyOn(authService, 'resendVerificationCode')
+      .mockReturnValue(
+        of({ success: true, message: 'Code resent successfully' }),
+      );
 
-    component.form.controls.otp.setValue('12');
-    component.submitReset();
+    component.resendVerification();
 
-    expect(component.otpError()).toBe('OTP must be 4 digits');
-    expect(authServiceMock.verifyForgotPasswordOtp).not.toHaveBeenCalled();
+    expect(resendSpy).toHaveBeenCalled();
   });
 
-  it('should navigate on successful submitReset', () => {
+  it('should navigate back to phone entry page', () => {
     createComponent('sign-up');
-    const navigateSpy = vi.spyOn(router, 'navigate');
+    const navSpy = vi.spyOn(router, 'navigate');
 
-    component.form.controls.otp.setValue('1234');
-    component.submitReset();
+    component.goBack();
 
-    expect(authServiceMock.verifyForgotPasswordOtp).toHaveBeenCalledWith('1234');
-    expect(navigateSpy).toHaveBeenCalledWith(['/auth/reset-password']);
-    expect(component.isSubmitting()).toBe(false);
-  });
-
-  it('should set error message on failed submitReset', () => {
-    createComponent('sign-up');
-    vi.spyOn(authService, 'verifyForgotPasswordOtp').mockReturnValue(
-      throwError(() => new HttpErrorResponse({ status: 400 })),
-    );
-
-    component.form.controls.otp.setValue('1234');
-    component.submitReset();
-
-    expect(component.otpError()).toBe('Invalid OTP code');
-    expect(component.isSubmitting()).toBe(false);
+    expect(navSpy).toHaveBeenCalledWith(['auth/sign-up/phone']);
   });
 });

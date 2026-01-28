@@ -18,7 +18,6 @@ export class PhoneVerification {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router)
-  private tokenService = inject(TokenService)
 
   public setPhoneNumberForm = this.fb.nonNullable.group({
     phoneNumber: [ '',[Validators.required],
@@ -30,19 +29,19 @@ export class PhoneVerification {
   public submit():void {
     let telNumber = this.setPhoneNumberForm.getRawValue().phoneNumber;
     this.authService
-      .sendVerificationCode(telNumber)
+      .sendPhoneVerificationCode(telNumber)
       .pipe(
         tap((res) => {
           this.errorMessage.set('')
           // Challenge id localStorage 🚩🚩 - ეს ეიაი არ გეგონოთ ჩვენი რედფლეგია
-          this.tokenService.setChallengeId(res.challengeId)
+          this.authService.setChellangeId(res.challengeId)
           this.router.navigate(['/auth/otp']);
 
         }),
         catchError((err) => {
           const messages = err.error?.message;
-
-          this.errorMessage.set(messages[0]);
+          console.log(messages, "__FAIL")
+          this.errorMessage.set(messages);
 
           return EMPTY;
         }),

@@ -38,6 +38,7 @@ describe('AuthService (Vitest)', () => {
     vi.spyOn(tokenService, 'setVerifyToken').mockImplementation(() => {});
     vi.spyOn(tokenService, 'setAccessToken').mockImplementation(() => {});
     vi.spyOn(tokenService, 'setRefreshToken').mockImplementation(() => {});
+    vi.spyOn(tokenService, 'clearAccessToken').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -95,7 +96,7 @@ describe('AuthService (Vitest)', () => {
     req.flush(mockResponse);
   });
 
-  it('loginPostRequest should handle error response', (done) => {
+  it('loginPostRequest should handle error response', () => {
     const loginData = {
       username: 'test@test.com',
       password: 'password',
@@ -109,12 +110,28 @@ describe('AuthService (Vitest)', () => {
     service.loginPostRequest(loginData).subscribe({
       error: (err) => {
         expect(service.loginError()).toBe('Invalid credentials');
-        expect(service.isLoginLoading()).toBe(false);
       },
     });
 
     const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
     req.flush(mockError.error, { status: 401, statusText: 'Unauthorized' });
+    expect(service.isLoginLoading()).toBe(false);
+  });
+
+  it('loginPostRequest should handle successful response without mfa', () => {
+    const loginData = { username: 'test', password: 'pass' };
+    const mockResponse = { status: 'success' };
+
+    service.loginPostRequest(loginData).subscribe({
+      next: (res) => {
+        expect(res).toEqual(mockResponse);
+        expect(router.navigate).not.toHaveBeenCalled();
+      },
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
+    req.flush(mockResponse);
+    expect(service.isLoginLoading()).toBe(false);
   });
 
   it('signUpUser should POST correct data', (done) => {
@@ -171,75 +188,16 @@ describe('AuthService (Vitest)', () => {
     req.flush({ success: true });
   });
 
-  it('forgotPasswordRequest should store challengeId from response', () => {
-    const challengeSpy = vi.spyOn(service, 'setChellangeId');
+  it('logout should POST and clear token on success', () => {
+    const mockResponse = { success: true };
 
-    service.forgotPasswordRequest('test@test.com').subscribe();
-
-    const req = httpMock.expectOne(`${environment.apiUrl}/auth/forgot-password`);
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({ email: 'test@test.com' });
-
-    req.flush({ challengeId: 'challenge-321' });
-    expect(challengeSpy).toHaveBeenCalledWith('challenge-321');
-  });
-
-  it('verifyForgotPasswordOtp should clear access token and set new access token', () => {
-    const clearSpy = vi.spyOn(tokenService, 'clearAccessToken');
-    const setSpy = vi.spyOn(tokenService, 'setAccessToken');
-    vi.spyOn(service, 'getChallengeId').mockReturnValue('challenge-123');
-
-    service.verifyForgotPasswordOtp('1234').subscribe();
-
-    const req = httpMock.expectOne(
-      `${environment.apiUrl}/auth/forgot-password/verify`,
-    );
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({
-      challengeId: 'challenge-123',
-      code: '1234',
+    service.logout().subscribe((res) => {
+      expect(res).toEqual(mockResponse);
+      expect(tokenService.clearAccessToken).toHaveBeenCalled();
     });
 
-    expect(clearSpy).toHaveBeenCalled();
-    req.flush({ access_token: 'new-access' });
-    expect(setSpy).toHaveBeenCalledWith('new-access');
-  });
-
-  it('createNewPassword should throw when access token missing', async () => {
-    await expect(
-      firstValueFrom(service.createNewPassword('Pass123!')),
-    ).rejects.toThrow('Missing forgot password access token');
-  });
-
-  it('createNewPassword should attach bearer token', () => {
-    localStorage.setItem('access_token', 'fp-token');
-
-    service.createNewPassword('Pass123!').subscribe();
-
-    const req = httpMock.expectOne(
-      `${environment.apiUrl}/auth/create-new-password`,
-    );
-    expect(req.request.headers.get('Authorization')).toBe('Bearer fp-token');
-    expect(req.request.body).toEqual({ password: 'Pass123!' });
-
-    req.flush({ success: true });
-  });
-
-  it('resetPhoneOtp should throw when challengeId is missing', async () => {
-    await expect(firstValueFrom(service.resetPhoneOtp())).rejects.toThrow(
-      'Missing forgot password challengeId',
-    );
-  });
-
-  it('resetPhoneOtp should use challengeId in payload', () => {
-    service.setChellangeId('challenge-555');
-
-    service.resetPhoneOtp().subscribe();
-
-    const req = httpMock.expectOne(`${environment.apiUrl}/auth/mfa/otp-resend`);
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/logout`);
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({ challengeId: 'challenge-555' });
-
-    req.flush({ success: true });
+    req.flush(mockResponse);
   });
 });

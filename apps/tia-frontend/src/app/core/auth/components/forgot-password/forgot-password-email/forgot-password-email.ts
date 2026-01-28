@@ -10,8 +10,7 @@ import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { AuthService } from '../../../../services/auth.service';
-import { TokenService } from '../../../../services/token.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-forgot-password-email',
@@ -23,7 +22,6 @@ import { TokenService } from '../../../../services/token.service';
 export class ForgotPasswordEmail {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
-  private readonly tokenService = inject(TokenService);
   private readonly router = inject(Router);
 
   public readonly isSubmitting = signal(false);

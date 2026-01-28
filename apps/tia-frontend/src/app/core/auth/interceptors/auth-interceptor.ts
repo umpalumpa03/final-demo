@@ -27,7 +27,7 @@ export const authInterceptor: HttpInterceptorFn = (
   const accessToken = tokenService.accessToken;
   const isPublic = PUBLIC_ENDPOINTS.some((url) => req.url.includes(url));
 
-  const authReq = accessToken
+  const authReq = !isPublic && accessToken
     ? req.clone({ setHeaders: { Authorization: `Bearer ${accessToken}` } })
     : req;
 
@@ -81,10 +81,10 @@ export const authInterceptor: HttpInterceptorFn = (
       }
 
       return refreshSubject.pipe(
-        filter((t) => t != null),
+        filter((token) => token != null),
         take(1),
-        switchMap((t) =>
-          next(req.clone({ setHeaders: { Authorization: `Bearer ${t}` } })),
+        switchMap((token) =>
+          next(req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })),
         ),
       );
     }),

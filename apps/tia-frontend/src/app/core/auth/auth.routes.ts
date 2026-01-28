@@ -96,7 +96,7 @@ export const authRoutes: Routes = [
         path: 'forgot-password',
         loadComponent: () =>
           import(
-            './components/forgot-password/components/forgot-password-email/forgot-password-email'
+            './components/forgot-password/forgot-password-email/forgot-password-email'
           ).then((c) => c.ForgotPasswordEmail),
         data: {
           sidePanel: {
@@ -113,7 +113,7 @@ export const authRoutes: Routes = [
         path: 'reset-password',
         loadComponent: () =>
           import(
-            './components/forgot-password/components/reset-password/reset-password'
+            './components/forgot-password/reset-password/reset-password'
           ).then((c) => c.ResetPassword),
         data: {
           sidePanel: {

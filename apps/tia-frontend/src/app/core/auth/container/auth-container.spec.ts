@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { AuthContainer } from './auth-container';
 
@@ -11,11 +11,10 @@ describe('AuthContainer', () => {
     await TestBed.configureTestingModule({
       imports: [AuthContainer],
       providers: [
-        provideRouter([]),
         {
           provide: ActivatedRoute,
           useValue: {
-            firstChild: null,
+            snapshot: { data: {} },
             data: of({}),
           },
         },

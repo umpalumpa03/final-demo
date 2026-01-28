@@ -78,7 +78,7 @@ export class AuthService {
   ): Observable<IMfaVerifyResponse> {
     return this.http
       .post<IMfaVerifyResponse>(
-        `${environment.apiUrl}/aსuth/refresh`,
+        `${environment.apiUrl}/auth/refresh`,
         refreshToken,
       )
       .pipe(
@@ -125,7 +125,7 @@ export class AuthService {
     );
   }
 
-  public sendVerificationCode(
+  public sendPhoneVerificationCode(
     phoneNumber: string,
   ): Observable<SendVerificationResponse> {
     const token =
@@ -135,16 +135,17 @@ export class AuthService {
       Authorization: `Bearer ${token}`,
     });
 
-    return this.http.post<SendVerificationResponse>(
-      `${environment.apiUrl}/auth/phone`,
-      { phone: phoneNumber },
-      { headers },
-    );
+    return this.http
+      .post<SendVerificationResponse>(
+        `${environment.apiUrl}/auth/phone`,
+        { phone: phoneNumber },
+        { headers },
+      )
   }
 
   public verifyOtpCode(code: string): Observable<OtpResponse> {
     const token = this.tokenService.getSignUpToken;
-    const challengeId = this.tokenService.getChallengeId;
+    const challengeId = this.getChallengeId();
 
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
@@ -216,6 +217,21 @@ export class AuthService {
     return this.http.post<ResendOtpResponse>(
       `${environment.apiUrl}/auth/mfa/otp-resend`,
       payload,
+    );
+  }
+
+  public resendVerificationCode(): Observable<OtpResponse> {
+    const challengeId = this.getChallengeId();
+    const token = this.tokenService.getSignUpToken;
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http.post<OtpResponse>(
+      `${environment.apiUrl}/auth/mfa/otp-resend`,
+      { challengeId },
+      { headers },
     );
   }
 }

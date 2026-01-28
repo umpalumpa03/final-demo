@@ -14,9 +14,8 @@ import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { AuthService } from '../../../../services/auth.service';
-import { forgotPasswordSegments } from '../../forgot-password.routes';
-import { passwordValidator } from '../../../../utils/validators/form-validations';
+import { AuthService } from '../../../services/auth.service';
+import { passwordValidator } from '../../../utils/validators/form-validations';
 
 @Component({
   selector: 'app-reset-password',

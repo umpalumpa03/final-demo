@@ -1,23 +1,14 @@
-<div left class="auth-panel">
-  <div class="auth-panel__header">
-    <h2 class="auth-panel__title">OTP Verification</h2>
-    <p class="auth-panel__subtitle">
-      We've sent a 4-digit code to
-      <span class="otp-email">{{ email || 'your email' }}</span>
-    </p>
-  </div>
-
-  @if(!isLoading()){
-  <form class="sign-in" [formGroup]="otpForm" (ngSubmit)="verifyOtp()">
-    <p>Verify Otp</p>
-    <lib-text-input formControlName="code"></lib-text-input>
-    <app-button type="submit">Verify - ეს დალოგინებისას</app-button>
-  </form>
-  } @else {
-  <div class="sign-in sign-in-loader">
-    <app-spinner size="4rem"></app-spinner>
-  </div>
-  }
+@if(!isLoading()){
+<form class="sign-in" [formGroup]="otpForm" (ngSubmit)="verifyOtp()">
+  <p>Verify Otp</p>
+  <lib-text-input formControlName="code"></lib-text-input>
+  <app-button type="submit">Verify - ეს დალოგინებისას</app-button>
+</form>
+} @else {
+<div class="sign-in sign-in-loader">
+  <app-spinner size="4rem"></app-spinner>
+</div>
+}
 
   <form
     class="sign-in"
@@ -26,8 +17,9 @@
   >
     <lib-text-input formControlName="verificationCode"></lib-text-input>
     <h2>ERROR: {{errorMessage()}}</h2>
+    <p>Didn't receive the code? <span class="otp-verification__resend" (click)="resendVerification()"> Resend </span></p>
     <app-button type="submit">Verify - ეს რესგისტრაციისას</app-button>
-    <p>Didn't receive the code? Resend <span>Resend</span></p>
+    <app-button type="button" variant="outline" (click)="goBack()">Change Phone Number</app-button>
   </form>
 
   <form class="auth-form" [formGroup]="form" (ngSubmit)="submitReset()">
@@ -67,4 +59,3 @@
   <p class="auth-panel__footer">
     <a class="auth-link" routerLink="/auth/sign-in">Back to Sign In</a>
   </p>
-</div>
