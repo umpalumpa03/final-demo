@@ -1,4 +1,10 @@
 <app-bank-header
-  (onNotificationClick)="onNotificationClick()"
+  (onNotificationClick)="onNotificationClick($event)"
   [hasUnread]="hasUnread()"
 ></app-bank-header>
+
+<app-header-notifications
+  [isOpen]="isModalOpen()"
+  [anchor]="anchorEl()"
+  [notificationsItems]="notificationsItems$"
+></app-header-notifications>

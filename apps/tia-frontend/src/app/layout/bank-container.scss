@@ -2,16 +2,15 @@
 
 .bank-container-wrapper {
   @include display-flex(row);
-  width: 100%;
-  max-width: 192rem;
+  width: 100vw;
 }
 
 .bank-container-sidebar {
-  width: 25.6rem;
   flex-shrink: 0;
 }
 
 .bank-container-content {
   @include display-flex(column);
   flex: 1;
+  min-width: 0;
 }

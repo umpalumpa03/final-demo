@@ -30,4 +30,10 @@ export class ApprovedLoans implements OnInit {
   protected onCardClick(id: string) {
     console.log('Clicked', id);
   }
+
+  protected onRenameLoan(event: { id: string; name: string }): void {
+    this.store.dispatch(
+      LoansActions.renameLoan({ id: event.id, name: event.name }),
+    );
+  }
 }

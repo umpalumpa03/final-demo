@@ -1,0 +1,65 @@
+{
+    "title": "Settings",
+    "sections": {
+        "profile": "Profile",
+        "security": "Security",
+        "notifications": "Notifications",
+        "language": "Language",
+        "accounts": "Accounts",
+        "appearance": "Appearance",
+        "user-management": "User Management",
+        "approve-accounts": "Approve Accounts",
+        "approve-cards": "Approve Cards",
+        "loan-management": "Loan Management",
+        "profile-photo": "Profile Photo"
+    },
+    "language": {
+        "title": "Language Settings",
+        "subtitle": "Choose your preferred language",
+        "current": "Current Language",
+        "available": "Available Languages",
+        "english": "English",
+        "georgian": "Georgian"
+    },
+    "appearance": {
+        "title": "Appearance",
+        "theme": "Theme",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+    },
+    "profile-photo": {
+        "title": "Profile Photo",
+        "change": "Change Photo",
+        "remove": "Remove Photo"
+    },
+    "security": {
+        "title": "Security Settings",
+        "changePassword": "Change Password",
+        "twoFactorAuth": "Two-Factor Authentication"
+    },
+    "user-management": {
+        "title": "User Management",
+        "addUser": "Add User",
+        "removeUser": "Remove User"
+    },
+    "approve-accounts": {
+        "title": "Approve Accounts",
+        "pendingApprovals": "Pending Approvals"
+    },
+    "approve-cards": {
+        "title": "Approve Cards",
+        "pendingCards": "Pending Cards"
+    },
+    "loan-management": {
+        "title": "Loan Management",
+        "viewLoans": "View Loans",
+        "approveLoan": "Approve Loan",
+        "rejectLoan": "Reject Loan"
+    },
+    "accounts": {
+        "title": "Accounts",
+        "savings": "Savings Account",
+        "checking": "Checking Account"
+    }
+}

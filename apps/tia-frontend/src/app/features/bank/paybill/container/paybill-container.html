@@ -1,6 +1,9 @@
 <section class="paybill-container">
   <header class="paybill-container__header">
-    <app-breadcrumbs [breadcrumbs]="breadcrumbs()" />
+    <app-breadcrumbs
+      [breadcrumbs]="breadcrumbs()"
+      (click)="handleNativeClick($event)"
+    />
     <app-library-title [title]="paybillTitle" [subtitle]="paybillSubtitle" />
     <app-tabs [tabs]="navigationConfig" orientation="horizontal"></app-tabs>
   </header>

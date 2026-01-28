@@ -1,0 +1,75 @@
+<app-ui-modal [isOpen]="isOpen()" (closed)="close.emit()">
+    <div class="loan-modal" [formGroup]="form">
+
+        <header class="loan-modal__header">
+            <div class="loan-modal__header-text">
+                <div class="loan-modal__header-icon">
+                    <img src="./images/svg/feature-loans/request-loan.svg" alt="">
+                    <h3>Request New Loan</h3>
+                </div>
+                <p>Fill out the application form to request a new loan</p>
+            </div>
+        </header>
+
+        <main class="loan-modal__body">
+
+            <section class="loan-modal__section">
+                <h4 class="loan-modal__section-title">
+                    <img src="./images/svg/feature-loans/details.svg"> Loan Details
+                </h4>
+                <div class="loan-modal__grid">
+                    <lib-text-input [config]="cfg.amount" formControlName="amount"></lib-text-input>
+                    <lib-select [config]="cfg.account" [options]="accountOptions"
+                        formControlName="account"></lib-select>
+                    <lib-select [config]="cfg.term" [options]="termOptions" formControlName="term"></lib-select>
+                    <lib-select [config]="cfg.purpose" [options]="purposeOptions"
+                        formControlName="purpose"></lib-select>
+                    <lib-text-input [type]="cfg.date.type" [config]="cfg.date"
+                        formControlName="firstPaymentDate"></lib-text-input>
+                </div>
+            </section>
+
+            <section class="loan-modal__section" formGroupName="address">
+                <h4 class="loan-modal__section-title">
+                    <img src="./images/svg/feature-loans/address.svg"> Address Information
+                </h4>
+                <div class="loan-modal__grid loan-modal__grid--full-width">
+                    <lib-text-input [config]="cfg.street" formControlName="street"></lib-text-input>
+                </div>
+                <div class="loan-modal__grid">
+                    <lib-text-input [config]="cfg.city" formControlName="city"></lib-text-input>
+                    <lib-text-input [config]="cfg.region" formControlName="region"></lib-text-input>
+                    <lib-text-input [config]="cfg.postal" formControlName="postalCode"></lib-text-input>
+                </div>
+            </section>
+
+            <section class="loan-modal__section" formGroupName="contact">
+                <h4 class="loan-modal__section-title">
+                    <img src="./images/svg/feature-loans/person.svg"> Emergency Contact Person
+                </h4>
+                <div class="loan-modal__grid">
+                    <lib-text-input [config]="cfg.contactName" formControlName="fullName"></lib-text-input>
+                    <lib-text-input [config]="cfg.contactRel" formControlName="relationship"></lib-text-input>
+                    <lib-text-input [config]="cfg.contactPhone" formControlName="phone"></lib-text-input>
+                    <lib-text-input [config]="cfg.contactEmail" formControlName="email"></lib-text-input>
+                </div>
+            </section>
+
+            <div class="loan-modal__info-box">
+                <img src="./images/svg/feature-loans/info.svg">
+                <div class="loan-modal__info-box-content">
+                    <strong>Application Review</strong>
+                    <p>Your loan application will be reviewed by our team. You'll receive a notification once processed.
+                    </p>
+                </div>
+            </div>
+
+            <footer class="loan-modal__footer">
+                <app-button [variant]="'outline'" (click)="close.emit()">Cancel</app-button>
+                <app-button [isDisabled]="form.invalid && form.touched" (click)="onSave()">
+                    Submit Application
+                </app-button>
+            </footer>
+        </main>
+    </div>
+</app-ui-modal>

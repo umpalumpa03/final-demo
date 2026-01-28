@@ -1,0 +1,36 @@
+{
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "submit": "Submit",
+    "back": "Back",
+    "next": "Next",
+    "close": "Close",
+    "logout":"Log Out"
+  },
+  "labels": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Operation successful",
+    "noData": "No data available"
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Please enter a valid email",
+    "minLength": "Minimum {{min}} characters required",
+    "maxLength": "Maximum {{max}} characters allowed"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "my-products": "My Products",
+    "transactions": "Transactions",
+    "transfers": "Transfers",
+    "loans": "Loans",
+    "my-finances": "My Finances",
+    "paybills": "Paybill",
+    "settings": "Settings",
+    "messaging": "Messaging"
+  }
+}
