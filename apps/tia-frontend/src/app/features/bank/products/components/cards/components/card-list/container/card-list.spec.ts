@@ -1,3 +1,4 @@
+
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
@@ -5,6 +6,7 @@ import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { CardList } from './card-list';
 import { loadCardAccounts } from '../../../../../../../../store/products/cards/cards.actions';
+import { selectCardGroups, selectLoading, selectError } from '../../../../../../../../store/products/cards/cards.selectors';
 import { CardGroup } from '../../../models/card-group.model';
 
 describe('CardList', () => {
@@ -60,11 +62,18 @@ describe('CardList', () => {
 
   beforeEach(async () => {
     mockStore = {
-      select: vi.fn((selector) => of(
-        selector.toString().includes('selectCardGroups') ? [singleCardGroup, multiCardGroup, emptyCardGroup] :
-        selector.toString().includes('selectLoading') ? false :
-        selector.toString().includes('selectError') ? null : null
-      )),
+      select: vi.fn((selector) => {
+        if (selector === selectCardGroups) {
+          return of([singleCardGroup, multiCardGroup, emptyCardGroup]);
+        }
+        if (selector === selectLoading) {
+          return of(false);
+        }
+        if (selector === selectError) {
+          return of(null);
+        }
+        return of(null);
+      }),
       dispatch: vi.fn(),
     };
 

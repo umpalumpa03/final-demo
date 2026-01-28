@@ -19,7 +19,7 @@
   }
 
   &__account-info {
-    @include flex-center(row, space-between, center);
+    @include flex-center(row, space-between);
     gap: 1.6rem;
     padding: 2.4rem;
     background-color: var(--color-bg);
@@ -115,7 +115,7 @@
   }
 
   &__card-meta {
-    @include flex-center(row, flex-start, center);
+    @include flex-center(row, flex-start);
     gap: 1.2rem;
     flex-wrap: wrap;
   }
@@ -127,7 +127,7 @@
   }
 
   &__loading {
-    @include flex-center(row, center, center);
+    @include flex-center(row, center);
     @include font-inter(400, 1.6rem, 1.5);
     padding: 4rem;
     color: $gray-600;

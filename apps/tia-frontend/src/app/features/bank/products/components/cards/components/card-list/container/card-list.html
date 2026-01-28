@@ -1,14 +1,14 @@
 <div class="card-list">
-  @if (loading$ | async) {
-    <div class="card-list__loading">Loading...</div>
-  }
-  
-  @if (error$ | async; as error) {
-    <div class="card-list__error">{{ error }}</div>
-  }
-  
-  @if (cardGroups$ | async; as cardGroups) {
-    @for (group of cardGroups; track group.account.id) {
+  @if (vm$ | async; as vm) {
+    @if (vm.loading) {
+      <div class="card-list__loading">Loading...</div>
+    }
+    
+    @if (vm.error; as errorMsg) {
+      <div class="card-list__error">{{ errorMsg }}</div>
+    }
+    
+    @for (group of vm.cardGroups; track group.account.id) {
       <div class="card-list__group">
         <div class="card-list__account-header">
           <div class="card-list__account-info">

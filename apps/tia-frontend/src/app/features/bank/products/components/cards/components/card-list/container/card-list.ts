@@ -8,6 +8,7 @@ import {
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
+import { combineLatest } from 'rxjs';
 import { loadCardAccounts } from '../../../../../../../../store/products/cards/cards.actions';
 import {
   selectCardGroups,
@@ -28,9 +29,11 @@ export class CardList implements OnInit {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
 
-  protected readonly cardGroups$ = this.store.select(selectCardGroups);
-  protected readonly loading$ = this.store.select(selectLoading);
-  protected readonly error$ = this.store.select(selectError);
+  protected readonly vm$ = combineLatest({
+    cardGroups: this.store.select(selectCardGroups),
+    loading: this.store.select(selectLoading),
+    error: this.store.select(selectError),
+  });
 
   protected readonly activeCardIndex = signal<Record<string, number>>({});
 
