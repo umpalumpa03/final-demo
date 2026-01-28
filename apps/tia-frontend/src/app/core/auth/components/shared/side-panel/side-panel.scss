@@ -5,8 +5,7 @@
   @include font-inter();
   @include flex-center(column, center, left);
   width: 100%;
-  height: 100%;
-  padding: 0 8.4rem;
+  padding: 0 4.4rem;
   color: $white;
 
   &__title {

@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { NgForOf } from '@angular/common';
 import { IFeaturePanel } from '../../../models/config.models';
 
@@ -8,6 +8,7 @@ import { IFeaturePanel } from '../../../models/config.models';
   imports: [],
   templateUrl: './side-panel.html',
   styleUrls: ['./side-panel.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SidePanel {
   public title = input<string>();

@@ -3,6 +3,7 @@
 
 .sign-in {
   &__header {
+    @include font-inter(700, 3.6rem, 4rem);
     margin-bottom: 4rem;
   }
 
