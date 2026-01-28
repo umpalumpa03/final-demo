@@ -26,6 +26,31 @@ export const accountsFeature = createFeature({
       ...state,
       selectedAccountId: accountId,
     })),
+    on(AccountsActions.createAccount, (state) => ({
+      ...state,
+      isCreating: true,
+      createError: null,
+    })),
+    on(AccountsActions.createAccountSuccess, (state, { account }) => ({
+      ...state,
+      accounts: [...state.accounts, account],
+      isCreating: false,
+      createError: null,
+      isCreateModalOpen: false,
+    })),
+    on(AccountsActions.createAccountFailure, (state, { error }) => ({
+      ...state,
+      isCreating: false,
+      createError: error,
+    })),
+    on(AccountsActions.openCreateModal, (state) => ({
+      ...state,
+      isCreateModalOpen: true,
+    })),
+    on(AccountsActions.closeCreateModal, (state) => ({
+      ...state,
+      isCreateModalOpen: false,
+    })),
   ),
 });
 
@@ -37,4 +62,7 @@ export const {
   selectSelectedAccountId,
   selectIsLoading,
   selectError,
+  selectIsCreating,
+  selectCreateError,
+  selectIsCreateModalOpen,
 } = accountsFeature;

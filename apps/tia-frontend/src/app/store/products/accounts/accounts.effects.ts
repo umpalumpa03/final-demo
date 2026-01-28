@@ -29,4 +29,22 @@ export class AccountsEffects {
       ),
     ),
   );
+
+  createAccount$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AccountsActions.createAccount),
+      switchMap(({ request }) =>
+        this.accountsService.createAccount(request).pipe(
+          map((account) => AccountsActions.createAccountSuccess({ account })),
+          catchError((error) =>
+            of(
+              AccountsActions.createAccountFailure({
+                error: error.message || 'Failed to create account',
+              }),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

@@ -5,6 +5,9 @@ export interface AccountsState {
   selectedAccountId: string | null;
   isLoading: boolean;
   error: string | null;
+  isCreating: boolean;
+  createError: string | null;
+  isCreateModalOpen: boolean;
 }
 
 export const initialAccountsState: AccountsState = {
@@ -12,4 +15,7 @@ export const initialAccountsState: AccountsState = {
   selectedAccountId: null,
   isLoading: false,
   error: null,
+  isCreating: false,
+  createError: null,
+  isCreateModalOpen: false,
 };
