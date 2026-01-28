@@ -111,7 +111,7 @@ export class OtpVerification {
       .subscribe();
   }
 
-  public check(): void {
+  public goBack(): void {
     this.router.navigate(['auth/sign-up/phone']);
   }
 }
