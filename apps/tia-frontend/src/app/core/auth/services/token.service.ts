@@ -35,6 +35,7 @@ export class TokenService {
 
   public clearRefreshToken(): void {
     localStorage.removeItem(TokenKey.REFRESH);
+    localStorage.removeItem(TokenKey.VERIFY);
   }
 
   public clearVerifyToken(): void {

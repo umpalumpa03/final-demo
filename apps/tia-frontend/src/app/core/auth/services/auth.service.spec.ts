@@ -37,6 +37,7 @@ describe('AuthService (Vitest)', () => {
     vi.spyOn(tokenService, 'setVerifyToken').mockImplementation(() => {});
     vi.spyOn(tokenService, 'setAccessToken').mockImplementation(() => {});
     vi.spyOn(tokenService, 'setRefreshToken').mockImplementation(() => {});
+    vi.spyOn(tokenService, 'clearAccessToken').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -72,7 +73,7 @@ describe('AuthService (Vitest)', () => {
 
     service.loginPostRequest(loginData).subscribe((res) => {
       expect(tokenService.setVerifyToken).toHaveBeenCalledWith('token123');
-      expect(router.navigate).toHaveBeenCalledWith(['/auth/phone-verify']);
+      expect(router.navigate).toHaveBeenCalledWith(['/auth/phone']);
     });
 
     const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
@@ -94,7 +95,7 @@ describe('AuthService (Vitest)', () => {
     req.flush(mockResponse);
   });
 
-  it('loginPostRequest should handle error response', (done) => {
+  it('loginPostRequest should handle error response', () => {
     const loginData = {
       username: 'test@test.com',
       password: 'password',
@@ -108,12 +109,28 @@ describe('AuthService (Vitest)', () => {
     service.loginPostRequest(loginData).subscribe({
       error: (err) => {
         expect(service.loginError()).toBe('Invalid credentials');
-        expect(service.isLoginLoading()).toBe(false);
       },
     });
 
     const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
     req.flush(mockError.error, { status: 401, statusText: 'Unauthorized' });
+    expect(service.isLoginLoading()).toBe(false);
+  });
+
+  it('loginPostRequest should handle successful response without mfa', () => {
+    const loginData = { username: 'test', password: 'pass' };
+    const mockResponse = { status: 'success' };
+
+    service.loginPostRequest(loginData).subscribe({
+      next: (res) => {
+        expect(res).toEqual(mockResponse);
+        expect(router.navigate).not.toHaveBeenCalled();
+      },
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
+    req.flush(mockResponse);
+    expect(service.isLoginLoading()).toBe(false);
   });
 
   it('signUpUser should POST correct data', (done) => {
@@ -168,5 +185,18 @@ describe('AuthService (Vitest)', () => {
     });
 
     req.flush({ success: true });
+  });
+
+  it('logout should POST and clear token on success', () => {
+    const mockResponse = { success: true };
+
+    service.logout().subscribe((res) => {
+      expect(res).toEqual(mockResponse);
+      expect(tokenService.clearAccessToken).toHaveBeenCalled();
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/logout`);
+    expect(req.request.method).toBe('POST');
+    req.flush(mockResponse);
   });
 });

@@ -27,7 +27,7 @@ export const authInterceptor: HttpInterceptorFn = (
   const accessToken = tokenService.accessToken;
   const isPublic = PUBLIC_ENDPOINTS.some((url) => req.url.includes(url));
 
-  const authReq = accessToken
+  const authReq = !isPublic && accessToken
     ? req.clone({ setHeaders: { Authorization: `Bearer ${accessToken}` } })
     : req;
 

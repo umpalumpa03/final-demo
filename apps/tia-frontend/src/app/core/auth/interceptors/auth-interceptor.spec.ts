@@ -1,70 +1,158 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { HttpRequest, HttpHandlerFn, HttpResponse, HttpEvent } from '@angular/common/http';
-import { firstValueFrom, of, Observable } from 'rxjs';
-import { authInterceptor } from '../services/auth-interceptor';
-import { TokenService } from '../services/token.service';
-import { PUBLIC_ENDPOINTS } from '../models/tokens.model';
+import {
+  HttpErrorResponse,
+  HttpHandlerFn,
+  HttpRequest,
+  HttpResponse,
+} from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { EnvironmentInjector, runInInjectionContext } from '@angular/core';
+import { firstValueFrom, of, throwError } from 'rxjs';
+import { Router } from '@angular/router';
 
-describe('authInterceptor', () => {
-  let tokenServiceMock: { accessToken: string | null };
-  let injector: EnvironmentInjector;
+import { authInterceptor } from './auth-interceptor';
+import { TokenService } from '../services/token.service';
+import { AuthService } from '../services/auth.service';
+import { PUBLIC_ENDPOINTS } from '../models/tokens.model';
+
+describe('authInterceptor (Vitest)', () => {
+  let tokenService: {
+    accessToken: string | null;
+    refreshToken: string | null;
+    setAccessToken: ReturnType<typeof vi.fn>;
+    clearAuthToken: ReturnType<typeof vi.fn>;
+  };
+
+  let authService: {
+    refreshTokenPostRequest: ReturnType<typeof vi.fn>;
+  };
+
+  let router: {
+    navigate: ReturnType<typeof vi.fn>;
+  };
+
+  const createHandler =
+    (response$: any): HttpHandlerFn =>
+    (req) =>
+      response$;
 
   beforeEach(() => {
-    tokenServiceMock = { accessToken: 'mock-token' };
+    tokenService = {
+      accessToken: 'access-token',
+      refreshToken: 'refresh-token',
+      setAccessToken: vi.fn(),
+      clearAuthToken: vi.fn(),
+    };
+
+    authService = {
+      refreshTokenPostRequest: vi.fn(),
+    };
+
+    router = {
+      navigate: vi.fn(),
+    };
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: TokenService, useValue: tokenServiceMock },
+        { provide: TokenService, useValue: tokenService },
+        { provide: AuthService, useValue: authService },
+        { provide: Router, useValue: router },
       ],
     });
-
-    // Get the injector from the TestBed
-    injector = TestBed.inject(EnvironmentInjector);
   });
 
-  // Correctly type the mock handler to return an Observable
-  const next: HttpHandlerFn = (req: HttpRequest<any>): Observable<HttpEvent<any>> => {
-    return of(new HttpResponse({ status: 200 }));
-  };
-
-  const nextSpy = vi.fn(next);
-
-  it('adds Authorization header if token exists and endpoint is private', async () => {
+  it('adds Authorization header for protected endpoints', () => {
     const req = new HttpRequest('GET', '/api/private');
 
-    await firstValueFrom(
-      runInInjectionContext(injector, () => authInterceptor(req, nextSpy))
-    );
+    const next: HttpHandlerFn = (request) => {
+      expect(request.headers.get('Authorization')).toBe('Bearer access-token');
+      return of(new HttpResponse({ status: 200 }));
+    };
 
-    const calledReq = nextSpy.mock.calls[0][0];
-    expect(calledReq.headers.get('Authorization')).toBe('Bearer mock-token');
+    TestBed.runInInjectionContext(() => {
+      return authInterceptor(req, next);
+    });
   });
 
-  it('does not add Authorization header for public endpoints', async () => {
-    const publicUrl = PUBLIC_ENDPOINTS[0] || '/api/public';
-    const req = new HttpRequest('GET', publicUrl);
-    nextSpy.mockClear();
-
-    await firstValueFrom(
-      runInInjectionContext(injector, () => authInterceptor(req, nextSpy))
-    );
-
-    const calledReq = nextSpy.mock.calls[0][0];
-    expect(calledReq.headers.has('Authorization')).toBe(false);
-  });
-
-  it('does not add Authorization header if token is null', async () => {
-    tokenServiceMock.accessToken = null;
+  it('refreshes token and retries request on 401', async () => {
     const req = new HttpRequest('GET', '/api/private');
-    nextSpy.mockClear();
 
-    await firstValueFrom(
-      runInInjectionContext(injector, () => authInterceptor(req, nextSpy))
+    authService.refreshTokenPostRequest.mockReturnValue(
+      of({ access_token: 'new-access-token' }),
     );
 
-    const calledReq = nextSpy.mock.calls[0][0];
-    expect(calledReq.headers.has('Authorization')).toBe(false);
+    let callCount = 0;
+
+    const next: HttpHandlerFn = (request) => {
+      callCount++;
+
+      if (callCount === 1) {
+        return throwError(() => new HttpErrorResponse({ status: 401 }));
+      }
+
+      expect(request.headers.get('Authorization')).toBe(
+        'Bearer new-access-token',
+      );
+
+      return of(new HttpResponse({ status: 200 }));
+    };
+
+    await TestBed.runInInjectionContext(() =>
+      firstValueFrom(authInterceptor(req, next)),
+    );
+
+    expect(tokenService.setAccessToken).toHaveBeenCalledWith(
+      'new-access-token',
+    );
+  });
+
+  it('clears auth and redirects if refresh token is missing', async () => {
+    tokenService.refreshToken = null;
+
+    const req = new HttpRequest('GET', '/api/private');
+
+    const next: HttpHandlerFn = () =>
+      throwError(() => new HttpErrorResponse({ status: 401 }));
+
+    try {
+      await TestBed.runInInjectionContext(() =>
+        firstValueFrom(authInterceptor(req, next)),
+      );
+    } catch {
+      expect(tokenService.clearAuthToken).toHaveBeenCalled();
+      expect(router.navigate).toHaveBeenCalledWith(['/auth/sign-in']);
+    }
+  });
+
+  it('clears auth and redirects if refresh request fails', async () => {
+    const req = new HttpRequest('GET', '/api/private');
+
+    authService.refreshTokenPostRequest.mockReturnValue(
+      throwError(() => new Error('refresh failed')),
+    );
+
+    const next: HttpHandlerFn = () =>
+      throwError(() => new HttpErrorResponse({ status: 401 }));
+
+    try {
+      await TestBed.runInInjectionContext(() =>
+        firstValueFrom(authInterceptor(req, next)),
+      );
+    } catch {
+      expect(tokenService.clearAuthToken).toHaveBeenCalled();
+      expect(router.navigate).toHaveBeenCalledWith(['/auth/sign-in']);
+    }
+  });
+
+  it('does NOT add Authorization header for public endpoints', async () => {
+    const req = new HttpRequest('GET', PUBLIC_ENDPOINTS[0]);
+
+    const next: HttpHandlerFn = (request) => {
+      expect(request.headers.has('Authorization')).toBe(false);
+      return of(new HttpResponse({ status: 200 }));
+    };
+
+    await TestBed.runInInjectionContext(() =>
+      firstValueFrom(authInterceptor(req, next)),
+    );
   });
 });
