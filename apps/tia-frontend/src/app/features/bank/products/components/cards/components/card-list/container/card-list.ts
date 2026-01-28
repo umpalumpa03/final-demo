@@ -8,6 +8,7 @@ import {
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
+import { combineLatest } from 'rxjs';
 import { loadCardAccounts } from '../../../../../../../../store/products/cards/cards.actions';
 import {
   selectCardGroups,
@@ -28,9 +29,11 @@ export class CardList implements OnInit {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
 
-  protected readonly cardGroups$ = this.store.select(selectCardGroups);
-  protected readonly loading$ = this.store.select(selectLoading);
-  protected readonly error$ = this.store.select(selectError);
+  protected readonly vm$ = combineLatest({
+    cardGroups: this.store.select(selectCardGroups),
+    loading: this.store.select(selectLoading),
+    error: this.store.select(selectError),
+  });
 
   protected readonly activeCardIndex = signal<Record<string, number>>({});
 
@@ -38,14 +41,21 @@ export class CardList implements OnInit {
     this.store.dispatch(loadCardAccounts());
   }
 
-  protected handleCardClick(group: CardGroup, cardId: string, cardIndex: number): void {
+  public handleCardClick(
+    group: CardGroup,
+    cardId: string,
+    cardIndex: number,
+  ): void {
     if (group.cardImages.length === 1) {
-      this.router.navigate(['/products/cards/details', cardId]);
+      this.router.navigate(['/bank/products/cards/details', cardId]);
     } else {
       const currentIndex = this.activeCardIndex()[group.account.id] ?? 0;
 
       if (cardIndex === currentIndex) {
-        this.router.navigate(['/products/cards/account', group.account.id]);
+        this.router.navigate([
+          '/bank/products/cards/account',
+          group.account.id,
+        ]);
       } else {
         this.activeCardIndex.update((state) => ({
           ...state,
@@ -55,7 +65,11 @@ export class CardList implements OnInit {
     }
   }
 
-  protected getCardIndex(accountId: string): number {
+  protected handleViewAllCards(accountId: string): void {
+    this.router.navigate(['/bank/products/cards/account', accountId]);
+  }
+
+  public getCardIndex(accountId: string): number {
     return this.activeCardIndex()[accountId] ?? 0;
   }
 }
