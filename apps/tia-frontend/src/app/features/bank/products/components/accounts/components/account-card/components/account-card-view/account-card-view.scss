@@ -4,6 +4,7 @@
 .account-card {
   @include display-flex(column);
   gap: 1.25rem;
+  flex-wrap: wrap;
 
   &__header {
     @include flex-center(row, flex-start, flex-start);
