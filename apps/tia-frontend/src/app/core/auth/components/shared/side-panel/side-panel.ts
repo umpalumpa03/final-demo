@@ -3,7 +3,6 @@ import { IFeaturePanel } from '../../../models/config.models';
 
 @Component({
   selector: 'app-side-panel',
-  standalone: true,
   imports: [],
   templateUrl: './side-panel.html',
   styleUrls: ['./side-panel.scss'],

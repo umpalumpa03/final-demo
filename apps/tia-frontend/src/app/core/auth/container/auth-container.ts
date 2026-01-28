@@ -50,7 +50,7 @@ export class AuthContainer {
       });
   }
 
-  private updateSidePanelData() {
+  private updateSidePanelData(): void {
     let current = this.route;
     while (current.firstChild) {
       current = current.firstChild;
