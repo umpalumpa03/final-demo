@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { ILoan, LoanMonthsResponse } from '../models/loan.model';
 import { environment } from '../../../../../../environments/environment';
 import { LoanPurpose } from '../models/loan-request.model';
-import { IPrepaymentOption } from '../models/prepayment.model';
+import { PrepaymentOption } from '../models/prepayment.model';
 
 @Injectable()
 export class LoansService {
@@ -41,9 +41,7 @@ export class LoansService {
     return this.http.get<LoanPurpose[]>(`${this.loansApiUrl}/catalog/purposes`);
   }
 
-  public getPrepaymentOptions(): Observable<IPrepaymentOption[]> {
-    return this.http.get<IPrepaymentOption[]>(
-      `${this.loansApiUrl}/loan-prepayment-options`,
-    );
+  getPrepaymentOptions(): Observable<PrepaymentOption[]> {
+    return this.http.get<PrepaymentOption[]>('/loans/loan-prepayment-options');
   }
 }

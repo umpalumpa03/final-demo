@@ -54,8 +54,10 @@ export const selectPurposeOptions = createSelector(
 export const selectPrepaymentTypeOptions = createSelector(
   selectLoansState,
   (state) =>
-    state.prepaymentOptions.map((opt) => ({
-      label: opt.prepaymentDisplayName,
-      value: opt.prepaymentValue,
-    })),
+    state.prepaymentOptions
+      .filter((opt) => opt.isActive)
+      .map((opt) => ({
+        label: opt.prepaymentDisplayName,
+        value: opt.prepaymentValue,
+      })),
 );

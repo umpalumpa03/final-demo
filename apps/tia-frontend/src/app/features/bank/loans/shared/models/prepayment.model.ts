@@ -1,7 +1,9 @@
-export type PrepaymentType = 'partial' | 'full';
-
-export interface IPrepaymentOption {
+export interface PrepaymentOption {
   isActive: boolean;
-  prepaymentValue: PrepaymentType;
+  prepaymentValue: string;
   prepaymentDisplayName: string;
+}
+
+export interface IPrepaymentResponse {
+  prepaymentOptions: PrepaymentOption[];
 }
