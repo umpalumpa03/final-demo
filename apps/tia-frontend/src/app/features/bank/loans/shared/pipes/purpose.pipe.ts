@@ -6,7 +6,7 @@ import { formatPurpose } from '../utils/purposes.util';
   standalone: true,
 })
 export class PurposeFormatPipe implements PipeTransform {
-  transform(value: string | null): string {
+  public transform(value: string | null): string {
     return formatPurpose(value) || '';
   }
 }
