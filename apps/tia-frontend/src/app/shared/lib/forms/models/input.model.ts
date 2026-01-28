@@ -69,6 +69,7 @@ export interface InputConfig {
   showPasswordToggle?: boolean;
   accept?: string;
   multiple?: boolean;
+  margin?: string;
 }
 
 export interface SelectOption {

@@ -1,0 +1,21 @@
+{
+  "title": "Transfers",
+  "description": "Send money between accounts or to other recipients",
+  "types": {
+    "internal": "Between Own Accounts",
+    "external": "To Other Account",
+    "international": "International Transfer"
+  },
+  "internal": {
+    "intTitle": "Transfer Between Your Accounts",
+    "intDescription": "Move money seamlessly between your accounts"
+  },
+  "external": {
+    "extTitle": "Transfer to Other Account",
+    "extDescription": "Send money to external accounts via IBAN or phone number"
+  },
+  "confirmation": {
+    "title": "Transfer Successful!",
+    "success": "Your transfer has been completed successfully"
+  }
+}

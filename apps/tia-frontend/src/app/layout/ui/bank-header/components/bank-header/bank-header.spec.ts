@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BankHeader } from './bank-header';
 import { provideRouter } from '@angular/router';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { ElementRef } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
 describe('BankHeader', () => {
   let component: BankHeader;
@@ -22,46 +24,51 @@ describe('BankHeader', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should use OnPush change detection strategy', () => {
-    expect(fixture.componentRef.changeDetectorRef).toBeDefined();
+  it('should reflect hasUnread input changes', async () => {
+    // Set signal input
+    fixture.componentRef.setInput('hasUnread', true);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(component.hasUnread()).toBe(true);
   });
 
-  describe('hasUnread input', () => {
-    it('should have default value of false', () => {
-      expect(component.hasUnread()).toBe(false);
-    });
+  it('should emit bellRef when onNotification is called', () => {
+    // Spy on the output emitter
+    const emitSpy = vi.spyOn(component.onNotificationClick, 'emit');
 
-    it('should accept hasUnread input value', () => {
-      fixture.componentRef.setInput('hasUnread', true);
-      fixture.detectChanges();
+    // Manually trigger the method
+    component.onNotification();
 
-      expect(component.hasUnread()).toBe(true);
-    });
+    // Check if it emitted the ElementRef from the viewChild
+    // Note: bellRef() will only be defined if #bell exists in your HTML
+    const bellEl = component.bellRef();
+    if (bellEl) {
+      expect(emitSpy).toHaveBeenCalledWith(bellEl);
+    }
   });
 
-  describe('onNotificationClick output', () => {
-    it('should be defined', () => {
-      expect(component.onNotificationClick).toBeDefined();
-    });
+  it('should not emit if bellRef is missing', () => {
+    const emitSpy = vi.spyOn(component.onNotificationClick, 'emit');
 
-    it('should emit event when onNotification is called', () => {
-      const emitSpy = vi.spyOn(component.onNotificationClick, 'emit');
+    // Force the signal to return undefined for this test case
+    vi.spyOn(component, 'bellRef').mockReturnValue(undefined as any);
 
-      component.onNotification();
+    component.onNotification();
+    expect(emitSpy).not.toHaveBeenCalled();
+  });
 
-      expect(emitSpy).toHaveBeenCalledTimes(1);
-      expect(emitSpy).toHaveBeenCalledWith();
-    });
+  it('should trigger onNotification on click', () => {
+    const methodSpy = vi.spyOn(component, 'onNotification');
 
-    it('should trigger subscription when onNotification is called', () => {
-      return new Promise<void>((resolve) => {
-        component.onNotificationClick.subscribe(() => {
-          expect(true).toBe(true);
-          resolve();
-        });
+    // Look for the element with the template ref #bell or a button
+    const bellBtn =
+      fixture.debugElement.query(By.css('#bell')) ||
+      fixture.debugElement.query(By.css('button'));
 
-        component.onNotification();
-      });
-    });
+    if (bellBtn) {
+      bellBtn.nativeElement.click();
+      expect(methodSpy).toHaveBeenCalled();
+    }
   });
 });

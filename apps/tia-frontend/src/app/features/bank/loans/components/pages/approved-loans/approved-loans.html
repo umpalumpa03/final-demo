@@ -1,0 +1,11 @@
+<div class="loans">
+    @for (loan of approvedLoans$ | async; track loan.id) {
+    <lib-loan-card [loan]="loan" [variant]="'colored'" (cardClick)="onCardClick($event)"
+        (rename)="onRenameLoan($event)">
+    </lib-loan-card>
+    } @empty {
+    <div class="empty-state">
+        <p>No approved loans found.</p>
+    </div>
+    }
+</div>

@@ -1,0 +1,22 @@
+{
+  "title": "Messages",
+  "inbox": {
+    "title": "Inbox",
+    "empty": "No messages"
+  },
+  "compose": {
+    "compose": "Compose",
+    "title": "messages",
+    "to": "To",
+    "subject": "Subject",
+    "body": "Message",
+    "send": "Send"
+  },
+  "routes": {
+    "inbox": "Inbox",
+    "sent": "Sent",
+    "drafts": "Drafts",
+    "important": "Important",
+    "favorites": "Favorites"
+  }
+}

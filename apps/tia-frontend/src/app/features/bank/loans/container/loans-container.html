@@ -1,1 +1,8 @@
-<div class="global-bank-wrapper"><p>loans-container works!</p></div>
+<main class="main">
+    <app-loan-header (requestClick)="isModalOpen.set(true)"></app-loan-header>
+
+    <app-loan-navigation />
+    <router-outlet></router-outlet>
+    <app-request-modal [isOpen]="isModalOpen()" (close)="isModalOpen.set(false)">
+    </app-request-modal>
+</main>

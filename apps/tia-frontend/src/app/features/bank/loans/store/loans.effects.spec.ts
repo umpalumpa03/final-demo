@@ -13,23 +13,12 @@ describe('LoansEffects', () => {
   let effects: LoansEffects;
   let loansServiceMock: any;
 
-  const mockLoan: ILoan = {
-    id: '1',
-    loanAmount: 1000,
-    accountId: 'acc-1',
-    months: 12,
-    purpose: 'Test',
-    status: 1,
-    statusName: 'Pending',
-    monthlyPayment: 100,
-    nextPaymentDate: null,
-    createdAt: '2025-01-01',
-    friendlyName: 'Test Loan',
-  };
+  const mockLoan: ILoan = { id: '1', loanAmount: 1000 } as ILoan;
 
   beforeEach(() => {
     loansServiceMock = {
       getAllLoans: vi.fn(),
+      updateFriendlyName: vi.fn(),
     };
 
     TestBed.configureTestingModule({
@@ -43,15 +32,58 @@ describe('LoansEffects', () => {
     effects = TestBed.inject(LoansEffects);
   });
 
-  it('should dispatch loadLoansSuccess when API call is successful', () => {
-    const mockLoans: ILoan[] = [mockLoan];
+  it('should return loadLoansSuccess on success', () => {
     const action = LoansActions.loadLoans();
-    const outcome = LoansActions.loadLoansSuccess({ loans: mockLoans });
+    const outcome = LoansActions.loadLoansSuccess({ loans: [mockLoan] });
 
     actions$ = of(action);
-    loansServiceMock.getAllLoans.mockReturnValue(of(mockLoans));
+    loansServiceMock.getAllLoans.mockReturnValue(of([mockLoan]));
 
     effects.loadLoans$.subscribe((result) => {
+      expect(result).toEqual(outcome);
+    });
+  });
+
+  it('should return loadLoansFailure on error', () => {
+    const action = LoansActions.loadLoans();
+    const errorMsg = 'Error loading';
+    const outcome = LoansActions.loadLoansFailure({ error: errorMsg });
+
+    actions$ = of(action);
+    loansServiceMock.getAllLoans.mockReturnValue(
+      throwError(() => new Error(errorMsg)),
+    );
+
+    effects.loadLoans$.subscribe((result) => {
+      expect(result).toEqual(outcome);
+    });
+  });
+
+  it('should return renameLoanSuccess on success', () => {
+    const payload = { id: '1', name: 'New Name' };
+    const action = LoansActions.renameLoan(payload);
+    const outcome = LoansActions.renameLoanSuccess(payload);
+
+    actions$ = of(action);
+    loansServiceMock.updateFriendlyName.mockReturnValue(of({}));
+
+    effects.renameLoan$.subscribe((result) => {
+      expect(result).toEqual(outcome);
+    });
+  });
+
+  it('should return renameLoanFailure on error', () => {
+    const payload = { id: '1', name: 'New Name' };
+    const action = LoansActions.renameLoan(payload);
+    const errorMsg = 'Rename failed';
+    const outcome = LoansActions.renameLoanFailure({ error: errorMsg });
+
+    actions$ = of(action);
+    loansServiceMock.updateFriendlyName.mockReturnValue(
+      throwError(() => new Error(errorMsg)),
+    );
+
+    effects.renameLoan$.subscribe((result) => {
       expect(result).toEqual(outcome);
     });
   });

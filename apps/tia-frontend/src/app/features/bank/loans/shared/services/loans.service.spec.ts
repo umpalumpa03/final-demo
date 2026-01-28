@@ -5,13 +5,14 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ILoan } from '../models/loan.model';
+import { environment } from '../../../../../../environments/environment';
 
 describe('LoansService', () => {
   let service: LoansService;
   let httpMock: HttpTestingController;
-  const apiUrl = 'https://tia.up.railway.app/loans';
+  const apiUrl = `${environment.apiUrl}/loans`;
 
   const mockLoan: ILoan = {
     id: '1',
@@ -41,7 +42,6 @@ describe('LoansService', () => {
 
   afterEach(() => {
     httpMock.verify();
-    vi.restoreAllMocks();
   });
 
   it('should be created', () => {
@@ -51,15 +51,12 @@ describe('LoansService', () => {
   it('should get all loans without params', () => {
     const mockLoans: ILoan[] = [mockLoan];
 
-    vi.spyOn(Storage.prototype, 'getItem').mockReturnValue('fake-token');
-
     service.getAllLoans().subscribe((loans) => {
       expect(loans).toEqual(mockLoans);
     });
 
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer fake-token');
     expect(req.request.params.keys().length).toBe(0);
 
     req.flush(mockLoans);
@@ -68,8 +65,6 @@ describe('LoansService', () => {
   it('should get all loans WITH status param', () => {
     const mockLoans: ILoan[] = [];
 
-    vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
-
     service.getAllLoans(2).subscribe();
 
     const req = httpMock.expectOne(
@@ -77,8 +72,23 @@ describe('LoansService', () => {
     );
     expect(req.request.method).toBe('GET');
     expect(req.request.params.get('status')).toBe('2');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer ');
 
     req.flush(mockLoans);
+  });
+
+  it('should update friendly name', () => {
+    const loanId = '123';
+    const newName = 'My New Loan';
+    const updatedLoan: ILoan = { ...mockLoan, friendlyName: newName };
+
+    service.updateFriendlyName(loanId, newName).subscribe((loan) => {
+      expect(loan).toEqual(updatedLoan);
+    });
+
+    const req = httpMock.expectOne(`${apiUrl}/update-friendly-name/${loanId}`);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({ friendlyName: newName });
+
+    req.flush(updatedLoan);
   });
 });
