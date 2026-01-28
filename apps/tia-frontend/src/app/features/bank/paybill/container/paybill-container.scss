@@ -1,0 +1,6 @@
+@use '../../../../shared/styles/mixins' as *;
+.paybill-container {
+  @include display-flex(column);
+  gap: 3.2rem;
+  padding: 3.2rem;
+}

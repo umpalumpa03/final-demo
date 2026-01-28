@@ -1,4 +1,4 @@
-<app-basic-card maxWidth="91.2rem" padding="0rem 0 2.4rem 2.4rem">
+<app-basic-card maxWidth="100%" padding="0rem 0 2.4rem 2.4rem">
   <div class="category-header">
     <div
       class="category-header__icon-box"
@@ -26,13 +26,13 @@
   <div class="provider-list">
     <app-scroll-area height="40rem">
       <div class="providers__wrapper">
-        @if (isLoading()) { @for (item of [1,2,3,4,5,6]; track $index) {
+        @if (isLoading()) { @for (item of [1,2,3,4,5,6]; track item) {
         <app-provider-item [isLoading]="true" />
-        } } @else { @for (provider of providers(); track provider.serviceId) {
+        } } @else { @for (provider of providers(); track provider.id) {
         <app-provider-item
           [name]="provider.name!"
           [indicatorColor]="iconBgColor() || ''"
-          (selected)="selected.emit(provider.serviceId)"
+          (selected)="selected.emit(provider.id)"
         />
         } }
       </div>
