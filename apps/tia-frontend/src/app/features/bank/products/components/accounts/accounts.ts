@@ -6,13 +6,13 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { ProductsActions } from '../../../../../store/products/products.actions';
+import { AccountsActions } from '../../../../../store/products/accounts/accounts.actions';
 import {
   selectAccountsGrouped,
   selectIsLoading,
   selectIsCreateModalOpen,
   selectError,
-} from '../../../../../store/products/products.selectors';
+} from '../../../../../store/products/accounts/accounts.selectors';
 import { AccountCardComponent } from './components/account-card/account-card';
 import { ButtonComponent } from '../../../../../shared/lib/primitives/button/button';
 import { BasicCard } from '../../../../../shared/lib/cards/basic-card/basic-card';
@@ -62,7 +62,7 @@ export class Accounts implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.store.dispatch(ProductsActions.loadAccounts());
+    this.store.dispatch(AccountsActions.loadAccounts());
   }
 
   public handleTransfer(accountId: string): void {

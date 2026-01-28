@@ -1,6 +1,10 @@
-<nav class="navigation navigation--{{ orientation() }}">
+<nav
+  class="navigation navigation--{{ orientation() }}"
+  [class.navigation--collapsed]="collapsed()"
+>
   <ul class="navigation__list">
     @for (item of routeWithActive(); track item.label) {
+
     <li
       class="navigation__item"
       [class.navigation__item--disabled]="item.disabled"
@@ -11,24 +15,31 @@
         [routerLink]="item.route"
         routerLinkActive="navigation__item--active"
         #rla="routerLinkActive"
-        [routerLinkActiveOptions]="{ exact: true }"
+        [routerLinkActiveOptions]="{ exact: false }"
       >
         @if (item.icon) {
-        <img
-          [src]="item.icon"
-          [attr.alt]="item.label"
-          class="navigation__img"
-        />
+
+        <img [src]="item.icon" [alt]="item.label" class="navigation__img" />
+
+        } @if (!collapsed()) {
+
+        <span class="navigation__text">{{ item.label }}</span>
+
         }
-        <span>{{ item.label }}</span>
       </a>
-      @if (item.count && item.count > 0) {
-      <div 
-      class="navigation__count"
-      [class.navigation__item--active]="rla.isActive"
-      >{{ item.count > 99 ? '99+' : item.count }}</div>
+
+      @if (item.count && item.count > 0 && !collapsed()) {
+
+      <div
+        class="navigation__count"
+        [class.navigation__count--active]="rla.isActive"
+      >
+        {{ item.count > 99 ? '99+' : item.count }}
+      </div>
+
       }
     </li>
+
     }
   </ul>
 </nav>
