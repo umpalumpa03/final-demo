@@ -15,7 +15,6 @@ import { AccountUtils } from '../../../utils/account.utils';
   selector: 'app-account-card',
   imports: [CommonModule, AccountCardViewComponent],
   templateUrl: './account-card.html',
-  styleUrl: './account-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountCardComponent {
