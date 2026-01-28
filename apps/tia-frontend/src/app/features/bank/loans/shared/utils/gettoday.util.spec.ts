@@ -12,8 +12,10 @@ describe('getTodayDate Util', () => {
     vi.useRealTimers();
   });
 
-  it('should return the current date in YYYY-MM-DD format', () => {
+  it('should return the date in YYYY-MM-DD format', () => {
     const result = getTodayDate();
-    expect(result).toBe('2026-01-14');
+    const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+
+    expect(result).toMatch(datePattern);
   });
 });

@@ -38,13 +38,4 @@ describe('ApprovedLoans', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should handle card click', () => {
-    const consoleSpy = vi.spyOn(console, 'log');
-    const testId = 'test-loan-id';
-
-    component['onCardClick'](testId);
-
-    expect(consoleSpy).toHaveBeenCalledWith('Clicked', testId);
-  });
 });

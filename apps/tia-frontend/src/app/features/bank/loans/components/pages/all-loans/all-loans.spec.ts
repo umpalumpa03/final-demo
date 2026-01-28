@@ -49,9 +49,4 @@ describe('AllLoans', () => {
       LoansActions.renameLoan({ id: event.id, name: event.name }),
     );
   });
-
-  it('should log ID when card is clicked', () => {
-    component.onCardClick('123');
-    expect(console.log).toHaveBeenCalledWith('Clicked', '123');
-  });
 });

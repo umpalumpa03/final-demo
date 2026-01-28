@@ -28,7 +28,7 @@ export class AllLoans implements OnInit {
 
   // ES IYOS JER ASE GADAKETDEBA
   public onCardClick(id: string): void {
-    console.log('Clicked', id);
+    // console.log('Clicked', id);
   }
 
   public onRenameLoan(event: { id: string; name: string }): void {
