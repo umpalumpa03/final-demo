@@ -44,15 +44,20 @@ export const selectActiveProvider = createSelector(
   selectPaybillState,
   selectProviders,
   (state, providers) => {
+    if (!state) return null;
+
     if (state.selectedProvider) {
       return state.selectedProvider;
     }
 
-    if (state.selectedProviderId && providers && providers.length > 0) {
-      const found = providers.find(
-        (p) => p.id.toLowerCase() === state.selectedProviderId!.toLowerCase(),
+    if (state.selectedProviderId && providers?.length) {
+      const searchId = state.selectedProviderId.toLowerCase();
+      return (
+        providers.find((p) => {
+          const pId = (p.id || p.categoryId)?.toLowerCase();
+          return pId === searchId;
+        }) ?? null
       );
-      return found || null;
     }
 
     return null;
@@ -94,5 +99,5 @@ export const selectLoading = createSelector(
 
 export const selectVerifiedDetails = createSelector(
   selectPaybillState,
-  (state) => state.verifiedDetails
+  (state) => state.verifiedDetails,
 );
