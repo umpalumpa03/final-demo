@@ -1,0 +1,89 @@
+@use "../../../../../../shared/styles/variables" as *;
+@use "../../../../../../shared/styles/mixins" as *;
+@use "../../../../../../shared/styles/palette" as *;
+
+.mail-card {
+    @include flex-center($align: flex-start);
+    gap: 1.2rem;
+    padding: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 0.063rem solid $gray-50;
+    position: relative;
+    animation: slideIn 0.3s ease-out;
+
+    &:hover {
+        box-shadow: 0 0.2rem 0.8rem $gray-200;
+    }
+
+    &--unread {
+        background-color: $white;
+    }
+
+    &--read {
+        background-color: var(--color-bg);
+    }
+
+    &__content {
+        @include display-flex(column);
+        flex: 1;
+        gap: 0.4rem;
+    }
+
+    &__sender {
+        @include font-inter(400, 1.4rem, 2rem);
+        color: var(--color-fg);
+    }
+
+    &__header {
+        @include flex-center(row, space-between, center);
+        gap: 1.2rem;
+    }
+
+    &__date {
+        @include font-inter(400, 1.2rem, 1.6rem);
+        color: $gray-600;
+        flex-shrink: 0;
+    }
+
+    &__subject {
+        @include font-inter(500, 1.4rem, 2rem);
+        color: var(--color-fg);
+    }
+
+    &__preview {
+        @include font-inter(400, 1.2rem, 1.6rem);
+        color: $gray-700;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    &__actions {
+        @include flex-center(row, center, center);
+        gap: 1rem;
+    }
+
+    &__icons {
+        @include flex-center(row, center, center);
+        gap: 0.8rem;
+    }
+}
+
+.mail-card__action-btn--read:hover,
+.mail-card__action-btn--delete:hover {
+    filter: invert(24%) sepia(98%) saturate(7472%) hue-rotate(210deg) brightness(97%) contrast(101%);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-2rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

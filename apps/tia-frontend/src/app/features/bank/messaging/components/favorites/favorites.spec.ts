@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Favorites } from './favorites';
 import { TranslateModule } from '@ngx-translate/core';
+import { MessagingStore } from '../../store/messaging.store';
 
 describe('Favorites', () => {
   let component: Favorites;
@@ -12,6 +13,7 @@ describe('Favorites', () => {
         Favorites,
         TranslateModule.forRoot()
       ],
+      providers: [MessagingStore],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Favorites);

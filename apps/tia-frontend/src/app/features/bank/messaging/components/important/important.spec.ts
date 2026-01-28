@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Important } from './important';
 import { TranslateModule } from '@ngx-translate/core';
+import { MessagingStore } from '../../store/messaging.store';
 
 describe('Important', () => {
   let component: Important;
@@ -12,6 +13,7 @@ describe('Important', () => {
         Important,
         TranslateModule.forRoot()
       ],
+      providers: [MessagingStore],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Important);
