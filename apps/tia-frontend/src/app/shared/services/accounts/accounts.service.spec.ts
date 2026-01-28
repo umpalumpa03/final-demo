@@ -5,11 +5,11 @@ import {
 } from '@angular/common/http/testing';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { AccountsService } from './accounts.service';
-import { environment } from '../../../../../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 import {
   AccountType,
   CreateAccountRequest,
-} from '../../../models/accounts.model';
+} from '../../models/accounts/accounts.model';
 
 describe('AccountsService', () => {
   let service: AccountsService;

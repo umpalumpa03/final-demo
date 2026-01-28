@@ -3,8 +3,8 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { AccountsEffects } from './accounts.effects';
-import { AccountsService } from '../../../features/bank/products/components/accounts/services/accounts.service';
 import { AccountsActions } from './accounts.actions';
+import { AccountsService } from '../../../shared/services/accounts/accounts.service';
 
 describe('AccountsEffects', () => {
   let effects: AccountsEffects;

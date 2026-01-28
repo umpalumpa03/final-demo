@@ -1,12 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from 'apps/tia-frontend/src/environments/environment';
+import { environment } from '../../../../environments/environment';
 import {
   Account,
   AccountsResponse,
   CreateAccountRequest,
-} from '@tia/shared/models/accounts/accounts.model';
+} from '../../models/accounts/accounts.model';
 
 @Injectable()
 export class AccountsService {
