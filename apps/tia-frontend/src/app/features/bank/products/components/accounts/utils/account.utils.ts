@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AccountType } from '../../../models/accounts.model';
+import { AccountType } from '../../../../../../shared/models/accounts/accounts.model';
 
 @Injectable()
 export class AccountUtils {

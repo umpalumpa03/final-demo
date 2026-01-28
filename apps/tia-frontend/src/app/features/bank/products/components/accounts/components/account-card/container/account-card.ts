@@ -6,7 +6,7 @@ import {
   computed,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Account } from '../../../../../models/accounts.model';
+import { Account } from '../../../../../../../../shared/models/accounts/accounts.model';
 import { AccountCardViewComponent } from '../components/account-card-view/account-card-view';
 import { FormatUtils } from '../../../utils/format.utils';
 import { AccountUtils } from '../../../utils/account.utils';

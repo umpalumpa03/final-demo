@@ -2,7 +2,7 @@ import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import {
   Account,
   CreateAccountRequest,
-} from '../../../features/bank/products/models/accounts.model';
+} from '../../../shared/models/accounts/accounts.model';
 
 export const AccountsActions = createActionGroup({
   source: 'Accounts',

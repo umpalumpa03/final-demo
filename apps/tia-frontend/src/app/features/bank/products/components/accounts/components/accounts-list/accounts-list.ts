@@ -11,7 +11,7 @@ import { RouteLoader } from '../../../../../../../shared/lib/feedback/route-load
 import {
   AccountSection,
   GroupedAccounts,
-} from '../../../../models/accounts.model';
+} from '../../../../../../../shared/models/accounts/accounts.model';
 import { ErrorStates } from '../../../../../../../shared/lib/feedback/error-states/error-states';
 
 @Component({

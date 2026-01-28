@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { accountsReducer } from './accounts.reducer';
 import { initialAccountsState } from './accounts.state';
 import { AccountsActions } from './accounts.actions';
-import { AccountType } from '../../../features/bank/products/models/accounts.model';
+import { AccountType } from '../../../shared/models/accounts/accounts.model';
 
 describe('AccountsReducer', () => {
   it('should return initial state', () => {

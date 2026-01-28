@@ -1,6 +1,6 @@
 import { createSelector } from '@ngrx/store';
 import { accountsFeature } from './accounts.reducer';
-import { AccountType } from '../../../features/bank/products/models/accounts.model';
+import { AccountType } from '../../../shared/models/accounts/accounts.model';
 
 export const {
   selectAccounts,

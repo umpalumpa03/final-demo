@@ -5,7 +5,7 @@ import {
   selectCardAccounts,
   selectAccountsGrouped,
 } from './accounts.selectors';
-import { AccountType } from '../../../features/bank/products/models/accounts.model';
+import { AccountType } from '../../../shared/models/accounts/accounts.model';
 
 describe('AccountsSelectors', () => {
   const mockAccounts = [

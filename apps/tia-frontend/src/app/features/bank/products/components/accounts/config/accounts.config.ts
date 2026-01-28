@@ -1,4 +1,4 @@
-import { AccountType } from '../../../models/accounts.model';
+import { AccountType } from '../../../../../../shared/models/accounts/accounts.model';
 import { AccountUtils } from '../utils/account.utils';
 
 const accountUtils = new AccountUtils();

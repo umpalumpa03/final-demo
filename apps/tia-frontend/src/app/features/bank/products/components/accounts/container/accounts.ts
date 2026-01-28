@@ -7,7 +7,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { AccountsListComponent } from '../components/accounts-list/accounts-list';
-import { CreateAccountRequest } from '../../../models/accounts.model';
+import { CreateAccountRequest } from '../../../../../../shared/models/accounts/accounts.model';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import {
   selectAccountsGrouped,
