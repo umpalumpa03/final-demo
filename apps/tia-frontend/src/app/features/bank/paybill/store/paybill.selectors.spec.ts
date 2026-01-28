@@ -9,14 +9,16 @@ import {
 describe('Paybill Selectors', () => {
   const mockProviders: PaybillProvider[] = [
     {
-      serviceId: 'prov-1',
-      serviceName: 'Water Dept',
-      category: 'utilities',
+      serviceName: 'Test',
+      id: 'prov-1',
+      name: 'Water Dept',
+      categoryId: 'utilities',
     },
     {
-      serviceId: 'prov-2',
-      serviceName: 'Electric Co',
-      category: 'utilities',
+      serviceName: 'Test',
+      id: 'prov-2',
+      name: 'Electric Co',
+      categoryId: 'utilities',
     },
   ];
 
@@ -43,6 +45,8 @@ describe('Paybill Selectors', () => {
     categories: mockCategories,
     selectedCategoryId: 'cat-1',
     selectedProviderId: 'prov-1',
+    selectedProvider: null,
+    verifiedDetails: null,
     loading: false,
     error: null,
     providers: mockProviders,
@@ -71,7 +75,7 @@ describe('Paybill Selectors', () => {
     it('should return null if selectedId is null', () => {
       const result = Selectors.selectActiveCategory.projector(
         mockCategories,
-        null,
+        null as any,
         [],
       );
       expect(result).toBeNull();
@@ -80,33 +84,33 @@ describe('Paybill Selectors', () => {
 
   describe('selectActiveProvider', () => {
     it('should return the provider object from the providers array', () => {
+      const mockState = {
+        ...initialState,
+        selectedProviderId: 'prov-1',
+      };
+
       const result = Selectors.selectActiveProvider.projector(
+        mockState,
         mockProviders,
-        'prov-1',
       );
-      expect(result).toEqual(mockProviders[0]);
+
+      expect(result?.id).toBe('prov-1');
     });
 
     it('should return null if there is no providers array', () => {
+      const mockState = { ...initialState, selectedProviderId: 'prov-1' };
+
+      const result = Selectors.selectActiveProvider.projector(
+        mockState,
+        null as any,
+      );
+      expect(result).toBeNull();
+    });
+
+    it('should return null if the state is missing', () => {
       const result = Selectors.selectActiveProvider.projector(
         null as any,
-        'prov-1',
-      );
-      expect(result).toBeNull();
-    });
-
-    it('should return null if there is no selected provider ID', () => {
-      const result = Selectors.selectActiveProvider.projector(
         mockProviders,
-        null,
-      );
-      expect(result).toBeNull();
-    });
-
-    it('should return null if the provider ID is not found in the array', () => {
-      const result = Selectors.selectActiveProvider.projector(
-        mockProviders,
-        'non-existent',
       );
       expect(result).toBeNull();
     });

@@ -41,11 +41,26 @@ export const selectActiveCategory = createSelector(
 );
 
 export const selectActiveProvider = createSelector(
+  selectPaybillState,
   selectProviders,
-  selectSelectedProviderId,
-  (providers, selectedProviderId) => {
-    if (!providers || !selectedProviderId) return null;
-    return providers.find((p) => p.serviceId === selectedProviderId) ?? null;
+  (state, providers) => {
+    if (!state) return null;
+
+    if (state.selectedProvider) {
+      return state.selectedProvider;
+    }
+
+    if (state.selectedProviderId && providers?.length) {
+      const searchId = state.selectedProviderId.toLowerCase();
+      return (
+        providers.find((p) => {
+          const pId = (p.id || p.categoryId)?.toLowerCase();
+          return pId === searchId;
+        }) ?? null
+      );
+    }
+
+    return null;
   },
 );
 
@@ -80,4 +95,9 @@ export const selectPaybillBreadcrumbs = createSelector(
 export const selectLoading = createSelector(
   selectPaybillState,
   (state) => state.loading,
+);
+
+export const selectVerifiedDetails = createSelector(
+  selectPaybillState,
+  (state) => state.verifiedDetails,
 );

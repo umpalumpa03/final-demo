@@ -48,7 +48,7 @@ describe('Paybill Reducer', () => {
 
   it('should update providers and stop loading on loadProvidersSuccess', () => {
     const providers = [
-      { serviceId: 'p1', serviceName: 'Provider 1', category: 'cat_1' },
+      { id: 'p1', serviceName: 'Provider 1', categoryId: 'cat_1' },
     ];
     const action = PaybillActions.loadProvidersSuccess({ providers });
 
@@ -70,5 +70,59 @@ describe('Paybill Reducer', () => {
 
     expect(result.selectedCategoryId).toBeNull();
     expect(result.selectedProviderId).toBeNull();
+  });
+
+  it('should store verifiedDetails on checkBillSuccess', () => {
+    const mockDetails = {
+      valid: true,
+      accountHolder: 'John Doe',
+      amountDue: 100,
+    } as any;
+    const action = PaybillActions.checkBillSuccess({ details: mockDetails });
+    const result = paybillReducer(initialPaybillState, action);
+
+    expect(result.verifiedDetails).toEqual(mockDetails);
+    expect(result.loading).toBe(false);
+  });
+
+  it('should clear verifiedDetails on clearSelection', () => {
+    const stateWithDetails = {
+      ...initialPaybillState,
+      verifiedDetails: { valid: true } as any,
+    };
+    const action = PaybillActions.clearSelection();
+    const result = paybillReducer(stateWithDetails, action);
+
+    expect(result.verifiedDetails).toBeNull();
+  });
+
+  it('should set loading and clear error on checkBill', () => {
+    const action = PaybillActions.checkBill({
+      serviceId: '1',
+      accountNumber: '2',
+    });
+    const result = paybillReducer(initialPaybillState, action);
+    expect(result.loading).toBe(true);
+    expect(result.error).toBeNull();
+  });
+
+  it('should set error and stop loading on checkBillFailure', () => {
+    const action = PaybillActions.checkBillFailure({ error: 'Failed' });
+    const result = paybillReducer(
+      { ...initialPaybillState, loading: true },
+      action,
+    );
+    expect(result.error).toBe('Failed');
+    expect(result.loading).toBe(false);
+  });
+
+  it('should set error and stop loading on loadProvidersFailure', () => {
+    const action = PaybillActions.loadProvidersFailure({ error: 'API Error' });
+    const result = paybillReducer(
+      { ...initialPaybillState, loading: true },
+      action,
+    );
+    expect(result.error).toBe('API Error');
+    expect(result.loading).toBe(false);
   });
 });
