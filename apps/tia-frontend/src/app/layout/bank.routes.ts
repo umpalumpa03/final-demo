@@ -3,6 +3,11 @@ import { provideState } from '@ngrx/store';
 import { paybillReducer } from '../features/bank/paybill/store/paybill.reducer';
 import { provideEffects } from '@ngrx/effects';
 import * as paybillEffects from '../features/bank/paybill/store/paybill.effects';
+import * as transactionEffects from '../store/transactions/transactions.effects';
+import {
+  TRANSACTION_FEATURE_KEY,
+  transactionReducer,
+} from '../store/transactions/transactions.reducer';
 export const bankRoutes: Routes = [
   {
     path: 'bank',
@@ -34,13 +39,20 @@ export const bankRoutes: Routes = [
           import(
             '../features/bank/transactions/container/transactions-container'
           ).then((c) => c.TransactionsContainer),
+        providers: [
+          provideEffects(transactionEffects),
+          provideState({
+            name: TRANSACTION_FEATURE_KEY,
+            reducer: transactionReducer,
+          }),
+        ],
       },
       {
         path: 'transfers',
-        loadComponent: () =>
-          import(
-            '../features/bank/transfers/container/transfers-container'
-          ).then((c) => c.TransfersContainer),
+        loadChildren: () =>
+          import('../features/bank/transfers/transfers.routes').then(
+            (r) => r.transfersRoutes,
+          ),
       },
       {
         path: 'loans',
@@ -50,7 +62,7 @@ export const bankRoutes: Routes = [
           ),
       },
       {
-        path: 'my-finances',
+        path: 'finances',
         loadComponent: () =>
           import('../features/bank/finances/container/finances-container').then(
             (c) => c.FinancesContainer,
