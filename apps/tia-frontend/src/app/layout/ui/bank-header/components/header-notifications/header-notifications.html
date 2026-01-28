@@ -1,0 +1,21 @@
+@if(isOpen()) {
+<div
+  class="header-notifications"
+  [style.top.px]="top()"
+  [style.left.px]="left()"
+>
+  <header class="header-notifications__header">
+    <h3>Notifications</h3>
+    <span>3 unread</span>
+  </header>
+  @let messages = notificationsItems();
+  <main class="header-notifications__main">
+    @if (messages | async; as notifications) { @for (item of
+    notifications.items; track $index) {
+    <div>
+      <p>{{ item.title }}</p>
+    </div>
+    } }
+  </main>
+</div>
+}

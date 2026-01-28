@@ -18,4 +18,5 @@ export const PUBLIC_ENDPOINTS = [
   '/auth/forgot-password/verify',
   '/auth/create-new-password',
   '/auth/mfa/otp-resend',
+  // '/auth/logout',
 ];
