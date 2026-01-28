@@ -26,14 +26,14 @@ export class ApprovedLoans implements OnInit {
 
   protected readonly approvedLoans$ = this.store.select(selectFilteredLoans(2));
 
-  selectedLoan = signal<ILoan | null>(null);
-  isDetailsOpen = signal<boolean>(false);
+  public readonly selectedLoan = signal<ILoan | null>(null);
+  public readonly isDetailsOpen = signal<boolean>(false);
 
   public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadLoans());
   }
 
-  onCardClick(id: string) {
+  public onCardClick(id: string) {
     this.approvedLoans$.pipe(take(1)).subscribe((loans) => {
       const loan = loans.find((l) => l.id === id);
       if (loan) {

@@ -19,15 +19,13 @@ import { CLOSE_VARIANT } from '../../../config/loan-details.config';
 })
 export class LoanDetails {
   public readonly buttonVariant = CLOSE_VARIANT;
+  public readonly loan = input<ILoan | null>(null);
+  public readonly isOpen = input.required<boolean>();
 
-  loan = input<ILoan | null>(null);
+  public readonly close = output<void>();
+  public readonly calculatePrepayment = output<ILoan>();
 
-  isOpen = input.required<boolean>();
-  close = output<void>();
-
-  calculatePrepayment = output<ILoan>();
-
-  onCalculate() {
+  protected onCalculate(): void {
     const currentLoan = this.loan();
     if (currentLoan) {
       this.calculatePrepayment.emit(currentLoan);
