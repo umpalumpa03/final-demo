@@ -8,6 +8,7 @@ import { CardsEffects } from './cards.effects';
 import { CardListService } from '../../../features/bank/products/components/cards/services/card-list.service';
 import * as CardsActions from './cards.actions';
 import { CardAccount } from '../../../features/bank/products/components/cards/models/card-account.model';
+import { toArray } from 'rxjs/operators';
 
 describe('CardsEffects', () => {
   let actions$: Observable<Action>;
@@ -81,9 +82,10 @@ describe('CardsEffects', () => {
       actions$ = of(CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts }));
 
       const action = await firstValueFrom(effects.loadCardImages$);
-      expect(action).toEqual(
-        CardsActions.loadCardImageFailure({ cardId: 'card1', error: error.message })
-      );
+     expect(action).toEqual(
+  CardsActions.loadCardImageFailure({ cardId: 'card1', error: 'IMAGE_LOAD_FAILED' })
+);
+
     });
 
     it('should handle multiple cards from multiple accounts', async () => {
@@ -96,8 +98,8 @@ describe('CardsEffects', () => {
       cardListService.getCardImage.mockReturnValue(of(imageBase64));
       actions$ = of(CardsActions.loadCardAccountsSuccess({ accounts: multipleAccounts }));
 
-      const action = await firstValueFrom(effects.loadCardImages$);
-      expect(action.type).toContain('[Cards] Load Card Image');
+     const actions = await firstValueFrom(effects.loadCardImages$.pipe(toArray()));
+expect(actions.every(a => a.type.includes('[Cards] Load Card Image'))).toBe(true);
     });
   });
 });

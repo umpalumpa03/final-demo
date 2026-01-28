@@ -15,35 +15,44 @@ export class CardsEffects {
       ofType(CardsActions.loadCardAccounts),
       switchMap(() =>
         this.cardListService.getCardAccounts().pipe(
-          map((accounts) =>
-            CardsActions.loadCardAccountsSuccess({ accounts })
-          ),
+          map((accounts) => CardsActions.loadCardAccountsSuccess({ accounts })),
           catchError((error) =>
-            of(CardsActions.loadCardAccountsFailure({ error: error.message }))
-          )
-        )
-      )
-    )
+            of(CardsActions.loadCardAccountsFailure({ error: error.message })),
+          ),
+        ),
+      ),
+    ),
   );
 
   loadCardImages$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CardsActions.loadCardAccountsSuccess),
-      mergeMap(({ accounts }) => {
+
+      switchMap(({ accounts }) => {
         const allCardIds = accounts.flatMap((account) => account.cardIds);
-        
-        return allCardIds.map((cardId) =>
-          this.cardListService.getCardImage(cardId).pipe(
-            map((imageBase64) =>
-              CardsActions.loadCardImageSuccess({ cardId, imageBase64 })
+        if (allCardIds.length === 0) {
+          return of([]);
+        }
+
+        return forkJoin(
+          allCardIds.map((cardId) =>
+            this.cardListService.getCardImage(cardId).pipe(
+              map((imageBase64) =>
+                CardsActions.loadCardImageSuccess({ cardId, imageBase64 }),
+              ),
+              catchError(() =>
+                of(
+                  CardsActions.loadCardImageFailure({
+                    cardId,
+                    error: 'IMAGE_LOAD_FAILED',
+                  }),
+                ),
+              ),
             ),
-            catchError((error) =>
-              of(CardsActions.loadCardImageFailure({ cardId, error: error.message }))
-            )
-          )
+          ),
         );
       }),
-      mergeMap((observables) => observables)
-    )
+      mergeMap((actions) => actions),
+    ),
   );
 }

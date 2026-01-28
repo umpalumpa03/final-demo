@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { CardListService } from './card-list.service';
 import { CardAccount } from '../models/card-account.model';
-import { environment } from 'apps/tia-frontend/src/environments/environment';
+import { environment } from '../../../../../../../environments/environment';
 
 describe('CardListService', () => {
   let service: CardListService;
