@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import {
-  HttpClientTestingModule,
+  provideHttpClientTesting,
   HttpTestingController,
 } from '@angular/common/http/testing';
 import { ProfilePhotoService } from './profile-photo.service';
@@ -18,8 +18,7 @@ describe('ProfilePhotoService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [ProfilePhotoService],
+      providers: [ProfilePhotoService, provideHttpClientTesting()],
     });
 
     service = TestBed.inject(ProfilePhotoService);
