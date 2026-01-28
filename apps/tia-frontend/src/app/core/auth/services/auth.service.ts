@@ -2,14 +2,16 @@ import { inject, Injectable, signal } from '@angular/core';
 import {
   ILoginRequest,
   IMfaVerifyRequest,
-  ISignUpResponse,
-  OtpResponse,
-  SendVerificationResponse,
+  IRefreshTokenRequest,
 } from '../models/authRequest.models';
 import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
 import {
   IloginResponse,
+  ILogoutResponse,
   IMfaVerifyResponse,
+  ISignUpResponse,
+  OtpResponse,
+  SendVerificationResponse,
 } from '../models/authResponse.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
@@ -17,7 +19,7 @@ import { Router } from '@angular/router';
 import { TokenService } from './token.service';
 import { IRegistrationForm } from '../../../features/storybook/components/forms/models/contact-forms.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
@@ -47,7 +49,7 @@ export class AuthService {
             this.router.navigate(['/auth/otp-verify']);
           } else if (res.status === 'phone_verification_required') {
             this.tokenService.setVerifyToken(res.verification_token!);
-            this.router.navigate(['/auth/phone-verify']);
+            this.router.navigate(['/auth/phone']);
           }
         }),
         catchError((err) => {
@@ -56,6 +58,37 @@ export class AuthService {
           return throwError(() => err);
         }),
         finalize(() => this.isLoginLoading.set(false)),
+      );
+  }
+
+  public isLoggedIn(): boolean {
+    return this.tokenService.accessToken ? true : false;
+  }
+
+  public refreshTokenPostRequest(
+    refreshToken: IRefreshTokenRequest,
+  ): Observable<IMfaVerifyResponse> {
+    return this.http
+      .post<IMfaVerifyResponse>(`${environment.apiUrl}/aსuth/refresh`, refreshToken)
+      .pipe(
+        tap((res) => {
+          if (res.access_token && res.refresh_token) {
+            this.tokenService.setAccessToken(res.access_token);
+            this.tokenService.setRefreshToken(res.refresh_token);
+          }
+        }),
+      );
+  }
+
+  public logout(): Observable<ILogoutResponse> {
+    return this.http
+      .post<ILogoutResponse>(`${environment.apiUrl}/auth/logout`, {})
+      .pipe(
+        tap((res) => {
+          if (res.success === true) {
+            this.tokenService.clearAccessToken();
+          }
+        }),
       );
   }
 
@@ -72,18 +105,6 @@ export class AuthService {
           }
         }),
       );
-  }
-
-  public setTokens(access: string, refresh: string) {
-    this.accessToken = access;
-    this.refreshToken = refresh;
-
-    localStorage.setItem('accessToken', access);
-    localStorage.setItem('refreshToken', refresh);
-  }
-
-  public getAccessToken(): string | null {
-    return this.accessToken ?? localStorage.getItem('accessToken');
   }
 
   public signUpUser(userData: IRegistrationForm): Observable<ISignUpResponse> {

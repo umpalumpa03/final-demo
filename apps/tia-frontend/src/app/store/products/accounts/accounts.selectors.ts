@@ -42,3 +42,10 @@ export const selectAccountsGrouped = createSelector(
     card,
   }),
 );
+
+export const selectAccountOptions = createSelector(selectAccounts, (accounts) =>
+  (accounts ?? []).map((acc) => ({
+    label: `${acc.friendlyName || acc.accountName} (${acc.currency}) - ${acc.balance} ${acc.currency}`,
+    value: acc.id,
+  })),
+);

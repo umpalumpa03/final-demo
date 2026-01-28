@@ -5,13 +5,13 @@ export enum AccountType {
 }
 export interface Account {
   id: string;
-  userId: string;
-  permission: number;
+  accountNumber: string;
+  accountName: string;
+  friendlyName: string | null;
   type: AccountType;
   currency: string;
   iban: string;
   name: string;
-  friendlyName: string;
   status: string;
   balance: number;
   createdAt: string;

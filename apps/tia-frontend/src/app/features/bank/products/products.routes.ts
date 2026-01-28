@@ -28,8 +28,8 @@ export const productsRoutes: Routes = [
       },
       {
         path: 'cards',
-        loadComponent: () =>
-          import('./components/cards/cards').then((c) => c.Cards),
+        loadChildren: () =>
+          import('./components/cards/cards.routes').then((r) => r.cardsRoutes),
       },
     ],
   },

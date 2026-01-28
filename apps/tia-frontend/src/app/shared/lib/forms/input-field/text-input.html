@@ -31,8 +31,9 @@
 
     <input [id]="mergedConfig().id" [type]="inputType()" [value]="getDisplayValue()"
         [placeholder]="mergedConfig().placeholder" [disabled]="isDisabled()" [readOnly]="isReadonly()"
-        [name]="cfg.name || ''" [autocomplete]="mergedConfig().autocomplete || 'off'" [class]="fieldClasses()"
-        (input)="handleInput($event)" (blur)="handleBlur($event)" (focus)="handleFocus($event)" />
+        [min]="mergedConfig().min" [max]="mergedConfig().max" [name]="cfg.name || ''"
+        [autocomplete]="mergedConfig().autocomplete || 'off'" [class]="fieldClasses()" (input)="handleInput($event)"
+        (blur)="handleBlur($event)" (focus)="handleFocus($event)" />
 
     @if (isPasswordType()) {
     <button type="button" class="text-input__icon text-input__icon--suffix" (click)="togglePasswordVisibility()">
