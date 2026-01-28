@@ -62,9 +62,9 @@ export class AllLoans implements OnInit {
     this.isPrepaymentOpen.set(true);
   }
 
+  // SHEMDEG GVERDZE GADASVLAA DA XVALVIZAM
   public onCalculatePrepayment(payload: PrepaymentCalculationPayload): void {
-    console.log('Calculation Payload:', payload);
-    // Dispatch action here, e.g.:
+    // console.log('Calculation Payload:', payload);
   }
 
   public closeModals(): void {
