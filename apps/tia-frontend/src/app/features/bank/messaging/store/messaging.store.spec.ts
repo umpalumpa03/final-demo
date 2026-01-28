@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { MessagingStore } from './messaging.store';
-import { MessagingService } from '../services/messaging-api.service.ts';
+import { MessagingService } from '../services/messaging-api.service';
 import { initialState, MailsResponse } from './messaging.state';
 import { of, throwError } from 'rxjs';
 

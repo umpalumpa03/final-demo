@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Favorites } from './favorites';
 import { TranslateModule } from '@ngx-translate/core';
 import { MessagingStore } from '../../store/messaging.store';
-import { MessagingService } from '../../services/messaging-api.service.ts';
+import { MessagingService } from '../../services/messaging-api.service';
 import { of } from 'rxjs';
 
 describe('Favorites', () => {
