@@ -1,7 +1,7 @@
 @use '../../../../shared/styles/palette' as *;
 @use '../../../../shared/styles/mixins' as *;
 
-.sidebar-wrapper {
+.sidebar {
   @include display-flex(column);
   position: relative;
   box-shadow:
@@ -33,10 +33,10 @@
       width: 1.2rem;
       height: 1.2rem;
       transition: transform 0.3s ease;
+    }
 
-      &.rotated {
-        transform: rotate(180deg);
-      }
+    &--rotated {
+      transform: rotate(180deg);
     }
   }
 
@@ -45,32 +45,32 @@
     gap: 1.2rem;
     min-height: 6.5rem;
     padding: 0 1.6rem;
+  }
 
-    &__title-icon {
-      @include flex-center;
-      @include font-inter(600, 1.8rem);
-      width: 4rem;
-      height: 4rem;
-      border-radius: 0.8rem;
-      background: $blue-800;
-      color: $white;
-      flex-shrink: 0;
-    }
+  &__header-icon {
+    @include flex-center;
+    @include font-inter(600, 1.8rem);
+    width: 4rem;
+    height: 4rem;
+    border-radius: 0.8rem;
+    background: $blue-800;
+    color: $white;
+    flex-shrink: 0;
+  }
 
-    &__title {
-      @include font-inter(600, 2rem);
-      color: var(--color-fg);
-      white-space: nowrap;
-      overflow: hidden;
-    }
+  &__header-title {
+    @include font-inter(600, 2rem);
+    color: var(--color-fg);
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   app-navigation-bar {
     flex: 1;
   }
 
-  footer {
-    @include flex-center(row, left);
+  &__footer {
+    @include flex-center(row, flex-start);
     margin-top: auto;
     padding: 1.6rem;
     position: sticky;
@@ -87,5 +87,16 @@
         flex-shrink: 0;
       }
     }
+  }
+
+  &__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba($black, 0.5);
+    @include flex-center;
+    z-index: 100;
   }
 }

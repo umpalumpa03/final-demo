@@ -7,6 +7,10 @@
     "loans": "Loans",
     "finances": "Finances",
     "paybill": "Paybill",
-    "settings": "Settings"
+    "settings": "Settings",
+    "logout": {
+      "title": "Logout",
+      "message": "Are you sure you want to log out?"
+    }
   }
 }
