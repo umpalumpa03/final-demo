@@ -12,7 +12,7 @@ import { LoansActions } from '../../../store/loans.actions';
 import { selectAllLoans } from '../../../store/loans.selectors';
 import { LoanDetails } from '../../../shared/ui/prepayment-wizard/loan-details/loan-details';
 import { ILoan } from '../../../shared/models/loan.model';
-import { take } from 'rxjs';
+import { filter, map, take } from 'rxjs';
 
 @Component({
   selector: 'app-all-loans',
@@ -34,14 +34,16 @@ export class AllLoans implements OnInit {
   }
 
   public onCardClick(id: string): void {
-    this.loans$.pipe(take(1)).subscribe((loans) => {
-      const loan = loans.find((l) => l.id === id);
-
-      if (loan && loan.status === 2) {
+    this.loans$
+      .pipe(
+        take(1),
+        map((loans) => loans.find((l) => l.id === id)),
+        filter((loan): loan is ILoan => !!loan && loan.status === 2),
+      )
+      .subscribe((loan) => {
         this.selectedLoan.set(loan);
         this.isDetailsOpen.set(true);
-      }
-    });
+      });
   }
 
   public onRenameLoan(event: { id: string; name: string }): void {

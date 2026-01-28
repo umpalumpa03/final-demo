@@ -21,6 +21,7 @@ describe('ApprovedLoans', () => {
       loading: false,
       error: null,
       months: [],
+      purposes: [],
     },
   };
 

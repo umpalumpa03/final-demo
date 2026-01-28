@@ -58,4 +58,18 @@ export class LoansEffects {
       map(() => LoansActions.loadLoans()),
     ),
   );
+
+  loadPurposes$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.loadPurposes),
+      switchMap(() =>
+        this.loansService.getPurposes().pipe(
+          map((purposes) => LoansActions.loadPurposesSuccess({ purposes })),
+          catchError((error) =>
+            of(LoansActions.loadPurposesFailure({ error: error.message })),
+          ),
+        ),
+      ),
+    ),
+  );
 }
