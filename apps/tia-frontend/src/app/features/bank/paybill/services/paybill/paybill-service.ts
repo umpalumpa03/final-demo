@@ -36,6 +36,9 @@ export class PaybillService {
       },
     };
 
-    return this.http.post<BillDetails>('/paybill/check-bill', payload);
+    return this.http.post<BillDetails>(
+      `${this.baseUrl}/check-bill`,
+      payload,
+    );
   }
 }

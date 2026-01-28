@@ -25,6 +25,8 @@ export class PaybillMain {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
+  // States
+
   public readonly activeCategory = this.store.selectSignal(
     PAYBILL_SELECTORS.selectActiveCategory,
   );
@@ -35,10 +37,15 @@ export class PaybillMain {
     PAYBILL_SELECTORS.selectCategories,
   );
 
+  public readonly verifiedDetails = this.store.selectSignal(
+    PAYBILL_SELECTORS.selectVerifiedDetails,
+  );
   public readonly isLoading = this.store.selectSignal(
     PAYBILL_SELECTORS.selectLoading,
   );
+
   
+
   public readonly formattedCategories = computed(() => {
     return this.categories().map((cat) => {
       const lookupKey = cat.id.toLowerCase();
@@ -80,14 +87,23 @@ export class PaybillMain {
       });
     }
   }
+  public onVerifyAccount(data: { accountNumber: string }): void {
+    const provider = this.activeProvider();
+    if (provider) {
+      this.store.dispatch(
+        PaybillActions.checkBill({
+          serviceId: provider.id,
+          accountNumber: data.accountNumber,
+        }),
+      );
+    }
+  }
 
-  public verifyAccount(data: { accountNumber: string }): void {
-    console.log(
-      'Verifying account:',
-      data.accountNumber,
-      'for',
-      this.activeProvider()?.serviceName,
-    );
+  public onProceedToPayment(data: {
+    accountNumber: string;
+    amount: number;
+  }): void {
+    // PLACEHOLDER
   }
 
   public readonly activeCategoryUI = computed(() => {

@@ -1,4 +1,6 @@
 @use '../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../shared/styles/palette' as *;
+@use '../../../../../../../shared/styles/variables' as *;
 
 .paybill-form {
   &__header {
@@ -15,56 +17,90 @@
     flex-shrink: 0;
   }
 
-  &__icon {
-    width: 2.4rem;
-    height: 2.4rem;
-  }
-
-  &__emoji {
-    font-size: 2.4rem;
-  }
-
   &__text-group {
     @include flex-center(column, center, flex-start);
   }
 
   &__title {
-    font-weight: 500;
-    font-size: 2.4rem;
-    line-height: 3.2rem;
-    color: #0c4a6e;
+    @include font-inter(500, 2.4rem, 3.2rem);
+    color: var(--color-fg);
     margin: 0;
   }
 
   &__subtitle {
-    font-weight: 400;
-    font-size: 1.6rem;
-    line-height: 2.4rem;
-    color: #0369a1;
+    @include font-inter(400, 1.6rem, 2.4rem);
+    color: $blue-600;
     margin: 0;
   }
 
   &__content {
     @include display-flex(column);
     gap: 2.4rem;
-    width: 100%;
   }
+}
 
-  &__field {
-    @include display-flex(column);
-    gap: 0.6rem;
-  }
+.verified-container {
+  box-sizing: border-box;
+  @include flex-center(column, flex-start, flex-start);
+  padding: 1.66rem 1.66rem 1.2rem;
+  gap: 1.2rem;
+  background: $green-50;
+  border: 0.0625rem solid $green-200;
+  border-radius: 1rem;
+  width: 100%;
 
-  &__label {
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    font-size: 1.4rem;
-    color: #0c4a6e;
-  }
+  .verified-status {
+    @include flex-center(row, flex-start, center);
+    gap: 0.8rem;
+    color: $green-800;
 
-  &__error {
-    font-size: 1.2rem;
-    color: #ef4444;
-    margin-top: 0.4rem;
+    .verified-icon {
+      font-size: 2rem;
+    }
+
+    .verified-text {
+      @include font-inter(600, 1.6rem, 2.4rem);
+    }
   }
+}
+
+.details-grid {
+  width: 100%;
+  @include display-flex(column);
+  gap: 0.8rem;
+
+  .detail-row {
+    @include flex-center(row, space-between, center);
+
+    .label {
+      @include font-inter(400, 1.4rem, 2rem);
+      color: $gray-550;
+    }
+
+    .value {
+      @include font-inter(600, 1.4rem, 2rem);
+      color: var(--color-fg);
+
+      &.date-alert {
+        color: $orange-600;
+      }
+    }
+  }
+}
+
+.verified-input {
+  opacity: 0.5;
+  border: 0.1875rem solid $blue-400;
+}
+
+.helper-text {
+  @include font-inter(400, 1.2rem, 1.6rem);
+  color: $gray-500;
+  margin-top: 0.6rem;
+}
+
+.form-actions {
+  @include flex-center(row, space-between, center);
+  gap: 1.2rem;
+  padding-top: 1.6rem;
 }

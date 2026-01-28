@@ -10,6 +10,7 @@ export const initialPaybillState: PaybillState = {
   loading: false,
   providers: [],
   error: null,
+  verifiedDetails: null,
 };
 
 export const paybillReducer = createReducer(
@@ -66,6 +67,7 @@ export const paybillReducer = createReducer(
     selectedCategoryId: null,
     selectedProviderId: null,
     selectedProvider: null,
+    verifiedDetails: null,
     providers: [],
   })),
 
@@ -78,6 +80,6 @@ export const paybillReducer = createReducer(
     ...state,
     verifiedDetails: details,
     loading: false,
-    error: details.error ?? null,
+    error: details.valid ? null : (details.error ?? 'Invalid account'),
   })),
 );

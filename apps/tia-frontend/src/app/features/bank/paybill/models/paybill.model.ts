@@ -25,6 +25,7 @@ export interface PaybillState {
   loading: boolean;
   error: string | null;
   selectedProvider: PaybillProvider | null;
+  verifiedDetails: BillDetails | null;
 }
 
 export interface BillDetails {

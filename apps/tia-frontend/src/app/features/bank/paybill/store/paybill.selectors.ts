@@ -91,3 +91,8 @@ export const selectLoading = createSelector(
   selectPaybillState,
   (state) => state.loading,
 );
+
+export const selectVerifiedDetails = createSelector(
+  selectPaybillState,
+  (state) => state.verifiedDetails
+);

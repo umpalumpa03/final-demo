@@ -6,9 +6,11 @@ activeProvider();
     @if (provider && provider.id) {
     <app-paybill-form
       [provider]="provider"
+      [verifiedDetails]="verifiedDetails()"
       [iconBgColor]="ui?.iconBgColor!"
       [iconBgPath]="ui?.iconBgPath"
-      (formSubmit)="verifyAccount($event)"
+      (verify)="onVerifyAccount($event)"
+      (pay)="onProceedToPayment($event)"
     />
     }@else if (category) { @defer (on immediate) {
     <app-provider-list
