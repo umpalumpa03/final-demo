@@ -56,9 +56,10 @@ export const loansReducer = createReducer(
     ...state,
     error,
   })),
+
   on(LoansActions.loadPrepaymentOptionsSuccess, (state, { options }) => ({
     ...state,
     prepaymentOptions: options,
-    loading: false,
+    error: null,
   })),
 );

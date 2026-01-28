@@ -41,7 +41,9 @@ export class LoansService {
     return this.http.get<LoanPurpose[]>(`${this.loansApiUrl}/catalog/purposes`);
   }
 
-  getPrepaymentOptions(): Observable<PrepaymentOption[]> {
-    return this.http.get<PrepaymentOption[]>('/loans/loan-prepayment-options');
+  public getPrepaymentOptions(): Observable<PrepaymentOption[]> {
+    return this.http.get<PrepaymentOption[]>(
+      `${this.loansApiUrl}/loan-prepayment-options`,
+    );
   }
 }
