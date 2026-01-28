@@ -24,6 +24,7 @@ import { selectLoanMonthsOptions } from '../../../store/loans.selectors';
 import { CommonModule } from '@angular/common';
 import { selectAccountOptions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+import { getTodayDate } from '../../utils/gettoday.util';
 
 @Component({
   selector: 'app-request-modal',
@@ -54,33 +55,43 @@ export class RequestModal implements OnInit {
   protected readonly accountOptions$: Observable<IDropdownOption[]> =
     this.store.select(selectAccountOptions);
 
+  protected readonly dateConfig = {
+    ...LOAN_FORM_CONFIG.date,
+    min: getTodayDate(),
+  };
   public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadMonths());
     this.store.dispatch(AccountsActions.loadAccounts());
   }
 
   public readonly form = this.fb.group({
-    amount: ['', [Validators.required, Validators.min(100)]],
-    account: ['', Validators.required],
-    term: ['', Validators.required],
+    loanAmount: [
+      null as number | null,
+      [Validators.required, Validators.min(100)],
+    ],
+    amountToReceiveAccountId: ['', Validators.required],
+    months: [null as number | null, Validators.required],
     purpose: ['', Validators.required],
     firstPaymentDate: ['', Validators.required],
-    address: this.fb.group({
-      street: ['', Validators.required],
-      city: ['', Validators.required],
-      region: ['', Validators.required],
-      postalCode: ['', Validators.required],
-    }),
     contact: this.fb.group({
-      fullName: ['', Validators.required],
-      relationship: ['', Validators.required],
-      phone: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-      email: ['', [Validators.required, Validators.email]],
+      address: this.fb.group({
+        street: ['', Validators.required],
+        city: ['', Validators.required],
+        region: ['', Validators.required],
+        postalCode: ['', Validators.required],
+      }),
+      contactPerson: this.fb.group({
+        name: ['', Validators.required],
+        relationship: ['', Validators.required],
+        phone: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+        email: ['', [Validators.required, Validators.email]],
+      }),
     }),
   });
 
   public onSave(): void {
     if (this.form.valid) {
+      console.log('Form Data:', this.form.getRawValue());
       const formData = this.form.getRawValue() as ILoanRequest;
       this.submit.emit(formData);
       this.form.reset();
