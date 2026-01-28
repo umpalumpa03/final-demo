@@ -8,8 +8,9 @@ import {
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+
 import { AuthService } from '../../../services/auth.service';
-import { catchError, EMPTY, tap } from 'rxjs';
+import { catchError, EMPTY, take, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 
@@ -62,7 +63,7 @@ export class OtpVerification {
     ],
   });
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     const path = this.route.snapshot.url[0].path;
     if (path === 'sign-in') {
       this.registerVerifyLogic.set(false);
@@ -74,7 +75,7 @@ export class OtpVerification {
   public submit(): void {
     if (this.registerVerifyLogic()) {
       this.registerVerification();
-    } 
+    }
   }
 
   private registerVerification(): void {
@@ -92,10 +93,25 @@ export class OtpVerification {
           this.router.navigate(['/auth/sign-up/success']);
         }),
         catchError((err) => {
-          this.errorMessage.set(err);
+          const messages = err.error?.message;
+          this.errorMessage.set(messages);
           return EMPTY;
         }),
       )
       .subscribe();
+  }
+
+  public resendVerification():void {
+    this.authService
+      .resendVerificationCode()
+      .pipe(
+        take(1),
+        tap((res) => console.log(res)),
+      )
+      .subscribe();
+  }
+
+  public check(): void {
+    this.router.navigate(['auth/sign-up/phone']);
   }
 }

@@ -38,7 +38,7 @@ export class TokenService {
   }
 
   //TODO will be deleted
-  public clearChallengeId(code:string) {
+  public clearChallengeId() {
     localStorage.removeItem(TokenKey.CHALLENGE_ID)
   }
 

@@ -41,8 +41,8 @@ export class PhoneVerification {
         }),
         catchError((err) => {
           const messages = err.error?.message;
-
-          this.errorMessage.set(messages[0]);
+          console.log(messages, "__FAIL")
+          this.errorMessage.set(messages);
 
           return EMPTY;
         }),

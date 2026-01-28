@@ -7,11 +7,13 @@
 } @else {
 <div class="sign-in sign-in-loader">
   <app-spinner size="4rem"></app-spinner>
-</div>}
+</div>
+}
 
-<form class="sign-in" [formGroup]="smsCodeVerificationForm" (ngSubmit)="submit()">
+<form class="otp-verification" [formGroup]="smsCodeVerificationForm" (ngSubmit)="submit()">
     <lib-text-input formControlName="verificationCode"></lib-text-input>
     <h2>ERROR: {{errorMessage()}}</h2>
+    <p>Didn't receive the code? <span class="otp-verification__resend" (click)="resendVerification()"> Resend </span></p>
     <app-button type="submit">Verify - ეს რესგისტრაციისას</app-button>
-    <p>Didn't receive the code? Resend <span>Resend</span></p>
+    <app-button type="button" variant="outline" (click)="check()">Change Phone Number</app-button>
 </form>

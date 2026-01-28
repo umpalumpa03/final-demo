@@ -17,7 +17,7 @@ export interface ISignUpResponse {
 }
 
 export interface SendVerificationResponse {
-  message: 'string',
+  message: string,
   challengeId: string,
   method: string;
 }
