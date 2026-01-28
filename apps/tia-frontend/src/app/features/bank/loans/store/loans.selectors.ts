@@ -25,3 +25,13 @@ export const selectLoanCounts = createSelector(selectAllLoans, (loans) => ({
   pending: loans.filter((l) => l.status === 1).length,
   declined: loans.filter((l) => l.status === 3).length,
 }));
+
+export const selectLoanMonths = createSelector(
+  selectLoansState,
+  (state) => state.months,
+);
+
+export const selectLoanMonthsOptions = createSelector(
+  selectLoanMonths,
+  (months) => months.map((m) => ({ label: `${m} Months`, value: m })),
+);

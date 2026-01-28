@@ -16,6 +16,7 @@ export interface ILoan {
 
 export interface ILoansState {
   loans: ILoan[];
+  months: number[];
   loading: boolean;
   error: string | null;
   filterStatus: number | null;

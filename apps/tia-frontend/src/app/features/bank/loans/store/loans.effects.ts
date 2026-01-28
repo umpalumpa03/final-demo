@@ -36,4 +36,18 @@ export class LoansEffects {
       ),
     ),
   );
+
+  public loadMonths$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.loadMonths),
+      switchMap(() =>
+        this.loansService.getLoanMonths().pipe(
+          map((months) => LoansActions.loadMonthsSuccess({ months })),
+          catchError((error) =>
+            of(LoansActions.loadMonthsFailure({ error: error.message })),
+          ),
+        ),
+      ),
+    ),
+  );
 }

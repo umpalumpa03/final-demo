@@ -1,7 +1,7 @@
 export interface ILoanRequest {
   amount: string;
   account: string;
-  term: string;
+  term: string | number;
   purpose: string;
   firstPaymentDate: string;
   address: {
@@ -16,4 +16,9 @@ export interface ILoanRequest {
     phone: string;
     email: string;
   };
+}
+
+export interface IDropdownOption {
+  label: string;
+  value: string | number;
 }

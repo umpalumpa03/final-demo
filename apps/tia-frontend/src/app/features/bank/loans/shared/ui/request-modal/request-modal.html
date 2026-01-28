@@ -21,7 +21,8 @@
                     <lib-text-input [config]="cfg.amount" formControlName="amount"></lib-text-input>
                     <lib-select [config]="cfg.account" [options]="accountOptions"
                         formControlName="account"></lib-select>
-                    <lib-select [config]="cfg.term" [options]="termOptions" formControlName="term"></lib-select>
+                    <lib-select [config]="cfg.term" [options]="(termOptions$ | async) || []"
+                        formControlName="term"></lib-select>
                     <lib-select [config]="cfg.purpose" [options]="purposeOptions"
                         formControlName="purpose"></lib-select>
                     <lib-text-input [type]="cfg.date.type" [config]="cfg.date"
