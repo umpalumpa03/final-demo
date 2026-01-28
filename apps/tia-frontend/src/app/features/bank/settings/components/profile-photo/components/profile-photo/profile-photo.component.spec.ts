@@ -20,8 +20,8 @@ describe('ProfilePhotoComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have default initials set to "JD"', () => {
-    expect(component.initials()).toBe('JD');
+  it('should have default initials as empty string', () => {
+    expect(component.initials()).toBe('');
   });
 
   it('should render avatar in the template', () => {
@@ -40,49 +40,27 @@ describe('ProfilePhotoComponent', () => {
 
   it('should create file input and emit file when selected', () => {
     const file = new File(['content'], 'avatar.png', { type: 'image/png' });
+    const emitSpy = vi.spyOn(component.fileSelected, 'emit');
+
+    component.onFileButtonClick();
+
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    expect(input).toBeTruthy();
+
     const fileList = {
       0: file,
       length: 1,
       item: (index: number) => (index === 0 ? file : null),
-    } as FileList;
+    } as unknown as FileList;
 
-    const emitSpy = vi.spyOn(component.fileSelected, 'emit');
-    const createElementSpy = vi.spyOn(document, 'createElement');
-    const appendChildSpy = vi.spyOn(document.body, 'appendChild');
-    const clickSpy = vi.fn();
-    const removeChildSpy = vi.spyOn(document.body, 'removeChild');
+    Object.defineProperty(input, 'files', {
+      value: fileList,
+      writable: false,
+    });
 
-    const mockInput = {
-      type: '',
-      accept: '',
-      style: { display: '' },
-      files: fileList,
-      addEventListener: vi.fn((event, callback) => {
-        if (event === 'change') {
-      
-          setTimeout(() => callback({ target: mockInput } as unknown as Event), 0);
-        }
-      }),
-      click: clickSpy,
-    } as unknown as HTMLInputElement;
+    input.dispatchEvent(new Event('change'));
 
-    createElementSpy.mockReturnValue(mockInput);
-
-    component.onFileButtonClick();
-
-    expect(createElementSpy).toHaveBeenCalledWith('input');
-    expect(appendChildSpy).toHaveBeenCalled();
-    expect(clickSpy).toHaveBeenCalled();
-    
-  
-    const changeCallback = (mockInput.addEventListener as ReturnType<typeof vi.fn>).mock.calls.find(
-      (call: any[]) => call[0] === 'change'
-    )?.[1];
-    
-    if (changeCallback) {
-      changeCallback({ target: mockInput } as unknown as Event);
-      expect(emitSpy).toHaveBeenCalledWith(file);
-      expect(removeChildSpy).toHaveBeenCalledWith(mockInput);
-    }
+    expect(emitSpy).toHaveBeenCalledWith(file);
+    expect(document.body.contains(input)).toBe(false);
   });
 });

@@ -6,7 +6,7 @@ import {
   ROOT_EFFECTS_INIT,
 } from '@ngrx/effects';
 import { ProfilePhotoActions } from './profile-photo.actions';
-import { ProfilePhotoService } from './profile-photo.service';
+import { ProfilePhotoService } from '../../shared/services/profile-photo-api/profile-photo.service';
 import { Store } from '@ngrx/store';
 import { catchError, concat, filter, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';

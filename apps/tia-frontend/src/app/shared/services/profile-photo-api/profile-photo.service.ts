@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { DefaultAvatarResponse, CurrentUserAvatar, UploadAvatarResponse } from './profile-photo.state';
+import { environment } from '../../../../environments/environment';
+import { DefaultAvatarResponse, CurrentUserAvatar, UploadAvatarResponse } from '../../../store/profile-photo/profile-photo.state';
 
 @Injectable({ providedIn: 'root' })
 export class ProfilePhotoService {
