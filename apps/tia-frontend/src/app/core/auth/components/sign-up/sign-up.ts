@@ -50,7 +50,7 @@ export class SignUp implements OnInit {
           this.loadingState.set(false);
           this.errorMessage.set('');
 
-          this.router.navigate(['/auth/sign-up/phone']);
+          this.router.navigate(['/auth/phone']);
         }),
 
         catchError((err) => {

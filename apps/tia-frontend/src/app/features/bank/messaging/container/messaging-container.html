@@ -1,8 +1,8 @@
 <div class="global-bank-wrapper messaging-container">
   <div class="messaging-container__navbar">
-    <app-button variant="default" [icon]="'plus-icon.svg'" [fullWidth]="true">Compose</app-button>
+    <app-button variant="default" [icon]="'plus-icon.svg'" [fullWidth]="true">{{ 'messaging.compose.compose' | translate }}</app-button>
     <app-navigation-bar
-      [items]="messagingRoutes()"
+      [items]="messageRoutes()"
       [orientation]="'vertical'"
     ></app-navigation-bar>
   </div>

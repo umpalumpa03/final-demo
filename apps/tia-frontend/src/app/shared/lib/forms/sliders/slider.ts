@@ -31,6 +31,13 @@ export class Slider extends BaseInput {
     id: this.config().id || this.defaultId,
   }));
 
+  private readonly minVal = computed(() =>
+    Number(this.mergedConfig().min ?? 0),
+  );
+  private readonly maxVal = computed(() =>
+    Number(this.mergedConfig().max ?? 100),
+  );
+
   protected override readonly isDisabled = computed<boolean>(() => {
     return (
       this.internalDisabled() ||
@@ -41,7 +48,8 @@ export class Slider extends BaseInput {
 
   protected readonly fillPercentage = computed(() => {
     const val = this.value() ?? 0;
-    const { min = 0, max = 100 } = this.mergedConfig();
+    const min = this.minVal();
+    const max = this.maxVal();
 
     if (max === min) return 0;
     if (val < min) return 0;
@@ -65,7 +73,7 @@ export class Slider extends BaseInput {
     super();
     effect(() => {
       if (this.value() === null) {
-        this.value.set(this.mergedConfig().min ?? 0);
+        this.value.set(this.minVal());
       }
     });
   }

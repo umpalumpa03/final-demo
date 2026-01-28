@@ -9,6 +9,11 @@ export const messagingRoutes: Route[] = [
 
         children: [
             {
+                path: '',
+                pathMatch: 'full',
+                redirectTo: 'inbox',
+            },
+            {
                 path: 'inbox',
                 loadComponent: () =>
                     import('./components/inbox/inbox').then((c) => c.Inbox),

@@ -10,11 +10,13 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { themeFeature } from './store/theme/theme.reducer';
 import { ThemeEffects } from './store/theme/theme.effects';
+import { profilePhotoFeature } from './store/profile-photo/profile-photo.reducer';
+import { ProfilePhotoEffects } from './store/profile-photo/profile-photo.effects';
 import {
   provideHttpClient,
   withInterceptors,
 } from '@angular/common/http';
-import { authInterceptor } from './core/auth/services/auth-interceptor';
+import { authInterceptor } from './core/auth/interceptors/auth-interceptor';
 
 import { HttpClient } from '@angular/common/http';
 import { TranslateLoader, provideTranslateService } from '@ngx-translate/core';
@@ -26,8 +28,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(appRoutes),
     provideStore({}, {}),
     provideState(themeFeature),
+    provideState(profilePhotoFeature),
     provideHttpClient(withInterceptors([authInterceptor])),
-    provideEffects([ThemeEffects]),
+    provideEffects([ThemeEffects, ProfilePhotoEffects]),
     provideStoreDevtools({
       maxAge: 25,
       logOnly: environment.production,

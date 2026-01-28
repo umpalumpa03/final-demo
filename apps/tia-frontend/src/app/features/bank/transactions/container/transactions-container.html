@@ -1,1 +1,5 @@
-<div class="global-bank-wrapper"><p>transactions-container works!</p></div>
+<div class="global-bank-wrapper">
+  <app-transactions-table
+    [transactionsData]="tableConfig()"
+  ></app-transactions-table>
+</div>

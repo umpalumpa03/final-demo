@@ -1,0 +1,12 @@
+{
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "products": "My Products",
+    "transactions": "Transactions",
+    "transfers": "Transfers",
+    "loans": "Loans",
+    "finances": "Finances",
+    "paybill": "Paybill",
+    "settings": "Settings"
+  }
+}

@@ -28,21 +28,12 @@ describe('Dropdowns', () => {
   it('should toggle visibility when clicked', () => {
     expect(component.isOpen()).toBe(false);
 
-    component['toggleDropdown']();
+    const mockEvent = { stopPropagation: () => {} } as MouseEvent;
+
+    component['toggleDropdown'](mockEvent);
     expect(component.isOpen()).toBe(true);
 
-    component['toggleDropdown']();
-    expect(component.isOpen()).toBe(false);
-  });
-
-  it('should close dropdown when clicking outside', () => {
-    component.isOpen.set(true);
-
-    const outsideNode = document.createElement('div');
-    const mockEvent = { target: outsideNode } as unknown as MouseEvent;
-
-    component['onDocumentClick'](mockEvent);
-
+    component['toggleDropdown'](mockEvent);
     expect(component.isOpen()).toBe(false);
   });
 

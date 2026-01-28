@@ -15,6 +15,7 @@ const TRANSLATION_FILES = [
   'paybill',
   'messaging',
   'my-products',
+  'sidebar',
 ] as const;
 
 export class MultiFileTranslateLoader implements TranslateLoader {

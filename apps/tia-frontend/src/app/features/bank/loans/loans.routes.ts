@@ -6,15 +6,27 @@ import { loansReducer } from './store/loans.reducer';
 import { LoansEffects } from './store/loans.effects';
 import { LoansContainer } from './container/loans-container';
 import { LoansService } from './shared/services/loans.service';
+import { AccountsEffects } from '../../../store/products/accounts/accounts.effects';
+import { accountsFeature } from '../../../store/products/accounts/accounts.reducer';
+import { loansFeature } from '../../../store/loans/loans.reducer';
+import { LoanCreateEffects } from '../../../store/loans/loans.effects';
+import { LoanCreateService } from '@tia/shared/services/loans/loan-create.service';
 
 export const loansRoutes: Routes = [
   {
     path: '',
     component: LoansContainer,
     providers: [
-      provideState('loans', loansReducer),
+      provideState('loans_local', loansReducer),
       provideEffects(LoansEffects),
       LoansService,
+
+      provideState(accountsFeature),
+      provideEffects(AccountsEffects),
+
+      provideState(loansFeature),
+      provideEffects(LoanCreateEffects),
+      LoanCreateService,
     ],
     children: [
       { path: '', redirectTo: 'all', pathMatch: 'full' },

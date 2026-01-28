@@ -1,22 +1,19 @@
 import { Routes } from '@angular/router';
-import { signUpGuard } from '../../guards/sign-up-guard';
+// import { signUpGuard } from '../../guards/sign-up-guard';
 
 export const signUpRoutes: Routes = [
-  { 
-    path: 'sign-up',
-    loadComponent: () => import('./sign-up').then(c => c.SignUp)
-  },
-  { 
-    path: 'sign-up/phone',
-    // canActivate: [signUpGuard],
-    loadComponent: () => import('./phone-verification/phone-verification').then(c => c.PhoneVerification)
-  },
   {
-    path: 'sign-up/otp-verify',
-    loadComponent: () => import('../shared/otp-verification/otp-verification').then(c => c.OtpVerification)
+    path: '',
+    loadComponent: () => import('./sign-up').then((c) => c.SignUp),
+    data: {
+      sidePanel: {
+        title: 'Join Us Today!',
+        description: 'Join us in just a few steps.',
+        features: [
+          { id: 1, title: 'Fast Signup', text: 'Create an account in minutes' },
+          { id: 2, title: 'Secure', text: 'We protect your data' },
+        ],
+      },
+    },
   },
-  {
-    path: 'sign-up/success',
-    loadComponent: () => import('../shared/success-page/success-page').then(c => c.SuccessPage)
-  }
 ];

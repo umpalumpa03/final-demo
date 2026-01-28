@@ -1,0 +1,12 @@
+{
+  "sidebar": {
+    "dashboard": "მთავარი",
+    "products": "ჩემი პროდუქტები",
+    "transactions": "ტრანზაქციები",
+    "transfers": "გადარიცხვები",
+    "loans": "სესხები",
+    "finances": "ფინანსები",
+    "paybill": "გადახდები",
+    "settings": "პარამეტრები"
+  }
+}
