@@ -27,4 +27,6 @@ export interface LoanUiState {
   iconKey: IconKey;
 }
 
+export type LoanMonthsResponse = number[];
+
 type IconKey = keyof typeof LOAN_ICONS;
