@@ -45,4 +45,15 @@ export const loansReducer = createReducer(
     months,
     loading: false,
   })),
+
+  on(LoansActions.loadPurposesSuccess, (state, { purposes }) => ({
+    ...state,
+    purposes: purposes,
+    error: null,
+  })),
+
+  on(LoansActions.loadPurposesFailure, (state, { error }) => ({
+    ...state,
+    error,
+  })),
 );

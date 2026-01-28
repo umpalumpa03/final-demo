@@ -24,8 +24,9 @@
                         formControlName="amountToReceiveAccountId"></lib-select>
                     <lib-select [config]="cfg.term" [options]="(termOptions$ | async) || []"
                         formControlName="months"></lib-select>
-                    <lib-select [config]="cfg.purpose" [options]="purposeOptions"
-                        formControlName="purpose"></lib-select>
+                    <lib-select [config]="cfg.purpose" [options]="(purposeOptions$ | async) ?? []"
+                        formControlName="purpose">
+                    </lib-select>
                     <lib-text-input [type]="cfg.date.type" [config]="dateConfig"
                         formControlName="firstPaymentDate"></lib-text-input>
                 </div>
