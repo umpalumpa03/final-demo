@@ -47,9 +47,17 @@ describe('TokenService', () => {
     expect(localStorage.getItem(TokenKey.REFRESH)).toBeNull();
   });
 
-  it('clears refresh/verify token', () => {
+  it('clears refresh token', () => {
+    localStorage.setItem(TokenKey.REFRESH, 'r');
     localStorage.setItem(TokenKey.VERIFY, 'v');
     service.clearRefreshToken();
+    expect(localStorage.getItem(TokenKey.REFRESH)).toBeNull();
+    expect(localStorage.getItem(TokenKey.VERIFY)).toBe('v');
+  });
+
+  it('clears verify token', () => {
+    localStorage.setItem(TokenKey.VERIFY, 'v');
+    service.clearVerifyToken();
     expect(localStorage.getItem(TokenKey.VERIFY)).toBeNull();
   });
 

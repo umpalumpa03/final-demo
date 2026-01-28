@@ -9,7 +9,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AuthService } from '../../../services/auth.service';
-import { catchError, EMPTY, firstValueFrom, tap } from 'rxjs';
+import { catchError, EMPTY, finalize, firstValueFrom, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { forgotPasswordSegments } from 'apps/tia-frontend/src/app/core/auth/components/forgot-password/forgot-password.routes';
@@ -163,7 +163,7 @@ export class OtpVerification {
   }
 
   //ესენი ასინქების გარეშე რომ გვქონდეს,წესით ტავიდან იქნება დასაწერი
-  async submitReset(): Promise<void> {
+  submitReset(): void {
     this.otpError.set(null);
     this.form.markAllAsTouched();
 
@@ -189,19 +189,22 @@ export class OtpVerification {
     // }
 
     this.isSubmitting.set(true);
-    try {
-      await firstValueFrom(this.authService.verifyForgotPasswordOtp(otpValue));
-      await this.router.navigate(['/auth/reset-password']);
-    } catch (error) {
-      const httpError = error as HttpErrorResponse;
-      if (httpError?.status === 400) {
-        this.otpError.set('Invalid OTP code');
-      } else {
-        this.otpError.set('Unable to verify OTP. Please try again.');
-      }
-    } finally {
-      this.isSubmitting.set(false);
-    }
+    this.authService
+      .verifyForgotPasswordOtp(otpValue)
+      .pipe(finalize(() => this.isSubmitting.set(false)))
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/auth/reset-password']);
+        },
+        error: (error) => {
+          const httpError = error as HttpErrorResponse;
+          if (httpError?.status === 400) {
+            this.otpError.set('Invalid OTP code');
+          } else {
+            this.otpError.set('Unable to verify OTP. Please try again.');
+          }
+        },
+      });
   }
 
   // async resendOtp(): Promise<void> {

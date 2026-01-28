@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, provideRouter } from '@angular/router';
+import { of } from 'rxjs';
 import { AuthContainer } from './auth-container';
 
 describe('AuthContainer', () => {
@@ -8,6 +10,16 @@ describe('AuthContainer', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AuthContainer],
+      providers: [
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            firstChild: null,
+            data: of({}),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AuthContainer);

@@ -10,6 +10,7 @@ import {
 import { vi } from 'vitest';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
+import { firstValueFrom } from 'rxjs';
 
 describe('AuthService (Vitest)', () => {
   let service: AuthService;
@@ -72,7 +73,7 @@ describe('AuthService (Vitest)', () => {
 
     service.loginPostRequest(loginData).subscribe((res) => {
       expect(tokenService.setVerifyToken).toHaveBeenCalledWith('token123');
-      expect(router.navigate).toHaveBeenCalledWith(['/auth/phone-verify']);
+      expect(router.navigate).toHaveBeenCalledWith(['/auth/phone']);
     });
 
     const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
@@ -166,6 +167,78 @@ describe('AuthService (Vitest)', () => {
       challengeId: 'challenge-789',
       code: otp,
     });
+
+    req.flush({ success: true });
+  });
+
+  it('forgotPasswordRequest should store challengeId from response', () => {
+    const challengeSpy = vi.spyOn(service, 'setChellangeId');
+
+    service.forgotPasswordRequest('test@test.com').subscribe();
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/forgot-password`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ email: 'test@test.com' });
+
+    req.flush({ challengeId: 'challenge-321' });
+    expect(challengeSpy).toHaveBeenCalledWith('challenge-321');
+  });
+
+  it('verifyForgotPasswordOtp should clear access token and set new access token', () => {
+    const clearSpy = vi.spyOn(tokenService, 'clearAccessToken');
+    const setSpy = vi.spyOn(tokenService, 'setAccessToken');
+    vi.spyOn(service, 'getChallengeId').mockReturnValue('challenge-123');
+
+    service.verifyForgotPasswordOtp('1234').subscribe();
+
+    const req = httpMock.expectOne(
+      `${environment.apiUrl}/auth/forgot-password/verify`,
+    );
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({
+      challengeId: 'challenge-123',
+      code: '1234',
+    });
+
+    expect(clearSpy).toHaveBeenCalled();
+    req.flush({ access_token: 'new-access' });
+    expect(setSpy).toHaveBeenCalledWith('new-access');
+  });
+
+  it('createNewPassword should throw when access token missing', async () => {
+    await expect(
+      firstValueFrom(service.createNewPassword('Pass123!')),
+    ).rejects.toThrow('Missing forgot password access token');
+  });
+
+  it('createNewPassword should attach bearer token', () => {
+    localStorage.setItem('access_token', 'fp-token');
+
+    service.createNewPassword('Pass123!').subscribe();
+
+    const req = httpMock.expectOne(
+      `${environment.apiUrl}/auth/create-new-password`,
+    );
+    expect(req.request.headers.get('Authorization')).toBe('Bearer fp-token');
+    expect(req.request.body).toEqual({ password: 'Pass123!' });
+
+    req.flush({ success: true });
+  });
+
+  it('resetPhoneOtp should throw when challengeId is missing', async () => {
+    await expect(firstValueFrom(service.resetPhoneOtp())).rejects.toThrow(
+      'Missing forgot password challengeId',
+    );
+  });
+
+  it('resetPhoneOtp should use challengeId in payload', () => {
+    service.setChellangeId('challenge-555');
+
+    service.resetPhoneOtp().subscribe();
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/mfa/otp-resend`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ challengeId: 'challenge-555' });
 
     req.flush({ success: true });
   });
