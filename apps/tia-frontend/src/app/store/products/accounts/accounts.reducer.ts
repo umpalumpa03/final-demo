@@ -37,5 +37,4 @@ export const {
   selectSelectedAccountId,
   selectIsLoading,
   selectError,
-  selectIsCreateModalOpen,
 } = accountsFeature;

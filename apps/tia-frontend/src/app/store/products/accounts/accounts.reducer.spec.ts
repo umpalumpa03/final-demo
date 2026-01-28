@@ -25,13 +25,19 @@ describe('AccountsReducer', () => {
     const mockAccounts = [
       {
         id: '1',
-        accountNumber: '123',
-        accountName: 'Test',
+        userId: 'user-1',
+        permission: 1,
+        friendlyName: 'Test',
         type: AccountType.current,
         balance: 1000,
         currency: 'USD',
-        isActive: true,
+        status: 'active',
         createdAt: '2024-01-01',
+        iban: 'GE89NB0000000123456789',
+        name: 'Test Account',
+        openedAt: '2024-01-01',
+        closedAt: '',
+        isFavorite: false,
       },
     ];
     const action = AccountsActions.loadAccountsSuccess({
@@ -63,13 +69,19 @@ describe('AccountsReducer', () => {
       accounts: [
         {
           id: '1',
-          accountNumber: '123',
-          accountName: 'Test',
+          userId: 'user-1',
+          permission: 1,
+          iban: 'GE89NB0000000123456789',
+          friendlyName: 'Test',
+          name: 'Test Account',
           type: AccountType.current,
           balance: 1000,
           currency: 'USD',
-          isActive: true,
+          status: 'active',
           createdAt: '2024-01-01',
+          openedAt: '2024-01-01',
+          closedAt: '',
+          isFavorite: false,
         },
       ],
     };

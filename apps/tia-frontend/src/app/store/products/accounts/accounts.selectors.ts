@@ -7,7 +7,6 @@ export const {
   selectSelectedAccountId,
   selectIsLoading,
   selectError,
-  selectIsCreateModalOpen,
 } = accountsFeature;
 
 export const selectCurrentAccounts = createSelector(
