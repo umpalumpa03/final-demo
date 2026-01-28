@@ -5,10 +5,18 @@
     "empty": "No messages"
   },
   "compose": {
-    "title": "New Message",
+    "compose": "Compose",
+    "title": "messages",
     "to": "To",
     "subject": "Subject",
     "body": "Message",
     "send": "Send"
+  },
+  "routes": {
+    "inbox": "Inbox",
+    "sent": "Sent",
+    "drafts": "Drafts",
+    "important": "Important",
+    "favorites": "Favorites"
   }
 }

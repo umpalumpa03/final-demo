@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MessagingContainer } from './messaging-container';
 import { ActivatedRoute } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('MessagingContainer', () => {
   let component: MessagingContainer;
@@ -8,7 +9,10 @@ describe('MessagingContainer', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MessagingContainer],
+      imports: [
+        MessagingContainer,
+        TranslateModule.forRoot()
+      ],
       providers: [
       { provide: ActivatedRoute, useValue: {} },
       ],
