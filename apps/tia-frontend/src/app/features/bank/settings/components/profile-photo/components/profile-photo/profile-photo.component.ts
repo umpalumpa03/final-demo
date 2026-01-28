@@ -7,8 +7,8 @@ import {
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { Avatar } from '@tia/shared/lib/data-display/avatars/avatar';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { DefaultAvatarResponse } from '../../../../../../store/profile-photo/profile-photo.state';
-import { environment } from '../../../../../../../environments/environment';
+import { DefaultAvatarResponse } from '../../../../../../../store/profile-photo/profile-photo.state';
+import { environment } from '../../../../../../../../environments/environment';
 
 @Component({
   selector: 'app-profile-photo',

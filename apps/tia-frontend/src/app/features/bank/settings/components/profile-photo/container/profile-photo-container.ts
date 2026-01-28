@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, effect, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { ProfilePhotoComponent } from '../components/profile-photo.component';
+import { ProfilePhotoComponent } from '../components/profile-photo/profile-photo.component';
 import { ProfilePhotoActions } from '../../../../../../store/profile-photo/profile-photo.actions';
 import {
   selectDefaultAvatars,
