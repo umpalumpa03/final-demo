@@ -1,0 +1,22 @@
+import { AccountType } from '../../../models/accounts.model';
+import { AccountUtils } from '../utils/account.utils';
+
+const accountUtils = new AccountUtils();
+
+export const accountSections = [
+  {
+    key: AccountType.current,
+    title: 'Current Accounts',
+    icon: accountUtils.getAccountIcon(AccountType.current),
+  },
+  {
+    key: AccountType.saving,
+    title: 'Savings Accounts',
+    icon: accountUtils.getAccountIcon(AccountType.saving),
+  },
+  {
+    key: AccountType.card,
+    title: 'Cards',
+    icon: accountUtils.getAccountIcon(AccountType.card),
+  },
+];

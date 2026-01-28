@@ -4,6 +4,8 @@ import { provideEffects } from '@ngrx/effects';
 import { accountsReducer } from '../../../store/products/accounts/accounts.reducer';
 import { AccountsEffects } from '../../../store/products/accounts/accounts.effects';
 import { AccountsService } from './components/accounts/services/accounts.service';
+import { AccountUtils } from './components/accounts/utils/account.utils';
+import { FormatUtils } from './components/accounts/utils/format.utils';
 
 export const productsRoutes: Routes = [
   {
@@ -19,11 +21,15 @@ export const productsRoutes: Routes = [
       {
         path: 'accounts',
         loadComponent: () =>
-          import('./components/accounts/accounts').then((c) => c.Accounts),
+          import('./components/accounts/container/accounts').then(
+            (c) => c.Accounts,
+          ),
         providers: [
           provideState({ name: 'accounts', reducer: accountsReducer }),
           provideEffects(AccountsEffects),
           AccountsService,
+          AccountUtils,
+          FormatUtils,
         ],
       },
       {

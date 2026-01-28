@@ -26,5 +26,17 @@ export interface CreateAccountRequest {
   currency: string;
 }
 
+export interface GroupedAccounts {
+  current: Account[];
+  saving: Account[];
+  card: Account[];
+}
+
+export interface AccountSection {
+  key: AccountType;
+  title: string;
+  icon: string;
+}
+
 // TODO: if more than 1 response, move to different file
 export type AccountsResponse = Account[];
