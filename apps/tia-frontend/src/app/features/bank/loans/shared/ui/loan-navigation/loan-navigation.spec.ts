@@ -7,9 +7,10 @@ describe('LoanNavigation', () => {
   let component: LoanNavigation;
   let fixture: ComponentFixture<LoanNavigation>;
   const initialState = {
-    loans: {
+    loans_local: {
       loans: [],
       loading: false,
+      months: [],
     },
   };
 

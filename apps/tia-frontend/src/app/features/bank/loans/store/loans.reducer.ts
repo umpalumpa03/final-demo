@@ -1,17 +1,10 @@
 import { createReducer, on } from '@ngrx/store';
-import { ILoansState } from '../shared/models/loan.model';
 import { LoansActions } from './loans.actions';
 import { toTitleCase } from '../shared/utils/titlecase.util';
-
-const initialState: ILoansState = {
-  loans: [],
-  loading: false,
-  error: null,
-  filterStatus: null,
-};
+import { loansInitialState } from './loans.state';
 
 export const loansReducer = createReducer(
-  initialState,
+  loansInitialState,
 
   on(LoansActions.loadLoans, (state) => ({
     ...state,
@@ -45,5 +38,22 @@ export const loansReducer = createReducer(
     loans: state.loans.map((loan) =>
       loan.id === id ? { ...loan, friendlyName: name } : loan,
     ),
+  })),
+
+  on(LoansActions.loadMonthsSuccess, (state, { months }) => ({
+    ...state,
+    months,
+    loading: false,
+  })),
+
+  on(LoansActions.loadPurposesSuccess, (state, { purposes }) => ({
+    ...state,
+    purposes: purposes,
+    error: null,
+  })),
+
+  on(LoansActions.loadPurposesFailure, (state, { error }) => ({
+    ...state,
+    error,
   })),
 );

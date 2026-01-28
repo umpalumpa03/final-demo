@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MailHeader } from './mail-header';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('MailHeader', () => {
   let component: MailHeader;
@@ -7,7 +8,10 @@ describe('MailHeader', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MailHeader],
+      imports: [
+        MailHeader,
+        TranslateModule.forRoot()
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MailHeader);

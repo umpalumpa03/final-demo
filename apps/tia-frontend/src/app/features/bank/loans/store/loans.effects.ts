@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, switchMap, of } from 'rxjs';
 import { LoansService } from '../shared/services/loans.service';
 import { LoansActions } from './loans.actions';
+import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
 
 @Injectable()
 export class LoansEffects {
@@ -31,6 +32,41 @@ export class LoansEffects {
           map(() => LoansActions.renameLoanSuccess({ id, name })),
           catchError((error) =>
             of(LoansActions.renameLoanFailure({ error: error.message })),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  public loadMonths$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.loadMonths),
+      switchMap(() =>
+        this.loansService.getLoanMonths().pipe(
+          map((months) => LoansActions.loadMonthsSuccess({ months })),
+          catchError((error) =>
+            of(LoansActions.loadMonthsFailure({ error: error.message })),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  public refreshListOnCreate$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansCreateActions.requestLoanSuccess),
+      map(() => LoansActions.loadLoans()),
+    ),
+  );
+
+  loadPurposes$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.loadPurposes),
+      switchMap(() =>
+        this.loansService.getPurposes().pipe(
+          map((purposes) => LoansActions.loadPurposesSuccess({ purposes })),
+          catchError((error) =>
+            of(LoansActions.loadPurposesFailure({ error: error.message })),
           ),
         ),
       ),
