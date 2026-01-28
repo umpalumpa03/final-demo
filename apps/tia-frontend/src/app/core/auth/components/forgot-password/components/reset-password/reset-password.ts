@@ -11,7 +11,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
+import { finalize } from 'rxjs';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AuthService } from '../../../../services/auth.service';
@@ -126,7 +126,7 @@ export class ResetPassword implements OnInit {
     }
   }
 
-  async submit(): Promise<void> {
+  submit(): void {
     this.submitError.set(null);
     this.form.markAllAsTouched();
     this.updateConfirmMismatch();
@@ -139,27 +139,22 @@ export class ResetPassword implements OnInit {
     // }
 
     this.isSubmitting.set(true);
-    try {
-      const password = this.form.controls.password.value;
-      await firstValueFrom(this.authService.createNewPassword(password));
-
-      //ეს ყველა ვარიანტში იძახება და ჩასასწორებელია, ევეითის მიდგომებით არგვინდა ამ მომენტში
-      // try {
-      //   await firstValueFrom(this.authService.resetPhoneOtp());
-      // } catch {
-      //   // Ignore cleanup errors
-      // }
-
-      await this.router.navigate(['/auth/success']);
-    } catch (error) {
-      const httpError = error as HttpErrorResponse;
-      if (httpError?.status === 400) {
-        this.submitError.set('Unable to reset password. Please try again.');
-      } else {
-        this.submitError.set('Something went wrong. Please try again.');
-      }
-    } finally {
-      this.isSubmitting.set(false);
-    }
+    const password = this.form.controls.password.value;
+    this.authService
+      .createNewPassword(password)
+      .pipe(finalize(() => this.isSubmitting.set(false)))
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/auth/success']);
+        },
+        error: (error) => {
+          const httpError = error as HttpErrorResponse;
+          if (httpError?.status === 400) {
+            this.submitError.set('Unable to reset password. Please try again.');
+          } else {
+            this.submitError.set('Something went wrong. Please try again.');
+          }
+        },
+      });
   }
 }

@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
+import { finalize } from 'rxjs';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AuthService } from '../../../../services/auth.service';
@@ -51,21 +51,24 @@ export class ForgotPasswordEmail {
     };
   });
 
-  public async submit(): Promise<void> {
+  public submit(): void {
     this.submitError.set(null);
     this.form.markAllAsTouched();
 
     if (this.form.invalid) return;
 
     this.isSubmitting.set(true);
-    try {
-      const { email } = this.form.getRawValue();
-      await firstValueFrom(this.authService.forgotPasswordRequest(email));
-      await this.router.navigate(['/auth/otp-verify']);
-    } catch {
-      this.submitError.set('Unable to send reset code. Please try again.');
-    } finally {
-      this.isSubmitting.set(false);
-    }
+    const { email } = this.form.getRawValue();
+    this.authService
+      .forgotPasswordRequest(email)
+      .pipe(finalize(() => this.isSubmitting.set(false)))
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/auth/otp-verify']);
+        },
+        error: () => {
+          this.submitError.set('Unable to send reset code. Please try again.');
+        },
+      });
   }
 }

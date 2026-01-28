@@ -41,12 +41,12 @@ export class ResetSuccess implements OnInit, OnDestroy {
     }
   }
 
-  async redirectToLogin(): Promise<void> {
+  redirectToLogin(): void {
     if (this.timerId !== null) {
       window.clearInterval(this.timerId);
       this.timerId = null;
     }
     // this.authService.clearForgotPasswordState();
-    await this.router.navigate(['/auth/sign-in']);
+    this.router.navigate(['/auth/sign-in']);
   }
 }
