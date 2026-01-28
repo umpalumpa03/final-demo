@@ -52,11 +52,22 @@ describe('ApprovedLoans', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should open details when card is clicked', () => {
+  it('should dispatch loadLoans on init', () => {
+    expect(store.dispatch).toHaveBeenCalledWith(LoansActions.loadLoans());
+  });
+
+  it('should open details and set selected loan when a valid card is clicked', () => {
     component.onCardClick('loan-1');
 
     expect(component.selectedLoan()).toEqual(mockLoans[0]);
     expect(component.isDetailsOpen()).toBe(true);
+  });
+
+  it('should NOT open details if the loan ID is not found', () => {
+    component.onCardClick('loan-999');
+
+    expect(component.selectedLoan()).toBeNull();
+    expect(component.isDetailsOpen()).toBe(false);
   });
 
   it('should dispatch renameLoan', () => {
