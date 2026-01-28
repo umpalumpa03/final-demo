@@ -10,6 +10,7 @@ import { AuthService } from '../../services/auth.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
+import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 
 @Component({
   selector: 'app-sign-in',
@@ -19,12 +20,16 @@ import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
     ReactiveFormsModule,
     RouterLink,
     Spinner,
+    LibraryTitle,
   ],
   templateUrl: './sign-in.html',
   styleUrl: './sign-in.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignIn {
+  public readonly title = 'Sign In';
+  public readonly subtitle =
+    'Enter your username and password to access your account';
   private authService = inject(AuthService);
   private fb = inject(FormBuilder);
   public isLoading = computed(() => this.authService.isLoginLoading());

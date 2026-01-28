@@ -1,1 +1,28 @@
-<router-outlet></router-outlet>
+<div class="auth">
+  <div class="auth__auth-layout">
+    <div class="auth__auth-layout__content">
+      <div class="auth__auth-layout__header">
+        <div class="auth__auth-layout__header__logo">L</div>
+        <div class="auth__auth-layout__header__title">Logo</div>
+      </div>
+
+      <div class="auth__auth-layout__body">
+        <div class="auth__auth-layout__form">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth__auth-layout__pannel">
+      <div class="auth__auth-layout__pannel__wrapper">
+        @if (sidePanelData()) {
+          <app-side-panel
+            [title]="sidePanelData()!.title"
+            [description]="sidePanelData()!.description"
+            [features]="sidePanelData()!.features"
+          ></app-side-panel>
+        }
+      </div>
+    </div>
+  </div>
+</div>

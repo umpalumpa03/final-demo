@@ -36,7 +36,7 @@ export class PhoneVerification {
           this.errorMessage.set('')
           // Challenge id localStorage 🚩🚩 - ეს ეიაი არ გეგონოთ ჩვენი რედფლეგია
           this.tokenService.setChallengeId(res.challengeId)
-          this.router.navigate(['/auth/sign-up/otp-verify']);
+          this.router.navigate(['/auth/otp']);
 
         }),
         catchError((err) => {

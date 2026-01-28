@@ -2,15 +2,17 @@ import { Routes } from '@angular/router';
 
 export const signInRoutes: Routes = [
   {
-    path: 'sign-in',
-    loadComponent: () =>
-      import('./sign-in').then((c) => c.SignIn),
-  },
-  {
-        path: 'sign-in/otp-verify',
-        loadComponent: () =>
-          import('../shared/otp-verification/otp-verification').then(
-            (c) => c.OtpVerification,
-          ),
+    path: '',
+    loadComponent: () => import('./sign-in').then((c) => c.SignIn),
+    data: {
+      sidePanel: {
+        title: 'Welcome Back!',
+        description: 'Sign in to continue to your account.',
+        features: [
+          { id: 1, title: 'Secure Authentication', text: 'Two-factor verification for enhanced security', icon: 'public/images/svg/alerts/base-alert-success.svg' },
+          { id: 2, title: 'Protected Data', text: 'Your information is encrypted and safe', icon: 'public/images/svg/alerts/base-alert-success.svg' },
+        ],
       },
+    },
+  },
 ];

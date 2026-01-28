@@ -49,7 +49,7 @@ export class AuthService {
             this.router.navigate(['/auth/otp-verify']);
           } else if (res.status === 'phone_verification_required') {
             this.tokenService.setVerifyToken(res.verification_token!);
-            this.router.navigate(['/auth/phone-verify']);
+            this.router.navigate(['/auth/phone']);
           }
         }),
         catchError((err) => {

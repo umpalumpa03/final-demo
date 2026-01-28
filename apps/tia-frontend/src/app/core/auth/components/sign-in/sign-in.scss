@@ -1,43 +1,27 @@
 @use '../../../../shared/styles/palette' as *;
 @use '../../../../shared/styles/mixins' as *;
 
-//temporary styles
 .sign-in {
-  font-size: 2rem;
-  margin: 5rem auto;
-  width: 40rem;
-  position: relative;
-  min-height: 20rem;
-}
-
-.sign-up__switch {
-  color: $gray-700;
-  font-size: 1.4rem;
-}
-
-.sign-up__link {
-  color: $blue-800;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
+  &__header {
+    margin-bottom: 4rem;
   }
-}
 
-.sign-in-loader {
-  width: 100%;
-  min-height: 20rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 5rem auto 0;
-}
+  &__form {
+    @include display-flex(column);
+    gap: 1.6rem;
+    margin-bottom: 1.6rem;
+  }
 
-app-spinner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40rem;
-  min-height: 20rem;
-  margin: 5rem auto;
+  &__switch, &__link {
+    font-size: 1.4rem;
+  }
+
+  &__link {
+    color: $blue-800;
+    cursor: pointer;
+  }
+
+  &__switch {
+    @include flex-center();
+  }
 }
