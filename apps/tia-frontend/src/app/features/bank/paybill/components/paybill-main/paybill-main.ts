@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
@@ -11,7 +10,7 @@ import { CategoryGrid } from './components/category-grid/category-grid';
 import { CATEGORY_UI_MAP } from './components/category-grid/config/category.config';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProviderList } from './components/provider-list/provider-list';
-import { PaybillForm } from '../paybill-form/paybill-form';
+import { PaybillForm } from './components/paybill-form/paybill-form';
 import { PaybillActions } from '../../store/paybill.actions';
 
 @Component({
@@ -39,13 +38,7 @@ export class PaybillMain {
   public readonly isLoading = this.store.selectSignal(
     PAYBILL_SELECTORS.selectLoading,
   );
-
-  constructor() {
-    effect(() => {
-      console.log('Active Provider Signal Changed:', this.activeProvider());
-    });
-  }
-
+  
   public readonly formattedCategories = computed(() => {
     return this.categories().map((cat) => {
       const lookupKey = cat.id.toLowerCase();

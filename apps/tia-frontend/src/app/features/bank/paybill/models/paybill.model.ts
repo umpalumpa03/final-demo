@@ -24,4 +24,18 @@ export interface PaybillState {
   selectedProviderId: string | null;
   loading: boolean;
   error: string | null;
+  selectedProvider: PaybillProvider | null;
+}
+
+export interface BillDetails {
+  valid: boolean;
+  accountHolder: string;
+  address: string;
+  amountDue: number;
+  dueDate: string;
+  isExactAmount: boolean;
+  minAmount?: number;
+  maxAmount?: number;
+  error?: string;
+  billPeriod?: string;
 }

@@ -39,8 +39,8 @@ export const PAYBILL_ROUTES: Routes = [
       {
         path: ':categoryId/:providerId',
         loadComponent: () =>
-          import('./components/paybill-form/paybill-form').then(
-            (c) => c.PaybillForm,
+          import('./components/paybill-main/paybill-main').then(
+            (c) => c.PaybillMain,
           ),
       },
     ],

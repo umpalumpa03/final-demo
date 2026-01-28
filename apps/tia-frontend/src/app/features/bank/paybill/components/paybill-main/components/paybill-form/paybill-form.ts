@@ -5,7 +5,7 @@ import {
   input,
   output,
 } from '@angular/core';
-import { PaybillProvider } from '../../models/paybill.model';
+import { PaybillProvider } from '../../../../models/paybill.model';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,

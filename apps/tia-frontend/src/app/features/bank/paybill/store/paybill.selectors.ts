@@ -41,15 +41,21 @@ export const selectActiveCategory = createSelector(
 );
 
 export const selectActiveProvider = createSelector(
+  selectPaybillState,
   selectProviders,
-  selectSelectedProviderId,
-  (providers, selectedProviderId) => {
-    if (!providers || !selectedProviderId) return null;
-    return (
-      providers.find(
-        (p) => p.id.toLowerCase() === selectedProviderId.toLowerCase(),
-      ) ?? null
-    );
+  (state, providers) => {
+    if (state.selectedProvider) {
+      return state.selectedProvider;
+    }
+
+    if (state.selectedProviderId && providers && providers.length > 0) {
+      const found = providers.find(
+        (p) => p.id.toLowerCase() === state.selectedProviderId!.toLowerCase(),
+      );
+      return found || null;
+    }
+
+    return null;
   },
 );
 

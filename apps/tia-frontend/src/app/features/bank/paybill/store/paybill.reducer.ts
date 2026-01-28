@@ -6,6 +6,7 @@ export const initialPaybillState: PaybillState = {
   categories: [],
   selectedCategoryId: null,
   selectedProviderId: null,
+  selectedProvider: null,
   loading: false,
   providers: [],
   error: null,
@@ -26,20 +27,23 @@ export const paybillReducer = createReducer(
     loading: false,
   })),
 
-  on(PaybillActions.selectProvider, (state, { providerId }) => ({
-    ...state,
-    selectedProviderId: providerId,
-  })),
+  on(PaybillActions.selectProvider, (state, { providerId }) => {
+    const provider = state.providers.find(
+      (p) => p.id.toLowerCase() === providerId.toLowerCase(),
+    );
 
-  on(PaybillActions.clearSelection, (state) => ({
-    ...state,
-    selectedCategoryId: null,
-    selectedProviderId: null,
-  })),
+    return {
+      ...state,
+      selectedProviderId: providerId,
+      selectedProvider: provider || null,
+    };
+  }),
+
   on(PaybillActions.selectCategory, (state, { categoryId }) => ({
     ...state,
     selectedCategoryId: categoryId,
     selectedProviderId: null,
+    selectedProvider: null,
     providers: [],
     loading: true,
     error: null,
@@ -61,6 +65,19 @@ export const paybillReducer = createReducer(
     ...state,
     selectedCategoryId: null,
     selectedProviderId: null,
+    selectedProvider: null,
     providers: [],
+  })),
+
+  on(PaybillActions.checkBill, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+  on(PaybillActions.checkBillSuccess, (state, { details }) => ({
+    ...state,
+    verifiedDetails: details,
+    loading: false,
+    error: details.error ?? null,
   })),
 );

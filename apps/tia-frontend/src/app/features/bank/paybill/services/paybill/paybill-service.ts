@@ -1,6 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { PaybillCategory, PaybillProvider } from '../../models/paybill.model';
+import {
+  BillDetails,
+  PaybillCategory,
+  PaybillProvider,
+} from '../../models/paybill.model';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environments/environment';
 
@@ -19,5 +23,19 @@ export class PaybillService {
     return this.http.get<PaybillProvider[]>(
       `${this.baseUrl}/${category.toLowerCase()}`,
     );
+  }
+
+  public checkBill(
+    serviceId: string,
+    accountNumber: string,
+  ): Observable<BillDetails> {
+    const payload = {
+      serviceId,
+      identification: {
+        accountNumber: accountNumber,
+      },
+    };
+
+    return this.http.post<BillDetails>('/paybill/check-bill', payload);
   }
 }
