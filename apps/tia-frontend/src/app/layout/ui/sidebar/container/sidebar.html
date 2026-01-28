@@ -1,36 +1,46 @@
-<aside
-  class="sidebar-wrapper"
-  [class.sidebar-wrapper--collapsed]="isCollapsed()"
->
-  <button class="sidebar-wrapper__collapse-btn" (click)="toggleCollapse()">
+<aside class="sidebar" [class.sidebar--collapsed]="isCollapsed()">
+  <button class="sidebar__collapse-btn" (click)="toggleCollapse()">
     <img
       src="images/svg/sidebar-nav/arrow-left.svg"
       alt="collapse"
-      [class.rotated]="isCollapsed()"
+      [class.sidebar__collapse-btn--rotated]="isCollapsed()"
     />
   </button>
 
-  <div class="sidebar-wrapper__header">
-    <div class="sidebar-wrapper__header__title-icon">T</div>
-
+  <div class="sidebar__header">
+    <div class="sidebar__header-icon">T</div>
     @if (!isCollapsed()) {
-
-    <div class="sidebar-wrapper__header__title">TIA</div>
-
+    <div class="sidebar__header-title">TIA</div>
     }
   </div>
 
   <app-navigation-bar
     [orientation]="'vertical'"
-    [items]="items"
+    [items]="items()"
     [collapsed]="isCollapsed()"
   ></app-navigation-bar>
 
-  <footer>
+  <footer class="sidebar__footer">
     <app-button (click)="onLogout()" [fullWidth]="true" variant="ghost">
       <img src="images/svg/sidebar-nav/logout.svg" alt="logout icon" />
-
       @if (!isCollapsed()) { {{'common.buttons.logout' | translate}} }
     </app-button>
   </footer>
 </aside>
+
+@if (showLogoutConfirm()) {
+<div class="sidebar__overlay">
+  <app-alerts-with-actions
+    [alertTitle]="''"
+    [alertMessage]="'sidebar.sidebar.logout.message' | translate"
+    [alertType]="'default'"
+  >
+    <app-button variant="outline" (click)="cancelLogout()">
+      {{ 'common.buttons.cancel' | translate }}
+    </app-button>
+    <app-button variant="default" (click)="confirmLogout()">
+      {{ 'common.buttons.logout' | translate }}
+    </app-button>
+  </app-alerts-with-actions>
+</div>
+}

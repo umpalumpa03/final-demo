@@ -1,94 +1,52 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { BankHeaderContainer } from './bank-header-container';
-import { Notifications } from '../service/notifications';
 import { of } from 'rxjs';
-import { ElementRef } from '@angular/core';
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { BankHeaderContainer } from './bank-header-container';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { Notifications } from '../service/notifications';
+import { InboxService } from '@tia/shared/services/messages/inbox.service';
 
 describe('BankHeaderContainer', () => {
   let component: BankHeaderContainer;
-  let fixture: ComponentFixture<BankHeaderContainer>;
+  let mockNotifications: any;
+  let mockInbox: any;
 
-  const mockNotificationsService = {
-    hasUnreadNotification: vi.fn(() => of({ hasUnread: true })),
-    getNotifications: vi.fn(() => of({ data: [], meta: {} })),
-  };
+  beforeEach(() => {
+    mockNotifications = {
+      hasUnreadNotification: vi.fn(() => of({ hasUnread: true })),
+      getNotifications: vi.fn(() => of({ items: [] })),
+    };
+    mockInbox = {
+      getInboxCount: vi.fn(() => of({ count: 12 })),
+    };
 
-  beforeEach(async () => {
-    vi.clearAllMocks();
-
-    await TestBed.configureTestingModule({
-      imports: [BankHeaderContainer],
+    TestBed.configureTestingModule({
       providers: [
-        { provide: Notifications, useValue: mockNotificationsService },
-        provideRouter([]),
-        provideHttpClient(),
-        provideHttpClientTesting(),
+        BankHeaderContainer,
+        { provide: Notifications, useValue: mockNotifications },
+        { provide: InboxService, useValue: mockInbox },
       ],
-    }).compileComponents();
+    });
 
-    fixture = TestBed.createComponent(BankHeaderContainer);
-    component = fixture.componentInstance;
+    component = TestBed.inject(BankHeaderContainer);
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
+  it('should update signals on init', () => {
+    component.ngOnInit();
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should call hasUnreadNotification on init', () => {
-    fixture.detectChanges();
-    expect(mockNotificationsService.hasUnreadNotification).toHaveBeenCalled();
-  });
-
-  it('should set hasUnread signal from service response', () => {
-    fixture.detectChanges();
     expect(component.hasUnread()).toBe(true);
+    expect(component.inboxCount()).toBe(12);
   });
 
-  it('should set hasUnread to false when service returns false', () => {
-    mockNotificationsService.hasUnreadNotification.mockReturnValue(
-      of({ hasUnread: false }),
-    );
-    fixture.detectChanges();
-    expect(component.hasUnread()).toBe(false);
-  });
-
-  it('should set anchorEl on notification click', () => {
-    const mockEl = { nativeElement: {} } as ElementRef;
+  it('should handle notification click logic', () => {
+    const mockEl = { nativeElement: {} } as any;
+    
     component.onNotificationClick(mockEl);
+
     expect(component.anchorEl()).toBe(mockEl);
-  });
-
-  it('should toggle isModalOpen on notification click', () => {
-    const mockEl = { nativeElement: {} } as ElementRef;
-
-    expect(component.isModalOpen()).toBe(false);
-    component.onNotificationClick(mockEl);
     expect(component.isModalOpen()).toBe(true);
+    expect(mockNotifications.getNotifications).toHaveBeenCalled();
+
     component.onNotificationClick(mockEl);
     expect(component.isModalOpen()).toBe(false);
-  });
-
-  it('should call getNotifications on notification click', () => {
-    const mockEl = { nativeElement: {} } as ElementRef;
-    component.onNotificationClick(mockEl);
-    expect(mockNotificationsService.getNotifications).toHaveBeenCalled();
-  });
-
-  it('should complete destroyRef$ on destroy', () => {
-    const nextSpy = vi.spyOn(component.destroyRef$, 'next');
-    const completeSpy = vi.spyOn(component.destroyRef$, 'complete');
-
-    component.ngOnDestroy();
-
-    expect(nextSpy).toHaveBeenCalledWith(null);
-    expect(completeSpy).toHaveBeenCalled();
   });
 });

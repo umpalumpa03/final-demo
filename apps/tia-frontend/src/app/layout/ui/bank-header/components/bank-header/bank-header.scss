@@ -43,6 +43,7 @@
     &__messaging,
     &__notifications {
       @include flex-center();
+      position: relative;
       width: 3.2rem;
       height: 3.2rem;
       border-radius: 0.8rem;
@@ -61,9 +62,15 @@
       }
     }
 
-    &__notifications {
-      position: relative;
+    &__messaging {
+      app-badges {
+        position: absolute;
+        top: -0.4rem;
+        right: -0.4rem;
+      }
+    }
 
+    &__notifications {
       .badge {
         @include flex-center();
         @include font-inter(400, 1.2rem);
