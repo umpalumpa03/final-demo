@@ -50,9 +50,10 @@ describe('Loans Selectors', () => {
     loading: true,
     error: null,
     filterStatus: null,
+    months: [],
   };
 
-  const rootState = { loans: initialState };
+  const rootState = { loans_local: initialState };
 
   it('should select the loan state', () => {
     const result = Selectors.selectLoansState(rootState);

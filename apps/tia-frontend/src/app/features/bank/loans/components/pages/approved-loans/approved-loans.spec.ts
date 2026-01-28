@@ -9,10 +9,11 @@ describe('ApprovedLoans', () => {
   let store: MockStore;
 
   const initialState = {
-    loans: {
+    loans_local: {
       loans: [],
       loading: false,
       error: null,
+      months: [],
     },
   };
 
@@ -36,14 +37,5 @@ describe('ApprovedLoans', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should handle card click', () => {
-    const consoleSpy = vi.spyOn(console, 'log');
-    const testId = 'test-loan-id';
-
-    component['onCardClick'](testId);
-
-    expect(consoleSpy).toHaveBeenCalledWith('Clicked', testId);
   });
 });

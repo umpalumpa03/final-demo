@@ -27,11 +27,11 @@ export class ApprovedLoans implements OnInit {
   }
 
   // ES AXLA IYOS SHEMDEG PR-ZE DAVAMATEB MODALEBS DA AMOISHLEBA
-  protected onCardClick(id: string) {
-    console.log('Clicked', id);
+  public onCardClick(id: string) {
+    // console.log('Clicked', id);
   }
 
-  protected onRenameLoan(event: { id: string; name: string }): void {
+  public onRenameLoan(event: { id: string; name: string }): void {
     this.store.dispatch(
       LoansActions.renameLoan({ id: event.id, name: event.name }),
     );

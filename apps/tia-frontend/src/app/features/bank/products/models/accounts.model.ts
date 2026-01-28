@@ -7,6 +7,7 @@ export interface Account {
   id: string;
   accountNumber: string;
   accountName: string;
+  friendlyName: string | null;
   type: AccountType;
   currency: string;
   balance: number;

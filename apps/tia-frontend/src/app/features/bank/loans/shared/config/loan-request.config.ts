@@ -6,8 +6,9 @@ import {
 export const LOAN_FORM_CONFIG = {
   amount: {
     label: 'Loan Amount',
-    placeholder: '$ 5000',
+    placeholder: '5000',
     required: true,
+    prefixIcon: './images/svg/feature-loans/dollar.svg',
     type: 'number',
   },
   account: {
@@ -58,6 +59,7 @@ export const LOAN_FORM_CONFIG = {
   postal: {
     label: 'Postal Code',
     placeholder: '0100',
+    type: 'number',
     required: true,
   },
 
@@ -77,6 +79,7 @@ export const LOAN_FORM_CONFIG = {
     label: 'Phone Number',
     placeholder: '591234567',
     required: true,
+    type: 'number',
   },
 
   contactEmail: {
