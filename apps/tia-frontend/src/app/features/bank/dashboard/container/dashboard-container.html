@@ -21,4 +21,31 @@
       </div>
     </div>
   }
+
+  <div class="exchange-rates">
+    <h2>Exchange Rates</h2>
+    @if (exchangeRatesLoading$ | async) {
+      <p>Loading exchange rates...</p>
+    }
+    @for (rate of exchangeRates$ | async; track rate.code) {
+      <div class="exchange-rate-card">
+        <div class="exchange-rate-card__info">
+          <img [src]="rate.flagUrl" [alt]="rate.name" class="exchange-rate-card__flag">
+          <div>
+            <div class="exchange-rate-card__currency">{{ rate.code }}/USD</div>
+            <div class="exchange-rate-card__name">{{ rate.name }}</div>
+          </div>
+        </div>
+        <div class="exchange-rate-card__details">
+          <div class="exchange-rate-card__rate">{{ rate.rate | number:'1.4-4' }}</div>
+          <div class="exchange-rate-card__change" [class.positive]="rate.isPositive" [class.negative]="!rate.isPositive">
+            {{ rate.isPositive ? '↑' : '↓' }} {{ rate.changePercent | number:'1.2-2' }}%
+          </div>
+        </div>
+      </div>
+    }
+  </div>
 </div>
+
+
+

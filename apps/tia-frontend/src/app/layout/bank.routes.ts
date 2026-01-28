@@ -8,11 +8,26 @@ import {
   TRANSACTION_FEATURE_KEY,
   transactionReducer,
 } from '../store/transactions/transactions.reducer';
+import {
+  accountsFeatureKey,
+  accountsReducer
+} from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
+import { AccountsEffects } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.effects';
+import { ExchangeRateReducer } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.reducers';
+import { ExchangeRatesEffects } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.effects';
 export const bankRoutes: Routes = [
   {
     path: 'bank',
     loadComponent: () =>
       import('./bank-container').then((c) => c.BankContainer),
+    providers: [
+      provideState({ name: accountsFeatureKey, reducer: accountsReducer }),
+      provideEffects(AccountsEffects),
+      provideState({ name: TRANSACTION_FEATURE_KEY, reducer: transactionReducer }),
+      provideEffects(transactionEffects),
+      provideState({ name: 'ExchangeRates', reducer: ExchangeRateReducer }),
+      provideEffects(ExchangeRatesEffects),
+    ],
     children: [
       {
         path: '',

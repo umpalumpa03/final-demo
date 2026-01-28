@@ -40,7 +40,7 @@ describe('AccountsService', () => {
     req.flush({});
   });
 
-  it('should fetch currencies', () => {
+  it('should fetch exchange-rates', () => {
     service.getCurrencies().subscribe();
     const req = httpMock.expectOne(`${apiUrl}/catalogs/currencies`);
     expect(req.request.method).toBe('GET');
