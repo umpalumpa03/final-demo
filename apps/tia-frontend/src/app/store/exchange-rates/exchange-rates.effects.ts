@@ -16,11 +16,10 @@ export class ExchangeRatesEffects {
   loadExchangeRates$ = createEffect(() =>
     this.actions$.pipe(
       ofType(loadExchangeRates),
-      mergeMap(() =>
-        this.exchangeRatesService.loadExchangeRates().pipe(
+      mergeMap(({ baseCurrency = 'USD' }) =>
+        this.exchangeRatesService.loadExchangeRates(baseCurrency).pipe(
           map((ExchangeRates: ExchangeRateInterface[]) => loadExchangeRatesSuccess({ ExchangeRates })),
           catchError(() => of(loadExchangeRatesFailure()))
-        ))
-    )
+        )))
   );
 }

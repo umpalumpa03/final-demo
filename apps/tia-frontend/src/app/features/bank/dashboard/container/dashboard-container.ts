@@ -11,7 +11,7 @@ import { selectItems } from 'apps/tia-frontend/src/app/store/transactions/transa
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import { filter, map } from 'rxjs';
 import { selectExchangeRates } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.selectors';
-import { selectLoading } from 'apps/tia-frontend/src/app/features/bank/paybill/store/paybill.selectors';
+import { selectLoading } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.selectors';
 import { loadExchangeRates } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.actions';
 
 @Component({
@@ -37,9 +37,8 @@ export class DashboardContainer implements OnInit {
   public exchangeRatesLoading$ = this.store.select(selectLoading);
 
   ngOnInit() {
-
     this.store.dispatch(AccountsActions.loadAccounts());
     this.store.dispatch(TransactionActions.loadTransactions());
-    this.store.dispatch(loadExchangeRates());
+    this.store.dispatch(loadExchangeRates({ baseCurrency: 'USD' }));
   }
 }

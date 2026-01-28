@@ -1,15 +1,20 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { ExchangeRateInterface } from '../../store/exchange-rates/models/exchange-rates.models'
-import { environment } from '../../../environments/environment'
+import { map, Observable } from 'rxjs';
+import { ExchangeRateInterface, ExchangeRateResponse } from '../../store/exchange-rates/models/exchange-rates.models';
+import { environment } from '../../../environments/environment';
 
-@Injectable()
-
+@Injectable({
+  providedIn: 'root'
+})
 export class ExchangeRatesService {
   private readonly http = inject(HttpClient);
 
-  loadExchangeRates(): Observable<ExchangeRateInterface[]> {
-    return this.http.get<ExchangeRateInterface[]>(`${environment.apiUrl}/exchange-rates`);
+  loadExchangeRates(baseCurrency: string = 'USD'): Observable<ExchangeRateInterface[]> {
+    return this.http.get<ExchangeRateResponse>(`${environment.apiUrl}/exchange-rates`, {
+      params: { base: baseCurrency }
+    }).pipe(
+      map(response => response.rates)
+    );
   }
 }
