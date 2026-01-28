@@ -14,7 +14,7 @@ import {
   provideHttpClient,
   withInterceptors,
 } from '@angular/common/http';
-import { authInterceptor } from './core/auth/services/auth-interceptor';
+import { authInterceptor } from './core/auth/interceptors/auth-interceptor';
 
 import { HttpClient } from '@angular/common/http';
 import { TranslateLoader, provideTranslateService } from '@ngx-translate/core';
