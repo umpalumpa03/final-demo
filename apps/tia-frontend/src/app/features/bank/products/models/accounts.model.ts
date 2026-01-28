@@ -5,8 +5,8 @@ export enum AccountType {
 }
 export interface Account {
   id: string;
-  accountNumber: string;
-  accountName: string;
+  userId: string;
+  permission: number;
   friendlyName: string | null;
   type: AccountType;
   currency: string;
