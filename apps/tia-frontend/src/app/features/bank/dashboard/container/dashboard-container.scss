@@ -1,0 +1,34 @@
+@use '../../../../shared/styles/mixins' as *;
+
+.transaction-card {
+  @include display-flex(row);
+  padding: 1.2rem;
+  justify-content: space-between;
+
+  &__description {
+    @include display-flex(column);
+    gap: 0.4rem;
+
+    &-text {
+      @include font-inter(500, 1.6rem, 2.4rem);
+      color: #0C4A6E;
+    }
+  }
+
+  &__meta {
+    @include font-inter(400, 1.2rem, 1.6rem);
+    color: #6A7282;
+  }
+
+  &__amount {
+    @include font-inter(600, 1.6rem, 2.4rem);
+
+    &--debit{
+      color: #101828;
+    }
+
+    &--credit{
+      color: #00A63E;
+    }
+  }
+}
