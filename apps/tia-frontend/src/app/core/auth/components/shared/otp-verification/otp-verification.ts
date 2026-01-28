@@ -164,7 +164,6 @@ export class OtpVerification {
       .subscribe();
   }
 
-  //ესენი ასინქების გარეშე რომ გვქონდეს,წესით ტავიდან იქნება დასაწერი
   submitReset(): void {
     this.otpError.set(null);
     this.form.markAllAsTouched();

@@ -3,6 +3,6 @@
     <lib-text-input formControlName="phoneNumber"></lib-text-input>
     <h2>ERROR: {{errorMessage()}}</h2>
     <app-button type="submit">Send Verification Code</app-button>
-    <app-button type="button" variant="outline">Back</app-button>
+    <app-button type="button" variant="outline" (click)="goBackToPreviousPage()">Back</app-button>
   </form>
 </section>
