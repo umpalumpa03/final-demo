@@ -114,11 +114,8 @@ export class AuthService {
     );
   }
 
-  public sendVerificationCode(
-    phoneNumber: string,
-  ): Observable<SendVerificationResponse> {
-    const token =
-      this.tokenService.getSignUpToken || this.tokenService.verifyToken;
+  public sendVerificationCode(phoneNumber: string): Observable<SendVerificationResponse> {
+    const token = this.tokenService.getSignUpToken || this.tokenService.verifyToken;
 
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
@@ -144,5 +141,16 @@ export class AuthService {
       { challengeId, code },
       { headers },
     );
+  }
+
+  public resendVerificationCode(): Observable<OtpResponse> {
+    const challengeId = this.tokenService.getChallengeId;
+    const token = this.tokenService.getSignUpToken;
+      
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http.post<OtpResponse>(`${environment.apiUrl}/auth/mfa/otp-resend`, {challengeId}, {headers})
   }
 }

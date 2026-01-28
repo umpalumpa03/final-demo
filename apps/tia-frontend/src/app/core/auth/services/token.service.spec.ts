@@ -61,7 +61,7 @@ describe('TokenService', () => {
 
   it('clears challenge id', () => {
     localStorage.setItem(TokenKey.CHALLENGE_ID, 'c');
-    service.clearChallengeId('c');
+    service.clearChallengeId();
     expect(localStorage.getItem(TokenKey.CHALLENGE_ID)).toBeNull();
   });
 

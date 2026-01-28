@@ -79,7 +79,7 @@ describe('PhoneVerification', () => {
   it('should handle error when sendVerificationCode fails', () => {
     const mockError = {
       error: {
-        message: ['Invalid phone number format'],
+        message: 'Invalid phone number format',
       },
     };
 

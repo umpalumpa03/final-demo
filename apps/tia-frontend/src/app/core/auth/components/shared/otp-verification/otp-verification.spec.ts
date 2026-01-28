@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { of } from 'rxjs';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { OtpVerification } from './otp-verification';
 import { AuthService } from '../../../services/auth.service';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
@@ -12,22 +12,16 @@ import { provideHttpClient } from '@angular/common/http';
 describe('OtpVerification', () => {
   let component: OtpVerification;
   let fixture: ComponentFixture<OtpVerification>;
-  let authServiceMock: {
-    verifyMfa: ReturnType<typeof vi.fn>;
-    getChallengeId: ReturnType<typeof vi.fn>;
-    isLoginLoading: ReturnType<typeof signal>;
-  };
   let authService: AuthService;
   let router: Router;
 
   const createComponent = (path: 'sign-in' | 'sign-up') => {
     TestBed.overrideProvider(ActivatedRoute, {
-      useValue: { snapshot: { url: [{ path }] } }
+      useValue: { snapshot: { url: [{ path }] } },
     });
 
     fixture = TestBed.createComponent(OtpVerification);
     component = fixture.componentInstance;
-    
     authService = TestBed.inject(AuthService);
     router = TestBed.inject(Router);
 
@@ -35,12 +29,6 @@ describe('OtpVerification', () => {
   };
 
   beforeEach(async () => {
-    authServiceMock = {
-      verifyMfa: vi.fn().mockReturnValue(of({})),
-      getChallengeId: vi.fn().mockReturnValue('challenge-123'),
-      isLoginLoading: signal(false),
-    };
-
     await TestBed.configureTestingModule({
       imports: [OtpVerification],
       providers: [
@@ -57,6 +45,10 @@ describe('OtpVerification', () => {
     }).compileComponents();
   });
 
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('should initialize with sign-in logic when path is sign-in', () => {
     createComponent('sign-in');
     expect(component['registerVerifyLogic']()).toBe(false);
@@ -67,17 +59,10 @@ describe('OtpVerification', () => {
     expect(component['registerVerifyLogic']()).toBe(true);
   });
 
-  it('should handle login logic (console log) when path is sign-in', () => {
-    createComponent('sign-in');
-    const consoleSpy = vi.spyOn(console, 'log');
-    
-    component.submit();
-      });
-
   it('should not call API and mark form touched if verificationCode is invalid', () => {
     createComponent('sign-up');
-    const authSpy = vi.spyOn(authService, 'verifyOtpCode');
-    
+    const authSpy = vi.spyOn(authService, 'verifyMfa');
+
     component.submit();
 
     expect(component.smsCodeVerificationForm.touched).toBe(true);
@@ -86,12 +71,60 @@ describe('OtpVerification', () => {
 
   it('should navigate to success page on successful verification', () => {
     createComponent('sign-up');
-    const navigateSpy = vi.spyOn(router, 'navigate');
-    vi.spyOn(authService, 'verifyOtpCode').mockReturnValue(of({ success: true } as any));
 
-    component.smsCodeVerificationForm.controls.verificationCode.setValue('1234');
+    const navigateSpy = vi.spyOn(router, 'navigate');
+
+    vi.spyOn(authService, 'verifyOtpCode').mockReturnValue(
+      of({ success: true } as any),
+    );
+
+    component.smsCodeVerificationForm.patchValue({
+      verificationCode: '123456',
+    });
+
     component.submit();
 
     expect(navigateSpy).toHaveBeenCalledWith(['/auth/success']);
+  });
+
+  it('should call verifyMfa with form values and challengeId', () => {
+    createComponent('sign-up');
+
+    const verifySpy = vi
+      .spyOn(authService, 'verifyMfa')
+      .mockReturnValue(of({} as any));
+
+    vi.spyOn(authService, 'getChallengeId').mockReturnValue('challenge-123');
+
+    component.otpForm.patchValue({ code: '123456' });
+
+    component.verifyOtp();
+
+    expect(verifySpy).toHaveBeenCalledWith({
+      code: '123456',
+      challengeId: 'challenge-123',
+    });
+  });
+
+  it('should call resendVerificationCode when resend is clicked', () => {
+    createComponent('sign-up');
+    const resendSpy = vi
+      .spyOn(authService, 'resendVerificationCode')
+      .mockReturnValue(
+        of({ success: true, message: 'Code resent successfully' }),
+      );
+
+    component.resendVerification();
+
+    expect(resendSpy).toHaveBeenCalled();
+  });
+
+  it('should navigate back to phone entry page', () => {
+    createComponent('sign-up');
+    const navSpy = vi.spyOn(router, 'navigate');
+
+    component.goBack();
+
+    expect(navSpy).toHaveBeenCalledWith(['auth/sign-up/phone']);
   });
 });
