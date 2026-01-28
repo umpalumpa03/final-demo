@@ -20,14 +20,12 @@ activeProvider();
       [isLoading]="isLoading()"
       (selected)="selectProvider($event)"
     />
-    } @placeholder {
-    <p>TEST</p>
-    } } @else { @defer (on idle) {
+    } } @else {
     <app-category-grid
       (selected)="selectCategory($event)"
       [categories]="formattedCategories()"
       [isLoading]="isLoading()"
     />
-    } }
+    }
   </div>
 </div>

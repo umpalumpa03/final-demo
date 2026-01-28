@@ -11,19 +11,19 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Input } from '../../../../storybook/components/input/input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
+import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 
 @Component({
   selector: 'app-paybill-form',
-  imports: [Input, ButtonComponent, BasicCard, ReactiveFormsModule],
+  imports: [ButtonComponent, BasicCard, ReactiveFormsModule, TextInput],
   templateUrl: './paybill-form.html',
   styleUrl: './paybill-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillForm {
-  public readonly provider = input.required<PaybillProvider>();
+  public readonly provider = input<PaybillProvider>();
   public readonly iconBgColor = input<string>('#F0F9FF');
   public readonly iconBgPath = input<string>();
 

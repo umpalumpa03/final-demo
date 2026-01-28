@@ -45,7 +45,11 @@ export const selectActiveProvider = createSelector(
   selectSelectedProviderId,
   (providers, selectedProviderId) => {
     if (!providers || !selectedProviderId) return null;
-    return providers.find((p) => p.id === selectedProviderId) ?? null;
+    return (
+      providers.find(
+        (p) => p.id.toLowerCase() === selectedProviderId.toLowerCase(),
+      ) ?? null
+    );
   },
 );
 

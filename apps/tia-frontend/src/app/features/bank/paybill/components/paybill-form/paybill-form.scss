@@ -1,0 +1,70 @@
+@use '../../../../../shared/styles/mixins' as *;
+
+.paybill-form {
+  &__header {
+    @include flex-center(row, flex-start, center);
+    gap: 1.6rem;
+    margin-bottom: 3rem;
+  }
+
+  &__icon-box {
+    width: 4.8rem;
+    height: 4.8rem;
+    border-radius: 0.8rem;
+    @include flex-center(row, center, center);
+    flex-shrink: 0;
+  }
+
+  &__icon {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+
+  &__emoji {
+    font-size: 2.4rem;
+  }
+
+  &__text-group {
+    @include flex-center(column, center, flex-start);
+  }
+
+  &__title {
+    font-weight: 500;
+    font-size: 2.4rem;
+    line-height: 3.2rem;
+    color: #0c4a6e;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-weight: 400;
+    font-size: 1.6rem;
+    line-height: 2.4rem;
+    color: #0369a1;
+    margin: 0;
+  }
+
+  &__content {
+    @include display-flex(column);
+    gap: 2.4rem;
+    width: 100%;
+  }
+
+  &__field {
+    @include display-flex(column);
+    gap: 0.6rem;
+  }
+
+  &__label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 1.4rem;
+    color: #0c4a6e;
+  }
+
+  &__error {
+    font-size: 1.2rem;
+    color: #ef4444;
+    margin-top: 0.4rem;
+  }
+}

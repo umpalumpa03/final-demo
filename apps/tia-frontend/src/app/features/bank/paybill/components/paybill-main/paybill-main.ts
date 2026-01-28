@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
@@ -11,6 +12,7 @@ import { CATEGORY_UI_MAP } from './components/category-grid/config/category.conf
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProviderList } from './components/provider-list/provider-list';
 import { PaybillForm } from '../paybill-form/paybill-form';
+import { PaybillActions } from '../../store/paybill.actions';
 
 @Component({
   selector: 'app-paybill-main',
@@ -37,6 +39,12 @@ export class PaybillMain {
   public readonly isLoading = this.store.selectSignal(
     PAYBILL_SELECTORS.selectLoading,
   );
+
+  constructor() {
+    effect(() => {
+      console.log('Active Provider Signal Changed:', this.activeProvider());
+    });
+  }
 
   public readonly formattedCategories = computed(() => {
     return this.categories().map((cat) => {
@@ -65,6 +73,12 @@ export class PaybillMain {
     const category = this.activeCategory();
 
     if (category?.id && providerId) {
+      this.store.dispatch(
+        PaybillActions.selectProvider({
+          providerId: providerId.toUpperCase(),
+        }),
+      );
+
       const catId = category.id.toLowerCase();
       const provId = providerId.toLowerCase();
 
@@ -74,13 +88,18 @@ export class PaybillMain {
     }
   }
 
-  public readonly activeCategoryUI = computed(() => {
-    const cat = this.activeCategory();
-    if (!cat) return null;
-    return CATEGORY_UI_MAP[cat.id.toLowerCase()];
-  });
-
   public verifyAccount(data: { accountNumber: string }): void {
-    console.log('Account Number submitted:', data.accountNumber);
+    console.log(
+      'Verifying account:',
+      data.accountNumber,
+      'for',
+      this.activeProvider()?.serviceName,
+    );
   }
+
+  public readonly activeCategoryUI = computed(() => {
+    const category = this.activeCategory();
+    if (!category) return null;
+    return CATEGORY_UI_MAP[category.id.toLowerCase()] || null;
+  });
 }
