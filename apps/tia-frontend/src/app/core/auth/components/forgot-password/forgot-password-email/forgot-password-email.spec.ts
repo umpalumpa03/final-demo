@@ -3,8 +3,8 @@ import { provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 import { ForgotPasswordEmail } from './forgot-password-email';
-import { AuthService } from '../../../../services/auth.service';
-import { TokenService } from '../../../../services/token.service';
+import { AuthService } from '../../../services/auth.service';
+import { TokenService } from '../../../services/token.service';
 
 describe('ForgotPasswordEmail', () => {
   let component: ForgotPasswordEmail;

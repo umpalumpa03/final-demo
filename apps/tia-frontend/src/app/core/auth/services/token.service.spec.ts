@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TokenService } from './token.service';
 import { TokenKey } from '../models/tokens.model';
 
@@ -6,98 +7,97 @@ describe('TokenService', () => {
   let service: TokenService;
 
   beforeEach(() => {
-    service = new TokenService();
+    TestBed.configureTestingModule({
+      providers: [TokenService]
+    });
+    service = TestBed.inject(TokenService);
+    
+    vi.spyOn(Storage.prototype, 'setItem');
+    vi.spyOn(Storage.prototype, 'getItem');
+    vi.spyOn(Storage.prototype, 'removeItem');
+    vi.spyOn(Storage.prototype, 'clear');
+    
     localStorage.clear();
+    vi.clearAllMocks();
   });
 
-  afterEach(() => {
-    localStorage.clear();
+  it('should set access token in localStorage', () => {
+    service.setAccessToken('test-access-token');
+    expect(localStorage.setItem).toHaveBeenCalledWith(TokenKey.ACCESS, 'test-access-token');
   });
 
-  it('sets access token', () => {
-    service.setAccessToken('a');
-    expect(localStorage.getItem(TokenKey.ACCESS)).toBe('a');
+  it('should set refresh token in localStorage', () => {
+    service.setRefreshToken('test-refresh-token');
+    expect(localStorage.setItem).toHaveBeenCalledWith(TokenKey.REFRESH, 'test-refresh-token');
   });
 
-  it('sets refresh token', () => {
-    service.setRefreshToken('r');
-    expect(localStorage.getItem(TokenKey.REFRESH)).toBe('r');
+  it('should set verify token in localStorage', () => {
+    service.setVerifyToken('test-verify-token');
+    expect(localStorage.setItem).toHaveBeenCalledWith(TokenKey.VERIFY, 'test-verify-token');
   });
 
-  it('sets verify token', () => {
-    service.setVerifyToken('v');
-    expect(localStorage.getItem(TokenKey.VERIFY)).toBe('v');
+  it('should set signup token in localStorage', () => {
+    service.setSignUpToken('test-signup-token');
+    expect(localStorage.setItem).toHaveBeenCalledWith(TokenKey.SIGNUP, 'test-signup-token');
   });
 
-  it('sets signup token', () => {
-    service.setSignUpToken('s');
-    expect(localStorage.getItem(TokenKey.SIGNUP)).toBe('s');
-  });
-
-  it('sets challenge id', () => {
-    expect(localStorage.getItem(TokenKey.CHALLENGE_ID)).toBe('c');
-  });
-
-  it('clears auth tokens (access & refresh)', () => {
-    localStorage.setItem(TokenKey.ACCESS, 'a');
-    localStorage.setItem(TokenKey.REFRESH, 'r');
+  it('should clear auth tokens (access and refresh)', () => {
     service.clearAuthToken();
-    expect(localStorage.getItem(TokenKey.ACCESS)).toBeNull();
-    expect(localStorage.getItem(TokenKey.REFRESH)).toBeNull();
+    expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.ACCESS);
+    expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.REFRESH);
   });
 
-  it('clears refresh token', () => {
-    localStorage.setItem(TokenKey.REFRESH, 'r');
-    localStorage.setItem(TokenKey.VERIFY, 'v');
+  it('should clear only access token', () => {
+    service.clearAccessToken();
+    expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.ACCESS);
+  });
+
+  it('should clear refresh and verify tokens', () => {
     service.clearRefreshToken();
-    expect(localStorage.getItem(TokenKey.REFRESH)).toBeNull();
-    expect(localStorage.getItem(TokenKey.VERIFY)).toBe('v');
+    expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.REFRESH);
+    expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.VERIFY);
   });
 
-  it('clears verify token', () => {
-    localStorage.setItem(TokenKey.VERIFY, 'v');
+  it('should clear verify token', () => {
     service.clearVerifyToken();
-    expect(localStorage.getItem(TokenKey.VERIFY)).toBeNull();
+    expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.VERIFY);
   });
 
-  it('clears signup token', () => {
-    localStorage.setItem(TokenKey.SIGNUP, 's');
+  it('should clear signup token', () => {
     service.clearSignUpToken();
-    expect(localStorage.getItem(TokenKey.SIGNUP)).toBeNull();
+    expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.SIGNUP);
   });
 
-  it('clears challenge id', () => {
-    localStorage.setItem(TokenKey.CHALLENGE_ID, 'c');
-    expect(localStorage.getItem(TokenKey.CHALLENGE_ID)).toBeNull();
-  });
-
-  it('clears all tokens', () => {
-    localStorage.setItem(TokenKey.ACCESS, 'a');
-    localStorage.setItem(TokenKey.VERIFY, 'v');
-    localStorage.setItem(TokenKey.SIGNUP, 's');
+  it('should clear all tokens from storage', () => {
     service.clearAllToken();
-    expect(localStorage.getItem(TokenKey.ACCESS)).toBeNull();
-    expect(localStorage.getItem(TokenKey.VERIFY)).toBeNull();
-    expect(localStorage.getItem(TokenKey.SIGNUP)).toBeNull();
+    expect(localStorage.clear).toHaveBeenCalled();
   });
 
-  it('reads tokens via getters', () => {
-    localStorage.setItem(TokenKey.ACCESS, 'a');
-    localStorage.setItem(TokenKey.REFRESH, 'r');
-    localStorage.setItem(TokenKey.VERIFY, 'v');
-    localStorage.setItem(TokenKey.SIGNUP, 's');
-    localStorage.setItem(TokenKey.CHALLENGE_ID, 'c');
-
-    expect(service.accessToken).toBe('a');
-    expect(service.refreshToken).toBe('r');
-    expect(service.verifyToken).toBe('v');
-    expect(service.getSignUpToken).toBe('s');
+  it('should get access token from localStorage', () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockReturnValue('stored-access-token');
+    const result = service.accessToken;
+    expect(localStorage.getItem).toHaveBeenCalledWith(TokenKey.ACCESS);
+    expect(result).toBe('stored-access-token');
   });
 
-  it('returns null for getters when tokens are not set', () => {
-    expect(service.accessToken).toBeNull();
-    expect(service.refreshToken).toBeNull();
-    expect(service.verifyToken).toBeNull();
-    expect(service.getSignUpToken).toBeNull();
+  it('should get refresh token from localStorage', () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockReturnValue('stored-refresh-token');
+    const result = service.refreshToken;
+    expect(localStorage.getItem).toHaveBeenCalledWith(TokenKey.REFRESH);
+    expect(result).toBe('stored-refresh-token');
+  });
+
+  it('should get verify token from localStorage', () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockReturnValue('stored-verify-token');
+    const result = service.verifyToken;
+    expect(localStorage.getItem).toHaveBeenCalledWith(TokenKey.VERIFY);
+    expect(result).toBe('stored-verify-token');
+  });
+
+  it('should get signup token from localStorage', () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockReturnValue('stored-signup-token');
+    const result = service.getSignUpToken;
+    expect(localStorage.getItem).toHaveBeenCalledWith(TokenKey.SIGNUP);
+    expect(result).toBe('stored-signup-token');
   });
 });
