@@ -64,7 +64,6 @@ describe('FinancesContainer', () => {
   });
 
   it('should trigger fetchData on valid form changes', async () => {
-  // ვიყენებთ Vitest-ის ტაიმერებს
   vi.useFakeTimers();
   
   const spy = vi.spyOn(mockStore, 'loadSummary');
@@ -72,12 +71,10 @@ describe('FinancesContainer', () => {
   // ფორმის შეცვლა
   component.filterForm.patchValue({ fromDate: '2026-02-01' });
   
-  // debounceTime(500)-ის "გადახტომა"
   vi.advanceTimersByTime(500);
   
   expect(spy).toHaveBeenCalled();
   
-  // ტაიმერების გასუფთავება
   vi.useRealTimers();
 });
 });

@@ -41,4 +41,18 @@ export class FinancesView {
   public getControl(name: string): FormControl {
     return this.filterForm().get(name) as FormControl;
   }
+
+  public get isRangeInvalid(): boolean {
+    return this.filterForm().hasError('dateRangeInvalid') && this.filterForm().touched;
+  }
+
+  public get isToDateInvalid(): boolean {
+    const control = this.filterForm().get('toDate');
+    return !!(control?.touched && control?.invalid);
+  }
+
+  public get isFromDateInvalid(): boolean {
+    const control = this.filterForm().get('fromDate');
+    return !!(control?.touched && control?.invalid);
+  }
 }

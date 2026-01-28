@@ -7,7 +7,7 @@
   margin-bottom: 2.4rem;
 
   &__container {
-    @include display-flex(row, nowrap);
+    @include display-flex();
     @include flex-center(row, flex-start, center);
     @include font-inter(500, 1.4rem);
     gap: 2rem;

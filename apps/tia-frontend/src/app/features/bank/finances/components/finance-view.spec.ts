@@ -32,22 +32,15 @@ describe('FinancesView', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit filterChange on onFilterChange', () => {
-    const emitSpy = vi.spyOn(component.filterChange, 'emit');
-    component.filterChange.emit('custom');
-    expect(emitSpy).toHaveBeenCalledWith('custom');
-  });
-
   it('should return correct form control via getControl', () => {
     const control = component.getControl('fromDate');
     expect(control).toBeInstanceOf(FormControl);
     expect(control.value).toBe('2026-01-01');
   });
 
-  it('should emit dateInput event', () => {
-    const emitSpy = vi.spyOn(component.dateInput, 'emit');
-    const mockEvent = { target: { value: '2026-02-01' } } as any;
-    component.dateInput.emit({ field: 'fromDate', event: mockEvent });
-    expect(emitSpy).toHaveBeenCalledWith({ field: 'fromDate', event: mockEvent });
+  it('should emit filterChange output', () => {
+    const emitSpy = vi.spyOn(component.filterChange, 'emit');
+    component.filterChange.emit('custom' as any);
+    expect(emitSpy).toHaveBeenCalledWith('custom');
   });
 });

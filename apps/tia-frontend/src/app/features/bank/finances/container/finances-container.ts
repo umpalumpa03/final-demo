@@ -3,7 +3,7 @@ import { FinancesStore } from '../store/finances.store';
 import {
   FINANCES_FILTER_OPTIONS,
   CARDS_CONFIG,
-} from '../config/filter-options.config';
+} from '../config/filter-options.models';
 import { FilterType, SummaryCard } from '../models/filter.model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs';
