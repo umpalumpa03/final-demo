@@ -1,0 +1,106 @@
+@use "../../../../shared/styles/mixins" as *;
+@use "../../../../shared/styles/palette" as *;
+@use "../../../../shared/styles/variables" as *;
+
+.finances-filters {
+  width: 100%;
+  margin-bottom: 2.4rem;
+
+  &__container {
+    @include display-flex();
+    @include flex-center(row, flex-start, center);
+    @include font-inter(500, 1.4rem);
+    gap: 2rem;
+    padding: 1.2rem 1.6rem;
+    background-color: $white;
+    border: 0.1rem solid $blue-300;
+    border-radius: 1.4rem;
+    min-height: 6.4rem;
+    margin-top: 3.2rem;
+  }
+
+  &__actions {
+    @include display-flex(row);
+    gap: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  &__inputs {
+    @include flex-center(row, flex-start, center);
+    flex-grow: 1;
+    gap: 1.6rem;
+  }
+
+  &__input-wrapper {
+    @include display-flex(column);
+    gap: 0.4rem;
+    position: relative;
+    min-width: 20rem;
+
+    .input-error {
+      @include font-inter(500, 1.1rem);
+      color: $red-500;
+      position: absolute;
+      top: 100%;
+      left: 0.4rem;
+      margin-top: 0.2rem;
+      white-space: nowrap;
+    }
+  }
+
+  &__messages {
+    @include display-flex(column);
+    gap: 1.2rem;
+    margin-top: 1.6rem;
+    animation: slideIn 0.3s ease-out;
+  }
+}
+
+.finances-summary {
+  width: 100%;
+  margin-top: 3.2rem;
+  position: relative;
+  min-height: 24rem;
+
+  &__loading-wrapper {
+    @include flex-center(column, center, center);
+    @include font-inter(600, 1.4rem);
+    position: absolute;
+    inset: 0;
+    background-color: rgba($white, 0.7);
+    backdrop-filter: blur(0.3rem);
+    z-index: 10;
+    gap: 1.2rem;
+    border-radius: 1.6rem;
+    color: $blue-600;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.4rem;
+    transition: all 0.3s ease;
+
+    @media (max-width: 75rem) { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 40rem) { grid-template-columns: 1fr; }
+  }
+
+  &.loading-state &__grid {
+    opacity: 0.3;
+    filter: grayscale(1);
+    pointer-events: none;
+  }
+}
+
+.no-data {
+  @include font-inter(500, 1.4rem);
+  color: $blue-500;
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-0.8rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
