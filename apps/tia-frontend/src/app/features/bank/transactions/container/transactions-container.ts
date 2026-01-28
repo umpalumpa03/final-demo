@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   OnInit,
 } from '@angular/core';
@@ -15,10 +16,20 @@ import { TransactionsTable } from '../components/transactions-table/transactions
 import { TRANSACTIONS_BASE_CONFIG } from '../config/transaction-data';
 import { convertTransactionData } from '../utils/data-converter.utils';
 import { TableConfig } from '@tia/shared/lib/tables/models/table.model';
+import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { FlexLayout } from '@tia/shared/lib/layout/components/flex-layout/flex-layout';
+import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 
 @Component({
   selector: 'app-transactions-container',
-  imports: [TransactionsTable],
+  imports: [
+    TransactionsTable,
+    LibraryTitle,
+    ButtonComponent,
+    FlexLayout,
+    RouteLoader,
+  ],
   templateUrl: './transactions-container.html',
   styleUrl: './transactions-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,14 +49,13 @@ export class TransactionsContainer implements OnInit {
     this.store.dispatch(TransactionActions.enter());
   }
 
-  constructor() {}
   public onScroll(event: Event): void {
     const el = event.target as HTMLElement;
 
     if (!el) return;
 
     if (el.scrollHeight - el.scrollTop <= el.clientHeight + 20) {
-      if (!this.isLoading()) {
+      if (this.items().length % 10 === 0) {
         this.store.dispatch(TransactionActions.loadMore());
       }
     }

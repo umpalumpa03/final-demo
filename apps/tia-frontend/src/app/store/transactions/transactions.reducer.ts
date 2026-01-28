@@ -11,6 +11,13 @@ export const transactionReducer = createReducer(
     ...state,
     items: [],
     nextCursor: null,
+    isLoading: true,
+  })),
+
+  on(TransactionActions.loadMore, (state) => ({
+    ...state,
+    isLoading: true,
+    error: null,
   })),
 
   on(TransactionActions.updateFilters, (state, { filters }) => ({
