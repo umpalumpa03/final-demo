@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { CardAccount } from '../../../features/bank/products/components/cards/models/card-account.model';
+import { CardDetail } from '../../../features/bank/products/components/cards/models/card-detail.model';
 
 export const loadCardAccounts = createAction('[Cards] Load Card Accounts');
 
@@ -26,4 +27,23 @@ export const loadCardImageSuccess = createAction(
 export const loadCardImageFailure = createAction(
   '[Cards] Load Card Image Failure',
   props<{ cardId: string; error: string }>()
+);
+
+export const loadCardDetails = createAction(
+  '[Cards] Load Card Details',
+  props<{ cardId: string }>()
+);
+
+export const loadCardDetailsSuccess = createAction(
+  '[Cards] Load Card Details Success',
+  props<{ cardId: string; details: CardDetail }>()
+);
+
+export const loadCardDetailsFailure = createAction(
+  '[Cards] Load Card Details Failure',
+  props<{ cardId: string; error: string }>()
+);
+export const loadAccountCards = createAction(
+  '[Cards] Load Account Cards',
+  props<{ accountId: string }>()
 );
