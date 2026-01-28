@@ -2,14 +2,10 @@ import { loansReducer } from './loans.reducer';
 import { LoansActions } from './loans.actions';
 import { describe, it, expect } from 'vitest';
 import { ILoan, ILoansState } from '../shared/models/loan.model';
+import { loansInitialState } from './loans.state';
 
 describe('LoansReducer', () => {
-  const initialState: ILoansState = {
-    loans: [],
-    loading: false,
-    error: null,
-    filterStatus: null,
-  };
+  const initialState: ILoansState = loansInitialState;
 
   const mockLoan: ILoan = {
     id: '1',
@@ -79,5 +75,23 @@ describe('LoansReducer', () => {
     const state = loansReducer(stateWithLoan, action);
 
     expect(state.loans[0].friendlyName).toBe('Old Name');
+  });
+
+  it('should update error and loading on loadLoansFailure', () => {
+    const errorMsg = 'Network Error';
+    const action = LoansActions.loadLoansFailure({ error: errorMsg });
+    const state = loansReducer({ ...initialState, loading: true }, action);
+
+    expect(state.loading).toBe(false);
+    expect(state.error).toBe(errorMsg);
+  });
+
+  it('should update months on loadMonthsSuccess', () => {
+    const mockMonths = [6, 12, 24, 36];
+    const action = LoansActions.loadMonthsSuccess({ months: mockMonths });
+    const state = loansReducer(initialState, action);
+
+    expect(state.months).toEqual(mockMonths);
+    expect(state.loading).toBe(false);
   });
 });

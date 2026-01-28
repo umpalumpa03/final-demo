@@ -89,7 +89,7 @@ export class OtpVerification {
       .verifyOtpCode(verificationCode)
       .pipe(
         tap((res) => {
-          this.router.navigate(['/auth/sign-up/success']);
+          this.router.navigate(['/auth/success']);
         }),
         catchError((err) => {
           this.errorMessage.set(err);

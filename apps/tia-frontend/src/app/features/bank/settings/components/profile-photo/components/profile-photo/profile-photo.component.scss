@@ -1,0 +1,79 @@
+@use '../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../shared/styles/palette' as *;
+
+
+.profile-photo {
+  display: block;
+  width: 100%;
+
+  &__upload-section {
+    @include display-flex(column);
+    gap: 1.6rem;
+  }
+
+  &__section-title {
+    @include font-inter(600, 1.6rem, 1.6rem);
+    color: var(--color-fg);
+    margin: 0;
+  }
+
+  &__upload-content {
+    @include display-flex();
+    align-items: center;
+    gap: 1.6rem;
+  }
+
+  &__avatar-wrapper {
+    position: relative;
+    width: fit-content;
+  }
+
+  &__avatar-main-image {
+    width: 4.8rem;
+    height: 4.8rem;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__defaults-section {
+    margin-top: 2.4rem;
+  }
+
+  &__defaults-list {
+    @include display-flex(row);
+    gap: 1.2rem;
+    margin-top: 1.6rem;
+    @include display-flex( wrap);
+  }
+
+  &__avatar-button {
+    border: none;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 999rem;
+    outline: none;
+
+    &--selected {
+      outline: 0.2rem solid var(--color-primary);
+      outline-offset: 0.2rem;
+    }
+  }
+
+  &__avatar-image {
+    width: 4.8rem;
+    height: 4.8rem;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+  }
+
+
+  &__footer {
+   @include flex-center();
+    gap: 1.2rem;
+    margin-top: 2.4rem;
+  }
+}
+

@@ -7,10 +7,11 @@ describe('LoansContainer', () => {
   let component: LoansContainer;
   let fixture: ComponentFixture<LoansContainer>;
   const initialState = {
-    loans: {
+    loans_local: {
       loans: [],
       loading: false,
       error: null,
+      months: [],
     },
   };
   beforeEach(async () => {
