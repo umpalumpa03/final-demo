@@ -22,5 +22,9 @@ export const LoansActions = createActionGroup({
     'Load Purposes': emptyProps(),
     'Load Purposes Success': props<{ purposes: LoanPurpose[] }>(),
     'Load Purposes Failure': props<{ error: string }>(),
+
+    'Load Prepayment Options': emptyProps(),
+    'Load Prepayment Options Success': props<{ options: any[] }>(),
+    'Load Prepayment Options Failure': props<{ error: string }>(),
   },
 });
