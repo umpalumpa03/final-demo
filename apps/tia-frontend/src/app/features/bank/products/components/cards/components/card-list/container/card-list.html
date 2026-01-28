@@ -44,7 +44,13 @@
             </div>
             
             @if (group.cardImages.length > 1) {
-              <div class="card-list__click-hint">Click to view all cards</div>
+              <button 
+                class="card-list__view-all-button"
+                (click)="handleViewAllCards(group.account.id)"
+                type="button"
+              >
+                Click to view all cards
+              </button>
             }
           </div>
         } @else {

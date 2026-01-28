@@ -1,1 +1,56 @@
-<p>account-cards works!</p>
+<div class="account-cards">
+  @if (account(); as accountData) {
+    <div class="account-cards__account-info">
+      <div class="account-cards__account-details">
+        <h1 class="account-cards__account-name">{{ accountData.name }}</h1>
+        <p class="account-cards__account-number">{{ accountData.iban }}</p>
+      </div>
+      <div class="account-cards__account-badge">
+        <app-badges
+          [label]="accountData.cardIds.length + ' Card' + (accountData.cardIds.length !== 1 ? 's' : '')"
+          variant="secondary"
+          size="small"
+          shape="rounded"
+        ></app-badges>
+      </div>
+    </div>
+
+    @if (cards(); as cardList) {
+      @if (cardList.length > 0) {
+        <div class="account-cards__grid">
+          @for (card of cardList; track card.cardId) {
+            <div 
+              class="account-cards__card"
+              (click)="handleCardClick(card.cardId)"
+            >
+              <img 
+                [src]="card.imageBase64" 
+                [alt]="card.details.cardName"
+                class="account-cards__card-image"
+              />
+              <div class="account-cards__card-info">
+                <span class="account-cards__card-name">{{ card.details.cardName }}</span>
+                <div class="account-cards__card-meta">
+                  <app-badges
+                    [label]="card.details.type.toLowerCase()"
+                    [variant]="card.details.type === 'DEBIT' ? 'success' : 'warning'"
+                    size="small"
+                    shape="rounded"
+                  ></app-badges>
+                  <span class="account-cards__card-currency">{{ accountData.currency }}</span>
+                  @if (card.details.type === 'CREDIT' && card.details.creditLimit) {
+                    <span class="account-cards__card-limit">Limit: {{ card.details.creditLimit }}</span>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="account-cards__loading">Loading cards...</div>
+      }
+    }
+  } @else {
+    <div class="account-cards__error">Account not found</div>
+  }
+</div>

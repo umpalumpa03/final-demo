@@ -55,4 +55,26 @@ export class CardsEffects {
       mergeMap((actions) => actions),
     ),
   );
+
+loadCardDetails$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(CardsActions.loadCardDetails),
+    mergeMap(({ cardId }) =>
+      this.cardListService.getCardDetails(cardId).pipe(
+        map((details) =>
+          CardsActions.loadCardDetailsSuccess({ cardId, details }),
+        ),
+        catchError((error) =>
+          of(
+            CardsActions.loadCardDetailsFailure({
+              cardId,
+              error: error.message,
+            }),
+          ),
+        ),
+      ),
+    ),
+  ),
+);
+
 }

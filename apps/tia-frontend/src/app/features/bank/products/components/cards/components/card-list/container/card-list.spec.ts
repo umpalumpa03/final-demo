@@ -98,12 +98,12 @@ describe('CardList', () => {
   describe('Card Navigation', () => {
     it('should navigate to card details when single card is clicked', () => {
       component.handleCardClick(singleCardGroup, 'card1', 0);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/products/cards/details', 'card1']);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/products/cards/details', 'card1']);
     });
 
     it('should navigate to account page when active card in multi-card group is clicked', () => {
       component.handleCardClick(multiCardGroup, 'card2', 0);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/products/cards/account', 'acc2']);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/products/cards/account', 'acc2']);
     });
   });
 
@@ -119,7 +119,7 @@ describe('CardList', () => {
       expect(component.getCardIndex('acc2')).toBe(1);
       
       component.handleCardClick(multiCardGroup, 'card3', 1);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/products/cards/account', 'acc2']);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/products/cards/account', 'acc2']);
     });
   });
 

@@ -1,0 +1,144 @@
+@use "../../../../../../../../shared/styles/mixins" as *;
+@use "../../../../../../../../shared/styles/palette" as *;
+
+.account-cards {
+  @include display-flex(column);
+  gap: 3.2rem;
+  padding: 2rem;
+  max-width: 120rem;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 1.6rem;
+    gap: 2.4rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1.2rem;
+    gap: 2rem;
+  }
+
+  &__account-info {
+    @include flex-center(row, space-between, center);
+    gap: 1.6rem;
+    padding: 2.4rem;
+    background-color: var(--color-bg);
+    border-radius: 1.2rem;
+    border: 0.1rem solid var(--color-secondary);
+
+    @media (max-width: 480px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.2rem;
+      padding: 1.6rem;
+    }
+  }
+
+  &__account-details {
+    @include display-flex(column);
+    gap: 0.4rem;
+  }
+
+  &__account-name {
+    @include font-inter(600, 2rem, 1.4);
+    color: var(--color-fg);
+    margin: 0;
+
+    @media (max-width: 480px) {
+      font-size: 1.8rem;
+    }
+  }
+
+  &__account-number {
+    @include font-inter(400, 1.4rem, 1.5);
+    color: $gray-600;
+    margin: 0;
+  }
+
+  &__account-badge {
+    flex-shrink: 0;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(35rem, 1fr));
+    gap: 2.4rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
+      gap: 2rem;
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+      gap: 1.6rem;
+    }
+  }
+
+  &__card {
+    @include display-flex(column);
+    gap: 1.6rem;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 1.2rem;
+    padding: 1.6rem;
+    background-color: $white;
+    border: 0.1rem solid $gray-200;
+
+    &:hover {
+      transform: translateY(-0.4rem);
+      box-shadow: 0 0.8rem 2.4rem rgba(0, 0, 0, 0.1);
+    }
+
+    &:focus-visible {
+      outline: 0.2rem solid var(--color-primary);
+      outline-offset: 0.2rem;
+    }
+  }
+
+  &__card-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 1.2rem;
+    box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
+  }
+
+  &__card-info {
+    @include display-flex(column);
+    gap: 1.2rem;
+  }
+
+  &__card-name {
+    @include font-inter(600, 1.6rem, 1.5);
+    color: var(--color-fg);
+  }
+
+  &__card-meta {
+    @include flex-center(row, flex-start, center);
+    gap: 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  &__card-currency,
+  &__card-limit {
+    @include font-inter(400, 1.4rem, 1.5);
+    color: $gray-600;
+  }
+
+  &__loading {
+    @include flex-center(row, center, center);
+    @include font-inter(400, 1.6rem, 1.5);
+    padding: 4rem;
+    color: $gray-600;
+  }
+
+  &__error {
+    @include font-inter(400, 1.4rem, 1.5);
+    padding: 1.6rem;
+    background-color: $red-300;
+    color: $red-700;
+    border-radius: 0.8rem;
+    text-align: center;
+  }
+}
