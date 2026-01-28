@@ -1,17 +1,70 @@
-@if(!isLoading()){
-<form class="sign-in" [formGroup]="otpForm" (ngSubmit)="verifyOtp()">
-  <p>Verify Otp</p>
-  <lib-text-input formControlName="code"></lib-text-input>
-  <app-button type="submit">Verify - ეს დალოგინებისას</app-button>
-</form>
-} @else {
-<div class="sign-in sign-in-loader">
-  <app-spinner size="4rem"></app-spinner>
-</div>}
+<div left class="auth-panel">
+  <div class="auth-panel__header">
+    <h2 class="auth-panel__title">OTP Verification</h2>
+    <p class="auth-panel__subtitle">
+      We've sent a 4-digit code to
+      <span class="otp-email">{{ email || 'your email' }}</span>
+    </p>
+  </div>
 
-<form class="sign-in" [formGroup]="smsCodeVerificationForm" (ngSubmit)="submit()">
+  @if(!isLoading()){
+  <form class="sign-in" [formGroup]="otpForm" (ngSubmit)="verifyOtp()">
+    <p>Verify Otp</p>
+    <lib-text-input formControlName="code"></lib-text-input>
+    <app-button type="submit">Verify - ეს დალოგინებისას</app-button>
+  </form>
+  } @else {
+  <div class="sign-in sign-in-loader">
+    <app-spinner size="4rem"></app-spinner>
+  </div>
+  }
+
+  <form
+    class="sign-in"
+    [formGroup]="smsCodeVerificationForm"
+    (ngSubmit)="submit()"
+  >
     <lib-text-input formControlName="verificationCode"></lib-text-input>
     <h2>ERROR: {{errorMessage()}}</h2>
     <app-button type="submit">Verify - ეს რესგისტრაციისას</app-button>
     <p>Didn't receive the code? Resend <span>Resend</span></p>
-</form>
+  </form>
+
+  <form class="auth-form" [formGroup]="form" (ngSubmit)="submitReset()">
+    <div class="otp-field">
+      <label class="otp-label">Enter OTP Code</label>
+      <lib-otp formControlName="otp" [config]="otpConfig"></lib-otp>
+    </div>
+
+    <!-- @if (otpErrorMessage()) {
+    <div class="auth-error">{{ otpErrorMessage() }}</div>
+    } -->
+
+    <div class="auth-form__actions">
+      <app-button
+        type="submit"
+        size="large"
+        [fullWidth]="true"
+        [isLoading]="isSubmitting()"
+      >
+        Verify OTP
+      </app-button>
+    </div>
+  </form>
+
+  <div class="otp-actions">
+    <!-- <button class="auth-inline-link" type="button" (click)="resendOtp()">
+      Didn't receive the code? Resend
+    </button> -->
+
+    @if (resendMessage()) {
+    <div class="auth-feedback" [class.auth-error]="resendStatus() === 'error'">
+      {{ resendMessage() }}
+    </div>
+    }
+  </div>
+
+  <p class="auth-panel__footer">
+    <a class="auth-link" routerLink="/auth/sign-in">Back to Sign In</a>
+  </p>
+</div>

@@ -6,7 +6,7 @@ import { TokenService } from '../../../services/token.service';
 
 @Component({
   selector: 'app-success-page',
-  imports: [RouterLink, ButtonComponent, RouterLink],
+  imports: [RouterLink, ButtonComponent],
   templateUrl: './success-page.html',
   styleUrl: './success-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

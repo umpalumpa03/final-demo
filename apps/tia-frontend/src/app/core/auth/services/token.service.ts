@@ -74,5 +74,4 @@ export class TokenService {
   public get getChallengeId(): string | null {
     return localStorage.getItem(TokenKey.CHALLENGE_ID)
   }
-  //reg - phone // @email
 }

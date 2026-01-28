@@ -1,5 +1,30 @@
-@use '../../../../../shared/styles/palette' as *;
+@use '../../shared/auth-shared' as *;
 @use '../../../../../shared/styles/mixins' as *;
+@use '../../../../../shared/styles/palette' as *;
+
+/////////
+.otp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.otp-label {
+  @include font-inter(500, 1.3rem, 1.4);
+  color: $gray-700;
+}
+
+.otp-email {
+  font-weight: 600;
+  color: $blue-950;
+}
+
+.otp-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+////////////
 
 //temporary styles
 .sign-in {

@@ -1,23 +1,31 @@
-import { inject, Injectable, signal } from '@angular/core';
 import {
   ILoginRequest,
   IMfaVerifyRequest,
+  OtpResponse,
+  SendVerificationResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordVerifyRequest,
+  CreateNewPasswordRequest,
+  ResendOtpRequest,
   IRefreshTokenRequest,
 } from '../models/authRequest.models';
-import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
 import {
+  CreateNewPasswordResponse,
+  ForgotPasswordResponse,
+  ForgotPasswordVerifyResponse,
   IloginResponse,
   ILogoutResponse,
   IMfaVerifyResponse,
   ISignUpResponse,
-  OtpResponse,
-  SendVerificationResponse,
+  ResendOtpResponse,
 } from '../models/authResponse.model';
+import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 import { TokenService } from './token.service';
 import { IRegistrationForm } from '../../../features/storybook/components/forms/models/contact-forms.model';
+import { inject, Injectable, signal } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -69,7 +77,10 @@ export class AuthService {
     refreshToken: IRefreshTokenRequest,
   ): Observable<IMfaVerifyResponse> {
     return this.http
-      .post<IMfaVerifyResponse>(`${environment.apiUrl}/aსuth/refresh`, refreshToken)
+      .post<IMfaVerifyResponse>(
+        `${environment.apiUrl}/aსuth/refresh`,
+        refreshToken,
+      )
       .pipe(
         tap((res) => {
           if (res.access_token && res.refresh_token) {
@@ -143,6 +154,68 @@ export class AuthService {
       `${environment.apiUrl}/auth/phone/verify`,
       { challengeId, code },
       { headers },
+    );
+  }
+
+  public forgotPasswordRequest(
+    email: string,
+  ): Observable<ForgotPasswordResponse> {
+    const payload: ForgotPasswordRequest = { email };
+    return this.http
+      .post<ForgotPasswordResponse>(
+        `${environment.apiUrl}/auth/forgot-password`,
+        payload,
+      )
+      .pipe(tap((res) => this.setChellangeId(res.challengeId)));
+  }
+
+  public verifyForgotPasswordOtp(
+    code: string,
+  ): Observable<ForgotPasswordVerifyResponse> {
+    this.tokenService.clearAccessToken();
+    const payload: ForgotPasswordVerifyRequest = {
+      challengeId: this.getChallengeId(),
+      code,
+    };
+    return this.http
+      .post<ForgotPasswordVerifyResponse>(
+        `${environment.apiUrl}/auth/forgot-password/verify`,
+        payload,
+      )
+      .pipe(tap((res) => this.tokenService.setAccessToken(res.access_token)));
+  }
+
+  public createNewPassword(
+    password: string,
+  ): Observable<CreateNewPasswordResponse> {
+    const token = this.tokenService.accessToken;
+    if (!token) {
+      return throwError(
+        () => new Error('Missing forgot password access token'),
+      );
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    const payload: CreateNewPasswordRequest = { password };
+    return this.http.post<CreateNewPasswordResponse>(
+      `${environment.apiUrl}/auth/create-new-password`,
+      payload,
+      { headers },
+    );
+  }
+
+  public resetPhoneOtp(): Observable<ResendOtpResponse> {
+    const challengeId = this.getChallengeId();
+    if (!challengeId) {
+      return throwError(() => new Error('Missing forgot password challengeId'));
+    }
+
+    const payload: ResendOtpRequest = { challengeId };
+    return this.http.post<ResendOtpResponse>(
+      `${environment.apiUrl}/auth/mfa/otp-resend`,
+      payload,
     );
   }
 }

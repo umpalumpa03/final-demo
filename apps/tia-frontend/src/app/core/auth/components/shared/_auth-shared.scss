@@ -1,0 +1,130 @@
+@use '../../../../shared/styles/mixins' as *;
+@use '../../../../shared/styles/palette' as *;
+
+.auth-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+}
+
+.auth-panel__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.auth-panel__title {
+  @include font-inter(600, 2.2rem, 1.2);
+  color: $blue-950;
+  margin: 0;
+}
+
+.auth-panel__subtitle {
+  @include font-inter(400, 1.4rem, 1.5);
+  color: $gray-700;
+  margin: 0;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+.auth-form__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.auth-link {
+  color: $blue-700;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+.auth-panel__footer {
+  @include font-inter(400, 1.3rem, 1.5);
+  color: $gray-700;
+}
+
+.auth-inline-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: $blue-700;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.auth-inline-link:hover {
+  text-decoration: underline;
+}
+
+.auth-side__title {
+  @include font-inter(600, 2.2rem, 1.2);
+  margin: 0;
+}
+
+.auth-side__subtitle {
+  @include font-inter(400, 1.4rem, 1.5);
+  margin: 0;
+  color: $blue-200;
+}
+
+.auth-side__list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+.auth-side__item {
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+}
+
+.auth-side__icon {
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 0.9rem;
+  background: rgba($white, 0.15);
+  color: $white;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.2rem;
+}
+
+.auth-side__item-title {
+  @include font-inter(600, 1.4rem, 1.4);
+  margin: 0;
+}
+
+.auth-side__item-subtitle {
+  @include font-inter(400, 1.2rem, 1.4);
+  margin: 0.2rem 0 0;
+  color: $blue-200;
+}
+
+.auth-feedback {
+  padding: 1rem 1.2rem;
+  border-radius: 0.8rem;
+  background: $green-50;
+  color: $green-900;
+  font-size: 1.2rem;
+}
+
+.auth-error {
+  padding: 1rem 1.2rem;
+  border-radius: 0.8rem;
+  background: $red-50;
+  color: $red-700;
+  font-size: 1.2rem;
+}
