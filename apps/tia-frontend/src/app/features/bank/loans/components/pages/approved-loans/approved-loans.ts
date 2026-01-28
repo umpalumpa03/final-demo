@@ -11,7 +11,7 @@ import { selectFilteredLoans } from '../../../store/loans.selectors';
 import { LoanCard } from '../../../shared/ui/loan-card/loan-card';
 import { CommonModule } from '@angular/common';
 import { ILoan } from '../../../shared/models/loan.model';
-import { take } from 'rxjs';
+import { filter, map, take } from 'rxjs';
 import { LoanDetails } from '../../../shared/ui/prepayment-wizard/loan-details/loan-details';
 
 @Component({
@@ -33,14 +33,17 @@ export class ApprovedLoans implements OnInit {
     this.store.dispatch(LoansActions.loadLoans());
   }
 
-  public onCardClick(id: string) {
-    this.approvedLoans$.pipe(take(1)).subscribe((loans) => {
-      const loan = loans.find((l) => l.id === id);
-      if (loan) {
+  public onCardClick(id: string): void {
+    this.approvedLoans$
+      .pipe(
+        take(1),
+        map((loans) => loans.find((l) => l.id === id)),
+        filter((loan): loan is ILoan => !!loan && loan.status === 2),
+      )
+      .subscribe((loan) => {
         this.selectedLoan.set(loan);
         this.isDetailsOpen.set(true);
-      }
-    });
+      });
   }
 
   public onRenameLoan(event: { id: string; name: string }): void {

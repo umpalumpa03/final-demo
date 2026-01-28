@@ -20,10 +20,17 @@ import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { toTitleCase } from '../../utils/titlecase.util';
+import { PurposeFormatPipe } from '../../pipes/purpose.pipe';
 
 @Component({
   selector: 'lib-loan-card',
-  imports: [CommonModule, BasicCard, ReactiveFormsModule, TextInput],
+  imports: [
+    CommonModule,
+    BasicCard,
+    ReactiveFormsModule,
+    TextInput,
+    PurposeFormatPipe,
+  ],
   templateUrl: './loan-card.html',
   styleUrl: './loan-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
