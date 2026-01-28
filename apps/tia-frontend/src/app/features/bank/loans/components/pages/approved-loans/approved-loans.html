@@ -9,3 +9,6 @@
     </div>
     }
 </div>
+
+<app-loan-details [isOpen]="isDetailsOpen()" [loan]="selectedLoan()" (close)="isDetailsOpen.set(false)">
+</app-loan-details>
