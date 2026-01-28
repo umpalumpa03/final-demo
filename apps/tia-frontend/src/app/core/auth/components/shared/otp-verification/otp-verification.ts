@@ -112,6 +112,6 @@ export class OtpVerification {
   }
 
   public goBack(): void {
-    this.router.navigate(['auth/sign-up/phone']);
+    this.router.navigate(['auth/phone']);
   }
 }
