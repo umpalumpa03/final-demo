@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProfilePhotoComponent } from './profile-photo.component';
+import { vi } from 'vitest';
 
 describe('ProfilePhotoComponent', () => {
   let component: ProfilePhotoComponent;
@@ -19,8 +20,8 @@ describe('ProfilePhotoComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have default initials set to "JD"', () => {
-    expect(component.initials()).toBe('JD');
+  it('should have default initials as empty string', () => {
+    expect(component.initials()).toBe('');
   });
 
   it('should render avatar in the template', () => {
@@ -37,21 +38,29 @@ describe('ProfilePhotoComponent', () => {
     expect(cardElement).toBeTruthy();
   });
 
-  it('should handle file change with a FileList-like object', () => {
+  it('should create file input and emit file when selected', () => {
     const file = new File(['content'], 'avatar.png', { type: 'image/png' });
+    const emitSpy = vi.spyOn(component.fileSelected, 'emit');
 
-    const fileListLike: any = {
+    component.onFileButtonClick();
+
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    expect(input).toBeTruthy();
+
+    const fileList = {
       0: file,
       length: 1,
       item: (index: number) => (index === 0 ? file : null),
-    };
+    } as unknown as FileList;
 
-    if (typeof FileList !== 'undefined') {
-      Object.setPrototypeOf(fileListLike, FileList.prototype);
-    }
+    Object.defineProperty(input, 'files', {
+      value: fileList,
+      writable: false,
+    });
 
-    expect(() =>
-      component.onFileChange(fileListLike as FileList),
-    ).not.toThrow();
+    input.dispatchEvent(new Event('change'));
+
+    expect(emitSpy).toHaveBeenCalledWith(file);
+    expect(document.body.contains(input)).toBe(false);
   });
 });

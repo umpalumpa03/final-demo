@@ -1,0 +1,82 @@
+<div class="profile-photo">
+  <app-basic-card
+    title="Profile Photo"
+    subtitle="Upload a new profile photo or choose a default avatar"
+    [hasFooter]="true"
+    [maxWidth]="'100%'"
+    [width]="'100%'"
+  >
+    <div class="profile-photo__upload-section">
+      <h3 class="profile-photo__section-title">Upload Custom Photo</h3>
+      <div class="profile-photo__upload-content">
+        <div class="profile-photo__avatar-wrapper">
+          @if (photoUrl()) {
+          <img
+            [src]="photoUrl()!"
+            alt="Profile photo"
+            class="profile-photo__avatar-main-image"
+          />
+          } @else {
+          <app-avatar
+            [initials]="initials()"
+            size="xl"
+            tone="solid"
+            color="blue"
+          ></app-avatar>
+          }
+        </div>
+        <app-button
+          variant="default"
+          size="default"
+          icon="white-download.svg"
+          (click)="onFileButtonClick()"
+        >
+          Choose File
+        </app-button>
+      </div>
+    </div>
+
+    <div class="profile-photo__defaults-section">
+      <h3 class="profile-photo__section-title">Or Choose a Default Avatar</h3>
+      <div class="profile-photo__defaults-list">
+        @for (avatar of defaultAvatars(); track avatar.id) {
+        <button
+          type="button"
+          class="profile-photo__avatar-button"
+          [class.profile-photo__avatar-button--selected]="
+            avatar.id === selectedAvatarId()
+          "
+          (click)="onDefaultAvatarClick(avatar.id)"
+        >
+          <img
+            [src]="getAvatarUrl(avatar.iconUri)"
+            alt="Default avatar"
+            class="profile-photo__avatar-image"
+          />
+        </button>
+        }
+      </div>
+    </div>
+
+    <div card-footer class="profile-photo__footer">
+      <app-button
+        variant="destructive"
+        size="default"
+        icon="trash-icon.svg"
+        (click)="removePhoto.emit()"
+      >
+        Remove Photo
+      </app-button>
+      <app-button
+        variant="default"
+        size="default"
+        (click)="saveChanges.emit()"
+      >
+        Save Changes
+      </app-button>
+    </div>
+  </app-basic-card>
+</div>
+
+
+
