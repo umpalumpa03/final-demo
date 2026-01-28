@@ -44,7 +44,7 @@
     @include display-flex(row);
     gap: 1.2rem;
     margin-top: 1.6rem;
-    flex-wrap: wrap;
+    @include display-flex( wrap);
   }
 
   &__avatar-button {
@@ -52,12 +52,12 @@
     padding: 0;
     background: transparent;
     cursor: pointer;
-    border-radius: 999px;
+    border-radius: 999rem;
     outline: none;
 
     &--selected {
-      outline: 2px solid var(--color-primary);
-      outline-offset: 2px;
+      outline: 0.2rem solid var(--color-primary);
+      outline-offset: 0.2rem;
     }
   }
 

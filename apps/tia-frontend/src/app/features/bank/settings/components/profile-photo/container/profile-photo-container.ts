@@ -27,7 +27,7 @@ export class ProfilePhotoContainer implements OnDestroy {
   private uploadedFile: File | null = null;
   private objectUrl: string | null = null;
 
-  constructor() {
+public  constructor() {
 
     effect(() => {
       const fileName = this.uploadedFileName();
@@ -38,7 +38,7 @@ export class ProfilePhotoContainer implements OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
    if (this.objectUrl) {
       URL.revokeObjectURL(this.objectUrl);
       this.objectUrl = null;
@@ -61,7 +61,7 @@ export class ProfilePhotoContainer implements OnDestroy {
     );
   }
 
-  public onSelectDefaultAvatar(avatarId: string): void {
+  public  onSelectDefaultAvatar(avatarId: string): void {
     this.store.dispatch(
       ProfilePhotoActions.selectDefaultAvatarRequest({ avatarId })
     );

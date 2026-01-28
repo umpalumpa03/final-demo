@@ -27,7 +27,7 @@ export class ProfilePhotoEffects {
             ProfilePhotoActions.loadDefaultAvatars({ avatars }),
           ),
           catchError((error) => {
-            console.error('Failed to load default avatars', error);
+           
            
             return concat(
               of(ProfilePhotoActions.loadDefaultAvatars({ avatars: [] })),
@@ -84,7 +84,7 @@ export class ProfilePhotoEffects {
             return ProfilePhotoActions.clearUploadedFile();
           }),
           catchError((error) => {
-            console.error('Failed to upload avatar', error);
+        
        
             return concat(
               of(ProfilePhotoActions.clearUploadedFile()),
@@ -140,7 +140,7 @@ export class ProfilePhotoEffects {
         this.profilePhotoService.removeUserAvatar().pipe(
           map(() => ProfilePhotoActions.removeAvatar()),
           catchError((error) => {
-            console.error('Failed to remove avatar', error);
+         
             return concat(
               of(ProfilePhotoActions.clearUploadedFile()),
               of(ProfilePhotoActions.removeAvatarFailure({ 
