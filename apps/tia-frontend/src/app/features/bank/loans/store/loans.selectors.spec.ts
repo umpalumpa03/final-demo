@@ -50,6 +50,9 @@ describe('Loans Selectors', () => {
     ...loansInitialState,
     loans: mockLoans,
     loading: true,
+    purposes: [],
+    prepaymentOptions: [],
+    months: [],
   };
 
   const rootState = { loans_local: initialState };

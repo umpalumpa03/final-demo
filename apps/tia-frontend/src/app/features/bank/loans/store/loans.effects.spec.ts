@@ -21,6 +21,7 @@ describe('LoansEffects', () => {
       updateFriendlyName: vi.fn(),
       getLoanMonths: vi.fn(),
       getPurposes: vi.fn(),
+      getPrepaymentOptions: vi.fn(),
     };
 
     TestBed.configureTestingModule({
@@ -102,6 +103,49 @@ describe('LoansEffects', () => {
 
     effects.loadPurposes$.subscribe((result) => {
       expect(result).toEqual(outcome);
+    });
+  });
+
+  it('should return loadMonthsSuccess on success', () => {
+    const months = [1, 2];
+    const action = LoansActions.loadMonths();
+    const outcome = LoansActions.loadMonthsSuccess({ months });
+
+    actions$ = of(action);
+    loansServiceMock.getLoanMonths.mockReturnValue(of(months));
+
+    effects.loadMonths$.subscribe((res) => {
+      expect(res).toEqual(outcome);
+    });
+  });
+
+  it('should return loadPrepaymentOptionsSuccess on success', () => {
+    const options = [] as any;
+    const action = LoansActions.loadPrepaymentOptions();
+    const outcome = LoansActions.loadPrepaymentOptionsSuccess({ options });
+
+    actions$ = of(action);
+    loansServiceMock.getPrepaymentOptions.mockReturnValue(of(options));
+
+    effects.loadPrepaymentOptions$.subscribe((res) => {
+      expect(res).toEqual(outcome);
+    });
+  });
+
+  it('should return loadPrepaymentOptionsFailure on error', () => {
+    const action = LoansActions.loadPrepaymentOptions();
+    const errorMsg = 'fail';
+    const outcome = LoansActions.loadPrepaymentOptionsFailure({
+      error: errorMsg,
+    });
+
+    actions$ = of(action);
+    loansServiceMock.getPrepaymentOptions.mockReturnValue(
+      throwError(() => new Error(errorMsg)),
+    );
+
+    effects.loadPrepaymentOptions$.subscribe((res) => {
+      expect(res).toEqual(outcome);
     });
   });
 });

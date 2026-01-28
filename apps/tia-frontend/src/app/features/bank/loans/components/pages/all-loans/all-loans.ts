@@ -13,10 +13,13 @@ import { selectAllLoans } from '../../../store/loans.selectors';
 import { LoanDetails } from '../../../shared/ui/prepayment-wizard/loan-details/loan-details';
 import { ILoan } from '../../../shared/models/loan.model';
 import { filter, map, take } from 'rxjs';
+import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
+import { PrepaymentOptionStep } from '../../../shared/ui/prepayment-wizard/prepayment-options-step/prepayment-option-step';
+import { PrepaymentCalculationPayload } from '../../../shared/models/prepayment.model';
 
 @Component({
   selector: 'app-all-loans',
-  imports: [CommonModule, LoanCard, LoanDetails],
+  imports: [CommonModule, LoanCard, LoanDetails, UiModal, PrepaymentOptionStep],
   templateUrl: './all-loans.html',
   styleUrl: './all-loans.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,7 +30,8 @@ export class AllLoans implements OnInit {
   protected readonly loans$ = this.store.select(selectAllLoans);
 
   public readonly selectedLoan = signal<ILoan | null>(null);
-  public readonly isDetailsOpen = signal<boolean>(false);
+  public readonly isDetailsOpen = signal(false);
+  public readonly isPrepaymentOpen = signal(false);
 
   public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadLoans());
@@ -50,5 +54,22 @@ export class AllLoans implements OnInit {
     this.store.dispatch(
       LoansActions.renameLoan({ id: event.id, name: event.name }),
     );
+  }
+
+  public onOpenPrepayment(loan: ILoan): void {
+    this.selectedLoan.set(loan);
+    this.isDetailsOpen.set(false);
+    this.isPrepaymentOpen.set(true);
+  }
+
+  // SHEMDEG GVERDZE GADASVLAA DA XVALVIZAM
+  public onCalculatePrepayment(payload: PrepaymentCalculationPayload): void {
+    // console.log('Calculation Payload:', payload);
+  }
+
+  public closeModals(): void {
+    this.isDetailsOpen.set(false);
+    this.isPrepaymentOpen.set(false);
+    this.selectedLoan.set(null);
   }
 }

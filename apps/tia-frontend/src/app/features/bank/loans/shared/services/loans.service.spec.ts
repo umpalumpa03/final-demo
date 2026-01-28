@@ -91,4 +91,30 @@ describe('LoansService', () => {
 
     req.flush(updatedLoan);
   });
+
+  it('should get loan months', () => {
+    const mockResponse = [6, 12, 24];
+    service
+      .getLoanMonths()
+      .subscribe((res) => expect(res).toEqual(mockResponse));
+    const req = httpMock.expectOne(`${apiUrl}/loan-months`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockResponse);
+  });
+
+  it('should get purposes', () => {
+    const mockPurposes = [{ value: '1', displayText: 'Home' }];
+    service.getPurposes().subscribe((res) => expect(res).toEqual(mockPurposes));
+    const req = httpMock.expectOne(`${apiUrl}/catalog/purposes`);
+    req.flush(mockPurposes);
+  });
+
+  it('should get prepayment options', () => {
+    const mockOptions = [{ prepaymentValue: 'full', isActive: true }];
+    service
+      .getPrepaymentOptions()
+      .subscribe((res) => expect(res).toEqual(mockOptions));
+    const req = httpMock.expectOne(`${apiUrl}/loan-prepayment-options`);
+    req.flush(mockOptions);
+  });
 });
