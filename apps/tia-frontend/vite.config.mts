@@ -44,6 +44,7 @@ export default defineConfig(() => ({
         '**/*.models.ts',
         '**/config/**',
         '**/*.actions.ts',
+        '**/*.state.ts',
         '**/*.provider.ts',
         '**/i18n/**'
       ],

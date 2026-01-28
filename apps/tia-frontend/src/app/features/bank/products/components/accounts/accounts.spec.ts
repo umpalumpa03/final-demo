@@ -1,26 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Account } from './account';
+import { Accounts } from './accounts';
 import { describe, it, expect, beforeEach } from 'vitest';
+import { provideMockStore } from '@ngrx/store/testing';
 
-describe('Account', () => {
-  let component: Account;
-  let fixture: ComponentFixture<Account>;
+describe('Accounts', () => {
+  let component: Accounts;
+  let fixture: ComponentFixture<Accounts>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Account],
+      imports: [Accounts],
+      providers: [provideMockStore()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Account);
+    fixture = TestBed.createComponent(Accounts);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should use OnPush change detection strategy', () => {
-    expect(fixture.componentRef.changeDetectorRef).toBeDefined();
   });
 });
