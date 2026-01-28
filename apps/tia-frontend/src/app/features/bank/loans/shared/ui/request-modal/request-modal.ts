@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import {
   LOAN_FORM_CONFIG,
-  MOCK_ACCOUNT_OPTIONS,
   PURPOSE_OPTIONS,
 } from '../../config/loan-request.config';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
