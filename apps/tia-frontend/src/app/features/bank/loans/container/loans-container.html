@@ -1,13 +1,10 @@
 <div class="global-bank-wrapper">
-  <main class="main">
-    <app-loan-header (requestClick)="isModalOpen.set(true)"></app-loan-header>
+    <main class="main">
+        <app-loan-header (requestClick)="isModalOpen.set(true)"></app-loan-header>
 
-    <app-loan-navigation />
-    <router-outlet></router-outlet>
-    <app-request-modal
-      [isOpen]="isModalOpen()"
-      (close)="isModalOpen.set(false)"
-    >
-    </app-request-modal>
-  </main>
+        <app-loan-navigation />
+        <router-outlet></router-outlet>
+        <app-request-modal [isOpen]="isModalOpen()" (close)="isModalOpen.set(false)">
+        </app-request-modal>
+    </main>
 </div>
