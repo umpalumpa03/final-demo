@@ -1,0 +1,18 @@
+<main class="external-transfer">
+  <header class="external-transfer__header">
+    <h1 class="external-transfer__title">
+      {{'transfers.external.extTitle' | translate}}
+    </h1>
+    <p class="external-transfer__description">
+      {{'transfers.external.extDescription' | translate}}
+    </p>
+  </header>
+
+  <div class="external-transfer__stepper">
+    <app-stepper-header [content]="steps" [step]="currentStep">
+    </app-stepper-header>
+  </div>
+  <div class="external-transfer__content">
+    <router-outlet></router-outlet>
+  </div>
+</main>

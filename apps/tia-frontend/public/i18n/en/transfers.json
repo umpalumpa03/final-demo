@@ -12,7 +12,12 @@
   },
   "external": {
     "extTitle": "Transfer to Other Account",
-    "extDescription": "Send money to external accounts via IBAN or phone number"
+    "extDescription": "Send money to external accounts via IBAN or phone number",
+    "recipient": {
+      "title": "Enter recipient IBAN or phone number",
+      "inputPlaceholder": "Enter IBAN (GE...) or phone number (+...)",
+      "verify": "Verify Recipient"
+    }
   },
   "confirmation": {
     "title": "Transfer Successful!",

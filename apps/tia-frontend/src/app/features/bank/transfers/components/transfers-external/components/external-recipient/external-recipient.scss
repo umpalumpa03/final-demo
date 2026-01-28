@@ -1,0 +1,22 @@
+@use '../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../shared/styles/palette' as *;
+
+.external-recipient {
+  width: 100vh;
+
+  &__title {
+    @include font-inter(500, 1.6rem, 2.4rem);
+    color: var(--color-fg);
+  }
+
+  &__form {
+    @include display-flex();
+    gap: 1.6rem;
+    width: 100%;
+    align-items: center;
+  }
+
+  &__input {
+    flex: 1;
+  }
+}

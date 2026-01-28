@@ -32,5 +32,18 @@ export const cardsReducer = createReducer(
   })),
   on(CardsActions.loadCardImageFailure, (state) => ({
     ...state,
-  }))
+  })),
+  on(CardsActions.loadCardDetails, (state) => ({
+    ...state,
+  })),
+  on(CardsActions.loadCardDetailsSuccess, (state, { cardId, details }) => ({
+    ...state,
+    cardDetails: {
+      ...state.cardDetails,
+      [cardId]: details,
+    },
+  })),
+  on(CardsActions.loadCardDetailsFailure, (state) => ({
+    ...state,
+  })),
 );
