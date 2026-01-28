@@ -9,11 +9,12 @@ describe('AllLoans', () => {
   let fixture: ComponentFixture<AllLoans>;
   let store: MockStore;
   const initialState = {
-    loans: {
+    loans_local: {
       loans: [],
       loading: false,
       error: null,
       filterStatus: null,
+      months: [],
     },
   };
 
@@ -47,10 +48,5 @@ describe('AllLoans', () => {
     expect(store.dispatch).toHaveBeenCalledWith(
       LoansActions.renameLoan({ id: event.id, name: event.name }),
     );
-  });
-
-  it('should log ID when card is clicked', () => {
-    component.onCardClick('123');
-    expect(console.log).toHaveBeenCalledWith('Clicked', '123');
   });
 });

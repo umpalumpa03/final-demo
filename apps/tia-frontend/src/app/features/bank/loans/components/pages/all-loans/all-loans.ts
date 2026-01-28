@@ -27,11 +27,11 @@ export class AllLoans implements OnInit {
   }
 
   // ES IYOS JER ASE GADAKETDEBA
-  protected onCardClick(id: string): void {
-    console.log('Clicked', id);
+  public onCardClick(id: string): void {
+    // console.log('Clicked', id);
   }
 
-  protected onRenameLoan(event: { id: string; name: string }): void {
+  public onRenameLoan(event: { id: string; name: string }): void {
     this.store.dispatch(
       LoansActions.renameLoan({ id: event.id, name: event.name }),
     );

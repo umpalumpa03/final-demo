@@ -16,6 +16,7 @@ export interface ILoan {
 
 export interface ILoansState {
   loans: ILoan[];
+  months: number[];
   loading: boolean;
   error: string | null;
   filterStatus: number | null;
@@ -26,5 +27,7 @@ export interface LoanUiState {
   color: string;
   iconKey: IconKey;
 }
+
+export type LoanMonthsResponse = number[];
 
 type IconKey = keyof typeof LOAN_ICONS;
