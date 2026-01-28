@@ -8,47 +8,45 @@
   &__header {
     @include flex-center(row, flex-start, flex-start);
     gap: 1rem;
-  }
 
-  &__header-icon {
-    width: 4.8rem;
-    height: 4.8rem;
-    @include flex-center();
-    background: $gray-50;
-    border-radius: 0.8rem;
-    flex-shrink: 0;
+    &-icon {
+      width: 4.8rem;
+      height: 4.8rem;
+      @include flex-center();
+      background: $gray-50;
+      border-radius: 0.8rem;
+      flex-shrink: 0;
 
-    img {
-      width: 2.4rem;
-      height: 2.4rem;
-    }
-  }
-
-  &__header-info {
-    flex: 1;
-
-    &-name {
-      @include font-arimo(600, 1.8rem, 1.2);
-      color: $gray-800;
-      margin: 0 0 0.25rem 0;
-      @include flex-center(row, flex-start, center);
-      gap: 0.5rem;
+      img {
+        width: 2.4rem;
+        height: 2.4rem;
+      }
     }
 
-    &-badge {
-      display: inline-block;
-      padding: 0.125rem 0.5rem;
-      background: $blue-500;
-      color: $white;
-      border-radius: 1.2rem;
-      @include font-arimo(500, 1.1rem, 1.2);
-      text-transform: uppercase;
-    }
+    &-info {
+      flex: 1;
 
-    &-number {
-      @include font-arimo(400, 1.4rem, 1.5);
-      color: $gray-600;
-      margin: 0.25rem 0 0 0;
+      &-name {
+        @include font-arimo(600, 1.8rem, 1.2);
+        color: $gray-800;
+        margin: 0 0 0.25rem 0;
+        @include flex-center(row, flex-start, center);
+        gap: 0.5rem;
+      }
+      &-badge {
+        display: inline-block;
+        padding: 0.125rem 0.5rem;
+        background: $blue-500;
+        color: $white;
+        border-radius: 1.2rem;
+        @include font-arimo(500, 1.1rem, 1.2);
+        text-transform: uppercase;
+      }
+      &-number {
+        @include font-arimo(400, 1.4rem, 1.5);
+        color: $gray-600;
+        margin: 0.25rem 0 0 0;
+      }
     }
   }
 
@@ -57,22 +55,21 @@
     padding: 1rem;
     background: $gray-25;
     border-radius: 0.8rem;
-  }
 
-  &__balance-label {
-    @include font-arimo(400, 1.2rem, 1.2);
-    color: $gray-600;
-    margin: 0 0 0.25rem 0;
-    text-transform: uppercase;
-    letter-spacing: 0.05rem;
-  }
+    &-label {
+      @include font-arimo(400, 1.2rem, 1.2);
+      color: $gray-600;
+      margin: 0 0 0.25rem 0;
+      text-transform: uppercase;
+      letter-spacing: 0.05rem;
+    }
 
-  &__balance-amount {
-    @include font-arimo(700, 2.8rem, 1.2);
-    color: $gray-800;
-    margin: 0;
+    &-amount {
+      @include font-arimo(700, 2.8rem, 1.2);
+      color: $gray-800;
+      margin: 0;
+    }
   }
-
   &__details {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -81,31 +78,32 @@
     padding: 1rem 0;
     border-top: 0.1rem solid $gray-200;
     border-bottom: 0.1rem solid $gray-200;
-  }
 
-  &__details-item {
-    @include flex-center(column, flex-start, flex-start);
-    gap: 0.25rem;
-  }
+    &-item {
+      @include flex-center(column, flex-start, flex-start);
+      gap: 0.25rem;
 
-  &__details-item-label {
-    @include font-arimo(400, 1.2rem, 1.2);
-    color: $gray-600;
-    text-transform: uppercase;
-    letter-spacing: 0.05rem;
-  }
+      &-label {
+        @include font-arimo(400, 1.2rem, 1.2);
+        color: $gray-600;
+        text-transform: uppercase;
+        letter-spacing: 0.05rem;
+      }
 
-  &__details-item-value {
-    @include font-arimo(500, 1.4rem, 1.5);
-    color: $gray-800;
+      &-value {
+        @include font-arimo(500, 1.4rem, 1.5);
+        color: $gray-800;
+      }
+    }
   }
 
   &__actions {
-    @include flex-center(row, stretch, center);
+    display: block;
     gap: 0.75rem;
-  }
+    padding: 1rem;
 
-  &__actions-icon {
-    font-size: 1.6rem;
+    &-icon {
+      font-size: 1.6rem;
+    }
   }
 }
