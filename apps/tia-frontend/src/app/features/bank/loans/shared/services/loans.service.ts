@@ -36,7 +36,7 @@ export class LoansService {
     return this.http.get<LoanMonthsResponse>(`${this.loansApiUrl}/loan-months`);
   }
 
-  getPurposes(): Observable<LoanPurpose[]> {
+  public getPurposes(): Observable<LoanPurpose[]> {
     return this.http.get<LoanPurpose[]>(`${this.loansApiUrl}/catalog/purposes`);
   }
 }
