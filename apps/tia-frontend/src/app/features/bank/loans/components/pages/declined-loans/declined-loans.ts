@@ -20,4 +20,10 @@ export class DeclinedLoans {
   public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadLoans());
   }
+
+  protected onRenameLoan(event: { id: string; name: string }): void {
+    this.store.dispatch(
+      LoansActions.renameLoan({ id: event.id, name: event.name }),
+    );
+  }
 }
