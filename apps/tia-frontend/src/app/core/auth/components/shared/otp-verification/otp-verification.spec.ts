@@ -92,6 +92,6 @@ describe('OtpVerification', () => {
     component.smsCodeVerificationForm.controls.verificationCode.setValue('1234');
     component.submit();
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/auth/sign-up/success']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/auth/success']);
   });
 });
