@@ -2,15 +2,10 @@ import { loansReducer } from './loans.reducer';
 import { LoansActions } from './loans.actions';
 import { describe, it, expect } from 'vitest';
 import { ILoan, ILoansState } from '../shared/models/loan.model';
+import { loansInitialState } from './loans.state';
 
 describe('LoansReducer', () => {
-  const initialState: ILoansState = {
-    loans: [],
-    loading: false,
-    error: null,
-    filterStatus: null,
-    months: [],
-  };
+  const initialState: ILoansState = loansInitialState;
 
   const mockLoan: ILoan = {
     id: '1',

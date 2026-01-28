@@ -20,11 +20,10 @@ describe('AllLoans', () => {
       loans: mockLoans,
       loading: false,
       error: null,
-      filterStatus: null,
       months: [],
+      purposes: [],
     },
   };
-
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AllLoans],

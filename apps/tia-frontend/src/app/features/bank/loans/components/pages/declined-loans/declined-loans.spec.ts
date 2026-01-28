@@ -12,8 +12,10 @@ describe('DeclinedLoans', () => {
       loading: false,
       error: null,
       months: [],
+      purposes: [],
     },
   };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DeclinedLoans],
