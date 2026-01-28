@@ -3,6 +3,8 @@ import { provideState } from '@ngrx/store';
 import { paybillReducer } from './paybill/store/paybill.reducer';
 import { provideEffects } from '@ngrx/effects';
 import * as paybillEffects from './paybill/store/paybill.effects';
+import { FinancesService } from './finances/services/finances.service';
+import { FinancesStore } from './finances/store/finances.store';
 export const bankRoutes: Routes = [
   {
     path: 'bank',
@@ -50,6 +52,10 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'finances',
+        providers: [
+          FinancesStore,
+          FinancesService
+        ],
         loadComponent: () =>
           import('./finances/container/finances-container').then(
             (c) => c.FinancesContainer,

@@ -14,6 +14,14 @@ export interface FilterOption {
   variant:ButtonVariant;
 }
 
+export interface SummaryCard {
+  label: string;
+  value: string;
+  change: string;
+  changeType: 'positive' | 'negative';
+  icon: string;
+}
+
 export interface FinancialSummaryResponse {
   totalIncome: number;
   totalExpenses: number;
