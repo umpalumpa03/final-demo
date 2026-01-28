@@ -6,6 +6,8 @@ import { loansReducer } from './store/loans.reducer';
 import { LoansEffects } from './store/loans.effects';
 import { LoansContainer } from './container/loans-container';
 import { LoansService } from './shared/services/loans.service';
+import { AccountsEffects } from '../../../store/products/accounts/accounts.effects';
+import { accountsFeature } from '../../../store/products/accounts/accounts.reducer';
 
 export const loansRoutes: Routes = [
   {
@@ -15,6 +17,9 @@ export const loansRoutes: Routes = [
       provideState('loans', loansReducer),
       provideEffects(LoansEffects),
       LoansService,
+
+      provideState(accountsFeature),
+      provideEffects(AccountsEffects),
     ],
     children: [
       { path: '', redirectTo: 'all', pathMatch: 'full' },

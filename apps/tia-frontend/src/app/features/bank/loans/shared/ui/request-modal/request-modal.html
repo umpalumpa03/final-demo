@@ -19,7 +19,7 @@
                 </h4>
                 <div class="loan-modal__grid">
                     <lib-text-input [config]="cfg.amount" formControlName="amount"></lib-text-input>
-                    <lib-select [config]="cfg.account" [options]="accountOptions"
+                    <lib-select [config]="cfg.account" [options]="(accountOptions$ | async) || []"
                         formControlName="account"></lib-select>
                     <lib-select [config]="cfg.term" [options]="(termOptions$ | async) || []"
                         formControlName="term"></lib-select>

@@ -22,6 +22,8 @@ import { LoansActions } from '../../../store/loans.actions';
 import { Observable } from 'rxjs';
 import { selectLoanMonthsOptions } from '../../../store/loans.selectors';
 import { CommonModule } from '@angular/common';
+import { selectAccountOptions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
+import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 
 @Component({
   selector: 'app-request-modal',
@@ -49,10 +51,12 @@ export class RequestModal implements OnInit {
   protected readonly termOptions$: Observable<IDropdownOption[]> =
     this.store.select(selectLoanMonthsOptions);
   protected readonly purposeOptions = PURPOSE_OPTIONS;
-  protected readonly accountOptions = MOCK_ACCOUNT_OPTIONS;
+  protected readonly accountOptions$: Observable<IDropdownOption[]> =
+    this.store.select(selectAccountOptions);
 
   public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadMonths());
+    this.store.dispatch(AccountsActions.loadAccounts());
   }
 
   public readonly form = this.fb.group({
