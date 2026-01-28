@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, computed, DestroyRef } from '@angular/core';
+import { Component, inject, OnInit, computed, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { FinancesStore } from '../store/finances.store';
 import {
   FINANCES_FILTER_OPTIONS,
@@ -16,6 +16,7 @@ import { FinancesView } from '../components/finances-view';
   imports: [FinancesView],
   templateUrl: './finances-container.html',
   styleUrl: './finances-container.scss',
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class FinancesContainer implements OnInit {
   readonly store = inject(FinancesStore);
