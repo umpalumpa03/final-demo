@@ -9,11 +9,12 @@ describe('AllLoans', () => {
   let fixture: ComponentFixture<AllLoans>;
   let store: MockStore;
   const initialState = {
-    loans: {
+    loans_local: {
       loans: [],
       loading: false,
       error: null,
       filterStatus: null,
+      months: [],
     },
   };
 

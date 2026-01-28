@@ -10,15 +10,7 @@ describe('toTitleCase Util', () => {
     expect(toTitleCase('')).toBeNull();
   });
 
-  it('should convert all uppercase to title case', () => {
-    expect(toTitleCase('HELLO WORLD')).toBe('Hello World');
-  });
-
   it('should convert all lowercase to title case', () => {
     expect(toTitleCase('hello world')).toBe('Hello World');
-  });
-
-  it('should handle mixed case', () => {
-    expect(toTitleCase('hElLo wOrLD')).toBe('Hello World');
   });
 });

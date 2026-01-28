@@ -9,10 +9,11 @@ describe('ApprovedLoans', () => {
   let store: MockStore;
 
   const initialState = {
-    loans: {
+    loans_local: {
       loans: [],
       loading: false,
       error: null,
+      months: [],
     },
   };
 

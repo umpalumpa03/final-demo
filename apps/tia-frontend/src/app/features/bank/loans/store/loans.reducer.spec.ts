@@ -9,6 +9,7 @@ describe('LoansReducer', () => {
     loading: false,
     error: null,
     filterStatus: null,
+    months: [],
   };
 
   const mockLoan: ILoan = {
@@ -79,5 +80,23 @@ describe('LoansReducer', () => {
     const state = loansReducer(stateWithLoan, action);
 
     expect(state.loans[0].friendlyName).toBe('Old Name');
+  });
+
+  it('should update error and loading on loadLoansFailure', () => {
+    const errorMsg = 'Network Error';
+    const action = LoansActions.loadLoansFailure({ error: errorMsg });
+    const state = loansReducer({ ...initialState, loading: true }, action);
+
+    expect(state.loading).toBe(false);
+    expect(state.error).toBe(errorMsg);
+  });
+
+  it('should update months on loadMonthsSuccess', () => {
+    const mockMonths = [6, 12, 24, 36];
+    const action = LoansActions.loadMonthsSuccess({ months: mockMonths });
+    const state = loansReducer(initialState, action);
+
+    expect(state.months).toEqual(mockMonths);
+    expect(state.loading).toBe(false);
   });
 });
