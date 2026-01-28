@@ -2,7 +2,6 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CardAccountsResponse } from '../models/card-account.model';
-// import { environment } from 'apps/tia-frontend/src/environments/environment';
 import { environment } from '../../../../../../../environments/environment';
 
 @Injectable({

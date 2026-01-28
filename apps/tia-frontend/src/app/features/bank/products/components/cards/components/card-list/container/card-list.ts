@@ -38,7 +38,7 @@ export class CardList implements OnInit {
     this.store.dispatch(loadCardAccounts());
   }
 
-  handleCardClick(group: CardGroup, cardId: string, cardIndex: number): void {
+  protected handleCardClick(group: CardGroup, cardId: string, cardIndex: number): void {
     if (group.cardImages.length === 1) {
       this.router.navigate(['/products/cards/details', cardId]);
     } else {
@@ -55,7 +55,7 @@ export class CardList implements OnInit {
     }
   }
 
-  getCardIndex(accountId: string): number {
+  protected getCardIndex(accountId: string): number {
     return this.activeCardIndex()[accountId] ?? 0;
   }
 }

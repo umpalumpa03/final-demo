@@ -18,9 +18,12 @@ describe('Cards Reducer', () => {
     },
   ];
 
+  const cardId = 'card1';
+  const imageBase64 = 'data:image/svg+xml;base64,test';
+
   describe('unknown action', () => {
     it('should return the default state', () => {
-      const action = { type: 'Unknown' };
+      const action = { type: 'Unknown' } as any;
       const state = cardsReducer(initialCardsState, action);
       expect(state).toBe(initialCardsState);
     });
@@ -30,7 +33,7 @@ describe('Cards Reducer', () => {
     it('should set loading to true and clear error', () => {
       const action = CardsActions.loadCardAccounts();
       const state = cardsReducer(initialCardsState, action);
-      
+
       expect(state.loading).toBe(true);
       expect(state.error).toBeNull();
     });
@@ -40,7 +43,7 @@ describe('Cards Reducer', () => {
     it('should populate accounts and set loading to false', () => {
       const action = CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts });
       const state = cardsReducer(initialCardsState, action);
-      
+
       expect(state.accounts).toEqual(mockAccounts);
       expect(state.loading).toBe(false);
       expect(state.error).toBeNull();
@@ -52,36 +55,48 @@ describe('Cards Reducer', () => {
       const error = 'Error loading accounts';
       const action = CardsActions.loadCardAccountsFailure({ error });
       const state = cardsReducer(initialCardsState, action);
-      
+
       expect(state.error).toBe(error);
       expect(state.loading).toBe(false);
     });
   });
 
+  describe('loadCardImage', () => {
+    it('should not modify state when loading image', () => {
+      const action = CardsActions.loadCardImage({ cardId });
+      const state = cardsReducer(initialCardsState, action);
+      expect(state).toEqual(initialCardsState);
+    });
+  });
+
   describe('loadCardImageSuccess', () => {
     it('should add card image to state', () => {
-      const cardId = 'card1';
-      const imageBase64 = 'data:image/svg+xml;base64,test';
       const action = CardsActions.loadCardImageSuccess({ cardId, imageBase64 });
       const state = cardsReducer(initialCardsState, action);
-      
       expect(state.cardImages[cardId]).toBe(imageBase64);
     });
 
     it('should update existing card image', () => {
-      const cardId = 'card1';
       const oldImage = 'old-image';
       const newImage = 'new-image';
-      
+
       const stateWithImage: CardsState = {
         ...initialCardsState,
         cardImages: { [cardId]: oldImage },
       };
-      
+
       const action = CardsActions.loadCardImageSuccess({ cardId, imageBase64: newImage });
       const state = cardsReducer(stateWithImage, action);
-      
       expect(state.cardImages[cardId]).toBe(newImage);
+    });
+  });
+
+  describe('loadCardImageFailure', () => {
+    it('should not modify state on failure', () => {
+      const error = 'Failed to load image';
+      const action = CardsActions.loadCardImageFailure({ cardId, error });
+      const state = cardsReducer(initialCardsState, action);
+      expect(state).toEqual(initialCardsState);
     });
   });
 });
