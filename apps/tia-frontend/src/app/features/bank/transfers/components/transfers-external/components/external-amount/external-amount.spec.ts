@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TransfersExternal } from './transfers-external';
+import { ExternalAmount } from './external-amount';
 
-describe('TransfersExternal', () => {
-  let component: TransfersExternal;
-  let fixture: ComponentFixture<TransfersExternal>;
+describe('ExternalAmount', () => {
+  let component: ExternalAmount;
+  let fixture: ComponentFixture<ExternalAmount>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TransfersExternal],
+      imports: [ExternalAmount],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TransfersExternal);
+    fixture = TestBed.createComponent(ExternalAmount);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
