@@ -19,6 +19,8 @@ describe('LoansEffects', () => {
     loansServiceMock = {
       getAllLoans: vi.fn(),
       updateFriendlyName: vi.fn(),
+      getLoanMonths: vi.fn(),
+      getPurposes: vi.fn(),
     };
 
     TestBed.configureTestingModule({
@@ -84,6 +86,21 @@ describe('LoansEffects', () => {
     );
 
     effects.renameLoan$.subscribe((result) => {
+      expect(result).toEqual(outcome);
+    });
+  });
+
+  it('should return loadPurposesSuccess on success', () => {
+    const mockPurposes = [{ displayText: 'Home', value: 'home' }] as any;
+    const action = LoansActions.loadPurposes();
+    const outcome = LoansActions.loadPurposesSuccess({
+      purposes: mockPurposes,
+    });
+
+    actions$ = of(action);
+    loansServiceMock.getPurposes.mockReturnValue(of(mockPurposes));
+
+    effects.loadPurposes$.subscribe((result) => {
       expect(result).toEqual(outcome);
     });
   });
