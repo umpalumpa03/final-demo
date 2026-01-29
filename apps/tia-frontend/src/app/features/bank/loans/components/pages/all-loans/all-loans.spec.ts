@@ -2,7 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AllLoans } from './all-loans';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { LoansActions } from '../../../store/loans.actions';
-import { selectAllLoans } from '../../../store/loans.selectors';
+import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+import { selectLoansWithAccountInfo } from '../../../store/loans.selectors';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
 describe('AllLoans', () => {
@@ -30,7 +31,9 @@ describe('AllLoans', () => {
       providers: [
         provideMockStore({
           initialState,
-          selectors: [{ selector: selectAllLoans, value: mockLoans }],
+          selectors: [
+            { selector: selectLoansWithAccountInfo, value: mockLoans },
+          ],
         }),
       ],
     }).compileComponents();
@@ -49,6 +52,11 @@ describe('AllLoans', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should dispatch loadLoans and loadAccounts on init', () => {
+    expect(store.dispatch).toHaveBeenCalledWith(LoansActions.loadLoans());
+    expect(store.dispatch).toHaveBeenCalledWith(AccountsActions.loadAccounts());
   });
 
   it('should open details only for approved loans (status 2)', () => {

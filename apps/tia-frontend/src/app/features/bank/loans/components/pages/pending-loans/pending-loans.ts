@@ -4,6 +4,7 @@ import { LoanCard } from '../../../shared/ui/loan-card/loan-card';
 import { Store } from '@ngrx/store';
 import { LoansActions } from '../../../store/loans.actions';
 import { selectFilteredLoans } from '../../../store/loans.selectors';
+import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 
 @Component({
   selector: 'app-pending-loans',
@@ -19,6 +20,7 @@ export class PendingLoans {
 
   public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadLoans());
+    this.store.dispatch(AccountsActions.loadAccounts());
   }
 
   public onRenameLoan(event: { id: string; name: string }): void {
