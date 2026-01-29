@@ -8,7 +8,7 @@ import {
   CreateAccountRequest,
 } from '../../models/accounts/accounts.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AccountsService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/accounts`;

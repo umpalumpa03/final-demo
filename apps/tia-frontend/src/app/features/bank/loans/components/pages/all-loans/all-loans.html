@@ -12,10 +12,20 @@
 </app-loan-details>
 
 <app-ui-modal [isOpen]="isPrepaymentOpen()" (closed)="closeModals()">
+
     @if (selectedLoan(); as loan) {
     <div class="modal-content-wrapper">
+
+        @if (step() === 'options') {
         <app-prepayment-option-step [loan]="loan" (cancel)="closeModals()" (calculate)="onCalculatePrepayment($event)">
         </app-prepayment-option-step>
+        }
+
+        @if (step() === 'review' && calculationResult(); as result) {
+        <app-prepayment-review [calculationResult]="result" (cancel)="step.set('options')" (confirmPay)="onFinalPay()">
+        </app-prepayment-review>
+        }
+
     </div>
     }
 </app-ui-modal>

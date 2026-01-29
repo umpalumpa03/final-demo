@@ -18,9 +18,16 @@ export class ProfilePhotoEffects {
   private profilePhotoService = inject(ProfilePhotoService);
   private store = inject(Store);
 
-  public loadDefaultAvatars$ = createEffect(() =>
+  public initLoadDefaultAvatars$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ROOT_EFFECTS_INIT),
+      map(() => ProfilePhotoActions.loadDefaultAvatarsRequest()),
+    ),
+  );
+
+  public loadDefaultAvatars$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ProfilePhotoActions.loadDefaultAvatarsRequest),
       switchMap(() =>
         this.profilePhotoService.getAvailableDefaultAvatars().pipe(
           map((avatars) =>

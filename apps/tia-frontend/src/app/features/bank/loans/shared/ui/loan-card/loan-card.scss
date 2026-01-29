@@ -15,8 +15,7 @@
 
         svg,
         img {
-            width: 2.4rem;
-            height: 2.4rem;
+            @include svg-icon(2.4rem);
         }
 
         &--blue {
