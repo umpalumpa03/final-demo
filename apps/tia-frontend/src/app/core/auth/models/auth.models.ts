@@ -5,3 +5,4 @@ export interface IFeaturePanel {
   icon?: string;
 }
 
+export type AuthFromType = 'sign-in' | 'sign-up' | 'forgot-password' | 'unknown'

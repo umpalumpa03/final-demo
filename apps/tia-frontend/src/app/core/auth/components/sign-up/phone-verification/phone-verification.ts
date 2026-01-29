@@ -54,7 +54,7 @@ export class PhoneVerification implements OnInit {
         tap((res) => {
           this.errorMessage.set('');
           this.authService.setChellangeId(res.challengeId);
-          this.router.navigate(['/auth/otp']);
+          this.router.navigate(['/auth/otp'], { state: { from: 'sign-up' } });
         }),
         catchError((err) => {
           const messages = err.error?.message;
@@ -74,4 +74,3 @@ export class PhoneVerification implements OnInit {
     }
   }
 }
-// OTP Timeout

@@ -47,7 +47,6 @@ describe('OtpVerification', () => {
   });
 
   it('should initialize with sign-up context based on route', () => {
-    component.ngOnInit();
     // Context is private, but we can verify behavior via submit()
     component.smsCodeVerificationForm.controls.verificationCode.setValue('1234');
     component.submit();
@@ -56,7 +55,6 @@ describe('OtpVerification', () => {
 
   it('should initialize with forgot-password context from route data', () => {
     routeMock.snapshot.data['otpContext'] = 'forgot-password';
-    component.ngOnInit();
     
     component.smsCodeVerificationForm.controls.verificationCode.setValue('1234');
     component.submit();
@@ -78,7 +76,6 @@ describe('OtpVerification', () => {
   describe('registerVerification (Sign-up path)', () => {
     it('should navigate to success on valid OTP', () => {
       routeMock.snapshot.url = [{ path: 'sign-up' }];
-      component.ngOnInit();
       
       component.smsCodeVerificationForm.controls.verificationCode.setValue('1234');
       component.submit();
