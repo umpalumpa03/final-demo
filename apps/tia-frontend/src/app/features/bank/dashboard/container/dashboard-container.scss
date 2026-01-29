@@ -1,0 +1,23 @@
+@use '../../../../shared/styles/mixins' as *;
+@use '../../../../shared/styles/palette' as *;
+
+.global-bank-wrapper {
+  padding: 3.2rem;
+  background-color: var(--color-bg);
+  min-height: 100vh;
+}
+
+.widget-content {
+  @include flex-center(column, center, center);
+  min-height: 18rem;
+
+  &__metric {
+    @include font-inter(600, 3.2rem);
+    color: var(--color-fg);
+  }
+
+  &__label {
+    @include font-inter(400, 1.4rem);
+    color: $gray-500;
+  }
+}
