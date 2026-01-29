@@ -21,6 +21,7 @@ import { authInterceptor } from './core/auth/interceptors/auth-interceptor';
 import { HttpClient } from '@angular/common/http';
 import { TranslateLoader, provideTranslateService } from '@ngx-translate/core';
 import { createMultiFileTranslateLoader } from './core/i18n';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -43,5 +44,6 @@ export const appConfig: ApplicationConfig = {
       },
       fallbackLang: 'en'
     }),
+    provideCharts(withDefaultRegisterables())
   ],
 };

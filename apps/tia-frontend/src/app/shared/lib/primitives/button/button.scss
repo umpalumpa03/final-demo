@@ -145,6 +145,12 @@
     animation: rotate 0.8s linear infinite;
     flex-shrink: 0;
   }
+
+  &[style*="--btn-custom-color"] {
+    background-color: var(--btn-custom-color);
+    border-color: var(--btn-custom-color);
+    color: $white; 
+  }
 }
 
 @keyframes rotate {
