@@ -81,9 +81,8 @@
       width: 100%;
 
       &-grid {
-        display: flex;
+        @include display-flex(row);
         gap: 1.5rem;
-        flex-wrap: nowrap;
 
         app-account-card {
           flex-shrink: 0;
