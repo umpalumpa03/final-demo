@@ -13,6 +13,7 @@ import { FinancesService } from '../features/bank/finances/services/finances.ser
 import { TransactionService } from '@tia/shared/services/transactions-service/transaction-service';
 import { LoanCreateEffects } from '../store/loans/loans.effects';
 import { loansFeature } from '../store/loans/loans.reducer';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 export const bankRoutes: Routes = [
   {
     path: 'bank',
@@ -73,7 +74,7 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'finances',
-        providers: [FinancesStore, FinancesService],
+        providers: [FinancesStore, FinancesService,provideCharts(withDefaultRegisterables())],
         loadComponent: () =>
           import('../features/bank/finances/container/finances-container').then(
             (c) => c.FinancesContainer,
