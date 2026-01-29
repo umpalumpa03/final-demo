@@ -92,4 +92,30 @@ export class LoansEffects {
       ),
     ),
   );
+
+  public calculatePrepayment$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.calculatePrepayment),
+      switchMap(({ payload }) =>
+        this.loansService
+          .calculatePartialPrepayment(
+            payload.loanId,
+            payload.amount!,
+            payload.loanPartialPaymentType!,
+          )
+          .pipe(
+            map((result) =>
+              LoansActions.calculatePrepaymentSuccess({ result }),
+            ),
+            catchError((error) =>
+              of(
+                LoansActions.calculatePrepaymentFailure({
+                  error: error.message,
+                }),
+              ),
+            ),
+          ),
+      ),
+    ),
+  );
 }
