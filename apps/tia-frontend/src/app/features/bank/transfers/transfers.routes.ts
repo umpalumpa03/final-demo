@@ -1,8 +1,9 @@
 import { Routes } from '@angular/router';
-
+import { TransferStore } from './components/transfers-internal/store/transfers.store';
 export const transfersRoutes: Routes = [
   {
     path: '',
+    providers: [TransferStore],
     loadComponent: () =>
       import('./container/transfers-container').then(
         (c) => c.TransfersContainer,
@@ -10,6 +11,7 @@ export const transfersRoutes: Routes = [
     children: [
       {
         path: '',
+
         redirectTo: 'internal',
         pathMatch: 'full',
       },

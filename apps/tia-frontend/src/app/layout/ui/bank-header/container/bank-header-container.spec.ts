@@ -4,19 +4,26 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { Notifications } from '../service/notifications';
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
+import { Store } from '@ngrx/store';
 
 describe('BankHeaderContainer', () => {
   let component: BankHeaderContainer;
   let mockNotifications: any;
   let mockInbox: any;
+  let mockStore: any;
 
   beforeEach(() => {
     mockNotifications = {
       hasUnreadNotification: vi.fn(() => of({ hasUnread: true })),
       getNotifications: vi.fn(() => of({ items: [] })),
     };
+
     mockInbox = {
       getInboxCount: vi.fn(() => of({ count: 12 })),
+    };
+
+    mockStore = {
+      select: vi.fn(() => of(null)),
     };
 
     TestBed.configureTestingModule({
@@ -24,6 +31,7 @@ describe('BankHeaderContainer', () => {
         BankHeaderContainer,
         { provide: Notifications, useValue: mockNotifications },
         { provide: InboxService, useValue: mockInbox },
+        { provide: Store, useValue: mockStore },
       ],
     });
 
@@ -39,7 +47,7 @@ describe('BankHeaderContainer', () => {
 
   it('should handle notification click logic', () => {
     const mockEl = { nativeElement: {} } as any;
-    
+
     component.onNotificationClick(mockEl);
 
     expect(component.anchorEl()).toBe(mockEl);
