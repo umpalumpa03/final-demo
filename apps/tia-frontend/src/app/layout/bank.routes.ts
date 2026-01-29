@@ -16,8 +16,7 @@ import { loansFeature } from '../store/loans/loans.reducer';
 import { accountsReducer } from '../store/products/accounts/accounts.reducer';
 import { AccountsEffects } from '../store/products/accounts/accounts.effects';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
-import { accountsReducer } from '../store/products/accounts/accounts.reducer';
-import { AccountsEffects } from '../store/products/accounts/accounts.effects';
+
 export const bankRoutes: Routes = [
   {
     path: 'bank',
