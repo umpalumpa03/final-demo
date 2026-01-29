@@ -3,6 +3,7 @@ export enum TokenKey {
   REFRESH = 'refresh_token',
   VERIFY = 'verification_token',
   SIGNUP = 'signup_token',
+  CHALLENGE = 'challenge_id',
 }
 
 export enum Routes {

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
@@ -10,12 +10,18 @@ import { forgotPasswordSegments } from '../forgot-password.routes';
   templateUrl: './forgot-password-verify.html',
   styleUrl: './forgot-password-verify.scss',
 })
-export class ForgotPasswordVerify {
+export class ForgotPasswordVerify implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
 
   public submitOtp = (code: string) =>
     this.authService.verifyForgotPasswordOtp(code);
+
+  public ngOnInit(): void {
+    if (!this.authService.getChallengeId()) {
+      this.router.navigate(['/auth', ...forgotPasswordSegments.base]);
+    }
+  }
 
   public onSubmitResult(result: { statusCode: number; message: string }): void {
     if (result.statusCode >= 200 && result.statusCode < 300) {

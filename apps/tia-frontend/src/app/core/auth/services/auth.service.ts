@@ -43,10 +43,11 @@ export class AuthService {
 
   public setChellangeId(id: string) {
     this.challengeId = id;
+    this.tokenService.setChallengeId(id);
   }
 
   public getChallengeId() {
-    return this.challengeId;
+    return this.challengeId || this.tokenService.challengeId || '';
   }
 
   public loginPostRequest(user: ILoginRequest): Observable<IloginResponse> {
