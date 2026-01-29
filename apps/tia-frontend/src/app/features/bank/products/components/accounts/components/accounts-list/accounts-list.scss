@@ -76,5 +76,21 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
     }
+
+    &-scroll {
+      width: 100%;
+
+      &-grid {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: nowrap;
+
+        app-account-card {
+          flex-shrink: 0;
+          width: 30%;
+          min-width: 280px;
+        }
+      }
+    }
   }
 }

@@ -6,7 +6,8 @@
       </div>
       <div class="account-card__header-info">
         <h3 class="account-card__header-info-name">
-          {{ account().friendlyName }}
+          @if (account().friendlyName) { {{ account().friendlyName }} } @else {
+          {{ account().name }} }
         </h3>
         @if (account().status === 'active') {
         <span class="account-card__header-info-badge">active</span>

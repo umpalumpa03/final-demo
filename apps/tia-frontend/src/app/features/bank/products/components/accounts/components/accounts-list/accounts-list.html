@@ -41,6 +41,24 @@
         {{ getAccountsBySection(section).length }}
       </span>
     </div>
+    @if (getAccountsBySection(section).length > 3) {
+    <div class="accounts-list__section-scroll">
+      <app-scroll-area
+        [direction]="'horizontal'"
+        [height]="'42rem'"
+        [scrollbar]="'visible'"
+      >
+        <div class="accounts-list__section-scroll-grid">
+          @for (account of getAccountsBySection(section); track account.id) {
+          <app-account-card
+            [account]="account"
+            (transfer)="handleTransfer($event)"
+          />
+          }
+        </div>
+      </app-scroll-area>
+    </div>
+    } @else {
     <div class="accounts-list__section-grid">
       @for (account of getAccountsBySection(section); track account.id) {
       <app-account-card
@@ -49,6 +67,7 @@
       />
       }
     </div>
+    }
   </section>
   } }
 </div>

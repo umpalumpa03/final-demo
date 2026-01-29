@@ -14,6 +14,7 @@ import {
   GroupedAccounts,
 } from '../../../../../../../shared/models/accounts/accounts.model';
 import { ErrorStates } from '../../../../../../../shared/lib/feedback/error-states/error-states';
+import { ScrollArea } from '../../../../../../../shared/lib/layout/components/scroll-area/container/scroll-area';
 
 @Component({
   selector: 'app-accounts-list',
@@ -23,6 +24,7 @@ import { ErrorStates } from '../../../../../../../shared/lib/feedback/error-stat
     ButtonComponent,
     RouteLoader,
     ErrorStates,
+    ScrollArea,
   ],
   templateUrl: './accounts-list.html',
   styleUrl: './accounts-list.scss',
@@ -57,8 +59,10 @@ export class AccountsListComponent {
     );
   });
 
+  private groupedAccountsMemo = computed(() => this.accountsGrouped());
+
   public getAccountsBySection(section: AccountSection) {
-    const grouped = this.accountsGrouped();
+    const grouped = this.groupedAccountsMemo();
     if (!grouped) return [];
     return grouped[section.key as keyof GroupedAccounts];
   }
