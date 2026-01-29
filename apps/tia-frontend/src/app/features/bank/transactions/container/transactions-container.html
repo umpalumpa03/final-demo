@@ -1,21 +1,21 @@
+@if(isLoading() && items().length === 0){
+<app-route-loader [variant]="'full-page'"></app-route-loader>
+}@else{
 <div class="global-bank-wrapper">
-  <div class="transactions-wrapper">
-    <app-library-title [title]="'Transactions'"> </app-library-title>
+  <app-showcase-card>
+    <app-library-title
+      [title]="'Transactions'"
+      [subtitle]="totalTransactionsString()"
+    ></app-library-title>
     <div
       (scroll)="onScroll($event)"
-      class="transactions-wrapper__scroll-container"
+      class="scroll-container"
     >
-      <app-transactions-table
-        [transactionsData]="tableConfig()"
-      ></app-transactions-table>
+      <app-tables [tableConfig]="tableConfig()"></app-tables>
+      @if(isLoading() && items().length > 0){
+      <app-button [isLoading]="true" [variant]="'outline'">Loading</app-button>
+      }
     </div>
-    <app-flex-layout
-      >@if(isLoading() && items().length > 0){
-      <app-button [isLoading]="true">Loading</app-button>
-      }</app-flex-layout
-    >
-    @if(isLoading() && items().length === 0){
-    <app-route-loader [variant]="'full-page'"></app-route-loader>
-    }
-  </div>
+  </app-showcase-card>
 </div>
+}

@@ -1,20 +1,12 @@
 @use '../../../../shared/styles/palette' as *;
 @use '../../../../shared/styles/mixins' as *;
 
-.container {
-  background: $gray-25;
-  @include flex-center();
-}
-.transactions-wrapper {
-  width: min(144rem, 100%);
-  &__scroll-container {
-    max-height: 92rem;
-    overflow-y: scroll;
-    &::-webkit-scrollbar {
-      overflow: clip;
-    }
-  }
-  app-flex-layout {
-    width: 100%;
+.scroll-container {
+  width: 100%;
+  max-height: 60rem;
+  overflow-y: scroll;
+  margin-top: 3rem;
+  &::-webkit-scrollbar {
+    overflow: clip;
   }
 }

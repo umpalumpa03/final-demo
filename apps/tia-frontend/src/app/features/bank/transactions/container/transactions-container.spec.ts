@@ -58,9 +58,10 @@ describe('TransactionsContainer', () => {
     expect(config.rows.length).toBe(1);
   });
 
-  it('should load more on scroll when bottom reached', () => {
+  it('should load more when scrolled to bottom AND not loading', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
     store.overrideSelector(selectIsLoading, false);
+    store.overrideSelector(selectItems, []);
     store.refreshState();
     const mockElement = {
       scrollHeight: 1000,

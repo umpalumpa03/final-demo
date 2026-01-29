@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   OnInit,
 } from '@angular/core';
@@ -11,25 +10,20 @@ import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions
 import {
   selectIsLoading,
   selectItems,
+  selectTotalTransactions,
 } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
-import { TransactionsTable } from '../components/transactions-table/transactions-table';
 import { TRANSACTIONS_BASE_CONFIG } from '../config/transaction-data';
 import { convertTransactionData } from '../utils/data-converter.utils';
 import { TableConfig } from '@tia/shared/lib/tables/models/table.model';
 import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { FlexLayout } from '@tia/shared/lib/layout/components/flex-layout/flex-layout';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
+import { Tables } from '@tia/shared/lib/tables/components/tables';
+import { ShowcaseCard } from '../../../storybook/shared/showcase-card/showcase-card';
 
 @Component({
   selector: 'app-transactions-container',
-  imports: [
-    TransactionsTable,
-    LibraryTitle,
-    ButtonComponent,
-    FlexLayout,
-    RouteLoader,
-  ],
+  imports: [LibraryTitle, ButtonComponent, RouteLoader, Tables, ShowcaseCard],
   templateUrl: './transactions-container.html',
   styleUrl: './transactions-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,6 +33,16 @@ export class TransactionsContainer implements OnInit {
 
   public items = this.store.selectSignal(selectItems);
   public readonly isLoading = this.store.selectSignal(selectIsLoading);
+  private readonly totalTransactions = this.store.selectSignal(
+    selectTotalTransactions,
+  );
+
+  public readonly totalTransactionsString = computed(() => {
+    const total = this.totalTransactions().toString();
+    const itemsFetched = this.items().length.toString();
+
+    return `Showing ${itemsFetched} of ${total} transactions`;
+  });
 
   public tableConfig = computed<TableConfig>(() => ({
     ...TRANSACTIONS_BASE_CONFIG,
@@ -55,7 +59,7 @@ export class TransactionsContainer implements OnInit {
     if (!el) return;
 
     if (el.scrollHeight - el.scrollTop <= el.clientHeight + 20) {
-      if (this.items().length % 10 === 0) {
+      if (this.items().length % 20 === 0 && !this.isLoading()) {
         this.store.dispatch(TransactionActions.loadMore());
       }
     }
