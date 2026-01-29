@@ -16,6 +16,8 @@ describe('ProfilePhoto Selectors', () => {
 
   const initialState: ProfilePhotoState = {
     defaultAvatars: [{ id: '1', iconUri: '/avatar-1.svg' }],
+    defaultAvatarsLoading: false,
+    defaultAvatarsError: null,
     selectedAvatarId: '1',
     uploadedFileName: 'avatar.png',
     currentAvatarUrl: 'current-url',

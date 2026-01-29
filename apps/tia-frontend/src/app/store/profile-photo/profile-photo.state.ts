@@ -1,5 +1,7 @@
 export interface ProfilePhotoState {
   defaultAvatars: DefaultAvatarResponse[];
+  defaultAvatarsLoading: boolean;
+  defaultAvatarsError: string | null;
   selectedAvatarId: string | null;
   uploadedFileName: string | null;
   currentAvatarUrl: string | null;
