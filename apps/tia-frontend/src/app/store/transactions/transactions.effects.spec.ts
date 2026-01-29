@@ -7,6 +7,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TransactionService } from '../../features/bank/transactions/services/transactions-service/transaction-service';
 import { TransactionActions } from './transactions.actions';
 import {
+  loadTotalEffect,
   loadTransactionsEffect,
   updateFiltersEffects,
 } from './transactions.effects';
@@ -18,7 +19,10 @@ describe('Transaction Effects', () => {
   let transactionService: any;
 
   beforeEach(() => {
-    transactionService = { getTransactions: vi.fn() };
+    transactionService = {
+      getTransactions: vi.fn(),
+      getTransactionsTotal: vi.fn(),
+    };
     vi.useFakeTimers();
 
     TestBed.configureTestingModule({
@@ -39,7 +43,6 @@ describe('Transaction Effects', () => {
   it('debounces updateFilters', () => {
     const subject = new Subject<Action>();
     actions$ = subject.asObservable();
-
     let result: Action | undefined;
 
     TestBed.runInInjectionContext(() =>
@@ -47,10 +50,8 @@ describe('Transaction Effects', () => {
     );
 
     subject.next(TransactionActions.updateFilters({ filters: {} }));
-
     vi.advanceTimersByTime(399);
     expect(result).toBeUndefined();
-
     vi.advanceTimersByTime(1);
     expect(result).toEqual(TransactionActions.loadTransactions());
   });
@@ -58,7 +59,6 @@ describe('Transaction Effects', () => {
   it('loads transactions successfully', () => {
     const response = { items: [], pageInfo: {} };
     const filters = { pageLimit: 20 };
-
     store.overrideSelector(selectFilters, filters);
     store.overrideSelector(selectNextCursor, null);
     transactionService.getTransactions.mockReturnValue(of(response));
@@ -81,7 +81,6 @@ describe('Transaction Effects', () => {
 
   it('handles API error', () => {
     const error = 'Network Error';
-
     store.overrideSelector(selectFilters, {});
     store.overrideSelector(selectNextCursor, null);
     transactionService.getTransactions.mockReturnValue(throwError(() => error));
@@ -99,7 +98,6 @@ describe('Transaction Effects', () => {
   it('passes cursor on loadMore', () => {
     const cursor = 'cursor';
     const filters = { pageLimit: 10 };
-
     store.overrideSelector(selectFilters, filters);
     store.overrideSelector(selectNextCursor, cursor);
     transactionService.getTransactions.mockReturnValue(
@@ -121,13 +119,28 @@ describe('Transaction Effects', () => {
   it('ignores loadMore without cursor', () => {
     store.overrideSelector(selectFilters, {});
     store.overrideSelector(selectNextCursor, null);
-
     actions$ = of(TransactionActions.loadMore());
 
+    const spy = vi.fn();
     TestBed.runInInjectionContext(() =>
-      loadTransactionsEffect(actions$, store, transactionService).subscribe(),
+      loadTransactionsEffect(actions$, store, transactionService).subscribe(
+        spy,
+      ),
     );
 
     expect(transactionService.getTransactions).not.toHaveBeenCalled();
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('loads total successfully', () => {
+    const total = 100;
+    transactionService.getTransactionsTotal.mockReturnValue(of(total));
+    actions$ = of(TransactionActions.enter());
+
+    TestBed.runInInjectionContext(() =>
+      loadTotalEffect(actions$, transactionService).subscribe((action) => {
+        expect(action).toEqual(TransactionActions.loadTotalSuccess({ total }));
+      }),
+    );
   });
 });

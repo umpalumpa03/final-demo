@@ -5,18 +5,10 @@ import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions
 import {
   selectItems,
   selectIsLoading,
+  selectTotalTransactions,
 } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
-import { Component } from '@angular/core';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { TransactionsTable } from '../components/transactions-table/transactions-table';
-
-@Component({
-  selector: 'app-transactions-table',
-  template: '',
-  standalone: true,
-  inputs: ['transactionsData'],
-})
-class MockTransactionsTable {}
 
 describe('TransactionsContainer', () => {
   let component: TransactionsContainer;
@@ -27,12 +19,8 @@ describe('TransactionsContainer', () => {
     await TestBed.configureTestingModule({
       imports: [TransactionsContainer],
       providers: [provideMockStore()],
-    })
-      .overrideComponent(TransactionsContainer, {
-        remove: { imports: [TransactionsTable] },
-        add: { imports: [MockTransactionsTable] },
-      })
-      .compileComponents();
+      schemas: [NO_ERRORS_SCHEMA],
+    }).compileComponents();
 
     store = TestBed.inject(MockStore);
     fixture = TestBed.createComponent(TransactionsContainer);
@@ -40,6 +28,7 @@ describe('TransactionsContainer', () => {
 
     store.overrideSelector(selectItems, []);
     store.overrideSelector(selectIsLoading, false);
+    store.overrideSelector(selectTotalTransactions, 0);
 
     fixture.detectChanges();
   });
@@ -54,34 +43,31 @@ describe('TransactionsContainer', () => {
     store.overrideSelector(selectItems, [{ id: 1, amount: 500 } as any]);
     store.refreshState();
     fixture.detectChanges();
-    const config = component.tableConfig();
-    expect(config.rows.length).toBe(1);
+    expect(component.tableConfig().rows.length).toBe(1);
   });
 
-  it('should load more when scrolled to bottom AND not loading', () => {
+  it('should load more when scrolled to bottom AND items length is multiple of 20', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
-    store.overrideSelector(selectIsLoading, false);
-    store.overrideSelector(selectItems, []);
+    store.overrideSelector(selectItems, new Array(20).fill({ id: 1 }));
     store.refreshState();
-    const mockElement = {
-      scrollHeight: 1000,
-      scrollTop: 900,
-      clientHeight: 100,
-    };
-    component.onScroll({ target: mockElement } as any);
+
+    component.onScroll({
+      target: { scrollHeight: 1000, scrollTop: 900, clientHeight: 100 },
+    } as any);
+
     expect(dispatchSpy).toHaveBeenCalledWith(TransactionActions.loadMore());
   });
 
   it('should NOT load more if already loading', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
     store.overrideSelector(selectIsLoading, true);
+    store.overrideSelector(selectItems, new Array(20).fill({ id: 1 }));
     store.refreshState();
-    const mockElement = {
-      scrollHeight: 1000,
-      scrollTop: 900,
-      clientHeight: 100,
-    };
-    component.onScroll({ target: mockElement } as any);
+
+    component.onScroll({
+      target: { scrollHeight: 1000, scrollTop: 900, clientHeight: 100 },
+    } as any);
+
     expect(dispatchSpy).not.toHaveBeenCalledWith(TransactionActions.loadMore());
   });
 });

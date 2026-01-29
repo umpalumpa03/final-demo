@@ -16,7 +16,14 @@ export const bankRoutes: Routes = [
     path: 'bank',
     loadComponent: () =>
       import('./bank-container').then((c) => c.BankContainer),
-    providers: [{ provide: TransactionService }],
+    providers: [
+      { provide: TransactionService },
+      provideEffects(transactionEffects),
+      provideState({
+        name: TRANSACTION_FEATURE_KEY,
+        reducer: transactionReducer,
+      }),
+    ],
     children: [
       {
         path: '',
@@ -43,13 +50,6 @@ export const bankRoutes: Routes = [
           import(
             '../features/bank/transactions/container/transactions-container'
           ).then((c) => c.TransactionsContainer),
-        providers: [
-          provideEffects(transactionEffects),
-          provideState({
-            name: TRANSACTION_FEATURE_KEY,
-            reducer: transactionReducer,
-          }),
-        ],
       },
       {
         path: 'transfers',
@@ -67,10 +67,7 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'finances',
-        providers: [
-                  FinancesStore,
-                  FinancesService
-                ],
+        providers: [FinancesStore, FinancesService],
         loadComponent: () =>
           import('../features/bank/finances/container/finances-container').then(
             (c) => c.FinancesContainer,

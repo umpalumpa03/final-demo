@@ -50,6 +50,7 @@ export class TransactionsContainer implements OnInit {
   }));
 
   public ngOnInit(): void {
+    this.store.dispatch(TransactionActions.loadTransactions());
     this.store.dispatch(TransactionActions.enter());
   }
 
@@ -63,5 +64,9 @@ export class TransactionsContainer implements OnInit {
         this.store.dispatch(TransactionActions.loadMore());
       }
     }
+  }
+
+  public onScrollBottom(): void {
+    console.log('scrolled');
   }
 }

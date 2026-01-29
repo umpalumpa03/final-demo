@@ -2,20 +2,24 @@
 <app-route-loader [variant]="'full-page'"></app-route-loader>
 }@else{
 <div class="global-bank-wrapper">
-  <app-showcase-card>
-    <app-library-title
-      [title]="'Transactions'"
-      [subtitle]="totalTransactionsString()"
-    ></app-library-title>
-    <div
-      (scroll)="onScroll($event)"
-      class="scroll-container"
-    >
-      <app-tables [tableConfig]="tableConfig()"></app-tables>
-      @if(isLoading() && items().length > 0){
-      <app-button [isLoading]="true" [variant]="'outline'">Loading</app-button>
-      }
-    </div>
-  </app-showcase-card>
+  <div class="transcaction-table-wrapper">
+    <app-showcase-card>
+      <app-library-title
+        [title]="'Transactions'"
+        [subtitle]="totalTransactionsString()"
+      ></app-library-title>
+      <div
+        (scroll)="onScroll($event)"
+        class="transcaction-table-wrapper__scroll-container"
+      >
+        <app-tables [tableConfig]="tableConfig()"></app-tables>
+        @if(isLoading() && items().length > 0){
+        <app-button [isLoading]="true" [variant]="'outline'"
+          >Loading</app-button
+        >
+        }
+      </div>
+    </app-showcase-card>
+  </div>
 </div>
 }
