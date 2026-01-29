@@ -43,7 +43,7 @@ export class SignIn {
   public isLoading = computed(() => this.authService.isLoginLoading());
   public errorMessage = computed(() => {
     this.alertTypes.error.message = 'Incorrect Credentials'
-    return this.authService.loginError();
+    return this.authService.errorMessage();
   });
 
   public loginForm = this.fb.nonNullable.group({

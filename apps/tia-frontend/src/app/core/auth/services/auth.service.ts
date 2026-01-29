@@ -36,7 +36,7 @@ export class AuthService {
   private refreshToken!: string;
   private challengeId!: string;
   public isLoginLoading = signal<boolean>(false);
-  public loginError = signal<boolean | null>(false);
+  public errorMessage = signal<boolean | null>(false);
   public successMessage = signal<boolean | null>(false);
   public infoMessage = signal<boolean | null>(false);
 
@@ -67,7 +67,7 @@ export class AuthService {
           }
         }),
         catchError((err) => {
-          this.loginError.set(true);
+          this.errorMessage.set(true);
           this.isLoginLoading.set(false);
           return throwError(() => err);
         }),
@@ -115,9 +115,16 @@ export class AuthService {
           if (res.access_token && res.refresh_token) {
             this.tokenService.setAccessToken(res.access_token);
             this.tokenService.setRefreshToken(res.refresh_token);
+            this.isLoginLoading.set(true);
             this.router.navigate(['/bank/dashboards']);
           }
         }),
+        catchError((err) => {
+          this.errorMessage.set(true);
+          this.isLoginLoading.set(false);
+          return throwError(() => err);
+        }),
+        finalize(() => this.isLoginLoading.set(false)),
       );
   }
 
