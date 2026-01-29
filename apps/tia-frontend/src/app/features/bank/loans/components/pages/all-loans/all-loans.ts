@@ -19,7 +19,10 @@ import { ILoan } from '../../../shared/models/loan.model';
 import { filter, map, take } from 'rxjs';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { PrepaymentOptionStep } from '../../../shared/ui/prepayment-wizard/prepayment-options-step/prepayment-option-step';
-import { PrepaymentCalculationPayload } from '../../../shared/models/prepayment.model';
+import {
+  PrepaymentCalculationPayload,
+  PrepaymentStep,
+} from '../../../shared/models/prepayment.model';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PrepaymentReview } from '../../../shared/ui/prepayment-wizard/prepayment-review/prepayment-review';
 
@@ -48,7 +51,7 @@ export class AllLoans implements OnInit {
   public readonly selectedLoan = signal<ILoan | null>(null);
   public readonly isDetailsOpen = signal(false);
   public readonly isPrepaymentOpen = signal(false);
-  public readonly step = signal<'options' | 'review'>('options');
+  public readonly step = signal<PrepaymentStep>('options');
 
   constructor() {
     effect(() => {

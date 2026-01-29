@@ -39,3 +39,5 @@ export interface IFullPrepaymentItem {
 export interface IFullPrepaymentResponse {
   items: IFullPrepaymentItem[];
 }
+
+export type PrepaymentStep = 'options' | 'review';

@@ -17,7 +17,10 @@ import { CommonModule } from '@angular/common';
 import { ILoan } from '../../../shared/models/loan.model';
 import { filter, map, take } from 'rxjs';
 import { LoanDetails } from '../../../shared/ui/prepayment-wizard/loan-details/loan-details';
-import { PrepaymentCalculationPayload } from '../../../shared/models/prepayment.model';
+import {
+  PrepaymentCalculationPayload,
+  PrepaymentStep,
+} from '../../../shared/models/prepayment.model';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { PrepaymentOptionStep } from '../../../shared/ui/prepayment-wizard/prepayment-options-step/prepayment-option-step';
 import { PrepaymentReview } from '../../../shared/ui/prepayment-wizard/prepayment-review/prepayment-review';
@@ -48,7 +51,7 @@ export class ApprovedLoans implements OnInit {
   public readonly selectedLoan = signal<ILoan | null>(null);
   public readonly isPrepaymentOpen = signal(false);
   public readonly isDetailsOpen = signal(false);
-  public readonly step = signal<'options' | 'review'>('options');
+  public readonly step = signal<PrepaymentStep>('options');
 
   constructor() {
     effect(() => {
@@ -96,7 +99,7 @@ export class ApprovedLoans implements OnInit {
   }
 
   public onFinalPay(): void {
-    console.log('Payment Triggered');
+    // console.log('Payment Triggered');
     this.closeModals();
   }
 
