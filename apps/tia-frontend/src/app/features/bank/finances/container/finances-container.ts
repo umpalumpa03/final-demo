@@ -87,7 +87,7 @@ export class FinancesContainer implements OnInit {
 
   private fetchData() {
     const { fromDate, toDate } = this.filterForm.getRawValue();
-    this.store.loadSummary({
+    this.store.loadAllData({
       from: fromDate ?? '',
       to: this.activeFilter === 'custom' ? (toDate ?? undefined) : undefined,
     });
