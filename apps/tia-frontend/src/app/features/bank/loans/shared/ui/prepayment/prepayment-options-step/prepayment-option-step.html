@@ -28,8 +28,10 @@
     <footer class="prepayment-step__footer">
         <app-button variant="outline" (click)="cancel.emit()">Cancel</app-button>
 
-        <app-button icon="./calculate.svg" [isDisabled]="form.invalid && form.get('type')?.value !== 'full'"
+        <app-button [icon]="isLoading() ? null : './calculate.svg'"
+            [isDisabled]="(form.invalid && form.get('type')?.value !== 'full') || isLoading()" [isLoading]="isLoading()"
             (click)="onCalculate()">
+
             Calculate Prepayment
         </app-button>
     </footer>

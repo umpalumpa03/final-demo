@@ -15,6 +15,11 @@ export const selectLoansLoading = createSelector(
   (state) => state.loading,
 );
 
+export const selectActionLoading = createSelector(
+  selectLoansState,
+  (state) => state.actionLoading ?? false,
+);
+
 export const selectLoansWithAccountInfo = createSelector(
   selectAllLoans,
   selectAccounts,

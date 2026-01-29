@@ -3,6 +3,7 @@ import {
   Component,
   input,
   output,
+  signal,
 } from '@angular/core';
 import { IPrepaymentCalcResponse } from '../../../models/prepayment.model';
 import { CommonModule } from '@angular/common';
@@ -18,6 +19,8 @@ import { PREPAYMENT_CURRENCY_KEYWORDS } from '../../../config/loan-prepayment.co
 })
 export class PrepaymentReview {
   public readonly calculationResult = input.required<IPrepaymentCalcResponse>();
+
+  public readonly isLoading = input<boolean>(false);
 
   public readonly currencyCode = input<string>('USD');
   protected readonly currencyKeywords = PREPAYMENT_CURRENCY_KEYWORDS;

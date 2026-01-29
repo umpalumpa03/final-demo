@@ -33,7 +33,9 @@
 
     <footer class="review-step__footer">
         <app-button variant="outline" (click)="cancel.emit()">Cancel</app-button>
-        <app-button variant="default" icon="./right-arrow.svg" (click)="confirmPay.emit()">
+        <app-button variant="default" [icon]="isLoading() ? null : './right-arrow.svg'" (click)="confirmPay.emit()"
+            [isDisabled]="isLoading()" [isLoading]="isLoading()">
+
             Pay
         </app-button>
     </footer>

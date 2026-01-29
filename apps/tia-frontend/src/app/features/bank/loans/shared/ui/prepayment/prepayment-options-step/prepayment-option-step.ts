@@ -4,6 +4,7 @@ import {
   inject,
   input,
   output,
+  signal,
   Signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -25,6 +26,7 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ILoan } from '../../../models/loan.model';
 import { PrepaymentCalculationPayload } from '../../../models/prepayment.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 
 @Component({
   selector: 'app-prepayment-option-step',
@@ -45,6 +47,8 @@ export class PrepaymentOptionStep {
   private readonly fb = inject(FormBuilder);
 
   public readonly loan = input.required<ILoan>();
+  public readonly isLoading = input<boolean>(false);
+
   public readonly cancel = output<void>();
   public readonly calculate = output<PrepaymentCalculationPayload>();
 
