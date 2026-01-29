@@ -1,5 +1,6 @@
 @use '../../../../styles/mixins' as *;
 @use '../../../../styles/palette' as *;
+@use '../../../../styles/themes' as *;
 
 .draggable-card {
   @include display-flex(column);
@@ -47,7 +48,6 @@
     align-items: center;
     gap: 2rem;
     position: relative;
-
   }
 
   &__draggable {
@@ -71,6 +71,10 @@
     margin: 0;
   }
 
+  &__title__custom {
+    color: var(--color-fg);
+  }
+
   &__icon {
     cursor: grab;
     touch-action: none;
@@ -91,7 +95,6 @@
 
   &__pagination-wrapper {
     width: 8rem;
-
   }
 
   &__expand {
@@ -108,4 +111,13 @@
   &__checkbox {
     flex-shrink: 0;
   }
+}
+
+.min-height {
+  height: 100%;
+  @include flex-center(
+    $direction: column,
+    $justify: space-between,
+    $align: left
+  );
 }
