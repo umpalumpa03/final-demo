@@ -6,16 +6,14 @@ export enum TokenKey {
 }
 
 export enum Routes {
-  SIGN_IN = 'auth/sign-in',
-  SIGN_UP = 'sign-up',
-  ROTGOT_PASSWORD = 'forgot-password',
-  RESET_PASSWORD = 'reset-password',
-  OTP_SIGN_IN = 'verify-otp',
-  OTP_SIGN_UP = 'verify-otp-register',
-  OTP_FORGOT_PASSWORD = 'verify-otp-reset',
-  SIGN_UP_SUCCESS = 'signup-success',
-  FORGOT_PASSWORD_SUCCESS = 'register-success',
-  PHONE = 'phone'
+  SIGN_IN = '/auth/sign-in',
+  SIGN_UP = '/auth/sign-up',
+  ROTGOT_PASSWORD = '/auth/forgot-password',
+  RESET_PASSWORD = '/auth/reset-password',
+  OTP_SIGN_IN = '/auth/verify-otp',
+  OTP_SIGN_UP = '/auth/verify-otp-register',
+  OTP_FORGOT_PASSWORD = '/auth/verify-otp-reset',
+  PHONE = '/auth/phone'
 }
 
 export const PUBLIC_ENDPOINTS = [

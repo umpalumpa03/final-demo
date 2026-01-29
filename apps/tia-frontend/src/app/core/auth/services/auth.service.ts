@@ -26,6 +26,7 @@ import { Router } from '@angular/router';
 import { TokenService } from './token.service';
 import { IRegistrationForm } from '../../../features/storybook/components/forms/models/contact-forms.model';
 import { inject, Injectable, signal } from '@angular/core';
+import { Routes } from '../models/tokens.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -57,10 +58,10 @@ export class AuthService {
           if (res.status === 'mfa_required') {
             this.setChellangeId(res.challengeId!);
             this.successMessage.set(true);
-            this.router.navigate(['/auth/verifyotp']);
+            this.router.navigate([Routes.OTP_SIGN_IN]);
           } else if (res.status === 'phone_verification_required') {
             this.tokenService.setVerifyToken(res.verification_token!);
-            this.router.navigate(['/auth/phone']);
+            this.router.navigate([Routes.PHONE]);
           }
         }),
         catchError((err) => {
@@ -104,7 +105,7 @@ export class AuthService {
         tap((res) => {
           if (res.success === true) {
             this.tokenService.clearAccessToken();
-            this.router.navigate(['auth/sign-in']);
+            this.router.navigate([Routes.SIGN_IN]);
           }
         }),
       );
@@ -120,7 +121,7 @@ export class AuthService {
             this.tokenService.setAccessToken(res.access_token);
             this.tokenService.setRefreshToken(res.refresh_token);
             this.isLoginLoading.set(true);
-            this.router.navigate(['/bank/dashboards']);
+            this.router.navigate(['/bank/dashboard']);
           }
         }),
         catchError((err) => {
@@ -175,12 +176,10 @@ export class AuthService {
     email: string,
   ): Observable<ForgotPasswordResponse> {
     const payload: ForgotPasswordRequest = { email };
-    return this.http
-      .post<ForgotPasswordResponse>(
-        `${environment.apiUrl}/auth/forgot-password`,
-        payload,
-      )
-      .pipe(tap((res) => this.setChellangeId(res.challengeId)));
+    return this.http.post<ForgotPasswordResponse>(
+      `${environment.apiUrl}/auth/forgot-password`,
+      payload,
+    );
   }
 
   public verifyForgotPasswordOtp(
@@ -191,12 +190,10 @@ export class AuthService {
       challengeId: this.getChallengeId(),
       code,
     };
-    return this.http
-      .post<ForgotPasswordVerifyResponse>(
-        `${environment.apiUrl}/auth/forgot-password/verify`,
-        payload,
-      )
-      .pipe(tap((res) => this.tokenService.setAccessToken(res.access_token)));
+    return this.http.post<ForgotPasswordVerifyResponse>(
+      `${environment.apiUrl}/auth/forgot-password/verify`,
+      payload,
+    );
   }
 
   public createNewPassword(

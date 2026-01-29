@@ -175,54 +175,6 @@ export const AUTH_SIDE_PANEL_DATA = {
       },
     ] as IFeaturePanel[],
   },
-  signUpSuccess: {
-    title: 'Welcome to TIA!',
-    description: 'Your account has been successfully created. Start exploring your financial dashboard.',
-    features: [
-      {
-        id: 1,
-        title: 'Account Created',
-        text: 'Your TIA banking account is now active and ready to use',
-        icon: 'images/svg/auth/account-created.svg',
-      },
-      {
-        id: 2,
-        title: 'Explore Features',
-        text: 'Discover powerful banking tools and financial insights',
-        icon: 'images/svg/auth/explore.svg',
-      },
-      {
-        id: 3,
-        title: 'Get Started',
-        text: 'Begin managing your finances with our intuitive dashboard',
-        icon: 'images/svg/auth/get-started.svg',
-      },
-    ] as IFeaturePanel[],
-  },
-  forgotPasswordSuccess: {
-    title: 'Password Updated!',
-    description: 'Your password has been successfully reset. You can now log in with your new password.',
-    features: [
-      {
-        id: 1,
-        title: 'Password Changed',
-        text: 'Your account password has been securely updated',
-        icon: 'images/svg/auth/password-changed.svg',
-      },
-      {
-        id: 2,
-        title: 'Secure Login',
-        text: 'Log in with your new password and enjoy secure access',
-        icon: 'images/svg/auth/secure-login.svg',
-      },
-      {
-        id: 3,
-        title: 'Account Protection',
-        text: 'Your account remains protected with updated credentials',
-        icon: 'images/svg/auth/protection.svg',
-      },
-    ] as IFeaturePanel[],
-  },
   phone: {
     title: 'Phone Verification',
     description: 'Add your phone number for enhanced security and account recovery',

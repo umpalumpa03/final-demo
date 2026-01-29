@@ -1,15 +1,21 @@
 import { Routes } from '@angular/router';
-// import { signUpGuard } from '../../guards/sign-up-guard';
 
 export const signUpRoutes: Routes = [
   {
-    path: '',
+    path: 'sign-up',
     loadComponent: () => import('./sign-up').then((c) => c.SignUp),
+  },
+  {
+    path: 'phone',
+    loadComponent: () =>
+      import('../sign-up/phone-verification/phone-verification').then(
+        (c) => c.PhoneVerification,
+      ),
   },
   {
     path: 'verify-otp-register',
     loadComponent: () =>
-      import('../shared/otp-verification/otp-verification').then(
+      import('../../shared/otp-verification/otp-verification').then(
         (c) => c.OtpVerification,
       ),
   },

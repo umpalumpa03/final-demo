@@ -2,14 +2,14 @@ import { Routes } from '@angular/router';
 
 export const signInRoutes: Routes = [
   {
-    path: '',
+    path: 'sign-in',
     loadComponent: () => import('./sign-in').then((c) => c.SignIn),
   },
   {
     path: 'verify-otp',
     loadComponent: () =>
-      import('../shared/otp-verification/otp-verification').then(
-        (c) => c.OtpVerification,
+      import('./verify-signin/verify-signin').then(
+        (c) => c.VerifySignin,
       ),
   },
 ];

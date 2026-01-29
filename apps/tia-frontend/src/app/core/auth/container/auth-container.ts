@@ -17,10 +17,10 @@ import {
 } from '@angular/router';
 import { TokenService } from '../services/token.service';
 import { AuthService } from '../services/auth.service';
-import { SidePanel } from '../components/shared/side-panel/side-panel';
 import { IFeature } from '../models/auth.models';
 import { AUTH_SIDE_PANEL_DATA } from '../models/input-config.models';
 import { Routes } from '../models/tokens.model';
+import { SidePanel } from '../shared/side-panel/side-panel';
 
 @Component({
   selector: 'app-auth-container',
@@ -47,7 +47,7 @@ export class AuthContainer implements OnInit {
   }
 
   private updateSidePanelForRoute(url: string): void {
-    const route = url.split('/').pop() || '';
+    const route = url;
 
     switch (route) {
       case Routes.SIGN_IN:
@@ -67,12 +67,6 @@ export class AuthContainer implements OnInit {
         break;
       case Routes.OTP_FORGOT_PASSWORD:
         this.sidePanelData.set(AUTH_SIDE_PANEL_DATA.otpForgotPassword);
-        break;
-      case Routes.SIGN_UP_SUCCESS:
-        this.sidePanelData.set(AUTH_SIDE_PANEL_DATA.signUpSuccess);
-        break;
-      case Routes.FORGOT_PASSWORD_SUCCESS:
-        this.sidePanelData.set(AUTH_SIDE_PANEL_DATA.forgotPasswordSuccess);
         break;
       case Routes.PHONE:
         this.sidePanelData.set(AUTH_SIDE_PANEL_DATA.phone);

@@ -11,24 +11,15 @@ export const forgotPasswordRoutes: Routes = [
   {
     path: 'forgot-password',
     loadComponent: () =>
-      import(
-        './forgot-password-email/forgot-password-email'
-      ).then(
+      import('./forgot-password-email/forgot-password-email').then(
         (c) => c.ForgotPasswordEmail,
       ),
   },
   {
-    path: 'forgot-password/reset',
+    path: 'verify-otp-reset',
     loadComponent: () =>
-      import('./reset-password/reset-password').then(
-        (c) => c.ResetPassword,
-      ),
-  },
-  {
-    path: 'forgot-password/success',
-    loadComponent: () =>
-      import('./reset-success/reset-success').then(
-        (c) => c.ResetSuccess,
-      ),
+      import(
+        '../forgot-password/forgot-password-verify/forgot-password-verify'
+      ).then((c) => c.ForgotPasswordVerify),
   },
 ];

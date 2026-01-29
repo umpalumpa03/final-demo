@@ -16,6 +16,7 @@ import {
   SIGN_IN_FORM,
 } from '../../models/input-config.models';
 import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
+import { Routes } from '../../models/tokens.model';
 
 @Component({
   selector: 'app-sign-in',
@@ -36,13 +37,15 @@ export class SignIn {
   public readonly title = 'Sign In';
   public readonly subtitle =
     'Enter your username and password to access your account';
+  public signUpRoute = Routes.SIGN_UP;
+  public forgotPasswordRoute = Routes.ROTGOT_PASSWORD;
   private authService = inject(AuthService);
   private fb = inject(FormBuilder);
   public signInConfig = SIGN_IN_FORM;
   public alertTypes = ALERTS_DISMISSIBLE_DATA;
   public isLoading = computed(() => this.authService.isLoginLoading());
   public errorMessage = computed(() => {
-    this.alertTypes.error.message = 'Incorrect Credentials'
+    this.alertTypes.error.message = 'Incorrect Credentials';
     return this.authService.errorMessage();
   });
 
@@ -57,10 +60,6 @@ export class SignIn {
       return;
     }
 
-    this.authService.loginPostRequest(this.loginForm.getRawValue()).subscribe({
-      error: () => {
-        this.loginForm.markAllAsTouched();
-      },
-    });
+    this.authService.loginPostRequest(this.loginForm.getRawValue()).subscribe();
   }
 }

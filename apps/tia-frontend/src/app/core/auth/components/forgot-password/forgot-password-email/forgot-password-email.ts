@@ -11,6 +11,7 @@ import { finalize } from 'rxjs';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AuthService } from '../../../services/auth.service';
+import { Routes } from '../../../models/tokens.model';
 
 @Component({
   selector: 'app-forgot-password-email',
@@ -62,7 +63,7 @@ export class ForgotPasswordEmail {
       .pipe(finalize(() => this.isSubmitting.set(false)))
       .subscribe({
         next: () => {
-          this.router.navigate(['/auth/otp-verify']);
+          this.router.navigate([Routes.OTP_FORGOT_PASSWORD]);
         },
         error: () => {
           this.submitError.set('Unable to send reset code. Please try again.');
