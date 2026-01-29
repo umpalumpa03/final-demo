@@ -5,6 +5,8 @@ import { ProfilePhotoState } from './profile-photo.state';
 
 const initialState: ProfilePhotoState = {
   defaultAvatars: [],
+  defaultAvatarsLoading: false,
+  defaultAvatarsError: null,
   selectedAvatarId: null,
   uploadedFileName: null,
   currentAvatarUrl: null,
@@ -16,9 +18,21 @@ export const profilePhotoFeature = createFeature({
   name: 'ProfilePhoto',
   reducer: createReducer(
     initialState,
+    on(ProfilePhotoActions.loadDefaultAvatarsRequest, (state) => ({
+      ...state,
+      defaultAvatarsLoading: true,
+      defaultAvatarsError: null,
+    })),
     on(ProfilePhotoActions.loadDefaultAvatars, (state, { avatars }) => ({
       ...state,
       defaultAvatars: avatars,
+      defaultAvatarsLoading: false,
+      defaultAvatarsError: null,
+    })),
+    on(ProfilePhotoActions.loadDefaultAvatarsFailure, (state, { error }) => ({
+      ...state,
+      defaultAvatarsLoading: false,
+      defaultAvatarsError: error,
     })),
     on(ProfilePhotoActions.selectDefaultAvatar, (state, { avatarId, imageUrl }) => ({
       ...state,

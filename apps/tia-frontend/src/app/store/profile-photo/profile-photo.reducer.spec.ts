@@ -5,6 +5,8 @@ import { ProfilePhotoState, DefaultAvatarResponse } from './profile-photo.state'
 describe('profilePhotoFeature reducer', () => {
   const initialState: ProfilePhotoState = {
     defaultAvatars: [],
+    defaultAvatarsLoading: false,
+    defaultAvatarsError: null,
     selectedAvatarId: null,
     uploadedFileName: null,
     currentAvatarUrl: null,
@@ -30,6 +32,8 @@ describe('profilePhotoFeature reducer', () => {
     );
 
     expect(state.defaultAvatars).toEqual(avatars);
+    expect(state.defaultAvatarsLoading).toBe(false);
+    expect(state.defaultAvatarsError).toBeNull();
   });
 
   it('should handle selectDefaultAvatar', () => {
@@ -80,6 +84,8 @@ describe('profilePhotoFeature reducer', () => {
   it('should handle removeAvatar', () => {
     const populatedState: ProfilePhotoState = {
       defaultAvatars: [],
+      defaultAvatarsLoading: false,
+      defaultAvatarsError: null,
       selectedAvatarId: 'avatar-1',
       uploadedFileName: 'photo.png',
       currentAvatarUrl: '/avatar-1.svg',

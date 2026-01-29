@@ -3,6 +3,9 @@
     [class.horizontal]="isHorizontal()" 
     [class.vertical]="isVertical()"
     [style.height]="height()"
+    [class.scrollbar-hidden]="!isScrollbarVisible()"
+    (scroll)="onScroll()"
+    #viewport
 >
     <ng-content />
 </div>
