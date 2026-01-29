@@ -48,92 +48,37 @@ describe('AccountsReducer', () => {
     expect(result).toEqual(initialAccountsState);
   });
 
-  it('should handle loadAccounts', () => {
+  it('should handle loadAccounts action', () => {
     const result = accountsReducer(
-      initialAccountsState,
+      { ...initialAccountsState, error: 'Previous error' },
       AccountsActions.loadAccounts(),
     );
     expect(result.isLoading).toBe(true);
     expect(result.error).toBeNull();
   });
 
-  it('should handle loadAccountsSuccess', () => {
+  it('should handle loadAccountsSuccess action', () => {
     const result = accountsReducer(
-      initialAccountsState,
+      { ...initialAccountsState, selectedAccountId: '1' },
       AccountsActions.loadAccountsSuccess({ accounts: [mockAccount] }),
     );
     expect(result.accounts).toEqual([mockAccount]);
     expect(result.isLoading).toBe(false);
-  });
-
-  it('should handle loadAccountsFailure', () => {
-    const result = accountsReducer(
-      initialAccountsState,
-      AccountsActions.loadAccountsFailure({ error: 'Error' }),
-    );
-    expect(result.isLoading).toBe(false);
-    expect(result.error).toBe('Error');
-  });
-
-  it('should handle selectAccount', () => {
-    const result = accountsReducer(
-      initialAccountsState,
-      AccountsActions.selectAccount({ accountId: '1' }),
-    );
+    expect(result.error).toBeNull();
     expect(result.selectedAccountId).toBe('1');
   });
 
-  it('should handle createAccount', () => {
+  it('should handle loadAccountsFailure action', () => {
     const result = accountsReducer(
-      initialAccountsState,
-      AccountsActions.createAccount({
-        request: {
-          friendlyName: 'New',
-          type: AccountType.saving,
-          currency: 'USD',
-        },
-      }),
+      { ...initialAccountsState, accounts: [mockAccount], isLoading: true },
+      AccountsActions.loadAccountsFailure({ error: 'Network error' }),
     );
-    expect(result.isCreating).toBe(true);
-    expect(result.createError).toBeNull();
+    expect(result.isLoading).toBe(false);
+    expect(result.error).toBe('Network error');
+    expect(result.accounts).toEqual([mockAccount]);
   });
 
-  it('should handle createAccountSuccess', () => {
-    const result = accountsReducer(
-      { ...initialAccountsState, isCreating: true, isCreateModalOpen: true },
-      AccountsActions.createAccountSuccess({ account: mockAccount }),
-    );
-    expect(result.accounts).toContain(mockAccount);
-    expect(result.isCreating).toBe(false);
-    expect(result.isCreateModalOpen).toBe(false);
-  });
-
-  it('should handle createAccountFailure', () => {
-    const result = accountsReducer(
-      { ...initialAccountsState, isCreating: true },
-      AccountsActions.createAccountFailure({ error: 'Create error' }),
-    );
-    expect(result.isCreating).toBe(false);
-    expect(result.createError).toBe('Create error');
-  });
-
-  it('should handle openCreateModal', () => {
-    const result = accountsReducer(
-      initialAccountsState,
-      AccountsActions.openCreateModal(),
-    );
-    expect(result.isCreateModalOpen).toBe(true);
-  });
-
-  it('should handle closeCreateModal', () => {
-    const result = accountsReducer(
-      { ...initialAccountsState, isCreateModalOpen: true },
-      AccountsActions.closeCreateModal(),
-    );
-    expect(result.isCreateModalOpen).toBe(false);
-  });
-
-  it('should preserve all state properties on selectAccount', () => {
+  it('should handle selectAccount', () => {
     const stateWithData = {
       ...initialAccountsState,
       accounts: [mockAccount],
@@ -153,22 +98,9 @@ describe('AccountsReducer', () => {
     expect(result.isCreating).toBe(false);
   });
 
-  it('should add account to empty accounts array on createAccountSuccess', () => {
+  it('should handle createAccount action', () => {
     const result = accountsReducer(
-      { ...initialAccountsState, isCreating: true },
-      AccountsActions.createAccountSuccess({ account: mockAccount }),
-    );
-    expect(result.accounts).toHaveLength(1);
-    expect(result.accounts[0]).toEqual(mockAccount);
-  });
-
-  it('should clear createError on createAccount', () => {
-    const stateWithError = {
-      ...initialAccountsState,
-      createError: 'Previous error',
-    };
-    const result = accountsReducer(
-      stateWithError,
+      { ...initialAccountsState, createError: 'Previous error' },
       AccountsActions.createAccount({
         request: {
           friendlyName: 'New',
@@ -177,72 +109,100 @@ describe('AccountsReducer', () => {
         },
       }),
     );
+    expect(result.isCreating).toBe(true);
     expect(result.createError).toBeNull();
   });
 
-  it('should clear error on loadAccounts', () => {
-    const stateWithError = {
-      ...initialAccountsState,
-      error: 'Previous error',
-    };
-    const result = accountsReducer(
-      stateWithError,
-      AccountsActions.loadAccounts(),
+  it('should handle createAccountSuccess action', () => {
+    const emptyResult = accountsReducer(
+      { ...initialAccountsState, isCreating: true },
+      AccountsActions.createAccountSuccess({ account: mockAccount }),
     );
-    expect(result.error).toBeNull();
+    expect(emptyResult.accounts).toHaveLength(1);
+    expect(emptyResult.accounts[0]).toEqual(mockAccount);
+    expect(emptyResult.isCreating).toBe(false);
+    expect(emptyResult.createError).toBeNull();
+    expect(emptyResult.isCreateModalOpen).toBe(false);
+
+    const multipleResult = accountsReducer(
+      { ...initialAccountsState, accounts: [mockAccount], isCreating: true, isCreateModalOpen: true },
+      AccountsActions.createAccountSuccess({ account: mockAccount2 }),
+    );
+    expect(multipleResult.accounts).toHaveLength(2);
+    expect(multipleResult.accounts).toContain(mockAccount);
+    expect(multipleResult.accounts).toContain(mockAccount2);
   });
 
-  it('should preserve other state when handling selectAccount', () => {
-    const stateWithAccounts = {
-      ...initialAccountsState,
-      accounts: [mockAccount],
-    };
-    const action = AccountsActions.selectAccount({ accountId: '1' });
-    const result = accountsReducer(stateWithAccounts, action);
-    expect(result.accounts).toEqual(stateWithAccounts.accounts);
-    expect(result.selectedAccountId).toBe('1');
+  it('should handle createAccountFailure action', () => {
+    const result = accountsReducer(
+      { ...initialAccountsState, isCreating: true },
+      AccountsActions.createAccountFailure({ error: 'Create error' }),
+    );
+    expect(result.isCreating).toBe(false);
+    expect(result.createError).toBe('Create error');
   });
 
-  it('should add new account to existing accounts on createAccountSuccess', () => {
-    const stateWithAccounts = {
-      ...initialAccountsState,
-      accounts: [mockAccount],
-      isCreating: true,
-      isCreateModalOpen: true,
-    };
-    const action = AccountsActions.createAccountSuccess({
-      account: mockAccount2,
-    });
-    const result = accountsReducer(stateWithAccounts, action);
-    expect(result.accounts).toHaveLength(2);
-    expect(result.accounts).toContain(mockAccount);
-    expect(result.accounts).toContain(mockAccount2);
+  it('should handle openCreateModal and closeCreateModal', () => {
+    const openResult = accountsReducer(
+      initialAccountsState,
+      AccountsActions.openCreateModal(),
+    );
+    expect(openResult.isCreateModalOpen).toBe(true);
+
+    const closeResult = accountsReducer(
+      { ...initialAccountsState, isCreateModalOpen: true },
+      AccountsActions.closeCreateModal(),
+    );
+    expect(closeResult.isCreateModalOpen).toBe(false);
   });
 
-  it('should preserve accounts when handling loadAccountsFailure', () => {
-    const stateWithAccounts = {
-      ...initialAccountsState,
-      accounts: [mockAccount],
-      isLoading: true,
-    };
-    const error = 'Network error';
-    const action = AccountsActions.loadAccountsFailure({ error });
-    const result = accountsReducer(stateWithAccounts, action);
-    expect(result.accounts).toEqual(stateWithAccounts.accounts);
-    expect(result.error).toBe(error);
-    expect(result.isLoading).toBe(false);
+  it('should handle updateFriendlyName', () => {
+    const singleResult = accountsReducer(
+      { ...initialAccountsState, accounts: [mockAccount] },
+      AccountsActions.updateFriendlyName({
+        accountId: '1',
+        friendlyName: 'Updated Name',
+      }),
+    );
+    expect(singleResult.isUpdatingFriendlyName).toBe(true);
+    expect(singleResult.updateFriendlyNameError).toBeNull();
+    expect(singleResult.accounts[0].friendlyName).toBe('Updated Name');
+
+    const multipleResult = accountsReducer(
+      { ...initialAccountsState, accounts: [mockAccount, mockAccount2] },
+      AccountsActions.updateFriendlyName({
+        accountId: '2',
+        friendlyName: 'Updated Savings',
+      }),
+    );
+    expect(multipleResult.accounts[0].friendlyName).toBe('Test');
+    expect(multipleResult.accounts[1].friendlyName).toBe('Updated Savings');
   });
 
-  it('should preserve selectedAccountId when handling loadAccountsSuccess', () => {
-    const stateWithSelected = {
-      ...initialAccountsState,
-      selectedAccountId: '1',
-    };
-    const action = AccountsActions.loadAccountsSuccess({
-      accounts: [mockAccount],
-    });
-    const result = accountsReducer(stateWithSelected, action);
-    expect(result.selectedAccountId).toBe('1');
-    expect(result.accounts).toEqual([mockAccount]);
+  it('should handle updateFriendlyNameSuccess action', () => {
+    const validResult = accountsReducer(
+      { ...initialAccountsState, accounts: [mockAccount, mockAccount2], isUpdatingFriendlyName: true },
+      AccountsActions.updateFriendlyNameSuccess({ account: { ...mockAccount2, friendlyName: 'Premium Savings' } }),
+    );
+    expect(validResult.isUpdatingFriendlyName).toBe(false);
+    expect(validResult.updateFriendlyNameError).toBeNull();
+    expect(validResult.accounts[0]).toEqual(mockAccount);
+    expect(validResult.accounts[1].friendlyName).toBe('Premium Savings');
+
+    const nullResult = accountsReducer(
+      { ...initialAccountsState, accounts: [mockAccount], isUpdatingFriendlyName: true },
+      AccountsActions.updateFriendlyNameSuccess({ account: null as any }),
+    );
+    expect(nullResult.isUpdatingFriendlyName).toBe(false);
+    expect(nullResult.accounts).toEqual([mockAccount]);
+  });
+
+  it('should handle updateFriendlyNameFailure action', () => {
+    const result = accountsReducer(
+      { ...initialAccountsState, isUpdatingFriendlyName: true },
+      AccountsActions.updateFriendlyNameFailure({ error: 'Update failed' }),
+    );
+    expect(result.isUpdatingFriendlyName).toBe(false);
+    expect(result.updateFriendlyNameError).toBe('Update failed');
   });
 });

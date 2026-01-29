@@ -41,6 +41,7 @@ describe('AccountCardViewComponent', () => {
       );
       fixture.componentRef.setInput('formattedBalance', '1,000.00');
       fixture.componentRef.setInput('formattedDate', '01 Jan 2024');
+      fixture.componentRef.setInput('isRenaming', false);
     });
     fixture.detectChanges();
   });
@@ -53,5 +54,60 @@ describe('AccountCardViewComponent', () => {
     const spy = vi.spyOn(component.transfer, 'emit');
     component.handleTransfer();
     expect(spy).toHaveBeenCalled();
+  });
+
+  it('should set isEditing and newName when handleRenameClick is called', () => {
+    component.handleRenameClick();
+    expect(component['isEditing']()).toBe(true);
+    expect(component['newName']()).toBe('Test Account');
+  });
+
+  it('should emit rename with trimmed name when handleSave is called with valid name', () => {
+    const spy = vi.spyOn(component.rename, 'emit');
+    component['newName'].set('New Account Name');
+    component.handleSave();
+    expect(spy).toHaveBeenCalledWith('New Account Name');
+  });
+
+  it('should not emit rename when name is same or empty', () => {
+    const spy = vi.spyOn(component.rename, 'emit');
+    component['newName'].set('Test Account');
+    component.handleSave();
+    expect(spy).not.toHaveBeenCalled();
+    
+    component['newName'].set('   ');
+    component.handleSave();
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('should reset isEditing and newName when handleCancel is called', () => {
+    component['isEditing'].set(true);
+    component['newName'].set('New Name');
+    component.handleCancel();
+    expect(component['isEditing']()).toBe(false);
+    expect(component['newName']()).toBe('');
+  });
+
+
+  it('should compute displayName from friendlyName or name', () => {
+    expect(component['displayName']()).toBe('Test Account');
+    
+    TestBed.runInInjectionContext(() => {
+      fixture.componentRef.setInput('account', {
+        ...mockAccount,
+        friendlyName: '',
+      });
+    });
+    expect(component['displayName']()).toBe('Test Account');
+  });
+
+  it('should set renamingAccountId when handleSave is called and maintain initial state', () => {
+    expect(component['isEditing']()).toBe(false);
+    expect(component['newName']()).toBe('');
+    expect(component['renamingAccountId']()).toBeNull();
+    
+    component['newName'].set('New Account Name');
+    component.handleSave();
+    expect(component['renamingAccountId']()).toBe('1');
   });
 });
