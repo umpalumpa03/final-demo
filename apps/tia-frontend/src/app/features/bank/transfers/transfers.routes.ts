@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { TransferStore } from './components/transfers-internal/store/transfers.store';
+import { TransferStore } from './store/transfers.store';
 export const transfersRoutes: Routes = [
   {
     path: '',
