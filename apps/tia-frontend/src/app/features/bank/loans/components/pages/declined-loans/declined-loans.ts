@@ -21,7 +21,6 @@ export class DeclinedLoans {
   );
 
   public ngOnInit(): void {
-    this.store.dispatch(LoansActions.loadLoans());
     this.store.dispatch(AccountsActions.loadAccounts());
   }
 

@@ -11,7 +11,6 @@ import { selectFilteredLoans } from '../../../store/loans.selectors';
 import { LoanCard } from '../../../shared/ui/loan-card/loan-card';
 import { CommonModule } from '@angular/common';
 import { ILoan } from '../../../shared/models/loan.model';
-import { filter, map, take } from 'rxjs';
 import { LoanDetails } from '../../../shared/ui/prepayment/loan-details/loan-details';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
@@ -36,7 +35,6 @@ export class ApprovedLoans implements OnInit {
   public readonly isDetailsOpen = signal(false);
 
   public ngOnInit(): void {
-    this.store.dispatch(LoansActions.loadLoans());
     this.store.dispatch(AccountsActions.loadAccounts());
   }
 

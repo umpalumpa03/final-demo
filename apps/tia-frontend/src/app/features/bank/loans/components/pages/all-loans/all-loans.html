@@ -1,39 +1,36 @@
 <section class="loans">
-    @if (isLoading()) {
-    @for (i of [1,2,3]; track i) {
-    <div class="loan-card-skeleton">
-        <div class="skeleton-header">
-            <app-skeleton variant="circle" height="4rem" width="4rem"></app-skeleton>
 
-            <div class="skeleton-titles">
-                <app-skeleton variant="text" height="1.6rem" width="12rem"></app-skeleton>
-                <app-skeleton variant="text" height="1.2rem" width="8rem"></app-skeleton>
-            </div>
-        </div>
-
-        <div class="skeleton-body">
-            <app-skeleton height="6rem"></app-skeleton>
-        </div>
-    </div>
-    }
-    }
-    @else {
     @for (loan of loans(); track loan.id) {
+
     <lib-loan-card [loan]="loan" (cardClick)="onCardClick($event)" (rename)="onRenameLoan($event)">
+
     </lib-loan-card>
+
     } @empty {
+
     <p>No loans found.</p>
+
     }
-    }
+
 </section>
+
+
 
 <app-loan-details [isOpen]="isDetailsOpen()" [loan]="selectedLoan()" (close)="closeModals()"
     (calculatePrepayment)="onOpenPrepayment($event)">
+
 </app-loan-details>
 
+
+
 <app-ui-modal [isOpen]="isPrepaymentOpen()" (closed)="closeModals()">
+
     @if (selectedLoan(); as loan) {
+
     <app-prepayment-container [loan]="loan" (close)="closeModals()">
+
     </app-prepayment-container>
+
     }
+
 </app-ui-modal>
