@@ -4,6 +4,7 @@ import { catchError, map, switchMap, of } from 'rxjs';
 import { LoansService } from '../shared/services/loans.service';
 import { LoansActions } from './loans.actions';
 import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
+import { IPrepaymentCalcResponse } from '../shared/models/prepayment.model';
 
 @Injectable()
 export class LoansEffects {
@@ -96,8 +97,27 @@ export class LoansEffects {
   public calculatePrepayment$ = createEffect(() =>
     this.actions$.pipe(
       ofType(LoansActions.calculatePrepayment),
-      switchMap(({ payload }) =>
-        this.loansService
+      switchMap(({ payload }) => {
+        if (payload.type === 'full') {
+          return this.loansService.calculateFullPrepayment(payload.loanId).pipe(
+            map((response) => {
+              const normalizedResult: IPrepaymentCalcResponse = {
+                displayedInfo: response.items || [],
+              };
+              return LoansActions.calculatePrepaymentSuccess({
+                result: normalizedResult,
+              });
+            }),
+            catchError((error) =>
+              of(
+                LoansActions.calculatePrepaymentFailure({
+                  error: error.message,
+                }),
+              ),
+            ),
+          );
+        }
+        return this.loansService
           .calculatePartialPrepayment(
             payload.loanId,
             payload.amount!,
@@ -114,8 +134,8 @@ export class LoansEffects {
                 }),
               ),
             ),
-          ),
-      ),
+          );
+      }),
     ),
   );
 }

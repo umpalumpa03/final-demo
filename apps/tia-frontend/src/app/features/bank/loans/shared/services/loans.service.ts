@@ -5,6 +5,7 @@ import { ILoan, LoanMonthsResponse } from '../models/loan.model';
 import { environment } from '../../../../../../environments/environment';
 import { LoanPurpose } from '../models/loan-request.model';
 import {
+  IFullPrepaymentResponse,
   IPrepaymentCalcResponse,
   PrepaymentOption,
 } from '../models/prepayment.model';
@@ -63,6 +64,14 @@ export class LoansService {
     return this.http.get<IPrepaymentCalcResponse>(
       `${this.loansApiUrl}/calculate-partial-prepayment`,
       { params },
+    );
+  }
+
+  public calculateFullPrepayment(
+    loanId: string,
+  ): Observable<IFullPrepaymentResponse> {
+    return this.http.get<IFullPrepaymentResponse>(
+      `${this.loansApiUrl}/calculate-full-prepayment/{loanId}?loanId=${loanId}`,
     );
   }
 }

@@ -30,3 +30,12 @@ export interface IPrepaymentCalcItem {
 export interface IPrepaymentCalcResponse {
   displayedInfo: IPrepaymentCalcItem[];
 }
+
+export interface IFullPrepaymentItem {
+  text: string;
+  amount: number;
+}
+
+export interface IFullPrepaymentResponse {
+  items: IFullPrepaymentItem[];
+}
