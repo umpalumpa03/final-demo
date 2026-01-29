@@ -20,7 +20,7 @@
 
                     <strong class="review-step__value">
                         @if (isCurrency(item.text)) {
-                        {{ item.amount | currency:currencyCode():'symbol':'1.0-2' }}
+                        {{ item.amount | currency:'USD':'symbol':'1.0-2' }}
                         } @else {
                         {{ item.amount }}
                         }
@@ -33,7 +33,7 @@
 
     <footer class="review-step__footer">
         <app-button variant="outline" (click)="cancel.emit()">Cancel</app-button>
-        <app-button variant="default" [icon]="isLoading() ? null : './right-arrow.svg'" (click)="confirmPay.emit()"
+        <app-button variant="success" [icon]="isLoading() ? null : './right-arrow.svg'" (click)="confirmPay.emit()"
             [isDisabled]="isLoading()" [isLoading]="isLoading()">
 
             Pay

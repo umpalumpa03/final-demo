@@ -5,26 +5,3 @@
     @include display-flex(column);
     gap: 3.2rem;
 }
-
-.loan-card-skeleton {
-    background-color: $white;
-    border: 1px solid $gray-200;
-    border-radius: 1.2rem;
-    padding: 2.4rem;
-    @include display-flex(column);
-    gap: 2.4rem;
-
-    .skeleton-header {
-        @include flex-center($justify: flex-start);
-        gap: 1.6rem;
-    }
-
-    .skeleton-titles {
-        @include display-flex(column);
-        gap: 0.8rem;
-    }
-
-    .skeleton-body {
-        width: 100%;
-    }
-}

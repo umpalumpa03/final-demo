@@ -22,7 +22,6 @@ export class PrepaymentReview {
 
   public readonly isLoading = input<boolean>(false);
 
-  public readonly currencyCode = input<string>('USD');
   protected readonly currencyKeywords = PREPAYMENT_CURRENCY_KEYWORDS;
 
   public readonly cancel = output<void>();
