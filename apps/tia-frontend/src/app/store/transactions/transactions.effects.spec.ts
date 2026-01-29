@@ -4,7 +4,6 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { Action } from '@ngrx/store';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { TransactionService } from '../../features/bank/transactions/services/transactions-service/transaction-service';
 import { TransactionActions } from './transactions.actions';
 import {
   loadTotalEffect,
@@ -12,6 +11,7 @@ import {
   updateFiltersEffects,
 } from './transactions.effects';
 import { selectFilters, selectNextCursor } from './transactions.selector';
+import { TransactionService } from '@tia/shared/services/transactions-service/transaction-service';
 
 describe('Transaction Effects', () => {
   let actions$: Observable<Action>;

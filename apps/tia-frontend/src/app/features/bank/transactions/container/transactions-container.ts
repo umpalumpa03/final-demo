@@ -67,10 +67,6 @@ export class TransactionsContainer implements OnInit {
     }
   }
 
-  public onScrollBottom(): void {
-    console.log('scrolled');
-  }
-
   public onMockFilter(): void {
     const hardcodedFilter = {
       searchCriteria: 'Coffee at Starbucks',

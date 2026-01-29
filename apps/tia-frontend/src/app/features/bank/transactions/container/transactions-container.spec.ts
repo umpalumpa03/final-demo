@@ -70,4 +70,15 @@ describe('TransactionsContainer', () => {
 
     expect(dispatchSpy).not.toHaveBeenCalledWith(TransactionActions.loadMore());
   });
+
+  it('should dispatch updateFilters action when onMockFilter is called', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+    component.onMockFilter();
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      TransactionActions.updateFilters({
+        filters: { searchCriteria: 'Coffee at Starbucks' },
+      }),
+    );
+  });
 });
