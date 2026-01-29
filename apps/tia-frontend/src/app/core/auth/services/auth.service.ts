@@ -36,7 +36,9 @@ export class AuthService {
   private refreshToken!: string;
   private challengeId!: string;
   public isLoginLoading = signal<boolean>(false);
-  public loginError = signal<string | null>(null);
+  public loginError = signal<boolean | null>(false);
+  public successMessage = signal<boolean | null>(false);
+  public infoMessage = signal<boolean | null>(false);
 
   public setChellangeId(id: string) {
     this.challengeId = id;
@@ -54,23 +56,23 @@ export class AuthService {
         tap((res) => {
           if (res.status === 'mfa_required') {
             this.setChellangeId(res.challengeId!);
+            this.successMessage.set(true);
             this.router.navigate(['/auth/otp-verify']);
           } else if (res.status === 'phone_verification_required') {
             this.tokenService.setVerifyToken(res.verification_token!);
-            this.router.navigate(['/auth/phone'], { state: { from: 'sign-in' } });
+            this.infoMessage.set(true);
+            this.router.navigate(['/auth/phone'], {
+              state: { from: 'sign-in' },
+            });
           }
         }),
         catchError((err) => {
-          this.loginError.set(err?.error?.message ?? 'Incorrect credentials');
+          this.loginError.set(true);
           this.isLoginLoading.set(false);
           return throwError(() => err);
         }),
         finalize(() => this.isLoginLoading.set(false)),
       );
-  }
-
-  public isLoggedIn(): boolean {
-    return this.tokenService.accessToken ? true : false;
   }
 
   public refreshTokenPostRequest(
@@ -98,6 +100,7 @@ export class AuthService {
         tap((res) => {
           if (res.success === true) {
             this.tokenService.clearAccessToken();
+            this.router.navigate(['auth/sign-in']);
           }
         }),
       );
@@ -112,7 +115,7 @@ export class AuthService {
           if (res.access_token && res.refresh_token) {
             this.tokenService.setAccessToken(res.access_token);
             this.tokenService.setRefreshToken(res.refresh_token);
-            this.router.navigate(['/bank/dashboard']);
+            this.router.navigate(['/bank/dashboards']);
           }
         }),
       );
@@ -135,12 +138,11 @@ export class AuthService {
       Authorization: `Bearer ${token}`,
     });
 
-    return this.http
-      .post<SendVerificationResponse>(
-        `${environment.apiUrl}/auth/phone`,
-        { phone: phoneNumber },
-        { headers },
-      )
+    return this.http.post<SendVerificationResponse>(
+      `${environment.apiUrl}/auth/phone`,
+      { phone: phoneNumber },
+      { headers },
+    );
   }
 
   public verifyOtpCode(code: string): Observable<OtpResponse> {

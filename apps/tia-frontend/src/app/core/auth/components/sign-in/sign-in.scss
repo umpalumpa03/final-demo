@@ -22,7 +22,12 @@
     cursor: pointer;
   }
 
-  &__switch {
+  &__switch, &__loader {
     @include flex-center();
+  }
+
+  &__error-message {
+    color: $red-500;
+    font-size: 1.4rem;
   }
 }

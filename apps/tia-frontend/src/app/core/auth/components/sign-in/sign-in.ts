@@ -11,6 +11,11 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
+import {
+  ALERTS_DISMISSIBLE_DATA,
+  SIGN_IN_FORM,
+} from '../../models/input-config.models';
+import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
 
 @Component({
   selector: 'app-sign-in',
@@ -21,6 +26,7 @@ import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/share
     RouterLink,
     Spinner,
     LibraryTitle,
+    DismissibleAlerts,
   ],
   templateUrl: './sign-in.html',
   styleUrl: './sign-in.scss',
@@ -32,8 +38,13 @@ export class SignIn {
     'Enter your username and password to access your account';
   private authService = inject(AuthService);
   private fb = inject(FormBuilder);
+  public signInConfig = SIGN_IN_FORM;
+  public alertTypes = ALERTS_DISMISSIBLE_DATA;
   public isLoading = computed(() => this.authService.isLoginLoading());
-  public error = computed(() => this.authService.loginError());
+  public errorMessage = computed(() => {
+    this.alertTypes.error.message = 'Incorrect Credentials'
+    return this.authService.loginError();
+  });
 
   public loginForm = this.fb.nonNullable.group({
     username: ['', [Validators.required, Validators.minLength(2)]],
@@ -47,7 +58,9 @@ export class SignIn {
     }
 
     this.authService.loginPostRequest(this.loginForm.getRawValue()).subscribe({
-      error: () => {},
+      error: () => {
+        this.loginForm.markAllAsTouched();
+      },
     });
   }
 }
