@@ -7,7 +7,10 @@ import {
   output,
   Signal,
 } from '@angular/core';
-import { LOAN_FORM_CONFIG } from '../../config/loan-request.config';
+import {
+  LOAN_FORM_CONFIG,
+  NUMBER_REGEX,
+} from '../../config/loan-request.config';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -80,12 +83,23 @@ export class RequestModal implements OnInit {
         street: ['', Validators.required],
         city: ['', Validators.required],
         region: ['', Validators.required],
-        postalCode: ['', Validators.required],
+        postalCode: [
+          '',
+          [Validators.required, Validators.pattern(NUMBER_REGEX)],
+        ],
       }),
       contactPerson: this.fb.group({
         name: ['', Validators.required],
         relationship: ['', Validators.required],
-        phone: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+        phone: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern(NUMBER_REGEX),
+            Validators.minLength(9),
+            Validators.maxLength(9),
+          ],
+        ],
         email: ['', [Validators.required, Validators.email]],
       }),
     }),
