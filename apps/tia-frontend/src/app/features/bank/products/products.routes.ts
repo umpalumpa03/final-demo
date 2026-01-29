@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { AccountUtils } from './components/accounts/utils/account.utils';
 import { FormatUtils } from './components/accounts/utils/format-date.utils';
-import { AccountsService } from '../../../shared/services/accounts/accounts.service';
 
 export const productsRoutes: Routes = [
   {

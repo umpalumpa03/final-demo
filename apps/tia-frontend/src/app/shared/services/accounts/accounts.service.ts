@@ -14,7 +14,12 @@ export class AccountsService {
   private readonly apiUrl = `${environment.apiUrl}/accounts`;
 
   public getAccounts(): Observable<AccountsResponse> {
-    return this.http.get<AccountsResponse>(this.apiUrl);
+    return this.http.get<AccountsResponse>(this.apiUrl, {
+      params: {
+        ignoreHiddens: 'true',
+        status: 'active',
+      },
+    });
   }
 
   public getAccountById(accountId: string): Observable<Account> {
@@ -31,5 +36,15 @@ export class AccountsService {
 
   public getCurrencies(): Observable<string[]> {
     return this.http.get<string[]>(`${this.apiUrl}/catalogs/currencies`);
+  }
+
+  public updateFriendlyName(
+    accountId: string,
+    friendlyName: string,
+  ): Observable<Account> {
+    return this.http.put<Account>(
+      `${this.apiUrl}/update-friendly-name/${accountId}`,
+      { friendlyName },
+    );
   }
 }

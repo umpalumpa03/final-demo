@@ -22,7 +22,10 @@ import { AccountUtils } from '../../../utils/account.utils';
 })
 export class AccountCardComponent {
   public account = input.required<Account>();
+  public isRenaming = input.required<boolean>();
+  public renameError = input<string | null>(null);
   public transfer = output<string>();
+  public rename = output<{ accountId: string; friendlyName: string }>();
 
   private readonly formatUtils = new FormatUtils();
   private readonly accountUtils = new AccountUtils();
@@ -39,6 +42,10 @@ export class AccountCardComponent {
 
   public handleTransfer(): void {
     this.transfer.emit(this.account().id);
+  }
+
+  public handleRename(friendlyName: string): void {
+    this.rename.emit({ accountId: this.account().id, friendlyName });
   }
 
   public formatCurrency(amount: number): string {
