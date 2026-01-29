@@ -5,6 +5,7 @@ import { vi } from 'vitest';
 import { ForgotPasswordEmail } from './forgot-password-email';
 import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
+import { Routes } from '../../../models/tokens.model';
 
 describe('ForgotPasswordEmail', () => {
   let component: ForgotPasswordEmail;
@@ -20,7 +21,10 @@ describe('ForgotPasswordEmail', () => {
         {
           provide: AuthService,
           useValue: {
-            forgotPasswordRequest: vi.fn().mockReturnValue(of({})),
+            forgotPasswordRequest: vi.fn().mockReturnValue(
+              of({ challengeId: 'challenge-1' }),
+            ),
+            setChellangeId: vi.fn(),
           },
         },
         {
@@ -56,7 +60,8 @@ describe('ForgotPasswordEmail', () => {
     expect(authService.forgotPasswordRequest).toHaveBeenCalledWith(
       'user@test.com',
     );
-    expect(router.navigate).toHaveBeenCalledWith(['/auth/otp-verify']);
+    expect(authService.setChellangeId).toHaveBeenCalledWith('challenge-1');
+    expect(router.navigate).toHaveBeenCalledWith([Routes.OTP_FORGOT_PASSWORD]);
     expect(component.submitError()).toBeNull();
   });
 

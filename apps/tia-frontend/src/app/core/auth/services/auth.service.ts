@@ -190,10 +190,18 @@ export class AuthService {
       challengeId: this.getChallengeId(),
       code,
     };
-    return this.http.post<ForgotPasswordVerifyResponse>(
-      `${environment.apiUrl}/auth/forgot-password/verify`,
-      payload,
-    );
+    return this.http
+      .post<ForgotPasswordVerifyResponse>(
+        `${environment.apiUrl}/auth/forgot-password/verify`,
+        payload,
+      )
+      .pipe(
+        tap((res) => {
+          if (res.access_token) {
+            this.tokenService.setAccessToken(res.access_token);
+          }
+        }),
+      );
   }
 
   public createNewPassword(

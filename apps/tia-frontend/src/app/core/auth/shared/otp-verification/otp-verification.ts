@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { Observable, tap, catchError, EMPTY } from 'rxjs';
+import { Observable, tap, catchError, EMPTY, finalize } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { OtpConfig } from '@tia/shared/lib/forms/models/otp.model';
@@ -43,6 +43,7 @@ export class OtpVerification {
       >
     >();
   public isSubmitting = signal(false);
+  public submitError = signal<string | null>(null);
 
   public submitResult = output<{ statusCode: number; message: string }>();
 
@@ -55,6 +56,7 @@ export class OtpVerification {
     if (this.otpForm.invalid || !this.submitMethod()) return;
 
     this.isSubmitting.set(true);
+    this.submitError.set(null);
     const code = this.otpForm.value.code;
     console.log('Submitting with code:', code);
     this.submitMethod()(code!).subscribe({
@@ -68,4 +70,21 @@ export class OtpVerification {
       }
     });
   }
+    // this.submitMethod()(code!)
+    //   .pipe(finalize(() => this.isSubmitting.set(false)))
+    //   .subscribe({
+    //     next: () => {
+    //       this.submitResult.emit({ statusCode: 200, message: 'Success' });
+    //     },
+    //     error: (err) => {
+    //       const httpError = err as HttpErrorResponse;
+    //       const statusCode = httpError?.status ?? 0;
+    //       const message =
+    //         statusCode === 400
+    //           ? 'Invalid code. Please try again.'
+    //           : 'Something went wrong. Please try again.';
+    //       this.submitError.set(message);
+    //       this.submitResult.emit({ statusCode, message });
+    //     },
+    //   });
 }
