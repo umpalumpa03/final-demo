@@ -14,14 +14,25 @@ import { LoanDetails } from '../../../shared/ui/prepayment/loan-details/loan-det
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 
 import { LoansActions } from '../../../store/loans.actions';
-import { selectLoansWithAccountInfo } from '../../../store/loans.selectors';
+import {
+  selectLoansLoading,
+  selectLoansWithAccountInfo,
+} from '../../../store/loans.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { ILoan } from '../../../shared/models/loan.model';
 import { PrepaymentContainer } from '../../../shared/ui/prepayment/prepayment-container/prepayment-container';
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 
 @Component({
   selector: 'app-all-loans',
-  imports: [CommonModule, LoanCard, LoanDetails, UiModal, PrepaymentContainer],
+  imports: [
+    CommonModule,
+    LoanCard,
+    LoanDetails,
+    UiModal,
+    PrepaymentContainer,
+    Skeleton,
+  ],
   templateUrl: './all-loans.html',
   styleUrl: './all-loans.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,6 +43,7 @@ export class AllLoans implements OnInit {
   protected readonly loans = this.store.selectSignal(
     selectLoansWithAccountInfo,
   );
+  protected readonly isLoading = this.store.selectSignal(selectLoansLoading);
 
   public readonly selectedLoan = signal<ILoan | null>(null);
   public readonly isDetailsOpen = signal(false);
