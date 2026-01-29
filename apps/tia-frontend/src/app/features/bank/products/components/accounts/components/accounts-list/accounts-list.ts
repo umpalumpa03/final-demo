@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   input,
   output,
 } from '@angular/core';
@@ -36,6 +37,31 @@ export class AccountsListComponent {
   public openModal = output<void>();
   public transfer = output<string>();
   public retry = output<void>();
+
+  public hasNoAccounts = computed(() => {
+    const grouped = this.accountsGrouped();
+    if (!grouped) return false;
+    return (
+      grouped.current.length === 0 &&
+      grouped.saving.length === 0 &&
+      grouped.card.length === 0
+    );
+  });
+
+  public visibleSections = computed(() => {
+    const grouped = this.accountsGrouped();
+    const sections = this.accountSections();
+    if (!grouped) return [];
+    return sections.filter(
+      (section) => grouped[section.key as keyof GroupedAccounts].length > 0,
+    );
+  });
+
+  public getAccountsBySection(section: AccountSection) {
+    const grouped = this.accountsGrouped();
+    if (!grouped) return [];
+    return grouped[section.key as keyof GroupedAccounts];
+  }
 
   public handleOpenModal(): void {
     this.openModal.emit();

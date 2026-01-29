@@ -58,6 +58,7 @@ export class Accounts implements OnInit {
     this.store.dispatch(AccountsActions.createAccount({ request }));
   }
 
+  // TODO: DELETE CONSOLE LOG
   public handleTransfer(accountId: string): void {}
 
   public handleRetry(): void {

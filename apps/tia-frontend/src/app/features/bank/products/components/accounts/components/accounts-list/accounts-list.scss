@@ -72,8 +72,8 @@
     }
 
     &-grid {
-      @include display-flex(row, wrap);
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
     }
   }

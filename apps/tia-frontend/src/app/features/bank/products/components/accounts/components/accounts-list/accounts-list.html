@@ -13,7 +13,7 @@
     </app-button>
   </div>
 
-  @if (error(); as errorMsg) {
+  @if (error()) {
   <div class="accounts-list__error">
     <h3 class="accounts-list__error-title">Error Loading Accounts</h3>
     <app-button [variant]="'default'" (click)="handleRetry()">
@@ -22,29 +22,7 @@
   </div>
   } @else if (isLoading()) {
   <app-route-loader [variant]="'full-page'" [text]="'Loading accounts...'" />
-  } @else { @if (accountsGrouped(); as grouped) { @for (section of
-  accountSections(); track section.key) { @if (grouped[section.key].length > 0)
-  {
-  <section class="accounts-list__section">
-    <div class="accounts-list__section-header">
-      <img [src]="section.icon" alt="" class="accounts-list__section-icon" />
-      <h2 class="accounts-list__section-title">{{ section.title }}</h2>
-      <span class="accounts-list__section-count"
-        >{{ grouped[section.key].length }}</span
-      >
-    </div>
-    <div class="accounts-list__section-grid">
-      @for (account of grouped[section.key]; track account.id) {
-      <app-account-card
-        [account]="account"
-        (transfer)="handleTransfer($event)"
-      />
-      }
-    </div>
-  </section>
-  } } @if (grouped.current.length === 0 && grouped.saving.length === 0 &&
-  grouped.card.length === 0) {
-
+  } @else if (hasNoAccounts()) {
   <app-error-states
     [variant]="'not-found'"
     [header]="'No accounts found'"
@@ -53,5 +31,24 @@
     (buttonClick)="handleOpenModal()"
   >
   </app-error-states>
-  } } }
+  } @else if (accountsGrouped(); as grouped) { @for (section of
+  visibleSections(); track section.key) {
+  <section class="accounts-list__section">
+    <div class="accounts-list__section-header">
+      <img [src]="section.icon" alt="" class="accounts-list__section-icon" />
+      <h2 class="accounts-list__section-title">{{ section.title }}</h2>
+      <span class="accounts-list__section-count">
+        {{ getAccountsBySection(section).length }}
+      </span>
+    </div>
+    <div class="accounts-list__section-grid">
+      @for (account of getAccountsBySection(section); track account.id) {
+      <app-account-card
+        [account]="account"
+        (transfer)="handleTransfer($event)"
+      />
+      }
+    </div>
+  </section>
+  } }
 </div>
