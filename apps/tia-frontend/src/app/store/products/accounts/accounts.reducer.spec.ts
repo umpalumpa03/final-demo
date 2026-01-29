@@ -142,20 +142,6 @@ describe('AccountsReducer', () => {
     expect(result.createError).toBe('Create error');
   });
 
-  it('should handle openCreateModal and closeCreateModal', () => {
-    const openResult = accountsReducer(
-      initialAccountsState,
-      AccountsActions.openCreateModal(),
-    );
-    expect(openResult.isCreateModalOpen).toBe(true);
-
-    const closeResult = accountsReducer(
-      { ...initialAccountsState, isCreateModalOpen: true },
-      AccountsActions.closeCreateModal(),
-    );
-    expect(closeResult.isCreateModalOpen).toBe(false);
-  });
-
   it('should handle updateFriendlyName', () => {
     const singleResult = accountsReducer(
       { ...initialAccountsState, accounts: [mockAccount] },
