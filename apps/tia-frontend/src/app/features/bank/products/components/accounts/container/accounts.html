@@ -4,8 +4,11 @@
     [isLoading]="(isLoading$ | async) || false"
     [error]="error$ | async"
     [accountSections]="accountSectionsData"
+    [isRenamingAccount]="(isRenamingAccount$ | async) || false"
+    [renameError]="renameError$ | async"
     (openModal)="handleOpenModal()"
     (transfer)="handleTransfer($event)"
     (retry)="handleRetry()"
+    (renameAccount)="handleRenameAccount($event)"
   />
 </div>
