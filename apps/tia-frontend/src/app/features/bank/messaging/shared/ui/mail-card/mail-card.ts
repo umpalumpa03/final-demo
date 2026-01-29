@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { Mail } from '../../../store/messaging.state';
 import { Avatar } from '@tia/shared/lib/data-display/avatars/avatar';
 import { DatePipe } from '@angular/common';
@@ -11,16 +11,18 @@ import { DatePipe } from '@angular/common';
 })
 export class MailCard {
   public readonly mail = input<Mail>();
-  public readonly toggleRead = output<number>();
+  public readonly markAsRead = output<number>();
   public readonly toggleFavorite = output<number>();
   public readonly toggleImportant = output<number>();
   public readonly deleteMail = output<number>();
   public readonly cardClick = output<number>();
 
-  public onToggleRead(event: Event): void {
+  public onMarkAsRead(event: Event): void {
     event.stopPropagation();
     const mail = this.mail();
-    if (mail) this.toggleRead.emit(mail.id);
+    if (mail) {
+      this.markAsRead.emit(mail.id)
+    };
   }
 
   public onToggleFavorite(event: Event): void {

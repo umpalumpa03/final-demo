@@ -16,11 +16,15 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
 export class Inbox implements OnInit {
   private messagingStore = inject(MessagingStore);
 
-  public mails = this.messagingStore.mails; 
+  public mails = this.messagingStore.mails;
   public isLoading = this.messagingStore.isLoading;
   public error = this.messagingStore.error;
 
   ngOnInit() {
     this.messagingStore.loadMails('inbox');
+  }
+
+  markAsRead(mailId: number) {
+    this.messagingStore.markMailasRead(mailId);
   }
 }

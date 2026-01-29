@@ -27,9 +27,7 @@ describe('InboxService', () => {
   it('should fetch inbox count from the correct API endpoint', () => {
     const mockResponse = { count: 10 };
 
-    service.getInboxCount().subscribe((data) => {
-      expect(data).toEqual(mockResponse);
-    });
+    service.fetchInboxCount();
 
     const req = httpMock.expectOne((request) =>
       request.url.includes('/mails/unread/count'),

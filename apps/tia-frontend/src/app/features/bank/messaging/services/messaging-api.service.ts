@@ -15,4 +15,8 @@ export class MessagingService {
     if (cursor) params['cursor'] = cursor;
     return this.http.get<MailsResponse>(this.baseUrl, { params });
   }
+
+  public markAsRead(mailId: number): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/${mailId}/read`, {});
+  }
 }

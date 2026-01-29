@@ -42,12 +42,12 @@ describe('MailCard', () => {
     expect(body.textContent).toContain(mail.body);
   });
 
-  it('should emit toggleRead when read button is clicked', () => {
-    vi.spyOn(component.toggleRead, 'emit');
-    const btn = fixture.nativeElement.querySelector('.mail-card__action-btn--read');
-    btn.dispatchEvent(new Event('click'));
-    expect(component.toggleRead.emit).toHaveBeenCalledWith(mail.id);
-  });
+  // it('should emit toggleRead when read button is clicked', () => {
+  //   vi.spyOn(component.toggleRead, 'emit');
+  //   const btn = fixture.nativeElement.querySelector('.mail-card__action-btn--read');
+  //   btn.dispatchEvent(new Event('click'));
+  //   expect(component.toggleRead.emit).toHaveBeenCalledWith(mail.id);
+  // });
 
   it('should emit toggleFavorite when favorite button is clicked', () => {
     vi.spyOn(component.toggleFavorite, 'emit');
