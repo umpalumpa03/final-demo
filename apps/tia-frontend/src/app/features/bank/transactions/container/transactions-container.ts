@@ -20,6 +20,7 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Tables } from '@tia/shared/lib/tables/components/tables';
 import { ShowcaseCard } from '../../../storybook/shared/showcase-card/showcase-card';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-transactions-container',
@@ -68,5 +69,17 @@ export class TransactionsContainer implements OnInit {
 
   public onScrollBottom(): void {
     console.log('scrolled');
+  }
+
+  public onMockFilter(): void {
+    const hardcodedFilter = {
+      searchCriteria: 'Coffee at Starbucks',
+    };
+
+    console.log('Testing Filter with:', hardcodedFilter);
+
+    this.store.dispatch(
+      TransactionActions.updateFilters({ filters: hardcodedFilter }),
+    );
   }
 }
