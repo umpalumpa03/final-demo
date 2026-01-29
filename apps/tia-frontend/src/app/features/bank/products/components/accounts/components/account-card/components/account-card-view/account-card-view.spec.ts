@@ -40,7 +40,7 @@ describe('AccountCardViewComponent', () => {
         '/images/svg/account/wallet.svg',
       );
       fixture.componentRef.setInput('formattedBalance', '1,000.00');
-      fixture.componentRef.setInput('formattedDate', '01 Jan 2024');
+      fixture.componentRef.setInput('formattedDate', '01 Jan 2026');
       fixture.componentRef.setInput('isRenaming', false);
     });
     fixture.detectChanges();
