@@ -26,6 +26,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PrepaymentReview } from '../../../shared/ui/prepayment-wizard/prepayment-review/prepayment-review';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+import { Verify } from '../../../shared/ui/prepayment-wizard/verify/verify';
 
 @Component({
   selector: 'app-all-loans',
@@ -36,6 +37,7 @@ import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accoun
     UiModal,
     PrepaymentOptionStep,
     PrepaymentReview,
+    Verify,
   ],
   templateUrl: './all-loans.html',
   styleUrl: './all-loans.scss',
@@ -101,6 +103,15 @@ export class AllLoans implements OnInit {
 
   public onCalculatePrepayment(payload: PrepaymentCalculationPayload): void {
     this.store.dispatch(LoansActions.calculatePrepayment({ payload }));
+  }
+
+  public onProceedToOtp(): void {
+    this.step.set('otp');
+  }
+
+  public onVerifyOtp(code: string): void {
+    console.log('OTP Entered:', code);
+    // Backend logic will go here later...
   }
 
   public onFinalPay(): void {

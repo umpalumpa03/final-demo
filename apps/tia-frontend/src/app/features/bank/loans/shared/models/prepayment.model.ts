@@ -40,4 +40,4 @@ export interface IFullPrepaymentResponse {
   items: IFullPrepaymentItem[];
 }
 
-export type PrepaymentStep = 'options' | 'review';
+export type PrepaymentStep = 'options' | 'review' | 'otp';
