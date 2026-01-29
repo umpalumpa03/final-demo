@@ -1,7 +1,13 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { ILoan, LoanMonthsResponse } from '../shared/models/loan.model';
 import { LoanPurpose } from '../shared/models/loan-request.model';
-import { PrepaymentOption } from '../shared/models/prepayment.model';
+import {
+  IInitiatePrepaymentRequest,
+  IPrepaymentCalcResponse,
+  IVerifyPrepaymentRequest,
+  PrepaymentCalculationPayload,
+  PrepaymentOption,
+} from '../shared/models/prepayment.model';
 
 export const LoansActions = createActionGroup({
   source: 'Loans API',
@@ -27,5 +33,24 @@ export const LoansActions = createActionGroup({
     'Load Prepayment Options': emptyProps(),
     'Load Prepayment Options Success': props<{ options: PrepaymentOption[] }>(),
     'Load Prepayment Options Failure': props<{ error: string }>(),
+
+    'Calculate Prepayment': props<{ payload: PrepaymentCalculationPayload }>(),
+    'Calculate Prepayment Success': props<{
+      result: IPrepaymentCalcResponse;
+    }>(),
+    'Calculate Prepayment Failure': props<{ error: string }>(),
+    'Clear Calculation Result': emptyProps(),
+
+    'Initiate Prepayment': props<{ payload: IInitiatePrepaymentRequest }>(),
+    'Initiate Prepayment Success': props<{ challengeId: string }>(),
+    'Initiate Prepayment Failure': props<{ error: string }>(),
+
+    'Verify Prepayment': props<{ payload: IVerifyPrepaymentRequest }>(),
+    'Verify Prepayment Success': emptyProps(),
+    'Verify Prepayment Failure': props<{ error: string }>(),
+
+    'Show Alert': props<{ message: string }>(),
+    'Start Closing Alert': emptyProps(),
+    'Hide Alert': emptyProps(),
   },
 });

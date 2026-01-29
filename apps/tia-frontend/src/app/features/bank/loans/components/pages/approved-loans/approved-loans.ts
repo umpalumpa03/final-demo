@@ -12,14 +12,14 @@ import { LoanCard } from '../../../shared/ui/loan-card/loan-card';
 import { CommonModule } from '@angular/common';
 import { ILoan } from '../../../shared/models/loan.model';
 import { filter, map, take } from 'rxjs';
-import { LoanDetails } from '../../../shared/ui/prepayment-wizard/loan-details/loan-details';
-import { PrepaymentCalculationPayload } from '../../../shared/models/prepayment.model';
+import { LoanDetails } from '../../../shared/ui/prepayment/loan-details/loan-details';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
-import { PrepaymentOptionStep } from '../../../shared/ui/prepayment-wizard/prepayment-options-step/prepayment-option-step';
+import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+import { PrepaymentContainer } from '../../../shared/ui/prepayment/prepayment-container/prepayment-container';
 
 @Component({
   selector: 'app-approved-loans',
-  imports: [LoanCard, CommonModule, LoanDetails, UiModal, PrepaymentOptionStep],
+  imports: [LoanCard, CommonModule, LoanDetails, UiModal, PrepaymentContainer],
   templateUrl: './approved-loans.html',
   styleUrl: './approved-loans.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,6 +35,7 @@ export class ApprovedLoans implements OnInit {
 
   public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadLoans());
+    this.store.dispatch(AccountsActions.loadAccounts());
   }
 
   public onCardClick(id: string): void {
@@ -42,7 +43,10 @@ export class ApprovedLoans implements OnInit {
       .pipe(
         take(1),
         map((loans) => loans.find((l) => l.id === id)),
-        filter((loan): loan is ILoan => !!loan && loan.status === 2),
+        filter(
+          (loan): loan is NonNullable<typeof loan> =>
+            !!loan && loan.status === 2,
+        ),
       )
       .subscribe((loan) => {
         this.selectedLoan.set(loan);
@@ -60,11 +64,6 @@ export class ApprovedLoans implements OnInit {
     this.selectedLoan.set(loan);
     this.isDetailsOpen.set(false);
     this.isPrepaymentOpen.set(true);
-  }
-
-  // SHEMDEG GVERDZE GADASVLAA DA XVALVIZAM
-  public onCalculatePrepayment(payload: PrepaymentCalculationPayload): void {
-    // console.log('Calculation Payload:', payload);
   }
 
   public closeModals(): void {

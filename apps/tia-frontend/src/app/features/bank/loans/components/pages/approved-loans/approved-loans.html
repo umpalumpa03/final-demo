@@ -16,9 +16,7 @@
 
 <app-ui-modal [isOpen]="isPrepaymentOpen()" (closed)="closeModals()">
     @if (selectedLoan(); as loan) {
-    <div class="modal-content-wrapper">
-        <app-prepayment-option-step [loan]="loan" (cancel)="closeModals()" (calculate)="onCalculatePrepayment($event)">
-        </app-prepayment-option-step>
-    </div>
+    <app-prepayment-container [loan]="loan" (close)="closeModals()">
+    </app-prepayment-container>
     }
 </app-ui-modal>

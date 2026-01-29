@@ -23,3 +23,6 @@ export const CARDS_CONFIG = [
   { label: 'Total Savings', key: 'totalSavings', changeKey: 'savingsChange', icon: 'finances-saving', type: 'positive', isPct: false, dynamicType: true },
   { label: 'Savings Rate', key: 'savingsRate', changeKey: 'savingsRateChange', icon: 'finances-saving-rate', type: 'positive', isPct: true, dynamicType: false }
 ] as const;
+
+
+

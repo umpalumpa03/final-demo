@@ -1,0 +1,194 @@
+@use "../../../../../../../shared/styles/palette" as *;
+@use "../../../../../../../shared/styles/mixins" as *;
+
+.loan-modal {
+    @include display-flex(column);
+    max-height: 90vh;
+    width: 100%;
+    max-width: 60rem;
+    border-radius: 1.2rem;
+    gap: 1.6rem;
+
+    &__header {
+        @include flex-center(row, space-between, flex-start);
+
+        &-text {
+            .icon {
+                @include display-flex;
+                gap: 0.8rem;
+
+                img {
+                    @include svg-icon();
+                }
+
+                h3 {
+                    margin: 0 0 0.4rem;
+                    color: var(--color-fg);
+                    @include font-inter(600, 2rem);
+                }
+            }
+        }
+    }
+
+    &__subtitle {
+        margin: 0;
+        color: $blue-600;
+        @include font-inter(400, 1.4rem);
+    }
+
+    &__close {
+        background: none;
+        border: none;
+        font-size: 2.4rem;
+        cursor: pointer;
+        color: $gray-400;
+        padding: 0;
+        line-height: 1;
+        transition: color 0.2s ease;
+
+        &:hover {
+            color: $gray-700;
+        }
+    }
+
+    &__body {
+        @include display-flex(column);
+        gap: 2.4rem;
+
+        overflow-y: auto;
+
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    &__status {
+        @include flex-center(row, space-between);
+        padding: 1.6rem;
+        background-color: $gray-25;
+        border-radius: 1rem;
+
+        &-label {
+            @include font-inter(500, 1.4rem, 1.5);
+            color: $gray-600;
+        }
+    }
+
+    &__badge {
+        @include flex-center;
+        gap: 0.6rem;
+        padding: 0.6rem 1.2rem;
+        border-radius: 2rem;
+        @include font-inter(600, 1.2rem);
+
+        img {
+            width: 1.4rem;
+        }
+
+        &--approved {
+            background: $green-50;
+            color: $green-950;
+        }
+
+        &--pending {
+            background: $yellow-50;
+            color: $brown-800;
+        }
+
+        &--declined {
+            background: $red-50;
+            color: $red-600;
+        }
+    }
+
+    &__section {
+        @include display-flex(column);
+        gap: 1.6rem;
+
+        &-title {
+            color: $blue-1000;
+            @include font-inter(600, 1.6rem);
+        }
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2.4rem 1.6rem;
+
+        &-item {
+            @include display-flex(column);
+            gap: 0.4rem;
+            background-color: $gray-25;
+            border-radius: 1rem;
+            padding: 1.2rem;
+
+            &--monthly {
+                border: 0.06rem solid $blue-200;
+                background-color: var(--color-bg);
+
+                .loan-modal__value {
+                    color: $blue-800;
+                }
+            }
+
+            &--full {
+                grid-column: 1 / -1;
+                margin-top: 0.8rem;
+            }
+        }
+    }
+
+    &__label {
+        @include font-inter(500, 1.4rem);
+        color: $gray-700;
+    }
+
+    &__value {
+        @include font-inter(600, 1.6rem);
+        color: $blue-1000;
+
+        &--amount {
+            @include font-inter(700, 2rem);
+        }
+    }
+
+    &__prepayment {
+        margin-top: 1.6rem;
+        padding-top: 2.4rem;
+        @include display-flex(column);
+        gap: 1.6rem;
+
+        &-info {
+            @include display-flex(column);
+            gap: 1.2rem;
+
+            > div {
+                @include display-flex;
+                gap: 0.8rem;
+            }
+        }
+
+        &-icon {
+            @include svg-icon(2.4rem);
+        }
+
+        &-title {
+            color: $blue-1000;
+            @include font-inter(600, 1.8rem);
+            margin-bottom: 0.4rem;
+        }
+
+        &-text {
+            margin: 0;
+            color: $gray-700;
+            @include font-inter(400, 1.4rem);
+        }
+    }
+
+    .close {
+        margin-left: auto;
+    }
+}

@@ -9,6 +9,16 @@ export const selectDefaultAvatars = createSelector(
   (state) => state.defaultAvatars,
 );
 
+export const selectDefaultAvatarsLoading = createSelector(
+  selectProfilePhotoFeatureState,
+  (state) => state.defaultAvatarsLoading,
+);
+
+export const selectDefaultAvatarsError = createSelector(
+  selectProfilePhotoFeatureState,
+  (state) => state.defaultAvatarsError,
+);
+
 export const selectSelectedAvatarId = createSelector(
   selectProfilePhotoFeatureState,
   (state) => state.selectedAvatarId,

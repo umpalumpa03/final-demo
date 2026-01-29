@@ -1,11 +1,13 @@
+import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { LOAN_ICONS } from '../config/loan-icons.config';
 import { LoanPurpose } from './loan-request.model';
-import { PrepaymentOption } from './prepayment.model';
+import { IPrepaymentCalcResponse, PrepaymentOption } from './prepayment.model';
 
 export interface ILoan {
   id: string;
   loanAmount: number;
   accountId: string;
+  accountName?: string;
   months: number;
   purpose: string;
   status: number;
@@ -20,10 +22,13 @@ export interface ILoansState {
   loans: ILoan[];
   months: number[];
   purposes: LoanPurpose[];
+  accounts: Account[];
   prepaymentOptions: PrepaymentOption[];
   loading: boolean;
   error: string | null;
   filterStatus: number | null;
+  calculationResult: IPrepaymentCalcResponse | null;
+  activeChallengeId: string | null;
 }
 
 export interface LoanUiState {

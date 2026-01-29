@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   ElementRef,
   inject,
   OnInit,
@@ -28,7 +29,7 @@ export class BankHeaderContainer implements OnInit {
   public anchorEl = signal<ElementRef | undefined>(undefined);
   public isModalOpen = signal<boolean>(false);
   public notificationsItems$!: Observable<NotificationsData>;
-  public inboxCount = signal<number>(0);
+  public inboxCount = computed(() => this.inboxService.inboxCount());
 
   ngOnInit(): void {
     this.headerNotificationService
@@ -40,14 +41,7 @@ export class BankHeaderContainer implements OnInit {
       )
       .subscribe();
 
-    this.inboxService
-      .getInboxCount()
-      .pipe(
-        tap((value) => {
-          this.inboxCount.set(value.count);
-        }),
-      )
-      .subscribe();
+      this.inboxService.fetchInboxCount();
   }
 
   public onNotificationClick(el: ElementRef): void {

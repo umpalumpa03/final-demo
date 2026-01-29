@@ -1,4 +1,45 @@
-
 <div class="global-bank-wrapper">
-    <p>dashboard-container works!</p>
+  <app-library-title
+    title="Dashboard"
+    subtitle="Welcome back! Here's your financial overview."
+  ></app-library-title>
+  <app-drag-container
+    [items]="myItems()"
+    [layout]="'grid'"
+    [columns]="{ default: 2, md:2,sm: 1 }"
+    [colspans]="dynamicColspans()"
+    (itemsChange)="onItemsChange($event)"
+    containerTitle=""
+    containerDescription=""
+  >
+    @for (item of myItems(); track item.id) {
+    <app-draggable-card
+      [hasMinHeight]="true"
+      [itemData]="item"
+      [hasViewOption]="true"
+      (viewOptionChange)="onToggleVisibility($event, item.id)"
+      [showHeadings]="false"
+      [class.bank-dashboard__widget--primary]="$index === 0"
+      [class.bank-dashboard__widget--collapsed]="$index === 0 && item.isHidden"
+      [hasPagination]="!!item.hasPagination"
+      [hasAddOption]="!!item.hasAdd"
+      [hasButton]="!!item.hasButton"
+      buttonContent="Refresh"
+      (buttonClick)="onWidgetRefresh(item)"
+      (add)="onWidgetAdd(item)"
+      (paginationChange)="onPaginationChange($event)"
+      appDragItem
+    >
+      @if (!($index === 0 && item.isHidden)) {
+      <div class="bank-dashboard__content">
+        @switch (item.type) { @case ('transactions') {
+        <app-widget-transactions /> } @case ('accounts') {
+        <app-widget-accounts /> } @case ('exchange') { <app-widget-exchange /> }
+        }
+      </div>
+      }
+    </app-draggable-card>
+
+    }
+  </app-drag-container>
 </div>

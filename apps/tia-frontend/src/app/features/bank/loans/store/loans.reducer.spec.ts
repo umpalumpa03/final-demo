@@ -19,6 +19,7 @@ describe('LoansReducer', () => {
     nextPaymentDate: null,
     createdAt: '2025-01-01',
     friendlyName: 'Test Loan',
+    accountName: '',
   };
 
   it('should return the default state on unknown action', () => {
@@ -95,6 +96,12 @@ describe('LoansReducer', () => {
     expect(state.loading).toBe(false);
   });
 
+  it('should handle loadMonthsFailure', () => {
+    const action = LoansActions.loadMonthsFailure({ error: 'fail' });
+    const state = loansReducer(initialState, action);
+    expect(state).toBeTruthy();
+  });
+
   it('should handle loadPurposesSuccess', () => {
     const purposes = [{ value: '1', displayText: 'Home' }] as any;
     const action = LoansActions.loadPurposesSuccess({ purposes });
@@ -106,5 +113,56 @@ describe('LoansReducer', () => {
     const action = LoansActions.loadPurposesFailure({ error: 'fail' });
     const state = loansReducer(loansInitialState, action);
     expect(state.error).toBe('fail');
+  });
+
+  it('should handle loadPrepaymentOptionsSuccess', () => {
+    const options = [{ isActive: true }] as any;
+    const action = LoansActions.loadPrepaymentOptionsSuccess({ options });
+    const state = loansReducer(loansInitialState, action);
+    expect(state.prepaymentOptions).toEqual(options);
+    expect(state.error).toBeNull();
+  });
+
+  it('should handle calculatePrepaymentSuccess', () => {
+    const result = { monthlyPayment: 100 } as any;
+    const action = LoansActions.calculatePrepaymentSuccess({ result });
+    const state = loansReducer(loansInitialState, action);
+    expect(state.calculationResult).toEqual(result);
+    expect(state.error).toBeNull();
+  });
+
+  it('should handle calculatePrepaymentFailure', () => {
+    const errorMsg = 'Calc failed';
+    const action = LoansActions.calculatePrepaymentFailure({ error: errorMsg });
+    const state = loansReducer(loansInitialState, action);
+    expect(state.calculationResult).toBeNull();
+    expect(state.error).toBe(errorMsg);
+  });
+
+  it('should handle initiatePrepaymentSuccess', () => {
+    const challengeId = '123';
+    const action = LoansActions.initiatePrepaymentSuccess({ challengeId });
+    const state = loansReducer(loansInitialState, action);
+    expect(state.activeChallengeId).toBe(challengeId);
+    expect(state.error).toBeNull();
+  });
+
+  it('should handle initiate/verify failures', () => {
+    const error = 'OTP Error';
+    const action = LoansActions.verifyPrepaymentFailure({ error });
+    const state = loansReducer(loansInitialState, action);
+    expect(state.error).toBe(error);
+  });
+
+  it('should clear calculation result and challenge id', () => {
+    const stateWithData = {
+      ...loansInitialState,
+      calculationResult: {} as any,
+      activeChallengeId: '123',
+    };
+    const action = LoansActions.clearCalculationResult();
+    const state = loansReducer(stateWithData, action);
+    expect(state.calculationResult).toBeNull();
+    expect(state.activeChallengeId).toBeNull();
   });
 });
