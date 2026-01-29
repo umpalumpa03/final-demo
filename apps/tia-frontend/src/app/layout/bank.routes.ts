@@ -13,6 +13,8 @@ import { FinancesService } from '../features/bank/finances/services/finances.ser
 import { TransactionService } from '@tia/shared/services/transactions-service/transaction-service';
 import { LoanCreateEffects } from '../store/loans/loans.effects';
 import { loansFeature } from '../store/loans/loans.reducer';
+import { accountsReducer } from '../store/products/accounts/accounts.reducer';
+import { AccountsEffects } from '../store/products/accounts/accounts.effects';
 export const bankRoutes: Routes = [
   {
     path: 'bank',
@@ -25,6 +27,8 @@ export const bankRoutes: Routes = [
         name: TRANSACTION_FEATURE_KEY,
         reducer: transactionReducer,
       }),
+      provideState({ name: 'accounts', reducer: accountsReducer }),
+      provideEffects(AccountsEffects),
     ],
     children: [
       {

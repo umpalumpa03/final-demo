@@ -2,20 +2,66 @@
 @use '../../../../../../../shared/styles/palette' as *;
 
 .external-recipient {
-  width: 100vh;
+  @include display-flex(column);
+  width: 100%;
+  max-width: 120rem;
+  margin: 0 auto;
+
+  &__header {
+    @include display-flex(column);
+    gap: 0.8rem;
+    margin-bottom: 4rem;
+  }
 
   &__title {
-    @include font-inter(500, 1.6rem, 2.4rem);
+    @include font-inter(600, 2rem, 2.8rem);
     color: var(--color-fg);
   }
 
-  &__form {
-    @include flex-center();
-    gap: 1.6rem;
-    width: 100%;
+  &__input-wrapper {
+    max-width: 35rem;
+    min-height: 10rem;
+    margin-bottom: 0;
   }
 
-  &__input {
-    flex: 1;
+  &__accounts {
+    @include display-flex(column);
+    gap: 2.4rem;
+    width: 100%;
+  }
+  &__accounts-title {
+    @include font-inter(600, 1.8rem, 2.4rem);
+    color: var(--color-fg);
+  }
+
+  &__accounts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(32rem, 1fr));
+    gap: 2rem;
+  }
+
+  &__actions {
+    @include flex-center();
+    width: 100%;
+    padding-top: 1.6rem;
+  }
+
+  &__button-wrapper {
+    position: relative;
+
+    &[data-tooltip]:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 0.8rem);
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0.8rem 1.2rem;
+      background: $blue-950;
+      color: $white;
+      border-radius: 0.4rem;
+      font-size: 1.3rem;
+      white-space: nowrap;
+      z-index: 1000;
+    }
   }
 }

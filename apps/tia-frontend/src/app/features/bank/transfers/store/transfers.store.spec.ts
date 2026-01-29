@@ -13,13 +13,13 @@ describe('TransferStore', () => {
     store = TestBed.inject(TransferStore);
   });
 
-  it('should create store with initial state', () => {
+  it('should create with initial state', () => {
     expect(store.recipientInput()).toBe('');
     expect(store.recipientType()).toBeNull();
     expect(store.error()).toBeNull();
   });
 
-  it('should update recipient input with phone', () => {
+  it('should update recipient input', () => {
     store.setRecipientInput('+995555123456');
     expect(store.recipientInput()).toBe('+995555123456');
   });
@@ -39,6 +39,11 @@ describe('TransferStore', () => {
     expect(store.recipientType()).toBe('iban-same-bank');
   });
 
+  it('should set recipient type to iban-different-bank', () => {
+    store.setRecipientType('iban-different-bank');
+    expect(store.recipientType()).toBe('iban-different-bank');
+  });
+
   it('should set recipient type to null', () => {
     store.setRecipientType('phone');
     store.setRecipientType(null);
@@ -46,8 +51,8 @@ describe('TransferStore', () => {
   });
 
   it('should set error message', () => {
-    store.setError('Invalid IBAN format');
-    expect(store.error()).toBe('Invalid IBAN format');
+    store.setError('Invalid format');
+    expect(store.error()).toBe('Invalid format');
   });
 
   it('should clear error', () => {
