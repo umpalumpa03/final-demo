@@ -23,6 +23,7 @@ import { AccountUtils } from '../../../utils/account.utils';
 export class AccountCardComponent {
   public account = input.required<Account>();
   public transfer = output<string>();
+  public rename = output<string>();
 
   private readonly formatUtils = new FormatUtils();
   private readonly accountUtils = new AccountUtils();
@@ -39,6 +40,10 @@ export class AccountCardComponent {
 
   public handleTransfer(): void {
     this.transfer.emit(this.account().id);
+  }
+
+  public handleRename(): void {
+    this.rename.emit(this.account().id);
   }
 
   public formatCurrency(amount: number): string {
