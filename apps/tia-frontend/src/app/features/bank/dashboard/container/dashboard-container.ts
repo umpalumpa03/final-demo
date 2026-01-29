@@ -67,4 +67,6 @@ export class DashboardContainer {
   public onPaginationChange(item: number): void {
     console.log(`Vaxtangas paginacia shoucvalien ${item}`);
   }
+
+  // console logebi aris droebiti
 }
