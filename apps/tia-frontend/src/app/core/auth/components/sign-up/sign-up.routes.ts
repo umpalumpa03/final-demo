@@ -15,8 +15,6 @@ export const signUpRoutes: Routes = [
   {
     path: 'verify-otp-register',
     loadComponent: () =>
-      import('../../shared/otp-verification/otp-verification').then(
-        (c) => c.OtpVerification,
-      ),
+      import('./verify-signup/verify-signup').then((c) => c.VerifySignup),
   },
 ];

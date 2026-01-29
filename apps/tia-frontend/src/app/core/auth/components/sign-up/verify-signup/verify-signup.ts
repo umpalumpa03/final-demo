@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
-import { OtpVerification } from "../../../shared/otp-verification/otp-verification";
+import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
 
 @Component({
   selector: 'app-verify-signup',
@@ -11,5 +11,6 @@ import { OtpVerification } from "../../../shared/otp-verification/otp-verificati
 export class VerifySignup {
   private authService = inject(AuthService);
 
-  public submitOtp = signal((code: string) => this.authService.verifyOtpCode(code));
+  public submitOtp = (code: string) =>
+    this.authService.verifyPhoneOtpCode(code);
 }

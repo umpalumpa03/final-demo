@@ -33,8 +33,6 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private tokenService = inject(TokenService);
-  private accessToken!: string;
-  private refreshToken!: string;
   private challengeId!: string;
   public isLoginLoading = signal<boolean>(false);
   public errorMessage = signal<boolean | null>(false);
@@ -157,7 +155,7 @@ export class AuthService {
     );
   }
 
-  public verifyOtpCode(code: string): Observable<OtpResponse> {
+  public verifyPhoneOtpCode(code: string): Observable<OtpResponse> {
     const token = this.tokenService.getSignUpToken;
     const challengeId = this.getChallengeId();
 
@@ -165,11 +163,24 @@ export class AuthService {
       Authorization: `Bearer ${token}`,
     });
 
-    return this.http.post<OtpResponse>(
-      `${environment.apiUrl}/auth/phone/verify`,
-      { challengeId, code },
-      { headers },
-    );
+    return this.http
+      .post<OtpResponse>(
+        `${environment.apiUrl}/auth/phone/verify`,
+        { challengeId, code },
+        { headers },
+      )
+      .pipe(
+        tap((res) => {
+          this.tokenService.clearAllToken();
+          this.router.navigate([Routes.SIGN_IN]);
+        }),
+        catchError((err) => {
+          this.errorMessage.set(true);
+          this.isLoginLoading.set(false);
+          return throwError(() => err);
+        }),
+        finalize(() => this.isLoginLoading.set(false)),
+      );
   }
 
   public forgotPasswordRequest(

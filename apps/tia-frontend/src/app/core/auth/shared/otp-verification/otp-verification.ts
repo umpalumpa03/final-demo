@@ -8,8 +8,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { Observable, tap, catchError, EMPTY } from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { OtpConfig } from '@tia/shared/lib/forms/models/otp.model';
 import { Otp } from '@tia/shared/lib/forms/otp/otp';
@@ -51,21 +50,9 @@ export class OtpVerification {
   });
 
   public onSubmit(): void {
-    console.log('onSubmit called, form:', this.otpForm.value, 'valid:', this.otpForm.valid);
-    if (this.otpForm.invalid || !this.submitMethod()) return;
+    if (this.otpForm.invalid) return;
 
     this.isSubmitting.set(true);
-    const code = this.otpForm.value.code;
-    console.log('Submitting with code:', code);
-    this.submitMethod()(code!).subscribe({
-      next: (res) => {
-        console.log('Submit success:', res);
-        this.isSubmitting.set(false);
-      },
-      error: (err) => {
-        console.log('Submit error:', err);
-        this.isSubmitting.set(false);
-      }
-    });
+    this.submitMethod()(this.otpForm.value.code!).subscribe({});
   }
 }
