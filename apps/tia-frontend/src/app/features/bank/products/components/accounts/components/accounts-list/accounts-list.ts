@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   input,
   output,
 } from '@angular/core';
@@ -13,6 +14,7 @@ import {
   GroupedAccounts,
 } from '../../../../../../../shared/models/accounts/accounts.model';
 import { ErrorStates } from '../../../../../../../shared/lib/feedback/error-states/error-states';
+import { ScrollArea } from '../../../../../../../shared/lib/layout/components/scroll-area/container/scroll-area';
 
 @Component({
   selector: 'app-accounts-list',
@@ -22,6 +24,7 @@ import { ErrorStates } from '../../../../../../../shared/lib/feedback/error-stat
     ButtonComponent,
     RouteLoader,
     ErrorStates,
+    ScrollArea,
   ],
   templateUrl: './accounts-list.html',
   styleUrl: './accounts-list.scss',
@@ -32,10 +35,40 @@ export class AccountsListComponent {
   public isLoading = input.required<boolean>();
   public error = input<string | null>(null);
   public accountSections = input.required<AccountSection[]>();
+  public isRenamingAccount = input.required<boolean>();
+  public renameError = input<string | null>(null);
 
   public openModal = output<void>();
   public transfer = output<string>();
   public retry = output<void>();
+  public renameAccount = output<{ accountId: string; friendlyName: string }>();
+
+  public hasNoAccounts = computed(() => {
+    const grouped = this.accountsGrouped();
+    if (!grouped) return false;
+    return (
+      grouped.current.length === 0 &&
+      grouped.saving.length === 0 &&
+      grouped.card.length === 0
+    );
+  });
+
+  public visibleSections = computed(() => {
+    const grouped = this.accountsGrouped();
+    const sections = this.accountSections();
+    if (!grouped) return [];
+    return sections.filter(
+      (section) => grouped[section.key as keyof GroupedAccounts].length > 0,
+    );
+  });
+
+  private groupedAccountsMemo = computed(() => this.accountsGrouped());
+
+  public getAccountsBySection(section: AccountSection) {
+    const grouped = this.groupedAccountsMemo();
+    if (!grouped) return [];
+    return grouped[section.key as keyof GroupedAccounts];
+  }
 
   public handleOpenModal(): void {
     this.openModal.emit();
@@ -47,5 +80,12 @@ export class AccountsListComponent {
 
   public handleRetry(): void {
     this.retry.emit();
+  }
+
+  public handleRenameClick(data: {
+    accountId: string;
+    friendlyName: string;
+  }): void {
+    this.renameAccount.emit(data);
   }
 }
