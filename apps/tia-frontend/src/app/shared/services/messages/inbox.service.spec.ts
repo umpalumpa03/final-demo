@@ -1,21 +1,18 @@
 import { TestBed } from '@angular/core/testing';
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { InboxService } from './inbox.service';
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { environment } from '../../../../environments/environment';
 
 describe('InboxService', () => {
   let service: InboxService;
   let httpMock: HttpTestingController;
+  const apiUrl = `${environment.apiUrl}/mails/unread/count`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [InboxService],
     });
-
     service = TestBed.inject(InboxService);
     httpMock = TestBed.inject(HttpTestingController);
   });
@@ -24,16 +21,21 @@ describe('InboxService', () => {
     httpMock.verify();
   });
 
-  it('should fetch inbox count from the correct API endpoint', () => {
-    const mockResponse = { count: 10 };
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
 
+  it('should have inboxCount signal initialized to 0', () => {
+    expect(service.inboxCount()).toBe(0);
+  });
+
+  it('should fetch inbox count and update signal', () => {
     service.fetchInboxCount();
 
-    const req = httpMock.expectOne((request) =>
-      request.url.includes('/mails/unread/count'),
-    );
-
+    const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('GET');
-    req.flush(mockResponse);
+    req.flush({ count: 42 });
+
+    expect(service.inboxCount()).toBe(42);
   });
 });

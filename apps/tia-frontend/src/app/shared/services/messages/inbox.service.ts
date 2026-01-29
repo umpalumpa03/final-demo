@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { InboxCount } from '@tia/shared/models/inbox/inbox.model';
-import { Observable, tap } from 'rxjs';
+import { tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
