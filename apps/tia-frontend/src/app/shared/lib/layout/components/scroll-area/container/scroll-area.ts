@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, input, output, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  ElementRef,
+  input,
+  output,
+  viewChild,
+} from '@angular/core';
 
 import { TDirection } from './scroll-area.model';
 
@@ -19,24 +28,27 @@ export class ScrollArea {
 
   private readonly viewport = viewChild<ElementRef<HTMLElement>>('viewport');
 
-  public readonly isHorizontal = computed(() => this.direction() === 'horizontal');
+  public readonly isHorizontal = computed(
+    () => this.direction() === 'horizontal',
+  );
   public readonly isVertical = computed(() => this.direction() === 'vertical');
-  public readonly isScrollbarVisible = computed(() => this.scrollbar() === 'visible');
+  public readonly isScrollbarVisible = computed(
+    () => this.scrollbar() === 'visible',
+  );
 
   constructor() {
     effect(() => {
       const el = this.viewport()?.nativeElement;
-      if(el && !this.isLoading()) {
-        this.checkScrollPosition(el);        
+      if (el && !this.isLoading()) {
+        this.checkScrollPosition(el);
       }
-    })
+    });
   }
-
 
   public onScroll(): void {
     const el = this.viewport()?.nativeElement;
-    if(el && !this.isLoading()) {
-      this.checkScrollPosition(el);        
+    if (el && !this.isLoading()) {
+      this.checkScrollPosition(el);
     }
   }
 

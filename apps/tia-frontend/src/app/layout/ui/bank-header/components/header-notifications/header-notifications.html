@@ -4,18 +4,93 @@
   [style.top.px]="top()"
   [style.left.px]="left()"
 >
+  @if (isLoading()) {
+  <div class="header-notifications__main__loader">
+    <app-route-loader variant="pulsing" />
+  </div>
+  }@else {
+
   <header class="header-notifications__header">
-    <h3>Notifications</h3>
-    <span>3 unread</span>
-  </header>
-  @let messages = notificationsItems();
-  <main class="header-notifications__main">
-    @if (messages | async; as notifications) { @for (item of
-    notifications.items; track $index) {
-    <div>
-      <p>{{ item.title }}</p>
+    <div class="header-notifications__header__info">
+      <h3>Notifications</h3>
+      <span>{{ unreadLeft() }} unread</span>
     </div>
-    } }
+
+    @if (selectedItems().length) {
+    <app-button
+      variant="destructive"
+      [fullWidth]="true"
+      icon="trash-icon.svg"
+      title="btn.label"
+      style="width: 100%"
+      class="header-notifications__header__button"
+    >
+      Delete ({{ selectedItems().length }})
+    </app-button>
+    }
+  </header>
+  <main class="header-notifications__main">
+    <header class="header-notifications__main__header">
+      <div class="header-notifications__main__header__select">
+        <lib-checkboxes
+          [checked]="isAllSelected()"
+          (change)="toggleSelectAll(notificationsItems())"
+        ></lib-checkboxes>
+        Select All
+      </div>
+      <div
+        class="header-notifications__main__header__markread"
+        (click)="onMarkAllClick()"
+      >
+        <p>Mark all as read</p>
+      </div>
+    </header>
+    <app-scroll-area height="95%">
+      @for (item of notificationsItems(); track $index) {
+      <div
+        class="header-notifications__main__item"
+        [class.unread]="!item.isRead"
+      >
+        <div class="header-notifications__main__item__checkbox">
+          <lib-checkboxes
+            (change)="individualItemSelection(item.id)"
+            [checked]="isItemSelected(item.id)"
+          ></lib-checkboxes>
+        </div>
+        <div class="header-notifications__main__item__content">
+          <h4 [class.unread]="!item.isRead">{{item.title}}</h4>
+
+          <p class="header-notifications__main__item__content__date">
+            {{ item.createdAt | date: 'yyyy-MM-dd HH:mm' }}
+          </p>
+          <span class="header-notifications__main__item__content__type">
+            {{ item.type | titlecase }}
+          </span>
+        </div>
+        <div class="header-notifications__main__item__cta">
+          @if(!item.isRead) {
+          <span class="header-notifications__main__item__cta--icon"></span>
+          <button (click)="onReadIconClicked(item.id)">
+            <img
+              class="header-notifications__main__item__cta--read"
+              src="images/svg/header-notifications/read.svg"
+              alt="read icon"
+            />
+          </button>
+          }
+
+          <button (click)="onTrashIconClick(item.id)">
+            <img
+              class="header-notifications__main__item__cta--delete"
+              src="images/svg/header-notifications/delete.svg"
+              alt="delete icon"
+            />
+          </button>
+        </div>
+      </div>
+      }
+    </app-scroll-area>
   </main>
+  }
 </div>
 }
