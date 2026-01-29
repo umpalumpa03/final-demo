@@ -1,13 +1,16 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, effect, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, computed, effect, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ProfilePhotoComponent } from '../components/profile-photo/profile-photo.component';
+import { AlertType } from '../shared/models/profile-photo.models';
 import { ProfilePhotoActions } from '../../../../../../store/profile-photo/profile-photo.actions';
 import {
   selectDefaultAvatars,
+  selectDefaultAvatarsLoading,
   selectSelectedAvatarId,
   selectCurrentAvatarUrl,
   selectUploadedFileName,
 } from '../../../../../../store/profile-photo/profile-photo.selectors';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile-photo-container',
@@ -18,16 +21,23 @@ import {
 })
 export class ProfilePhotoContainer implements OnDestroy {
   private readonly store = inject(Store);
+  private readonly translate = inject(TranslateService);
 
   public readonly defaultAvatars = this.store.selectSignal(selectDefaultAvatars);
+  public readonly defaultAvatarsLoading = this.store.selectSignal(selectDefaultAvatarsLoading);
   public readonly selectedAvatarId = this.store.selectSignal(selectSelectedAvatarId);
   public readonly currentAvatarUrl = this.store.selectSignal(selectCurrentAvatarUrl);
   public readonly uploadedFileName = this.store.selectSignal(selectUploadedFileName);
+
+  public readonly alertKind = signal<AlertType | null>(null);
+  public readonly alertMessage = signal<string>('');
+  public readonly alertType = computed<AlertType | null>(() => this.alertKind());
   
   private uploadedFile: File | null = null;
   private objectUrl: string | null = null;
+  private alertTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
-public  constructor() {
+public constructor() {
 
     effect(() => {
       const fileName = this.uploadedFileName();
@@ -43,6 +53,27 @@ public  constructor() {
       URL.revokeObjectURL(this.objectUrl);
       this.objectUrl = null;
     }
+
+    if (this.alertTimeoutId) {
+      clearTimeout(this.alertTimeoutId);
+      this.alertTimeoutId = null;
+    }
+  }
+
+  private showAlert(kind: AlertType, message: string, autoHideMs = 3500): void {
+    if (this.alertTimeoutId) {
+      clearTimeout(this.alertTimeoutId);
+      this.alertTimeoutId = null;
+    }
+
+    this.alertKind.set(kind);
+    this.alertMessage.set(message);
+
+    this.alertTimeoutId = setTimeout(() => {
+      this.alertKind.set(null);
+      this.alertMessage.set('');
+      this.alertTimeoutId = null;
+    }, autoHideMs);
   }
 
   public onFileSelected(file: File): void {
@@ -68,6 +99,10 @@ public  constructor() {
   }
 
   public onRemovePhoto(): void {
+    this.showAlert(
+      'warning',
+      this.translate.instant('settings.profile-photo.profilePictureRemovedSuccessfully'),
+    );
     if (this.objectUrl) {
       URL.revokeObjectURL(this.objectUrl);
       this.objectUrl = null;
@@ -81,6 +116,10 @@ public  constructor() {
     const avatarId = this.selectedAvatarId();
 
     if (file) {
+      this.showAlert(
+        'success',
+        this.translate.instant('settings.profile-photo.profilePictureChangedSuccessfully'),
+      );
       if (this.objectUrl) {
         URL.revokeObjectURL(this.objectUrl);
         this.objectUrl = null;
@@ -91,6 +130,10 @@ public  constructor() {
     }
 
     if (avatarId) {
+      this.showAlert(
+        'success',
+        this.translate.instant('settings.profile-photo.profilePictureChangedSuccessfully'),
+      );
       this.store.dispatch(
         ProfilePhotoActions.selectDefaultAvatarRequest({ avatarId })
       );
