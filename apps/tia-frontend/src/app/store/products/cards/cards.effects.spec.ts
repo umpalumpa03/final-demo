@@ -5,11 +5,13 @@ import { Observable, of, throwError } from 'rxjs';
 import { Action } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
 import { CardsEffects } from './cards.effects';
-import { CardListService } from '../../../features/bank/products/components/cards/services/card-list.service';
+
 import * as CardsActions from './cards.actions';
-import { CardAccount } from '../../../features/bank/products/components/cards/models/card-account.model';
-import { CardDetail } from '../../../features/bank/products/components/cards/models/card-detail.model';
+
 import { toArray } from 'rxjs/operators';
+import { CardAccount } from '@tia/shared/models/cards/card-account.model';
+import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
+import { CardListService } from '@tia/shared/services/cards/card-list.service';
 
 describe('CardsEffects', () => {
   let actions$: Observable<Action>;

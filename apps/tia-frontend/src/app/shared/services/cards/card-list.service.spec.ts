@@ -5,9 +5,10 @@ import {
   HttpTestingController,
 } from '@angular/common/http/testing';
 import { CardListService } from './card-list.service';
-import { CardAccount } from '../models/card-account.model';
-import { CardDetail } from '../models/card-detail.model';
-import { environment } from '../../../../../../../environments/environment';
+import { environment } from '../../../../environments/environment';
+import { CardAccount } from '@tia/shared/models/cards/card-account.model';
+import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
+
 
 describe('CardListService', () => {
   let service: CardListService;

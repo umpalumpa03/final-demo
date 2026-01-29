@@ -117,4 +117,32 @@ describe('LoansService', () => {
     const req = httpMock.expectOne(`${apiUrl}/loan-prepayment-options`);
     req.flush(mockOptions);
   });
+
+  it('should initiate prepayment', () => {
+    const payload = { loanId: '1', amount: 500 } as any;
+    const mockResponse = { verify: { challengeId: '123' } };
+
+    service
+      .initiatePrepayment(payload)
+      .subscribe((res) => expect(res).toEqual(mockResponse));
+
+    const req = httpMock.expectOne(`${apiUrl}/loan-prepayment`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+    req.flush(mockResponse);
+  });
+
+  it('should verify prepayment', () => {
+    const payload = { challengeId: '123', code: '0000' };
+    const mockResponse = { success: true };
+
+    service
+      .verifyPrepayment(payload)
+      .subscribe((res) => expect(res).toEqual(mockResponse));
+
+    const req = httpMock.expectOne(`${apiUrl}/verify-prepayment`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+    req.flush(mockResponse);
+  });
 });

@@ -77,7 +77,7 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'finances',
-        providers: [FinancesStore, FinancesService],
+        providers: [FinancesStore, FinancesService,provideCharts(withDefaultRegisterables())],
         loadComponent: () =>
           import('../features/bank/finances/container/finances-container').then(
             (c) => c.FinancesContainer,

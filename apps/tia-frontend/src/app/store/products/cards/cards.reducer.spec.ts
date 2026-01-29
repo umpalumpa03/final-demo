@@ -2,8 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { cardsReducer } from './cards.reducer';
 import { initialCardsState, CardsState } from './cards.state';
 import * as CardsActions from './cards.actions';
-import { CardAccount } from '../../../features/bank/products/components/cards/models/card-account.model';
-import { CardDetail } from '../../../features/bank/products/components/cards/models/card-detail.model';
+import { CardAccount } from '@tia/shared/models/cards/card-account.model';
+import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
+
 
 describe('Cards Reducer', () => {
   const mockAccounts: CardAccount[] = [
@@ -117,18 +118,23 @@ describe('Cards Reducer', () => {
   });
 
   describe('loadCardDetails', () => {
-    it('should not modify state when loading card details', () => {
+    it('should set cardDetailsLoading to true and clear cardDetailsError', () => {
       const action = CardsActions.loadCardDetails({ cardId });
       const state = cardsReducer(initialCardsState, action);
-      expect(state).toEqual(initialCardsState);
+      
+      expect(state.cardDetailsLoading).toBe(true);
+      expect(state.cardDetailsError).toBeNull();
     });
   });
 
   describe('loadCardDetailsSuccess', () => {
-    it('should add card details to state', () => {
+    it('should add card details to state and set cardDetailsLoading to false', () => {
       const action = CardsActions.loadCardDetailsSuccess({ cardId, details: mockCardDetail });
       const state = cardsReducer(initialCardsState, action);
+      
       expect(state.cardDetails[cardId]).toEqual(mockCardDetail);
+      expect(state.cardDetailsLoading).toBe(false);
+      expect(state.cardDetailsError).toBeNull();
     });
 
     it('should update existing card details', () => {
@@ -142,16 +148,21 @@ describe('Cards Reducer', () => {
 
       const action = CardsActions.loadCardDetailsSuccess({ cardId, details: newDetails });
       const state = cardsReducer(stateWithDetails, action);
+      
       expect(state.cardDetails[cardId]).toEqual(newDetails);
+      expect(state.cardDetailsLoading).toBe(false);
+      expect(state.cardDetailsError).toBeNull();
     });
   });
 
   describe('loadCardDetailsFailure', () => {
-    it('should not modify state on failure', () => {
+    it('should set cardDetailsError and cardDetailsLoading to false', () => {
       const error = 'Failed to load card details';
       const action = CardsActions.loadCardDetailsFailure({ cardId, error });
       const state = cardsReducer(initialCardsState, action);
-      expect(state).toEqual(initialCardsState);
+      
+      expect(state.cardDetailsLoading).toBe(false);
+      expect(state.cardDetailsError).toBe(error);
     });
   });
 });
