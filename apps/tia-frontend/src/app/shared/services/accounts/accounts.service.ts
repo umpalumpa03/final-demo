@@ -37,4 +37,14 @@ export class AccountsService {
   public getCurrencies(): Observable<string[]> {
     return this.http.get<string[]>(`${this.apiUrl}/catalogs/currencies`);
   }
+
+  public updateFriendlyName(
+    accountId: string,
+    friendlyName: string,
+  ): Observable<Account> {
+    return this.http.put<Account>(
+      `${this.apiUrl}/update-friendly-name/${accountId}`,
+      { friendlyName },
+    );
+  }
 }

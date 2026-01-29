@@ -10,6 +10,8 @@ export const {
   selectIsCreating,
   selectCreateError,
   selectIsCreateModalOpen,
+  selectIsUpdatingFriendlyName,
+  selectUpdateFriendlyNameError,
 } = accountsFeature;
 
 export const selectCurrentAccounts = createSelector(
