@@ -11,6 +11,7 @@ export const transactionReducer = createReducer(
     ...state,
     items: [],
     nextCursor: null,
+    total: 0,
     isLoading: true,
   })),
 
@@ -44,5 +45,10 @@ export const transactionReducer = createReducer(
     ...state,
     isLoading: false,
     error,
+  })),
+
+  on(TransactionActions.loadTotalSuccess, (state, { total }) => ({
+    ...state,
+    total,
   })),
 );

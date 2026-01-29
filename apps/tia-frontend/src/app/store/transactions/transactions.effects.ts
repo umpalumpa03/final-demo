@@ -60,3 +60,21 @@ export const loadTransactionsEffect = createEffect(
   },
   { functional: true },
 );
+
+export const loadTotalEffect = createEffect(
+  (
+    actions$ = inject(Actions),
+    transactionService = inject(TransactionService),
+  ) => {
+    return actions$.pipe(
+      ofType(TransactionActions.enter, TransactionActions.loadTransactions),
+      switchMap(() => {
+        return transactionService.getTransactionsTotal().pipe(
+          map((total) => TransactionActions.loadTotalSuccess({ total })),
+          catchError(() => EMPTY),
+        );
+      }),
+    );
+  },
+  { functional: true },
+);

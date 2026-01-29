@@ -25,6 +25,10 @@ export class TransactionService {
     );
   }
 
+  public getTransactionsTotal(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/transactions/total`);
+  }
+
   private createHttpParams(filters: TransactionFilter): HttpParams {
     let params = new HttpParams();
 

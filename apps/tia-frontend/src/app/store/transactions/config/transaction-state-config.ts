@@ -6,6 +6,7 @@ export const transactionInitialState: TransactionState = {
   filters: {
     pageLimit: 20,
   },
+  total: 0,
   isLoading: false,
   error: null,
 } as const;

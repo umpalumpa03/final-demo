@@ -7,6 +7,7 @@ export interface TransactionState {
   items: ITransactions[];
   nextCursor: string | null;
   filters: TransactionFilter;
+  total:number;
   isLoading: boolean;
   error: unknown;
 }

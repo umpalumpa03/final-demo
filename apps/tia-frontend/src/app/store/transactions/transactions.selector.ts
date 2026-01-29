@@ -31,9 +31,14 @@ export const selectError = createSelector(
   (state) => state.error,
 );
 
+export const selectTotalTransactions = createSelector(
+  selectTransactionState,
+  (state) => state.total,
+);
 export const selectTransactionViewModel = createSelector(
   selectItems,
   selectIsLoading,
   selectFilters,
-  (items, isLoading, filters) => ({ items, isLoading, filters }),
+  selectTotalTransactions,
+  (items, isLoading, filters, total) => ({ items, isLoading, filters, total }),
 );
