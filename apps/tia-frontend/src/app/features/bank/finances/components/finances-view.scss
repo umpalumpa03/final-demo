@@ -63,7 +63,7 @@
   min-height: 24rem;
 
   &__loading-wrapper {
-    @include flex-center(column, center, center);
+    @include flex-center();
     @include font-inter(600, 1.4rem);
     position: absolute;
     inset: 0;

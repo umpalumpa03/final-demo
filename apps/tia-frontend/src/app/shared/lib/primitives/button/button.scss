@@ -44,8 +44,17 @@
     color: $white;
     &:hover:not(:disabled) {
       background-color: $red-700;
+    }   
+  }
+
+  &--success {
+    background-color: $green-600;
+    color: $white;
+    &:hover:not(:disabled) {
+      background-color: $green-900;
     }
   }
+  
 
   &--outline {
     background-color: var(--color-bg);
@@ -72,6 +81,7 @@
     &:hover:not(:disabled) {
       text-decoration: underline;
     }
+    
   }
 
   // Sizes

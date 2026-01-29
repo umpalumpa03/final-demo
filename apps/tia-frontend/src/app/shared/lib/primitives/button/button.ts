@@ -1,13 +1,8 @@
-import {
-  Component,
-  input,
-  ChangeDetectionStrategy,
-  computed,
-} from '@angular/core';
+import { Component, input, ChangeDetectionStrategy,computed } from '@angular/core';
 import { ButtonVariant, ButtonSize } from './button.model';
 
 @Component({
-  selector: 'app-button',
+  selector: 'app-button', 
   templateUrl: './button.html',
   styleUrl: './button.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,3 +23,4 @@ export class ButtonComponent {
     );
   });
 }
+

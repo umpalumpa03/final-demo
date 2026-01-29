@@ -10,6 +10,7 @@ import {
 } from '../store/transactions/transactions.reducer';
 import { FinancesStore } from '../features/bank/finances/store/finances.store';
 import { FinancesService } from '../features/bank/finances/services/finances.service';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 export const bankRoutes: Routes = [
   {
     path: 'bank',
@@ -67,7 +68,8 @@ export const bankRoutes: Routes = [
         path: 'finances',
         providers: [
                   FinancesStore,
-                  FinancesService
+                  FinancesService,
+                  provideCharts(withDefaultRegisterables())
                 ],
         loadComponent: () =>
           import('../features/bank/finances/container/finances-container').then(
