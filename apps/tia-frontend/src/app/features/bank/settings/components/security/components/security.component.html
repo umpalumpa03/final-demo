@@ -1,3 +1,69 @@
 <div class="security">
+  <form [formGroup]="changePasswordForm" (ngSubmit)="onSubmit()">
+    <app-basic-card
+      [hasFooter]="true"
+      [maxWidth]="'100%'"
+      [width]="'100%'"
+    >
+      <div class="security__header">
+        <div class="security__header-icon">
+          <img src="/images/svg/library-input/password.svg" alt="Key icon" />
+        </div>
+        <div class="security__header-content">
+          <h3 class="security__title">{{ 'settings.security.changePassword' | translate }}</h3>
+          <p class="security__subtitle">{{ 'settings.security.changePasswordSubtitle' | translate }}</p>
+        </div>
+      </div>
 
+      <div class="security__form">
+        <div class="security__field">
+          <lib-text-input
+            type="password"
+            formControlName="currentPassword"
+            [config]="{
+              label: ('settings.security.currentPassword' | translate),
+              placeholder: ('settings.security.currentPasswordPlaceholder' | translate),
+              required: true
+            }"
+          ></lib-text-input>
+        </div>
+
+        <div class="security__field">
+          <lib-text-input
+            type="password"
+            formControlName="newPassword"
+            [config]="{
+              label: ('settings.security.newPassword' | translate),
+              placeholder: ('settings.security.newPasswordPlaceholder' | translate),
+              required: true
+            }"
+          ></lib-text-input>
+        </div>
+
+        <div class="security__field">
+          <lib-text-input
+            type="password"
+            formControlName="confirmPassword"
+            [config]="{
+              label: ('settings.security.confirmNewPassword' | translate),
+              placeholder: ('settings.security.confirmNewPasswordPlaceholder' | translate),
+              required: true
+            }"
+          ></lib-text-input>
+        </div>
+      </div>
+
+      <div card-footer class="security__footer">
+        <app-button
+          variant="default"
+          size="default"
+          icon="password-icon.svg"
+          type="submit"
+          [isDisabled]="changePasswordForm.invalid"
+        >
+          {{ 'settings.security.updatePassword' | translate }}
+        </app-button>
+      </div>
+    </app-basic-card>
+  </form>
 </div>
