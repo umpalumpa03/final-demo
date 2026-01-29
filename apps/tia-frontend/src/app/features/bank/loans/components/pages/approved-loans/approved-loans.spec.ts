@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApprovedLoans } from './approved-loans';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { LoansActions } from '../../../store/loans.actions';
+import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { selectFilteredLoans } from '../../../store/loans.selectors';
 
 describe('ApprovedLoans', () => {
@@ -11,8 +12,18 @@ describe('ApprovedLoans', () => {
   let store: MockStore;
 
   const mockLoans = [
-    { id: 'loan-1', status: 2, loanAmount: 1000 },
-    { id: 'loan-2', status: 2, loanAmount: 2000 },
+    {
+      id: 'loan-1',
+      status: 2,
+      accountName: 'Loading Account...',
+      loanAmount: 1000,
+    },
+    {
+      id: 'loan-2',
+      status: 2,
+      accountName: 'Loading Account...',
+      loanAmount: 2000,
+    },
   ];
 
   const initialState = {
@@ -53,8 +64,9 @@ describe('ApprovedLoans', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should dispatch loadLoans on init', () => {
+  it('should dispatch loadLoans and loadAccounts on init', () => {
     expect(store.dispatch).toHaveBeenCalledWith(LoansActions.loadLoans());
+    expect(store.dispatch).toHaveBeenCalledWith(AccountsActions.loadAccounts());
   });
 
   it('should open details and set selected loan when a valid card is clicked', () => {

@@ -22,7 +22,7 @@ describe('Loans Selectors', () => {
       id: '2',
       status: 2,
       loanAmount: 2000,
-      accountId: 'acc1',
+      accountId: 'acc2',
       months: 24,
       purpose: 'Test',
       statusName: 'Approved',
@@ -50,9 +50,22 @@ describe('Loans Selectors', () => {
     ...loansInitialState,
     loans: mockLoans,
     loading: true,
-    purposes: [],
-    prepaymentOptions: [],
-    months: [],
+    purposes: [{ displayText: 'Home', value: 'home' } as any],
+    prepaymentOptions: [
+      {
+        isActive: true,
+        prepaymentValue: 'full',
+        prepaymentDisplayName: 'Full',
+      } as any,
+      {
+        isActive: false,
+        prepaymentValue: 'partial',
+        prepaymentDisplayName: 'Partial',
+      } as any,
+    ],
+    months: [12, 24],
+    activeChallengeId: 'challenge-123',
+    calculationResult: { monthlyPayment: 500 } as any,
   };
 
   const rootState = { loans_local: initialState };
@@ -63,42 +76,117 @@ describe('Loans Selectors', () => {
   });
 
   it('should select all loans', () => {
-    const result = Selectors.selectAllLoans(rootState);
+    const result = Selectors.selectAllLoans.projector(initialState);
     expect(result.length).toBe(3);
     expect(result).toEqual(mockLoans);
   });
 
-  it('should select loading status', () => {
-    const result = Selectors.selectLoansLoading(rootState);
+  it('should select loading state', () => {
+    const result = Selectors.selectLoansLoading.projector(initialState);
     expect(result).toBe(true);
   });
 
-  it('should filter loans by status', () => {
-    const selector = Selectors.selectFilteredLoans(1);
-    const result = selector(rootState);
+  it('should select active challenge id', () => {
+    const result = Selectors.selectActiveChallengeId.projector(initialState);
+    expect(result).toBe('challenge-123');
+  });
+
+  it('should select calculation result', () => {
+    const result = Selectors.selectCalculationResult.projector(initialState);
+    expect(result).toEqual({ monthlyPayment: 500 });
+  });
+
+  it('should select only active prepayment options', () => {
+    const result =
+      Selectors.selectPrepaymentTypeOptions.projector(initialState);
     expect(result.length).toBe(1);
-    expect(result[0].status).toBe(1);
+    expect(result[0].value).toBe('full');
   });
 
-  it('should return all loans when filter status is null', () => {
-    const selector = Selectors.selectFilteredLoans(null);
-    const result = selector(rootState);
-    expect(result.length).toBe(3);
-  });
+  describe('selectLoansWithAccountInfo', () => {
+    it('should join loans with account info', () => {
+      const loans = mockLoans;
+      const accounts = [
+        { id: 'acc1', friendlyName: 'My Account' },
+        { id: 'acc2', name: 'Other Account', friendlyName: null },
+      ] as any;
 
-  it('should calculate loan counts correctly', () => {
-    const result = Selectors.selectLoanCounts(rootState);
+      const result = Selectors.selectLoansWithAccountInfo.projector(
+        loans,
+        accounts,
+      );
+      expect(result[0].accountName).toBe('My Account');
+      expect(result[1].accountName).toBe('Other Account');
+      expect(result[2].accountName).toBe('My Account');
+    });
 
-    expect(result).toEqual({
-      all: 3,
-      approved: 1,
-      pending: 1,
-      declined: 1,
+    it('should handle account not found for a loan', () => {
+      const loans = [mockLoans[0]];
+      const accounts = [{ id: 'other-id', name: 'X' }] as any;
+      const result = Selectors.selectLoansWithAccountInfo.projector(
+        loans,
+        accounts,
+      );
+      expect(result[0].accountName).toBe('Loading Account...');
     });
   });
 
-  it('should return empty purpose options when purposes are empty', () => {
-    const result = Selectors.selectPurposeOptions(rootState);
-    expect(result).toEqual([]);
+  describe('selectFilteredLoans', () => {
+    const joinedLoans = mockLoans.map((l) => ({
+      ...l,
+      accountName: 'Test Acc',
+    }));
+
+    it('should return all loans when status is null', () => {
+      const result = Selectors.selectFilteredLoans(null).projector(joinedLoans);
+      expect(result.length).toBe(3);
+    });
+
+    it('should filter loans by specific status', () => {
+      const result = Selectors.selectFilteredLoans(1).projector(joinedLoans);
+      expect(result.length).toBe(1);
+      expect(result[0].status).toBe(1);
+    });
+  });
+
+  describe('selectLoanCounts', () => {
+    it('should calculate counts correctly', () => {
+      const result = Selectors.selectLoanCounts.projector(mockLoans);
+      expect(result).toEqual({
+        all: 3,
+        approved: 1,
+        pending: 1,
+        declined: 1,
+      });
+    });
+  });
+
+  describe('selectLoanMonthsOptions', () => {
+    it('should map months to options', () => {
+      const months = [12, 24];
+      const result = Selectors.selectLoanMonthsOptions.projector(months);
+      expect(result).toEqual([
+        { label: '12 Months', value: 12 },
+        { label: '24 Months', value: 24 },
+      ]);
+    });
+  });
+
+  describe('selectPurposeOptions', () => {
+    it('should map purposes to options', () => {
+      const result = Selectors.selectPurposeOptions.projector(initialState);
+      expect(result).toEqual([{ label: 'Home', value: 'home' }]);
+    });
+
+    it('should handle null/empty purposes', () => {
+      const emptyState = { ...initialState, purposes: null } as any;
+      const result = Selectors.selectPurposeOptions.projector(emptyState);
+      expect(result).toEqual([]);
+    });
+  });
+
+  it('should select raw months', () => {
+    const result = Selectors.selectLoanMonths.projector(initialState);
+    expect(result).toEqual([12, 24]);
   });
 });
