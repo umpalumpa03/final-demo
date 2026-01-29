@@ -4,7 +4,11 @@ import { Observable } from 'rxjs';
 import { ILoan, LoanMonthsResponse } from '../models/loan.model';
 import { environment } from '../../../../../../environments/environment';
 import { LoanPurpose } from '../models/loan-request.model';
-import { PrepaymentOption } from '../models/prepayment.model';
+import {
+  IFullPrepaymentResponse,
+  IPrepaymentCalcResponse,
+  PrepaymentOption,
+} from '../models/prepayment.model';
 
 @Injectable()
 export class LoansService {
@@ -44,6 +48,30 @@ export class LoansService {
   public getPrepaymentOptions(): Observable<PrepaymentOption[]> {
     return this.http.get<PrepaymentOption[]>(
       `${this.loansApiUrl}/loan-prepayment-options`,
+    );
+  }
+
+  public calculatePartialPrepayment(
+    loanId: string,
+    amount: number,
+    option: string,
+  ): Observable<IPrepaymentCalcResponse> {
+    const params = new HttpParams()
+      .set('loanId', loanId)
+      .set('amount', amount.toString())
+      .set('option', option);
+
+    return this.http.get<IPrepaymentCalcResponse>(
+      `${this.loansApiUrl}/calculate-partial-prepayment`,
+      { params },
+    );
+  }
+
+  public calculateFullPrepayment(
+    loanId: string,
+  ): Observable<IFullPrepaymentResponse> {
+    return this.http.get<IFullPrepaymentResponse>(
+      `${this.loansApiUrl}/calculate-full-prepayment/{loanId}?loanId=${loanId}`,
     );
   }
 }

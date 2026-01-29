@@ -11,24 +11,16 @@
         <h4 class="prepayment-step__section-title">Prepayment Options</h4>
 
         <div class="prepayment-step__form-grid">
-            <lib-select [config]="{ label: 'Prepayment Type *', height: '3.6rem', placeholder: 'Select type' }"
-                [options]="(typeOptions$ | async) ?? []" formControlName="type">
+            <lib-select [config]="config.typeSelect" [options]="(typeOptions$ | async) ?? []" formControlName="type">
             </lib-select>
 
-            <lib-text-input type="number" [config]="{ 
-                    label: 'Prepayment Amount *', 
-                    placeholder: '500', 
-                    prefixIcon: './images/svg/feature-loans/dollar.svg'
-                }" formControlName="amount">
+            <lib-text-input type="number" [config]="config.amountInput" formControlName="amount">
             </lib-text-input>
         </div>
 
         <div class="prepayment-step__radios">
-            <lib-radios [config]="{ 
-                    label: 'Calculation Option *', 
-                    hasBorder: true,
-                    layout: 'column'
-                }" [options]="calculationOptions" formControlName="calculationOption">
+            <lib-radios [config]="config.calculationRadios" [options]="calculationOptions"
+                formControlName="calculationOption">
             </lib-radios>
         </div>
     </form>
