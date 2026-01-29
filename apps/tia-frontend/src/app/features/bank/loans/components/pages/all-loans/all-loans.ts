@@ -96,7 +96,7 @@ export class AllLoans implements OnInit {
   }
 
   public onFinalPay(): void {
-    console.log('Payment Triggered');
+    // console.log('Payment Triggered');
     this.closeModals();
   }
 
