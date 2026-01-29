@@ -14,8 +14,6 @@ import { TransactionService } from '@tia/shared/services/transactions-service/tr
 import { LoanCreateEffects } from '../store/loans/loans.effects';
 import { loansFeature } from '../store/loans/loans.reducer';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
-import { accountsReducer } from '../store/products/accounts/accounts.reducer';
-import { AccountsEffects } from '../store/products/accounts/accounts.effects';
 export const bankRoutes: Routes = [
   {
     path: 'bank',
@@ -28,8 +26,6 @@ export const bankRoutes: Routes = [
         name: TRANSACTION_FEATURE_KEY,
         reducer: transactionReducer,
       }),
-      provideState({ name: 'accounts', reducer: accountsReducer }),
-      provideEffects(AccountsEffects),
     ],
     children: [
       {
@@ -46,11 +42,6 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'products',
-        providers: [
-           provideState(account),
-          provideEffects(LoanCreateEffects),
-
-        ],
         loadChildren: () =>
           import('../features/bank/products/products.routes').then(
             (c) => c.productsRoutes,
