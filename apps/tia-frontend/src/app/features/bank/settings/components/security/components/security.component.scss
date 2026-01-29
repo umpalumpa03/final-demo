@@ -17,7 +17,7 @@
     height: 4.8rem;
     flex-shrink: 0;
     @include flex-center();
-    background-color: var(--color-accent);
+    background-color: var(--color-secondary);
     border-radius: 0.8rem;
 
     img {
@@ -48,6 +48,24 @@
   &__form {
     @include display-flex(column);
     gap: 1.6rem;
+  }
+
+  &__error {
+    @include font-arimo(400, 1.4rem, 2rem);
+    color: var(--color-error);
+    padding: 1.2rem;
+    background-color: var(--color-error-bg);
+    border-radius: 0.8rem;
+    border: 1px solid var(--color-error);
+  }
+
+  &__success {
+    @include font-arimo(400, 1.4rem, 2rem);
+    color: var(--color-success);
+    padding: 1.2rem;
+    background-color: var(--color-success-bg);
+    border-radius: 0.8rem;
+    border: 1px solid var(--color-success);
   }
 
   &__field {
