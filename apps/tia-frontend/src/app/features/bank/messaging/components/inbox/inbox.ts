@@ -24,7 +24,7 @@ export class Inbox implements OnInit {
     this.messagingStore.loadMails('inbox');
   }
 
-  markAsRead(mailId: number) {
+  public markAsRead(mailId: number): void {
     this.messagingStore.markMailasRead(mailId);
   }
 }

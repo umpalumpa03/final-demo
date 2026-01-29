@@ -16,9 +16,9 @@ describe('BankHeaderContainer', () => {
       getNotifications: vi.fn(() => of({ items: [] })),
     };
     mockInbox = {
-      fetchInboxCount: vi.fn(), // No HTTP call, just a stub
-      inboxCount: vi.fn(() => 12), // Signal mock
-      getInboxCount: vi.fn(() => of({ count: 12 })), // <-- Add this if used anywhere
+      fetchInboxCount: vi.fn(), 
+      inboxCount: vi.fn(() => 12), 
+      getInboxCount: vi.fn(() => of({ count: 12 })), 
     };
 
     TestBed.configureTestingModule({
