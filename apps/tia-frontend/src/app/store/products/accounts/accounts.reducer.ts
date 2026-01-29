@@ -51,19 +51,27 @@ export const accountsFeature = createFeature({
       ...state,
       isCreateModalOpen: false,
     })),
-    on(AccountsActions.updateFriendlyName, (state) => ({
-      ...state,
-      isUpdatingFriendlyName: true,
-      updateFriendlyNameError: null,
-    })),
-    on(AccountsActions.updateFriendlyNameSuccess, (state, { account }) => ({
-      ...state,
-      accounts: state.accounts.map((acc) =>
-        acc.id === account.id ? account : acc,
-      ),
-      isUpdatingFriendlyName: false,
-      updateFriendlyNameError: null,
-    })),
+    on(
+      AccountsActions.updateFriendlyName,
+      (state, { accountId, friendlyName }) => ({
+        ...state,
+        accounts: state.accounts.map((acc) =>
+          acc.id === accountId ? { ...acc, friendlyName } : acc,
+        ),
+        isUpdatingFriendlyName: true,
+        updateFriendlyNameError: null,
+      }),
+    ),
+    on(AccountsActions.updateFriendlyNameSuccess, (state, { account }) => {
+      return {
+        ...state,
+        accounts: account?.id
+          ? state.accounts.map((acc) => (acc.id === account.id ? account : acc))
+          : state.accounts,
+        isUpdatingFriendlyName: false,
+        updateFriendlyNameError: null,
+      };
+    }),
     on(AccountsActions.updateFriendlyNameFailure, (state, { error }) => ({
       ...state,
       isUpdatingFriendlyName: false,

@@ -46,12 +46,14 @@
       <app-scroll-area
         [direction]="'horizontal'"
         [height]="'42rem'"
-        [scrollbar]="'visible'"
+        [scrollbar]="'hidden'"
       >
         <div class="accounts-list__section-scroll-grid">
           @for (account of getAccountsBySection(section); track account.id) {
           <app-account-card
             [account]="account"
+            [isRenaming]="isRenamingAccount()"
+            [renameError]="renameError()"
             (transfer)="handleTransfer($event)"
             (rename)="handleRenameClick($event)"
           />
@@ -64,6 +66,8 @@
       @for (account of getAccountsBySection(section); track account.id) {
       <app-account-card
         [account]="account"
+        [isRenaming]="isRenamingAccount()"
+        [renameError]="renameError()"
         (transfer)="handleTransfer($event)"
         (rename)="handleRenameClick($event)"
       />
@@ -72,13 +76,4 @@
     }
   </section>
   } }
-
-  <app-rename-account-modal
-    [isOpen]="renameModalOpen()"
-    [currentName]="getSelectedAccountName()"
-    [isLoading]="isRenamingAccount()"
-    [error]="renameError()"
-    (closed)="handleRenameModalClose()"
-    (renamed)="handleRenameSubmit($event)"
-  />
 </div>

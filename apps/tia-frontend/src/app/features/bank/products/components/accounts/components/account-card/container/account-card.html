@@ -3,6 +3,8 @@
   [accountIcon]="accountIcon()"
   [formattedBalance]="formattedBalance()"
   [formattedDate]="formattedDate()"
+  [isRenaming]="isRenaming()"
+  [renameError]="renameError()"
   (transfer)="handleTransfer()"
-  (rename)="handleRename()"
+  (rename)="handleRename($event)"
 />
