@@ -62,7 +62,8 @@ export class ForgotPasswordEmail {
       .forgotPasswordRequest(email)
       .pipe(finalize(() => this.isSubmitting.set(false)))
       .subscribe({
-        next: () => {
+        next: (response) => {
+          this.authService.setChellangeId(response.challengeId);
           this.router.navigate([Routes.OTP_FORGOT_PASSWORD]);
         },
         error: () => {

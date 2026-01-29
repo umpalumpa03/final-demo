@@ -5,6 +5,7 @@ import { vi } from 'vitest';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ResetPassword } from './reset-password';
 import { AuthService } from '../../../services/auth.service';
+import { TokenService } from '../../../services/token.service';
 
 describe('ResetPassword', () => {
   let component: ResetPassword;
@@ -21,6 +22,12 @@ describe('ResetPassword', () => {
           provide: AuthService,
           useValue: {
             createNewPassword: vi.fn().mockReturnValue(of({})),
+          },
+        },
+        {
+          provide: TokenService,
+          useValue: {
+            accessToken: 'forgot-token',
           },
         },
       ],
@@ -60,7 +67,11 @@ describe('ResetPassword', () => {
     await component.submit();
 
     expect(authService.createNewPassword).toHaveBeenCalledWith('Aa1!aaaa');
-    expect(router.navigate).toHaveBeenCalledWith(['/auth/success']);
+    expect(router.navigate).toHaveBeenCalledWith([
+      '/auth',
+      'forgot-password',
+      'success',
+    ]);
     expect(component.submitError()).toBeNull();
     expect(component.isSubmitting()).toBe(false);
   });

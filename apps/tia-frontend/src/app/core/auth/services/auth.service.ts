@@ -41,10 +41,11 @@ export class AuthService {
 
   public setChellangeId(id: string) {
     this.challengeId = id;
+    this.tokenService.setChallengeId(id);
   }
 
   public getChallengeId() {
-    return this.challengeId;
+    return this.challengeId || this.tokenService.challengeId || '';
   }
 
   public loginPostRequest(user: ILoginRequest): Observable<IloginResponse> {
@@ -201,10 +202,18 @@ export class AuthService {
       challengeId: this.getChallengeId(),
       code,
     };
-    return this.http.post<ForgotPasswordVerifyResponse>(
-      `${environment.apiUrl}/auth/forgot-password/verify`,
-      payload,
-    );
+    return this.http
+      .post<ForgotPasswordVerifyResponse>(
+        `${environment.apiUrl}/auth/forgot-password/verify`,
+        payload,
+      )
+      .pipe(
+        tap((res) => {
+          if (res.access_token) {
+            this.tokenService.setAccessToken(res.access_token);
+          }
+        }),
+      );
   }
 
   public createNewPassword(

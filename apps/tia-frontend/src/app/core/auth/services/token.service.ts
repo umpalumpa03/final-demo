@@ -19,6 +19,10 @@ export class TokenService {
     localStorage.setItem(TokenKey.SIGNUP, token);
   }
 
+  public setChallengeId(challengeId: string): void {
+    localStorage.setItem(TokenKey.CHALLENGE, challengeId);
+  }
+
   public clearAuthToken(): void {
     localStorage.removeItem(TokenKey.ACCESS);
     localStorage.removeItem(TokenKey.REFRESH);
@@ -59,5 +63,9 @@ export class TokenService {
 
   public get getSignUpToken(): string | null {
     return localStorage.getItem(TokenKey.SIGNUP);
+  }
+
+  public get challengeId(): string | null {
+    return localStorage.getItem(TokenKey.CHALLENGE);
   }
 }

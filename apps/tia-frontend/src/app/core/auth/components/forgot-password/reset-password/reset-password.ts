@@ -15,7 +15,9 @@ import { finalize } from 'rxjs';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AuthService } from '../../../services/auth.service';
+import { TokenService } from '../../../services/token.service';
 import { passwordValidator } from '../../../utils/validators/form-validations';
+import { forgotPasswordSegments } from '../forgot-password.routes';
 
 @Component({
   selector: 'app-reset-password',
@@ -28,11 +30,11 @@ export class ResetPassword implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
+  private readonly tokenService = inject(TokenService);
   private readonly destroyRef = inject(DestroyRef);
 
   public readonly isSubmitting = signal(false);
   public readonly submitError = signal<string | null>(null);
-  public readonly passwordValue = signal('');
   public readonly confirmErrorMessage = signal('');
 
   public readonly form = this.fb.nonNullable.group({
@@ -53,52 +55,16 @@ export class ResetPassword implements OnInit {
     errorMessage: this.confirmErrorMessage() || undefined,
   }));
 
-  public readonly requirements = computed(() => {
-    const value = this.passwordValue() || '';
-    return {
-      length: value.length >= 8,
-      upper: /[A-Z]/.test(value),
-      lower: /[a-z]/.test(value),
-      number: /[0-9]/.test(value),
-      special: /[!@#$%^&*(),.?":{}|<>]/.test(value),
-    };
-  });
-
-  public readonly strengthCount = computed(() => {
-    const reqs = this.requirements();
-    return Object.values(reqs).filter(Boolean).length;
-  });
-
-  public readonly strengthLabel = computed(() => {
-    const count = this.strengthCount();
-    if (count <= 2) return 'Weak';
-    if (count <= 4) return 'Good';
-    return 'Strong';
-  });
-
-  public readonly strengthPercent = computed(() => {
-    const count = this.strengthCount();
-    return Math.min(100, Math.round((count / 5) * 100));
-  });
-
-  public readonly strengthClass = computed(() => {
-    const label = this.strengthLabel();
-    return label.toLowerCase();
-  });
-
   constructor() {
     this.form.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.updateConfirmMismatch());
-    this.form.controls.password.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((value) => this.passwordValue.set(value || ''));
   }
 
-  async ngOnInit(): Promise<void> {
-    // if (!this.authService.forgotPasswordAccessToken()) {
-    //   await this.router.navigate(['/auth', ...forgotPasswordSegments.otp]);
-    // }
+  ngOnInit(): void {
+    if (!this.tokenService.accessToken) {
+      this.router.navigate(['/auth', ...forgotPasswordSegments.otp]);
+    }
   }
 
   private updateConfirmMismatch(): void {
@@ -132,11 +98,6 @@ export class ResetPassword implements OnInit {
 
     if (this.form.invalid) return;
 
-    // if (!this.authService.forgotPasswordAccessToken()) {
-    //   await this.router.navigate(['/auth', ...forgotPasswordSegments.otp]);
-    //   return;
-    // }
-
     this.isSubmitting.set(true);
     const password = this.form.controls.password.value;
     this.authService
@@ -144,7 +105,7 @@ export class ResetPassword implements OnInit {
       .pipe(finalize(() => this.isSubmitting.set(false)))
       .subscribe({
         next: () => {
-          this.router.navigate(['/auth/success']);
+          this.router.navigate(['/auth', ...forgotPasswordSegments.success]);
         },
         error: (error) => {
           const httpError = error as HttpErrorResponse;

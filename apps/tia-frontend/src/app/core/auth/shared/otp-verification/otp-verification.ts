@@ -42,6 +42,7 @@ export class OtpVerification {
       >
     >();
   public isSubmitting = signal(false);
+  public submitError = signal<string | null>(null);
 
   public submitResult = output<{ statusCode: number; message: string }>();
 
