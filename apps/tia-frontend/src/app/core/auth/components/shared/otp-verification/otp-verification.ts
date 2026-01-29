@@ -16,18 +16,16 @@ import {
   catchError,
   EMPTY,
   take,
-  finalize,
   tap,
   interval,
   Subject,
   takeWhile,
   takeUntil,
 } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { forgotPasswordSegments } from 'apps/tia-frontend/src/app/core/auth/components/forgot-password/forgot-password.routes';
 import { OtpConfig } from '@tia/shared/lib/forms/models/otp.model';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Otp } from '@tia/shared/lib/forms/otp/otp';
 import { AuthFromType } from '../../../models/auth.models';
 
@@ -47,7 +45,7 @@ import { AuthFromType } from '../../../models/auth.models';
 })
 export class OtpVerification implements OnDestroy {
   // gavitanot
-  private readonly MAX_TIME = 60;
+  private readonly MAX_TIME = 3;
   private readonly CIRCUMFERENCE = 282.7;
 
   private fb = inject(FormBuilder);
@@ -101,17 +99,7 @@ export class OtpVerification implements OnDestroy {
     this.startTimer();
   }
 
-  ///ბექააა
   public isLoading = computed(() => this.authService.isLoginLoading());
-
-  public verifyOtp(): void {
-    this.authService
-      .verifyMfa({
-        ...this.otpForm.getRawValue(),
-        challengeId: this.authService.getChallengeId(),
-      })
-      .subscribe();
-  }
 
   // Mock Version got code length:4, In task: 6
   public otpForm = this.fb.nonNullable.group({
@@ -122,22 +110,41 @@ export class OtpVerification implements OnDestroy {
   });
 
   public submit(): void {
-    // disable when timeout
+    // this.otpError.set(null);
+    // this.otpForm.markAllAsTouched();
+
+    // const otpValue = this.otpForm.controls.code.value;
+
+    // if (!otpValue) {
+    //   this.otpError.set('OTP is required');
+    //   return;
+    // }
+
     const context = this.from();
 
-    if (context === 'sign-in') {
-      this.verifyOtp();
-      return;
-    }
+    switch (context) {
+      case 'sign-in':
+        this.verifyOtp();
+        break;
 
-    else if(context === 'forgot-password') {
-      this.forgotPasswordVerification();
-      return;
-    }
+      case 'forgot-password':
+        this.forgotPasswordVerification();
+        break;
 
-    else {
-      this.registerVerification();
+      case 'sign-up':
+      default:
+        this.registerVerification();
+        break;
     }
+  }
+
+  public verifyOtp(): void {
+    this.authService
+      .verifyMfa({
+        ...this.otpForm.getRawValue(),
+        challengeId: this.authService.getChallengeId(),
+      })
+      .subscribe();
   }
 
   private registerVerification(): void {
@@ -184,47 +191,6 @@ export class OtpVerification implements OnDestroy {
       )
       .subscribe();
   }
-
-  /// nika
-  // submitReset(): void {
-  //   this.otpError.set(null);
-  //   this.otpForm.markAllAsTouched();
-
-  //   const otpValue = this.otpForm.controls.otp.value;
-  //   if (!otpValue) {
-  //     this.otpError.set('OTP is required');
-  //     return;
-  //   }
-
-  //   if (otpValue.length < 4) {
-  //     this.otpError.set('OTP must be 4 digits');
-  //     return;
-  //   }
-
-  //   if (this.otpForm.invalid) {
-  //     this.otpError.set('OTP must be 4 digits');
-  //     return;
-  //   }
-
-  //   this.isSubmitting.set(true);
-  //   this.authService
-  //     .verifyForgotPasswordOtp(otpValue)
-  //     .pipe(finalize(() => this.isSubmitting.set(false)))
-  //     .subscribe({
-  //       next: () => {
-  //         this.router.navigate(['/auth/reset-password']);
-  //       },
-  //       error: (error) => {
-  //         const httpError = error as HttpErrorResponse;
-  //         if (httpError?.status === 400) {
-  //           this.otpError.set('Invalid OTP code');
-  //         } else {
-  //           this.otpError.set('Unable to verify OTP. Please try again.');
-  //         }
-  //       },
-  //     });
-  // }
-  ///
 
   public resendVerification(): void {
     if (this.isResendDisabled()) return;

@@ -1,11 +1,4 @@
 @if(!isLoading()){
-  <!-- <form class="sign-in" [formGroup]="otpForm" (ngSubmit)="verifyOtp()">
-    <p>Verify Otp</p>
-    <lib-text-input formControlName="code"></lib-text-input>
-    <app-button type="submit">Verify - ეს დალოგინებისას</app-button>
-  </form> -->
-
-
 <div class="timer-container">
   <svg class="timer-svg" viewBox="0 0 100 100">
     <circle class="timer-svg__bg" cx="50" cy="50" r="45"></circle>
@@ -32,39 +25,11 @@
     }
   </div>
 </div>
-@switch (from()) { @case ('sign-in') {
 
-} @case ('sign-up') {
-<!-- <form
-  class="sign-in"
-  [formGroup]="otpForm"
-  (ngSubmit)="submit()"
->
-  <lib-text-input formControlName="verificationCode"></lib-text-input>
-  @if (errorMessage()) {
-  <h2>ERROR: {{errorMessage()}}</h2>
-  }
-  <p>
-    Didn't receive the code?
-    <span
-      class="otp-verification__resend"
-      (click)="resendVerification()"
-      [class.otp-verification__resend--disabled]="isResendDisabled()"
-    >
-      Resend
-    </span>
-  </p>
-
-  <app-button type="submit">Verify - ეს რეგისტრაციისას</app-button>
-
-  <app-button type="button" variant="outline" (click)="goBack()"
-    >Change Phone Number</app-button
-  >
-</form> -->
 <form class="auth-form" [formGroup]="otpForm" (ngSubmit)="submit()">
   <div class="otp-field">
-    <label class="otp-label" [style.color]="'#333'">Enter OTP Code</label>
-    <lib-otp formControlName="otp" [config]="otpConfig"></lib-otp>
+    <label class="otp-label">Enter OTP Code</label>
+    <lib-otp formControlName="code" [config]="otpConfig"></lib-otp>
   </div>
 
   <div class="auth-form__actions">
@@ -74,30 +39,12 @@
       [fullWidth]="true"
       [isLoading]="isSubmitting()"
     >
-      Verify OTP
+      Verify
     </app-button>
   </div>
 </form>
-} @default {
-<!-- <form class="auth-form" [formGroup]="form" (ngSubmit)="submitReset()">
-  <div class="otp-field">
-    <label class="otp-label" [style.color]="'#333'">Enter OTP Code</label>
-    <lib-otp formControlName="otp" [config]="otpConfig"></lib-otp>
-  </div>
 
-  <div class="auth-form__actions">
-    <app-button
-      type="submit"
-      size="large"
-      [fullWidth]="true"
-      [isLoading]="isSubmitting()"
-    >
-      Verify OTP
-    </app-button>
-  </div>
-</form> -->
-} } }
- @else {
+} @else {
 <div class="sign-in sign-in-loader">
   <app-spinner size="4rem"></app-spinner>
 </div>
