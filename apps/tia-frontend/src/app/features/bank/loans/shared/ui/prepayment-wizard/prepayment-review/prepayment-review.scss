@@ -1,0 +1,88 @@
+@use "../../../../../../../shared/styles/palette" as *;
+@use "../../../../../../../shared/styles/mixins" as *;
+@use "../../../../../../../shared/styles/themes" as *;
+
+.review-step {
+    @include display-flex(column);
+    height: 100%;
+    gap: 1.6rem;
+
+    &__header {
+        @include flex-center(row, space-between, flex-start);
+
+        &-text {
+            .icon {
+                @include flex-center($justify: flex-start);
+                gap: 0.8rem;
+
+                img {
+                    @include svg-icon();
+                }
+
+                h3 {
+                    margin: 0 0 0.4rem;
+                    color: var(--color-fg);
+                    @include font-inter(600, 2rem);
+                }
+            }
+        }
+    }
+
+    &__subtitle {
+        margin: 0;
+        color: $blue-600;
+        @include font-inter(400, 1.4rem);
+    }
+
+    &__body {
+        flex: 1;
+        @include display-flex(column);
+        gap: 2.4rem;
+        overflow-y: auto;
+    }
+
+    &__section {
+        @include display-flex(column);
+        gap: 1.6rem;
+
+        &-title {
+            color: $blue-1000;
+            @include font-inter(600, 1.6rem);
+            margin: 0;
+        }
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2.4rem 1.6rem;
+
+        @media (max-width: 480px) {
+            grid-template-columns: 1fr;
+        }
+
+        &-item {
+            @include display-flex(column);
+            gap: 0.4rem;
+            background-color: var(--color-bg);
+            border: 1px solid $blue-200;
+            border-radius: 1rem;
+            padding: 1.2rem;
+        }
+    }
+
+    &__label {
+        @include font-inter(500, 1.4rem);
+        color: $gray-700;
+    }
+
+    &__value {
+        @include font-inter(700, 1.6rem);
+        color: $blue-1000;
+    }
+
+    &__footer {
+        @include flex-center($justify: flex-end, $align: flex-start);
+        gap: 0.8rem;
+    }
+}

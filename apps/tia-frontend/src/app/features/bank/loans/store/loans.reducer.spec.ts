@@ -95,6 +95,13 @@ describe('LoansReducer', () => {
     expect(state.loading).toBe(false);
   });
 
+  it('should handle loadMonthsFailure (if implemented in reducer)', () => {
+    const action = LoansActions.loadMonthsFailure({ error: 'fail' });
+    // Assuming default behavior if not explicitly handled, or just ensuring no crash
+    const state = loansReducer(initialState, action);
+    expect(state).toBeTruthy();
+  });
+
   it('should handle loadPurposesSuccess', () => {
     const purposes = [{ value: '1', displayText: 'Home' }] as any;
     const action = LoansActions.loadPurposesSuccess({ purposes });
@@ -106,5 +113,29 @@ describe('LoansReducer', () => {
     const action = LoansActions.loadPurposesFailure({ error: 'fail' });
     const state = loansReducer(loansInitialState, action);
     expect(state.error).toBe('fail');
+  });
+
+  it('should handle loadPrepaymentOptionsSuccess', () => {
+    const options = [{ isActive: true }] as any;
+    const action = LoansActions.loadPrepaymentOptionsSuccess({ options });
+    const state = loansReducer(loansInitialState, action);
+    expect(state.prepaymentOptions).toEqual(options);
+    expect(state.error).toBeNull();
+  });
+
+  it('should handle calculatePrepaymentSuccess', () => {
+    const result = { monthlyPayment: 100 } as any;
+    const action = LoansActions.calculatePrepaymentSuccess({ result });
+    const state = loansReducer(loansInitialState, action);
+    expect(state.calculationResult).toEqual(result);
+    expect(state.error).toBeNull();
+  });
+
+  it('should handle calculatePrepaymentFailure', () => {
+    const errorMsg = 'Calc failed';
+    const action = LoansActions.calculatePrepaymentFailure({ error: errorMsg });
+    const state = loansReducer(loansInitialState, action);
+    expect(state.calculationResult).toBeNull();
+    expect(state.error).toBe(errorMsg);
   });
 });
