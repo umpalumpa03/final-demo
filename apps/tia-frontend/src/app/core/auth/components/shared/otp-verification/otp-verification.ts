@@ -8,7 +8,6 @@ import {
   effect,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 
 import { AuthService } from '../../../services/auth.service';
@@ -27,13 +26,11 @@ import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { forgotPasswordSegments } from 'apps/tia-frontend/src/app/core/auth/components/forgot-password/forgot-password.routes';
 import { OtpConfig } from '@tia/shared/lib/forms/models/otp.model';
 import { Otp } from '@tia/shared/lib/forms/otp/otp';
-import { AuthFromType } from '../../../models/auth.models';
 
 @Component({
   selector: 'app-otp-verification',
   imports: [
     ButtonComponent,
-    TextInput,
     ReactiveFormsModule,
     ButtonComponent,
     Spinner,
@@ -72,7 +69,7 @@ export class OtpVerification implements OnDestroy {
 
   public errorMessage = signal<string>('');
 
-  public from = signal<string>('otp-sign-up');
+  public from = signal<string>('verify-otp-register');
 
   public strokeOffset = computed(() => {
     const progress = this.countdown() / this.MAX_TIME;
@@ -126,15 +123,15 @@ export class OtpVerification implements OnDestroy {
     const context = this.from();
 
     switch (context) {
-      case 'otp-sign-in':
+      case 'verify-otp':
         this.verifyOtp();
         break;
 
-      case 'otp-forgot-password':
+      case 'verify-otp-reset':
         this.forgotPasswordVerification();
         break;
 
-      case 'otp-sign-up':
+      case 'verify-otp-register':
       default:
         this.registerVerification();
         break;
@@ -162,7 +159,7 @@ export class OtpVerification implements OnDestroy {
       .verifyOtpCode(code)
       .pipe(
         tap((res) => {
-          this.router.navigate(['/auth/success']);
+          this.router.navigate(['/auth/signup-success']);
         }),
         catchError((err) => {
           const messages = err.error?.message;
