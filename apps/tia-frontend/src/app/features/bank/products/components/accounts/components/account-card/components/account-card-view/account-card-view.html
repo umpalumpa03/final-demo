@@ -2,28 +2,23 @@
   <div class="account-card">
     <div class="account-card__header">
       <div class="account-card__header-icon">
-        <img
-          [src]="getAccountIcon(account().type)"
-          [alt]="account().type + ' account icon'"
-        />
+        <img [src]="accountIcon()" [alt]="account().type + ' account icon'" />
       </div>
       <div class="account-card__header-info">
         <h3 class="account-card__header-info-name">
-          {{ account().accountName }}
+          {{ account().friendlyName }}
         </h3>
-        @if (account().isActive) {
+        @if (account().status === 'active') {
         <span class="account-card__header-info-badge">active</span>
         }
-        <p class="account-card__header-info-number">
-          {{ account().accountNumber }}
-        </p>
+        <p class="account-card__header-info-number">{{ account().iban }}</p>
       </div>
     </div>
 
     <div class="account-card__balance">
       <p class="account-card__balance-label">Available Balance</p>
       <h2 class="account-card__balance-amount">
-        {{ account().currency }} {{ formatCurrency(account().balance) }}
+        {{ account().currency }} {{ formattedBalance() }}
       </h2>
     </div>
 
@@ -37,7 +32,7 @@
       <div class="account-card__details-item">
         <span class="account-card__details-item-label">Created</span>
         <span class="account-card__details-item-value"
-          >{{ formatDate(account().createdAt) }}</span
+          >{{ formattedDate() }}</span
         >
       </div>
     </div>
