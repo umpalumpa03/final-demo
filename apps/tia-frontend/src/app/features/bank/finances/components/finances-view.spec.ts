@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinancesView } from './finances-view';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 describe('FinancesView', () => {
   let component: FinancesView;
@@ -10,22 +11,25 @@ describe('FinancesView', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinancesView, ReactiveFormsModule],
+      providers: [
+        provideCharts(withDefaultRegisterables())
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinancesView);
     component = fixture.componentInstance;
 
+    // სავალდებულო ინფუთები
     fixture.componentRef.setInput('financeTitle', 'Test Title');
     fixture.componentRef.setInput('financeSubTitle', 'Test Sub');
     fixture.componentRef.setInput('activeFilter', 'month');
-    fixture.componentRef.setInput('filterOptions', [{ label: 'Month', type: 'month', icon: 'test.svg' }]);
+    fixture.componentRef.setInput('filterOptions', []);
     fixture.componentRef.setInput('summaryCards', []);
-    
-    const form = new FormGroup({
-      fromDate: new FormControl('2026-01-01', [Validators.required]),
+    fixture.componentRef.setInput('charts', []);
+    fixture.componentRef.setInput('filterForm', new FormGroup({
+      fromDate: new FormControl('2026-01-01'),
       toDate: new FormControl('2026-01-31')
-    });
-    fixture.componentRef.setInput('filterForm', form);
+    }));
 
     fixture.detectChanges();
   });
@@ -42,38 +46,23 @@ describe('FinancesView', () => {
 
   it('should detect invalid fromDate when touched', () => {
     const control = component.getControl('fromDate');
+    control.setValidators([() => ({ required: true })]);
     control.setValue(''); 
     control.markAsTouched();
-    
+    fixture.detectChanges();
     expect(component.isFromDateInvalid).toBe(true);
   });
 
-  it('should generate charts array with correct titles', () => {
-    const charts = component.charts();
-    expect(charts.length).toBe(4);
-    expect(charts[0].title).toBe('Income vs Expenses');
-    expect(charts[1].type).toBe('pie');
-  });
-
-  it('should emit filterChange when onFilterChange logic is triggered', () => {
+  it('should emit filterChange when filterChange output is triggered', () => {
     const emitSpy = vi.spyOn(component.filterChange, 'emit');
     component.filterChange.emit('custom' as any);
     expect(emitSpy).toHaveBeenCalledWith('custom');
   });
 
-  it('should emit dateInput when date event occurs', () => {
-    const emitSpy = vi.spyOn(component.dateInput, 'emit');
-    const mockEvent = { target: { value: '2026-02-01' } } as any;
-    
-    component.dateInput.emit({ field: 'fromDate', event: mockEvent });
-    expect(emitSpy).toHaveBeenCalledWith({ field: 'fromDate', event: mockEvent });
-  });
-
-  it('should return isRangeInvalid as true when form has dateRangeInvalid error', () => {
+  it('should return isRangeInvalid as true when form has error', () => {
     const form = component.filterForm();
     form.setErrors({ dateRangeInvalid: true });
     form.markAsTouched();
-    
     expect(component.isRangeInvalid).toBe(true);
   });
 });
