@@ -2,10 +2,10 @@ import {
   PrintedData,
   TableRowCell,
 } from '@tia/shared/lib/tables/models/table.model';
-import { ITransactions  } from '../models/transactions.models';
+import { ITransactions } from '../../../../shared/models/transactions/transactions.models';
 
 export function convertTransactionData(
-  transaction: ITransactions ,
+  transaction: ITransactions,
 ): TableRowCell {
   const accDisplay =
     transaction.transactionType === 'debit'
@@ -38,6 +38,6 @@ export function convertTransactionData(
     transactionType: (['credit', 'debit'].includes(transaction.transactionType)
       ? transaction.transactionType
       : 'credit') as 'credit' | 'debit',
-    info: infoData, 
+    info: infoData,
   };
 }

@@ -8,9 +8,9 @@ import {
   TRANSACTION_FEATURE_KEY,
   transactionReducer,
 } from '../store/transactions/transactions.reducer';
-import { TransactionService } from '../features/bank/transactions/services/transactions-service/transaction-service';
 import { FinancesStore } from '../features/bank/finances/store/finances.store';
 import { FinancesService } from '../features/bank/finances/services/finances.service';
+import { TransactionService } from '@tia/shared/services/transactions-service/transaction-service';
 export const bankRoutes: Routes = [
   {
     path: 'bank',

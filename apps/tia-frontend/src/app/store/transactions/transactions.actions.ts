@@ -3,7 +3,7 @@ import {
   PaginatedResponse,
   TransactionFilter,
   ITransactions,
-} from '../../features/bank/transactions/models/transactions.models';
+} from '../../shared/models/transactions/transactions.models.js';
 
 export const TransactionActions = createActionGroup({
   source: 'Transactions Page',

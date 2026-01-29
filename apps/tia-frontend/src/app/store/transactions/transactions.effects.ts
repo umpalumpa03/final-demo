@@ -13,7 +13,7 @@ import {
 
 import { Store } from '@ngrx/store';
 import { selectFilters, selectNextCursor } from './transactions.selector';
-import { TransactionService } from '../../features/bank/transactions/services/transactions-service/transaction-service';
+import { TransactionService } from '@tia/shared/services/transactions-service/transaction-service';
 
 export const updateFiltersEffects = createEffect(
   (actions$ = inject(Actions)) => {
