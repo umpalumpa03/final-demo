@@ -1,0 +1,30 @@
+<div class="otp-step">
+    <header class="otp-step__header">
+        <div class="otp-step__header-text">
+            <div class="icon">
+                <img src="./images/svg/feature-loans/prepayment.svg" alt="OTP">
+                <h3 class="otp-step__title">Verify OTP</h3>
+            </div>
+            <p class="otp-step__subtitle">Enter the OTP sent to your registered mobile number</p>
+        </div>
+    </header>
+
+    <div class="otp-step__body">
+        <div class="otp-step__form" [formGroup]="form">
+            <h4 class="otp-step__section-title">Enter OTP</h4>
+
+            <lib-text-input formControlName="otp" [config]="inputConfig">
+            </lib-text-input>
+
+
+            <app-button variant="default" icon="./calculate.svg" (click)="onSubmit()" [isDisabled]="form.invalid">
+                Verify and Pay
+            </app-button>
+        </div>
+    </div>
+
+    <footer class="otp-step__footer">
+        <app-button variant="outline" (click)="cancel.emit()">Cancel</app-button>
+
+    </footer>
+</div>

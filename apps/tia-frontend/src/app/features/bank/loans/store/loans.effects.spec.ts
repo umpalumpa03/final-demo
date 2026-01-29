@@ -25,6 +25,8 @@ describe('LoansEffects', () => {
       getPrepaymentOptions: vi.fn(),
       calculateFullPrepayment: vi.fn(),
       calculatePartialPrepayment: vi.fn(),
+      initiatePrepayment: vi.fn(),
+      verifyPrepayment: vi.fn(),
     };
 
     TestBed.configureTestingModule({
@@ -216,6 +218,54 @@ describe('LoansEffects', () => {
         100,
         'reduce_term',
       );
+    });
+  });
+
+  it('should return initiatePrepaymentSuccess with challengeId', () => {
+    const payload = { loanId: '1' } as any;
+    const action = LoansActions.initiatePrepayment({ payload });
+    const outcome = LoansActions.initiatePrepaymentSuccess({
+      challengeId: '123',
+    });
+
+    actions$ = of(action);
+    loansServiceMock.initiatePrepayment.mockReturnValue(
+      of({ verify: { challengeId: '123' } }),
+    );
+
+    effects.initiatePrepayment$.subscribe((res) => {
+      expect(res).toEqual(outcome);
+    });
+  });
+
+  it('should return initiatePrepaymentFailure if challengeId missing', () => {
+    const payload = { loanId: '1' } as any;
+    const action = LoansActions.initiatePrepayment({ payload });
+    const outcome = LoansActions.initiatePrepaymentFailure({
+      error: 'No challenge ID returned',
+    });
+
+    actions$ = of(action);
+    loansServiceMock.initiatePrepayment.mockReturnValue(of({}));
+
+    effects.initiatePrepayment$.subscribe((res) => {
+      expect(res).toEqual(outcome);
+    });
+  });
+
+  it('should return verifyPrepaymentSuccess and loadLoans on success', () => {
+    const payload = { challengeId: '123', code: '0000' };
+    const action = LoansActions.verifyPrepayment({ payload });
+
+    actions$ = of(action);
+    loansServiceMock.verifyPrepayment.mockReturnValue(of({}));
+
+    let count = 0;
+    effects.verifyPrepayment$.subscribe((res) => {
+      count++;
+      if (count === 1)
+        expect(res).toEqual(LoansActions.verifyPrepaymentSuccess());
+      if (count === 2) expect(res).toEqual(LoansActions.loadLoans());
     });
   });
 });
