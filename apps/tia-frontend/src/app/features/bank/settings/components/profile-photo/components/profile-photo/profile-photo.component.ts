@@ -12,6 +12,9 @@ import { DefaultAvatarResponse } from '../../../../../../../store/profile-photo/
 import { environment } from '../../../../../../../../environments/environment';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
+import { AlertType } from '../../shared/models/profile-photo.models';
+
+
 
 @Component({
   selector: 'app-profile-photo',
@@ -26,7 +29,7 @@ export class ProfilePhotoComponent {
   public readonly defaultAvatars = input<DefaultAvatarResponse[]>([]);
   public readonly defaultAvatarsLoading = input<boolean>(false);
   public readonly selectedAvatarId = input<string | null>(null);
-  public readonly alertKind = input<'success' | 'warning' | null>(null);
+  public readonly alertType = input<AlertType | null>(null);
   public readonly alertMessage = input<string>('');
   public readonly fileSelected = output<File>();
   public readonly removePhoto = output<void>();

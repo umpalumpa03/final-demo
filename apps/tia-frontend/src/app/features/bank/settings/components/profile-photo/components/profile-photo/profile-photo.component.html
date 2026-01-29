@@ -1,9 +1,9 @@
 <div class="profile-photo">
-  @if (alertKind()) {
+  @if (alertType()) {
   <div class="profile-photo__alert-container">
     <app-alert-types-with-icons
       class="profile-photo__alert"
-      [alertType]="alertKind() === 'success' ? 'success' : 'warning'"
+      [alertType]="alertType()!"
       [alertMessage]="alertMessage()"
     ></app-alert-types-with-icons>
   </div>

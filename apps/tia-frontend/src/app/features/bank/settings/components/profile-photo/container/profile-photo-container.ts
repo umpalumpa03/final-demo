@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, computed, effect, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ProfilePhotoComponent } from '../components/profile-photo/profile-photo.component';
+import { AlertType } from '../shared/models/profile-photo.models';
 import { ProfilePhotoActions } from '../../../../../../store/profile-photo/profile-photo.actions';
 import {
   selectDefaultAvatars,
@@ -28,8 +29,9 @@ export class ProfilePhotoContainer implements OnDestroy {
   public readonly currentAvatarUrl = this.store.selectSignal(selectCurrentAvatarUrl);
   public readonly uploadedFileName = this.store.selectSignal(selectUploadedFileName);
 
-  public readonly alertKind = signal<'success' | 'warning' | null>(null);
+  public readonly alertKind = signal<AlertType | null>(null);
   public readonly alertMessage = signal<string>('');
+  public readonly alertType = computed<AlertType | null>(() => this.alertKind());
   
   private uploadedFile: File | null = null;
   private objectUrl: string | null = null;
@@ -58,7 +60,7 @@ public constructor() {
     }
   }
 
-  private showAlert(kind: 'success' | 'warning', message: string, autoHideMs = 3500): void {
+  private showAlert(kind: AlertType, message: string, autoHideMs = 3500): void {
     if (this.alertTimeoutId) {
       clearTimeout(this.alertTimeoutId);
       this.alertTimeoutId = null;
