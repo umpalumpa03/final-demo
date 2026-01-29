@@ -1,13 +1,23 @@
 <div class="profile-photo">
+  @if (alertKind()) {
+  <div class="profile-photo__alert-container">
+    <app-alert-types-with-icons
+      class="profile-photo__alert"
+      [alertType]="alertKind() === 'success' ? 'success' : 'warning'"
+      [alertMessage]="alertMessage()"
+    ></app-alert-types-with-icons>
+  </div>
+  }
+
   <app-basic-card
-    title="Profile Photo"
-    subtitle="Upload a new profile photo or choose a default avatar"
+    title="{{ 'settings.profile-photo.title' | translate }}"
+    subtitle="{{ 'settings.profile-photo.subtitle' | translate }}"
     [hasFooter]="true"
     [maxWidth]="'100%'"
     [width]="'100%'"
   >
     <div class="profile-photo__upload-section">
-      <h3 class="profile-photo__section-title">Upload Custom Photo</h3>
+      <h3 class="profile-photo__section-title">{{ 'settings.profile-photo.uploadCustomPhoto' | translate }}</h3>
       <div class="profile-photo__upload-content">
         <div class="profile-photo__avatar-wrapper">
           @if (photoUrl()) {
@@ -31,13 +41,19 @@
           icon="white-download.svg"
           (click)="onFileButtonClick()"
         >
-          Choose File
+          {{ 'settings.profile-photo.chooseFile' | translate }}
         </app-button>
       </div>
     </div>
 
     <div class="profile-photo__defaults-section">
-      <h3 class="profile-photo__section-title">Or Choose a Default Avatar</h3>
+      <h3 class="profile-photo__section-title">{{ 'settings.profile-photo.defaultAvatar' | translate }}</h3>
+      @if (defaultAvatarsLoading()) {
+      <div class="profile-photo__defaults-loading">
+        <app-spinner size="6rem"></app-spinner>
+        <span>{{ 'settings.profile-photo.loadingDefaultAvatars' | translate }}</span>
+      </div>
+      } @else {
       <div class="profile-photo__defaults-list">
         @for (avatar of defaultAvatars(); track avatar.id) {
         <button
@@ -56,6 +72,7 @@
         </button>
         }
       </div>
+      }
     </div>
 
     <div card-footer class="profile-photo__footer">
@@ -65,14 +82,14 @@
         icon="trash-icon.svg"
         (click)="removePhoto.emit()"
       >
-        Remove Photo
+        {{ 'settings.profile-photo.remove' | translate }}
       </app-button>
       <app-button
         variant="default"
         size="default"
         (click)="saveChanges.emit()"
       >
-        Save Changes
+        {{ 'settings.profile-photo.change' | translate }}
       </app-button>
     </div>
   </app-basic-card>
