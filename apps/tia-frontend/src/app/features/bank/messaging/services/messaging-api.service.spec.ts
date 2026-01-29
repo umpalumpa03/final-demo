@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { MessagingService } from './messaging-api.service';
-import { environment } from '../../../../../environments/environment.prod.js';
+import { environment } from '../../../../../environments/environment';
 import { MailsResponse } from '../store/messaging.state.js';
 
 describe('MessagingService', () => {
