@@ -25,17 +25,6 @@ export class PhoneVerification implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  public from = signal<string>('unknown');
-
-  constructor() {
-    const nav = this.router.currentNavigation();
-    const source = nav?.extras.state?.['from'];
-    
-    if (source) {
-      this.from.set(source);
-    }
-  }
-
   public setPhoneNumberForm = this.fb.nonNullable.group({
     phoneNumber: ['', [Validators.required]],
   });
@@ -66,12 +55,4 @@ export class PhoneVerification implements OnInit {
       )
       .subscribe();
   }
-  goBackToPreviousPage(){
-    if (this.from() === 'sign-in') {
-      this.router.navigate(['/auth/login']);
-    } else {
-      this.router.navigate(['auth/sign-up'])
-    }
-  }
 }
-// OTP Timeout

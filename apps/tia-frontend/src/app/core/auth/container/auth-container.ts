@@ -16,7 +16,7 @@ import { AuthService } from '../services/auth.service';
 import { SidePanel } from '../components/shared/side-panel/side-panel';
 import { filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { IFeaturePanel } from '../models/config.models';
+import { IFeaturePanel } from '../models/auth.models';
 
 @Component({
   selector: 'app-auth-container',

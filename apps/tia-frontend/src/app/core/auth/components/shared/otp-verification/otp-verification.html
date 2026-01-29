@@ -1,61 +1,53 @@
 @if(!isLoading()){
-<form class="sign-in" [formGroup]="otpForm" (ngSubmit)="verifyOtp()">
-  <p>Verify Otp</p>
-  <lib-text-input formControlName="code"></lib-text-input>
-  <app-button type="submit">Verify - ეს დალოგინებისას</app-button>
+  @if(isTimerActive()) {
+    <div class="timer-container">
+      <svg class="timer-svg" viewBox="0 0 100 100">
+        <circle class="timer-svg__bg" cx="50" cy="50" r="45"></circle>
+        <circle
+          class="timer-svg__progress"
+          cx="50"
+          cy="50"
+          r="45"
+          [style.strokeDashoffset]="strokeOffset()"
+        ></circle>
+      </svg>
+      <div class="timer-text">
+        @if (countdown() > 0) {
+        <span class="timer-text__value">{{ countdown() }}</span>
+        <span class="timer-text__label">sec</span>
+        } @else {
+        <span
+          class="otp-verification__resend"
+          (click)="resendVerification()"
+          [class.otp-verification__resend--disabled]="isResendDisabled()"
+        >
+          Resend
+        </span>
+        }
+      </div>
+    </div>
+  }
+
+<form class="auth-form" [formGroup]="otpForm" (ngSubmit)="submit()">
+  <div class="otp-field">
+    <label class="otp-label">Enter OTP Code</label>
+    <lib-otp formControlName="code" [config]="otpConfig"></lib-otp>
+  </div>
+
+  <div class="auth-form__actions">
+    <app-button
+      type="submit"
+      size="large"
+      [fullWidth]="true"
+      [isLoading]="isSubmitting()"
+    >
+      Verify
+    </app-button>
+  </div>
 </form>
+
 } @else {
 <div class="sign-in sign-in-loader">
   <app-spinner size="4rem"></app-spinner>
 </div>
 }
-
-  <form
-    class="sign-in"
-    [formGroup]="smsCodeVerificationForm"
-    (ngSubmit)="submit()"
-  >
-    <lib-text-input formControlName="verificationCode"></lib-text-input>
-    <h2>ERROR: {{errorMessage()}}</h2>
-    <p>Didn't receive the code? <span class="otp-verification__resend" (click)="resendVerification()"> Resend </span></p>
-    <app-button type="submit">Verify - ეს რესგისტრაციისას</app-button>
-    <app-button type="button" variant="outline" (click)="goBack()">Change Phone Number</app-button>
-  </form>
-
-  <form class="auth-form" [formGroup]="form" (ngSubmit)="submitReset()">
-    <div class="otp-field">
-      <label class="otp-label">Enter OTP Code</label>
-      <lib-otp formControlName="otp" [config]="otpConfig"></lib-otp>
-    </div>
-
-    <!-- @if (otpErrorMessage()) {
-    <div class="auth-error">{{ otpErrorMessage() }}</div>
-    } -->
-
-    <div class="auth-form__actions">
-      <app-button
-        type="submit"
-        size="large"
-        [fullWidth]="true"
-        [isLoading]="isSubmitting()"
-      >
-        Verify OTP
-      </app-button>
-    </div>
-  </form>
-
-  <div class="otp-actions">
-    <!-- <button class="auth-inline-link" type="button" (click)="resendOtp()">
-      Didn't receive the code? Resend
-    </button> -->
-
-    @if (resendMessage()) {
-    <div class="auth-feedback" [class.auth-error]="resendStatus() === 'error'">
-      {{ resendMessage() }}
-    </div>
-    }
-  </div>
-
-  <p class="auth-panel__footer">
-    <a class="auth-link" routerLink="/auth/sign-in">Back to Sign In</a>
-  </p>

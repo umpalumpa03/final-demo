@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { IFeaturePanel } from '../../../models/config.models';
+import { IFeaturePanel } from '../../../models/auth.models';
 
 @Component({
   selector: 'app-side-panel',

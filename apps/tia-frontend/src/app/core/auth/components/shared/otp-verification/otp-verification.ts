@@ -4,20 +4,30 @@ import {
   signal,
   computed,
   inject,
+  OnDestroy,
+  effect,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 
 import { AuthService } from '../../../services/auth.service';
-import { catchError, EMPTY, take, finalize, tap } from 'rxjs';
+import {
+  catchError,
+  EMPTY,
+  take,
+  tap,
+  interval,
+  Subject,
+  takeWhile,
+  takeUntil,
+} from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { forgotPasswordSegments } from 'apps/tia-frontend/src/app/core/auth/components/forgot-password/forgot-password.routes';
-import { TokenService } from '../../../services/token.service';
 import { OtpConfig } from '@tia/shared/lib/forms/models/otp.model';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Otp } from '@tia/shared/lib/forms/otp/otp';
+import { AuthFromType } from '../../../models/auth.models';
 
 @Component({
   selector: 'app-otp-verification',
@@ -33,17 +43,26 @@ import { Otp } from '@tia/shared/lib/forms/otp/otp';
   styleUrl: './otp-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OtpVerification {
-  //ამაზე კომპონენტზე რივიუ არ მიიღებაა დასამთავრებელია დდ
+export class OtpVerification implements OnDestroy {
+  private readonly MAX_TIME = 60;
+  private readonly CIRCUMFERENCE = 282.7;
+
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
-  private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private readonly tokenService = inject(TokenService);
+  private route = inject(ActivatedRoute);
   readonly isSubmitting = signal(false);
   readonly resendMessage = signal<string | null>(null);
   readonly resendStatus = signal<'success' | 'error' | null>(null);
   readonly otpError = signal<string | null>(null);
+
+  public isResendDisabled = signal<boolean>(false);
+  public isTimerActive = signal<boolean>(false);
+
+  private destroy$ = new Subject<void>();
+
+  public countdown = signal<number>(this.MAX_TIME);
+  private timer$ = interval(1000);
 
   readonly email = 'test@test.com';
   readonly otpConfig: OtpConfig = {
@@ -53,17 +72,74 @@ export class OtpVerification {
 
   public errorMessage = signal<string>('');
 
-  private registerVerifyLogic = signal<boolean>(true);
-  private otpContext = signal<'sign-in' | 'sign-up' | 'forgot-password'>(
-    'sign-up',
-  );
+  public from = signal<string>('otp-sign-up');
 
-  ///ბექააა
+  public strokeOffset = computed(() => {
+    const progress = this.countdown() / this.MAX_TIME;
+    return this.CIRCUMFERENCE * (1 - progress);
+  });
+
+
+  constructor() {
+
+    effect(() => {
+      this.countdown();
+
+      if (this.countdown() === 0) {
+        this.isResendDisabled.set(false);
+      }
+
+      this.isResendDisabled.set(true)
+      this.isTimerActive.set(true)
+    });
+  }
+
+  public ngOnInit() {
+    const source = this.route.snapshot.url[0].path;
+    if (source) {
+      this.from.set(source);
+    }
+
+    this.startTimer();
+  }
+
   public isLoading = computed(() => this.authService.isLoginLoading());
 
   public otpForm = this.fb.nonNullable.group({
-    code: ['', [Validators.required, Validators.pattern('^\\d*$')]],
+    code: [
+      '',
+      [Validators.required, Validators.minLength(4), Validators.maxLength(4)],
+    ],
   });
+
+  public submit(): void {
+    this.otpError.set(null);
+    this.otpForm.markAllAsTouched();
+
+    const otpValue = this.otpForm.controls.code.value;
+
+    if (!otpValue) {
+      this.otpError.set('OTP is required');
+      return;
+    }
+
+    const context = this.from();
+
+    switch (context) {
+      case 'otp-sign-in':
+        this.verifyOtp();
+        break;
+
+      case 'otp-forgot-password':
+        this.forgotPasswordVerification();
+        break;
+
+      case 'otp-sign-up':
+      default:
+        this.registerVerification();
+        break;
+    }
+  }
 
   public verifyOtp(): void {
     this.authService
@@ -73,62 +149,17 @@ export class OtpVerification {
       })
       .subscribe();
   }
-  /////////
-
-  //nikaaaa
-  public readonly form = this.fb.nonNullable.group({
-    otp: ['', [Validators.required, Validators.pattern(/^\d{4}$/)]],
-  });
-
-  ////
-
-  // Mock Version got code length:4, In task: 6
-  public smsCodeVerificationForm = this.fb.nonNullable.group({
-    verificationCode: [
-      '',
-      [Validators.required, Validators.minLength(4), Validators.maxLength(4)],
-    ],
-  });
-
-  public ngOnInit(): void {
-    const context = this.route.snapshot.data?.['otpContext'];
-    if (context === 'forgot-password') {
-      this.otpContext.set('forgot-password');
-      return;
-    }
-
-    const path = this.route.snapshot.url[0]?.path;
-    if (path === 'sign-in') {
-      this.registerVerifyLogic.set(false);
-      this.otpContext.set('sign-in');
-    } else if (path === 'sign-up') {
-      this.registerVerifyLogic.set(true);
-      this.otpContext.set('sign-up');
-    }
-  }
-
-  public submit(): void {
-    const context = this.otpContext();
-    if (context === 'forgot-password') {
-      this.forgotPasswordVerification();
-      return;
-    }
-
-    if (this.registerVerifyLogic()) {
-      this.registerVerification();
-    }
-  }
 
   private registerVerification(): void {
-    if (this.smsCodeVerificationForm.invalid) {
-      this.smsCodeVerificationForm.markAllAsTouched();
+    if (this.otpForm.invalid) {
+      this.otpForm.markAllAsTouched();
       return;
     }
 
-    const { verificationCode } = this.smsCodeVerificationForm.getRawValue();
+    const { code } = this.otpForm.getRawValue();
 
     this.authService
-      .verifyOtpCode(verificationCode)
+      .verifyOtpCode(code)
       .pipe(
         tap((res) => {
           this.router.navigate(['/auth/success']);
@@ -143,15 +174,15 @@ export class OtpVerification {
   }
 
   private forgotPasswordVerification(): void {
-    if (this.smsCodeVerificationForm.invalid) {
-      this.smsCodeVerificationForm.markAllAsTouched();
+    if (this.otpForm.invalid) {
+      this.otpForm.markAllAsTouched();
       return;
     }
 
-    const { verificationCode } = this.smsCodeVerificationForm.getRawValue();
+    const { code } = this.otpForm.getRawValue();
 
     this.authService
-      .verifyForgotPasswordOtp(verificationCode)
+      .verifyForgotPasswordOtp(code)
       .pipe(
         tap(() => {
           this.router.navigate(['/auth', ...forgotPasswordSegments.reset]);
@@ -164,50 +195,31 @@ export class OtpVerification {
       .subscribe();
   }
 
-  submitReset(): void {
-    this.otpError.set(null);
-    this.form.markAllAsTouched();
-
-    const otpValue = this.form.controls.otp.value;
-    if (!otpValue) {
-      this.otpError.set('OTP is required');
-      return;
-    }
-
-    if (otpValue.length < 4) {
-      this.otpError.set('OTP must be 4 digits');
-      return;
-    }
-
-    if (this.form.invalid) {
-      this.otpError.set('OTP must be 4 digits');
-      return;
-    }
-
-    this.isSubmitting.set(true);
-    this.authService
-      .verifyForgotPasswordOtp(otpValue)
-      .pipe(finalize(() => this.isSubmitting.set(false)))
-      .subscribe({
-        next: () => {
-          this.router.navigate(['/auth/reset-password']);
-        },
-        error: (error) => {
-          const httpError = error as HttpErrorResponse;
-          if (httpError?.status === 400) {
-            this.otpError.set('Invalid OTP code');
-          } else {
-            this.otpError.set('Unable to verify OTP. Please try again.');
-          }
-        },
-      });
-  }
-
   public resendVerification(): void {
+    if (this.isResendDisabled()) return;
+    this.countdown.set(this.MAX_TIME);
+    this.startTimer();
     this.authService.resendVerificationCode().pipe(take(1)).subscribe();
   }
 
   public goBack(): void {
     this.router.navigate(['auth/phone']);
+  }
+
+  private startTimer() {
+    this.timer$
+      .pipe(
+        takeUntil(this.destroy$),
+        takeWhile(() => this.countdown() > 0),
+        tap(() => {
+          this.countdown.update((s) => s - 1);
+        }),
+      )
+      .subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
