@@ -1,1 +1,94 @@
-<p>card-details works!</p>
+<div class="card-details">
+  @if (loading()) {
+    <div class="card-details__loading">Loading card details...</div>
+  } @else if (error()) {
+    <div class="card-details__error">{{ error() }}</div>
+  } @else if (cardData(); as data) {
+    <div class="card-details__header">
+      <button 
+        class="card-details__back-button" 
+        (click)="handleBack()"
+        type="button"
+      >
+        Back
+      </button>
+    </div>
+
+    <div class="card-details__card-image">
+      <img 
+        [src]="data.imageBase64" 
+        [alt]="data.details.cardName"
+        class="card-details__image"
+      />
+    </div>
+
+    <div class="card-details__info-section">
+      <h2 class="card-details__section-title">Card Information</h2>
+      <p class="card-details__section-subtitle">Details about your Personal Card</p>
+
+      <div class="card-details__info-grid">
+        <div class="card-details__info-item">
+          <span class="card-details__info-label">Card Name</span>
+          <span class="card-details__info-value">{{ data.details.cardName }}</span>
+        </div>
+
+        <div class="card-details__info-item">
+          <span class="card-details__info-label">Card Type</span>
+          <span class="card-details__info-value">{{ data.details.type }}</span>
+        </div>
+
+        <div class="card-details__info-item">
+          <span class="card-details__info-label">Currency</span>
+          <span class="card-details__info-value">USD</span>
+        </div>
+
+        <div class="card-details__info-item">
+          <span class="card-details__info-label">Status</span>
+          <span class="card-details__info-value" 
+                [class.card-details__info-value--status]="isActiveStatus(data.details.status)">
+            {{ data.details.status.toLowerCase() }}
+          </span>
+        </div>
+
+        @if (shouldShowCreditLimit(data.details)) {
+          <div class="card-details__info-item">
+            <span class="card-details__info-label">Credit Limit</span>
+            <span class="card-details__info-value">USD {{ data.details.creditLimit | number }}</span>
+          </div>
+
+          <div class="card-details__info-item">
+            <span class="card-details__info-label">Available Credit</span>
+            <span class="card-details__info-value">USD 7,500</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="card-details__actions-section">
+      <h2 class="card-details__section-title">Quick Actions</h2>
+      <p class="card-details__section-subtitle">Manage your card and transactions</p>
+
+      <div class="card-details__actions-grid">
+        <button class="card-details__action-button" type="button">
+          Transfer to Own Account
+        </button>
+
+        <button class="card-details__action-button" type="button">
+          Transfer to Someone Else
+        </button>
+
+        <button class="card-details__action-button" type="button">
+          Pay Paybill
+        </button>
+
+        <button class="card-details__action-button card-details__action-button--secondary" type="button">
+          View Sensitive Details
+        </button>
+
+        <button class="card-details__action-button card-details__action-button--secondary" type="button">
+          View Transactions
+        </button>
+      </div>
+    </div>
+  }
+</div>

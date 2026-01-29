@@ -78,3 +78,20 @@ export const selectCardDetailsError = createSelector(
   selectCardsState,
   (state) => state.cardDetailsError
 );
+export const selectCardDetailById = (cardId: string) =>
+  createSelector(
+    selectCardDetails,
+    selectCardImages,
+    (cardDetails, cardImages) => {
+      const details = cardDetails[cardId];
+      const image = cardImages[cardId];
+      
+      if (!details || !image) return null;
+      
+      return {
+        cardId,
+        details,
+        imageBase64: image,
+      };
+    }
+  );
