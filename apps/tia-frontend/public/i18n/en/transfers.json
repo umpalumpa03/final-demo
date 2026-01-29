@@ -1,23 +1,26 @@
 {
   "title": "Transfers",
-  "ragaca": "ragaca",
+  "description": "Send money between accounts or to other recipients",
   "types": {
-    "internal": "Internal Transfer",
-    "external": "External Transfer",
+    "internal": "Between Own Accounts",
+    "external": "To Other Account",
     "international": "International Transfer"
   },
-  "form": {
-    "fromAccount": "From Account",
-    "toAccount": "To Account",
-    "amount": "Amount",
-    "currency": "Currency",
-    "description": "Description",
-    "schedule": "Schedule Transfer"
+  "internal": {
+    "intTitle": "Transfer Between Your Accounts",
+    "intDescription": "Move money seamlessly between your accounts"
+  },
+  "external": {
+    "extTitle": "Transfer to Other Account",
+    "extDescription": "Send money to external accounts via IBAN or phone number",
+    "recipient": {
+      "title": "Enter recipient IBAN or phone number",
+      "inputPlaceholder": "Enter IBAN (GE...) or phone number (+...)",
+      "verify": "Verify Recipient"
+    }
   },
   "confirmation": {
-    "title": "Confirm Transfer",
-    "review": "Please review your transfer details",
-    "success": "Transfer completed successfully",
-    "reference": "Reference: {{ref}}"
+    "title": "Transfer Successful!",
+    "success": "Your transfer has been completed successfully"
   }
 }

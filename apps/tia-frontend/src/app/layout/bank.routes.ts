@@ -9,6 +9,8 @@ import {
   transactionReducer,
 } from '../store/transactions/transactions.reducer';
 import { TransactionService } from '../features/bank/transactions/services/transactions-service/transaction-service';
+import { FinancesStore } from '../features/bank/finances/store/finances.store';
+import { FinancesService } from '../features/bank/finances/services/finances.service';
 export const bankRoutes: Routes = [
   {
     path: 'bank',
@@ -51,10 +53,10 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'transfers',
-        loadComponent: () =>
-          import(
-            '../features/bank/transfers/container/transfers-container'
-          ).then((c) => c.TransfersContainer),
+        loadChildren: () =>
+          import('../features/bank/transfers/transfers.routes').then(
+            (r) => r.transfersRoutes,
+          ),
       },
       {
         path: 'loans',
@@ -64,7 +66,11 @@ export const bankRoutes: Routes = [
           ),
       },
       {
-        path: 'my-finances',
+        path: 'finances',
+        providers: [
+                  FinancesStore,
+                  FinancesService
+                ],
         loadComponent: () =>
           import('../features/bank/finances/container/finances-container').then(
             (c) => c.FinancesContainer,

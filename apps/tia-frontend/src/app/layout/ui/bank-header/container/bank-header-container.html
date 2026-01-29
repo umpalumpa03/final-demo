@@ -1,6 +1,7 @@
 <app-bank-header
   (onNotificationClick)="onNotificationClick($event)"
   [hasUnread]="hasUnread()"
+  [inboxCount]="inboxCount()"
 ></app-bank-header>
 
 <app-header-notifications

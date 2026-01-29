@@ -1,5 +1,5 @@
-@use "../../../../shared/styles/palette" as *;
-@use "../../../../shared/styles/mixins" as *;
+@use '../../../../shared/styles/palette' as *;
+@use '../../../../shared/styles/mixins' as *;
 
 .navigation {
   &__list {
@@ -9,6 +9,7 @@
 
   &__item {
     @include flex-center(row, space-between, center);
+
     &--disabled {
       .navigation__link {
         color: $gray-500;
@@ -22,17 +23,23 @@
   &__link {
     @include flex-center(row, start);
     gap: 1.2rem;
-    padding: 1.1rem 1.6rem;
+    padding: 1.1rem 1.6rem 1.1rem 2.6rem;
     @include font-arimo(400, 1.4rem, 2rem);
     cursor: pointer;
     text-align: left;
     color: $gray-700;
     width: 100%;
+    min-height: 4.2rem;
   }
 
   &__img {
     width: 1.6rem;
     height: 1.6rem;
+    flex-shrink: 0;
+  }
+
+  &__text {
+    white-space: nowrap;
   }
 
   &--horizontal {
@@ -69,8 +76,10 @@
         border-radius: 1rem;
       }
     }
+
     .navigation__link.navigation__item--active .navigation__img {
-      filter: invert(24%) sepia(98%) saturate(7472%) hue-rotate(210deg) brightness(97%) contrast(101%);
+      filter: invert(24%) sepia(98%) saturate(7472%) hue-rotate(210deg)
+        brightness(97%) contrast(101%);
     }
 
     .navigation__count {
@@ -81,12 +90,19 @@
       color: var(--color-fg);
       border-radius: 0.8rem;
       border: 0.063rem solid $blue-400;
+      flex-shrink: 0;
     }
 
     .navigation__item--active .navigation__count {
       background-color: $blue-800;
       border: none;
       color: $white;
+    }
+  }
+
+  &--collapsed {
+    .navigation__item {
+      padding-right: 0;
     }
   }
 }

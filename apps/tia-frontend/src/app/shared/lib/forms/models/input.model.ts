@@ -70,6 +70,8 @@ export interface InputConfig {
   accept?: string;
   multiple?: boolean;
   margin?: string;
+  min?: string | number;
+  max?: string | number;
 }
 
 export interface SelectOption {

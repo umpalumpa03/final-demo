@@ -1,74 +1,58 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { BankHeader } from './bank-header';
-import { provideRouter } from '@angular/router';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ElementRef } from '@angular/core';
-import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 describe('BankHeader', () => {
-  let component: BankHeader;
-  let fixture: ComponentFixture<BankHeader>;
-
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [BankHeader],
-      providers: [provideRouter([])],
+      providers: [{ provide: ActivatedRoute, useValue: {} }],
     }).compileComponents();
-
-    fixture = TestBed.createComponent(BankHeader);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should compute hasInboxMessages based on inboxCount', () => {
+    const fixture = TestBed.createComponent(BankHeader);
+    const component = fixture.componentInstance;
+
+    fixture.componentRef.setInput('inboxCount', 0);
+    expect(component.hasInboxMessages()).toBe(false);
+
+    fixture.componentRef.setInput('inboxCount', 5);
+    expect(component.hasInboxMessages()).toBe(true);
   });
 
-  it('should reflect hasUnread input changes', async () => {
-    // Set signal input
-    fixture.componentRef.setInput('hasUnread', true);
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    expect(component.hasUnread()).toBe(true);
-  });
-
-  it('should emit bellRef when onNotification is called', () => {
-    // Spy on the output emitter
+  it('should emit onNotificationClick when bellRef is present', () => {
+    const fixture = TestBed.createComponent(BankHeader);
+    const component = fixture.componentInstance;
     const emitSpy = vi.spyOn(component.onNotificationClick, 'emit');
 
-    // Manually trigger the method
+    const mockEl = { nativeElement: {} } as ElementRef;
+    vi.spyOn(component, 'bellRef').mockReturnValue(mockEl);
+
     component.onNotification();
 
-    // Check if it emitted the ElementRef from the viewChild
-    // Note: bellRef() will only be defined if #bell exists in your HTML
-    const bellEl = component.bellRef();
-    if (bellEl) {
-      expect(emitSpy).toHaveBeenCalledWith(bellEl);
-    }
+    expect(emitSpy).toHaveBeenCalledWith(mockEl);
   });
 
-  it('should not emit if bellRef is missing', () => {
+  it('should not emit if bellRef is undefined', () => {
+    const fixture = TestBed.createComponent(BankHeader);
+    const component = fixture.componentInstance;
     const emitSpy = vi.spyOn(component.onNotificationClick, 'emit');
 
-    // Force the signal to return undefined for this test case
-    vi.spyOn(component, 'bellRef').mockReturnValue(undefined as any);
+    vi.spyOn(component, 'bellRef').mockReturnValue(undefined);
 
     component.onNotification();
+
     expect(emitSpy).not.toHaveBeenCalled();
   });
 
-  it('should trigger onNotification on click', () => {
-    const methodSpy = vi.spyOn(component, 'onNotification');
+  it('should accept hasUnread input', () => {
+    const fixture = TestBed.createComponent(BankHeader);
+    const component = fixture.componentInstance;
 
-    // Look for the element with the template ref #bell or a button
-    const bellBtn =
-      fixture.debugElement.query(By.css('#bell')) ||
-      fixture.debugElement.query(By.css('button'));
-
-    if (bellBtn) {
-      bellBtn.nativeElement.click();
-      expect(methodSpy).toHaveBeenCalled();
-    }
+    fixture.componentRef.setInput('hasUnread', true);
+    expect(component.hasUnread()).toBe(true);
   });
 });

@@ -1,1 +1,11 @@
-<div class="global-bank-wrapper"><p>transfers-container works!</p></div>
+<div class="global-bank-wrapper">
+  <div class="transfers_wrapper">
+    <app-library-title
+      [title]="'transfers.title'| translate"
+      [subtitle]="'transfers.description' | translate"
+    ></app-library-title>
+    <app-tabs [tabs]="transferTabs()" [orientation]="'horizontal'"></app-tabs>
+  </div>
+
+  <router-outlet></router-outlet>
+</div>

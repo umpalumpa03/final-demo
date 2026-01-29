@@ -1,31 +1,45 @@
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Action } from '@ngrx/store';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Observable, of, throwError } from 'rxjs';
-import { loadCategories, loadProviders } from './paybill.effects';
+import {
+  loadCategories,
+  loadProviders,
+  autoSelectProviderAfterLoad,
+  checkBill,
+} from './paybill.effects';
 import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillActions } from './paybill.actions';
+import { BillDetails, PaybillProvider } from '../models/paybill.model';
+import * as fromSelectors from './paybill.selectors';
 
 describe('PaybillEffects', () => {
   let actions$: Observable<Action>;
+  let store: MockStore;
   let serviceMock: {
     getCategories: ReturnType<typeof vi.fn>;
     getProviders: ReturnType<typeof vi.fn>;
+    checkBill: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(() => {
     serviceMock = {
       getCategories: vi.fn(),
       getProviders: vi.fn(),
+      checkBill: vi.fn(),
     };
 
     TestBed.configureTestingModule({
       providers: [
         provideMockActions(() => actions$),
+        provideMockStore(),
         { provide: PaybillService, useValue: serviceMock },
       ],
     });
+
+    store = TestBed.inject(MockStore);
   });
 
   describe('loadCategories', () => {
@@ -41,8 +55,8 @@ describe('PaybillEffects', () => {
             servicesQuantity: 0,
           },
         ];
-        serviceMock.getCategories.mockReturnValue(of(categories));
 
+        serviceMock.getCategories.mockReturnValue(of(categories));
         actions$ = of(PaybillActions.loadCategories());
 
         loadCategories().subscribe((action) => {
@@ -55,14 +69,13 @@ describe('PaybillEffects', () => {
 
     it('should dispatch loadCategoriesFailure on API error', () => {
       TestBed.runInInjectionContext(() => {
-        const errorResponse = new Error('Unauthorized');
         serviceMock.getCategories.mockReturnValue(
-          throwError(() => errorResponse),
+          throwError(() => ({ message: 'Unauthorized' })),
         );
 
         actions$ = of(PaybillActions.loadCategories());
 
-        loadCategories().subscribe((action: Action) => {
+        loadCategories().subscribe((action) => {
           expect(action).toEqual(
             PaybillActions.loadCategoriesFailure({ error: 'Unauthorized' }),
           );
@@ -74,12 +87,16 @@ describe('PaybillEffects', () => {
   describe('loadProviders', () => {
     it('should dispatch loadProvidersSuccess on successful API call', () => {
       TestBed.runInInjectionContext(() => {
-        const providers = [
-          { serviceId: 'p1', serviceName: 'P1', category: 'utilities' },
+        const providers: PaybillProvider[] = [
+          {
+            id: 'p1',
+            name: 'P1',
+            categoryId: 'utilities',
+            serviceName: 'Test Service',
+          },
         ];
 
         serviceMock.getProviders.mockReturnValue(of(providers));
-
         actions$ = of(
           PaybillActions.selectCategory({ categoryId: 'utilities' }),
         );
@@ -92,21 +109,64 @@ describe('PaybillEffects', () => {
         });
       });
     });
+  });
 
-    it('should dispatch loadProvidersFailure on API error', () => {
+  describe('autoSelectProviderAfterLoad', () => {
+    it('should dispatch selectProvider if providerId exists in store after load', () => {
       TestBed.runInInjectionContext(() => {
-        const errorResponse = new Error('Network Error');
-        serviceMock.getProviders.mockReturnValue(
-          throwError(() => errorResponse),
+        store.overrideSelector(fromSelectors.selectSelectedProviderId, 'p1');
+
+        const providers: PaybillProvider[] = [
+          { id: 'p1', name: 'P1', categoryId: 'cat1', serviceName: 'S1' },
+        ];
+
+        actions$ = of(PaybillActions.loadProvidersSuccess({ providers }));
+
+        autoSelectProviderAfterLoad().subscribe((action) => {
+          expect(action).toEqual(
+            PaybillActions.selectProvider({ providerId: 'p1' }),
+          );
+        });
+      });
+    });
+  });
+
+  describe('checkBill', () => {
+    it('should dispatch checkBillSuccess on success', () => {
+      TestBed.runInInjectionContext(() => {
+        const details: BillDetails = {
+          valid: true,
+          accountHolder: 'John Doe',
+          amountDue: 100,
+          address: 'Test St',
+          dueDate: '2026-01-01',
+          isExactAmount: false,
+        };
+
+        serviceMock.checkBill.mockReturnValue(of(details));
+        actions$ = of(
+          PaybillActions.checkBill({ serviceId: 's1', accountNumber: 'a1' }),
+        );
+
+        checkBill().subscribe((action) => {
+          expect(action).toEqual(PaybillActions.checkBillSuccess({ details }));
+        });
+      });
+    });
+
+    it('should dispatch checkBillFailure on error', () => {
+      TestBed.runInInjectionContext(() => {
+        serviceMock.checkBill.mockReturnValue(
+          throwError(() => ({ message: 'Verification Failed' })),
         );
 
         actions$ = of(
-          PaybillActions.selectCategory({ categoryId: 'utilities' }),
+          PaybillActions.checkBill({ serviceId: 's1', accountNumber: 'a1' }),
         );
 
-        loadProviders().subscribe((action) => {
+        checkBill().subscribe((action) => {
           expect(action).toEqual(
-            PaybillActions.loadProvidersFailure({ error: 'Network Error' }),
+            PaybillActions.checkBillFailure({ error: 'Verification Failed' }),
           );
         });
       });

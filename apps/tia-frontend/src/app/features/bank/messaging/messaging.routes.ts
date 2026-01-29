@@ -1,4 +1,5 @@
 import { Route } from "@angular/router";
+import { MessagingStore } from "./store/messaging.store";
 
 
 export const messagingRoutes: Route[] = [
@@ -6,8 +7,14 @@ export const messagingRoutes: Route[] = [
         path: '',
         loadComponent: () =>
             import('./container/messaging-container').then((c) => c.MessagingContainer),
+        providers: [MessagingStore],
 
         children: [
+            {
+                path: '',
+                pathMatch: 'full',
+                redirectTo: 'inbox',
+            },
             {
                 path: 'inbox',
                 loadComponent: () =>

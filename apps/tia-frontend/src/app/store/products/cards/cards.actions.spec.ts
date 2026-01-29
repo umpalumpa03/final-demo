@@ -1,0 +1,119 @@
+import { describe, it, expect } from 'vitest';
+import * as CardsActions from './cards.actions';
+import { CardAccount } from '../../../features/bank/products/components/cards/models/card-account.model';
+import { CardDetail } from '../../../features/bank/products/components/cards/models/card-detail.model';
+
+describe('Cards Actions', () => {
+  const mockAccounts: CardAccount[] = [
+    {
+      id: 'acc1',
+      iban: 'GE29TIA7890123456789012',
+      name: 'Main GEL Account',
+      balance: 4500000,
+      currency: 'GEL',
+      status: 'active',
+      cardIds: ['card1'],
+      openedAt: '2026-01-18T01:10:50.948Z',
+    },
+  ];
+
+  const mockCardDetail: CardDetail = {
+    id: 'card1',
+    accountId: 'acc1',
+    type: 'DEBIT',
+    network: 'VISA',
+    design: 'MIDNIGHT_GRADIENT',
+    cardName: 'Main Visa',
+    status: 'ACTIVE',
+    allowOnlinePayments: true,
+    allowInternational: true,
+    allowAtm: true,
+    createdAt: '2026-01-18T01:10:50.948Z',
+    updatedAt: '2026-01-18T01:10:50.948Z',
+  };
+
+  describe('loadCardAccounts', () => {
+    it('should create action', () => {
+      const action = CardsActions.loadCardAccounts();
+      expect(action.type).toBe('[Cards] Load Card Accounts');
+    });
+  });
+
+  describe('loadCardAccountsSuccess', () => {
+    it('should create action with accounts payload', () => {
+      const action = CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts });
+      expect(action.type).toBe('[Cards] Load Card Accounts Success');
+      expect(action.accounts).toEqual(mockAccounts);
+    });
+  });
+
+  describe('loadCardAccountsFailure', () => {
+    it('should create action with error payload', () => {
+      const error = 'Error message';
+      const action = CardsActions.loadCardAccountsFailure({ error });
+      expect(action.type).toBe('[Cards] Load Card Accounts Failure');
+      expect(action.error).toBe(error);
+    });
+  });
+
+  describe('loadCardImage', () => {
+    it('should create action with cardId payload', () => {
+      const cardId = 'card1';
+      const action = CardsActions.loadCardImage({ cardId });
+      expect(action.type).toBe('[Cards] Load Card Image');
+      expect(action.cardId).toBe(cardId);
+    });
+  });
+
+  describe('loadCardImageSuccess', () => {
+    it('should create action with cardId and imageBase64 payload', () => {
+      const cardId = 'card1';
+      const imageBase64 = 'data:image/svg+xml;base64,test';
+      const action = CardsActions.loadCardImageSuccess({ cardId, imageBase64 });
+      expect(action.type).toBe('[Cards] Load Card Image Success');
+      expect(action.cardId).toBe(cardId);
+      expect(action.imageBase64).toBe(imageBase64);
+    });
+  });
+
+  describe('loadCardImageFailure', () => {
+    it('should create action with cardId and error payload', () => {
+      const cardId = 'card1';
+      const error = 'Error message';
+      const action = CardsActions.loadCardImageFailure({ cardId, error });
+      expect(action.type).toBe('[Cards] Load Card Image Failure');
+      expect(action.cardId).toBe(cardId);
+      expect(action.error).toBe(error);
+    });
+  });
+
+  describe('loadCardDetails', () => {
+    it('should create action with cardId payload', () => {
+      const cardId = 'card1';
+      const action = CardsActions.loadCardDetails({ cardId });
+      expect(action.type).toBe('[Cards] Load Card Details');
+      expect(action.cardId).toBe(cardId);
+    });
+  });
+
+  describe('loadCardDetailsSuccess', () => {
+    it('should create action with cardId and details payload', () => {
+      const cardId = 'card1';
+      const action = CardsActions.loadCardDetailsSuccess({ cardId, details: mockCardDetail });
+      expect(action.type).toBe('[Cards] Load Card Details Success');
+      expect(action.cardId).toBe(cardId);
+      expect(action.details).toEqual(mockCardDetail);
+    });
+  });
+
+  describe('loadCardDetailsFailure', () => {
+    it('should create action with cardId and error payload', () => {
+      const cardId = 'card1';
+      const error = 'Error message';
+      const action = CardsActions.loadCardDetailsFailure({ cardId, error });
+      expect(action.type).toBe('[Cards] Load Card Details Failure');
+      expect(action.cardId).toBe(cardId);
+      expect(action.error).toBe(error);
+    });
+  });
+});

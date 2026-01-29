@@ -1,0 +1,120 @@
+@use "../../../../../../shared/styles/palette" as *;
+@use "../../../../../../shared/styles/mixins" as *;
+@use "../../../../../../shared/styles/themes" as *;
+
+.loan-modal {
+    @include display-flex(column);
+    gap: 1.6rem;
+    max-height: 85rem;
+    height: 100%;
+    width: 100%;
+    max-width: 64rem;
+
+    &__header {
+        @include flex-center(row, space-between);
+    }
+
+    &__header-text {
+        @include display-flex(column);
+        gap: 0.8rem;
+
+        p {
+            color: $blue-600;
+            @include font-inter(400, 1.4rem, 2);
+        }
+    }
+
+    &__header-icon {
+        @include flex-center($justify: flex-start, $align: center);
+        gap: 0.8rem;
+
+        img {
+            width: 2rem;
+            height: 2rem;
+        }
+
+        h3 {
+            color: var(--color-fg);
+            @include font-inter(600, 1.8rem, 1.8);
+        }
+    }
+
+    &__body {
+        overflow-y: auto;
+        @include display-flex(column);
+        gap: 2.4rem;
+
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        -ms-overflow-style: none;
+    }
+
+    &__section {
+        @include display-flex(column);
+        gap: 1.6rem;
+    }
+
+    &__section-title {
+        @include flex-center($justify: flex-start, $align: center);
+        gap: 0.8rem;
+        color: $blue-1000;
+        @include font-inter(600, 1.8rem);
+
+        img {
+            width: 2rem;
+            height: 2rem;
+        }
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.6rem;
+
+        @media (max-width: 480px) {
+            grid-template-columns: 1fr;
+        }
+
+        &--full-width {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__info-box {
+        border-radius: 1rem;
+        @include flex-center($justify: flex-start, $align: flex-start);
+        gap: 1.2rem;
+        padding: 1.6rem;
+        border: 0.063rem solid $blue-200;
+        background: var(--color-bg);
+
+        img {
+            width: 2rem;
+            height: 2rem;
+        }
+
+        &-content {
+            @include display-flex(column);
+            gap: 0.4rem;
+
+            strong {
+                color: $blue-1000;
+                @include font-inter(600, 1.6rem);
+            }
+
+            p {
+                @include font-inter(400, 1.4rem);
+                color: $gray-700;
+            }
+        }
+    }
+
+    &__footer {
+        @include flex-center($justify: flex-end, $align: flex-start);
+        padding: 1.6rem;
+        gap: 1.2rem;
+    }
+}

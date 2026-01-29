@@ -1,0 +1,99 @@
+<div class="profile-photo">
+  @if (alertType()) {
+  <div class="profile-photo__alert-container">
+    <app-alert-types-with-icons
+      class="profile-photo__alert"
+      [alertType]="alertType()!"
+      [alertMessage]="alertMessage()"
+    ></app-alert-types-with-icons>
+  </div>
+  }
+
+  <app-basic-card
+    title="{{ 'settings.profile-photo.title' | translate }}"
+    subtitle="{{ 'settings.profile-photo.subtitle' | translate }}"
+    [hasFooter]="true"
+    [maxWidth]="'100%'"
+    [width]="'100%'"
+  >
+    <div class="profile-photo__upload-section">
+      <h3 class="profile-photo__section-title">{{ 'settings.profile-photo.uploadCustomPhoto' | translate }}</h3>
+      <div class="profile-photo__upload-content">
+        <div class="profile-photo__avatar-wrapper">
+          @if (photoUrl()) {
+          <img
+            [src]="photoUrl()!"
+            alt="Profile photo"
+            class="profile-photo__avatar-main-image"
+          />
+          } @else {
+          <app-avatar
+            [initials]="initials()"
+            size="xl"
+            tone="solid"
+            color="blue"
+          ></app-avatar>
+          }
+        </div>
+        <app-button
+          variant="default"
+          size="default"
+          icon="white-download.svg"
+          (click)="onFileButtonClick()"
+        >
+          {{ 'settings.profile-photo.chooseFile' | translate }}
+        </app-button>
+      </div>
+    </div>
+
+    <div class="profile-photo__defaults-section">
+      <h3 class="profile-photo__section-title">{{ 'settings.profile-photo.defaultAvatar' | translate }}</h3>
+      @if (defaultAvatarsLoading()) {
+      <div class="profile-photo__defaults-loading">
+        <app-spinner size="6rem"></app-spinner>
+        <span>{{ 'settings.profile-photo.loadingDefaultAvatars' | translate }}</span>
+      </div>
+      } @else {
+      <div class="profile-photo__defaults-list">
+        @for (avatar of defaultAvatars(); track avatar.id) {
+        <button
+          type="button"
+          class="profile-photo__avatar-button"
+          [class.profile-photo__avatar-button--selected]="
+            avatar.id === selectedAvatarId()
+          "
+          (click)="onDefaultAvatarClick(avatar.id)"
+        >
+          <img
+            [src]="getAvatarUrl(avatar.iconUri)"
+            alt="Default avatar"
+            class="profile-photo__avatar-image"
+          />
+        </button>
+        }
+      </div>
+      }
+    </div>
+
+    <div card-footer class="profile-photo__footer">
+      <app-button
+        variant="destructive"
+        size="default"
+        icon="trash-icon.svg"
+        (click)="removePhoto.emit()"
+      >
+        {{ 'settings.profile-photo.remove' | translate }}
+      </app-button>
+      <app-button
+        variant="default"
+        size="default"
+        (click)="saveChanges.emit()"
+      >
+        {{ 'settings.profile-photo.change' | translate }}
+      </app-button>
+    </div>
+  </app-basic-card>
+</div>
+
+
+

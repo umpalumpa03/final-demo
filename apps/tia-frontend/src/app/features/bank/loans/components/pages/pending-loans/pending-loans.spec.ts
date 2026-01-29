@@ -5,13 +5,17 @@ import { provideMockStore } from '@ngrx/store/testing';
 describe('PendingLoans', () => {
   let component: PendingLoans;
   let fixture: ComponentFixture<PendingLoans>;
+
   const initialState = {
-    loans: {
+    loans_local: {
       loans: [],
       loading: false,
       error: null,
+      months: [],
+      purposes: [],
     },
   };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PendingLoans],
