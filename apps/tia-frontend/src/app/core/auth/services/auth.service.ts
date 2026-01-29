@@ -88,8 +88,15 @@ export class AuthService {
           if (res.access_token && res.refresh_token) {
             this.tokenService.setAccessToken(res.access_token);
             this.tokenService.setRefreshToken(res.refresh_token);
+            this.isLoginLoading.set(true);
           }
         }),
+        catchError((err) => {
+          this.errorMessage.set(true);
+          this.isLoginLoading.set(false);
+          return throwError(() => err);
+        }),
+        finalize(() => this.isLoginLoading.set(false)),
       );
   }
 
