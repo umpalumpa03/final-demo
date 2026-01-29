@@ -15,7 +15,11 @@
     </div>
   </div>
 
-  @if (data.cards.length > 0) {
+  @if (cardDetailsLoading()) {
+    <div class="account-cards__loading">Loading cards...</div>
+  } @else if (cardDetailsError()) {
+    <div class="account-cards__error">{{ cardDetailsError() }}</div>
+  } @else if (data.cards.length > 0) {
   <div class="account-cards__grid">
     @for (card of data.cards; track card.cardId) {
     <div class="account-cards__card" (click)="handleCardClick(card.cardId)">
@@ -48,9 +52,8 @@
     </div>
     }
   </div>
+  }
   } @else {
-  <div class="account-cards__loading">Loading cards...</div>
-  } } @else {
   <div class="account-cards__error">Account not found</div>
   }
 </div>
