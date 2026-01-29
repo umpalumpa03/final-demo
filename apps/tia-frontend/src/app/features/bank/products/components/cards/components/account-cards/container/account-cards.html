@@ -1,0 +1,56 @@
+<div class="account-cards">
+  @if (vm(); as data) {
+  <div class="account-cards__account-info">
+    <div class="account-cards__account-details">
+      <h1 class="account-cards__account-name">{{ data.account.name }}</h1>
+      <p class="account-cards__account-number">{{ data.account.iban }}</p>
+    </div>
+    <div class="account-cards__account-badge">
+      <app-badges
+        [label]="data.account.cardIds.length + ' Card' + (data.account.cardIds.length !== 1 ? 's' : '')"
+        variant="secondary"
+        size="small"
+        shape="rounded"
+      ></app-badges>
+    </div>
+  </div>
+
+  @if (data.cards.length > 0) {
+  <div class="account-cards__grid">
+    @for (card of data.cards; track card.cardId) {
+    <div class="account-cards__card" (click)="handleCardClick(card.cardId)">
+      <img
+        [src]="card.imageBase64"
+        [alt]="card.details.cardName"
+        class="account-cards__card-image"
+      />
+      <div class="account-cards__card-info">
+        <span class="account-cards__card-name"
+          >{{ card.details.cardName }}</span
+        >
+        <div class="account-cards__card-meta">
+          <app-badges
+            [label]="card.details.type.toLowerCase()"
+            [variant]="card.details.type === 'DEBIT' ? 'success' : 'warning'"
+            size="small"
+            shape="rounded"
+          ></app-badges>
+          <span class="account-cards__card-currency"
+            >{{ data.account.currency }}</span
+          >
+          @if (shouldShowCreditLimit(card)) {
+          <span class="account-cards__card-limit"
+            >Limit: {{ card.details.creditLimit }}</span
+          >
+          }
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+  } @else {
+  <div class="account-cards__loading">Loading cards...</div>
+  } } @else {
+  <div class="account-cards__error">Account not found</div>
+  }
+</div>

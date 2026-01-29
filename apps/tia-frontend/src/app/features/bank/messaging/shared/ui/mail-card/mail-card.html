@@ -1,0 +1,66 @@
+@if(mail()){
+<div
+  class="mail-card"
+  [class.mail-card--read]="mail()?.isRead"
+  [class.mail-card--unread]="!mail()?.isRead"
+  (click)="onCardClick()"
+>
+  <app-avatar
+    size="md"
+    [initials]="getInitials(mail()?.senderEmail ?? '')"
+  ></app-avatar>
+
+  <div class="mail-card__content">
+    <div class="mail-card__header">
+      <span class="mail-card__sender">{{ mail()?.senderEmail }}</span>
+      <span class="mail-card__date"
+        >{{ mail()?.createdAt | date:'MMM d' }}</span
+      >
+    </div>
+    <div class="mail-card__header">
+      <div class="mail-card__subject">{{ mail()?.subject }}</div>
+      <div class="mail-card__icons">
+        @if(mail()?.isFavorite){
+        <button
+          class="mail-card__action-btn mail-card__action-btn--favorite"
+          (click)="onToggleFavorite($event)"
+          title="Favorite"
+        >
+          <img src="/images/svg/messaging/mail-favorite.svg" alt="Favorite" />
+        </button>
+        } @if(mail()?.isImportant){
+        <button
+          class="mail-card__action-btn--important"
+          (click)="onToggleImportant($event)"
+          title="Important"
+        >
+          <img src="/images/svg/messaging/mail-important.svg" alt="Important" />
+        </button>
+        }
+      </div>
+    </div>
+
+    <div class="mail-card__preview">{{ mail()?.body }}</div>
+  </div>
+
+  <div class="mail-card__actions">
+    <button
+      class="mail-card__action-btn--read"
+      (click)="onToggleRead($event)"
+      [title]="mail()?.isRead ? 'Mark as unread' : 'Mark as read'"
+    >
+      <img
+        src="/images/svg/messaging/{{mail()?.isRead ? 'read' : 'unread'}}.svg"
+        [alt]="mail()?.isRead ? 'Read' : 'Unread'"
+      />
+    </button>
+    <button
+      class="mail-card__action-btn mail-card__action-btn--delete"
+      (click)="onDelete($event)"
+      title="Delete"
+    >
+      <img src="/images/svg/messaging/delete.svg" alt="Delete" />
+    </button>
+  </div>
+</div>
+}

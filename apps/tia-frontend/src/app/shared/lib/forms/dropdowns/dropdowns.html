@@ -9,7 +9,7 @@
     }
 
     <div class="select__control">
-        <div class="select__trigger" [id]="cfg.id" (click)="toggleDropdown()" tabindex="0"
+        <div class="select__trigger" [id]="cfg.id" (click)="toggleDropdown($event)" tabindex="0"
             [style.height]="mergedConfig().height">
             <span class="select__value" [class.select__value--placeholder]="!value()">
                 {{ displayValue() }}

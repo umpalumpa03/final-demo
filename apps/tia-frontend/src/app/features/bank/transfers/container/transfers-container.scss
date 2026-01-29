@@ -1,0 +1,7 @@
+@use '../../../../shared/styles/mixins' as *;
+@use '../../../../shared/styles/palette' as *;
+.transfers_wrapper {
+  @include display-flex(column);
+  gap: 3.2rem;
+  padding:0 0 3.2rem 0;
+}
