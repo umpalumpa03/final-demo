@@ -1,0 +1,35 @@
+<app-ui-modal [isOpen]="isOpen()" (closed)="handleClose()">
+  <div class="rename-modal">
+    <h2 class="rename-modal__title">Rename Account</h2>
+
+    <div class="rename-modal__content">
+      <lib-text-input
+        [(ngModel)]="newName"
+        [config]="{ label: 'Friendly Name', placeholder: 'Enter new account name' }"
+      />
+
+      @if (error()) {
+      <p class="rename-modal__error">{{ error() }}</p>
+      }
+    </div>
+
+    <div class="rename-modal__actions">
+      <app-button
+        [variant]="'secondary'"
+        [fullWidth]="true"
+        (click)="handleClose()"
+        [isDisabled]="isLoading()"
+      >
+        Cancel
+      </app-button>
+      <app-button
+        [variant]="'default'"
+        [fullWidth]="true"
+        (click)="handleRename()"
+        [isDisabled]="isRenameDisabled()"
+      >
+        @if (isLoading()) { Saving... } @else { Save }
+      </app-button>
+    </div>
+  </div>
+</app-ui-modal>
