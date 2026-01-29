@@ -16,7 +16,9 @@ describe('BankHeaderContainer', () => {
       getNotifications: vi.fn(() => of({ items: [] })),
     };
     mockInbox = {
-      getInboxCount: vi.fn(() => of({ count: 12 })),
+      fetchInboxCount: vi.fn(), 
+      inboxCount: vi.fn(() => 12), 
+      getInboxCount: vi.fn(() => of({ count: 12 })), 
     };
 
     TestBed.configureTestingModule({
@@ -39,7 +41,7 @@ describe('BankHeaderContainer', () => {
 
   it('should handle notification click logic', () => {
     const mockEl = { nativeElement: {} } as any;
-    
+
     component.onNotificationClick(mockEl);
 
     expect(component.anchorEl()).toBe(mockEl);

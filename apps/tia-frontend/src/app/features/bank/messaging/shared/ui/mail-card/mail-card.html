@@ -46,8 +46,8 @@
   <div class="mail-card__actions">
     <button
       class="mail-card__action-btn--read"
-      (click)="onToggleRead($event)"
-      [title]="mail()?.isRead ? 'Mark as unread' : 'Mark as read'"
+      (click)="onMarkAsRead($event)"
+      title="Mark as read"
     >
       <img
         src="/images/svg/messaging/{{mail()?.isRead ? 'read' : 'unread'}}.svg"
