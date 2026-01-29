@@ -11,6 +11,7 @@ import {
   selectUploadedFileName,
 } from '../../../../../../store/profile-photo/profile-photo.selectors';
 import { TranslateService } from '@ngx-translate/core';
+import { environment } from '../../../../../../../environments/environment';
 
 @Component({
   selector: 'app-profile-photo-container',
@@ -77,6 +78,20 @@ public constructor() {
   }
 
   public onFileSelected(file: File): void {
+    const allowedTypes = ['image/png', 'image/jpeg'];
+    const maxSizeBytes = 1024 * 1024; 
+
+    const isValidType = allowedTypes.includes(file.type);
+    const isValidSize = file.size <= maxSizeBytes;
+
+    if (!isValidType || !isValidSize) {
+      this.showAlert(
+        'error',
+        this.translate.instant('settings.profile-photo.invalidFileAlert'),
+      );
+      return;
+    }
+
     this.uploadedFile = file;
 
     if (this.objectUrl) {
@@ -92,9 +107,22 @@ public constructor() {
     );
   }
 
-  public  onSelectDefaultAvatar(avatarId: string): void {
+  public onSelectDefaultAvatar(avatarId: string): void {
+ 
+    const avatar = this.defaultAvatars().find(a => a.id === avatarId);
+    if (!avatar) {
+      return;
+    }
+
+    if (this.uploadedFile && this.objectUrl) {
+      URL.revokeObjectURL(this.objectUrl);
+      this.objectUrl = null;
+    }
+    this.uploadedFile = null;
+
+    const imageUrl = `${environment.apiUrl}${avatar.iconUri}`;
     this.store.dispatch(
-      ProfilePhotoActions.selectDefaultAvatarRequest({ avatarId })
+      ProfilePhotoActions.selectDefaultAvatar({ avatarId, imageUrl })
     );
   }
 

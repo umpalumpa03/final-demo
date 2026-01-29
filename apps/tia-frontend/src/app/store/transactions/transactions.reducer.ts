@@ -1,33 +1,25 @@
 import { createReducer, on } from '@ngrx/store';
-
 import { TransactionActions } from './transactions.actions';
-import {
-  TransactionFilter,
-  TransactionInterface,
-} from '../../features/bank/transactions/models/transactions.models';
+import { transactionInitialState } from './config/transaction-state-config';
 
 export const TRANSACTION_FEATURE_KEY = 'transactions';
 
-export interface TransactionState {
-  items: TransactionInterface[];
-  nextCursor: string | null;
-  filters: TransactionFilter;
-  isLoading: boolean;
-  error: unknown;
-}
-
-export const initialState: TransactionState = {
-  items: [],
-  nextCursor: null,
-  filters: {
-    pageLimit: 20,
-  },
-  isLoading: false,
-  error: null,
-};
-
 export const transactionReducer = createReducer(
-  initialState,
+  transactionInitialState,
+
+  on(TransactionActions.enter, (state) => ({
+    ...state,
+    items: [],
+    nextCursor: null,
+    total: 0,
+    isLoading: true,
+  })),
+
+  on(TransactionActions.loadMore, (state) => ({
+    ...state,
+    isLoading: true,
+    error: null,
+  })),
 
   on(TransactionActions.updateFilters, (state, { filters }) => ({
     ...state,
@@ -53,5 +45,10 @@ export const transactionReducer = createReducer(
     ...state,
     isLoading: false,
     error,
+  })),
+
+  on(TransactionActions.loadTotalSuccess, (state, { total }) => ({
+    ...state,
+    total,
   })),
 );

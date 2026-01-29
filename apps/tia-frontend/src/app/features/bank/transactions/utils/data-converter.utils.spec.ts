@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TransactionInterface } from '../models/transactions.models';
+import { ITransactions  } from '../models/transactions.models';
 import { convertTransactionData } from './data-converter.utils';
 
 describe('convertTransactionData', () => {
@@ -14,7 +14,7 @@ describe('convertTransactionData', () => {
       amount: 100,
       currency: 'USD',
       createdAt: '2024-01-01',
-    } as TransactionInterface;
+    } as ITransactions ;
 
     const result = convertTransactionData(transaction);
 
@@ -42,7 +42,7 @@ describe('convertTransactionData', () => {
       amount: 2500,
       currency: 'EUR',
       createdAt: '2024-01-02',
-    } as TransactionInterface;
+    } as ITransactions ;
 
     const result = convertTransactionData(transaction);
 
@@ -61,7 +61,7 @@ describe('convertTransactionData', () => {
       amount: 10,
       currency: 'GEL',
       createdAt: '2024-01-03',
-    } as TransactionInterface;
+    } as ITransactions ;
 
     const result = convertTransactionData(transaction);
 

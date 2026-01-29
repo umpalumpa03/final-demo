@@ -1,3 +1,4 @@
+import { TransactionState } from './models/transactions-store.models';
 import {
   selectItems,
   selectIsLoading,
@@ -6,7 +7,6 @@ import {
   selectError,
   selectTransactionViewModel,
 } from './transactions.selector';
-import { TransactionState } from './transactions.reducer';
 import { describe, it, expect } from 'vitest';
 
 describe('Transaction Selectors', () => {

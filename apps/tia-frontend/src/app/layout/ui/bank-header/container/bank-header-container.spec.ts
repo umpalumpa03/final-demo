@@ -19,7 +19,9 @@ describe('BankHeaderContainer', () => {
     };
 
     mockInbox = {
-      getInboxCount: vi.fn(() => of({ count: 12 })),
+      fetchInboxCount: vi.fn(), 
+      inboxCount: vi.fn(() => 12), 
+      getInboxCount: vi.fn(() => of({ count: 12 })), 
     };
 
     mockStore = {
