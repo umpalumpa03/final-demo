@@ -3,6 +3,8 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ILoan, LoanMonthsResponse } from '../models/loan.model';
 import { environment } from '../../../../../../environments/environment';
+import { LoanPurpose } from '../models/loan-request.model';
+import { PrepaymentOption } from '../models/prepayment.model';
 
 @Injectable()
 export class LoansService {
@@ -33,5 +35,15 @@ export class LoansService {
 
   public getLoanMonths(): Observable<LoanMonthsResponse> {
     return this.http.get<LoanMonthsResponse>(`${this.loansApiUrl}/loan-months`);
+  }
+
+  public getPurposes(): Observable<LoanPurpose[]> {
+    return this.http.get<LoanPurpose[]>(`${this.loansApiUrl}/catalog/purposes`);
+  }
+
+  public getPrepaymentOptions(): Observable<PrepaymentOption[]> {
+    return this.http.get<PrepaymentOption[]>(
+      `${this.loansApiUrl}/loan-prepayment-options`,
+    );
   }
 }

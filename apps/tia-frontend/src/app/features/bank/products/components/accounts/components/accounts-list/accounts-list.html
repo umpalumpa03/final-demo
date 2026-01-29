@@ -1,0 +1,57 @@
+<div class="accounts-list">
+  <div class="accounts-list__header">
+    <div class="accounts-list__header-info">
+      <h1 class="accounts-list__header-title">My Accounts</h1>
+      <p class="accounts-list__header-subtitle">Manage your bank accounts</p>
+    </div>
+    <app-button
+      [variant]="'default'"
+      [icon]="'plus-icon.svg'"
+      (click)="handleOpenModal()"
+    >
+      New Account
+    </app-button>
+  </div>
+
+  @if (error(); as errorMsg) {
+  <div class="accounts-list__error">
+    <h3 class="accounts-list__error-title">Error Loading Accounts</h3>
+    <app-button [variant]="'default'" (click)="handleRetry()">
+      Retry
+    </app-button>
+  </div>
+  } @else if (isLoading()) {
+  <app-route-loader [variant]="'full-page'" [text]="'Loading accounts...'" />
+  } @else { @if (accountsGrouped(); as grouped) { @for (section of
+  accountSections(); track section.key) { @if (grouped[section.key].length > 0)
+  {
+  <section class="accounts-list__section">
+    <div class="accounts-list__section-header">
+      <img [src]="section.icon" alt="" class="accounts-list__section-icon" />
+      <h2 class="accounts-list__section-title">{{ section.title }}</h2>
+      <span class="accounts-list__section-count"
+        >{{ grouped[section.key].length }}</span
+      >
+    </div>
+    <div class="accounts-list__section-grid">
+      @for (account of grouped[section.key]; track account.id) {
+      <app-account-card
+        [account]="account"
+        (transfer)="handleTransfer($event)"
+      />
+      }
+    </div>
+  </section>
+  } } @if (grouped.current.length === 0 && grouped.saving.length === 0 &&
+  grouped.card.length === 0) {
+
+  <app-error-states
+    [variant]="'not-found'"
+    [header]="'No accounts found'"
+    [message]="'Create your first account to get started'"
+    [buttonMessage]="'Create Account'"
+    (buttonClick)="handleOpenModal()"
+  >
+  </app-error-states>
+  } } }
+</div>

@@ -1,27 +1,49 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { TestBed } from '@angular/core/testing';
 import { TransfersContainer } from './transfers-container';
+import { TranslateService } from '@ngx-translate/core';
 import { provideRouter } from '@angular/router';
-import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('TransfersContainer', () => {
-  let component: TransfersContainer;
-  let fixture: ComponentFixture<TransfersContainer>;
+  let translateService: TranslateService;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [TransfersContainer],
-      providers: [provideRouter([])],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(TransfersContainer);
-    component = fixture.componentInstance;
+      providers: [
+        provideRouter([]),
+        {
+          provide: TranslateService,
+          useValue: { instant: vi.fn((key: string) => key) },
+        },
+      ],
+    });
+    translateService = TestBed.inject(TranslateService);
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    const fixture = TestBed.createComponent(TransfersContainer);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should have transferTabs', () => {
-    expect(component.transferTabs()).toBeDefined();
+  it('should initialize transferTabs signal with tabs from config', () => {
+    const fixture = TestBed.createComponent(TransfersContainer);
+    const tabs = fixture.componentInstance.transferTabs();
+
+    expect(Array.isArray(tabs)).toBe(true);
+    expect(tabs.length).toBeGreaterThan(0);
+  });
+
+  it('should inject TranslateService and use it for tabs', () => {
+    TestBed.createComponent(TransfersContainer);
+    expect(translateService.instant).toHaveBeenCalled();
+  });
+
+  it('should have transferTabs as readonly signal', () => {
+    const fixture = TestBed.createComponent(TransfersContainer);
+    const tabs = fixture.componentInstance.transferTabs;
+
+    expect(typeof tabs).toBe('function');
+    expect(tabs()).toBeDefined();
   });
 });

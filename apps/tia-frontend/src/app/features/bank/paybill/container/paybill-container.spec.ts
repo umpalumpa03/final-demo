@@ -23,9 +23,9 @@ describe('PaybillContainer', () => {
   let routerEventsSubject: Subject<Event>;
 
   const mockProvider: PaybillProvider = {
-    serviceId: 'p1',
+    id: 'p1',
     serviceName: 'Water Co',
-    category: 'utilities',
+    categoryId: 'utilities',
   };
 
   const mockCategory: PaybillCategory = {

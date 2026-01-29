@@ -34,5 +34,30 @@ export const selectLoanMonths = createSelector(
 
 export const selectLoanMonthsOptions = createSelector(
   selectLoanMonths,
-  (months) => months.map((m) => ({ label: `${m} Months`, value: m })),
+  (months) =>
+    (months || []).map((m) => ({
+      label: `${m} Months`,
+      value: m,
+    })),
+);
+
+export const selectPurposeOptions = createSelector(
+  selectLoansState,
+  (state) => {
+    return (state.purposes || []).map((purpose) => ({
+      label: purpose.displayText,
+      value: purpose.value,
+    }));
+  },
+);
+
+export const selectPrepaymentTypeOptions = createSelector(
+  selectLoansState,
+  (state) =>
+    state.prepaymentOptions
+      .filter((opt) => opt.isActive)
+      .map((opt) => ({
+        label: opt.prepaymentDisplayName,
+        value: opt.prepaymentValue,
+      })),
 );

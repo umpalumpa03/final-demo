@@ -24,3 +24,8 @@ export interface IDropdownOption {
   label: string;
   value: string | number;
 }
+
+export interface LoanPurpose {
+  value: string;
+  displayText: string;
+}

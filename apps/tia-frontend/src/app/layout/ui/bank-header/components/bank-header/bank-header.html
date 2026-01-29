@@ -9,6 +9,13 @@
         src="images/svg/bank-header/header-messaging.svg"
         alt="messaging icon"
       />
+      @if (hasInboxMessages()) {
+      <app-badges
+        variant="destructive"
+        [text]="inboxCount().toString()"
+        shape="rounded"
+      ></app-badges>
+      }
     </div>
     <div class="bank-header-wrapper__container__notifications" #bell>
       <img
@@ -18,6 +25,7 @@
       />
       @if (hasUnread()) {
       <span class="badge"></span>
+
       }
     </div>
     <div

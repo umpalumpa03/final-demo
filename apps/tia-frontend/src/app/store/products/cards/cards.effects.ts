@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of, mergeMap, forkJoin } from 'rxjs';
+import { of, mergeMap, forkJoin, EMPTY } from 'rxjs';
 import { map, catchError, switchMap } from 'rxjs/operators';
 import { CardListService } from '../../../features/bank/products/components/cards/services/card-list.service';
 import * as CardsActions from './cards.actions';
@@ -27,11 +27,11 @@ export class CardsEffects {
   loadCardImages$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CardsActions.loadCardAccountsSuccess),
-
       switchMap(({ accounts }) => {
         const allCardIds = accounts.flatMap((account) => account.cardIds);
+
         if (allCardIds.length === 0) {
-          return of([]);
+          return EMPTY;
         }
 
         return forkJoin(
@@ -53,6 +53,27 @@ export class CardsEffects {
         );
       }),
       mergeMap((actions) => actions),
+    ),
+  );
+
+  loadCardDetails$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CardsActions.loadCardDetails),
+      mergeMap(({ cardId }) =>
+        this.cardListService.getCardDetails(cardId).pipe(
+          map((details) =>
+            CardsActions.loadCardDetailsSuccess({ cardId, details }),
+          ),
+          catchError((error) =>
+            of(
+              CardsActions.loadCardDetailsFailure({
+                cardId,
+                error: error.message,
+              }),
+            ),
+          ),
+        ),
+      ),
     ),
   );
 }

@@ -1,0 +1,16 @@
+<main class="external-recipient">
+  <header class="external-recipient__header">
+    <h1 class="external-recipient__title">
+      {{'transfers.external.recipient.title' | translate}}
+    </h1>
+  </header>
+  <div class="external-recipient__form">
+    <div class="external-recipient__input">
+      <lib-text-input [config]="recipientInputConfig"></lib-text-input>
+    </div>
+    <app-button>
+      Verify Recipient
+      <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />
+    </app-button>
+  </div>
+</main>

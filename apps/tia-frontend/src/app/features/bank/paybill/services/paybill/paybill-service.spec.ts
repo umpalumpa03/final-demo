@@ -6,6 +6,7 @@ import {
 } from '@angular/common/http/testing';
 import { PaybillService } from './paybill-service';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { environment } from '../../../../../../environments/environment';
 
 describe('PaybillService', () => {
   let service: PaybillService;
@@ -44,5 +45,19 @@ describe('PaybillService', () => {
     );
     expect(req.request.method).toBe('GET');
     req.flush(mockCategories);
+  });
+
+  it('should call checkBill with correct payload and URL', () => {
+    const mockResponse = { valid: true };
+    service.checkBill('power-1', '012345').subscribe((res) => {
+      expect(res).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/paybill/check-bill`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body.serviceId).toBe('power-1');
+    expect(req.request.body.identification.accountNumber).toBe('012345');
+
+    req.flush(mockResponse);
   });
 });

@@ -5,6 +5,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { provideRouter, Router, ActivatedRoute } from '@angular/router';
 import * as PAYBILL_SELECTORS from '../../store/paybill.selectors';
 import { PaybillCategory } from '../../models/paybill.model';
+import { PaybillActions } from '../../store/paybill.actions';
 
 describe('PaybillMain', () => {
   let component: PaybillMain;
@@ -63,7 +64,7 @@ describe('PaybillMain', () => {
           description: 'desc',
           servicesQuantity: 2,
           providers: [
-            { serviceId: 'p1', serviceName: 'Provider 1', category: 'phone' },
+            { id: 'p1', serviceName: 'Provider 1', categoryId: 'phone' },
           ],
         },
       ];
@@ -134,6 +135,33 @@ describe('PaybillMain', () => {
       expect(navigateSpy).toHaveBeenCalledWith(['utilities'], {
         relativeTo: route,
       });
+    });
+
+    it('should dispatch checkBill on verifyAccount', () => {
+      const spy = vi.spyOn(store, 'dispatch');
+      vi.spyOn(component, 'activeProvider').mockReturnValue({
+        id: 'p1',
+      } as any);
+
+      component.onVerifyAccount({ accountNumber: '12345' });
+
+      expect(spy).toHaveBeenCalledWith(
+        PaybillActions.checkBill({ serviceId: 'p1', accountNumber: '12345' }),
+      );
+    });
+
+    it('should navigate to category and provider on selectProvider', () => {
+      const navSpy = vi.spyOn(router, 'navigate');
+      vi.spyOn(component, 'activeCategory').mockReturnValue({
+        id: 'internet',
+      } as any);
+
+      component.selectProvider('netflow');
+
+      expect(navSpy).toHaveBeenCalledWith(
+        ['internet', 'netflow'],
+        expect.anything(),
+      );
     });
   });
 });

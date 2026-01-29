@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import * as Selectors from './loans.selectors';
 import { ILoan, ILoansState } from '../shared/models/loan.model';
+import { loansInitialState } from './loans.state';
 
 describe('Loans Selectors', () => {
   const mockLoans: ILoan[] = [
@@ -46,10 +47,11 @@ describe('Loans Selectors', () => {
   ];
 
   const initialState: ILoansState = {
+    ...loansInitialState,
     loans: mockLoans,
     loading: true,
-    error: null,
-    filterStatus: null,
+    purposes: [],
+    prepaymentOptions: [],
     months: [],
   };
 
@@ -93,5 +95,10 @@ describe('Loans Selectors', () => {
       pending: 1,
       declined: 1,
     });
+  });
+
+  it('should return empty purpose options when purposes are empty', () => {
+    const result = Selectors.selectPurposeOptions(rootState);
+    expect(result).toEqual([]);
   });
 });

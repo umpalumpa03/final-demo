@@ -23,7 +23,7 @@
   &__link {
     @include flex-center(row, start);
     gap: 1.2rem;
-    padding: 1.1rem 1.6rem;
+    padding: 1.1rem 1.6rem 1.1rem 2.6rem;
     @include font-arimo(400, 1.4rem, 2rem);
     cursor: pointer;
     text-align: left;
@@ -101,12 +101,6 @@
   }
 
   &--collapsed {
-    .navigation__link {
-      justify-content: center;
-      padding: 1.2rem;
-      min-height: 4.2rem;
-    }
-
     .navigation__item {
       padding-right: 0;
     }
