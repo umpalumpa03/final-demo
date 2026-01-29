@@ -123,7 +123,7 @@ describe('ProfilePhotoContainer', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
     const avatars: DefaultAvatarResponse[] = [
       { id: 'avatar-1', iconUri: '/avatars/1.png' },
-      { id: 'avatar-2', iconUri: '/avatars/2.png' },
+  
     ];
 
     store.overrideSelector(selectDefaultAvatars, avatars);
