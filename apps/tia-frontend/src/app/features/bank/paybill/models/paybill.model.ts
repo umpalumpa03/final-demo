@@ -26,6 +26,8 @@ export interface PaybillState {
   error: string | null;
   selectedProvider: PaybillProvider | null;
   verifiedDetails: BillDetails | null;
+  currentStep: string;
+  paymentPayload: string | null;
 }
 
 export interface BillDetails {

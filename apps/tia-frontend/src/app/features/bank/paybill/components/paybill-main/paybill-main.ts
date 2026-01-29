@@ -12,10 +12,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProviderList } from './components/provider-list/provider-list';
 import { PaybillForm } from './components/paybill-form/paybill-form';
 import { PaybillActions } from '../../store/paybill.actions';
+import { PaybillOtpVerification } from "./components/paybill-otp-verification/paybill-otp-verification";
 
 @Component({
   selector: 'app-paybill-main',
-  imports: [CategoryGrid, ProviderList, PaybillForm],
+  imports: [CategoryGrid, ProviderList, PaybillForm, PaybillOtpVerification],
   templateUrl: './paybill-main.html',
   styleUrl: './paybill-main.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,6 +25,13 @@ export class PaybillMain {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+
+  public readonly currentStep = this.store.selectSignal(
+    PAYBILL_SELECTORS.selectCurrentStep,
+  );
+  public readonly paymentPayload = this.store.selectSignal(
+    PAYBILL_SELECTORS.selectPaymentPayload,
+  );
 
   // States
 
@@ -43,8 +51,6 @@ export class PaybillMain {
   public readonly isLoading = this.store.selectSignal(
     PAYBILL_SELECTORS.selectLoading,
   );
-
-  
 
   public readonly formattedCategories = computed(() => {
     return this.categories().map((cat) => {
@@ -103,7 +109,16 @@ export class PaybillMain {
     accountNumber: string;
     amount: number;
   }): void {
-    // PLACEHOLDER
+    this.store.dispatch(PaybillActions.setPaymentPayload({ data }));
+    this.store.dispatch(PaybillActions.setPaymentStep({ step: 'OTP' }));
+  }
+
+  public onPaymentMethodSelected(): void {
+    this.store.dispatch(PaybillActions.setPaymentStep({ step: 'SUCCESS' }));
+  }
+
+  public onBackToDetails(): void {
+    this.store.dispatch(PaybillActions.setPaymentStep({ step: 'DETAILS' }));
   }
 
   public readonly activeCategoryUI = computed(() => {

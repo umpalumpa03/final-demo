@@ -101,3 +101,13 @@ export const selectVerifiedDetails = createSelector(
   selectPaybillState,
   (state) => state.verifiedDetails,
 );
+
+export const selectCurrentStep = createSelector(
+  selectPaybillState,
+  (state) => state.currentStep,
+);
+
+export const selectPaymentPayload = createSelector(
+  selectPaybillState,
+  (state) => state.paymentPayload,
+);
