@@ -1,1 +1,39 @@
-<p>prepayment-review works!</p>
+<div class="step-container">
+
+    <header class="step-header">
+        <div class="icon-wrapper">
+            <img src="assets/icons/feature-loans/calculation.svg" alt="Review">
+            <h3>Prepayment Calculation</h3>
+        </div>
+        <p>Review the prepayment details and proceed</p>
+    </header>
+
+    <div class="step-body">
+        <h4 class="section-title">Prepayment Information</h4>
+
+        <div class="info-grid">
+            @for (item of calculationResult().displayedInfo; track item.text) {
+            <div class="info-card">
+                <span class="info-card__label">{{ item.text }}</span>
+
+                <strong class="info-card__value">
+                    @if (isCurrency(item.text)) {
+                    {{ item.amount | currency:'USD':'symbol':'1.0-2' }}
+                    } @else {
+                    {{ item.amount }}
+                    }
+                </strong>
+            </div>
+            }
+        </div>
+    </div>
+
+    <footer class="step-footer">
+        <app-button variant="outline" (click)="cancel.emit()">Cancel</app-button>
+
+        <app-button variant="default" icon="arrow-right.svg" (click)="confirmPay.emit()">
+            Pay
+        </app-button>
+    </footer>
+
+</div>
