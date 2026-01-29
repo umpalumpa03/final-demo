@@ -58,9 +58,7 @@ export class Accounts implements OnInit {
     this.store.dispatch(AccountsActions.createAccount({ request }));
   }
 
-  public handleTransfer(accountId: string): void {
-    console.log('Transfer', accountId);
-  }
+  public handleTransfer(accountId: string): void {}
 
   public handleRetry(): void {
     this.store.dispatch(AccountsActions.loadAccounts());

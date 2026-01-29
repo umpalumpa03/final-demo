@@ -14,7 +14,12 @@ export class AccountsService {
   private readonly apiUrl = `${environment.apiUrl}/accounts`;
 
   public getAccounts(): Observable<AccountsResponse> {
-    return this.http.get<AccountsResponse>(this.apiUrl);
+    return this.http.get<AccountsResponse>(this.apiUrl, {
+      params: {
+        ignoreHiddens: 'true',
+        status: 'active',
+      },
+    });
   }
 
   public getAccountById(accountId: string): Observable<Account> {
