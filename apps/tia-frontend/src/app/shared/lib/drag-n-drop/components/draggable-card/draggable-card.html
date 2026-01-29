@@ -2,6 +2,7 @@
   class="draggable-card"
   [class.dragging]="computedIsDragging()"
   [class.drop-target]="computedIsDropTarget()"
+  [class.min-height]="hasMinHeight()"
 >
   <div class="draggable-card__default-content">
     <div class="draggable-card__draggable">
@@ -31,11 +32,16 @@
       <div class="draggable-card__content">
         @if (itemData().icon) {
         <img [src]="itemData().icon" alt="content icon" />
-        }
+        } @if(showHeadings()){
         <div class="draggable-card__info">
           <p class="draggable-card__title">{{ itemData().title }}</p>
           <p class="draggable-card__subtitle">{{ itemData().subtitle }}</p>
         </div>
+        }@else{
+        <div class="draggable-card__info">
+          <p class="draggable-card__title__custom">{{ itemData().title }}</p>
+        </div>
+        }
       </div>
     </div>
 
