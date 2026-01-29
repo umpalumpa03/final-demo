@@ -1,6 +1,7 @@
 import { createAction, props } from '@ngrx/store';
-import { CardAccount } from '../../../features/bank/products/components/cards/models/card-account.model';
-import { CardDetail } from '../../../features/bank/products/components/cards/models/card-detail.model';
+import { CardAccount } from '@tia/shared/models/cards/card-account.model';
+import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
+
 
 export const loadCardAccounts = createAction('[Cards] Load Card Accounts');
 

@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { CardsState } from './cards.state';
-import { CardGroup } from '../../../features/bank/products/components/cards/models/card-group.model';
+import { CardGroup } from '@tia/shared/models/cards/card-group.model';
 
 export const selectCardsState = createFeatureSelector<CardsState>('cards');
 
@@ -67,5 +67,31 @@ export const selectCardDetailsByAccountId = (accountId: string) =>
           imageBase64: cardImages[cardId],
         }))
         .filter((card) => card.details && card.imageBase64);
+    }
+  );
+  export const selectCardDetailsLoading = createSelector(
+  selectCardsState,
+  (state) => state.cardDetailsLoading
+);
+
+export const selectCardDetailsError = createSelector(
+  selectCardsState,
+  (state) => state.cardDetailsError
+);
+export const selectCardDetailById = (cardId: string) =>
+  createSelector(
+    selectCardDetails,
+    selectCardImages,
+    (cardDetails, cardImages) => {
+      const details = cardDetails[cardId];
+      const image = cardImages[cardId];
+      
+      if (!details || !image) return null;
+      
+      return {
+        cardId,
+        details,
+        imageBase64: image,
+      };
     }
   );
