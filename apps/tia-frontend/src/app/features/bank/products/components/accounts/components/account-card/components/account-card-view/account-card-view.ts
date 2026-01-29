@@ -23,8 +23,13 @@ export class AccountCardViewComponent {
   public formattedDate = input.required<string>();
 
   public transfer = output<void>();
+  public rename = output<void>();
 
   public handleTransfer(): void {
     this.transfer.emit();
+  }
+
+  public handleRename(): void {
+    this.rename.emit();
   }
 }

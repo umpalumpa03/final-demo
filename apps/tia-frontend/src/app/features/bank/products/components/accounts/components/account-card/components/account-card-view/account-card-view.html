@@ -5,7 +5,15 @@
         <img [src]="accountIcon()" [alt]="account().type + ' account icon'" />
       </div>
       <div class="account-card__header-info">
-        <h3 class="account-card__header-info-name">
+        <h3
+          class="account-card__header-info-name account-card__header-info-name--clickable"
+          (click)="handleRename()"
+          role="button"
+          tabindex="0"
+          (keydown.enter)="handleRename()"
+          (keydown.space)="handleRename()"
+          title="Click to rename account"
+        >
           @if (account().friendlyName) { {{ account().friendlyName }} } @else {
           {{ account().name }} }
         </h3>
