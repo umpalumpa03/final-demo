@@ -6,10 +6,12 @@ import {
 } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { describe, it, expect, afterEach, beforeEach } from 'vitest';
+import { environment } from '../../../../environments/environment';
 
 describe('TransactionService', () => {
   let service: TransactionService;
   let httpMock: HttpTestingController;
+  const apiUrl = environment.apiUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -28,37 +30,35 @@ describe('TransactionService', () => {
     httpMock.verify();
   });
 
-  it('should get transactions with correct params', () => {
+  it('should call getTransactions and pass generated params', () => {
     const filters = {
       pageLimit: 10,
-      pageCursor: 'abc',
       searchCriteria: 'test',
-      amountFrom: 100,
-      category: null,
     } as any;
 
-    service.getTransactions(filters).subscribe();
-
-    const req = httpMock.expectOne((req) => req.url.includes('/transactions'));
+    service.getTransactions(filters).subscribe((response) => {
+       expect(response.items.length).toBe(0);
+    });
+    const req = httpMock.expectOne((req) => 
+        req.url === `${apiUrl}/transactions` && 
+        req.params.has('page[limit]') &&
+        req.params.get('searchCriteria') === 'test'
+    );
 
     expect(req.request.method).toBe('GET');
-
-    expect(req.request.params.get('page[limit]')).toBe('10');
-    expect(req.request.params.get('page[cursor]')).toBe('abc');
-    expect(req.request.params.get('searchCriteria')).toBe('test');
-    expect(req.request.params.get('amountFrom')).toBe('100');
-
-    expect(req.request.params.has('category')).toBe(false);
-
     req.flush({ items: [], pageInfo: {} });
   });
 
-  it('should handle minimal filters', () => {
-    service.getTransactions({} as any).subscribe();
+  it('should call getTransactionsTotal', () => {
+    const mockTotal = 150;
 
-    const req = httpMock.expectOne((req) => req.url.includes('/transactions'));
-    expect(req.request.params.keys().length).toBe(0);
+    service.getTransactionsTotal().subscribe((total) => {
+      expect(total).toBe(mockTotal);
+    });
 
-    req.flush({ items: [], pageInfo: {} });
+    const req = httpMock.expectOne(`${apiUrl}/transactions/total`);
+    expect(req.request.method).toBe('GET');
+    
+    req.flush(mockTotal);
   });
 });

@@ -38,7 +38,8 @@
         "profilePictureChangedSuccessfully": "პროფილის ფოტო წარმატებით შეიცვალა",
         "profilePictureRemovedSuccessfully": "პროფილის ფოტო წარმატებით წაიშლა",
         "change": "შენახვა",
-        "remove": "ფოტოს წაშლა"
+        "remove": "ფოტოს წაშლა",
+        "invalidFileAlert": "გთხოვთ აირჩიოთ ნაგულისხმები ფოტო (PNG ან JPG ფორმატი, მაქსიმალური ზომა — 1 MB)"
     },
     "security": {
         "title": "უსაფრთხოების პარამეტრები",

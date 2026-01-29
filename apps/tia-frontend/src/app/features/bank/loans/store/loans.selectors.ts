@@ -61,3 +61,8 @@ export const selectPrepaymentTypeOptions = createSelector(
         value: opt.prepaymentValue,
       })),
 );
+
+export const selectCalculationResult = createSelector(
+  selectLoansState,
+  (state) => state.calculationResult,
+);
