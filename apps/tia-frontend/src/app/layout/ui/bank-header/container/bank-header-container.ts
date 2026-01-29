@@ -6,12 +6,15 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { BankHeader } from '../components/bank-header/bank-header';
 import { HeaderNotifications } from '../components/header-notifications/header-notifications';
 import { Notifications } from '../service/notifications';
 import { Observable, tap } from 'rxjs';
 import { NotificationsData } from '../modals/notification.model';
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
+import { selectCurrentAvatarUrl } from '../../../../store/profile-photo/profile-photo.selectors';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-bank-header-container',
@@ -21,6 +24,7 @@ import { InboxService } from '@tia/shared/services/messages/inbox.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BankHeaderContainer implements OnInit {
+  private store = inject(Store);
   public headerNotificationService = inject(Notifications);
   public inboxService = inject(InboxService);
 
@@ -29,6 +33,7 @@ export class BankHeaderContainer implements OnInit {
   public isModalOpen = signal<boolean>(false);
   public notificationsItems$!: Observable<NotificationsData>;
   public inboxCount = signal<number>(0);
+  public avatarUrl = toSignal(this.store.select(selectCurrentAvatarUrl));
 
   ngOnInit(): void {
     this.headerNotificationService
