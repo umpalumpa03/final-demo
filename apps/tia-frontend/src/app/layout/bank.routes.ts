@@ -15,6 +15,7 @@ import { LoanCreateEffects } from '../store/loans/loans.effects';
 import { loansFeature } from '../store/loans/loans.reducer';
 import { accountsReducer } from '../store/products/accounts/accounts.reducer';
 import { AccountsEffects } from '../store/products/accounts/accounts.effects';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 export const bankRoutes: Routes = [
   {
     path: 'bank',
@@ -77,7 +78,11 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'finances',
-        providers: [FinancesStore, FinancesService,provideCharts(withDefaultRegisterables())],
+        providers: [
+          FinancesStore,
+          FinancesService,
+          provideCharts(withDefaultRegisterables()),
+        ],
         loadComponent: () =>
           import('../features/bank/finances/container/finances-container').then(
             (c) => c.FinancesContainer,
