@@ -8,6 +8,7 @@ import {
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { VERIFY_LOAN } from '../../../config/loan-verify.config';
 
 @Component({
   selector: 'app-verify',
@@ -18,6 +19,8 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 })
 export class Verify {
   private fb = inject(FormBuilder);
+
+  public inputConfig = VERIFY_LOAN;
 
   public cancel = output<void>();
   public verify = output<string>();
@@ -31,7 +34,6 @@ export class Verify {
       this.form.markAllAsTouched();
       return;
     }
-    // Emit the OTP value to the parent
     this.verify.emit(this.form.controls.otp.value!);
   }
 }

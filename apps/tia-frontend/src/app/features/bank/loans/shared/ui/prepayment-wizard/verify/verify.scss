@@ -2,7 +2,7 @@
 @use "../../../../../../../shared/styles/mixins" as *;
 
 .otp-step {
-    @include display-flex(column);
+    @include display-flex(column, wrap);
     height: 100%;
     gap: 1.6rem;
 
@@ -15,9 +15,7 @@
                 gap: 0.8rem;
 
                 img {
-                    width: 2rem;
-                    height: 2rem;
-                    flex-shrink: 0;
+                    @include svg-icon;
                 }
 
                 h3 {
@@ -44,19 +42,16 @@
     &__section-title {
         color: $blue-1000;
         @include font-inter(600, 1.6rem);
-        margin: 0 0 1.2rem 0;
     }
 
     &__form {
         width: 100%;
         max-width: 40rem;
+        @include display-flex(column);
+        gap: 1.6rem;
     }
 
     &__footer {
-        display: flex;
-        justify-content: flex-end;
-        gap: 1.6rem;
-        padding-top: 2.4rem;
-        margin-top: auto;
+        @include flex-center($justify: flex-end);
     }
 }
