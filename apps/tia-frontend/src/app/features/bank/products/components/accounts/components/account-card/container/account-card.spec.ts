@@ -18,8 +18,8 @@ describe('AccountCardComponent', () => {
     iban: 'DE89370400440532013000',
     name: 'Test Account',
     status: 'active',
-    createdAt: '2024-01-01',
-    openedAt: '2024-01-01',
+    createdAt: '2026-01-01',
+    openedAt: '2026-01-01',
     closedAt: '',
     isFavorite: false,
   };
