@@ -25,10 +25,17 @@ import {
   PrepaymentCalculationPayload,
   IInitiatePrepaymentRequest,
 } from '../../../models/prepayment.model';
+import { BasicAlerts } from '@tia/shared/lib/alerts/components/basic-alerts/basic-alerts';
 
 @Component({
   selector: 'app-prepayment-container',
-  imports: [CommonModule, PrepaymentOptionStep, PrepaymentReview, Verify],
+  imports: [
+    CommonModule,
+    PrepaymentOptionStep,
+    PrepaymentReview,
+    Verify,
+    BasicAlerts,
+  ],
   templateUrl: './prepayment-container.html',
   styleUrl: './prepayment-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,6 +45,7 @@ export class PrepaymentContainer implements OnInit {
 
   public loan = input.required<ILoan>();
   public close = output<void>();
+  public showOtpAlert = signal(false);
 
   public calculationResult = toSignal(
     this.store.select(selectCalculationResult),
@@ -55,7 +63,14 @@ export class PrepaymentContainer implements OnInit {
     });
 
     effect(() => {
-      if (this.activeChallengeId()) this.step.set('otp');
+      if (this.activeChallengeId()) {
+        this.step.set('otp');
+
+        this.showOtpAlert.set(true);
+        setTimeout(() => {
+          this.showOtpAlert.set(false);
+        }, 3000);
+      }
     });
   }
 

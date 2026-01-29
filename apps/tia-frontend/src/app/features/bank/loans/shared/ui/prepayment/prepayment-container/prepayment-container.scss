@@ -1,0 +1,28 @@
+.wizard-wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.wizard-alert {
+    position: absolute;
+    bottom: 2.4rem;
+    right: 2.4rem;
+
+    max-width: 40rem;
+    width: 100%;
+
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

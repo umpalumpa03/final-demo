@@ -1,4 +1,11 @@
 <div class="wizard-wrapper">
+    @if (showOtpAlert()) {
+    <div class="wizard-alert">
+        <app-basic-alerts [alertType]="'default'" [alertState]="'default'" [alertTitle]="'Success'"
+            [alertMessage]="'OTP Sent to your registered mobile number'">
+        </app-basic-alerts>
+    </div>
+    }
     @if (step() === 'options') {
     <app-prepayment-option-step [loan]="loan()" (cancel)="close.emit()" (calculate)="onCalculate($event)">
     </app-prepayment-option-step>
