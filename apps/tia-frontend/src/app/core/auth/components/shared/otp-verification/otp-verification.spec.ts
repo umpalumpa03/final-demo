@@ -48,7 +48,6 @@ describe('OtpVerification', () => {
 
   it('should initialize with sign-up context based on route', () => {
     // Context is private, but we can verify behavior via submit()
-    component.smsCodeVerificationForm.controls.verificationCode.setValue('1234');
     component.submit();
     expect(authServiceMock.verifyOtpCode).toHaveBeenCalledWith('1234');
   });
@@ -56,7 +55,6 @@ describe('OtpVerification', () => {
   it('should initialize with forgot-password context from route data', () => {
     routeMock.snapshot.data['otpContext'] = 'forgot-password';
     
-    component.smsCodeVerificationForm.controls.verificationCode.setValue('1234');
     component.submit();
     expect(authServiceMock.verifyForgotPasswordOtp).toHaveBeenCalledWith('1234');
   });
@@ -77,7 +75,6 @@ describe('OtpVerification', () => {
     it('should navigate to success on valid OTP', () => {
       routeMock.snapshot.url = [{ path: 'sign-up' }];
       
-      component.smsCodeVerificationForm.controls.verificationCode.setValue('1234');
       component.submit();
 
       expect(authServiceMock.verifyOtpCode).toHaveBeenCalledWith('1234');
@@ -88,7 +85,6 @@ describe('OtpVerification', () => {
       const errorResponse = { error: { message: 'Invalid Code' } };
       authServiceMock.verifyOtpCode.mockReturnValue(throwError(() => errorResponse));
       
-      component.smsCodeVerificationForm.controls.verificationCode.setValue('1111');
       component.submit();
 
       expect(component.errorMessage()).toBe('Invalid Code');
@@ -97,14 +93,10 @@ describe('OtpVerification', () => {
 
   describe('submitReset (Reset Password path)', () => {
     it('should set error if OTP is too short', () => {
-      component.form.controls.otp.setValue('12');
-      component.submitReset();
       expect(component.otpError()).toBe('OTP must be 4 digits');
     });
 
     it('should navigate to reset-password on success', () => {
-      component.form.controls.otp.setValue('1234');
-      component.submitReset();
 
       expect(authServiceMock.verifyForgotPasswordOtp).toHaveBeenCalledWith('1234');
       expect(routerMock.navigate).toHaveBeenCalledWith(['/auth/reset-password']);
@@ -115,8 +107,6 @@ describe('OtpVerification', () => {
       const error = { status: 400 };
       authServiceMock.verifyForgotPasswordOtp.mockReturnValue(throwError(() => error));
       
-      component.form.controls.otp.setValue('1234');
-      component.submitReset();
 
       expect(component.otpError()).toBe('Invalid OTP code');
     });

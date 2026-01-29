@@ -25,17 +25,6 @@ export class PhoneVerification implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  public from = signal<string>('unknown');
-
-  constructor() {
-    const nav = this.router.currentNavigation();
-    const source = nav?.extras.state?.['from'];
-    
-    if (source) {
-      this.from.set(source);
-    }
-  }
-
   public setPhoneNumberForm = this.fb.nonNullable.group({
     phoneNumber: ['', [Validators.required]],
   });
@@ -54,7 +43,7 @@ export class PhoneVerification implements OnInit {
         tap((res) => {
           this.errorMessage.set('');
           this.authService.setChellangeId(res.challengeId);
-          this.router.navigate(['/auth/otp'], { state: { from: 'sign-up' } });
+          this.router.navigate(['/auth/otp']);
         }),
         catchError((err) => {
           const messages = err.error?.message;
@@ -65,12 +54,5 @@ export class PhoneVerification implements OnInit {
         }),
       )
       .subscribe();
-  }
-  goBackToPreviousPage(){
-    if (this.from() === 'sign-in') {
-      this.router.navigate(['/auth/login']);
-    } else {
-      this.router.navigate(['auth/sign-up'])
-    }
   }
 }

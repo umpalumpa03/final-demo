@@ -54,10 +54,10 @@ export class AuthService {
         tap((res) => {
           if (res.status === 'mfa_required') {
             this.setChellangeId(res.challengeId!);
-            this.router.navigate(['/auth/otp-verify'], { state: { from: 'sign-in' } });
+            this.router.navigate(['/auth/otp-verify']);
           } else if (res.status === 'phone_verification_required') {
             this.tokenService.setVerifyToken(res.verification_token!);
-            this.router.navigate(['/auth/phone'], { state: { from: 'sign-in' } });
+            this.router.navigate(['/auth/phone']);
           }
         }),
         catchError((err) => {

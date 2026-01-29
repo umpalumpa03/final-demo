@@ -22,7 +22,7 @@ import {
   takeWhile,
   takeUntil,
 } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { forgotPasswordSegments } from 'apps/tia-frontend/src/app/core/auth/components/forgot-password/forgot-password.routes';
 import { OtpConfig } from '@tia/shared/lib/forms/models/otp.model';
@@ -44,19 +44,20 @@ import { AuthFromType } from '../../../models/auth.models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OtpVerification implements OnDestroy {
-  // gavitanot
   private readonly MAX_TIME = 60;
   private readonly CIRCUMFERENCE = 282.7;
 
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   readonly isSubmitting = signal(false);
   readonly resendMessage = signal<string | null>(null);
   readonly resendStatus = signal<'success' | 'error' | null>(null);
   readonly otpError = signal<string | null>(null);
 
-  public isResendDisabled = signal<boolean>(true);
+  public isResendDisabled = signal<boolean>(false);
+  public isTimerActive = signal<boolean>(false);
 
   private destroy$ = new Subject<void>();
 
@@ -71,20 +72,15 @@ export class OtpVerification implements OnDestroy {
 
   public errorMessage = signal<string>('');
 
-  public from = signal<AuthFromType>('sign-up');
+  public from = signal<string>('otp-sign-up');
 
   public strokeOffset = computed(() => {
     const progress = this.countdown() / this.MAX_TIME;
     return this.CIRCUMFERENCE * (1 - progress);
   });
 
-  constructor() {
-    const nav = this.router.currentNavigation();
-    const source = nav?.extras.state?.['from'];
 
-    if (source) {
-      this.from.set(source);
-    }
+  constructor() {
 
     effect(() => {
       this.countdown();
@@ -92,16 +88,23 @@ export class OtpVerification implements OnDestroy {
       if (this.countdown() === 0) {
         this.isResendDisabled.set(false);
       }
+
+      this.isResendDisabled.set(true)
+      this.isTimerActive.set(true)
     });
   }
 
   public ngOnInit() {
+    const source = this.route.snapshot.url[0].path;
+    if (source) {
+      this.from.set(source);
+    }
+
     this.startTimer();
   }
 
   public isLoading = computed(() => this.authService.isLoginLoading());
 
-  // Mock Version got code length:4, In task: 6
   public otpForm = this.fb.nonNullable.group({
     code: [
       '',
@@ -110,28 +113,28 @@ export class OtpVerification implements OnDestroy {
   });
 
   public submit(): void {
-    // this.otpError.set(null);
-    // this.otpForm.markAllAsTouched();
+    this.otpError.set(null);
+    this.otpForm.markAllAsTouched();
 
-    // const otpValue = this.otpForm.controls.code.value;
+    const otpValue = this.otpForm.controls.code.value;
 
-    // if (!otpValue) {
-    //   this.otpError.set('OTP is required');
-    //   return;
-    // }
+    if (!otpValue) {
+      this.otpError.set('OTP is required');
+      return;
+    }
 
     const context = this.from();
 
     switch (context) {
-      case 'sign-in':
+      case 'otp-sign-in':
         this.verifyOtp();
         break;
 
-      case 'forgot-password':
+      case 'otp-forgot-password':
         this.forgotPasswordVerification();
         break;
 
-      case 'sign-up':
+      case 'otp-sign-up':
       default:
         this.registerVerification();
         break;
