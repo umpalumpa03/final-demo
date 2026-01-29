@@ -1,0 +1,35 @@
+<app-basic-card class="paybill-card" maxWidth="91.2rem" padding="2.4rem">
+  <header class="otp-container__header">
+    <app-library-title
+      [title]="otpTitle"
+      [subtitle]="otpSubtitle"
+    ></app-library-title>
+  </header>
+
+  <app-alert-types-with-icons
+    alertType="information"
+    [alertMessage]="otpAlert"
+  ></app-alert-types-with-icons>
+
+  <app-payment-summary
+    [serviceName]="provider()?.name!"
+    [accountNumber]="summary().accountNumber"
+    [amount]="summary().amount"
+  ></app-payment-summary>
+
+  <div class="otp-wrapper">
+    <lib-otp [(value)]="currentCode"></lib-otp>
+  </div>
+
+  <footer class="otp-actions">
+    <app-button variant="secondary" (click)="cancelPayment.emit()"
+      >Cancel</app-button
+    >
+    <app-button
+      (click)="verify.emit(currentCode())"
+      [isDisabled]="currentCode().length < 6"
+    >
+      Verify & Continue
+    </app-button>
+  </footer>
+</app-basic-card>

@@ -27,7 +27,7 @@ export interface PaybillState {
   selectedProvider: PaybillProvider | null;
   verifiedDetails: BillDetails | null;
   currentStep: string;
-  paymentPayload: string | null;
+  paymentPayload: PaybillPayload | null;
 }
 
 export interface BillDetails {
@@ -41,4 +41,9 @@ export interface BillDetails {
   maxAmount?: number;
   error?: string;
   billPeriod?: string;
+}
+
+export interface PaybillPayload {
+  accountNumber: string;
+  amount: number;
 }

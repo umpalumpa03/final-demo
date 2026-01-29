@@ -1,0 +1,9 @@
+@use '../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../shared/styles/palette' as *;
+
+
+.otp-wrapper {
+  margin: 2.4rem 0;
+  @include flex-center(row, center);
+}
+

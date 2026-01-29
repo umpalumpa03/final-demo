@@ -3,11 +3,8 @@ activeProvider();
 
 <div class="paybill-main">
   <div class="paybill-main__stage-wrapper">
-    @if (provider && provider.id) {
-
-    @switch(currentStep()){
-      @case('DETAILS'){
-            <app-paybill-form
+    @if (provider && provider.id) { @switch(currentStep()){ @case('DETAILS'){
+    <app-paybill-form
       [provider]="provider"
       [verifiedDetails]="verifiedDetails()"
       [iconBgColor]="ui?.iconBgColor!"
@@ -15,16 +12,14 @@ activeProvider();
       (verify)="onVerifyAccount($event)"
       (pay)="onProceedToPayment($event)"
     />
-      }
-      @case('OTP'){
-        <app-paybill-otp-verification 
-            [summary]="paymentPayload()"
-            (verify)="onOtpVerified()"
-            (cancel)="onBackToDetails()"
-          />
-      }
-    }
-    }@else if (category) { @defer (on immediate) {
+    } @case('OTP'){
+    <app-paybill-otp-verification
+      [provider]="provider"
+      [summary]="paymentPayload()!"
+      (verify)="onOtpVerified()"
+      (cancel)="onBackToDetails()"
+    />
+    } } }@else if (category) { @defer (on immediate) {
     <app-provider-list
       [categoryName]="category.name"
       [providers]="category.providers || []"

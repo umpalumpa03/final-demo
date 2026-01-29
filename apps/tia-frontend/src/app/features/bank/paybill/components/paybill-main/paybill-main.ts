@@ -22,6 +22,9 @@ import { PaybillOtpVerification } from "./components/paybill-otp-verification/pa
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillMain {
+onOtpVerified() {
+throw new Error('Method not implemented.');
+}
   private readonly store = inject(Store);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
