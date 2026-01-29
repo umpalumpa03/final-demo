@@ -8,8 +8,6 @@ import { LoansContainer } from './container/loans-container';
 import { LoansService } from './shared/services/loans.service';
 import { AccountsEffects } from '../../../store/products/accounts/accounts.effects';
 import { accountsFeature } from '../../../store/products/accounts/accounts.reducer';
-import { loansFeature } from '../../../store/loans/loans.reducer';
-import { LoanCreateEffects } from '../../../store/loans/loans.effects';
 import { LoanCreateService } from '@tia/shared/services/loans/loan-create.service';
 
 export const loansRoutes: Routes = [
