@@ -10,25 +10,22 @@ import {
 } from '../store/transactions/transactions.reducer';
 import { FinancesStore } from '../features/bank/finances/store/finances.store';
 import { FinancesService } from '../features/bank/finances/services/finances.service';
-import {
-  accountsFeatureKey,
-  accountsReducer
-} from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
-import { AccountsEffects } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.effects';
 import { ExchangeRateReducer } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.reducers';
+import { accountsFeature, accountsReducer } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
 import { ExchangeRatesEffects } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.effects';
+import { AccountsEffects } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.effects';
+
 export const bankRoutes: Routes = [
   {
     path: 'bank',
     loadComponent: () =>
       import('./bank-container').then((c) => c.BankContainer),
     providers: [
-      provideState({ name: accountsFeatureKey, reducer: accountsReducer }),
-      provideEffects(AccountsEffects),
       provideState({ name: TRANSACTION_FEATURE_KEY, reducer: transactionReducer }),
-      provideEffects(transactionEffects),
       provideState({ name: 'ExchangeRates', reducer: ExchangeRateReducer }),
-      provideEffects(ExchangeRatesEffects),
+      provideState(accountsFeature),
+
+      provideEffects([ExchangeRatesEffects, AccountsEffects, transactionEffects])
     ],
     children: [
       {
@@ -56,13 +53,6 @@ export const bankRoutes: Routes = [
           import(
             '../features/bank/transactions/container/transactions-container'
           ).then((c) => c.TransactionsContainer),
-        providers: [
-          provideEffects(transactionEffects),
-          provideState({
-            name: TRANSACTION_FEATURE_KEY,
-            reducer: transactionReducer,
-          }),
-        ],
       },
       {
         path: 'transfers',

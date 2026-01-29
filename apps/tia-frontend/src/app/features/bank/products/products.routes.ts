@@ -24,13 +24,6 @@ export const productsRoutes: Routes = [
           import('./components/accounts/container/accounts').then(
             (c) => c.Accounts,
           ),
-        providers: [
-          provideState({ name: 'accounts', reducer: accountsReducer }),
-          provideEffects(AccountsEffects),
-          AccountsService,
-          AccountUtils,
-          FormatUtils,
-        ],
       },
       {
         path: 'cards',

@@ -6,7 +6,7 @@
     <p>Error: {{ error }}</p>
   }
   @for (account of accounts$ | async; track account.id) {
-    <div>{{ account.accountName }} - {{ account.balance }}</div>
+    <div>{{ account.friendlyName }} - {{ account.balance }}</div>
   }
 
   @for (transaction of transactions$ | async; track transaction.id) {
