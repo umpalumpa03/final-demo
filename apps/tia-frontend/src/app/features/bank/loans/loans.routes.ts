@@ -24,8 +24,6 @@ export const loansRoutes: Routes = [
       provideState(accountsFeature),
       provideEffects(AccountsEffects),
 
-      provideState(loansFeature),
-      provideEffects(LoanCreateEffects),
       LoanCreateService,
     ],
     children: [

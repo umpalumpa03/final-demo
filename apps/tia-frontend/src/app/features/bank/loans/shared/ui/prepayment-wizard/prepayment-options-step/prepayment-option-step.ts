@@ -16,7 +16,10 @@ import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { CommonModule } from '@angular/common';
 import { Radios } from '@tia/shared/lib/forms/radios/radios';
 import { RadioOption } from '@tia/shared/lib/forms/models/radios.model';
-import { PREPAYMENT_CALC_OPTIONS } from '../../../config/loan-prepayment.config';
+import {
+  PREPAYMENT_CALC_OPTIONS,
+  PREPAYMENT_FORM_CONFIG,
+} from '../../../config/loan-prepayment.config';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ILoan } from '../../../models/loan.model';
 import { PrepaymentCalculationPayload } from '../../../models/prepayment.model';
@@ -47,6 +50,7 @@ export class PrepaymentOptionStep {
   protected readonly typeOptions$: Observable<IDropdownOption[]> =
     this.store.select(selectPrepaymentTypeOptions);
 
+  protected readonly config = PREPAYMENT_FORM_CONFIG;
   protected readonly calculationOptions: RadioOption[] =
     PREPAYMENT_CALC_OPTIONS;
 

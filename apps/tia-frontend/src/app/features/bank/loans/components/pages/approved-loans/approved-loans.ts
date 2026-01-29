@@ -64,7 +64,7 @@ export class ApprovedLoans implements OnInit {
 
   // SHEMDEG GVERDZE GADASVLAA DA XVALVIZAM
   public onCalculatePrepayment(payload: PrepaymentCalculationPayload): void {
-    // console.log('Calculation Payload:', payload);
+    console.log('Calculation Payload:', payload);
   }
 
   public closeModals(): void {
