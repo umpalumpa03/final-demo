@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { ILoansState } from '../shared/models/loan.model';
+import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 
 export const selectLoansState =
   createFeatureSelector<ILoansState>('loans_local');
@@ -14,8 +15,31 @@ export const selectLoansLoading = createSelector(
   (state) => state.loading,
 );
 
+export const selectLoansWithAccountInfo = createSelector(
+  selectAllLoans,
+  selectAccounts,
+  (loans, accounts) => {
+    const currentAccounts = accounts || [];
+
+    return loans.map((loan) => {
+      const matchedAccount = currentAccounts.find(
+        (acc) => acc.id === loan.accountId,
+      );
+
+      const accName = matchedAccount
+        ? matchedAccount.friendlyName || matchedAccount.name
+        : 'Loading Account...';
+
+      return {
+        ...loan,
+        accountName: accName,
+      };
+    });
+  },
+);
+
 export const selectFilteredLoans = (status: number | null) =>
-  createSelector(selectAllLoans, (loans) => {
+  createSelector(selectLoansWithAccountInfo, (loans) => {
     if (status === null) return loans;
     return loans.filter((l) => l.status === status);
   });

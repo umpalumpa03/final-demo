@@ -19,6 +19,7 @@ export const loansReducer = createReducer(
       ...l,
       purpose: toTitleCase(l.purpose) || '',
       friendlyName: toTitleCase(l.friendlyName),
+      accountName: l.accountName || '',
     })),
   })),
 

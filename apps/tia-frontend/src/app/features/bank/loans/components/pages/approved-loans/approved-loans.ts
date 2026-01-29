@@ -25,6 +25,7 @@ import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { PrepaymentOptionStep } from '../../../shared/ui/prepayment-wizard/prepayment-options-step/prepayment-option-step';
 import { PrepaymentReview } from '../../../shared/ui/prepayment-wizard/prepayment-review/prepayment-review';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 
 @Component({
   selector: 'app-approved-loans',
@@ -63,6 +64,7 @@ export class ApprovedLoans implements OnInit {
 
   public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadLoans());
+    this.store.dispatch(AccountsActions.loadAccounts());
   }
 
   public onCardClick(id: string): void {
@@ -70,7 +72,10 @@ export class ApprovedLoans implements OnInit {
       .pipe(
         take(1),
         map((loans) => loans.find((l) => l.id === id)),
-        filter((loan): loan is ILoan => !!loan && loan.status === 2),
+        filter(
+          (loan): loan is NonNullable<typeof loan> =>
+            !!loan && loan.status === 2,
+        ),
       )
       .subscribe((loan) => {
         this.selectedLoan.set(loan);

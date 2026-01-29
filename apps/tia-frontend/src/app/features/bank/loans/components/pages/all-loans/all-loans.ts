@@ -11,8 +11,8 @@ import { Store } from '@ngrx/store';
 import { LoanCard } from '../../../shared/ui/loan-card/loan-card';
 import { LoansActions } from '../../../store/loans.actions';
 import {
-  selectAllLoans,
   selectCalculationResult,
+  selectLoansWithAccountInfo,
 } from '../../../store/loans.selectors';
 import { LoanDetails } from '../../../shared/ui/prepayment-wizard/loan-details/loan-details';
 import { ILoan } from '../../../shared/models/loan.model';
@@ -25,6 +25,7 @@ import {
 } from '../../../shared/models/prepayment.model';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PrepaymentReview } from '../../../shared/ui/prepayment-wizard/prepayment-review/prepayment-review';
+import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 
 @Component({
   selector: 'app-all-loans',
@@ -43,7 +44,7 @@ import { PrepaymentReview } from '../../../shared/ui/prepayment-wizard/prepaymen
 export class AllLoans implements OnInit {
   private store = inject(Store);
 
-  protected readonly loans$ = this.store.select(selectAllLoans);
+  protected readonly loans$ = this.store.select(selectLoansWithAccountInfo);
   public readonly calculationResult = toSignal(
     this.store.select(selectCalculationResult),
   );
@@ -63,6 +64,7 @@ export class AllLoans implements OnInit {
 
   public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadLoans());
+    this.store.dispatch(AccountsActions.loadAccounts());
   }
 
   public onCardClick(id: string): void {
@@ -70,7 +72,10 @@ export class AllLoans implements OnInit {
       .pipe(
         take(1),
         map((loans) => loans.find((l) => l.id === id)),
-        filter((loan): loan is ILoan => !!loan && loan.status === 2),
+        filter(
+          (loan): loan is NonNullable<typeof loan> =>
+            !!loan && loan.status === 2,
+        ),
       )
       .subscribe((loan) => {
         this.selectedLoan.set(loan);
