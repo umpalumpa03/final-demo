@@ -32,6 +32,8 @@ describe('profilePhotoFeature reducer', () => {
     );
 
     expect(state.defaultAvatars).toEqual(avatars);
+    expect(state.defaultAvatarsLoading).toBe(false);
+    expect(state.defaultAvatarsError).toBeNull();
   });
 
   it('should handle selectDefaultAvatar', () => {
