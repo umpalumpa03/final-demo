@@ -1,11 +1,6 @@
 import { Routes } from '@angular/router';
-import { provideState } from '@ngrx/store';
-import { provideEffects } from '@ngrx/effects';
-import { accountsReducer } from '../../../store/products/accounts/accounts.reducer';
-import { AccountsEffects } from '../../../store/products/accounts/accounts.effects';
 import { AccountUtils } from './components/accounts/utils/account.utils';
 import { FormatUtils } from './components/accounts/utils/format-date.utils';
-import { AccountsService } from '../../../shared/services/accounts/accounts.service';
 
 export const productsRoutes: Routes = [
   {
@@ -25,9 +20,6 @@ export const productsRoutes: Routes = [
             (c) => c.Accounts,
           ),
         providers: [
-          provideState({ name: 'accounts', reducer: accountsReducer }),
-          provideEffects(AccountsEffects),
-          AccountsService,
           AccountUtils,
           FormatUtils,
         ],
