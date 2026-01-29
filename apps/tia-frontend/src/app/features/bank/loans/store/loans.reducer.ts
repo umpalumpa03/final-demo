@@ -62,4 +62,21 @@ export const loansReducer = createReducer(
     prepaymentOptions: options,
     error: null,
   })),
+
+  on(LoansActions.calculatePrepaymentSuccess, (state, { result }) => ({
+    ...state,
+    calculationResult: result,
+    error: null,
+  })),
+
+  on(LoansActions.calculatePrepaymentFailure, (state, { error }) => ({
+    ...state,
+    calculationResult: null,
+    error,
+  })),
+
+  on(LoansActions.clearCalculationResult, (state) => ({
+    ...state,
+    calculationResult: null,
+  })),
 );

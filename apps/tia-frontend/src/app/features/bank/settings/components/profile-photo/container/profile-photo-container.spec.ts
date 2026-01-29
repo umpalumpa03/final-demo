@@ -1,22 +1,31 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { vi } from 'vitest';
 import { ProfilePhotoActions } from '../../../../../../store/profile-photo/profile-photo.actions';
 import { ProfilePhotoContainer } from './profile-photo-container';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { DefaultAvatarResponse } from '../../../../../../store/profile-photo/profile-photo.state';
+import {
+  selectDefaultAvatars,
+  selectSelectedAvatarId,
+} from '../../../../../../store/profile-photo/profile-photo.selectors';
 
 describe('ProfilePhotoContainer', () => {
   let component: ProfilePhotoContainer;
   let fixture: ComponentFixture<ProfilePhotoContainer>;
+  let store: MockStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProfilePhotoContainer],
+      imports: [ProfilePhotoContainer, TranslateModule.forRoot()],
       providers: [
         provideMockStore({
           initialState: {
             ProfilePhoto: {
               defaultAvatars: [],
+              defaultAvatarsLoading: false,
+              defaultAvatarsError: null,
               selectedAvatarId: null,
               uploadedFileName: null,
               currentAvatarUrl: null,
@@ -28,6 +37,7 @@ describe('ProfilePhotoContainer', () => {
       ],
     }).compileComponents();
 
+    store = TestBed.inject(MockStore);
     fixture = TestBed.createComponent(ProfilePhotoContainer);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -80,11 +90,11 @@ describe('ProfilePhotoContainer', () => {
   });
 
   it('should dispatch selectDefaultAvatarRequest when saving with selected avatar id', () => {
-    const store = TestBed.inject(Store);
     const dispatchSpy = vi.spyOn(store, 'dispatch');
 
     (component as any).uploadedFile = null;
-    (component as any).selectedAvatarId = () => 'avatar-1';
+    store.overrideSelector(selectSelectedAvatarId, 'avatar-1');
+    store.refreshState();
 
     component.onSaveChanges();
 
@@ -93,32 +103,40 @@ describe('ProfilePhotoContainer', () => {
     );
   });
 
-  it('should revoke objectUrl when removing photo and objectUrl exists', () => {
-    const revokeSpy = vi.spyOn(URL, 'revokeObjectURL');
-
-    (component as any).objectUrl = 'blob:photo';
-
-    component.onRemovePhoto();
-
-    expect(revokeSpy).toHaveBeenCalledWith('blob:photo');
-    expect((component as any).objectUrl).toBeNull();
-  });
-
-  it('should revoke objectUrl when saving changes with file and existing objectUrl', () => {
+  it('should show error alert when file type is invalid', () => {
+    const translate = TestBed.inject(TranslateService);
+    const translateSpy = vi.spyOn(translate, 'instant').mockReturnValue('Invalid file type');
     const store = TestBed.inject(Store);
     const dispatchSpy = vi.spyOn(store, 'dispatch');
-    const revokeSpy = vi.spyOn(URL, 'revokeObjectURL');
 
-    const file = new File(['content'], 'photo.png', { type: 'image/png' });
-    (component as any).uploadedFile = file;
-    (component as any).objectUrl = 'blob:photo';
+    const file = new File(['content'], 'photo.gif', { type: 'image/gif' });
 
-    component.onSaveChanges();
+    component.onFileSelected(file);
 
-    expect(revokeSpy).toHaveBeenCalledWith('blob:photo');
-    expect((component as any).objectUrl).toBeNull();
+    expect(translateSpy).toHaveBeenCalledWith('settings.profile-photo.invalidFileAlert');
+    expect(component.alertKind()).toBe('error');
+    expect(component.alertMessage()).toBe('Invalid file type');
+    expect(dispatchSpy).not.toHaveBeenCalled();
+  });
+
+  it('should dispatch selectDefaultAvatar when avatar is found', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    const avatars: DefaultAvatarResponse[] = [
+      { id: 'avatar-1', iconUri: '/avatars/1.png' },
+  
+    ];
+
+    store.overrideSelector(selectDefaultAvatars, avatars);
+    store.refreshState();
+
+    component.onSelectDefaultAvatar('avatar-1');
+
     expect(dispatchSpy).toHaveBeenCalledWith(
-      ProfilePhotoActions.uploadAvatarRequest({ file }),
+      ProfilePhotoActions.selectDefaultAvatar({
+        avatarId: 'avatar-1',
+        imageUrl: expect.stringContaining('/avatars/1.png'),
+      }),
     );
   });
+
 });

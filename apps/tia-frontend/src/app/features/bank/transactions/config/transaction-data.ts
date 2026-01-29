@@ -2,6 +2,7 @@ import { TableConfig } from '@tia/shared/lib/tables/models/table.model';
 
 export const TRANSACTIONS_BASE_CONFIG: TableConfig = {
   type: 'transactions',
+  paginationType: 'scroll',
   itemsPerPage: 20,
   headers: [
     { title: 'Details', align: 'left', width: '47%' },
