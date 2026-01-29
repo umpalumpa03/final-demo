@@ -20,15 +20,4 @@ export class PrepaymentReview {
 
   public readonly cancel = output<void>();
   public readonly confirmPay = output<void>();
-
-  public isCurrency(text: string): boolean {
-    const lowerText = text.toLowerCase();
-    return (
-      lowerText.includes('amount') ||
-      lowerText.includes('savings') ||
-      lowerText.includes('monthly payment') ||
-      lowerText.includes('cost') ||
-      lowerText.includes('interest')
-    );
-  }
 }

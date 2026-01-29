@@ -18,11 +18,7 @@
                 <div class="review-step__grid-item">
                     <label class="review-step__label">{{ item.text }}</label>
                     <strong class="review-step__value">
-                        @if (isCurrency(item.text)) {
                         {{ item.amount | currency:'USD':'symbol':'1.0-2' }}
-                        } @else {
-                        {{ item.amount }}
-                        }
                     </strong>
                 </div>
                 }
