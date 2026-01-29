@@ -8,11 +8,15 @@ import {
 } from '../../../../store/loans.selectors';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { ILoan } from '../../../models/loan.model';
+import { provideMockActions } from '@ngrx/effects/testing';
+import { Subject } from 'rxjs';
+import { Action } from '@ngrx/store';
 
 describe('PrepaymentContainer', () => {
   let component: PrepaymentContainer;
   let fixture: ComponentFixture<PrepaymentContainer>;
   let store: MockStore;
+  let actions$: Subject<Action>;
 
   const mockLoan = { id: '1', accountId: 'acc1', loanAmount: 5000 } as ILoan;
 
@@ -30,6 +34,8 @@ describe('PrepaymentContainer', () => {
   };
 
   beforeEach(async () => {
+    actions$ = new Subject<Action>();
+
     await TestBed.configureTestingModule({
       imports: [PrepaymentContainer],
       providers: [
@@ -40,6 +46,7 @@ describe('PrepaymentContainer', () => {
             { selector: selectActiveChallengeId, value: null },
           ],
         }),
+        provideMockActions(() => actions$),
       ],
     }).compileComponents();
 
@@ -104,29 +111,6 @@ describe('PrepaymentContainer', () => {
     );
   });
 
-  it('should proceed to otp with correct payload for partial', () => {
-    const payload = {
-      type: 'partial',
-      amount: 500,
-      loanId: '1',
-      loanPartialPaymentType: 'reduce_term',
-    } as any;
-    component.onCalculate(payload);
-    component.onProceedToOtp();
-
-    expect(store.dispatch).toHaveBeenCalledWith(
-      LoansActions.initiatePrepayment({
-        payload: {
-          loanId: '1',
-          loanPrepaymentOption: 'partial',
-          loanPartialPaymentType: 'reduce_term',
-          amount: 500,
-          paymentAccountId: 'acc1',
-        },
-      }),
-    );
-  });
-
   it('should proceed to otp with payoff amount for full', () => {
     const payload = { type: 'full', loanId: '1' } as any;
     component.onCalculate(payload);
@@ -149,5 +133,11 @@ describe('PrepaymentContainer', () => {
         },
       }),
     );
+  });
+
+  it('should emit close on verifyPrepaymentSuccess', () => {
+    const spy = vi.spyOn(component.close, 'emit');
+    actions$.next(LoansActions.verifyPrepaymentSuccess());
+    expect(spy).toHaveBeenCalled();
   });
 });

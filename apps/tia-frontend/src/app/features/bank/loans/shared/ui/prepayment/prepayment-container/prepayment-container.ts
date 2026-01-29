@@ -12,7 +12,7 @@ import {
 import { PrepaymentOptionStep } from '../prepayment-options-step/prepayment-option-step';
 import { PrepaymentReview } from '../prepayment-review/prepayment-review';
 import { Verify } from '../verify/verify';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { LoansActions } from '../../../../store/loans.actions';
 import {
@@ -25,27 +25,20 @@ import {
   PrepaymentCalculationPayload,
   IInitiatePrepaymentRequest,
 } from '../../../models/prepayment.model';
-import { BasicAlerts } from '@tia/shared/lib/alerts/components/basic-alerts/basic-alerts';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'app-prepayment-container',
-  imports: [
-    CommonModule,
-    PrepaymentOptionStep,
-    PrepaymentReview,
-    Verify,
-    BasicAlerts,
-  ],
+  imports: [CommonModule, PrepaymentOptionStep, PrepaymentReview, Verify],
   templateUrl: './prepayment-container.html',
-  styleUrl: './prepayment-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrepaymentContainer implements OnInit {
   private store = inject(Store);
+  private actions$ = inject(Actions);
 
   public loan = input.required<ILoan>();
   public close = output<void>();
-  public showOtpAlert = signal(false);
 
   public calculationResult = toSignal(
     this.store.select(selectCalculationResult),
@@ -65,13 +58,14 @@ export class PrepaymentContainer implements OnInit {
     effect(() => {
       if (this.activeChallengeId()) {
         this.step.set('otp');
-
-        this.showOtpAlert.set(true);
-        setTimeout(() => {
-          this.showOtpAlert.set(false);
-        }, 3000);
       }
     });
+
+    this.actions$
+      .pipe(ofType(LoansActions.verifyPrepaymentSuccess), takeUntilDestroyed())
+      .subscribe(() => {
+        this.close.emit();
+      });
   }
 
   public ngOnInit(): void {

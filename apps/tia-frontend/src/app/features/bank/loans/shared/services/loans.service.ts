@@ -10,6 +10,7 @@ import {
   IInitiatePrepaymentResponse,
   IPrepaymentCalcResponse,
   IVerifyPrepaymentRequest,
+  IVerifyPrepaymentResponse,
   PrepaymentOption,
 } from '../models/prepayment.model';
 
@@ -87,8 +88,10 @@ export class LoansService {
     );
   }
 
-  public verifyPrepayment(payload: IVerifyPrepaymentRequest): Observable<any> {
-    return this.http.post<any>(
+  public verifyPrepayment(
+    payload: IVerifyPrepaymentRequest,
+  ): Observable<IVerifyPrepaymentResponse> {
+    return this.http.post<IVerifyPrepaymentResponse>(
       `${this.loansApiUrl}/verify-prepayment`,
       payload,
     );

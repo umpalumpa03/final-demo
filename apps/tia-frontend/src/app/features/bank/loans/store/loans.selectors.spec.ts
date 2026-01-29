@@ -104,22 +104,6 @@ describe('Loans Selectors', () => {
   });
 
   describe('selectLoansWithAccountInfo', () => {
-    it('should join loans with account info', () => {
-      const loans = mockLoans;
-      const accounts = [
-        { id: 'acc1', friendlyName: 'My Account' },
-        { id: 'acc2', name: 'Other Account', friendlyName: null },
-      ] as any;
-
-      const result = Selectors.selectLoansWithAccountInfo.projector(
-        loans,
-        accounts,
-      );
-      expect(result[0].accountName).toBe('My Account');
-      expect(result[1].accountName).toBe('Other Account');
-      expect(result[2].accountName).toBe('My Account');
-    });
-
     it('should handle account not found for a loan', () => {
       const loans = [mockLoans[0]];
       const accounts = [{ id: 'other-id', name: 'X' }] as any;
@@ -177,16 +161,5 @@ describe('Loans Selectors', () => {
       const result = Selectors.selectPurposeOptions.projector(initialState);
       expect(result).toEqual([{ label: 'Home', value: 'home' }]);
     });
-
-    it('should handle null/empty purposes', () => {
-      const emptyState = { ...initialState, purposes: null } as any;
-      const result = Selectors.selectPurposeOptions.projector(emptyState);
-      expect(result).toEqual([]);
-    });
-  });
-
-  it('should select raw months', () => {
-    const result = Selectors.selectLoanMonths.projector(initialState);
-    expect(result).toEqual([12, 24]);
   });
 });

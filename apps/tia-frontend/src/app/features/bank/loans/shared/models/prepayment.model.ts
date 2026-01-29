@@ -63,3 +63,8 @@ export interface IVerifyPrepaymentRequest {
   challengeId: string;
   code: string;
 }
+
+export interface IVerifyPrepaymentResponse {
+  success: boolean;
+  message: string;
+}

@@ -48,5 +48,9 @@ export const LoansActions = createActionGroup({
     'Verify Prepayment': props<{ payload: IVerifyPrepaymentRequest }>(),
     'Verify Prepayment Success': emptyProps(),
     'Verify Prepayment Failure': props<{ error: string }>(),
+
+    'Show Alert': props<{ message: string }>(),
+    'Start Closing Alert': emptyProps(),
+    'Hide Alert': emptyProps(),
   },
 });
