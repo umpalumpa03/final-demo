@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
+  input,
   output,
 } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
@@ -19,6 +20,8 @@ import { VERIFY_LOAN } from '../../../config/loan-verify.config';
 })
 export class Verify {
   private fb = inject(FormBuilder);
+
+  public readonly isLoading = input<boolean>(false);
 
   public inputConfig = VERIFY_LOAN;
 

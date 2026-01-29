@@ -18,6 +18,7 @@ import { LoansActions } from '../../../../store/loans.actions';
 import {
   selectCalculationResult,
   selectActiveChallengeId,
+  selectActionLoading,
 } from '../../../../store/loans.selectors';
 import { ILoan } from '../../../models/loan.model';
 import {
@@ -40,12 +41,9 @@ export class PrepaymentContainer implements OnInit {
   public loan = input.required<ILoan>();
   public close = output<void>();
 
-  public calculationResult = toSignal(
-    this.store.select(selectCalculationResult),
-  );
-  public activeChallengeId = toSignal(
-    this.store.select(selectActiveChallengeId),
-  );
+  public isLoading = this.store.selectSignal(selectActionLoading);
+  public calculationResult = this.store.selectSignal(selectCalculationResult);
+  public activeChallengeId = this.store.selectSignal(selectActiveChallengeId);
 
   public step = signal<PrepaymentStep>('options');
   private pendingPayload: PrepaymentCalculationPayload | null = null;

@@ -29,6 +29,7 @@ export interface ILoansState {
   filterStatus: number | null;
   calculationResult: IPrepaymentCalcResponse | null;
   activeChallengeId: string | null;
+  actionLoading: boolean;
 }
 
 export interface LoanUiState {

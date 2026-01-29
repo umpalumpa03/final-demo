@@ -64,8 +64,7 @@ describe('ApprovedLoans', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should dispatch loadLoans and loadAccounts on init', () => {
-    expect(store.dispatch).toHaveBeenCalledWith(LoansActions.loadLoans());
+  it('should dispatch loadAccounts on init', () => {
     expect(store.dispatch).toHaveBeenCalledWith(AccountsActions.loadAccounts());
   });
 
