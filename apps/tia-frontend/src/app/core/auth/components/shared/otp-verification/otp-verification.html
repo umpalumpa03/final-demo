@@ -1,9 +1,10 @@
-@if(!isLoading()){ @switch (from()) { @case ('sign-in') {
-<form class="sign-in" [formGroup]="otpForm" (ngSubmit)="verifyOtp()">
+@if(!isLoading()){
+   @switch (from()) { @case ('sign-in') {
+<!-- <form class="sign-in" [formGroup]="otpForm" (ngSubmit)="verifyOtp()">
   <p>Verify Otp</p>
   <lib-text-input formControlName="code"></lib-text-input>
   <app-button type="submit">Verify - ეს დალოგინებისას</app-button>
-</form>
+</form> -->
 } @case ('sign-up') {
 
 <div class="timer-container">
@@ -18,10 +19,10 @@
     ></circle>
   </svg>
   <div class="timer-text">
-  @if (countdown() > 0) {
+    @if (countdown() > 0) {
     <span class="timer-text__value">{{ countdown() }}</span>
     <span class="timer-text__label">sec</span>
-  } @else {
+    } @else {
     <span
       class="otp-verification__resend"
       (click)="resendVerification()"
@@ -29,13 +30,13 @@
     >
       Resend
     </span>
-  }
-</div>
+    }
+  </div>
 </div>
 
 <form
   class="sign-in"
-  [formGroup]="smsCodeVerificationForm"
+  [formGroup]="otpForm"
   (ngSubmit)="submit()"
 >
   <lib-text-input formControlName="verificationCode"></lib-text-input>
@@ -60,7 +61,7 @@
   >
 </form>
 } @default {
-<form class="auth-form" [formGroup]="form" (ngSubmit)="submitReset()">
+<!-- <form class="auth-form" [formGroup]="form" (ngSubmit)="submitReset()">
   <div class="otp-field">
     <label class="otp-label" [style.color]="'#333'">Enter OTP Code</label>
     <lib-otp formControlName="otp" [config]="otpConfig"></lib-otp>
@@ -76,8 +77,9 @@
       Verify OTP
     </app-button>
   </div>
-</form>
-} } } @else {
+</form> -->
+} } }
+ @else {
 <div class="sign-in sign-in-loader">
   <app-spinner size="4rem"></app-spinner>
 </div>

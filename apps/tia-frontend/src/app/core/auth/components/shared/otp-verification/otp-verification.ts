@@ -50,7 +50,6 @@ export class OtpVerification implements OnDestroy {
   private readonly MAX_TIME = 60;
   private readonly CIRCUMFERENCE = 282.7;
 
-  //ამაზე კომპონენტზე რივიუ არ მიიღებაა დასამთავრებელია დდ
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -73,8 +72,6 @@ export class OtpVerification implements OnDestroy {
   };
 
   public errorMessage = signal<string>('');
-
-  private registerVerifyLogic = signal<boolean>(true);
 
   public from = signal<AuthFromType>('sign-up');
 
@@ -107,10 +104,6 @@ export class OtpVerification implements OnDestroy {
   ///ბექააა
   public isLoading = computed(() => this.authService.isLoginLoading());
 
-  public otpForm = this.fb.nonNullable.group({
-    code: ['', [Validators.required, Validators.pattern('^\\d*$')]],
-  });
-
   public verifyOtp(): void {
     this.authService
       .verifyMfa({
@@ -119,52 +112,44 @@ export class OtpVerification implements OnDestroy {
       })
       .subscribe();
   }
-  /////////
-
-  //nikaaaa
-  public readonly form = this.fb.nonNullable.group({
-    otp: ['', [Validators.required, Validators.pattern(/^\d{4}$/)]],
-  });
-
-  ////
 
   // Mock Version got code length:4, In task: 6
- public smsCodeVerificationForm = this.fb.nonNullable.group({
-  verificationCode: [
-    '',
-    [
-      Validators.required, 
-      Validators.minLength(4), 
-      Validators.maxLength(4),
+  public otpForm = this.fb.nonNullable.group({
+    code: [
+      '',
+      [Validators.required, Validators.minLength(4), Validators.maxLength(4)],
     ],
-  ],
-});
+  });
 
   public submit(): void {
     // disable when timeout
-
-
     const context = this.from();
-    if (context === 'forgot-password') {
+
+    if (context === 'sign-in') {
+      this.verifyOtp();
+      return;
+    }
+
+    else if(context === 'forgot-password') {
       this.forgotPasswordVerification();
       return;
     }
 
-    if (this.registerVerifyLogic()) {
+    else {
       this.registerVerification();
     }
   }
 
   private registerVerification(): void {
-    if (this.smsCodeVerificationForm.invalid) {
-      this.smsCodeVerificationForm.markAllAsTouched();
+    if (this.otpForm.invalid) {
+      this.otpForm.markAllAsTouched();
       return;
     }
 
-    const { verificationCode } = this.smsCodeVerificationForm.getRawValue();
+    const { code } = this.otpForm.getRawValue();
 
     this.authService
-      .verifyOtpCode(verificationCode)
+      .verifyOtpCode(code)
       .pipe(
         tap((res) => {
           this.router.navigate(['/auth/success']);
@@ -179,15 +164,15 @@ export class OtpVerification implements OnDestroy {
   }
 
   private forgotPasswordVerification(): void {
-    if (this.smsCodeVerificationForm.invalid) {
-      this.smsCodeVerificationForm.markAllAsTouched();
+    if (this.otpForm.invalid) {
+      this.otpForm.markAllAsTouched();
       return;
     }
 
-    const { verificationCode } = this.smsCodeVerificationForm.getRawValue();
+    const { code } = this.otpForm.getRawValue();
 
     this.authService
-      .verifyForgotPasswordOtp(verificationCode)
+      .verifyForgotPasswordOtp(code)
       .pipe(
         tap(() => {
           this.router.navigate(['/auth', ...forgotPasswordSegments.reset]);
@@ -200,48 +185,50 @@ export class OtpVerification implements OnDestroy {
       .subscribe();
   }
 
-  submitReset(): void {
-    this.otpError.set(null);
-    this.form.markAllAsTouched();
+  /// nika
+  // submitReset(): void {
+  //   this.otpError.set(null);
+  //   this.otpForm.markAllAsTouched();
 
-    const otpValue = this.form.controls.otp.value;
-    if (!otpValue) {
-      this.otpError.set('OTP is required');
-      return;
-    }
+  //   const otpValue = this.otpForm.controls.otp.value;
+  //   if (!otpValue) {
+  //     this.otpError.set('OTP is required');
+  //     return;
+  //   }
 
-    if (otpValue.length < 4) {
-      this.otpError.set('OTP must be 4 digits');
-      return;
-    }
+  //   if (otpValue.length < 4) {
+  //     this.otpError.set('OTP must be 4 digits');
+  //     return;
+  //   }
 
-    if (this.form.invalid) {
-      this.otpError.set('OTP must be 4 digits');
-      return;
-    }
+  //   if (this.otpForm.invalid) {
+  //     this.otpError.set('OTP must be 4 digits');
+  //     return;
+  //   }
 
-    this.isSubmitting.set(true);
-    this.authService
-      .verifyForgotPasswordOtp(otpValue)
-      .pipe(finalize(() => this.isSubmitting.set(false)))
-      .subscribe({
-        next: () => {
-          this.router.navigate(['/auth/reset-password']);
-        },
-        error: (error) => {
-          const httpError = error as HttpErrorResponse;
-          if (httpError?.status === 400) {
-            this.otpError.set('Invalid OTP code');
-          } else {
-            this.otpError.set('Unable to verify OTP. Please try again.');
-          }
-        },
-      });
-  }
+  //   this.isSubmitting.set(true);
+  //   this.authService
+  //     .verifyForgotPasswordOtp(otpValue)
+  //     .pipe(finalize(() => this.isSubmitting.set(false)))
+  //     .subscribe({
+  //       next: () => {
+  //         this.router.navigate(['/auth/reset-password']);
+  //       },
+  //       error: (error) => {
+  //         const httpError = error as HttpErrorResponse;
+  //         if (httpError?.status === 400) {
+  //           this.otpError.set('Invalid OTP code');
+  //         } else {
+  //           this.otpError.set('Unable to verify OTP. Please try again.');
+  //         }
+  //       },
+  //     });
+  // }
+  ///
 
   public resendVerification(): void {
     if (this.isResendDisabled()) return;
-    this.countdown.set(this.MAX_TIME)
+    this.countdown.set(this.MAX_TIME);
     this.startTimer();
     this.authService.resendVerificationCode().pipe(take(1)).subscribe();
   }
