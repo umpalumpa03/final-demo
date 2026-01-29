@@ -2,27 +2,30 @@
   <app-drag-container
     [items]="myItems()"
     [layout]="'grid'"
-    [columns]="{ default: 2, md: 1, sm: 1 }"
+    [columns]="{ default: 2, sm: 2 }"
     [colspans]="dynamicColspans()"
+    (itemsChange)="onItemsChange($event)"
     containerTitle=""
     containerDescription=""
-    (itemsChange)="onItemsChange($event)"
-    (orderChange)="onContainerOrderChange($event)"
   >
     @for (item of myItems(); track item.id) {
-      <app-draggable-card
-        [itemData]="item"
-        [canDelete]="true"
-        [editable]="true"
-        (remove)="onRemove(item.id)"
-        (edit)="onEdit(item.id)"
-        appDragItem
-      >
-        <div class="widget-content">
-          <div class="widget-content__metric">PLACEHOLDER</div>
-          <p class="widget-content__label">{{ item.subtitle }}</p>
-        </div>
-      </app-draggable-card>
+    <app-draggable-card
+      [itemData]="item"
+      [canDelete]="true"
+      [editable]="true"
+      [hasViewOption]="true"
+      [hasAddOption]="true"
+      (remove)="onRemove(item.id)"
+      (edit)="onEdit(item.id)"
+      (add)="onAddExtra(item.id)"
+      (viewOptionChange)="onToggleVisibility($event, item.id)"
+      [showHeadings]="false"
+      appDragItem
+    >
+      @switch (item.type) { @case ('transactions') {
+      <app-widget-transactions /> } @case ('accounts') {
+      <app-widget-accounts /> } @case ('exchange') { <app-widget-exchange /> } }
+    </app-draggable-card>
     }
   </app-drag-container>
 </div>

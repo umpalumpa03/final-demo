@@ -1,5 +1,6 @@
 @use '../../../../styles/mixins' as *;
 @use '../../../../styles/palette' as *;
+@use '../../../../styles/themes' as *;
 
 .draggable-card {
   @include display-flex(column);
@@ -69,6 +70,10 @@
   &__title,
   &__subtitle {
     margin: 0;
+  }
+
+  &__title__custom{
+    color: var(--color-fg);
   }
 
   &__icon {

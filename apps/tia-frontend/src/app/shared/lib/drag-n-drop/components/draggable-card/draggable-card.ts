@@ -44,6 +44,8 @@ export class DraggableCard {
   public hasCheckbox = input(false);
   public checked = model(false);
 
+  public showHeadings = input(true);
+
   public dragStart = output<PointerEvent>();
   public remove = output<void>();
   public edit = output<void>();
