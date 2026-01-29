@@ -10,6 +10,12 @@
     gap: 0.8rem;
     scrollbar-width: thin;
     
+    &.scrollbar-hidden {
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
     &.horizontal {
         @include flex-center(row, flex-start, stretch);
         overflow-x: auto;
