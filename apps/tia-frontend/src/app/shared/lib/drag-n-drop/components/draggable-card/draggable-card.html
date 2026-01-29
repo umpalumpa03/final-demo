@@ -2,6 +2,7 @@
   class="draggable-card"
   [class.dragging]="computedIsDragging()"
   [class.drop-target]="computedIsDropTarget()"
+  [class.min-height]="hasMinHeight()"
 >
   <div class="draggable-card__default-content">
     <div class="draggable-card__draggable">

@@ -11,6 +11,8 @@ import { IWidgetItem } from '../models/widgets.model';
 import { WidgetTransactions } from '../components/widget-transactions/widget-transactions';
 import { WidgetAccounts } from '../components/widget-accounts/widget-accounts';
 import { WidgetExchange } from '../components/widget-exchange/widget-exchange';
+import { widgetItems } from '../config/widgets.config';
+import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
 
 @Component({
   selector: 'app-dashboard-container',
@@ -22,35 +24,16 @@ import { WidgetExchange } from '../components/widget-exchange/widget-exchange';
     WidgetTransactions,
     WidgetAccounts,
     WidgetExchange,
+    LibraryTitle,
   ],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardContainer {
-  protected readonly myItems = signal<IWidgetItem[]>([
-    {
-      id: '1',
-      title: 'Recent Transactions',
-      subtitle: 'Your latest account activity',
-      icon: 'images/svg/dashboard/transactions.svg',
-      type: 'transactions',
-    },
-    {
-      id: '2',
-      title: 'Accounts',
-      subtitle: 'Your account balances and activity',
-      icon: 'images/svg/dashboard/accounts.svg',
-      type: 'accounts',
-    },
-    {
-      id: '3',
-      title: 'Exchange Rates',
-      subtitle: 'Live currency exchange rates',
-      icon: 'images/svg/dashboard/rates.svg',
-      type: 'exchange',
-    },
-  ]);
+  protected readonly myItems = signal<(IWidgetItem & { isHidden?: boolean })[]>(
+    [...widgetItems],
+  );
 
   protected readonly dynamicColspans = computed(() => {
     return this.myItems().map((_, index) => (index === 0 ? 2 : 1));
@@ -65,18 +48,23 @@ export class DashboardContainer {
   }
 
   public onToggleVisibility(isVisible: boolean, id: string): void {
-    console.log(`Widget ${id} visibility changed to:`, isVisible);
+    console.log(`Vaxtangam daahaida widget ${id}`);
+    this.myItems.update((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, isHidden: !isVisible } : item,
+      ),
+    );
   }
 
-  public onAddExtra(id: string): void {
-    console.log(`Extra action triggered for widget: ${id}`);
+  public onWidgetRefresh(item: IWidgetItem): void {
+    console.log(`Vaxtanga arefreshebs: ${item.title}`);
   }
 
-  public onRemove(id: string): void {
-    this.myItems.update((items) => items.filter((i) => i.id !== id));
+  public onWidgetAdd(item: IWidgetItem): void {
+    console.log(`Vaxtanga amatebs acaunts: ${item.type}`);
   }
 
-  public onEdit(id: string): void {
-    console.log('Editing widget:', id);
+  public onPaginationChange(item: number): void {
+    console.log(`Vaxtangas paginacia shoucvalien ${item}`);
   }
 }
