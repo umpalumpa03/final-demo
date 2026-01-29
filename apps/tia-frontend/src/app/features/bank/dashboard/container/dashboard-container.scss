@@ -23,12 +23,135 @@
   &__amount {
     @include font-inter(600, 1.6rem, 2.4rem);
 
-    &--debit{
+    &--debit {
       color: #101828;
     }
 
-    &--credit{
+    &--credit {
       color: #00A63E;
     }
+  }
+}
+
+.exchange-rates {
+  @include display-flex(column);
+  gap: 1.6rem;
+  padding: 2rem 0;
+
+  &__title {
+    @include font-inter(600, 2rem, 2.8rem);
+    color: #0C4A6E;
+  }
+}
+
+.exchange-rate-card {
+  @include display-flex(row);
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.6rem;
+  background-color: #F9FAFB;
+  border-radius: 1.2rem;
+
+  &__info {
+    @include display-flex(row);
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  &__icon {
+    width: 4.8rem;
+    height: 4.8rem;
+    border-radius: 50%;
+    background-color: #DBEAFE;
+    @include display-flex(row);
+    align-items: center;
+    justify-content: center;
+    @include font-inter(600, 2rem, 2.4rem);
+    color: #155DFC;
+  }
+
+  &__details-left {
+    @include display-flex(column);
+    gap: 0.4rem;
+  }
+
+  &__currency {
+    @include font-inter(600, 1.6rem, 2.4rem);
+    color: #0C4A6E;
+  }
+
+  &__change {
+    @include font-inter(500, 1.4rem, 2rem);
+    @include display-flex(row);
+    align-items: center;
+    gap: 0.4rem;
+
+    &--positive {
+      color: #00A63E;
+    }
+
+    &--negative {
+      color: #DC2626;
+    }
+  }
+
+  &__arrow {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  &__details-right {
+    @include display-flex(column);
+    align-items: flex-end;
+    gap: 0.4rem;
+  }
+
+  &__rate {
+    @include font-inter(600, 1.8rem, 2.4rem);
+    color: #0C4A6E;
+  }
+
+  &__rate-change {
+    @include font-inter(500, 1.4rem, 2rem);
+
+    &--positive {
+      color: #DC2626;
+    }
+
+    &--negative {
+      color: #DC2626;
+    }
+  }
+}
+
+.account-card{
+  @include display-flex(row);
+  padding: 1.6rem;
+  background-color: #F9FAFB;
+  border-radius: 1rem;
+  width: 100%;
+  justify-content: space-between;
+  &__header{
+    @include display-flex(column);
+    gap: 0.4rem;
+    &-top{
+      @include display-flex(row);
+      gap: 0.8rem;
+      align-items: center;
+      @include font-inter(600, 1.6rem, 2.4rem);
+      color: #0C4A6E;
+      &--iban{
+        padding: 0.2rem 0.7rem;
+        border: 1px solid #0EA5E9;
+        border-radius: 0.8rem;
+        @include font-inter(500, 1.2rem, 1.6rem);
+        color: #0C4A6E;
+      }
+    }
+  }
+
+  &__balance{
+    @include font-inter(700, 2rem, 2.8rem);
+    color: #101828;
   }
 }

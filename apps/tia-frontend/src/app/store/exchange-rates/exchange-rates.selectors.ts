@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { ExchangeRateState } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.reducers';
+import { ExchangeRateState } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.state';
 
 export const selectExchangeRatesSelector = createFeatureSelector<ExchangeRateState>('ExchangeRates');
 

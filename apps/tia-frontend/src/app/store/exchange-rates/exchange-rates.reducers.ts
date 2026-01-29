@@ -1,21 +1,9 @@
-import { ExchangeRateInterface } from 'apps/tia-frontend/src/app/store/exchange-rates/models/exchange-rates.models';
 import { createReducer, on } from '@ngrx/store';
 import {
   loadExchangeRates, loadExchangeRatesFailure,
   loadExchangeRatesSuccess
 } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.actions';
-
-export interface ExchangeRateState {
-  ExchangeRates: ExchangeRateInterface[];
-  loading: boolean;
-  error: boolean;
-}
-
-export const initialState: ExchangeRateState = {
-  ExchangeRates: [],
-  loading: false,
-  error: false,
-}
+import { initialState } from './exchange-rates.state'
 
 export const ExchangeRateReducer = createReducer(
   initialState,

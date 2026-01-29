@@ -5,7 +5,7 @@ import {
   loadExchangeRatesFailure, loadExchangeRatesSuccess
 } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.actions';
 import { catchError, map, mergeMap, of } from 'rxjs';
-import { ExchangeRatesService } from '@tia/shared/services/exchange-rates.api.service';
+import { ExchangeRatesService } from '@tia/shared/services/exchange-rates/exchange-rates.api.service';
 import { ExchangeRateInterface } from 'apps/tia-frontend/src/app/store/exchange-rates/models/exchange-rates.models';
 
 @Injectable()

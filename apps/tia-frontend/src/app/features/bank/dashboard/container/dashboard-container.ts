@@ -6,7 +6,7 @@ import {
   selectIsLoading
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
-import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { AsyncPipe, CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { selectItems } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import { filter, map } from 'rxjs';
@@ -19,7 +19,8 @@ import { loadExchangeRates } from 'apps/tia-frontend/src/app/store/exchange-rate
   imports: [
     AsyncPipe,
     DatePipe,
-    DecimalPipe
+    DecimalPipe,
+    CurrencyPipe
   ],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
@@ -33,8 +34,12 @@ export class DashboardContainer implements OnInit {
   public error$ = this.store.select(selectError);
 
   public transactions$ = this.store.select(selectItems);
-  public exchangeRates$ = this.store.select(selectExchangeRates);
+
+  public exchangeRates$ = this.store.select(selectExchangeRates).pipe(
+    map(rates => rates.filter(rate => rate.code !== 'USD'))
+  );
   public exchangeRatesLoading$ = this.store.select(selectLoading);
+
 
   ngOnInit() {
     this.store.dispatch(AccountsActions.loadAccounts());

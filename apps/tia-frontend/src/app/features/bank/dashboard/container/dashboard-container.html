@@ -6,7 +6,24 @@
     <p>Error: {{ error }}</p>
   }
   @for (account of accounts$ | async; track account.id) {
-    <div>{{ account.friendlyName }} - {{ account.balance }}</div>
+    <div class = 'account-card'>
+      <div class = 'account-card__header'>
+        <div class = 'account-card__header-top'>
+          {{ account.friendlyName }}
+          <span class = 'account-card__header-top--iban'>
+            ****{{ account.iban?.slice(-4) }}
+          </span>
+        </div>
+        <div class = 'account-card__header-bottom'>
+
+        </div>
+      </div>
+
+      <div class = 'account-card__balance'>
+        {{ account.balance | currency:'USD':'symbol':'1.2-2' }}
+      </div>
+
+    </div>
   }
 
   @for (transaction of transactions$ | async; track transaction.id) {
@@ -23,23 +40,26 @@
   }
 
   <div class="exchange-rates">
-    <h2>Exchange Rates</h2>
+    <h2 class="exchange-rates__title">Exchange Rates</h2>
     @if (exchangeRatesLoading$ | async) {
       <p>Loading exchange rates...</p>
     }
     @for (rate of exchangeRates$ | async; track rate.code) {
       <div class="exchange-rate-card">
         <div class="exchange-rate-card__info">
-          <img [src]="rate.flagUrl" [alt]="rate.name" class="exchange-rate-card__flag">
-          <div>
+          <div class="exchange-rate-card__icon">{{ rate.symbol }}</div>
+          <div class="exchange-rate-card__details-left">
             <div class="exchange-rate-card__currency">{{ rate.code }}/USD</div>
-            <div class="exchange-rate-card__name">{{ rate.name }}</div>
+            <div class="exchange-rate-card__change" [class.exchange-rate-card__change--positive]="rate.isPositive" [class.exchange-rate-card__change--negative]="!rate.isPositive">
+              <img [src]="rate.isPositive ? '/images/svg/dashboard/arrow-up.svg' : '/images/svg/dashboard/arrow-down.svg'" [alt]="rate.isPositive ? 'up' : 'down'" class="exchange-rate-card__arrow">
+              {{ rate.changePercent | number:'1.2-2' }}%
+            </div>
           </div>
         </div>
-        <div class="exchange-rate-card__details">
+        <div class="exchange-rate-card__details-right">
           <div class="exchange-rate-card__rate">{{ rate.rate | number:'1.4-4' }}</div>
-          <div class="exchange-rate-card__change" [class.positive]="rate.isPositive" [class.negative]="!rate.isPositive">
-            {{ rate.isPositive ? '↑' : '↓' }} {{ rate.changePercent | number:'1.2-2' }}%
+          <div class="exchange-rate-card__rate-change" [class.exchange-rate-card__rate-change--positive]="rate.isPositive" [class.exchange-rate-card__rate-change--negative]="!rate.isPositive">
+            {{ rate.isPositive ? '+' : '' }}{{ (rate.rate - rate.previousRate) | number:'1.4-4' }}
           </div>
         </div>
       </div>
