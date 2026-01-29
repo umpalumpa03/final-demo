@@ -8,6 +8,8 @@ import {
   TRANSACTION_FEATURE_KEY,
   transactionReducer,
 } from '../store/transactions/transactions.reducer';
+import { FinancesStore } from '../features/bank/finances/store/finances.store';
+import { FinancesService } from '../features/bank/finances/services/finances.service';
 import {
   accountsFeatureKey,
   accountsReducer
@@ -15,7 +17,6 @@ import {
 import { AccountsEffects } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.effects';
 import { ExchangeRateReducer } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.reducers';
 import { ExchangeRatesEffects } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.effects';
-import { ExchangeRatesService } from '@tia/shared/services/exchange-rates.api.service';
 export const bankRoutes: Routes = [
   {
     path: 'bank',
@@ -79,6 +80,10 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'finances',
+        providers: [
+                  FinancesStore,
+                  FinancesService
+                ],
         loadComponent: () =>
           import('../features/bank/finances/container/finances-container').then(
             (c) => c.FinancesContainer,

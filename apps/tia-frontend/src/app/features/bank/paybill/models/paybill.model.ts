@@ -1,8 +1,8 @@
 export interface PaybillProvider {
-  serviceId: string;
+  id: string;
   serviceName: string;
-  category: string;
-  name?:string;
+  categoryId: string;
+  name?: string;
 }
 
 export interface PaybillCategory {
@@ -24,4 +24,19 @@ export interface PaybillState {
   selectedProviderId: string | null;
   loading: boolean;
   error: string | null;
+  selectedProvider: PaybillProvider | null;
+  verifiedDetails: BillDetails | null;
+}
+
+export interface BillDetails {
+  valid: boolean;
+  accountHolder: string;
+  address: string;
+  amountDue: number;
+  dueDate: string;
+  isExactAmount: boolean;
+  minAmount?: number;
+  maxAmount?: number;
+  error?: string;
+  billPeriod?: string;
 }

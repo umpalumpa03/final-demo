@@ -1,5 +1,9 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { PaybillCategory, PaybillProvider } from '../models/paybill.model';
+import {
+  BillDetails,
+  PaybillCategory,
+  PaybillProvider,
+} from '../models/paybill.model';
 
 export const PaybillActions = createActionGroup({
   source: 'Paybill API',
@@ -11,6 +15,9 @@ export const PaybillActions = createActionGroup({
     'Load Providers Success': props<{ providers: PaybillProvider[] }>(),
     'Load Providers Failure': props<{ error: string }>(),
     'Select Provider': props<{ providerId: string }>(),
+    'Check Bill': props<{ serviceId: string; accountNumber: string }>(),
+    'Check Bill Success': props<{ details: BillDetails }>(),
+    'Check Bill Failure': props<{ error: string }>(),
     'Clear Selection': emptyProps(),
   },
 });

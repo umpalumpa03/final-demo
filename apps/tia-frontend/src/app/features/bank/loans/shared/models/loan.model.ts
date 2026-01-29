@@ -1,4 +1,6 @@
 import { LOAN_ICONS } from '../config/loan-icons.config';
+import { LoanPurpose } from './loan-request.model';
+import { PrepaymentOption } from './prepayment.model';
 
 export interface ILoan {
   id: string;
@@ -17,6 +19,8 @@ export interface ILoan {
 export interface ILoansState {
   loans: ILoan[];
   months: number[];
+  purposes: LoanPurpose[];
+  prepaymentOptions: PrepaymentOption[];
   loading: boolean;
   error: string | null;
   filterStatus: number | null;

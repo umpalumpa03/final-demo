@@ -3,16 +3,23 @@ import {
   Component,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { LoanCard } from '../../../shared/ui/loan-card/loan-card';
 import { LoansActions } from '../../../store/loans.actions';
 import { selectAllLoans } from '../../../store/loans.selectors';
+import { LoanDetails } from '../../../shared/ui/prepayment-wizard/loan-details/loan-details';
+import { ILoan } from '../../../shared/models/loan.model';
+import { filter, map, take } from 'rxjs';
+import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
+import { PrepaymentOptionStep } from '../../../shared/ui/prepayment-wizard/prepayment-options-step/prepayment-option-step';
+import { PrepaymentCalculationPayload } from '../../../shared/models/prepayment.model';
 
 @Component({
   selector: 'app-all-loans',
-  imports: [CommonModule, LoanCard],
+  imports: [CommonModule, LoanCard, LoanDetails, UiModal, PrepaymentOptionStep],
   templateUrl: './all-loans.html',
   styleUrl: './all-loans.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,18 +29,47 @@ export class AllLoans implements OnInit {
 
   protected readonly loans$ = this.store.select(selectAllLoans);
 
+  public readonly selectedLoan = signal<ILoan | null>(null);
+  public readonly isDetailsOpen = signal(false);
+  public readonly isPrepaymentOpen = signal(false);
+
   public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadLoans());
   }
 
-  // ES IYOS JER ASE GADAKETDEBA
   public onCardClick(id: string): void {
-    // console.log('Clicked', id);
+    this.loans$
+      .pipe(
+        take(1),
+        map((loans) => loans.find((l) => l.id === id)),
+        filter((loan): loan is ILoan => !!loan && loan.status === 2),
+      )
+      .subscribe((loan) => {
+        this.selectedLoan.set(loan);
+        this.isDetailsOpen.set(true);
+      });
   }
 
   public onRenameLoan(event: { id: string; name: string }): void {
     this.store.dispatch(
       LoansActions.renameLoan({ id: event.id, name: event.name }),
     );
+  }
+
+  public onOpenPrepayment(loan: ILoan): void {
+    this.selectedLoan.set(loan);
+    this.isDetailsOpen.set(false);
+    this.isPrepaymentOpen.set(true);
+  }
+
+  // SHEMDEG GVERDZE GADASVLAA DA XVALVIZAM
+  public onCalculatePrepayment(payload: PrepaymentCalculationPayload): void {
+    // console.log('Calculation Payload:', payload);
+  }
+
+  public closeModals(): void {
+    this.isDetailsOpen.set(false);
+    this.isPrepaymentOpen.set(false);
+    this.selectedLoan.set(null);
   }
 }

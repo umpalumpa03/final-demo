@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import {
   LOAN_FORM_CONFIG,
-  MOCK_ACCOUNT_OPTIONS,
   PURPOSE_OPTIONS,
 } from '../../config/loan-request.config';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -20,7 +19,10 @@ import { IDropdownOption, ILoanRequest } from '../../models/loan-request.model';
 import { Store } from '@ngrx/store';
 import { LoansActions } from '../../../store/loans.actions';
 import { Observable } from 'rxjs';
-import { selectLoanMonthsOptions } from '../../../store/loans.selectors';
+import {
+  selectLoanMonthsOptions,
+  selectPurposeOptions,
+} from '../../../store/loans.selectors';
 import { CommonModule } from '@angular/common';
 import { selectAccountOptions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
@@ -52,7 +54,8 @@ export class RequestModal implements OnInit {
   protected readonly cfg = LOAN_FORM_CONFIG;
   protected readonly termOptions$: Observable<IDropdownOption[]> =
     this.store.select(selectLoanMonthsOptions);
-  protected readonly purposeOptions = PURPOSE_OPTIONS;
+  protected readonly purposeOptions$: Observable<IDropdownOption[]> =
+    this.store.select(selectPurposeOptions);
   protected readonly accountOptions$: Observable<IDropdownOption[]> =
     this.store.select(selectAccountOptions);
 
@@ -63,6 +66,7 @@ export class RequestModal implements OnInit {
   public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadMonths());
     this.store.dispatch(AccountsActions.loadAccounts());
+    this.store.dispatch(LoansActions.loadPurposes());
   }
 
   public readonly form = this.fb.group({

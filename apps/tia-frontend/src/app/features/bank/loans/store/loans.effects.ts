@@ -58,4 +58,38 @@ export class LoansEffects {
       map(() => LoansActions.loadLoans()),
     ),
   );
+
+  loadPurposes$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.loadPurposes),
+      switchMap(() =>
+        this.loansService.getPurposes().pipe(
+          map((purposes) => LoansActions.loadPurposesSuccess({ purposes })),
+          catchError((error) =>
+            of(LoansActions.loadPurposesFailure({ error: error.message })),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  loadPrepaymentOptions$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.loadPrepaymentOptions),
+      switchMap(() =>
+        this.loansService.getPrepaymentOptions().pipe(
+          map((options) =>
+            LoansActions.loadPrepaymentOptionsSuccess({ options }),
+          ),
+          catchError((error) =>
+            of(
+              LoansActions.loadPrepaymentOptionsFailure({
+                error: error.message,
+              }),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }
