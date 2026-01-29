@@ -79,6 +79,14 @@ export class PrepaymentOptionStep {
 
   public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadPrepaymentOptions());
+
+    const currentLoan = this.loan();
+    if (currentLoan && currentLoan.loanAmount) {
+      this.form.controls.amount.addValidators([
+        Validators.max(currentLoan.loanAmount),
+      ]);
+      this.form.controls.amount.updateValueAndValidity();
+    }
   }
 
   public onCalculate(): void {
