@@ -53,6 +53,7 @@
           <app-account-card
             [account]="account"
             (transfer)="handleTransfer($event)"
+            (rename)="handleRenameClick($event)"
           />
           }
         </div>
@@ -64,10 +65,20 @@
       <app-account-card
         [account]="account"
         (transfer)="handleTransfer($event)"
+        (rename)="handleRenameClick($event)"
       />
       }
     </div>
     }
   </section>
   } }
+
+  <app-rename-account-modal
+    [isOpen]="renameModalOpen()"
+    [currentName]="getSelectedAccountName()"
+    [isLoading]="isRenamingAccount()"
+    [error]="renameError()"
+    (closed)="handleRenameModalClose()"
+    (renamed)="handleRenameSubmit($event)"
+  />
 </div>
