@@ -11,6 +11,7 @@ import { Store } from '@ngrx/store';
 import { LoanCard } from '../../../shared/ui/loan-card/loan-card';
 import { LoansActions } from '../../../store/loans.actions';
 import {
+  selectActiveChallengeId,
   selectCalculationResult,
   selectLoansWithAccountInfo,
 } from '../../../store/loans.selectors';
@@ -20,6 +21,7 @@ import { filter, map, take } from 'rxjs';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { PrepaymentOptionStep } from '../../../shared/ui/prepayment-wizard/prepayment-options-step/prepayment-option-step';
 import {
+  IInitiatePrepaymentRequest,
   PrepaymentCalculationPayload,
   PrepaymentStep,
 } from '../../../shared/models/prepayment.model';
@@ -45,10 +47,15 @@ import { Verify } from '../../../shared/ui/prepayment-wizard/verify/verify';
 })
 export class AllLoans implements OnInit {
   private store = inject(Store);
+  private pendingPayload: PrepaymentCalculationPayload | null = null;
 
   protected readonly loans$ = this.store.select(selectLoansWithAccountInfo);
-  public readonly calculationResult = toSignal(
-    this.store.select(selectCalculationResult),
+  public readonly calculationResult = this.store.selectSignal(
+    selectCalculationResult,
+  );
+
+  public readonly activeChallengeId = this.store.selectSignal(
+    selectActiveChallengeId,
   );
 
   public readonly selectedLoan = signal<ILoan | null>(null);
@@ -60,6 +67,11 @@ export class AllLoans implements OnInit {
     effect(() => {
       if (this.calculationResult()) {
         this.step.set('review');
+      }
+    });
+    effect(() => {
+      if (this.activeChallengeId()) {
+        this.step.set('otp');
       }
     });
   }
@@ -102,20 +114,37 @@ export class AllLoans implements OnInit {
   }
 
   public onCalculatePrepayment(payload: PrepaymentCalculationPayload): void {
+    this.pendingPayload = payload;
     this.store.dispatch(LoansActions.calculatePrepayment({ payload }));
   }
 
   public onProceedToOtp(): void {
-    this.step.set('otp');
+    if (!this.pendingPayload) return;
+
+    const request: IInitiatePrepaymentRequest = {
+      loanId: this.pendingPayload.loanId,
+      loanPrepaymentOption: this.pendingPayload.type,
+      loanPartialPaymentType: this.pendingPayload.loanPartialPaymentType,
+      amount: this.pendingPayload.amount,
+      paymentAccountId: this.selectedLoan()!.accountId,
+    };
+
+    this.store.dispatch(LoansActions.initiatePrepayment({ payload: request }));
   }
 
   public onVerifyOtp(code: string): void {
-    console.log('OTP Entered:', code);
-    // Backend logic will go here later...
+    const challengeId = this.activeChallengeId();
+
+    if (!challengeId) return;
+
+    this.store.dispatch(
+      LoansActions.verifyPrepayment({
+        payload: { challengeId, code },
+      }),
+    );
   }
 
   public onFinalPay(): void {
-    // console.log('Payment Triggered');
     this.closeModals();
   }
 

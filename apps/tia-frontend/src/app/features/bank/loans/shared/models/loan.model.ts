@@ -28,6 +28,7 @@ export interface ILoansState {
   error: string | null;
   filterStatus: number | null;
   calculationResult: IPrepaymentCalcResponse | null;
+  activeChallengeId: string | null;
 }
 
 export interface LoanUiState {

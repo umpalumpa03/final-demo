@@ -90,3 +90,8 @@ export const selectCalculationResult = createSelector(
   selectLoansState,
   (state) => state.calculationResult,
 );
+
+export const selectActiveChallengeId = createSelector(
+  selectLoansState,
+  (state) => state.activeChallengeId,
+);
