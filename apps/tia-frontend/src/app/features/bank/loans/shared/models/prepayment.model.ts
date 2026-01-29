@@ -15,6 +15,8 @@ export interface RadioOption {
   description?: string;
 }
 
+export type PrepaymentStep = 'options' | 'review' | 'otp';
+
 export interface PrepaymentCalculationPayload {
   loanId: string;
   type: 'full' | 'partial';
@@ -27,20 +29,17 @@ export interface IPrepaymentCalcItem {
   amount: number;
 }
 
-export interface IPrepaymentCalcResponse {
+export interface IPartialPrepaymentResponse {
   displayedInfo: IPrepaymentCalcItem[];
 }
 
-export interface IFullPrepaymentItem {
-  text: string;
-  amount: number;
-}
-
 export interface IFullPrepaymentResponse {
-  items: IFullPrepaymentItem[];
+  items: IPrepaymentCalcItem[];
 }
 
-export type PrepaymentStep = 'options' | 'review' | 'otp';
+export interface IPrepaymentCalcResponse {
+  displayedInfo: IPrepaymentCalcItem[];
+}
 
 export interface IInitiatePrepaymentRequest {
   loanId: string;

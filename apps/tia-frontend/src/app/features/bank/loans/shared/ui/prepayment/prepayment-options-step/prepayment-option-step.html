@@ -11,7 +11,7 @@
         <h4 class="prepayment-step__section-title">Prepayment Options</h4>
 
         <div class="prepayment-step__form-grid">
-            <lib-select [config]="config.typeSelect" [options]="(typeOptions$ | async) ?? []" formControlName="type">
+            <lib-select [config]="config.typeSelect" [options]="(typeOptions()) ?? []" formControlName="type">
             </lib-select>
 
             <lib-text-input type="number" [config]="config.amountInput" formControlName="amount">

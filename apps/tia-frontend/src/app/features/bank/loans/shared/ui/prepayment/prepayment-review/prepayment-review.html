@@ -9,7 +9,7 @@
         </div>
     </header>
 
-    <div class="review-step__body">
+    <main class="review-step__body">
         <div class="review-step__section">
             <h4 class="review-step__section-title">Prepayment Information</h4>
 
@@ -17,14 +17,19 @@
                 @for (item of calculationResult().displayedInfo; track item.text) {
                 <div class="review-step__grid-item">
                     <label class="review-step__label">{{ item.text }}</label>
+
                     <strong class="review-step__value">
-                        {{ item.amount | currency:'USD':'symbol':'1.0-2' }}
+                        @if (isCurrency(item.text)) {
+                        {{ item.amount | currency:currencyCode():'symbol':'1.0-2' }}
+                        } @else {
+                        {{ item.amount }}
+                        }
                     </strong>
                 </div>
                 }
             </div>
         </div>
-    </div>
+    </main>
 
     <footer class="review-step__footer">
         <app-button variant="outline" (click)="cancel.emit()">Cancel</app-button>

@@ -40,12 +40,8 @@ export class PrepaymentContainer implements OnInit {
   public loan = input.required<ILoan>();
   public close = output<void>();
 
-  public calculationResult = toSignal(
-    this.store.select(selectCalculationResult),
-  );
-  public activeChallengeId = toSignal(
-    this.store.select(selectActiveChallengeId),
-  );
+  public calculationResult = this.store.selectSignal(selectCalculationResult);
+  public activeChallengeId = this.store.selectSignal(selectActiveChallengeId);
 
   public step = signal<PrepaymentStep>('options');
   private pendingPayload: PrepaymentCalculationPayload | null = null;

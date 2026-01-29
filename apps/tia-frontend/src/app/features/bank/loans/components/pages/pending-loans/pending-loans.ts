@@ -16,7 +16,9 @@ import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accoun
 export class PendingLoans {
   private store = inject(Store);
 
-  protected readonly pendingLoans$ = this.store.select(selectFilteredLoans(1));
+  protected readonly pendingLoans = this.store.selectSignal(
+    selectFilteredLoans(1),
+  );
 
   public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadLoans());

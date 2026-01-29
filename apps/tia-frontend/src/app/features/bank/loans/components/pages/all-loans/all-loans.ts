@@ -29,7 +29,9 @@ import { PrepaymentContainer } from '../../../shared/ui/prepayment/prepayment-co
 export class AllLoans implements OnInit {
   private store = inject(Store);
 
-  protected readonly loans$ = this.store.select(selectLoansWithAccountInfo);
+  protected readonly loans = this.store.selectSignal(
+    selectLoansWithAccountInfo,
+  );
 
   public readonly selectedLoan = signal<ILoan | null>(null);
   public readonly isDetailsOpen = signal(false);
@@ -41,19 +43,12 @@ export class AllLoans implements OnInit {
   }
 
   public onCardClick(id: string): void {
-    this.loans$
-      .pipe(
-        take(1),
-        map((loans) => loans.find((l) => l.id === id)),
-        filter(
-          (loan): loan is NonNullable<typeof loan> =>
-            !!loan && loan.status === 2,
-        ),
-      )
-      .subscribe((loan) => {
-        this.selectedLoan.set(loan);
-        this.isDetailsOpen.set(true);
-      });
+    const loan = this.loans().find((l) => l.id === id);
+
+    if (loan && loan.status === 2) {
+      this.selectedLoan.set(loan);
+      this.isDetailsOpen.set(true);
+    }
   }
 
   public onRenameLoan(event: { id: string; name: string }): void {

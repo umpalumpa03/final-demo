@@ -4,6 +4,7 @@ import {
   inject,
   input,
   output,
+  Signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -47,8 +48,8 @@ export class PrepaymentOptionStep {
   public readonly cancel = output<void>();
   public readonly calculate = output<PrepaymentCalculationPayload>();
 
-  protected readonly typeOptions$: Observable<IDropdownOption[]> =
-    this.store.select(selectPrepaymentTypeOptions);
+  protected readonly typeOptions: Signal<IDropdownOption[]> =
+    this.store.selectSignal(selectPrepaymentTypeOptions);
 
   protected readonly config = PREPAYMENT_FORM_CONFIG;
   protected readonly calculationOptions: RadioOption[] =
