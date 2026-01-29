@@ -39,7 +39,7 @@ export class ProfilePhotoComponent {
   public onFileButtonClick(): void {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = 'image/*';
+    input.accept = 'image/png,image/jpeg';
     input.style.display = 'none';
     
     input.addEventListener('change', (event: Event) => {
