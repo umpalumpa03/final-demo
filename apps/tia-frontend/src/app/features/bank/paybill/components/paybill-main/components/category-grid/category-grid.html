@@ -2,7 +2,11 @@
   <app-library-title title="Select Category"></app-library-title>
 
   <app-grid-layout cols="4" class="paybill-grid__container">
-    @for(category of categories(); track category.id) {
+    @if (isLoading()) { @for (item of [1,2,3,4,5]; track item) {
+    <div class="paybill-grid__card-wrapper">
+      <app-skeleton variant="rectangle" width="23rem" height="21rem" />
+    </div>
+    } } @else { @for(category of categories(); track category.id) {
     <div class="paybill-grid__card-wrapper">
       <app-category-card
         [title]="category.name"
@@ -13,6 +17,6 @@
         (cardClick)="onCategoryClick(category.id)"
       />
     </div>
-    }
+    } }
   </app-grid-layout>
 </section>

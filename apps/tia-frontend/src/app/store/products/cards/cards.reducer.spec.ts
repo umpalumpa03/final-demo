@@ -3,6 +3,7 @@ import { cardsReducer } from './cards.reducer';
 import { initialCardsState, CardsState } from './cards.state';
 import * as CardsActions from './cards.actions';
 import { CardAccount } from '../../../features/bank/products/components/cards/models/card-account.model';
+import { CardDetail } from '../../../features/bank/products/components/cards/models/card-detail.model';
 
 describe('Cards Reducer', () => {
   const mockAccounts: CardAccount[] = [
@@ -17,6 +18,21 @@ describe('Cards Reducer', () => {
       openedAt: '2026-01-18T01:10:50.948Z',
     },
   ];
+
+  const mockCardDetail: CardDetail = {
+    id: 'card1',
+    accountId: 'acc1',
+    type: 'DEBIT',
+    network: 'VISA',
+    design: 'MIDNIGHT_GRADIENT',
+    cardName: 'Main Visa',
+    status: 'ACTIVE',
+    allowOnlinePayments: true,
+    allowInternational: true,
+    allowAtm: true,
+    createdAt: '2026-01-18T01:10:50.948Z',
+    updatedAt: '2026-01-18T01:10:50.948Z',
+  };
 
   const cardId = 'card1';
   const imageBase64 = 'data:image/svg+xml;base64,test';
@@ -95,6 +111,45 @@ describe('Cards Reducer', () => {
     it('should not modify state on failure', () => {
       const error = 'Failed to load image';
       const action = CardsActions.loadCardImageFailure({ cardId, error });
+      const state = cardsReducer(initialCardsState, action);
+      expect(state).toEqual(initialCardsState);
+    });
+  });
+
+  describe('loadCardDetails', () => {
+    it('should not modify state when loading card details', () => {
+      const action = CardsActions.loadCardDetails({ cardId });
+      const state = cardsReducer(initialCardsState, action);
+      expect(state).toEqual(initialCardsState);
+    });
+  });
+
+  describe('loadCardDetailsSuccess', () => {
+    it('should add card details to state', () => {
+      const action = CardsActions.loadCardDetailsSuccess({ cardId, details: mockCardDetail });
+      const state = cardsReducer(initialCardsState, action);
+      expect(state.cardDetails[cardId]).toEqual(mockCardDetail);
+    });
+
+    it('should update existing card details', () => {
+      const oldDetails: CardDetail = { ...mockCardDetail, cardName: 'Old Name' };
+      const newDetails: CardDetail = { ...mockCardDetail, cardName: 'New Name' };
+
+      const stateWithDetails: CardsState = {
+        ...initialCardsState,
+        cardDetails: { [cardId]: oldDetails },
+      };
+
+      const action = CardsActions.loadCardDetailsSuccess({ cardId, details: newDetails });
+      const state = cardsReducer(stateWithDetails, action);
+      expect(state.cardDetails[cardId]).toEqual(newDetails);
+    });
+  });
+
+  describe('loadCardDetailsFailure', () => {
+    it('should not modify state on failure', () => {
+      const error = 'Failed to load card details';
+      const action = CardsActions.loadCardDetailsFailure({ cardId, error });
       const state = cardsReducer(initialCardsState, action);
       expect(state).toEqual(initialCardsState);
     });

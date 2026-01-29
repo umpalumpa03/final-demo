@@ -1,5 +1,7 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { ILoan } from '../shared/models/loan.model';
+import { ILoan, LoanMonthsResponse } from '../shared/models/loan.model';
+import { LoanPurpose } from '../shared/models/loan-request.model';
+import { PrepaymentOption } from '../shared/models/prepayment.model';
 
 export const LoansActions = createActionGroup({
   source: 'Loans API',
@@ -13,5 +15,17 @@ export const LoansActions = createActionGroup({
     'Rename Loan': props<{ id: string; name: string }>(),
     'Rename Loan Success': props<{ id: string; name: string }>(),
     'Rename Loan Failure': props<{ error: string }>(),
+
+    'Load Months': emptyProps(),
+    'Load Months Success': props<{ months: LoanMonthsResponse }>(),
+    'Load Months Failure': props<{ error: string }>(),
+
+    'Load Purposes': emptyProps(),
+    'Load Purposes Success': props<{ purposes: LoanPurpose[] }>(),
+    'Load Purposes Failure': props<{ error: string }>(),
+
+    'Load Prepayment Options': emptyProps(),
+    'Load Prepayment Options Success': props<{ options: PrepaymentOption[] }>(),
+    'Load Prepayment Options Failure': props<{ error: string }>(),
   },
 });

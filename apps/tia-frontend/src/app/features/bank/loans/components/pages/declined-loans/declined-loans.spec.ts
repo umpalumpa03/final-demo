@@ -7,12 +7,15 @@ describe('DeclinedLoans', () => {
   let fixture: ComponentFixture<DeclinedLoans>;
 
   const initialState = {
-    loans: {
+    loans_local: {
       loans: [],
       loading: false,
       error: null,
+      months: [],
+      purposes: [],
     },
   };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DeclinedLoans],
