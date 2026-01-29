@@ -94,4 +94,17 @@ describe('LoansReducer', () => {
     expect(state.months).toEqual(mockMonths);
     expect(state.loading).toBe(false);
   });
+
+  it('should handle loadPurposesSuccess', () => {
+    const purposes = [{ value: '1', displayText: 'Home' }] as any;
+    const action = LoansActions.loadPurposesSuccess({ purposes });
+    const state = loansReducer(loansInitialState, action);
+    expect(state.purposes).toEqual(purposes);
+  });
+
+  it('should handle loadPurposesFailure', () => {
+    const action = LoansActions.loadPurposesFailure({ error: 'fail' });
+    const state = loansReducer(loansInitialState, action);
+    expect(state.error).toBe('fail');
+  });
 });

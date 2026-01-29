@@ -5,8 +5,11 @@ import {
 } from '@angular/common/http/testing';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { AccountsService } from './accounts.service';
-import { environment } from '../../../../../../../environments/environment';
-import { AccountType } from '../../../models/accounts.model';
+import { environment } from '../../../../environments/environment';
+import {
+  AccountType,
+  CreateAccountRequest,
+} from '../../models/accounts/accounts.model';
 
 describe('AccountsService', () => {
   let service: AccountsService;
@@ -48,8 +51,8 @@ describe('AccountsService', () => {
   });
 
   it('should create account', () => {
-    const createRequest = {
-      accountName: 'New Account',
+    const createRequest: CreateAccountRequest = {
+      friendlyName: 'New Account',
       type: AccountType.saving,
       currency: 'USD',
     };

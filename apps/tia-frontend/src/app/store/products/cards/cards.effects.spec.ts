@@ -8,12 +8,17 @@ import { CardsEffects } from './cards.effects';
 import { CardListService } from '../../../features/bank/products/components/cards/services/card-list.service';
 import * as CardsActions from './cards.actions';
 import { CardAccount } from '../../../features/bank/products/components/cards/models/card-account.model';
+import { CardDetail } from '../../../features/bank/products/components/cards/models/card-detail.model';
 import { toArray } from 'rxjs/operators';
 
 describe('CardsEffects', () => {
   let actions$: Observable<Action>;
   let effects: CardsEffects;
-  let cardListService: { getCardAccounts: ReturnType<typeof vi.fn>; getCardImage: ReturnType<typeof vi.fn> };
+  let cardListService: { 
+    getCardAccounts: ReturnType<typeof vi.fn>; 
+    getCardImage: ReturnType<typeof vi.fn>;
+    getCardDetails: ReturnType<typeof vi.fn>;
+  };
 
   const mockAccounts: CardAccount[] = [
     {
@@ -28,10 +33,26 @@ describe('CardsEffects', () => {
     },
   ];
 
+  const mockCardDetail: CardDetail = {
+    id: 'card1',
+    accountId: 'acc1',
+    type: 'DEBIT',
+    network: 'VISA',
+    design: 'MIDNIGHT_GRADIENT',
+    cardName: 'Main Visa',
+    status: 'ACTIVE',
+    allowOnlinePayments: true,
+    allowInternational: true,
+    allowAtm: true,
+    createdAt: '2026-01-18T01:10:50.948Z',
+    updatedAt: '2026-01-18T01:10:50.948Z',
+  };
+
   beforeEach(() => {
     cardListService = {
       getCardAccounts: vi.fn(),
       getCardImage: vi.fn(),
+      getCardDetails: vi.fn(),
     };
 
     TestBed.configureTestingModule({
@@ -82,10 +103,9 @@ describe('CardsEffects', () => {
       actions$ = of(CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts }));
 
       const action = await firstValueFrom(effects.loadCardImages$);
-     expect(action).toEqual(
-  CardsActions.loadCardImageFailure({ cardId: 'card1', error: 'IMAGE_LOAD_FAILED' })
-);
-
+      expect(action).toEqual(
+        CardsActions.loadCardImageFailure({ cardId: 'card1', error: 'IMAGE_LOAD_FAILED' })
+      );
     });
 
     it('should handle multiple cards from multiple accounts', async () => {
@@ -98,8 +118,31 @@ describe('CardsEffects', () => {
       cardListService.getCardImage.mockReturnValue(of(imageBase64));
       actions$ = of(CardsActions.loadCardAccountsSuccess({ accounts: multipleAccounts }));
 
-     const actions = await firstValueFrom(effects.loadCardImages$.pipe(toArray()));
-expect(actions.every(a => a.type.includes('[Cards] Load Card Image'))).toBe(true);
+      const actions = await firstValueFrom(effects.loadCardImages$.pipe(toArray()));
+      expect(actions.every(a => a.type.includes('[Cards] Load Card Image'))).toBe(true);
+    });
+  });
+
+  describe('loadCardDetails$', () => {
+    it('should return loadCardDetailsSuccess on success', async () => {
+      cardListService.getCardDetails.mockReturnValue(of(mockCardDetail));
+      actions$ = of(CardsActions.loadCardDetails({ cardId: 'card1' }));
+
+      const action = await firstValueFrom(effects.loadCardDetails$);
+      expect(action).toEqual(
+        CardsActions.loadCardDetailsSuccess({ cardId: 'card1', details: mockCardDetail })
+      );
+    });
+
+    it('should return loadCardDetailsFailure on error', async () => {
+      const error = new Error('Details load error');
+      cardListService.getCardDetails.mockReturnValue(throwError(() => error));
+      actions$ = of(CardsActions.loadCardDetails({ cardId: 'card1' }));
+
+      const action = await firstValueFrom(effects.loadCardDetails$);
+      expect(action).toEqual(
+        CardsActions.loadCardDetailsFailure({ cardId: 'card1', error: error.message })
+      );
     });
   });
 });

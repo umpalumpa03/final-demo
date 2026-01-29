@@ -72,4 +72,24 @@ export class LoansEffects {
       ),
     ),
   );
+
+  loadPrepaymentOptions$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.loadPrepaymentOptions),
+      switchMap(() =>
+        this.loansService.getPrepaymentOptions().pipe(
+          map((options) =>
+            LoansActions.loadPrepaymentOptionsSuccess({ options }),
+          ),
+          catchError((error) =>
+            of(
+              LoansActions.loadPrepaymentOptionsFailure({
+                error: error.message,
+              }),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

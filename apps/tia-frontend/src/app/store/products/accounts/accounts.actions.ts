@@ -1,5 +1,8 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { Account } from '../../../features/bank/products/models/accounts.model';
+import {
+  Account,
+  CreateAccountRequest,
+} from '../../../shared/models/accounts/accounts.model';
 
 export const AccountsActions = createActionGroup({
   source: 'Accounts',
@@ -9,5 +12,12 @@ export const AccountsActions = createActionGroup({
     'Load Accounts Failure': props<{ error: string }>(),
 
     'Select Account': props<{ accountId: string | null }>(),
+
+    'Create Account': props<{ request: CreateAccountRequest }>(),
+    'Create Account Success': props<{ account: Account }>(),
+    'Create Account Failure': props<{ error: string }>(),
+
+    'Open Create Modal': emptyProps(),
+    'Close Create Modal': emptyProps(),
   },
 });
