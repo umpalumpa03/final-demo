@@ -8,4 +8,5 @@ export const loansInitialState: ILoansState = {
   loading: false,
   error: null,
   filterStatus: null,
+  calculationResult: null,
 };

@@ -11,6 +11,8 @@ import {
 import { FinancesStore } from '../features/bank/finances/store/finances.store';
 import { FinancesService } from '../features/bank/finances/services/finances.service';
 import { TransactionService } from '@tia/shared/services/transactions-service/transaction-service';
+import { LoanCreateEffects } from '../store/loans/loans.effects';
+import { loansFeature } from '../store/loans/loans.reducer';
 export const bankRoutes: Routes = [
   {
     path: 'bank',
@@ -60,6 +62,10 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'loans',
+        providers: [
+          provideState(loansFeature),
+          provideEffects(LoanCreateEffects),
+        ],
         loadChildren: () =>
           import('../features/bank/loans/loans.routes').then(
             (c) => c.loansRoutes,

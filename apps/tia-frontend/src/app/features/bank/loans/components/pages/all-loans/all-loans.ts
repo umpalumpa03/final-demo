@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  effect,
   inject,
   OnInit,
   signal,
@@ -9,17 +10,32 @@ import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { LoanCard } from '../../../shared/ui/loan-card/loan-card';
 import { LoansActions } from '../../../store/loans.actions';
-import { selectAllLoans } from '../../../store/loans.selectors';
+import {
+  selectAllLoans,
+  selectCalculationResult,
+} from '../../../store/loans.selectors';
 import { LoanDetails } from '../../../shared/ui/prepayment-wizard/loan-details/loan-details';
 import { ILoan } from '../../../shared/models/loan.model';
 import { filter, map, take } from 'rxjs';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { PrepaymentOptionStep } from '../../../shared/ui/prepayment-wizard/prepayment-options-step/prepayment-option-step';
-import { PrepaymentCalculationPayload } from '../../../shared/models/prepayment.model';
+import {
+  PrepaymentCalculationPayload,
+  PrepaymentStep,
+} from '../../../shared/models/prepayment.model';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { PrepaymentReview } from '../../../shared/ui/prepayment-wizard/prepayment-review/prepayment-review';
 
 @Component({
   selector: 'app-all-loans',
-  imports: [CommonModule, LoanCard, LoanDetails, UiModal, PrepaymentOptionStep],
+  imports: [
+    CommonModule,
+    LoanCard,
+    LoanDetails,
+    UiModal,
+    PrepaymentOptionStep,
+    PrepaymentReview,
+  ],
   templateUrl: './all-loans.html',
   styleUrl: './all-loans.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,10 +44,22 @@ export class AllLoans implements OnInit {
   private store = inject(Store);
 
   protected readonly loans$ = this.store.select(selectAllLoans);
+  public readonly calculationResult = toSignal(
+    this.store.select(selectCalculationResult),
+  );
 
   public readonly selectedLoan = signal<ILoan | null>(null);
   public readonly isDetailsOpen = signal(false);
   public readonly isPrepaymentOpen = signal(false);
+  public readonly step = signal<PrepaymentStep>('options');
+
+  constructor() {
+    effect(() => {
+      if (this.calculationResult()) {
+        this.step.set('review');
+      }
+    });
+  }
 
   public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadLoans());
@@ -59,17 +87,27 @@ export class AllLoans implements OnInit {
   public onOpenPrepayment(loan: ILoan): void {
     this.selectedLoan.set(loan);
     this.isDetailsOpen.set(false);
+
+    this.step.set('options');
+    this.store.dispatch(LoansActions.clearCalculationResult());
+
     this.isPrepaymentOpen.set(true);
   }
 
-  // SHEMDEG GVERDZE GADASVLAA DA XVALVIZAM
   public onCalculatePrepayment(payload: PrepaymentCalculationPayload): void {
-    // console.log('Calculation Payload:', payload);
+    this.store.dispatch(LoansActions.calculatePrepayment({ payload }));
+  }
+
+  public onFinalPay(): void {
+    // console.log('Payment Triggered');
+    this.closeModals();
   }
 
   public closeModals(): void {
     this.isDetailsOpen.set(false);
     this.isPrepaymentOpen.set(false);
     this.selectedLoan.set(null);
+    this.step.set('options');
+    this.store.dispatch(LoansActions.clearCalculationResult());
   }
 }

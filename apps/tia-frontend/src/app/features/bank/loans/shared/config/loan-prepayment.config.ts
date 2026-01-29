@@ -11,4 +11,24 @@ export const PREPAYMENT_CALC_OPTIONS: RadioOption[] = [
     value: 'reduceEndDateOfLoan',
     description: 'Shorten the loan term',
   },
-];
+] as const;
+
+export const PREPAYMENT_FORM_CONFIG = {
+  typeSelect: {
+    label: 'Prepayment Type *',
+    height: '3.6rem',
+    placeholder: 'Select type',
+  },
+
+  amountInput: {
+    label: 'Prepayment Amount *',
+    placeholder: '500',
+    prefixIcon: './images/svg/feature-loans/dollar.svg',
+  },
+
+  calculationRadios: {
+    label: 'Calculation Option *',
+    hasBorder: true,
+    layout: 'column',
+  },
+} as const;
