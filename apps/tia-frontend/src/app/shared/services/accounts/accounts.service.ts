@@ -1,16 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 import {
   Account,
-  CreateAccountRequest,
   AccountsResponse,
-} from '../../../models/accounts.model';
-import { environment } from '../../../../../../../environments/environment';
+  CreateAccountRequest,
+} from '../../models/accounts/accounts.model';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class AccountsService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/accounts`;
