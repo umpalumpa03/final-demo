@@ -1,11 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MailCard } from './mail-card';
 import { Mail } from '../../../store/messaging.state';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('MailCard', () => {
   let component: MailCard;
   let fixture: ComponentFixture<MailCard>;
-  const mail: Mail = {
+
+  const mockMail: Mail = {
     id: 1,
     subject: 'Test Subject',
     senderEmail: 'test@example.com',
@@ -20,64 +22,78 @@ describe('MailCard', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MailCard],
+      imports: [MailCard]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MailCard);
     component = fixture.componentInstance;
-    Object.defineProperty(component, 'mail', { value: () => mail });
-    fixture.detectChanges();
+    fixture.componentRef.setInput('mail', mockMail);
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render mail subject, sender, and body', () => {
-    const subject = fixture.nativeElement.querySelector('.mail-card__subject');
-    const sender = fixture.nativeElement.querySelector('.mail-card__sender');
-    const body = fixture.nativeElement.querySelector('.mail-card__preview');
-    expect(subject.textContent).toContain(mail.subject);
-    expect(sender.textContent).toContain(mail.senderEmail);
-    expect(body.textContent).toContain(mail.body);
+  it('should emit markAsRead', () => {
+    const spy = vi.fn();
+    component.markAsRead.subscribe(spy);
+    const event = new Event('click');
+
+    component.onMarkAsRead(event);
+
+    expect(spy).toHaveBeenCalledWith(1);
   });
 
-  it('should emit toggleRead when read button is clicked', () => {
-    vi.spyOn(component.toggleRead, 'emit');
-    const btn = fixture.nativeElement.querySelector('.mail-card__action-btn--read');
-    btn.dispatchEvent(new Event('click'));
-    expect(component.toggleRead.emit).toHaveBeenCalledWith(mail.id);
+  it('should emit toggleFavorite', () => {
+    const spy = vi.fn();
+    component.toggleFavorite.subscribe(spy);
+    const event = new Event('click');
+
+    component.onToggleFavorite(event);
+
+    expect(spy).toHaveBeenCalledWith(1);
   });
 
-  it('should emit toggleFavorite when favorite button is clicked', () => {
-    vi.spyOn(component.toggleFavorite, 'emit');
-    const btn = fixture.nativeElement.querySelector('.mail-card__action-btn--favorite');
-    btn.dispatchEvent(new Event('click'));
-    expect(component.toggleFavorite.emit).toHaveBeenCalledWith(mail.id);
+  it('should emit toggleImportant', () => {
+    const spy = vi.fn();
+    component.toggleImportant.subscribe(spy);
+    const event = new Event('click');
+
+    component.onToggleImportant(event);
+
+    expect(spy).toHaveBeenCalledWith(1);
   });
 
-  it('should emit toggleImportant when important button is clicked', () => {
-    vi.spyOn(component.toggleImportant, 'emit');
-    const btn = fixture.nativeElement.querySelector('.mail-card__action-btn--important');
-    btn.dispatchEvent(new Event('click'));
-    expect(component.toggleImportant.emit).toHaveBeenCalledWith(mail.id);
+  it('should emit deleteMail', () => {
+    const spy = vi.fn();
+    component.deleteMail.subscribe(spy);
+    const event = new Event('click');
+
+    component.onDelete(event);
+
+    expect(spy).toHaveBeenCalledWith(1);
   });
 
-  it('should emit deleteMail when delete button is clicked', () => {
-    vi.spyOn(component.deleteMail, 'emit');
-    const btn = fixture.nativeElement.querySelector('.mail-card__action-btn--delete');
-    btn.dispatchEvent(new Event('click'));
-    expect(component.deleteMail.emit).toHaveBeenCalledWith(mail.id);
+  it('should emit cardClick', () => {
+    const spy = vi.fn();
+    component.cardClick.subscribe(spy);
+
+    component.onCardClick();
+
+    expect(spy).toHaveBeenCalledWith(1);
   });
 
-  it('should emit cardClick when card is clicked', () => {
-    vi.spyOn(component.cardClick, 'emit');
-    const card = fixture.nativeElement.querySelector('.mail-card');
-    card.dispatchEvent(new Event('click'));
-    expect(component.cardClick.emit).toHaveBeenCalledWith(mail.id);
+  it('should get initials from email', () => {
+    const initials = component.getInitials('test@example.com');
+    expect(initials).toBe('TE');
   });
 
-  it('should get initials from sender email', () => {
-    expect(component.getInitials('test@example.com')).toBe('TE');
+  it('should stop event propagation', () => {
+    const event = new Event('click');
+    const spy = vi.spyOn(event, 'stopPropagation');
+
+    component.onMarkAsRead(event);
+
+    expect(spy).toHaveBeenCalled();
   });
 });

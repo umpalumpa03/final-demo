@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   OnInit,
 } from '@angular/core';
@@ -11,15 +10,21 @@ import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions
 import {
   selectIsLoading,
   selectItems,
+  selectTotalTransactions,
 } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
-import { TransactionsTable } from '../components/transactions-table/transactions-table';
 import { TRANSACTIONS_BASE_CONFIG } from '../config/transaction-data';
 import { convertTransactionData } from '../utils/data-converter.utils';
 import { TableConfig } from '@tia/shared/lib/tables/models/table.model';
+import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
+import { Tables } from '@tia/shared/lib/tables/components/tables';
+import { ShowcaseCard } from '../../../storybook/shared/showcase-card/showcase-card';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-transactions-container',
-  imports: [TransactionsTable],
+  imports: [LibraryTitle, ButtonComponent, RouteLoader, Tables, ShowcaseCard],
   templateUrl: './transactions-container.html',
   styleUrl: './transactions-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,31 +34,48 @@ export class TransactionsContainer implements OnInit {
 
   public items = this.store.selectSignal(selectItems);
   public readonly isLoading = this.store.selectSignal(selectIsLoading);
+  private readonly totalTransactions = this.store.selectSignal(
+    selectTotalTransactions,
+  );
+
+  public readonly totalTransactionsString = computed(() => {
+    const total = this.totalTransactions().toString();
+    const itemsFetched = this.items().length.toString();
+
+    return `Showing ${itemsFetched} of ${total} transactions`;
+  });
 
   public tableConfig = computed<TableConfig>(() => ({
     ...TRANSACTIONS_BASE_CONFIG,
     rows: this.items().map(convertTransactionData),
   }));
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
+    this.store.dispatch(TransactionActions.loadTransactions());
     this.store.dispatch(TransactionActions.enter());
-    console.log(this.items());
   }
 
-  constructor() {
-    effect(() => {
-      console.log(this.items());
-    });
-  }
   public onScroll(event: Event): void {
     const el = event.target as HTMLElement;
 
     if (!el) return;
 
     if (el.scrollHeight - el.scrollTop <= el.clientHeight + 20) {
-      if (!this.isLoading()) {
+      if (this.items().length % 20 === 0 && !this.isLoading()) {
         this.store.dispatch(TransactionActions.loadMore());
       }
     }
+  }
+
+  public onMockFilter(): void {
+    const hardcodedFilter = {
+      searchCriteria: 'Coffee at Starbucks',
+    };
+
+    console.log('Testing Filter with:', hardcodedFilter);
+
+    this.store.dispatch(
+      TransactionActions.updateFilters({ filters: hardcodedFilter }),
+    );
   }
 }
