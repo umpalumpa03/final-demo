@@ -167,4 +167,26 @@
     text-align: center;
     margin-top: 0.8rem;
   }
+  &__view-all-button {
+  @include font-inter(400, 1.4rem, 1.5);
+  width: 100%;
+  padding: 1.2rem;
+  margin-top: 0.8rem;
+  background-color: transparent;
+  border: 0.15rem solid var(--color-primary);
+  border-radius: 0.8rem;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--color-primary);
+    color: $white;
+  }
+
+  &:focus-visible {
+    outline: 0.2rem solid var(--color-primary);
+    outline-offset: 0.2rem;
+  }
+}
 }

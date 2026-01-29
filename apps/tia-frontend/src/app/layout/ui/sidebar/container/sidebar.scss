@@ -1,5 +1,5 @@
-@use '../../../../shared/styles/palette' as *;
-@use '../../../../shared/styles/mixins' as *;
+@use "../../../../shared/styles/palette" as *;
+@use "../../../../shared/styles/mixins" as *;
 
 .sidebar {
   @include display-flex(column);
@@ -98,5 +98,21 @@
     background: rgba($black, 0.5);
     @include flex-center;
     z-index: 100;
+  }
+
+  &__logout {
+    display: inline-block;
+    opacity: 1;
+    transition:
+      opacity 0.3s ease,
+      max-width 0.3s ease;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  &__logout-text--hidden {
+    opacity: 0;
+    max-width: 0;
+    pointer-events: none;
   }
 }

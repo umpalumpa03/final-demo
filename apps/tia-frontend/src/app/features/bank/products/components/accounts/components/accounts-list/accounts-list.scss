@@ -1,0 +1,80 @@
+@use '../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../shared/styles/palette' as *;
+
+.accounts-list {
+  margin: 0 auto;
+  padding-top: 2rem;
+
+  &__header {
+    @include font-arimo();
+    @include flex-center(row, space-between, center);
+    margin-bottom: 2rem;
+
+    &-info {
+      @include display-flex(column);
+      gap: 0.5rem;
+    }
+
+    &-title {
+      @include font-arimo(600, 2rem, 1.2);
+      margin: 0;
+    }
+
+    &-subtitle {
+      @include font-arimo(400, 1rem, 1.2);
+      color: $gray-600;
+      margin: 0;
+    }
+  }
+
+  &__error {
+    @include font-arimo(400, 1rem, 1.2);
+    @include flex-center(column);
+    gap: 1rem;
+    padding: 2rem;
+    background-color: $orange-50;
+    border-radius: 0.5rem;
+
+    &-title {
+      margin: 0;
+    }
+  }
+
+  &__section {
+    margin-bottom: 2rem;
+
+    &-header {
+      @include flex-center(row, flex-start, center);
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    &-icon {
+      width: 2.4rem;
+      height: 2.4rem;
+    }
+
+    &-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    &-count {
+      @include flex-center(row, center, center);
+      min-width: 2.4rem;
+      height: 2.4rem;
+      padding: 0 0.5rem;
+      background-color: $gray-200;
+      border-radius: 0.1rem;
+      @include font-arimo(500, 1rem, 1.2);
+      color: $gray-600;
+    }
+
+    &-grid {
+      @include display-flex(row, wrap);
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+  }
+}

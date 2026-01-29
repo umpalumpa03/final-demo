@@ -30,7 +30,14 @@
     },
     "profile-photo": {
         "title": "პროფილის ფოტო",
-        "change": "ფოტოს შეცვლა",
+        "subtitle": "ატვირთეთ ახალი პროფილის ფოტო ან აირჩიეთ ნაგულისხმები ფოტო ",
+        "uploadCustomPhoto": "ატვირთეთ ახალი პროფილის ფოტო",
+        "chooseFile": "ფაილის არჩევა",
+        "defaultAvatar": "ნაგულისხმები ფოტოები",
+        "loadingDefaultAvatars": "ნაგულისხმები ფოტოები იტვირთება...",
+        "profilePictureChangedSuccessfully": "პროფილის ფოტო წარმატებით შეიცვალა",
+        "profilePictureRemovedSuccessfully": "პროფილის ფოტო წარმატებით წაიშლა",
+        "change": "შენახვა",
         "remove": "ფოტოს წაშლა"
     },
     "security": {

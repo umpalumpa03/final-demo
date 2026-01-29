@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CardAccountsResponse } from '../models/card-account.model';
 import { environment } from '../../../../../../../environments/environment';
+import { CardDetailsResponse } from '../models/card-detail.model';
 
 @Injectable({
   providedIn: 'root',
@@ -19,5 +20,8 @@ export class CardListService {
     return this.http.get(`${this.apiUrl}/${cardId}/image`, {
       responseType: 'text',
     });
+  }
+   getCardDetails(cardId: string): Observable<CardDetailsResponse> {
+    return this.http.get<CardDetailsResponse>(`${this.apiUrl}/${cardId}`);
   }
 }

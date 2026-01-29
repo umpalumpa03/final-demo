@@ -1,0 +1,11 @@
+<div class="accounts-page">
+  <app-accounts-list
+    [accountsGrouped]="accountsGrouped$ | async"
+    [isLoading]="(isLoading$ | async) || false"
+    [error]="error$ | async"
+    [accountSections]="accountSectionsData"
+    (openModal)="handleOpenModal()"
+    (transfer)="handleTransfer($event)"
+    (retry)="handleRetry()"
+  />
+</div>

@@ -13,10 +13,13 @@ import { CommonModule } from '@angular/common';
 import { ILoan } from '../../../shared/models/loan.model';
 import { filter, map, take } from 'rxjs';
 import { LoanDetails } from '../../../shared/ui/prepayment-wizard/loan-details/loan-details';
+import { PrepaymentCalculationPayload } from '../../../shared/models/prepayment.model';
+import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
+import { PrepaymentOptionStep } from '../../../shared/ui/prepayment-wizard/prepayment-options-step/prepayment-option-step';
 
 @Component({
   selector: 'app-approved-loans',
-  imports: [LoanCard, CommonModule, LoanDetails],
+  imports: [LoanCard, CommonModule, LoanDetails, UiModal, PrepaymentOptionStep],
   templateUrl: './approved-loans.html',
   styleUrl: './approved-loans.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,7 +30,8 @@ export class ApprovedLoans implements OnInit {
   protected readonly approvedLoans$ = this.store.select(selectFilteredLoans(2));
 
   public readonly selectedLoan = signal<ILoan | null>(null);
-  public readonly isDetailsOpen = signal<boolean>(false);
+  public readonly isPrepaymentOpen = signal(false);
+  public readonly isDetailsOpen = signal(false);
 
   public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadLoans());
@@ -50,5 +54,22 @@ export class ApprovedLoans implements OnInit {
     this.store.dispatch(
       LoansActions.renameLoan({ id: event.id, name: event.name }),
     );
+  }
+
+  public onOpenPrepayment(loan: ILoan): void {
+    this.selectedLoan.set(loan);
+    this.isDetailsOpen.set(false);
+    this.isPrepaymentOpen.set(true);
+  }
+
+  // SHEMDEG GVERDZE GADASVLAA DA XVALVIZAM
+  public onCalculatePrepayment(payload: PrepaymentCalculationPayload): void {
+    // console.log('Calculation Payload:', payload);
+  }
+
+  public closeModals(): void {
+    this.isDetailsOpen.set(false);
+    this.isPrepaymentOpen.set(false);
+    this.selectedLoan.set(null);
   }
 }

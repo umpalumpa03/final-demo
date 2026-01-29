@@ -23,7 +23,9 @@
   <footer class="sidebar__footer">
     <app-button (click)="onLogout()" [fullWidth]="true" variant="ghost">
       <img src="images/svg/sidebar-nav/logout.svg" alt="logout icon" />
-      @if (!isCollapsed()) { {{'common.buttons.logout' | translate}} }
+      <span class="sidebar__logout" [class.sidebar__logout-text--hidden]="isCollapsed()">
+        {{ 'common.buttons.logout' | translate }}
+      </span>
     </app-button>
   </footer>
 </aside>

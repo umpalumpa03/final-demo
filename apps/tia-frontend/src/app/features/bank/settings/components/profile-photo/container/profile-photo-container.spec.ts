@@ -4,6 +4,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { vi } from 'vitest';
 import { ProfilePhotoActions } from '../../../../../../store/profile-photo/profile-photo.actions';
 import { ProfilePhotoContainer } from './profile-photo-container';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ProfilePhotoContainer', () => {
   let component: ProfilePhotoContainer;
@@ -11,12 +12,14 @@ describe('ProfilePhotoContainer', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProfilePhotoContainer],
+      imports: [ProfilePhotoContainer, TranslateModule.forRoot()],
       providers: [
         provideMockStore({
           initialState: {
             ProfilePhoto: {
               defaultAvatars: [],
+              defaultAvatarsLoading: false,
+              defaultAvatarsError: null,
               selectedAvatarId: null,
               uploadedFileName: null,
               currentAvatarUrl: null,
