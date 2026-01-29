@@ -21,3 +21,23 @@ export interface PrepaymentCalculationPayload {
   amount?: number;
   loanPartialPaymentType?: string;
 }
+
+export interface IPrepaymentCalcItem {
+  text: string;
+  amount: number;
+}
+
+export interface IPrepaymentCalcResponse {
+  displayedInfo: IPrepaymentCalcItem[];
+}
+
+export interface IFullPrepaymentItem {
+  text: string;
+  amount: number;
+}
+
+export interface IFullPrepaymentResponse {
+  items: IFullPrepaymentItem[];
+}
+
+export type PrepaymentStep = 'options' | 'review';
