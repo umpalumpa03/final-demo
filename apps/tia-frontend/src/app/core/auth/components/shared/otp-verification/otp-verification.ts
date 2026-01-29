@@ -45,7 +45,7 @@ import { AuthFromType } from '../../../models/auth.models';
 })
 export class OtpVerification implements OnDestroy {
   // gavitanot
-  private readonly MAX_TIME = 3;
+  private readonly MAX_TIME = 60;
   private readonly CIRCUMFERENCE = 282.7;
 
   private fb = inject(FormBuilder);
