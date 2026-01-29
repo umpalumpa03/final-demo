@@ -1,10 +1,10 @@
 import { createReducer, on } from '@ngrx/store';
 import { LoansActions } from './loans.actions';
 import { toTitleCase } from '../shared/utils/titlecase.util';
-import { initialState } from './loans.state';
+import { loansInitialState } from './loans.state';
 
 export const loansReducer = createReducer(
-  initialState,
+  loansInitialState,
 
   on(LoansActions.loadLoans, (state) => ({
     ...state,
@@ -44,5 +44,39 @@ export const loansReducer = createReducer(
     ...state,
     months,
     loading: false,
+  })),
+
+  on(LoansActions.loadPurposesSuccess, (state, { purposes }) => ({
+    ...state,
+    purposes: purposes,
+    error: null,
+  })),
+
+  on(LoansActions.loadPurposesFailure, (state, { error }) => ({
+    ...state,
+    error,
+  })),
+
+  on(LoansActions.loadPrepaymentOptionsSuccess, (state, { options }) => ({
+    ...state,
+    prepaymentOptions: options,
+    error: null,
+  })),
+
+  on(LoansActions.calculatePrepaymentSuccess, (state, { result }) => ({
+    ...state,
+    calculationResult: result,
+    error: null,
+  })),
+
+  on(LoansActions.calculatePrepaymentFailure, (state, { error }) => ({
+    ...state,
+    calculationResult: null,
+    error,
+  })),
+
+  on(LoansActions.clearCalculationResult, (state) => ({
+    ...state,
+    calculationResult: null,
   })),
 );

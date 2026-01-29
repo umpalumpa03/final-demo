@@ -5,6 +5,7 @@ import { Action } from '@ngrx/store';
 import { LoansEffects } from './loans.effects';
 import { LoansService } from '../shared/services/loans.service';
 import { LoansActions } from './loans.actions';
+import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ILoan } from '../shared/models/loan.model';
 
@@ -19,6 +20,11 @@ describe('LoansEffects', () => {
     loansServiceMock = {
       getAllLoans: vi.fn(),
       updateFriendlyName: vi.fn(),
+      getLoanMonths: vi.fn(),
+      getPurposes: vi.fn(),
+      getPrepaymentOptions: vi.fn(),
+      calculateFullPrepayment: vi.fn(),
+      calculatePartialPrepayment: vi.fn(),
     };
 
     TestBed.configureTestingModule({
@@ -85,6 +91,131 @@ describe('LoansEffects', () => {
 
     effects.renameLoan$.subscribe((result) => {
       expect(result).toEqual(outcome);
+    });
+  });
+
+  it('should return loadMonthsSuccess on success', () => {
+    const months = [1, 2];
+    const action = LoansActions.loadMonths();
+    const outcome = LoansActions.loadMonthsSuccess({ months });
+
+    actions$ = of(action);
+    loansServiceMock.getLoanMonths.mockReturnValue(of(months));
+
+    effects.loadMonths$.subscribe((res) => {
+      expect(res).toEqual(outcome);
+    });
+  });
+
+  it('should return loadMonthsFailure on error', () => {
+    const action = LoansActions.loadMonths();
+    const errorMsg = 'Months fail';
+    const outcome = LoansActions.loadMonthsFailure({ error: errorMsg });
+
+    actions$ = of(action);
+    loansServiceMock.getLoanMonths.mockReturnValue(
+      throwError(() => new Error(errorMsg)),
+    );
+
+    effects.loadMonths$.subscribe((res) => {
+      expect(res).toEqual(outcome);
+    });
+  });
+
+  it('should return loadPurposesSuccess on success', () => {
+    const mockPurposes = [{ displayText: 'Home', value: 'home' }] as any;
+    const action = LoansActions.loadPurposes();
+    const outcome = LoansActions.loadPurposesSuccess({
+      purposes: mockPurposes,
+    });
+
+    actions$ = of(action);
+    loansServiceMock.getPurposes.mockReturnValue(of(mockPurposes));
+
+    effects.loadPurposes$.subscribe((result) => {
+      expect(result).toEqual(outcome);
+    });
+  });
+
+  it('should return loadPurposesFailure on error', () => {
+    const action = LoansActions.loadPurposes();
+    const errorMsg = 'Purposes fail';
+    const outcome = LoansActions.loadPurposesFailure({ error: errorMsg });
+
+    actions$ = of(action);
+    loansServiceMock.getPurposes.mockReturnValue(
+      throwError(() => new Error(errorMsg)),
+    );
+
+    effects.loadPurposes$.subscribe((result) => {
+      expect(result).toEqual(outcome);
+    });
+  });
+
+  it('should trigger loadLoans when requestLoanSuccess occurs', () => {
+    const action = LoansCreateActions.requestLoanSuccess({ loan: mockLoan });
+    const outcome = LoansActions.loadLoans();
+
+    actions$ = of(action);
+
+    effects.refreshListOnCreate$.subscribe((result) => {
+      expect(result).toEqual(outcome);
+    });
+  });
+
+  it('should return loadPrepaymentOptionsSuccess on success', () => {
+    const options = [] as any;
+    const action = LoansActions.loadPrepaymentOptions();
+    const outcome = LoansActions.loadPrepaymentOptionsSuccess({ options });
+
+    actions$ = of(action);
+    loansServiceMock.getPrepaymentOptions.mockReturnValue(of(options));
+
+    effects.loadPrepaymentOptions$.subscribe((res) => {
+      expect(res).toEqual(outcome);
+    });
+  });
+
+  it('should return loadPrepaymentOptionsFailure on error', () => {
+    const action = LoansActions.loadPrepaymentOptions();
+    const errorMsg = 'fail';
+    const outcome = LoansActions.loadPrepaymentOptionsFailure({
+      error: errorMsg,
+    });
+
+    actions$ = of(action);
+    loansServiceMock.getPrepaymentOptions.mockReturnValue(
+      throwError(() => new Error(errorMsg)),
+    );
+
+    effects.loadPrepaymentOptions$.subscribe((res) => {
+      expect(res).toEqual(outcome);
+    });
+  });
+
+  it('should return calculatePrepaymentSuccess for PARTIAL prepayment', () => {
+    const payload = {
+      type: 'partial',
+      loanId: '1',
+      amount: 100,
+      loanPartialPaymentType: 'reduce_term',
+    } as any;
+    const mockResult = { monthlyPayment: 50 } as any;
+    const action = LoansActions.calculatePrepayment({ payload });
+    const outcome = LoansActions.calculatePrepaymentSuccess({
+      result: mockResult,
+    });
+
+    actions$ = of(action);
+    loansServiceMock.calculatePartialPrepayment.mockReturnValue(of(mockResult));
+
+    effects.calculatePrepayment$.subscribe((res) => {
+      expect(res).toEqual(outcome);
+      expect(loansServiceMock.calculatePartialPrepayment).toHaveBeenCalledWith(
+        '1',
+        100,
+        'reduce_term',
+      );
     });
   });
 });

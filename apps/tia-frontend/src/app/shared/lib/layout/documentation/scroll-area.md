@@ -12,6 +12,13 @@ import { ScrollArea } from '@shared/lib/layout/components/scroll-area/container/
 
 - `direction` - `'horizontal' | 'vertical'` - Scroll direction (default: `'vertical'`)
 - `height` - `string` - Container height (default: `'20rem'`)
+- `scrollbar` - `'visible' | 'hidden'` - Scrollbar visibility (default: `'visible'`)
+- `isLoading` - `boolean` - Indicates if content is loading (default: `false`), used to prevent multiple scroll events
+- `threshold` - `number` - Distance in pixels from the bottom to trigger the scroll
+
+# Outputs
+
+- `scrollBottom` - Emitted when the user scrolls near the bottom of the content.
 
 ## Usage Examples
 

@@ -21,6 +21,7 @@ describe('ApprovedLoans', () => {
       loading: false,
       error: null,
       months: [],
+      purposes: [],
     },
   };
 
@@ -74,5 +75,20 @@ describe('ApprovedLoans', () => {
     const event = { id: 'loan-1', name: 'New Name' };
     component.onRenameLoan(event);
     expect(store.dispatch).toHaveBeenCalledWith(LoansActions.renameLoan(event));
+  });
+
+  it('should open prepayment modal and close details', () => {
+    const loan = { id: '1', status: 2 } as any;
+    component.onOpenPrepayment(loan);
+    expect(component.isPrepaymentOpen()).toBe(true);
+    expect(component.isDetailsOpen()).toBe(false);
+    expect(component.selectedLoan()).toEqual(loan);
+  });
+
+  it('should reset state on closeModals', () => {
+    component.isDetailsOpen.set(true);
+    component.closeModals();
+    expect(component.isDetailsOpen()).toBe(false);
+    expect(component.selectedLoan()).toBeNull();
   });
 });

@@ -1,3 +1,20 @@
-<app-mail-header 
-[page]="'messaging.routes.inbox' | translate" 
-[messageCount]="0"></app-mail-header>
+<app-mail-header
+  [page]="'messaging.routes.inbox' | translate"
+  [messageCount]="0"
+></app-mail-header>
+
+@if(isLoading()){
+<div class="loading-state">
+  <app-route-loader variant="full-page" text="Loading messages..." />
+</div>
+} @else if(error()) {
+<div>{{ error()}}</div>
+} @else if(mails().length === 0) {
+<app-empty-card></app-empty-card>
+} @else {
+<div>
+  @for (mail of mails(); track mail.id) {
+  <app-mail-card [mail]="mail" (markAsRead)="markAsRead(mail.id)"></app-mail-card>
+  }
+</div>
+}

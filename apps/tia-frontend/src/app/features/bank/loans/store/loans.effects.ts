@@ -4,6 +4,7 @@ import { catchError, map, switchMap, of } from 'rxjs';
 import { LoansService } from '../shared/services/loans.service';
 import { LoansActions } from './loans.actions';
 import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
+import { IPrepaymentCalcResponse } from '../shared/models/prepayment.model';
 
 @Injectable()
 export class LoansEffects {
@@ -56,6 +57,85 @@ export class LoansEffects {
     this.actions$.pipe(
       ofType(LoansCreateActions.requestLoanSuccess),
       map(() => LoansActions.loadLoans()),
+    ),
+  );
+
+  loadPurposes$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.loadPurposes),
+      switchMap(() =>
+        this.loansService.getPurposes().pipe(
+          map((purposes) => LoansActions.loadPurposesSuccess({ purposes })),
+          catchError((error) =>
+            of(LoansActions.loadPurposesFailure({ error: error.message })),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  loadPrepaymentOptions$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.loadPrepaymentOptions),
+      switchMap(() =>
+        this.loansService.getPrepaymentOptions().pipe(
+          map((options) =>
+            LoansActions.loadPrepaymentOptionsSuccess({ options }),
+          ),
+          catchError((error) =>
+            of(
+              LoansActions.loadPrepaymentOptionsFailure({
+                error: error.message,
+              }),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  public calculatePrepayment$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.calculatePrepayment),
+      switchMap(({ payload }) => {
+        if (payload.type === 'full') {
+          return this.loansService.calculateFullPrepayment(payload.loanId).pipe(
+            map((response) => {
+              const normalizedResult: IPrepaymentCalcResponse = {
+                displayedInfo: response.items || [],
+              };
+              return LoansActions.calculatePrepaymentSuccess({
+                result: normalizedResult,
+              });
+            }),
+            catchError((error) =>
+              of(
+                LoansActions.calculatePrepaymentFailure({
+                  error: error.message,
+                }),
+              ),
+            ),
+          );
+        }
+        return this.loansService
+          .calculatePartialPrepayment(
+            payload.loanId,
+            payload.amount!,
+            payload.loanPartialPaymentType!,
+          )
+          .pipe(
+            map((result) =>
+              LoansActions.calculatePrepaymentSuccess({ result }),
+            ),
+            catchError((error) =>
+              of(
+                LoansActions.calculatePrepaymentFailure({
+                  error: error.message,
+                }),
+              ),
+            ),
+          );
+      }),
     ),
   );
 }

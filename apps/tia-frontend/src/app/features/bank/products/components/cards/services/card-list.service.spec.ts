@@ -1,8 +1,12 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { CardListService } from './card-list.service';
 import { CardAccount } from '../models/card-account.model';
+import { CardDetail } from '../models/card-detail.model';
 import { environment } from '../../../../../../../environments/environment';
 
 describe('CardListService', () => {
@@ -22,6 +26,21 @@ describe('CardListService', () => {
       openedAt: '2026-01-18T01:10:50.948Z',
     },
   ];
+
+  const mockCardDetail: CardDetail = {
+    id: 'c1000001-0001-4000-8000-000000000001',
+    accountId: 'a1000001-0001-4000-8000-000000000001',
+    type: 'DEBIT',
+    network: 'VISA',
+    design: 'MIDNIGHT_GRADIENT',
+    cardName: 'Main Visa',
+    status: 'ACTIVE',
+    allowOnlinePayments: true,
+    allowInternational: true,
+    allowAtm: true,
+    createdAt: '2026-01-18T01:10:50.948Z',
+    updatedAt: '2026-01-18T01:10:50.948Z',
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -56,7 +75,9 @@ describe('CardListService', () => {
         error: (error) => expect(error.status).toBe(500),
       });
 
-      httpMock.expectOne(`${baseUrl}/accounts`).flush(null, { status: 500, statusText: 'Error' });
+      httpMock
+        .expectOne(`${baseUrl}/accounts`)
+        .flush(null, { status: 500, statusText: 'Error' });
     });
   });
 
@@ -80,7 +101,32 @@ describe('CardListService', () => {
         error: (error) => expect(error.status).toBe(404),
       });
 
-      httpMock.expectOne(`${baseUrl}/${cardId}/image`).flush(null, { status: 404, statusText: 'Not Found' });
+      httpMock
+        .expectOne(`${baseUrl}/${cardId}/image`)
+        .flush(null, { status: 404, statusText: 'Not Found' });
+    });
+  });
+
+  describe('getCardDetails', () => {
+    const cardId = 'c1000001-0001-4000-8000-000000000001';
+
+    it('should fetch card details successfully', () => {
+      service.getCardDetails(cardId).subscribe((details) => {
+        expect(details).toEqual(mockCardDetail);
+      });
+
+      httpMock.expectOne(`${baseUrl}/${cardId}`).flush(mockCardDetail);
+    });
+
+    it('should handle HTTP error', () => {
+      service.getCardDetails(cardId).subscribe({
+        next: () => expect.fail('should have failed'),
+        error: (error) => expect(error.status).toBe(404),
+      });
+
+      httpMock
+        .expectOne(`${baseUrl}/${cardId}`)
+        .flush(null, { status: 404, statusText: 'Not Found' });
     });
   });
 });

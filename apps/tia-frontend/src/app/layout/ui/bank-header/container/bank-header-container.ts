@@ -1,18 +1,18 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   ElementRef,
   inject,
-  input,
-  OnDestroy,
   OnInit,
   signal,
 } from '@angular/core';
 import { BankHeader } from '../components/bank-header/bank-header';
 import { HeaderNotifications } from '../components/header-notifications/header-notifications';
 import { Notifications } from '../service/notifications';
-import { Observable, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { NotificationsData } from '../modals/notification.model';
+import { InboxService } from '@tia/shared/services/messages/inbox.service';
 
 @Component({
   selector: 'app-bank-header-container',
@@ -21,30 +21,27 @@ import { NotificationsData } from '../modals/notification.model';
   styleUrl: './bank-header-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BankHeaderContainer implements OnInit, OnDestroy {
-  // Service Injection
+export class BankHeaderContainer implements OnInit {
   public headerNotificationService = inject(Notifications);
+  public inboxService = inject(InboxService);
 
-  // public hasUnread = input<boolean>(true);
   public hasUnread = signal<boolean>(false);
   public anchorEl = signal<ElementRef | undefined>(undefined);
   public isModalOpen = signal<boolean>(false);
   public notificationsItems$!: Observable<NotificationsData>;
-
-  public destroyRef$ = new Subject<null>();
+  public inboxCount = computed(() => this.inboxService.inboxCount());
 
   ngOnInit(): void {
-
-
     this.headerNotificationService
       .hasUnreadNotification()
       .pipe(
-        takeUntil(this.destroyRef$),
         tap((value) => {
           this.hasUnread.set(value.hasUnread);
         }),
       )
       .subscribe();
+
+      this.inboxService.fetchInboxCount();
   }
 
   public onNotificationClick(el: ElementRef): void {
@@ -52,12 +49,6 @@ export class BankHeaderContainer implements OnInit, OnDestroy {
     this.notificationsItems$ = this.headerNotificationService
       .getNotifications()
       .pipe(tap((data) => console.log(data)));
-
     this.isModalOpen.update((v) => !v);
-  }
-
-  ngOnDestroy(): void {
-    this.destroyRef$.next(null);
-    this.destroyRef$.complete();
   }
 }

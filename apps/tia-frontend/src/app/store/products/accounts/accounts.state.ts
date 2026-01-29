@@ -1,12 +1,13 @@
-import { Account } from '../../../features/bank/products/models/accounts.model';
+import { Account } from '../../../shared/models/accounts/accounts.model';
 
 export interface AccountsState {
   accounts: Account[];
   selectedAccountId: string | null;
   isLoading: boolean;
   error: string | null;
+  isCreating: boolean;
+  createError: string | null;
   isCreateModalOpen: boolean;
-  isAuthenticated: boolean;
 }
 
 export const initialAccountsState: AccountsState = {
@@ -14,6 +15,7 @@ export const initialAccountsState: AccountsState = {
   selectedAccountId: null,
   isLoading: false,
   error: null,
+  isCreating: false,
+  createError: null,
   isCreateModalOpen: false,
-  isAuthenticated: true,
 };

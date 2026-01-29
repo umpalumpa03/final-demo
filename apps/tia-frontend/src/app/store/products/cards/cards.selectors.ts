@@ -14,6 +14,11 @@ export const selectCardImages = createSelector(
   (state) => state.cardImages
 );
 
+export const selectCardDetails = createSelector(
+  selectCardsState,
+  (state) => state.cardDetails
+);
+
 export const selectLoading = createSelector(
   selectCardsState,
   (state) => state.loading
@@ -39,3 +44,28 @@ export const selectCardGroups = createSelector(
     }));
   }
 );
+
+export const selectAccountById = (accountId: string) =>
+  createSelector(selectAllAccounts, (accounts) =>
+    accounts.find((account) => account.id === accountId)
+  );
+
+export const selectCardDetailsByAccountId = (accountId: string) =>
+  createSelector(
+    selectAccountById(accountId),
+    selectCardDetails,
+    selectCardImages,
+    (account, cardDetails, cardImages) => {
+      if (!account) {
+        return [];
+      }
+
+      return account.cardIds
+        .map((cardId) => ({
+          cardId,
+          details: cardDetails[cardId],
+          imageBase64: cardImages[cardId],
+        }))
+        .filter((card) => card.details && card.imageBase64);
+    }
+  );

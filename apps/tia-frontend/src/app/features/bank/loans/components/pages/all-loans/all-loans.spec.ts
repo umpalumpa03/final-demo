@@ -20,11 +20,10 @@ describe('AllLoans', () => {
       loans: mockLoans,
       loading: false,
       error: null,
-      filterStatus: null,
       months: [],
+      purposes: [],
     },
   };
-
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AllLoans],
@@ -68,5 +67,20 @@ describe('AllLoans', () => {
     const event = { id: '1', name: 'Updated' };
     component.onRenameLoan(event);
     expect(store.dispatch).toHaveBeenCalledWith(LoansActions.renameLoan(event));
+  });
+
+  it('should open prepayment modal and close details', () => {
+    const loan = { id: '1', status: 2 } as any;
+    component.onOpenPrepayment(loan);
+    expect(component.isPrepaymentOpen()).toBe(true);
+    expect(component.isDetailsOpen()).toBe(false);
+    expect(component.selectedLoan()).toEqual(loan);
+  });
+
+  it('should reset state on closeModals', () => {
+    component.isDetailsOpen.set(true);
+    component.closeModals();
+    expect(component.isDetailsOpen()).toBe(false);
+    expect(component.selectedLoan()).toBeNull();
   });
 });
