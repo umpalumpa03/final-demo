@@ -21,3 +21,12 @@ export interface PrepaymentCalculationPayload {
   amount?: number;
   loanPartialPaymentType?: string;
 }
+
+export interface IPrepaymentCalcItem {
+  text: string;
+  amount: number;
+}
+
+export interface IPrepaymentCalcResponse {
+  displayedInfo: IPrepaymentCalcItem[];
+}
