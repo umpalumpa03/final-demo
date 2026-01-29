@@ -10,10 +10,9 @@
   }
 
   &__form {
-    @include display-flex();
+    @include flex-center();
     gap: 1.6rem;
     width: 100%;
-    align-items: center;
   }
 
   &__input {
