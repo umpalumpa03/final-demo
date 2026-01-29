@@ -20,7 +20,7 @@
 
   &__loading,
   &__error {
-    @include flex-center(row, center);
+    @include flex-center;
     @include font-inter(400, 1.6rem, 1.5);
     padding: 4rem;
     text-align: center;
@@ -37,7 +37,7 @@
   }
 
   &__header {
-    @include display-flex(row);
+    @include display-flex();
   }
 
   &__back-button {
@@ -61,7 +61,7 @@
   }
 
   &__card-image {
-    @include flex-center(row, center);
+    @include flex-center();
     width: 100%;
   }
 
@@ -148,7 +148,7 @@
 
   &__action-button {
     @include font-inter(500, 1.5rem, 1.5);
-    @include flex-center(row, center);
+    @include flex-center();
     width: 100%;
     padding: 1.6rem;
     background-color: var(--color-primary);
@@ -183,6 +183,3 @@
   }
 }
 
-p{
-    color: red;
-}
