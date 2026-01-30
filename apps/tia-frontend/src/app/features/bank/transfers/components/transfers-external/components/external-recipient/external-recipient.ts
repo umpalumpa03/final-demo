@@ -6,7 +6,7 @@ import {
   signal,
   DestroyRef,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { getRecipientInputConfig } from '../../config/transfers-external.config';
@@ -24,21 +24,11 @@ import {
   getSuccessMessage,
 } from '../../../../utils/transfers-external.utils';
 import { RecipientType } from '../../../../models/transfers.state.model';
-import { TransfersAccountCard } from 'apps/tia-frontend/src/app/features/bank/transfers/ui/account-card/transfers-account-card';
-import { Account } from '@tia/shared/models/accounts/accounts.model';
-import { Store } from '@ngrx/store';
-import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
-import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
 
 @Component({
   selector: 'app-external-recipient',
-  imports: [
-    TranslatePipe,
-    TextInput,
-    ButtonComponent,
-    ReactiveFormsModule,
-    TransfersAccountCard,
-  ],
+  standalone: true,
+  imports: [TranslatePipe, TextInput, ButtonComponent, ReactiveFormsModule],
   templateUrl: './external-recipient.html',
   styleUrl: './external-recipient.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,13 +38,6 @@ export class ExternalRecipient implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly validationService = inject(TransferValidationService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly store = inject(Store);
-
-  public selectedAccountId: string | null = null;
-
-  public readonly accounts = toSignal(this.store.select(selectAccounts), {
-    initialValue: [],
-  });
 
   public readonly recipientInputConfig = signal<InputConfig>(
     getRecipientInputConfig(this.translate),
@@ -64,8 +47,7 @@ export class ExternalRecipient implements OnInit {
     recipientValidator(this.validationService),
   ]);
 
-  ngOnInit(): void {
-    this.store.dispatch(AccountsActions.loadAccounts());
+  public ngOnInit(): void {
     this.setupValueChangeListener();
   }
 
@@ -118,8 +100,8 @@ export class ExternalRecipient implements OnInit {
     }));
   }
 
-  onAccountSelect(account: Account): void {
-    this.selectedAccountId = account.id;
-    console.log('Selected account:', account);
+  public onVerify(): void {
+    if (this.recipientInput.valid) {
+    }
   }
 }

@@ -1,1 +1,43 @@
-<p>external-accounts works!</p>
+<!-- <p>external-accounts works!</p>
+<section class="external-recipient__accounts">
+    <h2 class="external-recipient__accounts-title">
+      {{'transfers.external.recipient.accountsTitle' | translate}}
+    </h2>
+
+    @if (isLoadingAccounts()) {
+    <div class="external-recipient__spinner-wrapper">
+      <app-spinner />
+    </div>
+    } @else if (accountsError(); as error) {
+    <div class="external-recipient__error-wrapper">
+      <app-error-states
+        [variant]="'failed'"
+        [header]="'transfers.external.recipient.accountsError.header' | translate"
+        [message]="'transfers.external.recipient.accountsError.message' | translate"
+        [buttonMessage]="'transfers.external.recipient.accountsError.retry' | translate"
+        (buttonClick)="retryLoadAccounts()"
+        [width]="'60rem'"
+      />
+    </div>
+    } @else if (accounts().length === 0) {
+    <div class="external-recipient__error-wrapper">
+      <app-error-states
+        [variant]="'not-found'"
+        [header]="'transfers.external.recipient.noAccounts.header' | translate"
+        [message]="'transfers.external.recipient.noAccounts.message' | translate"
+        [buttonMessage]="'transfers.external.recipient.noAccounts.createAccount' | translate"
+        (buttonClick)="navigateToCreateAccount()"
+      />
+    </div>
+    } @else {
+    <div class="external-recipient__accounts-grid">
+      @for (account of accounts(); track account.id) {
+      <app-transfers-account-card
+        [cardData]="account"
+        [isSelected]="selectedAccountId === account.id"
+        (cardClicked)="onAccountSelect($event)"
+      />
+      }
+    </div>
+    }
+  </section> -->
