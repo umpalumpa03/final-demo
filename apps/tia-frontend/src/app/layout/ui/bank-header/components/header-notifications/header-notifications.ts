@@ -102,12 +102,12 @@ export class HeaderNotifications {
     this.store.markAllAsRead();
   }
 
-  // public onScrollBottom() {
-  //   if (this.store.pageInfo.hasNext()) {
-  //     this.store.fetchNotifications({
-  //       cursor: this.store.pageInfo.nextCursor(),
-  //       limit: this.store.limitPerPage(),
-  //     });
-  //   }
-  // }
+  public onScrollBottom() {
+    if (this.store.pageInfo.hasNext()) {
+      this.store.fetchNotifications({
+        cursor: this.store.pageInfo.nextCursor(),
+        limit: this.store.limitPerPage(),
+      });
+    }
+  }
 }
