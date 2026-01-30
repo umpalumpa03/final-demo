@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
@@ -9,6 +9,7 @@ import { forgotPasswordSegments } from '../forgot-password.routes';
   imports: [OtpVerification],
   templateUrl: './forgot-password-verify.html',
   styleUrl: './forgot-password-verify.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ForgotPasswordVerify implements OnInit {
   private authService = inject(AuthService);

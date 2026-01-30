@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
 import { AuthService } from '../../../services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -8,7 +8,7 @@ import { IMfaVerifyRequest } from '../../../models/authRequest.models';
   selector: 'app-verify-signin',
   imports: [OtpVerification, ReactiveFormsModule],
   templateUrl: './verify-signin.html',
-  styleUrl: './verify-signin.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VerifySignin {
   private authService = inject(AuthService);

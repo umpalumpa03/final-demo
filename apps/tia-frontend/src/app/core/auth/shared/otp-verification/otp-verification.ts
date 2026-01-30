@@ -31,8 +31,8 @@ export class OtpVerification {
   private fb = inject(FormBuilder);
 
   public isLoading = input<boolean>(false);
-  public title = input<string>('');
-  public subText = input<string>('');
+  public title = input<string>();
+  public subText = input<string>();
   public submitBtnName = input<string>();
   public otpConfig = input<OtpConfig>({ length: 4, inputType: 'number' });
   public showIcon = input<boolean>(false);

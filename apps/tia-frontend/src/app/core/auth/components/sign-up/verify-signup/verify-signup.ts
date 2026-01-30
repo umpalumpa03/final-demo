@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
 
@@ -6,7 +6,7 @@ import { OtpVerification } from '../../../shared/otp-verification/otp-verificati
   selector: 'app-verify-signup',
   imports: [OtpVerification],
   templateUrl: './verify-signup.html',
-  styleUrl: './verify-signup.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VerifySignup {
   private authService = inject(AuthService);

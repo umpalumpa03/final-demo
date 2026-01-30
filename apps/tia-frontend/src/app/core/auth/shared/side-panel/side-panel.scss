@@ -95,27 +95,19 @@
       }
 
       &__icon-box {
-        width: 4.8rem;
-        height: 4.8rem;
+        @include flex-center();
         min-width: 4.8rem;
         min-height: 4.8rem;
         background: rgba(255, 255, 255, 0.15);
         border-radius: 1rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         transition: transform 0.3s ease;
 
         @media (min-width: 769px) and (max-width: 1024px) {
-          width: 4.4rem;
-          height: 4.4rem;
           min-width: 4.4rem;
           min-height: 4.4rem;
         }
 
         @media (max-width: 768px) {
-          width: 4rem;
-          height: 4rem;
           min-width: 4rem;
           min-height: 4rem;
         }
