@@ -17,7 +17,7 @@
   }
 
   &__loading {
-    @include flex-center(row, center, center);
+    @include flex-center;
     @include font-inter(400, 1.6rem, 1.5);
     padding: 4rem;
     color: $gray-600;
@@ -38,7 +38,9 @@
   }
 
   &__account-header {
-    @include flex-center(row, space-between, center);
+    @include display-flex(row);
+    justify-content: space-between;
+    align-items: center;
     gap: 1.2rem;
 
     @media (max-width: 480px) {
@@ -161,13 +163,6 @@
     border-radius: 0.8rem;
   }
 
-  &__click-hint {
-    @include font-inter(400, 1.2rem, 1.5);
-    color: $gray-500;
-    text-align: center;
-    margin-top: 0.8rem;
-  }
-
   &__view-all-button {
     @include font-inter(400, 1.4rem, 1.5);
     width: 100%;
@@ -217,13 +212,11 @@
     }
   }
 
-  &__add-icon {
-    @include font-inter(300, 3.2rem, 1);
-    color: var(--color-fg);
-  }
-
-  &__add-text {
-    @include font-inter(500, 1.4rem, 1.5);
-    color: var(--color-fg);
+  &__alert-container {
+    position: fixed;
+    bottom: 3rem;
+    right: 3rem;
+    max-width: 30rem;
+    z-index: 2;
   }
 }

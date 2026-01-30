@@ -7,6 +7,26 @@
   padding: 2.4rem;
   max-width: 60rem;
   width: 100%;
+  overflow-y: auto;
+  max-height: 90vh;
+
+  &::-webkit-scrollbar {
+    width: 0.8rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--color-secondary);
+    border-radius: 1rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border-radius: 1rem;
+
+    &:hover {
+      background: var(--color-accent);
+    }
+  }
 
   &__header {
     @include display-flex(column);
@@ -28,8 +48,6 @@
   &__form {
     @include display-flex(column);
     gap: 2rem;
-    max-height: 60vh;
-    overflow-y: auto;
   }
 
   &__preview {
@@ -46,10 +64,9 @@
   &__card-display {
     @include flex-center(row, center, center);
     width: 100%;
-    height: 20rem;
+    height: 24rem;
     background-color: var(--color-bg);
     border-radius: 1.2rem;
-    overflow: hidden;
   }
 
   &__card-image {
@@ -78,38 +95,6 @@
   &__label {
     @include font-inter(500, 1.4rem, 1.4);
     color: var(--color-fg);
-  }
-
-  &__input,
-  &__select {
-    @include font-inter(400, 1.4rem, 1.5);
-    padding: 1rem 1.2rem;
-    border: 0.1rem solid $gray-200;
-    border-radius: 0.8rem;
-    background-color: $white;
-    color: var(--color-fg);
-    transition: border-color 0.2s ease;
-
-    &:focus {
-      outline: none;
-      border-color: var(--color-primary);
-    }
-
-    &::placeholder {
-      color: $gray-500;
-    }
-
-    &--error {
-      border-color: $red-500;
-
-      &:focus {
-        border-color: $red-500;
-      }
-    }
-  }
-
-  &__select {
-    cursor: pointer;
   }
 
   &__error {
@@ -152,7 +137,7 @@
   &__design-preview {
     position: relative;
     width: 100%;
-    height: 8rem;
+    height: 10rem;
     border-radius: 0.6rem;
     overflow: hidden;
   }
@@ -173,7 +158,7 @@
     height: 2.4rem;
     border-radius: 50%;
     background-color: var(--color-primary);
-    
+
     svg {
       width: 1.6rem;
       height: 1.6rem;
@@ -200,38 +185,5 @@
     gap: 1.2rem;
     padding-top: 1.6rem;
     border-top: 0.1rem solid $gray-200;
-  }
-
-  &__button {
-    @include font-inter(500, 1.4rem, 1.4);
-    padding: 1rem 2rem;
-    border-radius: 0.8rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: none;
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    &--cancel {
-      background-color: $white;
-      color: var(--color-fg);
-      border: 0.1rem solid $gray-200;
-
-      &:hover:not(:disabled) {
-        background-color: $gray-50;
-      }
-    }
-
-    &--submit {
-      background-color: var(--color-primary);
-      color: $white;
-
-      &:hover:not(:disabled) {
-        background-color: $blue-600;
-      }
-    }
   }
 }
