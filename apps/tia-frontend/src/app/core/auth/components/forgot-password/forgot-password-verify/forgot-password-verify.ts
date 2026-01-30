@@ -8,7 +8,6 @@ import { forgotPasswordSegments } from '../forgot-password.routes';
   selector: 'app-forgot-password-verify',
   imports: [OtpVerification],
   templateUrl: './forgot-password-verify.html',
-  styleUrl: './forgot-password-verify.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ForgotPasswordVerify implements OnInit {
