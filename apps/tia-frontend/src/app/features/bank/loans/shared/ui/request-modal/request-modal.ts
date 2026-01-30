@@ -5,10 +5,11 @@ import {
   input,
   OnInit,
   output,
+  Signal,
 } from '@angular/core';
 import {
   LOAN_FORM_CONFIG,
-  PURPOSE_OPTIONS,
+  NUMBER_REGEX,
 } from '../../config/loan-request.config';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
@@ -18,13 +19,12 @@ import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { IDropdownOption, ILoanRequest } from '../../models/loan-request.model';
 import { Store } from '@ngrx/store';
 import { LoansActions } from '../../../store/loans.actions';
-import { Observable } from 'rxjs';
 import {
+  selectGelAccountOptions,
   selectLoanMonthsOptions,
   selectPurposeOptions,
 } from '../../../store/loans.selectors';
 import { CommonModule } from '@angular/common';
-import { selectAccountOptions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { getTodayDate } from '../../utils/gettoday.util';
 import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
@@ -52,12 +52,12 @@ export class RequestModal implements OnInit {
   public readonly submit = output<ILoanRequest>();
 
   protected readonly cfg = LOAN_FORM_CONFIG;
-  protected readonly termOptions$: Observable<IDropdownOption[]> =
-    this.store.select(selectLoanMonthsOptions);
-  protected readonly purposeOptions$: Observable<IDropdownOption[]> =
-    this.store.select(selectPurposeOptions);
-  protected readonly accountOptions$: Observable<IDropdownOption[]> =
-    this.store.select(selectAccountOptions);
+  protected readonly termOptions: Signal<IDropdownOption[]> =
+    this.store.selectSignal(selectLoanMonthsOptions);
+  protected readonly purposeOptions: Signal<IDropdownOption[]> =
+    this.store.selectSignal(selectPurposeOptions);
+  protected readonly accountOptions: Signal<IDropdownOption[]> =
+    this.store.selectSignal(selectGelAccountOptions);
 
   protected readonly dateConfig = {
     ...LOAN_FORM_CONFIG.date,
@@ -83,12 +83,23 @@ export class RequestModal implements OnInit {
         street: ['', Validators.required],
         city: ['', Validators.required],
         region: ['', Validators.required],
-        postalCode: ['', Validators.required],
+        postalCode: [
+          '',
+          [Validators.required, Validators.pattern(NUMBER_REGEX)],
+        ],
       }),
       contactPerson: this.fb.group({
         name: ['', Validators.required],
         relationship: ['', Validators.required],
-        phone: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+        phone: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern(NUMBER_REGEX),
+            Validators.minLength(9),
+            Validators.maxLength(9),
+          ],
+        ],
         email: ['', [Validators.required, Validators.email]],
       }),
     }),

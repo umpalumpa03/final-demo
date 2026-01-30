@@ -15,6 +15,11 @@ export const selectLoansLoading = createSelector(
   (state) => state.loading,
 );
 
+export const selectActionLoading = createSelector(
+  selectLoansState,
+  (state) => state.actionLoading ?? false,
+);
+
 export const selectLoansWithAccountInfo = createSelector(
   selectAllLoans,
   selectAccounts,
@@ -94,4 +99,15 @@ export const selectCalculationResult = createSelector(
 export const selectActiveChallengeId = createSelector(
   selectLoansState,
   (state) => state.activeChallengeId,
+);
+
+export const selectGelAccountOptions = createSelector(
+  selectAccounts,
+  (accounts) =>
+    (accounts || [])
+      .filter((acc) => acc.currency === 'GEL' && acc.balance != 0)
+      .map((acc) => ({
+        label: `${acc.friendlyName || acc.name} - ${acc.balance} ${acc.currency}`,
+        value: acc.id,
+      })),
 );

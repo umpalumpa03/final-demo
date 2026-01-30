@@ -2,9 +2,8 @@
 @use '../../../../../../../../../shared/styles/palette' as *;
 
 .account-card {
-  @include display-flex(column);
+  @include display-flex(column, wrap);
   gap: 1.25rem;
-  flex-wrap: wrap;
 
   &__header {
     @include flex-center(row, flex-start, flex-start);
@@ -31,8 +30,24 @@
         @include font-arimo(600, 1.8rem, 1.2);
         color: $gray-800;
         margin: 0 0 0.25rem 0;
-        @include flex-center(row, flex-start, center);
+        @include flex-center(row, flex-start);
         gap: 0.5rem;
+
+        &--clickable {
+          cursor: pointer;
+          padding: 0.25rem 0.5rem;
+          border-radius: 0.4rem;
+          transition: background-color 0.2s ease;
+
+          &:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+          }
+
+          &:focus {
+            outline: 2px solid $blue-500;
+            outline-offset: 2px;
+          }
+        }
       }
       &-badge {
         display: inline-block;
@@ -47,6 +62,55 @@
         @include font-arimo(400, 1.4rem, 1.5);
         color: $gray-600;
         margin: 0.25rem 0 0 0;
+      }
+
+      &-edit {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+
+        &-error {
+          @include font-arimo(400, 1.2rem, 1.4);
+          color: $red-600;
+          margin: 0;
+          padding: 0.5rem;
+          background: $red-50;
+          border-radius: 0.4rem;
+        }
+
+        &-save,
+        &-cancel {
+          padding: 0.5rem 1rem;
+          border-radius: 0.4rem;
+          @include font-arimo(500, 1.4rem, 1.2);
+          cursor: pointer;
+          transition: all 0.2s ease;
+          border: none;
+
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+        }
+
+        &-save {
+          background: $blue-500;
+          color: $white;
+
+          &:hover:not(:disabled) {
+            background: $blue-600;
+          }
+        }
+
+        &-cancel {
+          background: $gray-200;
+          color: $gray-800;
+
+          &:hover:not(:disabled) {
+            background: $gray-200;
+          }
+        }
       }
     }
   }

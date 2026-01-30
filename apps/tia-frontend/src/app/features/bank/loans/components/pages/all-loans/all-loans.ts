@@ -7,12 +7,9 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { take, map, filter } from 'rxjs';
-
 import { LoanCard } from '../../../shared/ui/loan-card/loan-card';
 import { LoanDetails } from '../../../shared/ui/prepayment/loan-details/loan-details';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
-
 import { LoansActions } from '../../../store/loans.actions';
 import { selectLoansWithAccountInfo } from '../../../store/loans.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
@@ -29,31 +26,24 @@ import { PrepaymentContainer } from '../../../shared/ui/prepayment/prepayment-co
 export class AllLoans implements OnInit {
   private store = inject(Store);
 
-  protected readonly loans$ = this.store.select(selectLoansWithAccountInfo);
+  protected readonly loans = this.store.selectSignal(
+    selectLoansWithAccountInfo,
+  );
 
   public readonly selectedLoan = signal<ILoan | null>(null);
   public readonly isDetailsOpen = signal(false);
   public readonly isPrepaymentOpen = signal(false);
 
   public ngOnInit(): void {
-    this.store.dispatch(LoansActions.loadLoans());
     this.store.dispatch(AccountsActions.loadAccounts());
   }
 
   public onCardClick(id: string): void {
-    this.loans$
-      .pipe(
-        take(1),
-        map((loans) => loans.find((l) => l.id === id)),
-        filter(
-          (loan): loan is NonNullable<typeof loan> =>
-            !!loan && loan.status === 2,
-        ),
-      )
-      .subscribe((loan) => {
-        this.selectedLoan.set(loan);
-        this.isDetailsOpen.set(true);
-      });
+    const loan = this.loans().find((l) => l.id === id);
+    if (loan && loan.status === 2) {
+      this.selectedLoan.set(loan);
+      this.isDetailsOpen.set(true);
+    }
   }
 
   public onRenameLoan(event: { id: string; name: string }): void {

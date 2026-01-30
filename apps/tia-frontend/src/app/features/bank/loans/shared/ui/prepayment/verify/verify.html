@@ -17,7 +17,9 @@
             </lib-text-input>
 
 
-            <app-button variant="default" icon="./calculate.svg" (click)="onSubmit()" [isDisabled]="form.invalid">
+            <app-button variant="default" [icon]="isLoading() ? null : './calculate.svg'" (click)="onSubmit()"
+                [isDisabled]="form.invalid || isLoading()" [isLoading]="isLoading()">
+
                 Verify and Pay
             </app-button>
         </div>
