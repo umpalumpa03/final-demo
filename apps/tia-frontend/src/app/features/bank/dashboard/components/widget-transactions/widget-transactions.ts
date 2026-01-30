@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { selectItems } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
 import { Store } from '@ngrx/store';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
+import {
+  selectItems,
+  selectIsLoading,
+  selectError,
+} from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { selectError, selectIsLoading } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
-import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
-import { loadExchangeRates } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.actions';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { map } from 'rxjs';
 
