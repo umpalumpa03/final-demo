@@ -1,18 +1,18 @@
-import { inject, Injectable, NgZone, signal } from "@angular/core";
-import { fromEvent, merge, Observable, Subject, throttleTime } from "rxjs";
+import { inject, Injectable, NgZone, signal } from '@angular/core';
+import { fromEvent, merge, Observable, Subject, throttleTime } from 'rxjs';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class UserActivityService {
-    private zone = inject(NgZone);
-    private idle = signal(false);
-    private idleTimeout = 5 * 60 * 1000;
-    private idleTimer: any;
-    private lastActivity = Date.now();
+  private zone = inject(NgZone);
+  private idle = signal(false);
+  private idleTimeout = 5 * 60 * 1000;
+  private idleTimer: any;
+  private lastActivity = Date.now();
 
-    private idleSubject = new Subject<boolean>();
-    public idle$ = this.idleSubject.asObservable();
+  private idleSubject = new Subject<boolean>();
+  public idle$ = this.idleSubject.asObservable();
 
-   constructor() {
+  constructor() {
     this.zone.runOutsideAngular(() => {
       const activity$ = merge(
         fromEvent(document, 'mousemove'),
@@ -20,7 +20,7 @@ export class UserActivityService {
         fromEvent(document, 'click'),
         fromEvent(document, 'scroll'),
         fromEvent(document, 'touchstart'),
-        fromEvent(document, 'touchmove')
+        fromEvent(document, 'touchmove'),
       ).pipe(throttleTime(1000));
 
       activity$.subscribe(() => {
@@ -35,7 +35,7 @@ export class UserActivityService {
     });
   }
 
-  private resetTimer() {
+  private resetTimer(): void {
     this.lastActivity = Date.now();
 
     if (this.idleTimer) {

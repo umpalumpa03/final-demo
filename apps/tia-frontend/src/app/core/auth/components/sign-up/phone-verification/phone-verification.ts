@@ -21,7 +21,7 @@ import { Routes } from '../../../models/tokens.model';
   styleUrl: './phone-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PhoneVerification implements OnInit {
+export class PhoneVerification {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -29,10 +29,6 @@ export class PhoneVerification implements OnInit {
   public setPhoneNumberForm = this.fb.nonNullable.group({
     phoneNumber: ['', [Validators.required]],
   });
-  
-  public ngOnInit(): void {
-    
-  }
 
   public errorMessage = signal<string>('');
 
