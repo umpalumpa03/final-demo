@@ -61,7 +61,7 @@ export class PrepaymentOptionStep {
 
   public readonly form = this.fb.group({
     type: ['', Validators.required],
-    amount: [null as number | null, [Validators.required, Validators.min(1)]],
+    amount: [null as number | null, [Validators.required, Validators.min(50)]],
     calculationOption: ['reduceMonthlyPayment', Validators.required],
   });
 

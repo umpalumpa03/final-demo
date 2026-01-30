@@ -105,7 +105,7 @@ export const selectGelAccountOptions = createSelector(
   selectAccounts,
   (accounts) =>
     (accounts || [])
-      .filter((acc) => acc.currency === 'GEL' && acc.balance != 0)
+      .filter((acc) => acc.currency === 'GEL')
       .map((acc) => ({
         label: `${acc.friendlyName || acc.name} - ${acc.balance} ${acc.currency}`,
         value: acc.id,
