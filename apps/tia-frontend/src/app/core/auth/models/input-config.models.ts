@@ -76,6 +76,8 @@ export const AUTH_SIDE_PANEL_DATA = {
   forgotPassword: {
     title: 'Reset Your Password!',
     description: 'Enter your email to receive a password reset code.',
+    title: 'Reset Your Password!',
+    description: 'Enter your email to receive a password reset code.',
     features: [
       {
         id: 1,
