@@ -9,7 +9,11 @@ import {
 } from '../../models/transactions/transactions.models';
 import { createTransactionHttpParams } from './utils/transactions-params';
 
-@Injectable()
+@Injectable(
+  {
+    providedIn: 'root',
+  }
+)
 export class TransactionService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;

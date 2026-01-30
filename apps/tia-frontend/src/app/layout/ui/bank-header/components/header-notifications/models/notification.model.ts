@@ -11,7 +11,7 @@ export interface ItemsData {
   isRead: boolean;
   isDeleted: boolean;
   actionUrl: string;
-  metadata: any;
+  metadata: null;
   createdAt: string;
 }
 
@@ -19,7 +19,7 @@ interface PageData {
   hasNext: boolean;
   hasPrev?: boolean;
   nextCursor: string;
-  prevCursor?: any;
+  prevCursor?: null;
 }
 
 export interface NotificationsData {
@@ -35,9 +35,16 @@ export interface NotificationsState {
   limitPerPage: number;
   hasUnread: boolean;
   unreadNotificationsNumber: number;
+  isEmpty: boolean;
+  isFetching: boolean;
+  selectedItems: string[];
 }
 
 export type FetchParams = {
   cursor?: string;
   limit: number;
+};
+
+export type successMessage = {
+  success: boolean;
 };

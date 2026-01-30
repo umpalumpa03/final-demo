@@ -1,0 +1,35 @@
+@use '../../../../../shared/styles/mixins' as *;
+@use '../../../../../shared/styles/palette' as *;
+
+.transaction-card {
+  @include display-flex(row);
+  padding: 1.2rem;
+  justify-content: space-between;
+
+  &__description {
+    @include display-flex(column);
+    gap: 0.4rem;
+
+    &-text {
+      @include font-inter(500, 1.6rem, 2.4rem);
+      color: $blue-ocean-foreground;
+    }
+  }
+
+  &__meta {
+    @include font-inter(400, 1.2rem, 1.6rem);
+    color: $gray-600;
+  }
+
+  &__amount {
+    @include font-inter(600, 1.6rem, 2.4rem);
+
+    &--debit {
+      color: $blue-1000;
+    }
+
+    &--credit {
+      color: $green-600;
+    }
+  }
+}
