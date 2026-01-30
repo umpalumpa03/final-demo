@@ -5,7 +5,7 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { Notifications } from './notifications';
-import { environment } from '../../../../../environments/environment';
+import { environment } from '../../../../../../../environments/environment';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe('Notifications', () => {

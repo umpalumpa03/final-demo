@@ -77,8 +77,17 @@
     }
 
     &__value {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 0.4rem;
+
         @include font-inter(700, 1.6rem);
         color: $blue-1000;
+    }
+
+    &__currency {
+        @include font-inter(500, 1.4rem);
+        color: $gray-700;
     }
 
     &__footer {

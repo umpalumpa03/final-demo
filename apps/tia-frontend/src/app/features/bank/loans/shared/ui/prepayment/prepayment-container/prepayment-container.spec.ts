@@ -11,6 +11,7 @@ import { ILoan } from '../../../models/loan.model';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Subject } from 'rxjs';
 import { Action } from '@ngrx/store';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('PrepaymentContainer', () => {
   let component: PrepaymentContainer;
@@ -37,7 +38,7 @@ describe('PrepaymentContainer', () => {
     actions$ = new Subject<Action>();
 
     await TestBed.configureTestingModule({
-      imports: [PrepaymentContainer],
+      imports: [PrepaymentContainer, TranslateModule.forRoot()],
       providers: [
         provideMockStore({
           initialState,

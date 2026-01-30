@@ -20,6 +20,8 @@ export interface ILoan {
 
 export interface ILoansState {
   loans: ILoan[];
+  selectedLoanDetails: ILoanDetails | null;
+  detailsLoading: boolean;
   months: number[];
   purposes: LoanPurpose[];
   accounts: Account[];
@@ -41,3 +43,44 @@ export interface LoanUiState {
 export type LoanMonthsResponse = number[];
 
 type IconKey = keyof typeof LOAN_ICONS;
+
+export interface ILoanDetails {
+  id: string;
+  userId: string;
+  loanAmount: number;
+  accountId: string;
+  accountName: string;
+  months: number;
+  purpose: string;
+  status: number;
+  statusName: string;
+  currency: string;
+  address: IAddress;
+  contactPerson: IContactPerson;
+  interestRate: number;
+  totalInterest: number;
+  totalAmountToPay: number;
+  monthlyPayment: number;
+  remainingPayments: number;
+  remainingBalance: number;
+  firstPaymentDate: string;
+  nextPaymentDate: string;
+  lastPaymentDate: string;
+  approvedAt: string;
+  createdAt: string;
+  friendlyName: string;
+}
+
+export interface IAddress {
+  street: string;
+  city: string;
+  region: string;
+  postalCode: string;
+}
+
+export interface IContactPerson {
+  name: string;
+  relationship: string;
+  phone: string;
+  email: string;
+}

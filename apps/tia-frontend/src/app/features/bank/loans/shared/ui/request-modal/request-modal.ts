@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
   OnInit,
@@ -28,6 +29,9 @@ import { CommonModule } from '@angular/common';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { getTodayDate } from '../../utils/gettoday.util';
 import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { startWith, map } from 'rxjs';
 
 @Component({
   selector: 'app-request-modal',
@@ -38,6 +42,7 @@ import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.
     Dropdowns,
     ReactiveFormsModule,
     CommonModule,
+    TranslatePipe,
   ],
   templateUrl: './request-modal.html',
   styleUrl: './request-modal.scss',
@@ -46,12 +51,20 @@ import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.
 export class RequestModal implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly store = inject(Store);
+  private readonly translate = inject(TranslateService);
 
   public readonly isOpen = input.required<boolean>();
   public readonly close = output<void>();
   public readonly submit = output<ILoanRequest>();
 
-  protected readonly cfg = LOAN_FORM_CONFIG;
+  protected readonly cfg = toSignal(
+    this.translate.onLangChange.pipe(
+      startWith({ lang: this.translate.getCurrentLang(), translations: null }),
+      map(() => this.getTranslatedConfig()),
+    ),
+    { initialValue: this.getTranslatedConfig() },
+  );
+
   protected readonly termOptions: Signal<IDropdownOption[]> =
     this.store.selectSignal(selectLoanMonthsOptions);
   protected readonly purposeOptions: Signal<IDropdownOption[]> =
@@ -59,14 +72,33 @@ export class RequestModal implements OnInit {
   protected readonly accountOptions: Signal<IDropdownOption[]> =
     this.store.selectSignal(selectGelAccountOptions);
 
-  protected readonly dateConfig = {
-    ...LOAN_FORM_CONFIG.date,
+  protected readonly dateConfig = computed(() => ({
+    ...this.cfg()?.date,
     min: getTodayDate(),
-  };
+  }));
+
   public ngOnInit(): void {
     this.store.dispatch(LoansActions.loadMonths());
     this.store.dispatch(AccountsActions.loadAccounts());
     this.store.dispatch(LoansActions.loadPurposes());
+  }
+
+  private getTranslatedConfig() {
+    const t = (key?: string) => (key ? this.translate.instant(key) : undefined);
+
+    const newConfig: any = { ...LOAN_FORM_CONFIG };
+
+    Object.keys(newConfig).forEach((key) => {
+      const field = { ...newConfig[key] };
+
+      if (field.label) field.label = t(field.label);
+      if (field.placeholder) field.placeholder = t(field.placeholder);
+      if (field.errorMessage) field.errorMessage = t(field.errorMessage);
+
+      newConfig[key] = field;
+    });
+
+    return newConfig;
   }
 
   public readonly form = this.fb.group({
