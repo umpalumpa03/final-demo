@@ -1,8 +1,12 @@
 <app-mail-header
   [page]="'messaging.routes.inbox' | translate"
-  [messageCount]="0"
+  [messageCount]="mails().length"
+  [isAllSelected]="isAllSelected()"
+  (toggleSelectAll)="toggleSelectAll($event)"
+  [showBulkActions]="hasBulkSelection()"
+  (bulkDelete)="deleteSelectedMails()"
+  (bulkRead)="markSelectedAsRead()"
 ></app-mail-header>
-
 @if(isLoading()){
 <div class="loading-state">
   <app-route-loader variant="full-page" text="Loading messages..." />
@@ -14,7 +18,13 @@
 } @else {
 <div>
   @for (mail of mails(); track mail.id) {
-  <app-mail-card [mail]="mail" (markAsRead)="markAsRead(mail.id)"></app-mail-card>
+  <app-mail-card
+    [mail]="mail"
+    [checked]="selectedMailIds().has(mail.id)"
+    (checkedChange)="onMailChecked(mail.id, $event)"
+    (markAsRead)="markAsRead(mail.id)"
+    (deleteMail)="deleteMail(mail.id)"
+  ></app-mail-card>
   }
 </div>
 }
