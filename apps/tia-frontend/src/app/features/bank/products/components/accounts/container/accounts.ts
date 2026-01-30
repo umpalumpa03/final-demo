@@ -100,7 +100,8 @@ export class Accounts implements OnInit {
   }
 
   public handleTransfer(accountId: string): void {
-    // this.store.dispatch(AccountsActions.transfer({ accountId }));
+    this.store.dispatch(AccountsActions.selectAccount({ accountId }));
+    this.router.navigate(['/bank/transfers/internal']);
   }
 
   public handleRetry(): void {
