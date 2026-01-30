@@ -4,32 +4,40 @@ import {
   computed,
   input,
   output,
+  inject,
+  signal,
+  OnInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AccountType } from '../../../../../../../../shared/models/accounts/accounts.model';
 import { UiModal } from '../../../../../../../../shared/lib/overlay/ui-modal/ui-modal';
 import { TextInput } from '../../../../../../../../shared/lib/forms/input-field/text-input';
 import { Dropdowns } from '../../../../../../../../shared/lib/forms/dropdowns/dropdowns';
 import { SelectOption } from '../../../../../../../../shared/lib/forms/models/dropdowns.model';
 import { ButtonComponent } from '../../../../../../../../shared/lib/primitives/button/button';
-import { CREATE_ACCOUNT_CONFIG } from '../../../config/accounts.config';
+import { CreateAccountConfig } from '../../../../../../../../shared/models/accounts/accounts.model';
+import { getCreateAccountConfig } from '../../../config/accounts.config';
+import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 
 @Component({
   selector: 'app-create-account',
   imports: [
     CommonModule,
+    TranslatePipe,
     ReactiveFormsModule,
     UiModal,
     TextInput,
     Dropdowns,
     ButtonComponent,
+    LibraryTitle,
   ],
   templateUrl: './create-account.html',
   styleUrl: './create-account.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateAccountComponent {
+export class CreateAccountComponent implements OnInit {
   public isOpen = input.required<boolean>();
   public accountForm = input.required<FormGroup>();
   public accountTypes = input.required<AccountType[]>();
@@ -39,7 +47,15 @@ export class CreateAccountComponent {
   public submitForm = output<void>();
   public backdropClick = output<MouseEvent>();
 
-  protected readonly createConfig = CREATE_ACCOUNT_CONFIG;
+  private readonly translate = inject(TranslateService);
+
+  protected readonly createConfig = signal<CreateAccountConfig>(
+    getCreateAccountConfig(this.translate),
+  );
+
+  public ngOnInit(): void {
+    this.createConfig.set(getCreateAccountConfig(this.translate));
+  }
 
   public accountTypeOptions = computed<SelectOption[]>(() =>
     this.accountTypes().map((type) => ({

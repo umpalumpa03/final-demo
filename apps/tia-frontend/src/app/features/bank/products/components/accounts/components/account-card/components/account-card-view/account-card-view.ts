@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Account } from '../../../../../../../../../shared/models/accounts/accounts.model';
 import { ButtonComponent } from '../../../../../../../../../shared/lib/primitives/button/button';
 import { BasicCard } from '../../../../../../../../../shared/lib/cards/basic-card/basic-card';
@@ -16,7 +17,14 @@ import { TextInput } from '../../../../../../../../../shared/lib/forms/input-fie
 
 @Component({
   selector: 'app-account-card-view',
-  imports: [CommonModule, FormsModule, ButtonComponent, BasicCard, TextInput],
+  imports: [
+    CommonModule,
+    FormsModule,
+    TranslatePipe,
+    ButtonComponent,
+    BasicCard,
+    TextInput,
+  ],
   templateUrl: './account-card-view.html',
   styleUrl: './account-card-view.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

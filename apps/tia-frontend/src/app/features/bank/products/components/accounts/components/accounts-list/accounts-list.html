@@ -1,33 +1,38 @@
 <div class="accounts-list">
   <div class="accounts-list__header">
-    <div class="accounts-list__header-info">
-      <h1 class="accounts-list__header-title">My Accounts</h1>
-      <p class="accounts-list__header-subtitle">Manage your bank accounts</p>
-    </div>
+    <app-library-title
+      title="{{ 'my-products.accounts.title' | translate }}"
+      subtitle="{{ 'my-products.accounts.subtitle' | translate }}"
+    ></app-library-title>
     <app-button
       [variant]="'default'"
       [icon]="'plus-icon.svg'"
       (click)="handleOpenModal()"
     >
-      New Account
+      {{ 'my-products.accounts.newAccount' | translate }}
     </app-button>
   </div>
 
   @if (error()) {
   <div class="accounts-list__error">
-    <h3 class="accounts-list__error-title">Error Loading Accounts</h3>
+    <h3 class="accounts-list__error-title">
+      {{ 'my-products.accounts.errorTitle' | translate }}
+    </h3>
     <app-button [variant]="'default'" (click)="handleRetry()">
-      Retry
+      {{ 'my-products.accounts.retry' | translate }}
     </app-button>
   </div>
   } @else if (isLoading()) {
-  <app-route-loader [variant]="'full-page'" [text]="'Loading accounts...'" />
+  <app-route-loader
+    [variant]="'full-page'"
+    [text]="'my-products.accounts.loading' | translate"
+  />
   } @else if (hasNoAccounts()) {
   <app-error-states
     [variant]="'not-found'"
-    [header]="'No accounts found'"
-    [message]="'Create your first account to get started'"
-    [buttonMessage]="'Create Account'"
+    [header]="'my-products.accounts.noAccounts' | translate"
+    [message]="'my-products.accounts.noAccountsMessage' | translate"
+    [buttonMessage]="'my-products.accounts.createAccount' | translate"
     (buttonClick)="handleOpenModal()"
   >
   </app-error-states>

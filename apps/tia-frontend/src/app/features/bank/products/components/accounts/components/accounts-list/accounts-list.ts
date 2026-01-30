@@ -6,6 +6,7 @@ import {
   output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AccountCardComponent } from '../account-card/container/account-card';
 import { ButtonComponent } from '../../../../../../../shared/lib/primitives/button/button';
 import { RouteLoader } from '../../../../../../../shared/lib/feedback/route-loader/route-loader';
@@ -15,16 +16,19 @@ import {
 } from '../../../../../../../shared/models/accounts/accounts.model';
 import { ErrorStates } from '../../../../../../../shared/lib/feedback/error-states/error-states';
 import { ScrollArea } from '../../../../../../../shared/lib/layout/components/scroll-area/container/scroll-area';
+import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 
 @Component({
   selector: 'app-accounts-list',
   imports: [
     CommonModule,
+    TranslatePipe,
     AccountCardComponent,
     ButtonComponent,
     RouteLoader,
     ErrorStates,
     ScrollArea,
+    LibraryTitle,
   ],
   templateUrl: './accounts-list.html',
   styleUrl: './accounts-list.scss',
