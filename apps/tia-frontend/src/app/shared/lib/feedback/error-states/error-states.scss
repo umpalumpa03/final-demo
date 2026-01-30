@@ -10,6 +10,13 @@
   box-shadow:
     0rem 0.1rem 0.3rem 0rem rgba(0, 0, 0, 0.1),
     0rem 0.1rem 0.2rem -0.1rem rgba(0, 0, 0, 0.1);
+
+  &--no-border {
+    border: none;
+    box-shadow: none;
+  }
+
+
   &__icon {
     @include flex-center;
     margin-bottom: 1.6rem;

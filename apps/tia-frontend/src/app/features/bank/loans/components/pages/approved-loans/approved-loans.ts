@@ -7,10 +7,14 @@ import {
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { LoansActions } from '../../../store/loans.actions';
-import { selectFilteredLoans } from '../../../store/loans.selectors';
+import {
+  selectFilteredLoans,
+  selectLoanDetailsLoading,
+  selectSelectedLoanDetails,
+} from '../../../store/loans.selectors';
 import { LoanCard } from '../../../shared/ui/loan-card/loan-card';
 import { CommonModule } from '@angular/common';
-import { ILoan } from '../../../shared/models/loan.model';
+import { ILoan, ILoanDetails } from '../../../shared/models/loan.model';
 import { LoanDetails } from '../../../shared/ui/prepayment/loan-details/loan-details';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
@@ -29,8 +33,15 @@ export class ApprovedLoans implements OnInit {
   protected readonly approvedLoans = this.store.selectSignal(
     selectFilteredLoans(2),
   );
+  protected readonly selectedLoanDetails = this.store.selectSignal(
+    selectSelectedLoanDetails,
+  );
+  protected readonly isDetailsLoading = this.store.selectSignal(
+    selectLoanDetailsLoading,
+  );
 
   public readonly selectedLoan = signal<ILoan | null>(null);
+  public readonly prepaymentLoan = signal<ILoanDetails | null>(null);
   public readonly isPrepaymentOpen = signal(false);
   public readonly isDetailsOpen = signal(false);
 
@@ -44,6 +55,7 @@ export class ApprovedLoans implements OnInit {
     if (loan) {
       this.selectedLoan.set(loan);
       this.isDetailsOpen.set(true);
+      this.store.dispatch(LoansActions.loadLoanDetails({ id }));
     }
   }
 
@@ -53,8 +65,9 @@ export class ApprovedLoans implements OnInit {
     );
   }
 
-  public onOpenPrepayment(loan: ILoan): void {
+  public onOpenPrepayment(loan: ILoanDetails): void {
     this.selectedLoan.set(loan);
+    this.prepaymentLoan.set(loan);
     this.isDetailsOpen.set(false);
     this.isPrepaymentOpen.set(true);
   }
@@ -62,6 +75,8 @@ export class ApprovedLoans implements OnInit {
   public closeModals(): void {
     this.isDetailsOpen.set(false);
     this.isPrepaymentOpen.set(false);
+    this.prepaymentLoan.set(null);
     this.selectedLoan.set(null);
+    this.store.dispatch(LoansActions.clearLoanDetails());
   }
 }

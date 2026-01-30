@@ -1,6 +1,11 @@
 <app-mail-header
   [page]="'messaging.routes.drafts' | translate"
-  [messageCount]="0"
+  [messageCount]="mails().length"
+  [isAllSelected]="isAllSelected()"
+  (toggleSelectAll)="toggleSelectAll($event)"
+  [showBulkActions]="hasBulkSelection()"
+  (bulkDelete)="deleteSelectedMails()"
+  [isDraft]="true"
 ></app-mail-header>
 @if(isLoading()){
 <div class="loading-state">
@@ -13,7 +18,14 @@
 }@else {
 <div>
   @for (mail of mails(); track mail.id) {
-  <app-mail-card [mail]="mail"> </app-mail-card>
+  <app-mail-card
+    [mail]="mail"
+    [isDraft]="true"
+    [checked]="selectedMailIds().has(mail.id)"
+    (checkedChange)="onMailChecked(mail.id, $event)"
+    (deleteMail)="deleteMail(mail.id)"
+  >
+  </app-mail-card>
   }
 </div>
 }

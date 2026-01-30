@@ -19,4 +19,8 @@ export class MessagingService {
   public markAsRead(mailId: number): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}/${mailId}/read`, {});
   }
+
+  public deleteMail(mailId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${mailId}`);
+  }
 }

@@ -20,4 +20,14 @@
             color: $gray-700;
         }
     }
+
+    &__checkbox {
+        @include flex-center();
+        gap: 0.5rem;
+    }
+
+    &__action {
+        @include flex-center(row);
+        gap: 0.8rem;
+    }
 }

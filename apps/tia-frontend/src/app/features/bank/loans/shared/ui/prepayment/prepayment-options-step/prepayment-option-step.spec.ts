@@ -6,6 +6,7 @@ import { selectPrepaymentTypeOptions } from '../../../../store/loans.selectors';
 import { ILoan } from '../../../models/loan.model';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('PrepaymentOptionStep', () => {
   let component: PrepaymentOptionStep;
@@ -22,7 +23,7 @@ describe('PrepaymentOptionStep', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PrepaymentOptionStep],
+      imports: [PrepaymentOptionStep, TranslateModule.forRoot()],
       providers: [
         provideMockStore({
           selectors: [{ selector: selectPrepaymentTypeOptions, value: [] }],

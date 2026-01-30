@@ -13,10 +13,17 @@ export class ErrorStates {
   public readonly header = input<string>('Failed');
   public readonly message = input<string>('Failed');
   public readonly buttonMessage = input<string>('Retry');
-  public readonly width = input<string>('32rem');
+  public readonly width = input<string>('100%');
   public readonly height = input<string>('23.8rem');
+  public readonly maxWidth = input<string>('32.8rem');
+  public readonly border = input<boolean>(true);
+  public readonly showButton = input<boolean>(true);
 
   public readonly buttonClick = output<void>();
 
-  public readonly errorClass = computed(() => `error-state error-state--${this.variant()}`);
+  public readonly errorClass = computed(() => {
+    const baseClass = `error-state error-state--${this.variant()}`;
+    return this.border() ? baseClass : `${baseClass} error-state--no-border`;
+  });
+
 }
