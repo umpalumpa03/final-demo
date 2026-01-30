@@ -1,5 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import {
+  clearExchangeRates,
   loadExchangeRates, loadExchangeRatesFailure,
   loadExchangeRatesSuccess
 } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.actions';
@@ -24,6 +25,11 @@ export const ExchangeRateReducer = createReducer(
     ...state,
     loading: false,
     error: true,
-  }))
+  })),
+
+  on(clearExchangeRates, () => ({
+    ...initialState,
+    loading: true,
+  })),
 )
 
