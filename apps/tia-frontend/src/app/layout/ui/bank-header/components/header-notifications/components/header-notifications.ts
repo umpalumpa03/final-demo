@@ -15,6 +15,7 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { VisibleInViewportDirective } from '../directives/visible-in-viewport.directive';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-header-notifications',
@@ -27,6 +28,7 @@ import { VisibleInViewportDirective } from '../directives/visible-in-viewport.di
     ButtonComponent,
     ErrorStates,
     VisibleInViewportDirective,
+    TranslatePipe,
   ],
   templateUrl: './header-notifications.html',
   styleUrl: './header-notifications.scss',

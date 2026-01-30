@@ -140,4 +140,25 @@ describe('NotificationsStore', () => {
     store.clearSelection();
     expect(store.selectedItems().length).toBe(0);
   });
+
+  it('should fetch and update hasUnread state', () => {
+    store.hasUnreadNotifications();
+    expect(notificationsServiceMock.hasUnreadNotification).toHaveBeenCalled();
+    expect(store.hasUnread()).toBe(true);
+  });
+
+  it('should set hasUnread to false when no unread notifications', () => {
+    notificationsServiceMock.hasUnreadNotification.mockReturnValue(
+      of({ hasUnread: false }),
+    );
+    store.hasUnreadNotifications();
+    expect(store.hasUnread()).toBe(false);
+  });
+
+  it('should set hasUnread to false after deleteAll', () => {
+    store.fetchNotifications({ cursor: '', limit: 10 });
+    store.deleteAll();
+
+    expect(store.hasUnread()).toBe(false);
+  });
 });

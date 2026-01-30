@@ -13,8 +13,11 @@
 
   <header class="header-notifications__header">
     <div class="header-notifications__header__info">
-      <h3>Notifications</h3>
-      <span>{{ unreadLeft() }} unread</span>
+      <h3>{{ 'header-notifications.title' | translate }}</h3>
+      <span
+        >{{ unreadLeft() }} {{ 'header-notifications.message' | translate
+        }}</span
+      >
     </div>
 
     @if (selectedItems().length) {
@@ -34,8 +37,8 @@
   @if(isEmpty()) {
   <app-error-states
     variant="not-found"
-    header="Empty Notifications"
-    message="There are no notifications"
+    [header]="'header-notifications.errorMessage' | translate"
+    [message]="'header-notifications.errorDescription' | translate "
     width="100%"
     maxWidth="100%"
     height="90%"
