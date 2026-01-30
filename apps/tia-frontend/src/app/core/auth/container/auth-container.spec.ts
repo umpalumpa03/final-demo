@@ -48,9 +48,19 @@ describe('AuthContainer', () => {
     events$.next(new NavigationEnd(2, Routes.PHONE, Routes.PHONE));
     expect(component.sidePanelData()).toEqual(AUTH_SIDE_PANEL_DATA.phone);
 
-    // OTP_SIGN_IN
     events$.next(new NavigationEnd(3, Routes.OTP_SIGN_IN, Routes.OTP_SIGN_IN));
     expect(component.sidePanelData()).toEqual(AUTH_SIDE_PANEL_DATA.otpSignIn);
+
+    events$.next(new NavigationEnd(4, Routes.OTP_SIGN_UP, Routes.OTP_SIGN_UP));
+    expect(component.sidePanelData()).toEqual(AUTH_SIDE_PANEL_DATA.otpSignUp);
+
+    events$.next(
+      new NavigationEnd(5, Routes.OTP_FORGOT_PASSWORD, Routes.OTP_FORGOT_PASSWORD),
+    );
+    expect(component.sidePanelData()).toEqual(AUTH_SIDE_PANEL_DATA.otpForgotPassword);
+
+    events$.next(new NavigationEnd(6, Routes.ROTGOT_PASSWORD, Routes.ROTGOT_PASSWORD));
+    expect(component.sidePanelData()).toEqual(AUTH_SIDE_PANEL_DATA.forgotPassword);
   });
 
   it('defaults to signIn panel for unknown routes', () => {
