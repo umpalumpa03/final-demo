@@ -4,12 +4,10 @@ import {
   inject,
   input,
   output,
-  signal,
   Signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
 import { LoansActions } from '../../../../store/loans.actions';
 import { selectPrepaymentTypeOptions } from '../../../../store/loans.selectors';
 import { IDropdownOption } from '../../../models/loan-request.model';
@@ -25,8 +23,9 @@ import {
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ILoan } from '../../../models/loan.model';
 import { PrepaymentCalculationPayload } from '../../../models/prepayment.model';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { startWith, map } from 'rxjs';
 
 @Component({
   selector: 'app-prepayment-option-step',
@@ -37,6 +36,7 @@ import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
     ButtonComponent,
     CommonModule,
     ReactiveFormsModule,
+    TranslatePipe,
   ],
   templateUrl: './prepayment-option-step.html',
   styleUrl: './prepayment-option-step.scss',
@@ -45,6 +45,7 @@ import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 export class PrepaymentOptionStep {
   private readonly store = inject(Store);
   private readonly fb = inject(FormBuilder);
+  private readonly translate = inject(TranslateService);
 
   public readonly loan = input.required<ILoan>();
   public readonly isLoading = input<boolean>(false);
@@ -55,9 +56,59 @@ export class PrepaymentOptionStep {
   protected readonly typeOptions: Signal<IDropdownOption[]> =
     this.store.selectSignal(selectPrepaymentTypeOptions);
 
-  protected readonly config = PREPAYMENT_FORM_CONFIG;
-  protected readonly calculationOptions: RadioOption[] =
-    PREPAYMENT_CALC_OPTIONS;
+  protected readonly config = toSignal(
+    this.translate.onLangChange.pipe(
+      startWith({ lang: this.translate.getCurrentLang(), translations: null }),
+      map(() => this.getTranslatedConfig()),
+    ),
+    { initialValue: this.getTranslatedConfig() },
+  );
+
+  protected readonly calculationOptions = toSignal(
+    this.translate.onLangChange.pipe(
+      startWith({ lang: this.translate.getCurrentLang(), translations: null }),
+      map(() => this.getTranslatedOptions()),
+    ),
+    { initialValue: this.getTranslatedOptions() },
+  );
+
+  private getTranslatedConfig() {
+    const t = (key?: string) => (key ? this.translate.instant(key) : undefined);
+    const newConfig: any = { ...PREPAYMENT_FORM_CONFIG };
+
+    Object.keys(newConfig).forEach((key) => {
+      const field = { ...newConfig[key] };
+      if (field.label) field.label = t(field.label);
+      if (field.placeholder) field.placeholder = t(field.placeholder);
+      newConfig[key] = field;
+    });
+
+    return newConfig;
+  }
+
+  private getTranslatedOptions(): RadioOption[] {
+    const t = (key: string) => this.translate.instant(key);
+    const prefix = 'loans.prepayment_wizard.radio_options';
+
+    return PREPAYMENT_CALC_OPTIONS.map((opt) => {
+      let labelKey = '';
+      let descKey = '';
+
+      if (opt.value === 'reduceMonthlyPayment') {
+        labelKey = `${prefix}.reduce_monthly_label`;
+        descKey = `${prefix}.reduce_monthly_desc`;
+      } else if (opt.value === 'reduceEndDateOfLoan') {
+        labelKey = `${prefix}.reduce_term_label`;
+        descKey = `${prefix}.reduce_term_desc`;
+      }
+
+      return {
+        ...opt,
+        label: t(labelKey || opt.label),
+        description: descKey ? t(descKey) : opt.description,
+      };
+    });
+  }
 
   public readonly form = this.fb.group({
     type: ['', Validators.required],

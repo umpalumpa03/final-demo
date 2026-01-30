@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PrepaymentReview } from './prepayment-review';
 import { IPrepaymentCalcResponse } from '../../../models/prepayment.model';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('PrepaymentReview', () => {
   let component: PrepaymentReview;
@@ -15,7 +16,7 @@ describe('PrepaymentReview', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PrepaymentReview],
+      imports: [PrepaymentReview, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PrepaymentReview);

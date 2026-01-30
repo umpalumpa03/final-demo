@@ -1,4 +1,3 @@
-@let loan = selectedLoan();
 <section class="loans">
     @for (loan of loans(); track loan.id) {
     <lib-loan-card [loan]="loan" (cardClick)="onCardClick($event)" (rename)="onRenameLoan($event)">
@@ -8,13 +7,15 @@
     }
 </section>
 
-<app-loan-details [isOpen]="isDetailsOpen()" [loan]="loan" (close)="closeModals()"
-    (calculatePrepayment)="onOpenPrepayment($event)">
+<app-loan-details [isOpen]="isDetailsOpen()" [loan]="selectedLoanDetails()" [isLoading]="isDetailsLoading()"
+    (close)="closeModals()" (calculatePrepayment)="onOpenPrepayment($event)">
 </app-loan-details>
 
 <app-ui-modal [isOpen]="isPrepaymentOpen()" (closed)="closeModals()">
-    @if (loan) {
-    <app-prepayment-container [loan]="loan" (close)="closeModals()">
+    @let activePrepayment = prepaymentLoan();
+
+    @if (activePrepayment) {
+    <app-prepayment-container [loan]="activePrepayment" (close)="closeModals()">
     </app-prepayment-container>
     }
 </app-ui-modal>

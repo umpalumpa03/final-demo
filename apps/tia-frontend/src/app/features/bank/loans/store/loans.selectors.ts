@@ -111,3 +111,13 @@ export const selectGelAccountOptions = createSelector(
         value: acc.id,
       })),
 );
+
+export const selectSelectedLoanDetails = createSelector(
+  selectLoansState,
+  (state) => state.selectedLoanDetails,
+);
+
+export const selectLoanDetailsLoading = createSelector(
+  selectLoansState,
+  (state) => state.detailsLoading,
+);
