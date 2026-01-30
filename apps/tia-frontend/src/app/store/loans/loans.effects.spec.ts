@@ -74,17 +74,4 @@ describe('LoanCreateEffects', () => {
       });
     });
   });
-
-  describe('requestLoanSuccess$', () => {
-    it('should not dispatch (dispatch: false)', () => {
-      const action = LoansCreateActions.requestLoanSuccess({ loan: {} as any });
-      actions$ = of(action);
-
-      const consoleSpy = vi.spyOn(console, 'log');
-
-      effects.requestLoanSuccess$.subscribe();
-
-      expect(consoleSpy).toHaveBeenCalledWith('Loan created successfully!');
-    });
-  });
 });

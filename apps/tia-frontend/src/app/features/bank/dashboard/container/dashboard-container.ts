@@ -1,49 +1,72 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
 import {
-  selectAccounts,
-  selectError,
-  selectIsLoading
-} from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
-import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
-import { AsyncPipe, CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
-import { selectItems } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
-import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
-import { filter, map } from 'rxjs';
-import { selectExchangeRates } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.selectors';
-import { selectLoading } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.selectors';
-import { loadExchangeRates } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.actions';
+  ChangeDetectionStrategy,
+  Component,
+  signal,
+  computed,
+} from '@angular/core';
+import { DragContainer } from '../../../../shared/lib/drag-n-drop/components/drag-container/drag-container';
+import { DraggableCard } from '../../../../shared/lib/drag-n-drop/components/draggable-card/draggable-card';
+import { DragItemDirective } from '../../../../shared/lib/drag-n-drop/directives/drag-item.directive';
+import { IWidgetItem } from '../models/widgets.model';
+import { WidgetTransactions } from '../components/widget-transactions/widget-transactions';
+import { WidgetAccounts } from '../components/widget-accounts/widget-accounts';
+import { WidgetExchange } from '../components/widget-exchange/widget-exchange';
+import { widgetItems } from '../config/widgets.config';
+import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
 
 @Component({
   selector: 'app-dashboard-container',
+  standalone: true,
   imports: [
-    AsyncPipe,
-    DatePipe,
-    DecimalPipe,
-    CurrencyPipe
+    DragContainer,
+    DraggableCard,
+    DragItemDirective,
+    WidgetTransactions,
+    WidgetAccounts,
+    WidgetExchange,
+    LibraryTitle,
   ],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardContainer implements OnInit {
-  private readonly store = inject(Store);
-
-  public accounts$ = this.store.select(selectAccounts);
-  public isLoading$ = this.store.select(selectIsLoading);
-  public error$ = this.store.select(selectError);
-
-  public transactions$ = this.store.select(selectItems);
-
-  public exchangeRates$ = this.store.select(selectExchangeRates).pipe(
-    map(rates => rates.filter(rate => rate.code !== 'USD'))
+export class DashboardContainer {
+  protected readonly myItems = signal<(IWidgetItem & { isHidden?: boolean })[]>(
+    [...widgetItems],
   );
-  public exchangeRatesLoading$ = this.store.select(selectLoading);
 
+  protected readonly dynamicColspans = computed(() => {
+    return this.myItems().map((_, index) => (index === 0 ? 2 : 1));
+  });
 
-  ngOnInit() {
-    this.store.dispatch(AccountsActions.loadAccounts());
-    this.store.dispatch(TransactionActions.loadTransactions());
-    this.store.dispatch(loadExchangeRates({ baseCurrency: 'USD' }));
+  public onItemsChange(newItems: IWidgetItem[]): void {
+    this.myItems.set(newItems);
   }
+
+  public onContainerOrderChange(ids: string[]): void {
+    console.log('New Order saved to DB:', ids);
+  }
+
+  public onToggleVisibility(isVisible: boolean, id: string): void {
+    console.log(`Vaxtangam daahaida widget ${id}`);
+    this.myItems.update((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, isHidden: !isVisible } : item,
+      ),
+    );
+  }
+
+  public onWidgetRefresh(item: IWidgetItem): void {
+    console.log(`Vaxtanga arefreshebs: ${item.title}`);
+  }
+
+  public onWidgetAdd(item: IWidgetItem): void {
+    console.log(`Vaxtanga amatebs acaunts: ${item.type}`);
+  }
+
+  public onPaginationChange(item: number): void {
+    console.log(`Vaxtangas paginacia shoucvalien ${item}`);
+  }
+
+  // console logebi aris droebiti
 }

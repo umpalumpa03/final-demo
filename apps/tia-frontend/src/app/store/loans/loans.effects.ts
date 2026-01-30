@@ -27,15 +27,4 @@ export class LoanCreateEffects {
       ),
     ),
   );
-
-  requestLoanSuccess$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(LoansCreateActions.requestLoanSuccess),
-        tap(() => {
-          console.log('Loan created successfully!');
-        }),
-      ),
-    { dispatch: false },
-  );
 }

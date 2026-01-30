@@ -30,8 +30,16 @@
     },
     "profile-photo": {
         "title": "Profile Photo",
-        "change": "Change Photo",
-        "remove": "Remove Photo"
+        "subtitle": "Upload a new profile photo or choose a default avatar",
+        "uploadCustomPhoto": "Upload a new profile photo",
+        "chooseFile": "Choose File",
+        "defaultAvatar": "Or Choose a Default Avatar",
+        "loadingDefaultAvatars": "Loading avatars...",
+        "profilePictureChangedSuccessfully": "Your profile picture changed successfully",
+        "profilePictureRemovedSuccessfully": "Your profile picture removed successfully",
+        "change": "Save Changes",
+        "remove": "Remove Photo",
+        "invalidFileAlert": "Unfortunately, your photo could not be uploaded. The avatar image file to upload (PNG/JPG only, max 1MB)."
     },
     "security": {
         "title": "Security Settings",

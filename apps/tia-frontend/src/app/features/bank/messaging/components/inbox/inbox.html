@@ -14,7 +14,7 @@
 } @else {
 <div>
   @for (mail of mails(); track mail.id) {
-  <app-mail-card [mail]="mail"> </app-mail-card>
+  <app-mail-card [mail]="mail" (markAsRead)="markAsRead(mail.id)"></app-mail-card>
   }
 </div>
 }

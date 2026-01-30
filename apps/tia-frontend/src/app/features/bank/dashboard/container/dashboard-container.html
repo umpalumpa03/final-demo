@@ -1,71 +1,45 @@
 <div class="global-bank-wrapper">
-  @if (isLoading$ | async) {
-    <p>Loading...</p>
-  }
-  @if (error$ | async; as error) {
-    <p>Error: {{ error }}</p>
-  }
-  @for (account of accounts$ | async; track account.id) {
-    <div class = 'account-card'>
-      <div class = 'account-card__header'>
-        <div class = 'account-card__header-top'>
-          {{ account.friendlyName }}
-          <span class = 'account-card__header-top--iban'>
-            ****{{ account.iban?.slice(-4) }}
-          </span>
-        </div>
-        <div class = 'account-card__header-bottom'>
-
-        </div>
+  <app-library-title
+    title="Dashboard"
+    subtitle="Welcome back! Here's your financial overview."
+  ></app-library-title>
+  <app-drag-container
+    [items]="myItems()"
+    [layout]="'grid'"
+    [columns]="{ default: 2, md:2,sm: 1 }"
+    [colspans]="dynamicColspans()"
+    (itemsChange)="onItemsChange($event)"
+    containerTitle=""
+    containerDescription=""
+  >
+    @for (item of myItems(); track item.id) {
+    <app-draggable-card
+      [hasMinHeight]="true"
+      [itemData]="item"
+      [hasViewOption]="true"
+      (viewOptionChange)="onToggleVisibility($event, item.id)"
+      [showHeadings]="false"
+      [class.bank-dashboard__widget--primary]="$index === 0"
+      [class.bank-dashboard__widget--collapsed]="$index === 0 && item.isHidden"
+      [hasPagination]="!!item.hasPagination"
+      [hasAddOption]="!!item.hasAdd"
+      [hasButton]="!!item.hasButton"
+      buttonContent="Refresh"
+      (buttonClick)="onWidgetRefresh(item)"
+      (add)="onWidgetAdd(item)"
+      (paginationChange)="onPaginationChange($event)"
+      appDragItem
+    >
+      @if (!($index === 0 && item.isHidden)) {
+      <div class="bank-dashboard__content">
+        @switch (item.type) { @case ('transactions') {
+        <app-widget-transactions /> } @case ('accounts') {
+        <app-widget-accounts /> } @case ('exchange') { <app-widget-exchange /> }
+        }
       </div>
+      }
+    </app-draggable-card>
 
-      <div class = 'account-card__balance'>
-        {{ account.balance | currency:'USD':'symbol':'1.2-2' }}
-      </div>
-
-    </div>
-  }
-
-  @for (transaction of transactions$ | async; track transaction.id) {
-    <div class="transaction-card">
-      <div class="transaction-card__description">
-        <div class="transaction-card__description-text">{{ transaction.description }}</div>
-        <div class="transaction-card__meta">{{ transaction.createdAt | date:'shortDate' }} • {{ transaction.category }}</div>
-      </div>
-
-      <div class="transaction-card__amount transaction-card__amount--{{ transaction.transactionType }}">
-        {{ transaction.transactionType === 'debit' ? '-' : '+' }} {{ transaction.amount }}
-      </div>
-    </div>
-  }
-
-  <div class="exchange-rates">
-    <h2 class="exchange-rates__title">Exchange Rates</h2>
-    @if (exchangeRatesLoading$ | async) {
-      <p>Loading exchange rates...</p>
     }
-    @for (rate of exchangeRates$ | async; track rate.code) {
-      <div class="exchange-rate-card">
-        <div class="exchange-rate-card__info">
-          <div class="exchange-rate-card__icon">{{ rate.symbol }}</div>
-          <div class="exchange-rate-card__details-left">
-            <div class="exchange-rate-card__currency">{{ rate.code }}/USD</div>
-            <div class="exchange-rate-card__change" [class.exchange-rate-card__change--positive]="rate.isPositive" [class.exchange-rate-card__change--negative]="!rate.isPositive">
-              <img [src]="rate.isPositive ? '/images/svg/dashboard/arrow-up.svg' : '/images/svg/dashboard/arrow-down.svg'" [alt]="rate.isPositive ? 'up' : 'down'" class="exchange-rate-card__arrow">
-              {{ rate.changePercent | number:'1.2-2' }}%
-            </div>
-          </div>
-        </div>
-        <div class="exchange-rate-card__details-right">
-          <div class="exchange-rate-card__rate">{{ rate.rate | number:'1.4-4' }}</div>
-          <div class="exchange-rate-card__rate-change" [class.exchange-rate-card__rate-change--positive]="rate.isPositive" [class.exchange-rate-card__rate-change--negative]="!rate.isPositive">
-            {{ rate.isPositive ? '+' : '' }}{{ (rate.rate - rate.previousRate) | number:'1.4-4' }}
-          </div>
-        </div>
-      </div>
-    }
-  </div>
+  </app-drag-container>
 </div>
-
-
-

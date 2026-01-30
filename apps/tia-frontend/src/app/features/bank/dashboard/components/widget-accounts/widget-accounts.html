@@ -1,0 +1,28 @@
+@if (isLoading$ | async) {
+  <p>Loading...</p>
+}
+@if (error$ | async; as error) {
+  <p>Error: {{ error }}</p>
+}
+@for (account of accounts$ | async; track account.id) {
+  <div class = 'account-card'>
+    <div class = 'account-card__header'>
+      <div class = 'account-card__header-top'>
+        {{ account.friendlyName }}
+        <span class = 'account-card__header-top--iban'>
+            ****{{ account.iban.slice(-4) }}
+          </span>
+      </div>
+      <div class = 'account-card__header-bottom'>
+
+      </div>
+    </div>
+
+    <div class = 'account-card__balance'>
+      {{ account.balance | currency:'USD':'symbol':'1.2-2' }}
+    </div>
+
+  </div>
+}
+
+

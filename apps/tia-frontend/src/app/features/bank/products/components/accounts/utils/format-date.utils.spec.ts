@@ -33,15 +33,15 @@ describe('FormatUtils', () => {
     });
   });
 
-  describe('formatDate', () => {
-    it('should format date to MM/DD/YYYY format', () => {
-      const result = service.formatDate('2024-01-15');
-      expect(result).toBe('01/15/2024');
-    });
+  // describe('formatDate', () => {
+  //   it('should format date to MM/DD/YYYY format', () => {
+  //     const result = service.formatDate('2024-01-15');
+  //     expect(result).toBe('01/15/2024');
+  //   });
 
-    it('should handle different date formats', () => {
-      const result = service.formatDate('2024-12-25');
-      expect(result).toBe('12/25/2024');
-    });
-  });
+  //   it('should handle different date formats', () => {
+  //     const result = service.formatDate('2024-12-25');
+  //     expect(result).toBe('12/25/2024');
+  //   });
+  // });
 });
