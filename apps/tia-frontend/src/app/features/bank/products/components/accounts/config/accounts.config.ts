@@ -42,11 +42,13 @@ export const getCreateAccountConfig = (
     placeholder: translate.instant(
       'my-products.accounts.form.type.placeholder',
     ),
+    required: true,
   },
   currency: {
     label: translate.instant('my-products.accounts.form.currency.label'),
     placeholder: translate.instant(
       'my-products.accounts.form.currency.placeholder',
     ),
+    required: true,
   },
 });

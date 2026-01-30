@@ -1,4 +1,4 @@
-<app-basic-card>
+<app-basic-card [padding]="'0 2.4rem'">
   <div class="account-card">
     <div class="account-card__header">
       <div class="account-card__header-icon">
@@ -11,6 +11,7 @@
           [config]="{ placeholder: 'my-products.accounts.card.enterName' | translate }"
           class="account-card__header-info-edit-input"
           (blur)="handleBlur()"
+          (keydown.enter)="handleSave()"
         />
         } @else {
         <div class="account-card__header-info-title">
@@ -31,9 +32,8 @@
           >
           }
         </div>
-        }
         <p class="account-card__header-info-number">{{ account().iban }}</p>
-        @if (isEditing() && renameError()) {
+        } @if (isEditing() && renameError()) {
         <p class="account-card__header-info-edit-error">{{ renameError() }}</p>
         }
       </div>

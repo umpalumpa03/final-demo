@@ -4,9 +4,11 @@
 .account-card {
   @include display-flex(column, wrap);
   gap: 1.25rem;
+  justify-content: center;
 
   &__header {
-    @include flex-center(row, flex-start, flex-start);
+    @include flex-center(row, center, center);
+    flex-wrap: wrap;
     gap: 1rem;
 
     &-icon {
@@ -26,18 +28,27 @@
     &-info {
       flex: 1;
       min-height: 5rem;
+      min-width: 0;
       @include flex-center(column, flex-start, flex-start);
 
       &-title {
         @include flex-center(row, flex-start);
         gap: 0.5rem;
         margin-bottom: 0.25rem;
+        flex-wrap: wrap;
+        width: 100%;
+        overflow: hidden;
       }
 
       &-name {
         @include font-arimo(600, 1.8rem, 1.2);
         color: $gray-800;
         margin: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 1;
+        min-width: 0;
 
         &--clickable {
           cursor: pointer;
@@ -46,7 +57,7 @@
           transition: background-color 0.2s ease;
 
           &:hover {
-            background-color: rgba(0, 0, 0, 0.05);
+            background-color: $blue-50;
           }
 
           &:focus {
@@ -68,6 +79,10 @@
         @include font-arimo(400, 1.4rem, 1.5);
         color: $gray-600;
         margin: 0.25rem 0 0 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
       }
 
       &-edit {
@@ -75,6 +90,7 @@
           width: 100%;
           max-width: 30rem;
           margin-bottom: 0.25rem;
+          max-height: 2.6rem;
         }
 
         &-buttons {
@@ -131,14 +147,13 @@
   &__balance {
     margin-bottom: 1.25rem;
     padding: 1rem;
-    background: $gray-25;
     border-radius: 0.8rem;
+    text-align: start;
 
     &-label {
       @include font-arimo(400, 1.2rem, 1.2);
       color: $gray-600;
       margin: 0 0 0.25rem 0;
-      text-transform: uppercase;
       letter-spacing: 0.05rem;
     }
 
@@ -157,6 +172,7 @@
     padding: 1rem 0;
     border-top: 0.1rem solid $gray-200;
     border-bottom: 0.1rem solid $gray-200;
+    text-align: center;
 
     &-item {
       @include flex-center(row, space-between, flex-start);
@@ -177,7 +193,7 @@
   }
 
   &__actions {
-    display: block;
+    @include flex-center();
     gap: 0.75rem;
     padding: 1rem;
 

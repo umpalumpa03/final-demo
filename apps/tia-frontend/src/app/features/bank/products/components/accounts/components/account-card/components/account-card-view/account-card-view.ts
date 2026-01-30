@@ -6,6 +6,8 @@ import {
   signal,
   effect,
   computed,
+  ElementRef,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -48,6 +50,8 @@ export class AccountCardViewComponent {
     () => this.account().friendlyName || this.account().name,
   );
 
+  private elementRef = inject(ElementRef);
+
   constructor() {
     effect(() => {
       const account = this.account();
@@ -68,6 +72,24 @@ export class AccountCardViewComponent {
         this.renameSuccess.emit();
       }
     });
+
+    effect(() => {
+      if (this.isEditing()) {
+        const tryFocus = (attempts = 0) => {
+          const inputElement = this.elementRef.nativeElement.querySelector(
+            'lib-text-input input',
+          );
+
+          if (inputElement instanceof HTMLInputElement) {
+            inputElement.focus();
+          } else if (attempts < 10) {
+            setTimeout(() => tryFocus(attempts + 1), 50);
+          }
+        };
+
+        setTimeout(() => tryFocus(), 0);
+      }
+    });
   }
 
   public handleTransfer(): void {
@@ -78,6 +100,19 @@ export class AccountCardViewComponent {
     const currentName = this.account().friendlyName || this.account().name;
     this.newName.set(currentName);
     this.isEditing.set(true);
+  }
+
+  public handleSave(): void {
+    const trimmedName = this.newName().trim();
+    const currentName = this.account().friendlyName || this.account().name;
+
+    if (trimmedName && trimmedName !== currentName) {
+      this.renamingAccountId.set(this.account().id);
+      this.rename.emit(trimmedName);
+    } else {
+      this.isEditing.set(false);
+      this.newName.set('');
+    }
   }
 
   public handleBlur(): void {
