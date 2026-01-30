@@ -1,4 +1,9 @@
 <div class="otp-verification">
+  @if (showIcon()) {
+  <div class="otp-verification__icon" aria-hidden="true">
+    <img [src]="iconUrl()" alt="" />
+  </div>
+  }
   <h2 class="otp-verification__title">{{ title() }}</h2>
   <p class="otp-verification__subtext">{{ subText() }}</p>
 
@@ -8,6 +13,10 @@
       <label class="otp-label">Enter OTP Code</label>
       <lib-otp formControlName="code" [config]="otpConfig()"></lib-otp>
     </div>
+
+    @if (submitError()) {
+      <div class="auth-error">{{ submitError() }}</div>
+    }
 
     <div class="auth-form__actions">
       <app-button
@@ -19,6 +28,19 @@
         {{ submitBtnName() }}
       </app-button>
     </div>
+
+    @if (showResend()) {
+      <div class="otp-verification__resend">
+        <span>{{ resendText() }}</span>
+        <span class="otp-verification__resend-link">{{ resendLinkText() }}</span>
+      </div>
+    }
+
+    @if (backLink()) {
+      <a class="otp-verification__back" [routerLink]="backLink()">
+        {{ backLinkText() }}
+      </a>
+    }
   </form>
   } @else {
   <div class="sign-in sign-in-loader">

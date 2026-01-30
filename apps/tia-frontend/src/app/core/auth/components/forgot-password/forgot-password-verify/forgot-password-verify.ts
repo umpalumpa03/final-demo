@@ -14,6 +14,15 @@ export class ForgotPasswordVerify implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
 
+  public readonly title = 'OTP Verification';
+  public readonly subText = "We've sent a 6-digit code to your email.";
+  public readonly submitText = 'Verify OTP';
+  public readonly resendText = "Didn't receive the code?";
+  public readonly resendLinkText = 'Resend';
+  public readonly backLink = '/auth/sign-in';
+  public readonly backLinkText = 'Back to Sign In';
+  public readonly iconUrl = 'images/svg/button-icons/confirm-icon.svg';
+
   public submitOtp = (code: string) =>
     this.authService.verifyForgotPasswordOtp(code);
 

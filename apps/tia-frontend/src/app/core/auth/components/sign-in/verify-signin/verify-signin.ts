@@ -24,8 +24,4 @@ export class VerifySignin {
       code,
       challengeId: this.authService.getChallengeId(),
     } as IMfaVerifyRequest);
-
-  public onOtpError(message: string): void {
-    console.log('OTP verification error:', message);
-  }
 }
