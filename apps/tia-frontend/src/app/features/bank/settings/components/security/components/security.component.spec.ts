@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SecurityComponent } from './security.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { InputConfig } from '@tia/shared/lib/forms/models/input.model';
 import { vi } from 'vitest';
 
 
@@ -27,6 +28,24 @@ describe('SecurityComponent', () => {
       { validators: passwordMatchValidator }, 
     );
 
+  const mockCurrentPasswordConfig: InputConfig = {
+    label: 'Current Password',
+    placeholder: 'Enter current password',
+    required: true,
+  };
+
+  const mockNewPasswordConfig: InputConfig = {
+    label: 'New Password',
+    placeholder: 'Enter new password',
+    required: true,
+  };
+
+  const mockConfirmPasswordConfig: InputConfig = {
+    label: 'Confirm Password',
+    placeholder: 'Confirm new password',
+    required: true,
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SecurityComponent, TranslateModule.forRoot(), ReactiveFormsModule],
@@ -35,10 +54,11 @@ describe('SecurityComponent', () => {
     fixture = TestBed.createComponent(SecurityComponent);
     component = fixture.componentInstance;
 
- 
     fixture.componentRef.setInput('form', createForm());
-   
     fixture.componentRef.setInput('isLoading', false);
+    fixture.componentRef.setInput('currentPasswordConfig', mockCurrentPasswordConfig);
+    fixture.componentRef.setInput('newPasswordConfig', mockNewPasswordConfig);
+    fixture.componentRef.setInput('confirmPasswordConfig', mockConfirmPasswordConfig);
 
     fixture.detectChanges();
   });

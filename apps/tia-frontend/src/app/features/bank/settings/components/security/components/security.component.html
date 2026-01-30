@@ -1,9 +1,9 @@
 <div class="security">
   <form [formGroup]="form()" (ngSubmit)="onSubmit()">
     <app-basic-card
-      [hasFooter]="true"
-      [maxWidth]="'100%'"
-      [width]="'100%'"
+      [hasFooter] ="true"
+      maxWidth="100%"
+      width="100%"
     >
       <div class="security__header">
         <div class="security__header-icon">
@@ -20,11 +20,7 @@
           <lib-text-input
             type="password"
             formControlName="currentPassword"
-            [config]="{
-              label: ('settings.security.currentPassword' | translate),
-              placeholder: ('settings.security.currentPasswordPlaceholder' | translate),
-              required: true
-            }"
+            [config]="currentPasswordConfig()"
           ></lib-text-input>
         </div>
 
@@ -32,11 +28,7 @@
           <lib-text-input
             type="password"
             formControlName="newPassword"
-            [config]="{
-              label: ('settings.security.newPassword' | translate),
-              placeholder: ('settings.security.newPasswordPlaceholder' | translate),
-              required: true
-            }"
+            [config]="newPasswordConfig()"
           ></lib-text-input>
         </div>
 
@@ -44,11 +36,7 @@
           <lib-text-input
             type="password"
             formControlName="confirmPassword"
-            [config]="{
-              label: ('settings.security.confirmNewPassword' | translate),
-              placeholder: ('settings.security.confirmNewPasswordPlaceholder' | translate),
-              required: true
-            }"
+            [config]="confirmPasswordConfig()"
           ></lib-text-input>
         </div>
       </div>
