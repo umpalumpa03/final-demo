@@ -1,15 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SecurityContainer } from './security-container';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { Store } from '@ngrx/store';
 import { vi } from 'vitest';
 import * as SecuritySelectors from '../store/security.selectors';
+import { SecurityActions } from '../store/security.actions';
 
 describe('SecurityContainer', () => {
   let component: SecurityContainer;
   let fixture: ComponentFixture<SecurityContainer>;
   let store: MockStore;
+  let translate: TranslateService;
+
+  const refresh = () => (store.refreshState(), fixture.detectChanges());
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -26,24 +30,45 @@ describe('SecurityContainer', () => {
     }).compileComponents();
 
     store = TestBed.inject(Store) as MockStore;
+    translate = TestBed.inject(TranslateService);
     fixture = TestBed.createComponent(SecurityContainer);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('create + passwordMismatch validator works', () => {
     expect(component).toBeTruthy();
+
+    const f = component.changePasswordForm;
+    f.patchValue({ currentPassword: 'a', newPassword: 'newPassword123', confirmPassword: 'x' });
+    f.updateValueAndValidity();
+    expect(f.hasError('passwordMismatch')).toBe(true);
+
+    f.patchValue({ confirmPassword: 'newPassword123' });
+    f.updateValueAndValidity();
+    expect(f.hasError('passwordMismatch')).toBe(false);
   });
 
-  it('should dispatch changePassword action when onChangePassword is called', () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
-    const passwordData = {
-      currentPassword: 'currentPass123',
-      newPassword: 'newPassword123',
-    };
+  it('alertType/message (error -> success)', () => {
+    store.overrideSelector(SecuritySelectors.selectSecurityError, 'Bad');
+    refresh();
+    expect(component.alertType()).toBe('error');
+    expect(component.alertMessage()).toBe('Bad');
 
-    component.onChangePassword(passwordData);
+    vi.spyOn(translate, 'instant').mockReturnValue('OK!');
+    store.overrideSelector(SecuritySelectors.selectSecurityError, null);
+    store.overrideSelector(SecuritySelectors.selectSecuritySuccess, true);
+    refresh();
+    expect(component.alertType()).toBe('success');
+    expect(component.alertMessage()).toBe('OK!');
+  });
 
-    expect(dispatchSpy).toHaveBeenCalled();
+  it('dispatches changePassword action', () => {
+    const spy = vi.spyOn(store, 'dispatch');
+    component.onChangePassword({ currentPassword: 'c', newPassword: 'n' });
+
+    expect(spy).toHaveBeenCalledWith(
+      SecurityActions.changePassword({ currentPassword: 'c', newPassword: 'n' }),
+    );
   });
 });
