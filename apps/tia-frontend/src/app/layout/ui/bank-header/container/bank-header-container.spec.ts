@@ -2,10 +2,10 @@ import { of } from 'rxjs';
 import { BankHeaderContainer } from './bank-header-container';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Notifications } from '../service/notifications';
+import { Notifications } from '../components/header-notifications/service/notifications';
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
 import { Store } from '@ngrx/store';
-import { NotificationsStore } from '../store/notifications.store';
+import { NotificationsStore } from '../components/header-notifications/store/notifications.store';
 import { signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
