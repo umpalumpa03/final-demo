@@ -33,7 +33,7 @@ export class ForgotPasswordVerify implements OnInit {
   }
 
   public onSubmitResult(result: { statusCode: number; message: string }): void {
-    if (result.statusCode >= 200 && result.statusCode < 300) {
+    if (result.statusCode === 200) {
       this.router.navigate(['/auth', ...forgotPasswordSegments.reset]);
     }
   }
