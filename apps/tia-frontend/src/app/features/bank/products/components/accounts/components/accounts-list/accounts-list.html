@@ -14,14 +14,15 @@
   </div>
 
   @if (error()) {
-  <div class="accounts-list__error">
-    <h3 class="accounts-list__error-title">
-      {{ 'my-products.accounts.errorTitle' | translate }}
-    </h3>
-    <app-button [variant]="'default'" (click)="handleRetry()">
-      {{ 'my-products.accounts.retry' | translate }}
-    </app-button>
-  </div>
+  <app-error-states
+    [variant]="'failed'"
+    [header]="'my-products.accounts.errorTitle' | translate"
+    [message]="'my-products.accounts.errorMessage' | translate"
+    [buttonMessage]="'my-products.accounts.retry' | translate"
+    (buttonClick)="handleRetry()"
+    [border]="false"
+  >
+  </app-error-states>
   } @else if (isLoading()) {
   <app-route-loader
     [variant]="'full-page'"
@@ -65,6 +66,7 @@
           [renameError]="renameError()"
           (transfer)="handleTransfer($event)"
           (rename)="handleRenameClick($event)"
+          (renameSuccess)="handleRenameSuccess()"
         />
         }
       </div>

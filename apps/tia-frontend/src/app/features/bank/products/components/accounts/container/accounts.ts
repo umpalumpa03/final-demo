@@ -29,10 +29,16 @@ import {
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { getAccountSections } from '../config/accounts.config';
 import { AccountsService } from 'apps/tia-frontend/src/app/shared/services/accounts/accounts.service';
+import { DismissibleAlerts } from '../../../../../../shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
 
 @Component({
   selector: 'app-accounts-page',
-  imports: [CommonModule, AccountsListComponent, CreateAccountComponent],
+  imports: [
+    CommonModule,
+    AccountsListComponent,
+    CreateAccountComponent,
+    DismissibleAlerts,
+  ],
   templateUrl: './accounts.html',
   styleUrl: './accounts.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -69,6 +75,7 @@ export class Accounts implements OnInit {
     .pipe(shareReplay(1));
 
   protected accountForm = signal<FormGroup>(this.createAccountForm());
+  protected showSuccessAlert = signal<boolean>(false);
 
   private createAccountForm(): FormGroup {
     return this.fb.group({
@@ -116,5 +123,13 @@ export class Accounts implements OnInit {
         friendlyName: data.friendlyName,
       }),
     );
+  }
+
+  public handleRenameSuccess(): void {
+    this.showSuccessAlert.set(true);
+  }
+
+  public handleAlertDismissed(): void {
+    this.showSuccessAlert.set(false);
   }
 }

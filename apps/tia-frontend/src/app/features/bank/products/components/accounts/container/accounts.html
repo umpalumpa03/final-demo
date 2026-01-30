@@ -11,6 +11,7 @@
     (transfer)="handleTransfer($event)"
     (retry)="handleRetry()"
     (renameAccount)="handleRenameAccount($event)"
+    (renameSuccess)="handleRenameSuccess()"
   />
 
   <app-create-account
@@ -21,4 +22,15 @@
     (closeModal)="handleCloseModal()"
     (submitForm)="handleCreateAccount(accountForm().value)"
   />
+
+  @if (showSuccessAlert()) {
+  <div class="accounts-page__alert">
+    <app-dismissible-alerts
+      [alertTitle]="'Success'"
+      [alertType]="'success'"
+      [alertMessage]="'Account name updated successfully'"
+      (dismissed)="handleAlertDismissed()"
+    />
+  </div>
+  }
 </div>

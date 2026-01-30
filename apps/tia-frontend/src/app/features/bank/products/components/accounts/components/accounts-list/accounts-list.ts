@@ -51,6 +51,7 @@ export class AccountsListComponent {
   public transfer = output<string>();
   public retry = output<void>();
   public renameAccount = output<{ accountId: string; friendlyName: string }>();
+  public renameSuccess = output<void>();
 
   public hasNoAccounts = computed(() => {
     const grouped = this.accountsGrouped();
@@ -96,5 +97,9 @@ export class AccountsListComponent {
     friendlyName: string;
   }): void {
     this.renameAccount.emit(data);
+  }
+
+  public handleRenameSuccess(): void {
+    this.renameSuccess.emit();
   }
 }

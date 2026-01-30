@@ -39,6 +39,7 @@ export class AccountCardViewComponent {
 
   public transfer = output<void>();
   public rename = output<string>();
+  public renameSuccess = output<void>();
 
   protected isEditing = signal<boolean>(false);
   protected newName = signal<string>('');
@@ -64,6 +65,7 @@ export class AccountCardViewComponent {
         this.isEditing.set(false);
         this.newName.set('');
         this.renamingAccountId.set(null);
+        this.renameSuccess.emit();
       }
     });
   }
@@ -78,26 +80,16 @@ export class AccountCardViewComponent {
     this.isEditing.set(true);
   }
 
-  public handleSave(): void {
+  public handleBlur(): void {
     const trimmedName = this.newName().trim();
     const currentName = this.account().friendlyName || this.account().name;
+
     if (trimmedName && trimmedName !== currentName) {
       this.renamingAccountId.set(this.account().id);
       this.rename.emit(trimmedName);
+    } else {
+      this.isEditing.set(false);
+      this.newName.set('');
     }
-  }
-
-  public handleCancel(): void {
-    this.isEditing.set(false);
-    this.newName.set('');
-  }
-
-  public isSaveDisabled(): boolean {
-    const trimmedName = this.newName().trim();
-    return (
-      this.isRenaming() ||
-      !trimmedName ||
-      trimmedName === (this.account().friendlyName || this.account().name)
-    );
   }
 }

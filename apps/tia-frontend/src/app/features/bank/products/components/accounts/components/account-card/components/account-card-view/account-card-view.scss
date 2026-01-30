@@ -13,8 +13,8 @@
       width: 4.8rem;
       height: 4.8rem;
       @include flex-center();
-      background: $gray-50;
-      border-radius: 0.8rem;
+      background: $blue-100;
+      border-radius: 50%;
       flex-shrink: 0;
 
       img {
@@ -25,6 +25,8 @@
 
     &-info {
       flex: 1;
+      min-height: 5rem;
+      @include flex-center(column, flex-start, flex-start);
 
       &-title {
         @include flex-center(row, flex-start);
@@ -69,12 +71,10 @@
       }
 
       &-edit {
-        @include display-flex(column, wrap);
-        gap: 0.5rem;
-        width: 100%;
-
         &-input {
           width: 100%;
+          max-width: 30rem;
+          margin-bottom: 0.25rem;
         }
 
         &-buttons {
@@ -85,7 +85,7 @@
         &-error {
           @include font-arimo(400, 1.2rem, 1.4);
           color: $red-600;
-          margin: 0;
+          margin: 0.5rem 0 0 0;
           padding: 0.5rem;
           background: $red-50;
           border-radius: 0.4rem;
@@ -151,7 +151,7 @@
 
   &__details {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
     gap: 1rem;
     margin-bottom: 1.25rem;
     padding: 1rem 0;
@@ -159,7 +159,7 @@
     border-bottom: 0.1rem solid $gray-200;
 
     &-item {
-      @include flex-center(column, flex-start, flex-start);
+      @include flex-center(row, space-between, flex-start);
       gap: 0.25rem;
 
       &-label {
