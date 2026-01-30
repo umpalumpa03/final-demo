@@ -70,6 +70,7 @@ describe('MailCard', () => {
     const event = new Event('click');
 
     component.onDelete(event);
+    component.onConfirmDelete();
 
     expect(spy).toHaveBeenCalledWith(1);
   });
