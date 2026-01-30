@@ -5,6 +5,7 @@ import { catchError, map, mergeMap, of, withLatestFrom } from 'rxjs';
 import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillActions } from './paybill.actions';
 import { selectSelectedProviderId } from './paybill.selectors';
+import { ProceedPaymentResponse } from '../models/paybill.model';
 
 export const loadCategories = createEffect(
   (actions$ = inject(Actions), paybillService = inject(PaybillService)) => {
@@ -69,10 +70,57 @@ export const checkBill = createEffect(
       mergeMap(({ serviceId, accountNumber }) =>
         paybillService.checkBill(serviceId, accountNumber).pipe(
           map((details) => PaybillActions.checkBillSuccess({ details })),
-          catchError((err) => of(PaybillActions.checkBillFailure({ error: err.message })))
-        )
-      )
+          catchError((err) =>
+            of(PaybillActions.checkBillFailure({ error: err.message })),
+          ),
+        ),
+      ),
     );
   },
-  { functional: true }
+  { functional: true },
+);
+
+export const proceedPayment = createEffect(
+  (
+    actions$ = inject(Actions),
+    paybillService = inject(PaybillService),
+    store = inject(Store),
+  ) => {
+    return actions$.pipe(
+      ofType(PaybillActions.proceedPayment),
+      mergeMap(({ payload }) =>
+        paybillService.payBill(payload).pipe(
+          map((response: ProceedPaymentResponse) => {
+            if (payload.amount >= 50 && response.verify?.challengeId) {
+              return PaybillActions.setPaymentStep({ step: 'OTP' });
+            }
+            return PaybillActions.setPaymentStep({ step: 'SUCCESS' });
+          }),
+          catchError((error) =>
+            of(PaybillActions.proceedPaymentFailure({ error: error.message })),
+          ),
+        ),
+      ),
+    );
+  },
+  { functional: true },
+);
+
+export const confirmPayment = createEffect(
+  (actions$ = inject(Actions), paybillService = inject(PaybillService)) => {
+    return actions$.pipe(
+      ofType(PaybillActions.confirmPayment),
+      mergeMap(({ payload }) =>
+        paybillService.verifyPayment(payload).pipe(
+          map((response) => {
+            return PaybillActions.setPaymentStep({ step: 'SUCCESS' });
+          }),
+          catchError((error) =>
+            of(PaybillActions.confirmPaymentFailure({ error: error.message })),
+          ),
+        ),
+      ),
+    );
+  },
+  { functional: true },
 );

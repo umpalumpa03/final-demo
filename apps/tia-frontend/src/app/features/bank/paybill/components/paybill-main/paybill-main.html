@@ -16,7 +16,7 @@ activeProvider();
     <app-paybill-otp-verification
       [provider]="provider"
       [summary]="paymentPayload()!"
-      (verify)="onOtpVerified()"
+      (verify)="onOtpVerified($event)"
       (cancel)="onBackToDetails()"
     />
     } } }@else if (category) { @defer (on immediate) {

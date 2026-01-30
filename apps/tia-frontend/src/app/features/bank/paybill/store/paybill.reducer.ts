@@ -13,6 +13,7 @@ export const initialPaybillState: PaybillState = {
   verifiedDetails: null,
   currentStep: 'DETAILS',
   paymentPayload: null,
+  challengeId: null,
 };
 
 export const paybillReducer = createReducer(
@@ -73,6 +74,7 @@ export const paybillReducer = createReducer(
     providers: [],
     currentStep: 'DETAILS',
     paymentPayload: null,
+    challengeId:null
   })),
 
   on(PaybillActions.checkBill, (state) => ({
@@ -115,4 +117,11 @@ export const paybillReducer = createReducer(
     ...state,
     paymentPayload: data,
   })),
+
+  on(PaybillActions.proceedPaymentSuccess, (state, { response }) => ({
+    ...state,
+    challengeId: response.verify?.challengeId ?? null,
+    loading: false,
+  })),
+
 );

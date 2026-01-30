@@ -28,6 +28,7 @@ export interface PaybillState {
   verifiedDetails: BillDetails | null;
   currentStep: string;
   paymentPayload: PaybillPayload | null;
+  challengeId: string | null;
 }
 
 export interface BillDetails {
@@ -46,4 +47,28 @@ export interface BillDetails {
 export interface PaybillPayload {
   accountNumber: string;
   amount: number;
+}
+
+export interface VerifyChallenge {
+  challengeId: string;
+  method: string;
+}
+
+export interface ProceedPaymentResponse {
+  verify?: VerifyChallenge;
+  transferType: string;
+}
+
+export interface ConfirmPaymentPayload {
+  challengeId: string;
+  code: string;
+}
+
+export interface ProceedPaymentPayload {
+  serviceId: string;
+  identification: {
+    accountNumber: string;
+  };
+  amount: number;
+  senderAccountId: string;
 }

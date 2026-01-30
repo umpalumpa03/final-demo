@@ -1,33 +1,42 @@
-<app-basic-card class="paybill-card" maxWidth="91.2rem" padding="2.4rem">
+<app-basic-card class="paybill-card" maxWidth="100%" padding="2.4rem">
   <header class="otp-container__header">
     <app-library-title
-      [title]="otpTitle"
-      [subtitle]="otpSubtitle"
+      [title]="otpConfig.otpTitle"
+      [subtitle]="otpConfig.otpSubtitle"
     ></app-library-title>
   </header>
 
   <app-alert-types-with-icons
     alertType="information"
-    [alertMessage]="otpAlert"
+    [alertMessage]="otpConfig.otpAlert"
   ></app-alert-types-with-icons>
 
   <app-payment-summary
-    [serviceName]="provider()?.name!"
+    [serviceName]="provider()?.name || ''"
     [accountNumber]="summary().accountNumber"
     [amount]="summary().amount"
   ></app-payment-summary>
 
   <div class="otp-wrapper">
-    <lib-otp [(value)]="currentCode"></lib-otp>
+    <lib-otp [config]="otpConfig.inputConfig" [(value)]="currentCode"></lib-otp>
+
+    <div class="otp-resend">
+      <p class="otp-resend__text">Didn't receive code?</p>
+      <p class="otp-resend__button" (onClick)="resendCode.emit()">Resend</p>
+    </div>
   </div>
 
   <footer class="otp-actions">
-    <app-button variant="secondary" (click)="cancelPayment.emit()"
+    <app-button
+      variant="secondary"
+      (click)="cancelPayment.emit()"
+      [fullWidth]="true"
       >Cancel</app-button
     >
     <app-button
-      (click)="verify.emit(currentCode())"
-      [isDisabled]="currentCode().length < 6"
+      (click)="handleVerify()"
+      [isDisabled]="currentCode().length < 4"
+      [fullWidth]="true"
     >
       Verify & Continue
     </app-button>

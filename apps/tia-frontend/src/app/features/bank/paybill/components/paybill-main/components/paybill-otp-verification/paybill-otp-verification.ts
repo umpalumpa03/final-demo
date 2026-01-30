@@ -16,6 +16,7 @@ import {
   PaybillPayload,
   PaybillProvider,
 } from '../../../../models/paybill.model';
+import { otpConfiguration } from './config/otp.config';
 
 @Component({
   selector: 'app-paybill-otp-verification',
@@ -37,12 +38,9 @@ export class PaybillOtpVerification {
 
   public readonly verify = output<string>();
   public readonly cancelPayment = output<void>();
+  public readonly resendCode = output<void>();
 
-  protected readonly otpTitle = 'OTP Verification';
-  protected readonly otpSubtitle =
-    'Enter the 6-digit code sent to your registered mobile number';
-  protected readonly otpAlert =
-    'For transactions above $50, we require additional verification for your security.';
+  protected readonly otpConfig = otpConfiguration;
 
   public currentCode = model('');
   public onOtpComplete(code: string): void {
@@ -50,7 +48,7 @@ export class PaybillOtpVerification {
   }
 
   public handleVerify(): void {
-    if (this.currentCode().length === 6) {
+    if (this.currentCode().length === 4) {
       this.verify.emit(this.currentCode());
     }
   }
