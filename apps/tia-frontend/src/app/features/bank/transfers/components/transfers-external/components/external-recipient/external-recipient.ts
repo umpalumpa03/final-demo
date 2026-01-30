@@ -24,6 +24,7 @@ import {
   getSuccessMessage,
 } from '../../../../utils/transfers-external.utils';
 import { RecipientType } from '../../../../models/transfers.state.model';
+import { TransferStore } from '../../../../store/transfers.store';
 
 @Component({
   selector: 'app-external-recipient',
@@ -38,7 +39,7 @@ export class ExternalRecipient implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly validationService = inject(TransferValidationService);
   private readonly destroyRef = inject(DestroyRef);
-
+  private readonly transferStore = inject(TransferStore);
   public readonly recipientInputConfig = signal<InputConfig>(
     getRecipientInputConfig(this.translate),
   );
@@ -101,7 +102,17 @@ export class ExternalRecipient implements OnInit {
   }
 
   public onVerify(): void {
-    if (this.recipientInput.valid) {
+    if (this.recipientInput.valid && this.recipientInput.value) {
+      const type = this.validationService.identifyRecipientType(
+        this.recipientInput.value,
+      );
+
+      if (type) {
+        this.transferStore.lookupRecipient({
+          value: this.recipientInput.value,
+          type,
+        });
+      }
     }
   }
 }
