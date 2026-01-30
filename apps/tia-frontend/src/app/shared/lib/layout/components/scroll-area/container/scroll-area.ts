@@ -41,12 +41,28 @@ export class ScrollArea {
     () => this.scrollbar() === 'visible',
   );
 
+  private hasEmittedForCurrentState = false;
+
   constructor() {
     effect(() => {
       const el = this.viewport()?.nativeElement;
-      if(el!.scrollHeight == el!.clientHeight && !this.isLoading()) {
-        this.checkScrollPosition(el!);
+      const isLoading = this.isLoading();
+
+      if (isLoading) {
+        this.hasEmittedForCurrentState = false;
+        return;
       }
+
+      setTimeout(() => {
+        if (el && !isLoading && !this.hasEmittedForCurrentState) {
+          const isNotScrollable = el.scrollHeight <= el.clientHeight;
+
+          if (isNotScrollable) {
+            this.hasEmittedForCurrentState = true;
+            this.scrollBottom.emit();
+          }
+        }
+      }, 0);
     });
   }
 
@@ -57,6 +73,7 @@ export class ScrollArea {
   public onScroll(): void {
     const el = this.viewport()?.nativeElement;
     if (el && !this.isLoading()) {
+      this.hasEmittedForCurrentState = false;
       this.checkScrollPosition(el);
     }
   }
