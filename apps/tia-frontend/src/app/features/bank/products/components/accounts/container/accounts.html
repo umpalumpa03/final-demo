@@ -11,4 +11,13 @@
     (retry)="handleRetry()"
     (renameAccount)="handleRenameAccount($event)"
   />
+
+  <app-create-account
+    [isOpen]="(isCreateModalOpen$ | async) || false"
+    [accountForm]="accountForm()"
+    [accountTypes]="accountTypeValues"
+    [currencies]="(currencyValues | async) ?? []"
+    (closeModal)="handleCloseModal()"
+    (submitForm)="handleCreateAccount(accountForm().value)"
+  />
 </div>

@@ -186,6 +186,39 @@ describe('AuthService', () => {
     await Promise.resolve();
   });
 
+  it('createNewPassword posts with Authorization header when access token present', async () => {
+    tokenSpy.accessToken = 'access-xyz';
+
+    service.createNewPassword('newpass').subscribe();
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/create-new-password`);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer access-xyz');
+    expect(req.request.body).toEqual({ password: 'newpass' });
+    req.flush({});
+    await Promise.resolve();
+  });
+
+  it('resetPhoneOtp posts when challengeId set', async () => {
+    service.setChellangeId('cid-123');
+
+    service.resetPhoneOtp().subscribe();
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/mfa/otp-resend`);
+    expect(req.request.body).toEqual({ challengeId: 'cid-123' });
+    req.flush({});
+    await Promise.resolve();
+  });
+
+  it('refreshTokenPostRequest sets errorMessage on error response', async () => {
+    service.refreshTokenPostRequest({ refresh_token: 'r' } as any).subscribe({ error: () => {} });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/refresh`);
+    req.flush({}, { status: 500, statusText: 'Server Error' });
+
+    await Promise.resolve();
+    expect(service.errorMessage()).toBe(true);
+  });
+
   it('logout clears tokens and navigates', async () => {
     service.logout().subscribe();
 
