@@ -6,7 +6,11 @@ import { environment } from '../../../../../../environments/environment';
 import { LoanPurpose } from '../models/loan-request.model';
 import {
   IFullPrepaymentResponse,
+  IInitiatePrepaymentRequest,
+  IInitiatePrepaymentResponse,
   IPrepaymentCalcResponse,
+  IVerifyPrepaymentRequest,
+  IVerifyPrepaymentResponse,
   PrepaymentOption,
 } from '../models/prepayment.model';
 
@@ -72,6 +76,24 @@ export class LoansService {
   ): Observable<IFullPrepaymentResponse> {
     return this.http.get<IFullPrepaymentResponse>(
       `${this.loansApiUrl}/calculate-full-prepayment/{loanId}?loanId=${loanId}`,
+    );
+  }
+
+  public initiatePrepayment(
+    payload: IInitiatePrepaymentRequest,
+  ): Observable<IInitiatePrepaymentResponse> {
+    return this.http.post<IInitiatePrepaymentResponse>(
+      `${this.loansApiUrl}/loan-prepayment`,
+      payload,
+    );
+  }
+
+  public verifyPrepayment(
+    payload: IVerifyPrepaymentRequest,
+  ): Observable<IVerifyPrepaymentResponse> {
+    return this.http.post<IVerifyPrepaymentResponse>(
+      `${this.loansApiUrl}/verify-prepayment`,
+      payload,
     );
   }
 }

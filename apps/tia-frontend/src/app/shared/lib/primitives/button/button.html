@@ -4,6 +4,7 @@
   [class.button--loading]="isLoading()"
   [class.button--full-width]="fullWidth()"
   [disabled]="isDisabled() || isLoading()"
+  [style.--btn-custom-color]="isHexColor() ? customColor() : ''"
 >
   @if (isLoading()) {
   <span class="button__spinner"></span>

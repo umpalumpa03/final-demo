@@ -8,6 +8,8 @@ export interface AccountsState {
   isCreating: boolean;
   createError: string | null;
   isCreateModalOpen: boolean;
+  isUpdatingFriendlyName: boolean;
+  updateFriendlyNameError: string | null;
 }
 
 export const initialAccountsState: AccountsState = {
@@ -18,4 +20,6 @@ export const initialAccountsState: AccountsState = {
   isCreating: false,
   createError: null,
   isCreateModalOpen: false,
+  isUpdatingFriendlyName: false,
+  updateFriendlyNameError: null,
 };
