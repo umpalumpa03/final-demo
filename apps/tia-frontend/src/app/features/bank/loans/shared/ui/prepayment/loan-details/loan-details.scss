@@ -26,6 +26,7 @@
         &-text {
             .icon {
                 @include display-flex;
+                align-items: center;
                 gap: 0.8rem;
 
                 img {

@@ -3,30 +3,27 @@
         <div class="otp-step__header-text">
             <div class="icon">
                 <img src="./images/svg/feature-loans/prepayment.svg" alt="OTP">
-                <h3 class="otp-step__title">Verify OTP</h3>
+                <h3 class="otp-step__title">{{ 'loans.prepayment_wizard.step_otp.title' | translate }}</h3>
             </div>
-            <p class="otp-step__subtitle">Enter the OTP sent to your registered mobile number</p>
+            <p class="otp-step__subtitle">{{ 'loans.prepayment_wizard.step_otp.subtitle' | translate }}</p>
         </div>
     </header>
 
     <div class="otp-step__body">
         <div class="otp-step__form" [formGroup]="form">
-            <h4 class="otp-step__section-title">Enter OTP</h4>
+            <h4 class="otp-step__section-title">{{ 'loans.prepayment_wizard.step_otp.section' | translate }}</h4>
+            <lib-text-input formControlName="otp" [config]="inputConfig"></lib-text-input>
 
-            <lib-text-input formControlName="otp" [config]="inputConfig">
-            </lib-text-input>
-
-
-            <app-button variant="default" [icon]="isLoading() ? null : './calculate.svg'" (click)="onSubmit()"
-                [isDisabled]="form.invalid || isLoading()" [isLoading]="isLoading()">
-
-                Verify and Pay
+            <app-button variant="default" (click)="onSubmit()" [isDisabled]="form.invalid || isLoading()"
+                [isLoading]="isLoading()">
+                {{ 'loans.prepayment_wizard.step_otp.button' | translate }}
             </app-button>
         </div>
     </div>
 
     <footer class="otp-step__footer">
-        <app-button variant="outline" (click)="cancel.emit()">Cancel</app-button>
-
+        <app-button variant="outline" (click)="cancel.emit()">
+            {{ 'loans.buttons.cancel' | translate }}
+        </app-button>
     </footer>
 </div>

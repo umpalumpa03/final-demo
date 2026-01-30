@@ -11,10 +11,18 @@ import { CommonModule } from '@angular/common';
 import { CLOSE_VARIANT } from '../../../config/loan-details.config';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { PurposeFormatPipe } from '../../../pipes/purpose.pipe';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-loan-details',
-  imports: [UiModal, ButtonComponent, CommonModule, Spinner, PurposeFormatPipe],
+  imports: [
+    UiModal,
+    ButtonComponent,
+    CommonModule,
+    Spinner,
+    PurposeFormatPipe,
+    TranslatePipe,
+  ],
   templateUrl: './loan-details.html',
   styleUrl: './loan-details.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

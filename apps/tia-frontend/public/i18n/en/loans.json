@@ -1,10 +1,121 @@
 {
-    "title": "Loans",
-    "apply": "Apply for a Loan",
+  "dashboard": {
+    "title": "My Loans",
+    "description": "Manage your loan applications and track payments",
+    "apply": "Request New Loan",
     "details": "Loan Details",
-    "types": {
-        "personal": "Personal Loan",
-        "mortgage": "Mortgage Loan",
-        "auto": "Auto Loan"
+    "all": "All Loans ",
+    "approved": "Approved ",
+    "pending": "Pending ",
+    "declined": "Declined ",
+    "empty_state": "No approved loans found."
+  },
+  "request": {
+    "title": "Request New Loan",
+    "description": "Fill out the application form to request a new loan",
+    "details": {
+      "title": "Loan Details",
+      "amount": "Loan Amount",
+      "account": "Account to Receive Funds",
+      "term": "Loan Term (Months)",
+      "purpose": "Loan Purpose",
+      "date": "First Payment Date"
+    },
+    "address": {
+      "title": "Address Information",
+      "street": "Street Address",
+      "city": "City",
+      "region": "Region",
+      "postal": "Postal Code"
+    },
+    "person": {
+      "title": "Emergency Contact Person",
+      "name": "Full Name",
+      "relationship": "Relationship",
+      "number": "Phone Number",
+      "email": "Email Address *"
+    },
+    "review_box": {
+      "title": "Application Review",
+      "description": "Your loan application will be reviewed by our team. You'll receive a notification once it's been processed. Processing typically takes 1-3 business days."
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "submit": "Submit Application"
     }
+  },
+  "details": {
+    "title": "Loan Details",
+    "description": "View complete information about this loan",
+    "loading": "Loading loan details...",
+    "status_label": "Status",
+    "section_title": "Loan Information",
+    "fields": {
+      "amount": "Loan Amount",
+      "purpose": "Purpose",
+      "term": "Loan Term",
+      "rate": "Interest Rate",
+      "monthly": "Monthly Payment",
+      "balance": "Remaining Balance",
+      "next_payment": "Next Payment Date",
+      "app_date": "Application Date",
+      "account": "Linked Account",
+      "address": "Address"
+    },
+    "prepayment_promo": {
+      "title": "Prepayment Options",
+      "description": "Make a prepayment on your loan to reduce your balance or pay it off completely.",
+      "button": "Calculate Prepayment"
+    },
+    "months": "months",
+    "actions": {
+      "close": "Close"
+    }
+  },
+  "prepayment_wizard": {
+    "step_setup": {
+      "title": "Loan Prepayment",
+      "subtitle": "Select prepayment options and calculate",
+      "section": "Prepayment Options",
+      "button": "Calculate Prepayment"
+    },
+    "step_review": {
+      "title": "Prepayment Calculation",
+      "subtitle": "Review the prepayment details and proceed",
+      "section": "Prepayment Information",
+      "button": "Pay"
+    },
+    "step_otp": {
+      "title": "Verify OTP",
+      "subtitle": "Enter the OTP sent to your registered mobile number",
+      "section": "Enter OTP",
+      "alert_message": "OTP Sent to your registered mobile number",
+      "button": "Verify and Pay"
+    },
+    "actions": {
+      "cancel": "Cancel"
+    }
+  },
+  "buttons": {
+    "cancel": "Cancel",
+    "close": "Close"
+  },
+  "validation": {
+    "postal_error": "Invalid postal code.",
+    "phone_error": "Must be at least 9 digits (numbers only)"
+  },
+  "placeholders": {
+    "amount_ex": "5000",
+    "select_account": "Select account",
+    "select_term": "Select term",
+    "select_purpose": "Select purpose",
+    "street_ex": "123 Main Street",
+    "city_ex": "Tbilisi",
+    "region_ex": "Tbilisi Region",
+    "postal_ex": "0100",
+    "name_ex": "John Doe",
+    "relation_ex": "Brother",
+    "phone_ex": "591234567",
+    "email_ex": "john.doe@example.com"
+  }
 }
