@@ -2,6 +2,7 @@ import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { LOAN_ICONS } from '../config/loan-icons.config';
 import { LoanPurpose } from './loan-request.model';
 import { IPrepaymentCalcResponse, PrepaymentOption } from './prepayment.model';
+import { SimpleAlertType } from '@tia/shared/lib/alerts/shared/models/alert.models';
 
 export interface ILoan {
   id: string;
@@ -32,6 +33,8 @@ export interface ILoansState {
   calculationResult: IPrepaymentCalcResponse | null;
   activeChallengeId: string | null;
   actionLoading: boolean;
+  alertMessage: string | null;
+  alertType: SimpleAlertType | null;
 }
 
 export interface LoanUiState {

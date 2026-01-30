@@ -14,4 +14,6 @@ export const loansInitialState: ILoansState = {
   calculationResult: null,
   activeChallengeId: null,
   actionLoading: false,
+  alertMessage: null,
+  alertType: null,
 };

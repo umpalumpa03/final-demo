@@ -105,7 +105,7 @@ export const selectGelAccountOptions = createSelector(
   selectAccounts,
   (accounts) =>
     (accounts || [])
-      .filter((acc) => acc.currency === 'GEL' && acc.balance != 0)
+      .filter((acc) => acc.currency === 'GEL')
       .map((acc) => ({
         label: `${acc.friendlyName || acc.name} - ${acc.balance} ${acc.currency}`,
         value: acc.id,
@@ -120,4 +120,10 @@ export const selectSelectedLoanDetails = createSelector(
 export const selectLoanDetailsLoading = createSelector(
   selectLoansState,
   (state) => state.detailsLoading,
+);
+
+export const selectLoansAlert = createSelector(selectLoansState, (state) =>
+  state.alertMessage
+    ? { message: state.alertMessage, type: state.alertType }
+    : null,
 );

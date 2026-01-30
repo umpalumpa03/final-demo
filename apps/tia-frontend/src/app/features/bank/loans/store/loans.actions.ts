@@ -12,6 +12,7 @@ import {
   PrepaymentCalculationPayload,
   PrepaymentOption,
 } from '../shared/models/prepayment.model';
+import { SimpleAlertType } from '@tia/shared/lib/alerts/shared/models/alert.models';
 
 export const LoansActions = createActionGroup({
   source: 'Loans API',
@@ -58,7 +59,10 @@ export const LoansActions = createActionGroup({
     'Verify Prepayment Success': emptyProps(),
     'Verify Prepayment Failure': props<{ error: string }>(),
 
-    'Show Alert': props<{ message: string }>(),
+    'Show Alert': props<{
+      message: string;
+      alertType: SimpleAlertType;
+    }>(),
     'Start Closing Alert': emptyProps(),
     'Hide Alert': emptyProps(),
   },
