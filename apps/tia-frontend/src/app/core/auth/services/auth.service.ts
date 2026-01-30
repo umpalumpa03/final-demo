@@ -24,7 +24,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 import { TokenService } from './token.service';
-import { UserActivityService } from './user-activity.service';
 import { IRegistrationForm } from '../../../features/storybook/components/forms/models/contact-forms.model';
 import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { Routes } from '../models/tokens.model';
@@ -35,7 +34,6 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private tokenService = inject(TokenService);
-  private userActivityService = inject(UserActivityService);
   private destroyRef = inject(DestroyRef);
   private challengeId!: string;
   public isLoginLoading = signal<boolean>(false);
@@ -43,18 +41,6 @@ export class AuthService {
   public successMessage = signal<boolean | null>(false);
   public infoMessage = signal<boolean | null>(false);
 
-  constructor() {
-    this.userActivityService.idle$
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap((isIdle) => {
-          if (isIdle && this.tokenService.accessToken) {
-            this.handleIdleLogout();
-          }
-        }),
-      )
-      .subscribe();
-  }
 
   public setChellangeId(id: string) {
     this.challengeId = id;
@@ -117,7 +103,6 @@ export class AuthService {
         tap((res) => {
           if (res.success === true) {
             this.tokenService.clearAuthToken();
-            this.userActivityService.stopMonitoring();
             this.router.navigate([Routes.SIGN_IN]);
           }
         }),
@@ -130,7 +115,6 @@ export class AuthService {
         takeUntilDestroyed(this.destroyRef),
         catchError((err) => {
           this.tokenService.clearAuthToken();
-          this.userActivityService.stopMonitoring();
           this.router.navigate([Routes.SIGN_IN]);
           return throwError(() => err);
         }),
@@ -148,7 +132,6 @@ export class AuthService {
           if (res.access_token && res.refresh_token) {
             this.tokenService.setAccessToken(res.access_token);
             this.tokenService.setRefreshToken(res.refresh_token);
-            this.userActivityService.startMonitoring();
             this.router.navigate([Routes.DASHBOARD]);
           }
         }),
@@ -291,9 +274,5 @@ export class AuthService {
       { challengeId },
       { headers },
     );
-  }
-
-  public setIdleTimeout(minutes: number): void {
-    this.userActivityService.setIdleTimeout(minutes);
   }
 }
