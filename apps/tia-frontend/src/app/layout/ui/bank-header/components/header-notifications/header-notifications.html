@@ -21,11 +21,19 @@
       variant="destructive"
       [fullWidth]="true"
       icon="trash-icon.svg"
-      title="btn.label"
       style="width: 100%"
       class="header-notifications__header__button"
     >
       Delete ({{ selectedItems().length }})
+    </app-button>
+    <app-button
+      variant="default"
+      [fullWidth]="true"
+      icon="email-icon.svg"
+      style="width: 100%"
+      class="header-notifications__header__button"
+    >
+      Mark as Read ({{ selectedItems().length }})
     </app-button>
     }
   </header>
