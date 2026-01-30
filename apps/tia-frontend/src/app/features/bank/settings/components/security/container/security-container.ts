@@ -7,6 +7,8 @@ import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-typ
 import { AlertType } from '@tia/shared/lib/alerts/shared/models/alert.models';
 import { TranslateService } from '@ngx-translate/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { SECURITY_FORM_CONFIG } from '../shared/config/security.config';
+
 
 const passwordMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const form = control as FormGroup;
@@ -42,6 +44,24 @@ export class SecurityContainer {
     newPassword: ['', [Validators.required, Validators.minLength(8)]],
     confirmPassword: ['', [Validators.required]],
   }, { validators: passwordMatchValidator });
+
+  readonly currentPasswordConfig = computed(() => ({
+    label: this.translate.instant(SECURITY_FORM_CONFIG.currentPassword.labelKey),
+    placeholder: this.translate.instant(SECURITY_FORM_CONFIG.currentPassword.placeholderKey),
+    required: true,
+  }));
+
+  readonly newPasswordConfig = computed(() => ({
+    label: this.translate.instant(SECURITY_FORM_CONFIG.newPassword.labelKey),
+    placeholder: this.translate.instant(SECURITY_FORM_CONFIG.newPassword.placeholderKey),
+    required: true,
+  }));
+
+  readonly confirmPasswordConfig = computed(() => ({
+    label: this.translate.instant(SECURITY_FORM_CONFIG.confirmPassword.labelKey),
+    placeholder: this.translate.instant(SECURITY_FORM_CONFIG.confirmPassword.placeholderKey),
+    required: true,
+  }));
 
   public readonly alertType = computed<AlertType | null>(() => {
     if (this.error()) {

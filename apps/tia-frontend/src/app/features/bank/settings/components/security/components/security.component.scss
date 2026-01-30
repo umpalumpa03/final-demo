@@ -6,8 +6,7 @@
   width: 100%;
 
   &__header {
-    @include display-flex();
-    align-items: flex-start;
+    @include flex-center(row, start, center);
     gap: 1.6rem;
     margin-bottom: 2.4rem;
   }
@@ -56,7 +55,6 @@
 
   &__footer {
     @include flex-center();
-    justify-content: flex-end;
     gap: 1.2rem;
     margin-top: 2.4rem;
   }
