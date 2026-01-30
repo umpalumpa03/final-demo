@@ -3,6 +3,7 @@ import { AccountCardViewComponent } from './account-card-view';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { provideMockStore } from '@ngrx/store/testing';
 import { AccountType } from '../../../../../../../../../shared/models/accounts/accounts.model';
+import { provideTranslateService } from '@ngx-translate/core';
 
 describe('AccountCardViewComponent', () => {
   let component: AccountCardViewComponent;
@@ -28,7 +29,7 @@ describe('AccountCardViewComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AccountCardViewComponent],
-      providers: [provideMockStore()],
+      providers: [provideMockStore(), provideTranslateService()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccountCardViewComponent);
@@ -73,23 +74,23 @@ describe('AccountCardViewComponent', () => {
     component['newName'].set('Test Account');
     component.handleSave();
     expect(spy).not.toHaveBeenCalled();
-    
+
     component['newName'].set('   ');
     component.handleSave();
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('should reset state when handleCancel is called', () => {
+  it('should reset state when saving with same or empty name', () => {
     component['isEditing'].set(true);
-    component['newName'].set('New Name');
-    component.handleCancel();
+    component['newName'].set('Test Account');
+    component.handleSave();
     expect(component['isEditing']()).toBe(false);
     expect(component['newName']()).toBe('');
   });
 
   it('should compute displayName from friendlyName or name', () => {
     expect(component['displayName']()).toBe('Test Account');
-    
+
     TestBed.runInInjectionContext(() => {
       fixture.componentRef.setInput('account', {
         ...mockAccount,
@@ -97,5 +98,60 @@ describe('AccountCardViewComponent', () => {
       });
     });
     expect(component['displayName']()).toBe('Test Account');
+  });
+
+  it('should handle blur with valid name change', () => {
+    const spy = vi.spyOn(component.rename, 'emit');
+    component['isEditing'].set(true);
+    component['newName'].set('New Name via Blur');
+    component.handleBlur();
+    expect(spy).toHaveBeenCalledWith('New Name via Blur');
+    expect(component['renamingAccountId']()).toBe('1');
+  });
+
+  it('should handle blur with same name', () => {
+    const spy = vi.spyOn(component.rename, 'emit');
+    component['isEditing'].set(true);
+    component['newName'].set('Test Account');
+    component.handleBlur();
+    expect(spy).not.toHaveBeenCalled();
+    expect(component['isEditing']()).toBe(false);
+    expect(component['newName']()).toBe('');
+  });
+
+  it('should handle blur with empty name', () => {
+    const spy = vi.spyOn(component.rename, 'emit');
+    component['isEditing'].set(true);
+    component['newName'].set('   ');
+    component.handleBlur();
+    expect(spy).not.toHaveBeenCalled();
+    expect(component['isEditing']()).toBe(false);
+  });
+
+  it('should reset editing state after successful rename', () => {
+    const successSpy = vi.spyOn(component.renameSuccess, 'emit');
+    component['isEditing'].set(true);
+    component['renamingAccountId'].set('1');
+
+    TestBed.runInInjectionContext(() => {
+      fixture.componentRef.setInput('isRenaming', false);
+      fixture.componentRef.setInput('renameError', null);
+    });
+    fixture.detectChanges();
+
+    expect(successSpy).toHaveBeenCalled();
+  });
+
+  it('should not reset editing state when there is an error', () => {
+    component['isEditing'].set(true);
+    component['renamingAccountId'].set('1');
+
+    TestBed.runInInjectionContext(() => {
+      fixture.componentRef.setInput('isRenaming', false);
+      fixture.componentRef.setInput('renameError', 'Error occurred');
+    });
+    fixture.detectChanges();
+
+    expect(component['isEditing']()).toBe(true);
   });
 });
