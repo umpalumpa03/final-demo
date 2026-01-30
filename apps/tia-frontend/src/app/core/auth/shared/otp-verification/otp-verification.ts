@@ -29,7 +29,7 @@ import { OtpResponse } from '../../models/authRequest.models';
 })
 export class OtpVerification {
   private fb = inject(FormBuilder);
-
+  
   public isLoading = input<boolean>(false);
   public title = input<string>();
   public subText = input<string>();

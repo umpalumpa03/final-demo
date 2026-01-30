@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { of } from 'rxjs';
 import { TokenService } from './token.service';
-import { UserActivityService } from './user-activity.service';
 import { environment } from '../../../../environments/environment';
 import { Routes } from '../models/tokens.model';
 
@@ -33,8 +32,6 @@ describe('AuthService', () => {
     };
 
     activitySpy = {
-      startMonitoring: vi.fn(),
-      stopMonitoring: vi.fn(),
       setIdleTimeout: vi.fn(),
       idle$: of(false),
     };
@@ -45,7 +42,6 @@ describe('AuthService', () => {
         AuthService,
         { provide: Router, useValue: routerSpy },
         { provide: TokenService, useValue: tokenSpy },
-        { provide: UserActivityService, useValue: activitySpy },
       ],
     });
 
@@ -101,7 +97,6 @@ describe('AuthService', () => {
     await Promise.resolve();
     expect(tokenSpy.setAccessToken).toHaveBeenCalledWith('a');
     expect(tokenSpy.setRefreshToken).toHaveBeenCalledWith('r');
-    expect(activitySpy.startMonitoring).toHaveBeenCalled();
     expect(routerSpy.navigate).toHaveBeenCalledWith([Routes.DASHBOARD]);
   });
 
@@ -227,7 +222,6 @@ describe('AuthService', () => {
 
     await Promise.resolve();
     expect(tokenSpy.clearAuthToken).toHaveBeenCalled();
-    expect(activitySpy.stopMonitoring).toHaveBeenCalled();
     expect(routerSpy.navigate).toHaveBeenCalledWith([Routes.SIGN_IN]);
   });
 
@@ -254,10 +248,5 @@ describe('AuthService', () => {
       },
     });
     await Promise.resolve();
-  });
-
-  it('setIdleTimeout delegates to userActivityService', () => {
-    service.setIdleTimeout(5);
-    expect(activitySpy.setIdleTimeout).toHaveBeenCalledWith(5);
   });
 });

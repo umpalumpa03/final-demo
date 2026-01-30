@@ -60,7 +60,7 @@ export class LoansEffects {
     ),
   );
 
-  loadPurposes$ = createEffect(() =>
+  public loadPurposes$ = createEffect(() =>
     this.actions$.pipe(
       ofType(LoansActions.loadPurposes),
       switchMap(() =>
@@ -74,7 +74,7 @@ export class LoansEffects {
     ),
   );
 
-  loadPrepaymentOptions$ = createEffect(() =>
+  public loadPrepaymentOptions$ = createEffect(() =>
     this.actions$.pipe(
       ofType(LoansActions.loadPrepaymentOptions),
       switchMap(() =>
@@ -176,6 +176,20 @@ export class LoansEffects {
           ]),
           catchError((error) =>
             of(LoansActions.verifyPrepaymentFailure({ error: error.message })),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  public loadLoanDetails$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.loadLoanDetails),
+      switchMap(({ id }) =>
+        this.loansService.getLoanById(id).pipe(
+          map((details) => LoansActions.loadLoanDetailsSuccess({ details })),
+          catchError((error) =>
+            of(LoansActions.loadLoanDetailsFailure({ error: error.message })),
           ),
         ),
       ),

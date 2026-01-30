@@ -1,0 +1,6 @@
+{
+  "title": "Notifications",
+  "message": "unread",
+  "errorMessage": "Empty Notifications",
+  "errorDescription": "There are no notifications"
+}

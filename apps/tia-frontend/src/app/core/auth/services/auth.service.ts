@@ -24,7 +24,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 import { TokenService } from './token.service';
-import { UserActivityService } from './user-activity.service';
 import { IRegistrationForm } from '../../../features/storybook/components/forms/models/contact-forms.model';
 import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { Routes } from '../models/tokens.model';
@@ -35,26 +34,13 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private tokenService = inject(TokenService);
-  private userActivityService = inject(UserActivityService);
   private destroyRef = inject(DestroyRef);
   private challengeId!: string;
   public isLoginLoading = signal<boolean>(false);
   public errorMessage = signal<boolean | null>(false);
   public successMessage = signal<boolean | null>(false);
   public infoMessage = signal<boolean | null>(false);
-
-  constructor() {
-    this.userActivityService.idle$
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap((isIdle) => {
-          if (isIdle && this.tokenService.accessToken) {
-            this.handleIdleLogout();
-          }
-        }),
-      )
-      .subscribe();
-  }
+  private baseUrl = `${environment.apiUrl}/auth`;
 
   public setChellangeId(id: string) {
     this.challengeId = id;
@@ -66,36 +52,31 @@ export class AuthService {
 
   public loginPostRequest(user: ILoginRequest): Observable<IloginResponse> {
     this.isLoginLoading.set(true);
-    return this.http
-      .post<IloginResponse>(`${environment.apiUrl}/auth/login`, user)
-      .pipe(
-        tap((res) => {
-          if (res.status === 'mfa_required') {
-            this.setChellangeId(res.challengeId!);
-            this.router.navigate([Routes.OTP_SIGN_IN]);
-          }
+    return this.http.post<IloginResponse>(`${this.baseUrl}/login`, user).pipe(
+      tap((res) => {
+        if (res.status === 'mfa_required') {
+          this.setChellangeId(res.challengeId!);
+          this.router.navigate([Routes.OTP_SIGN_IN]);
+        }
 
-          if (res.status === 'phone_verification_required') {
-            this.tokenService.setVerifyToken(res.verification_token!);
-            this.router.navigate([Routes.PHONE]);
-          }
-        }),
-        catchError((err) => {
-          this.errorMessage.set(true);
-          return throwError(() => err);
-        }),
-        finalize(() => this.isLoginLoading.set(false)),
-      );
+        if (res.status === 'phone_verification_required') {
+          this.tokenService.setVerifyToken(res.verification_token!);
+          this.router.navigate([Routes.PHONE]);
+        }
+      }),
+      catchError((err) => {
+        this.errorMessage.set(true);
+        return throwError(() => err);
+      }),
+      finalize(() => this.isLoginLoading.set(false)),
+    );
   }
 
   public refreshTokenPostRequest(
     refreshToken: IRefreshTokenRequest,
   ): Observable<IMfaVerifyResponse> {
     return this.http
-      .post<IMfaVerifyResponse>(
-        `${environment.apiUrl}/auth/refresh`,
-        refreshToken,
-      )
+      .post<IMfaVerifyResponse>(`${this.baseUrl}/refresh`, refreshToken)
       .pipe(
         tap((res) => {
           if (res.access_token && res.refresh_token) {
@@ -111,17 +92,14 @@ export class AuthService {
   }
 
   public logout(): Observable<ILogoutResponse> {
-    return this.http
-      .post<ILogoutResponse>(`${environment.apiUrl}/auth/logout`, {})
-      .pipe(
-        tap((res) => {
-          if (res.success === true) {
-            this.tokenService.clearAuthToken();
-            this.userActivityService.stopMonitoring();
-            this.router.navigate([Routes.SIGN_IN]);
-          }
-        }),
-      );
+    return this.http.post<ILogoutResponse>(`${this.baseUrl}/logout`, {}).pipe(
+      tap((res) => {
+        if (res.success === true) {
+          this.tokenService.clearAuthToken();
+          this.router.navigate([Routes.SIGN_IN]);
+        }
+      }),
+    );
   }
 
   private handleIdleLogout(): void {
@@ -130,7 +108,6 @@ export class AuthService {
         takeUntilDestroyed(this.destroyRef),
         catchError((err) => {
           this.tokenService.clearAuthToken();
-          this.userActivityService.stopMonitoring();
           this.router.navigate([Routes.SIGN_IN]);
           return throwError(() => err);
         }),
@@ -142,13 +119,12 @@ export class AuthService {
     this.isLoginLoading.set(true);
 
     return this.http
-      .post<IMfaVerifyResponse>(`${environment.apiUrl}/auth/mfa/verify`, verify)
+      .post<IMfaVerifyResponse>(`${this.baseUrl}/mfa/verify`, verify)
       .pipe(
         tap((res) => {
           if (res.access_token && res.refresh_token) {
             this.tokenService.setAccessToken(res.access_token);
             this.tokenService.setRefreshToken(res.refresh_token);
-            this.userActivityService.startMonitoring();
             this.router.navigate([Routes.DASHBOARD]);
           }
         }),
@@ -161,10 +137,7 @@ export class AuthService {
   }
 
   public signUpUser(userData: IRegistrationForm): Observable<ISignUpResponse> {
-    return this.http.post<ISignUpResponse>(
-      `${environment.apiUrl}/auth/signup`,
-      userData,
-    );
+    return this.http.post<ISignUpResponse>(`${this.baseUrl}/signup`, userData);
   }
 
   public sendPhoneVerificationCode(
@@ -178,7 +151,7 @@ export class AuthService {
     });
 
     return this.http.post<SendVerificationResponse>(
-      `${environment.apiUrl}/auth/phone`,
+      `${this.baseUrl}/phone`,
       { phone: phoneNumber },
       { headers },
     );
@@ -194,7 +167,7 @@ export class AuthService {
 
     return this.http
       .post<OtpResponse>(
-        `${environment.apiUrl}/auth/phone/verify`,
+        `${this.baseUrl}/phone/verify`,
         { challengeId, code },
         { headers },
       )
@@ -217,7 +190,7 @@ export class AuthService {
   ): Observable<ForgotPasswordResponse> {
     const payload: ForgotPasswordRequest = { email };
     return this.http.post<ForgotPasswordResponse>(
-      `${environment.apiUrl}/auth/forgot-password`,
+      `${this.baseUrl}/forgot-password`,
       payload,
     );
   }
@@ -232,7 +205,7 @@ export class AuthService {
     };
     return this.http
       .post<ForgotPasswordVerifyResponse>(
-        `${environment.apiUrl}/auth/forgot-password/verify`,
+        `${this.baseUrl}/forgot-password/verify`,
         payload,
       )
       .pipe(
@@ -259,7 +232,7 @@ export class AuthService {
     });
     const payload: CreateNewPasswordRequest = { password };
     return this.http.post<CreateNewPasswordResponse>(
-      `${environment.apiUrl}/auth/create-new-password`,
+      `${this.baseUrl}/create-new-password`,
       payload,
       { headers },
     );
@@ -273,7 +246,7 @@ export class AuthService {
 
     const payload: ResendOtpRequest = { challengeId };
     return this.http.post<ResendOtpResponse>(
-      `${environment.apiUrl}/auth/mfa/otp-resend`,
+      `${this.baseUrl}/mfa/otp-resend`,
       payload,
     );
   }
@@ -287,13 +260,9 @@ export class AuthService {
     });
 
     return this.http.post<OtpResponse>(
-      `${environment.apiUrl}/auth/mfa/otp-resend`,
+      `${this.baseUrl}/mfa/otp-resend`,
       { challengeId },
       { headers },
     );
-  }
-
-  public setIdleTimeout(minutes: number): void {
-    this.userActivityService.setIdleTimeout(minutes);
   }
 }

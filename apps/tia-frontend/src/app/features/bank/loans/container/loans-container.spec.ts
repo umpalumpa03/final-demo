@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoansContainer } from './loans-container';
 import { provideRouter } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('LoansContainer', () => {
   let component: LoansContainer;
@@ -16,7 +17,7 @@ describe('LoansContainer', () => {
   };
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoansContainer],
+      imports: [LoansContainer, TranslateModule.forRoot()],
       providers: [provideRouter([]), provideMockStore({ initialState })],
     }).compileComponents();
 

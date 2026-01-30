@@ -14,18 +14,18 @@ export const SIGN_IN_FORM = {
 export const ALERTS_DISMISSIBLE_DATA = {
   info: {
     type: 'information' as const,
-    title: 'New Feature Available',
+    title: 'New Feature Available' as const,
     message: '',
   },
   success: {
     type: 'success' as const,
-    title: 'Profile Updated',
+    title: 'Profile Updated' as const,
     message: '',
   },
   error: {
     id: 1,
     type: 'warning' as const,
-    title: 'Error',
+    title: 'Error' as const,
     message: '',
   },
 };
@@ -43,6 +43,12 @@ export const AUTH_SIDE_PANEL_DATA = {
       },
       {
         id: 2,
+        title: 'Protected Data',
+        text: 'Your information is encrypted and safe',
+        icon: '/images/svg/auth/secured.svg',
+      },
+      {
+        id: 3,
         title: 'Protected Data',
         text: 'Your information is encrypted and safe',
         icon: '/images/svg/auth/secured.svg',

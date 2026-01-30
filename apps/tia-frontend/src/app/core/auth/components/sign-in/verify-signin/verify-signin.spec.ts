@@ -33,7 +33,6 @@ describe('VerifySignin', () => {
     expect(component.title).toBe('OTP Verification');
     expect(component.subText).toContain("We've sent a 6-digit code");
     expect(component.submitBtnName).toBe('Verify');
-    expect(component.isLoading).toBe(false);
   });
 
   it('submitOtp should call authService.getChallengeId and verifyMfa with correct payload', () => {
@@ -46,7 +45,6 @@ describe('VerifySignin', () => {
       code,
       challengeId: 'challenge-123',
     });
-    // ensure the returned value is the Observable from the mock
     expect(returned).toBeDefined();
   });
 

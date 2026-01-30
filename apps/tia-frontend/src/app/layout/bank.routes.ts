@@ -10,12 +10,10 @@ import {
 } from '../store/transactions/transactions.reducer';
 import { FinancesStore } from '../features/bank/finances/store/finances.store';
 import { FinancesService } from '../features/bank/finances/services/finances.service';
-import { TransactionService } from '@tia/shared/services/transactions-service/transaction-service';
-import { LoanCreateEffects } from '../store/loans/loans.effects';
-import { loansFeature } from '../store/loans/loans.reducer';
-import { accountsReducer } from '../store/products/accounts/accounts.reducer';
-import { AccountsEffects } from '../store/products/accounts/accounts.effects';
-import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
+import { ExchangeRateReducer } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.reducers';
+import { accountsFeature, accountsReducer } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
+import { ExchangeRatesEffects } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.effects';
+import { AccountsEffects } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.effects';
 
 export const bankRoutes: Routes = [
   {
@@ -23,14 +21,11 @@ export const bankRoutes: Routes = [
     loadComponent: () =>
       import('./bank-container').then((c) => c.BankContainer),
     providers: [
-      { provide: TransactionService },
-      provideEffects(transactionEffects),
-      provideState({
-        name: TRANSACTION_FEATURE_KEY,
-        reducer: transactionReducer,
-      }),
-      provideState({ name: 'accounts', reducer: accountsReducer }),
-      provideEffects(AccountsEffects),
+      provideState({ name: TRANSACTION_FEATURE_KEY, reducer: transactionReducer }),
+      provideState({ name: 'ExchangeRates', reducer: ExchangeRateReducer }),
+      provideState(accountsFeature),
+
+      provideEffects([ExchangeRatesEffects, AccountsEffects, transactionEffects])
     ],
     children: [
       {
@@ -47,10 +42,6 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'products',
-        providers: [
-          provideState({ name: 'accounts', reducer: accountsReducer }),
-          provideEffects(AccountsEffects),
-        ],
         loadChildren: () =>
           import('../features/bank/products/products.routes').then(
             (c) => c.productsRoutes,
@@ -72,10 +63,6 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'loans',
-        providers: [
-          provideState(loansFeature),
-          provideEffects(LoanCreateEffects),
-        ],
         loadChildren: () =>
           import('../features/bank/loans/loans.routes').then(
             (c) => c.loansRoutes,
@@ -84,10 +71,9 @@ export const bankRoutes: Routes = [
       {
         path: 'finances',
         providers: [
-          FinancesStore,
-          FinancesService,
-          provideCharts(withDefaultRegisterables()),
-        ],
+                  FinancesStore,
+                  FinancesService
+                ],
         loadComponent: () =>
           import('../features/bank/finances/container/finances-container').then(
             (c) => c.FinancesContainer,
