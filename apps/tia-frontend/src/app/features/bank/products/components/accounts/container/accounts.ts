@@ -16,6 +16,8 @@ import {
   selectIsCreateModalOpen,
   selectIsCreating,
   selectCreateError,
+  selectIsUpdatingFriendlyName,
+  selectUpdateFriendlyNameError,
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { accountSections } from '../config/accounts.config';
 
@@ -39,6 +41,12 @@ export class Accounts implements OnInit {
   );
   protected readonly error$ = this.store.select(selectError);
   protected readonly createError$ = this.store.select(selectCreateError);
+  protected readonly isRenamingAccount$ = this.store.select(
+    selectIsUpdatingFriendlyName,
+  );
+  protected readonly renameError$ = this.store.select(
+    selectUpdateFriendlyNameError,
+  );
 
   protected readonly accountSectionsData = accountSections;
 
@@ -59,10 +67,22 @@ export class Accounts implements OnInit {
   }
 
   public handleTransfer(accountId: string): void {
-    console.log('Transfer', accountId);
+    // this.store.dispatch(AccountsActions.transfer({ accountId }));
   }
 
   public handleRetry(): void {
     this.store.dispatch(AccountsActions.loadAccounts());
+  }
+
+  public handleRenameAccount(data: {
+    accountId: string;
+    friendlyName: string;
+  }): void {
+    this.store.dispatch(
+      AccountsActions.updateFriendlyName({
+        accountId: data.accountId,
+        friendlyName: data.friendlyName,
+      }),
+    );
   }
 }

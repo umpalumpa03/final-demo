@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { RouterModule } from "@angular/router";
 import { NavigationItem } from '@tia/shared/lib/navigation/models/nav-bar.model';
 import { NavigationBar } from '@tia/shared/lib/navigation/navigation-bar/navigation-bar';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { InboxService } from '@tia/shared/services/messages/inbox.service';
 
 @Component({
   selector: 'app-messaging-container',
@@ -14,6 +15,18 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 })
 export class MessagingContainer {
   private translate = inject(TranslateService);
+  public inboxService = inject(InboxService);
+
+  constructor() {
+    this.inboxService.fetchInboxCount();
+    effect(() => {
+      const count = this.inboxService.inboxCount();
+      this.messageRoutes.update(routes => {
+        routes[0] = { ...routes[0], count };
+        return [...routes];
+      });
+    });
+  }
 
   public readonly messageRoutes = signal<NavigationItem[]>([
     {

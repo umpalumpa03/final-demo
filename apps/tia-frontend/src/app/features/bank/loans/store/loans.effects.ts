@@ -138,4 +138,47 @@ export class LoansEffects {
       }),
     ),
   );
+
+  public initiatePrepayment$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.initiatePrepayment),
+      switchMap(({ payload }) =>
+        this.loansService.initiatePrepayment(payload).pipe(
+          map((response) => {
+            if (response.verify?.challengeId) {
+              return LoansActions.initiatePrepaymentSuccess({
+                challengeId: response.verify.challengeId,
+              });
+            } else {
+              return LoansActions.initiatePrepaymentFailure({
+                error: 'No challenge ID returned',
+              });
+            }
+          }),
+          catchError((error) =>
+            of(
+              LoansActions.initiatePrepaymentFailure({ error: error.message }),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  public verifyPrepayment$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.verifyPrepayment),
+      switchMap(({ payload }) =>
+        this.loansService.verifyPrepayment(payload).pipe(
+          switchMap(() => [
+            LoansActions.verifyPrepaymentSuccess(),
+            LoansActions.loadLoans(),
+          ]),
+          catchError((error) =>
+            of(LoansActions.verifyPrepaymentFailure({ error: error.message })),
+          ),
+        ),
+      ),
+    ),
+  );
 }

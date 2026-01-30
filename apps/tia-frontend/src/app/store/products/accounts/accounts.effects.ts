@@ -47,4 +47,26 @@ export class AccountsEffects {
       ),
     ),
   );
+
+  updateFriendlyName$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AccountsActions.updateFriendlyName),
+      switchMap(({ accountId, friendlyName }) => {
+        return this.accountsService
+          .updateFriendlyName(accountId, friendlyName)
+          .pipe(
+            map((account) => {
+              return AccountsActions.updateFriendlyNameSuccess({ account });
+            }),
+            catchError((error) => {
+              return of(
+                AccountsActions.updateFriendlyNameFailure({
+                  error: error.message || 'Failed to update friendly name',
+                }),
+              );
+            }),
+          );
+      }),
+    ),
+  );
 }

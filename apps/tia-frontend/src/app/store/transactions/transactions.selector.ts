@@ -1,8 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import {
-  TRANSACTION_FEATURE_KEY,
-  TransactionState,
-} from './transactions.reducer';
+import { TRANSACTION_FEATURE_KEY } from './transactions.reducer';
+import { TransactionState } from './models/transactions-store.models';
 
 export const selectTransactionState = createFeatureSelector<TransactionState>(
   TRANSACTION_FEATURE_KEY,
@@ -33,9 +31,14 @@ export const selectError = createSelector(
   (state) => state.error,
 );
 
+export const selectTotalTransactions = createSelector(
+  selectTransactionState,
+  (state) => state.total,
+);
 export const selectTransactionViewModel = createSelector(
   selectItems,
   selectIsLoading,
   selectFilters,
-  (items, isLoading, filters) => ({ items, isLoading, filters }),
+  selectTotalTransactions,
+  (items, isLoading, filters, total) => ({ items, isLoading, filters, total }),
 );

@@ -1,0 +1,50 @@
+@use '../../../../shared/styles/mixins' as *;
+@use '../../../../shared/styles/palette' as *;
+
+.global-bank-wrapper {
+  padding: 3rem;
+  background-color: var(--color-bg);
+  min-height: 100vh;
+}
+
+.my-custom-layout {
+  @include display-flex(column);
+  gap: 1.2rem;
+  padding: 0.8rem 0;
+
+  &__tag {
+    color: var(--color-primary);
+    border-radius: 2rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+
+  &__text {
+    @include font-inter(400, 1.6rem, 2.4rem);
+    color: var(--color-fg);
+    margin: 0;
+  }
+
+  &__meta {
+    @include flex-center(row, flex-start, center);
+    gap: 0.8rem;
+    margin-top: 0.4rem;
+  }
+
+  &__id {
+    @include font-inter(500, 1.2rem);
+    color: $gray-400;
+  }
+
+  &__dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    background-color: $gray-200;
+    border-radius: 50%;
+  }
+
+  &__date {
+    @include font-inter(400, 1.2rem);
+    color: $gray-400;
+  }
+}

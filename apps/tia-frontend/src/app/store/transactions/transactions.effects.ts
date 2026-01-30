@@ -13,7 +13,7 @@ import {
 
 import { Store } from '@ngrx/store';
 import { selectFilters, selectNextCursor } from './transactions.selector';
-import { TransactionService } from '../../features/bank/transactions/services/transactions-service/transaction-service';
+import { TransactionService } from '@tia/shared/services/transactions-service/transaction-service';
 
 export const updateFiltersEffects = createEffect(
   (actions$ = inject(Actions)) => {
@@ -54,6 +54,24 @@ export const loadTransactionsEffect = createEffect(
         return transactionService.getTransactions(apiFilters).pipe(
           map((response) => TransactionActions.loadSuccess({ response })),
           catchError((error) => of(TransactionActions.loadFailure({ error }))),
+        );
+      }),
+    );
+  },
+  { functional: true },
+);
+
+export const loadTotalEffect = createEffect(
+  (
+    actions$ = inject(Actions),
+    transactionService = inject(TransactionService),
+  ) => {
+    return actions$.pipe(
+      ofType(TransactionActions.enter, TransactionActions.loadTransactions),
+      switchMap(() => {
+        return transactionService.getTransactionsTotal().pipe(
+          map((total) => TransactionActions.loadTotalSuccess({ total })),
+          catchError(() => EMPTY),
         );
       }),
     );

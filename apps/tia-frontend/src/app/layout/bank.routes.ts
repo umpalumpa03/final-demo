@@ -10,14 +10,28 @@ import {
 } from '../store/transactions/transactions.reducer';
 import { FinancesStore } from '../features/bank/finances/store/finances.store';
 import { FinancesService } from '../features/bank/finances/services/finances.service';
-import { LoanCreateService } from '@tia/shared/services/loans/loan-create.service';
+import { TransactionService } from '@tia/shared/services/transactions-service/transaction-service';
 import { LoanCreateEffects } from '../store/loans/loans.effects';
 import { loansFeature } from '../store/loans/loans.reducer';
+import { accountsReducer } from '../store/products/accounts/accounts.reducer';
+import { AccountsEffects } from '../store/products/accounts/accounts.effects';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
+
 export const bankRoutes: Routes = [
   {
     path: 'bank',
     loadComponent: () =>
       import('./bank-container').then((c) => c.BankContainer),
+    providers: [
+      { provide: TransactionService },
+      provideEffects(transactionEffects),
+      provideState({
+        name: TRANSACTION_FEATURE_KEY,
+        reducer: transactionReducer,
+      }),
+      provideState({ name: 'accounts', reducer: accountsReducer }),
+      provideEffects(AccountsEffects),
+    ],
     children: [
       {
         path: '',
@@ -33,6 +47,10 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'products',
+        providers: [
+          provideState({ name: 'accounts', reducer: accountsReducer }),
+          provideEffects(AccountsEffects),
+        ],
         loadChildren: () =>
           import('../features/bank/products/products.routes').then(
             (c) => c.productsRoutes,
@@ -44,13 +62,6 @@ export const bankRoutes: Routes = [
           import(
             '../features/bank/transactions/container/transactions-container'
           ).then((c) => c.TransactionsContainer),
-        providers: [
-          provideEffects(transactionEffects),
-          provideState({
-            name: TRANSACTION_FEATURE_KEY,
-            reducer: transactionReducer,
-          }),
-        ],
       },
       {
         path: 'transfers',
@@ -72,7 +83,11 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'finances',
-        providers: [FinancesStore, FinancesService],
+        providers: [
+          FinancesStore,
+          FinancesService,
+          provideCharts(withDefaultRegisterables()),
+        ],
         loadComponent: () =>
           import('../features/bank/finances/container/finances-container').then(
             (c) => c.FinancesContainer,

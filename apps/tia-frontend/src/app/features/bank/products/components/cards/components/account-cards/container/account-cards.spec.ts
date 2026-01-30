@@ -4,15 +4,17 @@ import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { AccountCards } from './account-cards';
-import { loadCardDetails } from '../../../../../../../../store/products/cards/cards.actions';
+import { loadCardAccounts, loadCardDetails } from '../../../../../../../../store/products/cards/cards.actions';
 import {
   selectAllAccounts,
   selectCardDetailsByAccountId,
+  selectCardDetailsError,
+  selectCardDetailsLoading,
 } from '../../../../../../../../store/products/cards/cards.selectors';
-import { CardAccount } from '../../../models/card-account.model';
-import { CardWithDetails } from '../../../models/card-image.model';
-import { DebugElement } from '@angular/core';
+
 import { By } from '@angular/platform-browser';
+import { CardWithDetails } from '@tia/shared/models/cards/card-image.model';
+import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 
 describe('AccountCards', () => {
   let component: AccountCards;
@@ -80,10 +82,21 @@ describe('AccountCards', () => {
     },
   ];
 
-  const setupTestBed = async (accounts: CardAccount[] = mockAccounts, cards: CardWithDetails[] = mockCardsWithDetails) => {
+  const setupTestBed = async (
+    accounts: CardAccount[] = mockAccounts, 
+    cards: CardWithDetails[] = mockCardsWithDetails,
+    loading: boolean = false,
+    error: string | null = null
+  ) => {
     mockStore.select.mockImplementation((selector: unknown) => {
       if (selector === selectAllAccounts) {
         return of(accounts);
+      }
+      if (selector === selectCardDetailsLoading) {
+        return of(loading);
+      }
+      if (selector === selectCardDetailsError) {
+        return of(error);
       }
       return of(cards);
     });
@@ -126,41 +139,91 @@ describe('AccountCards', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load accounts on init', () => {
+  it('should select accounts on initialization', () => {
     fixture.detectChanges();
     expect(mockStore.select).toHaveBeenCalledWith(selectAllAccounts);
   });
 
-  it('should load card details for account', () => {
+  it('should dispatch loadCardAccounts when accounts are empty', async () => {
+    await setupTestBed([], []);
     fixture.detectChanges();
-    expect(mockStore.select).toHaveBeenCalled();
+    await fixture.whenStable();
+    
+    expect(mockStore.dispatch).toHaveBeenCalledWith(loadCardAccounts());
   });
 
-  it('should dispatch loadCardDetails for each cardId', async () => {
+  it('should dispatch loadCardDetails for each cardId when accounts loaded', async () => {
     fixture.detectChanges();
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await fixture.whenStable();
     
     expect(mockStore.dispatch).toHaveBeenCalledWith(loadCardDetails({ cardId: 'card1' }));
     expect(mockStore.dispatch).toHaveBeenCalledWith(loadCardDetails({ cardId: 'card2' }));
   });
 
-  it('should compute vm correctly with account and cards', async () => {
+  it('should compute accountData correctly with account and cards', async () => {
     fixture.detectChanges();
     await fixture.whenStable();
     
-    const vmValue = component['vm']();
+    const accountData = component['accountData']();
     
-    expect(vmValue).toBeDefined();
-    expect(vmValue?.account.id).toBe(mockAccountId);
-    expect(vmValue?.cards).toHaveLength(2);
+    expect(accountData).toBeDefined();
+    expect(accountData?.account.id).toBe(mockAccountId);
+    expect(accountData?.cards).toHaveLength(2);
   });
 
-  it('should return null vm when account not found', async () => {
+  it('should return null accountData when account not found', async () => {
     await setupTestBed([], []);
     fixture.detectChanges();
     await fixture.whenStable();
     
-    expect(component['vm']()).toBeNull();
+    expect(component['accountData']()).toBeNull();
+  });
+
+  it('should compute viewState as no-account when account not found', async () => {
+    await setupTestBed([], []);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    
+    expect(component['viewState']()).toBe('no-account');
+  });
+
+  it('should compute viewState as loading when cardDetailsLoading is true', async () => {
+    await setupTestBed(mockAccounts, mockCardsWithDetails, true, null);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    
+    expect(component['viewState']()).toBe('loading');
+  });
+
+  it('should compute viewState as error when cardDetailsError is set', async () => {
+    await setupTestBed(mockAccounts, mockCardsWithDetails, false, 'Error message');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    
+    expect(component['viewState']()).toBe('error');
+  });
+
+  it('should compute viewState as success when data is loaded', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+    
+    expect(component['viewState']()).toBe('success');
+  });
+
+  it('should compute cardsLabel correctly', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+    
+    expect(component['cardsLabel']()).toBe('2 Cards');
+  });
+
+  it('should compute cardsLabel with singular Card', async () => {
+    const singleCardAccount = [{ ...mockAccounts[0], cardIds: ['card1'] }];
+    await setupTestBed(singleCardAccount, [mockCardsWithDetails[0]]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    
+    expect(component['cardsLabel']()).toBe('1 Card');
   });
 
   describe('handleCardClick', () => {
@@ -186,6 +249,16 @@ describe('AccountCards', () => {
       };
       
       expect(component['shouldShowCreditLimit'](creditCardNoLimit)).toBe(false);
+    });
+  });
+
+  describe('getCardBadgeVariant', () => {
+    it('should return success for DEBIT', () => {
+      expect(component['getCardBadgeVariant']('DEBIT')).toBe('success');
+    });
+
+    it('should return warning for CREDIT', () => {
+      expect(component['getCardBadgeVariant']('CREDIT')).toBe('warning');
     });
   });
 
@@ -218,8 +291,8 @@ describe('AccountCards', () => {
       expect(cardElements.length).toBeGreaterThan(0);
     });
 
-    it('should show loading state when cards array is empty', async () => {
-      await setupTestBed(mockAccounts, []);
+    it('should show loading state', async () => {
+      await setupTestBed(mockAccounts, [], true, null);  
       await detectChangesAndWait();
       
       const loading = fixture.nativeElement.querySelector('.account-cards__loading');
@@ -232,6 +305,16 @@ describe('AccountCards', () => {
       
       const error = fixture.nativeElement.querySelector('.account-cards__error');
       expect(error?.textContent).toContain('Account not found');
+    });
+
+    it('should display error message', async () => {
+      const errorMsg = 'Failed to load card details';
+      await setupTestBed(mockAccounts, mockCardsWithDetails, false, errorMsg);
+      await fixture.whenStable();
+      fixture.detectChanges();
+      
+      const error = fixture.nativeElement.querySelector('.account-cards__error');
+      expect(error?.textContent).toContain(errorMsg);
     });
   });
 });

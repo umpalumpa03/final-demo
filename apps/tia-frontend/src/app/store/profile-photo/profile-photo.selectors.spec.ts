@@ -14,51 +14,58 @@ describe('ProfilePhoto Selectors', () => {
     ProfilePhoto: ProfilePhotoState;
   }
 
-  const initialState: ProfilePhotoState = {
-    defaultAvatars: [{ id: '1', iconUri: '/avatar-1.svg' }],
+  const getInitialState = (): ProfilePhotoState => ({
+    defaultAvatars: [{ id: 'avatar-1', iconUri: '/avatars/1.png' }],
     defaultAvatarsLoading: false,
     defaultAvatarsError: null,
-    selectedAvatarId: '1',
+    selectedAvatarId: 'avatar-1',
     uploadedFileName: 'avatar.png',
     currentAvatarUrl: 'current-url',
     avatarId: 'avatar-1',
     avatarType: 'default',
-  };
-
-  const featureState: RootState = { ProfilePhoto: initialState };
+  });
 
   it('should select feature state', () => {
+    const initialState = getInitialState();
+    const featureState: RootState = { ProfilePhoto: { ...initialState } };
     const result = selectProfilePhotoFeatureState(featureState);
     expect(result).toEqual(initialState);
   });
 
   it('should select default avatars', () => {
+    const initialState = getInitialState();
+    const featureState: RootState = { ProfilePhoto: initialState };
     const result = selectDefaultAvatars(featureState);
     expect(result).toEqual(initialState.defaultAvatars);
   });
 
   it('should select selected avatar id', () => {
-    const result = selectSelectedAvatarId(featureState);
+    const initialState = getInitialState();
+    const result = selectSelectedAvatarId.projector(initialState);
     expect(result).toBe(initialState.selectedAvatarId);
   });
 
   it('should select uploaded file name', () => {
-    const result = selectUploadedFileName(featureState);
+    const initialState = getInitialState();
+    const result = selectUploadedFileName.projector(initialState);
     expect(result).toBe(initialState.uploadedFileName);
   });
 
   it('should select current avatar url', () => {
-    const result = selectCurrentAvatarUrl(featureState);
+    const initialState = getInitialState();
+    const result = selectCurrentAvatarUrl.projector(initialState);
     expect(result).toBe(initialState.currentAvatarUrl);
   });
 
   it('should select avatar id', () => {
-    const result = selectAvatarId(featureState);
+    const initialState = getInitialState();
+    const result = selectAvatarId.projector(initialState);
     expect(result).toBe(initialState.avatarId);
   });
 
   it('should select avatar type', () => {
-    const result = selectAvatarType(featureState);
+    const initialState = getInitialState();
+    const result = selectAvatarType.projector(initialState);
     expect(result).toBe(initialState.avatarType);
   });
 });

@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 import { CardList } from './card-list';
 import { loadCardAccounts } from '../../../../../../../../store/products/cards/cards.actions';
 import { selectCardGroups, selectLoading, selectError } from '../../../../../../../../store/products/cards/cards.selectors';
-import { CardGroup } from '../../../models/card-group.model';
+import { CardGroup } from '@tia/shared/models/cards/card-group.model';
 
 describe('CardList', () => {
   let component: CardList;

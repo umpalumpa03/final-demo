@@ -22,6 +22,8 @@ export class BankHeader {
 
   public hasUnread = input<boolean>(false);
   public inboxCount = input<number>(0);
+  public avatarUrl = input<string | null | undefined>(null);
+
   public hasInboxMessages = computed(() => this.inboxCount() > 0);
   public onNotificationClick = output<ElementRef>();
 

@@ -2,8 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of, mergeMap, forkJoin, EMPTY } from 'rxjs';
 import { map, catchError, switchMap } from 'rxjs/operators';
-import { CardListService } from '../../../features/bank/products/components/cards/services/card-list.service';
 import * as CardsActions from './cards.actions';
+import { CardListService } from '@tia/shared/services/cards/card-list.service';
 
 @Injectable()
 export class CardsEffects {

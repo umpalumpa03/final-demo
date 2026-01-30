@@ -15,6 +15,8 @@ export interface RadioOption {
   description?: string;
 }
 
+export type PrepaymentStep = 'options' | 'review' | 'otp';
+
 export interface PrepaymentCalculationPayload {
   loanId: string;
   type: 'full' | 'partial';
@@ -27,17 +29,41 @@ export interface IPrepaymentCalcItem {
   amount: number;
 }
 
+export interface IPartialPrepaymentResponse {
+  displayedInfo: IPrepaymentCalcItem[];
+}
+
+export interface IFullPrepaymentResponse {
+  items: IPrepaymentCalcItem[];
+}
+
 export interface IPrepaymentCalcResponse {
   displayedInfo: IPrepaymentCalcItem[];
 }
 
-export interface IFullPrepaymentItem {
-  text: string;
-  amount: number;
+export interface IInitiatePrepaymentRequest {
+  loanId: string;
+  loanPrepaymentOption: 'full' | 'partial';
+  loanPartialPaymentType?: string;
+  amount?: number;
+  paymentAccountId: string;
 }
 
-export interface IFullPrepaymentResponse {
-  items: IFullPrepaymentItem[];
+export interface IInitiatePrepaymentResponse {
+  success: boolean;
+  message: string;
+  verify?: {
+    challengeId: string;
+    method: string;
+  };
 }
 
-export type PrepaymentStep = 'options' | 'review';
+export interface IVerifyPrepaymentRequest {
+  challengeId: string;
+  code: string;
+}
+
+export interface IVerifyPrepaymentResponse {
+  success: boolean;
+  message: string;
+}

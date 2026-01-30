@@ -59,8 +59,8 @@ export const LOAN_FORM_CONFIG = {
   postal: {
     label: 'Postal Code',
     placeholder: '0100',
-    type: 'number',
     required: true,
+    errorMessage: 'Invalid postal code.',
   },
 
   contactName: {
@@ -79,13 +79,15 @@ export const LOAN_FORM_CONFIG = {
     label: 'Phone Number',
     placeholder: '591234567',
     required: true,
-    type: 'number',
+    errorMessage: 'Must be at least 9 digits (numbers only)',
+    prefixIcon: './images/svg/feature-loans/phone.svg',
   },
 
   contactEmail: {
     label: 'Email Address',
     placeholder: 'john.doe@example.com',
     required: true,
+    prefixIcon: './images/svg/feature-loans/mail.svg',
   },
 } as const;
 
@@ -96,3 +98,5 @@ export const PURPOSE_OPTIONS: SelectOption[] = [
   { label: 'Education', value: 'education' },
   { label: 'Other', value: 'other' },
 ] as const;
+
+export const NUMBER_REGEX = '^[0-9]*$' as const;

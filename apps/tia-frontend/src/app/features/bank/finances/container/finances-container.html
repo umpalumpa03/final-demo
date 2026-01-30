@@ -9,4 +9,8 @@
   [summaryCards]="summaryCardsData()"
   (filterChange)="onFilterChange($event)"
   (dateInput)="handleInput($event.field, $event.event)"
+  [categoryChartData]="store.categoryChartData()"
+  [mainChartData]="store.mainChartData()"
+  [savingsChartData]="store.savingsChartData()"
+  [dailyChartData]="store.dailyChartData()"
 ></app-finances-view>
