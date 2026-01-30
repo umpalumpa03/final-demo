@@ -64,7 +64,6 @@ export class HeaderNotifications {
     this.selectItem.emit(id);
   }
 
-  // What to do with this ?????????????
   public isItemSelected(id: string) {
     return this.selectedItems().includes(id);
   }
