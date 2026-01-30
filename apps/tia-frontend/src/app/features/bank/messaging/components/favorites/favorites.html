@@ -1,6 +1,11 @@
 <app-mail-header
   [page]="'messaging.routes.favorites' | translate"
-  [messageCount]="0"
+  [messageCount]="mails().length"
+  [isAllSelected]="isAllSelected()"
+  (toggleSelectAll)="toggleSelectAll($event)"
+  [showBulkActions]="hasBulkSelection()"
+  (bulkDelete)="deleteSelectedMails()"
+  (bulkRead)="markSelectedAsRead()"
 ></app-mail-header>
 @if(isLoading()){
 <div class="loading-state">
@@ -13,7 +18,13 @@
 }@else {
 <div>
   @for (mail of mails(); track mail.id) {
-  <app-mail-card [mail]="mail"> </app-mail-card>
+  <app-mail-card 
+  [mail]="mail"
+  [checked]="selectedMailIds().has(mail.id)"
+  (checkedChange)="onMailChecked(mail.id, $event)"
+  (markAsRead)="markAsRead(mail.id)"
+  (deleteMail)="deleteMail(mail.id)"
+  > </app-mail-card>
   }
 </div>
 }
