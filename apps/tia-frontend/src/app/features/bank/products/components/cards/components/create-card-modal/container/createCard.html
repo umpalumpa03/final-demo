@@ -1,0 +1,7 @@
+<app-ui-modal [isOpen]="isOpen()" (closed)="onClose()">
+  <h2>Add New Card</h2>
+  <form (submit)="onSubmit($event)">
+    <button type="submit">Save</button>
+    <button type="button" (click)="onClose()">Cancel</button>
+  </form>
+</app-ui-modal>

@@ -167,26 +167,63 @@
     text-align: center;
     margin-top: 0.8rem;
   }
+
   &__view-all-button {
-  @include font-inter(400, 1.4rem, 1.5);
-  width: 100%;
-  padding: 1.2rem;
-  margin-top: 0.8rem;
-  background-color: transparent;
-  border: 0.15rem solid var(--color-primary);
-  border-radius: 0.8rem;
-  color: var(--color-primary);
-  cursor: pointer;
-  transition: all 0.2s ease;
+    @include font-inter(400, 1.4rem, 1.5);
+    width: 100%;
+    padding: 1.2rem;
+    margin-top: 0.8rem;
+    background-color: transparent;
+    border: 0.15rem solid var(--color-primary);
+    border-radius: 0.8rem;
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
 
-  &:hover {
-    background-color: var(--color-primary);
-    color: $white;
+    &:hover {
+      background-color: var(--color-primary);
+      color: $white;
+    }
+
+    &:focus-visible {
+      outline: 0.2rem solid var(--color-primary);
+      outline-offset: 0.2rem;
+    }
   }
 
-  &:focus-visible {
-    outline: 0.2rem solid var(--color-primary);
-    outline-offset: 0.2rem;
+  &__add-card {
+    @include flex-center(column);
+    gap: 0.8rem;
+    padding: 3.2rem 2.4rem;
+    border: 0.2rem dashed var(--color-muted);
+    border-radius: 0.8rem;
+    background-color: $white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    max-width: 91rem;
+
+    &:hover {
+      border-color: var(--color-accent);
+      background-color: var(--color-bg);
+    }
+
+    &:focus {
+      outline: 0.2rem solid var(--color-primary);
+      outline-offset: 0.2rem;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
   }
-}
+
+  &__add-icon {
+    @include font-inter(300, 3.2rem, 1);
+    color: var(--color-fg);
+  }
+
+  &__add-text {
+    @include font-inter(500, 1.4rem, 1.5);
+    color: var(--color-fg);
+  }
 }

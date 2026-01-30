@@ -3,6 +3,8 @@ import {
   Component,
   OnInit,
   inject,
+  input,
+  output,
   signal,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
@@ -17,17 +19,18 @@ import {
 } from '../../../../../../../../store/products/cards/cards.selectors';
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 import { CardGroup } from '@tia/shared/models/cards/card-group.model';
-
+import { CreateCard } from "../../create-card-modal/container/createCard";
 @Component({
   selector: 'app-card-list',
   templateUrl: './card-list.html',
   styleUrls: ['./card-list.scss'],
-  imports: [AsyncPipe, Badges],
+  imports: [AsyncPipe, Badges, CreateCard],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardList implements OnInit {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
+
 
   protected readonly vm$ = combineLatest({
     cardGroups: this.store.select(selectCardGroups),
@@ -72,4 +75,14 @@ export class CardList implements OnInit {
   public getCardIndex(accountId: string): number {
     return this.activeCardIndex()[accountId] ?? 0;
   }
+  
+protected readonly isModalOpen = signal(false);  
+  protected openModal(): void {
+    this.isModalOpen.set(true);
+  }
+
+  protected handleCloseModal(): void {
+    this.isModalOpen.set(false);
+  }
+
 }
