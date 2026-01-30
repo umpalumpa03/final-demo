@@ -10,6 +10,7 @@ export const MessagingStore = signalStore(
   withState(initialState),
   withMethods((store) => {
     const messagingService = inject(MessagingService);
+    const inboxService = inject(InboxService);
     return {
       loadMails: rxMethod<MailType>(
         pipe(
@@ -38,6 +39,25 @@ export const MessagingStore = signalStore(
                   error: error.message || 'Failed to load mails',
                 });
                 return of(null);
+              }),
+            ),
+          ),
+        ),
+      ),
+
+      markMailasRead: rxMethod<number>(
+        pipe(
+          switchMap((mailId) =>
+            messagingService.markAsRead(mailId).pipe(
+              tap(() => {
+                patchState(store, {
+                  mails: store
+                    .mails()
+                    .map((mail) =>
+                      mail.id === mailId ? { ...mail, isRead: true } : mail,
+                    ),
+                });
+                inboxService.fetchInboxCount();
               }),
             ),
           ),

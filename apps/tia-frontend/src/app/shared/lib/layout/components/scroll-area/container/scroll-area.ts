@@ -10,8 +10,8 @@ import {
 } from '@angular/core';
 
 import { TDirection } from './scroll-area.model';
-import { Spinner } from "@tia/shared/lib/feedback/spinner/spinner";
-import { ErrorStates } from "@tia/shared/lib/feedback/error-states/error-states";
+import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 
 @Component({
   selector: 'app-scroll-area',
@@ -30,7 +30,6 @@ export class ScrollArea {
   public readonly threshold = input<number>(20);
   public scrollBottom = output<void>();
   public retry = output<void>();
-  
 
   private readonly viewport = viewChild<ElementRef<HTMLElement>>('viewport');
 
@@ -45,10 +44,14 @@ export class ScrollArea {
   constructor() {
     effect(() => {
       const el = this.viewport()?.nativeElement;
-      if (el && !this.isLoading()) {
-        this.checkScrollPosition(el);
+      if(el!.scrollHeight == el!.clientHeight && !this.isLoading()) {
+        this.checkScrollPosition(el!);
       }
     });
+  }
+
+  public onButtonClick(): void {
+    this.retry.emit();
   }
 
   public onScroll(): void {

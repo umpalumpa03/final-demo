@@ -15,6 +15,8 @@ import { Observable, tap } from 'rxjs';
 import { NotificationsData } from '../models/notification.model';
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
 import { NotificationsStore } from '../store/notifications.store';
+import { selectCurrentAvatarUrl } from '../../../../store/profile-photo/profile-photo.selectors';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-bank-header-container',
@@ -25,12 +27,13 @@ import { NotificationsStore } from '../store/notifications.store';
   providers: [NotificationsStore],
 })
 export class BankHeaderContainer implements OnInit {
-  readonly store = inject(NotificationsStore);
+  readonly notificationsStore = inject(NotificationsStore);
 
+  private store = inject(Store);
   public headerNotificationService = inject(Notifications);
   public inboxService = inject(InboxService);
 
-  public hasUnread = this.store.hasUnread;
+  public hasUnread = this.notificationsStore.hasUnread;
   public anchorEl = signal<ElementRef | undefined>(undefined);
   public isModalOpen = signal<boolean>(false);
   public notificationsItems$!: Observable<NotificationsData>;
@@ -38,14 +41,16 @@ export class BankHeaderContainer implements OnInit {
   public avatarUrl = toSignal(this.store.select(selectCurrentAvatarUrl));
 
   ngOnInit(): void {
-    this.store.hasUnreadNotifications();
+    this.notificationsStore.hasUnreadNotifications();
 
-      this.inboxService.fetchInboxCount();
+    this.inboxService.fetchInboxCount();
   }
 
   public onNotificationClick(el: ElementRef): void {
     this.anchorEl.set(el);
-    this.store.fetchNotifications({ limit: this.store.limitPerPage() });
+    this.notificationsStore.fetchNotifications({
+      limit: this.notificationsStore.limitPerPage(),
+    });
     this.isModalOpen.update((v) => !v);
   }
 }
