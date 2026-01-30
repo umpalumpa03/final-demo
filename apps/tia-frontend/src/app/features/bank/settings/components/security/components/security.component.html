@@ -1,5 +1,5 @@
 <div class="security">
-  <form [formGroup]="changePasswordForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="form()" (ngSubmit)="onSubmit()">
     <app-basic-card
       [hasFooter]="true"
       [maxWidth]="'100%'"
@@ -16,17 +16,6 @@
       </div>
 
       <div class="security__form">
-        @if (error()) {
-          <div class="security__error">
-            {{ error() }}
-          </div>
-        }
-        @if (success()) {
-          <div class="security__success">
-            {{ 'settings.security.passwordChangedSuccess' | translate }}
-          </div>
-        }
-
         <div class="security__field">
           <lib-text-input
             type="password"

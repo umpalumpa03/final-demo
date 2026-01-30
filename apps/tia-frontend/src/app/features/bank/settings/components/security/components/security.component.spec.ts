@@ -1,19 +1,45 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SecurityComponent } from './security.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { vi } from 'vitest';
+
+
+const passwordMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const form = control as FormGroup;
+  const newPassword = form.get('newPassword')?.value;
+  const confirmPassword = form.get('confirmPassword')?.value;
+  return newPassword !== confirmPassword ? { passwordMismatch: true } : null;
+};
 
 describe('SecurityComponent', () => {
   let component: SecurityComponent;
   let fixture: ComponentFixture<SecurityComponent>;
+  const fb = new FormBuilder();
+
+  const createForm = () =>
+    fb.group(
+      {
+        currentPassword: ['', [Validators.required]],
+        newPassword: ['', [Validators.required, Validators.minLength(8)]],
+        confirmPassword: ['', [Validators.required]],
+      },
+      { validators: passwordMatchValidator }, 
+    );
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SecurityComponent, TranslateModule.forRoot()],
+      imports: [SecurityComponent, TranslateModule.forRoot(), ReactiveFormsModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SecurityComponent);
     component = fixture.componentInstance;
+
+ 
+    fixture.componentRef.setInput('form', createForm());
+   
+    fixture.componentRef.setInput('isLoading', false);
+
     fixture.detectChanges();
   });
 
@@ -26,14 +52,14 @@ describe('SecurityComponent', () => {
   });
 
   it('should initialize form', () => {
-    expect(component.changePasswordForm).toBeDefined();
-    expect(component.changePasswordForm.invalid).toBe(true);
+    expect(component.form()).toBeDefined();
+    expect(component.form().invalid).toBe(true);
   });
 
   it('should emit changePassword event when form is valid', () => {
     const emitSpy = vi.spyOn(component.changePassword, 'emit');
 
-    component.changePasswordForm.setValue({
+    component.form().setValue({
       currentPassword: 'currentPass123',
       newPassword: 'newPassword123',
       confirmPassword: 'newPassword123',
@@ -53,5 +79,18 @@ describe('SecurityComponent', () => {
     component.onSubmit();
 
     expect(emitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should set passwordMismatch error when passwords do not match', () => {
+    const form = component.form();
+
+    form.setValue({
+      currentPassword: 'currentPass123',
+      newPassword: 'newPassword123',
+      confirmPassword: 'different123',
+    });
+    form.updateValueAndValidity();
+
+    expect(form.hasError('passwordMismatch')).toBe(true);
   });
 });
