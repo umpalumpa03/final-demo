@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { finalize } from 'rxjs';
+import { catchError, EMPTY, finalize, tap } from 'rxjs';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AuthService } from '../../../services/auth.service';
@@ -70,15 +70,17 @@ export class ForgotPasswordEmail {
     const { email } = this.form.getRawValue();
     this.authService
       .forgotPasswordRequest(email)
-      .pipe(finalize(() => this.isSubmitting.set(false)))
-      .subscribe({
-        next: (response) => {
+      .pipe(
+        finalize(() => this.isSubmitting.set(false)),
+        tap((response) => {
           this.authService.setChellangeId(response.challengeId);
           this.router.navigate([Routes.OTP_FORGOT_PASSWORD]);
-        },
-        error: () => {
+        }),
+        catchError(() => {
           this.submitError.set('Unable to send reset code. Please try again.');
-        },
-      });
+          return EMPTY;
+        }),
+      )
+      .subscribe();
   }
 }
