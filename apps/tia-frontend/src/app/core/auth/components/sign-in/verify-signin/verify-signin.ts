@@ -3,7 +3,6 @@ import { OtpVerification } from '../../../shared/otp-verification/otp-verificati
 import { AuthService } from '../../../services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IMfaVerifyRequest } from '../../../models/authRequest.models';
-import { OtpConfig } from '@tia/shared/lib/forms/models/otp.model';
 
 @Component({
   selector: 'app-verify-signin',

@@ -9,7 +9,7 @@ import {
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Observable, finalize } from 'rxjs';
+import { Observable, catchError, finalize, tap } from 'rxjs';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { OtpConfig } from '@tia/shared/lib/forms/models/otp.model';
@@ -33,15 +33,15 @@ export class OtpVerification {
   public isLoading = input<boolean>(false);
   public title = input<string>('');
   public subText = input<string>('');
-  public submitBtnName = input<string>('Submit');
+  public submitBtnName = input<string>();
   public otpConfig = input<OtpConfig>({ length: 4, inputType: 'number' });
   public showIcon = input<boolean>(false);
-  public iconUrl = input<string>('images/svg/button-icons/confirm-icon.svg');
+  public iconUrl = input<string>();
   public showResend = input<boolean>(false);
-  public resendText = input<string>("Didn't receive the code?");
-  public resendLinkText = input<string>('Resend');
+  public resendText = input<string>();
+  public resendLinkText = input<string>();
   public backLink = input<string | null>(null);
-  public backLinkText = input<string>('Back to Sign In');
+  public backLinkText = input<string>();
   public submitMethod =
     input.required<
       (
@@ -65,21 +65,15 @@ export class OtpVerification {
     this.submitError.set(null);
     const code = this.otpForm.value.code;
     this.submitMethod()(code!)
-      .pipe(finalize(() => this.isSubmitting.set(false)))
-      .subscribe({
-        next: () => {
-          this.submitResult.emit({ statusCode: 200, message: 'Success' });
-        },
-        error: (err) => {
-          const httpError = err as HttpErrorResponse;
-          const statusCode = httpError?.status ?? 0;
-          const message =
-            statusCode === 400
-              ? 'Invalid code. Please try again.'
-              : 'Something went wrong. Please try again.';
-          this.submitError.set(message);
-          this.submitResult.emit({ statusCode, message });
-        },
-      });
+      .pipe(
+        tap(() => {
+          this.submitResult.emit({ statusCode: 200, message: 'veirfied' });
+        }),
+        catchError((err) => {
+          return err.message;
+        }),
+        finalize(() => this.isSubmitting.set(false)),
+      )
+      .subscribe();
   }
 }
