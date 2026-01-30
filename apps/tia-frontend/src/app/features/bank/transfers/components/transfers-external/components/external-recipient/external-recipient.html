@@ -18,6 +18,7 @@
       <app-button
         (click)="onVerify()"
         [isDisabled]="!recipientInput.valid || !recipientInput.value"
+        [isLoading]="isLoading()"
       >
         {{'transfers.external.recipient.verify' | translate}}
         <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />
@@ -25,3 +26,12 @@
     </div>
   </div>
 </main>
+
+@if (showError()) {
+<div class="external-recipient__error-toast">
+  <app-alert-types-with-icons
+    [alertType]="'error'"
+    [alertMessage]="'transfers.external.recipient.recipientNotFound' | translate"
+  />
+</div>
+}

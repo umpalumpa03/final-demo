@@ -5,6 +5,8 @@ import {
   inject,
   signal,
   DestroyRef,
+  effect,
+  computed,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -25,11 +27,18 @@ import {
 } from '../../../../utils/transfers-external.utils';
 import { RecipientType } from '../../../../models/transfers.state.model';
 import { TransferStore } from '../../../../store/transfers.store';
+import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 
 @Component({
   selector: 'app-external-recipient',
   standalone: true,
-  imports: [TranslatePipe, TextInput, ButtonComponent, ReactiveFormsModule],
+  imports: [
+    TranslatePipe,
+    TextInput,
+    ButtonComponent,
+    ReactiveFormsModule,
+    AlertTypesWithIcons,
+  ],
   templateUrl: './external-recipient.html',
   styleUrl: './external-recipient.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,6 +49,8 @@ export class ExternalRecipient implements OnInit {
   private readonly validationService = inject(TransferValidationService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly transferStore = inject(TransferStore);
+  public readonly showError = signal(false);
+  public readonly isLoading = computed(() => this.transferStore.isLoading());
   public readonly recipientInputConfig = signal<InputConfig>(
     getRecipientInputConfig(this.translate),
   );
@@ -47,6 +58,17 @@ export class ExternalRecipient implements OnInit {
   public readonly recipientInput = this.fb.control('', [
     recipientValidator(this.validationService),
   ]);
+  constructor() {
+    effect(() => {
+      const error = this.transferStore.error();
+      if (error) {
+        this.showError.set(true);
+        setTimeout(() => {
+          this.showError.set(false);
+        }, 5000);
+      }
+    });
+  }
 
   public ngOnInit(): void {
     this.setupValueChangeListener();
