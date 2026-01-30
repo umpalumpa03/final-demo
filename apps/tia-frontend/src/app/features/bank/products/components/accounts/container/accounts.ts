@@ -22,9 +22,8 @@ import {
   selectAccountsGrouped,
   selectError,
   selectIsLoading,
+  selectIsFetching,
   selectIsCreateModalOpen,
-  selectIsCreating,
-  selectCreateError,
   selectIsUpdatingFriendlyName,
   selectUpdateFriendlyNameError,
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
@@ -49,12 +48,11 @@ export class Accounts implements OnInit {
     selectAccountsGrouped,
   );
   protected readonly isLoading$ = this.store.select(selectIsLoading);
-  protected readonly isCreating$ = this.store.select(selectIsCreating);
+  protected readonly isFetching$ = this.store.select(selectIsFetching);
   protected readonly isCreateModalOpen$ = this.store.select(
     selectIsCreateModalOpen,
   );
   protected readonly error$ = this.store.select(selectError);
-  protected readonly createError$ = this.store.select(selectCreateError);
   protected readonly isRenamingAccount$ = this.store.select(
     selectIsUpdatingFriendlyName,
   );

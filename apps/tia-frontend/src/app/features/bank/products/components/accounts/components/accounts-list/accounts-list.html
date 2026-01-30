@@ -41,44 +41,42 @@
   <section class="accounts-list__section">
     <div class="accounts-list__section-header">
       <img [src]="section.icon" alt="" class="accounts-list__section-icon" />
-      <h2 class="accounts-list__section-title">{{ section.title }}</h2>
-      <span class="accounts-list__section-count">
-        {{ getAccountsBySection(section).length }}
-      </span>
-    </div>
-    @if (getAccountsBySection(section).length > 3) {
-    <div class="accounts-list__section-scroll">
-      <app-scroll-area
-        [direction]="'horizontal'"
-        [height]="'42rem'"
-        [scrollbar]="'hidden'"
+      <app-library-title title="{{ section.title }}"></app-library-title>
+      <app-badges
+        [variant]="'secondary'"
+        [size]="'medium'"
+        [text]="getAccountsBySection(section).length.toString()"
+        [shape]="'rounded'"
       >
-        <div class="accounts-list__section-scroll-grid">
-          @for (account of getAccountsBySection(section); track account.id) {
-          <app-account-card
-            [account]="account"
-            [isRenaming]="isRenamingAccount()"
-            [renameError]="renameError()"
-            (transfer)="handleTransfer($event)"
-            (rename)="handleRenameClick($event)"
-          />
-          }
-        </div>
-      </app-scroll-area>
+      </app-badges>
     </div>
-    } @else {
-    <div class="accounts-list__section-grid">
-      @for (account of getAccountsBySection(section); track account.id) {
-      <app-account-card
-        [account]="account"
-        [isRenaming]="isRenamingAccount()"
-        [renameError]="renameError()"
-        (transfer)="handleTransfer($event)"
-        (rename)="handleRenameClick($event)"
-      />
+
+    <app-scroll-area
+      [direction]="'horizontal'"
+      [height]="'auto'"
+      [scrollbar]="'hidden'"
+      [hideBorder]="true"
+    >
+      <div class="accounts-list__section-grid">
+        @for (account of getAccountsBySection(section); track account.id) {
+        <app-account-card
+          [account]="account"
+          [isRenaming]="isRenamingAccount()"
+          [renameError]="renameError()"
+          (transfer)="handleTransfer($event)"
+          (rename)="handleRenameClick($event)"
+        />
+        }
+      </div>
+      @if (isFetching()) {
+      <div class="accounts-list__section-loader">
+        <app-route-loader
+          [variant]="'pulsing'"
+          [text]="'my-products.accounts.loadingMore' | translate"
+        />
+      </div>
       }
-    </div>
-    }
+    </app-scroll-area>
   </section>
   } }
 </div>

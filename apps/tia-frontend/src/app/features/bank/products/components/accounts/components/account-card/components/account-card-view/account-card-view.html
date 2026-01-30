@@ -10,47 +10,53 @@
           <lib-text-input
             [(ngModel)]="newName"
             [config]="{ placeholder: 'my-products.accounts.card.enterName' | translate }"
+            class="account-card__header-info-edit-input"
           />
+          <div class="account-card__header-info-edit-buttons">
+            <button
+              type="button"
+              class="account-card__header-info-edit-save"
+              (click)="handleSave()"
+              [disabled]="isSaveDisabled()"
+            >
+              @if (isRenaming()) { {{ 'my-products.accounts.card.saving' |
+              translate }} } @else { {{ 'my-products.accounts.card.save' |
+              translate }} }
+            </button>
+            <button
+              type="button"
+              class="account-card__header-info-edit-cancel"
+              (click)="handleCancel()"
+              [disabled]="isRenaming()"
+            >
+              {{ 'my-products.accounts.card.cancel' | translate }}
+            </button>
+          </div>
           @if (renameError()) {
           <p class="account-card__header-info-edit-error">
             {{ renameError() }}
           </p>
           }
-          <button
-            type="button"
-            class="account-card__header-info-edit-save"
-            (click)="handleSave()"
-            [disabled]="isSaveDisabled()"
-          >
-            @if (isRenaming()) { {{ 'my-products.accounts.card.saving' |
-            translate }} } @else { {{ 'my-products.accounts.card.save' |
-            translate }} }
-          </button>
-          <button
-            type="button"
-            class="account-card__header-info-edit-cancel"
-            (click)="handleCancel()"
-            [disabled]="isRenaming()"
-          >
-            {{ 'my-products.accounts.card.cancel' | translate }}
-          </button>
         </div>
         } @else {
-        <h3
-          class="account-card__header-info-name account-card__header-info-name--clickable"
-          (click)="handleRenameClick()"
-          role="button"
-          tabindex="0"
-          (keydown.enter)="handleRenameClick()"
-          (keydown.space)="handleRenameClick()"
-          [title]="'my-products.accounts.card.clickToRename' | translate"
-        >
-          {{ displayName() }}
-        </h3>
-        } @if (account().status === 'active') {
-        <span class="account-card__header-info-badge"
-          >{{ 'my-products.accounts.card.active' | translate }}</span
-        >
+        <div class="account-card__header-info-title">
+          <h3
+            class="account-card__header-info-name account-card__header-info-name--clickable"
+            (click)="handleRenameClick()"
+            role="button"
+            tabindex="0"
+            (keydown.enter)="handleRenameClick()"
+            (keydown.space)="handleRenameClick()"
+            [title]="'my-products.accounts.card.clickToRename' | translate"
+          >
+            {{ displayName() }}
+          </h3>
+          @if (account().status === 'active') {
+          <span class="account-card__header-info-badge"
+            >{{ 'my-products.accounts.card.active' | translate }}</span
+          >
+          }
+        </div>
         }
         <p class="account-card__header-info-number">{{ account().iban }}</p>
       </div>

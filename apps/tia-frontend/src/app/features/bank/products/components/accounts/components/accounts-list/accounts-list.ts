@@ -17,6 +17,7 @@ import {
 import { ErrorStates } from '../../../../../../../shared/lib/feedback/error-states/error-states';
 import { ScrollArea } from '../../../../../../../shared/lib/layout/components/scroll-area/container/scroll-area';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
+import { Badges } from '../../../../../../../shared/lib/primitives/badges/badges';
 
 @Component({
   selector: 'app-accounts-list',
@@ -29,6 +30,7 @@ import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/share
     ErrorStates,
     ScrollArea,
     LibraryTitle,
+    Badges,
   ],
   templateUrl: './accounts-list.html',
   styleUrl: './accounts-list.scss',
@@ -37,6 +39,9 @@ import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/share
 export class AccountsListComponent {
   public accountsGrouped = input.required<GroupedAccounts | null>();
   public isLoading = input.required<boolean>();
+
+  public isFetching = input<boolean>(false);
+
   public error = input<string | null>(null);
   public accountSections = input.required<AccountSection[]>();
   public isRenamingAccount = input.required<boolean>();
