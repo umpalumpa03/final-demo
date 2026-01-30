@@ -11,9 +11,13 @@ import {
 import { FinancesStore } from '../features/bank/finances/store/finances.store';
 import { FinancesService } from '../features/bank/finances/services/finances.service';
 import { ExchangeRateReducer } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.reducers';
-import { accountsFeature, accountsReducer } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
+import {
+  accountsFeature,
+  accountsReducer,
+} from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
 import { ExchangeRatesEffects } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.effects';
 import { AccountsEffects } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.effects';
+import { LoansService } from '../features/bank/loans/shared/services/loans.service';
 
 export const bankRoutes: Routes = [
   {
@@ -21,11 +25,18 @@ export const bankRoutes: Routes = [
     loadComponent: () =>
       import('./bank-container').then((c) => c.BankContainer),
     providers: [
-      provideState({ name: TRANSACTION_FEATURE_KEY, reducer: transactionReducer }),
+      provideState({
+        name: TRANSACTION_FEATURE_KEY,
+        reducer: transactionReducer,
+      }),
       provideState({ name: 'ExchangeRates', reducer: ExchangeRateReducer }),
       provideState(accountsFeature),
 
-      provideEffects([ExchangeRatesEffects, AccountsEffects, transactionEffects])
+      provideEffects([
+        ExchangeRatesEffects,
+        AccountsEffects,
+        transactionEffects,
+      ]),
     ],
     children: [
       {
@@ -70,10 +81,7 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'finances',
-        providers: [
-                  FinancesStore,
-                  FinancesService
-                ],
+        providers: [FinancesStore, FinancesService],
         loadComponent: () =>
           import('../features/bank/finances/container/finances-container').then(
             (c) => c.FinancesContainer,

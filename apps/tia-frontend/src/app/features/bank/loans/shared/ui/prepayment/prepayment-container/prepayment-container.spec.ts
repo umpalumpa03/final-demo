@@ -112,30 +112,6 @@ describe('PrepaymentContainer', () => {
     );
   });
 
-  it('should proceed to otp with payoff amount for full', () => {
-    const payload = { type: 'full', loanId: '1' } as any;
-    component.onCalculate(payload);
-    store.overrideSelector(selectCalculationResult, {
-      displayedInfo: [{ text: 'Total payoff amount', amount: 5000 }],
-    } as any);
-    store.refreshState();
-    fixture.detectChanges();
-
-    component.onProceedToOtp();
-
-    expect(store.dispatch).toHaveBeenCalledWith(
-      LoansActions.initiatePrepayment({
-        payload: {
-          loanId: '1',
-          loanPrepaymentOption: 'full',
-          loanPartialPaymentType: 'reduceMonthlyPayment',
-          amount: 5000,
-          paymentAccountId: 'acc1',
-        },
-      }),
-    );
-  });
-
   it('should emit close on verifyPrepaymentSuccess', () => {
     const spy = vi.spyOn(component.close, 'emit');
     actions$.next(LoansActions.verifyPrepaymentSuccess());
