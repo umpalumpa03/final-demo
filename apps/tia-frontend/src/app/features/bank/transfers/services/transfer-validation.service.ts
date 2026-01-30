@@ -48,11 +48,10 @@ import { RecipientType } from '../models/transfers.state.model';
 @Injectable({ providedIn: 'root' })
 export class TransferValidationService {
   public identifyRecipientType(input: string): RecipientType | null {
-    const cleaned = input.replace(/\s/g, '');
+    const cleaned = input.replace(/\s/g, '').toUpperCase();
 
     if (/^\d/.test(cleaned)) return 'phone';
 
-  
     if (cleaned.startsWith('GE')) {
       if (cleaned.substring(4, 7) === 'TIA') {
         return 'iban-same-bank';

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { environment } from 'apps/tia-frontend/src/environments/environment';
+import { environment } from '../../../../../environments/environment';
 import { Observable } from 'rxjs';
 import { RecipientResponse } from '../models/transfers.state.model';
 
