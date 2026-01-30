@@ -65,8 +65,7 @@
       }
 
       &-edit {
-        display: flex;
-        flex-direction: column;
+        @include display-flex(column, wrap);
         gap: 0.5rem;
         width: 100%;
 
