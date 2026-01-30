@@ -54,7 +54,7 @@ export class Timer implements OnDestroy, OnInit {
       if (this.countdown() === 0) {
         setTimeout(() => {
           this.tokenService.clearAllToken();
-          this.router.navigate(['/auth/sign-in'])
+          this.router.navigate(['/auth/sign-in']);
         }, 1000);
       }
     });
