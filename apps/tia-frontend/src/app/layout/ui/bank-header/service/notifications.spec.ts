@@ -33,59 +33,99 @@ describe('Notifications', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should call hasUnreadNotification endpoint', () => {
-    service.hasUnreadNotification().subscribe();
+  describe('hasUnreadNotification', () => {
+    it('should call hasUnreadNotification endpoint', () => {
+      service.hasUnreadNotification().subscribe();
 
-    const req = httpMock.expectOne(
-      `${environment.apiUrl}/notifications/has-unread`,
-    );
-    expect(req.request.method).toBe('GET');
-    req.flush({ hasUnread: true });
+      const req = httpMock.expectOne(
+        `${environment.apiUrl}/notifications/has-unread`,
+      );
+      expect(req.request.method).toBe('GET');
+      req.flush({ hasUnread: true });
+    });
   });
 
-  it('should call getNotifications with default limit', () => {
-    service.getNotifications().subscribe();
+  describe('getNotifications', () => {
+    it('should call getNotifications with default limit', () => {
+      service.getNotifications().subscribe();
 
-    const req = httpMock.expectOne(
-      (r) =>
-        r.url === `${environment.apiUrl}/notifications` &&
-        r.params.get('page[limit]') === '10',
-    );
-    expect(req.request.method).toBe('GET');
-    req.flush({ data: [], meta: {} });
+      const req = httpMock.expectOne(
+        (r) =>
+          r.url === `${environment.apiUrl}/notifications` &&
+          r.params.get('page[limit]') === '10',
+      );
+      expect(req.request.method).toBe('GET');
+      req.flush({ data: [], meta: {} });
+    });
+
+    it('should call getNotifications with custom limit', () => {
+      service.getNotifications(undefined, 25).subscribe();
+
+      const req = httpMock.expectOne(
+        (r) =>
+          r.url === `${environment.apiUrl}/notifications` &&
+          r.params.get('page[limit]') === '25',
+      );
+      expect(req.request.method).toBe('GET');
+      req.flush({ data: [], meta: {} });
+    });
+
+    it('should include cursor when provided', () => {
+      service.getNotifications('abc123', 10).subscribe();
+
+      const req = httpMock.expectOne(
+        (r) =>
+          r.url === `${environment.apiUrl}/notifications` &&
+          r.params.get('page[cursor]') === 'abc123',
+      );
+      expect(req.request.method).toBe('GET');
+      req.flush({ data: [], meta: {} });
+    });
+
+    it('should not include cursor when undefined', () => {
+      service.getNotifications().subscribe();
+
+      const req = httpMock.expectOne(
+        (r) => r.url === `${environment.apiUrl}/notifications`,
+      );
+      expect(req.request.params.has('page[cursor]')).toBe(false);
+      req.flush({ data: [], meta: {} });
+    });
   });
 
-  it('should call getNotifications with custom limit', () => {
-    service.getNotifications(undefined, 25).subscribe();
+  describe('removeNotification', () => {
+    it('should call DELETE with correct id', () => {
+      service.removeNotification('123').subscribe();
 
-    const req = httpMock.expectOne(
-      (r) =>
-        r.url === `${environment.apiUrl}/notifications` &&
-        r.params.get('page[limit]') === '25',
-    );
-    expect(req.request.method).toBe('GET');
-    req.flush({ data: [], meta: {} });
+      const req = httpMock.expectOne(`${environment.apiUrl}/notifications/123`);
+      expect(req.request.method).toBe('DELETE');
+      req.flush({});
+    });
   });
 
-  it('should include cursor when provided', () => {
-    service.getNotifications('abc123', 10).subscribe();
+  describe('markAllAsRead', () => {
+    it('should call PATCH to read-all endpoint', () => {
+      service.markAllAsRead().subscribe();
 
-    const req = httpMock.expectOne(
-      (r) =>
-        r.url === `${environment.apiUrl}/notifications` &&
-        r.params.get('page[cursor]') === 'abc123',
-    );
-    expect(req.request.method).toBe('GET');
-    req.flush({ data: [], meta: {} });
+      const req = httpMock.expectOne(
+        `${environment.apiUrl}/notifications/read-all`,
+      );
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual({});
+      req.flush({});
+    });
   });
 
-  it('should not include cursor when undefined', () => {
-    service.getNotifications().subscribe();
+  describe('markNotificationRead', () => {
+    it('should call PATCH with correct id', () => {
+      service.markNotificationRead('456').subscribe();
 
-    const req = httpMock.expectOne(
-      (r) => r.url === `${environment.apiUrl}/notifications`,
-    );
-    expect(req.request.params.has('page[cursor]')).toBe(false);
-    req.flush({ data: [], meta: {} });
+      const req = httpMock.expectOne(
+        `${environment.apiUrl}/notifications/456/read`,
+      );
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual({});
+      req.flush({});
+    });
   });
 });
