@@ -92,4 +92,26 @@
       } }
     </div>
   </section>
+
+  <section class="finances-charts">
+    @for (chart of charts(); track chart.title) {
+    <div class="finances-charts__card">
+      <h3 class="chart-title">{{ chart.title }}</h3>
+      <div class="chart-container">
+        @if (chart.data) {
+        <canvas
+          baseChart
+          [data]="chart.data"
+          [options]="chartOptions"
+          [type]="chart.type"
+        ></canvas>
+        } @else {
+        <div class="chart-loading">
+          <app-spinner size="2rem"></app-spinner>
+        </div>
+        }
+      </div>
+    </div>
+    }
+  </section>
 </div>

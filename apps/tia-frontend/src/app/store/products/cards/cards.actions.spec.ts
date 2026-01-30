@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import * as CardsActions from './cards.actions';
-import { CardAccount } from '../../../features/bank/products/components/cards/models/card-account.model';
-import { CardDetail } from '../../../features/bank/products/components/cards/models/card-detail.model';
+import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
+import { CardAccount } from '@tia/shared/models/cards/card-account.model';
+
 
 describe('Cards Actions', () => {
   const mockAccounts: CardAccount[] = [

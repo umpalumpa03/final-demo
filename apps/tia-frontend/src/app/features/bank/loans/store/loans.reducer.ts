@@ -64,26 +64,41 @@ export const loansReducer = createReducer(
     error: null,
   })),
 
+  on(
+    LoansActions.calculatePrepayment,
+    LoansActions.initiatePrepayment,
+    LoansActions.verifyPrepayment,
+    (state) => ({
+      ...state,
+      actionLoading: true,
+      error: null,
+    }),
+  ),
+
   on(LoansActions.calculatePrepaymentSuccess, (state, { result }) => ({
     ...state,
     calculationResult: result,
+    actionLoading: false,
     error: null,
   })),
 
   on(LoansActions.calculatePrepaymentFailure, (state, { error }) => ({
     ...state,
     calculationResult: null,
+    actionLoading: false,
     error,
   })),
 
   on(LoansActions.clearCalculationResult, (state) => ({
     ...state,
     calculationResult: null,
+    activeChallengeId: null,
   })),
 
   on(LoansActions.initiatePrepaymentSuccess, (state, { challengeId }) => ({
     ...state,
     activeChallengeId: challengeId,
+    actionLoading: false,
     error: null,
   })),
 
@@ -91,18 +106,17 @@ export const loansReducer = createReducer(
     ...state,
     activeChallengeId: null,
     calculationResult: null,
+    actionLoading: false,
     error: null,
   })),
 
   on(
     LoansActions.initiatePrepaymentFailure,
     LoansActions.verifyPrepaymentFailure,
-    (state, { error }) => ({ ...state, error }),
+    (state, { error }) => ({
+      ...state,
+      actionLoading: false,
+      error,
+    }),
   ),
-
-  on(LoansActions.clearCalculationResult, (state) => ({
-    ...state,
-    activeChallengeId: null,
-    calculationResult: null,
-  })),
 );

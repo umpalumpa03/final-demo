@@ -44,6 +44,14 @@
     "security": {
         "title": "უსაფრთხოების პარამეტრები",
         "changePassword": "პაროლის შეცვლა",
+        "changePasswordSubtitle": "განაახლეთ თქვენი პაროლი ანგარიშის უსაფრთხოებისთვის",
+        "currentPassword": "მიმდინარე პაროლი",
+        "currentPasswordPlaceholder": "შეიყვანეთ მიმდინარე პაროლი",
+        "newPassword": "ახალი პაროლი",
+        "newPasswordPlaceholder": "შეიყვანეთ ახალი პაროლი",
+        "confirmNewPassword": "დაადასტურეთ ახალი პაროლი",
+        "confirmNewPasswordPlaceholder": "დაადასტურეთ ახალი პაროლი",
+        "updatePassword": "პაროლის განახლება",
         "twoFactorAuth": "ორი ფაქტორიანი ავთენტიფიკაცია"
     },
     "user-management": {
