@@ -12,8 +12,9 @@ import { BankHeader } from '../components/bank-header/bank-header';
 import { HeaderNotifications } from '../components/header-notifications/header-notifications';
 import { Notifications } from '../service/notifications';
 import { Observable, tap } from 'rxjs';
-import { NotificationsData } from '../modals/notification.model';
+import { NotificationsData } from '../models/notification.model';
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
+import { NotificationsStore } from '../store/notifications.store';
 import { selectCurrentAvatarUrl } from '../../../../store/profile-photo/profile-photo.selectors';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -23,13 +24,16 @@ import { toSignal } from '@angular/core/rxjs-interop';
   templateUrl: './bank-header-container.html',
   styleUrl: './bank-header-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [NotificationsStore],
 })
 export class BankHeaderContainer implements OnInit {
+  readonly notificationsStore = inject(NotificationsStore);
+
   private store = inject(Store);
   public headerNotificationService = inject(Notifications);
   public inboxService = inject(InboxService);
 
-  public hasUnread = signal<boolean>(false);
+  public hasUnread = this.notificationsStore.hasUnread;
   public anchorEl = signal<ElementRef | undefined>(undefined);
   public isModalOpen = signal<boolean>(false);
   public notificationsItems$!: Observable<NotificationsData>;
@@ -37,23 +41,16 @@ export class BankHeaderContainer implements OnInit {
   public avatarUrl = toSignal(this.store.select(selectCurrentAvatarUrl));
 
   ngOnInit(): void {
-    this.headerNotificationService
-      .hasUnreadNotification()
-      .pipe(
-        tap((value) => {
-          this.hasUnread.set(value.hasUnread);
-        }),
-      )
-      .subscribe();
+    this.notificationsStore.hasUnreadNotifications();
 
-      this.inboxService.fetchInboxCount();
+    this.inboxService.fetchInboxCount();
   }
 
   public onNotificationClick(el: ElementRef): void {
     this.anchorEl.set(el);
-    this.notificationsItems$ = this.headerNotificationService
-      .getNotifications()
-      .pipe(tap((data) => console.log(data)));
+    this.notificationsStore.fetchNotifications({
+      limit: this.notificationsStore.limitPerPage(),
+    });
     this.isModalOpen.update((v) => !v);
   }
 }
