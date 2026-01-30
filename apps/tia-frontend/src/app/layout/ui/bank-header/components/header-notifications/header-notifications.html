@@ -53,7 +53,7 @@
         <p>Mark all as read</p>
       </div>
     </header>
-    <app-scroll-area height="95%">
+    <app-scroll-area [hideBorder]="true" height="95%">
       @for (item of notificationsItems(); track $index) {
       <div
         class="header-notifications__main__item"
