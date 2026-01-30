@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { finalize } from 'rxjs';
+import { catchError, EMPTY, finalize, tap } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
 import { forgotPasswordSegments } from '../forgot-password.routes';
@@ -36,19 +36,19 @@ export class ResetPassword implements OnInit {
     const password = formValue.password;
     this.authService
       .createNewPassword(password)
-      .pipe(finalize(() => this.isSubmitting.set(false)))
-      .subscribe({
-        next: () => {
-          this.router.navigate(['/auth', ...forgotPasswordSegments.success]);
-        },
-        error: (error) => {
+      .pipe(
+        finalize(() => this.isSubmitting.set(false)),
+        tap(() => this.router.navigate(['/auth', ...forgotPasswordSegments.success])),
+        catchError((error) => {
           const httpError = error as HttpErrorResponse;
-          if (httpError?.status === 400) {
-            this.submitError.set('Unable to reset password. Please try again.');
-          } else {
-            this.submitError.set('Something went wrong. Please try again.');
-          }
-        },
-      });
+          this.submitError.set(
+            httpError?.status === 400
+              ? 'Unable to reset password. Please try again.'
+              : 'Something went wrong. Please try again.',
+          );
+          return EMPTY;
+        }),
+      )
+      .subscribe();
   }
 }
