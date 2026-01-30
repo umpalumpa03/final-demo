@@ -60,10 +60,6 @@
       transform: translate(-50%, -50%);
       z-index: 999;
     }
-
-    &__data--fetching {
-    }
-
     &__header {
       @include flex-center($justify: space-between);
       @include font-inter(400, 1.4rem, 2rem);

@@ -24,6 +24,7 @@
       icon="trash-icon.svg"
       style="width: 100%"
       class="header-notifications__header__button"
+      (click)="OnDeleteMultipleClick(selectedItems())"
     >
       Delete ({{ selectedItems().length }})
     </app-button>
@@ -36,7 +37,10 @@
     header="Empty Notifications"
     message="There are no notifications"
     width="100%"
+    maxWidth="100%"
     height="90%"
+    [border]="false"
+    [showButton]="false"
   />
   }@else {
   <main class="header-notifications__main">
@@ -44,14 +48,14 @@
       <div class="header-notifications__main__header__select">
         <lib-checkboxes
           [checked]="isAllSelected()"
-          (change)="toggleSelectAll(notificationsItems())"
+          (change)="onSelectAllClicked(notificationItems())"
         ></lib-checkboxes>
         Select All
       </div>
       <div class="header-notifications__main__header__cta--all">
         <button
           (click)="onMarkAllClick()"
-          [disabled]="!notificationsItems().length"
+          [disabled]="!notificationItems().length"
         >
           <img
             class="header-notifications__main__header__cta--all__read"
@@ -63,7 +67,7 @@
         <p>/</p>
         <button
           (click)="onDeleteAllClicked()"
-          [disabled]="!notificationsItems().length"
+          [disabled]="!notificationItems().length"
         >
           <img
             class="header-notifications__main__header__cta--all__delete"
@@ -80,7 +84,7 @@
       [hideBorder]="true"
       height="95%"
     >
-      @for (item of notificationsItems(); track $index) {
+      @for (item of notificationItems(); track $index) {
       <div
         class="header-notifications__main__item"
         [class.unread]="!item.isRead"
@@ -90,7 +94,7 @@
       >
         <div class="header-notifications__main__item__checkbox">
           <lib-checkboxes
-            (change)="individualItemSelection(item.id)"
+            (change)="onSelectItemClicked(item.id)"
             [checked]="isItemSelected(item.id)"
           ></lib-checkboxes>
         </div>
@@ -109,7 +113,10 @@
           <span class="header-notifications__main__item__cta--icon"></span>
           }
 
-          <button (click)="onTrashIconClick(item.id)">
+          <button
+            (click)="onTrashIconClick(item.id)"
+            [disabled]="selectedItems().length"
+          >
             <img
               class="header-notifications__main__item__cta--delete"
               src="images/svg/header-notifications/delete.svg"

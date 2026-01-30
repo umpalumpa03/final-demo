@@ -10,10 +10,10 @@ import { computed, inject } from '@angular/core';
 import { Notifications } from '../service/notifications';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { filter, forkJoin, pipe, switchMap, tap } from 'rxjs';
-import { items } from 'apps/tia-frontend/src/app/features/storybook/components/drag-and-drop/config/draggable-data.config';
 
 export const initialState: NotificationsState = {
   items: [],
+  selectedItems: [],
   pageInfo: {
     hasNext: false,
     nextCursor: '',
@@ -34,6 +34,12 @@ export const NotificationsStore = signalStore(
       () => store.items().filter((item) => !item.isRead).length,
     ),
     isEmpty: computed(() => !store.isLoading() && store.items().length === 0),
+    isAllSelected: computed(() => {
+      return (
+        store.items().length === store.selectedItems().length &&
+        store.items().length > 0
+      );
+    }),
   })),
   withMethods((store) => {
     const notificationsService = inject(Notifications);
@@ -153,6 +159,7 @@ export const NotificationsStore = signalStore(
                     items: [],
                     hasUnread: false,
                     isLoading: false,
+                    selectedItems: [],
                   });
                 },
                 error: () => patchState(store, { hasError: true }),
@@ -171,7 +178,6 @@ export const NotificationsStore = signalStore(
               .map((item) =>
                 ids.includes(item.id) ? { ...item, isRead: true } : item,
               );
-
             patchState(store, {
               items: updatedItems,
               unreadNotificationsNumber: updatedItems.filter(
@@ -181,20 +187,77 @@ export const NotificationsStore = signalStore(
             });
           }),
           switchMap((ids) =>
-            // Send API calls in parallel
             forkJoin(
               ids.map((id) => notificationsService.markNotificationRead(id)),
             ).pipe(
               tap({
-                next: () => {
-                  // Already updated UI, nothing more to do
-                },
+                next: () => {},
                 error: () => patchState(store, { hasError: true }),
               }),
             ),
           ),
         ),
       ),
+
+      deleteMultiple: rxMethod<string[]>(
+        pipe(
+          tap(() => {
+            patchState(store, {
+              isLoading: true,
+            });
+          }),
+          switchMap((ids) => {
+            return notificationsService.deleteMultiple(ids).pipe(
+              tap({
+                next: () => {
+                  const updatedItems = store
+                    .items()
+                    .filter((item) => !ids.includes(item.id));
+                  patchState(store, {
+                    items: updatedItems,
+                    isLoading: false,
+                    selectedItems: [],
+                  });
+                },
+                error: () => patchState(store, { hasError: true }),
+              }),
+            );
+          }),
+        ),
+      ),
+
+      toggleSelectAll(): void {
+        if (store.isAllSelected()) {
+          patchState(store, { selectedItems: [] });
+        } else {
+          patchState(store, {
+            selectedItems: store.items().map((item) => item.id),
+          });
+        }
+      },
+
+      toggleItemSelection(id: string): void {
+        const currentSelected = store.selectedItems();
+        const exists = currentSelected.includes(id);
+
+        if (exists) {
+          patchState(store, {
+            selectedItems: currentSelected.filter((itemId) => itemId !== id),
+          });
+        } else {
+          patchState(store, {
+            selectedItems: [...currentSelected, id],
+          });
+        }
+      },
+
+      clearSelection(): void {
+        patchState(store, { selectedItems: [] });
+      },
+
+      isItemSelected(id: string): boolean {
+        return store.selectedItems().includes(id);
+      },
     };
   }),
 );

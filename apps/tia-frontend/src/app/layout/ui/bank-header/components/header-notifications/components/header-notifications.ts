@@ -1,12 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
-  effect,
-  ElementRef,
   inject,
   input,
-  signal,
+  output,
 } from '@angular/core';
 
 import { ItemsData } from '../models/notification.model';
@@ -38,113 +35,75 @@ import { VisibleInViewportDirective } from '../directives/visible-in-viewport.di
 export class HeaderNotifications {
   readonly store = inject(NotificationsStore);
 
-  public isOpen = input<boolean>();
-  public anchor = input<ElementRef | undefined>();
+  // For Modal Appearance
+  public readonly isOpen = input<boolean>(false);
+  public readonly top = input<number>(0);
+  public readonly left = input<number>(0);
 
-  // Store working
-  public notificationsItems = this.store.items;
-  public isLoading = this.store.isLoading;
-  public hasError = this.store.hasError;
-  public unreadLeft = this.store.unreadNotificationsNumber;
-  public isFetching = this.store.isFetching;
-  public isEmpty = this.store.isEmpty;
+  // Store Management working
+  public notificationItems = input<ItemsData[]>([]);
+  public isLoading = input<boolean>(false);
+  public hasError = input<boolean>(false);
+  public unreadLeft = input<number>(0);
+  public isFetching = input<boolean>(false);
+  public isEmpty = input<boolean>(false);
 
-  public top = signal(0);
-  public left = signal(0);
+  // Notifications Selection Inputs
+  public isAllSelected = input<boolean>(false);
+  public selectedItems = input<string[]>([]);
 
-  public isAllSelected = computed(() => {
-    return (
-      this.notificationsItems().length === this.selectedItems().length &&
-      this.notificationsItems().length > 0
-    );
-  });
-  public selectedItems = signal<string[]>([]);
+  // Outputs For Selection
+  public selectAll = output<ItemsData[]>();
+  public selectItem = output<string>();
 
-  constructor() {
-    effect(() => {
-      const anchorEl = this.anchor();
-      const open = this.isOpen();
-
-      if (!anchorEl || !open) return;
-
-      const rect = anchorEl.nativeElement.getBoundingClientRect();
-
-      this.top.set(rect.bottom + window.scrollY);
-      this.left.set(rect.right - 380);
-    });
+  public onSelectAllClicked(messages: ItemsData[]): void {
+    this.selectAll.emit(messages);
   }
 
-  public toggleSelectAll(messages: ItemsData[]) {
-    if (this.isAllSelected()) {
-      this.selectedItems.set([]);
-    } else {
-      this.selectedItems.set(messages.map((item) => item.id));
-    }
+  public onSelectItemClicked(id: string): void {
+    this.selectItem.emit(id);
   }
 
-  public individualItemSelection(id: string) {
-    this.selectedItems.update((items) => {
-      const exists = items.includes(id);
-
-      if (exists) {
-        return items.filter((itemId) => itemId !== id);
-      }
-
-      return [...items, id];
-    });
-  }
-
+  // What to do with this ?????????????
   public isItemSelected(id: string) {
     return this.selectedItems().includes(id);
   }
 
+  // Action Properties
+  public deleteNotification = output<string>();
+  public markAllAsRead = output<void>();
+  public deleteAllNotification = output<void>();
+  public deleteMultipleNotification = output<string[]>();
+
+  // Action Methods
   public onTrashIconClick(id: string) {
-    this.store.deleteNotification(id);
+    this.deleteNotification.emit(id);
   }
 
   public onMarkAllClick() {
-    this.store.markAllAsRead();
+    this.markAllAsRead.emit();
   }
+
   public onDeleteAllClicked() {
-    this.store.deleteAll();
+    this.deleteAllNotification.emit();
   }
+
+  public OnDeleteMultipleClick(ids: string[]) {
+    this.deleteMultipleNotification.emit(ids);
+  }
+
+  // Scroll Handler
+  public scrollBottom = output<void>();
 
   public onScrollBottom() {
-    if (this.store.pageInfo().hasNext) {
-      this.store.fetchNotifications({
-        cursor: this.store.pageInfo().nextCursor,
-        limit: this.store.limitPerPage(),
-      });
-
-      console.log('hello');
-    }
+    this.scrollBottom.emit();
   }
 
-  private pendingReadItems = new Set<string>();
-  private debounceTimer: ReturnType<typeof setTimeout> | null = null;
+  // Visibility handler
+
+  public itemVisible = output<string>();
 
   public onItemBecameVisible(itemId: string): void {
-    this.pendingReadItems.add(itemId);
-
-    if (this.debounceTimer) {
-      clearTimeout(this.debounceTimer);
-    }
-
-    this.debounceTimer = setTimeout(() => {
-      this.markPendingItemsAsRead();
-    }, 2000);
-  }
-
-  private markPendingItemsAsRead(): void {
-    if (this.pendingReadItems.size === 0) return;
-
-    const itemIds = Array.from(this.pendingReadItems);
-    this.pendingReadItems.clear();
-    this.store.markItemsRead(itemIds);
-  }
-  ngOnDestroy(): void {
-    if (this.debounceTimer) {
-      clearTimeout(this.debounceTimer);
-    }
+    this.itemVisible.emit(itemId);
   }
 }

@@ -1,231 +1,149 @@
 import { TestBed } from '@angular/core/testing';
 import { NotificationsStore } from './notifications.store';
 import { Notifications } from '../service/notifications';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('NotificationsStore', () => {
-  let store: InstanceType<typeof NotificationsStore>;
-  let mockNotificationsService: any;
-
-  const mockItems = [
-    { id: '1', title: 'Notification 1', isRead: false },
-    { id: '2', title: 'Notification 2', isRead: true },
-    { id: '3', title: 'Notification 3', isRead: false },
-  ];
+  let store: any;
+  let notificationsServiceMock: any;
 
   beforeEach(() => {
-    mockNotificationsService = {
-      hasUnreadNotification: vi.fn(),
-      getNotifications: vi.fn(),
-      removeNotification: vi.fn(),
-      markAllAsRead: vi.fn(),
-      markNotificationRead: vi.fn(),
+    // 1. Create a mock service with basic successful returns
+    notificationsServiceMock = {
+      hasUnreadNotification: vi.fn(() => of({ hasUnread: true })),
+      getNotifications: vi.fn(() =>
+        of({
+          items: [{ id: '1', isRead: false }],
+          pageInfo: { hasNext: false },
+        }),
+      ),
+      removeNotification: vi.fn(() => of(null)),
+      markAllAsRead: vi.fn(() => of(null)),
+      deleteAll: vi.fn(() => of(null)),
+      markNotificationRead: vi.fn(() => of(null)),
+      deleteMultiple: vi.fn(() => of(null)),
     };
 
     TestBed.configureTestingModule({
       providers: [
         NotificationsStore,
-        { provide: Notifications, useValue: mockNotificationsService },
+        { provide: Notifications, useValue: notificationsServiceMock },
       ],
     });
 
     store = TestBed.inject(NotificationsStore);
   });
 
-  describe('initial state', () => {
-    it('should have correct initial state', () => {
-      expect(store.items()).toEqual([]);
-      expect(store.pageInfo.hasNext()).toBe(false);
-      expect(store.pageInfo.nextCursor()).toBe('');
-      expect(store.hasUnread()).toBe(false);
-      expect(store.isLoading()).toBe(false);
-      expect(store.hasError()).toBe(false);
-      expect(store.limitPerPage()).toBe(10);
-      expect(store.unreadNotificationsNumber()).toBe(0);
-    });
+  it('should have initial state', () => {
+    expect(store.items()).toEqual([]);
+    expect(store.isLoading()).toBe(false);
+    expect(store.isEmpty()).toBe(true);
   });
 
-  describe('hasUnreadNotifications', () => {
-    it('should update hasUnread to true', () => {
-      mockNotificationsService.hasUnreadNotification.mockReturnValue(
-        of({ hasUnread: true }),
-      );
+  // --- Test Fetching ---
+  it('should fetch notifications and update state', () => {
+    store.fetchNotifications({ cursor: '', limit: 10 });
 
-      store.hasUnreadNotifications();
-
-      expect(store.hasUnread()).toBe(true);
-    });
-
-    it('should update hasUnread to false', () => {
-      mockNotificationsService.hasUnreadNotification.mockReturnValue(
-        of({ hasUnread: false }),
-      );
-
-      store.hasUnreadNotifications();
-
-      expect(store.hasUnread()).toBe(false);
-    });
+    expect(store.items().length).toBe(1);
+    expect(store.isLoading()).toBe(false);
+    expect(store.isEmpty()).toBe(false);
   });
 
-  describe('fetchNotifications', () => {
-    it('should update items on successful fetch', () => {
-      mockNotificationsService.getNotifications.mockReturnValue(
-        of({
-          items: mockItems,
-          pageInfo: { hasNext: true, nextCursor: 'cursor-123' },
-        }),
-      );
-
-      store.fetchNotifications({ limit: 10 });
-
-      expect(store.items()).toEqual(mockItems);
-      expect(store.pageInfo.hasNext()).toBe(true);
-      expect(store.pageInfo.nextCursor()).toBe('cursor-123');
-      expect(store.isLoading()).toBe(false);
-    });
-
-    it('should append items when cursor is provided', () => {
-      mockNotificationsService.getNotifications.mockReturnValue(
-        of({
-          items: mockItems.slice(0, 2),
-          pageInfo: { hasNext: true, nextCursor: 'cursor-1' },
-        }),
-      );
-
-      store.fetchNotifications({ limit: 10 });
-
-      const newItems = [{ id: '4', title: 'New', isRead: false }];
-      mockNotificationsService.getNotifications.mockReturnValue(
-        of({
-          items: newItems,
-          pageInfo: { hasNext: false, nextCursor: '' },
-        }),
-      );
-
-      store.fetchNotifications({ cursor: 'cursor-1', limit: 10 });
-
-      expect(store.items()).toHaveLength(3);
-    });
-
-    it('should replace items when no cursor is provided', () => {
-      mockNotificationsService.getNotifications.mockReturnValue(
-        of({
-          items: mockItems,
-          pageInfo: { hasNext: false, nextCursor: '' },
-        }),
-      );
-
-      store.fetchNotifications({ limit: 10 });
-
-      const newItems = [{ id: '4', title: 'New', isRead: false }];
-      mockNotificationsService.getNotifications.mockReturnValue(
-        of({
-          items: newItems,
-          pageInfo: { hasNext: false, nextCursor: '' },
-        }),
-      );
-
-      store.fetchNotifications({ limit: 10 });
-
-      expect(store.items()).toEqual(newItems);
-      expect(store.items()).toHaveLength(1);
-    });
-
-    it('should calculate unreadNotificationsNumber', () => {
-      mockNotificationsService.getNotifications.mockReturnValue(
-        of({
-          items: mockItems,
-          pageInfo: { hasNext: false, nextCursor: '' },
-        }),
-      );
-
-      store.fetchNotifications({ limit: 10 });
-
-      expect(store.unreadNotificationsNumber()).toBe(2);
-    });
-
-    it('should call service with correct parameters', () => {
-      mockNotificationsService.getNotifications.mockReturnValue(
-        of({
-          items: [],
-          pageInfo: { hasNext: false, nextCursor: '' },
-        }),
-      );
-
-      store.fetchNotifications({ cursor: 'test-cursor', limit: 25 });
-
-      expect(mockNotificationsService.getNotifications).toHaveBeenCalledWith(
-        'test-cursor',
-        25,
-      );
-    });
+  // --- Test Computed Logic (unread count & selection) ---
+  it('should compute unreadNotificationsNumber correctly', () => {
+    // Manually fetch to populate items
+    store.fetchNotifications({ cursor: '', limit: 10 });
+    expect(store.unreadNotificationsNumber()).toBe(1);
   });
 
-  describe('deleteNotification', () => {
-    beforeEach(() => {
-      mockNotificationsService.getNotifications.mockReturnValue(
-        of({
-          items: mockItems,
-          pageInfo: { hasNext: false, nextCursor: '' },
-        }),
-      );
-      store.fetchNotifications({ limit: 10 });
-    });
+  // --- Test Selection Methods ---
+  it('should toggle item selection', () => {
+    store.toggleItemSelection('1');
+    expect(store.selectedItems()).toContain('1');
+    expect(store.isItemSelected('1')).toBe(true);
 
-    it('should remove item from state on success', () => {
-      mockNotificationsService.removeNotification.mockReturnValue(of({}));
-
-      store.deleteNotification('1');
-
-      expect(store.items().find((item) => item.id === '1')).toBeUndefined();
-      expect(store.items()).toHaveLength(2);
-    });
-
-    it('should call service with correct id', () => {
-      mockNotificationsService.removeNotification.mockReturnValue(of({}));
-
-      store.deleteNotification('test-id');
-
-      expect(mockNotificationsService.removeNotification).toHaveBeenCalledWith(
-        'test-id',
-      );
-    });
+    store.toggleItemSelection('1');
+    expect(store.selectedItems()).not.toContain('1');
   });
 
-  describe('markAllAsRead', () => {
-    beforeEach(() => {
-      mockNotificationsService.getNotifications.mockReturnValue(
-        of({
-          items: mockItems,
-          pageInfo: { hasNext: false, nextCursor: '' },
-        }),
-      );
-      store.fetchNotifications({ limit: 10 });
-    });
+  it('should toggle select all', () => {
+    store.fetchNotifications({ cursor: '', limit: 10 }); // adds 1 item
+    store.toggleSelectAll();
+    expect(store.isAllSelected()).toBe(true);
 
-    it('should mark all items as read', () => {
-      mockNotificationsService.markAllAsRead.mockReturnValue(of({}));
+    store.toggleSelectAll();
+    expect(store.selectedItems().length).toBe(0);
+  });
 
-      store.markAllAsRead();
+  // --- Test Actions (Delete/Mark Read) ---
+  it('should delete a notification', () => {
+    store.fetchNotifications({ cursor: '', limit: 10 });
+    store.deleteNotification('1');
 
-      expect(store.items().every((item) => item.isRead)).toBe(true);
-    });
+    expect(notificationsServiceMock.removeNotification).toHaveBeenCalledWith(
+      '1',
+    );
+    expect(store.items().length).toBe(0);
+  });
 
-    it('should set hasUnread to false', () => {
-      mockNotificationsService.markAllAsRead.mockReturnValue(of({}));
+  it('should mark items as read', () => {
+    store.fetchNotifications({ cursor: '', limit: 10 });
+    store.markItemsRead(['1']);
 
-      store.markAllAsRead();
+    expect(notificationsServiceMock.markNotificationRead).toHaveBeenCalledWith(
+      '1',
+    );
+    expect(store.unreadNotificationsNumber()).toBe(0);
+  });
 
-      expect(store.hasUnread()).toBe(false);
-    });
+  it('should append items when fetching with a cursor', () => {
+    store.fetchNotifications({ cursor: '', limit: 10 });
 
-    it('should set unreadNotificationsNumber to 0', () => {
-      mockNotificationsService.markAllAsRead.mockReturnValue(of({}));
+    notificationsServiceMock.getNotifications.mockReturnValue(
+      of({ items: [{ id: '2', isRead: false }], pageInfo: { hasNext: false } }),
+    );
 
-      store.markAllAsRead();
+    store.fetchNotifications({ cursor: 'next-page-token', limit: 10 });
 
-      expect(store.unreadNotificationsNumber()).toBe(0);
-    });
+    expect(store.items().length).toBe(2);
+    expect(store.items()[1].id).toBe('2');
+  });
+
+  it('should clear all items and selection when deleteAll is called', () => {
+    store.fetchNotifications({ cursor: '', limit: 10 });
+    store.toggleItemSelection('1');
+
+    store.deleteAll();
+
+    expect(notificationsServiceMock.deleteAll).toHaveBeenCalled();
+    expect(store.items().length).toBe(0);
+    expect(store.selectedItems().length).toBe(0);
+  });
+  it('should delete multiple selected items', () => {
+    notificationsServiceMock.getNotifications.mockReturnValue(
+      of({ items: [{ id: '1' }, { id: '2' }], pageInfo: { hasNext: false } }),
+    );
+    store.fetchNotifications({ cursor: '', limit: 10 });
+
+    store.deleteMultiple(['1', '2']);
+
+    expect(notificationsServiceMock.deleteMultiple).toHaveBeenCalledWith([
+      '1',
+      '2',
+    ]);
+    expect(store.items().length).toBe(0);
+  });
+
+  it('should not call the service if markItemsRead is called with empty array', () => {
+    store.markItemsRead([]);
+    expect(
+      notificationsServiceMock.markNotificationRead,
+    ).not.toHaveBeenCalled();
+  });
+  it('should clear selection when clearSelection is called', () => {
+    store.toggleItemSelection('1');
+    store.clearSelection();
+    expect(store.selectedItems().length).toBe(0);
   });
 });

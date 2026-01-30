@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import {
   HasUnreadNotifications,
   NotificationsData,
+  successMessage,
 } from '../models/notification.model';
 import { environment } from '../../../../../../../environments/environment';
 
@@ -37,20 +38,35 @@ export class Notifications {
     );
   }
 
-  public removeNotification(id: string) {
-    return this.http.delete(`${environment.apiUrl}/notifications/${id}`);
+  public removeNotification(id: string): Observable<successMessage> {
+    return this.http.delete<successMessage>(
+      `${environment.apiUrl}/notifications/${id}`,
+    );
   }
 
-  public markAllAsRead() {
-    return this.http.patch(`${environment.apiUrl}/notifications/read-all`, {});
+  public markAllAsRead(): Observable<successMessage> {
+    return this.http.patch<successMessage>(
+      `${environment.apiUrl}/notifications/read-all`,
+      {},
+    );
   }
 
-  public deleteAll() {
-    return this.http.delete(`${environment.apiUrl}/notifications/remove-all`);
+  public deleteAll(): Observable<successMessage> {
+    return this.http.delete<successMessage>(
+      `${environment.apiUrl}/notifications/remove-all`,
+    );
+  }
+  public deleteMultiple(ids: string[]): Observable<successMessage> {
+    return this.http.delete<successMessage>(
+      `${environment.apiUrl}/notifications/delete-many`,
+      {
+        body: { ids },
+      },
+    );
   }
 
-  public markNotificationRead(id: string) {
-    return this.http.patch(
+  public markNotificationRead(id: string): Observable<successMessage> {
+    return this.http.patch<successMessage>(
       `${environment.apiUrl}/notifications/${id}/read`,
       {},
     );

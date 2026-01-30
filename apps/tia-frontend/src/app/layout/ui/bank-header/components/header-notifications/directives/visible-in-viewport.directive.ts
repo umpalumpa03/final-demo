@@ -5,6 +5,7 @@ import {
   OnDestroy,
   input,
   output,
+  inject,
 } from '@angular/core';
 
 @Directive({
@@ -12,38 +13,25 @@ import {
   standalone: true,
 })
 export class VisibleInViewportDirective implements AfterViewInit, OnDestroy {
-  // Inputs
   public appVisibleInViewport = input.required<string>();
   public isRead = input<boolean>(false);
 
-  // Output
   public becameVisible = output<string>();
 
-  private observer: IntersectionObserver | null = null;
+  private readonly el = inject(ElementRef<HTMLElement>);
+  private observer?: IntersectionObserver;
   private hasEmitted = false;
 
-  constructor(private el: ElementRef<HTMLElement>) {}
-
   ngAfterViewInit(): void {
-    if (this.isRead()) {
-      return;
-    }
+    if (this.isRead()) return;
 
-    this.observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !this.hasEmitted && !this.isRead()) {
-            this.hasEmitted = true;
-            this.becameVisible.emit(this.appVisibleInViewport());
-
-            this.observer?.unobserve(this.el.nativeElement);
-          }
-        });
-      },
-      {
-        threshold: 0.5,
-      },
-    );
+    this.observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !this.hasEmitted && !this.isRead()) {
+        this.hasEmitted = true;
+        this.becameVisible.emit(this.appVisibleInViewport());
+        this.observer?.disconnect();
+      }
+    });
 
     this.observer.observe(this.el.nativeElement);
   }

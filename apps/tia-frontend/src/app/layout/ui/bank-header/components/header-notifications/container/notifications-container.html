@@ -1,1 +1,21 @@
-<p>notifications-container works!</p>
+<app-header-notifications
+  [isOpen]="isModalOpen()"
+  [top]="position().top"
+  [left]="position().left"
+  [notificationItems]="notificationItems()"
+  [isLoading]="isLoading()"
+  [hasError]="hasError()"
+  [isFetching]="isFetching()"
+  [isEmpty]="isEmpty()"
+  [unreadLeft]="unreadLeft()"
+  [selectedItems]="selectedItems()"
+  [isAllSelected]="isAllSelected()"
+  (selectAll)="toggleSelectAll()"
+  (selectItem)="individualItemSelection($event)"
+  (deleteNotification)="handleDeleteNotification($event)"
+  (markAllAsRead)="handleMarkAllAsRead()"
+  (deleteAllNotification)="handleDeleteAllNotification()"
+  (scrollBottom)="handleScrollToBottom()"
+  (deleteMultipleNotification)="handleMultipleDeletion($event)"
+  (itemVisible)="handleItemVisible($event)"
+></app-header-notifications>
