@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
 import { AuthService } from '../../../services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -13,7 +13,7 @@ import { IMfaVerifyRequest } from '../../../models/authRequest.models';
 export class VerifySignin {
   private authService = inject(AuthService);
 
-  public isLoading = false;
+  public isLoading = signal(false);
   public title = 'OTP Verification';
   public subText = "We've sent a 6-digit code to test";
   public submitBtnName = 'Verify';

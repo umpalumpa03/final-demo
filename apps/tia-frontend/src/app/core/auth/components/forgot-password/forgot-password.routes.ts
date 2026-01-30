@@ -3,8 +3,8 @@ import { Routes } from '@angular/router';
 export const forgotPasswordSegments = {
   base: ['forgot-password'],
   otp: ['verify-otp-reset'],
-  reset: ['forgot-password', 'reset'],
-  success: ['forgot-password', 'success'],
+  reset: ['reset-password'],
+  success: ['success'],
 };
 
 export const forgotPasswordRoutes: Routes = [
@@ -23,14 +23,14 @@ export const forgotPasswordRoutes: Routes = [
       ).then((c) => c.ForgotPasswordVerify),
   },
   {
-    path: 'forgot-password/reset',
+    path: 'reset-password',
     loadComponent: () =>
       import('../forgot-password/reset-password/reset-password').then(
         (c) => c.ResetPassword,
       ),
   },
   {
-    path: 'forgot-password/success',
+    path: 'success',
     redirectTo: 'sign-in',
     pathMatch: 'full',
   },
