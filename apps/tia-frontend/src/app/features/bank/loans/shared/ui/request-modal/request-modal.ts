@@ -84,7 +84,8 @@ export class RequestModal implements OnInit {
   }
 
   private getTranslatedConfig() {
-    const t = (key?: string) => (key ? this.translate.instant(key) : undefined);
+    const translate = (key?: string) =>
+      key ? this.translate.instant(key) : undefined;
 
     type OriginalConfig = typeof LOAN_FORM_CONFIG;
 
@@ -98,6 +99,7 @@ export class RequestModal implements OnInit {
       };
     };
 
+    type ConfigValue = TranslatableConfig[keyof TranslatableConfig];
     const newConfig = { ...LOAN_FORM_CONFIG } as unknown as TranslatableConfig;
 
     (Object.keys(newConfig) as Array<keyof TranslatableConfig>).forEach(
@@ -105,16 +107,17 @@ export class RequestModal implements OnInit {
         const field = { ...newConfig[key] };
 
         if ('label' in field && field.label) {
-          field.label = t(field.label);
+          field.label = translate(field.label);
         }
         if ('placeholder' in field && field.placeholder) {
-          field.placeholder = t(field.placeholder);
+          field.placeholder = translate(field.placeholder);
         }
         if ('errorMessage' in field && field.errorMessage) {
-          field.errorMessage = t(field.errorMessage);
+          field.errorMessage = translate(field.errorMessage);
         }
 
-        (newConfig as any)[key] = field;
+        (newConfig as Record<keyof TranslatableConfig, ConfigValue>)[key] =
+          field;
       },
     );
 

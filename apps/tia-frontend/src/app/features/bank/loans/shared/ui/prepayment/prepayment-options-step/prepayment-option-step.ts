@@ -73,7 +73,8 @@ export class PrepaymentOptionStep {
   );
 
   private getTranslatedConfig() {
-    const t = (key?: string) => (key ? this.translate.instant(key) : undefined);
+    const translate = (key?: string) =>
+      key ? this.translate.instant(key) : undefined;
 
     type OriginalConfig = typeof PREPAYMENT_FORM_CONFIG;
 
@@ -87,6 +88,8 @@ export class PrepaymentOptionStep {
       };
     };
 
+    type ConfigValue = TranslatableConfig[keyof TranslatableConfig];
+
     const newConfig = {
       ...PREPAYMENT_FORM_CONFIG,
     } as unknown as TranslatableConfig;
@@ -96,13 +99,14 @@ export class PrepaymentOptionStep {
         const field = { ...newConfig[key] };
 
         if ('label' in field && field.label) {
-          field.label = t(field.label as string);
+          field.label = translate(field.label as string);
         }
         if ('placeholder' in field && field.placeholder) {
-          field.placeholder = t(field.placeholder as string);
+          field.placeholder = translate(field.placeholder as string);
         }
 
-        (newConfig as any)[key] = field;
+        (newConfig as Record<keyof TranslatableConfig, ConfigValue>)[key] =
+          field;
       },
     );
 
