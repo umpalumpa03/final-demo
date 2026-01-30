@@ -5,6 +5,7 @@ import { RequestModal } from './request-modal';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Store } from '@ngrx/store';
 import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('RequestModal', () => {
   let component: RequestModal;
@@ -37,7 +38,7 @@ describe('RequestModal', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RequestModal, ReactiveFormsModule],
+      imports: [RequestModal, ReactiveFormsModule, TranslateModule.forRoot()],
       providers: provideMockStore({
         initialState: {
           loans_local: { months: [] },

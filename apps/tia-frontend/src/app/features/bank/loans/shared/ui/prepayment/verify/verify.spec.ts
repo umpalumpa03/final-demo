@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Verify } from './verify';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('Verify', () => {
   let component: Verify;
@@ -8,7 +9,7 @@ describe('Verify', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Verify],
+      imports: [Verify, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Verify);
