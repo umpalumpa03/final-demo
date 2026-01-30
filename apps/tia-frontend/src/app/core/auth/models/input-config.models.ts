@@ -39,7 +39,7 @@ export const AUTH_SIDE_PANEL_DATA = {
         id: 1,
         title: 'Secure Authentication',
         text: 'Multi-factor authentication and advanced security measures protect your account',
-        icon: 'images/svg/auth/security.svg',
+        icon: 'pubic/images/svg/auth/email.svg',
       },
       {
         id: 2,
@@ -57,7 +57,8 @@ export const AUTH_SIDE_PANEL_DATA = {
   },
   signUp: {
     title: 'Join TIA Today!',
-    description: 'Create your account and start managing your finances with ease',
+    description:
+      'Create your account and start managing your finances with ease',
     features: [
       {
         id: 1,
@@ -81,7 +82,8 @@ export const AUTH_SIDE_PANEL_DATA = {
   },
   forgotPassword: {
     title: 'Password Recovery',
-    description: 'Securely reset your password and regain access to your account',
+    description:
+      'Securely reset your password and regain access to your account',
     features: [
       {
         id: 1,
@@ -105,7 +107,8 @@ export const AUTH_SIDE_PANEL_DATA = {
   },
   otpSignIn: {
     title: 'Verify Your Identity',
-    description: 'Complete your login with the verification code sent to your device',
+    description:
+      'Complete your login with the verification code sent to your device',
     features: [
       {
         id: 1,
@@ -129,7 +132,8 @@ export const AUTH_SIDE_PANEL_DATA = {
   },
   otpSignUp: {
     title: 'Verify Your Phone',
-    description: 'Confirm your phone number to complete the registration process',
+    description:
+      'Confirm your phone number to complete the registration process',
     features: [
       {
         id: 1,
@@ -177,7 +181,8 @@ export const AUTH_SIDE_PANEL_DATA = {
   },
   phone: {
     title: 'Phone Verification',
-    description: 'Add your phone number for enhanced security and account recovery',
+    description:
+      'Add your phone number for enhanced security and account recovery',
     features: [
       {
         id: 1,
@@ -200,5 +205,3 @@ export const AUTH_SIDE_PANEL_DATA = {
     ] as IFeaturePanel[],
   },
 } as const;
-
-

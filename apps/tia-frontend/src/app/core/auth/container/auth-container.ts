@@ -1,20 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   DestroyRef,
-  effect,
   inject,
-  OnDestroy,
   OnInit,
   signal,
 } from '@angular/core';
-import {
-  ActivatedRoute,
-  NavigationEnd,
-  Router,
-  RouterOutlet,
-} from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet, RouterLinkWithHref } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TokenService } from '../services/token.service';
 import { AuthService } from '../services/auth.service';
 import { IFeature } from '../models/auth.models';
@@ -32,18 +25,20 @@ import { SidePanel } from '../shared/side-panel/side-panel';
 })
 export class AuthContainer implements OnInit {
   private router = inject(Router);
-  private destroRef = inject(DestroyRef);
+  private destroyRef = inject(DestroyRef);
 
   public sidePanelData = signal<IFeature | null>(null);
 
   ngOnInit() {
     this.updateSidePanelForRoute(this.router.url);
 
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.updateSidePanelForRoute(event.url);
-      }
-    });
+    this.router.events
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          this.updateSidePanelForRoute(event.url);
+        }
+      });
   }
 
   private updateSidePanelForRoute(url: string): void {
