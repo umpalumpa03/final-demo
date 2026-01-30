@@ -7,12 +7,12 @@
     }
 </section>
 
-<app-loan-details [isOpen]="isDetailsOpen()" [loan]="selectedLoan()" (close)="closeModals()"
-    (calculatePrepayment)="onOpenPrepayment($event)">
+<app-loan-details [isOpen]="isDetailsOpen()" [loan]="selectedLoanDetails()" [isLoading]="isDetailsLoading()"
+    (close)="closeModals()" (calculatePrepayment)="onOpenPrepayment($event)">
 </app-loan-details>
 
 <app-ui-modal [isOpen]="isPrepaymentOpen()" (closed)="closeModals()">
-    @if (selectedLoan(); as loan) {
+    @if (prepaymentLoan(); as loan) {
     <app-prepayment-container [loan]="loan" (close)="closeModals()">
     </app-prepayment-container>
     }

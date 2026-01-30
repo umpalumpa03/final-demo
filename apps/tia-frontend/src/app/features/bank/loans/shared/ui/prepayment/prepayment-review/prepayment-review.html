@@ -3,15 +3,15 @@
         <div class="review-step__header-text">
             <div class="icon">
                 <img src="./images/svg/feature-loans/prepayment.svg" alt="Prepayment">
-                <h3 class="review-step__title">Prepayment Calculation</h3>
+                <h3 class="review-step__title">{{ 'loans.prepayment_wizard.step_review.title' | translate }}</h3>
             </div>
-            <p class="review-step__subtitle">Review the prepayment details and proceed</p>
+            <p class="review-step__subtitle">{{ 'loans.prepayment_wizard.step_review.subtitle' | translate }}</p>
         </div>
     </header>
 
     <main class="review-step__body">
         <div class="review-step__section">
-            <h4 class="review-step__section-title">Prepayment Information</h4>
+            <h4 class="review-step__section-title">{{ 'loans.prepayment_wizard.step_review.section' | translate }}</h4>
 
             <div class="review-step__grid">
                 @for (item of calculationResult().displayedInfo; track item.text) {
@@ -20,7 +20,8 @@
 
                     <strong class="review-step__value">
                         @if (isCurrency(item.text)) {
-                        {{ item.amount | currency:'USD':'symbol':'1.0-2' }}
+                        <span class="review-step__currency">{{ currencyCode() }}</span>
+                        <span class="review-step__amount">{{ item.amount | number:'1.2-2' }}</span>
                         } @else {
                         {{ item.amount }}
                         }
@@ -32,11 +33,12 @@
     </main>
 
     <footer class="review-step__footer">
-        <app-button variant="outline" (click)="cancel.emit()">Cancel</app-button>
+        <app-button variant="outline" (click)="cancel.emit()">
+            {{ 'loans.buttons.cancel' | translate }}
+        </app-button>
         <app-button variant="success" [icon]="isLoading() ? null : './right-arrow.svg'" (click)="confirmPay.emit()"
             [isDisabled]="isLoading()" [isLoading]="isLoading()">
-
-            Pay
+            {{ 'loans.prepayment_wizard.step_review.button' | translate }}
         </app-button>
     </footer>
 </div>

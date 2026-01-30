@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ILoan, LoanMonthsResponse } from '../models/loan.model';
+import { ILoan, ILoanDetails, LoanMonthsResponse } from '../models/loan.model';
 import { environment } from '../../../../../../environments/environment';
 import { LoanPurpose } from '../models/loan-request.model';
 import {
@@ -39,6 +39,10 @@ export class LoansService {
       `${this.loansApiUrl}/update-friendly-name/${loanId}`,
       { friendlyName },
     );
+  }
+
+  public getLoanById(id: string): Observable<ILoanDetails> {
+    return this.http.get<ILoanDetails>(`${this.loansApiUrl}/${id}`);
   }
 
   public getLoanMonths(): Observable<LoanMonthsResponse> {

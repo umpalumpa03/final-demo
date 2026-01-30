@@ -6,8 +6,8 @@
     }
 
     @if (step() === 'review' && calculationResult(); as result) {
-    <app-prepayment-review [isLoading]="isLoading()" [calculationResult]="result" (cancel)="step.set('options')"
-        (confirmPay)="onProceedToOtp()">
+    <app-prepayment-review [isLoading]="isLoading()" [currencyCode]="loan().currency" [calculationResult]="result"
+        (cancel)="step.set('options')" (confirmPay)="onProceedToOtp()">
     </app-prepayment-review>
     }
 

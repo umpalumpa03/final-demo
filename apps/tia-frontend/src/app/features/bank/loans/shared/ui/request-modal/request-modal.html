@@ -5,9 +5,9 @@
             <div class="loan-modal__header-text">
                 <div class="loan-modal__header-icon">
                     <img src="./images/svg/feature-loans/request-loan.svg" alt="">
-                    <h3>Request New Loan</h3>
+                    <h3>{{ 'loans.request.title' | translate }}</h3>
                 </div>
-                <p>Fill out the application form to request a new loan</p>
+                <p>{{ 'loans.request.description' | translate }}</p>
             </div>
         </header>
 
@@ -15,46 +15,55 @@
 
             <section class="loan-modal__section">
                 <h4 class="loan-modal__section-title">
-                    <img src="./images/svg/feature-loans/details.svg"> Loan Details
+                    <img src="./images/svg/feature-loans/details.svg">
+                    {{ 'loans.request.details.title' | translate }}
                 </h4>
                 <div class="loan-modal__grid">
-                    <lib-text-input [type]="cfg.amount.type" [config]="cfg.amount"
-                        formControlName="loanAmount"></lib-text-input>
-                    <lib-select [config]="cfg.account" [options]="(accountOptions()) || []"
-                        formControlName="amountToReceiveAccountId"></lib-select>
-                    <lib-select [config]="cfg.term" [options]="(termOptions()) || []"
-                        formControlName="months"></lib-select>
-                    <lib-select [config]="cfg.purpose" [options]="(purposeOptions()) ?? []" formControlName="purpose">
+                    <lib-text-input [type]="cfg().amount.type" [config]="cfg().amount" formControlName="loanAmount">
+                    </lib-text-input>
+
+                    <lib-select [config]="cfg().account" [options]="(accountOptions()) || []"
+                        formControlName="amountToReceiveAccountId">
                     </lib-select>
-                    <lib-text-input [type]="cfg.date.type" [config]="dateConfig"
-                        formControlName="firstPaymentDate"></lib-text-input>
+
+                    <lib-select [config]="cfg().term" [options]="(termOptions()) || []" formControlName="months">
+                    </lib-select>
+
+                    <lib-select [config]="cfg().purpose" [options]="(purposeOptions()) ?? []" formControlName="purpose">
+                    </lib-select>
+
+                    <lib-text-input [type]="cfg().date.type" [config]="dateConfig()" formControlName="firstPaymentDate">
+                    </lib-text-input>
                 </div>
             </section>
 
             <ng-container formGroupName="contact">
                 <section class="loan-modal__section" formGroupName="address">
                     <h4 class="loan-modal__section-title">
-                        <img src="./images/svg/feature-loans/address.svg"> Address Information
+                        <img src="./images/svg/feature-loans/address.svg">
+                        {{ 'loans.request.address.title' | translate }}
                     </h4>
                     <div class="loan-modal__grid loan-modal__grid--full-width">
-                        <lib-text-input [config]="cfg.street" formControlName="street"></lib-text-input>
+                        <lib-text-input [config]="cfg().street" formControlName="street">
+                        </lib-text-input>
                     </div>
                     <div class="loan-modal__grid">
-                        <lib-text-input [config]="cfg.city" formControlName="city"></lib-text-input>
-                        <lib-text-input [config]="cfg.region" formControlName="region"></lib-text-input>
-                        <lib-text-input [config]="cfg.postal" formControlName="postalCode"></lib-text-input>
+                        <lib-text-input [config]="cfg().city" formControlName="city"></lib-text-input>
+                        <lib-text-input [config]="cfg().region" formControlName="region"></lib-text-input>
+                        <lib-text-input [config]="cfg().postal" formControlName="postalCode"></lib-text-input>
                     </div>
                 </section>
 
                 <section class="loan-modal__section" formGroupName="contactPerson">
                     <h4 class="loan-modal__section-title">
-                        <img src="./images/svg/feature-loans/person.svg"> Emergency Contact Person
+                        <img src="./images/svg/feature-loans/person.svg">
+                        {{ 'loans.request.person.title' | translate }}
                     </h4>
                     <div class="loan-modal__grid">
-                        <lib-text-input [config]="cfg.contactName" formControlName="name"></lib-text-input>
-                        <lib-text-input [config]="cfg.contactRel" formControlName="relationship"></lib-text-input>
-                        <lib-text-input [config]="cfg.contactPhone" formControlName="phone"></lib-text-input>
-                        <lib-text-input [config]="cfg.contactEmail" formControlName="email"></lib-text-input>
+                        <lib-text-input [config]="cfg().contactName" formControlName="name"></lib-text-input>
+                        <lib-text-input [config]="cfg().contactRel" formControlName="relationship"></lib-text-input>
+                        <lib-text-input [config]="cfg().contactPhone" formControlName="phone"></lib-text-input>
+                        <lib-text-input [config]="cfg().contactEmail" formControlName="email"></lib-text-input>
                     </div>
                 </section>
             </ng-container>
@@ -62,16 +71,17 @@
             <div class="loan-modal__info-box">
                 <img src="./images/svg/feature-loans/info.svg">
                 <div class="loan-modal__info-box-content">
-                    <strong>Application Review</strong>
-                    <p>Your loan application will be reviewed by our team. You'll receive a notification once processed.
-                    </p>
+                    <strong>{{ 'loans.request.review_box.title' | translate }}</strong>
+                    <p>{{ 'loans.request.review_box.description' | translate }}</p>
                 </div>
             </div>
 
             <footer class="loan-modal__footer">
-                <app-button [variant]="'outline'" (click)="close.emit()">Cancel</app-button>
+                <app-button [variant]="'outline'" (click)="close.emit()">
+                    {{ 'loans.buttons.cancel' | translate }}
+                </app-button>
                 <app-button [isDisabled]="form.invalid" (click)="onSave()">
-                    Submit Application
+                    {{ 'loans.request.actions.submit' | translate }}
                 </app-button>
             </footer>
         </main>
