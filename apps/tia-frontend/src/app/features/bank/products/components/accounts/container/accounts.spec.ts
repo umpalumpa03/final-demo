@@ -49,6 +49,7 @@ describe('Accounts', () => {
 
   it('should dispatch createAccount', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
+    vi.spyOn(component['accountForm'](), 'valid', 'get').mockReturnValue(true);
     const mockRequest: CreateAccountRequest = {
       friendlyName: 'Test',
       type: AccountType.current,
