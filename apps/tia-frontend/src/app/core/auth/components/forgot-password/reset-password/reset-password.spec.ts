@@ -50,7 +50,6 @@ describe('ResetPassword', () => {
     expect(authService.createNewPassword).toHaveBeenCalledWith('Aa1!aaaa');
     expect(router.navigate).toHaveBeenCalledWith([
       '/auth',
-      'forgot-password',
       'success',
     ]);
     expect(component.submitError()).toBeNull();
