@@ -1,5 +1,5 @@
 <section class="phone-verification">
-  <app-timer [timeLimit]="0.1"></app-timer>
+  <app-timer [timeLimit]="2"></app-timer>
   <form class="sign-in" [formGroup]="setPhoneNumberForm" (ngSubmit)="submit()">
     <lib-text-input formControlName="phoneNumber"></lib-text-input>
     <h2>ERROR: {{errorMessage()}}</h2>

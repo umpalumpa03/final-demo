@@ -11,6 +11,12 @@ import { OtpVerification } from '../../../shared/otp-verification/otp-verificati
 export class VerifySignup {
   private authService = inject(AuthService);
 
+
+  public isLoading = false;
+  public title = 'OTP Verification';
+  public subText = "We've sent a 6-digit code to test";
+  public submitBtnName = 'Verify';
+  
   public submitOtp = (code: string) =>
     this.authService.verifyPhoneOtpCode(code);
 }
