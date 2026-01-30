@@ -44,7 +44,7 @@ export class ScrollArea {
   constructor() {
     effect(() => {
       const el = this.viewport()?.nativeElement;
-      if (el!.scrollHeight == 0 && !this.isLoading()) {
+      if(el!.scrollHeight == el!.clientHeight && !this.isLoading()) {
         this.checkScrollPosition(el!);
       }
     });
