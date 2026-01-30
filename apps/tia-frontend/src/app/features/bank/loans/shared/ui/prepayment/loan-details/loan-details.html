@@ -1,3 +1,4 @@
+@let loanData = loan();
 <app-ui-modal [isOpen]="isOpen()" (closed)="close.emit()">
     <div class="loan-modal">
         <header class="loan-modal__header">
@@ -9,7 +10,7 @@
                 <p class="loan-modal__subtitle">View complete information about this loan</p>
             </div>
         </header>
-        @if (loan(); as loanData) {
+        @if (loanData) {
         <div class="loan-modal__body">
             <div class="loan-modal__status">
                 <span class="loan-modal__status-label">Status</span>

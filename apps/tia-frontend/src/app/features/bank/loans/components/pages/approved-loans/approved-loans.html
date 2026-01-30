@@ -1,3 +1,4 @@
+@let loan = selectedLoan();
 <div class="loans">
     @for (loan of approvedLoans(); track loan.id) {
     <lib-loan-card [loan]="loan" [variant]="'colored'" (cardClick)="onCardClick($event)"
@@ -10,12 +11,12 @@
     }
 </div>
 
-<app-loan-details [isOpen]="isDetailsOpen()" [loan]="selectedLoan()" (calculatePrepayment)="onOpenPrepayment($event)"
+<app-loan-details [isOpen]="isDetailsOpen()" [loan]="loan" (calculatePrepayment)="onOpenPrepayment($event)"
     (close)="closeModals()">
 </app-loan-details>
 
 <app-ui-modal [isOpen]="isPrepaymentOpen()" (closed)="closeModals()">
-    @if (selectedLoan(); as loan) {
+    @if (loan) {
     <app-prepayment-container [loan]="loan" (close)="closeModals()">
     </app-prepayment-container>
     }
