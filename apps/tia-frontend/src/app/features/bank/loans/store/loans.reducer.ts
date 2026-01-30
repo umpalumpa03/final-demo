@@ -119,4 +119,29 @@ export const loansReducer = createReducer(
       error,
     }),
   ),
+
+  on(LoansActions.loadLoanDetails, (state) => ({
+    ...state,
+    selectedLoanDetails: null,
+    detailsLoading: true,
+    error: null,
+  })),
+
+  on(LoansActions.loadLoanDetailsSuccess, (state, { details }) => ({
+    ...state,
+    selectedLoanDetails: details,
+    detailsLoading: false,
+  })),
+
+  on(LoansActions.loadLoanDetailsFailure, (state, { error }) => ({
+    ...state,
+    detailsLoading: false,
+    error,
+  })),
+
+  on(LoansActions.clearLoanDetails, (state) => ({
+    ...state,
+    selectedLoanDetails: null,
+    detailsLoading: false,
+  })),
 );

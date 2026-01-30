@@ -5,6 +5,7 @@ import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { LoansActions } from '../../../store/loans.actions';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { selectFilteredLoans } from '../../../store/loans.selectors';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ApprovedLoans', () => {
   let component: ApprovedLoans;
@@ -38,7 +39,7 @@ describe('ApprovedLoans', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ApprovedLoans],
+      imports: [ApprovedLoans, TranslateModule.forRoot()],
       providers: [
         provideMockStore({
           initialState,
