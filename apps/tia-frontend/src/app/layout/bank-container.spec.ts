@@ -5,6 +5,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideTranslateService } from '@ngx-translate/core';
+import { provideMockStore } from '@ngrx/store/testing';
 
 describe('BankContainer', () => {
   let component: BankContainer;
@@ -18,6 +19,7 @@ describe('BankContainer', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         provideTranslateService(),
+        provideMockStore({ initialState: {} }),
       ],
     }).compileComponents();
 
