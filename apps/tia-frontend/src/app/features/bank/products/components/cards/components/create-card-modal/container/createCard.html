@@ -1,7 +1,165 @@
-<app-ui-modal [isOpen]="isOpen()" (closed)="onClose()">
-  <h2>Add New Card</h2>
-  <form (submit)="onSubmit($event)">
-    <button type="submit">Save</button>
-    <button type="button" (click)="onClose()">Cancel</button>
-  </form>
-</app-ui-modal>
+ <app-ui-modal [isOpen]="isOpen()" (closed)="onClose()">
+  <div class="create-card">
+    <div class="create-card__header">
+      <h2 class="create-card__title">Create New Card</h2>
+      <p class="create-card__subtitle">Add a new credit or debit card to your account</p>
+    </div>
+
+    <form [formGroup]="cardForm" (ngSubmit)="onSubmit()" class="create-card__form">
+      <div class="create-card__preview">
+        <h3 class="create-card__section-title">Card Preview</h3>
+        <div class="create-card__card-display">
+          @if (selectedDesignUri()) {
+  <img 
+    [src]="selectedDesignUri()" 
+    alt="Card preview" 
+    class="create-card__card-image"
+  />
+} @else {
+            <div class="create-card__card-placeholder">
+              <span>Select a design</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="create-card__field">
+        <label for="cardName" class="create-card__label">Card Name</label>
+        <input
+          id="cardName"
+          type="text"
+          formControlName="cardName"
+          placeholder="e.g., Personal Card"
+          class="create-card__input"
+          [class.create-card__input--error]="cardForm.controls.cardName.invalid && cardForm.controls.cardName.touched"
+        />
+        @if (cardForm.controls.cardName.invalid && cardForm.controls.cardName.touched) {
+          <span class="create-card__error">Card name is required (min 2 characters)</span>
+        }
+      </div>
+
+      <div class="create-card__field-group">
+        <div class="create-card__field">
+          <label for="cardCategory" class="create-card__label">Card Category</label>
+          <select
+            id="cardCategory"
+            formControlName="cardCategory"
+            class="create-card__select"
+            [class.create-card__select--error]="cardForm.controls.cardCategory.invalid && cardForm.controls.cardCategory.touched"
+          >
+            <option value="" disabled>Select category</option>
+            @for (category of creationData().categories; track category.value) {
+              <option [value]="category.value">{{ category.displayName }}</option>
+            }
+          </select>
+          @if (cardForm.controls.cardCategory.invalid && cardForm.controls.cardCategory.touched) {
+            <span class="create-card__error">Card category is required</span>
+          }
+        </div>
+
+        <div class="create-card__field">
+          <label for="cardType" class="create-card__label">Card Type</label>
+          <select
+            id="cardType"
+            formControlName="cardType"
+            class="create-card__select"
+            [class.create-card__select--error]="cardForm.controls.cardType.invalid && cardForm.controls.cardType.touched"
+          >
+            <option value="" disabled>Select type</option>
+            @for (type of creationData().types; track type.value) {
+              <option [value]="type.value">{{ type.displayName }}</option>
+            }
+          </select>
+          @if (cardForm.controls.cardType.invalid && cardForm.controls.cardType.touched) {
+            <span class="create-card__error">Card type is required</span>
+          }
+        </div>
+      </div>
+<div class="create-card__field">
+  <label class="create-card__label">Choose Card Design</label>
+  <div class="create-card__designs">
+    @for (design of creationData().designs; track design.design) {
+      <div
+        class="create-card__design-option"
+        [class.create-card__design-option--selected]="selectedDesign() === design.design"
+        (click)="selectDesign(design.design)"
+        (keydown.enter)="selectDesign(design.design)"
+        (keydown.space)="selectDesign(design.design)"
+        role="button"
+        tabindex="0"
+        [attr.aria-label]="design.designName"
+      >
+        <div class="create-card__design-preview">
+          <img 
+            [src]="design.uri" 
+            [alt]="design.designName"
+            class="create-card__design-image"
+          />
+          @if (selectedDesign() === design.design) {
+            <div class="create-card__design-check">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13.3337 4L6.00033 11.3333L2.66699 8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          }
+        </div>
+        <span class="create-card__design-name">{{ design.designName }}</span>
+      </div>
+    }
+  </div>
+  @if (cardForm.controls.design.invalid && cardForm.controls.design.touched) {
+    <span class="create-card__error">Please select a card design</span>
+  }
+</div>
+
+      <div class="create-card__field">
+        <label for="accountId" class="create-card__label">Choose Account</label>
+        <select
+          id="accountId"
+          formControlName="accountId"
+          class="create-card__select"
+          [class.create-card__select--error]="cardForm.controls.accountId.invalid && cardForm.controls.accountId.touched"
+        >
+          <option value="" disabled>Select an account</option>
+          @for (account of creationData().accounts; track account.id) {
+            <option [value]="account.id">
+              {{ account.name }} - {{ account.balance | number }} {{ account.currency }}
+            </option>
+          }
+        </select>
+        @if (cardForm.controls.accountId.invalid && cardForm.controls.accountId.touched) {
+          <span class="create-card__error">Please select an account</span>
+        }
+      </div>
+
+      @if (createError()) {
+        <div class="create-card__error-message">
+          {{ createError() }}
+        </div>
+      }
+
+      <div class="create-card__actions">
+        <button
+          type="button"
+          (click)="onClose()"
+          class="create-card__button create-card__button--cancel"
+          [disabled]="isCreating()"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="create-card__button create-card__button--submit"
+          [disabled]="cardForm.invalid || isCreating()"
+        >
+          @if (isCreating()) {
+            Creating...
+          } @else {
+            Create Card
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</app-ui-modal> 
+

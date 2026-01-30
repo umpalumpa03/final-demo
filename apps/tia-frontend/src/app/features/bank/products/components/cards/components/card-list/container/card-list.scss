@@ -65,7 +65,7 @@
 
   &__cards-wrapper {
     @include display-flex(column);
-    gap: 0.8rem;
+    gap: 6rem;
   }
 
   &__cards {

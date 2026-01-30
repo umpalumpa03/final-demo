@@ -74,3 +74,10 @@
 </div>
 
 <app-create-card [isOpen]="isModalOpen()" (closed)="handleCloseModal()" />
+
+@if (showSuccessAlert()) {
+  <app-simple-alerts
+    alertType="success"
+    alertMessage="Card created successfully!"
+  />
+}

@@ -76,4 +76,57 @@ export class CardsEffects {
       ),
     ),
   );
+
+  loadCardCreationData$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CardsActions.loadCardCreationData),
+      switchMap(() =>
+        forkJoin({
+          designs: this.cardListService.getCardDesigns(),
+          categories: this.cardListService.getCardCategories(),
+          types: this.cardListService.getCardTypes(),
+        }).pipe(
+          map(({ designs, categories, types }) =>
+            CardsActions.loadCardCreationDataSuccess({
+              designs,
+              categories,
+              types,
+            })
+          ),
+          catchError((error) =>
+            of(
+              CardsActions.loadCardCreationDataFailure({
+                error: error.message || 'Failed to load card creation data',
+              })
+            )
+          )
+        )
+      )
+    )
+  );
+
+  createCard$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CardsActions.createCard),
+      switchMap(({ request }) =>
+        this.cardListService.createCard(request).pipe(
+          map(() => CardsActions.createCardSuccess()),
+          catchError((error) =>
+            of(
+              CardsActions.createCardFailure({
+                error: error.message || 'Failed to create card',
+              })
+            )
+          )
+        )
+      )
+    )
+  );
+
+  createCardSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CardsActions.createCardSuccess),
+      map(() => CardsActions.loadCardAccounts())
+    )
+  );
 }

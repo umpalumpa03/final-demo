@@ -1,0 +1,237 @@
+@use '../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../shared/styles/palette' as *;
+
+.create-card {
+  @include display-flex(column);
+  gap: 2.4rem;
+  padding: 2.4rem;
+  max-width: 60rem;
+  width: 100%;
+
+  &__header {
+    @include display-flex(column);
+    gap: 0.8rem;
+  }
+
+  &__title {
+    @include font-inter(600, 2.4rem, 1.3);
+    color: var(--color-fg);
+    margin: 0;
+  }
+
+  &__subtitle {
+    @include font-inter(400, 1.4rem, 1.5);
+    color: $gray-600;
+    margin: 0;
+  }
+
+  &__form {
+    @include display-flex(column);
+    gap: 2rem;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  &__preview {
+    @include display-flex(column);
+    gap: 1.2rem;
+  }
+
+  &__section-title {
+    @include font-inter(500, 1.6rem, 1.4);
+    color: var(--color-fg);
+    margin: 0;
+  }
+
+  &__card-display {
+    @include flex-center(row, center, center);
+    width: 100%;
+    height: 20rem;
+    background-color: var(--color-bg);
+    border-radius: 1.2rem;
+    overflow: hidden;
+  }
+
+  &__card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  &__card-placeholder {
+    @include flex-center(row, center, center);
+    @include font-inter(400, 1.4rem, 1.5);
+    color: $gray-500;
+  }
+
+  &__field {
+    @include display-flex(column);
+    gap: 0.8rem;
+  }
+
+  &__field-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.6rem;
+  }
+
+  &__label {
+    @include font-inter(500, 1.4rem, 1.4);
+    color: var(--color-fg);
+  }
+
+  &__input,
+  &__select {
+    @include font-inter(400, 1.4rem, 1.5);
+    padding: 1rem 1.2rem;
+    border: 0.1rem solid $gray-200;
+    border-radius: 0.8rem;
+    background-color: $white;
+    color: var(--color-fg);
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary);
+    }
+
+    &::placeholder {
+      color: $gray-500;
+    }
+
+    &--error {
+      border-color: $red-500;
+
+      &:focus {
+        border-color: $red-500;
+      }
+    }
+  }
+
+  &__select {
+    cursor: pointer;
+  }
+
+  &__error {
+    @include font-inter(400, 1.2rem, 1.4);
+    color: $red-500;
+  }
+
+  &__designs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: 1.2rem;
+  }
+
+  &__design-option {
+    position: relative;
+    @include display-flex(column);
+    gap: 0.8rem;
+    padding: 1.2rem;
+    border: 0.2rem solid $gray-200;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: var(--color-primary);
+      background-color: var(--color-secondary);
+    }
+
+    &--selected {
+      border-color: var(--color-primary);
+      background-color: var(--color-secondary);
+    }
+
+    &:focus {
+      outline: 0.2rem solid var(--color-primary);
+      outline-offset: 0.2rem;
+    }
+  }
+
+  &__design-preview {
+    position: relative;
+    width: 100%;
+    height: 8rem;
+    border-radius: 0.6rem;
+    overflow: hidden;
+  }
+
+  &__design-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__design-check {
+    position: absolute;
+    top: 0.8rem;
+    right: 0.8rem;
+    @include flex-center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    
+    svg {
+      width: 1.6rem;
+      height: 1.6rem;
+    }
+  }
+
+  &__design-name {
+    @include font-inter(500, 1.2rem, 1.4);
+    color: var(--color-fg);
+    text-align: center;
+  }
+
+  &__error-message {
+    @include font-inter(400, 1.4rem, 1.5);
+    padding: 1.2rem;
+    background-color: $red-50;
+    border: 0.1rem solid $red-200;
+    border-radius: 0.8rem;
+    color: $red-700;
+  }
+
+  &__actions {
+    @include flex-center(row, flex-end, center);
+    gap: 1.2rem;
+    padding-top: 1.6rem;
+    border-top: 0.1rem solid $gray-200;
+  }
+
+  &__button {
+    @include font-inter(500, 1.4rem, 1.4);
+    padding: 1rem 2rem;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &--cancel {
+      background-color: $white;
+      color: var(--color-fg);
+      border: 0.1rem solid $gray-200;
+
+      &:hover:not(:disabled) {
+        background-color: $gray-50;
+      }
+    }
+
+    &--submit {
+      background-color: var(--color-primary);
+      color: $white;
+
+      &:hover:not(:disabled) {
+        background-color: $blue-600;
+      }
+    }
+  }
+}
