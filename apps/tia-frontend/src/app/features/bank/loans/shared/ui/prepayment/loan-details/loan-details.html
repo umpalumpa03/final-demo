@@ -4,18 +4,31 @@
             <div class="loan-modal__header-text">
                 <div class="icon">
                     <img src="./images/svg/feature-loans/default.svg" alt="">
-                    <h3 class=" loan-modal__title">Loan Details</h3>
+                    <h3 class="loan-modal__title">Loan Details</h3>
                 </div>
                 <p class="loan-modal__subtitle">View complete information about this loan</p>
             </div>
         </header>
-        @if (loan(); as loanData) {
+
+        @if (isLoading()) {
+        <div class="loan-modal__loading">
+            <app-spinner size="4rem"></app-spinner>
+            <p>Loading loan details...</p>
+        </div>
+        }
+
+        @else if (loan(); as loanData) {
         <div class="loan-modal__body">
+
             <div class="loan-modal__status">
                 <span class="loan-modal__status-label">Status</span>
-                <span class="loan-modal__badge loan-modal__badge--approved"
-                    [class.loan-modal__badge--approved]="loanData.status === 2">
-                    <img src="./images/svg/feature-loans/approve.svg" alt="">
+                <span class="loan-modal__badge" [class.loan-modal__badge--approved]="loanData.status === 2"
+                    [class.loan-modal__badge--pending]="loanData.status === 1"
+                    [class.loan-modal__badge--rejected]="loanData.status === 3">
+
+                    @if(loanData.status === 2) { <img src="./images/svg/feature-loans/approve.svg" alt=""> }
+                    @if(loanData.status === 1) { <img src="./images/svg/feature-loans/pending.svg" alt=""> }
+
                     {{ loanData.statusName }}
                 </span>
             </div>
@@ -23,16 +36,20 @@
             <div class="loan-modal__section">
                 <h4 class="loan-modal__section-title">Loan Information</h4>
                 <div class="loan-modal__grid">
+
                     <div class="loan-modal__grid-item">
                         <label class="loan-modal__label">Loan Amount</label>
                         <strong class="loan-modal__value loan-modal__value--amount">
-                            {{ loanData.loanAmount | currency:'USD':'symbol':'1.0-0' }}
+                            <div class="amount-display">
+                                <span class="currency-symbol">{{ loanData.currency }}</span>
+                                <span class="amount-value">{{ loanData.loanAmount | number:'1.2-2' }}</span>
+                            </div>
                         </strong>
                     </div>
 
                     <div class="loan-modal__grid-item">
                         <label class="loan-modal__label">Purpose</label>
-                        <strong class="loan-modal__value">{{ loanData.purpose }}</strong>
+                        <strong class="loan-modal__value">{{ loanData.purpose | purposeFmt }}</strong>
                     </div>
 
                     <div class="loan-modal__grid-item">
@@ -42,20 +59,26 @@
 
                     <div class="loan-modal__grid-item">
                         <label class="loan-modal__label">Interest Rate</label>
-                        <strong class="loan-modal__value">12.5% APR</strong>
+                        <strong class="loan-modal__value">{{ loanData.interestRate }}%</strong>
                     </div>
 
                     <div class="loan-modal__grid-item loan-modal__grid-item--monthly">
                         <label class="loan-modal__label">Monthly Payment</label>
                         <strong class="loan-modal__value loan-modal__value--highlight">
-                            {{ loanData.monthlyPayment | currency:'USD':'symbol':'1.0-0' }}
+                            <div class="amount-display">
+                                <span class="currency-symbol">{{ loanData.currency }}</span>
+                                <span class="amount-value">{{ loanData.loanAmount | number:'1.2-2' }}</span>
+                            </div>
                         </strong>
                     </div>
 
                     <div class="loan-modal__grid-item">
                         <label class="loan-modal__label">Remaining Balance</label>
                         <strong class="loan-modal__value">
-                            {{ loanData.loanAmount | currency:'USD':'symbol':'1.0-0' }}
+                            <div class="amount-display">
+                                <span class="currency-symbol">{{ loanData.currency }}</span>
+                                <span class="amount-value">{{ loanData.loanAmount | number:'1.2-2' }}</span>
+                            </div>
                         </strong>
                     </div>
 
@@ -70,12 +93,23 @@
                     </div>
 
                     <div class="loan-modal__grid-item loan-modal__grid-item--full">
-                        <label class="loan-modal__label">Account</label>
+                        <label class="loan-modal__label">Linked Account</label>
                         <strong class="loan-modal__value">{{ loanData.accountName }}</strong>
                     </div>
+
+                    @if (loanData.address) {
+                    <div class="loan-modal__grid-item loan-modal__grid-item--full">
+                        <label class="loan-modal__label">Address</label>
+                        <strong class="loan-modal__value">
+                            {{ loanData.address.street }}, {{ loanData.address.city }}, {{ loanData.address.postalCode
+                            }}
+                        </strong>
+                    </div>
+                    }
                 </div>
             </div>
 
+            @if(loanData.status === 2 && loanData.remainingBalance > 0) {
             <div class="loan-modal__prepayment">
                 <div class="loan-modal__prepayment-info">
                     <div>
@@ -89,6 +123,7 @@
                     Calculate Prepayment
                 </app-button>
             </div>
+            }
         </div>
         }
 

@@ -7,8 +7,8 @@
     }
 </section>
 
-<app-loan-details [isOpen]="isDetailsOpen()" [loan]="selectedLoan()" (close)="closeModals()"
-    (calculatePrepayment)="onOpenPrepayment($event)">
+<app-loan-details [isOpen]="isDetailsOpen()" [loan]="selectedLoanDetails()" [isLoading]="isDetailsLoading()"
+    (close)="closeModals()" (calculatePrepayment)="onOpenPrepayment($event)">
 </app-loan-details>
 
 <app-ui-modal [isOpen]="isPrepaymentOpen()" (closed)="closeModals()">

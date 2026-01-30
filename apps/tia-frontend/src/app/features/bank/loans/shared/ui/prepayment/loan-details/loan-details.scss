@@ -9,6 +9,17 @@
     border-radius: 1.2rem;
     gap: 1.6rem;
 
+    &__loading {
+        @include flex-center(column);
+        min-height: 30rem;
+        gap: 1.6rem;
+        width: 100%;
+
+        p {
+            color: var(--color-text-secondary);
+            font-size: 1.4rem;
+        }
+    }
     &__header {
         @include flex-center(row, space-between, flex-start);
 
@@ -149,6 +160,22 @@
     &__value {
         @include font-inter(600, 1.6rem);
         color: $blue-1000;
+
+        .amount-display {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 0.4rem;
+
+            .currency-symbol {
+                color: var(--color-text-secondary);
+                font-size: 0.9em;
+                font-weight: 500;
+            }
+
+            .amount-value {
+                font-weight: 700;
+            }
+        }
 
         &--amount {
             @include font-inter(700, 2rem);

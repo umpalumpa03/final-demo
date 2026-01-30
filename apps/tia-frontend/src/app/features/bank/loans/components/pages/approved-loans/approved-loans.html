@@ -10,8 +10,8 @@
     }
 </div>
 
-<app-loan-details [isOpen]="isDetailsOpen()" [loan]="selectedLoan()" (calculatePrepayment)="onOpenPrepayment($event)"
-    (close)="closeModals()">
+<app-loan-details [isOpen]="isDetailsOpen()" [loan]="selectedLoanDetails()" [isLoading]="isDetailsLoading()"
+    (calculatePrepayment)="onOpenPrepayment($event)" (close)="closeModals()">
 </app-loan-details>
 
 <app-ui-modal [isOpen]="isPrepaymentOpen()" (closed)="closeModals()">

@@ -7,7 +7,11 @@ import {
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { LoansActions } from '../../../store/loans.actions';
-import { selectFilteredLoans } from '../../../store/loans.selectors';
+import {
+  selectFilteredLoans,
+  selectLoanDetailsLoading,
+  selectSelectedLoanDetails,
+} from '../../../store/loans.selectors';
 import { LoanCard } from '../../../shared/ui/loan-card/loan-card';
 import { CommonModule } from '@angular/common';
 import { ILoan } from '../../../shared/models/loan.model';
@@ -29,6 +33,12 @@ export class ApprovedLoans implements OnInit {
   protected readonly approvedLoans = this.store.selectSignal(
     selectFilteredLoans(2),
   );
+  protected readonly selectedLoanDetails = this.store.selectSignal(
+    selectSelectedLoanDetails,
+  );
+  protected readonly isDetailsLoading = this.store.selectSignal(
+    selectLoanDetailsLoading,
+  );
 
   public readonly selectedLoan = signal<ILoan | null>(null);
   public readonly isPrepaymentOpen = signal(false);
@@ -44,6 +54,7 @@ export class ApprovedLoans implements OnInit {
     if (loan) {
       this.selectedLoan.set(loan);
       this.isDetailsOpen.set(true);
+      this.store.dispatch(LoansActions.loadLoanDetails({ id }));
     }
   }
 
@@ -63,5 +74,6 @@ export class ApprovedLoans implements OnInit {
     this.isDetailsOpen.set(false);
     this.isPrepaymentOpen.set(false);
     this.selectedLoan.set(null);
+    this.store.dispatch(LoansActions.clearLoanDetails());
   }
 }
