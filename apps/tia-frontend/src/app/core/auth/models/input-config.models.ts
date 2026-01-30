@@ -80,26 +80,14 @@ export const AUTH_SIDE_PANEL_DATA = {
     ] as IFeaturePanel[],
   },
   forgotPassword: {
-    title: 'Password Recovery',
-    description: 'Securely reset your password and regain access to your account',
+    title: 'Reset Your Password!',
+    description: 'Enter your email to receive a password reset code.',
     features: [
       {
         id: 1,
-        title: 'Secure Reset',
-        text: 'OTP verification ensures only you can reset your password',
-        icon: 'images/svg/auth/reset.svg',
-      },
-      {
-        id: 2,
-        title: 'Account Protection',
-        text: 'Advanced security measures keep your account safe during recovery',
-        icon: 'images/svg/auth/protect.svg',
-      },
-      {
-        id: 3,
-        title: 'Quick Recovery',
-        text: 'Get back to your account in minutes with our streamlined process',
-        icon: 'images/svg/auth/quick.svg',
+        title: 'Email Verification',
+        text: 'Code sent to your registered email',
+        icon: 'images/svg/button-icons/white-email-icon.svg',
       },
     ] as IFeaturePanel[],
   },

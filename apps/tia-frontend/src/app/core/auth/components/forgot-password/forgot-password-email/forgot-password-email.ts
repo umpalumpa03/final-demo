@@ -45,7 +45,7 @@ export class ForgotPasswordEmail {
     return {
       label: 'Email',
       required: true,
-      placeholder: 'Enter your email',
+      placeholder: 'your.email@example.com',
       errorMessage,
     };
   });
