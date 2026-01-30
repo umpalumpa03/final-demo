@@ -9,7 +9,6 @@ describe('NotificationsStore', () => {
   let notificationsServiceMock: any;
 
   beforeEach(() => {
-    // 1. Create a mock service with basic successful returns
     notificationsServiceMock = {
       hasUnreadNotification: vi.fn(() => of({ hasUnread: true })),
       getNotifications: vi.fn(() =>
@@ -41,7 +40,6 @@ describe('NotificationsStore', () => {
     expect(store.isEmpty()).toBe(true);
   });
 
-  // --- Test Fetching ---
   it('should fetch notifications and update state', () => {
     store.fetchNotifications({ cursor: '', limit: 10 });
 
@@ -50,14 +48,11 @@ describe('NotificationsStore', () => {
     expect(store.isEmpty()).toBe(false);
   });
 
-  // --- Test Computed Logic (unread count & selection) ---
   it('should compute unreadNotificationsNumber correctly', () => {
-    // Manually fetch to populate items
     store.fetchNotifications({ cursor: '', limit: 10 });
     expect(store.unreadNotificationsNumber()).toBe(1);
   });
 
-  // --- Test Selection Methods ---
   it('should toggle item selection', () => {
     store.toggleItemSelection('1');
     expect(store.selectedItems()).toContain('1');
@@ -68,7 +63,7 @@ describe('NotificationsStore', () => {
   });
 
   it('should toggle select all', () => {
-    store.fetchNotifications({ cursor: '', limit: 10 }); // adds 1 item
+    store.fetchNotifications({ cursor: '', limit: 10 });
     store.toggleSelectAll();
     expect(store.isAllSelected()).toBe(true);
 
@@ -76,7 +71,6 @@ describe('NotificationsStore', () => {
     expect(store.selectedItems().length).toBe(0);
   });
 
-  // --- Test Actions (Delete/Mark Read) ---
   it('should delete a notification', () => {
     store.fetchNotifications({ cursor: '', limit: 10 });
     store.deleteNotification('1');

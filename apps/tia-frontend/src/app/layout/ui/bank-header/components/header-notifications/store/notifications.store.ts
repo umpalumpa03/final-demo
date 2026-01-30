@@ -217,7 +217,31 @@ export const NotificationsStore = signalStore(
                     items: updatedItems,
                     isLoading: false,
                     selectedItems: [],
+                    hasUnread: updatedItems.some((item) => !item.isRead),
                   });
+
+                  const { hasNext, nextCursor } = store.pageInfo();
+
+                  if (updatedItems.length === 0 && hasNext) {
+                    patchState(store, { isLoading: true });
+
+                    notificationsService
+                      .getNotifications(nextCursor, store.limitPerPage())
+                      .subscribe({
+                        next: (response) => {
+                          patchState(store, {
+                            items: response.items,
+                            pageInfo: response.pageInfo,
+                            isLoading: false,
+                          });
+                        },
+                        error: () =>
+                          patchState(store, {
+                            hasError: true,
+                            isLoading: false,
+                          }),
+                      });
+                  }
                 },
                 error: () => patchState(store, { hasError: true }),
               }),

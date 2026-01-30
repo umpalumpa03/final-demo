@@ -13,11 +13,10 @@ import { environment } from '../../../../../../../environments/environment';
 })
 export class Notifications {
   public http = inject(HttpClient);
+  private readonly baseUrl = environment.apiUrl + '/notifications';
 
   public hasUnreadNotification(): Observable<HasUnreadNotifications> {
-    return this.http.get<HasUnreadNotifications>(
-      `${environment.apiUrl}/notifications/has-unread`,
-    );
+    return this.http.get<HasUnreadNotifications>(`${this.baseUrl}/has-unread`);
   }
 
   public getNotifications(
@@ -30,45 +29,29 @@ export class Notifications {
       params = params.set('page[cursor]', cursor);
     }
 
-    return this.http.get<NotificationsData>(
-      `${environment.apiUrl}/notifications`,
-      {
-        params,
-      },
-    );
+    return this.http.get<NotificationsData>(`${this.baseUrl}`, {
+      params,
+    });
   }
 
   public removeNotification(id: string): Observable<successMessage> {
-    return this.http.delete<successMessage>(
-      `${environment.apiUrl}/notifications/${id}`,
-    );
+    return this.http.delete<successMessage>(`${this.baseUrl}/${id}`);
   }
 
   public markAllAsRead(): Observable<successMessage> {
-    return this.http.patch<successMessage>(
-      `${environment.apiUrl}/notifications/read-all`,
-      {},
-    );
+    return this.http.patch<successMessage>(`${this.baseUrl}/read-all`, {});
   }
 
   public deleteAll(): Observable<successMessage> {
-    return this.http.delete<successMessage>(
-      `${environment.apiUrl}/notifications/remove-all`,
-    );
+    return this.http.delete<successMessage>(`${this.baseUrl}/remove-all`);
   }
   public deleteMultiple(ids: string[]): Observable<successMessage> {
-    return this.http.delete<successMessage>(
-      `${environment.apiUrl}/notifications/delete-many`,
-      {
-        body: { ids },
-      },
-    );
+    return this.http.delete<successMessage>(`${this.baseUrl}/delete-many`, {
+      body: { ids },
+    });
   }
 
   public markNotificationRead(id: string): Observable<successMessage> {
-    return this.http.patch<successMessage>(
-      `${environment.apiUrl}/notifications/${id}/read`,
-      {},
-    );
+    return this.http.patch<successMessage>(`${this.baseUrl}/${id}/read`, {});
   }
 }

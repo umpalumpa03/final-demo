@@ -92,7 +92,7 @@ export class NotificationsContainer {
   // Handle Visible Items
   private readonly visibleItem$ = new Subject<string>();
 
-  public handleItemVisible(id: string) {
+  public handleItemVisible(id: string): void {
     this.visibleItem$.next(id);
   }
 
