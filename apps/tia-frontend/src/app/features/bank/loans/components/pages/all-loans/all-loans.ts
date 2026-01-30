@@ -17,7 +17,7 @@ import {
   selectSelectedLoanDetails,
 } from '../../../store/loans.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
-import { ILoan } from '../../../shared/models/loan.model';
+import { ILoan, ILoanDetails } from '../../../shared/models/loan.model';
 import { PrepaymentContainer } from '../../../shared/ui/prepayment/prepayment-container/prepayment-container';
 
 @Component({
@@ -41,6 +41,7 @@ export class AllLoans implements OnInit {
   );
 
   public readonly selectedLoan = signal<ILoan | null>(null);
+  public readonly prepaymentLoan = signal<ILoanDetails | null>(null);
   public readonly isDetailsOpen = signal(false);
   public readonly isPrepaymentOpen = signal(false);
 
@@ -63,8 +64,9 @@ export class AllLoans implements OnInit {
     );
   }
 
-  public onOpenPrepayment(loan: ILoan): void {
+  public onOpenPrepayment(loan: ILoanDetails): void {
     this.selectedLoan.set(loan);
+    this.prepaymentLoan.set(loan);
     this.isDetailsOpen.set(false);
     this.isPrepaymentOpen.set(true);
   }
@@ -72,6 +74,7 @@ export class AllLoans implements OnInit {
   public closeModals(): void {
     this.isDetailsOpen.set(false);
     this.isPrepaymentOpen.set(false);
+    this.prepaymentLoan.set(null);
     this.selectedLoan.set(null);
     this.store.dispatch(LoansActions.clearLoanDetails());
   }

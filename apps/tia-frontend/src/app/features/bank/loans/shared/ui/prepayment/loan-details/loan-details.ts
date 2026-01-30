@@ -35,7 +35,7 @@ export class LoanDetails {
   public readonly isOpen = input.required<boolean>();
 
   public readonly close = output<void>();
-  public readonly calculatePrepayment = output<ILoan>();
+  public readonly calculatePrepayment = output<ILoanDetails>();
 
   protected onCalculate(): void {
     const currentLoan = this.loan();

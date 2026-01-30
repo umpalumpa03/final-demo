@@ -71,7 +71,7 @@
                         <strong class="loan-modal__value loan-modal__value--highlight">
                             <div class="amount-display">
                                 <span class="currency-symbol">{{ loanData.currency }}</span>
-                                <span class="amount-value">{{ loanData.loanAmount | number:'1.2-2' }}</span>
+                                <span class="amount-value">{{ loanData.monthlyPayment | number:'1.2-2' }}</span>
                             </div>
                         </strong>
                     </div>
@@ -81,7 +81,7 @@
                         <strong class="loan-modal__value">
                             <div class="amount-display">
                                 <span class="currency-symbol">{{ loanData.currency }}</span>
-                                <span class="amount-value">{{ loanData.loanAmount | number:'1.2-2' }}</span>
+                                <span class="amount-value">{{ loanData.remainingBalance | number:'1.2-2' }}</span>
                             </div>
                         </strong>
                     </div>
