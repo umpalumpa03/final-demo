@@ -40,6 +40,19 @@
         "message": "You need to create an account before making transfers",
         "createAccount": "Create Account"
       }
+    },
+    "accounts": {
+      "title": "Accounts",
+      "recipientVerified": "Recipient verified successfully!",
+      "selectRecipientAccount": "Select Recipient Account",
+      "noAccounts": {
+        "header": "No Accounts Found",
+        "message": "No active accounts were found for this recipient."
+      },
+      "error": {
+        "header": "An Error Occurred",
+        "message": "Failed to load accounts. Please try again."
+      }
     }
   },
   "confirmation": {

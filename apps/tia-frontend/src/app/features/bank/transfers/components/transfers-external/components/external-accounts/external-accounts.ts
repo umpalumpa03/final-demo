@@ -1,161 +1,87 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  signal,
+  computed,
+} from '@angular/core';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { TranslatePipe } from '@ngx-translate/core';
+import { TransferStore } from '../../../../store/transfers.store';
+import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
+import { VerifiedUserCard } from '../../../../ui/verified-user-card/verified-user-card';
+import { TransfersAccountCard } from '../../../../ui/account-card/transfers-account-card';
+import { RecipientAccount } from '../../../../models/transfers.state.model';
+import { Account } from '@tia/shared/models/accounts/accounts.model';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
+import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 
 @Component({
   selector: 'app-external-accounts',
-  imports: [],
+  standalone: true,
+  imports: [
+    ButtonComponent,
+    TranslatePipe,
+    AlertTypesWithIcons,
+    VerifiedUserCard,
+    TransfersAccountCard,
+    ErrorStates,
+    Spinner,
+  ],
   templateUrl: './external-accounts.html',
   styleUrl: './external-accounts.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ExternalAccounts {}
+export class ExternalAccounts {
+  private readonly router = inject(Router);
+  private readonly location = inject(Location);
+  private readonly transferStore = inject(TransferStore);
 
+  public readonly showSuccess = signal(false);
+  public readonly selectedAccountId = signal<string | null>(null);
 
-// import {
-//   ChangeDetectionStrategy,
-//   Component,
-//   OnInit,
-//   inject,
-//   signal,
-//   DestroyRef,
-// } from '@angular/core';
-// import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-// import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-// import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
-// import { getRecipientInputConfig } from '../../config/transfers-external.config';
-// import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-// import {
-//   FormBuilder,
-//   ReactiveFormsModule,
-//   ValidationErrors,
-// } from '@angular/forms';
-// import { InputConfig } from '@tia/shared/lib/forms/models/input.model';
-// import { recipientValidator } from '../../../../validators/transfer-validator';
-// import { TransferValidationService } from '../../../../services/transfer-validation.service';
-// import {
-//   getErrorMessage,
-//   getSuccessMessage,
-// } from '../../../../utils/transfers-external.utils';
-// import { RecipientType } from '../../../../models/transfers.state.model';
-// import { TransfersAccountCard } from 'apps/tia-frontend/src/app/features/bank/transfers/ui/account-card/transfers-account-card';
-// import { Account } from '@tia/shared/models/accounts/accounts.model';
-// import { Store } from '@ngrx/store';
-// import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
-// import {
-//   selectAccounts,
-//   selectError,
-//   selectIsLoading,
-// } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
-// import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
-// import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
-// import { map } from 'rxjs';
+  public readonly isLoading = computed(() => this.transferStore.isLoading());
+  public readonly error = computed(() => this.transferStore.error());
 
-// @Component({
-//   selector: 'app-external-recipient',
-//   imports: [
-//     TranslatePipe,
-//     TextInput,
-//     ButtonComponent,
-//     ReactiveFormsModule,
-//     TransfersAccountCard,
-//     Spinner,
-//     ErrorStates,
-//   ],
-//   templateUrl: './external-recipient.html',
-//   styleUrl: './external-recipient.scss',
-//   changeDetection: ChangeDetectionStrategy.OnPush,
-// })
-// export class ExternalRecipient implements OnInit {
-//   private readonly translate = inject(TranslateService);
-//   private readonly fb = inject(FormBuilder);
-//   private readonly validationService = inject(TransferValidationService);
-//   private readonly destroyRef = inject(DestroyRef);
-//   private readonly store = inject(Store);
-//   public readonly skeletonArray = Array(6).fill(0);
+  public readonly recipientName = computed(
+    () => this.transferStore.recipientInfo()?.fullName || '',
+  );
 
-//   public selectedAccountId: string | null = null;
+  public readonly recipientAccounts = computed(
+    () => this.transferStore.recipientInfo()?.accounts || [],
+  );
 
-//   public readonly recipientInputConfig = signal<InputConfig>(
-//     getRecipientInputConfig(this.translate),
-//   );
+  constructor() {
+    effect(() => {
+      const recipientInfo = this.transferStore.recipientInfo();
+      if (recipientInfo) {
+        this.showSuccess.set(true);
+        const timeout = setTimeout(() => {
+          this.showSuccess.set(false);
+        }, 3000);
 
-//   public readonly recipientInput = this.fb.control('', [
-//     recipientValidator(this.validationService),
-//   ]);
+        return () => clearTimeout(timeout);
+      }
+      return;
+    });
+  }
 
-//   public ngOnInit(): void {
-//     this.store.dispatch(AccountsActions.loadAccounts());
-//     this.setupValueChangeListener();
-//   }
+  public onRecieverAccountSelect(account: Account | RecipientAccount): void {
+    this.selectedAccountId.set(account.id);
+  }
 
-//   private setupValueChangeListener(): void {
-//     this.recipientInput.valueChanges
-//       .pipe(takeUntilDestroyed(this.destroyRef))
-//       .subscribe((value) => {
-//         this.updateInputConfig(value);
-//       });
-//   }
+  public onRetry(): void {}
 
-//   private updateInputConfig(value: string | null): void {
-//     if (!value) {
-//       this.clearMessages();
-//       return;
-//     }
+  public onGoBack(): void {
+    this.location.back();
+  }
 
-//     const type = this.validationService.identifyRecipientType(value);
-//     const isValid = this.recipientInput.valid;
-//     const errors = this.recipientInput.errors;
-
-//     if (isValid && type) {
-//       this.setSuccessMessage(type);
-//     } else if (errors) {
-//       this.setErrorMessage(errors);
-//     }
-//   }
-
-//   private clearMessages(): void {
-//     this.recipientInputConfig.update((config) => ({
-//       ...config,
-//       errorMessage: undefined,
-//       successMessage: undefined,
-//     }));
-//   }
-
-//   private setSuccessMessage(type: RecipientType): void {
-//     this.recipientInputConfig.update((config) => ({
-//       ...config,
-//       successMessage: getSuccessMessage(type, this.translate),
-//       errorMessage: undefined,
-//     }));
-//   }
-
-//   private setErrorMessage(errors: ValidationErrors): void {
-//     this.recipientInputConfig.update((config) => ({
-//       ...config,
-//       errorMessage: getErrorMessage(errors, this.translate),
-//       successMessage: undefined,
-//     }));
-//   }
-
-//   public onAccountSelect(account: Account): void {
-//     this.selectedAccountId = account.id;
-//     // console.log('Selected account:', account);
-//   }
-
-//   //account store
-
-//   public readonly accounts = toSignal(this.store.select(selectAccounts), {
-//     initialValue: [],
-//   });
-
-//   public readonly isLoadingAccounts = toSignal(
-//     this.store.select(selectIsLoading),
-//     { initialValue: false },
-//   );
-//   public readonly accountsError = toSignal(this.store.select(selectError), {
-//     initialValue: null,
-//   });
-//   // public accountsError = signal('fff');
-
-//   public retryLoadAccounts(): void {}
-//   public navigateToCreateAccount(): void {}
-// }
+  public onContinue(): void {
+    if (this.selectedAccountId()) {
+      this.router.navigate(['/bank/transfers/external/amount']);
+    }
+  }
+}

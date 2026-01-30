@@ -8,7 +8,7 @@ import {
   effect,
   computed,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { getRecipientInputConfig } from '../../config/transfers-external.config';
@@ -28,6 +28,8 @@ import {
 import { RecipientType } from '../../../../models/transfers.state.model';
 import { TransferStore } from '../../../../store/transfers.store';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
+import { Router } from '@angular/router';
+import { filter, take } from 'rxjs';
 
 @Component({
   selector: 'app-external-recipient',
@@ -49,6 +51,8 @@ export class ExternalRecipient implements OnInit {
   private readonly validationService = inject(TransferValidationService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly transferStore = inject(TransferStore);
+  private readonly router = inject(Router);
+
   public readonly showError = signal(false);
   public readonly isLoading = computed(() => this.transferStore.isLoading());
   public readonly recipientInputConfig = signal<InputConfig>(
@@ -58,9 +62,15 @@ export class ExternalRecipient implements OnInit {
   public readonly recipientInput = this.fb.control('', [
     recipientValidator(this.validationService),
   ]);
+
+  private readonly recipientInfo$ = toObservable(
+    this.transferStore.recipientInfo,
+  );
+
   constructor() {
     effect(() => {
       const error = this.transferStore.error();
+
       if (error) {
         this.showError.set(true);
         setTimeout(() => {
@@ -71,6 +81,11 @@ export class ExternalRecipient implements OnInit {
   }
 
   public ngOnInit(): void {
+    const storedValue = this.transferStore.recipientInput();
+    if (storedValue) {
+      this.recipientInput.setValue(storedValue, { emitEvent: false });
+    }
+
     this.setupValueChangeListener();
   }
 
@@ -125,15 +140,31 @@ export class ExternalRecipient implements OnInit {
 
   public onVerify(): void {
     if (this.recipientInput.valid && this.recipientInput.value) {
-      const type = this.validationService.identifyRecipientType(
-        this.recipientInput.value,
-      );
+      const currentValue = this.recipientInput.value;
+      const storedValue = this.transferStore.recipientInput();
+      const hasExistingData = this.transferStore.recipientInfo();
+
+      if (currentValue === storedValue && hasExistingData) {
+        this.router.navigate(['/bank/transfers/external/accounts']);
+        return;
+      }
+
+      const type = this.validationService.identifyRecipientType(currentValue);
 
       if (type) {
         this.transferStore.lookupRecipient({
-          value: this.recipientInput.value,
+          value: currentValue,
           type,
         });
+
+        this.recipientInfo$
+          .pipe(
+            filter((info) => !!info),
+            take(1),
+          )
+          .subscribe(() => {
+            this.router.navigate(['/bank/transfers/external/accounts']);
+          });
       }
     }
   }

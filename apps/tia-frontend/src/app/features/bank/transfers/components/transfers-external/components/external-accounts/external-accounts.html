@@ -1,43 +1,82 @@
-<!-- <p>external-accounts works!</p>
-<section class="external-recipient__accounts">
-    <h2 class="external-recipient__accounts-title">
-      {{'transfers.external.recipient.accountsTitle' | translate}}
+<main class="external-accounts">
+  <header class="external-accounts__header">
+    <h1 class="external-accounts__title">
+      {{ 'transfers.external.accounts.title' | translate }}
+    </h1>
+  </header>
+
+  <section class="external-accounts__verified-user">
+    <app-verified-user-card
+      [fullName]="recipientName()"
+      [description]="'transfers.external.accounts.recipientVerified' | translate"
+    />
+  </section>
+
+  <section class="external-accounts__recipient-accounts">
+    <h2 class="external-accounts__recipient-accounts-title">
+      {{ 'transfers.external.accounts.selectRecipientAccount' | translate }}
     </h2>
 
-    @if (isLoadingAccounts()) {
-    <div class="external-recipient__spinner-wrapper">
+    @if (isLoading()) {
+    <div class="external-accounts__spinner-wrapper">
       <app-spinner />
     </div>
-    } @else if (accountsError(); as error) {
-    <div class="external-recipient__error-wrapper">
+    } @else if (error()) {
+    <div class="external-accounts__error-wrapper">
       <app-error-states
         [variant]="'failed'"
-        [header]="'transfers.external.recipient.accountsError.header' | translate"
-        [message]="'transfers.external.recipient.accountsError.message' | translate"
+        [header]="'transfers.external.accounts.error.header' | translate"
+        [message]="'transfers.external.accounts.error.message' | translate"
         [buttonMessage]="'transfers.external.recipient.accountsError.retry' | translate"
-        (buttonClick)="retryLoadAccounts()"
-        [width]="'60rem'"
+        (buttonClick)="onRetry()"
       />
     </div>
-    } @else if (accounts().length === 0) {
-    <div class="external-recipient__error-wrapper">
+    } @else if (recipientAccounts().length === 0) {
+    <div class="external-accounts__not-found-wrapper">
       <app-error-states
         [variant]="'not-found'"
-        [header]="'transfers.external.recipient.noAccounts.header' | translate"
-        [message]="'transfers.external.recipient.noAccounts.message' | translate"
-        [buttonMessage]="'transfers.external.recipient.noAccounts.createAccount' | translate"
-        (buttonClick)="navigateToCreateAccount()"
+        [header]="'transfers.external.accounts.noAccounts.header' | translate"
+        [message]="'transfers.external.accounts.noAccounts.message' | translate"
+        [showButton]="false"
       />
     </div>
     } @else {
-    <div class="external-recipient__accounts-grid">
-      @for (account of accounts(); track account.id) {
+    <div class="external-accounts__accounts-grid">
+      @for (account of recipientAccounts(); track account.id) {
       <app-transfers-account-card
         [cardData]="account"
-        [isSelected]="selectedAccountId === account.id"
-        (cardClicked)="onAccountSelect($event)"
+        [mode]="'recipient'"
+        [isSelected]="selectedAccountId() === account.id"
+        (cardClicked)="onRecieverAccountSelect($event)"
       />
       }
     </div>
     }
-  </section> -->
+  </section>
+
+  <footer class="external-accounts__footer">
+    <app-button variant="outline" size="default" (click)="onGoBack()">
+      <img src="images/svg/transfers/go-back.svg" alt="back" />
+      {{ 'common.buttons.back' | translate }}
+    </app-button>
+
+    <app-button
+      variant="default"
+      size="default"
+      (click)="onContinue()"
+      [isDisabled]="!selectedAccountId() || isLoading()"
+    >
+      {{ 'common.buttons.continue' | translate }}
+      <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />
+    </app-button>
+  </footer>
+</main>
+
+@if (showSuccess()) {
+<div class="external-accounts__success-toast">
+  <app-alert-types-with-icons
+    [alertType]="'success'"
+    [alertMessage]="'transfers.external.accounts.recipientVerified' | translate"
+  />
+</div>
+}
