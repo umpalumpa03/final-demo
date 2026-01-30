@@ -57,7 +57,7 @@ describe('PhoneVerification', () => {
       expect(authServiceMock.sendPhoneVerificationCode).toHaveBeenCalledWith('555123456');
       expect(authServiceMock.setChellangeId).toHaveBeenCalledWith('mock-challenge-123');
       expect(component.errorMessage()).toBe('');
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/auth/otp']);
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/auth/verify-otp-register']);
     });
 
     it('should set errorMessage signal when API call fails', () => {

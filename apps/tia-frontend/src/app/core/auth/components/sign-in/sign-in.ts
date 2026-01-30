@@ -4,19 +4,19 @@ import {
   computed,
   inject,
 } from '@angular/core';
-import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
-import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { AuthService } from '../../services/auth.service';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
-import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import {
   ALERTS_DISMISSIBLE_DATA,
   SIGN_IN_FORM,
 } from '../../models/input-config.models';
-import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
+import { AuthService } from '../../services/auth.service';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { Routes } from '../../models/tokens.model';
+import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
+import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
+import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
 
 @Component({
   selector: 'app-sign-in',

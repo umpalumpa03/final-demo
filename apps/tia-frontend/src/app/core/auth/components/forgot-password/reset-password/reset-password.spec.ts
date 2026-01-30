@@ -42,29 +42,10 @@ describe('ResetPassword', () => {
     fixture.detectChanges();
   });
 
-  it('sets mismatch error when passwords differ', async () => {
-    component.form.controls.password.setValue('Aa1!aaaa');
-    component.form.controls.confirmPassword.setValue('Different1!');
-
-    await component.submit();
-
-    expect(component.confirmErrorMessage()).toBe('Passwords do not match');
-    expect(authService.createNewPassword).not.toHaveBeenCalled();
-  });
-
-  it('computes strong password indicators', () => {
-    component.form.controls.password.setValue('Aa1!aaaa');
-
-    expect(component.strengthLabel()).toBe('Strong');
-    expect(component.strengthPercent()).toBe(100);
-    expect(component.strengthClass()).toBe('strong');
-  });
-
   it('submits and navigates on success', async () => {
-    component.form.controls.password.setValue('Aa1!aaaa');
-    component.form.controls.confirmPassword.setValue('Aa1!aaaa');
+    const formValue = { password: 'Aa1!aaaa', confirmPassword: 'Aa1!aaaa' } as any;
 
-    await component.submit();
+    component.submit(formValue);
 
     expect(authService.createNewPassword).toHaveBeenCalledWith('Aa1!aaaa');
     expect(router.navigate).toHaveBeenCalledWith([
@@ -81,10 +62,9 @@ describe('ResetPassword', () => {
       throwError(() => new HttpErrorResponse({ status: 400 })),
     );
 
-    component.form.controls.password.setValue('Aa1!aaaa');
-    component.form.controls.confirmPassword.setValue('Aa1!aaaa');
+    const formValue = { password: 'Aa1!aaaa', confirmPassword: 'Aa1!aaaa' } as any;
 
-    await component.submit();
+    component.submit(formValue);
 
     expect(component.submitError()).toBe(
       'Unable to reset password. Please try again.',

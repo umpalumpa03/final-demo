@@ -1,32 +1,60 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { Subject } from 'rxjs';
+import { NavigationEnd, Router } from '@angular/router';
+
 import { AuthContainer } from './auth-container';
+import { Routes } from '../models/tokens.model';
+import { AUTH_SIDE_PANEL_DATA } from '../models/input-config.models';
 
 describe('AuthContainer', () => {
-  let component: AuthContainer;
   let fixture: ComponentFixture<AuthContainer>;
+  let component: AuthContainer;
+  let events$: Subject<any>;
+  let routerStub: any;
 
   beforeEach(async () => {
+    events$ = new Subject<any>();
+    routerStub = {
+      url: Routes.SIGN_IN,
+      events: events$,
+    };
+
     await TestBed.configureTestingModule({
       imports: [AuthContainer],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: { data: {} },
-            data: of({}),
-          },
-        },
-      ],
+      providers: [{ provide: Router, useValue: routerStub }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AuthContainer);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('creates the component', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('sets signIn panel on init when route is SIGN_IN', () => {
+    const panel = component.sidePanelData();
+    expect(panel).toEqual(AUTH_SIDE_PANEL_DATA.signIn);
+  });
+
+  it('updates panel on NavigationEnd events for various routes', () => {
+    // SIGN_UP
+    events$.next(new NavigationEnd(1, Routes.SIGN_UP, Routes.SIGN_UP));
+    expect(component.sidePanelData()).toEqual(AUTH_SIDE_PANEL_DATA.signUp);
+
+    // PHONE
+    events$.next(new NavigationEnd(2, Routes.PHONE, Routes.PHONE));
+    expect(component.sidePanelData()).toEqual(AUTH_SIDE_PANEL_DATA.phone);
+
+    // OTP_SIGN_IN
+    events$.next(new NavigationEnd(3, Routes.OTP_SIGN_IN, Routes.OTP_SIGN_IN));
+    expect(component.sidePanelData()).toEqual(AUTH_SIDE_PANEL_DATA.otpSignIn);
+  });
+
+  it('defaults to signIn panel for unknown routes', () => {
+    events$.next(new NavigationEnd(4, '/some/unknown', '/some/unknown'));
+    expect(component.sidePanelData()).toEqual(AUTH_SIDE_PANEL_DATA.signIn);
   });
 });
