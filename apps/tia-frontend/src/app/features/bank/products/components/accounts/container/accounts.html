@@ -32,5 +32,23 @@
       (dismissed)="handleAlertDismissed()"
     />
   </div>
+  } @if (showCreateAlert()) {
+  <div class="accounts-page__alert">
+    <app-dismissible-alerts
+      [alertTitle]="'Information'"
+      [alertType]="'information'"
+      [alertMessage]="'Account creation request has been sent to admin for approval'"
+      (dismissed)="handleCreateAlertDismissed()"
+    />
+  </div>
+  } @if (showCreateErrorAlert()) {
+  <div class="accounts-page__alert">
+    <app-dismissible-alerts
+      [alertTitle]="'Error'"
+      [alertType]="'warning'"
+      [alertMessage]="(createError$ | async) || 'Failed to create account'"
+      (dismissed)="handleCreateErrorAlertDismissed()"
+    />
+  </div>
   }
 </div>
