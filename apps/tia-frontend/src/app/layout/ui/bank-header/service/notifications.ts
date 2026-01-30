@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import {
   HasUnreadNotifications,
   NotificationsData,
-} from '../modals/notification.model';
+} from '../models/notification.model';
 import { environment } from '../../../../../environments/environment';
 
 @Injectable({
@@ -34,6 +34,21 @@ export class Notifications {
       {
         params,
       },
+    );
+  }
+
+  public removeNotification(id: string) {
+    return this.http.delete(`${environment.apiUrl}/notifications/${id}`);
+  }
+
+  public markAllAsRead() {
+    return this.http.patch(`${environment.apiUrl}/notifications/read-all`, {});
+  }
+
+  public markNotificationRead(id: string) {
+    return this.http.patch(
+      `${environment.apiUrl}/notifications/${id}/read`,
+      {},
     );
   }
 }

@@ -1,9 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CardAccountsResponse } from '../models/card-account.model';
-import { environment } from '../../../../../../../environments/environment';
-import { CardDetailsResponse } from '../models/card-detail.model';
+import { environment } from '../../../../environments/environment';
+import { CardAccountsResponse } from '@tia/shared/models/cards/card-account.model';
+import { CardDetailsResponse } from '@tia/shared/models/cards/card-detail.model';
+
 
 @Injectable({
   providedIn: 'root',

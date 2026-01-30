@@ -1,4 +1,7 @@
-import { AccountSection } from '../../../../../../shared/models/accounts/accounts.model';
+import {
+  AccountSection,
+  CreateAccountConfig,
+} from '../../../../../../shared/models/accounts/accounts.model';
 import { AccountType } from '../../../../../../shared/models/accounts/accounts.model';
 import { AccountUtils } from '../utils/account.utils';
 
@@ -21,3 +24,18 @@ export const accountSections: AccountSection[] = [
     icon: accountUtils.getAccountIcon(AccountType.card),
   },
 ] as const;
+
+export const CREATE_ACCOUNT_CONFIG: CreateAccountConfig = {
+  friendlyName: {
+    label: 'Account Name',
+    placeholder: 'e.g., Emergency Fund',
+  },
+  type: {
+    label: 'Account Type',
+    placeholder: 'Select account type',
+  },
+  currency: {
+    label: 'Currency',
+    placeholder: 'Select currency',
+  },
+} as const;

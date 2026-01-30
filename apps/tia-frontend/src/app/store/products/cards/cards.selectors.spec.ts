@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import * as fromSelectors from './cards.selectors';
 import { CardsState } from './cards.state';
-import { CardAccount } from '../../../features/bank/products/components/cards/models/card-account.model';
-import { CardDetail } from '../../../features/bank/products/components/cards/models/card-detail.model';
+import { CardAccount } from '@tia/shared/models/cards/card-account.model';
+import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
+
 
 describe('Cards Selectors', () => {
   const mockAccounts: CardAccount[] = [
@@ -63,16 +64,18 @@ describe('Cards Selectors', () => {
     card2: mockCardDetail2,
   };
 
-  const mockState: CardsState = {
-    accounts: mockAccounts,
-    cardImages: {
-      card1: 'data:image/svg+xml;base64,image1',
-      card2: 'data:image/svg+xml;base64,image2',
-    },
-    cardDetails: mockCardDetails,
-    loading: false,
-    error: null,
-  };
+ const mockState: CardsState = {
+  accounts: mockAccounts,
+  cardImages: {
+    card1: 'data:image/svg+xml;base64,image1',
+    card2: 'data:image/svg+xml;base64,image2',
+  },
+  cardDetails: mockCardDetails,
+  loading: false,
+  error: null,
+  cardDetailsLoading: false,
+  cardDetailsError: null,
+};
 
   describe('selectAllAccounts', () => {
     it('should select all accounts', () => {
@@ -198,4 +201,29 @@ describe('Cards Selectors', () => {
       expect(result[0].cardId).toBe('card1');
     });
   });
+  describe('selectCardDetailsLoading', () => {
+  it('should select cardDetailsLoading state', () => {
+    const result = fromSelectors.selectCardDetailsLoading.projector(mockState);
+    expect(result).toBe(false);
+  });
+
+  it('should return true when loading', () => {
+    const loadingState = { ...mockState, cardDetailsLoading: true };
+    const result = fromSelectors.selectCardDetailsLoading.projector(loadingState);
+    expect(result).toBe(true);
+  });
+});
+
+describe('selectCardDetailsError', () => {
+  it('should select cardDetailsError', () => {
+    const result = fromSelectors.selectCardDetailsError.projector(mockState);
+    expect(result).toBeNull();
+  });
+
+  it('should return error message when present', () => {
+    const errorState = { ...mockState, cardDetailsError: 'Load failed' };
+    const result = fromSelectors.selectCardDetailsError.projector(errorState);
+    expect(result).toBe('Load failed');
+  });
+});
 });
