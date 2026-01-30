@@ -17,7 +17,6 @@ import {
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
 import { ExchangeRatesEffects } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.effects';
 import { AccountsEffects } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.effects';
-import { LoansService } from '../features/bank/loans/shared/services/loans.service';
 
 export const bankRoutes: Routes = [
   {
