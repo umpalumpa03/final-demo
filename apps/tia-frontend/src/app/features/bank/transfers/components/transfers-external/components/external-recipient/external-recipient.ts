@@ -5,8 +5,10 @@ import {
   inject,
   signal,
   DestroyRef,
+  effect,
+  computed,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { getRecipientInputConfig } from '../../config/transfers-external.config';
@@ -24,20 +26,20 @@ import {
   getSuccessMessage,
 } from '../../../../utils/transfers-external.utils';
 import { RecipientType } from '../../../../models/transfers.state.model';
-import { TransfersAccountCard } from 'apps/tia-frontend/src/app/features/bank/transfers/ui/account-card/transfers-account-card';
-import { Account } from '@tia/shared/models/accounts/accounts.model';
-import { Store } from '@ngrx/store';
-import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
-import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
+import { TransferStore } from '../../../../store/transfers.store';
+import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
+import { Router } from '@angular/router';
+import { filter, take } from 'rxjs';
 
 @Component({
   selector: 'app-external-recipient',
+  standalone: true,
   imports: [
     TranslatePipe,
     TextInput,
     ButtonComponent,
     ReactiveFormsModule,
-    TransfersAccountCard,
+    AlertTypesWithIcons,
   ],
   templateUrl: './external-recipient.html',
   styleUrl: './external-recipient.scss',
@@ -48,14 +50,11 @@ export class ExternalRecipient implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly validationService = inject(TransferValidationService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly store = inject(Store);
+  private readonly transferStore = inject(TransferStore);
+  private readonly router = inject(Router);
 
-  public selectedAccountId: string | null = null;
-
-  public readonly accounts = toSignal(this.store.select(selectAccounts), {
-    initialValue: [],
-  });
-
+  public readonly showError = signal(false);
+  public readonly isLoading = computed(() => this.transferStore.isLoading());
   public readonly recipientInputConfig = signal<InputConfig>(
     getRecipientInputConfig(this.translate),
   );
@@ -64,8 +63,29 @@ export class ExternalRecipient implements OnInit {
     recipientValidator(this.validationService),
   ]);
 
-  ngOnInit(): void {
-    this.store.dispatch(AccountsActions.loadAccounts());
+  private readonly recipientInfo$ = toObservable(
+    this.transferStore.recipientInfo,
+  );
+
+  constructor() {
+    effect(() => {
+      const error = this.transferStore.error();
+
+      if (error) {
+        this.showError.set(true);
+        setTimeout(() => {
+          this.showError.set(false);
+        }, 5000);
+      }
+    });
+  }
+
+  public ngOnInit(): void {
+    const storedValue = this.transferStore.recipientInput();
+    if (storedValue) {
+      this.recipientInput.setValue(storedValue, { emitEvent: false });
+    }
+
     this.setupValueChangeListener();
   }
 
@@ -118,8 +138,34 @@ export class ExternalRecipient implements OnInit {
     }));
   }
 
-  onAccountSelect(account: Account): void {
-    this.selectedAccountId = account.id;
-    console.log('Selected account:', account);
+  public onVerify(): void {
+    if (this.recipientInput.valid && this.recipientInput.value) {
+      const currentValue = this.recipientInput.value;
+      const storedValue = this.transferStore.recipientInput();
+      const hasExistingData = this.transferStore.recipientInfo();
+
+      if (currentValue === storedValue && hasExistingData) {
+        this.router.navigate(['/bank/transfers/external/accounts']);
+        return;
+      }
+
+      const type = this.validationService.identifyRecipientType(currentValue);
+
+      if (type) {
+        this.transferStore.lookupRecipient({
+          value: currentValue,
+          type,
+        });
+
+        this.recipientInfo$
+          .pipe(
+            filter((info) => !!info),
+            take(1),
+          )
+          .subscribe(() => {
+            this.router.navigate(['/bank/transfers/external/accounts']);
+          });
+      }
+    }
   }
 }

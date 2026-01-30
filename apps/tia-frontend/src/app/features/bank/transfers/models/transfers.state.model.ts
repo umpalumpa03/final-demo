@@ -13,6 +13,7 @@ export interface RecipientAccount {
 export interface RecipientResponse {
   fullName: string;
   accounts: RecipientAccount[];
+  currency?: Currency;
   userId?: string;
 }
 
