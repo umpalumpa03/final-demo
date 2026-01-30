@@ -144,4 +144,16 @@ export const loansReducer = createReducer(
     selectedLoanDetails: null,
     detailsLoading: false,
   })),
+
+  on(LoansActions.showAlert, (state, { message, alertType }) => ({
+    ...state,
+    alertMessage: message,
+    alertType: alertType,
+  })),
+
+  on(LoansActions.hideAlert, (state) => ({
+    ...state,
+    alertMessage: null,
+    alertType: null,
+  })),
 );

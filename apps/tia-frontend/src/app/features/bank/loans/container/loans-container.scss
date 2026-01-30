@@ -36,3 +36,22 @@
         }
     }
 }
+
+.loans-alert-positioner {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 9999;
+    animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-2.4rem, 0);
+    }
+}

@@ -121,3 +121,9 @@ export const selectLoanDetailsLoading = createSelector(
   selectLoansState,
   (state) => state.detailsLoading,
 );
+
+export const selectLoansAlert = createSelector(selectLoansState, (state) =>
+  state.alertMessage
+    ? { message: state.alertMessage, type: state.alertType }
+    : null,
+);
