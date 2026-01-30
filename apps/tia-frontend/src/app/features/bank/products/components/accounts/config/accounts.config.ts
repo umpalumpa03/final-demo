@@ -4,38 +4,49 @@ import {
 } from '../../../../../../shared/models/accounts/accounts.model';
 import { AccountType } from '../../../../../../shared/models/accounts/accounts.model';
 import { AccountUtils } from '../utils/account.utils';
+import { TranslateService } from '@ngx-translate/core';
 
 const accountUtils = new AccountUtils();
 
-export const accountSections: AccountSection[] = [
+export const getAccountSections = (
+  translate: TranslateService,
+): AccountSection[] => [
   {
     key: AccountType.current,
-    title: 'Current Accounts',
+    title: translate.instant('my-products.accounts.sections.current'),
     icon: accountUtils.getAccountIcon(AccountType.current),
   },
   {
     key: AccountType.saving,
-    title: 'Savings Accounts',
+    title: translate.instant('my-products.accounts.sections.savings'),
     icon: accountUtils.getAccountIcon(AccountType.saving),
   },
   {
     key: AccountType.card,
-    title: 'Cards',
+    title: translate.instant('my-products.accounts.sections.cards'),
     icon: accountUtils.getAccountIcon(AccountType.card),
   },
-] as const;
+];
 
-export const CREATE_ACCOUNT_CONFIG: CreateAccountConfig = {
+export const getCreateAccountConfig = (
+  translate: TranslateService,
+): CreateAccountConfig => ({
   friendlyName: {
-    label: 'Account Name',
-    placeholder: 'e.g., Emergency Fund',
+    label: translate.instant('my-products.accounts.form.friendlyName.label'),
+    placeholder: translate.instant(
+      'my-products.accounts.form.friendlyName.placeholder',
+    ),
   },
   type: {
-    label: 'Account Type',
-    placeholder: 'Select account type',
+    label: translate.instant('my-products.accounts.form.type.label'),
+    placeholder: translate.instant(
+      'my-products.accounts.form.type.placeholder',
+    ),
   },
   currency: {
-    label: 'Currency',
-    placeholder: 'Select currency',
+    label: translate.instant('my-products.accounts.form.currency.label'),
+    placeholder: translate.instant(
+      'my-products.accounts.form.currency.placeholder',
+    ),
   },
-} as const;
+});

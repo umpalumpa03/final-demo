@@ -8,7 +8,9 @@ import {
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { shareReplay } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 import { AccountsListComponent } from '../components/accounts-list/accounts-list';
 import { CreateAccountComponent } from '../components/create-account/components/create-account';
 import {
@@ -26,7 +28,7 @@ import {
   selectIsUpdatingFriendlyName,
   selectUpdateFriendlyNameError,
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
-import { accountSections } from '../config/accounts.config';
+import { getAccountSections } from '../config/accounts.config';
 import { AccountsService } from 'apps/tia-frontend/src/app/shared/services/accounts/accounts.service';
 
 @Component({
@@ -40,6 +42,8 @@ export class Accounts implements OnInit {
   private readonly store = inject(Store);
   private readonly fb = inject(FormBuilder);
   private readonly accountsService = inject(AccountsService);
+  private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   protected readonly accountsGrouped$ = this.store.select(
     selectAccountsGrouped,
@@ -58,7 +62,9 @@ export class Accounts implements OnInit {
     selectUpdateFriendlyNameError,
   );
 
-  protected readonly accountSectionsData = accountSections;
+  protected readonly accountSectionsData = signal(
+    getAccountSections(this.translate),
+  );
   protected readonly accountTypeValues = Object.values(AccountType);
   protected readonly currencyValues = this.accountsService
     .getCurrencies()

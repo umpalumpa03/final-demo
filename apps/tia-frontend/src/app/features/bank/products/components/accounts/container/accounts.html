@@ -3,7 +3,7 @@
     [accountsGrouped]="accountsGrouped$ | async"
     [isLoading]="(isLoading$ | async) || false"
     [error]="error$ | async"
-    [accountSections]="accountSectionsData"
+    [accountSections]="accountSectionsData()"
     [isRenamingAccount]="(isRenamingAccount$ | async) || false"
     [renameError]="renameError$ | async"
     (openModal)="handleOpenModal()"
