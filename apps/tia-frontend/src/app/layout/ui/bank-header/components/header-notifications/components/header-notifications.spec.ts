@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeaderNotifications } from './header-notifications';
-import { NotificationsStore } from '../../store/notifications.store';
+import { NotificationsStore } from '../store/notifications.store';
 import { ElementRef, signal } from '@angular/core';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 

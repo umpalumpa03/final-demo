@@ -9,12 +9,12 @@ import {
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { BankHeader } from '../components/bank-header/bank-header';
-import { HeaderNotifications } from '../components/header-notifications/header-notifications';
-import { Notifications } from '../service/notifications';
+import { HeaderNotifications } from '../components/header-notifications/components/header-notifications';
+import { Notifications } from '../components/header-notifications/service/notifications';
 import { Observable, tap } from 'rxjs';
-import { NotificationsData } from '../models/notification.model';
+import { NotificationsData } from '../components/header-notifications/models/notification.model';
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
-import { NotificationsStore } from '../store/notifications.store';
+import { NotificationsStore } from '../components/header-notifications/store/notifications.store';
 import { selectCurrentAvatarUrl } from '../../../../store/profile-photo/profile-photo.selectors';
 import { toSignal } from '@angular/core/rxjs-interop';
 

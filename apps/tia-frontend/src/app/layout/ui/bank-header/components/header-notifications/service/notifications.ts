@@ -5,7 +5,7 @@ import {
   HasUnreadNotifications,
   NotificationsData,
 } from '../models/notification.model';
-import { environment } from '../../../../../environments/environment';
+import { environment } from '../../../../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',

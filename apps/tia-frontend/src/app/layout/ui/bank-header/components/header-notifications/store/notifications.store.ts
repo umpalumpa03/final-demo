@@ -1,9 +1,16 @@
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import {
+  patchState,
+  signalStore,
+  withComputed,
+  withMethods,
+  withState,
+} from '@ngrx/signals';
 import { FetchParams, NotificationsState } from '../models/notification.model';
-import { inject } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import { Notifications } from '../service/notifications';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { pipe, switchMap, tap } from 'rxjs';
+import { filter, forkJoin, pipe, switchMap, tap } from 'rxjs';
+import { items } from 'apps/tia-frontend/src/app/features/storybook/components/drag-and-drop/config/draggable-data.config';
 
 export const initialState: NotificationsState = {
   items: [],
@@ -22,6 +29,12 @@ export const initialState: NotificationsState = {
 
 export const NotificationsStore = signalStore(
   withState(initialState),
+  withComputed((store) => ({
+    unreadNotificationsNumber: computed(
+      () => store.items().filter((item) => !item.isRead).length,
+    ),
+    isEmpty: computed(() => !store.isLoading() && store.items().length === 0),
+  })),
   withMethods((store) => {
     const notificationsService = inject(Notifications);
     return {
@@ -62,10 +75,6 @@ export const NotificationsStore = signalStore(
                     pageInfo: response.pageInfo,
                     isLoading: false,
                     isFetching: false,
-                    isEmpty: false,
-                    unreadNotificationsNumber: updatedItems.filter(
-                      (item) => !item.isRead,
-                    ).length,
                   });
                 },
                 error: () =>
@@ -92,9 +101,6 @@ export const NotificationsStore = signalStore(
                     .filter((item) => item.id !== id);
                   patchState(store, {
                     items: updatedItems,
-                    unreadNotificationsNumber: updatedItems.filter(
-                      (item) => !item.isRead,
-                    ).length,
                     isLoading: false,
                   });
                 },
@@ -146,8 +152,6 @@ export const NotificationsStore = signalStore(
                   patchState(store, {
                     items: [],
                     hasUnread: false,
-                    unreadNotificationsNumber: 0,
-                    isEmpty: true,
                     isLoading: false,
                   });
                 },
@@ -158,29 +162,37 @@ export const NotificationsStore = signalStore(
         ),
       ),
 
-      markItemRead: rxMethod<string>(
+      markItemsRead: rxMethod<string[]>(
         pipe(
-          switchMap((id) => {
-            return notificationsService.markNotificationRead(id).pipe(
+          filter((ids) => ids.length > 0),
+          tap((ids) => {
+            const updatedItems = store
+              .items()
+              .map((item) =>
+                ids.includes(item.id) ? { ...item, isRead: true } : item,
+              );
+
+            patchState(store, {
+              items: updatedItems,
+              unreadNotificationsNumber: updatedItems.filter(
+                (item) => !item.isRead,
+              ).length,
+              hasUnread: updatedItems.some((item) => !item.isRead),
+            });
+          }),
+          switchMap((ids) =>
+            // Send API calls in parallel
+            forkJoin(
+              ids.map((id) => notificationsService.markNotificationRead(id)),
+            ).pipe(
               tap({
                 next: () => {
-                  const updatedItems = store
-                    .items()
-                    .map((item) =>
-                      item.id === id ? { ...item, isRead: true } : item,
-                    );
-                  patchState(store, {
-                    items: updatedItems,
-                    hasUnread: updatedItems.some((item) => !item.isRead),
-                    unreadNotificationsNumber: updatedItems.filter(
-                      (item) => !item.isRead,
-                    ).length,
-                  });
+                  // Already updated UI, nothing more to do
                 },
                 error: () => patchState(store, { hasError: true }),
               }),
-            );
-          }),
+            ),
+          ),
         ),
       ),
     };

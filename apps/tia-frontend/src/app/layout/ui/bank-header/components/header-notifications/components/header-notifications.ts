@@ -9,13 +9,15 @@ import {
   signal,
 } from '@angular/core';
 
-import { ItemsData } from '../../models/notification.model';
+import { ItemsData } from '../models/notification.model';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
-import { NotificationsStore } from '../../store/notifications.store';
+import { NotificationsStore } from '../store/notifications.store';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
+import { VisibleInViewportDirective } from '../directives/visible-in-viewport.directive';
 
 @Component({
   selector: 'app-header-notifications',
@@ -26,6 +28,8 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
     TitleCasePipe,
     RouteLoader,
     ButtonComponent,
+    ErrorStates,
+    VisibleInViewportDirective,
   ],
   templateUrl: './header-notifications.html',
   styleUrl: './header-notifications.scss',
@@ -35,7 +39,6 @@ export class HeaderNotifications {
   readonly store = inject(NotificationsStore);
 
   public isOpen = input<boolean>();
-  public messages = input();
   public anchor = input<ElementRef | undefined>();
 
   // Store working
@@ -44,6 +47,7 @@ export class HeaderNotifications {
   public hasError = this.store.hasError;
   public unreadLeft = this.store.unreadNotificationsNumber;
   public isFetching = this.store.isFetching;
+  public isEmpty = this.store.isEmpty;
 
   public top = signal(0);
   public left = signal(0);
@@ -98,10 +102,6 @@ export class HeaderNotifications {
     this.store.deleteNotification(id);
   }
 
-  public onReadIconClicked(id: string) {
-    this.store.markItemRead(id);
-  }
-
   public onMarkAllClick() {
     this.store.markAllAsRead();
   }
@@ -117,6 +117,34 @@ export class HeaderNotifications {
       });
 
       console.log('hello');
+    }
+  }
+
+  private pendingReadItems = new Set<string>();
+  private debounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+  public onItemBecameVisible(itemId: string): void {
+    this.pendingReadItems.add(itemId);
+
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
+    }
+
+    this.debounceTimer = setTimeout(() => {
+      this.markPendingItemsAsRead();
+    }, 2000);
+  }
+
+  private markPendingItemsAsRead(): void {
+    if (this.pendingReadItems.size === 0) return;
+
+    const itemIds = Array.from(this.pendingReadItems);
+    this.pendingReadItems.clear();
+    this.store.markItemsRead(itemIds);
+  }
+  ngOnDestroy(): void {
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
     }
   }
 }
