@@ -13,6 +13,7 @@ import { TextInput } from '../../../../../../../../shared/lib/forms/input-field/
 import { Dropdowns } from '../../../../../../../../shared/lib/forms/dropdowns/dropdowns';
 import { SelectOption } from '../../../../../../../../shared/lib/forms/models/dropdowns.model';
 import { ButtonComponent } from '../../../../../../../../shared/lib/primitives/button/button';
+import { CREATE_ACCOUNT_CONFIG } from '../../../config/accounts.config';
 
 @Component({
   selector: 'app-create-account',
@@ -37,6 +38,8 @@ export class CreateAccountComponent {
   public closeModal = output<void>();
   public submitForm = output<void>();
   public backdropClick = output<MouseEvent>();
+
+  protected readonly createConfig = CREATE_ACCOUNT_CONFIG;
 
   public accountTypeOptions = computed<SelectOption[]>(() =>
     this.accountTypes().map((type) => ({

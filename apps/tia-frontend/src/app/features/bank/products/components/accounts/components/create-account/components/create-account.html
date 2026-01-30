@@ -13,10 +13,7 @@
   >
     <div class="form-group">
       <lib-text-input
-        [config]="{
-          label: 'Account Name',
-          placeholder: 'e.g., Emergency Fund'
-        }"
+        [config]="createConfig.friendlyName"
         formControlName="friendlyName"
       ></lib-text-input>
     </div>
@@ -24,7 +21,7 @@
     <div class="form-group">
       <lib-select
         [options]="accountTypeOptions()"
-        [config]="{ label: 'Account Type', placeholder: 'Select account type' }"
+        [config]="createConfig.type"
         formControlName="type"
       ></lib-select>
     </div>
@@ -32,7 +29,7 @@
     <div class="form-group">
       <lib-select
         [options]="currencyOptions()"
-        [config]="{ label: 'Currency', placeholder: 'Select currency' }"
+        [config]="createConfig.currency"
         formControlName="currency"
       ></lib-select>
     </div>
