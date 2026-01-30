@@ -13,9 +13,11 @@ export const initialState: NotificationsState = {
   },
   hasUnread: false,
   isLoading: false,
+  isFetching: false,
   hasError: false,
   limitPerPage: 10,
   unreadNotificationsNumber: 0,
+  isEmpty: true,
 };
 
 export const NotificationsStore = signalStore(
@@ -39,22 +41,29 @@ export const NotificationsStore = signalStore(
 
       fetchNotifications: rxMethod<FetchParams>(
         pipe(
-          tap(() => {
-            patchState(store, {
-              isLoading: true,
-            });
+          tap(({ cursor }) => {
+            cursor
+              ? patchState(store, {
+                  isFetching: true,
+                })
+              : patchState(store, {
+                  isLoading: true,
+                });
           }),
           switchMap(({ cursor, limit = 10 }) => {
             return notificationsService.getNotifications(cursor, limit).pipe(
               tap({
                 next: (response) => {
+                  const updatedItems = cursor
+                    ? [...store.items(), ...response.items]
+                    : response.items;
                   patchState(store, {
-                    items: cursor
-                      ? [...store.items(), ...response.items]
-                      : response.items,
+                    items: updatedItems,
                     pageInfo: response.pageInfo,
                     isLoading: false,
-                    unreadNotificationsNumber: response.items.filter(
+                    isFetching: false,
+                    isEmpty: false,
+                    unreadNotificationsNumber: updatedItems.filter(
                       (item) => !item.isRead,
                     ).length,
                   });
@@ -69,12 +78,24 @@ export const NotificationsStore = signalStore(
 
       deleteNotification: rxMethod<string>(
         pipe(
+          tap(() => {
+            patchState(store, {
+              isLoading: true,
+            });
+          }),
           switchMap((id) => {
             return notificationsService.removeNotification(id).pipe(
               tap({
                 next: () => {
+                  const updatedItems = store
+                    .items()
+                    .filter((item) => item.id !== id);
                   patchState(store, {
-                    items: store.items().filter((item) => item.id !== id),
+                    items: updatedItems,
+                    unreadNotificationsNumber: updatedItems.filter(
+                      (item) => !item.isRead,
+                    ).length,
+                    isLoading: false,
                   });
                 },
                 error: () => patchState(store, { hasError: true }),
@@ -86,6 +107,11 @@ export const NotificationsStore = signalStore(
 
       markAllAsRead: rxMethod<void>(
         pipe(
+          tap(() => {
+            patchState(store, {
+              isLoading: true,
+            });
+          }),
           switchMap(() => {
             return notificationsService.markAllAsRead().pipe(
               tap({
@@ -94,8 +120,35 @@ export const NotificationsStore = signalStore(
                     items: store
                       .items()
                       .map((item) => ({ ...item, isRead: true })),
+                    isLoading: false,
                     hasUnread: false,
                     unreadNotificationsNumber: 0,
+                  });
+                },
+                error: () => patchState(store, { hasError: true }),
+              }),
+            );
+          }),
+        ),
+      ),
+
+      deleteAll: rxMethod<void>(
+        pipe(
+          tap(() => {
+            patchState(store, {
+              isLoading: true,
+            });
+          }),
+          switchMap(() => {
+            return notificationsService.deleteAll().pipe(
+              tap({
+                next: () => {
+                  patchState(store, {
+                    items: [],
+                    hasUnread: false,
+                    unreadNotificationsNumber: 0,
+                    isEmpty: true,
+                    isLoading: false,
                   });
                 },
                 error: () => patchState(store, { hasError: true }),

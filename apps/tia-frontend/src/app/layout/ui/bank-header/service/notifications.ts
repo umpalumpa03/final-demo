@@ -45,6 +45,10 @@ export class Notifications {
     return this.http.patch(`${environment.apiUrl}/notifications/read-all`, {});
   }
 
+  public deleteAll() {
+    return this.http.delete(`${environment.apiUrl}/notifications/remove-all`);
+  }
+
   public markNotificationRead(id: string) {
     return this.http.patch(
       `${environment.apiUrl}/notifications/${id}/read`,

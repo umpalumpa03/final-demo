@@ -49,26 +49,43 @@
       height: 100%;
     }
 
+    &__data--fetching {
+    }
+
     &__header {
       @include flex-center($justify: space-between);
       @include font-inter(400, 1.4rem, 2rem);
       letter-spacing: -0.015rem;
       color: $gray-700;
-      margin-bottom: 1.6rem;
+      margin: 0 1.2rem 1.6rem;
       &__select,
-      &__markread {
+      &__cta--all {
         @include flex-center($justify: flex-start);
         gap: 0.8rem;
         cursor: pointer;
       }
+      &__cta--all {
+        button {
+          img {
+            width: 2rem;
+            height: 2rem;
+          }
+        }
 
-      &__select {
-        margin-left: 1.2rem;
-      }
+        &__read {
+          filter: brightness(0) saturate(100%) invert(71%) sepia(6%)
+            saturate(698%) hue-rotate(180deg) brightness(91%) contrast(84%);
+          &:hover {
+            filter: brightness(0) saturate(100%) invert(24%) sepia(94%)
+              saturate(2607%) hue-rotate(219deg) brightness(98%) contrast(110%);
+          }
+        }
 
-      &__markread {
-        p {
-          cursor: pointer;
+        &__delete {
+          &:hover {
+            filter: brightness(0) saturate(100%) invert(17%) sepia(88%)
+              saturate(5328%) hue-rotate(355deg) brightness(92%) contrast(82%);
+          }
         }
       }
     }
@@ -76,6 +93,7 @@
     &__item {
       @include flex-center($justify: space-between);
       gap: 1.2rem;
+      margin-bottom: 1rem;
       padding: 1.6rem 1.2rem;
       border-radius: 1rem;
       cursor: pointer;
@@ -123,7 +141,7 @@
         &--icon {
           display: inline-block;
           position: absolute;
-          top: 0.8rem;
+          top: -1.6rem;
           right: 2rem;
           width: 0.8rem;
           height: 0.8rem;

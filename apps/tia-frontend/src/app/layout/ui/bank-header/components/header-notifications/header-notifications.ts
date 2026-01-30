@@ -43,12 +43,16 @@ export class HeaderNotifications {
   public isLoading = this.store.isLoading;
   public hasError = this.store.hasError;
   public unreadLeft = this.store.unreadNotificationsNumber;
+  public isFetching = this.store.isFetching;
 
   public top = signal(0);
   public left = signal(0);
 
   public isAllSelected = computed(() => {
-    return this.notificationsItems().length === this.selectedItems().length;
+    return (
+      this.notificationsItems().length === this.selectedItems().length &&
+      this.notificationsItems().length > 0
+    );
   });
   public selectedItems = signal<string[]>([]);
 
@@ -101,13 +105,18 @@ export class HeaderNotifications {
   public onMarkAllClick() {
     this.store.markAllAsRead();
   }
+  public onDeleteAllClicked() {
+    this.store.deleteAll();
+  }
 
   public onScrollBottom() {
-    if (this.store.pageInfo.hasNext()) {
+    if (this.store.pageInfo().hasNext) {
       this.store.fetchNotifications({
-        cursor: this.store.pageInfo.nextCursor(),
+        cursor: this.store.pageInfo().nextCursor,
         limit: this.store.limitPerPage(),
       });
+
+      console.log('hello');
     }
   }
 }

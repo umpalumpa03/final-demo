@@ -35,6 +35,8 @@ export interface NotificationsState {
   limitPerPage: number;
   hasUnread: boolean;
   unreadNotificationsNumber: number;
+  isEmpty: boolean;
+  isFetching: boolean;
 }
 
 export type FetchParams = {

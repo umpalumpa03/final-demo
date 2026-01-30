@@ -26,15 +26,6 @@
     >
       Delete ({{ selectedItems().length }})
     </app-button>
-    <app-button
-      variant="default"
-      [fullWidth]="true"
-      icon="email-icon.svg"
-      style="width: 100%"
-      class="header-notifications__header__button"
-    >
-      Mark as Read ({{ selectedItems().length }})
-    </app-button>
     }
   </header>
   <main class="header-notifications__main">
@@ -46,14 +37,38 @@
         ></lib-checkboxes>
         Select All
       </div>
-      <div
-        class="header-notifications__main__header__markread"
-        (click)="onMarkAllClick()"
-      >
-        <p>Mark all as read</p>
+      <div class="header-notifications__main__header__cta--all">
+        <button
+          (click)="onMarkAllClick()"
+          [disabled]="!notificationsItems().length"
+        >
+          <img
+            class="header-notifications__main__header__cta--all__read"
+            src="images/svg/header-notifications/read.svg"
+            alt="read all icon"
+            title="Mark all as read"
+          />
+        </button>
+        <p>/</p>
+        <button
+          (click)="onDeleteAllClicked()"
+          [disabled]="!notificationsItems().length"
+        >
+          <img
+            class="header-notifications__main__header__cta--all__delete"
+            src="images/svg/header-notifications/delete.svg"
+            alt="delete all icon"
+            title="Delete all notification"
+          />
+        </button>
       </div>
     </header>
-    <app-scroll-area [hideBorder]="true" height="95%">
+    <app-scroll-area
+      (scrollBottom)="onScrollBottom()"
+      [hideBorder]="true"
+      height="95%"
+      [isLoading]="isLoading()"
+    >
       @for (item of notificationsItems(); track $index) {
       <div
         class="header-notifications__main__item"
@@ -78,13 +93,6 @@
         <div class="header-notifications__main__item__cta">
           @if(!item.isRead) {
           <span class="header-notifications__main__item__cta--icon"></span>
-          <button (click)="onReadIconClicked(item.id)">
-            <img
-              class="header-notifications__main__item__cta--read"
-              src="images/svg/header-notifications/read.svg"
-              alt="read icon"
-            />
-          </button>
           }
 
           <button (click)="onTrashIconClick(item.id)">
@@ -95,6 +103,10 @@
             />
           </button>
         </div>
+      </div>
+      } @if(isFetching()) {
+      <div class="header-notifications__main__data--fetching">
+        <app-route-loader variant="pulsing" />
       </div>
       }
     </app-scroll-area>
