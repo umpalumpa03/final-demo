@@ -1,5 +1,5 @@
 <div class="loans">
-    @for (loan of pendingLoans$ | async; track loan.id) {
+    @for (loan of pendingLoans(); track loan.id) {
     <lib-loan-card [loan]="loan" [variant]="'colored'" (rename)="onRenameLoan($event)">
     </lib-loan-card>
     } @empty {

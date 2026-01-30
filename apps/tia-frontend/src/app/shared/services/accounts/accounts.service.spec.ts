@@ -17,6 +17,7 @@ describe('AccountsService', () => {
   const apiUrl = `${environment.apiUrl}/accounts`;
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [AccountsService],
@@ -29,35 +30,38 @@ describe('AccountsService', () => {
     httpMock.verify();
   });
 
-  it('should fetch all accounts', () => {
+  it('should fetch all accounts with correct params', () => {
     service.getAccounts().subscribe();
-    const req = httpMock.expectOne(apiUrl);
+    const req = httpMock.expectOne(
+      (request) =>
+        request.url === apiUrl &&
+        request.params.get('ignoreHiddens') === 'true' &&
+        request.params.get('status') === 'active',
+    );
     expect(req.request.method).toBe('GET');
     req.flush([]);
   });
 
-  it('should fetch account by id', () => {
+  it('should fetch account by id and currencies', () => {
     service.getAccountById('1').subscribe();
-    const req = httpMock.expectOne(`${apiUrl}/1`);
+    let req = httpMock.expectOne(`${apiUrl}/1`);
     expect(req.request.method).toBe('GET');
     req.flush({});
-  });
 
-  it('should fetch currencies', () => {
     service.getCurrencies().subscribe();
-    const req = httpMock.expectOne(`${apiUrl}/catalogs/currencies`);
+    req = httpMock.expectOne(`${apiUrl}/catalogs/currencies`);
     expect(req.request.method).toBe('GET');
     req.flush([]);
   });
 
-  it('should create account', () => {
+  it('should create account and make transfer', () => {
     const createRequest: CreateAccountRequest = {
       friendlyName: 'New Account',
       type: AccountType.saving,
       currency: 'USD',
     };
     service.createAccount(createRequest).subscribe();
-    const req = httpMock.expectOne(apiUrl);
+    let req = httpMock.expectOne(`${apiUrl}/create-account-request`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(createRequest);
     req.flush({
@@ -66,13 +70,11 @@ describe('AccountsService', () => {
       balance: 0,
       isActive: true,
       accountNumber: '123',
-      createdAt: '2024-01-01',
+      createdAt: '2026-01-01',
     });
-  });
 
-  it('should make transfer', () => {
     service.makeTransfer('1').subscribe();
-    const req = httpMock.expectOne(`${apiUrl}/1/transfer`);
+    req = httpMock.expectOne(`${apiUrl}/1/transfer`);
     expect(req.request.method).toBe('POST');
     req.flush(null);
   });

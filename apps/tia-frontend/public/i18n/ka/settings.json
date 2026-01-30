@@ -38,11 +38,20 @@
         "profilePictureChangedSuccessfully": "პროფილის ფოტო წარმატებით შეიცვალა",
         "profilePictureRemovedSuccessfully": "პროფილის ფოტო წარმატებით წაიშლა",
         "change": "შენახვა",
-        "remove": "ფოტოს წაშლა"
+        "remove": "ფოტოს წაშლა",
+        "invalidFileAlert": "გთხოვთ აირჩიოთ ნაგულისხმები ფოტო (PNG ან JPG ფორმატი, მაქსიმალური ზომა — 1 MB)"
     },
     "security": {
         "title": "უსაფრთხოების პარამეტრები",
         "changePassword": "პაროლის შეცვლა",
+        "changePasswordSubtitle": "განაახლეთ თქვენი პაროლი ანგარიშის უსაფრთხოებისთვის",
+        "currentPassword": "მიმდინარე პაროლი",
+        "currentPasswordPlaceholder": "შეიყვანეთ მიმდინარე პაროლი",
+        "newPassword": "ახალი პაროლი",
+        "newPasswordPlaceholder": "შეიყვანეთ ახალი პაროლი",
+        "confirmNewPassword": "დაადასტურეთ ახალი პაროლი",
+        "confirmNewPasswordPlaceholder": "დაადასტურეთ ახალი პაროლი",
+        "updatePassword": "პაროლის განახლება",
         "twoFactorAuth": "ორი ფაქტორიანი ავთენტიფიკაცია"
     },
     "user-management": {

@@ -5,10 +5,47 @@
         <img [src]="accountIcon()" [alt]="account().type + ' account icon'" />
       </div>
       <div class="account-card__header-info">
-        <h3 class="account-card__header-info-name">
-          {{ account().friendlyName }}
+        @if (isEditing()) {
+        <div class="account-card__header-info-edit">
+          <lib-text-input
+            [(ngModel)]="newName"
+            [config]="{ placeholder: 'Enter account name' }"
+          />
+          @if (renameError()) {
+          <p class="account-card__header-info-edit-error">
+            {{ renameError() }}
+          </p>
+          }
+          <button
+            type="button"
+            class="account-card__header-info-edit-save"
+            (click)="handleSave()"
+            [disabled]="isSaveDisabled()"
+          >
+            @if (isRenaming()) { Saving... } @else { Save }
+          </button>
+          <button
+            type="button"
+            class="account-card__header-info-edit-cancel"
+            (click)="handleCancel()"
+            [disabled]="isRenaming()"
+          >
+            Cancel
+          </button>
+        </div>
+        } @else {
+        <h3
+          class="account-card__header-info-name account-card__header-info-name--clickable"
+          (click)="handleRenameClick()"
+          role="button"
+          tabindex="0"
+          (keydown.enter)="handleRenameClick()"
+          (keydown.space)="handleRenameClick()"
+          title="Click to rename account"
+        >
+          {{ displayName() }}
         </h3>
-        @if (account().status === 'active') {
+        } @if (account().status === 'active') {
         <span class="account-card__header-info-badge">active</span>
         }
         <p class="account-card__header-info-number">{{ account().iban }}</p>

@@ -15,8 +15,8 @@ import {
   selectLoading,
   selectError,
 } from '../../../../../../../../store/products/cards/cards.selectors';
-import { CardGroup } from '../../../models/card-group.model';
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
+import { CardGroup } from '@tia/shared/models/cards/card-group.model';
 
 @Component({
   selector: 'app-card-list',

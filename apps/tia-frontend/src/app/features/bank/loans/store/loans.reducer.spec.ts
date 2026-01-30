@@ -19,6 +19,7 @@ describe('LoansReducer', () => {
     nextPaymentDate: null,
     createdAt: '2025-01-01',
     friendlyName: 'Test Loan',
+    accountName: '',
   };
 
   it('should return the default state on unknown action', () => {
@@ -95,9 +96,8 @@ describe('LoansReducer', () => {
     expect(state.loading).toBe(false);
   });
 
-  it('should handle loadMonthsFailure (if implemented in reducer)', () => {
+  it('should handle loadMonthsFailure', () => {
     const action = LoansActions.loadMonthsFailure({ error: 'fail' });
-    // Assuming default behavior if not explicitly handled, or just ensuring no crash
     const state = loansReducer(initialState, action);
     expect(state).toBeTruthy();
   });
@@ -137,5 +137,32 @@ describe('LoansReducer', () => {
     const state = loansReducer(loansInitialState, action);
     expect(state.calculationResult).toBeNull();
     expect(state.error).toBe(errorMsg);
+  });
+
+  it('should handle initiatePrepaymentSuccess', () => {
+    const challengeId = '123';
+    const action = LoansActions.initiatePrepaymentSuccess({ challengeId });
+    const state = loansReducer(loansInitialState, action);
+    expect(state.activeChallengeId).toBe(challengeId);
+    expect(state.error).toBeNull();
+  });
+
+  it('should handle initiate/verify failures', () => {
+    const error = 'OTP Error';
+    const action = LoansActions.verifyPrepaymentFailure({ error });
+    const state = loansReducer(loansInitialState, action);
+    expect(state.error).toBe(error);
+  });
+
+  it('should clear calculation result and challenge id', () => {
+    const stateWithData = {
+      ...loansInitialState,
+      calculationResult: {} as any,
+      activeChallengeId: '123',
+    };
+    const action = LoansActions.clearCalculationResult();
+    const state = loansReducer(stateWithData, action);
+    expect(state.calculationResult).toBeNull();
+    expect(state.activeChallengeId).toBeNull();
   });
 });

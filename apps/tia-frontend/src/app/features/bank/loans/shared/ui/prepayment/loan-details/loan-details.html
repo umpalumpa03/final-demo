@@ -1,0 +1,99 @@
+<app-ui-modal [isOpen]="isOpen()" (closed)="close.emit()">
+    <div class="loan-modal">
+        <header class="loan-modal__header">
+            <div class="loan-modal__header-text">
+                <div class="icon">
+                    <img src="./images/svg/feature-loans/default.svg" alt="">
+                    <h3 class=" loan-modal__title">Loan Details</h3>
+                </div>
+                <p class="loan-modal__subtitle">View complete information about this loan</p>
+            </div>
+        </header>
+        @if (loan(); as loanData) {
+        <div class="loan-modal__body">
+            <div class="loan-modal__status">
+                <span class="loan-modal__status-label">Status</span>
+                <span class="loan-modal__badge loan-modal__badge--approved"
+                    [class.loan-modal__badge--approved]="loanData.status === 2">
+                    <img src="./images/svg/feature-loans/approve.svg" alt="">
+                    {{ loanData.statusName }}
+                </span>
+            </div>
+
+            <div class="loan-modal__section">
+                <h4 class="loan-modal__section-title">Loan Information</h4>
+                <div class="loan-modal__grid">
+                    <div class="loan-modal__grid-item">
+                        <label class="loan-modal__label">Loan Amount</label>
+                        <strong class="loan-modal__value loan-modal__value--amount">
+                            {{ loanData.loanAmount | currency:'USD':'symbol':'1.0-0' }}
+                        </strong>
+                    </div>
+
+                    <div class="loan-modal__grid-item">
+                        <label class="loan-modal__label">Purpose</label>
+                        <strong class="loan-modal__value">{{ loanData.purpose }}</strong>
+                    </div>
+
+                    <div class="loan-modal__grid-item">
+                        <label class="loan-modal__label">Loan Term</label>
+                        <strong class="loan-modal__value">{{ loanData.months }} months</strong>
+                    </div>
+
+                    <div class="loan-modal__grid-item">
+                        <label class="loan-modal__label">Interest Rate</label>
+                        <strong class="loan-modal__value">12.5% APR</strong>
+                    </div>
+
+                    <div class="loan-modal__grid-item loan-modal__grid-item--monthly">
+                        <label class="loan-modal__label">Monthly Payment</label>
+                        <strong class="loan-modal__value loan-modal__value--highlight">
+                            {{ loanData.monthlyPayment | currency:'USD':'symbol':'1.0-0' }}
+                        </strong>
+                    </div>
+
+                    <div class="loan-modal__grid-item">
+                        <label class="loan-modal__label">Remaining Balance</label>
+                        <strong class="loan-modal__value">
+                            {{ loanData.loanAmount | currency:'USD':'symbol':'1.0-0' }}
+                        </strong>
+                    </div>
+
+                    <div class="loan-modal__grid-item">
+                        <label class="loan-modal__label">Next Payment Date</label>
+                        <strong class="loan-modal__value">{{ loanData.nextPaymentDate | date:'dd/MM/yyyy' }}</strong>
+                    </div>
+
+                    <div class="loan-modal__grid-item">
+                        <label class="loan-modal__label">Application Date</label>
+                        <strong class="loan-modal__value">{{ loanData.createdAt | date:'dd/MM/yyyy' }}</strong>
+                    </div>
+
+                    <div class="loan-modal__grid-item loan-modal__grid-item--full">
+                        <label class="loan-modal__label">Account</label>
+                        <strong class="loan-modal__value">{{ loanData.accountName }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="loan-modal__prepayment">
+                <div class="loan-modal__prepayment-info">
+                    <div>
+                        <img class="loan-modal__prepayment-icon" src="./images/svg/feature-loans/prepayment.svg" alt="">
+                        <strong class="loan-modal__prepayment-title">Prepayment Options</strong>
+                    </div>
+                    <p class="loan-modal__prepayment-text">Make a prepayment on your loan to reduce your balance or
+                        pay it off completely.</p>
+                </div>
+                <app-button [fullWidth]="true" icon="./calculate.svg" (click)="onCalculate()">
+                    Calculate Prepayment
+                </app-button>
+            </div>
+        </div>
+        }
+
+        <div class="close">
+            <app-button (click)="close.emit()" [variant]="buttonVariant">Close</app-button>
+        </div>
+    </div>
+</app-ui-modal>

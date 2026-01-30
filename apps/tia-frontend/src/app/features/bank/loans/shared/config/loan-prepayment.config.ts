@@ -32,3 +32,12 @@ export const PREPAYMENT_FORM_CONFIG = {
     layout: 'column',
   },
 } as const;
+
+export const PREPAYMENT_CURRENCY_KEYWORDS = [
+  'amount',
+  'savings',
+  'principal',
+  'interest',
+  'discount',
+  'monthly payment',
+] as const;

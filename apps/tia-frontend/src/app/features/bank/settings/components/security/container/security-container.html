@@ -1,3 +1,20 @@
-<app-security
+@if (alertType()) {
+  <div class="security-container__alert-container">
+    <app-alert-types-with-icons
+      class="security-container__alert"
+      [alertType]="alertType()!"
+      [alertMessage]="alertMessage()"
+    ></app-alert-types-with-icons>
+  </div>
+}
 
+<app-security
+  [isLoading]="isLoading()"
+  [error]="error()"
+  [success]="success()"
+  [form]="changePasswordForm"
+  [confirmPasswordConfig]="confirmPasswordConfig()"
+  [currentPasswordConfig]="currentPasswordConfig()"
+  [newPasswordConfig]="newPasswordConfig()"
+  (changePassword)="onChangePassword($event)"
 ></app-security>

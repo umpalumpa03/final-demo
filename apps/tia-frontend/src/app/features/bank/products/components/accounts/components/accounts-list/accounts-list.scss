@@ -7,7 +7,7 @@
 
   &__header {
     @include font-arimo();
-    @include flex-center(row, space-between, center);
+    @include flex-center(row, space-between);
     margin-bottom: 2rem;
 
     &-info {
@@ -44,7 +44,7 @@
     margin-bottom: 2rem;
 
     &-header {
-      @include flex-center(row, flex-start, center);
+      @include flex-center(row, flex-start);
       gap: 0.75rem;
       margin-bottom: 1rem;
     }
@@ -61,7 +61,7 @@
     }
 
     &-count {
-      @include flex-center(row, center, center);
+      @include flex-center();
       min-width: 2.4rem;
       height: 2.4rem;
       padding: 0 0.5rem;
@@ -72,9 +72,24 @@
     }
 
     &-grid {
-      @include display-flex(row, wrap);
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
+    }
+
+    &-scroll {
+      width: 100%;
+
+      &-grid {
+        @include display-flex(row);
+        gap: 1.5rem;
+
+        app-account-card {
+          flex-shrink: 0;
+          width: 30%;
+          min-width: 280px;
+        }
+      }
     }
   }
 }

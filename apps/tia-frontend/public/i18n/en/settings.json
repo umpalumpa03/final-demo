@@ -38,11 +38,20 @@
         "profilePictureChangedSuccessfully": "Your profile picture changed successfully",
         "profilePictureRemovedSuccessfully": "Your profile picture removed successfully",
         "change": "Save Changes",
-        "remove": "Remove Photo"
+        "remove": "Remove Photo",
+        "invalidFileAlert": "Unfortunately, your photo could not be uploaded. The avatar image file to upload (PNG/JPG only, max 1MB)."
     },
     "security": {
         "title": "Security Settings",
         "changePassword": "Change Password",
+        "changePasswordSubtitle": "Update your password to keep your account secure",
+        "currentPassword": "Current Password",
+        "currentPasswordPlaceholder": "Enter current password",
+        "newPassword": "New Password",
+        "newPasswordPlaceholder": "Enter new password",
+        "confirmNewPassword": "Confirm New Password",
+        "confirmNewPasswordPlaceholder": "Confirm new password",
+        "updatePassword": "Update Password",
         "twoFactorAuth": "Two-Factor Authentication"
     },
     "user-management": {
