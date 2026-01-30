@@ -24,20 +24,37 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 import { TokenService } from './token.service';
+import { UserActivityService } from './user-activity.service';
 import { IRegistrationForm } from '../../../features/storybook/components/forms/models/contact-forms.model';
-import { inject, Injectable, signal } from '@angular/core';
+import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { Routes } from '../models/tokens.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private tokenService = inject(TokenService);
+  private userActivityService = inject(UserActivityService);
+  private destroyRef = inject(DestroyRef);
   private challengeId!: string;
   public isLoginLoading = signal<boolean>(false);
   public errorMessage = signal<boolean | null>(false);
   public successMessage = signal<boolean | null>(false);
   public infoMessage = signal<boolean | null>(false);
+
+  constructor() {
+    this.userActivityService.idle$
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((isIdle) => {
+          if (isIdle && this.tokenService.accessToken) {
+            this.handleIdleLogout();
+          }
+        }),
+      )
+      .subscribe();
+  }
 
   public setChellangeId(id: string) {
     this.challengeId = id;
@@ -55,16 +72,16 @@ export class AuthService {
         tap((res) => {
           if (res.status === 'mfa_required') {
             this.setChellangeId(res.challengeId!);
-            this.successMessage.set(true);
             this.router.navigate([Routes.OTP_SIGN_IN]);
-          } else if (res.status === 'phone_verification_required') {
+          }
+
+          if (res.status === 'phone_verification_required') {
             this.tokenService.setVerifyToken(res.verification_token!);
             this.router.navigate([Routes.PHONE]);
           }
         }),
         catchError((err) => {
           this.errorMessage.set(true);
-          this.isLoginLoading.set(false);
           return throwError(() => err);
         }),
         finalize(() => this.isLoginLoading.set(false)),
@@ -84,15 +101,12 @@ export class AuthService {
           if (res.access_token && res.refresh_token) {
             this.tokenService.setAccessToken(res.access_token);
             this.tokenService.setRefreshToken(res.refresh_token);
-            this.isLoginLoading.set(true);
           }
         }),
         catchError((err) => {
           this.errorMessage.set(true);
-          this.isLoginLoading.set(false);
           return throwError(() => err);
         }),
-        finalize(() => this.isLoginLoading.set(false)),
       );
   }
 
@@ -102,15 +116,31 @@ export class AuthService {
       .pipe(
         tap((res) => {
           if (res.success === true) {
-            this.tokenService.clearAccessToken();
+            this.tokenService.clearAuthToken();
+            this.userActivityService.stopMonitoring();
             this.router.navigate([Routes.SIGN_IN]);
           }
         }),
       );
   }
 
+  private handleIdleLogout(): void {
+    this.logout()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        catchError((err) => {
+          this.tokenService.clearAuthToken();
+          this.userActivityService.stopMonitoring();
+          this.router.navigate([Routes.SIGN_IN]);
+          return throwError(() => err);
+        }),
+      )
+      .subscribe();
+  }
+
   public verifyMfa(verify: IMfaVerifyRequest): Observable<IMfaVerifyResponse> {
     this.isLoginLoading.set(true);
+
     return this.http
       .post<IMfaVerifyResponse>(`${environment.apiUrl}/auth/mfa/verify`, verify)
       .pipe(
@@ -118,13 +148,12 @@ export class AuthService {
           if (res.access_token && res.refresh_token) {
             this.tokenService.setAccessToken(res.access_token);
             this.tokenService.setRefreshToken(res.refresh_token);
-            this.isLoginLoading.set(true);
-            this.router.navigate(['/bank/dashboard']);
+            this.userActivityService.startMonitoring();
+            this.router.navigate([Routes.DASHBOARD]);
           }
         }),
         catchError((err) => {
           this.errorMessage.set(true);
-          this.isLoginLoading.set(false);
           return throwError(() => err);
         }),
         finalize(() => this.isLoginLoading.set(false)),
@@ -262,5 +291,9 @@ export class AuthService {
       { challengeId },
       { headers },
     );
+  }
+
+  public setIdleTimeout(minutes: number): void {
+    this.userActivityService.setIdleTimeout(minutes);
   }
 }

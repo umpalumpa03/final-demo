@@ -14,7 +14,8 @@ export enum Routes {
   OTP_SIGN_IN = '/auth/verify-otp',
   OTP_SIGN_UP = '/auth/verify-otp-register',
   OTP_FORGOT_PASSWORD = '/auth/verify-otp-reset',
-  PHONE = '/auth/phone'
+  PHONE = '/auth/phone',
+  DASHBOARD = '/bank/dashboard'
 }
 
 export const PUBLIC_ENDPOINTS = [

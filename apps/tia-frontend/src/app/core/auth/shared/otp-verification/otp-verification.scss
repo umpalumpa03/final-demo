@@ -2,7 +2,7 @@
 @use '../../../../shared/styles/palette' as *;
 
 .otp-verification {
-  @include display-flex(column);
+  @include flex-center(column);
   max-width: 48rem;
   margin: 0 auto;
   padding: 4rem 2rem;
