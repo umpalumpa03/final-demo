@@ -1,22 +1,22 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   inject,
-  OnInit,
   signal,
 } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Routes } from '../../../models/tokens.model';
+import { Timer } from '../../../shared/timer/timer';
+
 
 @Component({
   selector: 'app-phone-verification',
-  imports: [ReactiveFormsModule, TextInput, ButtonComponent],
+  imports: [ReactiveFormsModule, TextInput, ButtonComponent, Timer],
   templateUrl: './phone-verification.html',
   styleUrl: './phone-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
