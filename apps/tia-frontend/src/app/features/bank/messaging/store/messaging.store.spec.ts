@@ -13,7 +13,8 @@ describe('MessagingStore', () => {
   beforeEach(() => {
     mockMessagingService = {
       getInbox: vi.fn(),
-      markAsRead: vi.fn()
+      markAsRead: vi.fn(),
+      deleteMail: vi.fn()
     };
 
     mockInboxService = {
@@ -45,10 +46,11 @@ describe('MessagingStore', () => {
 
     store.loadMails('inbox');
 
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    expect(store.mails()).toEqual(mockResponse.items);
-    expect(store.isLoading()).toBe(false);
+    await vi.waitFor(() => {
+      expect(store.mails()).toEqual(mockResponse.items);
+      expect(store.isLoading()).toBe(false);
+      expect(store.pagination()).toEqual(mockResponse.pagination);
+    });
   });
 
   it('should handle load mails error', async () => {
@@ -58,10 +60,21 @@ describe('MessagingStore', () => {
 
     store.loadMails('inbox');
 
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await vi.waitFor(() => {
+      expect(store.error()).toBeTruthy();
+      expect(store.isLoading()).toBe(false);
+    });
+  });
 
-    expect(store.error()).toBeTruthy();
-    expect(store.isLoading()).toBe(false);
+  it('should set loading state when loading mails', () => {
+    mockMessagingService.getInbox.mockReturnValue(of({
+      items: [],
+      pagination: { hasNextPage: false, nextCursor: null }
+    }));
+
+    store.loadMails('inbox');
+
+    expect(store.currentType()).toBe('inbox');
   });
 
   it('should mark mail as read', async () => {
@@ -74,12 +87,97 @@ describe('MessagingStore', () => {
     }));
 
     store.loadMails('inbox');
-    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    await vi.waitFor(() => {
+      expect(store.mails().length).toBe(1);
+    });
 
     store.markMailasRead(1);
-    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    await vi.waitFor(() => {
+      expect(store.mails()[0].isRead).toBe(true);
+      expect(mockInboxService.fetchInboxCount).toHaveBeenCalled();
+    });
+  });
 
-    expect(store.mails()[0].isRead).toBe(true);
-    expect(mockInboxService.fetchInboxCount).toHaveBeenCalled();
+  it('should delete single mail', async () => {
+    const initialMails = [{ id: 1, subject: 'Test 1' }, { id: 2, subject: 'Test 2' }];
+    
+    mockMessagingService.deleteMail.mockReturnValue(of(null));
+    mockMessagingService.getInbox.mockReturnValue(of({
+      items: initialMails,
+      pagination: { hasNextPage: false, nextCursor: null }
+    }));
+
+    store.loadMails('inbox');
+    
+    await vi.waitFor(() => {
+      expect(store.mails().length).toBe(2);
+    });
+
+    store.deleteMail(1);
+    
+    await vi.waitFor(() => {
+      expect(store.mails().length).toBe(1);
+      expect(store.mails()[0].id).toBe(2);
+      expect(mockInboxService.fetchInboxCount).toHaveBeenCalled();
+    });
+  });
+
+  it('should delete multiple mails', async () => {
+    const initialMails = [
+      { id: 1, subject: 'Test 1' },
+      { id: 2, subject: 'Test 2' },
+      { id: 3, subject: 'Test 3' }
+    ];
+    
+    mockMessagingService.deleteMail.mockReturnValue(of(null));
+    mockMessagingService.getInbox.mockReturnValue(of({
+      items: initialMails,
+      pagination: { hasNextPage: false, nextCursor: null }
+    }));
+
+    store.loadMails('inbox');
+    
+    await vi.waitFor(() => {
+      expect(store.mails().length).toBe(3);
+    });
+
+    store.deleteAllMails([1, 2]);
+    
+    await vi.waitFor(() => {
+      expect(store.mails().length).toBe(1);
+      expect(store.mails()[0].id).toBe(3);
+      expect(mockInboxService.fetchInboxCount).toHaveBeenCalled();
+    });
+  });
+
+  it('should mark multiple mails as read', async () => {
+    const initialMails = [
+      { id: 1, isRead: false },
+      { id: 2, isRead: false },
+      { id: 3, isRead: true }
+    ];
+    
+    mockMessagingService.markAsRead.mockReturnValue(of(null));
+    mockMessagingService.getInbox.mockReturnValue(of({
+      items: initialMails,
+      pagination: { hasNextPage: false, nextCursor: null }
+    }));
+
+    store.loadMails('inbox');
+    
+    await vi.waitFor(() => {
+      expect(store.mails().length).toBe(3);
+    });
+
+    store.markAllAsRead([1, 2]);
+    
+    await vi.waitFor(() => {
+      expect(store.mails()[0].isRead).toBe(true);
+      expect(store.mails()[1].isRead).toBe(true);
+      expect(store.mails()[2].isRead).toBe(true);
+      expect(mockInboxService.fetchInboxCount).toHaveBeenCalled();
+    });
   });
 });
