@@ -84,7 +84,6 @@ export const proceedPayment = createEffect(
   (
     actions$ = inject(Actions),
     paybillService = inject(PaybillService),
-    store = inject(Store),
   ) => {
     return actions$.pipe(
       ofType(PaybillActions.proceedPayment),
@@ -112,7 +111,7 @@ export const confirmPayment = createEffect(
       ofType(PaybillActions.confirmPayment),
       mergeMap(({ payload }) =>
         paybillService.verifyPayment(payload).pipe(
-          map((response) => {
+          map(() => {
             return PaybillActions.setPaymentStep({ step: 'SUCCESS' });
           }),
           catchError((error) =>

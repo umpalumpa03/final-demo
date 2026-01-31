@@ -3,3 +3,5 @@ export interface SummaryField {
   value: string | number;
   isTotal?: boolean;
 }
+
+export type SummaryType = 'verified' | 'otp' | 'confirm-payment';

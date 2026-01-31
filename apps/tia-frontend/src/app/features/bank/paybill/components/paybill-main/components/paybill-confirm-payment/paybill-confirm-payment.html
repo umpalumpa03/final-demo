@@ -4,50 +4,33 @@
   </header>
 
   <div class="confirm-content">
-    <section class="info-section">
-      <div class="info-section__header">
-        <span class="info-section__icon">⚡</span>
-        <div class="info-section__title-group">
-          <h3 class="info-section__name">{{ provider().name || provider().serviceName }}</h3>
-          <p class="info-section__category">Utilities</p>
-        </div>
-      </div>
+    <app-payment-summary
+      [iconBgColor]="iconBgColor()"
+      [iconBgPath]="iconBgPath()"
+      [items]="summaryItems()"
+      headerTitle="National Power Company"
+      headerSubtitle="Utilities"
+      type="confirm-payment"
+    ></app-payment-summary>
 
-      <div class="info-section__grid">
-        <div class="row">
-          <span class="row__label">Account Number</span>
-          <span class="row__value">{{ summary().accountNumber }}</span>
-        </div>
-        <div class="row">
-          <span class="row__label">Customer Name</span>
-          <span class="row__value">{{ details().accountHolder }}</span>
-        </div>
-        <div class="row">
-          <span class="row__label">Bill Period</span>
-          <span class="row__value">December 2025</span>
-        </div>
-        <div class="row">
-          <span class="row__label">Due Date</span>
-          <span class="row__value row__value--alert">{{ details().dueDate }}</span>
-        </div>
-      </div>
-
-      <div class="info-section__footer">
-        <span class="total-label">Amount to Pay</span>
-        <span class="total-value">${{ summary().amount }}</span>
-      </div>
-    </section>
-
-    <div class="payment-method">
+    <!-- <div class="payment-method">
       <label class="payment-method__label">Payment Method</label>
       <div class="payment-method__selector">
-        <span class="selector-text">💳 Main Account (****1234) - $5,432.10</span>
-        <img src="images/svg/dashboard/chevron-down.svg" alt="select" class="selector-icon" />
+        <span class="selector-text"
+          >💳 Main Account (****1234) - $5,432.10</span
+        >
+        <img
+          src="images/svg/dashboard/chevron-down.svg"
+          alt="select"
+          class="selector-icon"
+        />
       </div>
-    </div>
+    </div> -->
 
     <footer class="confirm-actions">
-      <app-button variant="secondary" (click)="cancelPayment.emit()">Cancel</app-button>
+      <app-button variant="secondary" (click)="cancelPayment.emit()"
+        >Cancel</app-button
+      >
       <app-button (click)="confirm.emit()">
         Confirm & Pay ${{ summary().amount }}
       </app-button>
