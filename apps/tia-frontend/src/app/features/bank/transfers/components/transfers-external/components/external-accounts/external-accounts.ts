@@ -36,7 +36,6 @@ import { TransferExternalService } from '../../../../services/transfer.external.
 
 @Component({
   selector: 'app-external-accounts',
-  standalone: true,
   imports: [
     ButtonComponent,
     TranslatePipe,

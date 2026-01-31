@@ -17,7 +17,6 @@ import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-typ
 
 @Component({
   selector: 'app-external-amount',
-  standalone: true,
   imports: [
     ButtonComponent,
     TranslatePipe,

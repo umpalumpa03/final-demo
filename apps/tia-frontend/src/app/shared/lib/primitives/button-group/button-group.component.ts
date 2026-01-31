@@ -4,7 +4,6 @@ import { ButtonGroupItem } from './button-group.models/button-group.models';
 
 @Component({
   selector: 'app-button-group',
-  standalone: true,
   imports: [RouterModule],
   templateUrl: './button-group.component.html',
   styleUrls: ['./button-group.component.scss'],
