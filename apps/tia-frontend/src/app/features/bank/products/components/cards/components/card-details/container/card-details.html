@@ -1,11 +1,11 @@
 <div class="card-details">
-  @if (loading()) {
+  @if (loading$ | async) {
   <div class="card-details__loading">
     <app-route-loader variant="pulsing" />
   </div>
-  } @else if (error()) {
-  <div class="card-details__error">{{ error() }}</div>
-  } @else if (cardData(); as data) {
+  } @else if (error$ | async; as errorMsg) {
+  <div class="card-details__error">{{ errorMsg }}</div>
+  } @else if (cardData$ | async; as data) {
   <div class="card-details__header">
     <button
       class="card-details__back-button"
@@ -33,9 +33,7 @@
     <div class="card-details__info-grid">
       <div class="card-details__info-item">
         <span class="card-details__info-label">Card Name</span>
-        <span class="card-details__info-value"
-          >{{ data.details.cardName }}</span
-        >
+        <span class="card-details__info-value">{{ data.details.cardName }}</span>
       </div>
 
       <div class="card-details__info-item">
@@ -45,14 +43,14 @@
 
       <div class="card-details__info-item">
         <span class="card-details__info-label">Currency</span>
-        <span class="card-details__info-value">{{ currency() }}</span>
+        <span class="card-details__info-value">{{ currency$ | async }}</span>
       </div>
 
       <div class="card-details__info-item">
         <span class="card-details__info-label">Status</span>
         <span
           class="card-details__info-value"
-          [class.card-details__info-value--status]="isActiveStatus()"
+          [class.card-details__info-value--status]="isActiveStatus$ | async"
         >
           {{ data.details.status.toLowerCase() }}
         </span>
@@ -60,15 +58,13 @@
 
       <div class="card-details__info-item">
         <span class="card-details__info-label">Total Balance</span>
-        <span class="card-details__info-value">{{ formattedBalance() }}</span>
+        <span class="card-details__info-value">{{ formattedBalance$ | async }}</span>
       </div>
 
-      @if (shouldShowCreditLimit()) {
+      @if (shouldShowCreditLimit$ | async) {
       <div class="card-details__info-item">
         <span class="card-details__info-label">Credit Limit</span>
-        <span class="card-details__info-value"
-          >{{ formattedCreditLimit() }}</span
-        >
+        <span class="card-details__info-value">{{ formattedCreditLimit$ | async }}</span>
       </div>
       }
     </div>
