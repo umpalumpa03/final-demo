@@ -14,6 +14,7 @@ import { LoansActions } from '../store/loans.actions';
 import { selectLoansAlert, selectLoansLoading } from '../store/loans.selectors';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
+import { LoansStore } from '../store/loans.store';
 
 @Component({
   selector: 'app-loans-container',
@@ -30,14 +31,17 @@ import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/si
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoansContainer {
-  private store = inject(Store);
+  private globalStore = inject(Store);
+
+  protected readonly store = inject(LoansStore);
 
   protected isModalOpen = signal(false);
-  protected isLoading = this.store.selectSignal(selectLoansLoading);
-  protected readonly alertConfig = this.store.selectSignal(selectLoansAlert);
+
+  protected isLoading = this.store.loading;
+  protected readonly alertConfig = this.store.alert;
 
   public ngOnInit(): void {
-    this.store.dispatch(LoansActions.loadLoans());
-    this.store.dispatch(AccountsActions.loadAccounts());
+    this.store.loadLoans();
+    this.globalStore.dispatch(AccountsActions.loadAccounts());
   }
 }
