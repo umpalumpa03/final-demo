@@ -42,16 +42,29 @@
       }
     },
     "accounts": {
-      "title": "Accounts",
+      "title": "Recipient Details",
       "recipientVerified": "Recipient verified successfully!",
       "selectRecipientAccount": "Select Recipient Account",
+      "selectSenderAccount": "Select Your Account",
+      "recipientName": {
+        "label": "Recipient Name",
+        "placeholder": "Enter recipient's full name"
+      },
       "noAccounts": {
         "header": "No Accounts Found",
         "message": "No active accounts were found for this recipient."
       },
+      "noSenderAccounts": {
+        "header": "No Accounts Available",
+        "message": "You don't have any accounts to transfer from."
+      },
       "error": {
         "header": "An Error Occurred",
         "message": "Failed to load accounts. Please try again."
+      },
+      "senderError": {
+        "header": "Failed to Load Your Accounts",
+        "message": "Unable to load your accounts. Please try again."
       }
     }
   },

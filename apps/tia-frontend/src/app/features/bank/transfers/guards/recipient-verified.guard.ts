@@ -6,7 +6,12 @@ export const recipientVerifiedGuard: CanActivateFn = () => {
   const transferStore = inject(TransferStore);
   const router = inject(Router);
 
-  if (transferStore.recipientInfo()) {
+  const hasRecipientInfo = transferStore.recipientInfo();
+  const isExternalIban =
+    transferStore.recipientType() === 'iban-different-bank' &&
+    transferStore.recipientInput();
+
+  if (hasRecipientInfo || isExternalIban) {
     return true;
   }
 
