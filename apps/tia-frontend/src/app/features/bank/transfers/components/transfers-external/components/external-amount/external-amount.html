@@ -1,0 +1,116 @@
+<main class="external-amount">
+  <header class="external-amount__header">
+    <h1 class="external-amount__title">
+      {{ 'transfers.external.amount.title' | translate }}
+    </h1>
+  </header>
+
+  <section class="external-amount__summary">
+    <div class="external-amount__summary-grid">
+      <div
+        class="external-amount__summary-item external-amount__summary-item--from"
+      >
+        <span class="external-amount__summary-label">
+          {{ 'transfers.external.amount.from' | translate }}
+        </span>
+        <div class="external-amount__summary-content">
+          <div class="external-amount__summary-icon">
+            <img src="images/svg/transfers/cardicon.svg" alt="account" />
+          </div>
+          <div class="external-amount__summary-details">
+            <p class="external-amount__summary-name">
+              {{ selectedSenderAccount()?.friendlyName }}
+            </p>
+            <p class="external-amount__summary-sub">
+              {{ selectedSenderAccount()?.currency }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="external-amount__summary-divider">
+        <div class="external-amount__transfer-circle">
+          <img src="images/svg/transfers/transfer.svg" alt="transfer" />
+        </div>
+      </div>
+
+      <div
+        class="external-amount__summary-item external-amount__summary-item--to"
+      >
+        <div class="external-amount__summary-to-wrapper">
+          <span class="external-amount__summary-label">
+            {{ 'transfers.external.amount.to' | translate }}
+          </span>
+          <div class="external-amount__summary-content">
+            <div class="external-amount__summary-initials">
+              {{ recipientInitials() }}
+            </div>
+            <div class="external-amount__summary-details">
+              <p class="external-amount__summary-name">
+                @if (isExternalIban()) { {{ manualRecipientName() }} } @else {
+                {{ recipientInfo()?.fullName || selectedRecipientAccount()?.name
+                }} }
+              </p>
+              <p class="external-amount__summary-sub">
+                {{ isExternalIban() ? selectedSenderAccount()?.currency :
+                selectedRecipientAccount()?.currency }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="external-amount__divider"></div>
+
+  <section class="external-amount__form">
+    <div class="external-amount__input-group">
+      <lib-text-input
+        [formControl]="amountInput"
+        [config]="amountConfig()"
+        type="number"
+      />
+      <p class="external-amount__available">
+        {{ 'transfers.external.amount.available' | translate }}
+        <span>
+          {{ availableBalance() | number: '1.2-2' }} {{
+          selectedSenderAccount()?.currency }}
+        </span>
+      </p>
+    </div>
+
+    <div class="external-amount__input-group">
+      <lib-text-input
+        [formControl]="descriptionInput"
+        [config]="descriptionConfig()"
+      />
+    </div>
+  </section>
+
+  <footer class="external-amount__footer">
+    <app-button variant="outline" size="default" (click)="onGoBack()">
+      <img src="images/svg/transfers/go-back.svg" alt="back" />
+      {{ 'common.buttons.back' | translate }}
+    </app-button>
+
+    <app-button
+      variant="default"
+      size="default"
+      (click)="onTransfer()"
+      [isDisabled]="amountInput.invalid || isLoading()"
+    >
+      {{ 'transfers.external.amount.transferButton' | translate }}
+      <img src="images/svg/transfers/check.svg" alt="check" />
+    </app-button>
+  </footer>
+</main>
+
+@if (showSuccess()) {
+<div class="external-amount__success-toast">
+  <app-alert-types-with-icons
+    [alertType]="'success'"
+    [alertMessage]="currentToastMessage() | translate"
+  />
+</div>
+}
