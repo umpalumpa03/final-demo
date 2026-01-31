@@ -19,8 +19,8 @@
       ></lib-text-input>
     </div>
     } @if (submitError()) {
-    <!-- <app-simple-alerts alertType="error" [alertMessage]="submitError() || ''"></app-simple-alerts> -->
-    <div class="auth-error">{{ submitError() | translate}}</div>
+    <app-simple-alerts alertType="error" [alertMessage]="submitError() || ''"></app-simple-alerts>
+    <!-- <div class="auth-error">{{ submitError() | translate}}</div> -->
     }
 
     <div class="auth-form__actions">
