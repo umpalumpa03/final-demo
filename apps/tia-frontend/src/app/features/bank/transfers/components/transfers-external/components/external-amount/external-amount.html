@@ -89,7 +89,12 @@
   </section>
 
   <footer class="external-amount__footer">
-    <app-button variant="outline" size="default" (click)="onGoBack()">
+    <app-button
+      variant="outline"
+      size="default"
+      [fullWidth]="isMobile()"
+      (click)="onGoBack()"
+    >
       <img src="images/svg/transfers/go-back.svg" alt="back" />
       {{ 'common.buttons.back' | translate }}
     </app-button>
@@ -97,6 +102,7 @@
     <app-button
       variant="default"
       size="default"
+      [fullWidth]="isMobile()"
       (click)="onTransfer()"
       [isDisabled]="amountInput.invalid || isLoading()"
     >

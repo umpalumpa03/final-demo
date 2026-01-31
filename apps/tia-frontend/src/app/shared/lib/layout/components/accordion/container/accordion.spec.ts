@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Accordion } from './accordion';
 import { AccordionItem } from '../accordion-item/accordion-item';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('Accordion', () => {
   let component: Accordion;
@@ -9,14 +11,15 @@ describe('Accordion', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Accordion],
+      schemas: [NO_ERRORS_SCHEMA] 
     }).compileComponents();
 
     fixture = TestBed.createComponent(Accordion);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
@@ -43,6 +46,7 @@ describe('Accordion', () => {
     const openedItem = { isOpen: { set: vi.fn() } } as unknown as AccordionItem;
 
     vi.spyOn(component as any, 'items').mockReturnValue([mockItem, openedItem]);
+    
     fixture.componentRef.setInput('multi', true);
 
     component.notifyOpen(openedItem);

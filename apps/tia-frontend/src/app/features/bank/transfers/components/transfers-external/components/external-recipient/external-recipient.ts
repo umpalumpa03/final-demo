@@ -32,6 +32,7 @@ import { RecipientType } from '../../../../models/transfers.state.model';
 import { TransferStore } from '../../../../store/transfers.store';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { TransferExternalService } from '../../../../services/transfer.external.service';
+import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
 
 @Component({
   selector: 'app-external-recipient',
@@ -54,6 +55,8 @@ export class ExternalRecipient implements OnInit {
   private readonly validationService = inject(TransferValidationService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly transferStore = inject(TransferStore);
+  private breakpointService = inject(BreakpointService);
+  public isMobile = this.breakpointService.isMobile;
 
   public readonly showError = signal(false);
   public readonly isLoading = computed(() => this.transferStore.isLoading());
