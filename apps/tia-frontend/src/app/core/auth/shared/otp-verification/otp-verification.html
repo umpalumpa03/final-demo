@@ -22,7 +22,8 @@
       ></lib-text-input>
     </div>
     } @if (submitError()) {
-    <div class="auth-error">{{ submitError() }}</div>
+      <!-- <app-simple-alerts alertType="error" [alertMessage]="submitError() || ''"></app-simple-alerts> -->
+      <div class="auth-error">{{ submitError() }}</div>
     }
 
     <div class="auth-form__actions">

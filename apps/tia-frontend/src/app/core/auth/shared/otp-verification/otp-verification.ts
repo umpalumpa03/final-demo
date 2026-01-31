@@ -28,6 +28,7 @@ import {
 import { TimerType } from '../../models/auth.models';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { numberValidator } from '../../utils/validators/form-validations';
+import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 
 @Component({
   selector: 'app-otp-verification',
@@ -38,6 +39,7 @@ import { numberValidator } from '../../utils/validators/form-validations';
     Otp,
     RouterLink,
     TextInput,
+    SimpleAlerts
   ],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
@@ -137,9 +139,11 @@ export class OtpVerification {
     const currentForm = this.activeForm();
     if (currentForm.invalid) {
       currentForm.markAllAsTouched();
+      this.submitError.set("true")
       return;
     }
     const rawValue = currentForm.getRawValue() as any;
+    
     this.isVerifyCalled.emit({
       isCalled: true,
       otp: this.timerType() === 'phone' ? rawValue.phoneNumber : rawValue.code,
