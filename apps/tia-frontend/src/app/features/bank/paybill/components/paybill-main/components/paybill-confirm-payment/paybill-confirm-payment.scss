@@ -2,125 +2,24 @@
 @use '../../../../../../../shared/styles/palette' as *;
 
 .confirm-card {
-  border: 1.875px solid $blue-400;
-  border-radius: 1.4rem;
-
-  &__header {
-    margin-bottom: 2.4rem;
-  }
+  @include display-flex(column);
 }
 
 .confirm-content {
   @include display-flex(column);
-  gap: 2.4rem;
-}
+  flex: 1;
+  gap: 2rem;
 
-.info-section {
-  background: $blue-100;
-  border-radius: 1rem;
-  padding: 2.4rem 2.4rem 0.4rem;
-  @include display-flex(column);
-  gap: 1.6rem;
-
-  &__header {
-    @include display-flex(row);
-    align-items: center;
-    gap: 1.6rem;
-    padding-bottom: 1.6rem;
-    border-bottom: 0.625px solid $blue-200;
+  &__options {
+    margin-top: 1rem;
+    width: 100%;
   }
 
-  &__icon {
-    font-size: 4.8rem;
-    color: $blue-ocean-foreground;
-  }
-
-  &__name {
-    @include font-inter(700, 1.8rem, 2.8rem);
-    color: $blue-ocean-foreground;
-    margin: 0;
-  }
-
-  &__category {
-    @include font-inter(400, 1.4rem, 2rem);
-    color: $gray-700;
-    margin: 0;
-  }
-
-  &__grid {
-    @include display-flex(column);
+  .confirm-actions {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
     gap: 1.2rem;
+    padding-top: 3.2rem;
   }
-
-  &__footer {
-    @include flex-center(row, space-between, center);
-    padding-top: 1.2rem;
-    border-top: 0.625px solid $blue-200;
-    height: 4.4rem;
-
-    .total-label {
-      @include font-inter(400, 1.8rem, 2.8rem);
-      color: $gray-700;
-    }
-
-    .total-value {
-      @include font-inter(700, 2.4rem, 3.2rem);
-      color: $blue-800;
-    }
-  }
-}
-
-.row {
-  @include flex-center(row, space-between, center);
-
-  &__label {
-    @include font-inter(400, 1.6rem, 2.4rem);
-    color: $gray-700;
-  }
-
-  &__value {
-    @include font-inter(600, 1.6rem, 2.4rem);
-    color: $blue-ocean-foreground;
-
-    &--alert {
-      color: #f54900;
-    }
-  }
-}
-
-.payment-method {
-  @include display-flex(column);
-  gap: 1.2rem;
-
-  &__label {
-    @include font-inter(500, 1.4rem, 1.4rem);
-    color: $blue-ocean-foreground;
-  }
-
-  &__selector {
-    @include flex-center(row, space-between, center);
-    padding: 0 1.2rem;
-    height: 3.6rem;
-    background: $white;
-    border: 1.875px solid $blue-ocean;
-    border-radius: 0.8rem;
-    cursor: pointer;
-
-    .selector-text {
-      @include font-inter(500, 1.4rem, 2rem);
-      color: $blue-ocean-foreground;
-    }
-
-    .selector-icon {
-      width: 1.6rem;
-      opacity: 0.5;
-    }
-  }
-}
-
-.confirm-actions {
-  @include display-flex(row);
-  gap: 1.2rem;
-  padding-top: 1.6rem;
-
 }

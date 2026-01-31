@@ -70,7 +70,7 @@ export const selectPaybillBreadcrumbs = createSelector(
   selectActiveProvider,
   selectSelectedCategoryId,
   (category, provider, selectedCategoryId) => {
-    const base: Breadcrumb[] = [{ label: 'Paybill', route: '/bank/paybill' }];
+    const base: Breadcrumb[] = [{ label: 'Paybill', route: '/bank/paybill/pay' }];
 
     if (selectedCategoryId?.toUpperCase() === 'TEMPLATES') {
       base.push({ label: 'Templates', route: '' });
@@ -80,7 +80,7 @@ export const selectPaybillBreadcrumbs = createSelector(
     if (category) {
       base.push({
         label: category.name,
-        route: provider ? `/bank/paybill/${category.id.toLowerCase()}` : '',
+        route: provider ? `/bank/paybill/pay/${category.id.toLowerCase()}` : '',
       });
     }
 

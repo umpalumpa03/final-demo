@@ -15,8 +15,9 @@ export const PAYBILL_ROUTES: Routes = [
       provideEffects(PaybillEffect),
     ],
     children: [
+      { path: '', redirectTo: 'pay', pathMatch: 'full' },
       {
-        path: '',
+        path: 'pay',
         loadComponent: () =>
           import('./components/paybill-main/container/paybill-main').then(
             (c) => c.PaybillMain,
@@ -30,14 +31,14 @@ export const PAYBILL_ROUTES: Routes = [
           ).then((c) => c.PaybillTemplatesContainer),
       },
       {
-        path: ':categoryId',
+        path: 'pay/:categoryId',
         loadComponent: () =>
           import('./components/paybill-main/container/paybill-main').then(
             (c) => c.PaybillMain,
           ),
       },
       {
-        path: ':categoryId/:providerId',
+        path: 'pay/:categoryId/:providerId',
         loadComponent: () =>
           import('./components/paybill-main/container/paybill-main').then(
             (c) => c.PaybillMain,

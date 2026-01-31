@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PaybillTemplates } from './paybill-templates';
+import { TranslateModule } from '@ngx-translate/core';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('PaybillTemplates', () => {
   let component: PaybillTemplates;
@@ -7,12 +9,15 @@ describe('PaybillTemplates', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PaybillTemplates],
+      imports: [PaybillTemplates, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PaybillTemplates);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+
+    fixture.componentRef.setInput('templateGroups', []);
+
+    fixture.detectChanges();
   });
 
   it('should create', () => {

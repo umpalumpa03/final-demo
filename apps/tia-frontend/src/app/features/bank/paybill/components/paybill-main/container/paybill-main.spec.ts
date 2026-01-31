@@ -1,193 +1,206 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PaybillMain } from './paybill-main';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { provideRouter } from '@angular/router';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { provideRouter, Router, ActivatedRoute } from '@angular/router';
-import * as PAYBILL_SELECTORS from '../../../store/paybill.selectors';
-import { PaybillCategory } from '../shared/models/paybill.model';
+import { PaybillMain } from './paybill-main';
 import { PaybillActions } from '../../../store/paybill.actions';
+import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+import { selectCurrentAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
+import * as PAYBILL_SELECTORS from '../../../store/paybill.selectors';
 
 describe('PaybillMain', () => {
   let component: PaybillMain;
   let fixture: ComponentFixture<PaybillMain>;
   let store: MockStore;
-  let router: Router;
-  let route: ActivatedRoute;
 
-  const initialState = {
-    paybill: {
-      categories: [],
-      selectedCategoryId: null,
-      selectedProviderId: null,
-      loading: false,
-      error: null,
-    },
-  };
+  const mockProvider = { id: 'p1', name: 'Provider 1' };
+  const mockPayload = { accountNumber: '12345678', amount: 100 };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PaybillMain],
       providers: [
+        provideRouter([]),
         provideMockStore({
-          initialState,
           selectors: [
             { selector: PAYBILL_SELECTORS.selectCategories, value: [] },
             { selector: PAYBILL_SELECTORS.selectActiveCategory, value: null },
             { selector: PAYBILL_SELECTORS.selectActiveProvider, value: null },
+            { selector: PAYBILL_SELECTORS.selectCurrentStep, value: 'DETAILS' },
+            { selector: PAYBILL_SELECTORS.selectPaymentPayload, value: null },
+            { selector: PAYBILL_SELECTORS.selectChallengeId, value: null },
+            { selector: PAYBILL_SELECTORS.selectVerifiedDetails, value: null },
             { selector: PAYBILL_SELECTORS.selectLoading, value: false },
+            { selector: selectCurrentAccounts, value: [] },
           ],
         }),
-        provideRouter([]),
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PaybillMain);
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
-    router = TestBed.inject(Router);
-    route = TestBed.inject(ActivatedRoute);
-
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should initialize and load accounts on init', () => {
+    const spy = vi.spyOn(store, 'dispatch');
+    component.ngOnInit();
+    expect(spy).toHaveBeenCalledWith(AccountsActions.loadAccounts());
   });
 
-  describe('Computed: formattedCategories', () => {
-    it('should format categories with valid providers correctly', () => {
-      const mockRawCategories: PaybillCategory[] = [
-        {
-          id: 'phone',
-          name: 'Phone',
-          icon: 'icon.svg',
-          description: 'desc',
-          servicesQuantity: 2,
-          providers: [
-            { id: 'p1', serviceName: 'Provider 1', categoryId: 'phone' },
-          ],
-        },
-      ];
-
-      store.overrideSelector(
-        PAYBILL_SELECTORS.selectCategories,
-        mockRawCategories,
-      );
-      store.refreshState();
-      fixture.detectChanges();
-
-      const formatted = component.formattedCategories();
-      expect(formatted[0].count).toBe(1);
-    });
-
-    it('should handle category with undefined providers (fallback to 0 count)', () => {
-      const mockRawCategories: PaybillCategory[] = [
-        {
-          id: 'test',
-          name: 'Test',
-          icon: 'icon.svg',
-          description: 'desc',
-          servicesQuantity: 0,
-          providers: undefined,
-        },
-      ];
-
-      store.overrideSelector(
-        PAYBILL_SELECTORS.selectCategories,
-        mockRawCategories,
-      );
-      store.refreshState();
-      fixture.detectChanges();
-
-      const formatted = component.formattedCategories();
-      expect(formatted[0].count).toBe(0);
-    });
-
-    it('should use fallback config color for unknown category IDs', () => {
-      const mockRawCategories: PaybillCategory[] = [
-        {
-          id: 'unknown-id',
-          name: 'Unknown',
-          icon: 'icon.svg',
-          description: 'desc',
-          servicesQuantity: 0,
-          providers: [],
-        },
-      ];
-
-      store.overrideSelector(
-        PAYBILL_SELECTORS.selectCategories,
-        mockRawCategories,
-      );
-      store.refreshState();
-      fixture.detectChanges();
-
-      const formatted = component.formattedCategories();
-      expect(formatted[0].iconBgColor).toBe('#F5F5F5');
-    });
-  });
-
-  describe('Navigation Methods', () => {
-    it('should navigate relative to route when selecting a category', () => {
-      const navigateSpy = vi.spyOn(router, 'navigate');
-      component.selectCategory('Utilities');
-
-      expect(navigateSpy).toHaveBeenCalledWith(['utilities'], {
-        relativeTo: route,
-      });
-    });
-
-    it('should dispatch checkBill on verifyAccount', () => {
+  describe('Selection Handlers', () => {
+    it('should dispatch selectCategory action', () => {
       const spy = vi.spyOn(store, 'dispatch');
-      vi.spyOn(component, 'activeProvider').mockReturnValue({
-        id: 'p1',
-      } as any);
+      component.selectCategory('util-id');
+      expect(spy).toHaveBeenCalledWith(
+        PaybillActions.selectCategory({ categoryId: 'util-id' }),
+      );
+    });
 
-      component.onVerifyAccount({ accountNumber: '12345' });
+    it('should dispatch selectProvider action', () => {
+      const spy = vi.spyOn(store, 'dispatch');
+      component.selectProvider('prov-id');
+      expect(spy).toHaveBeenCalledWith(
+        PaybillActions.selectProvider({ providerId: 'prov-id' }),
+      );
+    });
+  });
+
+  describe('Payment Process', () => {
+    it('should dispatch checkBill when account is verified', () => {
+      const spy = vi.spyOn(store, 'dispatch');
+      store.overrideSelector(
+        PAYBILL_SELECTORS.selectActiveProvider,
+        mockProvider as any,
+      );
+      store.refreshState();
+
+      component.onVerifyAccount({ accountNumber: '123' });
+      expect(spy).toHaveBeenCalledWith(
+        PaybillActions.checkBill({ serviceId: 'p1', accountNumber: '123' }),
+      );
+    });
+
+    it('should dispatch setPaymentPayload and update step when proceeding', () => {
+      const spy = vi.spyOn(store, 'dispatch');
+      store.overrideSelector(
+        PAYBILL_SELECTORS.selectActiveProvider,
+        mockProvider as any,
+      );
+      store.refreshState();
+
+      component.onProceedToPayment(mockPayload);
+      expect(spy).toHaveBeenCalledWith(
+        PaybillActions.setPaymentPayload({ data: mockPayload }),
+      );
+      expect(spy).toHaveBeenCalledWith(
+        PaybillActions.setPaymentStep({ step: 'CONFIRM' }),
+      );
+    });
+
+    it('should dispatch proceedPayment on final confirm when all data is present', () => {
+      const spy = vi.spyOn(store, 'dispatch');
+      store.overrideSelector(
+        PAYBILL_SELECTORS.selectActiveProvider,
+        mockProvider as any,
+      );
+      store.overrideSelector(
+        PAYBILL_SELECTORS.selectPaymentPayload,
+        mockPayload,
+      );
+      store.refreshState();
+
+      component.onAccountSelected('account-abc');
+      component.onFinalConfirm();
 
       expect(spy).toHaveBeenCalledWith(
-        PaybillActions.checkBill({ serviceId: 'p1', accountNumber: '12345' }),
+        PaybillActions.proceedPayment({
+          payload: {
+            serviceId: 'p1',
+            identification: { accountNumber: '12345678' },
+            amount: 100,
+            senderAccountId: 'account-abc',
+          },
+        }),
       );
     });
 
-    it('should navigate to category and provider on selectProvider', () => {
-      const navSpy = vi.spyOn(router, 'navigate');
-      vi.spyOn(component, 'activeCategory').mockReturnValue({
-        id: 'internet',
+    it('should not dispatch proceedPayment if sender account is missing', () => {
+      const spy = vi.spyOn(store, 'dispatch');
+      store.overrideSelector(
+        PAYBILL_SELECTORS.selectActiveProvider,
+        mockProvider as any,
+      );
+      store.overrideSelector(
+        PAYBILL_SELECTORS.selectPaymentPayload,
+        mockPayload,
+      );
+      store.refreshState();
+
+      component.onFinalConfirm();
+      expect(spy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('OTP Verification', () => {
+    it('should dispatch confirmPayment if challengeId exists', () => {
+      const spy = vi.spyOn(store, 'dispatch');
+      store.overrideSelector(PAYBILL_SELECTORS.selectChallengeId, 'chal-123');
+      store.refreshState();
+
+      component.onOtpVerified('1111');
+      expect(spy).toHaveBeenCalledWith(
+        PaybillActions.confirmPayment({
+          payload: { challengeId: 'chal-123', code: '1111' },
+        }),
+      );
+    });
+
+    it('should not dispatch if challengeId is missing', () => {
+      const spy = vi.spyOn(store, 'dispatch');
+      store.overrideSelector(PAYBILL_SELECTORS.selectChallengeId, null);
+      store.refreshState();
+
+      component.onOtpVerified('1111');
+      expect(spy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('State Navigation', () => {
+    it('should set step to SUCCESS on payment method selected', () => {
+      const spy = vi.spyOn(store, 'dispatch');
+      component.onPaymentMethodSelected();
+      expect(spy).toHaveBeenCalledWith(
+        PaybillActions.setPaymentStep({ step: 'SUCCESS' }),
+      );
+    });
+
+    it('should return to DETAILS step', () => {
+      const spy = vi.spyOn(store, 'dispatch');
+      component.onBackToDetails();
+      expect(spy).toHaveBeenCalledWith(
+        PaybillActions.setPaymentStep({ step: 'DETAILS' }),
+      );
+    });
+  });
+
+  describe('Computed UI Logic', () => {
+    it('should compute activeCategoryUI when a category is active', () => {
+      store.overrideSelector(PAYBILL_SELECTORS.selectActiveCategory, {
+        id: 'UTILITIES',
       } as any);
+      store.refreshState();
 
-      component.selectProvider('netflow');
-
-      expect(navSpy).toHaveBeenCalledWith(
-        ['internet', 'netflow'],
-        expect.anything(),
-      );
+      const ui = component.activeCategoryUI();
+      expect(ui).toBeTruthy();
+      expect(ui?.iconBgColor).toBeDefined();
     });
-  });
 
-  it('should dispatch confirmPayment when onOtpVerified is called', () => {
-    const spy = vi.spyOn(store, 'dispatch');
-    vi.spyOn(component, 'challengeId' as any).mockReturnValue('mock-challenge');
-
-    component.onOtpVerified('1111');
-
-    expect(spy).toHaveBeenCalledWith(
-      PaybillActions.confirmPayment({
-        payload: { challengeId: 'mock-challenge', code: '1111' },
-      }),
-    );
-  });
-
-  it('should dispatch proceedPayment when onProceedToPayment is called', () => {
-    const spy = vi.spyOn(store, 'dispatch');
-    vi.spyOn(component, 'activeProvider').mockReturnValue({ id: 'p1' } as any);
-
-    component.onProceedToPayment({ accountNumber: '123', amount: 100 });
-
-    expect(spy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: PaybillActions.proceedPayment.type,
-      }),
-    );
+    it('should return null if no category is active', () => {
+      store.overrideSelector(PAYBILL_SELECTORS.selectActiveCategory, null);
+      store.refreshState();
+      expect(component.activeCategoryUI()).toBeNull();
+    });
   });
 });

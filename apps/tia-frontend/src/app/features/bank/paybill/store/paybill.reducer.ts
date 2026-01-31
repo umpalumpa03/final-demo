@@ -68,12 +68,7 @@ export const paybillReducer = createReducer(
     loading: true,
     error: null,
   })),
-  on(PaybillActions.checkBillSuccess, (state, { details }) => ({
-    ...state,
-    verifiedDetails: details,
-    loading: false,
-    error: details.valid ? null : (details.error ?? 'Invalid account'),
-  })),
+
   on(PaybillActions.checkBill, (state) => ({
     ...state,
     loading: true,
@@ -84,8 +79,7 @@ export const paybillReducer = createReducer(
     ...state,
     verifiedDetails: details,
     loading: false,
-
-    error: details.valid ? null : (details.error ?? null),
+    error: details.valid ? null : (details.error ?? 'Invalid account'),
   })),
 
   on(PaybillActions.checkBillFailure, (state, { error }) => ({
@@ -104,10 +98,23 @@ export const paybillReducer = createReducer(
     paymentPayload: data,
   })),
 
+  on(PaybillActions.proceedPayment, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
   on(PaybillActions.proceedPaymentSuccess, (state, { response }) => ({
     ...state,
-    challengeId: response.verify?.challengeId ?? null,
     loading: false,
+
+    challengeId: response.verify?.challengeId ?? null,
+  })),
+
+  on(PaybillActions.proceedPaymentFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
   })),
 
   on(TemplatesPageActions.loadTemplates, (state) => ({
