@@ -39,14 +39,6 @@ import { getOtpVerificationConfig } from '../../config/otp-verification.config';
     RouterLink,
     TextInput,
   ],
-  imports: [
-    ButtonComponent,
-    ReactiveFormsModule,
-    Spinner,
-    Otp,
-    RouterLink,
-    TextInput,
-  ],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -63,10 +55,9 @@ export class OtpVerification {
 
   public isLoading = signal(false);
   public submitError = signal<string | null>(null);
-  public otpConfig = signal({ length: 4 });
   public phoneConfig = signal({ label: 'Phone Number' });
   public otpConfig = signal({ length: 4, label: 'Verification Code' });
-  public phoneConfig = signal({ label: 'phone' });
+
 
   public iconUrl = computed(() => this.config().iconUrl);
   public title = computed(() => this.config().title);

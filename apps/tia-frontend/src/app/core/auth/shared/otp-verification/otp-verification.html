@@ -26,9 +26,8 @@
       <app-button
         [isDisabled]="isResendActive()"
         type="submit"
-        size="large"
         [fullWidth]="true"
-\      >
+      >
         {{ submitBtnName() }}
       </app-button>
     </div>
@@ -38,6 +37,7 @@
       [fullWidth]="true"
       class="otp-verification__back"
       [routerLink]="backLink()"
+      variant="outline"
       >{{ backLinkText() }}</app-button
     >
     }
