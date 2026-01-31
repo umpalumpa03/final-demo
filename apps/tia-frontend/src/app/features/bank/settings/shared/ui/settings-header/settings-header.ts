@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
+import { ButtonComponent } from "@tia/shared/lib/primitives/button/button";
 
 @Component({
   selector: 'app-settings-header',
-  imports: [RouterLink, RouterLinkActive, TranslatePipe],
+  imports: [RouterLink, RouterLinkActive, TranslatePipe, ButtonComponent],
   templateUrl: './settings-header.html',
   styleUrl: './settings-header.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
