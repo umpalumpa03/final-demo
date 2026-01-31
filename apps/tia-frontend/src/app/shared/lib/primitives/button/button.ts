@@ -17,10 +17,5 @@ export class ButtonComponent {
   public readonly type = input<'button' | 'submit' | 'reset'>('button');
   public readonly customColor = input<string>('');
 
-  public readonly isHexColor = computed(() => {
-    return (
-      this.customColor().startsWith('#') || this.customColor().startsWith('rgb')
-    );
-  });
 }
 
