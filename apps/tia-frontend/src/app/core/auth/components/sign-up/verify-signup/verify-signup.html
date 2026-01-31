@@ -1,7 +1,5 @@
 <app-otp-verification
-  [submitMethod]="submitOtp"
-  [isLoading]="isLoading"
-  [title]="title"
-  [subText]="subText"
-  [submitBtnName]="submitBtnName"
+  type="sign-up"
+  (isVerifyCalled)="verifyRegisterOtp($event)"
+  (isRsendCalled)="resendOtp($event)"
 ></app-otp-verification>

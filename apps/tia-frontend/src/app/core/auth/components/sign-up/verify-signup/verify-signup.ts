@@ -1,5 +1,4 @@
-
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
 
@@ -7,17 +6,20 @@ import { OtpVerification } from '../../../shared/otp-verification/otp-verificati
   selector: 'app-verify-signup',
   imports: [OtpVerification],
   templateUrl: './verify-signup.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VerifySignup {
   private authService = inject(AuthService);
 
+  public verifyRegisterOtp(event: { isCalled: boolean; otp: string | null }) {
+    if (event.isCalled) {
+      this.authService.verifyPhoneOtpCode(event.otp!).subscribe();
+    }
+  }
 
-  public isLoading = false;
-  public title = 'OTP Verification';
-  public subText = "We've sent a 6-digit code to test";
-  public submitBtnName = 'Verify';
-  
-  public submitOtp = (code: string) =>
-    this.authService.verifyPhoneOtpCode(code);
+  public resendOtp(isCalled: boolean) {
+    if (isCalled) {
+      this.authService.resetPhoneOtp().subscribe();
+    }
+  }
 }

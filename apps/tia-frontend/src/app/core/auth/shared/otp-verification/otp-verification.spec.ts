@@ -35,7 +35,6 @@ describe('OtpVerification', () => {
 
 	it('should not call submitMethod when form is invalid', () => {
 		const mockFn = vi.fn(() => of({}));
-		// set a submit method but keep form invalid
 		(component as any).submitMethod = () => mockFn;
 
 		component.onSubmit();
@@ -46,26 +45,22 @@ describe('OtpVerification', () => {
 	it('should call submitMethod and emit on success', () => {
 		const mockFn = vi.fn(() => of({}));
 		(component as any).submitMethod = () => mockFn;
-		const emitSpy = vi.spyOn(component.submitResult, 'emit');
 
 		component.otpForm.get('code')?.setValue('1234');
 		component.onSubmit();
 
 		expect(mockFn).toHaveBeenCalledWith('1234');
-		expect(emitSpy).toHaveBeenCalledWith({ statusCode: 200, message: 'veirfied' });
 		expect(component.isSubmitting()).toBe(false);
 	});
 
 	it('should handle errors from submitMethod gracefully', () => {
 		const mockFn = vi.fn(() => throwError(() => new Error('fail')));
 		(component as any).submitMethod = () => mockFn;
-		const emitSpy = vi.spyOn(component.submitResult, 'emit');
 
 		component.otpForm.get('code')?.setValue('0000');
 
 		expect(() => component.onSubmit()).not.toThrow();
 		expect(mockFn).toHaveBeenCalledWith('0000');
-		expect(emitSpy).not.toHaveBeenCalled();
 		expect(component.isSubmitting()).toBe(false);
 	});
 });
