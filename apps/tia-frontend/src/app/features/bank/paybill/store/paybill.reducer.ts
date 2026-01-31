@@ -1,21 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
-import { PaybillState } from '../components/paybill-main/shared/models/paybill.model';
 import { PaybillActions, TemplatesPageActions } from './paybill.actions';
-
-export const initialPaybillState: PaybillState = {
-  categories: [],
-  selectedCategoryId: null,
-  selectedProviderId: null,
-  selectedProvider: null,
-  loading: false,
-  providers: [],
-  error: null,
-  verifiedDetails: null,
-  currentStep: 'DETAILS',
-  paymentPayload: null,
-  challengeId: null,
-  templateGroups: [],
-};
+import { initialPaybillState } from './paybill.state';
 
 export const paybillReducer = createReducer(
   initialPaybillState,

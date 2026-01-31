@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from 'apps/tia-frontend/src/environments/environment';
 import { Observable } from 'rxjs';
-import { TableGroups } from '../../../models/paybill.model';
+import { TableGroups } from '../models/paybill-templates.model';
 
 @Injectable({
   providedIn: 'root',

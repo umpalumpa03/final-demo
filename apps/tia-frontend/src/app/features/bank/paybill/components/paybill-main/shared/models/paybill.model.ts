@@ -17,20 +17,20 @@ export interface PaybillCategory {
   providers?: PaybillProvider[];
 }
 
-export interface PaybillState {
-  categories: PaybillCategory[];
-  providers: PaybillProvider[];
-  selectedCategoryId: string | null;
-  selectedProviderId: string | null;
-  loading: boolean;
-  error: string | null;
-  selectedProvider: PaybillProvider | null;
-  verifiedDetails: BillDetails | null;
-  currentStep: string;
-  paymentPayload: PaybillPayload | null;
-  challengeId: string | null;
-  templateGroups: TableGroups[];
-}
+// export interface PaybillState {
+//   categories: PaybillCategory[];
+//   providers: PaybillProvider[];
+//   selectedCategoryId: string | null;
+//   selectedProviderId: string | null;
+//   loading: boolean;
+//   error: string | null;
+//   selectedProvider: PaybillProvider | null;
+//   verifiedDetails: BillDetails | null;
+//   currentStep: string;
+//   paymentPayload: PaybillPayload | null;
+//   challengeId: string | null;
+//   templateGroups: TableGroups[];
+// }
 
 export interface BillDetails {
   valid: boolean;
@@ -72,10 +72,4 @@ export interface ProceedPaymentPayload {
   };
   amount: number;
   senderAccountId: string;
-}
-
-export interface TableGroups {
-  id: string;
-  groupName: string;
-  templateCount: number;
 }
