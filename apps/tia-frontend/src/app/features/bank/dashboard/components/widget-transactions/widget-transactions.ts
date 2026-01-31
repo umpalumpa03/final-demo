@@ -17,7 +17,7 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { map } from 'rxjs';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
-import { BaseWidget } from '../shared/base-widget';
+import { BaseWidget } from '../shared/base-widget.config';
 
 @Component({
   selector: 'app-widget-transactions',

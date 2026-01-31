@@ -11,12 +11,11 @@ import {
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
-import { BaseWidget } from '../shared/base-widget';
-import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
+import { BaseWidget } from '../shared/base-widget.config';
 
 @Component({
   selector: 'app-widget-exchange',
-  imports: [AsyncPipe, DecimalPipe, RouteLoader, ErrorStates, ScrollArea],
+  imports: [AsyncPipe, DecimalPipe, RouteLoader, ErrorStates],
   templateUrl: './widget-exchange.html',
   styleUrl: './widget-exchange.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
