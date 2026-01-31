@@ -4,8 +4,8 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { Router } from '@angular/router';
 
 import { AuthService } from './auth.service';
-import { of } from 'rxjs';
 import { TokenService } from './token.service';
+import { Store } from '@ngrx/store';
 import { environment } from '../../../../environments/environment';
 import { Routes } from '../models/tokens.model';
 
@@ -14,7 +14,7 @@ describe('AuthService', () => {
   let httpMock: HttpTestingController;
   let routerSpy: { navigate: any };
   let tokenSpy: any;
-  let activitySpy: any;
+  let storeSpy: any;
 
   beforeEach(() => {
     routerSpy = { navigate: vi.fn() };
@@ -31,9 +31,8 @@ describe('AuthService', () => {
       verifyToken: null,
     };
 
-    activitySpy = {
-      setIdleTimeout: vi.fn(),
-      idle$: of(false),
+    storeSpy = {
+      dispatch: vi.fn(),
     };
 
     TestBed.configureTestingModule({
@@ -42,6 +41,7 @@ describe('AuthService', () => {
         AuthService,
         { provide: Router, useValue: routerSpy },
         { provide: TokenService, useValue: tokenSpy },
+        { provide: Store, useValue: storeSpy },
       ],
     });
 

@@ -22,6 +22,20 @@ export const accountsFeature = createFeature({
       isLoading: false,
       error,
     })),
+    on(AccountsActions.fetchMoreAccounts, (state) => ({
+      ...state,
+      isFetching: true,
+    })),
+    on(AccountsActions.fetchMoreAccountsSuccess, (state, { accounts }) => ({
+      ...state,
+      accounts: [...state.accounts, ...accounts],
+      isFetching: false,
+    })),
+    on(AccountsActions.fetchMoreAccountsFailure, (state, { error }) => ({
+      ...state,
+      isFetching: false,
+      error,
+    })),
     on(AccountsActions.selectAccount, (state, { accountId }) => ({
       ...state,
       selectedAccountId: accountId,
@@ -87,6 +101,7 @@ export const {
   selectAccounts,
   selectSelectedAccountId,
   selectIsLoading,
+  selectIsFetching,
   selectError,
   selectIsCreating,
   selectCreateError,

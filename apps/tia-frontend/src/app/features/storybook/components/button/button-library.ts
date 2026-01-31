@@ -15,6 +15,7 @@ import * as CONFIG from './button-config/button-library.config'
 })
 export class ButtonLibraryComponent {
   protected readonly isInteractiveLoading = signal(false);
+
   
   protected readonly variants = signal(CONFIG.BUTTON_VARIANTS);
   protected readonly sizes = signal(CONFIG.BUTTON_SIZES);

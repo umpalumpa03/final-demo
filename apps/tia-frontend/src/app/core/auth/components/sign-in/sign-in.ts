@@ -26,7 +26,6 @@ import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible
     ReactiveFormsModule,
     RouterLink,
     Spinner,
-    LibraryTitle,
     DismissibleAlerts,
   ],
   templateUrl: './sign-in.html',

@@ -23,6 +23,7 @@ import { authInterceptor } from './core/auth/interceptors/auth-interceptor';
 import { HttpClient } from '@angular/common/http';
 import { TranslateLoader, provideTranslateService } from '@ngx-translate/core';
 import { createMultiFileTranslateLoader } from './core/i18n';
+import { UserInfoEffects } from './store/user-info/user-info.effect';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -33,7 +34,7 @@ export const appConfig: ApplicationConfig = {
     provideState(profilePhotoFeature),
     provideState(securityFeature),
     provideHttpClient(withInterceptors([authInterceptor])),
-    provideEffects([ThemeEffects, ProfilePhotoEffects, SecurityEffects]),
+    provideEffects([ThemeEffects, ProfilePhotoEffects, SecurityEffects, UserInfoEffects]),
     provideStoreDevtools({
       maxAge: 25,
       logOnly: environment.production,

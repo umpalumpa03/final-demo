@@ -15,7 +15,6 @@ export class FinancesService {
   private http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
 
- 
   private getParams(from: string, to?: string): HttpParams {
     let params = new HttpParams().set('value', from);
     if (to) {
@@ -24,33 +23,33 @@ export class FinancesService {
     return params;
   }
 
-  getSummary(from: string, to?: string): Observable<FinancialSummaryResponse> {
+  public getSummary(from: string, to?: string): Observable<FinancialSummaryResponse> {
     return this.http.get<FinancialSummaryResponse>(`${this.apiUrl}/finances/summary`, { 
       params: this.getParams(from, to) 
     });
   }
   
-  getCategories(from: string, to?: string): Observable<CategoryBreakdown[]>{
+  public getCategories(from: string, to?: string): Observable<CategoryBreakdown[]> {
     return this.http.get<CategoryBreakdown[]>(`${this.apiUrl}/finances/category-breakdown`, { 
       params: this.getParams(from, to) 
     });
   }
 
-  getIncomeVsExpenses(months = 7): Observable<IncomeVsExpenses[]>{
+  public getIncomeVsExpenses(months = 7): Observable<IncomeVsExpenses[]> {
     const params = new HttpParams().set('months', months.toString());
     return this.http.get<IncomeVsExpenses[]>(`${this.apiUrl}/finances/income-vs-expenses`, { 
       params 
     });
   }
 
-  getSavingsTrend(months = 7): Observable<SavingsTrend[]> {
+  public getSavingsTrend(months = 7): Observable<SavingsTrend[]> {
     const params = new HttpParams().set('months', months.toString());
     return this.http.get<SavingsTrend[]>(`${this.apiUrl}/finances/savings-trend`, { 
       params 
     });
   }
 
-  getDailySpending(from: string, to?: string): Observable<DailySpending[]> {
+  public getDailySpending(from: string, to?: string): Observable<DailySpending[]> {
     return this.http.get<DailySpending[]>(`${this.apiUrl}/finances/daily-spending`, { 
       params: this.getParams(from, to) 
     });
