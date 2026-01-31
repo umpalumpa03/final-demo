@@ -8,6 +8,7 @@ import { Action } from '@ngrx/store';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { HttpErrorResponse } from '@angular/common/http';
 
 describe('LoansStore', () => {
   let store: InstanceType<typeof LoansStore>;
@@ -165,6 +166,29 @@ describe('LoansStore', () => {
       TestBed.tick();
       expect(loansServiceMock.verifyPrepayment).toHaveBeenCalled();
       expect(loansServiceMock.getAllLoans).toHaveBeenCalled();
+    });
+
+    it('should handle insufficient funds error (400)', () => {
+      const errorResponse = new HttpErrorResponse({
+        status: 400,
+        error: { message: 'Insufficient funds in payment account' },
+      });
+
+      loansServiceMock.initiatePrepayment.mockReturnValue(
+        throwError(() => errorResponse),
+      );
+
+      store.initiatePrepayment({ payload: { loanId: '1', amount: 5000 } });
+      TestBed.tick();
+
+      expect(store.actionLoading()).toBe(false);
+      expect(store.alertMessage()).toBe(
+        'Insufficient funds in payment account',
+      );
+      expect(store.alertType()).toBe('error');
+
+      vi.advanceTimersByTime(3000);
+      expect(store.alertMessage()).toBeNull();
     });
 
     it('should auto hide alert using Vitest timers', () => {

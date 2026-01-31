@@ -15,6 +15,7 @@ import { pipe, switchMap, tap, map, catchError, EMPTY, delay } from 'rxjs';
 import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { toTitleCase } from '../shared/utils/titlecase.util';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { LoansService } from '../shared/services/loans.service';
 import { loansInitialState } from './loans.state';
@@ -56,6 +57,22 @@ export const LoansStore = signalStore(
         })),
       ),
 
+      alert: computed(() => {
+        const message = store.alertMessage();
+        const type = store.alertType();
+
+        // Only return the config object if BOTH message and type exist
+        // This narrow the type from (LoanAlertType | null) to (LoanAlertType)
+        if (message && type) {
+          return {
+            message,
+            type: type as any, // Use 'any' or cast to your specific component's AlertType
+          };
+        }
+
+        return null;
+      }),
+
       prepaymentTypeOptions: computed(() =>
         store
           .prepaymentOptions()
@@ -64,12 +81,6 @@ export const LoansStore = signalStore(
             label: opt.prepaymentDisplayName,
             value: opt.prepaymentValue,
           })),
-      ),
-
-      alert: computed(() =>
-        store.alertMessage()
-          ? { message: store.alertMessage(), type: store.alertType() }
-          : null,
       ),
     };
   }),
@@ -312,11 +323,26 @@ export const LoansStore = signalStore(
                   });
                 }
               }),
-              catchError((error) => {
+              catchError((err: HttpErrorResponse) => {
+                const backendMsg = err.error?.message;
+
+                const isInsufficient =
+                  err.status === 400 &&
+                  backendMsg === 'Insufficient funds in payment account';
+
+                const displayMsg = isInsufficient
+                  ? 'Insufficient funds in payment account'
+                  : backendMsg || err.message || 'An unexpected error occurred';
+
                 patchState(store, {
                   actionLoading: false,
-                  error: error.message,
+                  alertMessage: displayMsg,
+                  alertType: 'error',
+                  error: displayMsg,
                 });
+
+                store._triggerAutoHide();
+
                 return EMPTY;
               }),
             ),

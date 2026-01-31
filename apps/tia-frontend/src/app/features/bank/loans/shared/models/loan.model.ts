@@ -34,7 +34,7 @@ export interface ILoansState {
   activeChallengeId: string | null;
   actionLoading: boolean;
   alertMessage: string | null;
-  alertType: SimpleAlertType | null;
+  alertType: LoanAlertType | null;
   dashboardCounts: {
     all: number;
     approved: number;
@@ -42,6 +42,8 @@ export interface ILoansState {
     declined: number;
   };
 }
+
+export type LoanAlertType = SimpleAlertType | 'error';
 
 export interface LoanUiState {
   badge: string;

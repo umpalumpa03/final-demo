@@ -11,8 +11,8 @@ import { RequestModal } from '../shared/ui/request-modal/request-modal';
 import { Store } from '@ngrx/store';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
-import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 import { LoansStore } from '../store/loans.store';
+import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 
 @Component({
   selector: 'app-loans-container',
@@ -22,7 +22,7 @@ import { LoansStore } from '../store/loans.store';
     RouterModule,
     RequestModal,
     Skeleton,
-    SimpleAlerts,
+    AlertTypesWithIcons,
   ],
   templateUrl: './loans-container.html',
   styleUrl: './loans-container.scss',
