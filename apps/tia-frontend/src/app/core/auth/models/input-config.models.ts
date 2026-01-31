@@ -47,6 +47,12 @@ export const AUTH_SIDE_PANEL_DATA = {
         text: 'Your information is encrypted and safe',
         icon: '/images/svg/auth/secured.svg',
       },
+      {
+        id: 3,
+        title: 'Protected Data',
+        text: 'Your information is encrypted and safe',
+        icon: '/images/svg/auth/secured.svg',
+      },
     ] as IFeaturePanel[],
   },
   signUp: {
