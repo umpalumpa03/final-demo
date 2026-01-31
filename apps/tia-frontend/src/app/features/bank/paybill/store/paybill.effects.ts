@@ -133,7 +133,12 @@ export class PaybillEffect {
       this.actions$.pipe(
         ofType(PaybillActions.selectCategory),
         tap(({ categoryId }) => {
-          this.router.navigate(['/bank/paybill', categoryId.toLowerCase()]);
+          if (categoryId.toUpperCase() !== 'TEMPLATES') {
+            this.router.navigate([
+              '/bank/paybill/pay',
+              categoryId.toLowerCase(),
+            ]);
+          }
         }),
       ),
     { dispatch: false },
@@ -147,7 +152,7 @@ export class PaybillEffect {
         tap(([{ providerId }, categoryId]) => {
           if (categoryId) {
             this.router.navigate([
-              '/bank/paybill',
+              '/bank/paybill/pay',
               categoryId.toLowerCase(),
               providerId.toLowerCase(),
             ]);
@@ -162,7 +167,7 @@ export class PaybillEffect {
       this.actions$.pipe(
         ofType(PaybillActions.clearSelection),
         tap(() => {
-          this.router.navigate(['/bank/paybill']);
+          this.router.navigate(['/bank/paybill/pay']);
         }),
       ),
     { dispatch: false },

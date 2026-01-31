@@ -4,7 +4,7 @@ export const navConfig: TabItem[] = [
   {
     label: 'Paybill',
     icon: 'images/svg/paybill/elva.svg',
-    route: './',
+    route: 'pay',
   },
   {
     label: 'Templates',

@@ -94,14 +94,15 @@ export class PaybillContainer implements OnInit {
           PaybillActions.selectCategory({ categoryId: catId }),
         );
       }
-
       if (provId) {
         this.store.dispatch(
           PaybillActions.selectProvider({ providerId: provId }),
         );
       }
 
-      const isBasePaybill = url === '/bank/paybill';
+      const isBasePaybill =
+        url.endsWith('/paybill/pay') || url.endsWith('/paybill/pay/');
+
       if (isBasePaybill) {
         this.store.dispatch(PaybillActions.clearSelection());
       }
