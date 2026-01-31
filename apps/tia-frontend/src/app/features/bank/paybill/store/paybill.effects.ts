@@ -84,17 +84,26 @@ export class PaybillEffect {
       ofType(PaybillActions.proceedPayment),
       mergeMap(({ payload }) =>
         this.paybillService.payBill(payload).pipe(
-          map((response: ProceedPaymentResponse) => {
-            if (payload.amount >= 50 && response.verify?.challengeId) {
-              return PaybillActions.setPaymentStep({ step: 'OTP' });
-            }
-            return PaybillActions.setPaymentStep({ step: 'SUCCESS' });
-          }),
+          map((response: ProceedPaymentResponse) =>
+            PaybillActions.proceedPaymentSuccess({ response }),
+          ),
           catchError((error) =>
             of(PaybillActions.proceedPaymentFailure({ error: error.message })),
           ),
         ),
       ),
+    );
+  });
+
+  handleProceedSuccess$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(PaybillActions.proceedPaymentSuccess),
+      map(({ response }) => {
+        if (response.verify?.challengeId) {
+          return PaybillActions.setPaymentStep({ step: 'OTP' });
+        }
+        return PaybillActions.setPaymentStep({ step: 'SUCCESS' });
+      }),
     );
   });
 

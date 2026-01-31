@@ -104,10 +104,23 @@ export const paybillReducer = createReducer(
     paymentPayload: data,
   })),
 
+  on(PaybillActions.proceedPayment, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
   on(PaybillActions.proceedPaymentSuccess, (state, { response }) => ({
     ...state,
-    challengeId: response.verify?.challengeId ?? null,
     loading: false,
+
+    challengeId: response.verify?.challengeId ?? null,
+  })),
+
+  on(PaybillActions.proceedPaymentFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
   })),
 
   on(TemplatesPageActions.loadTemplates, (state) => ({
