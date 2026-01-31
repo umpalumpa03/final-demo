@@ -45,4 +45,15 @@ describe('VerifySignin', () => {
   it('submitOtp should return the observable and resolve to expected value', async () => {
     const code = '654321';
   });
+    it('resendOtp should call authService.resendVerificationCode when isCalled is true', () => {
+      authMock.resendVerificationCode = vi.fn().mockReturnValue({ subscribe: vi.fn() });
+      component.resendOtp(true);
+      expect(authMock.resendVerificationCode).toHaveBeenCalled();
+    });
+
+    it('resendOtp should NOT call authService.resendVerificationCode when isCalled is false', () => {
+      authMock.resendVerificationCode = vi.fn();
+      component.resendOtp(false);
+      expect(authMock.resendVerificationCode).not.toHaveBeenCalled();
+    });
 });

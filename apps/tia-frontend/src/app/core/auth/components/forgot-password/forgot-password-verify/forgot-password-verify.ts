@@ -27,7 +27,7 @@ export class ForgotPasswordVerify implements OnInit {
     }
   }
 
-  public verifyResetOtp(event: IVerified) {
+  public verifyResetOtp(event: IVerified): void {
     if (event.isCalled) {
       this.authService
         .verifyForgotPasswordOtp(event.otp!)
@@ -40,7 +40,7 @@ export class ForgotPasswordVerify implements OnInit {
     }
   }
 
-  public resendOtp(isCalled: boolean) {
+  public resendOtp(isCalled: boolean): void {
     if (isCalled) {
       this.authService.resendVerificationCode().subscribe();
     }

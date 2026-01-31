@@ -18,7 +18,7 @@ export class PhoneVerification {
   private router = inject(Router);
   private tokenService = inject(TokenService);
 
-  public submit(event: { isCalled: boolean; otp: string | null }) {
+  public submit(event: { isCalled: boolean; otp: string | null }): void {
     if (event.isCalled) {
       let telNumber = event.otp;
       this.authService
@@ -37,7 +37,7 @@ export class PhoneVerification {
     }
   }
 
-  public handlePhoneTimer():void {
+  public handlePhoneTimer(): void {
     this.tokenService.clearAllToken();
     this.router.navigate(['/auth/sign-in']);
   }

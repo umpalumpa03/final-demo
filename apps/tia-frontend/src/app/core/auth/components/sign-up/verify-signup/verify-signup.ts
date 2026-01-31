@@ -12,13 +12,13 @@ import { IVerified } from '../../../models/otp-verification.models';
 export class VerifySignup {
   private authService = inject(AuthService);
 
-  public verifyRegisterOtp(event: IVerified) {
+  public verifyRegisterOtp(event: IVerified): void {
     if (event.isCalled) {
       this.authService.verifyPhoneOtpCode(event.otp!).subscribe();
     }
   }
 
-  public resendOtp(isCalled: boolean) {
+  public resendOtp(isCalled: boolean): void {
     if (isCalled) {
       this.authService.resetPhoneOtp().subscribe();
     }

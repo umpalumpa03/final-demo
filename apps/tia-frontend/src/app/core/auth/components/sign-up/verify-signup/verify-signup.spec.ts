@@ -27,4 +27,16 @@ describe('VerifySignup', () => {
     component.verifyRegisterOtp({ isCalled: true, otp: '123456' });
     expect(authMock.verifyPhoneOtpCode).toHaveBeenCalledWith('123456');
   });
+
+    it('resendOtp should call AuthService.resetPhoneOtp when isCalled is true', () => {
+      authMock.resetPhoneOtp = vi.fn().mockReturnValue({ subscribe: vi.fn() });
+      component.resendOtp(true);
+      expect(authMock.resetPhoneOtp).toHaveBeenCalled();
+    });
+
+    it('resendOtp should NOT call AuthService.resetPhoneOtp when isCalled is false', () => {
+      authMock.resetPhoneOtp = vi.fn();
+      component.resendOtp(false);
+      expect(authMock.resetPhoneOtp).not.toHaveBeenCalled();
+    });
 });
