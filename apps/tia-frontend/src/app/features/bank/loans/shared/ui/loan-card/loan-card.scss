@@ -3,6 +3,28 @@
 @use "../../../../../../shared/styles/mixins" as *;
 
 .card {
+    width: 100%;
+    @include flex-center;
+    gap: 1.6rem;
+
+    @media (max-width: 450px) {
+        flex-direction: column;
+        text-align: center;
+        &__header-row {
+            @include flex-center;
+            flex-direction: column;
+        }
+        &__details {
+            @include flex-center;
+            div {
+                @include display-flex(column);
+                strong {
+                    white-space: normal;
+                    word-break: break-all;
+                }
+            }
+        }
+    }
     &:hover {
         cursor: pointer;
     }
