@@ -4,6 +4,8 @@
 .accounts{
   @include display-flex(column);
   gap: 1.6rem;
+    padding: 3.2rem;
+
   .account-card {
     @include display-flex(row);
     padding: 1.6rem;

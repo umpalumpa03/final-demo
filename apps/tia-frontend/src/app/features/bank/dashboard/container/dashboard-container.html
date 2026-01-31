@@ -34,9 +34,9 @@
       @if (!($index === 0 && item.isHidden)) {
       <div class="bank-dashboard__content">
         @switch (item.type) { @case ('transactions') {
-        <app-widget-transactions /> } @case ('accounts') {
-        <app-widget-accounts /> } @case ('exchange') { <app-widget-exchange /> }
-        }
+        <app-widget-transactions [isLarge]="$index === 0" /> } @case
+        ('accounts') { <app-widget-accounts [isLarge]="$index === 0" /> } @case
+        ('exchange') { <app-widget-exchange [isLarge]="$index === 0" /> } }
       </div>
       }
     </app-draggable-card>
