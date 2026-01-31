@@ -12,6 +12,14 @@
     />
   </section>
 
+  @if (isExternalIban()) {
+  <section class="external-accounts__recipient-name">
+    <lib-text-input
+      [formControl]="recipientNameInput"
+      [config]="recipientNameConfig()"
+    />
+  </section>
+  } @else {
   <section class="external-accounts__recipient-accounts">
     <h2 class="external-accounts__recipient-accounts-title">
       {{ 'transfers.external.accounts.selectRecipientAccount' | translate }}
@@ -53,6 +61,7 @@
     </div>
     }
   </section>
+  }
 
   <footer class="external-accounts__footer">
     <app-button variant="outline" size="default" (click)="onGoBack()">
@@ -64,7 +73,7 @@
       variant="default"
       size="default"
       (click)="onContinue()"
-      [isDisabled]="!selectedAccountId() || isLoading()"
+      [isDisabled]="!selectedAccountId() || isLoading() || (isExternalIban() && !recipientNameInput.valid)"
     >
       {{ 'common.buttons.continue' | translate }}
       <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />

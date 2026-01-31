@@ -20,6 +20,11 @@
     margin-bottom: 3.2rem;
   }
 
+  &__recipient-name {
+    max-width: 50rem;
+    margin-bottom: 3.2rem;
+  }
+
   &__recipient-accounts {
     margin-bottom: 3.2rem;
   }
@@ -42,6 +47,7 @@
     text-align: center;
     padding: 3rem;
   }
+
   &__error-wrapper,
   &__not-found-wrapper {
     @include flex-center();

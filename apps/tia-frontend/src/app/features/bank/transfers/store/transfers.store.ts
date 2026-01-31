@@ -13,6 +13,18 @@ export const TransferStore = signalStore(
   withState(initialTransferState),
 
   withMethods((store, transfersApi = inject(TransfersApiService)) => ({
+    setExternalRecipient(input: string, type: RecipientType) {
+      patchState(store, {
+        recipientInput: input,
+        recipientType: type,
+        recipientInfo: null,
+        error: null,
+      });
+    },
+    setManualRecipientName(name: string) {
+      patchState(store, { manualRecipientName: name });
+    },
+
     lookupRecipient: rxMethod<{ value: string; type: RecipientType }>(
       pipe(
         tap(({ value, type }) =>
@@ -21,6 +33,7 @@ export const TransferStore = signalStore(
             recipientType: type,
             isLoading: true,
             error: null,
+            recipientInfo: null,
           }),
         ),
         switchMap(({ value, type }) => {

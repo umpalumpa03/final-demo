@@ -42,9 +42,13 @@
       }
     },
     "accounts": {
-      "title": "Accounts",
+      "title": "Recipient Details",
       "recipientVerified": "Recipient verified successfully!",
       "selectRecipientAccount": "Select Recipient Account",
+      "recipientName": {
+        "label": "Recipient Name",
+        "placeholder": "Enter recipient's full name"
+      },
       "noAccounts": {
         "header": "No Accounts Found",
         "message": "No active accounts were found for this recipient."

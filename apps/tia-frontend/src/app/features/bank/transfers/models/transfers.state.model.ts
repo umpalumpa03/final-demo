@@ -45,3 +45,4 @@ export interface TransferState {
   isLoading: boolean;
   error: string | null;
 }
+export type AccountData = Account | RecipientAccount;
