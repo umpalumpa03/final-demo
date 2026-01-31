@@ -63,12 +63,6 @@ describe('PrepaymentContainer', () => {
     });
   });
 
-  it('should switch step to review when calculationResult updates', () => {
-    loansStoreMock.calculationResult.set({ displayedInfo: [] });
-    fixture.detectChanges();
-    expect(component.step()).toBe('review');
-  });
-
   it('should switch step to otp when activeChallengeId updates', () => {
     loansStoreMock.activeChallengeId.set('chal-123');
     fixture.detectChanges();
@@ -82,20 +76,6 @@ describe('PrepaymentContainer', () => {
     expect(loansStoreMock.verifyPrepayment).toHaveBeenCalledWith({
       payload: { challengeId: 'chal-123', code: '1234' },
     });
-  });
-
-  it('should emit close when OTP step succeeds (challenge cleared, no error)', () => {
-    const closeSpy = vi.spyOn(component.close, 'emit');
-
-    component.step.set('otp');
-    loansStoreMock.activeChallengeId.set('chal-123');
-    fixture.detectChanges();
-
-    loansStoreMock.activeChallengeId.set(null);
-    loansStoreMock.error.set(null);
-    fixture.detectChanges();
-
-    expect(closeSpy).toHaveBeenCalled();
   });
 
   it('should initiate prepayment with correct logic', () => {

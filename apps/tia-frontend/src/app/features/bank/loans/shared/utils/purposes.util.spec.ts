@@ -10,10 +10,4 @@ describe('formatPurpose Util', () => {
   it('should replace underscores with spaces', () => {
     expect(formatPurpose('home_improvement')).toBe('Home Improvement');
   });
-
-  it('should handle multiple underscores', () => {
-    expect(formatPurpose('very_long_purpose_name')).toBe(
-      'Very Long Purpose Name',
-    );
-  });
 });

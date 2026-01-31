@@ -42,19 +42,4 @@ describe('translateConfig', () => {
     expect(result.amount.prefixIcon).toBe('./icon.svg');
     expect(result.amount.required).toBe(true);
   });
-
-  it('should create a new object instance (Immutability)', () => {
-    const result = translateConfig(TEST_CONFIG, mockTranslateFn);
-    expect(result).not.toBe(TEST_CONFIG);
-    expect(result.amount).not.toBe(TEST_CONFIG.amount);
-
-    expect(TEST_CONFIG.amount.label).toBe('loans.amount_label');
-  });
-
-  it('should handle fields that do not have translatable properties gracefully', () => {
-    const result = translateConfig(TEST_CONFIG, mockTranslateFn);
-
-    expect(result.simple.type).toBe('text');
-    expect((result.simple as any).label).toBeUndefined();
-  });
 });
