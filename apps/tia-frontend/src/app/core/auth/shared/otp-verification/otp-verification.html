@@ -24,11 +24,19 @@
     }
 
     <div class="auth-form__actions">
-      <app-button type="submit" size="large" [fullWidth]="true">
+      <app-button type="submit" [fullWidth]="true">
         {{ submitBtnName() }}
       </app-button>
     </div>
 
+    @if (backLink()) {
+    <app-button
+      [fullWidth]="true"
+      class="otp-verification__back"
+      [routerLink]="backLink()"
+      >{{ backLinkText() }}</app-button
+    >
+    }
     <div class="timer-compact">
       <div class="timer-compact__timer">
         <span
@@ -52,14 +60,6 @@
       </div>
       }
     </div>
-    @if (backLink()) {
-    <app-button
-      [fullWidth]="true"
-      class="otp-verification__back"
-      [routerLink]="backLink()"
-      >{{ backLinkText() }}</app-button
-    >
-    }
   </form>
   } @else {
   <div class="sign-in sign-in-loader">

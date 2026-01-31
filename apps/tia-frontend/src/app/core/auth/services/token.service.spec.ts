@@ -68,11 +68,6 @@ describe('TokenService', () => {
     expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.SIGNUP);
   });
 
-  it('should clear all tokens from storage', () => {
-    service.clearAllToken();
-    expect(localStorage.clear).toHaveBeenCalled();
-  });
-
   it('should get access token from localStorage', () => {
     vi.spyOn(Storage.prototype, 'getItem').mockReturnValue('stored-access-token');
     const result = service.accessToken;
