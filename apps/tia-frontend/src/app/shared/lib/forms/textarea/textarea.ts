@@ -17,7 +17,6 @@ import { generateUniqueId } from '../base/utils/input.util';
 
 @Component({
   selector: 'lib-textarea',
-  standalone: true,
   imports: [],
   templateUrl: './textarea.html',
   styleUrls: ['./textarea.scss'],
