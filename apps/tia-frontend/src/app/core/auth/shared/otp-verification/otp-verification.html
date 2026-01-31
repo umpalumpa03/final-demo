@@ -15,10 +15,19 @@
     </div>
 
     @if (submitError()) {
-      <div class="auth-error">{{ submitError() }}</div>
+    <div class="auth-error">{{ submitError() }}</div>
     }
 
     <div class="auth-form__actions">
+      
+      <app-timer
+        [timeLimit]="1"
+        [timerType]="'otp'"
+        (timerFinished)="onTimerStatusChange($event)"
+        (resendClicked)="onResendTriggered()"
+      >
+      </app-timer>
+
       <app-button
         type="submit"
         size="large"
@@ -30,16 +39,14 @@
     </div>
 
     @if (showResend()) {
-      <div class="otp-verification__resend">
-        <span>{{ resendText() }}</span>
-        <span class="otp-verification__resend-link">{{ resendLinkText() }}</span>
-      </div>
-    }
-
-    @if (backLink()) {
-      <a class="otp-verification__back" [routerLink]="backLink()">
-        {{ backLinkText() }}
-      </a>
+    <div class="otp-verification__resend">
+      <span>{{ resendText() }}</span>
+      <span class="otp-verification__resend-link">{{ resendLinkText() }}</span>
+    </div>
+    } @if (backLink()) {
+    <a class="otp-verification__back" [routerLink]="backLink()">
+      {{ backLinkText() }}
+    </a>
     }
   </form>
   } @else {

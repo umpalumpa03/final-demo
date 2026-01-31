@@ -1,17 +1,28 @@
-<div class="timer-container">
-  <svg class="timer-svg" viewBox="0 0 100 100">
-    <circle class="timer-svg__bg" cx="50" cy="50" r="45"></circle>
-    <circle
-      class="timer-svg__progress"
-      cx="50"
-      cy="50"
-      r="45"
-      [style.strokeDashoffset]="strokeOffset()"
-    ></circle>
-  </svg>
-  <div class="timer-text">
-    <span class="timer-text__value">{{ countdown() }}</span>
-    <span class="timer-text__label">sec</span>
-   
+<div class="timer-compact">
+  <div class="timer-compact__timer">
+    <span
+      class="timer-compact__status-dot"
+      [class.timer-compact__status-dot--pulse]="countdown() > 0"
+    >
+    </span>
+
+    <div class="timer-compact__readout">
+      <span class="timer-compact__value"
+        >{{ countdown() }}</span
+      >
+      <span class="timer-compact__unit">s</span>
+    </div>
+  </div>
+  <div
+    class="timer-compact__resend"
+    [class.timer-compact__resend--disabled]="countdown() > 0"
+  >
+    <span class="timer-compact__resend-text">{{ resendText() }}</span>
+    <span
+      class="timer-compact__link"
+      (click)="handleOtpResend()"
+    >
+      Resend
+    </span>
   </div>
 </div>

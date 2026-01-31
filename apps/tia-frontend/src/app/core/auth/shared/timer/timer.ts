@@ -6,18 +6,23 @@ import {
   input,
   OnDestroy,
   OnInit,
+  output,
   signal,
 } from '@angular/core';
 import {
   interval,
   Subject,
   Subscription,
+  take,
   takeUntil,
   takeWhile,
   tap,
 } from 'rxjs';
 import { TokenService } from '../../services/token.service';
 import { Router } from '@angular/router';
+import { TimerType } from '../../models/auth.models';
+import { AuthService } from '../../services/auth.service';
+import { OtpResponse } from '../../models/authRequest.models';
 
 @Component({
   selector: 'app-timer',
@@ -26,35 +31,39 @@ import { Router } from '@angular/router';
   styleUrl: './timer.scss',
 })
 export class Timer implements OnDestroy, OnInit {
-  private destroy$ = new Subject<void>();
   public timeLimit = input(1);
+  public timerType = input<TimerType>('phone');
+
+  private destroy$ = new Subject<void>();
   private timerSubscription?: Subscription;
   private tokenService = inject(TokenService);
+  private authService = inject(AuthService);
   private router = inject(Router);
-
   public maxTime = computed(() => {
     const limit = Math.abs(Number(this.timeLimit()));
 
-    return limit * 60;
+    return limit * 6;
   });
-
-  private readonly CIRCUMFERENCE = 282.7;
 
   public countdown = signal<number>(0);
   private timer$ = interval(1000);
 
-  public strokeOffset = computed(() => {
-    const progress = this.countdown() / this.maxTime();
-    return this.CIRCUMFERENCE * (1 - progress);
-  });
+  public isResendActive = signal<boolean>(false);
+  public resendText = input<string>('');
+
+  public timerFinished = output<boolean>();
+  public resendClicked = output<void>();
 
   constructor() {
     effect(() => {
       this.countdown();
       if (this.countdown() === 0) {
         setTimeout(() => {
-          this.tokenService.clearAllToken();
-          this.router.navigate(['/auth/sign-in']);
+          if (this.timerType() === 'phone') {
+            this.handlePhoneTimer();
+          } else {
+            this.handleOtpTimer();
+          }
         }, 1000);
       }
     });
@@ -75,6 +84,37 @@ export class Timer implements OnDestroy, OnInit {
         }),
       )
       .subscribe();
+  }
+
+  private handlePhoneTimer() {
+    this.tokenService.clearAllToken();
+    this.router.navigate(['/auth/sign-in']);
+  }
+
+  private handleOtpTimer() {
+    this.isResendActive.set(true);
+    this.timerFinished.emit(true);
+  }
+
+  public handleOtpResend() {
+    if (this.countdown() > 0) {
+      return;
+    }
+    this.resendClicked.emit();
+    // 
+    this.countdown.set(this.maxTime());
+    this.startTimer();
+    // 
+    // this.authService
+    //   .resendVerificationCode()
+    //   .pipe(
+    //     take(1),
+    //     tap(() => {
+    //       this.countdown.set(this.maxTime());
+    //       this.startTimer();
+    //     }),
+    //   )
+    //   .subscribe();
   }
 
   ngOnDestroy(): void {

@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, finalize, tap } from 'rxjs';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
@@ -19,17 +18,35 @@ import {
   IMfaVerifyResponse,
 } from '../../models/authResponse.model';
 import { OtpResponse } from '../../models/authRequest.models';
+import { Timer } from '../timer/timer';
+import { TimerType } from '../../models/auth.models';
 
 @Component({
   selector: 'app-otp-verification',
-  imports: [ButtonComponent, ReactiveFormsModule, Spinner, Otp, RouterLink],
+  imports: [ButtonComponent, ReactiveFormsModule, Spinner, Otp, RouterLink, Timer],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OtpVerification {
   private fb = inject(FormBuilder);
-  
+  public timerTime = input<number>(1);
+  public timerType = input<TimerType>("phone");
+  public isButtonDisabled = signal(true);
+
+  onTimerStatusChange(isFinished: boolean) {
+    console.log('Is the timer done?', isFinished);
+    this.isButtonDisabled.set(!isFinished);
+    
+    if (isFinished) {
+      console.log('isFinished');
+    }
+  }
+
+  onResendTriggered() {
+    console.log('The user clicked resend! Showing loading state...');
+  }
+
   public isLoading = input<boolean>(false);
   public title = input<string>();
   public subText = input<string>();

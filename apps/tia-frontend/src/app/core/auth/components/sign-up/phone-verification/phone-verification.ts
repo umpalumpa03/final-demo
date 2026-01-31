@@ -12,11 +12,12 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Routes } from '../../../models/tokens.model';
 import { Timer } from '../../../shared/timer/timer';
+import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 
 
 @Component({
   selector: 'app-phone-verification',
-  imports: [ReactiveFormsModule, TextInput, ButtonComponent, Timer],
+  imports: [ReactiveFormsModule, TextInput, ButtonComponent, Timer, AlertTypesWithIcons],
   templateUrl: './phone-verification.html',
   styleUrl: './phone-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

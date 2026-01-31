@@ -5,8 +5,15 @@
   @include flex-center(column);
   gap: 0.8rem;
   width: 100%;
-  
-  &__switch {
+  margin: 5% 0%; 
+
+  &__form {
+    width: 100%;
+    @include flex-center(column);
+    gap: 1rem;
+  }
+
+  &__footer {
     color: $gray-700;
     font-size: 1.4rem;
   }
@@ -19,4 +26,5 @@
       text-decoration: underline;
     }
   }
+
 }
