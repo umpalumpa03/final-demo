@@ -27,6 +27,7 @@ import {
 } from 'rxjs';
 import { TimerType } from '../../models/auth.models';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
+import { numberValidator } from '../../utils/validators/form-validations';
 
 @Component({
   selector: 'app-otp-verification',
@@ -56,7 +57,6 @@ export class OtpVerification {
   public isSubmitting = signal(false);
   public submitError = signal<string | null>(null);
   public otpConfig = signal({ length: 4 });
-  public phoneConfig = signal({ label: 'Phone Number' });
 
   public showIcon = computed(() => this.config().showIcon);
   public iconUrl = computed(() => this.config().iconUrl);
@@ -67,6 +67,11 @@ export class OtpVerification {
   public resendLinkText = computed(() => this.config().resendLinkText);
   public backLink = computed(() => this.config().backLink);
   public backLinkText = computed(() => this.config().backLinkText);
+  public phoneConfig = signal({
+    label: 'Phone Number',
+    errorMessage: 'invalid phone number',
+    placeholder: '(555) 0000-0000',
+  });
 
   private destroy$ = new Subject<void>();
   private timerSubscription?: Subscription;
@@ -84,8 +89,18 @@ export class OtpVerification {
   public onTimeout = output<void>();
   public resendClicked = output<void>();
 
+  public setPhoneNumberForm = this.fb.group({
+    phoneNumber: ['', [Validators.required, numberValidator]],
+  });
+
   public otpForm = this.fb.group({
     code: ['', Validators.required],
+  });
+
+  public activeForm = computed(() => {
+    return this.timerType() === 'phone'
+      ? this.setPhoneNumberForm
+      : this.otpForm;
   });
 
   constructor() {
@@ -119,13 +134,15 @@ export class OtpVerification {
   }
 
   public onSubmit(): void {
-    if (this.otpForm.invalid) {
+    const currentForm = this.activeForm();
+    if (currentForm.invalid) {
+      currentForm.markAllAsTouched();
       return;
     }
-
+    const rawValue = currentForm.getRawValue() as any;
     this.isVerifyCalled.emit({
       isCalled: true,
-      otp: this.otpForm.getRawValue().code,
+      otp: this.timerType() === 'phone' ? rawValue.phoneNumber : rawValue.code,
     });
   }
 

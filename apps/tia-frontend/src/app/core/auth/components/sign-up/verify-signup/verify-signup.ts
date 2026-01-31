@@ -17,7 +17,7 @@ export class VerifySignup {
     }
   }
 
-  public resendOtp(isCalled: boolean) {
+  public resendOtp(isCalled: boolean):void {
     if (isCalled) {
       this.authService.resetPhoneOtp().subscribe();
     }

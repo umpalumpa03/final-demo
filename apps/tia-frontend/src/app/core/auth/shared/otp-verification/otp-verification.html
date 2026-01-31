@@ -8,7 +8,7 @@
   <p class="otp-verification__subtext">{{ subText() }}</p>
 
   @if (!isLoading()) {
-  <form class="auth-form" [formGroup]="otpForm" (ngSubmit)="onSubmit()">
+  <form class="auth-form" [formGroup]="activeForm()" (ngSubmit)="onSubmit()">
     @if(timerType() === 'otp'){
     <div class="otp-field">
       <label class="otp-label">Enter OTP Code</label>
@@ -17,7 +17,7 @@
     } @else {
     <div class="otp-field__phone">
       <lib-text-input
-        formControlName="code"
+        formControlName="phoneNumber"
         [config]="phoneConfig()"
       ></lib-text-input>
     </div>
