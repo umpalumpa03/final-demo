@@ -117,11 +117,13 @@ export const LoansStore = signalStore(
         ),
       ),
 
-      loadLoans: rxMethod<void>(
+      loadLoans: rxMethod<number | void>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
-          switchMap(() =>
-            loansService.getAllLoans().pipe(
+          switchMap((status) => {
+            const apiStatus = typeof status === 'number' ? status : undefined;
+
+            return loansService.getAllLoans(apiStatus).pipe(
               tap((loans) => {
                 const mappedLoans = loans.map((l) => ({
                   ...l,
@@ -135,8 +137,8 @@ export const LoansStore = signalStore(
                 patchState(store, { error: error.message, loading: false });
                 return EMPTY;
               }),
-            ),
-          ),
+            );
+          }),
         ),
       ),
 
