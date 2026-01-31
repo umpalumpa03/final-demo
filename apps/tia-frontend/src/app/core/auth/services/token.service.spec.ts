@@ -95,4 +95,17 @@ describe('TokenService', () => {
     expect(localStorage.getItem).toHaveBeenCalledWith(TokenKey.SIGNUP);
     expect(result).toBe('stored-signup-token');
   });
+
+  it('should clear user info', () => {
+    service.clearUserInfo();
+    expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.USER);
+  });
+
+  it('should clear all tokens', () => {
+    service.clearAllToken();
+    expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.ACCESS);
+    expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.REFRESH);
+    expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.VERIFY);
+    expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.SIGNUP);
+  });
 });

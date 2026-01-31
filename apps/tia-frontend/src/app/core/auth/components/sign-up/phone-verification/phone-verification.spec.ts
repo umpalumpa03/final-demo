@@ -8,9 +8,20 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideRouter } from '@angular/router';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { of, throwError } from 'rxjs';
+import { of, throwError, Observable } from 'rxjs';
+
+import {
+  TranslateModule,
+  TranslateLoader,
+} from '@ngx-translate/core';
+
 import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
 
+class FakeLoader implements TranslateLoader {
+  getTranslation(): Observable<any> {
+    return of({});
+  }
+}
 
 describe('OtpVerification', () => {
   let fixture: ComponentFixture<OtpVerification>;
@@ -18,7 +29,16 @@ describe('OtpVerification', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, OtpVerification],
+      imports: [
+        ReactiveFormsModule,
+        OtpVerification,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: FakeLoader,
+          },
+        }),
+      ],
       providers: [provideRouter([])],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
@@ -53,6 +73,7 @@ describe('OtpVerification', () => {
     const submitFn = vi.fn().mockReturnValue(of({}));
     (component as any).submitMethod = () => submitFn;
 
+    component.otpForm.get('code')?.setValue('1234');
     component.onSubmit();
   });
 
@@ -61,6 +82,8 @@ describe('OtpVerification', () => {
       throwError(() => new Error('fail'))
     );
     (component as any).submitMethod = () => submitFn;
+
+    component.otpForm.get('code')?.setValue('1234');
 
     expect(() => component.onSubmit()).not.toThrow();
   });

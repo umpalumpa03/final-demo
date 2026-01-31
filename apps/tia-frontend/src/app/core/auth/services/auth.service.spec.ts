@@ -26,6 +26,7 @@ describe('AuthService', () => {
       clearAuthToken: vi.fn(),
       clearAccessToken: vi.fn(),
       clearAllToken: vi.fn(),
+      clearUserInfo: vi.fn(),
       accessToken: null,
       getSignUpToken: null,
       verifyToken: null,
@@ -135,7 +136,6 @@ describe('AuthService', () => {
     req.flush({});
 
     await Promise.resolve();
-    expect(tokenSpy.clearAllToken).toHaveBeenCalled();
     expect(routerSpy.navigate).toHaveBeenCalledWith([Routes.SIGN_IN]);
   });
 

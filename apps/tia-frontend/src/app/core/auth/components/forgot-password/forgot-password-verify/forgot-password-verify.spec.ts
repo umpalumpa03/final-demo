@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -8,6 +9,16 @@ import { AuthService } from '../../../services/auth.service';
 import { forgotPasswordSegments } from '../forgot-password.routes';
 
 describe('ForgotPasswordVerify', () => {
+const createMockObservable = () => ({ subscribe: () => ({ unsubscribe: () => {} }) });
+const mockTranslate = {
+  instant: () => '',
+  get: () => createMockObservable(),
+  stream: () => createMockObservable(),
+  currentLang: 'en',
+  onLangChange: createMockObservable(),
+  onTranslationChange: createMockObservable(),
+  onDefaultLangChange: createMockObservable(),
+};
   let component: ForgotPasswordVerify;
   let fixture: ComponentFixture<ForgotPasswordVerify>;
   let authServiceMock: any;
@@ -25,6 +36,7 @@ describe('ForgotPasswordVerify', () => {
       providers: [
         provideRouter([]),
         { provide: AuthService, useValue: authServiceMock },
+        { provide: TranslateService, useValue: mockTranslate },
       ],
     }).compileComponents();
 

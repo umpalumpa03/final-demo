@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
@@ -8,6 +9,16 @@ import { VerifySignin } from './verify-signin';
 import { AuthService } from '../../../services/auth.service';
 
 describe('VerifySignin', () => {
+const createMockObservable = () => ({ subscribe: () => ({ unsubscribe: () => {} }) });
+const mockTranslate = {
+  instant: () => '',
+  get: () => createMockObservable(),
+  stream: () => createMockObservable(),
+  currentLang: 'en',
+  onLangChange: createMockObservable(),
+  onTranslationChange: createMockObservable(),
+  onDefaultLangChange: createMockObservable(),
+};
   let component: VerifySignin;
   let authMock: any;
 
@@ -22,6 +33,7 @@ describe('VerifySignin', () => {
       providers: [
         { provide: AuthService, useValue: authMock },
         { provide: ActivatedRoute, useValue: {} },
+        { provide: TranslateService, useValue: mockTranslate },
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();

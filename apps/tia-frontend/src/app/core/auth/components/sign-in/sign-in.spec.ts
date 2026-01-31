@@ -1,8 +1,9 @@
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { AuthService } from '../../services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { signal } from '@angular/core';
 import '@angular/compiler';
 import { setupTestBed } from '@analogjs/vitest-angular/setup-testbed';
@@ -13,6 +14,11 @@ import { SignIn } from './sign-in';
 setupTestBed();
 
 describe('SignIn Component', () => {
+  class FakeLoader implements TranslateLoader {
+    getTranslation(): Observable<any> {
+      return of({});
+    }
+  }
   let fixture: ComponentFixture<SignIn>;
   let component: SignIn;
 
@@ -28,7 +34,14 @@ describe('SignIn Component', () => {
     mockAuthService.errorMessage.set('');
 
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule, SignIn],
+      imports: [
+        ReactiveFormsModule,
+        RouterTestingModule,
+        SignIn,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeLoader },
+        }),
+      ],
       providers: [{ provide: AuthService, useValue: mockAuthService }],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
@@ -39,7 +52,10 @@ describe('SignIn Component', () => {
   });
 
   it('initializes the form with empty values', () => {
-    expect(component.loginForm.getRawValue()).toEqual({ username: '', password: '' });
+    expect(component.loginForm.getRawValue()).toEqual({
+      username: '',
+      password: '',
+    });
   });
 
   it('does not call loginPostRequest if form is invalid', () => {
