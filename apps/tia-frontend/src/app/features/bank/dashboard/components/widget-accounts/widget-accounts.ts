@@ -7,11 +7,11 @@ import {
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { AsyncPipe, CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
-import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
-import { selectLoading } from 'apps/tia-frontend/src/app/store/loans/loans.reducer';
 import { map } from 'rxjs';
+import { BaseWidget } from '../shared/base-widget.config';
+import { ScrollArea } from "@tia/shared/lib/layout/components/scroll-area/container/scroll-area";
 
 
 @Component({
@@ -20,13 +20,14 @@ import { map } from 'rxjs';
     AsyncPipe,
     CurrencyPipe,
     RouteLoader,
-    ErrorStates
-  ],
+    ErrorStates,
+    ScrollArea
+],
   templateUrl: './widget-accounts.html',
   styleUrl: './widget-accounts.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-  export class WidgetAccounts{
+  export class WidgetAccounts extends BaseWidget{
   private readonly store = inject(Store);
 
   public retryLoad(): void {

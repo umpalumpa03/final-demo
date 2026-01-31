@@ -85,7 +85,6 @@ describe('NotificationsContainer', () => {
   });
 
   it('should push values to visibleItem$ when handleItemVisible is called', () => {
-    const spy = vi.spyOn(store, 'markItemsRead');
     component.handleItemVisible('notif-777');
     expect(component['visibleItem$']).toBeDefined();
   });

@@ -250,6 +250,10 @@ export const NotificationsStore = signalStore(
         ),
       ),
 
+      resetState(): void {
+        patchState(store, () => initialState);
+      },
+
       toggleSelectAll(): void {
         if (store.isAllSelected()) {
           patchState(store, { selectedItems: [] });

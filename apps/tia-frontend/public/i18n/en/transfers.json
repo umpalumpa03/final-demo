@@ -19,6 +19,7 @@
       "verify": "Verify Recipient",
       "accountsTitle": "Select your account to transfer from",
       "disabledTooltip": "Please enter recipient details and select an account",
+      "recipientNotFound": "Recipient not found. Please check the phone number or IBAN and try again.",
       "errors": {
         "invalidFormat": "Invalid format. Enter IBAN or phone (+995...)",
         "invalidPhone": "Invalid phone number format. Use +995XXXXXXXXX",
@@ -28,6 +29,42 @@
         "validPhone": "Valid phone number",
         "validIbanSameBank": "Valid TIA Bank IBAN",
         "validIbanDifferentBank": "Valid IBAN"
+      },
+      "accountsError": {
+        "header": "Failed to Load Accounts",
+        "message": "Unable to load your accounts. Please try again.",
+        "retry": "Retry"
+      },
+      "noAccounts": {
+        "header": "No Accounts Found",
+        "message": "You need to create an account before making transfers",
+        "createAccount": "Create Account"
+      }
+    },
+    "accounts": {
+      "title": "Recipient Details",
+      "recipientVerified": "Recipient verified successfully!",
+      "selectRecipientAccount": "Select Recipient Account",
+      "selectSenderAccount": "Select Your Account",
+      "recipientName": {
+        "label": "Recipient Name",
+        "placeholder": "Enter recipient's full name"
+      },
+      "noAccounts": {
+        "header": "No Accounts Found",
+        "message": "No active accounts were found for this recipient."
+      },
+      "noSenderAccounts": {
+        "header": "No Accounts Available",
+        "message": "You don't have any accounts to transfer from."
+      },
+      "error": {
+        "header": "An Error Occurred",
+        "message": "Failed to load accounts. Please try again."
+      },
+      "senderError": {
+        "header": "Failed to Load Your Accounts",
+        "message": "Unable to load your accounts. Please try again."
       }
     }
   },

@@ -12,10 +12,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProviderList } from './components/provider-list/provider-list';
 import { PaybillForm } from './components/paybill-form/paybill-form';
 import { PaybillActions } from '../../store/paybill.actions';
+import { PaybillOtpVerification } from './components/paybill-otp-verification/paybill-otp-verification';
+import {
+  PaybillPayload,
+  ProceedPaymentPayload,
+} from '../../models/paybill.model';
 
 @Component({
   selector: 'app-paybill-main',
-  imports: [CategoryGrid, ProviderList, PaybillForm],
+  imports: [CategoryGrid, ProviderList, PaybillForm, PaybillOtpVerification],
   templateUrl: './paybill-main.html',
   styleUrl: './paybill-main.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,6 +31,13 @@ export class PaybillMain {
   private readonly route = inject(ActivatedRoute);
 
   // States
+
+  public readonly currentStep = this.store.selectSignal(
+    PAYBILL_SELECTORS.selectCurrentStep,
+  );
+  public readonly paymentPayload = this.store.selectSignal(
+    PAYBILL_SELECTORS.selectPaymentPayload,
+  );
 
   public readonly activeCategory = this.store.selectSignal(
     PAYBILL_SELECTORS.selectActiveCategory,
@@ -44,7 +56,9 @@ export class PaybillMain {
     PAYBILL_SELECTORS.selectLoading,
   );
 
-  
+  public readonly challengeId = this.store.selectSignal(
+    PAYBILL_SELECTORS.selectChallengeId,
+  );
 
   public readonly formattedCategories = computed(() => {
     return this.categories().map((cat) => {
@@ -99,11 +113,43 @@ export class PaybillMain {
     }
   }
 
-  public onProceedToPayment(data: {
-    accountNumber: string;
-    amount: number;
-  }): void {
-    // PLACEHOLDER
+  public onProceedToPayment(data: PaybillPayload): void {
+    const provider = this.activeProvider();
+    if (provider) {
+      this.store.dispatch(PaybillActions.setPaymentPayload({ data }));
+
+      const payload: ProceedPaymentPayload = {
+        serviceId: provider.id,
+        identification: { accountNumber: data.accountNumber },
+        amount: data.amount,
+        senderAccountId: 'a1000001-0001-4000-8000-000000000004', // ES UNDA SHEVCVALO
+      };
+
+      this.store.dispatch(PaybillActions.proceedPayment({ payload }));
+    }
+  }
+
+  public onPaymentMethodSelected(): void {
+    this.store.dispatch(PaybillActions.setPaymentStep({ step: 'SUCCESS' }));
+  }
+
+  public onBackToDetails(): void {
+    this.store.dispatch(PaybillActions.setPaymentStep({ step: 'DETAILS' }));
+  }
+
+  public onOtpVerified(otpCode: string): void {
+    const challengeId = this.challengeId();
+
+    if (challengeId) {
+      this.store.dispatch(
+        PaybillActions.confirmPayment({
+          payload: {
+            challengeId,
+            code: otpCode,
+          },
+        }),
+      );
+    }
   }
 
   public readonly activeCategoryUI = computed(() => {

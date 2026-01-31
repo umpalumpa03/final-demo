@@ -1,7 +1,4 @@
 import { Routes } from '@angular/router';
-import { AccountUtils } from './components/accounts/utils/account.utils';
-import { FormatUtils } from './components/accounts/utils/format-date.utils';
-import { AccountsService } from '@tia/shared/services/accounts/accounts.service';
 
 export const productsRoutes: Routes = [
   {
@@ -16,11 +13,10 @@ export const productsRoutes: Routes = [
       },
       {
         path: 'accounts',
-        loadComponent: () =>
-          import('./components/accounts/container/accounts').then(
-            (c) => c.Accounts,
+        loadChildren: () =>
+          import('./components/accounts/accounts.routes').then(
+            (r) => r.accountsRoutes,
           ),
-        providers: [AccountsService, AccountUtils, FormatUtils],
       },
       {
         path: 'cards',

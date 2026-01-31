@@ -164,4 +164,30 @@ describe('PaybillMain', () => {
       );
     });
   });
+
+  it('should dispatch confirmPayment when onOtpVerified is called', () => {
+    const spy = vi.spyOn(store, 'dispatch');
+    vi.spyOn(component, 'challengeId' as any).mockReturnValue('mock-challenge');
+
+    component.onOtpVerified('1111');
+
+    expect(spy).toHaveBeenCalledWith(
+      PaybillActions.confirmPayment({
+        payload: { challengeId: 'mock-challenge', code: '1111' },
+      }),
+    );
+  });
+
+  it('should dispatch proceedPayment when onProceedToPayment is called', () => {
+    const spy = vi.spyOn(store, 'dispatch');
+    vi.spyOn(component, 'activeProvider').mockReturnValue({ id: 'p1' } as any);
+
+    component.onProceedToPayment({ accountNumber: '123', amount: 100 });
+
+    expect(spy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: PaybillActions.proceedPayment.type,
+      }),
+    );
+  });
 });

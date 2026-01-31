@@ -14,6 +14,7 @@ import { TokenService } from '../../services/token.service';
 import { IRegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/models/contact-forms.model';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { AuthService } from '../../services/auth.service';
+import { Routes } from '../../models/tokens.model';
 
 @Component({
   selector: 'app-sign-up',
@@ -50,7 +51,7 @@ export class SignUp implements OnInit {
           this.loadingState.set(false);
           this.errorMessage.set('');
 
-          this.router.navigate(['/auth/phone']);
+          this.router.navigate([Routes.PHONE]);
         }),
 
         catchError((err) => {

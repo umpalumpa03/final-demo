@@ -1,1 +1,135 @@
-<p>external-accounts works!</p>
+<main class="external-accounts">
+  <header class="external-accounts__header">
+    <h1 class="external-accounts__title">
+      {{ 'transfers.external.accounts.title' | translate }}
+    </h1>
+  </header>
+
+  <section class="external-accounts__verified-user">
+    <app-verified-user-card
+      [fullName]="recipientName()"
+      [description]="'transfers.external.accounts.recipientVerified' | translate"
+    />
+  </section>
+
+  @if (isExternalIban()) {
+  <section class="external-accounts__recipient-name">
+    <lib-text-input
+      [formControl]="recipientNameInput"
+      [config]="recipientNameConfig()"
+    />
+  </section>
+  } @else {
+  <section class="external-accounts__recipient-accounts">
+    <h2 class="external-accounts__recipient-accounts-title">
+      {{ 'transfers.external.accounts.selectRecipientAccount' | translate }}
+    </h2>
+
+    @if (isLoading()) {
+    <div class="external-accounts__spinner-wrapper">
+      <app-spinner />
+    </div>
+    } @else if (error()) {
+    <div class="external-accounts__error-wrapper">
+      <app-error-states
+        [variant]="'failed'"
+        [header]="'transfers.external.accounts.error.header' | translate"
+        [message]="'transfers.external.accounts.error.message' | translate"
+        [buttonMessage]="'transfers.external.recipient.accountsError.retry' | translate"
+        (buttonClick)="onRetry()"
+      />
+    </div>
+    } @else if (!recipientAccounts() || recipientAccounts().length === 0){
+    <div class="external-accounts__not-found-wrapper">
+      <app-error-states
+        [variant]="'not-found'"
+        [header]="'transfers.external.accounts.noAccounts.header' | translate"
+        [message]="'transfers.external.accounts.noAccounts.message' | translate"
+        [showButton]="false"
+      />
+    </div>
+    } @else {
+    <div class="external-accounts__accounts-grid">
+      @for (account of recipientAccounts(); track account.id) {
+      <app-transfers-account-card
+        [cardData]="account"
+        [mode]="'recipient'"
+        [isSelected]="selectedRecipientAccount()?.id === account.id"
+        [isDisabled]="isRecipientAccountDisabled(account)"
+        (cardClicked)="onRecipientAccountSelect($event)"
+      />
+      }
+    </div>
+    }
+  </section>
+  }
+  <div class="external-accounts__divider"></div>
+  <section class="external-accounts__sender-accounts">
+    <h2 class="external-accounts__sender-accounts-title">
+      {{ 'transfers.external.accounts.selectSenderAccount' | translate }}
+    </h2>
+
+    @if (isLoadingSenderAccounts()) {
+    <div class="external-accounts__loader-wrapper">
+      <app-route-loader variant="pulsing"></app-route-loader>
+    </div>
+    } @else if (senderAccountsError()) {
+    <div class="external-accounts__error-wrapper">
+      <app-error-states
+        [variant]="'failed'"
+        [header]="'transfers.external.accounts.senderError.header' | translate"
+        [message]="'transfers.external.accounts.senderError.message' | translate"
+        [buttonMessage]="'transfers.external.recipient.accountsError.retry' | translate"
+        (buttonClick)="onRetrySenderAccounts()"
+      />
+    </div>
+    } @else if (!senderAccounts() || senderAccounts().length === 0) {
+    <div class="external-accounts__error-wrapper">
+      <app-error-states
+        [variant]="'not-found'"
+        [header]="'transfers.external.accounts.noSenderAccounts.header' | translate"
+        [message]="'transfers.external.accounts.noSenderAccounts.message' | translate"
+        [showButton]="false"
+      />
+    </div>
+    } @else {
+    <div class="external-accounts__accounts-grid">
+      @for (account of senderAccounts(); track account.id) {
+      <app-transfers-account-card
+        [cardData]="account"
+        [mode]="'sender'"
+        [isSelected]="selectedSenderAccount()?.id === account.id"
+        (cardClicked)="onSenderAccountSelect($event)"
+        [isDisabled]="isSenderAccountDisabled(account)"
+      />
+      }
+    </div>
+    }
+  </section>
+
+  <footer class="external-accounts__footer">
+    <app-button variant="outline" size="default" (click)="onGoBack()">
+      <img src="images/svg/transfers/go-back.svg" alt="back" />
+      {{ 'common.buttons.back' | translate }}
+    </app-button>
+
+    <app-button
+      variant="default"
+      size="default"
+      (click)="onContinue()"
+      [isDisabled]="!selectedRecipientAccount() || !selectedSenderAccount() || isLoading() || (isExternalIban() && !recipientNameInput.valid)"
+    >
+      {{ 'common.buttons.continue' | translate }}
+      <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />
+    </app-button>
+  </footer>
+</main>
+
+@if (showSuccess()) {
+<div class="external-accounts__success-toast">
+  <app-alert-types-with-icons
+    [alertType]="'success'"
+    [alertMessage]="'transfers.external.accounts.recipientVerified' | translate"
+  />
+</div>
+}

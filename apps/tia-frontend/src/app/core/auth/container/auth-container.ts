@@ -3,20 +3,17 @@ import {
   Component,
   DestroyRef,
   inject,
+  OnInit,
   signal,
 } from '@angular/core';
-import {
-  ActivatedRoute,
-  NavigationEnd,
-  Router,
-  RouterOutlet,
-} from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { updateSidePanelForRoute } from '../utils/resolve-panel-data';
 import { TokenService } from '../services/token.service';
 import { AuthService } from '../services/auth.service';
-import { SidePanel } from '../components/shared/side-panel/side-panel';
-import { filter } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { IFeaturePanel } from '../models/config.models';
+import { IFeature } from '../models/auth.models';
+import { SidePanel } from '../shared/side-panel/side-panel';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-auth-container',
@@ -26,37 +23,24 @@ import { IFeaturePanel } from '../models/config.models';
   providers: [TokenService, AuthService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AuthContainer {
+export class AuthContainer implements OnInit {
   private router = inject(Router);
-  private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
 
-  public sidePanelData = signal<{
-    title: string;
-    description: string;
-    features: IFeaturePanel[];
-  } | null>(null);
+  public sidePanelData = signal<IFeature | null>(null);
 
-  constructor() {
-    this.updateSidePanelData();
+  public ngOnInit(): void {
+    updateSidePanelForRoute(this.router.url, this.sidePanelData);
 
     this.router.events
       .pipe(
-        filter((e) => e instanceof NavigationEnd),
         takeUntilDestroyed(this.destroyRef),
+        tap((res) => {
+          if (res instanceof NavigationEnd) {
+            updateSidePanelForRoute(res.url, this.sidePanelData);
+          }
+        }),
       )
-      .subscribe(() => {
-        this.updateSidePanelData();
-      });
-  }
-
-  private updateSidePanelData() {
-    let current = this.route;
-    while (current.firstChild) {
-      current = current.firstChild;
-    }
-    current.data.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data) => {
-      this.sidePanelData.set(data['sidePanel'] ?? null);
-    });
+      .subscribe();
   }
 }

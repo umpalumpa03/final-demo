@@ -31,6 +31,8 @@ export class DragContainer extends DragBase {
   );
   public readonly colspans = input<number[]>([]);
 
+  public readonly hasNoStyle = input(false);
+
   public readonly itemsChange = output<DraggableItemType[]>();
   public readonly orderChange = output<string[]>();
 
