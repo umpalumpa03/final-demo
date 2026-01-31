@@ -10,7 +10,7 @@ export const getOtpVerificationConfig = (type: OtpVerificationType): OtpVerifica
         backLink: '/auth/sign-in',
         backLinkText: 'auth.otp-sign-in.backLinkText',
         iconUrl: 'images/svg/auth/secured-blue.svg',
-      };
+      } as const;
     case 'sign-up':
       return {
         title: 'auth.otp-sign-up.title',
@@ -19,7 +19,7 @@ export const getOtpVerificationConfig = (type: OtpVerificationType): OtpVerifica
         backLink: '/auth/sign-in',
         backLinkText: 'auth.otp-sign-up.backLinkText',
         iconUrl: 'images/svg/auth/phone-blue.svg',
-      };
+      } as const;
     case 'forgot-password':
       return {
         title: 'Reset Your Password',
@@ -28,6 +28,6 @@ export const getOtpVerificationConfig = (type: OtpVerificationType): OtpVerifica
         backLink: '/auth/forgot-password',
         backLinkText: 'Back to Forgot Password',
         iconUrl: 'images/svg/auth/secured-blue.svg',
-      };
+      } as const;
   }
 };
