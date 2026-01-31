@@ -1,6 +1,7 @@
-import { InputConfig } from '@tia/shared/lib/forms/models/input.model';
+import { OtpConfig } from '@tia/shared/lib/forms/models/otp.model';
 
-export const VERIFY_LOAN: InputConfig = {
+export const VERIFY_LOAN: OtpConfig = {
   label: 'OTP Code *',
-  placeholder: '123456',
+  length: 4,
+  inputType: 'number',
 } as const;
