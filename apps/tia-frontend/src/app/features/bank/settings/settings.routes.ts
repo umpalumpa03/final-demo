@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { appearanceUnsavedGuard } from './components/appearance/guard/appearance-unsaved.guard';
 
 export const settingsRoutes: Routes = [
   {
@@ -15,6 +16,7 @@ export const settingsRoutes: Routes = [
       },
       {
         path: 'appearance',
+        canDeactivate: [appearanceUnsavedGuard],
         loadComponent: () =>
           import(
             './components/appearance/container/appearance-container'

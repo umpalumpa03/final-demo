@@ -10,7 +10,7 @@ import { tap } from "rxjs";
 export class AppearanceService {
     private readonly BASE_URL = environment.apiUrl;
     private readonly AVAILABLE_THEMES_ENDPOINT = '/settings/get-available-themes';
-    private readonly UPDATE_THEMES_ENDPOINT = '/settings/update-user-themes';
+    private readonly UPDATE_THEMES_ENDPOINT = '/settings/update-user-theme';
     
     private http = inject(HttpClient);
 

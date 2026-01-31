@@ -38,14 +38,7 @@ export class AppearanceContainer {
 
   public isLoading = this.appearanceService.isLoading;
   
-  // public readonly themesWithSubtitle = computed(() => {
-  //   return this.availableThemes()!.map((theme, index) => {
-  //     return {
-  //       ...theme,
-  //       subtitle: themesConfig[index].subtitle
-  //     }
-  //   });
-  // })
+  private lastSavedTheme = signal<string | null>(null);
 
 
   ngOnInit(): void {
@@ -90,7 +83,7 @@ export class AppearanceContainer {
   }
 
   public onSubmit(): void {
-    console.log("submitted...")
+    this.appearanceService.updateUserTheme(this.activeTheme()).subscribe();
   }
 
 }
