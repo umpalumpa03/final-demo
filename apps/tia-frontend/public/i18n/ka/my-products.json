@@ -60,6 +60,12 @@
       "type": "ტიპი",
       "created": "შექმნის თარიღი",
       "makeTransfer": "გადარიცხვა"
-    }
+    },
+    "success": "წარმატება",
+    "error": "შეცდომა",
+    "information": "ინფორმაცია",
+    "accountNameUpdatedSuccessfully": "ანგარიშის სახელი წარმატებით განახლდა",
+    "accountCreationRequestSent": "ანგარიშის შექმნის მოთხოვნა გადაეგზავნა ადმინისტრატორს დასადასტურებლად",
+    "failedToCreateAccount": "ანგარიშის შექმნა ვერ მოხერხდა"
   }
 }

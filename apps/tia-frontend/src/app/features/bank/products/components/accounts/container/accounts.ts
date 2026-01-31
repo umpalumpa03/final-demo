@@ -12,7 +12,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { shareReplay } from 'rxjs/operators';
 import { Subject, takeUntil } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { AccountsListComponent } from '../components/accounts-list/accounts-list';
 import { CreateAccountComponent } from '../components/create-account/components/create-account';
 import {
@@ -39,6 +39,7 @@ import { DismissibleAlerts } from '../../../../../../shared/lib/alerts/component
   selector: 'app-accounts-page',
   imports: [
     CommonModule,
+    TranslateModule,
     AccountsListComponent,
     CreateAccountComponent,
     DismissibleAlerts,
@@ -99,16 +100,7 @@ export class Accounts implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.accountsGrouped$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((accounts) => {
-        if (
-          !accounts ||
-          (accounts.current.length === 0 &&
-            accounts.saving.length === 0 &&
-            accounts.card.length === 0)
-        ) {
-          this.store.dispatch(AccountsActions.loadAccounts());
-        }
-      });
+      .subscribe((accounts) => this.handleAccountsGrouped(accounts));
 
     if (this.router.url.includes('/create')) {
       this.store.dispatch(AccountsActions.openCreateModal());
@@ -116,22 +108,33 @@ export class Accounts implements OnInit, OnDestroy {
 
     this.isCreatingAccount$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((isCreating) => {
-        if (!isCreating && this.wasCreating) {
-          this.createError$
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((error) => {
-              if (error) {
-                this.showCreateErrorAlert.set(true);
-                this.showCreateAlert.set(false);
-              } else {
-                this.showCreateAlert.set(true);
-                this.showCreateErrorAlert.set(false);
-              }
-            });
+      .subscribe((isCreating) => this.handleIsCreatingAccount(isCreating));
+  }
+
+  private handleAccountsGrouped(accounts: any): void {
+    if (
+      !accounts ||
+      (accounts.current.length === 0 &&
+        accounts.saving.length === 0 &&
+        accounts.card.length === 0)
+    ) {
+      this.store.dispatch(AccountsActions.loadAccounts());
+    }
+  }
+
+  private handleIsCreatingAccount(isCreating: boolean): void {
+    if (!isCreating && this.wasCreating) {
+      this.createError$.pipe(takeUntil(this.destroy$)).subscribe((error) => {
+        if (error) {
+          this.showCreateErrorAlert.set(true);
+          this.showCreateAlert.set(false);
+        } else {
+          this.showCreateAlert.set(true);
+          this.showCreateErrorAlert.set(false);
         }
-        this.wasCreating = isCreating;
       });
+    }
+    this.wasCreating = isCreating;
   }
 
   public ngOnDestroy(): void {
