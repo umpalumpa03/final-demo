@@ -86,9 +86,10 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
   }
 
   public onSubmit(): void {
-    this.appearanceService.updateUserTheme(this.activeTheme()).pipe(
+    const subscription = this.appearanceService.updateUserTheme(this.activeTheme()).pipe(
       tap(() => this.isSubmitted.set(true))
     ).subscribe();
+    this.destroyRef.onDestroy(() => subscription.unsubscribe());
   }
 
   public canDeactivate(): boolean {
