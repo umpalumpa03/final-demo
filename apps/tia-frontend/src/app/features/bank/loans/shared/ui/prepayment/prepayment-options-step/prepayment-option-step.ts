@@ -27,6 +27,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { startWith, map } from 'rxjs';
 import { translateConfig } from '../../../utils/config-translator.util';
+import { LoansStore } from '../../../../store/loans.store';
 
 @Component({
   selector: 'app-prepayment-option-step',
@@ -44,7 +45,7 @@ import { translateConfig } from '../../../utils/config-translator.util';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrepaymentOptionStep {
-  private readonly store = inject(Store);
+  private readonly store = inject(LoansStore);
   private readonly fb = inject(FormBuilder);
   private readonly translate = inject(TranslateService);
 
@@ -54,8 +55,7 @@ export class PrepaymentOptionStep {
   public readonly cancel = output<void>();
   public readonly calculate = output<PrepaymentCalculationPayload>();
 
-  protected readonly typeOptions: Signal<IDropdownOption[]> =
-    this.store.selectSignal(selectPrepaymentTypeOptions);
+  protected readonly typeOptions = this.store.prepaymentTypeOptions;
 
   protected readonly cfg = toSignal(
     this.translate.onLangChange.pipe(
@@ -129,7 +129,7 @@ export class PrepaymentOptionStep {
   }
 
   public ngOnInit(): void {
-    this.store.dispatch(LoansActions.loadPrepaymentOptions());
+    this.store.loadPrepaymentOptions();
 
     const currentLoan = this.loan();
     if (currentLoan && currentLoan.loanAmount) {

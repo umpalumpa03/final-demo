@@ -33,6 +33,8 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { startWith, map } from 'rxjs';
 import { translateConfig } from '../../utils/config-translator.util';
+import { LoansStore } from '../../../store/loans.store';
+import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 
 @Component({
   selector: 'app-request-modal',
@@ -51,7 +53,8 @@ import { translateConfig } from '../../utils/config-translator.util';
 })
 export class RequestModal implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly store = inject(Store);
+  private readonly globalStore = inject(Store);
+  private readonly store = inject(LoansStore);
   private readonly translate = inject(TranslateService);
 
   public readonly isOpen = input.required<boolean>();
@@ -72,12 +75,19 @@ export class RequestModal implements OnInit {
     },
   );
 
-  protected readonly termOptions: Signal<IDropdownOption[]> =
-    this.store.selectSignal(selectLoanMonthsOptions);
-  protected readonly purposeOptions: Signal<IDropdownOption[]> =
-    this.store.selectSignal(selectPurposeOptions);
-  protected readonly accountOptions: Signal<IDropdownOption[]> =
-    this.store.selectSignal(selectGelAccountOptions);
+  protected readonly termOptions = this.store.loanMonthsOptions;
+  protected readonly purposeOptions = this.store.purposeOptions;
+
+  private readonly accounts = this.globalStore.selectSignal(selectAccounts);
+
+  protected readonly accountOptions = computed<IDropdownOption[]>(() => {
+    return (this.accounts() || [])
+      .filter((acc) => acc.currency === 'GEL')
+      .map((acc) => ({
+        label: `${acc.friendlyName || acc.name} - ${acc.balance} ${acc.currency}`,
+        value: acc.id,
+      }));
+  });
 
   protected readonly dateConfig = computed(() => ({
     ...this.cfg()?.date,
@@ -85,9 +95,10 @@ export class RequestModal implements OnInit {
   }));
 
   public ngOnInit(): void {
-    this.store.dispatch(LoansActions.loadMonths());
-    this.store.dispatch(AccountsActions.loadAccounts());
-    this.store.dispatch(LoansActions.loadPurposes());
+    this.store.loadMonths();
+    this.store.loadPurposes();
+
+    this.globalStore.dispatch(AccountsActions.loadAccounts());
   }
 
   public readonly form = this.fb.group({
@@ -136,7 +147,9 @@ export class RequestModal implements OnInit {
         months: Number(rawData.months),
       } as ILoanRequest;
 
-      this.store.dispatch(LoansCreateActions.requestLoan({ request: payload }));
+      this.globalStore.dispatch(
+        LoansCreateActions.requestLoan({ request: payload }),
+      );
 
       this.close.emit();
     }
