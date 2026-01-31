@@ -4,39 +4,30 @@ export const getOtpVerificationConfig = (type: OtpVerificationType): OtpVerifica
   switch (type) {
     case 'sign-in':
       return {
-        title: 'Verify Your Identity',
-        subText: 'Enter the 4-digit code sent to your email',
-        submitBtnName: 'Verify',
+        title: 'auth.otp-sign-in.title',
+        subText: 'auth.otp-sign-in.subText',
+        submitBtnName: 'auth.otp-sign-in.submitBtnName',
         backLink: '/auth/sign-in',
-        backLinkText: 'Back to Sign In',
-        iconUrl: '/images/svg/auth/otp-icon.svg',
+        backLinkText: 'auth.otp-sign-in.backLinkText',
+        iconUrl: 'images/svg/auth/secured-blue.svg',
       };
     case 'sign-up':
       return {
-        title: 'Verify Phone Number',
-        subText: 'Enter the 4-digit code sent to your email to complete registration',
-        submitBtnName: 'Verify & Continue',
-        backLink: '/auth/sign-up',
-        backLinkText: 'Back to Sign Up',
-        iconUrl: '/images/svg/auth/otp-icon.svg',
+        title: 'auth.otp-sign-up.title',
+        subText: 'auth.otp-sign-up.subText',
+        submitBtnName: 'auth.otp-sign-up.submitBtnName',
+        backLink: '/auth/sign-in',
+        backLinkText: 'auth.otp-sign-up.backLinkText',
+        iconUrl: 'images/svg/auth/phone-blue.svg',
       };
-    case 'reset-password':
+    case 'forgot-password':
       return {
         title: 'Reset Your Password',
         subText: 'Enter the 4-digit code sent to your email',
         submitBtnName: 'Verify',
         backLink: '/auth/forgot-password',
         backLinkText: 'Back to Forgot Password',
-        iconUrl: '/images/svg/auth/otp-icon.svg',
-      };
-    case 'verify-email':
-      return {
-        title: 'Verify Your Email',
-        subText: 'Enter the 4-digit code sent to your email',
-        submitBtnName: 'Verify',
-        backLink: '/auth/sign-in',
-        backLinkText: 'Back to Sign In',
-        iconUrl: '/images/svg/auth/otp-icon.svg',
+        iconUrl: 'images/svg/auth/secured-blue.svg',
       };
   }
 };
