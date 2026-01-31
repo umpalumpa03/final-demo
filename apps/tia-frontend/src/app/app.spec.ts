@@ -1,77 +1,100 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
-import { provideRouter, Router, NavigationStart, NavigationEnd } from '@angular/router';
-import { provideTranslateService, TranslateService } from '@ngx-translate/core';
+import {
+  Router,
+  NavigationStart,
+  NavigationEnd,
+  provideRouter,
+} from '@angular/router';
+import { TranslateService, provideTranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
-import { vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('App Component', () => {
-  let routerEvents: Subject<any>;
+  let router: Router;
+  let translateService: TranslateService;
 
   beforeEach(async () => {
-    routerEvents = new Subject();
-    
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [
-        provideRouter([]), 
-        provideTranslateService(),
-        {
-          provide: Router,
-          useValue: {
-            events: routerEvents.asObservable(),
-            url: '/',
-            parseUrl: vi.fn(),
-          }
-        }
-      ],
+      providers: [provideRouter([]), provideTranslateService()],
     }).compileComponents();
-    
-    vi.spyOn(Storage.prototype, 'getItem').mockReturnValue('ka');
+
+    router = TestBed.inject(Router);
+    translateService = TestBed.inject(TranslateService);
   });
 
-  it('should create the app and set language from localStorage', () => {
-    const translateService = TestBed.inject(TranslateService);
-    const useSpy = vi.spyOn(translateService, 'use');
-    
+  it('should create the app', () => {
     const fixture = TestBed.createComponent(App);
     expect(fixture.componentInstance).toBeTruthy();
+  });
+
+  it('should initialize language from localStorage in constructor', () => {
+    const getItemSpy = vi
+      .spyOn(Storage.prototype, 'getItem')
+      .mockReturnValue('ka');
+    const useSpy = vi.spyOn(translateService, 'use');
+
+    TestBed.createComponent(App);
+
+    expect(getItemSpy).toHaveBeenCalledWith('language');
     expect(useSpy).toHaveBeenCalledWith('ka');
+    getItemSpy.mockRestore();
   });
 
-  it('should update isLoading to true when moving between root segments', () => {
-    const fixture = TestBed.createComponent(App);
-    const router = TestBed.inject(Router);
-    
-    routerEvents.next(new NavigationEnd(1, '/', '/'));
-    
-    (router as any).url = '/bank/dashboard';
-    routerEvents.next(new NavigationStart(2, '/auth/login'));
-    
-    expect(fixture.componentInstance.isLoading()).toBe(true);
-  });
+  it('should default to "en" if localStorage is empty', () => {
+    const getItemSpy = vi
+      .spyOn(Storage.prototype, 'getItem')
+      .mockReturnValue(null);
+    const useSpy = vi.spyOn(translateService, 'use');
 
-  it('should update isLoading to false when moving within same root segment', () => {
-    const fixture = TestBed.createComponent(App);
-    const router = TestBed.inject(Router);
-    
-    routerEvents.next(new NavigationEnd(1, '/bank/dashboard', '/bank/dashboard'));
-    
-    (router as any).url = '/bank/dashboard';
-    routerEvents.next(new NavigationStart(2, '/bank/transfers'));
-    
-    expect(fixture.componentInstance.isLoading()).toBe(false);
-  });
+    TestBed.createComponent(App);
 
-  it('should return empty string for root segment of empty url', () => {
-    const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect((app as any).getRootSegment('')).toBe('');
+    expect(useSpy).toHaveBeenCalledWith('en');
+    getItemSpy.mockRestore();
   });
 
   it('should correctly identify root segment of url', () => {
     const fixture = TestBed.createComponent(App);
     const app = fixture.componentInstance;
     expect((app as any).getRootSegment('/bank/transfers')).toBe('bank');
+    expect((app as any).getRootSegment('')).toBe('');
+  });
+
+  it('should set isLoading to true when navigating to a different root segment', () => {
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    const events = router.events as Subject<any>;
+
+    vi.spyOn(router, 'url', 'get').mockReturnValue('/bank/dashboard');
+    events.next(new NavigationEnd(1, '/bank/dashboard', '/bank/dashboard'));
+
+    events.next(new NavigationStart(2, '/settings/profile'));
+
+    expect(app.isLoading()).toBe(true);
+  });
+
+  it('should set isLoading to false when navigating within the same root segment', () => {
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    const events = router.events as Subject<any>;
+
+    vi.spyOn(router, 'url', 'get').mockReturnValue('/bank/dashboard');
+    events.next(new NavigationEnd(1, '/bank/dashboard', '/bank/dashboard'));
+
+    events.next(new NavigationStart(2, '/bank/transfers'));
+
+    expect(app.isLoading()).toBe(false);
+  });
+
+  it('should reset isLoading to false on NavigationEnd', () => {
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    const events = router.events as Subject<any>;
+
+    events.next(new NavigationStart(1, '/settings'));
+    events.next(new NavigationEnd(1, '/settings', '/settings'));
+
+    expect(app.isLoading()).toBe(false);
   });
 });
