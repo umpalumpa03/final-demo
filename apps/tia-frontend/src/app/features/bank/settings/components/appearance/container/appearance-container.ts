@@ -1,24 +1,25 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   DestroyRef,
-  effect,
   inject,
   OnInit,
   signal,
 } from '@angular/core';
-import { SettingsBody } from '../../../shared/ui/settings-body/settings-body';
-import { themesConfig } from '../config/appearance.config';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
+import { map, tap } from 'rxjs';
+
+import { SettingsBody } from '../../../shared/ui/settings-body/settings-body';
+import { themesConfig } from '../config/appearance.config';
 import { selectActiveTheme } from 'apps/tia-frontend/src/app/store/theme/theme.selectors';
 import { ThemeActions } from 'apps/tia-frontend/src/app/store/theme/theme.actions';
 import { AppearanceService } from '../services/appearance.service';
-import { map, tap } from 'rxjs';
 import { TAvailableThemes } from '../models/appearance.model';
 import { ButtonComponent } from "@tia/shared/lib/primitives/button/button";
 import { Skeleton } from "@tia/shared/lib/feedback/skeleton/skeleton";
+import { selectUserInfo } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
+import { CanComponentDeactivate } from '../guard/can-deactivate.interface';
 
 @Component({
   selector: 'app-appearance-container',
@@ -28,7 +29,7 @@ import { Skeleton } from "@tia/shared/lib/feedback/skeleton/skeleton";
   styleUrl: './appearance-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppearanceContainer {
+export class AppearanceContainer implements OnInit, CanComponentDeactivate {
   private store = inject(Store);
   private appearanceService = inject(AppearanceService);
   private destroyRef = inject(DestroyRef);
@@ -37,11 +38,13 @@ export class AppearanceContainer {
   public availableThemes = signal<TAvailableThemes | null>(null);
 
   public isLoading = this.appearanceService.isLoading;
+
+  private isSubmitted = signal(false);
   
-  private lastSavedTheme = signal<string | null>(null);
+  private userInfo = this.store.selectSignal(selectUserInfo);
 
-
-  ngOnInit(): void {
+  public ngOnInit(): void {
+    this.isSubmitted.set(false);
     const subscription = this.appearanceService.getAvailableThemes().pipe(
       map((themes) => {
         return[...themes].map((theme, index) => ({
@@ -83,7 +86,32 @@ export class AppearanceContainer {
   }
 
   public onSubmit(): void {
-    this.appearanceService.updateUserTheme(this.activeTheme()).subscribe();
+    this.appearanceService.updateUserTheme(this.activeTheme()).pipe(
+      tap(() => this.isSubmitted.set(true))
+    ).subscribe();
   }
 
+  public canDeactivate(): boolean {
+    if (this.isSubmitted()) {
+      return true;
+    }
+    
+    const currentTheme = this.activeTheme();
+    const savedTheme = this.userInfo()?.theme; 
+
+    if (savedTheme && currentTheme !== savedTheme) {
+      
+      const confirmLeave = confirm('You have unsaved changes. Do you really want to leave?');
+
+      if (confirmLeave) {
+        this.setActiveColor(savedTheme);
+        return true; 
+      } else {
+        return false; 
+      }
+    }
+
+    return true;
+  }
+  
 }
