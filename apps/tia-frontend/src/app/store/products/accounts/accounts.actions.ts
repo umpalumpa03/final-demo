@@ -17,6 +17,13 @@ export const AccountsActions = createActionGroup({
     'Create Account Success': props<{ account: Account }>(),
     'Create Account Failure': props<{ error: string }>(),
 
+    'Update Friendly Name': props<{
+      accountId: string;
+      friendlyName: string;
+    }>(),
+    'Update Friendly Name Success': props<{ account: Account }>(),
+    'Update Friendly Name Failure': props<{ error: string }>(),
+
     'Open Create Modal': emptyProps(),
     'Close Create Modal': emptyProps(),
   },

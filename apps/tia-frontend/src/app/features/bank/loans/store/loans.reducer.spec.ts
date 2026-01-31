@@ -123,6 +123,13 @@ describe('LoansReducer', () => {
     expect(state.error).toBeNull();
   });
 
+  it('should set actionLoading true for calculate/initiate/verify actions', () => {
+    const action = LoansActions.calculatePrepayment({ payload: {} as any });
+    const state = loansReducer(initialState, action);
+    expect(state.actionLoading).toBe(true);
+    expect(state.error).toBeNull();
+  });
+
   it('should handle calculatePrepaymentSuccess', () => {
     const result = { monthlyPayment: 100 } as any;
     const action = LoansActions.calculatePrepaymentSuccess({ result });
@@ -147,6 +154,21 @@ describe('LoansReducer', () => {
     expect(state.error).toBeNull();
   });
 
+  it('should handle verifyPrepaymentSuccess', () => {
+    const stateWithData = {
+      ...initialState,
+      activeChallengeId: '123',
+      calculationResult: {} as any,
+      actionLoading: true,
+    };
+    const action = LoansActions.verifyPrepaymentSuccess();
+    const state = loansReducer(stateWithData, action);
+
+    expect(state.activeChallengeId).toBeNull();
+    expect(state.calculationResult).toBeNull();
+    expect(state.actionLoading).toBe(false);
+  });
+
   it('should handle initiate/verify failures', () => {
     const error = 'OTP Error';
     const action = LoansActions.verifyPrepaymentFailure({ error });
@@ -164,5 +186,24 @@ describe('LoansReducer', () => {
     const state = loansReducer(stateWithData, action);
     expect(state.calculationResult).toBeNull();
     expect(state.activeChallengeId).toBeNull();
+  });
+
+  it('should handle loadLoanDetails', () => {
+    const action = LoansActions.loadLoanDetails({ id: '1' });
+    const state = loansReducer(initialState, action);
+    expect(state.detailsLoading).toBe(true);
+    expect(state.selectedLoanDetails).toBeNull();
+  });
+
+  it('should handle loadLoanDetailsSuccess', () => {
+    const details = { id: '1', loanAmount: 5000 } as any;
+    const action = LoansActions.loadLoanDetailsSuccess({ details });
+    const state = loansReducer(
+      { ...initialState, detailsLoading: true },
+      action,
+    );
+
+    expect(state.selectedLoanDetails).toEqual(details);
+    expect(state.detailsLoading).toBe(false);
   });
 });

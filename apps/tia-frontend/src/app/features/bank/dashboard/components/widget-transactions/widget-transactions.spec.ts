@@ -1,21 +1,42 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { Store } from '@ngrx/store';
+import { of } from 'rxjs';
 import { WidgetTransactions } from './widget-transactions';
 
 describe('WidgetTransactions', () => {
   let component: WidgetTransactions;
-  let fixture: ComponentFixture<WidgetTransactions>;
+  let mockStore: any;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    mockStore = {
+      select: vi.fn().mockReturnValue(of([]))
+    };
+
+    TestBed.configureTestingModule({
       imports: [WidgetTransactions],
-    }).compileComponents();
+      providers: [
+        { provide: Store, useValue: mockStore }
+      ]
+    });
 
-    fixture = TestBed.createComponent(WidgetTransactions);
+    const fixture = TestBed.createComponent(WidgetTransactions);
     component = fixture.componentInstance;
-    await fixture.whenStable();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have transactions$ observable', () => {
+    expect(component.transactions$).toBeDefined();
+  });
+
+  it('should have isLoading$ observable', () => {
+    expect(component.isLoading$).toBeDefined();
+  });
+
+  it('should have error$ observable', () => {
+    expect(component.error$).toBeDefined();
   });
 });

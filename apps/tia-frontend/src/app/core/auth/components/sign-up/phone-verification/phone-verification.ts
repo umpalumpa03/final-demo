@@ -1,15 +1,20 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { Router } from '@angular/router';
-import { TokenService } from '../../../services/token.service';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
+import { Routes } from '../../../models/tokens.model';
 
 @Component({
   selector: 'app-phone-verification',
-  imports: [ReactiveFormsModule, TextInput ,ButtonComponent],
+  imports: [ReactiveFormsModule, TextInput, ButtonComponent],
   templateUrl: './phone-verification.html',
   styleUrl: './phone-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,32 +22,27 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 export class PhoneVerification {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
-  private router = inject(Router)
-  private tokenService = inject(TokenService)
+  private router = inject(Router);
 
   public setPhoneNumberForm = this.fb.nonNullable.group({
-    phoneNumber: [ '',[Validators.required],
-    ],
+    phoneNumber: ['', [Validators.required]],
   });
 
-  public errorMessage = signal<string>('') 
+  public errorMessage = signal<string>('');
 
-  public submit():void {
+  public submit(): void {
     let telNumber = this.setPhoneNumberForm.getRawValue().phoneNumber;
     this.authService
-      .sendVerificationCode(telNumber)
+      .sendPhoneVerificationCode(telNumber)
       .pipe(
         tap((res) => {
-          this.errorMessage.set('')
-          // Challenge id localStorage 🚩🚩 - ეს ეიაი არ გეგონოთ ჩვენი რედფლეგია
-          this.tokenService.setChallengeId(res.challengeId)
-          this.router.navigate(['/auth/otp']);
-
+          this.errorMessage.set('');
+          this.authService.setChellangeId(res.challengeId);
+          this.router.navigate([Routes.OTP_SIGN_UP]);
         }),
         catchError((err) => {
           const messages = err.error?.message;
-
-          this.errorMessage.set(messages[0]);
+          this.errorMessage.set(messages);
 
           return EMPTY;
         }),

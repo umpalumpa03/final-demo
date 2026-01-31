@@ -16,6 +16,7 @@ const TRANSLATION_FILES = [
   'messaging',
   'my-products',
   'sidebar',
+  'header-notifications',
 ] as const;
 
 export class MultiFileTranslateLoader implements TranslateLoader {

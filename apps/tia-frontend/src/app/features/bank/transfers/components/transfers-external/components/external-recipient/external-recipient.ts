@@ -1,17 +1,171 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  inject,
+  signal,
+  DestroyRef,
+  effect,
+  computed,
+} from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { getRecipientInputConfig } from '../../config/transfers-external.config';
-import { ButtonComponent } from "@tia/shared/lib/primitives/button/button";
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import {
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+} from '@angular/forms';
+import { InputConfig } from '@tia/shared/lib/forms/models/input.model';
+import { recipientValidator } from '../../../../validators/transfer-validator';
+import { TransferValidationService } from '../../../../services/transfer-validation.service';
+import {
+  getErrorMessage,
+  getSuccessMessage,
+} from '../../../../utils/transfers-external.utils';
+import { RecipientType } from '../../../../models/transfers.state.model';
+import { TransferStore } from '../../../../store/transfers.store';
+import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
+import { Router } from '@angular/router';
+import { filter, take } from 'rxjs';
 
 @Component({
   selector: 'app-external-recipient',
-  imports: [TranslatePipe, TextInput, ButtonComponent],
+  standalone: true,
+  imports: [
+    TranslatePipe,
+    TextInput,
+    ButtonComponent,
+    ReactiveFormsModule,
+    AlertTypesWithIcons,
+  ],
   templateUrl: './external-recipient.html',
   styleUrl: './external-recipient.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ExternalRecipient {
-  private translate = inject(TranslateService);
-  recipientInputConfig = getRecipientInputConfig(this.translate);
+export class ExternalRecipient implements OnInit {
+  private readonly translate = inject(TranslateService);
+  private readonly fb = inject(FormBuilder);
+  private readonly validationService = inject(TransferValidationService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly transferStore = inject(TransferStore);
+  private readonly router = inject(Router);
+
+  public readonly showError = signal(false);
+  public readonly isLoading = computed(() => this.transferStore.isLoading());
+  public readonly recipientInputConfig = signal<InputConfig>(
+    getRecipientInputConfig(this.translate),
+  );
+
+  public readonly recipientInput = this.fb.control('', [
+    recipientValidator(this.validationService),
+  ]);
+
+  private readonly recipientInfo$ = toObservable(
+    this.transferStore.recipientInfo,
+  );
+
+  constructor() {
+    effect(() => {
+      const error = this.transferStore.error();
+
+      if (error) {
+        this.showError.set(true);
+        setTimeout(() => {
+          this.showError.set(false);
+        }, 5000);
+      }
+    });
+  }
+
+  public ngOnInit(): void {
+    const storedValue = this.transferStore.recipientInput();
+    if (storedValue) {
+      this.recipientInput.setValue(storedValue, { emitEvent: false });
+    }
+
+    this.setupValueChangeListener();
+  }
+
+  private setupValueChangeListener(): void {
+    this.recipientInput.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        this.updateInputConfig(value);
+      });
+  }
+
+  private updateInputConfig(value: string | null): void {
+    if (!value) {
+      this.clearMessages();
+      return;
+    }
+
+    const type = this.validationService.identifyRecipientType(value);
+    const isValid = this.recipientInput.valid;
+    const errors = this.recipientInput.errors;
+
+    if (isValid && type) {
+      this.setSuccessMessage(type);
+    } else if (errors) {
+      this.setErrorMessage(errors);
+    }
+  }
+
+  private clearMessages(): void {
+    this.recipientInputConfig.update((config) => ({
+      ...config,
+      errorMessage: undefined,
+      successMessage: undefined,
+    }));
+  }
+
+  private setSuccessMessage(type: RecipientType): void {
+    this.recipientInputConfig.update((config) => ({
+      ...config,
+      successMessage: getSuccessMessage(type, this.translate),
+      errorMessage: undefined,
+    }));
+  }
+
+  private setErrorMessage(errors: ValidationErrors): void {
+    this.recipientInputConfig.update((config) => ({
+      ...config,
+      errorMessage: getErrorMessage(errors, this.translate),
+      successMessage: undefined,
+    }));
+  }
+
+  public onVerify(): void {
+    if (this.recipientInput.valid && this.recipientInput.value) {
+      const currentValue = this.recipientInput.value;
+      const storedValue = this.transferStore.recipientInput();
+      const hasExistingData = this.transferStore.recipientInfo();
+
+      if (currentValue === storedValue && hasExistingData) {
+        this.router.navigate(['/bank/transfers/external/accounts']);
+        return;
+      }
+
+      const type = this.validationService.identifyRecipientType(currentValue);
+
+      if (type) {
+        this.transferStore.lookupRecipient({
+          value: currentValue,
+          type,
+        });
+
+        this.recipientInfo$
+          .pipe(
+            filter((info) => !!info),
+            take(1),
+          )
+          .subscribe(() => {
+            this.router.navigate(['/bank/transfers/external/accounts']);
+          });
+      }
+    }
+  }
 }

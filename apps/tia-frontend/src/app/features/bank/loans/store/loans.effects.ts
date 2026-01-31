@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, switchMap, of } from 'rxjs';
+import { catchError, map, switchMap, of, delay } from 'rxjs';
 import { LoansService } from '../shared/services/loans.service';
 import { LoansActions } from './loans.actions';
 import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
@@ -60,7 +60,7 @@ export class LoansEffects {
     ),
   );
 
-  loadPurposes$ = createEffect(() =>
+  public loadPurposes$ = createEffect(() =>
     this.actions$.pipe(
       ofType(LoansActions.loadPurposes),
       switchMap(() =>
@@ -74,7 +74,7 @@ export class LoansEffects {
     ),
   );
 
-  loadPrepaymentOptions$ = createEffect(() =>
+  public loadPrepaymentOptions$ = createEffect(() =>
     this.actions$.pipe(
       ofType(LoansActions.loadPrepaymentOptions),
       switchMap(() =>
@@ -179,6 +179,40 @@ export class LoansEffects {
           ),
         ),
       ),
+    ),
+  );
+
+  public loadLoanDetails$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.loadLoanDetails),
+      switchMap(({ id }) =>
+        this.loansService.getLoanById(id).pipe(
+          map((details) => LoansActions.loadLoanDetailsSuccess({ details })),
+          catchError((error) =>
+            of(LoansActions.loadLoanDetailsFailure({ error: error.message })),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  public triggerOtpAlert$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.initiatePrepaymentSuccess),
+      map(() =>
+        LoansActions.showAlert({
+          message: 'OTP sent to your registered mobile number',
+          alertType: 'success',
+        }),
+      ),
+    ),
+  );
+
+  public autoHideAlert$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LoansActions.showAlert),
+      delay(3000),
+      map(() => LoansActions.hideAlert()),
     ),
   );
 }

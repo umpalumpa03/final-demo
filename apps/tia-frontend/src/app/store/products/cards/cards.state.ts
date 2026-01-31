@@ -1,5 +1,6 @@
-import { CardAccount } from '../../../features/bank/products/components/cards/models/card-account.model';
-import { CardDetail } from '../../../features/bank/products/components/cards/models/card-detail.model';
+import { CardAccount } from "@tia/shared/models/cards/card-account.model";
+import { CardDetail } from "@tia/shared/models/cards/card-detail.model";
+
 
 export interface CardsState {
   accounts: CardAccount[];
@@ -7,6 +8,8 @@ export interface CardsState {
   cardDetails: Record<string, CardDetail>;
   loading: boolean;
   error: string | null;
+   cardDetailsLoading: boolean;  
+  cardDetailsError: string | null;  
 }
 
 export const initialCardsState: CardsState = {
@@ -15,4 +18,6 @@ export const initialCardsState: CardsState = {
   cardDetails: {},
   loading: false,
   error: null,
+  cardDetailsLoading: false,  
+  cardDetailsError: null,  
 };

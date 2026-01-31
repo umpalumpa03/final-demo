@@ -1,4 +1,4 @@
-<div [class] = "errorClass()" [style.width] = 'width()' [style.height] = 'height()'>
+<div [class] = "errorClass()" [style.width] = 'width()' [style.height] = 'height()' [style.max-width]="maxWidth()">
   <div class = 'error-state__icon'>
     @switch (variant()){
       @case('connection-error'){
@@ -14,5 +14,7 @@
   </div>
   <h3 class = 'error-state__header'>{{ header() }}</h3>
   <p class = 'error-state__message'>{{ message() }}</p>
-  <button class = 'error-state__button' (click) = 'buttonClick.emit()'>{{ buttonMessage() }}</button>
+  @if (showButton()) {
+    <button class = 'error-state__button' (click) = 'buttonClick.emit()'>{{ buttonMessage() }}</button>
+  }
 </div>

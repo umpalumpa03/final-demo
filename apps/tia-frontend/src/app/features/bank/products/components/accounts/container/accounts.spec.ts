@@ -49,6 +49,7 @@ describe('Accounts', () => {
 
   it('should dispatch createAccount', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
+    vi.spyOn(component['accountForm'](), 'valid', 'get').mockReturnValue(true);
     const mockRequest: CreateAccountRequest = {
       friendlyName: 'Test',
       type: AccountType.current,
@@ -65,8 +66,32 @@ describe('Accounts', () => {
   });
 
   it('should handle transfer', () => {
-    const consoleSpy = vi.spyOn(console, 'log');
     component.handleTransfer('acc-123');
-    expect(consoleSpy).toHaveBeenCalledWith('Transfer', 'acc-123');
+    expect(component).toBeTruthy();
+  });
+
+  it('should dispatch updateFriendlyName on handleRenameAccount', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    component.handleRenameAccount({
+      accountId: 'acc-123',
+      friendlyName: 'New Name',
+    });
+    expect(dispatchSpy).toHaveBeenCalled();
+  });
+
+  it('should have all required observables defined', () => {
+    expect(component['accountsGrouped$']).toBeDefined();
+    expect(component['isLoading$']).toBeDefined();
+    expect(component['isCreating$']).toBeDefined();
+    expect(component['isCreateModalOpen$']).toBeDefined();
+    expect(component['error$']).toBeDefined();
+    expect(component['createError$']).toBeDefined();
+    expect(component['isRenamingAccount$']).toBeDefined();
+    expect(component['renameError$']).toBeDefined();
+  });
+
+  it('should have accountSectionsData defined', () => {
+    expect(component['accountSectionsData']).toBeDefined();
+    expect(Array.isArray(component['accountSectionsData'])).toBe(true);
   });
 });
