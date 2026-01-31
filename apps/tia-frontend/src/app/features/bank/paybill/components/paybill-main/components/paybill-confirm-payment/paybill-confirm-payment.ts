@@ -43,12 +43,9 @@ export class PaybillConfirmPayment {
   public readonly confirm = output<void>();
   public readonly cancelPayment = output<void>();
 
-  // public readonly currentAccounts = this.store.selectSignal(
-  //   selectCurrentAccounts,
-  // );
-
+  public readonly accountChanged = output<string>();
   public readonly selectedAccountId = signal<string | null>(null);
-  public readonly currentAccounts = input<Account[]|null>(null);
+  public readonly currentAccounts = input<Account[] | null>(null);
 
   protected readonly accountOptions = computed(() =>
     this.currentAccounts()!.map((acc) => ({
@@ -59,6 +56,7 @@ export class PaybillConfirmPayment {
 
   public handleAccountChange(id: string): void {
     this.selectedAccountId.set(id);
+    this.accountChanged.emit(id);
   }
 
   protected readonly summaryItems = computed(() => [

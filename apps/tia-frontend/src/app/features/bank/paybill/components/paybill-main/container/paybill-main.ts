@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as PAYBILL_SELECTORS from '../../../store/paybill.selectors';
@@ -41,6 +42,8 @@ export class PaybillMain implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
   // States
+
+  private readonly selectedSenderAccountId = signal<string | null>(null);
 
   public readonly currentStep = this.store.selectSignal(
     PAYBILL_SELECTORS.selectCurrentStep,
@@ -97,6 +100,10 @@ export class PaybillMain implements OnInit {
     });
   });
 
+  public onAccountSelected(accountId: string): void {
+    this.selectedSenderAccountId.set(accountId);
+  }
+
   public selectCategory(categoryId: string): void {
     this.router.navigate([categoryId.toLowerCase()], {
       relativeTo: this.route,
@@ -145,13 +152,14 @@ export class PaybillMain implements OnInit {
   public onFinalConfirm(): void {
     const provider = this.activeProvider();
     const data = this.paymentPayload();
+    const senderId = this.selectedSenderAccountId();
 
-    if (provider && data) {
+    if (provider && data && senderId) {
       const payload: ProceedPaymentPayload = {
         serviceId: provider.id,
         identification: { accountNumber: data.accountNumber },
         amount: data.amount,
-        senderAccountId: 'a1000001-0001-4000-8000-000000000004',
+        senderAccountId: senderId,
       };
 
       this.store.dispatch(PaybillActions.proceedPayment({ payload }));
@@ -168,19 +176,11 @@ export class PaybillMain implements OnInit {
 
   public onOtpVerified(otpCode: string): void {
     const challengeId = this.challengeId();
-
-    console.log('OTP Received:', otpCode);
-    console.log('Challenge ID from Store:', challengeId);
-
     if (challengeId) {
       this.store.dispatch(
         PaybillActions.confirmPayment({
           payload: { challengeId, code: otpCode },
         }),
-      );
-    } else {
-      console.error(
-        'Confirm Payment failed: No challengeId found in store. Ensure the /pay request succeeded.',
       );
     }
   }
