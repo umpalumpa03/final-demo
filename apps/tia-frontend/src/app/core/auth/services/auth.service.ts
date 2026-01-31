@@ -195,7 +195,6 @@ export class AuthService {
     code: string,
   ): Observable<ForgotPasswordVerifyResponse> {
     this.tokenService.clearAccessToken();
-    console.log(this.getChallengeId());
     const payload: ForgotPasswordVerifyRequest = {
       challengeId: this.getChallengeId(),
       code,

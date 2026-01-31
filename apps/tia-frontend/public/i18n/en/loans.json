@@ -7,9 +7,31 @@
     "all": "All Loans ",
     "approved": "Approved ",
     "pending": "Pending ",
-    "declined": "Declined ",
-    "empty_state": "No approved loans found."
+    "declined": "Declined "
   },
+  "empty": {
+    "all": {
+      "title": "No Loans Found",
+      "message": "You don't have any loans yet.",
+      "button": "Request New Loan"
+    },
+    "approved": {
+      "title": "No Approved Loans",
+      "message": "You don't have any active approved loans at the moment.",
+      "button": "View All Loans"
+    },
+    "pending": {
+      "title": "No Pending Applications",
+      "message": "You don't have any loan applications currently under review.",
+      "button": "View All Loans"
+    },
+    "declined": {
+      "title": "No Declined Loans",
+      "message": "You don't have any declined loan applications.",
+      "button": "View All Loans"
+    }
+  },
+
   "request": {
     "title": "Request New Loan",
     "description": "Fill out the application form to request a new loan",

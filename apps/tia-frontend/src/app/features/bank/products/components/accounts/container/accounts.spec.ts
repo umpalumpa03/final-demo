@@ -2,6 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Accounts } from './accounts';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { TranslateModule } from '@ngx-translate/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { of } from 'rxjs';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import {
   CreateAccountRequest,
@@ -12,16 +15,27 @@ describe('Accounts', () => {
   let component: Accounts;
   let fixture: ComponentFixture<Accounts>;
   let store: MockStore;
+  let router: Router;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Accounts],
-      providers: [provideMockStore()],
+      imports: [Accounts, TranslateModule.forRoot()],
+      providers: [
+        provideMockStore(),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({}),
+            queryParams: of({}),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Accounts);
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 
@@ -36,9 +50,11 @@ describe('Accounts', () => {
   });
 
   it('should dispatch openCreateModal', () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    const navigateSpy = vi.spyOn(router, 'navigate');
     component.handleOpenModal();
-    expect(dispatchSpy).toHaveBeenCalled();
+    expect(navigateSpy).toHaveBeenCalledWith([
+      '/bank/products/accounts/create',
+    ]);
   });
 
   it('should dispatch closeCreateModal', () => {
@@ -82,7 +98,7 @@ describe('Accounts', () => {
   it('should have all required observables defined', () => {
     expect(component['accountsGrouped$']).toBeDefined();
     expect(component['isLoading$']).toBeDefined();
-    expect(component['isCreating$']).toBeDefined();
+    expect(component['isCreatingAccount$']).toBeDefined();
     expect(component['isCreateModalOpen$']).toBeDefined();
     expect(component['error$']).toBeDefined();
     expect(component['createError$']).toBeDefined();
@@ -92,6 +108,6 @@ describe('Accounts', () => {
 
   it('should have accountSectionsData defined', () => {
     expect(component['accountSectionsData']).toBeDefined();
-    expect(Array.isArray(component['accountSectionsData'])).toBe(true);
+    expect(Array.isArray(component['accountSectionsData']())).toBe(true);
   });
 });

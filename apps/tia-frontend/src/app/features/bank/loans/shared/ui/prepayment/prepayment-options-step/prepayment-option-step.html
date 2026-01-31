@@ -11,15 +11,15 @@
         <h4 class="prepayment-step__section-title">{{ 'loans.prepayment_wizard.step_setup.section' | translate }}</h4>
 
         <div class="prepayment-step__form-grid">
-            <lib-select [config]="config().typeSelect" [options]="(typeOptions()) ?? []" formControlName="type">
+            <lib-select [config]="cfg().typeSelect" [options]="(typeOptions()) ?? []" formControlName="type">
             </lib-select>
 
-            <lib-text-input type="number" [config]="config().amountInput" formControlName="amount">
+            <lib-text-input type="number" [config]="cfg().amountInput" formControlName="amount">
             </lib-text-input>
         </div>
 
         <div class="prepayment-step__radios">
-            <lib-radios [config]="config().calculationRadios" [options]="calculationOptions()"
+            <lib-radios [config]="cfg().calculationRadios" [options]="calculationOptions()"
                 formControlName="calculationOption">
             </lib-radios>
         </div>

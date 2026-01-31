@@ -4,6 +4,7 @@ export interface AccountsState {
   accounts: Account[];
   selectedAccountId: string | null;
   isLoading: boolean;
+  isFetching: boolean;
   error: string | null;
   isCreating: boolean;
   createError: string | null;
@@ -16,6 +17,7 @@ export const initialAccountsState: AccountsState = {
   accounts: [],
   selectedAccountId: null,
   isLoading: false,
+  isFetching: false,
   error: null,
   isCreating: false,
   createError: null,
