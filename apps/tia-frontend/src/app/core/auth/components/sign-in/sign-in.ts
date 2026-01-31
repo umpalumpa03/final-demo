@@ -4,10 +4,6 @@ import {
   computed,
   inject,
 } from '@angular/core';
-import {
-  ALERTS_DISMISSIBLE_DATA,
-  SIGN_IN_FORM,
-} from '../../models/input-config.models';
 import { AuthService } from '../../services/auth.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -17,6 +13,7 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
+import { ALERTS_DISMISSIBLE_DATA, SIGN_IN_FORM } from '../../config/inputs.config';
 
 @Component({
   selector: 'app-sign-in',

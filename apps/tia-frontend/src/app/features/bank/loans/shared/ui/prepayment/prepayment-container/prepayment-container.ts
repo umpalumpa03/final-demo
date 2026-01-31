@@ -12,21 +12,13 @@ import {
 import { PrepaymentOptionStep } from '../prepayment-options-step/prepayment-option-step';
 import { PrepaymentReview } from '../prepayment-review/prepayment-review';
 import { Verify } from '../verify/verify';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { Store } from '@ngrx/store';
-import { LoansActions } from '../../../../store/loans.actions';
-import {
-  selectCalculationResult,
-  selectActiveChallengeId,
-  selectActionLoading,
-} from '../../../../store/loans.selectors';
 import { ILoanDetails } from '../../../models/loan.model';
 import {
   PrepaymentStep,
   PrepaymentCalculationPayload,
   IInitiatePrepaymentRequest,
 } from '../../../models/prepayment.model';
-import { Actions, ofType } from '@ngrx/effects';
+import { LoansStore } from '../../../../store/loans.store';
 
 @Component({
   selector: 'app-prepayment-container',
@@ -35,15 +27,14 @@ import { Actions, ofType } from '@ngrx/effects';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrepaymentContainer implements OnInit {
-  private store = inject(Store);
-  private actions$ = inject(Actions);
+  protected readonly store = inject(LoansStore);
 
   public loan = input.required<ILoanDetails>();
   public close = output<void>();
 
-  public isLoading = this.store.selectSignal(selectActionLoading);
-  public calculationResult = this.store.selectSignal(selectCalculationResult);
-  public activeChallengeId = this.store.selectSignal(selectActiveChallengeId);
+  public isLoading = this.store.actionLoading;
+  public calculationResult = this.store.calculationResult;
+  public activeChallengeId = this.store.activeChallengeId;
 
   public step = signal<PrepaymentStep>('options');
   private pendingPayload: PrepaymentCalculationPayload | null = null;
@@ -59,21 +50,25 @@ export class PrepaymentContainer implements OnInit {
       }
     });
 
-    this.actions$
-      .pipe(ofType(LoansActions.verifyPrepaymentSuccess), takeUntilDestroyed())
-      .subscribe(() => {
+    effect(() => {
+      const id = this.activeChallengeId();
+      const currentStep = this.step();
+      const error = this.store.error();
+
+      if (currentStep === 'otp' && !id && !error) {
         this.close.emit();
-      });
+      }
+    });
   }
 
   public ngOnInit(): void {
-    this.store.dispatch(LoansActions.clearCalculationResult());
+    this.store.clearCalculationResult();
     this.step.set('options');
   }
 
   public onCalculate(payload: PrepaymentCalculationPayload): void {
     this.pendingPayload = payload;
-    this.store.dispatch(LoansActions.calculatePrepayment({ payload }));
+    this.store.calculatePrepayment({ payload });
   }
 
   public onProceedToOtp(): void {
@@ -83,11 +78,9 @@ export class PrepaymentContainer implements OnInit {
 
     if (this.pendingPayload.type === 'full') {
       const calcData = this.calculationResult()?.displayedInfo;
-
       const principalItem = calcData?.find(
         (x) => x.text === 'Remaining principal',
       );
-
       finalAmount = principalItem ? principalItem.amount : 0;
     }
 
@@ -100,15 +93,13 @@ export class PrepaymentContainer implements OnInit {
       paymentAccountId: this.loan().accountId,
     };
 
-    this.store.dispatch(LoansActions.initiatePrepayment({ payload: request }));
+    this.store.initiatePrepayment({ payload: request });
   }
 
   public onVerifyOtp(code: string): void {
     const challengeId = this.activeChallengeId();
     if (challengeId) {
-      this.store.dispatch(
-        LoansActions.verifyPrepayment({ payload: { challengeId, code } }),
-      );
+      this.store.verifyPrepayment({ payload: { challengeId, code } });
     }
   }
 }

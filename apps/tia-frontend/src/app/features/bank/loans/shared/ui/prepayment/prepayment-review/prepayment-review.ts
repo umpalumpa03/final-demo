@@ -3,7 +3,6 @@ import {
   Component,
   input,
   output,
-  signal,
 } from '@angular/core';
 import { IPrepaymentCalcResponse } from '../../../models/prepayment.model';
 import { CommonModule } from '@angular/common';

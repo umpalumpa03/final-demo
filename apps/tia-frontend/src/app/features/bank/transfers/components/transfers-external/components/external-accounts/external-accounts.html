@@ -117,7 +117,12 @@
       variant="default"
       size="default"
       (click)="onContinue()"
-      [isDisabled]="!selectedRecipientAccount() || !selectedSenderAccount() || isLoading() || (isExternalIban() && !recipientNameInput.valid)"
+      [isDisabled]="
+      !selectedSenderAccount() || 
+      isLoading() || 
+      (!selectedRecipientAccount() && !isExternalIban()) || 
+      (isExternalIban() && !recipientNameInput.valid)
+    "
     >
       {{ 'common.buttons.continue' | translate }}
       <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />
