@@ -130,10 +130,6 @@
         grid-template-columns: 1fr 1fr;
         gap: 2.4rem 1.6rem;
 
-        @media (max-width: 600px) {
-            grid-template-columns: 1fr;
-        }
-
         &-item {
             @include display-flex(column);
             gap: 0.4rem;
@@ -154,6 +150,10 @@
                 grid-column: 1 / -1;
                 margin-top: 0.8rem;
             }
+        }
+
+        @media (max-width: 600px) {
+            grid-template-columns: 1fr;
         }
     }
 
