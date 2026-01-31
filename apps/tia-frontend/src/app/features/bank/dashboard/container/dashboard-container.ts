@@ -60,7 +60,6 @@ export class DashboardContainer implements OnInit {
   }
 
   public onToggleVisibility(isVisible: boolean, id: string): void {
-    console.log(`Vaxtangam daahaida widget ${id}`);
     this.myItems.update((items) =>
       items.map((item) =>
         item.id === id ? { ...item, isHidden: !isVisible } : item,

@@ -151,6 +151,10 @@
                 margin-top: 0.8rem;
             }
         }
+
+        @media (max-width: 600px) {
+            grid-template-columns: 1fr;
+        }
     }
 
     &__label {
