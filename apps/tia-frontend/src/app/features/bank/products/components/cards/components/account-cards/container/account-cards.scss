@@ -127,7 +127,7 @@
   }
 
   &__loading {
-    @include flex-center(row, center);
+    @include flex-center(row);
     @include font-inter(400, 1.6rem, 1.5);
     padding: 4rem;
     color: $gray-600;

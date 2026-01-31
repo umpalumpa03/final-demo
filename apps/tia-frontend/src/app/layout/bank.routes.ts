@@ -14,6 +14,7 @@ import { ExchangeRateReducer } from 'apps/tia-frontend/src/app/store/exchange-ra
 import { accountsFeature, accountsReducer } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
 import { ExchangeRatesEffects } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.effects';
 import { AccountsEffects } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.effects';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const bankRoutes: Routes = [
   {
@@ -72,7 +73,8 @@ export const bankRoutes: Routes = [
         path: 'finances',
         providers: [
                   FinancesStore,
-                  FinancesService
+                  FinancesService,
+                  provideCharts(withDefaultRegisterables())
                 ],
         loadComponent: () =>
           import('../features/bank/finances/container/finances-container').then(

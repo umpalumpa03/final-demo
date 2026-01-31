@@ -8,4 +8,5 @@
 <app-notifications-container
   [isModalOpen]="isModalOpen()"
   [notificationEl]="anchorEl()"
+  (closeModal)="closeAndReset()"
 ></app-notifications-container>

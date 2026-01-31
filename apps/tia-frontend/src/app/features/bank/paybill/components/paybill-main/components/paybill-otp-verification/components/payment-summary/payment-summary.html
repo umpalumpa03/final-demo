@@ -1,0 +1,22 @@
+<div class="payment-summary">
+  <h3 class="payment-summary__title">Payment Summary</h3>
+
+  <div class="payment-summary__list">
+    <div class="summary-row">
+      <span class="summary-row__label">Service:</span>
+      <span class="summary-row__value">{{ serviceName() }}</span>
+    </div>
+
+    <div class="summary-row">
+      <span class="summary-row__label">Account:</span>
+      <span class="summary-row__value">{{ accountNumber() }}</span>
+    </div>
+
+    <div class="summary-row summary-row--total">
+      <span class="summary-row__label">Amount:</span>
+      <span class="summary-row__value summary-row__value--price">
+        ${{ amount() }}
+      </span>
+    </div>
+  </div>
+</div>
