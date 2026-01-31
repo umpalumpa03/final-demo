@@ -35,6 +35,12 @@ export interface ILoansState {
   actionLoading: boolean;
   alertMessage: string | null;
   alertType: SimpleAlertType | null;
+  dashboardCounts: {
+    all: number;
+    approved: number;
+    pending: number;
+    declined: number;
+  };
 }
 
 export interface LoanUiState {

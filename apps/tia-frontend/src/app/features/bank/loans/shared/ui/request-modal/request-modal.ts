@@ -6,7 +6,6 @@ import {
   input,
   OnInit,
   output,
-  Signal,
 } from '@angular/core';
 import {
   LOAN_FORM_CONFIG,
@@ -19,12 +18,6 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { IDropdownOption, ILoanRequest } from '../../models/loan-request.model';
 import { Store } from '@ngrx/store';
-import { LoansActions } from '../../../store/loans.actions';
-import {
-  selectGelAccountOptions,
-  selectLoanMonthsOptions,
-  selectPurposeOptions,
-} from '../../../store/loans.selectors';
 import { CommonModule } from '@angular/common';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { getTodayDate } from '../../utils/gettoday.util';

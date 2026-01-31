@@ -6,6 +6,7 @@
         </app-simple-alerts>
     </div>
     }
+
     <main class="main">
         <app-loan-header (requestClick)="isModalOpen.set(true)"></app-loan-header>
 
@@ -30,9 +31,9 @@
         </div>
         }
 
-        @else {
-        <router-outlet></router-outlet>
-        }
+        <div [style.display]="isLoading() ? 'none' : 'block'">
+            <router-outlet></router-outlet>
+        </div>
 
         <app-request-modal [isOpen]="isModalOpen()" (close)="isModalOpen.set(false)">
         </app-request-modal>

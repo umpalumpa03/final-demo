@@ -4,13 +4,8 @@ import {
   inject,
   input,
   output,
-  Signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { LoansActions } from '../../../../store/loans.actions';
-import { selectPrepaymentTypeOptions } from '../../../../store/loans.selectors';
-import { IDropdownOption } from '../../../models/loan-request.model';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { CommonModule } from '@angular/common';

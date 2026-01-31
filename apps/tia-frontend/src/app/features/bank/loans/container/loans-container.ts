@@ -10,8 +10,6 @@ import { RouterModule } from '@angular/router';
 import { RequestModal } from '../shared/ui/request-modal/request-modal';
 import { Store } from '@ngrx/store';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
-import { LoansActions } from '../store/loans.actions';
-import { selectLoansAlert, selectLoansLoading } from '../store/loans.selectors';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 import { LoansStore } from '../store/loans.store';
@@ -41,7 +39,11 @@ export class LoansContainer {
   protected readonly alertConfig = this.store.alert;
 
   public ngOnInit(): void {
-    this.store.loadLoans();
     this.globalStore.dispatch(AccountsActions.loadAccounts());
+
+    this.store.loadMonths();
+    this.store.loadPurposes();
+
+    this.store.loadCounts();
   }
 }

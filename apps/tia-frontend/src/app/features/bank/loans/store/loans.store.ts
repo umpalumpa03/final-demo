@@ -40,15 +40,7 @@ export const LoansStore = signalStore(
         });
       }),
 
-      loanCounts: computed(() => {
-        const loans = store.loans();
-        return {
-          all: loans.length,
-          approved: loans.filter((l) => l.status === 2).length,
-          pending: loans.filter((l) => l.status === 1).length,
-          declined: loans.filter((l) => l.status === 3).length,
-        };
-      }),
+      loanCounts: computed(() => store.dashboardCounts()),
 
       loanMonthsOptions: computed(() =>
         (store.months() || []).map((m) => ({
@@ -91,7 +83,6 @@ export const LoansStore = signalStore(
     }),
   })),
 
-  // --- Methods Block 1: Base Methods (Independent) ---
   withMethods((store) => {
     const loansService = inject(LoansService);
 
@@ -109,7 +100,6 @@ export const LoansStore = signalStore(
         patchState(store, { alertMessage: null, alertType: null });
       },
 
-      // Internal helper for auto-hiding
       _triggerAutoHide: rxMethod<void>(
         pipe(
           delay(3000),
@@ -139,6 +129,24 @@ export const LoansStore = signalStore(
               }),
             );
           }),
+        ),
+      ),
+      loadCounts: rxMethod<void>(
+        pipe(
+          switchMap(() =>
+            loansService.getAllLoans().pipe(
+              tap((loans) => {
+                const counts = {
+                  all: loans.length,
+                  approved: loans.filter((l) => l.status === 2).length,
+                  pending: loans.filter((l) => l.status === 1).length,
+                  declined: loans.filter((l) => l.status === 3).length,
+                };
+                patchState(store, { dashboardCounts: counts });
+              }),
+              catchError(() => EMPTY),
+            ),
+          ),
         ),
       ),
 
@@ -273,7 +281,6 @@ export const LoansStore = signalStore(
     };
   }),
 
-  // --- Methods Block 2: Dependent Methods (Use store.methodName) ---
   withMethods((store) => {
     const loansService = inject(LoansService);
     const actions$ = inject(Actions);
@@ -281,7 +288,7 @@ export const LoansStore = signalStore(
     return {
       showAlert(message: string, alertType: any) {
         patchState(store, { alertMessage: message, alertType });
-        store._triggerAutoHide(); // Now safe to call
+        store._triggerAutoHide();
       },
 
       initiatePrepayment: rxMethod<{ payload: any }>(
@@ -297,7 +304,7 @@ export const LoansStore = signalStore(
                     alertMessage: 'OTP sent to your registered mobile number',
                     alertType: 'success',
                   });
-                  store._triggerAutoHide(); // Now safe to call
+                  store._triggerAutoHide();
                 } else {
                   patchState(store, {
                     error: 'No challenge ID returned',
@@ -328,7 +335,9 @@ export const LoansStore = signalStore(
                   calculationResult: null,
                   actionLoading: false,
                 });
-                store.loadLoans(); // Now safe to call
+                store.loadLoans();
+
+                store.loadCounts();
               }),
               catchError((error) => {
                 patchState(store, {
@@ -347,7 +356,7 @@ export const LoansStore = signalStore(
           switchMap(() =>
             actions$.pipe(
               ofType(LoansCreateActions.requestLoanSuccess),
-              tap(() => store.loadLoans()), // Now safe to call
+              tap(() => store.loadLoans()),
             ),
           ),
         ),
@@ -355,7 +364,6 @@ export const LoansStore = signalStore(
     };
   }),
 
-  // --- Hooks ---
   withHooks({
     onInit(store) {
       store._listenToGlobalCreateSuccess();
