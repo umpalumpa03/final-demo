@@ -11,7 +11,6 @@ import { Store } from '@ngrx/store';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { shareReplay, tap } from 'rxjs/operators';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { AccountsListComponent } from '../components/accounts-list/accounts-list';
 import { CreateAccountComponent } from '../components/create-account/components/create-account';
@@ -74,11 +73,13 @@ export class Accounts implements OnInit {
   protected readonly isCreatingAccount$ = this.store.select(selectIsCreating);
   protected readonly createError$ = this.store.select(selectCreateError);
 
-  protected readonly accountsGroupedSignal = toSignal(this.accountsGrouped$);
-  protected readonly isCreatingAccountSignal = toSignal(
-    this.isCreatingAccount$,
+  protected readonly accountsGroupedSignal = this.store.selectSignal(
+    selectAccountsGrouped,
   );
-  protected readonly createErrorSignal = toSignal(this.createError$);
+  protected readonly isCreatingAccountSignal =
+    this.store.selectSignal(selectIsCreating);
+  protected readonly createErrorSignal =
+    this.store.selectSignal(selectCreateError);
 
   protected readonly accountSectionsData = signal(
     getAccountSections(this.translate),
