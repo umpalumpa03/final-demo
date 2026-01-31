@@ -2,10 +2,16 @@
     @if(!loadingState()) {
         <app-registration-form (submitRegistrationForm)="onSignUp($event)"></app-registration-form>
         
-        <p class="sign-up__switch">Already have an account? <span class="sign-up__link" [routerLink]="['/auth/sign-in']">Sign in</span></p>
+        <p class="sign-up__footer">
+            Already have an account? 
+            <span class="sign-up__link" [routerLink]="['/auth/sign-in']">Sign in</span>
+        </p>
         
-        <h2>{{errorMessage()}}</h2>
+        @if (errorMessage()) {
+           <app-alert-types-with-icons alertType="error" [alertMessage]="errorMessage()"> </app-alert-types-with-icons> 
+        }
+        
     } @else {
-        <app-spinner size = '4rem'></app-spinner>
+            <app-spinner size='4rem'></app-spinner>
     }
 </section>
