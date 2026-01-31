@@ -28,6 +28,7 @@
       (buttonClick)="onWidgetRefresh(item)"
       (add)="onWidgetAdd(item)"
       (paginationChange)="onPaginationChange($event)"
+      [paginationVariants]="[5,10,15,20]"
       appDragItem
     >
       @if (!($index === 0 && item.isHidden)) {

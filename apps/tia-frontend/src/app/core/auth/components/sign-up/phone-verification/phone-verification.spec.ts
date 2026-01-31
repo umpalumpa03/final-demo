@@ -1,94 +1,86 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { of, throwError } from 'rxjs';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { PhoneVerification } from './phone-verification';
 import { AuthService } from '../../../services/auth.service';
-import { TokenService } from '../../../services/token.service';
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideRouter, Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
-import { vi } from 'vitest';
 
 describe('PhoneVerification', () => {
   let component: PhoneVerification;
-  let fixture: ComponentFixture<PhoneVerification>;
-  let authService: AuthService;
-  let tokenService: TokenService;
-  let router: Router;
+  let authServiceMock: any;
+  let routerMock: any;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [PhoneVerification],
+  beforeEach(() => {
+    authServiceMock = {
+      sendPhoneVerificationCode: vi.fn(),
+      setChellangeId: vi.fn(),
+    };
+
+    routerMock = {
+      navigate: vi.fn(),
+    };
+
+    TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule, PhoneVerification],
       providers: [
-        {
-          provide: AuthService,
-          useValue: {
-            sendVerificationCode: () => of({ challengeId: 'mock-id' }),
-          },
-        },
-        {
-          provide: TokenService,
-          useValue: {
-            setChallengeId: () => {},
-            getSignUpToken: 'fake-token',
-          },
-        },
-        provideRouter([]),
-        provideHttpClient(),
-        provideHttpClientTesting(),
+        { provide: AuthService, useValue: authServiceMock },
+        { provide: Router, useValue: routerMock },
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PhoneVerification);
-    component = fixture.componentInstance;
-    
-    authService = TestBed.inject(AuthService);
-    tokenService = TestBed.inject(TokenService);
-    router = TestBed.inject(Router);
-    
-    fixture.detectChanges();
+    component = TestBed.createComponent(PhoneVerification).componentInstance;
   });
 
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call authService.sendVerificationCode on submit', () => {
-    const spy = vi.spyOn(authService, 'sendVerificationCode');
-    component.setPhoneNumberForm.controls.phoneNumber.setValue('123456789');
-
-    component.submit();
-
-    expect(spy).toHaveBeenCalledWith('123456789');
+  it('should initialize with an empty phone number and invalid form', () => {
+    expect(component.setPhoneNumberForm.getRawValue().phoneNumber).toBe('');
+    expect(component.setPhoneNumberForm.valid).toBe(false);
   });
 
-  it('should store challengeId and navigate on success', () => {
-    const navSpy = vi.spyOn(router, 'navigate');
-    const tokenSpy = vi.spyOn(tokenService, 'setChallengeId');
-    
-    vi.spyOn(authService, 'sendVerificationCode').mockReturnValue(
-      of({ challengeId: 'new-challenge-123' } as any)
-    );
-
-    component.setPhoneNumberForm.controls.phoneNumber.setValue('5551234');
-    component.submit();
-
-    expect(tokenSpy).toHaveBeenCalledWith('new-challenge-123');
-    expect(navSpy).toHaveBeenCalledWith(['/auth/otp']);
+  it('should be valid when a phone number is entered', () => {
+    component.setPhoneNumberForm.controls.phoneNumber.setValue('555123456');
+    expect(component.setPhoneNumberForm.valid).toBe(true);
   });
 
-  it('should handle error when sendVerificationCode fails', () => {
-    const mockError = {
-      error: {
-        message: ['Invalid phone number format'],
-      },
-    };
+  describe('submit()', () => {
+    it('should navigate and set challengeId on successful API call', () => {
+      const mockResponse = { challengeId: 'mock-challenge-123' };
+      authServiceMock.sendPhoneVerificationCode.mockReturnValue(of(mockResponse));
+      
+      component.setPhoneNumberForm.controls.phoneNumber.setValue('555123456');
+      component.submit();
 
-    vi.spyOn(authService, 'sendVerificationCode')
-      .mockReturnValue(throwError(() => mockError));
+      expect(authServiceMock.sendPhoneVerificationCode).toHaveBeenCalledWith('555123456');
+      expect(authServiceMock.setChellangeId).toHaveBeenCalledWith('mock-challenge-123');
+      expect(component.errorMessage()).toBe('');
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/auth/verify-otp-register']);
+    });
 
-    component.setPhoneNumberForm.controls.phoneNumber.setValue('invalid-number');
-    component.submit();
+    it('should set errorMessage signal when API call fails', () => {
+      const errorResponse = {
+        error: { message: 'Invalid phone number format' }
+      };
+      authServiceMock.sendPhoneVerificationCode.mockReturnValue(throwError(() => errorResponse));
 
-    expect(component.errorMessage()).toBe('Invalid phone number format');
+      component.setPhoneNumberForm.controls.phoneNumber.setValue('wrong-number');
+      component.submit();
+
+      expect(authServiceMock.sendPhoneVerificationCode).toHaveBeenCalled();
+      expect(component.errorMessage()).toBe('Invalid phone number format');
+      expect(routerMock.navigate).not.toHaveBeenCalled();
+    });
+
+    it('should set error message from backend even if message property is nested', () => {
+      const errorResponse = { error: { message: 'User already exists' } };
+      authServiceMock.sendPhoneVerificationCode.mockReturnValue(throwError(() => errorResponse));
+
+      component.submit();
+
+      expect(component.errorMessage()).toBe('User already exists');
+    });
   });
 });

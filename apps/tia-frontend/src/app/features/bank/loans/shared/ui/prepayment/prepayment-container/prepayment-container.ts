@@ -20,7 +20,7 @@ import {
   selectActiveChallengeId,
   selectActionLoading,
 } from '../../../../store/loans.selectors';
-import { ILoan } from '../../../models/loan.model';
+import { ILoanDetails } from '../../../models/loan.model';
 import {
   PrepaymentStep,
   PrepaymentCalculationPayload,
@@ -38,7 +38,7 @@ export class PrepaymentContainer implements OnInit {
   private store = inject(Store);
   private actions$ = inject(Actions);
 
-  public loan = input.required<ILoan>();
+  public loan = input.required<ILoanDetails>();
   public close = output<void>();
 
   public isLoading = this.store.selectSignal(selectActionLoading);
@@ -83,11 +83,12 @@ export class PrepaymentContainer implements OnInit {
 
     if (this.pendingPayload.type === 'full') {
       const calcData = this.calculationResult()?.displayedInfo;
-      const payoffItem = calcData?.find(
-        (x) =>
-          x.text === 'Total payoff amount' || x.text === 'Prepayment amount',
+
+      const principalItem = calcData?.find(
+        (x) => x.text === 'Remaining principal',
       );
-      finalAmount = payoffItem ? payoffItem.amount : 0;
+
+      finalAmount = principalItem ? principalItem.amount : 0;
     }
 
     const request: IInitiatePrepaymentRequest = {

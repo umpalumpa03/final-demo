@@ -1,88 +1,113 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { SignUp } from './sign-up';
 import { AuthService } from '../../services/auth.service';
 import { TokenService } from '../../services/token.service';
+import { IRegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/models/contact-forms.model';
 import { of, throwError } from 'rxjs';
-import { vi } from 'vitest';
-
-describe('SignUp (Vitest)', () => {
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+ 
+describe('SignUp', () => {
   let component: SignUp;
-  let fixture: ComponentFixture<SignUp>;
-  let authService: AuthService;
-  let tokenService: TokenService;
-  let navigateSpy: ReturnType<typeof vi.fn>;
-
+  
+  const validForm: IRegistrationForm = {
+    email: 'test@example.com',
+    password: 'Password123',
+    username: 'testuser',
+    firstName: 'Test'
+  };
+ 
+  const authServiceMock = {
+    signUpUser: vi.fn()
+  };
+ 
+  const tokenServiceMock = {
+    setSignUpToken: vi.fn()
+  };
+ 
+  const routerMock = {
+    navigate: vi.fn()
+  };
+  
   beforeEach(async () => {
-    const mockAuthService = {
-      signUpUser: vi.fn(),
-    };
-
-    const mockTokenService = {
-      setSignUpToken: vi.fn(),
-    };
-
+    vi.clearAllMocks();
+ 
     await TestBed.configureTestingModule({
-      imports: [SignUp],
       providers: [
-        provideRouter([]),
-        { provide: AuthService, useValue: mockAuthService },
-        { provide: TokenService, useValue: mockTokenService },
+        SignUp,
+        { provide: AuthService, useValue: authServiceMock },
+        { provide: TokenService, useValue: tokenServiceMock },
+        { provide: Router, useValue: routerMock },
       ],
     }).compileComponents();
-
-    fixture = TestBed.createComponent(SignUp);
-    component = fixture.componentInstance;
-    authService = TestBed.inject(AuthService);
-    tokenService = TestBed.inject(TokenService);
-
-    const router = TestBed.inject(Router) as any;
-    navigateSpy = vi.fn();
-    router.navigate = navigateSpy;
-
-    fixture.detectChanges();
+ 
+    component = TestBed.inject(SignUp);
   });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should call signUpService and handle success', () => {
-    const mockResponse = { signup_token: '12345' };
-    authService.signUpUser = vi.fn().mockReturnValue(of(mockResponse));
-
-    component.onSignUp({ email: 'test@example.com', password: 'password' } as any);
-
-    expect(authService.signUpUser).toHaveBeenCalled();
+ 
+  it('should initialize loadingState to false', () => {
+    component.ngOnInit();
     expect(component.loadingState()).toBe(false);
-    expect(component.errorMessage()).toBe('');
-    expect(navigateSpy).toHaveBeenCalledWith(['/auth/phone']);
   });
-
-  it('should handle error with array message', () => {
-    const error = { error: { message: ['email must be an email'] } };
-    authService.signUpUser = vi.fn().mockReturnValue(throwError(() => error));
-
-    component.onSignUp({ email: 'invalid', password: 'password' } as any);
-
+ 
+  it('should handle successful signup and navigation', () => {
+    const mockResponse = { signup_token: 'token_abc_123' };
+    authServiceMock.signUpUser.mockReturnValue(of(mockResponse));
+ 
+    component.onSignUp(validForm);
+ 
+    expect(tokenServiceMock.setSignUpToken).toHaveBeenCalledWith('token_abc_123');
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/auth/phone']);
+    expect(component.errorMessage()).toBe('');
+    expect(component.loadingState()).toBe(false);
+  });
+ 
+  it('should map "email must be an email" error array', () => {
+    const errorResponse = {
+      error: { message: ['email must be an email'] }
+    };
+    authServiceMock.signUpUser.mockReturnValue(throwError(() => errorResponse));
+ 
+    component.onSignUp(validForm);
+ 
     expect(component.errorMessage()).toBe('Invalid Email');
   });
-
-  it('should handle error with string message', () => {
-    const error = { error: { message: 'Some error occurred' } };
-    authService.signUpUser = vi.fn().mockReturnValue(throwError(() => error));
-
-    component.onSignUp({ email: 'test@example.com', password: 'password' } as any);
-
-    expect(component.errorMessage()).toBe('Some error occurred');
+ 
+  it('should map first element of general error array', () => {
+    const errorResponse = {
+      error: { message: ['User already exists', 'Extra error'] }
+    };
+    authServiceMock.signUpUser.mockReturnValue(throwError(() => errorResponse));
+ 
+    component.onSignUp(validForm);
+ 
+    expect(component.errorMessage()).toBe('User already exists');
   });
-
-  it('should handle unexpected errors', () => {
-    const error = { error: {} };
-    authService.signUpUser = vi.fn().mockReturnValue(throwError(() => error));
-
-    component.onSignUp({ email: 'test@example.com', password: 'password' } as any);
-
+ 
+  it('should handle string error messages', () => {
+    const errorResponse = {
+      error: { message: 'Database Connection Error' }
+    };
+    authServiceMock.signUpUser.mockReturnValue(throwError(() => errorResponse));
+ 
+    component.onSignUp(validForm);
+ 
+    expect(component.errorMessage()).toBe('Database Connection Error');
+  });
+ 
+  it('should handle unknown error objects', () => {
+    const errorResponse = { error: { message: null } };
+    authServiceMock.signUpUser.mockReturnValue(throwError(() => errorResponse));
+ 
+    component.onSignUp(validForm);
+ 
     expect(component.errorMessage()).toBe('An unexpected error occurred');
+  });
+ 
+  it('should stop loading on error', () => {
+    authServiceMock.signUpUser.mockReturnValue(throwError(() => new Error('Generic Error')));
+ 
+    component.onSignUp(validForm);
+ 
+    expect(component.loadingState()).toBe(false);
   });
 });

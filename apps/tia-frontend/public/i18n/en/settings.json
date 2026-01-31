@@ -59,6 +59,14 @@
     "security": {
         "title": "Security Settings",
         "changePassword": "Change Password",
+        "changePasswordSubtitle": "Update your password to keep your account secure",
+        "currentPassword": "Current Password",
+        "currentPasswordPlaceholder": "Enter current password",
+        "newPassword": "New Password",
+        "newPasswordPlaceholder": "Enter new password",
+        "confirmNewPassword": "Confirm New Password",
+        "confirmNewPasswordPlaceholder": "Confirm new password",
+        "updatePassword": "Update Password",
         "twoFactorAuth": "Two-Factor Authentication"
     },
     "user-management": {

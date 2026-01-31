@@ -1,4 +1,11 @@
 <div class="global-bank-wrapper">
+    @let alert = alertConfig();
+    @if (alert) {
+    <div class="loans-alert-positioner">
+        <app-simple-alerts [alertMessage]="alert.message">
+        </app-simple-alerts>
+    </div>
+    }
     <main class="main">
         <app-loan-header (requestClick)="isModalOpen.set(true)"></app-loan-header>
 

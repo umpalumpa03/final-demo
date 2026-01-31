@@ -1,10 +1,58 @@
-<p>widget-accounts works!</p>
+@if (isLoading$ | async) {
+  <div class="widget-loading">
+    <app-route-loader
+      variant="full-page"
+      text="Loading Accounts...">
+    </app-route-loader>
+  </div>
+}
 
-<p>widget-accounts works!</p>
+@else if (error$ | async) {
+  <div class="widget-error">
+    <app-error-states
+      variant="failed"
+      header="Failed to load"
+      message="Could not load accounts"
+      buttonMessage="Retry"
+      (buttonClick)="retryLoad()"
+      [border]="false">
+    </app-error-states>
+  </div>
+}
 
-<p>widget-accounts works!</p>
-<p>widget-accounts works!</p>
-<p>widget-accounts works!</p>
-<p>widget-accounts works!</p>
-<p>widget-accounts works!</p>
-<p>widget-accounts works!</p>
+@else if (isEmpty$ | async) {
+  <div class="widget-error">
+    <app-error-states
+      variant="not-found"
+      header="Empty"
+      message="Could not find any accounts"
+      [showButton]="false"
+      [border]="false">
+    </app-error-states>
+  </div>
+}
+<div class = 'accounts'>
+  @for (account of accounts$ | async; track account.id) {
+    <div class = 'account-card'>
+      <div class = 'account-card__header'>
+        <div class = 'account-card__header-top'>
+          {{ account.friendlyName }}
+          <span class = 'account-card__header-top--iban'>
+            ****{{ account.iban.slice(-4) }}
+          </span>
+        </div>
+        <div class = 'account-card__header-bottom'>
+
+        </div>
+      </div>
+
+      <div class = 'account-card__balance'>
+        {{ account.balance | currency:'USD':'symbol':'1.2-2' }}
+      </div>
+
+    </div>
+  }
+</div>
+
+
+

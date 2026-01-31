@@ -1,7 +1,35 @@
 <header class="header">
-    <div class="header__info">
-        <h2 class="header__info__title">{{ page() }}</h2>
-        <p class="header__info__count">{{ messageCount() }}</p>
-        <p class="header__info__count">{{ 'messaging.compose.title' | translate }}</p>
+  <div class="header__info">
+    <h2 class="header__info__title">{{ page() }}</h2>
+    <p class="header__info__count">{{ messageCount() }}</p>
+    <p class="header__info__count">
+      {{ 'messaging.compose.title' | translate }}
+    </p>
+  </div>
+  @if(!isSent()){
+  <div class="header__action">
+    <div class="header__action">
+      @if(showBulkActions()){
+      <app-button
+        variant="destructive"
+        icon="trash-icon.svg"
+        (click)="bulkDelete.emit()"
+      ></app-button>
+      @if(!isDraft()){
+      <app-button
+        variant="default"
+        icon="mail-read.svg"
+        (click)="bulkRead.emit()"
+      ></app-button>
+      } }
     </div>
+    <div class="header__checkbox">
+      <lib-checkboxes
+        [checked]="isAllSelected() ?? false"
+        (checkedChange)="toggleSelectAll.emit($event)"
+      ></lib-checkboxes>
+      <p>Select All</p>
+    </div>
+  </div>
+  }
 </header>

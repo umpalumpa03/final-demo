@@ -3,11 +3,18 @@ import {
   Component,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { shareReplay } from 'rxjs/operators';
 import { AccountsListComponent } from '../components/accounts-list/accounts-list';
-import { CreateAccountRequest } from '../../../../../../shared/models/accounts/accounts.model';
+import { CreateAccountComponent } from '../components/create-account/components/create-account';
+import {
+  CreateAccountRequest,
+  AccountType,
+} from '../../../../../../shared/models/accounts/accounts.model';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import {
   selectAccountsGrouped,
@@ -20,16 +27,19 @@ import {
   selectUpdateFriendlyNameError,
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { accountSections } from '../config/accounts.config';
+import { AccountsService } from 'apps/tia-frontend/src/app/shared/services/accounts/accounts.service';
 
 @Component({
   selector: 'app-accounts-page',
-  imports: [CommonModule, AccountsListComponent],
+  imports: [CommonModule, AccountsListComponent, CreateAccountComponent],
   templateUrl: './accounts.html',
   styleUrl: './accounts.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Accounts implements OnInit {
   private readonly store = inject(Store);
+  private readonly fb = inject(FormBuilder);
+  private readonly accountsService = inject(AccountsService);
 
   protected readonly accountsGrouped$ = this.store.select(
     selectAccountsGrouped,
@@ -49,6 +59,20 @@ export class Accounts implements OnInit {
   );
 
   protected readonly accountSectionsData = accountSections;
+  protected readonly accountTypeValues = Object.values(AccountType);
+  protected readonly currencyValues = this.accountsService
+    .getCurrencies()
+    .pipe(shareReplay(1));
+
+  protected accountForm = signal<FormGroup>(this.createAccountForm());
+
+  private createAccountForm(): FormGroup {
+    return this.fb.group({
+      friendlyName: ['', Validators.minLength(3)],
+      type: ['', Validators.required],
+      currency: ['', Validators.required],
+    });
+  }
 
   public ngOnInit(): void {
     this.store.dispatch(AccountsActions.loadAccounts());
@@ -63,7 +87,10 @@ export class Accounts implements OnInit {
   }
 
   public handleCreateAccount(request: CreateAccountRequest): void {
-    this.store.dispatch(AccountsActions.createAccount({ request }));
+    if (this.accountForm().valid) {
+      this.store.dispatch(AccountsActions.createAccount({ request }));
+      this.accountForm.set(this.createAccountForm());
+    }
   }
 
   public handleTransfer(accountId: string): void {

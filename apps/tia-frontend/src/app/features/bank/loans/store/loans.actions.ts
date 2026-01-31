@@ -1,5 +1,9 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { ILoan, LoanMonthsResponse } from '../shared/models/loan.model';
+import {
+  ILoan,
+  ILoanDetails,
+  LoanMonthsResponse,
+} from '../shared/models/loan.model';
 import { LoanPurpose } from '../shared/models/loan-request.model';
 import {
   IInitiatePrepaymentRequest,
@@ -8,6 +12,7 @@ import {
   PrepaymentCalculationPayload,
   PrepaymentOption,
 } from '../shared/models/prepayment.model';
+import { SimpleAlertType } from '@tia/shared/lib/alerts/shared/models/alert.models';
 
 export const LoansActions = createActionGroup({
   source: 'Loans API',
@@ -15,6 +20,11 @@ export const LoansActions = createActionGroup({
     'Load Loans': emptyProps(),
     'Load Loans Success': props<{ loans: ILoan[] }>(),
     'Load Loans Failure': props<{ error: string }>(),
+
+    'Load Loan Details': props<{ id: string }>(),
+    'Load Loan Details Success': props<{ details: ILoanDetails }>(),
+    'Load Loan Details Failure': props<{ error: string }>(),
+    'Clear Loan Details': emptyProps(),
 
     'Set Filter': props<{ status: number | null }>(),
 
@@ -49,7 +59,10 @@ export const LoansActions = createActionGroup({
     'Verify Prepayment Success': emptyProps(),
     'Verify Prepayment Failure': props<{ error: string }>(),
 
-    'Show Alert': props<{ message: string }>(),
+    'Show Alert': props<{
+      message: string;
+      alertType: SimpleAlertType;
+    }>(),
     'Start Closing Alert': emptyProps(),
     'Hide Alert': emptyProps(),
   },

@@ -36,7 +36,7 @@ describe('AccountsService', () => {
       (request) =>
         request.url === apiUrl &&
         request.params.get('ignoreHiddens') === 'true' &&
-        request.params.get('status') === 'active'
+        request.params.get('status') === 'active',
     );
     expect(req.request.method).toBe('GET');
     req.flush([]);
@@ -61,7 +61,7 @@ describe('AccountsService', () => {
       currency: 'USD',
     };
     service.createAccount(createRequest).subscribe();
-    let req = httpMock.expectOne(apiUrl);
+    let req = httpMock.expectOne(`${apiUrl}/create-account-request`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(createRequest);
     req.flush({
