@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
 import { forgotPasswordSegments } from '../forgot-password.routes';
+import { IVerified } from '../../../models/otp-verification.models';
 
 @Component({
   selector: 'app-forgot-password-verify',
@@ -25,7 +26,7 @@ export class ForgotPasswordVerify implements OnInit {
     }
   }
 
-  public verifyResetOtp(event: { isCalled: boolean; otp: string | null }) {
+  public verifyResetOtp(event: IVerified) {
     if (event.isCalled) {
       this.authService.verifyForgotPasswordOtp(event.otp!).subscribe();
     }

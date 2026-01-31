@@ -1,9 +1,7 @@
 <div class="otp-verification">
-  @if (showIcon()) {
   <div class="otp-verification__icon" aria-hidden="true">
     <img [src]="iconUrl()" />
   </div>
-  }
   <h2 class="otp-verification__title">{{ title() }}</h2>
   <p class="otp-verification__subtext">{{ subText() }}</p>
 
@@ -11,7 +9,6 @@
   <form class="auth-form" [formGroup]="otpForm" (ngSubmit)="onSubmit()">
     @if(timerType() === 'otp'){
     <div class="otp-field">
-      <label class="otp-label">Enter OTP Code</label>
       <lib-otp formControlName="code" [config]="otpConfig()"></lib-otp>
     </div>
     } @else {
@@ -27,12 +24,7 @@
     }
 
     <div class="auth-form__actions">
-      <app-button
-        type="submit"
-        size="large"
-        [fullWidth]="true"
-        [isLoading]="isSubmitting()"
-      >
+      <app-button type="submit" size="large" [fullWidth]="true">
         {{ submitBtnName() }}
       </app-button>
     </div>
@@ -55,15 +47,18 @@
         class="timer-compact__resend"
         [class.timer-compact__resend--disabled]="countdown() > 0"
       >
-        <span class="timer-compact__resend-text">{{ resendText() }}</span>
+        <span class="timer-compact__resend-text">Didn't receive the code?</span>
         <span class="timer-compact__link" (click)="onResend()"> Resend </span>
       </div>
       }
     </div>
     @if (backLink()) {
-    <a class="otp-verification__back" [routerLink]="backLink()">
-      {{ backLinkText() }}
-    </a>
+    <app-button
+      [fullWidth]="true"
+      class="otp-verification__back"
+      [routerLink]="backLink()"
+      >{{ backLinkText() }}</app-button
+    >
     }
   </form>
   } @else {

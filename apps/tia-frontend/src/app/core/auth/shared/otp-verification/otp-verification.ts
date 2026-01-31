@@ -14,10 +14,6 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { Otp } from '@tia/shared/lib/forms/otp/otp';
 import {
-  OtpVerificationType,
-  getOtpVerificationConfig,
-} from './models/otp-verification.model';
-import {
   interval,
   Subject,
   Subscription,
@@ -26,11 +22,23 @@ import {
   tap,
 } from 'rxjs';
 import { TimerType } from '../../models/auth.models';
-import { TextInput } from "@tia/shared/lib/forms/input-field/text-input";
+import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
+import {
+  IVerified,
+  OtpVerificationType,
+} from '../../models/otp-verification.models';
+import { getOtpVerificationConfig } from '../../config/otp-verification.config';
 
 @Component({
   selector: 'app-otp-verification',
-  imports: [ButtonComponent, ReactiveFormsModule, Spinner, Otp, RouterLink, TextInput],
+  imports: [
+    ButtonComponent,
+    ReactiveFormsModule,
+    Spinner,
+    Otp,
+    RouterLink,
+    TextInput,
+  ],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,24 +48,20 @@ export class OtpVerification {
   public type = input.required<OtpVerificationType>();
   public timeLimit = input(1);
   public timerType = input<TimerType>('phone');
-  public isVerifyCalled = output<{ isCalled: boolean; otp: string | null }>();
+  public isVerifyCalled = output<IVerified>();
   public isResendCalled = output<boolean>();
 
   public config = computed(() => getOtpVerificationConfig(this.type()));
 
   public isLoading = signal(false);
-  public isSubmitting = signal(false);
   public submitError = signal<string | null>(null);
-  public otpConfig = signal({ length: 4 });
-  public phoneConfig = signal({ label: "phone" });
+  public otpConfig = signal({ length: 4, label: 'Verification Code' });
+  public phoneConfig = signal({ label: 'phone' });
 
-  public showIcon = computed(() => this.config().showIcon);
   public iconUrl = computed(() => this.config().iconUrl);
   public title = computed(() => this.config().title);
   public subText = computed(() => this.config().subText);
   public submitBtnName = computed(() => this.config().submitBtnName);
-  public resendText = computed(() => this.config().resendText);
-  public resendLinkText = computed(() => this.config().resendLinkText);
   public backLink = computed(() => this.config().backLink);
   public backLinkText = computed(() => this.config().backLinkText);
 
@@ -66,16 +70,10 @@ export class OtpVerification {
   public maxTime = computed(() => {
     const limit = Math.abs(Number(this.timeLimit()));
 
-    return limit * 6;
+    return limit * 60;
   });
-
   public countdown = signal<number>(0);
   private timer$ = interval(1000);
-
-  public isResendActive = signal<boolean>(false);
-
-  public timerFinished = output<boolean>();
-  public resendClicked = output<void>();
 
   public otpForm = this.fb.group({
     code: ['', Validators.required],
@@ -90,12 +88,12 @@ export class OtpVerification {
     });
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.countdown.set(this.maxTime());
     this.startTimer();
   }
 
-  private startTimer() {
+  private startTimer(): void {
     this.timerSubscription = this.timer$
       .pipe(
         takeUntil(this.destroy$),
@@ -128,7 +126,7 @@ export class OtpVerification {
     this.startTimer();
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
     this.timerSubscription?.unsubscribe();

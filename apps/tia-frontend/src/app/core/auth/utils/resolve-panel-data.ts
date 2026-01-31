@@ -1,5 +1,5 @@
+import { AUTH_SIDE_PANEL_DATA } from '../config/inputs.config';
 import { IFeature } from '../models/auth.models';
-import { AUTH_SIDE_PANEL_DATA } from '../models/input-config.models';
 import { Routes } from '../models/tokens.model';
 import type { WritableSignal } from '@angular/core';
 
