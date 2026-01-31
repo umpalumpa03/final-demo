@@ -4,8 +4,8 @@
     </lib-loan-card>
     } @empty {
     <app-error-states variant="not-found" [header]="'loans.empty.pending.title' | translate"
-        [message]="'loans.empty.pending.message' | translate" [border]="false" width="100%" height="30rem"
-        (buttonClick)="navigateToAllLoans()">
+        [message]="'loans.empty.pending.message' | translate" [buttonMessage]="'loans.empty.pending.button' | translate"
+        [border]="false" width="100%" height="50rem" (buttonClick)="navigateToAllLoans()">
     </app-error-states>
     }
 </div>
