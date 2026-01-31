@@ -3,8 +3,9 @@
     <lib-loan-card [loan]="loan" [variant]="'colored'" (rename)="onRenameLoan($event)">
     </lib-loan-card>
     } @empty {
-    <div class="empty-state">
-        <p>No approved loans found.</p>
-    </div>
+    <app-error-states variant="not-found" [header]="'loans.empty.pending.title' | translate"
+        [message]="'loans.empty.pending.message' | translate" [border]="false" width="100%" height="30rem"
+        (buttonClick)="navigateToAllLoans()">
+    </app-error-states>
     }
 </div>

@@ -1,32 +1,33 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { LoanCard } from '../../../shared/ui/loan-card/loan-card';
-import { Store } from '@ngrx/store';
-import { LoansActions } from '../../../store/loans.actions';
-import { selectFilteredLoans } from '../../../store/loans.selectors';
-import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+import { LoansStore } from '../../../store/loans.store';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-pending-loans',
-  imports: [CommonModule, LoanCard],
+  imports: [CommonModule, LoanCard, ErrorStates, TranslatePipe],
   templateUrl: './pending-loans.html',
   styleUrl: './pending-loans.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PendingLoans {
-  private store = inject(Store);
+  protected readonly store = inject(LoansStore);
+  private readonly router = inject(Router);
 
-  protected readonly pendingLoans = this.store.selectSignal(
-    selectFilteredLoans(1),
-  );
+  protected readonly pendingLoans = this.store.loansWithAccountInfo;
 
   public ngOnInit(): void {
-    this.store.dispatch(AccountsActions.loadAccounts());
+    this.store.loadLoans(1);
   }
 
   public onRenameLoan(event: { id: string; name: string }): void {
-    this.store.dispatch(
-      LoansActions.renameLoan({ id: event.id, name: event.name }),
-    );
+    this.store.renameLoan({ id: event.id, name: event.name });
+  }
+
+  public navigateToAllLoans(): void {
+    this.router.navigate(['/loans/all']);
   }
 }

@@ -4,13 +4,8 @@ import {
   inject,
   input,
   output,
-  Signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { LoansActions } from '../../../../store/loans.actions';
-import { selectPrepaymentTypeOptions } from '../../../../store/loans.selectors';
-import { IDropdownOption } from '../../../models/loan-request.model';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { CommonModule } from '@angular/common';
@@ -26,6 +21,8 @@ import { PrepaymentCalculationPayload } from '../../../models/prepayment.model';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { startWith, map } from 'rxjs';
+import { translateConfig } from '../../../utils/config-translator.util';
+import { LoansStore } from '../../../../store/loans.store';
 
 @Component({
   selector: 'app-prepayment-option-step',
@@ -43,7 +40,7 @@ import { startWith, map } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrepaymentOptionStep {
-  private readonly store = inject(Store);
+  private readonly store = inject(LoansStore);
   private readonly fb = inject(FormBuilder);
   private readonly translate = inject(TranslateService);
 
@@ -53,15 +50,22 @@ export class PrepaymentOptionStep {
   public readonly cancel = output<void>();
   public readonly calculate = output<PrepaymentCalculationPayload>();
 
-  protected readonly typeOptions: Signal<IDropdownOption[]> =
-    this.store.selectSignal(selectPrepaymentTypeOptions);
+  protected readonly typeOptions = this.store.prepaymentTypeOptions;
 
-  protected readonly config = toSignal(
+  protected readonly cfg = toSignal(
     this.translate.onLangChange.pipe(
       startWith({ lang: this.translate.getCurrentLang(), translations: null }),
-      map(() => this.getTranslatedConfig()),
+      map(() =>
+        translateConfig(PREPAYMENT_FORM_CONFIG, (key) =>
+          this.translate.instant(key),
+        ),
+      ),
     ),
-    { initialValue: this.getTranslatedConfig() },
+    {
+      initialValue: translateConfig(PREPAYMENT_FORM_CONFIG, (key) =>
+        this.translate.instant(key),
+      ),
+    },
   );
 
   protected readonly calculationOptions = toSignal(
@@ -71,47 +75,6 @@ export class PrepaymentOptionStep {
     ),
     { initialValue: this.getTranslatedOptions() },
   );
-
-  private getTranslatedConfig() {
-    const translate = (key?: string) =>
-      key ? this.translate.instant(key) : undefined;
-
-    type OriginalConfig = typeof PREPAYMENT_FORM_CONFIG;
-
-    type TranslatableConfig = {
-      -readonly [K in keyof OriginalConfig]: {
-        [P in keyof OriginalConfig[K]]: P extends 'layout' | 'type'
-          ? OriginalConfig[K][P]
-          : OriginalConfig[K][P] extends string
-            ? string
-            : OriginalConfig[K][P];
-      };
-    };
-
-    type ConfigValue = TranslatableConfig[keyof TranslatableConfig];
-
-    const newConfig = {
-      ...PREPAYMENT_FORM_CONFIG,
-    } as unknown as TranslatableConfig;
-
-    (Object.keys(newConfig) as Array<keyof TranslatableConfig>).forEach(
-      (key) => {
-        const field = { ...newConfig[key] };
-
-        if ('label' in field && field.label) {
-          field.label = translate(field.label as string);
-        }
-        if ('placeholder' in field && field.placeholder) {
-          field.placeholder = translate(field.placeholder as string);
-        }
-
-        (newConfig as Record<keyof TranslatableConfig, ConfigValue>)[key] =
-          field;
-      },
-    );
-
-    return newConfig;
-  }
 
   private getTranslatedOptions(): RadioOption[] {
     const t = (key: string) => this.translate.instant(key);
@@ -161,7 +124,7 @@ export class PrepaymentOptionStep {
   }
 
   public ngOnInit(): void {
-    this.store.dispatch(LoansActions.loadPrepaymentOptions());
+    this.store.loadPrepaymentOptions();
 
     const currentLoan = this.loan();
     if (currentLoan && currentLoan.loanAmount) {

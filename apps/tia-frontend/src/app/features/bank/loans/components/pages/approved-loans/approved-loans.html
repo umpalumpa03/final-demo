@@ -4,12 +4,12 @@
         (rename)="onRenameLoan($event)">
     </lib-loan-card>
     } @empty {
-    <div class="empty-state">
-        <p>No approved loans found.</p>
-    </div>
+    <app-error-states variant="not-found" [header]="'loans.empty.approved.title' | translate"
+        [message]="'loans.empty.approved.message' | translate" [border]="false" width="100%" height="30rem"
+        (buttonClick)="navigateToAllLoans()">
+    </app-error-states>
     }
 </div>
-
 <app-loan-details [isOpen]="isDetailsOpen()" [loan]="selectedLoanDetails()" [isLoading]="isDetailsLoading()"
     (calculatePrepayment)="onOpenPrepayment($event)" (close)="closeModals()">
 </app-loan-details>
