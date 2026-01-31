@@ -1,9 +1,16 @@
 @use '../../../../../shared/styles/mixins' as *;
 @use '../../../../../shared/styles/palette' as *;
 
-.accounts{
+.accounts {
   @include display-flex(column);
   gap: 1.6rem;
+  padding: 1rem;
+
+  &__title {
+    @include font-inter(600, 2rem, 2.8rem);
+    color: $blue-ocean-foreground;
+  }
+
   .account-card {
     @include display-flex(row);
     padding: 1.6rem;
@@ -40,5 +47,4 @@
       color: $blue-1000;
     }
   }
-
 }
