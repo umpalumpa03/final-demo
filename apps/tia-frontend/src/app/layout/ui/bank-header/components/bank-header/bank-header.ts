@@ -25,12 +25,13 @@ export class BankHeader {
   public avatarUrl = input<string | null | undefined>(null);
 
   public hasInboxMessages = computed(() => this.inboxCount() > 0);
-  public onNotificationClick = output<ElementRef>();
+  public onNotificationClick = output<ElementRef | null>();
 
   public onNotification(): void {
     const el = this.bellRef();
+    const isSmallScreen = window.innerWidth < 550;
     if (el) {
-      this.onNotificationClick.emit(el);
+      this.onNotificationClick.emit(isSmallScreen ? null : el);
     }
   }
 }

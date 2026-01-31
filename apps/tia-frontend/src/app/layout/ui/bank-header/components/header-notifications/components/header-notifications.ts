@@ -1,9 +1,12 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
+  HostListener,
   inject,
   input,
   output,
+  signal,
 } from '@angular/core';
 
 import { ItemsData } from '../models/notification.model';
@@ -77,26 +80,26 @@ export class HeaderNotifications {
   public deleteMultipleNotification = output<string[]>();
 
   // Action Methods
-  public onTrashIconClick(id: string) {
+  public onTrashIconClick(id: string): void {
     this.deleteNotification.emit(id);
   }
 
-  public onMarkAllClick() {
+  public onMarkAllClick(): void {
     this.markAllAsRead.emit();
   }
 
-  public onDeleteAllClicked() {
+  public onDeleteAllClicked(): void {
     this.deleteAllNotification.emit();
   }
 
-  public OnDeleteMultipleClick(ids: string[]) {
+  public OnDeleteMultipleClick(ids: string[]): void {
     this.deleteMultipleNotification.emit(ids);
   }
 
   // Scroll Handler
   public scrollBottom = output<void>();
 
-  public onScrollBottom() {
+  public onScrollBottom(): void {
     this.scrollBottom.emit();
   }
 
@@ -106,5 +109,23 @@ export class HeaderNotifications {
 
   public onItemBecameVisible(itemId: string): void {
     this.itemVisible.emit(itemId);
+  }
+
+  // Mobile detection
+  private readonly MOBILE_BREAKPOINT = 550;
+  private readonly windowWidth = signal(window.innerWidth);
+
+  public isMobile = computed(() => this.windowWidth() < this.MOBILE_BREAKPOINT);
+
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    this.windowWidth.set(window.innerWidth);
+  }
+
+  // Close output for mobile
+  public closeModal = output<void>();
+
+  public onCloseClick(): void {
+    this.closeModal.emit();
   }
 }
