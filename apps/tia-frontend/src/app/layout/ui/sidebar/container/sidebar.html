@@ -1,3 +1,38 @@
+@if (isMobile()) {
+<div class="sidebar__mobile-menu">
+  <button
+    class="sidebar__mobile-toggle"
+    [class.sidebar__mobile-toggle--open]="isDropdownOpen()"
+    (click)="toggleDropdown()"
+    aria-label="Toggle menu"
+  >
+    <img
+      src="images/svg/sidebar-nav/arrow-left.svg"
+      alt="toggle menu"
+      class="sidebar__mobile-toggle-icon"
+      [class.sidebar__mobile-toggle-icon--open]="isDropdownOpen()"
+    />
+  </button>
+
+  <div
+    class="sidebar__dropdown"
+    [class.sidebar__dropdown--open]="isDropdownOpen()"
+  >
+    <app-navigation-bar
+      [orientation]="'vertical'"
+      [items]="items()"
+      [collapsed]="true"
+      (click)="closeDropdown()"
+    ></app-navigation-bar>
+
+    <div class="sidebar__dropdown-footer">
+      <button class="sidebar__dropdown-logout" (click)="onLogout()">
+        <img src="images/svg/sidebar-nav/logout.svg" alt="logout icon" />
+      </button>
+    </div>
+  </div>
+</div>
+} @if (!isMobile()) {
 <aside class="sidebar" [class.sidebar--collapsed]="isCollapsed()">
   <button class="sidebar__collapse-btn" (click)="toggleCollapse()">
     <img
@@ -23,14 +58,16 @@
   <footer class="sidebar__footer">
     <app-button (click)="onLogout()" [fullWidth]="true" variant="ghost">
       <img src="images/svg/sidebar-nav/logout.svg" alt="logout icon" />
-      <span class="sidebar__logout" [class.sidebar__logout-text--hidden]="isCollapsed()">
+      <span
+        class="sidebar__logout"
+        [class.sidebar__logout-text--hidden]="isCollapsed()"
+      >
         {{ 'common.buttons.logout' | translate }}
       </span>
     </app-button>
   </footer>
 </aside>
-
-@if (showLogoutConfirm()) {
+} @if (showLogoutConfirm() && !isLoggingOut()) {
 <div class="sidebar__overlay">
   <app-alerts-with-actions
     [alertTitle]="''"
@@ -44,5 +81,9 @@
       {{ 'common.buttons.logout' | translate }}
     </app-button>
   </app-alerts-with-actions>
+</div>
+} @if (isLoggingOut()) {
+<div class="sidebar__loader-overlay">
+  <app-route-loader variant="pulsing"></app-route-loader>
 </div>
 }

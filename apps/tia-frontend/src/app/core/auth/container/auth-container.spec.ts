@@ -5,7 +5,7 @@ import { NavigationEnd, Router } from '@angular/router';
 
 import { AuthContainer } from './auth-container';
 import { Routes } from '../models/tokens.model';
-import { AUTH_SIDE_PANEL_DATA } from '../models/input-config.models';
+import { AUTH_SIDE_PANEL_DATA } from '../config/inputs.config';
 
 describe('AuthContainer', () => {
   let fixture: ComponentFixture<AuthContainer>;
