@@ -12,7 +12,15 @@ describe('PaybillFormDetails', () => {
 
     fixture = TestBed.createComponent(PaybillFormDetails);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+
+    fixture.componentRef.setInput('details', {
+      valid: true,
+      accountHolder: 'John Doe',
+      amountDue: 50,
+      dueDate: '2025-12-31',
+    });
+
+    fixture.detectChanges();
   });
 
   it('should create', () => {

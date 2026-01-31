@@ -12,7 +12,12 @@ describe('PaymentSummary', () => {
 
     fixture = TestBed.createComponent(PaymentSummary);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+
+    fixture.componentRef.setInput('serviceName', 'Test Service');
+    fixture.componentRef.setInput('accountNumber', '123456');
+    fixture.componentRef.setInput('amount', 123.45);
+
+    fixture.detectChanges();
   });
 
   it('should create', () => {

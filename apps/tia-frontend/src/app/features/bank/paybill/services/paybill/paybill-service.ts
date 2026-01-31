@@ -42,7 +42,6 @@ export class PaybillService {
     return this.http.post<BillDetails>(`${this.baseUrl}/check-bill`, payload);
   }
 
-  //endpoint rom gaswordeba aq return type
   public payBill(
     data: ProceedPaymentPayload,
   ): Observable<ProceedPaymentResponse> {
@@ -50,6 +49,6 @@ export class PaybillService {
   }
 
   public verifyPayment(payload: ConfirmPaymentPayload): Observable<unknown> {
-    return this.http.post<unknown>(`${environment.apiUrl}/verify`, payload);
+    return this.http.post<unknown>(`${this.baseUrl}/verify`, payload);
   }
 }
