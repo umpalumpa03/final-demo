@@ -14,7 +14,7 @@ import { IVerified } from '../../../models/otp-verification.models';
 export class VerifySignin {
   private authService = inject(AuthService);
 
-  public verifyOtp(event: IVerified) {
+  public verifyOtp(event: IVerified): void {
     if (event.isCalled) {
       this.authService
         .verifyMfa({
@@ -25,7 +25,7 @@ export class VerifySignin {
     }
   }
 
-  public resendOtp(isCalled: boolean) {
+  public resendOtp(isCalled: boolean): void {
     if (isCalled) {
       this.authService.resendVerificationCode().subscribe();
     }
