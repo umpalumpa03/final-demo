@@ -105,29 +105,13 @@ export class PaybillMain implements OnInit {
   }
 
   public selectCategory(categoryId: string): void {
-    this.router.navigate([categoryId.toLowerCase()], {
-      relativeTo: this.route,
-    });
+    this.store.dispatch(PaybillActions.selectCategory({ categoryId }));
   }
 
   public selectProvider(providerId: string): void {
-    const category = this.activeCategory();
-
-    if (category?.id && providerId) {
-      this.store.dispatch(
-        PaybillActions.selectProvider({
-          providerId: providerId.toUpperCase(),
-        }),
-      );
-
-      const catId = category.id.toLowerCase();
-      const provId = providerId.toLowerCase();
-
-      this.router.navigate([catId, provId], {
-        relativeTo: this.route.parent,
-      });
-    }
+    this.store.dispatch(PaybillActions.selectProvider({ providerId }));
   }
+  
   public onVerifyAccount(data: { accountNumber: string }): void {
     const provider = this.activeProvider();
     if (provider) {
