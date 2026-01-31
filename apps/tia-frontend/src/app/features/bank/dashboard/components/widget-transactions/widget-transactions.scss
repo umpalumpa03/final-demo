@@ -7,11 +7,10 @@
   &__title {
     @include font-inter(600, 2rem, 2.8rem);
     color: $blue-ocean-foreground;
-    padding: 0 1rem 1rem 1rem;
   }
 
   .transaction-card {
-    padding: 1rem;
+    padding: 1rem 1rem 1rem 0;
     @include flex-center($justify: space-between);
     &__description {
       @include display-flex(column);
