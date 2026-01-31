@@ -1,23 +1,54 @@
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
 import { initialTransferState } from './transfers.state';
-import { RecipientType } from '../models/transfers.state.model';
+import {
+  RecipientType,
+  RecipientResponse,
+} from '../models/transfers.state.model';
+import { inject } from '@angular/core';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { pipe, switchMap, tap, catchError, of } from 'rxjs';
+import { TransfersApiService } from '../services/transfersApi.service';
 
 export const TransferStore = signalStore(
   withState(initialTransferState),
-  withMethods((store) => ({
-    //phone or iban
-    setRecipientInput(input: string) {
-      patchState(store, { recipientInput: input });
-    },
-    //same or other bank
 
-    setRecipientType(type: RecipientType | null) {
-      patchState(store, { recipientType: type });
-    },
+  withMethods((store, transfersApi = inject(TransfersApiService)) => ({
+    lookupRecipient: rxMethod<{ value: string; type: RecipientType }>(
+      pipe(
+        tap(({ value, type }) =>
+          patchState(store, {
+            recipientInput: value,
+            recipientType: type,
+            isLoading: true,
+            error: null,
+          }),
+        ),
+        switchMap(({ value, type }) => {
+          const lookup$ =
+            type === 'phone'
+              ? transfersApi.lookupByPhone(value)
+              : transfersApi.lookupByIban(value);
 
-    setError(error: string | null) {
-      patchState(store, { error });
-    },
+          return lookup$.pipe(
+            tap((response: RecipientResponse) => {
+              patchState(store, {
+                recipientInfo: response,
+                isLoading: false,
+                error: null,
+              });
+            }),
+            catchError((error) => {
+              patchState(store, {
+                error: error.message || 'Failed to find recipient',
+                isLoading: false,
+                recipientInfo: null,
+              });
+              return of(null);
+            }),
+          );
+        }),
+      ),
+    ),
 
     reset() {
       patchState(store, initialTransferState);

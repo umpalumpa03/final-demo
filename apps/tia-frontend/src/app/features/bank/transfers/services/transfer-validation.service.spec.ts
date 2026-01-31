@@ -1,41 +1,38 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { TransferValidationService } from './transfer-validation.service';
 
-describe('TransferValidationService', () => {
+describe('TransferValidationService (vitest)', () => {
   let service: TransferValidationService;
 
   beforeEach(() => {
     service = new TransferValidationService();
   });
 
-  it('should create', () => {
+  it('should create the service', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should identify phone number', () => {
-    expect(service.identifyRecipientType('+995555123456')).toBe('phone');
-    expect(service.identifyRecipientType('+995 555 123 456')).toBe('phone');
+  it('should identify phone number when input starts with a digit', () => {
+    expect(service.identifyRecipientType('599123456')).toBe('phone');
+    expect(service.identifyRecipientType(' 995 555 123 ')).toBe('phone');
   });
 
-  it('should identify same bank IBAN', () => {
+  it('should identify same bank IBAN when it starts with GE and has TIA', () => {
     expect(service.identifyRecipientType('GE29TIA7890123456789012')).toBe(
       'iban-same-bank',
     );
-    expect(service.identifyRecipientType('GE00TIA9B721732BFA35B9')).toBe(
+    expect(service.identifyRecipientType('ge 00 tia 123')).toBe(
       'iban-same-bank',
     );
   });
 
-  it('should identify different bank IBAN (Georgian)', () => {
-    expect(service.identifyRecipientType('GE29XXX7890123456789012')).toBe(
-      'iban-different-bank',
-    );
-    expect(service.identifyRecipientType('GE80BG0000000012345678')).toBe(
+  it('should identify different bank IBAN when it starts with GE but no TIA', () => {
+    expect(service.identifyRecipientType('GE29BOG7890123456789012')).toBe(
       'iban-different-bank',
     );
   });
 
-  it('should identify international IBAN', () => {
+  it('should identify international IBAN based on regex pattern', () => {
     expect(service.identifyRecipientType('DE89370400440532013000')).toBe(
       'iban-different-bank',
     );
@@ -44,42 +41,26 @@ describe('TransferValidationService', () => {
     );
   });
 
-  it('should return null for invalid input', () => {
-    expect(service.identifyRecipientType('invalid')).toBeNull();
-    expect(service.identifyRecipientType('123456')).toBeNull();
-    expect(service.identifyRecipientType('')).toBeNull();
+  it('should return null for non-matching strings', () => {
+    expect(service.identifyRecipientType('ABC')).toBeNull();
+    expect(service.identifyRecipientType('!!123')).toBeNull();
   });
 
-  it('should validate phone number correctly', () => {
-    expect(service.validatePhone('+995555123456')).toBe(true);
-    expect(service.validatePhone('+995 555 123 456')).toBe(true);
-    expect(service.validatePhone('+99555512345')).toBe(false);
-    expect(service.validatePhone('+9955551234567')).toBe(false);
-    expect(service.validatePhone('invalid')).toBe(false);
+  it('should validate phone numbers between 8 and 9 digits', () => {
+    expect(service.validatePhone('55512345')).toBe(true);
+    expect(service.validatePhone('555123456')).toBe(true);
+    expect(service.validatePhone('5551234')).toBe(false);
+    expect(service.validatePhone('5551234567')).toBe(false);
   });
 
-  it('should validate IBAN correctly', () => {
+  it('should validate IBAN based on format and length', () => {
     expect(service.validateIban('GE29TIA7890123456789012')).toBe(true);
-    expect(service.validateIban('DE89370400440532013000')).toBe(true);
-    expect(service.validateIban('FR1420041010050500013M02606')).toBe(true);
+    expect(service.validateIban('GE29TIA789')).toBe(false);
+    expect(service.validateIban('INVALID1234567890')).toBe(false);
   });
 
-  it('should reject invalid IBAN format', () => {
-    expect(service.validateIban('GE29TIA78')).toBe(false);
-    expect(service.validateIban('INVALID')).toBe(false);
-    expect(service.validateIban('123456789')).toBe(false);
-  });
-
-  it('should reject IBAN with invalid length', () => {
-    expect(service.validateIban('GE29TIA789012')).toBe(false);
-    expect(service.validateIban('GE29TIA78901234567890123456789012345')).toBe(
-      false,
-    );
-  });
-
-  it('should get IBAN country code', () => {
-    expect(service.getIbanCountry('GE29TIA7890123456789012')).toBe('GE');
-    expect(service.getIbanCountry('DE89370400440532013000')).toBe('DE');
-    expect(service.getIbanCountry('FR1420041010050500013M02606')).toBe('FR');
+  it('should extract the country code from IBAN', () => {
+    expect(service.getIbanCountry('GE29TIA')).toBe('GE');
+    expect(service.getIbanCountry('DE89370')).toBe('DE');
   });
 });

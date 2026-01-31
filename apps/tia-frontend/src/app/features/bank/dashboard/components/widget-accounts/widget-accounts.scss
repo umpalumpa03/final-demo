@@ -1,0 +1,44 @@
+@use '../../../../../shared/styles/mixins' as *;
+@use '../../../../../shared/styles/palette' as *;
+
+.accounts{
+  @include display-flex(column);
+  gap: 1.6rem;
+  .account-card {
+    @include display-flex(row);
+    padding: 1.6rem;
+    background-color: $gray-25;
+    border-radius: 1rem;
+    width: 100%;
+    justify-content: space-between;
+    height: 8rem;
+    align-items: center;
+
+    &__header {
+      @include display-flex(column);
+      gap: 0.4rem;
+
+      &-top {
+        @include display-flex(row);
+        gap: 0.8rem;
+        align-items: center;
+        @include font-inter(600, 1.6rem, 2.4rem);
+        color: $blue-ocean-foreground;
+
+        &--iban {
+          padding: 0.2rem 0.7rem;
+          border: 1px solid $blue-400;
+          border-radius: 0.8rem;
+          @include font-inter(500, 1.2rem, 1.6rem);
+          color: $blue-ocean-foreground;
+        }
+      }
+    }
+
+    &__balance {
+      @include font-inter(700, 2rem, 2.8rem);
+      color: $blue-1000;
+    }
+  }
+
+}

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { TransferStore } from './store/transfers.store';
+import { recipientVerifiedGuard } from './guards/recipient-verified.guard';
 export const transfersRoutes: Routes = [
   {
     path: '',
@@ -47,6 +48,7 @@ export const transfersRoutes: Routes = [
               import(
                 './components/transfers-external/components/external-accounts/external-accounts'
               ).then((c) => c.ExternalAccounts),
+            canActivate: [recipientVerifiedGuard],
           },
           {
             path: 'amount',

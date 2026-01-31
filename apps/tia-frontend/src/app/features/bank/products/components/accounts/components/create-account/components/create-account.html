@@ -1,10 +1,8 @@
 <app-ui-modal [isOpen]="isOpen()" (closed)="handleClose()">
-  <div class="modal__header">
-    <h2 class="modal__title">Create New Account</h2>
-    <p class="modal__subtitle">
-      Add a new bank account to manage your finances
-    </p>
-  </div>
+  <app-library-title
+    [title]="'my-products.accounts.modal.title' | translate"
+    [subtitle]="'my-products.accounts.modal.subtitle' | translate"
+  ></app-library-title>
 
   <form
     [formGroup]="accountForm()"
@@ -13,7 +11,7 @@
   >
     <div class="form-group">
       <lib-text-input
-        [config]="createConfig.friendlyName"
+        [config]="createConfig().friendlyName"
         formControlName="friendlyName"
       ></lib-text-input>
     </div>
@@ -21,7 +19,7 @@
     <div class="form-group">
       <lib-select
         [options]="accountTypeOptions()"
-        [config]="createConfig.type"
+        [config]="createConfig().type"
         formControlName="type"
       ></lib-select>
     </div>
@@ -29,14 +27,14 @@
     <div class="form-group">
       <lib-select
         [options]="currencyOptions()"
-        [config]="createConfig.currency"
+        [config]="createConfig().currency"
         formControlName="currency"
       ></lib-select>
     </div>
 
     <div class="modal__actions">
       <app-button variant="outline" type="button" (click)="handleClose()">
-        Cancel
+        {{ 'my-products.accounts.modal.cancel' | translate }}
       </app-button>
       <app-button
         variant="default"
@@ -44,7 +42,7 @@
         icon="plus-icon.svg"
         [isDisabled]="accountForm().invalid"
       >
-        Create Account
+        {{ 'my-products.accounts.modal.create' | translate }}
       </app-button>
     </div>
   </form>

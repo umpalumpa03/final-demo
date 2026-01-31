@@ -1,7 +1,9 @@
 <header class="header">
     <div class="header__title">
-        <h2>My Loans</h2>
-        <p>Manage your loan applications and track payments</p>
+        <h2>{{ 'loans.dashboard.title' | translate }}</h2>
+        <p>{{ 'loans.dashboard.description' | translate }}</p>
     </div>
-    <app-button icon="plus-icon.svg" (click)="requestClick.emit()">Request New Loan</app-button>
+    <app-button icon="plus-icon.svg" (click)="requestClick.emit()">
+        {{ 'loans.dashboard.apply' | translate }}
+    </app-button>
 </header>
