@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { Routes } from '../../../models/tokens.model';
+import { TokenService } from '../../../services/token.service';
 
 @Component({
   selector: 'app-phone-verification',
@@ -15,6 +16,7 @@ import { Routes } from '../../../models/tokens.model';
 export class PhoneVerification {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private tokenService = inject(TokenService);
 
   public submit(event: { isCalled: boolean; otp: string | null }) {
     if (event.isCalled) {
@@ -33,5 +35,10 @@ export class PhoneVerification {
         )
         .subscribe();
     }
+  }
+
+  public handlePhoneTimer():void {
+    this.tokenService.clearAllToken();
+    this.router.navigate(['/auth/sign-in']);
   }
 }

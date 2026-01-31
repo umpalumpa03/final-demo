@@ -49,7 +49,7 @@ export class OtpVerification {
   public isSubmitting = signal(false);
   public submitError = signal<string | null>(null);
   public otpConfig = signal({ length: 4 });
-  public phoneConfig = signal({ label: "phone" });
+  public phoneConfig = signal({ label: "Phone Number" });
 
   public showIcon = computed(() => this.config().showIcon);
   public iconUrl = computed(() => this.config().iconUrl);
@@ -66,15 +66,15 @@ export class OtpVerification {
   public maxTime = computed(() => {
     const limit = Math.abs(Number(this.timeLimit()));
 
-    return limit * 6;
+    return limit * 60;
   });
 
   public countdown = signal<number>(0);
   private timer$ = interval(1000);
 
   public isResendActive = signal<boolean>(false);
-
-  public timerFinished = output<boolean>();
+  
+  public onTimeout = output<void>();
   public resendClicked = output<void>();
 
   public otpForm = this.fb.group({
@@ -85,7 +85,9 @@ export class OtpVerification {
     effect(() => {
       this.countdown();
       if (this.countdown() === 0) {
-        setTimeout(() => {}, 1000);
+        setTimeout(() => {
+          this.onTimeout.emit();
+        }, 1000);
       }
     });
   }

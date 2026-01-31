@@ -15,14 +15,13 @@
       <lib-otp formControlName="code" [config]="otpConfig()"></lib-otp>
     </div>
     } @else {
-    <div class="otp-field">
+    <div class="otp-field__phone">
       <lib-text-input
         formControlName="code"
         [config]="phoneConfig()"
       ></lib-text-input>
     </div>
     } @if (submitError()) {
-    <div class="auth-error">{{ submitError() }}</div>
     <div class="auth-error">{{ submitError() }}</div>
     }
 
