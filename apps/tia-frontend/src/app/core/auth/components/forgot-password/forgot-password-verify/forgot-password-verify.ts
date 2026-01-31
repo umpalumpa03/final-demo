@@ -5,6 +5,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { tap } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
 import { forgotPasswordSegments } from '../forgot-password.routes';
@@ -28,7 +29,14 @@ export class ForgotPasswordVerify implements OnInit {
 
   public verifyResetOtp(event: IVerified) {
     if (event.isCalled) {
-      this.authService.verifyForgotPasswordOtp(event.otp!).subscribe();
+      this.authService
+        .verifyForgotPasswordOtp(event.otp!)
+        .pipe(
+          tap(() =>
+            this.router.navigate(['/auth', ...forgotPasswordSegments.reset])
+          )
+        )
+        .subscribe();
     }
   }
 
