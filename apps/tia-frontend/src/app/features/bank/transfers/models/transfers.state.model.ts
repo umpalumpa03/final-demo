@@ -28,7 +28,6 @@ export interface TransferState {
   senderAccount: Account | null; //selected sender account, used by both flow(g)
   receiverOwnAccount: Account | null; //used by transfer internal(g)
   selectedRecipientAccount: RecipientAccount | null; //for other account same bank flow
-  manualRecipientCurrency: Currency | null; //for other account transfer other bank
 
   ///response
   recipientInfo: RecipientResponse | null; //response after view account
@@ -45,3 +44,4 @@ export interface TransferState {
   isLoading: boolean;
   error: string | null;
 }
+export type AccountData = Account | RecipientAccount;
