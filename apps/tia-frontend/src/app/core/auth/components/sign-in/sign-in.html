@@ -1,10 +1,8 @@
 @if(!isLoading()) {
 <form class="sign-in" [formGroup]="loginForm" (ngSubmit)="submit()">
   <header class="sign-in__header">
-    <app-library-title
-      [title]="title"
-      [subtitle]="subtitle"
-    ></app-library-title>
+    <h1 class="sign-in__header__title">{{title}}</h1>
+    <span class="sign-in__header__subtitle">{{subtitle}}</span>
   </header>
   <div class="sign-in__form">
     <lib-text-input
@@ -33,7 +31,7 @@
     >
   </div>
   <p class="sign-in__switch">
-    Already have an account?
+    Already have an account? &nbsp;
     <span class="sign-in__link" [routerLink]="[signUpRoute]">Sign up</span>
   </p>
 </form>
