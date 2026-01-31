@@ -29,6 +29,7 @@ export interface PaybillState {
   currentStep: string;
   paymentPayload: PaybillPayload | null;
   challengeId: string | null;
+  templateGroups: TableGroups[];
 }
 
 export interface BillDetails {
@@ -71,4 +72,10 @@ export interface ProceedPaymentPayload {
   };
   amount: number;
   senderAccountId: string;
+}
+
+export interface TableGroups {
+  id: string;
+  groupName: string;
+  templateCount: number;
 }

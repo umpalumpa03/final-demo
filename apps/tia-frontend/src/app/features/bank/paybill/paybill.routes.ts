@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { paybillReducer } from './store/paybill.reducer';
-import * as paybillEffects from './store/paybill.effects';
+import { PaybillEffect } from './store/paybill.effects';
 
 export const PAYBILL_ROUTES: Routes = [
   {
@@ -12,7 +12,7 @@ export const PAYBILL_ROUTES: Routes = [
       import('./container/paybill-container').then((c) => c.PaybillContainer),
     providers: [
       provideState({ name: 'paybill', reducer: paybillReducer }),
-      provideEffects(paybillEffects),
+      provideEffects(PaybillEffect),
     ],
     children: [
       {
@@ -25,9 +25,9 @@ export const PAYBILL_ROUTES: Routes = [
       {
         path: 'templates',
         loadComponent: () =>
-          import('./components/paybill-templates/paybill-templates').then(
-            (c) => c.PaybillTemplates,
-          ),
+          import(
+            './components/paybill-templates/container/paybill-templates-container'
+          ).then((c) => c.PaybillTemplatesContainer),
       },
       {
         path: ':categoryId',

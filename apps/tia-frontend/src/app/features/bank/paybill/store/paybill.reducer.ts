@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { PaybillState } from '../models/paybill.model';
-import { PaybillActions } from './paybill.actions';
+import { PaybillActions, TemplatesPageActions } from './paybill.actions';
 
 export const initialPaybillState: PaybillState = {
   categories: [],
@@ -14,6 +14,7 @@ export const initialPaybillState: PaybillState = {
   currentStep: 'DETAILS',
   paymentPayload: null,
   challengeId: null,
+  templateGroups: [],
 };
 
 export const paybillReducer = createReducer(
@@ -74,7 +75,7 @@ export const paybillReducer = createReducer(
     providers: [],
     currentStep: 'DETAILS',
     paymentPayload: null,
-    challengeId:null
+    challengeId: null,
   })),
 
   on(PaybillActions.checkBill, (state) => ({
@@ -124,4 +125,9 @@ export const paybillReducer = createReducer(
     loading: false,
   })),
 
+  on(TemplatesPageActions.loadTemplates, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
 );

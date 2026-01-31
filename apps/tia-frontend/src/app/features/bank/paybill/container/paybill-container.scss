@@ -3,4 +3,16 @@
   @include display-flex(column);
   gap: 3.2rem;
   padding: 3.2rem;
+
+  &__header {
+    &__breadcrumb {
+      display: block;
+      margin-bottom: 1.6rem;
+    }
+
+    &__title-container {
+      display: block;
+      margin-bottom: 3.2rem;
+    }
+  }
 }

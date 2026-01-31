@@ -26,10 +26,11 @@ import { navConfig } from '../config/paybill.config';
 import { Tabs } from '@tia/shared/lib/navigation/tabs/tabs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-paybill-container',
-  imports: [Breadcrumbs, LibraryTitle, RouterModule, Tabs],
+  imports: [Breadcrumbs, LibraryTitle, RouterModule, Tabs, TranslatePipe],
   templateUrl: './paybill-container.html',
   styleUrl: './paybill-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,9 +39,6 @@ export class PaybillContainer implements OnInit {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-
-  public readonly paybillTitle = 'Pay Bills';
-  public readonly paybillSubtitle = 'Pay your bills quickly and securely';
 
   public readonly breadcrumbs = this.store.selectSignal(
     selectPaybillBreadcrumbs,

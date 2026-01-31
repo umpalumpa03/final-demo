@@ -1,4 +1,4 @@
-import { inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { catchError, map, mergeMap, of, withLatestFrom } from 'rxjs';
@@ -6,7 +6,14 @@ import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillActions } from './paybill.actions';
 import { selectSelectedProviderId } from './paybill.selectors';
 import { ProceedPaymentResponse } from '../models/paybill.model';
+import { PaybillTemplatesService } from '../components/paybill-templates/services/paybill-templates-service';
 
+@Injectable()
+export class PaybillEffect {
+  public actions$ = inject(Actions);
+  public payBillService = inject(PaybillService);
+  public payBillTemplatesService = inject(PaybillTemplatesService);
+}
 export const loadCategories = createEffect(
   (actions$ = inject(Actions), paybillService = inject(PaybillService)) => {
     return actions$.pipe(
@@ -124,3 +131,5 @@ export const confirmPayment = createEffect(
   },
   { functional: true },
 );
+
+// export const loadTemplateGroups = createEffect();

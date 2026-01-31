@@ -33,3 +33,10 @@ export const PaybillActions = createActionGroup({
     'Confirm Payment Failure': props<{ error: string }>(),
   },
 });
+
+export const TemplatesPageActions = createActionGroup({
+  source: 'Paybill Templates Page',
+  events: {
+    'Load Templates': emptyProps(),
+  },
+});
