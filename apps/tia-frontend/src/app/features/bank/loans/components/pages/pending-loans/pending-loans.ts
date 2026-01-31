@@ -28,6 +28,6 @@ export class PendingLoans {
   }
 
   public navigateToAllLoans(): void {
-    this.router.navigate(['/loans/all']);
+    this.router.navigate(['bank/loans/all']);
   }
 }
