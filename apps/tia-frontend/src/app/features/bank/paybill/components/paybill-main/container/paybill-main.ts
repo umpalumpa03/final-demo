@@ -166,23 +166,24 @@ export class PaybillMain implements OnInit {
     this.store.dispatch(PaybillActions.setPaymentStep({ step: 'DETAILS' }));
   }
 
-public onOtpVerified(otpCode: string): void {
-  const challengeId = this.challengeId();
-  
-  // DEBUG: Check if the orchestrator receives the event and the ID
-  console.log('OTP Received:', otpCode);
-  console.log('Challenge ID from Store:', challengeId);
+  public onOtpVerified(otpCode: string): void {
+    const challengeId = this.challengeId();
 
-  if (challengeId) {
-    this.store.dispatch(
-      PaybillActions.confirmPayment({
-        payload: { challengeId, code: otpCode },
-      }),
-    );
-  } else {
-    console.error('Confirm Payment failed: No challengeId found in store. Ensure the /pay request succeeded.');
+    console.log('OTP Received:', otpCode);
+    console.log('Challenge ID from Store:', challengeId);
+
+    if (challengeId) {
+      this.store.dispatch(
+        PaybillActions.confirmPayment({
+          payload: { challengeId, code: otpCode },
+        }),
+      );
+    } else {
+      console.error(
+        'Confirm Payment failed: No challengeId found in store. Ensure the /pay request succeeded.',
+      );
+    }
   }
-}
 
   public readonly activeCategoryUI = computed(() => {
     const category = this.activeCategory();
