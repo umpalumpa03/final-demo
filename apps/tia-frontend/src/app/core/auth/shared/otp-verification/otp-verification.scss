@@ -44,6 +44,10 @@
     gap: 1.6rem;
     margin-top: 1.6rem;
   }
+
+  &__disabled {
+    cursor: not-allowed;
+  }
 }
 
 .sign-in-loader {

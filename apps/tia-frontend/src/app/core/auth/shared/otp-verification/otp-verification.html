@@ -27,6 +27,7 @@
 
     <div class="auth-form__actions">
       <app-button
+        [isDisabled]="isResendActive()"
         type="submit"
         size="large"
         [fullWidth]="true"

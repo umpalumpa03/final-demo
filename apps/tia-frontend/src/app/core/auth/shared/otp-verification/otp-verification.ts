@@ -26,11 +26,18 @@ import {
   tap,
 } from 'rxjs';
 import { TimerType } from '../../models/auth.models';
-import { TextInput } from "@tia/shared/lib/forms/input-field/text-input";
+import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 
 @Component({
   selector: 'app-otp-verification',
-  imports: [ButtonComponent, ReactiveFormsModule, Spinner, Otp, RouterLink, TextInput],
+  imports: [
+    ButtonComponent,
+    ReactiveFormsModule,
+    Spinner,
+    Otp,
+    RouterLink,
+    TextInput,
+  ],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,7 +56,7 @@ export class OtpVerification {
   public isSubmitting = signal(false);
   public submitError = signal<string | null>(null);
   public otpConfig = signal({ length: 4 });
-  public phoneConfig = signal({ label: "Phone Number" });
+  public phoneConfig = signal({ label: 'Phone Number' });
 
   public showIcon = computed(() => this.config().showIcon);
   public iconUrl = computed(() => this.config().iconUrl);
@@ -73,7 +80,7 @@ export class OtpVerification {
   private timer$ = interval(1000);
 
   public isResendActive = signal<boolean>(false);
-  
+
   public onTimeout = output<void>();
   public resendClicked = output<void>();
 
@@ -88,6 +95,7 @@ export class OtpVerification {
         setTimeout(() => {
           this.onTimeout.emit();
         }, 1000);
+        this.isResendActive.set(true);
       }
     });
   }
@@ -107,6 +115,7 @@ export class OtpVerification {
         }),
       )
       .subscribe();
+    this.isResendActive.set(false);
   }
 
   public onSubmit(): void {
