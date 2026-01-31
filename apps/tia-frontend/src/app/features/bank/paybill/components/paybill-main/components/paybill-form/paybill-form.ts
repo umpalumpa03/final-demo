@@ -32,7 +32,7 @@ import { SummaryField } from '../../shared/models/summary.model';
     ReactiveFormsModule,
     TextInput,
     PaymentSummary,
-  ],
+],
   templateUrl: './paybill-form.html',
   styleUrl: './paybill-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -2,7 +2,6 @@
 
 .bank-container-wrapper {
   @include display-flex(row);
-  width: 100vw;
 }
 
 .bank-container-sidebar {

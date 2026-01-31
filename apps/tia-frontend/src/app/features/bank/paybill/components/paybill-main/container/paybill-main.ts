@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   inject,
+  OnInit,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as PAYBILL_SELECTORS from '../../../store/paybill.selectors';
@@ -13,17 +14,28 @@ import { ProviderList } from '../components/provider-list/provider-list';
 import { PaybillForm } from '../components/paybill-form/paybill-form';
 import { PaybillActions } from '../../../store/paybill.actions';
 import { PaybillOtpVerification } from '../components/paybill-otp-verification/paybill-otp-verification';
-import { PaybillPayload, ProceedPaymentPayload } from '../shared/models/paybill.model';
-import { PaybillConfirmPayment } from "../components/paybill-confirm-payment/paybill-confirm-payment";
+import {
+  PaybillPayload,
+  ProceedPaymentPayload,
+} from '../shared/models/paybill.model';
+import { PaybillConfirmPayment } from '../components/paybill-confirm-payment/paybill-confirm-payment';
+import { selectCurrentAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
+import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 
 @Component({
   selector: 'app-paybill-main',
-  imports: [CategoryGrid, ProviderList, PaybillForm, PaybillOtpVerification, PaybillConfirmPayment],
+  imports: [
+    CategoryGrid,
+    ProviderList,
+    PaybillForm,
+    PaybillOtpVerification,
+    PaybillConfirmPayment,
+  ],
   templateUrl: './paybill-main.html',
   styleUrl: './paybill-main.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PaybillMain {
+export class PaybillMain implements OnInit {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -57,6 +69,16 @@ export class PaybillMain {
   public readonly challengeId = this.store.selectSignal(
     PAYBILL_SELECTORS.selectChallengeId,
   );
+
+  // State from global store
+
+  public readonly storeAccounts = this.store.selectSignal(
+    selectCurrentAccounts,
+  );
+
+  public ngOnInit(): void {
+    this.store.dispatch(AccountsActions.loadAccounts());
+  }
 
   public readonly formattedCategories = computed(() => {
     return this.categories().map((cat) => {
@@ -144,20 +166,23 @@ export class PaybillMain {
     this.store.dispatch(PaybillActions.setPaymentStep({ step: 'DETAILS' }));
   }
 
-  public onOtpVerified(otpCode: string): void {
-    const challengeId = this.challengeId();
+public onOtpVerified(otpCode: string): void {
+  const challengeId = this.challengeId();
+  
+  // DEBUG: Check if the orchestrator receives the event and the ID
+  console.log('OTP Received:', otpCode);
+  console.log('Challenge ID from Store:', challengeId);
 
-    if (challengeId) {
-      this.store.dispatch(
-        PaybillActions.confirmPayment({
-          payload: {
-            challengeId,
-            code: otpCode,
-          },
-        }),
-      );
-    }
+  if (challengeId) {
+    this.store.dispatch(
+      PaybillActions.confirmPayment({
+        payload: { challengeId, code: otpCode },
+      }),
+    );
+  } else {
+    console.error('Confirm Payment failed: No challengeId found in store. Ensure the /pay request succeeded.');
   }
+}
 
   public readonly activeCategoryUI = computed(() => {
     const category = this.activeCategory();

@@ -66,7 +66,7 @@
 
   &__value {
     @include font-inter(600, 1.6rem, 2.4rem);
-    color: $blue-ocean-foreground;
+    color: var(--color-fg);
   }
 
   &--total {
