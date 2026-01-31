@@ -5,6 +5,8 @@
   @include display-flex(column, wrap);
   gap: 1.25rem;
   justify-content: center;
+  width: 100%;
+  max-width: 100%;
 
   &__header {
     @include flex-center(row);
@@ -41,7 +43,7 @@
       }
 
       &-name {
-        @include font-arimo(600, 1.8rem, 1.2);
+        @include font-arimo(500, 1.8rem, 1.2);
         color: $gray-800;
         margin: 0;
         overflow: hidden;
@@ -76,7 +78,7 @@
         text-transform: uppercase;
       }
       &-number {
-        @include font-arimo(400, 1.4rem, 1.5);
+        @include font-arimo(400, 1.2rem, 1.5);
         color: $gray-600;
         margin: 0.25rem 0 0 0;
         overflow: hidden;
@@ -158,7 +160,7 @@
     }
 
     &-amount {
-      @include font-arimo(700, 2.8rem, 1.2);
+      @include font-arimo(700, 2.2rem, 1.2);
       color: $gray-800;
       margin: 0;
     }
@@ -179,14 +181,14 @@
       gap: 0.25rem;
 
       &-label {
-        @include font-arimo(400, 1.2rem, 1.2);
+        @include font-arimo(400, 1rem, 1.2);
         color: $gray-600;
         text-transform: uppercase;
         letter-spacing: 0.05rem;
       }
 
       &-value {
-        @include font-arimo(500, 1.4rem, 1.5);
+        @include font-arimo(500, 1.2rem, 1.5);
         color: $gray-800;
       }
     }
@@ -199,6 +201,145 @@
 
     &-icon {
       font-size: 1.6rem;
+    }
+  }
+}
+@media (max-width: 768px) {
+  .account-card {
+    &__header {
+      &-info {
+        &-name {
+          @include font-arimo(500, 1.4rem, 1.2);
+        }
+
+        &-number {
+          @include font-arimo(400, 1.1rem, 1.5);
+        }
+      }
+    }
+
+    &__balance {
+      &-amount {
+        @include font-arimo(700, 1.8rem, 1.2);
+      }
+
+      &-label {
+        @include font-arimo(400, 1rem, 1.2);
+      }
+    }
+
+    &__details {
+      &-item {
+        &-label {
+          @include font-arimo(400, 0.9rem, 1.2);
+        }
+
+        &-value {
+          @include font-arimo(500, 1.1rem, 1.5);
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .account-card {
+    &__header {
+      &-info {
+        &-name {
+          @include font-arimo(500, 1.6rem, 1.2);
+        }
+
+        &-number {
+          @include font-arimo(400, 1.15rem, 1.5);
+        }
+      }
+    }
+
+    &__balance {
+      &-amount {
+        @include font-arimo(700, 2rem, 1.2);
+      }
+
+      &-label {
+        @include font-arimo(400, 1.1rem, 1.2);
+      }
+    }
+
+    &__details {
+      &-item {
+        &-label {
+          @include font-arimo(400, 0.95rem, 1.2);
+        }
+
+        &-value {
+          @include font-arimo(500, 1.15rem, 1.5);
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .account-card {
+    gap: 1rem;
+
+    &__header {
+      gap: 0.75rem;
+
+      &-icon {
+        width: 4rem;
+        height: 4rem;
+
+        img {
+          width: 2rem;
+          height: 2rem;
+        }
+      }
+
+      &-info {
+        &-name {
+          @include font-arimo(500, 1.2rem, 1.2);
+        }
+
+        &-number {
+          @include font-arimo(400, 1rem, 1.5);
+        }
+      }
+    }
+
+    &__balance {
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+
+      &-amount {
+        @include font-arimo(700, 1.6rem, 1.2);
+      }
+
+      &-label {
+        @include font-arimo(400, 0.9rem, 1.2);
+      }
+    }
+
+    &__details {
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      padding: 0.75rem 0;
+
+      &-item {
+        &-label {
+          @include font-arimo(400, 0.8rem, 1.2);
+        }
+
+        &-value {
+          @include font-arimo(500, 1rem, 1.5);
+        }
+      }
+    }
+
+    &__actions {
+      gap: 0.5rem;
+      padding: 0.75rem;
     }
   }
 }

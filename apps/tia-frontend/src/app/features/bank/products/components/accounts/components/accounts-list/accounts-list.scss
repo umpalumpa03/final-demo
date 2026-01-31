@@ -74,4 +74,32 @@
       min-width: 280px;
     }
   }
+
+  @media (max-width: 768px) {
+    &__section {
+      &-grid {
+        gap: 1rem;
+        app-account-card {
+          flex: 0 0 calc(50% - 0.5rem);
+          min-width: calc(50% - 0.5rem);
+        }
+      }
+    }
+  }
+
+  @media (max-width: 540px) {
+    &__header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    &__section {
+      &-grid {
+        gap: 1rem;
+        app-account-card {
+          flex: 0 0 100%;
+          min-width: 100%;
+        }
+      }
+    }
+  }
 }
