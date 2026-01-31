@@ -1,27 +1,19 @@
-export interface Theme {
-  title: string;
-  subtitle: string;
-  themeKey: string;
-  cssVariable: string;
-}
+import { ITheme } from "../models/appearance.model";
 
-export const themesConfig: Theme[] = [
+export const themesConfig: ITheme[] = [
   {
-    title: 'Ocean Blue',
+    displayName: 'Ocean Blue',
     subtitle: 'Light and refreshing blue theme',
-    themeKey: 'oceanBlue',
-    cssVariable: '--color-primary',
+    value: 'oceanBlue',
   },
   {
-    title: 'Royal Blue',
+    displayName: 'Royal Blue',
     subtitle: 'Classic and elegant blue theme',
-    themeKey: 'royalBlue',
-    cssVariable: '--color-primary',
+    value: 'royalBlue',
   },
   {
-    title: 'Deep Blue',
+    displayName: 'Deep Blue',
     subtitle: 'Rich and sophisticated blue theme',
-    themeKey: 'deepBlue',
-    cssVariable: '--color-primary',
+    value: 'deepBlue',
   },
 ] as const;

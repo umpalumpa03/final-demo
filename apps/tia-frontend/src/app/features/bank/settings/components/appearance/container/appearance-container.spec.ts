@@ -42,7 +42,7 @@ describe('AppearanceContainer', () => {
     component.onClick('dark');
     expect(dispatchSpy).toHaveBeenCalled();
     
-    component.setActiveColor(''); // Test early return
+    component.setActiveColor('');
     expect(dispatchSpy).toHaveBeenCalledTimes(1); 
   });
 

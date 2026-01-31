@@ -2,63 +2,27 @@
   <h1 class="settings__title">Settings</h1>
   <p class="settings__desc">Manage your preferences and application settings</p>
   <nav class="settings__header-nav">
+
     <div class="settings__nav-group">
-      <div class="settings__nav-link-container">
-        <a routerLink="appearance" routerLinkActive="active">
-          <img src="images/svg/settings/appearance.svg" alt="appearance icon">
-          {{'settings.sections.appearance' | translate }}
-        </a>
-      </div>
-      <div class="settings__nav-link-container">
-        <a routerLink="language" routerLinkActive="active">
-          <img src="images/svg/settings/language.svg" alt="language icon">
-          {{'settings.sections.language' | translate }}
-        </a>
-      </div>
-      <div class="settings__nav-link-container">
-        <a routerLink="profile-photo" routerLinkActive="active">
-          <img src="images/svg/settings/profile-photo.svg" alt="profile photo icon">
-          {{'settings.sections.profile-photo' | translate }}
-        </a>
-      </div>
-      <div class="settings__nav-link-container">
-        <a routerLink="accounts" routerLinkActive="active">
-          <img src="images/svg/settings/accounts.svg" alt="accounts icon">
-          {{'settings.sections.accounts' | translate }}
-        </a>
-      </div>
-      <div class="settings__nav-link-container">
-        <a routerLink="security" routerLinkActive="active">
-          <img src="images/svg/settings/security.svg" alt="security icon">
-          {{'settings.sections.security' | translate }}
-        </a>
-      </div>
-      <div class="settings__nav-link-container">
-        <a routerLink="user-management" routerLinkActive="active">
-          <img src="images/svg/settings/user-management.svg" alt="user management icon">
-          {{'settings.sections.user-management' | translate }}
-        </a>
-      </div>
+      @for(navItem of navItems; track navItem.routerLink) {
+        <div class="settings__nav-link-container">
+          <a [routerLink]="navItem.routerLink" routerLinkActive="active">
+            <img [src]="navItem.src" [alt]="navItem.alt">
+            {{ navItem.translateString | translate }}
+          </a>
+        </div>
+      }
     </div>
+
     <div class="settings__nav-group--admin">
-      <div class="settings__nav-link-container">
-        <a routerLink="approve-accounts" routerLinkActive="active">
-          <img src="images/svg/settings/approve-accounts.svg" alt="approve accounts icon">
-          {{'settings.sections.approve-accounts' | translate }}
-        </a>
-      </div>
-      <div class="settings__nav-link-container">
-        <a routerLink="approve-cards" routerLinkActive="active">
-          <img src="images/svg/settings/accounts.svg" alt="approve cards icon">
-          {{'settings.sections.approve-cards' | translate }}
-        </a>
-      </div>
-      <div class="settings__nav-link-container">
-        <a routerLink="loan-management" routerLinkActive="active">
-          <img src="images/svg/settings/loan-management.svg" alt="loan management icon">
-          {{'settings.sections.loan-management' | translate }}
-        </a>
-      </div>
+      @for(navItem of adminNavItems; track navItem.routerLink) {
+        <div class="settings__nav-link-container">
+          <a [routerLink]="navItem.routerLink" routerLinkActive="active">
+            <img [src]="navItem.src" [alt]="navItem.alt">
+            {{ navItem.translateString | translate }}
+          </a>
+        </div>
+      }
     </div>
     
  </nav>
