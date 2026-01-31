@@ -12,7 +12,7 @@ import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
   styleUrl: './paybill-templates.scss',
 })
 export class PaybillTemplates {
-  private translate = inject(TranslateService);
+  private readonly translate = inject(TranslateService);
   public templateGroups = input();
   public headerButtons = ctaButtonConfig(this.translate);
 
