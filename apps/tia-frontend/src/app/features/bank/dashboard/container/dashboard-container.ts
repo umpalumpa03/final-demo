@@ -2,7 +2,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   signal,
-  computed, OnInit, inject
+  computed,
+  OnInit,
+  inject,
 } from '@angular/core';
 import { DragContainer } from '../../../../shared/lib/drag-n-drop/components/drag-container/drag-container';
 import { DraggableCard } from '../../../../shared/lib/drag-n-drop/components/draggable-card/draggable-card';
@@ -17,14 +19,13 @@ import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions
 import { Store } from '@ngrx/store';
 import {
   clearExchangeRates,
-  loadExchangeRates
+  loadExchangeRates,
 } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.actions';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard-container',
-  standalone: true,
   imports: [
     DragContainer,
     DraggableCard,
@@ -67,7 +68,7 @@ export class DashboardContainer implements OnInit {
   }
 
   public onWidgetRefresh(item: IWidgetItem): void {
-    this.store.dispatch(clearExchangeRates())
+    this.store.dispatch(clearExchangeRates());
     this.store.dispatch(loadExchangeRates({ baseCurrency: 'USD' }));
   }
 
@@ -76,15 +77,19 @@ export class DashboardContainer implements OnInit {
   }
 
   public onPaginationChange(item: number): void {
-    this.store.dispatch(TransactionActions.updateFilters({
-      filters: { pageLimit: item }
-    }));
+    this.store.dispatch(
+      TransactionActions.updateFilters({
+        filters: { pageLimit: item },
+      }),
+    );
   }
 
   ngOnInit() {
-    this.store.dispatch(TransactionActions.updateFilters({
-      filters: { pageLimit: 10 }
-    }));
+    this.store.dispatch(
+      TransactionActions.updateFilters({
+        filters: { pageLimit: 10 },
+      }),
+    );
     this.store.dispatch(loadExchangeRates({ baseCurrency: 'USD' }));
     this.store.dispatch(AccountsActions.loadAccounts());
   }
