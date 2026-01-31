@@ -5,9 +5,11 @@ import {
   OnInit,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { tap } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
 import { forgotPasswordSegments } from '../forgot-password.routes';
+import { IVerified } from '../../../models/otp-verification.models';
 
 @Component({
   selector: 'app-forgot-password-verify',
@@ -25,13 +27,20 @@ export class ForgotPasswordVerify implements OnInit {
     }
   }
 
-  public verifyResetOtp(event: { isCalled: boolean; otp: string | null }):void {
+  public verifyResetOtp(event: IVerified): void {
     if (event.isCalled) {
-      this.authService.verifyForgotPasswordOtp(event.otp!).subscribe();
+      this.authService
+        .verifyForgotPasswordOtp(event.otp!)
+        .pipe(
+          tap(() =>
+            this.router.navigate(['/auth', ...forgotPasswordSegments.reset])
+          )
+        )
+        .subscribe();
     }
   }
 
-  public resendOtp(isCalled: boolean):void {
+  public resendOtp(isCalled: boolean): void {
     if (isCalled) {
       this.authService.resendVerificationCode().subscribe();
     }

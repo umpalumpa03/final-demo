@@ -3,6 +3,7 @@ import { OtpVerification } from '../../../shared/otp-verification/otp-verificati
 import { AuthService } from '../../../services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IMfaVerifyRequest } from '../../../models/authRequest.models';
+import { IVerified } from '../../../models/otp-verification.models';
 
 @Component({
   selector: 'app-verify-signin',
@@ -13,7 +14,7 @@ import { IMfaVerifyRequest } from '../../../models/authRequest.models';
 export class VerifySignin {
   private authService = inject(AuthService);
 
-  public verifyOtp(event: { isCalled: boolean; otp: string | null }) {
+  public verifyOtp(event: IVerified): void {
     if (event.isCalled) {
       this.authService
         .verifyMfa({
@@ -24,7 +25,7 @@ export class VerifySignin {
     }
   }
 
-  public resendOtp(isCalled: boolean):void {
+  public resendOtp(isCalled: boolean): void {
     if (isCalled) {
       this.authService.resendVerificationCode().subscribe();
     }

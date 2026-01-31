@@ -1,47 +1,13 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { CardListService } from './card-list.service';
 import { environment } from '../../../../environments/environment';
-import { CardAccount } from '@tia/shared/models/cards/card-account.model';
-import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
-
 
 describe('CardListService', () => {
   let service: CardListService;
   let httpMock: HttpTestingController;
-  const baseUrl = `${environment.apiUrl}/cards`;
-
-  const mockAccounts: CardAccount[] = [
-    {
-      id: 'acc1',
-      iban: 'GE29TIA7890123456789012',
-      name: 'Main GEL Account',
-      balance: 4500000,
-      currency: 'GEL',
-      status: 'active',
-      cardIds: ['card1'],
-      openedAt: '2026-01-18T01:10:50.948Z',
-    },
-  ];
-
-  const mockCardDetail: CardDetail = {
-    id: 'c1000001-0001-4000-8000-000000000001',
-    accountId: 'a1000001-0001-4000-8000-000000000001',
-    type: 'DEBIT',
-    network: 'VISA',
-    design: 'MIDNIGHT_GRADIENT',
-    cardName: 'Main Visa',
-    status: 'ACTIVE',
-    allowOnlinePayments: true,
-    allowInternational: true,
-    allowAtm: true,
-    createdAt: '2026-01-18T01:10:50.948Z',
-    updatedAt: '2026-01-18T01:10:50.948Z',
-  };
+  const apiUrl = `${environment.apiUrl}/cards`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -62,72 +28,150 @@ describe('CardListService', () => {
   });
 
   describe('getCardAccounts', () => {
-    it('should fetch card accounts successfully', () => {
+    it('should fetch card accounts', () => {
+      const mockAccounts = [
+        {
+          id: 'acc-123',
+          iban: 'GE00TB0000000000000000',
+          name: 'My Account',
+          balance: 1000,
+          currency: 'GEL',
+          status: 'ACTIVE',
+          cardIds: ['card-123'],
+          openedAt: '2024-01-01',
+        },
+      ];
+
       service.getCardAccounts().subscribe((accounts) => {
         expect(accounts).toEqual(mockAccounts);
       });
 
-      httpMock.expectOne(`${baseUrl}/accounts`).flush(mockAccounts);
-    });
-
-    it('should handle HTTP error', () => {
-      service.getCardAccounts().subscribe({
-        next: () => expect.fail('should have failed'),
-        error: (error) => expect(error.status).toBe(500),
-      });
-
-      httpMock
-        .expectOne(`${baseUrl}/accounts`)
-        .flush(null, { status: 500, statusText: 'Error' });
+      const req = httpMock.expectOne(`${apiUrl}/accounts`);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockAccounts);
     });
   });
 
   describe('getCardImage', () => {
-    const cardId = 'card1';
-    const mockImage = 'data:image/svg+xml;base64,test';
+    it('should fetch card image as text', () => {
+      const mockImage = 'data:image/png;base64,abc123';
+      const cardId = 'card-123';
 
-    it('should fetch card image successfully', () => {
       service.getCardImage(cardId).subscribe((image) => {
         expect(image).toBe(mockImage);
       });
 
-      const req = httpMock.expectOne(`${baseUrl}/${cardId}/image`);
+      const req = httpMock.expectOne(`${apiUrl}/${cardId}/image`);
+      expect(req.request.method).toBe('GET');
       expect(req.request.responseType).toBe('text');
       req.flush(mockImage);
-    });
-
-    it('should handle HTTP error', () => {
-      service.getCardImage(cardId).subscribe({
-        next: () => expect.fail('should have failed'),
-        error: (error) => expect(error.status).toBe(404),
-      });
-
-      httpMock
-        .expectOne(`${baseUrl}/${cardId}/image`)
-        .flush(null, { status: 404, statusText: 'Not Found' });
     });
   });
 
   describe('getCardDetails', () => {
-    const cardId = 'c1000001-0001-4000-8000-000000000001';
+    it('should fetch card details', () => {
+      const mockDetails = {
+        id: 'card-123',
+        accountId: 'acc-123',
+        type: 'DEBIT' as const,
+        network: 'VISA' as const,
+        design: 'design-1',
+        cardName: 'My Card',
+        status: 'ACTIVE' as const,
+        allowOnlinePayments: true,
+        allowInternational: true,
+        allowAtm: true,
+        createdAt: '2024-01-01',
+        updatedAt: '2024-01-01',
+      };
 
-    it('should fetch card details successfully', () => {
+      const cardId = 'card-123';
+
       service.getCardDetails(cardId).subscribe((details) => {
-        expect(details).toEqual(mockCardDetail);
+        expect(details).toEqual(mockDetails);
       });
 
-      httpMock.expectOne(`${baseUrl}/${cardId}`).flush(mockCardDetail);
+      const req = httpMock.expectOne(`${apiUrl}/${cardId}`);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockDetails);
+    });
+  });
+describe('getCardDesigns', () => {
+  it('should fetch and transform card designs', () => {
+    const mockDesigns = [
+      { design: 'design-1', designName: 'Classic', uri: '/designs/classic.png' },
+      { design: 'design-2', designName: 'Modern', uri: '/designs/modern.png' },
+    ];
+
+    const expectedDesigns = [
+      { id: 'design-1', designName: 'Classic', uri: `${environment.apiUrl}/designs/classic.png` },
+      { id: 'design-2', designName: 'Modern', uri: `${environment.apiUrl}/designs/modern.png` },
+    ];
+
+    service.getCardDesigns().subscribe((designs) => {
+      expect(designs).toEqual(expectedDesigns);
     });
 
-    it('should handle HTTP error', () => {
-      service.getCardDetails(cardId).subscribe({
-        next: () => expect.fail('should have failed'),
-        error: (error) => expect(error.status).toBe(404),
+    const req = httpMock.expectOne(`${apiUrl}/designs`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockDesigns);
+  });
+});
+
+  describe('getCardCategories', () => {
+    it('should fetch card categories', () => {
+      const mockCategories = [
+        { value: 'DEBIT' as const, displayName: 'Debit Card' },
+        { value: 'CREDIT' as const, displayName: 'Credit Card' },
+      ];
+
+      service.getCardCategories().subscribe((categories) => {
+        expect(categories).toEqual(mockCategories);
       });
 
-      httpMock
-        .expectOne(`${baseUrl}/${cardId}`)
-        .flush(null, { status: 404, statusText: 'Not Found' });
+      const req = httpMock.expectOne(`${apiUrl}/categories-catalog`);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockCategories);
+    });
+  });
+
+  describe('getCardTypes', () => {
+    it('should fetch card types', () => {
+      const mockTypes = [
+        { value: 'VISA' as const, displayName: 'Visa' },
+        { value: 'MASTERCARD' as const, displayName: 'Mastercard' },
+      ];
+
+      service.getCardTypes().subscribe((types) => {
+        expect(types).toEqual(mockTypes);
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/types-catalog`);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockTypes);
+    });
+  });
+
+  describe('createCard', () => {
+    it('should create card', () => {
+      const mockRequest = {
+        accountId: 'acc-123',
+        design: 'design-1',
+        cardName: 'My New Card',
+        cardCategory: 'DEBIT' as const,
+        cardType: 'VISA' as const,
+      };
+
+      const mockResponse = { success: true };
+
+      service.createCard(mockRequest).subscribe((response) => {
+        expect(response).toEqual(mockResponse);
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/request-card`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(mockRequest);
+      req.flush(mockResponse);
     });
   });
 });

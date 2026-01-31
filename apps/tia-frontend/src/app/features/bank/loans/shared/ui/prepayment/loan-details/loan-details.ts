@@ -4,7 +4,7 @@ import {
   input,
   output,
 } from '@angular/core';
-import { ILoan, ILoanDetails } from '../../../models/loan.model';
+import { ILoanDetails } from '../../../models/loan.model';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { CommonModule } from '@angular/common';

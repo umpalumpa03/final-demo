@@ -2,9 +2,7 @@
 @use '../../../../shared/styles/mixins' as *;
 
 .sign-in {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  @include display-flex(column);
   max-height: 100vh;
 
   &__header {

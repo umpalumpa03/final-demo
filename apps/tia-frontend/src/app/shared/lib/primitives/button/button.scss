@@ -21,7 +21,6 @@
   box-sizing: border-box;
   outline: none;
 
-  // Variants
   &--default {
     background-color: var(--color-primary);
     color: $white;
@@ -84,7 +83,6 @@
     
   }
 
-  // Sizes
   &--small {
     height: 3.2rem;
     padding: 0 1.2rem;
@@ -106,7 +104,6 @@
     flex-shrink: 0;
   }
 
-  // States
   &--full-width {
     display: flex;
     width: 100%;
@@ -125,7 +122,6 @@
     border-color: transparent;
   }
 
-  // Elements
   &__content {
     @include flex-center();
     gap: 0.8rem;

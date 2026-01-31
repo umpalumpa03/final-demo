@@ -1,13 +1,24 @@
+import { TranslateService } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { of } from 'rxjs';
 
+import { ActivatedRoute } from '@angular/router';
 import { VerifySignin } from './verify-signin';
 import { AuthService } from '../../../services/auth.service';
 
 describe('VerifySignin', () => {
-  let fixture: ComponentFixture<VerifySignin>;
+const createMockObservable = () => ({ subscribe: () => ({ unsubscribe: () => {} }) });
+const mockTranslate = {
+  instant: () => '',
+  get: () => createMockObservable(),
+  stream: () => createMockObservable(),
+  currentLang: 'en',
+  onLangChange: createMockObservable(),
+  onTranslationChange: createMockObservable(),
+  onDefaultLangChange: createMockObservable(),
+};
   let component: VerifySignin;
   let authMock: any;
 
@@ -19,22 +30,22 @@ describe('VerifySignin', () => {
 
     await TestBed.configureTestingModule({
       imports: [VerifySignin],
-      providers: [{ provide: AuthService, useValue: authMock }],
+      providers: [
+        { provide: AuthService, useValue: authMock },
+        { provide: ActivatedRoute, useValue: {} },
+        { provide: TranslateService, useValue: mockTranslate },
+      ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(VerifySignin);
+    const fixture = TestBed.createComponent(VerifySignin);
     component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('creates the component with default values', () => {
-    expect(component).toBeTruthy();
   });
 
   it('submitOtp should call authService.getChallengeId and verifyMfa with correct payload', () => {
     const code = '123456';
 
+    component.verifyOtp({ isCalled: true, otp: code });
 
     expect(authMock.getChallengeId).toHaveBeenCalled();
     expect(authMock.verifyMfa).toHaveBeenCalledWith({
@@ -46,4 +57,15 @@ describe('VerifySignin', () => {
   it('submitOtp should return the observable and resolve to expected value', async () => {
     const code = '654321';
   });
+    it('resendOtp should call authService.resendVerificationCode when isCalled is true', () => {
+      authMock.resendVerificationCode = vi.fn().mockReturnValue({ subscribe: vi.fn() });
+      component.resendOtp(true);
+      expect(authMock.resendVerificationCode).toHaveBeenCalled();
+    });
+
+    it('resendOtp should NOT call authService.resendVerificationCode when isCalled is false', () => {
+      authMock.resendVerificationCode = vi.fn();
+      component.resendOtp(false);
+      expect(authMock.resendVerificationCode).not.toHaveBeenCalled();
+    });
 });

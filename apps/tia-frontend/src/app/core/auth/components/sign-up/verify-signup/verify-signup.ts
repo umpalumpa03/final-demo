@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
+import { IVerified } from '../../../models/otp-verification.models';
 
 @Component({
   selector: 'app-verify-signup',
@@ -11,13 +12,13 @@ import { OtpVerification } from '../../../shared/otp-verification/otp-verificati
 export class VerifySignup {
   private authService = inject(AuthService);
 
-  public verifyRegisterOtp(event: { isCalled: boolean; otp: string | null }) {
+  public verifyRegisterOtp(event: IVerified): void {
     if (event.isCalled) {
       this.authService.verifyPhoneOtpCode(event.otp!).subscribe();
     }
   }
 
-  public resendOtp(isCalled: boolean):void {
+  public resendOtp(isCalled: boolean): void {
     if (isCalled) {
       this.authService.resetPhoneOtp().subscribe();
     }

@@ -8,11 +8,41 @@ import { inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, of } from 'rxjs';
 import { TransfersApiService } from '../services/transfersApi.service';
+import { Account } from '@tia/shared/models/accounts/accounts.model';
+import { RecipientAccount } from '../models/transfers.state.model';
 
 export const TransferStore = signalStore(
   withState(initialTransferState),
 
   withMethods((store, transfersApi = inject(TransfersApiService)) => ({
+    setExternalRecipient(input: string, type: RecipientType) {
+      patchState(store, {
+        recipientInput: input,
+        recipientType: type,
+        recipientInfo: null,
+        senderAccount: null,
+        selectedRecipientAccount: null,
+        manualRecipientName: '',
+        amount: 0,
+        description: '',
+        error: null,
+      });
+    },
+    setManualRecipientName(name: string) {
+      patchState(store, { manualRecipientName: name });
+    },
+    setSenderAccount(account: Account | null) {
+      patchState(store, { senderAccount: account });
+    },
+    setSelectedRecipientAccount(account: RecipientAccount | null) {
+      patchState(store, { selectedRecipientAccount: account });
+    },
+    setAmount(amount: number) {
+      patchState(store, { amount });
+    },
+    setDescription(description: string) {
+      patchState(store, { description });
+    },
     lookupRecipient: rxMethod<{ value: string; type: RecipientType }>(
       pipe(
         tap(({ value, type }) =>
@@ -21,6 +51,11 @@ export const TransferStore = signalStore(
             recipientType: type,
             isLoading: true,
             error: null,
+            recipientInfo: null,
+            senderAccount: null,
+            selectedRecipientAccount: null,
+            amount: 0,
+            description: '',
           }),
         ),
         switchMap(({ value, type }) => {
@@ -34,14 +69,12 @@ export const TransferStore = signalStore(
               patchState(store, {
                 recipientInfo: response,
                 isLoading: false,
-                error: null,
               });
             }),
             catchError((error) => {
               patchState(store, {
                 error: error.message || 'Failed to find recipient',
                 isLoading: false,
-                recipientInfo: null,
               });
               return of(null);
             }),
@@ -49,7 +82,6 @@ export const TransferStore = signalStore(
         }),
       ),
     ),
-
     reset() {
       patchState(store, initialTransferState);
     },

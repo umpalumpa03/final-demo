@@ -100,23 +100,11 @@ export class AuthService {
       tap((res) => {
         if (res.success === true) {
           this.tokenService.clearAuthToken();
+          this.tokenService.clearUserInfo();
           this.router.navigate([Routes.SIGN_IN]);
         }
       }),
     );
-  }
-
-  private handleIdleLogout(): void {
-    this.logout()
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        catchError((err) => {
-          this.tokenService.clearAuthToken();
-          this.router.navigate([Routes.SIGN_IN]);
-          return throwError(() => err);
-        }),
-      )
-      .subscribe();
   }
 
   public verifyMfa(verify: IMfaVerifyRequest): Observable<IMfaVerifyResponse> {
@@ -177,8 +165,8 @@ export class AuthService {
         { headers },
       )
       .pipe(
-        tap((res) => {
-          this.tokenService.clearAllToken();
+        tap(() => {
+          this.tokenService.clearAuthToken();
           this.router.navigate([Routes.SIGN_IN]);
         }),
         catchError((err) => {
@@ -207,7 +195,6 @@ export class AuthService {
     code: string,
   ): Observable<ForgotPasswordVerifyResponse> {
     this.tokenService.clearAccessToken();
-    console.log(this.getChallengeId());
     const payload: ForgotPasswordVerifyRequest = {
       challengeId: this.getChallengeId(),
       code,

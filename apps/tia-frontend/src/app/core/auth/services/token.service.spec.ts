@@ -68,11 +68,6 @@ describe('TokenService', () => {
     expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.SIGNUP);
   });
 
-  it('should clear all tokens from storage', () => {
-    service.clearAllToken();
-    expect(localStorage.clear).toHaveBeenCalled();
-  });
-
   it('should get access token from localStorage', () => {
     vi.spyOn(Storage.prototype, 'getItem').mockReturnValue('stored-access-token');
     const result = service.accessToken;
@@ -99,5 +94,18 @@ describe('TokenService', () => {
     const result = service.getSignUpToken;
     expect(localStorage.getItem).toHaveBeenCalledWith(TokenKey.SIGNUP);
     expect(result).toBe('stored-signup-token');
+  });
+
+  it('should clear user info', () => {
+    service.clearUserInfo();
+    expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.USER);
+  });
+
+  it('should clear all tokens', () => {
+    service.clearAllToken();
+    expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.ACCESS);
+    expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.REFRESH);
+    expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.VERIFY);
+    expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.SIGNUP);
   });
 });
