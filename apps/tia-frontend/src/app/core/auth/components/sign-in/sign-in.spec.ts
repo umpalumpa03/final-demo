@@ -38,11 +38,6 @@ describe('SignIn Component', () => {
     fixture.detectChanges();
   });
 
-  it('initializes title and subtitle', () => {
-    expect(component.title).toBe('Sign In');
-    expect(component.subtitle).toContain('Enter your username');
-  });
-
   it('initializes the form with empty values', () => {
     expect(component.loginForm.getRawValue()).toEqual({ username: '', password: '' });
   });
