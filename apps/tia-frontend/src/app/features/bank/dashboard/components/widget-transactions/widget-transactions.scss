@@ -9,14 +9,16 @@
     color: $blue-ocean-foreground;
   }
 
-  .transaction-card {
+  &-card {
     padding: 1rem 1rem 1rem 0;
     @include flex-center($justify: space-between);
     &__description {
+      word-break: break-word;
       @include display-flex(column);
       gap: 0.4rem;
 
       &-text {
+        white-space: wrap;
         @include font-inter(500, 1.6rem, 2.4rem);
         color: $blue-ocean-foreground;
       }
@@ -28,6 +30,7 @@
     }
 
     &__amount {
+      white-space: nowrap;
       @include font-inter(600, 1.6rem, 2.4rem);
 
       &--debit {
@@ -36,6 +39,26 @@
 
       &--credit {
         color: $green-600;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px){
+  .transaction {
+    &_card{
+      &__description {
+        word-break: break-word;
+
+        &-text {
+          white-space: wrap;
+        }
+      }
+
+      &__amount {
+        white-space: normal;
+        @include font-inter(600, 1.4rem, 2rem);
+        margin-top: 0.25rem;
       }
     }
   }
