@@ -1,15 +1,18 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of, mergeMap, forkJoin, EMPTY } from 'rxjs';
-import { map, catchError, switchMap } from 'rxjs/operators';
+import { map, catchError, switchMap, take } from 'rxjs/operators';
 import * as CardsActions from './cards.actions';
 import { CardListService } from '@tia/shared/services/cards/card-list.service';
+import { Store } from '@ngrx/store';
+import { selectAllAccounts } from './cards.selectors';
+import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 
 @Injectable()
 export class CardsEffects {
   private readonly actions$ = inject(Actions);
   private readonly cardListService = inject(CardListService);
-
+  private readonly store = inject(Store);
   loadCardAccounts$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CardsActions.loadCardAccounts),
@@ -91,18 +94,18 @@ export class CardsEffects {
               designs,
               categories,
               types,
-            })
+            }),
           ),
           catchError((error) =>
             of(
               CardsActions.loadCardCreationDataFailure({
                 error: error.message || 'Failed to load card creation data',
-              })
-            )
-          )
-        )
-      )
-    )
+              }),
+            ),
+          ),
+        ),
+      ),
+    ),
   );
 
   createCard$ = createEffect(() =>
@@ -115,18 +118,44 @@ export class CardsEffects {
             of(
               CardsActions.createCardFailure({
                 error: error.message || 'Failed to create card',
-              })
-            )
-          )
-        )
-      )
-    )
+              }),
+            ),
+          ),
+        ),
+      ),
+    ),
   );
 
   createCardSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CardsActions.createCardSuccess),
-      map(() => CardsActions.loadCardAccounts())
-    )
+      map(() => CardsActions.loadCardAccounts()),
+    ),
+  );
+  loadAccountCardsPage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CardsActions.loadAccountCardsPage),
+      switchMap(({ accountId }) =>
+        this.store.select(selectAllAccounts).pipe(
+          take(1),
+          switchMap((accounts: CardAccount[]) => {
+            const actions = [];
+
+            if (accounts.length === 0) {
+              actions.push(CardsActions.loadCardAccounts());
+            } else {
+              const account = accounts.find((acc) => acc.id === accountId);
+              if (account?.cardIds && account.cardIds.length > 0) {
+                account.cardIds.forEach((cardId) => {
+                  actions.push(CardsActions.loadCardDetails({ cardId }));
+                });
+              }
+            }
+
+            return actions;
+          }),
+        ),
+      ),
+    ),
   );
 }

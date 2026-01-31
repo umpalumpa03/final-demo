@@ -2,16 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  signal,
-  DestroyRef,
-  computed,
   OnInit,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { tap, switchMap, filter, map, take } from 'rxjs/operators';
+import { combineLatest, map, switchMap, of } from 'rxjs';
 import { loadCardDetails, loadCardAccounts } from '../../../../../../../../store/products/cards/cards.actions';
 import {
   selectCardDetails,
@@ -20,10 +16,13 @@ import {
   selectCardDetailsError,
   selectAccountById,
 } from '../../../../../../../../store/products/cards/cards.selectors';
-import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
-import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
-import { of } from 'rxjs';
+import { CardWithDetails } from '@tia/shared/models/cards/card-image.model';
+import { CardAccount } from '@tia/shared/models/cards/card-account.model';
+
+interface CardDataWithAccount extends CardWithDetails {
+  account: CardAccount | undefined;
+}
 
 @Component({
   selector: 'app-card-details',
@@ -36,106 +35,67 @@ export class CardDetails implements OnInit {
   private readonly store = inject(Store);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly destroyRef = inject(DestroyRef);
 
   private readonly cardId = this.route.snapshot.paramMap.get('cardId') || '';
-  private readonly cardDetails = signal<Record<string, CardDetail>>({});
-  private readonly cardImages = signal<Record<string, string>>({});
-  private readonly account = signal<CardAccount | undefined>(undefined);
-  protected readonly loading = signal<boolean>(false);
-  protected readonly error = signal<string | null>(null);
 
-  protected readonly cardData = computed(() => {
-    const details = this.cardDetails()[this.cardId];
-    const image = this.cardImages()[this.cardId];
+  protected readonly loading$ = this.store.select(selectCardDetailsLoading);
+  protected readonly error$ = this.store.select(selectCardDetailsError);
 
-    if (!details || !image) return null;
+  protected readonly cardData$ = combineLatest([
+    this.store.select(selectCardDetails),
+    this.store.select(selectCardImages),
+  ]).pipe(
+    switchMap(([details, images]) => {
+      const detail = details[this.cardId];
+      const image = images[this.cardId];
 
-    const account = this.account();
+      if (!detail || !image) return of(null);
 
-    return {
-      cardId: this.cardId,
-      details,
-      imageBase64: image,
-      account,
-    };
-  });
-
-  protected readonly currency = computed(() => {
-    const account = this.account();
-    return account?.currency ?? 'N/A';
-  });
-
-  protected readonly formattedBalance = computed(() => {
-    const account = this.account();
-    if (!account) return 'N/A';
-    return `${account.currency} ${account.balance.toLocaleString()}`;
-  });
-
-  protected readonly formattedCreditLimit = computed(() => {
-    const data = this.cardData();
-    if (!data?.account || !data.details.creditLimit) return 'N/A';
-    return `${data.account.currency} ${data.details.creditLimit.toLocaleString()}`;
-  });
-
-  protected readonly shouldShowCreditLimit = computed(() => {
-    const data = this.cardData();
-    return data?.details.type === 'CREDIT' && !!data.details.creditLimit;
-  });
-
-  protected readonly isActiveStatus = computed(() => {
-    const data = this.cardData();
-    return data?.details.status === 'ACTIVE';
-  });
-
-  private readonly cardDetailsSubscription = this.store
-    .select(selectCardDetails)
-    .pipe(
-      tap((details) => this.cardDetails.set(details)),
-      takeUntilDestroyed(this.destroyRef),
-    )
-    .subscribe();
-
-  private readonly cardImagesSubscription = this.store
-    .select(selectCardImages)
-    .pipe(
-      tap((images) => this.cardImages.set(images)),
-      takeUntilDestroyed(this.destroyRef),
-    )
-    .subscribe();
-
-  private readonly loadingSubscription = this.store
-    .select(selectCardDetailsLoading)
-    .pipe(
-      tap((loading) => this.loading.set(loading)),
-      takeUntilDestroyed(this.destroyRef),
-    )
-    .subscribe();
-
-  private readonly errorSubscription = this.store
-    .select(selectCardDetailsError)
-    .pipe(
-      tap((error) => this.error.set(error)),
-      takeUntilDestroyed(this.destroyRef),
-    )
-    .subscribe();
-
-private readonly accountSubscription = this.store
-  .select(selectCardDetails)
-  .pipe(
-    map((details) => details[this.cardId]), 
-    filter((detail) => !!detail),
-    take(1), 
-    switchMap((detail) => {
-      if (detail?.accountId) {
-        return this.store.select(selectAccountById(detail.accountId));
+      if (detail.accountId) {
+        return this.store.select(selectAccountById(detail.accountId)).pipe(
+          map((account): CardDataWithAccount => ({
+            cardId: this.cardId,
+            details: detail,
+            imageBase64: image,
+            account,
+          }))
+        );
       }
-      return of(undefined);
-    }),
-    tap((account) => this.account.set(account)),
-    takeUntilDestroyed(this.destroyRef),
-  )
-  .subscribe();
+
+      return of({
+        cardId: this.cardId,
+        details: detail,
+        imageBase64: image,
+        account: undefined,
+      });
+    })
+  );
+
+  protected readonly currency$ = this.cardData$.pipe(
+    map(data => data?.account?.currency ?? 'N/A')
+  );
+
+  protected readonly formattedBalance$ = this.cardData$.pipe(
+    map(data => {
+      if (!data?.account) return 'N/A';
+      return `${data.account.currency} ${data.account.balance.toLocaleString()}`;
+    })
+  );
+
+  protected readonly formattedCreditLimit$ = this.cardData$.pipe(
+    map(data => {
+      if (!data?.account || !data.details.creditLimit) return 'N/A';
+      return `${data.account.currency} ${data.details.creditLimit.toLocaleString()}`;
+    })
+  );
+
+  protected readonly shouldShowCreditLimit$ = this.cardData$.pipe(
+    map(data => data?.details.type === 'CREDIT' && !!data.details.creditLimit)
+  );
+
+  protected readonly isActiveStatus$ = this.cardData$.pipe(
+    map(data => data?.details.status === 'ACTIVE')
+  );
 
   ngOnInit(): void {
     this.store.dispatch(loadCardAccounts());

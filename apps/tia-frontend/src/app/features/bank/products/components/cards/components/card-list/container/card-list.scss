@@ -5,6 +5,7 @@
   @include display-flex(column);
   gap: 3.1rem;
   padding: 2rem;
+ 
 
   @media (max-width: 768px) {
     padding: 1.6rem;

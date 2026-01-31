@@ -76,7 +76,7 @@
   }
 
   &__card-placeholder {
-    @include flex-center(row, center, center);
+    @include flex-center();
     @include font-inter(400, 1.4rem, 1.5);
     color: $gray-500;
   }

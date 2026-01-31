@@ -1,9 +1,9 @@
 <div class="card-list">
-  @if (loading()) {
+  @if (loading$ | async) {
   <div class="card-list__loading">Loading...</div>
-  } @if (error(); as errorMsg) {
+  } @if (error$ | async; as errorMsg) {
   <div class="card-list__error">{{ errorMsg }}</div>
-  } @for (group of cardGroups(); track group.account.id) {
+  } @for (group of cardGroupsWithMeta$ | async; track group.account.id) {
   <div class="card-list__group">
     <div class="card-list__account-header">
       <div class="card-list__account-info">
@@ -11,7 +11,7 @@
         <span class="card-list__account-number">{{ group.account.iban }}</span>
       </div>
       <app-badges
-        [label]="getCardCountLabel(group.cardImages.length)"
+        [label]="group.cardCountLabel"
         variant="secondary"
         size="small"
         shape="rounded"
@@ -21,18 +21,17 @@
     @if (group.cardImages.length > 0) {
     <div class="card-list__cards-wrapper">
       <div class="card-list__cards">
-        @for (cardImage of group.cardImages; track cardImage.cardId; let idx =
-        $index) {
+        @for (card of group.cards; track card.cardId) {
         <div
           class="card-list__card"
-          [class.card-list__card--stacked]="getStackedClass(group.account.id, idx)"
-          [class.card-list__card--active]="getActiveClass(group.account.id, idx)"
-          [style.z-index]="getZIndex(group, idx)"
-          (click)="handleCardClick(group, cardImage.cardId, idx)"
+          [class.card-list__card--stacked]="card.isStacked"
+          [class.card-list__card--active]="card.isActive"
+          [style.z-index]="card.zIndex"
+          (click)="handleCardClick(group.account.id, card.cardId, card.index, group.cardImages.length > 1)"
         >
           <img
-            [src]="cardImage.imageBase64"
-            [alt]="getCardAlt(cardImage.cardId)"
+            [src]="card.imageBase64"
+            [alt]="card.cardAlt"
             class="card-list__card-image"
           />
         </div>
@@ -70,9 +69,11 @@
   </div>
 </div>
 
-<app-create-card [isOpen]="isModalOpen()" (closed)="handleCloseModal()" />
+@if (isModalOpen$ | async; as isOpen) {
+<app-create-card [isOpen]="isOpen" (closed)="handleCloseModal()" />
+}
 
-@if (showSuccessAlert()) {
+@if (showSuccessAlert$ | async) {
 <div class="card-list__alert-container">
   <app-simple-alerts
     alertType="success"

@@ -56,48 +56,48 @@
       <div class="create-card__field">
         <label class="create-card__label">Choose Card Design</label>
         <div class="create-card__designs">
-          @for (design of creationData().designs; track design.design) {
-          <div
-            class="create-card__design-option"
-            [class.create-card__design-option--selected]="selectedDesign() === design.design"
-            (click)="selectDesign(design.design)"
-            (keydown.enter)="selectDesign(design.design)"
-            (keydown.space)="selectDesign(design.design)"
-            role="button"
-            tabindex="0"
-            [attr.aria-label]="design.designName"
-          >
-            <div class="create-card__design-preview">
-              <img
-                [src]="design.uri"
-                [alt]="design.designName"
-                class="create-card__design-image"
-              />
-              @if (selectedDesign() === design.design) {
-              <div class="create-card__design-check">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M13.3337 4L6.00033 11.3333L2.66699 8"
-                    stroke="white"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </div>
-              }
-            </div>
-            <span class="create-card__design-name"
-              >{{ design.designName }}</span
-            >
-          </div>
-          }
+         @for (design of creationData().designs; track design.id) {
+<div
+  class="create-card__design-option"
+  [class.create-card__design-option--selected]="selectedDesign() === design.id"
+  (click)="selectDesign(design.id)"
+  (keydown.enter)="selectDesign(design.id)"
+  (keydown.space)="selectDesign(design.id)"
+  role="button"
+  tabindex="0"
+  [attr.aria-label]="design.designName"
+>
+  <div class="create-card__design-preview">
+    <img
+      [src]="design.uri"
+      [alt]="design.designName"
+      class="create-card__design-image"
+    />
+    @if (selectedDesign() === design.id) {
+    <div class="create-card__design-check">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M13.3337 4L6.00033 11.3333L2.66699 8"
+          stroke="white"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+    }
+  </div>
+  <span class="create-card__design-name"
+    >{{ design.designName }}</span
+  >
+</div>
+}
         </div>
       </div>
 

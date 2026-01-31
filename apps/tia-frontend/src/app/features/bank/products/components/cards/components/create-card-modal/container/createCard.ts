@@ -62,13 +62,12 @@ export class CreateCard {
 
   protected readonly selectedDesign = signal<string>('');
 
-  protected readonly selectedDesignUri = computed(() => {
-    const selected = this.creationData().designs.find(
-      (d) => d.design === this.selectedDesign(),
-    );
-    return selected?.uri || null;
-  });
-
+ protected readonly selectedDesignUri = computed(() => {
+  const selected = this.creationData().designs.find(
+    (d) => d.id === this.selectedDesign(),
+  );
+  return selected?.uri || null;
+});
   protected readonly categoryOptions = computed(() =>
     this.creationData().categories.map((c) => ({ label: c.displayName, value: c.value }))
   );
@@ -91,12 +90,12 @@ export class CreateCard {
       }
     });
 
-    effect(() => {
-      const designs = this.creationData().designs;
-      if (designs.length > 0 && !this.selectedDesign()) {
-        this.selectDesign(designs[0].design);
-      }
-    });
+ effect(() => {
+  const designs = this.creationData().designs;
+  if (designs.length > 0 && !this.selectedDesign()) {
+    this.selectDesign(designs[0].id);  
+  }
+});
   }
 
   protected selectDesign(design: string): void {

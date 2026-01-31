@@ -48,10 +48,17 @@ export const loadCardDetailsFailure = createAction(
   '[Cards] Load Card Details Failure',
   props<{ cardId: string; error: string }>()
 );
+
 export const loadAccountCards = createAction(
   '[Cards] Load Account Cards',
   props<{ accountId: string }>()
 );
+
+export const loadAccountCardsPage = createAction(
+  '[Cards] Load Account Cards Page',
+  props<{ accountId: string }>()
+);
+
 export const loadCardCreationData = createAction(
   '[Cards] Load Card Creation Data'
 );
@@ -91,6 +98,7 @@ export const openCreateCardModal = createAction(
 export const closeCreateCardModal = createAction(
   '[Cards] Close Create Card Modal'
 );
+
 export const hideSuccessAlert = createAction(
   '[Cards] Hide Success Alert'
 );
