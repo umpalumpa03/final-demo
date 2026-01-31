@@ -73,15 +73,42 @@ export class PrepaymentOptionStep {
   );
 
   private getTranslatedConfig() {
-    const t = (key?: string) => (key ? this.translate.instant(key) : undefined);
-    const newConfig: any = { ...PREPAYMENT_FORM_CONFIG };
+    const translate = (key?: string) =>
+      key ? this.translate.instant(key) : undefined;
 
-    Object.keys(newConfig).forEach((key) => {
-      const field = { ...newConfig[key] };
-      if (field.label) field.label = t(field.label);
-      if (field.placeholder) field.placeholder = t(field.placeholder);
-      newConfig[key] = field;
-    });
+    type OriginalConfig = typeof PREPAYMENT_FORM_CONFIG;
+
+    type TranslatableConfig = {
+      -readonly [K in keyof OriginalConfig]: {
+        [P in keyof OriginalConfig[K]]: P extends 'layout' | 'type'
+          ? OriginalConfig[K][P]
+          : OriginalConfig[K][P] extends string
+            ? string
+            : OriginalConfig[K][P];
+      };
+    };
+
+    type ConfigValue = TranslatableConfig[keyof TranslatableConfig];
+
+    const newConfig = {
+      ...PREPAYMENT_FORM_CONFIG,
+    } as unknown as TranslatableConfig;
+
+    (Object.keys(newConfig) as Array<keyof TranslatableConfig>).forEach(
+      (key) => {
+        const field = { ...newConfig[key] };
+
+        if ('label' in field && field.label) {
+          field.label = translate(field.label as string);
+        }
+        if ('placeholder' in field && field.placeholder) {
+          field.placeholder = translate(field.placeholder as string);
+        }
+
+        (newConfig as Record<keyof TranslatableConfig, ConfigValue>)[key] =
+          field;
+      },
+    );
 
     return newConfig;
   }
@@ -112,7 +139,7 @@ export class PrepaymentOptionStep {
 
   public readonly form = this.fb.group({
     type: ['', Validators.required],
-    amount: [null as number | null, [Validators.required, Validators.min(1)]],
+    amount: [null as number | null, [Validators.required, Validators.min(50)]],
     calculationOption: ['reduceMonthlyPayment', Validators.required],
   });
 

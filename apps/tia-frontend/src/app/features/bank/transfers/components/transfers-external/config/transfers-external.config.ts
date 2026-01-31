@@ -7,5 +7,5 @@ export const getRecipientInputConfig = (
   placeholder: translate.instant(
     'transfers.external.recipient.inputPlaceholder',
   ),
-  prefixIcon: 'images/svg/transfers/external-icon.svg',
+  prefixIcon: 'images/svg/transfers/recipient-info-input.svg',
 });

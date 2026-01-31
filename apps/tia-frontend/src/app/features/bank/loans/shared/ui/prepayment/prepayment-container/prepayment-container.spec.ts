@@ -1,10 +1,11 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { PrepaymentContainer } from './prepayment-container';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { LoansActions } from '../../../../store/loans.actions';
 import {
   selectActiveChallengeId,
   selectCalculationResult,
+  selectActionLoading,
 } from '../../../../store/loans.selectors';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { ILoan } from '../../../models/loan.model';
@@ -31,6 +32,7 @@ describe('PrepaymentContainer', () => {
       prepaymentOptions: [],
       calculationResult: null,
       activeChallengeId: null,
+      actionLoading: false,
     },
   };
 
@@ -45,6 +47,7 @@ describe('PrepaymentContainer', () => {
           selectors: [
             { selector: selectCalculationResult, value: null },
             { selector: selectActiveChallengeId, value: null },
+            { selector: selectActionLoading, value: false },
           ],
         }),
         provideMockActions(() => actions$),
@@ -112,33 +115,55 @@ describe('PrepaymentContainer', () => {
     );
   });
 
-  it('should proceed to otp with payoff amount for full', () => {
-    const payload = { type: 'full', loanId: '1' } as any;
-    component.onCalculate(payload);
-    store.overrideSelector(selectCalculationResult, {
-      displayedInfo: [{ text: 'Total payoff amount', amount: 5000 }],
-    } as any);
-    store.refreshState();
-    fixture.detectChanges();
-
-    component.onProceedToOtp();
-
-    expect(store.dispatch).toHaveBeenCalledWith(
-      LoansActions.initiatePrepayment({
-        payload: {
-          loanId: '1',
-          loanPrepaymentOption: 'full',
-          loanPartialPaymentType: 'reduceMonthlyPayment',
-          amount: 5000,
-          paymentAccountId: 'acc1',
-        },
-      }),
-    );
-  });
-
   it('should emit close on verifyPrepaymentSuccess', () => {
     const spy = vi.spyOn(component.close, 'emit');
     actions$.next(LoansActions.verifyPrepaymentSuccess());
     expect(spy).toHaveBeenCalled();
+  });
+
+  describe('onProceedToOtp', () => {
+    it('should return early if no pendingPayload exists', () => {
+      component.onProceedToOtp();
+      expect(store.dispatch).not.toHaveBeenCalledWith(
+        expect.objectContaining({ type: LoansActions.initiatePrepayment.type }),
+      );
+    });
+
+    it('should dispatch initiatePrepayment with amount from payload for partial type', () => {
+      const payload = { loanId: '1', type: 'partial', amount: 500 } as any;
+      component.onCalculate(payload);
+
+      component.onProceedToOtp();
+
+      expect(store.dispatch).toHaveBeenCalledWith(
+        LoansActions.initiatePrepayment({
+          payload: expect.objectContaining({
+            amount: 500,
+            loanPrepaymentOption: 'partial',
+          }),
+        }),
+      );
+    });
+
+    it('should extract principal amount from calculationResult for full prepayment', () => {
+      const payload = { loanId: '1', type: 'full' } as any;
+      component.onCalculate(payload);
+
+      store.overrideSelector(selectCalculationResult, {
+        displayedInfo: [{ text: 'Remaining principal', amount: 4500 }],
+      } as any);
+      store.refreshState();
+
+      component.onProceedToOtp();
+
+      expect(store.dispatch).toHaveBeenCalledWith(
+        LoansActions.initiatePrepayment({
+          payload: expect.objectContaining({
+            amount: 4500,
+            loanPrepaymentOption: 'full',
+          }),
+        }),
+      );
+    });
   });
 });

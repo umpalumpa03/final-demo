@@ -1,75 +1,93 @@
 import { TestBed } from '@angular/core/testing';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TransferStore } from './transfers.store';
+import { TransfersApiService } from '../services/transfersApi.service';
 import { initialTransferState } from './transfers.state';
+import { of, throwError } from 'rxjs';
 
-describe('TransferStore', () => {
-  let store: InstanceType<typeof TransferStore>;
+describe('TransferStore (vitest)', () => {
+  let store: any;
+  let transfersApiMock: any;
+
+  const mockResponse = {
+    fullName: 'John Doe',
+    accounts: [{ id: '1', accountNumber: 'ACC1' }],
+  };
 
   beforeEach(() => {
+    transfersApiMock = {
+      lookupByPhone: vi.fn(),
+      lookupByIban: vi.fn(),
+    };
+
     TestBed.configureTestingModule({
-      providers: [TransferStore],
+      providers: [
+        TransferStore,
+        { provide: TransfersApiService, useValue: transfersApiMock },
+      ],
     });
+
     store = TestBed.inject(TransferStore);
   });
 
-  it('should create with initial state', () => {
-    expect(store.recipientInput()).toBe('');
-    expect(store.recipientType()).toBeNull();
-    expect(store.error()).toBeNull();
+  it('should initialize with initial state', () => {
+    expect(store.recipientInput()).toBe(initialTransferState.recipientInput);
+    expect(store.isLoading()).toBe(false);
+    expect(store.recipientInfo()).toBeNull();
   });
 
-  it('should update recipient input', () => {
-    store.setRecipientInput('+995555123456');
-    expect(store.recipientInput()).toBe('+995555123456');
-  });
+  it('should handle successful lookupByPhone', () => {
+    transfersApiMock.lookupByPhone.mockReturnValue(of(mockResponse));
 
-  it('should update recipient input with IBAN', () => {
-    store.setRecipientInput('GE29TIA7890123456789012');
-    expect(store.recipientInput()).toBe('GE29TIA7890123456789012');
-  });
+    store.lookupRecipient({ value: '555123', type: 'phone' });
 
-  it('should set recipient type to phone', () => {
-    store.setRecipientType('phone');
+    expect(store.recipientInput()).toBe('555123');
     expect(store.recipientType()).toBe('phone');
-  });
-
-  it('should set recipient type to iban-same-bank', () => {
-    store.setRecipientType('iban-same-bank');
-    expect(store.recipientType()).toBe('iban-same-bank');
-  });
-
-  it('should set recipient type to iban-different-bank', () => {
-    store.setRecipientType('iban-different-bank');
-    expect(store.recipientType()).toBe('iban-different-bank');
-  });
-
-  it('should set recipient type to null', () => {
-    store.setRecipientType('phone');
-    store.setRecipientType(null);
-    expect(store.recipientType()).toBeNull();
-  });
-
-  it('should set error message', () => {
-    store.setError('Invalid format');
-    expect(store.error()).toBe('Invalid format');
-  });
-
-  it('should clear error', () => {
-    store.setError('Some error');
-    store.setError(null);
+    expect(store.recipientInfo()).toEqual(mockResponse);
+    expect(store.isLoading()).toBe(false);
     expect(store.error()).toBeNull();
+  });
+
+  it('should handle successful lookupByIban', () => {
+    transfersApiMock.lookupByIban.mockReturnValue(of(mockResponse));
+
+    store.lookupRecipient({ value: 'GE123', type: 'iban-same-bank' });
+
+    expect(transfersApiMock.lookupByIban).toHaveBeenCalledWith('GE123');
+    expect(store.recipientInfo()).toEqual(mockResponse);
+  });
+
+  it('should handle lookup error', () => {
+    const errorMsg = 'Recipient not found';
+    transfersApiMock.lookupByPhone.mockReturnValue(
+      throwError(() => ({ message: errorMsg })),
+    );
+
+    store.lookupRecipient({ value: '555000', type: 'phone' });
+
+    expect(store.error()).toBe(errorMsg);
+    expect(store.isLoading()).toBe(false);
+    expect(store.recipientInfo()).toBeNull();
+  });
+
+  it('should handle lookup error without message', () => {
+    transfersApiMock.lookupByPhone.mockReturnValue(
+      throwError(() => new Error()),
+    );
+
+    store.lookupRecipient({ value: '555000', type: 'phone' });
+
+    expect(store.error()).toBe('Failed to find recipient');
   });
 
   it('should reset store to initial state', () => {
-    store.setRecipientInput('+995555123456');
-    store.setRecipientType('phone');
-    store.setError('Some error');
+    transfersApiMock.lookupByPhone.mockReturnValue(of(mockResponse));
+    store.lookupRecipient({ value: '555123', type: 'phone' });
 
     store.reset();
 
     expect(store.recipientInput()).toBe(initialTransferState.recipientInput);
-    expect(store.recipientType()).toBe(initialTransferState.recipientType);
-    expect(store.error()).toBe(initialTransferState.error);
+    expect(store.recipientInfo()).toBeNull();
+    expect(store.error()).toBeNull();
   });
 });

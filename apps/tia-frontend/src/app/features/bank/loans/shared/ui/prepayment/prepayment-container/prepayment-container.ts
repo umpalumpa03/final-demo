@@ -83,11 +83,12 @@ export class PrepaymentContainer implements OnInit {
 
     if (this.pendingPayload.type === 'full') {
       const calcData = this.calculationResult()?.displayedInfo;
-      const payoffItem = calcData?.find(
-        (x) =>
-          x.text === 'Total payoff amount' || x.text === 'Prepayment amount',
+
+      const principalItem = calcData?.find(
+        (x) => x.text === 'Remaining principal',
       );
-      finalAmount = payoffItem ? payoffItem.amount : 0;
+
+      finalAmount = principalItem ? principalItem.amount : 0;
     }
 
     const request: IInitiatePrepaymentRequest = {
