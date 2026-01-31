@@ -4,7 +4,7 @@
 .exchange-rates {
   @include display-flex(column);
   gap: 1.6rem;
-  padding: 3.2rem;
+  padding: 1rem;
 
   &__title {
     @include font-inter(600, 2rem, 2.8rem);

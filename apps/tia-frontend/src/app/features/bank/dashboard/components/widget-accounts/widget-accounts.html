@@ -1,4 +1,8 @@
-<app-scroll-area [height]="widgetHeight()" [hideBorder]="true" scrollbar="hidden">
+<app-scroll-area
+  [height]="widgetHeight()"
+  [hideBorder]="true"
+  scrollbar="hidden"
+>
   @if (isLoading$ | async) {
   <div class="widget-loading">
     <app-route-loader variant="full-page" text="Loading Accounts...">
@@ -29,6 +33,8 @@
   </div>
   }
   <div class="accounts">
+    <h2 class="accounts__title">Your account balances and activity</h2>
+
     @for (account of accounts$ | async; track account.id) {
     <div class="account-card">
       <div class="account-card__header">
