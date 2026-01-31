@@ -12,16 +12,28 @@ import { LoanDetails } from '../../../shared/ui/prepayment/loan-details/loan-det
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { PrepaymentContainer } from '../../../shared/ui/prepayment/prepayment-container/prepayment-container';
 import { LoansStore } from '../../../store/loans.store';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-approved-loans',
-  imports: [LoanCard, CommonModule, LoanDetails, UiModal, PrepaymentContainer],
+  imports: [
+    LoanCard,
+    CommonModule,
+    LoanDetails,
+    UiModal,
+    PrepaymentContainer,
+    ErrorStates,
+    TranslatePipe,
+  ],
   templateUrl: './approved-loans.html',
   styleUrl: './approved-loans.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApprovedLoans implements OnInit {
   protected readonly store = inject(LoansStore);
+  private readonly router = inject(Router);
 
   protected readonly approvedLoans = this.store.loansWithAccountInfo;
   protected readonly selectedLoanDetails = this.store.selectedLoanDetails;
@@ -63,5 +75,9 @@ export class ApprovedLoans implements OnInit {
     this.prepaymentLoan.set(null);
     this.selectedLoan.set(null);
     this.store.clearLoanDetails();
+  }
+
+  public navigateToAllLoans(): void {
+    this.router.navigate(['/loans/all']);
   }
 }

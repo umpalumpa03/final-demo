@@ -33,7 +33,7 @@ export class LoansContainer {
 
   protected readonly store = inject(LoansStore);
 
-  protected isModalOpen = signal(false);
+  public isModalOpen = signal(false);
 
   protected isLoading = this.store.loading;
   protected readonly alertConfig = this.store.alert;
