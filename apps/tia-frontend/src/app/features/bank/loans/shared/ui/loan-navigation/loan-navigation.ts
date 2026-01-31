@@ -24,7 +24,7 @@ export class LoanNavigation {
     initialValue: null,
   });
 
-  protected readonly tabs = computed<TabItem[]>(() => {
+  public readonly tabs = computed<TabItem[]>(() => {
     const c = this.store.loanCounts();
     this.langChange();
 
