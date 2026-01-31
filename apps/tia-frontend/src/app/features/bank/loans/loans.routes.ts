@@ -1,9 +1,6 @@
 import { Routes } from '@angular/router';
 import { provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
-
-import { loansReducer } from './store/loans.reducer';
-import { LoansEffects } from './store/loans.effects';
 import { LoansContainer } from './container/loans-container';
 import { LoansService } from './shared/services/loans.service';
 import { AccountsEffects } from '../../../store/products/accounts/accounts.effects';
@@ -20,10 +17,8 @@ export const loansRoutes: Routes = [
     providers: [
       LoansStore,
 
-      // 2. Provide the Service (used by the store)
       LoansService,
 
-      // 3. Keep Global/Other features running on standard Ngrx
       provideState(accountsFeature),
       provideEffects(AccountsEffects),
 
