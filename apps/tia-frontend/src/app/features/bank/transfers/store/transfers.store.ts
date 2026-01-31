@@ -8,6 +8,8 @@ import { inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, of } from 'rxjs';
 import { TransfersApiService } from '../services/transfersApi.service';
+import { Account } from '@tia/shared/models/accounts/accounts.model';
+import { RecipientAccount } from '../models/transfers.state.model';
 
 export const TransferStore = signalStore(
   withState(initialTransferState),
@@ -23,6 +25,13 @@ export const TransferStore = signalStore(
     },
     setManualRecipientName(name: string) {
       patchState(store, { manualRecipientName: name });
+    },
+    setSenderAccount(account: Account | null) {
+      patchState(store, { senderAccount: account });
+    },
+
+    setSelectedRecipientAccount(account: RecipientAccount | null) {
+      patchState(store, { selectedRecipientAccount: account });
     },
 
     lookupRecipient: rxMethod<{ value: string; type: RecipientType }>(

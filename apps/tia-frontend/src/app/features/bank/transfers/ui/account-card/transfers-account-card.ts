@@ -9,8 +9,6 @@ import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { AccountData } from '../../models/transfers.state.model';
 import { DecimalPipe } from '@angular/common';
 
-// type AccountData = Account | RecipientAccount;
-
 @Component({
   selector: 'app-transfers-account-card',
   imports: [DecimalPipe],

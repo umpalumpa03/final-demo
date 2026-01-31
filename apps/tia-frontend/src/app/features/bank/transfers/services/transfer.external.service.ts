@@ -4,6 +4,8 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { filter, skip, take, tap } from 'rxjs';
 import { TransferStore } from '../store/transfers.store';
 import { TransferValidationService } from './transfer-validation.service';
+import { Account } from '@tia/shared/models/accounts/accounts.model';
+import { AccountData, RecipientAccount } from '../models/transfers.state.model';
 
 @Injectable()
 export class TransferExternalService {
@@ -40,7 +42,7 @@ export class TransferExternalService {
         return;
       }
 
-      // phone or same bank iban , call api to lookup recipient
+      // phone or same bank iban, call api to lookup recipient
       this.transferStore.lookupRecipient({
         value,
         type: currentType,
@@ -58,6 +60,67 @@ export class TransferExternalService {
           takeUntilDestroyed(this.destroyRef),
         )
         .subscribe();
+    }
+  }
+
+  public isRecipientAccountDisabled(
+    account: RecipientAccount,
+    selectedSenderAccount: Account | null,
+  ): boolean {
+    const senderCurrency = selectedSenderAccount?.currency;
+    // disable if sender is selected and currencies don't match
+    return senderCurrency ? account.currency !== senderCurrency : false;
+  }
+
+  public isSenderAccountDisabled(
+    account: Account,
+    selectedRecipientAccount: RecipientAccount | null,
+    isExternalIban: boolean,
+  ): boolean {
+    // external iban no filtering
+    if (isExternalIban) return false;
+
+    const recipientCurrency = selectedRecipientAccount?.currency;
+    // disable if recipient is selected and currencies don't match
+    return recipientCurrency ? account.currency !== recipientCurrency : false;
+  }
+
+  public handleRecipientAccountSelect(
+    account: RecipientAccount,
+    currentSelected: RecipientAccount | null,
+  ): void {
+    // toggle if clicking same account, deselect it
+    if (currentSelected?.id === account.id) {
+      this.transferStore.setSelectedRecipientAccount(null);
+    } else {
+      this.transferStore.setSelectedRecipientAccount(account);
+    }
+  }
+
+  public handleSenderAccountSelect(
+    account: Account,
+    currentSelected: Account | null,
+  ): void {
+    // toggle if clicking same account, deselect it
+    if (currentSelected?.id === account.id) {
+      this.transferStore.setSenderAccount(null);
+    } else {
+      this.transferStore.setSenderAccount(account);
+    }
+  }
+
+  public handleContinue(
+    selectedRecipientAccount: RecipientAccount | null,
+    selectedSenderAccount: Account | null,
+    isExternalIban: boolean,
+    recipientName: string | null,
+  ): void {
+    if (selectedRecipientAccount || isExternalIban) {
+      if (isExternalIban && recipientName) {
+        this.transferStore.setManualRecipientName(recipientName);
+      }
+
+      this.router.navigate(['/bank/transfers/external/amount']);
     }
   }
 }

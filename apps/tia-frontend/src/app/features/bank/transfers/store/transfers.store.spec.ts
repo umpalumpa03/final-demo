@@ -4,14 +4,42 @@ import { TransferStore } from './transfers.store';
 import { TransfersApiService } from '../services/transfersApi.service';
 import { initialTransferState } from './transfers.state';
 import { of, throwError } from 'rxjs';
+import { RecipientAccount } from '../models/transfers.state.model';
+import {
+  Account,
+  AccountType,
+} from '@tia/shared/models/accounts/accounts.model';
 
-describe('TransferStore (vitest)', () => {
+describe('TransferStore', () => {
   let store: any;
   let transfersApiMock: any;
 
   const mockResponse = {
     fullName: 'John Doe',
-    accounts: [{ id: '1', accountNumber: 'ACC1' }],
+    accounts: [{ id: '1', iban: 'GE123', currency: 'GEL' }],
+  };
+
+  const mockAccount: Account = {
+    id: '1',
+    userId: 'user1',
+    permission: 1,
+    friendlyName: 'My Account',
+    type: AccountType.current,
+    currency: 'GEL',
+    iban: 'GE123',
+    name: 'Current Account',
+    status: 'active',
+    balance: 1000,
+    createdAt: '2024-01-01',
+    openedAt: '2024-01-01',
+    closedAt: '',
+    isFavorite: false,
+  };
+
+  const mockRecipientAccount: RecipientAccount = {
+    id: '2',
+    iban: 'GE456',
+    currency: 'GEL',
   };
 
   beforeEach(() => {
@@ -34,6 +62,47 @@ describe('TransferStore (vitest)', () => {
     expect(store.recipientInput()).toBe(initialTransferState.recipientInput);
     expect(store.isLoading()).toBe(false);
     expect(store.recipientInfo()).toBeNull();
+  });
+
+  it('should set external recipient', () => {
+    store.setExternalRecipient('DE123', 'iban-different-bank');
+
+    expect(store.recipientInput()).toBe('DE123');
+    expect(store.recipientType()).toBe('iban-different-bank');
+    expect(store.recipientInfo()).toBeNull();
+    expect(store.error()).toBeNull();
+  });
+
+  it('should set manual recipient name', () => {
+    store.setManualRecipientName('Jane Doe');
+
+    expect(store.manualRecipientName()).toBe('Jane Doe');
+  });
+
+  it('should set sender account', () => {
+    store.setSenderAccount(mockAccount);
+
+    expect(store.senderAccount()).toEqual(mockAccount);
+  });
+
+  it('should clear sender account when null', () => {
+    store.setSenderAccount(mockAccount);
+    store.setSenderAccount(null);
+
+    expect(store.senderAccount()).toBeNull();
+  });
+
+  it('should set selected recipient account', () => {
+    store.setSelectedRecipientAccount(mockRecipientAccount);
+
+    expect(store.selectedRecipientAccount()).toEqual(mockRecipientAccount);
+  });
+
+  it('should clear selected recipient account when null', () => {
+    store.setSelectedRecipientAccount(mockRecipientAccount);
+    store.setSelectedRecipientAccount(null);
+
+    expect(store.selectedRecipientAccount()).toBeNull();
   });
 
   it('should handle successful lookupByPhone', () => {
@@ -83,11 +152,15 @@ describe('TransferStore (vitest)', () => {
   it('should reset store to initial state', () => {
     transfersApiMock.lookupByPhone.mockReturnValue(of(mockResponse));
     store.lookupRecipient({ value: '555123', type: 'phone' });
+    store.setSenderAccount(mockAccount);
+    store.setSelectedRecipientAccount(mockRecipientAccount);
 
     store.reset();
 
     expect(store.recipientInput()).toBe(initialTransferState.recipientInput);
     expect(store.recipientInfo()).toBeNull();
     expect(store.error()).toBeNull();
+    expect(store.senderAccount()).toBeNull();
+    expect(store.selectedRecipientAccount()).toBeNull();
   });
 });
