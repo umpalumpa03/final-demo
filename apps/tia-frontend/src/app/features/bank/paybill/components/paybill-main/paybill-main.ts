@@ -14,7 +14,6 @@ import { PaybillForm } from './components/paybill-form/paybill-form';
 import { PaybillActions } from '../../store/paybill.actions';
 import { PaybillOtpVerification } from './components/paybill-otp-verification/paybill-otp-verification';
 import {
-  ConfirmPaymentPayload,
   PaybillPayload,
   ProceedPaymentPayload,
 } from '../../models/paybill.model';
@@ -31,14 +30,14 @@ export class PaybillMain {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
+  // States
+
   public readonly currentStep = this.store.selectSignal(
     PAYBILL_SELECTORS.selectCurrentStep,
   );
   public readonly paymentPayload = this.store.selectSignal(
     PAYBILL_SELECTORS.selectPaymentPayload,
   );
-
-  // States
 
   public readonly activeCategory = this.store.selectSignal(
     PAYBILL_SELECTORS.selectActiveCategory,
@@ -138,7 +137,7 @@ export class PaybillMain {
     this.store.dispatch(PaybillActions.setPaymentStep({ step: 'DETAILS' }));
   }
 
-  public onOtpVerified(otpCode:string): void {
+  public onOtpVerified(otpCode: string): void {
     const challengeId = this.challengeId();
 
     if (challengeId) {

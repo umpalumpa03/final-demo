@@ -43,8 +43,13 @@ export class PaybillOtpVerification {
   protected readonly otpConfig = otpConfiguration;
 
   public currentCode = model('');
+
   public onOtpComplete(code: string): void {
     this.currentCode.set(code);
+  }
+
+  public onOtpResend(): void {
+    this.resendCode.emit();
   }
 
   public handleVerify(): void {
