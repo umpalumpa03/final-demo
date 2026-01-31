@@ -17,7 +17,6 @@ import { dateRangeValidator } from '../validators/date-range.validator';
 
 @Component({
   selector: 'app-finances-container',
-  standalone: true,
   imports: [FinancesView],
   templateUrl: './finances-container.html',
   styleUrl: './finances-container.scss',
@@ -54,7 +53,7 @@ export class FinancesContainer implements OnInit {
       .pipe(
         debounceTime(500),
         filter(() => this.filterForm.valid),
-        distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
+        distinctUntilChanged((prev, curr) => prev === curr),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => this.fetchData());
