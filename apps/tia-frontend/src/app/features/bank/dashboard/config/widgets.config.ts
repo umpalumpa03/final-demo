@@ -23,4 +23,5 @@ export const widgetItems = [
     type: 'exchange',
     hasButton: true,
   },
+
 ] as const;

@@ -18,8 +18,14 @@ export class ErrorStates {
   public readonly maxWidth = input<string>('32.8rem');
   public readonly border = input<boolean>(true);
   public readonly showButton = input<boolean>(true);
+  public readonly isCentered = input<boolean>(true);
 
   public readonly buttonClick = output<void>();
+
+  public readonly containerClass = computed(() => {
+    const baseClass = 'error-container';
+    return this.isCentered() ? `${baseClass} error-container--centered` : baseClass;
+  })
 
   public readonly errorClass = computed(() => {
     const baseClass = `error-state error-state--${this.variant()}`;

@@ -1,19 +1,109 @@
-@use "../../../../shared/styles/palette" as *;
-@use "../../../../shared/styles/mixins" as *;
+@use '../../../../shared/styles/palette' as *;
+@use '../../../../shared/styles/mixins' as *;
 
 .sidebar {
   @include display-flex(column);
   position: relative;
-  box-shadow:
-    0px 4px 6px -4px #0000001a,
-    0px 10px 15px -3px #0000001a;
   width: 25.6rem;
   height: 100vh;
   background: $white;
+  box-shadow:
+    0px 4px 6px -4px rgba($black, 0.1),
+    0px 10px 15px -3px rgba($black, 0.1);
   transition: width 0.3s ease;
 
   &--collapsed {
     width: 7.2rem;
+  }
+
+  &__mobile-menu {
+    @include display-flex(column);
+    align-items: center;
+    position: fixed;
+    top: 2rem;
+    left: 1.5rem;
+    z-index: 200;
+  }
+
+  &__mobile-toggle {
+    @include flex-center;
+    width: 4rem;
+    height: 4rem;
+    background: $white;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0px 2px 4px rgba($black, 0.1);
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+
+    &:hover,
+    &--open {
+      box-shadow: 0px 4px 8px rgba($black, 0.15);
+    }
+  }
+
+  &__mobile-toggle-icon {
+    width: 1.4rem;
+    height: 1.4rem;
+    transform: rotate(-90deg);
+    transition: transform 0.3s ease;
+
+    &--open {
+      transform: rotate(90deg);
+    }
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: calc(100% + 0.8rem);
+    left: 50%;
+    max-height: 0;
+    background: $white;
+    border-radius: 1.2rem;
+    box-shadow: 0px 4px 12px rgba($black, 0.15);
+    opacity: 0;
+    overflow: hidden;
+    transform: translateX(-50%) translateY(-0.8rem);
+    transition:
+      max-height 0.3s ease,
+      opacity 0.3s ease,
+      transform 0.3s ease;
+
+    &--open {
+      max-height: 50rem;
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    app-navigation-bar {
+      padding: 0.8rem;
+    }
+  }
+
+  &__dropdown-footer {
+    @include flex-center;
+    padding: 0.8rem;
+    border-top: 1px solid $gray-200;
+  }
+
+  &__dropdown-logout {
+    @include flex-center;
+    width: 4.2rem;
+    height: 4.2rem;
+    background: transparent;
+    border: none;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: $gray-50;
+    }
+
+    img {
+      width: 1.6rem;
+      height: 1.6rem;
+    }
   }
 
   &__collapse-btn {
@@ -23,10 +113,11 @@
     right: -1.2rem;
     width: 2.4rem;
     height: 2.4rem;
-    border-radius: 50%;
     background: $white;
     border: none;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    z-index: 15;
+    box-shadow: 0px 2px 4px rgba($black, 0.1);
     cursor: pointer;
 
     img {
@@ -52,8 +143,8 @@
     @include font-inter(600, 1.8rem);
     width: 4rem;
     height: 4rem;
-    border-radius: 0.8rem;
     background: $blue-800;
+    border-radius: 0.8rem;
     color: $white;
     flex-shrink: 0;
   }
@@ -71,10 +162,10 @@
 
   &__footer {
     @include flex-center(row, flex-start);
-    margin-top: auto;
-    padding: 1.6rem;
     position: sticky;
     bottom: 0;
+    margin-top: auto;
+    padding: 1.6rem;
     background: $white;
 
     app-button {
@@ -89,30 +180,39 @@
     }
   }
 
+  &__logout {
+    display: inline-block;
+    color: $gray-700;
+    white-space: nowrap;
+    overflow: hidden;
+    opacity: 1;
+    transition:
+      opacity 0.3s ease,
+      max-width 0.3s ease;
+  }
+
+  &__logout-text--hidden {
+    max-width: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
   &__overlay {
+    @include flex-center;
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
     background: rgba($black, 0.5);
-    @include flex-center;
     z-index: 100;
   }
 
-  &__logout {
-    display: inline-block;
-    opacity: 1;
-    transition:
-      opacity 0.3s ease,
-      max-width 0.3s ease;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-
-  &__logout-text--hidden {
-    opacity: 0;
-    max-width: 0;
-    pointer-events: none;
+  &__loader-overlay {
+    @include flex-center;
+    position: fixed;
+    inset: 0;
+    background: rgba($white, 0.85);
+    z-index: 300;
   }
 }
