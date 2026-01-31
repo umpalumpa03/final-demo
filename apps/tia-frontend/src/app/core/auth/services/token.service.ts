@@ -41,8 +41,8 @@ export class TokenService {
     localStorage.removeItem(TokenKey.SIGNUP);
   }
 
-  public clearAllToken(): void {
-    localStorage.clear();
+  public clearUserInfo(): void {
+    localStorage.removeItem(TokenKey.USER);
   }
 
   public get accessToken() {

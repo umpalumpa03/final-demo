@@ -14,9 +14,9 @@ export class VerifySignin {
   private authService = inject(AuthService);
 
   public isLoading = signal(false);
-  public title = 'OTP Verification';
-  public subText = "We've sent a 6-digit code to test";
-  public submitBtnName = 'Verify';
+  public title = 'auth.otp-verify.title';
+  public subText = "auth.otp-verify.subtitle";
+  public submitBtnName = 'auth.otp-verify.btnName';
 
   public submitOtp = (code: string) =>
     this.authService.verifyMfa({

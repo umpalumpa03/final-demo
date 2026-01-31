@@ -19,17 +19,18 @@ import {
   IMfaVerifyResponse,
 } from '../../models/authResponse.model';
 import { OtpResponse } from '../../models/authRequest.models';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-otp-verification',
-  imports: [ButtonComponent, ReactiveFormsModule, Spinner, Otp, RouterLink],
+  imports: [ButtonComponent, ReactiveFormsModule, Spinner, Otp, RouterLink, TranslatePipe],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OtpVerification {
   private fb = inject(FormBuilder);
-  
+
   public isLoading = input<boolean>(false);
   public title = input<string>();
   public subText = input<string>();
