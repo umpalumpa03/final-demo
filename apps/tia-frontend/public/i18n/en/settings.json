@@ -23,7 +23,22 @@
     },
     "appearance": {
         "title": "Appearance",
-        "theme": "Theme",
+        "subtitle": "Customize your visual experience",
+        "themes": {
+            "oceanBlue": {
+                "name": "Ocean Blue",
+                "description": "Light and refreshing blue theme"
+            },
+            "royalBlue": {
+                "name": "Royal Blue",
+                "description": "Classic and elegant blue theme"
+            },
+            "deepBlue": {
+                "name": "Deep Blue",
+                "description": "Rich and sophisticated blue theme"
+            }
+        },
+        "cardsTitle": "Select Theme",
         "light": "Light",
         "dark": "Dark",
         "system": "System"
