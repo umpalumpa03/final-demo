@@ -24,16 +24,13 @@
     z-index: 9999;
   }
 
-  // Close button
   &__close {
+    @include flex-center();
     position: absolute;
     top: 1.2rem;
     right: 1.2rem;
     width: 3.6rem;
     height: 3.6rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background: transparent;
     border: none;
     cursor: pointer;
@@ -136,11 +133,11 @@
             bottom: 100%;
             left: 50%;
             transform: translateX(-50%);
-            padding: 6px 10px;
-            background-color: #333;
-            color: white;
-            font-size: 12px;
-            border-radius: 4px;
+            padding: 0.6rem 0.1rem;
+            background-color: $blue-deep-muted;
+            color: $white;
+            font-size: 1.2rem;
+            border-radius: 0.4rem;
             white-space: nowrap;
             opacity: 0;
             visibility: hidden;
