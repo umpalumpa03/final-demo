@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   input,
   output,
@@ -16,10 +17,20 @@ import {
   OtpVerificationType,
   getOtpVerificationConfig,
 } from './models/otp-verification.model';
+import {
+  interval,
+  Subject,
+  Subscription,
+  takeUntil,
+  takeWhile,
+  tap,
+} from 'rxjs';
+import { TimerType } from '../../models/auth.models';
+import { TextInput } from "@tia/shared/lib/forms/input-field/text-input";
 
 @Component({
   selector: 'app-otp-verification',
-  imports: [ButtonComponent, ReactiveFormsModule, Spinner, Otp, RouterLink, Timer],
+  imports: [ButtonComponent, ReactiveFormsModule, Spinner, Otp, RouterLink, TextInput],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,8 +38,10 @@ import {
 export class OtpVerification {
   private fb = inject(FormBuilder);
   public type = input.required<OtpVerificationType>();
+  public timeLimit = input(1);
+  public timerType = input<TimerType>('phone');
   public isVerifyCalled = output<{ isCalled: boolean; otp: string | null }>();
-  public isRsendCalled = output<boolean>();
+  public isResendCalled = output<boolean>();
 
   public config = computed(() => getOtpVerificationConfig(this.type()));
 
@@ -36,6 +49,7 @@ export class OtpVerification {
   public isSubmitting = signal(false);
   public submitError = signal<string | null>(null);
   public otpConfig = signal({ length: 4 });
+  public phoneConfig = signal({ label: "phone" });
 
   public showIcon = computed(() => this.config().showIcon);
   public iconUrl = computed(() => this.config().iconUrl);
@@ -47,9 +61,51 @@ export class OtpVerification {
   public backLink = computed(() => this.config().backLink);
   public backLinkText = computed(() => this.config().backLinkText);
 
+  private destroy$ = new Subject<void>();
+  private timerSubscription?: Subscription;
+  public maxTime = computed(() => {
+    const limit = Math.abs(Number(this.timeLimit()));
+
+    return limit * 6;
+  });
+
+  public countdown = signal<number>(0);
+  private timer$ = interval(1000);
+
+  public isResendActive = signal<boolean>(false);
+
+  public timerFinished = output<boolean>();
+  public resendClicked = output<void>();
+
   public otpForm = this.fb.group({
     code: ['', Validators.required],
   });
+
+  constructor() {
+    effect(() => {
+      this.countdown();
+      if (this.countdown() === 0) {
+        setTimeout(() => {}, 1000);
+      }
+    });
+  }
+
+  public ngOnInit() {
+    this.countdown.set(this.maxTime());
+    this.startTimer();
+  }
+
+  private startTimer() {
+    this.timerSubscription = this.timer$
+      .pipe(
+        takeUntil(this.destroy$),
+        takeWhile(() => this.countdown() > 0),
+        tap(() => {
+          this.countdown.update((s) => s - 1);
+        }),
+      )
+      .subscribe();
+  }
 
   public onSubmit(): void {
     if (this.otpForm.invalid) {
@@ -63,10 +119,18 @@ export class OtpVerification {
   }
 
   public onResend(): void {
-    if (this.otpForm.invalid) {
+    if (this.countdown() > 0) {
       return;
     }
 
-    this.isRsendCalled.emit(true);
+    this.isResendCalled.emit(true);
+    this.countdown.set(this.maxTime());
+    this.startTimer();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.timerSubscription?.unsubscribe();
   }
 }

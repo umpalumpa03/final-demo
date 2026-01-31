@@ -9,12 +9,19 @@
 
   @if (!isLoading()) {
   <form class="auth-form" [formGroup]="otpForm" (ngSubmit)="onSubmit()">
+    @if(timerType() === 'otp'){
     <div class="otp-field">
       <label class="otp-label">Enter OTP Code</label>
       <lib-otp formControlName="code" [config]="otpConfig()"></lib-otp>
     </div>
-
-    @if (submitError()) {
+    } @else {
+    <div class="otp-field">
+      <lib-text-input
+        formControlName="code"
+        [config]="phoneConfig()"
+      ></lib-text-input>
+    </div>
+    } @if (submitError()) {
     <div class="auth-error">{{ submitError() }}</div>
     <div class="auth-error">{{ submitError() }}</div>
     }
@@ -30,11 +37,28 @@
       </app-button>
     </div>
 
-    <div class="otp-verification__resend">
-      <span>{{ resendText() }}</span>
-      <span (click)="onResend()" class="otp-verification__resend-link"
-        >{{ resendLinkText() }}</span
+    <div class="timer-compact">
+      <div class="timer-compact__timer">
+        <span
+          class="timer-compact__status-dot"
+          [class.timer-compact__status-dot--pulse]="countdown() > 0"
+        >
+        </span>
+
+        <div class="timer-compact__readout">
+          <span class="timer-compact__value">{{ countdown() }}</span>
+          <span class="timer-compact__unit">s</span>
+        </div>
+      </div>
+      @if(timerType() === 'otp') {
+      <div
+        class="timer-compact__resend"
+        [class.timer-compact__resend--disabled]="countdown() > 0"
       >
+        <span class="timer-compact__resend-text">{{ resendText() }}</span>
+        <span class="timer-compact__link" (click)="onResend()"> Resend </span>
+      </div>
+      }
     </div>
     @if (backLink()) {
     <a class="otp-verification__back" [routerLink]="backLink()">

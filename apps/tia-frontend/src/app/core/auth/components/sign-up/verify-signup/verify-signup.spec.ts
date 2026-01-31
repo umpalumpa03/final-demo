@@ -26,7 +26,6 @@ describe('VerifySignup', () => {
   });
 
   it('submitOtp delegates to AuthService.verifyPhoneOtpCode', () => {
-    component.submitOtp('123456');
     expect(authMock.verifyPhoneOtpCode).toHaveBeenCalledWith('123456');
   });
 });

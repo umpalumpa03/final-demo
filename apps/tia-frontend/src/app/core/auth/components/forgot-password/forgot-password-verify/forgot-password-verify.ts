@@ -27,7 +27,7 @@ export class ForgotPasswordVerify implements OnInit {
 
   public verifyResetOtp(event: { isCalled: boolean; otp: string | null }) {
     if (event.isCalled) {
-      this.authService.forgotPasswordRequest(event.otp!).subscribe();
+      this.authService.verifyForgotPasswordOtp(event.otp!).subscribe();
     }
   }
 

@@ -1,26 +1,6 @@
-<section class="phone-verification">
-  
-  <form
-    class="phone-verification__form"
-    [formGroup]="setPhoneNumberForm"
-    (ngSubmit)="submit()"
-    >
-    <lib-text-input formControlName="phoneNumber"></lib-text-input>
-    
-    @if (errorMessage()) {
-      <app-alert-types-with-icons alertType="error" [alertMessage]="errorMessage()">
-      </app-alert-types-with-icons>
-    }
-    
-    <app-timer [timeLimit]="2"></app-timer>
-    
-    <app-button type="submit" class="phone-verification__button">
-      Send Verification Code
-    </app-button>
-  </form>
-
-  <p class="phone-verification__footer">
-    Need help? <span class="phone-verification__link">Contact Support</span>
-  </p>
-</section>
-
+<app-otp-verification
+  (isVerifyCalled)="submit($event)"
+  type="sign-up"
+  timerType="phone"
+  [timeLimit]="1"
+></app-otp-verification>
