@@ -25,13 +25,13 @@ export class ForgotPasswordVerify implements OnInit {
     }
   }
 
-  public verifyResetOtp(event: { isCalled: boolean; otp: string | null }) {
+  public verifyResetOtp(event: { isCalled: boolean; otp: string | null }):void {
     if (event.isCalled) {
       this.authService.verifyForgotPasswordOtp(event.otp!).subscribe();
     }
   }
 
-  public resendOtp(isCalled: boolean) {
+  public resendOtp(isCalled: boolean):void {
     if (isCalled) {
       this.authService.resendVerificationCode().subscribe();
     }

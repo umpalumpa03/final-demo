@@ -24,7 +24,7 @@ export class VerifySignin {
     }
   }
 
-  public resendOtp(isCalled: boolean) {
+  public resendOtp(isCalled: boolean):void {
     if (isCalled) {
       this.authService.resendVerificationCode().subscribe();
     }
