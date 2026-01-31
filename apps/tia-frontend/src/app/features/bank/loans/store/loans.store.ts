@@ -1,0 +1,362 @@
+import { computed, inject } from '@angular/core';
+import {
+  signalStore,
+  withState,
+  withMethods,
+  withComputed,
+  withHooks,
+  patchState,
+} from '@ngrx/signals';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { Store } from '@ngrx/store';
+import { Actions, ofType } from '@ngrx/effects';
+import { pipe, switchMap, tap, map, catchError, EMPTY, delay } from 'rxjs';
+
+import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
+import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
+import { toTitleCase } from '../shared/utils/titlecase.util';
+
+import { LoansService } from '../shared/services/loans.service';
+import { loansInitialState } from './loans.state';
+
+export const LoansStore = signalStore(
+  withState(loansInitialState),
+
+  withComputed((store) => {
+    const globalStore = inject(Store);
+    const accountsSignal = globalStore.selectSignal(selectAccounts);
+
+    return {
+      loansWithAccountInfo: computed(() => {
+        const currentAccounts = accountsSignal() || [];
+        return store.loans().map((loan) => {
+          const matchedAccount = currentAccounts.find(
+            (acc) => acc.id === loan.accountId,
+          );
+          const accName = matchedAccount
+            ? matchedAccount.friendlyName || matchedAccount.name
+            : 'Loading Account...';
+          return { ...loan, accountName: accName };
+        });
+      }),
+
+      loanCounts: computed(() => {
+        const loans = store.loans();
+        return {
+          all: loans.length,
+          approved: loans.filter((l) => l.status === 2).length,
+          pending: loans.filter((l) => l.status === 1).length,
+          declined: loans.filter((l) => l.status === 3).length,
+        };
+      }),
+
+      loanMonthsOptions: computed(() =>
+        (store.months() || []).map((m) => ({
+          label: `${m} Months`,
+          value: m,
+        })),
+      ),
+
+      purposeOptions: computed(() =>
+        (store.purposes() || []).map((p) => ({
+          label: p.displayText,
+          value: p.value,
+        })),
+      ),
+
+      prepaymentTypeOptions: computed(() =>
+        store
+          .prepaymentOptions()
+          .filter((opt) => opt.isActive)
+          .map((opt) => ({
+            label: opt.prepaymentDisplayName,
+            value: opt.prepaymentValue,
+          })),
+      ),
+
+      alert: computed(() =>
+        store.alertMessage()
+          ? { message: store.alertMessage(), type: store.alertType() }
+          : null,
+      ),
+    };
+  }),
+
+  withComputed((store) => ({
+    filteredLoans: computed(() => {
+      const status = store.filterStatus();
+      const loans = store.loansWithAccountInfo();
+      if (status === null) return loans;
+      return loans.filter((l) => l.status === status);
+    }),
+  })),
+
+  // --- Methods Block 1: Base Methods (Independent) ---
+  withMethods((store) => {
+    const loansService = inject(LoansService);
+
+    return {
+      setFilter(status: number | null) {
+        patchState(store, { filterStatus: status });
+      },
+      clearLoanDetails() {
+        patchState(store, { selectedLoanDetails: null, detailsLoading: false });
+      },
+      clearCalculationResult() {
+        patchState(store, { calculationResult: null, activeChallengeId: null });
+      },
+      hideAlert() {
+        patchState(store, { alertMessage: null, alertType: null });
+      },
+
+      // Internal helper for auto-hiding
+      _triggerAutoHide: rxMethod<void>(
+        pipe(
+          delay(3000),
+          tap(() => patchState(store, { alertMessage: null, alertType: null })),
+        ),
+      ),
+
+      loadLoans: rxMethod<void>(
+        pipe(
+          tap(() => patchState(store, { loading: true, error: null })),
+          switchMap(() =>
+            loansService.getAllLoans().pipe(
+              tap((loans) => {
+                const mappedLoans = loans.map((l) => ({
+                  ...l,
+                  purpose: toTitleCase(l.purpose) || '',
+                  friendlyName: toTitleCase(l.friendlyName),
+                  accountName: l.accountName || '',
+                }));
+                patchState(store, { loans: mappedLoans, loading: false });
+              }),
+              catchError((error) => {
+                patchState(store, { error: error.message, loading: false });
+                return EMPTY;
+              }),
+            ),
+          ),
+        ),
+      ),
+
+      loadLoanDetails: rxMethod<string>(
+        pipe(
+          tap(() =>
+            patchState(store, {
+              detailsLoading: true,
+              error: null,
+              selectedLoanDetails: null,
+            }),
+          ),
+          switchMap((id) =>
+            loansService.getLoanById(id).pipe(
+              tap((details) =>
+                patchState(store, {
+                  selectedLoanDetails: details,
+                  detailsLoading: false,
+                }),
+              ),
+              catchError((error) => {
+                patchState(store, {
+                  error: error.message,
+                  detailsLoading: false,
+                });
+                return EMPTY;
+              }),
+            ),
+          ),
+        ),
+      ),
+
+      renameLoan: rxMethod<{ id: string; name: string }>(
+        pipe(
+          switchMap(({ id, name }) =>
+            loansService.updateFriendlyName(id, name).pipe(
+              tap(() => {
+                const updatedLoans = store
+                  .loans()
+                  .map((loan) =>
+                    loan.id === id ? { ...loan, friendlyName: name } : loan,
+                  );
+                patchState(store, { loans: updatedLoans });
+              }),
+              catchError((error) => {
+                patchState(store, { error: error.message });
+                return EMPTY;
+              }),
+            ),
+          ),
+        ),
+      ),
+
+      loadMonths: rxMethod<void>(
+        pipe(
+          switchMap(() =>
+            loansService.getLoanMonths().pipe(
+              tap((months) => patchState(store, { months })),
+              catchError((error) => {
+                patchState(store, { error: error.message });
+                return EMPTY;
+              }),
+            ),
+          ),
+        ),
+      ),
+
+      loadPurposes: rxMethod<void>(
+        pipe(
+          switchMap(() =>
+            loansService.getPurposes().pipe(
+              tap((purposes) => patchState(store, { purposes, error: null })),
+              catchError((error) => {
+                patchState(store, { error: error.message });
+                return EMPTY;
+              }),
+            ),
+          ),
+        ),
+      ),
+
+      loadPrepaymentOptions: rxMethod<void>(
+        pipe(
+          switchMap(() =>
+            loansService.getPrepaymentOptions().pipe(
+              tap((options) =>
+                patchState(store, { prepaymentOptions: options, error: null }),
+              ),
+              catchError((error) => {
+                patchState(store, { error: error.message });
+                return EMPTY;
+              }),
+            ),
+          ),
+        ),
+      ),
+
+      calculatePrepayment: rxMethod<{ payload: any }>(
+        pipe(
+          tap(() => patchState(store, { actionLoading: true, error: null })),
+          switchMap(({ payload }) => {
+            const request$ =
+              payload.type === 'full'
+                ? loansService
+                    .calculateFullPrepayment(payload.loanId)
+                    .pipe(map((res) => ({ displayedInfo: res.items || [] })))
+                : loansService.calculatePartialPrepayment(
+                    payload.loanId,
+                    payload.amount!,
+                    payload.loanPartialPaymentType!,
+                  );
+
+            return request$.pipe(
+              tap((result: any) =>
+                patchState(store, {
+                  calculationResult: result,
+                  actionLoading: false,
+                }),
+              ),
+              catchError((error) => {
+                patchState(store, {
+                  calculationResult: null,
+                  actionLoading: false,
+                  error: error.message,
+                });
+                return EMPTY;
+              }),
+            );
+          }),
+        ),
+      ),
+    };
+  }),
+
+  // --- Methods Block 2: Dependent Methods (Use store.methodName) ---
+  withMethods((store) => {
+    const loansService = inject(LoansService);
+    const actions$ = inject(Actions);
+
+    return {
+      showAlert(message: string, alertType: any) {
+        patchState(store, { alertMessage: message, alertType });
+        store._triggerAutoHide(); // Now safe to call
+      },
+
+      initiatePrepayment: rxMethod<{ payload: any }>(
+        pipe(
+          tap(() => patchState(store, { actionLoading: true, error: null })),
+          switchMap(({ payload }) =>
+            loansService.initiatePrepayment(payload).pipe(
+              tap((response) => {
+                if (response.verify?.challengeId) {
+                  patchState(store, {
+                    activeChallengeId: response.verify.challengeId,
+                    actionLoading: false,
+                    alertMessage: 'OTP sent to your registered mobile number',
+                    alertType: 'success',
+                  });
+                  store._triggerAutoHide(); // Now safe to call
+                } else {
+                  patchState(store, {
+                    error: 'No challenge ID returned',
+                    actionLoading: false,
+                  });
+                }
+              }),
+              catchError((error) => {
+                patchState(store, {
+                  actionLoading: false,
+                  error: error.message,
+                });
+                return EMPTY;
+              }),
+            ),
+          ),
+        ),
+      ),
+
+      verifyPrepayment: rxMethod<{ payload: any }>(
+        pipe(
+          tap(() => patchState(store, { actionLoading: true, error: null })),
+          switchMap(({ payload }) =>
+            loansService.verifyPrepayment(payload).pipe(
+              tap(() => {
+                patchState(store, {
+                  activeChallengeId: null,
+                  calculationResult: null,
+                  actionLoading: false,
+                });
+                store.loadLoans(); // Now safe to call
+              }),
+              catchError((error) => {
+                patchState(store, {
+                  actionLoading: false,
+                  error: error.message,
+                });
+                return EMPTY;
+              }),
+            ),
+          ),
+        ),
+      ),
+
+      _listenToGlobalCreateSuccess: rxMethod<void>(
+        pipe(
+          switchMap(() =>
+            actions$.pipe(
+              ofType(LoansCreateActions.requestLoanSuccess),
+              tap(() => store.loadLoans()), // Now safe to call
+            ),
+          ),
+        ),
+      ),
+    };
+  }),
+
+  // --- Hooks ---
+  withHooks({
+    onInit(store) {
+      store._listenToGlobalCreateSuccess();
+    },
+  }),
+);
