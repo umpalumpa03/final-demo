@@ -24,7 +24,7 @@ export class ErrorStates {
 
   public readonly containerClass = computed(() => {
     const baseClass = 'error-container';
-    return this.isCentered() ? baseClass : `${baseClass} error-container--centered`;
+    return this.isCentered() ? `${baseClass} error-container--centered` : baseClass;
   })
 
   public readonly errorClass = computed(() => {

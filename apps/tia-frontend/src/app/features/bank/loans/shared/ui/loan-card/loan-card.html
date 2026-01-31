@@ -20,7 +20,7 @@
             }
             @else {
             <h3 class="card__title" (click)="enableEdit($event)">
-                {{ loanData.friendlyName || loanData.purpose | purposeFmt }}
+                {{ displayedName() | purposeFmt }}
             </h3>
             }
 

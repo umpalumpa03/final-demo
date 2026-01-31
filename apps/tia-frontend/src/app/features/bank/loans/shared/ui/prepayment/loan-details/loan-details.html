@@ -1,3 +1,4 @@
+@let loanData = loan();
 <app-ui-modal [isOpen]="isOpen()" (closed)="close.emit()">
     <div class="loan-modal">
 
@@ -18,9 +19,8 @@
             <app-spinner size="4rem"></app-spinner>
             <p>{{ 'loans.details.loading' | translate }}</p>
         </div>
-        }
-
-        @else if (loan(); as loanData) {
+        }@else if (loanData)
+        {
         <div class="loan-modal__body">
 
             <div class="loan-modal__status">

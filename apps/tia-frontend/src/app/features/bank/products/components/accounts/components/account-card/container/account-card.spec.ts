@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AccountCardComponent } from './account-card';
 import { AccountType } from '../../../../../../../../shared/models/accounts/accounts.model';
+import { provideTranslateService, TranslateModule } from '@ngx-translate/core';
 
 describe('AccountCardComponent', () => {
   let component: AccountCardComponent;
@@ -27,6 +28,7 @@ describe('AccountCardComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AccountCardComponent],
+      providers: [provideTranslateService()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccountCardComponent);
@@ -104,7 +106,9 @@ describe('AccountCardComponent', () => {
         type: AccountType.saving,
       });
     });
-    expect(component['accountIcon']()).toBe('/images/svg/account/piggy-bank.svg');
+    expect(component['accountIcon']()).toBe(
+      '/images/svg/account/piggy-bank.svg',
+    );
   });
 
   it('should update computed formattedBalance when account balance changes', () => {

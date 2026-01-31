@@ -9,6 +9,8 @@ import {
   loadProviders,
   autoSelectProviderAfterLoad,
   checkBill,
+  proceedPayment,
+  confirmPayment,
 } from './paybill.effects';
 import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillActions } from './paybill.actions';
@@ -22,6 +24,8 @@ describe('PaybillEffects', () => {
     getCategories: ReturnType<typeof vi.fn>;
     getProviders: ReturnType<typeof vi.fn>;
     checkBill: ReturnType<typeof vi.fn>;
+    payBill: ReturnType<typeof vi.fn>;
+    verifyPayment: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(() => {
@@ -29,6 +33,8 @@ describe('PaybillEffects', () => {
       getCategories: vi.fn(),
       getProviders: vi.fn(),
       checkBill: vi.fn(),
+      payBill: vi.fn(),
+      verifyPayment: vi.fn(),
     };
 
     TestBed.configureTestingModule({
@@ -167,6 +173,54 @@ describe('PaybillEffects', () => {
         checkBill().subscribe((action) => {
           expect(action).toEqual(
             PaybillActions.checkBillFailure({ error: 'Verification Failed' }),
+          );
+        });
+      });
+    });
+  });
+
+  describe('proceedPayment', () => {
+    it('should set step to OTP if amount >= 50 and challenge exists', () => {
+      TestBed.runInInjectionContext(() => {
+        const response = {
+          verify: { challengeId: 'c1' },
+          transferType: 'BillPayment',
+        };
+        serviceMock.payBill.mockReturnValue(of(response));
+
+        actions$ = of(
+          PaybillActions.proceedPayment({
+            payload: {
+              amount: 100,
+              serviceId: 's1',
+              senderAccountId: 'acc1',
+              identification: { accountNumber: '1' },
+            },
+          }),
+        );
+
+        proceedPayment().subscribe((action) => {
+          expect(action).toEqual(
+            PaybillActions.setPaymentStep({ step: 'OTP' }),
+          );
+        });
+      });
+    });
+  });
+
+  describe('confirmPayment', () => {
+    it('should set step to SUCCESS on successful verification', () => {
+      TestBed.runInInjectionContext(() => {
+        serviceMock.verifyPayment.mockReturnValue(of({}));
+        actions$ = of(
+          PaybillActions.confirmPayment({
+            payload: { challengeId: 'c1', code: '1111' },
+          }),
+        );
+
+        confirmPayment().subscribe((action) => {
+          expect(action).toEqual(
+            PaybillActions.setPaymentStep({ step: 'SUCCESS' }),
           );
         });
       });

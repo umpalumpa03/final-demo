@@ -2,25 +2,27 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   ElementRef,
   inject,
   OnInit,
   signal,
+  viewChild,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { BankHeader } from '../components/bank-header/bank-header';
-import { HeaderNotifications } from '../components/header-notifications/header-notifications';
-import { Notifications } from '../service/notifications';
-import { Observable, tap } from 'rxjs';
-import { NotificationsData } from '../models/notification.model';
+import { Notifications } from '../components/header-notifications/service/notifications';
+import { fromEvent, Observable } from 'rxjs';
+import { NotificationsData } from '../components/header-notifications/models/notification.model';
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
-import { NotificationsStore } from '../store/notifications.store';
+import { NotificationsStore } from '../components/header-notifications/store/notifications.store';
 import { selectCurrentAvatarUrl } from '../../../../store/profile-photo/profile-photo.selectors';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { NotificationsContainer } from '../components/header-notifications/container/notifications-container';
 
 @Component({
   selector: 'app-bank-header-container',
-  imports: [BankHeader, HeaderNotifications],
+  imports: [BankHeader, NotificationsContainer],
   templateUrl: './bank-header-container.html',
   styleUrl: './bank-header-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,11 +36,37 @@ export class BankHeaderContainer implements OnInit {
   public inboxService = inject(InboxService);
 
   public hasUnread = this.notificationsStore.hasUnread;
-  public anchorEl = signal<ElementRef | undefined>(undefined);
+  public anchorEl = signal<ElementRef | null>(null);
   public isModalOpen = signal<boolean>(false);
   public notificationsItems$!: Observable<NotificationsData>;
   public inboxCount = computed(() => this.inboxService.inboxCount());
   public avatarUrl = toSignal(this.store.select(selectCurrentAvatarUrl));
+
+  readonly notificationsContainerRef = viewChild(NotificationsContainer, {
+    read: ElementRef,
+  });
+
+  private readonly documentClick = toSignal(
+    fromEvent<MouseEvent>(document, 'click'),
+  );
+
+  constructor() {
+    effect(() => {
+      const event = this.documentClick();
+      if (!event || !this.isModalOpen()) return;
+
+      const target = event.target as HTMLElement;
+      const anchorEl = this.anchorEl();
+      const containerEl = this.notificationsContainerRef();
+
+      const isAnchorClick = anchorEl?.nativeElement.contains(target) ?? false;
+      const isContainerClick = containerEl?.nativeElement.contains(target);
+
+      if (anchorEl && !isAnchorClick && !isContainerClick) {
+        this.closeAndReset();
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.notificationsStore.hasUnreadNotifications();
@@ -46,11 +74,23 @@ export class BankHeaderContainer implements OnInit {
     this.inboxService.fetchInboxCount();
   }
 
-  public onNotificationClick(el: ElementRef): void {
+  public onNotificationClick(el: ElementRef | null): void {
     this.anchorEl.set(el);
+
+    if (this.isModalOpen()) {
+      this.closeAndReset();
+      return;
+    }
+
     this.notificationsStore.fetchNotifications({
       limit: this.notificationsStore.limitPerPage(),
     });
+
     this.isModalOpen.update((v) => !v);
+  }
+
+  public closeAndReset(): void {
+    this.isModalOpen.set(false);
+    this.notificationsStore.resetState();
   }
 }

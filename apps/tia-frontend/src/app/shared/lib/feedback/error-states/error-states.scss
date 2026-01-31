@@ -3,8 +3,7 @@
 
 .error-container{
   &--centered{
-    align-items: center;
-    justify-content: center;
+    @include flex-center();
   }
 }
 .error-state {

@@ -84,23 +84,45 @@ export class RequestModal implements OnInit {
   }
 
   private getTranslatedConfig() {
-    const t = (key?: string) => (key ? this.translate.instant(key) : undefined);
+    const translate = (key?: string) =>
+      key ? this.translate.instant(key) : undefined;
 
-    const newConfig: any = { ...LOAN_FORM_CONFIG };
+    type OriginalConfig = typeof LOAN_FORM_CONFIG;
 
-    Object.keys(newConfig).forEach((key) => {
-      const field = { ...newConfig[key] };
+    type TranslatableConfig = {
+      -readonly [K in keyof OriginalConfig]: {
+        [P in keyof OriginalConfig[K]]: P extends 'type'
+          ? OriginalConfig[K][P]
+          : OriginalConfig[K][P] extends string
+            ? string
+            : OriginalConfig[K][P];
+      };
+    };
 
-      if (field.label) field.label = t(field.label);
-      if (field.placeholder) field.placeholder = t(field.placeholder);
-      if (field.errorMessage) field.errorMessage = t(field.errorMessage);
+    type ConfigValue = TranslatableConfig[keyof TranslatableConfig];
+    const newConfig = { ...LOAN_FORM_CONFIG } as unknown as TranslatableConfig;
 
-      newConfig[key] = field;
-    });
+    (Object.keys(newConfig) as Array<keyof TranslatableConfig>).forEach(
+      (key) => {
+        const field = { ...newConfig[key] };
+
+        if ('label' in field && field.label) {
+          field.label = translate(field.label);
+        }
+        if ('placeholder' in field && field.placeholder) {
+          field.placeholder = translate(field.placeholder);
+        }
+        if ('errorMessage' in field && field.errorMessage) {
+          field.errorMessage = translate(field.errorMessage);
+        }
+
+        (newConfig as Record<keyof TranslatableConfig, ConfigValue>)[key] =
+          field;
+      },
+    );
 
     return newConfig;
   }
-
   public readonly form = this.fb.group({
     loanAmount: [
       null as number | null,

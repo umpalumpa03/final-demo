@@ -12,8 +12,10 @@
 </app-loan-details>
 
 <app-ui-modal [isOpen]="isPrepaymentOpen()" (closed)="closeModals()">
-    @if (prepaymentLoan(); as loan) {
-    <app-prepayment-container [loan]="loan" (close)="closeModals()">
+    @let activePrepayment = prepaymentLoan();
+
+    @if (activePrepayment) {
+    <app-prepayment-container [loan]="activePrepayment" (close)="closeModals()">
     </app-prepayment-container>
     }
 </app-ui-modal>
