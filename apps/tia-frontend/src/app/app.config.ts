@@ -14,6 +14,7 @@ import { profilePhotoFeature } from './store/profile-photo/profile-photo.reducer
 import { ProfilePhotoEffects } from './store/profile-photo/profile-photo.effects';
 import { securityFeature } from './features/bank/settings/components/security/store/security.reducer';
 import { SecurityEffects } from './features/bank/settings/components/security/store/security.effects';
+import { userInfoFeature } from './store/user-info/user-info.reducer';
 import {
   provideHttpClient,
   withInterceptors,
@@ -33,6 +34,7 @@ export const appConfig: ApplicationConfig = {
     provideState(themeFeature),
     provideState(profilePhotoFeature),
     provideState(securityFeature),
+    provideState(userInfoFeature),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideEffects([ThemeEffects, ProfilePhotoEffects, SecurityEffects, UserInfoEffects]),
     provideStoreDevtools({
