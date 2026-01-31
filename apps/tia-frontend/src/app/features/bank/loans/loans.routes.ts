@@ -11,16 +11,19 @@ import { accountsFeature } from '../../../store/products/accounts/accounts.reduc
 import { LoanCreateService } from '@tia/shared/services/loans/loan-create.service';
 import { LoanCreateEffects } from '../../../store/loans/loans.effects';
 import { loansFeature } from '../../../store/loans/loans.reducer';
+import { LoansStore } from './store/loans.store';
 
 export const loansRoutes: Routes = [
   {
     path: '',
     component: LoansContainer,
     providers: [
-      provideState('loans_local', loansReducer),
-      provideEffects(LoansEffects),
+      LoansStore,
+
+      // 2. Provide the Service (used by the store)
       LoansService,
 
+      // 3. Keep Global/Other features running on standard Ngrx
       provideState(accountsFeature),
       provideEffects(AccountsEffects),
 
