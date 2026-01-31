@@ -14,6 +14,7 @@ import { TransferExternalService } from '../../../../services/transfer.external.
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
+import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
 
 @Component({
   selector: 'app-external-amount',
@@ -36,6 +37,8 @@ export class ExternalAmount implements OnInit {
   private readonly transferExternalService = inject(TransferExternalService);
   private readonly fb = inject(FormBuilder);
   private readonly translate = inject(TranslateService);
+  private readonly breakpointService = inject(BreakpointService);
+  public readonly isMobile = this.breakpointService.isMobile;
 
   public readonly showSuccess = signal(false);
   public readonly currentToastMessage = signal('');

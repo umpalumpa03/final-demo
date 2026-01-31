@@ -33,6 +33,7 @@ import {
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { TransferExternalService } from '../../../../services/transfer.external.service';
+import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
 
 @Component({
   selector: 'app-external-accounts',
@@ -60,9 +61,11 @@ export class ExternalAccounts implements OnInit {
   private readonly store = inject(Store);
   private readonly fb = inject(FormBuilder);
   private readonly translate = inject(TranslateService);
-
+  private readonly breakpointService = inject(BreakpointService);
   public readonly showSuccess = signal(false);
-
+  public readonly isFullWidth = computed(() =>
+    this.breakpointService.isMobile(),
+  );
   public readonly selectedSenderAccount = computed(() =>
     this.transferStore.senderAccount(),
   );

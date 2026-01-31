@@ -18,7 +18,7 @@ describe('ExternalRecipient', () => {
     recipientInput: signal(''),
     recipientInfo: signal<any>(null),
     recipientType: signal<string | null>(null),
-    lookupRecipient: vi.fn(), // Added to prevent store crash
+    lookupRecipient: vi.fn(), 
     setExternalRecipient: vi.fn(),
   };
 
@@ -68,7 +68,6 @@ describe('ExternalRecipient', () => {
   });
   it('should update config with success message for valid phone', () => {
     mockValidationService.identifyRecipientType.mockReturnValue('phone');
-    // Trigger the private updateInputConfig logic via valueChanges
     component.recipientInput.setValue('555123456');
     fixture.detectChanges();
     
@@ -78,7 +77,6 @@ describe('ExternalRecipient', () => {
 
   it('should update config with error message for invalid input', () => {
     mockValidationService.identifyRecipientType.mockReturnValue(null);
-    // Simulate validation error
     component.recipientInput.setErrors({ invalidRecipient: true });
     component.recipientInput.setValue('abc');
     fixture.detectChanges();
@@ -97,11 +95,9 @@ describe('ExternalRecipient', () => {
   it('should handle store error effect', () => {
     vi.useFakeTimers();
     mockStore.error.set('Account not found');
-    // Effect runs
     fixture.detectChanges();
     expect(component.showError()).toBe(true);
 
-    // After timeout
     vi.advanceTimersByTime(5000);
     expect(component.showError()).toBe(false);
     vi.useRealTimers();

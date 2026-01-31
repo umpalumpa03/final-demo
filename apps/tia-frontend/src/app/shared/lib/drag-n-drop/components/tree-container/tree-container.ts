@@ -18,10 +18,12 @@ import {
 import { DraggableCard } from '../draggable-card/draggable-card';
 import { TreeService } from '../../services/tree.service';
 import { ButtonVariant } from '@tia/shared/lib/primitives/button/button.model';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
+import { ErrorStateVariant } from '@tia/shared/lib/feedback/models/error-state.model';
 
 @Component({
   selector: 'app-tree-container',
-  imports: [DraggableCard],
+  imports: [DraggableCard, ErrorStates],
   templateUrl: './tree-container.html',
   styleUrl: './tree-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,6 +50,17 @@ export class TreeContainer extends DragBase {
   public readonly hasPagination = input(false);
   public readonly paginationVariants = input<number[]>([10, 20, 40]);
   public readonly hasCheckbox = input(false);
+  public readonly noBorder = input(false);
+  public readonly contentHeader = input(false);
+  public readonly noCardBorder = input(false);
+  public readonly cardBackground = input(false);
+  public readonly badgeLabel = input('Items:');
+
+  //empty/error states
+  public readonly errorVariant = input<ErrorStateVariant>('not-found');
+  public readonly errorHeader = input('');
+  public readonly errorMessage = input('');
+  public readonly showErrorButton = input(false);
 
   // data outputs
   public readonly groupsChange = output<TreeGroupConfig[]>();

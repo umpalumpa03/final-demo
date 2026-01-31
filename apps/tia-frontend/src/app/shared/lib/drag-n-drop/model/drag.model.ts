@@ -41,6 +41,9 @@ export interface TreeGroupConfig {
 export interface TreeItem extends DraggableItemType {
   groupId: string;
   order: number;
+  serviceId?: string;
+  accountNumber?: string;
+  amountDue?: number;
 }
 
 export interface TreeItemMovedEvent {
