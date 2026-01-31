@@ -9,6 +9,7 @@
   &__title {
     @include font-inter(600, 2rem, 2.8rem);
     color: $blue-ocean-foreground;
+    padding: 0 1rem 1rem 1rem;
   }
 }
 
