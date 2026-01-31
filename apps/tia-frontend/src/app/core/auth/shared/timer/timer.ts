@@ -42,7 +42,7 @@ export class Timer implements OnDestroy, OnInit {
   public maxTime = computed(() => {
     const limit = Math.abs(Number(this.timeLimit()));
 
-    return limit * 6;
+    return limit * 60;
   });
 
   public countdown = signal<number>(0);

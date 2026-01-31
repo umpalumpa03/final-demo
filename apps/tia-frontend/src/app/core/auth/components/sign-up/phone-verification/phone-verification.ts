@@ -28,8 +28,19 @@ export class PhoneVerification {
   private router = inject(Router);
 
   public setPhoneNumberForm = this.fb.nonNullable.group({
-    phoneNumber: ['', [Validators.required]],
-  });
+  // phoneNumber: ['', [
+  //   Validators.required, 
+  //   Validators.pattern(/^5.*$/),
+  //   Validators.minLength(9),
+  //   Validators.maxLength(9)
+  // ]],
+  phoneNumber: ['', [
+    Validators.required, 
+    // startsWithFiveValidator(),
+    Validators.minLength(9),
+    Validators.maxLength(9)
+  ]],
+});
 
   public errorMessage = signal<string>('');
 

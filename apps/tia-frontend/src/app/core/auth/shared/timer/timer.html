@@ -13,16 +13,18 @@
       <span class="timer-compact__unit">s</span>
     </div>
   </div>
-  <div
-    class="timer-compact__resend"
-    [class.timer-compact__resend--disabled]="countdown() > 0"
-  >
-    <span class="timer-compact__resend-text">{{ resendText() }}</span>
-    <span
-      class="timer-compact__link"
-      (click)="handleOtpResend()"
+  @if(timerType() === 'otp') {
+    <div
+      class="timer-compact__resend"
+      [class.timer-compact__resend--disabled]="countdown() > 0"
     >
-      Resend
-    </span>
-  </div>
+      <span class="timer-compact__resend-text">{{ resendText() }}</span>
+      <span
+        class="timer-compact__link"
+        (click)="handleOtpResend()"
+      >
+        Resend
+      </span>
+    </div>
+  }
 </div>
