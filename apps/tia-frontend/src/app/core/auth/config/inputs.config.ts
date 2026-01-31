@@ -1,4 +1,4 @@
-import { IFeaturePanel } from './auth.models';
+import { IFeaturePanel } from '../models/auth.models';
 
 export const SIGN_IN_FORM = {
   username: {
