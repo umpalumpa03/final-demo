@@ -31,11 +31,17 @@ describe('PaybillService', () => {
 
     vi.stubGlobal('localStorage', {
       getItem: vi.fn().mockReturnValue('mock-token'),
+      setItem: vi.fn(),
+      removeItem: vi.fn(),
+      clear: vi.fn(),
+      key: vi.fn(),
+      length: 0,
     });
   });
 
   afterEach(() => {
     httpMock.verify();
+    vi.unstubAllGlobals();
   });
 
   it('should fetch categories', () => {
