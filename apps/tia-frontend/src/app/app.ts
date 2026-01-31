@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import {
   NavigationEnd,
   NavigationStart,
@@ -15,6 +15,7 @@ import { RouteLoader } from "./shared/lib/feedback/route-loader/route-loader";
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class App {
   protected title = 'tia-frontend';
