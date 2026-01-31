@@ -55,22 +55,37 @@ export class PaybillContainer implements OnInit {
   public readonly navigationConfig = navConfig;
 
   constructor() {
-    const paramsSignal = toSignal(
+    const routeStateSignal = toSignal(
       this.router.events.pipe(
         filter((e) => e instanceof NavigationEnd),
-
         map(() => {
           let child = this.route.firstChild;
           while (child?.firstChild) child = child.firstChild;
-          return child?.snapshot.params;
-        }),
 
-        startWith(this.route.snapshot.firstChild?.params),
+          return {
+            params: child?.snapshot.params,
+            url: this.router.url,
+          };
+        }),
+        startWith({
+          params: this.route.snapshot.firstChild?.params,
+          url: this.router.url,
+        }),
       ),
     );
 
     effect(() => {
-      const params = paramsSignal();
+      const state = routeStateSignal();
+      const params = state?.params;
+      const url = state?.url ?? '';
+
+      if (url.includes('/templates')) {
+        this.store.dispatch(
+          PaybillActions.selectCategory({ categoryId: 'TEMPLATES' }),
+        );
+        return;
+      }
+
       const catId = params?.['categoryId']?.toUpperCase();
       const provId = params?.['providerId']?.toUpperCase();
 
@@ -79,13 +94,14 @@ export class PaybillContainer implements OnInit {
           PaybillActions.selectCategory({ categoryId: catId }),
         );
       }
+
       if (provId) {
         this.store.dispatch(
           PaybillActions.selectProvider({ providerId: provId }),
         );
       }
 
-      const isBasePaybill = this.router.url === '/bank/paybill';
+      const isBasePaybill = url === '/bank/paybill';
       if (isBasePaybill) {
         this.store.dispatch(PaybillActions.clearSelection());
       }

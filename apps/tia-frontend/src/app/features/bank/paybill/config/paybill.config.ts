@@ -5,12 +5,10 @@ export const navConfig: TabItem[] = [
     label: 'Paybill',
     icon: 'images/svg/paybill/elva.svg',
     route: './',
-    exact: true,
   },
   {
     label: 'Templates',
     icon: 'images/svg/paybill/star.svg',
     route: './templates',
-    exact: true,
   },
 ] as const;
