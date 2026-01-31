@@ -1,8 +1,12 @@
+import { InputConfig } from '../../lib/forms/models/input.model';
+import { SelectConfig } from '../../lib/forms/models/dropdowns.model';
+
 export enum AccountType {
   current = 'current',
   saving = 'saving',
   card = 'card',
 }
+
 export interface Account {
   id: string;
   userId: string;
@@ -18,6 +22,12 @@ export interface Account {
   openedAt: string;
   closedAt: string;
   isFavorite: boolean;
+}
+
+export interface CreateAccountConfig {
+  friendlyName: InputConfig;
+  type: SelectConfig;
+  currency: SelectConfig;
 }
 
 export interface CreateAccountRequest {
@@ -38,5 +48,4 @@ export interface AccountSection {
   icon: string;
 }
 
-// TODO: if more than 1 response, move to different file
 export type AccountsResponse = Account[];

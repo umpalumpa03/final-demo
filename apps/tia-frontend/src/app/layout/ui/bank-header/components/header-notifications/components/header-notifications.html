@@ -1,0 +1,140 @@
+@if(isOpen()) {
+<div
+  class="header-notifications"
+  [style.top.px]="top()"
+  [style.left.px]="left()"
+  [class.blurred]="isLoading()"
+>
+  @if (isLoading()) {
+  <div class="header-notifications__main__loader">
+    <app-route-loader variant="pulsing" />
+  </div>
+  }
+
+  <header class="header-notifications__header">
+    <div class="header-notifications__header__info">
+      <h3>{{ 'header-notifications.title' | translate }}</h3>
+      <span
+        >{{ unreadLeft() }} {{ 'header-notifications.message' | translate
+        }}</span
+      >
+    </div>
+
+    @if (selectedItems().length) {
+    <app-button
+      variant="destructive"
+      [fullWidth]="true"
+      icon="trash-icon.svg"
+      style="width: 100%"
+      class="header-notifications__header__button"
+      (click)="OnDeleteMultipleClick(selectedItems())"
+    >
+      Delete ({{ selectedItems().length }})
+    </app-button>
+    }
+  </header>
+
+  @if(isEmpty()) {
+  <app-error-states
+    variant="not-found"
+    [header]="'header-notifications.errorMessage' | translate"
+    [message]="'header-notifications.errorDescription' | translate "
+    width="100%"
+    maxWidth="100%"
+    height="90%"
+    [border]="false"
+    [showButton]="false"
+  />
+  }@else {
+  <main class="header-notifications__main">
+    <header class="header-notifications__main__header">
+      <div class="header-notifications__main__header__select">
+        <lib-checkboxes
+          [checked]="isAllSelected()"
+          (change)="onSelectAllClicked(notificationItems())"
+        ></lib-checkboxes>
+        Select All
+      </div>
+      <div class="header-notifications__main__header__cta--all">
+        <button
+          (click)="onMarkAllClick()"
+          [disabled]="!notificationItems().length"
+        >
+          <img
+            class="header-notifications__main__header__cta--all__read"
+            src="images/svg/header-notifications/read.svg"
+            alt="read all icon"
+            title="Mark all as read"
+          />
+        </button>
+        <p>/</p>
+        <button
+          (click)="onDeleteAllClicked()"
+          [disabled]="!notificationItems().length"
+        >
+          <img
+            class="header-notifications__main__header__cta--all__delete"
+            src="images/svg/header-notifications/delete.svg"
+            alt="delete all icon"
+            title="Delete all notification"
+          />
+        </button>
+      </div>
+    </header>
+
+    <app-scroll-area
+      (scrollBottom)="onScrollBottom()"
+      [hideBorder]="true"
+      height="95%"
+    >
+      @for (item of notificationItems(); track $index) {
+      <div
+        class="header-notifications__main__item"
+        [class.unread]="!item.isRead"
+        [appVisibleInViewport]="item.id"
+        [isRead]="item.isRead"
+        (becameVisible)="onItemBecameVisible($event)"
+      >
+        <div class="header-notifications__main__item__checkbox">
+          <lib-checkboxes
+            (change)="onSelectItemClicked(item.id)"
+            [checked]="isItemSelected(item.id)"
+          ></lib-checkboxes>
+        </div>
+        <div class="header-notifications__main__item__content">
+          <h4 [class.unread]="!item.isRead">{{item.title}}</h4>
+
+          <p class="header-notifications__main__item__content__date">
+            {{ item.createdAt | date: 'yyyy-MM-dd HH:mm' }}
+          </p>
+          <span class="header-notifications__main__item__content__type">
+            {{ item.type | titlecase }}
+          </span>
+        </div>
+        <div class="header-notifications__main__item__cta">
+          @if(!item.isRead) {
+          <span class="header-notifications__main__item__cta--icon"></span>
+          }
+
+          <button
+            (click)="onTrashIconClick(item.id)"
+            [disabled]="selectedItems().length"
+          >
+            <img
+              class="header-notifications__main__item__cta--delete"
+              src="images/svg/header-notifications/delete.svg"
+              alt="delete icon"
+            />
+          </button>
+        </div>
+      </div>
+      } @if(isFetching()) {
+      <div class="header-notifications__main__data--fetching">
+        <app-route-loader variant="pulsing" />
+      </div>
+      }
+    </app-scroll-area>
+  </main>
+  }
+</div>
+}

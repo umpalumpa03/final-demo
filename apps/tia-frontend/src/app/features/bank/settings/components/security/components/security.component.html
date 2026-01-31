@@ -1,3 +1,58 @@
 <div class="security">
+  <form [formGroup]="form()" (ngSubmit)="onSubmit()">
+    <app-basic-card
+      [hasFooter] ="true"
+      maxWidth="100%"
+      width="100%"
+    >
+      <div class="security__header">
+        <div class="security__header-icon">
+          <img src="images/svg/settings/security/settings-security-key-blue.svg" alt="Key icon" />
+        </div>
+        <div class="security__header-content">
+          <h3 class="security__title">{{ 'settings.security.changePassword' | translate }}</h3>
+          <p class="security__subtitle">{{ 'settings.security.changePasswordSubtitle' | translate }}</p>
+        </div>
+      </div>
 
+      <div class="security__form">
+        <div class="security__field">
+          <lib-text-input
+            type="password"
+            formControlName="currentPassword"
+            [config]="currentPasswordConfig()"
+          ></lib-text-input>
+        </div>
+
+        <div class="security__field">
+          <lib-text-input
+            type="password"
+            formControlName="newPassword"
+            [config]="newPasswordConfig()"
+          ></lib-text-input>
+        </div>
+
+        <div class="security__field">
+          <lib-text-input
+            type="password"
+            formControlName="confirmPassword"
+            [config]="confirmPasswordConfig()"
+          ></lib-text-input>
+        </div>
+      </div>
+
+      <div card-footer class="security__footer">
+        <app-button
+          variant="default"
+          size="default"
+          icon="settings-security-key-white.svg"
+          type="submit"
+          [isDisabled]="isFormInvalid() || isLoading()"
+          [isLoading]="isLoading()"
+        >
+          {{ 'settings.security.updatePassword' | translate }}
+        </app-button>
+      </div>
+    </app-basic-card>
+  </form>
 </div>

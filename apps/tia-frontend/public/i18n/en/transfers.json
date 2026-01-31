@@ -15,8 +15,44 @@
     "extDescription": "Send money to external accounts via IBAN or phone number",
     "recipient": {
       "title": "Enter recipient IBAN or phone number",
-      "inputPlaceholder": "Enter IBAN (GE...) or phone number (+...)",
-      "verify": "Verify Recipient"
+      "inputPlaceholder": "Enter IBAN or phone number",
+      "verify": "Verify Recipient",
+      "accountsTitle": "Select your account to transfer from",
+      "disabledTooltip": "Please enter recipient details and select an account",
+      "recipientNotFound": "Recipient not found. Please check the phone number or IBAN and try again.",
+      "errors": {
+        "invalidFormat": "Invalid format. Enter IBAN or phone (+995...)",
+        "invalidPhone": "Invalid phone number format. Use +995XXXXXXXXX",
+        "invalidIban": "Invalid IBAN format (15-34 characters, starts with country code)"
+      },
+      "success": {
+        "validPhone": "Valid phone number",
+        "validIbanSameBank": "Valid TIA Bank IBAN",
+        "validIbanDifferentBank": "Valid IBAN"
+      },
+      "accountsError": {
+        "header": "Failed to Load Accounts",
+        "message": "Unable to load your accounts. Please try again.",
+        "retry": "Retry"
+      },
+      "noAccounts": {
+        "header": "No Accounts Found",
+        "message": "You need to create an account before making transfers",
+        "createAccount": "Create Account"
+      }
+    },
+    "accounts": {
+      "title": "Accounts",
+      "recipientVerified": "Recipient verified successfully!",
+      "selectRecipientAccount": "Select Recipient Account",
+      "noAccounts": {
+        "header": "No Accounts Found",
+        "message": "No active accounts were found for this recipient."
+      },
+      "error": {
+        "header": "An Error Occurred",
+        "message": "Failed to load accounts. Please try again."
+      }
     }
   },
   "confirmation": {

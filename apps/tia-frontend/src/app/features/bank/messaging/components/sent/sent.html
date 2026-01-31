@@ -1,6 +1,7 @@
 <app-mail-header
   [page]="'messaging.routes.sent' | translate"
-  [messageCount]="0"
+  [messageCount]="mails().length"
+  [isSent]="true"
 ></app-mail-header>
 @if(isLoading()){
 <div class="loading-state">
@@ -13,7 +14,7 @@
 } @else {
 <div>
   @for (mail of mails(); track mail.id) {
-  <app-mail-card [mail]="mail"> </app-mail-card>
+  <app-mail-card [mail]="mail" [isSent]="true"> </app-mail-card>
   }
 </div>
 }

@@ -1,0 +1,41 @@
+<div
+  class="transfers-account-card"
+  [class.transfers-account-card--selected]="isSelected()"
+  [class.transfers-account-card--disabled]="isDisabled()"
+  [class.transfers-account-card--recipient]="mode() === 'recipient'"
+  (click)="onCardClick()"
+>
+  <div class="transfers-account-card__icon">
+    <img
+      [src]="cardIcon()"
+      alt="Icon"
+      class="transfers-account-card__icon-img"
+    />
+  </div>
+
+  <div class="transfers-account-card__content">
+    <div class="transfers-account-card__header">
+      @if (displayName()) {
+      <h3 class="transfers-account-card__name">{{ displayName() }}</h3>
+      }
+      <span class="transfers-account-card__currency">
+        {{ cardData().currency }}
+      </span>
+    </div>
+
+    <div class="transfers-account-card__details">
+      @if (balance() !== null) {
+      <p class="transfers-account-card__balance">
+        {{ balance() | number: '1.2-2' }}
+      </p>
+      }
+      <p class="transfers-account-card__iban">{{ cardData().iban }}</p>
+    </div>
+  </div>
+
+  @if (isSelected()) {
+  <div class="transfers-account-card__check">
+    <img src="images/svg/transfers/check.svg" alt="Selected" />
+  </div>
+  }
+</div>

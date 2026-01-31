@@ -5,6 +5,7 @@ import { LoansActions } from '../../../store/loans.actions';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { selectLoansWithAccountInfo } from '../../../store/loans.selectors';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('AllLoans', () => {
   let component: AllLoans;
@@ -27,7 +28,7 @@ describe('AllLoans', () => {
   };
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AllLoans],
+      imports: [AllLoans, TranslateModule.forRoot()],
       providers: [
         provideMockStore({
           initialState,
@@ -54,8 +55,7 @@ describe('AllLoans', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should dispatch loadLoans and loadAccounts on init', () => {
-    expect(store.dispatch).toHaveBeenCalledWith(LoansActions.loadLoans());
+  it('should dispatch loadAccounts on init', () => {
     expect(store.dispatch).toHaveBeenCalledWith(AccountsActions.loadAccounts());
   });
 

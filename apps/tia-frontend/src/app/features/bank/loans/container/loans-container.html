@@ -1,9 +1,39 @@
 <div class="global-bank-wrapper">
+    @let alert = alertConfig();
+    @if (alert) {
+    <div class="loans-alert-positioner">
+        <app-simple-alerts [alertMessage]="alert.message">
+        </app-simple-alerts>
+    </div>
+    }
     <main class="main">
         <app-loan-header (requestClick)="isModalOpen.set(true)"></app-loan-header>
 
         <app-loan-navigation />
+
+        @if (isLoading()) {
+        <div class="loans-skeleton-grid">
+            @for (i of [1,2,3]; track i) {
+            <div class="loan-card-skeleton">
+                <div class="skeleton-header">
+                    <app-skeleton variant="circle" height="4rem" width="4rem"></app-skeleton>
+                    <div class="skeleton-titles">
+                        <app-skeleton variant="text" height="1.6rem" width="12rem"></app-skeleton>
+                        <app-skeleton variant="text" height="1.2rem" width="8rem"></app-skeleton>
+                    </div>
+                </div>
+                <div class="skeleton-body">
+                    <app-skeleton height="6rem"></app-skeleton>
+                </div>
+            </div>
+            }
+        </div>
+        }
+
+        @else {
         <router-outlet></router-outlet>
+        }
+
         <app-request-modal [isOpen]="isModalOpen()" (close)="isModalOpen.set(false)">
         </app-request-modal>
     </main>

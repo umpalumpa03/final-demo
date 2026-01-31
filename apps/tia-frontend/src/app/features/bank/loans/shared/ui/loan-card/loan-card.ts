@@ -5,6 +5,7 @@ import {
   computed,
   ElementRef,
   input,
+  linkedSignal,
   output,
   Signal,
   signal,
@@ -46,6 +47,10 @@ export class LoanCard {
 
   protected readonly isEditing = signal(false);
 
+  protected readonly displayedName = linkedSignal(
+    () => this.loan().friendlyName || this.loan().purpose || '',
+  );
+
   protected readonly nameControl = new FormControl<string>('', {
     nonNullable: true,
     validators: [Validators.required, Validators.maxLength(25)],
@@ -57,18 +62,13 @@ export class LoanCard {
   protected readonly config = computed(() => {
     const status = this.loan().status;
     const isColored = this.variant() === 'colored';
-
     const ui = LOAN_UI_CONFIG[status] || DEFAULT_UI_CONFIG;
-
     const badgeClass = ui.badge;
-
     const iconClass = isColored
       ? `card__icon--${ui.color}`
       : 'card__icon--blue';
-
     const iconKey = isColored ? ui.iconKey : 'default';
     const iconSrc = this.loanIcons()[iconKey];
-
     return { badgeClass, iconClass, iconSrc };
   });
 
@@ -78,13 +78,8 @@ export class LoanCard {
 
   protected enableEdit(event: Event): void {
     event.stopPropagation();
-
-    const currentName: string | null =
-      this.loan().friendlyName || this.loan().purpose || '';
-
-    this.nameControl.setValue(currentName);
+    this.nameControl.setValue(this.displayedName());
     this.isEditing.set(true);
-
     setTimeout(() => {
       this.nameInput()?.nativeElement?.focus();
     });
@@ -99,6 +94,8 @@ export class LoanCard {
     const oldName = this.loan().friendlyName || this.loan().purpose;
 
     if (newName && newName !== oldName) {
+      this.displayedName.set(newName);
+
       this.rename.emit({ id: this.loan().id, name: newName });
     }
 

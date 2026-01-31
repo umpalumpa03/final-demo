@@ -33,7 +33,7 @@
     padding: 0 16rem 3.2rem;
   }
   &__content {
-    @include display-flex();
-    justify-content: center;
+    width: 100%; 
+    @include display-flex(column); 
   }
 }
