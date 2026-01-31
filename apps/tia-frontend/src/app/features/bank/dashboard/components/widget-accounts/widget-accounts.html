@@ -1,4 +1,4 @@
-<app-scroll-area [height]="widgetHeight()" scrollbar="hidden">
+<app-scroll-area [height]="widgetHeight()" [hideBorder]="true" scrollbar="hidden">
   @if (isLoading$ | async) {
   <div class="widget-loading">
     <app-route-loader variant="full-page" text="Loading Accounts...">

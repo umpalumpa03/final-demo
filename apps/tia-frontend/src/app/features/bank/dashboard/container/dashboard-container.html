@@ -4,6 +4,7 @@
     subtitle="Welcome back! Here's your financial overview."
   ></app-library-title>
   <app-drag-container
+    [hasNoStyle]="true"
     [items]="myItems()"
     [layout]="'grid'"
     [columns]="{ default: 2, md:2,sm: 1 }"
