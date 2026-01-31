@@ -54,6 +54,10 @@
         @include font-inter(500, 1.4rem, 2rem);
         color: $gray-700;
     }
+
+    &__submit {
+        @include flex-center(row, flex-end, center);
+    }
 }
 
 .color-preview {

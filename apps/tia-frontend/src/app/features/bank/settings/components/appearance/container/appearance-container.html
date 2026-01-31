@@ -1,14 +1,24 @@
-<app-settings-body [title]="'settings.appearance.title' | translate" [subTitle]="'settings.appearance.subtitle' | translate">
+<app-settings-body [title]="'settings.appearance.title' | translate"
+    [subTitle]="'settings.appearance.subtitle' | translate">
     <div class="container">
         <h4 class="container__title">{{'settings.appearance.cardsTitle' | translate}}</h4>
         <div class="container__cards">
-            @for (theme of themesWithColors(); track theme.title) {
-                <div class="container__card" [class.active]="isCurrentTheme(theme.themeKey)" (click)="onClick(theme.themeKey)">
-                    <h5 class="container__card-title">{{theme.title}}</h5>
-                    <p class="container__card-subtitle">{{theme.subtitle}}</p>
-                    <div class="color-preview" [style.background-color]="theme.colorValue"></div>
-                </div>
+            @if(isLoading()) {
+                <app-skeleton height="10rem"></app-skeleton>
+                <app-skeleton height="10rem"></app-skeleton>
+                <app-skeleton height="10rem"></app-skeleton>
+            } @else {
+                @for(theme of availableThemes(); track theme.value) {
+                    <div class="container__card" [class.active]="isCurrentTheme(theme.value)" (click)="onClick(theme.value)">
+                        <h5 class="container__card-title">{{theme.displayName}}</h5>
+                        <p class="container__card-subtitle">{{theme.subtitle}}</p>
+                        <div class="color-preview" [style.background-color]="getThemeColor(theme.value, '--color-primary')"></div>
+                    </div>
+                }
             }
+        </div>
+        <div class="container__submit">
+            <app-button (click)="onSubmit()">Submit</app-button>
         </div>
     </div>
 </app-settings-body>
