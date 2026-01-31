@@ -1,0 +1,54 @@
+@use '../../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../../shared/styles/palette' as *;
+
+.payment-summary {
+  @include display-flex(column);
+  padding: 2.4rem 2.4rem 0;
+  width: 100%;
+  min-height: 18.3rem;
+  background: $gray-25;
+  border-radius: 1rem;
+
+  &__title {
+    @include font-inter(600, 1.8rem, 2.7rem);
+    letter-spacing: -0.044rem;
+    color: var(--color-fg);
+    margin: 0;
+  }
+
+  &__list {
+    @include display-flex(column);
+    gap: 0.8rem;
+    width: 100%;
+  }
+}
+
+.summary-row {
+  @include flex-center(row, space-between, flex-start);
+  width: 100%;
+  height: 2rem;
+
+  &__label {
+    @include font-inter(400, 1.4rem, 2rem);
+    letter-spacing: -0.015rem;
+    color: $gray-700;
+  }
+
+  &__value {
+    @include font-inter(600, 1.4rem, 2rem);
+    letter-spacing: -0.015rem;
+    color: var(--color-fg);
+    &--price {
+      @include font-inter(700, 1.8rem, 2.8rem);
+      letter-spacing: -0.044rem;
+      color: $blue-800;
+    }
+  }
+
+  &--total {
+    height: 3.6rem;
+    padding-top: 0.8rem;
+    border-top: 0.0625rem solid $blue-400;
+    margin-top: 0.4rem;
+  }
+}

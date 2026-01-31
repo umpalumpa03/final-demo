@@ -44,6 +44,7 @@
 .providers__wrapper {
   @include display-flex(column);
   gap: 1.2rem;
+  border: none;
 }
 
 .skeleton__wrapper {

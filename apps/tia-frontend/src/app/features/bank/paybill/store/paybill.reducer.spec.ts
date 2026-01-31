@@ -125,4 +125,23 @@ describe('Paybill Reducer', () => {
     expect(result.error).toBe('API Error');
     expect(result.loading).toBe(false);
   });
+
+  it('should store challengeId and stop loading on proceedPaymentSuccess', () => {
+    const response = {
+      verify: { challengeId: 'challenge-123', method: 'SMS' },
+      transferType: 'BillPayment',
+    };
+    const action = PaybillActions.proceedPaymentSuccess({ response });
+    const result = paybillReducer(initialPaybillState, action);
+
+    expect(result.challengeId).toBe('challenge-123');
+    expect(result.loading).toBe(false);
+  });
+
+  it('should update currentStep on setPaymentStep', () => {
+    const action = PaybillActions.setPaymentStep({ step: 'OTP' });
+    const result = paybillReducer(initialPaybillState, action);
+
+    expect(result.currentStep).toBe('OTP');
+  });
 });
