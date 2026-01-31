@@ -1,0 +1,30 @@
+<div class="timer-compact">
+  <div class="timer-compact__timer">
+    <span
+      class="timer-compact__status-dot"
+      [class.timer-compact__status-dot--pulse]="countdown() > 0"
+    >
+    </span>
+
+    <div class="timer-compact__readout">
+      <span class="timer-compact__value"
+        >{{ countdown() }}</span
+      >
+      <span class="timer-compact__unit">s</span>
+    </div>
+  </div>
+  @if(timerType() === 'otp') {
+    <div
+      class="timer-compact__resend"
+      [class.timer-compact__resend--disabled]="countdown() > 0"
+    >
+      <span class="timer-compact__resend-text">{{ resendText() }}</span>
+      <span
+        class="timer-compact__link"
+        (click)="handleOtpResend()"
+      >
+        Resend
+      </span>
+    </div>
+  }
+</div>

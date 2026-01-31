@@ -19,7 +19,7 @@ import {
 
 @Component({
   selector: 'app-otp-verification',
-  imports: [ButtonComponent, ReactiveFormsModule, Spinner, Otp, RouterLink],
+  imports: [ButtonComponent, ReactiveFormsModule, Spinner, Otp, RouterLink, Timer],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

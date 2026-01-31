@@ -55,6 +55,7 @@ export class AuthService {
 
   public loginPostRequest(user: ILoginRequest): Observable<IloginResponse> {
     this.isLoginLoading.set(true);
+    this.tokenService.clearAllToken()
     return this.http.post<IloginResponse>(`${this.baseUrl}/login`, user).pipe(
       tap((res) => {
         if (res.status === 'mfa_required') {

@@ -4,17 +4,20 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Routes } from '../../../models/tokens.model';
+import { Timer } from '../../../shared/timer/timer';
+import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
+
 
 @Component({
   selector: 'app-phone-verification',
-  imports: [ReactiveFormsModule, TextInput, ButtonComponent],
+  imports: [ReactiveFormsModule, TextInput, ButtonComponent, Timer, AlertTypesWithIcons],
   templateUrl: './phone-verification.html',
   styleUrl: './phone-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,8 +28,19 @@ export class PhoneVerification {
   private router = inject(Router);
 
   public setPhoneNumberForm = this.fb.nonNullable.group({
-    phoneNumber: ['', [Validators.required]],
-  });
+  // phoneNumber: ['', [
+  //   Validators.required, 
+  //   Validators.pattern(/^5.*$/),
+  //   Validators.minLength(9),
+  //   Validators.maxLength(9)
+  // ]],
+  phoneNumber: ['', [
+    Validators.required, 
+    // startsWithFiveValidator(),
+    Validators.minLength(9),
+    Validators.maxLength(9)
+  ]],
+});
 
   public errorMessage = signal<string>('');
 

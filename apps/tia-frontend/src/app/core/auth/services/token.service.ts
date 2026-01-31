@@ -42,7 +42,10 @@ export class TokenService {
   }
 
   public clearAllToken(): void {
-    localStorage.clear();
+    localStorage.removeItem(TokenKey.ACCESS);
+    localStorage.removeItem(TokenKey.REFRESH);
+    localStorage.removeItem(TokenKey.VERIFY);
+    localStorage.removeItem(TokenKey.SIGNUP);
   }
 
   public get accessToken() {
