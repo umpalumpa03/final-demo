@@ -8,8 +8,11 @@ import {
   CategoryBreakdown, 
   IncomeVsExpenses, 
   SavingsTrend, 
-  DailySpending 
+  DailySpending,
+  ChartConfig,
+  SummaryCard 
 } from '../models/filter.model';
+import { CARDS_CONFIG } from '../config/filter-options.models'; 
 import { ChartData } from 'chart.js';
 
 export const FinancesStore = signalStore(
@@ -44,32 +47,77 @@ export const FinancesStore = signalStore(
       )
     ),
   })),
-  withComputed(({ categories, incomeVsExpenses, savingsTrend, dailySpending }) => ({
-    categoryChartData: computed((): ChartData<'pie'> => ({
-      labels: categories().map(c => c.category),
+  withComputed((store) => {
+    const formatUSD = (value: number) => 
+      new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+      }).format(value);
+
+    const summaryCards = computed((): SummaryCard[] => {
+      const storeData = store.summary();
+      if (!storeData) return [];
+
+      return CARDS_CONFIG.map((config) => {
+        const val = storeData[config.key] as number;
+        const changeVal = storeData[config.changeKey] as number;
+        
+        const calculatedType = config.dynamicType
+          ? val >= 0 ? 'positive' : 'negative'
+          : config.type;
+
+        return {
+          label: config.label,
+          value: config.isPct ? `${val}%` : formatUSD(val),
+          change: `${changeVal >= 0 ? '+' : ''}${changeVal}%`,
+          changeType: (calculatedType === 'positive' || calculatedType === 'negative') ? calculatedType : 'positive',
+          icon: `images/svg/cards/${config.icon}.svg`,
+        };
+      });
+    });
+
+    const categoryChartData = computed((): ChartData<'pie'> => ({
+      labels: store.categories().map(c => c.category),
       datasets: [{
-        data: categories().map(c => c.amount),
-        backgroundColor: categories().map(c => c.color),
+        data: store.categories().map(c => c.amount),
+        backgroundColor: store.categories().map(c => c.color),
         borderWidth: 0
       }]
-    })),
+    }));
 
-    mainChartData: computed((): ChartData<'line'> => ({
-      labels: incomeVsExpenses().map(i => i.month),
+    const mainChartData = computed((): ChartData<'line'> => ({
+      labels: store.incomeVsExpenses().map(i => i.month),
       datasets: [
-        { data: incomeVsExpenses().map(i => i.income), label: 'Income', borderColor: '#10B981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.4 },
-        { data: incomeVsExpenses().map(i => i.expenses), label: 'Expenses', borderColor: '#EF4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, tension: 0.4 }
+        { data: store.incomeVsExpenses().map(i => i.income), label: 'Income', borderColor: '#10B981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.4 },
+        { data: store.incomeVsExpenses().map(i => i.expenses), label: 'Expenses', borderColor: '#EF4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, tension: 0.4 }
       ]
-    })),
+    }));
 
-    savingsChartData: computed((): ChartData<'line'> => ({
-      labels: savingsTrend().map(s => s.month),
-      datasets: [{ data: savingsTrend().map(s => s.savings), label: 'Savings', borderColor: '#3B82F6', tension: 0.4 }]
-    })),
+    const savingsChartData = computed((): ChartData<'line'> => ({
+      labels: store.savingsTrend().map(s => s.month),
+      datasets: [{ data: store.savingsTrend().map(s => s.savings), label: 'Savings', borderColor: '#3B82F6', tension: 0.4 }]
+    }));
 
-    dailyChartData: computed((): ChartData<'bar'> => ({
-      labels: dailySpending().map(d => `Day ${d.day}`),
-      datasets: [{ data: dailySpending().map(d => d.amount), label: 'Spent', backgroundColor: '#8B5CF6', borderRadius: 4 }]
-    }))
-  }))
+    const dailyChartData = computed((): ChartData<'bar'> => ({
+      labels: store.dailySpending().map(d => `Day ${d.day}`),
+      datasets: [{ data: store.dailySpending().map(d => d.amount), label: 'Spent', backgroundColor: '#8B5CF6', borderRadius: 4 }]
+    }));
+
+    const charts = computed((): ChartConfig[] => [
+      { title: 'Income vs Expenses', type: 'line', data: mainChartData() },
+      { title: 'Spending by Category', type: 'pie', data: categoryChartData() },
+      { title: 'Savings Trend', type: 'line', data: savingsChartData() },
+      { title: 'Daily Spending', type: 'bar', data: dailyChartData() }
+    ]);
+
+    return {
+      summaryCards, 
+      charts,
+      categoryChartData,
+      mainChartData,
+      savingsChartData,
+      dailyChartData,
+    };
+  })
 );
