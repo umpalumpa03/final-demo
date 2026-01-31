@@ -1,12 +1,37 @@
 <app-tree-container
-  [containerTitle]="'paybill.templates.title' | translate"
-  [containerDescription]="'paybill.templates.description' | translate"
   [groups]="treeGroups"
   [items]="treeItems"
   [canDelete]="true"
   [editable]="true"
   [hasButton]="true"
   [buttonVariant]="'default'"
-  [buttonContent]="'Pay Now'"
+  [buttonContent]="'paybill.templates.payButton' | translate"
   [hasCheckbox]="true"
-></app-tree-container>
+  [noCardBorder]="true"
+  [errorHeader]="'paybill.templates.errorHeader' | translate"
+  [errorMessage]="'paybill.templates.errorMessage' | translate"
+  [contentHeader]="true"
+  [cardBackground]="true"
+>
+  <div class="templates__header">
+    <div class="templates__header__text">
+      <h3 class="templates__header__text__title">
+        {{ 'paybill.templates.title' | translate }}
+      </h3>
+      <p class="templates__header__text__desc">
+        {{ 'paybill.templates.description' | translate}}
+      </p>
+    </div>
+    <div class="templates__header__cta">
+      @for (button of headerButtons; track button.id) {
+      <app-button
+        (click)="modalHandler(button.action)"
+        [variant]="button.variant"
+        >{{ button.text }}</app-button
+      >
+      }
+    </div>
+  </div>
+</app-tree-container>
+
+<app-ui-modal [isOpen]="this.isModalOpen()"></app-ui-modal>

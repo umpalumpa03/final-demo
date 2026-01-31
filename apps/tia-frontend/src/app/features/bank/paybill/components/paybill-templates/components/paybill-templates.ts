@@ -1,15 +1,20 @@
-import { Component, input } from '@angular/core';
-import { TranslatePipe } from '@ngx-translate/core';
+import { Component, inject, input, signal } from '@angular/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { TreeContainer } from '@tia/shared/lib/drag-n-drop/components/tree-container/tree-container';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { ctaButtonConfig } from '../configs/cta-buttons.config';
+import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 
 @Component({
   selector: 'app-paybill-templates',
-  imports: [TreeContainer, TranslatePipe],
+  imports: [TreeContainer, TranslatePipe, ButtonComponent, UiModal],
   templateUrl: './paybill-templates.html',
   styleUrl: './paybill-templates.scss',
 })
 export class PaybillTemplates {
+  private translate = inject(TranslateService);
   public templateGroups = input();
+  public headerButtons = ctaButtonConfig(this.translate);
 
   treeGroups = [
     { id: 'g1', title: 'Group 1', subtitle: 'First group', expanded: true },
@@ -61,4 +66,16 @@ export class PaybillTemplates {
       order: 0,
     },
   ];
+
+  public isModalOpen = signal<boolean>(false);
+
+  public modalHandler(action: string): void {
+    if (action === 'select') {
+      return;
+    }
+
+    if (action === 'template') {
+    }
+    this.isModalOpen.update((val) => !val);
+  }
 }

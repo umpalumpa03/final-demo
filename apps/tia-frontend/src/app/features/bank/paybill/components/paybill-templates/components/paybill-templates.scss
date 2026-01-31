@@ -1,0 +1,23 @@
+@use '../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../shared/styles/palette' as *;
+
+.templates__header {
+  @include flex-center($justify: space-between);
+  &__text {
+    &__title {
+      @include font-inter(500, 1.6rem, 1.6rem);
+      color: var(--color-fg);
+    }
+
+    &__desc {
+      @include font-inter(400, 1.6rem, 2.4rem);
+      color: $blue-600;
+    }
+  }
+
+  &__cta {
+    @include flex-center();
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+}

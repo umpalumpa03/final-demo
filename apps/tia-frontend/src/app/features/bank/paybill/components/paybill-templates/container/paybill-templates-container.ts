@@ -16,7 +16,7 @@ export class PaybillTemplatesContainer implements OnInit {
   public store = inject(Store);
 
   ngOnInit(): void {
-    this.store.dispatch(TemplatesPageActions.loadTemplates());
+    // this.store.dispatch(TemplatesPageActions.loadTemplates());
   }
 
   public readonly templateGroups =
