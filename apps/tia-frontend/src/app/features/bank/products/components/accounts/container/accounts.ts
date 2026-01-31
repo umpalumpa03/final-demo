@@ -4,14 +4,14 @@ import {
   inject,
   OnInit,
   signal,
-  OnDestroy,
+  effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { shareReplay } from 'rxjs/operators';
-import { Subject, takeUntil } from 'rxjs';
+import { shareReplay, tap } from 'rxjs/operators';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { AccountsListComponent } from '../components/accounts-list/accounts-list';
 import { CreateAccountComponent } from '../components/create-account/components/create-account';
@@ -48,14 +48,13 @@ import { DismissibleAlerts } from '../../../../../../shared/lib/alerts/component
   styleUrl: './accounts.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Accounts implements OnInit, OnDestroy {
+export class Accounts implements OnInit {
   private readonly store = inject(Store);
   private readonly fb = inject(FormBuilder);
   private readonly accountsService = inject(AccountsService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly translate = inject(TranslateService);
-  private readonly destroy$ = new Subject<void>();
 
   protected readonly accountsGrouped$ = this.store.select(
     selectAccountsGrouped,
@@ -75,6 +74,12 @@ export class Accounts implements OnInit, OnDestroy {
   protected readonly isCreatingAccount$ = this.store.select(selectIsCreating);
   protected readonly createError$ = this.store.select(selectCreateError);
 
+  protected readonly accountsGroupedSignal = toSignal(this.accountsGrouped$);
+  protected readonly isCreatingAccountSignal = toSignal(
+    this.isCreatingAccount$,
+  );
+  protected readonly createErrorSignal = toSignal(this.createError$);
+
   protected readonly accountSectionsData = signal(
     getAccountSections(this.translate),
   );
@@ -90,6 +95,22 @@ export class Accounts implements OnInit, OnDestroy {
   protected errorTypeSignal = signal<'connection' | 'loading' | null>(null);
   private wasCreating = false;
 
+  constructor() {
+    effect(() => {
+      const accounts = this.accountsGroupedSignal();
+      if (accounts) {
+        this.handleAccountsGrouped(accounts);
+      }
+    });
+
+    effect(() => {
+      const isCreating = this.isCreatingAccountSignal();
+      if (isCreating !== undefined) {
+        this.handleIsCreatingAccount(isCreating);
+      }
+    });
+  }
+
   private createAccountForm(): FormGroup {
     return this.fb.group({
       friendlyName: ['', Validators.minLength(3)],
@@ -99,17 +120,9 @@ export class Accounts implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.accountsGrouped$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((accounts) => this.handleAccountsGrouped(accounts));
-
     if (this.router.url.includes('/create')) {
       this.store.dispatch(AccountsActions.openCreateModal());
     }
-
-    this.isCreatingAccount$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((isCreating) => this.handleIsCreatingAccount(isCreating));
   }
 
   private handleAccountsGrouped(accounts: any): void {
@@ -125,22 +138,16 @@ export class Accounts implements OnInit, OnDestroy {
 
   private handleIsCreatingAccount(isCreating: boolean): void {
     if (!isCreating && this.wasCreating) {
-      this.createError$.pipe(takeUntil(this.destroy$)).subscribe((error) => {
-        if (error) {
-          this.showCreateErrorAlert.set(true);
-          this.showCreateAlert.set(false);
-        } else {
-          this.showCreateAlert.set(true);
-          this.showCreateErrorAlert.set(false);
-        }
-      });
+      const error = this.createErrorSignal();
+      if (error) {
+        this.showCreateErrorAlert.set(true);
+        this.showCreateAlert.set(false);
+      } else {
+        this.showCreateAlert.set(true);
+        this.showCreateErrorAlert.set(false);
+      }
     }
     this.wasCreating = isCreating;
-  }
-
-  public ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   public handleOpenModal(): void {
