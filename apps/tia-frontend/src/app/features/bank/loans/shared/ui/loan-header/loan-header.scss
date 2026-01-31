@@ -5,6 +5,12 @@
 .header {
     @include flex-center(row, space-between);
 
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.6rem;
+    }
+
     &__title {
         @include display-flex(column);
         gap: 0.4rem;

@@ -1,15 +1,74 @@
-.settings-header-wrapper {
-    display: flex;
-   
- h1{
-    color: red;
- }
-    .settings-header-nav {
-        display: flex;
-        gap: 4rem;
+@use '../../../../../../shared/styles/palette' as *;
+@use '../../../../../../shared/styles/mixins' as *;
+
+.settings {
+
+    &__title {
+        color: var(--color-fg);
+        @include font-inter(700, 3rem, 3.6rem);
+    }
+
+    &__desc {
+        color: $gray-700;
+        @include font-inter(400, 1.6rem, 2.4rem);
+        margin-top: 0.4rem;
+    }
+    
+    &__header-nav {
+        margin-top: 3.2rem;
+        @include flex-center(column, flex-start, stretch);
+        gap: 0.8rem;
         margin-top: 2rem;
         margin-bottom: 4rem;
+        background-color: var(--color-muted);
+        padding: 0.3rem;
+        border-radius: 1.4rem;
     }
+
+    &__nav-group {
+        @include flex-center(row, space-between, center);
+        gap: 0.8rem;
+        & > * {
+            flex: 1;
+        }
+
+        &--admin {
+            @include flex-center(row, space-between, center);
+            gap: 0.8rem;
+            
+            & > * {
+                flex: 1;
+            }
+        }
+    }
+
+    &__nav-link-container {
+        
+        a {
+            @include font-inter(500, 1.4rem, 2rem);
+            @include flex-center();
+            gap: 0.8rem;
+            padding: 0.6rem 0.12rem;
+            width: 100%;
+            height: 100%;
+            border-radius: 1.4rem;
+
+            img {
+                width: 2rem;
+                height: 2rem;
+            }
+
+
+           &.active {
+            background-color: $white;
+           }
+
+           &:hover {
+            background-color: $white;
+           }
+        }
+    }
+    
 }
   
     

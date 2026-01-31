@@ -22,6 +22,7 @@ describe('ExternalAccounts', () => {
     senderAccount: signal<any>(null),
     selectedRecipientAccount: signal<any>(null),
     setSelectedRecipientAccount: vi.fn(),
+    setAmount: vi.fn(),
   };
 
   const mockExternalService = {
@@ -77,15 +78,18 @@ describe('ExternalAccounts', () => {
     const loc = TestBed.inject(Location);
     expect(loc.back).toHaveBeenCalled();
   });
+
   it('should handle recipient account selection toggle', () => {
     const account = { id: '1' } as any;
     component.onRecipientAccountSelect(account);
+    expect(mockStore.setAmount).toHaveBeenCalledWith(0);
     expect(mockExternalService.handleRecipientAccountSelect).toHaveBeenCalled();
   });
 
   it('should handle sender account selection', () => {
     const account = { id: 'sender-1' } as any;
     component.onSenderAccountSelect(account);
+    expect(mockStore.setAmount).toHaveBeenCalledWith(0);
     expect(mockExternalService.handleSenderAccountSelect).toHaveBeenCalled();
   });
 
@@ -93,7 +97,6 @@ describe('ExternalAccounts', () => {
     component.onContinue();
     expect(mockExternalService.handleContinue).toHaveBeenCalled();
   });
-
 
   it('should show error state when store has error', () => {
     mockStore.error.set('Failed to load');

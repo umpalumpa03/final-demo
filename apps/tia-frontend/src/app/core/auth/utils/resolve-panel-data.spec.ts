@@ -3,7 +3,7 @@ import { signal } from '@angular/core';
 
 import { updateSidePanelForRoute } from './resolve-panel-data';
 import { Routes } from '../models/tokens.model';
-import { AUTH_SIDE_PANEL_DATA } from '../models/input-config.models';
+import { AUTH_SIDE_PANEL_DATA } from '../config/inputs.config';
 
 describe('updateSidePanelForRoute', () => {
   it('sets signIn panel for SIGN_IN', () => {

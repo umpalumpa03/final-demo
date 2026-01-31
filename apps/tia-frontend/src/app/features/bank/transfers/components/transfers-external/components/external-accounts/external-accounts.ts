@@ -132,11 +132,20 @@ export class ExternalAccounts implements OnInit {
 
   constructor() {
     effect(() => {
+      const accounts = this.recipientAccounts();
+      const isExternal = this.isExternalIban();
       const recipientInfo = this.transferStore.recipientInfo();
+      if (
+        isExternal &&
+        accounts.length > 0 &&
+        !this.selectedRecipientAccount()
+      ) {
+        this.transferStore.setSelectedRecipientAccount(accounts[0]);
+      }
       if (recipientInfo) {
         this.showSuccess.set(true);
-        const accounts = this.recipientAccounts();
-        if (accounts.length === 1) {
+
+        if (accounts.length === 1 && !this.selectedRecipientAccount()) {
           this.transferStore.setSelectedRecipientAccount(accounts[0]);
         }
 
@@ -152,7 +161,9 @@ export class ExternalAccounts implements OnInit {
 
   public ngOnInit(): void {
     const accounts = this.senderAccounts();
-    if (!accounts || accounts.length === 0) {
+    const isLoading = this.isLoadingSenderAccounts();
+
+    if ((!accounts || accounts.length === 0) && !isLoading) {
       this.store.dispatch(AccountsActions.loadAccounts());
     }
   }
@@ -173,16 +184,24 @@ export class ExternalAccounts implements OnInit {
   };
 
   public onRecipientAccountSelect(account: Account | RecipientAccount): void {
+    const current = this.selectedRecipientAccount();
+    if (current?.id !== account.id) {
+      this.transferStore.setAmount(0);
+    }
     this.transferExternalService.handleRecipientAccountSelect(
       account as RecipientAccount,
-      this.selectedRecipientAccount(),
+      current,
     );
   }
 
   public onSenderAccountSelect(account: AccountData): void {
+    const current = this.selectedSenderAccount();
+    if (current?.id !== account.id) {
+      this.transferStore.setAmount(0);
+    }
     this.transferExternalService.handleSenderAccountSelect(
       account as Account,
-      this.selectedSenderAccount(),
+      current,
     );
   }
 
