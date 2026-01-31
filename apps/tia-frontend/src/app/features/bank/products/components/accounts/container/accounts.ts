@@ -87,6 +87,7 @@ export class Accounts implements OnInit, OnDestroy {
   protected showSuccessAlert = signal<boolean>(false);
   protected showCreateAlert = signal<boolean>(false);
   protected showCreateErrorAlert = signal<boolean>(false);
+  protected errorTypeSignal = signal<'connection' | 'loading' | null>(null);
   private wasCreating = false;
 
   private createAccountForm(): FormGroup {
