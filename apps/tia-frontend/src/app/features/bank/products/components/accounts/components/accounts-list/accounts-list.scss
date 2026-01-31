@@ -44,52 +44,34 @@
     margin-bottom: 2rem;
 
     &-header {
-      @include flex-center(row, flex-start);
+      @include flex-center(row, flex-start, flex-start);
       gap: 0.75rem;
       margin-bottom: 1rem;
     }
 
     &-icon {
-      width: 2.4rem;
-      height: 2.4rem;
-    }
-
-    &-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin: 0;
-    }
-
-    &-count {
-      @include flex-center();
-      min-width: 2.4rem;
-      height: 2.4rem;
-      padding: 0 0.5rem;
-      background-color: $gray-200;
-      border-radius: 0.1rem;
-      @include font-arimo(500, 1rem, 1.2);
-      color: $gray-600;
+      width: 3.2rem;
+      height: 3.2rem;
     }
 
     &-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      @include display-flex(row);
       gap: 1.5rem;
-    }
-
-    &-scroll {
+      padding: 1rem 0;
+      flex-wrap: nowrap;
       width: 100%;
 
-      &-grid {
-        @include display-flex(row);
-        gap: 1.5rem;
-
-        app-account-card {
-          flex-shrink: 0;
-          width: 30%;
-          min-width: 280px;
-        }
+      app-account-card {
+        flex: 0 0 calc(33.333% - 1rem);
+        min-width: calc(33.333% - 1rem);
       }
+    }
+
+    &-loader {
+      @include flex-center(row);
+      flex: 0 0 auto;
+      padding: 1rem;
+      min-width: 280px;
     }
   }
 }
