@@ -12,29 +12,31 @@ export function translateConfig<T extends object>(
   config: T,
   translateFn: (key: string) => string,
 ): TranslatableConfig<T> {
-  const newConfig = { ...config } as unknown as TranslatableConfig<T>;
-
-  type ConfigValue = TranslatableConfig<T>[keyof TranslatableConfig<T>];
+  const newConfig = { ...config } as TranslatableConfig<T>;
+  const translatableKeys = [
+    'label',
+    'placeholder',
+    'errorMessage',
+    'description',
+  ] as const;
 
   (Object.keys(newConfig) as Array<keyof TranslatableConfig<T>>).forEach(
     (key) => {
       const field = { ...newConfig[key] };
 
-      const translatableKeys = [
-        'label',
-        'placeholder',
-        'errorMessage',
-        'description',
-      ];
-
       translatableKeys.forEach((prop) => {
-        if (prop in field && (field as any)[prop]) {
-          (field as any)[prop] = translateFn((field as any)[prop]);
+        const fieldRecord = field as Record<string, unknown>;
+
+        if (prop in fieldRecord) {
+          const value = fieldRecord[prop];
+
+          if (typeof value === 'string') {
+            (fieldRecord as Record<string, string>)[prop] = translateFn(value);
+          }
         }
       });
 
-      (newConfig as Record<keyof TranslatableConfig<T>, ConfigValue>)[key] =
-        field;
+      newConfig[key] = field;
     },
   );
 
