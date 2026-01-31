@@ -5,22 +5,20 @@ import {
   inject,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
-import * as PAYBILL_SELECTORS from '../../store/paybill.selectors';
-import { CategoryGrid } from './components/category-grid/category-grid';
-import { CATEGORY_UI_MAP } from './components/category-grid/config/category.config';
+import * as PAYBILL_SELECTORS from '../../../store/paybill.selectors';
+import { CategoryGrid } from '../components/category-grid/category-grid';
+import { CATEGORY_UI_MAP } from '../components/category-grid/config/category.config';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProviderList } from './components/provider-list/provider-list';
-import { PaybillForm } from './components/paybill-form/paybill-form';
-import { PaybillActions } from '../../store/paybill.actions';
-import { PaybillOtpVerification } from './components/paybill-otp-verification/paybill-otp-verification';
-import {
-  PaybillPayload,
-  ProceedPaymentPayload,
-} from '../../models/paybill.model';
+import { ProviderList } from '../components/provider-list/provider-list';
+import { PaybillForm } from '../components/paybill-form/paybill-form';
+import { PaybillActions } from '../../../store/paybill.actions';
+import { PaybillOtpVerification } from '../components/paybill-otp-verification/paybill-otp-verification';
+import { PaybillPayload, ProceedPaymentPayload } from '../shared/models/paybill.model';
+import { PaybillConfirmPayment } from "../components/paybill-confirm-payment/paybill-confirm-payment";
 
 @Component({
   selector: 'app-paybill-main',
-  imports: [CategoryGrid, ProviderList, PaybillForm, PaybillOtpVerification],
+  imports: [CategoryGrid, ProviderList, PaybillForm, PaybillOtpVerification, PaybillConfirmPayment],
   templateUrl: './paybill-main.html',
   styleUrl: './paybill-main.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -118,11 +116,20 @@ export class PaybillMain {
     if (provider) {
       this.store.dispatch(PaybillActions.setPaymentPayload({ data }));
 
+      this.store.dispatch(PaybillActions.setPaymentStep({ step: 'CONFIRM' }));
+    }
+  }
+
+  public onFinalConfirm(): void {
+    const provider = this.activeProvider();
+    const data = this.paymentPayload();
+
+    if (provider && data) {
       const payload: ProceedPaymentPayload = {
         serviceId: provider.id,
         identification: { accountNumber: data.accountNumber },
         amount: data.amount,
-        senderAccountId: 'a1000001-0001-4000-8000-000000000004', // ES UNDA SHEVCVALO
+        senderAccountId: 'a1000001-0001-4000-8000-000000000004',
       };
 
       this.store.dispatch(PaybillActions.proceedPayment({ payload }));

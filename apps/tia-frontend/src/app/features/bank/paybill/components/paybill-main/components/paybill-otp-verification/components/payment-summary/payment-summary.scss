@@ -1,54 +1,79 @@
 @use '../../../../../../../../../shared/styles/mixins' as *;
 @use '../../../../../../../../../shared/styles/palette' as *;
 
-.payment-summary {
+.summary-container {
   @include display-flex(column);
-  padding: 2.4rem 2.4rem 0;
+  padding: 2rem;
   width: 100%;
-  min-height: 18.3rem;
-  background: $gray-25;
-  border-radius: 1rem;
+  border-radius: 1.2rem;
+  gap: 1.6rem;
+}
+
+.summary-header {
+  @include display-flex(row);
+  align-items: center;
+  justify-content: space-between;
+
+  &__left {
+    @include display-flex(row);
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  &__icon {
+    width: 4rem;
+    height: 4rem;
+    object-fit: contain;
+  }
+
+  &__text {
+    @include display-flex(column);
+  }
 
   &__title {
-    @include font-inter(600, 1.8rem, 2.7rem);
-    letter-spacing: -0.044rem;
-    color: var(--color-fg);
+    @include font-inter(600, 1.8rem, 2.4rem);
     margin: 0;
   }
 
-  &__list {
-    @include display-flex(column);
-    gap: 0.8rem;
-    width: 100%;
+  &__subtitle {
+    @include font-inter(400, 1.4rem, 2rem);
+    color: $gray-500;
+    margin: 0;
   }
 }
 
+.summary-list {
+  @include display-flex(column);
+  gap: 1.2rem;
+}
+
 .summary-row {
-  @include flex-center(row, space-between, flex-start);
+  @include flex-center(row, space-between, center);
   width: 100%;
-  height: 2rem;
 
   &__label {
     @include font-inter(400, 1.4rem, 2rem);
-    letter-spacing: -0.015rem;
-    color: $gray-700;
+    color: $gray-600;
   }
 
   &__value {
     @include font-inter(600, 1.4rem, 2rem);
-    letter-spacing: -0.015rem;
-    color: var(--color-fg);
-    &--price {
-      @include font-inter(700, 1.8rem, 2.8rem);
-      letter-spacing: -0.044rem;
-      color: $blue-800;
-    }
+    color: $blue-ocean-foreground;
   }
 
   &--total {
-    height: 3.6rem;
-    padding-top: 0.8rem;
-    border-top: 0.0625rem solid $blue-400;
-    margin-top: 0.4rem;
+    margin-top: 0.8rem;
+    padding-top: 1.2rem;
+    border-top: 0.1rem solid $gray-200;
+
+    .summary-row__label {
+      @include font-inter(600, 1.6rem, 2.4rem);
+      color: $blue-ocean-foreground;
+    }
+
+    .summary-row__value {
+      @include font-inter(700, 1.8rem, 2.6rem);
+      color: $blue-700;
+    }
   }
 }

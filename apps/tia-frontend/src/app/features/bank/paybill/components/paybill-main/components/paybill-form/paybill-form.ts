@@ -7,7 +7,7 @@ import {
   input,
   output,
 } from '@angular/core';
-import { BillDetails, PaybillPayload, PaybillProvider } from '../../../../models/paybill.model';
+import { BillDetails, PaybillPayload, PaybillProvider } from '../../shared/models/paybill.model';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
@@ -80,7 +80,6 @@ export class PaybillForm {
       }
     } else {
       if (this.paybillForm.valid) {
-        console.log(this.paybillForm.getRawValue());
         this.pay.emit(this.paybillForm.getRawValue());
       } else {
         this.paybillForm.markAllAsTouched();

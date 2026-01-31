@@ -3,9 +3,9 @@ import { PaybillMain } from './paybill-main';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { provideRouter, Router, ActivatedRoute } from '@angular/router';
-import * as PAYBILL_SELECTORS from '../../store/paybill.selectors';
-import { PaybillCategory } from '../../models/paybill.model';
-import { PaybillActions } from '../../store/paybill.actions';
+import * as PAYBILL_SELECTORS from '../../../store/paybill.selectors';
+import { PaybillCategory } from '../shared/models/paybill.model';
+import { PaybillActions } from '../../../store/paybill.actions';
 
 describe('PaybillMain', () => {
   let component: PaybillMain;

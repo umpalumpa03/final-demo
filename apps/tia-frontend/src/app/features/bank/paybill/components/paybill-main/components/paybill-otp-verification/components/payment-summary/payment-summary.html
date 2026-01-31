@@ -1,22 +1,26 @@
-<div class="payment-summary">
-  <h3 class="payment-summary__title">Payment Summary</h3>
-
-  <div class="payment-summary__list">
-    <div class="summary-row">
-      <span class="summary-row__label">Service:</span>
-      <span class="summary-row__value">{{ serviceName() }}</span>
+<div class="summary-container" [style.backgroundColor]="backgroundColor()">
+  <header class="summary-header">
+    <div class="summary-header__left">
+      @if (iconUrl()) {
+      <img [src]="iconUrl()" alt="icon" class="summary-header__icon" />
+      }
+      <div class="summary-header__text">
+        <h3 class="summary-header__title" [style.color]="headerColor()">
+          {{ headerTitle() }}
+        </h3>
+        @if (headerSubtitle()) {
+        <p class="summary-header__subtitle">{{ headerSubtitle() }}</p>
+        }
+      </div>
     </div>
+  </header>
 
-    <div class="summary-row">
-      <span class="summary-row__label">Account:</span>
-      <span class="summary-row__value">{{ accountNumber() }}</span>
+  <div class="summary-list">
+    @for (item of items(); track item.label) {
+    <div class="summary-row" [class.summary-row--total]="item.isTotal">
+      <span class="summary-row__label">{{ item.label }}</span>
+      <span class="summary-row__value">{{ item.value }}</span>
     </div>
-
-    <div class="summary-row summary-row--total">
-      <span class="summary-row__label">Amount:</span>
-      <span class="summary-row__value summary-row__value--price">
-        ${{ amount() }}
-      </span>
-    </div>
+    }
   </div>
 </div>

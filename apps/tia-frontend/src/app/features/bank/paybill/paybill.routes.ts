@@ -18,7 +18,7 @@ export const PAYBILL_ROUTES: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('./components/paybill-main/paybill-main').then(
+          import('./components/paybill-main/container/paybill-main').then(
             (c) => c.PaybillMain,
           ),
       },
@@ -32,14 +32,14 @@ export const PAYBILL_ROUTES: Routes = [
       {
         path: ':categoryId',
         loadComponent: () =>
-          import('./components/paybill-main/paybill-main').then(
+          import('./components/paybill-main/container/paybill-main').then(
             (c) => c.PaybillMain,
           ),
       },
       {
         path: ':categoryId/:providerId',
         loadComponent: () =>
-          import('./components/paybill-main/paybill-main').then(
+          import('./components/paybill-main/container/paybill-main').then(
             (c) => c.PaybillMain,
           ),
       },

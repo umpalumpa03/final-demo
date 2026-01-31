@@ -4,7 +4,7 @@ import {
   PaybillState,
   PaybillCategory,
   PaybillProvider,
-} from '../models/paybill.model';
+} from '../components/paybill-main/shared/models/paybill.model';
 
 describe('Paybill Selectors', () => {
   const mockProviders: PaybillProvider[] = [

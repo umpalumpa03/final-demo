@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { BillDetails } from '../../../../../../models/paybill.model';
+import { BillDetails } from '../../../../shared/models/paybill.model';
 
 @Component({
   selector: 'app-paybill-form-details',

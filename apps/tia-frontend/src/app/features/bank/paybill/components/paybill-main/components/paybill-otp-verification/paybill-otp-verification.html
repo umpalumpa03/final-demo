@@ -12,9 +12,9 @@
   ></app-alert-types-with-icons>
 
   <app-payment-summary
-    [serviceName]="provider()?.name || ''"
-    [accountNumber]="summary().accountNumber"
-    [amount]="summary().amount"
+    [items]="summaryItems()"
+    headerTitle="Payment Summary"
+    backgroundColor="$gray-25"
   ></app-payment-summary>
 
   <div class="otp-wrapper">

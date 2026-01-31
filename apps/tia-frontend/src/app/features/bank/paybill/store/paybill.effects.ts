@@ -5,7 +5,7 @@ import { catchError, map, mergeMap, of, withLatestFrom } from 'rxjs';
 import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillActions } from './paybill.actions';
 import { selectSelectedProviderId } from './paybill.selectors';
-import { ProceedPaymentResponse } from '../models/paybill.model';
+import { ProceedPaymentResponse } from '../components/paybill-main/shared/models/paybill.model';
 
 export const loadCategories = createEffect(
   (actions$ = inject(Actions), paybillService = inject(PaybillService)) => {
