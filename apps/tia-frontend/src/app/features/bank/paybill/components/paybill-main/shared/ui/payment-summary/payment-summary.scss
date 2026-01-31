@@ -1,0 +1,87 @@
+@use '../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../shared/styles/palette' as *;
+
+.summary-container {
+  @include display-flex(column);
+  padding: 2.4rem;
+  width: 100%;
+  border-radius: 1.2rem;
+  gap: 2.4rem;
+}
+
+.summary-header {
+  @include display-flex(row);
+  align-items: center;
+
+  &__left {
+    @include display-flex(row);
+    align-items: center;
+    gap: 1.6rem;
+  }
+
+  &__icon-container {
+    width: 6.4rem;
+    height: 6.4rem;
+    border-radius: 1.4rem;
+    @include flex-center();
+    flex-shrink: 0;
+  }
+
+  &__icon {
+    width: 3.2rem;
+    height: 3.2rem;
+    object-fit: contain;
+  }
+
+  &__text {
+    @include display-flex(column);
+    gap: 0.4rem;
+  }
+
+  &__title {
+    @include font-inter(700, 1.8rem, 2.8rem);
+    margin: 0;
+  }
+
+  &__subtitle {
+    @include font-inter(400, 1.4rem, 2rem);
+    color: $gray-600;
+    margin: 0;
+  }
+}
+
+.summary-list {
+  @include display-flex(column);
+  gap: 1.2rem;
+}
+
+.summary-row {
+  @include flex-center(row, space-between, center);
+  width: 100%;
+
+  &__label {
+    @include font-inter(400, 1.6rem, 2.4rem);
+    color: $gray-700;
+  }
+
+  &__value {
+    @include font-inter(600, 1.6rem, 2.4rem);
+    color: $blue-ocean-foreground;
+  }
+
+  &--total {
+    margin-top: 0.8rem;
+    padding-top: 1.6rem;
+    border-top: 0.0625rem solid $blue-200;
+
+    .summary-row__label {
+      @include font-inter(400, 1.8rem, 2.8rem);
+      color: $gray-700;
+    }
+
+    .summary-row__value {
+      @include font-inter(700, 2.4rem, 3.2rem);
+      color: $blue-800;
+    }
+  }
+}

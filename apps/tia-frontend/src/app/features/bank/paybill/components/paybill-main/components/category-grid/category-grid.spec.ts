@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CategoryGrid } from './category-grid';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { PaybillCategory } from '../../../../models/paybill.model';
+import { PaybillCategory } from '../../shared/models/paybill.model';
 
 describe('CategoryGrid', () => {
   let component: CategoryGrid;

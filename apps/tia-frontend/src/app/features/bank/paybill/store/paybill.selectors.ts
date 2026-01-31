@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { PaybillState } from '../models/paybill.model';
+import { PaybillState } from '../components/paybill-main/shared/models/paybill.model';
 import { Breadcrumb } from '@tia/shared/lib/navigation/models/breadcrumbs.model';
 
 export const selectPaybillState =

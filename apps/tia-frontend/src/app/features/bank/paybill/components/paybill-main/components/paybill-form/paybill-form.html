@@ -26,7 +26,11 @@
     </div>
 
     @if (isVerified()) {
-    <app-paybill-form-details [details]="verifiedDetails()" />
+    <app-payment-summary
+      [items]="summaryItems()"
+      headerTitle="Account Verified"
+      type="verified"
+    ></app-payment-summary>
 
     <lib-text-input
       label="Amount To Pay"
@@ -46,7 +50,7 @@
         Continue to Payment
       </app-button>
 
-      <app-button variant='secondary'>Save Template</app-button>
+      <app-button variant="secondary">Save Template</app-button>
     </div>
     } @else {
     <app-button

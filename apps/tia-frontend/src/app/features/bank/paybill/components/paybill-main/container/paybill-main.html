@@ -12,6 +12,16 @@ activeProvider();
       (verify)="onVerifyAccount($event)"
       (pay)="onProceedToPayment($event)"
     />
+    } @case('CONFIRM'){
+    <app-paybill-confirm-payment
+      [provider]="provider"
+      [summary]="paymentPayload()!"
+      [details]="verifiedDetails()!"
+      (confirm)="onFinalConfirm()"
+      [iconBgColor]="ui?.iconBgColor!"
+      [iconBgPath]="ui!.iconBgPath"
+      (cancelPayment)="onBackToDetails()"
+    />
     } @case('OTP'){
     <app-paybill-otp-verification
       [provider]="provider"

@@ -12,7 +12,7 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { PaybillActions } from '../store/paybill.actions';
 import * as fromSelectors from '../store/paybill.selectors';
 import { Subject, of } from 'rxjs';
-import { PaybillCategory, PaybillProvider } from '../models/paybill.model';
+import { PaybillCategory, PaybillProvider } from '../components/paybill-main/shared/models/paybill.model';
 
 describe('PaybillContainer', () => {
   let component: PaybillContainer;

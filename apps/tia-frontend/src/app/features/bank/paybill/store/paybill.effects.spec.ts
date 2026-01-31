@@ -14,7 +14,7 @@ import {
 } from './paybill.effects';
 import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillActions } from './paybill.actions';
-import { BillDetails, PaybillProvider } from '../models/paybill.model';
+import { BillDetails, PaybillProvider } from '../components/paybill-main/shared/models/paybill.model';
 import * as fromSelectors from './paybill.selectors';
 
 describe('PaybillEffects', () => {

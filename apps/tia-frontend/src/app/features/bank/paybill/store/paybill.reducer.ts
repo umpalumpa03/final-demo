@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { PaybillState } from '../models/paybill.model';
+import { PaybillState } from '../components/paybill-main/shared/models/paybill.model';
 import { PaybillActions, TemplatesPageActions } from './paybill.actions';
 
 export const initialPaybillState: PaybillState = {

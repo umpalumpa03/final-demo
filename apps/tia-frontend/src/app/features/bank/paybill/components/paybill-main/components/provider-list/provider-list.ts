@@ -4,7 +4,7 @@ import {
   input,
   output,
 } from '@angular/core';
-import { PaybillProvider } from '../../../../models/paybill.model';
+import { PaybillProvider } from '../../shared/models/paybill.model';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';

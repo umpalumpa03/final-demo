@@ -5,7 +5,7 @@ import { catchError, map, mergeMap, of, withLatestFrom } from 'rxjs';
 import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillActions } from './paybill.actions';
 import { selectSelectedProviderId } from './paybill.selectors';
-import { ProceedPaymentResponse } from '../models/paybill.model';
+import { ProceedPaymentResponse } from '../components/paybill-main/shared/models/paybill.model';
 import { PaybillTemplatesService } from '../components/paybill-templates/services/paybill-templates-service';
 
 @Injectable()
@@ -88,11 +88,7 @@ export const checkBill = createEffect(
 );
 
 export const proceedPayment = createEffect(
-  (
-    actions$ = inject(Actions),
-    paybillService = inject(PaybillService),
-    store = inject(Store),
-  ) => {
+  (actions$ = inject(Actions), paybillService = inject(PaybillService)) => {
     return actions$.pipe(
       ofType(PaybillActions.proceedPayment),
       mergeMap(({ payload }) =>
@@ -119,7 +115,7 @@ export const confirmPayment = createEffect(
       ofType(PaybillActions.confirmPayment),
       mergeMap(({ payload }) =>
         paybillService.verifyPayment(payload).pipe(
-          map((response) => {
+          map(() => {
             return PaybillActions.setPaymentStep({ step: 'SUCCESS' });
           }),
           catchError((error) =>

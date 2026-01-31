@@ -15,7 +15,7 @@ import {
   selectPaybillBreadcrumbs,
 } from '../store/paybill.selectors';
 import { PaybillActions } from '../store/paybill.actions';
-import { PaybillCategory, PaybillProvider } from '../models/paybill.model';
+import { PaybillCategory, PaybillProvider } from '../components/paybill-main/shared/models/paybill.model';
 import {
   ActivatedRoute,
   NavigationEnd,

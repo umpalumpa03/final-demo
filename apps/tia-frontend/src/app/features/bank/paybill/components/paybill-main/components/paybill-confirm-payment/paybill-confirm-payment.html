@@ -1,0 +1,39 @@
+<app-basic-card class="confirm-card" maxWidth="91.2rem" padding="2.4rem">
+  <header class="confirm-card__header">
+    <app-library-title [title]="title" [subtitle]="subtitle" />
+  </header>
+
+  <div class="confirm-content">
+    <app-payment-summary
+      [iconBgColor]="iconBgColor()"
+      [iconBgPath]="iconBgPath()"
+      [items]="summaryItems()"
+      headerTitle="National Power Company"
+      headerSubtitle="Utilities"
+      type="confirm-payment"
+    ></app-payment-summary>
+
+    <!-- <div class="payment-method">
+      <label class="payment-method__label">Payment Method</label>
+      <div class="payment-method__selector">
+        <span class="selector-text"
+          >💳 Main Account (****1234) - $5,432.10</span
+        >
+        <img
+          src="images/svg/dashboard/chevron-down.svg"
+          alt="select"
+          class="selector-icon"
+        />
+      </div>
+    </div> -->
+
+    <footer class="confirm-actions">
+      <app-button variant="secondary" (click)="cancelPayment.emit()"
+        >Cancel</app-button
+      >
+      <app-button (click)="confirm.emit()">
+        Confirm & Pay ${{ summary().amount }}
+      </app-button>
+    </footer>
+  </div>
+</app-basic-card>
