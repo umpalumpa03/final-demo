@@ -47,12 +47,14 @@ export class PaybillConfirmPayment {
   public readonly selectedAccountId = signal<string | null>(null);
   public readonly currentAccounts = input<Account[] | null>(null);
 
-  protected readonly accountOptions = computed(() =>
-    this.currentAccounts()!.map((acc) => ({
+  protected readonly accountOptions = computed(() => {
+    const accounts = this.currentAccounts();
+    if (!accounts) return [];
+    return accounts.map((acc) => ({
       label: `${acc.friendlyName || acc.name} (****${acc.id.slice(-4)}) - ${acc.balance} ${acc.currency}`,
       value: acc.id,
-    })),
-  );
+    }));
+  });
 
   public handleAccountChange(id: string): void {
     this.selectedAccountId.set(id);

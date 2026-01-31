@@ -68,12 +68,7 @@ export const paybillReducer = createReducer(
     loading: true,
     error: null,
   })),
-  on(PaybillActions.checkBillSuccess, (state, { details }) => ({
-    ...state,
-    verifiedDetails: details,
-    loading: false,
-    error: details.valid ? null : (details.error ?? 'Invalid account'),
-  })),
+
   on(PaybillActions.checkBill, (state) => ({
     ...state,
     loading: true,
@@ -84,8 +79,7 @@ export const paybillReducer = createReducer(
     ...state,
     verifiedDetails: details,
     loading: false,
-
-    error: details.valid ? null : (details.error ?? null),
+    error: details.valid ? null : (details.error ?? 'Invalid account'),
   })),
 
   on(PaybillActions.checkBillFailure, (state, { error }) => ({
