@@ -117,3 +117,11 @@ export const selectChallengeId = createSelector(
   selectPaybillState,
   (state) => state.challengeId,
 );
+
+export const selectTemplatesGroup = createSelector(
+  selectPaybillState,
+  (state) => {
+    console.log(state);
+    return state.templateGroups;
+  },
+);

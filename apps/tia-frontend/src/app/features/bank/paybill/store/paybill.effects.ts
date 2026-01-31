@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { catchError, map, mergeMap, of, withLatestFrom } from 'rxjs';
 import { PaybillService } from '../services/paybill/paybill-service';
-import { PaybillActions } from './paybill.actions';
+import { PaybillActions, TemplatesPageActions } from './paybill.actions';
 import { selectSelectedProviderId } from './paybill.selectors';
 import { ProceedPaymentResponse } from '../components/paybill-main/shared/models/paybill.model';
 import { PaybillTemplatesService } from '../components/paybill-templates/services/paybill-templates-service';
@@ -118,4 +118,24 @@ export class PaybillEffect {
     },
     { functional: true },
   );
+
+  loadTemplateGroups$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TemplatesPageActions.loadTemplates),
+      mergeMap(() =>
+        this.payBillTemplatesService.getAllTemplateGroups().pipe(
+          map((templateGroups) =>
+            TemplatesPageActions.loadTemplatesSuccess({ templateGroups }),
+          ),
+          catchError((error) =>
+            of(
+              TemplatesPageActions.loadTemplatesFailure({
+                error: error.message,
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
 }

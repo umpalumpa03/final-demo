@@ -9,7 +9,7 @@ import { TreeContainer } from '@tia/shared/lib/drag-n-drop/components/tree-conta
   styleUrl: './paybill-templates.scss',
 })
 export class PaybillTemplates {
-  public templateGroups = input.required();
+  public templateGroups = input();
 
   treeGroups = [
     { id: 'g1', title: 'Group 1', subtitle: 'First group', expanded: true },

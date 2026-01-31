@@ -1,4 +1,4 @@
-export interface TableGroups {
+export interface TemplateGroups {
   id: string;
   groupName: string;
   templateCount: number;
