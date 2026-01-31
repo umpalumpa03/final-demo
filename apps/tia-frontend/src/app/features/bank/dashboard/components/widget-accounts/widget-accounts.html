@@ -1,3 +1,27 @@
+
+<div class = 'accounts'>
+  @for (account of accounts$ | async; track account.id) {
+    <div class = 'account-card'>
+      <div class = 'account-card__header'>
+        <div class = 'account-card__header-top'>
+          {{ account.friendlyName }}
+          <span class = 'account-card__header-top--iban'>
+            ****{{ account.iban.slice(-4) }}
+          </span>
+        </div>
+        <div class = 'account-card__header-bottom'>
+
+        </div>
+      </div>
+
+      <div class = 'account-card__balance'>
+        {{ account.balance | currency:'USD':'symbol':'1.2-2' }}
+      </div>
+
+    </div>
+  }
+</div>
+
 @if (isLoading$ | async) {
   <div class="widget-loading">
     <app-route-loader
@@ -31,28 +55,6 @@
     </app-error-states>
   </div>
 }
-<div class = 'accounts'>
-  @for (account of accounts$ | async; track account.id) {
-    <div class = 'account-card'>
-      <div class = 'account-card__header'>
-        <div class = 'account-card__header-top'>
-          {{ account.friendlyName }}
-          <span class = 'account-card__header-top--iban'>
-            ****{{ account.iban.slice(-4) }}
-          </span>
-        </div>
-        <div class = 'account-card__header-bottom'>
-
-        </div>
-      </div>
-
-      <div class = 'account-card__balance'>
-        {{ account.balance | currency:'USD':'symbol':'1.2-2' }}
-      </div>
-
-    </div>
-  }
-</div>
 
 
 

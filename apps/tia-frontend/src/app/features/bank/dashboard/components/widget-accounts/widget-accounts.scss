@@ -42,3 +42,15 @@
   }
 
 }
+
+
+@media(max-width: 1024px) {
+  .accounts{
+    .account-card{
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+  }
+}

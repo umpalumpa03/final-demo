@@ -1,3 +1,18 @@
+
+
+@for (transaction of transactions$ | async; track transaction.id) {
+  <div class="transaction-card">
+    <div class="transaction-card__description">
+      <div class="transaction-card__description-text">{{ transaction.description }}</div>
+      <div class="transaction-card__meta">{{ transaction.createdAt | date:'shortDate' }} • {{ transaction.category }}</div>
+    </div>
+
+    <div class="transaction-card__amount transaction-card__amount--{{ transaction.transactionType }}">
+      {{ transaction.transactionType === 'debit' ? '-' : '+' }} {{ transaction.amount }}
+    </div>
+  </div>
+}
+
 @if (isLoading$ | async) {
   <div class="widget-loading">
     <app-route-loader
@@ -29,18 +44,5 @@
       [showButton]="false"
       [border]="false">
     </app-error-states>
-  </div>
-}
-
-@for (transaction of transactions$ | async; track transaction.id) {
-  <div class="transaction-card">
-    <div class="transaction-card__description">
-      <div class="transaction-card__description-text">{{ transaction.description }}</div>
-      <div class="transaction-card__meta">{{ transaction.createdAt | date:'shortDate' }} • {{ transaction.category }}</div>
-    </div>
-
-    <div class="transaction-card__amount transaction-card__amount--{{ transaction.transactionType }}">
-      {{ transaction.transactionType === 'debit' ? '-' : '+' }} {{ transaction.amount }}
-    </div>
   </div>
 }
