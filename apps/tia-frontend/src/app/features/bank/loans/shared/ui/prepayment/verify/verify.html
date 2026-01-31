@@ -12,7 +12,7 @@
     <div class="otp-step__body">
         <div class="otp-step__form" [formGroup]="form">
             <h4 class="otp-step__section-title">{{ 'loans.prepayment_wizard.step_otp.section' | translate }}</h4>
-            <lib-text-input formControlName="otp" [config]="inputConfig"></lib-text-input>
+            <lib-otp formControlName="otp" [config]="inputConfig"></lib-otp>
 
             <app-button variant="default" [icon]="isLoading() ? null : './calculate.svg'" (click)="onSubmit()"
                 [isDisabled]="form.invalid || isLoading()" [isLoading]="isLoading()">

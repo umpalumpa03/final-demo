@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApprovedLoans } from './approved-loans';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { TranslateModule } from '@ngx-translate/core';
 import { LoansStore } from '../../../store/loans.store';
 import { signal } from '@angular/core';

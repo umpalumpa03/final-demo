@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PendingLoans } from './pending-loans';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { LoansStore } from '../../../store/loans.store';
 import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('PendingLoans', () => {
   let component: PendingLoans;
@@ -20,7 +20,7 @@ describe('PendingLoans', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [PendingLoans],
+      imports: [PendingLoans, TranslateModule.forRoot()],
       providers: [
         provideMockStore(),
         { provide: LoansStore, useValue: loansStoreMock },

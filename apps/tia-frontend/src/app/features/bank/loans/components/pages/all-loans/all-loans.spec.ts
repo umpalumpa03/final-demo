@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AllLoans } from './all-loans';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { TranslateModule } from '@ngx-translate/core';
+import { LoansContainer } from '../../../container/loans-container';
 import { LoansStore } from '../../../store/loans.store';
 import { signal } from '@angular/core';
 
@@ -12,6 +12,7 @@ describe('AllLoans', () => {
   let fixture: ComponentFixture<AllLoans>;
   let globalStore: MockStore;
   let loansStoreMock: any;
+  let loansContainerMock: any;
 
   const mockLoans = [
     { id: 'loan-1', status: 2, loanAmount: 5000 },
@@ -29,11 +30,19 @@ describe('AllLoans', () => {
       clearLoanDetails: vi.fn(),
     };
 
+    loansContainerMock = {
+      isModalOpen: { set: vi.fn() },
+    };
+
     await TestBed.configureTestingModule({
       imports: [AllLoans, TranslateModule.forRoot()],
       providers: [
         provideMockStore(),
         { provide: LoansStore, useValue: loansStoreMock },
+        {
+          provide: LoansContainer,
+          useValue: loansContainerMock,
+        },
       ],
     }).compileComponents();
 
@@ -91,5 +100,10 @@ describe('AllLoans', () => {
     expect(component.isDetailsOpen()).toBe(false);
     expect(component.selectedLoan()).toBeNull();
     expect(loansStoreMock.clearLoanDetails).toHaveBeenCalled();
+  });
+
+  it('should open request modal via container', () => {
+    component.onRequestLoan();
+    expect(loansContainerMock.isModalOpen.set).toHaveBeenCalledWith(true);
   });
 });

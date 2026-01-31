@@ -11,14 +11,18 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { pipe, switchMap, tap, map, catchError, EMPTY, delay } from 'rxjs';
-
+import { HttpErrorResponse } from '@angular/common/http';
 import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { toTitleCase } from '../shared/utils/titlecase.util';
-import { HttpErrorResponse } from '@angular/common/http';
-
 import { LoansService } from '../shared/services/loans.service';
 import { loansInitialState } from './loans.state';
+import { LoanAlertType } from '../shared/models/loan.model';
+import {
+  PrepaymentCalculationPayload,
+  IInitiatePrepaymentRequest,
+} from '../shared/models/prepayment.model';
+import { PrepaymentCalculationResult } from '../shared/models/prepayment.model';
 
 export const LoansStore = signalStore(
   withState(loansInitialState),
@@ -61,12 +65,10 @@ export const LoansStore = signalStore(
         const message = store.alertMessage();
         const type = store.alertType();
 
-        // Only return the config object if BOTH message and type exist
-        // This narrow the type from (LoanAlertType | null) to (LoanAlertType)
         if (message && type) {
           return {
             message,
-            type: type as any, // Use 'any' or cast to your specific component's AlertType
+            type: type,
           };
         }
 
@@ -255,7 +257,7 @@ export const LoansStore = signalStore(
         ),
       ),
 
-      calculatePrepayment: rxMethod<{ payload: any }>(
+      calculatePrepayment: rxMethod<{ payload: PrepaymentCalculationPayload }>(
         pipe(
           tap(() => patchState(store, { actionLoading: true, error: null })),
           switchMap(({ payload }) => {
@@ -271,7 +273,7 @@ export const LoansStore = signalStore(
                   );
 
             return request$.pipe(
-              tap((result: any) =>
+              tap((result: PrepaymentCalculationResult) =>
                 patchState(store, {
                   calculationResult: result,
                   actionLoading: false,
@@ -297,12 +299,12 @@ export const LoansStore = signalStore(
     const actions$ = inject(Actions);
 
     return {
-      showAlert(message: string, alertType: any) {
+      showAlert(message: string, alertType: LoanAlertType) {
         patchState(store, { alertMessage: message, alertType });
         store._triggerAutoHide();
       },
 
-      initiatePrepayment: rxMethod<{ payload: any }>(
+      initiatePrepayment: rxMethod<{ payload: IInitiatePrepaymentRequest }>(
         pipe(
           tap(() => patchState(store, { actionLoading: true, error: null })),
           switchMap(({ payload }) =>
@@ -350,7 +352,9 @@ export const LoansStore = signalStore(
         ),
       ),
 
-      verifyPrepayment: rxMethod<{ payload: any }>(
+      verifyPrepayment: rxMethod<{
+        payload: { challengeId: string; code: string };
+      }>(
         pipe(
           tap(() => patchState(store, { actionLoading: true, error: null })),
           switchMap(({ payload }) =>
