@@ -28,12 +28,15 @@ import { IRegistrationForm } from '../../../features/storybook/components/forms/
 import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { Routes } from '../models/tokens.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Store } from '@ngrx/store';
+import { UserInfoActions } from '../../../store/user-info/user-info.actions';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private tokenService = inject(TokenService);
+  private store = inject(Store);
   private destroyRef = inject(DestroyRef);
   private challengeId!: string;
   public isLoginLoading = signal<boolean>(false);
@@ -125,6 +128,7 @@ export class AuthService {
           if (res.access_token && res.refresh_token) {
             this.tokenService.setAccessToken(res.access_token);
             this.tokenService.setRefreshToken(res.refresh_token);
+            this.store.dispatch(UserInfoActions.loadUser());
             this.router.navigate([Routes.DASHBOARD]);
           }
         }),
