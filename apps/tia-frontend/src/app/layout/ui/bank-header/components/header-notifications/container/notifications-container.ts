@@ -3,8 +3,11 @@ import {
   Component,
   computed,
   ElementRef,
+  HostListener,
   inject,
   input,
+  output,
+  signal,
 } from '@angular/core';
 import { NotificationsStore } from '../store/notifications.store';
 import { HeaderNotifications } from '../components/header-notifications';
@@ -15,7 +18,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   selector: 'app-notifications-container',
   imports: [HeaderNotifications],
   templateUrl: './notifications-container.html',
-  styleUrl: './notifications-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationsContainer {
@@ -23,7 +25,21 @@ export class NotificationsContainer {
 
   // From Parent Container Logic to open modal and get notifications element
   public isModalOpen = input<boolean>(false);
-  public notificationEl = input<ElementRef | undefined>();
+  public notificationEl = input<ElementRef | null>();
+
+  // Track window resize
+  private readonly windowSize = signal({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    this.windowSize.set({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+  }
 
   // Store Details
   public notificationItems = this.store.items;
@@ -38,13 +54,15 @@ export class NotificationsContainer {
     const anchorEl = this.notificationEl();
     const isOpen = this.isModalOpen();
 
+    this.windowSize();
+
     if (!anchorEl || !isOpen) {
       return { top: 0, left: 0 };
     }
 
     const rect = anchorEl.nativeElement.getBoundingClientRect();
     return {
-      top: rect.bottom + window.scrollY,
+      top: rect.bottom,
       left: rect.right - 380,
     };
   });
@@ -63,7 +81,7 @@ export class NotificationsContainer {
   }
 
   // Handle CTA's
-  public handleDeleteNotification(id: string) {
+  public handleDeleteNotification(id: string): void {
     this.store.deleteNotification(id);
   }
 
@@ -107,5 +125,13 @@ export class NotificationsContainer {
         tap((ids) => this.store.markItemsRead(ids)),
       )
       .subscribe();
+  }
+
+  // Handle Close button click on mobiles
+  public closeModal = output<void>();
+
+  // Add handler method
+  public handleClose(): void {
+    this.closeModal.emit();
   }
 }

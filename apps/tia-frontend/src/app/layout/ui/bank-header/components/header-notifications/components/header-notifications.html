@@ -1,26 +1,47 @@
 @if(isOpen()) {
 <div
   class="header-notifications"
-  [style.top.px]="top()"
-  [style.left.px]="left()"
+  [style.top.px]="isMobile() ? null : top()"
+  [style.left.px]="isMobile() ? null : left()"
+  [class.mobile]="isMobile()"
   [class.blurred]="isLoading()"
 >
-  @if (isLoading()) {
+  @if(isMobile() && !isLoading()) {
+  <button
+    class="header-notifications__close"
+    (click)="onCloseClick()"
+    aria-label="Close notifications"
+  >
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path d="M18 6L6 18M6 6l12 12" />
+    </svg>
+  </button>
+  } @if (isLoading()) {
   <div class="header-notifications__main__loader">
     <app-route-loader variant="pulsing" />
   </div>
   }
 
   <header class="header-notifications__header">
-    <div class="header-notifications__header__info">
+    <div
+      class="header-notifications__header__info"
+      [style.flex-direction]="isMobile() ? 'column' : 'row'"
+      [style.align-items]="isMobile() ? 'flex-start' : null"
+    >
       <h3>{{ 'header-notifications.title' | translate }}</h3>
       <span
         >{{ unreadLeft() }} {{ 'header-notifications.message' | translate
         }}</span
       >
     </div>
-
-    @if (selectedItems().length) {
+    @if (selectedItems().length && !isLoading()) {
     <app-button
       variant="destructive"
       [fullWidth]="true"
@@ -28,6 +49,7 @@
       style="width: 100%"
       class="header-notifications__header__button"
       (click)="OnDeleteMultipleClick(selectedItems())"
+      [class.hidden]="!selectedItems().length || isLoading()"
     >
       Delete ({{ selectedItems().length }})
     </app-button>
@@ -47,47 +69,50 @@
   />
   }@else {
   <main class="header-notifications__main">
+    @if (!isLoading()) {
     <header class="header-notifications__main__header">
-      <div class="header-notifications__main__header__select">
+      <label class="header-notifications__main__header__select">
         <lib-checkboxes
           [checked]="isAllSelected()"
           (change)="onSelectAllClicked(notificationItems())"
         ></lib-checkboxes>
         Select All
-      </div>
+      </label>
       <div class="header-notifications__main__header__cta--all">
         <button
           (click)="onMarkAllClick()"
           [disabled]="!notificationItems().length"
+          class="header-notifications__main__header__cta--all__tooltip-trigger"
+          data-tooltip="Mark all as read"
         >
           <img
             class="header-notifications__main__header__cta--all__read"
             src="images/svg/header-notifications/read.svg"
             alt="read all icon"
-            title="Mark all as read"
           />
         </button>
         <p>/</p>
         <button
           (click)="onDeleteAllClicked()"
           [disabled]="!notificationItems().length"
+          class="header-notifications__main__header__cta--all__tooltip-trigger"
+          data-tooltip="delete all"
         >
           <img
             class="header-notifications__main__header__cta--all__delete"
             src="images/svg/header-notifications/delete.svg"
             alt="delete all icon"
-            title="Delete all notification"
           />
         </button>
       </div>
     </header>
-
+    } @if(!isLoading()) {
     <app-scroll-area
       (scrollBottom)="onScrollBottom()"
       [hideBorder]="true"
-      height="95%"
+      [height]="isMobile() ? '97% ': '95%'"
     >
-      @for (item of notificationItems(); track $index) {
+      @for (item of notificationItems(); track item.id) {
       <div
         class="header-notifications__main__item"
         [class.unread]="!item.isRead"
@@ -134,6 +159,7 @@
       </div>
       }
     </app-scroll-area>
+    }
   </main>
   }
 </div>
