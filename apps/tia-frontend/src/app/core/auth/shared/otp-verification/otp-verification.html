@@ -12,7 +12,7 @@
       <lib-otp formControlName="code" [config]="otpConfig()"></lib-otp>
     </div>
     } @else {
-    <div class="otp-field">
+    <div class="otp-field__phone">
       <lib-text-input
         formControlName="code"
         [config]="phoneConfig()"
@@ -20,11 +20,15 @@
     </div>
     } @if (submitError()) {
     <div class="auth-error">{{ submitError() }}</div>
-    <div class="auth-error">{{ submitError() }}</div>
     }
 
     <div class="auth-form__actions">
-      <app-button type="submit" [fullWidth]="true">
+      <app-button
+        [isDisabled]="isResendActive()"
+        type="submit"
+        size="large"
+        [fullWidth]="true"
+\      >
         {{ submitBtnName() }}
       </app-button>
     </div>

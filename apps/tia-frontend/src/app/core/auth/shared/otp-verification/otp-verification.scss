@@ -33,12 +33,20 @@
       @include font-inter(500, 1.4rem, 2rem);
       color: $gray-800;
     }
+    
+    &__phone {
+      width: 100%;
+    }
   }
 
   &__actions {
     @include display-flex(column);
     gap: 1.6rem;
     margin-top: 1.6rem;
+  }
+
+  &__disabled {
+    cursor: not-allowed;
   }
 }
 

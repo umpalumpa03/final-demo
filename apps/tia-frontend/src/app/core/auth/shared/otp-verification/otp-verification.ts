@@ -39,6 +39,14 @@ import { getOtpVerificationConfig } from '../../config/otp-verification.config';
     RouterLink,
     TextInput,
   ],
+  imports: [
+    ButtonComponent,
+    ReactiveFormsModule,
+    Spinner,
+    Otp,
+    RouterLink,
+    TextInput,
+  ],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,6 +63,8 @@ export class OtpVerification {
 
   public isLoading = signal(false);
   public submitError = signal<string | null>(null);
+  public otpConfig = signal({ length: 4 });
+  public phoneConfig = signal({ label: 'Phone Number' });
   public otpConfig = signal({ length: 4, label: 'Verification Code' });
   public phoneConfig = signal({ label: 'phone' });
 
@@ -71,9 +81,15 @@ export class OtpVerification {
     const limit = Math.abs(Number(this.timeLimit()));
 
     return limit * 60;
+    return limit * 60;
   });
   public countdown = signal<number>(0);
   private timer$ = interval(1000);
+
+  public isResendActive = signal<boolean>(false);
+
+  public onTimeout = output<void>();
+  public resendClicked = output<void>();
 
   public otpForm = this.fb.group({
     code: ['', Validators.required],
@@ -83,7 +99,10 @@ export class OtpVerification {
     effect(() => {
       this.countdown();
       if (this.countdown() === 0) {
-        setTimeout(() => {}, 1000);
+        setTimeout(() => {
+          this.onTimeout.emit();
+        }, 1000);
+        this.isResendActive.set(true);
       }
     });
   }
@@ -103,6 +122,7 @@ export class OtpVerification {
         }),
       )
       .subscribe();
+    this.isResendActive.set(false);
   }
 
   public onSubmit(): void {

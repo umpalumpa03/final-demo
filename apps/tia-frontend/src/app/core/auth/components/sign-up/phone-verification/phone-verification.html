@@ -2,5 +2,6 @@
   (isVerifyCalled)="submit($event)"
   type="sign-up"
   timerType="phone"
-  [timeLimit]="1"
+  [timeLimit]="2"
+  (onTimeout)="handlePhoneTimer()"
 ></app-otp-verification>
