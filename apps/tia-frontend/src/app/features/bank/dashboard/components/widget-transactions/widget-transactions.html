@@ -53,7 +53,7 @@
         class="transaction-card__amount transaction-card__amount--{{ transaction.transactionType }}"
       >
         {{ transaction.transactionType === 'debit' ? '-' : '+' }} {{
-        transaction.amount }}
+        transaction.amount | currency}}
       </div>
     </div>
     }
