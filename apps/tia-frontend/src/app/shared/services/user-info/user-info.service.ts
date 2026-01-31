@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { IUserInfo, User } from '@tia/shared/models/user-info/user-info.models';
-import { environment } from 'apps/tia-frontend/src/environments/environment';
+import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
