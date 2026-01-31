@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { NotificationsStore } from './notifications.store';
 import { Notifications } from '../service/notifications';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('NotificationsStore', () => {
@@ -160,5 +160,21 @@ describe('NotificationsStore', () => {
     store.deleteAll();
 
     expect(store.hasUnread()).toBe(false);
+  });
+
+  it('should reset the state to initial values when resetState is called', () => {
+    store.fetchNotifications({ cursor: '', limit: 10 });
+    store.toggleItemSelection('1');
+
+    expect(store.items().length).toBe(1);
+    expect(store.selectedItems().length).toBe(1);
+
+    store.resetState();
+
+    expect(store.items()).toEqual([]);
+    expect(store.selectedItems()).toEqual([]);
+    expect(store.isLoading()).toBe(false);
+    expect(store.hasUnread()).toBe(false);
+    expect(store.isEmpty()).toBe(true);
   });
 });
