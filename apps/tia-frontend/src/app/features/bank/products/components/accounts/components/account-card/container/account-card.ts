@@ -26,6 +26,7 @@ export class AccountCardComponent {
   public renameError = input<string | null>(null);
   public transfer = output<string>();
   public rename = output<{ accountId: string; friendlyName: string }>();
+  public renameSuccess = output<void>();
 
   private readonly formatUtils = new FormatUtils();
   private readonly accountUtils = new AccountUtils();
@@ -46,6 +47,10 @@ export class AccountCardComponent {
 
   public handleRename(friendlyName: string): void {
     this.rename.emit({ accountId: this.account().id, friendlyName });
+  }
+
+  public handleRenameSuccess(): void {
+    this.renameSuccess.emit();
   }
 
   public formatCurrency(amount: number): string {

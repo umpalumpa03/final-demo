@@ -8,14 +8,16 @@
     <div class="finances-filters__container">
       <div class="finances-filters__actions">
         @for (option of filterOptions(); track option.type) {
-        <app-button
-          [icon]="option.icon"
-          [variant]="activeFilter() === option.type ? 'default' : 'outline'"
-          [isDisabled]="loading()"
-          (click)="filterChange.emit(option.type)"
-        >
-          {{ option.label }}
-        </app-button>
+          <div class="finances-filters__button-item">
+            <app-button
+              [icon]="option.icon"
+              [variant]="activeFilter() === option.type ? 'default' : 'outline'"
+              [isDisabled]="loading()"
+              (click)="filterChange.emit(option.type)"
+            >
+              {{ option.label }}
+            </app-button>
+          </div>
         }
       </div>
 
@@ -28,90 +30,90 @@
           ></lib-text-input>
 
           @if (isFromDateInvalid) {
-          <small class="input-error">Required format: YYYY-MM-DD</small>
+            <small class="input-error">Required format: YYYY-MM-DD</small>
           }
         </div>
 
         @if (activeFilter() === 'custom') {
-        <div class="finances-filters__input-wrapper">
-          <lib-text-input
-            [config]="{label: 'To:', placeholder: 'YYYY-MM-DD'}"
-            (input)="dateInput.emit({field: 'toDate', event: $event})"
-            [formControl]="getControl('toDate')"
-          ></lib-text-input>
+          <div class="finances-filters__input-wrapper">
+            <lib-text-input
+              [config]="{label: 'To:', placeholder: 'YYYY-MM-DD'}"
+              (input)="dateInput.emit({field: 'toDate', event: $event})"
+              [formControl]="getControl('toDate')"
+            ></lib-text-input>
 
-          @if (isToDateInvalid) {
-          <small class="input-error">Required format: YYYY-MM-DD</small>
-          }
-        </div>
+            @if (isToDateInvalid) {
+              <small class="input-error">Required format: YYYY-MM-DD</small>
+            }
+          </div>
         }
       </div>
-      @if (isRangeInvalid) {
-      <small class="input-error"
-        >End date cannot be earlier than start date</small
-      >
-      }
     </div>
 
     <div class="finances-filters__messages">
       @if (filterForm().hasError('dateRangeInvalid')) {
-      <app-basic-alerts
-        alertType="default"
-        alertTitle="Invalid Range"
-        alertMessage='"From" date must be earlier than "To" date'
-      ></app-basic-alerts>
-      } @if (error()) {
-      <app-basic-alerts
-        alertType="error"
-        alertTitle="System Error"
-        [alertMessage]="error()!"
-      ></app-basic-alerts>
+        <app-basic-alerts
+          alertType="default"
+          alertTitle="Invalid Range"
+          alertMessage='"From" date must be earlier than "To" date'
+        ></app-basic-alerts>
+      } 
+      @if (error()) {
+        <app-basic-alerts
+          alertType="error"
+          alertTitle="System Error"
+          [alertMessage]="error()!"
+        ></app-basic-alerts>
       }
     </div>
   </section>
 
   <section class="finances-summary" [class.loading-state]="loading()">
     @if (loading()) {
-    <div class="finances-summary__loading-wrapper">
-      <app-spinner size="3rem"></app-spinner>
-      <span>Updating data...</span>
-    </div>
+      <div class="finances-summary__loading-wrapper">
+        <app-spinner size="3rem"></app-spinner>
+        <span>Updating data...</span>
+      </div>
     }
 
     <div class="finances-summary__grid">
       @for (card of summaryCards(); track card.label) {
-      <app-statistic-card
-        [label]="card.label"
-        [value]="card.value"
-        [change]="card.change"
-        [changeType]="card.changeType"
-        [icon]="card.icon"
-      ></app-statistic-card>
-      } @empty { @if (!loading() && !error()) {
-      <p class="no-data">No data available for the selected range.</p>
-      } }
+        <div class="finances-summary__card-wrapper">
+          <app-statistic-card
+            [label]="card.label"
+            [value]="card.value"
+            [change]="card.change"
+            [changeType]="card.changeType"
+            [icon]="card.icon"
+          ></app-statistic-card>
+        </div>
+      } @empty { 
+        @if (!loading() && !error()) {
+          <p class="no-data">No data available for the selected range.</p>
+        } 
+      }
     </div>
   </section>
 
   <section class="finances-charts">
     @for (chart of charts(); track chart.title) {
-    <div class="finances-charts__card">
-      <h3 class="chart-title">{{ chart.title }}</h3>
-      <div class="chart-container">
-        @if (chart.data) {
-        <canvas
-          baseChart
-          [data]="chart.data"
-          [options]="chartOptions"
-          [type]="chart.type"
-        ></canvas>
-        } @else {
-        <div class="chart-loading">
-          <app-spinner size="2rem"></app-spinner>
+      <div class="finances-charts__card">
+        <h3 class="chart-title">{{ chart.title }}</h3>
+        <div class="chart-container">
+          @if (chart.data) {
+            <canvas
+              baseChart
+              [data]="chart.data"
+              [options]="chartOptions"
+              [type]="chart.type"
+            ></canvas>
+          } @else {
+            <div class="chart-loading">
+              <app-spinner size="2rem"></app-spinner>
+            </div>
+          }
         </div>
-        }
       </div>
-    </div>
     }
   </section>
 </div>

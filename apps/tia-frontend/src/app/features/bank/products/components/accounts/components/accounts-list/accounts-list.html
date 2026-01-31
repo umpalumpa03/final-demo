@@ -1,33 +1,39 @@
 <div class="accounts-list">
   <div class="accounts-list__header">
-    <div class="accounts-list__header-info">
-      <h1 class="accounts-list__header-title">My Accounts</h1>
-      <p class="accounts-list__header-subtitle">Manage your bank accounts</p>
-    </div>
+    <app-library-title
+      title="{{ 'my-products.accounts.title' | translate }}"
+      subtitle="{{ 'my-products.accounts.subtitle' | translate }}"
+    ></app-library-title>
     <app-button
       [variant]="'default'"
       [icon]="'plus-icon.svg'"
       (click)="handleOpenModal()"
     >
-      New Account
+      {{ 'my-products.accounts.newAccount' | translate }}
     </app-button>
   </div>
 
   @if (error()) {
-  <div class="accounts-list__error">
-    <h3 class="accounts-list__error-title">Error Loading Accounts</h3>
-    <app-button [variant]="'default'" (click)="handleRetry()">
-      Retry
-    </app-button>
-  </div>
+  <app-error-states
+    [variant]="'failed'"
+    [header]="'my-products.accounts.errorTitle' | translate"
+    [message]="'my-products.accounts.errorMessage' | translate"
+    [buttonMessage]="'my-products.accounts.retry' | translate"
+    (buttonClick)="handleRetry()"
+    [border]="false"
+  >
+  </app-error-states>
   } @else if (isLoading()) {
-  <app-route-loader [variant]="'full-page'" [text]="'Loading accounts...'" />
+  <app-route-loader
+    [variant]="'full-page'"
+    [text]="'my-products.accounts.loading' | translate"
+  />
   } @else if (hasNoAccounts()) {
   <app-error-states
     [variant]="'not-found'"
-    [header]="'No accounts found'"
-    [message]="'Create your first account to get started'"
-    [buttonMessage]="'Create Account'"
+    [header]="'my-products.accounts.noAccounts' | translate"
+    [message]="'my-products.accounts.noAccountsMessage' | translate"
+    [buttonMessage]="'my-products.accounts.createAccount' | translate"
     (buttonClick)="handleOpenModal()"
   >
   </app-error-states>
@@ -36,44 +42,43 @@
   <section class="accounts-list__section">
     <div class="accounts-list__section-header">
       <img [src]="section.icon" alt="" class="accounts-list__section-icon" />
-      <h2 class="accounts-list__section-title">{{ section.title }}</h2>
-      <span class="accounts-list__section-count">
-        {{ getAccountsBySection(section).length }}
-      </span>
-    </div>
-    @if (getAccountsBySection(section).length > 3) {
-    <div class="accounts-list__section-scroll">
-      <app-scroll-area
-        [direction]="'horizontal'"
-        [height]="'42rem'"
-        [scrollbar]="'hidden'"
+      <app-library-title title="{{ section.title }}"></app-library-title>
+      <app-badges
+        [variant]="'secondary'"
+        [size]="'medium'"
+        [text]="getAccountsBySection(section).length.toString()"
+        [shape]="'rounded'"
       >
-        <div class="accounts-list__section-scroll-grid">
-          @for (account of getAccountsBySection(section); track account.id) {
-          <app-account-card
-            [account]="account"
-            [isRenaming]="isRenamingAccount()"
-            [renameError]="renameError()"
-            (transfer)="handleTransfer($event)"
-            (rename)="handleRenameClick($event)"
-          />
-          }
-        </div>
-      </app-scroll-area>
+      </app-badges>
     </div>
-    } @else {
-    <div class="accounts-list__section-grid">
-      @for (account of getAccountsBySection(section); track account.id) {
-      <app-account-card
-        [account]="account"
-        [isRenaming]="isRenamingAccount()"
-        [renameError]="renameError()"
-        (transfer)="handleTransfer($event)"
-        (rename)="handleRenameClick($event)"
-      />
+
+    <app-scroll-area
+      [direction]="'horizontal'"
+      [height]="'auto'"
+      [scrollbar]="'hidden'"
+      [hideBorder]="true"
+    >
+      <div class="accounts-list__section-grid">
+        @for (account of getAccountsBySection(section); track account.id) {
+        <app-account-card
+          [account]="account"
+          [isRenaming]="isRenamingAccount()"
+          [renameError]="renameError()"
+          (transfer)="handleTransfer($event)"
+          (rename)="handleRenameClick($event)"
+          (renameSuccess)="handleRenameSuccess()"
+        />
+        }
+      </div>
+      @if (isFetching()) {
+      <div class="accounts-list__section-loader">
+        <app-route-loader
+          [variant]="'pulsing'"
+          [text]="'my-products.accounts.loadingMore' | translate"
+        />
+      </div>
       }
-    </div>
-    }
+    </app-scroll-area>
   </section>
   } }
 </div>

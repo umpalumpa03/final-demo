@@ -3,6 +3,7 @@ import { CreateAccountComponent } from './create-account';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AccountType } from '../../../../../../../../shared/models/accounts/accounts.model';
+import { provideTranslateService } from '@ngx-translate/core';
 
 describe('CreateAccountComponent', () => {
   let component: CreateAccountComponent;
@@ -24,6 +25,7 @@ describe('CreateAccountComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CreateAccountComponent],
+      providers: [provideTranslateService()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CreateAccountComponent);
