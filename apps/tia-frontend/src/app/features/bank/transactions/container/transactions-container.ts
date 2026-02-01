@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   OnInit,
 } from '@angular/core';
@@ -24,7 +23,6 @@ import { Tables } from '@tia/shared/lib/tables/components/tables';
 import { ShowcaseCard } from '../../../storybook/shared/showcase-card/showcase-card';
 import { TransactionsFilters } from '../components/transactions-filters/transactions-filters';
 import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
-import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
 import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
@@ -56,7 +54,7 @@ export class TransactionsContainer implements OnInit {
     if (!accountsList) return [];
 
     return accountsList.map((acc) => ({
-      label: `${acc.friendlyName} (${acc.iban})`,
+      label: `${acc.friendlyName}`,
       value: acc.iban,
     }));
   });

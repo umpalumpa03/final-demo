@@ -7,10 +7,12 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
 import { Currency } from '@tia/shared/models/transactions/base.models';
+import { ShowcaseCard } from "../../../../storybook/shared/showcase-card/showcase-card";
+import { LibraryTitle } from "../../../../storybook/shared/library-title/library-title";
 
 @Component({
   selector: 'app-transactions-filters',
-  imports: [ReactiveFormsModule, TextInput, Dropdowns],
+  imports: [ReactiveFormsModule, TextInput, Dropdowns, ShowcaseCard, LibraryTitle],
   templateUrl: './transactions-filters.html',
   styleUrl: './transactions-filters.scss',
 })
