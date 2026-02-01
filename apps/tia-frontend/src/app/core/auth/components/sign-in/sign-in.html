@@ -20,10 +20,8 @@
       type="password"
     ></lib-text-input>
     @if(errorMessage()) {
-    <app-dismissible-alerts
-      [alertTitle]="alertTypes.error.title"
+    <app-simple-alerts
       [alertType]="alertTypes.error.type"
-      [alertId]="alertTypes.error.id"
       [alertMessage]="alertTypes.error.message"
     />
     }

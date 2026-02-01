@@ -11,9 +11,9 @@ import { Routes } from '../../models/tokens.model';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
-import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
 import { ALERTS_DISMISSIBLE_DATA, SIGN_IN_FORM } from '../../config/inputs.config';
 import { TranslatePipe } from '@ngx-translate/core';
+import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 
 @Component({
   selector: 'app-sign-in',
@@ -23,7 +23,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     ReactiveFormsModule,
     RouterLink,
     Spinner,
-    DismissibleAlerts,
+    SimpleAlerts,
     TranslatePipe,
 ],
   templateUrl: './sign-in.html',

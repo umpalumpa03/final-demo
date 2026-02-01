@@ -141,6 +141,10 @@ export class OtpVerification {
   if (currentForm.invalid) {
     currentForm.markAllAsTouched();
     this.submitError.set("Please check the required fields.");
+
+    setTimeout(() => {
+      this.submitError.set('');
+    }, 5000);
     return;
   }
 

@@ -3,8 +3,8 @@
         <app-registration-form (submitRegistrationForm)="onSignUp($event)"></app-registration-form>
         
         <p class="sign-up__footer">
-            Already have an account? 
-            <span class="sign-up__link" [routerLink]="['/auth/sign-in']">Sign in</span>
+            {{'auth.sign-up.haveAccount' | translate}}
+            <span class="sign-up__link" [routerLink]="['/auth/sign-in']"> {{'auth.sign-up.signIn' | translate}} </span>
         </p>
         
         @if (errorMessage()) {

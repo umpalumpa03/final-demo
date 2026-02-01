@@ -238,7 +238,6 @@ describe('AuthService', () => {
   });
 
   it('resetPhoneOtp errors when no challengeId', async () => {
-    // ensure no challenge set
     service.setChellangeId('');
     service.resetPhoneOtp().subscribe({
       next: () => {},
