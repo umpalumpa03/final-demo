@@ -123,12 +123,7 @@
       size="default"
       [fullWidth]="isFullWidth()"
       (click)="onContinue()"
-      [isDisabled]="
-        !selectedSenderAccount() || 
-        isLoading() || 
-        (!selectedRecipientAccount() && !isExternalIban()) || 
-        (isExternalIban() && !recipientNameInput.valid)
-      "
+      [isDisabled]="isContinueDisabled()"
     >
       {{ 'common.buttons.continue' | translate }}
       <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />

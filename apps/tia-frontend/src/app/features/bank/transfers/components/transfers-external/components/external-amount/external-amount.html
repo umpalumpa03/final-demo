@@ -71,13 +71,37 @@
         [config]="amountConfig()"
         type="number"
       />
-      <p class="external-amount__available">
-        {{ 'transfers.external.amount.available' | translate }}
-        <span>
-          {{ availableBalance() | number: '1.2-2' }} {{
-          selectedSenderAccount()?.currency }}
-        </span>
-      </p>
+
+      <div class="external-amount__info-row">
+        <p class="external-amount__available">
+          {{ 'transfers.external.amount.available' | translate }}
+          <span
+            >{{ availableBalance() | number: '1.2-2' }} {{ currency() }}</span
+          >
+        </p>
+
+        <div class="external-amount__fee-wrapper">
+          @if (isLoading() && amountInput.value) {
+          <span class="external-amount__fee-loading">
+            {{ 'transfers.external.amount.loadingFee' | translate }}
+          </span>
+          } @else if (amountInput.value && !isLoading()) {
+          <div class="external-amount__fee-item">
+            <span>{{ 'transfers.external.amount.fee' | translate }}:</span>
+            <strong
+              >{{ (fee() || 0) | number: '1.2-2' }} {{ currency() }}</strong
+            >
+          </div>
+          <div class="external-amount__fee-item">
+            <span>{{ 'transfers.external.amount.total' | translate }}:</span>
+            <strong
+              >{{ (totalWithFee() || amountInput.value) | number: '1.2-2' }} {{
+              currency() }}</strong
+            >
+          </div>
+          }
+        </div>
+      </div>
     </div>
 
     <div class="external-amount__input-group">
