@@ -4,7 +4,7 @@ import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { of, throwError } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
@@ -78,14 +78,8 @@ describe('PhoneVerification Component', () => {
   });
 
   it('should handle error when phone verification fails', () => {
-    const error = {
-      error: {
-        message: 'Invalid phone number',
-      },
-    };
-
     authServiceMock.sendPhoneVerificationCode.mockReturnValue(
-      throwError(() => error)
+      EMPTY
     );
 
     const event = {
