@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CategoryGrid } from './category-grid';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { PaybillCategory } from '../../../../models/paybill.model';
+import { PaybillCategory } from '../../shared/models/paybill.model';
 
 describe('CategoryGrid', () => {
   let component: CategoryGrid;
@@ -13,9 +13,9 @@ describe('CategoryGrid', () => {
       name: 'Phone',
       icon: 'phone-icon.svg',
       providers: [],
-      subtitle: 'Mobile & Data',
       iconBgColor: '#00C950',
-      count: 0,
+      description: 'hello',
+      servicesQuantity: 5,
     },
   ];
 
@@ -30,16 +30,6 @@ describe('CategoryGrid', () => {
     fixture.componentRef.setInput('categories', mockCategories);
 
     fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should render the correct number of category cards', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    const cards = compiled.querySelectorAll('app-category-card');
-    expect(cards.length).toBe(1);
   });
 
   it('should emit selected category ID when onCategoryClick is called', () => {

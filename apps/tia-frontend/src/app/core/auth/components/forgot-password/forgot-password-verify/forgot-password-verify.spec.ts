@@ -1,88 +1,103 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { of } from 'rxjs';
-
 import { ForgotPasswordVerify } from './forgot-password-verify';
 import { AuthService } from '../../../services/auth.service';
-import { forgotPasswordSegments } from '../forgot-password.routes';
+import { Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { of } from 'rxjs';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { IVerified } from '../../../models/otp-verification.models';
 
-describe('ForgotPasswordVerify', () => {
+describe('ForgotPasswordVerify Component', () => {
   let component: ForgotPasswordVerify;
   let fixture: ComponentFixture<ForgotPasswordVerify>;
-  let authServiceMock: any;
-  let router: Router;
+  let authServiceMock: {
+    getChallengeId: ReturnType<typeof vi.fn>;
+    verifyForgotPasswordOtp: ReturnType<typeof vi.fn>;
+    resendVerificationCode: ReturnType<typeof vi.fn>;
+  };
+  let routerMock: {
+    navigate: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(async () => {
     authServiceMock = {
-      getChallengeId: vi.fn(() => 'challenge-id'),
-      verifyForgotPasswordOtp: vi.fn(() => of({})),
-      resendVerificationCode: vi.fn(() => of({})),
+      getChallengeId: vi.fn().mockReturnValue('challenge-123'),
+      verifyForgotPasswordOtp: vi.fn().mockReturnValue(of({})),
+      resendVerificationCode: vi.fn().mockReturnValue(of({})),
+    };
+
+    routerMock = {
+      navigate: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
-      imports: [ForgotPasswordVerify],
+      imports: [ForgotPasswordVerify, TranslateModule.forRoot()],
       providers: [
-        provideRouter([]),
         { provide: AuthService, useValue: authServiceMock },
+        { provide: Router, useValue: routerMock },
+        TranslateService,
       ],
     }).compileComponents();
-
-    router = TestBed.inject(Router);
-    vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     fixture = TestBed.createComponent(ForgotPasswordVerify);
     component = fixture.componentInstance;
   });
 
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should redirect to email step when challengeId is missing', () => {
-    authServiceMock.getChallengeId.mockReturnValue('');
-
+  it('should not navigate on init when challengeId exists', () => {
+    authServiceMock.getChallengeId.mockReturnValue('challenge-123');
+    
     component.ngOnInit();
 
-    expect(router.navigate).toHaveBeenCalledWith([
-      '/auth',
-      ...forgotPasswordSegments.base,
-    ]);
+    expect(authServiceMock.getChallengeId).toHaveBeenCalled();
+    expect(routerMock.navigate).not.toHaveBeenCalled();
   });
 
-  it('should NOT redirect when challengeId exists', () => {
-    authServiceMock.getChallengeId.mockReturnValue('challenge-id');
-
+  it('should navigate to base route when challengeId does not exist', () => {
+    authServiceMock.getChallengeId.mockReturnValue(null);
+    
     component.ngOnInit();
 
-    expect(router.navigate).not.toHaveBeenCalled();
+    expect(authServiceMock.getChallengeId).toHaveBeenCalled();
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/auth', 'forgot-password']);
   });
 
-  it('should call verifyForgotPasswordOtp when verifyResetOtp is triggered', () => {
-    component.verifyResetOtp({ isCalled: true, otp: '123456' });
+  it('should not verify OTP when isCalled is false', () => {
+    const event: IVerified = {
+      isCalled: false,
+      otp: '123456',
+    };
 
-    expect(authServiceMock.verifyForgotPasswordOtp)
-      .toHaveBeenCalledWith('123456');
+    component.verifyResetOtp(event);
+
+    expect(authServiceMock.verifyForgotPasswordOtp).not.toHaveBeenCalled();
+    expect(routerMock.navigate).not.toHaveBeenCalled();
   });
 
-  it('should NOT call verifyForgotPasswordOtp when isCalled is false', () => {
-    component.verifyResetOtp({ isCalled: false, code: '111' } as any);
+  it('should verify OTP and navigate when isCalled is true', () => {
+    const event: IVerified = {
+      isCalled: true,
+      otp: '123456',
+    };
 
-    expect(authServiceMock.verifyForgotPasswordOtp)
-      .not.toHaveBeenCalled();
+    component.verifyResetOtp(event);
+
+    expect(authServiceMock.verifyForgotPasswordOtp).toHaveBeenCalledWith('123456');
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/auth', 'reset-password']);
   });
 
-  it('should call resendVerificationCode when resendOtp is called with true', () => {
+  it('should resend OTP when isCalled is true', () => {
     component.resendOtp(true);
 
-    expect(authServiceMock.resendVerificationCode)
-      .toHaveBeenCalled();
+    expect(authServiceMock.resendVerificationCode).toHaveBeenCalled();
   });
 
-  it('should NOT call resendVerificationCode when resendOtp is false', () => {
+  it('should not resend OTP when isCalled is false', () => {
     component.resendOtp(false);
 
-    expect(authServiceMock.resendVerificationCode)
-      .not.toHaveBeenCalled();
+    expect(authServiceMock.resendVerificationCode).not.toHaveBeenCalled();
   });
 });

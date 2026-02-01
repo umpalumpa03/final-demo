@@ -24,13 +24,39 @@ describe('updateSidePanelForRoute', () => {
     expect(s()).toEqual(AUTH_SIDE_PANEL_DATA.forgotPassword);
   });
 
-  it('sets otpSignUp and phone panels', () => {
-    const s1 = signal(null as any);
-    updateSidePanelForRoute(Routes.OTP_SIGN_UP, s1);
-    expect(s1()).toEqual(AUTH_SIDE_PANEL_DATA.otpSignUp);
+  it('sets otpSignIn panel for OTP_SIGN_IN', () => {
+    const s = signal(null as any);
+    updateSidePanelForRoute(Routes.OTP_SIGN_IN, s);
+    expect(s()).toEqual(AUTH_SIDE_PANEL_DATA.otpSignIn);
+  });
 
-    const s2 = signal(null as any);
-    updateSidePanelForRoute(Routes.PHONE, s2);
-    expect(s2()).toEqual(AUTH_SIDE_PANEL_DATA.phone);
+  it('sets otpSignUp panel for OTP_SIGN_UP', () => {
+    const s = signal(null as any);
+    updateSidePanelForRoute(Routes.OTP_SIGN_UP, s);
+    expect(s()).toEqual(AUTH_SIDE_PANEL_DATA.otpSignUp);
+  });
+
+  it('sets otpForgotPassword panel for OTP_FORGOT_PASSWORD', () => {
+    const s = signal(null as any);
+    updateSidePanelForRoute(Routes.OTP_FORGOT_PASSWORD, s);
+    expect(s()).toEqual(AUTH_SIDE_PANEL_DATA.otpForgotPassword);
+  });
+
+  it('sets phone panel for PHONE', () => {
+    const s = signal(null as any);
+    updateSidePanelForRoute(Routes.PHONE, s);
+    expect(s()).toEqual(AUTH_SIDE_PANEL_DATA.phone);
+  });
+
+  it('sets resetPassword panel for RESET_PASSWORD', () => {
+    const s = signal(null as any);
+    updateSidePanelForRoute(Routes.RESET_PASSWORD, s);
+    expect(s()).toEqual(AUTH_SIDE_PANEL_DATA.resetPassword);
+  });
+
+  it('sets signIn panel as default for unknown routes', () => {
+    const s = signal(null as any);
+    updateSidePanelForRoute('/unknown-route', s);
+    expect(s()).toEqual(AUTH_SIDE_PANEL_DATA.signIn);
   });
 });

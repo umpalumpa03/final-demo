@@ -32,135 +32,154 @@ export const ALERTS_DISMISSIBLE_DATA = {
 
 export const AUTH_SIDE_PANEL_DATA = {
   signIn: {
-    title: 'Welcome Back!',
-    description: 'Sign in to continue to your account and access all features.',
+    title: 'auth.sign-in.side-panel.title',
+    description: 'auth.sign-in.side-panel.description',
     features: [
       {
         id: 1,
-        title: 'Secure Authentication',
-        text: 'Two-factor verification for enhanced security',
+        title: 'auth.sign-in.side-panel.features.secure-auth.title',
+        text: 'auth.sign-in.side-panel.features.secure-auth.text',
         icon: '/images/svg/auth/setup.svg',
       },
       {
         id: 2,
-        title: 'Protected Data',
-        text: 'Your information is encrypted and safe',
+        title: 'auth.sign-in.side-panel.features.protected-data.title',
+        text: 'auth.sign-in.side-panel.features.protected-data.text',
         icon: '/images/svg/auth/secured.svg',
       },
       {
         id: 3,
-        title: 'Protected Data',
-        text: 'Your information is encrypted and safe',
+        title: 'auth.sign-in.side-panel.features.protected-data-2.title',
+        text: 'auth.sign-in.side-panel.features.protected-data-2.text',
         icon: '/images/svg/auth/secured.svg',
-      },
-    ] as IFeaturePanel[],
+      }
+    ],
   },
+
   signUp: {
-    title: 'Join Us Today!',
-    description: 'Create your account and start your journey with us.',
+    title: 'auth.sign-up.side-panel.title',
+    description: 'auth.sign-up.side-panel.description',
     features: [
       {
         id: 1,
-        title: 'Quick Setup',
-        text: 'Get started in just a few minutes',
+        title: 'auth.sign-up.side-panel.features.quick-setup.title',
+        text: 'auth.sign-up.side-panel.features.quick-setup.text',
         icon: '/images/svg/auth/setup.svg',
       },
       {
         id: 2,
-        title: 'Secure & Private',
-        text: 'Your data is protected with encryption',
+        title: 'auth.sign-up.side-panel.features.secure-private.title',
+        text: 'auth.sign-up.side-panel.features.secure-private.text',
         icon: '/images/svg/auth/secured.svg',
       },
       {
         id: 3,
-        title: 'Email Verification',
-        text: 'Verify your account via email',
+        title: 'auth.sign-up.side-panel.features.email-verification.title',
+        text: 'auth.sign-up.side-panel.features.email-verification.text',
         icon: '/images/svg/auth/email.svg',
-      },
-    ] as IFeaturePanel[],
+      }
+    ],
   },
+
   forgotPassword: {
-    title: 'Reset Your Password!',
-    description: 'Enter your email to receive a password reset code.',
+    title: 'auth.forgot-password.side-panel.title',
+    description: 'auth.forgot-password.side-panel.description',
     features: [
       {
         id: 1,
-        title: 'Email Verification',
-        text: 'Code sent to your registered email',
+        title: 'auth.forgot-password.side-panel.features.email-verification.title',
+        text: 'auth.forgot-password.side-panel.features.email-verification.text',
         icon: '/images/svg/auth/email.svg',
-      },
-    ] as IFeaturePanel[],
+      }
+    ],
   },
+
   otpSignIn: {
-    title: 'Almost There!',
-    description: 'Enter the verification code to complete your sign in.',
+    title: 'auth.otp-sign-in.side-panel.title',
+    description: 'auth.otp-sign-in.side-panel.description',
     features: [
       {
         id: 1,
-        title: 'Two-Factor Security',
-        text: 'Extra layer of protection for your account',
+        title: 'auth.otp-sign-in.side-panel.features.two-factor.title',
+        text: 'auth.otp-sign-in.side-panel.features.two-factor.text',
         icon: '/images/svg/auth/secured.svg',
       },
       {
         id: 2,
-        title: 'Check Your Email',
-        text: 'Code sent to your registered email',
+        title: 'auth.otp-sign-in.side-panel.features.check-email.title',
+        text: 'auth.otp-sign-in.side-panel.features.check-email.text',
         icon: '/images/svg/auth/setup.svg',
-      },
-    ] as IFeaturePanel[],
+      }
+    ],
   },
+
   otpSignUp: {
-    title: 'Almost Done!',
-    description: 'Enter the code to complete your registration.',
+    title: 'auth.otp-sign-up.side-panel.title',
+    description: 'auth.otp-sign-up.side-panel.description',
     features: [
       {
         id: 1,
-        title: 'Phone Verification',
-        text: 'Secure Verification',
+        title: 'auth.otp-sign-up.side-panel.features.phone-verification.title',
+        text: 'auth.otp-sign-up.side-panel.features.phone-verification.text',
         icon: '/images/svg/auth/secured.svg',
       },
       {
         id: 2,
-        title: 'Final Step',
-        text: 'You are almost ready to get started',
+        title: 'auth.otp-sign-up.side-panel.features.final-step.title',
+        text: 'auth.otp-sign-up.side-panel.features.final-step.text',
         icon: '/images/svg/auth/secured.svg',
-      },
-    ] as IFeaturePanel[],
+      }
+    ],
   },
+
   otpForgotPassword: {
-    title: 'Almost There!',
-    description: 'Enter the verification code to complete your sign in.',
+    title: 'auth.otp-forgot-password.side-panel.title',
+    description: 'auth.otp-forgot-password.side-panel.description',
     features: [
       {
         id: 1,
-        title: 'Two-Factor Security',
-        text: 'Extra layer of protection for your account',
+        title: 'auth.otp-forgot-password.side-panel.features.two-factor.title',
+        text: 'auth.otp-forgot-password.side-panel.features.two-factor.text',
         icon: '/images/svg/auth/secured.svg',
       },
       {
         id: 2,
-        title: 'Check Your Email',
-        text: 'Code sent to your registered email',
+        title: 'auth.otp-forgot-password.side-panel.features.check-email.title',
+        text: 'auth.otp-forgot-password.side-panel.features.check-email.text',
         icon: '/images/svg/auth/email.svg',
-      },
-    ] as IFeaturePanel[],
+      }
+    ],
   },
+
   phone: {
-    title: 'Verify Your Identity',
-    description: 'Add your phone number to secure your account.',
+    title: 'auth.phone.side-panel.title',
+    description: 'auth.phone.side-panel.description',
     features: [
       {
         id: 1,
-        title: 'SMS Verification',
-        text: 'Receive a code via text message',
+        title: 'auth.phone.side-panel.features.sms-verification.title',
+        text: 'auth.phone.side-panel.features.sms-verification.text',
         icon: '/images/svg/auth/phone.svg',
       },
       {
         id: 2,
-        title: 'Account Security',
-        text: 'Extra protection for your account',
+        title: 'auth.phone.side-panel.features.account-security.title',
+        text: 'auth.phone.side-panel.features.account-security.text',
         icon: '/images/svg/auth/secured.svg',
-      },
-    ] as IFeaturePanel[],
+      }
+    ],
   },
-} as const;
+
+  resetPassword: {
+    title: 'auth.reset-password.side-panel.title',
+    description: 'auth.reset-password.side-panel.description',
+    features: [
+      {
+        id: 1,
+        title: 'auth.reset-password.side-panel.features.password-security.title',
+        text: 'auth.reset-password.side-panel.features.password-security.text',
+        icon: '/images/svg/auth/lock.svg',
+      }
+    ],
+  }
+};

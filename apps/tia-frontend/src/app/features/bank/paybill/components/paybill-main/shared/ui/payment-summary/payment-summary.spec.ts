@@ -13,9 +13,8 @@ describe('PaymentSummary', () => {
     fixture = TestBed.createComponent(PaymentSummary);
     component = fixture.componentInstance;
 
-    fixture.componentRef.setInput('serviceName', 'Test Service');
-    fixture.componentRef.setInput('accountNumber', '123456');
-    fixture.componentRef.setInput('amount', 123.45);
+    fixture.componentRef.setInput('headerTitle', 'Test Summary');
+    fixture.componentRef.setInput('items', []);
 
     fixture.detectChanges();
   });

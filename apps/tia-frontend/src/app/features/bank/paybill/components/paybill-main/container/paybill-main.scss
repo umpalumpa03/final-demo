@@ -1,5 +1,5 @@
-@use '../../../../../shared/styles/mixins' as *;
-@use '../../../../../shared/styles/palette' as *;
+@use '../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../shared/styles/palette' as *;
 
 .paybill-main {
   @include display-flex(column);
@@ -8,6 +8,5 @@
   &__stage-wrapper {
     @include display-flex(column);
     width: 100%;
-    padding-top: 1.2rem;
   }
 }
