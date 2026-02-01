@@ -49,6 +49,7 @@
     @include display-flex(column);
     gap: 2.6rem;
     margin-bottom: 2.6rem;
+    height: 100%;
   }
 
   &__switch,
@@ -64,5 +65,9 @@
   &__switch,
   &__loader {
     @include flex-center();
+  }
+
+  &__loader {
+    height: 65%;
   }
 }
