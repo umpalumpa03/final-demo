@@ -11,7 +11,7 @@
           #toInput
           [label]="'To'"
           [placeholder]="'recipient@example.com'"
-          [searchResults]="store.searchResults()"
+          [searchResults]="filteredSearchResults()"
           [isSearching]="store.isSearching()"
           [allowMultiple]="false"
           (searchQuery)="onSearchEmails($event)"
@@ -25,7 +25,7 @@
           #ccInput
           [label]="'CC (optional)'"
           [placeholder]="'cc1@example.com, cc2@example.com'"
-          [searchResults]="store.searchResults()"
+          [searchResults]="filteredSearchResultsCc()"
           [isSearching]="store.isSearching()"
           [allowMultiple]="true"
           (searchQuery)="onSearchEmails($event)"
