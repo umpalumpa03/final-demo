@@ -10,7 +10,7 @@ import { environment } from '../../../../../../environments/environment';
 import {
   ProceedPaymentPayload,
   ConfirmPaymentPayload,
-} from '../../models/paybill.model';
+} from '../../components/paybill-main/shared/models/paybill.model';
 
 describe('PaybillService', () => {
   let service: PaybillService;

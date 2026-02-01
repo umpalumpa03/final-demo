@@ -1,18 +1,30 @@
-import { inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, map, mergeMap, of, withLatestFrom } from 'rxjs';
+import { catchError, map, mergeMap, of, tap, withLatestFrom } from 'rxjs';
 import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillActions } from './paybill.actions';
-import { selectSelectedProviderId } from './paybill.selectors';
-import { ProceedPaymentResponse } from '../models/paybill.model';
+import {
+  selectSelectedCategoryId,
+  selectSelectedProviderId,
+} from './paybill.selectors';
+import { ProceedPaymentResponse } from '../components/paybill-main/shared/models/paybill.model';
+import { PaybillTemplatesService } from '../components/paybill-templates/services/paybill-templates-service';
+import { Router } from '@angular/router';
 
-export const loadCategories = createEffect(
-  (actions$ = inject(Actions), paybillService = inject(PaybillService)) => {
-    return actions$.pipe(
+@Injectable()
+export class PaybillEffect {
+  public store = inject(Store);
+  public actions$ = inject(Actions);
+  public paybillService = inject(PaybillService);
+  public payBillTemplatesService = inject(PaybillTemplatesService);
+  public router = inject(Router);
+
+  loadCategories$ = createEffect(() => {
+    return this.actions$.pipe(
       ofType(PaybillActions.loadCategories),
       mergeMap(() =>
-        paybillService.getCategories().pipe(
+        this.paybillService.getCategories().pipe(
           map((categories) =>
             PaybillActions.loadCategoriesSuccess({ categories }),
           ),
@@ -22,34 +34,31 @@ export const loadCategories = createEffect(
         ),
       ),
     );
-  },
-  { functional: true },
-);
+  });
 
-export const loadProviders = createEffect(
-  (actions$ = inject(Actions), paybillService = inject(PaybillService)) => {
-    return actions$.pipe(
-      ofType(PaybillActions.selectCategory),
-      mergeMap(({ categoryId }) =>
-        paybillService.getProviders(categoryId).pipe(
-          map((providers) =>
-            PaybillActions.loadProvidersSuccess({ providers }),
-          ),
-          catchError((error) =>
-            of(PaybillActions.loadProvidersFailure({ error: error.message })),
+  loadProviders$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(PaybillActions.selectCategory),
+        mergeMap(({ categoryId }) =>
+          this.paybillService.getProviders(categoryId).pipe(
+            map((providers) =>
+              PaybillActions.loadProvidersSuccess({ providers }),
+            ),
+            catchError((error) =>
+              of(PaybillActions.loadProvidersFailure({ error: error.message })),
+            ),
           ),
         ),
-      ),
-    );
-  },
-  { functional: true },
-);
+      );
+    },
+    { functional: true },
+  );
 
-export const autoSelectProviderAfterLoad = createEffect(
-  (actions$ = inject(Actions), store = inject(Store)) => {
-    return actions$.pipe(
+  autoSelectProviderAfterLoad$ = createEffect(() => {
+    return this.actions$.pipe(
       ofType(PaybillActions.loadProvidersSuccess),
-      withLatestFrom(store.select(selectSelectedProviderId)),
+      withLatestFrom(this.store.select(selectSelectedProviderId)),
       mergeMap(([action, selectedProviderId]) => {
         if (selectedProviderId && action.providers.length > 0) {
           return of(
@@ -59,16 +68,13 @@ export const autoSelectProviderAfterLoad = createEffect(
         return of();
       }),
     );
-  },
-  { functional: true },
-);
+  });
 
-export const checkBill = createEffect(
-  (actions$ = inject(Actions), paybillService = inject(PaybillService)) => {
-    return actions$.pipe(
+  checkBill$ = createEffect(() => {
+    return this.actions$.pipe(
       ofType(PaybillActions.checkBill),
       mergeMap(({ serviceId, accountNumber }) =>
-        paybillService.checkBill(serviceId, accountNumber).pipe(
+        this.paybillService.checkBill(serviceId, accountNumber).pipe(
           map((details) => PaybillActions.checkBillSuccess({ details })),
           catchError((err) =>
             of(PaybillActions.checkBillFailure({ error: err.message })),
@@ -76,43 +82,42 @@ export const checkBill = createEffect(
         ),
       ),
     );
-  },
-  { functional: true },
-);
+  });
 
-export const proceedPayment = createEffect(
-  (
-    actions$ = inject(Actions),
-    paybillService = inject(PaybillService),
-    store = inject(Store),
-  ) => {
-    return actions$.pipe(
+  proceedPayment$ = createEffect(() => {
+    return this.actions$.pipe(
       ofType(PaybillActions.proceedPayment),
       mergeMap(({ payload }) =>
-        paybillService.payBill(payload).pipe(
-          map((response: ProceedPaymentResponse) => {
-            if (payload.amount >= 50 && response.verify?.challengeId) {
-              return PaybillActions.setPaymentStep({ step: 'OTP' });
-            }
-            return PaybillActions.setPaymentStep({ step: 'SUCCESS' });
-          }),
+        this.paybillService.payBill(payload).pipe(
+          map((response: ProceedPaymentResponse) =>
+            PaybillActions.proceedPaymentSuccess({ response }),
+          ),
           catchError((error) =>
             of(PaybillActions.proceedPaymentFailure({ error: error.message })),
           ),
         ),
       ),
     );
-  },
-  { functional: true },
-);
+  });
 
-export const confirmPayment = createEffect(
-  (actions$ = inject(Actions), paybillService = inject(PaybillService)) => {
-    return actions$.pipe(
+  handleProceedSuccess$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(PaybillActions.proceedPaymentSuccess),
+      map(({ response }) => {
+        if (response.verify?.challengeId) {
+          return PaybillActions.setPaymentStep({ step: 'OTP' });
+        }
+        return PaybillActions.setPaymentStep({ step: 'SUCCESS' });
+      }),
+    );
+  });
+
+  confirmPayment$ = createEffect(() => {
+    return this.actions$.pipe(
       ofType(PaybillActions.confirmPayment),
       mergeMap(({ payload }) =>
-        paybillService.verifyPayment(payload).pipe(
-          map((response) => {
+        this.paybillService.verifyPayment(payload).pipe(
+          map(() => {
             return PaybillActions.setPaymentStep({ step: 'SUCCESS' });
           }),
           catchError((error) =>
@@ -121,6 +126,50 @@ export const confirmPayment = createEffect(
         ),
       ),
     );
-  },
-  { functional: true },
-);
+  });
+
+  selectCategoryNavigation$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(PaybillActions.selectCategory),
+        tap(({ categoryId }) => {
+          if (categoryId.toUpperCase() !== 'TEMPLATES') {
+            this.router.navigate([
+              '/bank/paybill/pay',
+              categoryId.toLowerCase(),
+            ]);
+          }
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  selectProviderNavigation$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(PaybillActions.selectProvider),
+        withLatestFrom(this.store.select(selectSelectedCategoryId)),
+        tap(([{ providerId }, categoryId]) => {
+          if (categoryId) {
+            this.router.navigate([
+              '/bank/paybill/pay',
+              categoryId.toLowerCase(),
+              providerId.toLowerCase(),
+            ]);
+          }
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  clearSelectionNavigation$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(PaybillActions.clearSelection),
+        tap(() => {
+          this.router.navigate(['/bank/paybill/pay']);
+        }),
+      ),
+    { dispatch: false },
+  );
+}

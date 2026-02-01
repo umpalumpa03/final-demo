@@ -1,20 +1,19 @@
 {
-  "title": "Pay Bills",
-  "categories": {
-    "utilities": "Utilities",
-    "telecom": "Telecom",
-    "insurance": "Insurance",
-    "government": "Government",
-    "other": "Other"
+  "shared": {
+    "title": "Pay Bills",
+    "description": "Pay your bills quickly and securely",
+    "navigation": {
+      "label1": "Paybill",
+      "label2": "Templates"
+    }
   },
-  "form": {
-    "provider": "Service Provider",
-    "accountNumber": "Account Number",
-    "amount": "Amount",
-    "dueDate": "Due Date"
+
+  "main": {
+    "category": "Select Category"
   },
-  "history": {
-    "title": "Payment History",
-    "recent": "Recent Payments"
+
+  "templates": {
+    "title": "Saved Templates",
+    "description": "Manage your payment templates and groups"
   }
 }
