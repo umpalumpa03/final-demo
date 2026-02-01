@@ -19,6 +19,9 @@ import {
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { CardWithDetails } from '@tia/shared/models/cards/card-image.model';
 import { CardAccount } from '@tia/shared/models/cards/card-account.model';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 
 interface CardDataWithAccount extends CardWithDetails {
   account: CardAccount | undefined;
@@ -28,7 +31,7 @@ interface CardDataWithAccount extends CardWithDetails {
   selector: 'app-card-details',
   templateUrl: './card-details.html',
   styleUrls: ['./card-details.scss'],
-  imports: [CommonModule, RouteLoader],
+  imports: [CommonModule, RouteLoader,ButtonComponent, BasicCard, ErrorStates],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardDetails implements OnInit {
@@ -121,4 +124,8 @@ export class CardDetails implements OnInit {
   protected handleViewTransactions(): void {
     this.router.navigate(['/bank/products/cards/transactions', this.cardId]);
   }
+  protected handleRetry(): void {
+  this.store.dispatch(loadCardAccounts());
+  this.store.dispatch(loadCardDetails({ cardId: this.cardId }));
+}
 }

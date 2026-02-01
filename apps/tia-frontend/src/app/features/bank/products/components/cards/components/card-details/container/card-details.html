@@ -4,16 +4,22 @@
     <app-route-loader variant="pulsing" />
   </div>
   } @else if (error$ | async; as errorMsg) {
-  <div class="card-details__error">{{ errorMsg }}</div>
+  <app-error-states
+    variant="failed"
+    header="Failed to Load Card"
+    [message]="errorMsg"
+    buttonMessage="Retry"
+    (buttonClick)="handleRetry()"
+  />
   } @else if (cardData$ | async; as data) {
   <div class="card-details__header">
-    <button
-      class="card-details__back-button"
+    <app-button
+      variant="ghost"
+      [icon]="'left-arrow.svg'"
       (click)="handleBack()"
-      type="button"
     >
-      Back
-    </button>
+      Back to Cards
+    </app-button>
   </div>
 
   <div class="card-details__card-image">
@@ -24,7 +30,7 @@
     />
   </div>
 
-  <div class="card-details__info-section">
+  <!-- <div class="card-details__info-section">
     <h2 class="card-details__section-title">Card Information</h2>
     <p class="card-details__section-subtitle">
       Details about your Personal Card
@@ -33,7 +39,9 @@
     <div class="card-details__info-grid">
       <div class="card-details__info-item">
         <span class="card-details__info-label">Card Name</span>
-        <span class="card-details__info-value">{{ data.details.cardName }}</span>
+        <span class="card-details__info-value"
+          >{{ data.details.cardName }}</span
+        >
       </div>
 
       <div class="card-details__info-item">
@@ -58,19 +66,73 @@
 
       <div class="card-details__info-item">
         <span class="card-details__info-label">Total Balance</span>
-        <span class="card-details__info-value">{{ formattedBalance$ | async }}</span>
+        <span class="card-details__info-value"
+          >{{ formattedBalance$ | async }}</span
+        >
       </div>
 
       @if (shouldShowCreditLimit$ | async) {
       <div class="card-details__info-item">
         <span class="card-details__info-label">Credit Limit</span>
-        <span class="card-details__info-value">{{ formattedCreditLimit$ | async }}</span>
+        <span class="card-details__info-value"
+          >{{ formattedCreditLimit$ | async }}</span
+        >
       </div>
       }
     </div>
-  </div>
+  </div> -->
+  <app-basic-card
+    title="Card Information"
+    subtitle="Details about your Personal Card"
+    maxWidth="100%"
+    padding="2rem"
+  >
+    <div class="card-details__info-grid">
+      <div class="card-details__info-item">
+        <span class="card-details__info-label">Card Name</span>
+        <span class="card-details__info-value"
+          >{{ data.details.cardName }}</span
+        >
+      </div>
 
-  <div class="card-details__actions-section">
+      <div class="card-details__info-item">
+        <span class="card-details__info-label">Card Type</span>
+        <span class="card-details__info-value">{{ data.details.type }}</span>
+      </div>
+
+      <div class="card-details__info-item">
+        <span class="card-details__info-label">Currency</span>
+        <span class="card-details__info-value">{{ currency$ | async }}</span>
+      </div>
+
+      <div class="card-details__info-item">
+        <span class="card-details__info-label">Status</span>
+        <span
+          class="card-details__info-value"
+          [class.card-details__info-value--status]="isActiveStatus$ | async"
+        >
+          {{ data.details.status.toLowerCase() }}
+        </span>
+      </div>
+
+      <div class="card-details__info-item">
+        <span class="card-details__info-label">Total Balance</span>
+        <span class="card-details__info-value"
+          >{{ formattedBalance$ | async }}</span
+        >
+      </div>
+
+      @if (shouldShowCreditLimit$ | async) {
+      <div class="card-details__info-item">
+        <span class="card-details__info-label">Credit Limit</span>
+        <span class="card-details__info-value"
+          >{{ formattedCreditLimit$ | async }}</span
+        >
+      </div>
+      }
+    </div>
+  </app-basic-card>
+  <!-- <div class="card-details__actions-section">
     <h2 class="card-details__section-title">Quick Actions</h2>
     <p class="card-details__section-subtitle">
       Manage your card and transactions
@@ -116,6 +178,55 @@
         View Transactions
       </button>
     </div>
-  </div>
+  </div> -->
   }
+
+  <app-basic-card
+    title="Quick Actions"
+    subtitle="Manage your card and transactions"
+    maxWidth="100%"
+    padding="2rem"
+  >
+    <div class="card-details__actions-grid">
+      <app-button
+        variant="default"
+        [fullWidth]="true"
+        icon="transfer.svg"
+        (click)="handleTransferOwn()"
+      >
+        Transfer to Own Account
+      </app-button>
+
+      <app-button
+        variant="default"
+        [fullWidth]="true"
+        icon="transfer.svg"
+        (click)="handleTransferExternal()"
+      >
+        Transfer to Someone Else
+      </app-button>
+
+      <app-button
+        variant="default"
+        [fullWidth]="true"
+        icon="paybill.svg"
+        (click)="handlePaybill()"
+      >
+        Pay Paybill
+      </app-button>
+
+      <app-button variant="outline" [fullWidth]="true" icon="eye.svg">
+        View Sensitive Details
+      </app-button>
+
+      <app-button
+        variant="outline"
+        [fullWidth]="true"
+        icon="transactions.svg"
+        (click)="handleViewTransactions()"
+      >
+        View Transactions
+      </app-button>
+    </div>
+  </app-basic-card>
 </div>

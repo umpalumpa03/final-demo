@@ -1,5 +1,5 @@
 export interface CardData {
- id: string;
+  id: string;
   title: string;
   subtitle?: string;
   content?: string;
@@ -15,7 +15,8 @@ export interface CardData {
   alignItems?: string;
   justifyContent?: string;
   minHeight?: string;
-padding?: string;
+  padding?: string;
+  borderColor?: string;
 }
 
 export interface StatisticCardData {

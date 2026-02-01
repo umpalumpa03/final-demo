@@ -1,21 +1,40 @@
 <div class="card-list">
   @if (loading$ | async) {
-  <div class="card-list__loading">Loading...</div>
-  } @if (error$ | async; as errorMsg) {
-  <div class="card-list__error">{{ errorMsg }}</div>
-  } @for (group of cardGroupsWithMeta$ | async; track group.account.id) {
+  <div class="card-list__loading">
+    <app-spinner size="4rem" />
+  </div>
+  } @else if (error$ | async; as errorMsg) {
+  <app-error-states
+    variant="failed"
+    header="Loading Failed"
+    [message]="errorMsg"
+    buttonMessage="Retry"
+  />
+  } @else { @for (group of cardGroupsWithMeta$ | async; track group.account.id)
+  {
   <div class="card-list__group">
     <div class="card-list__account-header">
       <div class="card-list__account-info">
-        <span class="card-list__account-name">{{ group.account.name }}</span>
+        <div class="card-list__account-name-wrapper">
+          <div class="card-list__icon-wrapper">
+            <img
+              [src]="'/images/svg/button-icons/account-icon.svg'"
+              alt="Account"
+              class="card-list__account-icon"
+            />
+          </div>
+          <span class="card-list__account-name">{{ group.account.name }}</span>
+        </div>
         <span class="card-list__account-number">{{ group.account.iban }}</span>
       </div>
+
       <app-badges
-        [label]="group.cardCountLabel"
-        variant="secondary"
-        size="small"
+        [text]="group.cardCountLabel"
+        variant="info"
+        size="medium"
         shape="rounded"
-      ></app-badges>
+      >
+      </app-badges>
     </div>
 
     @if (group.cardImages.length > 0) {
@@ -49,31 +68,48 @@
       }
     </div>
     } @else {
-    <div class="card-list__no-cards">No cards available for this account</div>
+    <app-badges
+      text="No cards available"
+      variant="info"
+      size="medium"
+      shape="rounded"
+      [disabled]="true"
+    ></app-badges>
     }
   </div>
   }
 
-  <div
-    class="card-list__add-card"
+  <app-basic-card
+    [hasHover]="true"
+    [width]="'100%'"
+    [maxWidth]="'100%'"
+    [padding]="'3.2rem 2.4rem'"
+    [display]="'flex'"
+    [flexDirection]="'column'"
+    [alignItems]="'center'"
+    [justifyContent]="'center'"
+    [minHeight]="'auto'"
+    [borderColor]="'var(--color-muted)'"
     (click)="openModal()"
-    (keydown.enter)="openModal()"
-    (keydown.space)="openModal()"
     role="button"
     tabindex="0"
-    aria-label="Get New Card"
   >
-    <app-button [variant]="'default'" [icon]="'plus-icon.svg'" type="button">
-      Get New Card
+    <app-button
+      class="test"
+      size="icon"
+      [variant]="'ghost'"
+      [icon]="'adding.svg'"
+      type="button"
+    >
     </app-button>
-  </div>
+    <span class="card-list__add-card-text">Get New Card</span>
+  </app-basic-card>
+  }
 </div>
 
 @if (isModalOpen$ | async; as isOpen) {
 <app-create-card [isOpen]="isOpen" (closed)="handleCloseModal()" />
-}
-
-@if (showSuccessAlert$ | async) {
+} @if (showSuccessAlert$ | async) {
 <div class="card-list__alert-container">
   <app-simple-alerts
     alertType="success"

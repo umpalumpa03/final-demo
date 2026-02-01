@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { map } from 'rxjs';
+import { combineLatest, map } from 'rxjs';
 import {
   loadCardAccounts,
   hideSuccessAlert,
@@ -28,12 +28,26 @@ import { CreateCard } from '../../create-card-modal/container/createCard';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AsyncPipe } from '@angular/common';
+import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
+import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-card-list',
   templateUrl: './card-list.html',
   styleUrls: ['./card-list.scss'],
-  imports: [Badges, AsyncPipe,CreateCard, SimpleAlerts, ButtonComponent],
+  imports: [
+    Badges,
+    AsyncPipe,
+    CreateCard,
+    SimpleAlerts,
+    ButtonComponent,
+    BasicCard,
+    Spinner,
+    ErrorStates
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardList implements OnInit {
@@ -48,24 +62,24 @@ export class CardList implements OnInit {
 
   protected readonly activeCardIndex = signal<Record<string, number>>({});
 
-  protected readonly cardGroupsWithMeta$ = this.cardGroups$.pipe(
-    map(groups => groups.map(group => ({
-      ...group,
-      cardCountLabel: `${group.cardImages.length} Card${group.cardImages.length !== 1 ? 's' : ''}`,
-      activeIndex: this.activeCardIndex()[group.account.id] ?? 0,
-      cards: group.cardImages.map((cardImage, idx) => ({
-        ...cardImage,
-        cardAlt: `Card ending in ${cardImage.cardId.slice(-4)}`,
-        isStacked: idx !== (this.activeCardIndex()[group.account.id] ?? 0),
-        isActive: idx === (this.activeCardIndex()[group.account.id] ?? 0),
-        zIndex: idx === (this.activeCardIndex()[group.account.id] ?? 0) 
-          ? 100 
-          : group.cardImages.length - idx,
-        index: idx,
-      })),
-    })))
-  );
-
+protected readonly cardGroupsWithMeta$ = combineLatest([
+  this.cardGroups$,
+  toObservable(this.activeCardIndex)
+]).pipe(
+  map(([groups, activeIndexMap]) => groups.map(group => ({
+    ...group,
+    cardCountLabel: `${group.cardImages.length} Card${group.cardImages.length !== 1 ? 's' : ''}`,
+    activeIndex: activeIndexMap[group.account.id] ?? 0,
+    cards: group.cardImages.map((cardImage, idx) => ({
+      ...cardImage,
+      cardAlt: `Card ending in ${cardImage.cardId.slice(-4)}`,
+      isStacked: idx !== (activeIndexMap[group.account.id] ?? 0),
+      isActive: idx === (activeIndexMap[group.account.id] ?? 0),
+      zIndex: idx === (activeIndexMap[group.account.id] ?? 0) ? 100 : group.cardImages.length - idx,
+      index: idx,
+    })),
+  })))
+);
   constructor() {
     effect(() => {
       this.store.select(selectShowSuccessAlert).subscribe(show => {

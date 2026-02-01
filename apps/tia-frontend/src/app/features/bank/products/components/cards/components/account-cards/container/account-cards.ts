@@ -17,12 +17,15 @@ import {
 } from '../../../../../../../../store/products/cards/cards.selectors';
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 import { AccountData, ViewState } from '@tia/shared/models/cards/account-cards.model';
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 
 @Component({
   selector: 'app-account-cards',
   templateUrl: './account-cards.html',
   styleUrls: ['./account-cards.scss'],
-  imports: [CommonModule, Badges],
+  imports: [CommonModule, Badges, Skeleton, ButtonComponent,ErrorStates],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountCards implements OnInit {
@@ -74,4 +77,10 @@ export class AccountCards implements OnInit {
   protected handleCardClick(cardId: string): void {
     this.router.navigate(['/bank/products/cards/details', cardId]);
   }
+  protected handleBackClick(): void {
+  this.router.navigate(['/bank/products/cards/list']);
+}
+protected handleRetry(): void {
+  this.store.dispatch(loadAccountCardsPage({ accountId: this.accountId }));
+}
 }
