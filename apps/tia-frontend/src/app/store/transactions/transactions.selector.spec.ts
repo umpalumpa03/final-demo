@@ -16,7 +16,13 @@ describe('Transaction Selectors', () => {
     filters: { pageLimit: 20 },
     isLoading: true,
     error: { message: 'Failed' },
-    total: 100
+    total: 100,
+    categories: [
+      {
+        categoryName: 'saba',
+        id: 'saba',
+      },
+    ],
   };
 
   it('should select items', () => {
@@ -51,6 +57,7 @@ describe('Transaction Selectors', () => {
       initialState.isLoading,
       initialState.filters,
       initialState.total,
+      initialState.categories,
     );
 
     expect(result).toEqual({

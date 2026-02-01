@@ -38,4 +38,43 @@
     >
     </lib-text-input>
   </div>
+
+  <div class="filter-item">
+    <lib-select
+      formControlName="accountIban"
+      [options]="accountOptions()"
+      [config]="{ 
+        label: 'Account', 
+        placeholder: 'Select Account' 
+      }"
+    >
+    </lib-select>
+    <lib-select
+      formControlName="currency"
+      [options]="currencyOptions"
+      [config]="{ 
+        label: 'Currency', 
+        placeholder: 'All' 
+      }"
+    >
+    </lib-select>
+    <lib-text-input
+      formControlName="dateFrom"
+      [type]="'date'"
+      [config]="{
+          label: 'Date From',
+          placeholder: 'YYYY-MM-DD'
+        }"
+    >
+    </lib-text-input>
+    <lib-text-input
+      formControlName="dateTo"
+      [type]="'date'"
+      [config]="{
+          label: 'Date To',
+          placeholder: 'YYYY-MM-DD'
+        }"
+    >
+    </lib-text-input>
+  </div>
 </form>

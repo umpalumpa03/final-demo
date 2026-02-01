@@ -6,6 +6,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
+import { Currency } from '@tia/shared/models/transactions/base.models';
 
 @Component({
   selector: 'app-transactions-filters',
@@ -17,13 +18,24 @@ export class TransactionsFilters {
   private fb = inject(FormBuilder);
 
   public categoryOptions = input.required<SelectOption[]>();
+  public accountOptions = input<SelectOption[]>([]);
   public filterChange = output<ITransactionFilter>();
+
+  public currencyOptions: SelectOption[] = [
+    { label: 'GEL', value: 'GEL' },
+    { label: 'USD', value: 'USD' },
+    { label: 'EUR', value: 'EUR' },
+  ];
 
   public filterForm = this.fb.group({
     searchCriteria: [''],
     category: [null as string | null],
     amountFrom: [null as number | null],
     amountTo: [null as number | null],
+    accountIban: [null as string | null],
+    currency: [null as Currency | null],
+    dateFrom: [null as string | null],
+    dateTo: [null as string | null],
   });
   constructor() {
     this.filterForm.valueChanges
@@ -40,6 +52,10 @@ export class TransactionsFilters {
           category: values.category || undefined,
           amountFrom: values.amountFrom || undefined,
           amountTo: values.amountTo || undefined,
+          iban: values.accountIban || undefined,
+          currency: (values.currency as Currency) || undefined,
+          dateFrom: values.dateFrom || undefined,
+          dateTo: values.dateTo || undefined,
         });
       });
   }

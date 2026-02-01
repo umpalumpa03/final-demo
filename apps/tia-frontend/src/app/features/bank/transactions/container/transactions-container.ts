@@ -25,6 +25,9 @@ import { ShowcaseCard } from '../../../storybook/shared/showcase-card/showcase-c
 import { TransactionsFilters } from '../components/transactions-filters/transactions-filters';
 import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
+import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
+import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
+import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 
 @Component({
   selector: 'app-transactions-container',
@@ -46,7 +49,17 @@ export class TransactionsContainer implements OnInit {
   public items = this.store.selectSignal(selectItems);
   public readonly isLoading = this.store.selectSignal(selectIsLoading);
   public categoryOptions = this.store.selectSignal(selectCategoryOptions);
+  public accounts = this.store.selectSignal(selectAccounts);
 
+  public accountOptions = computed<SelectOption[]>(() => {
+    const accountsList = this.accounts();
+    if (!accountsList) return [];
+
+    return accountsList.map((acc) => ({
+      label: `${acc.friendlyName} (${acc.iban})`,
+      value: acc.iban,
+    }));
+  });
   private readonly totalTransactions = this.store.selectSignal(
     selectTotalTransactions,
   );
@@ -63,16 +76,12 @@ export class TransactionsContainer implements OnInit {
     rows: this.items().map(convertTransactionData),
   }));
 
-  constructor() {
-    effect(() => {
-      console.log('Category Options in Container:', this.categoryOptions());
-    });
-  }
-
   public ngOnInit(): void {
     this.store.dispatch(TransactionActions.loadTransactions());
     this.store.dispatch(TransactionActions.enter());
     this.store.dispatch(TransactionActions.loadCategories());
+
+    this.store.dispatch(AccountsActions.loadAccounts());
   }
 
   public onFiltersChange(filters: Partial<ITransactionFilter>) {
