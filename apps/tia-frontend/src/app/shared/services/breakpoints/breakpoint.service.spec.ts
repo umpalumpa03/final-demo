@@ -7,9 +7,9 @@ describe('BreakpointService (vitest)', () => {
 
   beforeEach(() => {
     vi.stubGlobal('innerWidth', 1200);
-    
+
     TestBed.configureTestingModule({
-      providers: [BreakpointService]
+      providers: [BreakpointService],
     });
     service = TestBed.inject(BreakpointService);
   });
@@ -20,23 +20,21 @@ describe('BreakpointService (vitest)', () => {
 
   it('should update signals to true when window is resized to Mobile', () => {
     vi.stubGlobal('innerWidth', 375);
-    
+
     window.dispatchEvent(new Event('resize'));
 
     expect(service.isMobile()).toBe(true);
     expect(service.isTablet()).toBe(true);
   });
 
-
   it('should update signals to false when resized back to Desktop', () => {
     vi.stubGlobal('innerWidth', 375);
     window.dispatchEvent(new Event('resize'));
-    
+
     vi.stubGlobal('innerWidth', 1440);
     window.dispatchEvent(new Event('resize'));
 
     expect(service.isMobile()).toBe(false);
     expect(service.isTablet()).toBe(false);
   });
-
 });

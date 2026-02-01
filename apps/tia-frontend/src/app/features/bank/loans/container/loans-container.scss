@@ -10,6 +10,7 @@
         display: grid;
         grid-template-rows: repeat(auto-fill, minmax(13.2rem, 1fr));
         gap: 3.2rem;
+
         .loan-card-skeleton {
             background-color: $white;
             border: 1px solid $gray-200;
@@ -30,6 +31,19 @@
 
             .skeleton-body {
                 width: 100%;
+            }
+
+            @media (max-width: 400px) {
+                .skeleton-header {
+                    flex-direction: column;
+                    .skeleton-titles {
+                        align-items: center;
+                    }
+                }
+
+                .skeleton-body {
+                    width: 90%;
+                }
             }
         }
     }

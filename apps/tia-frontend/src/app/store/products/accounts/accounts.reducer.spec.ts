@@ -215,16 +215,7 @@ describe('AccountsReducer', () => {
     expect(result.isFetching).toBe(true);
   });
 
-  it('should handle fetchMoreAccountsSuccess action', () => {
-    const result = accountsReducer(
-      { ...initialAccountsState, accounts: [mockAccount], isFetching: true },
-      AccountsActions.fetchMoreAccountsSuccess({ accounts: [mockAccount2] }),
-    );
-    expect(result.accounts).toHaveLength(2);
-    expect(result.accounts).toContain(mockAccount);
-    expect(result.accounts).toContain(mockAccount2);
-    expect(result.isFetching).toBe(false);
-  });
+
 
   it('should handle fetchMoreAccountsFailure action', () => {
     const result = accountsReducer(

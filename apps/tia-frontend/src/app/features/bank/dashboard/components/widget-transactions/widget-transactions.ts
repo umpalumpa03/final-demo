@@ -12,7 +12,7 @@ import {
   selectIsLoading,
   selectError,
 } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe, CurrencyPipe, DatePipe } from '@angular/common';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { map } from 'rxjs';
@@ -21,7 +21,7 @@ import { BaseWidget } from '../shared/base-widget.config';
 
 @Component({
   selector: 'app-widget-transactions',
-  imports: [AsyncPipe, DatePipe, RouteLoader, ErrorStates, ScrollArea],
+  imports: [AsyncPipe, DatePipe, RouteLoader, ErrorStates, ScrollArea, CurrencyPipe],
   templateUrl: './widget-transactions.html',
   styleUrl: './widget-transactions.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

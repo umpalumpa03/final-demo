@@ -12,6 +12,8 @@
   transition: all 0.2s ease-in-out;
   cursor: pointer;
   position: relative;
+  width: 100%;
+  box-sizing: border-box;
 
   &:hover {
     border-color: $blue-300;
@@ -81,7 +83,7 @@
     @include display-flex(column);
     gap: 1.2rem;
     flex: 1;
-    min-width: 0;
+    min-width: 0; 
   }
 
   &__header {
@@ -143,5 +145,55 @@
   &__check-icon {
     @include svg-icon(1.8rem);
     filter: brightness(0) invert(1);
+  }
+
+  @media (max-width: 480px) {
+    @include display-flex(column);
+    align-items: flex-start;
+    padding: 1.6rem;
+    gap: 1.2rem;
+
+    &__icon {
+      width: 4.8rem;
+      height: 4.8rem;
+    }
+
+    &__header {
+      width: 100%;
+    }
+
+    &__check {
+      top: 1.6rem;
+      right: 1.6rem;
+      transform: none;
+      width: 2.8rem;
+      height: 2.8rem;
+    }
+
+    &__balance {
+      font-size: 1.8rem;
+    }
+  }
+
+  @media (max-width: 360px) {
+    padding: 1.2rem;
+    gap: 1rem;
+
+    &__name {
+      font-size: 1.4rem;
+    }
+
+    &__balance {
+      font-size: 1.6rem;
+    }
+
+    &__iban {
+      font-size: 1.2rem;
+    }
+
+    &__currency {
+      padding: 0.2rem 0.8rem;
+      font-size: 1.2rem;
+    }
   }
 }

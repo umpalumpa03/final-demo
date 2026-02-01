@@ -19,6 +19,7 @@
         (click)="onVerify()"
         [isDisabled]="!recipientInput.valid || !recipientInput.value"
         [isLoading]="isLoading()"
+        [fullWidth]="isMobile()"
       >
         {{'transfers.external.recipient.verify' | translate}}
         <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />

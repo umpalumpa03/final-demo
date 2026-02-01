@@ -3,7 +3,7 @@ import { of, Subject } from 'rxjs';
 import { Sidebar } from './sidebar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'apps/tia-frontend/src/app/core/auth/services/auth.service';
-import { BreakpointService } from '../services/breakpoint.service';
+import { BreakpointService } from '../../../../shared/services/breakpoints/breakpoint.service';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { ElementRef, signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { provideRouter } from '@angular/router';
@@ -52,7 +52,6 @@ describe('Sidebar', () => {
 
   it('should initialize and react to lang change', () => {
     const updateSpy = vi.spyOn(component as any, 'updateItems');
-
 
     langChangeSubject.next({ lang: 'en' });
 
