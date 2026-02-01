@@ -1,7 +1,10 @@
-<app-basic-card class="paybill-card" maxWidth="91.2rem" padding="2.4rem">
+<app-basic-card class="paybill-card" maxWidth="100%" padding="2.4rem">
   <header class="paybill-form__header">
-    <div class="paybill-form__icon-box" [style.background-color]="iconBgColor()">
-      <img [src]="iconBgPath()" alt="" class="paybill-form__icon" />
+    <div
+      class="paybill-form__icon-box"
+      [style.background-color]="iconBgColor()"
+    >
+      <img [src]="iconBgPath()" alt="Service Icon" class="paybill-form__icon" />
     </div>
     <div class="paybill-form__text-group">
       <h2 class="paybill-form__title">{{ provider()?.name }}</h2>
@@ -9,67 +12,53 @@
     </div>
   </header>
 
-  <form [formGroup]="paybillForm" (ngSubmit)="onSubmit()" class="paybill-form__content">
-    
+  <form
+    [formGroup]="paybillForm"
+    (ngSubmit)="onSubmit()"
+    class="paybill-form__content"
+  >
     <div class="paybill-form__field">
-      <lib-text-input 
-        formControlName="accountNumber" 
-        label="Account Number / Customer ID"
-        [class.verified-input]="isVerified()"
-        [disabled]="isVerified() || isLoading()"
+      <lib-text-input
+        formControlName="accountNumber"
+        [config]="paybillConfig"
+        [state]="isVerified() || isLoading() ? 'disabled' : 'default'"
       ></lib-text-input>
     </div>
 
     @if (isVerified()) {
-      <div class="verified-container">
-        <div class="verified-status">
-          <span class="verified-text">Account Verified</span>
-        </div>
+    <app-payment-summary
+      [items]="summaryItems()"
+      headerTitle="Account Verified"
+      type="verified"
+    ></app-payment-summary>
 
-        <div class="details-grid">
-          <div class="detail-row">
-            <span class="label">Customer Name:</span>
-            <span class="value">{{ verifiedDetails()?.accountHolder }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="label">Bill Period:</span>
-            <span class="value">December 2025</span>
-          </div>
-          <div class="detail-row">
-            <span class="label">Due Date:</span>
-            <span class="value value--alert">{{ verifiedDetails()?.dueDate }}</span>
-          </div>
-        </div>
-      </div>
+    <lib-text-input
+      label="Amount To Pay"
+      formControlName="amount"
+      [state]="isLoading() ? 'disabled' : 'default'"
+    />
+    <p class="helper-text">
+      Fetched amount: {{verifiedDetails()?.amountDue}}. You can edit before
+      continuing.
+    </p>
 
-      <div class="paybill-form__field">
-        <lib-text-input 
-          label="Amount To Pay" 
-          formControlName="amount"
-          [disabled]="isLoading()"
-        ></lib-text-input>
-        <p class="helper-text">Fetched amount: ${{ verifiedDetails()?.amountDue }}. You can edit before continuing</p>
-      </div>
-
-      <div class="form-actions">
-        <app-button 
-          type="submit" 
-          class="btn-pay" 
-          [isDisabled]="paybillForm.invalid || isLoading()"
-        >
-          {{ isLoading() ? 'Processing...' : 'Continue to Payment' }}
-        </app-button>
-        <app-button variant="secondary" class="btn-save" [isDisabled]="isLoading()">
-          Save Template
-        </app-button>
-      </div>
-    } @else {
-      <app-button 
-        type="submit" 
-        [isDisabled]="paybillForm.controls.accountNumber.invalid || isLoading()"
+    <div class="form-actions">
+      <app-button
+        type="submit"
+        [isDisabled]="paybillForm.invalid || isLoading()"
       >
-        {{ isLoading() ? 'Verifying...' : 'Verify Account' }}
+        Continue to Payment
       </app-button>
+
+      <app-button variant="secondary">Save Template</app-button>
+    </div>
+    } @else {
+    <app-button
+      type="submit"
+      [isDisabled]="paybillForm.controls.accountNumber.invalid || isLoading()"
+    >
+      {{ isLoading() ? 'Verifying...' : 'Verify Account' }}
+    </app-button>
     }
   </form>
 </app-basic-card>

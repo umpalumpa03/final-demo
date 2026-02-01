@@ -1,0 +1,28 @@
+<div class="category-item">
+  <div class="category-item__info">
+    <div class="category-item__left">
+      <div class="category-item__icon-wrapper" [style.background-color]="color() + '1A'">
+        <span class="category-item__icon">{{ icon() }}</span>
+      </div>
+
+      <div class="category-item__details">
+        <span class="category-item__label">{{ label() }}</span>
+        <span class="category-item__percentage">
+          {{ percentage() | number:'1.1-1' }}% of total
+        </span>
+      </div>
+    </div>
+
+    <div class="category-item__amount">
+      {{ amount() | currency:'USD':'symbol':'1.0-0' }}
+    </div>
+  </div>
+
+  <div class="category-item__progress-track">
+    <div
+      class="category-item__progress-bar"
+      [style.width.%]="percentage()"
+      [style.background-color]="color()"
+    ></div>
+  </div>
+</div>

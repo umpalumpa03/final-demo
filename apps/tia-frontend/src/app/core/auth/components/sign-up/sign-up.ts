@@ -14,10 +14,13 @@ import { TokenService } from '../../services/token.service';
 import { IRegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/models/contact-forms.model';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { AuthService } from '../../services/auth.service';
+import { Routes } from '../../models/tokens.model';
+import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
+
 
 @Component({
   selector: 'app-sign-up',
-  imports: [RouterLink, RegistrationForm, Spinner],
+  imports: [RouterLink, RegistrationForm, Spinner, AlertTypesWithIcons],
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.scss',
   providers: [TokenService],
@@ -39,7 +42,7 @@ export class SignUp implements OnInit {
 
   public onSignUp(signUpData: IRegistrationForm): void {
     this.loadingState.set(true);
-
+    
     this.signUpService
       .signUpUser(signUpData)
       .pipe(
@@ -50,7 +53,7 @@ export class SignUp implements OnInit {
           this.loadingState.set(false);
           this.errorMessage.set('');
 
-          this.router.navigate(['/auth/phone']);
+          this.router.navigate([Routes.PHONE]);
         }),
 
         catchError((err) => {

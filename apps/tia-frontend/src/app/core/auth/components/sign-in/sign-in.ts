@@ -4,13 +4,22 @@ import {
   computed,
   inject,
 } from '@angular/core';
-import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
-import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AuthService } from '../../services/auth.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { Routes } from '../../models/tokens.model';
+import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
-import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
+import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
+import {
+  ALERTS_DISMISSIBLE_DATA,
+  SIGN_IN_FORM,
+} from '../../config/inputs.config';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map, startWith } from 'rxjs';
+import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 
 @Component({
   selector: 'app-sign-in',
@@ -20,20 +29,40 @@ import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/share
     ReactiveFormsModule,
     RouterLink,
     Spinner,
-    LibraryTitle,
+    DismissibleAlerts,
+    TranslatePipe,
   ],
   templateUrl: './sign-in.html',
   styleUrl: './sign-in.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignIn {
-  public readonly title = 'Sign In';
-  public readonly subtitle =
-    'Enter your username and password to access your account';
+  public signUpRoute = Routes.SIGN_UP;
+  public forgotPasswordRoute = Routes.ROTGOT_PASSWORD;
   private authService = inject(AuthService);
   private fb = inject(FormBuilder);
+  private translate = inject(TranslateService);
+  public alertTypes = ALERTS_DISMISSIBLE_DATA;
   public isLoading = computed(() => this.authService.isLoginLoading());
-  public error = computed(() => this.authService.loginError());
+  public errorMessage = computed(() => {
+    this.alertTypes.error.message = 'Incorrect Credentials';
+    return this.authService.errorMessage();
+  });
+
+  public signInConfig = toSignal(
+    this.translate.onLangChange.pipe(
+      startWith({
+        lang: this.translate.getCurrentLang(),
+        translation: null,
+      }),
+      map(() => {
+        return translateConfig(SIGN_IN_FORM, (key) => this.translate.instant(key));
+      }),
+    ),
+    {
+      initialValue: translateConfig(SIGN_IN_FORM, (key) => this.translate.instant(key)) 
+    }
+  );
 
   public loginForm = this.fb.nonNullable.group({
     username: ['', [Validators.required, Validators.minLength(2)]],
@@ -46,8 +75,6 @@ export class SignIn {
       return;
     }
 
-    this.authService.loginPostRequest(this.loginForm.getRawValue()).subscribe({
-      error: () => {},
-    });
+    this.authService.loginPostRequest(this.loginForm.getRawValue()).subscribe();
   }
 }

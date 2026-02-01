@@ -1,99 +1,112 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
 import { TokenService } from './token.service';
 import { TokenKey } from '../models/tokens.model';
 
 describe('TokenService', () => {
   let service: TokenService;
+  let localStorageMock: { [key: string]: string };
 
   beforeEach(() => {
-    service = new TokenService();
-    localStorage.clear();
+    // Mock localStorage
+    localStorageMock = {};
+
+    vi.stubGlobal('localStorage', {
+      getItem: vi.fn((key: string) => localStorageMock[key] || null),
+      setItem: vi.fn((key: string, value: string) => {
+        localStorageMock[key] = value;
+      }),
+      removeItem: vi.fn((key: string) => {
+        delete localStorageMock[key];
+      }),
+      clear: vi.fn(() => {
+        localStorageMock = {};
+      }),
+    });
+
+    TestBed.configureTestingModule({
+      providers: [TokenService],
+    });
+
+    service = TestBed.inject(TokenService);
   });
 
-  afterEach(() => {
-    localStorage.clear();
+  it('should be created', () => {
+    expect(service).toBeTruthy();
   });
 
-  it('sets access token', () => {
-    service.setAccessToken('a');
-    expect(localStorage.getItem(TokenKey.ACCESS)).toBe('a');
+  describe('setTokens', () => {
+    it('should set access token', () => {
+      service.setAccessToken('test-access-token');
+      expect(localStorage.setItem).toHaveBeenCalledWith(TokenKey.ACCESS, 'test-access-token');
+      expect(localStorageMock[TokenKey.ACCESS]).toBe('test-access-token');
+    });
+
+    it('should set refresh token', () => {
+      service.setRefreshToken('test-refresh-token');
+      expect(localStorage.setItem).toHaveBeenCalledWith(TokenKey.REFRESH, 'test-refresh-token');
+      expect(localStorageMock[TokenKey.REFRESH]).toBe('test-refresh-token');
+    });
+
+    it('should set verify token', () => {
+      service.setVerifyToken('test-verify-token');
+      expect(localStorage.setItem).toHaveBeenCalledWith(TokenKey.VERIFY, 'test-verify-token');
+      expect(localStorageMock[TokenKey.VERIFY]).toBe('test-verify-token');
+    });
+
+    it('should set signup token', () => {
+      service.setSignUpToken('test-signup-token');
+      expect(localStorage.setItem).toHaveBeenCalledWith(TokenKey.SIGNUP, 'test-signup-token');
+      expect(localStorageMock[TokenKey.SIGNUP]).toBe('test-signup-token');
+    });
   });
 
-  it('sets refresh token', () => {
-    service.setRefreshToken('r');
-    expect(localStorage.getItem(TokenKey.REFRESH)).toBe('r');
+  describe('getTokens', () => {
+    it('should get access token', () => {
+      localStorageMock[TokenKey.ACCESS] = 'test-access-token';
+      expect(service.accessToken).toBe('test-access-token');
+      expect(localStorage.getItem).toHaveBeenCalledWith(TokenKey.ACCESS);
+    });
+
+    it('should get refresh token', () => {
+      localStorageMock[TokenKey.REFRESH] = 'test-refresh-token';
+      expect(service.refreshToken).toBe('test-refresh-token');
+      expect(localStorage.getItem).toHaveBeenCalledWith(TokenKey.REFRESH);
+    });
+
+    it('should get verify token', () => {
+      localStorageMock[TokenKey.VERIFY] = 'test-verify-token';
+      expect(service.verifyToken).toBe('test-verify-token');
+      expect(localStorage.getItem).toHaveBeenCalledWith(TokenKey.VERIFY);
+    });
+
+    it('should get signup token', () => {
+      localStorageMock[TokenKey.SIGNUP] = 'test-signup-token';
+      expect(service.getSignUpToken).toBe('test-signup-token');
+      expect(localStorage.getItem).toHaveBeenCalledWith(TokenKey.SIGNUP);
+    });
   });
 
-  it('sets verify token', () => {
-    service.setVerifyToken('v');
-    expect(localStorage.getItem(TokenKey.VERIFY)).toBe('v');
+  describe('clearTokens', () => {
+    it('should clear auth tokens (access and refresh)', () => {
+      service.clearAuthToken();
+      expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.ACCESS);
+      expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.REFRESH);
+    });
+
+    it('should clear refresh and verify tokens', () => {
+      service.clearRefreshToken();
+      expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.REFRESH);
+      expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.VERIFY);
+    });
+
+    it('should clear all tokens', () => {
+      service.clearAllToken();
+      expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.ACCESS);
+      expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.REFRESH);
+      expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.VERIFY);
+      expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.SIGNUP);
+    });
   });
 
-  it('sets signup token', () => {
-    service.setSignUpToken('s');
-    expect(localStorage.getItem(TokenKey.SIGNUP)).toBe('s');
-  });
-
-  it('sets challenge id', () => {
-    service.setChallengeId('c');
-    expect(localStorage.getItem(TokenKey.CHALLENGE_ID)).toBe('c');
-  });
-
-  it('clears auth tokens (access & refresh)', () => {
-    localStorage.setItem(TokenKey.ACCESS, 'a');
-    localStorage.setItem(TokenKey.REFRESH, 'r');
-    service.clearAuthToken();
-    expect(localStorage.getItem(TokenKey.ACCESS)).toBeNull();
-    expect(localStorage.getItem(TokenKey.REFRESH)).toBeNull();
-  });
-
-  it('clears refresh/verify token', () => {
-    localStorage.setItem(TokenKey.VERIFY, 'v');
-    service.clearRefreshToken();
-    expect(localStorage.getItem(TokenKey.VERIFY)).toBeNull();
-  });
-
-  it('clears signup token', () => {
-    localStorage.setItem(TokenKey.SIGNUP, 's');
-    service.clearSignUpToken();
-    expect(localStorage.getItem(TokenKey.SIGNUP)).toBeNull();
-  });
-
-  it('clears challenge id', () => {
-    localStorage.setItem(TokenKey.CHALLENGE_ID, 'c');
-    service.clearChallengeId('c');
-    expect(localStorage.getItem(TokenKey.CHALLENGE_ID)).toBeNull();
-  });
-
-  it('clears all tokens', () => {
-    localStorage.setItem(TokenKey.ACCESS, 'a');
-    localStorage.setItem(TokenKey.VERIFY, 'v');
-    localStorage.setItem(TokenKey.SIGNUP, 's');
-    service.clearAllToken();
-    expect(localStorage.getItem(TokenKey.ACCESS)).toBeNull();
-    expect(localStorage.getItem(TokenKey.VERIFY)).toBeNull();
-    expect(localStorage.getItem(TokenKey.SIGNUP)).toBeNull();
-  });
-
-  it('reads tokens via getters', () => {
-    localStorage.setItem(TokenKey.ACCESS, 'a');
-    localStorage.setItem(TokenKey.REFRESH, 'r');
-    localStorage.setItem(TokenKey.VERIFY, 'v');
-    localStorage.setItem(TokenKey.SIGNUP, 's');
-    localStorage.setItem(TokenKey.CHALLENGE_ID, 'c');
-
-    expect(service.accessToken).toBe('a');
-    expect(service.refreshToken).toBe('r');
-    expect(service.verifyToken).toBe('v');
-    expect(service.getSignUpToken).toBe('s');
-    expect(service.getChallengeId).toBe('c');
-  });
-
-  it('returns null for getters when tokens are not set', () => {
-    expect(service.accessToken).toBeNull();
-    expect(service.refreshToken).toBeNull();
-    expect(service.verifyToken).toBeNull();
-    expect(service.getSignUpToken).toBeNull();
-    expect(service.getChallengeId).toBeNull();
-  });
 });

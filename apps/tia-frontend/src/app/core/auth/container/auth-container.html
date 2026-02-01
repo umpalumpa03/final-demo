@@ -1,28 +1,33 @@
 <div class="auth">
   <div class="auth__auth-layout">
     <div class="auth__auth-layout__content">
-      <div class="auth__auth-layout__header">
-        <div class="auth__auth-layout__header__logo">T</div>
-        <div class="auth__auth-layout__header__title">TIA</div>
-      </div>
+      <header class="auth__auth-layout__header">
+        <div class="auth__auth-layout__header__bar">
+          <a class="auth__auth-layout__header__bar__logo">
+            <span aria-hidden="true">T</span>
+          </a>
+          <h1 class="auth__auth-layout__header__bar__title">TIA</h1>
+        </div>
+        <app-language-container [hasHeader]="false"></app-language-container>
+      </header>
 
-      <div class="auth__auth-layout__body">
+      <main class="auth__auth-layout__body">
         <div class="auth__auth-layout__form">
           <router-outlet></router-outlet>
         </div>
-      </div>
+      </main>
     </div>
 
-    <div class="auth__auth-layout__pannel">
+    <aside class="auth__auth-layout__pannel" role="complementary">
       <div class="auth__auth-layout__pannel__wrapper">
         @if (sidePanelData()) {
-          <app-side-panel
-            [title]="sidePanelData()!.title"
-            [description]="sidePanelData()!.description"
-            [features]="sidePanelData()!.features"
-          ></app-side-panel>
+        <app-side-panel
+          [title]="sidePanelData()!.title"
+          [description]="sidePanelData()!.description"
+          [features]="sidePanelData()!.features"
+        />
         }
       </div>
-    </div>
+    </aside>
   </div>
 </div>

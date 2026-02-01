@@ -6,7 +6,6 @@
   &__header {
     @include flex-center(row, flex-start, center);
     gap: 1.6rem;
-    margin-bottom: 3rem;
   }
 
   &__icon-box {
@@ -36,31 +35,6 @@
   &__content {
     @include display-flex(column);
     gap: 2.4rem;
-  }
-}
-
-.verified-container {
-  box-sizing: border-box;
-  @include flex-center(column, flex-start, flex-start);
-  padding: 1.66rem 1.66rem 1.2rem;
-  gap: 1.2rem;
-  background: $green-50;
-  border: 0.0625rem solid $green-200;
-  border-radius: 1rem;
-  width: 100%;
-
-  .verified-status {
-    @include flex-center(row, flex-start, center);
-    gap: 0.8rem;
-    color: $green-800;
-
-    .verified-icon {
-      font-size: 2rem;
-    }
-
-    .verified-text {
-      @include font-inter(600, 1.6rem, 2.4rem);
-    }
   }
 }
 
@@ -96,11 +70,10 @@
 .helper-text {
   @include font-inter(400, 1.2rem, 1.6rem);
   color: $gray-500;
-  margin-top: 0.6rem;
+  padding-top: 0;
 }
 
 .form-actions {
   @include flex-center(row, space-between, center);
   gap: 1.2rem;
-  padding-top: 1.6rem;
 }

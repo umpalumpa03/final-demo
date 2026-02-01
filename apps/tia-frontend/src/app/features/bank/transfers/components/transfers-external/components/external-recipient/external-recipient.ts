@@ -5,11 +5,16 @@ import {
   inject,
   signal,
   DestroyRef,
+  effect,
+  computed,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
-import { getRecipientInputConfig } from '../../config/transfers-external.config';
+import {
+  getRecipientInputConfig,
+  getRecipientIconByType,
+} from '../../config/transfers-external.config';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import {
   FormBuilder,
@@ -24,11 +29,10 @@ import {
   getSuccessMessage,
 } from '../../../../utils/transfers-external.utils';
 import { RecipientType } from '../../../../models/transfers.state.model';
-import { TransfersAccountCard } from 'apps/tia-frontend/src/app/features/bank/transfers/ui/account-card/transfers-account-card';
-import { Account } from '@tia/shared/models/accounts/accounts.model';
-import { Store } from '@ngrx/store';
-import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
-import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
+import { TransferStore } from '../../../../store/transfers.store';
+import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
+import { TransferExternalService } from '../../../../services/transfer.external.service';
+import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
 
 @Component({
   selector: 'app-external-recipient',
@@ -37,25 +41,25 @@ import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/account
     TextInput,
     ButtonComponent,
     ReactiveFormsModule,
-    TransfersAccountCard,
+    AlertTypesWithIcons,
   ],
+  providers: [TransferExternalService],
   templateUrl: './external-recipient.html',
   styleUrl: './external-recipient.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExternalRecipient implements OnInit {
   private readonly translate = inject(TranslateService);
+  private readonly transferExternalService = inject(TransferExternalService);
   private readonly fb = inject(FormBuilder);
   private readonly validationService = inject(TransferValidationService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly store = inject(Store);
+  private readonly transferStore = inject(TransferStore);
+  private breakpointService = inject(BreakpointService);
+  public isMobile = this.breakpointService.isMobile;
 
-  public selectedAccountId: string | null = null;
-
-  public readonly accounts = toSignal(this.store.select(selectAccounts), {
-    initialValue: [],
-  });
-
+  public readonly showError = signal(false);
+  public readonly isLoading = computed(() => this.transferStore.isLoading());
   public readonly recipientInputConfig = signal<InputConfig>(
     getRecipientInputConfig(this.translate),
   );
@@ -64,8 +68,25 @@ export class ExternalRecipient implements OnInit {
     recipientValidator(this.validationService),
   ]);
 
-  ngOnInit(): void {
-    this.store.dispatch(AccountsActions.loadAccounts());
+  constructor() {
+    effect(() => {
+      const error = this.transferStore.error();
+
+      if (error) {
+        this.showError.set(true);
+        setTimeout(() => {
+          this.showError.set(false);
+        }, 5000);
+      }
+    });
+  }
+
+  public ngOnInit(): void {
+    const storedValue = this.transferStore.recipientInput();
+    if (storedValue) {
+      this.recipientInput.setValue(storedValue, { emitEvent: false });
+    }
+
     this.setupValueChangeListener();
   }
 
@@ -89,8 +110,10 @@ export class ExternalRecipient implements OnInit {
 
     if (isValid && type) {
       this.setSuccessMessage(type);
+      this.updateIcon(type);
     } else if (errors) {
       this.setErrorMessage(errors);
+      this.updateIcon(null);
     }
   }
 
@@ -99,6 +122,7 @@ export class ExternalRecipient implements OnInit {
       ...config,
       errorMessage: undefined,
       successMessage: undefined,
+      prefixIcon: 'images/svg/transfers/person.svg',
     }));
   }
 
@@ -118,8 +142,16 @@ export class ExternalRecipient implements OnInit {
     }));
   }
 
-  onAccountSelect(account: Account): void {
-    this.selectedAccountId = account.id;
-    console.log('Selected account:', account);
+  private updateIcon(type: RecipientType | null): void {
+    this.recipientInputConfig.update((config) => ({
+      ...config,
+      prefixIcon: getRecipientIconByType(type),
+    }));
+  }
+
+  public onVerify(): void {
+    if (this.recipientInput.valid && this.recipientInput.value) {
+      this.transferExternalService.verifyRecipient(this.recipientInput.value);
+    }
   }
 }

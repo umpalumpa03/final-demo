@@ -16,6 +16,7 @@ describe('Transaction Selectors', () => {
     filters: { pageLimit: 20 },
     isLoading: true,
     error: { message: 'Failed' },
+    total: 100
   };
 
   it('should select items', () => {
@@ -49,12 +50,14 @@ describe('Transaction Selectors', () => {
       initialState.items,
       initialState.isLoading,
       initialState.filters,
+      initialState.total,
     );
 
     expect(result).toEqual({
       items: initialState.items,
       isLoading: initialState.isLoading,
       filters: initialState.filters,
+      total: initialState.total,
     });
   });
 });

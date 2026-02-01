@@ -2,37 +2,38 @@
     <header class="prepayment-step__header">
         <div class="prepayment-step__header-icon">
             <img src="./images/svg/feature-loans/prepayment.svg" alt="Prepayment">
-            <h3 class="prepayment-step__title">Loan Prepayment</h3>
+            <h3 class="prepayment-step__title">{{ 'loans.prepayment_wizard.step_setup.title' | translate }}</h3>
         </div>
-        <p class="prepayment-step__subtitle">Select prepayment options and calculate</p>
+        <p class="prepayment-step__subtitle">{{ 'loans.prepayment_wizard.step_setup.subtitle' | translate }}</p>
     </header>
 
     <form [formGroup]="form" class="prepayment-step__body">
-        <h4 class="prepayment-step__section-title">Prepayment Options</h4>
+        <h4 class="prepayment-step__section-title">{{ 'loans.prepayment_wizard.step_setup.section' | translate }}</h4>
 
         <div class="prepayment-step__form-grid">
-            <lib-select [config]="config.typeSelect" [options]="(typeOptions()) ?? []" formControlName="type">
+            <lib-select [config]="cfg().typeSelect" [options]="(typeOptions()) ?? []" formControlName="type">
             </lib-select>
 
-            <lib-text-input type="number" [config]="config.amountInput" formControlName="amount">
+            <lib-text-input type="number" [config]="cfg().amountInput" formControlName="amount">
             </lib-text-input>
         </div>
 
         <div class="prepayment-step__radios">
-            <lib-radios [config]="config.calculationRadios" [options]="calculationOptions"
+            <lib-radios [config]="cfg().calculationRadios" [options]="calculationOptions()"
                 formControlName="calculationOption">
             </lib-radios>
         </div>
     </form>
 
     <footer class="prepayment-step__footer">
-        <app-button variant="outline" (click)="cancel.emit()">Cancel</app-button>
+        <app-button variant="outline" (click)="cancel.emit()">
+            {{ 'loans.buttons.cancel' | translate }}
+        </app-button>
 
         <app-button [icon]="isLoading() ? null : './calculate.svg'"
             [isDisabled]="(form.invalid && form.get('type')?.value !== 'full') || isLoading()" [isLoading]="isLoading()"
             (click)="onCalculate()">
-
-            Calculate Prepayment
+            {{ 'loans.prepayment_wizard.step_setup.button' | translate }}
         </app-button>
     </footer>
 </div>

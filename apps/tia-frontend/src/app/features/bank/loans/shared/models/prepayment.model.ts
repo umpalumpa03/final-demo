@@ -67,3 +67,19 @@ export interface IVerifyPrepaymentResponse {
   success: boolean;
   message: string;
 }
+
+export interface IPrepaymentInfoItem {
+  text: string;
+  amount: number;
+}
+
+export interface IPrepaymentCalcResponse {
+  displayedInfo: IPrepaymentCalcItem[];
+  monthlyPayment?: number;
+  totalInterestSaved?: number;
+  newEndDate?: string;
+  loanId?: string;
+  prepaymentAmount?: number;
+}
+
+export interface PrepaymentCalculationResult extends IPrepaymentCalcResponse {}

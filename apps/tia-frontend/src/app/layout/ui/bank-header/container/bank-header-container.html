@@ -5,7 +5,8 @@
   [avatarUrl]="avatarUrl()"
 ></app-bank-header>
 
-<app-header-notifications
-  [isOpen]="isModalOpen()"
-  [anchor]="anchorEl()"
-></app-header-notifications>
+<app-notifications-container
+  [isModalOpen]="isModalOpen()"
+  [notificationEl]="anchorEl()"
+  (closeModal)="closeAndReset()"
+></app-notifications-container>

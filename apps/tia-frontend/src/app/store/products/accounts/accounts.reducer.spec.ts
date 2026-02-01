@@ -125,7 +125,12 @@ describe('AccountsReducer', () => {
     expect(emptyResult.isCreateModalOpen).toBe(false);
 
     const multipleResult = accountsReducer(
-      { ...initialAccountsState, accounts: [mockAccount], isCreating: true, isCreateModalOpen: true },
+      {
+        ...initialAccountsState,
+        accounts: [mockAccount],
+        isCreating: true,
+        isCreateModalOpen: true,
+      },
       AccountsActions.createAccountSuccess({ account: mockAccount2 }),
     );
     expect(multipleResult.accounts).toHaveLength(2);
@@ -167,8 +172,14 @@ describe('AccountsReducer', () => {
 
   it('should handle updateFriendlyNameSuccess action', () => {
     const validResult = accountsReducer(
-      { ...initialAccountsState, accounts: [mockAccount, mockAccount2], isUpdatingFriendlyName: true },
-      AccountsActions.updateFriendlyNameSuccess({ account: { ...mockAccount2, friendlyName: 'Premium Savings' } }),
+      {
+        ...initialAccountsState,
+        accounts: [mockAccount, mockAccount2],
+        isUpdatingFriendlyName: true,
+      },
+      AccountsActions.updateFriendlyNameSuccess({
+        account: { ...mockAccount2, friendlyName: 'Premium Savings' },
+      }),
     );
     expect(validResult.isUpdatingFriendlyName).toBe(false);
     expect(validResult.updateFriendlyNameError).toBeNull();
@@ -176,7 +187,11 @@ describe('AccountsReducer', () => {
     expect(validResult.accounts[1].friendlyName).toBe('Premium Savings');
 
     const nullResult = accountsReducer(
-      { ...initialAccountsState, accounts: [mockAccount], isUpdatingFriendlyName: true },
+      {
+        ...initialAccountsState,
+        accounts: [mockAccount],
+        isUpdatingFriendlyName: true,
+      },
       AccountsActions.updateFriendlyNameSuccess({ account: null as any }),
     );
     expect(nullResult.isUpdatingFriendlyName).toBe(false);
@@ -190,5 +205,40 @@ describe('AccountsReducer', () => {
     );
     expect(result.isUpdatingFriendlyName).toBe(false);
     expect(result.updateFriendlyNameError).toBe('Update failed');
+  });
+
+  it('should handle fetchMoreAccounts action', () => {
+    const result = accountsReducer(
+      initialAccountsState,
+      AccountsActions.fetchMoreAccounts(),
+    );
+    expect(result.isFetching).toBe(true);
+  });
+
+
+
+  it('should handle fetchMoreAccountsFailure action', () => {
+    const result = accountsReducer(
+      { ...initialAccountsState, isFetching: true },
+      AccountsActions.fetchMoreAccountsFailure({ error: 'Fetch error' }),
+    );
+    expect(result.isFetching).toBe(false);
+    expect(result.error).toBe('Fetch error');
+  });
+
+  it('should handle openCreateModal action', () => {
+    const result = accountsReducer(
+      initialAccountsState,
+      AccountsActions.openCreateModal(),
+    );
+    expect(result.isCreateModalOpen).toBe(true);
+  });
+
+  it('should handle closeCreateModal action', () => {
+    const result = accountsReducer(
+      { ...initialAccountsState, isCreateModalOpen: true },
+      AccountsActions.closeCreateModal(),
+    );
+    expect(result.isCreateModalOpen).toBe(false);
   });
 });

@@ -1,112 +1,105 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { ExternalRecipient } from './external-recipient';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TransferValidationService } from '../../../../services/transfer-validation.service';
-import { Store } from '@ngrx/store';
-import { of, Subject } from 'rxjs';
-import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
-import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
-import { NO_ERRORS_SCHEMA } from '@angular/core'; // Added this
+import { TransferStore } from '../../../../store/transfers.store';
+import { TransferExternalService } from '../../../../services/transfer.external.service';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
+import { of } from 'rxjs';
 
 describe('ExternalRecipient', () => {
   let component: ExternalRecipient;
   let fixture: ComponentFixture<ExternalRecipient>;
-  let mockStore: any;
-  let mockTranslate: any;
-  let mockValidationService: any;
 
-  const mockAccount = {
-    id: 'test-id',
-    name: 'Test Account',
-    iban: 'GE29TIA123',
-    balance: 1000,
+  const mockStore = {
+    isLoading: signal(false),
+    error: signal<string | null>(null),
+    recipientInput: signal(''),
+    recipientInfo: signal<any>(null),
+    recipientType: signal<string | null>(null),
+    lookupRecipient: vi.fn(), 
+    setExternalRecipient: vi.fn(),
+  };
+
+  const mockValidationService = {
+    identifyRecipientType: vi.fn(),
+    validatePhone: vi.fn().mockReturnValue(true),
+    validateIban: vi.fn().mockReturnValue(true),
+  };
+
+  const mockExternalService = {
+    verifyRecipient: vi.fn(),
   };
 
   beforeEach(async () => {
-    mockStore = {
-      select: vi.fn((selector) => {
-        if (selector === selectAccounts) return of([mockAccount]);
-        return of([]);
-      }),
-      dispatch: vi.fn(),
-    };
-
-    mockTranslate = {
-      instant: vi.fn((key: string) => key),
-      use: vi.fn(() => of({})),
-      get: vi.fn((key: string) => of(key)),
-      stream: vi.fn((key: string) => of(key)),
-      onLangChange: new Subject(),
-      onTranslationChange: new Subject(),
-      onDefaultLangChange: new Subject(),
-    };
-
-    mockValidationService = {
-      identifyRecipientType: vi.fn(),
-      validatePhone: vi.fn(),
-      validateIban: vi.fn(),
-    };
-
     await TestBed.configureTestingModule({
-      imports: [
-        ExternalRecipient,
-        ReactiveFormsModule,
-        TranslateModule.forRoot(),
-      ],
+      imports: [ExternalRecipient, TranslateModule.forRoot()],
       providers: [
-        FormBuilder,
-        { provide: Store, useValue: mockStore },
-        { provide: TranslateService, useValue: mockTranslate },
         { provide: TransferValidationService, useValue: mockValidationService },
+        { provide: TransferStore, useValue: mockStore },
       ],
-      schemas: [NO_ERRORS_SCHEMA], // This stops the refreshView crash from child components
-    }).compileComponents();
+      schemas: [NO_ERRORS_SCHEMA],
+    })
+      .overrideComponent(ExternalRecipient, {
+        set: {
+          providers: [
+            { provide: TransferExternalService, useValue: mockExternalService },
+          ],
+        },
+      })
+      .compileComponents();
+
+    const translate = TestBed.inject(TranslateService);
+    vi.spyOn(translate, 'get').mockReturnValue(of(''));
+    vi.spyOn(translate, 'instant').mockReturnValue('');
 
     fixture = TestBed.createComponent(ExternalRecipient);
     component = fixture.componentInstance;
-
-    // We wrap this to catch the specific error if it still fails
-    try {
-      fixture.detectChanges();
-    } catch (e) {
-      console.error('DETECT CHANGES FAILED:', e);
-    }
+    fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should call verifyRecipient on valid submit', () => {
+    component.recipientInput.setValue('555123456');
+    component.recipientInput.setErrors(null);
+
+    component.onVerify();
+    expect(mockExternalService.verifyRecipient).toHaveBeenCalled();
+  });
+  it('should update config with success message for valid phone', () => {
+    mockValidationService.identifyRecipientType.mockReturnValue('phone');
+    component.recipientInput.setValue('555123456');
+    fixture.detectChanges();
+    
+    expect(component.recipientInputConfig().successMessage).toBeDefined();
+    expect(component.recipientInputConfig().errorMessage).toBeUndefined();
   });
 
-  it('should dispatch loadAccounts on init', () => {
-    expect(mockStore.dispatch).toHaveBeenCalledWith(
-      AccountsActions.loadAccounts(),
-    );
-  });
+  it('should update config with error message for invalid input', () => {
+    mockValidationService.identifyRecipientType.mockReturnValue(null);
+    component.recipientInput.setErrors({ invalidRecipient: true });
+    component.recipientInput.setValue('abc');
+    fixture.detectChanges();
 
-  it('should load accounts from store', () => {
-    expect(component.accounts()).toEqual([mockAccount]);
-  });
-
-  it('should select account when onAccountSelect is called', () => {
-    component.onAccountSelect(mockAccount as any);
-    expect(component.selectedAccountId).toBe('test-id');
+    expect(component.recipientInputConfig().errorMessage).toBeDefined();
   });
 
   it('should clear messages when input is empty', () => {
     component.recipientInput.setValue('');
-    const config = component.recipientInputConfig();
-    expect(config.errorMessage).toBeUndefined();
-    expect(config.successMessage).toBeUndefined();
+    fixture.detectChanges();
+    
+    expect(component.recipientInputConfig().successMessage).toBeUndefined();
+    expect(component.recipientInputConfig().errorMessage).toBeUndefined();
   });
 
-  it('should set success message when input is valid', () => {
-    mockValidationService.identifyRecipientType.mockReturnValue('phone');
-    // Force validity for the test
-    vi.spyOn(component.recipientInput, 'valid', 'get').mockReturnValue(true);
+  it('should handle store error effect', () => {
+    vi.useFakeTimers();
+    mockStore.error.set('Account not found');
+    fixture.detectChanges();
+    expect(component.showError()).toBe(true);
 
-    component.recipientInput.setValue('+995555123456');
-    expect(component.recipientInputConfig().successMessage).toBeDefined();
+    vi.advanceTimersByTime(5000);
+    expect(component.showError()).toBe(false);
+    vi.useRealTimers();
   });
 });

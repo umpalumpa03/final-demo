@@ -61,5 +61,9 @@
     &__footer {
         @include flex-center(row, flex-end);
         gap: 1.6rem;
+
+        @media (max-width: 600px) {
+            flex-direction: column;
+        }
     }
 }

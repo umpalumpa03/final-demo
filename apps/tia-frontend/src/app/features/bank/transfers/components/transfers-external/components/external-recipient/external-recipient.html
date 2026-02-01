@@ -5,38 +5,21 @@
     </h1>
   </header>
 
-  <div class="external-recipient__input-wrapper">
-    <lib-text-input
-      [formControl]="recipientInput"
-      [config]="recipientInputConfig()"
-      [state]="recipientInput.valid && recipientInput.value ? 'success' : 'default'"
-    ></lib-text-input>
-  </div>
-
-  <section class="external-recipient__accounts">
-    <h2 class="external-recipient__accounts-title">
-      {{'transfers.external.recipient.accountsTitle' | translate}}
-    </h2>
-    <div class="external-recipient__accounts-grid">
-      @for (account of accounts(); track account.id) {
-      <app-transfers-account-card
-        [cardData]="account"
-        [isSelected]="selectedAccountId === account.id"
-        (cardClicked)="onAccountSelect($event)"
-      />
-      }
+  <div class="external-recipient__form-group">
+    <div class="external-recipient__input-col">
+      <lib-text-input
+        [formControl]="recipientInput"
+        [config]="recipientInputConfig()"
+        [state]="recipientInput.valid && recipientInput.value ? 'success' : 'default'"
+      ></lib-text-input>
     </div>
-  </section>
 
-  <div class="external-recipient__actions">
-    <div
-      class="external-recipient__button-wrapper"
-      [attr.data-tooltip]="(!recipientInput.valid || !recipientInput.value || !selectedAccountId) 
-        ? ('transfers.external.recipient.disabledTooltip' | translate) 
-        : null"
-    >
+    <div class="external-recipient__button-col">
       <app-button
-        [isDisabled]="!recipientInput.valid || !recipientInput.value || !selectedAccountId"
+        (click)="onVerify()"
+        [isDisabled]="!recipientInput.valid || !recipientInput.value"
+        [isLoading]="isLoading()"
+        [fullWidth]="isMobile()"
       >
         {{'transfers.external.recipient.verify' | translate}}
         <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />
@@ -44,3 +27,12 @@
     </div>
   </div>
 </main>
+
+@if (showError()) {
+<div class="external-recipient__error-toast">
+  <app-alert-types-with-icons
+    [alertType]="'error'"
+    [alertMessage]="'transfers.external.recipient.recipientNotFound' | translate"
+  />
+</div>
+}

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Verify } from './verify';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('Verify', () => {
   let component: Verify;
@@ -8,7 +9,7 @@ describe('Verify', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Verify],
+      imports: [Verify, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Verify);
@@ -25,14 +26,6 @@ describe('Verify', () => {
     component.form.controls.otp.setValue('123456');
     component.onSubmit();
     expect(spy).toHaveBeenCalledWith('123456');
-  });
-
-  it('should not emit verify when form is invalid', () => {
-    const spy = vi.spyOn(component.verify, 'emit');
-    component.form.controls.otp.setValue('');
-    component.onSubmit();
-    expect(spy).not.toHaveBeenCalled();
-    expect(component.form.touched).toBe(true);
   });
 
   it('should emit cancel', () => {

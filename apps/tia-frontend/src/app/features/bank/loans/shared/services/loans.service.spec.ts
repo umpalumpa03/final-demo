@@ -92,6 +92,16 @@ describe('LoansService', () => {
     req.flush(updatedLoan);
   });
 
+  it('should get loan by id', () => {
+    const loanId = '1';
+    service.getLoanById(loanId).subscribe((res) => {
+      expect(res).toEqual(mockLoan);
+    });
+    const req = httpMock.expectOne(`${apiUrl}/${loanId}`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockLoan);
+  });
+
   it('should get loan months', () => {
     const mockResponse = [6, 12, 24];
     service

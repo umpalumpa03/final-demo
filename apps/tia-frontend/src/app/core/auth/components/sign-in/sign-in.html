@@ -1,26 +1,48 @@
 @if(!isLoading()) {
 <form class="sign-in" [formGroup]="loginForm" (ngSubmit)="submit()">
   <header class="sign-in__header">
-    <app-library-title
-      [title]="title"
-      [subtitle]="subtitle"
-    ></app-library-title>
+    <h1 class="sign-in__header__title">
+      {{ 'auth.sign-in.title' | translate}}
+    </h1>
+    <span class="sign-in__header__subtitle"
+      >{{'auth.sign-in.subtitle' | translate}}</span
+    >
   </header>
   <div class="sign-in__form">
-    <lib-text-input formControlName="username"></lib-text-input>
-    <lib-text-input formControlName="password"></lib-text-input>
-    <span class="sign-in__link" [routerLink]="['/auth/sign-up']">Forgot password?</span>
+    <lib-text-input
+      formControlName="username"
+      [config]="signInConfig().username"
+      type="text"
+    ></lib-text-input>
+    <lib-text-input
+      formControlName="password"
+      [config]="signInConfig().password"
+      type="password"
+    ></lib-text-input>
+    @if(errorMessage()) {
+    <app-dismissible-alerts
+      [alertTitle]="alertTypes.error.title"
+      [alertType]="alertTypes.error.type"
+      [alertId]="alertTypes.error.id"
+      [alertMessage]="alertTypes.error.message"
+    />
+    }
+    <span class="sign-in__link" [routerLink]="[forgotPasswordRoute]"
+      >{{'auth.sign-in.forgotPassword' | translate}}</span
+    >
     <app-button [fullWidth]="true" type="submit"
-      >Continue to OTP Verification</app-button
+      >{{'auth.sign-in.submit' | translate}}</app-button
     >
   </div>
   <p class="sign-in__switch">
-    Already have an account?
-    <span class="sign-in__link" [routerLink]="['/auth/sign-up']">Sign up</span>
+    {{'auth.sign-in.noAccount' | translate}} &nbsp;
+    <span class="sign-in__link" [routerLink]="[signUpRoute]">
+      {{'auth.sign-in.signUp' | translate}}</span
+    >
   </p>
 </form>
 } @else {
-<div class="sign-in sign-in-loader">
+<div class="sign-in__loader">
   <app-spinner size="4rem"></app-spinner>
 </div>
 }
