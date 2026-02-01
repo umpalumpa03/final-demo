@@ -19,10 +19,11 @@ import { map } from 'rxjs';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import { BaseWidget } from '../shared/base-widget.config';
 import { CurrencySymbolPipe } from 'apps/tia-frontend/src/app/features/bank/dashboard/pipes/currency-symbols.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-widget-transactions',
-  imports: [AsyncPipe, DatePipe, RouteLoader, ErrorStates, ScrollArea, CurrencySymbolPipe, DecimalPipe],
+  imports: [AsyncPipe, DatePipe, RouteLoader, ErrorStates, ScrollArea, CurrencySymbolPipe, DecimalPipe, TranslateModule],
   templateUrl: './widget-transactions.html',
   styleUrl: './widget-transactions.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

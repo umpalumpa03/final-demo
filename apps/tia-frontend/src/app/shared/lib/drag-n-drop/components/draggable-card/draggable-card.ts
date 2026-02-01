@@ -16,10 +16,11 @@ import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { SelectOption } from '@tia/shared/lib/forms/models/dropdowns.model';
 import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-draggable-card',
-  imports: [ButtonComponent, Checkboxes, Dropdowns],
+  imports: [ButtonComponent, Checkboxes, Dropdowns, TranslateModule],
   templateUrl: './draggable-card.html',
   styleUrl: './draggable-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

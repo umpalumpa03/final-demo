@@ -13,6 +13,7 @@ import { map } from 'rxjs';
 import { BaseWidget } from '../shared/base-widget.config';
 import { ScrollArea } from "@tia/shared/lib/layout/components/scroll-area/container/scroll-area";
 import { CurrencySymbolPipe } from 'apps/tia-frontend/src/app/features/bank/dashboard/pipes/currency-symbols.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
@@ -23,7 +24,8 @@ import { CurrencySymbolPipe } from 'apps/tia-frontend/src/app/features/bank/dash
     ErrorStates,
     ScrollArea,
     CurrencySymbolPipe,
-    DecimalPipe
+    DecimalPipe,
+    TranslateModule
   ],
   templateUrl: './widget-accounts.html',
   styleUrl: './widget-accounts.scss',

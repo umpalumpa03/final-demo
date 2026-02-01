@@ -34,12 +34,12 @@
         <img [src]="itemData().icon" alt="content icon" />
         } @if(showHeadings()){
         <div class="draggable-card__info">
-          <p class="draggable-card__title">{{ itemData().title }}</p>
-          <p class="draggable-card__subtitle">{{ itemData().subtitle }}</p>
+          <p class="draggable-card__title">{{ itemData().title | translate }}</p>
+          <p class="draggable-card__subtitle">{{ itemData().subtitle | translate }}</p>
         </div>
         }@else{
         <div class="draggable-card__info">
-          <p class="draggable-card__title__custom">{{ itemData().title }}</p>
+          <p class="draggable-card__title__custom">{{ itemData().title | translate }}</p>
         </div>
         }
       </div>
