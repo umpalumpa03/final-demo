@@ -2,12 +2,14 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   OnInit,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import {
+  selectCategoryOptions,
   selectIsLoading,
   selectItems,
   selectTotalTransactions,
@@ -20,11 +22,20 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Tables } from '@tia/shared/lib/tables/components/tables';
 import { ShowcaseCard } from '../../../storybook/shared/showcase-card/showcase-card';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TransactionsFilters } from '../components/transactions-filters/transactions-filters';
+import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
+import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 
 @Component({
   selector: 'app-transactions-container',
-  imports: [LibraryTitle, ButtonComponent, RouteLoader, Tables, ShowcaseCard],
+  imports: [
+    LibraryTitle,
+    ButtonComponent,
+    RouteLoader,
+    Tables,
+    ShowcaseCard,
+    TransactionsFilters,
+  ],
   templateUrl: './transactions-container.html',
   styleUrl: './transactions-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,6 +45,8 @@ export class TransactionsContainer implements OnInit {
 
   public items = this.store.selectSignal(selectItems);
   public readonly isLoading = this.store.selectSignal(selectIsLoading);
+  public categoryOptions = this.store.selectSignal(selectCategoryOptions);
+
   private readonly totalTransactions = this.store.selectSignal(
     selectTotalTransactions,
   );
@@ -50,9 +63,20 @@ export class TransactionsContainer implements OnInit {
     rows: this.items().map(convertTransactionData),
   }));
 
+  constructor() {
+    effect(() => {
+      console.log('Category Options in Container:', this.categoryOptions());
+    });
+  }
+
   public ngOnInit(): void {
     this.store.dispatch(TransactionActions.loadTransactions());
     this.store.dispatch(TransactionActions.enter());
+    this.store.dispatch(TransactionActions.loadCategories());
+  }
+
+  public onFiltersChange(filters: Partial<ITransactionFilter>) {
+    this.store.dispatch(TransactionActions.updateFilters({ filters }));
   }
 
   public onScroll(event: Event): void {
@@ -65,17 +89,5 @@ export class TransactionsContainer implements OnInit {
         this.store.dispatch(TransactionActions.loadMore());
       }
     }
-  }
-
-  public onMockFilter(): void {
-    const hardcodedFilter = {
-      searchCriteria: 'Coffee at Starbucks',
-    };
-
-    console.log('Testing Filter with:', hardcodedFilter);
-
-    this.store.dispatch(
-      TransactionActions.updateFilters({ filters: hardcodedFilter }),
-    );
   }
 }

@@ -1,0 +1,41 @@
+<form [formGroup]="filterForm">
+  <div>
+    <lib-text-input
+      formControlName="searchCriteria"
+      [type]="'search'"
+      [config]="{
+      label: 'Search'
+    }"
+    >
+    </lib-text-input>
+  </div>
+
+  <div>
+    <lib-select
+      formControlName="category"
+      [options]="categoryOptions()"
+      [config]="{
+          label: 'Category',
+          placeholder: 'All Categories'
+        }"
+    >
+    </lib-select>
+  </div>
+  <div class="filter-item">
+    <lib-text-input
+      formControlName="amountFrom"
+      [type]="'number'"
+      [config]="{ label: 'Min Amount', placeholder: '0' }"
+    >
+    </lib-text-input>
+  </div>
+
+  <div class="filter-item">
+    <lib-text-input
+      formControlName="amountTo"
+      [type]="'number'"
+      [config]="{ label: 'Max Amount', placeholder: 'Any' }"
+    >
+    </lib-text-input>
+  </div>
+</form>

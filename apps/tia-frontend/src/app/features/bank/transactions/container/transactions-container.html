@@ -1,20 +1,25 @@
-@if(isLoading() && items().length === 0){
-<app-route-loader [variant]="'full-page'"></app-route-loader>
-}@else{
 <div class="global-bank-wrapper">
-  <button (click)="onMockFilter()">TEST FILTRATION</button>
+  <app-transactions-filters
+    [categoryOptions]="categoryOptions()"
+    (filterChange)="onFiltersChange($event)"
+  ></app-transactions-filters>
+
   <div class="transcaction-table-wrapper">
     <app-showcase-card>
       <app-library-title
         [title]="'Transactions'"
         [subtitle]="totalTransactionsString()"
       ></app-library-title>
+
       <div
         (scroll)="onScroll($event)"
         class="transcaction-table-wrapper__scroll-container"
       >
+        @if(isLoading() && items().length === 0){
+        <app-route-loader [variant]="'full-page'"></app-route-loader>
+        } @else {
         <app-tables [tableConfig]="tableConfig()"></app-tables>
-        @if(isLoading() && items().length > 0){
+        } @if(isLoading() && items().length > 0){
         <app-button [isLoading]="true" [variant]="'outline'"
           >Loading</app-button
         >
@@ -23,4 +28,3 @@
     </app-showcase-card>
   </div>
 </div>
-}
