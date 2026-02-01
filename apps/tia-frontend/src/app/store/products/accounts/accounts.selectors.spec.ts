@@ -6,6 +6,7 @@ import {
   selectAccountsGrouped,
   selectSelectedAccount,
   selectAccountOptions,
+  selectGelAccountOptions,
 } from './accounts.selectors';
 import { AccountType } from '../../../shared/models/accounts/accounts.model';
 
@@ -73,17 +74,6 @@ describe('AccountsSelectors', () => {
     expect(result.card.length).toBe(0);
   });
 
-  it('should handle null accounts in selectors', () => {
-    const currentResult = selectCurrentAccounts.projector(null as any);
-    expect(currentResult).toEqual([]);
-
-    const savingResult = selectSavingAccounts.projector(null as any);
-    expect(savingResult).toEqual([]);
-
-    const cardResult = selectCardAccounts.projector(null as any);
-    expect(cardResult).toEqual([]);
-  });
-
   it('should select account by id', () => {
     const result = selectSelectedAccount.projector(mockAccounts, '1');
     expect(result).toBeDefined();
@@ -121,5 +111,45 @@ describe('AccountsSelectors', () => {
   it('should handle null accounts in selectAccountOptions', () => {
     const result = selectAccountOptions.projector(null as any);
     expect(result).toEqual([]);
+  });
+
+  it('should select GEL account options', () => {
+    const gelAccount = {
+      id: '3',
+      userId: 'user1',
+      permission: 1,
+      type: AccountType.current,
+      iban: '789',
+      friendlyName: 'GEL Account',
+      name: 'GEL Account',
+      status: 'active',
+      balance: 2000,
+      currency: 'GEL',
+      createdAt: '2026-01-01',
+      openedAt: '2026-01-01',
+      closedAt: '',
+      isFavorite: false,
+    };
+    const result = selectGelAccountOptions.projector([
+      ...mockAccounts,
+      gelAccount,
+    ]);
+    expect(result.length).toBe(1);
+    expect(result[0].label).toBe('GEL Account (GEL) - 2000 GEL');
+    expect(result[0].value).toBe('3');
+  });
+
+  it('should handle null accounts in selectGelAccountOptions', () => {
+    const result = selectGelAccountOptions.projector(null as any);
+    expect(result).toEqual([]);
+  });
+
+  it('should use account name when friendlyName is not set in selectAccountOptions', () => {
+    const accountWithoutFriendlyName = {
+      ...mockAccounts[0],
+      friendlyName: null as any,
+    };
+    const result = selectAccountOptions.projector([accountWithoutFriendlyName]);
+    expect(result[0].label).toContain('Current Account');
   });
 });

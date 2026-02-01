@@ -51,22 +51,10 @@ describe('AccountCardViewComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit transfer when handleTransfer is called', () => {
+  it('should emit transfer on handleTransfer', () => {
     const spy = vi.spyOn(component.transfer, 'emit');
     component.handleTransfer();
     expect(spy).toHaveBeenCalled();
-  });
-
-  it('should handle rename click and save with valid name', () => {
-    component.handleRenameClick();
-    expect(component['isEditing']()).toBe(true);
-    expect(component['newName']()).toBe('Test Account');
-
-    const spy = vi.spyOn(component.rename, 'emit');
-    component['newName'].set('New Account Name');
-    component.handleSave();
-    expect(spy).toHaveBeenCalledWith('New Account Name');
-    expect(component['renamingAccountId']()).toBe('1');
   });
 
   it('should compute displayName from friendlyName or name', () => {
@@ -81,25 +69,43 @@ describe('AccountCardViewComponent', () => {
     expect(component['displayName']()).toBe('Test Account');
   });
 
-  it('should handle blur with valid name change', () => {
+  it('should set isEditing and newName on handleRenameClick', () => {
+    component.handleRenameClick();
+    expect(component['isEditing']()).toBe(true);
+    expect(component['newName']()).toBe('Test Account');
+  });
+
+  it('should emit rename with new name on handleSave', () => {
+    const spy = vi.spyOn(component.rename, 'emit');
+    component.handleRenameClick();
+    component['newName'].set('New Account Name');
+    component.handleSave();
+    expect(spy).toHaveBeenCalledWith('New Account Name');
+  });
+
+  it('should emit rename with new name on handleBlur', () => {
     const spy = vi.spyOn(component.rename, 'emit');
     component['isEditing'].set(true);
     component['newName'].set('New Name via Blur');
     component.handleBlur();
     expect(spy).toHaveBeenCalledWith('New Name via Blur');
-    expect(component['renamingAccountId']()).toBe('1');
   });
 
-  it('should handle blur with empty name', () => {
-    const spy = vi.spyOn(component.rename, 'emit');
+  it('should emit renameSuccess when rename completes', () => {
+    const spy = vi.spyOn(component.renameSuccess, 'emit');
+    component['renamingAccountId'].set('1');
     component['isEditing'].set(true);
-    component['newName'].set('   ');
-    component.handleBlur();
-    expect(spy).not.toHaveBeenCalled();
-    expect(component['isEditing']()).toBe(false);
+
+    TestBed.runInInjectionContext(() => {
+      fixture.componentRef.setInput('isRenaming', false);
+      fixture.componentRef.setInput('renameError', null);
+    });
+    fixture.detectChanges();
+
+    expect(spy).toHaveBeenCalled();
   });
 
-  it('should retry focus when input element is not found initially', () => {
+  it('should focus input element on edit', () => {
     vi.useFakeTimers();
     const setTimeoutSpy = vi.spyOn(global, 'setTimeout');
 

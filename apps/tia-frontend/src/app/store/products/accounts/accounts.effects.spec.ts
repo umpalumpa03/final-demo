@@ -137,4 +137,72 @@ describe('AccountsEffects', () => {
       });
     });
   });
+
+  it('should handle updateFriendlyName success', () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        AccountsEffects,
+        provideMockActions(() => actions$),
+        {
+          provide: AccountsApiService,
+          useValue: {
+            getAccounts: () => of([mockAccount]),
+            createAccount: () => of(mockAccount),
+            updateFriendlyName: () =>
+              of({ ...mockAccount, friendlyName: 'Updated' }),
+          },
+        },
+      ],
+    });
+    effects = TestBed.inject(AccountsEffects);
+    actions$ = of(
+      AccountsActions.updateFriendlyName({
+        accountId: '1',
+        friendlyName: 'Updated',
+      }),
+    );
+    return new Promise((resolve) => {
+      effects.updateFriendlyName$.subscribe((result) => {
+        expect(result.type).toBe(
+          AccountsActions.updateFriendlyNameSuccess.type,
+        );
+        resolve(undefined);
+      });
+    });
+  });
+
+  it('should handle updateFriendlyName failure', () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        AccountsEffects,
+        provideMockActions(() => actions$),
+        {
+          provide: AccountsApiService,
+          useValue: {
+            getAccounts: () => of([mockAccount]),
+            createAccount: () => of(mockAccount),
+            updateFriendlyName: () =>
+              throwError(() => new Error('Update error')),
+          },
+        },
+      ],
+    });
+    effects = TestBed.inject(AccountsEffects);
+    actions$ = of(
+      AccountsActions.updateFriendlyName({
+        accountId: '1',
+        friendlyName: 'Updated',
+      }),
+    );
+    return new Promise((resolve) => {
+      effects.updateFriendlyName$.subscribe((result) => {
+        expect(result.type).toBe(
+          AccountsActions.updateFriendlyNameFailure.type,
+        );
+        resolve(undefined);
+      });
+    });
+  });
 });
