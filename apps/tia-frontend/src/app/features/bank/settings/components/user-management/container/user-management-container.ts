@@ -1,11 +1,15 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { UserHeader } from '../shared/ui/user-header/user-header';
+import { UserManagementComponent } from '../components/user-management/user-management.component';
+import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
+import { HEADER_CONFIG } from '../shared/config/user-header.config';
 
 @Component({
   selector: 'app-user-management-container',
-  imports: [UserHeader],
+  imports: [BasicCard, UserManagementComponent],
   templateUrl: './user-management-container.html',
   styleUrl: './user-management-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserManagementContainer {}
+export class UserManagementContainer {
+  public readonly cfg = HEADER_CONFIG;
+}
