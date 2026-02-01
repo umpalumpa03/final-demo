@@ -5,16 +5,16 @@ import { TabItem } from "apps/tia-frontend/src/app/shared/lib/navigation/models/
 import { Item } from "../components/models/pills-data.model";
 
 export const TABS: TabItem[] = [
-    { label: 'Overview', route: '/storybook/navigation' },
-    { label: 'Analytics', route: 'test' },
-    { label: 'Reports', route: 'reports' },
-    { label: 'Settings', route: '' }
+    { label: 'Overview', route: '/storybook/navigation', exact: true },
+    { label: 'Analytics', route: 'test', exact: true },
+    { label: 'Reports', route: 'reports', exact: true },
+    { label: 'Settings', route: 'reports', exact: true }
 ] as const;
 
 export const TABS2: TabItem[] = [
-    { label: 'Account', icon: 'images/svg/notification-icons/account.svg', route: '/storybook/navigation' },
-    { label: 'Notifications', icon: 'images/svg/notification-icons/notifications.svg', route: 'test' },
-    { label: 'Preferences', icon: 'images/svg/notification-icons/setting.svg', route: '' },
+    { label: 'Account', icon: 'images/svg/notification-icons/account.svg', route: '/storybook/navigation', exact: true },
+    { label: 'Notifications', icon: 'images/svg/notification-icons/notifications.svg', route: 'test', exact: true },
+    { label: 'Preferences', icon: 'images/svg/notification-icons/setting.svg', route: '', exact: true },
 ] as const;
 
 export const BREADCRUMBS: Breadcrumb[] = [
@@ -43,41 +43,47 @@ export const VERTICALNAVBARS: NavigationItem[] = [
         label: 'Home',
         icon: 'images/svg/notification-icons/home-gray.svg',
         route: '/storybook/navigation',
+        exact: true
     },
     {
         label: 'Search',
         icon: 'images/svg/notification-icons/search.svg',
         route: 'test',
+        exact: true
     },
     {
         label: 'Profile',
         icon: 'images/svg/notification-icons/profile.svg',
         route: 'reports',
+        exact: true
     },
     {
         label: 'Notifications',
         icon: 'images/svg/notification-icons/notification-gray.svg',
-        route: 'test'
+        route: 'test',
+        exact: true
     },
     {
         label: 'Settings',
         icon: 'images/svg/notification-icons/setting-gray.svg',
-        route: 'reports'
+        route: 'reports',
+        exact: true
     },
     {
         label: 'Disabled Item',
         icon: 'images/svg/notification-icons/menu-bar.svg',
         route: '/disabled',
-        disabled: true
+        disabled: true,
+        exact: true
     }
 ] as const;
 
 export const HORIZONTALNAVBARS: NavigationItem[] = [
-    { label: 'Dashboard', route: '/storybook/navigation'},
-    { label: 'Projects', route: 'test' },
-    { label: 'Team', route: 'reports' },
-    { label: 'Calendar', route: 'test' },
-    { label: 'Disabled', route: 'report', disabled: true }
+    { label: 'Dashboard', route: '/storybook/navigation', exact: true },
+    { label: 'Projects', route: 'test', exact: true },
+    { label: 'Team', route: 'reports', exact: true },
+    { label: 'Calendar', route: 'test', exact: true },
+    { label: 'Disabled', route: 'report', disabled: true, exact: true }
 ] as const;
 
 export const PILLARRAY: PillItem[] = [

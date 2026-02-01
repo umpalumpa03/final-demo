@@ -6,7 +6,9 @@
   </app-library-title>
   <app-showcase-card title="Tabs">
     <div class="navigation__card">
-      <app-tabs [tabs]="tabs()" [orientation]="'horizontal'"></app-tabs>
+      <div class="navigation__card--tabs">
+        <app-tabs [tabs]="tabs()" [orientation]="'horizontal'"></app-tabs>
+      </div>
       <div class="navigation__card--title">
         <h4 class="navigation__card--title-heading">Overview Content</h4>
         <p class="navigation__card--title-desc">
@@ -18,7 +20,10 @@
   </app-showcase-card>
   <app-showcase-card title="Tabs">
     <div class="navigation__card">
-      <app-tabs [tabs]="tabs2()" [orientation]="'vertical'"></app-tabs>
+      <div class="navigation__card--tabs-vertical">
+        <app-tabs [tabs]="tabs2()" [orientation]="'vertical'"></app-tabs>
+      </div>
+
       <div class="navigation__card--title">
         <h4 class="navigation__card--title-heading">Account Settings</h4>
         <p class="navigation__card--title-desc">
@@ -46,25 +51,25 @@
   </app-showcase-card>
   <app-showcase-card title="Pagination">
     <div class="navigation__card">
-     <app-pagination-component></app-pagination-component>
+      <app-pagination-component></app-pagination-component>
     </div>
   </app-showcase-card>
 
   <app-showcase-card title="Horizontal Navigation">
     <div class="navigation__card">
-     <app-horizontal-nav-bar></app-horizontal-nav-bar>
+      <app-horizontal-nav-bar></app-horizontal-nav-bar>
     </div>
   </app-showcase-card>
 
   <app-showcase-card title="Vertical Navigation">
     <div class="navigation__card">
-     <app-nav-bar></app-nav-bar>
+      <app-nav-bar></app-nav-bar>
     </div>
   </app-showcase-card>
 
   <app-showcase-card title="Pills Navigation">
     <div class="navigation__card">
-     <app-pills-component></app-pills-component>
+      <app-pills-component></app-pills-component>
     </div>
   </app-showcase-card>
 </div>
