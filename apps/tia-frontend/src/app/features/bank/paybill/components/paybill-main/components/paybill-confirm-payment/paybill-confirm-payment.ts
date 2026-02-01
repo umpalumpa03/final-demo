@@ -22,6 +22,8 @@ import { Store } from '@ngrx/store';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { CurrencyPipe } from '@angular/common';
 import { paymentOptionPaybill } from './config/input.config';
+import { CONFIRM_PAYMENT_UI } from './config/translate.config';
+import { mapConfirmSummaryFields } from './utils/paybill-confirm.utils';
 
 @Component({
   selector: 'app-paybill-confirm-payment',
@@ -35,43 +37,37 @@ import { paymentOptionPaybill } from './config/input.config';
   ],
   templateUrl: './paybill-confirm-payment.html',
   styleUrl: './paybill-confirm-payment.scss',
-  changeDetection:ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillConfirmPayment {
+  // Inputs
+
   public readonly provider = input.required<PaybillProvider>();
   public readonly summary = input.required<PaybillPayload>();
   public readonly details = input.required<BillDetails>();
   public readonly iconBgColor = input('');
   public readonly iconBgPath = input('');
-
-  public readonly confirm = output<void>();
-  public readonly cancelPayment = output<void>();
-
-  public readonly accountChanged = output<string>();
-  public readonly selectedAccountId = model<string | null>(null);
   public readonly currentAccounts = input<
     { label: string; value: string }[] | null
   >(null);
 
+  // Outputs
+
+  public readonly confirm = output<void>();
+  public readonly cancelPayment = output<void>();
+  public readonly accountChanged = output<string>();
+  public readonly selectedAccountId = model<string | null>(null);
+
   protected readonly selectConfig = paymentOptionPaybill;
+  protected readonly ui = CONFIRM_PAYMENT_UI;
 
   public handleAccountChange(id: string): void {
     this.accountChanged.emit(id);
   }
 
-  protected readonly summaryItems = computed(() => [
-    {
-      label: 'Account Number:',
-      value: this.summary().accountNumber ?? 'Unknown Service',
-    },
-    { label: 'Customer Name:', value: this.details().accountHolder },
-    { label: 'Due Date:', value: this.details().dueDate },
-    {
-      label: 'Amount to Pay:',
-      value: `GEL${this.summary()!.amount}`,
-      isTotal: true,
-    },
-  ]);
+  protected readonly summaryItems = computed(() =>
+    mapConfirmSummaryFields(this.summary(), this.details()),
+  );
 
   protected readonly title = 'Confirm Payment';
   protected readonly subtitle = 'Review the details before proceeding';

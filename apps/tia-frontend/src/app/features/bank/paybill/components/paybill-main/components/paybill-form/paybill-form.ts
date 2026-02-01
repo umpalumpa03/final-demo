@@ -22,6 +22,7 @@ import { paybillInputConfig } from './config/input.config';
 import { PaymentSummary } from '../../shared/ui/payment-summary/payment-summary';
 import { SummaryField } from '../../shared/models/summary.model';
 import { CurrencyPipe } from '@angular/common';
+import { mapBillSummaryFields } from './utils/paybill-form.utils';
 
 @Component({
   selector: 'app-paybill-form',
@@ -71,21 +72,9 @@ export class PaybillForm {
   public readonly paybillConfig = paybillInputConfig;
 
   public readonly isVerified = computed(() => !!this.verifiedDetails()?.valid);
-
-  protected readonly summaryItems = computed<SummaryField[]>(() => [
-    {
-      label: 'Customer Name:',
-      value: this.verifiedDetails()?.accountHolder ?? 'Unknown Service',
-    },
-    {
-      label: 'Bill Period:',
-      value: this.verifiedDetails()?.billPeriod ?? 'Current Month',
-    },
-    {
-      label: 'Due Date:',
-      value: `${this.verifiedDetails()?.dueDate}`,
-    },
-  ]);
+  protected readonly summaryItems = computed(() =>
+    mapBillSummaryFields(this.verifiedDetails()),
+  );
 
   public onSubmit(): void {
     if (this.isLoading()) return;
