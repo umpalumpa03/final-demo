@@ -6,7 +6,7 @@
   <p class="otp-verification__subtext">{{ subText() | translate}}</p>
 
   @if (!isLoading()) {
-  <form class="auth-form" [formGroup]="otpForm" (ngSubmit)="onSubmit()">
+  <form class="auth-form" [formGroup]="activeForm()" (ngSubmit)="onSubmit()">
     @if(timerType() === 'otp'){
     <div class="otp-field">
       <lib-otp formControlName="code" [config]="formConfig().otp"></lib-otp>
@@ -14,17 +14,35 @@
     } @else {
     <div class="otp-field__phone">
       <lib-text-input
-        formControlName="code"
+        formControlName="phoneNumber"
         [config]="formConfig().phone"
       ></lib-text-input>
     </div>
-    } @if (submitError()) {
-    <div class="auth-error">{{ submitError() | translate}}</div>
+    } 
+    @if (submitError()) {
+      <app-simple-alerts
+        alertType="error"
+        [alertMessage]="submitError() ?? ''"
+      ></app-simple-alerts>
+    }
+
+    @if (unitedError()) {
+      <app-simple-alerts
+        alertType="error"
+        [alertMessage]="unitedError()"
+      ></app-simple-alerts>
+    }
+
+    @if (phoneErrorMessage()) {
+      <app-simple-alerts
+        alertType="error"
+        [alertMessage]="phoneErrorMessage() ?? 'An error occurred'"
+      ></app-simple-alerts>
     }
 
     <div class="auth-form__actions">
       <app-button
-        [isDisabled]="isResendActive()"
+        [isDisabled]="isButtonDisabled()"
         type="submit"
         [fullWidth]="true"
       >

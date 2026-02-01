@@ -6,30 +6,27 @@
     padding: 0.35rem 0.3rem;
     background-color: var(--color-muted);
     border-radius: 1.4rem;
-    max-width: fit-content;
 
     &.horizontal {
         @include display-flex(row, wrap);
+        justify-content: center;
         gap: 0.8rem;
-    }
-
-    &.vertical {
-        flex-direction: column;
-        gap: 1.2rem;
     }
 
     &__item {
         cursor: pointer;
         @include font-arimo(400, 1.4rem, 2rem);
         color: var(--color-fg);
+        flex: 1 0 auto;
 
         &--link {
-            @include display-flex();
             color: var(--color-fg);
             border-radius: 1.4rem;
             padding: 0.4rem 0.8rem;
-            transition: background 0.2s, color 0.2s;
-            
+            transition:
+                background 0.2s,
+                color 0.2s;
+            @include flex-center();
         }
 
         &--active {
@@ -45,6 +42,17 @@
                 height: 1.6em;
                 display: inline-block;
                 margin-right: 0.8rem;
+            }
+        }
+    }
+    &.vertical {
+        flex-direction: column;
+        gap: 1.2rem;
+
+        .tabs__item {
+            &--link {
+                @include display-flex();
+                justify-content: flex-start;
             }
         }
     }

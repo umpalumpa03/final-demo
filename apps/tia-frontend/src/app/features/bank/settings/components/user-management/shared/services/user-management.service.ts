@@ -16,28 +16,33 @@ export class UserManagementService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/users/management`;
 
-  getAllUsers(): Observable<IUser[]> {
+  public getAllUsers(): Observable<IUser[]> {
     return this.http.get<IUser[]>(this.apiUrl);
   }
 
-  getUserById(userId: string): Observable<IUserDetail> {
+  public getUserById(userId: string): Observable<IUserDetail> {
     return this.http.get<IUserDetail>(`${this.apiUrl}/${userId}`);
   }
 
-  updateUser(
+  public updateUser(
     userId: string,
     payload: IUpdateUserRequest,
   ): Observable<IUserDetail> {
     return this.http.patch<IUserDetail>(`${this.apiUrl}/${userId}`, payload);
   }
 
-  deleteUser(userId: string): Observable<{ success: true; message: string }> {
+  public deleteUser(
+    userId: string,
+  ): Observable<{ success: true; message: string }> {
     return this.http.delete<{ success: true; message: string }>(
       `${this.apiUrl}/${userId}`,
     );
   }
 
-  blockUser(userId: string, isBlocked: boolean): Observable<IUserDetail> {
+  public blockUser(
+    userId: string,
+    isBlocked: boolean,
+  ): Observable<IUserDetail> {
     const payload: IBlockUserRequest = { isBlocked };
     return this.http.post<IUserDetail>(
       `${this.apiUrl}/${userId}/block`,
