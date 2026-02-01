@@ -9,7 +9,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { of, throwError, Observable, Subscription } from 'rxjs';
+import { of, Observable, Subscription } from 'rxjs';
 
 import { OtpVerification } from './otp-verification';
 
