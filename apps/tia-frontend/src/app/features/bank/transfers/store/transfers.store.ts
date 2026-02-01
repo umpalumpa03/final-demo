@@ -47,6 +47,9 @@ export const TransferStore = signalStore(
     updateFeeInfo(fee: number, totalWithFee: number) {
       patchState(store, { fee, totalWithFee, isLoading: false });
     },
+    setInsufficientBalance(hasInsufficientBalance: boolean) {
+      patchState(store, { hasInsufficientBalance });
+    },
 
     setLoading(isLoading: boolean) {
       patchState(store, { isLoading });

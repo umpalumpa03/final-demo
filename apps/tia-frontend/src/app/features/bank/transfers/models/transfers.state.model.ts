@@ -34,6 +34,7 @@ export interface TransferState {
   challengeId: string | null; //needed for otp, this and transferid are unclear
   fee: number; //repsponse from /get-fee
   totalWithFee: number;
+  hasInsufficientBalance: boolean;
 
   //derived state
   recipientType: RecipientType | null; // from validation, values: 'phone','iban-same-bank' , 'iban-different-bank'

@@ -8,6 +8,7 @@ export const initialTransferState: TransferState = {
   senderAccount: null,
   receiverOwnAccount: null,
   selectedRecipientAccount: null,
+  hasInsufficientBalance: false,
   recipientInfo: null,
   transferId: null,
   challengeId: null,
