@@ -15,6 +15,7 @@ import * as CONFIG from './button-config/button-library.config'
 })
 export class ButtonLibraryComponent {
   protected readonly isInteractiveLoading = signal(false);
+
   
   protected readonly variants = signal(CONFIG.BUTTON_VARIANTS);
   protected readonly sizes = signal(CONFIG.BUTTON_SIZES);
@@ -22,9 +23,7 @@ export class ButtonLibraryComponent {
   protected readonly iconButtons = signal(CONFIG.ICON_BUTTONS);
   protected readonly iconOnlyButtons = signal(CONFIG.ICON_ONLY_BUTTONS);
   protected readonly interactiveItems = signal(CONFIG.INTERACTIVE_EXAMPLES);
-  protected readonly buttonGroups = signal(CONFIG.BUTTON_GROUPS); // add this for refactored group buttons
-  
-
+  protected readonly buttonGroups = signal(CONFIG.BUTTON_GROUPS); 
   public readonly title:string = "Buttons";
   public readonly subtitle:string = "A comprehensive showcase of all components with their various states"
 

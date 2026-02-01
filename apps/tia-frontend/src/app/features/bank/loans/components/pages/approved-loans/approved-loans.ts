@@ -5,71 +5,79 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { LoansActions } from '../../../store/loans.actions';
-import { selectFilteredLoans } from '../../../store/loans.selectors';
 import { LoanCard } from '../../../shared/ui/loan-card/loan-card';
 import { CommonModule } from '@angular/common';
-import { ILoan } from '../../../shared/models/loan.model';
-import { filter, map, take } from 'rxjs';
-import { LoanDetails } from '../../../shared/ui/prepayment-wizard/loan-details/loan-details';
-import { PrepaymentCalculationPayload } from '../../../shared/models/prepayment.model';
+import { ILoan, ILoanDetails } from '../../../shared/models/loan.model';
+import { LoanDetails } from '../../../shared/ui/prepayment/loan-details/loan-details';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
-import { PrepaymentOptionStep } from '../../../shared/ui/prepayment-wizard/prepayment-options-step/prepayment-option-step';
+import { PrepaymentContainer } from '../../../shared/ui/prepayment/prepayment-container/prepayment-container';
+import { LoansStore } from '../../../store/loans.store';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-approved-loans',
-  imports: [LoanCard, CommonModule, LoanDetails, UiModal, PrepaymentOptionStep],
+  imports: [
+    LoanCard,
+    CommonModule,
+    LoanDetails,
+    UiModal,
+    PrepaymentContainer,
+    ErrorStates,
+    TranslatePipe,
+  ],
   templateUrl: './approved-loans.html',
   styleUrl: './approved-loans.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApprovedLoans implements OnInit {
-  private store = inject(Store);
+  protected readonly store = inject(LoansStore);
+  private readonly router = inject(Router);
 
-  protected readonly approvedLoans$ = this.store.select(selectFilteredLoans(2));
+  protected readonly approvedLoans = this.store.loansWithAccountInfo;
+  protected readonly selectedLoanDetails = this.store.selectedLoanDetails;
+  protected readonly isDetailsLoading = this.store.detailsLoading;
 
   public readonly selectedLoan = signal<ILoan | null>(null);
+  public readonly prepaymentLoan = signal<ILoanDetails | null>(null);
   public readonly isPrepaymentOpen = signal(false);
   public readonly isDetailsOpen = signal(false);
 
   public ngOnInit(): void {
-    this.store.dispatch(LoansActions.loadLoans());
+    this.store.loadLoans(2);
   }
 
   public onCardClick(id: string): void {
-    this.approvedLoans$
-      .pipe(
-        take(1),
-        map((loans) => loans.find((l) => l.id === id)),
-        filter((loan): loan is ILoan => !!loan && loan.status === 2),
-      )
-      .subscribe((loan) => {
-        this.selectedLoan.set(loan);
-        this.isDetailsOpen.set(true);
-      });
+    const loan = this.approvedLoans().find((l) => l.id === id);
+
+    if (loan) {
+      this.selectedLoan.set(loan);
+      this.isDetailsOpen.set(true);
+      this.store.loadLoanDetails(id);
+    }
   }
 
   public onRenameLoan(event: { id: string; name: string }): void {
-    this.store.dispatch(
-      LoansActions.renameLoan({ id: event.id, name: event.name }),
-    );
+    this.store.renameLoan({ id: event.id, name: event.name });
   }
 
-  public onOpenPrepayment(loan: ILoan): void {
+  public onOpenPrepayment(loan: ILoanDetails): void {
     this.selectedLoan.set(loan);
+    this.prepaymentLoan.set(loan);
     this.isDetailsOpen.set(false);
     this.isPrepaymentOpen.set(true);
-  }
-
-  // SHEMDEG GVERDZE GADASVLAA DA XVALVIZAM
-  public onCalculatePrepayment(payload: PrepaymentCalculationPayload): void {
-    // console.log('Calculation Payload:', payload);
   }
 
   public closeModals(): void {
     this.isDetailsOpen.set(false);
     this.isPrepaymentOpen.set(false);
+    this.prepaymentLoan.set(null);
     this.selectedLoan.set(null);
+    this.store.clearLoanDetails();
+  }
+
+  public navigateToAllLoans(): void {
+    this.router.navigate(['bank/loans/all']);
   }
 }

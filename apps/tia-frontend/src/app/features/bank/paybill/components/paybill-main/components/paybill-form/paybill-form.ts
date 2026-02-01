@@ -2,12 +2,14 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   input,
   output,
 } from '@angular/core';
-import { BillDetails, PaybillProvider } from '../../../../models/paybill.model';
+import {
+  BillDetails,
+  PaybillProvider,
+} from '../../shared/models/paybill.model';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
@@ -16,20 +18,45 @@ import {
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
+import { paybillInputConfig } from './config/input.config';
+import { PaymentSummary } from '../../shared/ui/payment-summary/payment-summary';
+import { CurrencyPipe } from '@angular/common';
+import { mapBillSummaryFields } from './utils/paybill-form.config';
 
 @Component({
   selector: 'app-paybill-form',
-  imports: [ButtonComponent, BasicCard, ReactiveFormsModule, TextInput],
+  imports: [
+    ButtonComponent,
+    BasicCard,
+    ReactiveFormsModule,
+    TextInput,
+    PaymentSummary,
+    CurrencyPipe,
+  ],
   templateUrl: './paybill-form.html',
   styleUrl: './paybill-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillForm {
   public readonly provider = input<PaybillProvider | null>(null);
-  public readonly verifiedDetails = input<BillDetails | null>(null);
   public readonly isLoading = input<boolean>(false);
   public readonly iconBgColor = input<string>('#F0F9FF');
   public readonly iconBgPath = input<string>();
+  public readonly verifiedDetails = input<
+    BillDetails | null,
+    BillDetails | null
+  >(null, {
+    transform: (details) => {
+      if (details?.valid) {
+        this.paybillForm.patchValue(
+          { amount: details.amountDue },
+          { emitEvent: false },
+        );
+      }
+      return details;
+    },
+  });
+
   private readonly fb = inject(NonNullableFormBuilder);
 
   public readonly verify = output<{ accountNumber: string }>();
@@ -41,16 +68,12 @@ export class PaybillForm {
     amount: [0, [Validators.min(0.01)]],
   });
 
-  public readonly isVerified = computed(() => !!this.verifiedDetails()?.valid);
+  public readonly paybillConfig = paybillInputConfig;
 
-  constructor() {
-    effect(() => {
-      const details = this.verifiedDetails();
-      if (details?.valid) {
-        this.paybillForm.patchValue({ amount: details.amountDue });
-      }
-    });
-  }
+  public readonly isVerified = computed(() => !!this.verifiedDetails()?.valid);
+  protected readonly summaryItems = computed(() =>
+    mapBillSummaryFields(this.verifiedDetails()),
+  );
 
   public onSubmit(): void {
     if (this.isLoading()) return;

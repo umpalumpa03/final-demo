@@ -1,0 +1,84 @@
+<div class="accounts-list">
+  <div class="accounts-list__header">
+    <app-library-title
+      title="{{ 'my-products.accounts.title' | translate }}"
+      subtitle="{{ 'my-products.accounts.subtitle' | translate }}"
+    ></app-library-title>
+    <app-button
+      [variant]="'default'"
+      [icon]="'plus-icon.svg'"
+      (click)="handleOpenModal()"
+    >
+      {{ 'my-products.accounts.newAccount' | translate }}
+    </app-button>
+  </div>
+
+  @if (error()) {
+  <app-error-states
+    [variant]="'failed'"
+    [header]="'my-products.accounts.errorTitle' | translate"
+    [message]="'my-products.accounts.errorMessage' | translate"
+    [buttonMessage]="'my-products.accounts.retry' | translate"
+    (buttonClick)="handleRetry()"
+    [border]="false"
+  >
+  </app-error-states>
+  } @else if (isLoading()) {
+  <app-route-loader
+    [variant]="'full-page'"
+    [text]="'my-products.accounts.loading' | translate"
+  />
+  } @else if (hasNoAccounts()) {
+  <app-error-states
+    [variant]="'not-found'"
+    [header]="'my-products.accounts.noAccounts' | translate"
+    [message]="'my-products.accounts.noAccountsMessage' | translate"
+    [buttonMessage]="'my-products.accounts.createAccount' | translate"
+    (buttonClick)="handleOpenModal()"
+  >
+  </app-error-states>
+  } @else if (accountsGrouped(); as grouped) { @for (section of
+  visibleSections(); track section.key) {
+  <section class="accounts-list__section">
+    <div class="accounts-list__section-header">
+      <img [src]="section.icon" alt="" class="accounts-list__section-icon" />
+      <app-library-title title="{{ section.title }}"></app-library-title>
+      <app-badges
+        [variant]="'secondary'"
+        [size]="'medium'"
+        [text]="getAccountsBySection(section).length.toString()"
+        [shape]="'rounded'"
+      >
+      </app-badges>
+    </div>
+
+    <app-scroll-area
+      [direction]="'horizontal'"
+      [height]="'auto'"
+      [scrollbar]="'hidden'"
+      [hideBorder]="true"
+    >
+      <div class="accounts-list__section-grid">
+        @for (account of getAccountsBySection(section); track account.id) {
+        <app-account-card
+          [account]="account"
+          [isRenaming]="isRenamingAccount()"
+          [renameError]="renameError()"
+          (transfer)="handleTransfer($event)"
+          (rename)="handleRenameClick($event)"
+          (renameSuccess)="handleRenameSuccess()"
+        />
+        }
+      </div>
+      @if (isFetching()) {
+      <div class="accounts-list__section-loader">
+        <app-route-loader
+          [variant]="'pulsing'"
+          [text]="'my-products.accounts.loadingMore' | translate"
+        />
+      </div>
+      }
+    </app-scroll-area>
+  </section>
+  } }
+</div>

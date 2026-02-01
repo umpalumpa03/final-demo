@@ -2,7 +2,18 @@
     class="scroll-area ta-scroll-area" 
     [class.horizontal]="isHorizontal()" 
     [class.vertical]="isVertical()"
-    [style.height]="height()"
+    [style.height]="height()" 
+    [class.scrollbar-hidden]="!isScrollbarVisible()" 
+    (scroll)="onScroll()" 
+    #viewport
+    [style.border]="hideBorder() && 'none'"
 >
-    <ng-content />
+    @if (isError()) {
+        <app-error-states variant="not-found" (buttonClick)="onButtonClick()"></app-error-states>
+    } @else {
+        <ng-content />
+        @if(isLoading()) {
+            <app-spinner></app-spinner>
+        }
+    }
 </div>

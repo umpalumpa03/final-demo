@@ -2,78 +2,76 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  effect,
-  signal,
-  DestroyRef,
-  computed,
+  OnInit,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { tap } from 'rxjs/operators';
-import { loadCardDetails } from '../../../../../../../../store/products/cards/cards.actions';
+import { map, combineLatest } from 'rxjs';
+import { loadAccountCardsPage } from '../../../../../../../../store/products/cards/cards.actions';
 import {
   selectAllAccounts,
   selectCardDetailsByAccountId,
+  selectCardDetailsError,
+  selectCardDetailsLoading,
 } from '../../../../../../../../store/products/cards/cards.selectors';
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
-import { CardAccount } from '../../../models/card-account.model';
-import { CardWithDetails } from '../../../models/card-image.model';
+import { AccountData, ViewState } from '@tia/shared/models/cards/account-cards.model';
 
 @Component({
   selector: 'app-account-cards',
-  standalone: true,
   templateUrl: './account-cards.html',
   styleUrls: ['./account-cards.scss'],
   imports: [CommonModule, Badges],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountCards {
+export class AccountCards implements OnInit {
   private readonly store = inject(Store);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly destroyRef = inject(DestroyRef);
+  
   private readonly accountId = this.route.snapshot.paramMap.get('accountId') || '';
-  private readonly accounts = signal<CardAccount[]>([]);
-  private readonly cards = signal<CardWithDetails[]>([]);
 
-  protected readonly vm = computed(() => {
-    const account = this.accounts().find(acc => acc.id === this.accountId);
-    if (!account) return null;
-    return { account, cards: this.cards() };
-  });
+  protected readonly cardDetailsLoading$ = this.store.select(selectCardDetailsLoading);
+  protected readonly cardDetailsError$ = this.store.select(selectCardDetailsError);
 
-  private readonly accountsSubscription = this.store.select(selectAllAccounts)
-    .pipe(
-      tap(accounts => this.accounts.set(accounts)),
-      takeUntilDestroyed(this.destroyRef)
-    )
-    .subscribe();
+  protected readonly accountData$ = combineLatest([
+    this.store.select(selectAllAccounts),
+    this.store.select(selectCardDetailsByAccountId(this.accountId)),
+  ]).pipe(
+    map(([accounts, cards]): AccountData | null => {
+      const account = accounts.find(acc => acc.id === this.accountId);
+      if (!account) return null;
+      return { account, cards };
+    })
+  );
 
-  private readonly cardsSubscription = this.store.select(selectCardDetailsByAccountId(this.accountId))
-    .pipe(
-      tap(cards => this.cards.set(cards)),
-      takeUntilDestroyed(this.destroyRef)
-    )
-    .subscribe();
+  protected readonly viewState$ = combineLatest([
+    this.accountData$,
+    this.cardDetailsLoading$,
+    this.cardDetailsError$,
+  ]).pipe(
+    map(([accountData, loading, error]): ViewState => {
+      if (!accountData) return 'no-account';
+      if (loading) return 'loading';
+      if (error) return 'error';
+      return 'success';
+    })
+  );
 
-  constructor() {
-    effect(() => {
-      const data = this.vm();
-      if (data?.account?.cardIds && data.account.cardIds.length > 0) {
-        data.account.cardIds.forEach(cardId => {
-          this.store.dispatch(loadCardDetails({ cardId }));
-        });
-      }
-    });
+  protected readonly cardsLabel$ = this.accountData$.pipe(
+    map(data => {
+      if (!data) return '';
+      const count = data.account.cardIds.length;
+      return `${count} Card${count !== 1 ? 's' : ''}`;
+    })
+  );
+
+  ngOnInit(): void {
+    this.store.dispatch(loadAccountCardsPage({ accountId: this.accountId }));
   }
 
   protected handleCardClick(cardId: string): void {
     this.router.navigate(['/bank/products/cards/details', cardId]);
-  }
-
-  protected shouldShowCreditLimit(card: CardWithDetails): boolean {
-    return card.details.type === 'CREDIT' && !!card.details.creditLimit;
   }
 }

@@ -1,0 +1,141 @@
+@let loanData = loan();
+<app-ui-modal [isOpen]="isOpen()" (closed)="close.emit()">
+    <div class="loan-modal">
+
+        <header class="loan-modal__header">
+            <div class="loan-modal__header-text">
+                <div class="loan-modal__header">
+                    <div class="icon">
+                        <img src="./images/svg/feature-loans/request-loan.svg" alt="">
+                        <h3 class="loan-modal__title">{{ 'loans.details.title' | translate }}</h3>
+                    </div>
+                </div>
+                <p class="loan-modal__subtitle ">{{ 'loans.details.description' | translate }}</p>
+            </div>
+        </header>
+
+        @if (isLoading()) {
+        <div class="loan-modal__loading">
+            <app-spinner size="4rem"></app-spinner>
+            <p>{{ 'loans.details.loading' | translate }}</p>
+        </div>
+        }@else if (loanData)
+        {
+        <div class="loan-modal__body">
+
+            <div class="loan-modal__status">
+                <span class="loan-modal__status-label">{{ 'loans.details.status_label' | translate }}</span>
+                <span class="loan-modal__badge" [class.loan-modal__badge--approved]="loanData.status === 2"
+                    [class.loan-modal__badge--pending]="loanData.status === 1"
+                    [class.loan-modal__badge--rejected]="loanData.status === 3">
+
+                    @if(loanData.status === 2) { <img src="./images/svg/feature-loans/approve.svg" alt=""> }
+                    @if(loanData.status === 1) { <img src="./images/svg/feature-loans/pending.svg" alt=""> }
+
+                    {{ loanData.statusName }}
+                </span>
+            </div>
+
+            <div class="loan-modal__section">
+                <h4 class="loan-modal__section-title">{{ 'loans.details.section_title' | translate }}</h4>
+                <div class="loan-modal__grid">
+
+                    <div class="loan-modal__grid-item">
+                        <label class="loan-modal__label">{{ 'loans.details.fields.amount' | translate }}</label>
+                        <strong class="loan-modal__value loan-modal__value--amount">
+                            <div class="amount-display">
+                                <span class="currency-symbol">{{ loanData.currency }}</span>
+                                <span class="amount-value">{{ loanData.loanAmount | number:'1.2-2' }}</span>
+                            </div>
+                        </strong>
+                    </div>
+
+                    <div class="loan-modal__grid-item">
+                        <label class="loan-modal__label">{{ 'loans.details.fields.purpose' | translate }}</label>
+                        <strong class="loan-modal__value">{{ loanData.purpose | purposeFmt }}</strong>
+                    </div>
+
+                    <div class="loan-modal__grid-item">
+                        <label class="loan-modal__label">{{ 'loans.details.fields.term' | translate }}</label>
+                        <strong class="loan-modal__value">{{ loanData.months }} {{ 'loans.details.months' | translate
+                            }}</strong>
+                    </div>
+
+                    <div class="loan-modal__grid-item">
+                        <label class="loan-modal__label">{{ 'loans.details.fields.rate' | translate }}</label>
+                        <strong class="loan-modal__value">{{ loanData.interestRate }}%</strong>
+                    </div>
+
+                    <div class="loan-modal__grid-item loan-modal__grid-item--monthly">
+                        <label class="loan-modal__label">{{ 'loans.details.fields.monthly' | translate }}</label>
+                        <strong class="loan-modal__value loan-modal__value--highlight">
+                            <div class="amount-display">
+                                <span class="currency-symbol">{{ loanData.currency }}</span>
+                                <span class="amount-value">{{ loanData.monthlyPayment | number:'1.2-2' }}</span>
+                            </div>
+                        </strong>
+                    </div>
+
+                    <div class="loan-modal__grid-item">
+                        <label class="loan-modal__label">{{ 'loans.details.fields.balance' | translate }}</label>
+                        <strong class="loan-modal__value">
+                            <div class="amount-display">
+                                <span class="currency-symbol">{{ loanData.currency }}</span>
+                                <span class="amount-value">{{ loanData.remainingBalance | number:'1.2-2' }}</span>
+                            </div>
+                        </strong>
+                    </div>
+
+                    <div class="loan-modal__grid-item">
+                        <label class="loan-modal__label">{{ 'loans.details.fields.next_payment' | translate }}</label>
+                        <strong class="loan-modal__value">{{ loanData.nextPaymentDate | date:'dd/MM/yyyy' }}</strong>
+                    </div>
+
+                    <div class="loan-modal__grid-item">
+                        <label class="loan-modal__label">{{ 'loans.details.fields.app_date' | translate }}</label>
+                        <strong class="loan-modal__value">{{ loanData.createdAt | date:'dd/MM/yyyy' }}</strong>
+                    </div>
+
+                    <div class="loan-modal__grid-item loan-modal__grid-item--full">
+                        <label class="loan-modal__label">{{ 'loans.details.fields.account' | translate }}</label>
+                        <strong class="loan-modal__value">{{ loanData.accountName }}</strong>
+                    </div>
+
+                    @if (loanData.address) {
+                    <div class="loan-modal__grid-item loan-modal__grid-item--full">
+                        <label class="loan-modal__label">{{ 'loans.details.fields.address' | translate }}</label>
+                        <strong class="loan-modal__value">
+                            {{ loanData.address.street }}, {{ loanData.address.city }}, {{ loanData.address.postalCode
+                            }}
+                        </strong>
+                    </div>
+                    }
+                </div>
+            </div>
+
+            @if(loanData.status === 2 && loanData.remainingBalance > 0) {
+            <div class="loan-modal__prepayment">
+                <div class="loan-modal__prepayment-info">
+                    <div>
+                        <img class="loan-modal__prepayment-icon" src="./images/svg/feature-loans/prepayment.svg" alt="">
+                        <strong class="loan-modal__prepayment-title">{{ 'loans.details.prepayment_promo.title' |
+                            translate }}</strong>
+                    </div>
+                    <p class="loan-modal__prepayment-text">{{ 'loans.details.prepayment_promo.description' | translate
+                        }}</p>
+                </div>
+                <app-button [fullWidth]="true" icon="./calculate.svg" (click)="onCalculate()">
+                    {{ 'loans.details.prepayment_promo.button' | translate }}
+                </app-button>
+            </div>
+            }
+        </div>
+        }
+
+        <div class="close">
+            <app-button (click)="close.emit()" [variant]="buttonVariant">
+                {{ 'loans.details.actions.close' | translate }}
+            </app-button>
+        </div>
+    </div>
+</app-ui-modal>

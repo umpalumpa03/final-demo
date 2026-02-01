@@ -53,3 +53,9 @@
   border: $border-width solid $border-color;
   box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.1);
 }
+
+@mixin svg-icon($size: 2rem) {
+  width: $size;
+  height: $size;
+  flex-shrink: 0;
+}

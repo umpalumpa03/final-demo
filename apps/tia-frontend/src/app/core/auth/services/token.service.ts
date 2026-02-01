@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TokenKey } from '../models/tokens.model';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class TokenService {
   public setAccessToken(token: string): void {
     localStorage.setItem(TokenKey.ACCESS, token);
@@ -17,11 +17,6 @@ export class TokenService {
 
   public setSignUpToken(token: string): void {
     localStorage.setItem(TokenKey.SIGNUP, token);
-  }
-
-  //TODO will be deleted
-  public setChallengeId(code:string) {
-    localStorage.setItem(TokenKey.CHALLENGE_ID, code)
   }
 
   public clearAuthToken(): void {
@@ -43,16 +38,18 @@ export class TokenService {
   }
 
   public clearSignUpToken(): void {
-    localStorage.removeItem(TokenKey.SIGNUP)
+    localStorage.removeItem(TokenKey.SIGNUP);
   }
 
-  //TODO will be deleted
-  public clearChallengeId(code:string) {
-    localStorage.removeItem(TokenKey.CHALLENGE_ID)
+  public clearUserInfo(): void {
+    localStorage.removeItem(TokenKey.USER);
   }
 
   public clearAllToken(): void {
-    localStorage.clear();
+    localStorage.removeItem(TokenKey.ACCESS);
+    localStorage.removeItem(TokenKey.REFRESH);
+    localStorage.removeItem(TokenKey.VERIFY);
+    localStorage.removeItem(TokenKey.SIGNUP);
   }
 
   public get accessToken() {
@@ -70,10 +67,4 @@ export class TokenService {
   public get getSignUpToken(): string | null {
     return localStorage.getItem(TokenKey.SIGNUP);
   }
-
-  //TODO will be deleted
-  public get getChallengeId(): string | null {
-    return localStorage.getItem(TokenKey.CHALLENGE_ID)
-  }
-  //reg - phone // @email
 }

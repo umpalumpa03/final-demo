@@ -3,66 +3,69 @@
 @let cfg = config();
 
 <app-basic-card minHeight="13rem" padding="2.4rem" [hasHover]="true" maxWidth="100%" flexDirection="row"
-    alignItems="center" (click)="cardClick.emit(loanData.id)" class="card">
+    (click)="cardClick.emit(loanData.id)" gap="0">
 
-    <div class="card__icon" [class]="config().iconClass">
-        <img [src]="config().iconSrc" alt="Loan status icon">
-    </div>
 
-    <div class="card__middle">
-        <div class="card__header-row">
+    <div class="card">
+        <div class="card__icon" [class]="config().iconClass">
+            <img [src]="config().iconSrc" alt="Loan status icon">
+        </div>
 
-            @if (isEditing()) {
-            <lib-text-input #nameInput [formControl]="nameControl" (blur)="onBlur()" (keydown.enter)="onSave()"
-                (click)="$event.stopPropagation()" [config]=" {
+        <div class="card__middle">
+            <div class="card__header-row">
+
+                @if (isEditing()) {
+                <lib-text-input #nameInput [formControl]="nameControl" (blur)="onBlur()" (keydown.enter)="onSave()"
+                    (click)="$event.stopPropagation()" [config]=" {
                     margin: '0 0 0.8rem 0'
                 }" />
-            }
-            @else {
-            <h3 class="card__title" (click)="enableEdit($event)">
-                {{ loanData.friendlyName || loanData.purpose | purposeFmt }}
-            </h3>
-            }
+                }
+                @else {
+                <h3 class="card__title" (click)="enableEdit($event)">
+                    {{ displayedName() | purposeFmt }}
+                </h3>
+                }
 
-            <span class="badge" [class]="cfg.badgeClass">
-                @if (loanData.status === 1) { <img [src]="icons.pending"> }
-                @if (loanData.status === 2) { <img [src]="icons.approve"> }
-                @if (loanData.status === 3) { <img [src]="icons.declined"> }
-                {{ loanData.statusName }}
-            </span>
+                <span class="badge" [class]="cfg.badgeClass">
+                    @if (loanData.status === 1) { <img [src]="icons.pending"> }
+                    @if (loanData.status === 2) { <img [src]="icons.approve"> }
+                    @if (loanData.status === 3) { <img [src]="icons.declined"> }
+                    {{ loanData.statusName }}
+                </span>
+            </div>
+
+            <p class="card__subtitle">{{ loanData.accountName }}</p>
+
+            <div class="card__details">
+                <div>
+                    <span>Amount:</span>
+                    <strong>{{ loanData.loanAmount | currency:'USD':'symbol':'1.0-0' }}</strong>
+                </div>
+                <div>
+                    <span>Term:</span>
+                    <strong>{{ loanData.months }} months</strong>
+                </div>
+                @if (showPaymentDetails()) {
+                <div>
+                    <span>Monthly:</span>
+                    <strong>{{ loanData.monthlyPayment | currency:'USD':'symbol':'1.0-0' }}</strong>
+                </div>
+                <div>
+                    <span>Next Payment:</span>
+                    <strong>{{ loanData.nextPaymentDate | date:'dd/MM/yyyy' }}</strong>
+                </div>
+                } @else {
+                <div>
+                    <span>Applied:</span>
+                    <strong>{{ loanData.createdAt | date:'dd/MM/yyyy' }}</strong>
+                </div>
+                }
+            </div>
         </div>
 
-        <p class="card__subtitle">Main Checking</p>
-
-        <div class="card__details">
-            <div>
-                <span>Amount:</span>
-                <strong>{{ loanData.loanAmount | currency:'USD':'symbol':'1.0-0' }}</strong>
-            </div>
-            <div>
-                <span>Term:</span>
-                <strong>{{ loanData.months }} months</strong>
-            </div>
-            @if (showPaymentDetails()) {
-            <div>
-                <span>Monthly:</span>
-                <strong>{{ loanData.monthlyPayment | currency:'USD':'symbol':'1.0-0' }}</strong>
-            </div>
-            <div>
-                <span>Next Payment:</span>
-                <strong>{{ loanData.nextPaymentDate | date:'dd/MM/yyyy' }}</strong>
-            </div>
-            } @else {
-            <div>
-                <span>Applied:</span>
-                <strong>{{ loanData.createdAt | date:'dd/MM/yyyy' }}</strong>
-            </div>
-            }
+        <div class="card__action">
+            <img src="./images/svg/feature-loans/arrow.svg" alt="">
         </div>
-    </div>
 
-    <div class="card__action">
-        <img src="./images/svg/feature-loans/arrow.svg" alt="">
     </div>
-
 </app-basic-card>

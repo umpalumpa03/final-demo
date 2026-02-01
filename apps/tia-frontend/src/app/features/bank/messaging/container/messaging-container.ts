@@ -1,19 +1,39 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { RouterModule } from "@angular/router";
 import { NavigationItem } from '@tia/shared/lib/navigation/models/nav-bar.model';
 import { NavigationBar } from '@tia/shared/lib/navigation/navigation-bar/navigation-bar';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { InboxService } from '@tia/shared/services/messages/inbox.service';
+import { Compose } from "../components/compose/compose";
+import { MessagingStore } from '../store/messaging.store';
+import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
 
 @Component({
   selector: 'app-messaging-container',
-  imports: [RouterModule, NavigationBar, ButtonComponent, TranslatePipe],
+  imports: [RouterModule, NavigationBar, Compose, ButtonComponent, TranslatePipe, DismissibleAlerts],
   templateUrl: './messaging-container.html',
   styleUrl: './messaging-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MessagingContainer {
   private translate = inject(TranslateService);
+  public inboxService = inject(InboxService);
+  public isComposeOpen = signal(false);
+  private messagingStore = inject(MessagingStore);
+  public error = this.messagingStore.error;
+  public successMessage = this.messagingStore.successMessage;
+
+  constructor() {
+    this.inboxService.fetchInboxCount();
+    effect(() => {
+      const count = this.inboxService.inboxCount();
+      this.messageRoutes.update(routes => {
+        routes[0] = { ...routes[0], count };
+        return [...routes];
+      });
+    });
+  }
 
   public readonly messageRoutes = signal<NavigationItem[]>([
     {

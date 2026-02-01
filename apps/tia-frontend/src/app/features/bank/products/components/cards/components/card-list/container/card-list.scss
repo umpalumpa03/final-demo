@@ -5,6 +5,7 @@
   @include display-flex(column);
   gap: 3.1rem;
   padding: 2rem;
+ 
 
   @media (max-width: 768px) {
     padding: 1.6rem;
@@ -17,7 +18,7 @@
   }
 
   &__loading {
-    @include flex-center(row, center, center);
+    @include flex-center;
     @include font-inter(400, 1.6rem, 1.5);
     padding: 4rem;
     color: $gray-600;
@@ -38,7 +39,9 @@
   }
 
   &__account-header {
-    @include flex-center(row, space-between, center);
+    @include display-flex(row);
+    justify-content: space-between;
+    align-items: center;
     gap: 1.2rem;
 
     @media (max-width: 480px) {
@@ -65,7 +68,7 @@
 
   &__cards-wrapper {
     @include display-flex(column);
-    gap: 0.8rem;
+    gap: 6rem;
   }
 
   &__cards {
@@ -161,32 +164,60 @@
     border-radius: 0.8rem;
   }
 
-  &__click-hint {
-    @include font-inter(400, 1.2rem, 1.5);
-    color: $gray-500;
-    text-align: center;
-    margin-top: 0.8rem;
-  }
   &__view-all-button {
-  @include font-inter(400, 1.4rem, 1.5);
-  width: 100%;
-  padding: 1.2rem;
-  margin-top: 0.8rem;
-  background-color: transparent;
-  border: 0.15rem solid var(--color-primary);
-  border-radius: 0.8rem;
-  color: var(--color-primary);
-  cursor: pointer;
-  transition: all 0.2s ease;
+    @include font-inter(400, 1.4rem, 1.5);
+    width: 100%;
+    padding: 1.2rem;
+    margin-top: 0.8rem;
+    background-color: transparent;
+    border: 0.15rem solid var(--color-primary);
+    border-radius: 0.8rem;
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
 
-  &:hover {
-    background-color: var(--color-primary);
-    color: $white;
+    &:hover {
+      background-color: var(--color-primary);
+      color: $white;
+    }
+
+    &:focus-visible {
+      outline: 0.2rem solid var(--color-primary);
+      outline-offset: 0.2rem;
+    }
   }
 
-  &:focus-visible {
-    outline: 0.2rem solid var(--color-primary);
-    outline-offset: 0.2rem;
+  &__add-card {
+    @include flex-center(column);
+    gap: 0.8rem;
+    padding: 3.2rem 2.4rem;
+    border: 0.2rem dashed var(--color-muted);
+    border-radius: 0.8rem;
+    background-color: $white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    max-width: 91rem;
+
+    &:hover {
+      border-color: var(--color-accent);
+      background-color: var(--color-bg);
+    }
+
+    &:focus {
+      outline: 0.2rem solid var(--color-primary);
+      outline-offset: 0.2rem;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
   }
-}
+
+  &__alert-container {
+    position: fixed;
+    bottom: 3rem;
+    right: 3rem;
+    max-width: 30rem;
+    z-index: 2;
+  }
 }

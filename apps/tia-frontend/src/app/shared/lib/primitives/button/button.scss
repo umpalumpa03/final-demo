@@ -21,7 +21,6 @@
   box-sizing: border-box;
   outline: none;
 
-  // Variants
   &--default {
     background-color: var(--color-primary);
     color: $white;
@@ -44,8 +43,17 @@
     color: $white;
     &:hover:not(:disabled) {
       background-color: $red-700;
+    }   
+  }
+
+  &--success {
+    background-color: $green-600;
+    color: $white;
+    &:hover:not(:disabled) {
+      background-color: $green-900;
     }
   }
+  
 
   &--outline {
     background-color: var(--color-bg);
@@ -72,9 +80,9 @@
     &:hover:not(:disabled) {
       text-decoration: underline;
     }
+    
   }
 
-  // Sizes
   &--small {
     height: 3.2rem;
     padding: 0 1.2rem;
@@ -96,7 +104,6 @@
     flex-shrink: 0;
   }
 
-  // States
   &--full-width {
     display: flex;
     width: 100%;
@@ -115,7 +122,6 @@
     border-color: transparent;
   }
 
-  // Elements
   &__content {
     @include flex-center();
     gap: 0.8rem;
@@ -144,6 +150,12 @@
     border-radius: 50%;
     animation: rotate 0.8s linear infinite;
     flex-shrink: 0;
+  }
+
+  &[style*="--btn-custom-color"] {
+    background-color: var(--btn-custom-color);
+    border-color: var(--btn-custom-color);
+    color: $white; 
   }
 }
 

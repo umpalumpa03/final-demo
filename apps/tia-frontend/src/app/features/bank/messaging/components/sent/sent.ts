@@ -14,13 +14,11 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Sent implements OnInit {
-    private messagingStore = inject(MessagingStore);
-
-  public mails = this.messagingStore.mails; 
+  private messagingStore = inject(MessagingStore);
+  public mails = this.messagingStore.mails;
   public isLoading = this.messagingStore.isLoading;
-  public error = this.messagingStore.error;
 
-  ngOnInit() {
-    this.messagingStore.loadMails('sent'); 
+  ngOnInit(): void {
+    this.messagingStore.loadMails('sent');
   }
 }

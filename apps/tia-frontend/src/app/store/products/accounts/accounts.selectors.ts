@@ -1,13 +1,18 @@
 import { createSelector } from '@ngrx/store';
 import { accountsFeature } from './accounts.reducer';
-import { AccountType } from '../../../features/bank/products/models/accounts.model';
+import { AccountType } from '../../../shared/models/accounts/accounts.model';
 
 export const {
   selectAccounts,
   selectSelectedAccountId,
   selectIsLoading,
+  selectIsFetching,
   selectError,
+  selectIsCreating,
+  selectCreateError,
   selectIsCreateModalOpen,
+  selectIsUpdatingFriendlyName,
+  selectUpdateFriendlyNameError,
 } = accountsFeature;
 
 export const selectCurrentAccounts = createSelector(
@@ -46,7 +51,18 @@ export const selectAccountsGrouped = createSelector(
 
 export const selectAccountOptions = createSelector(selectAccounts, (accounts) =>
   (accounts ?? []).map((acc) => ({
-    label: `${acc.friendlyName || acc.accountName} (${acc.currency}) - ${acc.balance} ${acc.currency}`,
+    label: `${acc.friendlyName || acc.name} (${acc.currency}) - ${acc.balance} ${acc.currency}`,
     value: acc.id,
   })),
+);
+
+export const selectGelAccountOptions = createSelector(
+  selectAccounts,
+  (accounts) =>
+    (accounts ?? [])
+      .filter((acc) => acc.currency === 'GEL')
+      .map((acc) => ({
+        label: `${acc.friendlyName || acc.name} (${acc.currency}) - ${acc.balance} ${acc.currency}`,
+        value: acc.id,
+      })),
 );

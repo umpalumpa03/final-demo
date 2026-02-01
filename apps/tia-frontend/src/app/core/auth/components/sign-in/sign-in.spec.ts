@@ -1,55 +1,97 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SignIn } from './sign-in';
-import { of } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 import { provideRouter } from '@angular/router';
 import { signal } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
-import { vi } from 'vitest';
+import { of, throwError } from 'rxjs';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-describe('SignIn', () => {
+describe('SignIn Component', () => {
   let component: SignIn;
   let fixture: ComponentFixture<SignIn>;
-  let mockAuthService: Partial<AuthService>;
+  let authServiceMock: {
+    isLoginLoading: ReturnType<typeof signal>;
+    errorMessage: ReturnType<typeof signal>;
+    loginPostRequest: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(async () => {
-    mockAuthService = {
-      loginPostRequest: vi.fn(() => of({ status: 'ok' } as any)),
-      isLoginLoading: signal(false) as any,
+    // Create mock AuthService
+    authServiceMock = {
+      isLoginLoading: signal(false),
+      errorMessage: signal(''),
+      loginPostRequest: vi.fn().mockReturnValue(of({})),
     };
 
     await TestBed.configureTestingModule({
-      imports: [SignIn],
+      imports: [SignIn, TranslateModule.forRoot()],
       providers: [
-        { provide: AuthService, useValue: mockAuthService },
+        { provide: AuthService, useValue: authServiceMock },
         provideRouter([]),
+        TranslateService,
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SignIn);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should mark form as touched when invalid on submit', () => {
-    vi.spyOn(component.loginForm, 'markAllAsTouched');
-    component.loginForm.controls.username.setValue('');
-    component.loginForm.controls.password.setValue('');
-
-    component.submit();
-
-    expect(component.loginForm.markAllAsTouched).toHaveBeenCalled();
+  it('should initialize the login form with empty values', () => {
+    expect(component.loginForm.get('username')?.value).toBe('');
+    expect(component.loginForm.get('password')?.value).toBe('');
   });
 
-  it('should call authService.loginPostRequest on valid submit', () => {
-    component.loginForm.controls.username.setValue('user');
-    component.loginForm.controls.password.setValue('pass');
+  it('should have username field as required with minLength validator', () => {
+    const usernameControl = component.loginForm.get('username');
+    
+    usernameControl?.setValue('');
+    expect(usernameControl?.hasError('required')).toBe(true);
+    
+    usernameControl?.setValue('a');
+    expect(usernameControl?.hasError('minlength')).toBe(true);
+    
+    usernameControl?.setValue('ab');
+    expect(usernameControl?.valid).toBe(true);
+  });
+
+  it('should have password field as required', () => {
+    const passwordControl = component.loginForm.get('password');
+    
+    passwordControl?.setValue('');
+    expect(passwordControl?.hasError('required')).toBe(true);
+    
+    passwordControl?.setValue('password123');
+    expect(passwordControl?.valid).toBe(true);
+  });
+
+  it('should not submit when form is invalid', () => {
+    component.loginForm.patchValue({
+      username: '',
+      password: '',
+    });
 
     component.submit();
 
-    expect(mockAuthService.loginPostRequest).toHaveBeenCalledWith({ username: 'user', password: 'pass' });
+    expect(authServiceMock.loginPostRequest).not.toHaveBeenCalled();
+    expect(component.loginForm.touched).toBe(true);
+  });
+
+  it('should call authService.loginPostRequest when form is valid', () => {
+    const formValue = {
+      username: 'testuser',
+      password: 'testpassword',
+    };
+
+    component.loginForm.patchValue(formValue);
+    component.submit();
+
+    expect(authServiceMock.loginPostRequest).toHaveBeenCalledWith(formValue);
+    expect(authServiceMock.loginPostRequest).toHaveBeenCalledTimes(1);
   });
 });

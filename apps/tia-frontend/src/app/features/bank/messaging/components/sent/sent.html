@@ -1,19 +1,18 @@
 <app-mail-header
   [page]="'messaging.routes.sent' | translate"
-  [messageCount]="0"
+  [messageCount]="mails().length"
+  [isSent]="true"
 ></app-mail-header>
 @if(isLoading()){
 <div class="loading-state">
   <app-route-loader variant="full-page" text="Loading messages..." />
 </div>
-} @else if(error()) {
-<div>{{ error()}}</div>
 } @else if(mails().length === 0) {
 <app-empty-card></app-empty-card>
 } @else {
 <div>
   @for (mail of mails(); track mail.id) {
-  <app-mail-card [mail]="mail"> </app-mail-card>
+  <app-mail-card [mail]="mail" [isSent]="true"> </app-mail-card>
   }
 </div>
 }

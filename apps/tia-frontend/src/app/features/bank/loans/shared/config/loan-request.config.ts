@@ -5,87 +5,78 @@ import {
 
 export const LOAN_FORM_CONFIG = {
   amount: {
-    label: 'Loan Amount',
-    placeholder: '5000',
+    label: 'loans.request.details.amount',
+    placeholder: 'loans.placeholders.amount_ex',
     required: true,
     prefixIcon: './images/svg/feature-loans/dollar.svg',
     type: 'number',
   },
   account: {
-    label: 'Account to Receive Funds',
-    placeholder: 'Select account',
+    label: 'loans.request.details.account',
+    placeholder: 'loans.placeholders.select_account',
     required: true,
     height: '3.6rem',
   },
-
   term: {
-    label: 'Loan Term (Months)',
-    placeholder: 'Select term',
+    label: 'loans.request.details.term',
+    placeholder: 'loans.placeholders.select_term',
     required: true,
     height: '3.6rem',
   },
-
   purpose: {
-    label: 'Loan Purpose',
-    placeholder: 'Select purpose',
+    label: 'loans.request.details.purpose',
+    placeholder: 'loans.placeholders.select_purpose',
     required: true,
     height: '3.6rem',
   },
-
   date: {
-    label: 'First Payment Date',
+    label: 'loans.request.details.date',
     type: 'date' as TextInputType,
     required: true,
   },
-
   street: {
-    label: 'Street Address',
-    placeholder: '123 Main Street',
+    label: 'loans.request.address.street',
+    placeholder: 'loans.placeholders.street_ex',
     required: true,
   },
-
   city: {
-    label: 'City',
-    placeholder: 'Tbilisi',
+    label: 'loans.request.address.city',
+    placeholder: 'loans.placeholders.city_ex',
     required: true,
   },
-
   region: {
-    label: 'Region',
-    placeholder: 'Tbilisi Region',
+    label: 'loans.request.address.region',
+    placeholder: 'loans.placeholders.region_ex',
     required: true,
   },
-
   postal: {
-    label: 'Postal Code',
-    placeholder: '0100',
-    type: 'number',
+    label: 'loans.request.address.postal',
+    placeholder: 'loans.placeholders.postal_ex',
     required: true,
+    errorMessage: 'loans.validation.postal_error',
   },
-
   contactName: {
-    label: 'Full Name',
-    placeholder: 'John Doe',
+    label: 'loans.request.person.name',
+    placeholder: 'loans.placeholders.name_ex',
     required: true,
   },
-
   contactRel: {
-    label: 'Relationship',
-    placeholder: 'Brother',
+    label: 'loans.request.person.relationship',
+    placeholder: 'loans.placeholders.relation_ex',
     required: true,
   },
-
   contactPhone: {
-    label: 'Phone Number',
-    placeholder: '591234567',
+    label: 'loans.request.person.number',
+    placeholder: 'loans.placeholders.phone_ex',
     required: true,
-    type: 'number',
+    errorMessage: 'loans.validation.phone_error',
+    prefixIcon: './images/svg/feature-loans/phone.svg',
   },
-
   contactEmail: {
-    label: 'Email Address',
-    placeholder: 'john.doe@example.com',
+    label: 'loans.request.person.email',
+    placeholder: 'loans.placeholders.email_ex',
     required: true,
+    prefixIcon: './images/svg/feature-loans/mail.svg',
   },
 } as const;
 
@@ -96,3 +87,5 @@ export const PURPOSE_OPTIONS: SelectOption[] = [
   { label: 'Education', value: 'education' },
   { label: 'Other', value: 'other' },
 ] as const;
+
+export const NUMBER_REGEX = '^[0-9]*$' as const;

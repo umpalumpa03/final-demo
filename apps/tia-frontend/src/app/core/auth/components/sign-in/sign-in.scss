@@ -2,18 +2,58 @@
 @use '../../../../shared/styles/mixins' as *;
 
 .sign-in {
+  @include display-flex(column);
+  max-height: 100vh;
+
   &__header {
     @include font-inter(700, 3.6rem, 4rem);
     margin-bottom: 4rem;
+    line-height: 1;
+    display: block;
+    color: var(--color-fg);
+
+    &__title {
+      @include font-inter(700, 3.6rem, 4rem);
+      margin-bottom: 2.4rem;
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+        @include font-inter(700, 3.2rem, 3.6rem);
+        margin-bottom: 2rem;
+      }
+
+      @media (max-width: 768px) {
+        @include font-inter(700, 2.8rem, 3.2rem);
+        margin-bottom: 1.6rem;
+      }
+    }
+
+    &__subtitle {
+      font-size: 1.6rem;
+      opacity: 0.9;
+      margin-bottom: 6rem;
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+        font-size: 1.8rem;
+        margin-bottom: 5rem;
+      }
+
+      @media (max-width: 768px) {
+        font-size: 1.6rem;
+        margin-bottom: 4rem;
+        line-height: 2.4rem;
+      }
+    }
   }
 
   &__form {
     @include display-flex(column);
-    gap: 1.6rem;
-    margin-bottom: 1.6rem;
+    gap: 2.6rem;
+    margin-bottom: 2.6rem;
+    height: 100%;
   }
 
-  &__switch, &__link {
+  &__switch,
+  &__link {
     font-size: 1.4rem;
   }
 
@@ -22,7 +62,12 @@
     cursor: pointer;
   }
 
-  &__switch {
+  &__switch,
+  &__loader {
     @include flex-center();
+  }
+
+  &__loader {
+    height: 65%;
   }
 }

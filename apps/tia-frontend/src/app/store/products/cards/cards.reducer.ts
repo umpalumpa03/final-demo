@@ -35,6 +35,8 @@ export const cardsReducer = createReducer(
   })),
   on(CardsActions.loadCardDetails, (state) => ({
     ...state,
+    cardDetailsLoading: true,
+    cardDetailsError: null,
   })),
   on(CardsActions.loadCardDetailsSuccess, (state, { cardId, details }) => ({
     ...state,
@@ -42,8 +44,66 @@ export const cardsReducer = createReducer(
       ...state.cardDetails,
       [cardId]: details,
     },
+    cardDetailsLoading: false,
+    cardDetailsError: null,
   })),
-  on(CardsActions.loadCardDetailsFailure, (state) => ({
+  on(CardsActions.loadCardDetailsFailure, (state, { error }) => ({
     ...state,
+    cardDetailsLoading: false,
+    cardDetailsError: error,
   })),
+  on(CardsActions.loadCardCreationData, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+  on(CardsActions.loadCardCreationDataSuccess, (state, { designs, categories, types }) => ({
+    ...state,
+    designs,
+    categories,
+    types,
+    loading: false,
+    error: null,
+  })),
+  on(CardsActions.loadCardCreationDataFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
+  on(CardsActions.createCard, (state) => ({
+    ...state,
+    isCreating: true,
+    createError: null,
+  })),
+  on(CardsActions.createCardSuccess, (state) => ({
+    ...state,
+    isCreating: false,
+    createError: null,
+    isCreateModalOpen: false,
+  })),
+  on(CardsActions.createCardFailure, (state, { error }) => ({
+    ...state,
+    isCreating: false,
+    createError: error,
+  })),
+  on(CardsActions.openCreateCardModal, (state) => ({
+    ...state,
+    isCreateModalOpen: true,
+  })),
+  on(CardsActions.closeCreateCardModal, (state) => ({
+    ...state,
+    isCreateModalOpen: false,
+    createError: null,
+  })),
+  on(CardsActions.createCardSuccess, (state) => ({
+  ...state,
+  isCreating: false,
+  createError: null,
+  isCreateModalOpen: false,
+  showSuccessAlert: true,
+})),
+on(CardsActions.hideSuccessAlert, (state) => ({
+  ...state,
+  showSuccessAlert: false,
+})),
 );

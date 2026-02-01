@@ -14,8 +14,8 @@
         "accounts": "ანგარიშები"
     },
     "language": {
-        "title": "ენის პარამეტრები",
-        "subtitle": "აირჩიეთ სასურველი ენა",
+        "title": "ენა & რეგიონი",
+        "subtitle": "აირჩიეთ სასურველი ენა თქვენი გამოცდილების პერსონალიზაციისთვის",
         "current": "მიმდინარე ენა",
         "available": "ხელმისაწვდომი ენები",
         "english": "ინგლისური",
@@ -23,6 +23,8 @@
     },
     "appearance": {
         "title": "გარეგნობა",
+        "subtitle": "მოირგეთ თქვენი ვიზუალური გამოცდილება",
+        "cardsTitle": "თემის არჩევა",
         "theme": "თემა",
         "light": "ნათელი",
         "dark": "მუქი",
@@ -30,12 +32,28 @@
     },
     "profile-photo": {
         "title": "პროფილის ფოტო",
-        "change": "ფოტოს შეცვლა",
-        "remove": "ფოტოს წაშლა"
+        "subtitle": "ატვირთეთ ახალი პროფილის ფოტო ან აირჩიეთ ნაგულისხმები ფოტო ",
+        "uploadCustomPhoto": "ატვირთეთ ახალი პროფილის ფოტო",
+        "chooseFile": "ფაილის არჩევა",
+        "defaultAvatar": "ნაგულისხმები ფოტოები",
+        "loadingDefaultAvatars": "ნაგულისხმები ფოტოები იტვირთება...",
+        "profilePictureChangedSuccessfully": "პროფილის ფოტო წარმატებით შეიცვალა",
+        "profilePictureRemovedSuccessfully": "პროფილის ფოტო წარმატებით წაიშლა",
+        "change": "შენახვა",
+        "remove": "ფოტოს წაშლა",
+        "invalidFileAlert": "გთხოვთ აირჩიოთ ნაგულისხმები ფოტო (PNG ან JPG ფორმატი, მაქსიმალური ზომა — 1 MB)"
     },
     "security": {
         "title": "უსაფრთხოების პარამეტრები",
         "changePassword": "პაროლის შეცვლა",
+        "changePasswordSubtitle": "განაახლეთ თქვენი პაროლი ანგარიშის უსაფრთხოებისთვის",
+        "currentPassword": "მიმდინარე პაროლი",
+        "currentPasswordPlaceholder": "შეიყვანეთ მიმდინარე პაროლი",
+        "newPassword": "ახალი პაროლი",
+        "newPasswordPlaceholder": "შეიყვანეთ ახალი პაროლი",
+        "confirmNewPassword": "დაადასტურეთ ახალი პაროლი",
+        "confirmNewPasswordPlaceholder": "დაადასტურეთ ახალი პაროლი",
+        "updatePassword": "პაროლის განახლება",
         "twoFactorAuth": "ორი ფაქტორიანი ავთენტიფიკაცია"
     },
     "user-management": {

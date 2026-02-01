@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { map, catchError, switchMap } from 'rxjs/operators';
-import { AccountsService } from '../../../features/bank/products/components/accounts/services/accounts.service';
+import { AccountsService } from '../../../shared/services/accounts/accounts.service';
 import { AccountsActions } from './accounts.actions';
 
 @Injectable()
@@ -27,6 +27,46 @@ export class AccountsEffects {
           ),
         ),
       ),
+    ),
+  );
+
+  createAccount$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AccountsActions.createAccount),
+      switchMap(({ request }) =>
+        this.accountsService.createAccount(request).pipe(
+          map((account) => AccountsActions.createAccountSuccess({ account })),
+          catchError((error) =>
+            of(
+              AccountsActions.createAccountFailure({
+                error: error.message || 'Failed to create account',
+              }),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  updateFriendlyName$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AccountsActions.updateFriendlyName),
+      switchMap(({ accountId, friendlyName }) => {
+        return this.accountsService
+          .updateFriendlyName(accountId, friendlyName)
+          .pipe(
+            map((account) => {
+              return AccountsActions.updateFriendlyNameSuccess({ account });
+            }),
+            catchError((error) => {
+              return of(
+                AccountsActions.updateFriendlyNameFailure({
+                  error: error.message || 'Failed to update friendly name',
+                }),
+              );
+            }),
+          );
+      }),
     ),
   );
 }

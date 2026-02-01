@@ -1,31 +1,30 @@
 import { Routes } from '@angular/router';
 import { provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
-
-import { loansReducer } from './store/loans.reducer';
-import { LoansEffects } from './store/loans.effects';
 import { LoansContainer } from './container/loans-container';
 import { LoansService } from './shared/services/loans.service';
 import { AccountsEffects } from '../../../store/products/accounts/accounts.effects';
 import { accountsFeature } from '../../../store/products/accounts/accounts.reducer';
-import { loansFeature } from '../../../store/loans/loans.reducer';
-import { LoanCreateEffects } from '../../../store/loans/loans.effects';
 import { LoanCreateService } from '@tia/shared/services/loans/loan-create.service';
+import { LoanCreateEffects } from '../../../store/loans/loans.effects';
+import { loansFeature } from '../../../store/loans/loans.reducer';
+import { LoansStore } from './store/loans.store';
 
 export const loansRoutes: Routes = [
   {
     path: '',
     component: LoansContainer,
     providers: [
-      provideState('loans_local', loansReducer),
-      provideEffects(LoansEffects),
+      LoansStore,
+
       LoansService,
 
       provideState(accountsFeature),
       provideEffects(AccountsEffects),
 
       provideState(loansFeature),
-      provideEffects(LoanCreateEffects),
+      provideEffects([LoanCreateEffects]),
+
       LoanCreateService,
     ],
     children: [

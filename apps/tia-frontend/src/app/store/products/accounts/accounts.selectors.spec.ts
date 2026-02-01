@@ -4,30 +4,44 @@ import {
   selectSavingAccounts,
   selectCardAccounts,
   selectAccountsGrouped,
+  selectSelectedAccount,
+  selectAccountOptions,
 } from './accounts.selectors';
-import { AccountType } from '../../../features/bank/products/models/accounts.model';
+import { AccountType } from '../../../shared/models/accounts/accounts.model';
 
 describe('AccountsSelectors', () => {
   const mockAccounts = [
     {
       id: '1',
+      userId: 'user1',
+      permission: 1,
       type: AccountType.current,
-      accountNumber: '123',
-      accountName: 'Current',
+      iban: '123',
+      friendlyName: 'Current',
+      name: 'Current Account',
+      status: 'active',
       balance: 1000,
       currency: 'USD',
-      isActive: true,
-      createdAt: '2024-01-01',
+      createdAt: '2026-01-01',
+      openedAt: '2026-01-01',
+      closedAt: '',
+      isFavorite: true,
     },
     {
       id: '2',
+      userId: 'user1',
+      permission: 1,
       type: AccountType.saving,
-      accountNumber: '456',
-      accountName: 'Saving',
+      iban: '456',
+      friendlyName: 'Saving',
+      name: 'Saving Account',
+      status: 'active',
       balance: 5000,
       currency: 'USD',
-      isActive: true,
-      createdAt: '2024-01-01',
+      createdAt: '2026-01-01',
+      openedAt: '2026-01-01',
+      closedAt: '',
+      isFavorite: false,
     },
   ];
 
@@ -57,5 +71,55 @@ describe('AccountsSelectors', () => {
     expect(result.current.length).toBe(1);
     expect(result.saving.length).toBe(1);
     expect(result.card.length).toBe(0);
+  });
+
+  it('should handle null accounts in selectors', () => {
+    const currentResult = selectCurrentAccounts.projector(null as any);
+    expect(currentResult).toEqual([]);
+
+    const savingResult = selectSavingAccounts.projector(null as any);
+    expect(savingResult).toEqual([]);
+
+    const cardResult = selectCardAccounts.projector(null as any);
+    expect(cardResult).toEqual([]);
+  });
+
+  it('should select account by id', () => {
+    const result = selectSelectedAccount.projector(mockAccounts, '1');
+    expect(result).toBeDefined();
+    expect(result?.id).toBe('1');
+    expect(result?.type).toBe(AccountType.current);
+  });
+
+  it('should return null when no account is selected', () => {
+    const result = selectSelectedAccount.projector(mockAccounts, null);
+    expect(result).toBeNull();
+  });
+
+  it('should return null when selected account not found', () => {
+    const result = selectSelectedAccount.projector(
+      mockAccounts,
+      'non-existent',
+    );
+    expect(result).toBeUndefined();
+  });
+
+  it('should handle null accounts in selectSelectedAccount', () => {
+    const result = selectSelectedAccount.projector(null as any, '1');
+    expect(result).toBeUndefined();
+  });
+
+  it('should select account options', () => {
+    const result = selectAccountOptions.projector(mockAccounts);
+    expect(result.length).toBe(2);
+    expect(result[0].label).toBe('Current (USD) - 1000 USD');
+    expect(result[0].value).toBe('1');
+    expect(result[1].label).toBe('Saving (USD) - 5000 USD');
+    expect(result[1].value).toBe('2');
+  });
+
+  it('should handle null accounts in selectAccountOptions', () => {
+    const result = selectAccountOptions.projector(null as any);
+    expect(result).toEqual([]);
   });
 });

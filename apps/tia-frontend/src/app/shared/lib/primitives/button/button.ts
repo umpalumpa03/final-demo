@@ -1,4 +1,4 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy,computed } from '@angular/core';
 import { ButtonVariant, ButtonSize } from './button.model';
 
 @Component({
@@ -15,4 +15,7 @@ export class ButtonComponent {
   public readonly fullWidth = input<boolean>(false);
   public readonly icon = input<string | null>('');
   public readonly type = input<'button' | 'submit' | 'reset'>('button');
+  public readonly customColor = input<string>('');
+
 }
+

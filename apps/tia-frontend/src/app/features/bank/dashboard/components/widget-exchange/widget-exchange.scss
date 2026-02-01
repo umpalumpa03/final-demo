@@ -1,0 +1,104 @@
+@use '../../../../../shared/styles/mixins' as *;
+@use '../../../../../shared/styles/palette' as *;
+
+.exchange-rates {
+  @include display-flex(column);
+  gap: 1.6rem;
+  padding: 1rem;
+
+  &__title {
+    @include font-inter(600, 2rem, 2.8rem);
+    color: $blue-ocean-foreground;
+    padding: 0 1rem 1rem 1rem;
+  }
+}
+
+.exchange-rate-card {
+  @include display-flex(row);
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.6rem;
+  background-color: $gray-25;
+  border-radius: 1.2rem;
+
+  &__info {
+    @include display-flex(row);
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  &__icon {
+    width: 4.8rem;
+    height: 4.8rem;
+    border-radius: 50%;
+    background-color: $blue-royal-secondary;
+    @include display-flex(row);
+    align-items: center;
+    justify-content: center;
+    @include font-inter(600, 2rem, 2.4rem);
+    color: $blue-800;
+  }
+
+  &__details-left {
+    @include display-flex(column);
+    gap: 0.4rem;
+  }
+
+  &__currency {
+    @include font-inter(600, 1.6rem, 2.4rem);
+    color: $blue-ocean-foreground;
+  }
+
+  &__change {
+    @include font-inter(500, 1.4rem, 2rem);
+    @include display-flex(row);
+    align-items: center;
+    gap: 0.4rem;
+
+    &--positive {
+      color: $green-600;
+    }
+
+    &--negative {
+      color: $red-600;
+    }
+  }
+
+  &__arrow {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  &__details-right {
+    @include display-flex(column);
+    align-items: flex-end;
+    gap: 0.4rem;
+  }
+
+  &__rate {
+    @include font-inter(600, 1.8rem, 2.4rem);
+    color: $blue-ocean-foreground;
+  }
+
+  &__rate-change {
+    @include font-inter(500, 1.4rem, 2rem);
+
+    &--positive {
+      color: $red-600;
+    }
+
+    &--negative {
+      color: $red-600;
+    }
+  }
+}
+
+@media(max-width: 1024px) {
+  .exchange-rates{
+    padding-inline: 0;
+  }
+  .exchange-rate-card {
+
+    padding-inline: 0;
+  }
+}

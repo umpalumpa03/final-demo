@@ -1,7 +1,10 @@
 <app-profile-photo
   [defaultAvatars]="defaultAvatars()"
+  [defaultAvatarsLoading]="defaultAvatarsLoading()"
   [selectedAvatarId]="selectedAvatarId()"
   [photoUrl]="currentAvatarUrl()"
+  [alertType]="alertType()"
+  [alertMessage]="alertMessage()"
   (fileSelected)="onFileSelected($event)"
   (removePhoto)="onRemovePhoto()"
   (saveChanges)="onSaveChanges()"

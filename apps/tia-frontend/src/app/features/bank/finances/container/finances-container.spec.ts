@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { FinancesContainer } from './finances-container';
 import { FinancesStore } from '../store/finances.store';
-import { signal } from '@angular/core';
+import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('FinancesContainer', () => {
@@ -9,25 +9,20 @@ describe('FinancesContainer', () => {
   let fixture: ComponentFixture<FinancesContainer>;
   
   const mockStore = {
-    summary: signal({
-      income: 5000,
-      expenses: 2000,
-      savings: 3000,
-      efficiency: 60,
-      incomeChange: 10,
-      expensesChange: -5,
-      savingsChange: 15,
-      efficiencyChange: 2
-    }),
+    summary: signal(null),
     loading: signal(false),
     error: signal(null),
-    loadSummary: vi.fn(),
+    summaryCards: signal([]),
+    charts: signal([]),
+    loadAllData: vi.fn(), 
   };
 
   beforeEach(async () => {
+    vi.clearAllMocks();
     await TestBed.configureTestingModule({
       imports: [FinancesContainer],
-      providers: [{ provide: FinancesStore, useValue: mockStore }]
+      providers: [{ provide: FinancesStore, useValue: mockStore }],
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinancesContainer);
@@ -35,46 +30,18 @@ describe('FinancesContainer', () => {
     fixture.detectChanges();
   });
 
-  it('should initialize and load summary', () => {
-    expect(mockStore.loadSummary).toHaveBeenCalled();
+  it('should create component', () => {
+    expect(component).toBeTruthy();
   });
 
-  it('should format currency correctly', () => {
-    const result = component['formatCurrency'](1250);
-    expect(result).toContain('$1,250');
-  });
-
-  it('should update filter and re-fetch data', () => {
+  it('should update filter and load data', () => {
     component.onFilterChange('custom');
-    expect(component.activeFilter).toBe('custom');
-    expect(mockStore.loadSummary).toHaveBeenCalled();
+    expect(mockStore.loadAllData).toHaveBeenCalled();
   });
 
-  it('should map store data to summaryCardsData correctly', () => {
-    const cards = component.summaryCardsData();
-    expect(cards.length).toBeGreaterThan(0);
-    expect(cards[0].value).toBeDefined();
-    expect(['positive', 'negative']).toContain(cards[0].changeType);
+  it('should handle input date change', () => {
+    const event = { target: { value: '2026-01-01' } } as any;
+    component.handleInput('fromDate', event);
+    expect(component.filterForm.get('fromDate')?.value).toBe('2026-01-01');
   });
-
-  it('should handle input and update form control', () => {
-    const mockEvent = { target: { value: '2026-05-20' } } as any;
-    component.handleInput('fromDate', mockEvent);
-    expect(component.filterForm.get('fromDate')?.value).toBe('2026-05-20');
-  });
-
-  it('should trigger fetchData on valid form changes', async () => {
-  vi.useFakeTimers();
-  
-  const spy = vi.spyOn(mockStore, 'loadSummary');
-  
-  // ფორმის შეცვლა
-  component.filterForm.patchValue({ fromDate: '2026-02-01' });
-  
-  vi.advanceTimersByTime(500);
-  
-  expect(spy).toHaveBeenCalled();
-  
-  vi.useRealTimers();
-});
 });

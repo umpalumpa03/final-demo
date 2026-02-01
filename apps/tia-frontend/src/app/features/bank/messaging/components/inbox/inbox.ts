@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { MailHeader } from "../../shared/ui/mail-header/mail-header";
 import { TranslatePipe } from '@ngx-translate/core';
 import { MessagingStore } from '../../store/messaging.store';
@@ -16,11 +16,55 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
 export class Inbox implements OnInit {
   private messagingStore = inject(MessagingStore);
 
-  public mails = this.messagingStore.mails; 
+  public mails = this.messagingStore.mails;
   public isLoading = this.messagingStore.isLoading;
-  public error = this.messagingStore.error;
+  public selectedMailIds = signal<Set<number>>(new Set());
 
-  ngOnInit() {
+  public isAllSelected(): boolean {
+    return this.mails().length > 0 &&
+      this.mails().every(mail => this.selectedMailIds().has(mail.id));
+  }
+
+  public toggleSelectAll(checked: boolean): void {
+    if (checked) {
+      this.selectedMailIds.set(new Set(this.mails().map(m => m.id)));
+    } else {
+      this.selectedMailIds.set(new Set());
+    }
+  }
+
+  public onMailChecked(mailId: number, checked: boolean): void {
+    const set = new Set(this.selectedMailIds());
+    if (checked) set.add(mailId);
+    else set.delete(mailId);
+    this.selectedMailIds.set(set);
+  }
+
+  public hasBulkSelection(): boolean {
+    return this.selectedMailIds().size > 0;
+  }
+
+  public deleteSelectedMails(): void {
+    const ids = Array.from(this.selectedMailIds());
+    this.messagingStore.deleteAllMails(ids);
+    this.selectedMailIds.set(new Set());
+  }
+
+  public markSelectedAsRead(): void {
+    const ids = Array.from(this.selectedMailIds());
+    this.messagingStore.markAllAsRead(ids);
+    this.selectedMailIds.set(new Set());
+  }
+
+  ngOnInit(): void {
     this.messagingStore.loadMails('inbox');
+  }
+
+  public markAsRead(mailId: number): void {
+    this.messagingStore.markMailasRead(mailId);
+  }
+
+  public deleteMail(mailId: number): void {
+    this.messagingStore.deleteMail(mailId);
   }
 }

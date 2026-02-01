@@ -19,4 +19,15 @@
             color: $gray-700;
         }
     }
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.6rem;
+
+        &__title {
+            align-items: center;
+            text-align: center;
+        }
+    }
 }

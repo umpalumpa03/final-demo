@@ -1,146 +1,182 @@
-
-import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { describe, it, expect, beforeEach, vi, Mock } from 'vitest';
 import { CardList } from './card-list';
-import { loadCardAccounts } from '../../../../../../../../store/products/cards/cards.actions';
-import { selectCardGroups, selectLoading, selectError } from '../../../../../../../../store/products/cards/cards.selectors';
-import { CardGroup } from '../../../models/card-group.model';
+import {
+  loadCardAccounts,
+  hideSuccessAlert,
+  openCreateCardModal,
+  closeCreateCardModal,
+} from '../../../../../../../../store/products/cards/cards.actions';
+import * as CardsSelectors from '../../../../../../../../store/products/cards/cards.selectors';
+import { CardGroup } from '@tia/shared/models/cards/card-group.model';
+
+interface MockStore {
+  select: Mock;
+  dispatch: Mock;
+}
+
+interface MockRouter {
+  navigate: Mock;
+}
 
 describe('CardList', () => {
   let component: CardList;
   let fixture: ComponentFixture<CardList>;
-  let mockStore: { select: ReturnType<typeof vi.fn>; dispatch: ReturnType<typeof vi.fn> };
-  let mockRouter: { navigate: ReturnType<typeof vi.fn> };
+  let store: MockStore;
+  let router: MockRouter;
 
-  const singleCardGroup: CardGroup = {
-    account: {
-      id: 'acc1',
-      iban: 'GE29TIA7890123456789012',
-      name: 'Main GEL Account',
-      balance: 4500000,
-      currency: 'GEL',
-      status: 'active',
-      cardIds: ['card1'],
-      openedAt: '2026-01-18T01:10:50.948Z',
+  const mockCardGroups: CardGroup[] = [
+    {
+      account: {
+        id: 'acc-123',
+        iban: 'GE00TB0000000000000000',
+        name: 'My Account',
+        balance: 1000,
+        currency: 'GEL',
+        status: 'ACTIVE',
+        cardIds: ['card-123', 'card-456'],
+        openedAt: '2024-01-01',
+      },
+      cardImages: [
+        {
+          cardId: 'card-123',
+          imageBase64: 'data:image/png;base64,abc123',
+        },
+        {
+          cardId: 'card-456',
+          imageBase64: 'data:image/png;base64,def456',
+        },
+      ],
     },
-    cardImages: [{ cardId: 'card1', imageBase64: 'data:image/svg+xml;base64,test1' }],
-  };
-
-  const multiCardGroup: CardGroup = {
-    account: {
-      id: 'acc2',
-      iban: 'GE29TIA7890123456789013',
-      name: 'EUR Current',
-      balance: 1500000,
-      currency: 'EUR',
-      status: 'active',
-      cardIds: ['card2', 'card3'],
-      openedAt: '2026-01-18T01:10:50.948Z',
-    },
-    cardImages: [
-      { cardId: 'card2', imageBase64: 'data:image/svg+xml;base64,test2' },
-      { cardId: 'card3', imageBase64: 'data:image/svg+xml;base64,test3' },
-    ],
-  };
-
-  const emptyCardGroup: CardGroup = {
-    account: {
-      id: 'acc3',
-      iban: 'GE00TIAC9D8CF5ECADBD29',
-      name: 'Current Account',
-      balance: 0,
-      currency: 'GEL',
-      status: 'active',
-      cardIds: [],
-      openedAt: null,
-    },
-    cardImages: [],
-  };
+  ];
 
   beforeEach(async () => {
-    mockStore = {
+    const storeMock: MockStore = {
       select: vi.fn((selector) => {
-        if (selector === selectCardGroups) {
-          return of([singleCardGroup, multiCardGroup, emptyCardGroup]);
+        if (selector === CardsSelectors.selectCardGroups) {
+          return of(mockCardGroups);
         }
-        if (selector === selectLoading) {
+        if (selector === CardsSelectors.selectLoading) {
           return of(false);
         }
-        if (selector === selectError) {
+        if (selector === CardsSelectors.selectError) {
           return of(null);
+        }
+        if (selector === CardsSelectors.selectShowSuccessAlert) {
+          return of(false);
+        }
+        if (selector === CardsSelectors.selectIsCreateModalOpen) {
+          return of(false);
         }
         return of(null);
       }),
       dispatch: vi.fn(),
     };
 
-    mockRouter = {
+    const routerMock: MockRouter = {
       navigate: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
       imports: [CardList],
       providers: [
-        { provide: Store, useValue: mockStore },
-        { provide: Router, useValue: mockRouter },
+        { provide: Store, useValue: storeMock },
+        { provide: Router, useValue: routerMock },
       ],
     }).compileComponents();
 
+    store = TestBed.inject(Store) as unknown as MockStore;
+    router = TestBed.inject(Router) as unknown as MockRouter;
+
     fixture = TestBed.createComponent(CardList);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
-  describe('Component Initialization', () => {
-    it('should create', () => {
-      expect(component).toBeTruthy();
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should dispatch loadCardAccounts on init', () => {
+    expect(store.dispatch).toHaveBeenCalledWith(loadCardAccounts());
+  });
+
+  it('should open modal', () => {
+    component['openModal']();
+    expect(store.dispatch).toHaveBeenCalledWith(openCreateCardModal());
+  });
+
+  it('should close modal', () => {
+    component['handleCloseModal']();
+    expect(store.dispatch).toHaveBeenCalledWith(closeCreateCardModal());
+  });
+
+  describe('Card click handling', () => {
+    it('should navigate to card details when single card', () => {
+      component['handleCardClick']('acc-123', 'card-123', 0, false);
+      expect(router.navigate).toHaveBeenCalledWith(['/bank/products/cards/details', 'card-123']);
     });
 
-    it('should dispatch loadCardAccounts on init', () => {
-      fixture.detectChanges();
-      expect(mockStore.dispatch).toHaveBeenCalledWith(loadCardAccounts());
+    it('should navigate to account when clicking active card with multiple cards', () => {
+      component['activeCardIndex'].set({ 'acc-123': 0 });
+      component['handleCardClick']('acc-123', 'card-123', 0, true);
+      expect(router.navigate).toHaveBeenCalledWith(['/bank/products/cards/account', 'acc-123']);
+    });
+
+    it('should update active index when clicking non-active card', () => {
+      component['activeCardIndex'].set({ 'acc-123': 0 });
+      component['handleCardClick']('acc-123', 'card-456', 1, true);
+      expect(component['activeCardIndex']()).toEqual({ 'acc-123': 1 });
     });
   });
 
-  describe('Card Navigation', () => {
-    it('should navigate to card details when single card is clicked', () => {
-      component.handleCardClick(singleCardGroup, 'card1', 0);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/products/cards/details', 'card1']);
-    });
-
-    it('should navigate to account page when active card in multi-card group is clicked', () => {
-      component.handleCardClick(multiCardGroup, 'card2', 0);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/products/cards/account', 'acc2']);
-    });
+  it('should navigate to view all cards', () => {
+    component['handleViewAllCards']('acc-123');
+    expect(router.navigate).toHaveBeenCalledWith(['/bank/products/cards/account', 'acc-123']);
   });
 
-  describe('Card Switching', () => {
-    it('should update active card index when non-active card is clicked', () => {
-      component.handleCardClick(multiCardGroup, 'card3', 1);
-      expect(component.getCardIndex('acc2')).toBe(1);
-      expect(mockRouter.navigate).not.toHaveBeenCalled();
+  describe('Observables', () => {
+    it('should emit cardGroups', () => {
+      let result: CardGroup[] | undefined;
+      component['cardGroups$'].subscribe((val: CardGroup[]) => {
+        result = val;
+      });
+      expect(result).toEqual(mockCardGroups);
     });
 
-    it('should navigate after making card active and clicking again', () => {
-      component.handleCardClick(multiCardGroup, 'card3', 1);
-      expect(component.getCardIndex('acc2')).toBe(1);
-      
-      component.handleCardClick(multiCardGroup, 'card3', 1);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/products/cards/account', 'acc2']);
-    });
-  });
-
-  describe('Card Index Management', () => {
-    it('should return 0 as default card index for non-existent account', () => {
-      expect(component.getCardIndex('nonexistent')).toBe(0);
+    it('should emit loading false', () => {
+      let result: boolean | undefined;
+      component['loading$'].subscribe((val: boolean) => {
+        result = val;
+      });
+      expect(result).toBe(false);
     });
 
-    it('should maintain separate active indices for different accounts', () => {
-      component.handleCardClick(multiCardGroup, 'card3', 1);
-      expect(component.getCardIndex('acc2')).toBe(1);
-      expect(component.getCardIndex('acc1')).toBe(0);
+    it('should emit null error', () => {
+      let result: string | null | undefined;
+      component['error$'].subscribe((val: string | null) => {
+        result = val;
+      });
+      expect(result).toBeNull();
+    });
+
+    it('should emit showSuccessAlert false', () => {
+      let result: boolean | undefined;
+      component['showSuccessAlert$'].subscribe((val: boolean) => {
+        result = val;
+      });
+      expect(result).toBe(false);
+    });
+
+    it('should emit isModalOpen false', () => {
+      let result: boolean | undefined;
+      component['isModalOpen$'].subscribe((val: boolean) => {
+        result = val;
+      });
+      expect(result).toBe(false);
     });
   });
 });

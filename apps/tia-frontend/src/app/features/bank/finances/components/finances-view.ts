@@ -7,7 +7,9 @@ import { TextInput } from '../../../../shared/lib/forms/input-field/text-input';
 import { BasicAlerts } from '../../../../shared/lib/alerts/components/basic-alerts/basic-alerts';
 import { StatisticCard } from '../../../../shared/lib/cards/statistic-card/statistic-card';
 import { Spinner } from '../../../../shared/lib/feedback/spinner/spinner';
-import { FilterOption, FilterType, SummaryCard } from '../models/filter.model';
+import { FilterOption, FilterType, SummaryCard,ChartConfig } from '../models/filter.model';
+import { ChartOptions } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'app-finances-view',
@@ -19,7 +21,8 @@ import { FilterOption, FilterType, SummaryCard } from '../models/filter.model';
     TextInput,
     BasicAlerts,
     StatisticCard,
-    Spinner
+    Spinner,
+    BaseChartDirective
   ],
   templateUrl: './finances-view.html',
   styleUrl: './finances-view.scss',
@@ -28,15 +31,27 @@ import { FilterOption, FilterType, SummaryCard } from '../models/filter.model';
 export class FinancesView {
   public readonly financeTitle = input.required<string>();
   public readonly financeSubTitle = input.required<string>();
+  
   public readonly activeFilter = input.required<string>();
   public readonly filterOptions = input.required<FilterOption[]>();
   public readonly filterForm = input.required<FormGroup>();
+  
   public readonly loading = input<boolean>(false);
   public readonly error = input<string | null>(null);
   public readonly summaryCards = input<SummaryCard[]>([]);
 
+  public readonly charts = input.required<ChartConfig[]>();
+
   public readonly filterChange = output<FilterType>();
   public readonly dateInput = output<{ field: 'fromDate' | 'toDate'; event: Event }>();
+
+  public readonly chartOptions: ChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' }
+    }
+  };
 
   public getControl(name: string): FormControl {
     return this.filterForm().get(name) as FormControl;
