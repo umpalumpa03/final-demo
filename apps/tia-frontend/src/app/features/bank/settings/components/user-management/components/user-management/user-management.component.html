@@ -1,5 +1,12 @@
 @let cfg = userState.newConfig();
-<div class="search-box">
-    <lib-text-input [config]="cfg" type="search" (valueChange)="onSearch($event)">
-    </lib-text-input>
-</div>
+<main>
+    <div class="search-box">
+        <lib-text-input [config]="cfg" type="search" (valueChange)="onSearch($event)">
+        </lib-text-input>
+    </div>
+
+    @for (user of store.users(); track user.id) {
+    <app-user-card [user]="user">
+    </app-user-card>
+    }
+</main>
