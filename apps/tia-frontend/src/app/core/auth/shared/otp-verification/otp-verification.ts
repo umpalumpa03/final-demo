@@ -15,6 +15,8 @@ import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { Otp } from '@tia/shared/lib/forms/otp/otp';
 import {
   interval,
+  map,
+  startWith,
   Subject,
   Subscription,
   takeUntil,
@@ -28,7 +30,10 @@ import {
   OtpVerificationType,
 } from '../../models/otp-verification.models';
 import { getOtpVerificationConfig } from '../../config/otp-verification.config';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
+import { OTP_VERIFY_FORM } from '../../config/inputs.config';
 
 @Component({
   selector: 'app-otp-verification',
@@ -39,7 +44,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     Otp,
     RouterLink,
     TextInput,
-    TranslatePipe
+    TranslatePipe,
   ],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
@@ -47,6 +52,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class OtpVerification {
   private fb = inject(FormBuilder);
+  private translate = inject(TranslateService);
   public type = input.required<OtpVerificationType>();
   public timeLimit = input(1);
   public timerType = input<TimerType>('phone');
@@ -57,9 +63,6 @@ export class OtpVerification {
 
   public isLoading = signal(false);
   public submitError = signal<string | null>(null);
-  public phoneConfig = signal({ label: 'Phone Number' });
-  public otpConfig = signal({ length: 4, label: 'Verification Code' });
-
 
   public iconUrl = computed(() => this.config().iconUrl);
   public title = computed(() => this.config().title);
@@ -83,6 +86,25 @@ export class OtpVerification {
 
   public onTimeout = output<void>();
   public resendClicked = output<void>();
+
+  public formConfig = toSignal(
+    this.translate.onLangChange.pipe(
+      startWith({
+        lang: this.translate.getCurrentLang(),
+        translation: null,
+      }),
+      map(() => {
+        return translateConfig(OTP_VERIFY_FORM, (key) =>
+          this.translate.instant(key),
+        );
+      }),
+    ),
+    {
+      initialValue: translateConfig(OTP_VERIFY_FORM, (key) =>
+        this.translate.instant(key),
+      ),
+    },
+  );
 
   public otpForm = this.fb.group({
     code: ['', Validators.required],

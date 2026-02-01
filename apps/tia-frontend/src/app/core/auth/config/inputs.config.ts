@@ -2,14 +2,25 @@ import { IFeaturePanel } from '../models/auth.models';
 
 export const SIGN_IN_FORM = {
   username: {
-    label: 'Username',
-    placeholder: 'Enter password',
+    label: 'auth.sign-in.passwordLabel',
+    placeholder: 'auth.sign-in.passwordPlaceholder',
   },
   password: {
-    label: 'Password',
-    placeholder: 'Enter your password',
+    label: 'auth.sign-in.passwordLabel',
+    placeholder: 'auth.sign-in.passwordPlaceholder',
   },
 } as const;
+
+export const OTP_VERIFY_FORM = {
+  otp: {
+    label: 'auth.otp-sign-in.otpPlaceholder',
+    length: 4,
+  },
+  phone: {
+    label: 'auth.otp-sign-up.otpPlaceholder'
+  },
+} as const;
+
 
 export const ALERTS_DISMISSIBLE_DATA = {
   info: {

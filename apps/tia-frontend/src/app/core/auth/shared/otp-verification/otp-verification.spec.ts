@@ -65,8 +65,6 @@ describe('OtpVerification', () => {
     expect(component.isLoading()).toBe(false);
     expect(component.submitError()).toBeNull();
     expect(component.isResendActive()).toBe(false);
-    expect(component.phoneConfig()).toEqual({ label: 'Phone Number' });
-    expect(component.otpConfig()).toEqual({ length: 4, label: 'Verification Code' });
   });
 
   it('should compute config properties from type input', () => {
