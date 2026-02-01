@@ -1,6 +1,16 @@
 <div class="global-bank-wrapper messaging-container">
   <div class="messaging-container__navbar">
-    <app-button variant="default" [icon]="'plus-icon.svg'" [fullWidth]="true">{{ 'messaging.compose.compose' | translate }}</app-button>
+    <app-button
+      variant="default"
+      [icon]="'plus-icon.svg'"
+      [fullWidth]="true"
+      (click)="isComposeOpen.set(true)"
+      >{{ 'messaging.compose.compose' | translate }}</app-button
+    >
+    <app-compose
+      [isOpen]="isComposeOpen()"
+      (close)="isComposeOpen.set(false)"
+    ></app-compose>
     <app-navigation-bar
       [items]="messageRoutes()"
       [orientation]="'vertical'"
@@ -9,4 +19,21 @@
   <div class="messaging-container__content">
     <router-outlet></router-outlet>
   </div>
+  @if(error()) {
+  <div class="fade-alert-container">
+    <app-dismissible-alerts
+      [alertType]="'warning'"
+      [alertTitle]="'Oops!'"
+      [alertMessage]="error() || 'An unexpected error occurred while loading your messages. Please try again later.'"
+    ></app-dismissible-alerts>
+  </div>
+  } @else if (successMessage?.()) {
+  <div class="fade-alert-container">
+    <app-dismissible-alerts
+      [alertType]="'success'"
+      [alertTitle]="'Success!'"
+      [alertMessage]="successMessage?.() ?? ''"
+    ></app-dismissible-alerts>
+  </div>
+  }
 </div>
