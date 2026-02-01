@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
-import { INPUT_CONFIG } from '../../shared/config/user-management.config';
 import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
+import { UserManagamentState } from '../../shared/state/user-management.state';
 
 @Component({
   selector: 'app-user-management',
@@ -11,7 +11,7 @@ import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserManagementComponent {
-  public readonly inputCfg = INPUT_CONFIG;
+  public readonly userState = new UserManagamentState();
 
   onSearch(query: InputFieldValue) {}
 }

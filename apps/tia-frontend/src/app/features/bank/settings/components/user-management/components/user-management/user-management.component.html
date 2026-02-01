@@ -1,4 +1,5 @@
+@let cfg = userState.newConfig();
 <div class="search-box">
-    <lib-text-input [config]="inputCfg" type="search" (valueChange)="onSearch($event)">
+    <lib-text-input [config]="cfg" type="search" (valueChange)="onSearch($event)">
     </lib-text-input>
 </div>

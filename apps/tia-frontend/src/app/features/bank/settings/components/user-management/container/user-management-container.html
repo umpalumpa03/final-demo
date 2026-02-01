@@ -1,4 +1,5 @@
-<app-basic-card maxWidth="100%" height="fit-content" [title]="cfg.title" [subtitle]="cfg.subtitle">
+@let newCfg = userState.newConfig();
+<app-basic-card maxWidth="100%" height="fit-content" [title]="newCfg.title" [subtitle]='newCfg.subtitle'>
 
     <app-user-management></app-user-management>
 </app-basic-card>
