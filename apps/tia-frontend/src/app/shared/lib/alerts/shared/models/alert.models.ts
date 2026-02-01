@@ -2,7 +2,7 @@ export type AlertType = 'information' | 'success' | 'error' | 'warning';
 
 export type BaseAlertType = 'default' | 'error' 
 
-export type DismissibleAlertType = 'information' | 'success' | 'warning';
+export type DismissibleAlertType = 'information' | 'success' | 'warning' | 'error';;
 
 export type SimpleAlertType = 'information' | 'success' | 'warning' | 'error';
 

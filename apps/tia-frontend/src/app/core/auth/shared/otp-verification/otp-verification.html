@@ -18,16 +18,31 @@
         [config]="phoneConfig()"
       ></lib-text-input>
     </div>
-    } @if (submitError()) {
-    <app-simple-alerts
-      alertType="error"
-      [alertMessage]="submitError() || ''"
-    ></app-simple-alerts>
+    } 
+    @if (submitError()) {
+      <app-simple-alerts
+        alertType="error"
+        [alertMessage]="submitError() ?? ''"
+      ></app-simple-alerts>
+    }
+
+    @if (unitedError()) {
+      <app-simple-alerts
+        alertType="error"
+        [alertMessage]="unitedError()"
+      ></app-simple-alerts>
+    }
+
+    @if (phoneErrorMessage()) {
+      <app-simple-alerts
+        alertType="error"
+        [alertMessage]="phoneErrorMessage() ?? 'An error occurred'"
+      ></app-simple-alerts>
     }
 
     <div class="auth-form__actions">
       <app-button
-        [isDisabled]="isResendActive()"
+        [isDisabled]="isButtonDisabled()"
         type="submit"
         [fullWidth]="true"
       >

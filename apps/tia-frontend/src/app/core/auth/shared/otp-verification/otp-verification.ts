@@ -42,7 +42,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     RouterLink,
     TextInput,
     SimpleAlerts,
-    TranslatePipe
+    TranslatePipe,
   ],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
@@ -53,6 +53,40 @@ export class OtpVerification {
   public type = input.required<OtpVerificationType>();
   public timeLimit = input(1);
   public timerType = input<TimerType>('phone');
+  public errorMessage = input<string | null>(null);
+  public remainingAttempts = input<number | null>(null);
+
+  public phoneErrorMessage = input<string | null>(null);
+
+  public unitedError = computed(() => {
+    const error = this.errorMessage();
+    const attempts = this.remainingAttempts();
+
+    if (error && attempts !== null) {
+      return `${error} ${attempts === undefined ? '' : `(Remaining attempts: ${attempts})`}`;
+    }
+
+    if (error) return error;
+
+    if (attempts !== null) {
+      return `Remaining attempts: ${attempts}`;
+    }
+
+    return '';
+  });
+
+  public isButtonDisabled = computed(() => {
+    if (this.unitedError() || this.phoneErrorMessage() || this.submitError()) {
+      return true;
+    }
+
+    if (this.isResendActive()) {
+      return true;
+    }
+
+    return false;
+  });
+
   public isVerifyCalled = output<IVerified>();
   public isResendCalled = output<boolean>();
 
@@ -66,7 +100,6 @@ export class OtpVerification {
     errorMessage: 'invalid phone number',
     placeholder: '(555) 0000-0000',
   });
-
 
   public iconUrl = computed(() => this.config().iconUrl);
   public title = computed(() => this.config().title);
@@ -82,7 +115,7 @@ export class OtpVerification {
 
     return limit * 60;
   });
-  
+
   public countdown = signal<number>(0);
   private timer$ = interval(1000);
 
@@ -136,32 +169,32 @@ export class OtpVerification {
   }
 
   public onSubmit(): void {
-  const currentForm = this.activeForm();
-  
-  if (currentForm.invalid) {
-    currentForm.markAllAsTouched();
-    this.submitError.set("Please check the required fields.");
+    const currentForm = this.activeForm();
 
-    setTimeout(() => {
-      this.submitError.set('');
-    }, 5000);
-    return;
+    if (currentForm.invalid) {
+      currentForm.markAllAsTouched();
+      this.submitError.set('Please check the required fields.');
+
+      setTimeout(() => {
+        this.submitError.set('');
+      }, 5000);
+      return;
+    }
+
+    const rawValue = currentForm.getRawValue();
+    let otp: string | null = null;
+
+    if ('phoneNumber' in rawValue) {
+      otp = rawValue.phoneNumber;
+    } else if ('code' in rawValue) {
+      otp = rawValue.code;
+    }
+
+    this.isVerifyCalled.emit({
+      isCalled: true,
+      otp: otp,
+    });
   }
-
-  const rawValue = currentForm.getRawValue();
-  let otp: string | null = null;
-
-  if ('phoneNumber' in rawValue) {
-    otp = rawValue.phoneNumber;
-  } else if ('code' in rawValue) {
-    otp = rawValue.code;
-  }
-
-  this.isVerifyCalled.emit({
-    isCalled: true,
-    otp: otp
-  });
-}
 
   public onResend(): void {
     if (this.countdown() > 0) {
