@@ -6,11 +6,19 @@
   gap: 3.2rem;
   padding: 3.2rem;
 
-  &__toast {
+  &__notification-stack {
     position: fixed;
-    top: 8rem;
-    right: 3.2rem;
-    z-index: 11111;
+    top: 7rem;
+    right: 2.4rem;
+    z-index: 10000;
+
+    @include display-flex(column);
+    gap: 1.2rem;
+    pointer-events: none;
+  }
+
+  &__notification-item {
+    pointer-events: auto;
     min-width: 32rem;
     max-width: 42rem;
 

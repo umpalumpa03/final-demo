@@ -31,8 +31,8 @@ import { CurrencyPipe } from '@angular/common';
     ReactiveFormsModule,
     TextInput,
     PaymentSummary,
-    CurrencyPipe
-],
+    CurrencyPipe,
+  ],
   templateUrl: './paybill-form.html',
   styleUrl: './paybill-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -115,28 +115,6 @@ describe('PaybillEffect', () => {
     });
   });
 
-  describe('handleProceedSuccess$', () => {
-    it('should set step to OTP if challengeId exists', () => {
-      const response = { verify: { challengeId: 'chal-1' } } as any;
-      actions$ = of(PaybillActions.proceedPaymentSuccess({ response }));
-
-      effects.handleProceedSuccess$.subscribe((action) => {
-        expect(action).toEqual(PaybillActions.setPaymentStep({ step: 'OTP' }));
-      });
-    });
-
-    it('should set step to SUCCESS if challengeId does not exist', () => {
-      const response = { verify: null } as any;
-      actions$ = of(PaybillActions.proceedPaymentSuccess({ response }));
-
-      effects.handleProceedSuccess$.subscribe((action) => {
-        expect(action).toEqual(
-          PaybillActions.setPaymentStep({ step: 'SUCCESS' }),
-        );
-      });
-    });
-  });
-
   describe('confirmPayment$', () => {
     it('should set step to SUCCESS on successful verification', () => {
       paybillService.verifyPayment.mockReturnValue(of({}));

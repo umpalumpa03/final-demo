@@ -115,11 +115,6 @@ export const paybillReducer = createReducer(
     error: null,
   })),
 
-  on(PaybillActions.clearSuccessMessage, (state) => ({
-    ...state,
-    successMessage: null,
-  })),
-
   on(PaybillActions.proceedPaymentFailure, (state, { error }) => ({
     ...state,
     loading: false,
@@ -151,7 +146,6 @@ export const paybillReducer = createReducer(
     ...state,
     loading: true,
     error: null,
-    successMessage: 'OTP verified successfully!',
   })),
 
   on(PaybillActions.confirmPaymentFailure, (state, { error }) => ({
@@ -159,4 +153,32 @@ export const paybillReducer = createReducer(
     loading: false,
     error: error,
   })),
+
+  on(
+    PaybillActions.addNotification,
+    (state, { notificationType, message }) => ({
+      ...state,
+      notifications: [
+        ...state.notifications,
+        { id: Date.now().toString(), notificationType, message },
+      ],
+    }),
+  ),
+
+  on(PaybillActions.dismissNotification, (state, { id }) => ({
+    ...state,
+    notifications: state.notifications.filter((n) => n.id !== id),
+  })),
+
+  on(
+    PaybillActions.clearAllNotifications,
+    PaybillActions.selectCategory,
+    PaybillActions.selectProvider,
+    PaybillActions.clearSelection,
+    (state) => ({
+      ...state,
+      notifications: [],
+      error: null,
+    }),
+  ),
 );

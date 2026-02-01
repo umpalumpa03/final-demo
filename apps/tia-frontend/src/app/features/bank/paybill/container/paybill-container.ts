@@ -63,13 +63,13 @@ export class PaybillContainer implements OnInit {
 
   public readonly navigationConfig = navConfig(this.translate);
 
-  public readonly storeError = this.store.selectSignal(
-    PAYBILL_SELECTORS.selectError,
+  protected readonly notifications = this.store.selectSignal(
+    PAYBILL_SELECTORS.selectNotifications,
   );
 
-  protected readonly storeSuccess = this.store.selectSignal(
-    PAYBILL_SELECTORS.selectSuccessMessage,
-  );
+  public handleDismiss(id: string): void {
+    this.store.dispatch(PaybillActions.dismissNotification({ id }));
+  }
 
   constructor() {
     const routeStateSignal = toSignal(

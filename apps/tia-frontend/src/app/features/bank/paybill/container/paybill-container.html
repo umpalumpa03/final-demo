@@ -1,23 +1,16 @@
 <section class="global-bank-wrapper">
-@if(storeError()){
-    <div class="paybill-container__toast">
+  <div class="paybill-container__notification-stack">
+    @for (toast of notifications(); track toast.id) {
+    <div class="paybill-container__notification-item">
       <app-dismissible-alerts
-        alertType="warning"
-        [alertMessage]="storeError()!"
-        alertTitle="Action Failed"
+        [alertType]="toast.notificationType"
+        [alertMessage]="toast.message"
+        [alertTitle]="toast.notificationType === 'warning' ? 'Action Failed' : 'Success'"
+        (close)="handleDismiss(toast.id!)"
       />
     </div>
-  }
-
-  @if(storeSuccess()){
-    <div class="paybill-container__toast">
-      <app-dismissible-alerts
-        alertType="success"
-        [alertMessage]="storeSuccess()!"
-        alertTitle="Success"
-      />
-    </div>
-  }
+    }
+  </div>
 
   <header class="paybill-container__header">
     <app-breadcrumbs

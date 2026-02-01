@@ -125,12 +125,13 @@ export const selectError = createSelector(
   (state) => state.error,
 );
 
-export const selectSuccessMessage = createSelector(
-  selectPaybillState,
-  (state) => state.successMessage,
-);
 
 export const selectTemplatesGroup = createSelector(
   selectPaybillState,
   (state) => state.templateGroups,
+);
+
+export const selectNotifications = createSelector(
+  selectPaybillState,
+  (state) => state.notifications
 );
