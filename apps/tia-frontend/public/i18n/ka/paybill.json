@@ -17,6 +17,19 @@
       "default_period": "მიმდინარე თვე",
       "na": "უცნობია"
     },
+    "success": {
+      "title": "გადახდა წარმატებით შესრულდა!",
+      "description": "დავალიანება დაფარულია",
+      "summary_subheader": "გადახდის დეტალები",
+      "pay_another_btn": "კიდევ გადახდა",
+      "dashboard_btn": "მთავარზე გადასვლა",
+      "summary_fields": {
+        "transaction_id": "ტრანზაქციის ნომერი",
+        "service": "სერვისი",
+        "amount_paid": "გადახდილი თანხა",
+        "date_time": "თარიღი და დრო"
+      }
+    },
     "form": {
       "subtitle": "შეიყვანეთ მომხმარებლის ინფორმაცია",
       "account_label": "აბონენტის ნომერი / პირადი ნომერი",

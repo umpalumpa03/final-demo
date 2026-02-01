@@ -17,6 +17,19 @@
       "default_period": "Current Month",
       "na": "N/A"
     },
+    "success": {
+      "title": "Payment Successful!",
+      "description": "Your bill has been paid successfully",
+      "summary_subheader": "Transaction details",
+      "pay_another_btn": "Pay Another Bill",
+      "dashboard_btn": "Go to Dashboard",
+      "summary_fields": {
+        "transaction_id": "Transaction ID",
+        "service": "Service",
+        "amount_paid": "Amount Paid",
+        "date_time": "Date & Time"
+      }
+    },
     "form": {
       "subtitle": "Enter your bill details",
       "account_label": "Account Number / Customer ID",
