@@ -71,4 +71,58 @@ describe('ResetPassword', () => {
     );
     expect(component.isSubmitting()).toBe(false);
   });
+
+  it('sets generic error on non-400 response', async () => {
+    vi.spyOn(authService, 'createNewPassword').mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: 500 })),
+    );
+
+    const formValue = { password: 'Aa1!aaaa', confirmPassword: 'Aa1!aaaa' } as any;
+
+    component.submit(formValue);
+
+    expect(component.submitError()).toBe(
+      'Something went wrong. Please try again.',
+    );
+    expect(component.isSubmitting()).toBe(false);
+  });
+});
+
+describe('ResetPassword without token', () => {
+  let component: ResetPassword;
+  let fixture: ComponentFixture<ResetPassword>;
+  let router: Router;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ResetPassword, TranslateModule.forRoot()],
+      providers: [
+        provideRouter([]),
+        {
+          provide: AuthService,
+          useValue: {
+            createNewPassword: vi.fn().mockReturnValue(of({})),
+          },
+        },
+        {
+          provide: TokenService,
+          useValue: {
+            accessToken: null,
+          },
+        },
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(ResetPassword);
+    component = fixture.componentInstance;
+    router = TestBed.inject(Router);
+
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
+  });
+
+  it('redirects to OTP page when no access token', () => {
+    fixture.detectChanges();
+
+    expect(router.navigate).toHaveBeenCalledWith(['/auth', 'verify-otp-reset']);
+  });
 });

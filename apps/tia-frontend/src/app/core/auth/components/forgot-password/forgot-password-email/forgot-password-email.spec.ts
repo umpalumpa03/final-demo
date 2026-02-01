@@ -79,4 +79,22 @@ describe('ForgotPasswordEmail', () => {
     );
     expect(component.isSubmitting()).toBe(false);
   });
+
+  it('shows required error when email is empty', () => {
+    component.form.controls.email.setValue('');
+    component.form.controls.email.markAsTouched();
+
+    const config = component.emailConfig();
+
+    expect(config.errorMessage).toBe('Email is required');
+  });
+
+  it('shows invalid email error when email format is wrong', () => {
+    component.form.controls.email.setValue('invalid-email');
+    component.form.controls.email.markAsTouched();
+
+    const config = component.emailConfig();
+
+    expect(config.errorMessage).toBe('Enter a valid email');
+  });
 });
