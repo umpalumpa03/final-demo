@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { paybillReducer } from './paybill.reducer';
 import { initialPaybillState } from './paybill.state';
-import { PaybillActions } from './paybill.actions';
+import { PaybillActions, TemplatesPageActions } from './paybill.actions';
 
 describe('Paybill Reducer', () => {
   it('should return the initial state on unknown action', () => {
@@ -26,7 +26,6 @@ describe('Paybill Reducer', () => {
       expect(result.categories).toEqual(categories);
       expect(result.loading).toBe(false);
     });
-
   });
 
   it('selectCategory: should reset provider selection and set category ID', () => {
@@ -131,4 +130,50 @@ describe('Paybill Reducer', () => {
     });
   });
 
+  it('loadTemplates: should set loading true', () => {
+    const action = TemplatesPageActions.loadTemplates();
+    const result = paybillReducer(initialPaybillState, action);
+
+    expect(result.loading).toBe(true);
+    expect(result.error).toBeNull();
+  });
+
+  it('loadTemplatesSuccess: should set templateGroups', () => {
+    const templateGroups = [{ id: 'g1', name: 'Group 1' }] as any;
+    const action = TemplatesPageActions.loadTemplatesSuccess({
+      templateGroups,
+    });
+    const result = paybillReducer(initialPaybillState, action);
+
+    expect(result.templateGroups).toEqual(templateGroups);
+    expect(result.loading).toBe(false);
+  });
+
+  it('loadTemplatesFailure: should set error', () => {
+    const action = TemplatesPageActions.loadTemplatesFailure({
+      error: 'Load failed',
+    });
+    const result = paybillReducer(initialPaybillState, action);
+
+    expect(result.error).toBe('Load failed');
+    expect(result.loading).toBe(false);
+  });
+
+  it('proceedPayment: should set loading true', () => {
+    const action = PaybillActions.proceedPayment({ payload: {} as any });
+    const result = paybillReducer(initialPaybillState, action);
+
+    expect(result.loading).toBe(true);
+    expect(result.error).toBeNull();
+  });
+
+  it('proceedPaymentFailure: should set error', () => {
+    const action = PaybillActions.proceedPaymentFailure({
+      error: 'Payment failed',
+    });
+    const result = paybillReducer(initialPaybillState, action);
+
+    expect(result.loading).toBe(false);
+    expect(result.error).toBe('Payment failed');
+  });
 });

@@ -1,3 +1,8 @@
 <app-paybill-templates
-  [templateGroups]="templateGroups"
+  [templateGroups]="templateGroups()"
+  [activeModal]="modalType()"
+  [isModalOpen]="isModalOpen()"
+  [currentModalConfig]="currentModalConfig()"
+  (headerButtonAction)="handleHeaderAction($event)"
+  (modalOpenAction)="handleModalToggle()"
 ></app-paybill-templates>
