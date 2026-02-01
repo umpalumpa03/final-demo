@@ -23,8 +23,6 @@ export const initialState: NotificationsState = {
   isFetching: false,
   hasError: false,
   limitPerPage: 10,
-  unreadNotificationsNumber: 0,
-  isEmpty: true,
 };
 
 export const NotificationsStore = signalStore(
@@ -134,7 +132,6 @@ export const NotificationsStore = signalStore(
                       .map((item) => ({ ...item, isRead: true })),
                     isLoading: false,
                     hasUnread: false,
-                    unreadNotificationsNumber: 0,
                   });
                 },
                 error: () => patchState(store, { hasError: true }),
@@ -180,9 +177,6 @@ export const NotificationsStore = signalStore(
               );
             patchState(store, {
               items: updatedItems,
-              unreadNotificationsNumber: updatedItems.filter(
-                (item) => !item.isRead,
-              ).length,
               hasUnread: updatedItems.some((item) => !item.isRead),
             });
           }),
