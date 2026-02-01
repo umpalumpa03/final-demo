@@ -1,1 +1,11 @@
+@use '../../../../../../shared/styles/mixins' as *;
 
+.container {
+    @include flex-center(column, flex-start, stretch);
+    gap: 1.2rem;
+
+    &__title {
+        @include font-inter(500, 1.6rem, 2.4rem);
+        color: var(--color-fg)
+    }
+}

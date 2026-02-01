@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
 import { UserManagementState } from '../../shared/state/user-management.state';
@@ -8,10 +8,11 @@ import { UserManagementState } from '../../shared/state/user-management.state';
   imports: [TextInput],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss',
+  providers: [UserManagementState],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserManagementComponent {
-  public readonly userState = new UserManagementState();
+  public readonly userState = inject(UserManagementState);
 
   public onSearch(query: InputFieldValue) {}
 }
