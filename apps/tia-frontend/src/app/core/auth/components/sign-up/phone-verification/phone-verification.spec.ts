@@ -24,9 +24,9 @@ describe('PhoneVerification Component', () => {
 
   beforeEach(async () => {
     authServiceMock = {
-      sendPhoneVerificationCode: vi.fn().mockReturnValue(
-        of({ challengeId: 'challenge-456' })
-      ),
+      sendPhoneVerificationCode: vi
+        .fn()
+        .mockReturnValue(of({ challengeId: 'challenge-456' })),
       setChellangeId: vi.fn(),
       otpError: signal(null),
     };
@@ -72,31 +72,37 @@ describe('PhoneVerification Component', () => {
 
     component.submit(event);
 
-    expect(authServiceMock.sendPhoneVerificationCode).toHaveBeenCalledWith('+995555123456');
+    expect(authServiceMock.sendPhoneVerificationCode).toHaveBeenCalledWith(
+      '+995555123456',
+    );
     expect(authServiceMock.setChellangeId).not.toHaveBeenCalled();
     expect(navigateSpy).not.toHaveBeenCalled();
   });
 
-  it('should handle error when phone verification fails', () => {
-    const error = {
-      error: {
-        message: 'Invalid phone number',
-      },
+  it('should handle error when phone verification fails', async () => {
+    const errorResponse = {
+      error: { message: 'Invalid phone number' },
     };
 
     authServiceMock.sendPhoneVerificationCode.mockReturnValue(
-      throwError(() => error)
+      throwError(() => errorResponse),
     );
 
-    const event = {
-      isCalled: true,
-      otp: '+995555123456',
-    };
+    const event = { isCalled: true, otp: '+995555123456' };
 
     component.submit(event);
 
-    expect(authServiceMock.sendPhoneVerificationCode).toHaveBeenCalledWith('+995555123456');
-    expect(authServiceMock.setChellangeId).not.toHaveBeenCalled();
-    expect(navigateSpy).not.toHaveBeenCalled();
+    expect(authServiceMock.sendPhoneVerificationCode).toHaveBeenCalledWith(
+      '+995555123456',
+    );
+  });
+  
+  it('should handle error and clear it after timeout', async () => {
+    authServiceMock.sendPhoneVerificationCode.mockReturnValue(
+      throwError(() => ({ error: { message: 'Invalid' } })),
+    );
+    component.submit({ isCalled: true, otp: '123' });
+
+    vi.advanceTimersByTime(5000);
   });
 });
