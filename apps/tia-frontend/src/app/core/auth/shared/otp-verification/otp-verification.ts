@@ -77,7 +77,6 @@ export class OtpVerification {
     const limit = Math.abs(Number(this.timeLimit()));
 
     return limit * 60;
-    return limit * 60;
   });
   public countdown = signal<number>(0);
   private timer$ = interval(1000);
