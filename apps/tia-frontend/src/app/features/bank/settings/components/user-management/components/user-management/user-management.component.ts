@@ -13,5 +13,5 @@ import { UserManagamentState } from '../../shared/state/user-management.state';
 export class UserManagementComponent {
   public readonly userState = new UserManagamentState();
 
-  onSearch(query: InputFieldValue) {}
+  public onSearch(query: InputFieldValue) {}
 }
