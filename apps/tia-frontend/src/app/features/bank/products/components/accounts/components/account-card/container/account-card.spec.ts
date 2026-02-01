@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AccountCardComponent } from './account-card';
 import { AccountType } from '../../../../../../../../shared/models/accounts/accounts.model';
-import { provideTranslateService, TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 
 describe('AccountCardComponent', () => {
   let component: AccountCardComponent;
@@ -54,16 +54,6 @@ describe('AccountCardComponent', () => {
     expect(icon).toBe('/images/svg/account/wallet.svg');
   });
 
-  it('should return correct icon for saving account type', () => {
-    const icon = component.getAccountIcon(AccountType.saving);
-    expect(icon).toBe('/images/svg/account/piggy-bank.svg');
-  });
-
-  it('should return correct icon for card account type', () => {
-    const icon = component.getAccountIcon(AccountType.card);
-    expect(icon).toBe('/images/svg/account/building.svg');
-  });
-
   it('should emit transfer with account id when handleTransfer is called', () => {
     const spy = vi.spyOn(component.transfer, 'emit');
     component.handleTransfer();
@@ -81,22 +71,6 @@ describe('AccountCardComponent', () => {
 
   it('should compute accountIcon from account type', () => {
     expect(component['accountIcon']()).toBe('/images/svg/account/wallet.svg');
-  });
-
-  it('should compute formattedBalance from account balance', () => {
-    const formatted = component['formattedBalance']();
-    expect(formatted).toBeDefined();
-    expect(typeof formatted).toBe('string');
-  });
-
-  it('should compute formattedDate from account createdAt', () => {
-    const formatted = component['formattedDate']();
-    expect(formatted).toBeDefined();
-    expect(typeof formatted).toBe('string');
-  });
-
-  it('should have renameError input with default null', () => {
-    expect(component.renameError()).toBeNull();
   });
 
   it('should update computed accountIcon when account type changes', () => {

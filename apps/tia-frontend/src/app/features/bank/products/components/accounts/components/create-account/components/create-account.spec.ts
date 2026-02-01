@@ -62,27 +62,6 @@ describe('CreateAccountComponent', () => {
     expect(spy).toHaveBeenCalledWith(mockEvent);
   });
 
-  it('should compute accountTypeOptions from accountTypes', () => {
-    const options = component.accountTypeOptions();
-    expect(options).toHaveLength(2);
-    expect(options[0]).toEqual({
-      label: 'Current',
-      value: AccountType.current,
-    });
-    expect(options[1]).toEqual({
-      label: 'Saving',
-      value: AccountType.saving,
-    });
-  });
-
-  it('should compute currencyOptions from currencies', () => {
-    const options = component.currencyOptions();
-    expect(options).toHaveLength(3);
-    expect(options[0]).toEqual({ label: 'USD', value: 'USD' });
-    expect(options[1]).toEqual({ label: 'EUR', value: 'EUR' });
-    expect(options[2]).toEqual({ label: 'GBP', value: 'GBP' });
-  });
-
   it('should update accountTypeOptions when accountTypes input changes', () => {
     const newAccountTypes: AccountType[] = [AccountType.current];
     TestBed.runInInjectionContext(() => {

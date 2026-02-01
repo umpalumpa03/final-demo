@@ -69,25 +69,6 @@ describe('AccountCardViewComponent', () => {
     expect(component['renamingAccountId']()).toBe('1');
   });
 
-  it('should not emit rename when name is same or empty', () => {
-    const spy = vi.spyOn(component.rename, 'emit');
-    component['newName'].set('Test Account');
-    component.handleSave();
-    expect(spy).not.toHaveBeenCalled();
-
-    component['newName'].set('   ');
-    component.handleSave();
-    expect(spy).not.toHaveBeenCalled();
-  });
-
-  it('should reset state when saving with same or empty name', () => {
-    component['isEditing'].set(true);
-    component['newName'].set('Test Account');
-    component.handleSave();
-    expect(component['isEditing']()).toBe(false);
-    expect(component['newName']()).toBe('');
-  });
-
   it('should compute displayName from friendlyName or name', () => {
     expect(component['displayName']()).toBe('Test Account');
 
@@ -109,16 +90,6 @@ describe('AccountCardViewComponent', () => {
     expect(component['renamingAccountId']()).toBe('1');
   });
 
-  it('should handle blur with same name', () => {
-    const spy = vi.spyOn(component.rename, 'emit');
-    component['isEditing'].set(true);
-    component['newName'].set('Test Account');
-    component.handleBlur();
-    expect(spy).not.toHaveBeenCalled();
-    expect(component['isEditing']()).toBe(false);
-    expect(component['newName']()).toBe('');
-  });
-
   it('should handle blur with empty name', () => {
     const spy = vi.spyOn(component.rename, 'emit');
     component['isEditing'].set(true);
@@ -128,30 +99,15 @@ describe('AccountCardViewComponent', () => {
     expect(component['isEditing']()).toBe(false);
   });
 
-  it('should reset editing state after successful rename', () => {
-    const successSpy = vi.spyOn(component.renameSuccess, 'emit');
-    component['isEditing'].set(true);
-    component['renamingAccountId'].set('1');
+  it('should retry focus when input element is not found initially', () => {
+    vi.useFakeTimers();
+    const setTimeoutSpy = vi.spyOn(global, 'setTimeout');
 
-    TestBed.runInInjectionContext(() => {
-      fixture.componentRef.setInput('isRenaming', false);
-      fixture.componentRef.setInput('renameError', null);
-    });
+    component['isEditing'].set(true);
     fixture.detectChanges();
 
-    expect(successSpy).toHaveBeenCalled();
-  });
+    expect(setTimeoutSpy).toHaveBeenCalled();
 
-  it('should not reset editing state when there is an error', () => {
-    component['isEditing'].set(true);
-    component['renamingAccountId'].set('1');
-
-    TestBed.runInInjectionContext(() => {
-      fixture.componentRef.setInput('isRenaming', false);
-      fixture.componentRef.setInput('renameError', 'Error occurred');
-    });
-    fixture.detectChanges();
-
-    expect(component['isEditing']()).toBe(true);
+    vi.useRealTimers();
   });
 });

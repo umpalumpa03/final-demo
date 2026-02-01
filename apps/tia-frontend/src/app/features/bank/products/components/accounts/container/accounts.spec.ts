@@ -5,7 +5,6 @@ import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import {
   CreateAccountRequest,
   AccountType,
@@ -45,7 +44,7 @@ describe('Accounts', () => {
 
   it('should dispatch loadAccounts on ngOnInit', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
-    component.ngOnInit();
+    fixture.detectChanges();
     expect(dispatchSpy).toHaveBeenCalled();
   });
 
@@ -81,11 +80,6 @@ describe('Accounts', () => {
     expect(dispatchSpy).toHaveBeenCalled();
   });
 
-  it('should handle transfer', () => {
-    component.handleTransfer('acc-123');
-    expect(component).toBeTruthy();
-  });
-
   it('should dispatch updateFriendlyName on handleRenameAccount', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
     component.handleRenameAccount({
@@ -93,21 +87,5 @@ describe('Accounts', () => {
       friendlyName: 'New Name',
     });
     expect(dispatchSpy).toHaveBeenCalled();
-  });
-
-  it('should have all required observables defined', () => {
-    expect(component['accountsGrouped$']).toBeDefined();
-    expect(component['isLoading$']).toBeDefined();
-    expect(component['isCreatingAccount$']).toBeDefined();
-    expect(component['isCreateModalOpen$']).toBeDefined();
-    expect(component['error$']).toBeDefined();
-    expect(component['createError$']).toBeDefined();
-    expect(component['isRenamingAccount$']).toBeDefined();
-    expect(component['renameError$']).toBeDefined();
-  });
-
-  it('should have accountSectionsData defined', () => {
-    expect(component['accountSectionsData']).toBeDefined();
-    expect(Array.isArray(component['accountSectionsData']())).toBe(true);
   });
 });

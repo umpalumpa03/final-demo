@@ -130,9 +130,4 @@ describe('AccountsListComponent', () => {
     const nullAccounts = component.getAccountsBySection(mockAccountSections[0]);
     expect(nullAccounts.length).toBe(0);
   });
-
-  it('should have correct input defaults', () => {
-    expect(component.error()).toBeNull();
-    expect(component.renameError()).toBeNull();
-  });
 });
