@@ -122,4 +122,16 @@ export const paybillReducer = createReducer(
     loading: true,
     error: null,
   })),
+
+  on(PaybillActions.confirmPayment, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
+  on(PaybillActions.confirmPaymentFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error: error,
+  })),
 );

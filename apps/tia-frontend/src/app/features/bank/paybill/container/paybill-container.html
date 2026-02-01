@@ -1,4 +1,15 @@
 <section class="global-bank-wrapper">
+  @if(storeError()){
+
+  <div class="paybill-container__toast">
+    <app-dismissible-alerts
+      alertType="warning"
+      [alertMessage]="storeError()!"
+      alertTitle="There was an issue!"
+    />
+  </div>
+  }
+
   <header class="paybill-container__header">
     <app-breadcrumbs
       [breadcrumbs]="breadcrumbs()"

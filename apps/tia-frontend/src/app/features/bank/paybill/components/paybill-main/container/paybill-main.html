@@ -31,6 +31,15 @@ activeProvider();
       (verify)="onOtpVerified($event)"
       (cancel)="onBackToDetails()"
     />
+    } @case('SUCCESS') {
+    <app-paybill-success
+      [items]="successSummaryItems()"
+      [headerTitle]="provider.name!"
+      [iconBgColor]="ui?.iconBgColor!"
+      [iconBgPath]="ui?.iconBgPath!"
+      (payAnother)="onResetFlow()"
+      (goDashboard)="onGoDashboard()"
+    />
     } } }@else if (category) { @defer (on immediate) {
     <app-provider-list
       [categoryName]="category.name"

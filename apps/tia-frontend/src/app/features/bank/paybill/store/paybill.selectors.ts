@@ -117,3 +117,8 @@ export const selectChallengeId = createSelector(
   selectPaybillState,
   (state) => state.challengeId,
 );
+
+export const selectError = createSelector(
+  selectPaybillState,
+  (state) => state.error,
+);

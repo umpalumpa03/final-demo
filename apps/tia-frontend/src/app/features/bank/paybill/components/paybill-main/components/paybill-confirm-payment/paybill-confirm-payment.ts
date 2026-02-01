@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   inject,
@@ -34,6 +35,7 @@ import { paymentOptionPaybill } from './config/input.config';
   ],
   templateUrl: './paybill-confirm-payment.html',
   styleUrl: './paybill-confirm-payment.scss',
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class PaybillConfirmPayment {
   public readonly provider = input.required<PaybillProvider>();

@@ -1,12 +1,26 @@
 @use '../../../../shared/styles/mixins' as *;
+@use '../../../../shared/styles/palette' as *;
+
 .paybill-container {
   @include display-flex(column);
   gap: 3.2rem;
   padding: 3.2rem;
 
+  &__toast {
+    position: fixed;
+    top: 8rem;
+    right: 3.2rem;
+    z-index: 11111;
+    min-width: 32rem;
+    max-width: 42rem;
+
+    animation: toast-slide-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
   &__header {
     @include display-flex(column);
     gap: 2rem;
+
     &__breadcrumb {
       display: block;
     }
@@ -14,5 +28,16 @@
     &__title-container {
       display: block;
     }
+  }
+}
+
+@keyframes toast-slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
 }

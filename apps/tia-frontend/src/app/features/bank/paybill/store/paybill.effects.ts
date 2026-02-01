@@ -122,8 +122,14 @@ export class PaybillEffect {
       ofType(PaybillActions.confirmPayment),
       mergeMap(({ payload }) =>
         this.paybillService.verifyPayment(payload).pipe(
-          map(() => {
-            return PaybillActions.setPaymentStep({ step: 'SUCCESS' });
+          map((response) => {
+            if (response.success) {
+              return PaybillActions.setPaymentStep({ step: 'SUCCESS' });
+            }
+
+            return PaybillActions.confirmPaymentFailure({
+              error: response.message || 'Invalid code',
+            });
           }),
           catchError((error) =>
             of(PaybillActions.confirmPaymentFailure({ error: error.message })),

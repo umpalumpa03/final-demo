@@ -20,8 +20,11 @@ import {
   ProceedPaymentPayload,
 } from '../shared/models/paybill.model';
 import { PaybillConfirmPayment } from '../components/paybill-confirm-payment/paybill-confirm-payment';
-import { selectCurrentAccounts, selectGelAccountOptions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
+import {
+  selectGelAccountOptions,
+} from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+import { PaybillSuccess } from '../components/paybill-success/paybill-success';
 
 @Component({
   selector: 'app-paybill-main',
@@ -31,7 +34,8 @@ import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accoun
     PaybillForm,
     PaybillOtpVerification,
     PaybillConfirmPayment,
-  ],
+    PaybillSuccess,
+],
   templateUrl: './paybill-main.html',
   styleUrl: './paybill-main.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -111,7 +115,7 @@ export class PaybillMain implements OnInit {
   public selectProvider(providerId: string): void {
     this.store.dispatch(PaybillActions.selectProvider({ providerId }));
   }
-  
+
   public onVerifyAccount(data: { accountNumber: string }): void {
     const provider = this.activeProvider();
     if (provider) {
@@ -174,4 +178,48 @@ export class PaybillMain implements OnInit {
     if (!category) return null;
     return CATEGORY_UI_MAP[category.id.toLowerCase()] || null;
   });
+
+  protected readonly successSummaryItems = computed(() => {
+    const provider = this.activeProvider();
+    const payload = this.paymentPayload();
+
+    if (!provider || !payload) return [];
+
+    return [
+      {
+        label: 'Transaction ID',
+        value: `TXN-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`,
+      },
+      {
+        label: 'Service',
+        value: provider.serviceName || provider.name || '',
+      },
+      {
+        label: 'Amount Paid',
+        value: `${payload.amount} GEL`,
+      },
+      {
+        label: 'Date & Time',
+        value: new Date()
+          .toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+          })
+          .replace(',', ' at'),
+      },
+    ];
+  });
+
+  public onResetFlow(): void {
+    this.store.dispatch(PaybillActions.clearSelection());
+    this.router.navigate(['/bank/paybill/pay']);
+  }
+
+  public onGoDashboard(): void {
+    this.router.navigate(['/bank/dashboard']);
+  }
 }

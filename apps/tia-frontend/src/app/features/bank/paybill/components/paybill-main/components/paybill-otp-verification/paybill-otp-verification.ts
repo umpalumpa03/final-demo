@@ -13,7 +13,10 @@ import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-typ
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { PaymentSummary } from '../../shared/ui/payment-summary/payment-summary';
-import { PaybillPayload, PaybillProvider } from '../../shared/models/paybill.model';
+import {
+  PaybillPayload,
+  PaybillProvider,
+} from '../../shared/models/paybill.model';
 import { otpConfiguration } from './config/otp.config';
 
 @Component({
