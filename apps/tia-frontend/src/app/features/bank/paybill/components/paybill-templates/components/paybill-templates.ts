@@ -1,21 +1,39 @@
-import { Component, inject, input, signal } from '@angular/core';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Component, computed, input, output } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { TreeContainer } from '@tia/shared/lib/drag-n-drop/components/tree-container/tree-container';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { ctaButtonConfig } from '../configs/cta-buttons.config';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
+import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
+import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
+import { HeaderCtaConfig, ModalConfig } from '../configs/cta-buttons.config';
+import {
+  HeaderCtaAction,
+  ModalInfo,
+  ModalType,
+} from '../models/paybill-templates.model';
+import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 
 @Component({
   selector: 'app-paybill-templates',
-  imports: [TreeContainer, TranslatePipe, ButtonComponent, UiModal],
+  imports: [
+    TreeContainer,
+    TranslatePipe,
+    ButtonComponent,
+    UiModal,
+    TextInput,
+    LibraryTitle,
+    Dropdowns,
+  ],
   templateUrl: './paybill-templates.html',
   styleUrl: './paybill-templates.scss',
 })
 export class PaybillTemplates {
-  private readonly translate = inject(TranslateService);
   public templateGroups = input();
-  public headerButtons = ctaButtonConfig(this.translate);
+  public headerButtons = HeaderCtaConfig;
 
+  public currentModalConfig = input<ModalInfo | null>(null);
+
+  // FIXED DATA SHOULD COME FROM BACKEND
   treeGroups = [
     { id: 'g1', title: 'Group 1', subtitle: 'First group', expanded: true },
     { id: 'g2', title: 'Group 2', subtitle: 'Second group', expanded: true },
@@ -67,15 +85,21 @@ export class PaybillTemplates {
     },
   ];
 
-  public isModalOpen = signal<boolean>(false);
+  // Determine Which type of modal to be shown
+  public activeModal = input<ModalType | null>();
 
-  public modalHandler(action: string): void {
-    if (action === 'select') {
-      return;
-    }
+  // Handle Modal Open / Close actions
+  public isModalOpen = input<boolean>(false);
 
-    if (action === 'template') {
-    }
-    this.isModalOpen.update((val) => !val);
+  // Handle Header Button Clicks
+  public headerButtonAction = output<HeaderCtaAction>();
+  public modalOpenAction = output<void>();
+
+  public handleHeaderButtonClick(action: HeaderCtaAction) {
+    this.headerButtonAction.emit(action);
+  }
+
+  public toggleModal() {
+    this.modalOpenAction.emit();
   }
 }
