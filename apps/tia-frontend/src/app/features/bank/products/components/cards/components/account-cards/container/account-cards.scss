@@ -1,3 +1,4 @@
+
 @use "../../../../../../../../shared/styles/mixins" as *;
 @use "../../../../../../../../shared/styles/palette" as *;
 
@@ -62,47 +63,6 @@
     @media (max-width: 900px) {
       grid-template-columns: 1fr;
     }
-  }
-
-  &__card {
-    @include display-flex(column);
-    gap: 1.2rem;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-
-    &:hover {
-      transform: translateY(-0.4rem);
-    }
-  }
-
-  &__card-image {
-    width: 100%;
-    max-width: 36rem;
-    height: auto;
-    border-radius: 1.6rem;
-    display: block;
-  }
-
-  &__card-info {
-    @include display-flex(column);
-    gap: 0.8rem;
-    max-width: 35rem
-  }
-
-  &__card-name {
-    @include font-inter(600, 1.6rem, 1.5);
-    color: $blue-1000;
-  }
-
-  &__card-meta {
-    @include flex-center(row, space-between, center);
-    gap: 1.2rem;
-  }
-
-  &__card-currency,
-  &__card-limit {
-    @include font-inter(400, 1.4rem, 1.5);
-    color: $gray-600;
   }
 
   &__error {

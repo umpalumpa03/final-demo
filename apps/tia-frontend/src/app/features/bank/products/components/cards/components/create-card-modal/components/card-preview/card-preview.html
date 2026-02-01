@@ -1,0 +1,16 @@
+<div class="card-preview">
+  <h3 class="card-preview__title">Card Preview</h3>
+  <div class="card-preview__display">
+    @if (isLoading()) {
+      <div class="card-preview__placeholder">
+        <app-spinner size="3rem" />
+      </div>
+    } @else if (designUri()) {
+      <img [src]="designUri()" alt="Card preview" class="card-preview__image" />
+    } @else {
+      <div class="card-preview__placeholder">
+        <span>Select a design</span>
+      </div>
+    }
+  </div>
+</div>

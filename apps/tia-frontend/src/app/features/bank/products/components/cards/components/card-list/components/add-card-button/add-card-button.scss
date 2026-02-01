@@ -1,0 +1,10 @@
+@use "../../../../../../../../../shared/styles/mixins" as *;
+@use "../../../../../../../../../shared/styles/palette" as *;
+
+.add-card-button {
+  &__text {
+    @include font-inter(500, 1.4rem, 1.5);
+    color: $gray-700;
+    margin-top: 1.2rem;
+  }
+}

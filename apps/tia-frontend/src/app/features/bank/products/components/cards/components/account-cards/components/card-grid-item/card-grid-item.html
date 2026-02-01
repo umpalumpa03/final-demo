@@ -1,0 +1,26 @@
+<div class="card-grid-item" (click)="handleClick()">
+  <img
+    [src]="card().imageBase64"
+    [alt]="card().details.cardName"
+    class="card-grid-item__image"
+  />
+  <div class="card-grid-item__info">
+    <span class="card-grid-item__name">{{ card().details.cardName }}</span>
+    <div class="card-grid-item__meta">
+      <app-badges
+        [variant]="card().details.type === 'DEBIT' ? 'outline' : 'green-outline'"
+        [text]="card().details.type === 'DEBIT' ? 'debit' : 'credit'"
+        size="small"
+        shape="rounded"
+      />
+
+      <span class="card-grid-item__currency">{{ currency() }}</span>
+      
+      @if (card().details.type === 'CREDIT' && card().details.creditLimit) {
+        <span class="card-grid-item__limit">
+          Limit: {{ card().details.creditLimit }}
+        </span>
+      }
+    </div>
+  </div>
+</div>

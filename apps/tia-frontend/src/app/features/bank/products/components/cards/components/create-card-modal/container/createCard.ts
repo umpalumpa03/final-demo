@@ -1,3 +1,4 @@
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,40 +9,25 @@ import {
   effect,
   computed,
 } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
-import {
-  selectCardCreationData,
-  selectIsCreating,
-  selectCreateError,
-  selectCardCreationDataLoading,
-} from '../../../../../../../../store/products/cards/cards.selectors';
-import {
-  loadCardCreationData,
-  createCard,
-  closeCreateCardModal,
-} from '../../../../../../../../store/products/cards/cards.actions';
+
 import { CreateCardRequest } from '@tia/shared/models/cards/create-card-request.model';
 import { CardForm } from '@tia/shared/models/cards/card-form.model';
-import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
-import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
-import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
-import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
+import { selectCardCreationData, selectCardCreationDataLoading } from 'apps/tia-frontend/src/app/store/products/cards/cards.selectors';
+import { selectCreateError, selectIsCreating } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
+import { closeCreateCardModal, createCard, loadCardCreationData } from 'apps/tia-frontend/src/app/store/products/cards/cards.actions';
+import { CardPreview } from '../components/card-preview/card-preview';
+import { DesignSelector } from '../components/design-selector/design-selector';
+import { CreateCardForm } from '../components/create-card-form/create-card-form';
 
 
 @Component({
   selector: 'app-create-card',
-  imports: [UiModal, ReactiveFormsModule, TextInput, Dropdowns,ButtonComponent, Skeleton, Spinner],
   templateUrl: './createCard.html',
   styleUrl: './createCard.scss',
+  imports: [UiModal, CardPreview, DesignSelector, CreateCardForm],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateCard {
@@ -49,11 +35,12 @@ export class CreateCard {
   private readonly fb = inject(FormBuilder);
 
   readonly isOpen = input.required<boolean>();
-  closed = output<void>();
+  readonly closed = output<void>();
 
   protected readonly creationData = this.store.selectSignal(selectCardCreationData);
   protected readonly isCreating = this.store.selectSignal(selectIsCreating);
   protected readonly createError = this.store.selectSignal(selectCreateError);
+  protected readonly isLoadingData = this.store.selectSignal(selectCardCreationDataLoading);
 
   protected readonly cardForm: FormGroup<CardForm> = this.fb.group({
     cardName: this.fb.nonNullable.control('', [Validators.required, Validators.minLength(2)]),
@@ -65,12 +52,13 @@ export class CreateCard {
 
   protected readonly selectedDesign = signal<string>('');
 
- protected readonly selectedDesignUri = computed(() => {
-  const selected = this.creationData().designs.find(
-    (d) => d.id === this.selectedDesign(),
-  );
-  return selected?.uri || null;
-});
+  protected readonly selectedDesignUri = computed(() => {
+    const selected = this.creationData().designs.find(
+      (d) => d.id === this.selectedDesign(),
+    );
+    return selected?.uri || null;
+  });
+
   protected readonly categoryOptions = computed(() =>
     this.creationData().categories.map((c) => ({ label: c.displayName, value: c.value }))
   );
@@ -93,40 +81,48 @@ export class CreateCard {
       }
     });
 
- effect(() => {
-  const designs = this.creationData().designs;
-  if (designs.length > 0 && !this.selectedDesign()) {
-    this.selectDesign(designs[0].id);  
-  }
-});
+    effect(() => {
+      const designs = this.creationData().designs;
+      if (designs.length > 0 && !this.selectedDesign()) {
+        this.onDesignSelected(designs[0].id);
+      }
+    });
   }
 
-  protected selectDesign(design: string): void {
+  protected onDesignSelected(design: string): void {
     this.selectedDesign.set(design);
     this.cardForm.patchValue({ design });
   }
 
-  protected onSubmit(): void {
+  protected onFormSubmit(): void {
     if (this.cardForm.valid) {
       const request: CreateCardRequest = this.cardForm.getRawValue();
       this.store.dispatch(createCard({ request }));
     }
   }
 
-protected onClose(): void {
-  this.cardForm.patchValue({
-    cardName: '',
-    cardCategory: 'DEBIT',
-    cardType: 'VISA',
-    accountId: '',
-    design: '',
-  });
-  this.cardForm.markAsUntouched();
-  this.cardForm.markAsPristine();
-  this.selectedDesign.set('');
-  this.store.dispatch(closeCreateCardModal());
-  this.closed.emit();
-}
-protected readonly isLoadingData = this.store.selectSignal(selectCardCreationDataLoading);
+  protected onFormCancel(): void {
+    this.resetForm();
+    this.store.dispatch(closeCreateCardModal());
+    this.closed.emit();
+  }
 
+  protected onClose(): void {
+    this.resetForm();
+    this.store.dispatch(closeCreateCardModal());
+    this.closed.emit();
+  }
+
+  private resetForm(): void {
+    this.cardForm.patchValue({
+      cardName: '',
+      cardCategory: 'DEBIT',
+      cardType: 'VISA',
+      accountId: '',
+      design: '',
+    });
+    this.cardForm.markAsUntouched();
+    this.cardForm.markAsPristine();
+    this.selectedDesign.set('');
+  }
 }

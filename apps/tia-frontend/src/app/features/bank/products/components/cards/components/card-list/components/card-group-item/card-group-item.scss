@@ -1,0 +1,86 @@
+@use "../../../../../../../../../shared/styles/mixins" as *;
+@use "../../../../../../../../../shared/styles/palette" as *;
+
+.card-group-item {
+  @include display-flex(column);
+  gap: 1.6rem;
+  max-width: 100%;
+
+  &__header {
+    @include display-flex(row);
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.6rem;
+
+    @media (max-width: 480px) {
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+  }
+
+  &__info {
+    @include display-flex(column);
+    gap: 0.8rem;
+    flex: 1;
+  }
+
+  &__name-wrapper {
+    @include display-flex(row);
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  &__icon-wrapper {
+    @include flex-center;
+    width: 4rem;
+    height: 4rem;
+    background-color: var(--color-secondary);
+    border-radius: 0.8rem;
+    flex-shrink: 0;
+  }
+
+  &__icon {
+    width: 2rem;
+    height: 2rem;
+    object-fit: contain;
+  }
+
+  &__name {
+    @include font-inter(600, 1.6rem, 1.5);
+    color: var(--color-fg);
+  }
+
+  &__number {
+    @include font-inter(400, 1.4rem, 1.5);
+    color: $gray-600;
+    padding-left: 5.2rem;
+  }
+
+  &__cards-wrapper {
+    @include display-flex(column);
+    gap: 12rem;
+    align-items: start;
+  }
+
+  &__view-all-button {
+    @include font-inter(500, 1.4rem, 1.5);
+    background: none;
+    border: none;
+    color: $gray-600;
+    cursor: pointer;
+    padding: 0.8rem 0;
+    transition: all 0.2s ease;
+    text-align: center;
+    margin-top: 0.8rem;
+
+    &:hover {
+      color: var(--color-primary);
+    }
+
+    &:focus-visible {
+      outline: 0.2rem solid var(--color-primary);
+      outline-offset: 0.2rem;
+      border-radius: 0.4rem;
+    }
+  }
+}

@@ -1,0 +1,41 @@
+<div class="card-details__actions-grid">
+  <app-button
+    variant="default"
+    [fullWidth]="true"
+    icon="transfer.svg"
+    (click)="handleTransferOwn()"
+  >
+    Transfer to Own Account
+  </app-button>
+
+  <app-button
+    variant="default"
+    [fullWidth]="true"
+    icon="transfer.svg"
+    (click)="handleTransferExternal()"
+  >
+    Transfer to Someone Else
+  </app-button>
+
+  <app-button
+    variant="default"
+    [fullWidth]="true"
+    icon="paybill.svg"
+    (click)="handlePaybill()"
+  >
+    Pay Paybill
+  </app-button>
+
+  <app-button variant="outline" [fullWidth]="true" icon="eye.svg">
+    View Sensitive Details
+  </app-button>
+
+  <app-button
+    variant="outline"
+    [fullWidth]="true"
+    icon="transactions.svg"
+    (click)="handleViewTransactions()"
+  >
+    View Transactions
+  </app-button>
+</div>

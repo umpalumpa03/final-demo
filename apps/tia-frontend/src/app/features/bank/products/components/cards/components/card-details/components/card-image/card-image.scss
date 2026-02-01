@@ -1,0 +1,18 @@
+@use "../../../../../../../../../shared/styles/mixins" as *;
+
+.card-details__card-image {
+  @include flex-center();
+  width: 100%;
+}
+
+.card-details__image {
+  display: block;
+  width: 100%;
+  max-width: 44rem;
+  height: auto;
+  border-radius: 1.6rem;
+
+  @media (max-width: 480px) {
+    max-width: 100%;
+  }
+}

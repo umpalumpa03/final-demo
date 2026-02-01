@@ -1,3 +1,4 @@
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -23,30 +24,28 @@ import {
   selectShowSuccessAlert,
   selectIsCreateModalOpen,
 } from '../../../../../../../../store/products/cards/cards.selectors';
-import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 import { CreateCard } from '../../create-card-modal/container/createCard';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
-import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AsyncPipe } from '@angular/common';
-import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
-import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { CardGroupView } from '../models/card-list-view.model';
+import { CardGroupItem } from '../components/card-group-item/card-group-item';
+import { AddCardButton } from '../components/add-card-button/add-card-button';
 
 @Component({
   selector: 'app-card-list',
   templateUrl: './card-list.html',
   styleUrls: ['./card-list.scss'],
   imports: [
-    Badges,
     AsyncPipe,
     CreateCard,
     SimpleAlerts,
-    ButtonComponent,
-    BasicCard,
     Spinner,
-    ErrorStates
+    ErrorStates,
+    CardGroupItem,
+    AddCardButton,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -54,7 +53,6 @@ export class CardList implements OnInit {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
 
-  protected readonly cardGroups$ = this.store.select(selectCardGroups);
   protected readonly loading$ = this.store.select(selectLoading);
   protected readonly error$ = this.store.select(selectError);
   protected readonly showSuccessAlert$ = this.store.select(selectShowSuccessAlert);
@@ -62,24 +60,25 @@ export class CardList implements OnInit {
 
   protected readonly activeCardIndex = signal<Record<string, number>>({});
 
-protected readonly cardGroupsWithMeta$ = combineLatest([
-  this.cardGroups$,
-  toObservable(this.activeCardIndex)
-]).pipe(
-  map(([groups, activeIndexMap]) => groups.map(group => ({
-    ...group,
-    cardCountLabel: `${group.cardImages.length} Card${group.cardImages.length !== 1 ? 's' : ''}`,
-    activeIndex: activeIndexMap[group.account.id] ?? 0,
-    cards: group.cardImages.map((cardImage, idx) => ({
-      ...cardImage,
-      cardAlt: `Card ending in ${cardImage.cardId.slice(-4)}`,
-      isStacked: idx !== (activeIndexMap[group.account.id] ?? 0),
-      isActive: idx === (activeIndexMap[group.account.id] ?? 0),
-      zIndex: idx === (activeIndexMap[group.account.id] ?? 0) ? 100 : group.cardImages.length - idx,
-      index: idx,
-    })),
-  })))
-);
+  protected readonly cardGroupsWithMeta$ = combineLatest([
+    this.store.select(selectCardGroups),
+    toObservable(this.activeCardIndex)
+  ]).pipe(
+    map(([groups, activeIndexMap]): CardGroupView[] => groups.map(group => ({
+      ...group,
+      cardCountLabel: `${group.cardImages.length} Card${group.cardImages.length !== 1 ? 's' : ''}`,
+      activeIndex: activeIndexMap[group.account.id] ?? 0,
+      cards: group.cardImages.map((cardImage, idx) => ({
+        ...cardImage,
+        cardAlt: `Card ending in ${cardImage.cardId.slice(-4)}`,
+        isStacked: idx !== (activeIndexMap[group.account.id] ?? 0),
+        isActive: idx === (activeIndexMap[group.account.id] ?? 0),
+        zIndex: idx === (activeIndexMap[group.account.id] ?? 0) ? 100 : group.cardImages.length - idx,
+        index: idx,
+      })),
+    })))
+  );
+
   constructor() {
     effect(() => {
       this.store.select(selectShowSuccessAlert).subscribe(show => {
@@ -98,28 +97,28 @@ protected readonly cardGroupsWithMeta$ = combineLatest([
     this.store.dispatch(loadCardAccounts());
   }
 
-  protected handleCardClick(accountId: string, cardId: string, cardIndex: number, hasMultipleCards: boolean): void {
-    if (!hasMultipleCards) {
-      this.router.navigate(['/bank/products/cards/details', cardId]);
+  protected handleCardClick(data: { accountId: string; cardId: string; index: number; hasMultipleCards: boolean }): void {
+    if (!data.hasMultipleCards) {
+      this.router.navigate(['/bank/products/cards/details', data.cardId]);
     } else {
-      const currentIndex = this.activeCardIndex()[accountId] ?? 0;
+      const currentIndex = this.activeCardIndex()[data.accountId] ?? 0;
 
-      if (cardIndex === currentIndex) {
-        this.router.navigate(['/bank/products/cards/account', accountId]);
+      if (data.index === currentIndex) {
+        this.router.navigate(['/bank/products/cards/account', data.accountId]);
       } else {
         this.activeCardIndex.update((state) => ({
           ...state,
-          [accountId]: cardIndex,
+          [data.accountId]: data.index,
         }));
       }
     }
   }
 
-  protected handleViewAllCards(accountId: string): void {
-    this.router.navigate(['/bank/products/cards/account', accountId]);
+  protected handleViewAllCards(data: { accountId: string }): void {
+    this.router.navigate(['/bank/products/cards/account', data.accountId]);
   }
 
-  protected openModal(): void {
+  protected handleOpenModal(): void {
     this.store.dispatch(openCreateCardModal());
   }
 

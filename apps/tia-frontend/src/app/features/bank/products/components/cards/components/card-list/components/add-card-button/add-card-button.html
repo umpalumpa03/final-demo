@@ -1,0 +1,23 @@
+<app-basic-card
+  [hasHover]="true"
+  [width]="'100%'"
+  [maxWidth]="'100%'"
+  [padding]="'3.2rem 2.4rem'"
+  [display]="'flex'"
+  [flexDirection]="'column'"
+  [alignItems]="'center'"
+  [justifyContent]="'center'"
+  [minHeight]="'auto'"
+  [borderColor]="'var(--color-muted)'"
+  (click)="handleClick()"
+  role="button"
+  tabindex="0"
+>
+  <app-button
+    size="icon"
+    [variant]="'ghost'"
+    [icon]="'adding.svg'"
+    type="button"
+  />
+  <span class="add-card-button__text">Get New Card</span>
+</app-basic-card>

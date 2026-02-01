@@ -1,3 +1,5 @@
+
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -22,6 +24,9 @@ import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
+import { CardImage } from '../components/card-image/card-image';
+import { CardInfoSection } from '../components/card-info-section/card-info-section';
+import { QuickActionsSection } from '../components/quick-actions-section/quick-actions-section';
 
 interface CardDataWithAccount extends CardWithDetails {
   account: CardAccount | undefined;
@@ -31,7 +36,16 @@ interface CardDataWithAccount extends CardWithDetails {
   selector: 'app-card-details',
   templateUrl: './card-details.html',
   styleUrls: ['./card-details.scss'],
-  imports: [CommonModule, RouteLoader,ButtonComponent, BasicCard, ErrorStates],
+  imports: [
+    CommonModule,
+    RouteLoader,
+    ButtonComponent,
+    BasicCard,
+    ErrorStates,
+    CardImage,
+    CardInfoSection,
+    QuickActionsSection,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardDetails implements OnInit {
@@ -124,8 +138,9 @@ export class CardDetails implements OnInit {
   protected handleViewTransactions(): void {
     this.router.navigate(['/bank/products/cards/transactions', this.cardId]);
   }
+
   protected handleRetry(): void {
-  this.store.dispatch(loadCardAccounts());
-  this.store.dispatch(loadCardDetails({ cardId: this.cardId }));
-}
+    this.store.dispatch(loadCardAccounts());
+    this.store.dispatch(loadCardDetails({ cardId: this.cardId }));
+  }
 }

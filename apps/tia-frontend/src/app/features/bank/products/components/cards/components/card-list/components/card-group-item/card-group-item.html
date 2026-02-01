@@ -1,0 +1,52 @@
+<div class="card-group-item">
+  <div class="card-group-item__header">
+    <div class="card-group-item__info">
+      <div class="card-group-item__name-wrapper">
+        <div class="card-group-item__icon-wrapper">
+          <img
+            [src]="'/images/svg/button-icons/account-icon.svg'"
+            alt="Account"
+            class="card-group-item__icon"
+          />
+        </div>
+        <span class="card-group-item__name">{{ group().account.name }}</span>
+      </div>
+      <span class="card-group-item__number">{{ group().account.iban }}</span>
+    </div>
+
+    <app-badges
+      [text]="group().cardCountLabel"
+      variant="info"
+      size="medium"
+      shape="rounded"
+    />
+  </div>
+
+  @if (group().cardImages.length > 0) {
+    <div class="card-group-item__cards-wrapper">
+      <app-card-stack
+        [cards]="group().cards"
+        [hasMultipleCards]="group().cardImages.length > 1"
+        (cardClicked)="handleCardClick($event)"
+      />
+
+      @if (group().cardImages.length > 1) {
+        <button
+          class="card-group-item__view-all-button"
+          (click)="handleViewAllClick()"
+          type="button"
+        >
+          Click to view all cards
+        </button>
+      }
+    </div>
+  } @else {
+    <app-badges
+      text="No cards available"
+      variant="info"
+      size="medium"
+      shape="rounded"
+      [disabled]="true"
+    />
+  }
+</div>

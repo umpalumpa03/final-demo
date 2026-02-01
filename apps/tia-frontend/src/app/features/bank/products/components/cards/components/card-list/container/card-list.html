@@ -1,119 +1,40 @@
+
 <div class="card-list">
   @if (loading$ | async) {
-  <div class="card-list__loading">
-    <app-spinner size="4rem" />
-  </div>
+    <div class="card-list__loading">
+      <app-spinner size="4rem" />
+    </div>
   } @else if (error$ | async; as errorMsg) {
-  <app-error-states
-    variant="failed"
-    header="Loading Failed"
-    [message]="errorMsg"
-    buttonMessage="Retry"
-  />
-  } @else { @for (group of cardGroupsWithMeta$ | async; track group.account.id)
-  {
-  <div class="card-list__group">
-    <div class="card-list__account-header">
-      <div class="card-list__account-info">
-        <div class="card-list__account-name-wrapper">
-          <div class="card-list__icon-wrapper">
-            <img
-              [src]="'/images/svg/button-icons/account-icon.svg'"
-              alt="Account"
-              class="card-list__account-icon"
-            />
-          </div>
-          <span class="card-list__account-name">{{ group.account.name }}</span>
-        </div>
-        <span class="card-list__account-number">{{ group.account.iban }}</span>
+    <app-error-states
+      variant="failed"
+      header="Loading Failed"
+      [message]="errorMsg"
+      buttonMessage="Retry"
+    />
+  } @else {
+    @for (group of cardGroupsWithMeta$ | async; track group.account.id) {
+      <div class="card-list__group">
+        <app-card-group-item
+          [group]="group"
+          (cardClicked)="handleCardClick($event)"
+          (viewAllClicked)="handleViewAllCards($event)"
+        />
       </div>
-
-      <app-badges
-        [text]="group.cardCountLabel"
-        variant="info"
-        size="medium"
-        shape="rounded"
-      >
-      </app-badges>
-    </div>
-
-    @if (group.cardImages.length > 0) {
-    <div class="card-list__cards-wrapper">
-      <div class="card-list__cards">
-        @for (card of group.cards; track card.cardId) {
-        <div
-          class="card-list__card"
-          [class.card-list__card--stacked]="card.isStacked"
-          [class.card-list__card--active]="card.isActive"
-          [style.z-index]="card.zIndex"
-          (click)="handleCardClick(group.account.id, card.cardId, card.index, group.cardImages.length > 1)"
-        >
-          <img
-            [src]="card.imageBase64"
-            [alt]="card.cardAlt"
-            class="card-list__card-image"
-          />
-        </div>
-        }
-      </div>
-
-      @if (group.cardImages.length > 1) {
-      <button
-        class="card-list__view-all-button"
-        (click)="handleViewAllCards(group.account.id)"
-        type="button"
-      >
-        Click to view all cards
-      </button>
-      }
-    </div>
-    } @else {
-    <app-badges
-      text="No cards available"
-      variant="info"
-      size="medium"
-      shape="rounded"
-      [disabled]="true"
-    ></app-badges>
     }
-  </div>
-  }
 
-  <app-basic-card
-    [hasHover]="true"
-    [width]="'100%'"
-    [maxWidth]="'100%'"
-    [padding]="'3.2rem 2.4rem'"
-    [display]="'flex'"
-    [flexDirection]="'column'"
-    [alignItems]="'center'"
-    [justifyContent]="'center'"
-    [minHeight]="'auto'"
-    [borderColor]="'var(--color-muted)'"
-    (click)="openModal()"
-    role="button"
-    tabindex="0"
-  >
-    <app-button
-      class="test"
-      size="icon"
-      [variant]="'ghost'"
-      [icon]="'adding.svg'"
-      type="button"
-    >
-    </app-button>
-    <span class="card-list__add-card-text">Get New Card</span>
-  </app-basic-card>
+    <app-add-card-button (clicked)="handleOpenModal()" />
   }
 </div>
 
 @if (isModalOpen$ | async; as isOpen) {
-<app-create-card [isOpen]="isOpen" (closed)="handleCloseModal()" />
-} @if (showSuccessAlert$ | async) {
-<div class="card-list__alert-container">
-  <app-simple-alerts
-    alertType="success"
-    alertMessage="Card created successfully!"
-  />
-</div>
+  <app-create-card [isOpen]="isOpen" (closed)="handleCloseModal()" />
+}
+
+@if (showSuccessAlert$ | async) {
+  <div class="card-list__alert-container">
+    <app-simple-alerts
+      alertType="success"
+      alertMessage="Card created successfully!"
+    />
+  </div>
 }

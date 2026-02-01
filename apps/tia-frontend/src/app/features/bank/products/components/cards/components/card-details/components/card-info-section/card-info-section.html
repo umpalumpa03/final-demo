@@ -1,0 +1,38 @@
+<div class="card-details__info-grid">
+  <div class="card-details__info-item">
+    <span class="card-details__info-label">Card Name</span>
+    <span class="card-details__info-value">{{ cardName() }}</span>
+  </div>
+
+  <div class="card-details__info-item">
+    <span class="card-details__info-label">Card Type</span>
+    <span class="card-details__info-value">{{ cardType() }}</span>
+  </div>
+
+  <div class="card-details__info-item">
+    <span class="card-details__info-label">Currency</span>
+    <span class="card-details__info-value">{{ currency() }}</span>
+  </div>
+
+  <div class="card-details__info-item">
+    <span class="card-details__info-label">Status</span>
+    <span
+      class="card-details__info-value"
+      [class.card-details__info-value--status]="isActiveStatus()"
+    >
+      {{ status().toLowerCase() }}
+    </span>
+  </div>
+
+  <div class="card-details__info-item">
+    <span class="card-details__info-label">Total Balance</span>
+    <span class="card-details__info-value">{{ formattedBalance() }}</span>
+  </div>
+
+  @if (shouldShowCreditLimit()) {
+    <div class="card-details__info-item">
+      <span class="card-details__info-label">Credit Limit</span>
+      <span class="card-details__info-value">{{ formattedCreditLimit() }}</span>
+    </div>
+  }
+</div>

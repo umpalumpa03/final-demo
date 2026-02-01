@@ -1,0 +1,36 @@
+<div class="design-selector">
+  <label class="design-selector__label">Choose Card Design</label>
+  <div class="design-selector__grid">
+    @if (isLoading()) {
+      <app-skeleton width="100%" height="12rem" />
+      <app-skeleton width="100%" height="12rem" />
+      <app-skeleton width="100%" height="12rem" />
+      <app-skeleton width="100%" height="12rem" />
+      <app-skeleton width="100%" height="12rem" />
+    } @else {
+      @for (design of designs(); track design.id) {
+        <div 
+          class="design-selector__option" 
+          [class.design-selector__option--selected]="selectedDesign() === design.id" 
+          (click)="onSelectDesign(design.id)" 
+          (keydown.enter)="onSelectDesign(design.id)" 
+          (keydown.space)="onSelectDesign(design.id)" 
+          role="button" 
+          tabindex="0" 
+          [attr.aria-label]="design.designName">
+          <div class="design-selector__preview">
+            <img [src]="design.uri" [alt]="design.designName" class="design-selector__image" />
+            @if (selectedDesign() === design.id) {
+              <div class="design-selector__check">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M13.3337 4L6.00033 11.3333L2.66699 8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+            }
+          </div>
+          <span class="design-selector__name">{{ design.designName }}</span>
+        </div>
+      }
+    }
+  </div>
+</div>

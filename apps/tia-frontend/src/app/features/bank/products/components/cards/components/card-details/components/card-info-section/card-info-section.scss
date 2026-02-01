@@ -1,0 +1,34 @@
+@use "../../../../../../../../../shared/styles/mixins" as *;
+
+@use "../../../../../../../../../shared/styles/palette" as *;
+
+.card-details__info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem 1.6rem;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
+  }
+}
+
+.card-details__info-item {
+  @include display-flex(column);
+  gap: 0.4rem;
+}
+
+.card-details__info-label {
+  @include font-inter(400, 1.3rem, 1.5);
+  color: $gray-600;
+}
+
+.card-details__info-value {
+  @include font-inter(600, 1.5rem, 1.5);
+  color: $blue-1000;
+
+  &--status {
+    color: var(--color-primary);
+    text-transform: capitalize;
+  }
+}
