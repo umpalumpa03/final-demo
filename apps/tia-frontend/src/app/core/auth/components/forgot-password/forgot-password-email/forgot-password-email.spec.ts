@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 import { ForgotPasswordEmail } from './forgot-password-email';
 import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
@@ -15,7 +16,7 @@ describe('ForgotPasswordEmail', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ForgotPasswordEmail],
+      imports: [ForgotPasswordEmail, TranslateModule.forRoot()],
       providers: [
         provideRouter([]),
         {

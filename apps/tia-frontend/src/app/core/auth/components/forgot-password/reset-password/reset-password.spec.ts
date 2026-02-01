@@ -3,6 +3,7 @@ import { provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TranslateModule } from '@ngx-translate/core';
 import { ResetPassword } from './reset-password';
 import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
@@ -15,7 +16,7 @@ describe('ResetPassword', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ResetPassword],
+      imports: [ResetPassword, TranslateModule.forRoot()],
       providers: [
         provideRouter([]),
         {
