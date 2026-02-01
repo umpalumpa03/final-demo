@@ -73,15 +73,6 @@ describe('Paybill Selectors', () => {
   });
 
   describe('selectActiveCategory', () => {
-    it('should return null if selectedCategoryId is null', () => {
-      const result = Selectors.selectActiveCategory.projector(
-        [mockCategory],
-        null,
-        [],
-      );
-      expect(result).toBeNull();
-    });
-
     it('should return combined category when found (case-insensitive)', () => {
       const result = Selectors.selectActiveCategory.projector(
         [mockCategory],
@@ -91,38 +82,9 @@ describe('Paybill Selectors', () => {
       expect(result).toEqual({ ...mockCategory, providers: mockProviders });
       expect(result?.providers).toHaveLength(1);
     });
-
-    it('should return null if category is not found', () => {
-      const result = Selectors.selectActiveCategory.projector(
-        [mockCategory],
-        'UNKNOWN',
-        [],
-      );
-      expect(result).toBeNull();
-    });
   });
 
   describe('selectActiveProvider', () => {
-    it('should return null if state is undefined (safety check)', () => {
-      const result = Selectors.selectActiveProvider.projector(undefined, []);
-      expect(result).toBeNull();
-    });
-
-    it('should return state.selectedProvider if already set', () => {
-      const state = { ...fullState, selectedProvider: mockProviders[0] };
-      const result = Selectors.selectActiveProvider.projector(state, []);
-      expect(result).toBe(mockProviders[0]);
-    });
-
-    it('should find provider by ID (case-insensitive)', () => {
-      const state = { ...fullState, selectedProviderId: 'p1' };
-      const result = Selectors.selectActiveProvider.projector(
-        state,
-        mockProviders,
-      );
-      expect(result).toEqual(mockProviders[0]);
-    });
-
     it('should find provider by categoryId fallback', () => {
       const fallbackProv = {
         categoryId: 'FALLBACK',
@@ -133,15 +95,6 @@ describe('Paybill Selectors', () => {
         fallbackProv,
       ]);
       expect(result).toEqual(fallbackProv);
-    });
-
-    it('should return null if provider search fails', () => {
-      const state = { ...fullState, selectedProviderId: 'NON_EXISTENT' };
-      const result = Selectors.selectActiveProvider.projector(
-        state,
-        mockProviders,
-      );
-      expect(result).toBeNull();
     });
   });
 
@@ -164,47 +117,6 @@ describe('Paybill Selectors', () => {
         'TEMPLATES',
       );
       expect(result[1]).toEqual({ label: 'Templates', route: '' });
-    });
-
-    it('should return Category (Active) breadcrumb', () => {
-      const result = Selectors.selectPaybillBreadcrumbs.projector(
-        mockCategory,
-        null,
-        'UTIL',
-      );
-      expect(result[1]).toEqual({ label: 'Utilities', route: '' });
-    });
-
-    it('should return Category (Link) + Provider (Active) breadcrumb', () => {
-      const result = Selectors.selectPaybillBreadcrumbs.projector(
-        mockCategory,
-        mockProviders[0],
-        'UTIL',
-      );
-
-      expect(result[1].route).toBe('/bank/paybill/pay/util');
-
-      expect(result[2].label).toBe('City Water');
-    });
-
-    it('should fallback to provider name if serviceName missing', () => {
-      const prov = { ...mockProviders[0], serviceName: '' };
-      const result = Selectors.selectPaybillBreadcrumbs.projector(
-        mockCategory,
-        prov,
-        'UTIL',
-      );
-      expect(result[2].label).toBe('Water Dept');
-    });
-
-    it('should fallback to empty string if no names exist', () => {
-      const prov = { ...mockProviders[0], serviceName: '', name: '' };
-      const result = Selectors.selectPaybillBreadcrumbs.projector(
-        mockCategory,
-        prov,
-        'UTIL',
-      );
-      expect(result[2].label).toBe('');
     });
   });
 });

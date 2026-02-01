@@ -78,7 +78,6 @@ describe('PaybillEffect', () => {
     });
   });
 
-
   describe('checkBill$', () => {
     it('should dispatch checkBillSuccess on success', () => {
       const details = { valid: true, amount: 100 } as any;

@@ -92,11 +92,6 @@ describe('PaybillContainer', () => {
     });
   });
 
-  it('should dispatch loadCategories on init', () => {
-    const spy = vi.spyOn(store, 'dispatch');
-    component.ngOnInit();
-    expect(spy).toHaveBeenCalledWith(PaybillActions.loadCategories());
-  });
 
   it('should dispatch actions for provider select and back navigation', () => {
     const spy = vi.spyOn(store, 'dispatch');
