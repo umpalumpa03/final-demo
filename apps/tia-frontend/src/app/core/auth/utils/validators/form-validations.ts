@@ -35,3 +35,21 @@ export function passwordValidator(
 
   return isValid ? null : { passwordRules: errors };
 }
+
+export function numberValidator(
+  control: AbstractControl,
+): ValidationErrors | null {
+  const value = control.value;
+
+  if (!value) return null;
+
+  const errors = {
+    notNineChars: value.length !== 9,
+    mustStartWithFive: !value.startsWith('5'),
+    isNotNumber: isNaN(Number(value))
+  };
+
+  const hasError = Object.values(errors).some(error => error === true);
+
+  return hasError ? { numberRules: errors } : null;
+}

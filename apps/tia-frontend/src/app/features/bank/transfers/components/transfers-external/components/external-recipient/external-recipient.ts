@@ -43,7 +43,7 @@ import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.s
     ReactiveFormsModule,
     AlertTypesWithIcons,
   ],
-  providers: [TransferExternalService],
+  providers: [],
   templateUrl: './external-recipient.html',
   styleUrl: './external-recipient.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

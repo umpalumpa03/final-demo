@@ -25,6 +25,8 @@ import {
 } from 'rxjs';
 import { TimerType } from '../../models/auth.models';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
+import { numberValidator } from '../../utils/validators/form-validations';
+import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 import {
   IVerified,
   OtpVerificationType,
@@ -44,6 +46,7 @@ import { OTP_VERIFY_FORM } from '../../config/inputs.config';
     Otp,
     RouterLink,
     TextInput,
+    SimpleAlerts,
     TranslatePipe,
   ],
   templateUrl: './otp-verification.html',
@@ -56,6 +59,40 @@ export class OtpVerification {
   public type = input.required<OtpVerificationType>();
   public timeLimit = input(1);
   public timerType = input<TimerType>('phone');
+  public errorMessage = input<string | null>(null);
+  public remainingAttempts = input<number | null>(null);
+
+  public phoneErrorMessage = input<string | null>(null);
+
+  public unitedError = computed(() => {
+    const error = this.errorMessage();
+    const attempts = this.remainingAttempts();
+
+    if (error && attempts !== null) {
+      return `${error} ${attempts === undefined ? '' : `(Remaining attempts: ${attempts})`}`;
+    }
+
+    if (error) return error;
+
+    if (attempts !== null) {
+      return `Remaining attempts: ${attempts}`;
+    }
+
+    return '';
+  });
+
+  public isButtonDisabled = computed(() => {
+    if (this.unitedError() || this.phoneErrorMessage() || this.submitError()) {
+      return true;
+    }
+
+    if (this.isResendActive()) {
+      return true;
+    }
+
+    return false;
+  });
+
   public isVerifyCalled = output<IVerified>();
   public isResendCalled = output<boolean>();
 
@@ -78,6 +115,7 @@ export class OtpVerification {
 
     return limit * 60;
   });
+
   public countdown = signal<number>(0);
   private timer$ = interval(1000);
 
@@ -105,8 +143,18 @@ export class OtpVerification {
     },
   );
 
+  public setPhoneNumberForm = this.fb.group({
+    phoneNumber: ['', [Validators.required, numberValidator]],
+  });
+
   public otpForm = this.fb.group({
     code: ['', Validators.required],
+  });
+
+  public activeForm = computed(() => {
+    return this.timerType() === 'phone'
+      ? this.setPhoneNumberForm
+      : this.otpForm;
   });
 
   constructor() {
@@ -140,13 +188,30 @@ export class OtpVerification {
   }
 
   public onSubmit(): void {
-    if (this.otpForm.invalid) {
+    const currentForm = this.activeForm();
+
+    if (currentForm.invalid) {
+      currentForm.markAllAsTouched();
+      this.submitError.set('Please check the required fields.');
+
+      setTimeout(() => {
+        this.submitError.set('');
+      }, 5000);
       return;
+    }
+
+    const rawValue = currentForm.getRawValue();
+    let otp: string | null = null;
+
+    if ('phoneNumber' in rawValue) {
+      otp = rawValue.phoneNumber;
+    } else if ('code' in rawValue) {
+      otp = rawValue.code;
     }
 
     this.isVerifyCalled.emit({
       isCalled: true,
-      otp: this.otpForm.getRawValue().code,
+      otp: otp,
     });
   }
 

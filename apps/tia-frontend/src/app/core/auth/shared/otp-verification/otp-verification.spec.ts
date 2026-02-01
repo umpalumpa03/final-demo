@@ -3,7 +3,6 @@ import { OtpVerification } from './otp-verification';
 import { TranslateModule } from '@ngx-translate/core';
 import { provideRouter } from '@angular/router';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { By } from '@angular/platform-browser';
 
 describe('OtpVerification', () => {
   let component: OtpVerification;
@@ -68,8 +67,11 @@ describe('OtpVerification', () => {
 
   it('should emit correct otp value on submit', () => {
     const emitSpy = vi.spyOn(component.isVerifyCalled, 'emit');
-    
-    component.otpForm.patchValue({ code: '9876' });
+    fixture.componentRef.setInput('timerType', 'otp');
+    fixture.detectChanges();
+
+    component.otpForm.setValue({ code: '9876' });
+    component.otpForm.updateValueAndValidity();
     component.onSubmit();
     
     expect(emitSpy).toHaveBeenCalledWith({

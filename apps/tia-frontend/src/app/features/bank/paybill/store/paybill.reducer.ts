@@ -107,8 +107,12 @@ export const paybillReducer = createReducer(
   on(PaybillActions.proceedPaymentSuccess, (state, { response }) => ({
     ...state,
     loading: false,
-
     challengeId: response.verify?.challengeId ?? null,
+  })),
+
+  on(PaybillActions.clearError, (state) => ({
+    ...state,
+    error: null,
   })),
 
   on(PaybillActions.proceedPaymentFailure, (state, { error }) => ({
@@ -137,4 +141,44 @@ export const paybillReducer = createReducer(
     error,
     loading: false,
   })),
+
+  on(PaybillActions.confirmPayment, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
+  on(PaybillActions.confirmPaymentFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error: error,
+  })),
+
+  on(
+    PaybillActions.addNotification,
+    (state, { notificationType, message }) => ({
+      ...state,
+      notifications: [
+        ...state.notifications,
+        { id: Date.now().toString(), notificationType, message },
+      ],
+    }),
+  ),
+
+  on(PaybillActions.dismissNotification, (state, { id }) => ({
+    ...state,
+    notifications: state.notifications.filter((n) => n.id !== id),
+  })),
+
+  on(
+    PaybillActions.clearAllNotifications,
+    PaybillActions.selectCategory,
+    PaybillActions.selectProvider,
+    PaybillActions.clearSelection,
+    (state) => ({
+      ...state,
+      notifications: [],
+      error: null,
+    }),
+  ),
 );

@@ -15,7 +15,7 @@
         [routerLink]="item.route"
         routerLinkActive="navigation__item--active"
         #rla="routerLinkActive"
-        [routerLinkActiveOptions]="{ exact: false }"
+        [routerLinkActiveOptions]="{ exact: item.exact || false }"
       >
         @if (item.icon) {
 

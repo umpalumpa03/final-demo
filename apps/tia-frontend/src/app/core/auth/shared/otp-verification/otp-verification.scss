@@ -5,7 +5,6 @@
   @include flex-center(column);
   max-width: 48rem;
   margin: 0 auto;
-  padding: 4rem 2rem;
 
   &__icon {
     @include flex-center();
@@ -17,7 +16,7 @@
   }
 
   &__title {
-    @include font-inter(700, 3.2rem, 4rem);
+    @include font-inter(700, 3rem, 4rem);
     margin-bottom: 1.6rem;
     color: $gray-800;
   }
@@ -31,7 +30,7 @@
 
 .auth-form {
   @include display-flex(column);
-  gap: 3.2rem;
+  gap: 1.6rem;
   width: 100%;
 
   .otp-field {

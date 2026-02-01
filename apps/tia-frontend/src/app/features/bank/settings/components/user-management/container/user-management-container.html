@@ -1,1 +1,5 @@
-<h1>user management container</h1>
+@let newCfg = userState.newConfig();
+<app-basic-card maxWidth="100%" height="fit-content" [title]="newCfg.title" [subtitle]='newCfg.subtitle'>
+
+    <app-user-management></app-user-management>
+</app-basic-card>

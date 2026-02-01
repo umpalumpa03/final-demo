@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RegistrationForm } from './registration-form';
+import { TranslateModule } from '@ngx-translate/core';
 import { vi } from 'vitest';
 
 describe('RegistrationForm', () => {
@@ -9,7 +10,7 @@ describe('RegistrationForm', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegistrationForm],
+      imports: [RegistrationForm, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegistrationForm);

@@ -13,21 +13,23 @@
       [iconBgColor]="iconBgColor()"
       [iconBgPath]="iconBgPath()"
       [items]="summaryItems()"
-      headerTitle="National Power Company"
-      headerSubtitle="Utilities"
+      [headerTitle]="provider().name!"
+      headerSubtitle="Enter your bill details"
       type="confirm-payment"
     ></app-payment-summary>
 
     <div class="confirm-content__options">
       <lib-select
-        [options]="accountOptions()"
-        [value]="selectedAccountId()"
+        [options]="currentAccounts()!"
+        [(value)]="selectedAccountId"
+        [config]="selectConfig"
+        [maxVisibleItems]="4"
       ></lib-select>
     </div>
 
     <footer class="confirm-actions">
       <app-button [fullWidth]="true" (click)="confirm.emit()">
-        Confirm & Pay ${{ summary().amount }}
+        Confirm & Pay {{ summary().amount | currency: 'GEL':'symbol'}}
       </app-button>
       <app-button
         [fullWidth]="true"

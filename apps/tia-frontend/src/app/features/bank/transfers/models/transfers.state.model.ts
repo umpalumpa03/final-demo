@@ -28,12 +28,12 @@ export interface TransferState {
   senderAccount: Account | null; //selected sender account, used by both flow(g)
   receiverOwnAccount: Account | null; //used by transfer internal(g)
   selectedRecipientAccount: RecipientAccount | null; //for other account same bank flow
-
   ///response
   recipientInfo: RecipientResponse | null; //response after view account
   transferId: string | null; //transferid from response
   challengeId: string | null; //needed for otp, this and transferid are unclear
   fee: number; //repsponse from /get-fee
+  totalWithFee: number;
 
   //derived state
   recipientType: RecipientType | null; // from validation, values: 'phone','iban-same-bank' , 'iban-different-bank'
@@ -43,5 +43,9 @@ export interface TransferState {
   currentStep: number;
   isLoading: boolean;
   error: string | null;
+  isVerified: boolean;
 }
 export type AccountData = Account | RecipientAccount;
+export interface FeeResponse {
+  fee: number;
+}

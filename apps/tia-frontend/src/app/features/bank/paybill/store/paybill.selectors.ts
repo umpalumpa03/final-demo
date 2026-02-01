@@ -120,7 +120,18 @@ export const selectChallengeId = createSelector(
   (state) => state.challengeId,
 );
 
+export const selectError = createSelector(
+  selectPaybillState,
+  (state) => state.error,
+);
+
+
 export const selectTemplatesGroup = createSelector(
   selectPaybillState,
   (state) => state.templateGroups,
+);
+
+export const selectNotifications = createSelector(
+  selectPaybillState,
+  (state) => state.notifications
 );
