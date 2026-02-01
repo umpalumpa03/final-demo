@@ -27,6 +27,9 @@ describe('ExternalAmount', () => {
       recipientType: signal('phone'),
       amount: signal(0),
       description: signal(''),
+      hasInsufficientBalance: signal(false),
+      requiresOtp: signal(false),
+      transferSuccess: signal(false),
     };
 
     mockExternalService = {
