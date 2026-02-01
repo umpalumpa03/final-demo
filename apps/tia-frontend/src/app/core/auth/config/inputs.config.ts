@@ -17,7 +17,8 @@ export const OTP_VERIFY_FORM = {
     length: 4,
   },
   phone: {
-    label: 'auth.otp-sign-up.otpPlaceholder'
+    label: 'auth.otp-sign-up.otpPlaceholder',
+    placeholder: ''
   },
 } as const;
 
