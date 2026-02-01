@@ -1,111 +1,255 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import '@angular/compiler';
-import { setupTestBed } from '@analogjs/vitest-angular/setup-testbed';
-
-setupTestBed();
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { of, throwError } from 'rxjs';
-
 import { OtpVerification } from './otp-verification';
+import { TranslateModule } from '@ngx-translate/core';
+import { provideRouter } from '@angular/router';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { By } from '@angular/platform-browser';
 
 describe('OtpVerification', () => {
-	let fixture: ComponentFixture<OtpVerification>;
-	let component: OtpVerification;
+  let component: OtpVerification;
+  let fixture: ComponentFixture<OtpVerification>;
 
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [ReactiveFormsModule, OtpVerification],
-			providers: [provideRouter([])],
-			schemas: [NO_ERRORS_SCHEMA],
-		}).compileComponents();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [OtpVerification, TranslateModule.forRoot()],
+      providers: [
+        provideRouter([])
+      ]
+    }).compileComponents();
 
-		fixture = TestBed.createComponent(OtpVerification);
-		component = fixture.componentInstance;
+    fixture = TestBed.createComponent(OtpVerification);
+    component = fixture.componentInstance;
+    
+    // Set required inputs
+    fixture.componentRef.setInput('type', 'sign-in');
+    
+    fixture.detectChanges();
+  });
 
-		(component as any).type = () => 'sign-in';
-		fixture.detectChanges();
-	});
+  afterEach(() => {
+    fixture.destroy();
+  });
 
-	it('should create the component', () => {
-		expect(component).toBeTruthy();
-	});
+  it('should create and initialize properly', () => {
+    expect(component).toBeTruthy();
+    expect(component.type()).toBe('sign-in');
+    expect(component.timeLimit()).toBe(1);
+    expect(component.timerType()).toBe('phone');
+  });
 
-	it('should have an invalid form when empty', () => {
-		expect(component.otpForm.invalid).toBe(true);
-	});
+  it('should initialize form with empty code and required validator', () => {
+    expect(component.otpForm.get('code')?.value).toBe('');
+    expect(component.otpForm.get('code')?.hasError('required')).toBe(true);
+  });
 
-	it('should not call submitMethod when form is invalid', () => {
-		const submitFn = vi.fn().mockReturnValue(of({}));
-		(component as any).submitMethod = () => submitFn;
+  it('should set countdown to maxTime on init', () => {
+    component.ngOnInit();
+    expect(component.countdown()).toBe(60); // 1 minute * 60 seconds
+  });
 
-		component.onSubmit();
+  it('should calculate maxTime correctly with custom timeLimit', () => {
+    fixture.componentRef.setInput('timeLimit', 3);
+    fixture.detectChanges();
+    
+    expect(component.maxTime()).toBe(180); // 3 minutes * 60 seconds
+  });
 
-		expect(submitFn).not.toHaveBeenCalled();
-	});
+  it('should handle negative timeLimit by taking absolute value', () => {
+    fixture.componentRef.setInput('timeLimit', -2);
+    fixture.detectChanges();
+    
+    expect(component.maxTime()).toBe(120); // abs(-2) * 60 = 120 seconds
+  });
 
+  it('should initialize signals with correct default values', () => {
+    expect(component.isLoading()).toBe(false);
+    expect(component.submitError()).toBeNull();
+    expect(component.isResendActive()).toBe(false);
+    expect(component.phoneConfig()).toEqual({ label: 'Phone Number' });
+    expect(component.otpConfig()).toEqual({ length: 4, label: 'Verification Code' });
+  });
 
-	it('should emit isVerifyCalled with correct value on valid submit', () => {
-		const spy = vi.fn();
-		component.isVerifyCalled.subscribe(spy);
-		component.otpForm.get('code')?.setValue('1234');
-		component.onSubmit();
-		expect(spy).toHaveBeenCalledWith({ isCalled: true, otp: '1234' });
-	});
+  it('should compute config properties from type input', () => {
+    const config = component.config();
+    expect(config).toBeDefined();
+    expect(component.iconUrl()).toBeDefined();
+    expect(component.title()).toBeDefined();
+    expect(component.subText()).toBeDefined();
+    expect(component.submitBtnName()).toBeDefined();
+    expect(component.backLink()).toBeDefined();
+    expect(component.backLinkText()).toBeDefined();
+  });
 
-	it('should emit isResendCalled when onResend is called and countdown is 0', () => {
-		const spy = vi.fn();
-		component.isResendCalled.subscribe(spy);
-		component.countdown.set(0);
-		component.onResend();
-		expect(spy).toHaveBeenCalledWith(true);
-	});
+  it('should handle different timer types', () => {
+    expect(component.timerType()).toBe('phone');
+    
+    fixture.componentRef.setInput('timerType', 'otp');
+    fixture.detectChanges();
+    
+    expect(component.timerType()).toBe('otp');
+  });
 
-	it('should not emit isResendCalled if countdown is not 0', () => {
-		const spy = vi.fn();
-		component.isResendCalled.subscribe(spy);
-		component.countdown.set(10);
-		component.onResend();
-		expect(spy).not.toHaveBeenCalled();
-	});
+  it('should not submit when form is invalid', () => {
+    const emitSpy = vi.spyOn(component.isVerifyCalled, 'emit');
+    
+    component.onSubmit();
+    
+    expect(emitSpy).not.toHaveBeenCalled();
+  });
 
-	it('should emit onTimeout when countdown reaches 0', async () => {
-		const spy = vi.fn();
-		component.onTimeout.subscribe(spy);
-		component.countdown.set(0);
-		// Simulate effect
-		await new Promise((resolve) => setTimeout(resolve, 1100));
-		expect(spy).toHaveBeenCalled();
-	});
+  it('should emit isVerifyCalled when form is valid', () => {
+    const emitSpy = vi.spyOn(component.isVerifyCalled, 'emit');
+    
+    component.otpForm.patchValue({ code: '1234' });
+    component.onSubmit();
+    
+    expect(emitSpy).toHaveBeenCalledWith({
+      isCalled: true,
+      otp: '1234'
+    });
+  });
 
-	it('should set isResendActive true when countdown reaches 0', async () => {
-		component.countdown.set(0);
-		await new Promise((resolve) => setTimeout(resolve, 1100));
-		expect(component.isResendActive()).toBe(true);
-	});
+  it('should emit correct otp value on submit', () => {
+    const emitSpy = vi.spyOn(component.isVerifyCalled, 'emit');
+    
+    component.otpForm.patchValue({ code: '9876' });
+    component.onSubmit();
+    
+    expect(emitSpy).toHaveBeenCalledWith({
+      isCalled: true,
+      otp: '9876'
+    });
+  });
 
-	it('should reset timer and set isResendActive false on startTimer', () => {
-		component.isResendActive.set(true);
-		component.countdown.set(10);
-		(component as any).startTimer();
-		expect(component.isResendActive()).toBe(false);
-	});
+  it('should not resend when countdown is active', () => {
+    const emitSpy = vi.spyOn(component.isResendCalled, 'emit');
+    
+    component.countdown.set(30);
+    component.onResend();
+    
+    expect(emitSpy).not.toHaveBeenCalled();
+  });
 
-	it('should clean up on ngOnDestroy', () => {
-		const unsubSpy = vi.spyOn((component as any).timerSubscription || {}, 'unsubscribe');
-		component.ngOnDestroy();
-		expect((component as any).destroy$.isStopped).toBe(true);
-	});
+  it('should emit isResendCalled when countdown is 0', () => {
+    const emitSpy = vi.spyOn(component.isResendCalled, 'emit');
+    
+    component.countdown.set(0);
+    component.onResend();
+    
+    expect(emitSpy).toHaveBeenCalledWith(true);
+  });
 
-	it('should handle errors from submitMethod gracefully', () => {
-		const submitFn = vi.fn().mockReturnValue(
-			throwError(() => new Error('fail'))
-		);
-		(component as any).submitMethod = () => submitFn;
+  it('should reset countdown to maxTime on resend', () => {
+    component.countdown.set(0);
+    const maxTime = component.maxTime();
+    
+    component.onResend();
+    
+    expect(component.countdown()).toBe(maxTime);
+  });
 
+  it('should disable resend button after resend', () => {
+    component.countdown.set(0);
+    component.isResendActive.set(true);
+    
+    component.onResend();
+    
+    expect(component.isResendActive()).toBe(false);
+  });
 
-		expect(() => component.onSubmit()).not.toThrow();
-	});
+  it('should render form when not loading', () => {
+    component.isLoading.set(false);
+    fixture.detectChanges();
+    
+    const form = fixture.debugElement.query(By.css('.auth-form'));
+    expect(form).toBeTruthy();
+  });
+
+  it('should render spinner when loading', () => {
+    component.isLoading.set(true);
+    fixture.detectChanges();
+    
+    const spinner = fixture.debugElement.query(By.css('app-spinner'));
+    expect(spinner).toBeTruthy();
+  });
+
+  it('should display submit error when present', () => {
+    component.submitError.set('auth.errors.invalid-code');
+    fixture.detectChanges();
+    
+    const error = fixture.debugElement.query(By.css('.auth-error'));
+    expect(error).toBeTruthy();
+  });
+
+  it('should render otp field when timerType is otp', () => {
+    fixture.componentRef.setInput('timerType', 'otp');
+    fixture.detectChanges();
+    
+    const otpField = fixture.debugElement.query(By.css('.otp-field'));
+    expect(otpField).toBeTruthy();
+  });
+
+  it('should render phone field when timerType is phone', () => {
+    fixture.componentRef.setInput('timerType', 'phone');
+    fixture.detectChanges();
+    
+    const phoneField = fixture.debugElement.query(By.css('.otp-field__phone'));
+    expect(phoneField).toBeTruthy();
+  });
+
+  it('should show timer countdown value', () => {
+    component.countdown.set(45);
+    fixture.detectChanges();
+    
+    const timerValue = fixture.debugElement.query(By.css('.timer-compact__value'));
+    expect(timerValue?.nativeElement?.textContent?.trim()).toBe('45');
+  });
+
+  it('should add pulse class when countdown is active', () => {
+    component.countdown.set(30);
+    fixture.detectChanges();
+    
+    const statusDot = fixture.debugElement.query(By.css('.timer-compact__status-dot'));
+    expect(statusDot?.nativeElement?.classList?.contains('timer-compact__status-dot--pulse')).toBe(true);
+  });
+
+  it('should not add pulse class when countdown is 0', () => {
+    component.countdown.set(0);
+    fixture.detectChanges();
+    
+    const statusDot = fixture.debugElement.query(By.css('.timer-compact__status-dot'));
+    expect(statusDot?.nativeElement?.classList?.contains('timer-compact__status-dot--pulse')).toBe(false);
+  });
+
+  it('should enable resend when countdown reaches 0', () => {
+    component.countdown.set(1);
+    
+    // Simulate countdown reaching 0
+    component.countdown.set(0);
+    fixture.detectChanges();
+    
+    // Effect should trigger setting isResendActive to true
+    expect(component.isResendActive()).toBe(true);
+  });
+
+  it('should handle edge cases for form validation', () => {
+    const emitSpy = vi.spyOn(component.isVerifyCalled, 'emit');
+    
+    // Test with null value
+    component.otpForm.patchValue({ code: null as any });
+    component.onSubmit();
+    expect(emitSpy).not.toHaveBeenCalled();
+    
+    // Test with empty string
+    component.otpForm.patchValue({ code: '' });
+    component.onSubmit();
+    expect(emitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should handle timeLimit of 0', () => {
+    fixture.componentRef.setInput('timeLimit', 0);
+    fixture.detectChanges();
+    
+    expect(component.maxTime()).toBe(0);
+  });
 });

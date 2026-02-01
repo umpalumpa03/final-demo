@@ -1,8 +1,7 @@
 export type OtpVerificationType =
   | 'sign-in'
   | 'sign-up'
-  | 'reset-password'
-  | 'verify-email';
+  | 'forgot-password'
 
 export interface OtpVerificationConfig {
   title: string;
