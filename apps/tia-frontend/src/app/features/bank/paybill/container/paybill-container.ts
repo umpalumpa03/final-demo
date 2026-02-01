@@ -30,10 +30,18 @@ import { Tabs } from '@tia/shared/lib/navigation/tabs/tabs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-
+import * as PAYBILL_SELECTORS from '../store/paybill.selectors';
+import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
 @Component({
   selector: 'app-paybill-container',
-  imports: [Breadcrumbs, LibraryTitle, RouterModule, Tabs, TranslatePipe],
+  imports: [
+    Breadcrumbs,
+    LibraryTitle,
+    RouterModule,
+    Tabs,
+    TranslatePipe,
+    DismissibleAlerts,
+  ],
   templateUrl: './paybill-container.html',
   styleUrl: './paybill-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -54,6 +62,14 @@ export class PaybillContainer implements OnInit {
     this.store.selectSignal(selectActiveProvider);
 
   public readonly navigationConfig = navConfig(this.translate);
+
+  protected readonly notifications = this.store.selectSignal(
+    PAYBILL_SELECTORS.selectNotifications,
+  );
+
+  public handleDismiss(id: string): void {
+    this.store.dispatch(PaybillActions.dismissNotification({ id }));
+  }
 
   constructor() {
     const routeStateSignal = toSignal(

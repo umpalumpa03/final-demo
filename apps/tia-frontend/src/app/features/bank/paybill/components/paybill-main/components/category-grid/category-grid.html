@@ -4,7 +4,7 @@
   <app-grid-layout cols="4" class="paybill-grid__container">
     @if (isLoading()) { @for (item of [1,2,3,4,5]; track item) {
     <div class="paybill-grid__card-wrapper">
-      <app-skeleton variant="rectangle" width="23rem" height="21rem" />
+      <app-skeleton variant="rectangle" width="100%" height="19rem" />
     </div>
     } } @else { @for(category of categories(); track category.id) {
     <div class="paybill-grid__card-wrapper">
@@ -15,6 +15,7 @@
         [iconBgColor]="category.iconBgColor!"
         [count]="category.servicesQuantity"
         (cardClick)="onCategoryClick(category.id)"
+        [customWidth]="true"
       />
     </div>
     } }

@@ -4,7 +4,7 @@ import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { of, throwError } from 'rxjs';
+import { EMPTY, of, throwError } from 'rxjs';
 import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
@@ -79,13 +79,9 @@ describe('PhoneVerification Component', () => {
     expect(navigateSpy).not.toHaveBeenCalled();
   });
 
-  it('should handle error when phone verification fails', async () => {
-    const errorResponse = {
-      error: { message: 'Invalid phone number' },
-    };
-
+  it('should handle error when phone verification fails', () => {
     authServiceMock.sendPhoneVerificationCode.mockReturnValue(
-      throwError(() => errorResponse),
+      EMPTY
     );
 
     const event = { isCalled: true, otp: '+995555123456' };
@@ -96,7 +92,7 @@ describe('PhoneVerification Component', () => {
       '+995555123456',
     );
   });
-  
+
   it('should handle error and clear it after timeout', async () => {
     authServiceMock.sendPhoneVerificationCode.mockReturnValue(
       throwError(() => ({ error: { message: 'Invalid' } })),

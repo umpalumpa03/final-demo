@@ -24,7 +24,6 @@ import {
   catchError,
   debounceTime,
   EMPTY,
-  exhaustMap,
   finalize,
   Observable,
   tap,
@@ -37,7 +36,6 @@ import { TokenService } from './token.service';
 import { IRegistrationForm } from '../../../features/storybook/components/forms/models/contact-forms.model';
 import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { Routes } from '../models/tokens.model';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { UserInfoActions } from '../../../store/user-info/user-info.actions';
 
@@ -47,7 +45,6 @@ export class AuthService {
   private router = inject(Router);
   private tokenService = inject(TokenService);
   private store = inject(Store);
-  private destroyRef = inject(DestroyRef);
   private challengeId!: string;
   public isLoginLoading = signal<boolean>(false);
   public errorMessage = signal<boolean | null>(false);
@@ -77,6 +74,9 @@ export class AuthService {
 
         if (res.status === 'phone_verification_required') {
           this.tokenService.setVerifyToken(res.verification_token!);
+          if(res.reason === '') {
+            this.router
+          }
           this.router.navigate([Routes.PHONE]);
         }
       }),
