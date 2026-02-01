@@ -1,6 +1,6 @@
 <div class="side-panel">
-  <h2 class="side-panel__title">{{ title() }}</h2>
-  <p class="side-panel__description">{{ description() }}</p>
+  <h2 class="side-panel__title">{{ title() | translate }}</h2>
+  <p class="side-panel__description">{{ description() | translate }}</p>
 
   <div class="features">
     @for(feature of (features()); track feature.id) {
@@ -12,8 +12,8 @@
         ></div>
       </div>
       <div>
-        <div class="side-panel__feature__title">{{ feature.title }}</div>
-        <div class="side-panel__feature__text">{{ feature.text }}</div>
+        <div class="side-panel__feature__title">{{ feature.title | translate }}</div>
+        <div class="side-panel__feature__text">{{ feature.text | translate }}</div>
       </div>
     </div>
     }

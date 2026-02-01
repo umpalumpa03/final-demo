@@ -28,6 +28,7 @@ import {
   OtpVerificationType,
 } from '../../models/otp-verification.models';
 import { getOtpVerificationConfig } from '../../config/otp-verification.config';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-otp-verification',
@@ -38,6 +39,7 @@ import { getOtpVerificationConfig } from '../../config/otp-verification.config';
     Otp,
     RouterLink,
     TextInput,
+    TranslatePipe
   ],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',

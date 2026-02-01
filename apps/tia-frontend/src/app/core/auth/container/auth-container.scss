@@ -27,9 +27,8 @@
     }
 
     &__header {
-      @include flex-center($justify: start);
+      @include flex-center($justify: space-between);
       @include font-inter(600, 2rem);
-      gap: 1.2rem;
       min-height: 6.5rem;
       padding: 0 1.6rem;
       border-bottom: 0.1rem solid $blue-400;
@@ -39,25 +38,30 @@
         min-height: 8rem;
       }
 
-      &__logo {
+      &__bar {
         @include flex-center();
-        width: 4rem;
-        height: 4rem;
-        border-radius: 0.8rem;
-        background: $blue-800;
-        color: $white;
+        gap: 1.2rem;
 
-        @media (max-width: 768px) {
-          width: 5rem;
-          height: 5rem;
+        &__logo {
+          @include flex-center();
+          width: 4rem;
+          height: 4rem;
+          border-radius: 0.8rem;
+          background: $blue-800;
+          color: $white;
+
+          @media (max-width: 768px) {
+            width: 5rem;
+            height: 5rem;
+          }
         }
-      }
 
-      &__title {
-        color: var(--color-fg);
+        &__title {
+          color: var(--color-fg);
 
-        @media (max-width: 768px) {
-          @include font-inter(600, 2.4rem);
+          @media (max-width: 768px) {
+            @include font-inter(600, 2.4rem);
+          }
         }
       }
     }

@@ -4,6 +4,7 @@ export enum TokenKey {
   VERIFY = 'verification_token',
   SIGNUP = 'signup_token',
   CHALLENGE = 'challenge_id',
+  USER = 'user',
 }
 
 export enum Routes {
