@@ -30,6 +30,15 @@ describe('ExternalAmount', () => {
       hasInsufficientBalance: signal(false),
       requiresOtp: signal(false),
       transferSuccess: signal(false),
+
+      setAmount: vi.fn(),
+      setInsufficientBalance: vi.fn(),
+      setLoading: vi.fn(),
+      updateFeeInfo: vi.fn(),
+      setDescription: vi.fn(),
+      setManualRecipientName: vi.fn(),
+      setSelectedRecipientAccount: vi.fn(),
+      setSenderAccount: vi.fn(),
     };
 
     mockExternalService = {
