@@ -73,8 +73,12 @@
       "from": "From",
       "to": "To",
       "available": "Available:",
+      "fee": "Fee",
+      "total": "Total Charge",
       "transferButton": "Transfer Money",
+      "loadingFee": "Calculating total amount...",
       "accountsSelected": "Accounts selected successfully!",
+      "insufficientBalance": "Insufficient balance",
       "description": {
         "label": "Description (optional)",
         "placeholder": "Add a note for this transfer"

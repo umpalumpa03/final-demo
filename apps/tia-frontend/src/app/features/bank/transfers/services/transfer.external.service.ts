@@ -1,22 +1,48 @@
 import { inject, Injectable, DestroyRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { filter, skip, take, tap } from 'rxjs';
+import {
+  Subject,
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  of,
+  skip,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs';
 import { TransferStore } from '../store/transfers.store';
 import { TransferValidationService } from './transfer-validation.service';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
-import { RecipientAccount } from '../models/transfers.state.model';
+import {
+  RecipientAccount,
+  RecipientType,
+} from '../models/transfers.state.model';
+import { TransfersApiService } from './transfersApi.service';
 
 @Injectable()
 export class TransferExternalService {
   private readonly router = inject(Router);
+  private readonly location = inject(Location);
   private readonly transferStore = inject(TransferStore);
   private readonly validationService = inject(TransferValidationService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly transfersApi = inject(TransfersApiService);
 
   private readonly recipientInfo$ = toObservable(
     this.transferStore.recipientInfo,
   );
+  private readonly feeUpdateSubject = new Subject<{
+    amount: number;
+    accountId: string;
+  }>();
+
+  constructor() {
+    this.setupFeeCalculation();
+  }
 
   public verifyRecipient(value: string): void {
     const storedValue = this.transferStore.recipientInput();
@@ -51,9 +77,15 @@ export class TransferExternalService {
           skip(1),
           filter((info) => !!info),
           take(1),
-          tap(() =>
-            this.router.navigate(['/bank/transfers/external/accounts']),
-          ),
+          tap((info) => {
+            // auto-select single account
+            const accounts = info?.accounts || [];
+            if (accounts.length === 1) {
+              this.transferStore.setSelectedRecipientAccount(accounts[0]);
+            }
+
+            this.router.navigate(['/bank/transfers/external/accounts']);
+          }),
           takeUntilDestroyed(this.destroyRef),
         )
         .subscribe();
@@ -86,6 +118,11 @@ export class TransferExternalService {
     account: RecipientAccount,
     currentSelected: RecipientAccount | null,
   ): void {
+    // reset amount if selecting different account
+    if (currentSelected?.id !== account.id) {
+      this.transferStore.setAmount(0);
+    }
+
     // toggle if clicking same account, deselect it
     if (currentSelected?.id === account.id) {
       this.transferStore.setSelectedRecipientAccount(null);
@@ -98,11 +135,27 @@ export class TransferExternalService {
     account: Account,
     currentSelected: Account | null,
   ): void {
+    // reset amount if selecting different account
+    if (currentSelected?.id !== account.id) {
+      this.transferStore.setAmount(0);
+    }
+
     // toggle if clicking same account, deselect it
     if (currentSelected?.id === account.id) {
       this.transferStore.setSenderAccount(null);
     } else {
       this.transferStore.setSenderAccount(account);
+    }
+  }
+
+  public handleRetryRecipientLookup(
+    value: string | null,
+    type: RecipientType | null,
+  ): void {
+    if (value && type) {
+      this.transferStore.lookupRecipient({ value, type });
+    } else {
+      this.location.back();
     }
   }
 
@@ -124,14 +177,10 @@ export class TransferExternalService {
     }
   }
 
-  public handleAmountGoBack(
-    amount: number,
-    description: string,
-    router: any,
-  ): void {
+  public handleAmountGoBack(amount: number, description: string): void {
     this.transferStore.setAmount(amount);
     this.transferStore.setDescription(description);
-    router.back();
+    this.location.back();
   }
 
   public handleTransfer(amount: number, description: string): boolean {
@@ -141,5 +190,49 @@ export class TransferExternalService {
       return true;
     }
     return false;
+  }
+
+  public handleAmountInput(amount: number): void {
+    const numericAmount = Number(amount);
+    this.transferStore.setAmount(numericAmount);
+
+    const senderAccount = this.transferStore.senderAccount();
+
+    if (numericAmount > 0 && senderAccount?.id) {
+      this.transferStore.setLoading(true);
+
+      this.feeUpdateSubject.next({
+        amount: numericAmount,
+        accountId: senderAccount.id,
+      });
+    } else {
+      this.transferStore.updateFeeInfo(0, 0);
+    }
+  }
+
+  private setupFeeCalculation(): void {
+    this.feeUpdateSubject
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(
+          (prev, curr) =>
+            prev.amount === curr.amount && prev.accountId === curr.accountId,
+        ),
+        switchMap(({ amount, accountId }) =>
+          this.transfersApi.getFee(accountId, amount).pipe(
+            tap((response) => {
+              const fee =
+                typeof response === 'number' ? response : (response?.fee ?? 0);
+              this.transferStore.updateFeeInfo(fee, amount + fee);
+            }),
+            catchError(() => {
+              this.transferStore.updateFeeInfo(0, 0);
+              return of(null);
+            }),
+          ),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 }

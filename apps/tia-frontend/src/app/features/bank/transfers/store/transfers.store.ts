@@ -43,6 +43,17 @@ export const TransferStore = signalStore(
     setDescription(description: string) {
       patchState(store, { description });
     },
+    //
+    updateFeeInfo(fee: number, totalWithFee: number) {
+      patchState(store, { fee, totalWithFee, isLoading: false });
+    },
+
+    setLoading(isLoading: boolean) {
+      patchState(store, { isLoading });
+    },
+    setIsVerified(isVerified: boolean) {
+      patchState(store, { isVerified });
+    },
     lookupRecipient: rxMethod<{ value: string; type: RecipientType }>(
       pipe(
         tap(({ value, type }) =>
@@ -69,6 +80,7 @@ export const TransferStore = signalStore(
               patchState(store, {
                 recipientInfo: response,
                 isLoading: false,
+                isVerified: true,
               });
             }),
             catchError((error) => {
