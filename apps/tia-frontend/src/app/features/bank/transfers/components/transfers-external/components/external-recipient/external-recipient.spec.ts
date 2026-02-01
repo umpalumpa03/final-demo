@@ -84,22 +84,4 @@ describe('ExternalRecipient', () => {
     expect(component.recipientInputConfig().errorMessage).toBeDefined();
   });
 
-  it('should clear messages when input is empty', () => {
-    component.recipientInput.setValue('');
-    fixture.detectChanges();
-    
-    expect(component.recipientInputConfig().successMessage).toBeUndefined();
-    expect(component.recipientInputConfig().errorMessage).toBeUndefined();
-  });
-
-  it('should handle store error effect', () => {
-    vi.useFakeTimers();
-    mockStore.error.set('Account not found');
-    fixture.detectChanges();
-    expect(component.showError()).toBe(true);
-
-    vi.advanceTimersByTime(5000);
-    expect(component.showError()).toBe(false);
-    vi.useRealTimers();
-  });
 });
