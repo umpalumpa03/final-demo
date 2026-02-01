@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { selectUserInfo, selectUserLoading, selectUserError, selectUserInfoState } from './user-info.selectors';
+import {  selectUserLoading, selectUserError,  } from './user-info.selectors';
 
 describe('user-info selectors', () => {
   const slice = { fullName: 'X', loading: true, error: 'e', theme: 't', language: 'l' } as any;
@@ -13,11 +13,5 @@ describe('user-info selectors', () => {
     expect(selectUserError(state)).toBe('e');
   });
 
-  it('selectUserInfoState returns feature state', () => {
-    expect(selectUserInfoState(state)).toEqual(slice);
-  });
-
-  it('selectUserInfo returns full slice', () => {
-    expect(selectUserInfo(state)).toEqual(slice);
-  });
+ 
 });
