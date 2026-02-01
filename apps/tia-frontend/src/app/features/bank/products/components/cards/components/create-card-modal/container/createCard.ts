@@ -21,6 +21,7 @@ import {
   selectCardCreationData,
   selectIsCreating,
   selectCreateError,
+  selectCardCreationDataLoading,
 } from '../../../../../../../../store/products/cards/cards.selectors';
 import {
   loadCardCreationData,
@@ -32,11 +33,13 @@ import { CardForm } from '@tia/shared/models/cards/card-form.model';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
+import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 
 
 @Component({
   selector: 'app-create-card',
-  imports: [UiModal, ReactiveFormsModule, TextInput, Dropdowns,ButtonComponent],
+  imports: [UiModal, ReactiveFormsModule, TextInput, Dropdowns,ButtonComponent, Skeleton, Spinner],
   templateUrl: './createCard.html',
   styleUrl: './createCard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -124,4 +127,6 @@ protected onClose(): void {
   this.store.dispatch(closeCreateCardModal());
   this.closed.emit();
 }
+protected readonly isLoadingData = this.store.selectSignal(selectCardCreationDataLoading);
+
 }

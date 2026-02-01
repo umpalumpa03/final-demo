@@ -164,3 +164,7 @@ export const selectShowSuccessAlert = createSelector(
   selectCardsState,
   (state: CardsState): boolean => state.showSuccessAlert
 );
+export const selectCardCreationDataLoading = createSelector(
+  selectCardsState,
+  (state: CardsState): boolean => state.loading
+);

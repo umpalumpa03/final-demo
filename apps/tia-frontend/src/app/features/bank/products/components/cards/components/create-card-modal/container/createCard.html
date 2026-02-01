@@ -1,4 +1,3 @@
-
 <app-ui-modal [isOpen]="isOpen()" (closed)="onClose()">
   <div class="create-card">
     <div class="create-card__header">
@@ -13,23 +12,23 @@
       (ngSubmit)="onSubmit()"
       class="create-card__form"
     >
-      <div class="create-card__preview">
-        <h3 class="create-card__section-title">Card Preview</h3>
-        <div class="create-card__card-display">
-          @if (selectedDesignUri()) {
-          <img
-            [src]="selectedDesignUri()"
-            alt="Card preview"
-            class="create-card__card-image"
-          />
-          } @else {
-          <div class="create-card__card-placeholder">
-            <span>Select a design</span>
-          </div>
-          }
-        </div>
+      
+<div class="create-card__preview">
+  <h3 class="create-card__section-title">Card Preview</h3>
+  <div class="create-card__card-display">
+    @if (isLoadingData()) {
+      <div class="create-card__card-placeholder">
+        <app-spinner size="3rem" />
       </div>
-
+    } @else if (selectedDesignUri()) {
+      <img [src]="selectedDesignUri()" alt="Card preview" class="create-card__card-image" />
+    } @else {
+      <div class="create-card__card-placeholder">
+        <span>Select a design</span>
+      </div>
+    }
+  </div>
+</div>
       <div class="create-card__field">
         <lib-text-input
           formControlName="cardName"
@@ -53,53 +52,35 @@
         </div>
       </div>
 
+
       <div class="create-card__field">
-        <label class="create-card__label">Choose Card Design</label>
-        <div class="create-card__designs">
-         @for (design of creationData().designs; track design.id) {
-<div
-  class="create-card__design-option"
-  [class.create-card__design-option--selected]="selectedDesign() === design.id"
-  (click)="selectDesign(design.id)"
-  (keydown.enter)="selectDesign(design.id)"
-  (keydown.space)="selectDesign(design.id)"
-  role="button"
-  tabindex="0"
-  [attr.aria-label]="design.designName"
->
-  <div class="create-card__design-preview">
-    <img
-      [src]="design.uri"
-      [alt]="design.designName"
-      class="create-card__design-image"
-    />
-    @if (selectedDesign() === design.id) {
-    <div class="create-card__design-check">
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M13.3337 4L6.00033 11.3333L2.66699 8"
-          stroke="white"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </div>
+  <label class="create-card__label">Choose Card Design</label>
+  <div class="create-card__designs">
+    @if (isLoadingData()) {
+      <app-skeleton width="100%" height="12rem" />
+      <app-skeleton width="100%" height="12rem" />
+      <app-skeleton width="100%" height="12rem" />
+      <app-skeleton width="100%" height="12rem" />
+      <app-skeleton width="100%" height="12rem" />
+    } @else {
+      @for (design of creationData().designs; track design.id) {
+        <div class="create-card__design-option" [class.create-card__design-option--selected]="selectedDesign() === design.id" (click)="selectDesign(design.id)" (keydown.enter)="selectDesign(design.id)" (keydown.space)="selectDesign(design.id)" role="button" tabindex="0" [attr.aria-label]="design.designName">
+          <div class="create-card__design-preview">
+            <img [src]="design.uri" [alt]="design.designName" class="create-card__design-image" />
+            @if (selectedDesign() === design.id) {
+              <div class="create-card__design-check">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M13.3337 4L6.00033 11.3333L2.66699 8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+            }
+          </div>
+          <span class="create-card__design-name">{{ design.designName }}</span>
+        </div>
+      }
     }
   </div>
-  <span class="create-card__design-name"
-    >{{ design.designName }}</span
-  >
 </div>
-}
-        </div>
-      </div>
 
       <div class="create-card__field">
         <lib-select
