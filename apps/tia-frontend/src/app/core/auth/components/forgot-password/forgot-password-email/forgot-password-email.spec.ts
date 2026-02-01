@@ -84,14 +84,45 @@ describe('ForgotPasswordEmail', () => {
     component.form.controls.email.setValue('');
     component.form.controls.email.markAsTouched();
 
-    const config = component.emailConfig();
-
-    expect(config.errorMessage).toBe('Email is required');
+    expect(component.form.controls.email.hasError('required')).toBe(true);
   });
 
   it('shows invalid email error when email format is wrong', () => {
     component.form.controls.email.setValue('invalid-email');
     component.form.controls.email.markAsTouched();
+
+    expect(component.form.controls.email.hasError('required')).toBe(false);
+    expect(component.form.controls.email.hasError('email')).toBe(true);
+  });
+});
+
+describe('ForgotPasswordEmail emailConfig computed signal', () => {
+  it('returns email error message for invalid email format', async () => {
+    await TestBed.configureTestingModule({
+      imports: [ForgotPasswordEmail, TranslateModule.forRoot()],
+      providers: [
+        provideRouter([]),
+        {
+          provide: AuthService,
+          useValue: {
+            forgotPasswordRequest: vi.fn().mockReturnValue(of({})),
+            setChellangeId: vi.fn(),
+          },
+        },
+        {
+          provide: TokenService,
+          useValue: {},
+        },
+      ],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(ForgotPasswordEmail);
+    const component = fixture.componentInstance;
+
+    // Set invalid email BEFORE first detectChanges so computed signal evaluates with this state
+    component.form.controls.email.setValue('invalid-email');
+    component.form.controls.email.markAsTouched();
+    fixture.detectChanges();
 
     const config = component.emailConfig();
 
