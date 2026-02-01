@@ -20,6 +20,7 @@ import { ButtonComponent } from "@tia/shared/lib/primitives/button/button";
 import { Skeleton } from "@tia/shared/lib/feedback/skeleton/skeleton";
 import { selectUserInfo } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
 import { CanComponentDeactivate } from '../guard/unsaved-changes.guard';
+import { UserInfoActions } from 'apps/tia-frontend/src/app/store/user-info/user-info.actions';
 
 @Component({
   selector: 'app-appearance-container',
@@ -44,6 +45,7 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
   private userInfo = this.store.selectSignal(selectUserInfo);
 
   public ngOnInit(): void {
+    this.store.dispatch(UserInfoActions.loadUser());
     this.isSubmitted.set(false);
     const subscription = this.appearanceService.getAvailableThemes().pipe(
       map((themes) => {
