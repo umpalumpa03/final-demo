@@ -43,6 +43,13 @@ export const TransferStore = signalStore(
     setDescription(description: string) {
       patchState(store, { description });
     },
+    //
+    updateFeeInfo(fee: number, totalWithFee: number) {
+      patchState(store, { fee, totalWithFee, isLoading: false });
+    },
+    setLoading(isLoading: boolean) {
+      patchState(store, { isLoading });
+    },
     lookupRecipient: rxMethod<{ value: string; type: RecipientType }>(
       pipe(
         tap(({ value, type }) =>

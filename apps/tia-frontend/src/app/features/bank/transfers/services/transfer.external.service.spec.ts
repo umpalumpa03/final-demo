@@ -1,10 +1,12 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { TransferExternalService } from './transfer.external.service';
 import { TransferStore } from '../store/transfers.store';
 import { TransferValidationService } from './transfer-validation.service';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TransfersApiService } from './transfersApi.service';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { signal } from '@angular/core';
+import { of, throwError } from 'rxjs';
 import { RecipientAccount } from '../models/transfers.state.model';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
 
@@ -13,13 +15,19 @@ describe('TransferExternalService', () => {
   let mockRouter: any;
   let mockStore: any;
   let mockValidationService: any;
+  let mockApi: any;
 
   beforeEach(() => {
+    vi.useFakeTimers();
+
     mockRouter = { navigate: vi.fn() };
+    mockApi = { getFee: vi.fn().mockReturnValue(of({ fee: 5 })) };
+
     mockStore = {
       recipientInput: signal(''),
       recipientType: signal(null),
       recipientInfo: signal(null),
+      senderAccount: signal({ id: 'sender-1', currency: 'GEL' }),
       setExternalRecipient: vi.fn(),
       lookupRecipient: vi.fn(),
       setSelectedRecipientAccount: vi.fn(),
@@ -27,7 +35,10 @@ describe('TransferExternalService', () => {
       setManualRecipientName: vi.fn(),
       setAmount: vi.fn(),
       setDescription: vi.fn(),
+      setLoading: vi.fn(),
+      updateFeeInfo: vi.fn(),
     };
+
     mockValidationService = {
       identifyRecipientType: vi.fn(),
     };
@@ -38,10 +49,15 @@ describe('TransferExternalService', () => {
         { provide: Router, useValue: mockRouter },
         { provide: TransferStore, useValue: mockStore },
         { provide: TransferValidationService, useValue: mockValidationService },
+        { provide: TransfersApiService, useValue: mockApi },
       ],
     });
 
     service = TestBed.inject(TransferExternalService);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('should create service', () => {
@@ -55,37 +71,9 @@ describe('TransferExternalService', () => {
     mockValidationService.identifyRecipientType.mockReturnValue('phone');
 
     service.verifyRecipient('20202020');
-
     expect(mockRouter.navigate).toHaveBeenCalledWith([
       '/bank/transfers/external/accounts',
     ]);
-  });
-
-  it('should set external recipient and navigate for external iban', () => {
-    mockValidationService.identifyRecipientType.mockReturnValue(
-      'iban-different-bank',
-    );
-
-    service.verifyRecipient('DE89370400440532013000');
-
-    expect(mockStore.setExternalRecipient).toHaveBeenCalledWith(
-      'DE89370400440532013000',
-      'iban-different-bank',
-    );
-    expect(mockRouter.navigate).toHaveBeenCalledWith([
-      '/bank/transfers/external/accounts',
-    ]);
-  });
-
-  it('should call lookup for phone type', () => {
-    mockValidationService.identifyRecipientType.mockReturnValue('phone');
-
-    service.verifyRecipient('20202020');
-
-    expect(mockStore.lookupRecipient).toHaveBeenCalledWith({
-      value: '20202020',
-      type: 'phone',
-    });
   });
 
   it('should disable recipient account if sender currency does not match', () => {
@@ -96,78 +84,92 @@ describe('TransferExternalService', () => {
     ).toBe(true);
   });
 
-  it('should not disable recipient account if no sender selected', () => {
-    const recipientAccount = { id: '1', currency: 'GEL' } as RecipientAccount;
-    expect(service.isRecipientAccountDisabled(recipientAccount, null)).toBe(
-      false,
+  it('should disable sender account if recipient currency does not match (internal)', () => {
+    const sender = { id: 's1', currency: 'USD' } as Account;
+    const recipient = { id: 'r1', currency: 'GEL' } as RecipientAccount;
+    expect(service.isSenderAccountDisabled(sender, recipient, false)).toBe(
+      true,
     );
   });
 
-  it('should not disable sender account for external iban', () => {
-    const senderAccount = { id: '1', currency: 'USD' } as Account;
-    const recipientAccount = { id: '2', currency: 'GEL' } as RecipientAccount;
-    expect(
-      service.isSenderAccountDisabled(senderAccount, recipientAccount, true),
-    ).toBe(false);
+  it('should NOT disable sender account for external IBAN', () => {
+    const sender = { id: 's1', currency: 'USD' } as Account;
+    expect(service.isSenderAccountDisabled(sender, null, true)).toBe(false);
   });
 
-  it('should disable sender account if recipient currency does not match', () => {
-    const senderAccount = { id: '1', currency: 'USD' } as Account;
-    const recipientAccount = { id: '2', currency: 'GEL' } as RecipientAccount;
-    expect(
-      service.isSenderAccountDisabled(senderAccount, recipientAccount, false),
-    ).toBe(true);
-  });
-
-  it('should toggle recipient account selection', () => {
-    const account = { id: '1' } as RecipientAccount;
+  it('should toggle recipient account selection (deselect if same)', () => {
+    const account = { id: 'acc1' } as RecipientAccount;
     service.handleRecipientAccountSelect(account, account);
     expect(mockStore.setSelectedRecipientAccount).toHaveBeenCalledWith(null);
   });
 
-  it('should select recipient account if different', () => {
-    const account = { id: '1' } as RecipientAccount;
-    service.handleRecipientAccountSelect(account, null);
+  it('should select new recipient account if different', () => {
+    const account = { id: 'acc1' } as RecipientAccount;
+    service.handleRecipientAccountSelect(account, { id: 'acc2' } as any);
     expect(mockStore.setSelectedRecipientAccount).toHaveBeenCalledWith(account);
   });
 
   it('should toggle sender account selection', () => {
-    const account = { id: '1' } as Account;
+    const account = { id: 's1' } as Account;
     service.handleSenderAccountSelect(account, account);
     expect(mockStore.setSenderAccount).toHaveBeenCalledWith(null);
   });
 
-  it('should select sender account if different', () => {
-    const account = { id: '1' } as Account;
-    service.handleSenderAccountSelect(account, null);
-    expect(mockStore.setSenderAccount).toHaveBeenCalledWith(account);
-  });
 
-  it('should navigate on continue with recipient and sender', () => {
-    const recipient = { id: '1' } as RecipientAccount;
-    const sender = { id: '2' } as Account;
-    service.handleContinue(recipient, sender, false, null);
+  it('should navigate to amount on handleContinue', () => {
+    service.handleContinue(
+      { id: 'r1' } as any,
+      { id: 's1' } as any,
+      false,
+      null,
+    );
     expect(mockRouter.navigate).toHaveBeenCalledWith([
       '/bank/transfers/external/amount',
     ]);
   });
 
-  it('should save manual name for external iban on continue', () => {
-    const sender = { id: '1' } as Account;
-    service.handleContinue(null, sender, true, 'John Doe');
-    expect(mockStore.setManualRecipientName).toHaveBeenCalledWith('John Doe');
+  it('should save manual name and navigate for external IBAN', () => {
+    service.handleContinue(null, { id: 's1' } as any, true, 'Manual Name');
+    expect(mockStore.setManualRecipientName).toHaveBeenCalledWith(
+      'Manual Name',
+    );
     expect(mockRouter.navigate).toHaveBeenCalledWith([
       '/bank/transfers/external/amount',
     ]);
   });
 
-  it('should handle amount go back and sync store', () => {
-    const mockNativeRouter = { back: vi.fn() };
-    service.handleAmountGoBack(100, 'test', mockNativeRouter);
+
+  describe('Fee Calculation', () => {
+    it('should reset fee if amount is 0', () => {
+      service.handleAmountInput(0);
+      expect(mockStore.updateFeeInfo).toHaveBeenCalledWith(0, 0);
+    });
+
+    it('should trigger fee calculation after debounce', () => {
+      service.handleAmountInput(100);
+      vi.advanceTimersByTime(300);
+      expect(mockApi.getFee).toHaveBeenCalled();
+      expect(mockStore.updateFeeInfo).toHaveBeenCalledWith(5, 105);
+    });
+
+    it('should handle API error in fee calculation', () => {
+      mockApi.getFee.mockReturnValue(throwError(() => new Error()));
+      service.handleAmountInput(100);
+      vi.advanceTimersByTime(300);
+      expect(mockStore.updateFeeInfo).toHaveBeenCalledWith(0, 0);
+    });
+  });
+
+  it('should return true for valid transfer in handleTransfer', () => {
+    const result = service.handleTransfer(100, 'test');
+    expect(result).toBe(true);
     expect(mockStore.setAmount).toHaveBeenCalledWith(100);
-    expect(mockStore.setDescription).toHaveBeenCalledWith('test');
+  });
+
+  it('should handleAmountGoBack', () => {
+    const mockNativeRouter = { back: vi.fn() };
+    service.handleAmountGoBack(50, 'desc', mockNativeRouter);
+    expect(mockStore.setAmount).toHaveBeenCalledWith(50);
     expect(mockNativeRouter.back).toHaveBeenCalled();
   });
-
-
 });

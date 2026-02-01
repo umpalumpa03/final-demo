@@ -1,11 +1,23 @@
 import { inject, Injectable, DestroyRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { filter, skip, take, tap } from 'rxjs';
+import {
+  Subject,
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  of,
+  skip,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs';
 import { TransferStore } from '../store/transfers.store';
 import { TransferValidationService } from './transfer-validation.service';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { RecipientAccount } from '../models/transfers.state.model';
+import { TransfersApiService } from './transfersApi.service';
 
 @Injectable()
 export class TransferExternalService {
@@ -13,11 +25,19 @@ export class TransferExternalService {
   private readonly transferStore = inject(TransferStore);
   private readonly validationService = inject(TransferValidationService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly transfersApi = inject(TransfersApiService);
 
   private readonly recipientInfo$ = toObservable(
     this.transferStore.recipientInfo,
   );
+  private readonly feeUpdateSubject = new Subject<{
+    amount: number;
+    accountId: string;
+  }>();
 
+  constructor() {
+    this.setupFeeCalculation();
+  }
   public verifyRecipient(value: string): void {
     const storedValue = this.transferStore.recipientInput();
     const storedType = this.transferStore.recipientType();
@@ -141,5 +161,50 @@ export class TransferExternalService {
       return true;
     }
     return false;
+  }
+  public handleAmountInput(amount: number): void {
+    const numericAmount = Number(amount);
+    this.transferStore.setAmount(numericAmount);
+
+    const senderAccount = this.transferStore.senderAccount();
+
+    if (numericAmount > 0 && senderAccount?.id) {
+      this.transferStore.setLoading(true);
+
+      this.feeUpdateSubject.next({
+        amount: numericAmount,
+        accountId: senderAccount.id,
+      });
+    } else {
+      this.transferStore.updateFeeInfo(0, 0);
+    }
+  }
+
+  private setupFeeCalculation(): void {
+    this.feeUpdateSubject
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(
+          (prev, curr) =>
+            prev.amount === curr.amount && prev.accountId === curr.accountId,
+        ),
+        switchMap(({ amount, accountId }) =>
+          this.transfersApi.getFee(accountId, amount).pipe(
+            tap((response) => {
+              const fee =
+                typeof response === 'number'
+                  ? response
+                  : ((response)?.fee ?? 0);
+              this.transferStore.updateFeeInfo(fee, amount + fee);
+            }),
+            catchError(() => {
+              this.transferStore.updateFeeInfo(0, 0);
+              return of(null);
+            }),
+          ),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 }

@@ -12,6 +12,7 @@ export const initialTransferState: TransferState = {
   transferId: null,
   challengeId: null,
   fee: 0,
+  totalWithFee: 0,
   recipientType: null,
   requiresOTP: false,
   currentStep: 1,

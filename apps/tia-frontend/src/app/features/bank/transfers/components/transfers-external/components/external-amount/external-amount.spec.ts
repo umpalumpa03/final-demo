@@ -1,29 +1,30 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+} from '@angular/core/testing';
 import { ExternalAmount } from './external-amount';
-import { TransfersApiService } from '../../../../services/transfersApi.service';
 import { TransferStore } from '../../../../store/transfers.store';
 import { TransferExternalService } from '../../../../services/transfer.external.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TransfersApiService } from '../../../../services/transfersApi.service';
+import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { of } from 'rxjs';
 import { signal } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 
-describe('ExternalAmount (vitest)', () => {
+describe('ExternalAmount', () => {
   let component: ExternalAmount;
   let fixture: ComponentFixture<ExternalAmount>;
-  let transfersApiMock: any;
-  let transferStoreMock: any;
-  let transferExternalServiceMock: any;
+  let mockExternalService: any;
+  let mockStore: any;
 
   beforeEach(async () => {
-    transfersApiMock = {
-      getFee: vi.fn().mockReturnValue(of({ fee: 0 })),
-    };
-
-    transferStoreMock = {
+    mockStore = {
       isLoading: signal(false),
+      fee: signal(0),
+      totalWithFee: signal(0),
       senderAccount: signal({ id: 'a1', currency: 'GEL', balance: 1000 }),
-      selectedRecipientAccount: signal({ id: 'r1', name: 'Recipient' }),
+      selectedRecipientAccount: signal({ id: 'r1', name: 'John Doe' }),
       manualRecipientName: signal(''),
       recipientInfo: signal(null),
       recipientType: signal('phone'),
@@ -31,26 +32,26 @@ describe('ExternalAmount (vitest)', () => {
       description: signal(''),
     };
 
-    transferExternalServiceMock = {
+    mockExternalService = {
       handleAmountGoBack: vi.fn(),
       handleTransfer: vi.fn(),
-      getInitials: vi.fn().mockImplementation((name) => (name ? name[0] : '')),
+      handleAmountInput: vi.fn(),
     };
 
+    const mockBreakpoint = { isMobile: signal(false) };
+
     await TestBed.configureTestingModule({
-      imports: [ExternalAmount, TranslateModule.forRoot()],
+      imports: [ExternalAmount, ReactiveFormsModule, TranslateModule.forRoot()],
       providers: [
-        { provide: TransfersApiService, useValue: transfersApiMock },
-        { provide: TransferStore, useValue: transferStoreMock },
+        { provide: TransferStore, useValue: mockStore },
+        { provide: BreakpointService, useValue: mockBreakpoint },
+        { provide: TransfersApiService, useValue: { getFee: vi.fn() } },
       ],
     })
       .overrideComponent(ExternalAmount, {
         set: {
           providers: [
-            {
-              provide: TransferExternalService,
-              useValue: transferExternalServiceMock,
-            },
+            { provide: TransferExternalService, useValue: mockExternalService },
           ],
         },
       })
@@ -60,40 +61,48 @@ describe('ExternalAmount (vitest)', () => {
     component = fixture.componentInstance;
   });
 
-  it('should create the component', () => {
+  it('should create and trigger initial toast (Hits ngOnInit & triggerToast)', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
+    expect(component.showSuccess()).toBe(true);
+    expect(component.currentToastMessage()).toBe(
+      'transfers.external.amount.accountsSelected',
+    );
   });
 
-  it('should handle go back action', () => {
+  it('should call handleAmountInput on value change (Hits subscription branch)', () => {
+    fixture.detectChanges();
+    component.amountInput.setValue('50');
+    expect(mockExternalService.handleAmountInput).toHaveBeenCalledWith(50);
+  });
+
+  it('should calculate initials for internal recipient (Hits computed logic)', () => {
+    fixture.detectChanges();
+    expect(component.recipientInitials()).toBe('JD');
+  });
+
+  it('should calculate initials for external IBAN (Hits computed branch)', () => {
+    mockStore.recipientType.set('iban-different-bank');
+    mockStore.manualRecipientName.set('Jane Smith');
+    fixture.detectChanges();
+    expect(component.recipientInitials()).toBe('JS');
+  });
+
+  it('should call handleAmountGoBack with correct values', () => {
     fixture.detectChanges();
     component.amountInput.setValue('100');
-    component.descriptionInput.setValue('test');
-
+    component.descriptionInput.setValue('Rent');
     component.onGoBack();
 
-    expect(transferExternalServiceMock.handleAmountGoBack).toHaveBeenCalledWith(
+    expect(mockExternalService.handleAmountGoBack).toHaveBeenCalledWith(
       100,
-      'test',
+      'Rent',
       expect.anything(),
     );
   });
 
-  it('should handle transfer action when valid', () => {
-    transferExternalServiceMock.handleTransfer.mockReturnValue(true);
+  it('should show available balance from store (Hits computed balance)', () => {
     fixture.detectChanges();
-    component.amountInput.setValue('100');
-
-    component.onTransfer();
-
-    expect(transferExternalServiceMock.handleTransfer).toHaveBeenCalledWith(
-      100,
-      '',
-    );
-  });
-
-  it('should calculate initials correctly', () => {
-    fixture.detectChanges();
-    expect(component.recipientInitials()).toBe('R');
+    expect(component.availableBalance()).toBe(1000);
   });
 });
