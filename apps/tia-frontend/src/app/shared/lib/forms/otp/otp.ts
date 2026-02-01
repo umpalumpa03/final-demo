@@ -24,6 +24,7 @@ export class Otp extends BaseInput {
   readonly otpBoxes = viewChildren<ElementRef<HTMLInputElement>>('otpBox');
 
   public override readonly config = input<OtpConfig>({});
+  public readonly isCentered = input<boolean>();
   public override readonly value = model<string>('');
 
   private readonly defaultId: string = generateUniqueId('lib-otp');
