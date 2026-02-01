@@ -107,8 +107,17 @@ export const paybillReducer = createReducer(
   on(PaybillActions.proceedPaymentSuccess, (state, { response }) => ({
     ...state,
     loading: false,
-
     challengeId: response.verify?.challengeId ?? null,
+  })),
+
+  on(PaybillActions.clearError, (state) => ({
+    ...state,
+    error: null,
+  })),
+
+  on(PaybillActions.clearSuccessMessage, (state) => ({
+    ...state,
+    successMessage: null,
   })),
 
   on(PaybillActions.proceedPaymentFailure, (state, { error }) => ({
@@ -127,6 +136,7 @@ export const paybillReducer = createReducer(
     ...state,
     loading: true,
     error: null,
+    successMessage: 'OTP verified successfully!',
   })),
 
   on(PaybillActions.confirmPaymentFailure, (state, { error }) => ({

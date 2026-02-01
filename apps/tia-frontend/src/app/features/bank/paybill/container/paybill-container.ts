@@ -31,11 +31,18 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
 import { TranslatePipe } from '@ngx-translate/core';
 import * as PAYBILL_SELECTORS from '../store/paybill.selectors';
-import { DismissibleAlerts } from "@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts";
+import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
 
 @Component({
   selector: 'app-paybill-container',
-  imports: [Breadcrumbs, LibraryTitle, RouterModule, Tabs, TranslatePipe, DismissibleAlerts],
+  imports: [
+    Breadcrumbs,
+    LibraryTitle,
+    RouterModule,
+    Tabs,
+    TranslatePipe,
+    DismissibleAlerts,
+  ],
   templateUrl: './paybill-container.html',
   styleUrl: './paybill-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -58,6 +65,10 @@ export class PaybillContainer implements OnInit {
 
   public readonly storeError = this.store.selectSignal(
     PAYBILL_SELECTORS.selectError,
+  );
+
+  protected readonly storeSuccess = this.store.selectSignal(
+    PAYBILL_SELECTORS.selectSuccessMessage,
   );
 
   constructor() {

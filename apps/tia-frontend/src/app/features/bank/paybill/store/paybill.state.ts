@@ -19,6 +19,7 @@ export interface PaybillState {
   paymentPayload: PaybillPayload | null;
   challengeId: string | null;
   templateGroups: TableGroups[];
+  successMessage: string | null;
 }
 
 export const initialPaybillState: PaybillState = {
@@ -34,4 +35,5 @@ export const initialPaybillState: PaybillState = {
   paymentPayload: null,
   challengeId: null,
   templateGroups: [],
+  successMessage: null,
 };

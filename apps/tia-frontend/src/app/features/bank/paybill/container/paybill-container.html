@@ -1,13 +1,22 @@
 <section class="global-bank-wrapper">
-  @if(storeError()){
+@if(storeError()){
+    <div class="paybill-container__toast">
+      <app-dismissible-alerts
+        alertType="warning"
+        [alertMessage]="storeError()!"
+        alertTitle="Action Failed"
+      />
+    </div>
+  }
 
-  <div class="paybill-container__toast">
-    <app-dismissible-alerts
-      alertType="warning"
-      [alertMessage]="storeError()!"
-      alertTitle="There was an issue!"
-    />
-  </div>
+  @if(storeSuccess()){
+    <div class="paybill-container__toast">
+      <app-dismissible-alerts
+        alertType="success"
+        [alertMessage]="storeSuccess()!"
+        alertTitle="Success"
+      />
+    </div>
   }
 
   <header class="paybill-container__header">
