@@ -52,12 +52,13 @@ describe('Transaction Selectors', () => {
   });
 
   it('should combine state into view model', () => {
+    const mockCategoryOptions = [{ label: 'saba', value: 'saba' }];
     const result = selectTransactionViewModel.projector(
       initialState.items,
       initialState.isLoading,
       initialState.filters,
       initialState.total,
-      initialState.categories,
+      mockCategoryOptions,
     );
 
     expect(result).toEqual({
@@ -65,6 +66,7 @@ describe('Transaction Selectors', () => {
       isLoading: initialState.isLoading,
       filters: initialState.filters,
       total: initialState.total,
+      categoryOptions: mockCategoryOptions,
     });
   });
 });
