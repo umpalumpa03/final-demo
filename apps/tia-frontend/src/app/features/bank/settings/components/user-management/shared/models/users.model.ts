@@ -4,7 +4,7 @@ export interface IUser {
   lastName: string;
   email: string;
   username: string;
-  role: 'consumer' | 'support';
+  role: 'CONSUMER' | 'SUPPORT';
   isBlocked: boolean;
   createdAt: string;
 }
