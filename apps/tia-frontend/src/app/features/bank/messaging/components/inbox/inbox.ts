@@ -18,9 +18,6 @@ export class Inbox implements OnInit {
 
   public mails = this.messagingStore.mails;
   public isLoading = this.messagingStore.isLoading;
-  public error = this.messagingStore.error;
-
-
   public selectedMailIds = signal<Set<number>>(new Set());
 
   public isAllSelected(): boolean {
@@ -59,7 +56,7 @@ export class Inbox implements OnInit {
     this.selectedMailIds.set(new Set());
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.messagingStore.loadMails('inbox');
   }
 

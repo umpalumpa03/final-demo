@@ -67,7 +67,7 @@
 
   &__summary-icon,
   &__summary-initials {
-    @include svg-icon(4.8rem); 
+    @include svg-icon(4.8rem);
     @include flex-center();
     background: var(--color-bg-primary);
     border-radius: 50%;
@@ -122,17 +122,24 @@
 
   &__input-group {
     position: relative;
-    height: 10.5rem;
+    margin-bottom: 1.2rem;
+  }
 
-    &:last-of-type {
-      height: auto;
+  &__info-row {
+    @include display-flex(row);
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.8rem;
+    width: 100%;
+
+    @media (max-width: 640px) {
+      @include display-flex(column);
+      align-items: flex-start;
+      gap: 0.8rem;
     }
   }
 
   &__available {
-    position: absolute;
-    bottom: 0;
-    left: 0;
     @include font-inter(400, 1.3rem, 1.8rem);
     color: $gray-500;
     margin: 0;
@@ -141,6 +148,30 @@
       color: var(--color-fg);
       font-weight: 600;
     }
+  }
+
+  &__fee-wrapper {
+    @include display-flex(row);
+    gap: 2.4rem;
+    align-items: center;
+  }
+
+  &__fee-item {
+    @include display-flex(row);
+    gap: 0.6rem;
+    @include font-inter(400, 1.3rem, 1.8rem);
+    color: $gray-500;
+
+    strong {
+      color: var(--color-fg);
+      font-weight: 600;
+    }
+  }
+
+  &__fee-loading {
+    @include font-inter(400, 1.2rem, 1.6rem);
+    color: $gray-400;
+    font-style: italic;
   }
 
   &__footer {
@@ -155,10 +186,6 @@
       @include display-flex(column-reverse);
       align-items: stretch;
       gap: 1.6rem;
-
-      app-button {
-        width: 100%;
-      }
     }
   }
 

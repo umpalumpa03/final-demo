@@ -16,10 +16,9 @@ import { MailCard } from '../../shared/ui/mail-card/mail-card';
 export class Draft implements OnInit {
   private messagingStore = inject(MessagingStore);
 
-  public mails = this.messagingStore.mails; 
+  public mails = this.messagingStore.mails;
   public isLoading = this.messagingStore.isLoading;
-  public error = this.messagingStore.error;
-   public selectedMailIds = signal<Set<number>>(new Set());
+  public selectedMailIds = signal<Set<number>>(new Set());
 
   public isAllSelected(): boolean {
     return this.selectedMailIds().size === this.mails().length && this.mails().length > 0;
@@ -50,7 +49,7 @@ export class Draft implements OnInit {
     this.selectedMailIds.set(new Set());
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.messagingStore.loadMails('drafts');
   }
 

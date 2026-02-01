@@ -1,8 +1,10 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   inject,
   input,
+  model,
   output,
   signal,
 } from '@angular/core';
@@ -17,8 +19,11 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { PaymentSummary } from '../../shared/ui/payment-summary/payment-summary';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { Store } from '@ngrx/store';
-import { selectCurrentAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
+import { CurrencyPipe } from '@angular/common';
+import { paymentOptionPaybill } from './config/input.config';
+import { CONFIRM_PAYMENT_UI } from './config/translate.config';
+import { mapConfirmSummaryFields } from './utils/paybill-confirm.config';
 
 @Component({
   selector: 'app-paybill-confirm-payment',
@@ -28,52 +33,41 @@ import { Account } from '@tia/shared/models/accounts/accounts.model';
     ButtonComponent,
     PaymentSummary,
     Dropdowns,
+    CurrencyPipe,
   ],
   templateUrl: './paybill-confirm-payment.html',
   styleUrl: './paybill-confirm-payment.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillConfirmPayment {
-  private readonly store = inject(Store);
+  // Inputs
+
   public readonly provider = input.required<PaybillProvider>();
   public readonly summary = input.required<PaybillPayload>();
   public readonly details = input.required<BillDetails>();
   public readonly iconBgColor = input('');
   public readonly iconBgPath = input('');
+  public readonly currentAccounts = input<
+    { label: string; value: string }[] | null
+  >(null);
+
+  // Outputs
 
   public readonly confirm = output<void>();
   public readonly cancelPayment = output<void>();
-
   public readonly accountChanged = output<string>();
-  public readonly selectedAccountId = signal<string | null>(null);
-  public readonly currentAccounts = input<Account[] | null>(null);
+  public readonly selectedAccountId = model<string | null>(null);
 
-  protected readonly accountOptions = computed(() => {
-    const accounts = this.currentAccounts();
-    if (!accounts) return [];
-    return accounts.map((acc) => ({
-      label: `${acc.friendlyName || acc.name} (****${acc.id.slice(-4)}) - ${acc.balance} ${acc.currency}`,
-      value: acc.id,
-    }));
-  });
+  protected readonly selectConfig = paymentOptionPaybill;
+  protected readonly ui = CONFIRM_PAYMENT_UI;
 
   public handleAccountChange(id: string): void {
-    this.selectedAccountId.set(id);
     this.accountChanged.emit(id);
   }
 
-  protected readonly summaryItems = computed(() => [
-    {
-      label: 'Account Number:',
-      value: this.summary().accountNumber ?? 'Unknown Service',
-    },
-    { label: 'Customer Name:', value: this.details().accountHolder },
-    { label: 'Due Date:', value: this.details().dueDate },
-    {
-      label: 'Amount to Pay:',
-      value: `$${this.summary()!.amount}`,
-      isTotal: true,
-    },
-  ]);
+  protected readonly summaryItems = computed(() =>
+    mapConfirmSummaryFields(this.summary(), this.details()),
+  );
 
   protected readonly title = 'Confirm Payment';
   protected readonly subtitle = 'Review the details before proceeding';

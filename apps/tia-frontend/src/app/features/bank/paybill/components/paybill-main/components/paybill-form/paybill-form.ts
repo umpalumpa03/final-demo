@@ -2,14 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   input,
   output,
 } from '@angular/core';
 import {
   BillDetails,
-  PaybillPayload,
   PaybillProvider,
 } from '../../shared/models/paybill.model';
 import {
@@ -22,7 +20,8 @@ import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { paybillInputConfig } from './config/input.config';
 import { PaymentSummary } from '../../shared/ui/payment-summary/payment-summary';
-import { SummaryField } from '../../shared/models/summary.model';
+import { CurrencyPipe } from '@angular/common';
+import { mapBillSummaryFields } from './utils/paybill-form.config';
 
 @Component({
   selector: 'app-paybill-form',
@@ -32,7 +31,8 @@ import { SummaryField } from '../../shared/models/summary.model';
     ReactiveFormsModule,
     TextInput,
     PaymentSummary,
-],
+    CurrencyPipe,
+  ],
   templateUrl: './paybill-form.html',
   styleUrl: './paybill-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -71,21 +71,9 @@ export class PaybillForm {
   public readonly paybillConfig = paybillInputConfig;
 
   public readonly isVerified = computed(() => !!this.verifiedDetails()?.valid);
-
-  protected readonly summaryItems = computed<SummaryField[]>(() => [
-    {
-      label: 'Customer Name:',
-      value: this.verifiedDetails()?.accountHolder ?? 'Unknown Service',
-    },
-    {
-      label: 'Bill Period:',
-      value: this.verifiedDetails()?.billPeriod ?? 'Current Month',
-    },
-    {
-      label: 'Due Date:',
-      value: `${this.verifiedDetails()?.dueDate}`,
-    },
-  ]);
+  protected readonly summaryItems = computed(() =>
+    mapBillSummaryFields(this.verifiedDetails()),
+  );
 
   public onSubmit(): void {
     if (this.isLoading()) return;

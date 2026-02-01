@@ -15,10 +15,8 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
 })
 export class Important implements OnInit {
   private messagingStore = inject(MessagingStore);
-
   public mails = this.messagingStore.mails;
   public isLoading = this.messagingStore.isLoading;
-  public error = this.messagingStore.error;
 
   public selectedMailIds = signal<Set<number>>(new Set());
 
@@ -57,7 +55,7 @@ export class Important implements OnInit {
     this.selectedMailIds.set(new Set());
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.messagingStore.loadMails('important');
   }
 

@@ -31,7 +31,10 @@ export function translateConfig<T extends object>(
           const value = fieldRecord[prop];
 
           if (typeof value === 'string') {
-            (fieldRecord as Record<string, string>)[prop] = translateFn(value);
+            const trimmedValue = value.trim();
+            (fieldRecord as Record<string, string>)[prop] = trimmedValue
+              ? translateFn(trimmedValue)
+              : value;
           }
         }
       });
