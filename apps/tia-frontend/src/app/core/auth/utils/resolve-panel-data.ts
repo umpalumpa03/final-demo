@@ -36,6 +36,10 @@ export function updateSidePanelForRoute(
       sidePanelData.set(AUTH_SIDE_PANEL_DATA.phone);
       break;
 
+    case Routes.RESET_PASSWORD:
+      sidePanelData.set(AUTH_SIDE_PANEL_DATA.resetPassword);
+      break;
+
     default:
       sidePanelData.set(AUTH_SIDE_PANEL_DATA.signIn);
   }

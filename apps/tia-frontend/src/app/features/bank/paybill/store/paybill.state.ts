@@ -4,7 +4,7 @@ import {
   PaybillPayload,
   PaybillProvider,
 } from '../components/paybill-main/shared/models/paybill.model';
-import { TableGroups } from '../components/paybill-templates/models/paybill-templates.model';
+import { TemplateGroups } from '../components/paybill-templates/models/paybill-templates.model';
 
 export interface PaybillState {
   categories: PaybillCategory[];
@@ -18,7 +18,7 @@ export interface PaybillState {
   currentStep: string;
   paymentPayload: PaybillPayload | null;
   challengeId: string | null;
-  templateGroups: TableGroups[];
+  templateGroups: TemplateGroups[];
   successMessage: string | null;
 }
 

@@ -4,20 +4,24 @@ import { Action } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, Mocked } from 'vitest';
 
 import { PaybillEffect } from './paybill.effects';
-import { PaybillActions } from './paybill.actions';
+import { PaybillActions, TemplatesPageActions } from './paybill.actions';
 import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillTemplatesService } from '../components/paybill-templates/services/paybill-templates-service';
-import { selectSelectedCategoryId } from './paybill.selectors';
+import {
+  selectSelectedCategoryId,
+  selectSelectedProviderId,
+} from './paybill.selectors';
 
 describe('PaybillEffect', () => {
   let actions$: Observable<Action>;
   let effects: PaybillEffect;
   let store: MockStore;
-  let paybillService: vi.Mocked<PaybillService>;
-  let router: vi.Mocked<Router>;
+  let paybillService: Mocked<PaybillService>;
+  let paybillTemplatesService: Mocked<PaybillTemplatesService>;
+  let router: Mocked<Router>;
 
   beforeEach(() => {
     const paybillServiceMock = {
@@ -38,17 +42,22 @@ describe('PaybillEffect', () => {
         provideMockActions(() => actions$),
         provideMockStore(),
         { provide: PaybillService, useValue: paybillServiceMock },
-        { provide: PaybillTemplatesService, useValue: {} },
+        {
+          provide: PaybillTemplatesService,
+          useValue: { getAllTemplateGroups: vi.fn() },
+        },
         { provide: Router, useValue: routerMock },
       ],
     });
 
     effects = TestBed.inject(PaybillEffect);
     store = TestBed.inject(MockStore);
-    paybillService = TestBed.inject(
-      PaybillService,
-    ) as vi.Mocked<PaybillService>;
-    router = TestBed.inject(Router) as vi.Mocked<Router>;
+    paybillService = TestBed.inject(PaybillService) as Mocked<PaybillService>;
+    paybillTemplatesService = TestBed.inject(
+      PaybillTemplatesService,
+    ) as Mocked<PaybillTemplatesService>;
+
+    router = TestBed.inject(Router) as Mocked<Router>;
   });
 
   describe('loadCategories$', () => {
@@ -180,6 +189,33 @@ describe('PaybillEffect', () => {
       effects.clearSelectionNavigation$.subscribe();
 
       expect(router.navigate).toHaveBeenCalledWith(['/bank/paybill/pay']);
+    });
+  });
+
+  it('should dispatch loadTemplatesSuccess on success', () => {
+    const templateGroups = [{ id: 'g1' }] as any;
+    paybillTemplatesService.getAllTemplateGroups.mockReturnValue(
+      of(templateGroups),
+    );
+    actions$ = of(TemplatesPageActions.loadTemplates());
+
+    effects.loadTemplateGroups$.subscribe((action) => {
+      expect(action).toEqual(
+        TemplatesPageActions.loadTemplatesSuccess({ templateGroups }),
+      );
+    });
+  });
+
+  it('should dispatch selectProvider if providerId exists', () => {
+    store.overrideSelector(selectSelectedProviderId, 'p1');
+    actions$ = of(
+      PaybillActions.loadProvidersSuccess({ providers: [{ id: 'p1' }] as any }),
+    );
+
+    effects.autoSelectProviderAfterLoad$.subscribe((action) => {
+      expect(action).toEqual(
+        PaybillActions.selectProvider({ providerId: 'p1' }),
+      );
     });
   });
 });

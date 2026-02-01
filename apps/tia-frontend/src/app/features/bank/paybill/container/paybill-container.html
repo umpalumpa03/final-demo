@@ -30,7 +30,11 @@
       [subtitle]="'paybill.shared.description' | translate"
       class="paybill-container__header__title-container"
     />
-    <app-tabs [tabs]="navigationConfig" orientation="horizontal"></app-tabs>
+    <app-tabs
+      class="paybill-container__header__navigation"
+      [tabs]="navigationConfig"
+      orientation="horizontal"
+    ></app-tabs>
   </header>
 
   <main class="paybill-container__content">

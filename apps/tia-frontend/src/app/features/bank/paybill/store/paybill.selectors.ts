@@ -129,3 +129,8 @@ export const selectSuccessMessage = createSelector(
   selectPaybillState,
   (state) => state.successMessage,
 );
+
+export const selectTemplatesGroup = createSelector(
+  selectPaybillState,
+  (state) => state.templateGroups,
+);
