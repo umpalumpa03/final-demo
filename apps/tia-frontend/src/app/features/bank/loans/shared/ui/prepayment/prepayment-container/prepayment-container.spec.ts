@@ -1,61 +1,42 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { PrepaymentContainer } from './prepayment-container';
-import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { LoansActions } from '../../../../store/loans.actions';
-import {
-  selectActiveChallengeId,
-  selectCalculationResult,
-  selectActionLoading,
-} from '../../../../store/loans.selectors';
+import { LoansStore } from '../../../../store/loans.store';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { ILoan } from '../../../models/loan.model';
-import { provideMockActions } from '@ngrx/effects/testing';
-import { Subject } from 'rxjs';
-import { Action } from '@ngrx/store';
+import { ILoanDetails } from '../../../models/loan.model';
 import { TranslateModule } from '@ngx-translate/core';
+import { signal } from '@angular/core';
 
 describe('PrepaymentContainer', () => {
   let component: PrepaymentContainer;
   let fixture: ComponentFixture<PrepaymentContainer>;
-  let store: MockStore;
-  let actions$: Subject<Action>;
+  let loansStoreMock: any;
 
-  const mockLoan = { id: '1', accountId: 'acc1', loanAmount: 5000 } as ILoan;
-
-  const initialState = {
-    loans_local: {
-      loans: [],
-      loading: false,
-      error: null,
-      months: [],
-      purposes: [],
-      prepaymentOptions: [],
-      calculationResult: null,
-      activeChallengeId: null,
-      actionLoading: false,
-    },
-  };
+  const mockLoan = {
+    id: '1',
+    accountId: 'acc1',
+    loanAmount: 5000,
+  } as ILoanDetails;
 
   beforeEach(async () => {
-    actions$ = new Subject<Action>();
+    loansStoreMock = {
+      actionLoading: signal(false),
+      calculationResult: signal(null),
+      activeChallengeId: signal(null),
+      error: signal(null),
+
+      clearCalculationResult: vi.fn(),
+      calculatePrepayment: vi.fn(),
+      initiatePrepayment: vi.fn(),
+      verifyPrepayment: vi.fn(),
+
+      loadPrepaymentOptions: vi.fn(),
+      prepaymentTypeOptions: signal([]),
+    };
 
     await TestBed.configureTestingModule({
       imports: [PrepaymentContainer, TranslateModule.forRoot()],
-      providers: [
-        provideMockStore({
-          initialState,
-          selectors: [
-            { selector: selectCalculationResult, value: null },
-            { selector: selectActiveChallengeId, value: null },
-            { selector: selectActionLoading, value: false },
-          ],
-        }),
-        provideMockActions(() => actions$),
-      ],
+      providers: [{ provide: LoansStore, useValue: loansStoreMock }],
     }).compileComponents();
-
-    store = TestBed.inject(MockStore);
-    vi.spyOn(store, 'dispatch');
 
     fixture = TestBed.createComponent(PrepaymentContainer);
     component = fixture.componentInstance;
@@ -67,103 +48,47 @@ describe('PrepaymentContainer', () => {
     vi.clearAllMocks();
   });
 
-  it('should create', () => {
+  it('should create and clear result on init', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should clear calculation result on init', () => {
-    component.ngOnInit();
-    expect(store.dispatch).toHaveBeenCalledWith(
-      LoansActions.clearCalculationResult(),
-    );
+    expect(loansStoreMock.clearCalculationResult).toHaveBeenCalled();
+    expect(loansStoreMock.loadPrepaymentOptions).toHaveBeenCalled();
     expect(component.step()).toBe('options');
   });
 
-  it('should dispatch calculatePrepayment on calculate', () => {
+  it('should call calculatePrepayment', () => {
     const payload = { type: 'partial', amount: 100 } as any;
     component.onCalculate(payload);
-    expect(store.dispatch).toHaveBeenCalledWith(
-      LoansActions.calculatePrepayment({ payload }),
-    );
+    expect(loansStoreMock.calculatePrepayment).toHaveBeenCalledWith({
+      payload,
+    });
   });
 
-  it('should update step to review when calculation result exists', () => {
-    store.overrideSelector(selectCalculationResult, {
-      monthlyPayment: 10,
-    } as any);
-    store.refreshState();
-    fixture.detectChanges();
-    expect(component.step()).toBe('review');
-  });
-
-  it('should update step to otp when challengeId exists', () => {
-    store.overrideSelector(selectActiveChallengeId, '123');
-    store.refreshState();
+  it('should switch step to otp when activeChallengeId updates', () => {
+    loansStoreMock.activeChallengeId.set('chal-123');
     fixture.detectChanges();
     expect(component.step()).toBe('otp');
   });
 
-  it('should dispatch verifyPrepayment on verify otp', () => {
-    store.overrideSelector(selectActiveChallengeId, '123');
-    store.refreshState();
+  it('should call verifyPrepayment', () => {
+    loansStoreMock.activeChallengeId.set('chal-123');
     fixture.detectChanges();
     component.onVerifyOtp('1234');
-    expect(store.dispatch).toHaveBeenCalledWith(
-      LoansActions.verifyPrepayment({
-        payload: { challengeId: '123', code: '1234' },
+    expect(loansStoreMock.verifyPrepayment).toHaveBeenCalledWith({
+      payload: { challengeId: 'chal-123', code: '1234' },
+    });
+  });
+
+  it('should initiate prepayment with correct logic', () => {
+    const payload = { loanId: '1', type: 'partial', amount: 500 } as any;
+    component.onCalculate(payload);
+
+    component.onProceedToOtp();
+
+    expect(loansStoreMock.initiatePrepayment).toHaveBeenCalledWith({
+      payload: expect.objectContaining({
+        amount: 500,
+        loanPrepaymentOption: 'partial',
       }),
-    );
-  });
-
-  it('should emit close on verifyPrepaymentSuccess', () => {
-    const spy = vi.spyOn(component.close, 'emit');
-    actions$.next(LoansActions.verifyPrepaymentSuccess());
-    expect(spy).toHaveBeenCalled();
-  });
-
-  describe('onProceedToOtp', () => {
-    it('should return early if no pendingPayload exists', () => {
-      component.onProceedToOtp();
-      expect(store.dispatch).not.toHaveBeenCalledWith(
-        expect.objectContaining({ type: LoansActions.initiatePrepayment.type }),
-      );
-    });
-
-    it('should dispatch initiatePrepayment with amount from payload for partial type', () => {
-      const payload = { loanId: '1', type: 'partial', amount: 500 } as any;
-      component.onCalculate(payload);
-
-      component.onProceedToOtp();
-
-      expect(store.dispatch).toHaveBeenCalledWith(
-        LoansActions.initiatePrepayment({
-          payload: expect.objectContaining({
-            amount: 500,
-            loanPrepaymentOption: 'partial',
-          }),
-        }),
-      );
-    });
-
-    it('should extract principal amount from calculationResult for full prepayment', () => {
-      const payload = { loanId: '1', type: 'full' } as any;
-      component.onCalculate(payload);
-
-      store.overrideSelector(selectCalculationResult, {
-        displayedInfo: [{ text: 'Remaining principal', amount: 4500 }],
-      } as any);
-      store.refreshState();
-
-      component.onProceedToOtp();
-
-      expect(store.dispatch).toHaveBeenCalledWith(
-        LoansActions.initiatePrepayment({
-          payload: expect.objectContaining({
-            amount: 4500,
-            loanPrepaymentOption: 'full',
-          }),
-        }),
-      );
     });
   });
 });

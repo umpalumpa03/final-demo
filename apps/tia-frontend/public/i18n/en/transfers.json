@@ -66,6 +66,19 @@
         "header": "Failed to Load Your Accounts",
         "message": "Unable to load your accounts. Please try again."
       }
+    },
+    "amount": {
+      "title": "Transfer Amount",
+      "label": "Amount",
+      "from": "From",
+      "to": "To",
+      "available": "Available:",
+      "transferButton": "Transfer Money",
+      "accountsSelected": "Accounts selected successfully!",
+      "description": {
+        "label": "Description (optional)",
+        "placeholder": "Add a note for this transfer"
+      }
     }
   },
   "confirmation": {

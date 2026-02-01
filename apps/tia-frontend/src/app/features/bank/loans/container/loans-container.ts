@@ -10,10 +10,9 @@ import { RouterModule } from '@angular/router';
 import { RequestModal } from '../shared/ui/request-modal/request-modal';
 import { Store } from '@ngrx/store';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
-import { LoansActions } from '../store/loans.actions';
-import { selectLoansAlert, selectLoansLoading } from '../store/loans.selectors';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
-import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
+import { LoansStore } from '../store/loans.store';
+import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 
 @Component({
   selector: 'app-loans-container',
@@ -23,21 +22,28 @@ import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/si
     RouterModule,
     RequestModal,
     Skeleton,
-    SimpleAlerts,
+    AlertTypesWithIcons,
   ],
   templateUrl: './loans-container.html',
   styleUrl: './loans-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoansContainer {
-  private store = inject(Store);
+  private globalStore = inject(Store);
 
-  protected isModalOpen = signal(false);
-  protected isLoading = this.store.selectSignal(selectLoansLoading);
-  protected readonly alertConfig = this.store.selectSignal(selectLoansAlert);
+  protected readonly store = inject(LoansStore);
+
+  public isModalOpen = signal(false);
+
+  protected isLoading = this.store.loading;
+  protected readonly alertConfig = this.store.alert;
 
   public ngOnInit(): void {
-    this.store.dispatch(LoansActions.loadLoans());
-    this.store.dispatch(AccountsActions.loadAccounts());
+    this.globalStore.dispatch(AccountsActions.loadAccounts());
+
+    this.store.loadMonths();
+    this.store.loadPurposes();
+
+    this.store.loadCounts();
   }
 }

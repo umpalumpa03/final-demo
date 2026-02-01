@@ -12,6 +12,12 @@ describe('PrepaymentReview', () => {
     monthlyPayment: 500,
     totalInterest: 100,
     newBalance: 4000,
+    displayedInfo: [
+      { text: 'Monthly Payment: 500 GEL' },
+      { text: 'Total Interest: 100 USD' },
+      { text: 'Remaining Balance' },
+      { text: 'Processing Fee' },
+    ],
   } as unknown as IPrepaymentCalcResponse;
 
   beforeEach(async () => {
@@ -21,9 +27,7 @@ describe('PrepaymentReview', () => {
 
     fixture = TestBed.createComponent(PrepaymentReview);
     component = fixture.componentInstance;
-
     fixture.componentRef.setInput('calculationResult', mockCalculationResult);
-
     fixture.detectChanges();
   });
 
@@ -31,19 +35,25 @@ describe('PrepaymentReview', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should receive the calculationResult input', () => {
-    expect(component.calculationResult()).toEqual(mockCalculationResult);
+  it('should accept custom isLoading input', () => {
+    fixture.componentRef.setInput('isLoading', true);
+    fixture.detectChanges();
+    expect(component.isLoading()).toBe(true);
   });
 
-  it('should initialize cancel output', () => {
-    expect(component.cancel).toBeTruthy();
+  it('should accept custom currencyCode input', () => {
+    fixture.componentRef.setInput('currencyCode', 'USD');
+    fixture.detectChanges();
+    expect(component.currencyCode()).toBe('USD');
+  });
+
+  it('should emit cancel event', () => {
     const spy = vi.spyOn(component.cancel, 'emit');
     component.cancel.emit();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should initialize confirmPay output', () => {
-    expect(component.confirmPay).toBeTruthy();
+  it('should emit confirmPay event', () => {
     const spy = vi.spyOn(component.confirmPay, 'emit');
     component.confirmPay.emit();
     expect(spy).toHaveBeenCalled();

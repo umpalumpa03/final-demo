@@ -55,6 +55,7 @@ export class AuthService {
 
   public loginPostRequest(user: ILoginRequest): Observable<IloginResponse> {
     this.isLoginLoading.set(true);
+    this.tokenService.clearAllToken();
     return this.http.post<IloginResponse>(`${this.baseUrl}/login`, user).pipe(
       tap((res) => {
         if (res.status === 'mfa_required') {
@@ -193,10 +194,13 @@ export class AuthService {
     email: string,
   ): Observable<ForgotPasswordResponse> {
     const payload: ForgotPasswordRequest = { email };
-    return this.http.post<ForgotPasswordResponse>(
-      `${this.baseUrl}/forgot-password`,
-      payload,
-    );
+    return this.http
+      .post<ForgotPasswordResponse>(`${this.baseUrl}/forgot-password`, payload)
+      .pipe(
+        tap((res) => {
+          this.setChellangeId(res.challengeId);
+        }),
+      );
   }
 
   public verifyForgotPasswordOtp(

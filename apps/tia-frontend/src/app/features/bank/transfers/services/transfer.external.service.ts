@@ -5,7 +5,7 @@ import { filter, skip, take, tap } from 'rxjs';
 import { TransferStore } from '../store/transfers.store';
 import { TransferValidationService } from './transfer-validation.service';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
-import { AccountData, RecipientAccount } from '../models/transfers.state.model';
+import { RecipientAccount } from '../models/transfers.state.model';
 
 @Injectable()
 export class TransferExternalService {
@@ -43,10 +43,7 @@ export class TransferExternalService {
       }
 
       // phone or same bank iban, call api to lookup recipient
-      this.transferStore.lookupRecipient({
-        value,
-        type: currentType,
-      });
+      this.transferStore.lookupRecipient({ value, type: currentType });
 
       // wait for new api response and navigate
       this.recipientInfo$
@@ -115,12 +112,34 @@ export class TransferExternalService {
     isExternalIban: boolean,
     recipientName: string | null,
   ): void {
-    if (selectedRecipientAccount || isExternalIban) {
+    const hasRecipient = !!selectedRecipientAccount;
+    const hasSender = !!selectedSenderAccount;
+
+    if ((hasRecipient || isExternalIban) && hasSender) {
       if (isExternalIban && recipientName) {
         this.transferStore.setManualRecipientName(recipientName);
       }
 
       this.router.navigate(['/bank/transfers/external/amount']);
     }
+  }
+
+  public handleAmountGoBack(
+    amount: number,
+    description: string,
+    router: any,
+  ): void {
+    this.transferStore.setAmount(amount);
+    this.transferStore.setDescription(description);
+    router.back();
+  }
+
+  public handleTransfer(amount: number, description: string): boolean {
+    if (amount > 0) {
+      this.transferStore.setAmount(amount);
+      this.transferStore.setDescription(description);
+      return true;
+    }
+    return false;
   }
 }
