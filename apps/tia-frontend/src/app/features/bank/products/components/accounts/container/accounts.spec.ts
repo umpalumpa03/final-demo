@@ -35,20 +35,22 @@ describe('Accounts', () => {
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
     router = TestBed.inject(Router);
-    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should dispatch loadAccounts on ngOnInit', () => {
+  it('should dispatch openCreateModal on ngOnInit when URL contains /create', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
-    fixture.detectChanges();
+    vi.spyOn(router, 'url', 'get').mockReturnValue(
+      '/bank/products/accounts/create',
+    );
+    component.ngOnInit();
     expect(dispatchSpy).toHaveBeenCalled();
   });
 
-  it('should dispatch openCreateModal', () => {
+  it('should navigate to create on handleOpenModal', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.handleOpenModal();
     expect(navigateSpy).toHaveBeenCalledWith([
@@ -56,13 +58,15 @@ describe('Accounts', () => {
     ]);
   });
 
-  it('should dispatch closeCreateModal', () => {
+  it('should dispatch closeCreateModal and navigate on handleCloseModal', () => {
+    const navigateSpy = vi.spyOn(router, 'navigate');
     const dispatchSpy = vi.spyOn(store, 'dispatch');
     component.handleCloseModal();
     expect(dispatchSpy).toHaveBeenCalled();
+    expect(navigateSpy).toHaveBeenCalledWith(['/bank/products/accounts']);
   });
 
-  it('should dispatch createAccount', () => {
+  it('should dispatch createAccount when form is valid', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
     vi.spyOn(component['accountForm'](), 'valid', 'get').mockReturnValue(true);
     const mockRequest: CreateAccountRequest = {
@@ -72,6 +76,14 @@ describe('Accounts', () => {
     };
     component.handleCreateAccount(mockRequest);
     expect(dispatchSpy).toHaveBeenCalled();
+  });
+
+  it('should dispatch selectAccount and navigate on handleTransfer', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    const navigateSpy = vi.spyOn(router, 'navigate');
+    component.handleTransfer('acc-123');
+    expect(dispatchSpy).toHaveBeenCalled();
+    expect(navigateSpy).toHaveBeenCalledWith(['/bank/transfers/internal']);
   });
 
   it('should dispatch loadAccounts on handleRetry', () => {
@@ -87,5 +99,32 @@ describe('Accounts', () => {
       friendlyName: 'New Name',
     });
     expect(dispatchSpy).toHaveBeenCalled();
+  });
+
+  it('should set showSuccessAlert on handleRenameSuccess', () => {
+    component.handleRenameSuccess();
+    expect(component['showSuccessAlert']()).toBe(true);
+  });
+
+  it('should set showCreateAlert on handleCreateAlertDismissed', () => {
+    component['showCreateAlert'].set(true);
+    component.handleCreateAlertDismissed();
+    expect(component['showCreateAlert']()).toBe(false);
+  });
+
+  it('should dispatch loadAccounts when accounts are empty', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    component['handleAccountsGrouped']({
+      current: [],
+      saving: [],
+      card: [],
+    });
+    expect(dispatchSpy).toHaveBeenCalled();
+  });
+
+  it('should set showCreateAlert when isCreating transitions from true to false', () => {
+    component['wasCreating'] = true;
+    component['handleIsCreatingAccount'](false);
+    expect(component['showCreateAlert']()).toBe(true);
   });
 });
