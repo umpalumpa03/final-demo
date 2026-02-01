@@ -2,8 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PhoneVerification } from './phone-verification';
 import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
-import { Router } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -19,9 +18,8 @@ describe('PhoneVerification Component', () => {
   let tokenServiceMock: {
     clearAllToken: ReturnType<typeof vi.fn>;
   };
-  let routerMock: {
-    navigate: ReturnType<typeof vi.fn>;
-  };
+  let router: Router;
+  let navigateSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(async () => {
     authServiceMock = {
@@ -35,16 +33,12 @@ describe('PhoneVerification Component', () => {
       clearAllToken: vi.fn(),
     };
 
-    routerMock = {
-      navigate: vi.fn(),
-    };
-
     await TestBed.configureTestingModule({
       imports: [PhoneVerification, TranslateModule.forRoot()],
       providers: [
+        provideRouter([]),
         { provide: AuthService, useValue: authServiceMock },
         { provide: TokenService, useValue: tokenServiceMock },
-        { provide: Router, useValue: routerMock },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -59,6 +53,8 @@ describe('PhoneVerification Component', () => {
 
     fixture = TestBed.createComponent(PhoneVerification);
     component = fixture.componentInstance;
+    router = TestBed.inject(Router);
+    navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     fixture.detectChanges();
   });
 
@@ -76,7 +72,7 @@ describe('PhoneVerification Component', () => {
 
     expect(authServiceMock.sendPhoneVerificationCode).toHaveBeenCalledWith('+995555123456');
     expect(authServiceMock.setChellangeId).toHaveBeenCalledWith('challenge-456');
-    expect(routerMock.navigate).toHaveBeenCalledWith([Routes.OTP_SIGN_UP]);
+    expect(navigateSpy).toHaveBeenCalledWith([Routes.OTP_SIGN_UP]);
   });
 
   it('should handle error when phone verification fails', () => {
@@ -99,6 +95,6 @@ describe('PhoneVerification Component', () => {
 
     expect(authServiceMock.sendPhoneVerificationCode).toHaveBeenCalledWith('+995555123456');
     expect(authServiceMock.setChellangeId).not.toHaveBeenCalled();
-    expect(routerMock.navigate).not.toHaveBeenCalled();
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 });

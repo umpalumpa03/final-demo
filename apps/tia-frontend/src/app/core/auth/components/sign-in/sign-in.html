@@ -11,12 +11,12 @@
   <div class="sign-in__form">
     <lib-text-input
       formControlName="username"
-      [config]="signInConfig.username"
+      [config]="signInConfig().username"
       type="text"
     ></lib-text-input>
     <lib-text-input
       formControlName="password"
-      [config]="signInConfig.password"
+      [config]="signInConfig().password"
       type="password"
     ></lib-text-input>
     @if(errorMessage()) {
