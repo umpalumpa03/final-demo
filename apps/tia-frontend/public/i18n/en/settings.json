@@ -14,8 +14,8 @@
         "profile-photo": "Profile Photo"
     },
     "language": {
-        "title": "Language Settings",
-        "subtitle": "Choose your preferred language",
+        "title": "Language & Region",
+        "subtitle": "Choose your preferred language to personalize your experience",
         "current": "Current Language",
         "available": "Available Languages",
         "english": "English",
