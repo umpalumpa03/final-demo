@@ -38,7 +38,7 @@ import { translateConfig } from '@tia/shared/utils/translate-config/config-trans
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationForm {
-  private translate = inject(TranslateService)
+  private translate = inject(TranslateService);
   public countries = COUNTRY_OPTIONS;
   public readonly isRegistration = input<boolean>(true);
   public readonly buttonText = input<string>('auth.sign-up.buttonText');
@@ -243,10 +243,10 @@ export class RegistrationForm {
       const errs = {
         ...(confirm.errors || {}),
         passwordMismatch: true,
-      } as Record<string, any>;
+      } as Record<string, boolean>;
       confirm.setErrors(errs);
     } else if (confirm.errors && confirm.errors['passwordMismatch']) {
-      const next = { ...(confirm.errors || {}) } as Record<string, any>;
+      const next = { ...(confirm.errors || {}) } as Record<string, boolean>;
       delete next['passwordMismatch'];
       const hasOther = Object.keys(next).length > 0;
       confirm.setErrors(hasOther ? next : null);
