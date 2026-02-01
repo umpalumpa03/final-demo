@@ -83,4 +83,75 @@ describe('TransfersApiService (vitest)', () => {
     expect(req.request.method).toBe('GET');
     req.flush(mockFee);
   });
+
+  it('should call transferSameBank with correct payload', () => {
+    const mockResponse = { success: true, challengeId: 'challenge-123' };
+    const payload = {
+      senderAccountId: 'acc-001',
+      receiverAccountIban: 'GE29TIA0000000012345678',
+      description: 'Test transfer',
+      amountToSend: 150,
+    };
+
+    service.transferSameBank(payload).subscribe((res) => {
+      expect(res).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${baseURL}/tia-transfers/someone`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+    req.flush(mockResponse);
+  });
+
+  it('should call transferExternalBank with correct payload', () => {
+    const mockResponse = { success: true, challengeId: 'challenge-456' };
+    const payload = {
+      senderAccountId: 'acc-002',
+      receiverAccountIban: 'GE29BOG0000000012345678',
+      receiverAccountCurrency: 'USD',
+      receiverName: 'John Smith',
+      amountToSend: 500,
+      description: 'External transfer',
+    };
+
+    service.transferExternalBank(payload).subscribe((res) => {
+      expect(res).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${baseURL}/someone/external-bank`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+    req.flush(mockResponse);
+  });
+
+  it('should call verifyTransfer with challengeId only', () => {
+    const mockResponse = { success: true, transferId: 'transfer-789' };
+    const payload = { challengeId: 'challenge-123' };
+
+    service.verifyTransfer(payload).subscribe((res) => {
+      expect(res).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${baseURL}/verify`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ challengeId: 'challenge-123' });
+    req.flush(mockResponse);
+  });
+
+  it('should call verifyTransfer with challengeId and code', () => {
+    const mockResponse = { success: true, transferId: 'transfer-999' };
+    const payload = { challengeId: 'challenge-456', code: '123456' };
+
+    service.verifyTransfer(payload).subscribe((res) => {
+      expect(res).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${baseURL}/verify`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({
+      challengeId: 'challenge-456',
+      code: '123456',
+    });
+    req.flush(mockResponse);
+  });
 });

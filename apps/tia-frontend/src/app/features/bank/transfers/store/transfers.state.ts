@@ -15,9 +15,11 @@ export const initialTransferState: TransferState = {
   fee: 0,
   totalWithFee: 0,
   recipientType: null,
-  requiresOTP: false,
+  requiresOtp: false,
+  pendingTransferId: null,
   currentStep: 1,
   isVerified: false,
   isLoading: false,
   error: null,
+  transferSuccess: false,
 };
