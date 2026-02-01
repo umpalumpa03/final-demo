@@ -17,8 +17,8 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { PaymentSummary } from '../../shared/ui/payment-summary/payment-summary';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { Store } from '@ngrx/store';
-import { selectCurrentAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-paybill-confirm-payment',
@@ -28,12 +28,12 @@ import { Account } from '@tia/shared/models/accounts/accounts.model';
     ButtonComponent,
     PaymentSummary,
     Dropdowns,
+    CurrencyPipe
   ],
   templateUrl: './paybill-confirm-payment.html',
   styleUrl: './paybill-confirm-payment.scss',
 })
 export class PaybillConfirmPayment {
-  private readonly store = inject(Store);
   public readonly provider = input.required<PaybillProvider>();
   public readonly summary = input.required<PaybillPayload>();
   public readonly details = input.required<BillDetails>();
@@ -70,7 +70,7 @@ export class PaybillConfirmPayment {
     { label: 'Due Date:', value: this.details().dueDate },
     {
       label: 'Amount to Pay:',
-      value: `$${this.summary()!.amount}`,
+      value: `GEL${this.summary()!.amount}`,
       isTotal: true,
     },
   ]);

@@ -2,14 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   input,
   output,
 } from '@angular/core';
 import {
   BillDetails,
-  PaybillPayload,
   PaybillProvider,
 } from '../../shared/models/paybill.model';
 import {
@@ -23,6 +21,7 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { paybillInputConfig } from './config/input.config';
 import { PaymentSummary } from '../../shared/ui/payment-summary/payment-summary';
 import { SummaryField } from '../../shared/models/summary.model';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-paybill-form',
@@ -32,6 +31,7 @@ import { SummaryField } from '../../shared/models/summary.model';
     ReactiveFormsModule,
     TextInput,
     PaymentSummary,
+    CurrencyPipe
 ],
   templateUrl: './paybill-form.html',
   styleUrl: './paybill-form.scss',

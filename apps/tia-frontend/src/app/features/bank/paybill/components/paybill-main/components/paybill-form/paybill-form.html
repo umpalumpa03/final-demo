@@ -38,8 +38,8 @@
       [state]="isLoading() ? 'disabled' : 'default'"
     />
     <p class="helper-text">
-      Fetched amount: {{verifiedDetails()?.amountDue}}. You can edit before
-      continuing.
+      Fetched amount: {{verifiedDetails()?.amountDue |
+      currency:'GEL':'symbol'}}. You can edit before continuing.
     </p>
 
     <div class="form-actions">
