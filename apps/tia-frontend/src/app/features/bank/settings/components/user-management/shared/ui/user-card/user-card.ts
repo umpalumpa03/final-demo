@@ -3,7 +3,6 @@ import {
   Component,
   input,
   output,
-  signal,
 } from '@angular/core';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
