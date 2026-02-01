@@ -136,19 +136,28 @@ export class OtpVerification {
   }
 
   public onSubmit(): void {
-    const currentForm = this.activeForm();
-    if (currentForm.invalid) {
-      currentForm.markAllAsTouched();
-      this.submitError.set("true")
-      return;
-    }
-    const rawValue = currentForm.getRawValue() as any;
-    
-    this.isVerifyCalled.emit({
-      isCalled: true,
-      otp: this.timerType() === 'phone' ? rawValue.phoneNumber : rawValue.code,
-    });
+  const currentForm = this.activeForm();
+  
+  if (currentForm.invalid) {
+    currentForm.markAllAsTouched();
+    this.submitError.set("Please check the required fields.");
+    return;
   }
+
+  const rawValue = currentForm.getRawValue();
+  let otp: string | null = null;
+
+  if ('phoneNumber' in rawValue) {
+    otp = rawValue.phoneNumber;
+  } else if ('code' in rawValue) {
+    otp = rawValue.code;
+  }
+
+  this.isVerifyCalled.emit({
+    isCalled: true,
+    otp: otp
+  });
+}
 
   public onResend(): void {
     if (this.countdown() > 0) {
