@@ -1,37 +1,41 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
-
+import { Store } from '@ngrx/store';
 import { AuthService } from './auth.service';
 import { TokenService } from './token.service';
-import { Store } from '@ngrx/store';
 import { environment } from '../../../../environments/environment';
 import { Routes } from '../models/tokens.model';
+import { UserInfoActions } from '../../../store/user-info/user-info.actions';
 
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
-  let routerSpy: { navigate: any };
-  let tokenSpy: any;
-  let storeSpy: any;
+  let router: Router;
+  let tokenService: TokenService;
+  let store: Store;
+  const baseUrl = `${environment.apiUrl}/auth`;
 
   beforeEach(() => {
-    routerSpy = { navigate: vi.fn() };
-
-    tokenSpy = {
-      setVerifyToken: vi.fn(),
-      setAccessToken: vi.fn(),
-      setRefreshToken: vi.fn(),
-      clearAuthToken: vi.fn(),
-      clearAccessToken: vi.fn(),
-      clearAllToken: vi.fn(),
-      accessToken: null,
-      getSignUpToken: null,
-      verifyToken: null,
+    const routerMock = {
+      navigate: vi.fn(),
     };
 
-    storeSpy = {
+    const tokenServiceMock = {
+      clearAllToken: vi.fn(),
+      setAccessToken: vi.fn(),
+      setRefreshToken: vi.fn(),
+      setVerifyToken: vi.fn(),
+      clearAuthToken: vi.fn(),
+      clearUserInfo: vi.fn(),
+      clearAccessToken: vi.fn(),
+      accessToken: 'test-access-token',
+      verifyToken: 'test-verify-token',
+      getSignUpToken: 'test-signup-token',
+    };
+
+    const storeMock = {
       dispatch: vi.fn(),
     };
 
@@ -39,214 +43,464 @@ describe('AuthService', () => {
       imports: [HttpClientTestingModule],
       providers: [
         AuthService,
-        { provide: Router, useValue: routerSpy },
-        { provide: TokenService, useValue: tokenSpy },
-        { provide: Store, useValue: storeSpy },
+        { provide: Router, useValue: routerMock },
+        { provide: TokenService, useValue: tokenServiceMock },
+        { provide: Store, useValue: storeMock },
       ],
     });
 
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
+    router = TestBed.inject(Router);
+    tokenService = TestBed.inject(TokenService);
+    store = TestBed.inject(Store);
   });
 
-  it('should set and get challenge id', () => {
-    service.setChellangeId('abc123');
-    expect(service.getChallengeId()).toBe('abc123');
+  afterEach(() => {
+    httpMock.verify();
   });
 
-  it('loginPostRequest navigates to OTP on mfa_required', async () => {
-    service.loginPostRequest({ username: 'u', password: 'p' } as any).subscribe();
-
-    const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
-    req.flush({ status: 'mfa_required', challengeId: 'cid' });
-
-    await Promise.resolve();
-    expect(service.getChallengeId()).toBe('cid');
-    expect(routerSpy.navigate).toHaveBeenCalledWith([Routes.OTP_SIGN_IN]);
+  it('should be created', () => {
+    expect(service).toBeTruthy();
   });
 
-  it('loginPostRequest stores verify token and navigates to phone when required', async () => {
-    service.loginPostRequest({ username: 'u', password: 'p' } as any).subscribe();
-
-    const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
-    req.flush({ status: 'phone_verification_required', verification_token: 'vt' });
-
-    await Promise.resolve();
-    expect(tokenSpy.setVerifyToken).toHaveBeenCalledWith('vt');
-    expect(routerSpy.navigate).toHaveBeenCalledWith([Routes.PHONE]);
+  describe('challengeId', () => {
+    it('should set and get challenge id', () => {
+      service.setChellangeId('test-challenge-id');
+      expect(service.getChallengeId()).toBe('test-challenge-id');
+    });
   });
 
-  it('loginPostRequest sets errorMessage on error', async () => {
-    service.loginPostRequest({ username: 'u', password: 'p' } as any).subscribe({
-      error: () => {},
+  describe('loginPostRequest', () => {
+    it('should login with mfa_required status', async () => {
+      const loginData = { username: 'test@test.com', password: 'password' };
+      const mockResponse = {
+        status: 'mfa_required',
+        challengeId: 'challenge-123',
+      };
+
+      const promise = new Promise<void>((resolve) => {
+        service.loginPostRequest(loginData).subscribe({
+          next: (res) => {
+            expect(res.status).toBe('mfa_required');
+            expect(tokenService.clearAllToken).toHaveBeenCalled();
+            expect(router.navigate).toHaveBeenCalledWith([Routes.OTP_SIGN_IN]);
+            expect(service.getChallengeId()).toBe('challenge-123');
+            resolve();
+          },
+        });
+      });
+
+      const req = httpMock.expectOne(`${baseUrl}/login`);
+      expect(req.request.method).toBe('POST');
+      expect(service.isLoginLoading()).toBe(true);
+      req.flush(mockResponse);
+      
+      await promise;
+      expect(service.isLoginLoading()).toBe(false);
     });
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
-    req.flush({}, { status: 500, statusText: 'Server Error' });
+    it('should login with phone_verification_required status', async () => {
+      const loginData = { username: 'test@test.com', password: 'password' };
+      const mockResponse = {
+        status: 'phone_verification_required',
+        verification_token: 'verify-token-123',
+      };
 
-    await Promise.resolve();
-    expect(service.errorMessage()).toBe(true);
-  });
+      const promise = new Promise<void>((resolve) => {
+        service.loginPostRequest(loginData).subscribe({
+          next: (res) => {
+            expect(res.status).toBe('phone_verification_required');
+            expect(tokenService.setVerifyToken).toHaveBeenCalledWith('verify-token-123');
+            expect(router.navigate).toHaveBeenCalledWith([Routes.PHONE]);
+            resolve();
+          },
+        });
+      });
 
-  it('verifyMfa sets tokens and navigates on success', async () => {
-    service.verifyMfa({ code: '1', challengeId: 'c' } as any).subscribe();
-
-    const req = httpMock.expectOne(`${environment.apiUrl}/auth/mfa/verify`);
-    req.flush({ access_token: 'a', refresh_token: 'r' });
-
-    await Promise.resolve();
-    expect(tokenSpy.setAccessToken).toHaveBeenCalledWith('a');
-    expect(tokenSpy.setRefreshToken).toHaveBeenCalledWith('r');
-    expect(routerSpy.navigate).toHaveBeenCalledWith([Routes.DASHBOARD]);
-  });
-
-  it('refreshTokenPostRequest sets tokens on success', async () => {
-    service
-      .refreshTokenPostRequest({ refresh_token: 'r' } as any)
-      .subscribe();
-
-    const req = httpMock.expectOne(`${environment.apiUrl}/auth/refresh`);
-    req.flush({ access_token: 'a', refresh_token: 'r' });
-
-    await Promise.resolve();
-    expect(tokenSpy.setAccessToken).toHaveBeenCalledWith('a');
-    expect(tokenSpy.setRefreshToken).toHaveBeenCalledWith('r');
-  });
-
-  it('sendPhoneVerificationCode sends Authorization header', async () => {
-    tokenSpy.getSignUpToken = 'signup-token';
-
-    service.sendPhoneVerificationCode('123').subscribe();
-
-    const req = httpMock.expectOne(`${environment.apiUrl}/auth/phone`);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer signup-token');
-    req.flush({});
-    await Promise.resolve();
-  });
-
-  it('verifyPhoneOtpCode clears tokens and navigates on success', async () => {
-    tokenSpy.getSignUpToken = 'signup-token';
-    service.setChellangeId('cid');
-
-    service.verifyPhoneOtpCode('111').subscribe();
-
-    const req = httpMock.expectOne(`${environment.apiUrl}/auth/phone/verify`);
-    expect(req.request.body).toEqual({ challengeId: 'cid', code: '111' });
-    req.flush({});
-
-    await Promise.resolve();
-    expect(tokenSpy.clearAllToken).toHaveBeenCalled();
-    expect(routerSpy.navigate).toHaveBeenCalledWith([Routes.SIGN_IN]);
-  });
-
-  it('forgotPasswordRequest posts the email', async () => {
-    service.forgotPasswordRequest('me@here.com').subscribe();
-
-    const req = httpMock.expectOne(`${environment.apiUrl}/auth/forgot-password`);
-    expect(req.request.body).toEqual({ email: 'me@here.com' });
-    req.flush({});
-
-    await Promise.resolve();
-  });
-
-  it('verifyForgotPasswordOtp sets access token on success', async () => {
-    service.setChellangeId('cid');
-
-    service.verifyForgotPasswordOtp('000').subscribe();
-
-    const req = httpMock.expectOne(
-      `${environment.apiUrl}/auth/forgot-password/verify`,
-    );
-    req.flush({ access_token: 'access-1' });
-
-    await Promise.resolve();
-    expect(tokenSpy.setAccessToken).toHaveBeenCalledWith('access-1');
-  });
-
-  it('resendVerificationCode posts challengeId with Authorization header', async () => {
-    service.setChellangeId('cid');
-    tokenSpy.getSignUpToken = 'signup-token';
-
-    service.resendVerificationCode().subscribe();
-
-    const req = httpMock.expectOne(
-      `${environment.apiUrl}/auth/mfa/otp-resend`,
-    );
-    expect(req.request.body).toEqual({ challengeId: 'cid' });
-    expect(req.request.headers.get('Authorization')).toBe(
-      'Bearer signup-token',
-    );
-    req.flush({});
-
-    await Promise.resolve();
-  });
-
-  it('createNewPassword posts with Authorization header when access token present', async () => {
-    tokenSpy.accessToken = 'access-xyz';
-
-    service.createNewPassword('newpass').subscribe();
-
-    const req = httpMock.expectOne(`${environment.apiUrl}/auth/create-new-password`);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer access-xyz');
-    expect(req.request.body).toEqual({ password: 'newpass' });
-    req.flush({});
-    await Promise.resolve();
-  });
-
-  it('resetPhoneOtp posts when challengeId set', async () => {
-    service.setChellangeId('cid-123');
-
-    service.resetPhoneOtp().subscribe();
-
-    const req = httpMock.expectOne(`${environment.apiUrl}/auth/mfa/otp-resend`);
-    expect(req.request.body).toEqual({ challengeId: 'cid-123' });
-    req.flush({});
-    await Promise.resolve();
-  });
-
-  it('refreshTokenPostRequest sets errorMessage on error response', async () => {
-    service.refreshTokenPostRequest({ refresh_token: 'r' } as any).subscribe({ error: () => {} });
-
-    const req = httpMock.expectOne(`${environment.apiUrl}/auth/refresh`);
-    req.flush({}, { status: 500, statusText: 'Server Error' });
-
-    await Promise.resolve();
-    expect(service.errorMessage()).toBe(true);
-  });
-
-  it('logout clears tokens and navigates', async () => {
-    service.logout().subscribe();
-
-    const req = httpMock.expectOne(`${environment.apiUrl}/auth/logout`);
-    req.flush({ success: true });
-
-    await Promise.resolve();
-    expect(tokenSpy.clearAuthToken).toHaveBeenCalled();
-    expect(routerSpy.navigate).toHaveBeenCalledWith([Routes.SIGN_IN]);
-  });
-
-  it('createNewPassword errors when no access token', async () => {
-    tokenSpy.accessToken = null;
-    service.createNewPassword('pw').subscribe({
-      next: () => {},
-      error: (err: Error) => {
-        expect(err).toBeInstanceOf(Error);
-        expect(err.message).toContain('Missing forgot password access token');
-      },
+      const req = httpMock.expectOne(`${baseUrl}/login`);
+      req.flush(mockResponse);
+      await promise;
     });
-    await Promise.resolve();
+
+    it('should handle login error', async () => {
+      const loginData = { username: 'test@test.com', password: 'wrong' };
+
+      const promise = new Promise<void>((resolve) => {
+        service.loginPostRequest(loginData).subscribe({
+          error: () => {
+            expect(service.errorMessage()).toBe(true);
+            resolve();
+          },
+        });
+      });
+
+      const req = httpMock.expectOne(`${baseUrl}/login`);
+      req.flush({ message: 'Invalid credentials' }, { status: 401, statusText: 'Unauthorized' });
+      
+      await promise;
+      expect(service.isLoginLoading()).toBe(false);
+    });
   });
 
-  it('resetPhoneOtp errors when no challengeId', async () => {
-    // ensure no challenge set
-    service.setChellangeId('');
-    service.resetPhoneOtp().subscribe({
-      next: () => {},
-      error: (err: Error) => {
-        expect(err).toBeInstanceOf(Error);
-        expect(err.message).toContain('Missing forgot password challengeId');
-      },
+  describe('refreshTokenPostRequest', () => {
+    it('should refresh token successfully', async () => {
+      const refreshData = { refresh_token: 'refresh-token' };
+      const mockResponse = {
+        access_token: 'new-access-token',
+        refresh_token: 'new-refresh-token',
+      };
+
+      const promise = new Promise<void>((resolve) => {
+        service.refreshTokenPostRequest(refreshData).subscribe({
+          next: () => {
+            expect(tokenService.setAccessToken).toHaveBeenCalledWith('new-access-token');
+            expect(tokenService.setRefreshToken).toHaveBeenCalledWith('new-refresh-token');
+            resolve();
+          },
+        });
+      });
+
+      const req = httpMock.expectOne(`${baseUrl}/refresh`);
+      expect(req.request.method).toBe('POST');
+      req.flush(mockResponse);
+      await promise;
     });
-    await Promise.resolve();
+
+    it('should handle refresh token error', async () => {
+      const refreshData = { refresh_token: 'invalid-token' };
+
+      const promise = new Promise<void>((resolve) => {
+        service.refreshTokenPostRequest(refreshData).subscribe({
+          error: () => {
+            expect(service.errorMessage()).toBe(true);
+            resolve();
+          },
+        });
+      });
+
+      const req = httpMock.expectOne(`${baseUrl}/refresh`);
+      req.flush({ message: 'Invalid token' }, { status: 401, statusText: 'Unauthorized' });
+      await promise;
+    });
+  });
+
+  describe('logout', () => {
+    it('should logout successfully', async () => {
+      const mockResponse = { success: true };
+
+      const promise = new Promise<void>((resolve) => {
+        service.logout().subscribe({
+          next: (res) => {
+            expect(res.success).toBe(true);
+            expect(tokenService.clearAuthToken).toHaveBeenCalled();
+            expect(tokenService.clearUserInfo).toHaveBeenCalled();
+            expect(router.navigate).toHaveBeenCalledWith([Routes.SIGN_IN]);
+            resolve();
+          },
+        });
+      });
+
+      const req = httpMock.expectOne(`${baseUrl}/logout`);
+      expect(req.request.method).toBe('POST');
+      req.flush(mockResponse);
+      await promise;
+    });
+  });
+
+  describe('verifyMfa', () => {
+    it('should verify MFA successfully', async () => {
+      const verifyData = { code: '123456', challengeId: 'challenge-id' };
+      const mockResponse = {
+        access_token: 'access-token',
+        refresh_token: 'refresh-token',
+      };
+
+      const promise = new Promise<void>((resolve) => {
+        service.verifyMfa(verifyData).subscribe({
+          next: () => {
+            expect(tokenService.setAccessToken).toHaveBeenCalledWith('access-token');
+            expect(tokenService.setRefreshToken).toHaveBeenCalledWith('refresh-token');
+            expect(store.dispatch).toHaveBeenCalledWith(UserInfoActions.loadUser());
+            expect(router.navigate).toHaveBeenCalledWith([Routes.DASHBOARD]);
+            resolve();
+          },
+        });
+      });
+
+      const req = httpMock.expectOne(`${baseUrl}/mfa/verify`);
+      expect(service.isLoginLoading()).toBe(true);
+      req.flush(mockResponse);
+      
+      await promise;
+      expect(service.isLoginLoading()).toBe(false);
+    });
+
+    it('should handle MFA verification error', async () => {
+      const verifyData = { code: 'wrong', challengeId: 'challenge-id' };
+
+      const promise = new Promise<void>((resolve) => {
+        service.verifyMfa(verifyData).subscribe({
+          error: () => {
+            expect(service.errorMessage()).toBe(true);
+            resolve();
+          },
+        });
+      });
+
+      const req = httpMock.expectOne(`${baseUrl}/mfa/verify`);
+      req.flush({ message: 'Invalid code' }, { status: 400, statusText: 'Bad Request' });
+      
+      await promise;
+      expect(service.isLoginLoading()).toBe(false);
+    });
+  });
+
+  describe('signUpUser', () => {
+    it('should sign up user successfully', async () => {
+      const userData = {
+        email: 'test@test.com',
+        password: 'password',
+        firstName: 'John',
+        lastName: 'Doe',
+      } as any;
+      const mockResponse = { id: '123', email: 'test@test.com', username: 'testuser', createdAt: '2024-01-01', signup_token: 'token' };
+
+      const promise = new Promise<void>((resolve) => {
+        service.signUpUser(userData).subscribe({
+          next: (res) => {
+            expect(res.id).toBe('123');
+            resolve();
+          },
+        });
+      });
+
+      const req = httpMock.expectOne(`${baseUrl}/signup`);
+      expect(req.request.method).toBe('POST');
+      req.flush(mockResponse);
+      await promise;
+    });
+  });
+
+  describe('sendPhoneVerificationCode', () => {
+    it('should send phone verification code', async () => {
+      const phoneNumber = '+1234567890';
+      const mockResponse = { message: 'Verification code sent', challengeId: 'challenge-456', method: 'sms' };
+
+      const promise = new Promise<void>((resolve) => {
+        service.sendPhoneVerificationCode(phoneNumber).subscribe({
+          next: (res) => {
+            expect(res.message).toBe('Verification code sent');
+            resolve();
+          },
+        });
+      });
+
+      const req = httpMock.expectOne(`${baseUrl}/phone`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ phone: phoneNumber });
+      expect(req.request.headers.get('Authorization')).toBe('Bearer test-signup-token');
+      req.flush(mockResponse);
+      await promise;
+    });
+  });
+
+  describe('verifyPhoneOtpCode', () => {
+    it('should verify phone OTP code successfully', async () => {
+      service.setChellangeId('challenge-123');
+      const code = '123456';
+      const mockResponse = { message: 'Phone verified successfully' };
+
+      const promise = new Promise<void>((resolve) => {
+        service.verifyPhoneOtpCode(code).subscribe({
+          next: (res) => {
+            expect(res.message).toBe('Phone verified successfully');
+            expect(tokenService.clearAuthToken).toHaveBeenCalled();
+            expect(router.navigate).toHaveBeenCalledWith([Routes.SIGN_IN]);
+            resolve();
+          },
+        });
+      });
+
+      const req = httpMock.expectOne(`${baseUrl}/phone/verify`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ challengeId: 'challenge-123', code });
+      req.flush(mockResponse);
+      
+      await promise;
+      expect(service.isLoginLoading()).toBe(false);
+    });
+
+    it('should handle phone OTP verification error', async () => {
+      service.setChellangeId('challenge-123');
+      const code = 'wrong';
+
+      const promise = new Promise<void>((resolve) => {
+        service.verifyPhoneOtpCode(code).subscribe({
+          error: () => {
+            expect(service.errorMessage()).toBe(true);
+            resolve();
+          },
+        });
+      });
+
+      const req = httpMock.expectOne(`${baseUrl}/phone/verify`);
+      req.flush({ message: 'Invalid code' }, { status: 400, statusText: 'Bad Request' });
+      
+      await promise;
+      expect(service.isLoginLoading()).toBe(false);
+    });
+  });
+
+  describe('forgotPasswordRequest', () => {
+    it('should send forgot password request', async () => {
+      const email = 'test@test.com';
+      const mockResponse = { challengeId: 'forgot-challenge-123' };
+
+      const promise = new Promise<void>((resolve) => {
+        service.forgotPasswordRequest(email).subscribe({
+          next: (res) => {
+            expect(res.challengeId).toBe('forgot-challenge-123');
+            expect(service.getChallengeId()).toBe('forgot-challenge-123');
+            resolve();
+          },
+        });
+      });
+
+      const req = httpMock.expectOne(`${baseUrl}/forgot-password`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ email });
+      req.flush(mockResponse);
+      await promise;
+    });
+  });
+
+  describe('verifyForgotPasswordOtp', () => {
+    it('should verify forgot password OTP', async () => {
+      service.setChellangeId('forgot-challenge-123');
+      const code = '123456';
+      const mockResponse = { access_token: 'forgot-access-token' };
+
+      const promise = new Promise<void>((resolve) => {
+        service.verifyForgotPasswordOtp(code).subscribe({
+          next: () => {
+            expect(tokenService.clearAccessToken).toHaveBeenCalled();
+            expect(tokenService.setAccessToken).toHaveBeenCalledWith('forgot-access-token');
+            resolve();
+          },
+        });
+      });
+
+      const req = httpMock.expectOne(`${baseUrl}/forgot-password/verify`);
+      expect(req.request.body).toEqual({ challengeId: 'forgot-challenge-123', code });
+      req.flush(mockResponse);
+      await promise;
+    });
+  });
+
+  describe('createNewPassword', () => {
+    it('should create new password successfully', async () => {
+      const password = 'newPassword123';
+      const mockResponse = { success: true };
+
+      const promise = new Promise<void>((resolve) => {
+        service.createNewPassword(password).subscribe({
+          next: (res) => {
+            expect(res.success).toBe(true);
+            resolve();
+          },
+        });
+      });
+
+      const req = httpMock.expectOne(`${baseUrl}/create-new-password`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ password });
+      expect(req.request.headers.get('Authorization')).toBe('Bearer test-access-token');
+      req.flush(mockResponse);
+      await promise;
+    });
+
+    it('should throw error when token is missing', async () => {
+      (tokenService as any).accessToken = null;
+      const password = 'newPassword123';
+
+      const promise = new Promise<void>((resolve) => {
+        service.createNewPassword(password).subscribe({
+          error: (err) => {
+            expect(err.message).toBe('Missing forgot password access token');
+            resolve();
+          },
+        });
+      });
+
+      await promise;
+    });
+  });
+
+  describe('resetPhoneOtp', () => {
+    it('should reset phone OTP successfully', async () => {
+      service.setChellangeId('challenge-123');
+      const mockResponse = { success: true };
+
+      const promise = new Promise<void>((resolve) => {
+        service.resetPhoneOtp().subscribe({
+          next: (res) => {
+            expect(res.success).toBe(true);
+            resolve();
+          },
+        });
+      });
+
+      const req = httpMock.expectOne(`${baseUrl}/mfa/otp-resend`);
+      expect(req.request.body).toEqual({ challengeId: 'challenge-123' });
+      req.flush(mockResponse);
+      await promise;
+    });
+
+    it('should throw error when challengeId is missing', async () => {
+      service.setChellangeId('');
+
+      const promise = new Promise<void>((resolve) => {
+        service.resetPhoneOtp().subscribe({
+          error: (err) => {
+            expect(err.message).toBe('Missing forgot password challengeId');
+            resolve();
+          },
+        });
+      });
+
+      await promise;
+    });
+  });
+
+  describe('resendVerificationCode', () => {
+    it('should resend verification code successfully', async () => {
+      service.setChellangeId('challenge-123');
+      const mockResponse = { message: 'Verification code resent' };
+
+      const promise = new Promise<void>((resolve) => {
+        service.resendVerificationCode().subscribe({
+          next: (res) => {
+            expect(res.message).toBe('Verification code resent');
+            resolve();
+          },
+        });
+      });
+
+      const req = httpMock.expectOne(`${baseUrl}/mfa/otp-resend`);
+      expect(req.request.body).toEqual({ challengeId: 'challenge-123' });
+      expect(req.request.headers.get('Authorization')).toBe('Bearer test-signup-token');
+      req.flush(mockResponse);
+      await promise;
+    });
+  });
+
+  describe('signals', () => {
+    it('should initialize with default signal values', () => {
+      expect(service.isLoginLoading()).toBe(false);
+      expect(service.errorMessage()).toBe(false);
+      expect(service.successMessage()).toBe(false);
+      expect(service.infoMessage()).toBe(false);
+    });
   });
 });

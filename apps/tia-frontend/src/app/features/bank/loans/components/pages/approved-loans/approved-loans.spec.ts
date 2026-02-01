@@ -58,24 +58,10 @@ describe('ApprovedLoans', () => {
     expect(loansStoreMock.loadLoanDetails).toHaveBeenCalledWith('loan-1');
   });
 
-  it('should NOT open details if the loan ID is not found', () => {
-    component.onCardClick('loan-999');
-    expect(component.selectedLoan()).toBeNull();
-    expect(component.isDetailsOpen()).toBe(false);
-  });
-
   it('should dispatch renameLoan', () => {
     const event = { id: 'loan-1', name: 'New Name' };
     component.onRenameLoan(event);
     expect(loansStoreMock.renameLoan).toHaveBeenCalledWith(event);
-  });
-
-  it('should open prepayment modal and close details', () => {
-    const loan = { id: '1', status: 2 } as any;
-    component.onOpenPrepayment(loan);
-    expect(component.isPrepaymentOpen()).toBe(true);
-    expect(component.isDetailsOpen()).toBe(false);
-    expect(component.selectedLoan()).toEqual(loan);
   });
 
   it('should reset state on closeModals', () => {

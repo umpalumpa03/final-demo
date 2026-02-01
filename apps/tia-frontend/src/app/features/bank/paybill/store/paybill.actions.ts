@@ -7,7 +7,8 @@ import {
   PaybillProvider,
   ProceedPaymentPayload,
   ProceedPaymentResponse,
-} from '../models/paybill.model';
+} from '../components/paybill-main/shared/models/paybill.model';
+import { TemplateGroups } from '../components/paybill-templates/models/paybill-templates.model';
 
 export const PaybillActions = createActionGroup({
   source: 'Paybill API',
@@ -31,5 +32,14 @@ export const PaybillActions = createActionGroup({
     'Confirm Payment': props<{ payload: ConfirmPaymentPayload }>(),
     'Confirm Payment Success': emptyProps(),
     'Confirm Payment Failure': props<{ error: string }>(),
+  },
+});
+
+export const TemplatesPageActions = createActionGroup({
+  source: 'Paybill Templates Page',
+  events: {
+    'Load Templates': emptyProps(),
+    'Load Templates Success': props<{ templateGroups: TemplateGroups[] }>(),
+    'Load Templates Failure': props<{ error: string }>(),
   },
 });

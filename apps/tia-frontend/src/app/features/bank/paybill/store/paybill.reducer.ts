@@ -1,20 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
-import { PaybillState } from '../models/paybill.model';
-import { PaybillActions } from './paybill.actions';
-
-export const initialPaybillState: PaybillState = {
-  categories: [],
-  selectedCategoryId: null,
-  selectedProviderId: null,
-  selectedProvider: null,
-  loading: false,
-  providers: [],
-  error: null,
-  verifiedDetails: null,
-  currentStep: 'DETAILS',
-  paymentPayload: null,
-  challengeId: null,
-};
+import { PaybillActions, TemplatesPageActions } from './paybill.actions';
+import { initialPaybillState } from './paybill.state';
 
 export const paybillReducer = createReducer(
   initialPaybillState,
@@ -74,7 +60,7 @@ export const paybillReducer = createReducer(
     providers: [],
     currentStep: 'DETAILS',
     paymentPayload: null,
-    challengeId:null
+    challengeId: null,
   })),
 
   on(PaybillActions.checkBill, (state) => ({
@@ -82,24 +68,18 @@ export const paybillReducer = createReducer(
     loading: true,
     error: null,
   })),
+
+  on(PaybillActions.checkBill, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
   on(PaybillActions.checkBillSuccess, (state, { details }) => ({
     ...state,
     verifiedDetails: details,
     loading: false,
     error: details.valid ? null : (details.error ?? 'Invalid account'),
-  })),
-  on(PaybillActions.checkBill, (state) => ({
-    ...state,
-    loading: true,
-    error: null,
-  })),
-
-  on(PaybillActions.checkBillSuccess, (state, { details }) => ({
-    ...state,
-    verifiedDetails: details,
-    loading: false,
-
-    error: details.valid ? null : (details.error ?? null),
   })),
 
   on(PaybillActions.checkBillFailure, (state, { error }) => ({
@@ -118,10 +98,43 @@ export const paybillReducer = createReducer(
     paymentPayload: data,
   })),
 
-  on(PaybillActions.proceedPaymentSuccess, (state, { response }) => ({
+  on(PaybillActions.proceedPayment, (state) => ({
     ...state,
-    challengeId: response.verify?.challengeId ?? null,
-    loading: false,
+    loading: true,
+    error: null,
   })),
 
+  on(PaybillActions.proceedPaymentSuccess, (state, { response }) => ({
+    ...state,
+    loading: false,
+
+    challengeId: response.verify?.challengeId ?? null,
+  })),
+
+  on(PaybillActions.proceedPaymentFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
+
+  on(TemplatesPageActions.loadTemplates, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
+  on(
+    TemplatesPageActions.loadTemplatesSuccess,
+    (state, { templateGroups }) => ({
+      ...state,
+      templateGroups,
+      loading: false,
+    }),
+  ),
+
+  on(TemplatesPageActions.loadTemplatesFailure, (state, { error }) => ({
+    ...state,
+    error,
+    loading: false,
+  })),
 );

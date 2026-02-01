@@ -4,10 +4,6 @@ import {
   computed,
   inject,
 } from '@angular/core';
-import {
-  ALERTS_DISMISSIBLE_DATA,
-  SIGN_IN_FORM,
-} from '../../models/input-config.models';
 import { AuthService } from '../../services/auth.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -15,8 +11,9 @@ import { Routes } from '../../models/tokens.model';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
-import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
+import { ALERTS_DISMISSIBLE_DATA, SIGN_IN_FORM } from '../../config/inputs.config';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sign-in',
@@ -27,15 +24,13 @@ import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible
     RouterLink,
     Spinner,
     DismissibleAlerts,
-  ],
+    TranslatePipe,
+],
   templateUrl: './sign-in.html',
   styleUrl: './sign-in.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignIn {
-  public readonly title = 'Sign In';
-  public readonly subtitle =
-    'Enter your username and password to access your account';
   public signUpRoute = Routes.SIGN_UP;
   public forgotPasswordRoute = Routes.ROTGOT_PASSWORD;
   private authService = inject(AuthService);

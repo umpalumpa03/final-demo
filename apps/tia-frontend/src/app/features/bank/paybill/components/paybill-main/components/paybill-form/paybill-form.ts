@@ -7,7 +7,11 @@ import {
   input,
   output,
 } from '@angular/core';
-import { BillDetails, PaybillPayload, PaybillProvider } from '../../../../models/paybill.model';
+import {
+  BillDetails,
+  PaybillPayload,
+  PaybillProvider,
+} from '../../shared/models/paybill.model';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
@@ -17,7 +21,8 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { paybillInputConfig } from './config/input.config';
-import { PaybillFormDetails } from './components/paybill-form-details/paybill-form-details';
+import { PaymentSummary } from '../../shared/ui/payment-summary/payment-summary';
+import { SummaryField } from '../../shared/models/summary.model';
 
 @Component({
   selector: 'app-paybill-form',
@@ -26,8 +31,8 @@ import { PaybillFormDetails } from './components/paybill-form-details/paybill-fo
     BasicCard,
     ReactiveFormsModule,
     TextInput,
-    PaybillFormDetails,
-  ],
+    PaymentSummary,
+],
   templateUrl: './paybill-form.html',
   styleUrl: './paybill-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -67,6 +72,21 @@ export class PaybillForm {
 
   public readonly isVerified = computed(() => !!this.verifiedDetails()?.valid);
 
+  protected readonly summaryItems = computed<SummaryField[]>(() => [
+    {
+      label: 'Customer Name:',
+      value: this.verifiedDetails()?.accountHolder ?? 'Unknown Service',
+    },
+    {
+      label: 'Bill Period:',
+      value: this.verifiedDetails()?.billPeriod ?? 'Current Month',
+    },
+    {
+      label: 'Due Date:',
+      value: `${this.verifiedDetails()?.dueDate}`,
+    },
+  ]);
+
   public onSubmit(): void {
     if (this.isLoading()) return;
 
@@ -80,7 +100,6 @@ export class PaybillForm {
       }
     } else {
       if (this.paybillForm.valid) {
-        console.log(this.paybillForm.getRawValue());
         this.pay.emit(this.paybillForm.getRawValue());
       } else {
         this.paybillForm.markAllAsTouched();

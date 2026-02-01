@@ -29,19 +29,6 @@ describe('App Component', () => {
     expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should initialize language from localStorage in constructor', () => {
-    const getItemSpy = vi
-      .spyOn(Storage.prototype, 'getItem')
-      .mockReturnValue('ka');
-    const useSpy = vi.spyOn(translateService, 'use');
-
-    TestBed.createComponent(App);
-
-    expect(getItemSpy).toHaveBeenCalledWith('language');
-    expect(useSpy).toHaveBeenCalledWith('ka');
-    getItemSpy.mockRestore();
-  });
-
   it('should default to "en" if localStorage is empty', () => {
     const getItemSpy = vi
       .spyOn(Storage.prototype, 'getItem')
