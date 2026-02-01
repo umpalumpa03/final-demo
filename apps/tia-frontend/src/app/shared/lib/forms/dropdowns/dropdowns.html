@@ -18,7 +18,7 @@
         </div>
 
         @if (isOpen()) {
-        <ul class="select__dropdown">
+        <ul class="select__dropdown" [style.max-height]="dropdownMaxHeight()">
             @for (option of options(); track option.value) {
             <li class="select__option" [class.select__option--selected]="value() === option.value"
                 [class.select__option--disabled]="option.disabled" (click)="selectOption(option)">

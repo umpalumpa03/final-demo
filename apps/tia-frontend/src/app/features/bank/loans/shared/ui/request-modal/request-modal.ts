@@ -25,7 +25,7 @@ import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { startWith, map } from 'rxjs';
-import { translateConfig } from '../../utils/config-translator.util';
+import { translateConfig } from '../../../../../../shared/utils/translate-config/config-translator.util';
 import { LoansStore } from '../../../store/loans.store';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 

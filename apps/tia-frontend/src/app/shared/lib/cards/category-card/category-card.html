@@ -1,4 +1,4 @@
-<div class="category-card" (click)="handleClick()">
+<div class="category-card" [class.custom-width]="customWidth()" (click)="handleClick()">
   <div class="category-card__header">
     <div class="category-card__icon" [style.background-color]="iconBgColor()">
       <img [src]="icon()" [alt]="title()" />

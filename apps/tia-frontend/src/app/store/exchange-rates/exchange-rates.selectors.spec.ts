@@ -1,34 +1,43 @@
 import { describe, it, expect } from 'vitest';
-import { selectExchangeRates, selectLoading } from './exchange-rates.selectors';
+import * as Selectors from './exchange-rates.selectors';
 import { ExchangeRateState } from './exchange-rates.state';
 import { ExchangeRateInterface } from './models/exchange-rates.models';
-
 describe('ExchangeRates Selectors', () => {
-  const mockRates: ExchangeRateInterface[] = [{
-    code: 'EUR',
-    rate: 0.85,
-    previousRate: 0.84,
-    changePercent: 1.19,
-    isPositive: true,
-    name: 'Euro',
-    symbol: '€',
-    flagUrl: '',
-    lastUpdated: '2024-01-01'
-  }];
+  const mockRates = [
+    { code: 'USD', rate: 2.65 } as ExchangeRateInterface,
+    { code: 'EUR', rate: 2.85 } as ExchangeRateInterface,
+  ];
 
-  const mockState: ExchangeRateState = {
+  const mockFeatureState: ExchangeRateState = {
     ExchangeRates: mockRates,
-    loading: true,
+    loading: false,
     error: false,
   };
 
-  it('should select exchange rates', () => {
-    const result = selectExchangeRates.projector(mockState);
+  const globalState = {
+    ExchangeRates: mockFeatureState,
+  };
+
+  it('should verify the feature selector statement', () => {
+    const result = Selectors.selectExchangeRatesSelector(globalState);
+    expect(result).toEqual(mockFeatureState);
+  });
+
+  it('should select the ExchangeRates array', () => {
+    const result = Selectors.selectExchangeRates.projector(mockFeatureState);
     expect(result).toEqual(mockRates);
   });
 
   it('should select loading state', () => {
-    const result = selectLoading.projector(mockState);
-    expect(result).toBe(true);
+    const result = Selectors.selectLoading.projector(mockFeatureState);
+    expect(result).toBe(false);
+  });
+
+  it('should execute the rate by code factory (Statement 19)', () => {
+    const selectorFactory = Selectors.selectRateByCode('usd');
+
+    const result = selectorFactory.projector(mockRates);
+
+    expect(result).toBe(2.65);
   });
 });
