@@ -252,5 +252,4 @@ describe('OtpVerification', () => {
     
     expect(component.maxTime()).toBe(0);
   });
-
 });
