@@ -12,16 +12,17 @@ import {
   selectIsLoading,
   selectError,
 } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
-import { AsyncPipe, CurrencyPipe, DatePipe } from '@angular/common';
+import { AsyncPipe, CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { map } from 'rxjs';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import { BaseWidget } from '../shared/base-widget.config';
+import { CurrencySymbolPipe } from 'apps/tia-frontend/src/app/features/bank/dashboard/pipes/currency-symbols.pipe';
 
 @Component({
   selector: 'app-widget-transactions',
-  imports: [AsyncPipe, DatePipe, RouteLoader, ErrorStates, ScrollArea, CurrencyPipe],
+  imports: [AsyncPipe, DatePipe, RouteLoader, ErrorStates, ScrollArea, CurrencySymbolPipe, DecimalPipe],
   templateUrl: './widget-transactions.html',
   styleUrl: './widget-transactions.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
