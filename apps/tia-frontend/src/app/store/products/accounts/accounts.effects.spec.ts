@@ -4,11 +4,11 @@ import { Observable, of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { AccountsEffects } from './accounts.effects';
 import { AccountsActions } from './accounts.actions';
-import { AccountsService } from '../../../shared/services/accounts/accounts.service';
 import {
   Account,
   AccountType,
 } from '../../../shared/models/accounts/accounts.model';
+import { AccountsApiService } from '../../../shared/services/accounts/accounts.api.service';
 
 describe('AccountsEffects', () => {
   let effects: AccountsEffects;
@@ -37,7 +37,7 @@ describe('AccountsEffects', () => {
         AccountsEffects,
         provideMockActions(() => actions$),
         {
-          provide: AccountsService,
+          provide: AccountsApiService,
           useValue: {
             getAccounts: () => of([mockAccount]),
             createAccount: () => of(mockAccount),
@@ -69,7 +69,7 @@ describe('AccountsEffects', () => {
         AccountsEffects,
         provideMockActions(() => actions$),
         {
-          provide: AccountsService,
+          provide: AccountsApiService,
           useValue: {
             getAccounts: () => throwError(() => new Error('Test error')),
             createAccount: () => of(mockAccount),
@@ -112,7 +112,7 @@ describe('AccountsEffects', () => {
         AccountsEffects,
         provideMockActions(() => actions$),
         {
-          provide: AccountsService,
+          provide: AccountsApiService,
           useValue: {
             getAccounts: () => of([mockAccount]),
             createAccount: () => throwError(() => new Error('Create error')),

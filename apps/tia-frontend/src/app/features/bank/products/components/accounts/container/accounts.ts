@@ -31,8 +31,8 @@ import {
   selectCreateError,
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { getAccountSections } from '../config/accounts.config';
-import { AccountsService } from 'apps/tia-frontend/src/app/shared/services/accounts/accounts.service';
 import { DismissibleAlerts } from '../../../../../../shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
+import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.service';
 
 @Component({
   selector: 'app-accounts-page',
@@ -50,7 +50,7 @@ import { DismissibleAlerts } from '../../../../../../shared/lib/alerts/component
 export class Accounts implements OnInit {
   private readonly store = inject(Store);
   private readonly fb = inject(FormBuilder);
-  private readonly accountsService = inject(AccountsService);
+  private readonly accountsService = inject(AccountsApiService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly translate = inject(TranslateService);
