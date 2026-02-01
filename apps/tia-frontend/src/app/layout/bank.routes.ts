@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { provideState } from '@ngrx/store';
 import { paybillReducer } from '../features/bank/paybill/store/paybill.reducer';
 import { provideEffects } from '@ngrx/effects';
-import * as paybillEffects from '../features/bank/paybill/store/paybill.effects';
+import { PaybillEffect } from '../features/bank/paybill/store/paybill.effects';
 import * as transactionEffects from '../store/transactions/transactions.effects';
 import {
   TRANSACTION_FEATURE_KEY,
@@ -11,7 +11,10 @@ import {
 import { FinancesStore } from '../features/bank/finances/store/finances.store';
 import { FinancesService } from '../features/bank/finances/services/finances.service';
 import { ExchangeRateReducer } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.reducers';
-import { accountsFeature, accountsReducer } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
+import {
+  accountsFeature,
+  accountsReducer,
+} from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
 import { ExchangeRatesEffects } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.effects';
 import { AccountsEffects } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.effects';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
@@ -22,11 +25,18 @@ export const bankRoutes: Routes = [
     loadComponent: () =>
       import('./bank-container').then((c) => c.BankContainer),
     providers: [
-      provideState({ name: TRANSACTION_FEATURE_KEY, reducer: transactionReducer }),
+      provideState({
+        name: TRANSACTION_FEATURE_KEY,
+        reducer: transactionReducer,
+      }),
       provideState({ name: 'ExchangeRates', reducer: ExchangeRateReducer }),
       provideState(accountsFeature),
 
-      provideEffects([ExchangeRatesEffects, AccountsEffects, transactionEffects])
+      provideEffects([
+        ExchangeRatesEffects,
+        AccountsEffects,
+        transactionEffects,
+      ]),
     ],
     children: [
       {
@@ -72,10 +82,10 @@ export const bankRoutes: Routes = [
       {
         path: 'finances',
         providers: [
-                  FinancesStore,
-                  FinancesService,
-                  provideCharts(withDefaultRegisterables())
-                ],
+          FinancesStore,
+          FinancesService,
+          provideCharts(withDefaultRegisterables()),
+        ],
         loadComponent: () =>
           import('../features/bank/finances/container/finances-container').then(
             (c) => c.FinancesContainer,
@@ -89,7 +99,7 @@ export const bankRoutes: Routes = [
           ),
         providers: [
           provideState({ name: 'paybill', reducer: paybillReducer }),
-          provideEffects(paybillEffects),
+          provideEffects(PaybillEffect),
         ],
       },
       {

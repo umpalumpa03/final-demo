@@ -17,7 +17,7 @@
   }
 
   &__summary {
-    background: var(--color-bg-secondary);
+    background: $gray-25;
     border-radius: 1.6rem;
     padding: 2.4rem 3.2rem;
     margin-bottom: 3.2rem;
@@ -67,13 +67,11 @@
 
   &__summary-icon,
   &__summary-initials {
-    width: 4.8rem;
-    height: 4.8rem;
+    @include svg-icon(4.8rem); 
     @include flex-center();
     background: var(--color-bg-primary);
     border-radius: 50%;
     border: 0.1rem solid $gray-200;
-    flex-shrink: 0;
   }
 
   &__summary-initials {
@@ -99,8 +97,7 @@
   }
 
   &__transfer-circle {
-    width: 4.4rem;
-    height: 4.4rem;
+    @include svg-icon(4.4rem);
     @include flex-center();
     background: var(--color-bg-primary);
     border-radius: 50%;
@@ -155,9 +152,13 @@
     border-top: 0.1rem solid $gray-200;
 
     @media (max-width: 450px) {
-      flex-direction: column-reverse;
+      @include display-flex(column-reverse);
       align-items: stretch;
       gap: 1.6rem;
+
+      app-button {
+        width: 100%;
+      }
     }
   }
 

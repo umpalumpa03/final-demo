@@ -5,7 +5,8 @@
     </lib-loan-card>
     } @empty {
     <app-error-states variant="not-found" [header]="'loans.empty.approved.title' | translate"
-        [message]="'loans.empty.approved.message' | translate" [border]="false" width="100%" height="30rem"
+        [message]="'loans.empty.approved.message' | translate"
+        [buttonMessage]="'loans.empty.approved.button' | translate" [border]="false" width="100%" height="30rem"
         (buttonClick)="navigateToAllLoans()">
     </app-error-states>
     }

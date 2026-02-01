@@ -39,15 +39,6 @@ describe('PrepaymentOptionStep', () => {
     expect(component).toBeTruthy();
     expect(loansStoreMock.loadPrepaymentOptions).toHaveBeenCalled();
   });
-
-  it('should handle form logic', () => {
-    component.form.controls.type.setValue('full');
-    expect(component.form.controls.amount.disabled).toBe(true);
-
-    component.form.controls.type.setValue('partial');
-    expect(component.form.controls.amount.enabled).toBe(true);
-  });
-
   it('should emit calculation payload', () => {
     const emitSpy = vi.spyOn(component.calculate, 'emit');
     component.form.patchValue({

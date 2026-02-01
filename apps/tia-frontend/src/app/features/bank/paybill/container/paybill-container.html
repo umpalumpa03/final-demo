@@ -1,10 +1,15 @@
-<section class="paybill-container">
+<section class="global-bank-wrapper">
   <header class="paybill-container__header">
     <app-breadcrumbs
       [breadcrumbs]="breadcrumbs()"
       (click)="handleNativeClick($event)"
+      class="paybill-container__header__breadcrumb"
     />
-    <app-library-title [title]="paybillTitle" [subtitle]="paybillSubtitle" />
+    <app-library-title
+      [title]="'paybill.shared.title' | translate"
+      [subtitle]="'paybill.shared.description' | translate"
+      class="paybill-container__header__title-container"
+    />
     <app-tabs [tabs]="navigationConfig" orientation="horizontal"></app-tabs>
   </header>
 

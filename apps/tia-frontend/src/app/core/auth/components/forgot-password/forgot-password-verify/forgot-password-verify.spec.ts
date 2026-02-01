@@ -77,6 +77,18 @@ describe('ForgotPasswordVerify Component', () => {
     expect(routerMock.navigate).not.toHaveBeenCalled();
   });
 
+  it('should verify OTP and navigate when isCalled is true', () => {
+    const event: IVerified = {
+      isCalled: true,
+      otp: '123456',
+    };
+
+    component.verifyResetOtp(event);
+
+    expect(authServiceMock.verifyForgotPasswordOtp).toHaveBeenCalledWith('123456');
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/auth', 'reset-password']);
+  });
+
   it('should resend OTP when isCalled is true', () => {
     component.resendOtp(true);
 

@@ -48,3 +48,23 @@
     }
   }
 }
+
+
+@media(max-width: 1024px) {
+  .accounts{
+    .account-card{
+      flex-wrap: wrap;
+      @include flex-center();
+      padding-inline: 0;
+      padding-block: 0.6rem;
+      height: 100%;
+      &-top {
+        font-size: 1.2rem;
+    }
+    &__title {
+      font-size: 1.4rem;
+    }
+  }
+}}
+
+

@@ -1,9 +1,6 @@
 @use '../../../../shared/styles/mixins' as *;
 @use '../../../../shared/styles/palette' as *;
 
-.global-bank-wrapper {
-  padding: 3rem;
-}
 
 .my-custom-layout {
   @include display-flex(column);

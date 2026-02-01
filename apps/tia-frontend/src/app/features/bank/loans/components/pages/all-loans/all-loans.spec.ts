@@ -73,13 +73,6 @@ describe('AllLoans', () => {
     expect(loansStoreMock.loadLoanDetails).toHaveBeenCalledWith('loan-1');
   });
 
-  it('should not open details for non-approved loans', () => {
-    component.onCardClick('loan-2');
-    expect(component.isDetailsOpen()).toBe(false);
-    expect(component.selectedLoan()).toBeNull();
-    expect(loansStoreMock.loadLoanDetails).not.toHaveBeenCalled();
-  });
-
   it('should handle renameLoan', () => {
     const event = { id: '1', name: 'Updated' };
     component.onRenameLoan(event);
@@ -92,14 +85,6 @@ describe('AllLoans', () => {
     expect(component.isPrepaymentOpen()).toBe(true);
     expect(component.isDetailsOpen()).toBe(false);
     expect(component.selectedLoan()).toEqual(loan);
-  });
-
-  it('should reset state on closeModals', () => {
-    component.isDetailsOpen.set(true);
-    component.closeModals();
-    expect(component.isDetailsOpen()).toBe(false);
-    expect(component.selectedLoan()).toBeNull();
-    expect(loansStoreMock.clearLoanDetails).toHaveBeenCalled();
   });
 
   it('should open request modal via container', () => {

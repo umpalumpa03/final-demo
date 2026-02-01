@@ -180,5 +180,18 @@ export const AUTH_SIDE_PANEL_DATA = {
         icon: '/images/svg/auth/secured.svg',
       }
     ],
+  },
+
+  resetPassword: {
+    title: 'auth.reset-password.side-panel.title',
+    description: 'auth.reset-password.side-panel.description',
+    features: [
+      {
+        id: 1,
+        title: 'auth.reset-password.side-panel.features.password-security.title',
+        text: 'auth.reset-password.side-panel.features.password-security.text',
+        icon: '/images/svg/auth/lock.svg',
+      }
+    ],
   }
 };

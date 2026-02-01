@@ -4,7 +4,7 @@
       class="paybill-form__icon-box"
       [style.background-color]="iconBgColor()"
     >
-      <img [src]="iconBgPath()" alt="" class="paybill-form__icon" />
+      <img [src]="iconBgPath()" alt="Service Icon" class="paybill-form__icon" />
     </div>
     <div class="paybill-form__text-group">
       <h2 class="paybill-form__title">{{ provider()?.name }}</h2>
@@ -26,7 +26,11 @@
     </div>
 
     @if (isVerified()) {
-    <app-paybill-form-details [details]="verifiedDetails()" />
+    <app-payment-summary
+      [items]="summaryItems()"
+      headerTitle="Account Verified"
+      type="verified"
+    ></app-payment-summary>
 
     <lib-text-input
       label="Amount To Pay"
@@ -46,7 +50,7 @@
         Continue to Payment
       </app-button>
 
-      <app-button variant='secondary'>Save Template</app-button>
+      <app-button variant="secondary">Save Template</app-button>
     </div>
     } @else {
     <app-button

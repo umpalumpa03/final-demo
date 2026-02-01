@@ -7,7 +7,7 @@ import {
   PaybillProvider,
   ProceedPaymentPayload,
   ProceedPaymentResponse,
-} from '../../models/paybill.model';
+} from '../../components/paybill-main/shared/models/paybill.model';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environments/environment';
 
