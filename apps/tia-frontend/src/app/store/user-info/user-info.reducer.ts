@@ -1,4 +1,4 @@
-import { createReducer, on } from '@ngrx/store';
+import { createFeature, createReducer, on } from '@ngrx/store';
 import { UserInfoActions } from './user-info.actions';
 import { IUserState } from './models/user-info.model';
 
@@ -12,27 +12,33 @@ export const initialUserState: IUserState = {
   error: null,
 };
 
-export const userInfoReducer = createReducer(
-  initialUserState,
+export const userInfoFeature = createFeature({
+  name: 'user-info',
+  reducer: createReducer(
+    initialUserState,
 
-  on(UserInfoActions.loadUser, (state) => ({
-    ...state,
-    loading: true,
-    error: null,
-  })),
-
-  on(UserInfoActions.loadUserSuccess, (state, { user }) => {
-    return {
+    on(UserInfoActions.loadUser, (state) => ({
       ...state,
-      ...user,
-      loading: false,
+      loading: true,
       error: null,
-    };
-  }),
+    })),
 
-  on(UserInfoActions.loadUserError, (state, { error }) => ({
-    ...state,
-    loading: false,
-    error,
-  })),
-);
+    on(UserInfoActions.loadUserSuccess, (state, { user }) => {
+      return {
+        ...state,
+        ...user,
+        loading: false,
+        error: null,
+      };
+    }),
+
+    on(UserInfoActions.loadUserError, (state, { error }) => ({
+      ...state,
+      loading: false,
+      error,
+    })),
+  ),
+});
+
+
+export const userInfoReducer = userInfoFeature.reducer;

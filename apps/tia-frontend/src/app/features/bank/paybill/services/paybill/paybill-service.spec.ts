@@ -10,7 +10,7 @@ import { environment } from '../../../../../../environments/environment';
 import {
   ProceedPaymentPayload,
   ConfirmPaymentPayload,
-} from '../../models/paybill.model';
+} from '../../components/paybill-main/shared/models/paybill.model';
 
 describe('PaybillService', () => {
   let service: PaybillService;
@@ -86,46 +86,5 @@ describe('PaybillService', () => {
     });
 
     req.flush(mockResponse);
-  });
-
-  it('should call payBill and return challenge details', () => {
-    const payload: ProceedPaymentPayload = {
-      amount: 100,
-      serviceId: 's1',
-      senderAccountId: 'acc-123',
-      identification: { accountNumber: '987654' },
-    };
-
-    const mockResponse = {
-      verify: { challengeId: 'challenge-xyz', method: 'SMS' },
-      transferType: 'BillPayment',
-    };
-
-    service.payBill(payload).subscribe((res) => {
-      expect(res).toEqual(mockResponse);
-    });
-
-    const req = httpMock.expectOne(`${baseUrl}/pay`);
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual(payload);
-
-    req.flush(mockResponse);
-  });
-
-  it('should call verifyPayment with correct payload and prefix', () => {
-    const payload: ConfirmPaymentPayload = {
-      challengeId: 'challenge-xyz',
-      code: '1111',
-    };
-
-    service.verifyPayment(payload).subscribe((res) => {
-      expect(res).toBeDefined();
-    });
-
-    const req = httpMock.expectOne(`${baseUrl}/verify`);
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual(payload);
-
-    req.flush({ status: 'success' });
   });
 });

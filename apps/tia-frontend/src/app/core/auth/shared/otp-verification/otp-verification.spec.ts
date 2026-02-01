@@ -1,71 +1,82 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import '@angular/compiler';
-import { setupTestBed } from '@analogjs/vitest-angular/setup-testbed';
-
-setupTestBed();
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { of, throwError } from 'rxjs';
-
 import { OtpVerification } from './otp-verification';
+import { TranslateModule } from '@ngx-translate/core';
+import { provideRouter } from '@angular/router';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
 describe('OtpVerification', () => {
-	let fixture: ComponentFixture<OtpVerification>;
-	let component: OtpVerification;
+  let component: OtpVerification;
+  let fixture: ComponentFixture<OtpVerification>;
 
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [ReactiveFormsModule, OtpVerification],
-			schemas: [NO_ERRORS_SCHEMA],
-		}).compileComponents();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [OtpVerification, TranslateModule.forRoot()],
+      providers: [
+        provideRouter([])
+      ]
+    }).compileComponents();
 
-		fixture = TestBed.createComponent(OtpVerification);
-		component = fixture.componentInstance;
-		fixture.detectChanges();
-	});
+    fixture = TestBed.createComponent(OtpVerification);
+    component = fixture.componentInstance;
+    
+    // Set required inputs
+    fixture.componentRef.setInput('type', 'sign-in');
+    
+    fixture.detectChanges();
+  });
 
-	it('should create the component', () => {
-		expect(component).toBeTruthy();
-	});
+  afterEach(() => {
+    fixture.destroy();
+  });
 
-	it('should have an invalid form when empty', () => {
-		expect(component.otpForm.invalid).toBe(true);
-	});
+  it('should create and initialize properly', () => {
+    expect(component).toBeTruthy();
+    expect(component.type()).toBe('sign-in');
+    expect(component.timeLimit()).toBe(1);
+    expect(component.timerType()).toBe('phone');
+  });
 
-	it('should not call submitMethod when form is invalid', () => {
-		const mockFn = vi.fn(() => of({}));
-		// set a submit method but keep form invalid
-		(component as any).submitMethod = () => mockFn;
+  it('should compute config properties from type input', () => {
+    const config = component.config();
+    expect(config).toBeDefined();
+    expect(component.iconUrl()).toBeDefined();
+    expect(component.title()).toBeDefined();
+    expect(component.subText()).toBeDefined();
+    expect(component.submitBtnName()).toBeDefined();
+    expect(component.backLink()).toBeDefined();
+    expect(component.backLinkText()).toBeDefined();
+  });
 
-		component.onSubmit();
 
-		expect(mockFn).not.toHaveBeenCalled();
-	});
+  it('should handle different timer types', () => {
+    expect(component.timerType()).toBe('phone');
+    
+    fixture.componentRef.setInput('timerType', 'otp');
+    fixture.detectChanges();
+    
+    expect(component.timerType()).toBe('otp');
+  });
 
-	it('should call submitMethod and emit on success', () => {
-		const mockFn = vi.fn(() => of({}));
-		(component as any).submitMethod = () => mockFn;
-		const emitSpy = vi.spyOn(component.submitResult, 'emit');
+  it('should not submit when form is invalid', () => {
+    const emitSpy = vi.spyOn(component.isVerifyCalled, 'emit');
+    
+    component.onSubmit();
+    
+    expect(emitSpy).not.toHaveBeenCalled();
+  });
 
-		component.otpForm.get('code')?.setValue('1234');
-		component.onSubmit();
+  it('should emit correct otp value on submit', () => {
+    const emitSpy = vi.spyOn(component.isVerifyCalled, 'emit');
+    fixture.componentRef.setInput('timerType', 'otp');
+    fixture.detectChanges();
 
-		expect(mockFn).toHaveBeenCalledWith('1234');
-		expect(emitSpy).toHaveBeenCalledWith({ statusCode: 200, message: 'veirfied' });
-		expect(component.isSubmitting()).toBe(false);
-	});
-
-	it('should handle errors from submitMethod gracefully', () => {
-		const mockFn = vi.fn(() => throwError(() => new Error('fail')));
-		(component as any).submitMethod = () => mockFn;
-		const emitSpy = vi.spyOn(component.submitResult, 'emit');
-
-		component.otpForm.get('code')?.setValue('0000');
-
-		expect(() => component.onSubmit()).not.toThrow();
-		expect(mockFn).toHaveBeenCalledWith('0000');
-		expect(emitSpy).not.toHaveBeenCalled();
-		expect(component.isSubmitting()).toBe(false);
-	});
+    component.otpForm.setValue({ code: '9876' });
+    component.otpForm.updateValueAndValidity();
+    component.onSubmit();
+    
+    expect(emitSpy).toHaveBeenCalledWith({
+      isCalled: true,
+      otp: '9876'
+    });
+  });
 });

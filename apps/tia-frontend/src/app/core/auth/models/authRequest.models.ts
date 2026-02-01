@@ -20,6 +20,7 @@ export interface SendVerificationResponse {
 
 export interface OtpResponse {
   message: string;
+  remainingAttempts?: number;
 }
 
 export interface ForgotPasswordRequest {

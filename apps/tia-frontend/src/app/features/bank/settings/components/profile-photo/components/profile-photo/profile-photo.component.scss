@@ -19,7 +19,7 @@
   }
 
   &__upload-section {
-    @include display-flex(column);
+    @include display-flex(column, wrap);
     gap: 1.6rem;
   }
 
@@ -61,10 +61,9 @@
   }
 
   &__defaults-list {
-    @include display-flex(row);
+    @include display-flex(row, wrap);
     gap: 1.2rem;
     margin-top: 1.6rem;
-    @include display-flex( wrap);
   }
 
   &__avatar-button {
@@ -91,9 +90,10 @@
 
 
   &__footer {
-   @include flex-center();
+   @include display-flex(row, wrap);
     gap: 1.2rem;
     margin-top: 2.4rem;
+    margin-bottom: 1rem;
   }
 }
 

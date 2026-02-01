@@ -16,3 +16,5 @@ export interface IFeature {
   description: string;
   features: IFeaturePanel[];
 }
+
+export type TimerType =  "phone" | "otp"

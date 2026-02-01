@@ -8,12 +8,11 @@ import {
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { catchError, EMPTY, finalize, tap } from 'rxjs';
+import { TranslatePipe } from '@ngx-translate/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AuthService } from '../../../services/auth.service';
 import { Routes } from '../../../models/tokens.model';
-import { LibraryHeader } from 'apps/tia-frontend/src/app/features/storybook/shared/library-header/library-header';
-import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 
 @Component({
   selector: 'app-forgot-password-email',
@@ -22,7 +21,7 @@ import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/share
     ButtonComponent,
     ReactiveFormsModule,
     RouterLink,
-    LibraryTitle,
+    TranslatePipe,
   ],
   templateUrl: './forgot-password-email.html',
   styleUrl: './forgot-password-email.scss',
@@ -32,8 +31,8 @@ export class ForgotPasswordEmail {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
-  public readonly title = 'Forgot Password';
-  public readonly subtitle = 'Enter your email to reset your password';
+  public readonly title = 'auth.forgot-password.title';
+  public readonly subtitle = 'auth.forgot-password.subtitle';
 
   public readonly isSubmitting = signal(false);
   public readonly submitError = signal<string | null>(null);

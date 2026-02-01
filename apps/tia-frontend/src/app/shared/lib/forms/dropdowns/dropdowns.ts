@@ -32,6 +32,8 @@ export class Dropdowns extends BaseInput implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private static currentMaxZIndex = 1000;
 
+  public readonly maxVisibleItems = input<number>(5);
+
   public override readonly config = input<SelectConfig>({});
   public readonly options = input.required<SelectOption[]>();
 
@@ -109,6 +111,11 @@ export class Dropdowns extends BaseInput implements OnInit {
     if (this.isDisabled()) return;
     this.isOpen.update((v) => !v);
   }
+
+  protected readonly dropdownMaxHeight = computed(() => {
+    const optionHeightRem = 4;
+    return `${this.maxVisibleItems() * optionHeightRem}rem`;
+  });
 
   protected selectOption(option: SelectOption): void {
     if (option.disabled) return;

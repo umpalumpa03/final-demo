@@ -1,0 +1,61 @@
+@let ui = activeCategoryUI(); @let category = activeCategory(); @let provider =
+activeProvider();
+
+<div class="paybill-main">
+  <div class="paybill-main__stage-wrapper">
+    @if (provider && provider.id) { @switch(currentStep()){ @case('DETAILS'){
+    <app-paybill-form
+      [provider]="provider"
+      [verifiedDetails]="verifiedDetails()"
+      [iconBgColor]="ui?.iconBgColor!"
+      [iconBgPath]="ui?.iconBgPath"
+      (verify)="onVerifyAccount($event)"
+      (pay)="onProceedToPayment($event)"
+    />
+    } @case('CONFIRM'){
+    <app-paybill-confirm-payment
+      [provider]="provider"
+      [summary]="paymentPayload()!"
+      [details]="verifiedDetails()!"
+      (confirm)="onFinalConfirm()"
+      [iconBgColor]="ui?.iconBgColor!"
+      [iconBgPath]="ui!.iconBgPath"
+      (cancelPayment)="onBackToDetails()"
+      [currentAccounts]="storeAccounts()"
+      [(selectedAccountId)]="selectedSenderAccountId"
+    />
+    } @case('OTP'){
+    <app-paybill-otp-verification
+      [provider]="provider"
+      [summary]="paymentPayload()!"
+      (verify)="onOtpVerified($event)"
+      (cancel)="onBackToDetails()"
+    />
+    } @case('SUCCESS') {
+    <app-paybill-success
+      [items]="successSummaryItems()"
+      [headerTitle]="provider.name!"
+      [iconBgColor]="ui?.iconBgColor!"
+      [iconBgPath]="ui?.iconBgPath!"
+      (payAnother)="onResetFlow()"
+      (goDashboard)="onGoDashboard()"
+    />
+    } } }@else if (category) { @defer (on immediate) {
+    <app-provider-list
+      [categoryName]="category.name"
+      [providers]="category.providers || []"
+      [iconBgColor]="ui?.iconBgColor"
+      [iconBgPath]="ui?.iconBgPath"
+      [subtitle]="category.description"
+      [isLoading]="isLoading()"
+      (selected)="selectProvider($event)"
+    />
+    } } @else {
+    <app-category-grid
+      (selected)="selectCategory($event)"
+      [categories]="formattedCategories()"
+      [isLoading]="isLoading()"
+    />
+    }
+  </div>
+</div>

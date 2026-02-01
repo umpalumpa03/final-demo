@@ -1,32 +1,69 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { VerifySignup } from './verify-signup';
 import { AuthService } from '../../../services/auth.service';
+import { ActivatedRoute, provideRouter } from '@angular/router';
+import { signal } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { of } from 'rxjs';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { IVerified } from '../../../models/otp-verification.models';
 
-describe('VerifySignup', () => {
+describe('VerifySignup Component', () => {
   let component: VerifySignup;
   let fixture: ComponentFixture<VerifySignup>;
-  let authMock: any;
+  let authServiceMock: {
+    verifyPhoneOtpCode: ReturnType<typeof vi.fn>;
+    resetPhoneOtp: ReturnType<typeof vi.fn>;
+    otpError: ReturnType<typeof signal>;
+  };
 
   beforeEach(async () => {
-    authMock = { verifyPhoneOtpCode: vi.fn().mockReturnValue({ subscribe: () => {} }) };
+    authServiceMock = {
+      verifyPhoneOtpCode: vi.fn().mockReturnValue(of({})),
+      resetPhoneOtp: vi.fn().mockReturnValue(of({})),
+      otpError: signal(null),
+    };
 
     await TestBed.configureTestingModule({
-      imports: [VerifySignup],
-      providers: [{ provide: AuthService, useValue: authMock }],
+      imports: [VerifySignup, TranslateModule.forRoot()],
+      providers: [
+        provideRouter([]),
+        { provide: AuthService, useValue: authServiceMock },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({}),
+            queryParams: of({}),
+            snapshot: { params: {}, queryParams: {} },
+          },
+        },
+        TranslateService,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(VerifySignup);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('submitOtp delegates to AuthService.verifyPhoneOtpCode', () => {
-    component.submitOtp('123456');
-    expect(authMock.verifyPhoneOtpCode).toHaveBeenCalledWith('123456');
+  it('should not verify phone OTP when isCalled is false', () => {
+    const event: IVerified = {
+      isCalled: false,
+      otp: '123456',
+    };
+
+    component.verifyRegisterOtp(event);
+
+    expect(authServiceMock.verifyPhoneOtpCode).not.toHaveBeenCalled();
+  });
+
+  it('should resend OTP when isCalled is true', () => {
+    component.resendOtp(true);
+
+    expect(authServiceMock.resetPhoneOtp).toHaveBeenCalled();
   });
 });

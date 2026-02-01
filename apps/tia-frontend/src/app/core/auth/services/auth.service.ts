@@ -17,9 +17,18 @@ import {
   ILogoutResponse,
   IMfaVerifyResponse,
   ISignUpResponse,
+  phoneOtpError,
   ResendOtpResponse,
 } from '../models/authResponse.model';
-import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  EMPTY,
+  finalize,
+  Observable,
+  tap,
+  throwError,
+} from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
@@ -27,7 +36,6 @@ import { TokenService } from './token.service';
 import { IRegistrationForm } from '../../../features/storybook/components/forms/models/contact-forms.model';
 import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { Routes } from '../models/tokens.model';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { UserInfoActions } from '../../../store/user-info/user-info.actions';
 
@@ -37,13 +45,14 @@ export class AuthService {
   private router = inject(Router);
   private tokenService = inject(TokenService);
   private store = inject(Store);
-  private destroyRef = inject(DestroyRef);
   private challengeId!: string;
   public isLoginLoading = signal<boolean>(false);
   public errorMessage = signal<boolean | null>(false);
   public successMessage = signal<boolean | null>(false);
   public infoMessage = signal<boolean | null>(false);
   private baseUrl = `${environment.apiUrl}/auth`;
+
+  public otpError = signal<OtpResponse | null>(null);
 
   public setChellangeId(id: string) {
     this.challengeId = id;
@@ -55,6 +64,7 @@ export class AuthService {
 
   public loginPostRequest(user: ILoginRequest): Observable<IloginResponse> {
     this.isLoginLoading.set(true);
+    this.tokenService.clearAllToken();
     return this.http.post<IloginResponse>(`${this.baseUrl}/login`, user).pipe(
       tap((res) => {
         if (res.status === 'mfa_required') {
@@ -64,6 +74,9 @@ export class AuthService {
 
         if (res.status === 'phone_verification_required') {
           this.tokenService.setVerifyToken(res.verification_token!);
+          if(res.reason === '') {
+            this.router
+          }
           this.router.navigate([Routes.PHONE]);
         }
       }),
@@ -99,23 +112,11 @@ export class AuthService {
       tap((res) => {
         if (res.success === true) {
           this.tokenService.clearAuthToken();
+          this.tokenService.clearUserInfo();
           this.router.navigate([Routes.SIGN_IN]);
         }
       }),
     );
-  }
-
-  private handleIdleLogout(): void {
-    this.logout()
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        catchError((err) => {
-          this.tokenService.clearAuthToken();
-          this.router.navigate([Routes.SIGN_IN]);
-          return throwError(() => err);
-        }),
-      )
-      .subscribe();
   }
 
   public verifyMfa(verify: IMfaVerifyRequest): Observable<IMfaVerifyResponse> {
@@ -124,6 +125,7 @@ export class AuthService {
     return this.http
       .post<IMfaVerifyResponse>(`${this.baseUrl}/mfa/verify`, verify)
       .pipe(
+        debounceTime(300),
         tap((res) => {
           if (res.access_token && res.refresh_token) {
             this.tokenService.setAccessToken(res.access_token);
@@ -133,8 +135,14 @@ export class AuthService {
           }
         }),
         catchError((err) => {
+          const errorData: phoneOtpError = err.error;
+          this.otpError.set(errorData);
+
+          // errorMessage-s ikeneeeb BEKAA?
           this.errorMessage.set(true);
-          return throwError(() => err);
+
+          setTimeout(() => this.otpError.set(null), 2000);
+          return EMPTY;
         }),
         finalize(() => this.isLoginLoading.set(false)),
       );
@@ -154,11 +162,27 @@ export class AuthService {
       Authorization: `Bearer ${token}`,
     });
 
-    return this.http.post<SendVerificationResponse>(
-      `${this.baseUrl}/phone`,
-      { phone: phoneNumber },
-      { headers },
-    );
+    return this.http
+      .post<SendVerificationResponse>(
+        `${this.baseUrl}/phone`,
+        { phone: phoneNumber },
+        { headers },
+      )
+      .pipe(
+        debounceTime(300),
+        tap((res) => {
+          this.setChellangeId(res.challengeId);
+          this.otpError.set(null);
+          this.router.navigate([Routes.OTP_SIGN_UP]);
+        }),
+        catchError((err) => {
+          const errorData: phoneOtpError = err.error;
+          this.otpError.set(errorData);
+
+          setTimeout(() => this.otpError.set(null), 2000);
+          return EMPTY;
+        }),
+      );
   }
 
   public verifyPhoneOtpCode(code: string): Observable<OtpResponse> {
@@ -176,13 +200,20 @@ export class AuthService {
         { headers },
       )
       .pipe(
-        tap((res) => {
-          this.tokenService.clearAllToken();
+        debounceTime(300),
+        tap(() => {
+          this.tokenService.clearAuthToken();
+          this.otpError.set(null);
           this.router.navigate([Routes.SIGN_IN]);
         }),
         catchError((err) => {
-          this.errorMessage.set(true);
-          this.isLoginLoading.set(false);
+          const errorData = err.error as OtpResponse;
+          this.otpError.set(errorData);
+
+          setTimeout(() => {
+            this.otpError.set(null);
+          }, 2000);
+
           return throwError(() => err);
         }),
         finalize(() => this.isLoginLoading.set(false)),
@@ -193,10 +224,13 @@ export class AuthService {
     email: string,
   ): Observable<ForgotPasswordResponse> {
     const payload: ForgotPasswordRequest = { email };
-    return this.http.post<ForgotPasswordResponse>(
-      `${this.baseUrl}/forgot-password`,
-      payload,
-    );
+    return this.http
+      .post<ForgotPasswordResponse>(`${this.baseUrl}/forgot-password`, payload)
+      .pipe(
+        tap((res) => {
+          this.setChellangeId(res.challengeId);
+        }),
+      );
   }
 
   public verifyForgotPasswordOtp(

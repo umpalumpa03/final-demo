@@ -5,9 +5,11 @@ import {
   signal,
   OnInit,
   DestroyRef,
-  HostListener,
+  ElementRef,
+  effect,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { fromEvent, filter, finalize, tap } from 'rxjs';
 import { NavigationBar } from '@tia/shared/lib/navigation/navigation-bar/navigation-bar';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -15,41 +17,73 @@ import { AuthService } from 'apps/tia-frontend/src/app/core/auth/services/auth.s
 import { NavigationItem } from '@tia/shared/lib/navigation/models/nav-bar.model';
 import { getSidebarItems } from '../config/routes.config';
 import { AlertsWithActions } from '@tia/shared/lib/alerts/components/alerts-with-actions/alerts-with-actions';
+import { BreakpointService } from '../../../../shared/services/breakpoints/breakpoint.service';
+import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [NavigationBar, ButtonComponent, TranslatePipe, AlertsWithActions],
+  imports: [
+    NavigationBar,
+    ButtonComponent,
+    TranslatePipe,
+    AlertsWithActions,
+    RouteLoader,
+  ],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Sidebar implements OnInit {
-  private translate = inject(TranslateService);
-  private authService = inject(AuthService);
-  private destroyRef = inject(DestroyRef);
+  private readonly translate = inject(TranslateService);
+  private readonly authService = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly elementRef = inject(ElementRef<HTMLElement>);
+  private readonly breakpointService = inject(BreakpointService);
 
-  private readonly TABLET_BREAKPOINT = 1024;
+  public readonly isMobile = this.breakpointService.isMobile;
+  public readonly isTablet = this.breakpointService.isTablet;
+  public readonly isCollapsed = signal(false);
+  public readonly isDropdownOpen = signal(false);
+  public readonly items = signal<NavigationItem[]>([]);
+  public readonly showLogoutConfirm = signal(false);
+  public readonly isLoggingOut = signal(false);
 
-  public isCollapsed = signal(false);
-  public items = signal<NavigationItem[]>([]);
-  public showLogoutConfirm = signal(false);
+  constructor() {
+    this.setupBreakpointEffect();
+    this.setupClickOutsideListener();
+  }
 
   ngOnInit(): void {
     this.updateItems();
-    this.checkScreenSize();
 
     this.translate.onLangChange
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.updateItems());
   }
 
-  @HostListener('window:resize')
-  onResize(): void {
-    this.checkScreenSize();
+  private setupBreakpointEffect(): void {
+    effect(() => {
+      if (this.isMobile()) {
+        this.isCollapsed.set(false);
+        this.isDropdownOpen.set(false);
+      } else {
+        this.isCollapsed.set(this.isTablet());
+      }
+    });
   }
 
-  private checkScreenSize(): void {
-    this.isCollapsed.set(window.innerWidth <= this.TABLET_BREAKPOINT);
+  private setupClickOutsideListener(): void {
+    fromEvent<MouseEvent>(document, 'click')
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        filter(() => this.isMobile() && this.isDropdownOpen()),
+        filter(
+          (event) =>
+            !this.elementRef.nativeElement.contains(event.target as Node),
+        ),
+        tap(() => this.isDropdownOpen.set(false)),
+      )
+      .subscribe();
   }
 
   private updateItems(): void {
@@ -60,8 +94,17 @@ export class Sidebar implements OnInit {
     this.isCollapsed.update((v) => !v);
   }
 
+  public toggleDropdown(): void {
+    this.isDropdownOpen.update((v) => !v);
+  }
+
+  public closeDropdown(): void {
+    this.isDropdownOpen.set(false);
+  }
+
   public onLogout(): void {
     this.showLogoutConfirm.set(true);
+    this.closeDropdown();
   }
 
   public cancelLogout(): void {
@@ -69,7 +112,16 @@ export class Sidebar implements OnInit {
   }
 
   public confirmLogout(): void {
-    this.showLogoutConfirm.set(false);
-    this.authService.logout().subscribe();
+    this.isLoggingOut.set(true);
+
+    this.authService
+      .logout()
+      .pipe(
+        finalize(() => {
+          this.isLoggingOut.set(false);
+          this.showLogoutConfirm.set(false);
+        }),
+      )
+      .subscribe();
   }
 }

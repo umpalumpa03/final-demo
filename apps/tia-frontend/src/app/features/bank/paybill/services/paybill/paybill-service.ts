@@ -7,7 +7,7 @@ import {
   PaybillProvider,
   ProceedPaymentPayload,
   ProceedPaymentResponse,
-} from '../../models/paybill.model';
+} from '../../components/paybill-main/shared/models/paybill.model';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environments/environment';
 
@@ -48,7 +48,12 @@ export class PaybillService {
     return this.http.post<ProceedPaymentResponse>(`${this.baseUrl}/pay`, data);
   }
 
-  public verifyPayment(payload: ConfirmPaymentPayload): Observable<unknown> {
-    return this.http.post<unknown>(`${this.baseUrl}/verify`, payload);
+  public verifyPayment(
+    payload: ConfirmPaymentPayload,
+  ): Observable<{ success: boolean; message?: string }> {
+    return this.http.post<{ success: boolean; message?: string }>(
+      `${this.baseUrl}/verify`,
+      payload,
+    );
   }
 }

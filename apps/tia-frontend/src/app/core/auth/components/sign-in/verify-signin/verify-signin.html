@@ -1,7 +1,9 @@
 <app-otp-verification
-  [submitMethod]="submitOtp"
-  [isLoading]="isLoading()"
-  [title]="title"
-  [subText]="subText"
-  [submitBtnName]="submitBtnName"
+  type="sign-in"
+  (isVerifyCalled)="verifyOtp($event)"
+  (isResendCalled)="resendOtp($event)"
+  timerType="otp"
+  [timeLimit]="1"
+  [errorMessage]="otpError()?.message ?? null"
+  [remainingAttempts]="otpError()?.remainingAttempts ?? null"
 ></app-otp-verification>

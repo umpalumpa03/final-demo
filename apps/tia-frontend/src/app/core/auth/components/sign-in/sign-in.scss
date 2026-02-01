@@ -2,9 +2,7 @@
 @use '../../../../shared/styles/mixins' as *;
 
 .sign-in {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  @include display-flex(column);
   max-height: 100vh;
 
   &__header {
@@ -16,7 +14,7 @@
 
     &__title {
       @include font-inter(700, 3.6rem, 4rem);
-      margin-bottom: 2.4rem;
+      margin-bottom: 0.8rem;
 
       @media (min-width: 769px) and (max-width: 1024px) {
         @include font-inter(700, 3.2rem, 3.6rem);
@@ -30,8 +28,9 @@
     }
 
     &__subtitle {
+      @include font-inter(400, 1.6rem, 2.4rem);
+      color: $gray-700;
       font-size: 1.6rem;
-      opacity: 0.9;
       margin-bottom: 6rem;
 
       @media (min-width: 769px) and (max-width: 1024px) {
@@ -51,10 +50,12 @@
     @include display-flex(column);
     gap: 2.6rem;
     margin-bottom: 2.6rem;
+    height: 100%;
   }
 
   &__switch,
   &__link {
+    color: $gray-700;
     font-size: 1.4rem;
   }
 
@@ -66,5 +67,9 @@
   &__switch,
   &__loader {
     @include flex-center();
+  }
+
+  &__loader {
+    height: 65%;
   }
 }

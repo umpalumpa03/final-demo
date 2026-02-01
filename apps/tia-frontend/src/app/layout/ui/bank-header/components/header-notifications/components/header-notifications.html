@@ -56,20 +56,19 @@
     }
   </header>
 
-  @if(isEmpty()) {
-  <app-error-states
-    variant="not-found"
-    [header]="'header-notifications.errorMessage' | translate"
-    [message]="'header-notifications.errorDescription' | translate "
-    width="100%"
-    maxWidth="100%"
-    height="90%"
-    [border]="false"
-    [showButton]="false"
-  />
-  }@else {
   <main class="header-notifications__main">
-    @if (!isLoading()) {
+    @if(isEmpty()) {
+    <app-error-states
+      variant="not-found"
+      [header]="'header-notifications.errorMessage' | translate"
+      [message]="'header-notifications.errorDescription' | translate "
+      width="100%"
+      maxWidth="100%"
+      height="95%"
+      [border]="false"
+      [showButton]="false"
+      [isCentered]="false"
+    />}@else if (!isLoading()) {
     <header class="header-notifications__main__header">
       <label class="header-notifications__main__header__select">
         <lib-checkboxes
@@ -106,7 +105,6 @@
         </button>
       </div>
     </header>
-    } @if(!isLoading()) {
     <app-scroll-area
       (scrollBottom)="onScrollBottom()"
       [hideBorder]="true"
@@ -161,6 +159,5 @@
     </app-scroll-area>
     }
   </main>
-  }
 </div>
 }

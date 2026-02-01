@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { LoansStore } from './loans.store';
 import { LoansService } from '../shared/services/loans.service';
-import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Subject, of, throwError } from 'rxjs';
 import { Action } from '@ngrx/store';
@@ -13,10 +13,10 @@ import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.
 
 describe('LoansStore', () => {
   let store: InstanceType<typeof LoansStore>;
-  let loansServiceMock: any;
+  let svc: any;
   let actions$: Subject<Action>;
 
-  const mockLoan = {
+  const loan1 = {
     id: '1',
     accountId: 'acc1',
     status: 1,
@@ -25,8 +25,7 @@ describe('LoansStore', () => {
     loanAmount: 1000,
     accountName: '',
   };
-
-  const mockLoan2 = {
+  const loan2 = {
     id: '2',
     accountId: 'acc2',
     status: 2,
@@ -35,8 +34,7 @@ describe('LoansStore', () => {
     loanAmount: 5000,
     accountName: '',
   };
-
-  const mockLoan3 = {
+  const loan3 = {
     id: '3',
     accountId: 'acc3',
     status: 3,
@@ -46,11 +44,36 @@ describe('LoansStore', () => {
     accountName: '',
   };
 
+  const validPayload: IInitiatePrepaymentRequest = {
+    loanId: '1',
+    loanPrepaymentOption: 'full',
+    paymentAccountId: 'acc1',
+  };
+
+  function setupTestBed(
+    accountsValue: any = [
+      { id: 'acc1', friendlyName: 'Acc1' },
+      { id: 'acc2', name: 'Account 2' },
+    ],
+  ) {
+    TestBed.configureTestingModule({
+      providers: [
+        LoansStore,
+        { provide: LoansService, useValue: svc },
+        provideMockStore({
+          selectors: [{ selector: selectAccounts, value: accountsValue }],
+        }),
+        provideMockActions(() => actions$),
+      ],
+    });
+    store = TestBed.inject(LoansStore);
+  }
+
   beforeEach(() => {
-    loansServiceMock = {
-      getAllLoans: vi.fn().mockReturnValue(of([mockLoan])),
-      getLoanById: vi.fn().mockReturnValue(of(mockLoan)),
-      updateFriendlyName: vi.fn().mockReturnValue(of(mockLoan)),
+    svc = {
+      getAllLoans: vi.fn().mockReturnValue(of([loan1])),
+      getLoanById: vi.fn().mockReturnValue(of(loan1)),
+      updateFriendlyName: vi.fn().mockReturnValue(of(loan1)),
       getLoanMonths: vi.fn().mockReturnValue(of([12, 24])),
       getPurposes: vi
         .fn()
@@ -78,29 +101,8 @@ describe('LoansStore', () => {
         .mockReturnValue(of({ verify: { challengeId: 'chal-123' } })),
       verifyPrepayment: vi.fn().mockReturnValue(of({})),
     };
-
     actions$ = new Subject<Action>();
-
-    TestBed.configureTestingModule({
-      providers: [
-        LoansStore,
-        { provide: LoansService, useValue: loansServiceMock },
-        provideMockStore({
-          selectors: [
-            {
-              selector: selectAccounts,
-              value: [
-                { id: 'acc1', friendlyName: 'Acc1' },
-                { id: 'acc2', name: 'Account 2' },
-              ],
-            },
-          ],
-        }),
-        provideMockActions(() => actions$),
-      ],
-    });
-
-    store = TestBed.inject(LoansStore);
+    setupTestBed();
     vi.useFakeTimers();
   });
 
@@ -109,312 +111,258 @@ describe('LoansStore', () => {
     vi.useRealTimers();
   });
 
-  describe('Computed Signals', () => {
-    it('should return all loans when filter status is null', () => {
-      store.loadLoans();
-      TestBed.tick();
-      store.setFilter(null);
-      expect(store.filteredLoans().length).toBe(1);
+  it('should return all loans when filter is null', () => {
+    store.loadLoans();
+    TestBed.tick();
+    store.setFilter(null);
+    expect(store.filteredLoans().length).toBe(1);
+  });
+
+  it('should filter loans by status', () => {
+    svc.getAllLoans.mockReturnValue(of([loan1, loan2, loan3]));
+    store.loadLoans();
+    TestBed.tick();
+    store.setFilter(2);
+    expect(store.filteredLoans().length).toBe(1);
+    expect(store.filteredLoans()[0].status).toBe(2);
+  });
+
+  it('should use friendlyName over name for matched account', () => {
+    store.loadLoans();
+    TestBed.tick();
+    expect(store.loansWithAccountInfo()[0].accountName).toBe('Acc1');
+  });
+
+  it('should map purposes to label/value options', () => {
+    store.loadPurposes();
+    TestBed.tick();
+    expect(store.purposeOptions()).toEqual([
+      { label: 'Purpose 1', value: 'p1' },
+    ]);
+  });
+
+  it('should call getAllLoans with status param', () => {
+    store.loadLoans(1);
+    TestBed.tick();
+    expect(svc.getAllLoans).toHaveBeenCalledWith(1);
+  });
+
+  it('should load counts and compute dashboard totals', () => {
+    svc.getAllLoans.mockReturnValue(of([loan1, loan2, loan3]));
+    store.loadCounts();
+    TestBed.tick();
+    expect(store.loanCounts()).toEqual({
+      all: 3,
+      approved: 1,
+      pending: 1,
+      declined: 1,
     });
+  });
 
-    it('should filter loans by status', () => {
-      loansServiceMock.getAllLoans.mockReturnValue(
-        of([mockLoan, mockLoan2, mockLoan3]),
-      );
-      store.loadLoans();
-      TestBed.tick();
+  it('should load loan details by id', () => {
+    store.loadLoanDetails('1');
+    TestBed.tick();
+    expect(store.selectedLoanDetails()).toEqual(loan1);
+    expect(store.detailsLoading()).toBe(false);
+  });
 
-      store.setFilter(2);
-      expect(store.filteredLoans().length).toBe(1);
-      expect(store.filteredLoans()[0].status).toBe(2);
+  it('should set error on loadMonths failure', () => {
+    svc.getLoanMonths.mockReturnValue(
+      throwError(() => new Error('Months fail')),
+    );
+    store.loadMonths();
+    TestBed.tick();
+    expect(store.error()).toBe('Months fail');
+  });
+
+  it('should set error on loadPurposes failure', () => {
+    svc.getPurposes.mockReturnValue(
+      throwError(() => new Error('Purpose fail')),
+    );
+    store.loadPurposes();
+    TestBed.tick();
+    expect(store.error()).toBe('Purpose fail');
+  });
+
+  it('should set error on loadPrepaymentOptions failure', () => {
+    svc.getPrepaymentOptions.mockReturnValue(
+      throwError(() => new Error('Option Error')),
+    );
+    store.loadPrepaymentOptions();
+    TestBed.tick();
+    expect(store.error()).toBe('Option Error');
+  });
+
+  it('should rename loan and update local state', () => {
+    svc.getAllLoans.mockReturnValue(of([loan1, loan2]));
+    store.loadLoans();
+    TestBed.tick();
+    store.renameLoan({ id: '1', name: 'New Name' });
+    TestBed.tick();
+    expect(store.loans().find((l) => l.id === '1')?.friendlyName).toBe(
+      'New Name',
+    );
+  });
+
+  it('should set error on renameLoan failure', () => {
+    svc.getAllLoans.mockReturnValue(of([loan1]));
+    store.loadLoans();
+    TestBed.tick();
+    svc.updateFriendlyName.mockReturnValue(
+      throwError(() => new Error('Rename fail')),
+    );
+    store.renameLoan({ id: '1', name: 'X' });
+    TestBed.tick();
+    expect(store.error()).toBe('Rename fail');
+  });
+
+  it('should calculate full prepayment', () => {
+    svc.calculateFullPrepayment.mockReturnValue(
+      of({ items: [{ text: 'Info' }] }),
+    );
+    store.calculatePrepayment({ payload: { loanId: '1', type: 'full' } });
+    TestBed.tick();
+    expect(store.calculationResult()).toEqual({
+      displayedInfo: [{ text: 'Info' }],
     });
+    expect(store.actionLoading()).toBe(false);
+  });
 
-    it('should return null alert if no message present', () => {
-      store.hideAlert();
-      expect(store.alert()).toBeNull();
+  it('should calculate partial prepayment', () => {
+    const partial = { displayedInfo: [{ text: 'Partial' }] };
+    svc.calculatePartialPrepayment.mockReturnValue(of(partial));
+    store.calculatePrepayment({
+      payload: {
+        loanId: '1',
+        type: 'partial',
+        amount: 500,
+        loanPartialPaymentType: 'reduce',
+      },
     });
+    TestBed.tick();
+    expect(svc.calculatePartialPrepayment).toHaveBeenCalledWith(
+      '1',
+      500,
+      'reduce',
+    );
+    expect(store.calculationResult()).toEqual(partial);
+  });
 
-    it('should return null alert if no type present', () => {
-      store.showAlert('msg', null as any);
-      expect(store.alert()).toBeNull();
-    });
+  it('should set error on calculatePrepayment failure', () => {
+    svc.calculateFullPrepayment.mockReturnValue(
+      throwError(() => new Error('Calc fail')),
+    );
+    store.calculatePrepayment({ payload: { loanId: '1', type: 'full' } });
+    TestBed.tick();
+    expect(store.error()).toBe('Calc fail');
+    expect(store.calculationResult()).toBeNull();
+  });
 
-    it('should return alert when both message and type are present', () => {
-      store.showAlert('Test message', 'success');
-      const alert = store.alert();
-      expect(alert).not.toBeNull();
-      expect(alert?.message).toBe('Test message');
-      expect(alert?.type).toBe('success');
-    });
+  it('should clear calculation result and challengeId', () => {
+    store.showAlert('x', 'success');
+    store.calculatePrepayment({ payload: { loanId: '1', type: 'full' } });
+    TestBed.tick();
+    store.clearCalculationResult();
+    expect(store.calculationResult()).toBeNull();
+    expect(store.activeChallengeId()).toBeNull();
+  });
 
-    it('should handle missing accounts in loansWithAccountInfo', () => {
-      TestBed.resetTestingModule();
-      TestBed.configureTestingModule({
-        providers: [
-          LoansStore,
-          { provide: LoansService, useValue: loansServiceMock },
-          provideMockStore({
-            selectors: [{ selector: selectAccounts, value: null }],
+  it('should hide alert manually', () => {
+    store.showAlert('test', 'error');
+    expect(store.alertMessage()).toBe('test');
+    store.hideAlert();
+    expect(store.alertMessage()).toBeNull();
+    expect(store.alertType()).toBeNull();
+  });
+
+  it('should initiate prepayment and set challengeId', () => {
+    store.initiatePrepayment({ payload: validPayload });
+    TestBed.tick();
+    expect(store.activeChallengeId()).toBe('chal-123');
+    expect(store.alertMessage()).toBe(
+      'OTP sent to your registered mobile number',
+    );
+    expect(store.alertType()).toBe('success');
+    expect(store.actionLoading()).toBe(false);
+  });
+
+  it('should auto-hide alert after 3 seconds', () => {
+    store.initiatePrepayment({ payload: validPayload });
+    TestBed.tick();
+    expect(store.alertMessage()).not.toBeNull();
+    vi.advanceTimersByTime(3000);
+    expect(store.alertMessage()).toBeNull();
+    expect(store.alertType()).toBeNull();
+  });
+
+  it('should set error when no challengeId returned', () => {
+    svc.initiatePrepayment.mockReturnValue(of({ verify: {} }));
+    store.initiatePrepayment({ payload: validPayload });
+    TestBed.tick();
+    expect(store.error()).toBe('No challenge ID returned');
+    expect(store.actionLoading()).toBe(false);
+  });
+
+  it('should show insufficient funds error on 400', () => {
+    svc.initiatePrepayment.mockReturnValue(
+      throwError(
+        () =>
+          new HttpErrorResponse({
+            status: 400,
+            error: { message: 'Insufficient funds in payment account' },
           }),
-          provideMockActions(() => actions$),
-        ],
-      });
-      store = TestBed.inject(LoansStore);
-
-      store.loadLoans();
-      TestBed.tick();
-
-      expect(store.loansWithAccountInfo()[0].accountName).toBe(
-        'Loading Account...',
-      );
-    });
-
-    it('should use friendlyName over name when available', () => {
-      store.loadLoans();
-      TestBed.tick();
-
-      const loanWithAccount = store.loansWithAccountInfo()[0];
-      expect(loanWithAccount.accountName).toBe('Acc1');
-    });
-
-    it('should return loanCounts from dashboardCounts', () => {
-      loansServiceMock.getAllLoans.mockReturnValue(
-        of([mockLoan, mockLoan2, mockLoan3]),
-      );
-      store.loadCounts();
-      TestBed.tick();
-
-      const counts = store.loanCounts();
-      expect(counts.all).toBe(3);
-      expect(counts.pending).toBe(1);
-      expect(counts.approved).toBe(1);
-    });
-
-    it('should map loan months to options', () => {
-      store.loadMonths();
-      TestBed.tick();
-
-      const options = store.loanMonthsOptions();
-      expect(options).toEqual([
-        { label: '12 Months', value: 12 },
-        { label: '24 Months', value: 24 },
-      ]);
-    });
-
-    it('should filter active prepayment options', () => {
-      store.loadPrepaymentOptions();
-      TestBed.tick();
-
-      const options = store.prepaymentTypeOptions();
-      expect(options.length).toBe(1);
-      expect(options[0].value).toBe('opt1');
-    });
+      ),
+    );
+    store.initiatePrepayment({ payload: validPayload });
+    TestBed.tick();
+    expect(store.alertMessage()).toBe('Insufficient funds in payment account');
+    expect(store.alertType()).toBe('error');
+    vi.advanceTimersByTime(3000);
+    expect(store.alertMessage()).toBeNull();
   });
 
-  describe('Loading Methods', () => {
-    it('should load loans with status parameter', () => {
-      store.loadLoans(1);
-      TestBed.tick();
-
-      expect(loansServiceMock.getAllLoans).toHaveBeenCalledWith(1);
-    });
-
-    it('should handle loadMonths error', () => {
-      loansServiceMock.getLoanMonths.mockReturnValue(
-        throwError(() => new Error('Month Error')),
-      );
-      store.loadMonths();
-      TestBed.tick();
-      expect(store.error()).toBe('Month Error');
-    });
-
-    it('should handle loadPurposes error', () => {
-      loansServiceMock.getPurposes.mockReturnValue(
-        throwError(() => new Error('Purpose Error')),
-      );
-      store.loadPurposes();
-      TestBed.tick();
-      expect(store.error()).toBe('Purpose Error');
-    });
-
-    it('should handle loadPrepaymentOptions error', () => {
-      loansServiceMock.getPrepaymentOptions.mockReturnValue(
-        throwError(() => new Error('Option Error')),
-      );
-      store.loadPrepaymentOptions();
-      TestBed.tick();
-      expect(store.error()).toBe('Option Error');
-    });
-
-    it('should handle loadCounts error', () => {
-      loansServiceMock.getAllLoans.mockReturnValue(
-        throwError(() => new Error('Count Error')),
-      );
-      store.loadCounts();
-      TestBed.tick();
-      expect(store.dashboardCounts().all).toBe(0);
-    });
-
-    it('should handle loadLoanDetails error', () => {
-      loansServiceMock.getLoanById.mockReturnValue(
-        throwError(() => new Error('Detail Error')),
-      );
-      store.loadLoanDetails('1');
-      TestBed.tick();
-      expect(store.error()).toBe('Detail Error');
-      expect(store.detailsLoading()).toBe(false);
-    });
-
-    it('should clear loan details manually', () => {
-      store.loadLoanDetails('1');
-      TestBed.tick();
-
-      store.clearLoanDetails();
-      expect(store.selectedLoanDetails()).toBeNull();
-      expect(store.detailsLoading()).toBe(false);
-    });
+  it('should show backend message for non-400 errors', () => {
+    svc.initiatePrepayment.mockReturnValue(
+      throwError(
+        () =>
+          new HttpErrorResponse({
+            status: 500,
+            error: { message: 'Server error' },
+          }),
+      ),
+    );
+    store.initiatePrepayment({ payload: validPayload });
+    TestBed.tick();
+    expect(store.alertMessage()).toBe('Server error');
+    expect(store.alertType()).toBe('error');
   });
 
-  describe('Action Methods', () => {
-    it('should handle renameLoan error', () => {
-      loansServiceMock.updateFriendlyName.mockReturnValue(
-        throwError(() => new Error('Rename Error')),
-      );
-      store.renameLoan({ id: '1', name: 'New' });
-      TestBed.tick();
-      expect(store.error()).toBe('Rename Error');
-    });
-
-    it('should rename loan successfully', () => {
-      loansServiceMock.getAllLoans.mockReturnValue(of([mockLoan, mockLoan2]));
-      store.loadLoans();
-      TestBed.tick();
-
-      store.renameLoan({ id: '1', name: 'Updated Name' });
-      TestBed.tick();
-
-      const loans = store.loans();
-      const updatedLoan = loans.find((l) => l.id === '1');
-      expect(updatedLoan?.friendlyName).toBe('Updated Name');
-    });
-
-    it('should calculate full prepayment successfully', () => {
-      const mockResult = { items: [{ text: 'Test' }] };
-      loansServiceMock.calculateFullPrepayment.mockReturnValue(of(mockResult));
-
-      store.calculatePrepayment({ payload: { loanId: '1', type: 'full' } });
-      TestBed.tick();
-
-      expect(store.calculationResult()).toEqual({
-        displayedInfo: mockResult.items,
-      });
-      expect(store.actionLoading()).toBe(false);
-    });
-
-    it('should clear calculation result', () => {
-      store.calculatePrepayment({ payload: { loanId: '1', type: 'full' } });
-      TestBed.tick();
-
-      store.clearCalculationResult();
-      expect(store.calculationResult()).toBeNull();
-      expect(store.activeChallengeId()).toBeNull();
-    });
-
-    it('should handle verifyPrepayment error', () => {
-      loansServiceMock.verifyPrepayment.mockReturnValue(
-        throwError(() => new Error('Verify Error')),
-      );
-      store.verifyPrepayment({ payload: { challengeId: 'c', code: '1' } });
-      TestBed.tick();
-      expect(store.error()).toBe('Verify Error');
-      expect(store.actionLoading()).toBe(false);
-    });
+  it('should verify prepayment and reload loans', () => {
+    svc.getAllLoans.mockReturnValue(of([loan1]));
+    store.verifyPrepayment({ payload: { challengeId: 'c', code: '123' } });
+    TestBed.tick();
+    expect(store.activeChallengeId()).toBeNull();
+    expect(store.calculationResult()).toBeNull();
+    expect(store.actionLoading()).toBe(false);
+    expect(svc.getAllLoans).toHaveBeenCalled();
   });
 
-  describe('Initiate Prepayment', () => {
-    const validPayload: IInitiatePrepaymentRequest = {
-      loanId: '1',
-      loanPrepaymentOption: 'full',
-      paymentAccountId: 'acc1',
-    };
+  it('should set error on verifyPrepayment failure', () => {
+    svc.verifyPrepayment.mockReturnValue(
+      throwError(() => new Error('Verify Error')),
+    );
+    store.verifyPrepayment({ payload: { challengeId: 'c', code: '1' } });
+    TestBed.tick();
+    expect(store.error()).toBe('Verify Error');
+    expect(store.actionLoading()).toBe(false);
+  });
 
-    it('should initiate prepayment successfully', () => {
-      store.initiatePrepayment({ payload: validPayload });
-      TestBed.tick();
-
-      expect(store.activeChallengeId()).toBe('chal-123');
-      expect(store.alertMessage()).toBe(
-        'OTP sent to your registered mobile number',
-      );
-      expect(store.alertType()).toBe('success');
-      expect(store.actionLoading()).toBe(false);
-    });
-
-    it('should auto-hide success alert after 3 seconds', () => {
-      store.initiatePrepayment({ payload: validPayload });
-      TestBed.tick();
-
-      expect(store.alertMessage()).toBe(
-        'OTP sent to your registered mobile number',
-      );
-
-      vi.advanceTimersByTime(3000);
-      expect(store.alertMessage()).toBeNull();
-      expect(store.alertType()).toBeNull();
-    });
-
-    it('should handle insufficient funds error (400)', () => {
-      const errorResponse = new HttpErrorResponse({
-        status: 400,
-        error: { message: 'Insufficient funds in payment account' },
-      });
-      loansServiceMock.initiatePrepayment.mockReturnValue(
-        throwError(() => errorResponse),
-      );
-
-      store.initiatePrepayment({ payload: validPayload });
-      TestBed.tick();
-
-      expect(store.alertMessage()).toBe(
-        'Insufficient funds in payment account',
-      );
-      expect(store.alertType()).toBe('error');
-
-      vi.advanceTimersByTime(3000);
-      expect(store.alertMessage()).toBeNull();
-    });
-
-    it('should handle generic 500 error', () => {
-      const errorResponse = new HttpErrorResponse({
-        status: 500,
-        statusText: 'Server Error',
-        error: { message: 'Http failure' },
-      });
-      loansServiceMock.initiatePrepayment.mockReturnValue(
-        throwError(() => errorResponse),
-      );
-
-      store.initiatePrepayment({ payload: validPayload });
-      TestBed.tick();
-
-      expect(store.alertMessage()).toBe('Http failure');
-      expect(store.alertType()).toBe('error');
-    });
-
-    it('should handle 400 error with different message', () => {
-      const errorResponse = new HttpErrorResponse({
-        status: 400,
-        error: { message: 'Invalid payment account' },
-      });
-      loansServiceMock.initiatePrepayment.mockReturnValue(
-        throwError(() => errorResponse),
-      );
-
-      store.initiatePrepayment({ payload: validPayload });
-      TestBed.tick();
-
-      expect(store.alertMessage()).toBe('Invalid payment account');
-      expect(store.alertType()).toBe('error');
-    });
+  it('should reload loans on LoansCreateActions.requestLoanSuccess', () => {
+    svc.getAllLoans.mockReturnValue(of([loan1]));
+    actions$.next(
+      LoansCreateActions.requestLoanSuccess({ loan: loan1 as any }),
+    );
+    TestBed.tick();
+    expect(svc.getAllLoans).toHaveBeenCalled();
   });
 });
