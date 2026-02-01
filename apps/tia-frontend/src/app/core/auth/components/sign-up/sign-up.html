@@ -1,17 +1,28 @@
 <section class="sign-up">
-    @if(!loadingState()) {
-        <app-registration-form (submitRegistrationForm)="onSignUp($event)"></app-registration-form>
-        
-        <p class="sign-up__footer">
-            Already have an account? 
-            <span class="sign-up__link" [routerLink]="['/auth/sign-in']">Sign in</span>
-        </p>
-        
-        @if (errorMessage()) {
-           <app-alert-types-with-icons alertType="error" [alertMessage]="errorMessage()"> </app-alert-types-with-icons> 
-        }
-        
-    } @else {
-            <app-spinner size='4rem'></app-spinner>
-    }
+  @if(!loadingState()) {
+  <header class="sign-up__header">
+    <h1 class="sign-up__header__title">
+      {{ 'auth.sign-up.title' | translate}}
+    </h1>
+    <span class="sign-up__header__subtitle"
+      >{{'auth.sign-up.subtitle' | translate}}</span
+    >
+  </header>
+  <app-registration-form
+    (submitRegistrationForm)="onSignUp($event)"
+  ></app-registration-form>
+
+  <p class="sign-up__footer">
+    {{'auth.sign-up.haveAccount' | translate}}
+    <span class="sign-up__link" [routerLink]="['/auth/sign-in']">
+      {{'auth.sign-up.signIn' | translate}}
+    </span>
+  </p>
+
+  @if (errorMessage()) {
+  <app-alert-types-with-icons alertType="error" [alertMessage]="errorMessage()">
+  </app-alert-types-with-icons>
+  } } @else {
+  <app-spinner size="4rem"></app-spinner>
+  }
 </section>

@@ -16,11 +16,12 @@ import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { AuthService } from '../../services/auth.service';
 import { Routes } from '../../models/tokens.model';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
+import { TranslatePipe } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-sign-up',
-  imports: [RouterLink, RegistrationForm, Spinner, AlertTypesWithIcons],
+  imports: [RouterLink, RegistrationForm, Spinner, AlertTypesWithIcons,TranslatePipe],
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.scss',
   providers: [TokenService],

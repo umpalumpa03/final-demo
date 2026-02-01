@@ -241,8 +241,9 @@ describe('AuthService', () => {
 
       const promise = new Promise<void>((resolve) => {
         service.verifyMfa(verifyData).subscribe({
-          error: () => {
+          complete: () => {
             expect(service.errorMessage()).toBe(true);
+            expect(service.otpError()).not.toBeNull();
             resolve();
           },
         });
@@ -338,7 +339,7 @@ describe('AuthService', () => {
       const promise = new Promise<void>((resolve) => {
         service.verifyPhoneOtpCode(code).subscribe({
           error: () => {
-            expect(service.errorMessage()).toBe(true);
+            expect(service.otpError()).not.toBeNull();
             resolve();
           },
         });

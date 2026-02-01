@@ -26,25 +26,47 @@ import {
   PASSWORD_RULES,
 } from '../models/forms.config';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { map, startWith } from 'rxjs';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 
 @Component({
   selector: 'app-registration-form',
-  imports: [TextInput, ReactiveFormsModule, ButtonComponent],
+  imports: [TextInput, ReactiveFormsModule, ButtonComponent, TranslatePipe],
   templateUrl: './registration-form.html',
   styleUrl: './registration-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationForm {
+  private translate = inject(TranslateService)
   public countries = COUNTRY_OPTIONS;
-  public inputConfig = REGISTATION_FORM;
   public readonly isRegistration = input<boolean>(true);
-  public readonly buttonText = input<string>('Continue');
+  public readonly buttonText = input<string>('auth.sign-up.buttonText');
   public readonly passwordTouched = signal<boolean>(false);
   public readonly passwordInteracted = signal<boolean>(false);
 
   private readonly fb = inject(FormBuilder);
   public readonly submitRegistrationForm = output<IRegistrationForm>();
   private readonly ALL_PASSWORD_RULES = PASSWORD_RULES;
+
+  public inputConfig = toSignal(
+    this.translate.onLangChange.pipe(
+      startWith({
+        lang: this.translate.getCurrentLang(),
+        translation: null,
+      }),
+      map(() => {
+        return translateConfig(REGISTATION_FORM, (key) =>
+          this.translate.instant(key),
+        );
+      }),
+    ),
+    {
+      initialValue: translateConfig(REGISTATION_FORM, (key) =>
+        this.translate.instant(key),
+      ),
+    },
+  );
 
   constructor() {
     effect(() => {
@@ -150,20 +172,20 @@ export class RegistrationForm {
   public readonly passwordStrength = computed<PasswordStrength>(() => {
     const rules = this.passwordRules();
     if (!rules) {
-      return 'Weak';
+      return 'auth.sign-up.weak';
     }
 
     const passed = Object.values(rules).filter(Boolean).length;
 
     if (passed <= 1) {
-      return 'Weak';
+      return 'auth.sign-up.weak';
     } else if (passed <= 3) {
-      return 'Fair';
+      return 'auth.sign-up.fair';
     } else if (passed <= 4) {
-      return 'Good';
+      return 'auth.sign-up.good';
     }
 
-    return 'Strong';
+    return 'auth.sign-up.strong';
   });
 
   public readonly strengthPercent = computed<number>(() => {
@@ -195,7 +217,7 @@ export class RegistrationForm {
   });
 
   public readonly passwordConfig = computed(() => {
-    const base = this.inputConfig.password;
+    const base = this.inputConfig().password;
     const error =
       this.passwordInteracted() && this.firstFailedRule()
         ? this.firstFailedRule()
@@ -218,7 +240,10 @@ export class RegistrationForm {
     }
 
     if (this.passwordControl?.value !== confirm.value) {
-      const errs = { ...(confirm.errors || {}), passwordMismatch: true } as Record<string, any>;
+      const errs = {
+        ...(confirm.errors || {}),
+        passwordMismatch: true,
+      } as Record<string, any>;
       confirm.setErrors(errs);
     } else if (confirm.errors && confirm.errors['passwordMismatch']) {
       const next = { ...(confirm.errors || {}) } as Record<string, any>;

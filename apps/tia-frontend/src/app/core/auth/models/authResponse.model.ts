@@ -48,6 +48,13 @@ export interface SendVerificationResponse {
   method: string;
 }
 
+export interface phoneOtpError {
+  message: string;
+  error?: string; 
+  statusCode?: number; 
+  remainingAttempts?: number;
+}
+
 export interface OtpResponse {
   message: string;
 }

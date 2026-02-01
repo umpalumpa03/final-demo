@@ -13,7 +13,7 @@
     @media (max-width: 768px) {
       @include display-flex(column);
       height: auto;
-      min-height: 100vh;
+      min-height: 100%;
     }
 
     &__content {
