@@ -51,7 +51,7 @@ export class PaybillOtpVerification {
         'Unknown Service',
     },
     { label: 'Account:', value: this.summary()!.accountNumber },
-    { label: 'Amount:', value: `$${this.summary()!.amount}`, isTotal: true },
+    { label: 'Amount:', value: `GEL${this.summary()!.amount}`, isTotal: true },
   ]);
 
   public onOtpComplete(code: string): void {

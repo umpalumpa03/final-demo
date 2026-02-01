@@ -5,6 +5,7 @@ import { catchError, map, mergeMap, of, tap, withLatestFrom } from 'rxjs';
 import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillActions } from './paybill.actions';
 import {
+  selectPaymentPayload,
   selectSelectedCategoryId,
   selectSelectedProviderId,
 } from './paybill.selectors';
@@ -100,13 +101,17 @@ export class PaybillEffect {
     );
   });
 
-  handleProceedSuccess$ = createEffect(() => {
+  proceedPaymentSuccess$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PaybillActions.proceedPaymentSuccess),
-      map(({ response }) => {
-        if (response.verify?.challengeId) {
+      withLatestFrom(this.store.select(selectPaymentPayload)),
+      map(([{ response }, payload]) => {
+        const amount = payload?.amount ?? 0;
+
+        if (amount >= 50 && response.verify?.challengeId) {
           return PaybillActions.setPaymentStep({ step: 'OTP' });
         }
+
         return PaybillActions.setPaymentStep({ step: 'SUCCESS' });
       }),
     );
