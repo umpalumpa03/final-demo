@@ -2,16 +2,21 @@
   <header class="summary-header">
     <div class="summary-header__left">
       @if (iconBgPath()) {
-        <div class="summary-header__icon-container" [style.backgroundColor]="iconBgColor()">
-          <img [src]="iconBgPath()" alt="icon" class="summary-header__icon" />
-        </div>
+      <div
+        class="summary-header__icon-container"
+        [style.backgroundColor]="iconBgColor()"
+      >
+        <img [src]="iconBgPath()" alt="icon" class="summary-header__icon" />
+      </div>
       }
       <div class="summary-header__text">
         <h3 class="summary-header__title" [style.color]="headerColor()">
-          {{ headerTitle() }}
+          {{ headerTitle() | translate }}
         </h3>
         @if (headerSubtitle()) {
-          <p class="summary-header__subtitle">{{ headerSubtitle() }}</p>
+        <p class="summary-header__subtitle">
+          {{ headerSubtitle() | translate }}
+        </p>
         }
       </div>
     </div>
@@ -19,10 +24,13 @@
 
   <div class="summary-list">
     @for (item of items(); track item.label) {
-      <div class="summary-row" [class.summary-row--total]="item.isTotal">
-        <span class="summary-row__label">{{ item.label }}</span>
-        <span class="summary-row__value">{{ item.value }}</span>
-      </div>
+    <div class="summary-row" [class.summary-row--total]="item.isTotal">
+      <span class="summary-row__label">{{ item.label | translate }}</span>
+      <span class="summary-row__value"
+        >{{ item.canTranslate ? (item.value.toString() | translate) : item.value
+        }}</span
+      >
+    </div>
     }
   </div>
 </div>

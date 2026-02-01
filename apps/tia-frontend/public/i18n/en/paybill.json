@@ -9,7 +9,41 @@
   },
 
   "main": {
-    "category": "Select Category"
+    "category": "Select Category",
+    "summary": {
+      "customer_name": "Customer Name:",
+      "bill_period": "Bill Period:",
+      "due_date": "Due Date:",
+      "default_period": "Current Month",
+      "na": "N/A"
+    },
+    "form": {
+      "subtitle": "Enter your bill details",
+      "account_label": "Account Number / Customer ID",
+      "account_placeholder": "Enter your account number",
+      "account_error": "Please enter valid account number!",
+      "verified_title": "Account Verified",
+      "amount_label": "Amount To Pay",
+      "helper_text": "Fetched amount: {{amount}}. You can edit before continuing.",
+      "continue_btn": "Continue to Payment",
+      "verify_btn": "Verify Account",
+      "template": "Save Template"
+    },
+    "confirm": {
+      "title": "Confirm Payment",
+      "subtitle": "Review your payment details and choose an account",
+      "summary_header": "Payment Summary",
+      "summary_subheader": "Transaction Details",
+      "account_placeholder": "Please choose a GEL account",
+      "confirm_btn": "Confirm & Pay {{amount}}",
+      "cancel_btn": "Cancel",
+      "summary_fields": {
+        "service": "Service Name:",
+        "account": "Account Number:",
+        "holder": "Customer Name:",
+        "amount": "Total Amount:",
+        "na": "N/A"
+      }
   },
 
   "templates": {

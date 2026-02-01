@@ -5,10 +5,11 @@ import {
   input,
 } from '@angular/core';
 import { SummaryField, SummaryType } from '../../models/summary.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-payment-summary',
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './payment-summary.html',
   styleUrl: './payment-summary.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
