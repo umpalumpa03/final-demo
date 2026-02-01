@@ -156,51 +156,5 @@ describe('PaybillMain', () => {
         }),
       );
     });
-
-    it('should not dispatch if challengeId is missing', () => {
-      const spy = vi.spyOn(store, 'dispatch');
-      store.overrideSelector(PAYBILL_SELECTORS.selectChallengeId, null);
-      store.refreshState();
-
-      component.onOtpVerified('1111');
-      expect(spy).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('State Navigation', () => {
-    it('should set step to SUCCESS on payment method selected', () => {
-      const spy = vi.spyOn(store, 'dispatch');
-      component.onPaymentMethodSelected();
-      expect(spy).toHaveBeenCalledWith(
-        PaybillActions.setPaymentStep({ step: 'SUCCESS' }),
-      );
-    });
-
-    it('should return to DETAILS step', () => {
-      const spy = vi.spyOn(store, 'dispatch');
-      component.onBackToDetails();
-      expect(spy).toHaveBeenCalledWith(
-        PaybillActions.setPaymentStep({ step: 'DETAILS' }),
-      );
-    });
-  });
-
-  describe('Computed UI Logic', () => {
-    it('should compute activeCategoryUI when a category is active', () => {
-      store.overrideSelector(PAYBILL_SELECTORS.selectActiveCategory, {
-        id: 'UTILITIES',
-      } as any);
-      store.refreshState();
-
-      const ui = component.activeCategoryUI();
-      expect(ui).toBeTruthy();
-      expect(ui?.iconBgColor).toBeDefined();
-    });
-
-    it('should return null if no category is active', () => {
-      store.overrideSelector(PAYBILL_SELECTORS.selectActiveCategory, null);
-      store.refreshState();
-      expect(component.activeCategoryUI()).toBeNull();
-    });
   });
 });

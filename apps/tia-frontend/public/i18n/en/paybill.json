@@ -14,6 +14,12 @@
 
   "templates": {
     "title": "Saved Templates",
-    "description": "Manage your payment templates and groups"
+    "description": "Manage your payment templates and groups",
+    "selectButton": "Select All",
+    "createTemplate": "Create Template",
+    "createGroup": "Create Group",
+    "payButton": "Pay Now",
+    "errorHeader": "No templates yet",
+    "errorMessage": "Drag templates here or create a new one"
   }
 }
