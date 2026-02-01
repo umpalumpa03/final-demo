@@ -3,9 +3,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
-import { catchError, EMPTY, tap } from 'rxjs';
-import { Routes } from '../../../models/tokens.model';
 import { TokenService } from '../../../services/token.service';
+import { IVerified } from '../../../models/otp-verification.models';
 
 @Component({
   selector: 'app-phone-verification',
@@ -17,23 +16,12 @@ export class PhoneVerification {
   private authService = inject(AuthService);
   private router = inject(Router);
   private tokenService = inject(TokenService);
+  public PhoneOtpError = this.authService.otpError;
 
-  public submit(event: { isCalled: boolean; otp: string | null }): void {
+  public submit(event: IVerified): void {
     if (event.isCalled) {
       let telNumber = event.otp;
-      this.authService
-        .sendPhoneVerificationCode(telNumber!)
-        .pipe(
-          tap((res) => {
-            this.authService.setChellangeId(res.challengeId);
-            this.router.navigate([Routes.OTP_SIGN_UP]);
-          }),
-          catchError((err) => {
-            const messages = err.error?.message;
-            return EMPTY;
-          }),
-        )
-        .subscribe();
+      this.authService.sendPhoneVerificationCode(telNumber!).subscribe();
     }
   }
 

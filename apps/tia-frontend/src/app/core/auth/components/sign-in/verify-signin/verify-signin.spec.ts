@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { VerifySignin } from './verify-signin';
 import { AuthService } from '../../../services/auth.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
+import { signal } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -15,6 +16,7 @@ describe('VerifySignin Component', () => {
     getChallengeId: ReturnType<typeof vi.fn>;
     verifyMfa: ReturnType<typeof vi.fn>;
     resendVerificationCode: ReturnType<typeof vi.fn>;
+    otpError: ReturnType<typeof signal>;
   };
 
   beforeEach(async () => {
@@ -22,11 +24,13 @@ describe('VerifySignin Component', () => {
       getChallengeId: vi.fn().mockReturnValue('challenge-123'),
       verifyMfa: vi.fn().mockReturnValue(of({})),
       resendVerificationCode: vi.fn().mockReturnValue(of({})),
+      otpError: signal(null),
     };
 
     await TestBed.configureTestingModule({
       imports: [VerifySignin, TranslateModule.forRoot()],
       providers: [
+        provideRouter([]),
         { provide: AuthService, useValue: authServiceMock },
         {
           provide: ActivatedRoute,

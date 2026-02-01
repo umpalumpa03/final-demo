@@ -13,8 +13,6 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AuthService } from '../../../services/auth.service';
 import { Routes } from '../../../models/tokens.model';
-import { LibraryHeader } from 'apps/tia-frontend/src/app/features/storybook/shared/library-header/library-header';
-import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 
 @Component({
   selector: 'app-forgot-password-email',
@@ -23,7 +21,6 @@ import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/share
     ButtonComponent,
     ReactiveFormsModule,
     RouterLink,
-    LibraryTitle,
     TranslatePipe,
   ],
   templateUrl: './forgot-password-email.html',

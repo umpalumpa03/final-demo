@@ -36,4 +36,8 @@ export interface IStepConfig {
   key: string;
 }
 
-export type PasswordStrength = 'Weak' | 'Fair' | 'Good' | 'Strong';
+export type PasswordStrength =
+  | 'auth.sign-up.weak'
+  | 'auth.sign-up.fair'
+  | 'auth.sign-up.good'
+  | 'auth.sign-up.strong';

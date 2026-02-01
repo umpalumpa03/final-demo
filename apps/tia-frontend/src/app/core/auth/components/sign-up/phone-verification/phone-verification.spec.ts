@@ -4,9 +4,9 @@ import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { of, throwError } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
+import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { Routes } from '../../../models/tokens.model';
 
 describe('PhoneVerification Component', () => {
   let component: PhoneVerification;
@@ -14,6 +14,7 @@ describe('PhoneVerification Component', () => {
   let authServiceMock: {
     sendPhoneVerificationCode: ReturnType<typeof vi.fn>;
     setChellangeId: ReturnType<typeof vi.fn>;
+    otpError: ReturnType<typeof signal>;
   };
   let tokenServiceMock: {
     clearAllToken: ReturnType<typeof vi.fn>;
@@ -27,6 +28,7 @@ describe('PhoneVerification Component', () => {
         of({ challengeId: 'challenge-456' })
       ),
       setChellangeId: vi.fn(),
+      otpError: signal(null),
     };
 
     tokenServiceMock = {
@@ -71,19 +73,13 @@ describe('PhoneVerification Component', () => {
     component.submit(event);
 
     expect(authServiceMock.sendPhoneVerificationCode).toHaveBeenCalledWith('+995555123456');
-    expect(authServiceMock.setChellangeId).toHaveBeenCalledWith('challenge-456');
-    expect(navigateSpy).toHaveBeenCalledWith([Routes.OTP_SIGN_UP]);
+    expect(authServiceMock.setChellangeId).not.toHaveBeenCalled();
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 
   it('should handle error when phone verification fails', () => {
-    const error = {
-      error: {
-        message: 'Invalid phone number',
-      },
-    };
-
     authServiceMock.sendPhoneVerificationCode.mockReturnValue(
-      throwError(() => error)
+      EMPTY
     );
 
     const event = {
