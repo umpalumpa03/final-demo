@@ -23,7 +23,7 @@ import {
 } from '../models/transfers.state.model';
 import { TransfersApiService } from './transfersApi.service';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class TransferExternalService {
   private readonly router = inject(Router);
   private readonly location = inject(Location);
