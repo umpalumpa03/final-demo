@@ -5,6 +5,11 @@
     @include display-flex(column);
     gap: 0.8rem;
 
+    &--centered {
+        @include flex-center(column);
+        gap: 1.6rem;
+    }
+
     &--disabled {
         opacity: 0.6;
         pointer-events: none;

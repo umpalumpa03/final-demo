@@ -1,10 +1,21 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, map, mergeMap, of, tap, withLatestFrom } from 'rxjs';
+import {
+  catchError,
+  delay,
+  EMPTY,
+  map,
+  mergeMap,
+  of,
+  tap,
+  withLatestFrom,
+} from 'rxjs';
 import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillActions, TemplatesPageActions } from './paybill.actions';
 import {
+  selectNotifications,
+  selectPaymentPayload,
   selectSelectedCategoryId,
   selectSelectedProviderId,
 } from './paybill.selectors';
@@ -100,13 +111,17 @@ export class PaybillEffect {
     );
   });
 
-  handleProceedSuccess$ = createEffect(() => {
+  proceedPaymentSuccess$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PaybillActions.proceedPaymentSuccess),
-      map(({ response }) => {
-        if (response.verify?.challengeId) {
+      withLatestFrom(this.store.select(selectPaymentPayload)),
+      map(([{ response }, payload]) => {
+        const amount = payload?.amount ?? 0;
+
+        if (amount >= 50 && response.verify?.challengeId) {
           return PaybillActions.setPaymentStep({ step: 'OTP' });
         }
+
         return PaybillActions.setPaymentStep({ step: 'SUCCESS' });
       }),
     );
@@ -117,14 +132,48 @@ export class PaybillEffect {
       ofType(PaybillActions.confirmPayment),
       mergeMap(({ payload }) =>
         this.paybillService.verifyPayment(payload).pipe(
-          map(() => {
-            return PaybillActions.setPaymentStep({ step: 'SUCCESS' });
-          }),
+          mergeMap((response) => [
+            response.success
+              ? PaybillActions.addNotification({
+                  notificationType: 'success',
+                  message: 'OTP Verified Successfully',
+                })
+              : PaybillActions.addNotification({
+                  notificationType: 'warning',
+                  message: response.message || 'Invalid Code',
+                }),
+
+            response.success
+              ? PaybillActions.setPaymentStep({ step: 'SUCCESS' })
+              : { type: 'noop' },
+          ]),
           catchError((error) =>
-            of(PaybillActions.confirmPaymentFailure({ error: error.message })),
+            of(
+              PaybillActions.addNotification({
+                notificationType: 'warning',
+                message: error.message,
+              }),
+            ),
           ),
         ),
       ),
+    );
+  });
+
+  autoDismissNotifications$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(PaybillActions.addNotification),
+      delay(100),
+      withLatestFrom(this.store.select(selectNotifications)),
+      mergeMap(([action, notifications]) => {
+        const lastNotification = notifications[notifications.length - 1];
+
+        if (!lastNotification) return EMPTY;
+
+        return of(
+          PaybillActions.dismissNotification({ id: lastNotification.id! }),
+        ).pipe(delay(5000));
+      }),
     );
   });
 

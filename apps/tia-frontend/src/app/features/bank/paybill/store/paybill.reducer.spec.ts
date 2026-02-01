@@ -176,4 +176,71 @@ describe('Paybill Reducer', () => {
     expect(result.loading).toBe(false);
     expect(result.error).toBe('Payment failed');
   });
+
+  it('should handle checkBillFailure', () => {
+    const result = paybillReducer(
+      initialPaybillState,
+      PaybillActions.checkBillFailure({ error: 'Account not found' }),
+    );
+    expect(result.error).toBe('Account not found');
+    expect(result.loading).toBe(false);
+  });
+
+  it('should handle proceedPaymentFailure', () => {
+    const result = paybillReducer(
+      initialPaybillState,
+      PaybillActions.proceedPaymentFailure({ error: 'Insufficent funds' }),
+    );
+    expect(result.error).toBe('Insufficent funds');
+    expect(result.loading).toBe(false);
+  });
+
+  it('should handle loadTemplatesFailure', () => {
+    const result = paybillReducer(
+      initialPaybillState,
+      TemplatesPageActions.loadTemplatesFailure({ error: 'Auth failed' }),
+    );
+    expect(result.error).toBe('Auth failed');
+    expect(result.loading).toBe(false);
+  });
+
+  describe('Select stuff', () => {
+    it('selectProvider: should handle case-insensitive matching', () => {
+      const providers = [{ id: 'UTILITY_ID', name: 'Test' }] as any;
+      const state = { ...initialPaybillState, providers };
+      const action = PaybillActions.selectProvider({
+        providerId: 'utility_id',
+      });
+      const result = paybillReducer(state, action);
+
+      expect(result.selectedProvider?.id).toBe('UTILITY_ID');
+      expect(result.selectedProviderId).toBe('utility_id');
+    });
+
+    it('loadProvidersFailure: should stop loading and set error', () => {
+      const action = PaybillActions.loadProvidersFailure({
+        error: 'Server Down',
+      });
+      const result = paybillReducer(initialPaybillState, action);
+
+      expect(result.loading).toBe(false);
+      expect(result.error).toBe('Server Down');
+    });
+
+    it('confirmPaymentFailure: should map error to state and stop loading', () => {
+      const action = PaybillActions.confirmPaymentFailure({
+        error: 'Invalid OTP',
+      });
+      const result = paybillReducer(initialPaybillState, action);
+
+      expect(result.loading).toBe(false);
+      expect(result.error).toBe('Invalid OTP');
+    });
+
+    it('clearError: should set error to null', () => {
+      const state = { ...initialPaybillState, error: 'Discard me' };
+      const result = paybillReducer(state, PaybillActions.clearError());
+      expect(result.error).toBeNull();
+    });
+  });
 });
