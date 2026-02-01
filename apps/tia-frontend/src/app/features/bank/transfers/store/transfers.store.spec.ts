@@ -95,4 +95,14 @@ describe('TransferStore', () => {
     expect(store.isLoading()).toBe(false);
     expect(store.recipientInput()).toBe('');
   });
+
+  it('should update specific state flags (Account, Verified)', () => {
+    const mockAccount = { id: 's1', currency: 'GEL' } as any;
+
+    store.setSenderAccount(mockAccount);
+    store.setIsVerified(true);
+
+    expect(store.senderAccount()).toEqual(mockAccount);
+    expect(store.isVerified()).toBe(true);
+  });
 });

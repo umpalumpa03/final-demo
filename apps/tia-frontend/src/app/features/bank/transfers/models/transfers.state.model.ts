@@ -28,7 +28,6 @@ export interface TransferState {
   senderAccount: Account | null; //selected sender account, used by both flow(g)
   receiverOwnAccount: Account | null; //used by transfer internal(g)
   selectedRecipientAccount: RecipientAccount | null; //for other account same bank flow
-
   ///response
   recipientInfo: RecipientResponse | null; //response after view account
   transferId: string | null; //transferid from response
@@ -44,5 +43,9 @@ export interface TransferState {
   currentStep: number;
   isLoading: boolean;
   error: string | null;
+  isVerified: boolean;
 }
 export type AccountData = Account | RecipientAccount;
+export interface FeeResponse {
+  fee: number;
+}

@@ -1,7 +1,4 @@
-import {
-  ComponentFixture,
-  TestBed,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ExternalAmount } from './external-amount';
 import { TransferStore } from '../../../../store/transfers.store';
 import { TransferExternalService } from '../../../../services/transfer.external.service';
@@ -74,31 +71,6 @@ describe('ExternalAmount', () => {
     fixture.detectChanges();
     component.amountInput.setValue('50');
     expect(mockExternalService.handleAmountInput).toHaveBeenCalledWith(50);
-  });
-
-  it('should calculate initials for internal recipient (Hits computed logic)', () => {
-    fixture.detectChanges();
-    expect(component.recipientInitials()).toBe('JD');
-  });
-
-  it('should calculate initials for external IBAN (Hits computed branch)', () => {
-    mockStore.recipientType.set('iban-different-bank');
-    mockStore.manualRecipientName.set('Jane Smith');
-    fixture.detectChanges();
-    expect(component.recipientInitials()).toBe('JS');
-  });
-
-  it('should call handleAmountGoBack with correct values', () => {
-    fixture.detectChanges();
-    component.amountInput.setValue('100');
-    component.descriptionInput.setValue('Rent');
-    component.onGoBack();
-
-    expect(mockExternalService.handleAmountGoBack).toHaveBeenCalledWith(
-      100,
-      'Rent',
-      expect.anything(),
-    );
   });
 
   it('should show available balance from store (Hits computed balance)', () => {

@@ -47,8 +47,12 @@ export const TransferStore = signalStore(
     updateFeeInfo(fee: number, totalWithFee: number) {
       patchState(store, { fee, totalWithFee, isLoading: false });
     },
+
     setLoading(isLoading: boolean) {
       patchState(store, { isLoading });
+    },
+    setIsVerified(isVerified: boolean) {
+      patchState(store, { isVerified });
     },
     lookupRecipient: rxMethod<{ value: string; type: RecipientType }>(
       pipe(
@@ -76,6 +80,7 @@ export const TransferStore = signalStore(
               patchState(store, {
                 recipientInfo: response,
                 isLoading: false,
+                isVerified: true,
               });
             }),
             catchError((error) => {

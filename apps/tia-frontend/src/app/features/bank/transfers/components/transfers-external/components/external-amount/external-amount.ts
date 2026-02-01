@@ -6,9 +6,8 @@ import {
   signal,
   OnInit,
   DestroyRef,
-  effect,
 } from '@angular/core';
-import { Location, DecimalPipe } from '@angular/common';
+import {  DecimalPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -30,13 +29,12 @@ import { tap } from 'rxjs';
     AlertTypesWithIcons,
     DecimalPipe,
   ],
-  providers: [TransferExternalService],
+  providers: [],
   templateUrl: './external-amount.html',
   styleUrl: './external-amount.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExternalAmount implements OnInit {
-  private readonly location = inject(Location);
   private readonly transferStore = inject(TransferStore);
   private readonly transferExternalService = inject(TransferExternalService);
   private readonly fb = inject(FormBuilder);
@@ -124,10 +122,8 @@ export class ExternalAmount implements OnInit {
     this.transferExternalService.handleAmountGoBack(
       Number(this.amountInput.value),
       this.descriptionInput.value || '',
-      this.location,
     );
   }
-
   public onTransfer(): void {
     // if (this.amountInput.valid) {
     //   const success = this.transferExternalService.handleTransfer(

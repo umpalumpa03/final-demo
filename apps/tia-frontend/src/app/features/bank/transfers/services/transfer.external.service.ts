@@ -1,5 +1,6 @@
 import { inject, Injectable, DestroyRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import {
   Subject,
@@ -16,12 +17,16 @@ import {
 import { TransferStore } from '../store/transfers.store';
 import { TransferValidationService } from './transfer-validation.service';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
-import { RecipientAccount } from '../models/transfers.state.model';
+import {
+  RecipientAccount,
+  RecipientType,
+} from '../models/transfers.state.model';
 import { TransfersApiService } from './transfersApi.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class TransferExternalService {
   private readonly router = inject(Router);
+  private readonly location = inject(Location);
   private readonly transferStore = inject(TransferStore);
   private readonly validationService = inject(TransferValidationService);
   private readonly destroyRef = inject(DestroyRef);
@@ -38,6 +43,7 @@ export class TransferExternalService {
   constructor() {
     this.setupFeeCalculation();
   }
+
   public verifyRecipient(value: string): void {
     const storedValue = this.transferStore.recipientInput();
     const storedType = this.transferStore.recipientType();
@@ -71,9 +77,15 @@ export class TransferExternalService {
           skip(1),
           filter((info) => !!info),
           take(1),
-          tap(() =>
-            this.router.navigate(['/bank/transfers/external/accounts']),
-          ),
+          tap((info) => {
+            // auto-select single account
+            const accounts = info?.accounts || [];
+            if (accounts.length === 1) {
+              this.transferStore.setSelectedRecipientAccount(accounts[0]);
+            }
+
+            this.router.navigate(['/bank/transfers/external/accounts']);
+          }),
           takeUntilDestroyed(this.destroyRef),
         )
         .subscribe();
@@ -106,6 +118,11 @@ export class TransferExternalService {
     account: RecipientAccount,
     currentSelected: RecipientAccount | null,
   ): void {
+    // reset amount if selecting different account
+    if (currentSelected?.id !== account.id) {
+      this.transferStore.setAmount(0);
+    }
+
     // toggle if clicking same account, deselect it
     if (currentSelected?.id === account.id) {
       this.transferStore.setSelectedRecipientAccount(null);
@@ -118,11 +135,27 @@ export class TransferExternalService {
     account: Account,
     currentSelected: Account | null,
   ): void {
+    // reset amount if selecting different account
+    if (currentSelected?.id !== account.id) {
+      this.transferStore.setAmount(0);
+    }
+
     // toggle if clicking same account, deselect it
     if (currentSelected?.id === account.id) {
       this.transferStore.setSenderAccount(null);
     } else {
       this.transferStore.setSenderAccount(account);
+    }
+  }
+
+  public handleRetryRecipientLookup(
+    value: string | null,
+    type: RecipientType | null,
+  ): void {
+    if (value && type) {
+      this.transferStore.lookupRecipient({ value, type });
+    } else {
+      this.location.back();
     }
   }
 
@@ -144,14 +177,10 @@ export class TransferExternalService {
     }
   }
 
-  public handleAmountGoBack(
-    amount: number,
-    description: string,
-    router: any,
-  ): void {
+  public handleAmountGoBack(amount: number, description: string): void {
     this.transferStore.setAmount(amount);
     this.transferStore.setDescription(description);
-    router.back();
+    this.location.back();
   }
 
   public handleTransfer(amount: number, description: string): boolean {
@@ -162,6 +191,7 @@ export class TransferExternalService {
     }
     return false;
   }
+
   public handleAmountInput(amount: number): void {
     const numericAmount = Number(amount);
     this.transferStore.setAmount(numericAmount);
@@ -192,9 +222,7 @@ export class TransferExternalService {
           this.transfersApi.getFee(accountId, amount).pipe(
             tap((response) => {
               const fee =
-                typeof response === 'number'
-                  ? response
-                  : ((response)?.fee ?? 0);
+                typeof response === 'number' ? response : (response?.fee ?? 0);
               this.transferStore.updateFeeInfo(fee, amount + fee);
             }),
             catchError(() => {

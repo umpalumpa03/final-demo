@@ -16,6 +16,7 @@ export const initialTransferState: TransferState = {
   recipientType: null,
   requiresOTP: false,
   currentStep: 1,
+  isVerified: false,
   isLoading: false,
   error: null,
 };
