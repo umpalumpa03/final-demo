@@ -11,6 +11,7 @@ import { pipe, switchMap, tap, catchError, of } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserManagementService } from '../shared/services/user-management.service';
 import { initialState } from './user-management.state';
+import { IUpdateUserRequest } from '../shared/models/users.model';
 
 export const UserManagementStore = signalStore(
   withState(initialState),
@@ -39,7 +40,7 @@ export const UserManagementStore = signalStore(
 
     loadUserDetails: rxMethod<string>(pipe()),
 
-    updateUser: rxMethod<{ id: string; data: any }>(pipe()),
+    updateUser: rxMethod<{ id: string; data: IUpdateUserRequest }>(pipe()),
 
     deleteUser: rxMethod<string>(pipe()),
 
