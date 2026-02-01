@@ -20,7 +20,7 @@ import {
   ProceedPaymentPayload,
 } from '../shared/models/paybill.model';
 import { PaybillConfirmPayment } from '../components/paybill-confirm-payment/paybill-confirm-payment';
-import { selectCurrentAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
+import { selectCurrentAccounts, selectGelAccountOptions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 
 @Component({
@@ -76,7 +76,7 @@ export class PaybillMain implements OnInit {
   // State from global store
 
   public readonly storeAccounts = this.store.selectSignal(
-    selectCurrentAccounts,
+    selectGelAccountOptions,
   );
 
   public ngOnInit(): void {

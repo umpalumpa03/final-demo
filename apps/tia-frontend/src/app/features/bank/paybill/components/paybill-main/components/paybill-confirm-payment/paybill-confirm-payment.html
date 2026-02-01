@@ -20,8 +20,9 @@
 
     <div class="confirm-content__options">
       <lib-select
-        [options]="accountOptions()"
+        [options]="currentAccounts()!"
         [value]="selectedAccountId()"
+        [config]="selectConfig"
       ></lib-select>
     </div>
 

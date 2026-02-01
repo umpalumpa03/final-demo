@@ -19,6 +19,7 @@ import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { Store } from '@ngrx/store';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { CurrencyPipe } from '@angular/common';
+import { paymentOptionPaybill } from './config/input.config';
 
 @Component({
   selector: 'app-paybill-confirm-payment',
@@ -28,7 +29,7 @@ import { CurrencyPipe } from '@angular/common';
     ButtonComponent,
     PaymentSummary,
     Dropdowns,
-    CurrencyPipe
+    CurrencyPipe,
   ],
   templateUrl: './paybill-confirm-payment.html',
   styleUrl: './paybill-confirm-payment.scss',
@@ -45,16 +46,12 @@ export class PaybillConfirmPayment {
 
   public readonly accountChanged = output<string>();
   public readonly selectedAccountId = signal<string | null>(null);
-  public readonly currentAccounts = input<Account[] | null>(null);
+  public readonly currentAccounts = input<
+    { label: string; value: string }[] | null
+  >(null);
 
-  protected readonly accountOptions = computed(() => {
-    const accounts = this.currentAccounts();
-    if (!accounts) return [];
-    return accounts.map((acc) => ({
-      label: `${acc.friendlyName || acc.name} (****${acc.id.slice(-4)}) - ${acc.balance} ${acc.currency}`,
-      value: acc.id,
-    }));
-  });
+  protected readonly selectConfig = paymentOptionPaybill;
+
 
   public handleAccountChange(id: string): void {
     this.selectedAccountId.set(id);
