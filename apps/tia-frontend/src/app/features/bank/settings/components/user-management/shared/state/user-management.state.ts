@@ -1,8 +1,8 @@
-import { Directive, inject, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
-@Directive()
-export class UserManagamentState {
+@Injectable()
+export class UserManagementState {
   private readonly translate = inject(TranslateService);
 
   public newConfig = signal({

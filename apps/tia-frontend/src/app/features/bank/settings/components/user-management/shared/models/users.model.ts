@@ -1,9 +1,6 @@
-export interface IUser {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  username: string;
+import { User } from '@tia/shared/models/user-info/user-info.models';
+
+export interface IUser extends User {
   role: 'CONSUMER' | 'SUPPORT';
   isBlocked: boolean;
   createdAt: string;
