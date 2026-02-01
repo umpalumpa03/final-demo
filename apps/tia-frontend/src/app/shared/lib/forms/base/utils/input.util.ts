@@ -20,6 +20,7 @@ export function getValidationErrorMessage(
 
   if (errors['required']) return 'This field is required';
   if (errors['email']) return 'Invalid email address';
+  if (errors['notFound']) return 'Email not found';
   if (errors['pattern']) return 'Invalid format';
 
   if (errors['passwordStrength']) return 'Password is too weak';

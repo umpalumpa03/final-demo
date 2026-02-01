@@ -1,4 +1,4 @@
-<div class="otp" [class.otp--disabled]="isDisabled()">
+<div class="otp" [class.otp--disabled]="isDisabled()" [class.otp--centered]="isCentered()">
     @let cfg = mergedConfig();
 
     @if (cfg.label) {

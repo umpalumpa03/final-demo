@@ -1,0 +1,55 @@
+@use "../../../../../shared/styles/palette" as *;
+@use "../../../../../shared/styles/mixins" as *;
+
+.compose-modal {
+    position: relative;
+    @include display-flex(column);
+    gap: 1.6rem;
+
+    .modal-heading {
+        @include display-flex(column);
+        gap: 0.8rem;
+
+        h3 {
+            @include font-inter(600, 1.8rem, 1.8rem);
+            color: var(--color-fg);
+        }
+
+        p {
+            @include font-inter(400, 1.4rem, 2rem);
+            color: $blue-600;
+        }
+    }
+
+    .form-inputs {
+        @include display-flex(column);
+        gap: 0.6rem;
+    }
+
+    .buttons-container {
+        @include flex-center(row, end, flex-end);
+        gap: 0.8rem;
+    }
+
+    .input-container {
+        min-height: 8rem;
+    }
+
+    .fade-alert-container {
+        position: absolute;
+        bottom: -10rem;
+        right: -2.5rem;
+        width: 110%;
+        transition:
+            opacity 0.3s ease,
+            transform 0.3s ease;
+        opacity: 0;
+        transform: translateY(-1rem);
+        pointer-events: none;
+        &.fade-alert--visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+    }
+}

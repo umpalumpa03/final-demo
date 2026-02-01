@@ -6,6 +6,10 @@
     @include display-flex(column);
     gap: 3.2rem;
     padding: 3.2rem;
+
+    @media (max-width: 500px) {
+        padding: 0;
+    }
     .loans-skeleton-grid {
         display: grid;
         grid-template-rows: repeat(auto-fill, minmax(13.2rem, 1fr));
