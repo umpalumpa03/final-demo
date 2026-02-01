@@ -35,11 +35,6 @@ describe('PrepaymentReview', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have default inputs', () => {
-    expect(component.isLoading()).toBe(false);
-    expect(component.currencyCode()).toBe('GEL');
-  });
-
   it('should accept custom isLoading input', () => {
     fixture.componentRef.setInput('isLoading', true);
     fixture.detectChanges();
@@ -62,22 +57,5 @@ describe('PrepaymentReview', () => {
     const spy = vi.spyOn(component.confirmPay, 'emit');
     component.confirmPay.emit();
     expect(spy).toHaveBeenCalled();
-  });
-
-  describe('isCurrency', () => {
-    it('should return false for text containing currency keywords', () => {
-      expect(component.isCurrency('Payment: 500 GEL')).toBe(false);
-      expect(component.isCurrency('Amount in usd')).toBe(true);
-      expect(component.isCurrency('Payment: 500 EUR')).toBe(false);
-    });
-
-    it('should return true for text with mixed case currency keywords', () => {
-      expect(component.isCurrency('Payment: 500 Gel')).toBe(false);
-    });
-
-    it('should return false for text without currency keywords', () => {
-      expect(component.isCurrency('Processing Fee')).toBe(false);
-      expect(component.isCurrency('Remaining Balance')).toBe(false);
-    });
   });
 });

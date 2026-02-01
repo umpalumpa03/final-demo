@@ -12,9 +12,9 @@
   ></app-alert-types-with-icons>
 
   <app-payment-summary
-    [serviceName]="provider()?.name || ''"
-    [accountNumber]="summary().accountNumber"
-    [amount]="summary().amount"
+    [items]="summaryItems()"
+    headerTitle="Payment Summary"
+    type="otp"
   ></app-payment-summary>
 
   <div class="otp-wrapper">
@@ -41,4 +41,5 @@
       Verify & Continue
     </app-button>
   </footer>
+
 </app-basic-card>

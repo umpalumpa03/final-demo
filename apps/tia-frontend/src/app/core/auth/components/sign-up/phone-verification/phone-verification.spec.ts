@@ -1,34 +1,60 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import '@angular/compiler';
-import { setupTestBed } from '@analogjs/vitest-angular/setup-testbed';
-
-setupTestBed();
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { provideRouter } from '@angular/router';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { PhoneVerification } from './phone-verification';
+import { AuthService } from '../../../services/auth.service';
+import { TokenService } from '../../../services/token.service';
+import { ActivatedRoute, Router, provideRouter } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
-import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { Routes } from '../../../models/tokens.model';
 
-
-describe('OtpVerification', () => {
-  let fixture: ComponentFixture<OtpVerification>;
-  let component: OtpVerification;
+describe('PhoneVerification Component', () => {
+  let component: PhoneVerification;
+  let fixture: ComponentFixture<PhoneVerification>;
+  let authServiceMock: {
+    sendPhoneVerificationCode: ReturnType<typeof vi.fn>;
+    setChellangeId: ReturnType<typeof vi.fn>;
+  };
+  let tokenServiceMock: {
+    clearAllToken: ReturnType<typeof vi.fn>;
+  };
+  let router: Router;
+  let navigateSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(async () => {
+    authServiceMock = {
+      sendPhoneVerificationCode: vi.fn().mockReturnValue(
+        of({ challengeId: 'challenge-456' })
+      ),
+      setChellangeId: vi.fn(),
+    };
+
+    tokenServiceMock = {
+      clearAllToken: vi.fn(),
+    };
+
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, OtpVerification],
-      providers: [provideRouter([])],
-      schemas: [NO_ERRORS_SCHEMA],
+      imports: [PhoneVerification, TranslateModule.forRoot()],
+      providers: [
+        provideRouter([]),
+        { provide: AuthService, useValue: authServiceMock },
+        { provide: TokenService, useValue: tokenServiceMock },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({}),
+            queryParams: of({}),
+            snapshot: { params: {}, queryParams: {} },
+          },
+        },
+        TranslateService,
+      ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(OtpVerification);
+    fixture = TestBed.createComponent(PhoneVerification);
     component = fixture.componentInstance;
-
-    // required input
-    (component as any).type = () => 'sign-in';
-
+    router = TestBed.inject(Router);
+    navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     fixture.detectChanges();
   });
 
@@ -36,32 +62,39 @@ describe('OtpVerification', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have an invalid form when empty', () => {
-    expect(component.otpForm.invalid).toBe(true);
+  it('should send phone verification code and navigate when isCalled is true', () => {
+    const event = {
+      isCalled: true,
+      otp: '+995555123456',
+    };
+
+    component.submit(event);
+
+    expect(authServiceMock.sendPhoneVerificationCode).toHaveBeenCalledWith('+995555123456');
+    expect(authServiceMock.setChellangeId).toHaveBeenCalledWith('challenge-456');
+    expect(navigateSpy).toHaveBeenCalledWith([Routes.OTP_SIGN_UP]);
   });
 
-  it('should not call submitMethod when form is invalid', () => {
-    const submitFn = vi.fn().mockReturnValue(of({}));
-    (component as any).submitMethod = () => submitFn;
+  it('should handle error when phone verification fails', () => {
+    const error = {
+      error: {
+        message: 'Invalid phone number',
+      },
+    };
 
-    component.onSubmit();
-
-    expect(submitFn).not.toHaveBeenCalled();
-  });
-
-  it('should call submitMethod and emit on success', () => {
-    const submitFn = vi.fn().mockReturnValue(of({}));
-    (component as any).submitMethod = () => submitFn;
-
-    component.onSubmit();
-  });
-
-  it('should handle errors from submitMethod gracefully', () => {
-    const submitFn = vi.fn().mockReturnValue(
-      throwError(() => new Error('fail'))
+    authServiceMock.sendPhoneVerificationCode.mockReturnValue(
+      throwError(() => error)
     );
-    (component as any).submitMethod = () => submitFn;
 
-    expect(() => component.onSubmit()).not.toThrow();
+    const event = {
+      isCalled: true,
+      otp: '+995555123456',
+    };
+
+    component.submit(event);
+
+    expect(authServiceMock.sendPhoneVerificationCode).toHaveBeenCalledWith('+995555123456');
+    expect(authServiceMock.setChellangeId).not.toHaveBeenCalled();
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 });

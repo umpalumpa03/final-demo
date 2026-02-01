@@ -57,4 +57,30 @@ describe('MessagingService', () => {
     expect(req.request.method).toBe('PUT');
     req.flush(null);
   });
+
+  it('should call sendEmail', () => {
+    const emailData = {
+      recipient: 'test@test.com',
+      ccRecipients: ['cc@test.com'],
+      subject: 'Test Subject',
+      body: 'Test Body',
+      isImportant: true,
+      isDraft: false
+    };
+
+    service.sendEmail(emailData).subscribe();
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/mails`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(emailData);
+    req.flush(null);
+  });
+
+  it('should call deleteMail', () => {
+    service.deleteMail(123).subscribe();
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/mails/123`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush(null);
+  });
 });

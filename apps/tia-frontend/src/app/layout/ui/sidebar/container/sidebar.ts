@@ -17,7 +17,7 @@ import { AuthService } from 'apps/tia-frontend/src/app/core/auth/services/auth.s
 import { NavigationItem } from '@tia/shared/lib/navigation/models/nav-bar.model';
 import { getSidebarItems } from '../config/routes.config';
 import { AlertsWithActions } from '@tia/shared/lib/alerts/components/alerts-with-actions/alerts-with-actions';
-import { BreakpointService } from '../services/breakpoint.service';
+import { BreakpointService } from '../../../../shared/services/breakpoints/breakpoint.service';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 
 @Component({

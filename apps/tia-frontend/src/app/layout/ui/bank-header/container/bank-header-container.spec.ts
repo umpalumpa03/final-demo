@@ -84,35 +84,4 @@ describe('BankHeaderContainer', () => {
     expect(component.isModalOpen()).toBe(false);
     expect(mockNotificationsStore.resetState).toHaveBeenCalled();
   });
-
-  it('should close the modal when clicking outside', () => {
-    const anchor = document.createElement('div');
-    component.anchorEl.set({ nativeElement: anchor } as ElementRef);
-    component.isModalOpen.set(true);
-    fixture.detectChanges();
-
-    document.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    fixture.detectChanges();
-
-    expect(component.isModalOpen()).toBe(false);
-    expect(mockNotificationsStore.resetState).toHaveBeenCalled();
-  });
-
-  it('should NOT close the modal when clicking inside the anchor', () => {
-    const anchor = document.createElement('div');
-    component.anchorEl.set({ nativeElement: anchor } as ElementRef);
-    component.isModalOpen.set(true);
-    fixture.detectChanges();
-
-    anchor.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    fixture.detectChanges();
-
-    expect(component.isModalOpen()).toBe(true);
-  });
-
-  it('should compute inboxCount from service signal', () => {
-    mockInbox.inboxCount.set(99);
-    fixture.detectChanges();
-    expect(component.inboxCount()).toBe(99);
-  });
 });

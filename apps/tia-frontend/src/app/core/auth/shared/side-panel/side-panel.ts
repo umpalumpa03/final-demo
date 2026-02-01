@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { IFeaturePanel } from '../../models/auth.models';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-side-panel',
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './side-panel.html',
   styleUrls: ['./side-panel.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

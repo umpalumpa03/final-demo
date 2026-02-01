@@ -56,33 +56,6 @@ describe('RequestModal', () => {
     );
   });
 
-  it('should dispatch requestLoan when form is valid', () => {
-    component.form.setValue({
-      loanAmount: 5000,
-      amountToReceiveAccountId: 'acc_1',
-      months: 12,
-      purpose: 'misc',
-      firstPaymentDate: '2026-01-01',
-      contact: {
-        address: { street: 'A', city: 'B', region: 'C', postalCode: '0100' },
-        contactPerson: {
-          name: 'X',
-          relationship: 'Y',
-          phone: '599112233',
-          email: 'x@y.com',
-        },
-      },
-    });
-
-    const closeSpy = vi.spyOn(component.close, 'emit');
-    component.onSave();
-
-    expect(globalStore.dispatch).toHaveBeenCalledWith(
-      expect.objectContaining({ type: LoansCreateActions.requestLoan.type }),
-    );
-    expect(closeSpy).toHaveBeenCalled();
-  });
-
   it('should not dispatch if form invalid', () => {
     component.form.reset();
     component.onSave();

@@ -31,9 +31,22 @@
 
   &__stepper {
     padding: 0 16rem 3.2rem;
+
+    @media (max-width: 1200px) {
+      padding: 0 8rem 2.8rem;
+    }
+
+    @media (max-width: 900px) {
+      padding: 0 2rem 2.4rem;
+    }
+
+    @media (max-width: 480px) {
+      padding: 0 0 2rem;
+    }
   }
+
   &__content {
-    width: 100%; 
-    @include display-flex(column); 
+    width: 100%;
+    @include display-flex(column);
   }
 }

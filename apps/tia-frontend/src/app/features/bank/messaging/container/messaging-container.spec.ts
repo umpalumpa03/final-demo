@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
 import { of } from 'rxjs';
+import { MessagingStore } from '../store/messaging.store';
 
 describe('MessagingContainer', () => {
   let component: MessagingContainer;
@@ -16,6 +17,7 @@ describe('MessagingContainer', () => {
         TranslateModule.forRoot()
       ],
       providers: [
+        MessagingStore,
         { provide: ActivatedRoute, useValue: {} },
         {
           provide: InboxService,
