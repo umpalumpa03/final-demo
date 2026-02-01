@@ -20,9 +20,8 @@ import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { paybillInputConfig } from './config/input.config';
 import { PaymentSummary } from '../../shared/ui/payment-summary/payment-summary';
-import { SummaryField } from '../../shared/models/summary.model';
 import { CurrencyPipe } from '@angular/common';
-import { mapBillSummaryFields } from './utils/paybill-form.utils';
+import { mapBillSummaryFields } from './utils/paybill-form.config';
 
 @Component({
   selector: 'app-paybill-form',

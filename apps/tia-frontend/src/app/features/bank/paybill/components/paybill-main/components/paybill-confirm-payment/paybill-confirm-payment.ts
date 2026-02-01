@@ -23,7 +23,7 @@ import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { CurrencyPipe } from '@angular/common';
 import { paymentOptionPaybill } from './config/input.config';
 import { CONFIRM_PAYMENT_UI } from './config/translate.config';
-import { mapConfirmSummaryFields } from './utils/paybill-confirm.utils';
+import { mapConfirmSummaryFields } from './utils/paybill-confirm.config';
 
 @Component({
   selector: 'app-paybill-confirm-payment',

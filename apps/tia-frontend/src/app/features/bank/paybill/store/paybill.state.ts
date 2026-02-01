@@ -8,7 +8,7 @@ import { TemplateGroups } from '../components/paybill-templates/models/paybill-t
 
 export interface PaybillNotification {
   id?: string;
-  notificationType: 'success' | 'warning';
+  notificationType: 'success' | 'warning' | string;
   message: string;
 }
 

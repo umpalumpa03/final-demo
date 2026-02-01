@@ -20,7 +20,7 @@ import { PaybillConfirmPayment } from '../components/paybill-confirm-payment/pay
 import { selectGelAccountOptions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { PaybillSuccess } from '../components/paybill-success/paybill-success';
-import { getSuccessSummaryItems } from '../shared/utils/paybill.utils';
+import { getSuccessSummaryItems } from '../shared/utils/paybill.config';
 
 @Component({
   selector: 'app-paybill-main',

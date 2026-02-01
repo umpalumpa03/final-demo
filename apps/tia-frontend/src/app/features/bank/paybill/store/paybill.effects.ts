@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import {
   catchError,
   delay,
+  EMPTY,
   map,
   mergeMap,
   of,
@@ -167,7 +168,7 @@ export class PaybillEffect {
       mergeMap(([action, notifications]) => {
         const lastNotification = notifications[notifications.length - 1];
 
-        if (!lastNotification) return of({ type: 'noop' });
+        if (!lastNotification) return EMPTY;
 
         return of(
           PaybillActions.dismissNotification({ id: lastNotification.id! }),
