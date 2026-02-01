@@ -29,7 +29,7 @@ import { navConfig } from '../config/paybill.config';
 import { Tabs } from '@tia/shared/lib/navigation/tabs/tabs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-paybill-container',
@@ -39,6 +39,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillContainer implements OnInit {
+  private readonly translate = inject(TranslateService);
   private readonly store = inject(Store);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -52,7 +53,7 @@ export class PaybillContainer implements OnInit {
   public readonly activeProvider =
     this.store.selectSignal(selectActiveProvider);
 
-  public readonly navigationConfig = navConfig;
+  public readonly navigationConfig = navConfig(this.translate);
 
   constructor() {
     const routeStateSignal = toSignal(
