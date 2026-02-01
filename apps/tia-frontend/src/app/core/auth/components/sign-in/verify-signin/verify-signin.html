@@ -4,4 +4,6 @@
   (isResendCalled)="resendOtp($event)"
   timerType="otp"
   [timeLimit]="1"
+  [errorMessage]="otpError()?.message ?? null"
+  [remainingAttempts]="otpError()?.remainingAttempts ?? null"
 ></app-otp-verification>

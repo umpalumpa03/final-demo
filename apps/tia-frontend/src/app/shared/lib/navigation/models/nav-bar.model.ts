@@ -4,6 +4,7 @@ export interface NavigationItem {
     route?: string;
     disabled?: boolean;
     count?: number;
+    exact?: boolean;
 }
 
 export type NavigationOrientation = 'horizontal' | 'vertical';

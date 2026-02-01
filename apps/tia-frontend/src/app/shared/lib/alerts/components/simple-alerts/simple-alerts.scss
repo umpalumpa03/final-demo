@@ -54,4 +54,12 @@
       color: $brown-700;
     }
   }
+
+  &--error {
+    background: $red-50;
+    border: 0.08rem solid $red-900;
+    .simple-alerts__message {
+      color: $brown-700;
+    }
+  }
 }
