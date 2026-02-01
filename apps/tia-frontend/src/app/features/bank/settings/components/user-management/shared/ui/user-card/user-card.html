@@ -1,1 +1,46 @@
-<p>user-card works!</p>
+<app-basic-card minHeight="11.4rem" padding="1.8rem" maxWidth="100%" flexDirection="row" gap="0">
+    <div class="user-card__left">
+        <div class="user-card__avatar">
+            <img src="./images/svg/settings/user-management/person.svg" alt="">
+        </div>
+
+        <div class="user-card__info">
+            <h3 class="user-card__name">John Doe</h3>
+            <p class="user-card__email">john@example.com</p>
+            <div class="user-card__meta">
+                <span class="user-card__role">customer</span>
+                <span class="user-card__status">Active</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="user-card__actions">
+        <button class="action-btn">
+            <app-button variant="outline" icon="./details.svg">Details</app-button>
+
+        </button>
+
+        <button class="action-btn">
+            <app-button variant="outline" icon="./edit.svg">
+                Edit
+            </app-button>
+        </button>
+
+        <button class="action-btn">
+            <app-button variant="outline" icon="./delete.svg"> Delete</app-button>
+
+        </button>
+
+        <button class="action-btn">
+            @if (!isBlocked()) {
+            <app-button variant="outline" icon="./block.svg" (click)="block()">
+                Block
+            </app-button>
+            } @else {
+            <app-button variant="outline" icon="./unblock.svg" (click)="block()">
+                Unblock
+            </app-button>
+            }
+        </button>
+    </div>
+</app-basic-card>
