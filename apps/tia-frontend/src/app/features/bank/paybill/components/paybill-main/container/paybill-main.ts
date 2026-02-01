@@ -43,7 +43,7 @@ export class PaybillMain implements OnInit {
 
   // States
 
-  private readonly selectedSenderAccountId = signal<string | null>(null);
+  protected readonly selectedSenderAccountId = signal<string | null>(null);
 
   public readonly currentStep = this.store.selectSignal(
     PAYBILL_SELECTORS.selectCurrentStep,

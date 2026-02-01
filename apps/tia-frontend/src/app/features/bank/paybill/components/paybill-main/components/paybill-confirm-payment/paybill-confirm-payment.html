@@ -21,7 +21,7 @@
     <div class="confirm-content__options">
       <lib-select
         [options]="currentAccounts()!"
-        [value]="selectedAccountId()"
+        [(value)]="selectedAccountId"
         [config]="selectConfig"
       ></lib-select>
     </div>

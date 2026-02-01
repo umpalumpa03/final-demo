@@ -3,6 +3,7 @@ import {
   computed,
   inject,
   input,
+  model,
   output,
   signal,
 } from '@angular/core';
@@ -45,16 +46,14 @@ export class PaybillConfirmPayment {
   public readonly cancelPayment = output<void>();
 
   public readonly accountChanged = output<string>();
-  public readonly selectedAccountId = signal<string | null>(null);
+  public readonly selectedAccountId = model<string | null>(null);
   public readonly currentAccounts = input<
     { label: string; value: string }[] | null
   >(null);
 
   protected readonly selectConfig = paymentOptionPaybill;
 
-
   public handleAccountChange(id: string): void {
-    this.selectedAccountId.set(id);
     this.accountChanged.emit(id);
   }
 

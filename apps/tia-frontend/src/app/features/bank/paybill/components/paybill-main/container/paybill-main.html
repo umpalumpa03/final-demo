@@ -22,7 +22,7 @@ activeProvider();
       [iconBgPath]="ui!.iconBgPath"
       (cancelPayment)="onBackToDetails()"
       [currentAccounts]="storeAccounts()"
-      (accountChanged)="onAccountSelected($event)"
+      [(selectedAccountId)]="selectedSenderAccountId"
     />
     } @case('OTP'){
     <app-paybill-otp-verification
