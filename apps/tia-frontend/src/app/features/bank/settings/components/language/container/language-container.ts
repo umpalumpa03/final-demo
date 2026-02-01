@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LanguageSwitcher } from "../components/language-switcher/language-switcher";
 import { TranslatePipe } from '@ngx-translate/core';
 import { SettingsBody } from "../../../shared/ui/settings-body/settings-body";
@@ -12,6 +12,5 @@ import { SettingsBody } from "../../../shared/ui/settings-body/settings-body";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LanguageContainer {
-  public hasHeader = input<boolean>(true);
 }
 
