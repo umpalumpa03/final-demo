@@ -44,8 +44,8 @@
         "amount": "Total Amount:",
         "na": "N/A"
       }
+    }
   },
-
   "templates": {
     "title": "Saved Templates",
     "description": "Manage your payment templates and groups",

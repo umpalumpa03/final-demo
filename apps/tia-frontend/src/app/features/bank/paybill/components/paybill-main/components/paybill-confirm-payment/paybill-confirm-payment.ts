@@ -2,11 +2,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  inject,
   input,
   model,
   output,
-  signal,
 } from '@angular/core';
 import {
   BillDetails,
@@ -18,12 +16,10 @@ import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/share
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { PaymentSummary } from '../../shared/ui/payment-summary/payment-summary';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
-import { Store } from '@ngrx/store';
-import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { CurrencyPipe } from '@angular/common';
 import { paymentOptionPaybill } from './config/input.config';
-import { CONFIRM_PAYMENT_UI } from './config/translate.config';
-import { mapConfirmSummaryFields } from './utils/paybill-confirm.config';
+import { CONFIRM_PAYMENT_UI, mapConfirmSummaryFields } from './config/translate.config';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-paybill-confirm-payment',
@@ -34,6 +30,7 @@ import { mapConfirmSummaryFields } from './utils/paybill-confirm.config';
     PaymentSummary,
     Dropdowns,
     CurrencyPipe,
+    TranslatePipe
   ],
   templateUrl: './paybill-confirm-payment.html',
   styleUrl: './paybill-confirm-payment.scss',
@@ -66,7 +63,11 @@ export class PaybillConfirmPayment {
   }
 
   protected readonly summaryItems = computed(() =>
-    mapConfirmSummaryFields(this.summary(), this.details()),
+    mapConfirmSummaryFields(
+      this.provider().name!,
+      this.summary(),
+      this.details(),
+    ),
   );
 
   protected readonly title = 'Confirm Payment';
