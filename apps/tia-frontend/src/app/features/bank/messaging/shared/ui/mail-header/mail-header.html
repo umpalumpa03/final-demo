@@ -6,14 +6,14 @@
       {{ 'messaging.compose.title' | translate }}
     </p>
   </div>
-  @if(!isSent()){
+  @if(!isSent() && !(messageCount() == 0)){
   <div class="header__action">
     <div class="header__action">
       @if(showBulkActions()){
       <app-button
         variant="destructive"
         icon="trash-icon.svg"
-        (click)="bulkDelete.emit()"
+        (click)="onDeleteClick()"
       ></app-button>
       @if(!isDraft()){
       <app-button
@@ -33,3 +33,22 @@
   </div>
   }
 </header>
+
+<app-ui-modal [isOpen]="isDeleteModalOpen()" (closed)="onCancelDelete()">
+  <div class="delete-account">
+    <header class="delete-account__header">
+      <app-library-title
+        title="Delete Email"
+        subtitle="Are you sure you want to delete this email? This action cannot be undone."
+      ></app-library-title>
+    </header>
+    <footer class="delete-account__footer">
+      <app-button variant="outline" (click)="onCancelDelete()"
+        >Cancel</app-button
+      >
+      <app-button variant="destructive" (click)="onConfirmDelete()"
+        >Delete</app-button
+      >
+    </footer>
+  </div>
+</app-ui-modal>

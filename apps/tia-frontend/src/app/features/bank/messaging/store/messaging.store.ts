@@ -174,7 +174,22 @@ export const MessagingStore = signalStore(
             },
             clearError() {
                 patchState(store, { error: undefined });
-            }
+            },
+
+            getEmailById: rxMethod<number>(
+                pipe(
+                    tap(() => patchState(store, { isLoading: true })),
+                    switchMap((mailId) => messagingService.getEmailById(mailId).pipe(
+                        tap((emailDetail) => {
+                            patchState(store, { emailDetail }, { isLoading: false });
+                        }),
+                        catchError((error) => {
+                            patchState(store, { error: 'Failed to load email detail' });
+                            return of(null);
+                        }),
+                    )),
+                )
+            ),
         }
     })
 );

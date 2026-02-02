@@ -98,6 +98,7 @@ export class Compose {
     }
 
     const toEmail = this.toEmail();
+    console.log('To Email:', toEmail); //ეს კონსოლი მჭირდება დროებით
     if (!toEmail) {
       this.invalidForm.set(true);
       setTimeout(() => {
