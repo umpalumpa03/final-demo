@@ -2,13 +2,13 @@ import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { map, catchError, switchMap } from 'rxjs/operators';
-import { AccountsService } from '../../../shared/services/accounts/accounts.service';
+import { AccountsApiService } from '../../../shared/services/accounts/accounts.api.service';
 import { AccountsActions } from './accounts.actions';
 
 @Injectable()
 export class AccountsEffects {
   private readonly actions$ = inject(Actions);
-  private readonly accountsService = inject(AccountsService);
+  private readonly accountsService = inject(AccountsApiService);
 
   loadAccounts$ = createEffect(() =>
     this.actions$.pipe(

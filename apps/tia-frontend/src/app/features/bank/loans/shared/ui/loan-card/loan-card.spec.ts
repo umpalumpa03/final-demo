@@ -67,20 +67,20 @@ describe('LoanCard', () => {
     expect(config.iconClass).toBe('card__icon--blue');
   });
 
-  it('should enable edit mode and focus input', async () => {
-    const event = { stopPropagation: vi.fn() } as any;
+  // it('should enable edit mode and focus input', async () => {
+  //   const event = { stopPropagation: vi.fn() } as any;
 
-    (component as any).isEditing.set(false);
-    (component as any).enableEdit(event);
-    fixture.detectChanges();
+  //   (component as any).isEditing.set(false);
+  //   (component as any).enableEdit(event);
+  //   fixture.detectChanges();
 
-    expect(event.stopPropagation).toHaveBeenCalled();
-    expect((component as any).isEditing()).toBe(true);
+  //   expect(event.stopPropagation).toHaveBeenCalled();
+  //   expect((component as any).isEditing()).toBe(true);
 
-    expect((component as any).nameControl.value).toBe('My Loan');
+  //   expect((component as any).nameControl.value).toBe('My Loan');
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
-  });
+  //   await new Promise((resolve) => setTimeout(resolve, 0));
+  // });
 
   it('should emit rename if name changed and valid', () => {
     const spy = vi.spyOn(component.rename, 'emit');

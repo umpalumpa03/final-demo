@@ -2,7 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
 import { Observable } from 'rxjs';
-import { RecipientResponse } from '../models/transfers.state.model';
+import {
+  RecipientResponse,
+  TransferResponse,
+} from '../models/transfers.state.model';
 
 @Injectable({ providedIn: 'root' })
 export class TransfersApiService {
@@ -39,5 +42,42 @@ export class TransfersApiService {
         amountToSend: amountToSend.toString(),
       },
     });
+  }
+
+  public transferSameBank(payload: {
+    senderAccountId: string;
+    receiverAccountIban: string;
+    description: string;
+    amountToSend: number;
+  }): Observable<TransferResponse> {
+    return this.http.post<TransferResponse>(
+      `${this.baseURL}/tia-transfers/someone`,
+      payload,
+    );
+  }
+  public transferExternalBank(payload: {
+    senderAccountId: string;
+    receiverAccountIban: string;
+    receiverAccountCurrency: string;
+    receiverName: string;
+    amountToSend: number;
+    description: string;
+  }): Observable<TransferResponse> {
+    return this.http.post<TransferResponse>(
+      `${this.baseURL}/someone/external-bank`,
+      payload,
+    );
+  }
+  public verifyTransfer(payload: {
+    challengeId: string;
+    code?: string;
+  }): Observable<{ success: boolean; transferId: string }> {
+    return this.http.post<{ success: boolean; transferId: string }>(
+      `${this.baseURL}/verify`,
+      {
+        challengeId: payload.challengeId,
+        ...(payload.code && { code: payload.code }),
+      },
+    );
   }
 }
