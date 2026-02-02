@@ -78,3 +78,25 @@ export const loadTotalEffect = createEffect(
   },
   { functional: true },
 );
+
+export const loadTransactionsCategoriesEffect = createEffect(
+  (
+    actions$ = inject(Actions),
+    transactionService = inject(TransactionService),
+  ) => {
+    return actions$.pipe(
+      ofType(TransactionActions.enter, TransactionActions.loadCategories),
+      switchMap(() => {
+        return transactionService.getTransactionsCategories().pipe(
+          map((categories) =>
+            TransactionActions.loadCategoriesSuccess({ categories }),
+          ),
+          catchError((error) =>
+            of(TransactionActions.loadCategoriesFailure({ error })),
+          ),
+        );
+      }),
+    );
+  },
+  { functional: true },
+);

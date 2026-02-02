@@ -22,7 +22,7 @@ export interface ConvertionInfo {
   finalAmount: number;
 }
 
-export interface TransactionFilter {
+export interface ITransactionFilter {
   searchCriteria?: string;
   amountFrom?: number;
   amountTo?: number;
