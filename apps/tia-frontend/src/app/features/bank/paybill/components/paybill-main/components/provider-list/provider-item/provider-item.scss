@@ -39,6 +39,11 @@
     cursor: default;
     background: $gray-25;
     border-color: transparent;
+    pointer-events: none;
+
+    .provider-item__content {
+      gap: 1.6rem;
+    }
   }
 
   &:hover:not(&--skeleton) {

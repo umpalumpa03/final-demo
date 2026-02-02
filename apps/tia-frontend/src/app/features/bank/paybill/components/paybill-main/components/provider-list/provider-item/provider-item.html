@@ -1,9 +1,15 @@
 @if (isLoading()) {
 <section class="provider-item provider-item--skeleton">
   <div class="provider-item__content">
-    <app-skeleton variant="text" width="18rem" height="2rem" />
+    <app-skeleton variant="circle" width="0.8rem" height="0.8rem" />
+    <app-skeleton variant="text" width="18rem" height="1.6rem" />
   </div>
-  <app-skeleton variant="circle" width="2rem" height="2rem" />
+  <app-skeleton
+    variant="rectangle"
+    width="2.4rem"
+    height="2.4rem"
+    borderRadius="0.4rem"
+  />
 </section>
 } @else {
 <button
