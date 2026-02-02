@@ -115,7 +115,7 @@ header {
     }
 
     .loader-container {
-        @include flex-center($align: flex-start);
+        @include flex-center;
         padding: 3rem;
     }
 }

@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -14,10 +15,18 @@ import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
 import { UserDetailsModal } from '../../shared/ui/user-details-modal/user-details-modal';
 import { IModalState } from '../../shared/models/users.model';
 import { ConfirmModal } from '../../shared/ui/confirm-modal/confirm-modal';
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 
 @Component({
   selector: 'app-user-management',
-  imports: [TextInput, UserCard, Pagination, UserDetailsModal, ConfirmModal],
+  imports: [
+    TextInput,
+    UserCard,
+    Pagination,
+    UserDetailsModal,
+    ConfirmModal,
+    Skeleton,
+  ],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss',
   providers: [UserManagementState, UserManagementStore],
@@ -50,6 +59,23 @@ export class UserManagementComponent {
     return users.slice(startIndex, endIndex);
   });
 
+  constructor() {
+    effect(() => {
+      const mode = this.modalState();
+      const idToDelete = this.userToDeleteId();
+      const users = this.store.users();
+      const loading = this.store.actionLoading();
+
+      if (mode === 'delete' && idToDelete && !loading) {
+        const userExists = users.some((u) => u.id === idToDelete);
+
+        if (!userExists) {
+          this.onCloseModal();
+        }
+      }
+    });
+  }
+
   public ngOnInit(): void {
     this.store.loadUsers();
   }
@@ -74,7 +100,6 @@ export class UserManagementComponent {
 
     if (id) {
       this.store.deleteUser(id);
-      this.onCloseModal();
     }
   }
 

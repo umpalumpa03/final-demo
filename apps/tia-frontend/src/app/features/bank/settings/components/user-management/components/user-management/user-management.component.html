@@ -5,16 +5,39 @@
         </lib-text-input>
     </div>
 
+    @if (store.loading()) {
+    @for (item of [1, 2, 3, 4]; track item) {
+    <div class="skeleton">
+        <div class="skeleton__content">
+            <app-skeleton variant="circle" height="4.8rem"></app-skeleton>
+            <div class="skeleton__text">
+                <app-skeleton width="15rem" height="1.2rem"></app-skeleton>
+                <app-skeleton width="20rem" height="1rem"></app-skeleton>
+            </div>
+        </div>
+
+        <div class="skeleton__actions">
+            <app-skeleton width="8rem" height="3.6rem"></app-skeleton>
+            <app-skeleton width="8rem" height="3.6rem"></app-skeleton>
+            <app-skeleton width="8rem" height="3.6rem"></app-skeleton>
+            <app-skeleton width="8rem" height="3.6rem"></app-skeleton>
+        </div>
+    </div>
+    }
+    }
+    @else {
     @for (user of visibleUsers(); track user.id) {
     <app-user-card [user]="user" (onDetails)="details(user.id)" (onDelete)="deleteUser(user.id)">
     </app-user-card>
+    }
     }
 
     <app-user-details-modal [isOpen]="modalState() === 'details'" [userData]="store.selectedUser()"
         [isLoading]="store.actionLoading()" (close)="onCloseModal()">
     </app-user-details-modal>
 
-    <app-confirm-modal [isOpen]="modalState() === 'delete'" (close)="onCloseModal()" (deleteUser)="onConfirmDelete()">
+    <app-confirm-modal [isOpen]="modalState() === 'delete'" [isLoading]="store.actionLoading()" (close)="onCloseModal()"
+        (deleteUser)="onConfirmDelete()">
     </app-confirm-modal>
 
     <app-pagination [currentPage]="currentPage()" [totalPages]="totalPages()" (pageChange)="onPageChange($event)">
