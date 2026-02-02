@@ -10,6 +10,7 @@ import {
   selectCurrentAvatarUrl,
   selectUploadedFileName,
 } from '../../../../../../store/profile-photo/profile-photo.selectors';
+import { selectUserInfo } from '../../../../../../store/user-info/user-info.selectors';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../../../../environments/environment';
 
@@ -29,6 +30,7 @@ export class ProfilePhotoContainer implements OnDestroy {
   public readonly selectedAvatarId = this.store.selectSignal(selectSelectedAvatarId);
   public readonly currentAvatarUrl = this.store.selectSignal(selectCurrentAvatarUrl);
   public readonly uploadedFileName = this.store.selectSignal(selectUploadedFileName);
+  public readonly userInfo = this.store.selectSignal(selectUserInfo);
 
   public readonly alertKind = signal<AlertType | null>(null);
   public readonly alertMessage = signal<string>('');
@@ -136,6 +138,7 @@ public constructor() {
       this.objectUrl = null;
     }
     this.uploadedFile = null;
+    this.store.dispatch(ProfilePhotoActions.removeAvatar());
     this.store.dispatch(ProfilePhotoActions.removeAvatarRequest());
   }
 

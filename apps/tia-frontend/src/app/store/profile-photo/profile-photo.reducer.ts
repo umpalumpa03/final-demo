@@ -10,6 +10,7 @@ const initialState: ProfilePhotoState = {
   selectedAvatarId: null,
   uploadedFileName: null,
   currentAvatarUrl: null,
+  savedAvatarUrl: null,
   avatarId: null,
   avatarType: null,
 };
@@ -53,6 +54,7 @@ export const profilePhotoFeature = createFeature({
       avatarId,
       avatarType,
       currentAvatarUrl: avatarUrl,
+      savedAvatarUrl: avatarUrl,
       uploadedFileName: null,
       selectedAvatarId: avatarType === 'default' ? avatarId : null,
     })),
@@ -61,6 +63,7 @@ export const profilePhotoFeature = createFeature({
       uploadedFileName: null,
       selectedAvatarId: null,
       currentAvatarUrl: null,
+      savedAvatarUrl: null,
       avatarId: null,
       avatarType: null,
     })),
