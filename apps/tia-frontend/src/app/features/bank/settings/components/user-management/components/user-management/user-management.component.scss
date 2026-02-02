@@ -1,0 +1,6 @@
+@use "../../../../../../../shared/styles/mixins" as *;
+
+main {
+    @include display-flex(column);
+    gap: 1.6rem;
+}
