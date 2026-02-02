@@ -2,12 +2,13 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { CardGroupView } from '../../models/card-list-view.model';
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 import { CardStack } from '../card-stack/card-stack';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-card-group-item',
   templateUrl: './card-group-item.html',
   styleUrls: ['./card-group-item.scss'],
-  imports: [Badges, CardStack],
+  imports: [Badges, CardStack, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardGroupItem {
@@ -29,4 +30,5 @@ export class CardGroupItem {
   public handleViewAllClick(): void {
     this.viewAllClicked.emit({ accountId: this.group().account.id });
   }
+  
 }

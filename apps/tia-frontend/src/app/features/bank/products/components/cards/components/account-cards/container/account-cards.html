@@ -1,6 +1,6 @@
 <div class="account-cards">
   <app-button variant="ghost" [icon]="'left-arrow.svg'" (click)="handleBackClick()">
-    Back to Cards
+      {{'my-products.card.account-cards.backToCards' | translate }}
   </app-button>
 
   @let viewState = viewState$ | async;
@@ -10,7 +10,8 @@
 
   @switch (viewState) {
     @case ('no-account') {
-      <p class="account-cards__error">Account not found</p>
+      <p class="account-cards__error">      {{'my-products.card.account-cards.accountNotFound' | translate }}
+</p>
     }
 
     @case ('loading') {

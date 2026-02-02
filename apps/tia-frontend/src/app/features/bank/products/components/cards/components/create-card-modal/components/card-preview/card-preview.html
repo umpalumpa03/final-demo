@@ -1,5 +1,5 @@
 <div class="card-preview">
-  <h3 class="card-preview__title">Card Preview</h3>
+  <h3 class="card-preview__title">{{'my-products.card.create-card-modal.cardPreview.cardPreview' | translate }}</h3>
   <div class="card-preview__display">
     @if (isLoading()) {
       <div class="card-preview__placeholder">
@@ -9,7 +9,7 @@
       <img [src]="designUri()" alt="Card preview" class="card-preview__image" />
     } @else {
       <div class="card-preview__placeholder">
-        <span>Select a design</span>
+        <span>{{'my-products.card.create-card-modal.cardPreview.SelectDesign' | translate }}</span>
       </div>
     }
   </div>

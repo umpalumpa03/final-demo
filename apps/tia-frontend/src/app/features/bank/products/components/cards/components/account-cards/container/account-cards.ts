@@ -21,6 +21,7 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { AccountHeader } from '../components/account-header/account-header';
 import { CardGridItem } from '../components/card-grid-item/card-grid-item';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-account-cards',
@@ -32,7 +33,7 @@ import { CardGridItem } from '../components/card-grid-item/card-grid-item';
     ButtonComponent,
     ErrorStates,
     AccountHeader,
-    CardGridItem,
+    CardGridItem,TranslatePipe
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

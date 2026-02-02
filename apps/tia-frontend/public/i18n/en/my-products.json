@@ -67,5 +67,56 @@
     "accountNameUpdatedSuccessfully": "Account name updated successfully",
     "accountCreationRequestSent": "Account creation request has been sent to admin for approval",
     "failedToCreateAccount": "Failed to create account"
+  },
+  "card": {
+    "card-list": {
+      "add-card-button": {
+        "getNewCard": "Get New Card"
+      },
+      "card-group-item": {
+        "allCards": "Click to view all cards",
+        "noCard": "No cards avaliable"
+      },
+      "myCards": "My Cards",
+      "manageAccounts": "Manage your bank accounts",
+      "alertType": "success",
+      "alertMessage": "Card created successfully!"
+    },
+    "account-cards": {
+      "card-grid": {
+        "avaliableAmount": "Available"
+      },
+      "backToCards": "Back to Cards",
+      "accountNotFound": "Account not found"
+    },
+    "card-details": {
+      "backToCards": "Back to Cards",
+      "cardTitle": "Quick Actions",
+      "manageYourCard": "Manage your card and transactions",
+
+      "card-info-section": {
+        "cardName": "Card Name",
+        "cardType": "Card Type",
+        "currency": "Currency",
+        "Status": "Status",
+        "totalBalance": "Total Balance",
+        "avaliableLimit": "Avaliable Limit"
+      },
+      "quick-actions-section": {
+        "transferOwnAccount": "Transfer to Own Account",
+        "transferSomeoneElse": "Transfer to Someone Else",
+        "payPaybill": "Pay Paybill",
+        "ViewSensitiveDetails": "View Sensitive Details",
+        "ViewTransactions": "View Transactions"
+      }
+    },
+    "create-card-modal": {
+      "newCard": "Create New Card",
+      "subtitle": "Add a new credit or debit card to your account",
+      "cardPreview": {
+        "cardPreview": "Card Preview",
+        "SelectDesign": "Select a design"
+      }
+    }
   }
 }

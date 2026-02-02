@@ -29,12 +29,13 @@ import { CardPreview } from '../components/card-preview/card-preview';
 import { DesignSelector } from '../components/design-selector/design-selector';
 import { CreateCardForm } from '../components/create-card-form/create-card-form';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-create-card',
   templateUrl: './createCard.html',
   styleUrl: './createCard.scss',
-  imports: [CommonModule, UiModal, CardPreview, DesignSelector, CreateCardForm],
+  imports: [CommonModule, UiModal, CardPreview, DesignSelector, CreateCardForm,TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateCard {

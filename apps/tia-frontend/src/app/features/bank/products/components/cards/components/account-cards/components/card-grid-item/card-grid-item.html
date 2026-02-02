@@ -18,7 +18,7 @@
     </div>
     @if (card().details.type === 'CREDIT' && card().details.creditLimit) {
     <div class="card-grid-item__limit-info">
-      <p class="card-grid-item__limit-label">Available</p>
+      <p class="card-grid-item__limit-label"> {{'my-products.card.account-cards.card-grid.avaliableAmount' | translate }} </p>
       <p class="card-grid-item__limit-value">
        {{ currency() }} {{ card().details.creditLimit }}
       </p>

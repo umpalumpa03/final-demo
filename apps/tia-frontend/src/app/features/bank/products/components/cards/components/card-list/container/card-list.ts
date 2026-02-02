@@ -31,6 +31,7 @@ import { CardGroupView } from '../models/card-list-view.model';
 import { CardGroupItem } from '../components/card-group-item/card-group-item';
 import { AddCardButton } from '../components/add-card-button/add-card-button';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-card-list',
@@ -44,6 +45,7 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
     ErrorStates,
     CardGroupItem,
     AddCardButton,
+    TranslatePipe
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

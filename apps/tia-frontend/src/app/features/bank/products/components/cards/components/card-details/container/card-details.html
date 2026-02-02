@@ -19,7 +19,7 @@
         [icon]="'left-arrow.svg'"
         (click)="handleBack()"
       >
-        Back to Cards
+       {{'my-products.card.card-details.backToCards' | translate }}
       </app-button>
     </div>
 
@@ -47,8 +47,8 @@
     </app-basic-card>
 
     <app-basic-card
-      title="Quick Actions"
-      subtitle="Manage your card and transactions"
+      title="{{'my-products.card.card-details.cardTitle' | translate }}"
+      subtitle="{{'my-products.card.card-details.manageYourCard' | translate }}"
       maxWidth="100%"
       padding="2rem"
     >

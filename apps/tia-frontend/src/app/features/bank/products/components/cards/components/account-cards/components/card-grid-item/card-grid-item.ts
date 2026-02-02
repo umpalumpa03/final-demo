@@ -2,12 +2,13 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 import { CardWithDetails } from '../../../../models/card-image.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-card-grid-item',
   templateUrl: './card-grid-item.html',
   styleUrls: ['./card-grid-item.scss'],
-  imports: [Badges],
+  imports: [Badges, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardGridItem {

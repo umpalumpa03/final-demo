@@ -1,14 +1,14 @@
 @if (viewData$ | async; as data) {
 <div class="card-list">
   <div class="card-list__header">
-    <h1 class="card-list__title">My Cards</h1>
-    <h2 class="card-list__subtitle">Manage your bank accounts</h2>
+    <h1 class="card-list__title"> {{'my-products.card.card-list.myCards' | translate }}</h1>
+    <h2 class="card-list__subtitle">{{'my-products.card.card-list.manageAccounts' | translate }}</h2>
   </div>
   @if (data.showSuccessAlert) {
 <div class="card-list__alert-container">
   <app-simple-alerts
-    alertType="success"
-    alertMessage="Card created successfully!"
+    alertType="{{'my-products.card.card-list.alertType' | translate }}"
+    alertMessage="{{'my-products.card.card-list.alertMessage' | translate }}"
   />
 </div>
 }

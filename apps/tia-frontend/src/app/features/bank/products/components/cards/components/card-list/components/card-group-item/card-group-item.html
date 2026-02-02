@@ -36,7 +36,7 @@
       (click)="handleViewAllClick()"
       type="button"
     >
-      Click to view all cards
+      {{'my-products.card.card-list.card-group-item.allCards' | translate }}
     </button>
 
     }
@@ -44,7 +44,7 @@
 
   }@else {
   <app-badges
-    text="No cards available"
+    text=" {{'my-products.card.card-list.card-group-item.noCard' | translate }}"
     variant="info"
     size="medium"
     shape="rounded"
