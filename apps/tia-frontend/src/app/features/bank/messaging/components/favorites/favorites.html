@@ -11,7 +11,7 @@
 <div class="loading-state">
   <app-route-loader variant="full-page" text="Loading messages..." />
 </div>
-} @else if(mails().length === 0) {
+} @else if(!mails().length) {
 <app-empty-card></app-empty-card>
 }@else {
 <div>

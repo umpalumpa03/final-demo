@@ -13,8 +13,8 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AuthService } from '../../../services/auth.service';
 import { Routes } from '../../../models/tokens.model';
-import { LibraryHeader } from 'apps/tia-frontend/src/app/features/storybook/shared/library-header/library-header';
-import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
+import { AuthHeader } from "../../../shared/auth-header/auth-header";
+import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader";
 
 @Component({
   selector: 'app-forgot-password-email',
@@ -23,9 +23,10 @@ import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/share
     ButtonComponent,
     ReactiveFormsModule,
     RouterLink,
-    LibraryTitle,
     TranslatePipe,
-  ],
+    AuthHeader,
+    RouteLoader
+],
   templateUrl: './forgot-password-email.html',
   styleUrl: './forgot-password-email.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,10 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DragCard } from './drag-card';
 import { vi } from 'vitest';
+import { TranslateService } from '@ngx-translate/core';
+import { of } from 'rxjs';
 
 describe('DragCard', () => {
   let component: DragCard;
   let fixture: ComponentFixture<DragCard>;
+
+  const mockTranslate = {
+    instant: (key: string) => key,
+    get: vi.fn(() => of('translated')),
+    stream: vi.fn(() => of('translated')),
+    use: vi.fn(),
+    currentLang: 'en',
+    onLangChange: of({ lang: 'en', translations: {} }),
+    onTranslationChange: of({ lang: 'en', translations: {} }),
+    onDefaultLangChange: of({ lang: 'en', translations: {} })
+  };
 
   const mockItems = [
     { id: '1', title: 'Item 1', subtitle: 'Subtitle 1' },
@@ -15,6 +28,9 @@ describe('DragCard', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DragCard],
+      providers: [
+        { provide: TranslateService, useValue: mockTranslate }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(DragCard);

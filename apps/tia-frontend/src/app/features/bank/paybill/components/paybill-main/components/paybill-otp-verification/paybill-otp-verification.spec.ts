@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PaybillOtpVerification } from './paybill-otp-verification';
 import { vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('PaybillOtpVerification', () => {
   let component: PaybillOtpVerification;
@@ -8,7 +9,7 @@ describe('PaybillOtpVerification', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PaybillOtpVerification],
+      imports: [PaybillOtpVerification, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PaybillOtpVerification);

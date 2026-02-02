@@ -1,0 +1,97 @@
+<app-showcase-card>
+  <app-library-title
+    [title]="'Filters'"
+    [subtitle]="'Apply filters to refine your transaction list'"
+  ></app-library-title>
+
+  <form [formGroup]="filterForm" class="transaction-filters-form">
+    <div class="transaction-filters-form__input-wrapper">
+      <lib-text-input
+        formControlName="searchCriteria"
+        [type]="'search'"
+        [config]="{
+            label: 'Search'
+          }"
+      >
+      </lib-text-input>
+    </div>
+
+    <div class="transaction-filters-form__input-wrapper">
+      <lib-select
+        formControlName="category"
+        [options]="categoryOptions()"
+        [config]="{
+              label: 'Category',
+              placeholder: 'All Categories'
+            }"
+      >
+      </lib-select>
+    </div>
+
+    <div class="transaction-filters-form__input-wrapper">
+      <lib-text-input
+        formControlName="amountFrom"
+        [type]="'number'"
+        [config]="{ label: 'Min Amount', placeholder: '0' }"
+      >
+      </lib-text-input>
+    </div>
+
+    <div class="transaction-filters-form__input-wrapper">
+      <lib-text-input
+        formControlName="amountTo"
+        [type]="'number'"
+        [config]="{ label: 'Max Amount', placeholder: 'Any' }"
+      >
+      </lib-text-input>
+    </div>
+
+    <div class="transaction-filters-form__input-wrapper">
+      <lib-select
+        formControlName="accountIban"
+        [options]="accountOptions()"
+        [config]="{ 
+            label: 'Account', 
+            placeholder: 'Select Account' 
+          }"
+      >
+      </lib-select>
+    </div>
+
+    <div class="transaction-filters-form__input-wrapper">
+      <lib-select
+        formControlName="currency"
+        [options]="currencyOptions"
+        [config]="{ 
+            label: 'Currency', 
+            placeholder: 'All' 
+          }"
+      >
+      </lib-select>
+    </div>
+
+    <div class="transaction-filters-form__input-wrapper">
+      <lib-text-input
+        formControlName="dateFrom"
+        [type]="'date'"
+        [config]="{
+              label: 'Date From',
+              placeholder: 'YYYY-MM-DD'
+            }"
+      >
+      </lib-text-input>
+    </div>
+
+    <div class="transaction-filters-form__input-wrapper">
+      <lib-text-input
+        formControlName="dateTo"
+        [type]="'date'"
+        [config]="{
+              label: 'Date To',
+              placeholder: 'YYYY-MM-DD'
+            }"
+      >
+      </lib-text-input>
+    </div>
+  </form>
+</app-showcase-card>

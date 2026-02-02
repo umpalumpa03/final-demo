@@ -17,6 +17,7 @@ import { widgetItems } from '../config/widgets.config';
 import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import { Store } from '@ngrx/store';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import {
   clearExchangeRates,
   loadExchangeRates,
@@ -34,6 +35,7 @@ import { Router } from '@angular/router';
     WidgetAccounts,
     WidgetExchange,
     LibraryTitle,
+    TranslateModule
   ],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
@@ -42,9 +44,18 @@ import { Router } from '@angular/router';
 export class DashboardContainer implements OnInit {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   protected readonly myItems = signal<(IWidgetItem & { isHidden?: boolean })[]>(
     [...widgetItems],
+  );
+
+  protected readonly pageTitle = computed(() =>
+    this.translate.instant('dashboard.page.title')
+  );
+
+  protected readonly pageSubtitle = computed(() =>
+    this.translate.instant('dashboard.page.subtitle')
   );
 
   protected readonly dynamicColspans = computed(() => {
@@ -85,6 +96,20 @@ export class DashboardContainer implements OnInit {
   }
 
   ngOnInit() {
+    console.log('=== TRANSLATION DEBUG ===');
+    console.log('Current language:', this.translate.currentLang);
+    console.log('Default language:', this.translate.defaultLang);
+
+    // Test if the key exists
+    this.translate.get('dashboard.widgets.transactions.title').subscribe(result => {
+      console.log('Translation result:', result);
+    });
+
+    // Check what's actually loaded
+    this.translate.get('dashboard').subscribe(result => {
+      console.log('Full dashboard namespace:', result);
+    });
+
     this.store.dispatch(
       TransactionActions.updateFilters({
         filters: { pageLimit: 10 },

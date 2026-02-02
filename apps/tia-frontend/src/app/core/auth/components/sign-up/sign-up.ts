@@ -12,15 +12,17 @@ import { Router, RouterLink } from '@angular/router';
 import { RegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/registration-form/registration-form';
 import { TokenService } from '../../services/token.service';
 import { IRegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/models/contact-forms.model';
-import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { AuthService } from '../../services/auth.service';
 import { Routes } from '../../models/tokens.model';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
+import { TranslatePipe } from '@ngx-translate/core';
+import { AuthHeader } from "../../shared/auth-header/auth-header";
+import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader";
 
 
 @Component({
   selector: 'app-sign-up',
-  imports: [RouterLink, RegistrationForm, Spinner, AlertTypesWithIcons],
+  imports: [RouterLink, RegistrationForm, AlertTypesWithIcons, TranslatePipe, AuthHeader, RouteLoader],
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.scss',
   providers: [TokenService],

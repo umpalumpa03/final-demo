@@ -89,17 +89,17 @@ describe('DraggableCard', () => {
 
   it('should update checked model and emit change', () => {
     const spy = vi.spyOn(component.checkedChange, 'emit');
-    
+
     component.onCheckedChange(true);
-    
+
     expect(component.checked()).toBe(true);
     expect(spy).toHaveBeenCalledWith(true);
   });
 
   it('should update selectedPagination signal and emit value', () => {
     const spy = vi.spyOn(component.paginationChange, 'emit');
-    
-    const mockValue = '40'; 
+
+    const mockValue = '40';
 
     component.onPaginationChange(mockValue);
 
@@ -109,7 +109,7 @@ describe('DraggableCard', () => {
 
   it('should not update pagination if value is invalid', () => {
     const spy = vi.spyOn(component.paginationChange, 'emit');
-    
+
     component.onPaginationChange(null as any);
     component.onPaginationChange(true as any);
 
