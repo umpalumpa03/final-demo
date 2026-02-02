@@ -106,6 +106,9 @@ export const NotificationsStore = signalStore(
                   patchState(store, {
                     items: updatedItems,
                     isLoading: false,
+                    selectedItems: store
+                      .selectedItems()
+                      .filter((item) => item !== id),
                   });
                 },
                 error: () => patchState(store, { hasError: true }),
