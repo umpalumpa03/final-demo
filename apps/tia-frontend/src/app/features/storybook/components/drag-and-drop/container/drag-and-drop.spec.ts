@@ -6,14 +6,31 @@ import {
   TreeItemMovedEvent,
   TreeItemReorderedEvent,
 } from '@tia/shared/lib/drag-n-drop/model/drag.model';
+import { TranslateService } from '@ngx-translate/core';
+import { of } from 'rxjs';
+import { vi } from 'vitest';
 
 describe('DragAndDropContainer', () => {
   let component: DragAndDropContainer;
   let fixture: ComponentFixture<DragAndDropContainer>;
 
+  const mockTranslate = {
+    instant: (key: string) => key,
+    get: vi.fn(() => of('translated')),
+    stream: vi.fn(() => of('translated')),
+    use: vi.fn(),
+    currentLang: 'en',
+    onLangChange: of({ lang: 'en', translations: {} }),
+    onTranslationChange: of({ lang: 'en', translations: {} }),
+    onDefaultLangChange: of({ lang: 'en', translations: {} })
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DragAndDropContainer],
+      providers: [
+        { provide: TranslateService, useValue: mockTranslate }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(DragAndDropContainer);

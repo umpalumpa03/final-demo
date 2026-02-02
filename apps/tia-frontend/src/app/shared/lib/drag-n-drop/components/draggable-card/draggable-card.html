@@ -37,7 +37,7 @@
         } @if(showHeadings()){
         <div class="draggable-card__info">
           <div class="draggable-card__title-row">
-            <p class="draggable-card__title">{{ itemData().title | translate}}</p>
+            <p class="draggable-card__title">{{ itemData().title }}</p>
             @if (badgeCount() !== null) {
             <span class="draggable-card__badge">
               {{ badgeLabel() }} {{ badgeCount() }}
@@ -75,7 +75,7 @@
         </div>
         } @else {
         <div class="draggable-card__info">
-          <p class="draggable-card__title__custom">{{ itemData().title | translate}}</p>
+          <p class="draggable-card__title__custom">{{ itemData().title | translate }}</p>
         </div>
         }
       </div>
