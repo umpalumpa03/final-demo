@@ -36,7 +36,8 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 import { OTP_VERIFY_FORM } from '../../config/inputs.config';
-import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader";
+import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
+import { Routes } from '../../models/tokens.model';
 
 @Component({
   selector: 'app-otp-verification',
@@ -48,8 +49,8 @@ import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader"
     TextInput,
     SimpleAlerts,
     TranslatePipe,
-    RouteLoader
-],
+    RouteLoader,
+  ],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -152,7 +153,6 @@ export class OtpVerification implements OnInit {
     },
   );
 
-
   public setPhoneNumberForm = this.fb.group({
     phoneNumber: ['', [Validators.required, numberValidator]],
   });
@@ -177,11 +177,12 @@ export class OtpVerification implements OnInit {
         this.isResendActive.set(true);
       }
 
-      if(this.countdown() === 0 && this.resendTries() === 0) {
-        this.resendTries.set(3)
-        console.log("NAVIGATING to error page")
+      if (this.countdown() === 0 && this.resendTries() === 0) {
+        this.router.navigate([Routes.ERROR_PAGE]);
+        setTimeout(() => {
+          this.resendTries.set(3);
+        }, 2000);
       }
-
     });
   }
 

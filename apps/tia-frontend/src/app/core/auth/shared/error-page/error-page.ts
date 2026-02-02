@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
   imports: [],
   templateUrl: './error-page.html',
   styleUrl: './error-page.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ErrorPage {
   private router = inject(Router);

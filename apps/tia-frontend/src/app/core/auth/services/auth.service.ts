@@ -25,9 +25,7 @@ import {
   debounceTime,
   EMPTY,
   finalize,
-  interval,
   Observable,
-  Subscription,
   tap,
   throwError,
 } from 'rxjs';
@@ -50,10 +48,9 @@ export class AuthService {
   private challengeId!: string;
   public isLoginLoading = signal<boolean>(false);
   public errorMessage = signal<boolean | null>(false);
-  public successMessage = signal<boolean | null>(false);
-  public infoMessage = signal<boolean | null>(false);
   private baseUrl = `${environment.apiUrl}/auth`;
   public otpError = signal<OtpResponse | null>(null);
+  public resendRetryCounter = signal<number>(0);
 
   public setChellangeId(id: string) {
     this.challengeId = id;
@@ -186,7 +183,7 @@ export class AuthService {
           setTimeout(() => this.otpError.set(null), 2000);
           return EMPTY;
         }),
-        finalize(() => this.isLoginLoading.set(false))
+        finalize(() => this.isLoginLoading.set(false)),
       );
   }
 
@@ -198,7 +195,7 @@ export class AuthService {
       Authorization: `Bearer ${token}`,
     });
 
-    this.isLoginLoading.set(true)
+    this.isLoginLoading.set(true);
     return this.http
       .post<OtpResponse>(
         `${this.baseUrl}/phone/verify`,
@@ -242,7 +239,7 @@ export class AuthService {
   public verifyForgotPasswordOtp(
     code: string,
   ): Observable<ForgotPasswordVerifyResponse> {
-    this.isLoginLoading.set(true)
+    this.isLoginLoading.set(true);
     this.tokenService.clearAccessToken();
     const payload: ForgotPasswordVerifyRequest = {
       challengeId: this.getChallengeId(),
@@ -259,7 +256,7 @@ export class AuthService {
             this.tokenService.setAccessToken(res.access_token);
           }
         }),
-        finalize(() => this.isLoginLoading.set(false))
+        finalize(() => this.isLoginLoading.set(false)),
       );
   }
 
@@ -278,13 +275,13 @@ export class AuthService {
       Authorization: `Bearer ${token}`,
     });
     const payload: CreateNewPasswordRequest = { password };
-    return this.http.post<CreateNewPasswordResponse>(
-      `${this.baseUrl}/create-new-password`,
-      payload,
-      { headers },
-    ).pipe(
-      finalize(() => this.isLoginLoading.set(false))
-    );
+    return this.http
+      .post<CreateNewPasswordResponse>(
+        `${this.baseUrl}/create-new-password`,
+        payload,
+        { headers },
+      )
+      .pipe(finalize(() => this.isLoginLoading.set(false)));
   }
 
   public resendPhoneOtp(): Observable<ResendOtpResponse> {
@@ -299,8 +296,6 @@ export class AuthService {
       payload,
     );
   }
-
-  public resendRetryCounter = signal<number>(0);
 
   public resendVerificationCode(): Observable<OtpResponse> {
     if (this.resendRetryCounter() >= 5) {
