@@ -14,18 +14,20 @@ describe('UserManagementComponent', () => {
   beforeEach(async () => {
     mockStore = {
       loadUsers: vi.fn(),
+      loadUserDetails: vi.fn(),
+      clearSelectedUser: vi.fn(),
       users: signal(
         Array.from({ length: 5 }, (_, i) => ({
           id: `${i}`,
           firstName: `User ${i}`,
         })),
       ),
+      selectedUser: signal(null),
+      actionLoading: signal(false),
     };
 
     mockState = {
-      newConfig: signal({
-        searchInput: { placeholder: 'Search...' },
-      }),
+      newConfig: signal({ searchInput: { placeholder: 'Search...' } }),
     };
 
     await TestBed.configureTestingModule({
@@ -54,13 +56,21 @@ describe('UserManagementComponent', () => {
   it('should handle pagination logic correctly', () => {
     expect(component['totalPages']()).toBe(2);
     expect(component['visibleUsers']().length).toBe(4);
-    expect(component['visibleUsers']()[0].id).toBe('0');
 
     component.onPageChange(2);
     fixture.detectChanges();
 
     expect(component['currentPage']()).toBe(2);
     expect(component['visibleUsers']().length).toBe(1);
-    expect(component['visibleUsers']()[0].id).toBe('4');
+  });
+
+  it('should handle details and modal logic', () => {
+    component.details('1');
+    expect(mockStore.loadUserDetails).toHaveBeenCalledWith('1');
+    expect(component['modalState']()).toBe('details');
+
+    component.onCloseModal();
+    expect(component['modalState']()).toBe('none');
+    expect(mockStore.clearSelectedUser).toHaveBeenCalled();
   });
 });

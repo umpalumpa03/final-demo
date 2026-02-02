@@ -1,1 +1,51 @@
-<p>user-details-modal works!</p>
+@let user= userData();
+<app-ui-modal [isOpen]="isOpen()" (closed)="close.emit()">
+    <header>
+        <div class="icon">
+            <img src="./images/svg/settings/user-management/person.svg" alt="">
+            <h1>User Details</h1>
+        </div>
+        <p>View detailed information about the user.</p>
+    </header>
+
+    <main class="main">
+        @if (user) {
+        <div class="main__icon">
+            <img src="./images/svg/settings/user-management/person.svg" alt="">
+            <div class="user-info">
+                <strong>{{ user.firstName }} {{ user.lastName }}</strong>
+                <p>{{ user.email }}</p>
+                <p>
+                    {{ user.role | lowercase }}
+                    @if(user.isBlocked) {
+                    <strong>Blocked</strong>
+                    } @else {
+                    <strong>Active</strong>
+                    }
+                </p>
+            </div>
+        </div>
+
+        <div>
+            <h4>Username</h4>
+            <p>{{ user.username }}</p>
+        </div>
+
+        <div>
+            <h4>Created At</h4>
+            <p>{{ user.createdAt | date:'dd/MM/yyyy, HH:mm:ss' }}</p>
+        </div>
+        }
+
+        @else {
+        <div class="loading-state">
+            <p>Loading...</p>
+        </div>
+        }
+    </main>
+
+    <footer>
+        <app-button variant="outline" (click)="close.emit()">Close</app-button>
+    </footer>
+
+</app-ui-modal>
