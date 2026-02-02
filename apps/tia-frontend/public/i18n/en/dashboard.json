@@ -5,6 +5,7 @@
   },
   "widgets": {
     "transactions": {
+      "loadMore": "Load More",
       "title": "Recent Transactions",
       "subtitle": "Your latest account activity"
     },

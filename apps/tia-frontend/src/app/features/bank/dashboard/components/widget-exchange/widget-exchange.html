@@ -38,10 +38,8 @@
 </div>
 
 @if (isLoading$ | async) {
-  <div class="widget-loading">
-    <app-route-loader variant="full-page" text="Loading Exchange Rates...">
-    </app-route-loader>
-  </div>
+  <app-route-loader variant="pulsing"  [fillContainer] = 'true'>
+  </app-route-loader>
 } @else if (error$ | async) {
   <div class="widget-error">
     <app-error-states
