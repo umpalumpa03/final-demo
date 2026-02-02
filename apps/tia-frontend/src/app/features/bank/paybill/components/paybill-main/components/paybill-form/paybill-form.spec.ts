@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PaybillForm } from './paybill-form';
 import { ReactiveFormsModule } from '@angular/forms';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('PaybillForm', () => {
   let component: PaybillForm;
@@ -9,7 +10,7 @@ describe('PaybillForm', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PaybillForm, ReactiveFormsModule],
+      imports: [PaybillForm, ReactiveFormsModule,TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PaybillForm);

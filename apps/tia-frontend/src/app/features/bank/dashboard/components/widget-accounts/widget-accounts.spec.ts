@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { DashboardContainer } from 'apps/tia-frontend/src/app/features/bank/dashboard/container/dashboard-container';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('DashboardContainer', () => {
   let component: DashboardContainer;
@@ -26,7 +27,10 @@ describe('DashboardContainer', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DashboardContainer],
+      imports: [
+        DashboardContainer,
+        TranslateModule.forRoot()
+      ],
       providers: [
         provideMockStore({ initialState })
       ]
@@ -40,4 +44,5 @@ describe('DashboardContainer', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  })})
+  });
+});

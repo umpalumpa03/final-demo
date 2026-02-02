@@ -5,7 +5,10 @@
   padding="2.4rem"
 >
   <header class="confirm-card__header">
-    <app-library-title [title]="title" [subtitle]="subtitle" />
+    <app-library-title
+      [title]="ui.TITLE | translate"
+      [subtitle]="ui.SUBTITLE | translate"
+    />
   </header>
 
   <div class="confirm-content">
@@ -14,7 +17,7 @@
       [iconBgPath]="iconBgPath()"
       [items]="summaryItems()"
       [headerTitle]="provider().name!"
-      headerSubtitle="Enter your bill details"
+      [headerSubtitle]="ui.SUMMARY_SUBHEADER | translate"
       type="confirm-payment"
     ></app-payment-summary>
 
@@ -29,13 +32,14 @@
 
     <footer class="confirm-actions">
       <app-button [fullWidth]="true" (click)="confirm.emit()">
-        Confirm & Pay {{ summary().amount | currency: 'GEL':'symbol'}}
+        {{ 'paybill.main.confirm.confirm_btn' | translate: { amount:
+        (summary().amount) | currency: 'GEL' : 'symbol' } }}
       </app-button>
       <app-button
         [fullWidth]="true"
         variant="secondary"
         (click)="cancelPayment.emit()"
-        >Cancel</app-button
+        >{{ 'paybill.main.confirm.cancel_btn' | translate }}</app-button
       >
     </footer>
   </div>

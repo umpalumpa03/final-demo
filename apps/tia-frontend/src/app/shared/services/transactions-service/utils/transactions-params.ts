@@ -1,8 +1,8 @@
 import { HttpParams } from '@angular/common/http';
-import { TransactionFilter } from '@tia/shared/models/transactions/transactions.models';
+import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
 
 export function createTransactionHttpParams(
-  filters: TransactionFilter,
+  filters: ITransactionFilter,
 ): HttpParams {
   let params = new HttpParams();
 
@@ -14,7 +14,7 @@ export function createTransactionHttpParams(
     params = params.set('page[limit]', filters.pageLimit.toString());
   }
 
-  const standardKeys: (keyof TransactionFilter)[] = [
+  const standardKeys: (keyof ITransactionFilter)[] = [
     'searchCriteria',
     'amountFrom',
     'amountTo',

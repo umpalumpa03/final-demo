@@ -1,6 +1,12 @@
 @use '../../../../../../../shared/styles/mixins' as *;
 @use '../../../../../../../shared/styles/palette' as *;
 
+.paybill-card{
+  &__alert__wrapper{
+    width: 100%;
+  }
+}
+
 .otp-wrapper {
   margin: 2.4rem 0;
   @include flex-center(column, center, center);

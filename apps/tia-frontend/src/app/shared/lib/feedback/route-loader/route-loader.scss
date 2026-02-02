@@ -56,6 +56,12 @@
       animation-delay: 0.4s;
     }
   }
+
+  &--fill-container {
+    height: 100%;
+    width: 100%;
+    @include flex-center(row);
+  }
 }
 
 @keyframes route-loader-progress {

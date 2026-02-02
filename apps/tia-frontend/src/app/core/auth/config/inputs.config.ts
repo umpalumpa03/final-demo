@@ -36,7 +36,7 @@ export const ALERTS_DISMISSIBLE_DATA = {
   },
   error: {
     id: 1,
-    type: 'warning' as const,
+    type: 'error' as const,
     title: 'Error' as const,
     message: '',
   },

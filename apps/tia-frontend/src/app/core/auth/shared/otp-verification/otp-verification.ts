@@ -11,7 +11,6 @@ import {
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { Otp } from '@tia/shared/lib/forms/otp/otp';
 import {
   interval,
@@ -36,19 +35,20 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 import { OTP_VERIFY_FORM } from '../../config/inputs.config';
+import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader";
 
 @Component({
   selector: 'app-otp-verification',
   imports: [
     ButtonComponent,
     ReactiveFormsModule,
-    Spinner,
     Otp,
     RouterLink,
     TextInput,
     SimpleAlerts,
     TranslatePipe,
-  ],
+    RouteLoader
+],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

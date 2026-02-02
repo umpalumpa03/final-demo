@@ -5,6 +5,7 @@ import {
   inject,
   input,
   output,
+  signal,
 } from '@angular/core';
 import {
   BillDetails,
@@ -22,6 +23,10 @@ import { paybillInputConfig } from './config/input.config';
 import { PaymentSummary } from '../../shared/ui/payment-summary/payment-summary';
 import { CurrencyPipe } from '@angular/common';
 import { mapBillSummaryFields } from './utils/paybill-form.config';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map, startWith } from 'rxjs';
+import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 
 @Component({
   selector: 'app-paybill-form',
@@ -32,6 +37,7 @@ import { mapBillSummaryFields } from './utils/paybill-form.config';
     TextInput,
     PaymentSummary,
     CurrencyPipe,
+    TranslatePipe,
   ],
   templateUrl: './paybill-form.html',
   styleUrl: './paybill-form.scss',
@@ -58,6 +64,7 @@ export class PaybillForm {
   });
 
   private readonly fb = inject(NonNullableFormBuilder);
+  private readonly translate = inject(TranslateService);
 
   public readonly verify = output<{ accountNumber: string }>();
   public readonly pay = output<{ accountNumber: string; amount: number }>();
@@ -68,7 +75,21 @@ export class PaybillForm {
     amount: [0, [Validators.min(0.01)]],
   });
 
-  public readonly paybillConfig = paybillInputConfig;
+  public readonly paybillConfig = toSignal(
+    this.translate.onLangChange.pipe(
+      startWith({ lang: this.translate.getCurrentLang(), translations: null }),
+      map(() =>
+        translateConfig(paybillInputConfig, (key) =>
+          this.translate.instant(key),
+        ),
+      ),
+    ),
+    {
+      initialValue: translateConfig(paybillInputConfig, (key) =>
+        this.translate.instant(key),
+      ),
+    },
+  );
 
   public readonly isVerified = computed(() => !!this.verifiedDetails()?.valid);
   protected readonly summaryItems = computed(() =>

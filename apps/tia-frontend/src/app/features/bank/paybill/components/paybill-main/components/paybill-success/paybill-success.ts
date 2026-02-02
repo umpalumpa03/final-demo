@@ -8,10 +8,11 @@ import { SummaryField } from '../../shared/models/summary.model';
 import { BasicCard } from "@tia/shared/lib/cards/basic-card/basic-card";
 import { PaymentSummary } from "../../shared/ui/payment-summary/payment-summary";
 import { ButtonComponent } from "@tia/shared/lib/primitives/button/button";
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-paybill-success',
-  imports: [BasicCard, PaymentSummary, ButtonComponent],
+  imports: [BasicCard, PaymentSummary, ButtonComponent,TranslatePipe],
   templateUrl: './paybill-success.html',
   styleUrl: './paybill-success.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
