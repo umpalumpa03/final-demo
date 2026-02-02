@@ -25,7 +25,7 @@
         <app-skeleton variant="text" width="20rem" height="1.8rem" />
       </div>
       } @else {
-      <h2 class="category-header__title">{{ currentHeader() }}</h2>
+      <h2 class="category-header__title">{{ headerTitle() }}</h2>
       <p class="category-header__subtitle">{{ subtitle() }}</p>
       }
     </div>
@@ -36,12 +36,12 @@
       <div class="providers-container">
         @if (isLoading()) { @for (item of [1, 2, 3, 4, 5]; track item) {
         <app-provider-item [isLoading]="true" />
-        } } @else { @for (item of displayItems(); track item.id) {
+        } } @else { @for (item of providers(); track item.id) {
         <app-provider-item
           [name]="item.name || ''"
           [indicatorColor]="iconBgColor() || ''"
           [isFinal]="!!item.isFinal!"
-          (selected)="handleItemClick(item)"
+          (selected)="selected.emit(item.id)"
         />
         } }
       </div>
