@@ -9,8 +9,7 @@ header {
     margin-bottom: 2rem;
 
     .icon {
-        @include display-flex($direction: row, $wrap: nowrap);
-        align-items: center;
+        @include flex-center($justify: flex-start);
         gap: 0.75rem;
         margin-bottom: 0.5rem;
 
@@ -19,60 +18,57 @@ header {
         }
 
         h1 {
-            @include font-inter($weight: 600, $size: 1.8rem);
+            @include font-inter(600, 1.8rem);
             color: $blue-1000;
             margin: 0;
         }
     }
 
     p {
-        @include font-inter($weight: 400, $size: 1.4rem);
+        @include font-inter(400, 1.4rem);
         color: $gray-600;
         margin: 0;
     }
 }
 
 .main {
-    @include display-flex($direction: column);
+    @include display-flex(column);
     gap: 1.5rem;
     margin-bottom: 2rem;
 
     &__icon {
-        @include display-flex($direction: row);
-        align-items: center;
+        @include flex-center($justify: flex-start);
         gap: 1rem;
 
         img {
-            width: 4.8rem;
-            height: 4.8rem;
+            @include svg-icon(4.8rem);
             padding: 1rem;
             background-color: $blue-100;
             border-radius: 50%;
         }
 
         .user-info {
-            @include display-flex($direction: column);
+            @include display-flex(column);
             gap: 0.25rem;
 
             strong {
-                @include font-inter($weight: 600, $size: 1.6rem);
+                @include font-inter(600, 1.6rem);
                 color: $blue-1000;
             }
 
             p {
-                @include font-inter($weight: 400, $size: 1.4rem);
+                @include font-inter(400, 1.4rem);
                 color: $gray-600;
                 margin: 0;
             }
 
             p:last-child {
-                @include display-flex($direction: row);
-                align-items: center;
+                @include flex-center($justify: flex-start);
                 gap: 0.5rem;
                 margin-top: 0.25rem;
 
                 .status-badge {
-                    @include font-inter($weight: 500, $size: 1.2rem);
+                    @include font-inter(500, 1.2rem);
                     padding: 0.2rem 0.8rem;
                     border-radius: 1.6rem;
 
@@ -88,7 +84,7 @@ header {
                 }
 
                 .role-badge {
-                    @include font-inter($weight: 500, $size: 1.2rem);
+                    @include font-inter(500, 1.2rem);
                     padding: 0.2rem 0.8rem;
                     border-radius: 1.6rem;
                     background-color: $gray-200;
@@ -99,19 +95,19 @@ header {
     }
 
     > div:not(.main__icon) {
-        @include display-flex($direction: column);
+        @include display-flex(column);
         gap: 0.25rem;
         padding-bottom: 0.75rem;
 
         h4 {
-            @include font-inter($weight: 500, $size: 1.4rem);
+            @include font-inter(500, 1.4rem);
             color: $gray-500;
             letter-spacing: 0.05em;
             margin: 0;
         }
 
         p {
-            @include font-inter($weight: 400, $size: 1.4rem);
+            @include font-inter(400, 1.4rem);
             color: $blue-1000;
             margin: 0;
         }
@@ -127,7 +123,7 @@ footer {
     margin-left: auto;
 
     @media (min-width: 640px) {
-        @include display-flex($direction: row, $wrap: nowrap);
+        @include display-flex;
         justify-content: flex-end;
     }
 }
