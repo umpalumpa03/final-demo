@@ -32,6 +32,13 @@ export class PaybillEffect {
   public payBillTemplatesService = inject(PaybillTemplatesService);
   public router = inject(Router);
 
+  private getErrorMessage(error: any): string {
+    if (typeof error?.error === 'string') return error.error;
+    if (error?.error?.message) return error.error.message;
+    if (error?.message) return error.message;
+    return 'paybill.main.form.default_error';
+  }
+
   loadCategories$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PaybillActions.loadCategories),
@@ -41,7 +48,11 @@ export class PaybillEffect {
             PaybillActions.loadCategoriesSuccess({ categories }),
           ),
           catchError((error) =>
-            of(PaybillActions.loadCategoriesFailure({ error: error.message })),
+            of(
+              PaybillActions.loadCategoriesFailure({
+                error: this.getErrorMessage(error),
+              }),
+            ),
           ),
         ),
       ),
@@ -58,7 +69,11 @@ export class PaybillEffect {
               PaybillActions.loadProvidersSuccess({ providers }),
             ),
             catchError((error) =>
-              of(PaybillActions.loadProvidersFailure({ error: error.message })),
+              of(
+                PaybillActions.loadProvidersFailure({
+                  error: this.getErrorMessage(error),
+                }),
+              ),
             ),
           ),
         ),
@@ -82,32 +97,30 @@ export class PaybillEffect {
     );
   });
 
-  checkBill$ = createEffect(() => {
-    return this.actions$.pipe(
+  checkBill$ = createEffect(() =>
+    this.actions$.pipe(
       ofType(PaybillActions.checkBill),
       mergeMap(({ serviceId, identification }) =>
         this.paybillService.checkBill(serviceId, identification).pipe(
-          map((response) => {
-            if (response && response.valid === false) {
+          map((details) => {
+            if (details.valid === false) {
               return PaybillActions.checkBillFailure({
-                error: response.error || 'paybill.main.form.default_error',
+                error: details.error || 'paybill.main.form.default_error',
               });
             }
-            return PaybillActions.checkBillSuccess({ details: response });
+            return PaybillActions.checkBillSuccess({ details });
           }),
-          catchError((error) => {
-            const errorBody = error.error as {
-              message?: string;
-              error?: string;
-            };
-            const errorMessage =
-              errorBody?.message || errorBody?.error || error.message;
-            return of(PaybillActions.checkBillFailure({ error: errorMessage }));
-          }),
+          catchError((error) =>
+            of(
+              PaybillActions.checkBillFailure({
+                error: this.getErrorMessage(error),
+              }),
+            ),
+          ),
         ),
       ),
-    );
-  });
+    ),
+  );
 
   proceedPayment$ = createEffect(() => {
     return this.actions$.pipe(
@@ -125,7 +138,7 @@ export class PaybillEffect {
           catchError((error) =>
             of(
               PaybillActions.proceedPaymentFailure({
-                error: error.error.message,
+                error: error?.error?.message,
               }),
             ),
           ),
@@ -170,7 +183,7 @@ export class PaybillEffect {
               : { type: 'noop' },
           ]),
           catchError((error) => {
-            const errorBody = error.error as PaybillErrorPayload;
+            const errorBody = error?.error as PaybillErrorPayload;
 
             const displayMessage = errorBody?.message || error.message;
 

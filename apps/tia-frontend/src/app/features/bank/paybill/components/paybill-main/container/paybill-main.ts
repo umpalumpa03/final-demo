@@ -55,7 +55,7 @@ export class PaybillMain implements OnInit {
     this.store.dispatch(AccountsActions.loadAccounts());
   }
 
-  protected readonly selectedSenderAccountId = signal<string | null>(null);
+  public readonly selectedSenderAccountId = signal<string | null>(null);
 
   public readonly selectedParentId = signal<string | null>(null);
 
