@@ -25,6 +25,7 @@ import { DraggableCard } from '@tia/shared/lib/drag-n-drop/components/draggable-
 import { DragContainer } from '@tia/shared/lib/drag-n-drop/components/drag-container/drag-container';
 import { DragItemDirective } from '@tia/shared/lib/drag-n-drop/directives/drag-item.directive';
 import { TreeContainer } from '@tia/shared/lib/drag-n-drop/components/tree-container/tree-container';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-drag-and-drop-container',
@@ -37,6 +38,7 @@ import { TreeContainer } from '@tia/shared/lib/drag-n-drop/components/tree-conta
     DragContainer,
     DragItemDirective,
     TreeContainer,
+    TranslatePipe
   ],
   templateUrl: './drag-and-drop.html',
   styleUrl: './drag-and-drop.scss',

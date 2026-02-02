@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TreeItem, TreeGroupConfig } from '../model/drag.model';
+import { UNGROUPED_ID } from '../constants/drag.constants';
 
 @Injectable({ providedIn: 'root' })
 export class TreeService {
@@ -13,11 +14,14 @@ export class TreeService {
       map[group.id] = [];
     }
 
-    for (const item of items) {
-      if (item.groupId === null) continue;
+    if (!map[UNGROUPED_ID]) {
+      map[UNGROUPED_ID] = [];
+    }
 
-      if (map[item.groupId]) {
-        map[item.groupId].push(item);
+    for (const item of items) {
+      const targetId = item.groupId ?? UNGROUPED_ID;
+      if (map[targetId]) {
+        map[targetId].push(item);
       }
     }
 
@@ -31,7 +35,7 @@ export class TreeService {
   public reorderItems(
     items: TreeItem[],
     dragId: string,
-    toGroupId: string,
+    toGroupId: string | null,
     targetItemId?: string,
     reorderFn?: (list: TreeItem[], dId: string, tId: string) => TreeItem[],
   ): TreeItem[] {
@@ -92,7 +96,6 @@ export class TreeService {
     };
   }
 
-  // Checkbox methods
   public toggleGroupChecked(
     groupId: string,
     checked: boolean,
@@ -100,7 +103,8 @@ export class TreeService {
     checkedItemIds: Set<string>,
   ): Set<string> {
     const newSet = new Set(checkedItemIds);
-    const groupItems = items.filter((i) => i.groupId === groupId);
+    const targetGroupId = groupId === UNGROUPED_ID ? null : groupId;
+    const groupItems = items.filter((i) => i.groupId === targetGroupId);
 
     for (const item of groupItems) {
       if (checked) {
@@ -119,13 +123,11 @@ export class TreeService {
     checkedItemIds: Set<string>,
   ): Set<string> {
     const newSet = new Set(checkedItemIds);
-
     if (checked) {
       newSet.add(itemId);
     } else {
       newSet.delete(itemId);
     }
-
     return newSet;
   }
 
@@ -134,7 +136,8 @@ export class TreeService {
     items: TreeItem[],
     checkedItemIds: Set<string>,
   ): boolean {
-    const groupItems = items.filter((i) => i.groupId === groupId);
+    const targetGroupId = groupId === UNGROUPED_ID ? null : groupId;
+    const groupItems = items.filter((i) => i.groupId === targetGroupId);
     if (groupItems.length === 0) return false;
     return groupItems.every((i) => checkedItemIds.has(i.id));
   }
@@ -144,7 +147,8 @@ export class TreeService {
     items: TreeItem[],
     checkedItemIds: Set<string>,
   ): boolean {
-    const groupItems = items.filter((i) => i.groupId === groupId);
+    const targetGroupId = groupId === UNGROUPED_ID ? null : groupId;
+    const groupItems = items.filter((i) => i.groupId === targetGroupId);
     if (groupItems.length === 0) return false;
     const checkedCount = groupItems.filter((i) =>
       checkedItemIds.has(i.id),

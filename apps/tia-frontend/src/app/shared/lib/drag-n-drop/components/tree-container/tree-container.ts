@@ -17,6 +17,7 @@ import {
 } from '../../model/drag.model';
 import { DraggableCard } from '../draggable-card/draggable-card';
 import { TreeService } from '../../services/tree.service';
+import { UNGROUPED_ID } from '../../constants/drag.constants';
 import { ButtonVariant } from '@tia/shared/lib/primitives/button/button.model';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { ErrorStateVariant } from '@tia/shared/lib/feedback/models/error-state.model';
@@ -31,7 +32,6 @@ import { ErrorStateVariant } from '@tia/shared/lib/feedback/models/error-state.m
 export class TreeContainer extends DragBase {
   private readonly treeService = inject(TreeService);
 
-  // data
   public readonly groups = input.required<TreeGroupConfig[]>();
   public readonly items = input.required<TreeItem[]>();
   public readonly containerTitle = input('Tree View');
@@ -39,7 +39,6 @@ export class TreeContainer extends DragBase {
     'Drag items to reorder or move between groups',
   );
 
-  // draggable card inputs
   public readonly canDelete = input(false);
   public readonly editable = input(false);
   public readonly hasButton = input(false);
@@ -55,14 +54,13 @@ export class TreeContainer extends DragBase {
   public readonly noCardBorder = input(false);
   public readonly cardBackground = input(false);
   public readonly badgeLabel = input('Items:');
+  public readonly ungroupedTitle = input('Ungrouped');
 
-  //empty/error states
   public readonly errorVariant = input<ErrorStateVariant>('not-found');
   public readonly errorHeader = input('');
   public readonly errorMessage = input('');
   public readonly showErrorButton = input(false);
 
-  // data outputs
   public readonly groupsChange = output<TreeGroupConfig[]>();
   public readonly itemsChange = output<TreeItem[]>();
   public readonly orderChange = output<string[]>();
@@ -71,7 +69,6 @@ export class TreeContainer extends DragBase {
   public readonly expandedChange = output<{ id: string; expanded: boolean }>();
   public readonly checkedItemsChange = output<string[]>();
 
-  // draggable card outputs
   public readonly itemRemoved = output<string>();
   public readonly itemEdited = output<string>();
   public readonly itemAdded = output<string>();
@@ -84,17 +81,29 @@ export class TreeContainer extends DragBase {
   public readonly paginationChanged = output<{ id: string; value: number }>();
   public readonly buttonClicked = output<string>();
 
+  public readonly internalItems = linkedSignal<TreeItem[], TreeItem[]>({
+    source: this.items,
+    computation: (newItems) => [...newItems],
+  });
+
   public readonly internalGroups = linkedSignal<
     TreeGroupConfig[],
     TreeGroupConfig[]
   >({
     source: this.groups,
-    computation: (newGroups) => [...newGroups],
-  });
+    computation: (newGroups) => {
+      const base = [...newGroups];
 
-  public readonly internalItems = linkedSignal<TreeItem[], TreeItem[]>({
-    source: this.items,
-    computation: (newItems) => [...newItems],
+      if (!base.some((g) => g.id === UNGROUPED_ID)) {
+        base.unshift({
+          id: UNGROUPED_ID,
+          groupName: this.ungroupedTitle(),
+          expanded: true,
+          icon: 'images/svg/drag-and-drop/ungrouped.svg',
+        });
+      }
+      return base;
+    },
   });
 
   public readonly checkedItemIds = signal<Set<string>>(new Set());
@@ -113,9 +122,11 @@ export class TreeContainer extends DragBase {
       ),
     );
     const group = this.internalGroups().find((g) => g.id === id);
-    if (group) {
+    if (group && id !== UNGROUPED_ID) {
       this.expandedChange.emit({ id, expanded: group.expanded ?? false });
-      this.groupsChange.emit(this.internalGroups());
+      this.groupsChange.emit(
+        this.internalGroups().filter((g) => g.id !== UNGROUPED_ID),
+      );
     }
   }
 
@@ -132,7 +143,7 @@ export class TreeContainer extends DragBase {
       const newGroups = this.calculateReorderedItems(groups, dragId, dropId);
       if (newGroups !== groups) {
         this.internalGroups.set(newGroups);
-        this.groupsChange.emit(newGroups);
+        this.groupsChange.emit(newGroups.filter((g) => g.id !== UNGROUPED_ID));
       }
       return;
     }
@@ -141,14 +152,16 @@ export class TreeContainer extends DragBase {
     if (!dragItem) return;
 
     const isGroupDrop = dropId.startsWith('group:');
-    const toGroupId = isGroupDrop
+    const rawToId = isGroupDrop
       ? dropId.replace('group:', '')
       : (groups.find((g) => g.id === dropId)?.id ??
         items.find((i) => i.id === dropId)?.groupId);
 
-    if (!toGroupId) return;
+    if (rawToId === undefined) return;
 
+    const toGroupId = rawToId === UNGROUPED_ID ? null : rawToId;
     const targetItemId = isGroupDrop ? undefined : dropId;
+
     const updatedItems = this.treeService.reorderItems(
       items,
       dragId,
@@ -163,20 +176,18 @@ export class TreeContainer extends DragBase {
       this.orderChange.emit(updatedItems.map((i) => i.id));
 
       const finalItem = updatedItems.find((i) => i.id === dragId);
-      const newOrder = finalItem?.order ?? 0;
-
       if (dragItem.groupId !== toGroupId) {
         this.itemMoved.emit({
           itemId: dragId,
           fromGroupId: dragItem.groupId,
           toGroupId,
-          newOrder,
+          newOrder: finalItem?.order ?? 0,
         });
       } else {
         this.itemReordered.emit({
           itemId: dragId,
-          groupId: toGroupId,
-          newOrder,
+          groupId: toGroupId!,
+          newOrder: finalItem?.order ?? 0,
         });
       }
     }
@@ -197,12 +208,11 @@ export class TreeContainer extends DragBase {
     );
     this.internalGroups.set(groups);
     this.internalItems.set(items);
-    this.groupsChange.emit(groups);
+    this.groupsChange.emit(groups.filter((g) => g.id !== UNGROUPED_ID));
     this.itemsChange.emit(items);
     this.groupRemoved.emit(id);
   }
 
-  // checkbox methods
   public onGroupCheckedChange(groupId: string, checked: boolean): void {
     const updated = this.treeService.toggleGroupChecked(
       groupId,
@@ -247,23 +257,18 @@ export class TreeContainer extends DragBase {
   public onEditItem(id: string): void {
     this.itemEdited.emit(id);
   }
-
   public onEditGroup(id: string): void {
     this.groupEdited.emit(id);
   }
-
   public onAddItem(id: string): void {
     this.itemAdded.emit(id);
   }
-
   public onViewOptionChange(id: string, isViewable: boolean): void {
     this.viewOptionChanged.emit({ id, isViewable });
   }
-
   public onPaginationChange(id: string, value: number): void {
     this.paginationChanged.emit({ id, value });
   }
-
   public onButtonClick(id: string): void {
     this.buttonClicked.emit(id);
   }
