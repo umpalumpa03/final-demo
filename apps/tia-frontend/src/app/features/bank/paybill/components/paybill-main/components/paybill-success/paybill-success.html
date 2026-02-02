@@ -4,15 +4,19 @@
       <div class="success-icon-container">
         <span class="tia-icon tia-icon-check"></span>
       </div>
-      <h1 class="success-title">Payment Successful!</h1>
-      <p class="success-description">Your bill has been paid successfully</p>
+      <h1 class="success-title">
+        {{ 'paybill.main.success.title' | translate }}
+      </h1>
+      <p class="success-description">
+        {{ 'paybill.main.success.description' | translate }}
+      </p>
     </header>
 
     <div class="success-layout__card">
       <app-payment-summary
         [items]="items()"
         [headerTitle]="headerTitle()"
-        headerSubtitle="Transaction details"
+        [headerSubtitle]="'paybill.main.success.summary_subheader' | translate"
         [iconBgColor]="iconBgColor()"
         [iconBgPath]="iconBgPath()"
       />
@@ -24,11 +28,11 @@
         [fullWidth]="true"
         (click)="payAnother.emit()"
       >
-        Pay Another Bill
+        {{ 'paybill.main.success.pay_another_btn' | translate }}
       </app-button>
 
       <app-button [fullWidth]="true" (click)="goDashboard.emit()">
-        Go to Dashboard
+        {{ 'paybill.main.success.dashboard_btn' | translate }}
       </app-button>
     </footer>
   </div>

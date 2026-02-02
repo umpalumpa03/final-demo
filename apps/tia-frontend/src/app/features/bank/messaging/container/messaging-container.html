@@ -20,15 +20,21 @@
     <router-outlet></router-outlet>
   </div>
   @if(error()) {
-  <div class="fade-alert-container">
+  <div
+    class="fade-alert-container"
+    [class.fade-alert--visible]="error()"
+  >
     <app-dismissible-alerts
       [alertType]="'warning'"
       [alertTitle]="'Oops!'"
-      [alertMessage]="error() || 'An unexpected error occurred while loading your messages. Please try again later.'"
+      [alertMessage]="error() || 'An unexpected error occurred.'"
     ></app-dismissible-alerts>
   </div>
   } @else if (successMessage?.()) {
-  <div class="fade-alert-container">
+  <div
+    class="fade-alert-container"
+    [class.fade-alert--visible]="successMessage?.()"
+  >
     <app-dismissible-alerts
       [alertType]="'success'"
       [alertTitle]="'Success!'"

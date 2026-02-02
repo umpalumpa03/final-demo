@@ -12,10 +12,11 @@ import {
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { BaseWidget } from '../shared/base-widget.config';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-widget-exchange',
-  imports: [AsyncPipe, DecimalPipe, RouteLoader, ErrorStates],
+  imports: [AsyncPipe, DecimalPipe, RouteLoader, ErrorStates, TranslateModule],
   templateUrl: './widget-exchange.html',
   styleUrl: './widget-exchange.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

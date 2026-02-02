@@ -34,9 +34,9 @@ export class MailCard {
   public onMarkAsRead(event: Event): void {
     event.stopPropagation();
     const mail = this.mail();
-    if (mail) {
-      this.markAsRead.emit(mail.id)
-    };
+    if (mail && !mail.isRead) {
+      this.markAsRead.emit(mail.id);
+    }
   }
 
   public onToggleFavorite(event: Event): void {
@@ -75,5 +75,5 @@ export class MailCard {
   public getInitials(email: string): string {
     return email.substring(0, 2).toUpperCase();
   }
-  
+
 }

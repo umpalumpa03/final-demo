@@ -1,7 +1,7 @@
 <div class="global-bank-wrapper">
   <app-library-title
-    title="Dashboard"
-    subtitle="Welcome back! Here's your financial overview."
+    [title]="pageTitle()"
+    [subtitle]="pageSubtitle()"
   ></app-library-title>
   <app-drag-container
     [hasNoStyle]="true"

@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PaybillConfirmPayment } from './paybill-confirm-payment';
 import { provideMockStore } from '@ngrx/store/testing';
 import { selectCurrentAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('PaybillConfirmPayment', () => {
   let component: PaybillConfirmPayment;
@@ -9,7 +10,7 @@ describe('PaybillConfirmPayment', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PaybillConfirmPayment],
+      imports: [PaybillConfirmPayment, TranslateModule.forRoot()],
       providers: [
         provideMockStore({
           selectors: [{ selector: selectCurrentAccounts, value: [] }],

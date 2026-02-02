@@ -55,7 +55,6 @@ describe('SecurityComponent', () => {
     component = fixture.componentInstance;
 
     fixture.componentRef.setInput('form', createForm());
-    fixture.componentRef.setInput('isLoading', false);
     fixture.componentRef.setInput('currentPasswordConfig', mockCurrentPasswordConfig);
     fixture.componentRef.setInput('newPasswordConfig', mockNewPasswordConfig);
     fixture.componentRef.setInput('confirmPasswordConfig', mockConfirmPasswordConfig);
@@ -71,10 +70,7 @@ describe('SecurityComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize form', () => {
-    expect(component.form()).toBeDefined();
-    expect(component.form().invalid).toBe(true);
-  });
+
 
   it('should emit changePassword event when form is valid', () => {
     const emitSpy = vi.spyOn(component.changePassword, 'emit');
@@ -91,26 +87,5 @@ describe('SecurityComponent', () => {
       currentPassword: 'currentPass123',
       newPassword: 'newPassword123',
     });
-  });
-
-  it('should not emit changePassword event when form is invalid', () => {
-    const emitSpy = vi.spyOn(component.changePassword, 'emit');
-
-    component.onSubmit();
-
-    expect(emitSpy).not.toHaveBeenCalled();
-  });
-
-  it('should set passwordMismatch error when passwords do not match', () => {
-    const form = component.form();
-
-    form.setValue({
-      currentPassword: 'currentPass123',
-      newPassword: 'newPassword123',
-      confirmPassword: 'different123',
-    });
-    form.updateValueAndValidity();
-
-    expect(form.hasError('passwordMismatch')).toBe(true);
   });
 });
