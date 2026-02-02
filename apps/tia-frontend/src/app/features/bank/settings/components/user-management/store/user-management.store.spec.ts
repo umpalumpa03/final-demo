@@ -92,6 +92,15 @@ describe('UserManagementStore', () => {
     expect(store.error()).toContain('500');
   });
 
+  it('should toggle block status successfully', () => {
+    const blockedUser = { ...mockUsers[0], isBlocked: true };
+    service.getAllUsers.mockReturnValue(of(mockUsers));
+    store.loadUsers();
+    service.blockUser.mockReturnValue(of(blockedUser));
+    store.toggleBlockStatus({ id: '1', isBlocked: true });
+    expect(store.users()[0].isBlocked).toBe(true);
+  });
+
   it('should clear and reset selected user', () => {
     service.getUserById.mockReturnValue(of(mockUserDetail));
     store.loadUserDetails('1');
