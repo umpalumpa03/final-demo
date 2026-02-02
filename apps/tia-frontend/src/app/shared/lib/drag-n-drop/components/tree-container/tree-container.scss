@@ -6,14 +6,14 @@
   border: 0.18rem solid $blue-400;
   background-color: $white;
   width: 100%;
-  max-width: 123.2rem;
+  // max-width: 123.2rem;
   border-radius: 1rem;
   padding: 2.5rem;
   gap: 1.6rem;
   &--no-border {
     border: none;
     background-color: transparent;
-    padding: 0; 
+    padding: 0;
   }
 
   &__header {

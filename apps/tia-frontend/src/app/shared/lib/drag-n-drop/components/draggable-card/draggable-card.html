@@ -49,11 +49,11 @@
 
           @if (hasDetails()) {
           <div class="draggable-card__metadata">
-            @if (itemDetails().serviceId) {
+            @if (itemDetails().serviceId && itemDetails().accountNumber) {
             <div class="draggable-card__meta-item">
               <span class="draggable-card__meta-value"
-                >{{ itemDetails().serviceId }}</span
-              >
+                >{{ itemDetails().serviceId }}
+              </span>
             </div>
             } @if (itemDetails().accountNumber) {
             <div class="draggable-card__meta-item">
@@ -75,7 +75,9 @@
         </div>
         } @else {
         <div class="draggable-card__info">
-          <p class="draggable-card__title__custom">{{ itemData().title | translate }}</p>
+          <p class="draggable-card__title__custom">
+            {{ itemData().title | translate }}
+          </p>
         </div>
         }
       </div>

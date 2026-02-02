@@ -130,33 +130,64 @@ describe('Paybill Reducer', () => {
     });
   });
 
-  it('loadTemplates: should set loading true', () => {
-    const action = TemplatesPageActions.loadTemplates();
-    const result = paybillReducer(initialPaybillState, action);
+  describe('Templates', () => {
+    it('loadTemplates: should set loading true', () => {
+      const action = TemplatesPageActions.loadTemplates();
+      const result = paybillReducer(initialPaybillState, action);
 
-    expect(result.loading).toBe(true);
-    expect(result.error).toBeNull();
+      expect(result.loading).toBe(true);
+      expect(result.error).toBeNull();
+    });
+
+    it('loadTemplatesSuccess: should set templates', () => {
+      const templates = [{ id: 't1', name: 'Template 1' }] as any;
+      const action = TemplatesPageActions.loadTemplatesSuccess({ templates });
+      const result = paybillReducer(initialPaybillState, action);
+
+      expect(result.templates).toEqual(templates);
+      expect(result.loading).toBe(false);
+    });
+
+    it('loadTemplatesFailure: should set error', () => {
+      const action = TemplatesPageActions.loadTemplatesFailure({
+        error: 'Load failed',
+      });
+      const result = paybillReducer(initialPaybillState, action);
+
+      expect(result.error).toBe('Load failed');
+      expect(result.loading).toBe(false);
+    });
   });
 
-  it('loadTemplatesSuccess: should set templateGroups', () => {
-    const templateGroups = [{ id: 'g1', name: 'Group 1' }] as any;
-    const action = TemplatesPageActions.loadTemplatesSuccess({
-      templateGroups,
+  describe('Template Groups', () => {
+    it('loadTemplateGroups: should set loading true', () => {
+      const action = TemplatesPageActions.loadTemplateGroups();
+      const result = paybillReducer(initialPaybillState, action);
+
+      expect(result.loading).toBe(true);
+      expect(result.error).toBeNull();
     });
-    const result = paybillReducer(initialPaybillState, action);
 
-    expect(result.templateGroups).toEqual(templateGroups);
-    expect(result.loading).toBe(false);
-  });
+    it('loadTemplateGroupsSuccess: should set templateGroups', () => {
+      const templateGroups = [{ id: 'g1', name: 'Group 1' }] as any;
+      const action = TemplatesPageActions.loadTemplateGroupsSuccess({
+        templateGroups,
+      });
+      const result = paybillReducer(initialPaybillState, action);
 
-  it('loadTemplatesFailure: should set error', () => {
-    const action = TemplatesPageActions.loadTemplatesFailure({
-      error: 'Load failed',
+      expect(result.templateGroups).toEqual(templateGroups);
+      expect(result.loading).toBe(false);
     });
-    const result = paybillReducer(initialPaybillState, action);
 
-    expect(result.error).toBe('Load failed');
-    expect(result.loading).toBe(false);
+    it('loadTemplateGroupsFailure: should set error', () => {
+      const action = TemplatesPageActions.loadTemplateGroupsFailure({
+        error: 'Load failed',
+      });
+      const result = paybillReducer(initialPaybillState, action);
+
+      expect(result.error).toBe('Load failed');
+      expect(result.loading).toBe(false);
+    });
   });
 
   it('proceedPayment: should set loading true', () => {
