@@ -120,4 +120,16 @@ describe('AccountCardViewComponent', () => {
 
     vi.useRealTimers();
   });
+
+  it('should set dragStart on mouseDown with left button', () => {
+    const event = new MouseEvent('mousedown', { button: 0, clientX: 100 });
+    component.onMouseDown(event);
+    expect(component['dragStart']()).toBe(100);
+  });
+
+  it('should clear dragStart on mouseUp', () => {
+    component['dragStart'].set(100);
+    component.onMouseUp();
+    expect(component['dragStart']()).toBeNull();
+  });
 });
