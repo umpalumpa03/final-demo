@@ -17,6 +17,7 @@ import { CreateAccountComponent } from '../components/create-account/components/
 import {
   CreateAccountRequest,
   AccountType,
+  GroupedAccounts,
 } from '../../../../../../shared/models/accounts/accounts.model';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import {
@@ -95,9 +96,9 @@ export class Accounts implements OnInit {
   protected showCreateAlert = signal<boolean>(false);
   protected showCreateErrorAlert = signal<boolean>(false);
   protected errorTypeSignal = signal<'connection' | 'loading' | null>(null);
-  private wasCreating = false;
-  private wasLoading = false;
-  private hasLoadedAccounts = false;
+  private wasCreating: boolean = false;
+  private wasLoading: boolean = false;
+  private hasLoadedAccounts: boolean = false;
 
   constructor() {
     effect(() => {
@@ -136,7 +137,7 @@ export class Accounts implements OnInit {
     }
   }
 
-  private handleAccountsGrouped(accounts: any): void {
+  private handleAccountsGrouped(accounts: GroupedAccounts | null): void {
     const isLoading = this.isLoadingSignal();
     const isEmpty =
       !accounts ||
