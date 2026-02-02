@@ -29,27 +29,13 @@ import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
   templateUrl: './paybill-templates.html',
   styleUrl: './paybill-templates.scss',
 })
-export class PaybillTemplates implements OnInit {
+export class PaybillTemplates {
   public templateGroups = input.required<TemplateGroups[]>();
   public templates = input.required<TreeItem[]>();
   public headerButtons = HeaderCtaConfig;
 
-  templates2 = [
-    {
-      groupId: '4b03d846-43af-45cd-8d69-04b71d784625',
-      id: 'b91c6184-d477-4185-ad45-03890e70ca52',
-      order: 3,
-      subtitle: 'powergrid-bill',
-      title: 'Home Electric Bill',
-    },
-  ];
-
   public currentModalConfig = input<ModalInfo | null>(null);
 
-  ngOnInit() {
-    console.log(this.templateGroups());
-    console.log(this.templates());
-  }
   // Determine Which type of modal to be shown
   public activeModal = input<ModalType | null>();
 

@@ -4,7 +4,7 @@ import { PaybillTemplatesService } from '../services/paybill-templates-service';
 import { Store } from '@ngrx/store';
 import {
   selectTemplatesAsTreeItems,
-  selectTemplatesGroup,
+  selectTemplatesGroupWithConfigs,
 } from '../../../store/paybill.selectors';
 import { TemplatesPageActions } from '../../../store/paybill.actions';
 import { HeaderCtaAction, ModalType } from '../models/paybill-templates.model';
@@ -25,8 +25,9 @@ export class PaybillTemplatesContainer implements OnInit {
     this.store.dispatch(TemplatesPageActions.loadTemplates());
   }
 
-  public readonly templateGroups =
-    this.store.selectSignal(selectTemplatesGroup);
+  public readonly templateGroups = this.store.selectSignal(
+    selectTemplatesGroupWithConfigs,
+  );
 
   public readonly templates = this.store.selectSignal(
     selectTemplatesAsTreeItems,
