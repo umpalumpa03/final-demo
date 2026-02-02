@@ -55,13 +55,13 @@ export class UserManagementComponent {
     this.currentPage.set(page);
   }
 
-  public details(id: string) {
+  public details(id: string): void {
     this.store.clearSelectedUser();
     this.modalState.set('details');
     this.store.loadUserDetails(id);
   }
 
-  public onCloseModal() {
+  public onCloseModal(): void {
     this.modalState.set('none');
     this.store.clearSelectedUser();
   }
