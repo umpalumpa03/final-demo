@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Observable, of, throwError } from 'rxjs';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { Action } from '@ngrx/store';
 import { AccountsEffects } from './accounts.effects';
 import { AccountsActions } from './accounts.actions';
 import {
@@ -11,8 +12,9 @@ import {
 import { AccountsApiService } from '../../../shared/services/accounts/accounts.api.service';
 
 describe('AccountsEffects', () => {
+  let actions$: Observable<Action>;
   let effects: AccountsEffects;
-  let actions$: Observable<unknown>;
+  let service: AccountsApiService;
 
   const mockAccount: Account = {
     id: '1',
@@ -32,177 +34,122 @@ describe('AccountsEffects', () => {
   };
 
   beforeEach(() => {
+    const serviceMock = {
+      getAccounts: vi.fn(),
+      createAccount: vi.fn(),
+      updateFriendlyName: vi.fn(),
+    };
+
     TestBed.configureTestingModule({
       providers: [
         AccountsEffects,
         provideMockActions(() => actions$),
-        {
-          provide: AccountsApiService,
-          useValue: {
-            getAccounts: () => of([mockAccount]),
-            createAccount: () => of(mockAccount),
-          },
-        },
+        { provide: AccountsApiService, useValue: serviceMock },
       ],
     });
+
     effects = TestBed.inject(AccountsEffects);
+    service = TestBed.inject(AccountsApiService);
   });
 
-  it('should be created', () => {
-    expect(effects).toBeTruthy();
-  });
+  describe('loadAccounts$', () => {
+    it('should return loadAccountsSuccess on success', () => {
+      vi.spyOn(service, 'getAccounts').mockReturnValue(of([mockAccount]));
+      actions$ = of(AccountsActions.loadAccounts());
 
-  it('should handle loadAccounts success', () => {
-    actions$ = of(AccountsActions.loadAccounts());
-    return new Promise((resolve) => {
-      effects.loadAccounts$.subscribe((result) => {
-        expect(result.type).toBe(AccountsActions.loadAccountsSuccess.type);
-        resolve(undefined);
-      });
+      let result: Action | undefined;
+      effects.loadAccounts$.subscribe((action) => (result = action));
+      expect(result).toEqual(
+        AccountsActions.loadAccountsSuccess({ accounts: [mockAccount] }),
+      );
     });
-  });
 
-  it('should handle loadAccounts failure', () => {
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        AccountsEffects,
-        provideMockActions(() => actions$),
-        {
-          provide: AccountsApiService,
-          useValue: {
-            getAccounts: () => throwError(() => new Error('Test error')),
-            createAccount: () => of(mockAccount),
-          },
-        },
-      ],
-    });
-    effects = TestBed.inject(AccountsEffects);
-    actions$ = of(AccountsActions.loadAccounts());
-    return new Promise((resolve) => {
-      effects.loadAccounts$.subscribe((result) => {
-        expect(result.type).toBe(AccountsActions.loadAccountsFailure.type);
-        resolve(undefined);
-      });
+    it('should return loadAccountsFailure on error', () => {
+      vi.spyOn(service, 'getAccounts').mockReturnValue(
+        throwError(() => new Error('Test error')),
+      );
+      actions$ = of(AccountsActions.loadAccounts());
+
+      let result: Action | undefined;
+      effects.loadAccounts$.subscribe((action) => (result = action));
+      expect(result).toEqual(
+        AccountsActions.loadAccountsFailure({ error: 'Test error' }),
+      );
     });
   });
 
-  it('should handle createAccount success', () => {
-    actions$ = of(
-      AccountsActions.createAccount({
-        request: {
-          friendlyName: 'New',
-          type: AccountType.saving,
-          currency: 'USD',
-        },
-      }),
-    );
-    return new Promise((resolve) => {
-      effects.createAccount$.subscribe((result) => {
-        expect(result.type).toBe(AccountsActions.createAccountSuccess.type);
-        resolve(undefined);
-      });
+  describe('createAccount$', () => {
+    it('should return createAccountSuccess on success', () => {
+      const request = {
+        friendlyName: 'New',
+        type: AccountType.saving,
+        currency: 'USD',
+      };
+      vi.spyOn(service, 'createAccount').mockReturnValue(of(mockAccount));
+      actions$ = of(AccountsActions.createAccount({ request }));
+
+      let result: Action | undefined;
+      effects.createAccount$.subscribe((action) => (result = action));
+      expect(result).toEqual(
+        AccountsActions.createAccountSuccess({ account: mockAccount }),
+      );
+    });
+
+    it('should return createAccountFailure on error', () => {
+      const request = {
+        friendlyName: 'New',
+        type: AccountType.saving,
+        currency: 'USD',
+      };
+      vi.spyOn(service, 'createAccount').mockReturnValue(
+        throwError(() => new Error('Create error')),
+      );
+      actions$ = of(AccountsActions.createAccount({ request }));
+
+      let result: Action | undefined;
+      effects.createAccount$.subscribe((action) => (result = action));
+      expect(result).toEqual(
+        AccountsActions.createAccountFailure({ error: 'Create error' }),
+      );
     });
   });
 
-  it('should handle createAccount failure', () => {
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        AccountsEffects,
-        provideMockActions(() => actions$),
-        {
-          provide: AccountsApiService,
-          useValue: {
-            getAccounts: () => of([mockAccount]),
-            createAccount: () => throwError(() => new Error('Create error')),
-          },
-        },
-      ],
-    });
-    effects = TestBed.inject(AccountsEffects);
-    actions$ = of(
-      AccountsActions.createAccount({
-        request: {
-          friendlyName: 'New',
-          type: AccountType.saving,
-          currency: 'USD',
-        },
-      }),
-    );
-    return new Promise((resolve) => {
-      effects.createAccount$.subscribe((result) => {
-        expect(result.type).toBe(AccountsActions.createAccountFailure.type);
-        resolve(undefined);
-      });
-    });
-  });
+  describe('updateFriendlyName$', () => {
+    it('should return updateFriendlyNameSuccess on success', () => {
+      const updatedAccount = { ...mockAccount, friendlyName: 'Updated' };
+      vi.spyOn(service, 'updateFriendlyName').mockReturnValue(
+        of(updatedAccount),
+      );
+      actions$ = of(
+        AccountsActions.updateFriendlyName({
+          accountId: '1',
+          friendlyName: 'Updated',
+        }),
+      );
 
-  it('should handle updateFriendlyName success', () => {
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        AccountsEffects,
-        provideMockActions(() => actions$),
-        {
-          provide: AccountsApiService,
-          useValue: {
-            getAccounts: () => of([mockAccount]),
-            createAccount: () => of(mockAccount),
-            updateFriendlyName: () =>
-              of({ ...mockAccount, friendlyName: 'Updated' }),
-          },
-        },
-      ],
+      let result: Action | undefined;
+      effects.updateFriendlyName$.subscribe((action) => (result = action));
+      expect(result).toEqual(
+        AccountsActions.updateFriendlyNameSuccess({ account: updatedAccount }),
+      );
     });
-    effects = TestBed.inject(AccountsEffects);
-    actions$ = of(
-      AccountsActions.updateFriendlyName({
-        accountId: '1',
-        friendlyName: 'Updated',
-      }),
-    );
-    return new Promise((resolve) => {
-      effects.updateFriendlyName$.subscribe((result) => {
-        expect(result.type).toBe(
-          AccountsActions.updateFriendlyNameSuccess.type,
-        );
-        resolve(undefined);
-      });
-    });
-  });
 
-  it('should handle updateFriendlyName failure', () => {
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        AccountsEffects,
-        provideMockActions(() => actions$),
-        {
-          provide: AccountsApiService,
-          useValue: {
-            getAccounts: () => of([mockAccount]),
-            createAccount: () => of(mockAccount),
-            updateFriendlyName: () =>
-              throwError(() => new Error('Update error')),
-          },
-        },
-      ],
-    });
-    effects = TestBed.inject(AccountsEffects);
-    actions$ = of(
-      AccountsActions.updateFriendlyName({
-        accountId: '1',
-        friendlyName: 'Updated',
-      }),
-    );
-    return new Promise((resolve) => {
-      effects.updateFriendlyName$.subscribe((result) => {
-        expect(result.type).toBe(
-          AccountsActions.updateFriendlyNameFailure.type,
-        );
-        resolve(undefined);
-      });
+    it('should return updateFriendlyNameFailure on error', () => {
+      vi.spyOn(service, 'updateFriendlyName').mockReturnValue(
+        throwError(() => new Error('Update error')),
+      );
+      actions$ = of(
+        AccountsActions.updateFriendlyName({
+          accountId: '1',
+          friendlyName: 'Updated',
+        }),
+      );
+
+      let result: Action | undefined;
+      effects.updateFriendlyName$.subscribe((action) => (result = action));
+      expect(result).toEqual(
+        AccountsActions.updateFriendlyNameFailure({ error: 'Update error' }),
+      );
     });
   });
 });

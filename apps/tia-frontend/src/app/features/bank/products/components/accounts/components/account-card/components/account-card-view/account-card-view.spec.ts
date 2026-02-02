@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AccountCardViewComponent } from './account-card-view';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { provideMockStore } from '@ngrx/store/testing';
 import { AccountType } from '../../../../../../../../../shared/models/accounts/accounts.model';
 import { provideTranslateService } from '@ngx-translate/core';
@@ -45,6 +45,10 @@ describe('AccountCardViewComponent', () => {
       fixture.componentRef.setInput('isRenaming', false);
     });
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('should create', () => {

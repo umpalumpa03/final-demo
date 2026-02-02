@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreateAccountComponent } from './create-account';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AccountType } from '../../../../../../../../shared/models/accounts/accounts.model';
 import { provideTranslateService } from '@ngx-translate/core';
@@ -37,6 +37,10 @@ describe('CreateAccountComponent', () => {
       fixture.componentRef.setInput('currencies', mockCurrencies);
     });
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('should create', () => {

@@ -10,7 +10,7 @@ import {
 } from './accounts.selectors';
 import { AccountType } from '../../../shared/models/accounts/accounts.model';
 
-describe('AccountsSelectors', () => {
+describe('Accounts Selectors', () => {
   const mockAccounts = [
     {
       id: '1',
@@ -48,19 +48,19 @@ describe('AccountsSelectors', () => {
 
   it('should select current accounts', () => {
     const result = selectCurrentAccounts.projector(mockAccounts);
-    expect(result.length).toBe(1);
+    expect(result).toHaveLength(1);
     expect(result[0].type).toBe(AccountType.current);
   });
 
   it('should select saving accounts', () => {
     const result = selectSavingAccounts.projector(mockAccounts);
-    expect(result.length).toBe(1);
+    expect(result).toHaveLength(1);
     expect(result[0].type).toBe(AccountType.saving);
   });
 
   it('should select card accounts', () => {
     const result = selectCardAccounts.projector(mockAccounts);
-    expect(result.length).toBe(0);
+    expect(result).toHaveLength(0);
   });
 
   it('should select grouped accounts', () => {
@@ -69,9 +69,9 @@ describe('AccountsSelectors', () => {
       mockAccounts.filter((a) => a.type === AccountType.saving),
       [],
     );
-    expect(result.current.length).toBe(1);
-    expect(result.saving.length).toBe(1);
-    expect(result.card.length).toBe(0);
+    expect(result.current).toHaveLength(1);
+    expect(result.saving).toHaveLength(1);
+    expect(result.card).toHaveLength(0);
   });
 
   it('should select account by id', () => {
@@ -101,7 +101,7 @@ describe('AccountsSelectors', () => {
 
   it('should select account options', () => {
     const result = selectAccountOptions.projector(mockAccounts);
-    expect(result.length).toBe(2);
+    expect(result).toHaveLength(2);
     expect(result[0].label).toBe('Current (USD) - 1000 USD');
     expect(result[0].value).toBe('1');
     expect(result[1].label).toBe('Saving (USD) - 5000 USD');
@@ -134,7 +134,7 @@ describe('AccountsSelectors', () => {
       ...mockAccounts,
       gelAccount,
     ]);
-    expect(result.length).toBe(1);
+    expect(result).toHaveLength(1);
     expect(result[0].label).toBe('GEL Account (GEL) - 2000 GEL');
     expect(result[0].value).toBe('3');
   });
