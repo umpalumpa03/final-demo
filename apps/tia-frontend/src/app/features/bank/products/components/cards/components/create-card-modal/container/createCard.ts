@@ -6,7 +6,6 @@ import {
   inject,
   input,
   output,
-  effect,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -23,7 +22,7 @@ import {
 import {
   closeCreateCardModal,
   createCard,
-  loadCardCreationData,
+
 } from 'apps/tia-frontend/src/app/store/products/cards/cards.actions';
 import { CardPreview } from '../components/card-preview/card-preview';
 import { DesignSelector } from '../components/design-selector/design-selector';

@@ -1,10 +1,11 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AccountCards } from './account-cards';
 import { loadAccountCardsPage } from '../../../../../../../../store/products/cards/cards.actions';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('AccountCards', () => {
   let component: AccountCards;
@@ -19,7 +20,7 @@ describe('AccountCards', () => {
     router = { navigate: vi.fn() };
 
     TestBed.configureTestingModule({
-      imports: [AccountCards],
+      imports: [AccountCards, TranslateModule.forRoot()],
       providers: [
         { provide: Store, useValue: store },
         { provide: Router, useValue: router },

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { CardsService } from './cards.service';
-import { environment } from 'apps/tia-frontend/src/environments/environment';
+import { environment } from '../../../../../../../environments/environment';
 
 describe('CardsService', () => {
   let service: CardsService;

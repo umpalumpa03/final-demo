@@ -1,67 +1,56 @@
 <div class="account-cards">
-  <app-button variant="ghost" [icon]="'left-arrow.svg'" (click)="handleBackClick()">
-      {{'my-products.card.account-cards.backToCards' | translate }}
+  <app-button
+    variant="ghost"
+    [icon]="'left-arrow.svg'"
+    (click)="handleBackClick()"
+  >
+    {{'my-products.card.account-cards.backToCards' | translate }}
   </app-button>
 
-  @let viewState = viewState$ | async;
-  @let accountData = accountData$ | async;
-  @let cardsLabel = cardsLabel$ | async;
-  @let cardDetailsError = cardDetailsError$ | async;
-
-  @switch (viewState) {
-    @case ('no-account') {
-      <p class="account-cards__error">      {{'my-products.card.account-cards.accountNotFound' | translate }}
-</p>
-    }
-
-    @case ('loading') {
-      @if (accountData) {
-        <div class="account-cards__grid">
-          @for (id of accountData.account.cardIds; track id) {
-            <div class="account-cards__card">
-              <app-skeleton width="100%" height="20rem" />
-              <div class="account-cards__card-info">
-                <app-skeleton width="60%" height="1.6rem" />
-                <div class="account-cards__card-meta">
-                  <app-skeleton width="8rem" height="2.4rem" />
-                  <app-skeleton width="4rem" height="1.4rem" />
-                </div>
-              </div>
-            </div>
-          }
+  @let viewState = viewState$ | async; @let accountData = accountData$ | async;
+  @let cardsLabel = cardsLabel$ | async; @let cardDetailsError =
+  cardDetailsError$ | async; @switch (viewState) { @case ('no-account') {
+  <p class="account-cards__error">
+    {{'my-products.card.account-cards.accountNotFound' | translate }}
+  </p>
+  } @case ('loading') { @if (accountData) {
+  <div class="account-cards__grid">
+    @for (id of accountData.account.cardIds; track id) {
+    <div class="account-cards__card">
+      <app-skeleton width="100%" height="20rem" />
+      <div class="account-cards__card-info">
+        <app-skeleton width="60%" height="1.6rem" />
+        <div class="account-cards__card-meta">
+          <app-skeleton width="8rem" height="2.4rem" />
+          <app-skeleton width="4rem" height="1.4rem" />
         </div>
-      }
+      </div>
+    </div>
     }
+  </div>
+  } } @case ('error') {
+  <app-error-states
+    variant="failed"
+    header="Loading Failed"
+    [message]="cardDetailsError || 'Failed to load cards'"
+    buttonMessage="Retry"
+    (buttonClick)="handleRetry()"
+  />
+  } @case ('success') { @if (accountData) {
+  <app-account-header
+    [account]="accountData.account"
+    [cardsLabel]="cardsLabel || ''"
+  />
 
-    @case ('error') {
-      <app-error-states
-        variant="failed"
-        header="Loading Failed"
-        [message]="cardDetailsError || 'Failed to load cards'"
-        buttonMessage="Retry"
-        (buttonClick)="handleRetry()"
-      />
+  @if (accountData.cards.length > 0) {
+  <div class="account-cards__grid">
+    @for (card of accountData.cards; track card.cardId) {
+    <app-card-grid-item
+      [card]="card"
+      [currency]="accountData.account.currency"
+      (cardClicked)="handleCardClick($event)"
+    />
     }
-
-    @case ('success') {
-      @if (accountData) {
-        <app-account-header
-          [account]="accountData.account"
-          [cardsLabel]="cardsLabel || ''"
-        />
-
-        @if (accountData.cards.length > 0) {
-          <div class="account-cards__grid">
-            @for (card of accountData.cards; track card.cardId) {
-              <app-card-grid-item
-                [card]="card"
-                [currency]="accountData.account.currency"
-                (cardClicked)="handleCardClick($event)"
-              />
-            }
-          </div>
-        }
-      }
-    }
-  }
+  </div>
+  } } } }
 </div>

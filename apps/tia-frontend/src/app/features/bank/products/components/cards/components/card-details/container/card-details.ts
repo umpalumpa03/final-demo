@@ -22,7 +22,6 @@ import {
   selectAccountById,
 } from '../../../../../../../../store/products/cards/cards.selectors';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
-import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';

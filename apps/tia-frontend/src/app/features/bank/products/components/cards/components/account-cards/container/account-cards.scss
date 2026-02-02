@@ -27,7 +27,7 @@
   }
 
   &__error {
-    @include font-inter(400, 1.4rem, 1.5);
+    @include font-inter(400, 1.4rem, 1.5rem);
     padding: 1.6rem;
     background-color: $red-50;
     color: $red-700;

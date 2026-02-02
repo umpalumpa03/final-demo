@@ -4,7 +4,7 @@
 .add-card-button {
  
   &__text {
-    @include font-inter(600, 1.6rem, 2.4);
+    @include font-inter(600, 1.6rem, 2.4rem);
     color: $gray-600;
   }
 }

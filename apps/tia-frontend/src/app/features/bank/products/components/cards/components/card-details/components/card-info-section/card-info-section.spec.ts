@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CardInfoSection } from './card-info-section';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('CardInfoSection', () => {
   let component: CardInfoSection;
@@ -7,7 +8,7 @@ describe('CardInfoSection', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CardInfoSection],
+      imports: [CardInfoSection, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CardInfoSection);

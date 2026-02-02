@@ -21,7 +21,7 @@
 
   &__loading,
   &__error {
-    @include font-inter(400, 1.6rem, 1.5);
+    @include font-inter(400, 1.6rem, 1.5rem);
     padding: 4rem;
     text-align: center;
   }

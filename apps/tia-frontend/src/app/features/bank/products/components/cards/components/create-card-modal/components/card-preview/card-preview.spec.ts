@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { CardPreview } from './card-preview';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('CardPreview', () => {
   let component: CardPreview;
@@ -8,7 +9,7 @@ describe('CardPreview', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [CardPreview],
+      imports: [CardPreview, TranslateModule.forRoot()],
     });
 
     fixture = TestBed.createComponent(CardPreview);

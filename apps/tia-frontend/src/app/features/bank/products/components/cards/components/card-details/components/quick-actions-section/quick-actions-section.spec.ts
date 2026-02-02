@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { QuickActionsSection } from './quick-actions-section';
+import { TranslateModule } from '@ngx-translate/core';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('QuickActionsSection', () => {
   let component: QuickActionsSection;
@@ -7,11 +9,12 @@ describe('QuickActionsSection', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [QuickActionsSection],
+      imports: [QuickActionsSection, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(QuickActionsSection);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create and emit events', () => {
@@ -25,10 +28,10 @@ describe('QuickActionsSection', () => {
     component.paybillClicked.subscribe(paybillSpy);
     component.viewTransactionsClicked.subscribe(viewTransactionsSpy);
 
-    component.transferOwnClicked.emit();
-    component.transferExternalClicked.emit();
-    component.paybillClicked.emit();
-    component.viewTransactionsClicked.emit();
+    component['handleTransferOwn']();
+    component['handleTransferExternal']();
+    component['handlePaybill']();
+    component['handleViewTransactions']();
 
     expect(transferOwnSpy).toHaveBeenCalled();
     expect(transferExternalSpy).toHaveBeenCalled();
