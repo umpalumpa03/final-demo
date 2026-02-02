@@ -156,5 +156,15 @@ describe('PaybillMain', () => {
         }),
       );
     });
+
+    it('activeCategoryUI should return null if the active category ID does not exist in CATEGORY_UI_MAP', () => {
+      store.overrideSelector(PAYBILL_SELECTORS.selectActiveCategory, {
+        id: 'NON_EXISTENT_CATEGORY_ID',
+        name: 'Test',
+      } as any);
+      store.refreshState();
+
+      expect(component.activeCategoryUI()).toBeNull();
+    });
   });
 });
