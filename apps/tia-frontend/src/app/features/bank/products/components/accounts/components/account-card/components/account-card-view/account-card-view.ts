@@ -51,6 +51,7 @@ export class AccountCardViewComponent {
   );
 
   private elementRef = inject(ElementRef);
+  private dragStart = signal<number | null>(null);
 
   constructor() {
     effect(() => {
@@ -126,5 +127,27 @@ export class AccountCardViewComponent {
       this.isEditing.set(false);
       this.newName.set('');
     }
+  }
+
+  public onMouseDown(event: MouseEvent): void {
+    if (event.button !== 0) return;
+    this.dragStart.set(event.clientX);
+  }
+
+  public onMouseMove(event: MouseEvent): void {
+    const startX = this.dragStart();
+    if (startX === null) return;
+    const scrollContainer = this.elementRef.nativeElement.closest(
+      '.accounts-list__section-grid',
+    )?.parentElement;
+    if (scrollContainer) {
+      const scrollLeft = scrollContainer.scrollLeft;
+      scrollContainer.scrollLeft = scrollLeft - (event.clientX - startX);
+      this.dragStart.set(event.clientX);
+    }
+  }
+
+  public onMouseUp(): void {
+    this.dragStart.set(null);
   }
 }

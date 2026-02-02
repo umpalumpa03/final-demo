@@ -1,0 +1,12 @@
+{
+  "i18n-ally.localesPaths": [
+    "apps/tia-frontend/public/i18n",
+    "apps/tia-frontend/src/app/core/i18n",
+    "apps/tia-frontend/src/app/shared/services/messages",
+    "coverage/apps/tia-frontend/app/shared/services/messages",
+    "coverage/apps/tia-frontend/lcov-report/app/shared/services/messages",
+    "apps/tia-frontend/src/app/features/bank/settings/components/language",
+    "coverage/apps/tia-frontend/app/features/bank/settings/components/language",
+    "coverage/apps/tia-frontend/lcov-report/app/features/bank/settings/components/language"
+  ]
+}

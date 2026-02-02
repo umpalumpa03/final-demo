@@ -22,3 +22,5 @@ export interface IUpdateUserRequest {
 export interface IBlockUserRequest {
   isBlocked: boolean;
 }
+
+export type IModalState = 'none' | 'details' | 'edit' | 'delete';

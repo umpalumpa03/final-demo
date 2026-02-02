@@ -60,6 +60,12 @@
       "type": "Type",
       "created": "Created",
       "makeTransfer": "Make Transfer"
-    }
+    },
+    "success": "Success",
+    "error": "Error",
+    "information": "Information",
+    "accountNameUpdatedSuccessfully": "Account name updated successfully",
+    "accountCreationRequestSent": "Account creation request has been sent to admin for approval",
+    "failedToCreateAccount": "Failed to create account"
   }
 }

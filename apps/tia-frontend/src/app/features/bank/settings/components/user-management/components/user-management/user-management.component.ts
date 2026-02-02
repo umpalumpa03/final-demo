@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -11,10 +12,21 @@ import { UserManagementState } from '../../shared/state/user-management.state';
 import { UserManagementStore } from '../../store/user-management.store';
 import { UserCard } from '../../shared/ui/user-card/user-card';
 import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
+import { UserDetailsModal } from '../../shared/ui/user-details-modal/user-details-modal';
+import { IModalState } from '../../shared/models/users.model';
+import { ConfirmModal } from '../../shared/ui/confirm-modal/confirm-modal';
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 
 @Component({
   selector: 'app-user-management',
-  imports: [TextInput, UserCard, Pagination],
+  imports: [
+    TextInput,
+    UserCard,
+    Pagination,
+    UserDetailsModal,
+    ConfirmModal,
+    Skeleton,
+  ],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss',
   providers: [UserManagementState, UserManagementStore],
@@ -23,6 +35,9 @@ import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
 export class UserManagementComponent {
   public readonly userState = inject(UserManagementState);
   protected readonly store = inject(UserManagementStore);
+
+  protected readonly modalState = signal<IModalState>('none');
+  protected readonly userToDeleteId = signal<string | null>(null);
 
   protected readonly currentPage = signal<number>(1);
   protected readonly pageSize = signal<number>(4);
@@ -44,12 +59,54 @@ export class UserManagementComponent {
     return users.slice(startIndex, endIndex);
   });
 
+  constructor() {
+    effect(() => {
+      const mode = this.modalState();
+      const idToDelete = this.userToDeleteId();
+      const users = this.store.users();
+      const loading = this.store.actionLoading();
+
+      if (mode === 'delete' && idToDelete && !loading) {
+        const userExists = users.some((u) => u.id === idToDelete);
+
+        if (!userExists) {
+          this.onCloseModal();
+        }
+      }
+    });
+  }
+
   public ngOnInit(): void {
     this.store.loadUsers();
   }
 
   public onPageChange(page: number): void {
     this.currentPage.set(page);
+  }
+
+  public details(id: string): void {
+    this.store.clearSelectedUser();
+    this.modalState.set('details');
+    this.store.loadUserDetails(id);
+  }
+
+  public deleteUser(id: string): void {
+    this.userToDeleteId.set(id);
+    this.modalState.set('delete');
+  }
+
+  public onConfirmDelete(): void {
+    const id = this.userToDeleteId();
+
+    if (id) {
+      this.store.deleteUser(id);
+    }
+  }
+
+  public onCloseModal(): void {
+    this.modalState.set('none');
+    this.store.clearSelectedUser();
+    this.userToDeleteId.set(null);
   }
 
   public onSearch(query: InputFieldValue): void {}
