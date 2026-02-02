@@ -3,14 +3,14 @@ import {
   Component,
   computed,
   inject,
+  signal,
 } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Routes } from '../../models/tokens.model';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import {
   ALERTS_DISMISSIBLE_DATA,
   SIGN_IN_FORM,
@@ -20,6 +20,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map, startWith } from 'rxjs';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
+import { AuthHeader } from "../../shared/auth-header/auth-header";
+import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader";
 
 @Component({
   selector: 'app-sign-in',
@@ -28,10 +30,11 @@ import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/si
     ButtonComponent,
     ReactiveFormsModule,
     RouterLink,
-    Spinner,
     SimpleAlerts,
     TranslatePipe,
-  ],
+    AuthHeader,
+    RouteLoader
+],
   templateUrl: './sign-in.html',
   styleUrl: './sign-in.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,9 +43,11 @@ export class SignIn {
   public signUpRoute = Routes.SIGN_UP;
   public forgotPasswordRoute = Routes.ROTGOT_PASSWORD;
   private authService = inject(AuthService);
+  private router = inject(Router);
   private fb = inject(FormBuilder);
   private translate = inject(TranslateService);
   public alertTypes = ALERTS_DISMISSIBLE_DATA;
+  public isRouteLoading = signal(false);
   public isLoading = computed(() => this.authService.isLoginLoading());
   public errorMessage = computed(() => {
     this.alertTypes.error.message = 'Incorrect Credentials';
@@ -76,5 +81,18 @@ export class SignIn {
     }
 
     this.authService.loginPostRequest(this.loginForm.getRawValue()).subscribe();
+  }
+
+  public navigateToSignUp(event: Event): void {
+    event.preventDefault();
+
+    if (this.isRouteLoading()) {
+      return;
+    }
+
+    this.isRouteLoading.set(true);
+    this.router
+      .navigateByUrl(this.signUpRoute)
+      .finally(() => this.isRouteLoading.set(false));
   }
 }
