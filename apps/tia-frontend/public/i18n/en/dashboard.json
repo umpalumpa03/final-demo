@@ -1,15 +1,21 @@
 {
-  "title": "Dashboard",
-  "welcome": "Welcome, {{name}}!",
-  "overview": {
-    "title": "Account Overview",
-    "totalBalance": "Total Balance",
-    "availableBalance": "Available Balance"
+  "page": {
+    "title": "Dashboard",
+    "subtitle": "Welcome back! Here's your financial overview."
   },
-  "quickActions": {
-    "title": "Quick Actions",
-    "transfer": "Transfer",
-    "pay": "Pay Bills",
-    "deposit": "Deposit"
+  "widgets": {
+    "transactions": {
+      "loadMore": "Load More",
+      "title": "Recent Transactions",
+      "subtitle": "Your latest account activity"
+    },
+    "accounts": {
+      "title": "Accounts",
+      "subtitle": "Your account balances and activity"
+    },
+    "exchange": {
+      "title": "Exchange Rates",
+      "subtitle": "Live currency exchange rates"
+    }
   }
 }

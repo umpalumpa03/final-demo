@@ -1,13 +1,9 @@
 @if(!isLoading()) {
 <form class="sign-in" [formGroup]="loginForm" (ngSubmit)="submit()">
-  <header class="sign-in__header">
-    <h1 class="sign-in__header__title">
-      {{ 'auth.sign-in.title' | translate}}
-    </h1>
-    <span class="sign-in__header__subtitle"
-      >{{'auth.sign-in.subtitle' | translate}}</span
-    >
-  </header>
+  <app-auth-header
+    title="auth.sign-in.title"
+    subTitle="auth.sign-in.subtitle"
+  ></app-auth-header>
   <div class="sign-in__form">
     <lib-text-input
       formControlName="username"
@@ -20,10 +16,8 @@
       type="password"
     ></lib-text-input>
     @if(errorMessage()) {
-    <app-dismissible-alerts
-      [alertTitle]="alertTypes.error.title"
+    <app-simple-alerts
       [alertType]="alertTypes.error.type"
-      [alertId]="alertTypes.error.id"
       [alertMessage]="alertTypes.error.message"
     />
     }
@@ -33,16 +27,16 @@
     <app-button [fullWidth]="true" type="submit"
       >{{'auth.sign-in.submit' | translate}}</app-button
     >
+    <p class="sign-in__switch">
+      {{'auth.sign-in.noAccount' | translate}} &nbsp;
+      <span class="sign-in__link" [routerLink]="[signUpRoute]">
+        {{'auth.sign-in.signUp' | translate}}</span
+      >
+    </p>
   </div>
-  <p class="sign-in__switch">
-    {{'auth.sign-in.noAccount' | translate}} &nbsp;
-    <span class="sign-in__link" [routerLink]="[signUpRoute]">
-      {{'auth.sign-in.signUp' | translate}}</span
-    >
-  </p>
 </form>
 } @else {
 <div class="sign-in__loader">
-  <app-spinner size="4rem"></app-spinner>
+  <app-route-loader [variant]="'pulsing'" />
 </div>
 }

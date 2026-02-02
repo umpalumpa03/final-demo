@@ -1,14 +1,16 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   inject,
+  OnDestroy,
   OnInit,
   signal,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
-import { map, tap } from 'rxjs';
+import { catchError, map, Observable, of, Subject, tap } from 'rxjs';
 
 import { SettingsBody } from '../../../shared/ui/settings-body/settings-body';
 import { themesConfig } from '../config/appearance.config';
@@ -16,23 +18,66 @@ import { selectActiveTheme } from 'apps/tia-frontend/src/app/store/theme/theme.s
 import { ThemeActions } from 'apps/tia-frontend/src/app/store/theme/theme.actions';
 import { AppearanceService } from '../services/appearance.service';
 import { TAvailableThemes } from '../models/appearance.model';
-import { ButtonComponent } from "@tia/shared/lib/primitives/button/button";
-import { Skeleton } from "@tia/shared/lib/feedback/skeleton/skeleton";
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { selectUserInfo } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
 import { CanComponentDeactivate } from '../guard/unsaved-changes.guard';
+import { UserInfoActions } from 'apps/tia-frontend/src/app/store/user-info/user-info.actions';
+import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
+import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
+import { AlertType } from '@tia/shared/lib/alerts/shared/models/alert.models';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-appearance-container',
-  imports: [SettingsBody, TranslatePipe, ButtonComponent, Skeleton],
+  imports: [
+    SettingsBody,
+    TranslatePipe,
+    ButtonComponent,
+    Skeleton,
+    UiModal,
+    AlertTypesWithIcons,
+  ],
   providers: [AppearanceService],
   templateUrl: './appearance-container.html',
   styleUrl: './appearance-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppearanceContainer implements OnInit, CanComponentDeactivate {
+export class AppearanceContainer
+  implements OnInit, OnDestroy, CanComponentDeactivate
+{
   private store = inject(Store);
   private appearanceService = inject(AppearanceService);
   private destroyRef = inject(DestroyRef);
+  private translate = inject(TranslateService);
+
+  public isModalOpen = signal(false);
+  private leaveDecision$ = new Subject<boolean>();
+
+  public readonly alertKind = signal<AlertType | null>(null);
+  public readonly alertMessage = signal<string>('');
+  public readonly alertType = computed<AlertType | null>(() =>
+    this.alertKind(),
+  );
+  private alertTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  public toggleModal(): void {
+    this.isModalOpen.update((open) => !open);
+  }
+
+  public onStay(): void {
+    this.leaveDecision$.next(false);
+    this.isModalOpen.set(false);
+  }
+
+  public onLeave(): void {
+    const savedTheme = this.userInfo()?.theme;
+    if (savedTheme) {
+      this.setActiveColor(savedTheme);
+    }
+    this.leaveDecision$.next(true);
+    this.isModalOpen.set(false);
+  }
 
   private activeTheme = this.store.selectSignal(selectActiveTheme);
   public availableThemes = signal<TAvailableThemes | null>(null);
@@ -40,24 +85,51 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
   public isLoading = this.appearanceService.isLoading;
 
   private isSubmitted = signal(false);
-  
+
   private userInfo = this.store.selectSignal(selectUserInfo);
 
   public ngOnInit(): void {
+    this.store.dispatch(UserInfoActions.loadUser());
     this.isSubmitted.set(false);
-    const subscription = this.appearanceService.getAvailableThemes().pipe(
-      map((themes) => {
-        return[...themes].map((theme, index) => ({
-          ...theme,
-          subtitle: themesConfig[index].subtitle
-        }));
-      }),
-      tap(themes => {
-        this.availableThemes.set(themes);
-      })
-    ).subscribe();
-    
+    const subscription = this.appearanceService
+      .getAvailableThemes()
+      .pipe(
+        map((themes) => {
+          return [...themes].map((theme, index) => ({
+            ...theme,
+            subtitle: themesConfig[index].subtitle,
+          }));
+        }),
+        tap((themes) => {
+          this.availableThemes.set(themes);
+        }),
+      )
+      .subscribe();
+
     this.destroyRef.onDestroy(() => subscription.unsubscribe());
+  }
+
+  public ngOnDestroy(): void {
+    if (this.alertTimeoutId) {
+      clearTimeout(this.alertTimeoutId);
+      this.alertTimeoutId = null;
+    }
+  }
+
+  private showAlert(kind: AlertType, message: string, autoHideMs = 3500): void {
+    if (this.alertTimeoutId) {
+      clearTimeout(this.alertTimeoutId);
+      this.alertTimeoutId = null;
+    }
+
+    this.alertKind.set(kind);
+    this.alertMessage.set(message);
+
+    this.alertTimeoutId = setTimeout(() => {
+      this.alertKind.set(null);
+      this.alertMessage.set('');
+      this.alertTimeoutId = null;
+    }, autoHideMs);
   }
 
   public isCurrentTheme(theme: string) {
@@ -65,7 +137,7 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
   }
 
   public onClick(selectedColor: string): void {
-    this.setActiveColor(selectedColor)
+    this.setActiveColor(selectedColor);
   }
 
   public setActiveColor(selectedColor: string): void {
@@ -86,33 +158,41 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
   }
 
   public onSubmit(): void {
-    const subscription = this.appearanceService.updateUserTheme(this.activeTheme()).pipe(
-      tap(() => this.isSubmitted.set(true))
-    ).subscribe();
+    const subscription = this.appearanceService
+      .updateUserTheme(this.activeTheme())
+      .pipe(
+        tap(() => {
+          this.isSubmitted.set(true);
+          this.showAlert(
+            'success',
+            this.translate.instant('settings.appearance.saveSuccess'),
+          );
+        }),
+        catchError((error) => {
+          this.showAlert(
+            'error',
+            this.translate.instant('settings.appearance.saveError'),
+          );
+          return of(null);
+        }),
+      )
+      .subscribe();
     this.destroyRef.onDestroy(() => subscription.unsubscribe());
   }
 
-  public canDeactivate(): boolean {
+  public canDeactivate(): boolean | Observable<boolean> {
     if (this.isSubmitted()) {
       return true;
     }
-    
+
     const currentTheme = this.activeTheme();
-    const savedTheme = this.userInfo()?.theme; 
+    const savedTheme = this.userInfo()?.theme;
 
     if (savedTheme && currentTheme !== savedTheme) {
-      
-      const confirmLeave = confirm('You have unsaved changes. Do you really want to leave?');
-
-      if (confirmLeave) {
-        this.setActiveColor(savedTheme);
-        return true; 
-      } else {
-        return false; 
-      }
+      this.isModalOpen.set(true);
+      return this.leaveDecision$.asObservable();
     }
 
     return true;
   }
-  
 }

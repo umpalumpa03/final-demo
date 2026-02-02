@@ -14,8 +14,8 @@
         "profile-photo": "Profile Photo"
     },
     "language": {
-        "title": "Language Settings",
-        "subtitle": "Choose your preferred language",
+        "title": "Language & Region",
+        "subtitle": "Choose your preferred language to personalize your experience",
         "current": "Current Language",
         "available": "Available Languages",
         "english": "English",
@@ -41,7 +41,9 @@
         "cardsTitle": "Select Theme",
         "light": "Light",
         "dark": "Dark",
-        "system": "System"
+        "system": "System",
+        "saveSuccess": "Theme saved successfully!",
+        "saveError": "Failed to save theme. Please try again."
     },
     "profile-photo": {
         "title": "Profile Photo",
@@ -71,6 +73,8 @@
     },
     "user-management": {
         "title": "User Management",
+        "subtitle": "Manage users, roles, and access permissions",
+        "placeholder": "Search users by name, email, username...",
         "addUser": "Add User",
         "removeUser": "Remove User"
     },

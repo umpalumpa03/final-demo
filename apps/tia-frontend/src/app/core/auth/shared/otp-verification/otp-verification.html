@@ -1,3 +1,4 @@
+@defer {
 <div class="otp-verification">
   <div class="otp-verification__icon" aria-hidden="true">
     <img [src]="iconUrl()" />
@@ -6,7 +7,7 @@
   <p class="otp-verification__subtext">{{ subText() | translate}}</p>
 
   @if (!isLoading()) {
-  <form class="auth-form" [formGroup]="otpForm" (ngSubmit)="onSubmit()">
+  <form class="auth-form" [formGroup]="activeForm()" (ngSubmit)="onSubmit()">
     @if(timerType() === 'otp'){
     <div class="otp-field">
       <lib-otp formControlName="code" [config]="formConfig().otp"></lib-otp>
@@ -14,17 +15,30 @@
     } @else {
     <div class="otp-field__phone">
       <lib-text-input
-        formControlName="code"
+        formControlName="phoneNumber"
         [config]="formConfig().phone"
       ></lib-text-input>
     </div>
     } @if (submitError()) {
-    <div class="auth-error">{{ submitError() | translate}}</div>
+    <app-simple-alerts
+      alertType="error"
+      [alertMessage]="submitError() ?? ''"
+    ></app-simple-alerts>
+    } @if (unitedError()) {
+    <app-simple-alerts
+      alertType="error"
+      [alertMessage]="unitedError()"
+    ></app-simple-alerts>
+    } @if (phoneErrorMessage()) {
+    <app-simple-alerts
+      alertType="error"
+      [alertMessage]="phoneErrorMessage() ?? 'An error occurred'"
+    ></app-simple-alerts>
     }
 
     <div class="auth-form__actions">
       <app-button
-        [isDisabled]="isResendActive()"
+        [isDisabled]="isButtonDisabled()"
         type="submit"
         [fullWidth]="true"
       >
@@ -69,7 +83,8 @@
   </form>
   } @else {
   <div class="sign-in sign-in-loader">
-    <app-spinner size="4rem"></app-spinner>
+    <app-route-loader variant="pulsing"></app-route-loader>
   </div>
   }
 </div>
+} @placeholder {}

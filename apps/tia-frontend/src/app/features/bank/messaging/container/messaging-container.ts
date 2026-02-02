@@ -33,6 +33,21 @@ export class MessagingContainer {
         return [...routes];
       });
     });
+
+    effect(() => {
+      const message = this.successMessage?.();
+      const error = this.error?.();
+      if (message) {
+        setTimeout(() => {
+          this.messagingStore.clearSuccessMessage();
+        }, 4000);
+      }
+      if (error) {
+        setTimeout(() => {
+          this.messagingStore.clearError();
+        }, 4000);
+      }
+    });
   }
 
   public readonly messageRoutes = signal<NavigationItem[]>([

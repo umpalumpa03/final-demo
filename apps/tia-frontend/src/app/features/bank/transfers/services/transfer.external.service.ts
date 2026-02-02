@@ -121,6 +121,7 @@ export class TransferExternalService {
     // reset amount if selecting different account
     if (currentSelected?.id !== account.id) {
       this.transferStore.setAmount(0);
+      this.transferStore.setInsufficientBalance(false);
     }
 
     // toggle if clicking same account, deselect it
@@ -135,12 +136,11 @@ export class TransferExternalService {
     account: Account,
     currentSelected: Account | null,
   ): void {
-    // reset amount if selecting different account
     if (currentSelected?.id !== account.id) {
       this.transferStore.setAmount(0);
+      this.transferStore.setInsufficientBalance(false);
     }
 
-    // toggle if clicking same account, deselect it
     if (currentSelected?.id === account.id) {
       this.transferStore.setSenderAccount(null);
     } else {
@@ -196,6 +196,8 @@ export class TransferExternalService {
     const numericAmount = Number(amount);
     this.transferStore.setAmount(numericAmount);
 
+    this.transferStore.setInsufficientBalance(false);
+
     const senderAccount = this.transferStore.senderAccount();
 
     if (numericAmount > 0 && senderAccount?.id) {
@@ -222,8 +224,12 @@ export class TransferExternalService {
           this.transfersApi.getFee(accountId, amount).pipe(
             tap((response) => {
               const fee =
-                typeof response === 'number' ? response : (response?.fee ?? 0);
-              this.transferStore.updateFeeInfo(fee, amount + fee);
+                typeof response === 'number' ? response : response.fee;
+              const total = amount + fee;
+              this.transferStore.updateFeeInfo(fee, total);
+
+              const balance = this.transferStore.senderAccount()?.balance ?? 0;
+              this.validateBalance(total, balance);
             }),
             catchError(() => {
               this.transferStore.updateFeeInfo(0, 0);
@@ -234,5 +240,13 @@ export class TransferExternalService {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
+  }
+  public validateBalance(
+    totalWithFee: number,
+    availableBalance: number,
+  ): boolean {
+    const isInsufficient = totalWithFee > availableBalance;
+    this.transferStore.setInsufficientBalance(isInsufficient);
+    return !isInsufficient;
   }
 }

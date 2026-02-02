@@ -18,10 +18,10 @@ export const OTP_VERIFY_FORM = {
   },
   phone: {
     label: 'auth.otp-sign-up.otpPlaceholder',
-    placeholder: '000000'
+    errorMessage: 'auth.otp-sign-up.errorMessage',
+    placeholder: '(555) 0000-0000',
   },
 } as const;
-
 
 export const ALERTS_DISMISSIBLE_DATA = {
   info: {
@@ -36,7 +36,7 @@ export const ALERTS_DISMISSIBLE_DATA = {
   },
   error: {
     id: 1,
-    type: 'warning' as const,
+    type: 'error' as const,
     title: 'Error' as const,
     message: '',
   },
@@ -64,7 +64,7 @@ export const AUTH_SIDE_PANEL_DATA = {
         title: 'auth.sign-in.side-panel.features.protected-data-2.title',
         text: 'auth.sign-in.side-panel.features.protected-data-2.text',
         icon: '/images/svg/auth/secured.svg',
-      }
+      },
     ],
   },
 
@@ -89,7 +89,7 @@ export const AUTH_SIDE_PANEL_DATA = {
         title: 'auth.sign-up.side-panel.features.email-verification.title',
         text: 'auth.sign-up.side-panel.features.email-verification.text',
         icon: '/images/svg/auth/email.svg',
-      }
+      },
     ],
   },
 
@@ -99,10 +99,11 @@ export const AUTH_SIDE_PANEL_DATA = {
     features: [
       {
         id: 1,
-        title: 'auth.forgot-password.side-panel.features.email-verification.title',
+        title:
+          'auth.forgot-password.side-panel.features.email-verification.title',
         text: 'auth.forgot-password.side-panel.features.email-verification.text',
         icon: '/images/svg/auth/email.svg',
-      }
+      },
     ],
   },
 
@@ -121,7 +122,7 @@ export const AUTH_SIDE_PANEL_DATA = {
         title: 'auth.otp-sign-in.side-panel.features.check-email.title',
         text: 'auth.otp-sign-in.side-panel.features.check-email.text',
         icon: '/images/svg/auth/setup.svg',
-      }
+      },
     ],
   },
 
@@ -140,7 +141,7 @@ export const AUTH_SIDE_PANEL_DATA = {
         title: 'auth.otp-sign-up.side-panel.features.final-step.title',
         text: 'auth.otp-sign-up.side-panel.features.final-step.text',
         icon: '/images/svg/auth/secured.svg',
-      }
+      },
     ],
   },
 
@@ -159,7 +160,7 @@ export const AUTH_SIDE_PANEL_DATA = {
         title: 'auth.otp-forgot-password.side-panel.features.check-email.title',
         text: 'auth.otp-forgot-password.side-panel.features.check-email.text',
         icon: '/images/svg/auth/email.svg',
-      }
+      },
     ],
   },
 
@@ -178,7 +179,7 @@ export const AUTH_SIDE_PANEL_DATA = {
         title: 'auth.phone.side-panel.features.account-security.title',
         text: 'auth.phone.side-panel.features.account-security.text',
         icon: '/images/svg/auth/secured.svg',
-      }
+      },
     ],
   },
 
@@ -188,10 +189,11 @@ export const AUTH_SIDE_PANEL_DATA = {
     features: [
       {
         id: 1,
-        title: 'auth.reset-password.side-panel.features.password-security.title',
+        title:
+          'auth.reset-password.side-panel.features.password-security.title',
         text: 'auth.reset-password.side-panel.features.password-security.text',
         icon: '/images/svg/auth/lock.svg',
-      }
+      },
     ],
-  }
+  },
 };

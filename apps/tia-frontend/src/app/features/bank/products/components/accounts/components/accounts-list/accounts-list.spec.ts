@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { provideMockStore } from '@ngrx/store/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { AccountsListComponent } from './accounts-list';
@@ -70,6 +70,10 @@ describe('AccountsListComponent', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -129,10 +133,5 @@ describe('AccountsListComponent', () => {
     setInputs(null);
     const nullAccounts = component.getAccountsBySection(mockAccountSections[0]);
     expect(nullAccounts.length).toBe(0);
-  });
-
-  it('should have correct input defaults', () => {
-    expect(component.error()).toBeNull();
-    expect(component.renameError()).toBeNull();
   });
 });

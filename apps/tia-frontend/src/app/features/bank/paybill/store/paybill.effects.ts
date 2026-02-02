@@ -224,11 +224,31 @@ export class PaybillEffect {
 
   loadTemplateGroups$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(TemplatesPageActions.loadTemplates),
+      ofType(TemplatesPageActions.loadTemplateGroups),
       mergeMap(() =>
         this.payBillTemplatesService.getAllTemplateGroups().pipe(
           map((templateGroups) =>
-            TemplatesPageActions.loadTemplatesSuccess({ templateGroups }),
+            TemplatesPageActions.loadTemplateGroupsSuccess({ templateGroups }),
+          ),
+          catchError((error) =>
+            of(
+              TemplatesPageActions.loadTemplateGroupsFailure({
+                error: error.message,
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
+
+  loadTemplates$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TemplatesPageActions.loadTemplates),
+      mergeMap(() =>
+        this.payBillTemplatesService.getAllTemplates().pipe(
+          map((templates) =>
+            TemplatesPageActions.loadTemplatesSuccess({ templates }),
           ),
           catchError((error) =>
             of(

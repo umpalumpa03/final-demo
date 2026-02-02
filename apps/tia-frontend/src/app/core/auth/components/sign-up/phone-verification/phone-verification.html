@@ -4,4 +4,5 @@
   timerType="phone"
   [timeLimit]="2"
   (onTimeout)="handlePhoneTimer()"
+  [phoneErrorMessage]="PhoneOtpError()?.message ?? null"
 ></app-otp-verification>

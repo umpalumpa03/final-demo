@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PaymentSummary } from './payment-summary';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('PaymentSummary', () => {
   let component: PaymentSummary;
@@ -7,7 +8,7 @@ describe('PaymentSummary', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PaymentSummary],
+      imports: [PaymentSummary,TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PaymentSummary);
