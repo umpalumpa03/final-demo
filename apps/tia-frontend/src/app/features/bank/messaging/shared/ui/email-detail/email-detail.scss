@@ -1,0 +1,132 @@
+@use "../../../../../../shared/styles/palette" as *;
+@use "../../../../../../shared/styles/mixins" as *;
+
+.sceleton {
+    width: 100%;
+    height: 100vh;
+    @include flex-center(row, center, center);
+}
+.email-detail {
+    background: $white;
+    width: 100%;
+    margin: 0 auto;
+    transition: all 0.2s ease;
+    animation: slideIn 0.3s ease-out;
+
+    &__header {
+        border-bottom: 0.063rem solid $gray-200;
+    }
+
+    &__top {
+        @include display-flex(row, flex-start);
+        gap: 0.8rem;
+        padding: 1.6rem;
+    }
+
+    &__fromto {
+        @include display-flex(row, flex-start);
+        gap: 1.6rem;
+    }
+
+    &__back--btn {
+        background: none;
+        border: none;
+        font-size: 1.6rem;
+        cursor: pointer;
+        padding: 1rem;
+        border-radius: 0.8rem;
+        transition: background 0.2s;
+        width: 3.6rem;
+        height: 3.6rem;
+        &:hover {
+            background: #eaf6ff;
+        }
+
+        & > img {
+            width: 1.6rem;
+            height: 1.6rem;
+        }
+    }
+
+    &__subject,
+    &__draft {
+        @include font-inter(600, 2rem, 2.5rem);
+        color: var(--color-fg);
+    }
+
+    &__meta {
+        @include flex-center(column, flex-start, start);
+        @include font-inter(400, 1.4rem, 2rem);
+        color: $gray-700;
+        gap: 0.5rem;
+        margin-bottom: 0.4rem;
+
+        &-label {
+            font-weight: 700;
+        }
+    }
+
+    &__date {
+        @include font-inter(400, 1.4rem, 2rem);
+        color: $gray-600;
+    }
+
+    &__actions {
+        display: flex;
+        gap: 0.8rem;
+        margin-bottom: 1.2rem;
+        margin-left: 2.2rem;
+    }
+
+    &__message {
+        padding: 2.4rem;
+
+        &__content {
+            border: 0.063rem solid $gray-200;
+            border-radius: 1rem;
+            box-shadow:
+                0px 1px 2px -1px rgba(0, 0, 0, 0.1),
+                0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            padding: 1.7rem;
+            @include display-flex(column, flex-start);
+            gap: 1.2rem;
+        }
+
+        &__card {
+            @include display-flex(row, flex-start);
+            gap: 1.2rem;
+        }
+
+        &__card-header {
+            @include display-flex(column, flex-start);
+            gap: 0.062rem;
+        }
+    }
+
+    &__from {
+        @include font-inter(600, 1.4rem, 2rem);
+        color: var(--color-fg);
+    }
+
+    &__msg-date {
+        @include font-inter(400, 1.2rem, 1.6rem);
+        color: $gray-600;
+    }
+
+    &__body {
+        @include font-inter(400, 1.4rem, 2.27rem);
+        color: var(--color-fg);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-2rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

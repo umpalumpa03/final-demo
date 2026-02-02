@@ -1,0 +1,68 @@
+@if(isLoading()) {
+<div class="sceleton">
+  <app-route-loader variant="pulsing"></app-route-loader>
+</div>
+} @else if(data()) {
+<div class="email-detail">
+  <div class="email-detail__header">
+    <div class="email-detail__top">
+      <button
+        class="email-detail__back--btn"
+        type="button"
+        aria-label="Back"
+        (click)="goBack()"
+      >
+        <img src="images/svg/messaging/go-back.svg" alt="Go back" />
+      </button>
+
+      <div class="email-detail__meta">
+        <span class="email-detail__subject">
+          @if(data()?.isDraft) {
+          <span class="email-detail__draft">Draft:</span>
+          } {{ data()?.subject }}
+        </span>
+        <div class="email-detail__fromto">
+          <div>
+            <span class="email-detail__meta-label">From:</span>
+            <span>{{ data()?.senderEmail }}</span>
+          </div>
+          <div>
+            <span class="email-detail__meta-label">To:</span>
+            <span>{{ data()?.recipient }}</span>
+          </div>
+        </div>
+        @if(data()?.ccRecipients?.length) {
+        <div>
+          <span class="email-detail__meta-label">CC:</span>
+          <span>{{ data()?.ccRecipients }}</span>
+        </div>
+        }
+
+        <div class="email-detail__date">
+          {{ data()?.createdAt | date:"MMMM d, y 'at' hh:mm a" }}
+        </div>
+      </div>
+    </div>
+    <div class="email-detail__actions">
+      <ng-content></ng-content>
+    </div>
+  </div>
+  <div class="email-detail__message">
+    <div class="email-detail__message__card">
+      <app-avatar
+        size="md"
+        [initials]="getInitials(data()?.senderEmail)"
+      ></app-avatar>
+      <div class="email-detail__message__content">
+        <div class="email-detail__message__card-header">
+          <span class="email-detail__from">{{ data()?.senderEmail }}</span>
+          <span class="email-detail__msg-date"
+            >{{ data()?.createdAt | date:'MMM d, y, hh:mm a' }}</span
+          >
+        </div>
+        <div class="email-detail__body">{{ data()?.body }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+}
