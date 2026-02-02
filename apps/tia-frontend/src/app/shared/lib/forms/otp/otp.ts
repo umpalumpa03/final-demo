@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -20,7 +21,7 @@ import { OtpConfig, OtpDigit } from '../models/otp.model';
   styleUrl: './otp.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Otp extends BaseInput {
+export class Otp extends BaseInput implements AfterViewInit {
   readonly otpBoxes = viewChildren<ElementRef<HTMLInputElement>>('otpBox');
 
   public override readonly config = input<OtpConfig>({});
@@ -129,5 +130,11 @@ export class Otp extends BaseInput {
     const finalString: string = arr.join('').trimEnd();
     this.value.set(finalString);
     this.onChange(finalString);
+  }
+
+  public ngAfterViewInit(): void {
+    queueMicrotask(() => {
+      this.otpBoxes()[0]?.nativeElement.focus();
+    });
   }
 }
