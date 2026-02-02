@@ -115,7 +115,11 @@ export class PaybillEffect {
             return PaybillActions.proceedPaymentSuccess({ response });
           }),
           catchError((error) =>
-            of(PaybillActions.proceedPaymentFailure({ error: error.error.message })),
+            of(
+              PaybillActions.proceedPaymentFailure({
+                error: error.error.message,
+              }),
+            ),
           ),
         ),
       ),
@@ -138,41 +142,41 @@ export class PaybillEffect {
     );
   });
 
-confirmPayment$ = createEffect(() => {
-  return this.actions$.pipe(
-    ofType(PaybillActions.confirmPayment),
-    mergeMap(({ payload }) =>
-      this.paybillService.verifyPayment(payload).pipe(
-        mergeMap((response) => [
-          response.success
-            ? PaybillActions.addNotification({
-                notificationType: 'success',
-                message: 'OTP Verified Successfully',
-              })
-            : PaybillActions.addNotification({
-                notificationType: 'warning',
-                message: response.message || 'Invalid Code',
-              }),
-          response.success
-            ? PaybillActions.setPaymentStep({ step: 'SUCCESS' })
-            : { type: 'noop' },
-        ]),
-        catchError((error) => {
-          const errorBody = error.error as unknown as PaybillErrorPayload;
-          
-          const displayMessage = errorBody?.message || error.message;
+  confirmPayment$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(PaybillActions.confirmPayment),
+      mergeMap(({ payload }) =>
+        this.paybillService.verifyPayment(payload).pipe(
+          mergeMap((response) => [
+            response.success
+              ? PaybillActions.addNotification({
+                  notificationType: 'success',
+                  message: 'OTP Verified Successfully',
+                })
+              : PaybillActions.addNotification({
+                  notificationType: 'warning',
+                  message: response.message || 'Invalid Code',
+                }),
+            response.success
+              ? PaybillActions.setPaymentStep({ step: 'SUCCESS' })
+              : { type: 'noop' },
+          ]),
+          catchError((error) => {
+            const errorBody = error.error as PaybillErrorPayload;
 
-          return of(
-            PaybillActions.addNotification({
-              notificationType: 'warning',
-              message: displayMessage,
-            }),
-          );
-        }),
+            const displayMessage = errorBody?.message || error.message;
+
+            return of(
+              PaybillActions.addNotification({
+                notificationType: 'warning',
+                message: displayMessage,
+              }),
+            );
+          }),
+        ),
       ),
-    ),
-  );
-});
+    );
+  });
 
   autoDismissNotifications$ = createEffect(() => {
     return this.actions$.pipe(

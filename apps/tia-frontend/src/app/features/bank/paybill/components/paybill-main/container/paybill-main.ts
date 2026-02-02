@@ -181,7 +181,7 @@ export class PaybillMain implements OnInit {
     const provider = category.providers.find((p) => p.id === providerId);
     if (!provider) return;
 
-    if ((provider as any).isFinal) {
+    if (provider.isFinal) {
       this.store.dispatch(PaybillActions.selectProvider({ providerId }));
     } else {
       this.selectedParentId.set(provider.id);
