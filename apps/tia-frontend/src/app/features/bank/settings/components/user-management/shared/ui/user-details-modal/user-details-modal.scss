@@ -1,10 +1,6 @@
 @use "../../../../../../../../shared/styles/mixins" as *;
 @use "../../../../../../../../shared/styles/palette" as *;
 
-:host {
-    display: block;
-}
-
 header {
     margin-bottom: 2rem;
 
