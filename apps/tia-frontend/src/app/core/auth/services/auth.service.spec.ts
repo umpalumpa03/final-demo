@@ -444,7 +444,7 @@ describe('AuthService', () => {
       const mockResponse = { success: true };
 
       const promise = new Promise<void>((resolve) => {
-        service.resetPhoneOtp().subscribe({
+        service.resendPhoneOtp().subscribe({
           next: (res) => {
             expect(res.success).toBe(true);
             resolve();
@@ -462,7 +462,7 @@ describe('AuthService', () => {
       service.setChellangeId('');
 
       const promise = new Promise<void>((resolve) => {
-        service.resetPhoneOtp().subscribe({
+        service.resendPhoneOtp().subscribe({
           error: (err) => {
             expect(err.message).toBe('Missing forgot password challengeId');
             resolve();

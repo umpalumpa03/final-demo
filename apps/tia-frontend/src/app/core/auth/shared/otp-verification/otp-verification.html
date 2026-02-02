@@ -73,13 +73,16 @@
       @if(timerType() === 'otp') {
       <div
         class="timer-compact__resend"
-        [class.timer-compact__resend--disabled]="countdown() > 0"
+        [class.timer-compact__resend--disabled]="!canResend()"
       >
         <span class="timer-compact__resend-text"
           >{{'auth.otp-sign-in.codeQuestion' | translate}}</span
         >
         <span class="timer-compact__link" (click)="onResend()">
           {{'auth.otp-sign-in.code' | translate}}
+        </span>
+        <span class="timer-compact__resend-left">
+          {{resendTries()}}
         </span>
       </div>
       }

@@ -17,8 +17,9 @@ export class PhoneVerification {
   private authService = inject(AuthService);
   private router = inject(Router);
   private tokenService = inject(TokenService);
-  public PhoneOtpError = this.authService.otpError;
   private destroyRef = inject(DestroyRef);
+  
+  public PhoneOtpError = this.authService.otpError;
 
   public submit(event: IVerified): void {
     if (event.isCalled) {

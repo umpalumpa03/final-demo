@@ -3,6 +3,7 @@ import { AuthService } from '../../../services/auth.service';
 import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
 import { IVerified } from '../../../models/otp-verification.models';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { take, tap } from 'rxjs';
 
 @Component({
   selector: 'app-verify-signup',
@@ -21,12 +22,11 @@ export class VerifySignup {
     }
   }
 
-
   public resendOtp(isCalled: boolean): void {
     if (isCalled) {
-      this.authService.resetPhoneOtp().subscribe();
+      this.authService.resendPhoneOtp().pipe(
+        take(1),
+      ).subscribe();
     }
-
   }
-  
 }
