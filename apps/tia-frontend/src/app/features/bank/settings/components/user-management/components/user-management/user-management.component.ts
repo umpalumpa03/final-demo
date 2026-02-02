@@ -12,6 +12,7 @@ import { UserManagementStore } from '../../store/user-management.store';
 import { UserCard } from '../../shared/ui/user-card/user-card';
 import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
 import { UserDetailsModal } from '../../shared/ui/user-details-modal/user-details-modal';
+import { IModalState } from '../../shared/models/users.model';
 
 @Component({
   selector: 'app-user-management',
@@ -25,7 +26,7 @@ export class UserManagementComponent {
   public readonly userState = inject(UserManagementState);
   protected readonly store = inject(UserManagementStore);
 
-  protected readonly modalState = signal<'none' | 'details'>('none');
+  protected readonly modalState = signal<IModalState>('none');
 
   protected readonly currentPage = signal<number>(1);
   protected readonly pageSize = signal<number>(4);
