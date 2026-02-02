@@ -35,6 +35,7 @@
   &__content {
     @include display-flex(column);
     gap: 2.4rem;
+    padding-right: 2.4rem;
   }
 }
 

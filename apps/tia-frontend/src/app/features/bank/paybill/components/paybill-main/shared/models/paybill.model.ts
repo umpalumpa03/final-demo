@@ -3,8 +3,8 @@ export interface PaybillProvider {
   serviceName: string;
   categoryId: string;
   name?: string;
-  parentId?:string;
-  isFinal?:string;
+  parentId?: string;
+  isFinal?: string | boolean;
 }
 
 export interface PaybillCategory {
@@ -33,7 +33,7 @@ export interface BillDetails {
 }
 
 export interface PaybillPayload {
-  accountNumber: string;
+  identification: PaybillIdentification;
   amount: number;
 }
 
@@ -47,7 +47,7 @@ export interface ProceedPaymentResponse {
   transferType: string;
   error?: string;
   message?: string;
-  statusCode?:string;
+  statusCode?: string;
 }
 
 export interface ConfirmPaymentPayload {
@@ -57,9 +57,25 @@ export interface ConfirmPaymentPayload {
 
 export interface ProceedPaymentPayload {
   serviceId: string;
-  identification: {
-    accountNumber: string;
-  };
+  identification: PaybillIdentification;
   amount: number;
   senderAccountId: string;
+}
+
+export interface PaybillIdentification {
+  accountNumber?: string;
+  phoneNumber?: string;
+  policyNumber?: string;
+  propertyCode?: string;
+  tenantId?: string;
+  [key: string]: string | undefined;
+}
+
+export interface PaybillFormVerifyEvent {
+  value: string;
+}
+
+export interface PaybillFormProceedEvent {
+  value: string;
+  amount: number;
 }

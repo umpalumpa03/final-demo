@@ -82,24 +82,32 @@ export class PaybillEffect {
     );
   });
 
-  checkBill$ = createEffect(() =>
-    this.actions$.pipe(
+  checkBill$ = createEffect(() => {
+    return this.actions$.pipe(
       ofType(PaybillActions.checkBill),
-      mergeMap(({ serviceId, accountNumber }) =>
-        this.paybillService.checkBill(serviceId, accountNumber).pipe(
+      mergeMap(({ serviceId, identification }) =>
+        this.paybillService.checkBill(serviceId, identification).pipe(
           map((response) => {
-            if (!response.valid && response.error) {
-              return PaybillActions.checkBillFailure({ error: response.error });
+            if (response && response.valid === false) {
+              return PaybillActions.checkBillFailure({
+                error: response.error || 'paybill.main.form.default_error',
+              });
             }
             return PaybillActions.checkBillSuccess({ details: response });
           }),
-          catchError((error) =>
-            of(PaybillActions.checkBillFailure({ error: error.message })),
-          ),
+          catchError((error) => {
+            const errorBody = error.error as unknown as {
+              message?: string;
+              error?: string;
+            };
+            const errorMessage =
+              errorBody?.message || errorBody?.error || error.message;
+            return of(PaybillActions.checkBillFailure({ error: errorMessage }));
+          }),
         ),
       ),
-    ),
-  );
+    );
+  });
 
   proceedPayment$ = createEffect(() => {
     return this.actions$.pipe(
