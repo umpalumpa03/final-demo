@@ -1,0 +1,8 @@
+<app-email-detail [data]="emailDetail?.()">
+  @if (!fromSent) {
+  <div class="button-container">
+    <app-button [icon]="'reply.svg'">Send</app-button>
+    <app-button variant="outline" [icon]="'red-trash.svg'">Delete</app-button>
+  </div>
+  }
+</app-email-detail>

@@ -10,12 +10,12 @@ describe('Inbox', () => {
   let component: Inbox;
   let fixture: ComponentFixture<Inbox>;
   let mockMessagingStore: any;
-  
+
   const mockMails: Mail[] = [
-    { 
-      id: 1, 
-      subject: 'Inbox 1', 
-      body: 'Content 1', 
+    {
+      id: 1,
+      subject: 'Inbox 1',
+      body: 'Content 1',
       receiverEmail: 'test1@test.com',
       senderEmail: 'sender@test.com',
       isRead: false,
@@ -24,10 +24,10 @@ describe('Inbox', () => {
       createdAt: '2024-01-01T00:00:00.000Z',
       permission: 0
     },
-    { 
-      id: 2, 
-      subject: 'Inbox 2', 
-      body: 'Content 2', 
+    {
+      id: 2,
+      subject: 'Inbox 2',
+      body: 'Content 2',
       receiverEmail: 'test2@test.com',
       senderEmail: 'sender@test.com',
       isRead: false,
@@ -62,6 +62,10 @@ describe('Inbox', () => {
     await fixture.whenStable();
   });
 
+  it('should create the Inbox component', () => {
+    expect(component).toBeTruthy();
+  });
+
   it('should create and initialize on ngOnInit', () => {
     expect(component).toBeTruthy();
     component.ngOnInit();
@@ -70,12 +74,12 @@ describe('Inbox', () => {
 
   it('should handle select all and isAllSelected', () => {
     mockMessagingStore.mails.set(mockMails);
-    
+
     expect(component.isAllSelected()).toBe(false);
     component.toggleSelectAll(true);
     expect(component.isAllSelected()).toBe(true);
     expect(component.selectedMailIds()).toEqual(new Set([1, 2]));
-    
+
     component.toggleSelectAll(false);
     expect(component.selectedMailIds()).toEqual(new Set());
   });
@@ -83,7 +87,7 @@ describe('Inbox', () => {
   it('should handle individual mail selection', () => {
     component.onMailChecked(1, true);
     expect(component.selectedMailIds().has(1)).toBe(true);
-    
+
     component.onMailChecked(1, false);
     expect(component.selectedMailIds().has(1)).toBe(false);
   });
@@ -93,5 +97,14 @@ describe('Inbox', () => {
     component.deleteSelectedMails();
     expect(mockMessagingStore.deleteAllMails).toHaveBeenCalledWith([1, 2]);
     expect(component.selectedMailIds()).toEqual(new Set());
+  });
+
+  it('should navigate to inbox detail', () => {
+    const mockRouter = {
+      navigate: vi.fn()
+    };
+    (component as any).router = mockRouter;
+    component.goToDetail(1);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/messaging/inbox', 1]);
   });
 });

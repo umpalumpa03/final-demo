@@ -5,6 +5,7 @@ import {
   input,
   effect,
   output,
+  signal,
 } from '@angular/core';
 import { BaseInput } from '../base/base-input';
 import { CheckboxConfig } from '../models/checkbox.model';
@@ -22,6 +23,10 @@ export class Checkboxes extends BaseInput {
   public override readonly config = input<CheckboxConfig>({});
 
   public readonly checked = input<boolean>(false);
+
+  public readonly isIntermediate = input<boolean>(false);
+  protected readonly showIntermediate = signal<boolean>(false);
+
   public readonly checkedChange = output<boolean>();
 
   private readonly defaultId = generateUniqueId('lib-checkbox');
@@ -42,6 +47,11 @@ export class Checkboxes extends BaseInput {
 
   constructor() {
     super();
+
+    effect(() => {
+      this.showIntermediate.set(this.isIntermediate());
+    });
+
     effect(() => {
       const isChecked = this.checked();
       if (!this.ngControl) {
@@ -53,6 +63,8 @@ export class Checkboxes extends BaseInput {
   protected override handleInput(event: Event): void {
     const target = event.target as HTMLInputElement;
     const newValue = target.checked;
+
+    this.showIntermediate.set(false);
 
     this.value.set(newValue);
     this.onChange(newValue);
