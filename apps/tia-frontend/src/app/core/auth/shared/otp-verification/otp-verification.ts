@@ -5,11 +5,12 @@ import {
   effect,
   inject,
   input,
+  OnInit,
   output,
   signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Otp } from '@tia/shared/lib/forms/otp/otp';
 import {
@@ -53,9 +54,11 @@ import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader"
   styleUrl: './otp-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OtpVerification {
+export class OtpVerification implements OnInit {
   private fb = inject(FormBuilder);
   private translate = inject(TranslateService);
+  private router = inject(Router);
+
   public type = input.required<OtpVerificationType>();
   public timeLimit = input(1);
   public timerType = input<TimerType>('phone');
@@ -63,6 +66,8 @@ export class OtpVerification {
   public remainingAttempts = input<number | null>(null);
 
   public phoneErrorMessage = input<string | null>(null);
+
+  public resendTries = signal<number>(3);
 
   public unitedError = computed(() => {
     const error = this.errorMessage();
@@ -73,6 +78,10 @@ export class OtpVerification {
     }
 
     if (error) return error;
+
+    if (attempts === 0) {
+      return `Too many attempts`;
+    }
 
     if (attempts !== null) {
       return `Remaining attempts: ${attempts}`;
@@ -113,7 +122,7 @@ export class OtpVerification {
   public maxTime = computed(() => {
     const limit = Math.abs(Number(this.timeLimit()));
 
-    return limit * 60;
+    return limit * 6;
   });
 
   public countdown = signal<number>(0);
@@ -143,6 +152,7 @@ export class OtpVerification {
     },
   );
 
+
   public setPhoneNumberForm = this.fb.group({
     phoneNumber: ['', [Validators.required, numberValidator]],
   });
@@ -166,6 +176,12 @@ export class OtpVerification {
         }, 1000);
         this.isResendActive.set(true);
       }
+
+      if(this.countdown() === 0 && this.resendTries() === 0) {
+        this.resendTries.set(3)
+        console.log("NAVIGATING to error page")
+      }
+
     });
   }
 
@@ -175,6 +191,10 @@ export class OtpVerification {
   }
 
   private startTimer(): void {
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
+
     this.timerSubscription = this.timer$
       .pipe(
         takeUntil(this.destroy$),
@@ -215,11 +235,20 @@ export class OtpVerification {
     });
   }
 
+  public canResend = computed(
+    () => this.countdown() === 0 && this.resendTries() > 0,
+  );
+
   public onResend(): void {
-    if (this.countdown() > 0) {
+    if (!this.canResend()) {
       return;
     }
 
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
+
+    this.resendTries.update((s) => s - 1);
     this.isResendCalled.emit(true);
     this.countdown.set(this.maxTime());
     this.startTimer();
@@ -229,5 +258,6 @@ export class OtpVerification {
     this.destroy$.next();
     this.destroy$.complete();
     this.timerSubscription?.unsubscribe();
+    // this.stopBackgroundTimer();
   }
 }

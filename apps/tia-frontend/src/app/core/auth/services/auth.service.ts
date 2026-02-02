@@ -25,7 +25,9 @@ import {
   debounceTime,
   EMPTY,
   finalize,
+  interval,
   Observable,
+  Subscription,
   tap,
   throwError,
 } from 'rxjs';
@@ -34,7 +36,7 @@ import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 import { TokenService } from './token.service';
 import { IRegistrationForm } from '../../../features/storybook/components/forms/models/contact-forms.model';
-import { DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Routes } from '../models/tokens.model';
 import { Store } from '@ngrx/store';
 import { UserInfoActions } from '../../../store/user-info/user-info.actions';
@@ -51,7 +53,6 @@ export class AuthService {
   public successMessage = signal<boolean | null>(false);
   public infoMessage = signal<boolean | null>(false);
   private baseUrl = `${environment.apiUrl}/auth`;
-
   public otpError = signal<OtpResponse | null>(null);
 
   public setChellangeId(id: string) {
@@ -286,7 +287,7 @@ export class AuthService {
     );
   }
 
-  public resetPhoneOtp(): Observable<ResendOtpResponse> {
+  public resendPhoneOtp(): Observable<ResendOtpResponse> {
     const challengeId = this.getChallengeId();
     if (!challengeId) {
       return throwError(() => new Error('Missing forgot password challengeId'));
@@ -294,14 +295,26 @@ export class AuthService {
 
     const payload: ResendOtpRequest = { challengeId };
     return this.http.post<ResendOtpResponse>(
-      `${this.baseUrl}/mfa/otp-resend`,
+      `${this.baseUrl}/phone/otp-resend`,
       payload,
     );
   }
 
+  public resendRetryCounter = signal<number>(0);
+
   public resendVerificationCode(): Observable<OtpResponse> {
+    if (this.resendRetryCounter() >= 5) {
+      this.resendRetryCounter.set(0);
+      return throwError(() => new Error('MAX_ATTEMPTS_REACHED'));
+    }
+
     const challengeId = this.getChallengeId();
-    const token = this.tokenService.getSignUpToken;
+    const token =
+      this.tokenService.accessToken || this.tokenService.getSignUpToken;
+
+    if (this.tokenService.accessToken) {
+      this.resendRetryCounter.update((r) => r + 1);
+    }
 
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,

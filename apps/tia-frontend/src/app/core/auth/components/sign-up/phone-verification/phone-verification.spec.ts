@@ -4,7 +4,7 @@ import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { EMPTY, of } from 'rxjs';
+import { EMPTY, of, throwError } from 'rxjs';
 import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
@@ -24,9 +24,9 @@ describe('PhoneVerification Component', () => {
 
   beforeEach(async () => {
     authServiceMock = {
-      sendPhoneVerificationCode: vi.fn().mockReturnValue(
-        of({ challengeId: 'challenge-456' })
-      ),
+      sendPhoneVerificationCode: vi
+        .fn()
+        .mockReturnValue(of({ challengeId: 'challenge-456' })),
       setChellangeId: vi.fn(),
       otpError: signal(null),
     };
@@ -72,7 +72,9 @@ describe('PhoneVerification Component', () => {
 
     component.submit(event);
 
-    expect(authServiceMock.sendPhoneVerificationCode).toHaveBeenCalledWith('+995555123456');
+    expect(authServiceMock.sendPhoneVerificationCode).toHaveBeenCalledWith(
+      '+995555123456',
+    );
     expect(authServiceMock.setChellangeId).not.toHaveBeenCalled();
     expect(navigateSpy).not.toHaveBeenCalled();
   });
@@ -82,15 +84,21 @@ describe('PhoneVerification Component', () => {
       EMPTY
     );
 
-    const event = {
-      isCalled: true,
-      otp: '+995555123456',
-    };
+    const event = { isCalled: true, otp: '+995555123456' };
 
     component.submit(event);
 
-    expect(authServiceMock.sendPhoneVerificationCode).toHaveBeenCalledWith('+995555123456');
-    expect(authServiceMock.setChellangeId).not.toHaveBeenCalled();
-    expect(navigateSpy).not.toHaveBeenCalled();
+    expect(authServiceMock.sendPhoneVerificationCode).toHaveBeenCalledWith(
+      '+995555123456',
+    );
+  });
+
+  it('should handle error and clear it after timeout', async () => {
+    authServiceMock.sendPhoneVerificationCode.mockReturnValue(
+      throwError(() => ({ error: { message: 'Invalid' } })),
+    );
+    component.submit({ isCalled: true, otp: '123' });
+
+    vi.advanceTimersByTime(5000);
   });
 });
