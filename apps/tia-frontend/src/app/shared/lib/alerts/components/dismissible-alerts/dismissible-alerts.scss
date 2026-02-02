@@ -79,4 +79,15 @@
       color: $brown-700;
     }
   }
+
+  &--warning {
+    background: $red-50;
+    border: 0.08rem solid $red-900;
+    .dismissible-alerts__title {
+      color: $red-900;
+    }
+    .dismissible-alerts__message {
+      color: $red-700;
+    }
+  }
 }

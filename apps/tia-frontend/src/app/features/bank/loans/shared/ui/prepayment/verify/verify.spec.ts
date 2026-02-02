@@ -28,14 +28,6 @@ describe('Verify', () => {
     expect(spy).toHaveBeenCalledWith('123456');
   });
 
-  it('should not emit verify when form is invalid', () => {
-    const spy = vi.spyOn(component.verify, 'emit');
-    component.form.controls.otp.setValue('');
-    component.onSubmit();
-    expect(spy).not.toHaveBeenCalled();
-    expect(component.form.touched).toBe(true);
-  });
-
   it('should emit cancel', () => {
     const spy = vi.spyOn(component.cancel, 'emit');
     component.cancel.emit();

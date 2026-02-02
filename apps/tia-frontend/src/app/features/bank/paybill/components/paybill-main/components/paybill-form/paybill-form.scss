@@ -6,7 +6,6 @@
   &__header {
     @include flex-center(row, flex-start, center);
     gap: 1.6rem;
-    margin-bottom: 3rem;
   }
 
   &__icon-box {
@@ -77,5 +76,4 @@
 .form-actions {
   @include flex-center(row, space-between, center);
   gap: 1.2rem;
-  padding-top: 1.6rem;
 }

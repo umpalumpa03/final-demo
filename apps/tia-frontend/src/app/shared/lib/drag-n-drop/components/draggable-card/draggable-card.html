@@ -3,6 +3,8 @@
   [class.dragging]="computedIsDragging()"
   [class.drop-target]="computedIsDropTarget()"
   [class.min-height]="hasMinHeight()"
+  [class.draggable-card--no-border]="noCardBorder()"
+  [class.draggable-card--bg-gray]="cardBackground()"
 >
   <div class="draggable-card__default-content">
     <div class="draggable-card__draggable">
@@ -34,12 +36,46 @@
         <img [src]="itemData().icon" alt="content icon" />
         } @if(showHeadings()){
         <div class="draggable-card__info">
-          <p class="draggable-card__title">{{ itemData().title | translate }}</p>
-          <p class="draggable-card__subtitle">{{ itemData().subtitle | translate }}</p>
+          <div class="draggable-card__title-row">
+            <p class="draggable-card__title">{{ itemData().title | translate}}</p>
+            @if (badgeCount() !== null) {
+            <span class="draggable-card__badge">
+              {{ badgeLabel() }} {{ badgeCount() }}
+            </span>
+            }
+          </div>
+
+          <p class="draggable-card__subtitle">{{ itemData().subtitle }}</p>
+
+          @if (hasDetails()) {
+          <div class="draggable-card__metadata">
+            @if (itemDetails().serviceId) {
+            <div class="draggable-card__meta-item">
+              <span class="draggable-card__meta-value"
+                >{{ itemDetails().serviceId }}</span
+              >
+            </div>
+            } @if (itemDetails().accountNumber) {
+            <div class="draggable-card__meta-item">
+              <span class="draggable-card__meta-value"
+                >{{ itemDetails().accountNumber }}</span
+              >
+            </div>
+            } @if (itemDetails().amountDue !== undefined) {
+            <div
+              class="draggable-card__meta-item draggable-card__meta-item--amount"
+            >
+              <span class="draggable-card__meta-value">
+                {{ itemDetails().amountDue }}
+              </span>
+            </div>
+            }
+          </div>
+          }
         </div>
-        }@else{
+        } @else {
         <div class="draggable-card__info">
-          <p class="draggable-card__title__custom">{{ itemData().title | translate }}</p>
+          <p class="draggable-card__title__custom">{{ itemData().title | translate}}</p>
         </div>
         }
       </div>

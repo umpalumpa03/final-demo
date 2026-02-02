@@ -6,6 +6,7 @@ import {
   computed,
   OnInit,
   signal,
+  untracked,
 } from '@angular/core';
 import { Location } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -33,6 +34,7 @@ import {
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { TransferExternalService } from '../../../../services/transfer.external.service';
+import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
 
 @Component({
   selector: 'app-external-accounts',
@@ -48,7 +50,7 @@ import { TransferExternalService } from '../../../../services/transfer.external.
     ReactiveFormsModule,
     RouteLoader,
   ],
-  providers: [TransferExternalService],
+  providers: [],
   templateUrl: './external-accounts.html',
   styleUrl: './external-accounts.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -60,9 +62,11 @@ export class ExternalAccounts implements OnInit {
   private readonly store = inject(Store);
   private readonly fb = inject(FormBuilder);
   private readonly translate = inject(TranslateService);
-
+  private readonly breakpointService = inject(BreakpointService);
   public readonly showSuccess = signal(false);
-
+  public readonly isFullWidth = computed(() =>
+    this.breakpointService.isMobile(),
+  );
   public readonly selectedSenderAccount = computed(() =>
     this.transferStore.senderAccount(),
   );
@@ -128,26 +132,18 @@ export class ExternalAccounts implements OnInit {
 
     return [];
   });
-
+  private readonly recipientNameStatus = toSignal(
+    this.recipientNameInput.statusChanges,
+    { initialValue: this.recipientNameInput.status },
+  );
   constructor() {
     effect(() => {
-      const accounts = this.recipientAccounts();
-      const isExternal = this.isExternalIban();
-      const recipientInfo = this.transferStore.recipientInfo();
-      if (
-        isExternal &&
-        accounts.length > 0 &&
-        !this.selectedRecipientAccount()
-      ) {
-        this.transferStore.setSelectedRecipientAccount(accounts[0]);
-      }
-      if (recipientInfo) {
-        this.showSuccess.set(true);
-
-        if (accounts.length === 1 && !this.selectedRecipientAccount()) {
-          this.transferStore.setSelectedRecipientAccount(accounts[0]);
-        }
-
+      const isVerified = this.transferStore.isVerified();
+      if (isVerified) {
+        untracked(() => {
+          this.showSuccess.set(true);
+          this.transferStore.setIsVerified(false);
+        });
         const timeout = setTimeout(() => {
           this.showSuccess.set(false);
         }, 3000);
@@ -157,7 +153,6 @@ export class ExternalAccounts implements OnInit {
       return;
     });
   }
-
   public ngOnInit(): void {
     const accounts = this.senderAccounts();
     const isLoading = this.isLoadingSenderAccounts();
@@ -166,6 +161,18 @@ export class ExternalAccounts implements OnInit {
       this.store.dispatch(AccountsActions.loadAccounts());
     }
   }
+  public readonly isContinueDisabled = computed(() => {
+    const hasSender = !!this.selectedSenderAccount();
+    const loading = this.isLoading();
+    const isExternal = this.isExternalIban();
+    const hasRecipient = !!this.selectedRecipientAccount();
+
+    const isNameInvalid = isExternal && this.recipientNameStatus() !== 'VALID';
+
+    return (
+      !hasSender || loading || (!hasRecipient && !isExternal) || isNameInvalid
+    );
+  });
 
   public isRecipientAccountDisabled = (account: RecipientAccount): boolean => {
     return this.transferExternalService.isRecipientAccountDisabled(
@@ -183,24 +190,16 @@ export class ExternalAccounts implements OnInit {
   };
 
   public onRecipientAccountSelect(account: Account | RecipientAccount): void {
-    const current = this.selectedRecipientAccount();
-    if (current?.id !== account.id) {
-      this.transferStore.setAmount(0);
-    }
     this.transferExternalService.handleRecipientAccountSelect(
       account as RecipientAccount,
-      current,
+      this.selectedRecipientAccount(),
     );
   }
 
   public onSenderAccountSelect(account: AccountData): void {
-    const current = this.selectedSenderAccount();
-    if (current?.id !== account.id) {
-      this.transferStore.setAmount(0);
-    }
     this.transferExternalService.handleSenderAccountSelect(
       account as Account,
-      current,
+      this.selectedSenderAccount(),
     );
   }
 
@@ -208,7 +207,12 @@ export class ExternalAccounts implements OnInit {
     this.store.dispatch(AccountsActions.loadAccounts());
   }
 
-  public onRetry(): void {}
+  public onRetry(): void {
+    this.transferExternalService.handleRetryRecipientLookup(
+      this.transferStore.recipientInput(),
+      this.transferStore.recipientType(),
+    );
+  }
 
   public onGoBack(): void {
     this.location.back();

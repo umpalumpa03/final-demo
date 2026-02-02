@@ -2,45 +2,61 @@
   <div class="otp-verification__icon" aria-hidden="true">
     <img [src]="iconUrl()" />
   </div>
-  <h2 class="otp-verification__title">{{ title() }}</h2>
-  <p class="otp-verification__subtext">{{ subText() }}</p>
+  <h2 class="otp-verification__title">{{ title() | translate }}</h2>
+  <p class="otp-verification__subtext">{{ subText() | translate}}</p>
 
   @if (!isLoading()) {
-  <form class="auth-form" [formGroup]="otpForm" (ngSubmit)="onSubmit()">
+  <form class="auth-form" [formGroup]="activeForm()" (ngSubmit)="onSubmit()">
     @if(timerType() === 'otp'){
     <div class="otp-field">
-      <lib-otp formControlName="code" [config]="otpConfig()"></lib-otp>
+      <lib-otp formControlName="code" [config]="formConfig().otp"></lib-otp>
     </div>
     } @else {
     <div class="otp-field__phone">
       <lib-text-input
-        formControlName="code"
-        [config]="phoneConfig()"
+        formControlName="phoneNumber"
+        [config]="formConfig().phone"
       ></lib-text-input>
     </div>
-    } @if (submitError()) {
-    <div class="auth-error">{{ submitError() }}</div>
+    } 
+    @if (submitError()) {
+      <app-simple-alerts
+        alertType="error"
+        [alertMessage]="submitError() ?? ''"
+      ></app-simple-alerts>
+    }
+
+    @if (unitedError()) {
+      <app-simple-alerts
+        alertType="error"
+        [alertMessage]="unitedError()"
+      ></app-simple-alerts>
+    }
+
+    @if (phoneErrorMessage()) {
+      <app-simple-alerts
+        alertType="error"
+        [alertMessage]="phoneErrorMessage() ?? 'An error occurred'"
+      ></app-simple-alerts>
     }
 
     <div class="auth-form__actions">
       <app-button
-        [isDisabled]="isResendActive()"
+        [isDisabled]="isButtonDisabled()"
         type="submit"
         [fullWidth]="true"
       >
-        {{ submitBtnName() }}
+        {{ submitBtnName() | translate}}
       </app-button>
     </div>
 
-    @if (backLink()) {
     <app-button
       [fullWidth]="true"
       class="otp-verification__back"
       [routerLink]="backLink()"
       variant="outline"
-      >{{ backLinkText() }}</app-button
+      >{{ backLinkText() | translate}}</app-button
     >
-    }
     <div class="timer-compact">
       <div class="timer-compact__timer">
         <span
@@ -50,7 +66,7 @@
         </span>
 
         <div class="timer-compact__readout">
-          <span class="timer-compact__value">{{ countdown() }}</span>
+          <span class="timer-compact__value">{{ countdown()}}</span>
           <span class="timer-compact__unit">s</span>
         </div>
       </div>
@@ -59,8 +75,12 @@
         class="timer-compact__resend"
         [class.timer-compact__resend--disabled]="countdown() > 0"
       >
-        <span class="timer-compact__resend-text">Didn't receive the code?</span>
-        <span class="timer-compact__link" (click)="onResend()"> Resend </span>
+        <span class="timer-compact__resend-text"
+          >{{'auth.otp-sign-in.codeQuestion' | translate}}</span
+        >
+        <span class="timer-compact__link" (click)="onResend()">
+          {{'auth.otp-sign-in.code' | translate}}
+        </span>
       </div>
       }
     </div>

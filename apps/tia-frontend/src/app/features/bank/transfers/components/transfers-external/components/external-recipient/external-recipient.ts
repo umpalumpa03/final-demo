@@ -11,7 +11,10 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
-import { getRecipientInputConfig } from '../../config/transfers-external.config';
+import {
+  getRecipientInputConfig,
+  getRecipientIconByType,
+} from '../../config/transfers-external.config';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import {
   FormBuilder,
@@ -29,6 +32,7 @@ import { RecipientType } from '../../../../models/transfers.state.model';
 import { TransferStore } from '../../../../store/transfers.store';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { TransferExternalService } from '../../../../services/transfer.external.service';
+import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
 
 @Component({
   selector: 'app-external-recipient',
@@ -39,7 +43,7 @@ import { TransferExternalService } from '../../../../services/transfer.external.
     ReactiveFormsModule,
     AlertTypesWithIcons,
   ],
-  providers: [TransferExternalService],
+  providers: [],
   templateUrl: './external-recipient.html',
   styleUrl: './external-recipient.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,6 +55,8 @@ export class ExternalRecipient implements OnInit {
   private readonly validationService = inject(TransferValidationService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly transferStore = inject(TransferStore);
+  private breakpointService = inject(BreakpointService);
+  public isMobile = this.breakpointService.isMobile;
 
   public readonly showError = signal(false);
   public readonly isLoading = computed(() => this.transferStore.isLoading());
@@ -104,8 +110,10 @@ export class ExternalRecipient implements OnInit {
 
     if (isValid && type) {
       this.setSuccessMessage(type);
+      this.updateIcon(type);
     } else if (errors) {
       this.setErrorMessage(errors);
+      this.updateIcon(null);
     }
   }
 
@@ -114,6 +122,7 @@ export class ExternalRecipient implements OnInit {
       ...config,
       errorMessage: undefined,
       successMessage: undefined,
+      prefixIcon: 'images/svg/transfers/person.svg',
     }));
   }
 
@@ -130,6 +139,13 @@ export class ExternalRecipient implements OnInit {
       ...config,
       errorMessage: getErrorMessage(errors, this.translate),
       successMessage: undefined,
+    }));
+  }
+
+  private updateIcon(type: RecipientType | null): void {
+    this.recipientInputConfig.update((config) => ({
+      ...config,
+      prefixIcon: getRecipientIconByType(type),
     }));
   }
 

@@ -8,7 +8,7 @@ import {
   signal,
   model,
 } from '@angular/core';
-import { DraggableItemType } from '../../model/drag.model';
+import { DraggableItemType, TreeItem } from '../../model/drag.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ButtonVariant } from '@tia/shared/lib/primitives/button/button.model';
 import { DRAG_CONTAINER } from '../../model/drag.provider';
@@ -44,6 +44,18 @@ export class DraggableCard {
   public expanded = model(false);
   public hasCheckbox = input(false);
   public checked = model(false);
+  public noCardBorder = input(false);
+  public cardBackground = input(false);
+  public readonly badgeCount = input<number | null>(null);
+  public readonly badgeLabel = input<string>('');
+  protected readonly itemDetails = computed(() => this.itemData() as TreeItem);
+
+  protected readonly hasDetails = computed(() => {
+    const item = this.itemDetails();
+    return (
+      !!item.serviceId || !!item.accountNumber || item.amountDue !== undefined
+    );
+  });
 
   public showHeadings = input(true);
   public readonly hasMinHeight = input(false);

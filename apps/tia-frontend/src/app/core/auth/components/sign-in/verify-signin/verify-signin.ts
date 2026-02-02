@@ -13,6 +13,7 @@ import { IVerified } from '../../../models/otp-verification.models';
 })
 export class VerifySignin {
   private authService = inject(AuthService);
+  public otpError = this.authService.otpError;
 
   public verifyOtp(event: IVerified): void {
     if (event.isCalled) {

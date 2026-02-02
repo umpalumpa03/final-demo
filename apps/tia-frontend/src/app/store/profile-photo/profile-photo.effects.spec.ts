@@ -10,6 +10,9 @@ import { ProfilePhotoActions } from './profile-photo.actions';
 import { selectDefaultAvatars } from './profile-photo.selectors';
 import { DefaultAvatarResponse } from './profile-photo.state';
 import { environment } from '../../../environments/environment';
+import { selectUserInfo } from '../user-info/user-info.selectors';
+import { initialUserState } from '../user-info/user-info.reducer';
+import { UserInfoActions } from '../user-info/user-info.actions';
 
 describe('ProfilePhotoEffects', () => {
   let actions$: Subject<any>;
@@ -36,6 +39,10 @@ describe('ProfilePhotoEffects', () => {
             {
               selector: selectDefaultAvatars,
               value: [{ id: '1', iconUri: '/avatar-1.svg' }] as DefaultAvatarResponse[],
+            },
+            {
+              selector: selectUserInfo,
+              value: initialUserState,
             },
           ],
         }),
@@ -76,8 +83,16 @@ describe('ProfilePhotoEffects', () => {
   it('should load stored avatar on ROOT_EFFECTS_INIT when localStorage has data', async () => {
     const avatarId = '123';
     const avatarType: 'default' | 'custom' = 'default';
-    localStorage.setItem('avatarId', avatarId);
-    localStorage.setItem('avatarType', avatarType);
+    const userFullName = 'TestUser';
+    
+   
+    localStorage.setItem('user', JSON.stringify({ fullName: userFullName }));
+    localStorage.setItem(`avatarId_${userFullName}`, avatarId);
+    localStorage.setItem(`avatarType_${userFullName}`, avatarType);
+    
+
+    store.overrideSelector(selectUserInfo, { ...initialUserState, fullName: null });
+    store.refreshState();
 
     const promise = firstValueFrom(effects.loadStoredAvatar$);
 
@@ -192,6 +207,39 @@ describe('ProfilePhotoEffects', () => {
     );
 
     actions$.next(ProfilePhotoActions.removeAvatar());
+  });
+
+  it('should clear old user avatar from localStorage when user changes', () => {
+    const oldUserFullName = 'OldUser';
+    const newUserFullName = 'NewUser';
+    
+  
+    store.overrideSelector(selectUserInfo, { ...initialUserState, fullName: oldUserFullName });
+    store.refreshState();
+    
+   
+    localStorage.setItem(`avatarId_${oldUserFullName}`, 'old-avatar-123');
+    localStorage.setItem(`avatarType_${oldUserFullName}`, 'default');
+    
+   
+    effects.clearAvatarOnUserChange$.subscribe();
+    
+   
+    actions$.next(
+      UserInfoActions.loadUserSuccess({
+        user: {
+          fullName: newUserFullName,
+          theme: null,
+          language: null,
+          avatar: null,
+          role: null,
+        },
+      }),
+    );
+    
+    
+    expect(localStorage.getItem(`avatarId_${oldUserFullName}`)).toBeNull();
+    expect(localStorage.getItem(`avatarType_${oldUserFullName}`)).toBeNull();
   });
 
 });

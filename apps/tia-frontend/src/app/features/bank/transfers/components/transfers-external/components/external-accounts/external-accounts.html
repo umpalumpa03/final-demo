@@ -108,7 +108,12 @@
   </section>
 
   <footer class="external-accounts__footer">
-    <app-button variant="outline" size="default" (click)="onGoBack()">
+    <app-button
+      variant="outline"
+      size="default"
+      [fullWidth]="isFullWidth()"
+      (click)="onGoBack()"
+    >
       <img src="images/svg/transfers/go-back.svg" alt="back" />
       {{ 'common.buttons.back' | translate }}
     </app-button>
@@ -116,13 +121,9 @@
     <app-button
       variant="default"
       size="default"
+      [fullWidth]="isFullWidth()"
       (click)="onContinue()"
-      [isDisabled]="
-      !selectedSenderAccount() || 
-      isLoading() || 
-      (!selectedRecipientAccount() && !isExternalIban()) || 
-      (isExternalIban() && !recipientNameInput.valid)
-    "
+      [isDisabled]="isContinueDisabled()"
     >
       {{ 'common.buttons.continue' | translate }}
       <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />

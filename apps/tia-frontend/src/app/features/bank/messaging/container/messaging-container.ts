@@ -5,10 +5,13 @@ import { NavigationBar } from '@tia/shared/lib/navigation/navigation-bar/navigat
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
+import { Compose } from "../components/compose/compose";
+import { MessagingStore } from '../store/messaging.store';
+import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
 
 @Component({
   selector: 'app-messaging-container',
-  imports: [RouterModule, NavigationBar, ButtonComponent, TranslatePipe],
+  imports: [RouterModule, NavigationBar, Compose, ButtonComponent, TranslatePipe, DismissibleAlerts],
   templateUrl: './messaging-container.html',
   styleUrl: './messaging-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -16,6 +19,10 @@ import { InboxService } from '@tia/shared/services/messages/inbox.service';
 export class MessagingContainer {
   private translate = inject(TranslateService);
   public inboxService = inject(InboxService);
+  public isComposeOpen = signal(false);
+  private messagingStore = inject(MessagingStore);
+  public error = this.messagingStore.error;
+  public successMessage = this.messagingStore.successMessage;
 
   constructor() {
     this.inboxService.fetchInboxCount();
