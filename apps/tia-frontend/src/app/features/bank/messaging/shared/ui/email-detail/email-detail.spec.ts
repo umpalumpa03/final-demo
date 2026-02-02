@@ -94,7 +94,7 @@ describe('EmailDetail', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.sceleton')).toBeTruthy();
+    expect(compiled.querySelector('.skeleton')).toBeTruthy();
   });
 
   it('should display draft label when isDraft is true', () => {
