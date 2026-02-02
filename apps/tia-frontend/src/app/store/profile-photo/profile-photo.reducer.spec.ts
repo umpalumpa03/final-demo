@@ -119,6 +119,8 @@ describe('profilePhotoFeature reducer', () => {
     expect(state.uploadedFileName).toBeNull();
   });
 
+  
+
   it('should handle selectDefaultAvatarRequest', () => {
     const populatedState: ProfilePhotoState = {
       ...initialState,

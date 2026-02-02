@@ -5,7 +5,6 @@ import {
   output,
 } from '@angular/core';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
-import { Avatar } from '@tia/shared/lib/data-display/avatars/avatar';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { DefaultAvatarResponse } from '../../../../../../../store/profile-photo/profile-photo.state';
@@ -18,7 +17,7 @@ import { AlertType } from '../../shared/models/profile-photo.models';
 
 @Component({
   selector: 'app-profile-photo',
-  imports: [BasicCard, Avatar, ButtonComponent, AlertTypesWithIcons, TranslatePipe, Spinner],
+  imports: [BasicCard, ButtonComponent, AlertTypesWithIcons, TranslatePipe, Spinner],
   templateUrl: './profile-photo.component.html',
   styleUrl: './profile-photo.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

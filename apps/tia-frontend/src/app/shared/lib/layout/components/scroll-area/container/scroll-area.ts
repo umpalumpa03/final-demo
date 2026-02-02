@@ -10,12 +10,11 @@ import {
 } from '@angular/core';
 
 import { TDirection } from './scroll-area.model';
-import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 
 @Component({
   selector: 'app-scroll-area',
-  imports: [Spinner, ErrorStates],
+  imports: [ErrorStates],
   templateUrl: './scroll-area.html',
   styleUrl: './scroll-area.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
