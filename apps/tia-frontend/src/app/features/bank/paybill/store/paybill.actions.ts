@@ -8,7 +8,10 @@ import {
   ProceedPaymentPayload,
   ProceedPaymentResponse,
 } from '../components/paybill-main/shared/models/paybill.model';
-import { TemplateGroups } from '../components/paybill-templates/models/paybill-templates.model';
+import {
+  TemplateGroups,
+  Templates,
+} from '../components/paybill-templates/models/paybill-templates.model';
 import { PaybillNotification } from './paybill.state';
 
 export const PaybillActions = createActionGroup({
@@ -43,8 +46,15 @@ export const PaybillActions = createActionGroup({
 export const TemplatesPageActions = createActionGroup({
   source: 'Paybill Templates Page',
   events: {
+    'Load Template Groups': emptyProps(),
+    'Load Template Groups Success': props<{
+      templateGroups: TemplateGroups[];
+    }>(),
+    'Load Template Groups Failure': props<{ error: string }>(),
     'Load Templates': emptyProps(),
-    'Load Templates Success': props<{ templateGroups: TemplateGroups[] }>(),
+    'Load Templates Success': props<{
+      templates: Templates[];
+    }>(),
     'Load Templates Failure': props<{ error: string }>(),
   },
 });

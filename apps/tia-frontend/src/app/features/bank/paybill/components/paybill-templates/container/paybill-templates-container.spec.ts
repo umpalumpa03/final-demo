@@ -3,10 +3,22 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { PaybillTemplatesContainer } from './paybill-templates-container';
 import { PaybillTemplatesService } from '../services/paybill-templates-service';
 import { provideMockStore } from '@ngrx/store/testing';
-import { selectTemplatesGroup } from '../../../store/paybill.selectors';
+import {
+  selectTemplatesGroupWithConfigs,
+  selectTemplatesAsTreeItems,
+} from '../../../store/paybill.selectors';
 import { HeaderCtaAction, ModalType } from '../models/paybill-templates.model';
 
-const mockTemplatesGroup = [{ id: 1, name: 'Test Group' }];
+const mockTemplatesGroup = [
+  {
+    id: 1,
+    name: 'Test Group',
+    icon: 'images/svg/paybill/group.svg',
+    expanded: true,
+  },
+];
+
+const mockTemplates: any[] = [];
 
 const mockModalConfig = {
   [ModalType.Template]: { title: 'Template Modal' },
@@ -23,7 +35,11 @@ describe('PaybillTemplatesContainer', () => {
       providers: [
         provideMockStore({
           selectors: [
-            { selector: selectTemplatesGroup, value: mockTemplatesGroup },
+            {
+              selector: selectTemplatesGroupWithConfigs,
+              value: mockTemplatesGroup,
+            },
+            { selector: selectTemplatesAsTreeItems, value: mockTemplates },
           ],
         }),
         { provide: PaybillTemplatesService, useValue: {} },

@@ -2,20 +2,30 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PaybillSuccess } from './paybill-success';
 import { By } from '@angular/platform-browser';
 import { vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('PaybillSuccess', () => {
   let component: PaybillSuccess;
   let fixture: ComponentFixture<PaybillSuccess>;
 
   const mockItems = [
-    { label: 'Transaction ID', value: 'TXN-777' },
-    { label: 'Total Amount', value: '150 GEL', isTotal: true },
+    {
+      label: 'paybill.main.success.summary_fields.transaction_id',
+      value: 'TXN-777',
+      canTranslate: false,
+    },
+    {
+      label: 'paybill.main.success.summary_fields.amount_paid',
+      value: '150',
+      isTotal: true,
+      canTranslate: false,
+    },
   ];
   const mockTitle = 'United Water Georgian';
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PaybillSuccess],
+      imports: [PaybillSuccess, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PaybillSuccess);
@@ -44,12 +54,10 @@ describe('PaybillSuccess', () => {
 
   it('should dispatch payAnother event on primary action trigger', () => {
     const emitSpy = vi.spyOn(component.payAnother, 'emit');
-    const buttons = fixture.debugElement.queryAll(By.css('app-button'));
-    const primaryBtn = buttons.find((btn) =>
-      btn.nativeElement.textContent.includes('Pay Another'),
-    );
 
-    primaryBtn?.triggerEventHandler('click', null);
+    const buttons = fixture.debugElement.queryAll(By.css('app-button'));
+    const primaryBtn = buttons[0];
+    primaryBtn.nativeElement.click();
     expect(emitSpy).toHaveBeenCalled();
   });
 });

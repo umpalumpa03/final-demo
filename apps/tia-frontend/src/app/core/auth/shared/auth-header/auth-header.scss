@@ -1,0 +1,42 @@
+@use '../../../../shared/styles/palette' as *;
+@use '../../../../shared/styles/mixins' as *;
+
+.sign-in {
+  @include font-inter(700, 3.6rem, 4rem);
+  line-height: 1;
+  display: block;
+  color: var(--color-fg);
+
+  &__title {
+    @include font-inter(700, 3.6rem, 4rem);
+    margin-bottom: 0.8rem;
+
+    @media (max-width: 1024px) {
+      @include font-inter(700, 3.2rem, 3.6rem);
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      @include font-inter(700, 2.8rem, 3.2rem);
+      margin-bottom: 1.6rem;
+    }
+  }
+
+  &__subtitle {
+    @include font-inter(400, 1.6rem, 2.4rem);
+    color: $gray-700;
+    font-size: 1.6rem;
+    margin-bottom: 6rem;
+
+    @media (max-width: 1024px) {
+      font-size: 1.8rem;
+      margin-bottom: 5rem;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 1.6rem;
+      margin-bottom: 4rem;
+      line-height: 2.4rem;
+    }
+  }
+}

@@ -4,15 +4,15 @@ import {
   HttpTestingController,
 } from '@angular/common/http/testing';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { AccountsService } from './accounts.service';
+import { AccountsApiService } from './accounts.api.service';
 import { environment } from '../../../../environments/environment';
 import {
   AccountType,
   CreateAccountRequest,
 } from '../../models/accounts/accounts.model';
 
-describe('AccountsService', () => {
-  let service: AccountsService;
+describe('AccountsApiService', () => {
+  let service: AccountsApiService;
   let httpMock: HttpTestingController;
   const apiUrl = `${environment.apiUrl}/accounts`;
 
@@ -20,9 +20,9 @@ describe('AccountsService', () => {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [AccountsService],
+      providers: [AccountsApiService],
     });
-    service = TestBed.inject(AccountsService);
+    service = TestBed.inject(AccountsApiService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 

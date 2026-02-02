@@ -12,8 +12,12 @@ import { RouteLoaderVariant, RouteLoaderVariants } from '../models/route-loader.
 export class RouteLoader {
   public readonly variant = input<RouteLoaderVariant>(RouteLoaderVariants.TopBar);
   public readonly text = input<string>('Loading page content...');
+  public readonly fillContainer = input<boolean>(false);
 
-  public readonly loaderClass = computed(() => `route-loader route-loader--${this.variant()}`);
+  public readonly loaderClass = computed(() => {
+    const baseClass = `route-loader route-loader--${this.variant()}`;
+    return this.fillContainer() ? `${baseClass} route-loader--fill-container` : baseClass;
+  });
 
   protected readonly RouteLoaderVariants = RouteLoaderVariants;
 }

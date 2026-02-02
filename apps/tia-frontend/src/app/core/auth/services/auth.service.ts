@@ -74,10 +74,12 @@ export class AuthService {
 
         if (res.status === 'phone_verification_required') {
           this.tokenService.setVerifyToken(res.verification_token!);
-          if(res.reason === '') {
-            this.router
+          if (res.challengeId && res.reason === 'phone_unverified') {
+            this.setChellangeId(res.challengeId);
+            this.router.navigate([Routes.OTP_SIGN_UP]);
+          } else {
+            this.router.navigate([Routes.PHONE]);
           }
-          this.router.navigate([Routes.PHONE]);
         }
       }),
       catchError((err) => {

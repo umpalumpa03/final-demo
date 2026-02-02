@@ -125,7 +125,6 @@ export const selectError = createSelector(
   (state) => state.error,
 );
 
-
 export const selectTemplatesGroup = createSelector(
   selectPaybillState,
   (state) => state.templateGroups,
@@ -133,5 +132,38 @@ export const selectTemplatesGroup = createSelector(
 
 export const selectNotifications = createSelector(
   selectPaybillState,
-  (state) => state.notifications
+  (state) => state.notifications,
+);
+
+export const selectTemplates = createSelector(
+  selectPaybillState,
+  (state) => state.templates,
+);
+
+export const selectTemplatesAsTreeItems = createSelector(
+  selectTemplates,
+  (templates) => {
+    if (!templates?.length) return [];
+
+    return templates.map((template, index) => ({
+      id: template.id,
+      title: template.nickname,
+      subtitle: template.serviceId,
+      groupId: '4b03d846-43af-45cd-8d69-04b71d784625',
+      icon: 'images/svg/paybill/favorite.svg',
+      accountNumber: template.identification.accountNumber,
+      order: index,
+    }));
+  },
+);
+
+export const selectTemplatesGroupWithConfigs = createSelector(
+  selectTemplatesGroup,
+  (groups) =>
+    groups.map((group) => ({
+      ...group,
+      icon: 'images/svg/paybill/group.svg',
+      expanded: 5 > 0,
+      // neeed to be fixed
+    })),
 );

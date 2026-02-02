@@ -121,14 +121,14 @@ export const paybillReducer = createReducer(
     error,
   })),
 
-  on(TemplatesPageActions.loadTemplates, (state) => ({
+  on(TemplatesPageActions.loadTemplateGroups, (state) => ({
     ...state,
     loading: true,
     error: null,
   })),
 
   on(
-    TemplatesPageActions.loadTemplatesSuccess,
+    TemplatesPageActions.loadTemplateGroupsSuccess,
     (state, { templateGroups }) => ({
       ...state,
       templateGroups,
@@ -136,7 +136,7 @@ export const paybillReducer = createReducer(
     }),
   ),
 
-  on(TemplatesPageActions.loadTemplatesFailure, (state, { error }) => ({
+  on(TemplatesPageActions.loadTemplateGroupsFailure, (state, { error }) => ({
     ...state,
     error,
     loading: false,
@@ -181,4 +181,22 @@ export const paybillReducer = createReducer(
       error: null,
     }),
   ),
+
+  on(TemplatesPageActions.loadTemplates, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
+  on(TemplatesPageActions.loadTemplatesSuccess, (state, { templates }) => ({
+    ...state,
+    templates,
+    loading: false,
+  })),
+
+  on(TemplatesPageActions.loadTemplatesFailure, (state, { error }) => ({
+    ...state,
+    error,
+    loading: false,
+  })),
 );

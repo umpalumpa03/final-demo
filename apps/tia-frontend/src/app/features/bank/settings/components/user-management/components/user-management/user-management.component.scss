@@ -1,0 +1,34 @@
+@use "../../../../../../../shared/styles/mixins" as *;
+@use "../../../../../../../shared/styles/palette" as *;
+
+main {
+    @include display-flex(column);
+    gap: 1.6rem;
+}
+
+.skeleton {
+    @include flex-center($justify: space-between);
+
+    height: 11.2rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+
+    background: $white;
+    border: 0.1rem solid $gray-200;
+    border-radius: 0.8rem;
+
+    &__content {
+        @include flex-center($justify: flex-start);
+        gap: 1rem;
+    }
+
+    &__text {
+        @include display-flex(column);
+        gap: 0.5rem;
+    }
+
+    &__actions {
+        @include display-flex;
+        gap: 0.8rem;
+    }
+}

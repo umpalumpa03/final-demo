@@ -17,19 +17,16 @@ describe('AccountUtils', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return wallet icon for current account type', () => {
-    const icon = service.getAccountIcon(AccountType.current);
-    expect(icon).toBe('/images/svg/account/wallet.svg');
-  });
-
-  it('should return piggy-bank icon for saving account type', () => {
-    const icon = service.getAccountIcon(AccountType.saving);
-    expect(icon).toBe('/images/svg/account/piggy-bank.svg');
-  });
-
-  it('should return building icon for card account type', () => {
-    const icon = service.getAccountIcon(AccountType.card);
-    expect(icon).toBe('/images/svg/account/building.svg');
+  it('should return correct icons for all account types', () => {
+    expect(service.getAccountIcon(AccountType.current)).toBe(
+      '/images/svg/account/wallet.svg',
+    );
+    expect(service.getAccountIcon(AccountType.saving)).toBe(
+      '/images/svg/account/piggy-bank.svg',
+    );
+    expect(service.getAccountIcon(AccountType.card)).toBe(
+      '/images/svg/account/building.svg',
+    );
   });
 
   it('should return default icon for unknown account type', () => {

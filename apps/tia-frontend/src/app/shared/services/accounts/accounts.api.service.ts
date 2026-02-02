@@ -10,7 +10,7 @@ import {
 } from '../../models/accounts/accounts.model';
 
 @Injectable({ providedIn: 'root' })
-export class AccountsService {
+export class AccountsApiService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/accounts`;
 
