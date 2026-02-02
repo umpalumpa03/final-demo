@@ -1,4 +1,10 @@
-import { Component, input, OnInit, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  OnInit,
+  output,
+} from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TreeContainer } from '@tia/shared/lib/drag-n-drop/components/tree-container/tree-container';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -28,6 +34,7 @@ import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
   ],
   templateUrl: './paybill-templates.html',
   styleUrl: './paybill-templates.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillTemplates {
   public templateGroups = input.required<TemplateGroups[]>();

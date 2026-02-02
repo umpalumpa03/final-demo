@@ -1,4 +1,11 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { PaybillTemplates } from '../components/paybill-templates';
 import { PaybillTemplatesService } from '../services/paybill-templates-service';
 import { Store } from '@ngrx/store';
@@ -15,6 +22,7 @@ import { ModalConfig } from '../configs/cta-buttons.config';
   imports: [PaybillTemplates],
   templateUrl: './paybill-templates-container.html',
   styleUrl: './paybill-templates-container.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillTemplatesContainer implements OnInit {
   public paybillTemplatesService = inject(PaybillTemplatesService);
