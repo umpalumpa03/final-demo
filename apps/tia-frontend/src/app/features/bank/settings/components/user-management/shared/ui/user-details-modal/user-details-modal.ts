@@ -18,6 +18,9 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 })
 export class UserDetailsModal {
   public readonly isOpen = input<boolean>(false);
-  public userData = input.required<IUserDetail>();
+
+  public isLoading = input<boolean>(false);
+
+  public userData = input.required<IUserDetail | null>();
   public close = output<void>();
 }
