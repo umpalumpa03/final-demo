@@ -36,7 +36,7 @@ describe('ThemeEffects', () => {
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should apply theme from action payload', () => {
