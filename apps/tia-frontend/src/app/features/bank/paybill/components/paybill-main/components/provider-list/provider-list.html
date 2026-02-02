@@ -25,7 +25,7 @@
         <app-skeleton variant="text" width="20rem" height="1.8rem" />
       </div>
       } @else {
-      <h2 class="category-header__title">{{ categoryName() }}</h2>
+      <h2 class="category-header__title">{{ currentHeader() }}</h2>
       <p class="category-header__subtitle">{{ subtitle() }}</p>
       }
     </div>
@@ -34,30 +34,15 @@
   <div class="provider-list">
     <app-scroll-area [hideBorder]="true" scrollbar="hidden" height="40rem">
       <div class="providers-container">
-        @if (isLoading()) { @for (group of [1, 2,3]; track group) {
-        <div class="provider-group">
-          <div class="provider-group__header-skeleton">
-            <app-skeleton variant="text" width="15rem" height="1.6rem" />
-          </div>
-          <div class="provider-group__items">
-            @for (item of [1,2]; track item) {
-            <app-provider-item [isLoading]="true" />
-            }
-          </div>
-        </div>
-        } } @else { @for (group of providerGroups(); track group.header) {
-        <div class="provider-group">
-          <h4 class="provider-group__header">{{ group.header }}</h4>
-          <div class="provider-group__items">
-            @for (item of group.items; track item.id) {
-            <app-provider-item
-              [name]="item.name!"
-              [indicatorColor]="iconBgColor() || ''"
-              (selected)="selected.emit(item.id)"
-            />
-            }
-          </div>
-        </div>
+        @if (isLoading()) { @for (item of [1, 2, 3, 4, 5]; track item) {
+        <app-provider-item [isLoading]="true" />
+        } } @else { @for (item of displayItems(); track item.id) {
+        <app-provider-item
+          [name]="item.name || ''"
+          [indicatorColor]="iconBgColor() || ''"
+          [isFinal]="!!item.isFinal!"
+          (selected)="handleItemClick(item)"
+        />
         } }
       </div>
     </app-scroll-area>

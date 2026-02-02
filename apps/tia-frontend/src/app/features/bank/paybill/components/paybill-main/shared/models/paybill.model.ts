@@ -4,6 +4,7 @@ export interface PaybillProvider {
   categoryId: string;
   name?: string;
   parentId?:string;
+  isFinal?:string;
 }
 
 export interface PaybillCategory {
@@ -61,14 +62,4 @@ export interface ProceedPaymentPayload {
   };
   amount: number;
   senderAccountId: string;
-}
-
-export interface ProviderTreeNode extends PaybillProvider {
-  children?: ProviderTreeNode[];
-  level: number;
-}
-
-export interface ProviderGroup {
-  header: string;
-  items: PaybillProvider[];
 }

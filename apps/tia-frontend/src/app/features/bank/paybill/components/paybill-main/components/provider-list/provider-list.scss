@@ -6,6 +6,29 @@
   gap: 1.6rem;
   margin-bottom: 3.2rem;
 
+  &__back-btn {
+    @include flex-center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 1.2rem;
+    border: 0.1rem solid $gray-200;
+    background-color: $white;
+    color: var(--color-fg);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    flex-shrink: 0;
+
+    &:hover {
+      background-color: $gray-50;
+      border-color: $blue-500;
+      color: $blue-600;
+    }
+
+    span {
+      font-size: 2rem;
+    }
+  }
+
   &__icon-box {
     width: 6.4rem;
     height: 6.4rem;
@@ -55,25 +78,5 @@
 
 .providers-container {
   @include display-flex(column);
-}
-
-.provider-group {
-  margin-bottom: 2.4rem;
-
-  &__header {
-    @include font-inter(600, 1.4rem, 2rem);
-    color: $gray-500;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin: 0 0 1.2rem 0;
-  }
-
-  &__header-skeleton {
-    margin-bottom: 1.2rem;
-  }
-
-  &__items {
-    @include display-flex(column);
-    gap: 1.2rem;
-  }
+  gap: 0.8rem;
 }

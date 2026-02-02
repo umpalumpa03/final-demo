@@ -19,5 +19,7 @@ export class ProviderItem {
   public readonly indicatorColor = input<string>('');
   public readonly level = input<number>(0);
 
+  public readonly isFinal = input<boolean>(false);
+
   public readonly selected = output<void>();
 }

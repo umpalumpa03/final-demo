@@ -1,7 +1,6 @@
 import {
   PaybillPayload,
   PaybillProvider,
-  ProviderGroup,
 } from '../models/paybill.model';
 import { SummaryField } from '../models/summary.model';
 
@@ -43,27 +42,3 @@ export const getSuccessSummaryItems = (
   ];
 };
 
-export const groupProvidersByHierarchy = (
-  flatList: PaybillProvider[],
-): ProviderGroup[] => {
-  const roots = flatList.filter((p) => !p.parentId);
-
-  return roots.map((root) => {
-    const descendants: PaybillProvider[] = [];
-
-    const findDescendants = (parentId: string) => {
-      const children = flatList.filter((p) => p.parentId === parentId);
-      children.forEach((child) => {
-        descendants.push(child);
-        findDescendants(child.id);
-      });
-    };
-
-    findDescendants(root.id);
-
-    return {
-      header: root.name ?? root.id ?? '',
-      items: descendants.length > 0 ? descendants : [root],
-    };
-  });
-};
