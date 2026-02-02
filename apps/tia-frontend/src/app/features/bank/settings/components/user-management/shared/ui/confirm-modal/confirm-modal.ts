@@ -17,5 +17,5 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 export class ConfirmModal {
   public readonly isOpen = input<boolean>(false);
   public close = output<void>();
-  public delete = output<void>();
+  public deleteUser = output<void>();
 }

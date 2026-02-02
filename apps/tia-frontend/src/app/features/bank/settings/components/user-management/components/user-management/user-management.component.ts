@@ -13,10 +13,11 @@ import { UserCard } from '../../shared/ui/user-card/user-card';
 import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
 import { UserDetailsModal } from '../../shared/ui/user-details-modal/user-details-modal';
 import { IModalState } from '../../shared/models/users.model';
+import { ConfirmModal } from '../../shared/ui/confirm-modal/confirm-modal';
 
 @Component({
   selector: 'app-user-management',
-  imports: [TextInput, UserCard, Pagination, UserDetailsModal],
+  imports: [TextInput, UserCard, Pagination, UserDetailsModal, ConfirmModal],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss',
   providers: [UserManagementState, UserManagementStore],
@@ -27,6 +28,7 @@ export class UserManagementComponent {
   protected readonly store = inject(UserManagementStore);
 
   protected readonly modalState = signal<IModalState>('none');
+  protected readonly userToDeleteId = signal<string | null>(null);
 
   protected readonly currentPage = signal<number>(1);
   protected readonly pageSize = signal<number>(4);
@@ -62,9 +64,24 @@ export class UserManagementComponent {
     this.store.loadUserDetails(id);
   }
 
+  public deleteUser(id: string): void {
+    this.userToDeleteId.set(id);
+    this.modalState.set('delete');
+  }
+
+  public onConfirmDelete(): void {
+    const id = this.userToDeleteId();
+
+    if (id) {
+      this.store.deleteUser(id);
+      this.onCloseModal();
+    }
+  }
+
   public onCloseModal(): void {
     this.modalState.set('none');
     this.store.clearSelectedUser();
+    this.userToDeleteId.set(null);
   }
 
   public onSearch(query: InputFieldValue): void {}
