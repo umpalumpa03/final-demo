@@ -1,14 +1,25 @@
 <div class="account-header">
-  <img
-    [src]="'/images/svg/button-icons/account-icon.svg'"
-    alt="Account"
-    class="account-header__icon"
-  />
-  <div class="account-header__details">
-    <h1 class="account-header__name">{{ account().name }}</h1>
-    <p class="account-header__number">{{ account().iban }}</p>
+  <div class="account-header__heading">
+    <div class="account-header__icon">
+      <img
+        [src]="'/images/svg/button-icons/account-icon.svg'"
+        alt="Account"
+
+      />
+    </div>
+
+    <div class="account-header__details">
+      <h1 class="account-header__name">{{ account().name }}</h1>
+      <p class="account-header__number">{{ account().iban }}</p>
+    </div>
   </div>
+
   <div class="account-header__badge">
-    <app-badges [text]="cardsLabel()" variant="info" size="medium" shape="rounded" />
+    <app-badges
+      [text]="cardsLabel()"
+      variant="info"
+      size="large"
+      shape="rounded"
+    />
   </div>
 </div>

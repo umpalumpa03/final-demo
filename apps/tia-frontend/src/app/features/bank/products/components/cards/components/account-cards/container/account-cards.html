@@ -1,30 +1,22 @@
-
 <div class="account-cards">
   <app-button variant="ghost" [icon]="'left-arrow.svg'" (click)="handleBackClick()">
     Back to Cards
   </app-button>
 
-  @switch (viewState$ | async) {
+  @let viewState = viewState$ | async;
+  @let accountData = accountData$ | async;
+  @let cardsLabel = cardsLabel$ | async;
+  @let cardDetailsError = cardDetailsError$ | async;
+
+  @switch (viewState) {
     @case ('no-account') {
-      <div class="account-cards__error">Account not found</div>
+      <p class="account-cards__error">Account not found</p>
     }
 
     @case ('loading') {
-      @if (accountData$ | async; as data) {
-        <div class="account-cards__account-info">
-          <div class="account-cards__account-details">
-            <h1 class="account-cards__account-name">{{ data.account.name }}</h1>
-            <p class="account-cards__account-number">{{ data.account.iban }}</p>
-          </div>
-          <div class="account-cards__account-badge">
-            @if (cardsLabel$ | async; as label) {
-              <app-badges [label]="label" variant="secondary" size="small" shape="rounded" />
-            }
-          </div>
-        </div>
-        
+      @if (accountData) {
         <div class="account-cards__grid">
-          @for (id of data.account.cardIds; track id) {
+          @for (id of accountData.account.cardIds; track id) {
             <div class="account-cards__card">
               <app-skeleton width="100%" height="20rem" />
               <div class="account-cards__card-info">
@@ -41,42 +33,28 @@
     }
 
     @case ('error') {
-      @if (accountData$ | async; as data) {
-        <div class="account-cards__account-info">
-          <div class="account-cards__account-details">
-            <h1 class="account-cards__account-name">{{ data.account.name }}</h1>
-            <p class="account-cards__account-number">{{ data.account.iban }}</p>
-          </div>
-          <div class="account-cards__account-badge">
-            @if (cardsLabel$ | async; as label) {
-              <app-badges [label]="label" variant="secondary" size="small" shape="rounded" />
-            }
-          </div>
-        </div>
-      }
-      
       <app-error-states
         variant="failed"
         header="Loading Failed"
-        [message]="(cardDetailsError$ | async) || 'Failed to load cards'"
+        [message]="cardDetailsError || 'Failed to load cards'"
         buttonMessage="Retry"
         (buttonClick)="handleRetry()"
       />
     }
 
     @case ('success') {
-      @if (accountData$ | async; as data) {
+      @if (accountData) {
         <app-account-header
-          [account]="data.account"
-          [cardsLabel]="(cardsLabel$ | async) || ''"
+          [account]="accountData.account"
+          [cardsLabel]="cardsLabel || ''"
         />
 
-        @if (data.cards.length > 0) {
+        @if (accountData.cards.length > 0) {
           <div class="account-cards__grid">
-            @for (card of data.cards; track card.cardId) {
+            @for (card of accountData.cards; track card.cardId) {
               <app-card-grid-item
                 [card]="card"
-                [currency]="data.account.currency"
+                [currency]="accountData.account.currency"
                 (cardClicked)="handleCardClick($event)"
               />
             }

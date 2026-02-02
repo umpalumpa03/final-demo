@@ -16,12 +16,13 @@
 
   <div class="card-details__info-item">
     <span class="card-details__info-label">Status</span>
-    <span
-      class="card-details__info-value"
-      [class.card-details__info-value--status]="isActiveStatus()"
-    >
-      {{ status().toLowerCase() }}
-    </span>
+      <app-badges class="card-details__info-value"
+        [variant]="'default'"
+        [text]="status()"
+        size="small"
+        shape="rounded"
+      />
+
   </div>
 
   <div class="card-details__info-item">
@@ -31,7 +32,7 @@
 
   @if (shouldShowCreditLimit()) {
     <div class="card-details__info-item">
-      <span class="card-details__info-label">Credit Limit</span>
+      <span class="card-details__info-label">Avaliable Limit</span>
       <span class="card-details__info-value">{{ formattedCreditLimit() }}</span>
     </div>
   }

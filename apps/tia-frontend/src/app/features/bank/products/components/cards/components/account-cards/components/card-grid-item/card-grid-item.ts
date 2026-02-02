@@ -16,7 +16,7 @@ export class CardGridItem {
   
   readonly cardClicked = output<string>();
 
-  protected handleClick(): void {
+  public handleClick(): void {
     this.cardClicked.emit(this.card().cardId);
   }
 }

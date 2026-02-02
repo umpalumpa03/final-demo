@@ -1,6 +1,4 @@
-
-
-<app-ui-modal [isOpen]="isOpen()" (closed)="onClose()">
+<!-- <app-ui-modal [isOpen]="isOpen()" (closed)="onClose()">
   <div class="create-card">
     <div class="create-card__header">
       <h2 class="create-card__title">Create New Card</h2>
@@ -10,26 +8,64 @@
     </div>
 
     <app-card-preview
-      [isLoading]="isLoadingData()"
-      [designUri]="selectedDesignUri()"
+      [isLoading]="(isLoadingData$ | async) || false"
+      [designUri]="(selectedDesignUri$ | async) || null"
     />
 
-    <app-design-selector
-      [designs]="creationData().designs"
-      [selectedDesign]="selectedDesign()"
-      [isLoading]="isLoadingData()"
-      (designSelected)="onDesignSelected($event)"
-    />
+    @if (creationData$ | async; as data) {
+      <app-design-selector
+        [designs]="data.designs"
+        [selectedDesign]="selectedDesignId"
+        [isLoading]="(isLoadingData$ | async) || false"
+        (designSelected)="onDesignSelected($event)"
+      />
 
-    <app-create-card-form
-      [formGroup]="cardForm"
-      [categoryOptions]="categoryOptions()"
-      [typeOptions]="typeOptions()"
-      [accountOptions]="accountOptions()"
-      [isCreating]="isCreating()"
-      [createError]="createError()"
-      (formSubmit)="onFormSubmit()"
-      (formCancel)="onFormCancel()"
-    />
+      <app-create-card-form
+        [formGroup]="cardForm"
+        [categoryOptions]="(categoryOptions$ | async) || []"
+        [typeOptions]="(typeOptions$ | async) || []"
+        [accountOptions]="(accountOptions$ | async) || []"
+        [isCreating]="(isCreating$ | async) || false"
+        [createError]="(createError$ | async) || null"
+        (formSubmit)="onFormSubmit()"
+        (formCancel)="onFormCancel()"
+      />
+    }
   </div>
+</app-ui-modal> -->
+
+<app-ui-modal [isOpen]="isOpen()" (closed)="onClose()">
+  @if (viewData$ | async; as view) {
+    <div class="create-card">
+      <div class="create-card__header">
+        <h2 class="create-card__title">Create New Card</h2>
+        <p class="create-card__subtitle">
+          Add a new credit or debit card to your account
+        </p>
+      </div>
+
+      <app-card-preview
+        [isLoading]="view.isLoading"
+        [designUri]="view.selectedDesignUri"
+      />
+
+      <app-design-selector
+        [designs]="view.designs"
+        [selectedDesign]="selectedDesignId"
+        [isLoading]="view.isLoading"
+        (designSelected)="onDesignSelected($event)"
+      />
+
+      <app-create-card-form
+        [formGroup]="cardForm"
+        [categoryOptions]="view.categoryOptions"
+        [typeOptions]="view.typeOptions"
+        [accountOptions]="view.accountOptions"
+        [isCreating]="view.isCreating"
+        [createError]="view.createError"
+        (formSubmit)="onFormSubmit()"
+        (formCancel)="onFormCancel()"
+      />
+    </div>
+  }
 </app-ui-modal>

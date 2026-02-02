@@ -7,15 +7,16 @@ describe('AddCardButton', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddCardButton],
+      imports: [AddCardButton]
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddCardButton);
     component = fixture.componentInstance;
-    await fixture.whenStable();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should emit clicked on button click', () => {
+    const emitSpy = vi.spyOn(component.clicked, 'emit');
+    component.handleClick();
+    expect(emitSpy).toHaveBeenCalled();
   });
 });

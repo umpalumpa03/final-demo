@@ -1,21 +1,29 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { DesignSelector } from './design-selector';
 
 describe('DesignSelector', () => {
   let component: DesignSelector;
   let fixture: ComponentFixture<DesignSelector>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [DesignSelector],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(DesignSelector);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.componentRef.setInput('designs', []);
+    fixture.componentRef.setInput('selectedDesign', '');
+    fixture.componentRef.setInput('isLoading', false);
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should emit designSelected when design is selected', () => {
+    const emitSpy = vi.fn();
+    component.designSelected.subscribe(emitSpy);
+
+    component['onSelectDesign']('design-1');
+
+    expect(emitSpy).toHaveBeenCalledWith('design-1');
   });
 });

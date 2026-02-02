@@ -5,14 +5,12 @@
 
 .card-details {
   @include display-flex(column);
-  gap: 2.4rem;
-  padding: 4rem;
-  background-color: $gray-50;
+  gap: 3.2rem;
+  padding: 3.2rem;
   min-height: 100vh;
   margin: 0 auto;
 
   @media (max-width: 768px) {
-    padding: 2.4rem;
     gap: 2rem;
   }
 
@@ -23,7 +21,6 @@
 
   &__loading,
   &__error {
-    @include flex-center;
     @include font-inter(400, 1.6rem, 1.5);
     padding: 4rem;
     text-align: center;
@@ -35,11 +32,4 @@
     border-radius: 0.8rem;
   }
 
-  &__loading {
-    color: $gray-600;
-  }
-
-  &__header {
-    @include display-flex();
-  }
 }

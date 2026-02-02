@@ -12,10 +12,27 @@ describe('QuickActionsSection', () => {
 
     fixture = TestBed.createComponent(QuickActionsSection);
     component = fixture.componentInstance;
-    await fixture.whenStable();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create and emit events', () => {
+    const transferOwnSpy = vi.fn();
+    const transferExternalSpy = vi.fn();
+    const paybillSpy = vi.fn();
+    const viewTransactionsSpy = vi.fn();
+
+    component.transferOwnClicked.subscribe(transferOwnSpy);
+    component.transferExternalClicked.subscribe(transferExternalSpy);
+    component.paybillClicked.subscribe(paybillSpy);
+    component.viewTransactionsClicked.subscribe(viewTransactionsSpy);
+
+    component.transferOwnClicked.emit();
+    component.transferExternalClicked.emit();
+    component.paybillClicked.emit();
+    component.viewTransactionsClicked.emit();
+
+    expect(transferOwnSpy).toHaveBeenCalled();
+    expect(transferExternalSpy).toHaveBeenCalled();
+    expect(paybillSpy).toHaveBeenCalled();
+    expect(viewTransactionsSpy).toHaveBeenCalled();
   });
 });

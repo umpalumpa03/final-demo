@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of, mergeMap, forkJoin, EMPTY } from 'rxjs';
-import { map, catchError, switchMap, take } from 'rxjs/operators';
+import { map, catchError, switchMap, take, delay } from 'rxjs/operators';
 import * as CardsActions from './cards.actions';
 import { CardListApiService } from '@tia/shared/services/cards/card-list.service.api';
 import { Store } from '@ngrx/store';
@@ -160,6 +160,20 @@ export class CardsEffects {
           }),
         ),
       ),
+    ),
+  );
+
+  hideSuccessAlertAfterDelay$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CardsActions.createCardSuccess),
+      delay(5000),
+      map(() => CardsActions.hideSuccessAlert()),
+    ),
+  );
+  loadCardCreationDataOnModalOpen$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CardsActions.openCreateCardModal),
+      map(() => CardsActions.loadCardCreationData()),
     ),
   );
 }

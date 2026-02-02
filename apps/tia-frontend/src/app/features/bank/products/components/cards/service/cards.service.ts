@@ -11,7 +11,7 @@ import {
   CreateCardResponse,
 } from '../models/create-card-request.model';
 import { environment } from 'apps/tia-frontend/src/environments/environment';
-import { CardTypesResponse } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-type.model';
+import { CardTypesResponse } from '../models/card-type.model';
 
 @Injectable({
   providedIn: 'root',

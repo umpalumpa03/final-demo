@@ -15,12 +15,15 @@
       />
 
       <span class="card-grid-item__currency">{{ currency() }}</span>
-      
-      @if (card().details.type === 'CREDIT' && card().details.creditLimit) {
-        <span class="card-grid-item__limit">
-          Limit: {{ card().details.creditLimit }}
-        </span>
-      }
     </div>
+    @if (card().details.type === 'CREDIT' && card().details.creditLimit) {
+    <div class="card-grid-item__limit-info">
+      <p class="card-grid-item__limit-label">Available</p>
+      <p class="card-grid-item__limit-value">
+       {{ currency() }} {{ card().details.creditLimit }}
+      </p>
+    </div>
+
+    }
   </div>
 </div>

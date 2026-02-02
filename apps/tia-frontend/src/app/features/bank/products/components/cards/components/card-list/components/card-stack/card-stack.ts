@@ -14,7 +14,7 @@ export class CardStack {
   
   readonly cardClicked = output<{ cardId: string; index: number }>();
 
-  protected handleCardClick(cardId: string, index: number): void {
+  public handleCardClick(cardId: string, index: number): void {
     this.cardClicked.emit({ cardId, index });
   }
 }

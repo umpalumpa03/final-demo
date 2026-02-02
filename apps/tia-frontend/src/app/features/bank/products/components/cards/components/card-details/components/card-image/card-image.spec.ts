@@ -12,10 +12,13 @@ describe('CardImage', () => {
 
     fixture = TestBed.createComponent(CardImage);
     component = fixture.componentInstance;
-    await fixture.whenStable();
   });
 
-  it('should create', () => {
+  it('should create and render with inputs', () => {
+    fixture.componentRef.setInput('imageBase64', 'base64string');
+    fixture.componentRef.setInput('cardName', 'Test Card');
+    fixture.detectChanges();
+    
     expect(component).toBeTruthy();
   });
 });

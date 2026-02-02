@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 
 @Component({
   selector: 'app-card-info-section',
   templateUrl: './card-info-section.html',
   styleUrls: ['./card-info-section.scss'],
-  imports: [],
+  imports: [Badges],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardInfoSection {

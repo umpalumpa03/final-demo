@@ -2,7 +2,7 @@ import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
 import { CardDesign } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-design.model';
 import { CardCategory } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-category.model';
-import { CardType } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-type.model';
+import { CardType } from '../../../features/bank/products/components/cards/models/card-type.model';
 
 export interface CardsState {
   accounts: CardAccount[];

@@ -16,7 +16,7 @@ export class CardGroupItem {
   readonly cardClicked = output<{ accountId: string; cardId: string; index: number; hasMultipleCards: boolean }>();
   readonly viewAllClicked = output<{ accountId: string }>();
 
-  protected handleCardClick(data: { cardId: string; index: number }): void {
+  public handleCardClick(data: { cardId: string; index: number }): void {
     const group = this.group();
     this.cardClicked.emit({
       accountId: group.account.id,
@@ -26,7 +26,7 @@ export class CardGroupItem {
     });
   }
 
-  protected handleViewAllClick(): void {
+  public handleViewAllClick(): void {
     this.viewAllClicked.emit({ accountId: this.group().account.id });
   }
 }

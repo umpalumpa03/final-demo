@@ -34,16 +34,16 @@
       maxWidth="100%"
       padding="2rem"
     >
-      <app-card-info-section
-        [cardName]="data.details.cardName"
-        [cardType]="data.details.type"
-        [currency]="(currency$ | async) || 'N/A'"
-        [status]="data.details.status"
-        [isActiveStatus]="(isActiveStatus$ | async) || false"
-        [formattedBalance]="(formattedBalance$ | async) || 'N/A'"
-        [shouldShowCreditLimit]="(shouldShowCreditLimit$ | async) || false"
-        [formattedCreditLimit]="(formattedCreditLimit$ | async) || 'N/A'"
-      />
+ <app-card-info-section
+  [cardName]="data.details.cardName"
+  [cardType]="data.details.type"
+  [currency]="data.currency"
+  [status]="data.details.status"
+  [isActiveStatus]="data.isActiveStatus"
+  [formattedBalance]="data.formattedBalance"
+  [shouldShowCreditLimit]="data.shouldShowCreditLimit"
+  [formattedCreditLimit]="data.formattedCreditLimit"
+/>
     </app-basic-card>
 
     <app-basic-card

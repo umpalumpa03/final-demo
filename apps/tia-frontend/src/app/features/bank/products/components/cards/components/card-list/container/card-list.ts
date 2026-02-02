@@ -5,8 +5,6 @@ import {
   OnInit,
   inject,
   signal,
-  effect,
-  untracked,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
@@ -27,7 +25,6 @@ import {
 import { CreateCard } from '../../create-card-modal/container/createCard';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 import { AsyncPipe } from '@angular/common';
-import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { CardGroupView } from '../models/card-list-view.model';
@@ -59,7 +56,7 @@ export class CardList implements OnInit {
   protected readonly showSuccessAlert$ = this.store.select(selectShowSuccessAlert);
   protected readonly isModalOpen$ = this.store.select(selectIsCreateModalOpen);
 
-  protected readonly activeCardIndex = signal<Record<string, number>>({});
+  public readonly activeCardIndex = signal<Record<string, number>>({});
 
   protected readonly cardGroupsWithMeta$ = combineLatest([
     this.store.select(selectCardGroups),
@@ -80,25 +77,11 @@ export class CardList implements OnInit {
     })))
   );
 
-  constructor() {
-    effect(() => {
-      this.store.select(selectShowSuccessAlert).subscribe(show => {
-        if (show) {
-          untracked(() => {
-            setTimeout(() => {
-              this.store.dispatch(hideSuccessAlert());
-            }, 5000);
-          });
-        }
-      });
-    });
-  }
-
   ngOnInit(): void {
     this.store.dispatch(loadCardAccounts());
   }
 
-  protected handleCardClick(data: { accountId: string; cardId: string; index: number; hasMultipleCards: boolean }): void {
+  public handleCardClick(data: { accountId: string; cardId: string; index: number; hasMultipleCards: boolean }): void {
     if (!data.hasMultipleCards) {
       this.router.navigate(['/bank/products/cards/details', data.cardId]);
     } else {
@@ -115,15 +98,23 @@ export class CardList implements OnInit {
     }
   }
 
-  protected handleViewAllCards(data: { accountId: string }): void {
+  public handleViewAllCards(data: { accountId: string }): void {
     this.router.navigate(['/bank/products/cards/account', data.accountId]);
   }
 
-  protected handleOpenModal(): void {
+  public handleOpenModal(): void {
     this.store.dispatch(openCreateCardModal());
   }
 
-  protected handleCloseModal(): void {
+  public handleCloseModal(): void {
     this.store.dispatch(closeCreateCardModal());
   }
+
+  protected readonly viewData$ = combineLatest({
+  loading: this.loading$,
+  error: this.error$,
+  groups: this.cardGroupsWithMeta$,
+  isModalOpen: this.isModalOpen$,
+  showSuccessAlert: this.showSuccessAlert$
+});
 }

@@ -12,7 +12,7 @@ import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 export class AddCardButton {
   readonly clicked = output<void>();
 
-  protected handleClick(): void {
+  public handleClick(): void {
     this.clicked.emit();
   }
 }

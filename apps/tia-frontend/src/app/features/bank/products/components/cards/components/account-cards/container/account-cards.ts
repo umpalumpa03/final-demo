@@ -1,4 +1,3 @@
-
 import {
   ChangeDetectionStrategy,
   Component,
@@ -16,7 +15,6 @@ import {
   selectCardDetailsError,
   selectCardDetailsLoading,
 } from '../../../../../../../../store/products/cards/cards.selectors';
-import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 import { AccountData, ViewState } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/account-cards.model';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -30,7 +28,6 @@ import { CardGridItem } from '../components/card-grid-item/card-grid-item';
   styleUrls: ['./account-cards.scss'],
   imports: [
     CommonModule,
-    Badges,
     Skeleton,
     ButtonComponent,
     ErrorStates,
@@ -85,15 +82,15 @@ export class AccountCards implements OnInit {
     this.store.dispatch(loadAccountCardsPage({ accountId: this.accountId }));
   }
 
-  protected handleCardClick(cardId: string): void {
+  public handleCardClick(cardId: string): void {
     this.router.navigate(['/bank/products/cards/details', cardId]);
   }
 
-  protected handleBackClick(): void {
+  public handleBackClick(): void {
     this.router.navigate(['/bank/products/cards/list']);
   }
 
-  protected handleRetry(): void {
+  public handleRetry(): void {
     this.store.dispatch(loadAccountCardsPage({ accountId: this.accountId }));
   }
 }

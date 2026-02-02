@@ -3,8 +3,8 @@ import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 import { CardCategory } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-category.model';
 import { CardDesign } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-design.model';
 import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
-import { CardType } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-type.model';
 import { CreateCardRequest } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/create-card-request.model';
+import { CardType } from '../../../features/bank/products/components/cards/models/card-type.model';
 
 export const loadCardAccounts = createAction('[Cards] Load Card Accounts');
 
