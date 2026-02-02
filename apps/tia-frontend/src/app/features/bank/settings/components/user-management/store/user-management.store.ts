@@ -38,13 +38,82 @@ export const UserManagementStore = signalStore(
       ),
     ),
 
-    loadUserDetails: rxMethod<string>(pipe()),
+    loadUserDetails: rxMethod<string>(
+      pipe(
+        tap(() => patchState(store, { actionLoading: true, error: null })),
+        switchMap((userId) =>
+          service.getUserById(userId).pipe(
+            tap((user) => {
+              patchState(store, { selectedUser: user, actionLoading: false });
+            }),
+
+            catchError((err: HttpErrorResponse) => {
+              patchState(store, { actionLoading: false, error: err.message });
+              return of(null);
+            }),
+          ),
+        ),
+      ),
+    ),
+
+    deleteUser: rxMethod<string>(
+      pipe(
+        tap(() => patchState(store, { actionLoading: true, error: null })),
+
+        switchMap((id) =>
+          service.deleteUser(id).pipe(
+            tap(() => {
+              const currentUsers = store.users();
+              const updatedUsers = currentUsers.filter((u) => u.id !== id);
+
+              patchState(store, {
+                users: updatedUsers,
+                actionLoading: false,
+              });
+            }),
+
+            catchError((err: HttpErrorResponse) => {
+              patchState(store, {
+                actionLoading: false,
+                error: err.message,
+              });
+              return of(null);
+            }),
+          ),
+        ),
+      ),
+    ),
 
     updateUser: rxMethod<{ id: string; data: IUpdateUserRequest }>(pipe()),
 
-    deleteUser: rxMethod<string>(pipe()),
+    toggleBlockStatus: rxMethod<{ id: string; isBlocked: boolean }>(
+      pipe(
+        tap(() => patchState(store, { actionLoading: true, error: null })),
+        switchMap(({ id, isBlocked }) =>
+          service.blockUser(id, isBlocked).pipe(
+            tap((updatedUser) => {
+              patchState(store, (state) => ({
+                users: state.users.map((u) =>
+                  u.id === updatedUser.id ? updatedUser : u,
+                ),
+                actionLoading: false,
+              }));
+            }),
+            catchError((err: HttpErrorResponse) => {
+              patchState(store, {
+                actionLoading: false,
+                error: err.message,
+              });
+              return of(null);
+            }),
+          ),
+        ),
+      ),
+    ),
 
-    toggleBlockStatus: rxMethod<{ id: string; isBlocked: boolean }>(pipe()),
+    clearSelectedUser() {
+      patchState(store, { selectedUser: null });
+    },
 
     resetSelection() {
       patchState(store, { selectedUser: null, error: null });

@@ -16,7 +16,7 @@ export class CurrencyConverterService {
     const targetRateObj = this.rates().find((r) => r.code === currency);
 
     if (!targetRateObj) {
-      console.warn(`Rate for ${currency} not found in store.`);
+      // console.warn(`Rate for ${currency} not found in store.`);
       return 0;
     }
 

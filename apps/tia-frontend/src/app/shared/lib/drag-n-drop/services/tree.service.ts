@@ -14,6 +14,8 @@ export class TreeService {
     }
 
     for (const item of items) {
+      if (item.groupId === null) continue;
+
       if (map[item.groupId]) {
         map[item.groupId].push(item);
       }

@@ -119,4 +119,56 @@ describe('Paybill Selectors', () => {
       expect(result[1]).toEqual({ label: 'Templates', route: '' });
     });
   });
+
+  describe('selectTemplatesAsTreeItems', () => {
+    it('should transform templates to tree items', () => {
+      const templates = [
+        {
+          id: 't1',
+          nickname: 'My Template',
+          serviceId: 'SVC1',
+          identification: { accountNumber: '123' },
+        },
+        {
+          id: 't2',
+          nickname: 'Another',
+          serviceId: 'SVC2',
+          identification: { accountNumber: '456' },
+        },
+      ] as any;
+
+      const result = Selectors.selectTemplatesAsTreeItems.projector(templates);
+
+      expect(result).toHaveLength(2);
+      expect(result[0]).toEqual({
+        id: 't1',
+        title: 'My Template',
+        subtitle: 'SVC1',
+        groupId: '4b03d846-43af-45cd-8d69-04b71d784625',
+        icon: 'images/svg/paybill/favorite.svg',
+        accountNumber: '123',
+        order: 0,
+      });
+      expect(result[1].order).toBe(1);
+    });
+
+    it('should return empty array when templates is empty', () => {
+      const result = Selectors.selectTemplatesAsTreeItems.projector([]);
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe('selectTemplates', () => {
+    it('should return templates from state', () => {
+      const templates = [{ id: 't1', nickname: 'Template 1' }] as any;
+      const state = { ...initialPaybillState, templates };
+      const result = Selectors.selectTemplates.projector(state);
+      expect(result).toEqual(templates);
+    });
+
+    it('should return empty array when no templates', () => {
+      const result = Selectors.selectTemplates.projector(initialPaybillState);
+      expect(result).toEqual([]);
+    });
+  });
 });
