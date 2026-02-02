@@ -38,6 +38,10 @@ export class TreeService {
     const dragItem = items.find((i) => i.id === dragId);
     if (!dragItem) return items;
 
+    if (dragItem.groupId === toGroupId && !targetItemId) {
+      return items;
+    }
+
     const filteredItems = items.filter((i) => i.id !== dragId);
     const siblings = filteredItems
       .filter((i) => i.groupId === toGroupId)

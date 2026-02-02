@@ -38,7 +38,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     DragContainer,
     DragItemDirective,
     TreeContainer,
-    TranslatePipe
+    TranslatePipe,
   ],
   templateUrl: './drag-and-drop.html',
   styleUrl: './drag-and-drop.scss',
@@ -102,4 +102,8 @@ export class DragAndDropContainer {
   public onTreeExpandedChange(event: { id: string; expanded: boolean }): void {}
 
   public onCheckedItemsChange(itemIds: string[]): void {}
+
+  public movenotAllowed(event: boolean): void {
+    console.log(event);
+  }
 }

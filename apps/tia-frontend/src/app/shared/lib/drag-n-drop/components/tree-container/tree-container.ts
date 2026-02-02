@@ -24,6 +24,7 @@ import { ErrorStateVariant } from '@tia/shared/lib/feedback/models/error-state.m
 
 @Component({
   selector: 'app-tree-container',
+  standalone: true,
   imports: [DraggableCard, ErrorStates],
   templateUrl: './tree-container.html',
   styleUrl: './tree-container.scss',
@@ -38,6 +39,7 @@ export class TreeContainer extends DragBase {
   public readonly containerDescription = input(
     'Drag items to reorder or move between groups',
   );
+  public readonly ungroupedTitle = input('Ungrouped');
 
   public readonly canDelete = input(false);
   public readonly editable = input(false);
@@ -54,7 +56,6 @@ export class TreeContainer extends DragBase {
   public readonly noCardBorder = input(false);
   public readonly cardBackground = input(false);
   public readonly badgeLabel = input('Items:');
-  public readonly ungroupedTitle = input('Ungrouped');
 
   public readonly errorVariant = input<ErrorStateVariant>('not-found');
   public readonly errorHeader = input('');
@@ -68,6 +69,7 @@ export class TreeContainer extends DragBase {
   public readonly itemReordered = output<TreeItemReorderedEvent>();
   public readonly expandedChange = output<{ id: string; expanded: boolean }>();
   public readonly checkedItemsChange = output<string[]>();
+  public readonly moveRedundant = output<boolean>();
 
   public readonly itemRemoved = output<string>();
   public readonly itemEdited = output<string>();
@@ -93,7 +95,6 @@ export class TreeContainer extends DragBase {
     source: this.groups,
     computation: (newGroups) => {
       const base = [...newGroups];
-
       if (!base.some((g) => g.id === UNGROUPED_ID)) {
         base.unshift({
           id: UNGROUPED_ID,
@@ -140,7 +141,14 @@ export class TreeContainer extends DragBase {
 
     const dragGroup = groups.find((g) => g.id === dragId);
     if (dragGroup) {
-      const newGroups = this.calculateReorderedItems(groups, dragId, dropId);
+      const normalizedDropId = dropId.startsWith('group:')
+        ? dropId.replace('group:', '')
+        : dropId;
+      const newGroups = this.calculateReorderedItems(
+        groups,
+        dragId,
+        normalizedDropId,
+      );
       if (newGroups !== groups) {
         this.internalGroups.set(newGroups);
         this.groupsChange.emit(newGroups.filter((g) => g.id !== UNGROUPED_ID));
@@ -160,6 +168,12 @@ export class TreeContainer extends DragBase {
     if (rawToId === undefined) return;
 
     const toGroupId = rawToId === UNGROUPED_ID ? null : rawToId;
+
+    if (isGroupDrop && dragItem.groupId === toGroupId) {
+      this.moveRedundant.emit(true);
+      return;
+    }
+
     const targetItemId = isGroupDrop ? undefined : dropId;
 
     const updatedItems = this.treeService.reorderItems(
@@ -169,26 +183,29 @@ export class TreeContainer extends DragBase {
       targetItemId,
     );
 
-    if (updatedItems !== items) {
-      this.internalItems.set(updatedItems);
-      this.itemsChange.emit(updatedItems);
-      this.orderChange.emit(updatedItems.map((i) => i.id));
+    if (updatedItems === items) {
+      this.moveRedundant.emit(true);
+      return;
+    }
 
-      const finalItem = updatedItems.find((i) => i.id === dragId);
-      if (dragItem.groupId !== toGroupId) {
-        this.itemMoved.emit({
-          itemId: dragId,
-          fromGroupId: dragItem.groupId,
-          toGroupId,
-          newOrder: finalItem?.order ?? 0,
-        });
-      } else {
-        this.itemReordered.emit({
-          itemId: dragId,
-          groupId: toGroupId!,
-          newOrder: finalItem?.order ?? 0,
-        });
-      }
+    this.internalItems.set(updatedItems);
+    this.itemsChange.emit(updatedItems);
+    this.orderChange.emit(updatedItems.map((i) => i.id));
+
+    const finalItem = updatedItems.find((i) => i.id === dragId);
+    if (dragItem.groupId !== toGroupId) {
+      this.itemMoved.emit({
+        itemId: dragId,
+        fromGroupId: dragItem.groupId,
+        toGroupId,
+        newOrder: finalItem?.order ?? 0,
+      });
+    } else {
+      this.itemReordered.emit({
+        itemId: dragId,
+        groupId: toGroupId!,
+        newOrder: finalItem?.order ?? 0,
+      });
     }
   }
 
