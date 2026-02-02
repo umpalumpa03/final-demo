@@ -12,7 +12,7 @@ import {
 import * as CardsSelectors from '../../../../../../../../store/products/cards/cards.selectors';
 import { CardDesign } from '@tia/shared/models/cards/card-design.model';
 import { CardCategory } from '@tia/shared/models/cards/card-category.model';
-import { CardType } from '@tia/shared/models/cards/card-type.model';
+import { CardType } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-type.model';
 import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 
 interface CardCreationData {
@@ -78,10 +78,7 @@ describe('CreateCard', () => {
 
     await TestBed.configureTestingModule({
       imports: [CreateCard, ReactiveFormsModule],
-      providers: [
-        { provide: Store, useValue: storeMock },
-        FormBuilder,
-      ],
+      providers: [{ provide: Store, useValue: storeMock }, FormBuilder],
     }).compileComponents();
 
     store = TestBed.inject(Store) as unknown as MockStore;
@@ -126,7 +123,7 @@ describe('CreateCard', () => {
           accountId: 'acc-123',
           design: 'design-1',
         },
-      })
+      }),
     );
   });
 

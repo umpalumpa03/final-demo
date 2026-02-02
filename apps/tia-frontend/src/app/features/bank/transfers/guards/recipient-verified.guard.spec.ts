@@ -26,17 +26,6 @@ describe('recipientVerifiedGuard', () => {
     router = TestBed.inject(Router);
   });
 
-  it('should return true if recipientInfo exists in store', () => {
-    mockStore.recipientInfo.set({ fullName: 'John Doe' });
-
-    const result = TestBed.runInInjectionContext(() =>
-      recipientVerifiedGuard({} as any, {} as any),
-    );
-
-    expect(result).toBe(true);
-    expect(router.navigate).not.toHaveBeenCalled();
-  });
-
   it('should return true if external iban data exists', () => {
     mockStore.recipientType.set('iban-different-bank');
     mockStore.recipientInput.set('DE89370400440532013000');

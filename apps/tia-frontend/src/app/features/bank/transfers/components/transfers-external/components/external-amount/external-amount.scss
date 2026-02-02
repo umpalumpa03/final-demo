@@ -1,0 +1,198 @@
+@use '../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../shared/styles/palette' as *;
+
+.external-amount {
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1.6rem;
+
+  &__header {
+    margin-bottom: 3.2rem;
+  }
+
+  &__title {
+    @include font-inter(600, 2rem, 2.8rem);
+    color: var(--color-fg);
+  }
+
+  &__summary {
+    background: $gray-25;
+    border-radius: 1.6rem;
+    padding: 2.4rem 3.2rem;
+    margin-bottom: 3.2rem;
+  }
+
+  &__summary-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 2rem;
+
+    @media (max-width: 700px) {
+      grid-template-columns: 1fr;
+      gap: 2.4rem;
+    }
+  }
+
+  &__summary-item {
+    &--to {
+      @include display-flex();
+      justify-content: flex-end;
+
+      @media (max-width: 700px) {
+        justify-content: flex-start;
+      }
+    }
+  }
+
+  &__summary-to-wrapper {
+    @include display-flex(column);
+    align-items: flex-start;
+  }
+
+  &__summary-label {
+    @include font-inter(500, 1.2rem, 1.6rem);
+    color: $gray-500;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 1.2rem;
+  }
+
+  &__summary-content {
+    @include display-flex(row);
+    align-items: center;
+    gap: 1.6rem;
+  }
+
+  &__summary-icon,
+  &__summary-initials {
+    @include svg-icon(4.8rem);
+    @include flex-center();
+    background: var(--color-bg-primary);
+    border-radius: 50%;
+    border: 0.1rem solid $gray-200;
+  }
+
+  &__summary-initials {
+    @include font-inter(600, 1.4rem, 1);
+    color: var(--color-fg);
+    text-transform: uppercase;
+  }
+
+  &__summary-name {
+    @include font-inter(600, 1.6rem, 2.4rem);
+    color: var(--color-fg);
+    white-space: nowrap;
+  }
+
+  &__summary-sub {
+    @include font-inter(400, 1.4rem, 2rem);
+    color: $gray-500;
+  }
+
+  &__summary-divider {
+    @include flex-center();
+    min-width: 6.4rem;
+  }
+
+  &__transfer-circle {
+    @include svg-icon(4.4rem);
+    @include flex-center();
+    background: var(--color-bg-primary);
+    border-radius: 50%;
+    border: 0.1rem solid $gray-200;
+    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.05);
+
+    img {
+      @include svg-icon(2.4rem);
+    }
+  }
+
+  &__divider {
+    height: 0.1rem;
+    background: $gray-200;
+    margin: 3.2rem 0;
+  }
+
+  &__form {
+    @include display-flex(column);
+    gap: 3.2rem;
+  }
+
+  &__input-group {
+    position: relative;
+    margin-bottom: 1.2rem;
+  }
+
+  &__info-row {
+    @include display-flex(row);
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.8rem;
+    width: 100%;
+
+    @media (max-width: 640px) {
+      @include display-flex(column);
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+  }
+
+  &__available {
+    @include font-inter(400, 1.3rem, 1.8rem);
+    color: $gray-500;
+    margin: 0;
+
+    span {
+      color: var(--color-fg);
+      font-weight: 600;
+    }
+  }
+
+  &__fee-wrapper {
+    @include display-flex(row);
+    gap: 2.4rem;
+    align-items: center;
+  }
+
+  &__fee-item {
+    @include display-flex(row);
+    gap: 0.6rem;
+    @include font-inter(400, 1.3rem, 1.8rem);
+    color: $gray-500;
+
+    strong {
+      color: var(--color-fg);
+      font-weight: 600;
+    }
+  }
+
+  &__fee-loading {
+    @include font-inter(400, 1.2rem, 1.6rem);
+    color: $gray-400;
+    font-style: italic;
+  }
+
+  &__footer {
+    @include display-flex(row);
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4rem;
+    padding-top: 2.4rem;
+    border-top: 0.1rem solid $gray-200;
+
+    @media (max-width: 450px) {
+      @include display-flex(column-reverse);
+      align-items: stretch;
+      gap: 1.6rem;
+    }
+  }
+
+  &__success-toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+  }
+}

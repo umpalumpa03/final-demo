@@ -1,4 +1,3 @@
-
 import {
   ChangeDetectionStrategy,
   Component,
@@ -13,15 +12,24 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 
-import { CreateCardRequest } from '@tia/shared/models/cards/create-card-request.model';
-import { CardForm } from '@tia/shared/models/cards/card-form.model';
-import { selectCardCreationData, selectCardCreationDataLoading } from 'apps/tia-frontend/src/app/store/products/cards/cards.selectors';
-import { selectCreateError, selectIsCreating } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
-import { closeCreateCardModal, createCard, loadCardCreationData } from 'apps/tia-frontend/src/app/store/products/cards/cards.actions';
+import { CreateCardRequest } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/create-card-request.model';
+import { CardForm } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-form.model';
+import {
+  selectCardCreationData,
+  selectCardCreationDataLoading,
+} from 'apps/tia-frontend/src/app/store/products/cards/cards.selectors';
+import {
+  selectCreateError,
+  selectIsCreating,
+} from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
+import {
+  closeCreateCardModal,
+  createCard,
+  loadCardCreationData,
+} from 'apps/tia-frontend/src/app/store/products/cards/cards.actions';
 import { CardPreview } from '../components/card-preview/card-preview';
 import { DesignSelector } from '../components/design-selector/design-selector';
 import { CreateCardForm } from '../components/create-card-form/create-card-form';
-
 
 @Component({
   selector: 'app-create-card',
@@ -37,15 +45,28 @@ export class CreateCard {
   readonly isOpen = input.required<boolean>();
   readonly closed = output<void>();
 
-  protected readonly creationData = this.store.selectSignal(selectCardCreationData);
+  protected readonly creationData = this.store.selectSignal(
+    selectCardCreationData,
+  );
   protected readonly isCreating = this.store.selectSignal(selectIsCreating);
   protected readonly createError = this.store.selectSignal(selectCreateError);
-  protected readonly isLoadingData = this.store.selectSignal(selectCardCreationDataLoading);
+  protected readonly isLoadingData = this.store.selectSignal(
+    selectCardCreationDataLoading,
+  );
 
   protected readonly cardForm: FormGroup<CardForm> = this.fb.group({
-    cardName: this.fb.nonNullable.control('', [Validators.required, Validators.minLength(2)]),
-    cardCategory: this.fb.nonNullable.control<'DEBIT' | 'CREDIT'>('DEBIT', Validators.required),
-    cardType: this.fb.nonNullable.control<'VISA' | 'MASTERCARD'>('VISA', Validators.required),
+    cardName: this.fb.nonNullable.control('', [
+      Validators.required,
+      Validators.minLength(2),
+    ]),
+    cardCategory: this.fb.nonNullable.control<'DEBIT' | 'CREDIT'>(
+      'DEBIT',
+      Validators.required,
+    ),
+    cardType: this.fb.nonNullable.control<'VISA' | 'MASTERCARD'>(
+      'VISA',
+      Validators.required,
+    ),
     accountId: this.fb.nonNullable.control('', Validators.required),
     design: this.fb.nonNullable.control('', Validators.required),
   });
@@ -60,18 +81,24 @@ export class CreateCard {
   });
 
   protected readonly categoryOptions = computed(() =>
-    this.creationData().categories.map((c) => ({ label: c.displayName, value: c.value }))
+    this.creationData().categories.map((c) => ({
+      label: c.displayName,
+      value: c.value,
+    })),
   );
 
   protected readonly typeOptions = computed(() =>
-    this.creationData().types.map((t) => ({ label: t.displayName, value: t.value }))
+    this.creationData().types.map((t) => ({
+      label: t.displayName,
+      value: t.value,
+    })),
   );
 
   protected readonly accountOptions = computed(() =>
     this.creationData().accounts.map((a) => ({
       label: `${a.name} - ${a.balance} ${a.currency}`,
       value: a.id,
-    }))
+    })),
   );
 
   constructor() {

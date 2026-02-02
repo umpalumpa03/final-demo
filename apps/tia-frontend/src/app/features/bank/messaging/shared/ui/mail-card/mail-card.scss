@@ -17,11 +17,11 @@
     }
 
     &--unread {
-        background-color: $white;
+        background-color: var(--color-bg);
     }
 
     &--read {
-        background-color: var(--color-bg);
+        background-color: $white;
     }
 
     &__content {

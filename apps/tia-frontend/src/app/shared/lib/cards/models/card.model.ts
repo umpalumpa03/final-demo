@@ -17,6 +17,7 @@ export interface CardData {
   minHeight?: string;
   padding?: string;
   borderColor?: string;
+  gap?: string;
 }
 
 export interface StatisticCardData {

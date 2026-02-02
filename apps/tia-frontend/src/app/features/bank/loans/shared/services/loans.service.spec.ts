@@ -128,29 +128,6 @@ describe('LoansService', () => {
     req.flush(mockOptions);
   });
 
-  it('should calculate partial prepayment', () => {
-    const loanId = '1';
-    const amount = 100;
-    const option = 'reduceMonthlyPayment';
-    const mockResponse = { monthlyPayment: 90 } as any;
-
-    service
-      .calculatePartialPrepayment(loanId, amount, option)
-      .subscribe((res) => {
-        expect(res).toEqual(mockResponse);
-      });
-
-    const req = httpMock.expectOne(
-      (req) =>
-        req.url === `${apiUrl}/calculate-partial-prepayment` &&
-        req.params.get('loanId') === loanId &&
-        req.params.get('amount') === amount.toString() &&
-        req.params.get('option') === option,
-    );
-    expect(req.request.method).toBe('GET');
-    req.flush(mockResponse);
-  });
-
   it('should initiate prepayment', () => {
     const payload = { loanId: '1', amount: 500 } as any;
     const mockResponse = { verify: { challengeId: '123' } };

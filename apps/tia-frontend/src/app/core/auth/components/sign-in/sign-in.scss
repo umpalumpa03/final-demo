@@ -2,9 +2,7 @@
 @use '../../../../shared/styles/mixins' as *;
 
 .sign-in {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  @include display-flex(column);
   max-height: 100vh;
 
   &__header {
@@ -51,6 +49,7 @@
     @include display-flex(column);
     gap: 2.6rem;
     margin-bottom: 2.6rem;
+    height: 100%;
   }
 
   &__switch,
@@ -66,5 +65,9 @@
   &__switch,
   &__loader {
     @include flex-center();
+  }
+
+  &__loader {
+    height: 65%;
   }
 }

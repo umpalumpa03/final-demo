@@ -3,21 +3,24 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of, mergeMap, forkJoin, EMPTY } from 'rxjs';
 import { map, catchError, switchMap, take } from 'rxjs/operators';
 import * as CardsActions from './cards.actions';
-import { CardListService } from '@tia/shared/services/cards/card-list.service';
+import { CardListApiService } from '@tia/shared/services/cards/card-list.service.api';
 import { Store } from '@ngrx/store';
 import { selectAllAccounts } from './cards.selectors';
 import { CardAccount } from '@tia/shared/models/cards/card-account.model';
+import { CardsService } from '../../../features/bank/products/components/cards/service/cards.service';
 
 @Injectable()
 export class CardsEffects {
   private readonly actions$ = inject(Actions);
-  private readonly cardListService = inject(CardListService);
+  private readonly cardListApiService = inject(CardListApiService);
+  private readonly cardsService = inject(CardsService);
   private readonly store = inject(Store);
+
   loadCardAccounts$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CardsActions.loadCardAccounts),
       switchMap(() =>
-        this.cardListService.getCardAccounts().pipe(
+        this.cardListApiService.getCardAccounts().pipe(
           map((accounts) => CardsActions.loadCardAccountsSuccess({ accounts })),
           catchError((error) =>
             of(CardsActions.loadCardAccountsFailure({ error: error.message })),
@@ -39,7 +42,7 @@ export class CardsEffects {
 
         return forkJoin(
           allCardIds.map((cardId) =>
-            this.cardListService.getCardImage(cardId).pipe(
+            this.cardsService.getCardImage(cardId).pipe(
               map((imageBase64) =>
                 CardsActions.loadCardImageSuccess({ cardId, imageBase64 }),
               ),
@@ -63,7 +66,7 @@ export class CardsEffects {
     this.actions$.pipe(
       ofType(CardsActions.loadCardDetails),
       mergeMap(({ cardId }) =>
-        this.cardListService.getCardDetails(cardId).pipe(
+        this.cardListApiService.getCardDetails(cardId).pipe(
           map((details) =>
             CardsActions.loadCardDetailsSuccess({ cardId, details }),
           ),
@@ -85,9 +88,9 @@ export class CardsEffects {
       ofType(CardsActions.loadCardCreationData),
       switchMap(() =>
         forkJoin({
-          designs: this.cardListService.getCardDesigns(),
-          categories: this.cardListService.getCardCategories(),
-          types: this.cardListService.getCardTypes(),
+          designs: this.cardsService.getCardDesigns(),
+          categories: this.cardsService.getCardCategories(),
+          types: this.cardsService.getCardTypes(),
         }).pipe(
           map(({ designs, categories, types }) =>
             CardsActions.loadCardCreationDataSuccess({
@@ -112,7 +115,7 @@ export class CardsEffects {
     this.actions$.pipe(
       ofType(CardsActions.createCard),
       switchMap(({ request }) =>
-        this.cardListService.createCard(request).pipe(
+        this.cardsService.createCard(request).pipe(
           map(() => CardsActions.createCardSuccess()),
           catchError((error) =>
             of(
@@ -132,6 +135,7 @@ export class CardsEffects {
       map(() => CardsActions.loadCardAccounts()),
     ),
   );
+
   loadAccountCardsPage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CardsActions.loadAccountCardsPage),
@@ -158,6 +162,4 @@ export class CardsEffects {
       ),
     ),
   );
-
-  
 }

@@ -17,7 +17,7 @@ import {
   selectCardDetailsLoading,
 } from '../../../../../../../../store/products/cards/cards.selectors';
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
-import { AccountData, ViewState } from '@tia/shared/models/cards/account-cards.model';
+import { AccountData, ViewState } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/account-cards.model';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';

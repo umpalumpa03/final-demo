@@ -1,46 +1,71 @@
 <div class="otp-verification">
-  @if (showIcon()) {
   <div class="otp-verification__icon" aria-hidden="true">
-    <img [src]="iconUrl()" alt="" />
+    <img [src]="iconUrl()" />
   </div>
-  }
-  <h2 class="otp-verification__title">{{ title() }}</h2>
-  <p class="otp-verification__subtext">{{ subText() }}</p>
+  <h2 class="otp-verification__title">{{ title() | translate }}</h2>
+  <p class="otp-verification__subtext">{{ subText() | translate}}</p>
 
   @if (!isLoading()) {
   <form class="auth-form" [formGroup]="otpForm" (ngSubmit)="onSubmit()">
+    @if(timerType() === 'otp'){
     <div class="otp-field">
-      <label class="otp-label">Enter OTP Code</label>
-      <lib-otp formControlName="code" [config]="otpConfig()"></lib-otp>
+      <lib-otp formControlName="code" [config]="formConfig().otp"></lib-otp>
     </div>
-
-    @if (submitError()) {
-      <div class="auth-error">{{ submitError() }}</div>
+    } @else {
+    <div class="otp-field__phone">
+      <lib-text-input
+        formControlName="code"
+        [config]="formConfig().phone"
+      ></lib-text-input>
+    </div>
+    } @if (submitError()) {
+    <div class="auth-error">{{ submitError() | translate}}</div>
     }
 
     <div class="auth-form__actions">
       <app-button
+        [isDisabled]="isResendActive()"
         type="submit"
-        size="large"
         [fullWidth]="true"
-        [isLoading]="isSubmitting()"
       >
-        {{ submitBtnName() }}
+        {{ submitBtnName() | translate}}
       </app-button>
     </div>
 
-    @if (showResend()) {
-      <div class="otp-verification__resend">
-        <span>{{ resendText() }}</span>
-        <span class="otp-verification__resend-link">{{ resendLinkText() }}</span>
-      </div>
-    }
+    <app-button
+      [fullWidth]="true"
+      class="otp-verification__back"
+      [routerLink]="backLink()"
+      variant="outline"
+      >{{ backLinkText() | translate}}</app-button
+    >
+    <div class="timer-compact">
+      <div class="timer-compact__timer">
+        <span
+          class="timer-compact__status-dot"
+          [class.timer-compact__status-dot--pulse]="countdown() > 0"
+        >
+        </span>
 
-    @if (backLink()) {
-      <a class="otp-verification__back" [routerLink]="backLink()">
-        {{ backLinkText() }}
-      </a>
-    }
+        <div class="timer-compact__readout">
+          <span class="timer-compact__value">{{ countdown()}}</span>
+          <span class="timer-compact__unit">s</span>
+        </div>
+      </div>
+      @if(timerType() === 'otp') {
+      <div
+        class="timer-compact__resend"
+        [class.timer-compact__resend--disabled]="countdown() > 0"
+      >
+        <span class="timer-compact__resend-text"
+          >{{'auth.otp-sign-in.codeQuestion' | translate}}</span
+        >
+        <span class="timer-compact__link" (click)="onResend()">
+          {{'auth.otp-sign-in.code' | translate}}
+        </span>
+      </div>
+      }
+    </div>
   </form>
   } @else {
   <div class="sign-in sign-in-loader">

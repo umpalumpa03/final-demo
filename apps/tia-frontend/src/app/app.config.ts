@@ -14,6 +14,7 @@ import { profilePhotoFeature } from './store/profile-photo/profile-photo.reducer
 import { ProfilePhotoEffects } from './store/profile-photo/profile-photo.effects';
 import { securityFeature } from './features/bank/settings/components/security/store/security.reducer';
 import { SecurityEffects } from './features/bank/settings/components/security/store/security.effects';
+import { userInfoFeature } from './store/user-info/user-info.reducer';
 import {
   provideHttpClient,
   withInterceptors,
@@ -24,6 +25,7 @@ import { HttpClient } from '@angular/common/http';
 import { TranslateLoader, provideTranslateService } from '@ngx-translate/core';
 import { createMultiFileTranslateLoader } from './core/i18n';
 import { UserInfoEffects } from './store/user-info/user-info.effect';
+import { userInfoReducer } from './store/user-info/user-info.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -33,6 +35,8 @@ export const appConfig: ApplicationConfig = {
     provideState(themeFeature),
     provideState(profilePhotoFeature),
     provideState(securityFeature),
+    provideState(userInfoFeature),
+    provideState('user-info', userInfoReducer),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideEffects([ThemeEffects, ProfilePhotoEffects, SecurityEffects, UserInfoEffects]),
     provideStoreDevtools({

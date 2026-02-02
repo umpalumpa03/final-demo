@@ -19,7 +19,7 @@
   ></app-avatar>
   <div class="mail-card__content">
     <div class="mail-card__header">
-      <span class="mail-card__sender">{{ mail()?.senderEmail }}</span>
+      <span class="mail-card__sender">{{ !isSent() ? mail()?.senderEmail : mail()?.receiverEmail }}</span>
       <span class="mail-card__date"
         >{{ mail()?.createdAt | date:'MMM d' }}</span
       >

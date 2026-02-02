@@ -1,61 +1,80 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ExternalAmount } from './external-amount';
+import { TransferStore } from '../../../../store/transfers.store';
+import { TransferExternalService } from '../../../../services/transfer.external.service';
 import { TransfersApiService } from '../../../../services/transfersApi.service';
+import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { of, throwError } from 'rxjs';
+import { signal } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 
-describe('ExternalAmount (vitest)', () => {
+describe('ExternalAmount', () => {
   let component: ExternalAmount;
   let fixture: ComponentFixture<ExternalAmount>;
-  let transfersApiMock: any;
+  let mockExternalService: any;
+  let mockStore: any;
 
   beforeEach(async () => {
-    transfersApiMock = {
-      getFee: vi.fn().mockReturnValue(of({ fee: 0 })),
+    mockStore = {
+      isLoading: signal(false),
+      fee: signal(0),
+      totalWithFee: signal(0),
+      senderAccount: signal({ id: 'a1', currency: 'GEL', balance: 1000 }),
+      selectedRecipientAccount: signal({ id: 'r1', name: 'John Doe' }),
+      manualRecipientName: signal(''),
+      recipientInfo: signal(null),
+      recipientType: signal('phone'),
+      amount: signal(0),
+      description: signal(''),
     };
 
+    mockExternalService = {
+      handleAmountGoBack: vi.fn(),
+      handleTransfer: vi.fn(),
+      handleAmountInput: vi.fn(),
+    };
+
+    const mockBreakpoint = { isMobile: signal(false) };
+
     await TestBed.configureTestingModule({
-      imports: [ExternalAmount],
-      providers: [{ provide: TransfersApiService, useValue: transfersApiMock }],
-    }).compileComponents();
+      imports: [ExternalAmount, ReactiveFormsModule, TranslateModule.forRoot()],
+      providers: [
+        { provide: TransferStore, useValue: mockStore },
+        { provide: BreakpointService, useValue: mockBreakpoint },
+        { provide: TransfersApiService, useValue: { getFee: vi.fn() } },
+      ],
+    })
+      .overrideComponent(ExternalAmount, {
+        set: {
+          providers: [
+            { provide: TransferExternalService, useValue: mockExternalService },
+          ],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(ExternalAmount);
     component = fixture.componentInstance;
   });
 
-  it('should create the component', () => {
+  it('should create and trigger initial toast (Hits ngOnInit & triggerToast)', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
-  });
-
-  it('should call getFee on ngOnInit with hardcoded values', () => {
-    const testAccountId = 'a1000001-0001-4000-8000-000000000001';
-    const testAmount = 100;
-
-    fixture.detectChanges();
-
-    expect(transfersApiMock.getFee).toHaveBeenCalledWith(
-      testAccountId,
-      testAmount,
+    expect(component.showSuccess()).toBe(true);
+    expect(component.currentToastMessage()).toBe(
+      'transfers.external.amount.accountsSelected',
     );
   });
 
-  it('should handle getFee success response', () => {
-    const response = { fee: 5 };
-    transfersApiMock.getFee.mockReturnValue(of(response));
-
+  it('should call handleAmountInput on value change (Hits subscription branch)', () => {
     fixture.detectChanges();
-
-    expect(transfersApiMock.getFee).toHaveBeenCalled();
+    component.amountInput.setValue('50');
+    expect(mockExternalService.handleAmountInput).toHaveBeenCalledWith(50);
   });
 
-  it('should handle getFee error response', () => {
-    transfersApiMock.getFee.mockReturnValue(
-      throwError(() => new Error('API Error')),
-    );
-
+  it('should show available balance from store (Hits computed balance)', () => {
     fixture.detectChanges();
-
-    expect(transfersApiMock.getFee).toHaveBeenCalled();
+    expect(component.availableBalance()).toBe(1000);
   });
 });

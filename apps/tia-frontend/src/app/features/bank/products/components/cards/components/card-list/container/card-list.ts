@@ -33,6 +33,7 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { CardGroupView } from '../models/card-list-view.model';
 import { CardGroupItem } from '../components/card-group-item/card-group-item';
 import { AddCardButton } from '../components/add-card-button/add-card-button';
+import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 
 @Component({
   selector: 'app-card-list',
@@ -42,7 +43,7 @@ import { AddCardButton } from '../components/add-card-button/add-card-button';
     AsyncPipe,
     CreateCard,
     SimpleAlerts,
-    Spinner,
+  RouteLoader,
     ErrorStates,
     CardGroupItem,
     AddCardButton,

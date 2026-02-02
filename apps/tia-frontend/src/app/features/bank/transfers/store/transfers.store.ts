@@ -20,6 +20,11 @@ export const TransferStore = signalStore(
         recipientInput: input,
         recipientType: type,
         recipientInfo: null,
+        senderAccount: null,
+        selectedRecipientAccount: null,
+        manualRecipientName: '',
+        amount: 0,
+        description: '',
         error: null,
       });
     },
@@ -29,11 +34,26 @@ export const TransferStore = signalStore(
     setSenderAccount(account: Account | null) {
       patchState(store, { senderAccount: account });
     },
-
     setSelectedRecipientAccount(account: RecipientAccount | null) {
       patchState(store, { selectedRecipientAccount: account });
     },
+    setAmount(amount: number) {
+      patchState(store, { amount });
+    },
+    setDescription(description: string) {
+      patchState(store, { description });
+    },
+    //
+    updateFeeInfo(fee: number, totalWithFee: number) {
+      patchState(store, { fee, totalWithFee, isLoading: false });
+    },
 
+    setLoading(isLoading: boolean) {
+      patchState(store, { isLoading });
+    },
+    setIsVerified(isVerified: boolean) {
+      patchState(store, { isVerified });
+    },
     lookupRecipient: rxMethod<{ value: string; type: RecipientType }>(
       pipe(
         tap(({ value, type }) =>
@@ -43,6 +63,10 @@ export const TransferStore = signalStore(
             isLoading: true,
             error: null,
             recipientInfo: null,
+            senderAccount: null,
+            selectedRecipientAccount: null,
+            amount: 0,
+            description: '',
           }),
         ),
         switchMap(({ value, type }) => {
@@ -56,14 +80,13 @@ export const TransferStore = signalStore(
               patchState(store, {
                 recipientInfo: response,
                 isLoading: false,
-                error: null,
+                isVerified: true,
               });
             }),
             catchError((error) => {
               patchState(store, {
                 error: error.message || 'Failed to find recipient',
                 isLoading: false,
-                recipientInfo: null,
               });
               return of(null);
             }),
@@ -71,7 +94,6 @@ export const TransferStore = signalStore(
         }),
       ),
     ),
-
     reset() {
       patchState(store, initialTransferState);
     },

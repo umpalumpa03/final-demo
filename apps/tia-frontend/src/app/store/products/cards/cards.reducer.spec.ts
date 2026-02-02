@@ -7,7 +7,7 @@ import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
 import { CardDesign } from '@tia/shared/models/cards/card-design.model';
 import { CardCategory } from '@tia/shared/models/cards/card-category.model';
-import { CardType } from '@tia/shared/models/cards/card-type.model';
+import { CardType } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-type.model';
 
 describe('Cards Reducer', () => {
   const mockAccounts: CardAccount[] = [
@@ -38,9 +38,15 @@ describe('Cards Reducer', () => {
     updatedAt: '2026-01-18T01:10:50.948Z',
   };
 
-  const mockDesigns: CardDesign[] = [{ id: 'design-1', designName: 'Classic', uri: '/designs/classic.png' }];
-  const mockCategories: CardCategory[] = [{ value: 'DEBIT' as const, displayName: 'Debit Card' }];
-  const mockTypes: CardType[] = [{ value: 'VISA' as const, displayName: 'Visa' }];
+  const mockDesigns: CardDesign[] = [
+    { id: 'design-1', designName: 'Classic', uri: '/designs/classic.png' },
+  ];
+  const mockCategories: CardCategory[] = [
+    { value: 'DEBIT' as const, displayName: 'Debit Card' },
+  ];
+  const mockTypes: CardType[] = [
+    { value: 'VISA' as const, displayName: 'Visa' },
+  ];
 
   it('should return initial state', () => {
     const action: Action = { type: 'UNKNOWN' };
@@ -56,7 +62,9 @@ describe('Cards Reducer', () => {
   });
 
   it('should handle loadCardAccountsSuccess', () => {
-    const action = CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts });
+    const action = CardsActions.loadCardAccountsSuccess({
+      accounts: mockAccounts,
+    });
     const state = cardsReducer(initialCardsState, action);
     expect(state.accounts).toEqual(mockAccounts);
     expect(state.loading).toBe(false);
@@ -71,7 +79,10 @@ describe('Cards Reducer', () => {
   });
 
   it('should handle loadCardImageSuccess', () => {
-    const action = CardsActions.loadCardImageSuccess({ cardId: 'card1', imageBase64: 'base64' });
+    const action = CardsActions.loadCardImageSuccess({
+      cardId: 'card1',
+      imageBase64: 'base64',
+    });
     const state = cardsReducer(initialCardsState, action);
     expect(state.cardImages['card1']).toBe('base64');
   });
@@ -84,7 +95,10 @@ describe('Cards Reducer', () => {
   });
 
   it('should handle loadCardDetailsSuccess', () => {
-    const action = CardsActions.loadCardDetailsSuccess({ cardId: 'card1', details: mockCardDetail });
+    const action = CardsActions.loadCardDetailsSuccess({
+      cardId: 'card1',
+      details: mockCardDetail,
+    });
     const state = cardsReducer(initialCardsState, action);
     expect(state.cardDetails['card1']).toEqual(mockCardDetail);
     expect(state.cardDetailsLoading).toBe(false);
@@ -92,7 +106,10 @@ describe('Cards Reducer', () => {
   });
 
   it('should handle loadCardDetailsFailure', () => {
-    const action = CardsActions.loadCardDetailsFailure({ cardId: 'card1', error: 'Error' });
+    const action = CardsActions.loadCardDetailsFailure({
+      cardId: 'card1',
+      error: 'Error',
+    });
     const state = cardsReducer(initialCardsState, action);
     expect(state.cardDetailsLoading).toBe(false);
     expect(state.cardDetailsError).toBe('Error');
@@ -106,7 +123,11 @@ describe('Cards Reducer', () => {
   });
 
   it('should handle loadCardCreationDataSuccess', () => {
-    const action = CardsActions.loadCardCreationDataSuccess({ designs: mockDesigns, categories: mockCategories, types: mockTypes });
+    const action = CardsActions.loadCardCreationDataSuccess({
+      designs: mockDesigns,
+      categories: mockCategories,
+      types: mockTypes,
+    });
     const state = cardsReducer(initialCardsState, action);
     expect(state.designs).toEqual(mockDesigns);
     expect(state.categories).toEqual(mockCategories);

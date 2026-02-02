@@ -1,48 +1,33 @@
-
-@use "../../../../../../../../shared/styles/mixins" as *;
-@use "../../../../../../../../shared/styles/palette" as *;
+@use '../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../shared/styles/palette' as *;
 
 .card-list {
   @include display-flex(column);
-  gap: 2.4rem;
-  background-color: $gray-25;
-  min-height: 100vh;
+  gap: 3rem;
   width: 100%;
-  padding: 3.2rem;
-
-  @media (max-width: 768px) {
-    padding: 1.6rem;
-    gap: 2rem;
-  }
-
+  padding: 3.2rem 4rem;
   @media (max-width: 480px) {
-    padding: 1.2rem;
-    gap: 1.6rem;
+    padding: 3.2rem 0 0 2rem;
+  }
+  &__header{
+    @include flex-center(column,start,start)
+  }
+  &__title {
+    @include font-inter(600,2rem, 2.8rem);
+    color: var(--color-fg);
+  }
+  &__subtitle {
+    @include font-inter(400, 1.4rem, 2rem);
+    color: $gray-700;
   }
 
   &__loading {
     @include flex-center;
-    padding: 8rem 2rem;
-  }
-
-  &__group {
-    @include display-flex(column);
-    gap: 1.6rem;
-    max-width: 100%;
   }
 
   &__alert-container {
     position: fixed;
-    bottom: 2.4rem;
-    right: 2.4rem;
     max-width: 40rem;
     z-index: 1000;
-
-    @media (max-width: 768px) {
-      bottom: 2rem;
-      right: 2rem;
-      left: 2rem;
-      max-width: none;
-    }
   }
 }

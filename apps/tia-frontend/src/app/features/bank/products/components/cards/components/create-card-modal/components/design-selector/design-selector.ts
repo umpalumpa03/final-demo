@@ -1,5 +1,10 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { CardDesign } from '@tia/shared/models/cards/card-design.model';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+} from '@angular/core';
+import { CardDesign } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-design.model';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 
 @Component({
@@ -13,7 +18,7 @@ export class DesignSelector {
   readonly designs = input.required<CardDesign[]>();
   readonly selectedDesign = input.required<string>();
   readonly isLoading = input.required<boolean>();
-  
+
   readonly designSelected = output<string>();
 
   protected onSelectDesign(designId: string): void {

@@ -19,7 +19,6 @@ import {
   selectAccountById,
 } from '../../../../../../../../store/products/cards/cards.selectors';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
-import { CardWithDetails } from '@tia/shared/models/cards/card-image.model';
 import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
@@ -27,6 +26,7 @@ import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states'
 import { CardImage } from '../components/card-image/card-image';
 import { CardInfoSection } from '../components/card-info-section/card-info-section';
 import { QuickActionsSection } from '../components/quick-actions-section/quick-actions-section';
+import { CardWithDetails } from '../../../models/card-image.model';
 
 interface CardDataWithAccount extends CardWithDetails {
   account: CardAccount | undefined;

@@ -1,40 +1,41 @@
-
 <div class="card-list">
-  @if (loading$ | async) {
-    <div class="card-list__loading">
-      <app-spinner size="4rem" />
-    </div>
-  } @else if (error$ | async; as errorMsg) {
-    <app-error-states
-      variant="failed"
-      header="Loading Failed"
-      [message]="errorMsg"
-      buttonMessage="Retry"
-    />
-  } @else {
-    @for (group of cardGroupsWithMeta$ | async; track group.account.id) {
-      <div class="card-list__group">
-        <app-card-group-item
-          [group]="group"
-          (cardClicked)="handleCardClick($event)"
-          (viewAllClicked)="handleViewAllCards($event)"
-        />
-      </div>
-    }
+  <div class="card-list__header">
+    <h1 class="card-list__title">My Cards</h1>
+    <h2 class="card-list__subtitle">Manage your bank accounts</h2>
+  </div>
 
-    <app-add-card-button (clicked)="handleOpenModal()" />
+  @if (loading$ | async) {
+  <div class="card-list__loading">
+    <app-route-loader variant="pulsing" />
+  </div>
+  } @else if (error$ | async; as errorMsg) {
+  <app-error-states
+    variant="failed"
+    header="Loading Failed"
+    [message]="errorMsg"
+    buttonMessage="Retry"
+  />
+  } @else { @for (group of cardGroupsWithMeta$ | async; track group.account.id)
+  {
+  <div class="card-list__group">
+    <app-card-group-item
+      [group]="group"
+      (cardClicked)="handleCardClick($event)"
+      (viewAllClicked)="handleViewAllCards($event)"
+    />
+  </div>
+  }
+  <app-add-card-button (clicked)="handleOpenModal()" />
   }
 </div>
 
 @if (isModalOpen$ | async; as isOpen) {
-  <app-create-card [isOpen]="isOpen" (closed)="handleCloseModal()" />
-}
-
-@if (showSuccessAlert$ | async) {
-  <div class="card-list__alert-container">
-    <app-simple-alerts
-      alertType="success"
-      alertMessage="Card created successfully!"
-    />
-  </div>
+<app-create-card [isOpen]="isOpen" (closed)="handleCloseModal()" />
+} @if (showSuccessAlert$ | async) {
+<div class="card-list__alert-container">
+  <app-simple-alerts
+    alertType="success"
+    alertMessage="Card created successfully!"
+  />
+</div>
 }

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { CardWithDetails } from '@tia/shared/models/cards/card-image.model';
+
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
+import { CardWithDetails } from '../../../../models/card-image.model';
 
 @Component({
   selector: 'app-card-grid-item',

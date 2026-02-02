@@ -1,32 +1,23 @@
-@use "../../../../../../../../../shared/styles/mixins" as *;
-@use "../../../../../../../../../shared/styles/palette" as *;
+@use '../../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../../shared/styles/palette' as *;
 
 .card-group-item {
   @include display-flex(column);
-  gap: 1.6rem;
-  max-width: 100%;
-
-  &__header {
-    @include display-flex(row);
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1.6rem;
-
-    @media (max-width: 480px) {
-      flex-direction: column;
-      gap: 1.2rem;
+  gap: 1.7rem;
+     @media (max-width: 768px) {
+      @include flex-center(column); 
+      gap: 2rem;
+    }
+  &__header{
+    @include flex-center(row, space-between);
+    @media (max-width: 768px) {
+      @include flex-center(column, start, center); 
+      gap: 2rem;
     }
   }
 
   &__info {
-    @include display-flex(column);
-    gap: 0.8rem;
-    flex: 1;
-  }
-
-  &__name-wrapper {
-    @include display-flex(row);
-    align-items: center;
+    @include flex-center(row, start);
     gap: 1.2rem;
   }
 
@@ -34,44 +25,44 @@
     @include flex-center;
     width: 4rem;
     height: 4rem;
-    background-color: var(--color-secondary);
+    background-color: var(--color-bg);
     border-radius: 0.8rem;
-    flex-shrink: 0;
   }
 
   &__icon {
-    width: 2rem;
-    height: 2rem;
-    object-fit: contain;
+    width: 4.2rem;
+    height: 4.2rem;
   }
-
   &__name {
-    @include font-inter(600, 1.6rem, 1.5);
-    color: var(--color-fg);
+    @include font-inter(600, 1.8rem, 2);
+    color: $blue-ocean-foreground;
   }
 
   &__number {
-    @include font-inter(400, 1.4rem, 1.5);
-    color: $gray-600;
-    padding-left: 5.2rem;
+    @include font-inter(400, 1.4rem, 1.8);
+    color: $gray-700;
   }
 
-  &__cards-wrapper {
+  &__name-wrapper {
     @include display-flex(column);
-    gap: 12rem;
-    align-items: start;
+  }
+
+
+  &__cards-wrapper {
+    @include flex-center(column);
+    gap: 1.2rem;
+    max-width: 45rem;
   }
 
   &__view-all-button {
-    @include font-inter(500, 1.4rem, 1.5);
+    @include font-inter(400, 1.4rem, 2);
     background: none;
     border: none;
-    color: $gray-600;
+    color: $gray-700;
     cursor: pointer;
-    padding: 0.8rem 0;
     transition: all 0.2s ease;
     text-align: center;
-    margin-top: 0.8rem;
+    margin-top: 1.2rem;
 
     &:hover {
       color: var(--color-primary);
