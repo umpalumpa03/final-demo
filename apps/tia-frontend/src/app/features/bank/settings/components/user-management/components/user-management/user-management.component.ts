@@ -38,6 +38,7 @@ export class UserManagementComponent {
 
   protected readonly modalState = signal<IModalState>('none');
   protected readonly userToDeleteId = signal<string | null>(null);
+  protected readonly actionProcessingId = signal<string | null>(null);
 
   protected readonly currentPage = signal<number>(1);
   protected readonly pageSize = signal<number>(4);
@@ -101,6 +102,11 @@ export class UserManagementComponent {
     if (id) {
       this.store.deleteUser(id);
     }
+  }
+
+  public block(id: string, isBlocked: boolean) {
+    this.actionProcessingId.set(id);
+    this.store.toggleBlockStatus({ id: id, isBlocked: !isBlocked });
   }
 
   public onCloseModal(): void {
