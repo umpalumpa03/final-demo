@@ -1,27 +1,26 @@
 export const widgetItems = [
   {
     id: '1',
-    title: 'Recent Transactions',
-    subtitle: 'Your latest account activity',
+    title: 'dashboard.widgets.transactions.title',
+    subtitle: 'dashboard.widgets.transactions.subtitle',
     icon: 'images/svg/dashboard/transactions.svg',
     type: 'transactions',
     hasPagination: true,
   },
   {
     id: '2',
-    title: 'Accounts',
-    subtitle: 'Your account balances and activity',
+    title: 'dashboard.widgets.accounts.title',
+    subtitle: 'dashboard.widgets.accounts.subtitle',
     icon: 'images/svg/dashboard/accounts.svg',
     type: 'accounts',
     hasAdd: true,
   },
   {
     id: '3',
-    title: 'Exchange Rates',
-    subtitle: 'Live currency exchange rates',
+    title: 'dashboard.widgets.exchange.title',
+    subtitle: 'dashboard.widgets.exchange.subtitle',
     icon: 'images/svg/dashboard/rates.svg',
     type: 'exchange',
     hasButton: true,
   },
-
 ] as const;

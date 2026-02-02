@@ -1,24 +1,5 @@
-@if (isLoading$ | async) {
-<div class="widget-loading">
-  <app-route-loader variant="full-page" text="Loading Exchange Rates...">
-  </app-route-loader>
-</div>
-} @else if (error$ | async) {
-<div class="widget-error">
-  <app-error-states
-    variant="failed"
-    header="Failed to load"
-    message="Could not load exchange rates"
-    buttonMessage="Retry"
-    (buttonClick)="retryLoad()"
-    [border]="false"
-  >
-  </app-error-states>
-</div>
-}
-
 <div class="exchange-rates">
-  <h2 class="exchange-rates__title">Exchange Rates</h2>
+  <h2 class="exchange-rates__title">{{ 'dashboard.widgets.exchange.subtitle' | translate }}</h2>
   @for (rate of exchangeRates$ | async; track rate.code) {
   <div class="exchange-rate-card">
     <div class="exchange-rate-card__info">
@@ -55,3 +36,20 @@
   </div>
   }
 </div>
+
+@if (isLoading$ | async) {
+  <app-route-loader variant="pulsing"  [fillContainer] = 'true'>
+  </app-route-loader>
+} @else if (error$ | async) {
+  <div class="widget-error">
+    <app-error-states
+      variant="failed"
+      header="Failed to load"
+      message="Could not load exchange rates"
+      buttonMessage="Retry"
+      (buttonClick)="retryLoad()"
+      [border]="false"
+    >
+    </app-error-states>
+  </div>
+}

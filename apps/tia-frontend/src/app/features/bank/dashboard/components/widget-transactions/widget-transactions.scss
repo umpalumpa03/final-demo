@@ -44,6 +44,16 @@
   }
 }
 
+.load-trigger {
+  height: 0.1rem;
+  width: 100%;
+}
+
+.loading-more {
+  @include flex-center();
+  padding: 2rem 0;
+}
+
 @media (max-width: 768px){
   .transaction {
     &_card{
