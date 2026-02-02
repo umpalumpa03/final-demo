@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, output, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal, ViewChild } from '@angular/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { MessagingStore } from '../../store/messaging.store';
@@ -26,6 +26,25 @@ export class Compose {
   public errorMesage = signal<string>('');
 
   public readonly store = inject(MessagingStore);
+
+  public readonly filteredSearchResultsCc = computed(() => {
+    const selectedEmails = [
+      this.toEmail(),
+      ...this.ccEmails()
+    ].filter(Boolean);
+
+    return this.store.searchResults().filter(
+      user => !selectedEmails.includes(user.email)
+    );
+  });
+
+  public readonly filteredSearchResults = computed(() => {
+    const selectedEmails = this.ccEmails().filter(Boolean);
+
+    return this.store.searchResults().filter(
+      user => !selectedEmails.includes(user.email)
+    );
+  });
 
   public readonly form = this.fb.group({
     subject: ['', Validators.required],
