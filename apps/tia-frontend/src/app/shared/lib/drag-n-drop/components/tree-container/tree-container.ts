@@ -167,7 +167,6 @@ export class TreeContainer extends DragBase {
       dragId,
       toGroupId,
       targetItemId,
-      (list, dId, tId) => this.calculateReorderedItems(list, dId, tId),
     );
 
     if (updatedItems !== items) {

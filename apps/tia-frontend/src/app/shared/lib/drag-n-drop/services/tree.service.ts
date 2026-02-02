@@ -9,11 +9,9 @@ export class TreeService {
     items: TreeItem[],
   ): Record<string, TreeItem[]> {
     const map: Record<string, TreeItem[]> = {};
-
     for (const group of groups) {
       map[group.id] = [];
     }
-
     if (!map[UNGROUPED_ID]) {
       map[UNGROUPED_ID] = [];
     }
@@ -28,7 +26,6 @@ export class TreeService {
     for (const groupId of Object.keys(map)) {
       map[groupId].sort((a, b) => a.order - b.order);
     }
-
     return map;
   }
 
@@ -37,7 +34,6 @@ export class TreeService {
     dragId: string,
     toGroupId: string | null,
     targetItemId?: string,
-    reorderFn?: (list: TreeItem[], dId: string, tId: string) => TreeItem[],
   ): TreeItem[] {
     const dragItem = items.find((i) => i.id === dragId);
     if (!dragItem) return items;
@@ -46,39 +42,46 @@ export class TreeService {
     const siblings = filteredItems
       .filter((i) => i.groupId === toGroupId)
       .sort((a, b) => a.order - b.order);
+    const otherItems = filteredItems.filter((i) => i.groupId !== toGroupId);
+    const newItem = { ...dragItem, groupId: toGroupId };
 
-    let updatedSiblings: TreeItem[];
-
-    if (targetItemId && reorderFn) {
-      const tempSiblings = [...siblings, { ...dragItem, groupId: toGroupId }];
-      updatedSiblings = reorderFn(tempSiblings, dragId, targetItemId);
+    let updatedSiblings: TreeItem[] = [];
+    if (targetItemId) {
+      const targetIndex = siblings.findIndex((i) => i.id === targetItemId);
+      if (targetIndex !== -1) {
+        updatedSiblings = [...siblings];
+        const movingWithinGroup = dragItem.groupId === toGroupId;
+        const isMovingDown =
+          movingWithinGroup && dragItem.order < siblings[targetIndex].order;
+        const insertionIndex = isMovingDown ? targetIndex + 1 : targetIndex;
+        updatedSiblings.splice(insertionIndex, 0, newItem);
+      } else {
+        updatedSiblings = [...siblings, newItem];
+      }
     } else {
-      updatedSiblings = [...siblings, { ...dragItem, groupId: toGroupId }];
+      updatedSiblings = [...siblings, newItem];
     }
 
     const normalizedSiblings = updatedSiblings.map((item, index) => ({
       ...item,
       order: index,
     }));
-
-    const otherItems = filteredItems.filter((i) => i.groupId !== toGroupId);
     return [...otherItems, ...normalizedSiblings];
   }
 
   public removeItem(items: TreeItem[], id: string): TreeItem[] {
-    const removedItem = items.find((i) => i.id === id);
-    if (!removedItem) return items;
-
+    const itemToRemove = items.find((i) => i.id === id);
+    if (!itemToRemove) return items;
     const filtered = items.filter((item) => item.id !== id);
-    const affectedGroup = filtered
-      .filter((i) => i.groupId === removedItem.groupId)
-      .sort((a, b) => a.order - b.order)
-      .map((item, index) => ({ ...item, order: index }));
-
-    const otherItems = filtered.filter(
-      (i) => i.groupId !== removedItem.groupId,
-    );
-    return [...otherItems, ...affectedGroup];
+    const siblings = filtered
+      .filter((i) => i.groupId === itemToRemove.groupId)
+      .sort((a, b) => a.order - b.order);
+    const others = filtered.filter((i) => i.groupId !== itemToRemove.groupId);
+    const normalized = siblings.map((item, index) => ({
+      ...item,
+      order: index,
+    }));
+    return [...others, ...normalized];
   }
 
   public removeGroup(
@@ -89,7 +92,6 @@ export class TreeService {
     const filteredGroups = groups
       .filter((g) => g.id !== groupId)
       .map((g, index) => ({ ...g, order: index }));
-
     return {
       groups: filteredGroups,
       items: items.filter((i) => i.groupId !== groupId),
@@ -105,15 +107,9 @@ export class TreeService {
     const newSet = new Set(checkedItemIds);
     const targetGroupId = groupId === UNGROUPED_ID ? null : groupId;
     const groupItems = items.filter((i) => i.groupId === targetGroupId);
-
     for (const item of groupItems) {
-      if (checked) {
-        newSet.add(item.id);
-      } else {
-        newSet.delete(item.id);
-      }
+      checked ? newSet.add(item.id) : newSet.delete(item.id);
     }
-
     return newSet;
   }
 
@@ -123,11 +119,7 @@ export class TreeService {
     checkedItemIds: Set<string>,
   ): Set<string> {
     const newSet = new Set(checkedItemIds);
-    if (checked) {
-      newSet.add(itemId);
-    } else {
-      newSet.delete(itemId);
-    }
+    checked ? newSet.add(itemId) : newSet.delete(itemId);
     return newSet;
   }
 
@@ -138,8 +130,9 @@ export class TreeService {
   ): boolean {
     const targetGroupId = groupId === UNGROUPED_ID ? null : groupId;
     const groupItems = items.filter((i) => i.groupId === targetGroupId);
-    if (groupItems.length === 0) return false;
-    return groupItems.every((i) => checkedItemIds.has(i.id));
+    return (
+      groupItems.length > 0 && groupItems.every((i) => checkedItemIds.has(i.id))
+    );
   }
 
   public isGroupPartiallyChecked(
@@ -149,7 +142,6 @@ export class TreeService {
   ): boolean {
     const targetGroupId = groupId === UNGROUPED_ID ? null : groupId;
     const groupItems = items.filter((i) => i.groupId === targetGroupId);
-    if (groupItems.length === 0) return false;
     const checkedCount = groupItems.filter((i) =>
       checkedItemIds.has(i.id),
     ).length;
