@@ -10,7 +10,7 @@ import {
 import { DecimalPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { TransferStore } from '../../../../store/transfers.store';
 import { TransferExternalService } from '../../../../services/transfer.external.service';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -106,9 +106,13 @@ export class ExternalAmount implements OnInit {
       .toUpperCase()
       .substring(0, 2);
   });
+  private readonly amountStatus = toSignal(this.amountInput.statusChanges, {
+    initialValue: this.amountInput.status,
+  });
   public readonly isTransferDisabled = computed(() => {
+    const isInvalid = this.amountStatus() !== 'VALID';
     return (
-      this.amountInput.invalid ||
+      isInvalid ||
       this.isLoading() ||
       this.transferStore.hasInsufficientBalance()
     );

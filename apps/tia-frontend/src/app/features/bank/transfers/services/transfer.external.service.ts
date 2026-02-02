@@ -196,13 +196,19 @@ export class TransferExternalService {
     const numericAmount = Number(amount);
     this.transferStore.setAmount(numericAmount);
 
-    this.transferStore.setInsufficientBalance(false);
-
     const senderAccount = this.transferStore.senderAccount();
+    const balance = senderAccount?.balance ?? 0;
+
+    if (numericAmount > balance) {
+      this.transferStore.setInsufficientBalance(true);
+      this.transferStore.updateFeeInfo(0, 0);
+      return;
+    }
+
+    this.transferStore.setInsufficientBalance(false);
 
     if (numericAmount > 0 && senderAccount?.id) {
       this.transferStore.setLoading(true);
-
       this.feeUpdateSubject.next({
         amount: numericAmount,
         accountId: senderAccount.id,
@@ -216,13 +222,14 @@ export class TransferExternalService {
     this.feeUpdateSubject
       .pipe(
         debounceTime(300),
-        distinctUntilChanged(
-          (prev, curr) =>
-            prev.amount === curr.amount && prev.accountId === curr.accountId,
-        ),
         switchMap(({ amount, accountId }) =>
           this.transfersApi.getFee(accountId, amount).pipe(
             tap((response) => {
+              if (this.transferStore.amount() !== amount) {
+                this.transferStore.setLoading(false);
+                return;
+              }
+
               const fee =
                 typeof response === 'number' ? response : response.fee;
               const total = amount + fee;
@@ -233,6 +240,7 @@ export class TransferExternalService {
             }),
             catchError(() => {
               this.transferStore.updateFeeInfo(0, 0);
+              this.transferStore.setLoading(false);
               return of(null);
             }),
           ),
