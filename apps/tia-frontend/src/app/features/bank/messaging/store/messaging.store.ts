@@ -167,8 +167,14 @@ export const MessagingStore = signalStore(
                     )
                     ),
                 )
-            )
+            ),
 
+            clearSuccessMessage() {
+                patchState(store, { successMessage: '' });
+            },
+            clearError() {
+                patchState(store, { error: undefined });
+            }
         }
     })
 );

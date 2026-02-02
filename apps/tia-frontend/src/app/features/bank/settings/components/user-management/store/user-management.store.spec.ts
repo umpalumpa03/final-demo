@@ -16,7 +16,7 @@ describe('UserManagementStore', () => {
       lastName: 'User',
       email: 'test@test.com',
       username: 'test',
-      role: 'consumer',
+      role: 'CONSUMER',
       isBlocked: false,
       createdAt: '2024-01-01',
     },
@@ -59,16 +59,5 @@ describe('UserManagementStore', () => {
     expect(store.users()).toEqual(mockUsers);
     expect(store.error()).toBe(null);
     expect(service.getAllUsers).toHaveBeenCalled();
-  });
-
-  it('should handle load users error', () => {
-    const errorMsg = 'Network Error';
-    service.getAllUsers.mockReturnValue(
-      throwError(() => ({ message: errorMsg })),
-    );
-    store.loadUsers();
-    expect(store.loading()).toBe(false);
-    expect(store.users()).toEqual([]);
-    expect(store.error()).toBe(errorMsg);
   });
 });

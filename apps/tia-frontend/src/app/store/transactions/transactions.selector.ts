@@ -35,10 +35,33 @@ export const selectTotalTransactions = createSelector(
   selectTransactionState,
   (state) => state.total,
 );
+
+export const selectCategoriesRaw = createSelector(
+  selectTransactionState,
+  (state) => state.categories || [],
+);
+
+export const selectCategoryOptions = createSelector(
+  selectCategoriesRaw,
+  (categories) => {
+    return categories.map((cat) => ({
+      label: cat.categoryName,
+      value: cat.categoryName,
+    }));
+  },
+);
+
 export const selectTransactionViewModel = createSelector(
   selectItems,
   selectIsLoading,
   selectFilters,
   selectTotalTransactions,
-  (items, isLoading, filters, total) => ({ items, isLoading, filters, total }),
+  selectCategoryOptions,
+  (items, isLoading, filters, total, categoryOptions) => ({
+    items,
+    isLoading,
+    filters,
+    total,
+    categoryOptions,
+  }),
 );
