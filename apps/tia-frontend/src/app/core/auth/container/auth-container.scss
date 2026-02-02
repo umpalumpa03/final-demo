@@ -3,7 +3,16 @@
 @use '../../../shared/styles/palette' as *;
 
 .auth {
-  --auth-skeleton-width: 46rem;
+  --auth-skeleton-width: 48rem;
+  position: relative;
+
+  &__loader-overlay {
+    @include flex-center;
+    position: fixed;
+    inset: 0;
+    background: rgba($white, 0.85);
+    z-index: 300;
+  }
 
   .auth-skeleton-grid {
     display: grid;
