@@ -113,6 +113,11 @@ header {
             padding-bottom: 0;
         }
     }
+
+    .loader-container {
+        @include flex-center($align: flex-start);
+        padding: 3rem;
+    }
 }
 
 footer {
