@@ -1,38 +1,3 @@
-<!-- <app-ui-modal [isOpen]="isOpen()" (closed)="onClose()">
-  <div class="create-card">
-    <div class="create-card__header">
-      <h2 class="create-card__title">Create New Card</h2>
-      <p class="create-card__subtitle">
-        Add a new credit or debit card to your account
-      </p>
-    </div>
-
-    <app-card-preview
-      [isLoading]="(isLoadingData$ | async) || false"
-      [designUri]="(selectedDesignUri$ | async) || null"
-    />
-
-    @if (creationData$ | async; as data) {
-      <app-design-selector
-        [designs]="data.designs"
-        [selectedDesign]="selectedDesignId"
-        [isLoading]="(isLoadingData$ | async) || false"
-        (designSelected)="onDesignSelected($event)"
-      />
-
-      <app-create-card-form
-        [formGroup]="cardForm"
-        [categoryOptions]="(categoryOptions$ | async) || []"
-        [typeOptions]="(typeOptions$ | async) || []"
-        [accountOptions]="(accountOptions$ | async) || []"
-        [isCreating]="(isCreating$ | async) || false"
-        [createError]="(createError$ | async) || null"
-        (formSubmit)="onFormSubmit()"
-        (formCancel)="onFormCancel()"
-      />
-    }
-  </div>
-</app-ui-modal> -->
 
 <app-ui-modal [isOpen]="isOpen()" (closed)="onClose()">
   @if (viewData$ | async; as view) {

@@ -9,11 +9,11 @@
   @media (max-width: 480px) {
     padding: 3.2rem 0 0 2rem;
   }
-  &__header{
-    @include flex-center(column,start,start)
+  &__header {
+    @include flex-center(column, start, start);
   }
   &__title {
-    @include font-inter(600,2rem, 2.8rem);
+    @include font-inter(600, 2rem, 2.8rem);
     color: var(--color-fg);
   }
   &__subtitle {
@@ -27,7 +27,19 @@
 
   &__alert-container {
     position: fixed;
-    max-width: 40rem;
+    bottom: 2rem;
+    right: 2rem;
     z-index: 1000;
+
+    @media (max-width: 768px) {
+      bottom: 1.6rem;
+      right: 1.6rem;
+    }
+
+    @media (max-width: 480px) {
+      bottom: 1rem;
+      right: 1rem;
+      left: 1rem;
+    }
   }
 }

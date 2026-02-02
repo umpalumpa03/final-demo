@@ -4,6 +4,14 @@
     <h1 class="card-list__title">My Cards</h1>
     <h2 class="card-list__subtitle">Manage your bank accounts</h2>
   </div>
+  @if (data.showSuccessAlert) {
+<div class="card-list__alert-container">
+  <app-simple-alerts
+    alertType="success"
+    alertMessage="Card created successfully!"
+  />
+</div>
+}
 
   @if (data.loading) {
   <div class="card-list__loading">
@@ -32,12 +40,5 @@
 
 @if (data.isModalOpen) {
 <app-create-card [isOpen]="data.isModalOpen" (closed)="handleCloseModal()" />
-} @if (data.showSuccessAlert) {
-<div class="card-list__alert-container">
-  <app-simple-alerts
-    alertType="success"
-    alertMessage="Card created successfully!"
-  />
-</div>
-}
+} 
 }
