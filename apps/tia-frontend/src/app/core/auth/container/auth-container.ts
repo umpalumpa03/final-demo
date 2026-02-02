@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   inject,
   OnInit,
@@ -14,11 +15,12 @@ import { AuthService } from '../services/auth.service';
 import { IFeature } from '../models/auth.models';
 import { SidePanel } from '../shared/side-panel/side-panel';
 import { tap } from 'rxjs';
-import { LanguageSwitcher } from "../../../features/bank/settings/components/language/components/language-switcher/language-switcher";
+import { LanguageSwitcher } from '../../../features/bank/settings/components/language/components/language-switcher/language-switcher';
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 
 @Component({
   selector: 'app-auth-container',
-  imports: [RouterOutlet, SidePanel, LanguageSwitcher],
+  imports: [RouterOutlet, SidePanel, LanguageSwitcher, Skeleton],
   templateUrl: './auth-container.html',
   styleUrl: './auth-container.scss',
   providers: [TokenService, AuthService],
@@ -26,7 +28,9 @@ import { LanguageSwitcher } from "../../../features/bank/settings/components/lan
 })
 export class AuthContainer implements OnInit {
   private router = inject(Router);
+  private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
+  public isLoading = computed(() => this.authService.isLoginLoading());
 
   public sidePanelData = signal<IFeature | null>(null);
 

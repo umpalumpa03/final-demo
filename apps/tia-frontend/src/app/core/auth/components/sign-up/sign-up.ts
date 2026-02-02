@@ -1,13 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   inject,
-  OnInit,
+  OnDestroy,
   signal,
 } from '@angular/core';
-import { catchError, EMPTY, tap } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, EMPTY, finalize, tap } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
 import { RegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/registration-form/registration-form';
 import { TokenService } from '../../services/token.service';
@@ -17,42 +15,30 @@ import { Routes } from '../../models/tokens.model';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AuthHeader } from "../../shared/auth-header/auth-header";
-import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader";
 
 
 @Component({
   selector: 'app-sign-up',
-  imports: [RouterLink, RegistrationForm, AlertTypesWithIcons, TranslatePipe, AuthHeader, RouteLoader],
+  imports: [RouterLink, RegistrationForm, AlertTypesWithIcons, TranslatePipe, AuthHeader],
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.scss',
   providers: [TokenService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SignUp implements OnInit {
+export class SignUp {
   private signUpService = inject(AuthService);
   private tokenService = inject(TokenService);
   private router = inject(Router);
-
-  private destroyRef = inject(DestroyRef);
-
-  public loadingState = signal<boolean>(true);
   public errorMessage = signal<string>('');
 
-  ngOnInit(): void {
-    this.loadingState.set(false);
-  }
-
-  public onSignUp(signUpData: IRegistrationForm): void {
-    this.loadingState.set(true);
-    
+  public onSignUp(signUpData: IRegistrationForm): void {    
+    this.signUpService.isLoginLoading.set(true)
     this.signUpService
       .signUpUser(signUpData)
       .pipe(
-        takeUntilDestroyed(this.destroyRef),
         tap((res) => {
           if (res) this.tokenService.setSignUpToken(res.signup_token);
 
-          this.loadingState.set(false);
           this.errorMessage.set('');
 
           this.router.navigate([Routes.PHONE]);
@@ -60,7 +46,6 @@ export class SignUp implements OnInit {
 
         catchError((err) => {
           const messages = err.error?.message;
-          this.loadingState.set(false);
 
           if (Array.isArray(messages)) {
             const invalidEmailError = 'email must be an email';
@@ -78,6 +63,7 @@ export class SignUp implements OnInit {
 
           return EMPTY;
         }),
+        finalize(() => this.signUpService.isLoginLoading.set(false))
       )
     .subscribe();
   }

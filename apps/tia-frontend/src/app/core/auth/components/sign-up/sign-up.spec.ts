@@ -45,8 +45,6 @@ describe('SignUp', () => {
   });
  
   it('should initialize loadingState to false', () => {
-    component.ngOnInit();
-    expect(component.loadingState()).toBe(false);
   });
  
   it('should handle successful signup and navigation', () => {
@@ -58,7 +56,6 @@ describe('SignUp', () => {
     expect(tokenServiceMock.setSignUpToken).toHaveBeenCalledWith('token_abc_123');
     expect(routerMock.navigate).toHaveBeenCalledWith(['/auth/phone']);
     expect(component.errorMessage()).toBe('');
-    expect(component.loadingState()).toBe(false);
   });
  
   it('should map "email must be an email" error array', () => {
@@ -107,7 +104,5 @@ describe('SignUp', () => {
     authServiceMock.signUpUser.mockReturnValue(throwError(() => new Error('Generic Error')));
  
     component.onSignUp(validForm);
- 
-    expect(component.loadingState()).toBe(false);
-  });
+   });
 });

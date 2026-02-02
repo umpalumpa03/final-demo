@@ -164,6 +164,7 @@ export class AuthService {
       Authorization: `Bearer ${token}`,
     });
 
+    this.isLoginLoading.set(true);
     return this.http
       .post<SendVerificationResponse>(
         `${this.baseUrl}/phone`,
@@ -184,6 +185,7 @@ export class AuthService {
           setTimeout(() => this.otpError.set(null), 2000);
           return EMPTY;
         }),
+        finalize(() => this.isLoginLoading.set(false))
       );
   }
 
@@ -195,6 +197,7 @@ export class AuthService {
       Authorization: `Bearer ${token}`,
     });
 
+    this.isLoginLoading.set(true)
     return this.http
       .post<OtpResponse>(
         `${this.baseUrl}/phone/verify`,
@@ -238,6 +241,7 @@ export class AuthService {
   public verifyForgotPasswordOtp(
     code: string,
   ): Observable<ForgotPasswordVerifyResponse> {
+    this.isLoginLoading.set(true)
     this.tokenService.clearAccessToken();
     const payload: ForgotPasswordVerifyRequest = {
       challengeId: this.getChallengeId(),
@@ -254,6 +258,7 @@ export class AuthService {
             this.tokenService.setAccessToken(res.access_token);
           }
         }),
+        finalize(() => this.isLoginLoading.set(false))
       );
   }
 
@@ -267,6 +272,7 @@ export class AuthService {
       );
     }
 
+    this.isLoginLoading.set(true);
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
@@ -275,6 +281,8 @@ export class AuthService {
       `${this.baseUrl}/create-new-password`,
       payload,
       { headers },
+    ).pipe(
+      finalize(() => this.isLoginLoading.set(false))
     );
   }
 

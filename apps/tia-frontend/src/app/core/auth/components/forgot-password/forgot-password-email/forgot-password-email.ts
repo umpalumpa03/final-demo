@@ -38,7 +38,7 @@ export class ForgotPasswordEmail {
   public readonly title = 'auth.forgot-password.title';
   public readonly subtitle = 'auth.forgot-password.subtitle';
 
-  public readonly isSubmitting = signal(false);
+  public readonly isSubmitting = computed(() => this.authService.isLoginLoading());
   public readonly submitError = signal<string | null>(null);
 
   public readonly form = this.fb.nonNullable.group({
@@ -69,12 +69,11 @@ export class ForgotPasswordEmail {
 
     if (this.form.invalid) return;
 
-    this.isSubmitting.set(true);
+    this.authService.isLoginLoading.set(true);
     const { email } = this.form.getRawValue();
     this.authService
       .forgotPasswordRequest(email)
       .pipe(
-        finalize(() => this.isSubmitting.set(false)),
         tap((response) => {
           this.authService.setChellangeId(response.challengeId);
           this.router.navigate([Routes.OTP_FORGOT_PASSWORD]);
@@ -83,6 +82,7 @@ export class ForgotPasswordEmail {
           this.submitError.set('Unable to send reset code. Please try again.');
           return EMPTY;
         }),
+        finalize(() => this.authService.isLoginLoading.set(false))
       )
       .subscribe();
   }

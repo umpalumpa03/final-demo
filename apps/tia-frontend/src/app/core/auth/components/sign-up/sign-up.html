@@ -1,4 +1,3 @@
-@if(!loadingState()) {
 <section class="sign-up">
   <app-auth-header
     title="auth.sign-up.title"
@@ -20,8 +19,3 @@
   </app-alert-types-with-icons>
   }
 </section>
-} @else {
-<div class="sign-up__loader">
-  <app-route-loader [variant]="'pulsing'" />
-</div>
-}
