@@ -1,0 +1,34 @@
+@use "../../../../../../../../shared/styles/mixins" as *;
+@use "../../../../../../../../shared/styles/palette" as *;
+@use "../../../../../../../../shared/styles/themes" as *;
+
+.modal {
+    @include display-flex(column);
+    gap: 0.8rem;
+
+    header {
+        @include flex-center($justify: flex-start);
+        gap: 0.8rem;
+
+        img {
+            filter: brightness(0) saturate(100%) invert(22%) sepia(44%) saturate(6001%) hue-rotate(345deg)
+                brightness(81%) contrast(131%);
+        }
+
+        h1 {
+            @include font-inter(600, 1.8rem);
+            color: var(--color-fg);
+        }
+    }
+
+    p {
+        @include font-inter(400, 1.4rem);
+        color: $blue-600;
+    }
+
+    footer {
+        margin: 1.6rem 0 0 auto;
+        @include display-flex;
+        gap: 0.8rem;
+    }
+}

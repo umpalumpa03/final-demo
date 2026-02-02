@@ -12,8 +12,5 @@
         <app-error-states variant="not-found" (buttonClick)="onButtonClick()"></app-error-states>
     } @else {
         <ng-content />
-        @if(isLoading()) {
-            <app-spinner></app-spinner>
-        }
     }
 </div>

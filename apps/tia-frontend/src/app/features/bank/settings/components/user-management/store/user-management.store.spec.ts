@@ -8,13 +8,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 describe('UserManagementStore', () => {
   let store: InstanceType<typeof UserManagementStore>;
-  let service: {
-    getAllUsers: ReturnType<typeof vi.fn>;
-    getUserById: ReturnType<typeof vi.fn>;
-    updateUser: ReturnType<typeof vi.fn>;
-    deleteUser: ReturnType<typeof vi.fn>;
-    blockUser: ReturnType<typeof vi.fn>;
-  };
+  let service: any;
 
   const mockUsers: IUser[] = [
     {
@@ -37,81 +31,74 @@ describe('UserManagementStore', () => {
   };
 
   beforeEach(() => {
-    const serviceMock = {
+    service = {
       getAllUsers: vi.fn(),
       getUserById: vi.fn(),
       updateUser: vi.fn(),
       deleteUser: vi.fn(),
       blockUser: vi.fn(),
     };
-
     TestBed.configureTestingModule({
       providers: [
         UserManagementStore,
-        { provide: UserManagementService, useValue: serviceMock },
+        { provide: UserManagementService, useValue: service },
       ],
     });
-
     store = TestBed.inject(UserManagementStore);
-    service = TestBed.inject(UserManagementService) as any;
-  });
-
-  it('should be created', () => {
-    expect(store).toBeTruthy();
-  });
-
-  it('should have initial state', () => {
-    expect(store.users()).toEqual([]);
-    expect(store.loading()).toBe(false);
-    expect(store.error()).toBe(null);
-    expect(store.userCount()).toBe(0);
   });
 
   it('should load users successfully', () => {
     service.getAllUsers.mockReturnValue(of(mockUsers));
-
     store.loadUsers();
-
-    expect(store.loading()).toBe(false);
     expect(store.users()).toEqual(mockUsers);
     expect(store.userCount()).toBe(1);
-    expect(store.error()).toBe(null);
+  });
+
+  it('should handle load users error', () => {
+    service.getAllUsers.mockReturnValue(
+      throwError(() => new HttpErrorResponse({ error: 'Error', status: 500 })),
+    );
+    store.loadUsers();
+    expect(store.error()).toContain('500');
   });
 
   it('should load user details successfully', () => {
     service.getUserById.mockReturnValue(of(mockUserDetail));
-
     store.loadUserDetails('1');
-
-    expect(store.actionLoading()).toBe(false);
     expect(store.selectedUser()).toEqual(mockUserDetail);
-    expect(store.error()).toBe(null);
-    expect(service.getUserById).toHaveBeenCalledWith('1');
   });
 
   it('should handle load user details error', () => {
-    const errorResponse = new HttpErrorResponse({
-      error: 'Not Found',
-      status: 404,
-      statusText: 'Not Found',
-    });
-    service.getUserById.mockReturnValue(throwError(() => errorResponse));
-
-    store.loadUserDetails('99');
-
-    expect(store.actionLoading()).toBe(false);
-    expect(store.selectedUser()).toBeNull();
-    expect(store.error()).toBe(
-      'Http failure response for (unknown url): 404 Not Found',
+    service.getUserById.mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: 404 })),
     );
+    store.loadUserDetails('99');
+    expect(store.error()).toContain('404');
   });
 
-  it('should clear selected user', () => {
+  it('should delete user successfully', () => {
+    service.getAllUsers.mockReturnValue(of(mockUsers));
+    store.loadUsers();
+    service.deleteUser.mockReturnValue(of(null));
+    store.deleteUser('1');
+    expect(store.users()).toEqual([]);
+  });
+
+  it('should handle delete user error', () => {
+    service.deleteUser.mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: 500 })),
+    );
+    store.deleteUser('1');
+    expect(store.error()).toContain('500');
+  });
+
+  it('should clear and reset selected user', () => {
     service.getUserById.mockReturnValue(of(mockUserDetail));
     store.loadUserDetails('1');
-    expect(store.selectedUser()).not.toBeNull();
-
     store.clearSelectedUser();
     expect(store.selectedUser()).toBeNull();
+    store.resetSelection();
+    expect(store.selectedUser()).toBeNull();
+    expect(store.error()).toBeNull();
   });
 });

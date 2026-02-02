@@ -113,13 +113,17 @@ header {
             padding-bottom: 0;
         }
     }
+
+    .loader-container {
+        @include flex-center;
+        padding: 3rem;
+    }
 }
 
 footer {
     margin-left: auto;
 
     @media (min-width: 640px) {
-        @include display-flex;
-        justify-content: flex-end;
+        @include flex-center($justify: flex-end, $align: flex-start);
     }
 }
