@@ -2,7 +2,10 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { PaybillTemplates } from '../components/paybill-templates';
 import { PaybillTemplatesService } from '../services/paybill-templates-service';
 import { Store } from '@ngrx/store';
-import { selectTemplatesGroup } from '../../../store/paybill.selectors';
+import {
+  selectTemplatesAsTreeItems,
+  selectTemplatesGroup,
+} from '../../../store/paybill.selectors';
 import { TemplatesPageActions } from '../../../store/paybill.actions';
 import { HeaderCtaAction, ModalType } from '../models/paybill-templates.model';
 import { ModalConfig } from '../configs/cta-buttons.config';
@@ -18,11 +21,16 @@ export class PaybillTemplatesContainer implements OnInit {
   public store = inject(Store);
 
   ngOnInit(): void {
-    // this.store.dispatch(TemplatesPageActions.loadTemplates());
+    this.store.dispatch(TemplatesPageActions.loadTemplateGroups());
+    this.store.dispatch(TemplatesPageActions.loadTemplates());
   }
 
   public readonly templateGroups =
     this.store.selectSignal(selectTemplatesGroup);
+
+  public readonly templates = this.store.selectSignal(
+    selectTemplatesAsTreeItems,
+  );
 
   // Handles to determine what is modals type based on clicks in header
   public handleHeaderAction(action: HeaderCtaAction) {

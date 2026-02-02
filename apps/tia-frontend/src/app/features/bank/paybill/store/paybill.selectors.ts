@@ -125,7 +125,6 @@ export const selectError = createSelector(
   (state) => state.error,
 );
 
-
 export const selectTemplatesGroup = createSelector(
   selectPaybillState,
   (state) => state.templateGroups,
@@ -133,5 +132,25 @@ export const selectTemplatesGroup = createSelector(
 
 export const selectNotifications = createSelector(
   selectPaybillState,
-  (state) => state.notifications
+  (state) => state.notifications,
+);
+
+export const selectTemplates = createSelector(
+  selectPaybillState,
+  (state) => state.templates,
+);
+
+export const selectTemplatesAsTreeItems = createSelector(
+  selectTemplates,
+  (templates) => {
+    if (!templates?.length) return [];
+
+    return templates.map((template, index) => ({
+      id: template.id,
+      title: template.nickname,
+      subtitle: template.serviceId,
+      groupId: template.groupId,
+      order: index,
+    }));
+  },
 );
