@@ -33,7 +33,7 @@
     <footer class="confirm-actions">
       <app-button [fullWidth]="true" (click)="confirm.emit()">
         {{ 'paybill.main.confirm.confirm_btn' | translate: { amount:
-        (summary().amount | currency: 'GEL':'symbol') } }}
+        (summary().amount) | currency: 'GEL' : 'symbol' } }}
       </app-button>
       <app-button
         [fullWidth]="true"

@@ -36,7 +36,7 @@ export const mapConfirmSummaryFields = (
       label: 'paybill.main.confirm.summary_fields.amount',
       value: summary.amount,
       isTotal: true,
-      canTranslate: true,
+      canTranslate: false,
     },
   ];
 };

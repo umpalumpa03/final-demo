@@ -108,6 +108,7 @@ export class PaybillMain implements OnInit {
   public onBackToDetails(): void {
     this.store.dispatch(PaybillActions.clearAllNotifications());
     this.store.dispatch(PaybillActions.setPaymentStep({ step: 'DETAILS' }));
+    this.router.navigate(['bank/paybill/pay']);
   }
 
   public onVerifyAccount(data: { accountNumber: string }): void {
