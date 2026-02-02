@@ -18,6 +18,7 @@ import {
   PaybillProvider,
 } from '../../shared/models/paybill.model';
 import { otpConfiguration } from './config/otp.config';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-paybill-otp-verification',
@@ -28,6 +29,7 @@ import { otpConfiguration } from './config/otp.config';
     LibraryTitle,
     BasicCard,
     PaymentSummary,
+    TranslatePipe
   ],
   templateUrl: './paybill-otp-verification.html',
   styleUrl: './paybill-otp-verification.scss',
@@ -47,14 +49,24 @@ export class PaybillOtpVerification {
 
   protected readonly summaryItems = computed(() => [
     {
-      label: 'Service:',
+      label: 'paybill.main.otp.summary_fields.service',
       value:
         this.provider()?.name ??
         this.provider()?.serviceName ??
-        'Unknown Service',
+        'paybill.main.otp.summary_fields.unknown_service',
+      canTranslate: !this.provider()?.name && !this.provider()?.serviceName,
     },
-    { label: 'Account:', value: this.summary()!.accountNumber },
-    { label: 'Amount:', value: `GEL${this.summary()!.amount}`, isTotal: true },
+    {
+      label: 'paybill.main.otp.summary_fields.account',
+      value: this.summary()?.accountNumber ?? '',
+      canTranslate: false,
+    },
+    {
+      label: 'paybill.main.otp.summary_fields.amount',
+      value: `${this.summary()?.amount}`,
+      isTotal: true,
+      canTranslate: false,
+    },
   ]);
 
   public onOtpComplete(code: string): void {
