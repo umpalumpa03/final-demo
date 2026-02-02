@@ -102,6 +102,12 @@
           }
         </div>
       </div>
+
+      @if (hasInsufficientBalance() && amountInput.value) {
+      <p class="external-amount__error">
+        {{ 'transfers.external.amount.insufficientBalance' | translate }}
+      </p>
+      }
     </div>
 
     <div class="external-amount__input-group">
@@ -128,7 +134,7 @@
       size="default"
       [fullWidth]="isMobile()"
       (click)="onTransfer()"
-      [isDisabled]="amountInput.invalid || isLoading()"
+      [isDisabled]="isTransferDisabled()"
     >
       {{ 'transfers.external.amount.transferButton' | translate }}
       <img src="images/svg/transfers/check.svg" alt="check" />

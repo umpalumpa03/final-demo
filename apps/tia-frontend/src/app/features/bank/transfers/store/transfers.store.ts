@@ -26,6 +26,7 @@ export const TransferStore = signalStore(
         amount: 0,
         description: '',
         error: null,
+        
       });
     },
     setManualRecipientName(name: string) {
@@ -47,6 +48,9 @@ export const TransferStore = signalStore(
     updateFeeInfo(fee: number, totalWithFee: number) {
       patchState(store, { fee, totalWithFee, isLoading: false });
     },
+    setInsufficientBalance(hasInsufficientBalance: boolean) {
+      patchState(store, { hasInsufficientBalance });
+    },
 
     setLoading(isLoading: boolean) {
       patchState(store, { isLoading });
@@ -54,6 +58,16 @@ export const TransferStore = signalStore(
     setIsVerified(isVerified: boolean) {
       patchState(store, { isVerified });
     },
+    //will be used 
+    // setPendingTransferId(id: string | null) {
+    //   patchState(store, { pendingTransferId: id });
+    // },
+    // setRequiresOtp(requiresOtp: boolean) {
+    //   patchState(store, { requiresOtp });
+    // },
+    // setTransferSuccess(transferSuccess: boolean) {
+    //   patchState(store, { transferSuccess });
+    // },
     lookupRecipient: rxMethod<{ value: string; type: RecipientType }>(
       pipe(
         tap(({ value, type }) =>
