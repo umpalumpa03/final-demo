@@ -12,8 +12,8 @@
                 Cancel
             </app-button>
 
-            <app-button variant="destructive" [icon]="isLoading() ? null : 'trash-icon.svg'" [isDisabled]="isLoading()"
-                [isLoading]="isLoading()" (click)="deleteUser.emit()">
+            <app-button variant="destructive" [icon]="isLoading() ? null : './trash-icon.svg'"
+                [isDisabled]="isLoading()" [isLoading]="isLoading()" (click)="deleteUser.emit()">
                 Delete
             </app-button>
         </footer>
