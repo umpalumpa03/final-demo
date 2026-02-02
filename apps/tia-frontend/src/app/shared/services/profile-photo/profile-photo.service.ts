@@ -5,7 +5,7 @@ import { environment } from '../../../../environments/environment';
 import { DefaultAvatarResponse, CurrentUserAvatar, UploadAvatarResponse } from '../../../store/profile-photo/profile-photo.state';
 
 @Injectable({ providedIn: 'root' })
-export class ProfilePhotoService {
+export class ProfilePhotoApiService {
   private http = inject(HttpClient);
   private readonly settingsApiUrl = `${environment.apiUrl}/settings`;
 

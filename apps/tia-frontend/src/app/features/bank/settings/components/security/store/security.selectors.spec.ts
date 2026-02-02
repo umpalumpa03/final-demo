@@ -16,5 +16,10 @@ import {
       const result = selectSecuritySuccess.projector(state);
       expect(result).toBe(false);
     });
+
+    it('should select error', () => {
+      const result = selectSecurityError.projector(state);
+      expect(result).toBe('Some error');
+    });
   });
   

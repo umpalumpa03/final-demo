@@ -3,25 +3,23 @@ import {
   provideHttpClientTesting,
   HttpTestingController,
 } from '@angular/common/http/testing';
-import { ProfilePhotoService } from './profile-photo.service';
+import { ProfilePhotoApiService } from './profile-photo.service';
 import { environment } from '../../../../environments/environment';
 import {
-  CurrentUserAvatar,
-  DefaultAvatarResponse,
-  UploadAvatarResponse,
+ UploadAvatarResponse,
 } from '../../../store/profile-photo/profile-photo.state';
 
-describe('ProfilePhotoService', () => {
-  let service: ProfilePhotoService;
+describe('ProfilePhotoApiService', () => {
+  let service: ProfilePhotoApiService;
   let httpMock: HttpTestingController;
   const settingsApiUrl = `${environment.apiUrl}/settings`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ProfilePhotoService, provideHttpClientTesting()],
+      providers: [ProfilePhotoApiService, provideHttpClientTesting()],
     });
 
-    service = TestBed.inject(ProfilePhotoService);
+    service = TestBed.inject(ProfilePhotoApiService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
@@ -33,21 +31,7 @@ describe('ProfilePhotoService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should get available default avatars', () => {
-    const mockResponse: DefaultAvatarResponse[] = [
-      { id: '1', iconUri: 'url-1' } as DefaultAvatarResponse,
-    ];
 
-    service.getAvailableDefaultAvatars().subscribe((res) => {
-      expect(res).toEqual(mockResponse);
-    });
-
-    const req = httpMock.expectOne(
-      `${settingsApiUrl}/get-available-default-avatars`,
-    );
-    expect(req.request.method).toBe('GET');
-    req.flush(mockResponse);
-  });
 
   it('should select from default avatar', () => {
     const avatarId = 'avatar-123';
@@ -64,24 +48,7 @@ describe('ProfilePhotoService', () => {
     req.flush(null);
   });
 
-  it('should get current user avatar', () => {
-    const id = 'user-1';
-    const mockAvatar: CurrentUserAvatar = {
-      id,
-      imageUrl: 'avatar-url',
-      isDefault: true,
-    } as CurrentUserAvatar;
 
-    service.getCurrentUserAvatar(id).subscribe((res) => {
-      expect(res).toEqual(mockAvatar);
-    });
-
-    const req = httpMock.expectOne(
-      `${settingsApiUrl}/current-user-avatar/${id}`,
-    );
-    expect(req.request.method).toBe('GET');
-    req.flush(mockAvatar);
-  });
 
   it('should upload user avatar', () => {
     const file = new File(['dummy'], 'avatar.png', { type: 'image/png' });
