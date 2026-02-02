@@ -70,6 +70,7 @@ export class NotificationsContainer {
   // Items Selection (Properties)
   public selectedItems = this.store.selectedItems;
   public isAllSelected = this.store.isAllSelected;
+  public isIndeterminate = this.store.isIndeterminate;
 
   // Items Selection (Methods)
   public toggleSelectAll(): void {

@@ -74,6 +74,7 @@
         <lib-checkboxes
           [checked]="isAllSelected()"
           (change)="onSelectAllClicked(notificationItems())"
+          [isIntermediate]="isIndeterminate()"
         ></lib-checkboxes>
         Select All
       </label>
