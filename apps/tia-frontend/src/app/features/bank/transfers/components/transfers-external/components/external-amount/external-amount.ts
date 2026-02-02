@@ -7,7 +7,7 @@ import {
   OnInit,
   DestroyRef,
 } from '@angular/core';
-import {  DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -50,6 +50,8 @@ export class ExternalAmount implements OnInit {
   public readonly fee = this.transferStore.fee;
   public readonly totalWithFee = this.transferStore.totalWithFee;
   public readonly selectedSenderAccount = this.transferStore.senderAccount;
+  public readonly hasInsufficientBalance =
+    this.transferStore.hasInsufficientBalance;
   public readonly selectedRecipientAccount =
     this.transferStore.selectedRecipientAccount;
   public readonly manualRecipientName = this.transferStore.manualRecipientName;
@@ -103,6 +105,13 @@ export class ExternalAmount implements OnInit {
       .join('')
       .toUpperCase()
       .substring(0, 2);
+  });
+  public readonly isTransferDisabled = computed(() => {
+    return (
+      this.amountInput.invalid ||
+      this.isLoading() ||
+      this.transferStore.hasInsufficientBalance()
+    );
   });
 
   public ngOnInit(): void {

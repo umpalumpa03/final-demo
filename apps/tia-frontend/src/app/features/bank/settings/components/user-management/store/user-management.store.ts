@@ -38,13 +38,33 @@ export const UserManagementStore = signalStore(
       ),
     ),
 
-    loadUserDetails: rxMethod<string>(pipe()),
+    loadUserDetails: rxMethod<string>(
+      pipe(
+        tap(() => patchState(store, { actionLoading: true, error: null })),
+        switchMap((userId) =>
+          service.getUserById(userId).pipe(
+            tap((user) => {
+              patchState(store, { selectedUser: user, actionLoading: false });
+            }),
+
+            catchError((err: HttpErrorResponse) => {
+              patchState(store, { actionLoading: false, error: err.message });
+              return of(null);
+            }),
+          ),
+        ),
+      ),
+    ),
 
     updateUser: rxMethod<{ id: string; data: IUpdateUserRequest }>(pipe()),
 
     deleteUser: rxMethod<string>(pipe()),
 
     toggleBlockStatus: rxMethod<{ id: string; isBlocked: boolean }>(pipe()),
+
+    clearSelectedUser() {
+      patchState(store, { selectedUser: null });
+    },
 
     resetSelection() {
       patchState(store, { selectedUser: null, error: null });

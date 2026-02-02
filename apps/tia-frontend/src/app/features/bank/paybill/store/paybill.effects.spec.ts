@@ -36,6 +36,7 @@ describe('PaybillEffect (Modern Suite)', () => {
 
     const templatesServiceMock = {
       getAllTemplateGroups: vi.fn(),
+      getAllTemplates: vi.fn(),
     };
 
     const routerMock = { navigate: vi.fn() };
@@ -76,11 +77,11 @@ describe('PaybillEffect (Modern Suite)', () => {
       paybillTemplatesService.getAllTemplateGroups.mockReturnValue(
         of(templateGroups),
       );
-      actions$ = of(TemplatesPageActions.loadTemplates());
+      actions$ = of(TemplatesPageActions.loadTemplateGroups());
 
       effects.loadTemplateGroups$.subscribe((action) => {
         expect(action).toEqual(
-          TemplatesPageActions.loadTemplatesSuccess({ templateGroups }),
+          TemplatesPageActions.loadTemplateGroupsSuccess({ templateGroups }),
         );
       });
     });
@@ -247,7 +248,7 @@ describe('PaybillEffect (Modern Suite)', () => {
 
       actions$ = of(
         PaybillActions.addNotification({
-          notificationType: 'info',
+          notificationType: 'information',
           message: 'test',
         }),
       );
@@ -260,6 +261,50 @@ describe('PaybillEffect (Modern Suite)', () => {
       expect(result).toEqual(PaybillActions.dismissNotification({ id: '123' }));
 
       vi.useRealTimers();
+    });
+  });
+  describe('checkBill$ success', () => {
+    it('should dispatch checkBillSuccess on success', () => {
+      const details = { valid: true, accountName: 'John' } as any;
+      paybillService.checkBill.mockReturnValue(of(details));
+      actions$ = of(
+        PaybillActions.checkBill({ serviceId: 's1', accountNumber: '123' }),
+      );
+
+      effects.checkBill$.subscribe((action) => {
+        expect(action).toEqual(PaybillActions.checkBillSuccess({ details }));
+      });
+    });
+  });
+
+  describe('proceedPayment$ success', () => {
+    it('should dispatch proceedPaymentSuccess on success', () => {
+      const response = { verify: { challengeId: '123' } } as any;
+      paybillService.payBill.mockReturnValue(of(response));
+      actions$ = of(PaybillActions.proceedPayment({ payload: {} as any }));
+
+      effects.proceedPayment$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.proceedPaymentSuccess({ response }),
+        );
+      });
+    });
+  });
+
+  describe('loadTemplateGroups$ failure', () => {
+    it('should dispatch loadTemplateGroupsFailure on error', () => {
+      paybillTemplatesService.getAllTemplateGroups.mockReturnValue(
+        throwError(() => new Error('Groups Error')),
+      );
+      actions$ = of(TemplatesPageActions.loadTemplateGroups());
+
+      effects.loadTemplateGroups$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.loadTemplateGroupsFailure({
+            error: 'Groups Error',
+          }),
+        );
+      });
     });
   });
 });
