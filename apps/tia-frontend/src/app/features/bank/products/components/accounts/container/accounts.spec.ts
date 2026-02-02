@@ -39,6 +39,7 @@ describe('Accounts', () => {
 
   afterEach(() => {
     vi.clearAllMocks();
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
