@@ -96,7 +96,7 @@ export class PaybillEffect {
             return PaybillActions.checkBillSuccess({ details: response });
           }),
           catchError((error) => {
-            const errorBody = error.error as unknown as {
+            const errorBody = error.error as {
               message?: string;
               error?: string;
             };
