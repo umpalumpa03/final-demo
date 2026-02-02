@@ -22,6 +22,7 @@ import {
 import { ProceedPaymentResponse } from '../components/paybill-main/shared/models/paybill.model';
 import { PaybillTemplatesService } from '../components/paybill-templates/services/paybill-templates-service';
 import { Router } from '@angular/router';
+import { PaybillErrorPayload } from './paybill.state';
 
 @Injectable()
 export class PaybillEffect {
@@ -81,30 +82,40 @@ export class PaybillEffect {
     );
   });
 
-  checkBill$ = createEffect(() => {
-    return this.actions$.pipe(
+  checkBill$ = createEffect(() =>
+    this.actions$.pipe(
       ofType(PaybillActions.checkBill),
       mergeMap(({ serviceId, accountNumber }) =>
         this.paybillService.checkBill(serviceId, accountNumber).pipe(
-          map((details) => PaybillActions.checkBillSuccess({ details })),
-          catchError((err) =>
-            of(PaybillActions.checkBillFailure({ error: err.message })),
+          map((response) => {
+            if (!response.valid && response.error) {
+              return PaybillActions.checkBillFailure({ error: response.error });
+            }
+            return PaybillActions.checkBillSuccess({ details: response });
+          }),
+          catchError((error) =>
+            of(PaybillActions.checkBillFailure({ error: error.message })),
           ),
         ),
       ),
-    );
-  });
+    ),
+  );
 
   proceedPayment$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PaybillActions.proceedPayment),
       mergeMap(({ payload }) =>
         this.paybillService.payBill(payload).pipe(
-          map((response: ProceedPaymentResponse) =>
-            PaybillActions.proceedPaymentSuccess({ response }),
-          ),
+          map((response: ProceedPaymentResponse) => {
+            if (response.statusCode && response.message) {
+              return PaybillActions.proceedPaymentFailure({
+                error: response.message,
+              });
+            }
+            return PaybillActions.proceedPaymentSuccess({ response });
+          }),
           catchError((error) =>
-            of(PaybillActions.proceedPaymentFailure({ error: error.message })),
+            of(PaybillActions.proceedPaymentFailure({ error: error.error.message })),
           ),
         ),
       ),
@@ -127,38 +138,41 @@ export class PaybillEffect {
     );
   });
 
-  confirmPayment$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(PaybillActions.confirmPayment),
-      mergeMap(({ payload }) =>
-        this.paybillService.verifyPayment(payload).pipe(
-          mergeMap((response) => [
-            response.success
-              ? PaybillActions.addNotification({
-                  notificationType: 'success',
-                  message: 'OTP Verified Successfully',
-                })
-              : PaybillActions.addNotification({
-                  notificationType: 'warning',
-                  message: response.message || 'Invalid Code',
-                }),
-
-            response.success
-              ? PaybillActions.setPaymentStep({ step: 'SUCCESS' })
-              : { type: 'noop' },
-          ]),
-          catchError((error) =>
-            of(
-              PaybillActions.addNotification({
+confirmPayment$ = createEffect(() => {
+  return this.actions$.pipe(
+    ofType(PaybillActions.confirmPayment),
+    mergeMap(({ payload }) =>
+      this.paybillService.verifyPayment(payload).pipe(
+        mergeMap((response) => [
+          response.success
+            ? PaybillActions.addNotification({
+                notificationType: 'success',
+                message: 'OTP Verified Successfully',
+              })
+            : PaybillActions.addNotification({
                 notificationType: 'warning',
-                message: error.message,
+                message: response.message || 'Invalid Code',
               }),
-            ),
-          ),
-        ),
+          response.success
+            ? PaybillActions.setPaymentStep({ step: 'SUCCESS' })
+            : { type: 'noop' },
+        ]),
+        catchError((error) => {
+          const errorBody = error.error as unknown as PaybillErrorPayload;
+          
+          const displayMessage = errorBody?.message || error.message;
+
+          return of(
+            PaybillActions.addNotification({
+              notificationType: 'warning',
+              message: displayMessage,
+            }),
+          );
+        }),
       ),
-    );
-  });
+    ),
+  );
+});
 
   autoDismissNotifications$ = createEffect(() => {
     return this.actions$.pipe(
@@ -241,4 +255,28 @@ export class PaybillEffect {
       ),
     );
   });
+
+  handleCheckBillFailure$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PaybillActions.checkBillFailure),
+      map(({ error }) =>
+        PaybillActions.addNotification({
+          notificationType: 'warning',
+          message: error || 'paybill.main.form.default_error',
+        }),
+      ),
+    ),
+  );
+
+  handleProceedPaymentFailure$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PaybillActions.proceedPaymentFailure),
+      map(({ error }) =>
+        PaybillActions.addNotification({
+          notificationType: 'warning',
+          message: error || 'paybill.main.form.default_error',
+        }),
+      ),
+    ),
+  );
 }

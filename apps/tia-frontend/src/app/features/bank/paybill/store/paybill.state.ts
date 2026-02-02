@@ -12,6 +12,12 @@ export interface PaybillNotification {
   message: string;
 }
 
+export interface PaybillErrorPayload {
+  message?: string;
+  error?: string;
+  valid?: boolean;
+}
+
 export interface PaybillState {
   categories: PaybillCategory[];
   providers: PaybillProvider[];

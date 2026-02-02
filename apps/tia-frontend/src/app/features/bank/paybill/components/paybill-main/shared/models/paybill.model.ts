@@ -58,6 +58,9 @@ export interface VerifyChallenge {
 export interface ProceedPaymentResponse {
   verify?: VerifyChallenge;
   transferType: string;
+  error?: string;
+  message?: string;
+  statusCode?:string;
 }
 
 export interface ConfirmPaymentPayload {
