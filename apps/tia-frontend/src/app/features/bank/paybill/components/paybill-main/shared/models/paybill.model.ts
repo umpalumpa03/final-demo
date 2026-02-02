@@ -3,6 +3,7 @@ export interface PaybillProvider {
   serviceName: string;
   categoryId: string;
   name?: string;
+  parentId?:string;
 }
 
 export interface PaybillCategory {
@@ -16,21 +17,6 @@ export interface PaybillCategory {
   iconBgPath?: string;
   providers?: PaybillProvider[];
 }
-
-// export interface PaybillState {
-//   categories: PaybillCategory[];
-//   providers: PaybillProvider[];
-//   selectedCategoryId: string | null;
-//   selectedProviderId: string | null;
-//   loading: boolean;
-//   error: string | null;
-//   selectedProvider: PaybillProvider | null;
-//   verifiedDetails: BillDetails | null;
-//   currentStep: string;
-//   paymentPayload: PaybillPayload | null;
-//   challengeId: string | null;
-//   templateGroups: TableGroups[];
-// }
 
 export interface BillDetails {
   valid: boolean;
@@ -75,4 +61,14 @@ export interface ProceedPaymentPayload {
   };
   amount: number;
   senderAccountId: string;
+}
+
+export interface ProviderTreeNode extends PaybillProvider {
+  children?: ProviderTreeNode[];
+  level: number;
+}
+
+export interface ProviderGroup {
+  header: string;
+  items: PaybillProvider[];
 }

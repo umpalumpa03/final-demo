@@ -26,15 +26,26 @@
   <div class="provider-list">
     <app-scroll-area [hideBorder]="true" scrollbar="hidden" height="40rem">
       <div class="providers__wrapper">
-        @if (isLoading()) { @for (item of [1,2,3,4,5,6]; track item) {
-        <app-provider-item [isLoading]="true" />
-        } } @else { @for (provider of providers(); track provider.id) {
-        <app-provider-item
-          [name]="provider.name!"
-          [indicatorColor]="iconBgColor() || ''"
-          (selected)="selected.emit(provider.id)"
-        />
-        } }
+        @if (isLoading()) { 
+          @for (item of [1,2,3,4,5,6]; track item) {
+            <app-provider-item [isLoading]="true" />
+          } 
+        } @else { 
+          @for (group of providerGroups(); track group.header) {
+            <div class="provider-group">
+              <h4 class="provider-group__header">{{ group.header }}</h4>
+              <div class="provider-group__items">
+                @for (item of group.items; track item.id) {
+                  <app-provider-item
+                    [name]="item.name!"
+                    [indicatorColor]="iconBgColor() || ''"
+                    (selected)="selected.emit(item.id)"
+                  />
+                }
+              </div>
+            </div>
+          } 
+        }
       </div>
     </app-scroll-area>
   </div>

@@ -12,22 +12,18 @@
     height: 6.4rem;
     border-radius: 1.4rem;
   }
-
   &__img {
     width: 3.2rem;
     height: 3.2rem;
   }
-
   &__text {
     @include flex-center($direction: column, $align: flex-start);
   }
-
   &__title {
     @include font-inter(500, 2.4rem, 3.2rem);
     color: var(--color-fg);
     margin: 0;
   }
-
   &__subtitle {
     @include font-inter(400, 1.6rem, 2.4rem);
     color: $blue-600;
@@ -41,13 +37,24 @@
   padding-right: 2.4rem;
 }
 
-.providers__wrapper {
-  @include display-flex(column);
-  gap: 1.2rem;
-  border: none;
+.provider-group {
+  margin-bottom: 2.4rem;
+
+  &__header {
+    @include font-inter(600, 1.4rem, 2rem);
+    color: $gray-500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 1.2rem 0.4rem;
+  }
+
+  &__items {
+    @include display-flex(column);
+    gap: 0.8rem;
+  }
 }
 
 .skeleton__wrapper {
-  @include flex-center($direction: column, $align: left);
-  gap: 1rem;
+  @include flex-center(column, $align: flex-start);
+  gap: 2rem;
 }

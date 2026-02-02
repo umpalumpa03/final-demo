@@ -11,6 +11,29 @@
   border-radius: 1rem;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  margin-bottom: 0.8rem;
+
+  &--level-1 {
+    width: calc(100% - 3.2rem);
+    margin-left: 3.2rem;
+    height: 6.4rem;
+    background: transparent;
+    border-bottom: 0.1rem solid $gray-500;
+    border-radius: 0;
+
+    &:hover {
+      background: $gray-50;
+    }
+  }
+
+  &--level-2 {
+    width: calc(100% - 6.4rem);
+    margin-left: 6.4rem;
+    height: 5.6rem;
+    background: transparent;
+    border-bottom: 0.1rem solid $gray-500;
+    border-radius: 0;
+  }
 
   &--skeleton {
     cursor: default;
@@ -38,22 +61,30 @@
     height: 0.8rem;
     border-radius: 50%;
     flex-shrink: 0;
+
+    &--child {
+      background-color: $gray-200;
+      width: 0.6rem;
+      height: 0.6rem;
+    }
   }
 
   &__label {
-    @include font-inter(600, 1.8rem, 2.8rem);
+    @include font-inter(400, 1.6rem, 2.4rem);
     color: var(--color-fg);
     margin: 0;
+
+    &--main {
+      @include font-inter(600, 1.6rem, 2.4rem);
+    }
   }
 
   &__chevron {
-    width: 2rem;
-    height: 2rem;
-    background-color: $gray-500;
-    transition: all 0.2s ease;
-    mask-image: url('/images/svg/paybill/right.svg');
-    mask-repeat: no-repeat;
-    mask-position: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    background-color: $gray-200;
+    mask: url('/images/svg/paybill/right.svg') no-repeat center;
     mask-size: contain;
+    transition: all 0.2s ease-in-out;
   }
 }

@@ -1,14 +1,20 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   input,
   output,
 } from '@angular/core';
-import { PaybillProvider } from '../../shared/models/paybill.model';
+import {
+  PaybillProvider,
+  ProviderGroup,
+  ProviderTreeNode,
+} from '../../shared/models/paybill.model';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
-import { ProviderItem } from "./provider-item/provider-item";
+import { ProviderItem } from './provider-item/provider-item';
+import { groupProvidersByHierarchy } from '../../shared/utils/paybill.config';
 
 @Component({
   selector: 'app-provider-list',
@@ -25,4 +31,8 @@ export class ProviderList {
   public readonly iconBgPath = input<string>();
   public readonly subtitle = input<string>();
   public readonly selected = output<string>();
+
+  public readonly providerGroups = computed(() =>
+    groupProvidersByHierarchy(this.providers()),
+  );
 }

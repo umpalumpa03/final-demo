@@ -6,13 +6,23 @@
   <app-skeleton variant="circle" width="2rem" height="2rem" />
 </section>
 } @else {
-<button class="provider-item" (click)="selected.emit()">
+<button
+  class="provider-item"
+  [class]="'provider-item--level-' + level()"
+  (click)="selected.emit()"
+>
   <div class="provider-item__content">
     <div
       class="provider-item__indicator"
-      [style.background-color]="indicatorColor()"
+      [class.provider-item__indicator--child]="level() > 0"
+      [style.background-color]="level() === 0 ? indicatorColor() : ''"
     ></div>
-    <h3 class="provider-item__label">{{ name() }}</h3>
+    <h3
+      class="provider-item__label"
+      [class.provider-item__label--main]="level() === 0"
+    >
+      {{ name() }}
+    </h3>
   </div>
   <div class="provider-item__chevron"></div>
 </button>
