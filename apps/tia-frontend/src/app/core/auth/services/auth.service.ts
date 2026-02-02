@@ -34,7 +34,7 @@ import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 import { TokenService } from './token.service';
 import { IRegistrationForm } from '../../../features/storybook/components/forms/models/contact-forms.model';
-import { DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Routes } from '../models/tokens.model';
 import { Store } from '@ngrx/store';
 import { UserInfoActions } from '../../../store/user-info/user-info.actions';
@@ -132,21 +132,22 @@ export class AuthService {
           if (res.access_token && res.refresh_token) {
             this.tokenService.setAccessToken(res.access_token);
             this.tokenService.setRefreshToken(res.refresh_token);
-            this.store.dispatch(UserInfoActions.loadUser());
-            this.router.navigate([Routes.DASHBOARD]);
           }
         }),
         catchError((err) => {
           const errorData: phoneOtpError = err.error;
           this.otpError.set(errorData);
 
-          // errorMessage-s ikeneeeb BEKAA?
           this.errorMessage.set(true);
 
           setTimeout(() => this.otpError.set(null), 2000);
           return EMPTY;
         }),
-        finalize(() => this.isLoginLoading.set(false)),
+        finalize(() => {
+          this.store.dispatch(UserInfoActions.loadUser());
+          this.router.navigate([Routes.DASHBOARD]);
+          this.isLoginLoading.set(false);
+        }),
       );
   }
 
