@@ -1,96 +1,98 @@
 {
-    "title": "Settings",
-    "sections": {
-        "profile": "Profile",
-        "security": "Security",
-        "notifications": "Notifications",
-        "language": "Language",
-        "accounts": "Accounts",
-        "appearance": "Appearance",
-        "user-management": "User Management",
-        "approve-accounts": "Approve Accounts",
-        "approve-cards": "Approve Cards",
-        "loan-management": "Loan Management",
-        "profile-photo": "Profile Photo"
+  "title": "Settings",
+  "sections": {
+    "profile": "Profile",
+    "security": "Security",
+    "notifications": "Notifications",
+    "language": "Language",
+    "accounts": "Accounts",
+    "appearance": "Appearance",
+    "user-management": "User Management",
+    "approve-accounts": "Approve Accounts",
+    "approve-cards": "Approve Cards",
+    "loan-management": "Loan Management",
+    "profile-photo": "Profile Photo"
+  },
+  "language": {
+    "title": "Language & Region",
+    "subtitle": "Choose your preferred language to personalize your experience",
+    "current": "Current Language",
+    "available": "Available Languages",
+    "english": "English",
+    "georgian": "Georgian"
+  },
+  "appearance": {
+    "title": "Appearance",
+    "subtitle": "Customize your visual experience",
+    "themes": {
+      "oceanBlue": {
+        "name": "Ocean Blue",
+        "description": "Light and refreshing blue theme"
+      },
+      "royalBlue": {
+        "name": "Royal Blue",
+        "description": "Classic and elegant blue theme"
+      },
+      "deepBlue": {
+        "name": "Deep Blue",
+        "description": "Rich and sophisticated blue theme"
+      }
     },
-    "language": {
-        "title": "Language Settings",
-        "subtitle": "Choose your preferred language",
-        "current": "Current Language",
-        "available": "Available Languages",
-        "english": "English",
-        "georgian": "Georgian"
-    },
-    "appearance": {
-        "title": "Appearance",
-        "subtitle": "Customize your visual experience",
-        "themes": {
-            "oceanBlue": {
-                "name": "Ocean Blue",
-                "description": "Light and refreshing blue theme"
-            },
-            "royalBlue": {
-                "name": "Royal Blue",
-                "description": "Classic and elegant blue theme"
-            },
-            "deepBlue": {
-                "name": "Deep Blue",
-                "description": "Rich and sophisticated blue theme"
-            }
-        },
-        "cardsTitle": "Select Theme",
-        "light": "Light",
-        "dark": "Dark",
-        "system": "System"
-    },
-    "profile-photo": {
-        "title": "Profile Photo",
-        "subtitle": "Upload a new profile photo or choose a default avatar",
-        "uploadCustomPhoto": "Upload a new profile photo",
-        "chooseFile": "Choose File",
-        "defaultAvatar": "Or Choose a Default Avatar",
-        "loadingDefaultAvatars": "Loading avatars...",
-        "profilePictureChangedSuccessfully": "Your profile picture changed successfully",
-        "profilePictureRemovedSuccessfully": "Your profile picture removed successfully",
-        "change": "Save Changes",
-        "remove": "Remove Photo",
-        "invalidFileAlert": "Unfortunately, your photo could not be uploaded. The avatar image file to upload (PNG/JPG only, max 1MB)."
-    },
-    "security": {
-        "title": "Security Settings",
-        "changePassword": "Change Password",
-        "changePasswordSubtitle": "Update your password to keep your account secure",
-        "currentPassword": "Current Password",
-        "currentPasswordPlaceholder": "Enter current password",
-        "newPassword": "New Password",
-        "newPasswordPlaceholder": "Enter new password",
-        "confirmNewPassword": "Confirm New Password",
-        "confirmNewPasswordPlaceholder": "Confirm new password",
-        "updatePassword": "Update Password",
-        "twoFactorAuth": "Two-Factor Authentication"
-    },
-    "user-management": {
-        "title": "User Management",
-        "addUser": "Add User",
-        "removeUser": "Remove User"
-    },
-    "approve-accounts": {
-        "title": "Approve Accounts",
-        "pendingApprovals": "Pending Approvals"
-    },
-    "approve-cards": {
-        "title": "Approve Cards",
-        "pendingCards": "Pending Cards"
-    },
-    "loan-management": {
-        "title": "Loan Management",
-        "viewLoans": "View Loans",
-        "approveLoan": "Approve Loan",
-        "rejectLoan": "Reject Loan"
-    },
-    "accounts": {
-        "title": "Accounts",
-        "savings": "Savings Account",
-        "checking": "Checking Account"
-    }
+    "cardsTitle": "Select Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "profile-photo": {
+    "title": "Profile Photo",
+    "subtitle": "Upload a new profile photo or choose a default avatar",
+    "uploadCustomPhoto": "Upload a new profile photo",
+    "chooseFile": "Choose File",
+    "defaultAvatar": "Or Choose a Default Avatar",
+    "loadingDefaultAvatars": "Loading avatars...",
+    "profilePictureChangedSuccessfully": "Your profile picture changed successfully",
+    "profilePictureRemovedSuccessfully": "Your profile picture removed successfully",
+    "change": "Save Changes",
+    "remove": "Remove Photo",
+    "invalidFileAlert": "Unfortunately, your photo could not be uploaded. The avatar image file to upload (PNG/JPG only, max 1MB)."
+  },
+  "security": {
+    "title": "Security Settings",
+    "changePassword": "Change Password",
+    "changePasswordSubtitle": "Update your password to keep your account secure",
+    "currentPassword": "Current Password",
+    "currentPasswordPlaceholder": "Enter current password",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Enter new password",
+    "confirmNewPassword": "Confirm New Password",
+    "confirmNewPasswordPlaceholder": "Confirm new password",
+    "updatePassword": "Update Password",
+    "twoFactorAuth": "Two-Factor Authentication"
+  },
+  "user-management": {
+    "title": "User Management",
+    "subtitle": "Manage users, roles, and access permissions",
+    "placeholder": "Search users by name, email, username...",
+    "addUser": "Add User",
+    "removeUser": "Remove User"
+  },
+  "approve-accounts": {
+    "title": "Approve Accounts",
+    "pendingApprovals": "Pending Approvals"
+  },
+  "approve-cards": {
+    "title": "Approve Cards",
+    "pendingCards": "Pending Cards"
+  },
+  "loan-management": {
+    "title": "Loan Management",
+    "viewLoans": "View Loans",
+    "approveLoan": "Approve Loan",
+    "rejectLoan": "Reject Loan"
+  },
+  "accounts": {
+    "title": "Accounts",
+    "savings": "Savings Account",
+    "checking": "Checking Account"
+  }
 }

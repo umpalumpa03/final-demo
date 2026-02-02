@@ -34,8 +34,6 @@ export interface NotificationsState {
   hasError: boolean;
   limitPerPage: number;
   hasUnread: boolean;
-  unreadNotificationsNumber: number;
-  isEmpty: boolean;
   isFetching: boolean;
   selectedItems: string[];
 }
