@@ -31,6 +31,13 @@ export const PAYBILL_ROUTES: Routes = [
               ).then((c) => c.CategoryGridContainer),
           },
           {
+            path: 'payment-success',
+            loadComponent: () =>
+              import(
+                './components/paybill-main/components/paybill-success/container/paybill-success-container'
+              ).then((c) => c.PaybillSuccessContainer),
+          },
+          {
             path: 'otp-verification',
             loadComponent: () =>
               import(

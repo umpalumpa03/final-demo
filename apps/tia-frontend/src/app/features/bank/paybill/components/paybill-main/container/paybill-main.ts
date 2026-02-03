@@ -14,7 +14,7 @@ import {
   PaybillFormVerifyEvent,
 } from '../shared/models/paybill.model';
 // import { PaybillConfirmPayment } from '../components/paybill-confirm-payment/paybill-confirm-payment';
-import { PaybillSuccess } from '../components/paybill-success/paybill-success';
+import { PaybillSuccess } from '../components/paybill-success/components/paybill-success/paybill-success';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormControl,

@@ -197,9 +197,23 @@ export class PaybillMainFacade {
   public readonly showSearch = computed(() => !this.activeProvider());
   public readonly isRootProviderView = computed(() => !this.selectedParentId());
 
-  public readonly successSummaryItems = computed(() =>
-    getSuccessSummaryItems(this.activeProvider(), this.paymentPayload()),
-  );
+  public readonly successSummaryItems = computed(() => {
+    try {
+      const provider = this.activeProvider();
+      const payload = this.paymentPayload();
+
+      if (!provider || !payload) {
+        return [];
+      }
+
+      const items = getSuccessSummaryItems(provider, payload);
+
+      return items || [];
+    } catch (e) {
+      console.warn('Error calculating success items:', e);
+      return [];
+    }
+  });
 
   private readonly identificationKey = computed(() => {
     const url = this.router.url.toLowerCase();
