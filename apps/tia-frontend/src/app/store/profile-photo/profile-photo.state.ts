@@ -5,6 +5,7 @@ export interface ProfilePhotoState {
   selectedAvatarId: string | null;
   uploadedFileName: string | null;
   currentAvatarUrl: string | null;
+  savedAvatarUrl: string | null;
   avatarId: string | null;
   avatarType: 'default' | 'custom' | null;
 }

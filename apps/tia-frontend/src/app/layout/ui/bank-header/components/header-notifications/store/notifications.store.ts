@@ -38,6 +38,11 @@ export const NotificationsStore = signalStore(
         store.items().length > 0
       );
     }),
+    isIndeterminate: computed(() => {
+      const selectedCount = store.selectedItems().length;
+      const totalCount = store.items().length;
+      return selectedCount > 0 && selectedCount < totalCount;
+    }),
   })),
   withMethods((store) => {
     const notificationsService = inject(Notifications);
