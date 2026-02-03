@@ -1,0 +1,80 @@
+<div class="card-details-modal">
+  <h1 class="card-details-modal__title">Card Details</h1>
+  <h2 class="card-details-modal__subtitle">View your card information and sensitive details</h2>
+  <div class="card-details-modal__section">
+    <h3 class="card-details-modal__section-title">Card Information</h3>
+
+    <div class="card-details-modal__info-flex">
+      <div class="card-details-modal__info-item">
+        <span class="card-details-modal__label">Card Name</span>
+        <span class="card-details-modal__value">{{ cardName() }}</span>
+      </div>
+
+      <div class="card-details-modal__info-item">
+        <span class="card-details-modal__label">Card Type</span>
+        <span class="card-details-modal__value">{{ cardType() }}</span>
+      </div>
+
+      <div class="card-details-modal__info-item">
+        <span class="card-details-modal__label">Card Category</span>
+        <span class="card-details-modal__value">{{ cardCategory() }}</span>
+      </div>
+
+      <div class="card-details-modal__info-item">
+        <span class="card-details-modal__label">Status</span>
+        <div class="card-details-modal__value">
+          <app-badges
+            [variant]="isActiveStatus() ? 'default' : 'default'"
+            [text]="status()"
+            size="small"
+            shape="rounded"
+          />
+        </div>
+      </div>
+
+      @if (shouldShowCreditLimit()) {
+      <div class="card-details-modal__info-item">
+        <span class="card-details-modal__label">Credit Limit</span>
+        <span class="card-details-modal__value"
+          >{{ formattedCreditLimit() }}</span
+        >
+      </div>
+      }
+
+      <div class="card-details-modal__info-item">
+        <span class="card-details-modal__label">Available Amount</span>
+        <span class="card-details-modal__value">{{ formattedBalance() }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-details-modal__sensitive">
+    <div class="card-details-modal__sensitive-header">
+      <div class="card-details-modal__sensitive-icon">
+        <img [src]="'/images/svg/cards/eye.svg'" alt="View" />
+      </div>
+      <div class="card-details-modal__sensitive-text">
+        <h4 class="card-details-modal__sensitive-title">
+          View Sensitive Details
+        </h4>
+        <p class="card-details-modal__sensitive-subtitle">
+          To view full card number, CVV, and expiration date, please verify your
+          identity using OTP
+        </p>
+        <app-button
+          variant="default"
+          [fullWidth]="false"
+          (click)="handleRequestOtp()"
+        >
+          Request OTP
+        </app-button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-details-modal__footer">
+    <app-button variant="outline" [fullWidth]="true" (click)="handleClose()">
+      Close
+    </app-button>
+  </div>
+</div>

@@ -17,6 +17,9 @@ import {
   selectCreateError,
   selectShowSuccessAlert,
   selectCardCreationDataLoading,
+  selectIsCardDetailsModalOpen,
+  selectSelectedCardIdForModal,
+  selectCardDetailsModalData,
 } from './cards.selectors';
 import { CardsState } from './cards.state';
 
@@ -45,6 +48,8 @@ describe('CardsSelectors - Full Coverage', () => {
     createError: 'create failed',
     isCreateModalOpen: true,
     showSuccessAlert: true,
+     isCardDetailsModalOpen: false,
+  selectedCardIdForModal: null
   };
 
   it('should select all accounts', () => {
@@ -129,4 +134,17 @@ describe('CardsSelectors - Full Coverage', () => {
   it('should select cardCreationDataLoading', () => {
     expect(selectCardCreationDataLoading.projector(mockState)).toBe(false);
   });
+  it('should select isCardDetailsModalOpen', () => {
+  expect(selectIsCardDetailsModalOpen.projector({ ...mockState, isCardDetailsModalOpen: true })).toBe(true);
+});
+
+it('should select selectedCardIdForModal', () => {
+  expect(selectSelectedCardIdForModal.projector({ ...mockState, selectedCardIdForModal: 'card-1' })).toBe('card-1');
+});
+
+it('should select card details modal data', () => {
+  const result = selectCardDetailsModalData.projector('card-1', mockState.cardDetails, mockState.cardImages, mockState.accounts);
+  expect(result?.cardId).toBe('card-1');
+  expect(result?.formattedBalance).toBeDefined();
+});
 });
