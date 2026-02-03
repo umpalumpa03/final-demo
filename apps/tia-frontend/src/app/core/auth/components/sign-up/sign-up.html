@@ -6,6 +6,7 @@
   ></app-auth-header>
   <app-registration-form
     (submitRegistrationForm)="onSignUp($event)"
+    (formIncompleteData)="listenInputedData($event)"
   ></app-registration-form>
 
   <p class="sign-up__footer">

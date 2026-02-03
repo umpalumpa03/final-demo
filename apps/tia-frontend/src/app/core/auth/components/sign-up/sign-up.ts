@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  HostListener,
   inject,
   OnInit,
   signal,
@@ -16,13 +17,19 @@ import { AuthService } from '../../services/auth.service';
 import { Routes } from '../../models/tokens.model';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { TranslatePipe } from '@ngx-translate/core';
-import { AuthHeader } from "../../shared/auth-header/auth-header";
-import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader";
-
+import { AuthHeader } from '../../shared/auth-header/auth-header';
+import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 
 @Component({
   selector: 'app-sign-up',
-  imports: [RouterLink, RegistrationForm, AlertTypesWithIcons, TranslatePipe, AuthHeader, RouteLoader],
+  imports: [
+    RouterLink,
+    RegistrationForm,
+    AlertTypesWithIcons,
+    TranslatePipe,
+    AuthHeader,
+    RouteLoader,
+  ],
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.scss',
   providers: [TokenService],
@@ -38,13 +45,26 @@ export class SignUp implements OnInit {
   public loadingState = signal<boolean>(true);
   public errorMessage = signal<string>('');
 
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      this.onSignUp(this.partialData());
+    }
+  }
+
+  private partialData = signal<any>('');
+
+  public listenInputedData(event:any):void {
+    this.partialData.set(event)
+  }
+
   ngOnInit(): void {
     this.loadingState.set(false);
   }
 
   public onSignUp(signUpData: IRegistrationForm): void {
     this.loadingState.set(true);
-    
+
     this.signUpService
       .signUpUser(signUpData)
       .pipe(
@@ -79,6 +99,6 @@ export class SignUp implements OnInit {
           return EMPTY;
         }),
       )
-    .subscribe();
+      .subscribe();
   }
 }
