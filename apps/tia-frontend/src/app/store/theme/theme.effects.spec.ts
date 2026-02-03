@@ -30,7 +30,6 @@ describe('ThemeEffects', () => {
         provideMockActions(() => actions$),
         {
           provide: DOCUMENT,
-
           useValue: { documentElement: { setAttribute: setAttributeSpy } },
         },
       ],
@@ -44,20 +43,13 @@ describe('ThemeEffects', () => {
   });
 
   it('should apply theme from action payload', () => {
-    const inputTheme = 'ocean-blue';
-
-    const expectedDomTheme = 'oceanBlue';
-
-    actions$ = of(ThemeActions.setTheme({ theme: inputTheme }));
+    const themeInput = 'ocean-blue';
+    actions$ = of(ThemeActions.setTheme({ theme: themeInput }));
 
     effects.syncTheme$.subscribe();
 
-    expect(setAttributeSpy).toHaveBeenCalledWith(
-      'data-theme',
-      expectedDomTheme,
-    );
-
-    expect(setItemSpy).toHaveBeenCalledWith('theme', inputTheme);
+    expect(setAttributeSpy).toHaveBeenCalledWith('data-theme', 'oceanBlue');
+    expect(setItemSpy).toHaveBeenCalledWith('theme', themeInput);
   });
 
   it('should load saved theme from localStorage after initialization', () => {
