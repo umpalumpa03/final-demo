@@ -11,12 +11,14 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 describe('ThemeEffects', () => {
   let actions$: Observable<Action>;
   let effects: ThemeEffects;
-  let setAttributeSpy: ReturnType<typeof vi.fn>;
-  let getItemSpy: ReturnType<typeof vi.spyOn>;
-  let setItemSpy: ReturnType<typeof vi.spyOn>;
+
+  let setAttributeSpy: any;
+  let getItemSpy: any;
+  let setItemSpy: any;
 
   beforeEach(() => {
     setAttributeSpy = vi.fn();
+
     getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
     setItemSpy = vi
       .spyOn(Storage.prototype, 'setItem')
@@ -28,28 +30,45 @@ describe('ThemeEffects', () => {
         provideMockActions(() => actions$),
         {
           provide: DOCUMENT,
+
           useValue: { documentElement: { setAttribute: setAttributeSpy } },
         },
       ],
     });
+
     effects = TestBed.inject(ThemeEffects);
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should apply theme from action payload', () => {
-    actions$ = of(ThemeActions.setTheme({ theme: 'ocean-blue' }));
+    const inputTheme = 'ocean-blue';
+
+    const expectedDomTheme = 'oceanBlue';
+
+    actions$ = of(ThemeActions.setTheme({ theme: inputTheme }));
+
     effects.syncTheme$.subscribe();
-    expect(setAttributeSpy).toHaveBeenCalledWith('data-theme', 'oceanBlue');
-    expect(setItemSpy).toHaveBeenCalledWith('theme', 'ocean-blue');
+
+    expect(setAttributeSpy).toHaveBeenCalledWith(
+      'data-theme',
+      expectedDomTheme,
+    );
+
+    expect(setItemSpy).toHaveBeenCalledWith('theme', inputTheme);
   });
 
   it('should load saved theme from localStorage after initialization', () => {
-    getItemSpy.mockReturnValue('royal-blue');
+    const savedTheme = 'royalBlue';
+
+    getItemSpy.mockReturnValue(savedTheme);
+
     actions$ = of({ type: ROOT_EFFECTS_INIT });
+
     effects.syncTheme$.subscribe();
-    expect(setAttributeSpy).toHaveBeenCalledWith('data-theme', 'royalBlue');
+
+    expect(setAttributeSpy).toHaveBeenCalledWith('data-theme', savedTheme);
   });
 });
