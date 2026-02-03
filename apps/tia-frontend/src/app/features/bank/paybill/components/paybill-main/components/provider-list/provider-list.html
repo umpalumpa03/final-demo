@@ -1,23 +1,31 @@
 <app-basic-card maxWidth="100%" padding="0rem 0 2.4rem 2.4rem">
   <div class="category-header">
-    <div
-      class="category-header__icon-box"
-      [style.background-color]="isLoading() ? 'none' : iconBgColor()"
-    >
+    <div class="category-header__icon-box">
       @if (isLoading()) {
-      <app-skeleton variant="circle" width="6.4rem" height="6.4rem" />
+      <app-skeleton
+        variant="rectangle"
+        width="6.4rem"
+        height="6.4rem"
+        borderRadius="1.6rem"
+      />
       } @else {
-      <img [src]="iconBgPath()" class="category-header__img" alt="" />
+      <div
+        class="category-header__icon-background"
+        [style.background-color]="iconBgColor()"
+      >
+        <img [src]="iconBgPath()" class="category-header__img" alt="" />
+      </div>
       }
     </div>
+
     <div class="category-header__text">
       @if (isLoading()) {
-      <div class="skeleton__wrapper">
-        <app-skeleton variant="text" width="15rem" height="2.4rem" />
-        <app-skeleton variant="text" width="22rem" height="1.6rem" />
+      <div class="skeleton-text-group">
+        <app-skeleton variant="text" width="14rem" height="2.8rem" />
+        <app-skeleton variant="text" width="20rem" height="1.8rem" />
       </div>
       } @else {
-      <h2 class="category-header__title">{{ categoryName() }}</h2>
+      <h2 class="category-header__title">{{ headerTitle() }}</h2>
       <p class="category-header__subtitle">{{ subtitle() }}</p>
       }
     </div>
@@ -25,14 +33,15 @@
 
   <div class="provider-list">
     <app-scroll-area [hideBorder]="true" scrollbar="hidden" height="40rem">
-      <div class="providers__wrapper">
-        @if (isLoading()) { @for (item of [1,2,3,4,5,6]; track item) {
+      <div class="providers-container">
+        @if (isLoading()) { @for (item of [1, 2, 3, 4, 5]; track item) {
         <app-provider-item [isLoading]="true" />
-        } } @else { @for (provider of providers(); track provider.id) {
+        } } @else { @for (item of providers(); track item.id) {
         <app-provider-item
-          [name]="provider.name!"
+          [name]="item.name || ''"
           [indicatorColor]="iconBgColor() || ''"
-          (selected)="selected.emit(provider.id)"
+          [isFinal]="!!item.isFinal!"
+          (selected)="selected.emit(item.id)"
         />
         } }
       </div>

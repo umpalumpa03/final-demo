@@ -1,4 +1,5 @@
-<div class="checkbox-wrapper" [class.checkbox-wrapper--disabled]="isDisabled()">
+<div class="checkbox-wrapper" [class.checkbox-wrapper--disabled]="isDisabled()"
+    [class.checkbox-wrapper--intermediate]="showIntermediate()">
     <label [for]="mergedConfig().id" class="checkbox">
 
         <input type="checkbox" [id]="mergedConfig().id" [checked]="!!value()" [disabled]="isDisabled()"

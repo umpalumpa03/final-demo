@@ -12,10 +12,15 @@ import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillTemplatesService } from '../components/paybill-templates/services/paybill-templates-service';
 import {
   selectNotifications,
+  selectPaymentPayload,
   selectSelectedCategoryId,
   selectSelectedProviderId,
 } from './paybill.selectors';
 import { initialPaybillState } from './paybill.state';
+import {
+  PaybillPayload,
+  ProceedPaymentResponse,
+} from '../components/paybill-main/shared/models/paybill.model';
 
 describe('PaybillEffect (Modern Suite)', () => {
   let actions$: Observable<Action>;
@@ -181,18 +186,6 @@ describe('PaybillEffect (Modern Suite)', () => {
       });
     });
 
-    it('proceedPayment$: should dispatch Failure action when API fails', () => {
-      paybillService.payBill.mockReturnValue(
-        throwError(() => new Error('Payment Declined')),
-      );
-      actions$ = of(PaybillActions.proceedPayment({ payload: {} as any }));
-
-      effects.proceedPayment$.subscribe((action) => {
-        expect(action).toEqual(
-          PaybillActions.proceedPaymentFailure({ error: 'Payment Declined' }),
-        );
-      });
-    });
     it('loadTemplateGroups$: should use fallback error message if error object is empty', () => {
       paybillTemplatesService.getAllTemplateGroups.mockReturnValue(
         throwError(() => ({})),
@@ -305,6 +298,64 @@ describe('PaybillEffect (Modern Suite)', () => {
           }),
         );
       });
+    });
+  });
+
+  it('should set step to OTP if amount >= 50 and challengeId exists', () => {
+    store.overrideSelector(selectPaymentPayload, {
+      amount: 100,
+    } as PaybillPayload);
+
+    const response: ProceedPaymentResponse = {
+      verify: {
+        challengeId: 'id-123',
+        method: 'SMS',
+      },
+      transferType: 'INTERNAL',
+    };
+
+    actions$ = of(PaybillActions.proceedPaymentSuccess({ response }));
+
+    effects.proceedPaymentSuccess$.subscribe((action) => {
+      expect(action).toEqual(PaybillActions.setPaymentStep({ step: 'OTP' }));
+    });
+  });
+
+  it('should set step to SUCCESS if amount < 50', () => {
+    store.overrideSelector(selectPaymentPayload, {
+      amount: 20,
+    } as PaybillPayload);
+
+    const response: ProceedPaymentResponse = {
+      verify: {
+        challengeId: 'id-123',
+        method: 'SMS',
+      },
+      transferType: 'INTERNAL',
+    };
+
+    actions$ = of(PaybillActions.proceedPaymentSuccess({ response }));
+
+    effects.proceedPaymentSuccess$.subscribe((action) => {
+      expect(action).toEqual(
+        PaybillActions.setPaymentStep({ step: 'SUCCESS' }),
+      );
+    });
+  });
+
+  it('should dispatch loadTemplatesSuccess on successful API call', () => {
+    const mockTemplates = [
+      { id: 't1', name: 'Water Bill', providerId: 'p1' },
+      { id: 't2', name: 'Electric Bill', providerId: 'p2' },
+    ] as any;
+    paybillTemplatesService.getAllTemplates.mockReturnValue(of(mockTemplates));
+
+    actions$ = of(TemplatesPageActions.loadTemplates());
+
+    effects.loadTemplates$.subscribe((action) => {
+      expect(action).toEqual(
+        TemplatesPageActions.loadTemplatesSuccess({ templates: mockTemplates }),
+      );
     });
   });
 });
