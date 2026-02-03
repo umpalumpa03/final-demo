@@ -9,6 +9,7 @@ describe('ProfilePhotoState', () => {
       selectedAvatarId: null,
       uploadedFileName: null,
       currentAvatarUrl: null,
+      savedAvatarUrl: null,
       avatarId: null,
       avatarType: null,
     };

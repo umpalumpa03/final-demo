@@ -5,10 +5,11 @@ import {
   inject,
   input,
   output,
-  signal,
 } from '@angular/core';
 import {
   BillDetails,
+  PaybillFormProceedEvent,
+  PaybillFormVerifyEvent,
   PaybillProvider,
 } from '../../shared/models/paybill.model';
 import {
@@ -66,13 +67,16 @@ export class PaybillForm {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly translate = inject(TranslateService);
 
-  public readonly verify = output<{ accountNumber: string }>();
-  public readonly pay = output<{ accountNumber: string; amount: number }>();
+  public readonly verify = output<PaybillFormVerifyEvent>();
+  public readonly pay = output<PaybillFormProceedEvent>();
   public readonly saveTemplate = output<void>();
 
   public paybillForm = this.fb.group({
-    accountNumber: ['', [Validators.required, Validators.minLength(5)]],
-    amount: [0, [Validators.min(0.01)]],
+    value: ['', [Validators.required, Validators.minLength(5)]],
+    amount: [
+      0,
+      [Validators.required, Validators.min(0.01), Validators.max(9999)],
+    ],
   });
 
   public readonly paybillConfig = toSignal(
@@ -99,19 +103,20 @@ export class PaybillForm {
   public onSubmit(): void {
     if (this.isLoading()) return;
 
-    const accountNumberControl = this.paybillForm.controls.accountNumber;
+    const identifierControl = this.paybillForm.controls.value;
 
     if (!this.isVerified()) {
-      if (accountNumberControl.valid) {
-        this.verify.emit({ accountNumber: accountNumberControl.value });
+      if (identifierControl.valid) {
+        this.verify.emit({ value: identifierControl.value });
       } else {
-        accountNumberControl.markAsTouched();
+        identifierControl.markAsTouched();
       }
     } else {
       if (this.paybillForm.valid) {
-        this.pay.emit(this.paybillForm.getRawValue());
-      } else {
-        this.paybillForm.markAllAsTouched();
+        this.pay.emit({
+          value: identifierControl.value,
+          amount: this.paybillForm.controls.amount.value,
+        });
       }
     }
   }

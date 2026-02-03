@@ -16,7 +16,7 @@ import { fromEvent, Observable } from 'rxjs';
 import { NotificationsData } from '../components/header-notifications/models/notification.model';
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
 import { NotificationsStore } from '../components/header-notifications/store/notifications.store';
-import { selectCurrentAvatarUrl } from '../../../../store/profile-photo/profile-photo.selectors';
+import { selectSavedAvatarUrl } from '../../../../store/profile-photo/profile-photo.selectors';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NotificationsContainer } from '../components/header-notifications/container/notifications-container';
 
@@ -40,7 +40,7 @@ export class BankHeaderContainer implements OnInit {
   public isModalOpen = signal<boolean>(false);
   public notificationsItems$!: Observable<NotificationsData>;
   public inboxCount = computed(() => this.inboxService.inboxCount());
-  public avatarUrl = toSignal(this.store.select(selectCurrentAvatarUrl));
+  public avatarUrl = toSignal(this.store.select(selectSavedAvatarUrl));
 
   readonly notificationsContainerRef = viewChild(NotificationsContainer, {
     read: ElementRef,

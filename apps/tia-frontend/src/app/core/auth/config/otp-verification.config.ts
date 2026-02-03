@@ -22,11 +22,11 @@ export const getOtpVerificationConfig = (type: OtpVerificationType): OtpVerifica
       } as const;
     case 'forgot-password':
       return {
-        title: 'Reset Your Password',
-        subText: 'Enter the 4-digit code sent to your email',
-        submitBtnName: 'Verify',
+        title: 'auth.otp-forgot-password.title',
+        subText: 'auth.otp-forgot-password.subText',
+        submitBtnName: 'auth.otp-forgot-password.submitBtnName',
         backLink: '/auth/forgot-password',
-        backLinkText: 'Back to Forgot Password',
+        backLinkText: 'auth.otp-forgot-password.backLinkText',
         iconUrl: 'images/svg/auth/secured-blue.svg',
       } as const;
   }

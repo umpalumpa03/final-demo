@@ -12,7 +12,7 @@ import {
   updateFiltersEffects,
 } from './transactions.effects';
 import { selectFilters, selectNextCursor } from './transactions.selector';
-import { TransactionService } from '@tia/shared/services/transactions-service/transaction-service';
+import { TransactionApiService } from '@tia/shared/services/transactions-service/transactions.api.service';
 
 describe('Transaction Effects', () => {
   let actions$: Observable<Action>;
@@ -31,7 +31,7 @@ describe('Transaction Effects', () => {
       providers: [
         provideMockActions(() => actions$),
         provideMockStore(),
-        { provide: TransactionService, useValue: transactionService },
+        { provide: TransactionApiService, useValue: transactionService },
       ],
     });
 

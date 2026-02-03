@@ -46,7 +46,8 @@ export default defineConfig(() => ({
         '**/*.actions.ts',
         '**/*.state.ts',
         '**/*.provider.ts',
-        '**/i18n/**'
+        '**/*.constants.ts',
+        '**/i18n/**',
       ],
     },
   },

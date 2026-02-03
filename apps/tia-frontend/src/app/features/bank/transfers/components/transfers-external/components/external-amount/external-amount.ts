@@ -10,14 +10,17 @@ import {
 import { DecimalPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { TransferStore } from '../../../../store/transfers.store';
 import { TransferExternalService } from '../../../../services/transfer.external.service';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
-import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { tap } from 'rxjs';
+import { SuccessModal } from '@tia/shared/lib/overlay/ui-success-modal/ui-success-modal';
+import { Router } from '@angular/router';
+import { OtpModal } from "@tia/shared/lib/overlay/ui-otp-modal/otp-modal";
 
 @Component({
   selector: 'app-external-amount',
@@ -28,7 +31,9 @@ import { tap } from 'rxjs';
     ReactiveFormsModule,
     AlertTypesWithIcons,
     DecimalPipe,
-  ],
+    SuccessModal,
+    OtpModal
+],
   providers: [],
   templateUrl: './external-amount.html',
   styleUrl: './external-amount.scss',
@@ -41,6 +46,7 @@ export class ExternalAmount implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly breakpointService = inject(BreakpointService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
 
   public readonly isMobile = this.breakpointService.isMobile;
   public readonly showSuccess = signal(false);
@@ -56,6 +62,9 @@ export class ExternalAmount implements OnInit {
     this.transferStore.selectedRecipientAccount;
   public readonly manualRecipientName = this.transferStore.manualRecipientName;
   public readonly recipientInfo = this.transferStore.recipientInfo;
+  public readonly successfullTransfer = this.transferStore.transferSuccess;
+  public readonly requiresOtp = this.transferStore.requiresOtp;
+  // public readonly errorFromState = this.transferStore.error;
 
   public readonly isExternalIban = computed(
     () => this.transferStore.recipientType() === 'iban-different-bank',
@@ -106,9 +115,13 @@ export class ExternalAmount implements OnInit {
       .toUpperCase()
       .substring(0, 2);
   });
+  private readonly amountStatus = toSignal(this.amountInput.statusChanges, {
+    initialValue: this.amountInput.status,
+  });
   public readonly isTransferDisabled = computed(() => {
+    const isInvalid = this.amountStatus() !== 'VALID';
     return (
-      this.amountInput.invalid ||
+      isInvalid ||
       this.isLoading() ||
       this.transferStore.hasInsufficientBalance()
     );
@@ -134,20 +147,20 @@ export class ExternalAmount implements OnInit {
     );
   }
   public onTransfer(): void {
-    // if (this.amountInput.valid) {
-    //   const success = this.transferExternalService.handleTransfer(
-    //     Number(this.amountInput.value),
-    //     this.descriptionInput.value || '',
-    //   );
-    //   if (success) {
-    //     this.triggerToast('transfers.confirmation.success');
-    //   }
-    // }
+    // const requiresOtp = this.transferStore
+    if (this.amountInput.valid) {
+      this.transferStore.setDescription(this.descriptionInput.value || '');
+      this.transferExternalService.handleSameBankTransfer();
+    }
   }
 
   private triggerToast(messageKey: string): void {
     this.currentToastMessage.set(messageKey);
     this.showSuccess.set(true);
     setTimeout(() => this.showSuccess.set(false), 3000);
+  }
+  public onSuccessDone(): void {
+    this.transferStore.reset();
+    this.router.navigate(['/bank/transfers/external/accounts']);
   }
 }

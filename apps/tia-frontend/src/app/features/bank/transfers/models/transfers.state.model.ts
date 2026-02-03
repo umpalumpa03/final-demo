@@ -30,7 +30,6 @@ export interface TransferState {
   selectedRecipientAccount: RecipientAccount | null; //for other account same bank flow
   ///response
   recipientInfo: RecipientResponse | null; //response after view account
-  transferId: string | null; //transferid from response
   challengeId: string | null; //needed for otp, this and transferid are unclear
   fee: number; //repsponse from /get-fee
   totalWithFee: number;

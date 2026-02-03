@@ -1,4 +1,11 @@
 @use '../../../../../shared/styles/mixins' as *;
+.filters-heading {
+  @include display-flex();
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .transaction-filters-form {
   @include display-flex(row, wrap);
   justify-content: center;

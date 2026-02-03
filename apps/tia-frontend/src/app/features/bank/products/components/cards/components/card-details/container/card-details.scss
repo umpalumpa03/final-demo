@@ -1,185 +1,35 @@
+
+
 @use "../../../../../../../../shared/styles/mixins" as *;
 @use "../../../../../../../../shared/styles/palette" as *;
 
 .card-details {
   @include display-flex(column);
-  gap: 2.4rem;
-  padding: 2rem;
-  max-width: 60rem;
+  gap: 3.2rem;
+  padding: 3.2rem;
+  min-height: 100vh;
   margin: 0 auto;
 
   @media (max-width: 768px) {
-    padding: 1.6rem;
     gap: 2rem;
   }
 
   @media (max-width: 480px) {
-    padding: 1.2rem;
+    padding: 1.6rem;
     gap: 1.6rem;
   }
 
   &__loading,
   &__error {
-    @include flex-center;
-    @include font-inter(400, 1.6rem, 1.5);
+    @include font-inter(400, 1.6rem, 1.5rem);
     padding: 4rem;
     text-align: center;
   }
 
   &__error {
-    background-color: $red-300;
+    background-color: $red-50;
     color: $red-700;
     border-radius: 0.8rem;
   }
 
-  &__loading {
-    color: $gray-600;
-  }
-
-  &__header {
-    @include display-flex();
-  }
-
-  &__back-button {
-    @include font-inter(500, 1.4rem, 1.5);
-    background: none;
-    border: none;
-    color: var(--color-primary);
-    cursor: pointer;
-    padding: 0.8rem 1.6rem;
-    transition: color 0.2s ease;
-
-    &:hover {
-      color: var(--color-accent);
-    }
-
-    &:focus-visible {
-      outline: 0.2rem solid var(--color-primary);
-      outline-offset: 0.2rem;
-      border-radius: 0.4rem;
-    }
-  }
-
-  &__card-image {
-    @include flex-center();
-    width: 100%;
-  }
-
-  &__image {
-    display: block;
-    width: 100%;
-    max-width: 44rem;
-    height: auto;
-    border-radius: 1.6rem;
-    box-shadow: 0 0.4rem 1.6rem rgba(0, 0, 0, 0.1);
-
-    @media (max-width: 480px) {
-      max-width: 100%;
-    }
-  }
-
-  &__info-section,
-  &__actions-section {
-    @include display-flex(column);
-    gap: 1.6rem;
-    padding: 2.4rem;
-    background-color: $white;
-    border-radius: 1.2rem;
-    border: 0.1rem solid var(--color-secondary);
-
-    @media (max-width: 480px) {
-      padding: 1.6rem;
-      gap: 1.2rem;
-    }
-  }
-
-  &__section-title {
-    @include font-inter(600, 1.8rem, 1.4);
-    color: var(--color-fg);
-    margin: 0;
-
-    @media (max-width: 480px) {
-      font-size: 1.6rem;
-    }
-  }
-
-  &__section-subtitle {
-    @include font-inter(400, 1.4rem, 1.5);
-    color: $gray-600;
-    margin: 0;
-  }
-
-  &__info-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem 1.6rem;
-
-    @media (max-width: 480px) {
-      grid-template-columns: 1fr;
-      gap: 1.6rem;
-    }
-  }
-
-  &__info-item {
-    @include display-flex(column);
-    gap: 0.4rem;
-  }
-
-  &__info-label {
-    @include font-inter(400, 1.3rem, 1.5);
-    color: $gray-600;
-  }
-
-  &__info-value {
-    @include font-inter(500, 1.5rem, 1.5);
-    color: var(--color-fg);
-
-    &--status {
-      @include font-inter(500, 1.5rem, 1.5);
-      color: $green-600;
-      text-transform: capitalize;
-    }
-  }
-
-  &__actions-grid {
-    @include display-flex(column);
-    gap: 1.2rem;
-  }
-
-  &__action-button {
-    @include font-inter(500, 1.5rem, 1.5);
-    @include flex-center();
-    width: 100%;
-    padding: 1.6rem;
-    background-color: var(--color-primary);
-    color: $white;
-    border: none;
-    border-radius: 0.8rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-
-    &:hover {
-      background-color: var(--color-accent);
-    }
-
-    &:active {
-      transform: scale(0.98);
-    }
-
-    &:focus-visible {
-      outline: 0.2rem solid var(--color-primary);
-      outline-offset: 0.2rem;
-    }
-
-    &--secondary {
-      background-color: $white;
-      color: var(--color-fg);
-      border: 0.1rem solid var(--color-secondary);
-
-      &:hover {
-        background-color: var(--color-bg);
-      }
-    }
-  }
 }
-

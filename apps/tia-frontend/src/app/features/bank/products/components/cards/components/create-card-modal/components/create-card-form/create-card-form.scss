@@ -1,0 +1,35 @@
+@use '../../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../../shared/styles/palette' as *;
+
+
+.create-card-form {
+  @include display-flex(column);
+  gap: 2rem;
+
+  &__field {
+    @include display-flex(column);
+    gap: 0.8rem;
+  }
+
+  &__field-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.6rem;
+  }
+
+  &__error-message {
+    @include font-inter(400, 1.4rem, 1.5);
+    padding: 1.2rem;
+    background-color: $red-50;
+    border: 0.1rem solid $red-200;
+    border-radius: 0.8rem;
+    color: $red-700;
+  }
+
+  &__actions {
+    @include flex-center(row, flex-end, center);
+    gap: 1.2rem;
+    padding-top: 1.6rem;
+    border-top: 0.1rem solid $gray-200;
+  }
+}

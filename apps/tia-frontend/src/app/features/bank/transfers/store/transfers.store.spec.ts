@@ -105,4 +105,35 @@ describe('TransferStore', () => {
     expect(store.senderAccount()).toEqual(mockAccount);
     expect(store.isVerified()).toBe(true);
   });
+
+
+  it('should cover the catchError fallback when message is missing', () => {
+    transfersApiMock.lookupByPhone.mockReturnValue(throwError(() => ({})));
+    store.lookupRecipient({ value: '000', type: 'phone' });
+    expect(store.error()).toBe('Failed to find recipient');
+  });
+
+  it('should cover setExternalRecipient and verify state reset spread', () => {
+    store.setAmount(100);
+    store.setExternalRecipient('555', 'phone');
+    expect(store.recipientInput()).toBe('555');
+    expect(store.amount()).toBe(0); 
+  });
+
+  it('should cover all remaining setters (OTP, Challenge, Success)', () => {
+    const mockRecAcc = { id: 'r1' } as any;
+    store.setSelectedRecipientAccount(mockRecAcc);
+    store.setInsufficientBalance(true);
+    store.setChallengeId('ch-123');
+    store.setRequiresOtp(true);
+    store.setTransferSuccess(true);
+
+    expect(store.selectedRecipientAccount()).toEqual(mockRecAcc);
+    expect(store.hasInsufficientBalance()).toBe(true);
+    expect(store.challengeId()).toBe('ch-123');
+    expect(store.requiresOtp()).toBe(true);
+    expect(store.transferSuccess()).toBe(true);
+  });
+
+
 });

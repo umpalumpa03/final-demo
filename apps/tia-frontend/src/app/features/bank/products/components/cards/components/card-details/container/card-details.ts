@@ -1,3 +1,5 @@
+
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,27 +10,47 @@ import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { combineLatest, map, switchMap, of } from 'rxjs';
-import { loadCardDetails, loadCardAccounts } from '../../../../../../../../store/products/cards/cards.actions';
+import {
+  loadCardDetails,
+  loadCardAccounts,
+  openCardDetailsModal,
+  closeCardDetailsModal,
+} from '../../../../../../../../store/products/cards/cards.actions';
 import {
   selectCardDetails,
   selectCardImages,
   selectCardDetailsLoading,
   selectCardDetailsError,
   selectAccountById,
+  selectIsCardDetailsModalOpen,
 } from '../../../../../../../../store/products/cards/cards.selectors';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
-import { CardWithDetails } from '@tia/shared/models/cards/card-image.model';
-import { CardAccount } from '@tia/shared/models/cards/card-account.model';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
+import { CardImage } from '../components/card-image/card-image';
+import { CardInfoSection } from '../components/card-info-section/card-info-section';
+import { QuickActionsSection } from '../components/quick-actions-section/quick-actions-section';
+import { CardViewData } from '../../../models/card-view-data.model';
+import { TranslatePipe } from '@ngx-translate/core';
+import { CardDetailsModal } from '../../card-details-modal/container/card-details-modal/card-details-modal';
 
-interface CardDataWithAccount extends CardWithDetails {
-  account: CardAccount | undefined;
-}
+
 
 @Component({
   selector: 'app-card-details',
   templateUrl: './card-details.html',
   styleUrls: ['./card-details.scss'],
-  imports: [CommonModule, RouteLoader],
+  imports: [
+    CommonModule,
+    RouteLoader,
+    ButtonComponent,
+    BasicCard,
+    ErrorStates,
+    CardImage,
+    CardInfoSection,
+    QuickActionsSection,TranslatePipe,CardDetailsModal
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardDetails implements OnInit {
@@ -40,6 +62,8 @@ export class CardDetails implements OnInit {
 
   protected readonly loading$ = this.store.select(selectCardDetailsLoading);
   protected readonly error$ = this.store.select(selectCardDetailsError);
+  protected readonly isDetailsModalOpen$ = this.store.select(selectIsCardDetailsModalOpen);
+
 
   protected readonly cardData$ = combineLatest([
     this.store.select(selectCardDetails),
@@ -53,53 +77,36 @@ export class CardDetails implements OnInit {
 
       if (detail.accountId) {
         return this.store.select(selectAccountById(detail.accountId)).pipe(
-          map((account): CardDataWithAccount => ({
-            cardId: this.cardId,
-            details: detail,
-            imageBase64: image,
-            account,
-          }))
+          map(
+            (
+              account,
+            ): CardViewData => ({
+              cardId: this.cardId,
+              details: detail,
+              imageBase64: image,
+              account,
+              currency: account?.currency ?? 'N/A',
+              formattedBalance: account
+                ? `${account.currency} ${account.balance.toLocaleString()}`
+                : 'N/A',
+              shouldShowCreditLimit:
+                detail.type === 'CREDIT' && !!detail.creditLimit,
+              formattedCreditLimit:
+                account && detail.creditLimit
+                  ? `${account.currency} ${detail.creditLimit.toLocaleString()}`
+                  : 'N/A',
+              isActiveStatus: detail.status === 'ACTIVE',
+            }),
+          ),
         );
       }
 
-      return of({
-        cardId: this.cardId,
-        details: detail,
-        imageBase64: image,
-        account: undefined,
-      });
-    })
-  );
-
-  protected readonly currency$ = this.cardData$.pipe(
-    map(data => data?.account?.currency ?? 'N/A')
-  );
-
-  protected readonly formattedBalance$ = this.cardData$.pipe(
-    map(data => {
-      if (!data?.account) return 'N/A';
-      return `${data.account.currency} ${data.account.balance.toLocaleString()}`;
-    })
-  );
-
-  protected readonly formattedCreditLimit$ = this.cardData$.pipe(
-    map(data => {
-      if (!data?.account || !data.details.creditLimit) return 'N/A';
-      return `${data.account.currency} ${data.details.creditLimit.toLocaleString()}`;
-    })
-  );
-
-  protected readonly shouldShowCreditLimit$ = this.cardData$.pipe(
-    map(data => data?.details.type === 'CREDIT' && !!data.details.creditLimit)
-  );
-
-  protected readonly isActiveStatus$ = this.cardData$.pipe(
-    map(data => data?.details.status === 'ACTIVE')
+      return of(null);
+    }),
   );
 
   ngOnInit(): void {
-    this.store.dispatch(loadCardAccounts());
-    this.store.dispatch(loadCardDetails({ cardId: this.cardId }));
+    this.loadCardData();
   }
 
   protected handleBack(): void {
@@ -120,5 +127,20 @@ export class CardDetails implements OnInit {
 
   protected handleViewTransactions(): void {
     this.router.navigate(['/bank/products/cards/transactions', this.cardId]);
+  }
+
+  protected handleRetry(): void {
+    this.loadCardData();
+  }
+  protected handleOpenDetailsModal(): void {
+  this.store.dispatch(openCardDetailsModal({ cardId: this.cardId }));
+}
+
+protected handleCloseDetailsModal(): void {
+  this.store.dispatch(closeCardDetailsModal());
+}
+  private loadCardData(): void {
+    this.store.dispatch(loadCardAccounts());
+    this.store.dispatch(loadCardDetails({ cardId: this.cardId }));
   }
 }

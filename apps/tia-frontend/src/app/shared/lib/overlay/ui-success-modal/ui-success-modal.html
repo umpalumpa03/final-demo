@@ -1,0 +1,17 @@
+<app-ui-modal [isOpen]="isOpen()" (closed)="closed.emit()">
+  <div class="success-modal">
+    <div class="success-modal__content">
+      <div class="success-modal__icon">
+        <img src="./images/svg/success.svg" alt="Success" />
+      </div>
+      <h3 class="success-modal__title">{{ title() }}</h3>
+      <p class="success-modal__description">{{ description() }}</p>
+    </div>
+
+    <footer class="success-modal__footer">
+      <app-button variant="default" [fullWidth]="true" (click)="done.emit()">
+        {{ buttonText() }}
+      </app-button>
+    </footer>
+  </div>
+</app-ui-modal>

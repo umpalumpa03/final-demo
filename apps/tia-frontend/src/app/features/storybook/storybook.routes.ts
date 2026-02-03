@@ -1,10 +1,13 @@
 import { Routes } from '@angular/router';
+// import { supportRoleGuard } from '../../core/guards/support-role.guard';
 
 export const storybookRoutes: Routes = [
   {
     path: 'storybook',
     loadComponent: () =>
       import('./container/storybook.container').then((c) => c.LibraryContainer),
+    // canActivate: [supportRoleGuard],
+
     children: [
       {
         path: '',

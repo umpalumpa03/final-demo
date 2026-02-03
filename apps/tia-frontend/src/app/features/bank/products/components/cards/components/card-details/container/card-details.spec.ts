@@ -5,10 +5,16 @@ import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { describe, it, expect, beforeEach, vi, Mock } from 'vitest';
 import { CardDetails } from './card-details';
-import { loadCardDetails, loadCardAccounts } from '../../../../../../../../store/products/cards/cards.actions';
+import {
+  loadCardDetails,
+  loadCardAccounts,
+  openCardDetailsModal,
+  closeCardDetailsModal,
+} from '../../../../../../../../store/products/cards/cards.actions';
 import * as CardsSelectors from '../../../../../../../../store/products/cards/cards.selectors';
 import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
 import { CardAccount } from '@tia/shared/models/cards/card-account.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface MockStore {
   select: Mock;
@@ -81,6 +87,12 @@ describe('CardDetails', () => {
         if (selector === CardsSelectors.selectCardDetailsError) {
           return of(null);
         }
+        if (selector === CardsSelectors.selectIsCardDetailsModalOpen) {
+          return of(false);
+        }
+        if (selector === CardsSelectors.selectCardDetailsModalData) {
+          return of(null);
+        }
         if (typeof selector === 'function' || selector.projector) {
           return of(mockAccount);
         }
@@ -88,7 +100,6 @@ describe('CardDetails', () => {
       }),
       dispatch: vi.fn(),
     };
-
     const routerMock: MockRouter = {
       navigate: vi.fn(),
     };
@@ -102,7 +113,7 @@ describe('CardDetails', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [CardDetails],
+      imports: [CardDetails, TranslateModule.forRoot()],
       providers: [
         { provide: Store, useValue: storeMock },
         { provide: Router, useValue: routerMock },
@@ -124,7 +135,9 @@ describe('CardDetails', () => {
 
   it('should dispatch actions on init', () => {
     expect(store.dispatch).toHaveBeenCalledWith(loadCardAccounts());
-    expect(store.dispatch).toHaveBeenCalledWith(loadCardDetails({ cardId: mockCardId }));
+    expect(store.dispatch).toHaveBeenCalledWith(
+      loadCardDetails({ cardId: mockCardId }),
+    );
   });
 
   it('should navigate back', () => {
@@ -149,6 +162,20 @@ describe('CardDetails', () => {
 
   it('should navigate to transactions', () => {
     component['handleViewTransactions']();
-    expect(router.navigate).toHaveBeenCalledWith(['/bank/products/cards/transactions', mockCardId]);
+    expect(router.navigate).toHaveBeenCalledWith([
+      '/bank/products/cards/transactions',
+      mockCardId,
+    ]);
+  });
+  it('should dispatch openCardDetailsModal', () => {
+    component['handleOpenDetailsModal']();
+    expect(store.dispatch).toHaveBeenCalledWith(
+      openCardDetailsModal({ cardId: mockCardId }),
+    );
+  });
+
+  it('should dispatch closeCardDetailsModal', () => {
+    component['handleCloseDetailsModal']();
+    expect(store.dispatch).toHaveBeenCalledWith(closeCardDetailsModal());
   });
 });
