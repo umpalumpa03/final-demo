@@ -44,8 +44,9 @@ export interface CategoryBreakdown {
   category: string;
   amount: number;
   percentage: number;
-  icon: string;
+  icon?: string;
   color: string;
+  isImageIcon?: boolean;
 }
 
 export interface IncomeVsExpenses {
@@ -62,4 +63,15 @@ export interface SavingsTrend {
 export interface DailySpending {
   day: number;
   amount: number;
+}
+
+export interface Transaction {
+  id: string;      
+  title: string;   
+  category: string;
+  amount: number;  
+  date: string;   
+  type: 'expense' | 'income'; 
+  icon?:string;
+  isImageIcon?: boolean;
 }

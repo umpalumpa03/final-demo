@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import {DecimalPipe, CurrencyPipe } from '@angular/common';
 
 @Component({
@@ -14,4 +14,6 @@ export class CategoryItem {
   public readonly percentage = input.required<number>();
   public readonly color = input.required<string>();
   public readonly icon = input.required<string>();
+  public readonly iconBgColor = computed(() => `${this.color()}1A`);
+  public readonly isPath = computed(() => this.icon().startsWith('/'));
 }
