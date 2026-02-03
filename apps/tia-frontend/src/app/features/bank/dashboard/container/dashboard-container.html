@@ -7,7 +7,7 @@
     [hasNoStyle]="true"
     [items]="myItems()"
     [layout]="'grid'"
-    [columns]="{ default: 2, md:2,sm: 1 }"
+    [columns]="gridColumns"
     [colspans]="dynamicColspans()"
     (itemsChange)="onItemsChange($event)"
     containerTitle=""
