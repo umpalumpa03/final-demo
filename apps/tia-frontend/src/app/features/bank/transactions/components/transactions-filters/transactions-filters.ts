@@ -1,35 +1,54 @@
-import { Component, inject, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, tap } from 'rxjs';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
 import { Currency } from '@tia/shared/models/transactions/base.models';
-import { ShowcaseCard } from "../../../../storybook/shared/showcase-card/showcase-card";
-import { LibraryTitle } from "../../../../storybook/shared/library-title/library-title";
+import { ShowcaseCard } from '../../../../storybook/shared/showcase-card/showcase-card';
+import { LibraryTitle } from '../../../../storybook/shared/library-title/library-title';
+import { FilterConfig } from '../../models/transactions-filters.models';
+import { getTransactionFiltersConfig } from '../../config/transactions-filters-data';
 
 @Component({
   selector: 'app-transactions-filters',
-  imports: [ReactiveFormsModule, TextInput, Dropdowns, ShowcaseCard, LibraryTitle],
+  imports: [
+    ReactiveFormsModule,
+    TextInput,
+    Dropdowns,
+    ShowcaseCard,
+    LibraryTitle,
+  ],
   templateUrl: './transactions-filters.html',
   styleUrl: './transactions-filters.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransactionsFilters {
-  private fb = inject(FormBuilder);
+  private readonly fb = inject(FormBuilder);
 
-  public categoryOptions = input.required<SelectOption[]>();
-  public accountOptions = input<SelectOption[]>([]);
-  public filterChange = output<ITransactionFilter>();
+  public readonly filterChange = output<ITransactionFilter>();
+  public readonly categoryOptions = input.required<SelectOption[]>();
+  public readonly accountOptions = input<SelectOption[]>([]);
+  public readonly currencyOptions = input<SelectOption[]>([]);
 
-  public currencyOptions: SelectOption[] = [
-    { label: 'GEL', value: 'GEL' },
-    { label: 'USD', value: 'USD' },
-    { label: 'EUR', value: 'EUR' },
-  ];
+  public readonly filtersConfig = computed<FilterConfig[]>(() =>
+    getTransactionFiltersConfig(
+      this.categoryOptions(),
+      this.accountOptions(),
+      this.currencyOptions(),
+    ),
+  );
 
-  public filterForm = this.fb.group({
+  public readonly filterForm = this.fb.group({
     searchCriteria: [''],
     category: [null as string | null],
     amountFrom: [null as number | null],
@@ -39,6 +58,7 @@ export class TransactionsFilters {
     dateFrom: [null as string | null],
     dateTo: [null as string | null],
   });
+
   constructor() {
     this.filterForm.valueChanges
       .pipe(
@@ -46,10 +66,7 @@ export class TransactionsFilters {
         distinctUntilChanged(
           (prev, curr) => JSON.stringify(prev) === JSON.stringify(curr),
         ),
-        takeUntilDestroyed(),
-      )
-      .subscribe((values) => {
-        this.filterChange.emit({
+        map((values) => ({
           searchCriteria: values.searchCriteria || '',
           category: values.category || undefined,
           amountFrom: values.amountFrom || undefined,
@@ -58,7 +75,12 @@ export class TransactionsFilters {
           currency: (values.currency as Currency) || undefined,
           dateFrom: values.dateFrom || undefined,
           dateTo: values.dateTo || undefined,
-        });
-      });
+        })),
+        tap((filters) => {
+          this.filterChange.emit(filters);
+        }),
+        takeUntilDestroyed(),
+      )
+      .subscribe();
   }
 }
