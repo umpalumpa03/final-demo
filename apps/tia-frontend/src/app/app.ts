@@ -1,4 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+} from '@angular/core';
 import {
   NavigationEnd,
   NavigationStart,
@@ -8,7 +12,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, pairwise, startWith } from 'rxjs';
-import { RouteLoader } from "./shared/lib/feedback/route-loader/route-loader";
+import { RouteLoader } from './shared/lib/feedback/route-loader/route-loader';
 
 @Component({
   imports: [RouterModule, RouteLoader],

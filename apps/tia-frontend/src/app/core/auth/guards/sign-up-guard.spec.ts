@@ -1,6 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn } from '@angular/router';
-
 import { signUpGuard } from './sign-up-guard';
 import { TokenService } from '../services/token.service';
 

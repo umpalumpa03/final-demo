@@ -12,7 +12,7 @@
     height: 6.4rem;
     background-color: $blue-royal-secondary;
     border-radius: 999rem;
-    margin-bottom: 1.6rem
+    margin-bottom: 1.6rem;
   }
 
   &__title {
@@ -41,7 +41,7 @@
       @include font-inter(500, 1.4rem, 2rem);
       color: $gray-800;
     }
-    
+
     &__phone {
       width: 100%;
     }
@@ -76,6 +76,7 @@
     border: 1px solid $gray-400;
     border-radius: 2rem;
     width: fit-content;
+    min-width: 6.5rem;
   }
 
   &__status-dot {
@@ -105,6 +106,17 @@
     gap: 0.4rem;
     font-size: 1.2rem;
     user-select: none;
+  }
+
+  &__resend-left {
+    @include flex-center();
+
+    padding: 0.4rem 0.6rem;
+    min-width: 2rem;
+
+    border-radius: 2rem;
+    background-color: var(--color-primary);
+    color: $white;
   }
 
   &__link {

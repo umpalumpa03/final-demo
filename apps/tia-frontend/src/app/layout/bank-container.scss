@@ -1,4 +1,5 @@
 @use '../shared/styles/mixins' as *;
+@use '../shared/styles/palette' as *;
 
 .bank-container-wrapper {
   @include display-flex(row);
@@ -8,4 +9,22 @@
   @include display-flex(column);
   flex: 1;
   min-width: 0;
+}
+
+.inactivity-overlay {
+  @include flex-center(column);
+
+  &__circle {
+    width: 6.4rem;
+    height: 6.4rem;
+    border-radius: 50%;
+    @include flex-center();
+
+    &--timer {
+      background: $blue-royal-secondary;
+      color: $blue-800;
+      @include font-inter(600, 2.8rem);
+      margin-top: 2.4rem;
+    }
+  }
 }

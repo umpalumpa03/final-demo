@@ -444,7 +444,7 @@ describe('AuthService', () => {
       const mockResponse = { success: true };
 
       const promise = new Promise<void>((resolve) => {
-        service.resetPhoneOtp().subscribe({
+        service.resendPhoneOtp().subscribe({
           next: (res) => {
             expect(res.success).toBe(true);
             resolve();
@@ -452,7 +452,7 @@ describe('AuthService', () => {
         });
       });
 
-      const req = httpMock.expectOne(`${baseUrl}/mfa/otp-resend`);
+      const req = httpMock.expectOne(`${baseUrl}/phone/otp-resend`);
       expect(req.request.body).toEqual({ challengeId: 'challenge-123' });
       req.flush(mockResponse);
       await promise;
@@ -462,7 +462,7 @@ describe('AuthService', () => {
       service.setChellangeId('');
 
       const promise = new Promise<void>((resolve) => {
-        service.resetPhoneOtp().subscribe({
+        service.resendPhoneOtp().subscribe({
           error: (err) => {
             expect(err.message).toBe('Missing forgot password challengeId');
             resolve();
@@ -490,7 +490,7 @@ describe('AuthService', () => {
 
       const req = httpMock.expectOne(`${baseUrl}/mfa/otp-resend`);
       expect(req.request.body).toEqual({ challengeId: 'challenge-123' });
-      expect(req.request.headers.get('Authorization')).toBe('Bearer test-signup-token');
+      expect(req.request.headers.get('Authorization')).toBe('Bearer test-access-token');
       req.flush(mockResponse);
       await promise;
     });
@@ -500,8 +500,6 @@ describe('AuthService', () => {
     it('should initialize with default signal values', () => {
       expect(service.isLoginLoading()).toBe(false);
       expect(service.errorMessage()).toBe(false);
-      expect(service.successMessage()).toBe(false);
-      expect(service.infoMessage()).toBe(false);
     });
   });
 });

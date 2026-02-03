@@ -2,12 +2,12 @@ import { IFeaturePanel } from '../models/auth.models';
 
 export const SIGN_IN_FORM = {
   username: {
-    label: 'auth.sign-in.passwordLabel',
-    placeholder: 'auth.sign-in.passwordPlaceholder',
+    label: 'auth.sign-in.username',
+    placeholder: 'auth.sign-in.usernamePlaceholder',
   },
   password: {
     label: 'auth.sign-in.passwordLabel',
-    placeholder: 'auth.sign-in.passwordPlaceholder',
+    placeholder: 'auth.sign-in.usernamePlaceholder',
   },
 } as const;
 
