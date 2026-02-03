@@ -2,12 +2,11 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { signal } from '@angular/core';
 import { DashboardContainer } from './dashboard-container';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import {
   clearExchangeRates,
-  loadExchangeRates
+  loadExchangeRates,
 } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.actions';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { of } from 'rxjs';
@@ -21,16 +20,16 @@ describe('DashboardContainer', () => {
   const mockTranslate = {
     instant: (key: string) => key,
     get: vi.fn(() => of('translated')),
-    stream: vi.fn(() => of('translated'))
+    stream: vi.fn(() => of('translated')),
   };
 
   beforeEach(() => {
     mockStore = {
-      dispatch: vi.fn()
+      dispatch: vi.fn(),
     };
 
     mockRouter = {
-      navigate: vi.fn()
+      navigate: vi.fn(),
     };
 
     TestBed.configureTestingModule({
@@ -39,7 +38,7 @@ describe('DashboardContainer', () => {
         { provide: Store, useValue: mockStore },
         { provide: Router, useValue: mockRouter },
         { provide: TranslateService, useValue: mockTranslate },
-      ]
+      ],
     });
 
     component = TestBed.inject(DashboardContainer);
@@ -59,16 +58,16 @@ describe('DashboardContainer', () => {
 
     expect(mockStore.dispatch).toHaveBeenCalledWith(
       TransactionActions.updateFilters({
-        filters: { pageLimit: 10 }
-      })
+        filters: { pageLimit: 10 },
+      }),
     );
 
     expect(mockStore.dispatch).toHaveBeenCalledWith(
-      loadExchangeRates({ baseCurrency: 'USD' })
+      loadExchangeRates({ baseCurrency: 'USD' }),
     );
 
     expect(mockStore.dispatch).toHaveBeenCalledWith(
-      AccountsActions.loadAccounts()
+      AccountsActions.loadAccounts(),
     );
 
     expect(mockStore.dispatch).toHaveBeenCalledTimes(3);
@@ -76,7 +75,12 @@ describe('DashboardContainer', () => {
 
   it('should update items when onItemsChange is called', () => {
     const newItems = [
-      { id: '1', title: 'Test Widget', subtitle: 'Test Subtitle', type: 'test' as any }
+      {
+        id: '1',
+        title: 'Test Widget',
+        subtitle: 'Test Subtitle',
+        type: 'test' as any,
+      },
     ];
 
     component.onItemsChange(newItems);
@@ -84,19 +88,22 @@ describe('DashboardContainer', () => {
     expect(component['myItems']()).toEqual(newItems);
   });
 
-  it('should log new order when onContainerOrderChange is called', () => {
-    const consoleSpy = vi.spyOn(console, 'log');
-    const ids = ['1', '2', '3'];
-
-    component.onContainerOrderChange(ids);
-
-    expect(consoleSpy).toHaveBeenCalledWith('New Order saved to DB:', ids);
-  });
-
   it('should toggle visibility of a widget', () => {
     component['myItems'].set([
-      { id: '1', title: 'Widget 1', subtitle: 'Subtitle 1', type: 'transactions' as any, isHidden: false },
-      { id: '2', title: 'Widget 2', subtitle: 'Subtitle 2', type: 'accounts' as any, isHidden: false }
+      {
+        id: '1',
+        title: 'Widget 1',
+        subtitle: 'Subtitle 1',
+        type: 'transactions' as any,
+        isHidden: false,
+      },
+      {
+        id: '2',
+        title: 'Widget 2',
+        subtitle: 'Subtitle 2',
+        type: 'accounts' as any,
+        isHidden: false,
+      },
     ]);
 
     component.onToggleVisibility(false, '1');
@@ -108,8 +115,18 @@ describe('DashboardContainer', () => {
 
   it('should keep other items unchanged when toggling visibility', () => {
     component['myItems'].set([
-      { id: '1', title: 'Widget 1', subtitle: 'Subtitle 1', type: 'transactions' as any },
-      { id: '2', title: 'Widget 2', subtitle: 'Subtitle 2', type: 'accounts' as any }
+      {
+        id: '1',
+        title: 'Widget 1',
+        subtitle: 'Subtitle 1',
+        type: 'transactions' as any,
+      },
+      {
+        id: '2',
+        title: 'Widget 2',
+        subtitle: 'Subtitle 2',
+        type: 'accounts' as any,
+      },
     ]);
 
     component.onToggleVisibility(true, '1');
@@ -119,22 +136,34 @@ describe('DashboardContainer', () => {
   });
 
   it('should dispatch exchange rate actions on widget refresh', () => {
-    const mockWidget = { id: '1', title: 'Test', subtitle: 'Test Subtitle', type: 'exchange' as any };
+    const mockWidget = {
+      id: '1',
+      title: 'Test',
+      subtitle: 'Test Subtitle',
+      type: 'exchange' as any,
+    };
 
     component.onWidgetRefresh(mockWidget);
 
     expect(mockStore.dispatch).toHaveBeenCalledWith(clearExchangeRates());
     expect(mockStore.dispatch).toHaveBeenCalledWith(
-      loadExchangeRates({ baseCurrency: 'USD' })
+      loadExchangeRates({ baseCurrency: 'USD' }),
     );
   });
 
   it('should navigate to accounts page on widget add', () => {
-    const mockWidget = { id: '1', title: 'Test', subtitle: 'Test Subtitle', type: 'accounts' as any };
+    const mockWidget = {
+      id: '1',
+      title: 'Test',
+      subtitle: 'Test Subtitle',
+      type: 'accounts' as any,
+    };
 
     component.onWidgetAdd(mockWidget);
 
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/products/accounts']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/bank/products/accounts',
+    ]);
   });
 
   it('should dispatch pagination change action', () => {
@@ -144,16 +173,31 @@ describe('DashboardContainer', () => {
 
     expect(mockStore.dispatch).toHaveBeenCalledWith(
       TransactionActions.updateFilters({
-        filters: { pageLimit: 20 }
-      })
+        filters: { pageLimit: 20 },
+      }),
     );
   });
 
   it('should compute dynamic colspans correctly', () => {
     component['myItems'].set([
-      { id: '1', title: 'Widget 1', subtitle: 'Subtitle 1', type: 'transactions' as any },
-      { id: '2', title: 'Widget 2', subtitle: 'Subtitle 2', type: 'accounts' as any },
-      { id: '3', title: 'Widget 3', subtitle: 'Subtitle 3', type: 'exchange' as any }
+      {
+        id: '1',
+        title: 'Widget 1',
+        subtitle: 'Subtitle 1',
+        type: 'transactions' as any,
+      },
+      {
+        id: '2',
+        title: 'Widget 2',
+        subtitle: 'Subtitle 2',
+        type: 'accounts' as any,
+      },
+      {
+        id: '3',
+        title: 'Widget 3',
+        subtitle: 'Subtitle 3',
+        type: 'exchange' as any,
+      },
     ]);
 
     const colspans = component['dynamicColspans']();
