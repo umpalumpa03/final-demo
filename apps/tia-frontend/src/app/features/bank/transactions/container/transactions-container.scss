@@ -1,6 +1,10 @@
 @use '../../../../shared/styles/palette' as *;
 @use '../../../../shared/styles/mixins' as *;
-.transcaction-table-wrapper {
+.transaction-filters-wrapper {
+  margin-bottom: 2.4rem;
+}
+
+.transaction-table-wrapper {
   @include flex-center();
   &__scroll-container {
     width: 100%;
