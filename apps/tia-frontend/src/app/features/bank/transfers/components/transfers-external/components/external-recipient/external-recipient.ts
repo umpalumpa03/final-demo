@@ -33,7 +33,6 @@ import { TransferStore } from '../../../../store/transfers.store';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { TransferExternalService } from '../../../../services/transfer.external.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
-import { OtpModal } from "@tia/shared/lib/overlay/ui-otp-modal/otp-modal";
 
 @Component({
   selector: 'app-external-recipient',
@@ -43,8 +42,7 @@ import { OtpModal } from "@tia/shared/lib/overlay/ui-otp-modal/otp-modal";
     ButtonComponent,
     ReactiveFormsModule,
     AlertTypesWithIcons,
-    OtpModal
-],
+  ],
   providers: [],
   templateUrl: './external-recipient.html',
   styleUrl: './external-recipient.scss',

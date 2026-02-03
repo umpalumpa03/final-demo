@@ -18,6 +18,9 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { tap } from 'rxjs';
+import { SuccessModal } from '@tia/shared/lib/overlay/ui-success-modal/ui-success-modal';
+import { Router } from '@angular/router';
+import { OtpModal } from "@tia/shared/lib/overlay/ui-otp-modal/otp-modal";
 
 @Component({
   selector: 'app-external-amount',
@@ -28,7 +31,9 @@ import { tap } from 'rxjs';
     ReactiveFormsModule,
     AlertTypesWithIcons,
     DecimalPipe,
-  ],
+    SuccessModal,
+    OtpModal
+],
   providers: [],
   templateUrl: './external-amount.html',
   styleUrl: './external-amount.scss',
@@ -41,6 +46,7 @@ export class ExternalAmount implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly breakpointService = inject(BreakpointService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
 
   public readonly isMobile = this.breakpointService.isMobile;
   public readonly showSuccess = signal(false);
@@ -56,6 +62,9 @@ export class ExternalAmount implements OnInit {
     this.transferStore.selectedRecipientAccount;
   public readonly manualRecipientName = this.transferStore.manualRecipientName;
   public readonly recipientInfo = this.transferStore.recipientInfo;
+  public readonly successfullTransfer = this.transferStore.transferSuccess;
+  public readonly requiresOtp = this.transferStore.requiresOtp;
+  // public readonly errorFromState = this.transferStore.error;
 
   public readonly isExternalIban = computed(
     () => this.transferStore.recipientType() === 'iban-different-bank',
@@ -138,6 +147,7 @@ export class ExternalAmount implements OnInit {
     );
   }
   public onTransfer(): void {
+    // const requiresOtp = this.transferStore
     if (this.amountInput.valid) {
       this.transferStore.setDescription(this.descriptionInput.value || '');
       this.transferExternalService.handleSameBankTransfer();
@@ -149,5 +159,8 @@ export class ExternalAmount implements OnInit {
     this.showSuccess.set(true);
     setTimeout(() => this.showSuccess.set(false), 3000);
   }
+  public onSuccessDone(): void {
+    this.transferStore.reset();
+    this.router.navigate(['/bank/transfers/external/accounts']);
+  }
 }
- 

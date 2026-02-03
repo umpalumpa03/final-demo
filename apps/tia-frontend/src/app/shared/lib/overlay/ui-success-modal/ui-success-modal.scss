@@ -5,6 +5,7 @@
   @include display-flex(column);
   gap: 2.4rem;
   padding-top: 1.6rem;
+  
 
   &__content {
     @include flex-center(column);

@@ -144,6 +144,15 @@
     </app-button>
   </footer>
 </main>
+<app-success-modal
+  [title]="'transfers.confirmation.title' | translate"
+  [description]="'transfers.confirmation.success' | translate"
+  [buttonText]="'common.buttons.close' | translate"
+  [isOpen]="successfullTransfer()"
+  (closed)="onSuccessDone()"
+  (done)="onSuccessDone()"
+></app-success-modal>
+<app-otp-modal [isOpen]="requiresOtp()"></app-otp-modal>
 
 @if (showSuccess()) {
 <div class="external-amount__success-toast">
