@@ -1,26 +1,47 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { of, lastValueFrom } from 'rxjs';
-
 import { VerifySignin } from './verify-signin';
 import { AuthService } from '../../../services/auth.service';
+import { ActivatedRoute, provideRouter } from '@angular/router';
+import { signal } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { of } from 'rxjs';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { IVerified } from '../../../models/otp-verification.models';
+import { IMfaVerifyRequest } from '../../../models/authRequest.models';
 
-describe('VerifySignin', () => {
-  let fixture: ComponentFixture<VerifySignin>;
+describe('VerifySignin Component', () => {
   let component: VerifySignin;
-  let authMock: any;
+  let fixture: ComponentFixture<VerifySignin>;
+  let authServiceMock: {
+    getChallengeId: ReturnType<typeof vi.fn>;
+    verifyMfa: ReturnType<typeof vi.fn>;
+    resendVerificationCode: ReturnType<typeof vi.fn>;
+    otpError: ReturnType<typeof signal>;
+  };
 
   beforeEach(async () => {
-    authMock = {
-      verifyMfa: vi.fn().mockReturnValue(of({ success: true })),
+    authServiceMock = {
       getChallengeId: vi.fn().mockReturnValue('challenge-123'),
+      verifyMfa: vi.fn().mockReturnValue(of({})),
+      resendVerificationCode: vi.fn().mockReturnValue(of({})),
+      otpError: signal(null),
     };
 
     await TestBed.configureTestingModule({
-      imports: [VerifySignin],
-      providers: [{ provide: AuthService, useValue: authMock }],
-      schemas: [NO_ERRORS_SCHEMA],
+      imports: [VerifySignin, TranslateModule.forRoot()],
+      providers: [
+        provideRouter([]),
+        { provide: AuthService, useValue: authServiceMock },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({}),
+            queryParams: of({}),
+            snapshot: { params: {}, queryParams: {} },
+          },
+        },
+        TranslateService,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(VerifySignin);
@@ -28,29 +49,47 @@ describe('VerifySignin', () => {
     fixture.detectChanges();
   });
 
-  it('creates the component with default values', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
-    expect(component.title).toBe('OTP Verification');
-    expect(component.subText).toContain("We've sent a 6-digit code");
-    expect(component.submitBtnName).toBe('Verify');
   });
 
-  it('submitOtp should call authService.getChallengeId and verifyMfa with correct payload', () => {
-    const code = '123456';
+  it('should verify MFA with correct payload when isCalled is true', () => {
+    const event: IVerified = {
+      isCalled: true,
+      otp: '123456',
+    };
 
-    const returned = component.submitOtp(code);
-
-    expect(authMock.getChallengeId).toHaveBeenCalled();
-    expect(authMock.verifyMfa).toHaveBeenCalledWith({
-      code,
+    const expectedPayload: IMfaVerifyRequest = {
+      code: '123456',
       challengeId: 'challenge-123',
-    });
-    expect(returned).toBeDefined();
+    };
+
+    component.verifyOtp(event);
+
+    expect(authServiceMock.getChallengeId).toHaveBeenCalled();
+    expect(authServiceMock.verifyMfa).toHaveBeenCalledWith(expectedPayload);
   });
 
-  it('submitOtp should return the observable and resolve to expected value', async () => {
-    const code = '654321';
-    const result = await lastValueFrom(component.submitOtp(code));
-    expect(result).toEqual({ success: true });
+  it('should not verify MFA when isCalled is false', () => {
+    const event: IVerified = {
+      isCalled: false,
+      otp: '123456',
+    };
+
+    component.verifyOtp(event);
+
+    expect(authServiceMock.verifyMfa).not.toHaveBeenCalled();
+  });
+
+  it('should resend verification code when isCalled is true', () => {
+    component.resendOtp(true);
+
+    expect(authServiceMock.resendVerificationCode).toHaveBeenCalled();
+  });
+
+  it('should not resend verification code when isCalled is false', () => {
+    component.resendOtp(false);
+
+    expect(authServiceMock.resendVerificationCode).not.toHaveBeenCalled();
   });
 });

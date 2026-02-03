@@ -23,8 +23,6 @@ export const initialState: NotificationsState = {
   isFetching: false,
   hasError: false,
   limitPerPage: 10,
-  unreadNotificationsNumber: 0,
-  isEmpty: true,
 };
 
 export const NotificationsStore = signalStore(
@@ -39,6 +37,11 @@ export const NotificationsStore = signalStore(
         store.items().length === store.selectedItems().length &&
         store.items().length > 0
       );
+    }),
+    isIndeterminate: computed(() => {
+      const selectedCount = store.selectedItems().length;
+      const totalCount = store.items().length;
+      return selectedCount > 0 && selectedCount < totalCount;
     }),
   })),
   withMethods((store) => {
@@ -134,7 +137,6 @@ export const NotificationsStore = signalStore(
                       .map((item) => ({ ...item, isRead: true })),
                     isLoading: false,
                     hasUnread: false,
-                    unreadNotificationsNumber: 0,
                   });
                 },
                 error: () => patchState(store, { hasError: true }),
@@ -180,9 +182,6 @@ export const NotificationsStore = signalStore(
               );
             patchState(store, {
               items: updatedItems,
-              unreadNotificationsNumber: updatedItems.filter(
-                (item) => !item.isRead,
-              ).length,
               hasUnread: updatedItems.some((item) => !item.isRead),
             });
           }),
@@ -249,6 +248,10 @@ export const NotificationsStore = signalStore(
           }),
         ),
       ),
+
+      resetState(): void {
+        patchState(store, () => initialState);
+      },
 
       toggleSelectAll(): void {
         if (store.isAllSelected()) {

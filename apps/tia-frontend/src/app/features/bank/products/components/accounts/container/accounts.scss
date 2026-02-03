@@ -3,6 +3,28 @@
 
 .accounts-page {
   min-height: 100vh;
+  position: relative;
+
+  &__alert {
+    position: fixed;
+    bottom: auto;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    max-width: 50rem;
+    width: calc(100% - 4rem);
+
+    &--bottom-right {
+      bottom: 2rem;
+      top: auto;
+      left: auto;
+      right: 2rem;
+      transform: none;
+      max-width: 40rem;
+      width: calc(100% - 4rem);
+    }
+  }
 
   &__content {
     max-width: 140rem;

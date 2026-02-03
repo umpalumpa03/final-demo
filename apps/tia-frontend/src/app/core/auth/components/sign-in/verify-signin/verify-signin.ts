@@ -1,26 +1,34 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
 import { AuthService } from '../../../services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IMfaVerifyRequest } from '../../../models/authRequest.models';
+import { IVerified } from '../../../models/otp-verification.models';
 
 @Component({
   selector: 'app-verify-signin',
   imports: [OtpVerification, ReactiveFormsModule],
   templateUrl: './verify-signin.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VerifySignin {
   private authService = inject(AuthService);
+  public otpError = this.authService.otpError;
 
-  public isLoading = signal(false);
-  public title = 'OTP Verification';
-  public subText = "We've sent a 6-digit code to test";
-  public submitBtnName = 'Verify';
+  public verifyOtp(event: IVerified): void {
+    if (event.isCalled) {
+      this.authService
+        .verifyMfa({
+          code: event.otp,
+          challengeId: this.authService.getChallengeId(),
+        } as IMfaVerifyRequest)
+        .subscribe();
+    }
+  }
 
-  public submitOtp = (code: string) =>
-    this.authService.verifyMfa({
-      code,
-      challengeId: this.authService.getChallengeId(),
-    } as IMfaVerifyRequest);
+  public resendOtp(isCalled: boolean): void {
+    if (isCalled) {
+      this.authService.resendVerificationCode().subscribe();
+    }
+  }
 }

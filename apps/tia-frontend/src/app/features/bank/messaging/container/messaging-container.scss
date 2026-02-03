@@ -4,6 +4,7 @@
 .messaging-container {
     display: flex;
     width: 100%;
+    position: relative;
 
     &__navbar {
         max-width: 25rem;
@@ -23,5 +24,25 @@
         box-shadow:
             0rem 0.1rem 0.2rem -0.1rem rgba(0, 0, 0, 0.1),
             0rem 0.1rem 0.3rem 0rem rgba(0, 0, 0, 0.1);
+    }
+
+    .fade-alert-container {
+        max-width: 30rem;
+        width: 100%;
+        position: absolute;
+        bottom: 1.6rem;
+        right: 2.6rem;
+        z-index: 1000;
+        transition:
+            opacity 0.3s ease,
+            transform 0.3s ease;
+        opacity: 0;
+        transform: translateY(-1rem);
+        pointer-events: none;
+        &.fade-alert--visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
     }
 }

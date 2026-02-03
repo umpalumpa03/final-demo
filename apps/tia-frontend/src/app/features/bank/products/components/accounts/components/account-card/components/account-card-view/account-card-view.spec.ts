@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AccountCardViewComponent } from './account-card-view';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { provideMockStore } from '@ngrx/store/testing';
 import { AccountType } from '../../../../../../../../../shared/models/accounts/accounts.model';
+import { provideTranslateService } from '@ngx-translate/core';
 
 describe('AccountCardViewComponent', () => {
   let component: AccountCardViewComponent;
@@ -28,7 +29,7 @@ describe('AccountCardViewComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AccountCardViewComponent],
-      providers: [provideMockStore()],
+      providers: [provideMockStore(), provideTranslateService()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccountCardViewComponent);
@@ -46,50 +47,23 @@ describe('AccountCardViewComponent', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit transfer when handleTransfer is called', () => {
+  it('should emit transfer on handleTransfer', () => {
     const spy = vi.spyOn(component.transfer, 'emit');
     component.handleTransfer();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should handle rename click and save with valid name', () => {
-    component.handleRenameClick();
-    expect(component['isEditing']()).toBe(true);
-    expect(component['newName']()).toBe('Test Account');
-
-    const spy = vi.spyOn(component.rename, 'emit');
-    component['newName'].set('New Account Name');
-    component.handleSave();
-    expect(spy).toHaveBeenCalledWith('New Account Name');
-    expect(component['renamingAccountId']()).toBe('1');
-  });
-
-  it('should not emit rename when name is same or empty', () => {
-    const spy = vi.spyOn(component.rename, 'emit');
-    component['newName'].set('Test Account');
-    component.handleSave();
-    expect(spy).not.toHaveBeenCalled();
-    
-    component['newName'].set('   ');
-    component.handleSave();
-    expect(spy).not.toHaveBeenCalled();
-  });
-
-  it('should reset state when handleCancel is called', () => {
-    component['isEditing'].set(true);
-    component['newName'].set('New Name');
-    component.handleCancel();
-    expect(component['isEditing']()).toBe(false);
-    expect(component['newName']()).toBe('');
-  });
-
   it('should compute displayName from friendlyName or name', () => {
     expect(component['displayName']()).toBe('Test Account');
-    
+
     TestBed.runInInjectionContext(() => {
       fixture.componentRef.setInput('account', {
         ...mockAccount,
@@ -97,5 +71,65 @@ describe('AccountCardViewComponent', () => {
       });
     });
     expect(component['displayName']()).toBe('Test Account');
+  });
+
+  it('should set isEditing and newName on handleRenameClick', () => {
+    component.handleRenameClick();
+    expect(component['isEditing']()).toBe(true);
+    expect(component['newName']()).toBe('Test Account');
+  });
+
+  it('should emit rename with new name on handleSave', () => {
+    const spy = vi.spyOn(component.rename, 'emit');
+    component.handleRenameClick();
+    component['newName'].set('New Account Name');
+    component.handleSave();
+    expect(spy).toHaveBeenCalledWith('New Account Name');
+  });
+
+  it('should emit rename with new name on handleBlur', () => {
+    const spy = vi.spyOn(component.rename, 'emit');
+    component['isEditing'].set(true);
+    component['newName'].set('New Name via Blur');
+    component.handleBlur();
+    expect(spy).toHaveBeenCalledWith('New Name via Blur');
+  });
+
+  it('should emit renameSuccess when rename completes', () => {
+    const spy = vi.spyOn(component.renameSuccess, 'emit');
+    component['renamingAccountId'].set('1');
+    component['isEditing'].set(true);
+
+    TestBed.runInInjectionContext(() => {
+      fixture.componentRef.setInput('isRenaming', false);
+      fixture.componentRef.setInput('renameError', null);
+    });
+    fixture.detectChanges();
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should focus input element on edit', () => {
+    vi.useFakeTimers();
+    const setTimeoutSpy = vi.spyOn(global, 'setTimeout');
+
+    component['isEditing'].set(true);
+    fixture.detectChanges();
+
+    expect(setTimeoutSpy).toHaveBeenCalled();
+
+    vi.useRealTimers();
+  });
+
+  it('should set dragStart on mouseDown with left button', () => {
+    const event = new MouseEvent('mousedown', { button: 0, clientX: 100 });
+    component.onMouseDown(event);
+    expect(component['dragStart']()).toBe(100);
+  });
+
+  it('should clear dragStart on mouseUp', () => {
+    component['dragStart'].set(100);
+    component.onMouseUp();
+    expect(component['dragStart']()).toBeNull();
   });
 });

@@ -9,11 +9,9 @@
 ></app-mail-header>
 @if(isLoading()){
 <div class="loading-state">
-  <app-route-loader variant="full-page" text="Loading messages..." />
+  <app-route-loader variant="pulsing"/>
 </div>
-} @else if(error()) {
-<div>{{ error()}}</div>
-} @else if(mails().length === 0) {
+} @else if(!mails().length) {
 <app-empty-card></app-empty-card>
 }@else {
 <div>
@@ -24,6 +22,7 @@
   (checkedChange)="onMailChecked(mail.id, $event)"
   (markAsRead)="markAsRead(mail.id)"
   (deleteMail)="deleteMail(mail.id)"
+  (cardClick)="goToDetail($event)"
   > </app-mail-card>
   }
 </div>

@@ -42,16 +42,46 @@
       }
     },
     "accounts": {
-      "title": "Accounts",
+      "title": "Recipient Details",
       "recipientVerified": "Recipient verified successfully!",
       "selectRecipientAccount": "Select Recipient Account",
+      "selectSenderAccount": "Select Your Account",
+      "recipientName": {
+        "label": "Recipient Name",
+        "placeholder": "Enter recipient's full name"
+      },
       "noAccounts": {
         "header": "No Accounts Found",
         "message": "No active accounts were found for this recipient."
       },
+      "noSenderAccounts": {
+        "header": "No Accounts Available",
+        "message": "You don't have any accounts to transfer from."
+      },
       "error": {
         "header": "An Error Occurred",
         "message": "Failed to load accounts. Please try again."
+      },
+      "senderError": {
+        "header": "Failed to Load Your Accounts",
+        "message": "Unable to load your accounts. Please try again."
+      }
+    },
+    "amount": {
+      "title": "Transfer Amount",
+      "label": "Amount",
+      "from": "From",
+      "to": "To",
+      "available": "Available:",
+      "fee": "Fee",
+      "total": "Total Charge",
+      "transferButton": "Transfer Money",
+      "loadingFee": "Calculating total amount...",
+      "accountsSelected": "Accounts selected successfully!",
+      "insufficientBalance": "Insufficient balance",
+      "description": {
+        "label": "Description (optional)",
+        "placeholder": "Add a note for this transfer"
       }
     }
   },

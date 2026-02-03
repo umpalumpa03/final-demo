@@ -1,0 +1,46 @@
+<app-basic-card
+  class="confirm-card"
+  maxWidth="100%"
+  minHeight="70rem"
+  padding="2.4rem"
+>
+  <header class="confirm-card__header">
+    <app-library-title
+      [title]="ui.TITLE | translate"
+      [subtitle]="ui.SUBTITLE | translate"
+    />
+  </header>
+
+  <div class="confirm-content">
+    <app-payment-summary
+      [iconBgColor]="iconBgColor()"
+      [iconBgPath]="iconBgPath()"
+      [items]="summaryItems()"
+      [headerTitle]="provider().name!"
+      [headerSubtitle]="ui.SUMMARY_SUBHEADER | translate"
+      type="confirm-payment"
+    ></app-payment-summary>
+
+    <div class="confirm-content__options">
+      <lib-select
+        [options]="currentAccounts()!"
+        [(value)]="selectedAccountId"
+        [config]="selectConfig"
+        [maxVisibleItems]="4"
+      ></lib-select>
+    </div>
+
+    <footer class="confirm-actions">
+      <app-button [fullWidth]="true" (click)="confirm.emit()">
+        {{ 'paybill.main.confirm.confirm_btn' | translate: { amount:
+        (summary().amount) | currency: 'GEL' : 'symbol' } }}
+      </app-button>
+      <app-button
+        [fullWidth]="true"
+        variant="secondary"
+        (click)="cancelPayment.emit()"
+        >{{ 'paybill.main.confirm.cancel_btn' | translate }}</app-button
+      >
+    </footer>
+  </div>
+</app-basic-card>

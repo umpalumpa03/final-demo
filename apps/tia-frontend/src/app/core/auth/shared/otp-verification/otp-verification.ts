@@ -1,79 +1,233 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  signal,
+  computed,
+  effect,
   inject,
   input,
   output,
+  signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, finalize, tap } from 'rxjs';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
-import { OtpConfig } from '@tia/shared/lib/forms/models/otp.model';
 import { Otp } from '@tia/shared/lib/forms/otp/otp';
 import {
-  ForgotPasswordVerifyResponse,
-  IMfaVerifyResponse,
-} from '../../models/authResponse.model';
-import { OtpResponse } from '../../models/authRequest.models';
+  interval,
+  map,
+  startWith,
+  Subject,
+  Subscription,
+  takeUntil,
+  takeWhile,
+  tap,
+} from 'rxjs';
+import { TimerType } from '../../models/auth.models';
+import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
+import { numberValidator } from '../../utils/validators/form-validations';
+import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
+import {
+  IVerified,
+  OtpVerificationType,
+} from '../../models/otp-verification.models';
+import { getOtpVerificationConfig } from '../../config/otp-verification.config';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
+import { OTP_VERIFY_FORM } from '../../config/inputs.config';
+import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader";
 
 @Component({
   selector: 'app-otp-verification',
-  imports: [ButtonComponent, ReactiveFormsModule, Spinner, Otp, RouterLink],
+  imports: [
+    ButtonComponent,
+    ReactiveFormsModule,
+    Otp,
+    RouterLink,
+    TextInput,
+    SimpleAlerts,
+    TranslatePipe,
+    RouteLoader
+],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OtpVerification {
   private fb = inject(FormBuilder);
-  
-  public isLoading = input<boolean>(false);
-  public title = input<string>();
-  public subText = input<string>();
-  public submitBtnName = input<string>();
-  public otpConfig = input<OtpConfig>({ length: 4, inputType: 'number' });
-  public showIcon = input<boolean>(false);
-  public iconUrl = input<string>();
-  public showResend = input<boolean>(false);
-  public resendText = input<string>();
-  public resendLinkText = input<string>();
-  public backLink = input<string | null>(null);
-  public backLinkText = input<string>();
-  public submitMethod =
-    input.required<
-      (
-        code: string,
-      ) => Observable<
-        IMfaVerifyResponse | OtpResponse | ForgotPasswordVerifyResponse
-      >
-    >();
-  public isSubmitting = signal(false);
+  private translate = inject(TranslateService);
+  public type = input.required<OtpVerificationType>();
+  public timeLimit = input(1);
+  public timerType = input<TimerType>('phone');
+  public errorMessage = input<string | null>(null);
+  public remainingAttempts = input<number | null>(null);
+
+  public phoneErrorMessage = input<string | null>(null);
+
+  public unitedError = computed(() => {
+    const error = this.errorMessage();
+    const attempts = this.remainingAttempts();
+
+    if (error && attempts !== null) {
+      return `${error} ${attempts === undefined ? '' : `(Remaining attempts: ${attempts})`}`;
+    }
+
+    if (error) return error;
+
+    if (attempts !== null) {
+      return `Remaining attempts: ${attempts}`;
+    }
+
+    return '';
+  });
+
+  public isButtonDisabled = computed(() => {
+    if (this.unitedError() || this.phoneErrorMessage() || this.submitError()) {
+      return true;
+    }
+
+    if (this.isResendActive()) {
+      return true;
+    }
+
+    return false;
+  });
+
+  public isVerifyCalled = output<IVerified>();
+  public isResendCalled = output<boolean>();
+
+  public config = computed(() => getOtpVerificationConfig(this.type()));
+
+  public isLoading = signal(false);
   public submitError = signal<string | null>(null);
-  public submitResult = output<{ statusCode: number; message: string }>();
+
+  public iconUrl = computed(() => this.config().iconUrl);
+  public title = computed(() => this.config().title);
+  public subText = computed(() => this.config().subText);
+  public submitBtnName = computed(() => this.config().submitBtnName);
+  public backLink = computed(() => this.config().backLink);
+  public backLinkText = computed(() => this.config().backLinkText);
+
+  private destroy$ = new Subject<void>();
+  private timerSubscription?: Subscription;
+  public maxTime = computed(() => {
+    const limit = Math.abs(Number(this.timeLimit()));
+
+    return limit * 60;
+  });
+
+  public countdown = signal<number>(0);
+  private timer$ = interval(1000);
+
+  public isResendActive = signal<boolean>(false);
+
+  public onTimeout = output<void>();
+  public resendClicked = output<void>();
+
+  public formConfig = toSignal(
+    this.translate.onLangChange.pipe(
+      startWith({
+        lang: this.translate.getCurrentLang(),
+        translation: null,
+      }),
+      map(() => {
+        return translateConfig(OTP_VERIFY_FORM, (key) =>
+          this.translate.instant(key),
+        );
+      }),
+    ),
+    {
+      initialValue: translateConfig(OTP_VERIFY_FORM, (key) =>
+        this.translate.instant(key),
+      ),
+    },
+  );
+
+  public setPhoneNumberForm = this.fb.group({
+    phoneNumber: ['', [Validators.required, numberValidator]],
+  });
 
   public otpForm = this.fb.group({
     code: ['', Validators.required],
   });
 
-  public onSubmit(): void {
-    if (this.otpForm.invalid || !this.submitMethod()) return;
+  public activeForm = computed(() => {
+    return this.timerType() === 'phone'
+      ? this.setPhoneNumberForm
+      : this.otpForm;
+  });
 
-    this.isSubmitting.set(true);
-    this.submitError.set(null);
-    const code = this.otpForm.value.code;
-    this.submitMethod()(code!)
+  constructor() {
+    effect(() => {
+      this.countdown();
+      if (this.countdown() === 0) {
+        setTimeout(() => {
+          this.onTimeout.emit();
+        }, 1000);
+        this.isResendActive.set(true);
+      }
+    });
+  }
+
+  public ngOnInit(): void {
+    this.countdown.set(this.maxTime());
+    this.startTimer();
+  }
+
+  private startTimer(): void {
+    this.timerSubscription = this.timer$
       .pipe(
+        takeUntil(this.destroy$),
+        takeWhile(() => this.countdown() > 0),
         tap(() => {
-          this.submitResult.emit({ statusCode: 200, message: 'veirfied' });
+          this.countdown.update((s) => s - 1);
         }),
-        catchError((err) => {
-          return err.message;
-        }),
-        finalize(() => this.isSubmitting.set(false)),
       )
       .subscribe();
+    this.isResendActive.set(false);
+  }
+
+  public onSubmit(): void {
+    const currentForm = this.activeForm();
+
+    if (currentForm.invalid) {
+      currentForm.markAllAsTouched();
+      this.submitError.set('Please check the required fields.');
+
+      setTimeout(() => {
+        this.submitError.set('');
+      }, 5000);
+      return;
+    }
+
+    const rawValue = currentForm.getRawValue();
+    let otp: string | null = null;
+
+    if ('phoneNumber' in rawValue) {
+      otp = rawValue.phoneNumber;
+    } else if ('code' in rawValue) {
+      otp = rawValue.code;
+    }
+
+    this.isVerifyCalled.emit({
+      isCalled: true,
+      otp: otp,
+    });
+  }
+
+  public onResend(): void {
+    if (this.countdown() > 0) {
+      return;
+    }
+
+    this.isResendCalled.emit(true);
+    this.countdown.set(this.maxTime());
+    this.startTimer();
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.timerSubscription?.unsubscribe();
   }
 }

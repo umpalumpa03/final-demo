@@ -28,20 +28,34 @@ export interface TransferState {
   senderAccount: Account | null; //selected sender account, used by both flow(g)
   receiverOwnAccount: Account | null; //used by transfer internal(g)
   selectedRecipientAccount: RecipientAccount | null; //for other account same bank flow
-  manualRecipientCurrency: Currency | null; //for other account transfer other bank
-
   ///response
   recipientInfo: RecipientResponse | null; //response after view account
   transferId: string | null; //transferid from response
   challengeId: string | null; //needed for otp, this and transferid are unclear
   fee: number; //repsponse from /get-fee
+  totalWithFee: number;
+  hasInsufficientBalance: boolean;
 
   //derived state
   recipientType: RecipientType | null; // from validation, values: 'phone','iban-same-bank' , 'iban-different-bank'
-  requiresOTP: boolean; //if amount to be transfered is above 50GEL
+  requiresOtp: boolean; //if amount to be transfered is above 50GEL
+  pendingTransferId: string | null;
 
   //uistate
   currentStep: number;
   isLoading: boolean;
   error: string | null;
+  isVerified: boolean;
+  transferSuccess: boolean;
+}
+export type AccountData = Account | RecipientAccount;
+export interface FeeResponse {
+  fee: number;
+}
+export interface TransferResponse {
+  verify: {
+    challengeId: string;
+    method: string | null;
+  };
+  transferType: string;
 }

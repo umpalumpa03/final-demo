@@ -6,47 +6,48 @@ import { Notifications } from '../components/header-notifications/service/notifi
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
 import { Store } from '@ngrx/store';
 import { NotificationsStore } from '../components/header-notifications/store/notifications.store';
-import { signal } from '@angular/core';
+import { signal, ElementRef, Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
+@Component({ selector: 'app-bank-header', standalone: true, template: '' })
+class BankHeaderStub {}
+
+@Component({
+  selector: 'app-notifications-container',
+  standalone: true,
+  template: '',
+})
+class NotificationsContainerStub {}
 
 describe('BankHeaderContainer', () => {
   let component: BankHeaderContainer;
   let fixture: ComponentFixture<BankHeaderContainer>;
-  let mockNotifications: any;
-  let mockInbox: any;
-  let mockStore: any;
   let mockNotificationsStore: any;
+  let mockInbox: any;
 
   beforeEach(async () => {
-    mockNotifications = {
-      hasUnreadNotification: vi.fn(() => of({ hasUnread: true })),
-      getNotifications: vi.fn(() => of({ items: [] })),
-    };
-
     mockInbox = {
       fetchInboxCount: vi.fn(),
       inboxCount: signal(12),
     };
 
-    mockStore = {
-      select: vi.fn(() => of(null)),
-    };
-
     mockNotificationsStore = {
+      notificationItems: signal([]),
       notifications: signal([]),
       unreadCount: signal(0),
       hasUnread: signal(true),
       hasUnreadNotifications: vi.fn(),
       limitPerPage: signal(10),
       fetchNotifications: vi.fn(),
+      resetState: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
       imports: [BankHeaderContainer],
       providers: [
-        { provide: Notifications, useValue: mockNotifications },
+        { provide: Notifications, useValue: {} },
         { provide: InboxService, useValue: mockInbox },
-        { provide: Store, useValue: mockStore },
+        { provide: Store, useValue: { select: vi.fn(() => of(null)) } },
         { provide: ActivatedRoute, useValue: {} },
       ],
     })
@@ -55,31 +56,32 @@ describe('BankHeaderContainer', () => {
           providers: [
             { provide: NotificationsStore, useValue: mockNotificationsStore },
           ],
+          imports: [BankHeaderStub, NotificationsContainerStub],
         },
       })
       .compileComponents();
 
     fixture = TestBed.createComponent(BankHeaderContainer);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
-  it('should update signals on init', () => {
+  it('should call fetch methods on init', () => {
     component.ngOnInit();
-
-    expect(component.hasUnread()).toBe(true);
-    expect(component.inboxCount()).toBe(12);
+    expect(mockNotificationsStore.hasUnreadNotifications).toHaveBeenCalled();
+    expect(mockInbox.fetchInboxCount).toHaveBeenCalled();
   });
 
-  it('should handle notification click logic', () => {
-    const mockEl = { nativeElement: {} } as any;
-
+  it('should toggle modal and fetch data on notification click', () => {
+    const mockEl = {
+      nativeElement: document.createElement('div'),
+    } as ElementRef;
     component.onNotificationClick(mockEl);
-
-    expect(component.anchorEl()).toBe(mockEl);
     expect(component.isModalOpen()).toBe(true);
-    expect(mockNotificationsStore.fetchNotifications).toHaveBeenCalled();
 
+    expect(mockNotificationsStore.fetchNotifications).toHaveBeenCalled();
     component.onNotificationClick(mockEl);
     expect(component.isModalOpen()).toBe(false);
+    expect(mockNotificationsStore.resetState).toHaveBeenCalled();
   });
 });

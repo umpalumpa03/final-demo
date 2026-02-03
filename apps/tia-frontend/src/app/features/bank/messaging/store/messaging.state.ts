@@ -32,7 +32,45 @@ export interface MailingState {
   selectedMailId: number | null;
   error: string | null;
   limit: number;
+  searchResults: User[];
+  isSearching: boolean;
+  successMessage?: string;
+  emailDetail?: EmailDetailData
 }
+
+export interface SendEmailRequest {
+  subject: string;
+  body: string;
+  recipient: string;
+  ccRecipients?: string[];
+  isImportant?: boolean;
+  isDraft?: boolean;
+}
+export interface User {
+  id: string;
+  email: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+}
+
+export type UserMailsResponse = User[];
+
+export interface EmailDetailData {
+  id: number,
+  subject: string,
+  isFavorite: boolean,
+  body: string,
+  recipient: string,
+  mailType: string,
+  senderEmail: string,
+  isRead: boolean,
+  ccRecipients: string[],
+  isDraft: boolean,
+  isImportant: boolean,
+  createdAt: string,
+}
+
 
 export const initialState: MailingState = {
   mails: [],
@@ -46,4 +84,8 @@ export const initialState: MailingState = {
   selectedMailId: null,
   error: null,
   limit: 20,
+  searchResults: [],
+  isSearching: false,
+  successMessage: '',
+  emailDetail: undefined
 };

@@ -1,5 +1,9 @@
 {
   "title": "My Products",
+  "tabs": {
+    "accounts": "Accounts",
+    "cards": "Cards"
+  },
   "cards": {
     "title": "Cards",
     "credit": "Credit Cards",
@@ -11,8 +15,57 @@
     "mortgage": "Mortgage"
   },
   "accounts": {
-    "title": "Accounts",
-    "savings": "Savings Account",
-    "checking": "Checking Account"
+    "title": "My Accounts",
+    "subtitle": "Manage your bank accounts",
+    "newAccount": "New Account",
+    "errorTitle": "Error Loading Accounts",
+    "retry": "Retry",
+    "loading": "Loading accounts...",
+    "noAccounts": "No accounts found",
+    "noAccountsMessage": "Create your first account to get started",
+    "createAccount": "Create Account",
+    "sections": {
+      "current": "Current Accounts",
+      "savings": "Savings Accounts",
+      "cards": "Cards"
+    },
+    "form": {
+      "friendlyName": {
+        "label": "Account Name",
+        "placeholder": "e.g., Emergency Fund"
+      },
+      "type": {
+        "label": "Account Type",
+        "placeholder": "Select account type"
+      },
+      "currency": {
+        "label": "Currency",
+        "placeholder": "Select currency"
+      }
+    },
+    "modal": {
+      "title": "Create New Account",
+      "subtitle": "Add a new bank account to manage your finances",
+      "cancel": "Cancel",
+      "create": "Create Account"
+    },
+    "card": {
+      "enterName": "Enter account name",
+      "save": "Save",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "clickToRename": "Click to rename account",
+      "active": "active",
+      "availableBalance": "Available Balance",
+      "type": "Type",
+      "created": "Created",
+      "makeTransfer": "Make Transfer"
+    },
+    "success": "Success",
+    "error": "Error",
+    "information": "Information",
+    "accountNameUpdatedSuccessfully": "Account name updated successfully",
+    "accountCreationRequestSent": "Account creation request has been sent to admin for approval",
+    "failedToCreateAccount": "Failed to create account"
   }
 }

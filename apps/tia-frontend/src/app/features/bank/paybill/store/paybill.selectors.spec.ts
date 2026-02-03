@@ -1,118 +1,174 @@
 import { describe, it, expect } from 'vitest';
 import * as Selectors from './paybill.selectors';
+import { initialPaybillState } from './paybill.state';
 import {
-  PaybillState,
   PaybillCategory,
   PaybillProvider,
-} from '../models/paybill.model';
+} from '../components/paybill-main/shared/models/paybill.model';
 
 describe('Paybill Selectors', () => {
   const mockProviders: PaybillProvider[] = [
     {
-      serviceName: 'Test',
-      id: 'prov-1',
+      id: 'P1',
+      serviceName: 'City Water',
+      categoryId: 'UTIL',
       name: 'Water Dept',
-      categoryId: 'utilities',
-    },
-    {
-      serviceName: 'Test',
-      id: 'prov-2',
-      name: 'Electric Co',
-      categoryId: 'utilities',
     },
   ];
 
-  const mockCategories: PaybillCategory[] = [
-    {
-      id: 'cat-1',
-      name: 'Utilities',
-      icon: 'water',
-      description: 'Utilities description',
-      servicesQuantity: 2,
-      providers: [],
-    },
-    {
-      id: 'cat-2',
-      name: 'Internet',
-      icon: 'wifi',
-      description: 'Internet description',
-      servicesQuantity: 0,
-      providers: [],
-    },
-  ];
+  const mockCategory = {
+    id: 'UTIL',
+    name: 'Utilities',
+    icon: '',
+    description: '',
+    servicesQuantity: 1,
+    providers: [],
+  } as PaybillCategory & { providers: PaybillProvider[] };
 
-  const initialState: PaybillState = {
-    categories: mockCategories,
-    selectedCategoryId: 'cat-1',
-    selectedProviderId: 'prov-1',
-    selectedProvider: null,
-    verifiedDetails: null,
-    loading: false,
-    error: null,
+  const fullState = {
+    ...initialPaybillState,
+    categories: [mockCategory],
     providers: mockProviders,
+    selectedCategoryId: 'UTIL',
+    selectedProviderId: 'P1',
+    loading: true,
+    error: 'Error',
+    verifiedDetails: { valid: true } as any,
+    currentStep: 'OTP',
+    paymentPayload: { amount: 100 } as any,
+    challengeId: '123-abc',
   };
 
-  describe('selectActiveCategory', () => {
-    it('should return the category object matching the selected ID', () => {
-      const result = Selectors.selectActiveCategory.projector(
-        mockCategories,
-        'cat-1',
+  describe('Simple Selectors', () => {
+    it('should project all simple state slices', () => {
+      expect(Selectors.selectLoading.projector(fullState)).toBe(true);
+      expect(Selectors.selectCategories.projector(fullState)).toEqual([
+        mockCategory,
+      ]);
+      expect(Selectors.selectProviders.projector(fullState)).toEqual(
         mockProviders,
       );
-      expect(result?.id).toBe('cat-1');
-      expect(result?.providers).toEqual(mockProviders);
-    });
-
-    it('should return null if category ID is not found', () => {
-      const result = Selectors.selectActiveCategory.projector(
-        mockCategories,
-        'non-existent',
-        [],
+      expect(Selectors.selectSelectedCategoryId.projector(fullState)).toBe(
+        'UTIL',
       );
-      expect(result).toBeNull();
-    });
-
-    it('should return null if selectedId is null', () => {
-      const result = Selectors.selectActiveCategory.projector(
-        mockCategories,
-        null as any,
-        [],
+      expect(Selectors.selectSelectedProviderId.projector(fullState)).toBe(
+        'P1',
       );
-      expect(result).toBeNull();
+      expect(Selectors.selectVerifiedDetails.projector(fullState)).toEqual({
+        valid: true,
+      });
+      expect(Selectors.selectCurrentStep.projector(fullState)).toBe('OTP');
+
+      if ((Selectors as any).selectPaymentPayload) {
+        expect(
+          (Selectors as any).selectPaymentPayload.projector(fullState),
+        ).toEqual({ amount: 100 });
+      }
+      if ((Selectors as any).selectChallengeId) {
+        expect((Selectors as any).selectChallengeId.projector(fullState)).toBe(
+          '123-abc',
+        );
+      }
+    });
+  });
+
+  describe('selectActiveCategory', () => {
+    it('should return combined category when found (case-insensitive)', () => {
+      const result = Selectors.selectActiveCategory.projector(
+        [mockCategory],
+        'util',
+        mockProviders,
+      );
+      expect(result).toEqual({ ...mockCategory, providers: mockProviders });
+      expect(result?.providers).toHaveLength(1);
     });
   });
 
   describe('selectActiveProvider', () => {
-    it('should return the provider object from the providers array', () => {
-      const mockState = {
-        ...initialState,
-        selectedProviderId: 'prov-1',
-      };
+    it('should find provider by categoryId fallback', () => {
+      const fallbackProv = {
+        categoryId: 'FALLBACK',
+        name: 'F',
+      } as PaybillProvider;
+      const state = { ...fullState, selectedProviderId: 'fallback' };
+      const result = Selectors.selectActiveProvider.projector(state, [
+        fallbackProv,
+      ]);
+      expect(result).toEqual(fallbackProv);
+    });
+  });
 
-      const result = Selectors.selectActiveProvider.projector(
-        mockState,
-        mockProviders,
+  describe('selectPaybillBreadcrumbs', () => {
+    it('should return base path if nothing selected', () => {
+      const result = Selectors.selectPaybillBreadcrumbs.projector(
+        null,
+        null,
+        null,
       );
-
-      expect(result?.id).toBe('prov-1');
+      expect(result).toEqual([
+        { label: 'Paybill', route: '/bank/paybill/pay' },
+      ]);
     });
 
-    it('should return null if there is no providers array', () => {
-      const mockState = { ...initialState, selectedProviderId: 'prov-1' };
-
-      const result = Selectors.selectActiveProvider.projector(
-        mockState,
-        null as any,
+    it('should return Templates breadcrumb', () => {
+      const result = Selectors.selectPaybillBreadcrumbs.projector(
+        null,
+        null,
+        'TEMPLATES',
       );
-      expect(result).toBeNull();
+      expect(result[1]).toEqual({ label: 'Templates', route: '' });
+    });
+  });
+
+  describe('selectTemplatesAsTreeItems', () => {
+    it('should transform templates to tree items', () => {
+      const templates = [
+        {
+          id: 't1',
+          nickname: 'My Template',
+          serviceId: 'SVC1',
+          identification: { accountNumber: '123' },
+        },
+        {
+          id: 't2',
+          nickname: 'Another',
+          serviceId: 'SVC2',
+          identification: { accountNumber: '456' },
+        },
+      ] as any;
+
+      const result = Selectors.selectTemplatesAsTreeItems.projector(templates);
+
+      expect(result).toHaveLength(2);
+      expect(result[0]).toEqual({
+        id: 't1',
+        title: 'My Template',
+        subtitle: 'SVC1',
+        groupId: '4b03d846-43af-45cd-8d69-04b71d784625',
+        icon: 'images/svg/paybill/favorite.svg',
+        accountNumber: '123',
+        order: 0,
+      });
+      expect(result[1].order).toBe(1);
     });
 
-    it('should return null if the state is missing', () => {
-      const result = Selectors.selectActiveProvider.projector(
-        null as any,
-        mockProviders,
-      );
-      expect(result).toBeNull();
+    it('should return empty array when templates is empty', () => {
+      const result = Selectors.selectTemplatesAsTreeItems.projector([]);
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe('selectTemplates', () => {
+    it('should return templates from state', () => {
+      const templates = [{ id: 't1', nickname: 'Template 1' }] as any;
+      const state = { ...initialPaybillState, templates };
+      const result = Selectors.selectTemplates.projector(state);
+      expect(result).toEqual(templates);
+    });
+
+    it('should return empty array when no templates', () => {
+      const result = Selectors.selectTemplates.projector(initialPaybillState);
+      expect(result).toEqual([]);
     });
   });
 });

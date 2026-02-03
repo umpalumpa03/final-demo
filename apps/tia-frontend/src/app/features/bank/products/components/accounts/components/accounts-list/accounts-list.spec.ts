@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { provideMockStore } from '@ngrx/store/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { AccountsListComponent } from './accounts-list';
 import {
   AccountType,
@@ -29,12 +30,26 @@ describe('AccountsListComponent', () => {
   };
 
   const mockAccountSections = [
-    { key: AccountType.current, title: 'Current Accounts', icon: '/images/svg/account/wallet.svg' },
-    { key: AccountType.saving, title: 'Saving Accounts', icon: '/images/svg/account/piggy-bank.svg' },
-    { key: AccountType.card, title: 'Card Accounts', icon: '/images/svg/account/building.svg' },
+    {
+      key: AccountType.current,
+      title: 'Current Accounts',
+      icon: '/images/svg/account/wallet.svg',
+    },
+    {
+      key: AccountType.saving,
+      title: 'Saving Accounts',
+      icon: '/images/svg/account/piggy-bank.svg',
+    },
+    {
+      key: AccountType.card,
+      title: 'Card Accounts',
+      icon: '/images/svg/account/building.svg',
+    },
   ];
 
-  const setInputs = (grouped: { current: Account[]; saving: Account[]; card: Account[] } | null) => {
+  const setInputs = (
+    grouped: { current: Account[]; saving: Account[]; card: Account[] } | null,
+  ) => {
     TestBed.runInInjectionContext(() => {
       fixture.componentRef.setInput('accountsGrouped', grouped);
       fixture.componentRef.setInput('isLoading', false);
@@ -45,7 +60,7 @@ describe('AccountsListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccountsListComponent],
+      imports: [AccountsListComponent, TranslateModule.forRoot()],
       providers: [provideMockStore()],
     }).compileComponents();
 
@@ -53,6 +68,10 @@ describe('AccountsListComponent', () => {
     component = fixture.componentInstance;
     setInputs({ current: [mockAccount], saving: [], card: [] });
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('should create', () => {
@@ -106,16 +125,13 @@ describe('AccountsListComponent', () => {
     expect(accounts.length).toBe(1);
     expect(accounts[0].id).toBe('1');
 
-    const emptyAccounts = component.getAccountsBySection(mockAccountSections[1]);
+    const emptyAccounts = component.getAccountsBySection(
+      mockAccountSections[1],
+    );
     expect(emptyAccounts.length).toBe(0);
 
     setInputs(null);
     const nullAccounts = component.getAccountsBySection(mockAccountSections[0]);
     expect(nullAccounts.length).toBe(0);
-  });
-
-  it('should have correct input defaults', () => {
-    expect(component.error()).toBeNull();
-    expect(component.renameError()).toBeNull();
   });
 });

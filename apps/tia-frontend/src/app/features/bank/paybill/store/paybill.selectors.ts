@@ -1,6 +1,7 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { PaybillState } from '../models/paybill.model';
+
 import { Breadcrumb } from '@tia/shared/lib/navigation/models/breadcrumbs.model';
+import { PaybillState } from './paybill.state';
 
 export const selectPaybillState =
   createFeatureSelector<PaybillState>('paybill');
@@ -69,7 +70,9 @@ export const selectPaybillBreadcrumbs = createSelector(
   selectActiveProvider,
   selectSelectedCategoryId,
   (category, provider, selectedCategoryId) => {
-    const base: Breadcrumb[] = [{ label: 'Paybill', route: '/bank/paybill' }];
+    const base: Breadcrumb[] = [
+      { label: 'Paybill', route: '/bank/paybill/pay' },
+    ];
 
     if (selectedCategoryId?.toUpperCase() === 'TEMPLATES') {
       base.push({ label: 'Templates', route: '' });
@@ -79,7 +82,7 @@ export const selectPaybillBreadcrumbs = createSelector(
     if (category) {
       base.push({
         label: category.name,
-        route: provider ? `/bank/paybill/${category.id.toLowerCase()}` : '',
+        route: provider ? `/bank/paybill/pay/${category.id.toLowerCase()}` : '',
       });
     }
 
@@ -100,4 +103,67 @@ export const selectLoading = createSelector(
 export const selectVerifiedDetails = createSelector(
   selectPaybillState,
   (state) => state.verifiedDetails,
+);
+
+export const selectCurrentStep = createSelector(
+  selectPaybillState,
+  (state) => state.currentStep,
+);
+
+export const selectPaymentPayload = createSelector(
+  selectPaybillState,
+  (state) => state.paymentPayload,
+);
+
+export const selectChallengeId = createSelector(
+  selectPaybillState,
+  (state) => state.challengeId,
+);
+
+export const selectError = createSelector(
+  selectPaybillState,
+  (state) => state.error,
+);
+
+export const selectTemplatesGroup = createSelector(
+  selectPaybillState,
+  (state) => state.templateGroups,
+);
+
+export const selectNotifications = createSelector(
+  selectPaybillState,
+  (state) => state.notifications,
+);
+
+export const selectTemplates = createSelector(
+  selectPaybillState,
+  (state) => state.templates,
+);
+
+export const selectTemplatesAsTreeItems = createSelector(
+  selectTemplates,
+  (templates) => {
+    if (!templates?.length) return [];
+
+    return templates.map((template, index) => ({
+      id: template.id,
+      title: template.nickname,
+      subtitle: template.serviceId,
+      groupId: '4b03d846-43af-45cd-8d69-04b71d784625',
+      icon: 'images/svg/paybill/favorite.svg',
+      accountNumber: template.identification.accountNumber,
+      order: index,
+    }));
+  },
+);
+
+export const selectTemplatesGroupWithConfigs = createSelector(
+  selectTemplatesGroup,
+  (groups) =>
+    groups.map((group) => ({
+      ...group,
+      icon: 'images/svg/paybill/group.svg',
+      expanded: 5 > 0,
+      // neeed to be fixed
+    })),
 );

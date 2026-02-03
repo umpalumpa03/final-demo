@@ -9,4 +9,5 @@ export const transactionInitialState: TransactionState = {
   total: 0,
   isLoading: false,
   error: null,
+  categories: [],
 } as const;

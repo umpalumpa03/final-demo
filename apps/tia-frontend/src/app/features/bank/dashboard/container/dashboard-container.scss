@@ -1,11 +1,6 @@
 @use '../../../../shared/styles/mixins' as *;
 @use '../../../../shared/styles/palette' as *;
 
-.global-bank-wrapper {
-  padding: 3rem;
-  background-color: var(--color-bg);
-  min-height: 100vh;
-}
 
 .my-custom-layout {
   @include display-flex(column);

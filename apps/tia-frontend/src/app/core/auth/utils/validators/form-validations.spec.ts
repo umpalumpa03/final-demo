@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { FormControl, FormGroup } from '@angular/forms';
-import { passwordMatchValidator, passwordValidator } from './form-validations';
+import { numberValidator, passwordMatchValidator } from './form-validations';
 
 describe('passwordMatchValidator', () => {
   it('should return null when passwords match', () => {
@@ -11,6 +11,30 @@ describe('passwordMatchValidator', () => {
     
     const result = passwordMatchValidator(form);
     expect(result).toBeNull();
+  });
+});
+
+describe('numberValidator', () => {
+  it('should return null for valid phone number', () => {
+    const control = new FormControl('512345678');
+
+    const result = numberValidator(control);
+
+    expect(result).toBeNull();
+  });
+
+  it('should return error for invalid phone number', () => {
+    const control = new FormControl('41234');
+
+    const result = numberValidator(control);
+
+    expect(result).toEqual({
+      numberRules: {
+        notNineChars: true,
+        mustStartWithFive: true,
+        isNotNumber: false,
+      },
+    });
   });
 });
 

@@ -6,14 +6,11 @@ import {
   output,
 } from '@angular/core';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
-import { RecipientAccount } from '../../models/transfers.state.model';
+import { AccountData } from '../../models/transfers.state.model';
 import { DecimalPipe } from '@angular/common';
-
-type AccountData = Account | RecipientAccount;
 
 @Component({
   selector: 'app-transfers-account-card',
-  standalone: true,
   imports: [DecimalPipe],
   templateUrl: './transfers-account-card.html',
   styleUrl: './transfers-account-card.scss',

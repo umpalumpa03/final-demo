@@ -2,12 +2,11 @@
 @use '../../../../shared/styles/mixins' as *;
 
 .sign-up {
-  @include flex-center(column);
-  gap: 0.8rem;
+  @include flex-center(column, $align: start);
+  gap: 2.4rem;
   width: 100%;
-  margin: 5% 0%;
 
-  &__switch {
+  &__footer {
     color: $gray-700;
     font-size: 1.4rem;
   }

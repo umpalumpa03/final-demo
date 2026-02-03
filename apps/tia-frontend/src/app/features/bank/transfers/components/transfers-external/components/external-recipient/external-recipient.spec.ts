@@ -1,22 +1,25 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { ExternalRecipient } from './external-recipient';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TransferValidationService } from '../../../../services/transfer-validation.service';
 import { TransferStore } from '../../../../store/transfers.store';
-import { Router } from '@angular/router';
+import { TransferExternalService } from '../../../../services/transfer.external.service';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
+import { of } from 'rxjs';
 
-describe('ExternalRecipient (vitest)', () => {
+describe('ExternalRecipient', () => {
   let component: ExternalRecipient;
   let fixture: ComponentFixture<ExternalRecipient>;
 
   const mockStore = {
     isLoading: signal(false),
-    error: signal<any>(null),
+    error: signal<string | null>(null),
     recipientInput: signal(''),
     recipientInfo: signal<any>(null),
-    lookupRecipient: vi.fn(),
+    recipientType: signal<string | null>(null),
+    lookupRecipient: vi.fn(), 
+    setExternalRecipient: vi.fn(),
   };
 
   const mockValidationService = {
@@ -25,44 +28,60 @@ describe('ExternalRecipient (vitest)', () => {
     validateIban: vi.fn().mockReturnValue(true),
   };
 
+  const mockExternalService = {
+    verifyRecipient: vi.fn(),
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ExternalRecipient, TranslateModule.forRoot()],
       providers: [
         { provide: TransferValidationService, useValue: mockValidationService },
         { provide: TransferStore, useValue: mockStore },
-        { provide: Router, useValue: { navigate: vi.fn() } },
       ],
       schemas: [NO_ERRORS_SCHEMA],
-    }).compileComponents();
+    })
+      .overrideComponent(ExternalRecipient, {
+        set: {
+          providers: [
+            { provide: TransferExternalService, useValue: mockExternalService },
+          ],
+        },
+      })
+      .compileComponents();
+
+    const translate = TestBed.inject(TranslateService);
+    vi.spyOn(translate, 'get').mockReturnValue(of(''));
+    vi.spyOn(translate, 'instant').mockReturnValue('');
 
     fixture = TestBed.createComponent(ExternalRecipient);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create the component', () => {
-    expect(component).toBeTruthy();
-  });
+  it('should call verifyRecipient on valid submit', () => {
+    component.recipientInput.setValue('555123456');
+    component.recipientInput.setErrors(null);
 
-  it('should clear configuration when input is empty', () => {
-    component.recipientInput.setValue('');
-    expect(component.recipientInputConfig().successMessage).toBeUndefined();
-  });
-
-  it('should call store lookup on verify', () => {
-    mockValidationService.identifyRecipientType.mockReturnValue('phone');
-    vi.spyOn(component.recipientInput, 'valid', 'get').mockReturnValue(true);
-
-    component.recipientInput.setValue('555123');
     component.onVerify();
-
-    expect(mockStore.lookupRecipient).toHaveBeenCalled();
+    expect(mockExternalService.verifyRecipient).toHaveBeenCalled();
   });
-
-  it('should reflect loading state from store', () => {
-    mockStore.isLoading.set(true);
+  it('should update config with success message for valid phone', () => {
+    mockValidationService.identifyRecipientType.mockReturnValue('phone');
+    component.recipientInput.setValue('555123456');
     fixture.detectChanges();
-    expect(component.isLoading()).toBe(true);
+    
+    expect(component.recipientInputConfig().successMessage).toBeDefined();
+    expect(component.recipientInputConfig().errorMessage).toBeUndefined();
   });
+
+  it('should update config with error message for invalid input', () => {
+    mockValidationService.identifyRecipientType.mockReturnValue(null);
+    component.recipientInput.setErrors({ invalidRecipient: true });
+    component.recipientInput.setValue('abc');
+    fixture.detectChanges();
+
+    expect(component.recipientInputConfig().errorMessage).toBeDefined();
+  });
+
 });

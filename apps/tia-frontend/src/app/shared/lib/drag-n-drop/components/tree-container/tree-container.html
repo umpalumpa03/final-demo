@@ -1,9 +1,13 @@
-<div class="tree-container">
+<div class="tree-container" [class.tree-container--no-border]="noBorder()">
+  @if(contentHeader()) {
+  <ng-content></ng-content>
+  }@else {
   <div class="tree-container__header">
     <h2>{{ containerTitle() }}</h2>
     <p>{{ containerDescription() }}</p>
   </div>
-  <ng-content></ng-content>
+  }
+
   <div class="tree-container__cards">
     @for (group of internalGroups(); track group.id) { @let isDraggingGroup =
     draggingId() === group.id; @let isDropTargetGroup = dropTargetId() ===
@@ -17,7 +21,7 @@
       [style]="isDraggingGroup ? draggingStyle() : null"
     >
       <app-draggable-card
-        [itemData]="{ id: group.id, title: group.title, subtitle: group.subtitle ?? '', icon: group.icon }"
+        [itemData]="{ id: group.id, title: group.groupName, subtitle: group.subtitle ?? '', icon: group.icon }"
         [isDragging]="isDraggingGroup"
         [isDropTarget]="isDropTargetGroup"
         [canDelete]="canDelete()"
@@ -31,6 +35,9 @@
         (edit)="onEditGroup(group.id)"
         (expandedChange)="toggleExpanded(group.id)"
         (checkedChange)="onGroupCheckedChange(group.id, $event)"
+        [noCardBorder]="noCardBorder()"
+        [badgeCount]="itemsByGroup()[group.id]?.length ?? 0"
+        [badgeLabel]="badgeLabel()"
       />
 
       <div
@@ -65,15 +72,18 @@
             (paginationChange)="onPaginationChange(item.id, $event)"
             (buttonClick)="onButtonClick(item.id)"
             (checkedChange)="onItemCheckedChange(item.id, $event)"
+            [noCardBorder]="noCardBorder()"
+            [cardBackground]="cardBackground()"
           />
           } @empty {
-          <div
-            class="tree-container__empty"
-            [class.tree-container__empty--active]="dropTargetId() === 'group:' + group.id"
-            [attr.data-card-id]="'group:' + group.id"
-          >
-            Drop items here
-          </div>
+          <app-error-states
+            [variant]="errorVariant()"
+            [header]="errorHeader()"
+            [message]="errorMessage()"
+            [showButton]="showErrorButton()"
+            [width]="'100%'"
+            [maxWidth]="'none'"
+          />
           }
         </div>
       </div>

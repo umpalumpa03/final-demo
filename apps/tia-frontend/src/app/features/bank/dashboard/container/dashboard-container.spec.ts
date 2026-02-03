@@ -10,14 +10,21 @@ import {
   loadExchangeRates
 } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.actions';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+import { of } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 describe('DashboardContainer', () => {
   let component: DashboardContainer;
   let mockStore: any;
   let mockRouter: any;
 
+  const mockTranslate = {
+    instant: (key: string) => key,
+    get: vi.fn(() => of('translated')),
+    stream: vi.fn(() => of('translated'))
+  };
+
   beforeEach(() => {
-    // Create mocks
     mockStore = {
       dispatch: vi.fn()
     };
@@ -26,12 +33,12 @@ describe('DashboardContainer', () => {
       navigate: vi.fn()
     };
 
-    // Configure TestBed
     TestBed.configureTestingModule({
       providers: [
         DashboardContainer,
         { provide: Store, useValue: mockStore },
-        { provide: Router, useValue: mockRouter }
+        { provide: Router, useValue: mockRouter },
+        { provide: TranslateService, useValue: mockTranslate },
       ]
     });
 
@@ -87,7 +94,6 @@ describe('DashboardContainer', () => {
   });
 
   it('should toggle visibility of a widget', () => {
-    // Set up initial items
     component['myItems'].set([
       { id: '1', title: 'Widget 1', subtitle: 'Subtitle 1', type: 'transactions' as any, isHidden: false },
       { id: '2', title: 'Widget 2', subtitle: 'Subtitle 2', type: 'accounts' as any, isHidden: false }

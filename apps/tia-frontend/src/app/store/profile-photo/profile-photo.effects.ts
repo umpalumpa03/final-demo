@@ -6,16 +6,18 @@ import {
   ROOT_EFFECTS_INIT,
 } from '@ngrx/effects';
 import { ProfilePhotoActions } from './profile-photo.actions';
-import { ProfilePhotoService } from '../../shared/services/profile-photo-api/profile-photo.service';
+import { ProfilePhotoApiService } from '../../shared/services/profile-photo/profile-photo.service';
 import { Store } from '@ngrx/store';
-import { catchError, concat, filter, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
+import { catchError, concat, filter, map, of, switchMap, withLatestFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { selectDefaultAvatars } from './profile-photo.selectors';
+import { selectUserInfo } from '../user-info/user-info.selectors';
+import { UserInfoActions } from '../user-info/user-info.actions';
 
 @Injectable()
 export class ProfilePhotoEffects {
   private actions$ = inject(Actions);
-  private profilePhotoService = inject(ProfilePhotoService);
+  private profilePhotoApiService = inject(ProfilePhotoApiService);
   private store = inject(Store);
 
   public initLoadDefaultAvatars$ = createEffect(() =>
@@ -25,17 +27,26 @@ export class ProfilePhotoEffects {
     ),
   );
 
+  public initLoadUserInfo$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ROOT_EFFECTS_INIT),
+      withLatestFrom(this.store.select(selectUserInfo)),
+      filter(([, userInfo]) => {
+      return !userInfo?.fullName && !userInfo?.loading;
+      }),
+      map(() => UserInfoActions.loadUser()),
+    ),
+  );
+
   public loadDefaultAvatars$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProfilePhotoActions.loadDefaultAvatarsRequest),
       switchMap(() =>
-        this.profilePhotoService.getAvailableDefaultAvatars().pipe(
+        this.profilePhotoApiService.getAvailableDefaultAvatars().pipe(
           map((avatars) =>
             ProfilePhotoActions.loadDefaultAvatars({ avatars }),
           ),
           catchError((error) => {
-           
-           
             return concat(
               of(ProfilePhotoActions.loadDefaultAvatars({ avatars: [] })),
               of(ProfilePhotoActions.loadDefaultAvatarsFailure({ 
@@ -48,25 +59,46 @@ export class ProfilePhotoEffects {
     ),
   );
 
-
   public loadStoredAvatar$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(ROOT_EFFECTS_INIT, ProfilePhotoActions.loadStoredAvatar),
-      map(() => {
-        const storedAvatarId = localStorage.getItem('avatarId');
-        const storedAvatarType = localStorage.getItem('avatarType') as 'default' | 'custom' | null;
-        
-       
-        if (storedAvatarId && storedAvatarType && (storedAvatarType === 'default' || storedAvatarType === 'custom')) {
-          const avatarUrl = `${environment.apiUrl}/settings/current-user-avatar/${storedAvatarId}`;
-          return ProfilePhotoActions.setCurrentAvatar({
-            avatarId: storedAvatarId,
-            avatarType: storedAvatarType,
-            avatarUrl,
-          });
+      ofType(
+        ROOT_EFFECTS_INIT,
+        ProfilePhotoActions.loadStoredAvatar,
+        UserInfoActions.loadUserSuccess,
+        ProfilePhotoActions.loadDefaultAvatars,
+      ),
+      withLatestFrom(
+        this.store.select(selectUserInfo),
+        this.store.select(selectDefaultAvatars),
+      ),
+      filter(([, userInfo]) => {
+        return !!userInfo?.avatar;
+      }),
+      map(([, userInfo, defaultAvatars]) => {
+        const avatarFromStore = userInfo!.avatar!;
+        let avatarId: string;
+        let avatarUrl: string;
+
+        if (avatarFromStore.includes('/current-user-avatar/')) {
+          const avatarIdMatch = avatarFromStore.match(/\/current-user-avatar\/([^\/]+)$/);
+          if (!avatarIdMatch || !avatarIdMatch[1]) {
+            return null;
+          }
+          avatarId = avatarIdMatch[1];
+          avatarUrl = avatarFromStore;
+        } else {
+          avatarId = avatarFromStore;
+          avatarUrl = `${environment.apiUrl}/settings/current-user-avatar/${avatarId}`;
         }
-        
-        return null;
+
+        const isDefaultAvatar = defaultAvatars.length > 0 && defaultAvatars.some(avatar => avatar.id === avatarId);
+        const avatarType: 'default' | 'custom' = isDefaultAvatar ? 'default' : 'custom';
+
+        return ProfilePhotoActions.setCurrentAvatar({
+          avatarId,
+          avatarType,
+          avatarUrl,
+        });
       }),
       filter((action): action is ReturnType<typeof ProfilePhotoActions.setCurrentAvatar> => action !== null),
     ),
@@ -76,12 +108,10 @@ export class ProfilePhotoEffects {
     this.actions$.pipe(
       ofType(ProfilePhotoActions.uploadAvatarRequest),
       switchMap(({ file }) =>
-        this.profilePhotoService.uploadUserAvatar(file).pipe(
+        this.profilePhotoApiService.uploadUserAvatar(file).pipe(
           map((result) => {
-            
             if (result.success && result.avatarId) {
               const avatarUrl = `${environment.apiUrl}/settings/current-user-avatar/${result.avatarId}`;
-              
               return ProfilePhotoActions.setCurrentAvatar({
                 avatarId: result.avatarId,
                 avatarType: 'custom',
@@ -91,8 +121,6 @@ export class ProfilePhotoEffects {
             return ProfilePhotoActions.clearUploadedFile();
           }),
           catchError((error) => {
-        
-       
             return concat(
               of(ProfilePhotoActions.clearUploadedFile()),
               of(ProfilePhotoActions.uploadAvatarFailure({ 
@@ -110,17 +138,13 @@ export class ProfilePhotoEffects {
       ofType(ProfilePhotoActions.selectDefaultAvatarRequest),
       withLatestFrom(this.store.select(selectDefaultAvatars)),
       switchMap(([{ avatarId }, avatars]) => {
-       
         const avatar = avatars.find((a) => a.id === avatarId);
-        
         if (!avatar) {
-         return of(ProfilePhotoActions.clearUploadedFile());
+          return of(ProfilePhotoActions.clearUploadedFile());
         }
-
-        return this.profilePhotoService.selectFromDefaultAvatar(avatarId).pipe(
+        return this.profilePhotoApiService.selectFromDefaultAvatar(avatarId).pipe(
           map(() => {
             const avatarUrl = `${environment.apiUrl}/settings/current-user-avatar/${avatarId}`;
-            
             return ProfilePhotoActions.setCurrentAvatar({
               avatarId,
               avatarType: 'default',
@@ -128,7 +152,7 @@ export class ProfilePhotoEffects {
             });
           }),
           catchError((error) => {
-           return concat(
+            return concat(
               of(ProfilePhotoActions.clearUploadedFile()),
               of(ProfilePhotoActions.selectDefaultAvatarFailure({ 
                 error: error.message || 'Failed to select default avatar' 
@@ -144,10 +168,9 @@ export class ProfilePhotoEffects {
     this.actions$.pipe(
       ofType(ProfilePhotoActions.removeAvatarRequest),
       switchMap(() =>
-        this.profilePhotoService.removeUserAvatar().pipe(
+        this.profilePhotoApiService.removeUserAvatar().pipe(
           map(() => ProfilePhotoActions.removeAvatar()),
           catchError((error) => {
-         
             return concat(
               of(ProfilePhotoActions.clearUploadedFile()),
               of(ProfilePhotoActions.removeAvatarFailure({ 
@@ -160,23 +183,4 @@ export class ProfilePhotoEffects {
     ),
   );
 
-  public syncLocalStorage$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(
-          ProfilePhotoActions.setCurrentAvatar,
-          ProfilePhotoActions.removeAvatar,
-        ),
-        tap((action) => {
-          if (action.type === ProfilePhotoActions.setCurrentAvatar.type) {
-            localStorage.setItem('avatarId', action.avatarId);
-            localStorage.setItem('avatarType', action.avatarType);
-          } else if (action.type === ProfilePhotoActions.removeAvatar.type) {
-            localStorage.removeItem('avatarId');
-            localStorage.removeItem('avatarType');
-          }
-        }),
-      ),
-    { dispatch: false },
-  );
 }

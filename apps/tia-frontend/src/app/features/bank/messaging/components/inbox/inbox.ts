@@ -5,6 +5,7 @@ import { MessagingStore } from '../../store/messaging.store';
 import { MailCard } from '../../shared/ui/mail-card/mail-card';
 import { EmptyCard } from '../../shared/ui/empty-card/empty-card';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-inbox',
@@ -15,12 +16,10 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
 })
 export class Inbox implements OnInit {
   private messagingStore = inject(MessagingStore);
+  private router = inject(Router);
 
   public mails = this.messagingStore.mails;
   public isLoading = this.messagingStore.isLoading;
-  public error = this.messagingStore.error;
-
-
   public selectedMailIds = signal<Set<number>>(new Set());
 
   public isAllSelected(): boolean {
@@ -59,7 +58,7 @@ export class Inbox implements OnInit {
     this.selectedMailIds.set(new Set());
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.messagingStore.loadMails('inbox');
   }
 
@@ -69,5 +68,10 @@ export class Inbox implements OnInit {
 
   public deleteMail(mailId: number): void {
     this.messagingStore.deleteMail(mailId);
+  }
+
+  public goToDetail(mailId: number): void {
+    this.router.navigate(['/bank/messaging/inbox', mailId]);
+    this.markAsRead(mailId);
   }
 }

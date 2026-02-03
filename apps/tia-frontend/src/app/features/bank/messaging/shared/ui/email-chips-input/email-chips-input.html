@@ -1,0 +1,44 @@
+<div class="email-chips-input">
+  @if (allowMultiple() && selectedEmails().length > 0) {
+  <div class="chips-container">
+    @for (email of selectedEmails(); track email) {
+    <app-badges
+      variant="default"
+      [text]="email"
+      size="medium"
+      shape="rounded"
+      [dismissible]="true"
+      (dismissed)="removeEmail(email)"
+    ></app-badges>
+    }
+  </div>
+  }
+
+  <lib-text-input
+    type="text"
+    [config]="{ label: label(), placeholder: placeholder() }"
+    [formControl]="inputControl"
+    (input)="onSearchInput($event)"
+    (keydown)="onKeyDown($event)"
+    (blur)="onInputBlur()"
+  ></lib-text-input>
+
+  @if (showDropdown() && searchResults().length > 0) {
+  <div class="search-results" role="listbox">
+    @for (user of searchResults(); track user.id; let i = $index) {
+    <div
+      #userItem
+      class="user-item"
+      [class.user-item--active]="i === highlightedIndex()"
+      [attr.data-index]="i"
+      role="option"
+      [attr.aria-selected]="i === highlightedIndex()"
+      (click)="selectUser(user)"
+      (mouseenter)="onUserMouseEnter(i)"
+    >
+      <span>{{ user.email }}</span>
+    </div>
+    }
+  </div>
+  }
+</div>

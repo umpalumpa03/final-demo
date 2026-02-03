@@ -1,3 +1,9 @@
-<h1>{{'settings.language.title' | translate }}</h1>
-
-<app-language-switcher></app-language-switcher>
+<app-settings-body 
+    [title]="'settings.language.title' | translate"
+    [subTitle]="'settings.language.subtitle' | translate"
+>
+    <div class="container">
+        <h4 class="container__title">{{ 'settings.language.available' | translate }}</h4>
+        <app-language-switcher></app-language-switcher>
+    </div>
+</app-settings-body>

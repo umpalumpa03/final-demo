@@ -1,9 +1,18 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import {
   BillDetails,
+  ConfirmPaymentPayload,
   PaybillCategory,
+  PaybillPayload,
   PaybillProvider,
-} from '../models/paybill.model';
+  ProceedPaymentPayload,
+  ProceedPaymentResponse,
+} from '../components/paybill-main/shared/models/paybill.model';
+import {
+  TemplateGroups,
+  Templates,
+} from '../components/paybill-templates/models/paybill-templates.model';
+import { PaybillNotification } from './paybill.state';
 
 export const PaybillActions = createActionGroup({
   source: 'Paybill API',
@@ -19,5 +28,33 @@ export const PaybillActions = createActionGroup({
     'Check Bill Success': props<{ details: BillDetails }>(),
     'Check Bill Failure': props<{ error: string }>(),
     'Clear Selection': emptyProps(),
+    'Set Payment Step': props<{ step: string }>(),
+    'Set Payment Payload': props<{ data: PaybillPayload }>(),
+    'Proceed Payment': props<{ payload: ProceedPaymentPayload }>(),
+    'Proceed Payment Success': props<{ response: ProceedPaymentResponse }>(),
+    'Proceed Payment Failure': props<{ error: string }>(),
+    'Confirm Payment': props<{ payload: ConfirmPaymentPayload }>(),
+    'Confirm Payment Success': emptyProps(),
+    'Confirm Payment Failure': props<{ error: string }>(),
+    'Clear Error': emptyProps(),
+    'Add Notification': props<PaybillNotification>(),
+    'Dismiss Notification': props<{ id: string }>(),
+    'Clear All Notifications': emptyProps(),
+  },
+});
+
+export const TemplatesPageActions = createActionGroup({
+  source: 'Paybill Templates Page',
+  events: {
+    'Load Template Groups': emptyProps(),
+    'Load Template Groups Success': props<{
+      templateGroups: TemplateGroups[];
+    }>(),
+    'Load Template Groups Failure': props<{ error: string }>(),
+    'Load Templates': emptyProps(),
+    'Load Templates Success': props<{
+      templates: Templates[];
+    }>(),
+    'Load Templates Failure': props<{ error: string }>(),
   },
 });

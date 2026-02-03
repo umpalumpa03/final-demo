@@ -1,10 +1,12 @@
 import { Routes } from '@angular/router';
 import { TransferStore } from './store/transfers.store';
 import { recipientVerifiedGuard } from './guards/recipient-verified.guard';
+import { accountsSelectedGuard } from './guards/accounts-selected.guard';
+import { TransferExternalService } from './services/transfer.external.service';
 export const transfersRoutes: Routes = [
   {
     path: '',
-    providers: [TransferStore],
+    providers: [TransferStore, TransferExternalService],
     loadComponent: () =>
       import('./container/transfers-container').then(
         (c) => c.TransfersContainer,
@@ -56,6 +58,7 @@ export const transfersRoutes: Routes = [
               import(
                 './components/transfers-external/components/external-amount/external-amount'
               ).then((c) => c.ExternalAmount),
+            canActivate: [recipientVerifiedGuard, accountsSelectedGuard],
           },
         ],
       },

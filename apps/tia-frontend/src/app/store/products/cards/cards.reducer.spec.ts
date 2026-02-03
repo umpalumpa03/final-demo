@@ -1,10 +1,13 @@
 import { describe, it, expect } from 'vitest';
+import { Action } from '@ngrx/store';
 import { cardsReducer } from './cards.reducer';
-import { initialCardsState, CardsState } from './cards.state';
+import { initialCardsState } from './cards.state';
 import * as CardsActions from './cards.actions';
 import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
-
+import { CardDesign } from '@tia/shared/models/cards/card-design.model';
+import { CardCategory } from '@tia/shared/models/cards/card-category.model';
+import { CardType } from '@tia/shared/models/cards/card-type.model';
 
 describe('Cards Reducer', () => {
   const mockAccounts: CardAccount[] = [
@@ -23,11 +26,11 @@ describe('Cards Reducer', () => {
   const mockCardDetail: CardDetail = {
     id: 'card1',
     accountId: 'acc1',
-    type: 'DEBIT',
-    network: 'VISA',
+    type: 'DEBIT' as const,
+    network: 'VISA' as const,
     design: 'MIDNIGHT_GRADIENT',
     cardName: 'Main Visa',
-    status: 'ACTIVE',
+    status: 'ACTIVE' as const,
     allowOnlinePayments: true,
     allowInternational: true,
     allowAtm: true,
@@ -35,134 +38,137 @@ describe('Cards Reducer', () => {
     updatedAt: '2026-01-18T01:10:50.948Z',
   };
 
-  const cardId = 'card1';
-  const imageBase64 = 'data:image/svg+xml;base64,test';
+  const mockDesigns: CardDesign[] = [{ id: 'design-1', designName: 'Classic', uri: '/designs/classic.png' }];
+  const mockCategories: CardCategory[] = [{ value: 'DEBIT' as const, displayName: 'Debit Card' }];
+  const mockTypes: CardType[] = [{ value: 'VISA' as const, displayName: 'Visa' }];
 
-  describe('unknown action', () => {
-    it('should return the default state', () => {
-      const action = { type: 'Unknown' } as any;
-      const state = cardsReducer(initialCardsState, action);
-      expect(state).toBe(initialCardsState);
-    });
+  it('should return initial state', () => {
+    const action: Action = { type: 'UNKNOWN' };
+    const state = cardsReducer(undefined, action);
+    expect(state).toEqual(initialCardsState);
   });
 
-  describe('loadCardAccounts', () => {
-    it('should set loading to true and clear error', () => {
-      const action = CardsActions.loadCardAccounts();
-      const state = cardsReducer(initialCardsState, action);
-
-      expect(state.loading).toBe(true);
-      expect(state.error).toBeNull();
-    });
+  it('should handle loadCardAccounts', () => {
+    const action = CardsActions.loadCardAccounts();
+    const state = cardsReducer(initialCardsState, action);
+    expect(state.loading).toBe(true);
+    expect(state.error).toBeNull();
   });
 
-  describe('loadCardAccountsSuccess', () => {
-    it('should populate accounts and set loading to false', () => {
-      const action = CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts });
-      const state = cardsReducer(initialCardsState, action);
-
-      expect(state.accounts).toEqual(mockAccounts);
-      expect(state.loading).toBe(false);
-      expect(state.error).toBeNull();
-    });
+  it('should handle loadCardAccountsSuccess', () => {
+    const action = CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts });
+    const state = cardsReducer(initialCardsState, action);
+    expect(state.accounts).toEqual(mockAccounts);
+    expect(state.loading).toBe(false);
+    expect(state.error).toBeNull();
   });
 
-  describe('loadCardAccountsFailure', () => {
-    it('should set error and loading to false', () => {
-      const error = 'Error loading accounts';
-      const action = CardsActions.loadCardAccountsFailure({ error });
-      const state = cardsReducer(initialCardsState, action);
-
-      expect(state.error).toBe(error);
-      expect(state.loading).toBe(false);
-    });
+  it('should handle loadCardAccountsFailure', () => {
+    const action = CardsActions.loadCardAccountsFailure({ error: 'Error' });
+    const state = cardsReducer(initialCardsState, action);
+    expect(state.loading).toBe(false);
+    expect(state.error).toBe('Error');
   });
 
-  describe('loadCardImage', () => {
-    it('should not modify state when loading image', () => {
-      const action = CardsActions.loadCardImage({ cardId });
-      const state = cardsReducer(initialCardsState, action);
-      expect(state).toEqual(initialCardsState);
-    });
+  it('should handle loadCardImageSuccess', () => {
+    const action = CardsActions.loadCardImageSuccess({ cardId: 'card1', imageBase64: 'base64' });
+    const state = cardsReducer(initialCardsState, action);
+    expect(state.cardImages['card1']).toBe('base64');
   });
 
-  describe('loadCardImageSuccess', () => {
-    it('should add card image to state', () => {
-      const action = CardsActions.loadCardImageSuccess({ cardId, imageBase64 });
-      const state = cardsReducer(initialCardsState, action);
-      expect(state.cardImages[cardId]).toBe(imageBase64);
-    });
-
-    it('should update existing card image', () => {
-      const oldImage = 'old-image';
-      const newImage = 'new-image';
-
-      const stateWithImage: CardsState = {
-        ...initialCardsState,
-        cardImages: { [cardId]: oldImage },
-      };
-
-      const action = CardsActions.loadCardImageSuccess({ cardId, imageBase64: newImage });
-      const state = cardsReducer(stateWithImage, action);
-      expect(state.cardImages[cardId]).toBe(newImage);
-    });
+  it('should handle loadCardDetails', () => {
+    const action = CardsActions.loadCardDetails({ cardId: 'card1' });
+    const state = cardsReducer(initialCardsState, action);
+    expect(state.cardDetailsLoading).toBe(true);
+    expect(state.cardDetailsError).toBeNull();
   });
 
-  describe('loadCardImageFailure', () => {
-    it('should not modify state on failure', () => {
-      const error = 'Failed to load image';
-      const action = CardsActions.loadCardImageFailure({ cardId, error });
-      const state = cardsReducer(initialCardsState, action);
-      expect(state).toEqual(initialCardsState);
-    });
+  it('should handle loadCardDetailsSuccess', () => {
+    const action = CardsActions.loadCardDetailsSuccess({ cardId: 'card1', details: mockCardDetail });
+    const state = cardsReducer(initialCardsState, action);
+    expect(state.cardDetails['card1']).toEqual(mockCardDetail);
+    expect(state.cardDetailsLoading).toBe(false);
+    expect(state.cardDetailsError).toBeNull();
   });
 
-  describe('loadCardDetails', () => {
-    it('should set cardDetailsLoading to true and clear cardDetailsError', () => {
-      const action = CardsActions.loadCardDetails({ cardId });
-      const state = cardsReducer(initialCardsState, action);
-      
-      expect(state.cardDetailsLoading).toBe(true);
-      expect(state.cardDetailsError).toBeNull();
-    });
+  it('should handle loadCardDetailsFailure', () => {
+    const action = CardsActions.loadCardDetailsFailure({ cardId: 'card1', error: 'Error' });
+    const state = cardsReducer(initialCardsState, action);
+    expect(state.cardDetailsLoading).toBe(false);
+    expect(state.cardDetailsError).toBe('Error');
   });
 
-  describe('loadCardDetailsSuccess', () => {
-    it('should add card details to state and set cardDetailsLoading to false', () => {
-      const action = CardsActions.loadCardDetailsSuccess({ cardId, details: mockCardDetail });
-      const state = cardsReducer(initialCardsState, action);
-      
-      expect(state.cardDetails[cardId]).toEqual(mockCardDetail);
-      expect(state.cardDetailsLoading).toBe(false);
-      expect(state.cardDetailsError).toBeNull();
-    });
-
-    it('should update existing card details', () => {
-      const oldDetails: CardDetail = { ...mockCardDetail, cardName: 'Old Name' };
-      const newDetails: CardDetail = { ...mockCardDetail, cardName: 'New Name' };
-
-      const stateWithDetails: CardsState = {
-        ...initialCardsState,
-        cardDetails: { [cardId]: oldDetails },
-      };
-
-      const action = CardsActions.loadCardDetailsSuccess({ cardId, details: newDetails });
-      const state = cardsReducer(stateWithDetails, action);
-      
-      expect(state.cardDetails[cardId]).toEqual(newDetails);
-      expect(state.cardDetailsLoading).toBe(false);
-      expect(state.cardDetailsError).toBeNull();
-    });
+  it('should handle loadCardCreationData', () => {
+    const action = CardsActions.loadCardCreationData();
+    const state = cardsReducer(initialCardsState, action);
+    expect(state.loading).toBe(true);
+    expect(state.error).toBeNull();
   });
 
-  describe('loadCardDetailsFailure', () => {
-    it('should set cardDetailsError and cardDetailsLoading to false', () => {
-      const error = 'Failed to load card details';
-      const action = CardsActions.loadCardDetailsFailure({ cardId, error });
-      const state = cardsReducer(initialCardsState, action);
-      
-      expect(state.cardDetailsLoading).toBe(false);
-      expect(state.cardDetailsError).toBe(error);
+  it('should handle loadCardCreationDataSuccess', () => {
+    const action = CardsActions.loadCardCreationDataSuccess({ designs: mockDesigns, categories: mockCategories, types: mockTypes });
+    const state = cardsReducer(initialCardsState, action);
+    expect(state.designs).toEqual(mockDesigns);
+    expect(state.categories).toEqual(mockCategories);
+    expect(state.types).toEqual(mockTypes);
+    expect(state.loading).toBe(false);
+    expect(state.error).toBeNull();
+  });
+
+  it('should handle loadCardCreationDataFailure', () => {
+    const action = CardsActions.loadCardCreationDataFailure({ error: 'Error' });
+    const state = cardsReducer(initialCardsState, action);
+    expect(state.loading).toBe(false);
+    expect(state.error).toBe('Error');
+  });
+
+  it('should handle createCard', () => {
+    const action = CardsActions.createCard({
+      request: {
+        accountId: 'acc1',
+        design: 'design-1',
+        cardName: 'My Card',
+        cardCategory: 'DEBIT',
+        cardType: 'VISA',
+      },
     });
+    const state = cardsReducer(initialCardsState, action);
+    expect(state.isCreating).toBe(true);
+    expect(state.createError).toBeNull();
+  });
+
+  it('should handle createCardSuccess', () => {
+    const action = CardsActions.createCardSuccess();
+    const state = cardsReducer(initialCardsState, action);
+    expect(state.isCreating).toBe(false);
+    expect(state.createError).toBeNull();
+    expect(state.isCreateModalOpen).toBe(false);
+    expect(state.showSuccessAlert).toBe(true);
+  });
+
+  it('should handle createCardFailure', () => {
+    const action = CardsActions.createCardFailure({ error: 'Error' });
+    const state = cardsReducer(initialCardsState, action);
+    expect(state.isCreating).toBe(false);
+    expect(state.createError).toBe('Error');
+  });
+
+  it('should handle openCreateCardModal', () => {
+    const action = CardsActions.openCreateCardModal();
+    const state = cardsReducer(initialCardsState, action);
+    expect(state.isCreateModalOpen).toBe(true);
+  });
+
+  it('should handle closeCreateCardModal', () => {
+    const action = CardsActions.closeCreateCardModal();
+    const state = cardsReducer(initialCardsState, action);
+    expect(state.isCreateModalOpen).toBe(false);
+    expect(state.createError).toBeNull();
+  });
+
+  it('should handle hideSuccessAlert', () => {
+    const action = CardsActions.hideSuccessAlert();
+    const state = cardsReducer(initialCardsState, action);
+    expect(state.showSuccessAlert).toBe(false);
   });
 });

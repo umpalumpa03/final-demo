@@ -1,5 +1,5 @@
+import { AUTH_SIDE_PANEL_DATA } from '../config/inputs.config';
 import { IFeature } from '../models/auth.models';
-import { AUTH_SIDE_PANEL_DATA } from '../models/input-config.models';
 import { Routes } from '../models/tokens.model';
 import type { WritableSignal } from '@angular/core';
 
@@ -34,6 +34,10 @@ export function updateSidePanelForRoute(
 
     case Routes.PHONE:
       sidePanelData.set(AUTH_SIDE_PANEL_DATA.phone);
+      break;
+
+    case Routes.RESET_PASSWORD:
+      sidePanelData.set(AUTH_SIDE_PANEL_DATA.resetPassword);
       break;
 
     default:

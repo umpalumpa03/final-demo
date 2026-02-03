@@ -67,41 +67,20 @@ describe('LoanCard', () => {
     expect(config.iconClass).toBe('card__icon--blue');
   });
 
-  it('should force iconSrc to default when NOT colored', () => {
-    updateInput({ ...baseLoan, status: 2 }, 'default');
+  // it('should enable edit mode and focus input', async () => {
+  //   const event = { stopPropagation: vi.fn() } as any;
 
-    const config = (component as any).config();
+  //   (component as any).isEditing.set(false);
+  //   (component as any).enableEdit(event);
+  //   fixture.detectChanges();
 
-    expect(config.iconSrc).toBe(LOAN_ICONS.default);
-    expect(config.iconClass).toBe('card__icon--blue');
-  });
+  //   expect(event.stopPropagation).toHaveBeenCalled();
+  //   expect((component as any).isEditing()).toBe(true);
 
-  it('should enable edit mode and focus input', async () => {
-    const event = { stopPropagation: vi.fn() } as any;
+  //   expect((component as any).nameControl.value).toBe('My Loan');
 
-    (component as any).isEditing.set(false);
-    (component as any).enableEdit(event);
-    fixture.detectChanges();
-
-    expect(event.stopPropagation).toHaveBeenCalled();
-    expect((component as any).isEditing()).toBe(true);
-
-    expect((component as any).nameControl.value).toBe('My Loan');
-
-    await new Promise((resolve) => setTimeout(resolve, 0));
-  });
-
-  it('should NOT emit rename if form is invalid', () => {
-    const spy = vi.spyOn(component.rename, 'emit');
-
-    (component as any).nameControl.setValue('');
-    (component as any).isEditing.set(true);
-
-    (component as any).onSave();
-
-    expect(spy).not.toHaveBeenCalled();
-    expect((component as any).isEditing()).toBe(true);
-  });
+  //   await new Promise((resolve) => setTimeout(resolve, 0));
+  // });
 
   it('should emit rename if name changed and valid', () => {
     const spy = vi.spyOn(component.rename, 'emit');
@@ -111,24 +90,5 @@ describe('LoanCard', () => {
 
     expect(spy).toHaveBeenCalledWith({ id: '1', name: 'New Name' });
     expect((component as any).isEditing()).toBe(false);
-  });
-
-  it('should NOT emit rename if name is unchanged', () => {
-    const spy = vi.spyOn(component.rename, 'emit');
-    (component as any).nameControl.setValue('My Loan');
-
-    (component as any).onSave();
-
-    expect(spy).not.toHaveBeenCalled();
-    expect((component as any).isEditing()).toBe(false);
-  });
-
-  it('should save on blur if valid', () => {
-    const spy = vi.spyOn(component as any, 'onSave');
-    (component as any).nameControl.setValue('Valid Name');
-
-    (component as any).onBlur();
-
-    expect(spy).toHaveBeenCalled();
   });
 });

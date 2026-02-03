@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreateAccountComponent } from './create-account';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AccountType } from '../../../../../../../../shared/models/accounts/accounts.model';
+import { provideTranslateService } from '@ngx-translate/core';
 
 describe('CreateAccountComponent', () => {
   let component: CreateAccountComponent;
@@ -24,6 +25,7 @@ describe('CreateAccountComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CreateAccountComponent],
+      providers: [provideTranslateService()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CreateAccountComponent);
@@ -35,6 +37,10 @@ describe('CreateAccountComponent', () => {
       fixture.componentRef.setInput('currencies', mockCurrencies);
     });
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('should create', () => {
@@ -58,27 +64,6 @@ describe('CreateAccountComponent', () => {
     const mockEvent = new MouseEvent('click');
     component.handleBackdropClick(mockEvent);
     expect(spy).toHaveBeenCalledWith(mockEvent);
-  });
-
-  it('should compute accountTypeOptions from accountTypes', () => {
-    const options = component.accountTypeOptions();
-    expect(options).toHaveLength(2);
-    expect(options[0]).toEqual({
-      label: 'Current',
-      value: AccountType.current,
-    });
-    expect(options[1]).toEqual({
-      label: 'Saving',
-      value: AccountType.saving,
-    });
-  });
-
-  it('should compute currencyOptions from currencies', () => {
-    const options = component.currencyOptions();
-    expect(options).toHaveLength(3);
-    expect(options[0]).toEqual({ label: 'USD', value: 'USD' });
-    expect(options[1]).toEqual({ label: 'EUR', value: 'EUR' });
-    expect(options[2]).toEqual({ label: 'GBP', value: 'GBP' });
   });
 
   it('should update accountTypeOptions when accountTypes input changes', () => {

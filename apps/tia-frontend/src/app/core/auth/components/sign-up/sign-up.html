@@ -1,11 +1,27 @@
+@if(!loadingState()) {
 <section class="sign-up">
-    @if(!loadingState()) {
-        <app-registration-form (submitRegistrationForm)="onSignUp($event)"></app-registration-form>
-        
-        <p class="sign-up__switch">Already have an account? <span class="sign-up__link" [routerLink]="['/auth/sign-in']">Sign in</span></p>
-        
-        <h2>{{errorMessage()}}</h2>
-    } @else {
-        <app-spinner size = '4rem'></app-spinner>
-    }
+  <app-auth-header
+    title="auth.sign-up.title"
+    subTitle="auth.sign-up.subtitle"
+  ></app-auth-header>
+  <app-registration-form
+    (submitRegistrationForm)="onSignUp($event)"
+  ></app-registration-form>
+
+  <p class="sign-up__footer">
+    {{'auth.sign-up.haveAccount' | translate}}
+    <span class="sign-up__link" [routerLink]="['/auth/sign-in']">
+      {{'auth.sign-up.signIn' | translate}}
+    </span>
+  </p>
+
+  @if (errorMessage()) {
+  <app-alert-types-with-icons alertType="error" [alertMessage]="errorMessage()">
+  </app-alert-types-with-icons>
+  }
 </section>
+} @else {
+<div class="sign-up__loader">
+  <app-route-loader [variant]="'pulsing'" />
+</div>
+}

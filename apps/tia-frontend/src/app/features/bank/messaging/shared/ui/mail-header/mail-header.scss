@@ -31,3 +31,14 @@
         gap: 0.8rem;
     }
 }
+
+.delete-account {
+    &__header {
+        margin-bottom: 1.6rem;
+    }
+
+    &__footer {
+        @include flex-center($justify: flex-end);
+        gap: 1.2rem;
+    }
+}

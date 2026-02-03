@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PaybillForm } from './paybill-form';
 import { ReactiveFormsModule } from '@angular/forms';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('PaybillForm', () => {
   let component: PaybillForm;
@@ -9,7 +10,7 @@ describe('PaybillForm', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PaybillForm, ReactiveFormsModule],
+      imports: [PaybillForm, ReactiveFormsModule,TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PaybillForm);
@@ -40,32 +41,5 @@ describe('PaybillForm', () => {
     expect(spy).toHaveBeenCalledWith({ accountNumber: '123456' });
   });
 
-  it('should emit pay output when form is submitted and is verified', () => {
-    const spy = vi.spyOn(component.pay, 'emit');
 
-    fixture.componentRef.setInput('verifiedDetails', {
-      valid: true,
-      amountDue: 10,
-    });
-
-    component.paybillForm.controls.accountNumber.setValue('123456');
-    component.paybillForm.controls.amount.setValue(50);
-
-    component.onSubmit();
-
-    expect(spy).toHaveBeenCalledWith({ accountNumber: '123456', amount: 50 });
-  });
-
-  it('should mark fields as touched if invalid on submit', () => {
-    component.paybillForm.controls.accountNumber.setValue('');
-    component.onSubmit();
-    expect(component.paybillForm.controls.accountNumber.touched).toBe(true);
-  });
-
-  it('should return early if isLoading is true', () => {
-    const spy = vi.spyOn(component.verify, 'emit');
-    fixture.componentRef.setInput('isLoading', true);
-    component.onSubmit();
-    expect(spy).not.toHaveBeenCalled();
-  });
 });

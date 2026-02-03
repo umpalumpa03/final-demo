@@ -3,12 +3,13 @@ import { SecurityActions } from './security.actions';
 import { initialSecurityState } from './security.state';
 
 describe('securityFeature reducer', () => {
+
   it('should set loading true and reset flags on changePassword', () => {
-    const prev = { ...initialSecurityState, error: 'x', success: true, loading: false };
+    const prev = { ...initialSecurityState, loading: false, error: 'Old error', success: true };
 
     const next = securityFeature.reducer(
       prev,
-      SecurityActions.changePassword({ currentPassword: 'a', newPassword: 'b' }),
+      SecurityActions.changePassword({ currentPassword: 'old', newPassword: 'new' }),
     );
 
     expect(next.loading).toBe(true);
@@ -38,4 +39,7 @@ describe('securityFeature reducer', () => {
     expect(next.error).toBe('Bad request');
     expect(next.success).toBe(false);
   });
+
+  
+
 });

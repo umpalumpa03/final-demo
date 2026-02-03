@@ -5,6 +5,7 @@ import { MessagingStore } from '../../store/messaging.store';
 import { EmptyCard } from '../../shared/ui/empty-card/empty-card';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { MailCard } from '../../shared/ui/mail-card/mail-card';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-draft',
@@ -15,11 +16,11 @@ import { MailCard } from '../../shared/ui/mail-card/mail-card';
 })
 export class Draft implements OnInit {
   private messagingStore = inject(MessagingStore);
+  private router = inject(Router);
 
-  public mails = this.messagingStore.mails; 
+  public mails = this.messagingStore.mails;
   public isLoading = this.messagingStore.isLoading;
-  public error = this.messagingStore.error;
-   public selectedMailIds = signal<Set<number>>(new Set());
+  public selectedMailIds = signal<Set<number>>(new Set());
 
   public isAllSelected(): boolean {
     return this.selectedMailIds().size === this.mails().length && this.mails().length > 0;
@@ -50,11 +51,15 @@ export class Draft implements OnInit {
     this.selectedMailIds.set(new Set());
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.messagingStore.loadMails('drafts');
   }
 
   public deleteMail(mailId: number): void {
     this.messagingStore.deleteMail(mailId);
+  }
+
+  public goToDetail(mailId: number): void {
+    this.router.navigate(['/bank/messaging/draft', mailId]);
   }
 }

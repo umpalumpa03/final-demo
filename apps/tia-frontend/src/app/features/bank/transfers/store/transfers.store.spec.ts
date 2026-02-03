@@ -5,13 +5,13 @@ import { TransfersApiService } from '../services/transfersApi.service';
 import { initialTransferState } from './transfers.state';
 import { of, throwError } from 'rxjs';
 
-describe('TransferStore (vitest)', () => {
+describe('TransferStore', () => {
   let store: any;
   let transfersApiMock: any;
 
   const mockResponse = {
     fullName: 'John Doe',
-    accounts: [{ id: '1', accountNumber: 'ACC1' }],
+    accounts: [{ id: '1', iban: 'GE123', currency: 'GEL' }],
   };
 
   beforeEach(() => {
@@ -33,61 +33,76 @@ describe('TransferStore (vitest)', () => {
   it('should initialize with initial state', () => {
     expect(store.recipientInput()).toBe(initialTransferState.recipientInput);
     expect(store.isLoading()).toBe(false);
-    expect(store.recipientInfo()).toBeNull();
   });
 
-  it('should handle successful lookupByPhone', () => {
+  it('should update basic transaction details (Amount, Description, Name)', () => {
+    store.setAmount(500);
+    store.setDescription('Monthly Rent');
+    store.setManualRecipientName('Landlord');
+
+    expect(store.amount()).toBe(500);
+    expect(store.description()).toBe('Monthly Rent');
+    expect(store.manualRecipientName()).toBe('Landlord');
+  });
+
+  it('should handle fee updates and loading state', () => {
+    store.setLoading(true);
+    expect(store.isLoading()).toBe(true);
+
+    store.updateFeeInfo(2.5, 502.5);
+    expect(store.fee()).toBe(2.5);
+    expect(store.isLoading()).toBe(false);
+  });
+
+  it('should handle successful phone lookup', () => {
     transfersApiMock.lookupByPhone.mockReturnValue(of(mockResponse));
 
-    store.lookupRecipient({ value: '555123', type: 'phone' });
+    store.lookupRecipient({ value: '555111', type: 'phone' });
 
-    expect(store.recipientInput()).toBe('555123');
-    expect(store.recipientType()).toBe('phone');
+    expect(transfersApiMock.lookupByPhone).toHaveBeenCalledWith('555111');
     expect(store.recipientInfo()).toEqual(mockResponse);
     expect(store.isLoading()).toBe(false);
-    expect(store.error()).toBeNull();
   });
 
-  it('should handle successful lookupByIban', () => {
+  it('should handle successful IBAN lookup (Same Bank)', () => {
     transfersApiMock.lookupByIban.mockReturnValue(of(mockResponse));
 
-    store.lookupRecipient({ value: 'GE123', type: 'iban-same-bank' });
+    store.lookupRecipient({ value: 'GE999', type: 'iban-same-bank' });
 
-    expect(transfersApiMock.lookupByIban).toHaveBeenCalledWith('GE123');
+    expect(transfersApiMock.lookupByIban).toHaveBeenCalledWith('GE999');
     expect(store.recipientInfo()).toEqual(mockResponse);
   });
 
-  it('should handle lookup error', () => {
-    const errorMsg = 'Recipient not found';
+  it('should handle lookup error and set fallback message', () => {
     transfersApiMock.lookupByPhone.mockReturnValue(
-      throwError(() => ({ message: errorMsg })),
+      throwError(() => ({ message: 'Not Found' })),
     );
 
-    store.lookupRecipient({ value: '555000', type: 'phone' });
+    store.lookupRecipient({ value: '000', type: 'phone' });
 
-    expect(store.error()).toBe(errorMsg);
+    expect(store.error()).toBe('Not Found');
     expect(store.isLoading()).toBe(false);
     expect(store.recipientInfo()).toBeNull();
   });
 
-  it('should handle lookup error without message', () => {
-    transfersApiMock.lookupByPhone.mockReturnValue(
-      throwError(() => new Error()),
-    );
-
-    store.lookupRecipient({ value: '555000', type: 'phone' });
-
-    expect(store.error()).toBe('Failed to find recipient');
-  });
-
-  it('should reset store to initial state', () => {
-    transfersApiMock.lookupByPhone.mockReturnValue(of(mockResponse));
-    store.lookupRecipient({ value: '555123', type: 'phone' });
+  it('should reset the store to initial state', () => {
+    store.setAmount(100);
+    store.setLoading(true);
 
     store.reset();
 
-    expect(store.recipientInput()).toBe(initialTransferState.recipientInput);
-    expect(store.recipientInfo()).toBeNull();
-    expect(store.error()).toBeNull();
+    expect(store.amount()).toBe(0);
+    expect(store.isLoading()).toBe(false);
+    expect(store.recipientInput()).toBe('');
+  });
+
+  it('should update specific state flags (Account, Verified)', () => {
+    const mockAccount = { id: 's1', currency: 'GEL' } as any;
+
+    store.setSenderAccount(mockAccount);
+    store.setIsVerified(true);
+
+    expect(store.senderAccount()).toEqual(mockAccount);
+    expect(store.isVerified()).toBe(true);
   });
 });

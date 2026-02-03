@@ -3,7 +3,10 @@
     <lib-loan-card [loan]="loan" (cardClick)="onCardClick($event)" (rename)="onRenameLoan($event)">
     </lib-loan-card>
     } @empty {
-    <p>No loans found.</p>
+    <app-error-states variant="not-found" [header]="'loans.empty.all.title' | translate"
+        [message]="'loans.empty.all.message' | translate" [buttonMessage]="'loans.empty.all.button' | translate"
+        [border]="false" width="100%" height="30rem" (buttonClick)="onRequestLoan()">
+    </app-error-states>
     }
 </section>
 

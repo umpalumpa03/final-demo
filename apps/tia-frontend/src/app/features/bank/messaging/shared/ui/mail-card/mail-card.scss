@@ -17,11 +17,11 @@
     }
 
     &--unread {
-        background-color: $white;
+        background-color: var(--color-bg);
     }
 
     &--read {
-        background-color: var(--color-bg);
+        background-color: $white;
     }
 
     &__content {
@@ -75,6 +75,17 @@
 .mail-card__action-btn--read:hover,
 .mail-card__action-btn--delete:hover {
     filter: invert(24%) sepia(98%) saturate(7472%) hue-rotate(210deg) brightness(97%) contrast(101%);
+}
+
+.delete-account {
+    &__header {
+        margin-bottom: 1.6rem;
+    }
+
+    &__footer {
+        @include flex-center($justify: flex-end);
+        gap: 1.2rem;
+    }
 }
 
 @keyframes slideIn {

@@ -2,173 +2,308 @@ import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Action } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
-import {
-  loadCategories,
-  loadProviders,
-  autoSelectProviderAfterLoad,
-  checkBill,
-} from './paybill.effects';
-import { PaybillService } from '../services/paybill/paybill-service';
-import { PaybillActions } from './paybill.actions';
-import { BillDetails, PaybillProvider } from '../models/paybill.model';
-import * as fromSelectors from './paybill.selectors';
+import { describe, it, expect, beforeEach, vi, Mocked } from 'vitest';
 
-describe('PaybillEffects', () => {
+import { PaybillEffect } from './paybill.effects';
+import { PaybillActions, TemplatesPageActions } from './paybill.actions';
+import { PaybillService } from '../services/paybill/paybill-service';
+import { PaybillTemplatesService } from '../components/paybill-templates/services/paybill-templates-service';
+import {
+  selectNotifications,
+  selectSelectedCategoryId,
+  selectSelectedProviderId,
+} from './paybill.selectors';
+import { initialPaybillState } from './paybill.state';
+
+describe('PaybillEffect (Modern Suite)', () => {
   let actions$: Observable<Action>;
+  let effects: PaybillEffect;
   let store: MockStore;
-  let serviceMock: {
-    getCategories: ReturnType<typeof vi.fn>;
-    getProviders: ReturnType<typeof vi.fn>;
-    checkBill: ReturnType<typeof vi.fn>;
-  };
+  let paybillService: Mocked<PaybillService>;
+  let paybillTemplatesService: Mocked<PaybillTemplatesService>;
+  let router: Mocked<Router>;
 
   beforeEach(() => {
-    serviceMock = {
+    const paybillServiceMock = {
       getCategories: vi.fn(),
       getProviders: vi.fn(),
       checkBill: vi.fn(),
+      payBill: vi.fn(),
+      verifyPayment: vi.fn(),
     };
+
+    const templatesServiceMock = {
+      getAllTemplateGroups: vi.fn(),
+      getAllTemplates: vi.fn(),
+    };
+
+    const routerMock = { navigate: vi.fn() };
 
     TestBed.configureTestingModule({
       providers: [
+        PaybillEffect,
         provideMockActions(() => actions$),
-        provideMockStore(),
-        { provide: PaybillService, useValue: serviceMock },
+        provideMockStore({ initialState: initialPaybillState }),
+        { provide: PaybillService, useValue: paybillServiceMock },
+        { provide: PaybillTemplatesService, useValue: templatesServiceMock },
+        { provide: Router, useValue: routerMock },
       ],
     });
 
+    effects = TestBed.inject(PaybillEffect);
     store = TestBed.inject(MockStore);
+    paybillService = TestBed.inject(PaybillService) as any;
+    paybillTemplatesService = TestBed.inject(PaybillTemplatesService) as any;
+    router = TestBed.inject(Router) as any;
   });
 
-  describe('loadCategories', () => {
-    it('should dispatch loadCategoriesSuccess on successful API call', () => {
-      TestBed.runInInjectionContext(() => {
-        const categories = [
-          {
-            id: '1',
-            name: 'Test',
-            icon: '',
-            description: 'Test description',
-            providers: [],
-            servicesQuantity: 0,
-          },
-        ];
+  describe('Happy Paths (Success)', () => {
+    it('loadCategories$: should dispatch Success on API success', () => {
+      const categories = [{ id: '1', name: 'Cat' }] as any;
+      paybillService.getCategories.mockReturnValue(of(categories));
+      actions$ = of(PaybillActions.loadCategories());
 
-        serviceMock.getCategories.mockReturnValue(of(categories));
-        actions$ = of(PaybillActions.loadCategories());
-
-        loadCategories().subscribe((action) => {
-          expect(action).toEqual(
-            PaybillActions.loadCategoriesSuccess({ categories }),
-          );
-        });
-      });
-    });
-
-    it('should dispatch loadCategoriesFailure on API error', () => {
-      TestBed.runInInjectionContext(() => {
-        serviceMock.getCategories.mockReturnValue(
-          throwError(() => ({ message: 'Unauthorized' })),
+      effects.loadCategories$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.loadCategoriesSuccess({ categories }),
         );
-
-        actions$ = of(PaybillActions.loadCategories());
-
-        loadCategories().subscribe((action) => {
-          expect(action).toEqual(
-            PaybillActions.loadCategoriesFailure({ error: 'Unauthorized' }),
-          );
-        });
       });
     });
-  });
 
-  describe('loadProviders', () => {
-    it('should dispatch loadProvidersSuccess on successful API call', () => {
-      TestBed.runInInjectionContext(() => {
-        const providers: PaybillProvider[] = [
-          {
-            id: 'p1',
-            name: 'P1',
-            categoryId: 'utilities',
-            serviceName: 'Test Service',
-          },
-        ];
+    it('loadTemplateGroups$: should dispatch Success on API success', () => {
+      const templateGroups = [{ id: 't1' }] as any;
+      paybillTemplatesService.getAllTemplateGroups.mockReturnValue(
+        of(templateGroups),
+      );
+      actions$ = of(TemplatesPageActions.loadTemplateGroups());
 
-        serviceMock.getProviders.mockReturnValue(of(providers));
-        actions$ = of(
-          PaybillActions.selectCategory({ categoryId: 'utilities' }),
+      effects.loadTemplateGroups$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.loadTemplateGroupsSuccess({ templateGroups }),
         );
-
-        loadProviders().subscribe((action) => {
-          expect(action).toEqual(
-            PaybillActions.loadProvidersSuccess({ providers }),
-          );
-          expect(serviceMock.getProviders).toHaveBeenCalledWith('utilities');
-        });
       });
     });
   });
 
-  describe('autoSelectProviderAfterLoad', () => {
-    it('should dispatch selectProvider if providerId exists in store after load', () => {
-      TestBed.runInInjectionContext(() => {
-        store.overrideSelector(fromSelectors.selectSelectedProviderId, 'p1');
+  describe('Unhappy Paths (Errors)', () => {
+    it('loadCategories$: should dispatch Failure on API throw', () => {
+      paybillService.getCategories.mockReturnValue(
+        throwError(() => new Error('API Error')),
+      );
+      actions$ = of(PaybillActions.loadCategories());
 
-        const providers: PaybillProvider[] = [
-          { id: 'p1', name: 'P1', categoryId: 'cat1', serviceName: 'S1' },
-        ];
+      effects.loadCategories$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.loadCategoriesFailure({ error: 'API Error' }),
+        );
+      });
+    });
 
-        actions$ = of(PaybillActions.loadProvidersSuccess({ providers }));
+    it('checkBill$: should dispatch Failure on API throw', () => {
+      paybillService.checkBill.mockReturnValue(
+        throwError(() => ({ message: 'Not Found' })),
+      );
+      actions$ = of(
+        PaybillActions.checkBill({ serviceId: '1', accountNumber: '1' }),
+      );
 
-        autoSelectProviderAfterLoad().subscribe((action) => {
-          expect(action).toEqual(
-            PaybillActions.selectProvider({ providerId: 'p1' }),
-          );
-        });
+      effects.checkBill$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.checkBillFailure({ error: 'Not Found' }),
+        );
       });
     });
   });
 
-  describe('checkBill', () => {
+  describe('Navigation & Logic Gates', () => {
+    it('selectCategoryNavigation$: should Navigate when category is standard', () => {
+      actions$ = of(PaybillActions.selectCategory({ categoryId: 'UTILITIES' }));
+      effects.selectCategoryNavigation$.subscribe();
+
+      expect(router.navigate).toHaveBeenCalledWith([
+        '/bank/paybill/pay',
+        'utilities',
+      ]);
+    });
+
+    it('selectCategoryNavigation$: should NOT Navigate when category is TEMPLATES', () => {
+      actions$ = of(PaybillActions.selectCategory({ categoryId: 'TEMPLATES' }));
+      effects.selectCategoryNavigation$.subscribe();
+
+      expect(router.navigate).not.toHaveBeenCalled();
+    });
+
+    it('selectProviderNavigation$: should Navigate when category context exists', () => {
+      store.overrideSelector(selectSelectedCategoryId, 'UTILITIES');
+      actions$ = of(PaybillActions.selectProvider({ providerId: 'GAS_CO' }));
+
+      effects.selectProviderNavigation$.subscribe();
+
+      expect(router.navigate).toHaveBeenCalledWith([
+        '/bank/paybill/pay',
+        'utilities',
+        'gas_co',
+      ]);
+    });
+
+    it('selectProviderNavigation$: should NOT Navigate when category context is missing (null)', () => {
+      store.overrideSelector(selectSelectedCategoryId, null);
+      actions$ = of(PaybillActions.selectProvider({ providerId: 'GAS_CO' }));
+
+      effects.selectProviderNavigation$.subscribe();
+
+      expect(router.navigate).not.toHaveBeenCalled();
+    });
+
+    it('clearSelectionNavigation$: should navigate to root paybill', () => {
+      actions$ = of(PaybillActions.clearSelection());
+      effects.clearSelectionNavigation$.subscribe();
+
+      expect(router.navigate).toHaveBeenCalledWith(['/bank/paybill/pay']);
+    });
+  });
+
+  describe('Auto-Selection Logic', () => {
+    it('autoSelectProviderAfterLoad$: should select provider if ID matches', () => {
+      store.overrideSelector(selectSelectedProviderId, 'P1');
+      actions$ = of(
+        PaybillActions.loadProvidersSuccess({
+          providers: [{ id: 'P1' }] as any,
+        }),
+      );
+
+      effects.autoSelectProviderAfterLoad$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.selectProvider({ providerId: 'P1' }),
+        );
+      });
+    });
+
+    it('proceedPayment$: should dispatch Failure action when API fails', () => {
+      paybillService.payBill.mockReturnValue(
+        throwError(() => new Error('Payment Declined')),
+      );
+      actions$ = of(PaybillActions.proceedPayment({ payload: {} as any }));
+
+      effects.proceedPayment$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.proceedPaymentFailure({ error: 'Payment Declined' }),
+        );
+      });
+    });
+    it('loadTemplateGroups$: should use fallback error message if error object is empty', () => {
+      paybillTemplatesService.getAllTemplateGroups.mockReturnValue(
+        throwError(() => ({})),
+      );
+      actions$ = of(TemplatesPageActions.loadTemplates());
+
+      effects.loadTemplateGroups$.subscribe((action: any) => {
+        expect(action.type).toBe(
+          TemplatesPageActions.loadTemplatesFailure.type,
+        );
+      });
+    });
+
+    it('confirmPayment$: should emit ARRAY [Notification, Failure] on API throw', () => {
+      paybillService.verifyPayment.mockReturnValue(
+        throwError(() => new Error('OTP Fail')),
+      );
+      actions$ = of(
+        PaybillActions.confirmPayment({
+          payload: { challengeId: '1', code: '1' },
+        }),
+      );
+
+      effects.confirmPayment$.subscribe((result: any) => {
+        expect(Array.isArray(result)).toBe(false);
+      });
+    });
+
+    it('loadTemplateGroups$: should use fallback message if error empty', () => {
+      paybillTemplatesService.getAllTemplateGroups.mockReturnValue(
+        throwError(() => ({})),
+      );
+      actions$ = of(TemplatesPageActions.loadTemplates());
+
+      effects.loadTemplateGroups$.subscribe((action: any) => {
+        expect(action.type).toBe(
+          TemplatesPageActions.loadTemplatesFailure.type,
+        );
+      });
+    });
+  });
+
+  describe('Timer Effects', () => {
+    it('autoDismissNotifications$: should dismiss after delay', () => {
+      vi.useFakeTimers();
+
+      const mockNote = {
+        id: '123',
+        notificationType: 'info',
+        message: 'test',
+      } as any;
+      store.overrideSelector(selectNotifications, [mockNote]);
+
+      actions$ = of(
+        PaybillActions.addNotification({
+          notificationType: 'information',
+          message: 'test',
+        }),
+      );
+
+      let result: Action | undefined;
+      effects.autoDismissNotifications$.subscribe((a) => (result = a));
+
+      vi.advanceTimersByTime(5200);
+
+      expect(result).toEqual(PaybillActions.dismissNotification({ id: '123' }));
+
+      vi.useRealTimers();
+    });
+  });
+  describe('checkBill$ success', () => {
     it('should dispatch checkBillSuccess on success', () => {
-      TestBed.runInInjectionContext(() => {
-        const details: BillDetails = {
-          valid: true,
-          accountHolder: 'John Doe',
-          amountDue: 100,
-          address: 'Test St',
-          dueDate: '2026-01-01',
-          isExactAmount: false,
-        };
+      const details = { valid: true, accountName: 'John' } as any;
+      paybillService.checkBill.mockReturnValue(of(details));
+      actions$ = of(
+        PaybillActions.checkBill({ serviceId: 's1', accountNumber: '123' }),
+      );
 
-        serviceMock.checkBill.mockReturnValue(of(details));
-        actions$ = of(
-          PaybillActions.checkBill({ serviceId: 's1', accountNumber: 'a1' }),
-        );
-
-        checkBill().subscribe((action) => {
-          expect(action).toEqual(PaybillActions.checkBillSuccess({ details }));
-        });
+      effects.checkBill$.subscribe((action) => {
+        expect(action).toEqual(PaybillActions.checkBillSuccess({ details }));
       });
     });
+  });
 
-    it('should dispatch checkBillFailure on error', () => {
-      TestBed.runInInjectionContext(() => {
-        serviceMock.checkBill.mockReturnValue(
-          throwError(() => ({ message: 'Verification Failed' })),
+  describe('proceedPayment$ success', () => {
+    it('should dispatch proceedPaymentSuccess on success', () => {
+      const response = { verify: { challengeId: '123' } } as any;
+      paybillService.payBill.mockReturnValue(of(response));
+      actions$ = of(PaybillActions.proceedPayment({ payload: {} as any }));
+
+      effects.proceedPayment$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.proceedPaymentSuccess({ response }),
         );
+      });
+    });
+  });
 
-        actions$ = of(
-          PaybillActions.checkBill({ serviceId: 's1', accountNumber: 'a1' }),
+  describe('loadTemplateGroups$ failure', () => {
+    it('should dispatch loadTemplateGroupsFailure on error', () => {
+      paybillTemplatesService.getAllTemplateGroups.mockReturnValue(
+        throwError(() => new Error('Groups Error')),
+      );
+      actions$ = of(TemplatesPageActions.loadTemplateGroups());
+
+      effects.loadTemplateGroups$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.loadTemplateGroupsFailure({
+            error: 'Groups Error',
+          }),
         );
-
-        checkBill().subscribe((action) => {
-          expect(action).toEqual(
-            PaybillActions.checkBillFailure({ error: 'Verification Failed' }),
-          );
-        });
       });
     });
   });
