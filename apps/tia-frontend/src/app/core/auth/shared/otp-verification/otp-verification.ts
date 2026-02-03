@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   effect,
+  HostListener,
   inject,
   input,
   OnInit,
@@ -69,6 +70,12 @@ export class OtpVerification implements OnInit {
   public phoneErrorMessage = input<string | null>(null);
 
   public resendTries = signal<number>(3);
+
+  @HostListener('window:keydown.enter', ['$event'])
+  public handleKeyBoardEvent(event: Event) {
+    event.preventDefault();
+    this.onSubmit();
+  }
 
   public unitedError = computed(() => {
     const error = this.errorMessage();
@@ -209,6 +216,10 @@ export class OtpVerification implements OnInit {
   }
 
   public onSubmit(): void {
+    if (this.isButtonDisabled()) {
+      return;
+    }
+
     const currentForm = this.activeForm();
 
     if (currentForm.invalid) {

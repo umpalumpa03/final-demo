@@ -5,6 +5,9 @@
   ></app-auth-header>
   <app-registration-form
     (submitRegistrationForm)="onSignUp($event)"
+    (formIncompleteData)="listenInputedData($event)"
+    (currentUsername)="handleCurrentUsername($event)"
+    (currentEmail)="handleCurrentEmail($event)"
   ></app-registration-form>
 
   <p class="sign-up__footer">
@@ -13,7 +16,12 @@
       {{'auth.sign-up.signIn' | translate}}
     </span>
   </p>
-
+  @if(!emailAvailability() && emailAvailability() !== null) {
+    <div>EMAIL NOT AVAILABLE </div>
+  }
+  @if(!usernameAvailability() && usernameAvailability() !== null) {
+    <div>USER NOT AVAILABLE </div>
+  }
   @if (errorMessage()) {
   <app-alert-types-with-icons alertType="error" [alertMessage]="errorMessage()">
   </app-alert-types-with-icons>

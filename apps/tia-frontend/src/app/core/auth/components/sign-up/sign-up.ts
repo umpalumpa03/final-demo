@@ -1,11 +1,23 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  HostListener,
   inject,
-  OnDestroy,
+  OnInit,
   signal,
 } from '@angular/core';
-import { catchError, EMPTY, finalize, tap } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  EMPTY,
+  finalize,
+  of,
+  Subject,
+  switchMap,
+  tap,
+} from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { RegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/registration-form/registration-form';
 import { TokenService } from '../../services/token.service';
@@ -14,26 +26,96 @@ import { AuthService } from '../../services/auth.service';
 import { Routes } from '../../models/tokens.model';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { TranslatePipe } from '@ngx-translate/core';
-import { AuthHeader } from "../../shared/auth-header/auth-header";
-
+import { AuthHeader } from '../../shared/auth-header/auth-header';
 
 @Component({
   selector: 'app-sign-up',
-  imports: [RouterLink, RegistrationForm, AlertTypesWithIcons, TranslatePipe, AuthHeader],
+  imports: [
+    RouterLink,
+    RegistrationForm,
+    AlertTypesWithIcons,
+    TranslatePipe,
+    AuthHeader,
+  ],
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.scss',
   providers: [TokenService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignUp {
-  private signUpService = inject(AuthService);
+  private authService = inject(AuthService);
   private tokenService = inject(TokenService);
   private router = inject(Router);
   public errorMessage = signal<string>('');
 
-  public onSignUp(signUpData: IRegistrationForm): void {    
-    this.signUpService.isLoginLoading.set(true)
-    this.signUpService
+  @HostListener('window:keydown', ['$event'])
+  public handleKeyboardEvent(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      this.onSignUp(this.partialData());
+    }
+  }
+
+  private partialData = signal<IRegistrationForm>({} as IRegistrationForm);
+
+  public emailAvailability = signal<boolean | null>(null);
+  public usernameAvailability = signal<boolean | null>(null);
+
+  public currentEmail = signal<string | null>(null);
+  public currentUsername = signal<string | null>(null);
+
+  private usernameSource$ = new Subject<string>();
+  private emailSource$ = new Subject<string>();
+
+  constructor() {
+    this.usernameSource$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((name) =>
+          this.authService
+            .isUsernameAvailable(name)
+            .pipe(catchError(() => of({ available: false }))),
+        ),
+        tap((res) => this.usernameAvailability.set(res.available)),
+        takeUntilDestroyed(),
+      )
+      .subscribe();
+
+    this.emailSource$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((email) =>
+          this.authService
+            .isEmailAvailable(email)
+            .pipe(catchError(() => of({ available: false }))),
+        ),
+        tap((res) => this.emailAvailability.set(res.available)),
+        takeUntilDestroyed(),
+      )
+      .subscribe();
+  }
+
+  public handleCurrentUsername(username: string) {
+    if (username.length > 2) {
+      this.usernameSource$.next(username);
+    }
+  }
+
+  public handleCurrentEmail(email: string): void {
+    if (email.includes('@') && email.includes('.')) {
+      this.emailSource$.next(email);
+    }
+  }
+
+  public listenInputedData(event: IRegistrationForm): void {
+    this.partialData.set(event);
+  }
+
+  public onSignUp(signUpData: IRegistrationForm): void {
+    this.authService.isLoginLoading.set(true);
+
+    this.authService
       .signUpUser(signUpData)
       .pipe(
         tap((res) => {
@@ -63,8 +145,8 @@ export class SignUp {
 
           return EMPTY;
         }),
-        finalize(() => this.signUpService.isLoginLoading.set(false))
+        finalize(() => this.authService.isLoginLoading.set(false)),
       )
-    .subscribe();
+      .subscribe();
   }
 }

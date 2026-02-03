@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { PhoneVerificationGuard } from '../../guards/sign-up-guard';
 
 export const signUpRoutes: Routes = [
   {

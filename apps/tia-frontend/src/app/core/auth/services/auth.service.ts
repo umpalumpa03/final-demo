@@ -16,6 +16,7 @@ import {
   IloginResponse,
   ILogoutResponse,
   IMfaVerifyResponse,
+  IsAvailableBaseResponse,
   ISignUpResponse,
   phoneOtpError,
   ResendOtpResponse,
@@ -68,6 +69,26 @@ export class AuthService {
 
   public getChallengeId() {
     return this.challengeId;
+  }
+
+  public isUsernameAvailable(
+    username: string,
+  ): Observable<IsAvailableBaseResponse> {
+    const params = { username };
+
+    return this.http.get<IsAvailableBaseResponse>(
+      `${environment.apiUrl}/users/check-username`,
+      { params },
+    );
+  }
+
+  public isEmailAvailable(email: string): Observable<IsAvailableBaseResponse> {
+    const params = { email };
+
+    return this.http.get<IsAvailableBaseResponse>(
+      `${environment.apiUrl}/users/check-email`,
+      { params },
+    );
   }
 
   public loginPostRequest(user: ILoginRequest): Observable<IloginResponse> {
@@ -150,13 +171,16 @@ export class AuthService {
           const errorData: phoneOtpError = err.error;
           this.otpError.set(errorData);
 
-          // errorMessage-s ikeneeeb BEKAA?
           this.errorMessage.set(true);
 
           setTimeout(() => this.otpError.set(null), 2000);
           return EMPTY;
         }),
-        finalize(() => this.isLoginLoading.set(false)),
+        finalize(() => {
+          this.store.dispatch(UserInfoActions.loadUser());
+          this.router.navigate([Routes.DASHBOARD]);
+          this.isLoginLoading.set(false);
+        }),
       );
   }
 
@@ -231,7 +255,10 @@ export class AuthService {
 
           return throwError(() => err);
         }),
-        finalize(() => this.isLoginLoading.set(false)),
+        finalize(() => {
+          this.isLoginLoading.set(false);
+          this.tokenService.clearSignUpToken();
+        }),
       );
   }
 
@@ -293,7 +320,12 @@ export class AuthService {
         payload,
         { headers },
       )
-      .pipe(finalize(() => this.isLoginLoading.set(false)));
+      .pipe(
+        finalize(() => {
+          this.isLoginLoading.set(false);
+          this.tokenService.clearAccessToken()
+        }),
+      );
   }
 
   public resendPhoneOtp(): Observable<ResendOtpResponse> {

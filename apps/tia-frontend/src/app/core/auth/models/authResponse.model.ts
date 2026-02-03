@@ -62,3 +62,7 @@ export interface OtpResponse {
 export interface ILogoutResponse {
   success: boolean;
 }
+
+export interface IsAvailableBaseResponse {
+  available: boolean;
+}

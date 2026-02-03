@@ -11,10 +11,7 @@ import {
 import { FinancesStore } from '../features/bank/finances/store/finances.store';
 import { FinancesService } from '../features/bank/finances/services/finances.service';
 import { ExchangeRateReducer } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.reducers';
-import {
-  accountsFeature,
-  accountsReducer,
-} from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
+import { accountsFeature } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
 import { ExchangeRatesEffects } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.effects';
 import { AccountsEffects } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.effects';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
