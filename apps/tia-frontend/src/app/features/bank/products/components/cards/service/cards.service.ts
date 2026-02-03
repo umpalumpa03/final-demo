@@ -10,7 +10,7 @@ import {
   CreateCardRequest,
   CreateCardResponse,
 } from '../models/create-card-request.model';
-import { environment } from 'apps/tia-frontend/src/environments/environment';
+import { environment } from '../../../../../../../environments/environment';
 import { CardTypesResponse } from '../models/card-type.model';
 
 @Injectable({

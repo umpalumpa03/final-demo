@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Action, Store } from '@ngrx/store';
 import { Observable, of, throwError } from 'rxjs';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { CardsEffects } from './cards.effects';
 import * as CardsActions from './cards.actions';
 import { CardListApiService } from '@tia/shared/services/cards/card-list.service.api';
@@ -13,7 +13,7 @@ describe('CardsEffects', () => {
   let actions$: Observable<Action>;
   let effects: CardsEffects;
   let cardListApiService: { getCardAccounts: ReturnType<typeof vi.fn>; getCardDetails: ReturnType<typeof vi.fn> };
-  let cardsService: { 
+  let cardsService: {
     getCardImage: ReturnType<typeof vi.fn>;
     getCardDesigns: ReturnType<typeof vi.fn>;
     getCardCategories: ReturnType<typeof vi.fn>;
@@ -22,23 +22,23 @@ describe('CardsEffects', () => {
   };
   let store: { select: ReturnType<typeof vi.fn> };
 
+  const mockAccounts = [
+    { id: 'acc-1', iban: 'GE123', name: 'Main', balance: 1000, currency: 'GEL', status: 'ACTIVE', cardIds: ['card-1'], openedAt: '2024-01-01' },
+  ];
+
+  const mockDetails = {
+    id: 'card-1', accountId: 'acc-1', type: 'DEBIT' as const, network: 'VISA' as const,
+    design: 'blue', cardName: 'My Card', status: 'ACTIVE' as const,
+    allowOnlinePayments: true, allowInternational: true, allowAtm: true,
+    createdAt: '2024-01-01', updatedAt: '2024-01-01',
+  };
+
+  const mockRequest = { accountId: 'acc-1', design: 'blue', cardName: 'My Card', cardCategory: 'DEBIT' as const, cardType: 'VISA' as const };
+
   beforeEach(() => {
-    cardListApiService = {
-      getCardAccounts: vi.fn(),
-      getCardDetails: vi.fn(),
-    };
-
-    cardsService = {
-      getCardImage: vi.fn(),
-      getCardDesigns: vi.fn(),
-      getCardCategories: vi.fn(),
-      getCardTypes: vi.fn(),
-      createCard: vi.fn(),
-    };
-
-    store = {
-      select: vi.fn(() => of([])),
-    };
+    cardListApiService = { getCardAccounts: vi.fn(), getCardDetails: vi.fn() };
+    cardsService = { getCardImage: vi.fn(), getCardDesigns: vi.fn(), getCardCategories: vi.fn(), getCardTypes: vi.fn(), createCard: vi.fn() };
+    store = { select: vi.fn(() => of([])) };
 
     TestBed.configureTestingModule({
       providers: [
@@ -53,70 +53,111 @@ describe('CardsEffects', () => {
     effects = TestBed.inject(CardsEffects);
   });
 
-  it('should load card accounts successfully', async () => {
-    const mockAccounts = [
-      { id: 'acc-1', iban: 'GE123', name: 'Main', balance: 1000, currency: 'GEL', status: 'ACTIVE', cardIds: [], openedAt: '2024-01-01' },
-    ];
-    cardListApiService.getCardAccounts.mockReturnValue(of(mockAccounts));
+  afterEach(() => vi.useRealTimers());
 
+  it('should load card accounts successfully', async () => {
+    cardListApiService.getCardAccounts.mockReturnValue(of(mockAccounts));
     actions$ = of(CardsActions.loadCardAccounts());
 
-    const result = await firstValueFrom(effects.loadCardAccounts$);
-    expect(result).toEqual(CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts }));
+    expect(await firstValueFrom(effects.loadCardAccounts$)).toEqual(CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts }));
   });
 
   it('should handle card accounts load failure', async () => {
     cardListApiService.getCardAccounts.mockReturnValue(throwError(() => new Error('Load failed')));
-
     actions$ = of(CardsActions.loadCardAccounts());
 
-    const result = await firstValueFrom(effects.loadCardAccounts$);
-    expect(result).toEqual(CardsActions.loadCardAccountsFailure({ error: 'Load failed' }));
+    expect(await firstValueFrom(effects.loadCardAccounts$)).toEqual(CardsActions.loadCardAccountsFailure({ error: 'Load failed' }));
+  });
+
+  it('should load card images on accounts success', async () => {
+    cardsService.getCardImage.mockReturnValue(of('base64img'));
+    actions$ = of(CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts }));
+
+    expect(await firstValueFrom(effects.loadCardImages$)).toEqual(CardsActions.loadCardImageSuccess({ cardId: 'card-1', imageBase64: 'base64img' }));
+  });
+
+  it('should load card details successfully', async () => {
+    cardListApiService.getCardDetails.mockReturnValue(of(mockDetails));
+    actions$ = of(CardsActions.loadCardDetails({ cardId: 'card-1' }));
+
+    expect(await firstValueFrom(effects.loadCardDetails$)).toEqual(CardsActions.loadCardDetailsSuccess({ cardId: 'card-1', details: mockDetails }));
+  });
+
+  it('should handle card details failure', async () => {
+    cardListApiService.getCardDetails.mockReturnValue(throwError(() => new Error('Details failed')));
+    actions$ = of(CardsActions.loadCardDetails({ cardId: 'card-1' }));
+
+    expect(await firstValueFrom(effects.loadCardDetails$)).toEqual(CardsActions.loadCardDetailsFailure({ cardId: 'card-1', error: 'Details failed' }));
   });
 
   it('should load card creation data successfully', async () => {
-    const mockData = {
-      designs: [{ id: 'blue', designName: 'Blue', uri: 'uri1' }],
-      categories: [{ value: 'DEBIT' as const, displayName: 'Debit' }],
-      types: [{ value: 'VISA' as const, displayName: 'Visa' }],
-    };
-    cardsService.getCardDesigns.mockReturnValue(of(mockData.designs));
-    cardsService.getCardCategories.mockReturnValue(of(mockData.categories));
-    cardsService.getCardTypes.mockReturnValue(of(mockData.types));
-
+    cardsService.getCardDesigns.mockReturnValue(of([{ id: 'blue', designName: 'Blue', uri: 'uri1' }]));
+    cardsService.getCardCategories.mockReturnValue(of([{ value: 'DEBIT' as const, displayName: 'Debit' }]));
+    cardsService.getCardTypes.mockReturnValue(of([{ value: 'VISA' as const, displayName: 'Visa' }]));
     actions$ = of(CardsActions.loadCardCreationData());
 
-    const result = await firstValueFrom(effects.loadCardCreationData$);
-    expect(result).toEqual(CardsActions.loadCardCreationDataSuccess(mockData));
+    expect(await firstValueFrom(effects.loadCardCreationData$)).toEqual(CardsActions.loadCardCreationDataSuccess({
+      designs: [{ id: 'blue', designName: 'Blue', uri: 'uri1' }],
+      categories: [{ value: 'DEBIT', displayName: 'Debit' }],
+      types: [{ value: 'VISA', displayName: 'Visa' }],
+    }));
   });
 
   it('should create card successfully', async () => {
-    const mockRequest = {
-      accountId: 'acc-1',
-      design: 'blue',
-      cardName: 'My Card',
-      cardCategory: 'DEBIT' as const,
-      cardType: 'VISA' as const,
-    };
     cardsService.createCard.mockReturnValue(of({ success: true }));
-
     actions$ = of(CardsActions.createCard({ request: mockRequest }));
 
-    const result = await firstValueFrom(effects.createCard$);
-    expect(result).toEqual(CardsActions.createCardSuccess());
+    expect(await firstValueFrom(effects.createCard$)).toEqual(CardsActions.createCardSuccess());
+  });
+
+  it('should handle create card failure', async () => {
+    cardsService.createCard.mockReturnValue(throwError(() => new Error('Create failed')));
+    actions$ = of(CardsActions.createCard({ request: mockRequest }));
+
+    expect(await firstValueFrom(effects.createCard$)).toEqual(CardsActions.createCardFailure({ error: 'Create failed' }));
   });
 
   it('should reload accounts after card creation success', async () => {
     actions$ = of(CardsActions.createCardSuccess());
 
-    const result = await firstValueFrom(effects.createCardSuccess$);
-    expect(result).toEqual(CardsActions.loadCardAccounts());
+    expect(await firstValueFrom(effects.createCardSuccess$)).toEqual(CardsActions.loadCardAccounts());
+  });
+
+  it('should dispatch loadCardAccounts when store has no accounts', async () => {
+    store.select.mockReturnValue(of([]));
+    actions$ = of(CardsActions.loadAccountCardsPage({ accountId: 'acc-1' }));
+
+    expect(await firstValueFrom(effects.loadAccountCardsPage$)).toEqual(CardsActions.loadCardAccounts());
+  });
+
+  it('should dispatch loadCardDetails for each cardId', async () => {
+    store.select.mockReturnValue(of([{ ...mockAccounts[0], cardIds: ['card-1', 'card-2'] }]));
+    actions$ = of(CardsActions.loadAccountCardsPage({ accountId: 'acc-1' }));
+
+    const results: Action[] = [];
+    await new Promise<void>((resolve) => {
+      effects.loadAccountCardsPage$.subscribe({ next: (a) => results.push(a), complete: resolve });
+    });
+
+    expect(results).toEqual([
+      CardsActions.loadCardDetails({ cardId: 'card-1' }),
+      CardsActions.loadCardDetails({ cardId: 'card-2' }),
+    ]);
+  });
+
+  it('should dispatch hideSuccessAlert after delay', async () => {
+    vi.useFakeTimers();
+    actions$ = of(CardsActions.createCardSuccess());
+
+    const resultPromise = firstValueFrom(effects.hideSuccessAlertAfterDelay$);
+    vi.advanceTimersByTime(5000);
+
+    expect(await resultPromise).toEqual(CardsActions.hideSuccessAlert());
   });
 
   it('should load creation data when modal opens', async () => {
     actions$ = of(CardsActions.openCreateCardModal());
 
-    const result = await firstValueFrom(effects.loadCardCreationDataOnModalOpen$);
-    expect(result).toEqual(CardsActions.loadCardCreationData());
+    expect(await firstValueFrom(effects.loadCardCreationDataOnModalOpen$)).toEqual(CardsActions.loadCardCreationData());
   });
 });

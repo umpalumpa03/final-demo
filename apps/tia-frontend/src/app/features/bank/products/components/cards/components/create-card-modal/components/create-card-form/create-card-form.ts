@@ -9,11 +9,9 @@ import { CardForm } from 'apps/tia-frontend/src/app/features/bank/products/compo
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
 
-export interface SelectOption {
-  label: string;
-  value: string;
-}
+
 
 @Component({
   selector: 'app-create-card-form',
