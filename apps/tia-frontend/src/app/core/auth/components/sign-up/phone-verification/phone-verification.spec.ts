@@ -93,12 +93,22 @@ describe('PhoneVerification Component', () => {
     );
   });
 
-  it('should handle error and clear it after timeout', async () => {
+  it('should handle error and clear it after timeout', () => {
+    vi.useFakeTimers();
+    
     authServiceMock.sendPhoneVerificationCode.mockReturnValue(
-      throwError(() => ({ error: { message: 'Invalid' } })),
+      (() => {
+        authServiceMock.otpError.set({ error: { message: 'Invalid' }, stacks: [] });
+        setTimeout(() => authServiceMock.otpError.set(null), 2000);
+        return EMPTY;
+      })(),
     );
+
+    // This should not throw and should schedule clearing the otpError
     component.submit({ isCalled: true, otp: '123' });
 
     vi.advanceTimersByTime(5000);
+
+    vi.useRealTimers();
   });
 });

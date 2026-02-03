@@ -7,6 +7,7 @@ import { ForgotPasswordEmail } from './forgot-password-email';
 import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
 import { Routes } from '../../../models/tokens.model';
+import { signal } from '@angular/core';
 
 describe('ForgotPasswordEmail', () => {
   let component: ForgotPasswordEmail;
@@ -15,6 +16,8 @@ describe('ForgotPasswordEmail', () => {
   let router: Router;
 
   beforeEach(async () => {
+    const isLoadingSignal = signal(false);
+    
     await TestBed.configureTestingModule({
       imports: [ForgotPasswordEmail, TranslateModule.forRoot()],
       providers: [
@@ -26,6 +29,7 @@ describe('ForgotPasswordEmail', () => {
               of({ challengeId: 'challenge-1' }),
             ),
             setChellangeId: vi.fn(),
+            isLoginLoading: isLoadingSignal,
           },
         },
         {
@@ -107,6 +111,7 @@ describe('ForgotPasswordEmail emailConfig computed signal', () => {
           useValue: {
             forgotPasswordRequest: vi.fn().mockReturnValue(of({})),
             setChellangeId: vi.fn(),
+            isLoginLoading: signal(false),
           },
         },
         {

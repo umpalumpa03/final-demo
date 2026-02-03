@@ -6,6 +6,7 @@ import { TokenService } from '../../services/token.service';
 import { IRegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/models/contact-forms.model';
 import { of, throwError } from 'rxjs';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { signal } from '@angular/core';
  
 describe('SignUp', () => {
   let component: SignUp;
@@ -18,7 +19,8 @@ describe('SignUp', () => {
   };
  
   const authServiceMock = {
-    signUpUser: vi.fn()
+    signUpUser: vi.fn(),
+    isLoginLoading: signal(false)
   };
  
   const tokenServiceMock = {
