@@ -120,6 +120,7 @@ export class PaybillTemplates {
   public categorySelected = output<string>();
 
   onDropdownChange(controlName: string, event: Event) {
+    console.log('hello');
     const value = (event.target as HTMLSelectElement).value;
 
     if (controlName === 'category' && value) {
@@ -149,11 +150,11 @@ export class PaybillTemplates {
     this.GroupDeleteIcon.emit(id);
   }
 
-  public deleteItem = output();
+  public deleteTemplateModal = output<string>();
 
   onActionHandler(action: string | undefined) {
     if (action === 'deleteTemplate') {
-      console.log('TemplateDeleted');
+      this.deleteTemplateModal.emit('asd');
     }
   }
 }

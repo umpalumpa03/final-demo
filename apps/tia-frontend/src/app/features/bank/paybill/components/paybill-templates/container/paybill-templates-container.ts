@@ -26,6 +26,7 @@ import {
   ModalType,
 } from '../models/paybill-templates.model';
 import { ModalConfig } from '../configs/cta-buttons.config';
+import { NgPlural } from '@angular/common';
 
 @Component({
   selector: 'app-paybill-templates-container',
@@ -109,11 +110,23 @@ export class PaybillTemplatesContainer implements OnInit {
   }
 
   public selectedItemName = signal<string>('');
-
+  public selectedId = signal<string | null>(null);
   onItemDeleteAction(id: string) {
     const template = this.templates().find((t) => t.id === id);
     this.selectedItemName.set(template?.title ?? '');
     this.modalType.set(ModalType.DeleteTemplate);
+    this.selectedId.set(id);
     this.handleModalToggle();
+  }
+
+  deleteTemplate() {
+    const id = this.selectedId();
+    if (id) {
+      this.store.dispatch(
+        TemplatesPageActions.deleteTemplates({ templateId: id }),
+      );
+
+      this.handleModalToggle();
+    }
   }
 }
