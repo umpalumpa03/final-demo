@@ -48,6 +48,15 @@
     display: block;
   }
 
+  &__default-avatar {
+    width: 4.8rem;
+    height: 4.8rem;
+
+    .avatar__text {
+      display: none;
+    }
+  }
+
   &__defaults-section {
     margin-top: 2.4rem;
   }

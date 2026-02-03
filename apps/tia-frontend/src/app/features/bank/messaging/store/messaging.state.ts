@@ -32,9 +32,10 @@ export interface MailingState {
   selectedMailId: number | null;
   error: string | null;
   limit: number;
-  searchResults: User[]; 
+  searchResults: User[];
   isSearching: boolean;
   successMessage?: string;
+  emailDetail?: EmailDetailData
 }
 
 export interface SendEmailRequest {
@@ -55,6 +56,22 @@ export interface User {
 
 export type UserMailsResponse = User[];
 
+export interface EmailDetailData {
+  id: number,
+  subject: string,
+  isFavorite: boolean,
+  body: string,
+  recipient: string,
+  mailType: string,
+  senderEmail: string,
+  isRead: boolean,
+  ccRecipients: string[],
+  isDraft: boolean,
+  isImportant: boolean,
+  createdAt: string,
+}
+
+
 export const initialState: MailingState = {
   mails: [],
   currentType: 'inbox',
@@ -70,4 +87,5 @@ export const initialState: MailingState = {
   searchResults: [],
   isSearching: false,
   successMessage: '',
+  emailDetail: undefined
 };

@@ -1,7 +1,7 @@
 <app-ui-modal [isOpen]="isOpen()" (closed)="!isLoading() && close.emit()">
     <div class="modal">
         <header>
-            <img src="./images/svg/settings/user-management/delete.svg" alt="">
+            <img src="./images/svg/settings/user-management/user-delete.svg" alt="Delete Trash Icon">
             <h1>Delete User</h1>
         </header>
 
@@ -12,8 +12,8 @@
                 Cancel
             </app-button>
 
-            <app-button variant="destructive" [icon]="isLoading() ? null : 'trash-icon.svg'" [isDisabled]="isLoading()"
-                [isLoading]="isLoading()" (click)="deleteUser.emit()">
+            <app-button variant="destructive" [icon]="isLoading() ? null : './trash-icon.svg'"
+                [isDisabled]="isLoading()" [isLoading]="isLoading()" (click)="deleteUser.emit()">
                 Delete
             </app-button>
         </footer>

@@ -22,4 +22,10 @@ describe('MailHeader', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should open the delete modal when onDeleteClick is called', () => {
+    expect(component.isDeleteModalOpen()).toBe(false);
+    component.onDeleteClick();
+    expect(component.isDeleteModalOpen()).toBe(true);
+  });
 });
