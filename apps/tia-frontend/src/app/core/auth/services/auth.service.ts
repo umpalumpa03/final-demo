@@ -16,6 +16,7 @@ import {
   IloginResponse,
   ILogoutResponse,
   IMfaVerifyResponse,
+  IsAvailableBaseResponse,
   ISignUpResponse,
   phoneOtpError,
   ResendOtpResponse,
@@ -61,6 +62,24 @@ export class AuthService {
 
   public getChallengeId() {
     return this.challengeId;
+  }
+
+  public isUsernameAvailable(username: string): Observable<IsAvailableBaseResponse> {
+    const params = { username };
+
+    return this.http.get<IsAvailableBaseResponse>(
+      `${environment.apiUrl}/users/check-username`,
+      { params },
+    );
+  }
+
+  public isEmailAvailable(email: string): Observable<IsAvailableBaseResponse> {
+    const params = { email };
+
+    return this.http.get<IsAvailableBaseResponse>(
+      `${environment.apiUrl}/users/check-email`,
+      { params },
+    );
   }
 
   public loginPostRequest(user: ILoginRequest): Observable<IloginResponse> {
