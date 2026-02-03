@@ -60,6 +60,7 @@ export class HeaderNotifications {
   // Outputs For Selection
   public selectAll = output<ItemsData[]>();
   public selectItem = output<string>();
+  public isIndeterminate = input.required<boolean>();
 
   public onSelectAllClicked(messages: ItemsData[]): void {
     this.selectAll.emit(messages);

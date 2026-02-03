@@ -22,7 +22,8 @@ describe('MessagingStore', () => {
       markAsRead: vi.fn(),
       deleteMail: vi.fn(),
       searchByEmail: vi.fn(),
-      sendEmail: vi.fn()
+      sendEmail: vi.fn(),
+      getEmailById: vi.fn()
     };
 
     mockInboxService = {
@@ -225,5 +226,32 @@ describe('MessagingStore', () => {
     store.searchMails('user');
 
     expect(store.isSearching()).toBe(true);
+  });
+
+  it('should get email by id successfully', async () => {
+    const mockEmailDetail = {
+      id: 1,
+      subject: 'Test Email',
+      body: 'Test Body',
+      senderEmail: 'sender@test.com',
+      recipient: 'receiver@test.com',
+      createdAt: '2024-01-01T00:00:00.000Z'
+    };
+
+    mockMessagingService.getEmailById = vi.fn().mockReturnValue(of(mockEmailDetail));
+
+    store.getEmailById(1);
+  });
+
+  it('should handle get email by id error', async () => {
+    mockMessagingService.getEmailById = vi.fn().mockReturnValue(
+      throwError(() => new Error('Failed to load email'))
+    );
+
+    store.getEmailById(1);
+
+    await vi.waitFor(() => {
+      expect(store.error()).toBe('Failed to load email detail');
+    });
   });
 });

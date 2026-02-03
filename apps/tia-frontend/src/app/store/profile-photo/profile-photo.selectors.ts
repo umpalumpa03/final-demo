@@ -43,3 +43,8 @@ export const selectAvatarType = createSelector(
   selectProfilePhotoFeatureState,
   (state) => state.avatarType,
 );
+
+export const selectSavedAvatarUrl = createSelector(
+  selectProfilePhotoFeatureState,
+  (state) => state.savedAvatarUrl,
+);

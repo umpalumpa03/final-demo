@@ -10,6 +10,7 @@ describe('profilePhotoFeature reducer', () => {
     selectedAvatarId: null,
     uploadedFileName: null,
     currentAvatarUrl: null,
+    savedAvatarUrl: null,
     avatarId: null,
     avatarType: null,
   };
@@ -77,6 +78,7 @@ describe('profilePhotoFeature reducer', () => {
     expect(state.avatarId).toBe('avatar-1');
     expect(state.avatarType).toBe('default');
     expect(state.currentAvatarUrl).toBe('/avatar-1.svg');
+    expect(state.savedAvatarUrl).toBe('/avatar-1.svg');
     expect(state.uploadedFileName).toBeNull();
     expect(state.selectedAvatarId).toBe('avatar-1');
   });
@@ -89,6 +91,7 @@ describe('profilePhotoFeature reducer', () => {
       selectedAvatarId: 'avatar-1',
       uploadedFileName: 'photo.png',
       currentAvatarUrl: '/avatar-1.svg',
+      savedAvatarUrl: '/avatar-1.svg',
       avatarId: 'avatar-1',
       avatarType: 'default',
     };
@@ -101,6 +104,7 @@ describe('profilePhotoFeature reducer', () => {
     expect(state.uploadedFileName).toBeNull();
     expect(state.selectedAvatarId).toBeNull();
     expect(state.currentAvatarUrl).toBeNull();
+    expect(state.savedAvatarUrl).toBeNull();
     expect(state.avatarId).toBeNull();
     expect(state.avatarType).toBeNull();
   });
@@ -118,6 +122,8 @@ describe('profilePhotoFeature reducer', () => {
 
     expect(state.uploadedFileName).toBeNull();
   });
+
+  
 
   it('should handle selectDefaultAvatarRequest', () => {
     const populatedState: ProfilePhotoState = {

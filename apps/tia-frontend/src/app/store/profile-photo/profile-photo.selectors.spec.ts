@@ -21,6 +21,7 @@ describe('ProfilePhoto Selectors', () => {
     selectedAvatarId: 'avatar-1',
     uploadedFileName: 'avatar.png',
     currentAvatarUrl: 'current-url',
+    savedAvatarUrl: 'saved-url',
     avatarId: 'avatar-1',
     avatarType: 'default',
   });

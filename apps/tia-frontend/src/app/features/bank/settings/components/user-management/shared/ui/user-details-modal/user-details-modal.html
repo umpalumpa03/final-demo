@@ -3,7 +3,7 @@
 <app-ui-modal [isOpen]="isOpen()" (closed)="close.emit()">
     <header>
         <div class="icon">
-            <img src="./images/svg/settings/user-management/person.svg" alt="">
+            <img src="./images/svg/settings/user-management/person.svg" alt="Person Image">
             <h1>User Details</h1>
         </div>
         <p>View detailed information about the user.</p>
@@ -17,7 +17,7 @@
         }
         @else if (user) {
         <div class="main__icon">
-            <img src="./images/svg/settings/user-management/person.svg" alt="">
+            <img src="./images/svg/settings/user-management/person.svg" alt="Profile Picture">
             <div class="user-info">
                 <strong>{{ user.firstName }} {{ user.lastName }}</strong>
                 <p>{{ user.email }}</p>

@@ -19,6 +19,8 @@ import { CommonModule } from '@angular/common';
 export class UserCard {
   public readonly user = input.required<IUser>();
 
+  public readonly isLoading = input<boolean>(false);
+
   public readonly onBlockToggle = output<string>();
   public readonly onDetails = output<string>();
   public readonly onEdit = output<string>();
