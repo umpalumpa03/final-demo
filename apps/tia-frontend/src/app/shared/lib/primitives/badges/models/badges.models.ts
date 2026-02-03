@@ -3,6 +3,7 @@ export type BadgeVariant =
   | 'secondary'
   | 'destructive'
   | 'outline'
+  |'green-outline'  
   | (string & {});
 
 export type BadgeStatus =

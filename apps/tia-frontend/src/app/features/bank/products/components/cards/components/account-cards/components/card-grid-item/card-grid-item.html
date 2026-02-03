@@ -1,0 +1,29 @@
+<div class="card-grid-item" (click)="handleClick()">
+  <img
+    [src]="card().imageBase64"
+    [alt]="card().details.cardName"
+    class="card-grid-item__image"
+  />
+  <div class="card-grid-item__info">
+    <span class="card-grid-item__name">{{ card().details.cardName }}</span>
+    <div class="card-grid-item__meta">
+      <app-badges
+        [variant]="card().details.type === 'DEBIT' ? 'outline' : 'green-outline'"
+        [text]="card().details.type === 'DEBIT' ? 'debit' : 'credit'"
+        size="small"
+        shape="rounded"
+      />
+
+      <span class="card-grid-item__currency">{{ currency() }}</span>
+    </div>
+    @if (card().details.type === 'CREDIT' && card().details.creditLimit) {
+    <div class="card-grid-item__limit-info">
+      <p class="card-grid-item__limit-label"> {{'my-products.card.account-cards.card-grid.avaliableAmount' | translate }} </p>
+      <p class="card-grid-item__limit-value">
+       {{ currency() }} {{ card().details.creditLimit }}
+      </p>
+    </div>
+
+    }
+  </div>
+</div>

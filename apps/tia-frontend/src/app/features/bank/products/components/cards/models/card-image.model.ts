@@ -1,4 +1,4 @@
-import { CardDetail } from "./card-detail.model";
+import { CardDetail } from "@tia/shared/models/cards/card-detail.model";
 
 export interface CardImage {
   cardId: string;

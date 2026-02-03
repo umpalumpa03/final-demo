@@ -70,17 +70,14 @@ export const cardsReducer = createReducer(
     loading: false,
     error,
   })),
+
+  
   on(CardsActions.createCard, (state) => ({
     ...state,
     isCreating: true,
     createError: null,
   })),
-  on(CardsActions.createCardSuccess, (state) => ({
-    ...state,
-    isCreating: false,
-    createError: null,
-    isCreateModalOpen: false,
-  })),
+
   on(CardsActions.createCardFailure, (state, { error }) => ({
     ...state,
     isCreating: false,
