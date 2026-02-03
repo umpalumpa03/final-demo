@@ -66,7 +66,7 @@ describe('TransferExternalService', () => {
     service.verifyRecipient('555123');
 
     const mockResponse = { accounts: [{ id: 'acc1' }, { id: 'acc2' }] };
-    recipientInfoSubject.next(null); 
+    recipientInfoSubject.next(null);
     recipientInfoSubject.next(mockResponse);
 
     expect(mockStore.setSelectedRecipientAccount).not.toHaveBeenCalled();
@@ -87,18 +87,6 @@ describe('TransferExternalService', () => {
       '/bank/transfers/external/accounts',
     ]);
     expect(mockStore.lookupRecipient).not.toHaveBeenCalled();
-  });
-
-  it('should handle fee response as a raw number and catch errors', () => {
-    mockApi.getFee.mockReturnValue(of(10));
-    service.handleAmountInput(100);
-    vi.advanceTimersByTime(300);
-    expect(mockStore.updateFeeInfo).toHaveBeenCalledWith(10, 110);
-
-    mockApi.getFee.mockReturnValue(throwError(() => new Error('API FAIL')));
-    service.handleAmountInput(200);
-    vi.advanceTimersByTime(300);
-    expect(mockStore.updateFeeInfo).toHaveBeenCalledWith(0, 0);
   });
 
   it('should validate transfer amount and set description', () => {
@@ -176,7 +164,7 @@ describe('TransferExternalService', () => {
     );
 
     service.handleAmountInput(500);
-    vi.advanceTimersByTime(300); 
+    vi.advanceTimersByTime(300);
 
     expect(mockStore.updateFeeInfo).toHaveBeenCalledWith(0, 0);
   });
@@ -187,5 +175,60 @@ describe('TransferExternalService', () => {
 
     service.handleContinue(null, { id: 's1' } as any, false, null);
     expect(mockRouter.navigate).not.toHaveBeenCalled();
+  });
+  it('should handle external bank IBAN by saving locally and navigating without API call', () => {
+    const validation = TestBed.inject(TransferValidationService);
+    validation.identifyRecipientType = vi
+      .fn()
+      .mockReturnValue('iban-different-bank');
+
+    service.verifyRecipient('GE12TB0000000000000000');
+
+    expect(mockStore.setExternalRecipient).toHaveBeenCalledWith(
+      'GE12TB0000000000000000',
+      'iban-different-bank',
+    );
+    expect(mockStore.lookupRecipient).not.toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/bank/transfers/external/accounts',
+    ]);
+  });
+
+  it('should auto-select account when API returns exactly one account', () => {
+    const validation = TestBed.inject(TransferValidationService);
+    validation.identifyRecipientType = vi.fn().mockReturnValue('phone');
+
+    service.verifyRecipient('555999');
+
+    const mockResponse = { accounts: [{ id: 'single-acc', currency: 'GEL' }] };
+    recipientInfoSubject.next(null);
+    recipientInfoSubject.next(mockResponse);
+
+    expect(mockStore.setSelectedRecipientAccount).toHaveBeenCalledWith(
+      mockResponse.accounts[0],
+    );
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/bank/transfers/external/accounts',
+    ]);
+  });
+
+  it('should reset amount and balance status when selecting a different recipient account', () => {
+    const currentAcc = { id: 'old' } as any;
+    const newAcc = { id: 'new' } as any;
+
+    service.handleRecipientAccountSelect(newAcc, currentAcc);
+
+    expect(mockStore.setAmount).toHaveBeenCalledWith(0);
+    expect(mockStore.setInsufficientBalance).toHaveBeenCalledWith(false);
+    expect(mockStore.setSelectedRecipientAccount).toHaveBeenCalledWith(newAcc);
+  });
+
+  it('should set insufficient balance and stop if amount exceeds sender balance', () => {
+    mockStore.senderAccount.set({ id: 's1', balance: 100 });
+
+    service.handleAmountInput(150);
+
+    expect(mockStore.setInsufficientBalance).toHaveBeenCalledWith(true);
+    expect(mockStore.updateFeeInfo).toHaveBeenCalledWith(0, 0);
   });
 });

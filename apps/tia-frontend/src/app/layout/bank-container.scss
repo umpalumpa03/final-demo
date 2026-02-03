@@ -1,11 +1,28 @@
 @use '../shared/styles/mixins' as *;
+@use '../shared/styles/palette' as *;
 
-.bank-container-wrapper {
+.bank-container {
   @include display-flex(row);
-}
+  height: 100vh;
 
-.bank-container-content {
-  @include display-flex(column);
-  flex: 1;
-  min-width: 0;
+  &__content {
+    @include display-flex(column);
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__router-area {
+    @include display-flex(column);
+    position: relative;
+    flex: 1;
+  }
+  &__loader-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: $white;
+    z-index: 50;
+    @include flex-center(row, center, center);
+  }
 }

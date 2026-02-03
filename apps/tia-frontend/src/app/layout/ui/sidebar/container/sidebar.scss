@@ -4,12 +4,14 @@
 .sidebar {
   @include display-flex(column);
   position: relative;
+  z-index: 12;
   width: 25.6rem;
   height: 100vh;
   background: $white;
   box-shadow:
-    0px 4px 6px -4px rgba($black, 0.1),
-    0px 10px 15px -3px rgba($black, 0.1);
+    0px 1px 2px -1px rgba($black, 0.1),
+    0px 1px 3px 0px rgba($black, 0.1);
+
   transition: width 0.3s ease;
 
   &--collapsed {

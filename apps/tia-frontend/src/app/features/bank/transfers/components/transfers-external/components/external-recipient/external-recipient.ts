@@ -32,7 +32,7 @@ import { RecipientType } from '../../../../models/transfers.state.model';
 import { TransferStore } from '../../../../store/transfers.store';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { TransferExternalService } from '../../../../services/transfer.external.service';
-import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 
 @Component({
   selector: 'app-external-recipient',

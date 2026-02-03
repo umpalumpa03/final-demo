@@ -16,7 +16,7 @@ import { TransferExternalService } from '../../../../services/transfer.external.
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
-import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { tap } from 'rxjs';
 
 @Component({
