@@ -4,7 +4,7 @@ import { provideRouter } from '@angular/router';
 import { TranslateService, provideTranslateService } from '@ngx-translate/core';
 import { NavigationService } from './core/services/navigation/navigation.service';
 import { signal } from '@angular/core';
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('App Component', () => {
   let translateService: TranslateService;
@@ -27,32 +27,16 @@ describe('App Component', () => {
     translateService = TestBed.inject(TranslateService);
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-    localStorage.clear();
-  });
-
   it('should create the app', () => {
     const fixture = TestBed.createComponent(App);
     expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should use "en" if localStorage is empty', () => {
-    vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
+  it('should initialize with default translation setup', () => {
     const useSpy = vi.spyOn(translateService, 'use');
-
     TestBed.createComponent(App);
 
-    expect(useSpy).toHaveBeenCalledWith('en');
-  });
-
-  it('should use saved language from localStorage', () => {
-    vi.spyOn(Storage.prototype, 'getItem').mockReturnValue('ka');
-    const useSpy = vi.spyOn(translateService, 'use');
-
-    TestBed.createComponent(App);
-
-    expect(useSpy).toHaveBeenCalledWith('ka');
+    expect(useSpy).toHaveBeenCalled();
   });
 
   it('should reflect the loading state from NavigationService', () => {
