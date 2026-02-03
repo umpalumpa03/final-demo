@@ -20,6 +20,8 @@ export interface CardsState {
   createError: string | null;
   isCreateModalOpen: boolean;
   showSuccessAlert: boolean;
+  isCardDetailsModalOpen: boolean;
+  selectedCardIdForModal: string | null;
 }
 
 export const initialCardsState: CardsState = {
@@ -38,4 +40,6 @@ export const initialCardsState: CardsState = {
   createError: null,
   isCreateModalOpen: false,
   showSuccessAlert: false,
+   isCardDetailsModalOpen: false,
+  selectedCardIdForModal: null,
 };

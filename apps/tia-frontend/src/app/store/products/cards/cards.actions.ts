@@ -97,3 +97,12 @@ export const closeCreateCardModal = createAction(
 );
 
 export const hideSuccessAlert = createAction('[Cards] Hide Success Alert');
+
+export const openCardDetailsModal = createAction(
+  '[Cards] Open Card Details Modal',
+  props<{ cardId: string }>(),
+);
+
+export const closeCardDetailsModal = createAction(
+  '[Cards] Close Card Details Modal',
+);
