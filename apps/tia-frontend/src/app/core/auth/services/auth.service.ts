@@ -38,6 +38,8 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Routes } from '../models/tokens.model';
 import { Store } from '@ngrx/store';
 import { UserInfoActions } from '../../../store/user-info/user-info.actions';
+import { MonitorInactivity } from './monitor-inacticity.service';
+import { Subscription } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -45,12 +47,20 @@ export class AuthService {
   private router = inject(Router);
   private tokenService = inject(TokenService);
   private store = inject(Store);
+  private monitorInactivity = inject(MonitorInactivity);
   private challengeId!: string;
   public isLoginLoading = signal<boolean>(false);
   public errorMessage = signal<boolean | null>(false);
   private baseUrl = `${environment.apiUrl}/auth`;
   public otpError = signal<OtpResponse | null>(null);
   public resendRetryCounter = signal<number>(0);
+  private inactivitySubscription?: Subscription;
+
+  constructor() {
+    if (this.tokenService.accessToken) {
+      this.startInactivityMonitoring();
+    }
+  }
 
   public setChellangeId(id: string) {
     this.challengeId = id;
@@ -111,6 +121,7 @@ export class AuthService {
     return this.http.post<ILogoutResponse>(`${this.baseUrl}/logout`, {}).pipe(
       tap((res) => {
         if (res.success === true) {
+          this.stopInactivityMonitoring();
           this.tokenService.clearAuthToken();
           this.tokenService.clearUserInfo();
           this.router.navigate([Routes.SIGN_IN]);
@@ -131,6 +142,7 @@ export class AuthService {
             this.tokenService.setAccessToken(res.access_token);
             this.tokenService.setRefreshToken(res.refresh_token);
             this.store.dispatch(UserInfoActions.loadUser());
+            this.startInactivityMonitoring();
             this.router.navigate([Routes.DASHBOARD]);
           }
         }),
@@ -320,5 +332,24 @@ export class AuthService {
       { challengeId },
       { headers },
     );
+  }
+
+  private startInactivityMonitoring(): void {
+    this.inactivitySubscription = this.monitorInactivity.inactivity$
+      .pipe(
+        tap((isInactive) => {
+          if (isInactive === true) {
+            this.logout().subscribe();
+          }
+        }),
+      )
+      .subscribe();
+  }
+
+  private stopInactivityMonitoring(): void {
+    if (this.inactivitySubscription) {
+      this.inactivitySubscription.unsubscribe();
+      this.inactivitySubscription = undefined;
+    }
   }
 }

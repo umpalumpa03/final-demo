@@ -16,7 +16,7 @@ import { IFeature } from '../models/auth.models';
 import { SidePanel } from '../shared/side-panel/side-panel';
 import { tap } from 'rxjs';
 import { LanguageSwitcher } from '../../../features/bank/settings/components/language/components/language-switcher/language-switcher';
-import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader";
+import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 
 @Component({
   selector: 'app-auth-container',

@@ -1,23 +1,32 @@
-import { Injectable, inject } from '@angular/core';
-import { fromEvent, merge, BehaviorSubject, timer, Subscription } from 'rxjs';
+import { Injectable, inject, signal, computed } from '@angular/core';
+import { fromEvent, merge, BehaviorSubject, timer } from 'rxjs';
 import {
+  debounceTime,
   filter,
   map,
   shareReplay,
-  startWith,
   switchMap,
+  takeUntil,
+  takeWhile,
   tap,
 } from 'rxjs/operators';
-import { AuthService } from './auth.service';
 import { TokenService } from './token.service';
 
 @Injectable({ providedIn: 'root' })
 export class MonitorInactivity {
-  private authService = inject(AuthService);
   private tokenService = inject(TokenService);
 
-  private idleTime$ = new BehaviorSubject<number>(10000);
-  private inactivitySubscription: Subscription | null = null;
+  private totalInactivityTime$ = new BehaviorSubject<number>(600000);
+  private inactivityThreshold = 5000;
+  private warningThreshold = 60;
+
+  private _timeleft = signal<number>(0);
+  public readonly timeleft = this._timeleft.asReadonly();
+
+  public readonly timeWarning = computed(() => {
+    const timeLeft = this.timeleft();
+    return timeLeft > 0 && timeLeft <= this.warningThreshold ? timeLeft : 0;
+  });
 
   private activity$ = merge(
     fromEvent(document, 'mousemove'),
@@ -25,44 +34,38 @@ export class MonitorInactivity {
     fromEvent(document, 'keydown'),
     fromEvent(document, 'scroll'),
     fromEvent(document, 'touchstart'),
+  ).pipe(
+    debounceTime(500),
+    tap(() => {
+      this._timeleft.set(0);
+    }),
   );
 
-  public readonly inactivity$ = this.idleTime$.pipe(
-    switchMap((idleTime) =>
+  public readonly inactivity$ = this.totalInactivityTime$.pipe(
+    switchMap((inactiveTime) =>
       this.activity$.pipe(
-        startWith(null),
+        debounceTime(this.inactivityThreshold),
+        filter(() => {
+          const hasToken = !!this.tokenService.accessToken;
+          return hasToken;
+        }),
         switchMap(() =>
-          timer(idleTime).pipe(
-            map(() => true),
-            startWith(false),
+          timer(0, 1000).pipe(
+            map((second) =>
+              Math.max(0, Math.ceil(inactiveTime / 1000) - second),
+            ),
+            takeWhile((timeLeft) => timeLeft >= 0, true),
+            takeUntil(this.activity$),
+            tap((timeLeft) => {
+              this._timeleft.set(timeLeft);
+              if (timeLeft === 0) {
+              }
+            }),
+            map((timeLeft) => (timeLeft === 0 ? true : timeLeft)),
           ),
         ),
       ),
     ),
-    filter(() => !!this.tokenService.accessToken),
-    tap((isInactive) => {
-      if (isInactive) {
-        this.authService.logout().subscribe();
-      }
-    }),
     shareReplay({ bufferSize: 1, refCount: true }),
   );
-
-  public start(idleTime: number): void {
-    this.idleTime$.next(idleTime);
-    this.subscribeActivity();
-  }
-
-  public subscribeActivity(): void {
-    if (!this.inactivitySubscription) {
-      this.inactivitySubscription = this.inactivity$.subscribe();
-    }
-  }
-
-  public unsubscribeActivity(): void {
-    if (this.inactivitySubscription) {
-      this.inactivitySubscription.unsubscribe();
-      this.inactivitySubscription = null;
-    }
-  }
 }

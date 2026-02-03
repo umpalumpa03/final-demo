@@ -123,7 +123,7 @@ export class OtpVerification implements OnInit {
   public maxTime = computed(() => {
     const limit = Math.abs(Number(this.timeLimit()));
 
-    return limit * 6;
+    return limit * 60;
   });
 
   public countdown = signal<number>(0);
@@ -259,6 +259,5 @@ export class OtpVerification implements OnInit {
     this.destroy$.next();
     this.destroy$.complete();
     this.timerSubscription?.unsubscribe();
-    // this.stopBackgroundTimer();
   }
 }
