@@ -37,4 +37,18 @@
     </div>
     }
   </form>
+
+  @if (activeFilters().length > 0) {
+  <div class="active-filters-container">
+    @for (filter of activeFilters(); track filter.key) {
+    <app-button
+      [variant]="'outline'"
+      [icon]="'x-icon.svg'"
+      (click)="removeFilter(filter.key)"
+    >
+      {{ filter.displayText }}
+    </app-button>
+    }
+  </div>
+  }
 </app-showcase-card>

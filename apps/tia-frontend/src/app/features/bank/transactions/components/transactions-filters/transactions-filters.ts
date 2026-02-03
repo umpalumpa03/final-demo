@@ -19,6 +19,10 @@ import { LibraryTitle } from '../../../../storybook/shared/library-title/library
 import { FilterConfig } from '../../models/transactions-filters.models';
 import { getTransactionFiltersConfig } from '../../config/transactions-filters-data';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import {
+  getActiveFilters,
+  mapFormIntoTransactionFilter,
+} from '../../utils/transactions-filters.utils';
 
 @Component({
   selector: 'app-transactions-filters',
@@ -65,16 +69,12 @@ export class TransactionsFilters {
     initialValue: this.filterForm.value,
   });
 
-  public readonly hasActiveFilter = computed(() => {
-    const values = this.formValues();
-    if (!values) {
-      return false;
-    }
-
-    return Object.values(values).some(
-      (val) => val !== null && val !== '' && val !== undefined,
-    );
-  });
+  public readonly activeFilters = computed(() =>
+    getActiveFilters(this.formValues(), this.filtersConfig()),
+  );
+  public readonly hasActiveFilter = computed(
+    () => this.activeFilters().length > 0,
+  );
 
   constructor() {
     this.filterForm.valueChanges
@@ -83,16 +83,7 @@ export class TransactionsFilters {
         distinctUntilChanged(
           (prev, curr) => JSON.stringify(prev) === JSON.stringify(curr),
         ),
-        map((values) => ({
-          searchCriteria: values.searchCriteria || '',
-          category: values.category || undefined,
-          amountFrom: values.amountFrom || undefined,
-          amountTo: values.amountTo || undefined,
-          iban: values.accountIban || undefined,
-          currency: (values.currency as Currency) || undefined,
-          dateFrom: values.dateFrom || undefined,
-          dateTo: values.dateTo || undefined,
-        })),
+        map(mapFormIntoTransactionFilter),
         tap((filters) => {
           this.filterChange.emit(filters);
         }),
@@ -103,5 +94,8 @@ export class TransactionsFilters {
 
   public resetFilters(): void {
     this.filterForm.reset();
+  }
+  public removeFilter(controlName: string): void {
+    this.filterForm.get(controlName)?.reset();
   }
 }
