@@ -16,6 +16,7 @@ export enum Routes {
   OTP_SIGN_UP = '/auth/verify-otp-register',
   OTP_FORGOT_PASSWORD = '/auth/verify-otp-reset',
   PHONE = '/auth/phone',
+  ERROR_PAGE = '/auth/error-info',
   DASHBOARD = '/bank/dashboard'
 }
 

@@ -72,10 +72,6 @@ export class MultistepForms {
     }
   }
 
-  public submit(): void {
-    console.log(this.form.value);
-  }
-
   public isFrom(config: { key: string }): boolean {
     return config?.key === 'from';
   }

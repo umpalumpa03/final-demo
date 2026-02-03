@@ -1,3 +1,15 @@
+<app-ui-modal [isOpen]="timeWarning() > 0">
+  <div class="inactivity-overlay">
+    <app-library-title
+      [title]="modalTitle"
+      [subtitle]="subtitle"
+    ></app-library-title>
+    <div class="inactivity-overlay__circle inactivity-overlay__circle--timer">
+      {{ timeWarning() }}
+    </div>
+  </div>
+</app-ui-modal>
+
 <div class="bank-container">
   <app-sidebar></app-sidebar>
 

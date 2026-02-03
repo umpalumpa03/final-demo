@@ -8,7 +8,7 @@
           </a>
           <h1 class="auth__auth-layout__header__bar__title">TIA</h1>
         </div>
-         <app-language-switcher></app-language-switcher>
+        <app-language-switcher></app-language-switcher>
       </header>
 
       <main class="auth__auth-layout__body">
@@ -18,7 +18,7 @@
       </main>
     </div>
 
-    <aside class="auth__auth-layout__pannel" role="complementary">
+    <aside class="auth__auth-layout__pannel">
       <div class="auth__auth-layout__pannel__wrapper">
         @if (sidePanelData()) {
         <app-side-panel
@@ -29,5 +29,11 @@
         }
       </div>
     </aside>
+
+    @if (isLoading()) {
+    <div class="auth__loader-overlay">
+      <app-route-loader variant="pulsing"></app-route-loader>
+    </div>
+    }
   </div>
 </div>
