@@ -1,28 +1,33 @@
 <div class="global-bank-wrapper">
-  <app-transactions-filters
-    [categoryOptions]="categoryOptions()"
-    [accountOptions]="accountOptions()"
-    [currencyOptions]="currencyOptions()"
-    (filterChange)="onFiltersChange($event)"
-  ></app-transactions-filters>
-
+  <div class="transaction-filters-wrapper">
+    <app-transactions-filters
+      [categoryOptions]="categoryOptions()"
+      [accountOptions]="accountOptions()"
+      [currencyOptions]="currencyOptions()"
+      (filterChange)="onFiltersChange($event)"
+    ></app-transactions-filters>
+  </div>
   <app-showcase-card>
     <app-library-title
       [title]="'Transactions'"
       [subtitle]="totalTransactionsString()"
     ></app-library-title>
 
-    <div
-      (scroll)="onScroll($event)"
-      class="transcaction-table-wrapper__scroll-container"
-    >
-      @if(isLoading() && items().length === 0){
-      <app-route-loader [variant]="'full-page'"></app-route-loader>
-      } @else {
-      <app-tables [tableConfig]="tableConfig()"></app-tables>
-      } @if(isLoading() && items().length > 0){
-      <app-button [isLoading]="true" [variant]="'outline'">Loading</app-button>
-      }
+    <div class="transaction-table-wrapper">
+      <div
+        (scroll)="onScroll($event)"
+        class="transaction-table-wrapper__scroll-container"
+      >
+        @if(isLoading() && items().length === 0){
+        <app-route-loader [variant]="'full-page'"></app-route-loader>
+        } @else {
+        <app-tables [tableConfig]="tableConfig()"></app-tables>
+        } @if(isLoading() && items().length > 0){
+        <app-button [isLoading]="true" [variant]="'outline'"
+          >Loading</app-button
+        >
+        }
+      </div>
     </div>
   </app-showcase-card>
 </div>
