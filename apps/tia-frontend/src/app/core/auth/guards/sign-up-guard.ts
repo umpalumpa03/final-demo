@@ -7,7 +7,6 @@ export const signUpGuard: CanActivateFn = (route, state) => {
 
   const currSignUpToken =
     tokenService.getSignUpToken || tokenService.verifyToken;
-    console.log(currSignUpToken)
 
   return currSignUpToken ? true : false;
 };
