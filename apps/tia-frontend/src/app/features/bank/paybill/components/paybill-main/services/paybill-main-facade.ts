@@ -275,7 +275,6 @@ export class PaybillMainFacade {
     const provider = this.activeProvider();
     const data = this.paymentPayload();
     const senderId = this.selectedSenderAccountId();
-    console.log('HELLO BRO');
 
     if (provider && data && senderId) {
       this.store.dispatch(
@@ -288,6 +287,7 @@ export class PaybillMainFacade {
           },
         }),
       );
+      this.router.navigate(['/bank/paybill/pay/otp-verification']);
     }
   }
 

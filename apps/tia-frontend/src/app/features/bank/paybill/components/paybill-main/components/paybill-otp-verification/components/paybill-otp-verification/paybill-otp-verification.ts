@@ -12,12 +12,12 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
-import { PaymentSummary } from '../../shared/ui/payment-summary/payment-summary';
+import { PaymentSummary } from '../../../../shared/ui/payment-summary/payment-summary';
 import {
   PaybillPayload,
   PaybillProvider,
-} from '../../shared/models/paybill.model';
-import { otpConfiguration } from './config/otp.config';
+} from '../../../../shared/models/paybill.model';
+import { otpConfiguration } from '../../config/otp.config';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({

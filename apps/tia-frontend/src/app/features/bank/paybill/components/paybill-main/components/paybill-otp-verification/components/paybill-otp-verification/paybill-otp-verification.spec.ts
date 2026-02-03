@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PaybillOtpVerification } from './paybill-otp-verification';
+import { PaybillOtpVerification } from '../../paybill-otp-verification';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   PaybillPayload,
   PaybillProvider,
-} from '../../shared/models/paybill.model';
+} from '../../../../shared/models/paybill.model';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('PaybillOtpVerification', () => {

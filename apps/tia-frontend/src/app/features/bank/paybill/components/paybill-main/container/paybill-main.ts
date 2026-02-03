@@ -8,7 +8,7 @@ import {
 import { CategoryGrid } from '../components/category-grid/components/category-items/category-grid';
 import { ProviderList } from '../components/provider-list/components/provider-list-items/provider-list';
 import { PaybillForm } from '../components/paybill-form/components/paybill-form-items/paybill-form';
-import { PaybillOtpVerification } from '../components/paybill-otp-verification/paybill-otp-verification';
+import { PaybillOtpVerification } from '../components/paybill-otp-verification/components/paybill-otp-verification/paybill-otp-verification';
 import {
   PaybillFormProceedEvent,
   PaybillFormVerifyEvent,
