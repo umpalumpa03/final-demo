@@ -38,3 +38,35 @@ export const getSuccessSummaryItems = (
     },
   ];
 };
+
+export function getDisplayItems(
+  providers: PaybillProvider[],
+  parentId: string | null,
+): PaybillProvider[] {
+  if (!parentId) {
+    return providers.filter((p) => !p.parentId);
+  }
+
+  return providers.filter((p) => p.parentId === parentId);
+}
+
+export function getCurrentHeader(
+  providers: PaybillProvider[],
+  parentId: string | null,
+  rootCategoryName: string,
+): string {
+  if (!parentId) return rootCategoryName;
+
+  const activeParent = providers.find((p) => p.id === parentId);
+  return activeParent?.name || rootCategoryName;
+}
+
+export function getParentIdForBack(
+  providers: PaybillProvider[],
+  currentId: string | null,
+): string | null {
+  if (!currentId) return null;
+
+  const currentItem = providers.find((p) => p.id === currentId);
+  return currentItem?.parentId || null;
+}
