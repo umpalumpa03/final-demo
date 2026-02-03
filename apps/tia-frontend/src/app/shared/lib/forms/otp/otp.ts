@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   ElementRef,
   input,
   model,
@@ -11,7 +10,7 @@ import {
 } from '@angular/core';
 import { BaseInput } from '../base/base-input';
 import { generateUniqueId } from '../base/utils/input.util';
-import { OTP_DEFAULTS } from '../config/otp.config';
+import { OTP_ALLOWED_KEYS, OTP_DEFAULTS } from '../config/otp.config';
 import { OtpConfig, OtpDigit } from '../models/otp.model';
 
 @Component({
@@ -68,6 +67,11 @@ export class Otp extends BaseInput implements AfterViewInit {
       val = val.slice(-1);
     }
 
+    if (inputEl.value.trim() === '' && val === '') {
+      inputEl.value = '';
+      return;
+    }
+
     inputEl.value = val;
     this.updateValueAt(index, val);
 
@@ -77,16 +81,39 @@ export class Otp extends BaseInput implements AfterViewInit {
   }
 
   protected handleKeyDown(event: KeyboardEvent, index: number): void {
-    const input = event.target as HTMLInputElement;
     const len: number = this.mergedConfig().length!;
+    const isNumberType = this.mergedConfig().inputType === 'number';
+
+    if (event.code === 'Space' || event.key === ' ') {
+      event.preventDefault();
+      return;
+    }
+
+    if (isNumberType) {
+      const allowedKeys: readonly string[] = OTP_ALLOWED_KEYS;
+      const isControl = event.ctrlKey || event.metaKey;
+
+      if (
+        !allowedKeys.includes(event.key) &&
+        !isControl &&
+        !/^[0-9]$/.test(event.key)
+      ) {
+        event.preventDefault();
+        return;
+      }
+    }
 
     switch (event.key) {
       case 'Backspace':
-        event.preventDefault();
+        if (!event.target) return;
+        const input = event.target as HTMLInputElement;
+
         if (!input.value && index > 0) {
+          event.preventDefault();
           this.updateValueAt(index - 1, '');
           this.otpBoxes()[index - 1]?.nativeElement.focus();
-        } else {
+        } else if (input.value) {
+          event.preventDefault();
           this.updateValueAt(index, '');
         }
         break;
@@ -104,16 +131,22 @@ export class Otp extends BaseInput implements AfterViewInit {
   protected handlePaste(event: ClipboardEvent): void {
     event.preventDefault();
     const pastedData: string = event.clipboardData?.getData('text') || '';
-    const len: number = this.mergedConfig().length!;
-    const cleanData: string = pastedData.trim().slice(0, len);
+    const config = this.mergedConfig();
+    const len: number = config.length!;
 
+    let cleanData = pastedData.trim();
+
+    if (config.inputType === 'number') {
+      cleanData = cleanData.replace(/[^0-9]/g, '');
+    }
+
+    cleanData = cleanData.slice(0, len);
     if (!cleanData) return;
 
     this.value.set(cleanData);
     this.onChange(cleanData);
-
     setTimeout(() => {
-      const focusIndex: number = Math.min(cleanData.length, len) - 1;
+      const focusIndex = Math.min(cleanData.length, len) - 1;
       if (focusIndex >= 0) {
         this.otpBoxes()[focusIndex]?.nativeElement.focus();
       }
@@ -121,13 +154,19 @@ export class Otp extends BaseInput implements AfterViewInit {
   }
 
   private updateValueAt(index: number, val: string): void {
+    if (val === ' ') return;
+
     const currentVal: string = this.value() || '';
     const len: number = this.mergedConfig().length!;
-    const arr: string[] = currentVal.padEnd(len, ' ').split('');
+    const arr: string[] = currentVal.padEnd(len, '\u0000').split('');
 
-    arr[index] = val || ' ';
+    arr[index] = val || '\u0000';
 
-    const finalString: string = arr.join('').trimEnd();
+    const finalString = arr
+      .map((char) => (char === '\u0000' ? ' ' : char))
+      .join('')
+      .trimEnd();
+
     this.value.set(finalString);
     this.onChange(finalString);
   }

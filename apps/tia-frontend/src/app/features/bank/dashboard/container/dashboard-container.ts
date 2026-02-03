@@ -17,12 +17,14 @@ import { widgetItems } from '../config/widgets.config';
 import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import { Store } from '@ngrx/store';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import {
   clearExchangeRates,
   loadExchangeRates,
 } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.actions';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { Router } from '@angular/router';
+import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
 
 @Component({
   selector: 'app-dashboard-container',
@@ -34,6 +36,7 @@ import { Router } from '@angular/router';
     WidgetAccounts,
     WidgetExchange,
     LibraryTitle,
+    TranslateModule,
   ],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
@@ -42,22 +45,37 @@ import { Router } from '@angular/router';
 export class DashboardContainer implements OnInit {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
+  private readonly breakpointService = inject(BreakpointService);
 
   protected readonly myItems = signal<(IWidgetItem & { isHidden?: boolean })[]>(
     [...widgetItems],
   );
 
-  protected readonly dynamicColspans = computed(() => {
-    return this.myItems().map((_, index) => (index === 0 ? 2 : 1));
+  protected readonly pageTitle = computed(() =>
+    this.translate.instant('dashboard.page.title'),
+  );
+
+  protected readonly pageSubtitle = computed(() =>
+    this.translate.instant('dashboard.page.subtitle'),
+  );
+  public dynamicColspans = computed(() => {
+    const items = this.myItems();
+
+    const isMobile = this.breakpointService.isMobile();
+
+    if (isMobile) {
+      return items.map(() => 2);
+    }
+
+    return items.map((_, index) => (index === 0 ? 2 : 1));
   });
 
   public onItemsChange(newItems: IWidgetItem[]): void {
     this.myItems.set(newItems);
   }
 
-  public onContainerOrderChange(ids: string[]): void {
-    console.log('New Order saved to DB:', ids);
-  }
+  public onContainerOrderChange(ids: string[]): void {}
 
   public onToggleVisibility(isVisible: boolean, id: string): void {
     this.myItems.update((items) =>
@@ -83,6 +101,8 @@ export class DashboardContainer implements OnInit {
       }),
     );
   }
+
+  public readonly gridColumns = { default: 2, md: 0, sm: 0 };
 
   ngOnInit() {
     this.store.dispatch(

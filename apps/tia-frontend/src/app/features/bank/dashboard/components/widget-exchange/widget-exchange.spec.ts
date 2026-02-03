@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { WidgetExchange } from './widget-exchange';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('WidgetExchange', () => {
   let component: WidgetExchange;
@@ -10,11 +11,15 @@ describe('WidgetExchange', () => {
 
   beforeEach(() => {
     mockStore = {
-      select: vi.fn().mockReturnValue(of([]))
+      select: vi.fn().mockReturnValue(of([])),
+      dispatch: vi.fn()
     };
 
     TestBed.configureTestingModule({
-      imports: [WidgetExchange],
+      imports: [
+        WidgetExchange,
+        TranslateModule.forRoot()
+      ],
       providers: [
         { provide: Store, useValue: mockStore }
       ]
@@ -22,6 +27,7 @@ describe('WidgetExchange', () => {
 
     const fixture = TestBed.createComponent(WidgetExchange);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {

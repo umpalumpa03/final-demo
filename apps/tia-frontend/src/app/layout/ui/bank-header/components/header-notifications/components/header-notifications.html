@@ -74,6 +74,7 @@
         <lib-checkboxes
           [checked]="isAllSelected()"
           (change)="onSelectAllClicked(notificationItems())"
+          [isIntermediate]="isIndeterminate()"
         ></lib-checkboxes>
         Select All
       </label>
@@ -109,6 +110,7 @@
       (scrollBottom)="onScrollBottom()"
       [hideBorder]="true"
       [height]="isMobile() ? '97% ': '95%'"
+      [isLoading]="isFetching()"
     >
       @for (item of notificationItems(); track item.id) {
       <div
@@ -139,10 +141,7 @@
           <span class="header-notifications__main__item__cta--icon"></span>
           }
 
-          <button
-            (click)="onTrashIconClick(item.id)"
-            [disabled]="selectedItems().length"
-          >
+          <button (click)="onTrashIconClick(item.id)">
             <img
               class="header-notifications__main__item__cta--delete"
               src="images/svg/header-notifications/delete.svg"

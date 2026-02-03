@@ -1,7 +1,7 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { FinancesContainer } from './finances-container';
 import { FinancesStore } from '../store/finances.store';
-import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('FinancesContainer', () => {
@@ -9,12 +9,13 @@ describe('FinancesContainer', () => {
   let fixture: ComponentFixture<FinancesContainer>;
   
   const mockStore = {
-    summary: signal(null),
-    loading: signal(false),
-    error: signal(null),
-    summaryCards: signal([]),
-    charts: signal([]),
-    loadAllData: vi.fn(), 
+    loadAllData: vi.fn(),
+    summaryCards: vi.fn(() => []),
+    charts: vi.fn(() => []),
+    categoriesWithIcons: vi.fn(() => []),
+    transactionsWithIcons: vi.fn(() => []),
+    loading: vi.fn(() => false),
+    error: vi.fn(() => null),
   };
 
   beforeEach(async () => {
@@ -30,18 +31,34 @@ describe('FinancesContainer', () => {
     fixture.detectChanges();
   });
 
-  it('should create component', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should update filter and load data', () => {
-    component.onFilterChange('custom');
+  it('should handle initialization and filter changes', () => {
     expect(mockStore.loadAllData).toHaveBeenCalled();
+
+    component.onFilterChange('custom');
+    expect(component.activeFilter).toBe('custom');
+    expect(mockStore.loadAllData).toHaveBeenLastCalledWith({
+      from: '2026-01-15',
+      to: '2026-01-31'
+    });
   });
 
-  it('should handle input date change', () => {
-    const event = { target: { value: '2026-01-01' } } as any;
-    component.handleInput('fromDate', event);
-    expect(component.filterForm.get('fromDate')?.value).toBe('2026-01-01');
+  it('should debounce form changes and handle input', async () => {
+  vi.useFakeTimers();
+  const event = { target: { value: '2026-05-01' } } as any;
+  component.handleInput('fromDate', event);
+  expect(component.filterForm.get('fromDate')?.value).toBe('2026-05-01');
+  component.filterForm.patchValue({ fromDate: '2026-02-01' });
+  vi.advanceTimersByTime(550);
+  expect(mockStore.loadAllData).toHaveBeenCalled();
+  vi.useRealTimers();
+});
+
+  it('should validate form fields', () => {
+    const control = component.filterForm.get('fromDate');
+    control?.setValue('invalid');
+    expect(component.filterForm.valid).toBe(false);
+    
+    control?.setValue('2026-01-01');
+    expect(component.filterForm.valid).toBe(true);
   });
 });

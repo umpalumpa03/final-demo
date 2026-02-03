@@ -1,7 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -11,46 +11,89 @@ import { UserManagementState } from '../../shared/state/user-management.state';
 import { UserManagementStore } from '../../store/user-management.store';
 import { UserCard } from '../../shared/ui/user-card/user-card';
 import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
+import { UserDetailsModal } from '../../shared/ui/user-details-modal/user-details-modal';
+import { ConfirmModal } from '../../shared/ui/confirm-modal/confirm-modal';
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
+import { usePagination } from '../../shared/services/pagination.service';
+import { UserModalService } from '../../shared/services/user-modal.service';
 
 @Component({
   selector: 'app-user-management',
-  imports: [TextInput, UserCard, Pagination],
+  imports: [
+    TextInput,
+    UserCard,
+    Pagination,
+    UserDetailsModal,
+    ConfirmModal,
+    Skeleton,
+  ],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss',
-  providers: [UserManagementState, UserManagementStore],
+  providers: [UserManagementState, UserManagementStore, UserModalService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserManagementComponent {
-  public readonly userState = inject(UserManagementState);
+  protected readonly userState = inject(UserManagementState);
   protected readonly store = inject(UserManagementStore);
+  protected readonly modalService = inject(UserModalService);
 
-  protected readonly currentPage = signal<number>(1);
-  protected readonly pageSize = signal<number>(4);
+  protected readonly actionProcessingId = signal<string | null>(null);
 
-  protected readonly totalPages = computed(() => {
-    const total = this.store.users().length;
-    const size = this.pageSize();
-    return total === 0 ? 1 : Math.ceil(total / size);
-  });
+  protected readonly pagination = usePagination(this.store.users, 4);
 
-  protected readonly visibleUsers = computed(() => {
-    const page = this.currentPage();
-    const size = this.pageSize();
-    const users = this.store.users();
+  constructor() {
+    this.setupAutoCloseModal();
+  }
 
-    const startIndex = (page - 1) * size;
-    const endIndex = startIndex + size;
-
-    return users.slice(startIndex, endIndex);
-  });
-
-  public ngOnInit(): void {
+  ngOnInit(): void {
     this.store.loadUsers();
   }
 
-  public onPageChange(page: number): void {
-    this.currentPage.set(page);
+  onPageChange(page: number): void {
+    this.pagination.setPage(page);
+  }
+  details(id: string): void {
+    this.store.clearSelectedUser();
+    this.modalService.openDetails();
+    this.store.loadUserDetails(id);
   }
 
-  public onSearch(query: InputFieldValue): void {}
+  deleteUser(id: string): void {
+    this.modalService.openDelete(id);
+  }
+
+  onConfirmDelete(): void {
+    const id = this.modalService.userToDeleteId();
+    if (id) {
+      this.store.deleteUser(id);
+    }
+  }
+
+  block(id: string, isBlocked: boolean): void {
+    this.actionProcessingId.set(id);
+    this.store.toggleBlockStatus({ id, isBlocked: !isBlocked });
+  }
+
+  onCloseModal(): void {
+    this.modalService.close();
+    this.store.clearSelectedUser();
+  }
+
+  onSearch(query: InputFieldValue): void {}
+
+  private setupAutoCloseModal(): void {
+    effect(() => {
+      const mode = this.modalService.modalState();
+      const idToDelete = this.modalService.userToDeleteId();
+      const users = this.store.users();
+      const loading = this.store.actionLoading();
+
+      if (mode === 'delete' && idToDelete && !loading) {
+        const userExists = users.some((u) => u.id === idToDelete);
+        if (!userExists) {
+          this.onCloseModal();
+        }
+      }
+    });
+  }
 }

@@ -13,9 +13,9 @@
     </app-button>
   </div>
 
-  @if (error()) {
+  @if (error() && errorType() === 'connection') {
   <app-error-states
-    [variant]="'failed'"
+    [variant]="'connection-error'"
     [header]="'my-products.accounts.errorTitle' | translate"
     [message]="'my-products.accounts.errorMessage' | translate"
     [buttonMessage]="'my-products.accounts.retry' | translate"
@@ -23,9 +23,19 @@
     [border]="false"
   >
   </app-error-states>
+  } @else if (error() && errorType() === 'loading') {
+  <app-error-states
+    [variant]="'failed'"
+    [header]="'my-products.accounts.loadingErrorTitle' | translate"
+    [message]="'my-products.accounts.loadingErrorMessage' | translate"
+    [buttonMessage]="'my-products.accounts.retry' | translate"
+    (buttonClick)="handleRetry()"
+    [border]="false"
+  >
+  </app-error-states>
   } @else if (isLoading()) {
   <app-route-loader
-    [variant]="'full-page'"
+    [variant]="'pulsing'"
     [text]="'my-products.accounts.loading' | translate"
   />
   } @else if (hasNoAccounts()) {

@@ -1,4 +1,10 @@
-<app-basic-card [padding]="'0 2.4rem'">
+<app-basic-card
+  [padding]="'0 2.4rem'"
+  (mousedown)="onMouseDown($event)"
+  (mousemove)="onMouseMove($event)"
+  (mouseup)="onMouseUp()"
+  (mouseleave)="onMouseUp()"
+>
   <div class="account-card">
     <div class="account-card__header">
       <div class="account-card__header-icon">

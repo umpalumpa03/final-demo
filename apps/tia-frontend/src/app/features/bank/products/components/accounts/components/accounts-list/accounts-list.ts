@@ -43,6 +43,7 @@ export class AccountsListComponent {
   public isFetching = input<boolean>(false);
 
   public error = input<string | null>(null);
+  public errorType = input<'connection' | 'loading' | null>(null);
   public accountSections = input.required<AccountSection[]>();
   public isRenamingAccount = input.required<boolean>();
   public renameError = input<string | null>(null);

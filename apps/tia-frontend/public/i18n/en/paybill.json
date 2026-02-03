@@ -9,9 +9,77 @@
   },
 
   "main": {
-    "category": "Select Category"
+    "category": "Select Category",
+    "summary": {
+      "customer_name": "Customer Name:",
+      "bill_period": "Bill Period:",
+      "due_date": "Due Date:",
+      "default_period": "Current Month",
+      "na": "N/A"
+    },
+    "success": {
+      "title": "Payment Successful!",
+      "description": "Your bill has been paid successfully",
+      "summary_subheader": "Transaction details",
+      "pay_another_btn": "Pay Another Bill",
+      "dashboard_btn": "Go to Dashboard",
+      "summary_fields": {
+        "transaction_id": "Transaction ID",
+        "service": "Service",
+        "amount_paid": "Amount Paid",
+        "date_time": "Date & Time"
+      }
+    },
+    "form": {
+      "subtitle": "Enter your bill details",
+      "account_label": "Account Number / Customer ID",
+      "account_placeholder": "Enter your account number",
+      "account_error": "Please enter valid account number!",
+      "verified_title": "Account Verified",
+      "amount_label": "Amount To Pay",
+      "amount_placeholder": "0.00",
+      "amount_helper": "Enter an amount between 0.01 and 9999",
+      "amount_range_error": "Value must be between 0.01 and 9999",
+      "helper_text": "Fetched amount: {{amount}}. You can edit before continuing.",
+      "continue_btn": "Continue to Payment",
+      "verify_btn": "Verify Account",
+      "check_button": "Check",
+      "pay_button": "Pay",
+      "template": "Save Template"
+    },
+    "confirm": {
+      "title": "Confirm Payment",
+      "subtitle": "Review your payment details and choose an account",
+      "summary_header": "Payment Summary",
+      "summary_subheader": "Transaction Details",
+      "account_placeholder": "Please choose a GEL account",
+      "confirm_btn": "Confirm & Pay {{amount}}",
+      "cancel_btn": "Cancel",
+      "summary_fields": {
+        "service": "Service Name:",
+        "account": "Account Number:",
+        "holder": "Customer Name:",
+        "amount": "Total Amount:",
+        "na": "N/A"
+      }
+    },
+    "otp": {
+      "title": "OTP Verification",
+      "subtitle": "Enter the 4-digit code sent to your registered mobile number",
+      "alert_message": "For transactions above $50, we require additional verification for your security.",
+      "summary_title": "Payment Summary",
+      "resend_text": "Didn't receive code?",
+      "resend_btn": "Resend",
+      "cancel_btn": "Cancel",
+      "verify_btn": "Verify",
+      "summary_fields": {
+        "service": "Service:",
+        "account": "Account:",
+        "amount": "Amount:",
+        "unknown_service": "Unknown Service"
+      }
+    }
   },
-
   "templates": {
     "title": "Saved Templates",
     "description": "Manage your payment templates and groups",

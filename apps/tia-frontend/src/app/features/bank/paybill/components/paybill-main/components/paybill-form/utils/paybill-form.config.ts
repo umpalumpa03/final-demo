@@ -1,20 +1,28 @@
-import { BillDetails } from "../../../shared/models/paybill.model";
-import { SummaryField } from "../../../shared/models/summary.model";
+import { BillDetails } from '../../../shared/models/paybill.model';
+import { SummaryField } from '../../../shared/models/summary.model';
 
-export const mapBillSummaryFields = (details: BillDetails | null): SummaryField[] => {
+export const mapBillSummaryFields = (
+  details: BillDetails | null,
+): SummaryField[] => {
   if (!details) return [];
+
   return [
     {
-      label: 'Customer Name:',
-      value: details.accountHolder ?? 'N/A',
+      label: 'paybill.main.summary.customer_name',
+      value: details.accountHolder ?? 'paybill.main.summary.na',
+      canTranslate:true
     },
     {
-      label: 'Bill Period:',
-      value: details.billPeriod ?? 'Current Month',
+      label: 'paybill.main.summary.bill_period',
+      value: details.billPeriod ?? 'paybill.main.summary.default_period',
+      canTranslate:true
     },
     {
-      label: 'Due Date:',
-      value: details.dueDate ? String(details.dueDate) : 'N/A',
+      label: 'paybill.main.summary.due_date',
+      value: details.dueDate
+        ? String(details.dueDate)
+        : 'paybill.main.summary.na',
+        canTranslate:true
     },
   ];
 };

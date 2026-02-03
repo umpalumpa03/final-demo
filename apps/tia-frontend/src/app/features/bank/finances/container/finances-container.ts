@@ -11,7 +11,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { FinancesStore } from '../store/finances.store';
 import { FinancesView } from '../components/finances-view';
-import { FINANCES_FILTER_OPTIONS } from '../config/filter-options.models';
+import { FINANCES_FILTER_OPTIONS } from '../config/filter-options.config';
 import { FilterType } from '../models/filter.model';
 import { dateRangeValidator } from '../validators/date-range.validator';
 

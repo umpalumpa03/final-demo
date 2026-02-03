@@ -16,7 +16,7 @@ describe('PaybillTemplates', () => {
     component = fixture.componentInstance;
 
     fixture.componentRef.setInput('templateGroups', []);
-
+    fixture.componentRef.setInput('templates', []);
     fixture.detectChanges();
   });
 

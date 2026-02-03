@@ -6,6 +6,17 @@ export interface TemplateGroups {
   templateCount: number;
 }
 
+export interface Templates {
+  id: string;
+  nickname: string;
+  serviceId: string;
+  identification: {
+    accountNumber: string;
+  };
+  amountDue: number;
+  groupId: null | string;
+}
+
 export enum ModalType {
   Group = 'group',
   RenameGroup = 'renameGroup',

@@ -4,22 +4,21 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
   PaginatedResponse,
-  TransactionFilter,
   ITransactions,
+  ITransactionFilter,
 } from '../../models/transactions/transactions.models';
 import { createTransactionHttpParams } from './utils/transactions-params';
+import { ITransactionsCategory } from '@tia/shared/models/transactions/transactions-category.models';
 
-@Injectable(
-  {
-    providedIn: 'root',
-  }
-)
+@Injectable({
+  providedIn: 'root',
+})
 export class TransactionService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
 
   public getTransactions(
-    filters: TransactionFilter,
+    filters: ITransactionFilter,
   ): Observable<PaginatedResponse<ITransactions>> {
     const params = createTransactionHttpParams(filters);
 
@@ -31,5 +30,11 @@ export class TransactionService {
 
   public getTransactionsTotal(): Observable<number> {
     return this.http.get<number>(`${this.apiUrl}/transactions/total`);
+  }
+
+  public getTransactionsCategories(): Observable<ITransactionsCategory[]> {
+    return this.http.get<ITransactionsCategory[]>(
+      `${this.apiUrl}/transactions/categories`,
+    );
   }
 }

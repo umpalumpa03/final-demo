@@ -1,4 +1,8 @@
-<app-basic-card class="paybill-card" maxWidth="100%" padding="2.4rem">
+<app-basic-card
+  class="paybill-card"
+  maxWidth="100%"
+  padding="0 0 2.4rem 2.4rem"
+>
   <header class="paybill-form__header">
     <div
       class="paybill-form__icon-box"
@@ -8,7 +12,9 @@
     </div>
     <div class="paybill-form__text-group">
       <h2 class="paybill-form__title">{{ provider()?.name }}</h2>
-      <p class="paybill-form__subtitle">Enter your bill details</p>
+      <p class="paybill-form__subtitle">
+        {{'paybill.main.form.subtitle' | translate}}
+      </p>
     </div>
   </header>
 
@@ -19,8 +25,8 @@
   >
     <div class="paybill-form__field">
       <lib-text-input
-        formControlName="accountNumber"
-        [config]="paybillConfig"
+        formControlName="value"
+        [config]="paybillConfig().accountNumber"
         [state]="isVerified() || isLoading() ? 'disabled' : 'default'"
       ></lib-text-input>
     </div>
@@ -28,36 +34,42 @@
     @if (isVerified()) {
     <app-payment-summary
       [items]="summaryItems()"
-      headerTitle="Account Verified"
+      [headerTitle]="'paybill.main.form.verified_title' | translate"
       type="verified"
     ></app-payment-summary>
 
     <lib-text-input
       label="Amount To Pay"
       formControlName="amount"
+      [config]="paybillConfig().amount"
       [state]="isLoading() ? 'disabled' : 'default'"
     />
+
+    @if(verifiedDetails()?.amountDue){
     <p class="helper-text">
-      Fetched amount: {{verifiedDetails()?.amountDue |
-      currency:'GEL':'symbol'}}. You can edit before continuing.
+      {{ 'paybill.main.form.helper_text' | translate: { amount:
+      (verifiedDetails()?.amountDue | currency:'GEL':'symbol') } }}
     </p>
+    }
 
     <div class="form-actions">
       <app-button
         type="submit"
         [isDisabled]="paybillForm.invalid || isLoading()"
       >
-        Continue to Payment
+        {{ 'paybill.main.form.continue_btn' | translate }}
       </app-button>
 
-      <app-button variant="secondary">Save Template</app-button>
+      <app-button variant="secondary"
+        >{{ 'paybill.main.form.template' | translate }}</app-button
+      >
     </div>
     } @else {
     <app-button
       type="submit"
-      [isDisabled]="paybillForm.controls.accountNumber.invalid || isLoading()"
+      [isDisabled]="paybillForm.controls.value.invalid! || isLoading()"
     >
-      {{ isLoading() ? 'Verifying...' : 'Verify Account' }}
+      {{ 'paybill.main.form.continue_btn' | translate }}
     </app-button>
     }
   </form>

@@ -16,7 +16,13 @@ describe('Transaction Selectors', () => {
     filters: { pageLimit: 20 },
     isLoading: true,
     error: { message: 'Failed' },
-    total: 100
+    total: 100,
+    categories: [
+      {
+        categoryName: 'saba',
+        id: 'saba',
+      },
+    ],
   };
 
   it('should select items', () => {
@@ -46,11 +52,13 @@ describe('Transaction Selectors', () => {
   });
 
   it('should combine state into view model', () => {
+    const mockCategoryOptions = [{ label: 'saba', value: 'saba' }];
     const result = selectTransactionViewModel.projector(
       initialState.items,
       initialState.isLoading,
       initialState.filters,
       initialState.total,
+      mockCategoryOptions,
     );
 
     expect(result).toEqual({
@@ -58,6 +66,7 @@ describe('Transaction Selectors', () => {
       isLoading: initialState.isLoading,
       filters: initialState.filters,
       total: initialState.total,
+      categoryOptions: mockCategoryOptions,
     });
   });
 });

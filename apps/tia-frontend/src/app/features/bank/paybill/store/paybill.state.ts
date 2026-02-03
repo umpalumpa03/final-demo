@@ -4,12 +4,21 @@ import {
   PaybillPayload,
   PaybillProvider,
 } from '../components/paybill-main/shared/models/paybill.model';
-import { TemplateGroups } from '../components/paybill-templates/models/paybill-templates.model';
+import {
+  TemplateGroups,
+  Templates,
+} from '../components/paybill-templates/models/paybill-templates.model';
 
 export interface PaybillNotification {
   id?: string;
   notificationType: 'success' | 'warning' | 'information';
   message: string;
+}
+
+export interface PaybillErrorPayload {
+  message?: string;
+  error?: string;
+  valid?: boolean;
 }
 
 export interface PaybillState {
@@ -25,6 +34,7 @@ export interface PaybillState {
   paymentPayload: PaybillPayload | null;
   challengeId: string | null;
   templateGroups: TemplateGroups[];
+  templates: Templates[];
   notifications: PaybillNotification[];
 }
 
@@ -41,5 +51,6 @@ export const initialPaybillState: PaybillState = {
   paymentPayload: null,
   challengeId: null,
   templateGroups: [],
+  templates: [],
   notifications: [],
 };

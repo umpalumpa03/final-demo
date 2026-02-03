@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
-import { MailsResponse, SendEmailRequest, User } from '../store/messaging.state';
+import { EmailDetailData, MailsResponse, SendEmailRequest, User } from '../store/messaging.state';
 @Injectable({
   providedIn: 'root',
 })
@@ -32,5 +32,9 @@ export class MessagingService {
   public searchByEmail(query: string): Observable<User[]> {
     const params = { email: query };
     return this.http.get<User[]>(`${this.baseUrl1}/search-by-email`, { params });
+  }
+
+  public getEmailById(mailId: number): Observable<EmailDetailData> {
+    return this.http.get<EmailDetailData>(`${this.baseUrl}/${mailId}`);
   }
 }

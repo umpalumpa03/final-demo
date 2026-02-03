@@ -46,7 +46,6 @@
 
   &__content {
     @include display-flex(row);
-    align-items: flex-start;
     @include font-inter(400, 1.6rem, 2.4rem);
     gap: 1.2rem;
   }
@@ -94,14 +93,14 @@
     @include display-flex(row);
     align-items: center;
     gap: 0.4rem;
-    background: $gray-200; 
+    background: $gray-200;
     color: $gray-800;
     padding: 0.2rem 0.6rem;
     border-radius: 0.4rem;
     @include font-inter(500, 1.1rem, 1.6rem);
 
     &--amount {
-      background: $blue-royal; 
+      background: $blue-royal;
       color: $white;
       padding: 0.2rem 0.8rem;
       border-radius: 0.6rem;
@@ -166,4 +165,8 @@
   &__checkbox {
     flex-shrink: 0;
   }
+}
+
+.min-height {
+  min-height: 44rem;
 }

@@ -15,12 +15,23 @@ import { ProviderList } from '../components/provider-list/provider-list';
 import { PaybillForm } from '../components/paybill-form/paybill-form';
 import { PaybillActions } from '../../../store/paybill.actions';
 import { PaybillOtpVerification } from '../components/paybill-otp-verification/paybill-otp-verification';
-import { PaybillPayload } from '../shared/models/paybill.model';
+import {
+  PaybillFormProceedEvent,
+  PaybillFormVerifyEvent,
+  PaybillIdentification,
+  PaybillPayload,
+  PaybillProvider,
+} from '../shared/models/paybill.model';
 import { PaybillConfirmPayment } from '../components/paybill-confirm-payment/paybill-confirm-payment';
 import { selectGelAccountOptions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { PaybillSuccess } from '../components/paybill-success/paybill-success';
-import { getSuccessSummaryItems } from '../shared/utils/paybill.config';
+import {
+  getCurrentHeader,
+  getDisplayItems,
+  getParentIdForBack,
+  getSuccessSummaryItems,
+} from '../shared/utils/paybill.config';
 
 @Component({
   selector: 'app-paybill-main',
@@ -44,9 +55,9 @@ export class PaybillMain implements OnInit {
     this.store.dispatch(AccountsActions.loadAccounts());
   }
 
-  // States
+  public readonly selectedSenderAccountId = signal<string | null>(null);
 
-  protected readonly selectedSenderAccountId = signal<string | null>(null);
+  public readonly selectedParentId = signal<string | null>(null);
 
   public readonly currentStep = this.store.selectSignal(
     PAYBILL_SELECTORS.selectCurrentStep,
@@ -76,8 +87,6 @@ export class PaybillMain implements OnInit {
     PAYBILL_SELECTORS.selectChallengeId,
   );
 
-  // State from global store
-
   public readonly storeAccounts = this.store.selectSignal(
     selectGelAccountOptions,
   );
@@ -90,17 +99,6 @@ export class PaybillMain implements OnInit {
     this.store.dispatch(PaybillActions.selectProvider({ providerId }));
   }
 
-  private buildProceedPayload(provider: any, data: any, senderId: string) {
-    return {
-      serviceId: provider.id,
-      identification: { accountNumber: data.accountNumber },
-      amount: data.amount,
-      senderAccountId: senderId,
-    };
-  }
-
-  // Action methods (onSomething....)
-
   public onAccountSelected(accountId: string): void {
     this.selectedSenderAccountId.set(accountId);
   }
@@ -108,25 +106,32 @@ export class PaybillMain implements OnInit {
   public onBackToDetails(): void {
     this.store.dispatch(PaybillActions.clearAllNotifications());
     this.store.dispatch(PaybillActions.setPaymentStep({ step: 'DETAILS' }));
+    this.router.navigate(['bank/paybill/pay']);
   }
 
-  public onVerifyAccount(data: { accountNumber: string }): void {
+  public onVerifyAccount(data: PaybillFormVerifyEvent): void {
     const provider = this.activeProvider();
     if (provider) {
       this.store.dispatch(
         PaybillActions.checkBill({
           serviceId: provider.id,
-          accountNumber: data.accountNumber,
+          identification: this.buildIdentification(data.value),
         }),
       );
     }
   }
 
-  public onProceedToPayment(data: PaybillPayload): void {
+  public onProceedToPayment(data: PaybillFormProceedEvent): void {
     const provider = this.activeProvider();
     if (provider) {
-      this.store.dispatch(PaybillActions.setPaymentPayload({ data }));
-
+      this.store.dispatch(
+        PaybillActions.setPaymentPayload({
+          data: {
+            identification: this.buildIdentification(data.value),
+            amount: data.amount,
+          },
+        }),
+      );
       this.store.dispatch(PaybillActions.setPaymentStep({ step: 'CONFIRM' }));
     }
   }
@@ -139,7 +144,12 @@ export class PaybillMain implements OnInit {
     if (provider && data && senderId) {
       this.store.dispatch(
         PaybillActions.proceedPayment({
-          payload: this.buildProceedPayload(provider, data, senderId),
+          payload: {
+            serviceId: provider.id,
+            identification: data.identification,
+            amount: data.amount,
+            senderAccountId: senderId,
+          },
         }),
       );
     }
@@ -165,7 +175,30 @@ export class PaybillMain implements OnInit {
     this.router.navigate(['/bank/dashboard']);
   }
 
-  // comptued data (signals dynamic)
+  public onProviderSelected(providerId: string): void {
+    const category = this.activeCategory();
+    if (!category || !category.providers) return;
+
+    const provider = category.providers.find((p) => p.id === providerId);
+    if (!provider) return;
+
+    if (provider.isFinal) {
+      this.store.dispatch(PaybillActions.selectProvider({ providerId }));
+    } else {
+      this.selectedParentId.set(provider.id);
+    }
+  }
+
+  public onProviderListBack(): void {
+    const category = this.activeCategory();
+    if (!category || !category.providers) return;
+
+    const newParentId = getParentIdForBack(
+      category.providers,
+      this.selectedParentId(),
+    );
+    this.selectedParentId.set(newParentId);
+  }
 
   public readonly activeCategoryUI = computed(() => {
     const category = this.activeCategory();
@@ -193,4 +226,45 @@ export class PaybillMain implements OnInit {
       };
     });
   });
+
+  public readonly filteredProviders = computed(() => {
+    const category = this.activeCategory();
+    if (!category || !category.providers) return [];
+
+    return getDisplayItems(category.providers, this.selectedParentId());
+  });
+
+  public readonly providerListHeader = computed(() => {
+    const category = this.activeCategory();
+    if (!category || !category.providers) return '';
+
+    return getCurrentHeader(
+      category.providers,
+      this.selectedParentId(),
+      category.name,
+    );
+  });
+
+  public readonly isRootProviderView = computed(() => !this.selectedParentId());
+
+  public readonly identificationKey = computed(() => {
+    const url = this.router.url.toLowerCase();
+    if (url.includes('mobile') || url.includes('phone')) return 'phoneNumber';
+    if (url.includes('insurance')) return 'policyNumber';
+    if (url.includes('rent')) return 'propertyCode';
+    return 'accountNumber';
+  });
+
+  private buildIdentification(inputValue: string): PaybillIdentification {
+    const key = this.identificationKey();
+    const idObj: PaybillIdentification = {
+      [key]: inputValue,
+    };
+
+    if (key === 'propertyCode') {
+      idObj.tenantId = '09876543210';
+    }
+
+    return idObj;
+  }
 }

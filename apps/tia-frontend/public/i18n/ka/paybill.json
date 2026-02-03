@@ -9,7 +9,76 @@
   },
 
   "main": {
-    "category": "აირჩიე კატეგორია"
+    "category": "აირჩიე კატეგორია",
+    "summary": {
+      "customer_name": "აბონენტი:",
+      "bill_period": "პერიოდი:",
+      "due_date": "გადახდის ვადა:",
+      "default_period": "მიმდინარე თვე",
+      "na": "უცნობია"
+    },
+    "success": {
+      "title": "გადახდა წარმატებით შესრულდა!",
+      "description": "დავალიანება დაფარულია",
+      "summary_subheader": "გადახდის დეტალები",
+      "pay_another_btn": "კიდევ გადახდა",
+      "dashboard_btn": "მთავარზე გადასვლა",
+      "summary_fields": {
+        "transaction_id": "ტრანზაქციის ნომერი",
+        "service": "სერვისი",
+        "amount_paid": "გადახდილი თანხა",
+        "date_time": "თარიღი და დრო"
+      }
+    },
+    "form": {
+      "subtitle": "შეიყვანეთ დეტალები",
+      "account_label": "აბონენტის ნომერი / ID",
+      "account_placeholder": "შეიყვანეთ ნომერი",
+      "account_error": "გთხოვთ შეიყვანოთ სწორი მონაცემები!",
+      "verified_title": "აბონენტი ნაპოვნია",
+      "amount_label": "გადასახდელი თანხა",
+      "amount_placeholder": "0.00",
+      "amount_helper": "შეიყვანეთ თანხა 0.01-დან 9999-მდე",
+      "amount_range_error": "თანხა უნდა იყოს 0.01-სა და 9999-ს შორის",
+      "helper_text": "დავალიანება: {{amount}}. შეგიძლიათ დააკორექტიროთ.",
+      "continue_btn": "გადახდაზე გადასვლა",
+      "verify_btn": "შემოწმება",
+      "check_button": "შემოწმება",
+      "pay_button": "გადახდა",
+      "template": "შაბლონის შენახვა"
+    },
+    "confirm": {
+      "title": "დადასტურება",
+      "subtitle": "გადაამოწმეთ მონაცემები და აირჩიეთ გადახდის მეთოდი",
+      "summary_header": "გადახდის დეტალები",
+      "summary_subheader": "ტრანზაქციის დეტალები",
+      "account_placeholder": "გთხოვთ აირჩიოთ ლარის ანგარიში",
+      "confirm_btn": "დადასტურება - {{amount}}",
+      "cancel_btn": "გაუქმება",
+      "summary_fields": {
+        "service": "მომსახურება:",
+        "account": "აბონენტის ნომერი:",
+        "holder": "მომხმარებელი:",
+        "amount": "ჯამური თანხა:",
+        "na": "უცნობია"
+      }
+    },
+    "otp": {
+      "title": "ერთჯერადი კოდი",
+      "subtitle": "შეიყვანეთ 4-ნიშნა კოდი, რომელიც გამოიგზავნა თქვენს ნომერზე",
+      "alert_message": "თქვენივე უსაფრთხოებისათვის, 50 ლარზე მეტ ტრანზაქციაზე საჭიროა ერთჯერადი კოდი.",
+      "summary_title": "გადახდის ქვითარი",
+      "resend_text": "არ მიგიღიათ კოდი?",
+      "resend_btn": "თავიდან გაგზავნა",
+      "cancel_btn": "გაუქმება",
+      "verify_btn": "დადასტურება",
+      "summary_fields": {
+        "service": "მომსახურება:",
+        "account": "აბონენტი:",
+        "amount": "თანხა:",
+        "unknown_service": "უცნობი სერვისი"
+      }
+    }
   },
 
   "templates": {

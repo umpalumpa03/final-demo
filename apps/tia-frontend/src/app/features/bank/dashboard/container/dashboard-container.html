@@ -1,13 +1,13 @@
 <div class="global-bank-wrapper">
   <app-library-title
-    title="Dashboard"
-    subtitle="Welcome back! Here's your financial overview."
+    [title]="pageTitle()"
+    [subtitle]="pageSubtitle()"
   ></app-library-title>
   <app-drag-container
     [hasNoStyle]="true"
     [items]="myItems()"
     [layout]="'grid'"
-    [columns]="{ default: 2, md:2,sm: 1 }"
+    [columns]="gridColumns"
     [colspans]="dynamicColspans()"
     (itemsChange)="onItemsChange($event)"
     containerTitle=""
@@ -15,7 +15,7 @@
   >
     @for (item of myItems(); track item.id) {
     <app-draggable-card
-      [hasMinHeight]="true"
+      [hasMinHeight]="$index !== 0"
       [itemData]="item"
       [hasViewOption]="true"
       (viewOptionChange)="onToggleVisibility($event, item.id)"

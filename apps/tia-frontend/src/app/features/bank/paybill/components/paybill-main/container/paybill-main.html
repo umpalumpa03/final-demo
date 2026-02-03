@@ -29,7 +29,7 @@ activeProvider();
       [provider]="provider"
       [summary]="paymentPayload()!"
       (verify)="onOtpVerified($event)"
-      (cancel)="onBackToDetails()"
+      (cancelPayment)="onBackToDetails()"
     />
     } @case('SUCCESS') {
     <app-paybill-success
@@ -42,13 +42,15 @@ activeProvider();
     />
     } } }@else if (category) { @defer (on immediate) {
     <app-provider-list
-      [categoryName]="category.name"
-      [providers]="category.providers || []"
+      [headerTitle]="providerListHeader()"
+      [providers]="filteredProviders()"
       [iconBgColor]="ui?.iconBgColor"
       [iconBgPath]="ui?.iconBgPath"
       [subtitle]="category.description"
+      [isRoot]="isRootProviderView()"
       [isLoading]="isLoading()"
-      (selected)="selectProvider($event)"
+      (selected)="onProviderSelected($event)"
+      (back)="onProviderListBack()"
     />
     } } @else {
     <app-category-grid

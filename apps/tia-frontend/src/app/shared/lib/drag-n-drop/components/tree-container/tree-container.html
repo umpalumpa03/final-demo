@@ -21,7 +21,7 @@
       [style]="isDraggingGroup ? draggingStyle() : null"
     >
       <app-draggable-card
-        [itemData]="{ id: group.id, title: group.title, subtitle: group.subtitle ?? '', icon: group.icon }"
+        [itemData]="{ id: group.id, title: group.groupName, subtitle: group.subtitle ?? '', icon: group.icon }"
         [isDragging]="isDraggingGroup"
         [isDropTarget]="isDropTargetGroup"
         [canDelete]="canDelete()"

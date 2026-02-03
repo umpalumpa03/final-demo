@@ -8,6 +8,8 @@ import {
 } from '@angular/core';
 import {
   BillDetails,
+  PaybillFormProceedEvent,
+  PaybillFormVerifyEvent,
   PaybillProvider,
 } from '../../shared/models/paybill.model';
 import {
@@ -22,6 +24,10 @@ import { paybillInputConfig } from './config/input.config';
 import { PaymentSummary } from '../../shared/ui/payment-summary/payment-summary';
 import { CurrencyPipe } from '@angular/common';
 import { mapBillSummaryFields } from './utils/paybill-form.config';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map, startWith } from 'rxjs';
+import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 
 @Component({
   selector: 'app-paybill-form',
@@ -32,6 +38,7 @@ import { mapBillSummaryFields } from './utils/paybill-form.config';
     TextInput,
     PaymentSummary,
     CurrencyPipe,
+    TranslatePipe,
   ],
   templateUrl: './paybill-form.html',
   styleUrl: './paybill-form.scss',
@@ -58,17 +65,35 @@ export class PaybillForm {
   });
 
   private readonly fb = inject(NonNullableFormBuilder);
+  private readonly translate = inject(TranslateService);
 
-  public readonly verify = output<{ accountNumber: string }>();
-  public readonly pay = output<{ accountNumber: string; amount: number }>();
+  public readonly verify = output<PaybillFormVerifyEvent>();
+  public readonly pay = output<PaybillFormProceedEvent>();
   public readonly saveTemplate = output<void>();
 
   public paybillForm = this.fb.group({
-    accountNumber: ['', [Validators.required, Validators.minLength(5)]],
-    amount: [0, [Validators.min(0.01)]],
+    value: ['', [Validators.required, Validators.minLength(5)]],
+    amount: [
+      0,
+      [Validators.required, Validators.min(0.01), Validators.max(9999)],
+    ],
   });
 
-  public readonly paybillConfig = paybillInputConfig;
+  public readonly paybillConfig = toSignal(
+    this.translate.onLangChange.pipe(
+      startWith({ lang: this.translate.getCurrentLang(), translations: null }),
+      map(() =>
+        translateConfig(paybillInputConfig, (key) =>
+          this.translate.instant(key),
+        ),
+      ),
+    ),
+    {
+      initialValue: translateConfig(paybillInputConfig, (key) =>
+        this.translate.instant(key),
+      ),
+    },
+  );
 
   public readonly isVerified = computed(() => !!this.verifiedDetails()?.valid);
   protected readonly summaryItems = computed(() =>
@@ -78,19 +103,20 @@ export class PaybillForm {
   public onSubmit(): void {
     if (this.isLoading()) return;
 
-    const accountNumberControl = this.paybillForm.controls.accountNumber;
+    const identifierControl = this.paybillForm.controls.value;
 
     if (!this.isVerified()) {
-      if (accountNumberControl.valid) {
-        this.verify.emit({ accountNumber: accountNumberControl.value });
+      if (identifierControl.valid) {
+        this.verify.emit({ value: identifierControl.value });
       } else {
-        accountNumberControl.markAsTouched();
+        identifierControl.markAsTouched();
       }
     } else {
       if (this.paybillForm.valid) {
-        this.pay.emit(this.paybillForm.getRawValue());
-      } else {
-        this.paybillForm.markAllAsTouched();
+        this.pay.emit({
+          value: identifierControl.value,
+          amount: this.paybillForm.controls.amount.value,
+        });
       }
     }
   }

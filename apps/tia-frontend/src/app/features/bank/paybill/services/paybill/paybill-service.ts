@@ -4,6 +4,7 @@ import {
   BillDetails,
   ConfirmPaymentPayload,
   PaybillCategory,
+  PaybillIdentification,
   PaybillProvider,
   ProceedPaymentPayload,
   ProceedPaymentResponse,
@@ -30,13 +31,11 @@ export class PaybillService {
 
   public checkBill(
     serviceId: string,
-    accountNumber: string,
+    identification: PaybillIdentification,
   ): Observable<BillDetails> {
     const payload = {
       serviceId,
-      identification: {
-        accountNumber: accountNumber,
-      },
+      identification,
     };
 
     return this.http.post<BillDetails>(`${this.baseUrl}/check-bill`, payload);
