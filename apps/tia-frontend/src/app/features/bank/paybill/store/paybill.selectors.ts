@@ -1,6 +1,4 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-
-import { Breadcrumb } from '@tia/shared/lib/navigation/models/breadcrumbs.model';
 import { PaybillState } from './paybill.state';
 
 export const selectPaybillState =
@@ -62,36 +60,6 @@ export const selectActiveProvider = createSelector(
     }
 
     return null;
-  },
-);
-
-export const selectPaybillBreadcrumbs = createSelector(
-  selectActiveCategory,
-  selectActiveProvider,
-  selectSelectedCategoryId,
-  (category, provider, selectedCategoryId) => {
-    const base: Breadcrumb[] = [
-      { label: 'Paybill', route: '/bank/paybill/pay' },
-    ];
-
-    if (selectedCategoryId?.toUpperCase() === 'TEMPLATES') {
-      base.push({ label: 'Templates', route: '' });
-      return base;
-    }
-
-    if (category) {
-      base.push({
-        label: category.name,
-        route: provider ? `/bank/paybill/pay/${category.id.toLowerCase()}` : '',
-      });
-    }
-
-    if (provider) {
-      const label = provider.serviceName || provider.name || '';
-      base.push({ label, route: '' });
-    }
-
-    return base;
   },
 );
 
