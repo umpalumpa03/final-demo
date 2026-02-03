@@ -1,0 +1,37 @@
+@use '../../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../../shared/styles/palette' as *;
+
+
+.card-preview {
+  @include display-flex(column);
+  gap: 1.2rem;
+
+  &__title {
+    @include font-inter(500, 1.4rem, 1.4rem);
+    color: var(--color-fg);
+    margin: 0;
+  }
+
+  &__display {
+    @include flex-center(row, center, center);
+    width: 100%;
+    height: 23rem;
+    background-color: var(--color-bg);
+    border-radius: 1.6rem;
+    @media(max-width:350px){
+      height: 17rem;
+    }
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  &__placeholder {
+    @include flex-center();
+    @include font-inter(400, 1.4rem, 1.5rem);
+    color: $gray-500;
+  }
+}
