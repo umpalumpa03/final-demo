@@ -13,7 +13,7 @@ import { ITransactionsCategory } from '@tia/shared/models/transactions/transacti
 @Injectable({
   providedIn: 'root',
 })
-export class TransactionService {
+export class TransactionApiService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
 

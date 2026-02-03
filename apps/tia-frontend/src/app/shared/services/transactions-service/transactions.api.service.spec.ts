@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { TransactionService } from './transaction-service';
 import {
   HttpTestingController,
   provideHttpClientTesting,
@@ -7,22 +6,23 @@ import {
 import { provideHttpClient } from '@angular/common/http';
 import { describe, it, expect, afterEach, beforeEach } from 'vitest';
 import { environment } from '../../../../environments/environment';
+import { TransactionApiService } from './transactions.api.service';
 
-describe('TransactionService', () => {
-  let service: TransactionService;
+describe('TransactionApiService', () => {
+  let service: TransactionApiService;
   let httpMock: HttpTestingController;
   const apiUrl = environment.apiUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        TransactionService,
+        TransactionApiService,
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
     });
 
-    service = TestBed.inject(TransactionService);
+    service = TestBed.inject(TransactionApiService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
