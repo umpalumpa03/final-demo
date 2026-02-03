@@ -31,6 +31,13 @@ export const PAYBILL_ROUTES: Routes = [
               ).then((c) => c.CategoryGridContainer),
           },
           {
+            path: 'confirm-payment',
+            loadComponent: () =>
+              import(
+                './components/paybill-main/components/paybill-confirm-payment/container/paybill-confirm-payment-container'
+              ).then((c) => c.PaybillConfirmPaymentContainer),
+          },
+          {
             path: ':categoryId',
             children: [
               {
@@ -51,13 +58,6 @@ export const PAYBILL_ROUTES: Routes = [
               },
             ],
           },
-          // {
-          //   path: ':categoryId/:providerId',
-          //   loadComponent: () =>
-          //     import(
-          //       './components/paybill-main/components/paybill-form/container/paybill-form-container'
-          //     ).then((c) => c.PaybillFormContainer),
-          // },
         ],
       },
       {
@@ -67,20 +67,6 @@ export const PAYBILL_ROUTES: Routes = [
             './components/paybill-templates/container/paybill-templates-container'
           ).then((c) => c.PaybillTemplatesContainer),
       },
-      // {
-      //   path: 'pay/:categoryId',
-      //   loadComponent: () =>
-      //     import('./components/paybill-main/container/paybill-main').then(
-      //       (c) => c.PaybillMain,
-      //     ),
-      // },
-      // {
-      //   path: 'pay/:categoryId/:providerId',
-      //   loadComponent: () =>
-      //     import('./components/paybill-main/container/paybill-main').then(
-      //       (c) => c.PaybillMain,
-      //     ),
-      // },
     ],
   },
 ];

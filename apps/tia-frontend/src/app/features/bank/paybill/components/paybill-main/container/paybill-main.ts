@@ -13,7 +13,7 @@ import {
   PaybillFormProceedEvent,
   PaybillFormVerifyEvent,
 } from '../shared/models/paybill.model';
-import { PaybillConfirmPayment } from '../components/paybill-confirm-payment/paybill-confirm-payment';
+// import { PaybillConfirmPayment } from '../components/paybill-confirm-payment/paybill-confirm-payment';
 import { PaybillSuccess } from '../components/paybill-success/paybill-success';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -29,13 +29,6 @@ import { RouterModule } from "@angular/router";
 @Component({
   selector: 'app-paybill-main',
   imports: [
-    CategoryGrid,
-    ProviderList,
-    PaybillForm,
-    PaybillOtpVerification,
-    PaybillConfirmPayment,
-    PaybillSuccess,
-    TextInput,
     ɵInternalFormsSharedModule,
     ReactiveFormsModule,
     RouterModule

@@ -1,8 +1,6 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ProviderList } from '../components/provider-list-items/provider-list';
 import { PaybillMainFacade } from '../../../services/paybill-main-facade';
-import { PaybillFormContainer } from '../../paybill-form/container/paybill-form-container';
-import { PaybillForm } from '../../paybill-form/components/paybill-form-items/paybill-form';
 import {
   PaybillFormProceedEvent,
   PaybillFormVerifyEvent,
@@ -11,7 +9,7 @@ import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-provider-list-container',
-  imports: [ProviderList, PaybillFormContainer, PaybillForm, RouterOutlet],
+  imports: [ProviderList, RouterOutlet],
   templateUrl: './provider-list-container.html',
   styleUrl: './provider-list-container.scss',
 })
@@ -25,7 +23,13 @@ export class ProviderListContainer {
     const provider = category.providers.find((p) => p.id === providerId);
     if (!provider) return;
 
-    this.facade.selectParentId(provider.id);
+    if (provider.isFinal) {
+      this.facade.resetPaymentForm();
+
+      this.facade.selectProvider(providerId);
+    } else {
+      this.facade.selectParentId(provider.id);
+    }
   }
 
   public onVerifyAccount(data: PaybillFormVerifyEvent): void {

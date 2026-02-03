@@ -249,9 +249,15 @@ export const paybillReducer = createReducer(
     ...state,
 
     verifiedDetails: null,
-    paymentPayload: null,
     currentStep: 'DETAILS',
     error: null,
     challengeId: null,
+  })),
+
+  on(PaybillActions.setTransactionProvider, (state, { provider }) => ({
+    ...state,
+    selectedProvider: provider,
+    selectedProviderId: provider.id,
+    selectedCategoryId: state.selectedCategoryId || provider.categoryId || null
   })),
 );

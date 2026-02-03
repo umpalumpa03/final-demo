@@ -30,6 +30,7 @@ export const PaybillActions = createActionGroup({
       serviceId: string;
       identification: PaybillIdentification;
     }>(),
+    'Set Transaction Provider': props<{ provider: PaybillProvider }>(),
     'Check Bill Success': props<{ details: BillDetails }>(),
     'Check Bill Failure': props<{ error: string }>(),
     'Clear Selection': emptyProps(),

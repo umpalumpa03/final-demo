@@ -10,15 +10,18 @@ import {
   BillDetails,
   PaybillPayload,
   PaybillProvider,
-} from '../../shared/models/paybill.model';
+} from '../../../../shared/models/paybill.model';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { PaymentSummary } from '../../shared/ui/payment-summary/payment-summary';
+import { PaymentSummary } from '../../../../shared/ui/payment-summary/payment-summary';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { CurrencyPipe } from '@angular/common';
-import { paymentOptionPaybill } from './config/input.config';
-import { CONFIRM_PAYMENT_UI, mapConfirmSummaryFields } from './config/translate.config';
+import { paymentOptionPaybill } from '../../config/input.config';
+import {
+  CONFIRM_PAYMENT_UI,
+  mapConfirmSummaryFields,
+} from '../../config/translate.config';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -30,7 +33,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     PaymentSummary,
     Dropdowns,
     CurrencyPipe,
-    TranslatePipe
+    TranslatePipe,
   ],
   templateUrl: './paybill-confirm-payment.html',
   styleUrl: './paybill-confirm-payment.scss',

@@ -108,8 +108,6 @@ export class PaybillMainFacade {
     this.searchQuery.set('');
   }
 
-  // handling serach functionality from frontend
-
   private readonly visibleProviderIds = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
     const category = this.activeCategory();
@@ -174,8 +172,6 @@ export class PaybillMainFacade {
     return cats;
   });
 
-  // ui materials
-
   public readonly activeCategoryUI = computed(() => {
     const category = this.activeCategory();
     return category ? CATEGORY_UI_MAP[category.id.toLowerCase()] || null : null;
@@ -222,8 +218,6 @@ export class PaybillMainFacade {
     return idObj;
   }
 
-  // staet actions
-
   public setSearchQuery(query: string): void {
     this.searchQuery.set(query);
   }
@@ -244,16 +238,6 @@ export class PaybillMainFacade {
     this.router.navigateByUrl(`${base}/${childId}`);
   }
 
-  // public navigateBack(): void {
-  //   const category = this.activeCategory();
-  //   if (!category?.providers) return;
-  //   const newParentId = getParentIdForBack(
-  //     category.providers,
-  //     this.selectedParentId(),
-  //   );
-  //   this.selectedParentId.set(newParentId);
-  // }
-
   public verifyAccount(inputValue: string): void {
     const provider = this.activeProvider();
     if (provider) {
@@ -268,7 +252,10 @@ export class PaybillMainFacade {
 
   public proceedToPayment(amount: number, inputValue: string): void {
     const provider = this.activeProvider();
+
     if (provider) {
+      this.store.dispatch(PaybillActions.setTransactionProvider({ provider }));
+
       this.store.dispatch(
         PaybillActions.setPaymentPayload({
           data: {
@@ -277,7 +264,10 @@ export class PaybillMainFacade {
           },
         }),
       );
+
       this.store.dispatch(PaybillActions.setPaymentStep({ step: 'CONFIRM' }));
+
+      this.router.navigate(['/bank/paybill/pay/confirm-payment']);
     }
   }
 
@@ -285,6 +275,7 @@ export class PaybillMainFacade {
     const provider = this.activeProvider();
     const data = this.paymentPayload();
     const senderId = this.selectedSenderAccountId();
+    console.log('HELLO BRO');
 
     if (provider && data && senderId) {
       this.store.dispatch(

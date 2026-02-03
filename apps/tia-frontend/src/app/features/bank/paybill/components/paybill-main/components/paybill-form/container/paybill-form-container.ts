@@ -12,7 +12,7 @@ import {
   templateUrl: './paybill-form-container.html',
   styleUrl: './paybill-form-container.scss',
 })
-export class PaybillFormContainer implements OnDestroy {
+export class PaybillFormContainer {
   protected readonly paybillFacade = inject(PaybillMainFacade);
 
   public onVerifyAccount(data: PaybillFormVerifyEvent): void {
@@ -21,9 +21,5 @@ export class PaybillFormContainer implements OnDestroy {
 
   public onProceedToPayment(data: PaybillFormProceedEvent): void {
     this.paybillFacade.proceedToPayment(data.amount, data.value);
-  }
-
-  ngOnDestroy(): void {
-    this.paybillFacade.resetPaymentForm();
   }
 }
