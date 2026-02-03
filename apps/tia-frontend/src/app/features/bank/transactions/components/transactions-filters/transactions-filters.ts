@@ -6,7 +6,7 @@ import {
   input,
   output,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
 import { debounceTime, distinctUntilChanged, map, tap } from 'rxjs';
@@ -18,6 +18,7 @@ import { ShowcaseCard } from '../../../../storybook/shared/showcase-card/showcas
 import { LibraryTitle } from '../../../../storybook/shared/library-title/library-title';
 import { FilterConfig } from '../../models/transactions-filters.models';
 import { getTransactionFiltersConfig } from '../../config/transactions-filters-data';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 
 @Component({
   selector: 'app-transactions-filters',
@@ -27,6 +28,7 @@ import { getTransactionFiltersConfig } from '../../config/transactions-filters-d
     Dropdowns,
     ShowcaseCard,
     LibraryTitle,
+    ButtonComponent,
   ],
   templateUrl: './transactions-filters.html',
   styleUrl: './transactions-filters.scss',
@@ -59,6 +61,21 @@ export class TransactionsFilters {
     dateTo: [null as string | null],
   });
 
+  private readonly formValues = toSignal(this.filterForm.valueChanges, {
+    initialValue: this.filterForm.value,
+  });
+
+  public readonly hasActiveFilter = computed(() => {
+    const values = this.formValues();
+    if (!values) {
+      return false;
+    }
+
+    return Object.values(values).some(
+      (val) => val !== null && val !== '' && val !== undefined,
+    );
+  });
+
   constructor() {
     this.filterForm.valueChanges
       .pipe(
@@ -82,5 +99,9 @@ export class TransactionsFilters {
         takeUntilDestroyed(),
       )
       .subscribe();
+  }
+
+  public resetFilters(): void {
+    this.filterForm.reset();
   }
 }

@@ -1,8 +1,19 @@
 <app-showcase-card>
-  <app-library-title
-    [title]="'Filters'"
-    [subtitle]="'Apply filters to refine your transaction list'"
-  ></app-library-title>
+  <div class="filters-heading">
+    <app-library-title
+      [title]="'Filters'"
+      [subtitle]="'Apply filters to refine your transaction list'"
+    ></app-library-title>
+    @if(hasActiveFilter()){
+    <app-button
+      [type]="'reset'"
+      [variant]="'outline'"
+      [icon]="'x-icon.svg'"
+      (click)="resetFilters()"
+      >Reset All</app-button
+    >
+    }
+  </div>
 
   <form [formGroup]="filterForm" class="transaction-filters-form">
     @for (field of filtersConfig(); track field.controlName) {
