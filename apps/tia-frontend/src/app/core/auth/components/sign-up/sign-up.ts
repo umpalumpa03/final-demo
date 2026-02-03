@@ -46,16 +46,29 @@ export class SignUp implements OnInit {
   public errorMessage = signal<string>('');
 
   @HostListener('window:keydown', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent) {
+  public handleKeyboardEvent(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
       this.onSignUp(this.partialData());
     }
   }
 
-  private partialData = signal<any>('');
+  private partialData = signal<IRegistrationForm>({} as IRegistrationForm);
 
-  public listenInputedData(event:any):void {
-    this.partialData.set(event)
+  public currentUsername = signal<string | null>(null);
+  public currentEmail = signal<string | null>(null);
+
+  public handleCurrentUsername(username: string): void {
+    console.log(username, "__CURRENT_USERNAME")
+    this.currentUsername.set(username);
+  }
+  public handleCurrentEmail(email: string): void {
+    console.log(email, "__CURRENT_Email")
+    this.currentEmail.set(email);
+  }
+  
+
+  public listenInputedData(event: IRegistrationForm): void {
+    this.partialData.set(event);
   }
 
   ngOnInit(): void {

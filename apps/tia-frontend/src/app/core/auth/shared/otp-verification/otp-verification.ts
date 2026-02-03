@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   effect,
+  HostListener,
   inject,
   input,
   OnInit,
@@ -10,7 +11,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Otp } from '@tia/shared/lib/forms/otp/otp';
 import {
@@ -36,7 +37,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 import { OTP_VERIFY_FORM } from '../../config/inputs.config';
-import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader";
+import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 
 @Component({
   selector: 'app-otp-verification',
@@ -48,8 +49,8 @@ import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader"
     TextInput,
     SimpleAlerts,
     TranslatePipe,
-    RouteLoader
-],
+    RouteLoader,
+  ],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,7 +58,6 @@ import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader"
 export class OtpVerification implements OnInit {
   private fb = inject(FormBuilder);
   private translate = inject(TranslateService);
-  private router = inject(Router);
 
   public type = input.required<OtpVerificationType>();
   public timeLimit = input(1);
@@ -68,6 +68,11 @@ export class OtpVerification implements OnInit {
   public phoneErrorMessage = input<string | null>(null);
 
   public resendTries = signal<number>(3);
+
+  @HostListener('window:keydown.enter', ['$event'])
+  public handleKeyBoardEvent(event: Event) {
+    this.onSubmit();
+  }
 
   public unitedError = computed(() => {
     const error = this.errorMessage();
@@ -152,7 +157,6 @@ export class OtpVerification implements OnInit {
     },
   );
 
-
   public setPhoneNumberForm = this.fb.group({
     phoneNumber: ['', [Validators.required, numberValidator]],
   });
@@ -177,11 +181,9 @@ export class OtpVerification implements OnInit {
         this.isResendActive.set(true);
       }
 
-      if(this.countdown() === 0 && this.resendTries() === 0) {
-        this.resendTries.set(3)
-        console.log("NAVIGATING to error page")
+      if (this.countdown() === 0 && this.resendTries() === 0) {
+        this.resendTries.set(3);
       }
-
     });
   }
 
@@ -208,6 +210,10 @@ export class OtpVerification implements OnInit {
   }
 
   public onSubmit(): void {
+    if (this.isButtonDisabled()) {
+      return;
+    }
+
     const currentForm = this.activeForm();
 
     if (currentForm.invalid) {
@@ -258,6 +264,5 @@ export class OtpVerification implements OnInit {
     this.destroy$.next();
     this.destroy$.complete();
     this.timerSubscription?.unsubscribe();
-    // this.stopBackgroundTimer();
   }
 }

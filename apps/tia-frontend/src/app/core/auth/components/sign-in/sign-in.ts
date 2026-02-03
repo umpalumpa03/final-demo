@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  HostListener,
   inject,
   signal,
 } from '@angular/core';
@@ -53,6 +54,11 @@ export class SignIn {
     this.alertTypes.error.message = 'Incorrect Credentials';
     return this.authService.errorMessage();
   });
+
+  @HostListener('window:keydown.enter', ['$event'])
+  public handleKeydownEvent(event:Event):void {
+    this.submit()
+  }
 
   public signInConfig = toSignal(
     this.translate.onLangChange.pipe(

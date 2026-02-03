@@ -7,6 +7,8 @@
   <app-registration-form
     (submitRegistrationForm)="onSignUp($event)"
     (formIncompleteData)="listenInputedData($event)"
+    (currentUsername)="handleCurrentUsername($event)"
+    (currentEmail)="handleCurrentEmail($event)"
   ></app-registration-form>
 
   <p class="sign-up__footer">
