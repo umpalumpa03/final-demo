@@ -24,6 +24,7 @@ import {
 } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.actions';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { Router } from '@angular/router';
+import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
 
 @Component({
   selector: 'app-dashboard-container',
@@ -45,6 +46,7 @@ export class DashboardContainer implements OnInit {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
+  private readonly breakpointService = inject(BreakpointService)
 
   protected readonly myItems = signal<(IWidgetItem & { isHidden?: boolean })[]>(
     [...widgetItems],
