@@ -19,7 +19,6 @@ import {
   PaybillFormProceedEvent,
   PaybillFormVerifyEvent,
   PaybillIdentification,
-  PaybillPayload,
   PaybillProvider,
 } from '../shared/models/paybill.model';
 import { PaybillConfirmPayment } from '../components/paybill-confirm-payment/paybill-confirm-payment';
@@ -32,6 +31,15 @@ import {
   getParentIdForBack,
   getSuccessSummaryItems,
 } from '../shared/utils/paybill.config';
+import { toSignal } from '@angular/core/rxjs-interop';
+import {
+  FormControl,
+  ReactiveFormsModule,
+  ɵInternalFormsSharedModule,
+} from '@angular/forms';
+import { debounceTime, distinctUntilChanged, startWith } from 'rxjs';
+import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
+import { InputConfig } from '@tia/shared/lib/forms/models/input.model';
 
 @Component({
   selector: 'app-paybill-main',
@@ -42,6 +50,9 @@ import {
     PaybillOtpVerification,
     PaybillConfirmPayment,
     PaybillSuccess,
+    TextInput,
+    ɵInternalFormsSharedModule,
+    ReactiveFormsModule,
   ],
   templateUrl: './paybill-main.html',
   styleUrl: './paybill-main.scss',
@@ -56,6 +67,8 @@ export class PaybillMain implements OnInit {
   }
 
   public readonly selectedSenderAccountId = signal<string | null>(null);
+
+  public readonly searchControl = new FormControl('');
 
   public readonly selectedParentId = signal<string | null>(null);
 
@@ -211,13 +224,11 @@ export class PaybillMain implements OnInit {
   );
 
   public readonly formattedCategories = computed(() => {
-    return this.categories().map((cat) => {
+    const query = this.searchQuery()?.toLowerCase().trim();
+
+    let cats = this.categories().map((cat) => {
       const lookupKey = cat.id.toLowerCase();
-
-      const config = CATEGORY_UI_MAP[lookupKey] || {
-        iconBgColor: '#F5F5F5',
-      };
-
+      const config = CATEGORY_UI_MAP[lookupKey] || { iconBgColor: '#F5F5F5' };
       return {
         ...cat,
         iconBgColor: config.iconBgColor,
@@ -225,13 +236,69 @@ export class PaybillMain implements OnInit {
         count: cat.providers?.length || 0,
       };
     });
+
+    if (query) {
+      cats = cats.filter((c) => c.name.toLowerCase().includes(query));
+    }
+
+    return cats;
   });
+
+  public readonly showSearch = computed(() => {
+    return !this.activeProvider();
+  });
+
+  private readonly visibleProviderIds = computed(() => {
+    const query = this.searchQuery()?.toLowerCase().trim();
+    const category = this.activeCategory();
+
+    if (!query || !category?.providers) return null;
+
+    const providers = category.providers;
+    const visibleIds = new Set<string>();
+
+    const matches = providers.filter((p) =>
+      p.name?.toLowerCase().includes(query),
+    );
+
+    matches.forEach((match) => {
+      let current: PaybillProvider | undefined = match;
+      while (current) {
+        visibleIds.add(current.id);
+
+        if (current.parentId) {
+          current = providers.find((p) => p.id === current!.parentId);
+        } else {
+          current = undefined;
+        }
+      }
+    });
+
+    return visibleIds;
+  });
+
+  public readonly searchInputConfig = computed<InputConfig>(() => ({
+    placeholder: `Search ${this.activeCategory()?.name || ''}...`,
+    prefixIcon: 'images/svg/search.svg',
+    clearable: true,
+    ariaLabel: 'Search providers',
+  }));
 
   public readonly filteredProviders = computed(() => {
     const category = this.activeCategory();
     if (!category || !category.providers) return [];
 
-    return getDisplayItems(category.providers, this.selectedParentId());
+    const currentLevelItems = getDisplayItems(
+      category.providers,
+      this.selectedParentId(),
+    );
+
+    const visibleSet = this.visibleProviderIds();
+    if (visibleSet) {
+      return currentLevelItems.filter((item) => visibleSet.has(item.id));
+    }
+
+    return currentLevelItems;
   });
 
   public readonly providerListHeader = computed(() => {
@@ -267,4 +334,13 @@ export class PaybillMain implements OnInit {
 
     return idObj;
   }
+
+  private readonly searchQuery = toSignal(
+    this.searchControl.valueChanges.pipe(
+      startWith(''),
+      debounceTime(300),
+      distinctUntilChanged(),
+    ),
+    { initialValue: '' },
+  );
 }
