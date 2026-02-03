@@ -1,4 +1,6 @@
 @use '../shared/styles/mixins' as *;
+@use '../shared/styles/palette' as *;
+
 
 .bank-container-wrapper {
   @include display-flex(row);
