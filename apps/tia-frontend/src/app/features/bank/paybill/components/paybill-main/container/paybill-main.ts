@@ -5,9 +5,9 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import { CategoryGrid } from '../components/category-grid/category-grid';
-import { ProviderList } from '../components/provider-list/provider-list';
-import { PaybillForm } from '../components/paybill-form/paybill-form';
+import { CategoryGrid } from '../components/category-grid/components/category-items/category-grid';
+import { ProviderList } from '../components/provider-list/components/provider-list-items/provider-list';
+import { PaybillForm } from '../components/paybill-form/components/paybill-form-items/paybill-form';
 import { PaybillOtpVerification } from '../components/paybill-otp-verification/paybill-otp-verification';
 import {
   PaybillFormProceedEvent,
@@ -24,6 +24,7 @@ import {
 import { debounceTime, distinctUntilChanged, startWith, tap } from 'rxjs';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { PaybillMainFacade } from '../services/paybill-main-facade';
+import { RouterModule } from "@angular/router";
 
 @Component({
   selector: 'app-paybill-main',
@@ -37,7 +38,8 @@ import { PaybillMainFacade } from '../services/paybill-main-facade';
     TextInput,
     ɵInternalFormsSharedModule,
     ReactiveFormsModule,
-  ],
+    RouterModule
+],
   templateUrl: './paybill-main.html',
   styleUrl: './paybill-main.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -80,31 +82,5 @@ export class PaybillMain implements OnInit {
 
   public onGoDashboard(): void {
     this.facade.resetToDashboard();
-  }
-
-  public onProviderListBack(): void {
-    this.facade.navigateBack();
-  }
-
-  public onProviderSelected(providerId: string): void {
-    const category = this.facade.activeCategory();
-    if (!category?.providers) return;
-
-    const provider = category.providers.find((p) => p.id === providerId);
-    if (!provider) return;
-
-    if (provider.isFinal) {
-      this.facade.selectProvider(providerId);
-    } else {
-      this.facade.selectParentId(provider.id);
-    }
-  }
-
-  public onVerifyAccount(data: PaybillFormVerifyEvent): void {
-    this.facade.verifyAccount(data.value);
-  }
-
-  public onProceedToPayment(data: PaybillFormProceedEvent): void {
-    this.facade.proceedToPayment(data.amount, data.value);
   }
 }

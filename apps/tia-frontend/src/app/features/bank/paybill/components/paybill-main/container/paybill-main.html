@@ -3,7 +3,7 @@
 
 <div class="paybill-main">
   <div class="paybill-main__stage-wrapper">
-    @if (facade.showSearch()) {
+    <!-- @if (facade.showSearch()) {
     <div class="paybill-main__search">
       <lib-text-input
         [formControl]="searchControl"
@@ -49,23 +49,14 @@
       (goDashboard)="onGoDashboard()"
     />
     } } }@else if (category) { @defer (on immediate) {
-    <app-provider-list
-      [headerTitle]="facade.providerListHeader()"
-      [providers]="facade.filteredProviders()"
-      [iconBgColor]="ui?.iconBgColor"
-      [iconBgPath]="ui?.iconBgPath"
-      [subtitle]="category.description"
-      [isRoot]="facade.isRootProviderView()"
-      [isLoading]="facade.isLoading()"
-      (selected)="onProviderSelected($event)"
-      (back)="onProviderListBack()"
-    />
     } } @else {
     <app-category-grid
       (selected)="facade.selectCategory($event)"
       [categories]="facade.formattedCategories()"
       [isLoading]="facade.isLoading()"
     />
-    }
+    } -->
+
+    <router-outlet></router-outlet>
   </div>
 </div>

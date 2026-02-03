@@ -29,7 +29,7 @@ export class BreadcrumbService {
     const anchorIndex = fullUrl.indexOf(anchor);
 
     const breadcrumbs: PaybillBreadcrumb[] = [
-      { label: 'Paybill', route: '/bank/paybill/pay' },
+      { label: 'Paybill', route: 'bank/paybill/pay' },
     ];
 
     if (anchorIndex === -1) return breadcrumbs;

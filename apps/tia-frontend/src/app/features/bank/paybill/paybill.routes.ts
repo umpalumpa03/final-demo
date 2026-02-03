@@ -22,6 +22,29 @@ export const PAYBILL_ROUTES: Routes = [
           import('./components/paybill-main/container/paybill-main').then(
             (c) => c.PaybillMain,
           ),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import(
+                './components/paybill-main/components/category-grid/container/category-grid-container'
+              ).then((c) => c.CategoryGridContainer),
+          },
+          {
+            path: ':categoryId',
+            loadComponent: () =>
+              import(
+                './components/paybill-main/components/provider-list/container/provider-list-container'
+              ).then((c) => c.ProviderListContainer),
+          },
+          {
+            path: ':categoryId/:providerId',
+            loadComponent: () =>
+              import(
+                './components/paybill-main/components/paybill-form/container/paybill-form-container'
+              ).then((c) => c.PaybillFormContainer),
+          },
+        ],
       },
       {
         path: 'templates',
@@ -30,20 +53,20 @@ export const PAYBILL_ROUTES: Routes = [
             './components/paybill-templates/container/paybill-templates-container'
           ).then((c) => c.PaybillTemplatesContainer),
       },
-      {
-        path: 'pay/:categoryId',
-        loadComponent: () =>
-          import('./components/paybill-main/container/paybill-main').then(
-            (c) => c.PaybillMain,
-          ),
-      },
-      {
-        path: 'pay/:categoryId/:providerId',
-        loadComponent: () =>
-          import('./components/paybill-main/container/paybill-main').then(
-            (c) => c.PaybillMain,
-          ),
-      },
+      // {
+      //   path: 'pay/:categoryId',
+      //   loadComponent: () =>
+      //     import('./components/paybill-main/container/paybill-main').then(
+      //       (c) => c.PaybillMain,
+      //     ),
+      // },
+      // {
+      //   path: 'pay/:categoryId/:providerId',
+      //   loadComponent: () =>
+      //     import('./components/paybill-main/container/paybill-main').then(
+      //       (c) => c.PaybillMain,
+      //     ),
+      // },
     ],
   },
 ];

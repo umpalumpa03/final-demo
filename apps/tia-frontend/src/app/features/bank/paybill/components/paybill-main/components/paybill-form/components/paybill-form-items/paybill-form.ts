@@ -11,7 +11,7 @@ import {
   PaybillFormProceedEvent,
   PaybillFormVerifyEvent,
   PaybillProvider,
-} from '../../shared/models/paybill.model';
+} from '../../../../shared/models/paybill.model';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
@@ -20,10 +20,10 @@ import {
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
-import { paybillInputConfig } from './config/input.config';
-import { PaymentSummary } from '../../shared/ui/payment-summary/payment-summary';
+import { paybillInputConfig } from '../../config/input.config';
+import { PaymentSummary } from '../../../../shared/ui/payment-summary/payment-summary';
 import { CurrencyPipe } from '@angular/common';
-import { mapBillSummaryFields } from './utils/paybill-form.config';
+import { mapBillSummaryFields } from '../../utils/paybill-form.config';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map, startWith } from 'rxjs';

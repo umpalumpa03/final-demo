@@ -52,6 +52,12 @@ export class PaybillContainer implements OnInit {
 
   public readonly navigationConfig = navConfig(this.translate);
 
+  public readonly breadcrumbs = computed(() => {
+    return this.breadcrumbService.breadcrumbs$();
+  });
+
+  // alert system
+
   protected readonly notifications = this.store.selectSignal(
     PAYBILL_SELECTORS.selectNotifications,
   );
@@ -59,10 +65,6 @@ export class PaybillContainer implements OnInit {
   public handleDismiss(id: string): void {
     this.store.dispatch(PaybillActions.dismissNotification({ id }));
   }
-
-  public readonly breadcrumbs = computed(() => {
-    return this.breadcrumbService.breadcrumbs$();
-  });
 
   public ngOnInit(): void {
     this.store.dispatch(PaybillActions.loadCategories());

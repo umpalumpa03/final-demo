@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProviderList } from './provider-list';
-import { PaybillProvider } from '../../shared/models/paybill.model';
+import { PaybillProvider } from '../../../../shared/models/paybill.model';
 
 describe('ProviderList', () => {
   let component: ProviderList;

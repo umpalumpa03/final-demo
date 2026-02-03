@@ -10,7 +10,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import {
   PaybillProvider,
   BillDetails,
-} from '../../shared/models/paybill.model';
+} from '../../../../shared/models/paybill.model';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 
