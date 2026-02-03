@@ -10,6 +10,11 @@ import { environment } from '../../../../../../environments/environment';
 import {
   ProceedPaymentPayload,
   ConfirmPaymentPayload,
+  PaybillIdentification,
+  BillDetails,
+  PaybillCategory,
+  PaybillProvider,
+  ProceedPaymentResponse,
 } from '../../components/paybill-main/shared/models/paybill.model';
 
 describe('PaybillService', () => {
@@ -28,15 +33,6 @@ describe('PaybillService', () => {
 
     service = TestBed.inject(PaybillService);
     httpMock = TestBed.inject(HttpTestingController);
-
-    vi.stubGlobal('localStorage', {
-      getItem: vi.fn().mockReturnValue('mock-token'),
-      setItem: vi.fn(),
-      removeItem: vi.fn(),
-      clear: vi.fn(),
-      key: vi.fn(),
-      length: 0,
-    });
   });
 
   afterEach(() => {
@@ -44,8 +40,16 @@ describe('PaybillService', () => {
     vi.unstubAllGlobals();
   });
 
-  it('should fetch categories', () => {
-    const mockCategories = [{ id: '1', name: 'Utilities' }];
+  it('should fetch categories (GET)', () => {
+    const mockCategories: PaybillCategory[] = [
+      {
+        id: '1',
+        name: 'Utilities',
+        icon: 'utility.svg',
+        description: 'Pay bills',
+        servicesQuantity: 5,
+      },
+    ];
 
     service.getCategories().subscribe((data) => {
       expect(data).toEqual(mockCategories);
@@ -56,35 +60,116 @@ describe('PaybillService', () => {
     req.flush(mockCategories);
   });
 
-  it('should fetch providers for a specific category', () => {
-    const category = 'Utilities';
-    const mockProviders = [{ id: 'p1', serviceName: 'Gas' }];
+  it('should fetch providers for a specific category (GET)', () => {
+    const categoryId = 'mobile';
+    const mockProviders: PaybillProvider[] = [
+      {
+        id: 'magti',
+        serviceName: 'Magti',
+        categoryId: 'mobile',
+        name: 'Magti',
+      },
+    ];
 
-    service.getProviders(category).subscribe((data) => {
+    service.getProviders(categoryId).subscribe((data) => {
       expect(data).toEqual(mockProviders);
     });
 
-    const req = httpMock.expectOne(`${baseUrl}/utilities`);
+    const req = httpMock.expectOne(`${baseUrl}/${categoryId.toLowerCase()}`);
     expect(req.request.method).toBe('GET');
     req.flush(mockProviders);
   });
 
-  it('should call checkBill with correct payload', () => {
-    const mockResponse = { valid: true, accountHolder: 'John Doe' };
-    const serviceId = 'power-01';
-    const accountNumber = '123456789';
+  it('should check bill with correct identification payload (POST)', () => {
+    const serviceId = 'my-video';
 
-    service.checkBill(serviceId, accountNumber).subscribe((res) => {
+    const identification: PaybillIdentification = {
+      phoneNumber: '599123456',
+    };
+
+    const mockResponse: BillDetails = {
+      valid: true,
+      accountHolder: 'John Doe',
+      address: 'Tbilisi',
+      amountDue: 25.5,
+      dueDate: '2024-01-01',
+      isExactAmount: false,
+    };
+
+    service.checkBill(serviceId, identification).subscribe((res) => {
       expect(res).toEqual(mockResponse);
     });
 
     const req = httpMock.expectOne(`${baseUrl}/check-bill`);
     expect(req.request.method).toBe('POST');
+
     expect(req.request.body).toEqual({
       serviceId,
-      identification: { accountNumber },
+      identification,
     });
 
     req.flush(mockResponse);
+  });
+
+  it('should proceed to payment (POST)', () => {
+    const payload: ProceedPaymentPayload = {
+      serviceId: 'my-video',
+      identification: { phoneNumber: '599123456' },
+      amount: 50,
+      senderAccountId: 'GB123456',
+    };
+
+    const mockResponse: ProceedPaymentResponse = {
+      transferType: 'INTERNAL',
+      message: 'Success',
+    };
+
+    service.payBill(payload).subscribe((res) => {
+      expect(res).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${baseUrl}/pay`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+    req.flush(mockResponse);
+  });
+
+  it('should verify payment OTP (POST)', () => {
+    const payload: ConfirmPaymentPayload = {
+      challengeId: 'challenge-123',
+      code: '123456',
+    };
+
+    const mockResponse: ProceedPaymentResponse = {
+      transferType: 'INTERNAL',
+      message: 'Payment Confirmed',
+    };
+
+    service.verifyPayment(payload).subscribe((res) => {
+      expect(res).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${baseUrl}/verify`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+    req.flush(mockResponse);
+  });
+
+  it('should handle HTTP errors gracefully', () => {
+    const category = 'internet';
+
+    service.getProviders(category).subscribe({
+      next: () => {},
+      error: (error) => {
+        expect(error.status).toBe(500);
+        expect(error.statusText).toBe('Internal Server Error');
+      },
+    });
+
+    const req = httpMock.expectOne(`${baseUrl}/${category}`);
+    req.flush('Something went wrong', {
+      status: 500,
+      statusText: 'Internal Server Error',
+    });
   });
 });

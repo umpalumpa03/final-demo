@@ -58,7 +58,7 @@ export class PaybillOtpVerification {
     },
     {
       label: 'paybill.main.otp.summary_fields.account',
-      value: this.summary()?.accountNumber ?? '',
+      value: this.summary()?.identification.accountNumber ?? '',
       canTranslate: false,
     },
     {

@@ -11,16 +11,22 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 describe('ThemeEffects', () => {
   let actions$: Observable<Action>;
   let effects: ThemeEffects;
-  let setAttributeSpy: ReturnType<typeof vi.fn>;
-  let getItemSpy: ReturnType<typeof vi.spyOn>;
-  let setItemSpy: ReturnType<typeof vi.spyOn>;
+  let setAttributeSpy: any;
+
+  const localStorageMock = {
+    getItem: vi.fn(),
+    setItem: vi.fn(),
+    removeItem: vi.fn(),
+    clear: vi.fn(),
+  };
 
   beforeEach(() => {
     setAttributeSpy = vi.fn();
-    getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
-    setItemSpy = vi
-      .spyOn(Storage.prototype, 'setItem')
-      .mockImplementation(() => {});
+
+    vi.stubGlobal('localStorage', localStorageMock);
+
+    localStorageMock.getItem.mockReturnValue(null);
+    localStorageMock.setItem.mockImplementation(() => {});
 
     TestBed.configureTestingModule({
       providers: [
@@ -32,24 +38,37 @@ describe('ThemeEffects', () => {
         },
       ],
     });
+
     effects = TestBed.inject(ThemeEffects);
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
   });
 
   it('should apply theme from action payload', () => {
     actions$ = of(ThemeActions.setTheme({ theme: 'ocean-blue' }));
+
     effects.syncTheme$.subscribe();
+
     expect(setAttributeSpy).toHaveBeenCalledWith('data-theme', 'oceanBlue');
-    expect(setItemSpy).toHaveBeenCalledWith('theme', 'ocean-blue');
+
+    expect(localStorageMock.setItem).toHaveBeenCalledWith(
+      'theme',
+      'ocean-blue',
+    );
   });
 
   it('should load saved theme from localStorage after initialization', () => {
-    getItemSpy.mockReturnValue('royal-blue');
+    const savedTheme = 'royalBlue';
+
+    localStorageMock.getItem.mockReturnValue(savedTheme);
+
     actions$ = of({ type: ROOT_EFFECTS_INIT });
+
     effects.syncTheme$.subscribe();
-    expect(setAttributeSpy).toHaveBeenCalledWith('data-theme', 'royalBlue');
+
+    expect(setAttributeSpy).toHaveBeenCalledWith('data-theme', savedTheme);
+    expect(localStorageMock.setItem).toHaveBeenCalledWith('theme', savedTheme);
   });
 });

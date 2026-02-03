@@ -22,7 +22,7 @@ export const mapBillSummaryFields = (
       value: details.dueDate
         ? String(details.dueDate)
         : 'paybill.main.summary.na',
-        canTranslate:false
+        canTranslate:true
     },
   ];
 };

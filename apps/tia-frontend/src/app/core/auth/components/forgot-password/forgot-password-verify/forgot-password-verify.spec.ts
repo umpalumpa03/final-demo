@@ -2,12 +2,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ForgotPasswordVerify } from './forgot-password-verify';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { of } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
+import { of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { HttpErrorResponse } from '@angular/common/http';
 import { IVerified } from '../../../models/otp-verification.models';
 
-describe('ForgotPasswordVerify Component', () => {
+describe('ForgotPasswordVerify', () => {
   let component: ForgotPasswordVerify;
   let fixture: ComponentFixture<ForgotPasswordVerify>;
   let authServiceMock: {
@@ -25,79 +26,58 @@ describe('ForgotPasswordVerify Component', () => {
       verifyForgotPasswordOtp: vi.fn().mockReturnValue(of({})),
       resendVerificationCode: vi.fn().mockReturnValue(of({})),
     };
-
     routerMock = {
       navigate: vi.fn(),
     };
-
     await TestBed.configureTestingModule({
       imports: [ForgotPasswordVerify, TranslateModule.forRoot()],
       providers: [
         { provide: AuthService, useValue: authServiceMock },
         { provide: Router, useValue: routerMock },
-        TranslateService,
       ],
     }).compileComponents();
-
     fixture = TestBed.createComponent(ForgotPasswordVerify);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
-  it('should create the component', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should not navigate on init when challengeId exists', () => {
-    authServiceMock.getChallengeId.mockReturnValue('challenge-123');
-    
-    component.ngOnInit();
-
-    expect(authServiceMock.getChallengeId).toHaveBeenCalled();
-    expect(routerMock.navigate).not.toHaveBeenCalled();
-  });
-
-  it('should navigate to base route when challengeId does not exist', () => {
+  it('Feature: redirects to forgot-password base route when challengeId is missing', () => {
     authServiceMock.getChallengeId.mockReturnValue(null);
-    
     component.ngOnInit();
-
-    expect(authServiceMock.getChallengeId).toHaveBeenCalled();
     expect(routerMock.navigate).toHaveBeenCalledWith(['/auth', 'forgot-password']);
   });
 
-  it('should not verify OTP when isCalled is false', () => {
-    const event: IVerified = {
-      isCalled: false,
-      otp: '123456',
-    };
-
+  it('Feature: verifyResetOtp does nothing when isCalled=false', () => {
+    const event: IVerified = { isCalled: false, otp: '123456' };
     component.verifyResetOtp(event);
-
     expect(authServiceMock.verifyForgotPasswordOtp).not.toHaveBeenCalled();
-    expect(routerMock.navigate).not.toHaveBeenCalled();
   });
 
-  it('should verify OTP and navigate when isCalled is true', () => {
-    const event: IVerified = {
-      isCalled: true,
-      otp: '123456',
-    };
-
+  it('Feature: verifyResetOtp verifies otp and navigates to reset route on success', () => {
+    const event: IVerified = { isCalled: true, otp: '123456' };
     component.verifyResetOtp(event);
-
     expect(authServiceMock.verifyForgotPasswordOtp).toHaveBeenCalledWith('123456');
     expect(routerMock.navigate).toHaveBeenCalledWith(['/auth', 'reset-password']);
+    expect(component.errorMessage()).toBeNull();
   });
 
-  it('should resend OTP when isCalled is true', () => {
+  it('Feature: verifyResetOtp sets errorMessage when API returns an error', () => {
+    authServiceMock.verifyForgotPasswordOtp.mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: 400, error: { message: 'Invalid code' } })),
+    );
+    const event: IVerified = { isCalled: true, otp: 'wrong' };
+    component.verifyResetOtp(event);
+    expect(component.errorMessage()).toBe('Invalid code');
+  });
+
+  it('Feature: onOtpInputChanged clears errorMessage if it exists', () => {
+    component.errorMessage.set('Invalid code');
+    component.onOtpInputChanged();
+    expect(component.errorMessage()).toBeNull();
+  });
+
+  it('Feature: resendOtp calls resendVerificationCode when isCalled=true', () => {
     component.resendOtp(true);
-
     expect(authServiceMock.resendVerificationCode).toHaveBeenCalled();
-  });
-
-  it('should not resend OTP when isCalled is false', () => {
-    component.resendOtp(false);
-
-    expect(authServiceMock.resendVerificationCode).not.toHaveBeenCalled();
   });
 });

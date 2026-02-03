@@ -17,6 +17,7 @@ import { CreateAccountComponent } from '../components/create-account/components/
 import {
   CreateAccountRequest,
   AccountType,
+  GroupedAccounts,
 } from '../../../../../../shared/models/accounts/accounts.model';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import {
@@ -76,6 +77,7 @@ export class Accounts implements OnInit {
   protected readonly accountsGroupedSignal = this.store.selectSignal(
     selectAccountsGrouped,
   );
+  protected readonly isLoadingSignal = this.store.selectSignal(selectIsLoading);
   protected readonly isCreatingAccountSignal =
     this.store.selectSignal(selectIsCreating);
   protected readonly createErrorSignal =
@@ -94,14 +96,23 @@ export class Accounts implements OnInit {
   protected showCreateAlert = signal<boolean>(false);
   protected showCreateErrorAlert = signal<boolean>(false);
   protected errorTypeSignal = signal<'connection' | 'loading' | null>(null);
-  private wasCreating = false;
+  private wasCreating: boolean = false;
+  private wasLoading: boolean = false;
+  private hasLoadedAccounts: boolean = false;
 
   constructor() {
     effect(() => {
       const accounts = this.accountsGroupedSignal();
+      const isLoading = this.isLoadingSignal();
+
       if (accounts) {
         this.handleAccountsGrouped(accounts);
       }
+
+      if (!isLoading && this.wasLoading) {
+        this.hasLoadedAccounts = true;
+      }
+      this.wasLoading = isLoading;
     });
 
     effect(() => {
@@ -126,13 +137,15 @@ export class Accounts implements OnInit {
     }
   }
 
-  private handleAccountsGrouped(accounts: any): void {
-    if (
+  private handleAccountsGrouped(accounts: GroupedAccounts | null): void {
+    const isLoading = this.isLoadingSignal();
+    const isEmpty =
       !accounts ||
       (accounts.current.length === 0 &&
         accounts.saving.length === 0 &&
-        accounts.card.length === 0)
-    ) {
+        accounts.card.length === 0);
+
+    if (isEmpty && !this.hasLoadedAccounts && !isLoading) {
       this.store.dispatch(AccountsActions.loadAccounts());
     }
   }
