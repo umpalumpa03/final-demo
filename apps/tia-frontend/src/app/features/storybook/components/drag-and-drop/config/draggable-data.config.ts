@@ -49,9 +49,9 @@ export const kanbanItems = [
 ] as const satisfies readonly KanbanItem[];
 
 export const treeGroups = [
-  { id: 'g1', title: 'Group 1', subtitle: 'First group', expanded: true },
-  { id: 'g2', title: 'Group 2', subtitle: 'Second group', expanded: true },
-  { id: 'g3', title: 'Group 3', subtitle: 'Third group', expanded: false },
+  { id: 'g1', groupName: 'Group 1', subtitle: 'First group', expanded: true },
+  { id: 'g2', groupName: 'Group 2', subtitle: 'Second group', expanded: true },
+  { id: 'g3', groupName: 'Group 3', subtitle: 'Third group', expanded: false },
 ] as const satisfies readonly TreeGroupConfig[];
 
 export const treeItems = [

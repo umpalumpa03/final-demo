@@ -14,11 +14,11 @@ import { AuthService } from '../services/auth.service';
 import { IFeature } from '../models/auth.models';
 import { SidePanel } from '../shared/side-panel/side-panel';
 import { tap } from 'rxjs';
-import { LanguageContainer } from "../../../features/bank/settings/components/language/container/language-container";
+import { LanguageSwitcher } from "../../../features/bank/settings/components/language/components/language-switcher/language-switcher";
 
 @Component({
   selector: 'app-auth-container',
-  imports: [RouterOutlet, SidePanel, LanguageContainer],
+  imports: [RouterOutlet, SidePanel, LanguageSwitcher],
   templateUrl: './auth-container.html',
   styleUrl: './auth-container.scss',
   providers: [TokenService, AuthService],

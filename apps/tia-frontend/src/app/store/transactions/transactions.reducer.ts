@@ -51,4 +51,13 @@ export const transactionReducer = createReducer(
     ...state,
     total,
   })),
+
+  on(TransactionActions.loadCategoriesSuccess, (state, { categories }) => ({
+    ...state,
+    categories: categories,
+  })),
+  on(TransactionActions.loadCategoriesFailure, (state, { error }) => ({
+    ...state,
+    error,
+  })),
 );

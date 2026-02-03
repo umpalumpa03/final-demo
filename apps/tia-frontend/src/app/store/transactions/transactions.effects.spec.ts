@@ -7,6 +7,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TransactionActions } from './transactions.actions';
 import {
   loadTotalEffect,
+  loadTransactionsCategoriesEffect,
   loadTransactionsEffect,
   updateFiltersEffects,
 } from './transactions.effects';
@@ -22,6 +23,7 @@ describe('Transaction Effects', () => {
     transactionService = {
       getTransactions: vi.fn(),
       getTransactionsTotal: vi.fn(),
+      getTransactionsCategories: vi.fn(),
     };
     vi.useFakeTimers();
 
@@ -141,6 +143,42 @@ describe('Transaction Effects', () => {
       loadTotalEffect(actions$, transactionService).subscribe((action) => {
         expect(action).toEqual(TransactionActions.loadTotalSuccess({ total }));
       }),
+    );
+  });
+
+  it('loads categories successfully', () => {
+    const categories = [{ id: '1', name: 'Food' }];
+    transactionService.getTransactionsCategories.mockReturnValue(
+      of(categories),
+    );
+    actions$ = of(TransactionActions.loadCategories());
+
+    TestBed.runInInjectionContext(() =>
+      loadTransactionsCategoriesEffect(actions$, transactionService).subscribe(
+        (action) => {
+          expect(action).toEqual(
+            TransactionActions.loadCategoriesSuccess({ categories } as any),
+          );
+        },
+      ),
+    );
+  });
+
+  it('handles categories loading error', () => {
+    const error = 'Failed';
+    transactionService.getTransactionsCategories.mockReturnValue(
+      throwError(() => error),
+    );
+    actions$ = of(TransactionActions.loadCategories());
+
+    TestBed.runInInjectionContext(() =>
+      loadTransactionsCategoriesEffect(actions$, transactionService).subscribe(
+        (action) => {
+          expect(action).toEqual(
+            TransactionActions.loadCategoriesFailure({ error }),
+          );
+        },
+      ),
     );
   });
 });

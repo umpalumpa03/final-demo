@@ -75,10 +75,17 @@ export class AuthService {
 
         if (res.status === 'phone_verification_required') {
           this.tokenService.setVerifyToken(res.verification_token!);
+<<<<<<< HEAD
           if (res.reason === '') {
             this.router;
+=======
+          if (res.challengeId && res.reason === 'phone_unverified') {
+            this.setChellangeId(res.challengeId);
+            this.router.navigate([Routes.OTP_SIGN_UP]);
+          } else {
+            this.router.navigate([Routes.PHONE]);
+>>>>>>> 7e79f40ffa498d8544a2580d35836618cdbd0a1e
           }
-          this.router.navigate([Routes.PHONE]);
         }
       }),
       catchError((err) => {
@@ -131,21 +138,22 @@ export class AuthService {
           if (res.access_token && res.refresh_token) {
             this.tokenService.setAccessToken(res.access_token);
             this.tokenService.setRefreshToken(res.refresh_token);
-            this.store.dispatch(UserInfoActions.loadUser());
-            this.router.navigate([Routes.DASHBOARD]);
           }
         }),
         catchError((err) => {
           const errorData: phoneOtpError = err.error;
           this.otpError.set(errorData);
 
-          // errorMessage-s ikeneeeb BEKAA?
           this.errorMessage.set(true);
 
           setTimeout(() => this.otpError.set(null), 2000);
           return EMPTY;
         }),
-        finalize(() => this.isLoginLoading.set(false)),
+        finalize(() => {
+          this.store.dispatch(UserInfoActions.loadUser());
+          this.router.navigate([Routes.DASHBOARD]);
+          this.isLoginLoading.set(false);
+        }),
       );
   }
 

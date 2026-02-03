@@ -1,5 +1,7 @@
 export const paybillInputConfig = {
-  label: 'Account Number / Customer ID',
-  placeholder: 'Enter your account number',
-  errorMessage: 'Please enter valid account number!',
+  accountNumber: {
+    label: 'paybill.main.form.account_label',
+    placeholder: 'paybill.main.form.account_placeholder',
+    errorMessage: 'paybill.main.form.account_error',
+  },
 } as const;

@@ -1,3 +1,4 @@
+@defer {
 <div class="otp-verification">
   <div class="otp-verification__icon" aria-hidden="true">
     <img [src]="iconUrl()" />
@@ -18,26 +19,21 @@
         [config]="formConfig().phone"
       ></lib-text-input>
     </div>
-    } 
-    @if (submitError()) {
-      <app-simple-alerts
-        alertType="error"
-        [alertMessage]="submitError() ?? ''"
-      ></app-simple-alerts>
-    }
-
-    @if (unitedError()) {
-      <app-simple-alerts
-        alertType="error"
-        [alertMessage]="unitedError()"
-      ></app-simple-alerts>
-    }
-
-    @if (phoneErrorMessage()) {
-      <app-simple-alerts
-        alertType="error"
-        [alertMessage]="phoneErrorMessage() ?? 'An error occurred'"
-      ></app-simple-alerts>
+    } @if (submitError()) {
+    <app-simple-alerts
+      alertType="error"
+      [alertMessage]="submitError() ?? ''"
+    ></app-simple-alerts>
+    } @if (unitedError()) {
+    <app-simple-alerts
+      alertType="error"
+      [alertMessage]="unitedError()"
+    ></app-simple-alerts>
+    } @if (phoneErrorMessage()) {
+    <app-simple-alerts
+      alertType="error"
+      [alertMessage]="phoneErrorMessage() ?? 'An error occurred'"
+    ></app-simple-alerts>
     }
 
     <div class="auth-form__actions">
@@ -90,7 +86,8 @@
   </form>
   } @else {
   <div class="sign-in sign-in-loader">
-    <app-spinner size="4rem"></app-spinner>
+    <app-route-loader variant="pulsing"></app-route-loader>
   </div>
   }
 </div>
+} @placeholder {}

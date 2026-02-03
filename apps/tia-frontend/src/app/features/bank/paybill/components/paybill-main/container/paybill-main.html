@@ -29,7 +29,7 @@ activeProvider();
       [provider]="provider"
       [summary]="paymentPayload()!"
       (verify)="onOtpVerified($event)"
-      (cancel)="onBackToDetails()"
+      (cancelPayment)="onBackToDetails()"
     />
     } @case('SUCCESS') {
     <app-paybill-success

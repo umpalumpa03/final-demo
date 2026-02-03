@@ -2,14 +2,12 @@ import { inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
 import { TokenService } from '../services/token.service';
 
-export const signUpGuard: CanActivateFn = (route, state) => {
-  const tokenService = inject(TokenService)
+export const PhoneVerificationGuard: CanActivateFn = (route, state) => {
+  const tokenService = inject(TokenService);
 
-  const currSignUpToken = tokenService.getSignUpToken || tokenService.verifyToken;
-  
-  if (currSignUpToken) {
-    return true;
-  }
+  const currSignUpToken =
+    tokenService.getSignUpToken || tokenService.verifyToken;
+    console.log(currSignUpToken)
 
-  return false;
+  return currSignUpToken ? true : false;
 };

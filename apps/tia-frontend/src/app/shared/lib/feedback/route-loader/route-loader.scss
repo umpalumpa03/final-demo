@@ -2,7 +2,6 @@
 @use '../../../styles/mixins' as *;
 
 .route-loader {
-
   &--top-bar {
     position: absolute;
     top: 0;
@@ -57,6 +56,12 @@
       animation-delay: 0.4s;
     }
   }
+
+  &--fill-container {
+    height: 100%;
+    width: 100%;
+    @include flex-center(row);
+  }
 }
 
 @keyframes route-loader-progress {
@@ -72,7 +77,8 @@
 }
 
 @keyframes route-loader-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.3;
     transform: scale(0.8);
   }

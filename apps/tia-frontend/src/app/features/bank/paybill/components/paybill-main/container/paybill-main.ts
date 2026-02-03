@@ -15,7 +15,10 @@ import { ProviderList } from '../components/provider-list/provider-list';
 import { PaybillForm } from '../components/paybill-form/paybill-form';
 import { PaybillActions } from '../../../store/paybill.actions';
 import { PaybillOtpVerification } from '../components/paybill-otp-verification/paybill-otp-verification';
-import { PaybillPayload } from '../shared/models/paybill.model';
+import {
+  PaybillPayload,
+  PaybillProvider,
+} from '../shared/models/paybill.model';
 import { PaybillConfirmPayment } from '../components/paybill-confirm-payment/paybill-confirm-payment';
 import { selectGelAccountOptions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
@@ -90,7 +93,11 @@ export class PaybillMain implements OnInit {
     this.store.dispatch(PaybillActions.selectProvider({ providerId }));
   }
 
-  private buildProceedPayload(provider: any, data: any, senderId: string) {
+  private buildProceedPayload(
+    provider: PaybillProvider,
+    data: PaybillPayload,
+    senderId: string,
+  ) {
     return {
       serviceId: provider.id,
       identification: { accountNumber: data.accountNumber },
@@ -108,6 +115,7 @@ export class PaybillMain implements OnInit {
   public onBackToDetails(): void {
     this.store.dispatch(PaybillActions.clearAllNotifications());
     this.store.dispatch(PaybillActions.setPaymentStep({ step: 'DETAILS' }));
+    this.router.navigate(['bank/paybill/pay']);
   }
 
   public onVerifyAccount(data: { accountNumber: string }): void {

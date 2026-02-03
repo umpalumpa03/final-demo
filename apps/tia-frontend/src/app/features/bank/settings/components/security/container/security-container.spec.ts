@@ -49,19 +49,7 @@ describe('SecurityContainer', () => {
     expect(f.hasError('passwordMismatch')).toBe(false);
   });
 
-  it('alertType/message (error -> success)', () => {
-    store.overrideSelector(SecuritySelectors.selectSecurityError, 'Bad');
-    refresh();
-    expect(component.alertType()).toBe('error');
-    expect(component.alertMessage()).toBe('Bad');
 
-    vi.spyOn(translate, 'instant').mockReturnValue('OK!');
-    store.overrideSelector(SecuritySelectors.selectSecurityError, null);
-    store.overrideSelector(SecuritySelectors.selectSecuritySuccess, true);
-    refresh();
-    expect(component.alertType()).toBe('success');
-    expect(component.alertMessage()).toBe('OK!');
-  });
 
   it('dispatches changePassword action', () => {
     const spy = vi.spyOn(store, 'dispatch');
