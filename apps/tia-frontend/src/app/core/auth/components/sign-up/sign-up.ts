@@ -48,11 +48,10 @@ export class SignUp {
   private router = inject(Router);
   public errorMessage = signal<string>('');
 
-  @HostListener('window:keydown', ['$event'])
-  public handleKeyboardEvent(event: KeyboardEvent): void {
-    if (event.key === 'Enter') {
-      this.onSignUp(this.partialData());
-    }
+  @HostListener('window:keydown.enter', ['$event'])
+  public handleKeyboardEvent(event: Event): void {
+    event.preventDefault();
+    this.onSignUp(this.partialData());
   }
 
   private partialData = signal<IRegistrationForm>({} as IRegistrationForm);

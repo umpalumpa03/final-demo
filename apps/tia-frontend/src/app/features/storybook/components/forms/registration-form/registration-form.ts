@@ -21,7 +21,6 @@ import {
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import {
-  COUNTRY_OPTIONS,
   REGISTATION_FORM,
   PASSWORD_RULE_MESSAGES,
   PASSWORD_RULES,
@@ -40,9 +39,10 @@ import { translateConfig } from '@tia/shared/utils/translate-config/config-trans
 })
 export class RegistrationForm {
   private translate = inject(TranslateService);
-  public countries = COUNTRY_OPTIONS;
   public readonly isRegistration = input<boolean>(true);
   public readonly buttonText = input<string>('auth.sign-up.buttonText');
+  public readonly usernameError = input<boolean | null>();
+  public readonly emailError = input<boolean | null>();
   public readonly passwordTouched = signal<boolean>(false);
   public readonly passwordInteracted = signal<boolean>(false);
 
@@ -58,7 +58,10 @@ export class RegistrationForm {
       return;
     }
 
-    this.formIncompleteData.emit(this.registrationForm.getRawValue());
+    const { confirmPassword, ...regRequest } =
+      this.registrationForm.getRawValue();
+
+    this.formIncompleteData.emit(regRequest);
   }
 
   public formIncompleteData = output<IRegistrationForm>();
@@ -123,7 +126,10 @@ export class RegistrationForm {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [passwordValidator]],
       confirmPassword: ['', [Validators.required]],
-      username: ['', Validators.required],
+      username: [
+        '',
+        [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]{2,}$/)],
+      ],
     },
     {
       validators: passwordMatchValidator,
