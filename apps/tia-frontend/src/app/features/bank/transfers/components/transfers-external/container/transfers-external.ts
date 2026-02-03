@@ -12,7 +12,6 @@ import { StepperHeader } from 'apps/tia-frontend/src/app/features/storybook/comp
 })
 export class TransfersExternal {
   private router = inject(Router);
-
   public steps = [
     { key: 'recipient', label: 'Recipient' },
     { key: 'accounts', label: 'Accounts' },

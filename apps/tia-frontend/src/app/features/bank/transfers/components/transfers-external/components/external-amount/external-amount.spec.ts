@@ -3,7 +3,7 @@ import { ExternalAmount } from './external-amount';
 import { TransferStore } from '../../../../store/transfers.store';
 import { TransferExternalService } from '../../../../services/transfer.external.service';
 import { TransfersApiService } from '../../../../services/transfersApi.service';
-import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { signal } from '@angular/core';

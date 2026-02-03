@@ -1,7 +1,4 @@
-import {
-  TestBed,
-  ComponentFixture,
-} from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { ExternalAccounts } from './external-accounts';
 import { Location } from '@angular/common';
 import { TransferStore } from '../../../../store/transfers.store';
@@ -10,7 +7,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { provideMockStore } from '@ngrx/store/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
-import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 
 describe('ExternalAccounts', () => {
   let component: ExternalAccounts;
@@ -24,8 +21,8 @@ describe('ExternalAccounts', () => {
     recipientType: signal<string | null>(null),
     senderAccount: signal<any>(null),
     selectedRecipientAccount: signal<any>(null),
-    isVerified: signal(false), 
-    setIsVerified: vi.fn(), 
+    isVerified: signal(false),
+    setIsVerified: vi.fn(),
   };
 
   const mockExternalService = {

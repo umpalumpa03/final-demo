@@ -85,13 +85,16 @@
           <span class="external-amount__fee-loading">
             {{ 'transfers.external.amount.loadingFee' | translate }}
           </span>
-          } @else if (amountInput.value && !isLoading()) {
+          } @else if (amountInput.value && !isLoading()) { @if(
+          isExternalIban()) {
           <div class="external-amount__fee-item">
             <span>{{ 'transfers.external.amount.fee' | translate }}:</span>
             <strong
               >{{ (fee() || 0) | number: '1.2-2' }} {{ currency() }}</strong
             >
           </div>
+          }
+
           <div class="external-amount__fee-item">
             <span>{{ 'transfers.external.amount.total' | translate }}:</span>
             <strong
@@ -141,6 +144,15 @@
     </app-button>
   </footer>
 </main>
+<app-success-modal
+  [title]="'transfers.confirmation.title' | translate"
+  [description]="'transfers.confirmation.success' | translate"
+  [buttonText]="'common.buttons.close' | translate"
+  [isOpen]="successfullTransfer()"
+  (closed)="onSuccessDone()"
+  (done)="onSuccessDone()"
+></app-success-modal>
+<app-otp-modal [isOpen]="requiresOtp()"></app-otp-modal>
 
 @if (showSuccess()) {
 <div class="external-amount__success-toast">
