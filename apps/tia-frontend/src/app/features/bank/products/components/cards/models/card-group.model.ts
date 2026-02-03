@@ -1,4 +1,4 @@
-import { CardAccount } from './card-account.model';
+import { CardAccount } from '../../../../../../shared/models/cards/card-account.model';
 import { CardImage } from './card-image.model';
 
 export interface CardGroup {

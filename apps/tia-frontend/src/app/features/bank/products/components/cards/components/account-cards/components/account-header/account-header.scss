@@ -1,0 +1,42 @@
+@use "../../../../../../../../../shared/styles/mixins" as *;
+@use "../../../../../../../../../shared/styles/palette" as *;
+
+.account-header {
+  @include flex-center(column, start,start);
+  gap: 1.6rem;
+  &__heading{
+    @include display-flex(); 
+    gap: 1.6rem;
+      @media (max-width: 480px) {
+     flex-direction: column;
+    }
+    
+  }
+
+
+  &__details {
+    @include flex-center(column, space-between,start);
+  }
+
+  &__name {
+    @include font-inter(700, 2.4rem, 3.2rem);
+    color:var(--color-fg);
+
+    @media (max-width: 480px) {
+      font-size: 1.8rem;
+    }
+  }
+  &__icon{
+    background-color: var(--color-bg); 
+    width: 6.4rem;
+    height: 6.4rem; 
+    border-radius: 50%; 
+    @include flex-center;
+  }
+
+  &__number {
+    @include font-inter(400, 1.4rem, 2.4rem);
+    color: $gray-600;
+  }
+
+}
