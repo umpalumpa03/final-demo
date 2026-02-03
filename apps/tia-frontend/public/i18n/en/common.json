@@ -12,7 +12,8 @@
     "continue": "Continue",
     "stay": "Stay",
     "leave": "Leave",
-    "ungrouped": "Ungrouped"
+    "ungrouped": "Ungrouped",
+    "resend": "Resend"
   },
   "labels": {
     "loading": "Loading...",

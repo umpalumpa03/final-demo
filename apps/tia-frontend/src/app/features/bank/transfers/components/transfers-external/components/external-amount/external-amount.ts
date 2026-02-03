@@ -138,15 +138,10 @@ export class ExternalAmount implements OnInit {
     );
   }
   public onTransfer(): void {
-    // if (this.amountInput.valid) {
-    //   const success = this.transferExternalService.handleTransfer(
-    //     Number(this.amountInput.value),
-    //     this.descriptionInput.value || '',
-    //   );
-    //   if (success) {
-    //     this.triggerToast('transfers.confirmation.success');
-    //   }
-    // }
+    if (this.amountInput.valid) {
+      this.transferStore.setDescription(this.descriptionInput.value || '');
+      this.transferExternalService.handleSameBankTransfer();
+    }
   }
 
   private triggerToast(messageKey: string): void {
@@ -155,3 +150,4 @@ export class ExternalAmount implements OnInit {
     setTimeout(() => this.showSuccess.set(false), 3000);
   }
 }
+ 

@@ -3,8 +3,8 @@ import {
   withState,
   withMethods,
   patchState,
-  // withHooks,
-  // getState,
+  withHooks,
+  getState,
 } from '@ngrx/signals';
 import { initialTransferState } from './transfers.state';
 import {
@@ -19,7 +19,6 @@ import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { RecipientAccount } from '../models/transfers.state.model';
 
 export const TransferStore = signalStore(
-  { providedIn: 'root' },
   withState(initialTransferState),
 
   withMethods((store, transfersApi = inject(TransfersApiService)) => ({
@@ -65,16 +64,16 @@ export const TransferStore = signalStore(
     setLoading(isLoading: boolean) {
       patchState(store, { isLoading });
     },
-    //will be used
-    // setPendingTransferId(id: string | null) {
-    //   patchState(store, { pendingTransferId: id });
-    // },
-    // setRequiresOtp(requiresOtp: boolean) {
-    //   patchState(store, { requiresOtp });
-    // },
-    // setTransferSuccess(transferSuccess: boolean) {
-    //   patchState(store, { transferSuccess });
-    // },
+    setChallengeId(challengeId: string | null) {
+      patchState(store, { challengeId });
+    },
+    setRequiresOtp(requiresOtp: boolean) {
+      patchState(store, { requiresOtp });
+    },
+    setTransferSuccess(transferSuccess: boolean) {
+      patchState(store, { transferSuccess });
+    },
+
     lookupRecipient: rxMethod<{ value: string; type: RecipientType }>(
       pipe(
         tap(({ value, type }) =>
@@ -119,12 +118,12 @@ export const TransferStore = signalStore(
       patchState(store, initialTransferState);
     },
   })),
-  // withHooks({
-  //   onInit(store) {
-  //     effect(() => {
-  //       const state = getState(store);
-  //       console.log(' stateeee', state);
-  //     });
-  //   },
-  // }),
+  withHooks({
+    onInit(store) {
+      effect(() => {
+        const state = getState(store);
+        console.log(' stateeee', state);
+      });
+    },
+  }),
 );

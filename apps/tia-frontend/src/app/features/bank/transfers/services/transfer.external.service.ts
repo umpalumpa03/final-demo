@@ -198,21 +198,27 @@ export class TransferExternalService {
 
     const senderAccount = this.transferStore.senderAccount();
     const balance = senderAccount?.balance ?? 0;
+    const isExternalBank =
+      this.transferStore.recipientType() === 'iban-different-bank';
 
     if (numericAmount > balance) {
       this.transferStore.setInsufficientBalance(true);
-      this.transferStore.updateFeeInfo(0, 0);
+      this.transferStore.updateFeeInfo(0, numericAmount);
       return;
     }
 
     this.transferStore.setInsufficientBalance(false);
 
     if (numericAmount > 0 && senderAccount?.id) {
-      this.transferStore.setLoading(true);
-      this.feeUpdateSubject.next({
-        amount: numericAmount,
-        accountId: senderAccount.id,
-      });
+      if (isExternalBank) {
+        this.transferStore.setLoading(true);
+        this.feeUpdateSubject.next({
+          amount: numericAmount,
+          accountId: senderAccount.id,
+        });
+      } else {
+        this.transferStore.updateFeeInfo(0, numericAmount);
+      }
     } else {
       this.transferStore.updateFeeInfo(0, 0);
     }
@@ -256,5 +262,71 @@ export class TransferExternalService {
     const isInsufficient = totalWithFee > availableBalance;
     this.transferStore.setInsufficientBalance(isInsufficient);
     return !isInsufficient;
+  }
+  public handleSameBankTransfer(): void {
+    const senderAccount = this.transferStore.senderAccount();
+    const recipientAccount = this.transferStore.selectedRecipientAccount();
+    const amount = this.transferStore.amount();
+    const description = this.transferStore.description();
+
+    if (!senderAccount?.id || !recipientAccount?.iban || amount <= 0) {
+      return;
+    }
+
+    this.transferStore.setLoading(true);
+
+    this.transfersApi
+      .transferSameBank({
+        senderAccountId: senderAccount.id,
+        receiverAccountIban: recipientAccount.iban,
+        description: description || 'Transfer to someone',
+        amountToSend: amount,
+      })
+      .pipe(
+        tap((response) => {
+          const requiresOtp = response.verify.method !== null;
+
+          this.transferStore.setChallengeId(response.verify.challengeId);
+          this.transferStore.setRequiresOtp(requiresOtp);
+          this.transferStore.setLoading(false);
+
+          if (!requiresOtp) {
+            this.verifyTransfer();
+          }
+        }),
+        catchError((error) => {
+          this.transferStore.setLoading(false);
+          return of(null);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
+  }
+  public verifyTransfer(code?: string): void {
+    const challengeId = this.transferStore.challengeId();
+
+    if (!challengeId) {
+      return;
+    }
+    this.transferStore.setLoading(true);
+    this.transfersApi
+      .verifyTransfer({
+        challengeId,
+        ...(code && { code }),
+      })
+      .pipe(
+        tap((response) => {
+          if (response.success) {
+            this.transferStore.setTransferSuccess(true);
+            this.transferStore.setLoading(false);
+          }
+        }),
+        catchError((error) => {
+          this.transferStore.setLoading(false);
+          return of(null);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 }
