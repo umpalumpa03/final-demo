@@ -24,7 +24,6 @@ import { ErrorStateVariant } from '@tia/shared/lib/feedback/models/error-state.m
 
 @Component({
   selector: 'app-tree-container',
-  standalone: true,
   imports: [DraggableCard, ErrorStates],
   templateUrl: './tree-container.html',
   styleUrl: './tree-container.scss',
