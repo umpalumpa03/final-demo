@@ -12,12 +12,13 @@ import { environment } from '../../../../../../../../environments/environment';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { AlertType } from '../../shared/models/profile-photo.models';
+import { Avatar } from '@tia/shared/lib/data-display/avatars/avatar';
 
 
 
 @Component({
   selector: 'app-profile-photo',
-  imports: [BasicCard, ButtonComponent, AlertTypesWithIcons, TranslatePipe, Spinner],
+  imports: [BasicCard, ButtonComponent, AlertTypesWithIcons, TranslatePipe, Spinner, Avatar],
   templateUrl: './profile-photo.component.html',
   styleUrl: './profile-photo.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
