@@ -57,7 +57,6 @@ export class PaybillContainer implements OnInit {
   });
 
   // alert system
-
   protected readonly notifications = this.store.selectSignal(
     PAYBILL_SELECTORS.selectNotifications,
   );

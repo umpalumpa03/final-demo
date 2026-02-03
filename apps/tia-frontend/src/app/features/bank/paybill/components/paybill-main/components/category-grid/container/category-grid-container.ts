@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CategoryGrid } from '../components/category-items/category-grid';
 import { PaybillMainFacade } from '../../../services/paybill-main-facade';
 
@@ -7,6 +7,7 @@ import { PaybillMainFacade } from '../../../services/paybill-main-facade';
   imports: [CategoryGrid],
   templateUrl: './category-grid-container.html',
   styleUrl: './category-grid-container.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoryGridContainer {
   protected readonly facade = inject(PaybillMainFacade);

@@ -1,99 +1,72 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { Router, provideRouter } from '@angular/router';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { PaybillMain } from './paybill-main';
-import { PaybillActions } from '../../../store/paybill.actions';
-import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
-import * as PAYBILL_SELECTORS from '../../../store/paybill.selectors';
+import { PaybillMainFacade } from '../services/paybill-main-facade';
+import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
 describe('PaybillMain', () => {
   let component: PaybillMain;
   let fixture: ComponentFixture<PaybillMain>;
-  let store: MockStore;
-  let router: Router;
-
-  const mockProvider = { id: 'p1', name: 'Provider 1', isFinal: true };
-  const mockCategory = {
-    id: 'UTILITIES',
-    name: 'Utilities',
-    providers: [
-      { id: 'parent_1', name: 'Folder', isFinal: false },
-      { id: 'child_1', name: 'Bill', isFinal: true, parentId: 'parent_1' },
-    ],
-  };
+  let facadeMock: Partial<PaybillMainFacade>;
 
   beforeEach(async () => {
+    // Enable fake timers for Vitest
+    vi.useFakeTimers();
+
+    facadeMock = {
+      init: vi.fn(),
+      setSearchQuery: vi.fn(),
+      activeProvider: signal(null),
+      isLoading: signal(false),
+    } as unknown as Partial<PaybillMainFacade>;
+
     await TestBed.configureTestingModule({
       imports: [PaybillMain, TranslateModule.forRoot()],
-      providers: [
-        provideRouter([]),
-        provideMockStore({
-          selectors: [
-            {
-              selector: PAYBILL_SELECTORS.selectCategories,
-              value: [mockCategory],
-            },
-            {
-              selector: PAYBILL_SELECTORS.selectActiveCategory,
-              value: mockCategory,
-            },
-            {
-              selector: PAYBILL_SELECTORS.selectActiveProvider,
-              value: mockProvider,
-            },
-            { selector: PAYBILL_SELECTORS.selectCurrentStep, value: 'DETAILS' },
-            { selector: PAYBILL_SELECTORS.selectVerifiedDetails, value: null },
-            { selector: PAYBILL_SELECTORS.selectLoading, value: false },
-            { selector: PAYBILL_SELECTORS.selectPaymentPayload, value: null },
-            { selector: PAYBILL_SELECTORS.selectChallengeId, value: null },
-          ],
-        }),
-      ],
+      providers: [{ provide: PaybillMainFacade, useValue: facadeMock }],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
-    store = TestBed.inject(MockStore);
-    router = TestBed.inject(Router);
     fixture = TestBed.createComponent(PaybillMain);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  describe('Navigation Methods', () => {
-    it('onResetFlow should clear selection and navigate to root', () => {
-      const spy = vi.spyOn(store, 'dispatch');
-      const navSpy = vi.spyOn(router, 'navigate');
-
-      component.onResetFlow();
-
-      expect(spy).toHaveBeenCalledWith(PaybillActions.clearSelection());
-      expect(navSpy).toHaveBeenCalledWith(['/bank/paybill/pay']);
-    });
-
-    it('onGoDashboard should navigate to dashboard', () => {
-      const navSpy = vi.spyOn(router, 'navigate');
-      component.onGoDashboard();
-      expect(navSpy).toHaveBeenCalledWith(['/bank/dashboard']);
-    });
+  afterEach(() => {
+    // Restore real timers after each test
+    vi.useRealTimers();
   });
 
-  describe('Navigation and Step Management', () => {
-    it('onBackToDetails should clear notifications, reset step, and navigate to the base pay route', () => {
-      const dispatchSpy = vi.spyOn(store, 'dispatch');
-      const navSpy = vi.spyOn(router, 'navigate');
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
-      component.onBackToDetails();
+  it('should call facade.init on ngOnInit', () => {
+    expect(facadeMock.init).toHaveBeenCalled();
+  });
 
-      expect(dispatchSpy).toHaveBeenCalledWith(
-        PaybillActions.clearAllNotifications(),
-      );
+  it('should call setSearchQuery after debounce time', () => {
+    const query = 'Internet';
 
-      expect(dispatchSpy).toHaveBeenCalledWith(
-        PaybillActions.setPaymentStep({ step: 'DETAILS' }),
-      );
+    // Change value
+    component.searchControl.setValue(query);
 
-      expect(navSpy).toHaveBeenCalledWith(['bank/paybill/pay']);
-    });
+    // Fast-forward 300ms
+    vi.advanceTimersByTime(300);
+
+    expect(facadeMock.setSearchQuery).toHaveBeenCalledWith(query);
+  });
+
+  it('should only call setSearchQuery once for multiple rapid changes', () => {
+    component.searchControl.setValue('A');
+    component.searchControl.setValue('AB');
+    component.searchControl.setValue('ABC');
+
+    // Advance time
+    vi.advanceTimersByTime(300);
+
+    // Should only be called with the latest value
+    expect(facadeMock.setSearchQuery).toHaveBeenCalledTimes(1);
+    expect(facadeMock.setSearchQuery).toHaveBeenCalledWith('ABC');
   });
 });

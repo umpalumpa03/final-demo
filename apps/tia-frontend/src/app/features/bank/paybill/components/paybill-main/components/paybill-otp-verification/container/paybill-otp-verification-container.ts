@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { PaybillOtpVerification } from '../components/paybill-otp-verification/paybill-otp-verification';
 import { PaybillMainFacade } from '../../../services/paybill-main-facade';
 
@@ -7,6 +7,7 @@ import { PaybillMainFacade } from '../../../services/paybill-main-facade';
   imports: [PaybillOtpVerification],
   templateUrl: './paybill-otp-verification-container.html',
   styleUrl: './paybill-otp-verification-container.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillOtpVerificationContainer {
   protected readonly facade = inject(PaybillMainFacade);

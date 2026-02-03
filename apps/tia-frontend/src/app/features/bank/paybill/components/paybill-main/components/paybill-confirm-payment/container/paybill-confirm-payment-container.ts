@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { PaybillConfirmPayment } from '../components/paybill-confirm-payment/paybill-confirm-payment';
 import { PaybillMainFacade } from '../../../services/paybill-main-facade';
 
@@ -7,6 +7,7 @@ import { PaybillMainFacade } from '../../../services/paybill-main-facade';
   imports: [PaybillConfirmPayment],
   templateUrl: './paybill-confirm-payment-container.html',
   styleUrl: './paybill-confirm-payment-container.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillConfirmPaymentContainer {
   protected readonly facade = inject(PaybillMainFacade);

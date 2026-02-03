@@ -1,4 +1,9 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnDestroy,
+} from '@angular/core';
 import { PaybillForm } from '../components/paybill-form-items/paybill-form';
 import { PaybillMainFacade } from '../../../services/paybill-main-facade';
 import {
@@ -11,6 +16,7 @@ import {
   imports: [PaybillForm],
   templateUrl: './paybill-form-container.html',
   styleUrl: './paybill-form-container.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillFormContainer {
   protected readonly paybillFacade = inject(PaybillMainFacade);

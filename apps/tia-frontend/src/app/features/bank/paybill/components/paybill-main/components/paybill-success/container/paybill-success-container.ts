@@ -1,4 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { PaybillSuccess } from '../components/paybill-success/paybill-success';
 import { PaybillMainFacade } from '../../../services/paybill-main-facade';
 
@@ -7,6 +12,7 @@ import { PaybillMainFacade } from '../../../services/paybill-main-facade';
   imports: [PaybillSuccess],
   templateUrl: './paybill-success-container.html',
   styleUrl: './paybill-success-container.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillSuccessContainer implements OnInit {
   protected readonly facade = inject(PaybillMainFacade);

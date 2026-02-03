@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ProviderList } from '../components/provider-list-items/provider-list';
 import { PaybillMainFacade } from '../../../services/paybill-main-facade';
 import {
@@ -12,6 +12,7 @@ import { RouterOutlet } from '@angular/router';
   imports: [ProviderList, RouterOutlet],
   templateUrl: './provider-list-container.html',
   styleUrl: './provider-list-container.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProviderListContainer {
   protected readonly facade = inject(PaybillMainFacade);
