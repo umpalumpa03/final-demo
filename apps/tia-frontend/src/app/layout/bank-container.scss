@@ -11,21 +11,17 @@
 }
 
 .inactivity-overlay {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  @include flex-center(column);
+
   &__circle {
     width: 6.4rem;
     height: 6.4rem;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include flex-center();
 
     &--timer {
-      background: #dbeafe;
-      color: #155dfc;
+      background: $blue-royal-secondary;
+      color: $blue-800;
       @include font-inter(600, 2.8rem);
       margin-top: 2.4rem;
     }
