@@ -10,6 +10,7 @@ import {
   ProceedPaymentResponse,
 } from '../components/paybill-main/shared/models/paybill.model';
 import {
+  CreateTemplateGroupResponse,
   TemplateGroups,
   Templates,
 } from '../components/paybill-templates/models/paybill-templates.model';
@@ -60,5 +61,22 @@ export const TemplatesPageActions = createActionGroup({
       templates: Templates[];
     }>(),
     'Load Templates Failure': props<{ error: string }>(),
+    'Create Templates Groups': props<{ groupName: string; templateIds: [] }>(),
+    'Create Templates Groups Success': props<{
+      templateGroup: CreateTemplateGroupResponse;
+    }>(),
+    'Create Templates Groups Failure': props<{
+      error: string;
+    }>(),
+    'Delete Templates': props<{
+      templateId: string;
+    }>(),
+    'Delete Templates Success': props<{
+      templateId: string;
+      message: string;
+    }>(),
+    'Delete Templates Failure': props<{
+      error: string;
+    }>(),
   },
 });

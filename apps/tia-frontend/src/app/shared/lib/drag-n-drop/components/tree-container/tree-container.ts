@@ -210,22 +210,22 @@ export class TreeContainer extends DragBase {
   }
 
   public onRemoveItem(id: string): void {
-    const updated = this.treeService.removeItem(this.internalItems(), id);
-    this.internalItems.set(updated);
-    this.itemsChange.emit(updated);
+    // const updated = this.treeService.removeItem(this.internalItems(), id);
+    // this.internalItems.set(updated);
+    // this.itemsChange.emit(updated);
     this.itemRemoved.emit(id);
   }
 
   public onRemoveGroup(id: string): void {
-    const { groups, items } = this.treeService.removeGroup(
-      this.internalGroups(),
-      this.internalItems(),
-      id,
-    );
-    this.internalGroups.set(groups);
-    this.internalItems.set(items);
-    this.groupsChange.emit(groups.filter((g) => g.id !== UNGROUPED_ID));
-    this.itemsChange.emit(items);
+    // const { groups, items } = this.treeService.removeGroup(
+    //   this.internalGroups(),
+    //   this.internalItems(),
+    //   id,
+    // );
+    // this.internalGroups.set(groups);
+    // this.internalItems.set(items);
+    // this.groupsChange.emit(groups.filter((g) => g.id !== UNGROUPED_ID));
+    // this.itemsChange.emit(items);
     this.groupRemoved.emit(id);
   }
 

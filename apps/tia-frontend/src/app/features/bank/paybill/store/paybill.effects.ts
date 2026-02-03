@@ -8,6 +8,7 @@ import {
   map,
   mergeMap,
   of,
+  switchMap,
   tap,
   withLatestFrom,
 } from 'rxjs';
@@ -324,4 +325,49 @@ export class PaybillEffect {
       ),
     ),
   );
+
+  createTemplatesGroup$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TemplatesPageActions.createTemplatesGroups),
+      switchMap((payload) =>
+        this.payBillTemplatesService.createTemplateGroups(payload).pipe(
+          map((response) =>
+            TemplatesPageActions.createTemplatesGroupsSuccess({
+              templateGroup: response,
+            }),
+          ),
+          catchError((error) =>
+            of(
+              TemplatesPageActions.createTemplatesGroupsFailure({
+                error: error.message,
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
+
+  deleteTemplates$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TemplatesPageActions.deleteTemplates),
+      switchMap(({ templateId }) =>
+        this.payBillTemplatesService.deleteTemplate(templateId).pipe(
+          map(({ message }) =>
+            TemplatesPageActions.deleteTemplatesSuccess({
+              message,
+              templateId,
+            }),
+          ),
+          catchError((error) =>
+            of(
+              TemplatesPageActions.createTemplatesGroupsFailure({
+                error: error.message,
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
 }
