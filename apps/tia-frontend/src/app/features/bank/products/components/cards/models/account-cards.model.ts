@@ -1,5 +1,5 @@
 import { CardAccount } from '@tia/shared/models/cards/card-account.model';
-import { CardWithDetails } from '@tia/shared/models/cards/card-image.model';
+import { CardWithDetails } from './card-image.model';
 
 export type ViewState = 'loading' | 'error' | 'success' | 'no-account';
 

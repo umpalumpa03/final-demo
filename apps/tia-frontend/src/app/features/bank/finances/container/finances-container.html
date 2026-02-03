@@ -8,6 +8,8 @@
   [error]="store.error()"
   [summaryCards]="store.summaryCards()"
   [charts]="store.charts()"
+  [categories]="store.categoriesWithIcons()"
+  [transactions]="store.transactionsWithIcons()"
   (filterChange)="onFilterChange($event)"
   (dateInput)="handleInput($event.field, $event.event)"
 ></app-finances-view>
