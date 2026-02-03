@@ -15,7 +15,7 @@
   >
     @for (item of myItems(); track item.id) {
     <app-draggable-card
-      [hasMinHeight]="true"
+      [hasMinHeight]="$index !== 0"
       [itemData]="item"
       [hasViewOption]="true"
       (viewOptionChange)="onToggleVisibility($event, item.id)"
