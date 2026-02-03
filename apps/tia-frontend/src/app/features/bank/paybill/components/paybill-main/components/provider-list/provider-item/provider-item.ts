@@ -17,6 +17,9 @@ export class ProviderItem {
   public readonly name = input<string>('');
   public readonly isLoading = input<boolean>(false);
   public readonly indicatorColor = input<string>('');
+  public readonly level = input<number>(0);
+
+  public readonly isFinal = input<boolean>(false);
 
   public readonly selected = output<void>();
 }

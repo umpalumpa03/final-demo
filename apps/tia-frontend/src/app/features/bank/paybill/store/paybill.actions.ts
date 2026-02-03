@@ -3,6 +3,7 @@ import {
   BillDetails,
   ConfirmPaymentPayload,
   PaybillCategory,
+  PaybillIdentification,
   PaybillPayload,
   PaybillProvider,
   ProceedPaymentPayload,
@@ -24,7 +25,10 @@ export const PaybillActions = createActionGroup({
     'Load Providers Success': props<{ providers: PaybillProvider[] }>(),
     'Load Providers Failure': props<{ error: string }>(),
     'Select Provider': props<{ providerId: string }>(),
-    'Check Bill': props<{ serviceId: string; accountNumber: string }>(),
+    'Check Bill': props<{
+      serviceId: string;
+      identification: PaybillIdentification;
+    }>(),
     'Check Bill Success': props<{ details: BillDetails }>(),
     'Check Bill Failure': props<{ error: string }>(),
     'Clear Selection': emptyProps(),
