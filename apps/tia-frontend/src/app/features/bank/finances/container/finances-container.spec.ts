@@ -43,14 +43,15 @@ describe('FinancesContainer', () => {
   });
 
   it('should debounce form changes and handle input', async () => {
-    const event = { target: { value: '2026-05-01' } } as any;
-    component.handleInput('fromDate', event);
-    expect(component.filterForm.get('fromDate')?.value).toBe('2026-05-01');
-
-    component.filterForm.patchValue({ fromDate: '2026-02-01' });
-    await new Promise(r => setTimeout(r, 550)); 
-    expect(mockStore.loadAllData).toHaveBeenCalled();
-  });
+  vi.useFakeTimers();
+  const event = { target: { value: '2026-05-01' } } as any;
+  component.handleInput('fromDate', event);
+  expect(component.filterForm.get('fromDate')?.value).toBe('2026-05-01');
+  component.filterForm.patchValue({ fromDate: '2026-02-01' });
+  vi.advanceTimersByTime(550);
+  expect(mockStore.loadAllData).toHaveBeenCalled();
+  vi.useRealTimers();
+});
 
   it('should validate form fields', () => {
     const control = component.filterForm.get('fromDate');
