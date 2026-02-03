@@ -1,5 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserEditModal } from './user-edit-modal';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('UserEditModal', () => {
   let component: UserEditModal;
@@ -7,12 +11,21 @@ describe('UserEditModal', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UserEditModal],
+      imports: [
+        UserEditModal,
+        HttpClientTestingModule,
+        ReactiveFormsModule,
+        TranslateModule.forRoot(),
+      ],
+      providers: [
+        { provide: 'AsyncAnimationRendererConfig', useValue: [] },
+        { provide: 'RendererFactory2', useValue: {} },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserEditModal);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {

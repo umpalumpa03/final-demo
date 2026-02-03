@@ -11,7 +11,8 @@
     "logout": "Log Out",
     "continue": "Continue",
     "stay": "Stay",
-    "leave": "Leave"
+    "leave": "Leave",
+    "ungrouped": "Ungrouped"
   },
   "labels": {
     "loading": "Loading...",
