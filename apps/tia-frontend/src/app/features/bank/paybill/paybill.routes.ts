@@ -32,18 +32,32 @@ export const PAYBILL_ROUTES: Routes = [
           },
           {
             path: ':categoryId',
-            loadComponent: () =>
-              import(
-                './components/paybill-main/components/provider-list/container/provider-list-container'
-              ).then((c) => c.ProviderListContainer),
+            children: [
+              {
+                path: '**',
+                loadComponent: () =>
+                  import(
+                    './components/paybill-main/components/provider-list/container/provider-list-container'
+                  ).then((c) => c.ProviderListContainer),
+                children: [
+                  {
+                    path: '',
+                    loadComponent: () =>
+                      import(
+                        './components/paybill-main/components/paybill-form/container/paybill-form-container'
+                      ).then((c) => c.PaybillFormContainer),
+                  },
+                ],
+              },
+            ],
           },
-          {
-            path: ':categoryId/:providerId',
-            loadComponent: () =>
-              import(
-                './components/paybill-main/components/paybill-form/container/paybill-form-container'
-              ).then((c) => c.PaybillFormContainer),
-          },
+          // {
+          //   path: ':categoryId/:providerId',
+          //   loadComponent: () =>
+          //     import(
+          //       './components/paybill-main/components/paybill-form/container/paybill-form-container'
+          //     ).then((c) => c.PaybillFormContainer),
+          // },
         ],
       },
       {

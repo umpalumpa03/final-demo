@@ -244,4 +244,14 @@ export const paybillReducer = createReducer(
     loading: false,
     error,
   })),
+
+  on(PaybillActions.resetPaymentForm, (state) => ({
+    ...state,
+
+    verifiedDetails: null,
+    paymentPayload: null,
+    currentStep: 'DETAILS',
+    error: null,
+    challengeId: null,
+  })),
 );

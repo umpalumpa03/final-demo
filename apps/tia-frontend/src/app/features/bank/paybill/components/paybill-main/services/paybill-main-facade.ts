@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as PAYBILL_SELECTORS from '../../../store/paybill.selectors';
 import { selectGelAccountOptions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
@@ -11,12 +11,13 @@ import {
 import {
   getCurrentHeader,
   getDisplayItems,
-  getParentIdForBack,
   getSuccessSummaryItems,
 } from '../shared/utils/paybill.config';
 import { CATEGORY_UI_MAP } from '../components/category-grid/config/category.config';
 import { InputConfig } from '@tia/shared/lib/forms/models/input.model';
 import { PaybillActions } from '../../../store/paybill.actions';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -24,9 +25,9 @@ import { PaybillActions } from '../../../store/paybill.actions';
 export class PaybillMainFacade {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   public readonly searchQuery = signal('');
-  public readonly selectedParentId = signal<string | null>(null);
   public readonly selectedSenderAccountId = signal<string | null>(null);
 
   public readonly currentStep = this.store.selectSignal(
@@ -38,7 +39,7 @@ export class PaybillMainFacade {
   public readonly activeCategory = this.store.selectSignal(
     PAYBILL_SELECTORS.selectActiveCategory,
   );
-  public readonly activeProvider = this.store.selectSignal(
+  private readonly storeActiveProvider = this.store.selectSignal(
     PAYBILL_SELECTORS.selectActiveProvider,
   );
   public readonly categories = this.store.selectSignal(
@@ -57,11 +58,53 @@ export class PaybillMainFacade {
     selectGelAccountOptions,
   );
 
-  // logic to handle oninit
+  public readonly activeProvider = computed(() => {
+    const urlId = this.selectedParentId();
+    const category = this.activeCategory();
+
+    if (urlId && category?.providers) {
+      const providerFromUrl = category.providers.find((p) => p.id === urlId);
+
+      if (providerFromUrl) return providerFromUrl;
+    }
+
+    return this.storeActiveProvider();
+  });
+
+  private readonly urlSegments = toSignal(
+    this.router.events.pipe(
+      filter((e) => e instanceof NavigationEnd),
+      map(() => {
+        const url = this.router.url.split('?')[0];
+        return url.split('/').filter((p) => p);
+      }),
+    ),
+  );
+
+  public readonly selectedParentId = computed(() => {
+    const segments = this.urlSegments();
+    if (!segments || segments.length === 0) return null;
+
+    const category = this.activeCategory();
+    const lastSegment = segments[segments.length - 1];
+
+    if (lastSegment === category?.id || lastSegment === 'pay') {
+      return null;
+    }
+    return lastSegment;
+  });
+
+  public readonly isFormView = computed(() => {
+    const currentId = this.selectedParentId();
+    const category = this.activeCategory();
+
+    const provider = category?.providers?.find((p) => p.id === currentId);
+
+    return !!provider?.isFinal;
+  });
+
   public init(): void {
     this.store.dispatch(AccountsActions.loadAccounts());
-
-    this.selectedParentId.set(null);
     this.searchQuery.set('');
   }
 
@@ -193,19 +236,23 @@ export class PaybillMainFacade {
     this.store.dispatch(PaybillActions.selectProvider({ providerId }));
   }
 
-  public selectParentId(parentId: string | null): void {
-    this.selectedParentId.set(parentId);
+  public selectParentId(childId: string): void {
+    const currentUrl = this.router.url.split('?')[0];
+    const base = currentUrl.endsWith('/')
+      ? currentUrl.slice(0, -1)
+      : currentUrl;
+    this.router.navigateByUrl(`${base}/${childId}`);
   }
 
-  public navigateBack(): void {
-    const category = this.activeCategory();
-    if (!category?.providers) return;
-    const newParentId = getParentIdForBack(
-      category.providers,
-      this.selectedParentId(),
-    );
-    this.selectedParentId.set(newParentId);
-  }
+  // public navigateBack(): void {
+  //   const category = this.activeCategory();
+  //   if (!category?.providers) return;
+  //   const newParentId = getParentIdForBack(
+  //     category.providers,
+  //     this.selectedParentId(),
+  //   );
+  //   this.selectedParentId.set(newParentId);
+  // }
 
   public verifyAccount(inputValue: string): void {
     const provider = this.activeProvider();
@@ -267,6 +314,10 @@ export class PaybillMainFacade {
   public resetFlow(): void {
     this.store.dispatch(PaybillActions.clearSelection());
     this.router.navigate(['/bank/paybill/pay']);
+  }
+
+  public resetPaymentForm(): void {
+    this.store.dispatch(PaybillActions.resetPaymentForm());
   }
 
   public resetToDashboard(): void {

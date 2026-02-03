@@ -52,6 +52,7 @@ export class PaybillMain implements OnInit {
 
   public ngOnInit(): void {
     this.facade.init();
+    
 
     this.searchControl.valueChanges
       .pipe(
@@ -84,3 +85,4 @@ export class PaybillMain implements OnInit {
     this.facade.resetToDashboard();
   }
 }
+

@@ -41,6 +41,7 @@ export const PaybillActions = createActionGroup({
     'Confirm Payment': props<{ payload: ConfirmPaymentPayload }>(),
     'Confirm Payment Success': emptyProps(),
     'Confirm Payment Failure': props<{ error: string }>(),
+    'Reset Payment Form': emptyProps(),
     'Clear Error': emptyProps(),
     'Add Notification': props<PaybillNotification>(),
     'Dismiss Notification': props<{ id: string }>(),
