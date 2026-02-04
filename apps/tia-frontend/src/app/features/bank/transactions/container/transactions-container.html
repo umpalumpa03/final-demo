@@ -27,11 +27,24 @@
       } @else {
       <app-tables
         [tableConfig]="tableConfig()"
-        (transactionClickedOutput)="handleTableAction($event)"
+        (transactionClickedOutput)="onTableAction($event)"
       ></app-tables>
       } @if(isLoading() && items().length > 0){
       <app-button [isLoading]="true" [variant]="'outline'">Loading</app-button>
       }
     </app-scroll-area>
   </app-basic-card>
+  <app-ui-modal
+    [isOpen]="isCategorizeModalOpen()"
+    (closed)="closeCategorizeModal()"
+  >
+    @if(selectedTransaction(); as trx) {
+    <app-categorize-modal
+      [transaction]="trx"
+      [selectCategoryOptions]="categoryOptions()"
+      (save)="onCategorizeSave($event)"
+      (cancel)="closeCategorizeModal()"
+    ></app-categorize-modal>
+    }
+  </app-ui-modal>
 </div>

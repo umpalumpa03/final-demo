@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
@@ -24,7 +25,10 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Tables } from '@tia/shared/lib/tables/components/tables';
 import { TransactionsFilters } from '../components/transactions-filters/transactions-filters';
-import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
+import {
+  ITransactionFilter,
+  ITransactions,
+} from '@tia/shared/models/transactions/transactions.models';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
 import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
@@ -32,6 +36,8 @@ import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.s
 import { toSignal } from '@angular/core/rxjs-interop';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
+import { CategorizeModal } from '../components/categorize-modal/categorize-modal';
+import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 
 @Component({
   selector: 'app-transactions-container',
@@ -42,6 +48,8 @@ import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/contai
     TransactionsFilters,
     BasicCard,
     ScrollArea,
+    CategorizeModal,
+    UiModal,
   ],
   templateUrl: './transactions-container.html',
   styleUrl: './transactions-container.scss',
@@ -60,6 +68,8 @@ export class TransactionsContainer implements OnInit {
   public readonly isLoading = this.store.selectSignal(selectIsLoading);
   public categoryOptions = this.store.selectSignal(selectCategoryOptions);
   public accounts = this.store.selectSignal(selectAccounts);
+  public isCategorizeModalOpen = signal<boolean>(false);
+  public selectedTransaction = signal<ITransactions | null>(null);
 
   public readonly currencyOptions = computed<SelectOption[]>(() => {
     const currencies = this.currencyList();
@@ -68,6 +78,30 @@ export class TransactionsContainer implements OnInit {
       value: curr,
     }));
   });
+
+  public onTableAction(event: TransactionActionEvent): void {
+    if (event.action === 'categorize') {
+      const trx = this.items().find((item) => item.id === event.rowId);
+
+      if (trx) {
+        this.selectedTransaction.set(trx);
+        this.isCategorizeModalOpen.set(true);
+      }
+    }
+  }
+
+  public closeCategorizeModal(): void {
+    this.isCategorizeModalOpen.set(false);
+    this.selectedTransaction.set(null);
+  }
+
+  public onCategorizeSave(event: {
+    transactionId: string;
+    categoryId: string;
+  }): void {
+    console.log('Saving category:', event);
+    this.closeCategorizeModal();
+  }
 
   public accountOptions = computed<SelectOption[]>(() => {
     const accountsList = this.accounts();
@@ -109,17 +143,6 @@ export class TransactionsContainer implements OnInit {
   public loadProducts(): void {
     if (this.items().length % 20 === 0 && !this.isLoading()) {
       this.store.dispatch(TransactionActions.loadMore());
-    }
-  }
-
-  public handleTableAction(event: TransactionActionEvent): void {
-    const action = event.action;
-    const rowId = event.rowId;
-
-    if (action === 'categorize') {
-      console.log('Categorize triggered');
-    } else if (action === 'repeat') {
-      console.log('Repeat clicked for row:', rowId);
     }
   }
 }

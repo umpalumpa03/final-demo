@@ -1,0 +1,57 @@
+<app-basic-card
+  [title]="title()"
+  [subtitle]="subTitle()"
+  [maxWidth]="'51.1rem'"
+  [width]="'100%'"
+  [borderColor]="'#ffffff'"
+>
+  @if (transaction(); as trx) {
+  <div class="transaction-summary">
+    <div class="transaction-summary__title">{{ trx.description }}</div>
+    <div class="transaction-summary__meta">
+      {{ trx.currency }} {{ trx.amount }} • {{ trx.createdAt | date:'dd/MM/yyyy'
+      }}
+    </div>
+  </div>
+  }
+  <form [formGroup]="form" class="categorize-form">
+    <div class="categorize-form__group">
+      <lib-select
+        [config]="selectConfig()"
+        [options]="selectCategoryOptions()"
+        formControlName="categoryId"
+      ></lib-select>
+    </div>
+    <div class="categorize-form__custom-category">
+      <div class="categorize-form__row">
+        <div class="categorize-form__input-wrapper">
+          <lib-text-input
+            [config]="{ placeholder: 'Enter category name', label:'Or Add Custom Category', margin:'0.4rem 0 0'}"
+            formControlName="newCategoryName"
+          ></lib-text-input>
+        </div>
+        <app-button
+          [variant]="'default'"
+          [icon]="'adding.svg'"
+          [type]="'button'"
+        >
+          Add
+        </app-button>
+      </div>
+    </div>
+    <div class="categorize-form__actions">
+      <app-button [variant]="'outline'" (click)="onCancel()" [type]="'button'">
+        Cancel
+      </app-button>
+      <app-button
+        [variant]="'default'"
+        [icon]="'save-transaction.svg'"
+        [isDisabled]="form.invalid"
+        (click)="onSave()"
+        [type]="'button'"
+      >
+        Save Category
+      </app-button>
+    </div>
+  </form>
+</app-basic-card>
