@@ -247,17 +247,30 @@ export const paybillReducer = createReducer(
 
   on(PaybillActions.resetPaymentForm, (state) => ({
     ...state,
-
     verifiedDetails: null,
     currentStep: 'DETAILS',
     error: null,
     challengeId: null,
+    paymentDetails: null,
   })),
 
   on(PaybillActions.setTransactionProvider, (state, { provider }) => ({
     ...state,
     selectedProvider: provider,
     selectedProviderId: provider.id,
-    selectedCategoryId: state.selectedCategoryId || provider.categoryId || null
+    selectedCategoryId: state.selectedCategoryId || provider.categoryId || null,
+  })),
+
+  on(PaybillActions.loadPaymentDetailsSuccess, (state, { details }) => ({
+    ...state,
+    paymentDetails: details,
+    loading: false,
+    error: null,
+  })),
+
+  on(PaybillActions.loadPaymentDetailsFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error: error,
   })),
 );

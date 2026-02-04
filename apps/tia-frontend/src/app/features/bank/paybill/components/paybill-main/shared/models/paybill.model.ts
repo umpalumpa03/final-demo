@@ -72,7 +72,7 @@ export interface PaybillIdentification {
 }
 
 export interface PaybillFormVerifyEvent {
-  value: string;
+  value: Record<string, string | number | boolean | null | undefined>;
 }
 
 export interface PaybillFormProceedEvent {

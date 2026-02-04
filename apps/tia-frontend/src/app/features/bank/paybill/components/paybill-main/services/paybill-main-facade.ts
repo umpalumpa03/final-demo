@@ -18,6 +18,8 @@ import { InputConfig } from '@tia/shared/lib/forms/models/input.model';
 import { PaybillActions } from '../../../store/paybill.actions';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
+import { PaybillDynamicField } from '../../shared/dynamic-inputs/models/dynamic-inputs.model';
+import { buildDynamicIdentification } from '../../../config/paybill.config';
 
 @Injectable({
   providedIn: 'root',
@@ -56,6 +58,10 @@ export class PaybillMainFacade {
   );
   public readonly storeAccounts = this.store.selectSignal(
     selectGelAccountOptions,
+  );
+
+  public readonly paymentFields = this.store.selectSignal(
+    PAYBILL_SELECTORS.selectPaymentFields,
   );
 
   public readonly activeProvider = computed(() => {
@@ -242,6 +248,9 @@ export class PaybillMainFacade {
 
   public selectProvider(providerId: string): void {
     this.store.dispatch(PaybillActions.selectProvider({ providerId }));
+    this.store.dispatch(
+      PaybillActions.loadPaymentDetails({ serviceId: providerId }),
+    );
   }
 
   public selectParentId(childId: string): void {
@@ -252,13 +261,17 @@ export class PaybillMainFacade {
     this.router.navigateByUrl(`${base}/${childId}`);
   }
 
-  public verifyAccount(inputValue: string): void {
+  public verifyAccount<
+    T extends Record<string, string | number | boolean | null | undefined>,
+  >(formValues: T): void {
     const provider = this.activeProvider();
+
     if (provider) {
       this.store.dispatch(
         PaybillActions.checkBill({
           serviceId: provider.id,
-          identification: this.buildIdentification(inputValue),
+
+          identification: buildDynamicIdentification(formValues),
         }),
       );
     }

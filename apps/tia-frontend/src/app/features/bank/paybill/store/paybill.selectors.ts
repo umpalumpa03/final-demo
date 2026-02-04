@@ -134,3 +134,8 @@ export const selectTemplatesGroupWithConfigs = createSelector(
       expanded: group.templateCount > 0,
     })),
 );
+
+export const selectPaymentFields = createSelector(
+  selectPaybillState,
+  (state) => state.paymentDetails?.fields ?? []
+);

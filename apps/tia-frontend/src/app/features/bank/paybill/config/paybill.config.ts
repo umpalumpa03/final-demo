@@ -19,8 +19,16 @@ export const buildDynamicIdentification = <
   T extends Record<string, string | number | boolean | null | undefined>,
 >(
   formValues: T,
-) => {
+): Record<string, string | undefined> => {
   const { amount, ...identification } = formValues;
 
-  return identification;
+  const sanitized: Record<string, string | undefined> = {};
+
+  Object.keys(identification).forEach((key) => {
+    const value = identification[key];
+    sanitized[key] =
+      value === null || value === undefined ? undefined : String(value);
+  });
+
+  return sanitized;
 };

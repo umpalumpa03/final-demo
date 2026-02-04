@@ -23,15 +23,15 @@
     (ngSubmit)="onSubmit()"
     class="paybill-form__content"
   >
+    @for (field of fields(); track field.id) {
     <div class="paybill-form__field">
       <lib-text-input
-        formControlName="value"
-        [config]="paybillConfig().accountNumber"
+        [formControlName]="field.id"
+        [config]="{ placeholder: field.placeholder || field.label }"
         [state]="isVerified() || isLoading() ? 'disabled' : 'default'"
       ></lib-text-input>
     </div>
-
-    @if (isVerified()) {
+    } @if (isVerified()) {
     <app-payment-summary
       [items]="summaryItems()"
       [headerTitle]="'paybill.main.form.verified_title' | translate"
@@ -67,7 +67,7 @@
     } @else {
     <app-button
       type="submit"
-      [isDisabled]="paybillForm.controls.value.invalid! || isLoading()"
+      [isDisabled]="paybillForm.invalid || isLoading()"
     >
       {{ 'paybill.main.form.continue_btn' | translate }}
     </app-button>

@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   input,
   output,
@@ -13,6 +14,8 @@ import {
   PaybillProvider,
 } from '../../../../shared/models/paybill.model';
 import {
+  FormControl,
+  FormGroup,
   NonNullableFormBuilder,
   ReactiveFormsModule,
   Validators,
@@ -28,6 +31,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map, startWith } from 'rxjs';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
+import { PaybillDynamicField } from '../../../../../shared/dynamic-inputs/models/dynamic-inputs.model';
 
 @Component({
   selector: 'app-paybill-form',
@@ -63,6 +67,7 @@ export class PaybillForm {
       return details;
     },
   });
+  public readonly fields = input.required<PaybillDynamicField[]>();
 
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly translate = inject(TranslateService);
@@ -71,12 +76,38 @@ export class PaybillForm {
   public readonly pay = output<PaybillFormProceedEvent>();
   public readonly saveTemplate = output<void>();
 
-  public paybillForm = this.fb.group({
-    value: ['', [Validators.required, Validators.minLength(5)]],
-    amount: [
-      0,
-      [Validators.required, Validators.min(0.01), Validators.max(9999)],
-    ],
+  public paybillForm: FormGroup = this.fb.group({
+    amount: [0, [Validators.required, Validators.min(0.01)]],
+  });
+
+  private readonly updateValidators = effect(() => {
+    const amountControl = this.paybillForm.controls['amount'];
+    if (this.isVerified()) {
+      amountControl.setValidators([
+        Validators.required,
+        Validators.min(0.01),
+        Validators.max(9999),
+      ]);
+    } else {
+      amountControl.setValidators([Validators.required, Validators.max(9999)]);
+    }
+    amountControl.updateValueAndValidity();
+  });
+
+  private readonly buildControls = effect(() => {
+    const currentFields = this.fields();
+    const form = this.paybillForm;
+
+    Object.keys(form.controls).forEach((key) => {
+      if (key !== 'amount') form.removeControl(key);
+    });
+
+    currentFields.forEach((field) => {
+      form.addControl(
+        field.id,
+        new FormControl('', field.required ? [Validators.required] : []),
+      );
+    });
   });
 
   public readonly paybillConfig = toSignal(
@@ -103,20 +134,13 @@ export class PaybillForm {
   public onSubmit(): void {
     if (this.isLoading()) return;
 
-    const identifierControl = this.paybillForm.controls.value;
+    const formValues = this.paybillForm.getRawValue();
 
     if (!this.isVerified()) {
-      if (identifierControl.valid) {
-        this.verify.emit({ value: identifierControl.value });
-      } else {
-        identifierControl.markAsTouched();
-      }
-    } else {
       if (this.paybillForm.valid) {
-        this.pay.emit({
-          value: identifierControl.value,
-          amount: this.paybillForm.controls.amount.value,
-        });
+        this.verify.emit({ value: formValues });
+      } else {
+        this.paybillForm.markAllAsTouched();
       }
     }
   }
