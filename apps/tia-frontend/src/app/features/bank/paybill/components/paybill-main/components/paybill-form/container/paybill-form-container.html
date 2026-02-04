@@ -1,4 +1,5 @@
 <app-paybill-form
+  [paybillForm]="paybillForm"
   [provider]="paybillFacade.activeProvider()"
   [fields]="paybillFacade.paymentFields()"
   [verifiedDetails]="paybillFacade.verifiedDetails()"

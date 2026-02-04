@@ -54,4 +54,16 @@ export class PaybillDynamicForm {
       errorMessage: 'Please fill required fields!',
     };
   }
+
+  public updateAmountValidators(form: FormGroup, isVerified: boolean): void {
+    const amountControl = form.controls['amount'];
+    if (!amountControl) return;
+
+    const validators = isVerified
+      ? [Validators.required, Validators.min(0.01), Validators.max(9999)]
+      : [Validators.required, Validators.max(9999)];
+
+    amountControl.setValidators(validators);
+    amountControl.updateValueAndValidity({ emitEvent: false });
+  }
 }

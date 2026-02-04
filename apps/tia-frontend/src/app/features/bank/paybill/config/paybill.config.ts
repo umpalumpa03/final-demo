@@ -1,5 +1,7 @@
 import { TranslateService } from '@ngx-translate/core';
 import { TabItem } from '@tia/shared/lib/navigation/models/tab.model';
+import { PaybillDynamicFormValues } from '../services/paybill-dynamic-form/models/dynamic-form.model';
+import { PaybillIdentification } from '../components/paybill-main/shared/models/paybill.model';
 
 export const navConfig = (translate: TranslateService): TabItem[] =>
   [
@@ -15,14 +17,12 @@ export const navConfig = (translate: TranslateService): TabItem[] =>
     },
   ] as const;
 
-export const buildDynamicIdentification = <
-  T extends Record<string, string | number | boolean | null | undefined>,
->(
-  formValues: T,
-): Record<string, string | undefined> => {
+export const buildDynamicIdentification = (
+  formValues: PaybillDynamicFormValues,
+): PaybillIdentification => {
   const { amount, ...identification } = formValues;
 
-  const sanitized: Record<string, string | undefined> = {};
+  const sanitized: PaybillIdentification = {};
 
   Object.keys(identification).forEach((key) => {
     const value = identification[key];

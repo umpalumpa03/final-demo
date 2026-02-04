@@ -19,7 +19,7 @@
   </header>
 
   <form
-    [formGroup]="paybillForm"
+    [formGroup]="paybillForm()"
     (ngSubmit)="onSubmit()"
     class="paybill-form__content"
   >
@@ -55,7 +55,7 @@
     <div class="form-actions">
       <app-button
         type="submit"
-        [isDisabled]="paybillForm.invalid || isLoading()"
+        [isDisabled]="paybillForm().invalid || isLoading()"
       >
         {{ 'paybill.main.form.continue_btn' | translate }}
       </app-button>
@@ -65,10 +65,7 @@
       >
     </div>
     } @else {
-    <app-button
-      type="submit"
-      [isDisabled]="paybillForm.invalid || isLoading()"
-    >
+    <app-button type="submit" [isDisabled]="paybillForm().invalid || isLoading()">
       {{ 'paybill.main.form.continue_btn' | translate }}
     </app-button>
     }
