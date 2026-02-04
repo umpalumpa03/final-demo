@@ -16,6 +16,7 @@
   (itemEdited)="onItemEditAction($event)"
   (groupRemoved)="onGroupDeleteAction($event)"
   (groupEdited)="onGroupEditAction($event)"
+  [isLoading]="isLoading()"
 >
   <div class="templates__header">
     <app-library-title
@@ -75,10 +76,9 @@
     </form>
     }@else {
     <div class="modal__identifier">{{ selectedDeleteItem() }}</div>
-    <p>
-      Templates in this group will be moved to "Ungrouped". This action cannot
-      be undone.
-    </p>
+    @if (config.description) {
+    <p class="modal__warning">{{ config.description }}</p>
+    }
 
     <div class="modal__buttons">
       <app-button variant="outline" type="button" (click)="toggleModal()">

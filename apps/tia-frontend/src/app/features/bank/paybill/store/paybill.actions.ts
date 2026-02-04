@@ -104,10 +104,12 @@ export const TemplatesPageActions = createActionGroup({
     }>(),
     'Rename Template Group': props<{
       groupId: string;
+      groupName: string;
     }>(),
     'Rename Template Group Success': props<{
-      message: string;
+      templateGroup: CreateTemplateGroupResponse;
       groupId: string;
+      message: string;
     }>(),
     'Rename Template Group Failure': props<{
       error: string;

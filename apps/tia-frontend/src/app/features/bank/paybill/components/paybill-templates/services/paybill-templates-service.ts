@@ -59,4 +59,14 @@ export class PaybillTemplatesService {
       `${this.baseUrl}/template-groups/${groupId}`,
     );
   }
+
+  public renameGroup(
+    groupId: string,
+    groupName: string,
+  ): Observable<TemplateGroups> {
+    return this.http.patch<TemplateGroups>(
+      `${this.baseUrl}/template-groups/${groupId}`,
+      { groupName },
+    );
+  }
 }

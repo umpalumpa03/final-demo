@@ -1,5 +1,9 @@
 <div class="tree-container" [class.tree-container--no-border]="noBorder()">
-  @if(contentHeader()) {
+  @if(isLoading()) {
+  <div class="tree-container__overlay">
+    <app-route-loader variant="pulsing" />
+  </div>
+  } @if(contentHeader()) {
   <ng-content></ng-content>
   } @else {
   <div class="tree-container__header">

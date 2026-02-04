@@ -45,6 +45,7 @@ export interface ModalInfo {
   formSubmitType: formSubmitType;
   submitAction?: string;
   initialValues?: Record<string, string>;
+  description?: string;
 }
 
 export enum HeaderCtaAction {
@@ -59,7 +60,10 @@ export interface HeaderCtaButton {
   textKey: string;
 }
 
-export type formSubmitType = 'create-group' | 'rename-template';
+export type formSubmitType =
+  | 'create-group'
+  | 'rename-template'
+  | 'rename-group';
 export interface FormSubmitPayload {
   type: formSubmitType;
   values: Record<string, string>;

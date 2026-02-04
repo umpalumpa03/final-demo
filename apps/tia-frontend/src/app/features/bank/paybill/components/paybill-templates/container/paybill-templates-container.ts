@@ -11,6 +11,7 @@ import { PaybillTemplatesService } from '../services/paybill-templates-service';
 import { Store } from '@ngrx/store';
 import {
   selectCategories,
+  selectLoading,
   selectProviders,
   selectTemplatesAsTreeItems,
   selectTemplatesGroupWithConfigs,
@@ -49,6 +50,8 @@ export class PaybillTemplatesContainer implements OnInit {
   public readonly templates = this.store.selectSignal(
     selectTemplatesAsTreeItems,
   );
+
+  public isLoading = this.store.selectSignal(selectLoading);
 
   // Handles to determine what is modals type based on clicks in header
   public handleHeaderAction(action: HeaderCtaAction): void {
@@ -90,11 +93,6 @@ export class PaybillTemplatesContainer implements OnInit {
   protected readonly modalConfig = ModalConfig;
   public modalType = signal<ModalType | null>(null);
 
-  // protected currentModalConfig = computed(() => {
-  //   const modal = this.modalType();
-  //   return modal ? this.modalConfig[modal] : null;
-  // });
-
   protected currentModalConfig = computed(() => {
     const modal = this.modalType();
     if (!modal) return null;
@@ -134,7 +132,22 @@ export class PaybillTemplatesContainer implements OnInit {
           );
         }
         break;
+
+      case 'rename-group':
+        const groupId = this.selectedId();
+        console.log(groupId);
+        if (groupId) {
+          this.store.dispatch(
+            TemplatesPageActions.renameTemplateGroup({
+              groupId,
+              groupName: payload.values['name'],
+            }),
+          );
+        }
+        break;
     }
+
+    this.handleModalToggle();
   }
 
   public selectedItemName = signal<string>('');
@@ -187,6 +200,10 @@ export class PaybillTemplatesContainer implements OnInit {
 
   onGroupDeleteAction(id: string) {
     this.openGroupModal(id, ModalType.DeleteGroup);
+  }
+
+  onGroupEditAction(id: string) {
+    this.openGroupModal(id, ModalType.RenameGroup);
   }
 
   // Actual delete / edit logic

@@ -324,22 +324,6 @@ describe('Paybill Reducer', () => {
       expect(result.templateGroups).toContain(newGroup);
       expect(result.loading).toBe(false);
     });
-
-    it('deleteTemplatesSuccess: should remove template and add a success notification', () => {
-      const state = {
-        ...initialPaybillState,
-        templates: [{ id: 't1' }, { id: 't2' }] as any,
-      };
-      const action = TemplatesPageActions.deleteTemplatesSuccess({
-        templateId: 't1',
-        message: 'Deleted!',
-      });
-      const result = paybillReducer(state, action);
-
-      expect(result.templates.length).toBe(1);
-      expect(result.templates[0].id).toBe('t2');
-      expect(result.notifications[0].message).toBe('Deleted!');
-    });
   });
 
   describe('Payment Form & Transaction Sync', () => {

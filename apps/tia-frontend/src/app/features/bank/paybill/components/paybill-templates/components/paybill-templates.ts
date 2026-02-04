@@ -57,6 +57,7 @@ export class PaybillTemplates {
     }[]
   >();
   public templateProviders = input<PaybillProvider[]>();
+  public isLoading = input.required<boolean>();
 
   constructor() {
     effect(() => {
@@ -65,6 +66,8 @@ export class PaybillTemplates {
 
       if (form) {
         form.reset();
+        form.markAsPristine();
+        form.markAsUntouched();
 
         if (config?.initialValues) {
           form.patchValue(config.initialValues);
@@ -75,7 +78,7 @@ export class PaybillTemplates {
 
   // Build templates for form
   createGroupForm = this.fb.nonNullable.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z\s]+$/)]],
+    name: ['', Validators.required],
   });
 
   createTemplateForm = this.fb.nonNullable.group({
@@ -86,6 +89,11 @@ export class PaybillTemplates {
   });
 
   editTemplate = this.fb.nonNullable.group({
+    currentName: [{ value: '', disabled: true }],
+    name: ['', Validators.required],
+  });
+
+  editGroup = this.fb.nonNullable.group({
     currentName: [{ value: '', disabled: true }],
     name: ['', Validators.required],
   });
@@ -107,6 +115,14 @@ export class PaybillTemplates {
   }
 
   public toggleModal(): void {
+    if (this.isModalOpen()) {
+      const form = this.activeForm();
+      if (form) {
+        form.reset();
+        form.markAsPristine();
+        form.markAsUntouched();
+      }
+    }
     this.modalOpenAction.emit();
   }
 
@@ -120,6 +136,8 @@ export class PaybillTemplates {
         return this.createTemplateForm;
       case ModalType.RenameTemplate:
         return this.editTemplate;
+      case ModalType.RenameGroup:
+        return this.editGroup;
       default:
         return null;
     }
@@ -171,6 +189,7 @@ export class PaybillTemplates {
   public deleteTemplateModal = output<void>();
   public editTemplateModal = output<void>();
   public deleteGroupModal = output<void>();
+  public renameGroupModal = output<void>();
 
   onActionHandler(action: string | undefined) {
     if (action === 'deleteTemplate') {
@@ -182,6 +201,10 @@ export class PaybillTemplates {
     }
 
     if (action === 'deleteGroup') {
+      this.deleteGroupModal.emit();
+    }
+
+    if (action === 'renameGroup') {
       this.deleteGroupModal.emit();
     }
   }

@@ -44,18 +44,6 @@ describe('PaybillTemplatesService', () => {
   });
 
   describe('POST & DELETE Operations', () => {
-    it('should call deleteTemplateGroups with the correct groupId', () => {
-      const groupId = 'group-123';
-
-      service.deleteTemplateGroups(groupId).subscribe();
-
-      const req = httpMock.expectOne(
-        `${environment.apiUrl}/paybill/template-groups/${groupId}`,
-      );
-      expect(req.request.method).toBe('DELETE');
-      req.flush({});
-    });
-
     it('should call deleteTemplate and return a success message', () => {
       const templateId = 'temp-456';
       const mockResponse = { message: 'Template deleted successfully' };

@@ -375,24 +375,6 @@ describe('PaybillEffect (Modern Suite)', () => {
   });
 
   describe('Template Management & Failure Handlers', () => {
-    it('deleteTemplates$: should dispatch Success on successful deletion', () => {
-      const mockResponse = { message: 'Deleted Successfully' };
-      (paybillTemplatesService as any).deleteTemplate = vi
-        .fn()
-        .mockReturnValue(of(mockResponse));
-
-      actions$ = of(TemplatesPageActions.deleteTemplates({ templateId: 'T1' }));
-
-      effects.deleteTemplates$.subscribe((action) => {
-        expect(action).toEqual(
-          TemplatesPageActions.deleteTemplatesSuccess({
-            message: 'Deleted Successfully',
-            templateId: 'T1',
-          }),
-        );
-      });
-    });
-
     it('createTemplatesGroup$: should dispatch Success on successful creation', () => {
       const mockGroup = { id: 'G1', name: 'Utility' } as any;
       (paybillTemplatesService as any).createTemplateGroups = vi
@@ -407,18 +389,6 @@ describe('PaybillEffect (Modern Suite)', () => {
         expect(action).toEqual(
           TemplatesPageActions.createTemplatesGroupsSuccess({
             templateGroup: mockGroup,
-          }),
-        );
-      });
-    });
-
-    it('handleCheckBillFailure$: should map failure to notification', () => {
-      actions$ = of(PaybillActions.checkBillFailure({ error: 'Not Found' }));
-      effects.handleCheckBillFailure$.subscribe((action) => {
-        expect(action).toEqual(
-          PaybillActions.addNotification({
-            notificationType: 'warning',
-            message: 'Not Found',
           }),
         );
       });

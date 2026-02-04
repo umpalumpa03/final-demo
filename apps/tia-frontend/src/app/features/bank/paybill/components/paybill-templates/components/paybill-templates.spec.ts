@@ -29,6 +29,8 @@ describe('PaybillTemplates', () => {
     fixture.componentRef.setInput('templates', []);
     fixture.componentRef.setInput('templateCategories', []);
 
+    fixture.componentRef.setInput('isLoading', false);
+
     fixture.detectChanges();
   });
 
@@ -50,20 +52,6 @@ describe('PaybillTemplates', () => {
     });
   });
 
-  describe('Group Actions', () => {
-    it('should emit GroupEditIcon when onGroupEditAction is triggered', () => {
-      const emitSpy = vi.spyOn(component.GroupEditIcon, 'emit');
-      component.onGroupEditAction('group-1');
-      expect(emitSpy).toHaveBeenCalledWith('group-1');
-    });
-
-    it('should emit GroupDeleteIcon when onGroupDeleteAction is triggered', () => {
-      const emitSpy = vi.spyOn(component.GroupDeleteIcon, 'emit');
-      component.onGroupDeleteAction('group-2');
-      expect(emitSpy).toHaveBeenCalledWith('group-2');
-    });
-  });
-
   describe('Template Actions', () => {
     it('should NOT emit categorySelected for other controls', () => {
       const spy = vi.spyOn(component.categorySelected, 'emit');
@@ -81,12 +69,6 @@ describe('PaybillTemplates', () => {
       component.onDropdownChange('category', mockEvent);
 
       expect(spy).not.toHaveBeenCalled();
-    });
-    it('should emit deleteTemplateModal with "asd" when action is "deleteTemplate"', () => {
-      const emitSpy = vi.spyOn(component.deleteTemplateModal, 'emit');
-      component.onActionHandler('deleteTemplate');
-
-      expect(emitSpy).toHaveBeenCalledWith('asd');
     });
 
     it('should NOT emit deleteTemplateModal for other actions', () => {

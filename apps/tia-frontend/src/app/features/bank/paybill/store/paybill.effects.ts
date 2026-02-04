@@ -42,6 +42,8 @@ export class PaybillEffect {
       'Group deleted successfully',
     '[Paybill Templates Page] Create Templates Groups Success':
       'Group created successfully',
+    '[Paybill Templates Page] Rename Template Group Success':
+      'Group renamed successfully',
   };
 
   private getErrorMessage(error: any): string {
@@ -349,6 +351,7 @@ export class PaybillEffect {
         TemplatesPageActions.renameTemplateSuccess,
         TemplatesPageActions.deleteTemplateGroupSuccess,
         TemplatesPageActions.createTemplatesGroupsSuccess,
+        TemplatesPageActions.renameTemplateGroupSuccess,
       ),
       map((action) =>
         PaybillActions.addNotification({
@@ -464,6 +467,30 @@ export class PaybillEffect {
           catchError((error) =>
             of(
               TemplatesPageActions.deleteTemplateGroupFailure({
+                error: error.message,
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
+
+  renameTemplateGroup$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TemplatesPageActions.renameTemplateGroup),
+      switchMap(({ groupId, groupName }) =>
+        this.payBillTemplatesService.renameGroup(groupId, groupName).pipe(
+          map((response) =>
+            TemplatesPageActions.renameTemplateGroupSuccess({
+              templateGroup: response,
+              groupId,
+              message: 'Group name has been changed',
+            }),
+          ),
+          catchError((error) =>
+            of(
+              TemplatesPageActions.renameTemplateGroupFailure({
                 error: error.message,
               }),
             ),

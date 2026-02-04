@@ -7,6 +7,7 @@
   [templateCategories]="categoryOptions()"
   [templateProviders]="templateProviders()"
   [selectedDeleteItem]="selectedItemName()"
+  [isLoading]="isLoading()"
   (headerButtonAction)="handleHeaderAction($event)"
   (modalOpenAction)="handleModalToggle()"
   (formSubmit)="handleFormSubmit($event)"
@@ -16,4 +17,5 @@
   (itemEditIcon)="onItemEditAction($event)"
   (groupDeleteIcon)="onGroupDeleteAction($event)"
   (deleteGroupModal)="deleteGroup()"
+  (groupEditIcon)="onGroupEditAction($event)"
 ></app-paybill-templates>
