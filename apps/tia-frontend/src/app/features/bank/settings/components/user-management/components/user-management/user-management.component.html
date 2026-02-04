@@ -28,7 +28,7 @@
     @else {
     @for (user of pagination.visibleItems(); track user.id) {
     @let userId = user.id;
-    <app-user-card [user]="user" (onDetails)="details(userId)" (onDelete)="deleteUser(userId)"
+    <app-user-card [user]="user" (onDetails)="details(userId)" (onEdit)="onEdit(userId)" (onDelete)="deleteUser(userId)"
         (onBlockToggle)="block(userId, user.isBlocked)"
         [isLoading]="store.actionLoading() && actionProcessingId() === userId">
     </app-user-card>
@@ -42,6 +42,10 @@
     <app-confirm-modal [isOpen]="modalService.isDeleteOpen" [isLoading]="store.actionLoading()" (close)="onCloseModal()"
         (deleteUser)="onConfirmDelete()">
     </app-confirm-modal>
+
+    <app-user-edit-modal [isOpen]="modalService.isEditOpen" [userData]="store.selectedUser()"
+        [isLoading]="store.actionLoading()" (close)="onCloseModal()" (save)="onUpdateUser($event)">
+    </app-user-edit-modal>
 
     <app-pagination [currentPage]="pagination.currentPage()" [totalPages]="pagination.totalPages()"
         (pageChange)="onPageChange($event)">>

@@ -41,6 +41,6 @@ describe('Textarea', () => {
     fixture.detectChanges();
 
     expect(component['value']()).toBe(mockValue);
-    expect(textareaEl.style.height).toBe('100px');
+    expect(textareaEl.style.height).toBe('10rem');
   });
 });
