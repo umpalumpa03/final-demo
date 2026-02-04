@@ -45,66 +45,6 @@ export class UserManagementComponent {
   protected readonly pagination = usePagination(this.store.users, 4);
 
   constructor() {
-    this.setupAutoCloseModal();
-  }
-
-  ngOnInit(): void {
-    this.store.loadUsers();
-  }
-
-  onPageChange(page: number): void {
-    this.pagination.setPage(page);
-  }
-
-  onEdit(id: string): void {
-    this.store.clearSelectedUser();
-    this.modalService.openEdit();
-    this.store.loadUserDetails(id);
-  }
-
-  onUpdateUser(data: IUpdateUserRequest): void {
-    const selectedUser = this.store.selectedUser();
-
-    if (selectedUser) {
-      this.store.updateUser({
-        id: selectedUser.id,
-        data: data,
-      });
-      this.onCloseModal();
-      this.store.loadUsers();
-    }
-  }
-
-  details(id: string): void {
-    this.store.clearSelectedUser();
-    this.modalService.openDetails();
-    this.store.loadUserDetails(id);
-  }
-
-  deleteUser(id: string): void {
-    this.modalService.openDelete(id);
-  }
-
-  onConfirmDelete(): void {
-    const id = this.modalService.userToDeleteId();
-    if (id) {
-      this.store.deleteUser(id);
-    }
-  }
-
-  block(id: string, isBlocked: boolean): void {
-    this.actionProcessingId.set(id);
-    this.store.toggleBlockStatus({ id, isBlocked: !isBlocked });
-  }
-
-  onCloseModal(): void {
-    this.modalService.close();
-    this.store.clearSelectedUser();
-  }
-
-  onSearch(query: InputFieldValue): void {}
-
-  private setupAutoCloseModal(): void {
     effect(() => {
       const mode = this.modalService.modalState();
       const idToDelete = this.modalService.userToDeleteId();
@@ -119,4 +59,60 @@ export class UserManagementComponent {
       }
     });
   }
+
+  ngOnInit(): void {
+    this.store.loadUsers();
+  }
+
+  public onPageChange(page: number): void {
+    this.pagination.setPage(page);
+  }
+
+  public onEdit(id: string): void {
+    this.store.clearSelectedUser();
+    this.modalService.openEdit();
+    this.store.loadUserDetails(id);
+  }
+
+  public onUpdateUser(data: IUpdateUserRequest): void {
+    const selectedUser = this.store.selectedUser();
+
+    if (selectedUser) {
+      this.store.updateUser({
+        id: selectedUser.id,
+        data: data,
+      });
+      this.onCloseModal();
+      this.store.loadUsers();
+    }
+  }
+
+  public details(id: string): void {
+    this.store.clearSelectedUser();
+    this.modalService.openDetails();
+    this.store.loadUserDetails(id);
+  }
+
+  public deleteUser(id: string): void {
+    this.modalService.openDelete(id);
+  }
+
+  public onConfirmDelete(): void {
+    const id = this.modalService.userToDeleteId();
+    if (id) {
+      this.store.deleteUser(id);
+    }
+  }
+
+  public block(id: string, isBlocked: boolean): void {
+    this.actionProcessingId.set(id);
+    this.store.toggleBlockStatus({ id, isBlocked: !isBlocked });
+  }
+
+  public onCloseModal(): void {
+    this.modalService.close();
+    this.store.clearSelectedUser();
+  }
+
+  public onSearch(query: InputFieldValue): void {}
 }

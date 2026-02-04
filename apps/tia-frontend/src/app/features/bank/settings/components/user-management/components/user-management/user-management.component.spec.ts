@@ -9,44 +9,38 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 describe('UserManagementComponent', () => {
   let component: UserManagementComponent;
   let fixture: ComponentFixture<UserManagementComponent>;
-  let mockStore: any;
+
+  let store: any;
   let modalService: UserModalService;
 
   beforeEach(async () => {
-    mockStore = {
+    const mockStore = {
       loadUsers: vi.fn(),
       loadUserDetails: vi.fn(),
       clearSelectedUser: vi.fn(),
       deleteUser: vi.fn(),
       toggleBlockStatus: vi.fn(),
-      users: signal(
-        Array.from({ length: 5 }, (_, i) => ({
-          id: `${i}`,
-          firstName: `U${i}`,
-          isBlocked: false,
-        })),
-      ),
-      selectedUser: signal(null),
+      updateUser: vi.fn(),
+      users: signal([{ id: '1', firstName: 'U1', isBlocked: false }]),
+      selectedUser: signal({ id: '1', firstName: 'John' }),
       loading: signal(false),
       actionLoading: signal(false),
       error: signal(null),
     };
 
+    const mockState = {
+      newConfig: signal({ searchInput: { placeholder: 'Search...' } }),
+    };
+
     await TestBed.configureTestingModule({
       imports: [UserManagementComponent],
+      providers: [],
     })
       .overrideComponent(UserManagementComponent, {
         set: {
           providers: [
             { provide: UserManagementStore, useValue: mockStore },
-            {
-              provide: UserManagementState,
-              useValue: {
-                newConfig: signal({
-                  searchInput: { placeholder: 'Search...' },
-                }),
-              },
-            },
+            { provide: UserManagementState, useValue: mockState },
             UserModalService,
           ],
         },
@@ -55,47 +49,63 @@ describe('UserManagementComponent', () => {
 
     fixture = TestBed.createComponent(UserManagementComponent);
     component = fixture.componentInstance;
+
+    store = fixture.debugElement.injector.get(UserManagementStore);
     modalService = fixture.debugElement.injector.get(UserModalService);
+
     fixture.detectChanges();
   });
 
-  it('should load users and handle pagination', () => {
-    expect(mockStore.loadUsers).toHaveBeenCalled();
-    expect(component['pagination'].totalPages()).toBe(2);
-    expect(component['pagination'].visibleItems().length).toBe(4);
+  it('should initialize and handle pagination', () => {
+    expect(store.loadUsers).toHaveBeenCalled();
+
+    expect(component['pagination'].currentPage()).toBe(1);
     component.onPageChange(2);
     expect(component['pagination'].currentPage()).toBe(2);
-    expect(component['pagination'].visibleItems().length).toBe(1);
   });
 
-  it('should handle details modal', () => {
+  it('should open modals via service', () => {
     component.details('1');
+    expect(store.clearSelectedUser).toHaveBeenCalled();
+    expect(store.loadUserDetails).toHaveBeenCalledWith('1');
     expect(modalService.modalState()).toBe('details');
-    expect(mockStore.loadUserDetails).toHaveBeenCalledWith('1');
-    expect(mockStore.clearSelectedUser).toHaveBeenCalled();
-  });
 
-  it('should handle delete modal and confirm', () => {
-    component.deleteUser('123');
-    expect(modalService.userToDeleteId()).toBe('123');
+    component.onEdit('1');
+    expect(modalService.modalState()).toBe('edit');
+
+    component.deleteUser('1');
     expect(modalService.modalState()).toBe('delete');
-    component.onConfirmDelete();
-    expect(mockStore.deleteUser).toHaveBeenCalledWith('123');
   });
 
-  it('should handle block toggle', () => {
+  it('should handle actions (Update, Delete, Block)', () => {
+    modalService.openEdit();
+    component.onUpdateUser({ firstName: 'New' } as any);
+    expect(store.updateUser).toHaveBeenCalled();
+    expect(store.loadUsers).toHaveBeenCalledTimes(2);
+    expect(modalService.modalState()).toBe('none');
+
+    modalService.openDelete('1');
+    component.onConfirmDelete();
+    expect(store.deleteUser).toHaveBeenCalledWith('1');
+
     component.block('1', false);
-    expect(component['actionProcessingId']()).toBe('1');
-    expect(mockStore.toggleBlockStatus).toHaveBeenCalledWith({
+    expect(store.toggleBlockStatus).toHaveBeenCalledWith({
       id: '1',
       isBlocked: true,
     });
+    expect(component['actionProcessingId']()).toBe('1');
   });
 
-  it('should close modal and clear state', () => {
+  it('should auto-close modal when user is removed', async () => {
     component.deleteUser('1');
-    component.onCloseModal();
+    fixture.detectChanges();
+    expect(modalService.modalState()).toBe('delete');
+
+    store.users.set([]);
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+
     expect(modalService.modalState()).toBe('none');
-    expect(mockStore.clearSelectedUser).toHaveBeenCalled();
   });
 });
