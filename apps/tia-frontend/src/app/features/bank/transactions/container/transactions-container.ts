@@ -20,7 +20,6 @@ import {
   TableConfig,
   TransactionActionEvent,
 } from '@tia/shared/lib/tables/models/table.model';
-import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Tables } from '@tia/shared/lib/tables/components/tables';
@@ -144,5 +143,9 @@ export class TransactionsContainer implements OnInit {
     if (this.items().length % 20 === 0 && !this.isLoading()) {
       this.store.dispatch(TransactionActions.loadMore());
     }
+  }
+
+  public onCategoryCreate(name: string): void {
+    this.store.dispatch(TransactionActions.createCategory({ name }));
   }
 }

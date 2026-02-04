@@ -44,6 +44,7 @@
       [selectCategoryOptions]="categoryOptions()"
       (save)="onCategorizeSave($event)"
       (cancel)="closeCategorizeModal()"
+      (createCategory)="onCategoryCreate($event)"
     ></app-categorize-modal>
     }
   </app-ui-modal>

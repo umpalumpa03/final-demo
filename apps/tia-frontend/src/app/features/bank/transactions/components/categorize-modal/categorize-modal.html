@@ -3,21 +3,27 @@
   [subtitle]="subTitle()"
   [maxWidth]="'51.1rem'"
   [width]="'100%'"
-  [borderColor]="'#ffffff'"
+  [borderColor]="'transparent'"
 >
   @if (transaction(); as trx) {
   <div class="transaction-summary">
     <div class="transaction-summary__title">{{ trx.description }}</div>
     <div class="transaction-summary__meta">
-      {{ trx.currency }} {{ trx.amount }} • {{ trx.createdAt | date:'dd/MM/yyyy'
-      }}
+      {{ trx.currency }} {{ trx.amount }} • <br />
+      {{ trx.createdAt | date:'dd/MM/yyyy' }}
     </div>
   </div>
   }
   <form [formGroup]="form" class="categorize-form">
+    @if (successMessage()) {
+    <app-simple-alerts
+      [alertType]="'success'"
+      [alertMessage]="successMessage()!"
+    ></app-simple-alerts>
+    }
     <div class="categorize-form__group">
       <lib-select
-        [config]="selectConfig()"
+        [config]="selectConfig"
         [options]="selectCategoryOptions()"
         formControlName="categoryId"
       ></lib-select>
@@ -26,7 +32,7 @@
       <div class="categorize-form__row">
         <div class="categorize-form__input-wrapper">
           <lib-text-input
-            [config]="{ placeholder: 'Enter category name', label:'Or Add Custom Category', margin:'0.4rem 0 0'}"
+            [config]="inputConfig"
             formControlName="newCategoryName"
           ></lib-text-input>
         </div>
@@ -34,6 +40,7 @@
           [variant]="'default'"
           [icon]="'adding.svg'"
           [type]="'button'"
+          (click)="onCategoryCreate()"
         >
           Add
         </app-button>

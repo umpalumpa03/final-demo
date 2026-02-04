@@ -10,11 +10,17 @@ import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { SelectConfig } from '@tia/shared/lib/forms/models/dropdowns.model';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 import { DatePipe } from '@angular/common';
+import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
+import {
+  CATEGORIZE_MODAL_CONFIG,
+  CATEGORY_SELECT_CONFIG,
+  NEW_CATEGORY_INPUT_CONFIG,
+} from '../../config/categorize-modal.config';
 
 @Component({
   selector: 'app-categorize-modal',
@@ -25,6 +31,7 @@ import { DatePipe } from '@angular/common';
     ButtonComponent,
     DatePipe,
     ReactiveFormsModule,
+    SimpleAlerts,
   ],
   templateUrl: './categorize-modal.html',
   styleUrl: './categorize-modal.scss',
@@ -32,27 +39,25 @@ import { DatePipe } from '@angular/common';
 export class CategorizeModal {
   private readonly fb = inject(FormBuilder);
 
-  public title = signal<string>('Categorize Transaction');
-  public subTitle = signal<string>(
-    'Assign a category to this transaction for better organization',
-  );
+  public title = signal(CATEGORIZE_MODAL_CONFIG.title);
+  public subTitle = signal(CATEGORIZE_MODAL_CONFIG.subTitle);
+
+  public readonly selectConfig = CATEGORY_SELECT_CONFIG;
+  public readonly inputConfig = NEW_CATEGORY_INPUT_CONFIG;
 
   public transaction = input<ITransactions | null>(null);
   public selectCategoryOptions = input.required<SelectOption[]>();
 
   public save = output<{ transactionId: string; categoryId: string }>();
   public cancel = output<void>();
+  public createCategory = output<string>();
+
+  public successMessage = signal<string | null>(null);
 
   public form = this.fb.group({
-    categoryId: [null as string | null],
+    categoryId: [null as string | null, Validators.required],
     newCategoryName: [''],
   });
-
-  public selectConfig = computed<SelectConfig>(() => ({
-    label: 'Select Category',
-    placeholder: 'Select category',
-    height: '3.6rem',
-  }));
 
   public onSave(): void {
     const categoryId = this.form.value.categoryId;
@@ -65,5 +70,20 @@ export class CategorizeModal {
 
   public onCancel(): void {
     this.cancel.emit();
+  }
+
+  public onCategoryCreate(): void {
+    const categoryName = this.form.value.newCategoryName;
+
+    if (categoryName) {
+      this.createCategory.emit(categoryName);
+      this.form.controls.newCategoryName.reset();
+
+      this.successMessage.set(`Category "${categoryName}" added successfully!`);
+
+      setTimeout(() => {
+        this.successMessage.set(null);
+      }, CATEGORIZE_MODAL_CONFIG.successMessageDuration);
+    }
   }
 }
