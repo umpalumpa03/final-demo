@@ -16,6 +16,8 @@ import { ConfirmModal } from '../../shared/ui/confirm-modal/confirm-modal';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { usePagination } from '../../shared/services/pagination.service';
 import { UserModalService } from '../../shared/services/user-modal.service';
+import { UserEditModal } from '../../shared/ui/user-edit-modal/user-edit-modal';
+import { IUpdateUserRequest } from '../../shared/models/users.model';
 
 @Component({
   selector: 'app-user-management',
@@ -26,6 +28,7 @@ import { UserModalService } from '../../shared/services/user-modal.service';
     UserDetailsModal,
     ConfirmModal,
     Skeleton,
+    UserEditModal,
   ],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss',
@@ -52,6 +55,26 @@ export class UserManagementComponent {
   onPageChange(page: number): void {
     this.pagination.setPage(page);
   }
+
+  onEdit(id: string): void {
+    this.store.clearSelectedUser();
+    this.modalService.openEdit();
+    this.store.loadUserDetails(id);
+  }
+
+  onUpdateUser(data: IUpdateUserRequest): void {
+    const selectedUser = this.store.selectedUser();
+
+    if (selectedUser) {
+      this.store.updateUser({
+        id: selectedUser.id,
+        data: data,
+      });
+      this.onCloseModal();
+      this.store.loadUsers();
+    }
+  }
+
   details(id: string): void {
     this.store.clearSelectedUser();
     this.modalService.openDetails();
