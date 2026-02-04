@@ -5,11 +5,14 @@ import { TranslateModule } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { signal } from '@angular/core';
 import { User } from '../../store/messaging.state';
+import { Store } from '@ngrx/store';
+import { of } from 'rxjs';
 
 describe('Compose', () => {
   let component: Compose;
   let fixture: ComponentFixture<Compose>;
   let mockMessagingStore: any;
+  let mockRoleStore: any;
 
   const mockUser: User = {
     id: '1',
@@ -26,11 +29,15 @@ describe('Compose', () => {
       searchMails: vi.fn(),
       sendEmail: vi.fn()
     };
+    mockRoleStore = {
+      select: vi.fn().mockReturnValue(of('USER'))
+    };
 
     await TestBed.configureTestingModule({
       imports: [Compose, TranslateModule.forRoot()],
       providers: [
-        { provide: MessagingStore, useValue: mockMessagingStore }
+        { provide: MessagingStore, useValue: mockMessagingStore },
+        { provide: Store, useValue: mockRoleStore }
       ]
     }).compileComponents();
 

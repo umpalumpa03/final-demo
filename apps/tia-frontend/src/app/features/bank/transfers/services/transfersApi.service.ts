@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import {
   RecipientResponse,
   TransferResponse,
+  TransferVerifyResponse,
 } from '../models/transfers.state.model';
 
 @Injectable({ providedIn: 'root' })
@@ -71,7 +72,7 @@ export class TransfersApiService {
   public verifyTransfer(payload: {
     challengeId: string;
     code?: string;
-  }): Observable<{ success: boolean; transferId: string }> {
+  }): Observable<TransferVerifyResponse> {
     return this.http.post<{ success: boolean; transferId: string }>(
       `${this.baseURL}/verify`,
       {

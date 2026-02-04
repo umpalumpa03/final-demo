@@ -24,6 +24,7 @@ describe('TransferExternalService', () => {
     mockApi = {
       getFee: vi.fn(),
       transferSameBank: vi.fn(),
+      transferExternalBank: vi.fn(),
       verifyTransfer: vi.fn(),
     };
     recipientInfoSubject = new Subject<any>();
@@ -37,6 +38,9 @@ describe('TransferExternalService', () => {
       description: signal(''),
       selectedRecipientAccount: signal<any>(null),
       challengeId: signal<string | null>(null),
+      manualRecipientName: signal(''),
+      setFeeLoading: vi.fn(),
+      setError: vi.fn(),
 
       setExternalRecipient: vi.fn(),
       lookupRecipient: vi.fn(),
@@ -71,42 +75,32 @@ describe('TransferExternalService', () => {
     (service as any)['recipientInfo$'] = recipientInfoSubject.asObservable();
   });
 
-  it('should handle recipient info stream with multiple accounts', () => {
+  it('should handle recipient info stream with auto-selection of single account', () => {
     const validation = TestBed.inject(TransferValidationService);
     validation.identifyRecipientType = vi.fn().mockReturnValue('phone');
     service.verifyRecipient('555123');
-    const mockResponse = { accounts: [{ id: 'acc1' }, { id: 'acc2' }] };
+    const mockResponse = { accounts: [{ id: 'acc1' }] };
     recipientInfoSubject.next(null);
     recipientInfoSubject.next(mockResponse);
+
+    expect(mockStore.setSelectedRecipientAccount).toHaveBeenCalledWith(
+      mockResponse.accounts[0],
+    );
     expect(mockRouter.navigate).toHaveBeenCalledWith([
       '/bank/transfers/external/accounts',
     ]);
   });
 
-  it('should skip API call if data is identical to store', () => {
-    mockStore.recipientInput.set('999');
-    mockStore.recipientType.set('phone');
-    mockStore.recipientInfo.set({ id: 'existing' });
+  it('should handle different bank IBAN (no API call)', () => {
     const validation = TestBed.inject(TransferValidationService);
-    validation.identifyRecipientType = vi.fn().mockReturnValue('phone');
-    service.verifyRecipient('999');
-    expect(mockStore.lookupRecipient).not.toHaveBeenCalled();
-  });
-
-  it('should handle sender account disabling logic', () => {
-    const acc = { currency: 'GEL' } as any;
-    expect(service.isSenderAccountDisabled(acc, null, true)).toBe(false);
-    const recipientUSD = { currency: 'USD' } as any;
-    expect(service.isSenderAccountDisabled(acc, recipientUSD, false)).toBe(
-      true,
-    );
-  });
-
-  it('should set insufficient balance and stop if amount exceeds sender balance', () => {
-    mockStore.senderAccount.set({ id: 's1', balance: 100 });
-    service.handleAmountInput(150);
-    expect(mockStore.setInsufficientBalance).toHaveBeenCalledWith(true);
-    expect(mockStore.updateFeeInfo).toHaveBeenCalledWith(0, 150);
+    validation.identifyRecipientType = vi
+      .fn()
+      .mockReturnValue('iban-different-bank');
+    service.verifyRecipient('GE0000');
+    expect(mockStore.setExternalRecipient).toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/bank/transfers/external/accounts',
+    ]);
   });
 
   it('should calculate fee successfully and validate balance', () => {
@@ -114,9 +108,29 @@ describe('TransferExternalService', () => {
     mockStore.amount.set(500);
     mockStore.recipientType.set('iban-different-bank');
     mockApi.getFee.mockReturnValue(of({ fee: 10 }));
+
     service.handleAmountInput(500);
+    expect(mockStore.setFeeLoading).toHaveBeenCalledWith(true);
+
     vi.advanceTimersByTime(300);
     expect(mockStore.updateFeeInfo).toHaveBeenCalledWith(10, 510);
+    expect(mockStore.setFeeLoading).toHaveBeenCalledWith(false);
+  });
+
+  it('should handle external bank transfer with OTP requirement', () => {
+    mockStore.senderAccount.set({ id: 's1', currency: 'GEL' });
+    mockStore.recipientInput.set('GE_EXT');
+    mockStore.amount.set(200);
+    mockStore.manualRecipientName.set('Recipient Name');
+
+    const mockResponse = {
+      verify: { method: 'EMAIL', challengeId: 'ext-chal' },
+    };
+    mockApi.transferExternalBank.mockReturnValue(of(mockResponse));
+
+    service.handleOtherBankTransfer();
+    expect(mockStore.setRequiresOtp).toHaveBeenCalledWith(true);
+    expect(mockStore.setChallengeId).toHaveBeenCalledWith('ext-chal');
   });
 
   it('should handle same bank transfer requiring OTP', () => {
@@ -125,89 +139,44 @@ describe('TransferExternalService', () => {
     mockStore.amount.set(100);
     const mockResponse = { verify: { method: 'SMS', challengeId: 'chal-123' } };
     mockApi.transferSameBank.mockReturnValue(of(mockResponse));
+
     service.handleSameBankTransfer();
-    expect(mockStore.setChallengeId).toHaveBeenCalledWith('chal-123');
+    expect(mockStore.setError).toHaveBeenCalledWith('');
     expect(mockStore.setRequiresOtp).toHaveBeenCalledWith(true);
   });
 
-  it('should verify transfer successfully', () => {
-    mockStore.challengeId.set('chal-123');
-    mockApi.verifyTransfer.mockReturnValue(of({ success: true }));
-    service.verifyTransfer('1234');
-    expect(mockStore.setTransferSuccess).toHaveBeenCalledWith(true);
-    expect(mockStore.setLoading).toHaveBeenCalledWith(false);
+  it('should handle handleRetryRecipientLookup logic', () => {
+    service.handleRetryRecipientLookup('val', 'phone' as any);
+    expect(mockStore.lookupRecipient).toHaveBeenCalled();
+
+    service.handleRetryRecipientLookup(null, null);
+    expect(mockLocation.back).toHaveBeenCalled();
   });
 
-  it('should handle error during transfer verification', () => {
-    mockStore.challengeId.set('chal-123');
-    mockApi.verifyTransfer.mockReturnValue(throwError(() => new Error('Err')));
-    service.verifyTransfer('1234');
-    expect(mockStore.setLoading).toHaveBeenCalledWith(false);
-  });
-
-  it('should handle API error in fee calculation', () => {
-    mockStore.recipientType.set('iban-different-bank');
-    mockApi.getFee.mockReturnValue(throwError(() => new Error('Err')));
-    service.handleAmountInput(500);
-    vi.advanceTimersByTime(300);
-    expect(mockStore.updateFeeInfo).toHaveBeenCalledWith(0, 0);
-  });
-
-  it('should handle same bank transfer NOT requiring OTP', () => {
-    mockStore.senderAccount.set({ id: 's1' });
-    mockStore.selectedRecipientAccount.set({ iban: 'GE001' });
-    mockStore.amount.set(100);
-    mockStore.challengeId.set('chal-123');
-    const mockResponse = { verify: { method: null, challengeId: 'chal-123' } };
-    mockApi.transferSameBank.mockReturnValue(of(mockResponse));
-    mockApi.verifyTransfer.mockReturnValue(of({ success: true }));
-    service.handleSameBankTransfer();
-    expect(mockStore.setRequiresOtp).toHaveBeenCalledWith(false);
-  });
-
-  it('should update info directly for same bank in handleAmountInput', () => {
-    mockStore.recipientType.set('phone');
-    mockStore.senderAccount.set({ id: 's1', balance: 1000 });
-    service.handleAmountInput(200);
-    expect(mockStore.updateFeeInfo).toHaveBeenCalledWith(0, 200);
-  });
-
-  it('should reset amount and balance when selecting different account', () => {
-    const currentAcc = { id: 'old' } as any;
-    const newAcc = { id: 'new' } as any;
-    service.handleRecipientAccountSelect(newAcc, currentAcc);
-    expect(mockStore.setAmount).toHaveBeenCalledWith(0);
-    expect(mockStore.setInsufficientBalance).toHaveBeenCalledWith(false);
-  });
-
-  it('should toggle selection off if the same account is selected', () => {
-    const acc = { id: 'acc-123' } as any;
-    service.handleRecipientAccountSelect(acc, acc);
-    expect(mockStore.setSelectedRecipientAccount).toHaveBeenCalledWith(null);
-  });
-  it('should return early in handleSameBankTransfer if requirements are missing', () => {
-    mockStore.senderAccount.set(null);
-    service.handleSameBankTransfer();
-    expect(mockStore.setLoading).not.toHaveBeenCalled();
-
-    mockStore.senderAccount.set({ id: 's1' });
-    mockStore.selectedRecipientAccount.set({ iban: null });
-    service.handleSameBankTransfer();
-    expect(mockStore.setLoading).not.toHaveBeenCalled();
-  });
-
-  it('should handle API error in handleSameBankTransfer (catchError coverage)', () => {
-    mockStore.senderAccount.set({ id: 's1' });
-    mockStore.selectedRecipientAccount.set({ iban: 'GE123' });
-    mockStore.amount.set(100);
-
-    mockApi.transferSameBank.mockReturnValue(
-      throwError(() => new Error('Server Down')),
+  it('should handle handleContinue for external and same bank', () => {
+    service.handleContinue(
+      { id: 'r1' } as any,
+      { id: 's1' } as any,
+      false,
+      null,
     );
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/bank/transfers/external/amount',
+    ]);
 
-    service.handleSameBankTransfer();
+    service.handleContinue(null, { id: 's1' } as any, true, 'Name');
+    expect(mockStore.setManualRecipientName).toHaveBeenCalledWith('Name');
+  });
 
-    expect(mockStore.setLoading).toHaveBeenCalledWith(false);
+  it('should handleAmountGoBack correctly', () => {
+    service.handleAmountGoBack(50, 'test');
+    expect(mockStore.setAmount).toHaveBeenCalledWith(50);
+    expect(mockLocation.back).toHaveBeenCalled();
+  });
+
+  it('should handleTransfer validation', () => {
+    expect(service.handleTransfer(0, '')).toBe(false);
+    expect(service.handleTransfer(10, 'ok')).toBe(true);
   });
 
   it('should return early in verifyTransfer if challengeId is missing', () => {
@@ -216,30 +185,129 @@ describe('TransferExternalService', () => {
     expect(mockStore.setLoading).not.toHaveBeenCalled();
   });
 
-  it('should handle handleSenderAccountSelect logic correctly', () => {
-    const acc1 = { id: 's1' } as any;
-    const acc2 = { id: 's2' } as any;
+  it('should disable recipient account if currencies do not match', () => {
+    const acc = { currency: 'USD' } as any;
+    const sender = { currency: 'GEL' } as any;
+    expect(service.isRecipientAccountDisabled(acc, sender)).toBe(true);
+    expect(
+      service.isRecipientAccountDisabled(acc, { currency: 'USD' } as any),
+    ).toBe(false);
+  });
+  it('should cover catchError in handleSameBankTransfer', () => {
+    mockStore.senderAccount.set({ id: 's1' });
+    mockStore.selectedRecipientAccount.set({ iban: 'GE123' });
+    mockStore.amount.set(100);
+    mockApi.transferSameBank.mockReturnValue(
+      throwError(() => ({ error: { message: 'Fail' } })),
+    );
 
-    service.handleSenderAccountSelect(acc1, acc2);
-    expect(mockStore.setAmount).toHaveBeenCalledWith(0);
-    expect(mockStore.setSenderAccount).toHaveBeenCalledWith(acc1);
-
-    service.handleSenderAccountSelect(acc1, acc1);
-    expect(mockStore.setSenderAccount).toHaveBeenCalledWith(null);
+    service.handleSameBankTransfer();
+    expect(mockStore.setError).toHaveBeenCalledWith('Fail');
+    expect(mockStore.setLoading).toHaveBeenCalledWith(false);
   });
 
+  it('should cover catchError in handleOtherBankTransfer', () => {
+    mockStore.senderAccount.set({ id: 's1', currency: 'GEL' });
+    mockStore.recipientInput.set('GE_OTHER');
+    mockStore.amount.set(100);
+    mockApi.transferExternalBank.mockReturnValue(
+      throwError(() => ({ error: { message: 'Other Fail' } })),
+    );
 
-  it('should stop loading in setupFeeCalculation if amount changed (tap logic)', () => {
-    mockStore.senderAccount.set({ id: 's1', balance: 1000 });
-    mockStore.amount.set(999); 
+    service.handleOtherBankTransfer();
+    expect(mockStore.setError).toHaveBeenCalledWith('Other Fail');
+  });
+
+  it('should cover fee calculation API error', () => {
     mockStore.recipientType.set('iban-different-bank');
+    mockApi.getFee.mockReturnValue(throwError(() => new Error('Err')));
+    service.handleAmountInput(500);
+    vi.advanceTimersByTime(300);
+    expect(mockStore.updateFeeInfo).toHaveBeenCalledWith(0, 0);
+  });
 
+  it('should cover handleContinue with manual name for external IBAN', () => {
+    service.handleContinue(null, { id: 's1' } as any, true, 'John Doe');
+    expect(mockStore.setManualRecipientName).toHaveBeenCalledWith('John Doe');
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/bank/transfers/external/amount',
+    ]);
+  });
+
+  it('should return early in verifyTransfer if no challengeId', () => {
+    mockStore.challengeId.set(null);
+    service.verifyTransfer();
+    expect(mockStore.setLoading).not.toHaveBeenCalled();
+  });
+
+  it('should handleRetryRecipientLookup with and without values', () => {
+    service.handleRetryRecipientLookup('test', 'phone' as any);
+    expect(mockStore.lookupRecipient).toHaveBeenCalled();
+    service.handleRetryRecipientLookup(null, null);
+    expect(mockLocation.back).toHaveBeenCalled();
+  });
+  it('should handle same bank transfer WITHOUT requiring OTP', () => {
+    mockStore.senderAccount.set({ id: 's1' });
+    mockStore.selectedRecipientAccount.set({ iban: 'GE001' });
+    mockStore.amount.set(100);
+    const mockResponse = { verify: { method: null, challengeId: 'chal-999' } };
+    mockApi.transferSameBank.mockReturnValue(of(mockResponse));
+    mockApi.verifyTransfer.mockReturnValue(of({ success: true }));
+
+    service.handleSameBankTransfer();
+    expect(mockStore.setRequiresOtp).toHaveBeenCalledWith(false);
+  });
+
+  it('should handle other bank transfer WITHOUT requiring OTP', () => {
+    mockStore.senderAccount.set({ id: 's1', currency: 'GEL' });
+    mockStore.recipientInput.set('GE_OTHER');
+    mockStore.amount.set(100);
+    const mockResponse = { verify: { method: null, challengeId: 'chal-888' } };
+    mockApi.transferExternalBank.mockReturnValue(of(mockResponse));
+    mockApi.verifyTransfer.mockReturnValue(of({ success: true }));
+
+    service.handleOtherBankTransfer();
+    expect(mockStore.setRequiresOtp).toHaveBeenCalledWith(false);
+  });
+
+  it('should cover fee calculation amount mismatch guard', () => {
+    mockStore.senderAccount.set({ id: 's1', balance: 1000 });
+    mockStore.recipientType.set('iban-different-bank');
     mockApi.getFee.mockReturnValue(of({ fee: 10 }));
 
     service.handleAmountInput(500);
-    vi.advanceTimersByTime(300);
+    mockStore.amount.set(999);
 
-    expect(mockStore.setLoading).toHaveBeenCalledWith(false);
+    vi.advanceTimersByTime(300);
     expect(mockStore.updateFeeInfo).not.toHaveBeenCalledWith(10, 510);
+    expect(mockStore.setFeeLoading).toHaveBeenCalledWith(false);
+  });
+
+  it('should cover handleRecipientAccountSelect toggle logic', () => {
+    const acc = { id: 'acc-1' } as any;
+    service.handleRecipientAccountSelect(acc, acc);
+    expect(mockStore.setSelectedRecipientAccount).toHaveBeenCalledWith(null);
+  });
+
+  it('should return early in transfer methods if requirements are missing', () => {
+    service.handleSameBankTransfer(); 
+    service.handleOtherBankTransfer(); 
+    expect(mockStore.setLoading).not.toHaveBeenCalled();
+  });
+
+  it('should hit catchError branch in verifyTransfer', () => {
+    mockStore.challengeId.set('ch-123');
+    mockApi.verifyTransfer.mockReturnValue(
+      throwError(() => ({ error: { message: 'OTP Wrong' } })),
+    );
+    service.verifyTransfer('1111');
+    expect(mockStore.setError).toHaveBeenCalledWith('OTP Wrong');
+  });
+
+
+  it('should cover isRecipientAccountDisabled without sender account', () => {
+    expect(
+      service.isRecipientAccountDisabled({ currency: 'GEL' } as any, null),
+    ).toBe(false);
   });
 });

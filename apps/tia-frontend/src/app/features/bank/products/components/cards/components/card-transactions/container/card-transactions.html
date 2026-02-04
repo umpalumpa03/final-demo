@@ -1,1 +1,54 @@
-<p>card-transactions works!</p>
+<div class="card-transactions">
+  @if (isLoading$ | async) {
+    <div class="card-transactions__loading">
+      <app-route-loader variant="pulsing" />
+    </div>
+  } @else if (error$ | async; as errorMsg) {
+    <app-error-states
+      variant="failed"
+      header="Failed to Load Transactions"
+      [message]="errorMsg"
+      buttonMessage="Retry"
+      (buttonClick)="handleRetry()"
+    />
+  } @else {
+    <div class="card-transactions__header">
+      <app-button
+        variant="ghost"
+        [icon]="'left-arrow.svg'"
+        (click)="handleBack()"
+      >
+        Back to Card Details
+      </app-button>
+    </div>
+
+    @if (cardHeaderData$ | async; as headerData) {
+      @if (headerData) {
+        <app-basic-card
+          [maxWidth]="'100%'"
+          [padding]="'2rem'"
+          [minHeight]="'12rem'"
+        >
+          <app-transaction-card-header
+            [imageBase64]="headerData.imageBase64"
+            [cardName]="headerData.cardName"
+            [maskedNumber]="headerData.maskedNumber"
+            [linkedAccountName]="(accountName$ | async) || 'N/A'"
+            [totalTransactions]="(totalCount$ | async) || 0"
+          />
+        </app-basic-card>
+      }
+    }
+
+    <app-basic-card
+      [title]="'Transaction History'"
+      [subtitle]="'All transactions made with this card'"
+      [maxWidth]="'100%'"
+      [padding]="'2rem'"
+    >
+      <app-transaction-list
+        [transactions]="(transactions$ | async) || []"
+      />
+    </app-basic-card>
+  }
+</div>
