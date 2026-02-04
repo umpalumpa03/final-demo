@@ -40,6 +40,8 @@ export class UserManagementComponent {
   protected readonly store = inject(UserManagementStore);
   protected readonly modalService = inject(UserModalService);
 
+  protected readonly isSaving = signal(false);
+
   protected readonly actionProcessingId = signal<string | null>(null);
 
   protected readonly pagination = usePagination(this.store.users, 4);
@@ -49,13 +51,23 @@ export class UserManagementComponent {
       const mode = this.modalService.modalState();
       const idToDelete = this.modalService.userToDeleteId();
       const users = this.store.users();
+
       const loading = this.store.actionLoading();
+      const error = this.store.error();
+      const saving = this.isSaving();
 
       if (mode === 'delete' && idToDelete && !loading) {
         const userExists = users.some((u) => u.id === idToDelete);
-        if (!userExists) {
-          this.onCloseModal();
-        }
+        if (!userExists) this.onCloseModal();
+      }
+
+      if (saving && !loading && !error) {
+        this.onCloseModal();
+        this.isSaving.set(false);
+      }
+
+      if (saving && !loading && error) {
+        this.isSaving.set(false);
       }
     });
   }
@@ -78,12 +90,12 @@ export class UserManagementComponent {
     const selectedUser = this.store.selectedUser();
 
     if (selectedUser) {
+      this.isSaving.set(true);
+
       this.store.updateUser({
         id: selectedUser.id,
         data: data,
       });
-      this.onCloseModal();
-      this.store.loadUsers();
     }
   }
 
