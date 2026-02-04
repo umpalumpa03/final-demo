@@ -13,9 +13,9 @@ import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { CommonModule } from '@angular/common';
 import { CLOSE_VARIANT } from '../../../config/loan-details.config';
-import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { PurposeFormatPipe } from '../../../pipes/purpose.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
+import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 
 @Component({
   selector: 'app-loan-details',
@@ -23,9 +23,9 @@ import { TranslatePipe } from '@ngx-translate/core';
     UiModal,
     ButtonComponent,
     CommonModule,
-    Spinner,
     PurposeFormatPipe,
     TranslatePipe,
+    RouteLoader,
   ],
   templateUrl: './loan-details.html',
   styleUrl: './loan-details.scss',

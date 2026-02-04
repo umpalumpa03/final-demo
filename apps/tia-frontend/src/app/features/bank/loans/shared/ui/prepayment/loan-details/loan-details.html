@@ -17,7 +17,7 @@
 
         @if (isLoading()) {
         <div class="loan-modal__loading">
-            <app-spinner size="4rem"></app-spinner>
+            <app-route-loader variant="pulsing"></app-route-loader>
             <p>{{ 'loans.details.loading' | translate }}</p>
         </div>
         }
