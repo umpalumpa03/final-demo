@@ -1,39 +1,48 @@
-<app-basic-card maxWidth="100%" minHeight="70rem" padding="2.4rem">
+<app-basic-card
+  maxWidth="100%"
+  minHeight="70rem"
+  padding="0rem 0 2.4rem 2.4rem"
+>
   <div class="success-layout">
     <header class="success-header">
-      <div class="success-icon-container">
-        <span class="tia-icon tia-icon-check"></span>
-      </div>
-      <h1 class="success-title">
+      <div class="success-header__icon-container"></div>
+      <h1 class="success-header__title">
         {{ 'paybill.main.success.title' | translate }}
       </h1>
-      <p class="success-description">
+      <p class="success-header__description">
         {{ 'paybill.main.success.description' | translate }}
       </p>
     </header>
 
-    <div class="success-layout__card">
-      <app-payment-summary
-        [items]="items()"
-        [headerTitle]="headerTitle()"
-        [headerSubtitle]="'paybill.main.success.summary_subheader' | translate"
-        [iconBgColor]="iconBgColor()"
-        [iconBgPath]="iconBgPath()"
-      />
+    <div class="confirm-container">
+      <div class="confirm-container__summary">
+        <app-payment-summary
+          [items]="items()"
+          [headerTitle]="headerTitle()"
+          [headerSubtitle]="'paybill.main.success.summary_subheader' | translate"
+          [iconBgColor]="iconBgColor()"
+          [iconBgPath]="iconBgPath()"
+        />
+      </div>
+
+      <footer class="confirm-container__actions">
+        <app-button
+          class="btn-secondary"
+          variant="secondary"
+          [fullWidth]="true"
+          (click)="payAnother.emit()"
+        >
+          {{ 'paybill.main.success.pay_another_btn' | translate }}
+        </app-button>
+
+        <app-button
+          class="btn-primary"
+          [fullWidth]="true"
+          (click)="goDashboard.emit()"
+        >
+          {{ 'paybill.main.success.dashboard_btn' | translate }}
+        </app-button>
+      </footer>
     </div>
-
-    <footer class="success-footer">
-      <app-button
-        variant="secondary"
-        [fullWidth]="true"
-        (click)="payAnother.emit()"
-      >
-        {{ 'paybill.main.success.pay_another_btn' | translate }}
-      </app-button>
-
-      <app-button [fullWidth]="true" (click)="goDashboard.emit()">
-        {{ 'paybill.main.success.dashboard_btn' | translate }}
-      </app-button>
-    </footer>
   </div>
 </app-basic-card>
