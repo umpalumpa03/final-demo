@@ -1,0 +1,221 @@
+<app-ui-modal [isOpen]="isOpen()" (closed)="onClose()">
+  <div class="loan-modal">
+    <!-- Header -->
+    <header class="loan-modal__header">
+      <p class="loan-modal__subtitle">Review the loan application and user information</p>
+      <button
+        class="loan-modal__close-btn"
+        (click)="onClose()"
+        aria-label="Close"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Content -->
+    <div class="loan-modal__content">
+      <!-- Applicant Information Section -->
+      <section class="loan-modal__section">
+        <div class="loan-modal__section-header">
+          <svg class="loan-modal__section-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <h3 class="loan-modal__section-title">Applicant Information</h3>
+        </div>
+
+        @if (isUserInfoLoading()) {
+          <app-skeleton [width]="'100%'" [height]="'150px'"></app-skeleton>
+        } @else if (userInfo()) {
+          <div class="loan-modal__grid">
+            <div class="loan-modal__field">
+              <span class="loan-modal__label">Full Name</span>
+              <span class="loan-modal__value">{{ userInfo()?.fullName }}</span>
+            </div>
+            <div class="loan-modal__field">
+              <span class="loan-modal__label">Email</span>
+              <span class="loan-modal__value">{{ userInfo()?.email }}</span>
+            </div>
+            <div class="loan-modal__field">
+              <span class="loan-modal__label">Phone Number</span>
+              <span class="loan-modal__value">{{ userInfo()?.phoneNumber }}</span>
+            </div>
+            <div class="loan-modal__field">
+              <span class="loan-modal__label">Employment Status</span>
+              <span class="loan-modal__value">{{ userInfo()?.employmentStatus }}</span>
+            </div>
+            <div class="loan-modal__field loan-modal__field--full">
+              <span class="loan-modal__label">Address</span>
+              <span class="loan-modal__value">{{ userInfo()?.address }}</span>
+            </div>
+            <div class="loan-modal__field">
+              <span class="loan-modal__label">Annual Income</span>
+              <span class="loan-modal__value">{{ userInfo()?.annualIncome | currency:'USD':'symbol':'1.0-0' }}</span>
+            </div>
+            <div class="loan-modal__field">
+              <span class="loan-modal__label">Credit Score</span>
+              <span class="loan-modal__value loan-modal__credit-score">
+                {{ userInfo()?.creditScore }}
+                <app-badges
+                  [text]="userInfo()?.creditScoreBadge || ''"
+                  [customColor]="creditScoreBadgeColor()"
+                  [size]="'small'"
+                  [shape]="'pill'"
+                />
+              </span>
+            </div>
+          </div>
+        } @else {
+          <p class="loan-modal__no-data">Applicant information unavailable</p>
+        }
+      </section>
+
+      <!-- Loan Details Section -->
+      @if (loanDetails()) {
+        <section class="loan-modal__section">
+          <div class="loan-modal__section-header">
+            <svg class="loan-modal__section-icon loan-modal__section-icon--loan" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+            <h3 class="loan-modal__section-title">Loan Details</h3>
+          </div>
+
+          <div class="loan-modal__card">
+            <div class="loan-modal__grid">
+              <div class="loan-modal__field">
+                <span class="loan-modal__label">Loan Amount</span>
+                <span class="loan-modal__value loan-modal__value--highlight">{{ loanDetails()?.loanAmount | currency:'USD':'symbol':'1.0-0' }}</span>
+              </div>
+              <div class="loan-modal__field">
+                <span class="loan-modal__label">Loan Purpose</span>
+                <span class="loan-modal__value">{{ loanDetails()?.purpose }}</span>
+              </div>
+              <div class="loan-modal__field">
+                <span class="loan-modal__label">Loan Term</span>
+                <span class="loan-modal__value">{{ loanDetails()?.months }} months</span>
+              </div>
+              <div class="loan-modal__field">
+                <span class="loan-modal__label">Interest Rate</span>
+                <span class="loan-modal__value">{{ interestRate() }} APR</span>
+              </div>
+              <div class="loan-modal__field">
+                <span class="loan-modal__label">Monthly Payment</span>
+                <span class="loan-modal__value loan-modal__value--highlight">{{ monthlyPayment() | currency:'USD':'symbol':'1.0-0' }}</span>
+              </div>
+              <div class="loan-modal__field">
+                <span class="loan-modal__label">Request Date</span>
+                <span class="loan-modal__value">{{ loanDetails()?.createdAt | date:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- Risk Assessment Section -->
+      @if (loanDetails() && userInfo()) {
+        <section class="loan-modal__section">
+          <div class="loan-modal__section-header">
+            <svg class="loan-modal__section-icon loan-modal__section-icon--risk" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <h3 class="loan-modal__section-title">Risk Assessment</h3>
+          </div>
+
+          <div class="loan-modal__risk-list">
+            <div class="loan-modal__risk-item">
+              <span class="loan-modal__risk-label">Debt-to-Income Ratio</span>
+              <span class="loan-modal__risk-value">{{ debtToIncomeRatio() }}%</span>
+            </div>
+            <div class="loan-modal__risk-item">
+              <span class="loan-modal__risk-label">Loan-to-Income Ratio</span>
+              <span class="loan-modal__risk-value">{{ loanToIncomeRatio() }}%</span>
+            </div>
+            <div class="loan-modal__risk-item">
+              <span class="loan-modal__risk-label">Total Interest</span>
+              <span class="loan-modal__risk-value">{{ totalInterest() | currency:'USD':'symbol':'1.0-0' }}</span>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- Error Message -->
+      @if (actionError()) {
+        <div class="loan-modal__error">
+          {{ actionError() }}
+        </div>
+      }
+
+      <!-- Decline Form -->
+      @if (showDeclineForm()) {
+        <section class="loan-modal__section loan-modal__section--decline">
+          <h3 class="loan-modal__section-title">Reason for Declining</h3>
+          <textarea
+            class="loan-modal__textarea"
+            placeholder="Please provide a reason for declining this loan application..."
+            [value]="declineReason()"
+            (input)="onReasonChange($any($event.target).value)"
+            rows="3"
+          ></textarea>
+        </section>
+      }
+    </div>
+
+    <!-- Footer Actions -->
+    <footer class="loan-modal__footer">
+      @if (!showDeclineForm()) {
+        <app-button
+          [variant]="'outline'"
+          (click)="onClose()"
+        >
+          Close
+        </app-button>
+        <app-button
+          [variant]="'destructive'"
+          [isDisabled]="!loanDetails() || isActionLoading()"
+          (click)="onShowDeclineForm()"
+          class="loan-modal__decline-btn"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+          </svg>
+          Decline Loan
+        </app-button>
+        <app-button
+          [variant]="'success'"
+          [isDisabled]="!canApprove()"
+          [isLoading]="isActionLoading()"
+          (click)="onApprove()"
+          class="loan-modal__approve-btn"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Approve Loan
+        </app-button>
+      } @else {
+        <app-button
+          [variant]="'outline'"
+          [isDisabled]="isActionLoading()"
+          (click)="onCancelDecline()"
+        >
+          Cancel
+        </app-button>
+        <app-button
+          [variant]="'destructive'"
+          [isDisabled]="!canDecline()"
+          [isLoading]="isActionLoading()"
+          (click)="onConfirmDecline()"
+        >
+          Confirm Decline
+        </app-button>
+      }
+    </footer>
+  </div>
+</app-ui-modal>
