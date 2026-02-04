@@ -8,9 +8,9 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransactionCardHeader {
-  readonly imageBase64 = input.required<string>();
-  readonly cardName = input.required<string>();
-  readonly maskedNumber = input.required<string>();
-  readonly linkedAccountName = input.required<string>();
-  readonly totalTransactions = input.required<number>();
+  public readonly imageBase64 = input.required<string>();
+  public readonly cardName = input.required<string>();
+  public readonly maskedNumber = input.required<string>();
+  public readonly linkedAccountName = input.required<string>();
+  public readonly totalTransactions = input.required<number>();
 }

@@ -21,12 +21,14 @@ export class TransactionList {
     });
   }
 
-protected formatAmount(amount: number | string, currency: string): string {
-  const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-  return `-${currency} ${numAmount.toFixed(2)}`;
-}
-protected getCategoryName(category: string | { categoryName: string } | null): string {
-  if (!category) return 'Uncategorized';
-  return typeof category === 'string' ? category : category.categoryName;
-}
+  protected formatAmount(amount: number | string, currency: string): string {
+    const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+    return `-${currency} ${numAmount.toFixed(2)}`;
+  }
+  protected getCategoryName(
+    category: string | { categoryName: string } | null,
+  ): string {
+    if (!category) return 'Uncategorized';
+    return typeof category === 'string' ? category : category.categoryName;
+  }
 }

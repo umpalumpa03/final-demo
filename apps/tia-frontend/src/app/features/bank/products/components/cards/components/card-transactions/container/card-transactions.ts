@@ -40,8 +40,9 @@ import { TransactionList } from '../components/transaction-list/transaction-list
     RouteLoader,
     ButtonComponent,
     BasicCard,
-    ErrorStates,TransactionCardHeader,TransactionList
-    
+    ErrorStates,
+    TransactionCardHeader,
+    TransactionList,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -52,14 +53,16 @@ export class CardTransactions implements OnInit {
 
   private readonly cardId = this.route.snapshot.paramMap.get('cardId') || '';
 
-  protected readonly loading$ = this.store.select(selectCardTransactionsLoading);
+  protected readonly loading$ = this.store.select(
+    selectCardTransactionsLoading,
+  );
   protected readonly error$ = this.store.select(selectCardTransactionsError);
 
-protected readonly transactions$ = this.store.select(
-  selectCardTransactionsByCardId(this.cardId)
-);
+  protected readonly transactions$ = this.store.select(
+    selectCardTransactionsByCardId(this.cardId),
+  );
   protected readonly totalCount$ = this.store.select(
-    selectCardTransactionsTotalByCardId(this.cardId)
+    selectCardTransactionsTotalByCardId(this.cardId),
   );
 
   protected readonly cardHeaderData$ = combineLatest([
@@ -67,26 +70,26 @@ protected readonly transactions$ = this.store.select(
   ]).pipe(
     map(([cardData]) => {
       if (!cardData) return null;
-      
+
       return {
         cardId: this.cardId,
         imageBase64: cardData.imageBase64,
         cardName: cardData.details.cardName,
         maskedNumber: '•••• •••• •••• ' + this.cardId.slice(-4),
       };
-    })
+    }),
   );
 
- protected readonly accountName$ = combineLatest([
-  this.store.select(selectCardDetailById(this.cardId)),
-]).pipe(
-  switchMap(([cardData]) => {
-    if (!cardData?.details?.accountId) return of('N/A');
-    return this.store.select(selectAccountById(cardData.details.accountId)).pipe(
-      map((account) => account?.name || 'N/A')
-    );
-  })
-);
+  protected readonly accountName$ = combineLatest([
+    this.store.select(selectCardDetailById(this.cardId)),
+  ]).pipe(
+    switchMap(([cardData]) => {
+      if (!cardData?.details?.accountId) return of('N/A');
+      return this.store
+        .select(selectAccountById(cardData.details.accountId))
+        .pipe(map((account) => account?.name || 'N/A'));
+    }),
+  );
   ngOnInit(): void {
     this.loadData();
   }
@@ -99,20 +102,20 @@ protected readonly transactions$ = this.store.select(
     this.loadData();
   }
 
-private loadData(): void {
-  this.store.dispatch(clearCardTransactionsError());
-  this.store.dispatch(loadCardAccounts());
-  this.store.dispatch(loadCardDetails({ cardId: this.cardId }));
-  this.store.dispatch(loadCardTransactions({ cardId: this.cardId }));
-}
+  private loadData(): void {
+    this.store.dispatch(clearCardTransactionsError());
+    this.store.dispatch(loadCardAccounts());
+    this.store.dispatch(loadCardDetails({ cardId: this.cardId }));
+    this.store.dispatch(loadCardTransactions({ cardId: this.cardId }));
+  }
 
-protected readonly isLoading$ = combineLatest([
-  this.store.select(selectCardTransactionsLoading),
-  this.store.select(selectCardDetailById(this.cardId)),
-  this.store.select(selectCardTransactionsByCardId(this.cardId)),
-]).pipe(
-  map(([loading, cardData, transactions]) => {
-    return loading && (!cardData || transactions.length === 0);
-  })
-);
+  protected readonly isLoading$ = combineLatest([
+    this.store.select(selectCardTransactionsLoading),
+    this.store.select(selectCardDetailById(this.cardId)),
+    this.store.select(selectCardTransactionsByCardId(this.cardId)),
+  ]).pipe(
+    map(([loading, cardData, transactions]) => {
+      return loading && (!cardData || transactions.length === 0);
+    }),
+  );
 }

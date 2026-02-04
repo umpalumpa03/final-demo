@@ -9,10 +9,10 @@ import { Badges } from '@tia/shared/lib/primitives/badges/badges';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransactionItem {
-  readonly description = input.required<string>();
-  readonly date = input.required<string>();
-  readonly category = input.required<string>();
-  readonly referenceNumber = input.required<string>();
-  readonly amount = input.required<string>();
-  readonly status = input.required<string>();
+  public readonly description = input.required<string>();
+  public readonly date = input.required<string>();
+  public readonly category = input.required<string>();
+  public readonly referenceNumber = input.required<string>();
+  public readonly amount = input.required<string>();
+  public readonly status = input.required<string>();
 }
