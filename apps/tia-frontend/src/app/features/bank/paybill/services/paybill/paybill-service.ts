@@ -5,6 +5,7 @@ import {
   ConfirmPaymentPayload,
   PaybillCategory,
   PaybillIdentification,
+  PaybillPaymentDetails,
   PaybillProvider,
   ProceedPaymentPayload,
   ProceedPaymentResponse,
@@ -53,6 +54,14 @@ export class PaybillService {
     return this.http.post<{ success: boolean; message?: string }>(
       `${this.baseUrl}/verify`,
       payload,
+    );
+  }
+
+  public getPaymentDetails(
+    serviceId: string,
+  ): Observable<PaybillPaymentDetails> {
+    return this.http.get<PaybillPaymentDetails>(
+      `${this.baseUrl}/payment-details/${serviceId}`,
     );
   }
 }

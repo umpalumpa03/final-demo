@@ -79,3 +79,16 @@ export interface PaybillFormProceedEvent {
   value: string;
   amount: number;
 }
+
+export interface PaybillField {
+  id: string;
+  label: string;
+  required: boolean;
+  type: string;
+}
+
+export interface PaybillPaymentDetails {
+  serviceId: string;
+  serviceName: string;
+  fields: PaybillField[];
+}
