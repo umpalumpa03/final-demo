@@ -11,7 +11,6 @@ describe('PaybillMain', () => {
   let facadeMock: Partial<PaybillMainFacade>;
 
   beforeEach(async () => {
-    // Enable fake timers for Vitest
     vi.useFakeTimers();
 
     facadeMock = {
@@ -33,7 +32,6 @@ describe('PaybillMain', () => {
   });
 
   afterEach(() => {
-    // Restore real timers after each test
     vi.useRealTimers();
   });
 
@@ -48,10 +46,8 @@ describe('PaybillMain', () => {
   it('should call setSearchQuery after debounce time', () => {
     const query = 'Internet';
 
-    // Change value
     component.searchControl.setValue(query);
 
-    // Fast-forward 300ms
     vi.advanceTimersByTime(300);
 
     expect(facadeMock.setSearchQuery).toHaveBeenCalledWith(query);
@@ -62,10 +58,8 @@ describe('PaybillMain', () => {
     component.searchControl.setValue('AB');
     component.searchControl.setValue('ABC');
 
-    // Advance time
     vi.advanceTimersByTime(300);
 
-    // Should only be called with the latest value
     expect(facadeMock.setSearchQuery).toHaveBeenCalledTimes(1);
     expect(facadeMock.setSearchQuery).toHaveBeenCalledWith('ABC');
   });

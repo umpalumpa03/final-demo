@@ -1,12 +1,4 @@
 @if (facade.isFormView()) {
-  <!-- <app-paybill-form
-  [provider]="facade.activeProvider()"
-  [verifiedDetails]="facade.verifiedDetails()"
-  [iconBgColor]="facade.activeCategoryUI()!.iconBgColor"
-  [iconBgPath]="facade.activeCategoryUI()!.iconBgPath"
-  (verify)="onVerifyAccount($event)"
-  (pay)="onProceedToPayment($event)"
-/> -->
 <router-outlet></router-outlet>
 } @else {
   <app-provider-list
