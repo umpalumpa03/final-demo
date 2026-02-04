@@ -10,7 +10,6 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
   selector: 'app-provider-list',
   template: '',
   standalone: true,
-
   inputs: [
     'headerTitle',
     'providers',
@@ -66,7 +65,6 @@ describe('ProviderListContainer', () => {
       imports: [ProviderListContainer],
       providers: [{ provide: PaybillMainFacade, useValue: mockFacade }],
     })
-
       .overrideComponent(ProviderListContainer, {
         remove: { imports: [ProviderList, RouterOutlet] },
         add: { imports: [MockProviderListComponent, MockRouterOutlet] },
@@ -80,5 +78,45 @@ describe('ProviderListContainer', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('Provider Selection Logic', () => {
+    it('should select provider and reset form when provider is FINAL', () => {
+      component.onProviderSelected('1');
+
+      expect(mockFacade.resetPaymentForm).toHaveBeenCalled();
+      expect(mockFacade.selectProvider).toHaveBeenCalledWith('1');
+      expect(mockFacade.selectParentId).not.toHaveBeenCalled();
+    });
+
+    it('should select parent ID when provider is NOT final (is a group)', () => {
+      component.onProviderSelected('2');
+
+      expect(mockFacade.selectParentId).toHaveBeenCalledWith('2');
+      expect(mockFacade.selectProvider).not.toHaveBeenCalled();
+    });
+
+    it('should do nothing if provider is not found', () => {
+      component.onProviderSelected('999');
+
+      expect(mockFacade.selectProvider).not.toHaveBeenCalled();
+      expect(mockFacade.selectParentId).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Event Delegation', () => {
+    it('should delegate account verification to facade', () => {
+      const mockEvent = { value: '123456' };
+      component.onVerifyAccount(mockEvent as any);
+
+      expect(mockFacade.verifyAccount).toHaveBeenCalledWith('123456');
+    });
+
+    it('should delegate payment progression to facade', () => {
+      const mockEvent = { amount: 100, value: '123456' };
+      component.onProceedToPayment(mockEvent as any);
+
+      expect(mockFacade.proceedToPayment).toHaveBeenCalledWith(100, '123456');
+    });
   });
 });

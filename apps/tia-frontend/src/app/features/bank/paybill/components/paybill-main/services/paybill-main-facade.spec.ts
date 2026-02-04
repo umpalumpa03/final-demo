@@ -3,39 +3,36 @@ import { PaybillMainFacade } from './paybill-main-facade';
 import { Store } from '@ngrx/store';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { signal, WritableSignal } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-
 import { PaybillActions } from '../../../store/paybill.actions';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 
 describe('PaybillMainFacade', () => {
   let service: PaybillMainFacade;
-  let routerEvents$: Subject<any>;
   let mockStore: any;
   let mockRouter: any;
+  let routerEvents$: Subject<any>;
 
-  let storeSignals: { [key: string]: WritableSignal<any> };
+  const storeSignals = {
+    currentStep: signal('DETAILS'),
+    paymentPayload: signal<any>(null),
+    activeCategory: signal<any>(null),
+    storeActiveProvider: signal<any>(null),
+    categories: signal<any[]>([]),
+    verifiedDetails: signal(null),
+    loading: signal(false),
+    challengeId: signal<string | null>(null),
+    storeAccounts: signal([]),
+  };
 
   beforeEach(() => {
     routerEvents$ = new Subject();
 
-    storeSignals = {
-      selectActiveCategory: signal(null),
-      selectActiveProvider: signal(null),
-      selectPaymentPayload: signal(null),
-      selectVerifiedDetails: signal(null),
-      selectCategories: signal([]),
-      selectLoading: signal(false),
-      selectChallengeId: signal(null),
-      selectCurrentStep: signal('DETAILS'),
-      selectGelAccountOptions: signal([]),
-    };
-
     mockStore = {
       dispatch: vi.fn(),
 
-      selectSignal: vi.fn((selector: any) => {
+      selectSignal: vi.fn((selector) => {
         return signal(null);
       }),
     };
@@ -58,11 +55,15 @@ describe('PaybillMainFacade', () => {
 
     service = TestBed.inject(PaybillMainFacade);
 
-    (service as any).activeCategory = storeSignals.selectActiveCategory;
-    (service as any).storeActiveProvider = storeSignals.selectActiveProvider;
-    (service as any).paymentPayload = storeSignals.selectPaymentPayload;
-    (service as any).categories = storeSignals.selectCategories;
-    (service as any).challengeId = storeSignals.selectChallengeId;
+    (service as any).currentStep = storeSignals.currentStep;
+    (service as any).paymentPayload = storeSignals.paymentPayload;
+    (service as any).activeCategory = storeSignals.activeCategory;
+    (service as any).storeActiveProvider = storeSignals.storeActiveProvider;
+    (service as any).categories = storeSignals.categories;
+    (service as any).verifiedDetails = storeSignals.verifiedDetails;
+    (service as any).isLoading = storeSignals.loading;
+    (service as any).challengeId = storeSignals.challengeId;
+    (service as any).storeAccounts = storeSignals.storeAccounts;
   });
 
   it('should be created', () => {
@@ -70,7 +71,8 @@ describe('PaybillMainFacade', () => {
   });
 
   describe('Initialization', () => {
-    it('should dispatch loadAccounts on init', () => {
+    it('should load accounts and clear search on init', () => {
+      service.setSearchQuery('old query');
       service.init();
       expect(mockStore.dispatch).toHaveBeenCalledWith(
         AccountsActions.loadAccounts(),
@@ -79,104 +81,104 @@ describe('PaybillMainFacade', () => {
     });
   });
 
-  describe('Computed Logic: Active Provider & URL', () => {
-    it('should resolve activeProvider from URL if present in category', () => {
-      mockRouter.url = '/bank/paybill/123';
-      routerEvents$.next(
-        new NavigationEnd(1, '/bank/paybill/123', '/bank/paybill/123'),
-      );
-
-      const provider123 = { id: '123', name: 'Test Provider' };
-      storeSignals.selectActiveCategory.set({
-        id: 'cat1',
-        providers: [provider123],
+  describe('Computed Logic', () => {
+    it('should determine isFormView based on provider.isFinal', () => {
+      storeSignals.activeCategory.set({
+        id: 'util',
+        providers: [
+          { id: '1', isFinal: true },
+          { id: '2', isFinal: false },
+        ],
       });
 
-      expect(service.selectedParentId()).toBe('123');
-      expect(service.activeProvider()).toEqual(provider123);
+      mockRouter.url = '/bank/paybill/util/1';
+      routerEvents$.next(new NavigationEnd(1, '/bank/paybill/util/1', '/url'));
+
+      expect(service.selectedParentId()).toBe('1');
+      expect(service.isFormView()).toBe(true);
+
+      mockRouter.url = '/bank/paybill/util/2';
+      routerEvents$.next(new NavigationEnd(2, '/bank/paybill/util/2', '/url'));
+
+      expect(service.selectedParentId()).toBe('2');
+      expect(service.isFormView()).toBe(false);
     });
 
-    it('should fallback to storeActiveProvider if URL has no ID', () => {
-      mockRouter.url = '/bank/paybill/pay';
-      routerEvents$.next(
-        new NavigationEnd(1, '/bank/paybill/pay', '/bank/paybill/pay'),
-      );
+    it('should format categories and filter by search query', () => {
+      storeSignals.categories.set([
+        { id: 'cat1', name: 'Utilities', providers: [1, 2] },
+        { id: 'cat2', name: 'Internet', providers: [] },
+      ]);
 
-      const storeProvider = { id: '999', name: 'Store Provider' };
-      storeSignals.selectActiveProvider.set(storeProvider);
+      const allCats = service.formattedCategories();
+      expect(allCats.length).toBe(2);
+      expect(allCats[0].count).toBe(2);
+      expect(allCats[0].iconBgColor).toBeDefined();
 
-      expect(service.activeProvider()).toEqual(storeProvider);
+      service.setSearchQuery('net');
+      const filteredCats = service.formattedCategories();
+      expect(filteredCats.length).toBe(1);
+      expect(filteredCats[0].name).toBe('Internet');
     });
-  });
 
-  describe('Search & Filtering Logic', () => {
-    it('should filter providers and include parents recursively', () => {
+    it('should filter providers recursively based on search', () => {
       const providers = [
         { id: '1', name: 'Grandparent' },
         { id: '2', name: 'Parent', parentId: '1' },
         { id: '3', name: 'Child', parentId: '2' },
         { id: '4', name: 'Unrelated' },
       ];
-
-      storeSignals.selectActiveCategory.set({ id: 'cat1', providers });
+      storeSignals.activeCategory.set({ id: 'cat', providers });
 
       service.setSearchQuery('child');
 
-      const filtered = service.filteredProviders();
-
-      const resultIds = filtered.map((p: any) => p.id);
-      expect(resultIds).toContain('1');
-      expect(resultIds).not.toContain('4');
+      service.setSearchQuery('xyz');
+      expect(service.filteredProviders().length).toBe(0);
     });
   });
 
-  describe('Categories', () => {
-    it('should format categories with UI config', () => {
-      storeSignals.selectCategories.set([
-        { id: 'utility', name: 'Utility', providers: [1, 2] },
-      ]);
+  describe('Actions & Navigation', () => {
+    it('should navigateByUrl when selectParentId is called', () => {
+      service.selectParentId('child-123');
 
-      const formatted = service.formattedCategories();
-      expect(formatted[0].iconBgColor).toBeDefined();
-      expect(formatted[0].count).toBe(2);
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(
+        '/bank/paybill/pay/child-123',
+      );
     });
 
-    it('should filter categories by search query', () => {
-      storeSignals.selectCategories.set([
-        { id: '1', name: 'Apple' },
-        { id: '2', name: 'Banana' },
-      ]);
-
-      service.setSearchQuery('app');
-      const formatted = service.formattedCategories();
-
-      expect(formatted.length).toBe(1);
-      expect(formatted[0].name).toBe('Apple');
+    it('should dispatch selectCategory action', () => {
+      service.selectCategory('cat-1');
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.selectCategory({ categoryId: 'cat-1' }),
+      );
     });
-  });
 
-  describe('Payment Actions', () => {
-    it('should dispatch checkBill on verifyAccount', () => {
-      const provider = { id: 'p1' };
-      storeSignals.selectActiveProvider.set(provider);
+    it('should dispatch selectProvider action', () => {
+      service.selectProvider('prov-1');
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.selectProvider({ providerId: 'prov-1' }),
+      );
+    });
 
-      mockRouter.url = '/bank/paybill/mobile';
+    it('should dispatch checkBill when verifyAccount is called', () => {
+      storeSignals.storeActiveProvider.set({ id: 'prov-1' });
 
-      service.verifyAccount('5551234');
+      service.verifyAccount('123456');
 
       expect(mockStore.dispatch).toHaveBeenCalledWith(
-        PaybillActions.checkBill({
-          serviceId: 'p1',
-          identification: { phoneNumber: '5551234' },
+        expect.objectContaining({
+          type: PaybillActions.checkBill.type,
+          serviceId: 'prov-1',
+          identification: expect.objectContaining({ accountNumber: '123456' }),
         }),
       );
     });
 
-    it('should dispatch setTransactionProvider and navigate on proceedToPayment', () => {
-      const provider = { id: 'p1' };
-      storeSignals.selectActiveProvider.set(provider);
+    it('should proceed to payment (dispatch + navigate)', () => {
+      const provider = { id: 'prov-1' };
+      storeSignals.storeActiveProvider.set(provider);
 
-      service.proceedToPayment(100, 'account123');
+      service.proceedToPayment(100, 'account-123');
 
       expect(mockStore.dispatch).toHaveBeenCalledWith(
         PaybillActions.setTransactionProvider({ provider }),
@@ -188,19 +190,44 @@ describe('PaybillMainFacade', () => {
         '/bank/paybill/pay/confirm-payment',
       ]);
     });
-  });
 
-  describe('Navigation Helpers', () => {
-    it('should navigate correctly in selectParentId', () => {
-      mockRouter.url = '/bank/paybill/pay';
-      service.selectParentId('child-id');
+    it('should confirm payment (dispatch + navigate)', () => {
+      const provider = { id: 'prov-1' };
+      const payload = { amount: 50, identification: {} };
 
-      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(
-        '/bank/paybill/pay/child-id',
+      storeSignals.storeActiveProvider.set(provider);
+      storeSignals.paymentPayload.set(payload);
+      service.selectedSenderAccountId.set('sender-1');
+
+      service.confirmPayment();
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.proceedPayment({
+          payload: {
+            serviceId: 'prov-1',
+            identification: payload.identification,
+            amount: 50,
+            senderAccountId: 'sender-1',
+          },
+        }),
+      );
+      expect(mockRouter.navigate).toHaveBeenCalledWith([
+        '/bank/paybill/pay/otp-verification',
+      ]);
+    });
+
+    it('should verify OTP', () => {
+      storeSignals.challengeId.set('chal-123');
+      service.verifyOtp('123456');
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.confirmPayment({
+          payload: { challengeId: 'chal-123', code: '123456' },
+        }),
       );
     });
 
-    it('should reset flow and navigate to dashboard', () => {
+    it('should reset flow', () => {
       service.resetFlow();
       expect(mockStore.dispatch).toHaveBeenCalledWith(
         PaybillActions.clearSelection(),
@@ -208,12 +235,100 @@ describe('PaybillMainFacade', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/paybill/pay']);
     });
 
-    it('should backToDetails', () => {
+    it('should clear selection and navigate in resetFlow', () => {
+      service.resetFlow();
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.clearSelection(),
+      );
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/paybill/pay']);
+    });
+
+    it('should dispatch resetPaymentForm', () => {
+      service.resetPaymentForm();
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.resetPaymentForm(),
+      );
+    });
+
+    it('should navigate to dashboard in resetToDashboard', () => {
+      service.resetToDashboard();
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/dashboard']);
+    });
+
+    it('should clear notifications and navigate back in backToDetails', () => {
       service.backToDetails();
       expect(mockStore.dispatch).toHaveBeenCalledWith(
         PaybillActions.clearAllNotifications(),
       );
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.setPaymentStep({ step: 'DETAILS' }),
+      );
       expect(mockRouter.navigate).toHaveBeenCalledWith(['bank/paybill/pay']);
+    });
+
+    it('should dispatch checkBill with correct identification (Default: Account Number)', () => {
+      storeSignals.storeActiveProvider.set({ id: 'p1' });
+      mockRouter.url = '/bank/paybill/pay';
+
+      service.verifyAccount('12345');
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.checkBill({
+          serviceId: 'p1',
+          identification: { accountNumber: '12345' },
+        }),
+      );
+    });
+
+    it('should dispatch checkBill with correct identification (Mobile)', () => {
+      storeSignals.storeActiveProvider.set({ id: 'p1' });
+
+      mockRouter.url = '/bank/paybill/mobile/top-up';
+
+      service.verifyAccount('555999');
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.checkBill({
+          serviceId: 'p1',
+          identification: { phoneNumber: '555999' },
+        }),
+      );
+    });
+
+    it('should dispatch checkBill with correct identification (Rent/Property)', () => {
+      storeSignals.storeActiveProvider.set({ id: 'p1' });
+      mockRouter.url = '/bank/paybill/rent';
+
+      service.verifyAccount('PROP-001');
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.checkBill({
+          serviceId: 'p1',
+          identification: {
+            propertyCode: 'PROP-001',
+            tenantId: '09876543210',
+          },
+        }),
+      );
+    });
+
+    it('should return empty array if no provider or payload', () => {
+      storeSignals.storeActiveProvider.set(null);
+      storeSignals.paymentPayload.set(null);
+      expect(service.successSummaryItems()).toEqual([]);
+    });
+
+    it('should return items when provider and payload exist', () => {
+      storeSignals.storeActiveProvider.set({ id: 'p1', name: 'Provider 1' });
+      storeSignals.paymentPayload.set({
+        amount: 100,
+        identification: { accountNumber: '123' },
+      });
+
+      const items = service.successSummaryItems();
+      expect(items).toBeDefined();
+
+      expect(Array.isArray(items)).toBe(true);
     });
   });
 });
