@@ -26,7 +26,7 @@ export const TransferStore = signalStore(
         amount: 0,
         description: '',
         error: null,
-        
+
       });
     },
     setManualRecipientName(name: string) {
@@ -34,6 +34,9 @@ export const TransferStore = signalStore(
     },
     setSenderAccount(account: Account | null) {
       patchState(store, { senderAccount: account });
+    },
+    setReceiverOwnAccount(account: Account | null) {
+      patchState(store, { receiverOwnAccount: account });
     },
     setSelectedRecipientAccount(account: RecipientAccount | null) {
       patchState(store, { selectedRecipientAccount: account });
@@ -58,7 +61,8 @@ export const TransferStore = signalStore(
     setIsVerified(isVerified: boolean) {
       patchState(store, { isVerified });
     },
-    //will be used 
+
+    //will be used
     // setPendingTransferId(id: string | null) {
     //   patchState(store, { pendingTransferId: id });
     // },
