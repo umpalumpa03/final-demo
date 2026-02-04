@@ -109,9 +109,14 @@
             color: $brown-800;
         }
 
-        &--declined {
+        &--rejected {
             background: $red-50;
             color: $red-600;
+        }
+
+        &--finished {
+            background: $gray-50;
+            color: $gray-700;
         }
     }
 
