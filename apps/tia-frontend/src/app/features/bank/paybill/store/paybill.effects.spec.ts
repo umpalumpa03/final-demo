@@ -359,6 +359,25 @@ describe('PaybillEffect (Modern Suite)', () => {
       });
     });
 
+    it('checkBill$: should dispatch Failure on API throw', () => {
+      paybillService.checkBill.mockReturnValue(
+        throwError(() => new Error('Network Error')),
+      );
+
+      actions$ = of(
+        PaybillActions.checkBill({
+          serviceId: 's1',
+          identification: {} as any,
+        }),
+      );
+
+      effects.checkBill$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.checkBillFailure({ error: 'Network Error' }),
+        );
+      });
+    });
+
     it('getErrorMessage: should handle nested error objects (error.error.message)', () => {
       const complexError = { error: { message: 'Deep Error' } };
       paybillService.getCategories.mockReturnValue(

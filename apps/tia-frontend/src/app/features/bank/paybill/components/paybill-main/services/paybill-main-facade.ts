@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as PAYBILL_SELECTORS from '../../../store/paybill.selectors';
 import { selectGelAccountOptions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
@@ -18,6 +18,9 @@ import { InputConfig } from '@tia/shared/lib/forms/models/input.model';
 import { PaybillActions } from '../../../store/paybill.actions';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
+import { PaybillDynamicForm } from '../../../services/paybill-dynamic-form/paybill-dynamic-form';
+import { PaybillDynamicFormValues } from '../../../services/paybill-dynamic-form/models/dynamic-form.model';
+import { buildDynamicIdentification } from '../../../config/paybill.config';
 
 @Injectable({
   providedIn: 'root',
@@ -25,10 +28,16 @@ import { filter, map } from 'rxjs';
 export class PaybillMainFacade {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
-
+  private readonly dynamicFormService = inject(PaybillDynamicForm);
   public readonly searchQuery = signal('');
   public readonly selectedSenderAccountId = signal<string | null>(null);
+
+  public init(): void {
+    this.store.dispatch(AccountsActions.loadAccounts());
+    this.searchQuery.set('');
+  }
+
+  // select state from store
 
   public readonly currentStep = this.store.selectSignal(
     PAYBILL_SELECTORS.selectCurrentStep,
@@ -57,6 +66,12 @@ export class PaybillMainFacade {
   public readonly storeAccounts = this.store.selectSignal(
     selectGelAccountOptions,
   );
+
+  public readonly paymentFields = this.store.selectSignal(
+    PAYBILL_SELECTORS.selectPaymentFields,
+  );
+
+  // Computed data for smart components
 
   public readonly activeProvider = computed(() => {
     const urlId = this.selectedParentId();
@@ -102,11 +117,6 @@ export class PaybillMainFacade {
 
     return !!provider?.isFinal;
   });
-
-  public init(): void {
-    this.store.dispatch(AccountsActions.loadAccounts());
-    this.searchQuery.set('');
-  }
 
   private readonly visibleProviderIds = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
@@ -215,23 +225,6 @@ export class PaybillMainFacade {
     }
   });
 
-  private readonly identificationKey = computed(() => {
-    const url = this.router.url.toLowerCase();
-    if (url.includes('mobile') || url.includes('phone')) return 'phoneNumber';
-    if (url.includes('insurance')) return 'policyNumber';
-    if (url.includes('rent')) return 'propertyCode';
-    return 'accountNumber';
-  });
-
-  private buildIdentification(inputValue: string): PaybillIdentification {
-    const key = this.identificationKey();
-    const idObj: PaybillIdentification = { [key]: inputValue };
-    if (key === 'propertyCode') {
-      idObj.tenantId = '09876543210';
-    }
-    return idObj;
-  }
-
   public setSearchQuery(query: string): void {
     this.searchQuery.set(query);
   }
@@ -242,6 +235,9 @@ export class PaybillMainFacade {
 
   public selectProvider(providerId: string): void {
     this.store.dispatch(PaybillActions.selectProvider({ providerId }));
+    this.store.dispatch(
+      PaybillActions.loadPaymentDetails({ serviceId: providerId }),
+    );
   }
 
   public selectParentId(childId: string): void {
@@ -252,19 +248,24 @@ export class PaybillMainFacade {
     this.router.navigateByUrl(`${base}/${childId}`);
   }
 
-  public verifyAccount(inputValue: string): void {
+  public verifyAccount<T extends Record<string, any>>(formValues: T): void {
     const provider = this.activeProvider();
+
     if (provider) {
       this.store.dispatch(
         PaybillActions.checkBill({
           serviceId: provider.id,
-          identification: this.buildIdentification(inputValue),
+          identification:
+            this.dynamicFormService.buildIdentification(formValues),
         }),
       );
     }
   }
 
-  public proceedToPayment(amount: number, inputValue: string): void {
+  public proceedToPayment(
+    amount: number,
+    formValues: PaybillDynamicFormValues,
+  ): void {
     const provider = this.activeProvider();
 
     if (provider) {
@@ -273,18 +274,16 @@ export class PaybillMainFacade {
       this.store.dispatch(
         PaybillActions.setPaymentPayload({
           data: {
-            identification: this.buildIdentification(inputValue),
+            identification: buildDynamicIdentification(formValues),
             amount: amount,
           },
         }),
       );
 
       this.store.dispatch(PaybillActions.setPaymentStep({ step: 'CONFIRM' }));
-
       this.router.navigate(['/bank/paybill/pay/confirm-payment']);
     }
   }
-
   public confirmPayment(): void {
     const provider = this.activeProvider();
     const data = this.paymentPayload();

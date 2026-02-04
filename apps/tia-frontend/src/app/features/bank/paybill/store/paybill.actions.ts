@@ -5,6 +5,7 @@ import {
   PaybillCategory,
   PaybillIdentification,
   PaybillPayload,
+  PaybillPaymentDetails,
   PaybillProvider,
   ProceedPaymentPayload,
   ProceedPaymentResponse,
@@ -47,6 +48,9 @@ export const PaybillActions = createActionGroup({
     'Add Notification': props<PaybillNotification>(),
     'Dismiss Notification': props<{ id: string }>(),
     'Clear All Notifications': emptyProps(),
+    'Load Payment Details': props<{ serviceId: string }>(),
+    'Load Payment Details Success': props<{ details: PaybillPaymentDetails }>(),
+    'Load Payment Details Failure': props<{ error: string }>(),
   },
 });
 

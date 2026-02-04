@@ -14,8 +14,6 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
 import { Currency } from '@tia/shared/models/transactions/base.models';
-import { ShowcaseCard } from '../../../../storybook/shared/showcase-card/showcase-card';
-import { LibraryTitle } from '../../../../storybook/shared/library-title/library-title';
 import { FilterConfig } from '../../models/transactions-filters.models';
 import { getTransactionFiltersConfig } from '../../config/transactions-filters-data';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -23,6 +21,7 @@ import {
   getActiveFilters,
   mapFormIntoTransactionFilter,
 } from '../../utils/transactions-filters.utils';
+import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 
 @Component({
   selector: 'app-transactions-filters',
@@ -30,9 +29,8 @@ import {
     ReactiveFormsModule,
     TextInput,
     Dropdowns,
-    ShowcaseCard,
-    LibraryTitle,
     ButtonComponent,
+    BasicCard,
   ],
   templateUrl: './transactions-filters.html',
   styleUrl: './transactions-filters.scss',

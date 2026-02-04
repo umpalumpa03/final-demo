@@ -85,7 +85,11 @@ export const loadTransactionsCategoriesEffect = createEffect(
     transactionService = inject(TransactionApiService),
   ) => {
     return actions$.pipe(
-      ofType(TransactionActions.enter, TransactionActions.loadCategories),
+      ofType(
+        TransactionActions.enter,
+        TransactionActions.loadCategories,
+        TransactionActions.createCategorySuccess,
+      ),
       switchMap(() => {
         return transactionService.getTransactionsCategories().pipe(
           map((categories) =>
@@ -96,6 +100,55 @@ export const loadTransactionsCategoriesEffect = createEffect(
           ),
         );
       }),
+    );
+  },
+  { functional: true },
+);
+
+export const createCategoryEffect = createEffect(
+  (
+    actions$ = inject(Actions),
+    transactionService = inject(TransactionApiService),
+  ) => {
+    return actions$.pipe(
+      ofType(TransactionActions.createCategory),
+      switchMap(({ name }) =>
+        transactionService.createTransactionCategory(name).pipe(
+          map((response) =>
+            TransactionActions.createCategorySuccess({ response }),
+          ),
+          catchError((error) =>
+            of(TransactionActions.createCategoryFailure({ error })),
+          ),
+        ),
+      ),
+    );
+  },
+  { functional: true },
+);
+
+export const assignCategoryEffect = createEffect(
+  (
+    actions$ = inject(Actions),
+    transactionService = inject(TransactionApiService),
+  ) => {
+    return actions$.pipe(
+      ofType(TransactionActions.assignCategory),
+      switchMap(({ transactionId, categoryId }) =>
+        transactionService
+          .categorizeTransaction(transactionId, categoryId)
+          .pipe(
+            map(() =>
+              TransactionActions.assignCategorySuccess({
+                transactionId,
+                categoryId,
+              }),
+            ),
+            catchError((error) =>
+              of(TransactionActions.assignCategoryFailure({ error })),
+            ),
+          ),
+      ),
     );
   },
   { functional: true },
