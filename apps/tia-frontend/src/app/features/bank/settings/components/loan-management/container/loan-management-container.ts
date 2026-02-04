@@ -9,11 +9,6 @@ import { LoanManagementStore } from '../store/loan-management.store';
 import { PendingApprovalsTable } from '../components/pending-approvals-table/pending-approvals-table';
 import { LoanCaseDrawer } from '../components/loan-case-drawer/loan-case-drawer';
 
-/**
- * Loan Management Container.
- * Provides the LoanManagementStore and composes the table and drawer components.
- * Handles communication between child components and the store.
- */
 @Component({
   selector: 'app-loan-management-container',
   imports: [BasicCard, PendingApprovalsTable, LoanCaseDrawer],
@@ -25,7 +20,6 @@ import { LoanCaseDrawer } from '../components/loan-case-drawer/loan-case-drawer'
 export class LoanManagementContainer implements OnInit {
   protected readonly store = inject(LoanManagementStore);
 
-  // Config
   protected readonly config = {
     title: 'Loan Management',
     subtitle: 'Review and process pending loan applications',
@@ -35,7 +29,6 @@ export class LoanManagementContainer implements OnInit {
     this.store.loadPendingApprovals();
   }
 
-  // Table event handlers
   protected onRowClick(loanId: string): void {
     this.store.selectLoan(loanId);
   }
@@ -43,8 +36,7 @@ export class LoanManagementContainer implements OnInit {
   protected onReload(): void {
     this.store.loadPendingApprovals();
   }
-
-  // Drawer event handlers
+  
   protected onDrawerClose(): void {
     this.store.clearSelection();
   }

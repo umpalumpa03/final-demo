@@ -6,7 +6,6 @@
   [subtitle]="config.subtitle"
 >
   <div class="loan-management-container">
-    <!-- Pending Approvals Table -->
     <app-pending-approvals-table
       [approvals]="store.pendingApprovals()"
       [isLoading]="store.loading()"
@@ -16,8 +15,6 @@
     ></app-pending-approvals-table>
   </div>
 </app-basic-card>
-
-<!-- Loan Case Drawer -->
 <app-loan-case-drawer
   [isOpen]="!!store.selectedLoanId()"
   [loanDetails]="store.selectedLoanDetails()"
