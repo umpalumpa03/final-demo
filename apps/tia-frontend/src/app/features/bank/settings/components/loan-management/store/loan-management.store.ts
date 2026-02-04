@@ -25,40 +25,20 @@ import {
   UserInfo,
 } from '../shared/models/loan-management.model';
 
-/**
- * In-flight request cache for deduplication.
- * Prevents multiple concurrent requests for the same resource.
- */
 const userInfoRequests = new Map<
   string,
   ReturnType<LoanManagementApiService['getUserInfo']>
 >();
 
-/**
- * Loan Management Signal Store
- *
- * Features:
- * - Caching: User info cached in Map
- * - Deduplication: shareReplay prevents duplicate concurrent requests
- * - Cancellation: switchMap cancels previous requests on selection change
- * - Optimistic updates: Approve/reject removes from list immediately
- */
 export const LoanManagementStore = signalStore(
   withState(loanManagementInitialState),
 
   withComputed((store) => ({
-    /**
-     * Selected loan details from pending approvals list
-     */
     selectedLoanDetails: computed(() => {
       const selectedId = store.selectedLoanId();
       if (!selectedId) return null;
       return store.pendingApprovals().find((loan) => loan.id === selectedId) ?? null;
     }),
-
-    /**
-     * Selected user info from cache (based on selected loan's userId)
-     */
     selectedUserInfo: computed(() => {
       const selectedId = store.selectedLoanId();
       if (!selectedId) return null;
@@ -66,39 +46,22 @@ export const LoanManagementStore = signalStore(
       if (!loan?.userId) return null;
       return store.userInfoCache()[loan.userId] ?? null;
     }),
-
-    /**
-     * Whether there are pending approvals
-     */
     hasPendingApprovals: computed(() => store.pendingApprovals().length > 0),
-
-    /**
-     * Count of pending approvals
-     */
     pendingCount: computed(() => store.pendingApprovals().length),
   })),
 
   withMethods((store) => {
     const api = inject(LoanManagementApiService);
-
-    /**
-     * Helper to fetch user info with caching and dedup
-     */
     const fetchUserInfo = (userId: string | undefined) => {
-      // Handle missing userId gracefully
       if (!userId) {
         patchState(store, { userInfoLoading: false });
         return EMPTY;
       }
-
-      // Check cache first
       const cached = store.userInfoCache()[userId];
       if (cached) {
         patchState(store, { userInfoLoading: false });
         return of(cached);
       }
-
-      // Dedup: reuse in-flight request if exists
       let request$ = userInfoRequests.get(userId);
       if (!request$) {
         request$ = api.getUserInfo(userId).pipe(shareReplay(1));
@@ -125,10 +88,6 @@ export const LoanManagementStore = signalStore(
     };
 
     return {
-      /**
-       * Load pending approvals list.
-       * Stale-while-revalidate: shows cached data immediately, refreshes in background.
-       */
       loadPendingApprovals: rxMethod<void>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
@@ -151,11 +110,6 @@ export const LoanManagementStore = signalStore(
           ),
         ),
       ),
-
-      /**
-       * Select a loan and load its user info.
-       * Uses switchMap to cancel previous in-flight requests.
-       */
       selectLoan: rxMethod<string | null>(
         pipe(
           tap((loanId) => {
@@ -167,18 +121,12 @@ export const LoanManagementStore = signalStore(
           }),
           filter((loanId): loanId is string => loanId !== null),
           switchMap((loanId) => {
-            // Get userId from pending approvals
             const loan = store.pendingApprovals().find((l) => l.id === loanId);
             return fetchUserInfo(loan?.userId);
           }),
         ),
       ),
 
-      /**
-       * Load user info for a specific user.
-       * Called on demand when loan case is opened.
-       * NEVER call per row in the list.
-       */
       loadUserInfo: rxMethod<string>(
         pipe(
           tap(() => patchState(store, { userInfoLoading: true })),
@@ -186,21 +134,14 @@ export const LoanManagementStore = signalStore(
         ),
       ),
 
-      /**
-       * Approve a loan.
-       * Optimistically removes from list, invalidates caches on success.
-       */
       approveLoan: rxMethod<string>(
         pipe(
           tap(() =>
             patchState(store, { actionLoading: true, actionError: null }),
           ),
           switchMap((loanId) => {
-            // Get userId before optimistic update for cache invalidation
             const loan = store.pendingApprovals().find((l) => l.id === loanId);
             const userId = loan?.userId;
-
-            // Optimistic update: remove from list immediately
             const updatedList = store
               .pendingApprovals()
               .filter((l) => l.id !== loanId);
@@ -213,7 +154,6 @@ export const LoanManagementStore = signalStore(
               })
               .pipe(
                 tap(() => {
-                  // Invalidate user cache
                   const newUserInfoCache = { ...store.userInfoCache() };
                   if (userId) {
                     delete newUserInfoCache[userId];
@@ -237,8 +177,6 @@ export const LoanManagementStore = signalStore(
                     actionLoading: false,
                     actionError: errorMsg,
                   });
-
-                  // Reload list to get current state (rollback)
                   return api.getPendingApprovals().pipe(
                     tap((pendingApprovals) => {
                       patchState(store, { pendingApprovals });
@@ -251,21 +189,14 @@ export const LoanManagementStore = signalStore(
         ),
       ),
 
-      /**
-       * Reject a loan with reason.
-       * Optimistically removes from list, invalidates caches on success.
-       */
       rejectLoan: rxMethod<{ loanId: string; reason: string }>(
         pipe(
           tap(() =>
             patchState(store, { actionLoading: true, actionError: null }),
           ),
           switchMap(({ loanId, reason }) => {
-            // Get userId before optimistic update for cache invalidation
             const loan = store.pendingApprovals().find((l) => l.id === loanId);
             const userId = loan?.userId;
-
-            // Optimistic update: remove from list immediately
             const updatedList = store
               .pendingApprovals()
               .filter((l) => l.id !== loanId);
@@ -279,7 +210,6 @@ export const LoanManagementStore = signalStore(
               })
               .pipe(
                 tap(() => {
-                  // Invalidate user cache
                   const newUserInfoCache = { ...store.userInfoCache() };
                   if (userId) {
                     delete newUserInfoCache[userId];
@@ -303,8 +233,6 @@ export const LoanManagementStore = signalStore(
                     actionLoading: false,
                     actionError: errorMsg,
                   });
-
-                  // Reload list to get current state (rollback)
                   return api.getPendingApprovals().pipe(
                     tap((pendingApprovals) => {
                       patchState(store, { pendingApprovals });
@@ -316,20 +244,12 @@ export const LoanManagementStore = signalStore(
           }),
         ),
       ),
-
-      /**
-       * Clear selection and close drawer
-       */
       clearSelection(): void {
         patchState(store, {
           selectedLoanId: null,
           actionError: null,
         });
       },
-
-      /**
-       * Clear error state
-       */
       clearError(): void {
         patchState(store, { error: null, actionError: null });
       },
