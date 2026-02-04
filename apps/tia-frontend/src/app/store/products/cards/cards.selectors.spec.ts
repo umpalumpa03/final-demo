@@ -20,37 +20,48 @@ import {
   selectIsCardDetailsModalOpen,
   selectSelectedCardIdForModal,
   selectCardDetailsModalData,
+  selectCardTransactions,
+  selectCardTransactionsLoading,
+  selectCardTransactionsError,
+  selectCardTransactionsTotalCount,
+  selectCardTransactionsByCardId,
+  selectCardTransactionsTotalByCardId,
 } from './cards.selectors';
 import { CardsState } from './cards.state';
+import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 
 describe('CardsSelectors - Full Coverage', () => {
-  const mockState: CardsState = {
-    accounts: [
-      { id: 'acc-1', iban: 'GE123', name: 'Main', balance: 1000, currency: 'GEL', status: 'ACTIVE', cardIds: ['card-1'], openedAt: '2024-01-01' },
-    ],
-    cardImages: { 'card-1': 'base64image' },
-    cardDetails: {
-      'card-1': {
-        id: 'card-1', accountId: 'acc-1', type: 'DEBIT' as const, network: 'VISA' as const,
-        design: 'blue', cardName: 'My Card', status: 'ACTIVE' as const,
-        allowOnlinePayments: true, allowInternational: true, allowAtm: true,
-        createdAt: '2024-01-01', updatedAt: '2024-01-01',
-      },
+const mockState: CardsState = {
+  accounts: [
+    { id: 'acc-1', iban: 'GE123', name: 'Main', balance: 1000, currency: 'GEL', status: 'ACTIVE', cardIds: ['card-1'], openedAt: '2024-01-01' },
+  ],
+  cardImages: { 'card-1': 'base64image' },
+  cardDetails: {
+    'card-1': {
+      id: 'card-1', accountId: 'acc-1', type: 'DEBIT' as const, network: 'VISA' as const,
+      design: 'blue', cardName: 'My Card', status: 'ACTIVE' as const,
+      allowOnlinePayments: true, allowInternational: true, allowAtm: true,
+      createdAt: '2024-01-01', updatedAt: '2024-01-01',
     },
-    loading: false,
-    error: 'some error',
-    cardDetailsLoading: false,
-    cardDetailsError: 'details error',
-    designs: [{ id: 'blue', designName: 'Blue', uri: 'uri1' }],
-    categories: [{ value: 'DEBIT' as const, displayName: 'Debit' }],
-    types: [{ value: 'VISA' as const, displayName: 'Visa' }],
-    isCreating: true,
-    createError: 'create failed',
-    isCreateModalOpen: true,
-    showSuccessAlert: true,
-     isCardDetailsModalOpen: false,
-  selectedCardIdForModal: null
-  };
+  },
+  loading: false,
+  error: 'some error',
+  cardDetailsLoading: false,
+  cardDetailsError: 'details error',
+  designs: [{ id: 'blue', designName: 'Blue', uri: 'uri1' }],
+  categories: [{ value: 'DEBIT' as const, displayName: 'Debit' }],
+  types: [{ value: 'VISA' as const, displayName: 'Visa' }],
+  isCreating: true,
+  createError: 'create failed',
+  isCreateModalOpen: true,
+  showSuccessAlert: true,
+  isCardDetailsModalOpen: false,
+  selectedCardIdForModal: null,
+  cardTransactions: {},
+  cardTransactionsLoading: false,
+  cardTransactionsError: null,
+  cardTransactionsTotalCount: {},
+};
 
   it('should select all accounts', () => {
     expect(selectAllAccounts.projector(mockState)).toEqual(mockState.accounts);
@@ -146,5 +157,31 @@ it('should select card details modal data', () => {
   const result = selectCardDetailsModalData.projector('card-1', mockState.cardDetails, mockState.cardImages, mockState.accounts);
   expect(result?.cardId).toBe('card-1');
   expect(result?.formattedBalance).toBeDefined();
+});
+it('should select cardTransactions', () => {
+  expect(selectCardTransactions.projector(mockState)).toEqual({});
+});
+
+it('should select cardTransactionsLoading', () => {
+  expect(selectCardTransactionsLoading.projector(mockState)).toBe(false);
+});
+
+it('should select cardTransactionsError', () => {
+  expect(selectCardTransactionsError.projector(mockState)).toBeNull();
+});
+
+it('should select cardTransactionsTotalCount', () => {
+  expect(selectCardTransactionsTotalCount.projector(mockState)).toEqual({});
+});
+
+it('should select transactions by cardId', () => {
+  const transactions = [{ id: 'tx-1' }] as ITransactions[];
+  expect(selectCardTransactionsByCardId('card-1').projector({ 'card-1': transactions })).toEqual(transactions);
+  expect(selectCardTransactionsByCardId('unknown').projector({})).toEqual([]);
+});
+
+it('should select total by cardId', () => {
+  expect(selectCardTransactionsTotalByCardId('card-1').projector({ 'card-1': 10 })).toBe(10);
+  expect(selectCardTransactionsTotalByCardId('unknown').projector({})).toBe(0);
 });
 });

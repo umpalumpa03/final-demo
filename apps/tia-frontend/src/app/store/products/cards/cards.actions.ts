@@ -5,6 +5,7 @@ import { CardDesign } from 'apps/tia-frontend/src/app/features/bank/products/com
 import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
 import { CreateCardRequest } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/create-card-request.model';
 import { CardType } from '../../../features/bank/products/components/cards/models/card-type.model';
+import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 
 export const loadCardAccounts = createAction('[Cards] Load Card Accounts');
 
@@ -105,4 +106,19 @@ export const openCardDetailsModal = createAction(
 
 export const closeCardDetailsModal = createAction(
   '[Cards] Close Card Details Modal',
+);
+
+export const loadCardTransactions = createAction(
+  '[Cards] Load Card Transactions',
+  props<{ cardId: string }>(),
+);
+
+export const loadCardTransactionsSuccess = createAction(
+  '[Cards] Load Card Transactions Success',
+  props<{ cardId: string; transactions: ITransactions[]; total: number }>(),
+);
+
+export const loadCardTransactionsFailure = createAction(
+  '[Cards] Load Card Transactions Failure',
+  props<{ cardId: string; error: string }>(),
 );
