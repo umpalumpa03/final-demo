@@ -1,2 +1,7 @@
 @use "../../../../../../shared/styles/mixins" as *;
 @use "../../../../../../shared/styles/palette" as *;
+
+main {
+    @include display-flex(column);
+    gap: 1.6rem;
+}
