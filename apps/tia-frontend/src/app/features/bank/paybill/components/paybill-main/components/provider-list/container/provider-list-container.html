@@ -1,0 +1,14 @@
+@if (facade.isFormView()) {
+<router-outlet></router-outlet>
+} @else {
+  <app-provider-list
+    [headerTitle]="facade.providerListHeader()"
+    [providers]="facade.filteredProviders()"
+    [iconBgColor]="facade.activeCategoryUI()?.iconBgColor"
+    [iconBgPath]="facade.activeCategoryUI()?.iconBgPath"
+    [subtitle]="facade.activeCategory()?.description || ''" 
+    [isRoot]="facade.isRootProviderView()"
+    [isLoading]="facade.isLoading() || !facade.activeCategory()"
+    (selected)="onProviderSelected($event)"
+  />
+}

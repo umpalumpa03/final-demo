@@ -13,7 +13,7 @@ import {
 
 import { Store } from '@ngrx/store';
 import { selectFilters, selectNextCursor } from './transactions.selector';
-import { TransactionService } from '@tia/shared/services/transactions-service/transaction-service';
+import { TransactionApiService } from '@tia/shared/services/transactions-service/transactions.api.service';
 
 export const updateFiltersEffects = createEffect(
   (actions$ = inject(Actions)) => {
@@ -29,7 +29,7 @@ export const loadTransactionsEffect = createEffect(
   (
     actions$ = inject(Actions),
     store = inject(Store),
-    transactionService = inject(TransactionService),
+    transactionService = inject(TransactionApiService),
   ) => {
     return actions$.pipe(
       ofType(
@@ -64,7 +64,7 @@ export const loadTransactionsEffect = createEffect(
 export const loadTotalEffect = createEffect(
   (
     actions$ = inject(Actions),
-    transactionService = inject(TransactionService),
+    transactionService = inject(TransactionApiService),
   ) => {
     return actions$.pipe(
       ofType(TransactionActions.enter, TransactionActions.loadTransactions),
@@ -82,7 +82,7 @@ export const loadTotalEffect = createEffect(
 export const loadTransactionsCategoriesEffect = createEffect(
   (
     actions$ = inject(Actions),
-    transactionService = inject(TransactionService),
+    transactionService = inject(TransactionApiService),
   ) => {
     return actions$.pipe(
       ofType(TransactionActions.enter, TransactionActions.loadCategories),

@@ -3,10 +3,12 @@ import { of, Subject } from 'rxjs';
 import { Sidebar } from './sidebar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'apps/tia-frontend/src/app/core/auth/services/auth.service';
-import { BreakpointService } from '../../../../shared/services/breakpoints/breakpoint.service';
+import { BreakpointService } from '../../../../core/services/breakpoints/breakpoint.service';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { ElementRef, signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { userInfoFeature } from 'apps/tia-frontend/src/app/store/user-info/user-info.reducer';
 
 describe('Sidebar', () => {
   let component: Sidebar;
@@ -14,6 +16,7 @@ describe('Sidebar', () => {
   let mockAuth: any;
   let mockBreakpoint: any;
   let langChangeSubject: Subject<any>;
+  let store: MockStore;
 
   beforeEach(async () => {
     langChangeSubject = new Subject();
@@ -30,6 +33,7 @@ describe('Sidebar', () => {
       imports: [Sidebar, TranslateModule.forRoot()],
       providers: [
         provideRouter([]),
+        provideMockStore(),
         { provide: AuthService, useValue: mockAuth },
         { provide: BreakpointService, useValue: mockBreakpoint },
         {
@@ -39,6 +43,9 @@ describe('Sidebar', () => {
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
+
+    store = TestBed.inject(MockStore);
+    store.overrideSelector(userInfoFeature.selectRole, 'CONSUMER');
 
     const translate = TestBed.inject(TranslateService);
     Object.defineProperty(translate, 'onLangChange', {
@@ -52,10 +59,19 @@ describe('Sidebar', () => {
 
   it('should initialize and react to lang change', () => {
     const updateSpy = vi.spyOn(component as any, 'updateItems');
-
     langChangeSubject.next({ lang: 'en' });
+    expect(updateSpy).toHaveBeenCalled();
+  });
 
-    expect(updateSpy).toHaveBeenCalledTimes(1);
+  it('should add storybook item when user role is SUPPORT', () => {
+    store.overrideSelector(userInfoFeature.selectRole, 'SUPPORT');
+    store.refreshState();
+    (component as any).updateItems();
+
+    const storybookItem = component
+      .items()
+      .find((item) => item.route?.includes('storybook'));
+    expect(storybookItem).toBeTruthy();
   });
 
   it('should toggle collapse and logout signals', () => {

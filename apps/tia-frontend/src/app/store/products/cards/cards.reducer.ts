@@ -103,4 +103,15 @@ on(CardsActions.hideSuccessAlert, (state) => ({
   ...state,
   showSuccessAlert: false,
 })),
+
+on(CardsActions.openCardDetailsModal, (state, { cardId }) => ({
+  ...state,
+  isCardDetailsModalOpen: true,
+  selectedCardIdForModal: cardId,
+})),
+on(CardsActions.closeCardDetailsModal, (state) => ({
+  ...state,
+  isCardDetailsModalOpen: false,
+  selectedCardIdForModal: null,
+})),
 );

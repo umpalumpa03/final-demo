@@ -28,7 +28,7 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
     title: 'Create New Group',
     subtitle: 'Create a group to organize your bill payment templates',
     submitLabel: 'Create Group',
-    submitType: 'default',
+    submitButtonType: 'default',
     fields: [
       {
         type: 'text',
@@ -38,13 +38,15 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
         required: true,
       },
     ],
+    formGroupName: 'createGroupForm',
+    formSubmitType: 'create-group',
   },
 
   [ModalType.RenameGroup]: {
     title: 'Rename Group',
     subtitle: 'Enter a new name for this group',
     submitLabel: 'Rename Group',
-    submitType: 'default',
+    submitButtonType: 'default',
     fields: [
       {
         type: 'text',
@@ -54,20 +56,24 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
         required: true,
       },
     ],
+    formSubmitType: 'create-group',
+    submitAction: 'renameGroup',
   },
 
   [ModalType.DeleteGroup]: {
     title: 'Delete Group',
     subtitle: 'Are you sure you want to delete this group?',
     submitLabel: 'Delete Group',
-    submitType: 'destructive',
+    submitButtonType: 'destructive',
+    formSubmitType: 'create-group',
+    submitAction: 'deleteGroup',
   },
 
   [ModalType.Template]: {
     title: 'Create New Template',
     subtitle: 'Create a new payment template for quick access',
     submitLabel: 'Create Template',
-    submitType: 'default',
+    submitButtonType: 'default',
     fields: [
       {
         type: 'text',
@@ -84,7 +90,7 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
         required: true,
       },
       {
-        type: 'text',
+        type: 'dropdown',
         label: 'Service Provider *',
         placeholder: 'e.g., Power Company',
         controlName: 'serviceProvider',
@@ -98,13 +104,14 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
         required: true,
       },
     ],
+    formSubmitType: 'create-group',
   },
 
   [ModalType.RenameTemplate]: {
     title: 'Rename Template',
     subtitle: 'Enter a new name for this template',
     submitLabel: 'Rename Template',
-    submitType: 'default',
+    submitButtonType: 'default',
     fields: [
       {
         type: 'text',
@@ -114,19 +121,25 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
         required: true,
       },
     ],
+    formSubmitType: 'create-group',
+    submitAction: 'renameTemplate',
   },
 
   [ModalType.DeleteTemplate]: {
     title: 'Delete Template',
     subtitle: 'Are you sure you want to delete this template?',
     submitLabel: 'Delete Template',
-    submitType: 'destructive',
+    submitButtonType: 'destructive',
+    submitAction: 'deleteTemplate',
+    formSubmitType: 'create-group',
   },
 
   [ModalType.ConfirmPayment]: {
     title: 'Confirm Batch Payment',
     subtitle: 'Review selected bills before payment',
     submitLabel: 'Confirm & Pay All',
-    submitType: 'default',
+    submitButtonType: 'default',
+    submitAction: 'confirmPayment',
+    formSubmitType: 'create-group',
   },
 } as const;
