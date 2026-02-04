@@ -34,6 +34,7 @@ export interface TransferState {
   fee: number; //repsponse from /get-fee
   totalWithFee: number;
   hasInsufficientBalance: boolean;
+  isFeeLoading: boolean;
 
   //derived state
   recipientType: RecipientType | null; // from validation, values: 'phone','iban-same-bank' , 'iban-different-bank'
@@ -57,4 +58,9 @@ export interface TransferResponse {
     method: string | null;
   };
   transferType: string;
+}
+export interface TransferVerifyResponse {
+  success: boolean;
+  transferId: string;
+  message?: string;
 }

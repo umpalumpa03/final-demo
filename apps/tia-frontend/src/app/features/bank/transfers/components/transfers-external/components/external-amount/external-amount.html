@@ -81,11 +81,11 @@
         </p>
 
         <div class="external-amount__fee-wrapper">
-          @if (isLoading() && amountInput.value) {
+          @if (isFeeLoading() && amountInput.value) {
           <span class="external-amount__fee-loading">
             {{ 'transfers.external.amount.loadingFee' | translate }}
           </span>
-          } @else if (amountInput.value && !isLoading()) { @if(
+          } @else if (amountInput.value && !isFeeLoading()) { @if(
           isExternalIban()) {
           <div class="external-amount__fee-item">
             <span>{{ 'transfers.external.amount.fee' | translate }}:</span>
@@ -152,7 +152,18 @@
   (closed)="onSuccessDone()"
   (done)="onSuccessDone()"
 ></app-success-modal>
-<app-otp-modal [isOpen]="requiresOtp()"></app-otp-modal>
+<app-otp-modal
+  [isOpen]="requiresOtp()"
+  [title]="'Verify Transfer'"
+  [description]="'Enter the code sent to your phone.'"
+  [verifyOtpTitle]="'Verify'"
+  [isLoading]="isLoading()"
+  [hasResend]="true"
+  [resendText]="'Didn\'t receive the code?'"
+  (closed)="onOtpClose()"
+  (verify)="onOtpVerify($event)"
+  (resend)="onResendOtp()"
+></app-otp-modal>
 
 @if (showSuccess()) {
 <div class="external-amount__success-toast">
@@ -161,4 +172,16 @@
     [alertMessage]="currentToastMessage() | translate"
   />
 </div>
+} @if(isLoading() && !requiresOtp()) {
+<div class="external-amount__loader-overlay">
+  <app-route-loader variant="pulsing"></app-route-loader>
+</div>
+} @if(showError() && errorFromState()) {
+<div class="external-amount__error-toast">
+  <app-alert-types-with-icons
+    [alertType]="'error'"
+    [alertMessage]="errorFromState()!"
+  ></app-alert-types-with-icons>
+</div>
+
 }
