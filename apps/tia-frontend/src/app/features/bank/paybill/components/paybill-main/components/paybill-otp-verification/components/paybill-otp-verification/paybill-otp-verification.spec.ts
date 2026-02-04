@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PaybillOtpVerification } from '../../paybill-otp-verification';
+import { PaybillOtpVerification } from '../../../paybill-otp-verification/components/paybill-otp-verification/paybill-otp-verification';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   PaybillPayload,
