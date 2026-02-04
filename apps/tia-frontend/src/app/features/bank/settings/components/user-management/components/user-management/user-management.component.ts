@@ -1,9 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   inject,
   signal,
+  OnInit,
 } from '@angular/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
@@ -18,6 +20,9 @@ import { usePagination } from '../../shared/services/pagination.service';
 import { UserModalService } from '../../shared/services/user-modal.service';
 import { UserEditModal } from '../../shared/ui/user-edit-modal/user-edit-modal';
 import { IUpdateUserRequest } from '../../shared/models/users.model';
+import { debounceTime, distinctUntilChanged, Subject, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { UserSearchService } from '../../shared/services/user-search.service';
 
 @Component({
   selector: 'app-user-management',
@@ -35,23 +40,30 @@ import { IUpdateUserRequest } from '../../shared/models/users.model';
   providers: [UserManagementState, UserManagementStore, UserModalService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserManagementComponent {
+export class UserManagementComponent implements OnInit {
   protected readonly userState = inject(UserManagementState);
   protected readonly store = inject(UserManagementStore);
   protected readonly modalService = inject(UserModalService);
 
-  protected readonly isSaving = signal(false);
+  protected readonly searchQuery = signal<string>('');
+  private readonly searchSubject = new Subject<string>();
 
+  protected readonly filteredUsers =
+    UserSearchService.createFilteredUsersComputed(
+      this.store.users,
+      this.searchQuery,
+    );
+
+  protected readonly isSaving = signal(false);
   protected readonly actionProcessingId = signal<string | null>(null);
 
-  protected readonly pagination = usePagination(this.store.users, 4);
+  protected readonly pagination = usePagination(this.filteredUsers, 4);
 
   constructor() {
     effect(() => {
       const mode = this.modalService.modalState();
       const idToDelete = this.modalService.userToDeleteId();
       const users = this.store.users();
-
       const loading = this.store.actionLoading();
       const error = this.store.error();
       const saving = this.isSaving();
@@ -70,10 +82,27 @@ export class UserManagementComponent {
         this.isSaving.set(false);
       }
     });
+
+    this.searchSubject
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntilDestroyed(),
+        tap((query) => {
+          this.searchQuery.set(query);
+          this.pagination.setPage(1);
+        }),
+      )
+      .subscribe();
   }
 
   ngOnInit(): void {
     this.store.loadUsers();
+  }
+
+  public onSearch(query: InputFieldValue): void {
+    const safeQuery = query ? String(query) : '';
+    this.searchSubject.next(safeQuery);
   }
 
   public onPageChange(page: number): void {
@@ -88,10 +117,8 @@ export class UserManagementComponent {
 
   public onUpdateUser(data: IUpdateUserRequest): void {
     const selectedUser = this.store.selectedUser();
-
     if (selectedUser) {
       this.isSaving.set(true);
-
       this.store.updateUser({
         id: selectedUser.id,
         data: data,
@@ -125,6 +152,4 @@ export class UserManagementComponent {
     this.modalService.close();
     this.store.clearSelectedUser();
   }
-
-  public onSearch(query: InputFieldValue): void {}
 }
