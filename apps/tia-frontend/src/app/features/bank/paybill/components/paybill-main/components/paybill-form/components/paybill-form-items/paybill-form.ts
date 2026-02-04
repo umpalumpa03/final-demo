@@ -31,8 +31,8 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map, startWith } from 'rxjs';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
-import { PaybillDynamicField } from '../../../../../shared/dynamic-inputs/models/dynamic-inputs.model';
 import { PaybillDynamicForm } from '../../../../../../services/paybill-dynamic-form/paybill-dynamic-form';
+import { PaybillDynamicField } from '../../../../../../services/paybill-dynamic-form/models/dynamic-form.model';
 
 @Component({
   selector: 'app-paybill-form',
@@ -133,4 +133,11 @@ export class PaybillForm {
       }
     }
   }
+
+  protected readonly fieldConfigs = computed(() =>
+    this.fields().map((field) => ({
+      id: field.id,
+      config: this.dynamicFormService.mapFieldToConfig(field),
+    })),
+  );
 }

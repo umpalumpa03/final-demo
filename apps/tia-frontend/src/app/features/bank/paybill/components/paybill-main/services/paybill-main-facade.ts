@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as PAYBILL_SELECTORS from '../../../store/paybill.selectors';
 import { selectGelAccountOptions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
@@ -18,8 +18,6 @@ import { InputConfig } from '@tia/shared/lib/forms/models/input.model';
 import { PaybillActions } from '../../../store/paybill.actions';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
-import { PaybillDynamicField } from '../../shared/dynamic-inputs/models/dynamic-inputs.model';
-import { buildDynamicIdentification } from '../../../config/paybill.config';
 import { PaybillDynamicForm } from '../../../services/paybill-dynamic-form/paybill-dynamic-form';
 
 @Injectable({
@@ -28,7 +26,6 @@ import { PaybillDynamicForm } from '../../../services/paybill-dynamic-form/paybi
 export class PaybillMainFacade {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
 
   public readonly searchQuery = signal('');
   public readonly selectedSenderAccountId = signal<string | null>(null);

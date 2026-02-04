@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  OnDestroy,
 } from '@angular/core';
 import { PaybillForm } from '../components/paybill-form-items/paybill-form';
 import { PaybillMainFacade } from '../../../services/paybill-main-facade';

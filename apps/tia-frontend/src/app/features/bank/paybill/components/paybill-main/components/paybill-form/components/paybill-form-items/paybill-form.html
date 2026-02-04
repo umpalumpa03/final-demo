@@ -23,11 +23,11 @@
     (ngSubmit)="onSubmit()"
     class="paybill-form__content"
   >
-    @for (field of fields(); track field.id) {
+    @for (field of fieldConfigs(); track field.id) {
     <div class="paybill-form__field">
       <lib-text-input
         [formControlName]="field.id"
-        [config]="{ placeholder: field.placeholder || field.label }"
+        [config]="field.config"
         [state]="isVerified() || isLoading() ? 'disabled' : 'default'"
       ></lib-text-input>
     </div>

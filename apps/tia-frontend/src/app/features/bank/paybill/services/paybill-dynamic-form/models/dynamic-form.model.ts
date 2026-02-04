@@ -1,3 +1,8 @@
+export interface PaybillDynamicFormValues {
+  amount?: number;
+  [key: string]: string | number | boolean | null | undefined;
+}
+
 export interface PaybillDynamicField {
   id: string;
   label: string;
@@ -6,4 +11,5 @@ export interface PaybillDynamicField {
   placeholder?: string;
   minLength?: number;
   maxLength?: number;
+  component?: 'input' | 'select' | 'date';
 }
