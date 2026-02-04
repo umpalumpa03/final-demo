@@ -1,5 +1,5 @@
 <div class="card-transactions">
-  @if (loading$ | async) {
+  @if (isLoading$ | async) {
     <div class="card-transactions__loading">
       <app-route-loader variant="pulsing" />
     </div>
@@ -27,6 +27,7 @@
         <app-basic-card
           [maxWidth]="'100%'"
           [padding]="'2rem'"
+          [minHeight]="'12rem'"
         >
           <app-transaction-card-header
             [imageBase64]="headerData.imageBase64"

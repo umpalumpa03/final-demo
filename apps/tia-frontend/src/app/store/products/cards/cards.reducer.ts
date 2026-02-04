@@ -140,5 +140,8 @@ on(CardsActions.loadCardTransactionsFailure, (state, { error }) => ({
   cardTransactionsLoading: false,
   cardTransactionsError: error,
 })),
-
+on(CardsActions.clearCardTransactionsError, (state) => ({
+  ...state,
+  cardTransactionsError: null,
+}))
 );

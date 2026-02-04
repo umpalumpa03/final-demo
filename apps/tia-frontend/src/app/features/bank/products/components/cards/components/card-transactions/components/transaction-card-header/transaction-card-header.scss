@@ -3,22 +3,17 @@
 
 .transaction-card-header {
   @include display-flex(row);
-  align-items: center;
+
   gap: 2rem;
   width: 100%;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
 
   &__card-visual {
     flex-shrink: 0;
   }
 
   &__image {
-    width: 8rem;
-    height: 5rem;
+    width: 10rem;
+    height: 7rem;
     border-radius: 0.8rem;
     object-fit: cover;
     box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.1);
@@ -31,8 +26,8 @@
   }
 
   &__card-name {
-    @include font-inter(600, 1.6rem, 2.4rem);
-    color: $gray-900;
+    @include font-inter(600, 2rem, 2.4rem);
+    color: $gray-700;
     margin: 0;
   }
 
@@ -40,17 +35,12 @@
   &__linked-account {
     @include font-inter(400, 1.4rem, 2rem);
     color: $gray-600;
-    margin: 0;
   }
 
   &__total {
-    @include display-flex(column);
-    align-items: flex-end;
+    @include flex-center(column, end,end);
     gap: 0.4rem;
 
-    @media (max-width: 768px) {
-      align-items: flex-start;
-    }
   }
 
   &__total-label {

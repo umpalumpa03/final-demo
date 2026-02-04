@@ -109,7 +109,6 @@ const mockState: CardsState = {
     expect(selectIsCreateModalOpen.projector(mockState)).toBe(true);
   });
 
-  // ---- Additional selectors for full coverage ----
   it('should select loading', () => {
     expect(selectLoading.projector(mockState)).toBe(false);
   });

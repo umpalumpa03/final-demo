@@ -122,3 +122,6 @@ export const loadCardTransactionsFailure = createAction(
   '[Cards] Load Card Transactions Failure',
   props<{ cardId: string; error: string }>(),
 );
+export const clearCardTransactionsError = createAction(
+  '[Cards] Clear Card Transactions Error'
+);

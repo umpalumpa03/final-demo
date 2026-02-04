@@ -1,17 +1,31 @@
 <div class="transaction-item">
   <div class="transaction-item__icon">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-    </svg>
+    <img
+      [src]="'/images/svg/cards/arrow.svg'"
+      alt="outcome"
+      class="card-group-item__icon"
+    />
   </div>
 
   <div class="transaction-item__details">
     <h4 class="transaction-item__description">{{ description() }}</h4>
     <div class="transaction-item__meta">
       <span class="transaction-item__date">{{ date() }}</span>
-      <span class="transaction-item__separator">•</span>
+      <span class="transaction-item__separator">
+        <img
+          [src]="'/images/svg/cards/dot.svg'"
+          alt="seperate dot"
+          class="card-group-item__icon"
+        />
+      </span>
       <span class="transaction-item__category">{{ category() }}</span>
-      <span class="transaction-item__separator">•</span>
+      <span class="transaction-item__separator">
+        <img
+          [src]="'/images/svg/cards/dot.svg'"
+          alt="seperate dot"
+          class="card-group-item__icon"
+        />
+      </span>
       <span class="transaction-item__reference">{{ referenceNumber() }}</span>
     </div>
   </div>

@@ -24,9 +24,9 @@ export interface CardsState {
   isCardDetailsModalOpen: boolean;
   selectedCardIdForModal: string | null;
   cardTransactions: Record<string, ITransactions[]>;
-cardTransactionsLoading: boolean;
-cardTransactionsError: string | null;
-cardTransactionsTotalCount: Record<string, number>;
+  cardTransactionsLoading: boolean;
+  cardTransactionsError: string | null;
+  cardTransactionsTotalCount: Record<string, number>;
 }
 
 export const initialCardsState: CardsState = {
@@ -45,12 +45,10 @@ export const initialCardsState: CardsState = {
   createError: null,
   isCreateModalOpen: false,
   showSuccessAlert: false,
-   isCardDetailsModalOpen: false,
+  isCardDetailsModalOpen: false,
   selectedCardIdForModal: null,
   cardTransactions: {},
-cardTransactionsLoading: false,
-cardTransactionsError: null,
-cardTransactionsTotalCount: {},
-
-  
+  cardTransactionsLoading: false,
+  cardTransactionsError: null,
+  cardTransactionsTotalCount: {},
 };

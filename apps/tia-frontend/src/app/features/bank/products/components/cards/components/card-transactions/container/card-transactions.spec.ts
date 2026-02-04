@@ -82,6 +82,6 @@ describe('CardTransactions', () => {
   it('should retry loading data', () => {
     store.dispatch = vi.fn();
     component['handleRetry']();
-    expect(store.dispatch).toHaveBeenCalledTimes(3);
+    expect(store.dispatch).toHaveBeenCalledTimes(4);
   });
 });

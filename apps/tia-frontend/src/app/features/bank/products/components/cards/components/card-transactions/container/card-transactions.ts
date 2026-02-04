@@ -12,6 +12,7 @@ import {
   loadCardTransactions,
   loadCardDetails,
   loadCardAccounts,
+  clearCardTransactionsError,
 } from '../../../../../../../../store/products/cards/cards.actions';
 import {
   selectCardDetailById,
@@ -91,21 +92,27 @@ protected readonly transactions$ = this.store.select(
   }
 
   protected handleBack(): void {
-    this.router.navigate(['/bank/products/cards', this.cardId]);
+    this.router.navigate(['/bank/products/cards/details', this.cardId]);
   }
 
   protected handleRetry(): void {
     this.loadData();
   }
 
-  // private loadData(): void {
-  //   this.store.dispatch(loadCardAccounts());
-  //   this.store.dispatch(loadCardDetails({ cardId: this.cardId }));
-  //   this.store.dispatch(loadCardTransactions({ cardId: this.cardId }));
-  // }
-
 private loadData(): void {
+  this.store.dispatch(clearCardTransactionsError());
   this.store.dispatch(loadCardAccounts());
   this.store.dispatch(loadCardDetails({ cardId: this.cardId }));
+  this.store.dispatch(loadCardTransactions({ cardId: this.cardId }));
 }
+
+protected readonly isLoading$ = combineLatest([
+  this.store.select(selectCardTransactionsLoading),
+  this.store.select(selectCardDetailById(this.cardId)),
+  this.store.select(selectCardTransactionsByCardId(this.cardId)),
+]).pipe(
+  map(([loading, cardData, transactions]) => {
+    return loading && (!cardData || transactions.length === 0);
+  })
+);
 }

@@ -1,11 +1,24 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of, mergeMap, forkJoin, EMPTY, combineLatest } from 'rxjs';
-import { map, catchError, switchMap, take, delay, filter, skip } from 'rxjs/operators';
+import {
+  map,
+  catchError,
+  switchMap,
+  take,
+  delay,
+  filter,
+  skip,
+} from 'rxjs/operators';
 import * as CardsActions from './cards.actions';
 import { CardListApiService } from '@tia/shared/services/cards/card-list.service.api';
 import { Store } from '@ngrx/store';
-import { selectAccountById, selectAllAccounts, selectCardDetailById, selectCardDetails } from './cards.selectors';
+import {
+  selectAccountById,
+  selectAllAccounts,
+  selectCardDetailById,
+  selectCardDetails,
+} from './cards.selectors';
 import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 import { CardsService } from '../../../features/bank/products/components/cards/service/cards.service';
 import { TransactionApiService } from '@tia/shared/services/transactions-service/transactions.api.service';
@@ -16,7 +29,7 @@ export class CardsEffects {
   private readonly cardListApiService = inject(CardListApiService);
   private readonly cardsService = inject(CardsService);
   private readonly store = inject(Store);
-private readonly transactionApiService = inject(TransactionApiService);
+  private readonly transactionApiService = inject(TransactionApiService);
 
   loadCardAccounts$ = createEffect(() =>
     this.actions$.pipe(
@@ -179,144 +192,91 @@ private readonly transactionApiService = inject(TransactionApiService);
     ),
   );
 
-//   loadCardTransactions$ = createEffect(() =>
-//   this.actions$.pipe(
-//     ofType(CardsActions.loadCardTransactions),
-//     switchMap(({ cardId }) =>
-//       this.store.select(selectCardDetailById(cardId)).pipe(
-//         take(1),
-//         switchMap((cardData) => {
-//           if (!cardData?.details?.accountId) {
-//             return of(
-//               CardsActions.loadCardTransactionsFailure({
-//                 cardId,
-//                 error: 'Card details not found',
-//               }),
-//             );
-//           }
-
-//           return this.store.select(selectAccountById(cardData.details.accountId)).pipe(
-//             take(1),
-//             switchMap((account) => {
-//               if (!account?.iban) {
-//                 return of(
-//                   CardsActions.loadCardTransactionsFailure({
-//                     cardId,
-//                     error: 'Account IBAN not found',
-//                   }),
-//                 );
-//               }
-
-//               return this.transactionApiService.getTransactions({
-//                 accountIban: account.iban,
-//                 pageLimit: 20,
-//               }).pipe(
-//                 map((response) =>
-//                   CardsActions.loadCardTransactionsSuccess({
-//                     cardId,
-//                     transactions: response.items || [],
-//                     total: response.items?.length || 0,
-//                   }),
-//                 ),
-//                 catchError((error) =>
-//                   of(
-//                     CardsActions.loadCardTransactionsFailure({
-//                       cardId,
-//                       error: error.message || 'Failed to load transactions',
-//                     }),
-//                   ),
-//                 ),
-//               );
-//             }),
-//           );
-//         }),
-//       ),
-//     ),
-//   ),
-// );
-
-loadCardTransactions$ = createEffect(() =>
-  this.actions$.pipe(
-    ofType(CardsActions.loadCardTransactions),
-    switchMap(({ cardId }) =>
-      this.store.select(selectCardDetailById(cardId)).pipe(
-        take(1),
-        switchMap((cardData) => {
-          if (!cardData?.details?.accountId) {
-            return of(
-              CardsActions.loadCardTransactionsFailure({
-                cardId,
-                error: 'Card details not found',
-              }),
-            );
-          }
-
-          return this.store.select(selectAccountById(cardData.details.accountId)).pipe(
-            take(1),
-            switchMap((account) => {
-              if (!account?.iban) {
-                return of(
-                  CardsActions.loadCardTransactionsFailure({
-                    cardId,
-                    error: 'Account IBAN not found',
-                  }),
-                );
-              }
-
-              return this.transactionApiService.getTransactions({
-                accountIban: account.iban,
-                pageLimit: 20,
-              }).pipe(
-                map((response) =>
-                  CardsActions.loadCardTransactionsSuccess({
-                    cardId,
-                    transactions: response.items || [],
-                    total: response.items?.length || 0,
-                  }),
-                ),
-                catchError((error) =>
-                  of(
-                    CardsActions.loadCardTransactionsFailure({
-                      cardId,
-                      error: error.message || 'Failed to load transactions',
-                    }),
-                  ),
-                ),
+  loadCardTransactions$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CardsActions.loadCardTransactions),
+      switchMap(({ cardId }) =>
+        this.store.select(selectCardDetailById(cardId)).pipe(
+          take(1),
+          switchMap((cardData) => {
+            if (!cardData?.details?.accountId) {
+              return of(
+                CardsActions.loadCardTransactionsFailure({
+                  cardId,
+                  error: 'Card details not found',
+                }),
               );
-            }),
-          );
-        }),
+            }
+
+            return this.store
+              .select(selectAccountById(cardData.details.accountId))
+              .pipe(
+                take(1),
+                switchMap((account) => {
+                  if (!account?.iban) {
+                    return of(
+                      CardsActions.loadCardTransactionsFailure({
+                        cardId,
+                        error: 'Account IBAN not found',
+                      }),
+                    );
+                  }
+
+                  return this.transactionApiService
+                    .getTransactions({
+                      accountIban: account.iban,
+                      pageLimit: 20,
+                    })
+                    .pipe(
+                      map((response) =>
+                        CardsActions.loadCardTransactionsSuccess({
+                          cardId,
+                          transactions: response.items || [],
+                          total: response.items?.length || 0,
+                        }),
+                      ),
+                      catchError((error) =>
+                        of(
+                          CardsActions.loadCardTransactionsFailure({
+                            cardId,
+                            error:
+                              error.message || 'Failed to load transactions',
+                          }),
+                        ),
+                      ),
+                    );
+                }),
+              );
+          }),
+        ),
       ),
     ),
-  ),
-);
-loadCardTransactionsWhenReady$ = createEffect(() =>
-  this.actions$.pipe(
-    ofType(CardsActions.loadCardDetailsSuccess),
-    switchMap(({ cardId }) =>
-      combineLatest([
-        this.store.select(selectCardDetailById(cardId)).pipe(skip(1)),
-        this.store.select(selectAllAccounts),
-      ]).pipe(
-        take(1),
-        switchMap(([cardData, accounts]) => {
-          if (!cardData?.details?.accountId || accounts.length === 0) {
+  );
+  loadCardTransactionsWhenReady$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CardsActions.loadCardDetailsSuccess),
+      switchMap(({ cardId }) =>
+        combineLatest([
+          this.store.select(selectCardDetailById(cardId)).pipe(skip(1)),
+          this.store.select(selectAllAccounts),
+        ]).pipe(
+          take(1),
+          switchMap(([cardData, accounts]) => {
+            if (!cardData?.details?.accountId || accounts.length === 0) {
+              return EMPTY;
+            }
+
+            const account = accounts.find(
+              (acc) => acc.id === cardData.details.accountId,
+            );
+
+            if (account) {
+              return of(CardsActions.loadCardTransactions({ cardId }));
+            }
             return EMPTY;
-          }
-
-          const account = accounts.find(
-            (acc) => acc.id === cardData.details.accountId
-          );
-
-          if (account) {
-            return of(CardsActions.loadCardTransactions({ cardId }));
-          }
-          return EMPTY;
-        }),
+          }),
+        ),
       ),
     ),
-  ),
-);
-
-
+  );
 }
