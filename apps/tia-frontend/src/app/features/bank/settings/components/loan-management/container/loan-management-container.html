@@ -1,1 +1,31 @@
-<h1>loan management container</h1>
+<app-basic-card
+  maxWidth="100%"
+  height="fit-content"
+  padding="2.4rem"
+  [title]="config.title"
+  [subtitle]="config.subtitle"
+>
+  <div class="loan-management-container">
+    <!-- Pending Approvals Table -->
+    <app-pending-approvals-table
+      [approvals]="store.pendingApprovals()"
+      [isLoading]="store.loading()"
+      [error]="store.error()"
+      (rowClick)="onRowClick($event)"
+      (reload)="onReload()"
+    ></app-pending-approvals-table>
+  </div>
+</app-basic-card>
+
+<!-- Loan Case Drawer -->
+<app-loan-case-drawer
+  [isOpen]="!!store.selectedLoanId()"
+  [loanDetails]="store.selectedLoanDetails()"
+  [userInfo]="store.selectedUserInfo()"
+  [isUserInfoLoading]="store.userInfoLoading()"
+  [isActionLoading]="store.actionLoading()"
+  [actionError]="store.actionError()"
+  (closed)="onDrawerClose()"
+  (approve)="onApprove($event)"
+  (reject)="onReject($event)"
+></app-loan-case-drawer>

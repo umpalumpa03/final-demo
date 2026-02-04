@@ -1,0 +1,91 @@
+<div class="pending-approvals">
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="pending-approvals__loading">
+      <app-spinner size="large"></app-spinner>
+      <p class="pending-approvals__loading-text">Loading pending approvals...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (showError()) {
+    <div class="pending-approvals__error">
+      <app-error-states
+        [header]="'Error Loading Approvals'"
+        [message]="error() ?? 'An error occurred'"
+        [buttonMessage]="'Retry'"
+        (buttonClick)="onReload()"
+      ></app-error-states>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (showEmptyState()) {
+    <app-error-states
+      variant="not-found"
+      [header]="'No Pending Approvals'"
+      [message]="'All loan applications have been processed.'"
+      [showButton]="false"
+      [border]="false"
+      width="100%"
+      height="30rem"
+    ></app-error-states>
+  }
+
+  <!-- List -->
+  @if (showList()) {
+    <div class="pending-approvals__list">
+      @for (approval of approvals(); track approval.id) {
+        <app-basic-card
+          minHeight="13rem"
+          padding="2.4rem"
+          [hasHover]="true"
+          maxWidth="100%"
+          flexDirection="row"
+          gap="0"
+          (click)="onRowClick(approval.id)"
+        >
+          <div class="card">
+            <!-- Avatar using library component -->
+            <app-avatar
+              [initials]="getInitials(approval.userFullName)"
+              [size]="'lg'"
+              [color]="'blue'"
+            />
+
+            <!-- Content -->
+            <div class="card__middle">
+              <!-- Header Row: Name + Badge -->
+              <div class="card__header-row">
+                <h3 class="card__title">{{ approval.userFullName }}</h3>
+                <app-badges
+                  [status]="'pending'"
+                  [size]="'small'"
+                  [shape]="'pill'"
+                />
+              </div>
+
+              <!-- Subtitle: Purpose + Amount -->
+              <p class="card__subtitle">{{ approval.purpose }} - {{ approval.loanAmount | currency:'USD':'symbol':'1.0-0' }}</p>
+
+              <!-- Details Row -->
+              <div class="card__details">
+                <div>
+                  <strong>{{ approval.months }} months</strong>
+                </div>
+                <div>
+                  <strong>{{ approval.createdAt | date:'dd/MM/yyyy' }}</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Arrow -->
+            <div class="card__action">
+              <img src="./images/svg/feature-loans/arrow.svg" alt="">
+            </div>
+          </div>
+        </app-basic-card>
+      }
+    </div>
+  }
+</div>
