@@ -18,6 +18,7 @@ export class AlertsWithActions {
   public readonly alertType = input<BaseAlertType>('default');
   public readonly alertTitle = input<string>('Update Available');
   public readonly alertMessage = input<string>('Default Alert Message');
+  public readonly customMaxwidth = input<string>('105.3rem');
 
   public readonly iconAlertClass = computed(() => {
     const type = this.alertType();
