@@ -75,6 +75,10 @@
     </form>
     }@else {
     <div class="modal__identifier">{{ selectedDeleteItem() }}</div>
+    <p>
+      Templates in this group will be moved to "Ungrouped". This action cannot
+      be undone.
+    </p>
 
     <div class="modal__buttons">
       <app-button variant="outline" type="button" (click)="toggleModal()">
@@ -92,5 +96,3 @@
   </main>
   }
 </app-ui-modal>
-
-{{templateProviders() | json}}

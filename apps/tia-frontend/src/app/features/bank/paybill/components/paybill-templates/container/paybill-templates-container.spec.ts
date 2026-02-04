@@ -195,14 +195,13 @@ describe('PaybillTemplatesContainer', () => {
       component.deleteTemplate();
 
       expect(dispatchSpy).toHaveBeenCalledWith(
-        TemplatesPageActions.deleteTemplates({ templateId: 'T123' }),
+        TemplatesPageActions.deleteTemplate({ templateId: 'T123' }),
       );
       expect(component.isModalOpen()).toBe(false);
     });
 
     it('deleteTemplate: should not dispatch if selectedId is null', () => {
       const dispatchSpy = vi.spyOn(component.store, 'dispatch');
-      component.selectedId.set(null);
 
       component.deleteTemplate();
 

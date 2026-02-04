@@ -30,7 +30,7 @@ export enum ModalType {
 export interface ModalField {
   type: 'text' | 'dropdown';
   label: string;
-  placeholder: string;
+  placeholder?: string;
   controlName: string;
   required?: boolean;
 }
@@ -44,6 +44,7 @@ export interface ModalInfo {
   formGroupName?: string | null;
   formSubmitType: formSubmitType;
   submitAction?: string;
+  initialValues?: Record<string, string>;
 }
 
 export enum HeaderCtaAction {
@@ -58,7 +59,7 @@ export interface HeaderCtaButton {
   textKey: string;
 }
 
-export type formSubmitType = 'create-group';
+export type formSubmitType = 'create-group' | 'rename-template';
 export interface FormSubmitPayload {
   type: formSubmitType;
   values: Record<string, string>;

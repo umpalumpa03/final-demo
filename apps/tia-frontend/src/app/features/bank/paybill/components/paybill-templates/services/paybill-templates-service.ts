@@ -36,13 +36,27 @@ export class PaybillTemplatesService {
     );
   }
 
-  public deleteTemplateGroups(groupId: string) {
-    return this.http.delete(`${this.baseUrl}/template-groups/${groupId}`);
-  }
-
   public deleteTemplate(templateId: string): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(
       `${this.baseUrl}/templates/${templateId}`,
+    );
+  }
+
+  public renameTemplate(
+    templateId: string,
+    newName: string,
+  ): Observable<Templates> {
+    return this.http.patch<Templates>(
+      `${this.baseUrl}/templates/${templateId}`,
+      {
+        nickname: newName,
+      },
+    );
+  }
+
+  public deleteGroup(groupId: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(
+      `${this.baseUrl}/template-groups/${groupId}`,
     );
   }
 }

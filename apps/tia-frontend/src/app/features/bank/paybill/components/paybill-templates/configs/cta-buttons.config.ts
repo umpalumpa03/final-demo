@@ -115,13 +115,19 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
     fields: [
       {
         type: 'text',
-        label: 'New Template Name',
+        label: 'Current Template Name',
+        controlName: 'currentName',
+      },
+      {
+        type: 'text',
+        label: 'Current Name',
         placeholder: 'Enter new name',
         controlName: 'name',
         required: true,
       },
     ],
-    formSubmitType: 'create-group',
+    formSubmitType: 'rename-template',
+    formGroupName: 'editTemplate',
     submitAction: 'renameTemplate',
   },
 
