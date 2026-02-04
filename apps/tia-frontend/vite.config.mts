@@ -25,13 +25,9 @@ export default defineConfig(() => ({
     pool: 'threads',
     poolOptions: {
       threads: {
-        maxThreads: Math.max(1, Math.floor(cpus().length / 2)),
-        minThreads: 1,
-  
         isolate: true,
       },
     },
-    maxConcurrency: 5,
     fileParallelism: true,
     reporters: ['default'],
     coverage: {
