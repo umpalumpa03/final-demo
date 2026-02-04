@@ -240,12 +240,6 @@ export class OtpVerification implements OnInit {
     });
   }
 
-  public handleAutoSubmit(code: string): void {
-    this.otpForm.patchValue({ code });
-
-    this.onSubmit();
-  }
-
   public canResend = computed(
     () => this.countdown() === 0 && this.resendTries() > 0,
   );

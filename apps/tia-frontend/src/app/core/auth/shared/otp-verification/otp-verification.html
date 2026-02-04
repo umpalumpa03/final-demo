@@ -10,7 +10,6 @@
     @if(timerType() === 'otp'){
     <div class="otp-field">
       <lib-otp
-        (completed)="handleAutoSubmit($event)"
         formControlName="code"
         [config]="formConfig().otp"
       ></lib-otp>
