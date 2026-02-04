@@ -15,12 +15,14 @@ import {
 } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
 import { TRANSACTIONS_BASE_CONFIG } from '../config/transaction-data';
 import { convertTransactionData } from '../utils/data-converter.utils';
-import { TableConfig } from '@tia/shared/lib/tables/models/table.model';
+import {
+  TableConfig,
+  TransactionActionEvent,
+} from '@tia/shared/lib/tables/models/table.model';
 import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Tables } from '@tia/shared/lib/tables/components/tables';
-import { ShowcaseCard } from '../../../storybook/shared/showcase-card/showcase-card';
 import { TransactionsFilters } from '../components/transactions-filters/transactions-filters';
 import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
@@ -28,16 +30,18 @@ import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
+import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 
 @Component({
   selector: 'app-transactions-container',
   imports: [
-    LibraryTitle,
     ButtonComponent,
     RouteLoader,
     Tables,
-    ShowcaseCard,
     TransactionsFilters,
+    BasicCard,
+    ScrollArea,
   ],
   templateUrl: './transactions-container.html',
   styleUrl: './transactions-container.scss',
@@ -102,15 +106,20 @@ export class TransactionsContainer implements OnInit {
     this.store.dispatch(TransactionActions.updateFilters({ filters }));
   }
 
-  public onScroll(event: Event): void {
-    const el = event.target as HTMLElement;
+  public loadProducts(): void {
+    if (this.items().length % 20 === 0 && !this.isLoading()) {
+      this.store.dispatch(TransactionActions.loadMore());
+    }
+  }
 
-    if (!el) return;
+  public handleTableAction(event: TransactionActionEvent): void {
+    const action = event.action;
+    const rowId = event.rowId;
 
-    if (el.scrollHeight - el.scrollTop <= el.clientHeight + 20) {
-      if (this.items().length % 20 === 0 && !this.isLoading()) {
-        this.store.dispatch(TransactionActions.loadMore());
-      }
+    if (action === 'categorize') {
+      console.log('Categorize triggered');
+    } else if (action === 'repeat') {
+      console.log('Repeat clicked for row:', rowId);
     }
   }
 }

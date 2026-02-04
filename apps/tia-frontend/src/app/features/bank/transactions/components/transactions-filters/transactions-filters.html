@@ -1,9 +1,11 @@
-<app-showcase-card>
+<app-basic-card
+  [minWidth]="'100%'"
+  [width]="'100%'"
+  [padding]="'2.4rem'"
+  [title]="'Filters'"
+  [subtitle]="'Apply filters to refine your transaction list'"
+>
   <div class="filters-heading">
-    <app-library-title
-      [title]="'Filters'"
-      [subtitle]="'Apply filters to refine your transaction list'"
-    ></app-library-title>
     @if(hasActiveFilter()){
     <app-button
       [type]="'reset'"
@@ -51,4 +53,4 @@
     }
   </div>
   }
-</app-showcase-card>
+</app-basic-card>

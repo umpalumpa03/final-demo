@@ -8,9 +8,8 @@
 
 .transaction-filters-form {
   @include display-flex(row, wrap);
-  justify-content: center;
   gap: 1.6rem;
   &__input-wrapper {
-    width: min(20.3rem, 100%);
+    width: 23.5%;
   }
 }
