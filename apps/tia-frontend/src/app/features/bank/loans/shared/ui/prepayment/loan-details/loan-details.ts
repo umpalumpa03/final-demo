@@ -38,7 +38,7 @@ export class LoanDetails {
   public readonly isLoading = input<boolean>(false);
   public readonly isOpen = input.required<boolean>();
 
-  protected readonly scrollContainer =
+  protected scrollContainer =
     viewChild<ElementRef<HTMLDivElement>>('scrollContainer');
   protected readonly showScrollButton = signal(false);
 
