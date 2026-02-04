@@ -214,3 +214,30 @@ describe('CardsReducer', () => {
     expect(state.selectedCardIdForModal).toBeNull();
   });
 });
+it('should handle card transactions actions', () => {
+  let state = cardsReducer(
+    initialCardsState,
+    CardsActions.loadCardTransactions({ cardId: 'card-1' }),
+  );
+  expect(state.cardTransactionsLoading).toBe(true);
+
+  const transactions = [{ id: 'tx-1' }] as any[];
+  state = cardsReducer(
+    state,
+    CardsActions.loadCardTransactionsSuccess({
+      cardId: 'card-1',
+      transactions,
+      total: 5,
+    }),
+  );
+  expect(state.cardTransactions['card-1']).toEqual(transactions);
+  expect(state.cardTransactionsTotalCount['card-1']).toBe(5);
+  expect(state.cardTransactionsLoading).toBe(false);
+
+  state = cardsReducer(
+    initialCardsState,
+    CardsActions.loadCardTransactionsFailure({ cardId: 'card-1', error: 'Failed' }),
+  );
+  expect(state.cardTransactionsError).toBe('Failed');
+  expect(state.cardTransactionsLoading).toBe(false);
+});

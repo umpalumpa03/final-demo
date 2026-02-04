@@ -160,4 +160,84 @@ describe('CardsEffects', () => {
 
     expect(await firstValueFrom(effects.loadCardCreationDataOnModalOpen$)).toEqual(CardsActions.loadCardCreationData());
   });
+  it('should return EMPTY when no cardIds in loadCardImages$', async () => {
+  actions$ = of(CardsActions.loadCardAccountsSuccess({ accounts: [{ ...mockAccounts[0], cardIds: [] }] }));
+
+  const result = await new Promise<boolean>((resolve) => {
+    effects.loadCardImages$.subscribe({
+      next: () => resolve(false),
+      complete: () => resolve(true),
+    });
+  });
+
+  expect(result).toBe(true);
+});
+
+it('should handle image load failure in loadCardImages$', async () => {
+  cardsService.getCardImage.mockReturnValue(throwError(() => new Error('Image failed')));
+  actions$ = of(CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts }));
+
+  expect(await firstValueFrom(effects.loadCardImages$)).toEqual(
+    CardsActions.loadCardImageFailure({ cardId: 'card-1', error: 'IMAGE_LOAD_FAILED' })
+  );
+});
+
+it('should handle card creation data failure', async () => {
+  cardsService.getCardDesigns.mockReturnValue(throwError(() => new Error('Failed')));
+  actions$ = of(CardsActions.loadCardCreationData());
+
+  expect(await firstValueFrom(effects.loadCardCreationData$)).toEqual(
+    CardsActions.loadCardCreationDataFailure({ error: 'Failed' })
+  );
+});
+it('should return EMPTY when no cardIds in loadCardImages$', async () => {
+  const emptyAccounts = [{ ...mockAccounts[0], cardIds: [] }];
+  actions$ = of(CardsActions.loadCardAccountsSuccess({ accounts: emptyAccounts }));
+
+  const results: any[] = [];
+  await new Promise<void>((resolve) => {
+    effects.loadCardImages$.subscribe({
+      next: (action) => results.push(action),
+      complete: resolve,
+    });
+  });
+
+  expect(results.length).toBe(0);
+});
+
+it('should handle creation data load failure', async () => {
+  cardsService.getCardDesigns.mockReturnValue(throwError(() => new Error('Failed to load')));
+  actions$ = of(CardsActions.loadCardCreationData());
+
+  expect(await firstValueFrom(effects.loadCardCreationData$)).toEqual(
+    CardsActions.loadCardCreationDataFailure({ error: 'Failed to load' })
+  );
+});
+
+it('should handle card image failure gracefully', async () => {
+  cardsService.getCardImage.mockReturnValue(throwError(() => new Error('Image error')));
+  actions$ = of(CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts }));
+
+  expect(await firstValueFrom(effects.loadCardImages$)).toEqual(
+    CardsActions.loadCardImageFailure({ cardId: 'card-1', error: 'IMAGE_LOAD_FAILED' })
+  );
+});
+it('should handle loadCardTransactions with missing card details', async () => {
+  store.select.mockReturnValue(of(null));
+  actions$ = of(CardsActions.loadCardTransactions({ cardId: 'card-1' }));
+
+  expect(await firstValueFrom(effects.loadCardTransactions$)).toEqual(
+    CardsActions.loadCardTransactionsFailure({ cardId: 'card-1', error: 'Card details not found' })
+  );
+});
+
+it('should handle loadCardTransactions with missing account IBAN', async () => {
+  store.select.mockReturnValueOnce(of({ details: { accountId: 'acc-1' } }));
+  store.select.mockReturnValueOnce(of({ id: 'acc-1' })); // account without IBAN
+  actions$ = of(CardsActions.loadCardTransactions({ cardId: 'card-1' }));
+
+  expect(await firstValueFrom(effects.loadCardTransactions$)).toEqual(
+    CardsActions.loadCardTransactionsFailure({ cardId: 'card-1', error: 'Account IBAN not found' })
+  );
+});
 });
