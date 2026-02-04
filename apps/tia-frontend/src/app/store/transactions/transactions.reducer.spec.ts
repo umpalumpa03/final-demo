@@ -107,4 +107,30 @@ describe('Transaction Reducer', () => {
 
     expect(state.total).toBe(150);
   });
+
+  it('should locally update transaction category on assignCategorySuccess', () => {
+    const newCategory = { id: 'cat-new', name: 'Food', icon: 'food.svg' };
+
+    const startState = {
+      ...transactionInitialState,
+      categories: [newCategory] as any,
+      items: [
+        {
+          id: 'tx-1',
+          category: { id: 'cat-old', name: 'Other' },
+        },
+      ] as any,
+    };
+
+    const action = TransactionActions.assignCategorySuccess({
+      transactionId: 'tx-1',
+      categoryId: 'cat-new',
+    });
+
+    const state = transactionReducer(startState, action);
+
+    expect((state.items[0].category as any).id).toBe('cat-new');
+
+    expect(state.items[0].category).toEqual(newCategory);
+  });
 });

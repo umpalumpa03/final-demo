@@ -374,4 +374,24 @@ export class PaybillEffect {
       ),
     );
   });
+
+  loadPaymentDetails$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(PaybillActions.loadPaymentDetails),
+      switchMap(({ serviceId }) =>
+        this.paybillService.getPaymentDetails(serviceId).pipe(
+          map((details) =>
+            PaybillActions.loadPaymentDetailsSuccess({ details }),
+          ),
+          catchError((error) =>
+            of(
+              PaybillActions.loadPaymentDetailsFailure({
+                error: this.getErrorMessage(error),
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
 }

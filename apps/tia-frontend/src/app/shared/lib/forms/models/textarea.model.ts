@@ -6,4 +6,5 @@ export interface TextareaConfig extends InputConfig {
   rows?: number;
   resizable?: TextareaResize;
   showCharacterCount?: boolean;
+  maxHeight?: number;
 }

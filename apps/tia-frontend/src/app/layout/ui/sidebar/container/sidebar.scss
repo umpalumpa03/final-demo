@@ -4,10 +4,10 @@
 .sidebar {
   @include display-flex(column);
   position: relative;
-  z-index: 12;
   width: 25.6rem;
   height: 100vh;
   background: $white;
+  z-index: 2;
   box-shadow:
     0px 1px 2px -1px rgba($black, 0.1),
     0px 1px 3px 0px rgba($black, 0.1);
@@ -118,7 +118,7 @@
     background: $white;
     border: none;
     border-radius: 50%;
-    z-index: 15;
+    // z-index: 25;
     box-shadow: 0px 2px 4px rgba($black, 0.1);
     cursor: pointer;
 

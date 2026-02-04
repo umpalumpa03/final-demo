@@ -403,4 +403,21 @@ describe('Paybill Reducer', () => {
       expect(result.error).toBe('Invalid account');
     });
   });
+  it('deleteTemplates: should set loading true', () => {
+    const action = TemplatesPageActions.deleteTemplates({ templateId: 't1' });
+    const result = paybillReducer(initialPaybillState, action);
+
+    expect(result.loading).toBe(true);
+    expect(result.error).toBeNull();
+  });
+
+  it('deleteTemplatesFailure: should set error and stop loading', () => {
+    const action = TemplatesPageActions.deleteTemplatesFailure({
+      error: 'Delete Failed',
+    });
+    const result = paybillReducer(initialPaybillState, action);
+
+    expect(result.loading).toBe(false);
+    expect(result.error).toBe('Delete Failed');
+  });
 });
