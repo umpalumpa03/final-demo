@@ -1,0 +1,19 @@
+<div class="email-detail">
+  <div class="email-detail__message">
+    <div class="email-detail__message__card">
+      <app-avatar
+        size="md"
+        [initials]="getInitials(reply()?.authorEmail || '')"
+      ></app-avatar>
+      <div class="email-detail__message__content">
+        <div class="email-detail__message__card-header">
+          <span class="email-detail__from">{{ reply()?.authorEmail }}</span>
+          <span class="email-detail__msg-date"
+            >{{ reply()?.createdAt | date:'MMM d, y, hh:mm a' }}</span
+          >
+        </div>
+        <div class="email-detail__body">{{ reply()?.body }}</div>
+      </div>
+    </div>
+  </div>
+</div>

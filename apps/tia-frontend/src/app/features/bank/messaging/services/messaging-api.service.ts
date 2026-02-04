@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
-import { EmailDetailData, MailsResponse, SendEmailRequest, User } from '../store/messaging.state';
+import { EmailDetailData, EmailRepliesData, MailsResponse, SendEmailRequest, User } from '../store/messaging.state';
 @Injectable({
   providedIn: 'root',
 })
@@ -56,5 +56,9 @@ export class MessagingService {
 
   public sendDraft(mailId: number, data: SendEmailRequest): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}/${mailId}`, data);
+  }
+
+  public getMailReplies(mailId: number): Observable<EmailRepliesData[]> {
+    return this.http.get<EmailRepliesData[]>(`${this.baseUrl}/${mailId}/replies`);
   }
 }

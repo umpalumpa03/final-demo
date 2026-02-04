@@ -94,8 +94,9 @@ describe('Draft', () => {
     expect(mockMessagingStore.getDraftTotalCount).toHaveBeenCalledWith(0);
   });
 
-  it('should NOT load drafts on init when coming from draft page', () => {
+  it('should NOT load drafts on init when coming from draft page with existing mails', () => {
     mockNavigationService.previous.mockReturnValue('/bank/messaging/draft');
+    mockMessagingStore.mails.set([{ id: 1 }, { id: 2 }]); 
 
     fixture.detectChanges();
 

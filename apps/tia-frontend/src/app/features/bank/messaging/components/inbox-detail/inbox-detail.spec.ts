@@ -30,10 +30,13 @@ describe('InboxDetail', () => {
   beforeEach(async () => {
     mockMessagingStore = {
       emailDetail: signal<Mail | null>(mockMail),
+      mailReplies: signal([]),
       getEmailById: vi.fn(),
+      getMailReplies: vi.fn(), 
       deleteMail: vi.fn(),
       togleFavorite: vi.fn(),
       isLoading: signal(false),
+      isFavoriteLoading: signal(false),
     };
 
     mockRouter = {
@@ -67,10 +70,11 @@ describe('InboxDetail', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load email detail on init', () => {
+  it('should load email detail and replies on init', () => {
     fixture.detectChanges();
 
     expect(mockMessagingStore.getEmailById).toHaveBeenCalledWith(1);
+    expect(mockMessagingStore.getMailReplies).toHaveBeenCalledWith(1); 
   });
 
   it('should toggle favorite status', () => {

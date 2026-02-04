@@ -5,10 +5,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { LibraryTitle } from '../../../../storybook/shared/library-title/library-title';
+import { RepliesCard } from '../../shared/ui/replies-card/replies-card';
 
 @Component({
   selector: 'app-inbox-detail',
-  imports: [EmailDetail, ButtonComponent, UiModal, LibraryTitle],
+  imports: [EmailDetail, ButtonComponent, UiModal, LibraryTitle, RepliesCard],
   templateUrl: './inbox-detail.html',
   styleUrl: './inbox-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,14 +19,16 @@ export class InboxDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   public readonly deleteMail = output<number>();
-
+  public isFavoriteLoading = computed(() => !!this.messagingStore.isFavoriteLoading?.());
   private readonly emailId = this.route.snapshot.paramMap.get('id') || '';
   public emailDetail = computed(() => this.messagingStore.emailDetail?.());
   public isFavorite = computed(() => this.emailDetail()?.isFavorite ?? false);
   public isDeleteModalOpen = signal(false);
+  public mailReplies = computed(() => this.messagingStore.mailReplies?.() || []);
 
   ngOnInit(): void {
     this.messagingStore.getEmailById(+this.emailId);
+    this.messagingStore.getMailReplies(+this.emailId);
   }
 
   public toggleFavorite(): void {

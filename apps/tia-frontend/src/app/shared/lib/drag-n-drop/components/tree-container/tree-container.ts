@@ -21,10 +21,11 @@ import { UNGROUPED_ID } from '../../constants/drag.constants';
 import { ButtonVariant } from '@tia/shared/lib/primitives/button/button.model';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { ErrorStateVariant } from '@tia/shared/lib/feedback/models/error-state.model';
+import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 
 @Component({
   selector: 'app-tree-container',
-  imports: [DraggableCard, ErrorStates],
+  imports: [DraggableCard, ErrorStates, RouteLoader],
   templateUrl: './tree-container.html',
   styleUrl: './tree-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,6 +56,8 @@ export class TreeContainer extends DragBase {
   public readonly noCardBorder = input(false);
   public readonly cardBackground = input(false);
   public readonly badgeLabel = input('Items:');
+
+  public readonly isLoading = input(false);
 
   public readonly errorVariant = input<ErrorStateVariant>('not-found');
   public readonly errorHeader = input('');

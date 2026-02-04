@@ -96,8 +96,9 @@ describe('Inbox', () => {
     expect(mockMessagingStore.getTotalCount).toHaveBeenCalledWith('inbox');
   });
 
-  it('should NOT load inbox mails when coming from inbox page', () => {
+  it('should NOT load inbox mails when coming from inbox page with existing mails', () => {
     mockNavigationService.previous.mockReturnValue('/bank/messaging/inbox');
+    mockMessagingStore.mails.set([{ id: 1 }, { id: 2 }]); 
 
     fixture.detectChanges();
 

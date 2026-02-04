@@ -66,7 +66,7 @@ export class Inbox implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!(this.nav.previous()?.includes('inbox'))) {
+    if (!(this.nav.previous()?.includes('inbox') && this.messagingStore.mails().length > 0)) {
       this.messagingStore.loadMails('inbox');
       this.messagingStore.getTotalCount('inbox');
     }
