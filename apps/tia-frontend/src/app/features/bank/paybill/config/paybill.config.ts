@@ -20,7 +20,7 @@ export const navConfig = (translate: TranslateService): TabItem[] =>
 export const buildDynamicIdentification = (
   formValues: PaybillDynamicFormValues,
 ): PaybillIdentification => {
-  const { amount, ...identification } = formValues;
+  const { ...identification } = formValues;
 
   const sanitized: PaybillIdentification = {};
 

@@ -31,7 +31,7 @@ export class PaybillDynamicForm {
   public buildIdentification(
     formValues: PaybillDynamicFormValues,
   ): PaybillIdentification {
-    const { amount, ...identification } = formValues;
+    const { ...identification } = formValues;
     const sanitized: PaybillIdentification = {};
 
     Object.keys(identification).forEach((key) => {
