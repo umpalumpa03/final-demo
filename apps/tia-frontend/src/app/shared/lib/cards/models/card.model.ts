@@ -18,6 +18,7 @@ export interface CardData {
   padding?: string;
   borderColor?: string;
   gap?: string;
+  backgroundColor?:string;
 }
 
 export interface StatisticCardData {

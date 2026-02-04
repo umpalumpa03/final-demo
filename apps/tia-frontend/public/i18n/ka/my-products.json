@@ -124,9 +124,27 @@
         "SelectDesign":"შეარჩიეთ დიზაინი"
       }
 
-
-
+    }, 
+    "card-details-modal":{
+      "card-details-modal-content":{
+        "cardDetails": "ბარათის დეტალები", 
+        "cardSubtitle":"იხილეთ ბარათის დეტალები",
+        "cardInfo":"ბარათის ინფორმაცია", 
+        "cardName":"ბარათის სახელი", 
+        "cardType": "ბარათის ტიპი", 
+        "cardCategory": "ბარათის კატეგორია", 
+        "cardStatus": "ბარათის სტატუსი", 
+        "creditLimit": "საკრედიტო ლიმიტი", 
+        "avaliableAmount": "ხელმისაწვდომი თანხა", 
+        "sensitiveDetails": "ბარათის დაფარული ინფორმაცია", 
+        "sensitiveSubtitle": "გთხოვთ გაიაროთ OTP ვერიფიკაცია, რომ იხილოთ ბარათის ნომერი, CVV და მოქმედების ვადა", 
+        "requestOtp": "OTP-ს გაგზავნა", 
+        "closeBtn": "დახურვა"
+        
+      }
     }
+
+
 
   }
 

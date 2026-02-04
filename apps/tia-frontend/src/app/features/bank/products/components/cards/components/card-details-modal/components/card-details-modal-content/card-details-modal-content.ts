@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
+import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 
@@ -7,7 +8,7 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
   selector: 'app-card-details-modal-content',
   templateUrl: './card-details-modal-content.html',
   styleUrls: ['./card-details-modal-content.scss'],
-  imports: [Badges, ButtonComponent],
+  imports: [Badges, ButtonComponent, BasicCard,TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardDetailsModalContent {
