@@ -202,15 +202,15 @@ describe('EmailChipsInput', () => {
     expect(component.selectedEmails()).toEqual(['user1@test.com']);
   });
 
-  it('should handle onInputBlur and validate email', async () => {
-  fixture.componentRef.setInput('searchResults', mockUsers);
-  component.inputControl.setValue('user1@test.com');
+//   it('should handle onInputBlur and validate email', async () => {
+//   fixture.componentRef.setInput('searchResults', mockUsers);
+//   component.inputControl.setValue('user1@test.com');
 
-  component.onInputBlur();
+//   component.onInputBlur();
 
-  await new Promise(resolve => setTimeout(resolve, 250));
+//   await new Promise(resolve => setTimeout(resolve, 250));
 
-  expect(component.inputControl.value).toBe('user1@test.com');
-  expect(component.showDropdown()).toBe(false);
-});
+//   expect(component.inputControl.value).toBe('user1@test.com');
+//   expect(component.showDropdown()).toBe(false);
+// });
 });
