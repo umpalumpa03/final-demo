@@ -16,6 +16,7 @@ export const mapConfirmSummaryFields = (
   summary: PaybillPayload,
   details: BillDetails,
 ): SummaryField[] => {
+  if(!summary) return [];
   const identifierValue = summary.identification
     ? Object.values(summary.identification)[0]
     : '';

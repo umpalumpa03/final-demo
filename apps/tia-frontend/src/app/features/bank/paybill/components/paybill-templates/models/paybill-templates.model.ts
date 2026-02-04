@@ -39,8 +39,11 @@ export interface ModalInfo {
   title: string;
   subtitle: string;
   submitLabel: string;
-  submitType: ButtonVariant;
+  submitButtonType: ButtonVariant;
   fields?: ModalField[];
+  formGroupName?: string | null;
+  formSubmitType: formSubmitType;
+  submitAction?: string;
 }
 
 export enum HeaderCtaAction {
@@ -53,4 +56,21 @@ export interface HeaderCtaButton {
   action: HeaderCtaAction;
   variant: 'outline' | 'default';
   textKey: string;
+}
+
+export type formSubmitType = 'create-group';
+export interface FormSubmitPayload {
+  type: formSubmitType;
+  values: Record<string, string>;
+}
+
+export interface CreateTemplateGroup {
+  groupName: string;
+  templateIds: [];
+}
+
+export interface CreateTemplateGroupResponse {
+  id: string;
+  groupName: string;
+  templateCount: number;
 }

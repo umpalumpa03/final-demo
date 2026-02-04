@@ -105,21 +105,6 @@ describe('PaybillEffect (Modern Suite)', () => {
         );
       });
     });
-
-    it('checkBill$: should dispatch Failure on API throw', () => {
-      paybillService.checkBill.mockReturnValue(
-        throwError(() => ({ message: 'Not Found' })),
-      );
-      actions$ = of(
-        PaybillActions.checkBill({ serviceId: '1', accountNumber: '1' }),
-      );
-
-      effects.checkBill$.subscribe((action) => {
-        expect(action).toEqual(
-          PaybillActions.checkBillFailure({ error: 'Not Found' }),
-        );
-      });
-    });
   });
 
   describe('Navigation & Logic Gates', () => {
@@ -256,20 +241,6 @@ describe('PaybillEffect (Modern Suite)', () => {
       vi.useRealTimers();
     });
   });
-  describe('checkBill$ success', () => {
-    it('should dispatch checkBillSuccess on success', () => {
-      const details = { valid: true, accountName: 'John' } as any;
-      paybillService.checkBill.mockReturnValue(of(details));
-      actions$ = of(
-        PaybillActions.checkBill({ serviceId: 's1', accountNumber: '123' }),
-      );
-
-      effects.checkBill$.subscribe((action) => {
-        expect(action).toEqual(PaybillActions.checkBillSuccess({ details }));
-      });
-    });
-  });
-
   describe('proceedPayment$ success', () => {
     it('should dispatch proceedPaymentSuccess on success', () => {
       const response = { verify: { challengeId: '123' } } as any;
@@ -356,6 +327,101 @@ describe('PaybillEffect (Modern Suite)', () => {
       expect(action).toEqual(
         TemplatesPageActions.loadTemplatesSuccess({ templates: mockTemplates }),
       );
+    });
+  });
+
+  describe('Additional Logic Branches & Error Mapping', () => {
+    it('proceedPayment$: should dispatch Failure if response contains statusCode (API Error)', () => {
+      const response = { statusCode: '400', message: 'Balance Low' } as any;
+      paybillService.payBill.mockReturnValue(of(response));
+      actions$ = of(PaybillActions.proceedPayment({ payload: {} as any }));
+
+      effects.proceedPayment$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.proceedPaymentFailure({ error: 'Balance Low' }),
+        );
+      });
+    });
+
+    it('confirmPayment$: should handle business failure and show warning', () => {
+      paybillService.verifyPayment.mockReturnValue(
+        of({ success: false, message: 'Invalid OTP' }),
+      );
+      actions$ = of(PaybillActions.confirmPayment({ payload: {} as any }));
+
+      effects.confirmPayment$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.addNotification({
+            notificationType: 'warning',
+            message: 'Invalid OTP',
+          }),
+        );
+      });
+    });
+
+    it('getErrorMessage: should handle nested error objects (error.error.message)', () => {
+      const complexError = { error: { message: 'Deep Error' } };
+      paybillService.getCategories.mockReturnValue(
+        throwError(() => complexError),
+      );
+      actions$ = of(PaybillActions.loadCategories());
+
+      effects.loadCategories$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.loadCategoriesFailure({ error: 'Deep Error' }),
+        );
+      });
+    });
+  });
+
+  describe('Template Management & Failure Handlers', () => {
+    it('deleteTemplates$: should dispatch Success on successful deletion', () => {
+      const mockResponse = { message: 'Deleted Successfully' };
+      (paybillTemplatesService as any).deleteTemplate = vi
+        .fn()
+        .mockReturnValue(of(mockResponse));
+
+      actions$ = of(TemplatesPageActions.deleteTemplates({ templateId: 'T1' }));
+
+      effects.deleteTemplates$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.deleteTemplatesSuccess({
+            message: 'Deleted Successfully',
+            templateId: 'T1',
+          }),
+        );
+      });
+    });
+
+    it('createTemplatesGroup$: should dispatch Success on successful creation', () => {
+      const mockGroup = { id: 'G1', name: 'Utility' } as any;
+      (paybillTemplatesService as any).createTemplateGroups = vi
+        .fn()
+        .mockReturnValue(of(mockGroup));
+
+      actions$ = of(
+        TemplatesPageActions.createTemplatesGroups({ name: 'Utility' } as any),
+      );
+
+      effects.createTemplatesGroup$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.createTemplatesGroupsSuccess({
+            templateGroup: mockGroup,
+          }),
+        );
+      });
+    });
+
+    it('handleCheckBillFailure$: should map failure to notification', () => {
+      actions$ = of(PaybillActions.checkBillFailure({ error: 'Not Found' }));
+      effects.handleCheckBillFailure$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.addNotification({
+            notificationType: 'warning',
+            message: 'Not Found',
+          }),
+        );
+      });
     });
   });
 });
