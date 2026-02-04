@@ -20,6 +20,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 import { PaybillDynamicField } from '../../shared/dynamic-inputs/models/dynamic-inputs.model';
 import { buildDynamicIdentification } from '../../../config/paybill.config';
+import { PaybillDynamicForm } from '../../../services/paybill-dynamic-form/paybill-dynamic-form';
 
 @Injectable({
   providedIn: 'root',
@@ -31,6 +32,8 @@ export class PaybillMainFacade {
 
   public readonly searchQuery = signal('');
   public readonly selectedSenderAccountId = signal<string | null>(null);
+
+  private readonly dynamicFormService = inject(PaybillDynamicForm);
 
   public readonly currentStep = this.store.selectSignal(
     PAYBILL_SELECTORS.selectCurrentStep,
@@ -261,17 +264,15 @@ export class PaybillMainFacade {
     this.router.navigateByUrl(`${base}/${childId}`);
   }
 
-  public verifyAccount<
-    T extends Record<string, string | number | boolean | null | undefined>,
-  >(formValues: T): void {
+  public verifyAccount<T extends Record<string, any>>(formValues: T): void {
     const provider = this.activeProvider();
 
     if (provider) {
       this.store.dispatch(
         PaybillActions.checkBill({
           serviceId: provider.id,
-
-          identification: buildDynamicIdentification(formValues),
+          identification:
+            this.dynamicFormService.buildIdentification(formValues),
         }),
       );
     }

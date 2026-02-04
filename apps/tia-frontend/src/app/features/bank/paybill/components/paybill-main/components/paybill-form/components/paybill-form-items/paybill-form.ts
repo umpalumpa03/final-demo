@@ -32,6 +32,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map, startWith } from 'rxjs';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 import { PaybillDynamicField } from '../../../../../shared/dynamic-inputs/models/dynamic-inputs.model';
+import { PaybillDynamicForm } from '../../../../../../services/paybill-dynamic-form/paybill-dynamic-form';
 
 @Component({
   selector: 'app-paybill-form',
@@ -50,6 +51,7 @@ import { PaybillDynamicField } from '../../../../../shared/dynamic-inputs/models
 })
 export class PaybillForm {
   public readonly provider = input<PaybillProvider | null>(null);
+  private readonly dynamicFormService = inject(PaybillDynamicForm);
   public readonly isLoading = input<boolean>(false);
   public readonly iconBgColor = input<string>('#F0F9FF');
   public readonly iconBgPath = input<string>();
@@ -95,19 +97,7 @@ export class PaybillForm {
   });
 
   private readonly buildControls = effect(() => {
-    const currentFields = this.fields();
-    const form = this.paybillForm;
-
-    Object.keys(form.controls).forEach((key) => {
-      if (key !== 'amount') form.removeControl(key);
-    });
-
-    currentFields.forEach((field) => {
-      form.addControl(
-        field.id,
-        new FormControl('', field.required ? [Validators.required] : []),
-      );
-    });
+    this.dynamicFormService.syncFormControls(this.paybillForm, this.fields());
   });
 
   public readonly paybillConfig = toSignal(
@@ -133,7 +123,6 @@ export class PaybillForm {
 
   public onSubmit(): void {
     if (this.isLoading()) return;
-
     const formValues = this.paybillForm.getRawValue();
 
     if (!this.isVerified()) {
