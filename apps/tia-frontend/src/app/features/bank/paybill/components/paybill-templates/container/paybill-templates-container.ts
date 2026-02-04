@@ -10,8 +10,8 @@ import { PaybillTemplates } from '../components/paybill-templates';
 import { PaybillTemplatesService } from '../services/paybill-templates-service';
 import { Store } from '@ngrx/store';
 import {
-  selectActiveProvider,
   selectCategories,
+  selectLoading,
   selectProviders,
   selectTemplatesAsTreeItems,
   selectTemplatesGroupWithConfigs,
@@ -26,7 +26,6 @@ import {
   ModalType,
 } from '../models/paybill-templates.model';
 import { ModalConfig } from '../configs/cta-buttons.config';
-import { NgPlural } from '@angular/common';
 
 @Component({
   selector: 'app-paybill-templates-container',
@@ -51,6 +50,8 @@ export class PaybillTemplatesContainer implements OnInit {
   public readonly templates = this.store.selectSignal(
     selectTemplatesAsTreeItems,
   );
+
+  public isLoading = this.store.selectSignal(selectLoading);
 
   // Handles to determine what is modals type based on clicks in header
   public handleHeaderAction(action: HeaderCtaAction): void {
@@ -94,7 +95,20 @@ export class PaybillTemplatesContainer implements OnInit {
 
   protected currentModalConfig = computed(() => {
     const modal = this.modalType();
-    return modal ? this.modalConfig[modal] : null;
+    if (!modal) return null;
+
+    const baseConfig = this.modalConfig[modal];
+
+    if (modal === ModalType.RenameGroup || modal === ModalType.RenameTemplate) {
+      return {
+        ...baseConfig,
+        initialValues: {
+          currentName: this.selectedItemName(),
+        },
+      };
+    }
+
+    return baseConfig;
   });
 
   public handleFormSubmit(payload: FormSubmitPayload) {
@@ -106,27 +120,106 @@ export class PaybillTemplatesContainer implements OnInit {
             templateIds: [],
           }),
         );
-    }
-  }
+        break;
+      case 'rename-template':
+        const templateId = this.selectedId();
+        if (templateId) {
+          this.store.dispatch(
+            TemplatesPageActions.renameTemplate({
+              templateId,
+              nickName: payload.values['name'],
+            }),
+          );
+        }
+        break;
 
-  public selectedItemName = signal<string>('');
-  public selectedId = signal<string | null>(null);
-  onItemDeleteAction(id: string) {
-    const template = this.templates().find((t) => t.id === id);
-    this.selectedItemName.set(template?.title ?? '');
-    this.modalType.set(ModalType.DeleteTemplate);
-    this.selectedId.set(id);
+      case 'rename-group':
+        const groupId = this.selectedId();
+        console.log(groupId);
+        if (groupId) {
+          this.store.dispatch(
+            TemplatesPageActions.renameTemplateGroup({
+              groupId,
+              groupName: payload.values['name'],
+            }),
+          );
+        }
+        break;
+    }
+
     this.handleModalToggle();
   }
 
-  deleteTemplate() {
-    const id = this.selectedId();
-    if (id) {
-      this.store.dispatch(
-        TemplatesPageActions.deleteTemplates({ templateId: id }),
-      );
+  public selectedItemName = signal<string>('');
+  public selectedId = signal<string>('');
 
-      this.handleModalToggle();
-    }
+  private withSelectedId(action: (id: string) => void) {
+    const id = this.selectedId();
+    if (!id) return;
+
+    action(id);
+    this.handleModalToggle();
+  }
+
+  // This will select active template
+  private selectTemplate(id: string) {
+    const template = this.templates().find((t) => t.id === id);
+
+    this.selectedId.set(id);
+    this.selectedItemName.set(template?.title ?? '');
+  }
+
+  private selectGroup(id: string) {
+    const group = this.templateGroups().find((t) => t.id === id);
+
+    this.selectedId.set(id);
+    this.selectedItemName.set(group?.groupName ?? '');
+  }
+
+  // This will open the modal
+  private openTemplateModal(id: string, type: ModalType) {
+    this.selectTemplate(id);
+    this.modalType.set(type);
+    this.handleModalToggle();
+  }
+
+  private openGroupModal(id: string, type: ModalType) {
+    this.selectGroup(id);
+    this.modalType.set(type);
+    this.handleModalToggle();
+  }
+
+  // Modal Openers
+  onItemEditAction(id: string) {
+    this.openTemplateModal(id, ModalType.RenameTemplate);
+  }
+
+  onItemDeleteAction(id: string) {
+    this.openTemplateModal(id, ModalType.DeleteTemplate);
+  }
+
+  onGroupDeleteAction(id: string) {
+    this.openGroupModal(id, ModalType.DeleteGroup);
+  }
+
+  onGroupEditAction(id: string) {
+    this.openGroupModal(id, ModalType.RenameGroup);
+  }
+
+  // Actual delete / edit logic
+  deleteTemplate() {
+    this.withSelectedId((id) =>
+      this.store.dispatch(
+        TemplatesPageActions.deleteTemplate({ templateId: id }),
+      ),
+    );
+  }
+
+  deleteGroup() {
+    this.withSelectedId((id) =>
+      this.store.dispatch(
+        TemplatesPageActions.deleteTemplateGroup({ groupId: id }),
+      ),
+    );
   }
 }
