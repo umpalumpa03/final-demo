@@ -195,18 +195,102 @@ describe('PaybillTemplatesContainer', () => {
       component.deleteTemplate();
 
       expect(dispatchSpy).toHaveBeenCalledWith(
-        TemplatesPageActions.deleteTemplates({ templateId: 'T123' }),
+        TemplatesPageActions.deleteTemplate({ templateId: 'T123' }),
       );
       expect(component.isModalOpen()).toBe(false);
     });
 
     it('deleteTemplate: should not dispatch if selectedId is null', () => {
       const dispatchSpy = vi.spyOn(component.store, 'dispatch');
-      component.selectedId.set(null);
 
       component.deleteTemplate();
 
       expect(dispatchSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Container Business Logic', () => {
+    it('handleFormSubmit: should dispatch renameTemplate when payload type is rename-template', () => {
+      const dispatchSpy = vi.spyOn(component.store, 'dispatch');
+      component.selectedId.set('T_RENAME_ID');
+
+      const payload = {
+        type: 'rename-template',
+        values: { name: 'New Nickname' },
+      } as any;
+
+      component.handleFormSubmit(payload);
+
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        TemplatesPageActions.renameTemplate({
+          templateId: 'T_RENAME_ID',
+          nickName: 'New Nickname',
+        }),
+      );
+    });
+
+    it('handleFormSubmit: should dispatch renameTemplateGroup when payload type is rename-group', () => {
+      const dispatchSpy = vi.spyOn(component.store, 'dispatch');
+      component.selectedId.set('G_RENAME_ID');
+
+      const payload = {
+        type: 'rename-group',
+        values: { name: 'Updated Group Name' },
+      } as any;
+
+      component.handleFormSubmit(payload);
+
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        TemplatesPageActions.renameTemplateGroup({
+          groupId: 'G_RENAME_ID',
+          groupName: 'Updated Group Name',
+        }),
+      );
+    });
+
+    it('onGroupEditAction: should find group and set data for renaming', () => {
+      const mockGroups = [{ id: 'G1', groupName: 'My Group' }];
+      (component as any).templateGroups = () => mockGroups;
+
+      component.onGroupEditAction('G1');
+
+      expect(component.selectedId()).toBe('G1');
+      expect(component.selectedItemName()).toBe('My Group');
+      expect(component.modalType()).toBe(ModalType.RenameGroup);
+      expect(component.isModalOpen()).toBe(true);
+    });
+
+    it('onGroupDeleteAction: should set delete group modal state', () => {
+      const mockGroups = [{ id: 'G2', groupName: 'Bills' }];
+      (component as any).templateGroups = () => mockGroups;
+
+      component.onGroupDeleteAction('G2');
+
+      expect(component.modalType()).toBe(ModalType.DeleteGroup);
+    });
+
+    it('deleteGroup: should dispatch deleteTemplateGroup action', () => {
+      const dispatchSpy = vi.spyOn(component.store, 'dispatch');
+      component.selectedId.set('G_DELETE_ID');
+      component.isModalOpen.set(true);
+
+      component.deleteGroup();
+
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        TemplatesPageActions.deleteTemplateGroup({ groupId: 'G_DELETE_ID' }),
+      );
+      expect(component.isModalOpen()).toBe(false);
+    });
+
+    it('onItemEditAction: should find template and open rename modal', () => {
+      const mockTemplates = [{ id: 'T5', title: 'Gym Membership' }];
+      (component as any).templates = () => mockTemplates;
+
+      component.onItemEditAction('T5');
+
+      expect(component.selectedId()).toBe('T5');
+      expect(component.selectedItemName()).toBe('Gym Membership');
+      expect(component.modalType()).toBe(ModalType.RenameTemplate);
     });
   });
 });

@@ -115,7 +115,7 @@
   }
 
   &:disabled,
-  &--disabled {
+  &--disabled, &--loading {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
@@ -140,6 +140,10 @@
       height: 1.8rem;
       object-fit: contain;
       display: block;
+    }
+
+    &--loading {
+      display: none;
     }
   }
 

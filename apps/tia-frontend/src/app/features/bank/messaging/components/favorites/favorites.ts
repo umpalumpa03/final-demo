@@ -63,7 +63,7 @@ export class Favorites implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!(this.nav.previous()?.includes('favorites'))) {
+    if (!(this.nav.previous()?.includes('favorites') && this.messagingStore.mails().length > 0)) {
       this.messagingStore.loadMails('favorites');
     }
       this.messagingStore.getTotalCount('favorite');
