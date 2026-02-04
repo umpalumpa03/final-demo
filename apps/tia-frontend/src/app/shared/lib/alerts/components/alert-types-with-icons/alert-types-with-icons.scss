@@ -7,8 +7,6 @@
   background: var(--color-bg);
   border: 0.08rem solid $blue-200;
   border-radius: 1rem;
-  z-index: 100;
-  position: absolute;
   @include display-flex(row, nowrap);
   gap: 1.2rem;
   padding: 1rem 1.64rem;
