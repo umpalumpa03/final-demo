@@ -211,7 +211,7 @@ export class TransferExternalService {
 
     if (numericAmount > 0 && senderAccount?.id) {
       if (isExternalBank) {
-        this.transferStore.setLoading(true);
+        this.transferStore.setFeeLoading(true);
         this.feeUpdateSubject.next({
           amount: numericAmount,
           accountId: senderAccount.id,
@@ -232,7 +232,7 @@ export class TransferExternalService {
           this.transfersApi.getFee(accountId, amount).pipe(
             tap((response) => {
               if (this.transferStore.amount() !== amount) {
-                this.transferStore.setLoading(false);
+                this.transferStore.setFeeLoading(false);
                 return;
               }
 
@@ -240,13 +240,14 @@ export class TransferExternalService {
                 typeof response === 'number' ? response : response.fee;
               const total = amount + fee;
               this.transferStore.updateFeeInfo(fee, total);
+              this.transferStore.setFeeLoading(false);
 
               const balance = this.transferStore.senderAccount()?.balance ?? 0;
               this.validateBalance(total, balance);
             }),
             catchError(() => {
               this.transferStore.updateFeeInfo(0, 0);
-              this.transferStore.setLoading(false);
+              this.transferStore.setFeeLoading(false);
               return of(null);
             }),
           ),
@@ -274,7 +275,7 @@ export class TransferExternalService {
     }
 
     this.transferStore.setLoading(true);
-
+    this.transferStore.setError('');
     this.transfersApi
       .transferSameBank({
         senderAccountId: senderAccount.id,
@@ -296,6 +297,61 @@ export class TransferExternalService {
         }),
         catchError((error) => {
           this.transferStore.setLoading(false);
+          this.transferStore.setError(
+            error?.error?.message || 'Transfer failed',
+          );
+
+          return of(null);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
+  }
+
+  public handleOtherBankTransfer(): void {
+    const senderAccount = this.transferStore.senderAccount();
+    const receiverAccountIban = this.transferStore.recipientInput();
+    const amount = this.transferStore.amount();
+    const receiverName = this.transferStore.manualRecipientName();
+    const receiverCurrency = this.transferStore.senderAccount()?.currency;
+    const description = this.transferStore.description();
+
+    if (
+      amount <= 0 ||
+      !receiverAccountIban ||
+      !senderAccount?.id ||
+      !receiverCurrency
+    )
+      return;
+
+    this.transferStore.setLoading(true);
+    this.transferStore.setError('');
+    this.transfersApi
+      .transferExternalBank({
+        senderAccountId: senderAccount.id,
+        receiverAccountIban: receiverAccountIban,
+        receiverAccountCurrency: receiverCurrency,
+        receiverName: receiverName,
+        amountToSend: amount,
+        description: description || 'Transfer to someone',
+      })
+      .pipe(
+        tap((response) => {
+          const requiresOtp = response.verify.method !== null;
+
+          this.transferStore.setChallengeId(response.verify.challengeId);
+          this.transferStore.setRequiresOtp(requiresOtp);
+          this.transferStore.setLoading(false);
+          if (!requiresOtp) {
+            this.verifyTransfer();
+          }
+        }),
+        catchError((error) => {
+          this.transferStore.setLoading(false);
+          this.transferStore.setError(
+            error?.error?.message || 'Transfer Failed',
+          );
+
           return of(null);
         }),
         takeUntilDestroyed(this.destroyRef),
@@ -308,7 +364,9 @@ export class TransferExternalService {
     if (!challengeId) {
       return;
     }
+
     this.transferStore.setLoading(true);
+
     this.transfersApi
       .verifyTransfer({
         challengeId,
@@ -317,12 +375,14 @@ export class TransferExternalService {
       .pipe(
         tap((response) => {
           if (response.success) {
+            this.transferStore.setRequiresOtp(false);
             this.transferStore.setTransferSuccess(true);
-            this.transferStore.setLoading(false);
           }
+          this.transferStore.setLoading(false);
         }),
         catchError((error) => {
           this.transferStore.setLoading(false);
+          this.transferStore.setError(error?.error?.message);
           return of(null);
         }),
         takeUntilDestroyed(this.destroyRef),
