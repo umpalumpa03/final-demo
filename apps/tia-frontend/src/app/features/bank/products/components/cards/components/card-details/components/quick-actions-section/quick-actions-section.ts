@@ -14,7 +14,7 @@ export class QuickActionsSection {
   readonly transferExternalClicked = output<void>();
   readonly paybillClicked = output<void>();
   readonly viewTransactionsClicked = output<void>();
-
+readonly viewSensitiveDetailsClicked = output<void>();
   protected handleTransferOwn(): void {
     this.transferOwnClicked.emit();
   }
@@ -30,4 +30,7 @@ export class QuickActionsSection {
   protected handleViewTransactions(): void {
     this.viewTransactionsClicked.emit();
   }
+  protected handleViewSensitiveDetails(): void {
+  this.viewSensitiveDetailsClicked.emit();
+}
 }

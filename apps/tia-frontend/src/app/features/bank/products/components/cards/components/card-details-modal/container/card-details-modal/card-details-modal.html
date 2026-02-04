@@ -1,0 +1,20 @@
+@if (isOpen()) {
+
+<app-ui-modal [isOpen]="isOpen()" (closed)="handleClose()">
+  @if (modalData$ | async; as data) {
+  <app-card-details-modal-content
+    [cardName]="data.details.cardName"
+    [cardType]="data.details.network"
+    [cardCategory]="data.details.type"
+    [currency]="data.currency"
+    [status]="data.details.status"
+    [isActiveStatus]="data.isActiveStatus"
+    [formattedBalance]="data.formattedBalance"
+    [shouldShowCreditLimit]="data.shouldShowCreditLimit"
+    [formattedCreditLimit]="data.formattedCreditLimit"
+    (requestOtpClicked)="handleRequestOtp()"
+    (closeClicked)="handleClose()"
+  />
+  }
+</app-ui-modal>
+} 

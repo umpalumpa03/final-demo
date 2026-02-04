@@ -13,6 +13,8 @@ import { combineLatest, map, switchMap, of } from 'rxjs';
 import {
   loadCardDetails,
   loadCardAccounts,
+  openCardDetailsModal,
+  closeCardDetailsModal,
 } from '../../../../../../../../store/products/cards/cards.actions';
 import {
   selectCardDetails,
@@ -20,6 +22,7 @@ import {
   selectCardDetailsLoading,
   selectCardDetailsError,
   selectAccountById,
+  selectIsCardDetailsModalOpen,
 } from '../../../../../../../../store/products/cards/cards.selectors';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -30,6 +33,7 @@ import { CardInfoSection } from '../components/card-info-section/card-info-secti
 import { QuickActionsSection } from '../components/quick-actions-section/quick-actions-section';
 import { CardViewData } from '../../../models/card-view-data.model';
 import { TranslatePipe } from '@ngx-translate/core';
+import { CardDetailsModal } from '../../card-details-modal/container/card-details-modal/card-details-modal';
 
 
 
@@ -45,7 +49,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     ErrorStates,
     CardImage,
     CardInfoSection,
-    QuickActionsSection,TranslatePipe
+    QuickActionsSection,TranslatePipe,CardDetailsModal
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -58,6 +62,8 @@ export class CardDetails implements OnInit {
 
   protected readonly loading$ = this.store.select(selectCardDetailsLoading);
   protected readonly error$ = this.store.select(selectCardDetailsError);
+  protected readonly isDetailsModalOpen$ = this.store.select(selectIsCardDetailsModalOpen);
+
 
   protected readonly cardData$ = combineLatest([
     this.store.select(selectCardDetails),
@@ -126,6 +132,13 @@ export class CardDetails implements OnInit {
   protected handleRetry(): void {
     this.loadCardData();
   }
+  protected handleOpenDetailsModal(): void {
+  this.store.dispatch(openCardDetailsModal({ cardId: this.cardId }));
+}
+
+protected handleCloseDetailsModal(): void {
+  this.store.dispatch(closeCardDetailsModal());
+}
   private loadCardData(): void {
     this.store.dispatch(loadCardAccounts());
     this.store.dispatch(loadCardDetails({ cardId: this.cardId }));

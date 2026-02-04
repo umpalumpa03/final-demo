@@ -170,3 +170,51 @@ export const selectCardCreationDataLoading = createSelector(
   selectCardsState,
   (state: CardsState): boolean => state.loading,
 );
+export const selectIsCardDetailsModalOpen = createSelector(
+  selectCardsState,
+  (state: CardsState): boolean => state.isCardDetailsModalOpen,
+);
+
+export const selectSelectedCardIdForModal = createSelector(
+  selectCardsState,
+  (state: CardsState): string | null => state.selectedCardIdForModal,
+);
+
+export const selectCardDetailsModalData = createSelector(
+  selectSelectedCardIdForModal,
+  selectCardDetails,
+  selectCardImages,
+  selectAllAccounts,
+  (
+    cardId: string | null,
+    cardDetails: Record<string, CardDetail>,
+    cardImages: Record<string, string>,
+    accounts: CardAccount[],
+  ) => {
+    if (!cardId) return null;
+
+    const details = cardDetails[cardId];
+    const image = cardImages[cardId];
+
+    if (!details || !image) return null;
+
+    const account = accounts.find((acc) => acc.id === details.accountId);
+
+    return {
+      cardId,
+      details,
+      imageBase64: image,
+      account,
+      currency: account?.currency ?? 'N/A',
+      formattedBalance: account
+        ? `${account.currency} ${account.balance.toLocaleString()}`
+        : 'N/A',
+      shouldShowCreditLimit: details.type === 'CREDIT' && !!details.creditLimit,
+      formattedCreditLimit:
+        account && details.creditLimit
+          ? `${account.currency} ${details.creditLimit.toLocaleString()}`
+          : 'N/A',
+      isActiveStatus: details.status === 'ACTIVE',
+    };
+  },
+);
