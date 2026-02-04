@@ -17,7 +17,6 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AuthService } from '../../../services/auth.service';
 import { Routes } from '../../../models/tokens.model';
 import { AuthHeader } from '../../../shared/auth-header/auth-header';
-import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 
 @Component({
   selector: 'app-forgot-password-email',
@@ -28,7 +27,6 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
     RouterLink,
     TranslatePipe,
     AuthHeader,
-    RouteLoader,
   ],
   templateUrl: './forgot-password-email.html',
   styleUrl: './forgot-password-email.scss',
@@ -43,7 +41,9 @@ export class ForgotPasswordEmail {
   public readonly title = 'auth.forgot-password.title';
   public readonly subtitle = 'auth.forgot-password.subtitle';
 
-  public readonly isSubmitting = computed(() => this.authService.isLoginLoading());
+  public readonly isSubmitting = computed(() =>
+    this.authService.isLoginLoading(),
+  );
   public readonly submitError = signal<string | null>(null);
 
   public readonly form = this.fb.nonNullable.group({
@@ -105,7 +105,7 @@ export class ForgotPasswordEmail {
           }
           return EMPTY;
         }),
-        finalize(() => this.authService.isLoginLoading.set(false))
+        finalize(() => this.authService.isLoginLoading.set(false)),
       )
       .subscribe();
   }

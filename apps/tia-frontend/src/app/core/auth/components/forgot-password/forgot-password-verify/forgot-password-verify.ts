@@ -7,13 +7,14 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
 import { forgotPasswordSegments } from '../forgot-password.routes';
 import { IVerified } from '../../../models/otp-verification.models';
+import { TokenService } from '../../../services/token.service';
+import { Routes } from '../../../models/tokens.model';
 
 @Component({
   selector: 'app-forgot-password-verify',
@@ -23,6 +24,7 @@ import { IVerified } from '../../../models/otp-verification.models';
 })
 export class ForgotPasswordVerify implements OnInit {
   private authService = inject(AuthService);
+  private tokenService = inject(TokenService)
   private router = inject(Router);
 
   public readonly errorMessage = signal<string | null>(null);
@@ -47,13 +49,13 @@ export class ForgotPasswordVerify implements OnInit {
         .verifyForgotPasswordOtp(event.otp!)
         .pipe(
           tap(() =>
-            this.router.navigate(['/auth', ...forgotPasswordSegments.reset])
+            this.router.navigate(['/auth', ...forgotPasswordSegments.reset]),
           ),
           catchError((error) => {
             const httpError = error as HttpErrorResponse;
             this.errorMessage.set(httpError.error?.message || 'Invalid code');
             return EMPTY;
-          })
+          }),
         )
         .subscribe();
     }
@@ -63,5 +65,10 @@ export class ForgotPasswordVerify implements OnInit {
     if (isCalled) {
       this.authService.resendVerificationCode().subscribe();
     }
+  }
+
+  public clearedBackout(): void {
+    this.tokenService.clearAllToken();
+    this.router.navigate([Routes.SIGN_IN]);
   }
 }

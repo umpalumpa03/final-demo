@@ -1,14 +1,13 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
 import { Routes } from '../models/tokens.model';
+import { TokenService } from '../services/token.service';
 
-export const OtpVerifyGuard: CanActivateFn = () => {
-  const authService = inject(AuthService);
+export const PhoneGuard: CanActivateFn = () => {
+  const tokenService = inject(TokenService);
   const router = inject(Router);
-  console.log(authService.getChallengeId());
 
-  return authService.getChallengeId()
+  return tokenService.getSignUpToken || tokenService.verifyToken
     ? true
     : router.createUrlTree([Routes.SIGN_IN]);
 };
