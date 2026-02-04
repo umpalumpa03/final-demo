@@ -35,7 +35,10 @@ export interface MailingState {
   searchResults: User[];
   isSearching: boolean;
   successMessage?: string;
-  emailDetail?: EmailDetailData
+  emailDetail?: EmailDetailData,
+  total: { [type: string]: number };
+  draftsTotal?: number;
+  importantCount?: number;
 }
 
 export interface SendEmailRequest {
@@ -87,5 +90,8 @@ export const initialState: MailingState = {
   searchResults: [],
   isSearching: false,
   successMessage: '',
-  emailDetail: undefined
+  emailDetail: undefined,
+  total: {},
+  draftsTotal: 0,
+  importantCount: 0,
 };

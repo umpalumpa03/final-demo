@@ -5,6 +5,7 @@ export interface NavigationItem {
     disabled?: boolean;
     count?: number;
     exact?: boolean;
+    activeCount?: boolean;
 }
 
 export type NavigationOrientation = 'horizontal' | 'vertical';
