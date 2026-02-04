@@ -59,3 +59,8 @@ export interface TransferResponse {
   };
   transferType: string;
 }
+export interface TransferVerifyResponse {
+  success: boolean;
+  transferId: string;
+  message?: string;
+}

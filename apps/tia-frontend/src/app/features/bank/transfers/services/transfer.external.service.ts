@@ -379,6 +379,7 @@ export class TransferExternalService {
             this.transferStore.setTransferSuccess(true);
           }
           this.transferStore.setLoading(false);
+          //here we need to catch success false from response on otp code
         }),
         catchError((error) => {
           this.transferStore.setLoading(false);
