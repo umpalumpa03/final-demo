@@ -8,6 +8,10 @@ import {
   selectTemplatesAsTreeItems,
 } from '../../../store/paybill.selectors';
 import { HeaderCtaAction, ModalType } from '../models/paybill-templates.model';
+import {
+  PaybillActions,
+  TemplatesPageActions,
+} from '../../../store/paybill.actions';
 
 const mockTemplatesGroup = [
   {
@@ -117,5 +121,92 @@ describe('PaybillTemplatesContainer', () => {
     component.modalType.set(null);
 
     expect(component['currentModalConfig']()).toBeNull();
+  });
+
+  describe('Extended Logic & Store Dispatches', () => {
+    it('ngOnInit: should dispatch load actions', () => {
+      const dispatchSpy = vi.spyOn(component.store, 'dispatch');
+      component.ngOnInit();
+
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        TemplatesPageActions.loadTemplateGroups(),
+      );
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        TemplatesPageActions.loadTemplates(),
+      );
+    });
+
+    it('onCategorySelected: should dispatch selectCategory action', () => {
+      const dispatchSpy = vi.spyOn(component.store, 'dispatch');
+      component.onCategorySelected('CAT_123');
+
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        PaybillActions.selectCategory({ categoryId: 'CAT_123' }),
+      );
+    });
+
+    it('categoryOptions: should map templateCategories to select options via computed signal', () => {
+      (component as any).templateCategories = () => [
+        { id: '1', name: 'Utilities' },
+        { id: '2', name: 'Mobile' },
+      ];
+
+      const options = component.categoryOptions();
+      expect(options).toEqual([
+        { label: 'Utilities', value: '1' },
+        { label: 'Mobile', value: '2' },
+      ]);
+    });
+
+    it('handleFormSubmit: should dispatch createTemplatesGroups when payload type is create-group', () => {
+      const dispatchSpy = vi.spyOn(component.store, 'dispatch');
+      const payload = {
+        type: 'create-group',
+        values: { name: 'New House Group' },
+      } as any;
+
+      component.handleFormSubmit(payload);
+
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        TemplatesPageActions.createTemplatesGroups({
+          groupName: 'New House Group',
+          templateIds: [],
+        }),
+      );
+    });
+
+    it('onItemDeleteAction: should find template name and open delete modal', () => {
+      const mockTemplates = [{ id: 'T1', title: 'Electric Bill' }];
+      (component as any).templates = () => mockTemplates;
+
+      component.onItemDeleteAction('T1');
+
+      expect(component.selectedId()).toBe('T1');
+      expect(component.selectedItemName()).toBe('Electric Bill');
+      expect(component.modalType()).toBe(ModalType.DeleteTemplate);
+      expect(component.isModalOpen()).toBe(true);
+    });
+
+    it('deleteTemplate: should dispatch delete action and close modal', () => {
+      const dispatchSpy = vi.spyOn(component.store, 'dispatch');
+      component.selectedId.set('T123');
+      component.isModalOpen.set(true);
+
+      component.deleteTemplate();
+
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        TemplatesPageActions.deleteTemplates({ templateId: 'T123' }),
+      );
+      expect(component.isModalOpen()).toBe(false);
+    });
+
+    it('deleteTemplate: should not dispatch if selectedId is null', () => {
+      const dispatchSpy = vi.spyOn(component.store, 'dispatch');
+      component.selectedId.set(null);
+
+      component.deleteTemplate();
+
+      expect(dispatchSpy).not.toHaveBeenCalled();
+    });
   });
 });

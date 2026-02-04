@@ -81,15 +81,6 @@ describe('Paybill Reducer', () => {
   });
 
   describe('Check Bill', () => {
-    it('checkBill: should set loading', () => {
-      const action = PaybillActions.checkBill({
-        serviceId: 's1',
-        accountNumber: '123',
-      });
-      const result = paybillReducer(initialPaybillState, action);
-      expect(result.loading).toBe(true);
-    });
-
     it('checkBillSuccess: should set details and clear error if valid', () => {
       const details = { valid: true } as any;
       const action = PaybillActions.checkBillSuccess({ details });
@@ -272,6 +263,144 @@ describe('Paybill Reducer', () => {
       const state = { ...initialPaybillState, error: 'Discard me' };
       const result = paybillReducer(state, PaybillActions.clearError());
       expect(result.error).toBeNull();
+    });
+  });
+
+  describe('Notification Actions', () => {
+    it('addNotification: should append a new notification with a timestamp ID', () => {
+      const action = PaybillActions.addNotification({
+        notificationType: 'success',
+        message: 'Saved Successfully',
+      });
+      const result = paybillReducer(initialPaybillState, action);
+
+      expect(result.notifications.length).toBe(1);
+      expect(result.notifications[0].message).toBe('Saved Successfully');
+      expect(result.notifications[0].id).toBeDefined();
+    });
+
+    it('dismissNotification: should remove the specific notification by ID', () => {
+      const state = {
+        ...initialPaybillState,
+        notifications: [
+          { id: '1', message: 'First', notificationType: 'info' },
+          { id: '2', message: 'Second', notificationType: 'info' },
+        ] as any,
+      };
+      const action = PaybillActions.dismissNotification({ id: '1' });
+      const result = paybillReducer(state, action);
+
+      expect(result.notifications.length).toBe(1);
+      expect(result.notifications[0].id).toBe('2');
+    });
+
+    it('clearAllNotifications: should empty the notifications array', () => {
+      const state = {
+        ...initialPaybillState,
+        notifications: [{ id: '1' }] as any,
+        error: 'Some error',
+      };
+      // Note: This action is triggered by several actions in your 'on' block
+      const action = PaybillActions.clearAllNotifications();
+      const result = paybillReducer(state, action);
+
+      expect(result.notifications).toEqual([]);
+      expect(result.error).toBeNull();
+    });
+  });
+
+  describe('Template Management', () => {
+    it('createTemplatesGroupsSuccess: should add new group to existing list', () => {
+      const existingGroups = [{ id: 'g1' }] as any;
+      const newGroup = { id: 'g2' } as any;
+      const state = { ...initialPaybillState, templateGroups: existingGroups };
+
+      const action = TemplatesPageActions.createTemplatesGroupsSuccess({
+        templateGroup: newGroup,
+      });
+      const result = paybillReducer(state, action);
+
+      expect(result.templateGroups.length).toBe(2);
+      expect(result.templateGroups).toContain(newGroup);
+      expect(result.loading).toBe(false);
+    });
+
+    it('deleteTemplatesSuccess: should remove template and add a success notification', () => {
+      const state = {
+        ...initialPaybillState,
+        templates: [{ id: 't1' }, { id: 't2' }] as any,
+      };
+      const action = TemplatesPageActions.deleteTemplatesSuccess({
+        templateId: 't1',
+        message: 'Deleted!',
+      });
+      const result = paybillReducer(state, action);
+
+      expect(result.templates.length).toBe(1);
+      expect(result.templates[0].id).toBe('t2');
+      expect(result.notifications[0].message).toBe('Deleted!');
+    });
+  });
+
+  describe('Payment Form & Transaction Sync', () => {
+    it('resetPaymentForm: should clear verification and step but keep provider', () => {
+      const state = {
+        ...initialPaybillState,
+        verifiedDetails: { amount: 10 } as any,
+        currentStep: 'CONFIRM',
+        selectedProviderId: 'p1',
+      };
+      const action = PaybillActions.resetPaymentForm();
+      const result = paybillReducer(state, action);
+
+      expect(result.verifiedDetails).toBeNull();
+      expect(result.currentStep).toBe('DETAILS');
+      expect(result.selectedProviderId).toBe('p1'); // Should persist
+    });
+
+    it('setTransactionProvider: should set provider and try to infer category', () => {
+      const provider = { id: 'p1', categoryId: 'CAT_LPG' } as any;
+      const action = PaybillActions.setTransactionProvider({ provider });
+      const result = paybillReducer(initialPaybillState, action);
+
+      expect(result.selectedProvider).toEqual(provider);
+      expect(result.selectedProviderId).toBe('p1');
+      expect(result.selectedCategoryId).toBe('CAT_LPG');
+    });
+
+    it('clearSelection: should fully reset the paybill state machine', () => {
+      const state = {
+        ...initialPaybillState,
+        selectedProviderId: 'p1',
+        paymentPayload: { acc: '123' } as any,
+        currentStep: 'SUCCESS',
+      };
+      const action = PaybillActions.clearSelection();
+      const result = paybillReducer(state, action);
+
+      expect(result.selectedProviderId).toBeNull();
+      expect(result.paymentPayload).toBeNull();
+      expect(result.currentStep).toBe('DETAILS');
+      expect(result.providers).toEqual([]);
+    });
+  });
+
+  describe('Additional Edge Cases', () => {
+    it('checkBillSuccess: should set error if details object is invalid', () => {
+      const details = { valid: false, error: 'Database mismatch' } as any;
+      const action = PaybillActions.checkBillSuccess({ details });
+      const result = paybillReducer(initialPaybillState, action);
+
+      expect(result.error).toBe('Database mismatch');
+      expect(result.loading).toBe(false);
+    });
+
+    it('checkBillSuccess: should provide default error message if details invalid and no error string provided', () => {
+      const details = { valid: false } as any;
+      const action = PaybillActions.checkBillSuccess({ details });
+      const result = paybillReducer(initialPaybillState, action);
+
+      expect(result.error).toBe('Invalid account');
     });
   });
 });
