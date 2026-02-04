@@ -23,6 +23,13 @@ export interface MailsResponse {
   pagination: MailPagination;
 }
 
+export interface EmailRepliesData {
+  id: number;
+  authorEmail: string;
+  body: string;
+  createdAt: string;
+}
+
 export interface MailingState {
   mails: Mail[];
   currentType: MailType;
@@ -39,6 +46,8 @@ export interface MailingState {
   total: { [type: string]: number };
   draftsTotal?: number;
   importantCount?: number;
+  mailReplies?: EmailRepliesData[];
+  isFavoriteLoading?: boolean;
 }
 
 export interface SendEmailRequest {
@@ -94,4 +103,6 @@ export const initialState: MailingState = {
   total: {},
   draftsTotal: 0,
   importantCount: 0,
+  mailReplies: [],
+  isFavoriteLoading: false,
 };

@@ -14,7 +14,7 @@ describe('SentDraftDetail', () => {
   let mockMessagingStore: any;
   let mockRouter: any;
 
-   const mockMail: Mail = {
+  const mockMail: Mail = {
     id: 1,
     subject: 'Test mail',
     body: 'Body',
@@ -30,7 +30,9 @@ describe('SentDraftDetail', () => {
   beforeEach(async () => {
     mockMessagingStore = {
       emailDetail: signal<Mail | null>(mockMail),
+      mailReplies: signal([]),
       getEmailById: vi.fn(),
+      getMailReplies: vi.fn(),
       deleteMail: vi.fn(),
       sendDraft: vi.fn(),
       isLoading: signal(false),
@@ -70,10 +72,11 @@ describe('SentDraftDetail', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load email detail on init', () => {
+  it('should load email detail and replies on init', () => {
     fixture.detectChanges();
 
     expect(mockMessagingStore.getEmailById).toHaveBeenCalledWith(1);
+    expect(mockMessagingStore.getMailReplies).toHaveBeenCalledWith(1);
   });
 
   it('should detect fromSent query param as false when not provided', () => {

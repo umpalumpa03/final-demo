@@ -394,24 +394,6 @@ describe('PaybillEffect (Modern Suite)', () => {
   });
 
   describe('Template Management & Failure Handlers', () => {
-    it('deleteTemplates$: should dispatch Success on successful deletion', () => {
-      const mockResponse = { message: 'Deleted Successfully' };
-      (paybillTemplatesService as any).deleteTemplate = vi
-        .fn()
-        .mockReturnValue(of(mockResponse));
-
-      actions$ = of(TemplatesPageActions.deleteTemplates({ templateId: 'T1' }));
-
-      effects.deleteTemplates$.subscribe((action) => {
-        expect(action).toEqual(
-          TemplatesPageActions.deleteTemplatesSuccess({
-            message: 'Deleted Successfully',
-            templateId: 'T1',
-          }),
-        );
-      });
-    });
-
     it('createTemplatesGroup$: should dispatch Success on successful creation', () => {
       const mockGroup = { id: 'G1', name: 'Utility' } as any;
       (paybillTemplatesService as any).createTemplateGroups = vi
@@ -430,15 +412,149 @@ describe('PaybillEffect (Modern Suite)', () => {
         );
       });
     });
+  });
 
-    it('handleCheckBillFailure$: should map failure to notification', () => {
-      actions$ = of(PaybillActions.checkBillFailure({ error: 'Not Found' }));
-      effects.handleCheckBillFailure$.subscribe((action) => {
+  describe('Template CRUD Operations', () => {
+    it('deleteTemplates$: should dispatch Success on successful delete', () => {
+      const mockResponse = { message: 'Deleted' };
+      (paybillTemplatesService as any).deleteTemplate = vi
+        .fn()
+        .mockReturnValue(of(mockResponse));
+      actions$ = of(TemplatesPageActions.deleteTemplate({ templateId: 'T1' }));
+
+      effects.deleteTemplates$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.deleteTemplateSuccess({
+            message: 'Deleted',
+            templateId: 'T1',
+          }),
+        );
+      });
+    });
+
+    it('renameTemplates$: should dispatch Success on successful rename', () => {
+      const updatedTemplate = { id: 'T1', nickname: 'New' } as any;
+      (paybillTemplatesService as any).renameTemplate = vi
+        .fn()
+        .mockReturnValue(of(updatedTemplate));
+      actions$ = of(
+        TemplatesPageActions.renameTemplate({
+          templateId: 'T1',
+          nickName: 'New',
+        }),
+      );
+
+      effects.renameTemplates$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.renameTemplateSuccess({
+            template: updatedTemplate,
+          }),
+        );
+      });
+    });
+
+    it('deleteTemplateGroup$: should dispatch Success', () => {
+      (paybillTemplatesService as any).deleteGroup = vi
+        .fn()
+        .mockReturnValue(of({ message: 'Removed' }));
+      actions$ = of(
+        TemplatesPageActions.deleteTemplateGroup({ groupId: 'G1' }),
+      );
+
+      effects.deleteTemplateGroup$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.deleteTemplateGroupSuccess({
+            message: 'Removed',
+            groupId: 'G1',
+          }),
+        );
+      });
+    });
+
+    it('renameTemplateGroup$: should dispatch Success', () => {
+      const group = { id: 'G1', groupName: 'New' } as any;
+      (paybillTemplatesService as any).renameGroup = vi
+        .fn()
+        .mockReturnValue(of(group));
+      actions$ = of(
+        TemplatesPageActions.renameTemplateGroup({
+          groupId: 'G1',
+          groupName: 'New',
+        }),
+      );
+
+      effects.renameTemplateGroup$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.renameTemplateGroupSuccess({
+            templateGroup: group,
+            groupId: 'G1',
+            message: 'Group name has been changed',
+          }),
+        );
+      });
+    });
+  });
+
+  describe('Consolidated Notification Effects', () => {
+    it('actionSuccess$: should map success actions to notifications using internal mapping', () => {
+      actions$ = of(
+        TemplatesPageActions.deleteTemplateSuccess({
+          message: 'ok',
+          templateId: '1',
+        }),
+      );
+
+      effects.actionSuccess$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.addNotification({
+            notificationType: 'success',
+            message: 'Template deleted successfully',
+          }),
+        );
+      });
+    });
+
+    it('actionFailure$: should map failure actions to warning notifications', () => {
+      const error = 'Global Error';
+      actions$ = of(TemplatesPageActions.loadTemplatesFailure({ error }));
+
+      effects.actionFailure$.subscribe((action) => {
         expect(action).toEqual(
           PaybillActions.addNotification({
             notificationType: 'warning',
-            message: 'Not Found',
+            message: error,
           }),
+        );
+      });
+    });
+  });
+
+  describe('Payment Details & Check Bill Logic', () => {
+    it('loadPaymentDetails$: should dispatch Success', () => {
+      const details = { amount: 100 } as any;
+      paybillService.getPaymentDetails = vi.fn().mockReturnValue(of(details));
+      actions$ = of(PaybillActions.loadPaymentDetails({ serviceId: '123' }));
+
+      effects.loadPaymentDetails$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.loadPaymentDetailsSuccess({ details }),
+        );
+      });
+    });
+
+    it('checkBill$: should dispatch Failure if details.valid is false', () => {
+      const invalidDetails = { valid: false, error: 'User not found' } as any;
+      paybillService.checkBill.mockReturnValue(of(invalidDetails));
+      actions$ = of(
+        PaybillActions.checkBill({
+          serviceId: 's1',
+          identification: {} as any,
+        }),
+      );
+
+      effects.checkBill$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.checkBillFailure({ error: 'User not found' }),
         );
       });
     });
