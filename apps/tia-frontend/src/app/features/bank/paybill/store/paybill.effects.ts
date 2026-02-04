@@ -319,30 +319,6 @@ export class PaybillEffect {
     );
   });
 
-  // handleCheckBillFailure$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(PaybillActions.checkBillFailure),
-  //     map(({ error }) =>
-  //       PaybillActions.addNotification({
-  //         notificationType: 'warning',
-  //         message: error || 'paybill.main.form.default_error',
-  //       }),
-  //     ),
-  //   ),
-  // );
-
-  // handleProceedPaymentFailure$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(PaybillActions.proceedPaymentFailure),
-  //     map(({ error }) =>
-  //       PaybillActions.addNotification({
-  //         notificationType: 'warning',
-  //         message: error || 'paybill.main.form.default_error',
-  //       }),
-  //     ),
-  //   ),
-  // );
-
   // All success notifications
   actionSuccess$ = createEffect(() => {
     return this.actions$.pipe(

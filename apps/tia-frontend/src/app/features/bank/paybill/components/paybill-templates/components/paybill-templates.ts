@@ -205,7 +205,7 @@ export class PaybillTemplates {
     }
 
     if (action === 'renameGroup') {
-      this.deleteGroupModal.emit();
+      this.renameGroupModal.emit();
     }
   }
 }
