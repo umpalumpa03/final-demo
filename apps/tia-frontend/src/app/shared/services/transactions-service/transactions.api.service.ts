@@ -49,4 +49,14 @@ export class TransactionApiService {
       },
     );
   }
+
+  public categorizeTransaction(
+    transactionId: string,
+    categoryId: string,
+  ): Observable<string> {
+    return this.http.put<string>(
+      `${this.apiUrl}/transactions/change-category/${transactionId}`,
+      { categoryId },
+    );
+  }
 }

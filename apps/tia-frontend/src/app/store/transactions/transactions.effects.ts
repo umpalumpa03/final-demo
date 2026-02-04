@@ -36,6 +36,7 @@ export const loadTransactionsEffect = createEffect(
         TransactionActions.enter,
         TransactionActions.loadTransactions,
         TransactionActions.loadMore,
+        TransactionActions.assignCategorySuccess,
       ),
       withLatestFrom(
         store.select(selectFilters),
@@ -121,6 +122,30 @@ export const createCategoryEffect = createEffect(
             of(TransactionActions.createCategoryFailure({ error })),
           ),
         ),
+      ),
+    );
+  },
+  { functional: true },
+);
+
+export const assignCategoryEffect = createEffect(
+  (
+    actions$ = inject(Actions),
+    transactionService = inject(TransactionApiService),
+  ) => {
+    return actions$.pipe(
+      ofType(TransactionActions.assignCategory),
+      switchMap(({ transactionId, categoryId }) =>
+        transactionService
+          .categorizeTransaction(transactionId, categoryId)
+          .pipe(
+            map((response) =>
+              TransactionActions.assignCategorySuccess({ response }),
+            ),
+            catchError((error) =>
+              of(TransactionActions.assignCategoryFailure({ error })),
+            ),
+          ),
       ),
     );
   },

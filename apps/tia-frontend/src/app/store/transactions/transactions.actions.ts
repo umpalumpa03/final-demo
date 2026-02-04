@@ -28,5 +28,9 @@ export const TransactionActions = createActionGroup({
     'Create Category': props<{ name: string }>(),
     'Create Category Success': props<{ response: ICategoryPostResponse }>(),
     'Create Category Failure': props<{ error: string }>(),
+
+    'Assign Category': props<{ transactionId: string; categoryId: string }>(),
+    'Assign Category Success': props<{ response: string }>(),
+    'Assign Category Failure': props<{ error: string }>(),
   },
 });

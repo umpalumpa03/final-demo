@@ -41,7 +41,7 @@
     @if(selectedTransaction(); as trx) {
     <app-categorize-modal
       [transaction]="trx"
-      [selectCategoryOptions]="categoryOptions()"
+      [selectCategoryOptions]="categoryOptionsForModal()"
       (save)="onCategorizeSave($event)"
       (cancel)="closeCategorizeModal()"
       (createCategory)="onCategoryCreate($event)"

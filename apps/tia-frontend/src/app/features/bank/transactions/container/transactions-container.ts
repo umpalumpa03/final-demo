@@ -10,6 +10,7 @@ import { Store } from '@ngrx/store';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import {
   selectCategoryOptions,
+  selectCategoryOptionsForModal,
   selectIsLoading,
   selectItems,
   selectTotalTransactions,
@@ -66,6 +67,9 @@ export class TransactionsContainer implements OnInit {
   public items = this.store.selectSignal(selectItems);
   public readonly isLoading = this.store.selectSignal(selectIsLoading);
   public categoryOptions = this.store.selectSignal(selectCategoryOptions);
+  public categoryOptionsForModal = this.store.selectSignal(
+    selectCategoryOptionsForModal,
+  );
   public accounts = this.store.selectSignal(selectAccounts);
   public isCategorizeModalOpen = signal<boolean>(false);
   public selectedTransaction = signal<ITransactions | null>(null);
@@ -77,30 +81,6 @@ export class TransactionsContainer implements OnInit {
       value: curr,
     }));
   });
-
-  public onTableAction(event: TransactionActionEvent): void {
-    if (event.action === 'categorize') {
-      const trx = this.items().find((item) => item.id === event.rowId);
-
-      if (trx) {
-        this.selectedTransaction.set(trx);
-        this.isCategorizeModalOpen.set(true);
-      }
-    }
-  }
-
-  public closeCategorizeModal(): void {
-    this.isCategorizeModalOpen.set(false);
-    this.selectedTransaction.set(null);
-  }
-
-  public onCategorizeSave(event: {
-    transactionId: string;
-    categoryId: string;
-  }): void {
-    console.log('Saving category:', event);
-    this.closeCategorizeModal();
-  }
 
   public accountOptions = computed<SelectOption[]>(() => {
     const accountsList = this.accounts();
@@ -143,6 +123,35 @@ export class TransactionsContainer implements OnInit {
     if (this.items().length % 20 === 0 && !this.isLoading()) {
       this.store.dispatch(TransactionActions.loadMore());
     }
+  }
+
+  public onTableAction(event: TransactionActionEvent): void {
+    if (event.action === 'categorize') {
+      const trx = this.items().find((item) => item.id === event.rowId);
+
+      if (trx) {
+        this.selectedTransaction.set(trx);
+        this.isCategorizeModalOpen.set(true);
+      }
+    }
+  }
+
+  public closeCategorizeModal(): void {
+    this.isCategorizeModalOpen.set(false);
+    this.selectedTransaction.set(null);
+  }
+
+  public onCategorizeSave(event: {
+    transactionId: string;
+    categoryId: string;
+  }): void {
+    this.store.dispatch(
+      TransactionActions.assignCategory({
+        transactionId: event.transactionId,
+        categoryId: event.categoryId,
+      }),
+    );
+    this.closeCategorizeModal();
   }
 
   public onCategoryCreate(name: string): void {
