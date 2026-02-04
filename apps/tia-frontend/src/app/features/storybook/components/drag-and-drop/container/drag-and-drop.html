@@ -94,6 +94,10 @@
         (itemReordered)="onTreeItemReordered($event)"
         (expandedChange)="onTreeExpandedChange($event)"
         (checkedItemsChange)="onCheckedItemsChange($event)"
+        [errorHeader]="'paybill.templates.errorHeader' | translate"
+        [errorMessage]="'paybill.templates.errorMessage' | translate"
+        [ungroupedTitle]="'common.buttons.ungrouped' | translate"
+        (moveRedundant)="movenotAllowed($event)"
       />
       <app-instructions-card></app-instructions-card>
     </div>

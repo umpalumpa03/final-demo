@@ -117,4 +117,14 @@ describe('Cards Actions', () => {
       expect(action.error).toBe(error);
     });
   });
+  it('should create openCardDetailsModal action', () => {
+  const action = CardsActions.openCardDetailsModal({ cardId: 'card-1' });
+  expect(action.type).toBe('[Cards] Open Card Details Modal');
+  expect(action.cardId).toBe('card-1');
+});
+
+it('should create closeCardDetailsModal action', () => {
+  const action = CardsActions.closeCardDetailsModal();
+  expect(action.type).toBe('[Cards] Close Card Details Modal');
+});
 });

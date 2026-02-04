@@ -24,8 +24,7 @@ import {
 } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.actions';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { Router } from '@angular/router';
-import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
-
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 @Component({
   selector: 'app-dashboard-container',
   imports: [

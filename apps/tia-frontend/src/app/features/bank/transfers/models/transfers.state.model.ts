@@ -30,11 +30,11 @@ export interface TransferState {
   selectedRecipientAccount: RecipientAccount | null; //for other account same bank flow
   ///response
   recipientInfo: RecipientResponse | null; //response after view account
-  transferId: string | null; //transferid from response
   challengeId: string | null; //needed for otp, this and transferid are unclear
   fee: number; //repsponse from /get-fee
   totalWithFee: number;
   hasInsufficientBalance: boolean;
+  isFeeLoading: boolean;
 
   //derived state
   recipientType: RecipientType | null; // from validation, values: 'phone','iban-same-bank' , 'iban-different-bank'
@@ -58,4 +58,9 @@ export interface TransferResponse {
     method: string | null;
   };
   transferType: string;
+}
+export interface TransferVerifyResponse {
+  success: boolean;
+  transferId: string;
+  message?: string;
 }

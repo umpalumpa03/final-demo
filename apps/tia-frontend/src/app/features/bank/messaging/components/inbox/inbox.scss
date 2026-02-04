@@ -1,6 +1,16 @@
-@use '../../../../../shared/styles/mixins' as *;
+@use "../../../../../shared/styles/mixins" as *;
 
 .loading-state {
     margin-top: 25%;
 }
 
+.inbox-container {
+    position: relative;
+
+    .loading-more-indicator {
+        position: absolute;
+        bottom: 0;
+        height: 4rem;
+        width: 100%;
+    }
+}

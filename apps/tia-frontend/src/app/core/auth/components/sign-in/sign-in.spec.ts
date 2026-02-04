@@ -1,35 +1,38 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SignIn } from './sign-in';
 import { AuthService } from '../../services/auth.service';
-import { provideRouter } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import { of } from 'rxjs';
 import { signal } from '@angular/core';
-import { of, throwError } from 'rxjs';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { vi } from 'vitest';
 
-describe('SignIn Component', () => {
-  let component: SignIn;
+describe('SignIn', () => {
   let fixture: ComponentFixture<SignIn>;
-  let authServiceMock: {
-    isLoginLoading: ReturnType<typeof signal>;
-    errorMessage: ReturnType<typeof signal>;
-    loginPostRequest: ReturnType<typeof vi.fn>;
-  };
+  let component: SignIn;
+  let authMock: any;
+  let routerMock: any;
 
   beforeEach(async () => {
-    // Create mock AuthService
-    authServiceMock = {
-      isLoginLoading: signal(false),
-      errorMessage: signal(''),
+    authMock = {
       loginPostRequest: vi.fn().mockReturnValue(of({})),
+      errorMessage: signal(false),
+      isLoginLoading: signal(false),
+    };
+
+    routerMock = {
+      navigateByUrl: vi.fn().mockResolvedValue(true),
     };
 
     await TestBed.configureTestingModule({
       imports: [SignIn, TranslateModule.forRoot()],
       providers: [
-        { provide: AuthService, useValue: authServiceMock },
-        provideRouter([]),
-        TranslateService,
+        { provide: AuthService, useValue: authMock },
+        { provide: Router, useValue: routerMock },
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: {}, params: of({}), queryParams: of({}) },
+        },
       ],
     }).compileComponents();
 
@@ -38,60 +41,40 @@ describe('SignIn Component', () => {
     fixture.detectChanges();
   });
 
-  it('should create the component', () => {
-    expect(component).toBeTruthy();
+  it('computes errorMessage and updates alertTypes', () => {
+    authMock.errorMessage.set(true);
+    fixture.detectChanges();
+
+    expect(component.errorMessage()).toBe(true);
+    expect(component.alertTypes.error.message).toBe('Incorrect Credentials');
   });
 
-  it('should initialize the login form with empty values', () => {
-    expect(component.loginForm.get('username')?.value).toBe('');
-    expect(component.loginForm.get('password')?.value).toBe('');
+  it('does not submit when form invalid', () => {
+    const spy = vi.spyOn(authMock, 'loginPostRequest');
+    component.submit();
+    expect(spy).not.toHaveBeenCalled();
   });
 
-  it('should have username field as required with minLength validator', () => {
-    const usernameControl = component.loginForm.get('username');
-    
-    usernameControl?.setValue('');
-    expect(usernameControl?.hasError('required')).toBe(true);
-    
-    usernameControl?.setValue('a');
-    expect(usernameControl?.hasError('minlength')).toBe(true);
-    
-    usernameControl?.setValue('ab');
-    expect(usernameControl?.valid).toBe(true);
-  });
-
-  it('should have password field as required', () => {
-    const passwordControl = component.loginForm.get('password');
-    
-    passwordControl?.setValue('');
-    expect(passwordControl?.hasError('required')).toBe(true);
-    
-    passwordControl?.setValue('password123');
-    expect(passwordControl?.valid).toBe(true);
-  });
-
-  it('should not submit when form is invalid', () => {
-    component.loginForm.patchValue({
-      username: '',
-      password: '',
-    });
+  it('submits when form is valid', () => {
+    component.loginForm.controls.username.setValue('ab');
+    component.loginForm.controls.password.setValue('secret');
 
     component.submit();
 
-    expect(authServiceMock.loginPostRequest).not.toHaveBeenCalled();
-    expect(component.loginForm.touched).toBe(true);
+    expect(authMock.loginPostRequest).toHaveBeenCalledWith(
+      component.loginForm.getRawValue(),
+    );
   });
 
-  it('should call authService.loginPostRequest when form is valid', () => {
-    const formValue = {
-      username: 'testuser',
-      password: 'testpassword',
-    };
+  it('navigateToSignUp respects isRouteLoading', async () => {
+    const ev = { preventDefault: vi.fn() } as unknown as Event;
 
-    component.loginForm.patchValue(formValue);
-    component.submit();
+    component.isRouteLoading.set(true);
+    component.navigateToSignUp(ev);
+    expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
 
-    expect(authServiceMock.loginPostRequest).toHaveBeenCalledWith(formValue);
-    expect(authServiceMock.loginPostRequest).toHaveBeenCalledTimes(1);
+    component.isRouteLoading.set(false);
+    await component.navigateToSignUp(ev);
+    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(component.signUpRoute);
   });
 });

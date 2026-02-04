@@ -80,7 +80,7 @@ export const treeItems = [
     id: 'c4',
     title: 'Child 4',
     subtitle: 'Drag to reorder',
-    groupId: 'g2',
+    groupId: null,
     order: 0,
   },
   {
@@ -94,7 +94,7 @@ export const treeItems = [
     id: 'c6',
     title: 'Child 6',
     subtitle: 'Drag to reorder',
-    groupId: 'g3',
+    groupId: null,
     order: 0,
   },
 ] as const satisfies readonly TreeItem[];

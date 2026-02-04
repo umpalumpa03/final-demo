@@ -28,53 +28,55 @@ export class KanbanService {
     toBoardId: string,
     dropId?: string,
   ): KanbanItem[] {
-    const allItems = [...items];
-    const dragIndex = allItems.findIndex((i) => i.id === dragId);
-    if (dragIndex === -1) return items;
+    const dragItem = items.find((i) => i.id === dragId);
+    if (!dragItem) return items;
 
-    const dragItem = allItems[dragIndex];
+    const filteredItems = items.filter((i) => i.id !== dragId);
+    const siblings = filteredItems
+      .filter((i) => i.boardId === toBoardId)
+      .sort((a, b) => a.order - b.order);
 
-    let dropIndex = dropId ? allItems.findIndex((i) => i.id === dropId) : -1;
+    const otherItems = filteredItems.filter((i) => i.boardId !== toBoardId);
+    const newItem = { ...dragItem, boardId: toBoardId };
+    let updatedSiblings: KanbanItem[] = [];
 
-    const [removed] = allItems.splice(dragIndex, 1);
-    const updatedDragItem = { ...removed, boardId: toBoardId };
+    if (dropId) {
+      const targetIndex = siblings.findIndex((i) => i.id === dropId);
+      if (targetIndex !== -1) {
+        updatedSiblings = [...siblings];
 
-    if (dropId && dropIndex !== -1) {
-      const isSameBoard = dragItem.boardId === toBoardId;
-
-      if (isSameBoard && dragIndex < dropIndex) {
-        dropIndex = dropIndex - 1;
+        const movingWithinBoard = dragItem.boardId === toBoardId;
+        const isMovingDown =
+          movingWithinBoard && dragItem.order < siblings[targetIndex].order;
+        const insertionIndex = isMovingDown ? targetIndex + 1 : targetIndex;
+        updatedSiblings.splice(insertionIndex, 0, newItem);
+      } else {
+        updatedSiblings = [...siblings, newItem];
       }
-
-      allItems.splice(dropIndex + 1, 0, updatedDragItem);
     } else {
-      allItems.push(updatedDragItem);
+      updatedSiblings = [...siblings, newItem];
     }
 
-    return this.normalizeOrders(allItems);
-  }
+    const normalizedSiblings = updatedSiblings.map((item, index) => ({
+      ...item,
+      order: index,
+    }));
 
-  private normalizeOrders(items: KanbanItem[]): KanbanItem[] {
-    const boardItemsMap = new Map<string, KanbanItem[]>();
-
-    for (const item of items) {
-      const list = boardItemsMap.get(item.boardId) ?? [];
-      list.push(item);
-      boardItemsMap.set(item.boardId, list);
-    }
-
-    const result: KanbanItem[] = [];
-    boardItemsMap.forEach((boardItems) => {
-      boardItems.forEach((item, index) => {
-        result.push({ ...item, order: index });
-      });
-    });
-
-    return result;
+    return [...otherItems, ...normalizedSiblings];
   }
 
   public removeItem(items: KanbanItem[], id: string): KanbanItem[] {
+    const itemToRemove = items.find((i) => i.id === id);
+    if (!itemToRemove) return items;
+
     const filtered = items.filter((i) => i.id !== id);
-    return this.normalizeOrders(filtered);
+    const siblings = filtered
+      .filter((i) => i.boardId === itemToRemove.boardId)
+      .sort((a, b) => a.order - b.order)
+      .map((item, index) => ({ ...item, order: index }));
+
+    const others = filtered.filter((i) => i.boardId !== itemToRemove.boardId);
+
+    return [...others, ...siblings];
   }
 }

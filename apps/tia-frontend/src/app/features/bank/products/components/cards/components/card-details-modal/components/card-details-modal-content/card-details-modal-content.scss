@@ -1,0 +1,97 @@
+@use '../../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../../shared/styles/palette' as *;
+
+.card-details-modal {
+  @include display-flex(column);
+  gap: 3.2rem;
+  &__title{
+    @include font-inter(600, 1.8rem, 1.8rem);
+    color: var(--color-fg)
+  }
+    &__subtitle{
+    @include font-inter(400, 1.4rem, 2rem);
+    color: $blue-600;
+  }
+
+  &__section {
+    @include display-flex(column);
+    gap: 1.2rem;
+    background-color: $white;
+    padding: 1.6rem;
+  }
+
+  &__section-title {
+    @include font-inter(500, 1.4rem, 1.4rem);
+    color: var(--color-fg);
+    margin: 0;
+  }
+
+  &__info-flex {
+    @include display-flex(column);
+    gap: 1.6rem;
+  }
+
+  &__info-item {
+    @include flex-center(row, space-between);
+    @media(max-width:450px){
+      @include flex-center(column,start,start)
+    }
+  }
+
+  &__label {
+    @include font-inter(400, 1.4rem, 2rem);
+    color: $gray-700;
+  }
+
+  &__value {
+    @include font-inter(600, 1.6rem, 2.4rem);
+    color: var(--color-fg);
+  }
+
+  &__sensitive {
+    @include display-flex(column);
+    gap: 1.6rem;
+    padding: 1.6rem;
+    background-color: $blue-50;
+    border-radius: 0.8rem;
+  }
+
+  &__sensitive-header {
+    @include display-flex();
+    gap: 1.2rem;
+  }
+
+  &__sensitive-icon {
+    @include flex-center();
+    width: 4rem;
+    height: 4rem;
+    background-color: $blue-800;
+    border-radius: 50%;
+    flex-shrink: 0;
+
+    img {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+
+  &__sensitive-text {
+    @include display-flex(column);
+    gap: 1.2rem;
+    flex: 1;
+  }
+
+  &__sensitive-title {
+    @include font-inter(600, 1.6rem, 2.4rem);
+    color: $blue-1000;
+  }
+
+  &__sensitive-subtitle {
+    @include font-inter(400, 1.4rem, 2rem);
+    color: $gray-700;
+  }
+  &__footer {
+    @include flex-center(row, end);
+    padding-top: 0.8rem;
+  }
+}
