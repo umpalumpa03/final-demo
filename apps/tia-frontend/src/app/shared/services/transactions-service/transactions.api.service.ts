@@ -6,6 +6,7 @@ import {
   PaginatedResponse,
   ITransactions,
   ITransactionFilter,
+  ICategoryPostResponse,
 } from '../../models/transactions/transactions.models';
 import { createTransactionHttpParams } from './utils/transactions-params';
 import { ITransactionsCategory } from '@tia/shared/models/transactions/transactions-category.models';
@@ -35,6 +36,17 @@ export class TransactionApiService {
   public getTransactionsCategories(): Observable<ITransactionsCategory[]> {
     return this.http.get<ITransactionsCategory[]>(
       `${this.apiUrl}/transactions/categories`,
+    );
+  }
+
+  public createTransactionCategory(
+    categoryName: string,
+  ): Observable<ICategoryPostResponse> {
+    return this.http.post<ICategoryPostResponse>(
+      `${this.apiUrl}/transactions/categories`,
+      {
+        categoryName: categoryName,
+      },
     );
   }
 }

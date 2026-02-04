@@ -1,7 +1,6 @@
-import { Currency, TransactionCategoryInterface } from "./base.models";
+import { Currency, TransactionCategoryInterface } from './base.models';
 
-
-export interface ITransactions  {
+export interface ITransactions {
   id: string;
   userId: string;
   amount: number;
@@ -43,4 +42,11 @@ export interface PageInfo {
 export interface PaginatedResponse<T> {
   items: T[];
   pageInfo: PageInfo;
+}
+
+export interface ICategoryPostResponse {
+  id: string;
+  userId: string;
+  categoryName: string;
+  createdAt: string;
 }
