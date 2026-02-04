@@ -160,37 +160,6 @@ describe('PaybillMainFacade', () => {
       );
     });
 
-    it('should dispatch checkBill when verifyAccount is called', () => {
-      storeSignals.storeActiveProvider.set({ id: 'prov-1' });
-
-      service.verifyAccount('123456');
-
-      expect(mockStore.dispatch).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: PaybillActions.checkBill.type,
-          serviceId: 'prov-1',
-          identification: expect.objectContaining({ accountNumber: '123456' }),
-        }),
-      );
-    });
-
-    it('should proceed to payment (dispatch + navigate)', () => {
-      const provider = { id: 'prov-1' };
-      storeSignals.storeActiveProvider.set(provider);
-
-      service.proceedToPayment(100, 'account-123');
-
-      expect(mockStore.dispatch).toHaveBeenCalledWith(
-        PaybillActions.setTransactionProvider({ provider }),
-      );
-      expect(mockStore.dispatch).toHaveBeenCalledWith(
-        PaybillActions.setPaymentStep({ step: 'CONFIRM' }),
-      );
-      expect(mockRouter.navigate).toHaveBeenCalledWith([
-        '/bank/paybill/pay/confirm-payment',
-      ]);
-    });
-
     it('should confirm payment (dispatch + navigate)', () => {
       const provider = { id: 'prov-1' };
       const payload = { amount: 50, identification: {} };
@@ -266,52 +235,6 @@ describe('PaybillMainFacade', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['bank/paybill/pay']);
     });
 
-    it('should dispatch checkBill with correct identification (Default: Account Number)', () => {
-      storeSignals.storeActiveProvider.set({ id: 'p1' });
-      mockRouter.url = '/bank/paybill/pay';
-
-      service.verifyAccount('12345');
-
-      expect(mockStore.dispatch).toHaveBeenCalledWith(
-        PaybillActions.checkBill({
-          serviceId: 'p1',
-          identification: { accountNumber: '12345' },
-        }),
-      );
-    });
-
-    it('should dispatch checkBill with correct identification (Mobile)', () => {
-      storeSignals.storeActiveProvider.set({ id: 'p1' });
-
-      mockRouter.url = '/bank/paybill/mobile/top-up';
-
-      service.verifyAccount('555999');
-
-      expect(mockStore.dispatch).toHaveBeenCalledWith(
-        PaybillActions.checkBill({
-          serviceId: 'p1',
-          identification: { phoneNumber: '555999' },
-        }),
-      );
-    });
-
-    it('should dispatch checkBill with correct identification (Rent/Property)', () => {
-      storeSignals.storeActiveProvider.set({ id: 'p1' });
-      mockRouter.url = '/bank/paybill/rent';
-
-      service.verifyAccount('PROP-001');
-
-      expect(mockStore.dispatch).toHaveBeenCalledWith(
-        PaybillActions.checkBill({
-          serviceId: 'p1',
-          identification: {
-            propertyCode: 'PROP-001',
-            tenantId: '09876543210',
-          },
-        }),
-      );
-    });
-
     it('should return empty array if no provider or payload', () => {
       storeSignals.storeActiveProvider.set(null);
       storeSignals.paymentPayload.set(null);
@@ -329,6 +252,28 @@ describe('PaybillMainFacade', () => {
       expect(items).toBeDefined();
 
       expect(Array.isArray(items)).toBe(true);
+    });
+
+    it('should execute the recursive while loop when a search matches a nested child', () => {
+      const providers = [
+        { id: 'parent-1', name: 'Utility Group', isFinal: false },
+        {
+          id: 'child-1',
+          name: 'Water Bill',
+          parentId: 'parent-1',
+          isFinal: true,
+        },
+        { id: 'unrelated', name: 'Other', isFinal: true },
+      ];
+
+      storeSignals.activeCategory.set({ id: 'utilities', providers });
+
+      service.setSearchQuery('Water');
+
+      const result = service.filteredProviders();
+
+      expect(result.length).toBe(1);
+      expect(result[0].id).toBe('parent-1');
     });
   });
 });

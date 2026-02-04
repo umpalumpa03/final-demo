@@ -4,6 +4,7 @@ import {
   FormBuilder,
   NonNullableFormBuilder,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -17,6 +18,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 describe('PaybillForm', () => {
   let component: PaybillForm;
   let fixture: ComponentFixture<PaybillForm>;
+  let fb: FormBuilder;
 
   const mockProvider: PaybillProvider = {
     id: 'test-provider',
@@ -26,7 +28,7 @@ describe('PaybillForm', () => {
   };
 
   beforeEach(async () => {
-    const fb = new FormBuilder();
+    fb = new FormBuilder();
     const nonNullableFb = fb.nonNullable;
 
     await TestBed.configureTestingModule({
@@ -34,7 +36,6 @@ describe('PaybillForm', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-
         { provide: NonNullableFormBuilder, useValue: nonNullableFb },
       ],
     }).compileComponents();
@@ -42,15 +43,22 @@ describe('PaybillForm', () => {
     fixture = TestBed.createComponent(PaybillForm);
     component = fixture.componentInstance;
 
+    const mockForm = fb.group({
+      value: ['', Validators.required],
+      amount: [0, [Validators.required, Validators.min(1)]],
+    });
+
+    fixture.componentRef.setInput('paybillForm', mockForm);
+    fixture.componentRef.setInput('fields', []);
     fixture.componentRef.setInput('provider', mockProvider);
+
     fixture.detectChanges();
   });
 
   it('should create and initialize the form with default values', () => {
     expect(component).toBeTruthy();
-    expect(component.paybillForm).toBeDefined();
-    expect(component.paybillForm.controls.value.value).toBe('');
-    expect(component.paybillForm.controls.amount.value).toBe(0);
+    expect(component.paybillForm()).toBeDefined();
+    expect(component.paybillForm().controls['value'].value).toBe('');
   });
 
   describe('onSubmit logic', () => {
@@ -59,7 +67,7 @@ describe('PaybillForm', () => {
       fixture.componentRef.setInput('isLoading', true);
       fixture.detectChanges();
 
-      component.paybillForm.controls.value.setValue('123456');
+      component.paybillForm().setValue({ value: '123456', amount: 10 });
       component.onSubmit();
 
       expect(verifySpy).not.toHaveBeenCalled();
@@ -69,21 +77,27 @@ describe('PaybillForm', () => {
       it('should emit verify event if identifier is valid', () => {
         const verifySpy = vi.spyOn(component.verify, 'emit');
 
-        component.paybillForm.controls.value.setValue('123456');
+        component.paybillForm().controls['value'].setValue('123456');
+        component.paybillForm().controls['amount'].setValue(10);
 
         component.onSubmit();
 
-        expect(verifySpy).toHaveBeenCalledWith({ value: '123456' });
+        expect(verifySpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            value: expect.objectContaining({ value: '123456' }),
+          }),
+        );
       });
 
       it('should mark control as touched if identifier is invalid', () => {
         const verifySpy = vi.spyOn(component.verify, 'emit');
-        const touchedSpy = vi.spyOn(
-          component.paybillForm.controls.value,
-          'markAsTouched',
-        );
 
-        component.paybillForm.controls.value.setValue('12');
+        component.paybillForm().controls['value'].setErrors({ required: true });
+
+        const touchedSpy = vi.spyOn(
+          component.paybillForm(),
+          'markAllAsTouched',
+        );
 
         component.onSubmit();
 
@@ -114,19 +128,20 @@ describe('PaybillForm', () => {
       it('should emit pay event if form is valid', () => {
         const paySpy = vi.spyOn(component.pay, 'emit');
 
-        component.paybillForm.controls.value.setValue('123456');
-        component.paybillForm.controls.amount.setValue(100);
+        component.paybillForm().setValue({ value: '123456', amount: 100 });
 
         component.onSubmit();
 
-        expect(paySpy).toHaveBeenCalledWith({ value: '123456', amount: 100 });
+        expect(paySpy).toHaveBeenCalledWith({
+          amount: 100,
+          value: expect.objectContaining({ value: '123456', amount: 100 }),
+        });
       });
 
       it('should not emit pay event if amount is invalid', () => {
         const paySpy = vi.spyOn(component.pay, 'emit');
 
-        component.paybillForm.controls.value.setValue('123456');
-        component.paybillForm.controls.amount.setValue(10000);
+        component.paybillForm().setValue({ value: '123456', amount: 0 });
 
         component.onSubmit();
 

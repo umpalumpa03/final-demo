@@ -1,0 +1,11 @@
+<form [formGroup]="form()">
+      @for (item of fieldConfigs(); track item.id) {
+        <div class="dynamic-form__field">
+          <lib-text-input
+            [formControlName]="item.id"
+            [config]="item.config"
+            [state]="state()"
+          ></lib-text-input>
+        </div>
+      }
+    </form>
