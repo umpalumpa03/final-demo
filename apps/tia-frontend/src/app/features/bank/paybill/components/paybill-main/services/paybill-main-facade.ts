@@ -225,23 +225,6 @@ export class PaybillMainFacade {
     }
   });
 
-  private readonly identificationKey = computed(() => {
-    const url = this.router.url.toLowerCase();
-    if (url.includes('mobile') || url.includes('phone')) return 'phoneNumber';
-    if (url.includes('insurance')) return 'policyNumber';
-    if (url.includes('rent')) return 'propertyCode';
-    return 'accountNumber';
-  });
-
-  private buildIdentification(inputValue: string): PaybillIdentification {
-    const key = this.identificationKey();
-    const idObj: PaybillIdentification = { [key]: inputValue };
-    if (key === 'propertyCode') {
-      idObj.tenantId = '09876543210';
-    }
-    return idObj;
-  }
-
   public setSearchQuery(query: string): void {
     this.searchQuery.set(query);
   }

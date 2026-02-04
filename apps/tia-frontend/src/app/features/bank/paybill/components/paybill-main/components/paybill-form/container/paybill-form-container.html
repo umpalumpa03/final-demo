@@ -1,7 +1,7 @@
 <app-paybill-form
   [paybillForm]="paybillForm"
-  [provider]="paybillFacade.activeProvider()"
   [fields]="paybillFacade.paymentFields()"
+  [provider]="paybillFacade.activeProvider()"
   [verifiedDetails]="paybillFacade.verifiedDetails()"
   [iconBgColor]="paybillFacade.activeCategoryUI()!.iconBgColor"
   [iconBgPath]="paybillFacade.activeCategoryUI()!.iconBgPath"

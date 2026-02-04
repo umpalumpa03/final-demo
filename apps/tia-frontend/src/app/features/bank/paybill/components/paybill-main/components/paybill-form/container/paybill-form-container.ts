@@ -26,6 +26,7 @@ export class PaybillFormContainer {
   protected readonly dynamicForm = inject(PaybillDynamicForm);
   private readonly fb = inject(NonNullableFormBuilder);
 
+  
   // sync form data with service
   private readonly formSync = effect(() => {
     const fields = this.paybillFacade.paymentFields();
@@ -43,7 +44,7 @@ export class PaybillFormContainer {
     }
   });
 
-  
+
   public readonly paybillForm = this.fb.group({
     amount: [0, [Validators.required, Validators.max(9999)]],
   });
