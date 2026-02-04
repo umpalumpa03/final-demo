@@ -1,0 +1,37 @@
+<app-basic-card
+  maxWidth="100%"
+  minHeight="11.4rem"
+  padding="1.8rem"
+  borderColor="#E5E7EB"
+  alignItems="center"
+  gap="0"
+  flexDirection="row"
+>
+  <div class="account-card">
+    <div class="account-card__inner">
+      <div class="account-card__left">
+        <div class="account-card__avatar" aria-hidden="true">
+          <span class="account-card__avatar-icon">💳</span>
+        </div>
+        <div class="account-card__content">
+          <div class="account-card__title-row">
+            <h3 class="account-card__title">Main Account</h3>
+            <app-badges text="Favorte"></app-badges>
+          </div>
+          <div class="account-card__number">**** **** **** 1234</div>
+          <div class="account-card__meta">
+            <span class="account-card__type">Checking</span>
+            <span class="account-card__balance">$25,430.50</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="account-card__actions">
+        <app-button variant="outline" icon="">Change name</app-button>
+        <app-button variant="outline" icon=""></app-button>
+        <app-button variant="outline" icon=""></app-button>
+      </div>
+    </div>
+  </div>
+
+</app-basic-card>
