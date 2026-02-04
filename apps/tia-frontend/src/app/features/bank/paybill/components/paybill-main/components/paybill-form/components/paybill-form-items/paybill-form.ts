@@ -36,6 +36,7 @@ import {
   PaybillDynamicField,
   PaybillDynamicFormValues,
 } from '../../../../../../services/paybill-dynamic-form/models/dynamic-form.model';
+import { DynamicInputs } from '../../../../../shared/dynamic-inputs/dynamic-inputs';
 
 @Component({
   selector: 'app-paybill-form',
@@ -47,14 +48,16 @@ import {
     PaymentSummary,
     CurrencyPipe,
     TranslatePipe,
+    DynamicInputs,
   ],
   templateUrl: './paybill-form.html',
   styleUrl: './paybill-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillForm {
-  protected readonly dynamicFormService = inject(PaybillDynamicForm);
   protected readonly translate = inject(TranslateService);
+
+  // inputs from smart parent
 
   public readonly paybillForm = input.required<FormGroup>();
   public readonly provider = input<PaybillProvider | null>(null);
@@ -64,17 +67,14 @@ export class PaybillForm {
   public readonly iconBgColor = input<string>('#F0F9FF');
   public readonly iconBgPath = input<string>();
 
+  // output buton events
+
   public readonly verify = output<PaybillFormVerifyEvent>();
   public readonly pay = output<PaybillFormProceedEvent>();
 
-  public readonly isVerified = computed(() => !!this.verifiedDetails()?.valid);
+  // computed dynamic signal data
 
-  protected readonly fieldConfigs = computed(() =>
-    this.fields().map((field) => ({
-      id: field.id,
-      config: this.dynamicFormService.mapFieldToConfig(field),
-    })),
-  );
+  public readonly isVerified = computed(() => !!this.verifiedDetails()?.valid);
 
   protected readonly summaryItems = computed(() =>
     mapBillSummaryFields(this.verifiedDetails()),

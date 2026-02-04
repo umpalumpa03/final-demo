@@ -21,28 +21,29 @@ import { NonNullableFormBuilder, Validators } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillFormContainer {
+  // dependencies
   protected readonly paybillFacade = inject(PaybillMainFacade);
   protected readonly dynamicForm = inject(PaybillDynamicForm);
   private readonly fb = inject(NonNullableFormBuilder);
 
-  constructor() {
-    effect(() => {
-      const fields = this.paybillFacade.paymentFields();
-      const details = this.paybillFacade.verifiedDetails();
-      const isVerified = !!details?.valid;
+  // sync form data with service
+  private readonly formSync = effect(() => {
+    const fields = this.paybillFacade.paymentFields();
+    const details = this.paybillFacade.verifiedDetails();
+    const isVerified = !!details?.valid;
 
-      this.dynamicForm.syncFormControls(this.paybillForm, fields);
-      this.dynamicForm.updateAmountValidators(this.paybillForm, isVerified);
+    this.dynamicForm.syncFormControls(this.paybillForm, fields);
+    this.dynamicForm.updateAmountValidators(this.paybillForm, isVerified);
 
-      if (isVerified && details?.amountDue !== undefined) {
-        this.paybillForm.patchValue(
-          { amount: details.amountDue },
-          { emitEvent: false },
-        );
-      }
-    });
-  }
+    if (isVerified && details?.amountDue !== undefined) {
+      this.paybillForm.patchValue(
+        { amount: details.amountDue },
+        { emitEvent: false },
+      );
+    }
+  });
 
+  
   public readonly paybillForm = this.fb.group({
     amount: [0, [Validators.required, Validators.max(9999)]],
   });
