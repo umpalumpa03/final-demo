@@ -38,6 +38,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class PaybillOtpVerification {
   public readonly summary = input.required<PaybillPayload>();
   public readonly provider = input<PaybillProvider | null>(null);
+  public readonly iconBgColor = input<string>('#F0F9FF');
+  public readonly iconBgPath = input<string>();
 
   public readonly verify = output<string>();
   public readonly cancelPayment = output<void>();

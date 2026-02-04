@@ -31,6 +31,7 @@ import {
   PaybillDynamicField,
 } from '../../../../../../services/paybill-dynamic-form/models/dynamic-form.model';
 import { DynamicInputs } from '../../../../../shared/dynamic-inputs/dynamic-inputs';
+import { Skeleton } from "@tia/shared/lib/feedback/skeleton/skeleton";
 
 @Component({
   selector: 'app-paybill-form',
@@ -43,7 +44,8 @@ import { DynamicInputs } from '../../../../../shared/dynamic-inputs/dynamic-inpu
     CurrencyPipe,
     TranslatePipe,
     DynamicInputs,
-  ],
+    Skeleton
+],
   templateUrl: './paybill-form.html',
   styleUrl: './paybill-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

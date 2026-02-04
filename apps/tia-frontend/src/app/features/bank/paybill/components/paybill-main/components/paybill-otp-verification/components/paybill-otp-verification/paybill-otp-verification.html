@@ -1,50 +1,71 @@
-<app-basic-card class="paybill-card" maxWidth="100%" padding="2.4rem">
-  <header class="otp-container__header">
-    <app-library-title
-      [title]="'paybill.main.otp.title' | translate"
-      [subtitle]="'paybill.main.otp.subtitle' | translate"
-    ></app-library-title>
-  </header>
+<app-basic-card maxWidth="100%" padding="0rem 0 2.4rem 2.4rem">
+  <header class="category-header">
+    <div class="category-header__icon-box">
+      <div
+        class="category-header__icon-background"
+        [style.background-color]="iconBgColor()"
+      >
+        <img [src]="iconBgPath()" class="category-header__img" alt="Service Icon" />
+      </div>
+    </div>
 
-<div class="paybill-card__alert__wrapper">
-    <app-alert-types-with-icons
-    alertType="information"
-    [alertMessage]="'paybill.main.otp.alert_message' | translate"
-  ></app-alert-types-with-icons>
-</div>
-
-  <app-payment-summary
-    [items]="summaryItems()"
-    [headerTitle]="'paybill.main.otp.summary_title' | translate"
-    type="otp"
-  ></app-payment-summary>
-
-  <div class="otp-wrapper">
-    <lib-otp [config]="otpConfig.inputConfig" [(value)]="currentCode"></lib-otp>
-
-    <div class="otp-resend">
-      <p class="otp-resend__text">
-        {{ 'paybill.main.otp.resend_text' | translate }}
-      </p>
-      <p class="otp-resend__button" (onClick)="onOtpResend()">
-        {{ 'paybill.main.otp.resend_btn' | translate }}
+    <div class="category-header__text">
+      <h2 class="category-header__title">
+        {{ 'paybill.main.otp.title' | translate }}
+      </h2>
+      <p class="category-header__subtitle">
+        {{ 'paybill.main.otp.subtitle' | translate }}
       </p>
     </div>
-  </div>
+  </header>
 
-  <footer class="otp-actions">
-    <app-button
-      variant="secondary"
-      (click)="cancelPayment.emit()"
-      [fullWidth]="true"
-      >{{ 'paybill.main.otp.cancel_btn' | translate }}</app-button
-    >
-    <app-button
-      (click)="handleVerify()"
-      [isDisabled]="currentCode().length < 4"
-      [fullWidth]="true"
-    >
-      {{ 'paybill.main.otp.verify_btn' | translate }}
-    </app-button>
-  </footer>
+  <div class="confirm-container">
+    <div class="confirm-container__alert">
+      <app-alert-types-with-icons
+        alertType="information"
+        [alertMessage]="'paybill.main.otp.alert_message' | translate"
+      />
+    </div>
+
+    <div class="confirm-container__summary">
+      <app-payment-summary
+        [items]="summaryItems()"
+        [headerTitle]="'paybill.main.otp.summary_title' | translate"
+        type="otp"
+      />
+    </div>
+
+    <div class="otp-verification">
+      <lib-otp [config]="otpConfig.inputConfig" [(value)]="currentCode" />
+
+      <div class="otp-verification__resend">
+        <p class="otp-verification__text">
+          {{ 'paybill.main.otp.resend_text' | translate }}
+        </p>
+        <button class="otp-verification__btn" (click)="onOtpResend()">
+          {{ 'paybill.main.otp.resend_btn' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <footer class="confirm-container__actions">
+      <app-button
+        class="btn-cancel"
+        variant="secondary"
+        (click)="cancelPayment.emit()"
+        [fullWidth]="true"
+      >
+        {{ 'paybill.main.otp.cancel_btn' | translate }}
+      </app-button>
+      
+      <app-button
+        class="btn-verify"
+        (click)="handleVerify()"
+        [isDisabled]="currentCode().length < 4"
+        [fullWidth]="true"
+      >
+        {{ 'paybill.main.otp.verify_btn' | translate }}
+      </app-button>
+    </footer>
+  </div>
 </app-basic-card>

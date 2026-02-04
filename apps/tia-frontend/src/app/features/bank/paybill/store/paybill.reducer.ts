@@ -261,6 +261,12 @@ export const paybillReducer = createReducer(
     selectedCategoryId: state.selectedCategoryId || provider.categoryId || null,
   })),
 
+  on(PaybillActions.loadPaymentDetails, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
   on(PaybillActions.loadPaymentDetailsSuccess, (state, { details }) => ({
     ...state,
     paymentDetails: details,

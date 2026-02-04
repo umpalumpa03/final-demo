@@ -9,10 +9,11 @@ import { PaybillDynamicForm } from '../../../services/paybill-dynamic-form/paybi
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PaybillDynamicField } from '../../../services/paybill-dynamic-form/models/dynamic-form.model';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
+import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 
 @Component({
   selector: 'app-dynamic-inputs',
-  imports: [ReactiveFormsModule, TextInput],
+  imports: [ReactiveFormsModule, TextInput, RouteLoader],
   templateUrl: './dynamic-inputs.html',
   styleUrl: './dynamic-inputs.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,6 +24,7 @@ export class DynamicInputs {
   public readonly form = input.required<FormGroup>();
   public readonly fields = input.required<PaybillDynamicField[]>();
   public readonly state = input<'default' | 'disabled'>('default');
+  public readonly isLoading = input(false);
 
   protected readonly fieldConfigs = computed(() =>
     this.fields().map((field) => ({
