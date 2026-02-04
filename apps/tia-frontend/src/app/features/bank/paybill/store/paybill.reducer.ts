@@ -199,4 +199,65 @@ export const paybillReducer = createReducer(
     error,
     loading: false,
   })),
+
+  on(TemplatesPageActions.createTemplatesGroups, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
+  on(
+    TemplatesPageActions.createTemplatesGroupsSuccess,
+    (state, { templateGroup }) => ({
+      ...state,
+      loading: false,
+      templateGroups: [...state.templateGroups, templateGroup],
+    }),
+  ),
+
+  on(TemplatesPageActions.createTemplatesGroupsFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
+
+  on(TemplatesPageActions.deleteTemplates, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+  on(
+    TemplatesPageActions.deleteTemplatesSuccess,
+    (state, { message, templateId }) => ({
+      ...state,
+      loading: false,
+      error: null,
+      templates: state.templates.filter((t) => t.id !== templateId),
+      notifications: [
+        ...state.notifications,
+        { id: Date.now().toString(), notificationType: 'success', message },
+      ],
+    }),
+  ),
+  on(TemplatesPageActions.deleteTemplatesFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
+
+  on(PaybillActions.resetPaymentForm, (state) => ({
+    ...state,
+
+    verifiedDetails: null,
+    currentStep: 'DETAILS',
+    error: null,
+    challengeId: null,
+  })),
+
+  on(PaybillActions.setTransactionProvider, (state, { provider }) => ({
+    ...state,
+    selectedProvider: provider,
+    selectedProviderId: provider.id,
+    selectedCategoryId: state.selectedCategoryId || provider.categoryId || null
+  })),
 );

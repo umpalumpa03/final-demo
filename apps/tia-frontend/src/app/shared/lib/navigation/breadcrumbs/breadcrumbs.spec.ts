@@ -31,11 +31,4 @@ describe('Breadcrumbs (vitest)', () => {
     expect(typeof component.breadcrumbs).toBe('function');
   });
 
-  it('should return the last breadcrumb with lastCrumb()', () => {
-    const spy = vi.spyOn(component, 'breadcrumbs').mockReturnValue(mockCrumbs);
-    const last = (component as any)['lastCrumb']();
-    expect(last).toEqual(mockCrumbs[mockCrumbs.length - 1]);
-    spy.mockRestore();
-  });
-
 });

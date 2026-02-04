@@ -1,24 +1,48 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MailHeader } from '../../shared/ui/mail-header/mail-header';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MessagingStore } from '../../store/messaging.store';
 import { MailCard } from '../../shared/ui/mail-card/mail-card';
 import { EmptyCard } from "../../shared/ui/empty-card/empty-card";
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
+import { Router } from '@angular/router';
+import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
+import { NavigationService } from '../../services/navigation.service';
 
 @Component({
   selector: 'app-sent',
-  imports: [MailHeader, TranslatePipe, MailCard, EmptyCard, EmptyCard, RouteLoader],
+  imports: [MailHeader, TranslatePipe, MailCard, EmptyCard, EmptyCard, RouteLoader, ScrollArea],
   templateUrl: './sent.html',
   styleUrl: './sent.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Sent implements OnInit {
   private messagingStore = inject(MessagingStore);
-  public mails = this.messagingStore.mails;
+  private router = inject(Router);
+  public mails = computed(() => {
+    return this.messagingStore.mails()
+  });
+  public loadsMoreMails = signal(false);
   public isLoading = this.messagingStore.isLoading;
+  public total = computed(() => this.messagingStore.total()['sent'] ?? 0);
+  private nav = inject(NavigationService);
 
   ngOnInit(): void {
-    this.messagingStore.loadMails('sent');
+    if (!(this.nav.previous()?.includes('sent'))) {
+      this.messagingStore.loadMails('sent');
+      this.messagingStore.getTotalCount('sent');
+    }
+  }
+
+  public goToDetail(mailId: number): void {
+    this.router.navigate(['/bank/messaging/sent', mailId], { queryParams: { sent: true } });
+  }
+
+  public onScrollBottom(): void {
+    const pagination = this.messagingStore.pagination();
+    if (pagination.hasNextPage) {
+      this.loadsMoreMails.set(true);
+      this.messagingStore.loadMails('sent');
+    }
   }
 }

@@ -1,16 +1,16 @@
-@use '../../../../../shared/styles/mixins' as *;
+@use "../../../../../shared/styles/mixins" as *;
 
 .loading-state {
     margin-top: 25%;
 }
 
-.delete-account {
-    &__header {
-        margin-bottom: 1.6rem;
-    }
+.inbox-container {
+    position: relative;
 
-    &__footer {
-        @include flex-center($justify: flex-end);
-        gap: 1.2rem;
+    .loading-more-indicator {
+        position: absolute;
+        bottom: 0;
+        height: 4rem;
+        width: 100%;
     }
 }

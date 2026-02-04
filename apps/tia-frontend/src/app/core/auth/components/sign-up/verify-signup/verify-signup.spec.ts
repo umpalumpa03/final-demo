@@ -14,6 +14,7 @@ describe('VerifySignup Component', () => {
   let authServiceMock: {
     verifyPhoneOtpCode: ReturnType<typeof vi.fn>;
     resetPhoneOtp: ReturnType<typeof vi.fn>;
+    resendPhoneOtp: ReturnType<typeof vi.fn>;
     otpError: ReturnType<typeof signal>;
   };
 
@@ -21,6 +22,7 @@ describe('VerifySignup Component', () => {
     authServiceMock = {
       verifyPhoneOtpCode: vi.fn().mockReturnValue(of({})),
       resetPhoneOtp: vi.fn().mockReturnValue(of({})),
+      resendPhoneOtp: vi.fn().mockReturnValue(of({})),
       otpError: signal(null),
     };
 
@@ -64,6 +66,6 @@ describe('VerifySignup Component', () => {
   it('should resend OTP when isCalled is true', () => {
     component.resendOtp(true);
 
-    expect(authServiceMock.resetPhoneOtp).toHaveBeenCalled();
+    expect(authServiceMock.resendPhoneOtp).toHaveBeenCalled();
   });
 });

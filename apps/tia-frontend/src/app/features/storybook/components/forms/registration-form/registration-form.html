@@ -25,7 +25,10 @@
       [config]="inputConfig().username"
     ></lib-text-input>
   </div>
-
+  <!-- ეს დროებითია  -->
+  @if(!usernameError() && usernameError() !== null) {
+  <div class="error">User not available</div>
+  }
   <div class="registration__field">
     <lib-text-input
       type="email"
@@ -33,7 +36,10 @@
       [config]="inputConfig().email"
     ></lib-text-input>
   </div>
-  }
+  <!-- ესეც -->
+  @if(!emailError() && emailError() !== null) {
+  <div class="error">Email not available</div>
+  } }
 
   <div class="registration__field">
     <lib-text-input

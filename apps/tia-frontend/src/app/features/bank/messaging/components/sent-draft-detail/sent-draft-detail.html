@@ -1,0 +1,26 @@
+<app-email-detail [data]="emailDetail?.()">
+  @if (!fromSent) {
+  <div class="button-container">
+    <app-button icon="send-email.svg" (click)="sendDraft()">Send</app-button>
+    <app-button variant="outline" [icon]="'red-trash.svg'" (click)="onDelete($event)">Delete</app-button>
+  </div>
+  }
+</app-email-detail>
+<app-ui-modal [isOpen]="isDeleteModalOpen()" (closed)="onCancelDelete()">
+  <div class="delete-account">
+    <header class="delete-account__header">
+      <app-library-title
+        title="Delete Email"
+        subtitle="Are you sure you want to delete this email? This action cannot be undone."
+      ></app-library-title>
+    </header>
+    <footer class="delete-account__footer">
+      <app-button variant="outline" (click)="onCancelDelete()"
+        >Cancel</app-button
+      >
+      <app-button variant="destructive" (click)="onConfirmDelete()"
+        >Delete</app-button
+      >
+    </footer>
+  </div>
+</app-ui-modal>

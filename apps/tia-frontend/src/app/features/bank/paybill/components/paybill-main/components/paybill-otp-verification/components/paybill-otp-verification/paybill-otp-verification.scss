@@ -1,0 +1,45 @@
+@use '../../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../../shared/styles/palette' as *;
+
+.paybill-card{
+  &__alert__wrapper{
+    width: 100%;
+  }
+}
+
+.otp-wrapper {
+  margin: 2.4rem 0;
+  @include flex-center(column, center, center);
+  gap: 1.6rem;
+}
+
+.otp-resend {
+  @include flex-center(row, center, center);
+  gap: 0.8rem;
+  width: 100%;
+
+  &__text {
+    @include font-inter(400, 1.4rem, 2rem);
+    letter-spacing: -0.015rem;
+    color: $gray-700;
+    margin: 0;
+  }
+
+  &__button {
+    @include font-inter(500, 1.6rem, 2.4rem);
+    cursor: pointer;
+    color: $blue-800;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+.otp-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  margin-top: 1.2rem;
+}

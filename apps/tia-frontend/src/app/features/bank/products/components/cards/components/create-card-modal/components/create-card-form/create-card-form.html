@@ -1,0 +1,52 @@
+<form [formGroup]="formGroup()" (ngSubmit)="onSubmit()" class="create-card-form">
+  <div class="create-card-form__field">
+    <lib-text-input
+      formControlName="cardName"
+      [type]="'text'"
+    ></lib-text-input>
+  </div>
+
+  <div class="create-card-form__field-group">
+    <div class="create-card-form__field">
+      <lib-select
+        formControlName="cardCategory"
+        [options]="categoryOptions()"
+      ></lib-select>
+    </div>
+
+    <div class="create-card-form__field">
+      <lib-select
+        formControlName="cardType"
+        [options]="typeOptions()"
+      ></lib-select>
+    </div>
+  </div>
+
+  <div class="create-card-form__field">
+    <lib-select
+      formControlName="accountId"
+      [options]="accountOptions()"
+    ></lib-select>
+  </div>
+
+  @if (createError()) {
+    <div class="create-card-form__error-message">{{ createError() }}</div>
+  }
+
+  <div class="create-card-form__actions">
+    @if (!isCreating()) {
+      <app-button [variant]="'outline'" (click)="onCancel()" type="button">
+        Cancel
+      </app-button>
+    }
+    @if (formGroup().valid && !isCreating()) {
+      <app-button
+        [variant]="'default'"
+        [icon]="'plus-icon.svg'"
+        type="submit"
+      >
+        @if (isCreating()) { Creating... } @else { Create Card }
+      </app-button>
+    }
+  </div>
+</form>

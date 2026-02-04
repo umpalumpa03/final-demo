@@ -1,44 +1,40 @@
+
+
 import {
   ChangeDetectionStrategy,
   Component,
   inject,
   input,
   output,
-  signal,
-  effect,
-  computed,
 } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { BehaviorSubject, combineLatest, map, tap } from 'rxjs';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
+import { CreateCardRequest } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/create-card-request.model';
+import { CardForm } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-form.model';
 import {
   selectCardCreationData,
-  selectIsCreating,
+  selectCardCreationDataLoading,
   selectCreateError,
-} from '../../../../../../../../store/products/cards/cards.selectors';
+  selectIsCreating,
+} from 'apps/tia-frontend/src/app/store/products/cards/cards.selectors';
 import {
-  loadCardCreationData,
-  createCard,
   closeCreateCardModal,
-} from '../../../../../../../../store/products/cards/cards.actions';
-import { CreateCardRequest } from '@tia/shared/models/cards/create-card-request.model';
-import { CardForm } from '@tia/shared/models/cards/card-form.model';
-import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
-import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
-import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+  createCard,
 
+} from 'apps/tia-frontend/src/app/store/products/cards/cards.actions';
+import { CardPreview } from '../components/card-preview/card-preview';
+import { DesignSelector } from '../components/design-selector/design-selector';
+import { CreateCardForm } from '../components/create-card-form/create-card-form';
+import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-create-card',
-  imports: [UiModal, ReactiveFormsModule, TextInput, Dropdowns,ButtonComponent],
   templateUrl: './createCard.html',
   styleUrl: './createCard.scss',
+  imports: [CommonModule, UiModal, CardPreview, DesignSelector, CreateCardForm,TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateCard {
@@ -46,82 +42,99 @@ export class CreateCard {
   private readonly fb = inject(FormBuilder);
 
   readonly isOpen = input.required<boolean>();
-  closed = output<void>();
-
-  protected readonly creationData = this.store.selectSignal(selectCardCreationData);
-  protected readonly isCreating = this.store.selectSignal(selectIsCreating);
-  protected readonly createError = this.store.selectSignal(selectCreateError);
+  readonly closed = output<void>();
 
   protected readonly cardForm: FormGroup<CardForm> = this.fb.group({
-    cardName: this.fb.nonNullable.control('', [Validators.required, Validators.minLength(2)]),
+    cardName: this.fb.nonNullable.control('', [
+      Validators.required,
+      Validators.minLength(2),
+    ]),
     cardCategory: this.fb.nonNullable.control<'DEBIT' | 'CREDIT'>('DEBIT', Validators.required),
     cardType: this.fb.nonNullable.control<'VISA' | 'MASTERCARD'>('VISA', Validators.required),
     accountId: this.fb.nonNullable.control('', Validators.required),
     design: this.fb.nonNullable.control('', Validators.required),
   });
 
-  protected readonly selectedDesign = signal<string>('');
+  private readonly selectedDesignId$ = new BehaviorSubject<string>('');
+  
+  protected get selectedDesignId(): string {
+    return this.selectedDesignId$.value;
+  }
 
- protected readonly selectedDesignUri = computed(() => {
-  const selected = this.creationData().designs.find(
-    (d) => d.id === this.selectedDesign(),
-  );
-  return selected?.uri || null;
-});
-  protected readonly categoryOptions = computed(() =>
-    this.creationData().categories.map((c) => ({ label: c.displayName, value: c.value }))
-  );
 
-  protected readonly typeOptions = computed(() =>
-    this.creationData().types.map((t) => ({ label: t.displayName, value: t.value }))
-  );
 
-  protected readonly accountOptions = computed(() =>
-    this.creationData().accounts.map((a) => ({
-      label: `${a.name} - ${a.balance} ${a.currency}`,
-      value: a.id,
-    }))
-  );
-
-  constructor() {
-    effect(() => {
-      if (this.isOpen()) {
-        this.store.dispatch(loadCardCreationData());
+  protected readonly viewData$ = combineLatest([
+    this.store.select(selectCardCreationData),
+    this.store.select(selectIsCreating),
+    this.store.select(selectCreateError),
+    this.store.select(selectCardCreationDataLoading),
+    this.selectedDesignId$,
+  ]).pipe(
+    tap(([creationData, , , , selectedId]) => {
+      if (creationData.designs.length > 0 && !selectedId) {
+        this.selectedDesignId$.next(creationData.designs[0].id);
+        this.cardForm.patchValue({ design: creationData.designs[0].id });
       }
-    });
+    }),
+    map(([creationData, isCreating, createError, isLoading, selectedId]) => {
+      const selectedDesign = creationData.designs.find((d) => d.id === selectedId);
+      
+      return {
+        designs: creationData.designs,
+        selectedDesignUri: selectedDesign?.uri || null,
+        categoryOptions: creationData.categories.map((c) => ({
+          label: c.displayName,
+          value: c.value,
+        })),
+        typeOptions: creationData.types.map((t) => ({
+          label: t.displayName,
+          value: t.value,
+        })),
+        accountOptions: creationData.accounts.map((a) => ({
+          label: `${a.name} - ${a.balance} ${a.currency}`,
+          value: a.id,
+        })),
+        isCreating,
+        createError,
+        isLoading,
+      };
+    })
+  );
 
- effect(() => {
-  const designs = this.creationData().designs;
-  if (designs.length > 0 && !this.selectedDesign()) {
-    this.selectDesign(designs[0].id);  
-  }
-});
-  }
-
-  protected selectDesign(design: string): void {
-    this.selectedDesign.set(design);
+  protected onDesignSelected(design: string): void {
+    this.selectedDesignId$.next(design);
     this.cardForm.patchValue({ design });
   }
 
-  protected onSubmit(): void {
+  protected onFormSubmit(): void {
     if (this.cardForm.valid) {
       const request: CreateCardRequest = this.cardForm.getRawValue();
       this.store.dispatch(createCard({ request }));
     }
   }
 
-protected onClose(): void {
-  this.cardForm.patchValue({
-    cardName: '',
-    cardCategory: 'DEBIT',
-    cardType: 'VISA',
-    accountId: '',
-    design: '',
-  });
-  this.cardForm.markAsUntouched();
-  this.cardForm.markAsPristine();
-  this.selectedDesign.set('');
-  this.store.dispatch(closeCreateCardModal());
-  this.closed.emit();
-}
+  protected onFormCancel(): void {
+    this.resetForm();
+    this.store.dispatch(closeCreateCardModal());
+    this.closed.emit();
+  }
+
+  protected onClose(): void {
+    this.resetForm();
+    this.store.dispatch(closeCreateCardModal());
+    this.closed.emit();
+  }
+
+  private resetForm(): void {
+    this.cardForm.patchValue({
+      cardName: '',
+      cardCategory: 'DEBIT',
+      cardType: 'VISA',
+      accountId: '',
+      design: '',
+    });
+    this.cardForm.markAsUntouched();
+    this.cardForm.markAsPristine();
+    this.selectedDesignId$.next('');
+  }
 }

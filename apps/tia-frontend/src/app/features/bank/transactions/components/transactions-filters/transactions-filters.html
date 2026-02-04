@@ -1,97 +1,54 @@
 <app-showcase-card>
-  <app-library-title
-    [title]="'Filters'"
-    [subtitle]="'Apply filters to refine your transaction list'"
-  ></app-library-title>
+  <div class="filters-heading">
+    <app-library-title
+      [title]="'Filters'"
+      [subtitle]="'Apply filters to refine your transaction list'"
+    ></app-library-title>
+    @if(hasActiveFilter()){
+    <app-button
+      [type]="'reset'"
+      [variant]="'outline'"
+      [icon]="'x-icon.svg'"
+      (click)="resetFilters()"
+      >Reset All</app-button
+    >
+    }
+  </div>
 
   <form [formGroup]="filterForm" class="transaction-filters-form">
-    <div class="transaction-filters-form__input-wrapper">
-      <lib-text-input
-        formControlName="searchCriteria"
-        [type]="'search'"
-        [config]="{
-            label: 'Search'
-          }"
-      >
-      </lib-text-input>
-    </div>
+    @for (field of filtersConfig(); track field.controlName) {
 
     <div class="transaction-filters-form__input-wrapper">
+      @if (field.type === 'select') {
       <lib-select
-        formControlName="category"
-        [options]="categoryOptions()"
-        [config]="{
-              label: 'Category',
-              placeholder: 'All Categories'
-            }"
+        [formControlName]="field.controlName"
+        [options]="field.options || []"
+        [config]="field.uiConfig"
       >
       </lib-select>
-    </div>
-
-    <div class="transaction-filters-form__input-wrapper">
+      } @else {
       <lib-text-input
-        formControlName="amountFrom"
-        [type]="'number'"
-        [config]="{ label: 'Min Amount', placeholder: '0' }"
+        [formControlName]="field.controlName"
+        [type]="field.inputType || 'text'"
+        [config]="field.uiConfig"
       >
       </lib-text-input>
+      }
     </div>
-
-    <div class="transaction-filters-form__input-wrapper">
-      <lib-text-input
-        formControlName="amountTo"
-        [type]="'number'"
-        [config]="{ label: 'Max Amount', placeholder: 'Any' }"
-      >
-      </lib-text-input>
-    </div>
-
-    <div class="transaction-filters-form__input-wrapper">
-      <lib-select
-        formControlName="accountIban"
-        [options]="accountOptions()"
-        [config]="{ 
-            label: 'Account', 
-            placeholder: 'Select Account' 
-          }"
-      >
-      </lib-select>
-    </div>
-
-    <div class="transaction-filters-form__input-wrapper">
-      <lib-select
-        formControlName="currency"
-        [options]="currencyOptions"
-        [config]="{ 
-            label: 'Currency', 
-            placeholder: 'All' 
-          }"
-      >
-      </lib-select>
-    </div>
-
-    <div class="transaction-filters-form__input-wrapper">
-      <lib-text-input
-        formControlName="dateFrom"
-        [type]="'date'"
-        [config]="{
-              label: 'Date From',
-              placeholder: 'YYYY-MM-DD'
-            }"
-      >
-      </lib-text-input>
-    </div>
-
-    <div class="transaction-filters-form__input-wrapper">
-      <lib-text-input
-        formControlName="dateTo"
-        [type]="'date'"
-        [config]="{
-              label: 'Date To',
-              placeholder: 'YYYY-MM-DD'
-            }"
-      >
-      </lib-text-input>
-    </div>
+    }
   </form>
+
+  @if (activeFilters().length > 0) {
+  <div class="active-filters-container">
+    @for (filter of activeFilters(); track filter.key) {
+    <app-button
+      [variant]="'outline'"
+      [icon]="'x-icon.svg'"
+      (click)="removeFilter(filter.key)"
+    >
+      {{ filter.displayText }}
+    </app-button>
+    }
+  </div>
+  }
 </app-showcase-card>

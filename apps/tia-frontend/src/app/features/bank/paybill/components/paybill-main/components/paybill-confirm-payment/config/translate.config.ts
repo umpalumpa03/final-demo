@@ -16,6 +16,10 @@ export const mapConfirmSummaryFields = (
   summary: PaybillPayload,
   details: BillDetails,
 ): SummaryField[] => {
+  if(!summary) return [];
+  const identifierValue = summary.identification
+    ? Object.values(summary.identification)[0]
+    : '';
   return [
     {
       label: 'paybill.main.confirm.summary_fields.service',
@@ -24,7 +28,7 @@ export const mapConfirmSummaryFields = (
     },
     {
       label: 'paybill.main.confirm.summary_fields.account',
-      value: summary.accountNumber,
+      value: identifierValue || '',
       canTranslate: true,
     },
     {

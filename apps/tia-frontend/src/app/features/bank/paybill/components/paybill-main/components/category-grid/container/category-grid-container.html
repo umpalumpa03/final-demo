@@ -1,0 +1,5 @@
+<app-category-grid
+  (selected)="facade.selectCategory($event)"
+  [categories]="facade.formattedCategories()"
+  [isLoading]="facade.isLoading()"
+/>

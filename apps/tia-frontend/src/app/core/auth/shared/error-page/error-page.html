@@ -1,0 +1,18 @@
+<div class="error-page">
+  <div class="error-page__content">
+    <div class="error-page__circle error-page__circle--icon">
+      <img src="images/svg/auth/download.svg" alt="">
+    </div>
+
+    <h1 class="error-page__title">Too many retries</h1>
+    <p class="error-page__description">
+      You have reached the rlimit of retries
+    </p>
+
+    <p class="error-page__redirect-text">You will be redirected to sign in</p>
+
+    <div class="error-page__circle error-page__circle--timer">
+      {{ timer() }}
+    </div>
+  </div>
+</div>

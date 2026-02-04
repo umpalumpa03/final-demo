@@ -26,6 +26,8 @@ import { ITransactionFilter } from '@tia/shared/models/transactions/transactions
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
 import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-transactions-container',
@@ -43,11 +45,25 @@ import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accoun
 })
 export class TransactionsContainer implements OnInit {
   private store = inject(Store);
+  private readonly accountsService = inject(AccountsApiService);
+
+  private readonly currencyList = toSignal(
+    this.accountsService.getCurrencies(),
+    { initialValue: [] as string[] },
+  );
 
   public items = this.store.selectSignal(selectItems);
   public readonly isLoading = this.store.selectSignal(selectIsLoading);
   public categoryOptions = this.store.selectSignal(selectCategoryOptions);
   public accounts = this.store.selectSignal(selectAccounts);
+
+  public readonly currencyOptions = computed<SelectOption[]>(() => {
+    const currencies = this.currencyList();
+    return currencies.map((curr) => ({
+      label: curr,
+      value: curr,
+    }));
+  });
 
   public accountOptions = computed<SelectOption[]>(() => {
     const accountsList = this.accounts();

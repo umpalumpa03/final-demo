@@ -12,6 +12,11 @@ export const authRoutes: Routes = [
       ...signInRoutes,
       ...forgotPasswordRoutes,
       ...signUpRoutes,
+      {
+        path: 'error-info',
+        loadComponent: () =>
+          import('./shared/error-page/error-page').then((c) => c.ErrorPage),
+      },
       { path: '', redirectTo: 'sign-in', pathMatch: 'full' },
       { path: '**', redirectTo: 'sign-in' },
     ],

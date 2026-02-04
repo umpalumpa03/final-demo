@@ -3,6 +3,8 @@ export interface PaybillProvider {
   serviceName: string;
   categoryId: string;
   name?: string;
+  parentId?: string;
+  isFinal?: string | boolean;
 }
 
 export interface PaybillCategory {
@@ -16,21 +18,6 @@ export interface PaybillCategory {
   iconBgPath?: string;
   providers?: PaybillProvider[];
 }
-
-// export interface PaybillState {
-//   categories: PaybillCategory[];
-//   providers: PaybillProvider[];
-//   selectedCategoryId: string | null;
-//   selectedProviderId: string | null;
-//   loading: boolean;
-//   error: string | null;
-//   selectedProvider: PaybillProvider | null;
-//   verifiedDetails: BillDetails | null;
-//   currentStep: string;
-//   paymentPayload: PaybillPayload | null;
-//   challengeId: string | null;
-//   templateGroups: TableGroups[];
-// }
 
 export interface BillDetails {
   valid: boolean;
@@ -46,7 +33,7 @@ export interface BillDetails {
 }
 
 export interface PaybillPayload {
-  accountNumber: string;
+  identification: PaybillIdentification;
   amount: number;
 }
 
@@ -58,6 +45,9 @@ export interface VerifyChallenge {
 export interface ProceedPaymentResponse {
   verify?: VerifyChallenge;
   transferType: string;
+  error?: string;
+  message?: string;
+  statusCode?: string;
 }
 
 export interface ConfirmPaymentPayload {
@@ -67,9 +57,25 @@ export interface ConfirmPaymentPayload {
 
 export interface ProceedPaymentPayload {
   serviceId: string;
-  identification: {
-    accountNumber: string;
-  };
+  identification: PaybillIdentification;
   amount: number;
   senderAccountId: string;
+}
+
+export interface PaybillIdentification {
+  accountNumber?: string;
+  phoneNumber?: string;
+  policyNumber?: string;
+  propertyCode?: string;
+  tenantId?: string;
+  [key: string]: string | undefined;
+}
+
+export interface PaybillFormVerifyEvent {
+  value: string;
+}
+
+export interface PaybillFormProceedEvent {
+  value: string;
+  amount: number;
 }

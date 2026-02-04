@@ -1,0 +1,10 @@
+@if (facade.paymentPayload()) {
+  <app-paybill-success
+    [items]="facade.successSummaryItems()"
+    [headerTitle]="facade.activeProvider()?.name || 'Success'"
+    [iconBgColor]="facade.activeCategoryUI()?.iconBgColor || '#F0F9FF'"
+    [iconBgPath]="facade.activeCategoryUI()?.iconBgPath || ''"
+    (payAnother)="onPayAnother()"
+    (goDashboard)="onGoDashboard()"
+  />
+}

@@ -1,6 +1,6 @@
 @let step = currentStep();
 
-<form class="multi-step" [formGroup]="form" (ngSubmit)="submit()">
+<form class="multi-step" [formGroup]="form">
   <div class="multi-step__field">
     <app-stepper-header [content]="stepsConfig" [step]="currentStep()" />
   </div>

@@ -26,8 +26,15 @@
             alt="Profile photo"
             class="profile-photo__avatar-main-image"
           />
-          } @else {
+          } @else if (defaultAvatarsLoading()) {
           <app-spinner size="6rem"></app-spinner>
+          } @else {
+          <app-avatar
+            [initials]="initials()"
+            size="lg"
+            tone="solid"
+           class="profile-photo__default-avatar"
+          ></app-avatar>
           }
         </div>
         <app-button

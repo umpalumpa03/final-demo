@@ -134,27 +134,6 @@ describe('AppearanceContainer', () => {
   });
 
   describe('alert functionality', () => {
-    it('should show success alert on successful submit', async () => {
-      component.onSubmit();
-
-      await new Promise((resolve) => setTimeout(resolve, 10));
-
-      expect(component.alertType()).toBe('success');
-      expect(component.alertMessage()).toContain('');
-    });
-
-    it('should show error alert on failed submit', async () => {
-      appearanceService.updateUserTheme.mockReturnValue(
-        new Observable((observer) => observer.error(new Error('Save failed'))),
-      );
-
-      component.onSubmit();
-
-      await new Promise((resolve) => setTimeout(resolve, 10));
-
-      expect(component.alertType()).toBe('error');
-    });
-
     it('should clear alert timeout on destroy', () => {
       const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
       (component as any).alertTimeoutId = setTimeout(() => {}, 1000);

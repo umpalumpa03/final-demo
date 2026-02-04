@@ -80,7 +80,7 @@
     }
   }
 
-  &--warning {
+  &--error {
     background: $red-50;
     border: 0.08rem solid $red-900;
     .dismissible-alerts__title {

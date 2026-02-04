@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   effect,
+  HostListener,
   inject,
   input,
   output,
@@ -20,7 +21,6 @@ import {
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import {
-  COUNTRY_OPTIONS,
   REGISTATION_FORM,
   PASSWORD_RULE_MESSAGES,
   PASSWORD_RULES,
@@ -39,15 +39,34 @@ import { translateConfig } from '@tia/shared/utils/translate-config/config-trans
 })
 export class RegistrationForm {
   private translate = inject(TranslateService);
-  public countries = COUNTRY_OPTIONS;
   public readonly isRegistration = input<boolean>(true);
   public readonly buttonText = input<string>('auth.sign-up.buttonText');
+  public readonly usernameError = input<boolean | null>();
+  public readonly emailError = input<boolean | null>();
   public readonly passwordTouched = signal<boolean>(false);
   public readonly passwordInteracted = signal<boolean>(false);
 
   private readonly fb = inject(FormBuilder);
   public readonly submitRegistrationForm = output<IRegistrationForm>();
   private readonly ALL_PASSWORD_RULES = PASSWORD_RULES;
+
+  @HostListener('input', ['$event'])
+  public handleInput(event: Event) {
+    const target = event.target as HTMLInputElement;
+
+    if (target.tagName !== 'INPUT') {
+      return;
+    }
+
+    const { confirmPassword, ...regRequest } =
+      this.registrationForm.getRawValue();
+
+    this.formIncompleteData.emit(regRequest);
+  }
+
+  public formIncompleteData = output<IRegistrationForm>();
+  public currentUsername = output<string>();
+  public currentEmail = output<string>();
 
   public inputConfig = toSignal(
     this.translate.onLangChange.pipe(
@@ -89,6 +108,15 @@ export class RegistrationForm {
 
       ['firstName', 'lastName', 'email', 'username'].forEach(toggle);
     });
+
+    effect(() => {
+      const username = this.usernameValue() ?? '';
+      this.currentUsername.emit(username);
+    });
+    effect(() => {
+      const email = this.emailValue() ?? '';
+      this.currentEmail.emit(email);
+    });
   }
 
   public registrationForm = this.fb.nonNullable.group(
@@ -98,7 +126,10 @@ export class RegistrationForm {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [passwordValidator]],
       confirmPassword: ['', [Validators.required]],
-      username: ['', Validators.required],
+      username: [
+        '',
+        [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]{2,}$/)],
+      ],
     },
     {
       validators: passwordMatchValidator,
@@ -111,6 +142,13 @@ export class RegistrationForm {
 
   public get confirmPasswordControl() {
     return this.registrationForm.get('confirmPassword');
+  }
+
+  private get usernameControl() {
+    return this.registrationForm.get('username');
+  }
+  private get emailControl() {
+    return this.registrationForm.get('email');
   }
 
   private onPasswordChange(): void {
@@ -136,6 +174,9 @@ export class RegistrationForm {
 
     this.comparePasswords();
   }
+
+  private usernameValue = toSignal(this.usernameControl!.valueChanges);
+  private emailValue = toSignal(this.emailControl!.valueChanges);
 
   private passwordValue = toSignal(this.passwordControl!.valueChanges);
 
