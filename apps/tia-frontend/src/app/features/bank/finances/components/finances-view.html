@@ -1,188 +1,33 @@
-<div class="global-bank-wrapper">
-  <app-library-title
-    [title]="financeTitle()"
-    [subtitle]="financeSubTitle()"
-  ></app-library-title>
+<app-library-title
+  [title]="financeTitle()"
+  [subtitle]="financeSubTitle()"
+></app-library-title>
 
-  <section class="finances-filters">
-    <div class="finances-filters__container">
-      <div class="finances-filters__actions">
-        @for (option of filterOptions(); track option.type) {
-        <div class="finances-filters__button-item">
-          <app-button
-            [icon]="option.icon"
-            [variant]="activeFilter() === option.type ? 'default' : 'outline'"
-            [isDisabled]="loading()"
-            (click)="filterChange.emit(option.type)"
-          >
-            {{ option.label }}
-          </app-button>
-        </div>
-        }
-      </div>
+<app-finances-filters
+  [activeFilter]="activeFilter()"
+  [filterOptions]="filterOptions()"
+  [filterForm]="filterForm()"
+  [monthOptions]="monthOptions()"
+  (filterChange)="filterChange.emit($event)"
+></app-finances-filters>
 
-      <div class="finances-filters__inputs">
-        <div class="finances-filters__input-wrapper">
-          <lib-text-input
-            [config]="{label: activeFilter() === 'month' ? 'Month:' : 'From:', placeholder: 'YYYY-MM-DD'}"
-            (input)="dateInput.emit({field: 'fromDate', event: $event})"
-            [formControl]="getControl('fromDate')"
-          ></lib-text-input>
+<app-finances-summary
+  [loading]="loading()"
+  [error]="error()"
+  [summaryCards]="summaryCards()"
+  [activeFilter]="activeFilter()"
+  (retry)="filterChange.emit($event)"
+></app-finances-summary>
 
-          @if (isFromDateInvalid) {
-          <small class="input-error">Required format: YYYY-MM-DD</small>
-          }
-        </div>
+<app-finances-charts 
+  [charts]="charts()"
+></app-finances-charts>
 
-        @if (activeFilter() === 'custom') {
-        <div class="finances-filters__input-wrapper">
-          <lib-text-input
-            [config]="{label: 'To:', placeholder: 'YYYY-MM-DD'}"
-            (input)="dateInput.emit({field: 'toDate', event: $event})"
-            [formControl]="getControl('toDate')"
-          ></lib-text-input>
+<app-finances-breakdown 
+  [categories]="categories()"
+  [loading]="loading()"
+></app-finances-breakdown>
 
-          @if (isToDateInvalid) {
-          <small class="input-error">Required format: YYYY-MM-DD</small>
-          }
-        </div>
-        }
-      </div>
-    </div>
-
-    <div class="finances-filters__messages">
-      @if (filterForm().hasError('dateRangeInvalid')) {
-      <app-basic-alerts
-        alertType="default"
-        alertTitle="Invalid Range"
-        alertMessage='"From" date must be earlier than "To" date'
-      ></app-basic-alerts>
-      } @if (error()) {
-      <app-basic-alerts
-        alertType="error"
-        alertTitle="System Error"
-        [alertMessage]="error()!"
-      ></app-basic-alerts>
-      }
-    </div>
-  </section>
-
-  <section class="finances-summary" [class.loading-state]="loading()">
-    @if (loading()) {
-    <div class="finances-summary__loading-wrapper">
-      <app-spinner size="3rem"></app-spinner>
-      <span>Updating data...</span>
-    </div>
-    }
-
-    <div class="finances-summary__grid">
-      @for (card of summaryCards(); track card.label) {
-      <div class="finances-summary__card-wrapper">
-        <app-statistic-card
-          [label]="card.label"
-          [value]="card.value"
-          [change]="card.change"
-          [changeType]="card.changeType"
-          [icon]="card.icon"
-        ></app-statistic-card>
-      </div>
-      } @empty { @if (!loading() && !error()) {
-      <p class="no-data">No data available for the selected range.</p>
-      } }
-    </div>
-  </section>
-
-  <section class="finances-charts">
-    @for (chart of charts(); track chart.title) {
-    <div class="finances-charts__card">
-      <h3 class="chart-title">{{ chart.title }}</h3>
-      <div class="chart-container">
-        @if (chart.data) {
-        <canvas
-          baseChart
-          [data]="chart.data"
-          [options]="chartOptions"
-          [type]="chart.type"
-        ></canvas>
-        } @else {
-        <div class="chart-loading">
-          <app-spinner size="2rem"></app-spinner>
-        </div>
-        }
-      </div>
-    </div>
-    }
-  </section>
-
-  <section class="finances-breakdown">
-    <div class="finances-breakdown__card">
-      <div class="finances-breakdown__header">
-        <h3 class="breakdown-title">Category Breakdown</h3>
-        <p class="breakdown-subtitle">Detailed view of spending by category</p>
-      </div>
-
-      <div class="finances-breakdown__list">
-        @for (item of categories(); track item.category) {
-        <app-category-item
-          [label]="item.category"
-          [amount]="item.amount"
-          [percentage]="item.percentage"
-          [color]="item.color"
-          [icon]="item.icon || ''"
-        ></app-category-item>
-        } @empty { @if (!loading()) {
-        <p class="no-data">No categories found for this period.</p>
-        } }
-      </div>
-    </div>
-  </section>
-
-  <section class="finances-details-grid">
-    <div class="finances-card">
-      <div class="finances-card__header">
-        <h3 class="card-title">Recent Transactions</h3>
-        <p class="card-subtitle">Latest financial activity</p>
-      </div>
-      <div class="finances-card__list">
-        @for (tx of transactions(); track tx.id) {
-        <div class="transaction-item">
-          <div class="transaction-item__left">
-            <div
-              class="transaction-item__icon-box"
-              [class.is-income]="tx.type === 'income'"
-            >
-              @if (tx.isImageIcon) {
-              <img
-                [src]="tx.icon"
-                [alt]="tx.category"
-                class="transaction-item__icon-img"
-              >
-              } @else {
-              <span class="transaction-item__raw-icon">{{ tx.icon }}</span>
-              }
-            </div>
-
-            <div class="transaction-item__info">
-              <span class="transaction-item__title">{{ tx.title }}</span>
-              <span class="transaction-item__category">{{ tx.category }}</span>
-            </div>
-          </div>
-
-          <div class="transaction-item__right">
-            <span
-              class="transaction-item__amount"
-              [class.income]="tx.type === 'income'"
-            >
-              {{ tx.type === 'income' ? '+' : '-' }}{{ tx.amount |
-              currency:'USD':'symbol':'1.0-1' }}
-            </span>
-            <span class="transaction-item__date"
-              >{{ tx.date | date:'dd/MM/yyyy' }}</span
-            >
-          </div>
-        </div>
-        }
-      </div>
-    </div>
-  </section>
-</div>
+<app-finances-transactions 
+  [transactions]="transactions()"
+></app-finances-transactions>

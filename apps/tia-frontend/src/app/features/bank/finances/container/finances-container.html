@@ -1,15 +1,17 @@
-<app-finances-view
-  [financeTitle]="financeTitle"
-  [financeSubTitle]="financeSubTitle"
-  [activeFilter]="activeFilter"
-  [filterOptions]="filterOptions"
-  [filterForm]="filterForm"
-  [loading]="store.loading()"
-  [error]="store.error()"
-  [summaryCards]="store.summaryCards()"
-  [charts]="store.charts()"
-  [categories]="store.categoriesWithIcons()"
-  [transactions]="store.transactionsWithIcons()"
-  (filterChange)="onFilterChange($event)"
-  (dateInput)="handleInput($event.field, $event.event)"
-></app-finances-view>
+<div class="global-bank-wrapper">
+  <app-finances-view
+    [financeTitle]="financeTitle"
+    [financeSubTitle]="financeSubTitle"
+    [activeFilter]="activeFilter()"
+    [filterOptions]="filterOptions"
+    [filterForm]="filterForm"
+    [monthOptions]="monthOptions()"
+    [loading]="store.loading()"
+    [error]="store.error()"
+    [summaryCards]="store.summaryCards()"
+    [charts]="store.charts()"
+    [categories]="store.categoriesWithIcons()"
+    [transactions]="store.transactionsWithIcons()"
+    (filterChange)="onFilterChange($event)"
+  ></app-finances-view>
+</div>

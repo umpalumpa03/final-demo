@@ -7,7 +7,15 @@ import {
 } from '@ngrx/signals';
 import { computed, inject } from '@angular/core';
 import { FinancesService } from '../services/finances.service';
-import { pipe, switchMap, tap, catchError, EMPTY, forkJoin } from 'rxjs';
+import {
+  pipe,
+  switchMap,
+  tap,
+  catchError,
+  EMPTY,
+  forkJoin,
+  filter,
+} from 'rxjs';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import {
   FinancialSummaryResponse,
@@ -19,7 +27,11 @@ import {
   SummaryCard,
   Transaction,
 } from '../models/filter.model';
-import { CARDS_CONFIG, CATEGORY_ICONS } from '../config/filter-options.config';
+import {
+  CARDS_CONFIG,
+  CATEGORY_ICONS,
+  getMonthOptions,
+} from '../config/filter-options.config';
 import { ChartData } from 'chart.js';
 
 export const FinancesStore = signalStore(
@@ -30,25 +42,53 @@ export const FinancesStore = signalStore(
     incomeVsExpenses: [] as IncomeVsExpenses[],
     savingsTrend: [] as SavingsTrend[],
     dailySpending: [] as DailySpending[],
+    availableMonths: [] as string[],
     loading: false,
     error: null as string | null,
   }),
   withMethods((store, service = inject(FinancesService)) => ({
     loadAllData: rxMethod<{ from: string; to?: string }>(
       pipe(
+        filter((params) => !!params.from),
         tap(() => patchState(store, { loading: true, error: null })),
         switchMap(({ from, to }) =>
           forkJoin({
             summary: service.getSummary(from, to),
             categories: service.getCategories(from, to),
-            transactions: service.getRecentTransactions(6),
-            incomeVsExpenses: service.getIncomeVsExpenses(),
-            savingsTrend: service.getSavingsTrend(),
             dailySpending: service.getDailySpending(from, to),
+            incomeVsExpenses: service.getIncomeVsExpenses(12),
+            savingsTrend: service.getSavingsTrend(12),
+            transactions: service.getRecentTransactions(6),
           }).pipe(
-            tap((res) => patchState(store, { ...res, loading: false })),
-            catchError(() => {
-              patchState(store, { loading: false, error: 'Data sync failed' });
+            tap((res) => {
+              const monthsWithData = res.incomeVsExpenses
+                .filter((i) => i.income > 0 || i.expenses > 0)
+                .map((i) => i.month);
+              if (!res.summary) {
+                patchState(store, {
+                  ...res,
+                  availableMonths: monthsWithData,
+                  loading: false,
+                  error: 'No data found for this period',
+                });
+              } else {
+                patchState(store, {
+                  ...res,
+                  availableMonths: monthsWithData,
+                  loading: false,
+                  error: null,
+                });
+              }
+            }),
+            catchError((err) => {
+              let errorMessage = 'An unexpected error occurred';
+              if (err.status === 401)
+                errorMessage = 'Session expired. Please login again.';
+              if (err.status === 500)
+                errorMessage =
+                  'Server is currently unavailable. Try again later.';
+
+              patchState(store, { loading: false, error: errorMessage });
               return EMPTY;
             }),
           ),
@@ -193,6 +233,10 @@ export const FinancesStore = signalStore(
       });
     });
 
+    const availableMonthsOptions = computed(() => {
+      return getMonthOptions([...store.availableMonths()]);
+    });
+
     return {
       summaryCards,
       charts,
@@ -202,6 +246,7 @@ export const FinancesStore = signalStore(
       dailyChartData,
       categoriesWithIcons,
       transactionsWithIcons,
+      availableMonthsOptions,
     };
   }),
 );

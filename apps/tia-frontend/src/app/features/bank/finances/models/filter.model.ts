@@ -8,6 +8,12 @@ export interface FinancesParams {
   toValue?: string; 
 }
 
+export interface SelectOption {
+  label: string;
+  value: string | number;
+  disabled?: boolean;
+}
+
 export interface FilterOption {
   label: string;
   icon: string;

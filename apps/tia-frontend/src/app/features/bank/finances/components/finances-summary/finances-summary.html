@@ -1,0 +1,35 @@
+<section class="finances-summary" [class.loading-state]="loading()">
+  @if (loading()) {
+    <div class="finances-summary__loading-wrapper">
+      <app-spinner size="3rem"></app-spinner>
+      <span>Syncing your finances...</span>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="finances-summary__error-state">
+      <app-basic-alerts alertType="error" [alertMessage]="error()!"></app-basic-alerts>
+      <app-button variant="outline" (click)="retry.emit(activeFilter()!)">
+        Try Again
+      </app-button>
+    </div>
+  } @else {
+    <div class="finances-summary__grid">
+      @for (card of summaryCards(); track card.label) {
+        <div class="finances-summary__card-wrapper">
+          <app-statistic-card
+            [label]="card.label"
+            [value]="card.value"
+            [change]="card.change"
+            [changeType]="card.changeType"
+            [icon]="card.icon"
+          ></app-statistic-card>
+        </div>
+      } @empty {
+        @if (!loading()) {
+          <p class="no-data">We couldn't find any records for the selected range.</p>
+        }
+      }
+    </div>
+  }
+</section>

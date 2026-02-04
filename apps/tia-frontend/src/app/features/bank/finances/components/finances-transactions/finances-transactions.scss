@@ -1,0 +1,74 @@
+@use '../../../../../shared/styles/mixins' as *;
+@use '../../../../../shared/styles/palette' as *;
+@use '../../../../../shared/styles/variables' as *;
+
+.finances-details-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  margin-top: 4rem;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr; 
+  }
+}
+
+.finances-card {
+  background-color: $white;
+  border: 0.15rem solid $blue-200;
+  border-radius: 2.4rem;
+  padding: 2.4rem;
+
+  &__header {
+    margin-bottom: 2.4rem;
+    .card-title { @include font-inter(700, 2rem); color: $blue-900; }
+    .card-subtitle { @include font-inter(400, 1.3rem); color: $gray-500; }
+  }
+
+  &__list {
+    @include display-flex(column);
+    gap: 1.2rem;
+  }
+}
+
+.transaction-item {
+  @include flex-center(row, space-between, center);
+  padding: 1.2rem;
+  border-radius: 1.6rem;
+  transition: background-color 0.2s;
+
+  &:hover { background-color: $gray-50; }
+
+  &__left { @include flex-center(); gap: 1.4rem; }
+  
+  &__icon-box {
+    width: 4.4rem;
+    height: 4.4rem;
+    border-radius: 1.2rem;
+    @include flex-center();
+    
+    background-color: rgba(239, 68, 68, 0.1); 
+    color: $red-500;
+
+    &.is-income {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: $green-500;
+    }
+  }
+
+  &__info {
+    @include display-flex(column);
+    .transaction-item__title { @include font-inter(600, 1.4rem); color: $blue-900; }
+    .transaction-item__category { @include font-inter(400, 1.2rem); color: $gray-500; }
+  }
+
+  &__right {
+    text-align: right;
+    @include display-flex(column);
+    .transaction-item__amount {
+      @include font-inter(700, 1.5rem);
+      color: $red-500;
+      &.income { color: $green-500; }
+    }
+    .transaction-item__date { @include font-inter(400, 1.1rem); color: $gray-400; }
+  }
+}

@@ -1,0 +1,38 @@
+@use '../../../../../shared/styles/mixins' as *;
+@use '../../../../../shared/styles/palette' as *;
+@use '../../../../../shared/styles/variables' as *;
+
+.finances-breakdown {
+  margin-top: 4rem;
+  width: 100%;
+
+  &__card {
+    background-color: $white;
+    border: 0.15rem solid $blue-200;
+    border-radius: 2.4rem;
+    padding: 3.2rem;
+    box-shadow: 0 0.4rem 1.6rem rgba($black, 0.03);
+    @include display-flex(column);
+  }
+
+  &__header {
+    margin-bottom: 3.2rem;
+
+    .breakdown-title {
+      @include font-inter(700, 2.2rem);
+      color: $blue-900;
+      margin-bottom: 0.8rem;
+    }
+
+    .breakdown-subtitle {
+      @include font-inter(400, 1.4rem);
+      color: $gray-500;
+    }
+  }
+
+  &__list {
+    @include display-flex(column);
+    gap: 0.8rem;
+    width: 100%;
+  }
+}

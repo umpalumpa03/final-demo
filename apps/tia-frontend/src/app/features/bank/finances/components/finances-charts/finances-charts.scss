@@ -1,0 +1,36 @@
+@use '../../../../../shared/styles/mixins' as *;
+@use '../../../../../shared/styles/palette' as *;
+@use '../../../../../shared/styles/variables' as *;
+
+.finances-charts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.4rem;
+  margin-top: 4rem;
+
+  @media (max-width: 76.8rem) {
+    grid-template-columns: 1fr;
+  }
+
+  &__card {
+    background-color: $white;
+    border: 0.15rem solid $blue-200;
+    border-radius: 2.4rem;
+    padding: 3.2rem;
+    min-height: 45rem;
+    @include display-flex(column);
+    box-shadow: 0 0.4rem 1.6rem rgba($black, 0.03);
+
+    .chart-title {
+      @include font-inter(700, 2.2rem);
+      color: $blue-900;
+      margin-bottom: 3rem;
+    }
+
+    .chart-container {
+      flex-grow: 1;
+      width: 100%;
+      @include flex-center();
+    }
+  }
+}

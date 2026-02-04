@@ -1,0 +1,33 @@
+<section class="finances-details-grid">
+  <div class="finances-card">
+    <div class="finances-card__header">
+      <h3 class="card-title">Recent Transactions</h3>
+      <p class="card-subtitle">Latest financial activity</p>
+    </div>
+    <div class="finances-card__list">
+      @for (tx of transactions(); track tx.id) {
+      <div class="transaction-item">
+        <div class="transaction-item__left">
+          <div class="transaction-item__icon-box" [class.is-income]="tx.type === 'income'">
+            @if (tx.isImageIcon) {
+            <img [src]="tx.icon" [alt]="tx.category" class="transaction-item__icon-img">
+            } @else {
+            <span class="transaction-item__raw-icon">{{ tx.icon }}</span>
+            }
+          </div>
+          <div class="transaction-item__info">
+            <span class="transaction-item__title">{{ tx.title }}</span>
+            <span class="transaction-item__category">{{ tx.category }}</span>
+          </div>
+        </div>
+        <div class="transaction-item__right">
+          <span class="transaction-item__amount" [class.income]="tx.type === 'income'">
+            {{ tx.type === 'income' ? '+' : '-' }}{{ tx.amount | currency:'USD':'symbol':'1.0-1' }}
+          </span>
+          <span class="transaction-item__date">{{ tx.date | date:'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</section>
