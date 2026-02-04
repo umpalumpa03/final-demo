@@ -2,6 +2,7 @@ import {
   BillDetails,
   PaybillCategory,
   PaybillPayload,
+  PaybillPaymentDetails,
   PaybillProvider,
 } from '../components/paybill-main/shared/models/paybill.model';
 import {
@@ -36,6 +37,7 @@ export interface PaybillState {
   templateGroups: TemplateGroups[];
   templates: Templates[];
   notifications: PaybillNotification[];
+  paymentDetails: PaybillPaymentDetails | null;
 }
 
 export const initialPaybillState: PaybillState = {
@@ -53,4 +55,5 @@ export const initialPaybillState: PaybillState = {
   templateGroups: [],
   templates: [],
   notifications: [],
+  paymentDetails: null,
 };

@@ -1,7 +1,11 @@
 <div class="tree-container" [class.tree-container--no-border]="noBorder()">
-  @if(contentHeader()) {
+  @if(isLoading()) {
+  <div class="tree-container__overlay">
+    <app-route-loader variant="pulsing" />
+  </div>
+  } @if(contentHeader()) {
   <ng-content></ng-content>
-  }@else {
+  } @else {
   <div class="tree-container__header">
     <h2>{{ containerTitle() }}</h2>
     <p>{{ containerDescription() }}</p>
@@ -11,22 +15,22 @@
   <div class="tree-container__cards">
     @for (group of internalGroups(); track group.id) { @let isDraggingGroup =
     draggingId() === group.id; @let isDropTargetGroup = dropTargetId() ===
-    group.id;
+    'group:' + group.id;
 
     <div
       class="tree-container__group"
       [class.tree-container__group--dragging]="isDraggingGroup"
       [class.tree-container__group--drop-target]="isDropTargetGroup"
-      [attr.data-card-id]="group.id"
+      [attr.data-card-id]="'group:' + group.id"
       [style]="isDraggingGroup ? draggingStyle() : null"
     >
       <app-draggable-card
         [itemData]="{ id: group.id, title: group.groupName, subtitle: group.subtitle ?? '', icon: group.icon }"
         [isDragging]="isDraggingGroup"
         [isDropTarget]="isDropTargetGroup"
-        [canDelete]="canDelete()"
-        [editable]="editable()"
-        [expandable]="itemsByGroup()[group.id].length > 0"
+        [canDelete]="group.id !== 'ungrouped-group-id' && canDelete()"
+        [editable]="group.id !== 'ungrouped-group-id' && editable()"
+        [expandable]="true"
         [expanded]="group.expanded ?? false"
         [hasCheckbox]="hasCheckbox()"
         [checked]="isGroupChecked(group.id)"

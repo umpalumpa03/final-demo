@@ -1,23 +1,22 @@
 import { UserModalService } from './user-modal.service';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 describe('UserModalService', () => {
-  let service: UserModalService;
+  const service = new UserModalService();
 
-  beforeEach(() => {
-    service = new UserModalService();
-  });
-
-  it('should open details modal', () => {
+  it('should manage states correctly', () => {
     service.openDetails();
-    expect(service.modalState()).toBe('details');
     expect(service.isDetailsOpen).toBe(true);
-  });
 
-  it('should open delete modal', () => {
+    service.openEdit();
+    expect(service.isEditOpen).toBe(true);
+
     service.openDelete('123');
-    expect(service.modalState()).toBe('delete');
-    expect(service.userToDeleteId()).toBe('123');
     expect(service.isDeleteOpen).toBe(true);
+    expect(service.userToDeleteId()).toBe('123');
+
+    service.close();
+    expect(service.modalState()).toBe('none');
+    expect(service.userToDeleteId()).toBeNull();
   });
 });

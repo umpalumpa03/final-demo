@@ -1,1 +1,54 @@
-<p>user-edit-modal works!</p>
+<app-ui-modal [isOpen]="isOpen()" (closed)="close.emit()">
+    <header>
+        <div class="icon">
+            <img src="./images/svg/settings/user-management/person.svg" alt="Person Image">
+            <h1>User Details</h1>
+        </div>
+        <p>Edit user information.</p>
+    </header>
+
+    <main class="main">
+        @let user = userData();
+
+        @if (isLoading() && !user) {
+        <div class="loader-container">
+            <app-route-loader variant="pulsing" />
+        </div>
+        }
+        @else if (user) {
+        <div class="main__icon">
+            <img src="./images/svg/settings/user-management/person.svg" alt="Profile Picture">
+            <div class="user-info">
+                <strong>{{ user.firstName }} {{ user.lastName }}</strong>
+                <p>{{ user.email }}</p>
+            </div>
+        </div>
+
+        <form [formGroup]="form" class="edit-form">
+            <div>
+                <lib-text-input formControlName="firstName" [config]="firstNameConfig">
+                </lib-text-input>
+            </div>
+
+            <div>
+                <lib-text-input formControlName="lastName" [config]="lastNameConfig">
+                </lib-text-input>
+            </div>
+
+            <div>
+                <lib-select formControlName="role" height="3.6rem" [options]="select.options" [config]="select.config">
+                </lib-select>
+            </div>
+        </form>
+        }
+    </main>
+
+    <footer>
+        <app-button variant="outline" (click)="close.emit()">Cancel</app-button>
+
+        <app-button [isLoading]="isLoading()" [icon]="isLoading() ? null : './white-edit.svg'"
+            [isDisabled]="form.invalid || form.pristine || isLoading()" (click)="onSave()">
+            Save Changes
+        </app-button>
+    </footer>
+</app-ui-modal>

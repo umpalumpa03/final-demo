@@ -8,6 +8,7 @@ import {
   map,
   mergeMap,
   of,
+  switchMap,
   tap,
   withLatestFrom,
 } from 'rxjs';
@@ -31,6 +32,19 @@ export class PaybillEffect {
   public paybillService = inject(PaybillService);
   public payBillTemplatesService = inject(PaybillTemplatesService);
   public router = inject(Router);
+
+  private successMessages: Record<string, string> = {
+    '[Paybill Templates Page] Delete Template Success':
+      'Template deleted successfully',
+    '[Paybill Templates Page] Rename Template Success':
+      'Template renamed successfully',
+    '[Paybill Templates Page] Delete Template Group Success':
+      'Group deleted successfully',
+    '[Paybill Templates Page] Create Templates Groups Success':
+      'Group created successfully',
+    '[Paybill Templates Page] Rename Template Group Success':
+      'Group renamed successfully',
+  };
 
   private getErrorMessage(error: any): string {
     if (typeof error?.error === 'string') return error.error;
@@ -168,23 +182,27 @@ export class PaybillEffect {
       ofType(PaybillActions.confirmPayment),
       mergeMap(({ payload }) =>
         this.paybillService.verifyPayment(payload).pipe(
-          mergeMap((response) => [
-            response.success
-              ? PaybillActions.addNotification({
+          mergeMap((response) => {
+            if (response.success) {
+              this.router.navigate(['/bank/paybill/pay/payment-success']);
+
+              return of(
+                PaybillActions.addNotification({
                   notificationType: 'success',
                   message: 'OTP Verified Successfully',
-                })
-              : PaybillActions.addNotification({
-                  notificationType: 'warning',
-                  message: response.message || 'Invalid Code',
                 }),
-            response.success
-              ? PaybillActions.setPaymentStep({ step: 'SUCCESS' })
-              : { type: 'noop' },
-          ]),
+              );
+            }
+
+            return of(
+              PaybillActions.addNotification({
+                notificationType: 'warning',
+                message: response.message || 'Invalid Code',
+              }),
+            );
+          }),
           catchError((error) => {
             const errorBody = error?.error as PaybillErrorPayload;
-
             const displayMessage = errorBody?.message || error.message;
 
             return of(
@@ -211,7 +229,7 @@ export class PaybillEffect {
 
         return of(
           PaybillActions.dismissNotification({ id: lastNotification.id! }),
-        ).pipe(delay(5000));
+        ).pipe(delay(3000));
       }),
     );
   });
@@ -301,27 +319,180 @@ export class PaybillEffect {
     );
   });
 
-  handleCheckBillFailure$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(PaybillActions.checkBillFailure),
-      map(({ error }) =>
+  // All success notifications
+  actionSuccess$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(
+        TemplatesPageActions.deleteTemplateSuccess,
+        TemplatesPageActions.renameTemplateSuccess,
+        TemplatesPageActions.deleteTemplateGroupSuccess,
+        TemplatesPageActions.createTemplatesGroupsSuccess,
+        TemplatesPageActions.renameTemplateGroupSuccess,
+      ),
+      map((action) =>
         PaybillActions.addNotification({
-          notificationType: 'warning',
-          message: error || 'paybill.main.form.default_error',
+          notificationType: 'success',
+          message:
+            this.successMessages[action.type] ??
+            'Action completed successfully',
         }),
       ),
-    ),
-  );
+    );
+  });
 
-  handleProceedPaymentFailure$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(PaybillActions.proceedPaymentFailure),
+  // All failure notifications
+  actionFailure$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(
+        TemplatesPageActions.deleteTemplateFailure,
+        TemplatesPageActions.renameTemplateFailure,
+        TemplatesPageActions.deleteTemplateGroupFailure,
+        TemplatesPageActions.createTemplatesGroupsFailure,
+        TemplatesPageActions.loadTemplateGroupsFailure,
+        TemplatesPageActions.loadTemplatesFailure,
+        PaybillActions.checkBillFailure,
+        PaybillActions.proceedPaymentFailure,
+        PaybillActions.loadCategoriesFailure,
+        PaybillActions.loadProvidersFailure,
+      ),
       map(({ error }) =>
         PaybillActions.addNotification({
           notificationType: 'warning',
-          message: error || 'paybill.main.form.default_error',
+          message: error,
         }),
       ),
-    ),
-  );
+    );
+  });
+
+  createTemplatesGroup$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TemplatesPageActions.createTemplatesGroups),
+      switchMap((payload) =>
+        this.payBillTemplatesService.createTemplateGroups(payload).pipe(
+          map((response) =>
+            TemplatesPageActions.createTemplatesGroupsSuccess({
+              templateGroup: response,
+            }),
+          ),
+          catchError((error) =>
+            of(
+              TemplatesPageActions.createTemplatesGroupsFailure({
+                error: error.message,
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
+
+  deleteTemplates$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TemplatesPageActions.deleteTemplate),
+      switchMap(({ templateId }) =>
+        this.payBillTemplatesService.deleteTemplate(templateId).pipe(
+          map(({ message }) =>
+            TemplatesPageActions.deleteTemplateSuccess({
+              message,
+              templateId,
+            }),
+          ),
+          catchError((error) =>
+            of(
+              TemplatesPageActions.deleteTemplateFailure({
+                error: error.message,
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
+
+  renameTemplates$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TemplatesPageActions.renameTemplate),
+      switchMap(({ templateId, nickName }) =>
+        this.payBillTemplatesService.renameTemplate(templateId, nickName).pipe(
+          map((template) =>
+            TemplatesPageActions.renameTemplateSuccess({ template }),
+          ),
+          catchError((error) =>
+            of(
+              TemplatesPageActions.renameTemplateFailure({
+                error: error.message,
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
+
+  deleteTemplateGroup$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TemplatesPageActions.deleteTemplateGroup),
+      switchMap(({ groupId }) =>
+        this.payBillTemplatesService.deleteGroup(groupId).pipe(
+          map((response) =>
+            TemplatesPageActions.deleteTemplateGroupSuccess({
+              message: response.message,
+              groupId,
+            }),
+          ),
+          catchError((error) =>
+            of(
+              TemplatesPageActions.deleteTemplateGroupFailure({
+                error: error.message,
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
+
+  renameTemplateGroup$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TemplatesPageActions.renameTemplateGroup),
+      switchMap(({ groupId, groupName }) =>
+        this.payBillTemplatesService.renameGroup(groupId, groupName).pipe(
+          map((response) =>
+            TemplatesPageActions.renameTemplateGroupSuccess({
+              templateGroup: response,
+              groupId,
+              message: 'Group name has been changed',
+            }),
+          ),
+          catchError((error) =>
+            of(
+              TemplatesPageActions.renameTemplateGroupFailure({
+                error: error.message,
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
+
+  loadPaymentDetails$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(PaybillActions.loadPaymentDetails),
+      switchMap(({ serviceId }) =>
+        this.paybillService.getPaymentDetails(serviceId).pipe(
+          map((details) =>
+            PaybillActions.loadPaymentDetailsSuccess({ details }),
+          ),
+          catchError((error) =>
+            of(
+              PaybillActions.loadPaymentDetailsFailure({
+                error: this.getErrorMessage(error),
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
 }

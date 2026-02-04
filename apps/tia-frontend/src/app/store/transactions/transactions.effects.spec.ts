@@ -6,13 +6,15 @@ import { Action } from '@ngrx/store';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TransactionActions } from './transactions.actions';
 import {
+  assignCategoryEffect,
+  createCategoryEffect,
   loadTotalEffect,
   loadTransactionsCategoriesEffect,
   loadTransactionsEffect,
   updateFiltersEffects,
 } from './transactions.effects';
 import { selectFilters, selectNextCursor } from './transactions.selector';
-import { TransactionService } from '@tia/shared/services/transactions-service/transaction-service';
+import { TransactionApiService } from '@tia/shared/services/transactions-service/transactions.api.service';
 
 describe('Transaction Effects', () => {
   let actions$: Observable<Action>;
@@ -24,6 +26,8 @@ describe('Transaction Effects', () => {
       getTransactions: vi.fn(),
       getTransactionsTotal: vi.fn(),
       getTransactionsCategories: vi.fn(),
+      createTransactionCategory: vi.fn(),
+      categorizeTransaction: vi.fn(),
     };
     vi.useFakeTimers();
 
@@ -31,7 +35,7 @@ describe('Transaction Effects', () => {
       providers: [
         provideMockActions(() => actions$),
         provideMockStore(),
-        { provide: TransactionService, useValue: transactionService },
+        { provide: TransactionApiService, useValue: transactionService },
       ],
     });
 
@@ -179,6 +183,44 @@ describe('Transaction Effects', () => {
           );
         },
       ),
+    );
+  });
+  it('creates category successfully', () => {
+    const categoryName = 'New Cat';
+    const response = { id: '123', name: categoryName };
+
+    transactionService.createTransactionCategory.mockReturnValue(of(response));
+    actions$ = of(TransactionActions.createCategory({ name: categoryName }));
+
+    TestBed.runInInjectionContext(() =>
+      createCategoryEffect(actions$, transactionService).subscribe((action) => {
+        expect(action).toEqual(
+          TransactionActions.createCategorySuccess({ response } as any),
+        );
+        expect(
+          transactionService.createTransactionCategory,
+        ).toHaveBeenCalledWith(categoryName);
+      }),
+    );
+  });
+
+  it('assigns category successfully', () => {
+    const payload = { transactionId: 'tx-1', categoryId: 'cat-1' };
+    const response = 'success';
+
+    transactionService.categorizeTransaction.mockReturnValue(of(response));
+    actions$ = of(TransactionActions.assignCategory(payload));
+
+    TestBed.runInInjectionContext(() =>
+      assignCategoryEffect(actions$, transactionService).subscribe((action) => {
+        expect(action).toEqual(
+          TransactionActions.assignCategorySuccess(payload),
+        );
+        expect(transactionService.categorizeTransaction).toHaveBeenCalledWith(
+          payload.transactionId,
+          payload.categoryId,
+        );
+      }),
     );
   });
 });

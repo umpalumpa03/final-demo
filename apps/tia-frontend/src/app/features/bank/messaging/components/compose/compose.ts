@@ -9,6 +9,9 @@ import { Textarea } from '@tia/shared/lib/forms/textarea/textarea';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Checkboxes } from "@tia/shared/lib/forms/checkboxes/checkboxes";
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Store } from '@ngrx/store';
+import { userInfoFeature } from 'apps/tia-frontend/src/app/store/user-info/user-info.reducer';
 
 @Component({
   selector: 'app-compose',
@@ -26,6 +29,7 @@ export class Compose {
   public errorMesage = signal<string>('');
 
   public readonly store = inject(MessagingStore);
+  public readonly roleStore = inject(Store);
 
   public readonly filteredSearchResultsCc = computed(() => {
     const selectedEmails = [
@@ -51,6 +55,10 @@ export class Compose {
     body: ['', Validators.required],
     isImportant: [false],
   });
+
+  public readonly role = this.roleStore.selectSignal(
+    userInfoFeature.selectRole,
+  );
 
   @ViewChild('toInput') toInput!: EmailChipsInput;
   @ViewChild('ccInput') ccInput!: EmailChipsInput;
@@ -98,7 +106,6 @@ export class Compose {
     }
 
     const toEmail = this.toEmail();
-    console.log('To Email:', toEmail); //ეს კონსოლი მჭირდება დროებით
     if (!toEmail) {
       this.invalidForm.set(true);
       setTimeout(() => {

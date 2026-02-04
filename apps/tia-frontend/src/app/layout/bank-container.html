@@ -10,11 +10,19 @@
   </div>
 </app-ui-modal>
 
-<div class="bank-container-wrapper">
+<div class="bank-container">
   <app-sidebar></app-sidebar>
 
-  <div class="bank-container-content">
+  <div class="bank-container__content">
     <app-bank-header-container></app-bank-header-container>
-    <router-outlet></router-outlet>
+
+    <div class="bank-container__router-area">
+      @if (isLoading()) {
+      <div class="bank-container__loader-overlay">
+        <app-route-loader variant="pulsing"></app-route-loader>
+      </div>
+      }
+      <router-outlet></router-outlet>
+    </div>
   </div>
 </div>

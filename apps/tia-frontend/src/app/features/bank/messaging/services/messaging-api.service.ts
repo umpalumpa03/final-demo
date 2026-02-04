@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
-import { EmailDetailData, MailsResponse, SendEmailRequest, User } from '../store/messaging.state';
+import { EmailDetailData, EmailRepliesData, MailsResponse, SendEmailRequest, User } from '../store/messaging.state';
 @Injectable({
   providedIn: 'root',
 })
@@ -11,7 +11,7 @@ export class MessagingService {
   private readonly baseUrl = `${environment.apiUrl}/mails`;
   private readonly baseUrl1 = `${environment.apiUrl}/users`; //ეს დროებით იქნება აქ
 
-  public getInbox(type: string, limit: number, cursor?: string): Observable<MailsResponse> {
+  public getInbox(type: string, limit: number, cursor?: string | null): Observable<MailsResponse> {
     const params: Record<string, string | number> = { type, limit };
     if (cursor) params['cursor'] = cursor;
     return this.http.get<MailsResponse>(this.baseUrl, { params });
@@ -36,5 +36,29 @@ export class MessagingService {
 
   public getEmailById(mailId: number): Observable<EmailDetailData> {
     return this.http.get<EmailDetailData>(`${this.baseUrl}/${mailId}`);
+  }
+
+  public getTotalCount(type: string): Observable<{ count: number }> {
+    return this.http.get<{ count: number }>(`${this.baseUrl}/total`, { params: { type } });
+  }
+
+  public getDraftTotalCount(): Observable<{ count: number }> {
+    return this.http.get<{ count: number }>(`${this.baseUrl}/drafts/total`);
+  }
+
+  public getImportantUnreadCount(): Observable<{ count: number }> {
+    return this.http.get<{ count: number }>(`${this.baseUrl}/importants/unread`);
+  }
+
+  public togleFavorite(mailId: number, isFavorite: boolean): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/mark-as-favorite`, { id: mailId, isFavorite });
+  }
+
+  public sendDraft(mailId: number, data: SendEmailRequest): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/${mailId}`, data);
+  }
+
+  public getMailReplies(mailId: number): Observable<EmailRepliesData[]> {
+    return this.http.get<EmailRepliesData[]>(`${this.baseUrl}/${mailId}/replies`);
   }
 }

@@ -10,6 +10,10 @@ export class UserModalService {
     this.modalState.set('details');
   }
 
+  public openEdit(): void {
+    this.modalState.set('edit');
+  }
+
   public openDelete(userId: string): void {
     this.userToDeleteId.set(userId);
     this.modalState.set('delete');
@@ -22,6 +26,10 @@ export class UserModalService {
 
   get isDetailsOpen(): boolean {
     return this.modalState() === 'details';
+  }
+
+  get isEditOpen(): boolean {
+    return this.modalState() === 'edit';
   }
 
   get isDeleteOpen(): boolean {

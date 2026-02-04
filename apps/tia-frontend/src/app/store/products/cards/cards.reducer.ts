@@ -103,4 +103,45 @@ on(CardsActions.hideSuccessAlert, (state) => ({
   ...state,
   showSuccessAlert: false,
 })),
+
+on(CardsActions.openCardDetailsModal, (state, { cardId }) => ({
+  ...state,
+  isCardDetailsModalOpen: true,
+  selectedCardIdForModal: cardId,
+})),
+on(CardsActions.closeCardDetailsModal, (state) => ({
+  ...state,
+  isCardDetailsModalOpen: false,
+  selectedCardIdForModal: null,
+})),
+
+on(CardsActions.loadCardTransactions, (state) => ({
+  ...state,
+  cardTransactionsLoading: true,
+  cardTransactionsError: null,
+})),
+
+on(CardsActions.loadCardTransactionsSuccess, (state, { cardId, transactions, total }) => ({
+  ...state,
+  cardTransactions: {
+    ...state.cardTransactions,
+    [cardId]: transactions,
+  },
+  cardTransactionsTotalCount: {
+    ...state.cardTransactionsTotalCount,
+    [cardId]: total,
+  },
+  cardTransactionsLoading: false,
+  cardTransactionsError: null,
+})),
+
+on(CardsActions.loadCardTransactionsFailure, (state, { error }) => ({
+  ...state,
+  cardTransactionsLoading: false,
+  cardTransactionsError: error,
+})),
+on(CardsActions.clearCardTransactionsError, (state) => ({
+  ...state,
+  cardTransactionsError: null,
+}))
 );
