@@ -44,7 +44,7 @@
         height: 3.6rem;
         flex-shrink: 0;
         &:hover {
-            background: $blue-ocean-secondary;
+            background: var(--color-secondary);
         }
 
         & > img {
