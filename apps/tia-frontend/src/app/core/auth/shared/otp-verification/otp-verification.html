@@ -9,7 +9,11 @@
   <form class="auth-form" [formGroup]="activeForm()" (ngSubmit)="onSubmit()">
     @if(timerType() === 'otp'){
     <div class="otp-field">
-      <lib-otp formControlName="code" [config]="formConfig().otp"></lib-otp>
+      <lib-otp
+        (completed)="handleAutoSubmit($event)"
+        formControlName="code"
+        [config]="formConfig().otp"
+      ></lib-otp>
     </div>
     } @else {
     <div class="otp-field__phone">
@@ -48,7 +52,7 @@
     <app-button
       [fullWidth]="true"
       class="otp-verification__back"
-      [routerLink]="backLink()"
+      (click)="resgisterBackout()"
       variant="outline"
       >{{ backLinkText() | translate}}</app-button
     >
@@ -76,9 +80,7 @@
         <span class="timer-compact__link" (click)="onResend()">
           {{'auth.otp-sign-in.code' | translate}}
         </span>
-        <span class="timer-compact__resend-left">
-          {{resendTries()}}
-        </span>
+        <span class="timer-compact__resend-left"> {{resendTries()}} </span>
       </div>
       }
     </div>
