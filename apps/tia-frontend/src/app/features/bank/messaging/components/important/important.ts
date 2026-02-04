@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MailHeader } from '../../shared/ui/mail-header/mail-header';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MessagingStore } from '../../store/messaging.store';
@@ -6,10 +6,12 @@ import { MailCard } from '../../shared/ui/mail-card/mail-card';
 import { EmptyCard } from '../../shared/ui/empty-card/empty-card';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Router } from '@angular/router';
+import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
+import { NavigationService } from '../../services/navigation.service';
 
 @Component({
   selector: 'app-important',
-  imports: [MailHeader, TranslatePipe, MailCard, EmptyCard, RouteLoader],
+  imports: [MailHeader, TranslatePipe, MailCard, EmptyCard, RouteLoader, ScrollArea],
   templateUrl: './important.html',
   styleUrl: './important.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,10 +19,13 @@ import { Router } from '@angular/router';
 export class Important implements OnInit {
   private messagingStore = inject(MessagingStore);
   private router = inject(Router);
-  public mails = this.messagingStore.mails;
+  public mails = computed(() => {
+    return this.messagingStore.mails()
+  });
   public isLoading = this.messagingStore.isLoading;
-
+  public total = computed(() => this.messagingStore.total()['importants'] ?? 0);
   public selectedMailIds = signal<Set<number>>(new Set());
+  private nav = inject(NavigationService);
 
   public isAllSelected(): boolean {
     return this.selectedMailIds().size === this.mails().length && this.mails().length > 0;
@@ -58,7 +63,10 @@ export class Important implements OnInit {
   }
 
   ngOnInit(): void {
-    this.messagingStore.loadMails('important');
+    if (!(this.nav.previous()?.includes('important'))) {
+      this.messagingStore.loadMails('important');
+      this.messagingStore.getTotalCount('importants');
+    }
   }
 
   public markAsRead(mailId: number): void {
@@ -72,5 +80,12 @@ export class Important implements OnInit {
   public goToDetail(mailId: number): void {
     this.router.navigate(['/bank/messaging/important', mailId]);
     this.markAsRead(mailId);
+  }
+
+  public onScrollBottom(): void {
+    const pagination = this.messagingStore.pagination();
+    if (pagination.hasNextPage) {
+      this.messagingStore.loadMails('important');
+    }
   }
 }

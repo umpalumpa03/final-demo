@@ -1,5 +1,5 @@
-@use '../../../../shared/styles/palette' as *;
-@use '../../../../shared/styles/mixins' as *;
+@use "../../../../shared/styles/palette" as *;
+@use "../../../../shared/styles/mixins" as *;
 
 .navigation {
   &__list {
@@ -82,8 +82,7 @@
     }
 
     .navigation__link.navigation__item--active .navigation__img {
-      filter: invert(24%) sepia(98%) saturate(7472%) hue-rotate(210deg)
-        brightness(97%) contrast(101%);
+      filter: invert(24%) sepia(98%) saturate(7472%) hue-rotate(210deg) brightness(97%) contrast(101%);
     }
 
     .navigation__count {
@@ -97,7 +96,7 @@
       flex-shrink: 0;
     }
 
-    .navigation__item--active .navigation__count {
+    .navigation__count--activecount {
       background-color: $blue-800;
       border: none;
       color: $white;

@@ -18,6 +18,10 @@
 
     &--unread {
         background-color: var(--color-bg);
+
+        .mail-card__sender, .mail-card__subject {
+            font-weight: 600;
+        }
     }
 
     &--read {
