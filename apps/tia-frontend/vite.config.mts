@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import angular from '@analogjs/vite-plugin-angular';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
+import { cpus } from 'os';
 
 export default defineConfig(() => ({
   root: __dirname,
@@ -19,6 +20,19 @@ export default defineConfig(() => ({
     environment: 'jsdom',
     include: ['{src,tests}/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     setupFiles: ['src/test-setup.ts'],
+    testTimeout: 15000,     
+    hookTimeout: 15000,
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        maxThreads: Math.max(1, Math.floor(cpus().length / 2)),
+        minThreads: 1,
+  
+        isolate: true,
+      },
+    },
+    maxConcurrency: 5,
+    fileParallelism: true,
     reporters: ['default'],
     coverage: {
       all: true,
