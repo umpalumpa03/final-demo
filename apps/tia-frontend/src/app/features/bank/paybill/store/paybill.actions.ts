@@ -10,6 +10,7 @@ import {
   ProceedPaymentResponse,
 } from '../components/paybill-main/shared/models/paybill.model';
 import {
+  CreateTemplateGroupResponse,
   TemplateGroups,
   Templates,
 } from '../components/paybill-templates/models/paybill-templates.model';
@@ -29,6 +30,7 @@ export const PaybillActions = createActionGroup({
       serviceId: string;
       identification: PaybillIdentification;
     }>(),
+    'Set Transaction Provider': props<{ provider: PaybillProvider }>(),
     'Check Bill Success': props<{ details: BillDetails }>(),
     'Check Bill Failure': props<{ error: string }>(),
     'Clear Selection': emptyProps(),
@@ -40,6 +42,7 @@ export const PaybillActions = createActionGroup({
     'Confirm Payment': props<{ payload: ConfirmPaymentPayload }>(),
     'Confirm Payment Success': emptyProps(),
     'Confirm Payment Failure': props<{ error: string }>(),
+    'Reset Payment Form': emptyProps(),
     'Clear Error': emptyProps(),
     'Add Notification': props<PaybillNotification>(),
     'Dismiss Notification': props<{ id: string }>(),
@@ -60,5 +63,22 @@ export const TemplatesPageActions = createActionGroup({
       templates: Templates[];
     }>(),
     'Load Templates Failure': props<{ error: string }>(),
+    'Create Templates Groups': props<{ groupName: string; templateIds: [] }>(),
+    'Create Templates Groups Success': props<{
+      templateGroup: CreateTemplateGroupResponse;
+    }>(),
+    'Create Templates Groups Failure': props<{
+      error: string;
+    }>(),
+    'Delete Templates': props<{
+      templateId: string;
+    }>(),
+    'Delete Templates Success': props<{
+      templateId: string;
+      message: string;
+    }>(),
+    'Delete Templates Failure': props<{
+      error: string;
+    }>(),
   },
 });

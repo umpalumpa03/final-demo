@@ -1,0 +1,6 @@
+<app-paybill-otp-verification
+  [provider]="facade.activeProvider()"
+  [summary]="facade.paymentPayload()!"
+  (verify)="onOtpVerified($event)"
+  (cancelPayment)="onBackToDetails()"
+/>

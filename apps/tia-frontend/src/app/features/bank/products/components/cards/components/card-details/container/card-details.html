@@ -57,7 +57,15 @@
         (transferExternalClicked)="handleTransferExternal()"
         (paybillClicked)="handlePaybill()"
         (viewTransactionsClicked)="handleViewTransactions()"
+          (viewSensitiveDetailsClicked)="handleOpenDetailsModal()"
+
       />
     </app-basic-card>
   }
 </div>
+@if (isDetailsModalOpen$ | async; as isModalOpen) {
+  <app-card-details-modal
+    [isOpen]="isModalOpen"
+    (closed)="handleCloseDetailsModal()"
+  />
+}

@@ -254,4 +254,155 @@ describe('MessagingStore', () => {
       expect(store.error()).toBe('Failed to load email detail');
     });
   });
+  it('should get draft total count successfully', async () => {
+    const mockResponse = { count: 5 };
+
+    mockMessagingService.getDraftTotalCount = vi.fn().mockReturnValue(of(mockResponse));
+
+    store.getDraftTotalCount(0);
+
+    await vi.waitFor(() => {
+      expect(store.draftsTotal?.()).toBe(5);
+    });
+  });
+
+  it('should get unread important count successfully', async () => {
+    const mockResponse = { count: 3 };
+
+    mockMessagingService.getImportantUnreadCount = vi.fn().mockReturnValue(of(mockResponse));
+
+    store.getUnreadImportantCount();
+
+    await vi.waitFor(() => {
+      expect(store.importantCount?.()).toBe(3);
+    });
+  });
+
+  it('should send draft successfully', async () => {
+    const draftData = {
+      mailId: 1,
+      data: {
+        recipient: 'test@test.com',
+        ccRecipients: [],
+        subject: 'Test Draft',
+        body: 'Draft body',
+        isImportant: false,
+        isDraft: false
+      }
+    };
+
+    mockMessagingService.sendDraft = vi.fn().mockReturnValue(of(null));
+    mockMessagingService.getInbox = vi.fn().mockReturnValue(of({
+      items: [],
+      pagination: { hasNextPage: false, nextCursor: null }
+    }));
+    mockMessagingService.getDraftTotalCount = vi.fn().mockReturnValue(of({ count: 0 }));
+    mockMessagingService.getImportantUnreadCount = vi.fn().mockReturnValue(of({ count: 0 }));
+
+    store.sendDraft(draftData);
+  });
+
+  it('should get total count successfully', async () => {
+    const mockResponse = { count: 10 };
+
+    mockMessagingService.getTotalCount = vi.fn().mockReturnValue(of(mockResponse));
+
+    store.getTotalCount('inbox');
+
+    await vi.waitFor(() => {
+      expect(store.total()['inbox']).toBe(10);
+    });
+  });
+
+  it('should toggle favorite successfully', async () => {
+    const initialMails = [{ id: 1, isFavorite: false }];
+
+    mockMessagingService.togleFavorite = vi.fn().mockReturnValue(of(null));
+    mockMessagingService.getInbox = vi.fn().mockReturnValue(of({
+      items: initialMails,
+      pagination: { hasNextPage: false, nextCursor: null }
+    }));
+
+    store.loadMails('inbox');
+
+    await vi.waitFor(() => {
+      expect(store.mails().length).toBe(1);
+    });
+
+    store.togleFavorite({ mailId: 1, isFavorite: true });
+
+    await vi.waitFor(() => {
+      expect(store.mails()[0].isFavorite).toBe(true);
+      expect(store.isLoading()).toBe(false);
+    });
+  });
+  it('should clear success message', () => {
+    store.clearSuccessMessage();
+    expect(store.successMessage?.()).toBe('');
+  });
+
+  it('should clear error', () => {
+    store.clearError();
+    expect(store.error()).toBeUndefined();
+  });
+
+  it('should handle send draft error', async () => {
+    const draftData = {
+      mailId: 1,
+      data: {
+        recipient: 'test@test.com',
+        ccRecipients: [],
+        subject: 'Test',
+        body: 'Body',
+        isImportant: false,
+        isDraft: false
+      }
+    };
+
+    mockMessagingService.sendDraft = vi.fn().mockReturnValue(
+      throwError(() => new Error('Failed to send'))
+    );
+
+    store.sendDraft(draftData);
+
+    await vi.waitFor(() => {
+      expect(store.error()).toBe('Failed to send draft');
+      expect(store.isLoading()).toBe(false);
+    });
+  });
+
+  it('should handle get unread important count error', async () => {
+    mockMessagingService.getImportantUnreadCount = vi.fn().mockReturnValue(
+      throwError(() => new Error('Failed to load important count'))
+    );
+
+    store.getUnreadImportantCount();
+
+    await vi.waitFor(() => {
+      expect(store.error()).toBe('Failed to load important unread count');
+    });
+  });
+
+  it('should handle empty search query', async () => {
+    store.searchMails('');
+
+    await vi.waitFor(() => {
+      expect(store.searchResults()).toEqual([]);
+      expect(store.isSearching()).toBe(false);
+    });
+  });
+
+  it('should handle search error', async () => {
+    mockMessagingService.searchByEmail.mockReturnValue(
+      throwError(() => new Error('Search failed'))
+    );
+
+    store.searchMails('test');
+
+    await vi.waitFor(() => {
+      expect(store.error()).toBe('Search failed');
+      expect(store.searchResults()).toEqual([]);
+      expect(store.isSearching()).toBe(false);
+    });
+  });
 });
