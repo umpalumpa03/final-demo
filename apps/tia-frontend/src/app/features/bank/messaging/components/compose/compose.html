@@ -45,11 +45,13 @@
         formControlName="body"
       ></lib-textarea>
       <div>
+        @if (role() === 'SUPPORT') {
         <lib-checkboxes
           formControlName="isImportant"
-          [config]="{label: 'Mark as important. (For Supporter)'}"
+          [config]="{label: 'Mark as important'}"
           formControlName="isImportant"
         ></lib-checkboxes>
+        }
       </div>
       <div class="buttons-container">
         <app-button variant="outline" (click)="onClose()">Cancel</app-button>

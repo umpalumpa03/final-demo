@@ -39,19 +39,6 @@ export class MailCard {
     }
   }
 
-  public onToggleFavorite(event: Event): void {
-    event.stopPropagation();
-    const mail = this.mail();
-    if (mail) this.toggleFavorite.emit(mail.id);
-  }
-
-  public onToggleImportant(event: Event): void {
-    event.stopPropagation();
-    const mail = this.mail();
-    if (mail) this.toggleImportant.emit(mail.id);
-  }
-
-
   public onDelete(event: Event): void {
     event.stopPropagation();
     this.isDeleteModalOpen.set(true);

@@ -51,6 +51,16 @@ export const selectCategoryOptions = createSelector(
   },
 );
 
+export const selectCategoryOptionsForModal = createSelector(
+  selectCategoriesRaw,
+  (categories) => {
+    return categories.map((cat) => ({
+      label: cat.categoryName,
+      value: cat.id,
+    }));
+  },
+);
+
 export const selectTransactionViewModel = createSelector(
   selectItems,
   selectIsLoading,
