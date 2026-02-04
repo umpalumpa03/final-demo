@@ -11,7 +11,6 @@
     [maxWidth]="'100%'"
     [width]="'100%'"
     [padding]="'2.4rem'"
-    [minHeight]="'72.1rem'"
     [height]="'72.1rem'"
     [title]="'Transactions'"
     [subtitle]="totalTransactionsString()"
@@ -19,7 +18,6 @@
     <app-scroll-area
       [height]="'60rem'"
       [hideBorder]="true"
-      []
       (scrollBottom)="loadProducts()"
     >
       @if(isLoading() && items().length === 0){
