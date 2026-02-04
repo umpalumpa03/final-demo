@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   inject,
@@ -9,7 +10,6 @@ import {
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
-import { SelectConfig } from '@tia/shared/lib/forms/models/dropdowns.model';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -35,6 +35,7 @@ import {
   ],
   templateUrl: './categorize-modal.html',
   styleUrl: './categorize-modal.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategorizeModal {
   private readonly fb = inject(FormBuilder);
