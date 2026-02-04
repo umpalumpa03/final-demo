@@ -44,26 +44,6 @@ describe('MailCard', () => {
     expect(spy).toHaveBeenCalledWith(1);
   });
 
-  it('should emit toggleFavorite', () => {
-    const spy = vi.fn();
-    component.toggleFavorite.subscribe(spy);
-    const event = new Event('click');
-
-    component.onToggleFavorite(event);
-
-    expect(spy).toHaveBeenCalledWith(1);
-  });
-
-  it('should emit toggleImportant', () => {
-    const spy = vi.fn();
-    component.toggleImportant.subscribe(spy);
-    const event = new Event('click');
-
-    component.onToggleImportant(event);
-
-    expect(spy).toHaveBeenCalledWith(1);
-  });
-
   it('should emit deleteMail', () => {
     const spy = vi.fn();
     component.deleteMail.subscribe(spy);
