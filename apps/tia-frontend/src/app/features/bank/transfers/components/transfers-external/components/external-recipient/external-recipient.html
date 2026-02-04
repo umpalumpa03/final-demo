@@ -26,27 +26,6 @@
       </app-button>
     </div>
   </div>
-
-  <!-- <app-success-modal
-  [isOpen]="transferSuccess()"
-  [title]="'Transfer Successful'"
-  [description]="'Your money has been sent.'"
-  [buttonText]="'Done'"
-  (closed)="onSuccessClose()"
-  (done)="onSuccessDone()"
-/> -->
-  <!-- <app-otp-modal
-  [isOpen]="requiresOtp()"
-  [title]="'Verify Transfer'"
-  [description]="'Enter the code sent to your phone.'"
-  [verifyOtpTitle]="'Verify'"
-  [isLoading]="isLoading()"
-  [hasResend]="true"
-  [resendText]="'Didn\'t receive the code?'"
-  (closed)="onOtpClose()"
-  (verify)="onOtpVerify($event)"
-  (resend)="onResendOtp()"
-/> -->
 </main>
 
 @if (showError()) {

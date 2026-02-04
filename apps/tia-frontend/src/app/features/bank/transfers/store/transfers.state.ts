@@ -9,7 +9,8 @@ export const initialTransferState: TransferState = {
   receiverOwnAccount: null, //for own transfer
   recipientInfo: null, //recipient info after lookup
   selectedRecipientAccount: null, //selected account by number or iban
-  hasInsufficientBalance: false,//flag
+  hasInsufficientBalance: false, //flag
+  isFeeLoading: false,
 
   challengeId: null,
   fee: 0,

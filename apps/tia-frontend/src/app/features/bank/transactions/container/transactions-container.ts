@@ -4,40 +4,52 @@ import {
   computed,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import {
   selectCategoryOptions,
+  selectCategoryOptionsForModal,
   selectIsLoading,
   selectItems,
   selectTotalTransactions,
 } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
 import { TRANSACTIONS_BASE_CONFIG } from '../config/transaction-data';
 import { convertTransactionData } from '../utils/data-converter.utils';
-import { TableConfig } from '@tia/shared/lib/tables/models/table.model';
-import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
+import {
+  TableConfig,
+  TransactionActionEvent,
+} from '@tia/shared/lib/tables/models/table.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Tables } from '@tia/shared/lib/tables/components/tables';
-import { ShowcaseCard } from '../../../storybook/shared/showcase-card/showcase-card';
 import { TransactionsFilters } from '../components/transactions-filters/transactions-filters';
-import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
+import {
+  ITransactionFilter,
+  ITransactions,
+} from '@tia/shared/models/transactions/transactions.models';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
 import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
+import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
+import { CategorizeModal } from '../components/categorize-modal/categorize-modal';
+import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 
 @Component({
   selector: 'app-transactions-container',
   imports: [
-    LibraryTitle,
     ButtonComponent,
     RouteLoader,
     Tables,
-    ShowcaseCard,
     TransactionsFilters,
+    BasicCard,
+    ScrollArea,
+    CategorizeModal,
+    UiModal,
   ],
   templateUrl: './transactions-container.html',
   styleUrl: './transactions-container.scss',
@@ -55,7 +67,12 @@ export class TransactionsContainer implements OnInit {
   public items = this.store.selectSignal(selectItems);
   public readonly isLoading = this.store.selectSignal(selectIsLoading);
   public categoryOptions = this.store.selectSignal(selectCategoryOptions);
+  public categoryOptionsForModal = this.store.selectSignal(
+    selectCategoryOptionsForModal,
+  );
   public accounts = this.store.selectSignal(selectAccounts);
+  public isCategorizeModalOpen = signal<boolean>(false);
+  public selectedTransaction = signal<ITransactions | null>(null);
 
   public readonly currencyOptions = computed<SelectOption[]>(() => {
     const currencies = this.currencyList();
@@ -102,15 +119,42 @@ export class TransactionsContainer implements OnInit {
     this.store.dispatch(TransactionActions.updateFilters({ filters }));
   }
 
-  public onScroll(event: Event): void {
-    const el = event.target as HTMLElement;
+  public loadProducts(): void {
+    if (this.items().length % 20 === 0 && !this.isLoading()) {
+      this.store.dispatch(TransactionActions.loadMore());
+    }
+  }
 
-    if (!el) return;
+  public onTableAction(event: TransactionActionEvent): void {
+    if (event.action === 'categorize') {
+      const trx = this.items().find((item) => item.id === event.rowId);
 
-    if (el.scrollHeight - el.scrollTop <= el.clientHeight + 20) {
-      if (this.items().length % 20 === 0 && !this.isLoading()) {
-        this.store.dispatch(TransactionActions.loadMore());
+      if (trx) {
+        this.selectedTransaction.set(trx);
+        this.isCategorizeModalOpen.set(true);
       }
     }
+  }
+
+  public closeCategorizeModal(): void {
+    this.isCategorizeModalOpen.set(false);
+    this.selectedTransaction.set(null);
+  }
+
+  public onCategorizeSave(event: {
+    transactionId: string;
+    categoryId: string;
+  }): void {
+    this.store.dispatch(
+      TransactionActions.assignCategory({
+        transactionId: event.transactionId,
+        categoryId: event.categoryId,
+      }),
+    );
+    this.closeCategorizeModal();
+  }
+
+  public onCategoryCreate(name: string): void {
+    this.store.dispatch(TransactionActions.createCategory({ name }));
   }
 }

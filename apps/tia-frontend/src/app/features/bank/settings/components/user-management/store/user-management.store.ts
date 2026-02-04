@@ -84,7 +84,31 @@ export const UserManagementStore = signalStore(
       ),
     ),
 
-    updateUser: rxMethod<{ id: string; data: IUpdateUserRequest }>(pipe()),
+    updateUser: rxMethod<{ id: string; data: IUpdateUserRequest }>(
+      pipe(
+        tap(() => patchState(store, { actionLoading: true, error: null })),
+        switchMap(({ id, data }) =>
+          service.updateUser(id, data).pipe(
+            tap((updatedUser) => {
+              patchState(store, (state) => ({
+                users: state.users.map((u) =>
+                  u.id === updatedUser.id ? updatedUser : u,
+                ),
+                selectedUser: updatedUser,
+                actionLoading: false,
+              }));
+            }),
+            catchError((err: HttpErrorResponse) => {
+              patchState(store, {
+                actionLoading: false,
+                error: err.message,
+              });
+              return of(null);
+            }),
+          ),
+        ),
+      ),
+    ),
 
     toggleBlockStatus: rxMethod<{ id: string; isBlocked: boolean }>(
       pipe(

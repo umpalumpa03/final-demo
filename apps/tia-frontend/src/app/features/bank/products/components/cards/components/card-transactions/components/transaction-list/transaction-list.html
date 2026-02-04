@@ -1,0 +1,20 @@
+<div class="transaction-list">
+  @if (transactions().length === 0) {
+  <div class="transaction-list__empty">
+    <p class="transaction-list__empty-text">No transactions found</p>
+  </div>
+  } @else {
+  <div class="transaction-list__items">
+    @for (transaction of transactions(); track transaction.id) {
+    <app-transaction-item
+      [description]="transaction.description"
+      [date]="formatDate(transaction.createdAt)"
+      [category]="getCategoryName(transaction.category)"
+      [referenceNumber]="transaction.id.substring(0, 6).toUpperCase()"
+      [amount]="formatAmount(transaction.amount, transaction.currency)"
+      [status]="'completed'"
+    />
+    }
+  </div>
+  }
+</div>
