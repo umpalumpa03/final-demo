@@ -14,3 +14,13 @@ export const navConfig = (translate: TranslateService): TabItem[] =>
       route: './templates',
     },
   ] as const;
+
+export const buildDynamicIdentification = <
+  T extends Record<string, string | number | boolean | null | undefined>,
+>(
+  formValues: T,
+) => {
+  const { amount, ...identification } = formValues;
+
+  return identification;
+};
