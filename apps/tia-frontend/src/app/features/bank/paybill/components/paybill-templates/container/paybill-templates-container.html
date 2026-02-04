@@ -4,6 +4,13 @@
   [activeModal]="modalType()"
   [isModalOpen]="isModalOpen()"
   [currentModalConfig]="currentModalConfig()"
+  [templateCategories]="categoryOptions()"
+  [templateProviders]="templateProviders()"
+  [selectedDeleteItem]="selectedItemName()"
   (headerButtonAction)="handleHeaderAction($event)"
   (modalOpenAction)="handleModalToggle()"
+  (formSubmit)="handleFormSubmit($event)"
+  (categorySelected)="onCategorySelected($event)"
+  (itemDeleteIcon)="onItemDeleteAction($event)"
+  (deleteTemplateModal)="deleteTemplate()"
 ></app-paybill-templates>

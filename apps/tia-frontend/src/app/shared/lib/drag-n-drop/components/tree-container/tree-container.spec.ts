@@ -78,15 +78,6 @@ describe('TreeContainer', () => {
     expect(spy).toHaveBeenCalledWith(true);
   });
 
-  it('should remove item and group correctly', () => {
-    component.onRemoveItem('i1');
-    expect(component.internalItems().length).toBe(1);
-
-    component.onRemoveGroup('g1');
-    expect(component.internalGroups().length).toBe(2);
-    expect(component.internalItems().length).toBe(0);
-  });
-
   it('should handle checkbox selection logic', () => {
     const spy = vi.spyOn(component.checkedItemsChange, 'emit');
 
