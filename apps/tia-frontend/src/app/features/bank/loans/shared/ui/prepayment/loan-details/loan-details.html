@@ -1,4 +1,5 @@
 @let loanData = loan();
+
 <app-ui-modal [isOpen]="isOpen()" (closed)="close.emit()">
     <div class="loan-modal">
 
@@ -10,7 +11,7 @@
                         <h3 class="loan-modal__title">{{ 'loans.details.title' | translate }}</h3>
                     </div>
                 </div>
-                <p class="loan-modal__subtitle ">{{ 'loans.details.description' | translate }}</p>
+                <p class="loan-modal__subtitle">{{ 'loans.details.description' | translate }}</p>
             </div>
         </header>
 
@@ -21,7 +22,8 @@
         </div>
         }
         @else if (loanData) {
-        <div class="loan-modal__body">
+
+        <div class="loan-modal__body" #scrollContainer (scroll)="onScroll()">
 
             <div class="loan-modal__status">
                 <span class="loan-modal__status-label">{{ 'loans.details.status_label' | translate }}</span>
@@ -31,15 +33,9 @@
                     [class.loan-modal__badge--finished]="loanData.status === 4">
 
                     @switch (loanData.status){
-                    @case(1) {
-                    <img src="./images/svg/feature-loans/pending.svg" alt="">
-                    }
-                    @case(2) {
-                    <img src="./images/svg/feature-loans/approve.svg" alt="">
-                    }
-                    @case(3) {
-                    <img src="./images/svg/feature-loans/declined.svg" alt="">
-                    }
+                    @case(1) { <img src="./images/svg/feature-loans/pending.svg" alt=""> }
+                    @case(2) { <img src="./images/svg/feature-loans/approve.svg" alt=""> }
+                    @case(3) { <img src="./images/svg/feature-loans/declined.svg" alt=""> }
                     }
                     {{ loanData.statusName }}
                 </span>
@@ -130,7 +126,7 @@
                 </div>
             </div>
 
-            @if(loanData.status === 2) {
+            @if(loanData.status === 2 && (loanData.remainingBalance || 0) > 0) {
             <div class="loan-modal__prepayment">
                 <div class="loan-modal__prepayment-info">
                     <div>
@@ -147,6 +143,15 @@
             </div>
             }
         </div>
+
+        @if (showScrollButton()) {
+        <div class="loan-modal__scroll-btn-wrapper">
+            <button class="scroll-btn" (click)="scrollToBottom()">
+                <img src="./images/svg/feature-loans/down-arrow.svg" alt="Scroll to Bottom button">
+            </button>
+        </div>
+        }
+
         }
 
         <div class="close">

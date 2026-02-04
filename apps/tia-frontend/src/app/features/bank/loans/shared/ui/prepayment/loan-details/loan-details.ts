@@ -1,8 +1,12 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  effect,
+  ElementRef,
   input,
   output,
+  signal,
+  viewChild,
 } from '@angular/core';
 import { ILoanDetails } from '../../../models/loan.model';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
@@ -34,8 +38,49 @@ export class LoanDetails {
   public readonly isLoading = input<boolean>(false);
   public readonly isOpen = input.required<boolean>();
 
+  protected readonly scrollContainer =
+    viewChild<ElementRef<HTMLDivElement>>('scrollContainer');
+  protected readonly showScrollButton = signal(false);
+
   public readonly close = output<void>();
   public readonly calculatePrepayment = output<ILoanDetails>();
+
+  constructor() {
+    effect(() => {
+      const loan = this.loan();
+      const isLoading = this.isLoading();
+      const isOpen = this.isOpen();
+
+      if (loan && !isLoading && isOpen) {
+        setTimeout(() => this.checkScrollPosition(), 100);
+      }
+    });
+  }
+
+  protected onScroll(): void {
+    this.checkScrollPosition();
+  }
+
+  private checkScrollPosition(): void {
+    const el = this.scrollContainer()?.nativeElement;
+    if (!el) return;
+
+    const isAtBottom =
+      Math.abs(el.scrollHeight - el.clientHeight - el.scrollTop) < 20;
+    const isScrollable = el.scrollHeight > el.clientHeight;
+
+    this.showScrollButton.set(isScrollable && !isAtBottom);
+  }
+
+  protected scrollToBottom(): void {
+    const el = this.scrollContainer()?.nativeElement;
+    if (el) {
+      el.scrollTo({
+        top: el.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  }
 
   protected onCalculate(): void {
     const currentLoan = this.loan();

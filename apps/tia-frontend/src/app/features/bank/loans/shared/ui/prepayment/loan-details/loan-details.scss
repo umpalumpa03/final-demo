@@ -8,6 +8,7 @@
     max-width: 60rem;
     border-radius: 1.2rem;
     gap: 1.6rem;
+    position: relative;
 
     &__loading {
         @include flex-center(column);
@@ -66,6 +67,9 @@
     &__body {
         @include display-flex(column);
         gap: 2.4rem;
+
+        position: relative;
+        scroll-behavior: smooth;
 
         overflow-y: auto;
 
@@ -226,6 +230,39 @@
     }
 
     .close {
-        margin-left: auto;
+        margin: 0 0 0.5rem auto;
+    }
+
+    &__scroll-btn-wrapper {
+        position: absolute;
+        bottom: 8rem;
+        right: 0;
+        @include flex-center;
+    }
+
+    .scroll-btn {
+        pointer-events: auto;
+        @include flex-center;
+        gap: 0.8rem;
+        background-color: $gray-800;
+        color: $white;
+        padding: 1rem;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        span {
+            @include font-inter(500, 1.2rem);
+        }
+
+        img {
+            width: 2rem;
+            height: 2rem;
+            filter: brightness(0) invert(1);
+        }
+
+        &:hover {
+            background-color: var(--color-primary);
+        }
     }
 }
