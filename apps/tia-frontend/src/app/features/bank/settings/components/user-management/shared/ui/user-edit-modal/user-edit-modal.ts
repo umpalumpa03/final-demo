@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { IUserDetail } from '../../models/users.model';
+import { IUpdateUserRequest, IUserDetail } from '../../models/users.model';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { CommonModule } from '@angular/common';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
@@ -40,7 +40,7 @@ export class UserEditModal {
   public userData = input.required<IUserDetail | null>();
 
   public close = output<void>();
-  public save = output<any>();
+  public save = output<IUpdateUserRequest>();
 
   public readonly form = this.fb.group({
     firstName: ['', Validators.required],
@@ -74,7 +74,7 @@ export class UserEditModal {
 
   public onSave(): void {
     if (this.form.valid) {
-      this.save.emit(this.form.getRawValue());
+      this.save.emit(this.form.getRawValue() as IUpdateUserRequest);
     }
   }
 }
