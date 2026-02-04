@@ -22,13 +22,7 @@ export default defineConfig(() => ({
     setupFiles: ['src/test-setup.ts'],
     testTimeout: 15000,     
     hookTimeout: 15000,
-    pool: 'threads',
-    poolOptions: {
-      threads: {
-        isolate: true,
-      },
-    },
-    fileParallelism: true,
+    fileParallelism: true, 
     reporters: ['default'],
     coverage: {
       all: true,
