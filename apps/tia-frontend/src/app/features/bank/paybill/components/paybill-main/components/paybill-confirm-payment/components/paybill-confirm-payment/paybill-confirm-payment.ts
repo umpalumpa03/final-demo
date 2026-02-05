@@ -2,9 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   input,
   model,
   output,
+  untracked,
 } from '@angular/core';
 import {
   BillDetails,
@@ -12,7 +14,6 @@ import {
   PaybillProvider,
 } from '../../../../shared/models/paybill.model';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
-import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { PaymentSummary } from '../../../../shared/ui/payment-summary/payment-summary';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
@@ -23,13 +24,11 @@ import {
   mapConfirmSummaryFields,
 } from '../../config/translate.config';
 import { TranslatePipe } from '@ngx-translate/core';
-import { paymentTitleConfig } from '../../config/header.config';
 
 @Component({
   selector: 'app-paybill-confirm-payment',
   imports: [
     BasicCard,
-    LibraryTitle,
     ButtonComponent,
     PaymentSummary,
     Dropdowns,
@@ -41,7 +40,6 @@ import { paymentTitleConfig } from '../../config/header.config';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillConfirmPayment {
-
   // Inputs
 
   public readonly provider = input.required<PaybillProvider>();
@@ -50,8 +48,9 @@ export class PaybillConfirmPayment {
   public readonly iconBgColor = input('');
   public readonly iconBgPath = input('');
   public readonly currentAccounts = input<
-    { label: string; value: string }[] | null
+    { label: string; value: string; isFavorite: boolean }[] | null
   >(null);
+  public readonly isLoading = input<boolean>(false);
 
   // Outputs
 
@@ -62,6 +61,23 @@ export class PaybillConfirmPayment {
 
   protected readonly selectConfig = paymentOptionPaybill;
   protected readonly ui = CONFIRM_PAYMENT_UI;
+
+  constructor() {
+    effect(() => {
+      const accounts = this.currentAccounts();
+
+      if (accounts && accounts.length > 0 && !this.selectedAccountId()) {
+        const favoriteAccount = accounts.find((acc) => acc.isFavorite);
+
+        if (favoriteAccount) {
+          untracked(() => {
+            this.selectedAccountId.set(favoriteAccount.value);
+            this.handleAccountChange(favoriteAccount.value);
+          });
+        }
+      }
+    });
+  }
 
   public handleAccountChange(id: string): void {
     this.accountChanged.emit(id);
