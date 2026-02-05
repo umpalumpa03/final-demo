@@ -5,12 +5,10 @@ import {
   input,
   model,
   output,
-  signal,
 } from '@angular/core';
 import { Otp } from '@tia/shared/lib/forms/otp/otp';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
-import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { PaymentSummary } from '../../../../shared/ui/payment-summary/payment-summary';
 import {
@@ -26,7 +24,6 @@ import { TranslatePipe } from '@ngx-translate/core';
     Otp,
     ButtonComponent,
     AlertTypesWithIcons,
-    LibraryTitle,
     BasicCard,
     PaymentSummary,
     TranslatePipe
