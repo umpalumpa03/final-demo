@@ -92,7 +92,7 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
 
   public onFileSelected(file: File): void {
     const allowedTypes = ['image/png', 'image/jpeg'];
-    const maxSizeBytes = 150 * 1024; 
+    const maxSizeBytes = 1024; 
 
     const isValidType = allowedTypes.includes(file.type);
     const isValidSize = file.size <= maxSizeBytes;
