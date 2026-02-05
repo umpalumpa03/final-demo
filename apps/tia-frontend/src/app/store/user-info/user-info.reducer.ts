@@ -8,6 +8,7 @@ export const initialUserState: IUserState = {
   language: localStorage.getItem('language'),
   avatar: null,
   role: null,
+  email: null,
   loading: false,
   error: null,
 };

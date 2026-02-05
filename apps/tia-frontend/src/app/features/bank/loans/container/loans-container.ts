@@ -39,7 +39,9 @@ export class LoansContainer {
   protected readonly alertConfig = this.store.alert;
 
   public ngOnInit(): void {
-    this.globalStore.dispatch(AccountsActions.loadAccounts({}));
+    this.globalStore.dispatch(
+      AccountsActions.loadAccounts({ forceRefresh: true }),
+    );
 
     this.store.loadCounts();
   }

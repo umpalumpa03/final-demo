@@ -19,7 +19,7 @@ export class MailHeader {
   public readonly toggleSelectAll = output<boolean>();
   public readonly isSent = input<boolean>(false);
   public readonly isDraft = input<boolean>(false);
-  public isDeleteModalOpen = signal(false);
+  public readonly isDeleteModalOpen = signal(false);
 
   public readonly showBulkActions = input<boolean>(false);
   public readonly bulkDelete = output<void>();
