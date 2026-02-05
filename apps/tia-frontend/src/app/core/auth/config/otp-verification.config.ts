@@ -1,6 +1,6 @@
-import { OtpVerificationConfig, OtpVerificationType } from "../models/otp-verification.models";
+import { IOtpVerificationConfig, OtpVerificationType } from "../models/otp-verification.models";
 
-export const getOtpVerificationConfig = (type: OtpVerificationType): OtpVerificationConfig => {
+export const getOtpVerificationConfig = (type: OtpVerificationType): IOtpVerificationConfig => {
   switch (type) {
     case 'sign-in':
       return {
@@ -31,3 +31,30 @@ export const getOtpVerificationConfig = (type: OtpVerificationType): OtpVerifica
       } as const;
   }
 };
+
+export const otpVerificationConfig = {
+  'sign-in': {
+    title: 'auth.otp-sign-in.title',
+    subText: 'auth.otp-sign-in.subText',
+    submitBtnName: 'auth.otp-sign-in.submitBtnName',
+    backLink: '/auth/sign-in',
+    backLinkText: 'auth.otp-sign-in.backLinkText',
+    iconUrl: 'images/svg/auth/secured-blue.svg',
+  },
+  'sign-up': {
+    title: 'auth.otp-sign-up.title',
+    subText: 'auth.otp-sign-up.subText',
+    submitBtnName: 'auth.otp-sign-up.submitBtnName',
+    backLink: '/auth/sign-in',
+    backLinkText: 'auth.otp-sign-up.backLinkText',
+    iconUrl: 'images/svg/auth/phone-blue.svg',
+  },
+  'forgot-password': {
+    title: 'auth.otp-forgot-password.title',
+    subText: 'auth.otp-forgot-password.subText',
+    submitBtnName: 'auth.otp-forgot-password.submitBtnName',
+    backLink: '/auth/forgot-password',
+    backLinkText: 'auth.otp-forgot-password.backLinkText',
+    iconUrl: 'images/svg/auth/secured-blue.svg',
+  },
+} as const;

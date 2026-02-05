@@ -3,7 +3,7 @@ export type OtpVerificationType =
   | 'sign-up'
   | 'forgot-password'
 
-export interface OtpVerificationConfig {
+export interface IOtpVerificationConfig {
   title?: string;
   subText?: string;
   submitBtnName?: string;
