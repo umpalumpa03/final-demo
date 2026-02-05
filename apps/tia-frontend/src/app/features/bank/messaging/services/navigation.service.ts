@@ -4,13 +4,13 @@ import { filter } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class NavigationService {
-    private router = inject(Router);
+    private readonly router = inject(Router);
 
-    private currentUrl = signal<string | null>(null);
-    private previousUrl = signal<string | null>(null);
+    private readonly currentUrl = signal<string | null>(null);
+    private readonly previousUrl = signal<string | null>(null);
 
-    readonly current = computed(() => this.currentUrl());
-    readonly previous = computed(() => this.previousUrl());
+    public readonly current = computed(() => this.currentUrl());
+    public readonly previous = computed(() => this.previousUrl());
 
     constructor() {
         this.currentUrl.set(this.router.url);

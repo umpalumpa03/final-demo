@@ -41,7 +41,13 @@
         ></lib-text-input>
       </div>
       <lib-textarea
-        [config]="{ label: 'Message', placeholder: 'Type your message here...', rows: 2 }"
+        [config]="{ 
+          label: 'Message', 
+          placeholder: 'Type your message here...', 
+          rows: 2, 
+          resizable: 'none',
+          maxHeight: 16
+          }"
         formControlName="body"
       ></lib-textarea>
       <div>

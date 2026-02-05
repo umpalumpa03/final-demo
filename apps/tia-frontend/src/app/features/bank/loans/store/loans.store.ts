@@ -120,13 +120,21 @@ export const LoansStore = signalStore(
         ),
       ),
 
-      loadLoans: rxMethod<number | void>(
+      loadLoans: rxMethod<{ status?: number | null; forceChange?: boolean }>(
         pipe(
-          tap(() => patchState(store, { loading: true, error: null })),
-          switchMap((status) => {
-            const apiStatus = typeof status === 'number' ? status : undefined;
+          tap(({ status }) => {
+            patchState(store, { filterStatus: status ?? null });
+          }),
+          switchMap(({ forceChange }) => {
+            const currentLoans = store.loans();
 
-            return loansService.getAllLoans(apiStatus).pipe(
+            if (currentLoans.length > 0 && !forceChange) {
+              return EMPTY;
+            }
+
+            patchState(store, { loading: true, error: null });
+
+            return loansService.getAllLoans().pipe(
               tap((loans) => {
                 const mappedLoans = loans.map((l) => ({
                   ...l,
@@ -144,6 +152,7 @@ export const LoansStore = signalStore(
           }),
         ),
       ),
+
       loadCounts: rxMethod<void>(
         pipe(
           switchMap(() =>
@@ -365,7 +374,8 @@ export const LoansStore = signalStore(
                   calculationResult: null,
                   actionLoading: false,
                 });
-                store.loadLoans();
+
+                store.loadLoans({ forceChange: true });
 
                 store.loadCounts();
               }),
@@ -386,7 +396,7 @@ export const LoansStore = signalStore(
           switchMap(() =>
             actions$.pipe(
               ofType(LoansCreateActions.requestLoanSuccess),
-              tap(() => store.loadLoans()),
+              tap(() => store.loadLoans({ forceChange: true })),
             ),
           ),
         ),

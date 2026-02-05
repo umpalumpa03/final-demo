@@ -112,7 +112,7 @@ export class TransactionsContainer implements OnInit {
     this.store.dispatch(TransactionActions.enter());
     this.store.dispatch(TransactionActions.loadCategories());
 
-    this.store.dispatch(AccountsActions.loadAccounts());
+    this.store.dispatch(AccountsActions.loadAccounts({}));
   }
 
   public onFiltersChange(filters: Partial<ITransactionFilter>) {

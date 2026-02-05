@@ -7,6 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Mail } from '../../store/messaging.state';
+import { Store } from '@ngrx/store';
 
 describe('Sent', () => {
   let component: Sent;
@@ -15,6 +16,7 @@ describe('Sent', () => {
   let mockMessagingStore: any;
   let mockNavigationService: any;
   let mockRouter: any;
+  let mockStore: any;
 
   const mockMails: Mail[] = [
     {
@@ -49,12 +51,17 @@ describe('Sent', () => {
       navigate: vi.fn(),
     };
 
+    mockStore = {
+      selectSignal: vi.fn().mockReturnValue(signal('test@example.com')),
+    };
+
     await TestBed.configureTestingModule({
       imports: [Sent, TranslateModule.forRoot()],
       providers: [
         { provide: MessagingStore, useValue: mockMessagingStore },
         { provide: NavigationService, useValue: mockNavigationService },
         { provide: Router, useValue: mockRouter },
+        { provide: Store, useValue: mockStore }
       ],
     }).compileComponents();
 

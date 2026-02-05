@@ -1,8 +1,12 @@
-<div class="email-detail">
+<div class="email-detail" 
+[class.email-detail--current-user]="isCurrentUser()"
+[class.email-detail--other-user]="!isCurrentUser()"
+>
   <div class="email-detail__message">
     <div class="email-detail__message__card">
       <app-avatar
         size="md"
+        [tone]="isCurrentUser() ? 'solid' : 'soft'"
         [initials]="getInitials(reply()?.authorEmail || '')"
       ></app-avatar>
       <div class="email-detail__message__content">
