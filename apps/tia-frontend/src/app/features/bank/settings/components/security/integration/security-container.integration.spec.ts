@@ -12,7 +12,7 @@ import { provideHttpClientTesting, HttpTestingController } from '@angular/common
 import { environment } from '../../../../../../../environments/environment';
 import { Store } from '@ngrx/store';
 import * as SecuritySelectors from '../store/security.selectors';
-import { take, timeout } from 'rxjs';
+import { take, timeout, filter } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
 
 const routes: Routes = [
@@ -77,11 +77,16 @@ describe('SecurityContainer integration', () => {
     req.flush(null);
     fixture.detectChanges();
 
-    await new Promise(resolve => setTimeout(resolve, 100));
-    await fixture.whenStable();
+   
+    loading = await firstValueFrom(
+      store.select(SecuritySelectors.selectSecurityLoading).pipe(
+        filter(loading => loading === false),
+        take(1),
+        timeout(5000)
+      )
+    );
+    
 
-
-    loading = await firstValueFrom(store.select(SecuritySelectors.selectSecurityLoading).pipe(take(1), timeout(5000)));
     const success = await firstValueFrom(store.select(SecuritySelectors.selectSecuritySuccess).pipe(take(1), timeout(5000)));
     const error = await firstValueFrom(store.select(SecuritySelectors.selectSecurityError).pipe(take(1), timeout(5000)));
 
@@ -114,12 +119,17 @@ describe('SecurityContainer integration', () => {
     );
 
     fixture.detectChanges();
-    
-    await new Promise(resolve => setTimeout(resolve, 100));
-    await fixture.whenStable();
 
  
-    loading = await firstValueFrom(store.select(SecuritySelectors.selectSecurityLoading).pipe(take(1), timeout(5000)));
+    loading = await firstValueFrom(
+      store.select(SecuritySelectors.selectSecurityLoading).pipe(
+        filter(loading => loading === false),
+        take(1),
+        timeout(5000)
+      )
+    );
+    
+ 
     const success = await firstValueFrom(store.select(SecuritySelectors.selectSecuritySuccess).pipe(take(1), timeout(5000)));
     const error = await firstValueFrom(store.select(SecuritySelectors.selectSecurityError).pipe(take(1), timeout(5000)));
 
