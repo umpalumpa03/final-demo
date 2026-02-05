@@ -510,6 +510,8 @@ export class PaybillEffect {
               return of(
                 TemplatesPageActions.moveTemplateSuccess({
                   message: 'Item removed successfully',
+                  groupId,
+                  templateId,
                 }),
               );
             }
@@ -520,6 +522,8 @@ export class PaybillEffect {
                 map(() =>
                   TemplatesPageActions.moveTemplateSuccess({
                     message: 'Item moved successfully',
+                    groupId,
+                    templateId,
                   }),
                 ),
               );

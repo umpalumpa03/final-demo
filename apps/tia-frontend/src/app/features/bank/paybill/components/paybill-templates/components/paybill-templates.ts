@@ -175,6 +175,8 @@ export class PaybillTemplates {
     }
   }
   // /////////////////////////////////////////////
+  //  RIGHT NOW UNUSED LOGIC KEPT FOR REFERENCE //
+  // /////////////////////////////////////////////
   public templateCategories = input.required<
     {
       label: string;

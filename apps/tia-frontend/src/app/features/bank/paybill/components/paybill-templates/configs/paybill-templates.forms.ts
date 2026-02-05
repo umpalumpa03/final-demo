@@ -2,7 +2,10 @@ import { FormBuilder, Validators } from '@angular/forms';
 
 export function createGroupForm(fb: FormBuilder) {
   return fb.nonNullable.group({
-    name: ['', Validators.required],
+    name: [
+      '',
+      [Validators.required, Validators.minLength(3), Validators.maxLength(50)],
+    ],
   });
 }
 
@@ -18,14 +21,14 @@ export function createTemplateForm(fb: FormBuilder) {
 export function createEditTemplateForm(fb: FormBuilder) {
   return fb.nonNullable.group({
     currentName: [{ value: '', disabled: true }],
-    name: ['', Validators.required],
+    name: ['', [Validators.required, Validators.maxLength(50)]],
   });
 }
 
 export function createEditGroupForm(fb: FormBuilder) {
   return fb.nonNullable.group({
     currentName: [{ value: '', disabled: true }],
-    name: ['', Validators.required],
+    name: ['', [Validators.required, Validators.maxLength(50)]],
   });
 }
 

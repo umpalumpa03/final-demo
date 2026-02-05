@@ -38,7 +38,11 @@
   </div>
 </app-tree-container>
 
-<app-ui-modal class="modal" [isOpen]="isModalOpen()">
+<app-ui-modal
+  class="modal"
+  [isOpen]="isModalOpen()"
+  (closed)="modalOpenAction.emit()"
+>
   @if (currentModalConfig(); as config) {
   <app-library-title
     [title]="config.title"

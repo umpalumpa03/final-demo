@@ -33,7 +33,6 @@ import { ModalConfig } from '../configs/cta-buttons.config';
   selector: 'app-paybill-templates-container',
   imports: [PaybillTemplates],
   templateUrl: './paybill-templates-container.html',
-  styleUrl: './paybill-templates-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillTemplatesContainer implements OnInit {
@@ -156,11 +155,11 @@ export class PaybillTemplatesContainer implements OnInit {
     }
   }
 
-  public onCategorySelected(categoryId: string) {
+  public onCategorySelected(categoryId: string): void {
     this.store.dispatch(PaybillActions.selectCategory({ categoryId }));
   }
 
-  public handleFormSubmit(payload: FormSubmitPayload) {
+  public handleFormSubmit(payload: FormSubmitPayload): void {
     this.formSubmitHandlers[payload.type]?.(payload.values);
     this.handleModalToggle();
   }
