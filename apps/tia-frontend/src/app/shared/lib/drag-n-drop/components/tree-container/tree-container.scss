@@ -46,6 +46,11 @@
     flex-direction: column;
     border-radius: 0.8rem;
     gap: 1.1rem;
+    position: relative;
+    margin-bottom: 0.8rem;
+    &:has(.tree-container__children--expanded) {
+      margin-bottom: 2rem; 
+    }
 
     &--dragging {
       opacity: 0.8;

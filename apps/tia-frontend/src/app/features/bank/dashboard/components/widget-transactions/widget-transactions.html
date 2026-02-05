@@ -3,6 +3,7 @@
   [hideBorder]="true"
   scrollbar="hidden"
   (scrollBottom)="onScrollBottom()"
+  [isLoading]="(isLoading$ | async) ?? false"
 >
   @if ((isLoading$ | async) && (isEmpty$ | async)) {
     <app-route-loader variant="pulsing" [fillContainer]="true">

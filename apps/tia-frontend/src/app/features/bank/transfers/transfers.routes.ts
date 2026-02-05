@@ -3,6 +3,9 @@ import { TransferStore } from './store/transfers.store';
 import { recipientVerifiedGuard } from './guards/recipient-verified.guard';
 import { accountsSelectedGuard } from './guards/accounts-selected.guard';
 import { TransferExternalService } from './services/transfer.external.service';
+import {
+  TransferInternalService
+} from 'apps/tia-frontend/src/app/features/bank/transfers/services/transfer.internal.service';
 export const transfersRoutes: Routes = [
   {
     path: '',
@@ -14,16 +17,35 @@ export const transfersRoutes: Routes = [
     children: [
       {
         path: '',
-
         redirectTo: 'internal',
         pathMatch: 'full',
       },
       {
         path: 'internal',
+        providers: [TransferInternalService],
         loadComponent: () =>
           import(
             './components/transfers-internal/container/transfers-internal'
           ).then((c) => c.TransfersInternal),
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: 'from-account'
+          },
+          {
+            path: 'from-account',
+            loadComponent: () => import('./components/transfers-internal/components/internal-from-account/internal-from-account').then(c => c.InternalFromAccount)
+          },
+          {
+            path: 'to-account',
+            loadComponent: () => import('./components/transfers-internal/components/internal-to-account/internal-to-account').then(c => c.InternalToAccount)
+          },
+          {
+            path: 'amount',
+            loadComponent: () => import('./components/transfers-internal/components/internal-amount/internal-amount').then(c => c.InternalAmount)
+          }
+        ]
       },
       {
         path: 'external',
