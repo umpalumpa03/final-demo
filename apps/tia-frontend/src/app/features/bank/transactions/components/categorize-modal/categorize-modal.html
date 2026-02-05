@@ -5,12 +5,13 @@
   [width]="'100%'"
   [borderColor]="'transparent'"
 >
-  @if (transaction(); as trx) {
+  @if (transaction()) { 
+    @let trx =transaction();
   <div class="transaction-summary">
-    <div class="transaction-summary__title">{{ trx.description }}</div>
+    <div class="transaction-summary__title">{{ trx?.description }}</div>
     <div class="transaction-summary__meta">
-      {{ trx.currency }} {{ trx.amount }} • <br />
-      {{ trx.createdAt | date:'dd/MM/yyyy' }}
+      {{ trx?.currency }} {{ trx?.amount }} • <br />
+      {{ trx?.createdAt | date:'dd/MM/yyyy' }}
     </div>
   </div>
   }
