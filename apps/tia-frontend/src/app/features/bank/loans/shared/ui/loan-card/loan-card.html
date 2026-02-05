@@ -21,9 +21,15 @@
                 }" />
                 }
                 @else {
-                <h3 class="card__title" (click)="enableEdit($event)">
-                    {{ displayedName() | purposeFmt }}
-                </h3>
+                <div class="card__title-wrapper" (click)="enableEdit($event)" data-tooltip="Click to rename">
+                    <h3 class="card__title">
+                        {{ displayedName() | purposeFmt }}
+                    </h3>
+
+                    <div class="card__edit-icon">
+                        <img src="./images/svg/feature-loans/edit-pencil.svg" alt="Edit">
+                    </div>
+                </div>
                 }
 
                 <span class="badge" [class]="cfg.badgeClass">
