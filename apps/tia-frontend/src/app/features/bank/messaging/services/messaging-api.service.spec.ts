@@ -143,4 +143,15 @@ describe('MessagingService', () => {
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });
+
+  it('should call sendMailReply', () => {
+    const replyBody = 'This is my reply message';
+
+    service.sendMailReply(123, replyBody).subscribe();
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/mails/123/reply`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ body: replyBody });
+    req.flush(null);
+  });
 });

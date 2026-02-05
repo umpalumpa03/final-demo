@@ -14,8 +14,8 @@
 
   <div class="tree-container__cards">
     @for (group of internalGroups(); track group.id) { @let isDraggingGroup =
-    draggingId() === group.id; @let isDropTargetGroup = dropTargetId() ===
-    'group:' + group.id;
+    draggingId() === 'group:' + group.id; @let isDropTargetGroup =
+    dropTargetId() === 'group:' + group.id;
 
     <div
       class="tree-container__group"
@@ -32,9 +32,9 @@
         [editable]="group.id !== 'ungrouped-group-id' && editable()"
         [expandable]="true"
         [expanded]="group.expanded ?? false"
-        [hasCheckbox]="hasCheckbox()"
+        [hasCheckbox]="groupHasCheckbox(group.id)"
         [checked]="isGroupChecked(group.id)"
-        (dragStart)="onDragStartHandler(group.id, $event)"
+        (dragStart)="onDragStartHandler('group:' + group.id, $event)"
         (remove)="onRemoveGroup(group.id)"
         (edit)="onEditGroup(group.id)"
         (expandedChange)="toggleExpanded(group.id)"

@@ -33,9 +33,10 @@ import {
   selectError,
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
-import { TransferExternalService } from '../../../../services/transfer.external.service';
+import { TransferRecipientService } from '../../services/transfer-recipient.service';
+import { TransferAccountSelectionService } from '../../services/transfer-account-selection.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
-import { Tooltip } from "@tia/shared/lib/data-display/tooltip/tooltip";
+import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 
 @Component({
   selector: 'app-external-accounts',
@@ -50,8 +51,8 @@ import { Tooltip } from "@tia/shared/lib/data-display/tooltip/tooltip";
     TextInput,
     ReactiveFormsModule,
     RouteLoader,
-    Tooltip
-],
+    Tooltip,
+  ],
   providers: [],
   templateUrl: './external-accounts.html',
   styleUrl: './external-accounts.scss',
@@ -60,7 +61,10 @@ import { Tooltip } from "@tia/shared/lib/data-display/tooltip/tooltip";
 export class ExternalAccounts implements OnInit {
   private readonly location = inject(Location);
   private readonly transferStore = inject(TransferStore);
-  private readonly transferExternalService = inject(TransferExternalService);
+  private readonly recipientService = inject(TransferRecipientService);
+  private readonly accountSelectionService = inject(
+    TransferAccountSelectionService,
+  );
   private readonly store = inject(Store);
   private readonly fb = inject(FormBuilder);
   private readonly translate = inject(TranslateService);
@@ -160,7 +164,7 @@ export class ExternalAccounts implements OnInit {
     const isLoading = this.isLoadingSenderAccounts();
 
     if ((!accounts || accounts.length === 0) && !isLoading) {
-      this.store.dispatch(AccountsActions.loadAccounts());
+      this.store.dispatch(AccountsActions.loadAccounts({}));
     }
   }
   public readonly isContinueDisabled = computed(() => {
@@ -177,14 +181,14 @@ export class ExternalAccounts implements OnInit {
   });
 
   public isRecipientAccountDisabled = (account: RecipientAccount): boolean => {
-    return this.transferExternalService.isRecipientAccountDisabled(
+    return this.recipientService.isRecipientAccountDisabled(
       account,
       this.selectedSenderAccount(),
     );
   };
 
   public isSenderAccountDisabled = (account: Account): boolean => {
-    return this.transferExternalService.isSenderAccountDisabled(
+    return this.recipientService.isSenderAccountDisabled(
       account,
       this.selectedRecipientAccount(),
       this.isExternalIban(),
@@ -192,25 +196,25 @@ export class ExternalAccounts implements OnInit {
   };
 
   public onRecipientAccountSelect(account: Account | RecipientAccount): void {
-    this.transferExternalService.handleRecipientAccountSelect(
+    this.accountSelectionService.handleRecipientAccountSelect(
       account as RecipientAccount,
       this.selectedRecipientAccount(),
     );
   }
 
   public onSenderAccountSelect(account: AccountData): void {
-    this.transferExternalService.handleSenderAccountSelect(
+    this.accountSelectionService.handleSenderAccountSelect(
       account as Account,
       this.selectedSenderAccount(),
     );
   }
 
   public onRetrySenderAccounts(): void {
-    this.store.dispatch(AccountsActions.loadAccounts());
+    this.store.dispatch(AccountsActions.loadAccounts({}));
   }
 
   public onRetry(): void {
-    this.transferExternalService.handleRetryRecipientLookup(
+    this.recipientService.handleRetryRecipientLookup(
       this.transferStore.recipientInput(),
       this.transferStore.recipientType(),
     );
@@ -221,7 +225,7 @@ export class ExternalAccounts implements OnInit {
   }
 
   public onContinue(): void {
-    this.transferExternalService.handleContinue(
+    this.accountSelectionService.handleContinue(
       this.selectedRecipientAccount(),
       this.selectedSenderAccount(),
       this.isExternalIban(),

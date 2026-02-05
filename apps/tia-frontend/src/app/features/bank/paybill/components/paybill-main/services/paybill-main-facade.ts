@@ -33,7 +33,7 @@ export class PaybillMainFacade {
   public readonly selectedSenderAccountId = signal<string | null>(null);
 
   public init(): void {
-    this.store.dispatch(AccountsActions.loadAccounts());
+    this.store.dispatch(AccountsActions.loadAccounts({}));
     this.searchQuery.set('');
   }
 

@@ -17,12 +17,12 @@ import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MessagingContainer {
-  private translate = inject(TranslateService);
-  public inboxService = inject(InboxService);
-  public isComposeOpen = signal(false);
-  private messagingStore = inject(MessagingStore);
-  public error = this.messagingStore.error;
-  public successMessage = this.messagingStore.successMessage;
+  private readonly translate = inject(TranslateService);
+  public readonly inboxService = inject(InboxService);
+  public readonly isComposeOpen = signal(false);
+  private readonly messagingStore = inject(MessagingStore);
+  public readonly error = this.messagingStore.error;
+  public readonly successMessage = this.messagingStore.successMessage;
 
   constructor() {
     this.inboxService.fetchInboxCount();

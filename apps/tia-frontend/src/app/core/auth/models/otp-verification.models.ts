@@ -4,12 +4,12 @@ export type OtpVerificationType =
   | 'forgot-password'
 
 export interface OtpVerificationConfig {
-  title: string;
-  subText: string;
-  submitBtnName: string;
-  backLink: string;
-  backLinkText: string;
-  iconUrl: string;
+  title?: string;
+  subText?: string;
+  submitBtnName?: string;
+  backLink?: string;
+  backLinkText?: string;
+  iconUrl?: string;
 }
 
 export interface IVerified {
