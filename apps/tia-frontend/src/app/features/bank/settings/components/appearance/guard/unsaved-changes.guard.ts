@@ -14,7 +14,7 @@ export const unsavedChangesGuard: CanDeactivateFn<CanComponentDeactivate> = (
   nextState,
 ) => {
   if (
-    nextState &&
+    nextState?.url &&
     ALLOWED_ROUTES.some((route) => nextState.url.includes(route))
   ) {
     return true;
