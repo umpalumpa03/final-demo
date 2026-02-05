@@ -25,6 +25,10 @@ import { Router } from '@angular/router';
 import { OtpModal } from '@tia/shared/lib/overlay/ui-otp-modal/otp-modal';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
+import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
+import { OtpVerification } from 'apps/tia-frontend/src/app/core/auth/shared/otp-verification/otp-verification';
+import { IVerified } from 'apps/tia-frontend/src/app/core/auth/models/otp-verification.models';
+import { transferOtpConfig } from '../../config/transfers-external.config';
 
 @Component({
   selector: 'app-external-amount',
@@ -36,9 +40,10 @@ import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
     AlertTypesWithIcons,
     DecimalPipe,
     SuccessModal,
-    OtpModal,
     RouteLoader,
     Tooltip,
+    UiModal,
+    OtpVerification,
   ],
   providers: [],
   templateUrl: './external-amount.html',
@@ -74,6 +79,8 @@ export class ExternalAmount implements OnInit {
   public readonly successfullTransfer = this.transferStore.transferSuccess;
   public readonly requiresOtp = this.transferStore.requiresOtp;
   public readonly errorFromState = this.transferStore.error;
+  public readonly otpConfig = transferOtpConfig['extrenal'];
+  
 
   public readonly isExternalIban = computed(
     () => this.transferStore.recipientType() === 'iban-different-bank',
@@ -143,7 +150,7 @@ export class ExternalAmount implements OnInit {
         this.showError.set(true);
         setTimeout(() => {
           this.showError.set(false);
-          this.transferStore.setError('');
+          // this.transferStore.setError('');
         }, 3000);
       }
     });
@@ -191,8 +198,16 @@ export class ExternalAmount implements OnInit {
   public onOtpClose(): void {
     this.transferStore.setRequiresOtp(false);
   }
-  public onOtpVerify(otpCode: string): void {
-    this.executionService.verifyTransfer(otpCode);
+  public onOtpVerify(event: IVerified): void {
+    const otpCode = event.otp;
+    if (otpCode) {
+      this.executionService.verifyTransfer(otpCode);
+    }
   }
   public onResendOtp(): void {}
+
+
+  public resendOtp(isCalled: boolean): void {
+    // console.log(isCalled);
+  }
 }

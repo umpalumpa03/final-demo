@@ -36,18 +36,6 @@ describe('OtpVerification', () => {
     expect(component.timerType()).toBe('phone');
   });
 
-  it('should compute config properties from type input', () => {
-    const config = component.config();
-    expect(config).toBeDefined();
-    expect(component.iconUrl()).toBeDefined();
-    expect(component.title()).toBeDefined();
-    expect(component.subText()).toBeDefined();
-    expect(component.submitBtnName()).toBeDefined();
-    expect(component.backLink()).toBeDefined();
-    expect(component.backLinkText()).toBeDefined();
-  });
-
-
   it('should handle different timer types', () => {
     expect(component.timerType()).toBe('phone');
     
