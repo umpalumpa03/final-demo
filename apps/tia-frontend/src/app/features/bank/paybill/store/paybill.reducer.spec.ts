@@ -522,4 +522,59 @@ describe('Paybill Reducer', () => {
       expect(result.loading).toBe(false);
     });
   });
+  it('should update the name of the correct group in the list', () => {
+    const initialStateWithGroups = {
+      ...initialPaybillState,
+      templateGroups: [
+        { id: 'group-1', groupName: 'Old Name' },
+        { id: 'group-2', groupName: 'Other' },
+      ] as any,
+    };
+
+    // We cast the whole payload to 'any' so it stops complaining about missing properties
+    const action = TemplatesPageActions.renameTemplateGroupSuccess({
+      templateGroup: { id: 'group-1', groupName: 'New Name' },
+      groupId: 'group-1',
+      message: 'Success',
+    } as any);
+
+    const result = paybillReducer(initialStateWithGroups, action);
+
+    expect(
+      result.templateGroups.find((g) => g.id === 'group-1')?.groupName,
+    ).toBe('New Name');
+    expect(result.loading).toBe(false);
+  });
+
+  it('should remove the group and ungroup its templates on deleteTemplateGroupSuccess', () => {
+    const initialState = {
+      ...initialPaybillState,
+      templateGroups: [
+        { id: 'group-123', groupName: 'Utilities' },
+        { id: 'group-456', groupName: 'Other' },
+      ] as any,
+      templates: [
+        { id: 'temp-1', nickname: 'Electric', groupId: 'group-123' },
+        { id: 'temp-2', nickname: 'Water', groupId: 'group-456' },
+      ] as any,
+    };
+
+    const action = TemplatesPageActions.deleteTemplateGroupSuccess({
+      groupId: 'group-123',
+    } as any);
+
+    const result = paybillReducer(initialState, action);
+    expect(result.templateGroups.length).toBe(1);
+    expect(
+      result.templateGroups.find((g) => g.id === 'group-123'),
+    ).toBeUndefined();
+
+    const temp1 = result.templates.find((t) => t.id === 'temp-1');
+    expect(temp1?.groupId).toBeNull();
+
+    const temp2 = result.templates.find((t) => t.id === 'temp-2');
+    expect(temp2?.groupId).toBe('group-456');
+
+    expect(result.loading).toBe(false);
+  });
 });

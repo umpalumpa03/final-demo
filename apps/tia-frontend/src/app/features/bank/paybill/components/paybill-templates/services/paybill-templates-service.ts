@@ -69,4 +69,21 @@ export class PaybillTemplatesService {
       { groupName },
     );
   }
+
+  public removeTemplateFromGroup(templateId: string): Observable<Templates> {
+    return this.http.patch<Templates>(
+      `${this.baseUrl}/templates/${templateId}/ungroup`,
+      {},
+    );
+  }
+
+  public addTemplateToGroup(
+    groupId: string | null,
+    template: string,
+  ): Observable<TemplateGroups> {
+    return this.http.patch<TemplateGroups>(
+      `${this.baseUrl}/template-groups/${groupId}/add-templates`,
+      { templateIds: [template] },
+    );
+  }
 }
