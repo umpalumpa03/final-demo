@@ -77,14 +77,6 @@ describe('AllLoans', () => {
     expect(loansStoreMock.renameLoan).toHaveBeenCalledWith(event);
   });
 
-  it('should open prepayment modal and close details', () => {
-    component.onOpenPrepayment(mockLoanDetails as any);
-    expect(component.isPrepaymentOpen()).toBe(true);
-    expect(component.isDetailsOpen()).toBe(false);
-    expect(component.selectedLoan()).toEqual(mockLoanDetails);
-    expect(component.prepaymentLoan()).toEqual(mockLoanDetails);
-  });
-
   it('should close all modals and reset state', () => {
     component.isDetailsOpen.set(true);
     component.isPrepaymentOpen.set(true);

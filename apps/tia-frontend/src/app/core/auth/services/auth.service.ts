@@ -223,7 +223,8 @@ export class AuthService {
   }
 
   public verifyPhoneOtpCode(code: string): Observable<OtpResponse> {
-    const token = this.tokenService.getSignUpToken;
+    const token =
+      this.tokenService.getSignUpToken || this.tokenService.verifyToken;
     const challengeId = this.getChallengeId();
 
     const headers = new HttpHeaders({
