@@ -58,9 +58,9 @@ export class AccountsListComponent {
     const grouped = this.accountsGrouped();
     if (!grouped) return false;
     return (
-      grouped.current.length === 0 &&
-      grouped.saving.length === 0 &&
-      grouped.card.length === 0
+      (grouped.current?.length ?? 0) === 0 &&
+      (grouped.saving?.length ?? 0) === 0 &&
+      (grouped.card?.length ?? 0) === 0
     );
   });
 
