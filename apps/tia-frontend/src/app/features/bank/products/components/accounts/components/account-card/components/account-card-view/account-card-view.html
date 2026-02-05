@@ -74,6 +74,7 @@
     </div>
 
     <div class="account-card__actions">
+      @if (canMakeTransfer()) {
       <app-button
         [variant]="'default'"
         [fullWidth]="true"
@@ -82,6 +83,7 @@
         <span class="account-card__actions-icon">⇄</span>
         {{ 'my-products.accounts.card.makeTransfer' | translate }}
       </app-button>
+      }
     </div>
   </div>
 </app-basic-card>

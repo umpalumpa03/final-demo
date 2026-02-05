@@ -49,6 +49,7 @@ export class AccountCardViewComponent {
   protected displayName = computed(
     () => this.account().friendlyName || this.account().name,
   );
+  protected canMakeTransfer = computed(() => this.account().permission === 1);
 
   private elementRef = inject(ElementRef);
   private dragStart = signal<number | null>(null);

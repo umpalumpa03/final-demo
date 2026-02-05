@@ -132,4 +132,26 @@ describe('AccountCardViewComponent', () => {
     component.onMouseUp();
     expect(component['dragStart']()).toBeNull();
   });
+
+  it('should show make-transfer button when account has write permission', () => {
+    TestBed.runInInjectionContext(() => {
+      fixture.componentRef.setInput('account', {
+        ...mockAccount,
+        permission: 2,
+      });
+    });
+    fixture.detectChanges();
+    expect(component['canMakeTransfer']()).toBe(true);
+  });
+
+  it('should hide make-transfer button when account does not have write permission', () => {
+    TestBed.runInInjectionContext(() => {
+      fixture.componentRef.setInput('account', {
+        ...mockAccount,
+        permission: 1,
+      });
+    });
+    fixture.detectChanges();
+    expect(component['canMakeTransfer']()).toBe(false);
+  });
 });
