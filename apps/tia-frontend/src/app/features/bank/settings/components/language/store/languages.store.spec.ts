@@ -39,9 +39,10 @@ describe('LanguagesStore', () => {
 
     store.fetchLanguages();
 
-    await new Promise((resolve) => setTimeout(resolve, 10));
+    await vi.waitFor(() => {
+      expect(store.isLoading()).toBe(false);
+    });
 
-    expect(store.isLoading()).toBe(false);
     expect(store.languages().length).toBe(2);
     expect(store.languages()[0].region).toBe('Global');
     expect(store.languages()[1].speakerCount).toBe('4M');
@@ -52,9 +53,9 @@ describe('LanguagesStore', () => {
 
     store.updateLanguage('english');
 
-    await new Promise((resolve) => setTimeout(resolve, 10));
-
-    expect(store.isLoading()).toBe(false);
+    await vi.waitFor(() => {
+      expect(store.isLoading()).toBe(false);
+    });
   });
 
   it('should reset state', () => {
