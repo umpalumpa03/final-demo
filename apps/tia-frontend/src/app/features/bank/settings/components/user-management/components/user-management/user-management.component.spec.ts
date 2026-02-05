@@ -36,6 +36,7 @@ describe('UserManagementComponent', () => {
       deleteUser: vi.fn(),
       toggleBlockStatus: vi.fn(),
       updateUser: vi.fn(),
+      reset: vi.fn(),
       users: signal(users),
       selectedUser: signal({
         id: '1',
@@ -128,5 +129,10 @@ describe('UserManagementComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     expect(component['isSaving']()).toBe(false);
+  });
+
+  it('should reset store on destroy', () => {
+    fixture.destroy();
+    expect(store.reset).toHaveBeenCalled();
   });
 });

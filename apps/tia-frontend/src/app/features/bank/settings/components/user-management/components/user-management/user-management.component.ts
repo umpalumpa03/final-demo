@@ -6,6 +6,7 @@ import {
   inject,
   signal,
   OnInit,
+  OnDestroy,
 } from '@angular/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
@@ -40,7 +41,7 @@ import { UserSearchService } from '../../shared/services/user-search.service';
   providers: [UserManagementState, UserManagementStore, UserModalService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserManagementComponent implements OnInit {
+export class UserManagementComponent implements OnInit, OnDestroy {
   protected readonly userState = inject(UserManagementState);
   protected readonly store = inject(UserManagementStore);
   protected readonly modalService = inject(UserModalService);
@@ -149,5 +150,9 @@ export class UserManagementComponent implements OnInit {
   public onCloseModal(): void {
     this.modalService.close();
     this.store.clearSelectedUser();
+  }
+
+  ngOnDestroy() {
+    this.store.reset();
   }
 }

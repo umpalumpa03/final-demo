@@ -17,6 +17,7 @@ import {
   mergeMap,
   finalize,
   filter,
+  EMPTY,
 } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserManagementService } from '../shared/services/user-management.service';
@@ -47,7 +48,7 @@ export const UserManagementStore = signalStore(
               }),
               catchError((err: HttpErrorResponse) => {
                 patchState(store, { loading: false, error: err.message });
-                return of(null);
+                return EMPTY;
               }),
             ),
           ),
@@ -64,7 +65,7 @@ export const UserManagementStore = signalStore(
                 selectedUser: cachedUser,
                 actionLoading: false,
               });
-              return of(null);
+              return EMPTY;
             }
 
             return service.getUserById(userId).pipe(
@@ -92,7 +93,7 @@ export const UserManagementStore = signalStore(
               }),
               catchError((err: HttpErrorResponse) => {
                 patchState(store, { actionLoading: false, error: err.message });
-                return of(null);
+                return EMPTY;
               }),
             );
           }),
@@ -121,7 +122,7 @@ export const UserManagementStore = signalStore(
                   actionLoading: false,
                   error: err.message,
                 });
-                return of(null);
+                return EMPTY;
               }),
             ),
           ),
@@ -153,7 +154,7 @@ export const UserManagementStore = signalStore(
                   actionLoading: false,
                   error: err.message,
                 });
-                return of(null);
+                return EMPTY;
               }),
             ),
           ),
@@ -199,7 +200,7 @@ export const UserManagementStore = signalStore(
               }),
               catchError((err: HttpErrorResponse) => {
                 patchState(store, { error: err.message });
-                return of(null);
+                return EMPTY;
               }),
               finalize(() => {
                 patchState(store, (state) => ({
