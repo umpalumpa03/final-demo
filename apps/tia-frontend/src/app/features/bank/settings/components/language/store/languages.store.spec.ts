@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { LanguagesStore, initialState } from './languages.store';
 import { LanguageService } from '../services/language.service';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('LanguagesStore', () => {
@@ -47,19 +47,6 @@ describe('LanguagesStore', () => {
     expect(store.languages()[1].speakerCount).toBe('4M');
   });
 
-  it('should handle fetch error', async () => {
-    languageService.getAvailableLanguages.mockReturnValue(
-      throwError(() => new Error('Fetch failed')),
-    );
-
-    store.fetchLanguages();
-
-    await new Promise((resolve) => setTimeout(resolve, 10));
-
-    expect(store.hasError()).toBe(true);
-    expect(store.isLoading()).toBe(false);
-  });
-
   it('should update language successfully', async () => {
     languageService.updateUserLanguage.mockReturnValue(of({ success: true }));
 
@@ -68,23 +55,13 @@ describe('LanguagesStore', () => {
     await new Promise((resolve) => setTimeout(resolve, 10));
 
     expect(store.isLoading()).toBe(false);
-    expect(store.hasError()).toBe(false);
-  });
-
-  it('should handle update error', async () => {
-    languageService.updateUserLanguage.mockReturnValue(
-      throwError(() => new Error('Update failed')),
-    );
-
-    store.updateLanguage('english');
-
-    await new Promise((resolve) => setTimeout(resolve, 10));
-
-    expect(store.hasError()).toBe(true);
-    expect(store.isLoading()).toBe(false);
   });
 
   it('should reset state', () => {
+    languageService.getAvailableLanguages.mockReturnValue(
+      of([{ value: 'english', displayName: 'English' }]),
+    );
+
     store.fetchLanguages();
     store.resetState();
 

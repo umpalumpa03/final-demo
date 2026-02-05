@@ -10,6 +10,9 @@ describe('LanguageSelection', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(LanguageSelection);
+    fixture.componentRef.setInput('languages', []);
+    fixture.componentRef.setInput('isLoading', false);
+    fixture.componentRef.setInput('hasError', false);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
