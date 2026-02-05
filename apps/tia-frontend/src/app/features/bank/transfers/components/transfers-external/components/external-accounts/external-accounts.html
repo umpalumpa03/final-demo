@@ -118,16 +118,22 @@
       {{ 'common.buttons.back' | translate }}
     </app-button>
 
-    <app-button
-      variant="default"
-      size="default"
-      [fullWidth]="isFullWidth()"
-      (click)="onContinue()"
-      [isDisabled]="isContinueDisabled()"
+    <app-tooltip
+      [content]="'transfers.external.accounts.selectBothAccounts' | translate"
+      placement="top"
+      [disabled]="!isContinueDisabled()"
     >
-      {{ 'common.buttons.continue' | translate }}
-      <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />
-    </app-button>
+      <app-button
+        variant="default"
+        size="default"
+        [fullWidth]="isFullWidth()"
+        (click)="onContinue()"
+        [isDisabled]="isContinueDisabled()"
+      >
+        {{ 'common.buttons.continue' | translate }}
+        <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />
+      </app-button>
+    </app-tooltip>
   </footer>
 </main>
 

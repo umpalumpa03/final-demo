@@ -23,6 +23,7 @@ import { SuccessModal } from '@tia/shared/lib/overlay/ui-success-modal/ui-succes
 import { Router } from '@angular/router';
 import { OtpModal } from '@tia/shared/lib/overlay/ui-otp-modal/otp-modal';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
+import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 
 @Component({
   selector: 'app-external-amount',
@@ -36,6 +37,7 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
     SuccessModal,
     OtpModal,
     RouteLoader,
+    Tooltip,
   ],
   providers: [],
   templateUrl: './external-amount.html',
@@ -183,7 +185,7 @@ export class ExternalAmount implements OnInit {
   }
   public onSuccessDone(): void {
     this.transferStore.reset();
-    this.router.navigate(['/bank/transfers/external/accounts']);
+    this.router.navigate(['/bank/dashboard']);
   }
   public onOtpClose(): void {
     this.transferStore.setRequiresOtp(false);

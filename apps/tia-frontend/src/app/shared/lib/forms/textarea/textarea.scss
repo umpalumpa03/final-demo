@@ -43,7 +43,7 @@
         transition: all 0.2s ease;
         box-sizing: border-box;
 
-        overflow-y: hidden;
+        overflow-y: auto;
         transition: height 0.1s ease;
 
         &::placeholder {
@@ -53,6 +53,10 @@
         &:focus {
             border-color: $blue-500;
             box-shadow: 0 0 0 0.3rem rgba($blue-500, 0.1);
+        }
+
+        &[style*="resize: none"] {
+            resize: none;
         }
 
         &--error {

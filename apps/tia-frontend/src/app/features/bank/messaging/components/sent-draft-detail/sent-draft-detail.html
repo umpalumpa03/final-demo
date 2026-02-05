@@ -6,6 +6,9 @@
   </div>
   }
 </app-email-detail>
+@if (mailReplies().length && fromSent) { @for (reply of mailReplies(); track reply.id) {
+<app-replies-card  [reply]="reply"></app-replies-card>
+} }
 <app-ui-modal [isOpen]="isDeleteModalOpen()" (closed)="onCancelDelete()">
   <div class="delete-account">
     <header class="delete-account__header">

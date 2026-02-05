@@ -96,8 +96,9 @@ describe('Favorites', () => {
     expect(mockMessagingStore.getTotalCount).toHaveBeenCalledWith('favorite');
   });
 
-  it('should NOT load favorites when coming from favorites page', () => {
+  it('should NOT load favorites when coming from favorites page with existing mails', () => {
     mockNavigationService.previous.mockReturnValue('/bank/messaging/favorites');
+    mockMessagingStore.mails.set([{ id: 1 }, { id: 2 }]); 
 
     fixture.detectChanges();
 

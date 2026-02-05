@@ -324,22 +324,6 @@ describe('Paybill Reducer', () => {
       expect(result.templateGroups).toContain(newGroup);
       expect(result.loading).toBe(false);
     });
-
-    it('deleteTemplatesSuccess: should remove template and add a success notification', () => {
-      const state = {
-        ...initialPaybillState,
-        templates: [{ id: 't1' }, { id: 't2' }] as any,
-      };
-      const action = TemplatesPageActions.deleteTemplatesSuccess({
-        templateId: 't1',
-        message: 'Deleted!',
-      });
-      const result = paybillReducer(state, action);
-
-      expect(result.templates.length).toBe(1);
-      expect(result.templates[0].id).toBe('t2');
-      expect(result.notifications[0].message).toBe('Deleted!');
-    });
   });
 
   describe('Payment Form & Transaction Sync', () => {
@@ -402,5 +386,195 @@ describe('Paybill Reducer', () => {
 
       expect(result.error).toBe('Invalid account');
     });
+  });
+  it('deleteTemplates: should set loading true', () => {
+    const action = TemplatesPageActions.deleteTemplate({ templateId: 't1' });
+    const result = paybillReducer(initialPaybillState, action);
+
+    expect(result.loading).toBe(true);
+    expect(result.error).toBeNull();
+  });
+
+  it('deleteTemplatesFailure: should set error and stop loading', () => {
+    const action = TemplatesPageActions.deleteTemplateFailure({
+      error: 'Delete Failed',
+    });
+    const result = paybillReducer(initialPaybillState, action);
+
+    expect(result.loading).toBe(false);
+    expect(result.error).toBe('Delete Failed');
+  });
+
+  describe('Paybill Reducer - State Modifications', () => {
+    describe('Template Management Success', () => {
+      it('deleteTemplateSuccess: should remove the template from the list', () => {
+        const state = {
+          ...initialPaybillState,
+          templates: [{ id: 't1' }, { id: 't2' }] as any,
+        };
+        const action = TemplatesPageActions.deleteTemplateSuccess({
+          templateId: 't1',
+          message: 'Deleted',
+        });
+        const result = paybillReducer(state, action);
+
+        expect(result.templates.length).toBe(1);
+        expect(result.templates[0].id).toBe('t2');
+        expect(result.loading).toBe(false);
+      });
+
+      it('renameTemplateSuccess: should update the nickname of the specific template', () => {
+        const state = {
+          ...initialPaybillState,
+          templates: [
+            { id: 't1', nickname: 'Old Name' },
+            { id: 't2', nickname: 'Stay Same' },
+          ] as any,
+        };
+        const updatedTemplate = { id: 't1', nickname: 'New Name' } as any;
+        const action = TemplatesPageActions.renameTemplateSuccess({
+          template: updatedTemplate,
+        });
+        const result = paybillReducer(state, action);
+
+        expect(result.templates.find((t) => t.id === 't1')?.nickname).toBe(
+          'New Name',
+        );
+        expect(result.templates.find((t) => t.id === 't2')?.nickname).toBe(
+          'Stay Same',
+        );
+      });
+
+      it('renameTemplateFailure: should stop loading and set error', () => {
+        const action = TemplatesPageActions.renameTemplateFailure({
+          error: 'Rename Error',
+        });
+        const result = paybillReducer(initialPaybillState, action);
+        expect(result.error).toBe('Rename Error');
+        expect(result.loading).toBe(false);
+      });
+    });
+
+    describe('Template Group Management Success', () => {
+      it('renameTemplateGroup: should set loading true', () => {
+        const action = TemplatesPageActions.renameTemplateGroup({
+          groupId: '1',
+          groupName: 'n',
+        });
+        const result = paybillReducer(initialPaybillState, action);
+        expect(result.loading).toBe(true);
+      });
+    });
+
+    describe('Payment Details', () => {
+      it('loadPaymentDetailsSuccess: should set details object', () => {
+        const details = { amount: 500 } as any;
+        const action = PaybillActions.loadPaymentDetailsSuccess({ details });
+        const result = paybillReducer(initialPaybillState, action);
+
+        expect(result.paymentDetails).toBe(details);
+        expect(result.loading).toBe(false);
+      });
+
+      it('loadPaymentDetailsFailure: should set error', () => {
+        const action = PaybillActions.loadPaymentDetailsFailure({
+          error: 'Fail',
+        });
+        const result = paybillReducer(initialPaybillState, action);
+        expect(result.error).toBe('Fail');
+      });
+    });
+    it('renameTemplateGroupFailure: should handle failure and stop loading', () => {
+      const action = TemplatesPageActions.renameTemplateGroupFailure({
+        error: 'Group Rename Fail',
+      });
+      const result = paybillReducer(initialPaybillState, action);
+
+      expect(result.error).toBe('Group Rename Fail');
+      expect(result.loading).toBe(false);
+    });
+
+    it('loadTemplateGroupsFailure: should handle API error', () => {
+      const action = TemplatesPageActions.loadTemplateGroupsFailure({
+        error: 'Server Error',
+      });
+      const result = paybillReducer(initialPaybillState, action);
+
+      expect(result.error).toBe('Server Error');
+      expect(result.loading).toBe(false);
+    });
+
+    it('createTemplatesGroups: should set loading true', () => {
+      const action = TemplatesPageActions.createTemplatesGroups({
+        groupName: 'test',
+        templateIds: [],
+      });
+      const result = paybillReducer(initialPaybillState, action);
+      expect(result.loading).toBe(true);
+    });
+
+    it('createTemplatesGroupsFailure: should handle error', () => {
+      const action = TemplatesPageActions.createTemplatesGroupsFailure({
+        error: 'Create error',
+      });
+      const result = paybillReducer(initialPaybillState, action);
+      expect(result.error).toBe('Create error');
+      expect(result.loading).toBe(false);
+    });
+  });
+  it('should update the name of the correct group in the list', () => {
+    const initialStateWithGroups = {
+      ...initialPaybillState,
+      templateGroups: [
+        { id: 'group-1', groupName: 'Old Name' },
+        { id: 'group-2', groupName: 'Other' },
+      ] as any,
+    };
+
+    // We cast the whole payload to 'any' so it stops complaining about missing properties
+    const action = TemplatesPageActions.renameTemplateGroupSuccess({
+      templateGroup: { id: 'group-1', groupName: 'New Name' },
+      groupId: 'group-1',
+      message: 'Success',
+    } as any);
+
+    const result = paybillReducer(initialStateWithGroups, action);
+
+    expect(
+      result.templateGroups.find((g) => g.id === 'group-1')?.groupName,
+    ).toBe('New Name');
+    expect(result.loading).toBe(false);
+  });
+
+  it('should remove the group and ungroup its templates on deleteTemplateGroupSuccess', () => {
+    const initialState = {
+      ...initialPaybillState,
+      templateGroups: [
+        { id: 'group-123', groupName: 'Utilities' },
+        { id: 'group-456', groupName: 'Other' },
+      ] as any,
+      templates: [
+        { id: 'temp-1', nickname: 'Electric', groupId: 'group-123' },
+        { id: 'temp-2', nickname: 'Water', groupId: 'group-456' },
+      ] as any,
+    };
+
+    const action = TemplatesPageActions.deleteTemplateGroupSuccess({
+      groupId: 'group-123',
+    } as any);
+
+    const result = paybillReducer(initialState, action);
+    expect(result.templateGroups.length).toBe(1);
+    expect(
+      result.templateGroups.find((g) => g.id === 'group-123'),
+    ).toBeUndefined();
+
+    const temp1 = result.templates.find((t) => t.id === 'temp-1');
+    expect(temp1?.groupId).toBeNull();
+
+    const temp2 = result.templates.find((t) => t.id === 'temp-2');
+    expect(temp2?.groupId).toBe('group-456');
+
+    expect(result.loading).toBe(false);
   });
 });

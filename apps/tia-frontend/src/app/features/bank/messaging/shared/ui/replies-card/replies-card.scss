@@ -1,0 +1,67 @@
+@use "../../../../../../shared/styles/variables" as *;
+@use "../../../../../../shared/styles/mixins" as *;
+@use "../../../../../../shared/styles/palette" as *;
+
+.email-detail {
+    background: $white;
+    width: 100%;
+    margin: 0 auto;
+    transition: all 0.2s ease;
+    animation: slideIn 0.3s ease-out;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    word-break: break-word;
+
+    &__message {
+        padding: 1.2rem 2.4rem;
+
+        &__content {
+            border: 0.063rem solid $blue-200;
+            border-radius: 1rem;
+            box-shadow:
+                0 0.2rem 0.8rem 0 rgba(33, 150, 243, 0.18),
+                0 0.15rem 0.4rem 0 rgba(33, 150, 243, 0.12);
+            width: 100%;
+            padding: 1.7rem;
+            @include display-flex(column, flex-start);
+            gap: 1.2rem;
+        }
+
+        &__card {
+            @include display-flex(row, flex-start);
+            gap: 1.2rem;
+        }
+
+        &__card-header {
+            @include display-flex(column, flex-start);
+            gap: 0.062rem;
+        }
+    }
+
+    &__from {
+        @include font-inter(600, 1.4rem, 2rem);
+        color: var(--color-fg);
+    }
+
+    &__msg-date {
+        @include font-inter(400, 1.2rem, 1.6rem);
+        color: $gray-600;
+    }
+
+    &__body {
+        @include font-inter(400, 1.4rem, 2.27rem);
+        color: var(--color-fg);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-2rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

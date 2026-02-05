@@ -43,36 +43,81 @@ describe('PaybillTemplatesService', () => {
     req.flush([]);
   });
 
-  describe('POST & DELETE Operations', () => {
-    it('should call deleteTemplateGroups with the correct groupId', () => {
-      const groupId = 'group-123';
+  describe('POST, PATCH & DELETE Operations', () => {
+    it('should call renameTemplate and return the updated template', () => {
+      const templateId = 'temp-1';
+      const newName = 'Internet Bill';
+      const mockResponse = { id: templateId, nickname: newName };
 
-      service.deleteTemplateGroups(groupId).subscribe();
-
-      const req = httpMock.expectOne(
-        `${environment.apiUrl}/paybill/template-groups/${groupId}`,
-      );
-      expect(req.request.method).toBe('DELETE');
-      req.flush({});
-    });
-
-    it('should call deleteTemplate and return a success message', () => {
-      const templateId = 'temp-456';
-      const mockResponse = { message: 'Template deleted successfully' };
-
-      service.deleteTemplate(templateId).subscribe((res) => {
+      service.renameTemplate(templateId, newName).subscribe((res) => {
         expect(res).toEqual(mockResponse);
       });
 
       const req = httpMock.expectOne(
         `${environment.apiUrl}/paybill/templates/${templateId}`,
       );
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual({ nickname: newName });
+      req.flush(mockResponse);
+    });
+
+    it('should call deleteGroup and return success message', () => {
+      const groupId = 'group-789';
+      const mockResponse = { message: 'Group deleted' };
+
+      service.deleteGroup(groupId).subscribe((res) => {
+        expect(res).toEqual(mockResponse);
+      });
+
+      const req = httpMock.expectOne(
+        `${environment.apiUrl}/paybill/template-groups/${groupId}`,
+      );
       expect(req.request.method).toBe('DELETE');
+      req.flush(mockResponse);
+    });
+
+    it('should call renameGroup and return updated group', () => {
+      const groupId = 'group-1';
+      const newName = 'House Utilities';
+      const mockResponse = { id: groupId, groupName: newName };
+
+      service.renameGroup(groupId, newName).subscribe((res) => {
+        expect(res).toEqual(mockResponse);
+      });
+
+      const req = httpMock.expectOne(
+        `${environment.apiUrl}/paybill/template-groups/${groupId}`,
+      );
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual({ groupName: newName });
       req.flush(mockResponse);
     });
   });
 
-  afterEach(() => {
-    httpMock.verify();
+  it('should call removeTemplateFromGroup (ungroup)', () => {
+    const templateId = 'temp-456';
+
+    service.removeTemplateFromGroup(templateId).subscribe();
+
+    const req = httpMock.expectOne(
+      `${environment.apiUrl}/paybill/templates/${templateId}/ungroup`,
+    );
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual({});
+    req.flush({});
+  });
+
+  it('should call addTemplateToGroup with correct payload', () => {
+    const groupId = 'group-789';
+    const templateId = 'temp-999';
+
+    service.addTemplateToGroup(groupId, templateId).subscribe();
+
+    const req = httpMock.expectOne(
+      `${environment.apiUrl}/paybill/template-groups/${groupId}/add-templates`,
+    );
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual({ templateIds: [templateId] });
+    req.flush({});
   });
 });
