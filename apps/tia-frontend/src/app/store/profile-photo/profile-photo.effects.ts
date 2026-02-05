@@ -20,13 +20,6 @@ export class ProfilePhotoEffects {
   private profilePhotoApiService = inject(ProfilePhotoApiService);
   private store = inject(Store);
 
-  public initLoadDefaultAvatars$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(ROOT_EFFECTS_INIT),
-      map(() => ProfilePhotoActions.loadDefaultAvatarsRequest()),
-    ),
-  );
-
   public initLoadUserInfo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ROOT_EFFECTS_INIT),

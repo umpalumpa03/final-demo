@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ProfilePhotoComponent } from '../components/profile-photo/profile-photo.component';
 import { AlertType } from '../shared/models/profile-photo.models';
@@ -21,7 +21,7 @@ import { environment } from '../../../../../../../environments/environment';
   styleUrl: './profile-photo-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProfilePhotoContainer implements OnDestroy {
+export class ProfilePhotoContainer implements OnInit, OnDestroy {
   private readonly store = inject(Store);
   private readonly translate = inject(TranslateService);
 
@@ -40,8 +40,7 @@ export class ProfilePhotoContainer implements OnDestroy {
   private objectUrl: string | null = null;
   private alertTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
-public constructor() {
-
+  public constructor() {
     effect(() => {
       const fileName = this.uploadedFileName();
       if (!fileName && this.objectUrl) {
@@ -49,6 +48,10 @@ public constructor() {
         this.objectUrl = null;
       }
     });
+  }
+
+  public ngOnInit(): void {
+    this.store.dispatch(ProfilePhotoActions.loadDefaultAvatarsRequest());
   }
 
   public ngOnDestroy(): void {
@@ -81,7 +84,7 @@ public constructor() {
 
   public onFileSelected(file: File): void {
     const allowedTypes = ['image/png', 'image/jpeg'];
-    const maxSizeBytes = 1024 * 1024; 
+    const maxSizeBytes = 150 * 1024; 
 
     const isValidType = allowedTypes.includes(file.type);
     const isValidSize = file.size <= maxSizeBytes;

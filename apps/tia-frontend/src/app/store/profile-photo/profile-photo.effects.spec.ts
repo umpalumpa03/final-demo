@@ -54,16 +54,6 @@ describe('ProfilePhotoEffects', () => {
     store = TestBed.inject(MockStore);
   });
 
-  it('should dispatch loadDefaultAvatarsRequest on ROOT_EFFECTS_INIT', async () => {
-    const promise = firstValueFrom(effects.initLoadDefaultAvatars$);
-
-    actions$.next({ type: ROOT_EFFECTS_INIT });
-
-    const result = await promise;
-
-    expect(result).toEqual(ProfilePhotoActions.loadDefaultAvatarsRequest());
-  });
-
   it('should load default avatars on loadDefaultAvatarsRequest', async () => {
     const avatars: DefaultAvatarResponse[] = [
       { id: '1', iconUri: '/avatar-1.svg' },
