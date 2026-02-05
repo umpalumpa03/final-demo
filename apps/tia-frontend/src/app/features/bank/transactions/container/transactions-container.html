@@ -7,16 +7,25 @@
       (filterChange)="onFiltersChange($event)"
     ></app-transactions-filters>
   </div>
+  @if (alertMessage()) {
+  <div class="alert-message">
+    <app-simple-alerts
+      [alertType]="alertType()"
+      [alertMessage]="alertMessage()!"
+    >
+    </app-simple-alerts>
+  </div>
+  }
   <app-basic-card
     [maxWidth]="'100%'"
     [width]="'100%'"
     [padding]="'2.4rem'"
-    [height]="'72.1rem'"
+    [height]="'calc(100vh - 39rem)'"
     [title]="'Transactions'"
     [subtitle]="totalTransactionsString()"
   >
     <app-scroll-area
-      [height]="'60rem'"
+      [height]="'calc(100vh - 50.8rem)'"
       [hideBorder]="true"
       (scrollBottom)="loadProducts()"
     >
