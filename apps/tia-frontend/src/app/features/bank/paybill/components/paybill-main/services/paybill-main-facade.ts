@@ -207,7 +207,7 @@ export class PaybillMainFacade {
     ariaLabel: 'Search providers',
   }));
 
-  public readonly showSearch = computed(() => !this.activeProvider());
+  public readonly showSearch = computed(() => !this.isFormView());
   public readonly isRootProviderView = computed(() => !this.selectedParentId());
 
   public readonly successSummaryItems = computed(() => {

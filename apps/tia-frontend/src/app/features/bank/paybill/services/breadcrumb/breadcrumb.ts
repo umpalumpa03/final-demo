@@ -23,13 +23,12 @@ export class BreadcrumbService {
   );
 
   public getDynamicBreadcrumbs(): PaybillBreadcrumb[] {
-    const fullUrl = this.router.url;
-
+    const fullUrl = this.router.url.split('?')[0];
     const anchor = '/paybill';
     const anchorIndex = fullUrl.indexOf(anchor);
 
     const breadcrumbs: PaybillBreadcrumb[] = [
-      { label: 'Paybill', route: 'bank/paybill/pay' },
+      { label: 'Paybill', route: '/bank/paybill/pay' },
     ];
 
     if (anchorIndex === -1) return breadcrumbs;
@@ -40,23 +39,29 @@ export class BreadcrumbService {
     let accumulatedPath = fullUrl.substring(0, anchorIndex + anchor.length);
 
     segments.forEach((segment) => {
-      accumulatedPath += `/${segment}`;
+      if (segment.toLowerCase() === 'pay') {
+        accumulatedPath += `/${segment}`;
+        return;
+      }
 
-      if (segment.toLowerCase() !== 'pay') {
+      const subSegments = segment.split('-');
+
+      subSegments.forEach((sub, index) => {
+        if (index === 0) {
+          accumulatedPath += `/${segment}`;
+        }
+
         breadcrumbs.push({
-          label: this.formatLabel(segment),
+          label: this.capitalize(sub),
           route: accumulatedPath,
         });
-      }
+      });
     });
 
     return breadcrumbs;
   }
 
-  private formatLabel(segment: string): string {
-    return segment
-      .split('-')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+  private capitalize(word: string): string {
+    return word.charAt(0).toUpperCase() + word.slice(1);
   }
 }
