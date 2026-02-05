@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { selectAccounts, selectIsLoading } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { TransferStore } from 'apps/tia-frontend/src/app/features/bank/transfers/store/transfers.store';
 import { Store } from '@ngrx/store';
@@ -36,6 +36,7 @@ import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/break
   ],
   templateUrl: './internal-from-account.html',
   styleUrl: './internal-from-account.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InternalFromAccount implements OnInit {
   private readonly transferStore = inject(TransferStore);
@@ -55,6 +56,14 @@ export class InternalFromAccount implements OnInit {
     this.store.select(selectAccounts),
     { initialValue: [] }
   );
+
+  public readonly transferableAccounts = computed(() => {
+    const allAccounts = this.accounts();
+
+    return allAccounts.filter(account =>
+      account.permission && (account.permission & 1) === 1,
+    );
+  })
 
   public readonly isLoading = toSignal(
     this.store.select(selectIsLoading),

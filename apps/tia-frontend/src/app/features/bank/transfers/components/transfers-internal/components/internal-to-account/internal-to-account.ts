@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   TransferInternalService
@@ -35,6 +35,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
   templateUrl: './internal-to-account.html',
   styleUrl: './internal-to-account.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InternalToAccount {
   private readonly transferStore = inject(TransferStore);
@@ -51,9 +52,14 @@ export class InternalToAccount {
 
   public readonly showSuccess = signal(false);
   public readonly selectedToAccount = computed(() => this.transferStore.receiverOwnAccount());
+  public readonly selectedFromAccount = computed(() => this.transferStore.senderAccount());
 
   public readonly isContinueDisabled = computed(() => {
     return !this.selectedToAccount();
+  })
+
+  public readonly transferableAccounts = computed(() => {
+    return this.accounts().filter(account => account.id !== this.selectedFromAccount()?.id)
   })
 
   ngOnInit() {
@@ -76,7 +82,7 @@ export class InternalToAccount {
   }
 
   public onContinue() {
-
+    this.router.navigate(['/bank/transfers/internal/amount'])
   }
 
 }

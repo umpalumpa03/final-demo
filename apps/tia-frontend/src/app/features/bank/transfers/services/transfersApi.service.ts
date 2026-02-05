@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import {
   RecipientResponse,
   TransferResponse,
-  TransferVerifyResponse,
+  TransferVerifyResponse
 } from '../models/transfers.state.model';
 
 @Injectable({ providedIn: 'root' })
@@ -56,6 +56,20 @@ export class TransfersApiService {
       payload,
     );
   }
+
+  public transferToOwn(payload: {
+    senderAccountId: string;
+    receiverAccountId: string;
+    description: string;
+    amountToSend: number;
+  }): Observable<TransferResponse> {
+    return this.http.post<TransferResponse>(
+      `${this.baseURL}/between-own-accounts`,
+      payload,
+    )
+  }
+
+
   public transferExternalBank(payload: {
     senderAccountId: string;
     receiverAccountIban: string;
