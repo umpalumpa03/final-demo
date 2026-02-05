@@ -8,7 +8,7 @@ export const accountsFeature = createFeature({
     initialAccountsState,
     on(AccountsActions.loadAccounts, (state) => ({
       ...state,
-      isLoading: true,
+      isLoading: state.accounts.length === 0, //addedchheck load only if data comes rom api and not from cashe
       error: null,
     })),
     on(AccountsActions.loadAccountsSuccess, (state, { accounts }) => ({
