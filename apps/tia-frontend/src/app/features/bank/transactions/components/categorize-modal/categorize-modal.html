@@ -1,3 +1,11 @@
+@if (successMessage()) {
+<div class="success">
+  <app-simple-alerts
+    [alertType]="'success'"
+    [alertMessage]="successMessage()!"
+  ></app-simple-alerts>
+</div>
+}
 <app-basic-card
   [title]="title()"
   [subtitle]="subTitle()"
@@ -5,8 +13,7 @@
   [width]="'100%'"
   [borderColor]="'transparent'"
 >
-  @if (transaction()) { 
-    @let trx =transaction();
+  @if (transaction()) { @let trx =transaction();
   <div class="transaction-summary">
     <div class="transaction-summary__title">{{ trx?.description }}</div>
     <div class="transaction-summary__meta">
@@ -16,12 +23,6 @@
   </div>
   }
   <form [formGroup]="form" class="categorize-form">
-    @if (successMessage()) {
-    <app-simple-alerts
-      [alertType]="'success'"
-      [alertMessage]="successMessage()!"
-    ></app-simple-alerts>
-    }
     <div class="categorize-form__group">
       <lib-select
         [config]="selectConfig"

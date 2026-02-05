@@ -1,4 +1,5 @@
 <div class="global-bank-wrapper">
+  <app-library-title [title]="'Transactions'"></app-library-title>
   <div class="transaction-filters-wrapper">
     <app-transactions-filters
       [categoryOptions]="categoryOptions()"
@@ -20,12 +21,12 @@
     [maxWidth]="'100%'"
     [width]="'100%'"
     [padding]="'2.4rem'"
-    [height]="'calc(100vh - 39rem)'"
+    [height]="'calc(100vh - 45.4rem)'"
     [title]="'Transactions'"
     [subtitle]="totalTransactionsString()"
   >
     <app-scroll-area
-      [height]="'calc(100vh - 50.8rem)'"
+      [height]="'calc(calc(100vh - 45.4rem) - 12rem)'"
       [hideBorder]="true"
       (scrollBottom)="loadProducts()"
     >

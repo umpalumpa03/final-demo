@@ -44,6 +44,7 @@ import { SimpleAlertType } from '@tia/shared/lib/alerts/shared/models/alert.mode
 import { TransfersRepeatActions } from 'apps/tia-frontend/src/app/store/transfers-repeat/transfers-repeat.actions';
 import { Router } from '@angular/router';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
+import { LibraryTitle } from "../../../storybook/shared/library-title/library-title";
 
 @Component({
   selector: 'app-transactions-container',
@@ -57,7 +58,8 @@ import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/si
     CategorizeModal,
     UiModal,
     SimpleAlerts,
-  ],
+    LibraryTitle
+],
   templateUrl: './transactions-container.html',
   styleUrl: './transactions-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -149,8 +151,6 @@ export class TransactionsContainer implements OnInit {
     } else {
       if (!this.isLoaded()) {
         this.store.dispatch(TransactionActions.loadTransactions());
-      } else {
-        console.log('⚡ Cached data used. No API call needed.');
       }
     }
 

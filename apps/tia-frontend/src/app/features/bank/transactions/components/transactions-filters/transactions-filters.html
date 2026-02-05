@@ -4,6 +4,7 @@
   [padding]="'2.4rem'"
   [title]="'Filters'"
   [subtitle]="'Apply filters to refine your transaction list'"
+  [height]="'calc(100vh -6rem)'"
 >
   <div class="transactions-filters">
     <div class="transactions-filters__heading">
@@ -27,6 +28,7 @@
           [formControlName]="field.controlName"
           [options]="field.options || []"
           [config]="field.uiConfig"
+          [height]="'3.6rem'"
         >
         </lib-select>
         } @else {
