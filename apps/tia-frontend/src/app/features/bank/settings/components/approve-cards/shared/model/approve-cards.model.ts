@@ -36,3 +36,4 @@ export interface UpdateCardStatusRequest {
   status: CardApprovalStatus;
   permissions: CardPermission[];
 }
+

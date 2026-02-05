@@ -2,68 +2,17 @@
   @if (store.isLoading()) {
   <p>Loading cards...</p>
   } @else { @for(card of store.cards(); track card.id) {
-  <div class="approve-card__card">
-    <div class="approve-card__card__display">
-      <div class="approve-card__card__img">
-        <img
-          class="approve-card__card__icon"
-          src="images/svg/settings/approve-cards/card-icon.svg"
-          alt="Card Icon"
-        />
-      </div>
-      <div class="approve-card__card__info">
-        <div class="approve-card__card__info__header">
-          <h3 class="approve-card__card__title">{{ card.nickname }}</h3>
-          <div class="approve-card__card__pending">
-            <img
-              class="approve-card__card__pending__icon"
-              src="images/svg/settings/approve-cards/favorite.svg"
-              alt="Card Icon"
-            />
-            <p>Pending</p>
-          </div>
-        </div>
-        <div class="approve-card__card__email">
-          Alice Williams (alice@example.com)
-        </div>
-        <div class="approve-card__card__info__desc">
-          <p>visa</p>
-          <div class="approve-card__card__info__desc--bold">USD 5,000</div>
-          <p>14/01/2026</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="approve-card__card__actions">
-      <button class="approve-card__card__actions__button">
-        <img
-          src="images/svg/settings/approve-cards/permissions.svg"
-          alt="Permissions Icon"
-        />
-        <p>Permissions</p>
-      </button>
-
-      <button
-        class="approve-card__card__actions__button approve-card__card__actions__button--approve"
-      >
-        <img
-          src="images/svg/settings/approve-cards/approve.svg"
-          alt="Approve"
-        />
-        <p>Approve</p>
-      </button>
-
-      <button
-        class="approve-card__card__actions__button approve-card__card__actions__button--decline"
-      >
-        <img
-          src="images/svg/settings/approve-cards/decline.svg"
-          alt="Decline"
-        />
-        <p>Decline</p>
-      </button>
-    </div>
-  </div>
+  <app-cards-approve-element
+    [id]="card.id"
+    [title]="card.nickname"
+    [status]="card.status"
+    [email]="card.cardholderName"
+    [network]="card.network"
+    [balance]="''"
+    [creationDate]="card.createdAt"
+    (cardAction)="handleAction($event)"
+  >
+  </app-cards-approve-element>
   } @empty {
   <p>No cards found.</p>
   } }
