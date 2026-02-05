@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { PhoneGuard } from '../../guards/phone.guard';
 
 export const signUpRoutes: Routes = [
   {
@@ -11,6 +12,7 @@ export const signUpRoutes: Routes = [
       import('../sign-up/phone-verification/phone-verification').then(
         (c) => c.PhoneVerification,
       ),
+      canActivate: [PhoneGuard]
   },
   {
     path: 'verify-otp-register',

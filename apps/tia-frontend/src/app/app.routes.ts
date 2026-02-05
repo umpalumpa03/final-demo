@@ -4,7 +4,6 @@ import { bankRoutes } from './layout/bank.routes';
 import { storybookRoutes } from './features/storybook/storybook.routes';
 
 export const appRoutes: Routes = [
-
   {
     path: '',
     redirectTo: 'auth',

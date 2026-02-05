@@ -299,7 +299,7 @@ export class TransferExternalService {
           this.transferStore.setLoading(false);
           this.transferStore.setError(
             error?.error?.message || 'Transfer failed',
-          );
+          ); //needschange
 
           return of(null);
         }),
@@ -350,7 +350,7 @@ export class TransferExternalService {
           this.transferStore.setLoading(false);
           this.transferStore.setError(
             error?.error?.message || 'Transfer Failed',
-          );
+          );//needs change
 
           return of(null);
         }),

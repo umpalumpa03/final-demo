@@ -1,10 +1,12 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   inject,
   signal,
 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-language-switcher',
@@ -15,6 +17,8 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class LanguageSwitcher {
   private translate = inject(TranslateService);
+  private languageService = inject(LanguageService);
+  private destroyRef = inject(DestroyRef);
 
   public readonly languages = [
     { code: 'en', value: 'english', label: 'English', flag: '🇬🇧' },
@@ -25,10 +29,13 @@ export class LanguageSwitcher {
   public isOpen = signal(false);
 
   constructor() {
-    const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage) {
-      this.currentLanguage.set(savedLanguage);
-      this.translate.use(savedLanguage);
+    const savedLanguage = localStorage.getItem('language') || 'en';
+    if (savedLanguage === 'georgian' || savedLanguage === 'ka') {
+      this.currentLanguage.set('ka');
+      this.translate.use('ka');
+    } else if (savedLanguage === 'english' || savedLanguage === 'en') {
+      this.currentLanguage.set('en');
+      this.translate.use('en');
     }
   }
 
@@ -41,6 +48,11 @@ export class LanguageSwitcher {
   }
 
   public switchLanguage(languageCode: string): void {
+    const langCodeForApi =
+      languageCode === 'ka' ? 'georgian' : 'english';
+    const subscription = this.languageService.updateUserLanguage(langCodeForApi).subscribe();
+    this.destroyRef.onDestroy(() => subscription.unsubscribe());
+    
     this.currentLanguage.set(languageCode);
     this.translate.use(languageCode);
     localStorage.setItem('language', languageCode);
