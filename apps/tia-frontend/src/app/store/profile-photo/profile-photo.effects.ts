@@ -34,21 +34,32 @@ export class ProfilePhotoEffects {
   public loadDefaultAvatars$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProfilePhotoActions.loadDefaultAvatarsRequest),
-      switchMap(() =>
-        this.profilePhotoApiService.getAvailableDefaultAvatars().pipe(
-          map((avatars) =>
-            ProfilePhotoActions.loadDefaultAvatars({ avatars }),
+      withLatestFrom(this.store.select(selectDefaultAvatars)),
+      switchMap(([{ forceRefresh }, avatars]) => {
+        const shouldFetch =
+          !!forceRefresh || !avatars || avatars.length === 0;
+
+        if (!shouldFetch) {
+          return of(ProfilePhotoActions.loadDefaultAvatars({ avatars }));
+        }
+
+        return this.profilePhotoApiService.getAvailableDefaultAvatars().pipe(
+          map((fetchedAvatars) =>
+            ProfilePhotoActions.loadDefaultAvatars({ avatars: fetchedAvatars }),
           ),
           catchError((error) => {
             return concat(
               of(ProfilePhotoActions.loadDefaultAvatars({ avatars: [] })),
-              of(ProfilePhotoActions.loadDefaultAvatarsFailure({ 
-                error: error.message || 'Failed to load default avatars' 
-              })),
+              of(
+                ProfilePhotoActions.loadDefaultAvatarsFailure({
+                  error:
+                    error.message || 'Failed to load default avatars',
+                }),
+              ),
             );
           }),
-        ),
-      ),
+        );
+      }),
     ),
   );
 

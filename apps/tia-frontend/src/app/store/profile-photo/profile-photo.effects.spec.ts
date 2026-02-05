@@ -59,11 +59,14 @@ describe('ProfilePhotoEffects', () => {
       { id: '1', iconUri: '/avatar-1.svg' },
     ];
 
+    store.overrideSelector(selectDefaultAvatars, []);
+    store.refreshState();
+
     (profilePhotoApiServiceMock.getAvailableDefaultAvatars as any).mockReturnValue(of(avatars));
 
     const promise = firstValueFrom(effects.loadDefaultAvatars$);
 
-    actions$.next(ProfilePhotoActions.loadDefaultAvatarsRequest());
+    actions$.next(ProfilePhotoActions.loadDefaultAvatarsRequest({}));
 
     const result = await promise;
 
