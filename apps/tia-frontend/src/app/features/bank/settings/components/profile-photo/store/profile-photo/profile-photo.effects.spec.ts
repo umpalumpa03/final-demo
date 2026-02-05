@@ -55,14 +55,18 @@ describe('ProfilePhotoEffects', () => {
   });
 
   it('should load default avatars on loadDefaultAvatarsRequest', async () => {
-    const avatars: DefaultAvatarWithUrl[] = [
+    const apiResponse: DefaultAvatarResponse[] = [
+      { id: '1', iconUri: '/avatar-1.svg' },
+    ];
+
+    const expectedAvatars: DefaultAvatarWithUrl[] = [
       { id: '1', imageUrl: `${environment.apiUrl}/avatar-1.svg` },
     ];
 
     store.overrideSelector(selectDefaultAvatars, []);
     store.refreshState();
 
-    (profilePhotoApiServiceMock.getAvailableDefaultAvatars as any).mockReturnValue(of(avatars));
+    (profilePhotoApiServiceMock.getAvailableDefaultAvatars as any).mockReturnValue(of(apiResponse));
 
     const promise = firstValueFrom(effects.loadDefaultAvatars$);
 
@@ -70,7 +74,7 @@ describe('ProfilePhotoEffects', () => {
 
     const result = await promise;
 
-    expect(result).toEqual(ProfilePhotoActions.loadDefaultAvatars({ avatars }));
+    expect(result).toEqual(ProfilePhotoActions.loadDefaultAvatars({ avatars: expectedAvatars }));
   });
 
   it('should load stored avatar on ROOT_EFFECTS_INIT when userInfo has avatar', async () => {

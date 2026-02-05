@@ -9,6 +9,7 @@ import { DefaultAvatarResponse, DefaultAvatarWithUrl } from '../../../../../../f
 import {
   selectDefaultAvatars,
   selectSelectedAvatarId,
+  selectUploadedFileName,
 } from '../../../../../../features/bank/settings/components/profile-photo/store/profile-photo/profile-photo.selectors';
 import { environment } from '../../../../../../../environments/environment';
 
@@ -138,6 +139,50 @@ describe('ProfilePhotoContainer', () => {
         imageUrl: expect.stringContaining('/avatars/1.png'),
       }),
     );
+  });
+
+  it('should show error alert when file size is too large', () => {
+    const translate = TestBed.inject(TranslateService);
+    vi.spyOn(translate, 'instant').mockReturnValue('File too large');
+    const largeContent = new Array(151 * 1024).fill('a').join('');
+    component.onFileSelected(new File([largeContent], 'large-photo.png', { type: 'image/png' }));
+    expect(component.alertKind()).toBe('error');
+  });
+
+  it('should dispatch loadDefaultAvatarsRequest on ngOnInit', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    component.ngOnInit();
+    expect(dispatchSpy).toHaveBeenCalledWith(ProfilePhotoActions.loadDefaultAvatarsRequest({}));
+  });
+
+  it('should cleanup in ngOnDestroy', () => {
+    const revokeSpy = vi.spyOn(URL, 'revokeObjectURL');
+    const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
+    (component as any).objectUrl = 'blob:photo';
+    (component as any).alertTimeoutId = setTimeout(() => {}, 100);
+    component.ngOnDestroy();
+    expect(revokeSpy).toHaveBeenCalled();
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+  });
+
+  it('should clear alert when onAlertClose is called', () => {
+    const translate = TestBed.inject(TranslateService);
+    vi.spyOn(translate, 'instant').mockReturnValue('Test');
+    component.onFileSelected(new File(['content'], 'photo.gif', { type: 'image/gif' }));
+    component.onAlertClose();
+    expect(component.alertKind()).toBeNull();
+  });
+
+  it('should handle edge cases', () => {
+    const revokeSpy = vi.spyOn(URL, 'revokeObjectURL');
+    store.overrideSelector(selectDefaultAvatars, []);
+    store.refreshState();
+    component.onSelectDefaultAvatar('non-existent');
+    (component as any).objectUrl = 'blob:photo';
+    store.overrideSelector(selectUploadedFileName, null);
+    store.refreshState();
+    fixture.detectChanges();
+    expect(revokeSpy).toHaveBeenCalled();
   });
 
 });
