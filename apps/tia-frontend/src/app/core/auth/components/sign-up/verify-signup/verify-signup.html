@@ -7,4 +7,5 @@
   (onBackOut)="clearedBackout()"
   [errorMessage]="otpError()?.message ?? null"
   [remainingAttempts]="otpError()?.remainingAttempts ?? null"
+  [inputOtpConfig]="inputOtpConfig"
 ></app-otp-verification>
