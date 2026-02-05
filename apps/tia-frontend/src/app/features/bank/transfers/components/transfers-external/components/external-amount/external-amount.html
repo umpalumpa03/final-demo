@@ -158,7 +158,7 @@
   (closed)="onSuccessDone()"
   (done)="onSuccessDone()"
 ></app-success-modal>
-<app-otp-modal
+<!-- <app-otp-modal
   [isOpen]="requiresOtp()"
   [title]="'Verify Transfer'"
   [description]="'Enter the code sent to your phone.'"
@@ -169,7 +169,29 @@
   (closed)="onOtpClose()"
   (verify)="onOtpVerify($event)"
   (resend)="onResendOtp()"
-></app-otp-modal>
+></app-otp-modal> -->
+
+<app-ui-modal [isOpen]="requiresOtp()" (closed)="onOtpClose()">
+  <app-otp-verification
+    type="sign-in"
+    timerType="otp"
+    [timeLimit]="1"
+    [isBtnRowDirection]="true"
+    (isVerifyCalled)="onOtpVerify($event)"
+    (isResendCalled)="resendOtp($event)"
+    [onErrorRedirect]="false"
+    [errorMessage]="errorFromState()"
+    [remainingAttempts]="3"
+  >
+    <!-- wrap app-otp-verification in appui modal -->
+    <!-- write onerrorredirect=false always when using in components(you will handle with success mesage  -->
+    <!-- if timer needed and retry pass 
+  timerType="otp"
+  [timeLimit]="1"
+  isverifycalled gives you otp code 
+  isresendcalled gives you true on click -->
+  </app-otp-verification>
+</app-ui-modal>
 
 @if (showSuccess()) {
 <div class="external-amount__success-toast">
@@ -182,7 +204,9 @@
 <div class="external-amount__loader-overlay">
   <app-route-loader variant="pulsing"></app-route-loader>
 </div>
-} @if(showError() && errorFromState()) {
+}
+<!-- only need to show when no otp needed// -->
+@if(showError() && errorFromState()) {
 <div class="external-amount__error-toast">
   <app-alert-types-with-icons
     [alertType]="'error'"

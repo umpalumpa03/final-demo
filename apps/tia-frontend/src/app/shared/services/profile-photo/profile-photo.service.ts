@@ -2,7 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { DefaultAvatarResponse, CurrentUserAvatar, UploadAvatarResponse } from '../../../store/profile-photo/profile-photo.state';
+import {
+  DefaultAvatarResponse,
+  UploadAvatarResponse,
+} from '../../../store/profile-photo/profile-photo.state';
 
 @Injectable({ providedIn: 'root' })
 export class ProfilePhotoApiService {
@@ -22,10 +25,10 @@ export class ProfilePhotoApiService {
     );
   }
 
-  public getCurrentUserAvatar(id: string): Observable<CurrentUserAvatar> {
-    return this.http.get<CurrentUserAvatar>(
-      `${this.settingsApiUrl}/current-user-avatar/${id}`,
-    );
+  public getCurrentUserAvatar(id: string): Observable<Blob> {
+    return this.http.get(`${this.settingsApiUrl}/current-user-avatar/${id}`, {
+      responseType: 'blob',
+    });
   }
 
   public uploadUserAvatar(file: File): Observable<UploadAvatarResponse> {
@@ -39,8 +42,6 @@ export class ProfilePhotoApiService {
   }
 
   public removeUserAvatar(): Observable<void> {
-    return this.http.delete<void>(
-      `${this.settingsApiUrl}/remove-user-avatar`,
-    );
+    return this.http.delete<void>(`${this.settingsApiUrl}/remove-user-avatar`);
   }
 }

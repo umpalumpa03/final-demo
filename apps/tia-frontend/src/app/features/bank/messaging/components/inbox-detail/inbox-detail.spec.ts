@@ -6,6 +6,7 @@ import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Mail } from '../../store/messaging.state';
+import { Store } from '@ngrx/store';
 
 describe('InboxDetail', () => {
   let component: InboxDetail;
@@ -13,6 +14,7 @@ describe('InboxDetail', () => {
 
   let mockMessagingStore: any;
   let mockRouter: any;
+  let mockStore: any;
 
   const mockMail: Mail = {
     id: 1,
@@ -43,6 +45,10 @@ describe('InboxDetail', () => {
       navigate: vi.fn(),
     };
 
+    mockStore = {
+      selectSignal: vi.fn().mockReturnValue(signal('test@example.com')),
+    };
+
     const mockActivatedRoute = {
       snapshot: {
         paramMap: {
@@ -57,6 +63,7 @@ describe('InboxDetail', () => {
         { provide: MessagingStore, useValue: mockMessagingStore },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
+        { provide: Store, useValue: mockStore }
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();

@@ -1,6 +1,6 @@
 import { ValidationErrors } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { RecipientType } from '../models/transfers.state.model';
+import { RecipientType } from '../../../models/transfers.state.model';
 
 export function getErrorMessage(
   errors: ValidationErrors | null,
