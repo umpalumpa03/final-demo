@@ -78,7 +78,7 @@
       <app-button
         [variant]="'default'"
         [fullWidth]="true"
-        (click)="handleTransfer()"
+        (click)="handleOpenTransferModal()"
       >
         <span class="account-card__actions-icon">⇄</span>
         {{ 'my-products.accounts.card.makeTransfer' | translate }}
@@ -87,3 +87,10 @@
     </div>
   </div>
 </app-basic-card>
+
+<app-transfer-permissions-modal
+  [isOpen]="showTransferModal()"
+  [accountPermission]="account().permission"
+  (permissionSelected)="handlePermissionSelected($event)"
+  (closed)="showTransferModal.set(false)"
+></app-transfer-permissions-modal>
