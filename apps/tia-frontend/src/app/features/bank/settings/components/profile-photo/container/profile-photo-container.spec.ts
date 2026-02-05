@@ -2,14 +2,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { vi } from 'vitest';
-import { ProfilePhotoActions } from '../../../../../../store/profile-photo/profile-photo.actions';
+import { ProfilePhotoActions } from '../../../../../../features/bank/settings/components/profile-photo/store/profile-photo/profile-photo.actions';
 import { ProfilePhotoContainer } from './profile-photo-container';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { DefaultAvatarResponse } from '../../../../../../store/profile-photo/profile-photo.state';
+import { DefaultAvatarResponse, DefaultAvatarWithUrl } from '../../../../../../features/bank/settings/components/profile-photo/store/profile-photo/profile-photo.state';
 import {
   selectDefaultAvatars,
   selectSelectedAvatarId,
-} from '../../../../../../store/profile-photo/profile-photo.selectors';
+} from '../../../../../../features/bank/settings/components/profile-photo/store/profile-photo/profile-photo.selectors';
+import { environment } from '../../../../../../../environments/environment';
 
 describe('ProfilePhotoContainer', () => {
   let component: ProfilePhotoContainer;
@@ -126,7 +127,7 @@ describe('ProfilePhotoContainer', () => {
   
     ];
 
-    store.overrideSelector(selectDefaultAvatars, avatars);
+    store.overrideSelector(selectDefaultAvatars, avatars.map(avatar => ({ ...avatar, imageUrl: `${environment.apiUrl}${avatar.iconUri}` })) as DefaultAvatarWithUrl[]);
     store.refreshState();
 
     component.onSelectDefaultAvatar('avatar-1');

@@ -1,5 +1,5 @@
 export interface ProfilePhotoState {
-  defaultAvatars: DefaultAvatarResponse[];
+  defaultAvatars: DefaultAvatarWithUrl[];
   defaultAvatarsLoading: boolean;
   defaultAvatarsError: string | null;
   selectedAvatarId: string | null;
@@ -15,6 +15,11 @@ export interface DefaultAvatarResponse {
     id: string;
     iconUri: string;
   }
+
+export interface DefaultAvatarWithUrl {
+  id: string;
+  imageUrl: string;
+}
   
   export interface DefaultAvatar {
     id: string;

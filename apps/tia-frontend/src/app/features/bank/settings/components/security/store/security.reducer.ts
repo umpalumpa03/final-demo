@@ -27,5 +27,15 @@ export const securityFeature = createFeature({
       error,
       success: false,
     })),
+
+    on(SecurityActions.clearError, (state) => ({
+      ...state,
+      error: null,
+    })),
+
+    on(SecurityActions.clearSuccess, (state) => ({
+      ...state,
+      success: false,
+    })),
   ),
 });

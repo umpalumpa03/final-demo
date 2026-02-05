@@ -2,17 +2,16 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, computed, effect
 import { Store } from '@ngrx/store';
 import { ProfilePhotoComponent } from '../components/profile-photo/profile-photo.component';
 import { AlertType } from '../shared/models/profile-photo.models';
-import { ProfilePhotoActions } from '../../../../../../store/profile-photo/profile-photo.actions';
+import { ProfilePhotoActions } from '../store/profile-photo/profile-photo.actions';
 import {
   selectDefaultAvatars,
   selectDefaultAvatarsLoading,
   selectSelectedAvatarId,
   selectCurrentAvatarUrl,
   selectUploadedFileName,
-} from '../../../../../../store/profile-photo/profile-photo.selectors';
+} from '../store/profile-photo/profile-photo.selectors';
 import { selectUserInfo } from '../../../../../../store/user-info/user-info.selectors';
 import { TranslateService } from '@ngx-translate/core';
-import { environment } from '../../../../../../../environments/environment';
 
 @Component({
   selector: 'app-profile-photo-container',
@@ -134,9 +133,8 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
     }
     this.uploadedFile = null;
 
-    const imageUrl = `${environment.apiUrl}${avatar.iconUri}`;
     this.store.dispatch(
-      ProfilePhotoActions.selectDefaultAvatar({ avatarId, imageUrl })
+      ProfilePhotoActions.selectDefaultAvatar({ avatarId, imageUrl: avatar.imageUrl })
     );
   }
 

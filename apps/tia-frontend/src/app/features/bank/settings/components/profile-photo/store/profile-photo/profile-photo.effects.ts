@@ -6,13 +6,14 @@ import {
   ROOT_EFFECTS_INIT,
 } from '@ngrx/effects';
 import { ProfilePhotoActions } from './profile-photo.actions';
-import { ProfilePhotoApiService } from '../../shared/services/profile-photo/profile-photo.service';
+import { ProfilePhotoApiService } from '../../../../../../../shared/services/profile-photo/profile-photo.service';
 import { Store } from '@ngrx/store';
 import { catchError, concat, filter, map, of, switchMap, withLatestFrom } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../../../../../environments/environment';
 import { selectDefaultAvatars } from './profile-photo.selectors';
-import { selectUserInfo } from '../user-info/user-info.selectors';
-import { UserInfoActions } from '../user-info/user-info.actions';
+import { selectUserInfo } from '../../../../../../../store/user-info/user-info.selectors';
+import { UserInfoActions } from '../../../../../../../store/user-info/user-info.actions';
+
 
 @Injectable()
 export class ProfilePhotoEffects {
@@ -44,9 +45,13 @@ export class ProfilePhotoEffects {
         }
 
         return this.profilePhotoApiService.getAvailableDefaultAvatars().pipe(
-          map((fetchedAvatars) =>
-            ProfilePhotoActions.loadDefaultAvatars({ avatars: fetchedAvatars }),
-          ),
+          map((fetchedAvatars) => {
+            const avatarsWithUrls = fetchedAvatars.map(avatar => ({
+              id: avatar.id,
+              imageUrl: `${environment.apiUrl}${avatar.iconUri}`
+            }));
+            return ProfilePhotoActions.loadDefaultAvatars({ avatars: avatarsWithUrls });
+          }),
           catchError((error) => {
             return concat(
               of(ProfilePhotoActions.loadDefaultAvatars({ avatars: [] })),
