@@ -26,6 +26,8 @@ import { TranslateLoader, provideTranslateService } from '@ngx-translate/core';
 import { createMultiFileTranslateLoader } from './core/i18n';
 import { UserInfoEffects } from './store/user-info/user-info.effect';
 import { userInfoReducer } from './store/user-info/user-info.reducer';
+import { personalInfoReducer } from './store/personal-info/personal-info.reducer';
+import { PersonalInfoEffects } from './store/personal-info/personal-info.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -37,8 +39,9 @@ export const appConfig: ApplicationConfig = {
     provideState(securityFeature),
     provideState(userInfoFeature),
     provideState('user-info', userInfoReducer),
+    provideState('personalInfo', personalInfoReducer),
     provideHttpClient(withInterceptors([authInterceptor])),
-    provideEffects([ThemeEffects, ProfilePhotoEffects, SecurityEffects, UserInfoEffects]),
+    provideEffects([ThemeEffects, ProfilePhotoEffects, SecurityEffects, UserInfoEffects, PersonalInfoEffects]),
     provideStoreDevtools({
       maxAge: 25,
       logOnly: environment.production,
