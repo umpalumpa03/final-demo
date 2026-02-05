@@ -211,7 +211,7 @@ export const paybillReducer = createReducer(
     (state, { templateGroup }) => ({
       ...state,
       loading: false,
-      templateGroups: [...state.templateGroups, templateGroup],
+      templateGroups: [templateGroup, ...state.templateGroups],
     }),
   ),
 
@@ -354,12 +354,23 @@ export const paybillReducer = createReducer(
     loading: true,
     error: null,
   })),
-
-  on(TemplatesPageActions.moveTemplateSuccess, (state) => ({
-    ...state,
-    loading: false,
-    error: null,
-  })),
+  on(
+    TemplatesPageActions.moveTemplateSuccess,
+    (state, { groupId, templateId }) => ({
+      ...state,
+      loading: false,
+      error: null,
+      templates: state.templates.map((item) => {
+        if (item.id === templateId) {
+          return {
+            ...item,
+            groupId,
+          };
+        }
+        return item;
+      }),
+    }),
+  ),
 
   on(TemplatesPageActions.moveTemplateFailure, (state, { error }) => ({
     ...state,

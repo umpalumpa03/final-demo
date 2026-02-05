@@ -1,4 +1,5 @@
 import {
+  CrudActionType,
   HeaderCtaAction,
   HeaderCtaButton,
   ModalInfo,
@@ -63,7 +64,7 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
     ],
     formSubmitType: 'rename-group',
     formGroupName: 'editGroup',
-    submitAction: 'renameGroup',
+    submitAction: CrudActionType.RenameGroup,
   },
 
   [ModalType.DeleteGroup]: {
@@ -72,7 +73,7 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
     submitLabel: 'Delete Group',
     submitButtonType: 'destructive',
     formSubmitType: 'create-group',
-    submitAction: 'deleteGroup',
+    submitAction: CrudActionType.DeleteGroup,
     description:
       'Templates in this group will be moved to "Ungrouped". This action cannot be undone.',
   },
@@ -136,7 +137,7 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
     ],
     formSubmitType: 'rename-template',
     formGroupName: 'editTemplate',
-    submitAction: 'renameTemplate',
+    submitAction: CrudActionType.RenameTemplate,
   },
 
   [ModalType.DeleteTemplate]: {
@@ -144,7 +145,7 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
     subtitle: 'Are you sure you want to delete this template?',
     submitLabel: 'Delete Template',
     submitButtonType: 'destructive',
-    submitAction: 'deleteTemplate',
+    submitAction: CrudActionType.DeleteTemplate,
     formSubmitType: 'create-group',
   },
 
@@ -153,7 +154,7 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
     subtitle: 'Review selected bills before payment',
     submitLabel: 'Confirm & Pay All',
     submitButtonType: 'default',
-    submitAction: 'confirmPayment',
+    submitAction: CrudActionType.DeleteGroup,
     formSubmitType: 'create-group',
   },
 } as const;
