@@ -1,0 +1,73 @@
+<app-basic-card
+  class="paybill-card"
+  maxWidth="100%"
+  padding="0 0 2.4rem 2.4rem"
+>
+  <header class="paybill-form__header">
+    <div
+      class="paybill-form__icon-box"
+      [style.background-color]="iconBgColor()"
+    >
+      <img [src]="iconBgPath()" alt="Service Icon" class="paybill-form__icon" />
+    </div>
+    <div class="paybill-form__text-group">
+      <h2 class="paybill-form__title">{{ provider()?.name }}</h2>
+      <p class="paybill-form__subtitle">
+        {{'paybill.main.form.subtitle' | translate}}
+      </p>
+    </div>
+  </header>
+
+  <form
+    [formGroup]="paybillForm()"
+    (ngSubmit)="onSubmit()"
+    class="paybill-form__content"
+  >
+    <app-dynamic-inputs
+      [form]="paybillForm()"
+      [fields]="fields()"
+      [state]="isVerified() || isLoading() ? 'disabled' : 'default'"
+    />
+    @if (isVerified()) {
+    <app-payment-summary
+      [items]="summaryItems()"
+      [headerTitle]="'paybill.main.form.verified_title' | translate"
+      type="verified"
+    ></app-payment-summary>
+
+    <lib-text-input
+      label="Amount To Pay"
+      formControlName="amount"
+      [config]="paybillConfig().amount"
+      [state]="isLoading() ? 'disabled' : 'default'"
+    />
+
+    @if(verifiedDetails()?.amountDue){
+    <p class="helper-text">
+      {{ 'paybill.main.form.helper_text' | translate: { amount:
+      (verifiedDetails()?.amountDue | currency:'GEL':'symbol') } }}
+    </p>
+    }
+
+    <div class="form-actions">
+      <app-button
+        type="submit"
+        [isDisabled]="paybillForm().invalid || isLoading()"
+      >
+        {{ 'paybill.main.form.continue_btn' | translate }}
+      </app-button>
+
+      <app-button variant="secondary"
+        >{{ 'paybill.main.form.template' | translate }}</app-button
+      >
+    </div>
+    } @else {
+    <app-button
+      type="submit"
+      [isDisabled]="paybillForm().invalid || isLoading()"
+    >
+      {{ 'paybill.main.form.continue_btn' | translate }}
+    </app-button>
+    }
+  </form>
+</app-basic-card>

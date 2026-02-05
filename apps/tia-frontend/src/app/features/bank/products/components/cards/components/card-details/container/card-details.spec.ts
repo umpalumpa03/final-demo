@@ -8,6 +8,8 @@ import { CardDetails } from './card-details';
 import {
   loadCardDetails,
   loadCardAccounts,
+  openCardDetailsModal,
+  closeCardDetailsModal,
 } from '../../../../../../../../store/products/cards/cards.actions';
 import * as CardsSelectors from '../../../../../../../../store/products/cards/cards.selectors';
 import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
@@ -85,6 +87,12 @@ describe('CardDetails', () => {
         if (selector === CardsSelectors.selectCardDetailsError) {
           return of(null);
         }
+        if (selector === CardsSelectors.selectIsCardDetailsModalOpen) {
+          return of(false);
+        }
+        if (selector === CardsSelectors.selectCardDetailsModalData) {
+          return of(null);
+        }
         if (typeof selector === 'function' || selector.projector) {
           return of(mockAccount);
         }
@@ -92,7 +100,6 @@ describe('CardDetails', () => {
       }),
       dispatch: vi.fn(),
     };
-
     const routerMock: MockRouter = {
       navigate: vi.fn(),
     };
@@ -159,5 +166,16 @@ describe('CardDetails', () => {
       '/bank/products/cards/transactions',
       mockCardId,
     ]);
+  });
+  it('should dispatch openCardDetailsModal', () => {
+    component['handleOpenDetailsModal']();
+    expect(store.dispatch).toHaveBeenCalledWith(
+      openCardDetailsModal({ cardId: mockCardId }),
+    );
+  });
+
+  it('should dispatch closeCardDetailsModal', () => {
+    component['handleCloseDetailsModal']();
+    expect(store.dispatch).toHaveBeenCalledWith(closeCardDetailsModal());
   });
 });

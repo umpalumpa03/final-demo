@@ -1,6 +1,4 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-
-import { Breadcrumb } from '@tia/shared/lib/navigation/models/breadcrumbs.model';
 import { PaybillState } from './paybill.state';
 
 export const selectPaybillState =
@@ -65,36 +63,6 @@ export const selectActiveProvider = createSelector(
   },
 );
 
-export const selectPaybillBreadcrumbs = createSelector(
-  selectActiveCategory,
-  selectActiveProvider,
-  selectSelectedCategoryId,
-  (category, provider, selectedCategoryId) => {
-    const base: Breadcrumb[] = [
-      { label: 'Paybill', route: '/bank/paybill/pay' },
-    ];
-
-    if (selectedCategoryId?.toUpperCase() === 'TEMPLATES') {
-      base.push({ label: 'Templates', route: '' });
-      return base;
-    }
-
-    if (category) {
-      base.push({
-        label: category.name,
-        route: provider ? `/bank/paybill/pay/${category.id.toLowerCase()}` : '',
-      });
-    }
-
-    if (provider) {
-      const label = provider.serviceName || provider.name || '';
-      base.push({ label, route: '' });
-    }
-
-    return base;
-  },
-);
-
 export const selectLoading = createSelector(
   selectPaybillState,
   (state) => state.loading,
@@ -149,7 +117,7 @@ export const selectTemplatesAsTreeItems = createSelector(
       id: template.id,
       title: template.nickname,
       subtitle: template.serviceId,
-      groupId: '4b03d846-43af-45cd-8d69-04b71d784625',
+      groupId: template.groupId,
       icon: 'images/svg/paybill/favorite.svg',
       accountNumber: template.identification.accountNumber,
       order: index,
@@ -163,7 +131,11 @@ export const selectTemplatesGroupWithConfigs = createSelector(
     groups.map((group) => ({
       ...group,
       icon: 'images/svg/paybill/group.svg',
-      expanded: 5 > 0,
-      // neeed to be fixed
+      expanded: group.templateCount > 0,
     })),
+);
+
+export const selectPaymentFields = createSelector(
+  selectPaybillState,
+  (state) => state.paymentDetails?.fields ?? []
 );

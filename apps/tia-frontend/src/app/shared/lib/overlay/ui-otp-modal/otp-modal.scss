@@ -1,0 +1,59 @@
+@use '../../../../shared/styles/mixins' as *;
+@use '../../../../shared/styles/palette' as *;
+
+.otp-modal {
+  @include display-flex(column);
+  gap: 2.4rem;
+
+  &__content {
+    @include flex-center(column);
+    gap: 1.6rem;
+    text-align: center;
+  }
+
+  &__icon {
+    @include flex-center;
+    width: 6.4rem;
+    height: 6.4rem;
+    border-radius: 50%;
+    background-color: $blue-100;
+
+    img {
+      @include svg-icon(3.2rem);
+    }
+  }
+
+  &__title {
+    margin: 0;
+    color: var(--color-fg);
+    @include font-inter(600, 2rem);
+  }
+
+  &__description {
+    margin: 0;
+    color: $blue-600;
+    @include font-inter(400, 1.4rem);
+  }
+
+  &__form {
+    @include flex-center;
+  }
+  &__resend {
+    @include flex-center;
+    gap: 0.4rem;
+
+    &-text {
+      color: $gray-600;
+      @include font-inter(400, 1.4rem);
+    }
+  }
+
+  &__footer {
+    width: 100%;
+    @include display-flex(row);
+    gap: 1.2rem;
+    app-button {
+      flex: 1;
+    }
+  }
+}

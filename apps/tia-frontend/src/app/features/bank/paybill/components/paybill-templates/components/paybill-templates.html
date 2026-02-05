@@ -12,6 +12,12 @@
   [errorMessage]="'paybill.templates.errorMessage' | translate"
   [contentHeader]="true"
   [cardBackground]="true"
+  (itemRemoved)="onItemDeleteAction($event)"
+  (itemEdited)="onItemEditAction($event)"
+  (groupRemoved)="onGroupDeleteAction($event)"
+  (groupEdited)="onGroupEditAction($event)"
+  (itemMoved)="itemMoved($event)"
+  [isLoading]="isLoading()"
 >
   <div class="templates__header">
     <app-library-title
@@ -38,30 +44,56 @@
     [subtitle]="config.subtitle"
     class="modal__header"
   />
+  @let form = activeForm();
 
   <main>
-    @if (config.fields?.length) { @for (field of config.fields; track
-    field.controlName) { @if(field.type === 'dropdown') {
-    <!-- Options here should come from backend -->
-    <lib-select
-      [options]="[{label: 'hello', value: 'asd'}]"
-      [config]="{ label: field.label, placeholder: field.placeholder }"
-    ></lib-select>
+    @if (form) {
+    <form [formGroup]="form" (ngSubmit)="onSubmit(config.formSubmitType)">
+      @if (config.fields?.length) { @for (field of config.fields; track
+      field.controlName) { @if(field.type === 'dropdown') {
+      <lib-select
+        [formControlName]="field.controlName"
+        [options]="templateCategories()"
+        [config]="{ label: field.label, placeholder: field.placeholder }"
+        (selectionChange)="onDropdownChange(field.controlName, $event)"
+      ></lib-select>
+
+      }@else {
+      <lib-text-input
+        [formControlName]="field.controlName"
+        [type]="field.type"
+        [config]="{ label: field.label, placeholder: field.placeholder }"
+      />
+      } } }
+
+      <div class="modal__buttons">
+        <app-button type="button" variant="outline" (click)="toggleModal()">
+          Cancel
+        </app-button>
+        <app-button [variant]="config.submitButtonType" type="submit">
+          {{ config.submitLabel }}
+        </app-button>
+      </div>
+    </form>
     }@else {
-    <lib-text-input
-      [type]="field.type"
-      [config]="{ label: field.label, placeholder: field.placeholder }"
-    />
-    } } }
+    <div class="modal__identifier">{{ selectedDeleteItem() }}</div>
+    @if (config.description) {
+    <p class="modal__warning">{{ config.description }}</p>
+    }
 
     <div class="modal__buttons">
-      <app-button variant="outline" (click)="toggleModal()">
+      <app-button variant="outline" type="button" (click)="toggleModal()">
         Cancel
       </app-button>
-      <app-button [variant]="config.submitType">
+      <app-button
+        [variant]="config.submitButtonType"
+        type="submit"
+        (click)="onActionHandler(config.submitAction)"
+      >
         {{ config.submitLabel }}
       </app-button>
     </div>
+    }
   </main>
   }
 </app-ui-modal>

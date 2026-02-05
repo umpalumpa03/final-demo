@@ -22,7 +22,11 @@ export class UserInfoEffects {
               localStorage.setItem('theme', user.theme);
             }
             if (user.language) {
-              localStorage.setItem('language', user.language);
+              if (user.language === 'georgian') {
+                localStorage.setItem('language', 'ka');
+              } else {
+                localStorage.setItem('language', 'en');
+              }
             }
           }),
           map((user) => UserInfoActions.loadUserSuccess({ user })),

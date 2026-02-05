@@ -60,4 +60,26 @@ export const transactionReducer = createReducer(
     ...state,
     error,
   })),
+
+  on(
+    TransactionActions.assignCategorySuccess,
+    (state, { transactionId, categoryId }) => {
+      const newCategory = state.categories.find((c) => c.id === categoryId);
+
+      const updateItems = state.items.map((item) => {
+        if (item.id === transactionId) {
+          return {
+            ...item,
+            categoryId: categoryId,
+            category: newCategory ? newCategory : item.category,
+          };
+        }
+        return item;
+      });
+      return {
+        ...state,
+        items: updateItems,
+      };
+    },
+  ),
 );

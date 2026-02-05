@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import {
   TransferInternalService
 } from 'apps/tia-frontend/src/app/features/bank/transfers/services/transfer.internal.service';
-import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { Store } from '@ngrx/store';
 import { TransferStore } from 'apps/tia-frontend/src/app/features/bank/transfers/store/transfers.store';
 import { selectAccounts, selectIsLoading } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
@@ -57,7 +57,7 @@ export class InternalToAccount {
   })
 
   ngOnInit() {
-    this.store.dispatch(AccountsActions.loadAccounts());
+    this.store.dispatch(AccountsActions.loadAccounts({}));
   }
 
   public onAccountSelect(account: AccountData) {
@@ -68,7 +68,7 @@ export class InternalToAccount {
   }
 
   public onRetry() {
-    this.store.dispatch(AccountsActions.loadAccounts());
+    this.store.dispatch(AccountsActions.loadAccounts({}));
   }
 
   public onGoBack(): void {

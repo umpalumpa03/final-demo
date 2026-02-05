@@ -7,7 +7,7 @@ import {
 export const AccountsActions = createActionGroup({
   source: 'Accounts',
   events: {
-    'Load Accounts': emptyProps(),
+    'Load Accounts': props<{ forceRefresh?: boolean }>(), //pass empty object when initial load and no update needed, checks from cashed data and when updating for example from transfers, pass forcerefresh true
     'Load Accounts Success': props<{ accounts: Account[] }>(),
     'Load Accounts Failure': props<{ error: string }>(),
 

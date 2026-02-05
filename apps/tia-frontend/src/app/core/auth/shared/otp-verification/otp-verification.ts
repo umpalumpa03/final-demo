@@ -3,13 +3,15 @@ import {
   Component,
   computed,
   effect,
+  HostListener,
   inject,
   input,
+  OnInit,
   output,
   signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Otp } from '@tia/shared/lib/forms/otp/otp';
 import {
@@ -35,7 +37,8 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 import { OTP_VERIFY_FORM } from '../../config/inputs.config';
-import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader";
+import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
+import { Routes } from '../../models/tokens.model';
 
 @Component({
   selector: 'app-otp-verification',
@@ -43,39 +46,46 @@ import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader"
     ButtonComponent,
     ReactiveFormsModule,
     Otp,
-    RouterLink,
     TextInput,
     SimpleAlerts,
     TranslatePipe,
-    RouteLoader
-],
+    RouteLoader,
+  ],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OtpVerification {
+export class OtpVerification implements OnInit {
   private fb = inject(FormBuilder);
   private translate = inject(TranslateService);
+  private router = inject(Router);
+
   public type = input.required<OtpVerificationType>();
   public timeLimit = input(1);
   public timerType = input<TimerType>('phone');
   public errorMessage = input<string | null>(null);
   public remainingAttempts = input<number | null>(null);
-
+  public onBackOut = output<void>();
   public phoneErrorMessage = input<string | null>(null);
+
+  public resendTries = signal<number>(3);
+
+  @HostListener('window:keydown.enter', ['$event'])
+  public handleKeyBoardEvent(event: Event) {
+    event.preventDefault();
+    this.onSubmit();
+  }
 
   public unitedError = computed(() => {
     const error = this.errorMessage();
     const attempts = this.remainingAttempts();
 
-    if (error && attempts !== null) {
+    if (error && attempts !== null && attempts > 0) {
       return `${error} ${attempts === undefined ? '' : `(Remaining attempts: ${attempts})`}`;
     }
 
-    if (error) return error;
-
-    if (attempts !== null) {
-      return `Remaining attempts: ${attempts}`;
+    if (attempts === 0) {
+      this.router.navigate([Routes.ERROR_PAGE]);
     }
 
     return '';
@@ -166,6 +176,13 @@ export class OtpVerification {
         }, 1000);
         this.isResendActive.set(true);
       }
+
+      if (this.countdown() === 0 && this.resendTries() === 0) {
+        this.router.navigate([Routes.ERROR_PAGE]);
+        setTimeout(() => {
+          this.resendTries.set(3);
+        }, 2000);
+      }
     });
   }
 
@@ -175,6 +192,10 @@ export class OtpVerification {
   }
 
   private startTimer(): void {
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
+
     this.timerSubscription = this.timer$
       .pipe(
         takeUntil(this.destroy$),
@@ -188,6 +209,10 @@ export class OtpVerification {
   }
 
   public onSubmit(): void {
+    if (this.isButtonDisabled()) {
+      return;
+    }
+
     const currentForm = this.activeForm();
 
     if (currentForm.invalid) {
@@ -215,14 +240,27 @@ export class OtpVerification {
     });
   }
 
+  public canResend = computed(
+    () => this.countdown() === 0 && this.resendTries() > 0,
+  );
+
   public onResend(): void {
-    if (this.countdown() > 0) {
+    if (!this.canResend()) {
       return;
     }
 
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
+
+    this.resendTries.update((s) => s - 1);
     this.isResendCalled.emit(true);
     this.countdown.set(this.maxTime());
     this.startTimer();
+  }
+
+  public resgisterBackout(): void {
+    this.onBackOut.emit();
   }
 
   public ngOnDestroy(): void {

@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Spinner } from './spinner';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('Spinner', () => {
   let component: Spinner;
@@ -12,7 +13,7 @@ describe('Spinner', () => {
 
     fixture = TestBed.createComponent(Spinner);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -27,5 +28,12 @@ describe('Spinner', () => {
     fixture.componentRef.setInput('size', '4rem');
     fixture.detectChanges();
     expect(component.size()).toBe('4rem');
+  });
+
+  it('should apply the size to the host style', () => {
+    fixture.componentRef.setInput('size', '50px');
+    fixture.detectChanges();
+    const element = fixture.nativeElement.querySelector('.spinner');
+    expect(component.size()).toBe('50px');
   });
 });

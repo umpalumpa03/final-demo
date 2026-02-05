@@ -4,6 +4,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AuthService } from './auth.service';
+import { firstValueFrom } from 'rxjs';
 import { TokenService } from './token.service';
 import { environment } from '../../../../environments/environment';
 import { Routes } from '../models/tokens.model';
@@ -30,6 +31,7 @@ describe('AuthService', () => {
       clearAuthToken: vi.fn(),
       clearUserInfo: vi.fn(),
       clearAccessToken: vi.fn(),
+      clearSignUpToken: vi.fn(),
       accessToken: 'test-access-token',
       verifyToken: 'test-verify-token',
       getSignUpToken: 'test-signup-token',
@@ -312,24 +314,20 @@ describe('AuthService', () => {
       const code = '123456';
       const mockResponse = { message: 'Phone verified successfully' };
 
-      const promise = new Promise<void>((resolve) => {
-        service.verifyPhoneOtpCode(code).subscribe({
-          next: (res) => {
-            expect(res.message).toBe('Phone verified successfully');
-            expect(tokenService.clearAuthToken).toHaveBeenCalled();
-            expect(router.navigate).toHaveBeenCalledWith([Routes.SIGN_IN]);
-            resolve();
-          },
-        });
-      });
+        const obs$ = service.verifyPhoneOtpCode(code);
+        const promise = firstValueFrom<any>(obs$ as any);
 
-      const req = httpMock.expectOne(`${baseUrl}/phone/verify`);
-      expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual({ challengeId: 'challenge-123', code });
-      req.flush(mockResponse);
-      
-      await promise;
-      expect(service.isLoginLoading()).toBe(false);
+        const req = httpMock.expectOne(`${baseUrl}/phone/verify`);
+        expect(req.request.method).toBe('POST');
+        expect(req.request.body).toEqual({ challengeId: 'challenge-123', code });
+        req.flush(mockResponse);
+
+        const res = await promise;
+        expect(res.message).toBe('Phone verified successfully');
+        expect(tokenService.clearAuthToken).toHaveBeenCalled();
+        expect(tokenService.clearSignUpToken).toHaveBeenCalled();
+        expect(router.navigate).toHaveBeenCalledWith([Routes.SIGN_IN]);
+        expect(service.isLoginLoading()).toBe(false);
     });
 
     it('should handle phone OTP verification error', async () => {
@@ -444,7 +442,7 @@ describe('AuthService', () => {
       const mockResponse = { success: true };
 
       const promise = new Promise<void>((resolve) => {
-        service.resetPhoneOtp().subscribe({
+        service.resendPhoneOtp().subscribe({
           next: (res) => {
             expect(res.success).toBe(true);
             resolve();
@@ -452,7 +450,7 @@ describe('AuthService', () => {
         });
       });
 
-      const req = httpMock.expectOne(`${baseUrl}/mfa/otp-resend`);
+      const req = httpMock.expectOne(`${baseUrl}/phone/otp-resend`);
       expect(req.request.body).toEqual({ challengeId: 'challenge-123' });
       req.flush(mockResponse);
       await promise;
@@ -462,7 +460,7 @@ describe('AuthService', () => {
       service.setChellangeId('');
 
       const promise = new Promise<void>((resolve) => {
-        service.resetPhoneOtp().subscribe({
+        service.resendPhoneOtp().subscribe({
           error: (err) => {
             expect(err.message).toBe('Missing forgot password challengeId');
             resolve();
@@ -490,7 +488,7 @@ describe('AuthService', () => {
 
       const req = httpMock.expectOne(`${baseUrl}/mfa/otp-resend`);
       expect(req.request.body).toEqual({ challengeId: 'challenge-123' });
-      expect(req.request.headers.get('Authorization')).toBe('Bearer test-signup-token');
+      expect(req.request.headers.get('Authorization')).toBe('Bearer test-access-token');
       req.flush(mockResponse);
       await promise;
     });
@@ -500,8 +498,6 @@ describe('AuthService', () => {
     it('should initialize with default signal values', () => {
       expect(service.isLoginLoading()).toBe(false);
       expect(service.errorMessage()).toBe(false);
-      expect(service.successMessage()).toBe(false);
-      expect(service.infoMessage()).toBe(false);
     });
   });
 });

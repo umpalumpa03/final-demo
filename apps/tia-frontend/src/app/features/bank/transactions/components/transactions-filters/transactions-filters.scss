@@ -1,9 +1,21 @@
 @use '../../../../../shared/styles/mixins' as *;
-.transaction-filters-form {
-  @include display-flex(row, wrap);
-  justify-content: center;
-  gap: 1.6rem;
-  &__input-wrapper {
-    width: min(20.3rem, 100%);
+.transactions-filters {
+  position: relative;
+  &__heading {
+    position: absolute;
+    top: -6.5rem;
+    right: 2.5rem;
+  }
+
+  &__active-filters {
+    @include display-flex();
+    gap: 1.2rem;
+  }
+  &__form {
+    @include display-flex(row, wrap);
+    gap: 1.6rem;
+    &__input-wrapper {
+      width: 23.5%;
+    }
   }
 }

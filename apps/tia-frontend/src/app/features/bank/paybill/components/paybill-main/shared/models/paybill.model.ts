@@ -1,3 +1,5 @@
+import { PaybillDynamicFormValues } from '../../../../services/paybill-dynamic-form/models/dynamic-form.model';
+
 export interface PaybillProvider {
   id: string;
   serviceName: string;
@@ -72,10 +74,23 @@ export interface PaybillIdentification {
 }
 
 export interface PaybillFormVerifyEvent {
-  value: string;
+  value: PaybillDynamicFormValues;
 }
 
 export interface PaybillFormProceedEvent {
-  value: string;
   amount: number;
+  value: PaybillDynamicFormValues;
+}
+
+export interface PaybillField {
+  id: string;
+  label: string;
+  required: boolean;
+  type: string;
+}
+
+export interface PaybillPaymentDetails {
+  serviceId: string;
+  serviceName: string;
+  fields: PaybillField[];
 }

@@ -34,7 +34,8 @@ import {
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { TransferExternalService } from '../../../../services/transfer.external.service';
-import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
+import { Tooltip } from "@tia/shared/lib/data-display/tooltip/tooltip";
 
 @Component({
   selector: 'app-external-accounts',
@@ -49,7 +50,8 @@ import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.s
     TextInput,
     ReactiveFormsModule,
     RouteLoader,
-  ],
+    Tooltip
+],
   providers: [],
   templateUrl: './external-accounts.html',
   styleUrl: './external-accounts.scss',
@@ -158,7 +160,7 @@ export class ExternalAccounts implements OnInit {
     const isLoading = this.isLoadingSenderAccounts();
 
     if ((!accounts || accounts.length === 0) && !isLoading) {
-      this.store.dispatch(AccountsActions.loadAccounts());
+      this.store.dispatch(AccountsActions.loadAccounts({}));
     }
   }
   public readonly isContinueDisabled = computed(() => {
@@ -204,7 +206,7 @@ export class ExternalAccounts implements OnInit {
   }
 
   public onRetrySenderAccounts(): void {
-    this.store.dispatch(AccountsActions.loadAccounts());
+    this.store.dispatch(AccountsActions.loadAccounts({}));
   }
 
   public onRetry(): void {

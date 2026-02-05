@@ -38,4 +38,10 @@ describe('QuickActionsSection', () => {
     expect(paybillSpy).toHaveBeenCalled();
     expect(viewTransactionsSpy).toHaveBeenCalled();
   });
+  it('should emit viewSensitiveDetailsClicked', () => {
+    const spy = vi.fn();
+    component.viewSensitiveDetailsClicked.subscribe(spy);
+    component['handleViewSensitiveDetails']();
+    expect(spy).toHaveBeenCalled();
+  });
 });

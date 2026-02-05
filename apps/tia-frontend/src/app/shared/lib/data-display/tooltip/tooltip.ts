@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  signal,
+} from '@angular/core';
 import { TooltipPlacement } from '../models/tooltip.models';
 
 @Component({
@@ -11,10 +16,13 @@ import { TooltipPlacement } from '../models/tooltip.models';
 export class Tooltip {
   public content = input.required<string>();
   public placement = input<TooltipPlacement>('top');
+  public disabled = input<boolean>(false);
   public isOpen = signal(false);
 
   public open(): void {
-    this.isOpen.set(true);
+    if (!this.disabled()) {
+      this.isOpen.set(true);
+    }
   }
 
   public close(): void {

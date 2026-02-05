@@ -1,15 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Important } from './important';
 import { MessagingStore } from '../../store/messaging.store';
+import { NavigationService } from '../../services/navigation.service';
 import { signal } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Mail } from '../../store/messaging.state';
+import { Router } from '@angular/router';
 
 describe('Important', () => {
   let component: Important;
   let fixture: ComponentFixture<Important>;
+
   let mockMessagingStore: any;
+  let mockNavigationService: any;
+  let mockRouter: any;
 
   const mockMails: Mail[] = [
     {
@@ -22,7 +27,7 @@ describe('Important', () => {
       isImportant: true,
       isFavorite: false,
       createdAt: '2024-01-01T00:00:00.000Z',
-      permission: 0
+      permission: 0,
     },
     {
       id: 2,
@@ -34,7 +39,7 @@ describe('Important', () => {
       isImportant: true,
       isFavorite: false,
       createdAt: '2024-01-01T00:00:00.000Z',
-      permission: 0
+      permission: 0,
     },
   ];
 
@@ -42,40 +47,71 @@ describe('Important', () => {
     mockMessagingStore = {
       mails: signal<Mail[]>([]),
       isLoading: signal(false),
-      error: signal<string | null>(null),
+      total: signal({ importants: 2 }),
+      pagination: signal({ hasNextPage: false }),
+
       loadMails: vi.fn(),
       deleteMail: vi.fn(),
       deleteAllMails: vi.fn(),
       markMailasRead: vi.fn(),
       markAllAsRead: vi.fn(),
+      getTotalCount: vi.fn(),
+    };
+
+    mockNavigationService = {
+      previous: vi.fn(),
+    };
+
+    mockRouter = {
+      navigate: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
       imports: [Important, TranslateModule.forRoot()],
       providers: [
         { provide: MessagingStore, useValue: mockMessagingStore },
+        { provide: NavigationService, useValue: mockNavigationService },
+        { provide: Router, useValue: mockRouter },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Important);
     component = fixture.componentInstance;
-    await fixture.whenStable();
   });
 
   it('should create the Important component', () => {
+    mockNavigationService.previous.mockReturnValue(null);
+
+    fixture.detectChanges();
+
     expect(component).toBeTruthy();
   });
 
-  it('should create and initialize on ngOnInit', () => {
-    expect(component).toBeTruthy();
-    component.ngOnInit();
+  it('should load important mails on init when previous page is not important', () => {
+    mockNavigationService.previous.mockReturnValue('/bank/messaging/inbox');
+
+    fixture.detectChanges();
+
     expect(mockMessagingStore.loadMails).toHaveBeenCalledWith('important');
+    expect(mockMessagingStore.getTotalCount).toHaveBeenCalledWith('importants');
   });
 
-  it('should handle select all and isAllSelected', () => {
+  it('should NOT load important mails when coming from important page with existing mails', () => {
+    mockNavigationService.previous.mockReturnValue('/bank/messaging/important');
+    mockMessagingStore.mails.set([{ id: 1 }, { id: 2 }]); 
+
+    fixture.detectChanges();
+
+    expect(mockMessagingStore.loadMails).not.toHaveBeenCalled();
+    expect(mockMessagingStore.getTotalCount).not.toHaveBeenCalled();
+  });
+
+  it('should handle select all logic', () => {
     mockMessagingStore.mails.set(mockMails);
+    fixture.detectChanges();
 
     expect(component.isAllSelected()).toBe(false);
+
     component.toggleSelectAll(true);
     expect(component.isAllSelected()).toBe(true);
     expect(component.selectedMailIds()).toEqual(new Set([1, 2]));
@@ -84,27 +120,36 @@ describe('Important', () => {
     expect(component.selectedMailIds()).toEqual(new Set());
   });
 
-  it('should handle individual mail selection', () => {
+  it('should mark selected mails as read and reset selection', () => {
+    fixture.detectChanges();
+
     component.onMailChecked(1, true);
-    expect(component.selectedMailIds().has(1)).toBe(true);
+    component.onMailChecked(2, true);
 
-    component.onMailChecked(1, false);
-    expect(component.selectedMailIds().has(1)).toBe(false);
+    component.markSelectedAsRead();
+
+    expect(mockMessagingStore.markAllAsRead).toHaveBeenCalledWith([1, 2]);
+    expect(component.selectedMailIds().size).toBe(0);
   });
 
-  it('should handle bulk deletion', () => {
-    component.selectedMailIds.set(new Set([1, 2]));
-    component.deleteSelectedMails();
-    expect(mockMessagingStore.deleteAllMails).toHaveBeenCalledWith([1, 2]);
-    expect(component.selectedMailIds()).toEqual(new Set());
-  });
+  it('should navigate to important detail and mark mail as read', () => {
+    fixture.detectChanges();
 
-   it('should navigate to important detail', () => {
-    const mockRouter = {
-      navigate: vi.fn()
-    };
-    (component as any).router = mockRouter;
     component.goToDetail(1);
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/messaging/important', 1]);
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/bank/messaging/important',
+      1,
+    ]);
+    expect(mockMessagingStore.markMailasRead).toHaveBeenCalledWith(1);
+  });
+
+  it('should load more mails on scroll when next page exists', () => {
+    mockMessagingStore.pagination.set({ hasNextPage: true });
+    fixture.detectChanges();
+
+    component.onScrollBottom();
+
+    expect(mockMessagingStore.loadMails).toHaveBeenCalledWith('important');
   });
 });

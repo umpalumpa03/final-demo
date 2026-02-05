@@ -16,12 +16,13 @@ import { selectError } from 'apps/tia-frontend/src/app/store/loans/loans.reducer
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
-import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
+
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import {
   TransferInternalService
 } from 'apps/tia-frontend/src/app/features/bank/transfers/services/transfer.internal.service';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 
 @Component({
   selector: 'app-internal-from-account',
@@ -72,7 +73,7 @@ export class InternalFromAccount implements OnInit {
   });
 
   ngOnInit() {
-    this.store.dispatch(AccountsActions.loadAccounts());
+    this.store.dispatch(AccountsActions.loadAccounts({}));
   }
 
   public onAccountSelect(account: AccountData) {
@@ -83,7 +84,7 @@ export class InternalFromAccount implements OnInit {
   }
 
   public onRetry() {
-    this.store.dispatch(AccountsActions.loadAccounts());
+    this.store.dispatch(AccountsActions.loadAccounts({}));
   }
 
   public onGoBack(): void {

@@ -6,6 +6,7 @@ import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
 import { CardDesign } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-design.model';
 import { CardCategory } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-category.model';
 import { CardType } from '../../../features/bank/products/components/cards/models/card-type.model';
+import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 
 export const selectCardsState = createFeatureSelector<CardsState>('cards');
 
@@ -170,3 +171,84 @@ export const selectCardCreationDataLoading = createSelector(
   selectCardsState,
   (state: CardsState): boolean => state.loading,
 );
+export const selectIsCardDetailsModalOpen = createSelector(
+  selectCardsState,
+  (state: CardsState): boolean => state.isCardDetailsModalOpen,
+);
+
+export const selectSelectedCardIdForModal = createSelector(
+  selectCardsState,
+  (state: CardsState): string | null => state.selectedCardIdForModal,
+);
+
+export const selectCardDetailsModalData = createSelector(
+  selectSelectedCardIdForModal,
+  selectCardDetails,
+  selectCardImages,
+  selectAllAccounts,
+  (
+    cardId: string | null,
+    cardDetails: Record<string, CardDetail>,
+    cardImages: Record<string, string>,
+    accounts: CardAccount[],
+  ) => {
+    if (!cardId) return null;
+
+    const details = cardDetails[cardId];
+    const image = cardImages[cardId];
+
+    if (!details || !image) return null;
+
+    const account = accounts.find((acc) => acc.id === details.accountId);
+
+    return {
+      cardId,
+      details,
+      imageBase64: image,
+      account,
+      currency: account?.currency ?? 'N/A',
+      formattedBalance: account
+        ? `${account.currency} ${account.balance.toLocaleString()}`
+        : 'N/A',
+      shouldShowCreditLimit: details.type === 'CREDIT' && !!details.creditLimit,
+      formattedCreditLimit:
+        account && details.creditLimit
+          ? `${account.currency} ${details.creditLimit.toLocaleString()}`
+          : 'N/A',
+      isActiveStatus: details.status === 'ACTIVE',
+    };
+  },
+);
+export const selectCardTransactions = createSelector(
+  selectCardsState,
+  (state: CardsState): Record<string, ITransactions[]> => state.cardTransactions,
+);
+
+export const selectCardTransactionsLoading = createSelector(
+  selectCardsState,
+  (state: CardsState): boolean => state.cardTransactionsLoading,
+);
+
+export const selectCardTransactionsError = createSelector(
+  selectCardsState,
+  (state: CardsState): string | null => state.cardTransactionsError,
+);
+
+export const selectCardTransactionsTotalCount = createSelector(
+  selectCardsState,
+  (state: CardsState): Record<string, number> => state.cardTransactionsTotalCount,
+);
+
+export const selectCardTransactionsByCardId = (cardId: string) =>
+  createSelector(
+    selectCardTransactions,
+    (transactions: Record<string, ITransactions[]>): ITransactions[] =>
+      transactions[cardId] || [],
+  );
+
+export const selectCardTransactionsTotalByCardId = (cardId: string) =>
+  createSelector(
+    selectCardTransactionsTotalCount,
+    (totals: Record<string, number>): number =>
+      totals[cardId] || 0,
+  );

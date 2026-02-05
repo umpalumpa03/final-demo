@@ -15,15 +15,22 @@
     </div>
 
     <div class="external-recipient__button-col">
-      <app-button
-        (click)="onVerify()"
-        [isDisabled]="!recipientInput.valid || !recipientInput.value"
-        [isLoading]="isLoading()"
-        [fullWidth]="isMobile()"
+      <app-tooltip
+        [content]="'transfers.external.recipient.disabledTooltip' | translate"
+        placement="top"
+        
+        [disabled]="!!(recipientInput.valid && recipientInput.value)"
       >
-        {{'transfers.external.recipient.verify' | translate}}
-        <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />
-      </app-button>
+        <app-button
+          (click)="onVerify()"
+          [isDisabled]="!recipientInput.valid || !recipientInput.value"
+          [isLoading]="isLoading()"
+          [fullWidth]="isMobile()"
+        >
+          {{'transfers.external.recipient.verify' | translate}}
+          <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />
+        </app-button>
+      </app-tooltip>
     </div>
   </div>
 </main>

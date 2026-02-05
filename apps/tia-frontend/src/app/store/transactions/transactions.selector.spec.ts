@@ -5,6 +5,10 @@ import {
   selectFilters,
   selectNextCursor,
   selectError,
+  selectTotalTransactions,
+  selectCategoriesRaw,
+  selectCategoryOptions,
+  selectCategoryOptionsForModal,
   selectTransactionViewModel,
 } from './transactions.selector';
 import { describe, it, expect } from 'vitest';
@@ -19,11 +23,11 @@ describe('Transaction Selectors', () => {
     total: 100,
     categories: [
       {
-        categoryName: 'saba',
-        id: 'saba',
+        categoryName: 'Food',
+        id: 'cat-1',
       },
     ],
-  };
+  } as TransactionState;
 
   it('should select items', () => {
     const result = selectItems.projector(initialState);
@@ -49,6 +53,37 @@ describe('Transaction Selectors', () => {
   it('should select error', () => {
     const result = selectError.projector(initialState);
     expect(result).toEqual({ message: 'Failed' });
+  });
+
+  it('should select total transactions', () => {
+    const result = selectTotalTransactions.projector(initialState);
+    expect(result).toBe(100);
+  });
+
+  it('should select raw categories', () => {
+    const result = selectCategoriesRaw.projector(initialState);
+    expect(result.length).toBe(1);
+    expect(result[0].categoryName).toBe('Food');
+  });
+
+  it('should select categories mapped for filters (value is name)', () => {
+    const categories = [{ categoryName: 'Food', id: '1' } as any];
+    const result = selectCategoryOptions.projector(categories);
+
+    expect(result[0]).toEqual({
+      label: 'Food',
+      value: 'Food',
+    });
+  });
+
+  it('should select categories mapped for modal (value is id)', () => {
+    const categories = [{ categoryName: 'Food', id: '1' } as any];
+    const result = selectCategoryOptionsForModal.projector(categories);
+
+    expect(result[0]).toEqual({
+      label: 'Food',
+      value: '1',
+    });
   });
 
   it('should combine state into view model', () => {

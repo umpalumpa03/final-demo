@@ -1,12 +1,15 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, output, signal } from '@angular/core';
 import { EmailDetail } from '../../shared/ui/email-detail/email-detail';
 import { MessagingStore } from '../../store/messaging.store';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
+import { LibraryTitle } from '../../../../storybook/shared/library-title/library-title';
+import { RepliesCard } from '../../shared/ui/replies-card/replies-card';
 
 @Component({
   selector: 'app-inbox-detail',
-  imports: [EmailDetail, ButtonComponent],
+  imports: [EmailDetail, ButtonComponent, UiModal, LibraryTitle, RepliesCard],
   templateUrl: './inbox-detail.html',
   styleUrl: './inbox-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,12 +17,44 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 export class InboxDetail implements OnInit {
   private messagingStore = inject(MessagingStore);
   private route = inject(ActivatedRoute);
-
+  private router = inject(Router);
+  public readonly deleteMail = output<number>();
+  public isFavoriteLoading = computed(() => !!this.messagingStore.isFavoriteLoading?.());
   private readonly emailId = this.route.snapshot.paramMap.get('id') || '';
-  public emailDetail = this.messagingStore.emailDetail;
+  public emailDetail = computed(() => this.messagingStore.emailDetail?.());
+  public isFavorite = computed(() => this.emailDetail()?.isFavorite ?? false);
+  public isDeleteModalOpen = signal(false);
+  public mailReplies = computed(() => this.messagingStore.mailReplies?.() || []);
 
   ngOnInit(): void {
-    this.messagingStore.getEmailById(+this.emailId); 
+    this.messagingStore.getEmailById(+this.emailId);
+    this.messagingStore.getMailReplies(+this.emailId);
+  }
+
+  public toggleFavorite(): void {
+    const email = this.emailDetail?.();
+    if (email) {
+      this.messagingStore.togleFavorite({ mailId: email.id, isFavorite: !email.isFavorite });
+    }
+  }
+
+  public onDelete(event: Event): void {
+    event.stopPropagation();
+    this.isDeleteModalOpen.set(true);
+  }
+
+  public onConfirmDelete(): void {
+    const mail = this.emailDetail?.();
+    if (mail) {
+      this.deleteMail.emit(mail.id);
+      this.messagingStore.deleteMail(mail.id);
+      this.isDeleteModalOpen.set(false);
+      this.router.navigate(['..'], { relativeTo: this.route });
+    }
+  }
+
+  public onCancelDelete(): void {
+    this.isDeleteModalOpen.set(false);
   }
 
 }

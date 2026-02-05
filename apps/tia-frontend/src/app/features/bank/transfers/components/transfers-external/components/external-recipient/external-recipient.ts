@@ -32,7 +32,8 @@ import { RecipientType } from '../../../../models/transfers.state.model';
 import { TransferStore } from '../../../../store/transfers.store';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { TransferExternalService } from '../../../../services/transfer.external.service';
-import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.service';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
+import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 
 @Component({
   selector: 'app-external-recipient',
@@ -42,6 +43,7 @@ import { BreakpointService } from '@tia/shared/services/breakpoints/breakpoint.s
     ButtonComponent,
     ReactiveFormsModule,
     AlertTypesWithIcons,
+    Tooltip,
   ],
   providers: [],
   templateUrl: './external-recipient.html',
@@ -154,4 +156,5 @@ export class ExternalRecipient implements OnInit {
       this.transferExternalService.verifyRecipient(this.recipientInput.value);
     }
   }
+  onDone(): void {}
 }

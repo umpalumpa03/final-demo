@@ -1,27 +1,49 @@
 <div class="global-bank-wrapper">
-  <app-transactions-filters
-    [categoryOptions]="categoryOptions()"
-    [accountOptions]="accountOptions()"
-    (filterChange)="onFiltersChange($event)"
-  ></app-transactions-filters>
-
-  <app-showcase-card>
-    <app-library-title
-      [title]="'Transactions'"
-      [subtitle]="totalTransactionsString()"
-    ></app-library-title>
-
-    <div
-      (scroll)="onScroll($event)"
-      class="transcaction-table-wrapper__scroll-container"
+  <div class="transaction-filters-wrapper">
+    <app-transactions-filters
+      [categoryOptions]="categoryOptions()"
+      [accountOptions]="accountOptions()"
+      [currencyOptions]="currencyOptions()"
+      (filterChange)="onFiltersChange($event)"
+    ></app-transactions-filters>
+  </div>
+  <app-basic-card
+    [maxWidth]="'100%'"
+    [width]="'100%'"
+    [padding]="'2.4rem'"
+    [height]="'72.1rem'"
+    [title]="'Transactions'"
+    [subtitle]="totalTransactionsString()"
+  >
+    <app-scroll-area
+      [height]="'60rem'"
+      [hideBorder]="true"
+      (scrollBottom)="loadProducts()"
     >
       @if(isLoading() && items().length === 0){
       <app-route-loader [variant]="'full-page'"></app-route-loader>
       } @else {
-      <app-tables [tableConfig]="tableConfig()"></app-tables>
+      <app-tables
+        [tableConfig]="tableConfig()"
+        (transactionClickedOutput)="onTableAction($event)"
+      ></app-tables>
       } @if(isLoading() && items().length > 0){
       <app-button [isLoading]="true" [variant]="'outline'">Loading</app-button>
       }
-    </div>
-  </app-showcase-card>
+    </app-scroll-area>
+  </app-basic-card>
+  <app-ui-modal
+    [isOpen]="isCategorizeModalOpen()"
+    (closed)="closeCategorizeModal()"
+  >
+    @if(selectedTransaction(); as trx) {
+    <app-categorize-modal
+      [transaction]="trx"
+      [selectCategoryOptions]="categoryOptionsForModal()"
+      (save)="onCategorizeSave($event)"
+      (cancel)="closeCategorizeModal()"
+      (createCategory)="onCategoryCreate($event)"
+    ></app-categorize-modal>
+    }
+  </app-ui-modal>
 </div>
