@@ -4,6 +4,13 @@
 .paybill-main {
   @include display-flex(column);
   width: 100%;
+  gap: 2.4rem;
+  padding: 2.4rem;
+
+  &__search-container {
+    max-width: 60rem;
+    width: 100%;
+  }
 
   &__stage-wrapper {
     @include display-flex(column);

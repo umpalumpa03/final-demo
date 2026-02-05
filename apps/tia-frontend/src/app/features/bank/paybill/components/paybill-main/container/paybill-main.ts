@@ -6,18 +6,15 @@ import {
   OnInit,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  FormControl,
-  ReactiveFormsModule,
-  ɵInternalFormsSharedModule,
-} from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, startWith, tap } from 'rxjs';
 import { PaybillMainFacade } from '../services/paybill-main-facade';
 import { RouterModule } from '@angular/router';
+import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 
 @Component({
   selector: 'app-paybill-main',
-  imports: [ɵInternalFormsSharedModule, ReactiveFormsModule, RouterModule],
+  imports: [ReactiveFormsModule, RouterModule, TextInput],
   templateUrl: './paybill-main.html',
   styleUrl: './paybill-main.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

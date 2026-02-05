@@ -1,4 +1,13 @@
 <div class="paybill-main">
+  @if (facade.showSearch()) {
+  <div class="paybill-main__search-container">
+    <lib-text-input
+      [formControl]="searchControl"
+      [config]="facade.searchInputConfig()"
+    />
+  </div>
+  }
+
   <div class="paybill-main__stage-wrapper">
     <router-outlet></router-outlet>
   </div>

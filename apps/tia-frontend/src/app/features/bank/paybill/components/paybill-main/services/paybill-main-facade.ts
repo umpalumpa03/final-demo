@@ -201,7 +201,7 @@ export class PaybillMainFacade {
   });
 
   public readonly searchInputConfig = computed<InputConfig>(() => ({
-    placeholder: `Search ${this.activeCategory()?.name || ''}...`,
+    placeholder: `Search active providers...`,
     prefixIcon: 'images/svg/search.svg',
     clearable: true,
     ariaLabel: 'Search providers',
