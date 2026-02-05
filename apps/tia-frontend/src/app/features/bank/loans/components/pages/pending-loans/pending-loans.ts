@@ -29,8 +29,6 @@ export class PendingLoans {
   protected readonly isDetailsLoading = this.store.detailsLoading;
 
   public readonly selectedLoan = signal<ILoan | null>(null);
-  public readonly prepaymentLoan = signal<ILoanDetails | null>(null);
-  public readonly isPrepaymentOpen = signal(false);
   public readonly isDetailsOpen = signal(false);
 
   public ngOnInit(): void {
