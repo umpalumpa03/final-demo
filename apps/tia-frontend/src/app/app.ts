@@ -17,6 +17,10 @@ export class App {
 
   constructor() {
     const savedLanguage = localStorage.getItem('language') || 'en';
-    this.translate.use(savedLanguage);
+    if (savedLanguage === 'georgian' || savedLanguage === 'ka') {
+      this.translate.use('ka');
+    } else if(savedLanguage === 'english' || savedLanguage === 'en') {
+      this.translate.use('en');
+    }
   }
 }
