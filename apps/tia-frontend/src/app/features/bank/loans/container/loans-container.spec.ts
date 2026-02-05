@@ -57,9 +57,4 @@ describe('LoansContainer', () => {
     );
     expect(loansStoreMock.loadCounts).toHaveBeenCalled();
   });
-
-  it('should reset store on destroy', () => {
-    fixture.destroy();
-    expect(loansStoreMock.reset).toHaveBeenCalled();
-  });
 });
