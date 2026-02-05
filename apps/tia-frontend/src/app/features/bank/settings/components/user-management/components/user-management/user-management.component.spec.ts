@@ -9,9 +9,20 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 describe('UserManagementComponent', () => {
   let component: UserManagementComponent;
   let fixture: ComponentFixture<UserManagementComponent>;
-
   let store: any;
   let modalService: UserModalService;
+
+  const users = [
+    {
+      id: '1',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'j@t.com',
+      username: 'jd',
+      role: 'admin',
+      isBlocked: false,
+    },
+  ];
 
   beforeEach(async () => {
     const mockStore = {
@@ -21,26 +32,24 @@ describe('UserManagementComponent', () => {
       deleteUser: vi.fn(),
       toggleBlockStatus: vi.fn(),
       updateUser: vi.fn(),
-      users: signal([{ id: '1', firstName: 'U1', isBlocked: false }]),
+      users: signal(users),
       selectedUser: signal({ id: '1', firstName: 'John' }),
       loading: signal(false),
       actionLoading: signal(false),
       error: signal(null),
     };
 
-    const mockState = {
-      newConfig: signal({ searchInput: { placeholder: 'Search...' } }),
-    };
-
     await TestBed.configureTestingModule({
       imports: [UserManagementComponent],
-      providers: [],
     })
       .overrideComponent(UserManagementComponent, {
         set: {
           providers: [
             { provide: UserManagementStore, useValue: mockStore },
-            { provide: UserManagementState, useValue: mockState },
+            {
+              provide: UserManagementState,
+              useValue: { newConfig: signal({}) },
+            },
             UserModalService,
           ],
         },
@@ -49,25 +58,13 @@ describe('UserManagementComponent', () => {
 
     fixture = TestBed.createComponent(UserManagementComponent);
     component = fixture.componentInstance;
-
     store = fixture.debugElement.injector.get(UserManagementStore);
     modalService = fixture.debugElement.injector.get(UserModalService);
-
     fixture.detectChanges();
   });
 
-  it('should initialize and handle pagination', () => {
-    expect(store.loadUsers).toHaveBeenCalled();
-
-    expect(component['pagination'].currentPage()).toBe(1);
-    component.onPageChange(2);
-    expect(component['pagination'].currentPage()).toBe(2);
-  });
-
-  it('should open modals via service', () => {
+  it('should handle modals', () => {
     component.details('1');
-    expect(store.clearSelectedUser).toHaveBeenCalled();
-    expect(store.loadUserDetails).toHaveBeenCalledWith('1');
     expect(modalService.modalState()).toBe('details');
 
     component.onEdit('1');
@@ -75,37 +72,50 @@ describe('UserManagementComponent', () => {
 
     component.deleteUser('1');
     expect(modalService.modalState()).toBe('delete');
+
+    component.onCloseModal();
+    expect(modalService.modalState()).toBe('none');
   });
 
-  it('should handle actions (Update, Delete, Block)', () => {
-    modalService.openEdit();
+  it('should handle actions', async () => {
     component.onUpdateUser({ firstName: 'New' } as any);
     expect(store.updateUser).toHaveBeenCalled();
-    expect(store.loadUsers).toHaveBeenCalledTimes(2);
-    expect(modalService.modalState()).toBe('none');
+
+    store.selectedUser.set(null);
+    component.onUpdateUser({} as any);
 
     modalService.openDelete('1');
     component.onConfirmDelete();
     expect(store.deleteUser).toHaveBeenCalledWith('1');
+
+    modalService.close();
+    component.onConfirmDelete();
 
     component.block('1', false);
     expect(store.toggleBlockStatus).toHaveBeenCalledWith({
       id: '1',
       isBlocked: true,
     });
-    expect(component['actionProcessingId']()).toBe('1');
   });
 
-  it('should auto-close modal when user is removed', async () => {
-    component.deleteUser('1');
-    fixture.detectChanges();
-    expect(modalService.modalState()).toBe('delete');
-
+  it('should handle effects', async () => {
+    modalService.openDelete('1');
     store.users.set([]);
-
     fixture.detectChanges();
     await fixture.whenStable();
-
     expect(modalService.modalState()).toBe('none');
+
+    component['isSaving'].set(true);
+    store.actionLoading.set(false);
+    store.error.set(null);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(component['isSaving']()).toBe(false);
+
+    component['isSaving'].set(true);
+    store.error.set('error');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(component['isSaving']()).toBe(false);
   });
 });

@@ -6,7 +6,7 @@ import {
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, Observable, switchMap } from 'rxjs';
-import { PUBLIC_ENDPOINTS } from '../models/tokens.model';
+import { PUBLIC_ENDPOINTS, Routes } from '../models/tokens.model';
 import { TokenService } from '../services/token.service';
 import { AuthService } from '../services/auth.service';
 import { Subject, filter, take, throwError } from 'rxjs';
@@ -44,7 +44,7 @@ export const authInterceptor: HttpInterceptorFn = (
       const refreshToken = tokenService.refreshToken;
       if (!refreshToken) {
         tokenService.clearAuthToken();
-        router.navigate(['/auth/sign-in']);
+        router.navigate([Routes.SIGN_IN]);
         return throwError(() => err);
       }
 
@@ -73,7 +73,7 @@ export const authInterceptor: HttpInterceptorFn = (
               refreshInProgress = false;
               refreshSubject.next(null);
               tokenService.clearAuthToken();
-              router.navigate(['/auth/sign-in']);
+              router.navigate([Routes.SIGN_IN]);
 
               return throwError(() => err);
             }),

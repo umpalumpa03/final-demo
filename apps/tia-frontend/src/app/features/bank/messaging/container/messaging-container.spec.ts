@@ -6,6 +6,7 @@ import { InboxService } from '@tia/shared/services/messages/inbox.service';
 import { of } from 'rxjs';
 import { MessagingStore } from '../store/messaging.store';
 import { Store } from '@ngrx/store';
+import { signal } from '@angular/core';
 
 describe('MessagingContainer', () => {
   let component: MessagingContainer;
@@ -14,7 +15,7 @@ describe('MessagingContainer', () => {
 
   beforeEach(async () => {
     mockRoleStore = {
-      select: vi.fn().mockReturnValue(of('USER'))
+      selectSignal: vi.fn().mockReturnValue(signal('USER'))
     };
     
     await TestBed.configureTestingModule({

@@ -63,7 +63,7 @@ export class Important implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!(this.nav.previous()?.includes('important'))) {
+    if (!(this.nav.previous()?.includes('important') && this.messagingStore.mails().length > 0)) {
       this.messagingStore.loadMails('important');
       this.messagingStore.getTotalCount('importants');
     }

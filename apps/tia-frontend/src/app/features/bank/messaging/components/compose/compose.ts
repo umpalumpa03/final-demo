@@ -56,8 +56,8 @@ export class Compose {
     isImportant: [false],
   });
 
-  public readonly role = toSignal(
-    this.roleStore.select(userInfoFeature.selectRole),
+  public readonly role = this.roleStore.selectSignal(
+    userInfoFeature.selectRole,
   );
 
   @ViewChild('toInput') toInput!: EmailChipsInput;

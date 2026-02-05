@@ -50,13 +50,19 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
     fields: [
       {
         type: 'text',
+        label: 'Current Group Name',
+        controlName: 'currentName',
+      },
+      {
+        type: 'text',
         label: 'New Group Name',
         placeholder: 'Enter new name',
         controlName: 'name',
         required: true,
       },
     ],
-    formSubmitType: 'create-group',
+    formSubmitType: 'rename-group',
+    formGroupName: 'editGroup',
     submitAction: 'renameGroup',
   },
 
@@ -67,6 +73,8 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
     submitButtonType: 'destructive',
     formSubmitType: 'create-group',
     submitAction: 'deleteGroup',
+    description:
+      'Templates in this group will be moved to "Ungrouped". This action cannot be undone.',
   },
 
   [ModalType.Template]: {
@@ -115,13 +123,19 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
     fields: [
       {
         type: 'text',
-        label: 'New Template Name',
+        label: 'Current Template Name',
+        controlName: 'currentName',
+      },
+      {
+        type: 'text',
+        label: 'Enter new name',
         placeholder: 'Enter new name',
         controlName: 'name',
         required: true,
       },
     ],
-    formSubmitType: 'create-group',
+    formSubmitType: 'rename-template',
+    formGroupName: 'editTemplate',
     submitAction: 'renameTemplate',
   },
 

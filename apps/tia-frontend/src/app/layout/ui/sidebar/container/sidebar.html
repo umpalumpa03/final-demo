@@ -42,12 +42,12 @@
     />
   </button>
 
-  <div class="sidebar__header">
+  <a class="sidebar__header" routerLink="/bank/dashboard">
     <div class="sidebar__header-icon">T</div>
     @if (!isCollapsed()) {
     <div class="sidebar__header-title">TIA</div>
     }
-  </div>
+  </a>
 
   <app-navigation-bar
     [orientation]="'vertical'"

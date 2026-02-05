@@ -96,8 +96,9 @@ describe('Important', () => {
     expect(mockMessagingStore.getTotalCount).toHaveBeenCalledWith('importants');
   });
 
-  it('should NOT load important mails when coming from important page', () => {
+  it('should NOT load important mails when coming from important page with existing mails', () => {
     mockNavigationService.previous.mockReturnValue('/bank/messaging/important');
+    mockMessagingStore.mails.set([{ id: 1 }, { id: 2 }]); 
 
     fixture.detectChanges();
 

@@ -28,7 +28,7 @@ export class Sent implements OnInit {
   private nav = inject(NavigationService);
 
   ngOnInit(): void {
-    if (!(this.nav.previous()?.includes('sent'))) {
+    if (!(this.nav.previous()?.includes('sent') && this.messagingStore.mails().length > 0)) {
       this.messagingStore.loadMails('sent');
       this.messagingStore.getTotalCount('sent');
     }

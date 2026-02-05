@@ -138,6 +138,12 @@
     gap: 1.2rem;
     min-height: 6.5rem;
     padding: 0 1.6rem;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+      opacity: 0.9;
+    }
   }
 
   &__header-icon {

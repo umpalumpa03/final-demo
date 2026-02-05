@@ -58,7 +58,7 @@ export class Draft implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!(this.nav.previous()?.includes('draft'))) {
+    if (!(this.nav.previous()?.includes('draft') && this.messagingStore.mails().length > 0)) {
     this.messagingStore.loadMails('drafts');
     this.messagingStore.getDraftTotalCount(0);
     }

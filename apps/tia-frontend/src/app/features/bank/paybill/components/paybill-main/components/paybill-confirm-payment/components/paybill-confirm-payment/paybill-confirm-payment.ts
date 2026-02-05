@@ -23,6 +23,7 @@ import {
   mapConfirmSummaryFields,
 } from '../../config/translate.config';
 import { TranslatePipe } from '@ngx-translate/core';
+import { paymentTitleConfig } from '../../config/header.config';
 
 @Component({
   selector: 'app-paybill-confirm-payment',
@@ -40,6 +41,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillConfirmPayment {
+
   // Inputs
 
   public readonly provider = input.required<PaybillProvider>();
@@ -72,7 +74,4 @@ export class PaybillConfirmPayment {
       this.details(),
     ),
   );
-
-  protected readonly title = 'Confirm Payment';
-  protected readonly subtitle = 'Review the details before proceeding';
 }

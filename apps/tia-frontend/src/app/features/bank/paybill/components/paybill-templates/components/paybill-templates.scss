@@ -27,4 +27,10 @@
     background-color: $white;
     padding: 2rem 1rem;
   }
+
+  &__warning {
+    @include font-inter(400, 1.4rem, 2rem);
+    color: $gray-700;
+    margin-top: 1.6rem;
+  }
 }

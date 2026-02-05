@@ -30,7 +30,7 @@ describe('Compose', () => {
       sendEmail: vi.fn()
     };
     mockRoleStore = {
-      select: vi.fn().mockReturnValue(of('USER'))
+      selectSignal: vi.fn().mockReturnValue(signal('USER')) 
     };
 
     await TestBed.configureTestingModule({
