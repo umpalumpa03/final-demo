@@ -44,7 +44,12 @@ import { SimpleAlertType } from '@tia/shared/lib/alerts/shared/models/alert.mode
 import { TransfersRepeatActions } from 'apps/tia-frontend/src/app/store/transfers-repeat/transfers-repeat.actions';
 import { Router } from '@angular/router';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
-import { LibraryTitle } from "../../../storybook/shared/library-title/library-title";
+import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
+import {
+  TranslateModule,
+  TranslatePipe,
+  TranslateService,
+} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-transactions-container',
@@ -58,8 +63,10 @@ import { LibraryTitle } from "../../../storybook/shared/library-title/library-ti
     CategorizeModal,
     UiModal,
     SimpleAlerts,
-    LibraryTitle
-],
+    LibraryTitle,
+    TranslatePipe,
+    TranslateModule,
+  ],
   templateUrl: './transactions-container.html',
   styleUrl: './transactions-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -68,6 +75,10 @@ export class TransactionsContainer implements OnInit {
   private store = inject(Store);
   private readonly accountsService = inject(AccountsApiService);
   private router = inject(Router);
+  private translate = inject(TranslateService);
+  private currentLang = toSignal(this.translate.onLangChange, {
+    initialValue: null,
+  });
 
   private readonly currencyList = toSignal(
     this.accountsService.getCurrencies(),
@@ -111,9 +122,9 @@ export class TransactionsContainer implements OnInit {
     selectTotalTransactions,
   );
 
-  private showValidationAlert(type: SimpleAlertType, message: string): void {
+  private showValidationAlert(type: SimpleAlertType, messageKey: string): void {
     this.alertType.set(type);
-    this.alertMessage.set(message);
+    this.alertMessage.set(this.translate.instant(messageKey));
 
     setTimeout(() => {
       this.alertMessage.set(null);
@@ -121,16 +132,28 @@ export class TransactionsContainer implements OnInit {
   }
 
   public readonly totalTransactionsString = computed(() => {
+    this.currentLang();
+
     const total = this.totalTransactions().toString();
     const itemsFetched = this.items().length.toString();
 
-    return `Showing ${itemsFetched} of ${total} transactions`;
+    return this.translate.instant('transactions.table.showing_text', {
+      fetched: itemsFetched,
+      total: total,
+    });
   });
 
-  public tableConfig = computed<TableConfig>(() => ({
-    ...TRANSACTIONS_BASE_CONFIG,
-    rows: this.items().map(convertTransactionData),
-  }));
+  public tableConfig = computed<TableConfig>(() => {
+    this.currentLang();
+    return {
+      ...TRANSACTIONS_BASE_CONFIG,
+      headers: TRANSACTIONS_BASE_CONFIG.headers.map((h) => ({
+        ...h,
+        title: this.translate.instant(h.title),
+      })),
+      rows: this.items().map(convertTransactionData),
+    };
+  });
 
   public ngOnInit(): void {
     this.store.dispatch(TransactionActions.enter());
@@ -209,23 +232,16 @@ export class TransactionsContainer implements OnInit {
 
   public onRepeatAction(transaction: ITransactions): void {
     if (transaction.transactionType === 'credit') {
-      this.showValidationAlert(
-        'warning',
-        'Income transactions cannot be repeated.',
-      );
+      this.showValidationAlert('warning', 'transactions.alerts.income_warning');
       return;
     }
     if (transaction.transferType === 'Loan') {
-      this.showValidationAlert(
-        'warning',
-        'Loan payments cannot be repeated manually.',
-      );
+      this.showValidationAlert('warning', 'transactions.alerts.loan_warning');
       return;
     }
 
     this.onRepeatConfirm(transaction);
   }
-
   public onRepeatConfirm(transaction: ITransactions): void {
     this.store.dispatch(
       TransfersRepeatActions.setTransactionToRepeat({ transaction }),

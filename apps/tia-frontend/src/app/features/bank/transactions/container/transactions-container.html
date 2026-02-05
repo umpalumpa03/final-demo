@@ -1,5 +1,7 @@
 <div class="global-bank-wrapper">
-  <app-library-title [title]="'Transactions'"></app-library-title>
+  <app-library-title
+    [title]="'transactions.title' | translate"
+  ></app-library-title>
   <div class="transaction-filters-wrapper">
     <app-transactions-filters
       [categoryOptions]="categoryOptions()"
@@ -22,7 +24,7 @@
     [width]="'100%'"
     [padding]="'2.4rem'"
     [height]="'calc(100vh - 45.4rem)'"
-    [title]="'Transactions'"
+    [title]="'transactions.title' | translate"
     [subtitle]="totalTransactionsString()"
   >
     <app-scroll-area
@@ -38,7 +40,9 @@
         (transactionClickedOutput)="onTableAction($event)"
       ></app-tables>
       } @if(isLoading() && items().length > 0){
-      <app-button [isLoading]="true" [variant]="'outline'">Loading</app-button>
+      <app-button [isLoading]="true" [variant]="'outline'"
+        >{{ 'transactions.table.loading' | translate }}</app-button
+      >
       }
     </app-scroll-area>
   </app-basic-card>

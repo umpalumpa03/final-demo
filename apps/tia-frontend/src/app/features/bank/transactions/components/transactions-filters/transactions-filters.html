@@ -2,8 +2,8 @@
   [minWidth]="'100%'"
   [width]="'100%'"
   [padding]="'2.4rem'"
-  [title]="'Filters'"
-  [subtitle]="'Apply filters to refine your transaction list'"
+  [title]="'transactions.filters.title' | translate"
+  [subtitle]="'transactions.filters.subtitle' | translate"
   [height]="'calc(100vh -6rem)'"
 >
   <div class="transactions-filters">
@@ -14,8 +14,9 @@
         [variant]="'outline'"
         [icon]="'x-icon.svg'"
         (click)="resetFilters()"
-        >Reset All</app-button
       >
+        {{ 'transactions.filters.reset_all' | translate }}
+      </app-button>
       }
     </div>
 
@@ -24,18 +25,27 @@
 
       <div class="transactions-filters__form__input-wrapper">
         @if (field.type === 'select') {
+
         <lib-select
           [formControlName]="field.controlName"
           [options]="field.options || []"
-          [config]="field.uiConfig"
+          [config]="{
+             label: (field.uiConfig.label | translate),
+             placeholder: (field.uiConfig.placeholder | translate),
+          }"
           [height]="'3.6rem'"
         >
         </lib-select>
+
         } @else {
+
         <lib-text-input
           [formControlName]="field.controlName"
           [type]="field.inputType || 'text'"
-          [config]="field.uiConfig"
+          [config]="{
+             label: (field.uiConfig.label | translate),
+             placeholder: (field.uiConfig.placeholder | translate)
+          }"
         >
         </lib-text-input>
         }

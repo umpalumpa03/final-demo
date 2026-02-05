@@ -6,14 +6,15 @@
   ></app-simple-alerts>
 </div>
 }
+
 <app-basic-card
-  [title]="title()"
-  [subtitle]="subTitle()"
+  [title]="modalConfig.title | translate"
+  [subtitle]="modalConfig.subTitle | translate"
   [maxWidth]="'51.1rem'"
   [width]="'100%'"
   [borderColor]="'transparent'"
 >
-  @if (transaction()) { @let trx =transaction();
+  @if (transaction()) { @let trx = transaction();
   <div class="transaction-summary">
     <div class="transaction-summary__title">{{ trx?.description }}</div>
     <div class="transaction-summary__meta">
@@ -22,36 +23,49 @@
     </div>
   </div>
   }
+
   <form [formGroup]="form" class="categorize-form">
     <div class="categorize-form__group">
       <lib-select
-        [config]="selectConfig"
+        [config]="{
+             label: (selectConfig.label | translate),
+             placeholder: (selectConfig.placeholder | translate),
+             height: selectConfig.height
+          }"
         [options]="selectCategoryOptions()"
         formControlName="categoryId"
       ></lib-select>
     </div>
+
     <div class="categorize-form__custom-category">
       <div class="categorize-form__row">
         <div class="categorize-form__input-wrapper">
           <lib-text-input
-            [config]="inputConfig"
+            [config]="{
+                 label: (inputConfig.label | translate),
+                 placeholder: (inputConfig.placeholder | translate),
+                 margin: inputConfig.margin
+              }"
             formControlName="newCategoryName"
           ></lib-text-input>
         </div>
+
         <app-button
           [variant]="'default'"
           [icon]="'adding.svg'"
           [type]="'button'"
           (click)="onCategoryCreate()"
         >
-          Add
+          {{ 'transactions.categorize_modal.buttons.add' | translate }}
         </app-button>
       </div>
     </div>
+
     <div class="categorize-form__actions">
       <app-button [variant]="'outline'" (click)="onCancel()" [type]="'button'">
-        Cancel
+        {{ 'transactions.categorize_modal.buttons.cancel' | translate }}
       </app-button>
+
       <app-button
         [variant]="'default'"
         [icon]="'save-transaction.svg'"
@@ -59,7 +73,7 @@
         (click)="onSave()"
         [type]="'button'"
       >
-        Save Category
+        {{ 'transactions.categorize_modal.buttons.save' | translate }}
       </app-button>
     </div>
   </form>
