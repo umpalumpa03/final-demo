@@ -5,13 +5,13 @@ import {
   signal,
 } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
-import { Tabs } from '@tia/shared/lib/navigation/tabs/tabs';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Tabs } from '../../../../shared/lib/navigation/tabs/tabs';
 import { getProductTabs } from '../config/products.config';
 
 @Component({
   selector: 'app-products-container',
-  imports: [Tabs, RouterOutlet],
+  imports: [Tabs, RouterOutlet, TranslatePipe],
   templateUrl: './products-container.html',
   styleUrl: './products-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

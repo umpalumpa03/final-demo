@@ -1,6 +1,7 @@
 <div class="global-bank-wrapper">
+  <h1 class="title">{{ 'my-products.title' | translate }}</h1>
   @if (shouldShowTabs) {
-    <app-tabs [tabs]="tabs()" [orientation]="'horizontal'" ></app-tabs>
+  <app-tabs [tabs]="tabs()" [orientation]="'horizontal'"></app-tabs>
   }
   <router-outlet></router-outlet>
 </div>

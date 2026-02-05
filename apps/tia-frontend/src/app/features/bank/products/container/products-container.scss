@@ -1,0 +1,8 @@
+@use '../../../../shared/styles/mixins' as *;
+@use '../../../../shared/styles/palette' as *;
+
+.title {
+  @include font-arimo(700, 2.4rem);
+  color: $blue-deep-foreground;
+  margin-bottom: 1rem;
+}
