@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { Mail } from '../../../store/messaging.state';
 import { Avatar } from '@tia/shared/lib/data-display/avatars/avatar';
 import { DatePipe } from '@angular/common';
@@ -25,6 +25,14 @@ export class MailCard {
   public isDeleteModalOpen = signal(false);
   public readonly checked = input<boolean>(false);
   public readonly checkedChange = output<boolean>();
+
+  public readonly currentUserEmail = input<string>();
+
+  public readonly isCurrentUser = computed(() => {
+    const currentEmail = this.currentUserEmail();
+    const mailSenderEmail = this.mail()?.senderEmail;
+    return currentEmail && mailSenderEmail && currentEmail === mailSenderEmail;
+  });
 
   public onCheckboxChange(checked: boolean): void {
     this.checkedChange.emit(checked);
@@ -60,7 +68,10 @@ export class MailCard {
   }
 
   public getInitials(email: string): string {
-    return email.substring(0, 2).toUpperCase();
+    if (this.isCurrentUser()) {
+      return 'ME';
+    }
+    return email?.substring(0, 2).toUpperCase();
   }
 
 }

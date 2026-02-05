@@ -2,13 +2,31 @@
   @if (!fromSent) {
   <div class="button-container">
     <app-button icon="send-email.svg" (click)="sendDraft()">Send</app-button>
-    <app-button variant="outline" [icon]="'red-trash.svg'" (click)="onDelete($event)">Delete</app-button>
+    <app-button
+      variant="outline"
+      [icon]="'red-trash.svg'"
+      (click)="onDelete($event)"
+      >Delete</app-button
+    >
+  </div>
+  } @else if (fromSent) {
+  <div class="button-container">
+    <app-button [icon]="'reply.svg'" (click)="onReply()">Reply</app-button>
   </div>
   }
 </app-email-detail>
-@if (mailReplies().length && fromSent) { @for (reply of mailReplies(); track reply.id) {
-<app-replies-card  [reply]="reply"></app-replies-card>
+@if (mailReplies().length && fromSent) { @for (reply of mailReplies(); track
+reply.id) {
+<app-replies-card [reply]="reply" [currentUserEmail]="currentUserEmail()"></app-replies-card>
 } }
+@if (isReplyOpen()) {
+  <div #replyCard>
+    <app-reply-form
+      (sendReply)="onSendReply($event)"
+      (cancel)="onCancelReply()"
+    ></app-reply-form>
+  </div>
+}
 <app-ui-modal [isOpen]="isDeleteModalOpen()" (closed)="onCancelDelete()">
   <div class="delete-account">
     <header class="delete-account__header">

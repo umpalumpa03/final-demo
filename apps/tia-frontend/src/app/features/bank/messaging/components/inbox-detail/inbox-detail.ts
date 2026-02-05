@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, OnInit, output, signal, ViewChild } from '@angular/core';
 import { EmailDetail } from '../../shared/ui/email-detail/email-detail';
 import { MessagingStore } from '../../store/messaging.store';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -6,10 +6,14 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { LibraryTitle } from '../../../../storybook/shared/library-title/library-title';
 import { RepliesCard } from '../../shared/ui/replies-card/replies-card';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { ReplyForm } from '../../shared/ui/reply-form/reply-form';
+import { Store } from '@ngrx/store';
+import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
 
 @Component({
   selector: 'app-inbox-detail',
-  imports: [EmailDetail, ButtonComponent, UiModal, LibraryTitle, RepliesCard],
+  imports: [EmailDetail, ButtonComponent, UiModal, LibraryTitle, RepliesCard, FormsModule, ReactiveFormsModule, ReplyForm],
   templateUrl: './inbox-detail.html',
   styleUrl: './inbox-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,6 +22,8 @@ export class InboxDetail implements OnInit {
   private messagingStore = inject(MessagingStore);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private readonly store = inject(Store);
+  private readonly fb = inject(FormBuilder);
   public readonly deleteMail = output<number>();
   public isFavoriteLoading = computed(() => !!this.messagingStore.isFavoriteLoading?.());
   private readonly emailId = this.route.snapshot.paramMap.get('id') || '';
@@ -25,6 +31,32 @@ export class InboxDetail implements OnInit {
   public isFavorite = computed(() => this.emailDetail()?.isFavorite ?? false);
   public isDeleteModalOpen = signal(false);
   public mailReplies = computed(() => this.messagingStore.mailReplies?.() || []);
+  public isReplyOpen = signal(false);
+  public readonly currentUserEmail = computed(() => this.store.selectSignal(selectCurrentUserEmail)() ?? '');
+
+  @ViewChild('replyCard') replyCard?: ElementRef;
+
+  public onReply(): void {
+    this.isReplyOpen.set(true);
+    setTimeout(() => {
+      this.replyCard?.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      });
+    }, 100);
+  }
+
+  public onCancelReply(): void {
+    this.isReplyOpen.set(false);
+  }
+
+  public onSendReply(body: string): void {
+    this.messagingStore.sendMailReply({
+      mailId: +this.emailId,
+      body
+    });
+    this.isReplyOpen.set(false);
+  }
 
   ngOnInit(): void {
     this.messagingStore.getEmailById(+this.emailId);

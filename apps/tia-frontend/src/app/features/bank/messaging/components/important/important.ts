@@ -8,6 +8,8 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
 import { Router } from '@angular/router';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import { NavigationService } from '../../services/navigation.service';
+import { Store } from '@ngrx/store';
+import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
 
 @Component({
   selector: 'app-important',
@@ -19,6 +21,7 @@ import { NavigationService } from '../../services/navigation.service';
 export class Important implements OnInit {
   private messagingStore = inject(MessagingStore);
   private router = inject(Router);
+  private readonly store = inject(Store);
   public mails = computed(() => {
     return this.messagingStore.mails()
   });
@@ -26,6 +29,7 @@ export class Important implements OnInit {
   public total = computed(() => this.messagingStore.total()['importants'] ?? 0);
   public selectedMailIds = signal<Set<number>>(new Set());
   private nav = inject(NavigationService);
+  public readonly currentUserEmail = computed(() => this.store.selectSignal(selectCurrentUserEmail)() ?? '');
 
   public isAllSelected(): boolean {
     return this.selectedMailIds().size === this.mails().length && this.mails().length > 0;
