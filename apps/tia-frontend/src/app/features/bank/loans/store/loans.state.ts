@@ -6,6 +6,7 @@ export const loansInitialState: ILoansState = {
   purposes: [],
   accounts: [],
   prepaymentOptions: [],
+  loanDetailsCache: {},
   selectedLoanDetails: null,
   detailsLoading: false,
   loading: false,

@@ -18,3 +18,8 @@ export const selectUserInfo = createSelector(
   selectUserInfoState,
   (state) => state,
 );
+
+export const selectCurrentUserEmail = createSelector(
+  selectUserInfoState,
+  (state) => state.email,
+);

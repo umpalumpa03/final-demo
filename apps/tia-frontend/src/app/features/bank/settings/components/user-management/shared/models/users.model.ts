@@ -10,6 +10,8 @@ export interface IUserDetail extends IUser {
   pId: string;
   phone: string;
   phoneVerifiedAt: string;
+  avatar: string;
+  avatarUrl?: string | null;
 }
 
 export interface IUpdateUserRequest {

@@ -19,7 +19,9 @@
         "current": "Current Language",
         "available": "Available Languages",
         "english": "English",
-        "georgian": "Georgian"
+        "georgian": "Georgian",
+        "saveSuccess": "Language updated successfully!",
+        "saveError": "Failed to update language. Please try again."
     },
     "appearance": {
         "title": "Appearance",

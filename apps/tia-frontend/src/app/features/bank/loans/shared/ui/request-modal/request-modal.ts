@@ -91,7 +91,7 @@ export class RequestModal implements OnInit {
     this.store.loadMonths();
     this.store.loadPurposes();
 
-    this.globalStore.dispatch(AccountsActions.loadAccounts());
+    this.globalStore.dispatch(AccountsActions.loadAccounts({}));
   }
 
   public readonly form = this.fb.group({

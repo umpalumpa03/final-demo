@@ -6,6 +6,7 @@ import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Mail } from '../../store/messaging.state';
+import { Store } from '@ngrx/store';
 
 describe('SentDraftDetail', () => {
   let component: SentDraftDetail;
@@ -13,6 +14,7 @@ describe('SentDraftDetail', () => {
 
   let mockMessagingStore: any;
   let mockRouter: any;
+  let mockStore: any;
 
   const mockMail: Mail = {
     id: 1,
@@ -35,11 +37,16 @@ describe('SentDraftDetail', () => {
       getMailReplies: vi.fn(),
       deleteMail: vi.fn(),
       sendDraft: vi.fn(),
+      sendMailReply: vi.fn(),
       isLoading: signal(false),
     };
 
     mockRouter = {
       navigate: vi.fn(),
+    };
+
+    mockStore = {
+      selectSignal: vi.fn().mockReturnValue(signal('test@example.com')),
     };
 
     const mockActivatedRoute = {
@@ -59,6 +66,7 @@ describe('SentDraftDetail', () => {
         { provide: MessagingStore, useValue: mockMessagingStore },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
+        { provide: Store, useValue: mockStore }
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
@@ -104,6 +112,7 @@ describe('SentDraftDetail', () => {
         { provide: MessagingStore, useValue: mockMessagingStore },
         { provide: ActivatedRoute, useValue: mockActivatedRouteWithSent },
         { provide: Router, useValue: mockRouter },
+        { provide: Store, useValue: mockStore }
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
@@ -170,5 +179,32 @@ describe('SentDraftDetail', () => {
 
     expect(mockMessagingStore.sendDraft).not.toHaveBeenCalled();
     expect(mockRouter.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should send reply when onSendReply is called', () => {
+    const mockBody = 'This is a reply message';
+    const sendMailReplySpy = vi.spyOn(mockMessagingStore, 'sendMailReply');
+
+    fixture.detectChanges();
+
+    component.isReplyOpen.set(true);
+    component.onSendReply(mockBody);
+
+    expect(sendMailReplySpy).toHaveBeenCalledWith({
+      mailId: 1,
+      body: mockBody
+    });
+    expect(component.isReplyOpen()).toBe(false);
+  });
+
+  it('should cancel reply and close reply form', () => {
+    fixture.detectChanges();
+
+    component.isReplyOpen.set(true);
+    expect(component.isReplyOpen()).toBe(true);
+
+    component.onCancelReply();
+
+    expect(component.isReplyOpen()).toBe(false);
   });
 });

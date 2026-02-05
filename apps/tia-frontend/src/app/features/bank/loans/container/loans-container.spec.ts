@@ -8,11 +8,7 @@ import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accoun
 import { Component, signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-@Component({
-  selector: 'app-request-modal',
-  template: '',
-  standalone: true,
-})
+@Component({ selector: 'app-request-modal', template: '', standalone: true })
 class MockRequestModal {}
 
 describe('LoansContainer', () => {
@@ -25,13 +21,9 @@ describe('LoansContainer', () => {
     loansStoreMock = {
       loading: signal(false),
       alert: signal(null),
-
-      loadMonths: vi.fn(),
-      loadPurposes: vi.fn(),
       loadCounts: vi.fn(),
-
+      reset: vi.fn(),
       loanCounts: signal({ all: 0, approved: 0, pending: 0, declined: 0 }),
-
       loanMonthsOptions: signal([]),
       purposeOptions: signal([]),
     };
@@ -44,9 +36,7 @@ describe('LoansContainer', () => {
         { provide: LoansStore, useValue: loansStoreMock },
       ],
     })
-      .overrideComponent(LoansContainer, {
-        set: { animations: [] },
-      })
+      .overrideComponent(LoansContainer, { set: { animations: [] } })
       .compileComponents();
 
     globalStore = TestBed.inject(MockStore);
@@ -63,10 +53,8 @@ describe('LoansContainer', () => {
 
   it('should initialize data loading on init', () => {
     expect(globalStore.dispatch).toHaveBeenCalledWith(
-      AccountsActions.loadAccounts(),
+      AccountsActions.loadAccounts({ forceRefresh: true }),
     );
-    expect(loansStoreMock.loadMonths).toHaveBeenCalled();
-    expect(loansStoreMock.loadPurposes).toHaveBeenCalled();
     expect(loansStoreMock.loadCounts).toHaveBeenCalled();
   });
 });

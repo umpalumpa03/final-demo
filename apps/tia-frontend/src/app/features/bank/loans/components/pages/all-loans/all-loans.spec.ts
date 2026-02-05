@@ -18,6 +18,7 @@ describe('AllLoans', () => {
     { id: 'loan-1', status: 2, loanAmount: 5000 },
     { id: 'loan-2', status: 1, loanAmount: 2000 },
   ];
+  const mockLoanDetails = { id: 'loan-1', status: 2, loanAmount: 5000 };
 
   beforeEach(async () => {
     loansStoreMock = {
@@ -39,10 +40,7 @@ describe('AllLoans', () => {
       providers: [
         provideMockStore(),
         { provide: LoansStore, useValue: loansStoreMock },
-        {
-          provide: LoansContainer,
-          useValue: loansContainerMock,
-        },
+        { provide: LoansContainer, useValue: loansContainerMock },
       ],
     }).compileComponents();
 
@@ -63,10 +61,10 @@ describe('AllLoans', () => {
   });
 
   it('should call loadLoans on init', () => {
-    expect(loansStoreMock.loadLoans).toHaveBeenCalled();
+    expect(loansStoreMock.loadLoans).toHaveBeenCalledWith({ status: null });
   });
 
-  it('should open details only for approved loans (status 2)', () => {
+  it('should open details when valid card is clicked', () => {
     component.onCardClick('loan-1');
     expect(component.isDetailsOpen()).toBe(true);
     expect(component.selectedLoan()?.id).toBe('loan-1');
@@ -79,16 +77,18 @@ describe('AllLoans', () => {
     expect(loansStoreMock.renameLoan).toHaveBeenCalledWith(event);
   });
 
-  it('should open prepayment modal and close details', () => {
-    const loan = { id: '1', status: 2 } as any;
-    component.onOpenPrepayment(loan);
-    expect(component.isPrepaymentOpen()).toBe(true);
-    expect(component.isDetailsOpen()).toBe(false);
-    expect(component.selectedLoan()).toEqual(loan);
-  });
+  it('should close all modals and reset state', () => {
+    component.isDetailsOpen.set(true);
+    component.isPrepaymentOpen.set(true);
+    component.selectedLoan.set(mockLoans[0] as any);
+    component.prepaymentLoan.set(mockLoanDetails as any);
 
-  it('should open request modal via container', () => {
-    component.onRequestLoan();
-    expect(loansContainerMock.isModalOpen.set).toHaveBeenCalledWith(true);
+    component.closeModals();
+
+    expect(component.isDetailsOpen()).toBe(false);
+    expect(component.isPrepaymentOpen()).toBe(false);
+    expect(component.selectedLoan()).toBeNull();
+    expect(component.prepaymentLoan()).toBeNull();
+    expect(loansStoreMock.clearLoanDetails).toHaveBeenCalled();
   });
 });

@@ -6,6 +6,7 @@ export interface IUserInfo {
   language: string | null;
   avatar: string | null;
   role: UserRole | null;
+  email: string | null;
 }
 
 export interface User {
