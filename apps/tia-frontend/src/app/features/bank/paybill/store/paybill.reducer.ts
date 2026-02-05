@@ -257,6 +257,12 @@ export const paybillReducer = createReducer(
     selectedCategoryId: state.selectedCategoryId || provider.categoryId || null,
   })),
 
+  on(PaybillActions.loadPaymentDetails, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
   on(PaybillActions.loadPaymentDetailsSuccess, (state, { details }) => ({
     ...state,
     paymentDetails: details,
@@ -373,6 +379,23 @@ export const paybillReducer = createReducer(
   ),
 
   on(TemplatesPageActions.moveTemplateFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
+
+  on(TemplatesPageActions.createTemplate, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
+  on(TemplatesPageActions.createTemplateSuccess, (state) => ({
+    ...state,
+    loading: false,
+  })),
+
+  on(TemplatesPageActions.createTemplateFailure, (state, { error }) => ({
     ...state,
     loading: false,
     error,

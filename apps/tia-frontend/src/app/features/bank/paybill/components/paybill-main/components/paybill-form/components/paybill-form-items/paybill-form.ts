@@ -31,6 +31,7 @@ import {
   PaybillDynamicField,
 } from '../../../../../../services/paybill-dynamic-form/models/dynamic-form.model';
 import { DynamicInputs } from '../../../../../shared/dynamic-inputs/dynamic-inputs';
+import { Skeleton } from "@tia/shared/lib/feedback/skeleton/skeleton";
 
 @Component({
   selector: 'app-paybill-form',
@@ -43,7 +44,8 @@ import { DynamicInputs } from '../../../../../shared/dynamic-inputs/dynamic-inpu
     CurrencyPipe,
     TranslatePipe,
     DynamicInputs,
-  ],
+    Skeleton,
+],
   templateUrl: './paybill-form.html',
   styleUrl: './paybill-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -60,6 +62,7 @@ export class PaybillForm {
   public readonly isLoading = input<boolean>(false);
   public readonly iconBgColor = input<string>('#F0F9FF');
   public readonly iconBgPath = input<string>();
+  public readonly saveTemplate = output<string>();
 
   // output buton events
 
@@ -87,6 +90,11 @@ export class PaybillForm {
       ),
     },
   );
+
+  public onSaveTemplate(): void {
+    const defaultNickname = this.provider()?.name || '';    
+    this.saveTemplate.emit(defaultNickname);
+  }
 
   public onSubmit(): void {
     if (this.isLoading()) return;

@@ -30,8 +30,10 @@ describe('PaybillFormContainer', () => {
       verifiedDetails: signal(null),
       activeCategoryUI: signal({ iconBgColor: '#fff', iconBgPath: '' }),
       paymentFields: signal([]),
+      isLoading: signal(false),
       verifyAccount: vi.fn(),
       proceedToPayment: vi.fn(),
+      saveAsTemplate: vi.fn(),
     };
 
     mockDynamicForm = {

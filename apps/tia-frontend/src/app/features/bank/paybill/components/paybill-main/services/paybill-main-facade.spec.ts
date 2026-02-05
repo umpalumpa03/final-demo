@@ -121,6 +121,34 @@ describe('PaybillMainFacade', () => {
       expect(filteredCats[0].name).toBe('Internet');
     });
 
+    it('should dispatch checkBill and setPaymentPayload in verifyAccount', () => {
+      storeSignals.storeActiveProvider.set({ id: 'p1' });
+      const formValues = { amount: 50, meter: '123' };
+
+      service.verifyAccount(formValues);
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        expect.objectContaining({ type: PaybillActions.checkBill.type }),
+      );
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.setPaymentPayload({
+          data: { identification: expect.any(Object), amount: 50 },
+        }),
+      );
+    });
+
+    it('should navigate and set confirmation step in proceedToPayment', () => {
+      storeSignals.storeActiveProvider.set({ id: 'p1' });
+      service.proceedToPayment(100, { meter: '123' });
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.setPaymentStep({ step: 'CONFIRM' }),
+      );
+      expect(mockRouter.navigate).toHaveBeenCalledWith([
+        '/bank/paybill/pay/confirm-payment',
+      ]);
+    });
+
     it('should filter providers recursively based on search', () => {
       const providers = [
         { id: '1', name: 'Grandparent' },
@@ -158,31 +186,6 @@ describe('PaybillMainFacade', () => {
       expect(mockStore.dispatch).toHaveBeenCalledWith(
         PaybillActions.selectProvider({ providerId: 'prov-1' }),
       );
-    });
-
-    it('should confirm payment (dispatch + navigate)', () => {
-      const provider = { id: 'prov-1' };
-      const payload = { amount: 50, identification: {} };
-
-      storeSignals.storeActiveProvider.set(provider);
-      storeSignals.paymentPayload.set(payload);
-      service.selectedSenderAccountId.set('sender-1');
-
-      service.confirmPayment();
-
-      expect(mockStore.dispatch).toHaveBeenCalledWith(
-        PaybillActions.proceedPayment({
-          payload: {
-            serviceId: 'prov-1',
-            identification: payload.identification,
-            amount: 50,
-            senderAccountId: 'sender-1',
-          },
-        }),
-      );
-      expect(mockRouter.navigate).toHaveBeenCalledWith([
-        '/bank/paybill/pay/otp-verification',
-      ]);
     });
 
     it('should verify OTP', () => {
