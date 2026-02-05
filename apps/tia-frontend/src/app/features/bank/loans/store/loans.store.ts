@@ -34,13 +34,19 @@ export const LoansStore = signalStore(
     return {
       loansWithAccountInfo: computed(() => {
         const currentAccounts = accountsSignal() || [];
+        const areAccountsLoaded = currentAccounts.length > 0;
+
         return store.loans().map((loan) => {
           const matchedAccount = currentAccounts.find(
-            (acc) => acc.id === loan.accountId,
+            (acc) => String(acc.id) === String(loan.accountId),
           );
-          const accName = matchedAccount
-            ? matchedAccount.friendlyName || matchedAccount.name
-            : 'Loading Account...';
+          let accName = 'Loading Account...';
+          if (matchedAccount) {
+            accName = matchedAccount.friendlyName || matchedAccount.name;
+          } else if (areAccountsLoaded) {
+            accName = `Unknown Account`;
+          }
+
           return { ...loan, accountName: accName };
         });
       }),
@@ -401,6 +407,10 @@ export const LoansStore = signalStore(
           ),
         ),
       ),
+
+      reset() {
+        patchState(store, loansInitialState);
+      },
     };
   }),
 

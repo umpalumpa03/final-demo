@@ -43,4 +43,8 @@ export class LoansContainer {
 
     this.store.loadCounts();
   }
+
+  ngOnDestroy(): void {
+    this.store.reset();
+  }
 }
