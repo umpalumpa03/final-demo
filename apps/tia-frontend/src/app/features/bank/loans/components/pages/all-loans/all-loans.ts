@@ -55,7 +55,8 @@ export class AllLoans implements OnInit {
 
   public onCardClick(id: string): void {
     const loan = this.loans().find((l) => l.id === id);
-    if (loan && loan.status === 2) {
+
+    if (loan) {
       this.selectedLoan.set(loan);
       this.isDetailsOpen.set(true);
       this.store.loadLoanDetails(id);

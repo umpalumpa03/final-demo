@@ -1,4 +1,5 @@
 @let loanData = loan();
+
 <app-ui-modal [isOpen]="isOpen()" (closed)="close.emit()">
     <div class="loan-modal">
 
@@ -10,28 +11,32 @@
                         <h3 class="loan-modal__title">{{ 'loans.details.title' | translate }}</h3>
                     </div>
                 </div>
-                <p class="loan-modal__subtitle ">{{ 'loans.details.description' | translate }}</p>
+                <p class="loan-modal__subtitle">{{ 'loans.details.description' | translate }}</p>
             </div>
         </header>
 
         @if (isLoading()) {
         <div class="loan-modal__loading">
-            <app-spinner size="4rem"></app-spinner>
+            <app-route-loader variant="pulsing"></app-route-loader>
             <p>{{ 'loans.details.loading' | translate }}</p>
         </div>
-        }@else if (loanData)
-        {
-        <div class="loan-modal__body">
+        }
+        @else if (loanData) {
+
+        <div class="loan-modal__body" #scrollContainer (scroll)="onScroll()">
 
             <div class="loan-modal__status">
                 <span class="loan-modal__status-label">{{ 'loans.details.status_label' | translate }}</span>
                 <span class="loan-modal__badge" [class.loan-modal__badge--approved]="loanData.status === 2"
                     [class.loan-modal__badge--pending]="loanData.status === 1"
-                    [class.loan-modal__badge--rejected]="loanData.status === 3">
+                    [class.loan-modal__badge--rejected]="loanData.status === 3"
+                    [class.loan-modal__badge--finished]="loanData.status === 4">
 
-                    @if(loanData.status === 2) { <img src="./images/svg/feature-loans/approve.svg" alt=""> }
-                    @if(loanData.status === 1) { <img src="./images/svg/feature-loans/pending.svg" alt=""> }
-
+                    @switch (loanData.status){
+                    @case(1) { <img src="./images/svg/feature-loans/pending.svg" alt=""> }
+                    @case(2) { <img src="./images/svg/feature-loans/approve.svg" alt=""> }
+                    @case(3) { <img src="./images/svg/feature-loans/declined.svg" alt=""> }
+                    }
                     {{ loanData.statusName }}
                 </span>
             </div>
@@ -61,11 +66,14 @@
                             }}</strong>
                     </div>
 
+                    @if (loanData.interestRate) {
                     <div class="loan-modal__grid-item">
                         <label class="loan-modal__label">{{ 'loans.details.fields.rate' | translate }}</label>
                         <strong class="loan-modal__value">{{ loanData.interestRate }}%</strong>
                     </div>
+                    }
 
+                    @if (loanData.monthlyPayment) {
                     <div class="loan-modal__grid-item loan-modal__grid-item--monthly">
                         <label class="loan-modal__label">{{ 'loans.details.fields.monthly' | translate }}</label>
                         <strong class="loan-modal__value loan-modal__value--highlight">
@@ -75,7 +83,9 @@
                             </div>
                         </strong>
                     </div>
+                    }
 
+                    @if (loanData.remainingBalance) {
                     <div class="loan-modal__grid-item">
                         <label class="loan-modal__label">{{ 'loans.details.fields.balance' | translate }}</label>
                         <strong class="loan-modal__value">
@@ -85,11 +95,14 @@
                             </div>
                         </strong>
                     </div>
+                    }
 
+                    @if (loanData.nextPaymentDate) {
                     <div class="loan-modal__grid-item">
                         <label class="loan-modal__label">{{ 'loans.details.fields.next_payment' | translate }}</label>
                         <strong class="loan-modal__value">{{ loanData.nextPaymentDate | date:'dd/MM/yyyy' }}</strong>
                     </div>
+                    }
 
                     <div class="loan-modal__grid-item">
                         <label class="loan-modal__label">{{ 'loans.details.fields.app_date' | translate }}</label>
@@ -113,7 +126,7 @@
                 </div>
             </div>
 
-            @if(loanData.status === 2 && loanData.remainingBalance > 0) {
+            @if(loanData.status === 2 && (loanData.remainingBalance || 0) > 0) {
             <div class="loan-modal__prepayment">
                 <div class="loan-modal__prepayment-info">
                     <div>
@@ -130,6 +143,15 @@
             </div>
             }
         </div>
+
+        @if (showScrollButton()) {
+        <div class="loan-modal__scroll-btn-wrapper">
+            <button class="scroll-btn" (click)="scrollToBottom()">
+                <img src="./images/svg/feature-loans/down-arrow.svg" alt="Scroll to Bottom button">
+            </button>
+        </div>
+        }
+
         }
 
         <div class="close">
