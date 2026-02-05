@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { InternalAmount } from './internal-amount';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('InternalAmount', () => {
   let component: InternalAmount;
@@ -7,7 +8,7 @@ describe('InternalAmount', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InternalAmount],
+      imports: [InternalAmount, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(InternalAmount);
