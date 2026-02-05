@@ -4,12 +4,12 @@ export const getOtpVerificationConfig = (type: OtpVerificationType): OtpVerifica
   switch (type) {
     case 'sign-in':
       return {
-        // title: 'auth.otp-sign-in.title',
-        // subText: 'auth.otp-sign-in.subText',
+        title: 'auth.otp-sign-in.title',
+        subText: 'auth.otp-sign-in.subText',
         submitBtnName: 'auth.otp-sign-in.submitBtnName',
         backLink: '/auth/sign-in',
         backLinkText: 'auth.otp-sign-in.backLinkText',
-        // iconUrl: 'images/svg/auth/secured-blue.svg',
+        iconUrl: 'images/svg/auth/secured-blue.svg',
       } as const;
     case 'sign-up':
       return {

@@ -74,7 +74,7 @@
 
     <div
       class="auth-form__wrapper"
-      [style.flex-direction]="isHeaderVisible()? 'column' : 'row-reverse'"
+      [style.flex-direction]="isHeaderVisible() || isBtnRowDirection() ? 'column' : 'row-reverse'"
     >
       <div class="auth-form__wrapper__btn">
         <app-button
