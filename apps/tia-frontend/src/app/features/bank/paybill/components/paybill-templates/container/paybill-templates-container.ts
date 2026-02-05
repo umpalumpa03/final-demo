@@ -24,6 +24,7 @@ import {
   FormSubmitPayload,
   HeaderCtaAction,
   ModalType,
+  TreeItemMoved,
 } from '../models/paybill-templates.model';
 import { ModalConfig } from '../configs/cta-buttons.config';
 
@@ -70,7 +71,14 @@ export class PaybillTemplatesContainer implements OnInit {
   public isModalOpen = signal<boolean>(false);
 
   public handleModalToggle(): void {
+    const willClose = this.isModalOpen();
     this.isModalOpen.update((val) => !val);
+
+    if (willClose) {
+      this.modalType.set(null);
+      this.selectedId.set('');
+      this.selectedItemName.set('');
+    }
   }
 
   // Select Template Categories
@@ -220,6 +228,15 @@ export class PaybillTemplatesContainer implements OnInit {
       this.store.dispatch(
         TemplatesPageActions.deleteTemplateGroup({ groupId: id }),
       ),
+    );
+  }
+
+  public templateMoved(event: TreeItemMoved) {
+    this.store.dispatch(
+      TemplatesPageActions.moveTemplate({
+        groupId: event.toGroupId,
+        templateId: event.itemId,
+      }),
     );
   }
 }

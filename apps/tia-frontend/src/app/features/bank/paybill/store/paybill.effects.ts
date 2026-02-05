@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import {
   catchError,
+  concatMap,
   delay,
   EMPTY,
   map,
@@ -44,6 +45,8 @@ export class PaybillEffect {
       'Group created successfully',
     '[Paybill Templates Page] Rename Template Group Success':
       'Group renamed successfully',
+    '[Paybill Templates Page] Move Template Success':
+      'Template moved successfully',
   };
 
   private getErrorMessage(error: any): string {
@@ -328,6 +331,7 @@ export class PaybillEffect {
         TemplatesPageActions.deleteTemplateGroupSuccess,
         TemplatesPageActions.createTemplatesGroupsSuccess,
         TemplatesPageActions.renameTemplateGroupSuccess,
+        TemplatesPageActions.moveTemplateSuccess,
       ),
       map((action) =>
         PaybillActions.addNotification({
@@ -484,6 +488,43 @@ export class PaybillEffect {
           map((details) =>
             PaybillActions.loadPaymentDetailsSuccess({ details }),
           ),
+          catchError((error) =>
+            of(
+              PaybillActions.loadPaymentDetailsFailure({
+                error: this.getErrorMessage(error),
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
+
+  moveTemplate$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TemplatesPageActions.moveTemplate),
+      concatMap(({ groupId, templateId }) =>
+        this.payBillTemplatesService.removeTemplateFromGroup(templateId).pipe(
+          concatMap(() => {
+            if (groupId === null) {
+              return of(
+                TemplatesPageActions.moveTemplateSuccess({
+                  message: 'Item removed successfully',
+                }),
+              );
+            }
+
+            return this.payBillTemplatesService
+              .addTemplateToGroup(groupId, templateId)
+              .pipe(
+                map(() =>
+                  TemplatesPageActions.moveTemplateSuccess({
+                    message: 'Item moved successfully',
+                  }),
+                ),
+              );
+          }),
+
           catchError((error) =>
             of(
               PaybillActions.loadPaymentDetailsFailure({

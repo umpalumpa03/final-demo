@@ -11,7 +11,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Otp } from '@tia/shared/lib/forms/otp/otp';
 import {
@@ -46,7 +46,6 @@ import { Routes } from '../../models/tokens.model';
     ButtonComponent,
     ReactiveFormsModule,
     Otp,
-    RouterLink,
     TextInput,
     SimpleAlerts,
     TranslatePipe,
@@ -66,7 +65,7 @@ export class OtpVerification implements OnInit {
   public timerType = input<TimerType>('phone');
   public errorMessage = input<string | null>(null);
   public remainingAttempts = input<number | null>(null);
-
+  public onBackOut = output<void>();
   public phoneErrorMessage = input<string | null>(null);
 
   public resendTries = signal<number>(3);
@@ -81,18 +80,12 @@ export class OtpVerification implements OnInit {
     const error = this.errorMessage();
     const attempts = this.remainingAttempts();
 
-    if (error && attempts !== null) {
+    if (error && attempts !== null && attempts > 0) {
       return `${error} ${attempts === undefined ? '' : `(Remaining attempts: ${attempts})`}`;
     }
 
-    if (error) return error;
-
     if (attempts === 0) {
-      return `Too many attempts`;
-    }
-
-    if (attempts !== null) {
-      return `Remaining attempts: ${attempts}`;
+      this.router.navigate([Routes.ERROR_PAGE]);
     }
 
     return '';
@@ -264,6 +257,10 @@ export class OtpVerification implements OnInit {
     this.isResendCalled.emit(true);
     this.countdown.set(this.maxTime());
     this.startTimer();
+  }
+
+  public resgisterBackout(): void {
+    this.onBackOut.emit();
   }
 
   public ngOnDestroy(): void {

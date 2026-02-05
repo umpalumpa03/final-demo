@@ -16,6 +16,7 @@
   (itemEdited)="onItemEditAction($event)"
   (groupRemoved)="onGroupDeleteAction($event)"
   (groupEdited)="onGroupEditAction($event)"
+  (itemMoved)="itemMoved($event)"
   [isLoading]="isLoading()"
 >
   <div class="templates__header">

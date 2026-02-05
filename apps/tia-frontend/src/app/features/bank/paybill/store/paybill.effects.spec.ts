@@ -559,4 +559,49 @@ describe('PaybillEffect (Modern Suite)', () => {
       });
     });
   });
+  describe('Check Bill Logic Branches', () => {
+    it('checkBill$: should return failure action if details.valid is false', () => {
+      const invalidResponse = { valid: false, error: 'Custom Error' } as any;
+      paybillService.checkBill.mockReturnValue(of(invalidResponse));
+
+      actions$ = of(
+        PaybillActions.checkBill({ serviceId: '1', identification: {} as any }),
+      );
+
+      effects.checkBill$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.checkBillFailure({ error: 'Custom Error' }),
+        );
+      });
+    });
+
+    it('checkBill$: should return success if valid is true', () => {
+      const validResponse = { valid: true } as any;
+      paybillService.checkBill.mockReturnValue(of(validResponse));
+
+      actions$ = of(
+        PaybillActions.checkBill({ serviceId: '1', identification: {} as any }),
+      );
+
+      effects.checkBill$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.checkBillSuccess({ details: validResponse }),
+        );
+      });
+    });
+  });
+
+  describe('Payment Success Flow', () => {
+    it('confirmPayment$: should navigate and notify on success', () => {
+      paybillService.verifyPayment.mockReturnValue(of({ success: true }));
+      actions$ = of(PaybillActions.confirmPayment({ payload: {} as any }));
+
+      effects.confirmPayment$.subscribe((action) => {
+        expect(router.navigate).toHaveBeenCalledWith([
+          '/bank/paybill/pay/payment-success',
+        ]);
+        expect(action.message).toBe('OTP Verified Successfully');
+      });
+    });
+  });
 });

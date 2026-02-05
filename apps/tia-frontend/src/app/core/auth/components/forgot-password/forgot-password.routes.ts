@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { ResetPasswordGuard } from '../../guards/reset-password-guard';
 
 export const forgotPasswordSegments = {
   base: ['forgot-password'],
@@ -28,10 +29,6 @@ export const forgotPasswordRoutes: Routes = [
       import('../forgot-password/reset-password/reset-password').then(
         (c) => c.ResetPassword,
       ),
-  },
-  {
-    path: 'success',
-    redirectTo: 'sign-in',
-    pathMatch: 'full',
+      canActivate: [ResetPasswordGuard]
   },
 ];
