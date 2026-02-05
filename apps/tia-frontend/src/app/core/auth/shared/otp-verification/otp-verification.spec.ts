@@ -109,6 +109,7 @@ describe('OtpVerification', () => {
   it('should compute unitedError and disable button when errors are set', () => {
     fixture.componentRef.setInput('errorMessage', 'Invalid code');
     fixture.componentRef.setInput('remainingAttempts', 2);
+    fixture.componentRef.setInput('onErrorRedirect', true);
     fixture.detectChanges();
 
     expect(component.unitedError()).toContain('Invalid code');

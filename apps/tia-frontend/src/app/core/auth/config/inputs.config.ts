@@ -15,6 +15,7 @@ export const OTP_VERIFY_FORM = {
   otp: {
     label: 'auth.otp-sign-in.otpPlaceholder',
     length: 4,
+    errorMessage: ' ',
   },
   phone: {
     label: 'auth.otp-sign-up.otpPlaceholder',

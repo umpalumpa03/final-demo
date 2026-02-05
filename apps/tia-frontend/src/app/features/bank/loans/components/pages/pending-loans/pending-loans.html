@@ -1,6 +1,7 @@
 <div class="loans">
     @for (loan of pendingLoans(); track loan.id) {
-    <lib-loan-card [loan]="loan" [variant]="'colored'" (rename)="onRenameLoan($event)">
+    <lib-loan-card [loan]="loan" [variant]="'colored'" (cardClick)="onCardClick($event)"
+        (rename)="onRenameLoan($event)">
     </lib-loan-card>
     } @empty {
     <app-error-states variant="not-found" [header]="'loans.empty.pending.title' | translate"
@@ -9,3 +10,7 @@
     </app-error-states>
     }
 </div>
+
+<app-loan-details [isOpen]="isDetailsOpen()" (close)="closeModals()" [loan]="selectedLoanDetails()"
+    [isLoading]="isDetailsLoading()">
+</app-loan-details>

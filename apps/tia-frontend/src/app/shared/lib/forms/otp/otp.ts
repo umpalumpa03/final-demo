@@ -27,6 +27,7 @@ export class Otp extends BaseInput implements AfterViewInit {
   public override readonly config = input<OtpConfig>({});
   public readonly isCentered = input<boolean>();
   public override readonly value = model<string>('');
+  public readonly isOtpLoading = input<boolean>(false);
 
   public readonly completed = output<string>();
 
@@ -192,5 +193,12 @@ export class Otp extends BaseInput implements AfterViewInit {
     queueMicrotask(() => {
       this.otpBoxes()[0]?.nativeElement.focus();
     });
+  }
+
+  public focusFirst(): void {
+    const firstInput = this.otpBoxes()[0]?.nativeElement;
+    if (firstInput) {
+      firstInput.focus();
+    }
   }
 }

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { TransferStore } from '../store/transfers.store';
+import { TransferStore } from '../../../store/transfers.store';
 import { accountsSelectedGuard } from './accounts-selected.guard';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { signal } from '@angular/core';
