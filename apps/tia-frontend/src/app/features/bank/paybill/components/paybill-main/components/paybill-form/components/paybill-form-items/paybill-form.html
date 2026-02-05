@@ -1,7 +1,13 @@
-<app-basic-card maxWidth="100%" padding="0rem 0 2.4rem 2.4rem">
+<app-basic-card
+  maxWidth="100%"
+  padding="0rem 0 2.4rem 2.4rem"
+  [minHeight]="isVerified() ? '65rem': '0rem'"
+  class="basic-card"
+  justifyContent="space-between"
+>
   <div class="category-header">
     <div class="category-header__icon-box">
-      @if (isLoading()) {
+      @if (isLoading() && !isVerified()) {
       <app-skeleton
         variant="rectangle"
         width="6.4rem"
@@ -75,12 +81,18 @@
         <app-button
           class="btn-submit"
           type="submit"
+          [fullWidth]="true"
           [isDisabled]="paybillForm().invalid || isLoading()"
         >
           {{ 'paybill.main.form.continue_btn' | translate }}
         </app-button>
 
-        <app-button variant="secondary" class="btn-template">
+        <app-button
+          variant="secondary"
+          (click)="onSaveTemplate()"
+          [fullWidth]="true"
+          class="btn-template"
+        >
           {{ 'paybill.main.form.template' | translate }}
         </app-button>
       </div>
@@ -90,6 +102,7 @@
       <app-button
         class="btn-submit"
         type="submit"
+        [fullWidth]="true"
         [isDisabled]="paybillForm().invalid || isLoading()"
       >
         {{ 'paybill.main.form.continue_btn' | translate }}

@@ -61,7 +61,7 @@
   }
 
   &__actions {
-    @include flex-center(row, stretch, center);
+    @include flex-center(row,space-between, center);
     gap: 1.6rem;
     margin-top: auto;
     padding-top: 3.2rem;

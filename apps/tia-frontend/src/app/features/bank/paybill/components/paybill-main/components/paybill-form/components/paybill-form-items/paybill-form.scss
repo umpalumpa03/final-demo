@@ -51,18 +51,18 @@
 }
 
 .paybill-form-container {
-  @include display-flex(column);
+  @include flex-center(column, space-between, stretch);
   padding-right: 2.4rem;
   width: 100%;
 
   &__fields {
     margin-bottom: 2.4rem;
+    min-height: 8rem;
   }
 
   &__verification {
-    @include display-flex(column);
+    @include flex-center(column, space-between, stretch);
     gap: 3.2rem;
-    animation: slideUp 0.3s ease-out;
   }
 
   &__amount {
@@ -79,26 +79,16 @@
 
   &__actions {
     @include flex-center(row, stretch, center);
+
     gap: 1.6rem;
     margin-top: 0.8rem;
 
     .btn-submit {
-      flex: 2;
+      flex: 4;
     }
 
     .btn-template {
-      flex: 1;
+      flex: 2;
     }
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(1rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }

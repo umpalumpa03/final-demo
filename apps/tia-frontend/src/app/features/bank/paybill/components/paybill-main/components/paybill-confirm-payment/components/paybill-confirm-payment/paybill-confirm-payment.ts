@@ -48,6 +48,7 @@ export class PaybillConfirmPayment {
   public readonly currentAccounts = input<
     { label: string; value: string }[] | null
   >(null);
+  public readonly isLoading = input<boolean>(false);
 
   // Outputs
 

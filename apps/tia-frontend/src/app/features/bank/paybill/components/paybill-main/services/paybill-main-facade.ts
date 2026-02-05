@@ -15,7 +15,10 @@ import {
 } from '../shared/utils/paybill.config';
 import { CATEGORY_UI_MAP } from '../components/category-grid/config/category.config';
 import { InputConfig } from '@tia/shared/lib/forms/models/input.model';
-import { PaybillActions } from '../../../store/paybill.actions';
+import {
+  PaybillActions,
+  TemplatesPageActions,
+} from '../../../store/paybill.actions';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 import { PaybillDynamicForm } from '../../../services/paybill-dynamic-form/paybill-dynamic-form';
@@ -250,13 +253,23 @@ export class PaybillMainFacade {
 
   public verifyAccount<T extends Record<string, any>>(formValues: T): void {
     const provider = this.activeProvider();
+    const identification =
+      this.dynamicFormService.buildIdentification(formValues);
 
     if (provider) {
       this.store.dispatch(
         PaybillActions.checkBill({
           serviceId: provider.id,
-          identification:
-            this.dynamicFormService.buildIdentification(formValues),
+          identification,
+        }),
+      );
+
+      this.store.dispatch(
+        PaybillActions.setPaymentPayload({
+          data: {
+            identification,
+            amount: formValues['amount'] || 0,
+          },
         }),
       );
     }
@@ -300,7 +313,6 @@ export class PaybillMainFacade {
           },
         }),
       );
-      this.router.navigate(['/bank/paybill/pay/otp-verification']);
     }
   }
 
@@ -332,5 +344,22 @@ export class PaybillMainFacade {
     this.store.dispatch(PaybillActions.clearAllNotifications());
     this.store.dispatch(PaybillActions.setPaymentStep({ step: 'DETAILS' }));
     this.router.navigate(['bank/paybill/pay']);
+  }
+
+  public saveAsTemplate(customNickname?: string): void {
+    const provider = this.activeProvider();
+    const payload = this.paymentPayload();
+
+    if (provider && payload) {
+      this.store.dispatch(
+        TemplatesPageActions.createTemplate({
+          serviceId: provider.id,
+          identification: payload.identification,
+          nickname: customNickname || provider.name || 'My Template',
+        }),
+      );
+    } else {
+      return;
+    }
   }
 }

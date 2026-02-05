@@ -44,7 +44,7 @@ import { Skeleton } from "@tia/shared/lib/feedback/skeleton/skeleton";
     CurrencyPipe,
     TranslatePipe,
     DynamicInputs,
-    Skeleton
+    Skeleton,
 ],
   templateUrl: './paybill-form.html',
   styleUrl: './paybill-form.scss',
@@ -62,6 +62,7 @@ export class PaybillForm {
   public readonly isLoading = input<boolean>(false);
   public readonly iconBgColor = input<string>('#F0F9FF');
   public readonly iconBgPath = input<string>();
+  public readonly saveTemplate = output<string>();
 
   // output buton events
 
@@ -89,6 +90,11 @@ export class PaybillForm {
       ),
     },
   );
+
+  public onSaveTemplate(): void {
+    const defaultNickname = this.provider()?.name || '';    
+    this.saveTemplate.emit(defaultNickname);
+  }
 
   public onSubmit(): void {
     if (this.isLoading()) return;

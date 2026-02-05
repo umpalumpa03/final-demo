@@ -372,4 +372,21 @@ export const paybillReducer = createReducer(
     loading: false,
     error,
   })),
+
+  on(TemplatesPageActions.createTemplate, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
+  on(TemplatesPageActions.createTemplateSuccess, (state) => ({
+    ...state,
+    loading: false,
+  })),
+
+  on(TemplatesPageActions.createTemplateFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
 );
