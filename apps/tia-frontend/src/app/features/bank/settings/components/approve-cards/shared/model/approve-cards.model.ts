@@ -25,3 +25,14 @@ export interface PendingCard {
   user: CardUser;
   account: CardAccount;
 }
+
+export type CardApprovalStatus = 'APPROVED' | 'REJECTED';
+
+export type CardPermission = 'allowAtm' | 'allowInternational';
+
+
+export interface UpdateCardStatusRequest {
+  cardId: string; 
+  status: CardApprovalStatus;
+  permissions: CardPermission[];
+}

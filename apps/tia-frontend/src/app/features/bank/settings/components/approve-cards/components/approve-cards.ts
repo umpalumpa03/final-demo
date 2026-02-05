@@ -1,29 +1,24 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component,  inject, OnInit, signal } from '@angular/core';
 import { UserCard } from '../../user-management/shared/ui/user-card/user-card';
-import { ApproveCardsService } from '../shared/services/approve-cards.service';
 import { PendingCard } from '../shared/model/approve-cards.model';
-import { takeUntil, tap } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ApproveCardsStore } from '../store/approve-cards.store';
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 
 @Component({
   selector: 'app-approve-cards',
-  imports: [UserCard],
+  imports: [Skeleton],
   templateUrl: './approve-cards.html',
+  providers: [ApproveCardsStore],
   styleUrl: './approve-cards.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApproveCards implements OnInit{
-  private approveCardsService = inject(ApproveCardsService)
-  private destroyRef = inject(DestroyRef)
-  
+  public readonly store = inject(ApproveCardsStore)
+
   public cardInfo = signal<PendingCard[]>([])
 
   ngOnInit() {
-    this.approveCardsService.getPendingCards().pipe(
-      takeUntilDestroyed(this.destroyRef),
-      tap(res =>  {
-        this.cardInfo.set(res)
-        console.log(this.cardInfo())
-      }),
-    ).subscribe()
+    this.store.load()
   }
+
 }

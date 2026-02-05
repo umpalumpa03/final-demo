@@ -1,10 +1,31 @@
-<main>
-  <!-- <app-user-card
-    [user]="user"
-    (onDetails)="details(userId)"
-    (onDelete)="deleteUser(userId)"
-    (onBlockToggle)="block(userId, user.isBlocked)"
-    [isLoading]="store.actionLoading() && actionProcessingId() === userId"
-  > -->
-  <!-- <app-user-car> </app-user-card> -->
+<main class="approve-card">
+  @if (store.isLoading()) {
+  <p>Loading cards...</p>
+  } @else { @for(card of store.cards(); track card.id) {
+  <div class="approve-card__card">
+    <div class="approve-card__card__display">
+      <div class="approve-card__card__img">
+        <img
+          class="approve-card__card__icon"
+          src="images/svg/settings/approve-cards/card-icon.svg"
+          alt="Card Icon"
+        />
+      </div>
+      <div class="approve-card__card__info">
+        <div class="approve-card__card__info__header">
+            <h3>{{ card.nickname }}</h3>
+            <p>Type</p>
+
+        </div>
+        <div>Alice Williams (alice@example.com)</div>
+        <div>visa USD 5,000 14/01/2026</div>
+      </div>
+    </div>
+    <div class="approve-card__card__actions">
+      <div>ame2</div>
+    </div>
+  </div>
+  } @empty {
+  <p>No cards found.</p>
+  } }
 </main>

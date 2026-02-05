@@ -29,7 +29,7 @@ export const ApproveCardsStore = signalStore(
               patchState(store, { cards: card, isLoading: false });
             }),
             catchError((err) => {
-              patchState(store, { error: err, isLoading: false });
+              patchState(store, { error: err.message, isLoading: false });
               return of([]);
             }),
           ),

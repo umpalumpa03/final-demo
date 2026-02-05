@@ -1,7 +1,30 @@
-@use "../../../../../../shared/styles/mixins" as *;
-@use "../../../../../../shared/styles/palette" as *;
+@use '../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../shared/styles/palette' as *;
 
-main {
-    @include display-flex(column);
-    gap: 1.6rem;
+.approve-card {
+  @include display-flex(column);
+  gap: 1.6rem;
+
+  &__card {
+    @include flex-center($justify: space-between);
+
+    min-height: 6.4rem;
+    width: 100%;
+    padding: 1.2rem;
+    border-radius: 1rem;
+    background-color: $white;
+    border: 0.19rem solid #e5e7eb;
+    
+    &__img {
+      background-color: #dbeafe;
+      padding: 1.2rem;
+      border-radius: 100%;
+    }
+
+    &__display {
+        @include flex-center($justify: start);
+        gap: 1.6rem;
+        
+    }
+  }
 }
