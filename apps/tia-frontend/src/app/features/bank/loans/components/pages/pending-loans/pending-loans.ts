@@ -11,7 +11,7 @@ import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states'
 import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { LoanDetails } from '../../../shared/ui/prepayment/loan-details/loan-details';
-import { ILoan, ILoanDetails } from '../../../shared/models/loan.model';
+import { ILoan } from '../../../shared/models/loan.model';
 
 @Component({
   selector: 'app-pending-loans',

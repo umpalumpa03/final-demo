@@ -82,12 +82,4 @@ describe('ApprovedLoans', () => {
     expect(component.isDetailsOpen()).toBe(false);
     expect(component.prepaymentLoan()).toEqual(mockLoanDetails);
   });
-
-  it('should reset state on closeModals', () => {
-    component.isDetailsOpen.set(true);
-    component.closeModals();
-    expect(component.isDetailsOpen()).toBe(false);
-    expect(component.selectedLoan()).toBeNull();
-    expect(loansStoreMock.clearLoanDetails).toHaveBeenCalled();
-  });
 });

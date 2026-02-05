@@ -7,7 +7,18 @@ import {
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { inject, computed } from '@angular/core';
-import { pipe, switchMap, tap, catchError, of, map } from 'rxjs';
+import {
+  pipe,
+  switchMap,
+  tap,
+  catchError,
+  of,
+  map,
+  mergeMap,
+  finalize,
+  filter,
+  EMPTY,
+} from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserManagementService } from '../shared/services/user-management.service';
 import { initialState } from './user-management.state';
@@ -22,21 +33,22 @@ export const UserManagementStore = signalStore(
   })),
 
   withMethods((store) => {
-    const userManagementService = inject(UserManagementService);
+    const service = inject(UserManagementService);
     const avatarService = inject(ProfilePhotoApiService);
 
     return {
       loadUsers: rxMethod<void>(
         pipe(
+          filter(() => store.users().length === 0 && !store.loading()),
           tap(() => patchState(store, { loading: true, error: null })),
           switchMap(() =>
-            userManagementService.getAllUsers().pipe(
+            service.getAllUsers().pipe(
               tap((users) => {
                 patchState(store, { users, loading: false });
               }),
               catchError((err: HttpErrorResponse) => {
                 patchState(store, { loading: false, error: err.message });
-                return of(null);
+                return EMPTY;
               }),
             ),
           ),
@@ -46,8 +58,17 @@ export const UserManagementStore = signalStore(
       loadUserDetails: rxMethod<string>(
         pipe(
           tap(() => patchState(store, { actionLoading: true, error: null })),
-          switchMap((userId) =>
-            userManagementService.getUserById(userId).pipe(
+          switchMap((userId) => {
+            const cachedUser = store.userCache()[userId];
+            if (cachedUser) {
+              patchState(store, {
+                selectedUser: cachedUser,
+                actionLoading: false,
+              });
+              return EMPTY;
+            }
+
+            return service.getUserById(userId).pipe(
               switchMap((user) => {
                 if (!user.avatar) {
                   return of({ ...user, avatarUrl: null });
@@ -56,57 +77,52 @@ export const UserManagementStore = signalStore(
                 return avatarService.getCurrentUserAvatar(user.avatar).pipe(
                   map((blob: Blob) => {
                     const objectUrl = URL.createObjectURL(blob);
-
-                    return {
-                      ...user,
-                      avatarUrl: objectUrl,
-                    };
+                    return { ...user, avatarUrl: objectUrl };
                   }),
-
                   catchError(() => {
                     return of({ ...user, avatarUrl: null });
                   }),
                 );
               }),
-
               tap((fullUserData) => {
-                patchState(store, {
+                patchState(store, (state) => ({
                   selectedUser: fullUserData,
                   actionLoading: false,
-                });
+                  userCache: { ...state.userCache, [userId]: fullUserData },
+                }));
               }),
-
               catchError((err: HttpErrorResponse) => {
                 patchState(store, { actionLoading: false, error: err.message });
-                return of(null);
+                return EMPTY;
               }),
-            ),
-          ),
+            );
+          }),
         ),
       ),
 
       deleteUser: rxMethod<string>(
         pipe(
           tap(() => patchState(store, { actionLoading: true, error: null })),
-
           switchMap((id) =>
-            userManagementService.deleteUser(id).pipe(
+            service.deleteUser(id).pipe(
               tap(() => {
                 const currentUsers = store.users();
-                const updatedUsers = currentUsers.filter((u) => u.id !== id);
+                patchState(store, (state) => {
+                  const { [id]: removed, ...remainingCache } = state.userCache;
 
-                patchState(store, {
-                  users: updatedUsers,
-                  actionLoading: false,
+                  return {
+                    users: currentUsers.filter((u) => u.id !== id),
+                    userCache: remainingCache,
+                    actionLoading: false,
+                  };
                 });
               }),
-
               catchError((err: HttpErrorResponse) => {
                 patchState(store, {
                   actionLoading: false,
                   error: err.message,
                 });
-                return of(null);
+                return EMPTY;
               }),
             ),
           ),
@@ -117,22 +133,28 @@ export const UserManagementStore = signalStore(
         pipe(
           tap(() => patchState(store, { actionLoading: true, error: null })),
           switchMap(({ id, data }) =>
-            userManagementService.updateUser(id, data).pipe(
+            service.updateUser(id, data).pipe(
               tap((updatedUser) => {
-                patchState(store, (state) => ({
-                  users: state.users.map((u) =>
-                    u.id === updatedUser.id ? updatedUser : u,
-                  ),
-                  selectedUser: updatedUser,
-                  actionLoading: false,
-                }));
+                patchState(store, (state) => {
+                  const { [updatedUser.id]: removed, ...remainingCache } =
+                    state.userCache;
+
+                  return {
+                    users: state.users.map((u) =>
+                      u.id === updatedUser.id ? updatedUser : u,
+                    ),
+                    selectedUser: updatedUser,
+                    actionLoading: false,
+                    userCache: remainingCache,
+                  };
+                });
               }),
               catchError((err: HttpErrorResponse) => {
                 patchState(store, {
                   actionLoading: false,
                   error: err.message,
                 });
-                return of(null);
+                return EMPTY;
               }),
             ),
           ),
@@ -141,26 +163,54 @@ export const UserManagementStore = signalStore(
 
       toggleBlockStatus: rxMethod<{ id: string; isBlocked: boolean }>(
         pipe(
-          tap(() => patchState(store, { actionLoading: true, error: null })),
-          switchMap(({ id, isBlocked }) =>
-            userManagementService.blockUser(id, isBlocked).pipe(
+          mergeMap(({ id, isBlocked }) => {
+            patchState(store, (state) => ({
+              processingIds: [...state.processingIds, id],
+            }));
+
+            return service.blockUser(id, isBlocked).pipe(
               tap((updatedUser) => {
-                patchState(store, (state) => ({
-                  users: state.users.map((u) =>
-                    u.id === updatedUser.id ? updatedUser : u,
-                  ),
-                  actionLoading: false,
-                }));
+                const users = store
+                  .users()
+                  .map((u) =>
+                    u.id === id
+                      ? { ...u, isBlocked: updatedUser.isBlocked }
+                      : u,
+                  );
+
+                patchState(store, (state) => {
+                  const { [updatedUser.id]: removed, ...remainingCache } =
+                    state.userCache;
+
+                  const currentSelected = state.selectedUser;
+                  const updatedSelected =
+                    currentSelected && currentSelected.id === id
+                      ? {
+                          ...currentSelected,
+                          isBlocked: updatedUser.isBlocked,
+                        }
+                      : currentSelected;
+
+                  return {
+                    users,
+                    userCache: remainingCache,
+                    selectedUser: updatedSelected,
+                  };
+                });
               }),
               catchError((err: HttpErrorResponse) => {
-                patchState(store, {
-                  actionLoading: false,
-                  error: err.message,
-                });
-                return of(null);
+                patchState(store, { error: err.message });
+                return EMPTY;
               }),
-            ),
-          ),
+              finalize(() => {
+                patchState(store, (state) => ({
+                  processingIds: state.processingIds.filter(
+                    (pid) => pid !== id,
+                  ),
+                }));
+              }),
+            );
+          }),
         ),
       ),
 
@@ -170,6 +220,10 @@ export const UserManagementStore = signalStore(
 
       resetSelection() {
         patchState(store, { selectedUser: null, error: null });
+      },
+
+      reset() {
+        patchState(store, initialState);
       },
     };
   }),
