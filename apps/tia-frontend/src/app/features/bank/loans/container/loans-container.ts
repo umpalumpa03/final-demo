@@ -41,9 +41,6 @@ export class LoansContainer {
   public ngOnInit(): void {
     this.globalStore.dispatch(AccountsActions.loadAccounts({}));
 
-    this.store.loadMonths();
-    this.store.loadPurposes();
-
     this.store.loadCounts();
   }
 }
