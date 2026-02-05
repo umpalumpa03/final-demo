@@ -1,5 +1,5 @@
 export type OtpVerificationType =
-  | 'sign-in'
+  | 'otp'
   | 'sign-up'
   | 'forgot-password'
 
