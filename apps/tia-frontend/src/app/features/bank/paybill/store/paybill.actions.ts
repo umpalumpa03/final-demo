@@ -124,6 +124,8 @@ export const TemplatesPageActions = createActionGroup({
     }>(),
     'Move Template Success': props<{
       message: string;
+      groupId: string | null;
+      templateId: string;
     }>(),
     'Move Template Failure': props<{
       error: string;
