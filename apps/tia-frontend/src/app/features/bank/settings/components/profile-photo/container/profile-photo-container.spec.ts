@@ -144,7 +144,7 @@ describe('ProfilePhotoContainer', () => {
   it('should show error alert when file size is too large', () => {
     const translate = TestBed.inject(TranslateService);
     vi.spyOn(translate, 'instant').mockReturnValue('File too large');
-    const largeContent = new Array(2 * 1024).fill('a').join('');
+    const largeContent = new Array(1024*1024).fill('a').join('');
     component.onFileSelected(new File([largeContent], 'large-photo.png', { type: 'image/png' }));
     expect(component.alertKind()).toBe('error');
   });
