@@ -12,7 +12,6 @@ import {
   PaybillProvider,
 } from '../../../../shared/models/paybill.model';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
-import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { PaymentSummary } from '../../../../shared/ui/payment-summary/payment-summary';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
@@ -23,13 +22,11 @@ import {
   mapConfirmSummaryFields,
 } from '../../config/translate.config';
 import { TranslatePipe } from '@ngx-translate/core';
-import { paymentTitleConfig } from '../../config/header.config';
 
 @Component({
   selector: 'app-paybill-confirm-payment',
   imports: [
     BasicCard,
-    LibraryTitle,
     ButtonComponent,
     PaymentSummary,
     Dropdowns,
@@ -41,7 +38,6 @@ import { paymentTitleConfig } from '../../config/header.config';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillConfirmPayment {
-
   // Inputs
 
   public readonly provider = input.required<PaybillProvider>();
