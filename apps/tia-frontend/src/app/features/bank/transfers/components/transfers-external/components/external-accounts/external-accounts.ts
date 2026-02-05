@@ -35,6 +35,7 @@ import {
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { TransferExternalService } from '../../../../services/transfer.external.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
+import { Tooltip } from "@tia/shared/lib/data-display/tooltip/tooltip";
 
 @Component({
   selector: 'app-external-accounts',
@@ -49,7 +50,8 @@ import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/break
     TextInput,
     ReactiveFormsModule,
     RouteLoader,
-  ],
+    Tooltip
+],
   providers: [],
   templateUrl: './external-accounts.html',
   styleUrl: './external-accounts.scss',
