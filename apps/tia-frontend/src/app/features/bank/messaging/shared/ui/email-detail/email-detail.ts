@@ -15,10 +15,10 @@ import { MessagingStore } from '../../../store/messaging.store';
 })
 export class EmailDetail {
   public readonly data = input<EmailDetailData | undefined>();
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private messagingStore = inject(MessagingStore);
-  public isLoading = this.messagingStore.isLoading;
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly messagingStore = inject(MessagingStore);
+  public readonly isLoading = this.messagingStore.isLoading;
 
   public getInitials(email?: string): string {
     if (!email) return '';
