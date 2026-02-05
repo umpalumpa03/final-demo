@@ -32,11 +32,7 @@ export const loadTransactionsEffect = createEffect(
     transactionService = inject(TransactionApiService),
   ) => {
     return actions$.pipe(
-      ofType(
-        TransactionActions.enter,
-        TransactionActions.loadTransactions,
-        TransactionActions.loadMore,
-      ),
+      ofType(TransactionActions.loadTransactions, TransactionActions.loadMore),
       withLatestFrom(
         store.select(selectFilters),
         store.select(selectNextCursor),
@@ -47,12 +43,21 @@ export const loadTransactionsEffect = createEffect(
         }
 
         const apiFilters = { ...filters };
-        if (action.type === TransactionActions.loadMore.type && nextCursor) {
-          apiFilters.pageCursor = nextCursor;
-        }
+        const isLoadMore = action.type === TransactionActions.loadMore.type;
 
+        if (isLoadMore && nextCursor) {
+          apiFilters.pageCursor = nextCursor;
+        } else {
+          apiFilters.pageCursor = undefined;
+        }
         return transactionService.getTransactions(apiFilters).pipe(
-          map((response) => TransactionActions.loadSuccess({ response })),
+          map((response) => {
+            if (isLoadMore) {
+              return TransactionActions.loadSuccess({ response });
+            } else {
+              return TransactionActions.loadTransactionsSuccess({ response });
+            }
+          }),
           catchError((error) => of(TransactionActions.loadFailure({ error }))),
         );
       }),

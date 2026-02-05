@@ -10,6 +10,7 @@ export interface TransactionState {
   filters: ITransactionFilter;
   total: number;
   isLoading: boolean;
+  loaded: boolean;
   error: unknown;
   categories: ITransactionsCategory[];
 }

@@ -9,10 +9,14 @@ export const transactionReducer = createReducer(
 
   on(TransactionActions.enter, (state) => ({
     ...state,
-    items: [],
-    nextCursor: null,
-    total: 0,
-    isLoading: true,
+    error: null,
+  })),
+  on(TransactionActions.loadTransactionsSuccess, (state, { response }) => ({
+    ...state,
+    items: response.items,
+    isLoading: false,
+    loaded: true,
+    nextCursor: response.pageInfo.nextCursor || null,
   })),
 
   on(TransactionActions.loadMore, (state) => ({
@@ -27,6 +31,7 @@ export const transactionReducer = createReducer(
     items: [],
     nextCursor: null,
     isLoading: true,
+    loaded: false,
   })),
   on(TransactionActions.loadTransactions, (state) => ({
     ...state,
