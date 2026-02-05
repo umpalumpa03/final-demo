@@ -21,6 +21,7 @@
       [mail]="mail"
       [isSent]="true"
       (cardClick)="goToDetail($event)"
+      [currentUserEmail]="currentUserEmail()"
     >
     </app-mail-card>
     } @if (isLoading()) {

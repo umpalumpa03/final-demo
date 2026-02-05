@@ -8,6 +8,8 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
 import { Router } from '@angular/router';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import { NavigationService } from '../../services/navigation.service';
+import { Store } from '@ngrx/store';
+import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
 
 @Component({
   selector: 'app-inbox',
@@ -17,18 +19,19 @@ import { NavigationService } from '../../services/navigation.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Inbox implements OnInit {
-  private messagingStore = inject(MessagingStore);
-  private router = inject(Router);
-  private nav = inject(NavigationService);
-  public loadsMoreMails = signal(false);
+  private readonly messagingStore = inject(MessagingStore);
+  private readonly router = inject(Router);
+  private readonly nav = inject(NavigationService);
+  private readonly store = inject(Store);
+  public readonly loadsMoreMails = signal(false);
 
-  public mails = computed(() => {
+  public readonly mails = computed(() => {
     return this.messagingStore.mails()
   });
-  public isLoading = this.messagingStore.isLoading;
-  public selectedMailIds = signal<Set<number>>(new Set());
-  public total = computed(() => this.messagingStore.total()['inbox'] ?? 0);
-
+  public readonly isLoading = this.messagingStore.isLoading;
+  public readonly selectedMailIds = signal<Set<number>>(new Set());
+  public readonly total = computed(() => this.messagingStore.total()['inbox'] ?? 0);
+  public readonly currentUserEmail = computed(() => this.store.selectSignal(selectCurrentUserEmail)() ?? '');
   public isAllSelected(): boolean {
     return this.mails().length > 0 &&
       this.mails().every(mail => this.selectedMailIds().has(mail.id));

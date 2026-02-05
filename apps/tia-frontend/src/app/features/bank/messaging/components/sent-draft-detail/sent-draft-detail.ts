@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, output, signal, ViewChild } from '@angular/core';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessagingStore } from '../../store/messaging.store';
@@ -6,28 +6,58 @@ import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { LibraryTitle } from '../../../../storybook/shared/library-title/library-title';
 import { EmailDetail } from '../../shared/ui/email-detail/email-detail';
 import { RepliesCard } from '../../shared/ui/replies-card/replies-card';
+import { ReplyForm } from '../../shared/ui/reply-form/reply-form';
+import { Store } from '@ngrx/store';
+import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
 
 @Component({
   selector: 'app-sent-draft-detail',
-  imports: [EmailDetail, ButtonComponent, UiModal, LibraryTitle, RepliesCard],
+  imports: [EmailDetail, ButtonComponent, UiModal, LibraryTitle, RepliesCard, ReplyForm],
   templateUrl: './sent-draft-detail.html',
   styleUrl: './sent-draft-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SentDraftDetail {
-  private messagingStore = inject(MessagingStore);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
+  private readonly messagingStore = inject(MessagingStore);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly store = inject(Store);
   public readonly deleteMail = output<number>();
-  public isDeleteModalOpen = signal(false);
+  public readonly isDeleteModalOpen = signal(false);
 
   private readonly emailId = this.route.snapshot.paramMap.get('id') || '';
-  public emailDetail = this.messagingStore.emailDetail;
-  public fromSent = this.route.snapshot.queryParamMap.get('sent') === 'true';
-  public mailReplies = computed(() => this.messagingStore.mailReplies?.() || []);
+  public readonly emailDetail = this.messagingStore.emailDetail;
+  public readonly fromSent = this.route.snapshot.queryParamMap.get('sent') === 'true';
+  public readonly mailReplies = computed(() => this.messagingStore.mailReplies?.() || []);
+  public readonly isReplyOpen = signal(false);
+  public readonly currentUserEmail = computed(() => this.store.selectSignal(selectCurrentUserEmail)() ?? '');
+
+  @ViewChild('replyCard') replyCard?: ElementRef;
+
+  public onReply(): void {
+    this.isReplyOpen.set(true);
+    setTimeout(() => {
+      this.replyCard?.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      });
+    }, 100);
+  }
+
+  public onCancelReply(): void {
+    this.isReplyOpen.set(false);
+  }
+
+  public onSendReply(body: string): void {
+    this.messagingStore.sendMailReply({
+      mailId: +this.emailId,
+      body
+    });
+    this.isReplyOpen.set(false);
+  }
 
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
     this.messagingStore.getEmailById(+this.emailId);
     this.messagingStore.getMailReplies(+this.emailId);
   }

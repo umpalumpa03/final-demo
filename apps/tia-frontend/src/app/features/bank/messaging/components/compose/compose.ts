@@ -9,7 +9,6 @@ import { Textarea } from '@tia/shared/lib/forms/textarea/textarea';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Checkboxes } from "@tia/shared/lib/forms/checkboxes/checkboxes";
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { userInfoFeature } from 'apps/tia-frontend/src/app/store/user-info/user-info.reducer';
 
@@ -25,8 +24,8 @@ export class Compose {
   private readonly fb = inject(FormBuilder);
   public readonly close = output<void>();
   public readonly isOpen = input.required<boolean>();
-  public invalidForm = signal<boolean>(false);
-  public errorMesage = signal<string>('');
+  public readonly invalidForm = signal<boolean>(false);
+  public readonly errorMesage = signal<string>('');
 
   public readonly store = inject(MessagingStore);
   public readonly roleStore = inject(Store);
