@@ -11,9 +11,11 @@ import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions
 import {
   selectCategoryOptions,
   selectCategoryOptionsForModal,
+  selectFilters,
   selectIsLoading,
   selectItems,
   selectTotalTransactions,
+  selectTransactionsLoaded,
 } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
 import { TRANSACTIONS_BASE_CONFIG } from '../config/transaction-data';
 import { convertTransactionData } from '../utils/data-converter.utils';
@@ -38,6 +40,10 @@ import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import { CategorizeModal } from '../components/categorize-modal/categorize-modal';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
+import { SimpleAlertType } from '@tia/shared/lib/alerts/shared/models/alert.models';
+import { TransfersRepeatActions } from 'apps/tia-frontend/src/app/store/transfers-repeat/transfers-repeat.actions';
+import { Router } from '@angular/router';
+import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 
 @Component({
   selector: 'app-transactions-container',
@@ -50,6 +56,7 @@ import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
     ScrollArea,
     CategorizeModal,
     UiModal,
+    SimpleAlerts,
   ],
   templateUrl: './transactions-container.html',
   styleUrl: './transactions-container.scss',
@@ -58,11 +65,15 @@ import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 export class TransactionsContainer implements OnInit {
   private store = inject(Store);
   private readonly accountsService = inject(AccountsApiService);
+  private router = inject(Router);
 
   private readonly currencyList = toSignal(
     this.accountsService.getCurrencies(),
     { initialValue: [] as string[] },
   );
+
+  private readonly isLoaded = this.store.selectSignal(selectTransactionsLoaded);
+  private readonly currentFilters = this.store.selectSignal(selectFilters);
 
   public items = this.store.selectSignal(selectItems);
   public readonly isLoading = this.store.selectSignal(selectIsLoading);
@@ -73,6 +84,9 @@ export class TransactionsContainer implements OnInit {
   public accounts = this.store.selectSignal(selectAccounts);
   public isCategorizeModalOpen = signal<boolean>(false);
   public selectedTransaction = signal<ITransactions | null>(null);
+
+  public alertMessage = signal<string | null>(null);
+  public alertType = signal<SimpleAlertType>('warning');
 
   public readonly currencyOptions = computed<SelectOption[]>(() => {
     const currencies = this.currencyList();
@@ -95,6 +109,15 @@ export class TransactionsContainer implements OnInit {
     selectTotalTransactions,
   );
 
+  private showValidationAlert(type: SimpleAlertType, message: string): void {
+    this.alertType.set(type);
+    this.alertMessage.set(message);
+
+    setTimeout(() => {
+      this.alertMessage.set(null);
+    }, 3000);
+  }
+
   public readonly totalTransactionsString = computed(() => {
     const total = this.totalTransactions().toString();
     const itemsFetched = this.items().length.toString();
@@ -108,10 +131,30 @@ export class TransactionsContainer implements OnInit {
   }));
 
   public ngOnInit(): void {
-    this.store.dispatch(TransactionActions.loadTransactions());
     this.store.dispatch(TransactionActions.enter());
-    this.store.dispatch(TransactionActions.loadCategories());
 
+    const filters = this.currentFilters();
+
+    const needsReset = filters.pageLimit !== 20 || !!filters.pageCursor;
+
+    if (needsReset) {
+      this.store.dispatch(
+        TransactionActions.updateFilters({
+          filters: {
+            pageLimit: 20,
+            pageCursor: undefined,
+          },
+        }),
+      );
+    } else {
+      if (!this.isLoaded()) {
+        this.store.dispatch(TransactionActions.loadTransactions());
+      } else {
+        console.log('⚡ Cached data used. No API call needed.');
+      }
+    }
+
+    this.store.dispatch(TransactionActions.loadCategories());
     this.store.dispatch(AccountsActions.loadAccounts());
   }
 
@@ -132,6 +175,12 @@ export class TransactionsContainer implements OnInit {
       if (trx) {
         this.selectedTransaction.set(trx);
         this.isCategorizeModalOpen.set(true);
+      }
+    }
+    if (event.action === 'repeat') {
+      const trx = this.items().find((item) => item.id === event.rowId);
+      if (trx) {
+        this.onRepeatAction(trx);
       }
     }
   }
@@ -156,5 +205,45 @@ export class TransactionsContainer implements OnInit {
 
   public onCategoryCreate(name: string): void {
     this.store.dispatch(TransactionActions.createCategory({ name }));
+  }
+
+  public onRepeatAction(transaction: ITransactions): void {
+    if (transaction.transactionType === 'credit') {
+      this.showValidationAlert(
+        'warning',
+        'Income transactions cannot be repeated.',
+      );
+      return;
+    }
+    if (transaction.transferType === 'Loan') {
+      this.showValidationAlert(
+        'warning',
+        'Loan payments cannot be repeated manually.',
+      );
+      return;
+    }
+
+    this.onRepeatConfirm(transaction);
+  }
+
+  public onRepeatConfirm(transaction: ITransactions): void {
+    this.store.dispatch(
+      TransfersRepeatActions.setTransactionToRepeat({ transaction }),
+    );
+
+    let route = '/bank/transfers/regular';
+
+    if (transaction.transferType === 'BillPayment') {
+      route = '/bank/paybill';
+    } else if (transaction.transferType === 'OwnAccount') {
+      route = '/bank/transfers/internal';
+    } else if (
+      transaction.transferType === 'ToSomeoneSameBank' ||
+      transaction.transferType === 'ToSomeoneOtherBank'
+    ) {
+      route = '/bank/transfers/external';
+    }
+
+    this.router.navigate([route]);
   }
 }
