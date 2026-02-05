@@ -8,11 +8,7 @@ import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accoun
 import { Component, signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-@Component({
-  selector: 'app-request-modal',
-  template: '',
-  standalone: true,
-})
+@Component({ selector: 'app-request-modal', template: '', standalone: true })
 class MockRequestModal {}
 
 describe('LoansContainer', () => {
@@ -26,6 +22,7 @@ describe('LoansContainer', () => {
       loading: signal(false),
       alert: signal(null),
       loadCounts: vi.fn(),
+      reset: vi.fn(),
       loanCounts: signal({ all: 0, approved: 0, pending: 0, declined: 0 }),
       loanMonthsOptions: signal([]),
       purposeOptions: signal([]),
@@ -39,9 +36,7 @@ describe('LoansContainer', () => {
         { provide: LoansStore, useValue: loansStoreMock },
       ],
     })
-      .overrideComponent(LoansContainer, {
-        set: { animations: [] },
-      })
+      .overrideComponent(LoansContainer, { set: { animations: [] } })
       .compileComponents();
 
     globalStore = TestBed.inject(MockStore);
@@ -58,8 +53,13 @@ describe('LoansContainer', () => {
 
   it('should initialize data loading on init', () => {
     expect(globalStore.dispatch).toHaveBeenCalledWith(
-      AccountsActions.loadAccounts({}),
+      AccountsActions.loadAccounts({ forceRefresh: true }),
     );
     expect(loansStoreMock.loadCounts).toHaveBeenCalled();
+  });
+
+  it('should reset store on destroy', () => {
+    fixture.destroy();
+    expect(loansStoreMock.reset).toHaveBeenCalled();
   });
 });
