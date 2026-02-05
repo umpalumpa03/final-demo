@@ -79,3 +79,10 @@ export interface CreateTemplateGroupResponse {
   groupName: string;
   templateCount: number;
 }
+
+export interface TreeItemMoved {
+  itemId: string;
+  fromGroupId: string | null;
+  toGroupId: string | null;
+  newOrder: number;
+}

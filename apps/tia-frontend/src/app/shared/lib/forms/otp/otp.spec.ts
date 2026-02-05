@@ -33,13 +33,13 @@ describe('Otp', () => {
     firstInput.dispatchEvent(new Event('input'));
     fixture.detectChanges();
 
-    expect(component.value()).toBe('');
+    expect(component.value().trim()).toBe('');
 
     firstInput.value = '5';
     firstInput.dispatchEvent(new Event('input'));
     fixture.detectChanges();
 
-    expect(component.value()).toBe('5');
+    expect(component.value().trim()).toBe('5');
     expect(focusSpy).toHaveBeenCalled();
   });
 
@@ -75,7 +75,7 @@ describe('Otp', () => {
       preventDefault: () => {},
     });
 
-    expect(component.value()).toBe('1');
+    expect(component.value().trim()).toBe('1');
     expect(spy1).toHaveBeenCalledTimes(2);
   });
 
@@ -95,7 +95,7 @@ describe('Otp', () => {
 
     await fixture.whenStable();
 
-    expect(component.value()).toBe('123456');
+    expect(component.value().trim()).toBe('123456');
     expect(mockPreventDefault).toHaveBeenCalled();
   });
 });

@@ -63,17 +63,6 @@ describe('UserManagementComponent', () => {
     fixture.detectChanges();
   });
 
-  // it('should init, search, and paginate', async () => {
-  //   expect(store.loadUsers).toHaveBeenCalled();
-
-  //   component.onSearch('john');
-  //   await new Promise((r) => setTimeout(r, 350));
-  //   expect(component['searchQuery']()).toBe('john');
-
-  //   component.onPageChange(2);
-  //   expect(component['pagination'].currentPage()).toBe(2);
-  // });
-
   it('should handle modals', () => {
     component.details('1');
     expect(modalService.modalState()).toBe('details');

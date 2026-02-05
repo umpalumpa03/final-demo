@@ -93,4 +93,31 @@ describe('PaybillTemplatesService', () => {
       req.flush(mockResponse);
     });
   });
+
+  it('should call removeTemplateFromGroup (ungroup)', () => {
+    const templateId = 'temp-456';
+
+    service.removeTemplateFromGroup(templateId).subscribe();
+
+    const req = httpMock.expectOne(
+      `${environment.apiUrl}/paybill/templates/${templateId}/ungroup`,
+    );
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual({});
+    req.flush({});
+  });
+
+  it('should call addTemplateToGroup with correct payload', () => {
+    const groupId = 'group-789';
+    const templateId = 'temp-999';
+
+    service.addTemplateToGroup(groupId, templateId).subscribe();
+
+    const req = httpMock.expectOne(
+      `${environment.apiUrl}/paybill/template-groups/${groupId}/add-templates`,
+    );
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual({ templateIds: [templateId] });
+    req.flush({});
+  });
 });
