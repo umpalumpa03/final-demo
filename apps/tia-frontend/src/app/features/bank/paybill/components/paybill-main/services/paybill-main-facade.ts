@@ -121,50 +121,6 @@ export class PaybillMainFacade {
     return !!provider?.isFinal;
   });
 
-  private readonly visibleProviderIds = computed(() => {
-    const query = this.searchQuery().toLowerCase().trim();
-    const category = this.activeCategory();
-
-    if (!query || !category?.providers) return null;
-
-    const providers = category.providers;
-    const visibleIds = new Set<string>();
-
-    const matches = providers.filter((p) =>
-      p.name?.toLowerCase().includes(query),
-    );
-
-    matches.forEach((match) => {
-      let current: PaybillProvider | undefined = match;
-      while (current) {
-        visibleIds.add(current.id);
-        if (current.parentId) {
-          current = providers.find((p) => p.id === current!.parentId);
-        } else {
-          current = undefined;
-        }
-      }
-    });
-
-    return visibleIds;
-  });
-
-  public readonly filteredProviders = computed(() => {
-    const category = this.activeCategory();
-    if (!category || !category.providers) return [];
-
-    const currentLevelItems = getDisplayItems(
-      category.providers,
-      this.selectedParentId(),
-    );
-    const visibleSet = this.visibleProviderIds();
-
-    if (visibleSet) {
-      return currentLevelItems.filter((item) => visibleSet.has(item.id));
-    }
-
-    return currentLevelItems;
-  });
 
   public readonly formattedCategories = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
@@ -190,15 +146,6 @@ export class PaybillMainFacade {
     return category ? CATEGORY_UI_MAP[category.id.toLowerCase()] || null : null;
   });
 
-  public readonly providerListHeader = computed(() => {
-    const category = this.activeCategory();
-    if (!category || !category.providers) return '';
-    return getCurrentHeader(
-      category.providers,
-      this.selectedParentId(),
-      category.name,
-    );
-  });
 
   public readonly searchInputConfig = computed<InputConfig>(() => ({
     placeholder: `Search active providers...`,
