@@ -82,6 +82,15 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
     }, autoHideMs);
   }
 
+  public onAlertClose(): void {
+    if (this.alertTimeoutId) {
+      clearTimeout(this.alertTimeoutId);
+      this.alertTimeoutId = null;
+    }
+    this.alertKind.set(null);
+    this.alertMessage.set('');
+  }
+
   public onFileSelected(file: File): void {
     const allowedTypes = ['image/png', 'image/jpeg'];
     const maxSizeBytes = 150 * 1024; 

@@ -1,11 +1,14 @@
 <div class="profile-photo">
   @if (alertType()) {
   <div class="profile-photo__alert-container">
-    <app-alert-types-with-icons
+    <app-dismissible-alerts
       class="profile-photo__alert"
       [alertType]="alertType()!"
+      [alertTitle]="alertType()!"
       [alertMessage]="alertMessage()"
-    ></app-alert-types-with-icons>
+      [alertId]="0"
+      (dismissed)="alertClose.emit()"
+    ></app-dismissible-alerts>
   </div>
   }
 
