@@ -28,6 +28,7 @@ import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { OtpVerification } from 'apps/tia-frontend/src/app/core/auth/shared/otp-verification/otp-verification';
 import { IVerified } from 'apps/tia-frontend/src/app/core/auth/models/otp-verification.models';
+import { transferOtpConfig } from '../../config/transfers-external.config';
 
 @Component({
   selector: 'app-external-amount',
@@ -39,7 +40,6 @@ import { IVerified } from 'apps/tia-frontend/src/app/core/auth/models/otp-verifi
     AlertTypesWithIcons,
     DecimalPipe,
     SuccessModal,
-    OtpModal,
     RouteLoader,
     Tooltip,
     UiModal,
@@ -79,6 +79,7 @@ export class ExternalAmount implements OnInit {
   public readonly successfullTransfer = this.transferStore.transferSuccess;
   public readonly requiresOtp = this.transferStore.requiresOtp;
   public readonly errorFromState = this.transferStore.error;
+  public readonly otpConfig = transferOtpConfig['extrenal'];
   
 
   public readonly isExternalIban = computed(
@@ -205,16 +206,8 @@ export class ExternalAmount implements OnInit {
   }
   public onResendOtp(): void {}
 
-  // public verifyOtp(event: IVerified): void {
-  //   console.log(event.isCalled);
-  //   console.log(event.otp);
-  // }
 
   public resendOtp(isCalled: boolean): void {
     // console.log(isCalled);
   }
-
-  // public test(): void {
-  //   console.log('otp is wrong');
-  // }
 }
