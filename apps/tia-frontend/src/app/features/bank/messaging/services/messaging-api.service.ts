@@ -61,4 +61,8 @@ export class MessagingService {
   public getMailReplies(mailId: number): Observable<EmailRepliesData[]> {
     return this.http.get<EmailRepliesData[]>(`${this.baseUrl}/${mailId}/replies`);
   }
+
+  public sendMailReply(mailId: number, body: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${mailId}/reply`, { body });
+  }
 }

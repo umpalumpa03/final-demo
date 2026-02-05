@@ -46,7 +46,7 @@ export class AllLoans implements OnInit {
   public readonly isPrepaymentOpen = signal(false);
 
   public ngOnInit(): void {
-    this.store.loadLoans();
+    this.store.loadLoans({ status: null });
   }
 
   public onRequestLoan(): void {

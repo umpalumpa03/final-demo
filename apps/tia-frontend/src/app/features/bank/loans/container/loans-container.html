@@ -34,8 +34,9 @@
         <div [style.display]="isLoading() ? 'none' : 'block'">
             <router-outlet></router-outlet>
         </div>
-
+        @if (isModalOpen()) {
         <app-request-modal [isOpen]="isModalOpen()" (close)="isModalOpen.set(false)">
         </app-request-modal>
+        }
     </main>
 </div>
