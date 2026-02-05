@@ -7,7 +7,16 @@ import {
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { inject, computed } from '@angular/core';
-import { pipe, switchMap, tap, catchError, of, mergeMap, finalize } from 'rxjs';
+import {
+  pipe,
+  switchMap,
+  tap,
+  catchError,
+  of,
+  mergeMap,
+  finalize,
+  filter,
+} from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserManagementService } from '../shared/services/user-management.service';
 import { initialState } from './user-management.state';
@@ -23,6 +32,7 @@ export const UserManagementStore = signalStore(
   withMethods((store, service = inject(UserManagementService)) => ({
     loadUsers: rxMethod<void>(
       pipe(
+        filter(() => store.users().length === 0 && !store.loading()),
         tap(() => patchState(store, { loading: true, error: null })),
         switchMap(() =>
           service.getAllUsers().pipe(
@@ -41,18 +51,30 @@ export const UserManagementStore = signalStore(
     loadUserDetails: rxMethod<string>(
       pipe(
         tap(() => patchState(store, { actionLoading: true, error: null })),
-        switchMap((userId) =>
-          service.getUserById(userId).pipe(
-            tap((user) => {
-              patchState(store, { selectedUser: user, actionLoading: false });
-            }),
+        switchMap((userId) => {
+          const cachedUser = store.userCache()[userId];
+          if (cachedUser) {
+            patchState(store, {
+              selectedUser: cachedUser,
+              actionLoading: false,
+            });
+            return of(null);
+          }
 
+          return service.getUserById(userId).pipe(
+            tap((user) => {
+              patchState(store, (state) => ({
+                selectedUser: user,
+                actionLoading: false,
+                userCache: { ...state.userCache, [userId]: user },
+              }));
+            }),
             catchError((err: HttpErrorResponse) => {
               patchState(store, { actionLoading: false, error: err.message });
               return of(null);
             }),
-          ),
-        ),
+          );
+        }),
       ),
     ),
 
@@ -64,11 +86,15 @@ export const UserManagementStore = signalStore(
           service.deleteUser(id).pipe(
             tap(() => {
               const currentUsers = store.users();
-              const updatedUsers = currentUsers.filter((u) => u.id !== id);
 
-              patchState(store, {
-                users: updatedUsers,
-                actionLoading: false,
+              patchState(store, (state) => {
+                const { [id]: removed, ...remainingCache } = state.userCache;
+
+                return {
+                  users: currentUsers.filter((u) => u.id !== id),
+                  userCache: remainingCache,
+                  actionLoading: false,
+                };
               });
             }),
 
@@ -90,13 +116,19 @@ export const UserManagementStore = signalStore(
         switchMap(({ id, data }) =>
           service.updateUser(id, data).pipe(
             tap((updatedUser) => {
-              patchState(store, (state) => ({
-                users: state.users.map((u) =>
-                  u.id === updatedUser.id ? updatedUser : u,
-                ),
-                selectedUser: updatedUser,
-                actionLoading: false,
-              }));
+              patchState(store, (state) => {
+                const { [updatedUser.id]: removed, ...remainingCache } =
+                  state.userCache;
+
+                return {
+                  users: state.users.map((u) =>
+                    u.id === updatedUser.id ? updatedUser : u,
+                  ),
+                  selectedUser: updatedUser,
+                  actionLoading: false,
+                  userCache: remainingCache,
+                };
+              });
             }),
             catchError((err: HttpErrorResponse) => {
               patchState(store, {
@@ -124,7 +156,23 @@ export const UserManagementStore = signalStore(
                 .map((u) =>
                   u.id === id ? { ...u, isBlocked: updatedUser.isBlocked } : u,
                 );
-              patchState(store, { users });
+
+              patchState(store, (state) => {
+                const { [updatedUser.id]: removed, ...remainingCache } =
+                  state.userCache;
+
+                const currentSelected = state.selectedUser;
+                const updatedSelected =
+                  currentSelected && currentSelected.id === id
+                    ? { ...currentSelected, isBlocked: updatedUser.isBlocked }
+                    : currentSelected;
+
+                return {
+                  users,
+                  userCache: remainingCache,
+                  selectedUser: updatedSelected,
+                };
+              });
             }),
             catchError((err: HttpErrorResponse) => {
               patchState(store, { error: err.message });
