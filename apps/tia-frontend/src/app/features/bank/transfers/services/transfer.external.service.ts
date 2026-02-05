@@ -22,6 +22,8 @@ import {
   RecipientType,
 } from '../models/transfers.state.model';
 import { TransfersApiService } from './transfersApi.service';
+import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+import { Store } from '@ngrx/store';
 
 @Injectable()
 export class TransferExternalService {
@@ -31,6 +33,7 @@ export class TransferExternalService {
   private readonly validationService = inject(TransferValidationService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly transfersApi = inject(TransfersApiService);
+  private readonly store = inject(Store);
 
   private readonly recipientInfo$ = toObservable(
     this.transferStore.recipientInfo,
@@ -299,7 +302,7 @@ export class TransferExternalService {
           this.transferStore.setLoading(false);
           this.transferStore.setError(
             error?.error?.message || 'Transfer failed',
-          );
+          ); //needschange
 
           return of(null);
         }),
@@ -350,7 +353,7 @@ export class TransferExternalService {
           this.transferStore.setLoading(false);
           this.transferStore.setError(
             error?.error?.message || 'Transfer Failed',
-          );
+          ); //needs change
 
           return of(null);
         }),
@@ -377,6 +380,10 @@ export class TransferExternalService {
           if (response.success) {
             this.transferStore.setRequiresOtp(false);
             this.transferStore.setTransferSuccess(true);
+            //dispatching action to reload accounts
+            this.store.dispatch(
+              AccountsActions.loadAccounts({ forceRefresh: true }),
+            );
           }
           this.transferStore.setLoading(false);
           //here we need to catch success false from response on otp code

@@ -15,12 +15,14 @@ import { accountsFeature } from 'apps/tia-frontend/src/app/store/products/accoun
 import { ExchangeRatesEffects } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.effects';
 import { AccountsEffects } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.effects';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
+import { AuthGuard } from '../core/auth/guards/auth-guard';
 
 export const bankRoutes: Routes = [
   {
     path: 'bank',
     loadComponent: () =>
       import('./bank-container').then((c) => c.BankContainer),
+    // canActivateChild: [AuthGuard],
     providers: [
       provideState({
         name: TRANSACTION_FEATURE_KEY,

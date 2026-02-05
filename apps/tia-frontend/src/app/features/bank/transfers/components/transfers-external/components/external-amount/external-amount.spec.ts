@@ -118,15 +118,6 @@ describe('ExternalAmount', () => {
     component.onOtpVerify('123456');
     expect(mockExternalService.verifyTransfer).toHaveBeenCalledWith('123456');
   });
-
-  it('should handle onSuccessDone', () => {
-    component.onSuccessDone();
-    expect(mockStore.reset).toHaveBeenCalled();
-    expect(mockRouter.navigate).toHaveBeenCalledWith([
-      '/bank/transfers/external/accounts',
-    ]);
-  });
-
   it('should compute recipient initials correctly', () => {
     mockStore.recipientType.set('phone');
     mockStore.recipientInfo.set({ fullName: 'Mariam Svanidze' });

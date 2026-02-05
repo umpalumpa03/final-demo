@@ -1,9 +1,20 @@
-<app-settings-body 
-    [title]="'settings.language.title' | translate"
-    [subTitle]="'settings.language.subtitle' | translate"
->
+<app-settings-body [title]="'settings.language.title' | translate"
+    [subTitle]="'settings.language.subtitle' | translate">
     <div class="container">
         <h4 class="container__title">{{ 'settings.language.available' | translate }}</h4>
         <app-language-switcher></app-language-switcher>
+
+        @if(languagesStore.isLoading()) {
+        <p>Loading languages...</p>
+        } @else if(languagesStore.hasError()) {
+        <p>Error loading languages</p>
+        } @else {
+        <app-language-selection 
+            [languages]="languages()"
+            [isLoading]="isLoading()"
+            [hasError]="hasError()"
+        >
+        </app-language-selection>
+        }
     </div>
 </app-settings-body>

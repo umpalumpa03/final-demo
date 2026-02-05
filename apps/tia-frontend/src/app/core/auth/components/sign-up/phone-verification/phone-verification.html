@@ -3,6 +3,7 @@
   type="sign-up"
   timerType="phone"
   [timeLimit]="2"
-  (onTimeout)="handlePhoneTimer()"
+  (onTimeout)="clearedBackout()"
+  (onBackOut)="clearedBackout()"
   [phoneErrorMessage]="PhoneOtpError()?.message ?? null"
 ></app-otp-verification>

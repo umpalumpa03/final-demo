@@ -70,18 +70,62 @@ export const TemplatesPageActions = createActionGroup({
     'Create Templates Groups': props<{ groupName: string; templateIds: [] }>(),
     'Create Templates Groups Success': props<{
       templateGroup: CreateTemplateGroupResponse;
+      message?: string;
     }>(),
     'Create Templates Groups Failure': props<{
       error: string;
     }>(),
-    'Delete Templates': props<{
+    'Delete Template': props<{
       templateId: string;
     }>(),
-    'Delete Templates Success': props<{
+    'Delete Template Success': props<{
       templateId: string;
       message: string;
     }>(),
-    'Delete Templates Failure': props<{
+    'Delete Template Failure': props<{
+      error: string;
+    }>(),
+    'Rename Template': props<{
+      templateId: string;
+      nickName: string;
+    }>(),
+    'Rename Template Success': props<{
+      template: Templates;
+      message?: string;
+    }>(),
+    'Rename Template Failure': props<{
+      error: string;
+    }>(),
+    'Delete Template Group': props<{
+      groupId: string;
+    }>(),
+    'Delete Template Group Success': props<{
+      message: string;
+      groupId: string;
+    }>(),
+    'Delete Template Group Failure': props<{
+      error: string;
+    }>(),
+    'Rename Template Group': props<{
+      groupId: string;
+      groupName: string;
+    }>(),
+    'Rename Template Group Success': props<{
+      templateGroup: CreateTemplateGroupResponse;
+      groupId: string;
+      message: string;
+    }>(),
+    'Rename Template Group Failure': props<{
+      error: string;
+    }>(),
+    'Move Template': props<{
+      groupId: string | null;
+      templateId: string;
+    }>(),
+    'Move Template Success': props<{
+      message: string;
+    }>(),
+    'Move Template Failure': props<{
       error: string;
     }>(),
   },
