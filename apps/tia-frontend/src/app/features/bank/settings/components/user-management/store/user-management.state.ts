@@ -5,6 +5,7 @@ type UserState = {
   selectedUser: IUserDetail | null;
   loading: boolean;
   actionLoading: boolean;
+  processingIds: string[];
   error: string | null;
 };
 
@@ -13,5 +14,6 @@ export const initialState: UserState = {
   selectedUser: null,
   loading: false,
   actionLoading: false,
+  processingIds: [],
   error: null,
 };

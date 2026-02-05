@@ -55,7 +55,6 @@ export class UserManagementComponent implements OnInit {
     );
 
   protected readonly isSaving = signal(false);
-  protected readonly actionProcessingId = signal<string | null>(null);
 
   protected readonly pagination = usePagination(this.filteredUsers, 4);
 
@@ -144,7 +143,6 @@ export class UserManagementComponent implements OnInit {
   }
 
   public block(id: string, isBlocked: boolean): void {
-    this.actionProcessingId.set(id);
     this.store.toggleBlockStatus({ id, isBlocked: !isBlocked });
   }
 

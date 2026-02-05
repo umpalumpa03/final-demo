@@ -7,7 +7,7 @@ import {
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { inject, computed } from '@angular/core';
-import { pipe, switchMap, tap, catchError, of } from 'rxjs';
+import { pipe, switchMap, tap, catchError, of, mergeMap, finalize } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserManagementService } from '../shared/services/user-management.service';
 import { initialState } from './user-management.state';
@@ -112,26 +112,31 @@ export const UserManagementStore = signalStore(
 
     toggleBlockStatus: rxMethod<{ id: string; isBlocked: boolean }>(
       pipe(
-        tap(() => patchState(store, { actionLoading: true, error: null })),
-        switchMap(({ id, isBlocked }) =>
-          service.blockUser(id, isBlocked).pipe(
+        mergeMap(({ id, isBlocked }) => {
+          patchState(store, (state) => ({
+            processingIds: [...state.processingIds, id],
+          }));
+
+          return service.blockUser(id, isBlocked).pipe(
             tap((updatedUser) => {
-              patchState(store, (state) => ({
-                users: state.users.map((u) =>
-                  u.id === updatedUser.id ? updatedUser : u,
-                ),
-                actionLoading: false,
-              }));
+              const users = store
+                .users()
+                .map((u) =>
+                  u.id === id ? { ...u, isBlocked: updatedUser.isBlocked } : u,
+                );
+              patchState(store, { users });
             }),
             catchError((err: HttpErrorResponse) => {
-              patchState(store, {
-                actionLoading: false,
-                error: err.message,
-              });
+              patchState(store, { error: err.message });
               return of(null);
             }),
-          ),
-        ),
+            finalize(() => {
+              patchState(store, (state) => ({
+                processingIds: state.processingIds.filter((pid) => pid !== id),
+              }));
+            }),
+          );
+        }),
       ),
     ),
 
