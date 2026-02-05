@@ -9,6 +9,7 @@ import {
   OnInit,
   output,
   signal,
+  viewChild,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -65,25 +66,53 @@ export class OtpVerification implements OnInit {
   public timerType = input<TimerType>('phone');
   public errorMessage = input<string | null>(null);
   public remainingAttempts = input<number | null>(null);
-  public onBackOut = output<void>();
   public phoneErrorMessage = input<string | null>(null);
+  public isBtnRowDirection = input<boolean>(true);
+  public isDisabled = input<boolean>(false);
+  public isTimerDisplayed = input<boolean>(true);
+  public onErrorRedirect = input<boolean>(false);
+
+  public onBackOut = output<void>();
+  public onTimeout = output<void>();
+  public isVerifyCalled = output<IVerified>();
+  public isResendCalled = output<boolean>();
+  public customError = output<void>();
 
   public resendTries = signal<number>(3);
+  public isLoading = signal(false);
+  public submitError = signal<string | null>(null);
+  public countdown = signal<number>(0);
+  public isResendActive = signal<boolean>(false);
+  public isLimitExeeded = signal<boolean>(false);
 
-  @HostListener('window:keydown.enter', ['$event'])
-  public handleKeyBoardEvent(event: Event) {
-    event.preventDefault();
-    this.onSubmit();
-  }
+  public config = computed(() => getOtpVerificationConfig(this.type()));
+  public iconUrl = computed(() => this.config().iconUrl);
+  public title = computed(() => this.config().title);
+  public subText = computed(() => this.config().subText);
+  public submitBtnName = computed(() => this.config().submitBtnName);
+  public backLink = computed(() => this.config().backLink);
+  public backLinkText = computed(() => this.config().backLinkText);
+  public isHeaderVisible = computed(
+    () => this.iconUrl() || this.title() || this.subText(),
+  );
 
-  public isHeaderVisible = computed(() => this)
+  public maxTime = computed(() => {
+    const limit = Math.abs(Number(this.timeLimit()));
+
+    return limit * 60;
+  });
 
   public unitedError = computed(() => {
     const error = this.errorMessage();
     const attempts = this.remainingAttempts();
 
+    if (!this.onErrorRedirect()) {
+      this.customError.emit();
+      return '';
+    }
+
     if (error && attempts !== null && attempts > 0) {
-      return `${error} ${attempts === undefined ? '' : `(Remaining attempts: ${attempts})`}`;
+      return `${error} (Remaining attempts: ${attempts})`;
     }
 
     if (attempts === 0) {
@@ -94,7 +123,12 @@ export class OtpVerification implements OnInit {
   });
 
   public isButtonDisabled = computed(() => {
-    if (this.unitedError() || this.phoneErrorMessage() || this.submitError()) {
+    if (
+      this.unitedError() ||
+      this.phoneErrorMessage() ||
+      this.submitError() ||
+      this.isLimitExeeded()
+    ) {
       return true;
     }
 
@@ -102,38 +136,25 @@ export class OtpVerification implements OnInit {
       return true;
     }
 
+    setTimeout(() => {
+      this.otpComponent()?.focusFirst();
+    }, 0);
+
     return false;
   });
 
-  public isVerifyCalled = output<IVerified>();
-  public isResendCalled = output<boolean>();
+  @HostListener('window:keydown.enter', ['$event'])
+  public handleKeyBoardEvent(event: Event) {
+    event.preventDefault();
+    this.onSubmit();
+  }
 
-  public config = computed(() => getOtpVerificationConfig(this.type()));
-
-  public isLoading = signal(false);
-  public submitError = signal<string | null>(null);
-
-  public iconUrl = computed(() => this.config().iconUrl);
-  public title = computed(() => this.config().title);
-  public subText = computed(() => this.config().subText);
-  public submitBtnName = computed(() => this.config().submitBtnName);
-  public backLink = computed(() => this.config().backLink);
-  public backLinkText = computed(() => this.config().backLinkText);
+  public readonly otpComponent = viewChild(Otp);
 
   private destroy$ = new Subject<void>();
   private timerSubscription?: Subscription;
-  public maxTime = computed(() => {
-    const limit = Math.abs(Number(this.timeLimit()));
 
-    return limit * 60;
-  });
-
-  public countdown = signal<number>(0);
   private timer$ = interval(1000);
-
-  public isResendActive = signal<boolean>(false);
-
-  public onTimeout = output<void>();
 
   public formConfig = toSignal(
     this.translate.onLangChange.pipe(
@@ -183,6 +204,12 @@ export class OtpVerification implements OnInit {
         setTimeout(() => {
           this.resendTries.set(3);
         }, 2000);
+      }
+    });
+
+    effect(() => {
+      if (this.remainingAttempts() === 0) {
+        this.isLimitExeeded.set(true);
       }
     });
   }
@@ -240,8 +267,9 @@ export class OtpVerification implements OnInit {
       otp: otp,
     });
 
-    this.otpForm.reset();
-    console.log(currentForm.getRawValue());
+    setTimeout(() => {
+      this.otpForm.reset();
+    }, 0);
   }
 
   public handleAutoSubmit(code: string): void {

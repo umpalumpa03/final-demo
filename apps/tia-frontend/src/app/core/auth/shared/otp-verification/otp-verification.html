@@ -1,17 +1,18 @@
 <div class="otp-verification">
-
+  @if(isHeaderVisible()) {
   <div class="otp-verification__icon" aria-hidden="true">
     <img [src]="iconUrl()" />
   </div>
   <h2 class="otp-verification__title">{{ title() | translate }}</h2>
   <p class="otp-verification__subtext">{{ subText() | translate}}</p>
-
-  @if (!isLoading()) {
+  } @if (!isLoading()) {
   <form class="auth-form" [formGroup]="activeForm()" (ngSubmit)="onSubmit()">
     @if(timerType() === 'otp'){
     <div class="otp-field">
       <lib-otp
+        [isOtpLoading]="isButtonDisabled()"
         formControlName="code"
+        [isCentered]="true"
         (completed)="handleAutoSubmit($event)"
         [config]="formConfig().otp"
       ></lib-otp>
@@ -38,25 +39,9 @@
       alertType="error"
       [alertMessage]="phoneErrorMessage() ?? 'An error occurred'"
     ></app-simple-alerts>
-    }
-
-    <div class="auth-form__actions">
-      <app-button
-        [isDisabled]="isButtonDisabled()"
-        type="submit"
-        [fullWidth]="true"
-      >
-        {{ submitBtnName() | translate}}
-      </app-button>
-    </div>
-
-    <app-button
-      [fullWidth]="true"
-      class="otp-verification__back"
-      (click)="resgisterBackout()"
-      variant="outline"
-      >{{ backLinkText() | translate}}</app-button
-    >
+    } 
+    
+    @if(isTimerDisplayed()) {
     <div class="timer-compact">
       <div class="timer-compact__timer">
         <span
@@ -84,6 +69,33 @@
         <span class="timer-compact__resend-left"> {{resendTries()}} </span>
       </div>
       }
+    </div>
+    }
+
+    <div
+      class="auth-form__wrapper"
+      [style.flex-direction]="isHeaderVisible()? 'column' : 'row-reverse'"
+    >
+      <div class="auth-form__wrapper__btn">
+        <app-button
+          [isDisabled]="isButtonDisabled()"
+          type="submit"
+          [fullWidth]="true"
+          variant="default"
+        >
+          {{ submitBtnName() | translate}}
+        </app-button>
+      </div>
+
+      <div class="auth-form__wrapper__btn">
+        <app-button
+          [fullWidth]="true"
+          class="otp-verification__back"
+          (click)="resgisterBackout()"
+          variant="outline"
+          >{{ backLinkText() | translate}}</app-button
+        >
+      </div>
     </div>
   </form>
   } @else {
