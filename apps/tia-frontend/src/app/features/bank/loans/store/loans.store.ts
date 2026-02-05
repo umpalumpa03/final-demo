@@ -187,13 +187,27 @@ export const LoansStore = signalStore(
               selectedLoanDetails: null,
             }),
           ),
-          switchMap((id) =>
-            loansService.getLoanById(id).pipe(
+          switchMap((id) => {
+            const cachedDetails = store.loanDetailsCache()[id];
+
+            if (cachedDetails) {
+              patchState(store, {
+                selectedLoanDetails: cachedDetails,
+                detailsLoading: false,
+              });
+              return EMPTY;
+            }
+
+            return loansService.getLoanById(id).pipe(
               tap((details) =>
-                patchState(store, {
+                patchState(store, (state) => ({
                   selectedLoanDetails: details,
                   detailsLoading: false,
-                }),
+                  loanDetailsCache: {
+                    ...state.loanDetailsCache,
+                    [id]: details,
+                  },
+                })),
               ),
               catchError((error) => {
                 patchState(store, {
@@ -202,8 +216,8 @@ export const LoansStore = signalStore(
                 });
                 return EMPTY;
               }),
-            ),
-          ),
+            );
+          }),
         ),
       ),
 
@@ -379,10 +393,10 @@ export const LoansStore = signalStore(
                   activeChallengeId: null,
                   calculationResult: null,
                   actionLoading: false,
+                  loanDetailsCache: {},
                 });
 
                 store.loadLoans({ forceChange: true });
-
                 store.loadCounts();
               }),
               catchError((error) => {
