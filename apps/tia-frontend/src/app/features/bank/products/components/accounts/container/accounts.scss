@@ -15,11 +15,11 @@
     max-width: 50rem;
     width: calc(100% - 4rem);
 
-    &--bottom-right {
-      bottom: 2rem;
-      top: auto;
+    &--top-right {
+      top: 7rem;
+      right: 1rem;
+      bottom: auto;
       left: auto;
-      right: 2rem;
       transform: none;
       max-width: 40rem;
       width: calc(100% - 4rem);
