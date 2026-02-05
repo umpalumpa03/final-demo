@@ -170,7 +170,7 @@ describe('CardsEffects', () => {
     });
   });
 
-  expect(result).toBe(true);
+  expect(result).toBe(false);
 });
 
 it('should handle image load failure in loadCardImages$', async () => {
@@ -202,7 +202,7 @@ it('should return EMPTY when no cardIds in loadCardImages$', async () => {
     });
   });
 
-  expect(results.length).toBe(0);
+  expect(results.length).toBe(1);
 });
 
 it('should handle creation data load failure', async () => {
@@ -233,11 +233,34 @@ it('should handle loadCardTransactions with missing card details', async () => {
 
 it('should handle loadCardTransactions with missing account IBAN', async () => {
   store.select.mockReturnValueOnce(of({ details: { accountId: 'acc-1' } }));
-  store.select.mockReturnValueOnce(of({ id: 'acc-1' })); // account without IBAN
+  store.select.mockReturnValueOnce(of({ id: 'acc-1' }));
   actions$ = of(CardsActions.loadCardTransactions({ cardId: 'card-1' }));
 
   expect(await firstValueFrom(effects.loadCardTransactions$)).toEqual(
     CardsActions.loadCardTransactionsFailure({ cardId: 'card-1', error: 'Account IBAN not found' })
   );
+});
+it('should dispatch loadCardImagesComplete when no cardIds', async () => {
+  const emptyAccounts = [{ ...mockAccounts[0], cardIds: [] }];
+  actions$ = of(CardsActions.loadCardAccountsSuccess({ accounts: emptyAccounts }));
+
+  expect(await firstValueFrom(effects.loadCardImages$)).toEqual(
+    CardsActions.loadCardImagesComplete()
+  );
+});
+
+it('should dispatch loadCardImagesComplete after all images loaded', async () => {
+  cardsService.getCardImage.mockReturnValue(of('base64img'));
+  actions$ = of(CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts }));
+
+  const results: any[] = [];
+  await new Promise<void>((resolve) => {
+    effects.loadCardImages$.subscribe({
+      next: (action) => results.push(action),
+      complete: resolve,
+    });
+  });
+
+  expect(results).toContainEqual(CardsActions.loadCardImagesComplete());
 });
 });

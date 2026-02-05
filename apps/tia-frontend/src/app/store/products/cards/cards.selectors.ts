@@ -221,7 +221,8 @@ export const selectCardDetailsModalData = createSelector(
 );
 export const selectCardTransactions = createSelector(
   selectCardsState,
-  (state: CardsState): Record<string, ITransactions[]> => state.cardTransactions,
+  (state: CardsState): Record<string, ITransactions[]> =>
+    state.cardTransactions,
 );
 
 export const selectCardTransactionsLoading = createSelector(
@@ -236,7 +237,8 @@ export const selectCardTransactionsError = createSelector(
 
 export const selectCardTransactionsTotalCount = createSelector(
   selectCardsState,
-  (state: CardsState): Record<string, number> => state.cardTransactionsTotalCount,
+  (state: CardsState): Record<string, number> =>
+    state.cardTransactionsTotalCount,
 );
 
 export const selectCardTransactionsByCardId = (cardId: string) =>
@@ -249,6 +251,9 @@ export const selectCardTransactionsByCardId = (cardId: string) =>
 export const selectCardTransactionsTotalByCardId = (cardId: string) =>
   createSelector(
     selectCardTransactionsTotalCount,
-    (totals: Record<string, number>): number =>
-      totals[cardId] || 0,
+    (totals: Record<string, number>): number => totals[cardId] || 0,
   );
+export const selectCardImagesLoading = createSelector(
+  selectCardsState,
+  (state: CardsState): boolean => state.cardImagesLoading,
+);

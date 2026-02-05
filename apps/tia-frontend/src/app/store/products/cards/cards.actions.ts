@@ -125,3 +125,6 @@ export const loadCardTransactionsFailure = createAction(
 export const clearCardTransactionsError = createAction(
   '[Cards] Clear Card Transactions Error'
 );
+export const loadCardImagesComplete = createAction(
+  '[Cards] Load Card Images Complete',
+);

@@ -241,3 +241,30 @@ it('should handle card transactions actions', () => {
   expect(state.cardTransactionsError).toBe('Failed');
   expect(state.cardTransactionsLoading).toBe(false);
 });
+it('should set cardImagesLoading on loadCardAccountsSuccess', () => {
+  const mockAccounts = [
+    {
+      id: 'acc-1',
+      iban: 'GE123',
+      name: 'Main',
+      balance: 1000,
+      currency: 'GEL',
+      status: 'ACTIVE',
+      cardIds: ['card-1'],
+      openedAt: '2024-01-01',
+    },
+  ];
+  const state = cardsReducer(
+    initialCardsState,
+    CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts }),
+  );
+  expect(state.cardImagesLoading).toBe(true);
+});
+
+it('should set cardImagesLoading false on loadCardImagesComplete', () => {
+  const state = cardsReducer(
+    { ...initialCardsState, cardImagesLoading: true },
+    CardsActions.loadCardImagesComplete(),
+  );
+  expect(state.cardImagesLoading).toBe(false);
+});

@@ -57,21 +57,23 @@ export const cardsReducer = createReducer(
     loading: true,
     error: null,
   })),
-  on(CardsActions.loadCardCreationDataSuccess, (state, { designs, categories, types }) => ({
-    ...state,
-    designs,
-    categories,
-    types,
-    loading: false,
-    error: null,
-  })),
+  on(
+    CardsActions.loadCardCreationDataSuccess,
+    (state, { designs, categories, types }) => ({
+      ...state,
+      designs,
+      categories,
+      types,
+      loading: false,
+      error: null,
+    }),
+  ),
   on(CardsActions.loadCardCreationDataFailure, (state, { error }) => ({
     ...state,
     loading: false,
     error,
   })),
 
-  
   on(CardsActions.createCard, (state) => ({
     ...state,
     isCreating: true,
@@ -93,55 +95,83 @@ export const cardsReducer = createReducer(
     createError: null,
   })),
   on(CardsActions.createCardSuccess, (state) => ({
+    ...state,
+    isCreating: false,
+    createError: null,
+    isCreateModalOpen: false,
+    showSuccessAlert: true,
+  })),
+  on(CardsActions.hideSuccessAlert, (state) => ({
+    ...state,
+    showSuccessAlert: false,
+  })),
+
+  on(CardsActions.openCardDetailsModal, (state, { cardId }) => ({
+    ...state,
+    isCardDetailsModalOpen: true,
+    selectedCardIdForModal: cardId,
+  })),
+  on(CardsActions.closeCardDetailsModal, (state) => ({
+    ...state,
+    isCardDetailsModalOpen: false,
+    selectedCardIdForModal: null,
+  })),
+
+  on(CardsActions.loadCardTransactions, (state) => ({
+    ...state,
+    cardTransactionsLoading: true,
+    cardTransactionsError: null,
+  })),
+
+  on(
+    CardsActions.loadCardTransactionsSuccess,
+    (state, { cardId, transactions, total }) => ({
+      ...state,
+      cardTransactions: {
+        ...state.cardTransactions,
+        [cardId]: transactions,
+      },
+      cardTransactionsTotalCount: {
+        ...state.cardTransactionsTotalCount,
+        [cardId]: total,
+      },
+      cardTransactionsLoading: false,
+      cardTransactionsError: null,
+    }),
+  ),
+
+  on(CardsActions.loadCardTransactionsFailure, (state, { error }) => ({
+    ...state,
+    cardTransactionsLoading: false,
+    cardTransactionsError: error,
+  })),
+  on(CardsActions.clearCardTransactionsError, (state) => ({
+    ...state,
+    cardTransactionsError: null,
+  })),
+
+  on(CardsActions.loadCardAccountsSuccess, (state, { accounts }) => ({
   ...state,
-  isCreating: false,
-  createError: null,
-  isCreateModalOpen: false,
-  showSuccessAlert: true,
-})),
-on(CardsActions.hideSuccessAlert, (state) => ({
-  ...state,
-  showSuccessAlert: false,
+  accounts,
+  loading: false,
+  error: null,
+  cardImagesLoading: true,
 })),
 
-on(CardsActions.openCardDetailsModal, (state, { cardId }) => ({
+on(CardsActions.loadCardImageSuccess, (state, { cardId, imageBase64 }) => ({
   ...state,
-  isCardDetailsModalOpen: true,
-  selectedCardIdForModal: cardId,
-})),
-on(CardsActions.closeCardDetailsModal, (state) => ({
-  ...state,
-  isCardDetailsModalOpen: false,
-  selectedCardIdForModal: null,
-})),
-
-on(CardsActions.loadCardTransactions, (state) => ({
-  ...state,
-  cardTransactionsLoading: true,
-  cardTransactionsError: null,
-})),
-
-on(CardsActions.loadCardTransactionsSuccess, (state, { cardId, transactions, total }) => ({
-  ...state,
-  cardTransactions: {
-    ...state.cardTransactions,
-    [cardId]: transactions,
+  cardImages: {
+    ...state.cardImages,
+    [cardId]: imageBase64,
   },
-  cardTransactionsTotalCount: {
-    ...state.cardTransactionsTotalCount,
-    [cardId]: total,
-  },
-  cardTransactionsLoading: false,
-  cardTransactionsError: null,
 })),
 
-on(CardsActions.loadCardTransactionsFailure, (state, { error }) => ({
+on(CardsActions.loadCardImageFailure, (state) => ({
   ...state,
-  cardTransactionsLoading: false,
-  cardTransactionsError: error,
+  cardImagesLoading: false, 
 })),
-on(CardsActions.clearCardTransactionsError, (state) => ({
+on(CardsActions.loadCardImagesComplete, (state) => ({
   ...state,
-  cardTransactionsError: null,
-}))
+  cardImagesLoading: false,
+})),
 );

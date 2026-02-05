@@ -21,6 +21,7 @@ import {
   selectError,
   selectShowSuccessAlert,
   selectIsCreateModalOpen,
+  selectCardImagesLoading,
 } from '../../../../../../../../store/products/cards/cards.selectors';
 import { CreateCard } from '../../create-card-modal/container/createCard';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
@@ -52,12 +53,11 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class CardList implements OnInit {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
-
-  protected readonly loading$ = this.store.select(selectLoading);
-  protected readonly error$ = this.store.select(selectError);
-  protected readonly showSuccessAlert$ = this.store.select(selectShowSuccessAlert);
-  protected readonly isModalOpen$ = this.store.select(selectIsCreateModalOpen);
-
+protected readonly loading$ = this.store.select(selectLoading);
+protected readonly error$ = this.store.select(selectError);
+protected readonly showSuccessAlert$ = this.store.select(selectShowSuccessAlert);
+protected readonly isModalOpen$ = this.store.select(selectIsCreateModalOpen);
+protected readonly cardImagesLoading$ = this.store.select(selectCardImagesLoading);
   public readonly activeCardIndex = signal<Record<string, number>>({});
 
   protected readonly cardGroupsWithMeta$ = combineLatest([
@@ -112,11 +112,13 @@ export class CardList implements OnInit {
     this.store.dispatch(closeCreateCardModal());
   }
 
-  protected readonly viewData$ = combineLatest({
+
+protected readonly viewData$ = combineLatest({
   loading: this.loading$,
   error: this.error$,
   groups: this.cardGroupsWithMeta$,
   isModalOpen: this.isModalOpen$,
-  showSuccessAlert: this.showSuccessAlert$
+  showSuccessAlert: this.showSuccessAlert$,
+  cardImagesLoading: this.cardImagesLoading$,
 });
 }

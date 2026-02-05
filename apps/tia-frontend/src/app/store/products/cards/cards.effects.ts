@@ -44,39 +44,38 @@ export class CardsEffects {
       ),
     ),
   );
+loadCardImages$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(CardsActions.loadCardAccountsSuccess),
+    switchMap(({ accounts }) => {
+      const allCardIds = accounts.flatMap((account) => account.cardIds);
 
-  loadCardImages$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CardsActions.loadCardAccountsSuccess),
-      switchMap(({ accounts }) => {
-        const allCardIds = accounts.flatMap((account) => account.cardIds);
+      if (allCardIds.length === 0) {
+        return of(CardsActions.loadCardImagesComplete());
+      }
 
-        if (allCardIds.length === 0) {
-          return EMPTY;
-        }
-
-        return forkJoin(
-          allCardIds.map((cardId) =>
-            this.cardsService.getCardImage(cardId).pipe(
-              map((imageBase64) =>
-                CardsActions.loadCardImageSuccess({ cardId, imageBase64 }),
-              ),
-              catchError(() =>
-                of(
-                  CardsActions.loadCardImageFailure({
-                    cardId,
-                    error: 'IMAGE_LOAD_FAILED',
-                  }),
-                ),
+      return forkJoin(
+        allCardIds.map((cardId) =>
+          this.cardsService.getCardImage(cardId).pipe(
+            map((imageBase64) =>
+              CardsActions.loadCardImageSuccess({ cardId, imageBase64 }),
+            ),
+            catchError(() =>
+              of(
+                CardsActions.loadCardImageFailure({
+                  cardId,
+                  error: 'IMAGE_LOAD_FAILED',
+                }),
               ),
             ),
           ),
-        );
-      }),
-      mergeMap((actions) => actions),
-    ),
-  );
-
+        ),
+      ).pipe(
+        mergeMap((actions) => [...actions, CardsActions.loadCardImagesComplete()]),
+      );
+    }),
+  ),
+);
   loadCardDetails$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CardsActions.loadCardDetails),

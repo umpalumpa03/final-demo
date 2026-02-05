@@ -1,3 +1,5 @@
+
+
 @if (viewData$ | async; as data) {
 <div class="card-list">
   <div class="card-list__header">
@@ -24,17 +26,18 @@
     [message]="errorMsg"
     buttonMessage="Retry"
   />
-  } @else { @for (group of data.groups; track group.account.id)
-  {
-  <div class="card-list__group">
-    <app-card-group-item
-      [group]="group"
-      (cardClicked)="handleCardClick($event)"
-      (viewAllClicked)="handleViewAllCards($event)"
-    />
-  </div>
-  }
-  <app-add-card-button (clicked)="handleOpenModal()" />
+  } @else { 
+    @for (group of data.groups; track group.account.id) {
+      <div class="card-list__group">
+        <app-card-group-item
+          [group]="group"
+          [isLoading]="data.cardImagesLoading"
+          (cardClicked)="handleCardClick($event)"
+          (viewAllClicked)="handleViewAllCards($event)"
+        />
+      </div>
+    }
+    <app-add-card-button (clicked)="handleOpenModal()" />
   }
 </div>
 

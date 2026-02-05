@@ -13,7 +13,6 @@ export interface CardsState {
   error: string | null;
   cardDetailsLoading: boolean;
   cardDetailsError: string | null;
-
   designs: CardDesign[];
   categories: CardCategory[];
   types: CardType[];
@@ -27,6 +26,8 @@ export interface CardsState {
   cardTransactionsLoading: boolean;
   cardTransactionsError: string | null;
   cardTransactionsTotalCount: Record<string, number>;
+    cardImagesLoading: boolean;
+
 }
 
 export const initialCardsState: CardsState = {
@@ -37,7 +38,6 @@ export const initialCardsState: CardsState = {
   error: null,
   cardDetailsLoading: false,
   cardDetailsError: null,
-
   designs: [],
   categories: [],
   types: [],
@@ -51,4 +51,6 @@ export const initialCardsState: CardsState = {
   cardTransactionsLoading: false,
   cardTransactionsError: null,
   cardTransactionsTotalCount: {},
+  cardImagesLoading: true,
+
 };

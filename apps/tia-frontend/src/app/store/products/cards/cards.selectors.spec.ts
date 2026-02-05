@@ -26,6 +26,7 @@ import {
   selectCardTransactionsTotalCount,
   selectCardTransactionsByCardId,
   selectCardTransactionsTotalByCardId,
+  selectCardImagesLoading,
 } from './cards.selectors';
 import { CardsState } from './cards.state';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
@@ -61,6 +62,7 @@ const mockState: CardsState = {
   cardTransactionsLoading: false,
   cardTransactionsError: null,
   cardTransactionsTotalCount: {},
+  cardImagesLoading: false,
 };
 
   it('should select all accounts', () => {
@@ -182,5 +184,8 @@ it('should select transactions by cardId', () => {
 it('should select total by cardId', () => {
   expect(selectCardTransactionsTotalByCardId('card-1').projector({ 'card-1': 10 })).toBe(10);
   expect(selectCardTransactionsTotalByCardId('unknown').projector({})).toBe(0);
+});
+it('should select cardImagesLoading', () => {
+  expect(selectCardImagesLoading.projector({ ...mockState, cardImagesLoading: true })).toBe(true);
 });
 });

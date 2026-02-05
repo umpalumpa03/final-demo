@@ -154,5 +154,7 @@ describe('card transactions actions', () => {
     expect(action.type).toBe('[Cards] Load Card Transactions Failure');
     expect(action.error).toBe('Failed');
   });
+  
 });
+
 });
