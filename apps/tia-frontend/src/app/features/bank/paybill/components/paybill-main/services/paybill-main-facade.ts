@@ -223,7 +223,6 @@ export class PaybillMainFacade {
 
       return items || [];
     } catch (e) {
-      console.warn('Error calculating success items:', e);
       return [];
     }
   });
