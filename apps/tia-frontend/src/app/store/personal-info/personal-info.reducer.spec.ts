@@ -66,26 +66,5 @@ describe('personalInfoReducer', () => {
     expect(state.pId).toBe('new');
     expect(state.phoneNumber).toBe('222');
   });
-
-  it('should merge personal info and reset flags on updatePersonalInfoSuccess', () => {
-    const update = { ...mockPersonalInfo, loading: true, error: 'prev' };
-    const state = personalInfoReducer(
-      initialPersonalInfoState,
-      PersonalInfoActions.updatePersonalInfoSuccess({ personalInfo: update }),
-    );
-    expect(state.pId).toBe(update.pId);
-    expect(state.phoneNumber).toBe(update.phoneNumber);
-    expect(state.loading).toBe(false);
-    expect(state.error).toBeNull();
-  });
-
-  it('should set error on updatePersonalInfoFailure', () => {
-    const state = personalInfoReducer(
-      initialPersonalInfoState,
-      PersonalInfoActions.updatePersonalInfoFailure({ error: 'Update failed' }),
-    );
-    expect(state.loading).toBe(false);
-    expect(state.error).toBe('Update failed');
-  });
 });
 

@@ -2,8 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { PersonalInfoApiService } from '../../shared/services/personal-info/personal-info.api.service';
 import { PersonalInfoActions } from './pesronal-info.actions';
-import { catchError, map, mergeMap, of } from 'rxjs';
-import { PersonalInfoDto, UpdatePersonalInfoDto } from './personal-info.state';
+import { catchError, map,  of, switchMap } from 'rxjs';
+import {  UpdatePersonalInfoDto } from './personal-info.state';
 
 @Injectable()
 export class PersonalInfoEffects {
@@ -13,7 +13,7 @@ export class PersonalInfoEffects {
   loadPersonalInfo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(PersonalInfoActions.loadPersonalInfo),
-      mergeMap(() =>
+      switchMap(() =>
         this.api.getPersonalInfo().pipe(
           map((dto) =>
             PersonalInfoActions.loadPersonalInfoSuccess({
@@ -40,7 +40,7 @@ export class PersonalInfoEffects {
   updatePersonalInfo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(PersonalInfoActions.updatePersonalInfo),
-      mergeMap(({ personalInfo }) => {
+      switchMap(({ personalInfo }) => {
     
         const dto: UpdatePersonalInfoDto = {
           pId: personalInfo.pId,

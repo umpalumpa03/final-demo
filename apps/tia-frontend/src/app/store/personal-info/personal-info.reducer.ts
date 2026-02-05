@@ -3,7 +3,7 @@ import { PersonalInfoActions } from './pesronal-info.actions';
 import { personalInfoState } from './personal-info.state';
 
 
-        export const initialPersonalInfoState: personalInfoState = {
+export const initialPersonalInfoState: personalInfoState = {
             pId: null,
             phoneNumber: '',
             loading: false,
