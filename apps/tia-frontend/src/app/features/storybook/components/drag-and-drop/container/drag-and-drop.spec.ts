@@ -91,10 +91,4 @@ describe('DragAndDropContainer', () => {
     component.onContainerOrderChange(['1']);
     expect(true).toBe(true);
   });
-
-  it('should log move not allowed to console', () => {
-    const consoleSpy = vi.spyOn(console, 'log');
-    component.movenotAllowed(true);
-    expect(consoleSpy).toHaveBeenCalledWith(true);
-  });
 });

@@ -160,7 +160,7 @@ export class ExternalAccounts implements OnInit {
     const isLoading = this.isLoadingSenderAccounts();
 
     if ((!accounts || accounts.length === 0) && !isLoading) {
-      this.store.dispatch(AccountsActions.loadAccounts());
+      this.store.dispatch(AccountsActions.loadAccounts({}));
     }
   }
   public readonly isContinueDisabled = computed(() => {
@@ -206,7 +206,7 @@ export class ExternalAccounts implements OnInit {
   }
 
   public onRetrySenderAccounts(): void {
-    this.store.dispatch(AccountsActions.loadAccounts());
+    this.store.dispatch(AccountsActions.loadAccounts({}));
   }
 
   public onRetry(): void {

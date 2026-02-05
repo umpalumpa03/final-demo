@@ -1,23 +1,43 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { map, catchError, switchMap } from 'rxjs/operators';
+import {
+  map,
+  catchError,
+  switchMap,
+  withLatestFrom,
+  filter,
+} from 'rxjs/operators';
 import { AccountsApiService } from '../../../shared/services/accounts/accounts.api.service';
 import { AccountsActions } from './accounts.actions';
+import { Store } from '@ngrx/store';
+import { selectAccounts } from './accounts.selectors';
 
 @Injectable()
 export class AccountsEffects {
   private readonly actions$ = inject(Actions);
   private readonly accountsService = inject(AccountsApiService);
+  private readonly store = inject(Store);
 
   loadAccounts$ = createEffect(() =>
     this.actions$.pipe(
+      // liisten specifically for the 'loadAccounts' action
       ofType(AccountsActions.loadAccounts),
+      // peek at the current accounts in the Store for comparison
+      withLatestFrom(this.store.select(selectAccounts)),
+      // only proceed to the API call if:
+      //  a manual refresh is requested or
+      //    store is empty / null
+      filter(
+        ([action, accounts]) =>
+          action.forceRefresh || !accounts || accounts.length === 0,
+      ),
+
+      // than fetch
       switchMap(() =>
         this.accountsService.getAccounts().pipe(
-          map((accounts) => {
-            return AccountsActions.loadAccountsSuccess({ accounts });
-          }),
+          // success-> the store with fresh data
+          map((accounts) => AccountsActions.loadAccountsSuccess({ accounts })),
           catchError((error) =>
             of(
               AccountsActions.loadAccountsFailure({
