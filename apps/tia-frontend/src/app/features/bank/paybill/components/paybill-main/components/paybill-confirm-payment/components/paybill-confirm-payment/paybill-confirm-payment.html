@@ -1,4 +1,9 @@
-<app-basic-card maxWidth="100%" minHeight="70rem" padding="0rem 0 2.4rem 2.4rem">
+<app-basic-card
+  maxWidth="100%"
+  minHeight="65rem"
+  padding="0rem 0 2.4rem 2.4rem"
+  justifyContent="space-between"
+>
   <header class="category-header">
     <div class="category-header__icon-box">
       <div
@@ -32,21 +37,21 @@
         [options]="currentAccounts()!"
         [(value)]="selectedAccountId"
         [config]="selectConfig"
-        [maxVisibleItems]="4"
+        [maxVisibleItems]="2.5"
       />
     </div>
 
     <footer class="confirm-container__actions">
-      <app-button 
-        class="btn-confirm" 
-        [fullWidth]="true" 
+      <app-button
+        class="btn-confirm"
+        [fullWidth]="true"
         (click)="confirm.emit()"
         [isDisabled]="isLoading()"
       >
         {{ 'paybill.main.confirm.confirm_btn' | translate: { amount:
         (summary().amount) | currency: 'GEL' : 'symbol' } }}
       </app-button>
-      
+
       <app-button
         class="btn-cancel"
         [fullWidth]="true"

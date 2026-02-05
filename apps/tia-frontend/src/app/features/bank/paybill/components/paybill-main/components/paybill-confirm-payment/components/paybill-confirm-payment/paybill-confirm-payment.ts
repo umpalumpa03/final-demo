@@ -2,9 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   input,
   model,
   output,
+  untracked,
 } from '@angular/core';
 import {
   BillDetails,
@@ -46,7 +48,7 @@ export class PaybillConfirmPayment {
   public readonly iconBgColor = input('');
   public readonly iconBgPath = input('');
   public readonly currentAccounts = input<
-    { label: string; value: string }[] | null
+    { label: string; value: string; isFavorite: boolean }[] | null
   >(null);
   public readonly isLoading = input<boolean>(false);
 
@@ -59,6 +61,23 @@ export class PaybillConfirmPayment {
 
   protected readonly selectConfig = paymentOptionPaybill;
   protected readonly ui = CONFIRM_PAYMENT_UI;
+
+  constructor() {
+    effect(() => {
+      const accounts = this.currentAccounts();
+
+      if (accounts && accounts.length > 0 && !this.selectedAccountId()) {
+        const favoriteAccount = accounts.find((acc) => acc.isFavorite);
+
+        if (favoriteAccount) {
+          untracked(() => {
+            this.selectedAccountId.set(favoriteAccount.value);
+            this.handleAccountChange(favoriteAccount.value);
+          });
+        }
+      }
+    });
+  }
 
   public handleAccountChange(id: string): void {
     this.accountChanged.emit(id);
