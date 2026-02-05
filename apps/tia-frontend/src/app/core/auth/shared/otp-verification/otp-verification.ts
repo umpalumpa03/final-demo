@@ -76,6 +76,8 @@ export class OtpVerification implements OnInit {
     this.onSubmit();
   }
 
+  public isHeaderVisible = computed(() => this)
+
   public unitedError = computed(() => {
     const error = this.errorMessage();
     const attempts = this.remainingAttempts();
@@ -132,7 +134,6 @@ export class OtpVerification implements OnInit {
   public isResendActive = signal<boolean>(false);
 
   public onTimeout = output<void>();
-  public resendClicked = output<void>();
 
   public formConfig = toSignal(
     this.translate.onLangChange.pipe(
@@ -201,7 +202,7 @@ export class OtpVerification implements OnInit {
         takeUntil(this.destroy$),
         takeWhile(() => this.countdown() > 0),
         tap(() => {
-          this.countdown.update((s) => s - 1);
+          this.countdown.update((sec) => sec - 1);
         }),
       )
       .subscribe();
@@ -238,6 +239,15 @@ export class OtpVerification implements OnInit {
       isCalled: true,
       otp: otp,
     });
+
+    this.otpForm.reset();
+    console.log(currentForm.getRawValue());
+  }
+
+  public handleAutoSubmit(code: string): void {
+    this.otpForm.patchValue({ code });
+
+    this.onSubmit();
   }
 
   public canResend = computed(
@@ -253,7 +263,7 @@ export class OtpVerification implements OnInit {
       this.timerSubscription.unsubscribe();
     }
 
-    this.resendTries.update((s) => s - 1);
+    this.resendTries.update((sec) => sec - 1);
     this.isResendCalled.emit(true);
     this.countdown.set(this.maxTime());
     this.startTimer();

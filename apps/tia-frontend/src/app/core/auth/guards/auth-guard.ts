@@ -15,7 +15,7 @@ export const AuthGuard: CanActivateChildFn = () => {
   }
 
   return userInfoService.getUserInfo().pipe(
-    map((res) => (res ? true : false)),
+    map((res) => (res ? true : router.createUrlTree([Routes.SIGN_IN]))),
     catchError(() => {
       return of(router.createUrlTree([Routes.SIGN_IN]));
     }),

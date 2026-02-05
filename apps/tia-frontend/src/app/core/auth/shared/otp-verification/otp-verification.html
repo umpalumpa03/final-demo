@@ -1,4 +1,5 @@
 <div class="otp-verification">
+
   <div class="otp-verification__icon" aria-hidden="true">
     <img [src]="iconUrl()" />
   </div>
@@ -11,6 +12,7 @@
     <div class="otp-field">
       <lib-otp
         formControlName="code"
+        (completed)="handleAutoSubmit($event)"
         [config]="formConfig().otp"
       ></lib-otp>
     </div>
