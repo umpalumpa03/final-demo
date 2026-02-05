@@ -37,7 +37,8 @@ describe('ProfilePhoto Selectors', () => {
   it('should select default avatars', () => {
     const initialState = getInitialState();
     const featureState: RootState = { ProfilePhoto: initialState };
-    const result = selectDefaultAvatars(featureState);
+    const featureStateResult = selectProfilePhotoFeatureState(featureState);
+    const result = selectDefaultAvatars.projector(featureStateResult);
     expect(result).toEqual(initialState.defaultAvatars);
   });
 

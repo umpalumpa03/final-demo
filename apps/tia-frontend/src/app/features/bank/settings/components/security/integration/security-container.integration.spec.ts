@@ -12,6 +12,7 @@ import { provideHttpClientTesting, HttpTestingController } from '@angular/common
 import { environment } from '../../../../../../../environments/environment';
 import { Store } from '@ngrx/store';
 import * as SecuritySelectors from '../store/security.selectors';
+import { take, timeout } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
 
 const routes: Routes = [
@@ -53,13 +54,11 @@ describe('SecurityContainer integration', () => {
   it('should complete full flow: dispatch action -> effect calls service -> success -> state updates', async () => {
     const component = fixture.componentInstance;
 
-
     component.onChangePassword({
       currentPassword: 'oldPassword123',
       newPassword: 'newPassword456',
     });
 
-  
     const req = httpMock.expectOne(
       `${environment.apiUrl}/settings/change-password`,
     );
@@ -70,20 +69,24 @@ describe('SecurityContainer integration', () => {
       newPassword: 'newPassword456',
     });
 
-
-    let loading = await firstValueFrom(store.select(SecuritySelectors.selectSecurityLoading));
+    // Check loading state
+    fixture.detectChanges();
+    await fixture.whenStable();
+    let loading = await firstValueFrom(store.select(SecuritySelectors.selectSecurityLoading).pipe(take(1), timeout({ first: 5000 })));
     expect(loading).toBe(true);
 
- 
+    // Simulate successful response
     req.flush(null);
+    fixture.detectChanges();
+    
+    // Wait for effects to process
+    await new Promise(resolve => setTimeout(resolve, 100));
+    await fixture.whenStable();
 
-
-    await new Promise(resolve => setTimeout(resolve, 0));
-
-   
-    loading = await firstValueFrom(store.select(SecuritySelectors.selectSecurityLoading));
-    const success = await firstValueFrom(store.select(SecuritySelectors.selectSecuritySuccess));
-    const error = await firstValueFrom(store.select(SecuritySelectors.selectSecurityError));
+    // Check final state
+    loading = await firstValueFrom(store.select(SecuritySelectors.selectSecurityLoading).pipe(take(1), timeout({ first: 5000 })));
+    const success = await firstValueFrom(store.select(SecuritySelectors.selectSecuritySuccess).pipe(take(1), timeout({ first: 5000 })));
+    const error = await firstValueFrom(store.select(SecuritySelectors.selectSecurityError).pipe(take(1), timeout({ first: 5000 })));
 
     expect(loading).toBe(false);
     expect(success).toBe(true);
@@ -94,28 +97,29 @@ describe('SecurityContainer integration', () => {
     const component = fixture.componentInstance;
     const errorMessage = 'Invalid current password';
 
-   
     component.onChangePassword({
       currentPassword: 'wrongPassword',
       newPassword: 'newPassword456',
     });
 
-  
     const req = httpMock.expectOne(
       `${environment.apiUrl}/settings/change-password`,
     );
 
- 
     req.flush(
       { message: errorMessage },
       { status: 400, statusText: 'Bad Request' }
     );
 
-     await new Promise(resolve => setTimeout(resolve, 0));
-     
-    const loading = await firstValueFrom(store.select(SecuritySelectors.selectSecurityLoading));
-    const success = await firstValueFrom(store.select(SecuritySelectors.selectSecuritySuccess));
-    const error = await firstValueFrom(store.select(SecuritySelectors.selectSecurityError));
+    fixture.detectChanges();
+    
+    // Wait for effects to process
+    await new Promise(resolve => setTimeout(resolve, 100));
+    await fixture.whenStable();
+
+    const loading = await firstValueFrom(store.select(SecuritySelectors.selectSecurityLoading).pipe(take(1), timeout({ first: 5000 })));
+    const success = await firstValueFrom(store.select(SecuritySelectors.selectSecuritySuccess).pipe(take(1), timeout({ first: 5000 })));
+    const error = await firstValueFrom(store.select(SecuritySelectors.selectSecurityError).pipe(take(1), timeout({ first: 5000 })));
 
     expect(loading).toBe(false);
     expect(success).toBe(false);
