@@ -1,3 +1,44 @@
-<app-settings-body>
-  <app-account-card></app-account-card>
+<app-settings-body
+  maxWidth="100%"
+  minHeight="11.4rem"
+  padding="1.8rem"
+  alignItems="start"
+  justifyContent="space-between"
+  gap="1.6rem"
+  flexDirection="column"
+>
+  @if (isLoading()) {
+    <div class="accounts-skeleton-grid">
+      @for (i of [1,2,3]; track i) {
+        <div class="accounts-card-skeleton">
+          <div class="skeleton-header">
+            <app-skeleton variant="circle" height="4rem" width="4rem"></app-skeleton>
+            <div class="skeleton-titles">
+              <app-skeleton variant="text" height="1.6rem" width="9rem"></app-skeleton>
+              <app-skeleton variant="text" height="1.2rem" width="5rem"></app-skeleton>
+            </div>
+          </div>
+          <div class="skeleton-body">
+            <app-skeleton height="6rem"></app-skeleton>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    @if (accountsList().length > 0) {
+      @for (item of accountsList(); track item.id) {
+        <div class="card-wrapper">
+          <app-account-card
+            [isFavorite]="item.isFavorite"
+            [isHidden]="item.isHidden"
+            [accountName]="item.name"
+            [accountType]="item.type"
+            (clickFaforite)="handleFavorite(item.id, $event)"
+            (clickHideUnhide)="handleVisibility(item.id, $event)"
+            (clickFriendlyName)="handleFriendlyName(item.id)"
+          ></app-account-card>
+        </div>
+      }
+    }
+  }
 </app-settings-body>

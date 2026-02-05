@@ -1,143 +1,77 @@
+@use '../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../shared/styles/palette' as *;
+
 .account-card {
-	width: 100%;
+  width: 100%;
 
-	&__inner {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 1.6rem;
-	}
+  &__inner {
+    @include flex-center($justify: space-between);
+    gap: 1.6rem;
+  }
 
-	&__left {
-		display: flex;
-		align-items: center;
-		gap: 1.2rem;
-	}
+  &__left {
+    @include flex-center();
+    gap: 1.2rem;
+  }
 
-	&__avatar {
-		width: 56px;
-		height: 56px;
-		border-radius: 50%;
-		background: #EEF2FF;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex: 0 0 56px;
-	}
+  &__avatar {
+    @include flex-center();
+    width: 4.8rem;
+    height: 4.8rem;
+    border-radius: 999rem;
+    background: $blue-royal-secondary;
+  }
 
-	&__avatar-icon {
-		font-size: 1.4rem;
-		line-height: 1;
-	}
+  &__content {
+    @include display-flex(column);
+    gap: 0.4rem;
+    min-width: 0;
+  }
 
-	&__content {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-		min-width: 0;
-	}
+  &__title-row {
+    @include flex-center($justify: flex-start);
+    gap: 0.6rem;
+  }
 
-	&__title-row {
-		display: flex;
-		align-items: center;
-		gap: 0.6rem;
-	}
+  &__title {
+    @include font-inter(600, 1.8rem);
+    color: $blue-1000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-	&__title {
-		margin: 0;
-		font-size: 1rem;
-		font-weight: 600;
-		color: #111827;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
+  &__number, &__type {
+    @include font-inter(400, 1.4rem);
+    color: $gray-700;
+  }
 
-	&__badge {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.35rem;
-		padding: 0.2rem 0.5rem;
-		border-radius: 9999px;
-		font-size: 0.75rem;
-		font-weight: 700;
-	}
+  &__meta {
+	@include flex-center($justify: flex-start);
+    gap: 0.8rem;
+  }
 
-	&__badge--favorite {
-		background: #FDE68A;
-		color: #92400E;
-	}
+  &__balance {
+    @include font-inter(600, 1.4rem);
+    color: $blue-1000;
+  }
 
-	&__number {
-		font-size: 0.95rem;
-		color: #6B7280;
-	}
+  &__actions {
+    @include flex-center();
+    gap: 0.8rem;
+  }
 
-	&__meta {
-		display: flex;
-		gap: 0.8rem;
-		align-items: center;
-		margin-top: 0.2rem;
-	}
+  @media (max-width: 640px) {
+    &__inner {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
 
-	&__type {
-		color: #6B7280;
-		font-size: 0.875rem;
-	}
-
-	&__balance {
-		font-weight: 700;
-		color: #111827;
-		font-size: 1rem;
-	}
-
-	&__actions {
-		display: flex;
-		gap: 0.8rem;
-		align-items: center;
-	}
-
-	&__action-btn {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.5rem 0.9rem;
-		border-radius: 0.5rem;
-		border: 1px solid transparent;
-		background: transparent;
-		color: #065f46;
-		font-size: 0.875rem;
-		cursor: pointer;
-	}
-
-	&__action-btn--ghost {
-		background: #fff;
-		border-color: #DBEAFE;
-		color: #0369A1;
-	}
-
-	&__action-btn--primary {
-		background: #F59E0B;
-		color: #ffffff;
-		border-color: transparent;
-	}
-
-	&__action-icon {
-		font-size: 0.95rem;
-		line-height: 1;
-	}
-
-	@media (max-width: 640px) {
-		&__inner {
-			flex-direction: column;
-			align-items: flex-start;
-			gap: 1rem;
-		}
-
-		&__actions {
-			width: 100%;
-			display: flex;
-			justify-content: space-between;
-		}
-	}
+    &__actions {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
 }

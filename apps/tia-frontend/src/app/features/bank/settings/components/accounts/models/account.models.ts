@@ -5,9 +5,9 @@ export interface IAccounts {
   iban: string;
   name: string;
   friendlyName: string;
-  isHidden: boolean;
-  order: number;
-  isFavorite: boolean;
+  isHidden: boolean | null;
+  order: number | null;
+  isFavorite: boolean | null;
 }
 
 export interface IAccountRequestBase {

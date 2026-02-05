@@ -1,0 +1,48 @@
+@use '../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../shared/styles/palette' as *;
+
+.card-wrapper {
+  width: 100%;
+}
+
+.accounts-skeleton-grid {
+  display: grid;
+  grid-template-rows: repeat(auto-fill, minmax(13.2rem, 1fr));
+  gap: 3.2rem;
+
+  .accounts-card-skeleton {
+    background-color: $white;
+    border: 1px solid $gray-200;
+    border-radius: 1.2rem;
+    padding: 2.4rem;
+    @include display-flex(column);
+    gap: 2.4rem;
+
+    .skeleton-header {
+      @include flex-center($justify: flex-start);
+      gap: 1.6rem;
+    }
+
+    .skeleton-titles {
+      @include display-flex(column);
+      gap: 0.8rem;
+    }
+
+    .skeleton-body {
+      width: 100%;
+    }
+
+    @media (max-width: 400px) {
+      .skeleton-header {
+        flex-direction: column;
+        .skeleton-titles {
+          align-items: center;
+        }
+      }
+
+      .skeleton-body {
+        width: 90%;
+      }
+    }
+  }
+}

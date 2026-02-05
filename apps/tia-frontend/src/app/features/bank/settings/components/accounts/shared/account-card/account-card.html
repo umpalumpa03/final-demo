@@ -10,28 +10,70 @@
   <div class="account-card">
     <div class="account-card__inner">
       <div class="account-card__left">
-        <div class="account-card__avatar" aria-hidden="true">
-          <span class="account-card__avatar-icon">💳</span>
+        <div class="account-card__avatar">
+          <!-- icon will be placxed -->
+          <span class="account-card__avatar-icon"></span>
         </div>
         <div class="account-card__content">
           <div class="account-card__title-row">
-            <h3 class="account-card__title">Main Account</h3>
-            <app-badges text="Favorte"></app-badges>
+            <h3 class="account-card__title">{{accountName()}}</h3>
+            @switch(badge()) { @case('Hidden') {
+            <app-badges
+              [text]="badge()"
+              variant="outline"
+              shape="rounded"
+              size="small"
+            ></app-badges>
+            } @case('Favorite') {
+            <app-badges
+              [text]="badge()"
+              status="featured"
+              customColor="#FEF9C2"
+              size="small"
+            ></app-badges>
+            } @default { } }
           </div>
           <div class="account-card__number">**** **** **** 1234</div>
           <div class="account-card__meta">
-            <span class="account-card__type">Checking</span>
+            <span class="account-card__type">{{accountType()}}</span>
             <span class="account-card__balance">$25,430.50</span>
           </div>
         </div>
       </div>
 
       <div class="account-card__actions">
-        <app-button variant="outline" icon="">Change name</app-button>
-        <app-button variant="outline" icon=""></app-button>
-        <app-button variant="outline" icon=""></app-button>
+        <app-button
+          variant="outline"
+          size="small"
+          iconWidth="1.4rem"
+          iconHeight="1.4rem"
+          icon="edit.svg"
+          (click)="onFriendlyNameClick()"
+          >Change name</app-button
+        >
+        <app-button
+          [variant]="isFavorite() ? 'default' : 'outline'"
+          size="small"
+          iconWidth="1.4rem"
+          iconHeight="1.4rem"
+          [customColor]="isFavorite()? '#f0b100' : ''"
+          (click)="onFavoriteClick()"
+          [icon]="isFavorite() ? 'favorited.svg' : 'non-favorite.svg'"
+        >
+          {{ isFavorite() ? 'Favorited' : 'Favorite' }}
+        </app-button>
+
+        <app-button
+          variant="outline"
+          size="small"
+          iconWidth="1.4rem"
+          iconHeight="1.4rem"
+          (click)="onHideUnhideClick()"
+          [icon]="isHidden() ? 'eye.svg' : 'eye-hide.svg'"
+        >
+          {{ isHidden() ? 'Show' : 'Hide' }}
+        </app-button>
       </div>
     </div>
   </div>
-
 </app-basic-card>
