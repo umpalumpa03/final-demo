@@ -19,16 +19,16 @@ import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-inf
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Favorites implements OnInit {
-  private messagingStore = inject(MessagingStore);
-  private router = inject(Router);
+  private readonly messagingStore = inject(MessagingStore);
+  private readonly router = inject(Router);
   private readonly store = inject(Store);
-  public mails = computed(() => {
+  public readonly mails = computed(() => {
     return this.messagingStore.mails()
   });
-  public isLoading = this.messagingStore.isLoading;
-  public selectedMailIds = signal<Set<number>>(new Set());
-  public total = computed(() => this.messagingStore.total()['favorite'] ?? 0);
-  private nav = inject(NavigationService);
+  public readonly isLoading = this.messagingStore.isLoading;
+  public readonly selectedMailIds = signal<Set<number>>(new Set());
+  public readonly total = computed(() => this.messagingStore.total()['favorite'] ?? 0);
+  private readonly nav = inject(NavigationService);
   public readonly currentUserEmail = computed(() => this.store.selectSignal(selectCurrentUserEmail)() ?? '');
 
   public isAllSelected(): boolean {
@@ -70,7 +70,7 @@ export class Favorites implements OnInit {
     if (!(this.nav.previous()?.includes('favorites') && this.messagingStore.mails().length > 0)) {
       this.messagingStore.loadMails('favorites');
     }
-      this.messagingStore.getTotalCount('favorite');
+    this.messagingStore.getTotalCount('favorite');
   }
 
   public markAsRead(mailId: number): void {

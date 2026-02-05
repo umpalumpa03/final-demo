@@ -18,18 +18,18 @@ import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-inf
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SentDraftDetail {
-  private messagingStore = inject(MessagingStore);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
+  private readonly messagingStore = inject(MessagingStore);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly store = inject(Store);
   public readonly deleteMail = output<number>();
-  public isDeleteModalOpen = signal(false);
+  public readonly isDeleteModalOpen = signal(false);
 
   private readonly emailId = this.route.snapshot.paramMap.get('id') || '';
-  public emailDetail = this.messagingStore.emailDetail;
-  public fromSent = this.route.snapshot.queryParamMap.get('sent') === 'true';
-  public mailReplies = computed(() => this.messagingStore.mailReplies?.() || []);
-  public isReplyOpen = signal(false);
+  public readonly emailDetail = this.messagingStore.emailDetail;
+  public readonly fromSent = this.route.snapshot.queryParamMap.get('sent') === 'true';
+  public readonly mailReplies = computed(() => this.messagingStore.mailReplies?.() || []);
+  public readonly isReplyOpen = signal(false);
   public readonly currentUserEmail = computed(() => this.store.selectSignal(selectCurrentUserEmail)() ?? '');
 
   @ViewChild('replyCard') replyCard?: ElementRef;

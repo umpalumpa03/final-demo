@@ -19,16 +19,16 @@ import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-inf
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Sent implements OnInit {
-  private messagingStore = inject(MessagingStore);
-  private router = inject(Router);
+  private readonly messagingStore = inject(MessagingStore);
+  private readonly router = inject(Router);
   private readonly store = inject(Store);
-  public mails = computed(() => {
+  public readonly mails = computed(() => {
     return this.messagingStore.mails()
   });
-  public loadsMoreMails = signal(false);
-  public isLoading = this.messagingStore.isLoading;
-  public total = computed(() => this.messagingStore.total()['sent'] ?? 0);
-  private nav = inject(NavigationService);
+  public readonly loadsMoreMails = signal(false);
+  public readonly isLoading = this.messagingStore.isLoading;
+  public readonly total = computed(() => this.messagingStore.total()['sent'] ?? 0);
+  private readonly nav = inject(NavigationService);
   public readonly currentUserEmail = computed(() => this.store.selectSignal(selectCurrentUserEmail)() ?? '');
 
   ngOnInit(): void {

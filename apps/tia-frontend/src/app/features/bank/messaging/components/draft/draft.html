@@ -1,6 +1,6 @@
 <app-mail-header
   [page]="'messaging.routes.drafts' | translate"
-  [messageCount]="drafytsTotal?.()"
+  [messageCount]="draftsTotal?.()"
   [isAllSelected]="isAllSelected()"
   (toggleSelectAll)="toggleSelectAll($event)"
   [showBulkActions]="hasBulkSelection()"

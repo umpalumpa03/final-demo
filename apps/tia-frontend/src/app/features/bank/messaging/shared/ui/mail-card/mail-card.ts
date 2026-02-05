@@ -22,7 +22,7 @@ export class MailCard {
   public readonly cardClick = output<number>();
   public readonly isSent = input<boolean>(false);
   public readonly isDraft = input<boolean>(false);
-  public isDeleteModalOpen = signal(false);
+  public readonly isDeleteModalOpen = signal(false);
   public readonly checked = input<boolean>(false);
   public readonly checkedChange = output<boolean>();
 

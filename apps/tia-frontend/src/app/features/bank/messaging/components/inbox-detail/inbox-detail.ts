@@ -19,19 +19,19 @@ import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-inf
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InboxDetail implements OnInit {
-  private messagingStore = inject(MessagingStore);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
+  private readonly messagingStore = inject(MessagingStore);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly store = inject(Store);
   private readonly fb = inject(FormBuilder);
   public readonly deleteMail = output<number>();
-  public isFavoriteLoading = computed(() => !!this.messagingStore.isFavoriteLoading?.());
+  public readonly isFavoriteLoading = computed(() => !!this.messagingStore.isFavoriteLoading?.());
   private readonly emailId = this.route.snapshot.paramMap.get('id') || '';
-  public emailDetail = computed(() => this.messagingStore.emailDetail?.());
-  public isFavorite = computed(() => this.emailDetail()?.isFavorite ?? false);
-  public isDeleteModalOpen = signal(false);
-  public mailReplies = computed(() => this.messagingStore.mailReplies?.() || []);
-  public isReplyOpen = signal(false);
+  public readonly emailDetail = computed(() => this.messagingStore.emailDetail?.());
+  public readonly isFavorite = computed(() => this.emailDetail()?.isFavorite ?? false);
+  public readonly isDeleteModalOpen = signal(false);
+  public readonly mailReplies = computed(() => this.messagingStore.mailReplies?.() || []);
+  public readonly isReplyOpen = signal(false);
   public readonly currentUserEmail = computed(() => this.store.selectSignal(selectCurrentUserEmail)() ?? '');
 
   @ViewChild('replyCard') replyCard?: ElementRef;

@@ -19,17 +19,17 @@ import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-inf
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Draft implements OnInit {
-  private messagingStore = inject(MessagingStore);
-  private router = inject(Router);
-  private nav = inject(NavigationService);
+  private readonly messagingStore = inject(MessagingStore);
+  private readonly router = inject(Router);
+  private readonly nav = inject(NavigationService);
   private readonly store = inject(Store);
-  public mails = computed(() => {
+  public readonly mails = computed(() => {
     return this.messagingStore.mails()
   });
-  public loadsMoreMails = signal(false);
-  public isLoading = this.messagingStore.isLoading;
-  public selectedMailIds = signal<Set<number>>(new Set());
-  public drafytsTotal = this.messagingStore.draftsTotal;
+  public readonly loadsMoreMails = signal(false);
+  public readonly isLoading = this.messagingStore.isLoading;
+  public readonly selectedMailIds = signal<Set<number>>(new Set());
+  public readonly draftsTotal = this.messagingStore.draftsTotal;
   public readonly currentUserEmail = computed(() => this.store.selectSignal(selectCurrentUserEmail)() ?? '');
 
   public isAllSelected(): boolean {

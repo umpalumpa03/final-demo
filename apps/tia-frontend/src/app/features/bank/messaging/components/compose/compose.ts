@@ -24,8 +24,8 @@ export class Compose {
   private readonly fb = inject(FormBuilder);
   public readonly close = output<void>();
   public readonly isOpen = input.required<boolean>();
-  public invalidForm = signal<boolean>(false);
-  public errorMesage = signal<string>('');
+  public readonly invalidForm = signal<boolean>(false);
+  public readonly errorMesage = signal<string>('');
 
   public readonly store = inject(MessagingStore);
   public readonly roleStore = inject(Store);
