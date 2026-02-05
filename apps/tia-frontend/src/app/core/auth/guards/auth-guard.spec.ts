@@ -22,7 +22,7 @@ describe('AuthGuard', () => {
     });
   });
 
-  it('resolves to false when tokens exist but user info is missing', async () => {
+  it('resolves to UrlTree when tokens exist but user info is missing', async () => {
     TestBed.overrideProvider(TokenService as any, {
       useValue: { accessToken: 'a', refreshToken: 'b' },
     });
@@ -34,7 +34,7 @@ describe('AuthGuard', () => {
     const result$ = TestBed.runInInjectionContext(() => AuthGuard({} as any, {} as any));
     const value = await firstValueFrom(result$ as any);
 
-    expect(value).toBe(false);
+    expect(value).toEqual({ redirect: [Routes.SIGN_IN] });
   });
 
   it('resolves to true when tokens exist and user info is present', async () => {
@@ -65,7 +65,7 @@ describe('AuthGuard', () => {
     const value = await firstValueFrom(result$ as any);
 
     expect(router.navigate).toHaveBeenCalledWith([Routes.SIGN_IN]);
-    expect(value).toBe(false);
+    expect(value).toEqual({ redirect: [Routes.SIGN_IN] });
   });
 
   it('returns UrlTree when user service throws', async () => {
