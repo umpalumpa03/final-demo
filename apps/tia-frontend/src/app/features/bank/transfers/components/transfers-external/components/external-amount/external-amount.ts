@@ -13,7 +13,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { TransferStore } from '../../../../store/transfers.store';
-import { TransferExternalService } from '../../../../services/transfer.external.service';
+import { TransferAmountService } from '../../services/transfer-amount.service';
+import { TransferExecutionService } from '../../services/transfer-execution.service';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
@@ -46,7 +47,8 @@ import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 })
 export class ExternalAmount implements OnInit {
   private readonly transferStore = inject(TransferStore);
-  private readonly transferExternalService = inject(TransferExternalService);
+  private readonly amountService = inject(TransferAmountService);
+  private readonly executionService = inject(TransferExecutionService);
   private readonly fb = inject(FormBuilder);
   private readonly translate = inject(TranslateService);
   private readonly breakpointService = inject(BreakpointService);
@@ -57,7 +59,6 @@ export class ExternalAmount implements OnInit {
   public readonly showSuccess = signal(false);
   public readonly showError = signal(false);
   public readonly currentToastMessage = signal('');
-  // public readonly errorMessage = signal('');
 
   public readonly isLoading = this.transferStore.isLoading;
   public readonly isFeeLoading = this.transferStore.isFeeLoading;
@@ -153,7 +154,7 @@ export class ExternalAmount implements OnInit {
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((value) => {
-          this.transferExternalService.handleAmountInput(Number(value));
+          this.amountService.handleAmountInput(Number(value));
         }),
       )
       .subscribe();
@@ -162,7 +163,7 @@ export class ExternalAmount implements OnInit {
   }
 
   public onGoBack(): void {
-    this.transferExternalService.handleAmountGoBack(
+    this.amountService.handleAmountGoBack(
       Number(this.amountInput.value),
       this.descriptionInput.value || '',
     );
@@ -172,9 +173,9 @@ export class ExternalAmount implements OnInit {
       this.transferStore.setDescription(this.descriptionInput.value || '');
 
       if (this.isExternalIban()) {
-        this.transferExternalService.handleOtherBankTransfer();
+        this.executionService.handleOtherBankTransfer();
       } else {
-        this.transferExternalService.handleSameBankTransfer();
+        this.executionService.handleSameBankTransfer();
       }
     }
   }
@@ -191,7 +192,7 @@ export class ExternalAmount implements OnInit {
     this.transferStore.setRequiresOtp(false);
   }
   public onOtpVerify(otpCode: string): void {
-    this.transferExternalService.verifyTransfer(otpCode);
+    this.executionService.verifyTransfer(otpCode);
   }
   public onResendOtp(): void {}
 }
