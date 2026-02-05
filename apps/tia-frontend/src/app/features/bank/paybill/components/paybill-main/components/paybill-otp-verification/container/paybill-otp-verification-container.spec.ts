@@ -25,8 +25,14 @@ describe('PaybillOtpVerificationContainer', () => {
   beforeEach(async () => {
     mockFacade = {
       activeProvider: signal({ name: 'Test Provider' }),
-
       paymentPayload: signal({ amount: 100, currency: 'GEL' }),
+      isLoading: signal(false),
+
+      activeCategoryUI: signal({
+        iconBgColor: '#F0F9FF',
+        iconBgPath: 'assets/icons/utilities.svg',
+      }),
+
       backToDetails: vi.fn(),
       verifyOtp: vi.fn(),
     };
