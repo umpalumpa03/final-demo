@@ -37,7 +37,9 @@ export const TransferStore = signalStore(
     setSenderAccount(account: Account | null) {
       patchState(store, { senderAccount: account });
     },
-    //reciipents
+    setReceiverOwnAccount(account: Account | null) {
+      patchState(store, { receiverOwnAccount: account });
+    },
     setSelectedRecipientAccount(account: RecipientAccount | null) {
       patchState(store, { selectedRecipientAccount: account });
     },

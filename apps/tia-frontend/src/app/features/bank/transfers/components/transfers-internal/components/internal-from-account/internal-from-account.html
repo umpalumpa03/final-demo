@@ -1,0 +1,81 @@
+<main class="internal-accounts">
+  <header class="internal-accounts__header">
+    <h1 class="internal-accounts__title">
+      {{ 'transfers.internal.accounts.title' | translate }}
+    </h1>
+  </header>
+
+  <section class="internal-accounts__sender-accounts">
+    <h2 class="internal-accounts__sender-accounts-title">
+      {{ 'transfers.internal.accounts.selectSenderAccount' | translate }}
+    </h2>
+
+    @if (isLoading()) {
+      <div class="internal-accounts__loader-wrapper">
+        <app-route-loader variant="pulsing"></app-route-loader>
+      </div>
+    } @else if (error()) {
+      <div class="internal-accounts__error-wrapper">
+        <app-error-states
+          [variant]="'failed'"
+          [header]="'transfers.internal.accounts.senderError.header' | translate"
+          [message]="'transfers.internal.accounts.senderError.message' | translate"
+          [buttonMessage]="'transfers.internal.recipient.accountsError.retry' | translate"
+          (buttonClick)="onRetry()"
+        />
+      </div>
+    } @else if (!accounts() || accounts().length === 0) {
+      <div class="internal-accounts__error-wrapper">
+        <app-error-states
+          [variant]="'not-found'"
+          [header]="'transfers.internal.accounts.noSenderAccounts.header' | translate"
+          [message]="'transfers.internal.accounts.noSenderAccounts.message' | translate"
+          [showButton]="false"
+        />
+      </div>
+    } @else {
+      <div class="internal-accounts__accounts-grid">
+        @for (account of accounts(); track account.id) {
+          <app-transfers-account-card
+            [cardData]="account"
+            [mode]="'sender'"
+            [isSelected]="selectedFromAccount()?.id === account.id"
+            (cardClicked)="onAccountSelect($event)"
+          />
+        }
+      </div>
+    }
+  </section>
+
+  <footer class="internal-accounts__footer">
+    <app-button
+      variant="outline"
+      size="default"
+      [fullWidth]="isFullWidth()"
+      (click)="onGoBack()"
+    >
+      <img src="images/svg/transfers/go-back.svg" alt="back" />
+      {{ 'common.buttons.back' | translate }}
+    </app-button>
+
+    <app-button
+      variant="default"
+      size="default"
+      [fullWidth]="isFullWidth()"
+      (click)="onContinue()"
+      [isDisabled]="isContinueDisabled()"
+    >
+      {{ 'common.buttons.continue' | translate }}
+      <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />
+    </app-button>
+  </footer>
+</main>
+
+@if (showSuccess()) {
+  <div class="internal-accounts__success-toast">
+    <app-alert-types-with-icons
+      [alertType]="'success'"
+      [alertMessage]="'transfers.internal.accounts.recipientVerified' | translate"
+    />
+  </div>
+}
