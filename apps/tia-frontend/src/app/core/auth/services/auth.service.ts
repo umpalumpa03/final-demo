@@ -56,6 +56,7 @@ export class AuthService {
   public otpError = signal<OtpResponse | null>(null);
   public resendRetryCounter = signal<number>(0);
   private inactivitySubscription?: Subscription;
+  public isAuthenticated = signal<boolean>(false);
 
   constructor() {
     if (this.tokenService.accessToken) {
@@ -177,8 +178,6 @@ export class AuthService {
           return EMPTY;
         }),
         finalize(() => {
-          this.store.dispatch(UserInfoActions.loadUser());
-          this.router.navigate([Routes.DASHBOARD]);
           this.isLoginLoading.set(false);
         }),
       );
@@ -244,6 +243,7 @@ export class AuthService {
           this.tokenService.clearAuthToken();
           this.otpError.set(null);
           this.router.navigate([Routes.SIGN_IN]);
+          this.tokenService.clearSignUpToken();
         }),
         catchError((err) => {
           const errorData = err.error as OtpResponse;
@@ -257,7 +257,6 @@ export class AuthService {
         }),
         finalize(() => {
           this.isLoginLoading.set(false);
-          this.tokenService.clearSignUpToken();
         }),
       );
   }
@@ -323,7 +322,7 @@ export class AuthService {
       .pipe(
         finalize(() => {
           this.isLoginLoading.set(false);
-          this.tokenService.clearAccessToken()
+          this.tokenService.clearAccessToken();
         }),
       );
   }
@@ -383,5 +382,11 @@ export class AuthService {
       this.inactivitySubscription.unsubscribe();
       this.inactivitySubscription = undefined;
     }
+  }
+
+  public logoutSideEffects() {
+    this.isAuthenticated.set(false);
+    this.tokenService.clearAuthToken();
+    this.stopInactivityMonitoring();
   }
 }
