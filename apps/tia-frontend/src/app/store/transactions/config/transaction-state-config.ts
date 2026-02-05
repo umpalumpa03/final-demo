@@ -8,7 +8,8 @@ export const transactionInitialState: TransactionState = {
   },
   total: 0,
   isLoading: false,
-  loaded:false,
+  loaded: false,
   error: null,
   categories: [],
+  transactionToRepeat: null,
 } as const;

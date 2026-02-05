@@ -15,8 +15,6 @@ import { accountsFeature } from 'apps/tia-frontend/src/app/store/products/accoun
 import { ExchangeRatesEffects } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.effects';
 import { AccountsEffects } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.effects';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
-import { TRANSFERS_FEATURE_KEY } from '../store/transfers-repeat/config/transfers-repeat.state';
-import { transfersReducer } from '../store/transfers-repeat/transfers-repeat.reducer';
 
 export const bankRoutes: Routes = [
   {
@@ -27,10 +25,6 @@ export const bankRoutes: Routes = [
       provideState({
         name: TRANSACTION_FEATURE_KEY,
         reducer: transactionReducer,
-      }),
-      provideState({
-        name: TRANSFERS_FEATURE_KEY,
-        reducer: transfersReducer,
       }),
       provideState({ name: 'ExchangeRates', reducer: ExchangeRateReducer }),
       provideState(accountsFeature),

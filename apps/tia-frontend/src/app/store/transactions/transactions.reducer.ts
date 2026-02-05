@@ -87,4 +87,14 @@ export const transactionReducer = createReducer(
       };
     },
   ),
+
+  on(TransactionActions.setTransactionToRepeat, (state, { transaction }) => ({
+    ...state,
+    transactionToRepeat: transaction,
+  })),
+
+  on(TransactionActions.clearTransactionToRepeat, (state) => ({
+    ...state,
+    transactionToRepeat: null,
+  })),
 );

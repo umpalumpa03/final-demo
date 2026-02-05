@@ -13,4 +13,5 @@ export interface TransactionState {
   loaded: boolean;
   error: unknown;
   categories: ITransactionsCategory[];
+  transactionToRepeat: ITransactions | null;
 }

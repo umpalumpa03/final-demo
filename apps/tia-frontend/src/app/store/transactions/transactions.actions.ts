@@ -40,5 +40,8 @@ export const TransactionActions = createActionGroup({
       categoryId: string;
     }>(),
     'Assign Category Failure': props<{ error: string }>(),
+
+    'Set Transaction To Repeat': props<{ transaction: ITransactions }>(),
+    'Clear Transaction To Repeat': emptyProps(),
   },
 });

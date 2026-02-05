@@ -80,3 +80,7 @@ export const selectTransactionViewModel = createSelector(
     categoryOptions,
   }),
 );
+export const selectTransactionToRepeat = createSelector(
+  selectTransactionState,
+  (state) => state.transactionToRepeat,
+);

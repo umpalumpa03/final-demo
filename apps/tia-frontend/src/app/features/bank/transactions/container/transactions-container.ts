@@ -41,7 +41,6 @@ import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/contai
 import { CategorizeModal } from '../components/categorize-modal/categorize-modal';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { SimpleAlertType } from '@tia/shared/lib/alerts/shared/models/alert.models';
-import { TransfersRepeatActions } from 'apps/tia-frontend/src/app/store/transfers-repeat/transfers-repeat.actions';
 import { Router } from '@angular/router';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
@@ -244,7 +243,7 @@ export class TransactionsContainer implements OnInit {
   }
   public onRepeatConfirm(transaction: ITransactions): void {
     this.store.dispatch(
-      TransfersRepeatActions.setTransactionToRepeat({ transaction }),
+      TransactionActions.setTransactionToRepeat({ transaction }),
     );
 
     let route = '/bank/transfers/regular';
