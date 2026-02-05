@@ -128,3 +128,17 @@ export const clearCardTransactionsError = createAction(
 export const loadCardImagesComplete = createAction(
   '[Cards] Load Card Images Complete',
 );
+export const updateCardName = createAction(
+  '[Cards] Update Card Name',
+  props<{ cardId: string; cardName: string }>(),
+);
+
+export const updateCardNameSuccess = createAction(
+  '[Cards] Update Card Name Success',
+  props<{ cardId: string; cardName: string }>(),
+);
+
+export const updateCardNameFailure = createAction(
+  '[Cards] Update Card Name Failure',
+  props<{ cardId: string; error: string }>(),
+);

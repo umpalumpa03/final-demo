@@ -156,5 +156,20 @@ describe('card transactions actions', () => {
   });
   
 });
+describe('updateCardName actions', () => {
+  it('should create updateCardName action', () => {
+    const action = CardsActions.updateCardName({ cardId: 'card-1', cardName: 'New Name' });
+    expect(action.type).toBe('[Cards] Update Card Name');
+  });
 
+  it('should create updateCardNameSuccess action', () => {
+    const action = CardsActions.updateCardNameSuccess({ cardId: 'card-1', cardName: 'New Name' });
+    expect(action.type).toBe('[Cards] Update Card Name Success');
+  });
+
+  it('should create updateCardNameFailure action', () => {
+    const action = CardsActions.updateCardNameFailure({ cardId: 'card-1', error: 'Failed' });
+    expect(action.type).toBe('[Cards] Update Card Name Failure');
+  });
+});
 });

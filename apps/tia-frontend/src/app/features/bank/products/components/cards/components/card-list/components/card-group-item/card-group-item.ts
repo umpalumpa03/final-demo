@@ -12,11 +12,10 @@ import { TranslatePipe } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardGroupItem {
-readonly group = input.required<CardGroupView>();
-readonly isLoading = input.required<boolean>();
-
-readonly cardClicked = output<{ accountId: string; cardId: string; index: number; hasMultipleCards: boolean }>();
-readonly viewAllClicked = output<{ accountId: string }>();
+public readonly group = input.required<CardGroupView>();
+public readonly isLoading = input.required<boolean>();
+public readonly cardClicked = output<{ accountId: string; cardId: string; index: number; hasMultipleCards: boolean }>();
+public readonly viewAllClicked = output<{ accountId: string }>();
   public handleCardClick(data: { cardId: string; index: number }): void {
     const group = this.group();
     this.cardClicked.emit({

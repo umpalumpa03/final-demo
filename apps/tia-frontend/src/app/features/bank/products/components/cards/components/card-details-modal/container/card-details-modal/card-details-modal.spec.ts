@@ -3,7 +3,8 @@ import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { CardDetailsModal } from './card-details-modal';
 import { TranslateModule } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { selectCardDetailsModalData } from 'apps/tia-frontend/src/app/store/products/cards/cards.selectors';
+import { selectCardDetailsModalData, selectIsUpdatingCardName } from 'apps/tia-frontend/src/app/store/products/cards/cards.selectors';
+import { updateCardName } from 'apps/tia-frontend/src/app/store/products/cards/cards.actions';
 
 describe('CardDetailsModal', () => {
   let component: CardDetailsModal;
@@ -52,6 +53,7 @@ describe('CardDetailsModal', () => {
         provideMockStore({
           selectors: [
             { selector: selectCardDetailsModalData, value: mockModalData },
+            { selector: selectIsUpdatingCardName, value: false },
           ],
         }),
       ],
@@ -68,20 +70,22 @@ describe('CardDetailsModal', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit closed event on handleClose', () => {
-    const closedSpy = vi.fn();
-    component.closed.subscribe(closedSpy);
+  it('should emit closed event', () => {
+    const spy = vi.fn();
+    component.closed.subscribe(spy);
 
     component['handleClose']();
 
-    expect(closedSpy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalled();
   });
 
-  it('should call handleRequestOtp', () => {
-    const spy = vi.spyOn(component as any, 'handleRequestOtp');
+  it('should dispatch updateCardName action', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
 
-    component['handleRequestOtp']();
+    component['handleCardNameUpdate']('card-1', 'New Name');
 
-    expect(spy).toHaveBeenCalled();
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      updateCardName({ cardId: 'card-1', cardName: 'New Name' })
+    );
   });
 });

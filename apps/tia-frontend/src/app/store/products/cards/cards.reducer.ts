@@ -174,4 +174,28 @@ on(CardsActions.loadCardImagesComplete, (state) => ({
   ...state,
   cardImagesLoading: false,
 })),
+on(CardsActions.updateCardName, (state) => ({
+  ...state,
+  isUpdatingCardName: true,
+  updateCardNameError: null,
+})),
+
+on(CardsActions.updateCardNameSuccess, (state, { cardId, cardName }) => ({
+  ...state,
+  cardDetails: {
+    ...state.cardDetails,
+    [cardId]: {
+      ...state.cardDetails[cardId],
+      cardName,
+    },
+  },
+  isUpdatingCardName: false,
+  updateCardNameError: null,
+})),
+
+on(CardsActions.updateCardNameFailure, (state, { error }) => ({
+  ...state,
+  isUpdatingCardName: false,
+  updateCardNameError: error,
+})),
 );

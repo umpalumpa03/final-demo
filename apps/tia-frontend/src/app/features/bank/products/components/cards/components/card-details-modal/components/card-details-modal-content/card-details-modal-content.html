@@ -19,12 +19,27 @@
   >
     <div class="card-details-modal__info-flex">
       <div class="card-details-modal__info-item">
-        <span class="card-details-modal__label"
-          >{{'my-products.card.card-details-modal.card-details-modal-content.cardName'
-          | translate }}</span
-        >
-        <span class="card-details-modal__value">{{ cardName() }}</span>
+  <span class="card-details-modal__label"
+    >{{'my-products.card.card-details-modal.card-details-modal-content.cardName'
+    | translate }}</span
+  >
+  @if (isEditing()) {
+    <lib-text-input 
+      [formControl]="nameControl" 
+      (blur)="onBlur()" 
+      (keydown.enter)="onSave()"
+      (click)="$event.stopPropagation()" 
+      [config]="{ margin: '0' }"
+    />
+  } @else {
+    <div class="card-details-modal__name-wrapper" (click)="enableEdit($event)">
+      <span class="card-details-modal__value">{{ displayedName() }}</span>
+      <div class="card-details-modal__edit-icon">
+        <img src="./images/svg/cards/edit-pencil.svg" alt="Edit">
       </div>
+    </div>
+  }
+</div>
 
       <div class="card-details-modal__info-item">
         <span class="card-details-modal__label"

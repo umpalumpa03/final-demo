@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+} from '@angular/core';
 import { CardImageView } from '../../models/card-list-view.model';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 
@@ -10,14 +15,12 @@ import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardStack {
+  public readonly cards = input.required<CardImageView[]>();
+  public readonly hasMultipleCards = input.required<boolean>();
+  public readonly isLoading = input.required<boolean>();
 
-readonly cards = input.required<CardImageView[]>();
-readonly hasMultipleCards = input.required<boolean>();
-readonly isLoading = input.required<boolean>();
-
-readonly cardClicked = output<{ cardId: string; index: number }>();
+  readonly cardClicked = output<{ cardId: string; index: number }>();
   public handleCardClick(cardId: string, index: number): void {
     this.cardClicked.emit({ cardId, index });
   }
-  
 }

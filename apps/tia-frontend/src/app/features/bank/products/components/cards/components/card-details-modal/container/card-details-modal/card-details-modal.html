@@ -1,5 +1,6 @@
-@if (isOpen()) {
 
+
+@if (isOpen()) {
 <app-ui-modal [isOpen]="isOpen()" (closed)="handleClose()">
   @if (modalData$ | async; as data) {
   <app-card-details-modal-content
@@ -12,9 +13,11 @@
     [formattedBalance]="data.formattedBalance"
     [shouldShowCreditLimit]="data.shouldShowCreditLimit"
     [formattedCreditLimit]="data.formattedCreditLimit"
+    [isUpdating]="(isUpdating$ | async) ?? false"
     (requestOtpClicked)="handleRequestOtp()"
     (closeClicked)="handleClose()"
+    (cardNameUpdated)="handleCardNameUpdate(data.cardId, $event)"
   />
   }
 </app-ui-modal>
-} 
+}

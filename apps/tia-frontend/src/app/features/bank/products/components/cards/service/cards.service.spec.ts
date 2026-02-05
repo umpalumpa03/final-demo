@@ -94,4 +94,18 @@ describe('CardsService', () => {
     expect(req.request.body).toEqual(mockRequest);
     req.flush(mockResponse);
   });
+  it('should update card name', () => {
+  const cardId = 'card-1';
+  const cardName = 'My Travel Card';
+  const mockResponse = { success: true };
+
+  service.updateCardName(cardId, cardName).subscribe((response) => {
+    expect(response).toEqual(mockResponse);
+  });
+
+  const req = httpMock.expectOne(`${apiUrl}/update-card-name/${cardId}`);
+  expect(req.request.method).toBe('PUT');
+  expect(req.request.body).toEqual({ cardName });
+  req.flush(mockResponse);
+});
 });

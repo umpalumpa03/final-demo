@@ -56,4 +56,10 @@ export class CardsService {
       request,
     );
   }
+  updateCardName(cardId: string, cardName: string): Observable<{ success: boolean }> {
+  return this.http.put<{ success: boolean }>(
+    `${this.apiUrl}/update-card-name/${cardId}`,
+    { cardName }
+  );
+}
 }

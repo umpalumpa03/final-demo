@@ -27,6 +27,8 @@ import {
   selectCardTransactionsByCardId,
   selectCardTransactionsTotalByCardId,
   selectCardImagesLoading,
+  selectIsUpdatingCardName,
+  selectUpdateCardNameError,
 } from './cards.selectors';
 import { CardsState } from './cards.state';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
@@ -63,6 +65,8 @@ const mockState: CardsState = {
   cardTransactionsError: null,
   cardTransactionsTotalCount: {},
   cardImagesLoading: false,
+  isUpdatingCardName: false,
+  updateCardNameError: null,
 };
 
   it('should select all accounts', () => {
@@ -187,5 +191,12 @@ it('should select total by cardId', () => {
 });
 it('should select cardImagesLoading', () => {
   expect(selectCardImagesLoading.projector({ ...mockState, cardImagesLoading: true })).toBe(true);
+});
+it('should select isUpdatingCardName', () => {
+  expect(selectIsUpdatingCardName.projector({ ...mockState, isUpdatingCardName: true })).toBe(true);
+});
+
+it('should select updateCardNameError', () => {
+  expect(selectUpdateCardNameError.projector({ ...mockState, updateCardNameError: 'Failed' })).toBe('Failed');
 });
 });

@@ -278,4 +278,22 @@ loadCardImages$ = createEffect(() =>
       ),
     ),
   );
+  updateCardName$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(CardsActions.updateCardName),
+    switchMap(({ cardId, cardName }) =>
+      this.cardsService.updateCardName(cardId, cardName).pipe(
+        map(() => CardsActions.updateCardNameSuccess({ cardId, cardName })),
+        catchError((error) =>
+          of(
+            CardsActions.updateCardNameFailure({
+              cardId,
+              error: error.message || 'Failed to update card name',
+            }),
+          ),
+        ),
+      ),
+    ),
+  ),
+);
 }

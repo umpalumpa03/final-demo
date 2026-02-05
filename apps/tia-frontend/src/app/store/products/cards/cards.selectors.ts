@@ -257,3 +257,12 @@ export const selectCardImagesLoading = createSelector(
   selectCardsState,
   (state: CardsState): boolean => state.cardImagesLoading,
 );
+export const selectIsUpdatingCardName = createSelector(
+  selectCardsState,
+  (state: CardsState): boolean => state.isUpdatingCardName,
+);
+
+export const selectUpdateCardNameError = createSelector(
+  selectCardsState,
+  (state: CardsState): string | null => state.updateCardNameError,
+);

@@ -27,6 +27,8 @@ export interface CardsState {
   cardTransactionsError: string | null;
   cardTransactionsTotalCount: Record<string, number>;
     cardImagesLoading: boolean;
+     isUpdatingCardName: boolean;
+  updateCardNameError: string | null;
 
 }
 
@@ -52,5 +54,7 @@ export const initialCardsState: CardsState = {
   cardTransactionsError: null,
   cardTransactionsTotalCount: {},
   cardImagesLoading: true,
+  isUpdatingCardName: false,
+  updateCardNameError: null,
 
 };

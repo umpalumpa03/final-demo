@@ -268,3 +268,47 @@ it('should set cardImagesLoading false on loadCardImagesComplete', () => {
   );
   expect(state.cardImagesLoading).toBe(false);
 });
+it('should set isUpdatingCardName on updateCardName', () => {
+  const state = cardsReducer(
+    initialCardsState,
+    CardsActions.updateCardName({ cardId: 'card-1', cardName: 'New Name' })
+  );
+  expect(state.isUpdatingCardName).toBe(true);
+  expect(state.updateCardNameError).toBeNull();
+});
+
+it('should update card name on updateCardNameSuccess', () => {
+  const state = cardsReducer(
+    {
+      ...initialCardsState,
+      cardDetails: {
+        'card-1': {
+          id: 'card-1',
+          accountId: 'acc-1',
+          type: 'DEBIT' as const,
+          network: 'VISA' as const,
+          design: 'blue',
+          cardName: 'Old Name',
+          status: 'ACTIVE' as const,
+          allowOnlinePayments: true,
+          allowInternational: true,
+          allowAtm: true,
+          createdAt: '2024-01-01',
+          updatedAt: '2024-01-01',
+        },
+      },
+    },
+    CardsActions.updateCardNameSuccess({ cardId: 'card-1', cardName: 'New Name' })
+  );
+  expect(state.cardDetails['card-1'].cardName).toBe('New Name');
+  expect(state.isUpdatingCardName).toBe(false);
+});
+
+it('should set error on updateCardNameFailure', () => {
+  const state = cardsReducer(
+    initialCardsState,
+    CardsActions.updateCardNameFailure({ cardId: 'card-1', error: 'Failed' })
+  );
+  expect(state.updateCardNameError).toBe('Failed');
+  expect(state.isUpdatingCardName).toBe(false);
+});
