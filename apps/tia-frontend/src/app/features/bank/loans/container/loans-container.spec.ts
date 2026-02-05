@@ -25,13 +25,8 @@ describe('LoansContainer', () => {
     loansStoreMock = {
       loading: signal(false),
       alert: signal(null),
-
-      loadMonths: vi.fn(),
-      loadPurposes: vi.fn(),
       loadCounts: vi.fn(),
-
       loanCounts: signal({ all: 0, approved: 0, pending: 0, declined: 0 }),
-
       loanMonthsOptions: signal([]),
       purposeOptions: signal([]),
     };
@@ -63,10 +58,8 @@ describe('LoansContainer', () => {
 
   it('should initialize data loading on init', () => {
     expect(globalStore.dispatch).toHaveBeenCalledWith(
-      AccountsActions.loadAccounts(),
+      AccountsActions.loadAccounts({}),
     );
-    expect(loansStoreMock.loadMonths).toHaveBeenCalled();
-    expect(loansStoreMock.loadPurposes).toHaveBeenCalled();
     expect(loansStoreMock.loadCounts).toHaveBeenCalled();
   });
 });
