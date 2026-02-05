@@ -251,8 +251,9 @@ export class PaybillMainFacade {
     this.router.navigateByUrl(`${base}/${childId}`);
   }
 
-  public verifyAccount<T extends Record<string, any>>(formValues: T): void {
+  public verifyAccount(formValues: PaybillDynamicFormValues): void {
     const provider = this.activeProvider();
+
     const identification =
       this.dynamicFormService.buildIdentification(formValues);
 
@@ -268,7 +269,7 @@ export class PaybillMainFacade {
         PaybillActions.setPaymentPayload({
           data: {
             identification,
-            amount: formValues['amount'] || 0,
+            amount: formValues.amount || 0,
           },
         }),
       );
