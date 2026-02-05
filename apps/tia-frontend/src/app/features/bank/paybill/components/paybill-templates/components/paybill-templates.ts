@@ -21,6 +21,7 @@ import {
   ModalInfo,
   ModalType,
   TemplateGroups,
+  TreeItemMoved,
 } from '../models/paybill-templates.model';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
@@ -207,5 +208,11 @@ export class PaybillTemplates {
     if (action === 'renameGroup') {
       this.renameGroupModal.emit();
     }
+  }
+
+  public treeItemMoved = output<TreeItemMoved>();
+
+  public itemMoved(event: TreeItemMoved) {
+    this.treeItemMoved.emit(event);
   }
 }
