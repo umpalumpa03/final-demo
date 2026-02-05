@@ -7,6 +7,7 @@ export type TLanguages = ILanguage[];
 
 export interface Language {
   id: string;
+  value: string;
   name: string;
   nativeName: string;
   region: string;

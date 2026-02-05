@@ -12,12 +12,13 @@ describe('PaybillConfirmPaymentContainer', () => {
 
   beforeEach(async () => {
     facadeMock = {
-      // 🔹 METHODS used in container
       confirmPayment: vi.fn(),
       backToDetails: vi.fn(),
-      storeAccounts: vi.fn(() => []),
 
-      // 🔹 SIGNALS used directly or indirectly by template/children
+      storeAccounts: signal([]),
+
+      isLoading: signal(false),
+
       activeProvider: signal({
         id: 'provider-1',
         name: 'Test Provider',
@@ -28,32 +29,29 @@ describe('PaybillConfirmPaymentContainer', () => {
         currency: 'GEL',
       }),
 
-      selectedSenderAccount: signal({
-        iban: 'GE00TB123456789',
-        name: 'Main Account',
-      }),
+      selectedSenderAccountId: signal(null),
 
       verifiedDetails: signal({
         subscriberId: '123456',
         customerName: 'John Doe',
+        valid: true,
       }),
 
       activeCategoryUI: signal({
-        icon: 'electricity',
-        title: 'Utilities',
+        iconBgColor: '#fff',
+        iconBgPath: 'path/to/icon',
       }),
     };
 
     await TestBed.configureTestingModule({
       imports: [PaybillConfirmPaymentContainer, TranslateModule.forRoot()],
       providers: [{ provide: PaybillMainFacade, useValue: facadeMock }],
-      schemas: [NO_ERRORS_SCHEMA], // ignore child component templates
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PaybillConfirmPaymentContainer);
     component = fixture.componentInstance;
 
-    // 🚀 This used to crash — now all computeds have valid data
     fixture.detectChanges();
   });
 

@@ -64,5 +64,6 @@ export const selectGelAccountOptions = createSelector(
       .map((acc) => ({
         label: `${acc.friendlyName || acc.name} (${acc.currency}) - ${acc.balance} ${acc.currency}`,
         value: acc.id,
+        isFavorite: acc.isFavorite,
       })),
 );
