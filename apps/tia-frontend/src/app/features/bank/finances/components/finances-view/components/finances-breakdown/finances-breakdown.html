@@ -1,0 +1,22 @@
+<section class="finances-breakdown">
+  <div class="finances-breakdown__card">
+    <div class="finances-breakdown__header">
+      <h3 class="breakdown-title">Category Breakdown</h3>
+      <p class="breakdown-subtitle">Detailed view of spending by category</p>
+    </div>
+
+    <div class="finances-breakdown__list">
+      @for (item of categories(); track item.category) {
+      <app-category-item
+        [label]="item.category"
+        [amount]="item.amount"
+        [percentage]="item.percentage"
+        [color]="item.color"
+        [icon]="item.icon || ''"
+      ></app-category-item>
+      } @empty { @if (!loading()) {
+      <p class="no-data">No categories found for this period.</p>
+      } }
+    </div>
+  </div>
+</section>

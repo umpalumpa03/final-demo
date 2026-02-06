@@ -7,45 +7,122 @@ import { patchState } from '@ngrx/signals';
 
 describe('FinancesStore', () => {
   let store: any;
-  let serviceMock: any;
+  let service: any;
 
   beforeEach(() => {
-    serviceMock = {
-      getSummary: vi.fn(() => of({ totalIncome: 1000, incomeChange: 10, totalExpenses: 500, expensesChange: -5, totalSavings: 500, savingsChange: 5, savingsRate: 50, savingsRateChange: 1 })),
-      getCategories: vi.fn(() => of([{ category: 'Food & Dining', amount: 100, color: '#ff0' }])),
-      getRecentTransactions: vi.fn(() => of([{ id: '1', title: 'T1', amount: 50, category: 'Food & Dining', type: 'expense' }])),
-      getIncomeVsExpenses: vi.fn(() => of([{ month: 'Jan', income: 100, expenses: 80 }])),
-      getSavingsTrend: vi.fn(() => of([{ month: 'Jan', savings: 20 }])),
-      getDailySpending: vi.fn(() => of([{ day: 1, amount: 10 }])),
+    service = {
+      getSummary: vi.fn(),
+      getCategories: vi.fn(),
+      getRecentTransactions: vi.fn(),
+      getIncomeVsExpenses: vi.fn(),
+      getSavingsTrend: vi.fn(),
+      getDailySpending: vi.fn(),
     };
     TestBed.configureTestingModule({
-      providers: [FinancesStore, { provide: FinancesService, useValue: serviceMock }]
+      providers: [
+        FinancesStore,
+        { provide: FinancesService, useValue: service }
+      ]
     });
     store = TestBed.inject(FinancesStore);
   });
 
-  it('should cover all computed logic and formatting', () => {
-    store.loadAllData({ from: '2026-01-01', to: '2026-01-31' });
+  it('should handle successful loadAllData and summary mapping', () => {
+    const mockSummary = { 
+      totalIncome: 5000, 
+      totalExpenses: 3000, 
+      netProfit: 2000,
+      incomeChange: 10,
+      expenseChange: -5,
+      netProfitChange: 15,
+      savingsRate: 20,
+      savingsRateChange: 2
+    };
 
-    const cards = store.summaryCards();
-    expect(cards.length).toBe(4);
-    expect(cards[0].value).toContain('$'); 
-    expect(cards[3].value).toContain('%');
+    service.getSummary.mockReturnValue(of(mockSummary));
+    service.getCategories.mockReturnValue(of([{ category: 'Food', amount: 500, color: '#6B7280' }]));
+    service.getDailySpending.mockReturnValue(of([{ day: 1, amount: 50 }]));
+    service.getIncomeVsExpenses.mockReturnValue(of([{ month: 'Jan', income: 1000, expenses: 800 }]));
+    service.getSavingsTrend.mockReturnValue(of([{ month: 'Jan', savings: 200 }]));
+    service.getRecentTransactions.mockReturnValue(of([]));
 
-    const tx = store.transactionsWithIcons()[0];
-    expect(tx.icon).toBeDefined();
-    expect(store.categoriesWithIcons()[0].icon).toBeDefined();
+    store.loadAllData({ from: '2026-01-01' });
 
-    expect(store.charts().length).toBe(4);
-    expect(store.mainChartData().datasets[0].data).toContain(100);
+    expect(store.loading()).toBe(false);
+    expect(store.summary()).toEqual(mockSummary);
+    expect(store.summaryCards().length).toBeGreaterThan(0);
+    expect(store.incomeVsExpensesFooter()?.isNetPositive).toBe(true);
   });
 
-  it('should handle error and null states', () => {
-    serviceMock.getSummary.mockReturnValue(throwError(() => new Error()));
-    store.loadAllData({ from: 'err' });
-    expect(store.error()).toBe('Data sync failed');
+  
 
-    patchState(store, { summary: null });
+  it('should compute all chart configurations correctly', () => {
+    patchState(store, {
+      incomeVsExpenses: [{ month: 'Jan', income: 1000, expenses: 800 }],
+      categories: [{ category: 'Food', amount: 500, color: 'red' }],
+      savingsTrend: [{ month: 'Jan', savings: 200 }],
+      dailySpending: [{ day: 2, amount: 20 }, { day: 1, amount: 10 }] 
+    });
+
+    const charts = store.charts();
+    expect(charts.length).toBe(4);
+    
+    const dailyData = store.dailyChartData();
+    expect(dailyData.labels[0]).toBe('Day 1');
+    
+    expect(store.categoryChartData().datasets[0].backgroundColor).toContain('red');
+  });
+
+  it('should correctly compute footer statistics', () => {
+    patchState(store, {
+      summary: { totalIncome: 1000, totalExpenses: 1200 }, 
+      categories: [
+        { category: 'Rent', amount: 1000 },
+        { category: 'Food', amount: 200 }
+      ],
+      savingsTrend: [
+        { month: 'Jan', savings: 100 },
+        { month: 'Feb', savings: 300 }
+      ],
+      dailySpending: [
+        { day: 1, amount: 10 },
+        { day: 2, amount: 50 },
+        { day: 3, amount: 30 }
+      ]
+    });
+
+    expect(store.incomeVsExpensesFooter()?.isNetPositive).toBe(false);
+    expect(store.topCategoriesFooter()[0].category).toBe('Rent');
+    expect(store.savingsFooter()?.average).toContain('200'); 
+    expect(store.dailySpendingFooter()?.highest).toContain('50');
+    expect(store.dailySpendingFooter()?.lowest).toContain('10');
+  });
+
+  it('should handle various error statuses in loadAllData', () => {
+    const errorScenarios = [
+      { status: 401, message: 'Session expired' },
+      { status: 500, message: 'Server is currently unavailable' },
+      { status: 404, message: 'unexpected error' }
+    ];
+
+    errorScenarios.forEach(scenario => {
+      service.getSummary.mockReturnValue(throwError(() => ({ status: scenario.status })));
+      store.loadAllData({ from: '2026-01-01' });
+      expect(store.error().toLowerCase()).toContain(scenario.message.toLowerCase());
+    });
+  });
+
+  it('should handle null summary response', () => {
+    service.getSummary.mockReturnValue(of(null));
+    service.getCategories.mockReturnValue(of([]));
+    service.getDailySpending.mockReturnValue(of([]));
+    service.getIncomeVsExpenses.mockReturnValue(of([]));
+    service.getSavingsTrend.mockReturnValue(of([]));
+    service.getRecentTransactions.mockReturnValue(of([]));
+
+    store.loadAllData({ from: '2026-01-01' });
+
+    expect(store.error()).toBe('No data found for this period');
     expect(store.summaryCards()).toEqual([]);
   });
 });

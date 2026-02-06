@@ -1,0 +1,87 @@
+<section class="finances-charts">
+  @for (chart of charts(); track chart.title) {
+  <div class="finances-charts__card">
+    <div class="chart-header">
+      <h3 class="chart-title">{{ chart.title }}</h3>
+      <p class="chart-subtitle">
+        @switch (chart.title) { 
+          @case ('Income vs Expenses') { Monthly comparison over time } 
+          @case ('Spending by Category') { Breakdown of expenses this month } 
+          @case ('Savings Trend') { Monthly savings over time } 
+          @default { Spending pattern throughout the month } 
+        }
+      </p>
+    </div>
+
+    <div class="chart-container">
+      @if (chart.data) {
+      <canvas baseChart [data]="chart.data" [options]="chartOptions" [type]="chart.type"></canvas>
+      } @else {
+      <div class="chart-loading"><app-spinner size="2rem"></app-spinner></div>
+      }
+    </div>
+
+    <div class="chart-footer">
+      @if (chart.title === 'Income vs Expenses' && incomeVsExpensesFooter(); as data) {
+      <div class="footer-summary summary-grid">
+        <div class="summary-item">
+          <span class="label">{{ selectedMonthLabel() }} Overview</span>
+          <div class="value-group">
+            <p class="income">Income: {{ data.income }}</p>
+            <p class="expense">Expenses: {{ data.expenses }}</p>
+          </div>
+        </div>
+        <div class="summary-net">
+          <span class="net-value" [class.positive]="data.isNetPositive">Net: {{ data.net }}</span>
+        </div>
+      </div>
+      } 
+
+      @if (chart.title === 'Spending by Category' && topCategoriesFooter().length > 0) {
+      <div class="footer-summary">
+        <h4 class="footer-title">Top Categories - {{ selectedMonthLabel() }}</h4>
+        @for (cat of topCategoriesFooter().slice(0, 3); track cat.category) {
+        <div class="category-item">
+          <div class="cat-info">
+            <span class="dot" [style.background-color]="cat.color"></span>
+            <span class="cat-name">{{ cat.category }}</span>
+          </div>
+          <span class="cat-value">{{ cat.formattedAmount }}</span>
+        </div>
+        }
+      </div>
+      } 
+
+      @if (chart.title === 'Savings Trend' && savingsFooter(); as data) {
+      <div class="footer-summary summary-flex">
+        <div class="summary-item">
+          <span class="label">{{ selectedMonthLabel() }} Savings</span>
+          <p class="stat-value">{{ data.current }}</p>
+        </div>
+        <div class="summary-item">
+          <span class="label">Average (Last {{ data.period }} months)</span>
+          <p class="stat-value purple">{{ data.average }}</p>
+        </div>
+      </div>
+      }
+
+      @if (chart.title === 'Daily Spending' && dailySpendingFooter(); as data) {
+      <div class="footer-summary summary-grid-three">
+        <div class="summary-item">
+          <span class="label">Daily Average</span>
+          <p class="stat-value">{{ data.average }}</p>
+        </div>
+        <div class="summary-item">
+          <span class="label">Highest Day</span>
+          <p class="stat-value">{{ data.highest }}</p>
+        </div>
+        <div class="summary-item">
+          <span class="label">Lowest Day</span>
+          <p class="stat-value">{{ data.lowest }}</p>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  }
+</section>
