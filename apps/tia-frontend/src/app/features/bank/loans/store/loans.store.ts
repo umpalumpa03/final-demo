@@ -96,9 +96,22 @@ export const LoansStore = signalStore(
   withComputed((store) => ({
     filteredLoans: computed(() => {
       const status = store.filterStatus();
+      const query = store.searchQuery().toLowerCase().trim();
       const loans = store.loansWithAccountInfo();
-      if (status === null) return loans;
-      return loans.filter((l) => l.status === status);
+
+      let result =
+        status === null ? loans : loans.filter((l) => l.status === status);
+
+      if (query) {
+        result = result.filter((l) => {
+          const friendlyName = (l.friendlyName || '').toLowerCase();
+          const purpose = (l.purpose || '').toLowerCase();
+
+          return friendlyName.includes(query) || purpose.includes(query);
+        });
+      }
+
+      return result;
     }),
   })),
 
@@ -118,6 +131,9 @@ export const LoansStore = signalStore(
       hideAlert() {
         patchState(store, { alertMessage: null, alertType: null });
       },
+      setSearchQuery(query: string) {
+        patchState(store, { searchQuery: query });
+      },
 
       _triggerAutoHide: rxMethod<void>(
         pipe(
@@ -129,7 +145,9 @@ export const LoansStore = signalStore(
       loadLoans: rxMethod<{ status?: number | null; forceChange?: boolean }>(
         pipe(
           tap(({ status }) => {
-            patchState(store, { filterStatus: status ?? null });
+            if (status !== undefined) {
+              patchState(store, { filterStatus: status });
+            }
           }),
           switchMap(({ forceChange }) => {
             const currentLoans = store.loans();

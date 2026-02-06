@@ -7,6 +7,7 @@ export const loansInitialState: ILoansState = {
   accounts: [],
   prepaymentOptions: [],
   loanDetailsCache: {},
+  searchQuery: '',
   selectedLoanDetails: null,
   detailsLoading: false,
   loading: false,

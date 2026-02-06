@@ -27,6 +27,7 @@ export interface ILoansState {
   purposes: LoanPurpose[];
   accounts: Account[];
   prepaymentOptions: PrepaymentOption[];
+  searchQuery: string;
   loanDetailsCache: Record<string, ILoanDetails>;
   loading: boolean;
   error: string | null;

@@ -36,7 +36,7 @@ export class AllLoans implements OnInit {
 
   private readonly container = inject(LoansContainer);
 
-  protected readonly loans = this.store.loansWithAccountInfo;
+  protected readonly loans = this.store.filteredLoans;
   protected readonly selectedLoanDetails = this.store.selectedLoanDetails;
   protected readonly isDetailsLoading = this.store.detailsLoading;
 
