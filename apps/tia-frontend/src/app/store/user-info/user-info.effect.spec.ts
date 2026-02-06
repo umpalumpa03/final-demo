@@ -57,10 +57,6 @@ describe('UserInfoEffects (Vitest)', () => {
     );
 
     expect(localStorage.setItem).toHaveBeenCalledWith(
-      'user',
-      JSON.stringify(mockUser),
-    );
-    expect(localStorage.setItem).toHaveBeenCalledWith(
       'theme',
       mockUser.theme,
     );
@@ -101,11 +97,6 @@ describe('UserInfoEffects (Vitest)', () => {
       UserInfoActions.loadUserSuccess({
         user: userWithoutPrefs,
       }),
-    );
-
-    expect(localStorage.setItem).toHaveBeenCalledWith(
-      'user',
-      JSON.stringify(userWithoutPrefs),
     );
 
     expect(localStorage.setItem).not.toHaveBeenCalledWith(

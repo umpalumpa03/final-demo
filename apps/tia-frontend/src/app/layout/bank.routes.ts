@@ -23,7 +23,7 @@ export const bankRoutes: Routes = [
     path: 'bank',
     loadComponent: () =>
       import('./bank-container').then((c) => c.BankContainer),
-    // canActivateChild: [AuthGuard],
+    canActivateChild: [AuthGuard],
     providers: [
       provideState({
         name: TRANSACTION_FEATURE_KEY,
