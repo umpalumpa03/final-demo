@@ -8,10 +8,11 @@ import {
 import { Router } from '@angular/router';
 import { BannerSlide } from '../../models/banner.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-banner-carousel',
-  imports: [ButtonComponent],
+  imports: [ButtonComponent,TranslatePipe],
   templateUrl: './banner-carousel.html',
   styleUrl: './banner-carousel.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

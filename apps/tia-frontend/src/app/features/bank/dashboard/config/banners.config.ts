@@ -3,26 +3,26 @@ import { BannerSlide } from '../components/shared/models/banner.model';
 export const bannerSlides: BannerSlide[] = [
   {
     imagePath: 'images/png/dashboard/banners/paybill_banner.png',
-    title: 'Paybill Test Title',
-    description: 'Description for paybill blablablabla',
+    title: 'dashboard.banners.paybills.title',
+    description: 'dashboard.banners.paybills.description',
     pageUrl: '/bank/paybill/pay',
-    buttonText: 'TEST BUTTON',
+    buttonText: 'dashboard.banners.paybills.button',
     contentPosition: 'right',
   },
   {
     imagePath: 'images/png/dashboard/banners/transfers_banner.png',
-    title: 'Transfers Test Title',
-    description: 'Description for trasfers blablablabla',
-    pageUrl: '/bank/paybill/pay',
-    buttonText: 'TEST BUTTON',
+    title: 'dashboard.banners.transfers.title',
+    description: 'dashboard.banners.transfers.description',
+    pageUrl: '/bank/transfers',
+    buttonText: 'dashboard.banners.transfers.button',
     contentPosition: 'left',
   },
   {
     imagePath: 'images/png/dashboard/banners/loans_banner.png',
-    title: 'Loans blablablablabla',
-    description: 'Description for loans blablablabla',
-    pageUrl: '/bank/paybill/pay',
-    buttonText: 'TEST BUTTON',
+    title: 'dashboard.banners.loans.title',
+    description: 'dashboard.banners.loans.description',
+    pageUrl: '/bank/products/loans',
+    buttonText: 'dashboard.banners.loans.button',
     contentPosition: 'right',
   },
-] as const;
+];

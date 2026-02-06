@@ -108,7 +108,7 @@ export class DashboardContainer implements OnInit {
 
   public readonly gridColumns = { default: 2, md: 0, sm: 0 };
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.store.dispatch(
       TransactionActions.updateFilters({
         filters: { pageLimit: 10 },
