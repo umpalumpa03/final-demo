@@ -8,7 +8,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AccountCardComponent } from '../account-card/container/account-card';
-import { ButtonComponent } from '../../../../../../../shared/lib/primitives/button/button';
 import { RouteLoader } from '../../../../../../../shared/lib/feedback/route-loader/route-loader';
 import {
   AccountSection,
@@ -25,7 +24,6 @@ import { Badges } from '../../../../../../../shared/lib/primitives/badges/badges
     CommonModule,
     TranslatePipe,
     AccountCardComponent,
-    ButtonComponent,
     RouteLoader,
     ErrorStates,
     ScrollArea,

@@ -5,7 +5,8 @@
     "cards": "Cards"
   },
   "cards": {
-    "title": "Cards",
+    "title": "My Cards",
+    "subtitle": "Manage your credit and debit cards grouped by account",
     "credit": "Credit Cards",
     "debit": "Debit Cards"
   },

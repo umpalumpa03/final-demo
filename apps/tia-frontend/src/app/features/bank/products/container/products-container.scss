@@ -1,8 +1,15 @@
 @use '../../../../shared/styles/mixins' as *;
 @use '../../../../shared/styles/palette' as *;
 
-.title {
-  @include font-arimo(700, 2.4rem);
-  color: $blue-deep-foreground;
-  margin-bottom: 1rem;
+.products-container {
+  &__section-header {
+    @include flex-center(row, space-between);
+    gap: 2rem;
+    margin-bottom: 2rem;
+
+    &-info {
+      @include display-flex(column);
+      gap: 0.5rem;
+    }
+  }
 }
