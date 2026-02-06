@@ -1,31 +1,22 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { LoansStore } from '../../../store/loans.store';
 import { Router } from '@angular/router';
-import { ILoan } from '../../../shared/models/loan.model';
 import { LoansGrid } from '../../../shared/ui/loans-grid/loans-grid';
 import { LOANS_ROUTES } from '../../../shared/config/loans-redirect.config';
+import { LoanDashboardState } from '../../../shared/state/loan-dashboard.state';
 
 @Component({
   selector: 'app-pending-loans',
   imports: [LoansGrid],
   templateUrl: './pending-loans.html',
   styleUrl: './pending-loans.scss',
+  providers: [LoanDashboardState],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PendingLoans {
   protected readonly store = inject(LoansStore);
   private readonly router = inject(Router);
-
-  protected readonly emptyConfig = {
-    title: 'loans.empty.pending.title',
-    message: 'loans.empty.pending.message',
-    button: 'loans.empty.pending.button',
-  };
+  public readonly emptyState = inject(LoanDashboardState);
 
   ngOnInit() {
     this.store.loadLoans({ status: 1 });

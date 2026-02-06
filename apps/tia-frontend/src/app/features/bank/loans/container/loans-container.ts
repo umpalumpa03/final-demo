@@ -20,6 +20,7 @@ import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
 import { LoanDetails } from '../shared/ui/prepayment/loan-details/loan-details';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { PrepaymentContainer } from '../shared/ui/prepayment/prepayment-container/prepayment-container';
+import { LoanDashboardState } from '../shared/state/loan-dashboard.state';
 
 @Component({
   selector: 'app-loans-container',
@@ -37,11 +38,12 @@ import { PrepaymentContainer } from '../shared/ui/prepayment/prepayment-containe
   ],
   templateUrl: './loans-container.html',
   styleUrl: './loans-container.scss',
+  providers: [LoanDashboardState],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoansContainer {
   private globalStore = inject(Store);
-
+  public readonly loanDashboardState = inject(LoanDashboardState);
   protected readonly store = inject(LoansStore);
 
   private readonly searchSubject = new Subject<string>();
