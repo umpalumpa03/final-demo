@@ -69,6 +69,11 @@
         "message": "Unable to load your accounts. Please try again."
       }
     },
+    "otp": {
+      "title": "Verify Transaction",
+      "description": "Enter the 4 digit code sent to your registered phone number",
+      "submit": "Verify and Transfer"
+    },
     "amount": {
       "title": "Transfer Amount",
       "label": "Amount",

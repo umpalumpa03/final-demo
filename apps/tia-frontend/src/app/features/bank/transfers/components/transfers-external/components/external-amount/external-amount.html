@@ -185,7 +185,7 @@
 </div>
 }
 <!-- only need to show when no otp needed// -->
-@if(showError() && errorFromState()) {
+@if(showError() && errorFromState() && !requiresOtp()) {
 <div class="external-amount__error-toast">
   <app-alert-types-with-icons
     [alertType]="'error'"
