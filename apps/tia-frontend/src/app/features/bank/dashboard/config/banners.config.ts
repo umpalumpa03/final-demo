@@ -2,18 +2,26 @@ import { BannerSlide } from '../components/shared/models/banner.model';
 
 export const bannerSlides: BannerSlide[] = [
   {
-    imagePath: 'assets/images/banners/paybill-promo.png',
-    title: 'TITLE TEST',
-    description: 'TITLE DESC',
+    imagePath: 'images/png/dashboard/banners/paybill_banner.png',
+    title: 'Paybill Test Title',
+    description: 'Description for paybill blablablabla',
+    pageUrl: '/bank/paybill/pay',
+    buttonText: 'TEST BUTTON',
+    contentPosition: 'right',
+  },
+  {
+    imagePath: 'images/png/dashboard/banners/transfers_banner.png',
+    title: 'Transfers Test Title',
+    description: 'Description for trasfers blablablabla',
     pageUrl: '/bank/paybill/pay',
     buttonText: 'TEST BUTTON',
     contentPosition: 'left',
   },
   {
-    imagePath: 'assets/images/banners/loans-promo.png',
-    title: 'TITLE TEST',
-    description: 'TITLE DESC',
-    pageUrl: '/bank/products/loans',
+    imagePath: 'images/png/dashboard/banners/loans_banner.png',
+    title: 'Loans blablablablabla',
+    description: 'Description for loans blablablabla',
+    pageUrl: '/bank/paybill/pay',
     buttonText: 'TEST BUTTON',
     contentPosition: 'right',
   },
