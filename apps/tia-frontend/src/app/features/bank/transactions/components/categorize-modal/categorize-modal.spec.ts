@@ -2,20 +2,29 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CategorizeModal } from './categorize-modal';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { CATEGORIZE_MODAL_CONFIG } from '../../config/categorize-modal.config';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { of } from 'rxjs';
+
+class FakeLoader implements TranslateLoader {
+  getTranslation(lang: string) {
+    return of({});
+  }
+}
 
 describe('CategorizeModal', () => {
   let component: CategorizeModal;
   let fixture: ComponentFixture<CategorizeModal>;
-  vi.mock('@angular/platform-browser/animations', () => ({
-    provideNoopAnimations: () => ({}),
-    provideAnimations: () => ({}),
-  }));
-  
+
   beforeEach(async () => {
+    vi.useFakeTimers();
+
     await TestBed.configureTestingModule({
-      imports: [CategorizeModal],
-      providers: [provideNoopAnimations],
+      imports: [
+        CategorizeModal,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeLoader }
+        })
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CategorizeModal);
@@ -28,7 +37,6 @@ describe('CategorizeModal', () => {
     fixture.componentRef.setInput('transaction', { id: 'tx-1' } as any);
 
     fixture.detectChanges();
-    vi.useFakeTimers();
   });
 
   afterEach(() => {
@@ -70,9 +78,12 @@ describe('CategorizeModal', () => {
 
     expect(emitSpy).toHaveBeenCalledWith(name);
     expect(component.form.controls.newCategoryName.value).toBe(null);
-    expect(component.successMessage()).toContain(name);
+    expect(component.successMessage()).toBeTruthy();
 
+    fixture.detectChanges();
     vi.advanceTimersByTime(CATEGORIZE_MODAL_CONFIG.successMessageDuration);
+    fixture.detectChanges();
+
     expect(component.successMessage()).toBeNull();
   });
 });

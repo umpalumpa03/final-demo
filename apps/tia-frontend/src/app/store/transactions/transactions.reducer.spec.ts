@@ -10,22 +10,19 @@ describe('Transaction Reducer', () => {
     expect(state).toBe(transactionInitialState);
   });
 
-  it('should reset state (items, total, cursor) and start loading on enter', () => {
+  it('should clear error on enter but KEEP items (Smart Cache)', () => {
     const dirtyState = {
       ...transactionInitialState,
       items: [{ id: 'old' }] as any,
-      nextCursor: 'old',
+      error: 'Some Error',
+      nextCursor: 'old-cursor',
       total: 500,
-      isLoading: false,
     };
-
     const action = TransactionActions.enter();
     const state = transactionReducer(dirtyState, action);
-
-    expect(state.items).toEqual([]);
-    expect(state.nextCursor).toBeNull();
-    expect(state.total).toBe(0);
-    expect(state.isLoading).toBe(true);
+    expect(state.error).toBeNull();
+    expect(state.items.length).toBe(1);
+    expect(state.items).toEqual([{ id: 'old' }]);
   });
 
   it('should set isLoading to true on loadMore', () => {
@@ -42,6 +39,7 @@ describe('Transaction Reducer', () => {
       ...transactionInitialState,
       items: [{ id: 'old' }] as any,
       nextCursor: 'old-cursor',
+      loaded: true,
     };
 
     const action = TransactionActions.updateFilters({
@@ -53,14 +51,39 @@ describe('Transaction Reducer', () => {
     expect(state.items).toEqual([]);
     expect(state.nextCursor).toBeNull();
     expect(state.isLoading).toBe(true);
+    expect(state.loaded).toBe(false);
   });
 
   it('should set loading to true on loadTransactions', () => {
-    const action = TransactionActions.loadTransactions();
+    const action = TransactionActions.loadTransactions({});
     const state = transactionReducer(transactionInitialState, action);
 
     expect(state.isLoading).toBe(true);
     expect(state.error).toBeNull();
+  });
+
+  it('should REPLACE items and set loaded to true on loadTransactionsSuccess', () => {
+    const existingState = {
+      ...transactionInitialState,
+      items: [{ id: 'old-garbage' }] as any,
+      isLoading: true,
+    };
+
+    const response = {
+      items: [{ id: 'new-1' }, { id: 'new-2' }] as any,
+      pageInfo: { nextCursor: 'next-page' },
+    };
+
+    const action = TransactionActions.loadTransactionsSuccess({
+      response,
+    } as any);
+    const state = transactionReducer(existingState, action);
+
+    expect(state.items.length).toBe(2);
+    expect(state.items[0].id).toBe('new-1');
+    expect(state.isLoading).toBe(false);
+    expect(state.loaded).toBe(true);
+    expect(state.nextCursor).toBe('next-page');
   });
 
   it('should append items and update cursor on loadSuccess', () => {
@@ -106,6 +129,22 @@ describe('Transaction Reducer', () => {
     const state = transactionReducer(transactionInitialState, action);
 
     expect(state.total).toBe(150);
+  });
+
+  it('should update categories state on loadCategoriesSuccess', () => {
+    const categories = [{ id: '1', name: 'Cat' }] as any;
+    const action = TransactionActions.loadCategoriesSuccess({ categories });
+    const state = transactionReducer(transactionInitialState, action);
+
+    expect(state.categories).toEqual(categories);
+  });
+
+  it('should set error on loadCategoriesFailure', () => {
+    const error = 'Cat Error';
+    const action = TransactionActions.loadCategoriesFailure({ error });
+    const state = transactionReducer(transactionInitialState, action);
+
+    expect(state.error).toBe(error);
   });
 
   it('should locally update transaction category on assignCategorySuccess', () => {
