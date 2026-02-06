@@ -27,6 +27,10 @@ export interface StatisticCardData {
   change: string;
   changeType: 'positive' | 'negative';
   icon: string;
+  minWidth?: string;
+  maxWidth?: string;
+  width?: string;
+  height?: string;
 }
 
 export interface CategoryCardData {
