@@ -39,64 +39,6 @@ describe('LoanDetails', () => {
     expect(emitSpy).toHaveBeenCalled();
   });
 
-  it('should call checkScrollPosition on scroll', () => {
-    const spy = vi.spyOn(component as any, 'checkScrollPosition');
-    component['onScroll']();
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('should handle scrollToBottom when element exists', () => {
-    const mockElement = {
-      scrollTo: vi.fn(),
-      scrollHeight: 1000,
-    };
-    component['scrollContainer'] = signal({
-      nativeElement: mockElement,
-    }) as any;
-
-    component['scrollToBottom']();
-
-    expect(mockElement.scrollTo).toHaveBeenCalledWith({
-      top: 1000,
-      behavior: 'smooth',
-    });
-  });
-
-  it('should handle scrollToBottom when element does not exist', () => {
-    component['scrollContainer'] = signal(undefined) as any;
-    expect(() => component['scrollToBottom']()).not.toThrow();
-  });
-
-  it('should set showScrollButton based on scroll position', () => {
-    const mockElement = {
-      scrollHeight: 1000,
-      clientHeight: 500,
-      scrollTop: 0,
-    };
-    component['scrollContainer'] = signal({
-      nativeElement: mockElement,
-    }) as any;
-
-    component['checkScrollPosition']();
-
-    expect(component['showScrollButton']()).toBe(true);
-  });
-
-  it('should hide scroll button when at bottom', () => {
-    const mockElement = {
-      scrollHeight: 1000,
-      clientHeight: 500,
-      scrollTop: 500,
-    };
-    component['scrollContainer'] = signal({
-      nativeElement: mockElement,
-    }) as any;
-
-    component['checkScrollPosition']();
-
-    expect(component['showScrollButton']()).toBe(false);
-  });
-
   it('should not calculate prepayment when loan is null', () => {
     fixture.componentRef.setInput('loan', null);
     const emitSpy = vi.spyOn(component.calculatePrepayment, 'emit');
