@@ -99,7 +99,7 @@ export class PaybillFormContainer {
 
   public onVerifyAccount(event: PaybillFormVerifyEvent): void {
     const identification = this.dynamicForm.buildIdentification(event.value);
-    this.paybillFacade.verifyAccount(identification);
+    this.verifyAccount(identification);
   }
 
   public onSaveAsTemplate(nickname: string): void {
@@ -109,5 +109,29 @@ export class PaybillFormContainer {
   public onProceedToPayment(event: PaybillFormProceedEvent): void {
     const identification = this.dynamicForm.buildIdentification(event.value);
     this.proceedToPayment(event.amount, identification);
+  }
+
+  public verifyAccount(formValues: PaybillDynamicFormValues): void {
+    const provider = this.paybillFacade.activeProvider();
+
+    const identification = this.dynamicForm.buildIdentification(formValues);
+
+    if (provider) {
+      this.store.dispatch(
+        PaybillActions.checkBill({
+          serviceId: provider.id,
+          identification,
+        }),
+      );
+
+      this.store.dispatch(
+        PaybillActions.setPaymentPayload({
+          data: {
+            identification,
+            amount: formValues.amount || 0,
+          },
+        }),
+      );
+    }
   }
 }

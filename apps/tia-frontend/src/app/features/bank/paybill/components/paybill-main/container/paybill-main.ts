@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   inject,
   OnInit,
@@ -11,7 +12,8 @@ import { debounceTime, distinctUntilChanged, startWith, tap } from 'rxjs';
 import { PaybillMainFacade } from '../services/paybill-main-facade';
 import { RouterModule } from '@angular/router';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
-
+import { InputConfig } from '@tia/shared/lib/forms/models/input.model';
+import { paybillSearchConfig } from '../../../config/paybill.config';
 
 @Component({
   selector: 'app-paybill-main',
@@ -40,4 +42,5 @@ export class PaybillMain implements OnInit {
       .subscribe();
   }
 
+  public readonly searchInputConfig = paybillSearchConfig;
 }

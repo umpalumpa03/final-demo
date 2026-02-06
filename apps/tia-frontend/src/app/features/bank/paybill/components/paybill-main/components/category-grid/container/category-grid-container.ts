@@ -7,6 +7,8 @@ import {
 import { CategoryGrid } from '../components/category-items/category-grid';
 import { PaybillMainFacade } from '../../../services/paybill-main-facade';
 import { CATEGORY_UI_MAP } from '../config/category.config';
+import { Store } from '@ngrx/store';
+import { PaybillActions } from '../../../../../store/paybill.actions';
 
 @Component({
   selector: 'app-category-grid-container',
@@ -17,6 +19,7 @@ import { CATEGORY_UI_MAP } from '../config/category.config';
 })
 export class CategoryGridContainer {
   protected readonly facade = inject(PaybillMainFacade);
+  private readonly store = inject(Store);
 
   public readonly formattedCategories = computed(() => {
     const query = this.facade.searchQuery().toLowerCase().trim();
@@ -36,4 +39,8 @@ export class CategoryGridContainer {
     }
     return cats;
   });
+
+  public selectCategory(categoryId: string): void {
+    this.store.dispatch(PaybillActions.selectCategory({ categoryId }));
+  }
 }

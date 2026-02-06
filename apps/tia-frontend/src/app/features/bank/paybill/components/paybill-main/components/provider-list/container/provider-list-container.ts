@@ -15,6 +15,9 @@ import {
   getCurrentHeader,
   getDisplayItems,
 } from '../../../shared/utils/paybill.config';
+import { Store } from '@ngrx/store';
+import { PaybillActions } from '../../../../../store/paybill.actions';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-provider-list-container',
@@ -26,6 +29,7 @@ import {
 export class ProviderListContainer {
   protected readonly facade = inject(PaybillMainFacade);
   private readonly router = inject(Router);
+  private readonly store = inject(Store);
 
   // methods for handling navigation
 
@@ -104,13 +108,16 @@ export class ProviderListContainer {
     if (provider.isFinal) {
       this.facade.resetPaymentForm();
 
-      this.facade.selectProvider(providerId);
+      this.selectProvider(providerId);
     } else {
       this.selectParentId(provider.id);
     }
   }
 
-  public onVerifyAccount(data: PaybillFormVerifyEvent): void {
-    this.facade.verifyAccount(data.value);
+  public selectProvider(providerId: string): void {
+    this.store.dispatch(PaybillActions.selectProvider({ providerId }));
+    this.store.dispatch(
+      PaybillActions.loadPaymentDetails({ serviceId: providerId }),
+    );
   }
 }
