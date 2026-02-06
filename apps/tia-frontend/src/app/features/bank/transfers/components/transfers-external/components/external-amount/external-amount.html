@@ -164,12 +164,14 @@
     (isVerifyCalled)="onOtpVerify($event)"
     (isResendCalled)="resendOtp($event)"
     timerType="otp"
+    (onBackOut)="onOtpClose()"
     [timeLimit]="1"
     [errorMessage]="errorFromState()"
     [remainingAttempts]="3"
     [inputOtpConfig]="otpConfig"
     [isBtnRowDirection]="true"
     noMoreAttempsRedirectRoute="/bank/transfers"
+    (customError)="handleNoMoreAttempts()"
   ></app-otp-verification>
 </app-ui-modal>
 @if (showSuccess()) {
