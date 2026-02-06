@@ -21,6 +21,7 @@ import { ILoanDetails, LoanAlertType } from '../shared/models/loan.model';
 import {
   PrepaymentCalculationPayload,
   IInitiatePrepaymentRequest,
+  IVerifyPrepaymentResponse,
 } from '../shared/models/prepayment.model';
 import { PrepaymentCalculationResult } from '../shared/models/prepayment.model';
 
@@ -450,20 +451,26 @@ export const LoansStore = signalStore(
           tap(() => patchState(store, { actionLoading: true, error: null })),
           switchMap(({ payload }) =>
             loansService.verifyPrepayment(payload).pipe(
-              tap(() => {
+              tap((response: IVerifyPrepaymentResponse) => {
+                if (response.success === false) {
+                  throw new Error(response.message || 'Invalid code');
+                }
+
                 patchState(store, {
                   activeChallengeId: null,
                   calculationResult: null,
                   actionLoading: false,
                   loanDetailsCache: {},
                 });
-
                 store.loadLoans({ forceChange: true });
               }),
+
               catchError((error) => {
+                const errorMsg = error.message || 'Verification failed';
+
                 patchState(store, {
                   actionLoading: false,
-                  error: error.message,
+                  error: errorMsg,
                 });
                 return EMPTY;
               }),
