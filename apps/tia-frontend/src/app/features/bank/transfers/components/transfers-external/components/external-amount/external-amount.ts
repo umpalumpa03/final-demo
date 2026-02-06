@@ -22,7 +22,6 @@ import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/break
 import { tap } from 'rxjs';
 import { SuccessModal } from '@tia/shared/lib/overlay/ui-success-modal/ui-success-modal';
 import { Router } from '@angular/router';
-import { OtpModal } from '@tia/shared/lib/overlay/ui-otp-modal/otp-modal';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';

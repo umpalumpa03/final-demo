@@ -110,9 +110,9 @@ export const TransferStore = signalStore(
                 isVerified: true,
               });
             }),
-            catchError((error) => {
+            catchError(() => {
               patchState(store, {
-                error: error.message || 'Failed to find recipient',
+                error: 'transfers.external.recipient.recipientNotFound',
                 isLoading: false,
               });
               return of(null);

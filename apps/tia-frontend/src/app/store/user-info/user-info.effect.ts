@@ -16,7 +16,6 @@ export class UserInfoEffects {
       switchMap(() =>
         this.userInfoService.getUserInfo().pipe(
           tap((user) => {
-            localStorage.setItem('user', JSON.stringify(user));
 
             if (user.theme) {
               localStorage.setItem('theme', user.theme);

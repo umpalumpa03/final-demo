@@ -7,6 +7,8 @@ import { TransferValidationService } from './transfer-validation.service';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { signal } from '@angular/core';
 import { Subject } from 'rxjs';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { selectPhoneNumber } from 'apps/tia-frontend/src/app/store/personal-info/personal-info.selectors';
 
 describe('TransferRecipientService', () => {
   let service: TransferRecipientService;
@@ -14,6 +16,7 @@ describe('TransferRecipientService', () => {
   let mockLocation: any;
   let mockStore: any;
   let mockValidation: any;
+  let ngrxStore: MockStore;
   let recipientInfoSubject: Subject<any>;
 
   beforeEach(() => {
@@ -28,6 +31,7 @@ describe('TransferRecipientService', () => {
       setExternalRecipient: vi.fn(),
       lookupRecipient: vi.fn(),
       setSelectedRecipientAccount: vi.fn(),
+      setError: vi.fn(),
     };
 
     mockValidation = { identifyRecipientType: vi.fn() };
@@ -35,6 +39,9 @@ describe('TransferRecipientService', () => {
     TestBed.configureTestingModule({
       providers: [
         TransferRecipientService,
+        provideMockStore({
+          selectors: [{ selector: selectPhoneNumber, value: '995555123456' }],
+        }),
         { provide: Router, useValue: mockRouter },
         { provide: Location, useValue: mockLocation },
         { provide: TransferStore, useValue: mockStore },
@@ -43,10 +50,22 @@ describe('TransferRecipientService', () => {
     });
 
     service = TestBed.inject(TransferRecipientService);
+    ngrxStore = TestBed.inject(MockStore);
     (service as any).recipientInfo$ = recipientInfoSubject.asObservable();
   });
 
   describe('verifyRecipient', () => {
+    it('should set error if phone matches own normalized phone number', () => {
+      mockValidation.identifyRecipientType.mockReturnValue('phone');
+
+      service.verifyRecipient('+995 555-12-34-56');
+
+      expect(mockStore.setError).toHaveBeenCalledWith(
+        'transfers.external.recipient.ownPhoneError',
+      );
+      expect(mockStore.lookupRecipient).not.toHaveBeenCalled();
+    });
+
     it('should return early if data matches stored state (Optimization branch)', () => {
       mockStore.recipientInput.set('999');
       mockStore.recipientType.set('phone');
@@ -77,9 +96,9 @@ describe('TransferRecipientService', () => {
       ]);
     });
 
-    it('should auto-select account when exactly one is returned', () => {
+    it('should auto-select account when exactly one is returned in lookup', () => {
       mockValidation.identifyRecipientType.mockReturnValue('phone');
-      service.verifyRecipient('555');
+      service.verifyRecipient('555000000'); 
 
       const mockData = { accounts: [{ id: 'acc1' }] };
       recipientInfoSubject.next(null); 
@@ -88,12 +107,14 @@ describe('TransferRecipientService', () => {
       expect(mockStore.setSelectedRecipientAccount).toHaveBeenCalledWith(
         mockData.accounts[0],
       );
-      expect(mockRouter.navigate).toHaveBeenCalled();
+      expect(mockRouter.navigate).toHaveBeenCalledWith([
+        '/bank/transfers/external/accounts',
+      ]);
     });
 
     it('should NOT auto-select if multiple accounts are returned', () => {
       mockValidation.identifyRecipientType.mockReturnValue('phone');
-      service.verifyRecipient('555');
+      service.verifyRecipient('555000000');
 
       const mockData = { accounts: [{ id: '1' }, { id: '2' }] };
       recipientInfoSubject.next(null);
