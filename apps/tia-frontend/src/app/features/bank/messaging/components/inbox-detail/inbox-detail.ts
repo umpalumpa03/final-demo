@@ -10,10 +10,12 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ReplyForm } from '../../shared/ui/reply-form/reply-form';
 import { Store } from '@ngrx/store';
 import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-inbox-detail',
-  imports: [EmailDetail, ButtonComponent, UiModal, LibraryTitle, RepliesCard, FormsModule, ReactiveFormsModule, ReplyForm],
+  imports: [EmailDetail, ButtonComponent, UiModal, LibraryTitle, RepliesCard, FormsModule, ReactiveFormsModule, ReplyForm, TranslatePipe],
   templateUrl: './inbox-detail.html',
   styleUrl: './inbox-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,6 +35,8 @@ export class InboxDetail implements OnInit {
   public readonly mailReplies = computed(() => this.messagingStore.mailReplies?.() || []);
   public readonly isReplyOpen = signal(false);
   public readonly currentUserEmail = computed(() => this.store.selectSignal(selectCurrentUserEmail)() ?? '');
+  private readonly breakpointService = inject(BreakpointService);
+  public readonly isMobile = this.breakpointService.isMobile;
 
   @ViewChild('replyCard') replyCard?: ElementRef;
 

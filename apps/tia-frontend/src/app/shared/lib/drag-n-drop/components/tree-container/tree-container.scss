@@ -49,7 +49,7 @@
     position: relative;
     margin-bottom: 0.8rem;
     &:has(.tree-container__children--expanded) {
-      margin-bottom: 2rem; 
+      margin-bottom: 2rem;
     }
 
     &--dragging {
@@ -67,14 +67,20 @@
     display: grid;
     grid-template-rows: 0fr;
     opacity: 0;
+    margin-left: 2.8rem;
+    overflow: hidden;
+    visibility: hidden;
+
     transition:
       grid-template-rows 200ms ease-in-out,
-      opacity 200ms ease-in-out;
-    margin-left: 2.8rem;
+      opacity 200ms ease-in-out,
+      visibility 200ms;
 
     &--expanded {
       grid-template-rows: 1fr;
       opacity: 1;
+      visibility: visible;
+      overflow: visible;
     }
   }
 

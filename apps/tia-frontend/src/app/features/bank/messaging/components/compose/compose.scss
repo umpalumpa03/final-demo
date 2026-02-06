@@ -53,3 +53,12 @@
         }
     }
 }
+
+@media (max-width: 450px) {
+    .compose-modal {
+        .buttons-container {
+            flex-direction: column-reverse;
+            align-items: stretch;
+        }
+    }
+}

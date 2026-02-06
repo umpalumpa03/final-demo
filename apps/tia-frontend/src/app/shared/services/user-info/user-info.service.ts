@@ -11,7 +11,6 @@ export class UserInfoService {
 
   public getUserInfo(): Observable<IUserInfo> {
     return this.http.get<IUserInfo>(`${this.baseUrl}/current-user`);
-    return EMPTY
   }
 
   public searchByEmail(query: string): Observable<User[]> {
