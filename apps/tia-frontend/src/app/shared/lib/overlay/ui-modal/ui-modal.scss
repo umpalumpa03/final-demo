@@ -36,9 +36,6 @@
       img {
         transform: rotate(90deg);
       }
-      @media (max-width: 600) {
-        left: 0.5rem;
-      }
     }
 
     &.next {
@@ -46,16 +43,20 @@
       img {
         transform: rotate(-90deg);
       }
-      @media (max-width: 600) {
-        right: 0.5rem;
-      }
     }
 
     @media (max-width: 600px) {
-      background-color: $blue-deep-foreground;
+      background-color: var(--color-fg);
       img {
         filter: brightness(0) saturate(100%) invert(94%) sepia(100%) saturate(26%) hue-rotate(9deg) brightness(104%)
           contrast(109%);
+      }
+      &.next {
+        right: 0.5rem;
+      }
+
+      &.prev {
+        left: 0.5rem;
       }
     }
   }
