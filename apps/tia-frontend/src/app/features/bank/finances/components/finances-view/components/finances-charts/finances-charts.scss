@@ -1,6 +1,6 @@
-@use '../../../../../shared/styles/mixins' as *;
-@use '../../../../../shared/styles/palette' as *;
-@use '../../../../../shared/styles/variables' as *;
+@use '../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../shared/styles/palette' as *;
+@use '../../../../../../../shared/styles/variables' as *;
 
 .finances-charts {
   display: grid;
@@ -18,9 +18,9 @@
     border-radius: 2.4rem;
     padding: 3.2rem;
     min-height: 52rem;
-    display: flex; 
-    flex-direction: column;
+    @include display-flex(column);
     box-shadow: 0 0.4rem 1.6rem rgba($black, 0.03);
+    width: 100%;
 
     .chart-header {
       margin-bottom: 2.4rem;
@@ -96,7 +96,7 @@
       .stat-value { 
         @include font-inter(700, 1.6rem); 
         color: $blue-900;
-        &.purple { color: #8B5CF6; }
+        &.purple { color: $purple-200; }
       }
 
       .category-item {

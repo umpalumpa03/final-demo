@@ -1,13 +1,12 @@
-import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
-import { Spinner } from '../../../../../shared/lib/feedback/spinner/spinner';
-import { ChartConfig, DailySpendingFooter, IncomeVsExpensesFooter, SavingsFooter, SelectOption, TopCategoryFooter } from '../../models/filter.model';
+import { Spinner } from '../../../../../../../shared/lib/feedback/spinner/spinner';
+import { ChartConfig, DailySpendingFooter, IncomeVsExpensesFooter, SavingsFooter, SelectOption, TopCategoryFooter } from '../../../../models/filter.model';
 import { ChartOptions } from 'chart.js';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 @Component({
   selector: 'app-finances-charts',
-  imports: [CommonModule, BaseChartDirective, Spinner],
+  imports: [BaseChartDirective, Spinner],
   templateUrl: './finances-charts.html',
   styleUrl: './finances-charts.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

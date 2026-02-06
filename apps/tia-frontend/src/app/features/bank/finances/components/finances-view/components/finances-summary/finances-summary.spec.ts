@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinancesSummary } from './finances-summary';
 import { By } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { Spinner } from '../../../../../shared/lib/feedback/spinner/spinner'; 
-import { BasicAlerts } from '../../../../../shared/lib/alerts/components/basic-alerts/basic-alerts';
+import { Spinner } from '../../../../../../../shared/lib/feedback/spinner/spinner'; 
+import { BasicAlerts } from '../../../../../../../shared/lib/alerts/components/basic-alerts/basic-alerts';
 
 describe('FinancesSummary', () => {
   let component: FinancesSummary;

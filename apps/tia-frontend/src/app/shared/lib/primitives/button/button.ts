@@ -20,11 +20,9 @@ export class ButtonComponent {
   public readonly customColor = input<string>('');
   public readonly iconWidth = input<string>(''); 
   public readonly iconHeight = input<string>('');
-
-  public readonly iconStyles = computed(() => ({
-    'width': this.iconWidth(),
-    'height': this.iconHeight()
-  }));
+  public readonly customWidth = input<string>(''); 
+  public readonly customHeight = input<string>('');
+  
 
 }
 

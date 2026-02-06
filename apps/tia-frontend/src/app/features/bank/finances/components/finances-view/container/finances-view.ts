@@ -1,14 +1,13 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
 
 import { FinancesFilters } from '../components/finances-filters/finances-filters';
 import { FinancesSummary } from '../components/finances-summary/finances-summary';
 import { FinancesCharts } from '../components/finances-charts/finances-charts';
 import { FinancesBreakdown } from '../components/finances-breakdown/finances-breakdown';
 import { FinancesTransactions } from '../components/finances-transactions/finances-transactions';
-import {RouteLoader} from "../../../../shared/lib/feedback/route-loader/route-loader";
-import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
+import {RouteLoader} from "../../../../../../shared/lib/feedback/route-loader/route-loader";
+import { LibraryTitle } from '../../../../../storybook/shared/library-title/library-title';
 
 import {
   FilterOption,
@@ -22,12 +21,11 @@ import {
   SavingsFooter,
   IncomeVsExpensesFooter,
   TopCategoryFooter,
-} from '../models/filter.model';
+} from '../../../models/filter.model';
 
 @Component({
   selector: 'app-finances-view',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     LibraryTitle,
     FinancesFilters,

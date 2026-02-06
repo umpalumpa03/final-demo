@@ -1,15 +1,14 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { ButtonComponent } from '../../../../../shared/lib/primitives/button/button';
-import { TextInput } from '../../../../../shared/lib/forms/input-field/text-input';
-import { Dropdowns } from '../../../../../shared/lib/forms/dropdowns/dropdowns';
-import { BasicAlerts } from '../../../../../shared/lib/alerts/components/basic-alerts/basic-alerts';
-import { FilterOption, FilterType, SelectOption } from '../../models/filter.model';
+import { ButtonComponent } from '../../../../../../../shared/lib/primitives/button/button';
+import { TextInput } from '../../../../../../../shared/lib/forms/input-field/text-input';
+import { Dropdowns } from '../../../../../../../shared/lib/forms/dropdowns/dropdowns';
+import { BasicAlerts } from '../../../../../../../shared/lib/alerts/components/basic-alerts/basic-alerts';
+import { FilterOption, FilterType, SelectOption } from '../../../../models/filter.model';
 
 @Component({
   selector: 'app-finances-filters',
-  imports: [CommonModule, ReactiveFormsModule, ButtonComponent, TextInput, Dropdowns, BasicAlerts],
+  imports: [ReactiveFormsModule, ButtonComponent, TextInput, Dropdowns, BasicAlerts],
   templateUrl: './finances-filters.html',
   styleUrl: './finances-filters.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

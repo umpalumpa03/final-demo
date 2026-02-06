@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { FinancesStore } from '../../store/finances.store';
-import { FinancesService } from '../../services/finances.service';
+import { FinancesStore } from '../../../../store/finances.store';
+import { FinancesService } from '../../../../services/finances.service';
 import { of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
