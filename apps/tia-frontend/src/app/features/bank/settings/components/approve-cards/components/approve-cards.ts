@@ -10,7 +10,6 @@ import { ApproveCardsStore } from '../store/approve-cards.store';
 import { CardsApproveElement } from '../ui/cards-approve-element';
 import {
   buttonEmit,
-  CardAction,
 } from '../shared/model/approve-card-element.model';
 
 @Component({

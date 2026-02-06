@@ -25,7 +25,6 @@ export const ApproveCardsStore = signalStore(
         switchMap(() =>
           service.getPendingCards().pipe(
             tap((card) => {
-              console.log('API Response:', card);
               patchState(store, { cards: card, isLoading: false });
             }),
             catchError((err) => {
