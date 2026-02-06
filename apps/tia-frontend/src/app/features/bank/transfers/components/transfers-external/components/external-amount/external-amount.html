@@ -159,6 +159,11 @@
   (done)="onSuccessDone()"
 ></app-success-modal>
 <app-ui-modal [isOpen]="requiresOtp()" (closed)="onOtpClose()">
+  @if(isLoading() ) {
+  <div class="external-amount__otp-loader">
+    <app-route-loader variant="pulsing"></app-route-loader>
+  </div>
+  }
   <app-otp-verification
     type="otp"
     (isVerifyCalled)="onOtpVerify($event)"
@@ -194,5 +199,4 @@
     [alertMessage]="'transfers.external.amount.transferError' | translate"
   ></app-alert-types-with-icons>
 </div>
-
 }
