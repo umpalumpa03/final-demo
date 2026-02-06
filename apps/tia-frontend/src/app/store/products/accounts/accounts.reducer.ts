@@ -36,9 +36,9 @@ export const accountsFeature = createFeature({
       isFetching: false,
       error,
     })),
-    on(AccountsActions.selectAccount, (state, { accountId }) => ({
+    on(AccountsActions.selectAccount, (state, { account }) => ({
       ...state,
-      selectedAccountId: accountId,
+      selectedAccountId: account,
     })),
     on(AccountsActions.createAccount, (state) => ({
       ...state,

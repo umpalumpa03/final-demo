@@ -29,14 +29,7 @@ export const selectCardAccounts = createSelector(selectAccounts, (accounts) =>
   (accounts ?? []).filter((account) => account.type === AccountType.card),
 );
 
-export const selectSelectedAccount = createSelector(
-  selectAccounts,
-  selectSelectedAccountId,
-  (accounts, selectedId) =>
-    selectedId
-      ? (accounts ?? []).find((account) => account.id === selectedId)
-      : null,
-);
+export const selectSelectedAccount = selectSelectedAccountId;
 
 export const selectAccountsGrouped = createSelector(
   selectCurrentAccounts,

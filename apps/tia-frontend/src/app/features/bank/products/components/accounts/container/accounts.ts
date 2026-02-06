@@ -21,6 +21,7 @@ import {
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import {
   selectAccountsGrouped,
+  selectAccounts,
   selectError,
   selectIsLoading,
   selectIsFetching,
@@ -76,6 +77,7 @@ export class Accounts implements OnInit {
   protected readonly accountsGroupedSignal = this.store.selectSignal(
     selectAccountsGrouped,
   );
+  protected readonly accountsSignal = this.store.selectSignal(selectAccounts);
   protected readonly isLoadingSignal = this.store.selectSignal(selectIsLoading);
   protected readonly isCreatingAccountSignal =
     this.store.selectSignal(selectIsCreating);
@@ -157,7 +159,9 @@ export class Accounts implements OnInit {
   }
 
   public handleTransfer(accountId: string): void {
-    this.store.dispatch(AccountsActions.selectAccount({ accountId }));
+    const accounts = this.accountsSignal();
+    const account = accounts?.find((acc) => acc.id === accountId) || null;
+    this.store.dispatch(AccountsActions.selectAccount({ account }));
     this.router.navigate(['/bank/transfers/internal']);
   }
 
