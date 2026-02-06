@@ -11,6 +11,7 @@ import {
   catchError,
   EMPTY,
   filter,
+  forkJoin,
   pipe,
   switchMap,
   tap,
@@ -130,8 +131,10 @@ export const LoanManagementStore = signalStore(
           filter((loanId): loanId is string => loanId !== null),
           switchMap((loanId) => {
             const loan = store.pendingApprovals().find((l) => l.id === loanId);
-            fetchUserInfo(loan?.userId).subscribe();
-            return fetchLoanDetails(loanId);
+            return forkJoin([
+              fetchUserInfo(loan?.userId),
+              fetchLoanDetails(loanId),
+            ]);
           }),
         ),
       ),

@@ -36,7 +36,7 @@
         </div>
 
         @if (isUserInfoLoading()) {
-          <app-skeleton [width]="'100%'" [height]="'120px'"></app-skeleton>
+          <app-skeleton [width]="'100%'" [height]="'12rem'"></app-skeleton>
         } @else if (userInfo()) {
           <div class="loan-drawer__fields">
             <div class="loan-drawer__field">
@@ -91,7 +91,7 @@
           </div>
 
           @if (isLoanDetailsLoading()) {
-            <app-skeleton [width]="'100%'" [height]="'120px'"></app-skeleton>
+            <app-skeleton [width]="'100%'" [height]="'12rem'"></app-skeleton>
           } @else {
             <div class="loan-drawer__card">
               <div class="loan-drawer__fields">
@@ -135,7 +135,7 @@
           </div>
 
           @if (isLoanDetailsLoading()) {
-            <app-skeleton [width]="'100%'" [height]="'100px'"></app-skeleton>
+            <app-skeleton [width]="'100%'" [height]="'10rem'"></app-skeleton>
           } @else {
             <div class="loan-drawer__risk-card">
               <div class="loan-drawer__risk-row">
