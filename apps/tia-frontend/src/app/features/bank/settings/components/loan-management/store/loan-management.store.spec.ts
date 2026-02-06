@@ -103,7 +103,7 @@ describe('LoanManagementStore', () => {
       getPendingApprovals: vi.fn().mockReturnValue(of(mockPendingApprovals)),
       getLoanDetails: vi.fn().mockReturnValue(of(mockLoanDetailsResponse)),
       getUserInfo: vi.fn().mockReturnValue(of(mockUserInfo)),
-      approveLoan: vi.fn().mockReturnValue(of({ id: 'loan-1', status: 1 })),
+      approveLoan: vi.fn().mockReturnValue(of({ id: 'loan-1', status: 2 })),
     };
 
     TestBed.configureTestingModule({

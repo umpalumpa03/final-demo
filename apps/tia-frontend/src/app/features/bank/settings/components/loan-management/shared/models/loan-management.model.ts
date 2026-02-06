@@ -1,6 +1,6 @@
 export const LOAN_APPROVAL_STATUS = {
-  APPROVED: 1,
-  REJECTED: 2,
+  APPROVED: 2,
+  REJECTED: 3,
 } as const;
 
 export type LoanApprovalStatusType =
