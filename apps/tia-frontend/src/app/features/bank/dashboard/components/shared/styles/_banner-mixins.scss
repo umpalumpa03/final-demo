@@ -1,0 +1,23 @@
+@mixin banner-position($textAlign: left, $margin: 0, $bgPos: center) {
+  .banner-carousel__content {
+    text-align: $textAlign;
+    margin: $margin;
+  }
+  .banner-carousel__image {
+    background-position: $bgPos;
+  }
+}
+
+@mixin banner-mobile-overlay($opacity-top: 0.2, $opacity-bottom: 0.6) {
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, $opacity-top),
+      rgba(0, 0, 0, $opacity-bottom)
+    );
+    z-index: 2;
+  }
+}

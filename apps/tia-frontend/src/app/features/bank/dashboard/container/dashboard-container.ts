@@ -25,6 +25,8 @@ import {
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { Router } from '@angular/router';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
+import { BannerCarousel } from '../components/shared/ui/banner-carousel/banner-carousel';
+import { bannerSlides } from '../config/banners.config';
 @Component({
   selector: 'app-dashboard-container',
   imports: [
@@ -36,6 +38,7 @@ import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/break
     WidgetExchange,
     LibraryTitle,
     TranslateModule,
+    BannerCarousel,
   ],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
@@ -50,6 +53,8 @@ export class DashboardContainer implements OnInit {
   protected readonly myItems = signal<(IWidgetItem & { isHidden?: boolean })[]>(
     [...widgetItems],
   );
+
+  protected readonly bannerConfig = signal(bannerSlides);
 
   protected readonly pageTitle = computed(() =>
     this.translate.instant('dashboard.page.title'),
@@ -103,7 +108,7 @@ export class DashboardContainer implements OnInit {
 
   public readonly gridColumns = { default: 2, md: 0, sm: 0 };
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.store.dispatch(
       TransactionActions.updateFilters({
         filters: { pageLimit: 10 },
