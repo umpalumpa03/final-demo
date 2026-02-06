@@ -7,6 +7,7 @@ import { Language } from '../../models/language.model';
 import { vi } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { signal } from '@angular/core';
+import { TranslationLoaderService } from 'apps/tia-frontend/src/app/core/i18n';
 
 const mockLanguages: Language[] = [
   {
@@ -35,6 +36,7 @@ describe('LanguageSelection', () => {
   let mockLanguagesStore: any;
   let mockTranslateService: any;
   let mockAlertService: any;
+  let mockTranslationLoader: any;
 
   beforeEach(async () => {
     mockLanguagesStore = {
@@ -43,7 +45,7 @@ describe('LanguageSelection', () => {
 
     mockTranslateService = {
       getCurrentLang: vi.fn().mockReturnValue('en'),
-      use: vi.fn(),
+      use: vi.fn().mockReturnValue(of(void 0)),
       instant: vi.fn((key: string) => key),
     };
 
@@ -53,12 +55,18 @@ describe('LanguageSelection', () => {
       alertMessage: signal(''),
     };
 
+    mockTranslationLoader = {
+      loadTranslations: vi.fn().mockReturnValue(of(void 0)),
+      clearCache: vi.fn(),
+    };
+
     await TestBed.configureTestingModule({
       imports: [LanguageSelection],
       providers: [
         { provide: LanguagesStore, useValue: mockLanguagesStore },
         { provide: TranslateService, useValue: mockTranslateService },
         { provide: AlertService, useValue: mockAlertService },
+        { provide: TranslationLoaderService, useValue: mockTranslationLoader },
       ],
     }).compileComponents();
 
@@ -130,7 +138,11 @@ describe('LanguageSelection', () => {
       expect(mockLanguagesStore.updateLanguage).toHaveBeenCalledWith(
         'georgian',
       );
+      expect(mockTranslationLoader.clearCache).toHaveBeenCalled();
       expect(mockTranslateService.use).toHaveBeenCalledWith('ka');
+      expect(mockTranslationLoader.loadTranslations).toHaveBeenCalledWith(
+        'settings',
+      );
       expect(mockAlertService.showAlert).toHaveBeenCalledWith(
         'success',
         'settings.language.saveSuccess',
