@@ -11,66 +11,118 @@ describe('FinancesStore', () => {
 
   beforeEach(() => {
     service = {
-      getSummary: vi.fn(() => of({ totalIncome: 1000, incomeChange: 5 })),
-      getCategories: vi.fn(() => of([])),
-      getRecentTransactions: vi.fn(() => of([])),
-      getIncomeVsExpenses: vi.fn(() => of([])),
-      getSavingsTrend: vi.fn(() => of([])),
-      getDailySpending: vi.fn(() => of([])),
+      getSummary: vi.fn(),
+      getCategories: vi.fn(),
+      getRecentTransactions: vi.fn(),
+      getIncomeVsExpenses: vi.fn(),
+      getSavingsTrend: vi.fn(),
+      getDailySpending: vi.fn(),
     };
     TestBed.configureTestingModule({
-      providers: [FinancesStore, { provide: FinancesService, useValue: service }]
+      providers: [
+        FinancesStore,
+        { provide: FinancesService, useValue: service }
+      ]
     });
     store = TestBed.inject(FinancesStore);
   });
 
-  it('should compute transactions and categories icons correctly', () => {
-    // პირდაპირ ვასეტებთ სტეიტს, რომ ავირიდოთ ასინქრონული ლოდინი
-    patchState(store, {
-      transactions: [
-        { id: '1', category: 'Food & Dining', type: 'expense', amount: 50, title: 'Dinner', date: '2026-01-01' },
-        { id: '2', category: 'Income', type: 'income', amount: 1000, title: 'Salary', date: '2026-01-01' }
-      ],
-      categories: [{ category: 'Food & Dining', amount: 50, color: '#6B7280' }],
-      summary: { totalIncome: 1000, incomeChange: 10 } as any
-    });
+  it('should handle successful loadAllData and summary mapping', () => {
+    const mockSummary = { 
+      totalIncome: 5000, 
+      totalExpenses: 3000, 
+      netProfit: 2000,
+      incomeChange: 10,
+      expenseChange: -5,
+      netProfitChange: 15,
+      savingsRate: 20,
+      savingsRateChange: 2
+    };
 
-    const txs = store.transactionsWithIcons();
-    const cats = store.categoriesWithIcons();
+    service.getSummary.mockReturnValue(of(mockSummary));
+    service.getCategories.mockReturnValue(of([{ category: 'Food', amount: 500, color: '#6B7280' }]));
+    service.getDailySpending.mockReturnValue(of([{ day: 1, amount: 50 }]));
+    service.getIncomeVsExpenses.mockReturnValue(of([{ month: 'Jan', income: 1000, expenses: 800 }]));
+    service.getSavingsTrend.mockReturnValue(of([{ month: 'Jan', savings: 200 }]));
+    service.getRecentTransactions.mockReturnValue(of([]));
 
-    // ვამოწმებთ ჩვენს მთავარ ლოგიკას (ქავერიჯისთვის)
-    expect(txs.length).toBe(2);
-    expect(txs[0].statusIcon).toContain('expense-abs');
-    expect(txs[1].statusIcon).toContain('income-abs');
-    expect(txs[0].categoryColor).toBeDefined();
-    expect(cats[0].icon).toBeDefined();
+    store.loadAllData({ from: '2026-01-01' });
+
+    expect(store.loading()).toBe(false);
+    expect(store.summary()).toEqual(mockSummary);
     expect(store.summaryCards().length).toBeGreaterThan(0);
+    expect(store.incomeVsExpensesFooter()?.isNetPositive).toBe(true);
   });
 
-  it('should handle chart computations', () => {
+  
+
+  it('should compute all chart configurations correctly', () => {
     patchState(store, {
-      incomeVsExpenses: [{ month: 'Jan', income: 100, expenses: 80 }],
-      savingsTrend: [{ month: 'Jan', savings: 20 }],
-      dailySpending: [{ day: 1, amount: 10 }]
+      incomeVsExpenses: [{ month: 'Jan', income: 1000, expenses: 800 }],
+      categories: [{ category: 'Food', amount: 500, color: 'red' }],
+      savingsTrend: [{ month: 'Jan', savings: 200 }],
+      dailySpending: [{ day: 2, amount: 20 }, { day: 1, amount: 10 }] 
     });
 
-    expect(store.charts().length).toBe(4);
-    expect(store.charts()[0].data.datasets[0].data).toEqual([100]);
+    const charts = store.charts();
+    expect(charts.length).toBe(4);
+    
+    const dailyData = store.dailyChartData();
+    expect(dailyData.labels[0]).toBe('Day 1');
+    
+    expect(store.categoryChartData().datasets[0].backgroundColor).toContain('red');
   });
 
-  it('should cover error branches in loadAllData', async () => {
-    // 500 Error
-    service.getSummary.mockReturnValue(throwError(() => ({ status: 500 })));
-    store.loadAllData({ from: '2026-01-01' });
-    
-    // 401 Error
-    service.getSummary.mockReturnValue(throwError(() => ({ status: 401 })));
-    store.loadAllData({ from: '2026-01-01' });
+  it('should correctly compute footer statistics', () => {
+    patchState(store, {
+      summary: { totalIncome: 1000, totalExpenses: 1200 }, 
+      categories: [
+        { category: 'Rent', amount: 1000 },
+        { category: 'Food', amount: 200 }
+      ],
+      savingsTrend: [
+        { month: 'Jan', savings: 100 },
+        { month: 'Feb', savings: 300 }
+      ],
+      dailySpending: [
+        { day: 1, amount: 10 },
+        { day: 2, amount: 50 },
+        { day: 3, amount: 30 }
+      ]
+    });
 
-    // Empty summary
+    expect(store.incomeVsExpensesFooter()?.isNetPositive).toBe(false);
+    expect(store.topCategoriesFooter()[0].category).toBe('Rent');
+    expect(store.savingsFooter()?.average).toContain('200'); 
+    expect(store.dailySpendingFooter()?.highest).toContain('50');
+    expect(store.dailySpendingFooter()?.lowest).toContain('10');
+  });
+
+  it('should handle various error statuses in loadAllData', () => {
+    const errorScenarios = [
+      { status: 401, message: 'Session expired' },
+      { status: 500, message: 'Server is currently unavailable' },
+      { status: 404, message: 'unexpected error' }
+    ];
+
+    errorScenarios.forEach(scenario => {
+      service.getSummary.mockReturnValue(throwError(() => ({ status: scenario.status })));
+      store.loadAllData({ from: '2026-01-01' });
+      expect(store.error().toLowerCase()).toContain(scenario.message.toLowerCase());
+    });
+  });
+
+  it('should handle null summary response', () => {
     service.getSummary.mockReturnValue(of(null));
+    service.getCategories.mockReturnValue(of([]));
+    service.getDailySpending.mockReturnValue(of([]));
+    service.getIncomeVsExpenses.mockReturnValue(of([]));
+    service.getSavingsTrend.mockReturnValue(of([]));
+    service.getRecentTransactions.mockReturnValue(of([]));
+
     store.loadAllData({ from: '2026-01-01' });
 
-    expect(store.loading()).toBeDefined();
+    expect(store.error()).toBe('No data found for this period');
+    expect(store.summaryCards()).toEqual([]);
   });
 });
