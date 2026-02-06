@@ -1,8 +1,13 @@
 import { inject, Injectable, DestroyRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import {
+  takeUntilDestroyed,
+  toObservable,
+  toSignal,
+} from '@angular/core/rxjs-interop';
 import { filter, skip, take, tap } from 'rxjs';
+import { Store } from '@ngrx/store';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { TransferStore } from '../../../store/transfers.store';
 import { TransferValidationService } from './transfer-validation.service';
@@ -10,6 +15,7 @@ import {
   RecipientAccount,
   RecipientType,
 } from '../../../models/transfers.state.model';
+import { selectPhoneNumber } from 'apps/tia-frontend/src/app/store/personal-info/personal-info.selectors';
 
 @Injectable()
 export class TransferRecipientService {
@@ -18,16 +24,33 @@ export class TransferRecipientService {
   private readonly transferStore = inject(TransferStore);
   private readonly validationService = inject(TransferValidationService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly store = inject(Store);
 
   private readonly recipientInfo$ = toObservable(
     this.transferStore.recipientInfo,
   );
+  private readonly userPhone = toSignal(this.store.select(selectPhoneNumber));
+
+  private isOwnPhoneNumber(value: string): boolean {
+    const userPhone = this.userPhone() || '';
+    const normalize = (phone: string) =>
+      phone.replace(/\D/g, '').replace(/^995/, '');
+    return normalize(value) === normalize(userPhone);
+  }
 
   public verifyRecipient(value: string): void {
     const storedValue = this.transferStore.recipientInput();
     const storedType = this.transferStore.recipientType();
     const hasExistingData = this.transferStore.recipientInfo();
     const currentType = this.validationService.identifyRecipientType(value);
+
+    // check if phone matches user's own number
+    if (currentType === 'phone' && this.isOwnPhoneNumber(value)) {
+      this.transferStore.setError(
+        'transfers.external.recipient.ownPhoneError',
+      );
+      return;
+    }
 
     // skip api call if value and type match existing data
     if (
@@ -62,7 +85,6 @@ export class TransferRecipientService {
             if (accounts.length === 1) {
               this.transferStore.setSelectedRecipientAccount(accounts[0]);
             }
-
             this.router.navigate(['/bank/transfers/external/accounts']);
           }),
           takeUntilDestroyed(this.destroyRef),
@@ -98,7 +120,6 @@ export class TransferRecipientService {
   ): boolean {
     // external iban no filtering
     if (isExternalIban) return false;
-
     const recipientCurrency = selectedRecipientAccount?.currency;
     // disable if recipient is selected and currencies don't match
     return recipientCurrency ? account.currency !== recipientCurrency : false;
