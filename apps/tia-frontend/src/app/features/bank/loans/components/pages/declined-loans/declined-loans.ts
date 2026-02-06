@@ -22,7 +22,7 @@ export class DeclinedLoans {
     this.store.loadLoans({ status: 3 });
   }
 
-  navigateToAll() {
+  public navigateToAll(): void {
     this.router.navigate([LOANS_ROUTES.ALL]);
   }
 }

@@ -27,7 +27,7 @@ export class ApprovedLoans implements OnInit {
     this.store.loadLoans({ status: 2 });
   }
 
-  navigateToAll() {
+  public navigateToAll(): void {
     this.router.navigate([LOANS_ROUTES.ALL]);
   }
 }

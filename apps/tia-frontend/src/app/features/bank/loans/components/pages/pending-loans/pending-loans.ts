@@ -22,7 +22,7 @@ export class PendingLoans {
     this.store.loadLoans({ status: 1 });
   }
 
-  navigateToAll() {
+  public navigateToAll(): void {
     this.router.navigate([LOANS_ROUTES.ALL]);
   }
 }
