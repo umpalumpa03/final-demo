@@ -5,6 +5,7 @@ import { MessagingStore } from '../../../store/messaging.store';
 import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { EmailDetailData } from '../../../store/messaging.state';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('EmailDetail', () => {
   let component: EmailDetail;
@@ -42,7 +43,7 @@ describe('EmailDetail', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [EmailDetail],
+      imports: [EmailDetail, TranslateModule.forRoot()],
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
@@ -103,7 +104,7 @@ describe('EmailDetail', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement;
-    expect(compiled.textContent).toContain('Draft:');
+    expect(compiled.textContent).toContain('messaging.mail-detail.draft');
   });
 
   it('should display CC recipients when available', () => {

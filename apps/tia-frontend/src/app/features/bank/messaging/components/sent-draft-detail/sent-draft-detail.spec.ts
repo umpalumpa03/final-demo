@@ -7,6 +7,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Mail } from '../../store/messaging.state';
 import { Store } from '@ngrx/store';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SentDraftDetail', () => {
   let component: SentDraftDetail;
@@ -61,7 +62,7 @@ describe('SentDraftDetail', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [SentDraftDetail],
+      imports: [SentDraftDetail, TranslateModule.forRoot()],
       providers: [
         { provide: MessagingStore, useValue: mockMessagingStore },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
@@ -107,7 +108,7 @@ describe('SentDraftDetail', () => {
 
     await TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
-      imports: [SentDraftDetail],
+      imports: [SentDraftDetail, TranslateModule.forRoot()],
       providers: [
         { provide: MessagingStore, useValue: mockMessagingStore },
         { provide: ActivatedRoute, useValue: mockActivatedRouteWithSent },
