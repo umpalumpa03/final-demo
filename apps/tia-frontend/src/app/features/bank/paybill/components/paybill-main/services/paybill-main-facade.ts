@@ -111,7 +111,23 @@ export class PaybillMainFacade {
     return category ? CATEGORY_UI_MAP[category.id.toLowerCase()] || null : null;
   });
 
-  public readonly showSearch = computed(() => !this.isFormView());
+  private readonly hideSearchRoutes = [
+    'otp-verification',
+    'confirm-payment',
+    'payment-success',
+    'templates',
+  ];
+
+  public readonly showSearch = computed(() => {
+    const segments = this.urlSegments() || [];
+    const currentPath = segments[segments.length - 1];
+
+    if (this.hideSearchRoutes.includes(currentPath)) {
+      return false;
+    }
+    return !this.isFormView();
+  });
+
   public readonly isRootProviderView = computed(() => !this.selectedParentId());
 
   public setSearchQuery(query: string): void {
