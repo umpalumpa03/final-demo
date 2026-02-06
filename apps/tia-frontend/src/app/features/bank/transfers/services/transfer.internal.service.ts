@@ -9,9 +9,7 @@ import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { TransfersApiService } from 'apps/tia-frontend/src/app/features/bank/transfers/services/transfersApi.service';
-import {
-  TransferExternalService
-} from 'apps/tia-frontend/src/app/features/bank/transfers/services/transfer.external.service';
+
 
 @Injectable()
 export class TransferInternalService {
