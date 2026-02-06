@@ -93,7 +93,7 @@ describe('TransactionsContainer', () => {
 
     expect(spy).toHaveBeenCalledWith(TransactionActions.enter());
     expect(spy).toHaveBeenCalledWith(TransactionActions.loadTransactions({}));
-    expect(spy).toHaveBeenCalledWith(AccountsActions.loadAccounts());
+    expect(spy).toHaveBeenCalledWith(AccountsActions.loadAccounts({}));
     expect(spy).not.toHaveBeenCalledWith(
       expect.objectContaining({ type: TransactionActions.updateFilters.type }),
     );
