@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { APPROVE_CARD_BUTTONS } from '../config/approve-card-element.config';
-import { ActionButton, CardAction } from '../shared/model/approve-card-element.model';
+import { ActionButton, buttonEmit, CardAction } from '../shared/model/approve-card-element.model';
 
 @Component({
   selector: 'app-cards-approve-element',
@@ -19,7 +19,7 @@ export class CardsApproveElement {
 
   public readonly buttons:ActionButton[] = APPROVE_CARD_BUTTONS;
   
-  public cardAction = output<{ action: CardAction, id: string }>();
+  public cardAction = output<buttonEmit>();
   
   public onAction(action: CardAction): void {
     this.cardAction.emit({ action, id: this.id() });
