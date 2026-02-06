@@ -1,0 +1,38 @@
+<app-ui-modal [isOpen]="isOpen()" (closed)="onClose()">
+  <div class="transfer-permissions-modal">
+    <div class="transfer-permissions-modal__header">
+      <h2 class="transfer-permissions-modal__header__title">
+        {{ 'my-products.accounts.transfer-modal.title' | translate }}
+      </h2>
+      <p class="transfer-permissions-modal__header__description">
+        {{ 'my-products.accounts.transfer-modal.description' | translate }}
+      </p>
+    </div>
+
+    <div class="transfer-permissions-modal__content">
+      @for (permission of availablePermissions(); track permission.value) {
+      <app-button
+        variant="outline"
+        size="default"
+        [fullWidth]="true"
+        (click)="onPermissionSelect(permission.value)"
+      >
+        {{ permission.label | translate }}
+      </app-button>
+      }
+    </div>
+
+    @if (availablePermissions().length > 0) {
+    <div class="transfer-permissions-modal__footer">
+      <app-button
+        variant="destructive"
+        size="default"
+        [fullWidth]="true"
+        (click)="onClose()"
+      >
+        {{ 'common.buttons.cancel' | translate }}
+      </app-button>
+    </div>
+    }
+  </div>
+</app-ui-modal>

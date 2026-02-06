@@ -1,6 +1,31 @@
 <div class="global-bank-wrapper">
-  @if (shouldShowTabs) {
-    <app-tabs [tabs]="tabs()" [orientation]="'horizontal'" ></app-tabs>
+  @if (isAccountsSection()) {
+  <div class="products-container__section-header">
+    <div class="products-container__section-header-info">
+      <app-library-title
+        [title]="'my-products.accounts.title' | translate"
+        [subtitle]="'my-products.accounts.subtitle' | translate"
+      ></app-library-title>
+    </div>
+    <app-button
+      [variant]="'default'"
+      [icon]="'plus-icon.svg'"
+      (click)="onNewItemClick()"
+    >
+      {{ 'my-products.accounts.newAccount' | translate }}
+    </app-button>
+  </div>
+  } @else if (isCardsSection()) {
+  <div class="products-container__section-header">
+    <div class="products-container__section-header-info">
+      <app-library-title
+        [title]="'my-products.cards.title' | translate"
+        [subtitle]="'my-products.cards.subtitle' | translate"
+      ></app-library-title>
+    </div>
+  </div>
+  } @if (shouldShowTabs) {
+  <app-tabs [tabs]="tabs()" [orientation]="'horizontal'"></app-tabs>
   }
   <router-outlet></router-outlet>
 </div>
