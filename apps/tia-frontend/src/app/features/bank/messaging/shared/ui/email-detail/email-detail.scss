@@ -217,6 +217,18 @@
     }
 }
 
+@media (max-width: 380px) {
+    .email-detail {
+        &__top {
+            flex-direction: column;
+        }
+
+        &__actions {
+            margin-left: 0;
+        }
+    }
+}
+
 @keyframes slideIn {
     from {
         opacity: 0;
