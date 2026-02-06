@@ -1,9 +1,7 @@
 export const otpConfiguration = {
-  otpTitle: 'OTP Verification',
-  otpSubtitle: 'Enter the 4-digit code sent to your registered mobile number',
-  otpAlert:
-    'For transactions above $50, we require additional verification for your security.',
-  inputConfig: {
-    length: 4,
-  },
+  title: 'paybill.main.otp.title',
+  subText: 'paybill.main.otp.subtitle',
+  submitBtnName: 'paybill.main.otp.verify_btn',
+  backLinkText: 'paybill.main.otp.cancel_btn',
+  iconUrl: 'images/svg/auth/secured.svg',
 } as const;

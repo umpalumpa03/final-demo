@@ -64,4 +64,16 @@ export class PaybillService {
       `${this.baseUrl}/payment-details/${serviceId}`,
     );
   }
+
+  public createTemplate(
+    serviceId: string,
+    identification: PaybillIdentification,
+    nickname: string,
+  ): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.baseUrl}/templates`, {
+      serviceId,
+      identification,
+      nickname,
+    });
+  }
 }

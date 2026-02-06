@@ -40,7 +40,7 @@
 
   &__subtitle {
     @include font-arimo(400, 1.4rem, 2rem);
-    color: var(--color-muted);
+    color: $blue-600;
     margin: 0;
   }
 

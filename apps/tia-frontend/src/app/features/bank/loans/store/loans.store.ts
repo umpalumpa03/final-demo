@@ -34,13 +34,19 @@ export const LoansStore = signalStore(
     return {
       loansWithAccountInfo: computed(() => {
         const currentAccounts = accountsSignal() || [];
+        const areAccountsLoaded = currentAccounts.length > 0;
+
         return store.loans().map((loan) => {
           const matchedAccount = currentAccounts.find(
-            (acc) => acc.id === loan.accountId,
+            (acc) => String(acc.id) === String(loan.accountId),
           );
-          const accName = matchedAccount
-            ? matchedAccount.friendlyName || matchedAccount.name
-            : 'Loading Account...';
+          let accName = 'Loading Account...';
+          if (matchedAccount) {
+            accName = matchedAccount.friendlyName || matchedAccount.name;
+          } else if (areAccountsLoaded) {
+            accName = `Unknown Account`;
+          }
+
           return { ...loan, accountName: accName };
         });
       }),
@@ -120,13 +126,21 @@ export const LoansStore = signalStore(
         ),
       ),
 
-      loadLoans: rxMethod<number | void>(
+      loadLoans: rxMethod<{ status?: number | null; forceChange?: boolean }>(
         pipe(
-          tap(() => patchState(store, { loading: true, error: null })),
-          switchMap((status) => {
-            const apiStatus = typeof status === 'number' ? status : undefined;
+          tap(({ status }) => {
+            patchState(store, { filterStatus: status ?? null });
+          }),
+          switchMap(({ forceChange }) => {
+            const currentLoans = store.loans();
 
-            return loansService.getAllLoans(apiStatus).pipe(
+            if (currentLoans.length > 0 && !forceChange) {
+              return EMPTY;
+            }
+
+            patchState(store, { loading: true, error: null });
+
+            return loansService.getAllLoans().pipe(
               tap((loans) => {
                 const mappedLoans = loans.map((l) => ({
                   ...l,
@@ -144,6 +158,7 @@ export const LoansStore = signalStore(
           }),
         ),
       ),
+
       loadCounts: rxMethod<void>(
         pipe(
           switchMap(() =>
@@ -172,13 +187,27 @@ export const LoansStore = signalStore(
               selectedLoanDetails: null,
             }),
           ),
-          switchMap((id) =>
-            loansService.getLoanById(id).pipe(
+          switchMap((id) => {
+            const cachedDetails = store.loanDetailsCache()[id];
+
+            if (cachedDetails) {
+              patchState(store, {
+                selectedLoanDetails: cachedDetails,
+                detailsLoading: false,
+              });
+              return EMPTY;
+            }
+
+            return loansService.getLoanById(id).pipe(
               tap((details) =>
-                patchState(store, {
+                patchState(store, (state) => ({
                   selectedLoanDetails: details,
                   detailsLoading: false,
-                }),
+                  loanDetailsCache: {
+                    ...state.loanDetailsCache,
+                    [id]: details,
+                  },
+                })),
               ),
               catchError((error) => {
                 patchState(store, {
@@ -187,8 +216,8 @@ export const LoansStore = signalStore(
                 });
                 return EMPTY;
               }),
-            ),
-          ),
+            );
+          }),
         ),
       ),
 
@@ -364,9 +393,10 @@ export const LoansStore = signalStore(
                   activeChallengeId: null,
                   calculationResult: null,
                   actionLoading: false,
+                  loanDetailsCache: {},
                 });
-                store.loadLoans();
 
+                store.loadLoans({ forceChange: true });
                 store.loadCounts();
               }),
               catchError((error) => {
@@ -386,11 +416,15 @@ export const LoansStore = signalStore(
           switchMap(() =>
             actions$.pipe(
               ofType(LoansCreateActions.requestLoanSuccess),
-              tap(() => store.loadLoans()),
+              tap(() => store.loadLoans({ forceChange: true })),
             ),
           ),
         ),
       ),
+
+      reset() {
+        patchState(store, loansInitialState);
+      },
     };
   }),
 

@@ -30,7 +30,7 @@ export enum ModalType {
 export interface ModalField {
   type: 'text' | 'dropdown';
   label: string;
-  placeholder: string;
+  placeholder?: string;
   controlName: string;
   required?: boolean;
 }
@@ -43,7 +43,9 @@ export interface ModalInfo {
   fields?: ModalField[];
   formGroupName?: string | null;
   formSubmitType: formSubmitType;
-  submitAction?: string;
+  submitAction?: CrudActionType;
+  initialValues?: Record<string, string>;
+  description?: string;
 }
 
 export enum HeaderCtaAction {
@@ -58,7 +60,10 @@ export interface HeaderCtaButton {
   textKey: string;
 }
 
-export type formSubmitType = 'create-group';
+export type formSubmitType =
+  | 'create-group'
+  | 'rename-template'
+  | 'rename-group';
 export interface FormSubmitPayload {
   type: formSubmitType;
   values: Record<string, string>;
@@ -74,3 +79,23 @@ export interface CreateTemplateGroupResponse {
   groupName: string;
   templateCount: number;
 }
+
+export interface TreeItemMoved {
+  itemId: string;
+  fromGroupId: string | null;
+  toGroupId: string | null;
+  newOrder: number;
+}
+
+export enum CrudActionType {
+  DeleteTemplate = 'deleteTemplate',
+  RenameTemplate = 'renameTemplate',
+  DeleteGroup = 'deleteGroup',
+  RenameGroup = 'renameGroup',
+}
+
+export type TreeAction =
+  | { type: 'item-delete'; id: string }
+  | { type: 'item-edit'; id: string }
+  | { type: 'group-delete'; id: string }
+  | { type: 'group-edit'; id: string };

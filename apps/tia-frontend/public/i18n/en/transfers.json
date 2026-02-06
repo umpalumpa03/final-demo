@@ -19,6 +19,7 @@
       "verify": "Verify Recipient",
       "accountsTitle": "Select your account to transfer from",
       "disabledTooltip": "Please enter recipient details and select an account",
+      "ownPhoneError": "You cannot transfer to your own phone number",
       "recipientNotFound": "Recipient not found. Please check the phone number or IBAN and try again.",
       "errors": {
         "invalidFormat": "Invalid format. Enter IBAN or phone (+995...)",
@@ -46,6 +47,7 @@
       "recipientVerified": "Recipient verified successfully!",
       "selectRecipientAccount": "Select Recipient Account",
       "selectSenderAccount": "Select Your Account",
+      "selectBothAccounts": "Please select both accounts",
       "recipientName": {
         "label": "Recipient Name",
         "placeholder": "Enter recipient's full name"
@@ -79,6 +81,8 @@
       "loadingFee": "Calculating total amount...",
       "accountsSelected": "Accounts selected successfully!",
       "insufficientBalance": "Insufficient balance",
+      "transferError": "Transfer failed. Please try again.",
+      "enterValidAmount": "Please enter a valid amount",
       "description": {
         "label": "Description (optional)",
         "placeholder": "Add a note for this transfer"

@@ -211,7 +211,7 @@ export const paybillReducer = createReducer(
     (state, { templateGroup }) => ({
       ...state,
       loading: false,
-      templateGroups: [...state.templateGroups, templateGroup],
+      templateGroups: [templateGroup, ...state.templateGroups],
     }),
   ),
 
@@ -221,25 +221,21 @@ export const paybillReducer = createReducer(
     error,
   })),
 
-  on(TemplatesPageActions.deleteTemplates, (state) => ({
+  on(TemplatesPageActions.deleteTemplate, (state) => ({
     ...state,
     loading: true,
     error: null,
   })),
   on(
-    TemplatesPageActions.deleteTemplatesSuccess,
+    TemplatesPageActions.deleteTemplateSuccess,
     (state, { message, templateId }) => ({
       ...state,
       loading: false,
       error: null,
       templates: state.templates.filter((t) => t.id !== templateId),
-      notifications: [
-        ...state.notifications,
-        { id: Date.now().toString(), notificationType: 'success', message },
-      ],
     }),
   ),
-  on(TemplatesPageActions.deleteTemplatesFailure, (state, { error }) => ({
+  on(TemplatesPageActions.deleteTemplateFailure, (state, { error }) => ({
     ...state,
     loading: false,
     error,
@@ -261,6 +257,12 @@ export const paybillReducer = createReducer(
     selectedCategoryId: state.selectedCategoryId || provider.categoryId || null,
   })),
 
+  on(PaybillActions.loadPaymentDetails, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
   on(PaybillActions.loadPaymentDetailsSuccess, (state, { details }) => ({
     ...state,
     paymentDetails: details,
@@ -272,5 +274,130 @@ export const paybillReducer = createReducer(
     ...state,
     loading: false,
     error: error,
+  })),
+
+  on(TemplatesPageActions.renameTemplate, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
+  on(TemplatesPageActions.renameTemplateSuccess, (state, { template }) => ({
+    ...state,
+    loading: false,
+    error: null,
+    templates: state.templates.map((item) => {
+      if (item.id === template.id) {
+        return {
+          ...item,
+          nickname: template.nickname,
+        };
+      }
+      return item;
+    }),
+  })),
+
+  on(TemplatesPageActions.renameTemplateFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
+
+  on(TemplatesPageActions.deleteTemplateGroup, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
+  on(TemplatesPageActions.deleteTemplateGroupSuccess, (state, { groupId }) => ({
+    ...state,
+    loading: false,
+    error: null,
+    templateGroups: state.templateGroups.filter((t) => t.id !== groupId),
+    templates: state.templates.map((item) => {
+      if (item.groupId === groupId) {
+        return {
+          ...item,
+          groupId: null,
+        };
+      }
+      return item;
+    }),
+  })),
+
+  on(TemplatesPageActions.renameTemplateGroupFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
+
+  on(TemplatesPageActions.renameTemplateGroup, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
+  on(
+    TemplatesPageActions.renameTemplateGroupSuccess,
+    (state, { templateGroup }) => ({
+      ...state,
+      loading: false,
+      error: null,
+      templateGroups: state.templateGroups.map((item) => {
+        if (item.id === templateGroup.id) {
+          return {
+            ...item,
+            groupName: templateGroup.groupName,
+          };
+        }
+        return item;
+      }),
+    }),
+  ),
+
+  on(TemplatesPageActions.moveTemplate, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+  on(
+    TemplatesPageActions.moveTemplateSuccess,
+    (state, { groupId, templateId }) => ({
+      ...state,
+      loading: false,
+      error: null,
+      templates: state.templates.map((item) => {
+        if (item.id === templateId) {
+          return {
+            ...item,
+            groupId,
+          };
+        }
+        return item;
+      }),
+    }),
+  ),
+
+  on(TemplatesPageActions.moveTemplateFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
+
+  on(TemplatesPageActions.createTemplate, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
+  on(TemplatesPageActions.createTemplateSuccess, (state) => ({
+    ...state,
+    loading: false,
+  })),
+
+  on(TemplatesPageActions.createTemplateFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
   })),
 );

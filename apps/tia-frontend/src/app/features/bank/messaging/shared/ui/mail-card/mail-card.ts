@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { Mail } from '../../../store/messaging.state';
 import { Avatar } from '@tia/shared/lib/data-display/avatars/avatar';
 import { DatePipe } from '@angular/common';
@@ -6,9 +6,11 @@ import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
+import { TranslatePipe } from '@ngx-translate/core';
 @Component({
   selector: 'app-mail-card',
-  imports: [Avatar, DatePipe, UiModal, LibraryTitle, ButtonComponent, Checkboxes],
+  imports: [Avatar, TranslatePipe, DatePipe, UiModal, LibraryTitle, ButtonComponent, Checkboxes],
   templateUrl: './mail-card.html',
   styleUrl: './mail-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -22,9 +24,18 @@ export class MailCard {
   public readonly cardClick = output<number>();
   public readonly isSent = input<boolean>(false);
   public readonly isDraft = input<boolean>(false);
-  public isDeleteModalOpen = signal(false);
+  public readonly isDeleteModalOpen = signal(false);
   public readonly checked = input<boolean>(false);
   public readonly checkedChange = output<boolean>();
+  private readonly breakpointService = inject(BreakpointService);
+  public readonly isExtraSmall = this.breakpointService.isExtraSmall;
+  public readonly currentUserEmail = input<string>();
+
+  public readonly isCurrentUser = computed(() => {
+    const currentEmail = this.currentUserEmail();
+    const mailSenderEmail = this.mail()?.senderEmail;
+    return currentEmail && mailSenderEmail && currentEmail === mailSenderEmail;
+  });
 
   public onCheckboxChange(checked: boolean): void {
     this.checkedChange.emit(checked);
@@ -60,7 +71,10 @@ export class MailCard {
   }
 
   public getInitials(email: string): string {
-    return email.substring(0, 2).toUpperCase();
+    if (this.isCurrentUser()) {
+      return 'ME';
+    }
+    return email?.substring(0, 2).toUpperCase();
   }
 
 }

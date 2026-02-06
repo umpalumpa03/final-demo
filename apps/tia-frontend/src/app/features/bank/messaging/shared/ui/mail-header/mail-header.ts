@@ -7,7 +7,7 @@ import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/share
 
 @Component({
   selector: 'app-mail-header',
-  imports: [TranslatePipe, Checkboxes, ButtonComponent, UiModal, LibraryTitle],
+  imports: [TranslatePipe, Checkboxes, ButtonComponent, UiModal, LibraryTitle, TranslatePipe],
   templateUrl: './mail-header.html',
   styleUrl: './mail-header.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -19,7 +19,7 @@ export class MailHeader {
   public readonly toggleSelectAll = output<boolean>();
   public readonly isSent = input<boolean>(false);
   public readonly isDraft = input<boolean>(false);
-  public isDeleteModalOpen = signal(false);
+  public readonly isDeleteModalOpen = signal(false);
 
   public readonly showBulkActions = input<boolean>(false);
   public readonly bulkDelete = output<void>();

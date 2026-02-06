@@ -5,12 +5,14 @@ import { inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, debounceTime, distinctUntilChanged, forkJoin, of, pipe, switchMap, tap } from 'rxjs';
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
+import { TranslateService } from '@ngx-translate/core';
 
 export const MessagingStore = signalStore(
     withState(initialState),
 
     withMethods((store) => {
         const messagingService = inject(MessagingService);
+        const translate = inject(TranslateService);
         return {
             getTotalCount: rxMethod<string>(
                 pipe(
@@ -20,7 +22,7 @@ export const MessagingStore = signalStore(
                         })
                     )),
                     catchError((error) => {
-                        patchState(store, { error: 'Failed to load total count' });
+                        patchState(store, { error: translate.instant('storeErrors.loadTotalCount') });
                         return of(0);
                     })
                 )
@@ -35,7 +37,7 @@ export const MessagingStore = signalStore(
                         )),
                     ),
                     catchError((error) => {
-                        patchState(store, { error: 'Failed to load drafts total count' });
+                        patchState(store, { error: translate.instant('storeErrors.loadDraftsTotalCount') });
                         return of(0);
                     })
                 )
@@ -50,7 +52,7 @@ export const MessagingStore = signalStore(
                         )),
                     ),
                     catchError((error) => {
-                        patchState(store, { error: 'Failed to load important unread count' });
+                        patchState(store, { error: translate.instant('messaging.storeErrors.loadImportantUnreadCount') });
                         return of();
                     }
                     ))
@@ -58,28 +60,32 @@ export const MessagingStore = signalStore(
 
             togleFavorite: rxMethod<{ mailId: number; isFavorite: boolean }>(
                 pipe(
-                    tap(() => patchState(store, { isLoading: true })),
+                    tap(() => patchState(store, { isFavoriteLoading: true })),
                     switchMap(({ mailId, isFavorite }) =>
                         messagingService.togleFavorite(mailId, isFavorite).pipe(
                             tap(() => {
                                 const currentDetail = store.emailDetail?.();
-                                if (currentDetail) {
-                                    patchState(store, {
-                                        mails: store.mails().map(mail =>
+                                const isFavoritesPage = store.currentType() === 'favorites';
+
+                                patchState(store, {
+                                    mails: isFavoritesPage
+                                        ? store.mails().filter(mail => mail.id !== mailId)
+                                        : store.mails().map(mail =>
                                             mail.id === mailId ? { ...mail, isFavorite } : mail
                                         ),
-                                        emailDetail: { ...currentDetail, isFavorite }
-                                    });
-                                } else {
-                                    patchState(store, {
-                                        mails: store.mails().map(mail =>
-                                            mail.id === mailId ? { ...mail, isFavorite } : mail
-                                        )
-                                    });
-                                }
+                                    emailDetail: { ...currentDetail!, isFavorite },
+                                    isFavoriteLoading: false
+                                });
+                            }),
+                            catchError((error) => {
+                                patchState(store, {
+                                    error: translate.instant('messaging.storeErrors.toggleFavorite'),
+                                    isFavoriteLoading: false
+                                });
+                                return of(null);
                             })
-                        )),
-                    tap(() => patchState(store, { isLoading: false }))
+                        )
+                    ),
                 )
             ),
         };
@@ -88,6 +94,24 @@ export const MessagingStore = signalStore(
     withMethods((store) => {
         const messagingService = inject(MessagingService);
         const inboxService = inject(InboxService);
+        const translate = inject(TranslateService);
+
+        const updateTotalCountByType = () => {
+            const type = store.currentType();
+            switch (type) {
+                case 'drafts':
+                    store.getDraftTotalCount(0);
+                    break;
+                case 'important':
+                    store.getTotalCount('importants');
+                    break;
+                case 'favorites':
+                    store.getTotalCount('favorite');
+                    break;
+                default:
+                    store.getTotalCount(type);
+            }
+        };
         return {
             loadMails: rxMethod<MailType>(
                 pipe(
@@ -115,7 +139,7 @@ export const MessagingStore = signalStore(
                             catchError((error) => {
                                 patchState(store, {
                                     isLoading: false,
-                                    error: 'Failed to load mails',
+                                    error: translate.instant('messaging.storeErrors.loadMails'),
                                 });
                                 return of(null);
                             }),
@@ -136,6 +160,12 @@ export const MessagingStore = signalStore(
                             });
                             inboxService.fetchInboxCount();
                             store.getUnreadImportantCount();
+                        }),
+                        catchError((error) => {
+                            patchState(store, {
+                                error: translate.instant('messaging.storeErrors.markMailAsRead')
+                            });
+                            return of(null);
                         })
                     ))
                 )
@@ -150,15 +180,13 @@ export const MessagingStore = signalStore(
                             });
                             inboxService.fetchInboxCount();
                             store.getUnreadImportantCount();
-                            if (!(store.currentType() === 'drafts') && !(store.currentType() === 'important') && !(store.currentType() === 'favorites')) {
-                                store.getTotalCount(store.currentType());
-                            } else if (store.currentType() === 'drafts') {
-                                store.getDraftTotalCount(0);
-                            } else if (store.currentType() === 'important') {
-                                store.getTotalCount('importants');
-                            } else if (store.currentType() === 'favorites') {
-                                store.getTotalCount('favorite');
-                            }
+                            updateTotalCountByType();
+                        }),
+                        catchError((error) => {
+                            patchState(store, {
+                                error: translate.instant('messaging.storeErrors.deleteMail')
+                            });
+                            return of(null);
                         })
                     ))
                 )
@@ -175,15 +203,13 @@ export const MessagingStore = signalStore(
                                 });
                                 inboxService.fetchInboxCount();
                                 store.getUnreadImportantCount();
-                                if (!(store.currentType() === 'drafts') && !(store.currentType() === 'important') && !(store.currentType() === 'favorites')) {
-                                    store.getTotalCount(store.currentType());
-                                } else if (store.currentType() === 'drafts') {
-                                    store.getDraftTotalCount(0);
-                                } else if (store.currentType() === 'important') {
-                                    store.getTotalCount('importants');
-                                } else if (store.currentType() === 'favorites') {
-                                    store.getTotalCount('favorite');
-                                }
+                                updateTotalCountByType();
+                            }),
+                            catchError((error) => {
+                                patchState(store, {
+                                    error: translate.instant('messaging.storeErrors.deleteAllMails')
+                                });
+                                return of(null);
                             })
                         );
                     })
@@ -205,6 +231,12 @@ export const MessagingStore = signalStore(
                                 });
                                 inboxService.fetchInboxCount();
                                 store.getUnreadImportantCount();
+                            }),
+                            catchError((error) => {
+                                patchState(store, {
+                                    error: translate.instant('messaging.storeErrors.markAllAsRead')
+                                });
+                                return of(null);
                             })
                         );
                     })
@@ -236,7 +268,7 @@ export const MessagingStore = signalStore(
                                 patchState(store, {
                                     searchResults: [],
                                     isSearching: false,
-                                    error: 'Search failed',
+                                    error: translate.instant('messaging.storeErrors.searchFailed'),
                                 });
                                 return of([]);
                             }),
@@ -244,35 +276,53 @@ export const MessagingStore = signalStore(
                     }),
                 ),
             ),
+
+            getMailReplies: rxMethod<number>(
+                pipe(
+                    tap(() => patchState(store, { isLoading: true })),
+                    switchMap((mailId) => messagingService.getMailReplies(mailId).pipe(
+                        tap((replies) => {
+                            patchState(store, { mailReplies: replies }, { isLoading: false });
+                        }),
+                        catchError((error) => {
+                            patchState(store, { isLoading: false, error: translate.instant('messaging.storeErrors.loadMailReplies') });
+                            return of([]);
+                        }),
+                    ))
+                )
+            ),
         };
     }),
     withMethods((store) => {
         const messagingService = inject(MessagingService);
         const inboxService = inject(InboxService);
+        const translate = inject(TranslateService);
         return {
             sendEmail: rxMethod<SendEmailRequest>(
                 pipe(
                     tap(() => patchState(store, { isLoading: true })),
                     switchMap((emailData) => messagingService.sendEmail(emailData).pipe(
                         tap(() => {
-                            patchState(store, { mails: [], pagination: { hasNextPage: false, nextCursor: null } }, { isLoading: false, successMessage: 'Email sent successfully' });
+                            patchState(store, 
+                                { mails: [], pagination: { hasNextPage: false, nextCursor: null } }, 
+                                { isLoading: false, successMessage: translate.instant('messaging.storeSuccess.emailSent') });
 
                             store.loadMails(store.currentType());
                             inboxService.fetchInboxCount();
                             store.getUnreadImportantCount();
-
-                            if (!(store.currentType() === 'drafts') && !(store.currentType() === 'important')) {
-                                store.getTotalCount(store.currentType());
-                            } else if (store.currentType() === 'drafts') {
-                                store.getDraftTotalCount(0);
-                            } else if (store.currentType() === 'important') {
-                                store.getTotalCount('importants');
-                            } 
+                            store.getDraftTotalCount(0);
+                            switch (store.currentType()) {
+                                case 'important':
+                                    store.getTotalCount('importants');
+                                    break;
+                                default:
+                                    store.getTotalCount(store.currentType());
+                            }
                         }),
                         catchError((error) => {
                             patchState(store, {
                                 isLoading: false,
-                                error: 'Failed to send email',
+                                error: translate.instant('messaging.storeErrors.sendEmail'),
                             });
                             return of(null);
                         }),
@@ -290,13 +340,13 @@ export const MessagingStore = signalStore(
 
             getEmailById: rxMethod<number>(
                 pipe(
-                    tap(() => patchState(store, { isLoading: true })),
+                    tap(() => patchState(store, { isLoading: true, mailReplies: [] })),
                     switchMap((mailId) => messagingService.getEmailById(mailId).pipe(
                         tap((emailDetail) => {
                             patchState(store, { emailDetail }, { isLoading: false });
                         }),
                         catchError((error) => {
-                            patchState(store, { error: 'Failed to load email detail' });
+                            patchState(store, { isLoading: false, error: translate.instant('messaging.storeErrors.loadEmailDetail') });
                             return of(null);
                         }),
                     )),
@@ -308,7 +358,8 @@ export const MessagingStore = signalStore(
                     tap(() => patchState(store, { isLoading: true })),
                     switchMap(({ mailId, data }) => messagingService.sendDraft(mailId, data).pipe(
                         tap(() => {
-                            patchState(store, { mails: [], pagination: { hasNextPage: false, nextCursor: null }  }, { isLoading: false, successMessage: 'Draft sent successfully' });
+                            patchState(store, { mails: [], pagination: { hasNextPage: false, nextCursor: null } },
+                                { isLoading: false, successMessage: translate.instant('messaging.storeSuccess.draftSent') });
                             store.loadMails('drafts');
                             inboxService.fetchInboxCount();
                             store.getUnreadImportantCount();
@@ -317,11 +368,30 @@ export const MessagingStore = signalStore(
                         catchError((error) => {
                             patchState(store, {
                                 isLoading: false,
-                                error: 'Failed to send draft',
+                                error: translate.instant('messaging.storeErrors.sendDraft'),
                             });
                             return of(null);
                         }),
                     )),
+                )
+            ),
+
+            sendMailReply: rxMethod<{ mailId: number; body: string }>(
+                pipe(
+                    tap(() => patchState(store)),
+                    switchMap(({ mailId, body }) => messagingService.sendMailReply(mailId, body).pipe(
+                        tap(() => {
+                            store.getMailReplies(mailId);
+                            patchState(store, {
+                                isLoading: false,
+                                successMessage: translate.instant('messaging.storeSuccess.replySent')
+                            });
+                        }),
+                        catchError((error) => {
+                            patchState(store, { isLoading: false, error: translate.instant('messaging.storeErrors.sendMailReply') });
+                            return of(null);
+                        }),
+                    ))
                 )
             ),
         };

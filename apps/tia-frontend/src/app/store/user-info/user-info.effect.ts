@@ -16,13 +16,16 @@ export class UserInfoEffects {
       switchMap(() =>
         this.userInfoService.getUserInfo().pipe(
           tap((user) => {
-            localStorage.setItem('user', JSON.stringify(user));
 
             if (user.theme) {
               localStorage.setItem('theme', user.theme);
             }
             if (user.language) {
-              localStorage.setItem('language', user.language);
+              if (user.language === 'georgian') {
+                localStorage.setItem('language', 'ka');
+              } else {
+                localStorage.setItem('language', 'en');
+              }
             }
           }),
           map((user) => UserInfoActions.loadUserSuccess({ user })),

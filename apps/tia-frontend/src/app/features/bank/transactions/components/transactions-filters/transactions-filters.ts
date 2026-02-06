@@ -22,6 +22,7 @@ import {
   mapFormIntoTransactionFilter,
 } from '../../utils/transactions-filters.utils';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
+import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-transactions-filters',
@@ -31,6 +32,8 @@ import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
     Dropdowns,
     ButtonComponent,
     BasicCard,
+    TranslatePipe,
+    TranslateModule,
   ],
   templateUrl: './transactions-filters.html',
   styleUrl: './transactions-filters.scss',

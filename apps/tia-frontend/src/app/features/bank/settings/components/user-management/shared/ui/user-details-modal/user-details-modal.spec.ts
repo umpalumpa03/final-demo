@@ -18,6 +18,7 @@ describe('UserDetailsModal', () => {
     pId: '123',
     phone: '555',
     phoneVerifiedAt: '',
+    avatar: 'string',
     createdAt: new Date().toISOString(),
   };
 
@@ -39,5 +40,11 @@ describe('UserDetailsModal', () => {
     expect(component).toBeTruthy();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('John Doe');
+  });
+
+  it('should handle getInitials', () => {
+    expect(component.getInitials('John', 'Doe')).toBe('JD');
+    expect(component.getInitials('', '')).toBe('');
+    expect(component.getInitials('A', 'B')).toBe('AB');
   });
 });

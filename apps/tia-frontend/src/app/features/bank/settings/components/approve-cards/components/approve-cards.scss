@@ -1,0 +1,9 @@
+@use '../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../shared/styles/palette' as *;
+
+.approve-card {
+  @include display-flex(column);
+  gap: 1.6rem;
+
+
+}

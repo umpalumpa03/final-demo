@@ -10,9 +10,9 @@
 
     <div class="otp__inputs">
         @for (val of valuesArray(); track val.id; let i = $index) {
-        <input #otpBox class="otp__input" [type]="inputType()" [value]="val.value" [disabled]="isDisabled()"
-            [placeholder]="cfg.placeholder || ''" maxlength="1" (input)="onDigitInput($event, i)"
-            (keydown)="handleKeyDown($event, i)" (paste)="handlePaste($event)" />
+        <input #otpBox class="otp__input" [type]="inputType()" [value]="val.value" [disabled]="isDisabled() || isOtpLoading()"
+            [placeholder]="cfg.placeholder || ''" (input)="onDigitInput($event, i)" (keydown)="handleKeyDown($event, i)"
+            (paste)="handlePaste($event)" />
         }
     </div>
 

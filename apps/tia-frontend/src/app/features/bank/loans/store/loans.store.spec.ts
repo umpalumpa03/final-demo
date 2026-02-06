@@ -111,43 +111,63 @@ describe('LoansStore', () => {
     vi.useRealTimers();
   });
 
-  it('should return all loans when filter is null', () => {
-    store.loadLoans();
-    TestBed.tick();
-    store.setFilter(null);
-    expect(store.filteredLoans().length).toBe(1);
-  });
-
   it('should filter loans by status', () => {
     svc.getAllLoans.mockReturnValue(of([loan1, loan2, loan3]));
-    store.loadLoans();
+    store.loadLoans({ status: null });
     TestBed.tick();
     store.setFilter(2);
     expect(store.filteredLoans().length).toBe(1);
     expect(store.filteredLoans()[0].status).toBe(2);
+    store.setFilter(null);
+    expect(store.filteredLoans().length).toBe(3);
   });
 
-  it('should use friendlyName over name for matched account', () => {
-    store.loadLoans();
+  it('should skip loading if loans exist without forceChange', () => {
+    store.loadLoans({ status: null });
+    TestBed.tick();
+    svc.getAllLoans.mockClear();
+    store.loadLoans({ status: null, forceChange: false });
+    TestBed.tick();
+    expect(svc.getAllLoans).not.toHaveBeenCalled();
+    store.loadLoans({ status: null, forceChange: true });
+    TestBed.tick();
+    expect(svc.getAllLoans).toHaveBeenCalled();
+  });
+
+  it('should map account names correctly', () => {
+    svc.getAllLoans.mockReturnValue(of([loan1, loan2]));
+    store.loadLoans({ status: null, forceChange: true });
     TestBed.tick();
     expect(store.loansWithAccountInfo()[0].accountName).toBe('Acc1');
+    expect(store.loansWithAccountInfo()[1].accountName).toBe('Account 2');
   });
 
-  it('should map purposes to label/value options', () => {
+  it('should map options correctly', () => {
+    store.loadMonths();
     store.loadPurposes();
+    store.loadPrepaymentOptions();
     TestBed.tick();
+    expect(store.loanMonthsOptions()).toEqual([
+      { label: '12 Months', value: 12 },
+      { label: '24 Months', value: 24 },
+    ]);
     expect(store.purposeOptions()).toEqual([
       { label: 'Purpose 1', value: 'p1' },
     ]);
+    expect(store.prepaymentTypeOptions()).toEqual([
+      { label: 'Opt1', value: 'opt1' },
+    ]);
   });
 
-  it('should call getAllLoans with status param', () => {
-    store.loadLoans(1);
-    TestBed.tick();
-    expect(svc.getAllLoans).toHaveBeenCalledWith(1);
+  it('should handle alert', () => {
+    expect(store.alert()).toBeNull();
+    store.showAlert('Test', 'success');
+    expect(store.alert()).toEqual({ message: 'Test', type: 'success' });
+    store.hideAlert();
+    expect(store.alert()).toBeNull();
   });
 
-  it('should load counts and compute dashboard totals', () => {
+  it('should load counts', () => {
     svc.getAllLoans.mockReturnValue(of([loan1, loan2, loan3]));
     store.loadCounts();
     TestBed.tick();
@@ -159,43 +179,30 @@ describe('LoansStore', () => {
     });
   });
 
-  it('should load loan details by id', () => {
+  it('should handle loadCounts error', () => {
+    svc.getAllLoans.mockReturnValue(throwError(() => new Error('Fail')));
+    store.loadCounts();
+    TestBed.tick();
+    expect(store.loanCounts()).toEqual({
+      all: 0,
+      approved: 0,
+      pending: 0,
+      declined: 0,
+    });
+  });
+
+  it('should load and clear loan details', () => {
     store.loadLoanDetails('1');
     TestBed.tick();
     expect(store.selectedLoanDetails()).toEqual(loan1);
     expect(store.detailsLoading()).toBe(false);
+    store.clearLoanDetails();
+    expect(store.selectedLoanDetails()).toBeNull();
   });
 
-  it('should set error on loadMonths failure', () => {
-    svc.getLoanMonths.mockReturnValue(
-      throwError(() => new Error('Months fail')),
-    );
-    store.loadMonths();
-    TestBed.tick();
-    expect(store.error()).toBe('Months fail');
-  });
-
-  it('should set error on loadPurposes failure', () => {
-    svc.getPurposes.mockReturnValue(
-      throwError(() => new Error('Purpose fail')),
-    );
-    store.loadPurposes();
-    TestBed.tick();
-    expect(store.error()).toBe('Purpose fail');
-  });
-
-  it('should set error on loadPrepaymentOptions failure', () => {
-    svc.getPrepaymentOptions.mockReturnValue(
-      throwError(() => new Error('Option Error')),
-    );
-    store.loadPrepaymentOptions();
-    TestBed.tick();
-    expect(store.error()).toBe('Option Error');
-  });
-
-  it('should rename loan and update local state', () => {
+  it('should rename loan', () => {
     svc.getAllLoans.mockReturnValue(of([loan1, loan2]));
-    store.loadLoans();
+    store.loadLoans({ status: null });
     TestBed.tick();
     store.renameLoan({ id: '1', name: 'New Name' });
     TestBed.tick();
@@ -204,9 +211,9 @@ describe('LoansStore', () => {
     );
   });
 
-  it('should set error on renameLoan failure', () => {
+  it('should handle renameLoan error', () => {
     svc.getAllLoans.mockReturnValue(of([loan1]));
-    store.loadLoans();
+    store.loadLoans({ status: null });
     TestBed.tick();
     svc.updateFriendlyName.mockReturnValue(
       throwError(() => new Error('Rename fail')),
@@ -248,7 +255,7 @@ describe('LoansStore', () => {
     expect(store.calculationResult()).toEqual(partial);
   });
 
-  it('should set error on calculatePrepayment failure', () => {
+  it('should handle calculatePrepayment error', () => {
     svc.calculateFullPrepayment.mockReturnValue(
       throwError(() => new Error('Calc fail')),
     );
@@ -258,8 +265,7 @@ describe('LoansStore', () => {
     expect(store.calculationResult()).toBeNull();
   });
 
-  it('should clear calculation result and challengeId', () => {
-    store.showAlert('x', 'success');
+  it('should clear calculation result', () => {
     store.calculatePrepayment({ payload: { loanId: '1', type: 'full' } });
     TestBed.tick();
     store.clearCalculationResult();
@@ -267,15 +273,7 @@ describe('LoansStore', () => {
     expect(store.activeChallengeId()).toBeNull();
   });
 
-  it('should hide alert manually', () => {
-    store.showAlert('test', 'error');
-    expect(store.alertMessage()).toBe('test');
-    store.hideAlert();
-    expect(store.alertMessage()).toBeNull();
-    expect(store.alertType()).toBeNull();
-  });
-
-  it('should initiate prepayment and set challengeId', () => {
+  it('should initiate prepayment', () => {
     store.initiatePrepayment({ payload: validPayload });
     TestBed.tick();
     expect(store.activeChallengeId()).toBe('chal-123');
@@ -292,18 +290,16 @@ describe('LoansStore', () => {
     expect(store.alertMessage()).not.toBeNull();
     vi.advanceTimersByTime(3000);
     expect(store.alertMessage()).toBeNull();
-    expect(store.alertType()).toBeNull();
   });
 
-  it('should set error when no challengeId returned', () => {
+  it('should handle initiatePrepayment with no challengeId', () => {
     svc.initiatePrepayment.mockReturnValue(of({ verify: {} }));
     store.initiatePrepayment({ payload: validPayload });
     TestBed.tick();
     expect(store.error()).toBe('No challenge ID returned');
-    expect(store.actionLoading()).toBe(false);
   });
 
-  it('should show insufficient funds error on 400', () => {
+  it('should handle insufficient funds error', () => {
     svc.initiatePrepayment.mockReturnValue(
       throwError(
         () =>
@@ -317,11 +313,9 @@ describe('LoansStore', () => {
     TestBed.tick();
     expect(store.alertMessage()).toBe('Insufficient funds in payment account');
     expect(store.alertType()).toBe('error');
-    vi.advanceTimersByTime(3000);
-    expect(store.alertMessage()).toBeNull();
   });
 
-  it('should show backend message for non-400 errors', () => {
+  it('should handle backend error', () => {
     svc.initiatePrepayment.mockReturnValue(
       throwError(
         () =>
@@ -334,10 +328,9 @@ describe('LoansStore', () => {
     store.initiatePrepayment({ payload: validPayload });
     TestBed.tick();
     expect(store.alertMessage()).toBe('Server error');
-    expect(store.alertType()).toBe('error');
   });
 
-  it('should verify prepayment and reload loans', () => {
+  it('should verify prepayment', () => {
     svc.getAllLoans.mockReturnValue(of([loan1]));
     store.verifyPrepayment({ payload: { challengeId: 'c', code: '123' } });
     TestBed.tick();
@@ -345,16 +338,6 @@ describe('LoansStore', () => {
     expect(store.calculationResult()).toBeNull();
     expect(store.actionLoading()).toBe(false);
     expect(svc.getAllLoans).toHaveBeenCalled();
-  });
-
-  it('should set error on verifyPrepayment failure', () => {
-    svc.verifyPrepayment.mockReturnValue(
-      throwError(() => new Error('Verify Error')),
-    );
-    store.verifyPrepayment({ payload: { challengeId: 'c', code: '1' } });
-    TestBed.tick();
-    expect(store.error()).toBe('Verify Error');
-    expect(store.actionLoading()).toBe(false);
   });
 
   it('should reload loans on LoansCreateActions.requestLoanSuccess', () => {

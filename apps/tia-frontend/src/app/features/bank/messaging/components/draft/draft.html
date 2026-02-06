@@ -1,6 +1,6 @@
 <app-mail-header
   [page]="'messaging.routes.drafts' | translate"
-  [messageCount]="drafytsTotal?.()"
+  [messageCount]="draftsTotal?.()"
   [isAllSelected]="isAllSelected()"
   (toggleSelectAll)="toggleSelectAll($event)"
   [showBulkActions]="hasBulkSelection()"
@@ -28,6 +28,7 @@
     (checkedChange)="onMailChecked(mail.id, $event)"
     (deleteMail)="deleteMail(mail.id)"
     (cardClick)="goToDetail($event)"
+    [currentUserEmail]="currentUserEmail()"
   >
   </app-mail-card>
   } @if (isLoading()) {

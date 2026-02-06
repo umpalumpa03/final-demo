@@ -12,7 +12,8 @@ import { AlertType } from '../../shared/models/alert.models';
 export class AlertTypesWithIcons {
   public readonly alertType = input<AlertType>('information');
   public readonly alertMessage = input<string>('Default Alert Message');
-
+  public readonly customMaxwidth = input<string>('105.3rem');
+  
   public readonly iconAlertClass = computed(() => `alert-icons--${this.alertType()}`);
 
   public readonly effectiveImgName = computed(() => {

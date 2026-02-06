@@ -8,6 +8,7 @@ import { InboxService } from '@tia/shared/services/messages/inbox.service';
 import { Compose } from "../components/compose/compose";
 import { MessagingStore } from '../store/messaging.store';
 import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 
 @Component({
   selector: 'app-messaging-container',
@@ -17,12 +18,18 @@ import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MessagingContainer {
-  private translate = inject(TranslateService);
-  public inboxService = inject(InboxService);
-  public isComposeOpen = signal(false);
-  private messagingStore = inject(MessagingStore);
-  public error = this.messagingStore.error;
-  public successMessage = this.messagingStore.successMessage;
+  private readonly translate = inject(TranslateService);
+  public readonly inboxService = inject(InboxService);
+  public readonly isComposeOpen = signal(false);
+  private readonly messagingStore = inject(MessagingStore);
+  public readonly error = this.messagingStore.error;
+  public readonly successMessage = this.messagingStore.successMessage;
+  private readonly breakpointService = inject(BreakpointService);
+
+  public readonly isExtraSmall = this.breakpointService.isExtraSmall;
+  public readonly isMobile = this.breakpointService.isMobile;
+  public readonly isTablet = this.breakpointService.isTablet;
+  public readonly isCollapsed = signal(false);
 
   constructor() {
     this.inboxService.fetchInboxCount();

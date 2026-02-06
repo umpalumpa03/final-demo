@@ -21,6 +21,7 @@ import { BreakpointService } from '../../../../core/services/breakpoints/breakpo
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { userInfoFeature } from 'apps/tia-frontend/src/app/store/user-info/user-info.reducer';
 import { Store } from '@ngrx/store';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -30,6 +31,7 @@ import { Store } from '@ngrx/store';
     TranslatePipe,
     AlertsWithActions,
     RouteLoader,
+    RouterModule
   ],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',

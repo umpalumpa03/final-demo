@@ -10,6 +10,7 @@
   border-radius: 1rem;
   padding: 2.5rem;
   gap: 1.6rem;
+  position: relative;
   &--no-border {
     border: none;
     background-color: transparent;
@@ -32,10 +33,12 @@
     }
   }
 
-  &__cards {
-    display: flex;
-    flex-direction: column;
-    gap: 1.1rem;
+  &__overlay {
+    @include flex-center();
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 9998;
   }
 
   &__group {
@@ -43,6 +46,11 @@
     flex-direction: column;
     border-radius: 0.8rem;
     gap: 1.1rem;
+    position: relative;
+    margin-bottom: 0.8rem;
+    &:has(.tree-container__children--expanded) {
+      margin-bottom: 2rem;
+    }
 
     &--dragging {
       opacity: 0.8;
@@ -59,14 +67,20 @@
     display: grid;
     grid-template-rows: 0fr;
     opacity: 0;
+    margin-left: 2.8rem;
+    overflow: hidden;
+    visibility: hidden;
+
     transition:
       grid-template-rows 200ms ease-in-out,
-      opacity 200ms ease-in-out;
-    margin-left: 2.8rem;
+      opacity 200ms ease-in-out,
+      visibility 200ms;
 
     &--expanded {
       grid-template-rows: 1fr;
       opacity: 1;
+      visibility: visible;
+      overflow: visible;
     }
   }
 

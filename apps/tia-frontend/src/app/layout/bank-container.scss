@@ -1,6 +1,5 @@
 @use '../shared/styles/mixins' as *;
 @use '../shared/styles/palette' as *;
-@use '../shared/styles/palette' as *;
 
 .bank-container {
   @include display-flex(row);
@@ -17,13 +16,20 @@
     @include display-flex(column);
     position: relative;
     flex: 1;
+    box-shadow:
+      inset 4px 0 8px -4px rgba(0, 0, 0, 0.1),
+      inset 0 4px 8px -4px rgba(0, 0, 0, 0.1);
   }
+
   &__loader-overlay {
     position: absolute;
     inset: 0;
     background-color: $white;
     z-index: 50;
     @include flex-center(row, center, center);
+    box-shadow:
+      inset 4px 0 8px -4px rgba(0, 0, 0, 0.1),
+      inset 0 4px 8px -4px rgba(0, 0, 0, 0.1);
   }
 }
 

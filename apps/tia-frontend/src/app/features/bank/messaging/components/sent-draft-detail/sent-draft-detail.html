@@ -1,25 +1,52 @@
 <app-email-detail [data]="emailDetail?.()">
   @if (!fromSent) {
   <div class="button-container">
-    <app-button icon="send-email.svg" (click)="sendDraft()">Send</app-button>
-    <app-button variant="outline" [icon]="'red-trash.svg'" (click)="onDelete($event)">Delete</app-button>
+    <app-button icon="send-email.svg" (click)="sendDraft()"
+      >{{ 'messaging.compose.send' | translate }}</app-button
+    >
+    <app-button
+      variant="outline"
+      [icon]="'red-trash.svg'"
+      (click)="onDelete($event)"
+      >{{ 'messaging.mail-detail.delete' | translate }}</app-button
+    >
+  </div>
+  } @else if (fromSent) {
+  <div class="button-container">
+    <app-button [icon]="'reply.svg'" (click)="onReply()"
+      >{{ 'messaging.mail-detail.reply' | translate }}</app-button
+    >
   </div>
   }
 </app-email-detail>
+@if (mailReplies().length && fromSent) { @for (reply of mailReplies(); track
+reply.id) {
+<app-replies-card
+  [reply]="reply"
+  [currentUserEmail]="currentUserEmail()"
+></app-replies-card>
+} } @if (isReplyOpen()) {
+<div #replyCard>
+  <app-reply-form
+    (sendReply)="onSendReply($event)"
+    (cancel)="onCancelReply()"
+  ></app-reply-form>
+</div>
+}
 <app-ui-modal [isOpen]="isDeleteModalOpen()" (closed)="onCancelDelete()">
   <div class="delete-account">
     <header class="delete-account__header">
       <app-library-title
-        title="Delete Email"
-        subtitle="Are you sure you want to delete this email? This action cannot be undone."
+        [title]="'messaging.deleteModal.title' | translate"
+        [subtitle]="'messaging.deleteModal.subtitle' | translate"
       ></app-library-title>
     </header>
     <footer class="delete-account__footer">
       <app-button variant="outline" (click)="onCancelDelete()"
-        >Cancel</app-button
+        >{{ 'messaging.deleteModal.cancel' | translate }}</app-button
       >
       <app-button variant="destructive" (click)="onConfirmDelete()"
-        >Delete</app-button
+        >{{ 'messaging.deleteModal.delete' | translate }}</app-button
       >
     </footer>
   </div>

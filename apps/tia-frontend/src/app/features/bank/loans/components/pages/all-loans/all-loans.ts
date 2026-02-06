@@ -46,7 +46,7 @@ export class AllLoans implements OnInit {
   public readonly isPrepaymentOpen = signal(false);
 
   public ngOnInit(): void {
-    this.store.loadLoans();
+    this.store.loadLoans({ status: null });
   }
 
   public onRequestLoan(): void {
@@ -55,7 +55,8 @@ export class AllLoans implements OnInit {
 
   public onCardClick(id: string): void {
     const loan = this.loans().find((l) => l.id === id);
-    if (loan && loan.status === 2) {
+
+    if (loan) {
       this.selectedLoan.set(loan);
       this.isDetailsOpen.set(true);
       this.store.loadLoanDetails(id);

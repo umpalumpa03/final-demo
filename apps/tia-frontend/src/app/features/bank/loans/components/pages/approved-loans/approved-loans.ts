@@ -35,7 +35,7 @@ export class ApprovedLoans implements OnInit {
   protected readonly store = inject(LoansStore);
   private readonly router = inject(Router);
 
-  protected readonly approvedLoans = this.store.loansWithAccountInfo;
+  protected readonly approvedLoans = this.store.filteredLoans;
   protected readonly selectedLoanDetails = this.store.selectedLoanDetails;
   protected readonly isDetailsLoading = this.store.detailsLoading;
 
@@ -45,7 +45,7 @@ export class ApprovedLoans implements OnInit {
   public readonly isDetailsOpen = signal(false);
 
   public ngOnInit(): void {
-    this.store.loadLoans(2);
+    this.store.loadLoans({ status: 2 });
   }
 
   public onCardClick(id: string): void {

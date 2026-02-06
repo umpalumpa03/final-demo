@@ -2,8 +2,8 @@
 <router-outlet></router-outlet>
 } @else {
   <app-provider-list
-    [headerTitle]="facade.providerListHeader()"
-    [providers]="facade.filteredProviders()"
+    [headerTitle]="providerListHeader()"
+    [providers]="filteredProviders()"
     [iconBgColor]="facade.activeCategoryUI()?.iconBgColor"
     [iconBgPath]="facade.activeCategoryUI()?.iconBgPath"
     [subtitle]="facade.activeCategory()?.description || ''" 

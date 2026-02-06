@@ -5,20 +5,21 @@ import { Avatar } from '@tia/shared/lib/data-display/avatars/avatar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader";
 import { MessagingStore } from '../../../store/messaging.store';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-email-detail',
-  imports: [Avatar, DatePipe, RouteLoader],
+  imports: [Avatar, DatePipe, RouteLoader, TranslatePipe],
   templateUrl: './email-detail.html',
   styleUrl: './email-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmailDetail {
   public readonly data = input<EmailDetailData | undefined>();
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private messagingStore = inject(MessagingStore);
-  public isLoading = this.messagingStore.isLoading;
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly messagingStore = inject(MessagingStore);
+  public readonly isLoading = this.messagingStore.isLoading;
 
   public getInitials(email?: string): string {
     if (!email) return '';

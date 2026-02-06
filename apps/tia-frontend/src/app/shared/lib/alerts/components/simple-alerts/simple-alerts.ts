@@ -12,7 +12,8 @@ import { FirstUpperPipe } from '@tia/shared/pipes/first-upper/first-upper-pipe';
 export class SimpleAlerts {
   public readonly alertType = input<SimpleAlertType>('information');
   public readonly alertMessage = input<string>('This is a simple informational message without a title.');
-
+  public readonly customMaxwidth = input<string>('105.3rem');
+  
   public readonly iconAlertClass = computed(() => `simple-alerts--${this.alertType()}`);
 
   public readonly effectiveImgName = computed(() => {

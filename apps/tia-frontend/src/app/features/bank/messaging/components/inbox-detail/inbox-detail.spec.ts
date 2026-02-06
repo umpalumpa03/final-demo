@@ -6,6 +6,8 @@ import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Mail } from '../../store/messaging.state';
+import { Store } from '@ngrx/store';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('InboxDetail', () => {
   let component: InboxDetail;
@@ -13,6 +15,7 @@ describe('InboxDetail', () => {
 
   let mockMessagingStore: any;
   let mockRouter: any;
+  let mockStore: any;
 
   const mockMail: Mail = {
     id: 1,
@@ -30,14 +33,21 @@ describe('InboxDetail', () => {
   beforeEach(async () => {
     mockMessagingStore = {
       emailDetail: signal<Mail | null>(mockMail),
+      mailReplies: signal([]),
       getEmailById: vi.fn(),
+      getMailReplies: vi.fn(), 
       deleteMail: vi.fn(),
       togleFavorite: vi.fn(),
       isLoading: signal(false),
+      isFavoriteLoading: signal(false),
     };
 
     mockRouter = {
       navigate: vi.fn(),
+    };
+
+    mockStore = {
+      selectSignal: vi.fn().mockReturnValue(signal('test@example.com')),
     };
 
     const mockActivatedRoute = {
@@ -49,11 +59,12 @@ describe('InboxDetail', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [InboxDetail],
+      imports: [InboxDetail, TranslateModule.forRoot()],
       providers: [
         { provide: MessagingStore, useValue: mockMessagingStore },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
+        { provide: Store, useValue: mockStore }
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
@@ -67,10 +78,11 @@ describe('InboxDetail', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load email detail on init', () => {
+  it('should load email detail and replies on init', () => {
     fixture.detectChanges();
 
     expect(mockMessagingStore.getEmailById).toHaveBeenCalledWith(1);
+    expect(mockMessagingStore.getMailReplies).toHaveBeenCalledWith(1); 
   });
 
   it('should toggle favorite status', () => {

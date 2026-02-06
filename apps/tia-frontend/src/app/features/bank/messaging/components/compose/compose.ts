@@ -9,13 +9,14 @@ import { Textarea } from '@tia/shared/lib/forms/textarea/textarea';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Checkboxes } from "@tia/shared/lib/forms/checkboxes/checkboxes";
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { userInfoFeature } from 'apps/tia-frontend/src/app/store/user-info/user-info.reducer';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-compose',
-  imports: [UiModal, ReactiveFormsModule, EmailChipsInput, TextInput, Textarea, ButtonComponent, Checkboxes, AlertTypesWithIcons],
+  imports: [UiModal, ReactiveFormsModule, EmailChipsInput, TextInput, Textarea, ButtonComponent, Checkboxes, AlertTypesWithIcons, TranslatePipe],
   templateUrl: './compose.html',
   styleUrl: './compose.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,11 +26,12 @@ export class Compose {
   private readonly fb = inject(FormBuilder);
   public readonly close = output<void>();
   public readonly isOpen = input.required<boolean>();
-  public invalidForm = signal<boolean>(false);
-  public errorMesage = signal<string>('');
-
+  public readonly invalidForm = signal<boolean>(false);
+  public readonly errorMesage = signal<string>('');
   public readonly store = inject(MessagingStore);
   public readonly roleStore = inject(Store);
+  private readonly breakpointService = inject(BreakpointService);
+  public readonly isExtraSmall = this.breakpointService.isExtraSmall;
 
   public readonly filteredSearchResultsCc = computed(() => {
     const selectedEmails = [
@@ -56,8 +58,8 @@ export class Compose {
     isImportant: [false],
   });
 
-  public readonly role = toSignal(
-    this.roleStore.select(userInfoFeature.selectRole),
+  public readonly role = this.roleStore.selectSignal(
+    userInfoFeature.selectRole,
   );
 
   @ViewChild('toInput') toInput!: EmailChipsInput;

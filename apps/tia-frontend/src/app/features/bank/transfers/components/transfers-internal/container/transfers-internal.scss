@@ -1,0 +1,54 @@
+@use '../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../shared/styles/palette' as *;
+
+.internal-transfer {
+  @include display-flex(column);
+  @include custom-scrollbar();
+  width: 100%;
+  max-height: calc(-26.4rem + 100vh);
+  overflow-y: auto;
+  background: $white;
+  border: 0.188rem solid $blue-400;
+  border-radius: 0.8rem;
+  padding: 2.4rem;
+  gap: 1.6rem;
+  box-shadow:
+    0px 1px 3px 0px rgba(0, 0, 0, 10%),
+    0px 1px 2px -1px rgba(0, 0, 0, 10%);
+
+  &__header {
+    @include display-flex(column);
+    gap: 1.6rem;
+  }
+
+  &__title {
+    @include font-inter(500, 1.6rem, 1.6rem);
+    color: var(--color-fg);
+  }
+
+  &__description {
+    @include font-inter(400, 1.6rem, 2.4rem);
+    color: $blue-600;
+  }
+
+  &__stepper {
+    padding: 0 16rem 3.2rem;
+
+    @media (max-width: 1200px) {
+      padding: 0 8rem 2.8rem;
+    }
+
+    @media (max-width: 900px) {
+      padding: 0 2rem 2.4rem;
+    }
+
+    @media (max-width: 480px) {
+      padding: 0 0 2rem;
+    }
+  }
+
+  &__content {
+    width: 100%;
+    @include display-flex(column);
+  }
+}

@@ -1,1 +1,18 @@
-<p>transfers-internal works!</p>
+<main class="internal-transfer">
+  <header class="internal-transfer__header">
+    <h1 class="internal-transfer__title">
+      {{'transfers.internal.extTitle' | translate}}
+    </h1>
+    <p class="internal-transfer__description">
+      {{'transfers.internal.extDescription' | translate}}
+    </p>
+  </header>
+
+  <div class="internal-transfer__stepper">
+    <app-stepper-header [content]="steps" [step]="currentStep">
+    </app-stepper-header>
+  </div>
+  <div class="internal-transfer__content">
+    <router-outlet></router-outlet>
+  </div>
+</main>

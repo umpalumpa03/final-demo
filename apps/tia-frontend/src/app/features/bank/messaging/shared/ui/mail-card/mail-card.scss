@@ -60,21 +60,20 @@
     &__subject {
         @include font-inter(500, 1.4rem, 2rem);
         color: var(--color-fg);
-        display: -webkit-box;
-        -webkit-line-clamp: 1;
-        line-clamp: 1;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
         text-overflow: ellipsis;
         white-space: normal;
         word-break: break-all;
-         flex: 1 1 0;
+        flex: 1 1 0;
         min-width: 0;
     }
 
     &__preview {
         @include font-inter(400, 1.2rem, 1.6rem);
         color: $gray-700;
+    }
+
+    &__subject,
+    &__preview {
         display: -webkit-box;
         -webkit-line-clamp: 1;
         line-clamp: 1;
@@ -83,7 +82,7 @@
     }
 
     &__actions {
-        @include flex-center(row, center, center);
+        @include flex-center();
         gap: 1rem;
 
         &-btn--favorite,
@@ -114,6 +113,61 @@
         @include flex-center($justify: flex-end);
         gap: 1.2rem;
     }
+}
+
+@media (max-width: 530px) {
+  .mail-card {
+    gap: 0.8rem;
+    padding: 1rem;
+    flex-wrap: wrap;
+
+    &__content {
+      flex: 1;
+      min-width: 0;
+      width: 100%;
+      order: 2;
+    }
+
+    &__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.4rem;
+    }
+
+    &__sender {
+      @include font-inter(400, 1.2rem, 1.6rem);
+    }
+
+    &__date {
+      @include font-inter(400, 1.1rem, 1.4rem);
+    }
+
+    &__subject {
+      @include font-inter(500, 1.3rem, 1.8rem);
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+    }
+
+    &__preview {
+      @include font-inter(400, 1.1rem, 1.6rem);
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+    }
+
+    &__actions {
+      order: 3;
+      margin-left: auto;
+      gap: 0.6rem;
+    }
+
+    &__icons {
+      gap: 0.4rem;
+    }
+
+    & > app-avatar {
+      order: 1;
+    }
+  }
 }
 
 @keyframes slideIn {
