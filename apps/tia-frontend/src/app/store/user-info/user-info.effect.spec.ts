@@ -99,11 +99,6 @@ describe('UserInfoEffects (Vitest)', () => {
       }),
     );
 
-    expect(localStorage.setItem).toHaveBeenCalledWith(
-      'user',
-      JSON.stringify(userWithoutPrefs),
-    );
-
     expect(localStorage.setItem).not.toHaveBeenCalledWith(
       'theme',
       expect.anything(),

@@ -1,68 +1,86 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { firstValueFrom, of, throwError } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn } from '@angular/router';
+import { provideMockStore } from '@ngrx/store/testing';
 
 import { GuestGuard } from './guest-guard';
 import { TokenService } from '../services/token.service';
-import { UserInfoService } from '@tia/shared/services/user-info/user-info.service';
 import { Router } from '@angular/router';
 import { Routes } from '../models/tokens.model';
+import { selectUserInfoState } from '../../../store/user-info/user-info.selectors';
 
 describe('GuestGuard', () => {
-  beforeEach(() => {
+  it('returns true when tokens missing', () => {
     TestBed.configureTestingModule({
       providers: [
-        { provide: TokenService, useValue: {} },
-        { provide: UserInfoService, useValue: { getUserInfo: () => of(null) } },
+        provideMockStore(),
+        { provide: TokenService, useValue: { accessToken: null, refreshToken: null } },
         { provide: Router, useValue: { createUrlTree: vi.fn((p: any) => ({ redirect: p })) } },
       ],
     });
-  });
 
-  it('returns true when tokens missing', () => {
-    TestBed.overrideProvider(TokenService as any, { useValue: {} });
     const result = TestBed.runInInjectionContext(() => GuestGuard({} as any, {} as any));
-    expect(result).toBe(true);
-  });
-
-  it('returns true when tokens exist but userInfo missing', async () => {
-    TestBed.overrideProvider(TokenService as any, { useValue: { accessToken: 'a', refreshToken: 'b' } });
-    TestBed.overrideProvider(UserInfoService as any, { useValue: { getUserInfo: () => of(null) } });
-
-    const result$ = TestBed.runInInjectionContext(() => GuestGuard({} as any, {} as any));
-    const value = await firstValueFrom(result$ as any);
+    let value: any;
+    (result as any).subscribe((v: any) => value = v);
     expect(value).toBe(true);
   });
 
-  it('redirects to DASHBOARD when user info exists', async () => {
-    TestBed.overrideProvider(TokenService as any, { useValue: { accessToken: 'a', refreshToken: 'b' } });
-    TestBed.overrideProvider(UserInfoService as any, { useValue: { getUserInfo: () => of({ id: '1' }) } });
+  it('returns UrlTree when tokens present and user loaded with fullName', () => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideMockStore({
+          selectors: [
+            { selector: selectUserInfoState, value: { loaded: true, error: null, fullName: 'John' } }
+          ]
+        }),
+        { provide: TokenService, useValue: { accessToken: 'token', refreshToken: 'refresh' } },
+        {
+          provide: Router,
+          useValue: { createUrlTree: vi.fn((p: any) => ({ redirect: p })) },
+        },
+      ],
+    });
 
-    const result$ = TestBed.runInInjectionContext(() => GuestGuard({} as any, {} as any));
-    const value = await firstValueFrom(result$ as any);
+    const result = TestBed.runInInjectionContext(() => GuestGuard({} as any, {} as any));
+    let value: any;
+    (result as any).subscribe((v: any) => value = v);
     expect(value).toEqual({ redirect: [Routes.DASHBOARD] });
   });
 
-  it('returns UrlTree to SIGN_IN when user service errors', async () => {
-    TestBed.overrideProvider(TokenService as any, { useValue: { accessToken: 'a', refreshToken: 'b' } });
-    TestBed.overrideProvider(UserInfoService as any, { useValue: { getUserInfo: () => throwError(() => new Error('boom')) } });
+  it('returns true when tokens present and user loaded without fullName', () => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideMockStore({
+          selectors: [
+            { selector: selectUserInfoState, value: { loaded: true, error: null, fullName: null } }
+          ]
+        }),
+        { provide: TokenService, useValue: { accessToken: 'token', refreshToken: 'refresh' } },
+        { provide: Router, useValue: { createUrlTree: vi.fn() } },
+      ],
+    });
 
-    const result$ = TestBed.runInInjectionContext(() => GuestGuard({} as any, {} as any));
-    const value = await firstValueFrom(result$ as any);
-    expect(value).toEqual({ redirect: [Routes.SIGN_IN] });
+    const result = TestBed.runInInjectionContext(() => GuestGuard({} as any, {} as any));
+    let value: any;
+    (result as any).subscribe((v: any) => value = v);
+    expect(value).toBe(true);
   });
-});
 
-describe('guestGuard', () => {
-  const executeGuard: CanActivateFn = (...guardParameters) => 
-      TestBed.runInInjectionContext(() => guestGuard(...guardParameters));
+  it('returns true when tokens present and user loaded with error', () => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideMockStore({
+          selectors: [
+            { selector: selectUserInfoState, value: { loaded: true, error: 'error', fullName: null } }
+          ]
+        }),
+        { provide: TokenService, useValue: { accessToken: 'token', refreshToken: 'refresh' } },
+        { provide: Router, useValue: { createUrlTree: vi.fn() } },
+      ],
+    });
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-  });
-
-  it('should be created', () => {
-    expect(executeGuard).toBeTruthy();
+    const result = TestBed.runInInjectionContext(() => GuestGuard({} as any, {} as any));
+    let value: any;
+    (result as any).subscribe((v: any) => value = v);
+    expect(value).toBe(true);
   });
 });
