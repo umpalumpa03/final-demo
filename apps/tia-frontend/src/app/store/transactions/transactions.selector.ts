@@ -16,6 +16,11 @@ export const selectIsLoading = createSelector(
   (state) => state.isLoading,
 );
 
+export const selectTransactionsLoaded = createSelector(
+  selectTransactionState,
+  (state) => state.loaded,
+);
+
 export const selectFilters = createSelector(
   selectTransactionState,
   (state) => state.filters,
@@ -74,4 +79,8 @@ export const selectTransactionViewModel = createSelector(
     total,
     categoryOptions,
   }),
+);
+export const selectTransactionToRepeat = createSelector(
+  selectTransactionState,
+  (state) => state.transactionToRepeat,
 );

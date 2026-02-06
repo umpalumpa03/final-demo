@@ -6,7 +6,7 @@ export const selectProfilePhotoFeatureState =
 
 export const selectDefaultAvatars = createSelector(
   selectProfilePhotoFeatureState,
-  (state) => state.defaultAvatars,
+  (state) => state ? state.defaultAvatars : [],
 );
 
 export const selectDefaultAvatarsLoading = createSelector(

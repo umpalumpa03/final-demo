@@ -13,6 +13,7 @@ import { take, tap } from 'rxjs';
 import { TokenService } from '../../../services/token.service';
 import { Router } from '@angular/router';
 import { Routes } from '../../../models/tokens.model';
+import { otpVerificationConfig } from '../../../config/otp-verification.config';
 
 @Component({
   selector: 'app-verify-signup',
@@ -26,6 +27,7 @@ export class VerifySignup {
   private router = inject(Router);
   public otpError = this.authService.otpError;
   private destroyRef = inject(DestroyRef);
+  public inputOtpConfig = otpVerificationConfig['sign-up']
 
   public verifyRegisterOtp(event: IVerified): void {
     if (event.isCalled) {

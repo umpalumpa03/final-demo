@@ -6,5 +6,7 @@ export const SecurityActions = createActionGroup({
     'Change Password': props<{ currentPassword: string; newPassword: string }>(),
     'Change Password Success': emptyProps(),
     'Change Password Failure': props<{ error: string }>(),
+    'Clear Error': emptyProps(),
+    'Clear Success': emptyProps(),
   },
 });

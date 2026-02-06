@@ -9,10 +9,11 @@ import { IUserDetail } from '../../models/users.model';
 import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
+import { Avatar } from '@tia/shared/lib/data-display/avatars/avatar';
 
 @Component({
   selector: 'app-user-details-modal',
-  imports: [UiModal, CommonModule, ButtonComponent, RouteLoader],
+  imports: [UiModal, CommonModule, ButtonComponent, RouteLoader, Avatar],
   templateUrl: './user-details-modal.html',
   styleUrl: './user-details-modal.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,4 +25,10 @@ export class UserDetailsModal {
 
   public userData = input.required<IUserDetail | null>();
   public close = output<void>();
+
+  public getInitials(firstName: string, lastName: string): string {
+    const first = firstName?.[0]?.toUpperCase() || '';
+    const last = lastName?.[0]?.toUpperCase() || '';
+    return first + last;
+  }
 }

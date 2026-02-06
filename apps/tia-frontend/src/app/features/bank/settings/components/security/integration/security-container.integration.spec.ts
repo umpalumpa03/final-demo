@@ -10,9 +10,10 @@ import { SecurityService } from '../service/security.service';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { environment } from '../../../../../../../environments/environment';
-import { SecurityActions } from '../store/security.actions';
 import { Store } from '@ngrx/store';
-import { vi } from 'vitest';
+import * as SecuritySelectors from '../store/security.selectors';
+import { take, timeout, filter } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 const routes: Routes = [
   {
@@ -32,10 +33,9 @@ describe('SecurityContainer integration', () => {
       providers: [
         provideRouter(routes),
         provideTranslateService(),
-        provideStore(),
+        provideStore({ security: securityFeature.reducer }),
         provideEffects(SecurityEffects),
         SecurityService,
-        provideStore({ security: securityFeature.reducer }),
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
@@ -51,8 +51,7 @@ describe('SecurityContainer integration', () => {
     httpMock.verify();
   });
 
-  it('calls backend and dispatches changePassword action', () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
+  it('should complete full flow: dispatch action -> effect calls service -> success -> state updates', async () => {
     const component = fixture.componentInstance;
 
     component.onChangePassword({
@@ -70,14 +69,73 @@ describe('SecurityContainer integration', () => {
       newPassword: 'newPassword456',
     });
 
-    req.flush(null);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    let loading = await firstValueFrom(store.select(SecuritySelectors.selectSecurityLoading).pipe(take(1), timeout(5000)));
+    expect(loading).toBe(true);
 
-    expect(dispatchSpy).toHaveBeenCalledWith(
-      SecurityActions.changePassword({
-        currentPassword: 'oldPassword123',
-        newPassword: 'newPassword456',
-      }),
+    req.flush(null);
+    fixture.detectChanges();
+
+   
+    loading = await firstValueFrom(
+      store.select(SecuritySelectors.selectSecurityLoading).pipe(
+        filter(loading => loading === false),
+        take(1),
+        timeout(5000)
+      )
     );
+    
+
+    const success = await firstValueFrom(store.select(SecuritySelectors.selectSecuritySuccess).pipe(take(1), timeout(5000)));
+    const error = await firstValueFrom(store.select(SecuritySelectors.selectSecurityError).pipe(take(1), timeout(5000)));
+
+    expect(loading).toBe(false);
+    expect(success).toBe(true);
+    expect(error).toBeNull();
+  });
+
+  it('should handle error flow: dispatch action -> effect calls service -> error -> state updates', async () => {
+    const component = fixture.componentInstance;
+    const errorMessage = 'Invalid current password';
+
+    component.onChangePassword({
+      currentPassword: 'wrongPassword',
+      newPassword: 'newPassword456',
+    });
+
+    const req = httpMock.expectOne(
+      `${environment.apiUrl}/settings/change-password`,
+    );
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    let loading = await firstValueFrom(store.select(SecuritySelectors.selectSecurityLoading).pipe(take(1), timeout(5000)));
+    expect(loading).toBe(true);
+
+    req.flush(
+      { message: errorMessage },
+      { status: 400, statusText: 'Bad Request' }
+    );
+
+    fixture.detectChanges();
+
+ 
+    loading = await firstValueFrom(
+      store.select(SecuritySelectors.selectSecurityLoading).pipe(
+        filter(loading => loading === false),
+        take(1),
+        timeout(5000)
+      )
+    );
+    
+ 
+    const success = await firstValueFrom(store.select(SecuritySelectors.selectSecuritySuccess).pipe(take(1), timeout(5000)));
+    const error = await firstValueFrom(store.select(SecuritySelectors.selectSecurityError).pipe(take(1), timeout(5000)));
+
+    expect(loading).toBe(false);
+    expect(success).toBe(false);
+    expect(error).toBe(errorMessage);
   });
 });
 

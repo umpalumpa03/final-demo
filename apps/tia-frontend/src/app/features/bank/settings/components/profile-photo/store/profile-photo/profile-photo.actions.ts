@@ -1,11 +1,11 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { DefaultAvatarResponse } from './profile-photo.state';
+import { DefaultAvatarWithUrl } from './profile-photo.state';
 
 export const ProfilePhotoActions = createActionGroup({
   source: 'Profile Photo',
   events: {
-    'Load Default Avatars Request': emptyProps(),
-    'Load Default Avatars': props<{ avatars: DefaultAvatarResponse[] }>(),
+    'Load Default Avatars Request': props<{ forceRefresh?: boolean }>(),
+    'Load Default Avatars': props<{ avatars: DefaultAvatarWithUrl[] }>(),
     'Load Default Avatars Failure': props<{ error: string }>(),
     'Select Default Avatar': props<{ avatarId: string; imageUrl: string }>(),
     'Upload File': props<{ fileName: string; objectUrl: string }>(),

@@ -13,6 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TokenService } from '../../../services/token.service';
 import { Router } from '@angular/router';
 import { Routes } from '../../../models/tokens.model';
+import { otpVerificationConfig } from '../../../config/otp-verification.config';
 
 @Component({
   selector: 'app-verify-signin',
@@ -26,6 +27,7 @@ export class VerifySignin {
   private router = inject(Router);
   public otpError = this.authService.otpError;
   private destroyRef = inject(DestroyRef);
+  public otpConfig = otpVerificationConfig['sign-in'];
 
   public verifyOtp(event: IVerified): void {
     if (event.isCalled) {

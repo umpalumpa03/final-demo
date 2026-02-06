@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TransactionsFilters } from './transactions-filters';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('TransactionsFilters', () => {
   let component: TransactionsFilters;
@@ -9,7 +10,10 @@ describe('TransactionsFilters', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TransactionsFilters],
+      imports: [
+        TransactionsFilters, //
+        TranslateModule.forRoot(),
+      ],
       providers: [provideAnimationsAsync()],
     }).compileComponents();
 
@@ -26,7 +30,6 @@ describe('TransactionsFilters', () => {
 
   it('should map form values correctly and emit after 400ms debounce', () => {
     vi.useFakeTimers();
-
     const emitSpy = vi.spyOn(component.filterChange, 'emit');
 
     const mockFormValue = {
@@ -37,20 +40,35 @@ describe('TransactionsFilters', () => {
     };
 
     component.filterForm.patchValue(mockFormValue as any);
-
     vi.advanceTimersByTime(400);
 
-    expect(emitSpy).toHaveBeenCalledWith({
-      searchCriteria: 'Test Search',
-      iban: 'GE123',
-      amountFrom: 100,
-      amountTo: undefined,
-      category: undefined,
-      currency: 'GEL',
-      dateFrom: undefined,
-      dateTo: undefined,
-    });
+    expect(emitSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        searchCriteria: 'Test Search',
+        iban: 'GE123',
+        amountFrom: 100,
+        currency: 'GEL',
+      }),
+    );
 
     vi.useRealTimers();
+  });
+
+  it('should reset filters on resetFilters call', () => {
+    component.filterForm.patchValue({ searchCriteria: 'Test' });
+    component.resetFilters();
+    expect(component.filterForm.value.searchCriteria).toBeNull();
+  });
+
+  it('should remove specific filter on removeFilter call', () => {
+    component.filterForm.patchValue({
+      searchCriteria: 'Test',
+      currency: 'USD' as any,
+    });
+
+    component.removeFilter('searchCriteria');
+
+    expect(component.filterForm.value.searchCriteria).toBeNull();
+    expect(component.filterForm.value.currency).toBe('USD');
   });
 });

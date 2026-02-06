@@ -30,16 +30,17 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { numberValidator } from '../../utils/validators/form-validations';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 import {
+  IOtpVerificationConfig,
   IVerified,
   OtpVerificationType,
 } from '../../models/otp-verification.models';
-import { getOtpVerificationConfig } from '../../config/otp-verification.config';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 import { OTP_VERIFY_FORM } from '../../config/inputs.config';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Routes } from '../../models/tokens.model';
+import { ɵɵRouterLink } from '@angular/router/testing';
 
 @Component({
   selector: 'app-otp-verification',
@@ -51,6 +52,7 @@ import { Routes } from '../../models/tokens.model';
     SimpleAlerts,
     TranslatePipe,
     RouteLoader,
+    ɵɵRouterLink,
   ],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
@@ -66,11 +68,13 @@ export class OtpVerification implements OnInit {
   public timerType = input<TimerType>('phone');
   public errorMessage = input<string | null>(null);
   public remainingAttempts = input<number | null>(null);
+  public customRemainingAttempts = input<number | null>(null);
   public phoneErrorMessage = input<string | null>(null);
-  public isBtnRowDirection = input<boolean>(true);
+  public isBtnRowDirection = input<boolean>(false);
   public isDisabled = input<boolean>(false);
   public isTimerDisplayed = input<boolean>(true);
-  public onErrorRedirect = input<boolean>(false);
+  public onErrorRedirect = input<boolean>(true);
+  public inputOtpConfig = input<IOtpVerificationConfig>();
 
   public onBackOut = output<void>();
   public onTimeout = output<void>();
@@ -85,15 +89,11 @@ export class OtpVerification implements OnInit {
   public isResendActive = signal<boolean>(false);
   public isLimitExeeded = signal<boolean>(false);
 
-  public config = computed(() => getOtpVerificationConfig(this.type()));
-  public iconUrl = computed(() => this.config().iconUrl);
-  public title = computed(() => this.config().title);
-  public subText = computed(() => this.config().subText);
-  public submitBtnName = computed(() => this.config().submitBtnName);
-  public backLink = computed(() => this.config().backLink);
-  public backLinkText = computed(() => this.config().backLinkText);
   public isHeaderVisible = computed(
-    () => this.iconUrl() || this.title() || this.subText(),
+    () =>
+      this.inputOtpConfig()?.iconUrl ||
+      this.inputOtpConfig()?.title ||
+      this.inputOtpConfig()?.subText,
   );
 
   public maxTime = computed(() => {
@@ -105,6 +105,7 @@ export class OtpVerification implements OnInit {
   public unitedError = computed(() => {
     const error = this.errorMessage();
     const attempts = this.remainingAttempts();
+    const customAttempts = this.customRemainingAttempts();
 
     if (!this.onErrorRedirect()) {
       this.customError.emit();
@@ -115,7 +116,11 @@ export class OtpVerification implements OnInit {
       return `${error} (Remaining attempts: ${attempts})`;
     }
 
-    if (attempts === 0) {
+    if (error && customAttempts !== null && customAttempts > 0) {
+      return `${error} (Remaining attempts: ${customAttempts})`;
+    }
+
+    if (attempts === 0 || customAttempts === 0) {
       this.router.navigate([Routes.ERROR_PAGE]);
     }
 

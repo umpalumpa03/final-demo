@@ -127,13 +127,13 @@ export class TransferExecutionService {
           if (response.success) {
             this.transferStore.setRequiresOtp(false);
             this.transferStore.setTransferSuccess(true);
-            //dispatching action to reload accounts
             this.store.dispatch(
               AccountsActions.loadAccounts({ forceRefresh: true }),
             );
+          } else {
+            this.transferStore.setError(response.message || 'Invalid OTP code');
           }
           this.transferStore.setLoading(false);
-          //here we need to catch success false from response on otp code
         }),
         catchError((error) => {
           this.transferStore.setLoading(false);
