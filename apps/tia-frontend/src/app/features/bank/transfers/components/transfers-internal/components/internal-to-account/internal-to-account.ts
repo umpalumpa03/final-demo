@@ -82,6 +82,9 @@ export class InternalToAccount {
   }
 
   public onContinue() {
+    if (this.isContinueDisabled()) {
+      return;
+    }
     this.router.navigate(['/bank/transfers/internal/amount'])
   }
 

@@ -101,6 +101,9 @@ export class InternalFromAccount implements OnInit {
   }
 
   public onContinue() {
+    if (this.isContinueDisabled()) {
+      return;
+    }
     this.router.navigate(['/bank/transfers/internal/to-account']);
   }
 }

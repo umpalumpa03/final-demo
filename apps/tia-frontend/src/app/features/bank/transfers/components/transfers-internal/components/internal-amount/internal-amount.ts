@@ -10,7 +10,7 @@ import {ChangeDetectionStrategy,
 import { DecimalPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { TransferStore } from '../../../../store/transfers.store';
 import { TransferInternalService } from '../../../../services/transfer.internal.service';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -121,13 +121,24 @@ export class InternalAmount implements OnInit {
       .substring(0, 2);
   });
 
+  private readonly amountStatus = toSignal(this.amountInput.statusChanges, {
+    initialValue: this.amountInput.status,
+  });
+
+  private readonly destinationAmountStatus = toSignal(
+    this.destinationAmountInput.statusChanges,
+    {
+      initialValue: this.destinationAmountInput.status,
+    }
+  );
+
   public readonly isTransferDisabled = computed(() => {
     if (this.isConversionMode()) {
-      const sourceValid = this.amountInput.status === 'VALID';
-      const destValid = this.destinationAmountInput.status === 'VALID';
+      const sourceValid = this.amountStatus() === 'VALID';
+      const destValid = this.destinationAmountStatus() === 'VALID';
       return !sourceValid || !destValid || this.isLoading() || this.hasInsufficientBalance();
     }
-    return this.amountInput.status !== 'VALID' || this.isLoading() || this.hasInsufficientBalance();
+    return this.amountStatus() !== 'VALID' || this.isLoading() || this.hasInsufficientBalance();
   });
 
   constructor() {
