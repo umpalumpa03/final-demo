@@ -18,16 +18,22 @@
       <div class="email-detail__meta">
         <span class="email-detail__subject">
           @if(data()?.isDraft) {
-          <span class="email-detail__draft">Draft:</span>
+          <span class="email-detail__draft"
+            >{{ 'messaging.mail-detail.draft' | translate }}</span
+          >
           } {{ data()?.subject }}
         </span>
         <div class="email-detail__fromto">
           <div>
-            <span class="email-detail__meta-label">From:</span>
+            <span class="email-detail__meta-label"
+              >{{ 'messaging.mail-detail.from' | translate }}</span
+            >
             <span>{{ data()?.senderEmail }}</span>
           </div>
           <div>
-            <span class="email-detail__meta-label">To:</span>
+            <span class="email-detail__meta-label"
+              >{{ 'messaging.mail-detail.to' | translate }}</span
+            >
             <span>{{ data()?.recipient }}</span>
           </div>
         </div>

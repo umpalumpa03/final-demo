@@ -18,12 +18,11 @@
       <app-tooltip
         [content]="'transfers.external.recipient.disabledTooltip' | translate"
         placement="top"
-        
         [disabled]="!!(recipientInput.valid && recipientInput.value)"
       >
         <app-button
           (click)="onVerify()"
-          [isDisabled]="!recipientInput.valid || !recipientInput.value"
+          [isDisabled]="!recipientInput.valid || !recipientInput.value "
           [isLoading]="isLoading()"
           [fullWidth]="isMobile()"
         >
@@ -39,7 +38,7 @@
 <div class="external-recipient__error-toast">
   <app-alert-types-with-icons
     [alertType]="'error'"
-    [alertMessage]="'transfers.external.recipient.recipientNotFound' | translate"
+    [alertMessage]="errorMessage() | translate"
   />
 </div>
 }

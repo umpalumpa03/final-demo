@@ -1,6 +1,7 @@
 import { profilePhotoFeature } from './profile-photo.reducer';
 import { ProfilePhotoActions } from './profile-photo.actions';
 import { ProfilePhotoState, DefaultAvatarResponse } from './profile-photo.state';
+import { environment } from '../../../../../../../../environments/environment';
 
 describe('profilePhotoFeature reducer', () => {
   const initialState: ProfilePhotoState = {
@@ -29,10 +30,10 @@ describe('profilePhotoFeature reducer', () => {
 
     const state = profilePhotoFeature.reducer(
       initialState,
-      ProfilePhotoActions.loadDefaultAvatars({ avatars }),
+      ProfilePhotoActions.loadDefaultAvatars({ avatars: avatars.map(avatar => ({ ...avatar, imageUrl: `${environment.apiUrl}${avatar.iconUri}` })) }),
     );
 
-    expect(state.defaultAvatars).toEqual(avatars);
+    expect(state.defaultAvatars).toEqual(avatars.map(avatar => ({ ...avatar, imageUrl: `${environment.apiUrl}${avatar.iconUri}` })));
     expect(state.defaultAvatarsLoading).toBe(false);
     expect(state.defaultAvatarsError).toBeNull();
   });

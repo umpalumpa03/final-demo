@@ -73,14 +73,16 @@ describe('TransferStore', () => {
     expect(store.recipientInfo()).toEqual(mockResponse);
   });
 
-  it('should handle lookup error and set fallback message', () => {
+  it('should handle lookup error and set the translation key as error', () => {
     transfersApiMock.lookupByPhone.mockReturnValue(
-      throwError(() => ({ message: 'Not Found' })),
+      throwError(() => ({ message: 'Any Error' })),
     );
 
     store.lookupRecipient({ value: '000', type: 'phone' });
 
-    expect(store.error()).toBe('Not Found');
+    expect(store.error()).toBe(
+      'transfers.external.recipient.recipientNotFound',
+    );
     expect(store.isLoading()).toBe(false);
     expect(store.recipientInfo()).toBeNull();
   });
@@ -106,18 +108,11 @@ describe('TransferStore', () => {
     expect(store.isVerified()).toBe(true);
   });
 
-
-  it('should cover the catchError fallback when message is missing', () => {
-    transfersApiMock.lookupByPhone.mockReturnValue(throwError(() => ({})));
-    store.lookupRecipient({ value: '000', type: 'phone' });
-    expect(store.error()).toBe('Failed to find recipient');
-  });
-
   it('should cover setExternalRecipient and verify state reset spread', () => {
     store.setAmount(100);
     store.setExternalRecipient('555', 'phone');
     expect(store.recipientInput()).toBe('555');
-    expect(store.amount()).toBe(0); 
+    expect(store.amount()).toBe(0);
   });
 
   it('should cover all remaining setters (OTP, Challenge, Success)', () => {
@@ -134,6 +129,4 @@ describe('TransferStore', () => {
     expect(store.requiresOtp()).toBe(true);
     expect(store.transferSuccess()).toBe(true);
   });
-
-
 });

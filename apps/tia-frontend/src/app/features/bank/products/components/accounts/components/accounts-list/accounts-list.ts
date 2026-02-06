@@ -8,7 +8,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AccountCardComponent } from '../account-card/container/account-card';
-import { ButtonComponent } from '../../../../../../../shared/lib/primitives/button/button';
 import { RouteLoader } from '../../../../../../../shared/lib/feedback/route-loader/route-loader';
 import {
   AccountSection,
@@ -25,7 +24,6 @@ import { Badges } from '../../../../../../../shared/lib/primitives/badges/badges
     CommonModule,
     TranslatePipe,
     AccountCardComponent,
-    ButtonComponent,
     RouteLoader,
     ErrorStates,
     ScrollArea,
@@ -58,9 +56,9 @@ export class AccountsListComponent {
     const grouped = this.accountsGrouped();
     if (!grouped) return false;
     return (
-      grouped.current.length === 0 &&
-      grouped.saving.length === 0 &&
-      grouped.card.length === 0
+      (grouped.current?.length ?? 0) === 0 &&
+      (grouped.saving?.length ?? 0) === 0 &&
+      (grouped.card?.length ?? 0) === 0
     );
   });
 

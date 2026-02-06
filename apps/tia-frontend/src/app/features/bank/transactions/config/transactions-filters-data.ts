@@ -11,49 +11,73 @@ export const getTransactionFiltersConfig = (
       controlName: 'searchCriteria',
       type: 'input',
       inputType: 'search',
-      uiConfig: { label: 'Search' },
+      uiConfig: {
+        label: 'transactions.filters.search',
+        placeholder: 'transactions.filters.search',
+      },
     },
     {
       controlName: 'category',
       type: 'select',
       options: categoryOptions,
-      uiConfig: { label: 'Category', placeholder: 'All Categories' },
+      uiConfig: {
+        label: 'transactions.filters.category',
+        placeholder: 'transactions.filters.all_categories',
+      },
     },
     {
       controlName: 'amountFrom',
       type: 'input',
       inputType: 'number',
-      uiConfig: { label: 'Min Amount', placeholder: '0' },
+      uiConfig: {
+        label: 'transactions.filters.min_amount',
+        placeholder: '0',
+      },
     },
     {
       controlName: 'amountTo',
       type: 'input',
       inputType: 'number',
-      uiConfig: { label: 'Max Amount', placeholder: 'Any' },
+      uiConfig: {
+        label: 'transactions.filters.max_amount',
+        placeholder: 'transactions.filters.any',
+      },
     },
     {
       controlName: 'accountIban',
       type: 'select',
       options: accountOptions,
-      uiConfig: { label: 'Account', placeholder: 'Select Account' },
+      uiConfig: {
+        label: 'transactions.filters.account',
+        placeholder: 'transactions.filters.select_account',
+      },
     },
     {
       controlName: 'currency',
       type: 'select',
       options: currencyOptions,
-      uiConfig: { label: 'Currency', placeholder: 'All' },
+      uiConfig: {
+        label: 'transactions.filters.currency',
+        placeholder: 'transactions.filters.all',
+      },
     },
     {
       controlName: 'dateFrom',
       type: 'input',
       inputType: 'date',
-      uiConfig: { label: 'Date From', placeholder: 'YYYY-MM-DD' },
+      uiConfig: {
+        label: 'transactions.filters.date_from',
+        placeholder: 'transactions.filters.placeholder_date',
+      },
     },
     {
       controlName: 'dateTo',
       type: 'input',
       inputType: 'date',
-      uiConfig: { label: 'Date To', placeholder: 'YYYY-MM-DD' },
+      uiConfig: {
+        label: 'transactions.filters.date_to',
+        placeholder: 'transactions.filters.placeholder_date',
+      },
     },
-  ] as const
+  ] as const;
 };
