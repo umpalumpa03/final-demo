@@ -13,7 +13,6 @@ export function createTemplateForm(fb: FormBuilder) {
   return fb.nonNullable.group({
     name: ['', Validators.required],
     category: ['', Validators.required],
-    serviceProvider: ['', Validators.required],
   });
 }
 

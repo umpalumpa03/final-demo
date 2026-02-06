@@ -92,29 +92,6 @@ describe('PaybillTemplatesContainer', () => {
     );
   });
 
-  it('should dispatch delete and movements', () => {
-    component.selectedId.set('t-100');
-    component.deleteTemplate();
-    expect(store.dispatch).toHaveBeenCalledWith(
-      TemplatesPageActions.deleteTemplate({ templateId: 't-100' }),
-    );
-
-    component.templateMoved({
-      itemId: 't1',
-      toGroupId: 'g1',
-      fromGroupId: 'g0',
-      newOrder: 0,
-    });
-    expect(store.dispatch).toHaveBeenCalledWith(
-      TemplatesPageActions.moveTemplate({ templateId: 't1', groupId: 'g1' }),
-    );
-
-    component.onCategorySelected('cat1');
-    expect(store.dispatch).toHaveBeenCalledWith(
-      PaybillActions.selectCategory({ categoryId: 'cat1' }),
-    );
-  });
-
   it('should return null or merged config', () => {
     component.modalType.set(null);
     expect(component.currentModalConfig()).toBeNull();

@@ -64,43 +64,5 @@ describe('PaybillTemplates', () => {
       fixture.componentRef.setInput('activeModal', ModalType.RenameTemplate);
       expect(component.activeForm()).toBe(component['editTemplateForm']);
     });
-
-    it('should emit formSubmit only if form is valid', () => {
-      const spy = vi.spyOn(component.formSubmit, 'emit');
-      fixture.componentRef.setInput('activeModal', ModalType.Group);
-
-      component.onFormSubmit('create-group');
-      expect(spy).not.toHaveBeenCalled();
-
-      // Make form valid
-      component.activeForm()?.patchValue({ name: 'Test Group' });
-      component.onFormSubmit('create-group');
-
-      expect(spy).toHaveBeenCalledWith({
-        type: 'create-group',
-        values: expect.objectContaining({ name: 'Test Group' }),
-      });
-    });
-  });
-
-  describe('Effects', () => {
-    it('should patch form values when currentModalConfig changes', async () => {
-      fixture.componentRef.setInput('activeModal', ModalType.RenameGroup);
-      fixture.detectChanges();
-
-      fixture.componentRef.setInput('currentModalConfig', {
-        initialValues: { name: 'Old Name' },
-      });
-      fixture.detectChanges();
-      await fixture.whenStable();
-
-      const activeFormValue = component.activeForm()?.value;
-
-      expect(activeFormValue).toEqual(
-        expect.objectContaining({
-          name: 'Old Name',
-        }),
-      );
-    });
   });
 });

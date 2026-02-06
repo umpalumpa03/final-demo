@@ -43,9 +43,7 @@
   [isOpen]="isModalOpen()"
   (closed)="modalOpenAction.emit()"
 >
-  @if (selectLoading()) {
-  <app-spinner size="large"></app-spinner>
-  } @if (!selectLoading() && currentModalConfig(); as config) {
+  @if (currentModalConfig(); as config) {
   <app-library-title
     [title]="config.title"
     [subtitle]="config.subtitle"
@@ -54,15 +52,16 @@
   @let form = activeForm();
 
   <main>
-    @if (form) {
+    @if(selectLoading()) {
+    <app-spinner size="large"></app-spinner>
+    } @else if (form) {
     <form [formGroup]="form" (ngSubmit)="onFormSubmit(config.formSubmitType)">
       @if (config.fields?.length) { @for (field of config.fields; track
       field.controlName) { @if(field.type === 'dropdown') {
       <lib-select
         [formControlName]="field.controlName"
         [config]="{ label: field.label, placeholder: field.placeholder }"
-        [options]="templateCategories()"
-        (valueChange)="onCategorySelect($event)"
+        [options]="getDropdownOptions(field.controlName)"
       ></lib-select>
       }@else {
       <lib-text-input

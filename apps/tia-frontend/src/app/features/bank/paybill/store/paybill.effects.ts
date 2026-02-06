@@ -264,23 +264,23 @@ export class PaybillEffect {
   //   { dispatch: false },
   // );
 
-  selectProviderNavigation$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(PaybillActions.selectProvider),
-        withLatestFrom(this.store.select(selectSelectedCategoryId)),
-        tap(([{ providerId }, categoryId]) => {
-          if (categoryId) {
-            this.router.navigate([
-              '/bank/paybill/pay',
-              categoryId.toLowerCase(),
-              providerId.toLowerCase(),
-            ]);
-          }
-        }),
-      ),
-    { dispatch: false },
-  );
+  // selectProviderNavigation$ = createEffect(
+  //   () =>
+  //     this.actions$.pipe(
+  //       ofType(PaybillActions.selectProvider),
+  //       withLatestFrom(this.store.select(selectSelectedCategoryId)),
+  //       tap(([{ providerId }, categoryId]) => {
+  //         if (categoryId) {
+  //           this.router.navigate([
+  //             '/bank/paybill/pay',
+  //             categoryId.toLowerCase(),
+  //             providerId.toLowerCase(),
+  //           ]);
+  //         }
+  //       }),
+  //     ),
+  //   { dispatch: false },
+  // );
 
   clearSelectionNavigation$ = createEffect(
     () =>

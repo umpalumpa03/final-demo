@@ -9,12 +9,10 @@ import {
 import { PaybillTemplates } from '../components/paybill-templates';
 import { Store } from '@ngrx/store';
 import {
-  selectActiveCategory,
-  selectActiveProvider,
-  selectActiveProviderOption,
   selectCategories,
   selectLoading,
   selectProviders,
+  selectProvidersDropdown,
   selectTemplatesAsTreeItems,
   selectTemplatesGroupWithConfigs,
 } from '../../../store/paybill.selectors';
@@ -32,6 +30,13 @@ import {
 } from '../models/paybill-templates.model';
 import { ModalConfig } from '../configs/cta-buttons.config';
 import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
+import { FormBuilder } from '@angular/forms';
+import {
+  createEditGroupForm,
+  createEditTemplateForm,
+  createGroupForm,
+  createTemplateForm,
+} from '../configs/paybill-templates.forms';
 
 @Component({
   selector: 'app-paybill-templates-container',
@@ -40,6 +45,13 @@ import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillTemplatesContainer implements OnInit {
+  private readonly fb = inject(FormBuilder);
+  public createTemplateForm = createTemplateForm(this.fb);
+  public editTemplateForm = createEditTemplateForm(this.fb);
+  public editGroupForm = createEditGroupForm(this.fb);
+  public createGroupForm = createGroupForm(this.fb);
+
+  // //////////////////
   private readonly store = inject(Store);
 
   // Store Selections
@@ -160,10 +172,6 @@ export class PaybillTemplatesContainer implements OnInit {
     }
   }
 
-  public onCategorySelected(categoryId: string): void {
-    this.store.dispatch(PaybillActions.selectCategory({ categoryId }));
-  }
-
   public handleFormSubmit(payload: FormSubmitPayload): void {
     this.formSubmitHandlers[payload.type]?.(payload.values);
     this.handleModalToggle();
@@ -246,27 +254,28 @@ export class PaybillTemplatesContainer implements OnInit {
     this.handleModalToggle();
   }
 
-  public providerOption = this.store.selectSignal(selectActiveProviderOption);
-  public providerOption2 = this.store.selectSignal(selectActiveCategory);
-  public providerOption3 = this.store.selectSignal(selectProviders);
+  public providerOptions = this.store.selectSignal(selectProvidersDropdown);
   public selectLoading = this.store.selectSignal(selectLoading);
 
-  public counter = 0;
   // Create Template Logic - to be implemented
   onCategorySelect(category: InputFieldValue): void {
     if (category === '') {
       return;
     }
-    console.log(category);
-    if (this.counter === 0) {
-      this.store.dispatch(
-        PaybillActions.selectCategory({ categoryId: category as string }),
-      );
-      this.counter++;
-    }
+    this.store.dispatch(
+      PaybillActions.selectCategory({ categoryId: category as string }),
+    );
+    ModalConfig.template.fields?.push({
+      label: '',
+      type: 'dropdown',
+      placeholder: 'Choose Provider',
+      controlName: 'serviceProvider',
+    });
+  }
 
-    console.log(this.providerOption2());
-
-    console.log(this.selectLoading());
+  onProviderSelect(provider: any) {
+    this.store.dispatch(
+      PaybillActions.selectProvider({ providerId: provider }),
+    );
   }
 }

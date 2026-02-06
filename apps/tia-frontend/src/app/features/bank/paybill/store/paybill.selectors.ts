@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { PaybillState } from './paybill.state';
+import { filter } from 'rxjs';
 
 export const selectPaybillState =
   createFeatureSelector<PaybillState>('paybill');
@@ -39,6 +40,32 @@ export const selectActiveCategory = createSelector(
   },
 );
 
+export const selectProvidersDropdown = createSelector(
+  selectPaybillState,
+  selectActiveCategory,
+  (state, activeCategory) => {
+    if (!activeCategory) return [];
+
+    if (state.selectedCategoryId !== null) {
+      const filteredProviders = activeCategory.providers.filter(
+        (categories) => {
+          return categories.parentId === state.selectedProviderId;
+        },
+      );
+
+      console.log(filteredProviders);
+    }
+
+    const category = activeCategory.providers
+      .filter((provider) => provider.parentId === null)
+      .map((provider) => ({
+        label: provider.name ?? '',
+        value: provider.id,
+      }));
+    return category;
+  },
+);
+
 export const selectActiveProvider = createSelector(
   selectPaybillState,
   selectProviders,
@@ -61,12 +88,6 @@ export const selectActiveProvider = createSelector(
 
     return null;
   },
-);
-
-export const selectActiveProviderOption = createSelector(
-  selectActiveProvider,
-  (provider) =>
-    provider ? [{ label: provider.name ?? '', value: provider.id }] : [],
 );
 
 export const selectLoading = createSelector(

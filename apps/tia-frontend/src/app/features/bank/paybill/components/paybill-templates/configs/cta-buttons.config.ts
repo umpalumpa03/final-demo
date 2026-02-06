@@ -98,13 +98,6 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
         controlName: 'category',
         required: true,
       },
-      {
-        type: 'dropdown',
-        label: 'Service Provider *',
-        placeholder: 'e.g., Power Company',
-        controlName: 'serviceProvider',
-        required: true,
-      },
     ],
     formSubmitType: 'create-template',
   },

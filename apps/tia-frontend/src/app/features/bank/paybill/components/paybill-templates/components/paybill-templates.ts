@@ -29,7 +29,12 @@ import {
 } from '../models/paybill-templates.model';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { PaybillProvider } from '../../paybill-main/shared/models/paybill.model';
 import {
   createEditGroupForm,
@@ -39,6 +44,7 @@ import {
 } from '../configs/paybill-templates.forms';
 import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
+import { distinctUntilChanged, tap } from 'rxjs';
 
 @Component({
   selector: 'app-paybill-templates',
@@ -59,11 +65,10 @@ import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 })
 export class PaybillTemplates {
   // Forms
-  private readonly fb = inject(FormBuilder);
-  protected readonly createGroupForm = createGroupForm(this.fb);
-  protected readonly createTemplateForm = createTemplateForm(this.fb);
-  protected readonly editTemplateForm = createEditTemplateForm(this.fb);
-  protected readonly editGroupForm = createEditGroupForm(this.fb);
+  public createGroupForm = input.required<FormGroup>();
+  public createTemplateForm = input.required<FormGroup>();
+  public editTemplateForm = input.required<FormGroup>();
+  public editGroupForm = input.required<FormGroup>();
 
   // Config for tree build
   public templateGroups = input.required<TemplateGroups[]>();
@@ -138,13 +143,13 @@ export class PaybillTemplates {
   public activeForm = computed(() => {
     switch (this.activeModal()) {
       case ModalType.Group:
-        return this.createGroupForm;
+        return this.createGroupForm();
       case ModalType.Template:
-        return this.createTemplateForm;
+        return this.createTemplateForm();
       case ModalType.RenameTemplate:
-        return this.editTemplateForm;
+        return this.editTemplateForm();
       case ModalType.RenameGroup:
-        return this.editGroupForm;
+        return this.editGroupForm();
       default:
         return null;
     }
@@ -187,7 +192,7 @@ export class PaybillTemplates {
       value: string;
     }[]
   >();
-  public serviceProvider = input.required<
+  public serviceProviders = input.required<
     {
       label: string;
       value: string;
@@ -196,10 +201,45 @@ export class PaybillTemplates {
 
   // public templateProviders = input<PaybillProvider[]>();
 
-  public categorySelected = output<InputFieldValue>();
+  public categorySelected = output<string>();
+  public providerSelected = output<string>();
   public selectLoading = input<boolean>(false);
 
-  onCategorySelect(category: InputFieldValue): void {
-    this.categorySelected.emit(category);
+  // ngOnInit() {
+  //   console.log(this.createTemplateForm.value);
+  //   this.createTemplateForm
+  //     .get('category')
+  //     ?.valueChanges.pipe(distinctUntilChanged())
+  //     .subscribe((value) => {
+  //       this.categorySelected.emit(value);
+  //       (this.createTemplateForm as any).addControl(
+  //         'serviceProvider',
+  //         this.fb.nonNullable.control('', Validators.required),
+  //       );
+  //       console.log(this.createTemplateForm.value);
+  //     });
+  //   this.createTemplateForm
+  //     .get('serviceProvider')
+  //     ?.valueChanges.pipe(
+  //       distinctUntilChanged(),
+  //       tap((value) => {
+  //         this.providerSelected.emit(value);
+  //         console.log(this.createTemplateForm.value);
+  //       }),
+  //     )
+  //     .subscribe();
+  // }
+
+  getDropdownOptions(controlName: string) {
+    switch (controlName) {
+      case 'category':
+        return this.templateCategories();
+
+      case 'serviceProvider':
+        return this.serviceProviders();
+
+      default:
+        return [];
+    }
   }
 }
