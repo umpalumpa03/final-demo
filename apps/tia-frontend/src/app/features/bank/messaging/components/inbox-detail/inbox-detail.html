@@ -1,18 +1,18 @@
 <app-email-detail [data]="emailDetail()">
   <div class="button-container">
-    <app-button [icon]="'reply.svg'" (click)="onReply()">Reply</app-button>
+    <app-button [icon]="'reply.svg'" (click)="onReply()">{{ isMobile() ? '' : 'Reply' }}</app-button>
     <app-button
       variant="outline"
       [icon]="'favorite.svg'"
       (click)="toggleFavorite()"
       [isLoading]="isFavoriteLoading()"
-      >{{ isFavorite() ? 'Unfavorite' : 'Mark as Favorite' }}</app-button
+      >{{ isMobile() ? '' :  isFavorite() ? 'Unfavorite' : 'Mark as Favorite' }}</app-button
     >
     <app-button
       variant="outline"
       [icon]="'red-trash.svg'"
       (click)="onDelete($event)"
-      >Delete</app-button
+      >{{ isMobile() ? '' : 'Delete' }}</app-button
     >
   </div>
 </app-email-detail>

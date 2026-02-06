@@ -64,27 +64,26 @@ export const MessagingStore = signalStore(
                             tap(() => {
                                 const currentDetail = store.emailDetail?.();
                                 const isFavoritesPage = store.currentType() === 'favorites';
-                                if (currentDetail) {
-                                    patchState(store, {
-                                        mails: isFavoritesPage
-                                            ? store.mails().filter(mail => mail.id !== mailId)
-                                            : store.mails().map(mail =>
-                                                mail.id === mailId ? { ...mail, isFavorite } : mail
-                                            ),
-                                        emailDetail: { ...currentDetail, isFavorite }
-                                    });
-                                } else {
-                                    patchState(store, {
-                                        mails: isFavoritesPage
-                                            ? store.mails().filter(mail => mail.id !== mailId)
-                                            : store.mails().map(mail =>
-                                                mail.id === mailId ? { ...mail, isFavorite } : mail
-                                            )
-                                    });
-                                }
+
+                                patchState(store, {
+                                    mails: isFavoritesPage
+                                        ? store.mails().filter(mail => mail.id !== mailId)
+                                        : store.mails().map(mail =>
+                                            mail.id === mailId ? { ...mail, isFavorite } : mail
+                                        ),
+                                    emailDetail: { ...currentDetail!, isFavorite },
+                                    isFavoriteLoading: false
+                                });
+                            }),
+                            catchError((error) => {
+                                patchState(store, {
+                                    error: 'Failed to toggle favorite',
+                                    isFavoriteLoading: false
+                                });
+                                return of(null);
                             })
-                        )),
-                    tap(() => patchState(store, { isFavoriteLoading: false }))
+                        )
+                    ),
                 )
             ),
         };
@@ -93,6 +92,23 @@ export const MessagingStore = signalStore(
     withMethods((store) => {
         const messagingService = inject(MessagingService);
         const inboxService = inject(InboxService);
+
+        const updateTotalCountByType = () => {
+            const type = store.currentType();
+            switch (type) {
+                case 'drafts':
+                    store.getDraftTotalCount(0);
+                    break;
+                case 'important':
+                    store.getTotalCount('importants');
+                    break;
+                case 'favorites':
+                    store.getTotalCount('favorite');
+                    break;
+                default:
+                    store.getTotalCount(type);
+            }
+        };
         return {
             loadMails: rxMethod<MailType>(
                 pipe(
@@ -141,6 +157,12 @@ export const MessagingStore = signalStore(
                             });
                             inboxService.fetchInboxCount();
                             store.getUnreadImportantCount();
+                        }),
+                        catchError((error) => {
+                            patchState(store, {
+                                error: 'Failed to mark mail as read'
+                            });
+                            return of(null);
                         })
                     ))
                 )
@@ -155,15 +177,13 @@ export const MessagingStore = signalStore(
                             });
                             inboxService.fetchInboxCount();
                             store.getUnreadImportantCount();
-                            if (!(store.currentType() === 'drafts') && !(store.currentType() === 'important') && !(store.currentType() === 'favorites')) {
-                                store.getTotalCount(store.currentType());
-                            } else if (store.currentType() === 'drafts') {
-                                store.getDraftTotalCount(0);
-                            } else if (store.currentType() === 'important') {
-                                store.getTotalCount('importants');
-                            } else if (store.currentType() === 'favorites') {
-                                store.getTotalCount('favorite');
-                            }
+                            updateTotalCountByType();
+                        }),
+                        catchError((error) => {
+                            patchState(store, {
+                                error: 'Failed to delete mail'
+                            });
+                            return of(null);
                         })
                     ))
                 )
@@ -180,15 +200,13 @@ export const MessagingStore = signalStore(
                                 });
                                 inboxService.fetchInboxCount();
                                 store.getUnreadImportantCount();
-                                if (!(store.currentType() === 'drafts') && !(store.currentType() === 'important') && !(store.currentType() === 'favorites')) {
-                                    store.getTotalCount(store.currentType());
-                                } else if (store.currentType() === 'drafts') {
-                                    store.getDraftTotalCount(0);
-                                } else if (store.currentType() === 'important') {
-                                    store.getTotalCount('importants');
-                                } else if (store.currentType() === 'favorites') {
-                                    store.getTotalCount('favorite');
-                                }
+                                updateTotalCountByType();
+                            }),
+                            catchError((error) => {
+                                patchState(store, {
+                                    error: 'Failed to delete mails'
+                                });
+                                return of(null);
                             })
                         );
                     })
@@ -210,6 +228,12 @@ export const MessagingStore = signalStore(
                                 });
                                 inboxService.fetchInboxCount();
                                 store.getUnreadImportantCount();
+                            }),
+                            catchError((error) => {
+                                patchState(store, {
+                                    error: 'Failed to mark mail as read'
+                                });
+                                return of(null);
                             })
                         );
                     })
@@ -258,7 +282,7 @@ export const MessagingStore = signalStore(
                             patchState(store, { mailReplies: replies }, { isLoading: false });
                         }),
                         catchError((error) => {
-                            patchState(store, { error: 'Failed to load mail replies' });
+                            patchState(store, { isLoading: false, error: 'Failed to load mail replies' });
                             return of([]);
                         }),
                     ))
@@ -280,13 +304,13 @@ export const MessagingStore = signalStore(
                             store.loadMails(store.currentType());
                             inboxService.fetchInboxCount();
                             store.getUnreadImportantCount();
-
-                            if (!(store.currentType() === 'drafts') && !(store.currentType() === 'important')) {
-                                store.getTotalCount(store.currentType());
-                            } else if (store.currentType() === 'drafts') {
-                                store.getDraftTotalCount(0);
-                            } else if (store.currentType() === 'important') {
-                                store.getTotalCount('importants');
+                            store.getDraftTotalCount(0);
+                            switch (store.currentType()) {
+                                case 'important':
+                                    store.getTotalCount('importants');
+                                    break;
+                                default:
+                                    store.getTotalCount(store.currentType());
                             }
                         }),
                         catchError((error) => {
@@ -316,7 +340,7 @@ export const MessagingStore = signalStore(
                             patchState(store, { emailDetail }, { isLoading: false });
                         }),
                         catchError((error) => {
-                            patchState(store, { error: 'Failed to load email detail' });
+                            patchState(store, { isLoading: false, error: 'Failed to load email detail' });
                             return of(null);
                         }),
                     )),
@@ -345,7 +369,7 @@ export const MessagingStore = signalStore(
                     )),
                 )
             ),
-            
+
             sendMailReply: rxMethod<{ mailId: number; body: string }>(
                 pipe(
                     tap(() => patchState(store)),
@@ -358,7 +382,7 @@ export const MessagingStore = signalStore(
                             });
                         }),
                         catchError((error) => {
-                            patchState(store, { error: 'Failed to send mail reply' });
+                            patchState(store, { isLoading: false, error: 'Failed to send mail reply' });
                             return of(null);
                         }),
                     ))

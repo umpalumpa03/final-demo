@@ -14,7 +14,7 @@
   </lib-checkboxes>
   }
   <app-avatar
-    size="md"
+    [size]="isExtraSmall() ? 'sm' : 'md'"
     [tone]="isCurrentUser() ? 'solid' : 'soft'"
     [initials]="getInitials(mail()?.senderEmail ?? '')"
   ></app-avatar>

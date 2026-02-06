@@ -11,6 +11,7 @@ import { Checkboxes } from "@tia/shared/lib/forms/checkboxes/checkboxes";
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { Store } from '@ngrx/store';
 import { userInfoFeature } from 'apps/tia-frontend/src/app/store/user-info/user-info.reducer';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 
 @Component({
   selector: 'app-compose',
@@ -26,9 +27,10 @@ export class Compose {
   public readonly isOpen = input.required<boolean>();
   public readonly invalidForm = signal<boolean>(false);
   public readonly errorMesage = signal<string>('');
-
   public readonly store = inject(MessagingStore);
   public readonly roleStore = inject(Store);
+  private readonly breakpointService = inject(BreakpointService);
+  public readonly isExtraSmall = this.breakpointService.isExtraSmall;
 
   public readonly filteredSearchResultsCc = computed(() => {
     const selectedEmails = [

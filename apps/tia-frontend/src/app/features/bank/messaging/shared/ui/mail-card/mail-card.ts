@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { Mail } from '../../../store/messaging.state';
 import { Avatar } from '@tia/shared/lib/data-display/avatars/avatar';
 import { DatePipe } from '@angular/common';
@@ -6,6 +6,7 @@ import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 @Component({
   selector: 'app-mail-card',
   imports: [Avatar, DatePipe, UiModal, LibraryTitle, ButtonComponent, Checkboxes],
@@ -25,7 +26,8 @@ export class MailCard {
   public readonly isDeleteModalOpen = signal(false);
   public readonly checked = input<boolean>(false);
   public readonly checkedChange = output<boolean>();
-
+  private readonly breakpointService = inject(BreakpointService);
+  public readonly isExtraSmall = this.breakpointService.isExtraSmall;
   public readonly currentUserEmail = input<string>();
 
   public readonly isCurrentUser = computed(() => {

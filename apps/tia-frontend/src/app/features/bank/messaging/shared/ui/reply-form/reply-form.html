@@ -13,10 +13,10 @@
       >
       </lib-textarea>
       <div class="reply-card__actions">
-        <app-button variant="outline" (click)="onCancel()"
+        <app-button variant="outline" (click)="onCancel()" [fullWidth]="isExtraSmall() ? true : false"
           >Cancel</app-button
         >
-        <app-button [icon]="'send-email.svg'" (click)="onSendReply()"
+        <app-button [icon]="'send-email.svg'" (click)="onSendReply()" [fullWidth]="isExtraSmall() ? true : false"
           >Send Reply</app-button
         >
       </div>

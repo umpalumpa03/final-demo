@@ -60,17 +60,24 @@
         }
       </div>
       <div class="buttons-container">
-        <app-button variant="outline" (click)="onClose()">Cancel</app-button>
+        <app-button
+          variant="outline"
+          (click)="onClose()"
+          [fullWidth]="isExtraSmall() ? true : false"
+          >Cancel</app-button
+        >
         <app-button
           variant="outline"
           icon="save-draft.svg"
           (click)="onSaveDraft()"
+          [fullWidth]="isExtraSmall() ? true : false"
           >Save Draft</app-button
         >
         <app-button
           variant="default"
           icon="send-email.svg"
           (click)="onSendEmail()"
+          [fullWidth]="isExtraSmall() ? true : false"
           >Send</app-button
         >
       </div>
