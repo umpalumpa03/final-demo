@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
   selectPersonalInfo,
   selectPId,
@@ -7,6 +7,10 @@ import {
 import type { personalInfoState } from './personal-info.state';
 
 describe('personal-info selectors', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
+
   const initialState: { personalInfo: personalInfoState } = {
     personalInfo: {
       pId: '12345678901',
@@ -27,20 +31,18 @@ describe('personal-info selectors', () => {
   });
 
   it('selectPhoneNumber should return phoneNumber', () => {
-    const result = selectPhoneNumber(initialState);
+    const result = selectPhoneNumber.projector(initialState.personalInfo);
     expect(result).toBe('555999333');
   });
 
   it('should handle empty state for phone number', () => {
-    const emptyState = {
-      personalInfo: {
-        pId: '',
-        phoneNumber: '',
-        loading: false,
-        error: null,
-      },
+    const emptyState: personalInfoState = {
+      pId: '',
+      phoneNumber: '',
+      loading: false,
+      error: null,
     };
-    const result = selectPhoneNumber(emptyState);
+    const result = selectPhoneNumber.projector(emptyState);
     expect(result).toBe('');
   });
 });
