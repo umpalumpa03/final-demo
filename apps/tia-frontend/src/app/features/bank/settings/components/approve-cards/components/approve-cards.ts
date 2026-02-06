@@ -26,7 +26,7 @@ export class ApproveCards implements OnInit {
 
   public cardInfo = signal<PendingCard[]>([]);
 
-  ngOnInit() {
+  ngOnInit():void {
     this.store.load();
   }
 
