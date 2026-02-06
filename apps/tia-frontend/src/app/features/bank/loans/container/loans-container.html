@@ -31,9 +31,9 @@
         </div>
         }
 
-        <lib-text-input type="search" (valueChange)="onSearch($event)"></lib-text-input>
 
         <div [style.display]="isLoading() ? 'none' : 'block'">
+            <lib-text-input type="search" (valueChange)="onSearch($event)"></lib-text-input>
             <router-outlet></router-outlet>
         </div>
         @if (isModalOpen()) {

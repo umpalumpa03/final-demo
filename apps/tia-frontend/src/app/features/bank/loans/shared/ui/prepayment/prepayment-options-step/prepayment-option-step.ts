@@ -11,10 +11,7 @@ import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { CommonModule } from '@angular/common';
 import { Radios } from '@tia/shared/lib/forms/radios/radios';
 import { RadioOption } from '@tia/shared/lib/forms/models/radios.model';
-import {
-  PREPAYMENT_CALC_OPTIONS,
-  PREPAYMENT_FORM_CONFIG,
-} from '../../../config/loan-prepayment.config';
+import { PREPAYMENT_CALC_OPTIONS } from '../../../config/loan-prepayment.config';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ILoan } from '../../../models/loan.model';
 import { PrepaymentCalculationPayload } from '../../../models/prepayment.model';
@@ -23,6 +20,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { startWith, map } from 'rxjs';
 import { translateConfig } from '../../../../../../../shared/utils/translate-config/config-translator.util';
 import { LoansStore } from '../../../../store/loans.store';
+import { LoanPrepaymentState } from '../../../state/loan-prepayment.state';
 
 @Component({
   selector: 'app-prepayment-option-step',
@@ -37,12 +35,14 @@ import { LoansStore } from '../../../../store/loans.store';
   ],
   templateUrl: './prepayment-option-step.html',
   styleUrl: './prepayment-option-step.scss',
+  providers: [LoanPrepaymentState],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrepaymentOptionStep {
   private readonly store = inject(LoansStore);
   private readonly fb = inject(FormBuilder);
   private readonly translate = inject(TranslateService);
+  public readonly loanPrepayment = inject(LoanPrepaymentState);
 
   public readonly loan = input.required<ILoan>();
   public readonly isLoading = input<boolean>(false);
@@ -51,22 +51,6 @@ export class PrepaymentOptionStep {
   public readonly calculate = output<PrepaymentCalculationPayload>();
 
   protected readonly typeOptions = this.store.prepaymentTypeOptions;
-
-  protected readonly cfg = toSignal(
-    this.translate.onLangChange.pipe(
-      startWith({ lang: this.translate.getCurrentLang(), translations: null }),
-      map(() =>
-        translateConfig(PREPAYMENT_FORM_CONFIG, (key) =>
-          this.translate.instant(key),
-        ),
-      ),
-    ),
-    {
-      initialValue: translateConfig(PREPAYMENT_FORM_CONFIG, (key) =>
-        this.translate.instant(key),
-      ),
-    },
-  );
 
   protected readonly calculationOptions = toSignal(
     this.translate.onLangChange.pipe(
