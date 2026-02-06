@@ -17,6 +17,9 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { debounceTime, distinctUntilChanged, Subject, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
+import { LoanDetails } from '../shared/ui/prepayment/loan-details/loan-details';
+import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
+import { PrepaymentContainer } from '../shared/ui/prepayment/prepayment-container/prepayment-container';
 
 @Component({
   selector: 'app-loans-container',
@@ -28,6 +31,9 @@ import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
     Skeleton,
     AlertTypesWithIcons,
     TextInput,
+    LoanDetails,
+    UiModal,
+    PrepaymentContainer,
   ],
   templateUrl: './loans-container.html',
   styleUrl: './loans-container.scss',
@@ -65,11 +71,10 @@ export class LoansContainer {
 
   public ngOnInit(): void {
     this.globalStore.dispatch(AccountsActions.loadAccounts({}));
-
-    this.store.loadCounts();
   }
 
   ngOnDestroy(): void {
+    this.store.reset();
     this.store.setSearchQuery('');
   }
 }

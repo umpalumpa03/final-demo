@@ -1,24 +1,3 @@
-<section class="loans">
-    @for (loan of loans(); track loan.id) {
-    <lib-loan-card [loan]="loan" (cardClick)="onCardClick($event)" (rename)="onRenameLoan($event)">
-    </lib-loan-card>
-    } @empty {
-    <app-error-states variant="not-found" [header]="'loans.empty.all.title' | translate"
-        [message]="'loans.empty.all.message' | translate" [buttonMessage]="'loans.empty.all.button' | translate"
-        [border]="false" width="100%" height="30rem" (buttonClick)="onRequestLoan()">
-    </app-error-states>
-    }
-</section>
-
-<app-loan-details [isOpen]="isDetailsOpen()" [loan]="selectedLoanDetails()" [isLoading]="isDetailsLoading()"
-    (close)="closeModals()" (calculatePrepayment)="onOpenPrepayment($event)">
-</app-loan-details>
-
-<app-ui-modal [isOpen]="isPrepaymentOpen()" (closed)="closeModals()">
-    @let activePrepayment = prepaymentLoan();
-
-    @if (activePrepayment) {
-    <app-prepayment-container [loan]="activePrepayment" (close)="closeModals()">
-    </app-prepayment-container>
-    }
-</app-ui-modal>
+<app-loans-grid [loans]="store.filteredLoans()" [variant]="'default'" [emptyConfig]="emptyConfig"
+    (cardClick)="store.openDetails($event)" (rename)="store.renameLoan($event)" (emptyClick)="onRequestLoan()">
+</app-loans-grid>

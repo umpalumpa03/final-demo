@@ -166,7 +166,19 @@ export const LoansStore = signalStore(
                   friendlyName: toTitleCase(l.friendlyName),
                   accountName: l.accountName || '',
                 }));
-                patchState(store, { loans: mappedLoans, loading: false });
+
+                const counts = {
+                  all: loans.length,
+                  approved: loans.filter((l) => l.status === 2).length,
+                  pending: loans.filter((l) => l.status === 1).length,
+                  declined: loans.filter((l) => l.status === 3).length,
+                };
+
+                patchState(store, {
+                  loans: mappedLoans,
+                  dashboardCounts: counts,
+                  loading: false,
+                });
               }),
               catchError((error) => {
                 patchState(store, { error: error.message, loading: false });
@@ -174,25 +186,6 @@ export const LoansStore = signalStore(
               }),
             );
           }),
-        ),
-      ),
-
-      loadCounts: rxMethod<void>(
-        pipe(
-          switchMap(() =>
-            loansService.getAllLoans().pipe(
-              tap((loans) => {
-                const counts = {
-                  all: loans.length,
-                  approved: loans.filter((l) => l.status === 2).length,
-                  pending: loans.filter((l) => l.status === 1).length,
-                  declined: loans.filter((l) => l.status === 3).length,
-                };
-                patchState(store, { dashboardCounts: counts });
-              }),
-              catchError(() => EMPTY),
-            ),
-          ),
         ),
       ),
 
@@ -456,7 +449,6 @@ export const LoansStore = signalStore(
                 });
 
                 store.loadLoans({ forceChange: true });
-                store.loadCounts();
               }),
               catchError((error) => {
                 patchState(store, {

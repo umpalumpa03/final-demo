@@ -1,18 +1,3 @@
-<div class="loans">
-    @for (loan of declinedLoans(); track loan.id) {
-    <lib-loan-card [loan]="loan" [variant]="'colored'" (cardClick)="onCardClick($event)"
-        (rename)="onRenameLoan($event)">
-    </lib-loan-card>
-    } @empty {
-    <div class="error">
-        <app-error-states variant="not-found" [header]="'loans.empty.declined.title' | translate"
-            [message]="'loans.empty.declined.message' | translate" [border]="false" height="30rem"
-            [buttonMessage]="'loans.empty.declined.button' | translate" (buttonClick)="navigateToAllLoans()">
-        </app-error-states>
-    </div>
-    }
-</div>
-
-<app-loan-details [isOpen]="isDetailsOpen()" (close)="closeModals()" [loan]="selectedLoanDetails()"
-    [isLoading]="isDetailsLoading()">
-</app-loan-details>
+<app-loans-grid [loans]="store.filteredLoans()" [variant]="'colored'" [emptyConfig]="emptyConfig"
+    (cardClick)="store.openDetails($event)" (rename)="store.renameLoan($event)" (emptyClick)="navigateToAll()">
+</app-loans-grid>

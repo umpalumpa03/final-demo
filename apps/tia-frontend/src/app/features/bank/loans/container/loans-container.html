@@ -37,8 +37,21 @@
             <router-outlet></router-outlet>
         </div>
         @if (isModalOpen()) {
-        <app-request-modal [isOpen]="isModalOpen()" (close)="isModalOpen.set(false)">
-        </app-request-modal>
+        <app-request-modal [isOpen]="isModalOpen()" (close)="isModalOpen.set(false)" />
         }
+
+        @if (store.isDetailsOpen()) {
+        <app-loan-details [isOpen]="store.isDetailsOpen()" [loan]="store.selectedLoanDetails()"
+            [isLoading]="store.detailsLoading()" (calculatePrepayment)="store.openPrepayment($event)"
+            (close)="store.closeModals()">
+        </app-loan-details>
+        }
+
+        <app-ui-modal [isOpen]="store.isPrepaymentOpen()" (closed)="store.closeModals()">
+            @let prepayLoan = store.activePrepaymentLoan();
+            @if (prepayLoan) {
+            <app-prepayment-container [loan]="prepayLoan" (close)="store.closeModals()" />
+            }
+        </app-ui-modal>
     </main>
 </div>

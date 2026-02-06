@@ -1,16 +1,3 @@
-<div class="loans">
-    @for (loan of pendingLoans(); track loan.id) {
-    <lib-loan-card [loan]="loan" [variant]="'colored'" (cardClick)="onCardClick($event)"
-        (rename)="onRenameLoan($event)">
-    </lib-loan-card>
-    } @empty {
-    <app-error-states variant="not-found" [header]="'loans.empty.pending.title' | translate"
-        [message]="'loans.empty.pending.message' | translate" [buttonMessage]="'loans.empty.pending.button' | translate"
-        [border]="false" width="100%" height="50rem" (buttonClick)="navigateToAllLoans()">
-    </app-error-states>
-    }
-</div>
-
-<app-loan-details [isOpen]="isDetailsOpen()" (close)="closeModals()" [loan]="selectedLoanDetails()"
-    [isLoading]="isDetailsLoading()">
-</app-loan-details>
+<app-loans-grid [loans]="store.filteredLoans()" [variant]="'colored'" [emptyConfig]="emptyConfig"
+    (cardClick)="store.openDetails($event)" (rename)="store.renameLoan($event)" (emptyClick)="navigateToAll()">
+</app-loans-grid>
