@@ -43,7 +43,7 @@
         @if (store.isDetailsOpen()) {
         <app-loan-details [isOpen]="store.isDetailsOpen()" [loan]="store.selectedLoanDetails()"
             [isLoading]="store.detailsLoading()" (calculatePrepayment)="store.openPrepayment($event)"
-            (close)="store.closeModals()">
+            (close)="store.closeModals()" (navigate)="store.navigateDetails($event)">
         </app-loan-details>
         }
 

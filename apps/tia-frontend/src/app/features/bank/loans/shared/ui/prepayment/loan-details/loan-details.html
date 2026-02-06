@@ -1,6 +1,6 @@
 @let loanData = loan();
 
-<app-ui-modal [isOpen]="isOpen()" (closed)="close.emit()">
+<app-ui-modal [isOpen]="isOpen()" (closed)="close.emit()" [hasNavigation]="true" (navigate)="navigate.emit($event)">
     <div class="loan-modal">
 
         <header class="loan-modal__header">
