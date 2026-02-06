@@ -7,7 +7,7 @@ import {
 } from '@ngrx/effects';
 import { ThemeActions } from './theme.actions';
 import { tap } from 'rxjs';
-import { toCamelCase } from '@tia/shared/utils/camel-case/camel-case.utils';
+import { UserInfoActions } from '../user-info/user-info.actions';
 
 @Injectable()
 export class ThemeEffects {
@@ -17,15 +17,24 @@ export class ThemeEffects {
   public syncTheme$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(ThemeActions.setTheme, ROOT_EFFECTS_INIT),
+        ofType(
+          ThemeActions.setTheme,
+          UserInfoActions.loadUserSuccess,
+          ROOT_EFFECTS_INIT,
+        ),
         tap((action) => {
-          const theme =
-            action.type === ThemeActions.setTheme.type
-              ? action.theme
-              : localStorage.getItem('theme') || 'ocean-blue';
+          let theme: string;
 
-          const themeName = toCamelCase(theme);
-          this.document.documentElement.setAttribute('data-theme', themeName);
+          if (action.type === ThemeActions.setTheme.type) {
+            theme = action.theme;
+          } else if (action.type === UserInfoActions.loadUserSuccess.type) {
+            theme =
+              action.user.theme || localStorage.getItem('theme') || 'oceanBlue';
+          } else {
+            theme = localStorage.getItem('theme') || 'oceanBlue';
+          }
+
+          this.document.documentElement.setAttribute('data-theme', theme);
           localStorage.setItem('theme', theme);
         }),
       ),
