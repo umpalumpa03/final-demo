@@ -36,6 +36,14 @@
           <span class="account-card__header-info-badge"
             >{{ 'my-products.accounts.card.active' | translate }}</span
           >
+          } @if (account().isFavorite) {
+          <div class="account-card__header-favorite">
+            <img
+              src="images/svg/settings/approve-cards/favorite.svg"
+              alt="favorite"
+              class="account-card__header-favorite-icon"
+            />
+          </div>
           }
         </div>
         <p class="account-card__header-info-number">{{ account().iban }}</p>

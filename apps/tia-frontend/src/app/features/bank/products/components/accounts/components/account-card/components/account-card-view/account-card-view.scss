@@ -13,6 +13,16 @@
     flex-wrap: wrap;
     gap: 1rem;
 
+    &-favorite {
+      @include flex-center();
+      flex-shrink: 0;
+
+      &-icon {
+        width: 1.8rem;
+        height: 1.8rem;
+      }
+    }
+
     &-icon {
       width: 4.8rem;
       height: 4.8rem;
@@ -294,6 +304,12 @@
 
     &__header {
       gap: 0.75rem;
+
+      &-favorite {
+        &-icon {
+          font-size: 1.6rem;
+        }
+      }
 
       &-icon {
         width: 4rem;

@@ -18,15 +18,21 @@ export const {
 export const selectCurrentAccounts = createSelector(
   selectAccounts,
   (accounts) =>
-    (accounts ?? []).filter((account) => account.type === AccountType.current),
+    (accounts ?? [])
+      .filter((account) => account.type === AccountType.current)
+      .sort((a, b) => (b.isFavorite ? 1 : 0) - (a.isFavorite ? 1 : 0)),
 );
 
 export const selectSavingAccounts = createSelector(selectAccounts, (accounts) =>
-  (accounts ?? []).filter((account) => account.type === AccountType.saving),
+  (accounts ?? [])
+    .filter((account) => account.type === AccountType.saving)
+    .sort((a, b) => (b.isFavorite ? 1 : 0) - (a.isFavorite ? 1 : 0)),
 );
 
 export const selectCardAccounts = createSelector(selectAccounts, (accounts) =>
-  (accounts ?? []).filter((account) => account.type === AccountType.card),
+  (accounts ?? [])
+    .filter((account) => account.type === AccountType.card)
+    .sort((a, b) => (b.isFavorite ? 1 : 0) - (a.isFavorite ? 1 : 0)),
 );
 
 export const selectSelectedAccount = selectSelectedAccountId;
