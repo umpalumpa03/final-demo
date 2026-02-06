@@ -1,106 +1,91 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PaybillContainer } from './paybill-container';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import {
-  provideRouter,
-  Router,
-  NavigationEnd,
-  Event as RouterEvent,
-} from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { PaybillActions } from '../store/paybill.actions';
 import * as fromSelectors from '../store/paybill.selectors';
-import { Subject } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { initialPaybillState } from '../store/paybill.state';
+import { BreadcrumbService } from '../services/breadcrumb/breadcrumb';
+import { signal } from '@angular/core';
 
 describe('PaybillContainer', () => {
   let component: PaybillContainer;
   let fixture: ComponentFixture<PaybillContainer>;
   let store: MockStore;
-  let router: Router;
-  let routerEventsSubject: Subject<RouterEvent>;
+
+  // Simple mock data
+  const mockCategory = { id: 'UTIL', name: 'Utilities' };
+  const mockProvider = { id: 'P1', name: 'Electric Co' };
 
   beforeEach(async () => {
-    routerEventsSubject = new Subject<RouterEvent>();
-
     await TestBed.configureTestingModule({
       imports: [PaybillContainer, TranslateModule.forRoot()],
       providers: [
         provideMockStore({
           initialState: { paybill: initialPaybillState },
           selectors: [
-            { selector: fromSelectors.selectPaybillBreadcrumbs, value: [] },
-            {
-              selector: fromSelectors.selectCategories,
-              value: [{ id: 'WATER', name: 'Water' }],
-            },
+            { selector: fromSelectors.selectCategories, value: [mockCategory] },
+            { selector: fromSelectors.selectActiveCategory, value: null },
+            { selector: fromSelectors.selectActiveProvider, value: null },
+            { selector: fromSelectors.selectNotifications, value: [] },
           ],
         }),
         provideRouter([]),
+        {
+          provide: BreadcrumbService,
+          useValue: { breadcrumbs$: signal([]) },
+        },
       ],
     }).compileComponents();
 
-    router = TestBed.inject(Router);
     store = TestBed.inject(MockStore);
-    vi.spyOn(router, 'events', 'get').mockReturnValue(routerEventsSubject);
     fixture = TestBed.createComponent(PaybillContainer);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
-  describe('handleNativeClick Logic', () => {
-    it('should dispatch clearSelection when clicking "Paybill" text', () => {
+  it('should create and load categories on init', () => {
+    const spy = vi.spyOn(store, 'dispatch');
+    component.ngOnInit();
+    expect(component).toBeTruthy();
+    expect(spy).toHaveBeenCalledWith(PaybillActions.loadCategories());
+  });
+
+  it('should dispatch selectCategory when a category is selected', () => {
+    const spy = vi.spyOn(store, 'dispatch');
+    component.handleCategorySelect(mockCategory as any);
+    expect(spy).toHaveBeenCalledWith(
+      PaybillActions.selectCategory({ categoryId: mockCategory.id }),
+    );
+  });
+
+  it('should dispatch selectProvider when a provider is selected', () => {
+    const spy = vi.spyOn(store, 'dispatch');
+    component.handleProviderSelect(mockProvider as any);
+    expect(spy).toHaveBeenCalledWith(
+      PaybillActions.selectProvider({ providerId: mockProvider.id }),
+    );
+  });
+
+  it('should dispatch dismissNotification when alert is closed', () => {
+    const spy = vi.spyOn(store, 'dispatch');
+    component.handleDismiss('alert-123');
+    expect(spy).toHaveBeenCalledWith(
+      PaybillActions.dismissNotification({ id: 'alert-123' }),
+    );
+  });
+
+  describe('handleNativeClick', () => {
+    it('should clear selection when clicking "Paybill" text', () => {
       const spy = vi.spyOn(store, 'dispatch');
       const mockEvent = {
-        target: { textContent: '  Paybill  ' },
-      } as unknown as MouseEvent;
+        target: { textContent: 'Paybill' },
+      } as unknown as Event;
+
       component.handleNativeClick(mockEvent);
       expect(spy).toHaveBeenCalledWith(PaybillActions.clearSelection());
     });
-
-  });
-
-  describe('Route Signal Sync', () => {
-    it('should dispatch TEMPLATES selection on template route', () => {
-      const spy = vi.spyOn(store, 'dispatch');
-      vi.spyOn(router, 'url', 'get').mockReturnValue('/bank/paybill/templates');
-
-      routerEventsSubject.next(
-        new NavigationEnd(
-          1,
-          '/bank/paybill/templates',
-          '/bank/paybill/templates',
-        ),
-      );
-      fixture.detectChanges();
-
-      expect(spy).toHaveBeenCalledWith(
-        PaybillActions.selectCategory({ categoryId: 'TEMPLATES' }),
-      );
-    });
-
-    it('should clear selection on base pay route', () => {
-      const spy = vi.spyOn(store, 'dispatch');
-      vi.spyOn(router, 'url', 'get').mockReturnValue('/bank/paybill/pay');
-
-      routerEventsSubject.next(
-        new NavigationEnd(1, '/bank/paybill/pay', '/bank/paybill/pay'),
-      );
-      fixture.detectChanges();
-
-      expect(spy).toHaveBeenCalledWith(PaybillActions.clearSelection());
-    });
-  });
-
-
-  it('should dispatch actions for provider select and back navigation', () => {
-    const spy = vi.spyOn(store, 'dispatch');
-    component.handleProviderSelect({ id: 'P1' } as any);
-    expect(spy).toHaveBeenCalledWith(
-      PaybillActions.selectProvider({ providerId: 'P1' }),
-    );
-
-    component.navigateBack();
-    expect(spy).toHaveBeenCalledWith(PaybillActions.clearSelection());
   });
 });

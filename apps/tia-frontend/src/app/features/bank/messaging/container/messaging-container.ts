@@ -17,19 +17,37 @@ import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MessagingContainer {
-  private translate = inject(TranslateService);
-  public inboxService = inject(InboxService);
-  public isComposeOpen = signal(false);
-  private messagingStore = inject(MessagingStore);
-  public error = this.messagingStore.error;
-  public successMessage = this.messagingStore.successMessage;
+  private readonly translate = inject(TranslateService);
+  public readonly inboxService = inject(InboxService);
+  public readonly isComposeOpen = signal(false);
+  private readonly messagingStore = inject(MessagingStore);
+  public readonly error = this.messagingStore.error;
+  public readonly successMessage = this.messagingStore.successMessage;
 
   constructor() {
     this.inboxService.fetchInboxCount();
+    this.messagingStore.getDraftTotalCount(0);
+    this.messagingStore.getUnreadImportantCount();
     effect(() => {
       const count = this.inboxService.inboxCount();
       this.messageRoutes.update(routes => {
         routes[0] = { ...routes[0], count };
+        return [...routes];
+      });
+    });
+
+    effect(() => {
+      const draftCount = this.messagingStore.draftsTotal?.();
+      this.messageRoutes.update(routes => {
+        routes[2] = { ...routes[2], count: draftCount ?? 0 };
+        return [...routes];
+      });
+    });
+
+    effect(() => {
+      const importantCount = this.messagingStore.importantCount?.();
+      this.messageRoutes.update(routes => {
+        routes[3] = { ...routes[3], count: importantCount ?? 0 };
         return [...routes];
       });
     });
@@ -55,7 +73,8 @@ export class MessagingContainer {
       label: this.translate.instant('messaging.routes.inbox'),
       icon: 'images/svg/messaging/inbox.svg',
       route: 'inbox',
-      count: 0
+      count: 0,
+      activeCount: true
     },
     {
       label: this.translate.instant('messaging.routes.sent'),

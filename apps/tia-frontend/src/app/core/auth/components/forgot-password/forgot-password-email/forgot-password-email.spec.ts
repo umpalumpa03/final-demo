@@ -8,6 +8,7 @@ import { ForgotPasswordEmail } from './forgot-password-email';
 import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
 import { Routes } from '../../../models/tokens.model';
+import { signal } from '@angular/core';
 
 describe('ForgotPasswordEmail', () => {
   let component: ForgotPasswordEmail;
@@ -19,6 +20,8 @@ describe('ForgotPasswordEmail', () => {
   let router: Router;
 
   beforeEach(async () => {
+    const isLoadingSignal = signal(false);
+    
     authServiceMock = {
       forgotPasswordRequest: vi
         .fn()
@@ -30,8 +33,11 @@ describe('ForgotPasswordEmail', () => {
       imports: [ForgotPasswordEmail, TranslateModule.forRoot()],
       providers: [
         provideRouter([]),
-        { provide: AuthService, useValue: authServiceMock },
-        { provide: TokenService, useValue: {} },
+        { provide: AuthService, useValue: { ...authServiceMock, isLoginLoading: isLoadingSignal } },
+        {
+          provide: TokenService,
+          useValue: {},
+        },
       ],
     }).compileComponents();
 
@@ -43,12 +49,10 @@ describe('ForgotPasswordEmail', () => {
   });
 
   it('submit: validates form, calls API on valid input, navigates on success, and handles all error types', () => {
-    // Invalid form - should not call API
     component.submit();
     expect(authServiceMock.forgotPasswordRequest).not.toHaveBeenCalled();
     expect(component.isSubmitting()).toBe(false);
 
-    // Valid form - should call API and navigate
     component.form.controls.email.setValue('user@test.com');
     component.submit();
     expect(authServiceMock.forgotPasswordRequest).toHaveBeenCalledWith(
@@ -88,7 +92,6 @@ describe('ForgotPasswordEmail', () => {
     component.submit();
     expect(component.submitError()).toBe('email must be an email');
 
-    // 400 error with string message - should use message directly
     authServiceMock.forgotPasswordRequest.mockReturnValue(
       throwError(
         () =>
@@ -102,7 +105,6 @@ describe('ForgotPasswordEmail', () => {
     component.submit();
     expect(component.submitError()).toBe('Invalid email');
 
-    // Unknown error - should show generic message
     authServiceMock.forgotPasswordRequest.mockReturnValue(
       throwError(() => new Error('boom')),
     );
@@ -115,21 +117,50 @@ describe('ForgotPasswordEmail', () => {
   });
 
   it('emailConfig: returns appropriate errorMessage based on form validation state', () => {
-    // Empty email (required error)
     component.form.controls.email.setValue('');
     component.form.controls.email.markAsTouched();
     expect(component.emailConfig().errorMessage).toBe('Enter valid email');
 
-    // Invalid email format (email error)
     component.form.controls.email.setValue('not-an-email');
     component.form.controls.email.markAsTouched();
     expect(component.emailConfig().errorMessage).toBe('Enter valid email');
+    expect(component.form.controls.email.hasError('email')).toBe(true);
 
-    // Valid email (no error)
     component.form.controls.email.setValue('valid@email.com');
     expect(component.emailConfig().errorMessage).toBeUndefined();
+    expect(component.form.controls.email.hasError('required')).toBe(false);
+    expect(component.form.controls.email.hasError('email')).toBe(false);
+  });
+});
 
-    // Verify static config values
+describe('ForgotPasswordEmail emailConfig computed signal', () => {
+  it('returns email error message for invalid email format', async () => {
+    await TestBed.configureTestingModule({
+      imports: [ForgotPasswordEmail, TranslateModule.forRoot()],
+      providers: [
+        provideRouter([]),
+        {
+          provide: AuthService,
+          useValue: {
+            forgotPasswordRequest: vi.fn().mockReturnValue(of({})),
+            setChellangeId: vi.fn(),
+            isLoginLoading: signal(false),
+          },
+        },
+        {
+          provide: TokenService,
+          useValue: {},
+        },
+      ],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(ForgotPasswordEmail);
+    const component = fixture.componentInstance;
+
+    component.form.controls.email.setValue('invalid-email');
+    component.form.controls.email.markAsTouched();
+    fixture.detectChanges();
+
     const config = component.emailConfig();
     expect(config.label).toBe('Email');
     expect(config.required).toBe(true);

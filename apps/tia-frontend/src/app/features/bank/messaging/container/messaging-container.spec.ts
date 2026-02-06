@@ -5,12 +5,19 @@ import { TranslateModule } from '@ngx-translate/core';
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
 import { of } from 'rxjs';
 import { MessagingStore } from '../store/messaging.store';
+import { Store } from '@ngrx/store';
+import { signal } from '@angular/core';
 
 describe('MessagingContainer', () => {
   let component: MessagingContainer;
   let fixture: ComponentFixture<MessagingContainer>;
+  let mockRoleStore: any;
 
   beforeEach(async () => {
+    mockRoleStore = {
+      selectSignal: vi.fn().mockReturnValue(signal('USER'))
+    };
+    
     await TestBed.configureTestingModule({
       imports: [
         MessagingContainer,
@@ -18,6 +25,7 @@ describe('MessagingContainer', () => {
       ],
       providers: [
         MessagingStore,
+        { provide: Store, useValue: mockRoleStore },
         { provide: ActivatedRoute, useValue: {} },
         {
           provide: InboxService,

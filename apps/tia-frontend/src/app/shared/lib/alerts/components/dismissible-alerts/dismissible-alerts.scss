@@ -3,7 +3,6 @@
 
 .dismissible-alerts {
   position: relative;
-  max-width: 105.3rem;
   min-height: 6.76rem;
   width: 100%;
   background: var(--color-bg);
@@ -80,7 +79,7 @@
     }
   }
 
-  &--warning {
+  &--error {
     background: $red-50;
     border: 0.08rem solid $red-900;
     .dismissible-alerts__title {

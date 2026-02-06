@@ -8,7 +8,7 @@ import {
   ElementRef,
   effect,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { fromEvent, filter, finalize, tap } from 'rxjs';
 import { NavigationBar } from '@tia/shared/lib/navigation/navigation-bar/navigation-bar';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -17,8 +17,11 @@ import { AuthService } from 'apps/tia-frontend/src/app/core/auth/services/auth.s
 import { NavigationItem } from '@tia/shared/lib/navigation/models/nav-bar.model';
 import { getSidebarItems } from '../config/routes.config';
 import { AlertsWithActions } from '@tia/shared/lib/alerts/components/alerts-with-actions/alerts-with-actions';
-import { BreakpointService } from '../../../../shared/services/breakpoints/breakpoint.service';
+import { BreakpointService } from '../../../../core/services/breakpoints/breakpoint.service';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
+import { userInfoFeature } from 'apps/tia-frontend/src/app/store/user-info/user-info.reducer';
+import { Store } from '@ngrx/store';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -28,6 +31,7 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
     TranslatePipe,
     AlertsWithActions,
     RouteLoader,
+    RouterModule
   ],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
@@ -39,6 +43,7 @@ export class Sidebar implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly elementRef = inject(ElementRef<HTMLElement>);
   private readonly breakpointService = inject(BreakpointService);
+  private readonly store = inject(Store);
 
   public readonly isMobile = this.breakpointService.isMobile;
   public readonly isTablet = this.breakpointService.isTablet;
@@ -48,14 +53,17 @@ export class Sidebar implements OnInit {
   public readonly showLogoutConfirm = signal(false);
   public readonly isLoggingOut = signal(false);
 
+  private readonly role = toSignal(
+    this.store.select(userInfoFeature.selectRole),
+  );
+
   constructor() {
     this.setupBreakpointEffect();
     this.setupClickOutsideListener();
+    this.setupRoleEffect();
   }
 
   ngOnInit(): void {
-    this.updateItems();
-
     this.translate.onLangChange
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.updateItems());
@@ -69,6 +77,13 @@ export class Sidebar implements OnInit {
       } else {
         this.isCollapsed.set(this.isTablet());
       }
+    });
+  }
+
+  private setupRoleEffect(): void {
+    effect(() => {
+      this.role();
+      this.updateItems();
     });
   }
 
@@ -87,7 +102,17 @@ export class Sidebar implements OnInit {
   }
 
   private updateItems(): void {
-    this.items.set(getSidebarItems(this.translate));
+    const items = getSidebarItems(this.translate);
+
+    if (this.role() === 'SUPPORT') {
+      items.push({
+        label: this.translate.instant('sidebar.sidebar.storybook'),
+        icon: 'images/svg/sidebar-nav/storybook.svg',
+        route: '../storybook',
+      });
+    }
+
+    this.items.set(items);
   }
 
   public toggleCollapse(): void {

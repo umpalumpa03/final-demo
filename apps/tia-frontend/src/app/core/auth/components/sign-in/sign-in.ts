@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  HostListener,
   inject,
   signal,
 } from '@angular/core';
@@ -20,8 +21,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map, startWith } from 'rxjs';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
-import { AuthHeader } from "../../shared/auth-header/auth-header";
-import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader";
+import { AuthHeader } from '../../shared/auth-header/auth-header';
 
 @Component({
   selector: 'app-sign-in',
@@ -33,8 +33,7 @@ import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader"
     SimpleAlerts,
     TranslatePipe,
     AuthHeader,
-    RouteLoader
-],
+  ],
   templateUrl: './sign-in.html',
   styleUrl: './sign-in.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,11 +47,16 @@ export class SignIn {
   private translate = inject(TranslateService);
   public alertTypes = ALERTS_DISMISSIBLE_DATA;
   public isRouteLoading = signal(false);
-  public isLoading = computed(() => this.authService.isLoginLoading());
   public errorMessage = computed(() => {
     this.alertTypes.error.message = 'Incorrect Credentials';
     return this.authService.errorMessage();
   });
+
+  @HostListener('window:keydown.enter', ['$event'])
+  public handleKeydownEvent(event: Event): void {
+    event.preventDefault();
+    this.submit();
+  }
 
   public signInConfig = toSignal(
     this.translate.onLangChange.pipe(
@@ -61,12 +65,16 @@ export class SignIn {
         translation: null,
       }),
       map(() => {
-        return translateConfig(SIGN_IN_FORM, (key) => this.translate.instant(key));
+        return translateConfig(SIGN_IN_FORM, (key) =>
+          this.translate.instant(key),
+        );
       }),
     ),
     {
-      initialValue: translateConfig(SIGN_IN_FORM, (key) => this.translate.instant(key)) 
-    }
+      initialValue: translateConfig(SIGN_IN_FORM, (key) =>
+        this.translate.instant(key),
+      ),
+    },
   );
 
   public loginForm = this.fb.nonNullable.group({

@@ -9,10 +9,14 @@ export const transactionReducer = createReducer(
 
   on(TransactionActions.enter, (state) => ({
     ...state,
-    items: [],
-    nextCursor: null,
-    total: 0,
-    isLoading: true,
+    error: null,
+  })),
+  on(TransactionActions.loadTransactionsSuccess, (state, { response }) => ({
+    ...state,
+    items: response.items,
+    isLoading: false,
+    loaded: true,
+    nextCursor: response.pageInfo.nextCursor || null,
   })),
 
   on(TransactionActions.loadMore, (state) => ({
@@ -27,6 +31,7 @@ export const transactionReducer = createReducer(
     items: [],
     nextCursor: null,
     isLoading: true,
+    loaded: false,
   })),
   on(TransactionActions.loadTransactions, (state) => ({
     ...state,
@@ -59,5 +64,37 @@ export const transactionReducer = createReducer(
   on(TransactionActions.loadCategoriesFailure, (state, { error }) => ({
     ...state,
     error,
+  })),
+
+  on(
+    TransactionActions.assignCategorySuccess,
+    (state, { transactionId, categoryId }) => {
+      const newCategory = state.categories.find((c) => c.id === categoryId);
+
+      const updateItems = state.items.map((item) => {
+        if (item.id === transactionId) {
+          return {
+            ...item,
+            categoryId: categoryId,
+            category: newCategory ? newCategory : item.category,
+          };
+        }
+        return item;
+      });
+      return {
+        ...state,
+        items: updateItems,
+      };
+    },
+  ),
+
+  on(TransactionActions.setTransactionToRepeat, (state, { transaction }) => ({
+    ...state,
+    transactionToRepeat: transaction,
+  })),
+
+  on(TransactionActions.clearTransactionToRepeat, (state) => ({
+    ...state,
+    transactionToRepeat: null,
   })),
 );

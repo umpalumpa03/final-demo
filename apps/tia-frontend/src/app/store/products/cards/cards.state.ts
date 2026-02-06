@@ -1,8 +1,9 @@
-import { CardAccount } from "@tia/shared/models/cards/card-account.model";
-import { CardDetail } from "@tia/shared/models/cards/card-detail.model";
-import { CardDesign } from '@tia/shared/models/cards/card-design.model';
-import { CardCategory } from '@tia/shared/models/cards/card-category.model';
-import { CardType } from '@tia/shared/models/cards/card-type.model';
+import { CardAccount } from '@tia/shared/models/cards/card-account.model';
+import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
+import { CardDesign } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-design.model';
+import { CardCategory } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-category.model';
+import { CardType } from '../../../features/bank/products/components/cards/models/card-type.model';
+import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 
 export interface CardsState {
   accounts: CardAccount[];
@@ -10,9 +11,9 @@ export interface CardsState {
   cardDetails: Record<string, CardDetail>;
   loading: boolean;
   error: string | null;
-  cardDetailsLoading: boolean;  
+  cardDetailsLoading: boolean;
   cardDetailsError: string | null;
-  
+
   designs: CardDesign[];
   categories: CardCategory[];
   types: CardType[];
@@ -20,6 +21,12 @@ export interface CardsState {
   createError: string | null;
   isCreateModalOpen: boolean;
   showSuccessAlert: boolean;
+  isCardDetailsModalOpen: boolean;
+  selectedCardIdForModal: string | null;
+  cardTransactions: Record<string, ITransactions[]>;
+  cardTransactionsLoading: boolean;
+  cardTransactionsError: string | null;
+  cardTransactionsTotalCount: Record<string, number>;
 }
 
 export const initialCardsState: CardsState = {
@@ -28,9 +35,9 @@ export const initialCardsState: CardsState = {
   cardDetails: {},
   loading: false,
   error: null,
-  cardDetailsLoading: false,  
+  cardDetailsLoading: false,
   cardDetailsError: null,
-  
+
   designs: [],
   categories: [],
   types: [],
@@ -38,4 +45,10 @@ export const initialCardsState: CardsState = {
   createError: null,
   isCreateModalOpen: false,
   showSuccessAlert: false,
+  isCardDetailsModalOpen: false,
+  selectedCardIdForModal: null,
+  cardTransactions: {},
+  cardTransactionsLoading: false,
+  cardTransactionsError: null,
+  cardTransactionsTotalCount: {},
 };

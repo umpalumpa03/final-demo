@@ -24,7 +24,7 @@ import {
 } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.actions';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { Router } from '@angular/router';
-
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 @Component({
   selector: 'app-dashboard-container',
   imports: [
@@ -35,7 +35,7 @@ import { Router } from '@angular/router';
     WidgetAccounts,
     WidgetExchange,
     LibraryTitle,
-    TranslateModule
+    TranslateModule,
   ],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
@@ -45,30 +45,36 @@ export class DashboardContainer implements OnInit {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
+  private readonly breakpointService = inject(BreakpointService);
 
   protected readonly myItems = signal<(IWidgetItem & { isHidden?: boolean })[]>(
     [...widgetItems],
   );
 
   protected readonly pageTitle = computed(() =>
-    this.translate.instant('dashboard.page.title')
+    this.translate.instant('dashboard.page.title'),
   );
 
   protected readonly pageSubtitle = computed(() =>
-    this.translate.instant('dashboard.page.subtitle')
+    this.translate.instant('dashboard.page.subtitle'),
   );
+  public dynamicColspans = computed(() => {
+    const items = this.myItems();
 
-  protected readonly dynamicColspans = computed(() => {
-    return this.myItems().map((_, index) => (index === 0 ? 2 : 1));
+    const isMobile = this.breakpointService.isMobile();
+
+    if (isMobile) {
+      return items.map(() => 2);
+    }
+
+    return items.map((_, index) => (index === 0 ? 2 : 1));
   });
 
   public onItemsChange(newItems: IWidgetItem[]): void {
     this.myItems.set(newItems);
   }
 
-  public onContainerOrderChange(ids: string[]): void {
-    console.log('New Order saved to DB:', ids);
-  }
+  public onContainerOrderChange(ids: string[]): void {}
 
   public onToggleVisibility(isVisible: boolean, id: string): void {
     this.myItems.update((items) =>
@@ -95,27 +101,15 @@ export class DashboardContainer implements OnInit {
     );
   }
 
+  public readonly gridColumns = { default: 2, md: 0, sm: 0 };
+
   ngOnInit() {
-    console.log('=== TRANSLATION DEBUG ===');
-    console.log('Current language:', this.translate.currentLang);
-    console.log('Default language:', this.translate.defaultLang);
-
-    // Test if the key exists
-    this.translate.get('dashboard.widgets.transactions.title').subscribe(result => {
-      console.log('Translation result:', result);
-    });
-
-    // Check what's actually loaded
-    this.translate.get('dashboard').subscribe(result => {
-      console.log('Full dashboard namespace:', result);
-    });
-
     this.store.dispatch(
       TransactionActions.updateFilters({
         filters: { pageLimit: 10 },
       }),
     );
     this.store.dispatch(loadExchangeRates({ baseCurrency: 'USD' }));
-    this.store.dispatch(AccountsActions.loadAccounts());
+    this.store.dispatch(AccountsActions.loadAccounts({}));
   }
 }

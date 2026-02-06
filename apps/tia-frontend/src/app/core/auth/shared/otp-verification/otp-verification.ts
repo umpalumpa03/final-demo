@@ -3,13 +3,16 @@ import {
   Component,
   computed,
   effect,
+  HostListener,
   inject,
   input,
+  OnInit,
   output,
   signal,
+  viewChild,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Otp } from '@tia/shared/lib/forms/otp/otp';
 import {
@@ -27,15 +30,16 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { numberValidator } from '../../utils/validators/form-validations';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 import {
+  IOtpVerificationConfig,
   IVerified,
   OtpVerificationType,
 } from '../../models/otp-verification.models';
-import { getOtpVerificationConfig } from '../../config/otp-verification.config';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 import { OTP_VERIFY_FORM } from '../../config/inputs.config';
-import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader";
+import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
+import { Routes } from '../../models/tokens.model';
 
 @Component({
   selector: 'app-otp-verification',
@@ -43,46 +47,96 @@ import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader"
     ButtonComponent,
     ReactiveFormsModule,
     Otp,
-    RouterLink,
     TextInput,
     SimpleAlerts,
     TranslatePipe,
-    RouteLoader
-],
+    RouteLoader,
+  ],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OtpVerification {
+export class OtpVerification implements OnInit {
   private fb = inject(FormBuilder);
   private translate = inject(TranslateService);
+  private router = inject(Router);
+
   public type = input.required<OtpVerificationType>();
   public timeLimit = input(1);
   public timerType = input<TimerType>('phone');
   public errorMessage = input<string | null>(null);
   public remainingAttempts = input<number | null>(null);
-
+  public customRemainingAttempts = input<number | null>(null);
+  public noMoreAttempsRedirectRoute = input<string | null>(null);
   public phoneErrorMessage = input<string | null>(null);
+  public isBtnRowDirection = input<boolean>(false);
+  public isDisabled = input<boolean>(false);
+  public isTimerDisplayed = input<boolean>(true);
+  public onErrorRedirect = input<boolean>(true);
+  public inputOtpConfig = input<IOtpVerificationConfig>();
+
+
+  public onBackOut = output<void>();
+  public onTimeout = output<void>();
+  public isVerifyCalled = output<IVerified>();
+  public isResendCalled = output<boolean>();
+  public clickedOnCancl = output<void>();
+  public customError = output<void>();
+
+  public resendTries = signal<number>(3);
+  public internalRemainingAttempts = signal<number | null>(null);
+  public isLoading = signal(false);
+  public submitError = signal<string | null>(null);
+  public countdown = signal<number>(0);
+  public isResendActive = signal<boolean>(false);
+  public isLimitExeeded = signal<boolean>(false);
+
+  public isHeaderVisible = computed(
+    () =>
+      this.inputOtpConfig()?.iconUrl ||
+      this.inputOtpConfig()?.title ||
+      this.inputOtpConfig()?.subText,
+  );
+
+  public maxTime = computed(() => {
+    const limit = Math.abs(Number(this.timeLimit()));
+
+    return limit * 60;
+  });
+
+  public effectiveRemainingAttempts = computed(() => {
+    const internalAttempts = this.internalRemainingAttempts();
+
+    if (internalAttempts !== null) {
+      return internalAttempts;
+    }
+
+    return this.remainingAttempts();
+  });
 
   public unitedError = computed(() => {
     const error = this.errorMessage();
-    const attempts = this.remainingAttempts();
+    const attempts = this.effectiveRemainingAttempts();
 
-    if (error && attempts !== null) {
-      return `${error} ${attempts === undefined ? '' : `(Remaining attempts: ${attempts})`}`;
+    if (!this.onErrorRedirect()) {
+      this.customError.emit();
+      return '';
     }
 
-    if (error) return error;
+    if (error && attempts !== null && attempts > 0) {
+      return `${error} (Remaining attempts: ${attempts})`;
+    }
 
-    if (attempts !== null) {
-      return `Remaining attempts: ${attempts}`;
+    if (attempts === 0) {
+      const redirectRoute = this.noMoreAttempsRedirectRoute();
+      this.router.navigate([redirectRoute || Routes.ERROR_PAGE]);
     }
 
     return '';
   });
 
   public isButtonDisabled = computed(() => {
-    if (this.unitedError() || this.phoneErrorMessage() || this.submitError()) {
+    if (this.isLimitExeeded() || this.phoneErrorMessage()) {
       return true;
     }
 
@@ -93,36 +147,18 @@ export class OtpVerification {
     return false;
   });
 
-  public isVerifyCalled = output<IVerified>();
-  public isResendCalled = output<boolean>();
+  @HostListener('window:keydown.enter', ['$event'])
+  public handleKeyBoardEvent(event: Event) {
+    event.preventDefault();
+    this.onSubmit();
+  }
 
-  public config = computed(() => getOtpVerificationConfig(this.type()));
-
-  public isLoading = signal(false);
-  public submitError = signal<string | null>(null);
-
-  public iconUrl = computed(() => this.config().iconUrl);
-  public title = computed(() => this.config().title);
-  public subText = computed(() => this.config().subText);
-  public submitBtnName = computed(() => this.config().submitBtnName);
-  public backLink = computed(() => this.config().backLink);
-  public backLinkText = computed(() => this.config().backLinkText);
+  public readonly otpComponent = viewChild(Otp);
 
   private destroy$ = new Subject<void>();
   private timerSubscription?: Subscription;
-  public maxTime = computed(() => {
-    const limit = Math.abs(Number(this.timeLimit()));
 
-    return limit * 60;
-  });
-
-  public countdown = signal<number>(0);
   private timer$ = interval(1000);
-
-  public isResendActive = signal<boolean>(false);
-
-  public onTimeout = output<void>();
-  public resendClicked = output<void>();
 
   public formConfig = toSignal(
     this.translate.onLangChange.pipe(
@@ -166,21 +202,55 @@ export class OtpVerification {
         }, 1000);
         this.isResendActive.set(true);
       }
+
+      if (this.countdown() === 0 && this.resendTries() === 0) {
+        this.router.navigate([Routes.ERROR_PAGE]);
+        setTimeout(() => {
+          this.resendTries.set(3);
+        }, 2000);
+      }
+    });
+
+    effect(() => {
+      if (this.effectiveRemainingAttempts() === 0) {
+        this.isLimitExeeded.set(true);
+      }
+    });
+
+    effect(() => {
+      if (!this.isButtonDisabled()) {
+        setTimeout(() => {
+          this.otpComponent()?.focusFirst();
+        }, 0);
+      }
     });
   }
 
   public ngOnInit(): void {
+    const customAttempts = this.customRemainingAttempts();
+    const parentAttempts = this.remainingAttempts();
+
+    if (customAttempts !== null) {
+      this.internalRemainingAttempts.set(customAttempts);
+    } else if (parentAttempts !== null) {
+      this.internalRemainingAttempts.set(parentAttempts);
+    }
+
     this.countdown.set(this.maxTime());
     this.startTimer();
   }
 
   private startTimer(): void {
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
+
     this.timerSubscription = this.timer$
       .pipe(
         takeUntil(this.destroy$),
         takeWhile(() => this.countdown() > 0),
         tap(() => {
-          this.countdown.update((s) => s - 1);
+          this.countdown.update((sec) => sec - 1);
         }),
       )
       .subscribe();
@@ -188,6 +258,10 @@ export class OtpVerification {
   }
 
   public onSubmit(): void {
+    if (this.isButtonDisabled()) {
+      return;
+    }
+
     const currentForm = this.activeForm();
 
     if (currentForm.invalid) {
@@ -209,20 +283,53 @@ export class OtpVerification {
       otp = rawValue.code;
     }
 
+    if (this.internalRemainingAttempts() !== null) {
+      this.internalRemainingAttempts.update((value) =>
+        value !== null && value > 0 ? value - 1 : value,
+      );
+    }
+
     this.isVerifyCalled.emit({
       isCalled: true,
       otp: otp,
     });
+
+    setTimeout(() => {
+      this.otpForm.reset();
+    }, 0);
+
+    setTimeout(() => {
+      this.otpComponent()?.focusFirst();
+    }, 0);
   }
 
+  public handleAutoSubmit(code: string): void {
+    this.otpForm.patchValue({ code });
+
+    this.onSubmit();
+  }
+
+  public canResend = computed(
+    () => this.countdown() === 0 && this.resendTries() > 0,
+  );
+
   public onResend(): void {
-    if (this.countdown() > 0) {
+    if (!this.canResend()) {
       return;
     }
 
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
+
+    this.resendTries.update((sec) => sec - 1);
     this.isResendCalled.emit(true);
     this.countdown.set(this.maxTime());
     this.startTimer();
+  }
+
+  public resgisterBackout(): void {
+    this.onBackOut.emit();
   }
 
   public ngOnDestroy(): void {

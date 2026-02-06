@@ -1,10 +1,10 @@
-@if(!isLoading()) {
 <form class="sign-in" [formGroup]="loginForm" (ngSubmit)="submit()">
   <app-auth-header
     title="auth.sign-in.title"
     subTitle="auth.sign-in.subtitle"
   ></app-auth-header>
   <div class="sign-in__form">
+    @defer {
     <lib-text-input
       formControlName="username"
       [config]="signInConfig().username"
@@ -15,7 +15,7 @@
       [config]="signInConfig().password"
       type="password"
     ></lib-text-input>
-    @if(errorMessage()) {
+    } @if(errorMessage()) {
     <app-simple-alerts
       [alertType]="alertTypes.error.type"
       [alertMessage]="alertTypes.error.message"
@@ -35,8 +35,3 @@
     </p>
   </div>
 </form>
-} @else {
-<div class="sign-in__loader">
-  <app-route-loader [variant]="'pulsing'" />
-</div>
-}

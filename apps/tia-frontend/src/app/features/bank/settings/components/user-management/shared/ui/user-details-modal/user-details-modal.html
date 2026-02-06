@@ -17,7 +17,11 @@
         }
         @else if (user) {
         <div class="main__icon">
-            <img src="./images/svg/settings/user-management/person.svg" alt="Profile Picture">
+            @if (user.avatarUrl) {
+            <img [src]="user.avatarUrl" class="avatar avatar__pfp" alt="User Avatar">
+            } @else {
+            <app-avatar size="xl" [initials]="getInitials(user.firstName, user.lastName)"></app-avatar>
+            }
             <div class="user-info">
                 <strong>{{ user.firstName }} {{ user.lastName }}</strong>
                 <p>{{ user.email }}</p>

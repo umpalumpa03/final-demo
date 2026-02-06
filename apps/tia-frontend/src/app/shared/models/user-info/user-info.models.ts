@@ -1,4 +1,4 @@
-export type UserRole = 'CONSUMER' | 'ADMIN';
+export type UserRole = 'CONSUMER' | 'SUPPORT';
 
 export interface IUserInfo {
   fullName: string | null;
@@ -6,6 +6,7 @@ export interface IUserInfo {
   language: string | null;
   avatar: string | null;
   role: UserRole | null;
+  email: string | null;
 }
 
 export interface User {

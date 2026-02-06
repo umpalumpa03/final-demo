@@ -1,11 +1,15 @@
-@if(!loadingState()) {
 <section class="sign-up">
   <app-auth-header
     title="auth.sign-up.title"
     subTitle="auth.sign-up.subtitle"
   ></app-auth-header>
   <app-registration-form
+    [emailError]="emailAvailability()"
+    [usernameError]="usernameAvailability()"
     (submitRegistrationForm)="onSignUp($event)"
+    (formIncompleteData)="listenInputedData($event)"
+    (currentUsername)="handleCurrentUsername($event)"
+    (currentEmail)="handleCurrentEmail($event)"
   ></app-registration-form>
 
   <p class="sign-up__footer">
@@ -14,14 +18,8 @@
       {{'auth.sign-up.signIn' | translate}}
     </span>
   </p>
-
-  @if (errorMessage()) {
+   @if (errorMessage()) {
   <app-alert-types-with-icons alertType="error" [alertMessage]="errorMessage()">
   </app-alert-types-with-icons>
   }
 </section>
-} @else {
-<div class="sign-up__loader">
-  <app-route-loader [variant]="'pulsing'" />
-</div>
-}

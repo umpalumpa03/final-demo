@@ -5,6 +5,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { signal } from '@angular/core';
+import { provideMockStore } from '@ngrx/store/testing';
 
 describe('AuthContainer Component', () => {
   let component: AuthContainer;
@@ -29,6 +30,7 @@ describe('AuthContainer Component', () => {
       providers: [
         { provide: Router, useValue: routerMock },
         TranslateService,
+        provideMockStore({}),
       ],
     }).compileComponents();
 

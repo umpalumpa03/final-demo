@@ -1,0 +1,79 @@
+@use "../../../../../../../../../shared/styles/mixins" as *;
+@use "../../../../../../../../../shared/styles/palette" as *;
+
+.transaction-item {
+  @include display-flex(row);
+  align-items: center;
+  gap: 1.6rem;
+  padding: 1.6rem;
+  border: 1px solid $gray-200;
+  border-radius: 0.8rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: $gray-50;
+    border-color: $gray-600;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  &__icon {
+    @include flex-center();
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background-color: $red-50;
+    color: $red-600;
+    flex-shrink: 0;
+  }
+
+  &__details {
+    @include display-flex(column);
+    gap: 0.4rem;
+    flex: 1;
+  }
+
+  &__description {
+    @include font-inter(600, 1.6rem, 2.4rem);
+    color: $gray-700;
+    margin: 0;
+  }
+
+  &__meta {
+    @include display-flex(row);
+    align-items: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  &__date,
+  &__category,
+  &__reference {
+    @include font-inter(400, 1.4rem, 2rem);
+    color: $gray-600;
+  }
+
+  &__separator {
+    color: $gray-400;
+  }
+
+  &__right {
+    @include display-flex(column);
+    align-items: flex-end;
+    gap: 0.8rem;
+
+    @media (max-width: 768px) {
+      align-items: flex-start;
+      width: 100%;
+    }
+  }
+
+  &__amount {
+    @include font-inter(700, 1.8rem, 2.4rem);
+    color: $gray-700;
+    margin: 0;
+  }
+}

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MailHeader } from '../../shared/ui/mail-header/mail-header';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MessagingStore } from '../../store/messaging.store';
@@ -6,20 +6,30 @@ import { EmptyCard } from '../../shared/ui/empty-card/empty-card';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { MailCard } from '../../shared/ui/mail-card/mail-card';
 import { Router } from '@angular/router';
+import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
+import { NavigationService } from '../../services/navigation.service';
+import { Store } from '@ngrx/store';
+import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
 
 @Component({
   selector: 'app-favorites',
-  imports: [MailHeader, TranslatePipe, EmptyCard, RouteLoader, MailCard],
+  imports: [MailHeader, TranslatePipe, EmptyCard, RouteLoader, MailCard, ScrollArea],
   templateUrl: './favorites.html',
   styleUrl: './favorites.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Favorites implements OnInit {
-  private messagingStore = inject(MessagingStore);
-  private router = inject(Router);
-  public mails = this.messagingStore.mails;
-  public isLoading = this.messagingStore.isLoading;
-  public selectedMailIds = signal<Set<number>>(new Set());
+  private readonly messagingStore = inject(MessagingStore);
+  private readonly router = inject(Router);
+  private readonly store = inject(Store);
+  public readonly mails = computed(() => {
+    return this.messagingStore.mails()
+  });
+  public readonly isLoading = this.messagingStore.isLoading;
+  public readonly selectedMailIds = signal<Set<number>>(new Set());
+  public readonly total = computed(() => this.messagingStore.total()['favorite'] ?? 0);
+  private readonly nav = inject(NavigationService);
+  public readonly currentUserEmail = computed(() => this.store.selectSignal(selectCurrentUserEmail)() ?? '');
 
   public isAllSelected(): boolean {
     return this.selectedMailIds().size === this.mails().length && this.mails().length > 0;
@@ -57,7 +67,10 @@ export class Favorites implements OnInit {
   }
 
   ngOnInit(): void {
-    this.messagingStore.loadMails('favorites');
+    if (!(this.nav.previous()?.includes('favorites') && this.messagingStore.mails().length > 0)) {
+      this.messagingStore.loadMails('favorites');
+    }
+    this.messagingStore.getTotalCount('favorite');
   }
 
   public markAsRead(mailId: number): void {
@@ -68,8 +81,15 @@ export class Favorites implements OnInit {
     this.messagingStore.deleteMail(mailId);
   }
 
-   public goToDetail(mailId: number): void {
+  public goToDetail(mailId: number): void {
     this.router.navigate(['/bank/messaging/favorites', mailId]);
     this.markAsRead(mailId);
+  }
+
+  public onScrollBottom(): void {
+    const pagination = this.messagingStore.pagination();
+    if (pagination.hasNextPage) {
+      this.messagingStore.loadMails('favorites');
+    }
   }
 }

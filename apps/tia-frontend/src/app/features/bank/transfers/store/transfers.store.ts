@@ -1,10 +1,17 @@
-import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
+import {
+  signalStore,
+  withState,
+  withMethods,
+  patchState,
+  withHooks,
+  getState,
+} from '@ngrx/signals';
 import { initialTransferState } from './transfers.state';
 import {
   RecipientType,
   RecipientResponse,
 } from '../models/transfers.state.model';
-import { inject } from '@angular/core';
+import { effect, inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, of } from 'rxjs';
 import { TransfersApiService } from '../services/transfersApi.service';
@@ -17,57 +24,63 @@ export const TransferStore = signalStore(
   withMethods((store, transfersApi = inject(TransfersApiService)) => ({
     setExternalRecipient(input: string, type: RecipientType) {
       patchState(store, {
+        ...initialTransferState,
         recipientInput: input,
         recipientType: type,
-        recipientInfo: null,
-        senderAccount: null,
-        selectedRecipientAccount: null,
-        manualRecipientName: '',
-        amount: 0,
-        description: '',
-        error: null,
-        
       });
     },
+    //for otherbank transfer
     setManualRecipientName(name: string) {
       patchState(store, { manualRecipientName: name });
     },
+    //senders accoutn
     setSenderAccount(account: Account | null) {
       patchState(store, { senderAccount: account });
+    },
+    setReceiverOwnAccount(account: Account | null) {
+      patchState(store, { receiverOwnAccount: account });
     },
     setSelectedRecipientAccount(account: RecipientAccount | null) {
       patchState(store, { selectedRecipientAccount: account });
     },
+    //amoutn written by user tobe transfered
     setAmount(amount: number) {
       patchState(store, { amount });
     },
+    //description sent with transfer
     setDescription(description: string) {
       patchState(store, { description });
     },
-    //
+    //update fee indepemdentpy and total amount with fee which needs to be charged from account
     updateFeeInfo(fee: number, totalWithFee: number) {
       patchState(store, { fee, totalWithFee, isLoading: false });
     },
+    //flag if balance is insufficient
     setInsufficientBalance(hasInsufficientBalance: boolean) {
       patchState(store, { hasInsufficientBalance });
     },
-
-    setLoading(isLoading: boolean) {
-      patchState(store, { isLoading });
-    },
+    //if verified already no more success messages
     setIsVerified(isVerified: boolean) {
       patchState(store, { isVerified });
     },
-    //will be used 
-    // setPendingTransferId(id: string | null) {
-    //   patchState(store, { pendingTransferId: id });
-    // },
-    // setRequiresOtp(requiresOtp: boolean) {
-    //   patchState(store, { requiresOtp });
-    // },
-    // setTransferSuccess(transferSuccess: boolean) {
-    //   patchState(store, { transferSuccess });
-    // },
+    setLoading(isLoading: boolean) {
+      patchState(store, { isLoading });
+    },
+    setChallengeId(challengeId: string | null) {
+      patchState(store, { challengeId });
+    },
+    setRequiresOtp(requiresOtp: boolean) {
+      patchState(store, { requiresOtp });
+    },
+    setTransferSuccess(transferSuccess: boolean) {
+      patchState(store, { transferSuccess });
+    },
+    setFeeLoading(isFeeLoading: boolean) {
+      patchState(store, { isFeeLoading });
+    },
+    setError(error: string) {
+      patchState(store, { error: error });
+    },
     lookupRecipient: rxMethod<{ value: string; type: RecipientType }>(
       pipe(
         tap(({ value, type }) =>
@@ -112,4 +125,12 @@ export const TransferStore = signalStore(
       patchState(store, initialTransferState);
     },
   })),
+  withHooks({
+    onInit(store) {
+      effect(() => {
+        const state = getState(store);
+        console.log(' stateeee', state);
+      });
+    },
+  }),
 );

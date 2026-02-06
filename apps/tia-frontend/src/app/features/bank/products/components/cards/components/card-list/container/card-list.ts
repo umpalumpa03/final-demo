@@ -1,15 +1,14 @@
+
 import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
   inject,
   signal,
-  effect,
-  untracked,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { map } from 'rxjs';
+import { combineLatest, map } from 'rxjs';
 import {
   loadCardAccounts,
   hideSuccessAlert,
@@ -23,93 +22,101 @@ import {
   selectShowSuccessAlert,
   selectIsCreateModalOpen,
 } from '../../../../../../../../store/products/cards/cards.selectors';
-import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 import { CreateCard } from '../../create-card-modal/container/createCard';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
-import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AsyncPipe } from '@angular/common';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { CardGroupView } from '../models/card-list-view.model';
+import { CardGroupItem } from '../components/card-group-item/card-group-item';
+import { AddCardButton } from '../components/add-card-button/add-card-button';
+import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-card-list',
   templateUrl: './card-list.html',
   styleUrls: ['./card-list.scss'],
-  imports: [Badges, AsyncPipe,CreateCard, SimpleAlerts, ButtonComponent],
+  imports: [
+    AsyncPipe,
+    CreateCard,
+    SimpleAlerts,
+  RouteLoader,
+    ErrorStates,
+    CardGroupItem,
+    AddCardButton,
+    TranslatePipe
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardList implements OnInit {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
 
-  protected readonly cardGroups$ = this.store.select(selectCardGroups);
   protected readonly loading$ = this.store.select(selectLoading);
   protected readonly error$ = this.store.select(selectError);
   protected readonly showSuccessAlert$ = this.store.select(selectShowSuccessAlert);
   protected readonly isModalOpen$ = this.store.select(selectIsCreateModalOpen);
 
-  protected readonly activeCardIndex = signal<Record<string, number>>({});
+  public readonly activeCardIndex = signal<Record<string, number>>({});
 
-  protected readonly cardGroupsWithMeta$ = this.cardGroups$.pipe(
-    map(groups => groups.map(group => ({
+  protected readonly cardGroupsWithMeta$ = combineLatest([
+    this.store.select(selectCardGroups),
+    toObservable(this.activeCardIndex)
+  ]).pipe(
+    map(([groups, activeIndexMap]): CardGroupView[] => groups.map(group => ({
       ...group,
       cardCountLabel: `${group.cardImages.length} Card${group.cardImages.length !== 1 ? 's' : ''}`,
-      activeIndex: this.activeCardIndex()[group.account.id] ?? 0,
+      activeIndex: activeIndexMap[group.account.id] ?? 0,
       cards: group.cardImages.map((cardImage, idx) => ({
         ...cardImage,
         cardAlt: `Card ending in ${cardImage.cardId.slice(-4)}`,
-        isStacked: idx !== (this.activeCardIndex()[group.account.id] ?? 0),
-        isActive: idx === (this.activeCardIndex()[group.account.id] ?? 0),
-        zIndex: idx === (this.activeCardIndex()[group.account.id] ?? 0) 
-          ? 100 
-          : group.cardImages.length - idx,
+        isStacked: idx !== (activeIndexMap[group.account.id] ?? 0),
+        isActive: idx === (activeIndexMap[group.account.id] ?? 0),
+        zIndex: idx === (activeIndexMap[group.account.id] ?? 0) ? 100 : group.cardImages.length - idx,
         index: idx,
       })),
     })))
   );
 
-  constructor() {
-    effect(() => {
-      this.store.select(selectShowSuccessAlert).subscribe(show => {
-        if (show) {
-          untracked(() => {
-            setTimeout(() => {
-              this.store.dispatch(hideSuccessAlert());
-            }, 5000);
-          });
-        }
-      });
-    });
-  }
-
   ngOnInit(): void {
     this.store.dispatch(loadCardAccounts());
   }
 
-  protected handleCardClick(accountId: string, cardId: string, cardIndex: number, hasMultipleCards: boolean): void {
-    if (!hasMultipleCards) {
-      this.router.navigate(['/bank/products/cards/details', cardId]);
+  public handleCardClick(data: { accountId: string; cardId: string; index: number; hasMultipleCards: boolean }): void {
+    if (!data.hasMultipleCards) {
+      this.router.navigate(['/bank/products/cards/details', data.cardId]);
     } else {
-      const currentIndex = this.activeCardIndex()[accountId] ?? 0;
+      const currentIndex = this.activeCardIndex()[data.accountId] ?? 0;
 
-      if (cardIndex === currentIndex) {
-        this.router.navigate(['/bank/products/cards/account', accountId]);
+      if (data.index === currentIndex) {
+        this.router.navigate(['/bank/products/cards/account', data.accountId]);
       } else {
         this.activeCardIndex.update((state) => ({
           ...state,
-          [accountId]: cardIndex,
+          [data.accountId]: data.index,
         }));
       }
     }
   }
 
-  protected handleViewAllCards(accountId: string): void {
-    this.router.navigate(['/bank/products/cards/account', accountId]);
+  public handleViewAllCards(data: { accountId: string }): void {
+    this.router.navigate(['/bank/products/cards/account', data.accountId]);
   }
 
-  protected openModal(): void {
+  public handleOpenModal(): void {
     this.store.dispatch(openCreateCardModal());
   }
 
-  protected handleCloseModal(): void {
+  public handleCloseModal(): void {
     this.store.dispatch(closeCreateCardModal());
   }
+
+  protected readonly viewData$ = combineLatest({
+  loading: this.loading$,
+  error: this.error$,
+  groups: this.cardGroupsWithMeta$,
+  isModalOpen: this.isModalOpen$,
+  showSuccessAlert: this.showSuccessAlert$
+});
 }

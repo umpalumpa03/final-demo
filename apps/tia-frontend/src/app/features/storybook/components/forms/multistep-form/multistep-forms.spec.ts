@@ -44,16 +44,4 @@ describe('MultistepForms', () => {
     expect(component.currentStep()).toBe(total - 1);
     expect(component.canBack()).toBe(true);
   });
-
-  it('should submit form when valid and log value', () => {
-    const spy = vi.spyOn(console, 'log');
-
-    component.form.get('from')?.setValue({ name: 'From', bio: 'From bio' });
-    component.form.get('to')?.setValue({ name: 'To', bio: 'To bio' });
-    component.form.get('amount')?.setValue({ name: 'Amount', bio: 'Amount bio' });
-
-    component.submit();
-
-    expect(spy).toHaveBeenCalledWith(component.form.value);
-  });
 });

@@ -1,121 +1,71 @@
+
 <div class="card-details">
   @if (loading$ | async) {
-  <div class="card-details__loading">
-    <app-route-loader variant="pulsing" />
-  </div>
+    <div class="card-details__loading">
+      <app-route-loader variant="pulsing" />
+    </div>
   } @else if (error$ | async; as errorMsg) {
-  <div class="card-details__error">{{ errorMsg }}</div>
-  } @else if (cardData$ | async; as data) {
-  <div class="card-details__header">
-    <button
-      class="card-details__back-button"
-      (click)="handleBack()"
-      type="button"
-    >
-      Back
-    </button>
-  </div>
-
-  <div class="card-details__card-image">
-    <img
-      [src]="data.imageBase64"
-      [alt]="data.details.cardName"
-      class="card-details__image"
+    <app-error-states
+      variant="failed"
+      header="Failed to Load Card"
+      [message]="errorMsg"
+      buttonMessage="Retry"
+      (buttonClick)="handleRetry()"
     />
-  </div>
-
-  <div class="card-details__info-section">
-    <h2 class="card-details__section-title">Card Information</h2>
-    <p class="card-details__section-subtitle">
-      Details about your Personal Card
-    </p>
-
-    <div class="card-details__info-grid">
-      <div class="card-details__info-item">
-        <span class="card-details__info-label">Card Name</span>
-        <span class="card-details__info-value">{{ data.details.cardName }}</span>
-      </div>
-
-      <div class="card-details__info-item">
-        <span class="card-details__info-label">Card Type</span>
-        <span class="card-details__info-value">{{ data.details.type }}</span>
-      </div>
-
-      <div class="card-details__info-item">
-        <span class="card-details__info-label">Currency</span>
-        <span class="card-details__info-value">{{ currency$ | async }}</span>
-      </div>
-
-      <div class="card-details__info-item">
-        <span class="card-details__info-label">Status</span>
-        <span
-          class="card-details__info-value"
-          [class.card-details__info-value--status]="isActiveStatus$ | async"
-        >
-          {{ data.details.status.toLowerCase() }}
-        </span>
-      </div>
-
-      <div class="card-details__info-item">
-        <span class="card-details__info-label">Total Balance</span>
-        <span class="card-details__info-value">{{ formattedBalance$ | async }}</span>
-      </div>
-
-      @if (shouldShowCreditLimit$ | async) {
-      <div class="card-details__info-item">
-        <span class="card-details__info-label">Credit Limit</span>
-        <span class="card-details__info-value">{{ formattedCreditLimit$ | async }}</span>
-      </div>
-      }
+  } @else if (cardData$ | async; as data) {
+    <div class="card-details__header">
+      <app-button
+        variant="ghost"
+        [icon]="'left-arrow.svg'"
+        (click)="handleBack()"
+      >
+       {{'my-products.card.card-details.backToCards' | translate }}
+      </app-button>
     </div>
-  </div>
 
-  <div class="card-details__actions-section">
-    <h2 class="card-details__section-title">Quick Actions</h2>
-    <p class="card-details__section-subtitle">
-      Manage your card and transactions
-    </p>
+    <app-card-image
+      [imageBase64]="data.imageBase64"
+      [cardName]="data.details.cardName"
+    />
 
-    <div class="card-details__actions-grid">
-      <button
-        class="card-details__action-button"
-        type="button"
-        (click)="handleTransferOwn()"
-      >
-        Transfer to Own Account
-      </button>
+    <app-basic-card
+      title="Card Information"
+      subtitle="Details about your Personal Card"
+      maxWidth="100%"
+      padding="2rem"
+    >
+ <app-card-info-section
+  [cardName]="data.details.cardName"
+  [cardType]="data.details.type"
+  [currency]="data.currency"
+  [status]="data.details.status"
+  [isActiveStatus]="data.isActiveStatus"
+  [formattedBalance]="data.formattedBalance"
+  [shouldShowCreditLimit]="data.shouldShowCreditLimit"
+  [formattedCreditLimit]="data.formattedCreditLimit"
+/>
+    </app-basic-card>
 
-      <button
-        class="card-details__action-button"
-        type="button"
-        (click)="handleTransferExternal()"
-      >
-        Transfer to Someone Else
-      </button>
+    <app-basic-card
+      title="{{'my-products.card.card-details.cardTitle' | translate }}"
+      subtitle="{{'my-products.card.card-details.manageYourCard' | translate }}"
+      maxWidth="100%"
+      padding="2rem"
+    >
+      <app-quick-actions-section
+        (transferOwnClicked)="handleTransferOwn()"
+        (transferExternalClicked)="handleTransferExternal()"
+        (paybillClicked)="handlePaybill()"
+        (viewTransactionsClicked)="handleViewTransactions()"
+          (viewSensitiveDetailsClicked)="handleOpenDetailsModal()"
 
-      <button
-        class="card-details__action-button"
-        type="button"
-        (click)="handlePaybill()"
-      >
-        Pay Paybill
-      </button>
-
-      <button
-        class="card-details__action-button card-details__action-button--secondary"
-        type="button"
-      >
-        View Sensitive Details
-      </button>
-
-      <button
-        class="card-details__action-button card-details__action-button--secondary"
-        type="button"
-        (click)="handleViewTransactions()"
-      >
-        View Transactions
-      </button>
-    </div>
-  </div>
+      />
+    </app-basic-card>
   }
 </div>
+@if (isDetailsModalOpen$ | async; as isModalOpen) {
+  <app-card-details-modal
+    [isOpen]="isModalOpen"
+    (closed)="handleCloseDetailsModal()"
+  />
+}

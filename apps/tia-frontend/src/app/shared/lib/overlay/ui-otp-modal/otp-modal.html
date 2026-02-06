@@ -1,0 +1,39 @@
+<app-ui-modal [isOpen]="isOpen()" (closed)="closed.emit()">
+  <div class="otp-modal">
+    <div class="otp-modal__content">
+      <div class="otp-modal__icon">
+        <img src="./images/svg/feature-loans/prepayment.svg" alt="OTP" />
+      </div>
+      <h3 class="otp-modal__title">{{ title() }}</h3>
+      <p class="otp-modal__description">{{ description() }}</p>
+    </div>
+
+    <div class="otp-modal__form" [formGroup]="form">
+      <lib-otp formControlName="otp" [config]="inputConfig" />
+    </div>
+
+    @if (hasResend()) {
+    <div class="otp-modal__resend">
+      <span class="otp-modal__resend-text">{{ resendText() }}</span>
+      <app-button variant="ghost" (click)="resend.emit()">
+        {{ 'common.buttons.resend' | translate }}
+      </app-button>
+    </div>
+    }
+
+    <footer class="otp-modal__footer">
+      <app-button variant="outline" [fullWidth]="true" (click)="closed.emit()">
+        {{ 'common.buttons.cancel' | translate }}
+      </app-button>
+      <app-button
+        variant="default"
+        [fullWidth]="true"
+        [isDisabled]="form.invalid || isLoading()"
+        [isLoading]="isLoading()"
+        (click)="onSubmit()"
+      >
+        {{ verifyOtpTitle() }}
+      </app-button>
+    </footer>
+  </div>
+</app-ui-modal>

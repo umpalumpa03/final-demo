@@ -1,0 +1,49 @@
+<app-basic-card
+  maxWidth="100%"
+  minHeight="65rem"
+  padding="0rem 0 2.4rem 2.4rem"
+  justifyContent="space-between"
+>
+  <div class="success-layout">
+    <header class="success-header">
+      <div class="success-header__icon-container"></div>
+      <h1 class="success-header__title">
+        {{ 'paybill.main.success.title' | translate }}
+      </h1>
+      <p class="success-header__description">
+        {{ 'paybill.main.success.description' | translate }}
+      </p>
+    </header>
+
+    <div class="confirm-container">
+      <div class="confirm-container__summary">
+        <app-payment-summary
+          [items]="items()"
+          [headerTitle]="headerTitle()"
+          [headerSubtitle]="'paybill.main.success.summary_subheader' | translate"
+          [iconBgColor]="iconBgColor()"
+          [iconBgPath]="iconBgPath()"
+        />
+      </div>
+
+      <footer class="confirm-container__actions">
+        <app-button
+          class="btn-secondary"
+          variant="secondary"
+          [fullWidth]="true"
+          (click)="payAnother.emit()"
+        >
+          {{ 'paybill.main.success.pay_another_btn' | translate }}
+        </app-button>
+
+        <app-button
+          class="btn-primary"
+          [fullWidth]="true"
+          (click)="goDashboard.emit()"
+        >
+          {{ 'paybill.main.success.dashboard_btn' | translate }}
+        </app-button>
+      </footer>
+    </div>
+  </div>
+</app-basic-card>

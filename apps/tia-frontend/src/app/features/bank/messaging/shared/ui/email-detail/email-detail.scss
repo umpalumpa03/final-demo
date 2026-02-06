@@ -3,8 +3,9 @@
 
 .skeleton {
     width: 100%;
-    height: 100vh;
-    @include flex-center(row, center, center);
+    height: 100%;
+    min-height: 80vh;
+    @include flex-center();
 }
 .email-detail {
     background: $white;
@@ -12,6 +13,10 @@
     margin: 0 auto;
     transition: all 0.2s ease;
     animation: slideIn 0.3s ease-out;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    word-break: break-word;
 
     &__header {
         border-bottom: 0.063rem solid $gray-200;
@@ -38,8 +43,9 @@
         transition: background 0.2s;
         width: 3.6rem;
         height: 3.6rem;
+        flex-shrink: 0;
         &:hover {
-            background: $blue-ocean-secondary;
+            background: var(--color-secondary);
         }
 
         & > img {
@@ -52,6 +58,10 @@
     &__draft {
         @include font-inter(600, 2rem, 2.5rem);
         color: var(--color-fg);
+        display: -webkit-box;
+        overflow: hidden;
+        white-space: normal;
+        min-width: 0;
     }
 
     &__meta {
@@ -79,7 +89,7 @@
     }
 
     &__message {
-        padding: 2.4rem;
+        padding: 2.4rem 7.1rem 2.4rem 2.4rem;
 
         &__content {
             border: 0.063rem solid $gray-200;

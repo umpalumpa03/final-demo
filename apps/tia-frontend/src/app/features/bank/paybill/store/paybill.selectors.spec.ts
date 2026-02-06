@@ -59,16 +59,11 @@ describe('Paybill Selectors', () => {
       });
       expect(Selectors.selectCurrentStep.projector(fullState)).toBe('OTP');
 
-      if ((Selectors as any).selectPaymentPayload) {
-        expect(
-          (Selectors as any).selectPaymentPayload.projector(fullState),
-        ).toEqual({ amount: 100 });
-      }
-      if ((Selectors as any).selectChallengeId) {
-        expect((Selectors as any).selectChallengeId.projector(fullState)).toBe(
-          '123-abc',
-        );
-      }
+      expect(Selectors.selectPaymentPayload.projector(fullState)).toEqual({
+        amount: 100,
+      });
+      expect(Selectors.selectChallengeId.projector(fullState)).toBe('123-abc');
+      expect(Selectors.selectError.projector(fullState)).toBe('Error');
     });
   });
 
@@ -82,6 +77,15 @@ describe('Paybill Selectors', () => {
       expect(result).toEqual({ ...mockCategory, providers: mockProviders });
       expect(result?.providers).toHaveLength(1);
     });
+
+    it('should return null if no selected ID', () => {
+      const result = Selectors.selectActiveCategory.projector(
+        [mockCategory],
+        null,
+        mockProviders,
+      );
+      expect(result).toBeNull();
+    });
   });
 
   describe('selectActiveProvider', () => {
@@ -89,34 +93,21 @@ describe('Paybill Selectors', () => {
       const fallbackProv = {
         categoryId: 'FALLBACK',
         name: 'F',
+        id: 'fallback',
       } as PaybillProvider;
+
       const state = { ...fullState, selectedProviderId: 'fallback' };
       const result = Selectors.selectActiveProvider.projector(state, [
         fallbackProv,
       ]);
       expect(result).toEqual(fallbackProv);
     });
-  });
 
-  describe('selectPaybillBreadcrumbs', () => {
-    it('should return base path if nothing selected', () => {
-      const result = Selectors.selectPaybillBreadcrumbs.projector(
-        null,
-        null,
-        null,
-      );
-      expect(result).toEqual([
-        { label: 'Paybill', route: '/bank/paybill/pay' },
-      ]);
-    });
-
-    it('should return Templates breadcrumb', () => {
-      const result = Selectors.selectPaybillBreadcrumbs.projector(
-        null,
-        null,
-        'TEMPLATES',
-      );
-      expect(result[1]).toEqual({ label: 'Templates', route: '' });
+    it('should return selectedProvider directly from state if set', () => {
+      const manualProv = { id: 'manual', name: 'Manual' } as any;
+      const state = { ...fullState, selectedProvider: manualProv };
+      const result = Selectors.selectActiveProvider.projector(state, []);
+      expect(result).toEqual(manualProv);
     });
   });
 
@@ -127,6 +118,8 @@ describe('Paybill Selectors', () => {
           id: 't1',
           nickname: 'My Template',
           serviceId: 'SVC1',
+
+          groupId: '4b03d846-43af-45cd-8d69-04b71d784625',
           identification: { accountNumber: '123' },
         },
         {
@@ -140,6 +133,7 @@ describe('Paybill Selectors', () => {
       const result = Selectors.selectTemplatesAsTreeItems.projector(templates);
 
       expect(result).toHaveLength(2);
+
       expect(result[0]).toEqual({
         id: 't1',
         title: 'My Template',
@@ -169,6 +163,23 @@ describe('Paybill Selectors', () => {
     it('should return empty array when no templates', () => {
       const result = Selectors.selectTemplates.projector(initialPaybillState);
       expect(result).toEqual([]);
+    });
+  });
+
+  describe('selectTemplatesGroupWithConfigs', () => {
+    it('should expand groups with items', () => {
+      const groups = [
+        { id: 'g1', templateCount: 5 },
+        { id: 'g2', templateCount: 0 },
+      ] as any;
+
+      const result =
+        Selectors.selectTemplatesGroupWithConfigs.projector(groups);
+
+      expect(result[0].expanded).toBe(true);
+      expect(result[0].icon).toContain('group.svg');
+
+      expect(result[1].expanded).toBe(false);
     });
   });
 });

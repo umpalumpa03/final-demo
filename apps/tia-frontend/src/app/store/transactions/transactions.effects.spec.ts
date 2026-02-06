@@ -6,13 +6,19 @@ import { Action } from '@ngrx/store';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TransactionActions } from './transactions.actions';
 import {
+  assignCategoryEffect,
+  createCategoryEffect,
   loadTotalEffect,
   loadTransactionsCategoriesEffect,
   loadTransactionsEffect,
   updateFiltersEffects,
 } from './transactions.effects';
-import { selectFilters, selectNextCursor } from './transactions.selector';
-import { TransactionService } from '@tia/shared/services/transactions-service/transaction-service';
+import {
+  selectFilters,
+  selectNextCursor,
+  selectTransactionsLoaded,
+} from './transactions.selector';
+import { TransactionApiService } from '@tia/shared/services/transactions-service/transactions.api.service';
 
 describe('Transaction Effects', () => {
   let actions$: Observable<Action>;
@@ -24,6 +30,8 @@ describe('Transaction Effects', () => {
       getTransactions: vi.fn(),
       getTransactionsTotal: vi.fn(),
       getTransactionsCategories: vi.fn(),
+      createTransactionCategory: vi.fn(),
+      categorizeTransaction: vi.fn(),
     };
     vi.useFakeTimers();
 
@@ -31,11 +39,12 @@ describe('Transaction Effects', () => {
       providers: [
         provideMockActions(() => actions$),
         provideMockStore(),
-        { provide: TransactionService, useValue: transactionService },
+        { provide: TransactionApiService, useValue: transactionService },
       ],
     });
 
     store = TestBed.inject(MockStore);
+    store.overrideSelector(selectTransactionsLoaded, false);
   });
 
   afterEach(() => {
@@ -55,7 +64,7 @@ describe('Transaction Effects', () => {
     vi.advanceTimersByTime(399);
     expect(result).toBeUndefined();
     vi.advanceTimersByTime(1);
-    expect(result).toEqual(TransactionActions.loadTransactions());
+    expect(result).toEqual(TransactionActions.loadTransactions({}));
   });
 
   it('loads transactions successfully', () => {
@@ -63,19 +72,21 @@ describe('Transaction Effects', () => {
     const filters = { pageLimit: 20 };
     store.overrideSelector(selectFilters, filters);
     store.overrideSelector(selectNextCursor, null);
+    store.overrideSelector(selectTransactionsLoaded, false);
     transactionService.getTransactions.mockReturnValue(of(response));
 
-    actions$ = of(TransactionActions.loadTransactions());
+    actions$ = of(TransactionActions.loadTransactions({}));
 
     TestBed.runInInjectionContext(() =>
       loadTransactionsEffect(actions$, store, transactionService).subscribe(
         (action) => {
           expect(action).toEqual(
-            TransactionActions.loadSuccess({ response } as any),
+            TransactionActions.loadTransactionsSuccess({ response } as any),
           );
-          expect(transactionService.getTransactions).toHaveBeenCalledWith(
-            filters,
-          );
+          expect(transactionService.getTransactions).toHaveBeenCalledWith({
+            ...filters,
+            pageCursor: undefined,
+          });
         },
       ),
     );
@@ -85,9 +96,10 @@ describe('Transaction Effects', () => {
     const error = 'Network Error';
     store.overrideSelector(selectFilters, {});
     store.overrideSelector(selectNextCursor, null);
+    store.overrideSelector(selectTransactionsLoaded, false);
     transactionService.getTransactions.mockReturnValue(throwError(() => error));
 
-    actions$ = of(TransactionActions.loadTransactions());
+    actions$ = of(TransactionActions.loadTransactions({}));
 
     TestBed.runInInjectionContext(() =>
       loadTransactionsEffect(actions$, store, transactionService).subscribe(
@@ -102,6 +114,7 @@ describe('Transaction Effects', () => {
     const filters = { pageLimit: 10 };
     store.overrideSelector(selectFilters, filters);
     store.overrideSelector(selectNextCursor, cursor);
+
     transactionService.getTransactions.mockReturnValue(
       of({ items: [], pageInfo: {} }),
     );
@@ -109,7 +122,9 @@ describe('Transaction Effects', () => {
     actions$ = of(TransactionActions.loadMore());
 
     TestBed.runInInjectionContext(() =>
-      loadTransactionsEffect(actions$, store, transactionService).subscribe(),
+      loadTransactionsEffect(actions$, store, transactionService).subscribe(
+        () => {},
+      ),
     );
 
     expect(transactionService.getTransactions).toHaveBeenCalledWith({
@@ -132,6 +147,42 @@ describe('Transaction Effects', () => {
 
     expect(transactionService.getTransactions).not.toHaveBeenCalled();
     expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('skips loading when data is already loaded and no forceRefresh', () => {
+    store.overrideSelector(selectTransactionsLoaded, true);
+    actions$ = of(TransactionActions.loadTransactions({}));
+
+    const spy = vi.fn();
+    TestBed.runInInjectionContext(() =>
+      loadTransactionsEffect(actions$, store, transactionService).subscribe(
+        spy,
+      ),
+    );
+
+    expect(transactionService.getTransactions).not.toHaveBeenCalled();
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('loads transactions when forceRefresh is true despite loaded data', () => {
+    const response = { items: [], pageInfo: {} };
+    store.overrideSelector(selectTransactionsLoaded, true);
+    store.overrideSelector(selectFilters, {});
+    store.overrideSelector(selectNextCursor, null);
+    transactionService.getTransactions.mockReturnValue(of(response));
+
+    actions$ = of(TransactionActions.loadTransactions({ forceRefresh: true }));
+
+    TestBed.runInInjectionContext(() =>
+      loadTransactionsEffect(actions$, store, transactionService).subscribe(
+        (action) => {
+          expect(action).toEqual(
+            TransactionActions.loadTransactionsSuccess({ response } as any),
+          );
+        },
+      ),
+    );
+    expect(transactionService.getTransactions).toHaveBeenCalled();
   });
 
   it('loads total successfully', () => {
@@ -179,6 +230,44 @@ describe('Transaction Effects', () => {
           );
         },
       ),
+    );
+  });
+  it('creates category successfully', () => {
+    const categoryName = 'New Cat';
+    const response = { id: '123', name: categoryName };
+
+    transactionService.createTransactionCategory.mockReturnValue(of(response));
+    actions$ = of(TransactionActions.createCategory({ name: categoryName }));
+
+    TestBed.runInInjectionContext(() =>
+      createCategoryEffect(actions$, transactionService).subscribe((action) => {
+        expect(action).toEqual(
+          TransactionActions.createCategorySuccess({ response } as any),
+        );
+        expect(
+          transactionService.createTransactionCategory,
+        ).toHaveBeenCalledWith(categoryName);
+      }),
+    );
+  });
+
+  it('assigns category successfully', () => {
+    const payload = { transactionId: 'tx-1', categoryId: 'cat-1' };
+    const response = 'success';
+
+    transactionService.categorizeTransaction.mockReturnValue(of(response));
+    actions$ = of(TransactionActions.assignCategory(payload));
+
+    TestBed.runInInjectionContext(() =>
+      assignCategoryEffect(actions$, transactionService).subscribe((action) => {
+        expect(action).toEqual(
+          TransactionActions.assignCategorySuccess(payload),
+        );
+        expect(transactionService.categorizeTransaction).toHaveBeenCalledWith(
+          payload.transactionId,
+          payload.categoryId,
+        );
+      }),
     );
   });
 });

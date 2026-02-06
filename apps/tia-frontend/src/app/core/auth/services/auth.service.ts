@@ -16,6 +16,7 @@ import {
   IloginResponse,
   ILogoutResponse,
   IMfaVerifyResponse,
+  IsAvailableBaseResponse,
   ISignUpResponse,
   phoneOtpError,
   ResendOtpResponse,
@@ -34,10 +35,12 @@ import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 import { TokenService } from './token.service';
 import { IRegistrationForm } from '../../../features/storybook/components/forms/models/contact-forms.model';
-import { DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Routes } from '../models/tokens.model';
 import { Store } from '@ngrx/store';
 import { UserInfoActions } from '../../../store/user-info/user-info.actions';
+import { MonitorInactivity } from './monitor-inacticity.service';
+import { Subscription } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -45,14 +48,21 @@ export class AuthService {
   private router = inject(Router);
   private tokenService = inject(TokenService);
   private store = inject(Store);
+  private monitorInactivity = inject(MonitorInactivity);
   private challengeId!: string;
   public isLoginLoading = signal<boolean>(false);
   public errorMessage = signal<boolean | null>(false);
-  public successMessage = signal<boolean | null>(false);
-  public infoMessage = signal<boolean | null>(false);
   private baseUrl = `${environment.apiUrl}/auth`;
-
   public otpError = signal<OtpResponse | null>(null);
+  public resendRetryCounter = signal<number>(0);
+  private inactivitySubscription?: Subscription;
+  public isAuthenticated = signal<boolean>(false);
+
+  constructor() {
+    if (this.tokenService.accessToken) {
+      this.startInactivityMonitoring();
+    }
+  }
 
   public setChellangeId(id: string) {
     this.challengeId = id;
@@ -60,6 +70,26 @@ export class AuthService {
 
   public getChallengeId() {
     return this.challengeId;
+  }
+
+  public isUsernameAvailable(
+    username: string,
+  ): Observable<IsAvailableBaseResponse> {
+    const params = { username };
+
+    return this.http.get<IsAvailableBaseResponse>(
+      `${environment.apiUrl}/users/check-username`,
+      { params },
+    );
+  }
+
+  public isEmailAvailable(email: string): Observable<IsAvailableBaseResponse> {
+    const params = { email };
+
+    return this.http.get<IsAvailableBaseResponse>(
+      `${environment.apiUrl}/users/check-email`,
+      { params },
+    );
   }
 
   public loginPostRequest(user: ILoginRequest): Observable<IloginResponse> {
@@ -113,6 +143,7 @@ export class AuthService {
     return this.http.post<ILogoutResponse>(`${this.baseUrl}/logout`, {}).pipe(
       tap((res) => {
         if (res.success === true) {
+          this.stopInactivityMonitoring();
           this.tokenService.clearAuthToken();
           this.tokenService.clearUserInfo();
           this.router.navigate([Routes.SIGN_IN]);
@@ -133,6 +164,7 @@ export class AuthService {
             this.tokenService.setAccessToken(res.access_token);
             this.tokenService.setRefreshToken(res.refresh_token);
             this.store.dispatch(UserInfoActions.loadUser());
+            this.startInactivityMonitoring();
             this.router.navigate([Routes.DASHBOARD]);
           }
         }),
@@ -140,13 +172,14 @@ export class AuthService {
           const errorData: phoneOtpError = err.error;
           this.otpError.set(errorData);
 
-          // errorMessage-s ikeneeeb BEKAA?
           this.errorMessage.set(true);
 
           setTimeout(() => this.otpError.set(null), 2000);
           return EMPTY;
         }),
-        finalize(() => this.isLoginLoading.set(false)),
+        finalize(() => {
+          this.isLoginLoading.set(false);
+        }),
       );
   }
 
@@ -164,6 +197,7 @@ export class AuthService {
       Authorization: `Bearer ${token}`,
     });
 
+    this.isLoginLoading.set(true);
     return this.http
       .post<SendVerificationResponse>(
         `${this.baseUrl}/phone`,
@@ -184,17 +218,20 @@ export class AuthService {
           setTimeout(() => this.otpError.set(null), 2000);
           return EMPTY;
         }),
+        finalize(() => this.isLoginLoading.set(false)),
       );
   }
 
   public verifyPhoneOtpCode(code: string): Observable<OtpResponse> {
-    const token = this.tokenService.getSignUpToken;
+    const token =
+      this.tokenService.getSignUpToken || this.tokenService.verifyToken;
     const challengeId = this.getChallengeId();
 
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
 
+    this.isLoginLoading.set(true);
     return this.http
       .post<OtpResponse>(
         `${this.baseUrl}/phone/verify`,
@@ -207,6 +244,7 @@ export class AuthService {
           this.tokenService.clearAuthToken();
           this.otpError.set(null);
           this.router.navigate([Routes.SIGN_IN]);
+          this.tokenService.clearSignUpToken();
         }),
         catchError((err) => {
           const errorData = err.error as OtpResponse;
@@ -218,7 +256,9 @@ export class AuthService {
 
           return throwError(() => err);
         }),
-        finalize(() => this.isLoginLoading.set(false)),
+        finalize(() => {
+          this.isLoginLoading.set(false);
+        }),
       );
   }
 
@@ -238,6 +278,7 @@ export class AuthService {
   public verifyForgotPasswordOtp(
     code: string,
   ): Observable<ForgotPasswordVerifyResponse> {
+    this.isLoginLoading.set(true);
     this.tokenService.clearAccessToken();
     const payload: ForgotPasswordVerifyRequest = {
       challengeId: this.getChallengeId(),
@@ -254,6 +295,7 @@ export class AuthService {
             this.tokenService.setAccessToken(res.access_token);
           }
         }),
+        finalize(() => this.isLoginLoading.set(false)),
       );
   }
 
@@ -267,18 +309,26 @@ export class AuthService {
       );
     }
 
+    this.isLoginLoading.set(true);
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
     const payload: CreateNewPasswordRequest = { password };
-    return this.http.post<CreateNewPasswordResponse>(
-      `${this.baseUrl}/create-new-password`,
-      payload,
-      { headers },
-    );
+    return this.http
+      .post<CreateNewPasswordResponse>(
+        `${this.baseUrl}/create-new-password`,
+        payload,
+        { headers },
+      )
+      .pipe(
+        finalize(() => {
+          this.isLoginLoading.set(false);
+          this.tokenService.clearAccessToken();
+        }),
+      );
   }
 
-  public resetPhoneOtp(): Observable<ResendOtpResponse> {
+  public resendPhoneOtp(): Observable<ResendOtpResponse> {
     const challengeId = this.getChallengeId();
     if (!challengeId) {
       return throwError(() => new Error('Missing forgot password challengeId'));
@@ -286,14 +336,24 @@ export class AuthService {
 
     const payload: ResendOtpRequest = { challengeId };
     return this.http.post<ResendOtpResponse>(
-      `${this.baseUrl}/mfa/otp-resend`,
+      `${this.baseUrl}/phone/otp-resend`,
       payload,
     );
   }
 
   public resendVerificationCode(): Observable<OtpResponse> {
+    if (this.resendRetryCounter() >= 5) {
+      this.resendRetryCounter.set(0);
+      return throwError(() => new Error('MAX_ATTEMPTS_REACHED'));
+    }
+
     const challengeId = this.getChallengeId();
-    const token = this.tokenService.getSignUpToken;
+    const token =
+      this.tokenService.accessToken || this.tokenService.getSignUpToken;
+
+    if (this.tokenService.accessToken) {
+      this.resendRetryCounter.update((r) => r + 1);
+    }
 
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
@@ -304,5 +364,30 @@ export class AuthService {
       { challengeId },
       { headers },
     );
+  }
+
+  private startInactivityMonitoring(): void {
+    this.inactivitySubscription = this.monitorInactivity.inactivity$
+      .pipe(
+        tap((isInactive) => {
+          if (isInactive === true) {
+            this.logout().subscribe();
+          }
+        }),
+      )
+      .subscribe();
+  }
+
+  private stopInactivityMonitoring(): void {
+    if (this.inactivitySubscription) {
+      this.inactivitySubscription.unsubscribe();
+      this.inactivitySubscription = undefined;
+    }
+  }
+
+  public logoutSideEffects() {
+    this.isAuthenticated.set(false);
+    this.tokenService.clearAuthToken();
+    this.stopInactivityMonitoring();
   }
 }

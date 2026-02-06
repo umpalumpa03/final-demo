@@ -254,4 +254,239 @@ describe('MessagingStore', () => {
       expect(store.error()).toBe('Failed to load email detail');
     });
   });
+  it('should get draft total count successfully', async () => {
+    const mockResponse = { count: 5 };
+
+    mockMessagingService.getDraftTotalCount = vi.fn().mockReturnValue(of(mockResponse));
+
+    store.getDraftTotalCount(0);
+
+    await vi.waitFor(() => {
+      expect(store.draftsTotal?.()).toBe(5);
+    });
+  });
+
+  it('should get unread important count successfully', async () => {
+    const mockResponse = { count: 3 };
+
+    mockMessagingService.getImportantUnreadCount = vi.fn().mockReturnValue(of(mockResponse));
+
+    store.getUnreadImportantCount();
+
+    await vi.waitFor(() => {
+      expect(store.importantCount?.()).toBe(3);
+    });
+  });
+
+  it('should send draft successfully', async () => {
+    const draftData = {
+      mailId: 1,
+      data: {
+        recipient: 'test@test.com',
+        ccRecipients: [],
+        subject: 'Test Draft',
+        body: 'Draft body',
+        isImportant: false,
+        isDraft: false
+      }
+    };
+
+    mockMessagingService.sendDraft = vi.fn().mockReturnValue(of(null));
+    mockMessagingService.getInbox = vi.fn().mockReturnValue(of({
+      items: [],
+      pagination: { hasNextPage: false, nextCursor: null }
+    }));
+    mockMessagingService.getDraftTotalCount = vi.fn().mockReturnValue(of({ count: 0 }));
+    mockMessagingService.getImportantUnreadCount = vi.fn().mockReturnValue(of({ count: 0 }));
+
+    store.sendDraft(draftData);
+  });
+
+  it('should get total count successfully', async () => {
+    const mockResponse = { count: 10 };
+
+    mockMessagingService.getTotalCount = vi.fn().mockReturnValue(of(mockResponse));
+
+    store.getTotalCount('inbox');
+
+    await vi.waitFor(() => {
+      expect(store.total()['inbox']).toBe(10);
+    });
+  });
+
+  it('should toggle favorite successfully', async () => {
+    const initialMails = [{ id: 1, isFavorite: false }];
+
+    mockMessagingService.togleFavorite = vi.fn().mockReturnValue(of(null));
+    mockMessagingService.getInbox = vi.fn().mockReturnValue(of({
+      items: initialMails,
+      pagination: { hasNextPage: false, nextCursor: null }
+    }));
+
+    store.loadMails('inbox');
+
+    await vi.waitFor(() => {
+      expect(store.mails().length).toBe(1);
+    });
+
+    store.togleFavorite({ mailId: 1, isFavorite: true });
+
+    await vi.waitFor(() => {
+      expect(store.mails()[0].isFavorite).toBe(true);
+      expect(store.isLoading()).toBe(false);
+    });
+  });
+  it('should clear success message', () => {
+    store.clearSuccessMessage();
+    expect(store.successMessage?.()).toBe('');
+  });
+
+  it('should clear error', () => {
+    store.clearError();
+    expect(store.error()).toBeUndefined();
+  });
+
+  it('should handle send draft error', async () => {
+    const draftData = {
+      mailId: 1,
+      data: {
+        recipient: 'test@test.com',
+        ccRecipients: [],
+        subject: 'Test',
+        body: 'Body',
+        isImportant: false,
+        isDraft: false
+      }
+    };
+
+    mockMessagingService.sendDraft = vi.fn().mockReturnValue(
+      throwError(() => new Error('Failed to send'))
+    );
+
+    store.sendDraft(draftData);
+
+    await vi.waitFor(() => {
+      expect(store.error()).toBe('Failed to send draft');
+      expect(store.isLoading()).toBe(false);
+    });
+  });
+
+  it('should handle get unread important count error', async () => {
+    mockMessagingService.getImportantUnreadCount = vi.fn().mockReturnValue(
+      throwError(() => new Error('Failed to load important count'))
+    );
+
+    store.getUnreadImportantCount();
+
+    await vi.waitFor(() => {
+      expect(store.error()).toBe('Failed to load important unread count');
+    });
+  });
+
+  it('should handle empty search query', async () => {
+    store.searchMails('');
+
+    await vi.waitFor(() => {
+      expect(store.searchResults()).toEqual([]);
+      expect(store.isSearching()).toBe(false);
+    });
+  });
+
+  it('should handle search error', async () => {
+    mockMessagingService.searchByEmail.mockReturnValue(
+      throwError(() => new Error('Search failed'))
+    );
+
+    store.searchMails('test');
+
+    await vi.waitFor(() => {
+      expect(store.error()).toBe('Search failed');
+      expect(store.searchResults()).toEqual([]);
+      expect(store.isSearching()).toBe(false);
+    });
+  });
+
+  it('should get mail replies successfully', async () => {
+    const mockReplies = [
+      { id: 1, subject: 'Re: Test', body: 'Reply 1', createdAt: '2024-01-01' },
+      { id: 2, subject: 'Re: Test', body: 'Reply 2', createdAt: '2024-01-02' }
+    ];
+
+    mockMessagingService.getMailReplies = vi.fn().mockReturnValue(of(mockReplies));
+
+    store.getMailReplies(1);
+  });
+
+  it('should reset mailReplies when getting email by id', async () => {
+    const mockEmailDetail = {
+      id: 1,
+      subject: 'Test Email',
+      body: 'Test Body',
+      senderEmail: 'sender@test.com',
+      recipient: 'receiver@test.com',
+      createdAt: '2024-01-01T00:00:00.000Z'
+    };
+    mockMessagingService.getEmailById = vi.fn().mockReturnValue(of(mockEmailDetail));
+    store.getEmailById(1);
+  });
+
+  it('should call getDraftTotalCount when deleting all mails from drafts', async () => {
+    const initialMails = [
+      { id: 1, subject: 'Draft 1' },
+      { id: 2, subject: 'Draft 2' }
+    ];
+
+    mockMessagingService.deleteMail.mockReturnValue(of(null));
+    mockMessagingService.getDraftTotalCount = vi.fn().mockReturnValue(of({ count: 0 }));
+    mockMessagingService.getImportantUnreadCount = vi.fn().mockReturnValue(of({ count: 0 }));
+    mockMessagingService.getInbox.mockReturnValue(of({
+      items: initialMails,
+      pagination: { hasNextPage: false, nextCursor: null }
+    }));
+
+    store.loadMails('drafts');
+
+    await vi.waitFor(() => {
+      expect(store.currentType()).toBe('drafts');
+      expect(store.mails().length).toBe(2);
+    });
+
+    store.deleteAllMails([1, 2]);
+
+    await vi.waitFor(() => {
+      expect(store.mails().length).toBe(0);
+      expect(mockMessagingService.getDraftTotalCount).toHaveBeenCalled();
+      expect(mockInboxService.fetchInboxCount).toHaveBeenCalled();
+    });
+  });
+
+  it('should send mail reply successfully', async () => {
+    const mockReplies = [
+      { id: 1, subject: 'Re: Test', body: 'Reply 1', createdAt: '2024-01-01' }
+    ];
+
+    mockMessagingService.sendMailReply = vi.fn().mockReturnValue(of(null));
+    mockMessagingService.getMailReplies = vi.fn().mockReturnValue(of(mockReplies));
+
+    store.sendMailReply({ mailId: 1, body: 'This is my reply' });
+
+    await vi.waitFor(() => {
+      expect(mockMessagingService.sendMailReply).toHaveBeenCalledWith(1, 'This is my reply');
+      expect(mockMessagingService.getMailReplies).toHaveBeenCalledWith(1);
+      expect(store.successMessage?.()).toBe('Reply sent successfully');
+      expect(store.isLoading()).toBe(false);
+    });
+  });
+
+  it('should handle send mail reply error', async () => {
+    mockMessagingService.sendMailReply = vi.fn().mockReturnValue(
+      throwError(() => new Error('Failed to send reply'))
+    );
+
+    store.sendMailReply({ mailId: 1, body: 'This is my reply' });
+
+    await vi.waitFor(() => {
+      expect(store.error()).toBe('Failed to send mail reply');
+    });
+  });
 });

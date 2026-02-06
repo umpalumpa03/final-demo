@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ForgotPasswordVerify } from './forgot-password-verify';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -29,11 +30,23 @@ describe('ForgotPasswordVerify', () => {
     routerMock = {
       navigate: vi.fn(),
     };
+    @Component({ selector: 'app-otp-verification', standalone: true, template: '' })
+    class OtpVerificationStub {
+      @Input() errorMessage: any;
+      @Output() isVerifyCalled = new EventEmitter<any>();
+      @Output() isResendCalled = new EventEmitter<any>();
+      @Output() onTimeout = new EventEmitter<void>();
+    }
+
     await TestBed.configureTestingModule({
-      imports: [ForgotPasswordVerify, TranslateModule.forRoot()],
+      imports: [ForgotPasswordVerify, OtpVerificationStub, TranslateModule.forRoot()],
       providers: [
         { provide: AuthService, useValue: authServiceMock },
         { provide: Router, useValue: routerMock },
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: {}, params: of({}), queryParams: of({}) },
+        },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(ForgotPasswordVerify);

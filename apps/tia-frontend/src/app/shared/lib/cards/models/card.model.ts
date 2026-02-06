@@ -16,6 +16,7 @@ export interface CardData {
   justifyContent?: string;
   minHeight?: string;
   padding?: string;
+  borderColor?: string;
   gap?: string;
 }
 

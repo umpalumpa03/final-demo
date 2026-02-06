@@ -1,14 +1,12 @@
 @use '../../../../shared/styles/palette' as *;
 @use '../../../../shared/styles/mixins' as *;
-.transcaction-table-wrapper {
-  @include flex-center();
-  &__scroll-container {
-    width: 100%;
-    max-height: 60rem;
-    overflow-y: scroll;
-    margin-top: 3rem;
-    &::-webkit-scrollbar {
-      overflow: clip;
-    }
-  }
+.transaction-filters-wrapper {
+  margin-bottom: 2.4rem;
+}
+
+.alert-message {
+  position: fixed;
+  z-index: 1121;
+  top: 7rem;
+  right: 1rem;
 }

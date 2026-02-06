@@ -1,0 +1,12 @@
+<app-paybill-form
+  [paybillForm]="paybillForm"
+  [fields]="paybillFacade.paymentFields()"
+  [isLoading]="paybillFacade.isLoading()"
+  [provider]="paybillFacade.activeProvider()"
+  [verifiedDetails]="paybillFacade.verifiedDetails()"
+  [iconBgColor]="paybillFacade.activeCategoryUI()!.iconBgColor"
+  [iconBgPath]="paybillFacade.activeCategoryUI()!.iconBgPath"
+  (saveTemplate)="onSaveAsTemplate($event)"
+  (verify)="onVerifyAccount($event)"
+  (pay)="onProceedToPayment($event)"
+/>

@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { shareReplay, tap } from 'rxjs/operators';
+import { shareReplay } from 'rxjs/operators';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { AccountsListComponent } from '../components/accounts-list/accounts-list';
 import { CreateAccountComponent } from '../components/create-account/components/create-account';
@@ -76,6 +76,7 @@ export class Accounts implements OnInit {
   protected readonly accountsGroupedSignal = this.store.selectSignal(
     selectAccountsGrouped,
   );
+  protected readonly isLoadingSignal = this.store.selectSignal(selectIsLoading);
   protected readonly isCreatingAccountSignal =
     this.store.selectSignal(selectIsCreating);
   protected readonly createErrorSignal =
@@ -94,16 +95,10 @@ export class Accounts implements OnInit {
   protected showCreateAlert = signal<boolean>(false);
   protected showCreateErrorAlert = signal<boolean>(false);
   protected errorTypeSignal = signal<'connection' | 'loading' | null>(null);
+
   private wasCreating = false;
 
   constructor() {
-    effect(() => {
-      const accounts = this.accountsGroupedSignal();
-      if (accounts) {
-        this.handleAccountsGrouped(accounts);
-      }
-    });
-
     effect(() => {
       const isCreating = this.isCreatingAccountSignal();
       if (isCreating !== undefined) {
@@ -121,19 +116,10 @@ export class Accounts implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.store.dispatch(AccountsActions.loadAccounts({}));
+
     if (this.router.url.includes('/create')) {
       this.store.dispatch(AccountsActions.openCreateModal());
-    }
-  }
-
-  private handleAccountsGrouped(accounts: any): void {
-    if (
-      !accounts ||
-      (accounts.current.length === 0 &&
-        accounts.saving.length === 0 &&
-        accounts.card.length === 0)
-    ) {
-      this.store.dispatch(AccountsActions.loadAccounts());
     }
   }
 
@@ -176,7 +162,7 @@ export class Accounts implements OnInit {
   }
 
   public handleRetry(): void {
-    this.store.dispatch(AccountsActions.loadAccounts());
+    this.store.dispatch(AccountsActions.loadAccounts({ forceRefresh: true }));
   }
 
   public handleRenameAccount(data: {

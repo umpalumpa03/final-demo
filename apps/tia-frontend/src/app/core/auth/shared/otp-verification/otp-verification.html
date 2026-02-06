@@ -1,16 +1,25 @@
-@defer {
 <div class="otp-verification">
+  @if(isHeaderVisible()) {
   <div class="otp-verification__icon" aria-hidden="true">
-    <img [src]="iconUrl()" />
+    <img [src]="inputOtpConfig()?.iconUrl" />
   </div>
-  <h2 class="otp-verification__title">{{ title() | translate }}</h2>
-  <p class="otp-verification__subtext">{{ subText() | translate}}</p>
-
-  @if (!isLoading()) {
+  <h2 class="otp-verification__title">
+    {{ inputOtpConfig()?.title| translate }}
+  </h2>
+  <p class="otp-verification__subtext">
+    {{ inputOtpConfig()?.subText| translate}}
+  </p>
+  } @if (!isLoading()) {
   <form class="auth-form" [formGroup]="activeForm()" (ngSubmit)="onSubmit()">
     @if(timerType() === 'otp'){
     <div class="otp-field">
-      <lib-otp formControlName="code" [config]="formConfig().otp"></lib-otp>
+      <lib-otp
+        [isOtpLoading]="isButtonDisabled()"
+        formControlName="code"
+        [isCentered]="true"
+        (completed)="handleAutoSubmit($event)"
+        [config]="formConfig().otp"
+      ></lib-otp>
     </div>
     } @else {
     <div class="otp-field__phone">
@@ -34,25 +43,7 @@
       alertType="error"
       [alertMessage]="phoneErrorMessage() ?? 'An error occurred'"
     ></app-simple-alerts>
-    }
-
-    <div class="auth-form__actions">
-      <app-button
-        [isDisabled]="isButtonDisabled()"
-        type="submit"
-        [fullWidth]="true"
-      >
-        {{ submitBtnName() | translate}}
-      </app-button>
-    </div>
-
-    <app-button
-      [fullWidth]="true"
-      class="otp-verification__back"
-      [routerLink]="backLink()"
-      variant="outline"
-      >{{ backLinkText() | translate}}</app-button
-    >
+    } @if(isTimerDisplayed()) {
     <div class="timer-compact">
       <div class="timer-compact__timer">
         <span
@@ -69,7 +60,7 @@
       @if(timerType() === 'otp') {
       <div
         class="timer-compact__resend"
-        [class.timer-compact__resend--disabled]="countdown() > 0"
+        [class.timer-compact__resend--disabled]="!canResend()"
       >
         <span class="timer-compact__resend-text"
           >{{'auth.otp-sign-in.codeQuestion' | translate}}</span
@@ -77,8 +68,36 @@
         <span class="timer-compact__link" (click)="onResend()">
           {{'auth.otp-sign-in.code' | translate}}
         </span>
+        <span class="timer-compact__resend-left"> {{resendTries()}} </span>
       </div>
       }
+    </div>
+    }
+
+    <div
+      class="auth-form__wrapper"
+      [style.flex-direction]="isBtnRowDirection() ? 'row-reverse' : 'column'"
+    >
+      <div class="auth-form__wrapper__btn">
+        <app-button
+          [isDisabled]="isButtonDisabled()"
+          type="submit"
+          [fullWidth]="true"
+          variant="default"
+        >
+          {{ inputOtpConfig()?.submitBtnName | translate}}
+        </app-button>
+      </div>
+
+      <div class="auth-form__wrapper__btn">
+        <app-button
+          [fullWidth]="true"
+          class="otp-verification__back"
+          (click)="resgisterBackout()"
+          variant="outline"
+          >{{ inputOtpConfig()?.backLinkText | translate}}</app-button
+        >
+      </div>
     </div>
   </form>
   } @else {
@@ -87,4 +106,3 @@
   </div>
   }
 </div>
-} @placeholder {}

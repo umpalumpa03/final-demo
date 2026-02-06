@@ -16,6 +16,11 @@ export const selectIsLoading = createSelector(
   (state) => state.isLoading,
 );
 
+export const selectTransactionsLoaded = createSelector(
+  selectTransactionState,
+  (state) => state.loaded,
+);
+
 export const selectFilters = createSelector(
   selectTransactionState,
   (state) => state.filters,
@@ -51,6 +56,16 @@ export const selectCategoryOptions = createSelector(
   },
 );
 
+export const selectCategoryOptionsForModal = createSelector(
+  selectCategoriesRaw,
+  (categories) => {
+    return categories.map((cat) => ({
+      label: cat.categoryName,
+      value: cat.id,
+    }));
+  },
+);
+
 export const selectTransactionViewModel = createSelector(
   selectItems,
   selectIsLoading,
@@ -64,4 +79,8 @@ export const selectTransactionViewModel = createSelector(
     total,
     categoryOptions,
   }),
+);
+export const selectTransactionToRepeat = createSelector(
+  selectTransactionState,
+  (state) => state.transactionToRepeat,
 );

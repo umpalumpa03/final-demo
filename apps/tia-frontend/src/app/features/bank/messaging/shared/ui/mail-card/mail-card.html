@@ -15,6 +15,7 @@
   }
   <app-avatar
     size="md"
+    [tone]="isCurrentUser() ? 'solid' : 'soft'"
     [initials]="getInitials(mail()?.senderEmail ?? '')"
   ></app-avatar>
   <div class="mail-card__content">
@@ -28,21 +29,17 @@
       <div class="mail-card__subject">{{ mail()?.subject }}</div>
       <div class="mail-card__icons">
         @if(mail()?.isFavorite){
-        <button
+        <div
           class="mail-card__action-btn mail-card__action-btn--favorite"
-          (click)="onToggleFavorite($event)"
-          title="Favorite"
         >
           <img src="/images/svg/messaging/mail-favorite.svg" alt="Favorite" />
-        </button>
+        </div>
         } @if(mail()?.isImportant){
-        <button
+        <div
           class="mail-card__action-btn--important"
-          (click)="onToggleImportant($event)"
-          title="Important"
         >
           <img src="/images/svg/messaging/mail-important.svg" alt="Important" />
-        </button>
+        </div>
         }
       </div>
     </div>
