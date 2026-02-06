@@ -1,0 +1,19 @@
+<main class="approve-card">
+  @if (store.isLoading()) {
+  <p>Loading cards...</p>
+  } @else { @for(card of store.cards(); track card.id) {
+  <app-cards-approve-element
+    [id]="card.id"
+    [title]="card.nickname"
+    [status]="card.status"
+    [email]="card.cardholderName"
+    [network]="card.network"
+    [balance]="''"
+    [creationDate]="card.createdAt"
+    (cardAction)="handleAction($event)"
+  >
+  </app-cards-approve-element>
+  } @empty {
+  <p>No cards found.</p>
+  } }
+</main>

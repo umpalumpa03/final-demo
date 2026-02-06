@@ -45,36 +45,16 @@
     </div>
 
     <div class="otp-verification">
-      <lib-otp [config]="otpConfig.inputConfig" [(value)]="currentCode" />
-
-      <div class="otp-verification__resend">
-        <p class="otp-verification__text">
-          {{ 'paybill.main.otp.resend_text' | translate }}
-        </p>
-        <button class="otp-verification__btn" (click)="onOtpResend()">
-          {{ 'paybill.main.otp.resend_btn' | translate }}
-        </button>
-      </div>
+      <app-otp-verification
+        type="otp"
+        timerType="otp"
+        [inputOtpConfig]="otpConfig"
+        [errorMessage]="errorMessage()"
+        [isBtnRowDirection]="true"
+        (isVerifyCalled)="onVerify($event)"
+        (isResendCalled)="onResend()"
+        (onBackOut)="onCancel()"
+      />
     </div>
-
-    <footer class="confirm-container__actions">
-      <app-button
-        class="btn-cancel"
-        variant="secondary"
-        (click)="cancelPayment.emit()"
-        [fullWidth]="true"
-      >
-        {{ 'paybill.main.otp.cancel_btn' | translate }}
-      </app-button>
-
-      <app-button
-        class="btn-verify"
-        (click)="handleVerify()"
-        [isDisabled]="currentCode().length < 4"
-        [fullWidth]="true"
-      >
-        {{ 'paybill.main.otp.verify_btn' | translate }}
-      </app-button>
-    </footer>
   </div>
 </app-basic-card>
