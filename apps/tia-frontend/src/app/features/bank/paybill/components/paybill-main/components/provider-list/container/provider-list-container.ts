@@ -6,10 +6,7 @@ import {
 } from '@angular/core';
 import { ProviderList } from '../components/provider-list-items/provider-list';
 import { PaybillMainFacade } from '../../../services/paybill-main-facade';
-import {
-  PaybillFormVerifyEvent,
-  PaybillProvider,
-} from '../../../shared/models/paybill.model';
+import { PaybillProvider } from '../../../shared/models/paybill.model';
 import { Router, RouterOutlet } from '@angular/router';
 import {
   getCurrentHeader,
@@ -17,7 +14,6 @@ import {
 } from '../../../shared/utils/paybill.config';
 import { Store } from '@ngrx/store';
 import { PaybillActions } from '../../../../../store/paybill.actions';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-provider-list-container',
