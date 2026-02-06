@@ -36,6 +36,8 @@ export class PrepaymentContainer implements OnInit {
   public calculationResult = this.store.calculationResult;
   public activeChallengeId = this.store.activeChallengeId;
 
+  public error = this.store.error;
+
   public step = signal<PrepaymentStep>('options');
   private pendingPayload: PrepaymentCalculationPayload | null = null;
 
@@ -99,7 +101,12 @@ export class PrepaymentContainer implements OnInit {
   public onVerifyOtp(code: string): void {
     const challengeId = this.activeChallengeId();
     if (challengeId) {
-      this.store.verifyPrepayment({ payload: { challengeId, code } });
+      this.store.verifyPrepayment({
+        payload: {
+          challengeId: challengeId,
+          code: code,
+        },
+      });
     }
   }
 }

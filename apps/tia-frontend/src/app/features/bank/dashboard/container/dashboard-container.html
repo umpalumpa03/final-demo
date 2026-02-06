@@ -3,6 +3,11 @@
     [title]="pageTitle()"
     [subtitle]="pageSubtitle()"
   ></app-library-title>
+
+  <div class="bank-dashboard__banner">
+    <app-banner-carousel [slides]="bannerConfig()" />
+  </div>
+
   <app-drag-container
     [hasNoStyle]="true"
     [items]="myItems()"

@@ -9,6 +9,9 @@ import {
   selectSelectedAvatarId,
   selectCurrentAvatarUrl,
   selectUploadedFileName,
+  selectAvatarId,
+  selectAvatarType,
+  selectSavedAvatarUrl,
 } from '../store/profile-photo/profile-photo.selectors';
 import { selectUserInfo } from '../../../../../../store/user-info/user-info.selectors';
 import { TranslateService } from '@ngx-translate/core';
@@ -29,11 +32,16 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   public readonly selectedAvatarId = this.store.selectSignal(selectSelectedAvatarId);
   public readonly currentAvatarUrl = this.store.selectSignal(selectCurrentAvatarUrl);
   public readonly uploadedFileName = this.store.selectSignal(selectUploadedFileName);
+  public readonly avatarId = this.store.selectSignal(selectAvatarId);
+  public readonly avatarType = this.store.selectSignal(selectAvatarType);
+  public readonly savedAvatarUrl = this.store.selectSignal(selectSavedAvatarUrl);
   public readonly userInfo = this.store.selectSignal(selectUserInfo);
 
   public readonly alertKind = signal<AlertType | null>(null);
   public readonly alertMessage = signal<string>('');
   public readonly alertType = computed<AlertType | null>(() => this.alertKind());
+  public readonly isUploadModalOpen = signal<boolean>(false);
+  public readonly isDragOver = signal<boolean>(false);
   
   private uploadedFile: File | null = null;
   private objectUrl: string | null = null;
@@ -90,6 +98,50 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
     this.alertMessage.set('');
   }
 
+  public onOpenUploadModal(): void {
+    this.isUploadModalOpen.set(true);
+  }
+
+  public onCloseUploadModal(): void {
+    this.isUploadModalOpen.set(false);
+    this.isDragOver.set(false);
+  }
+
+  public onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragOver.set(true);
+  }
+
+  public onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragOver.set(false);
+  }
+
+  public onFileDrop(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragOver.set(false);
+    const files = event.dataTransfer?.files;
+    if (!files || files.length === 0) {
+      return;
+    }
+
+    const file = files[0];
+    this.onFileSelected(file);
+    this.isUploadModalOpen.set(false);
+  }
+
+  public onFileInputChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) {
+      return;
+    }
+
+    const file = input.files[0];
+    this.onFileSelected(file);
+    this.isUploadModalOpen.set(false);
+    input.value = '';
+  }
+
   public onFileSelected(file: File): void {
     const allowedTypes = ['image/png', 'image/jpeg'];
     const maxSizeBytes = 1024*1024; 
@@ -139,6 +191,40 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   }
 
   public onRemovePhoto(): void {
+    const hasUnsavedFile = !!this.uploadedFile || !!this.uploadedFileName();
+    const hasSavedAvatarUrl = !!this.savedAvatarUrl();
+    const currentUrl = this.currentAvatarUrl();
+    const savedUrl = this.savedAvatarUrl();
+
+    const hasUnsavedSelection =
+      (!!currentUrl && currentUrl !== savedUrl) || hasUnsavedFile;
+
+  
+    if (hasUnsavedSelection && hasSavedAvatarUrl) {
+      const avatarId = this.avatarId();
+      const avatarType = this.avatarType();
+
+      if (this.objectUrl) {
+        URL.revokeObjectURL(this.objectUrl);
+        this.objectUrl = null;
+      }
+      this.uploadedFile = null;
+
+      if (avatarId && avatarType && savedUrl) {
+        this.store.dispatch(
+          ProfilePhotoActions.setCurrentAvatar({
+            avatarId,
+            avatarType,
+            avatarUrl: savedUrl,
+          }),
+        );
+      }
+
+      this.store.dispatch(ProfilePhotoActions.clearUploadedFile());
+      return;
+    }
+
+   
     this.showAlert(
       'warning',
       this.translate.instant('settings.profile-photo.profilePictureRemovedSuccessfully'),
