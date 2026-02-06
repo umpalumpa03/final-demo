@@ -11,23 +11,41 @@
   (filterChange)="filterChange.emit($event)"
 ></app-finances-filters>
 
-<app-finances-summary
-  [loading]="loading()"
-  [error]="error()"
-  [summaryCards]="summaryCards()"
-  [activeFilter]="activeFilter()"
-  (retry)="filterChange.emit($event)"
-></app-finances-summary>
+<div class="finances-content-area">
+  @if (loading()) {
+  <div class="finances-loader-container">
+    <app-route-loader
+      variant="pulsing"
+      text="Updating your financial overview..."
+      [fillContainer]="true"
+    ></app-route-loader>
+  </div>
+  } @else {
+  <app-finances-summary
+    [loading]="loading()"
+    [error]="error()"
+    [summaryCards]="summaryCards()"
+    [activeFilter]="activeFilter()"
+    (retry)="filterChange.emit($event)"
+  ></app-finances-summary>
 
-<app-finances-charts 
-  [charts]="charts()"
-></app-finances-charts>
+  <app-finances-charts
+    [charts]="charts()"
+    [incomeVsExpensesFooter]="incomeVsExpensesFooter()"
+    [topCategoriesFooter]="topCategoriesFooter()"
+    [savingsFooter]="savingsFooter()"
+    [dailySpendingFooter]="dailySpendingFooter()"
+    [monthOptions]="monthOptions()"
+    [selectedMonthValue]="filterForm().get('selectedMonth')?.value"
+  ></app-finances-charts>
 
-<app-finances-breakdown 
-  [categories]="categories()"
-  [loading]="loading()"
-></app-finances-breakdown>
+  <app-finances-breakdown
+    [categories]="categories()"
+    [loading]="loading()"
+  ></app-finances-breakdown>
 
-<app-finances-transactions 
-  [transactions]="transactions()"
-></app-finances-transactions>
+  <app-finances-transactions
+    [transactions]="transactions()"
+  ></app-finances-transactions>
+  }
+</div>

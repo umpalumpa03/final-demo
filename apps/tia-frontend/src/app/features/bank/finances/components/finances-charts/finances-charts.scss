@@ -8,7 +8,7 @@
   gap: 2.4rem;
   margin-top: 4rem;
 
-  @media (max-width: 76.8rem) {
+  @media (max-width: 102.4rem) {
     grid-template-columns: 1fr;
   }
 
@@ -17,20 +17,109 @@
     border: 0.15rem solid $blue-200;
     border-radius: 2.4rem;
     padding: 3.2rem;
-    min-height: 45rem;
-    @include display-flex(column);
+    min-height: 52rem;
+    display: flex; 
+    flex-direction: column;
     box-shadow: 0 0.4rem 1.6rem rgba($black, 0.03);
 
-    .chart-title {
-      @include font-inter(700, 2.2rem);
-      color: $blue-900;
-      margin-bottom: 3rem;
+    .chart-header {
+      margin-bottom: 2.4rem;
+
+      .chart-title {
+        @include font-inter(700, 2.2rem);
+        color: $blue-900;
+        margin-bottom: 0.8rem;
+      }
+
+      .chart-subtitle {
+        @include font-inter(400, 1.4rem);
+        color: $gray-500;
+      }
     }
 
     .chart-container {
-      flex-grow: 1;
+      flex: 1;
       width: 100%;
-      @include flex-center();
+      min-height: 25rem;
+      @include flex-center(); 
+      margin-bottom: 2.4rem;
+    }
+
+    .chart-footer {
+      background-color: $gray-25;
+      border-radius: 1.6rem;
+      padding: 2rem;
+      margin-top: auto;
+
+      .footer-summary {
+        width: 100%;
+
+        &.summary-grid {
+          @include flex-center(row, space-between, center);
+        }
+
+        &.summary-flex {
+          @include flex-center(row, flex-start, center);
+          gap: 4rem;
+        }
+
+        &.summary-grid-three {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 1.6rem;
+        }
+      }
+
+      .footer-title {
+        @include font-inter(600, 1.4rem);
+        color: $blue-900;
+        margin-bottom: 1.2rem;
+      }
+
+      .label {
+        @include font-inter(500, 1.5rem);
+        color: $gray-500;
+        display: block;
+        margin-bottom: 0.4rem;
+      }
+
+      .income { color: $green-600; font-weight: 600; font-size: 1.4rem;  }
+      .expense { color: $red-500; font-weight: 600; font-size: 1.4rem; margin-top:0.8rem;}
+      
+      .net-value {
+        @include font-inter(700, 1.8rem);
+        &.positive { color: $blue-600; }
+        &:not(.positive) { color: $red-500; }
+      }
+
+      .main-value { @include font-inter(700, 2rem); color: $blue-600; }
+      .stat-value { 
+        @include font-inter(700, 1.6rem); 
+        color: $blue-900;
+        &.purple { color: #8B5CF6; }
+      }
+
+      .category-item {
+        @include flex-center(row, space-between, center);
+        margin-bottom: 0.8rem;
+        
+        &:last-child { margin-bottom: 0; }
+
+        .cat-info {
+          @include flex-center(row, flex-start, center);
+          gap: 0.8rem;
+
+          .dot {
+            width: 0.8rem;
+            height: 0.8rem;
+            border-radius: 50%;
+          }
+
+          .cat-name { @include font-inter(500, 1.4rem); color: $blue-900; }
+        }
+
+        .cat-value { @include font-inter(600, 1.4rem); color: $blue-900; }
+      }
     }
   }
 }

@@ -19,6 +19,7 @@ export interface FilterOption {
   icon: string;
   type: FilterType;
   variant:ButtonVariant;
+  activeIcon:string,
 }
 
 export interface SummaryCard {
@@ -27,6 +28,7 @@ export interface SummaryCard {
   change: string;
   changeType: 'positive' | 'negative';
   icon: string;
+  comparisonLabel: string;
 }
 
 export interface FinancialSummaryResponse {
@@ -79,5 +81,36 @@ export interface Transaction {
   date: string;   
   type: 'expense' | 'income'; 
   icon?:string;
+  isImageIcon?: boolean;
+  categoryColor?: string;
+  statusIcon?: string;
+}
+
+export interface IncomeVsExpensesFooter {
+  income: string;
+  expenses: string;
+  net: string;
+  isNetPositive: boolean;
+}
+
+export interface SavingsFooter {
+  current: string;
+  average: string;
+  period: number;
+}
+
+export interface DailySpendingFooter {
+  average: string;
+  highest: string;
+  lowest: string;
+}
+
+export interface TopCategoryFooter {
+  category: string;
+  amount: number;
+  color: string;
+  formattedAmount: string;
+  percentage: string;
+  icon?: string;
   isImageIcon?: boolean;
 }

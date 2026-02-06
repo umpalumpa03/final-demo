@@ -8,13 +8,26 @@
       @for (tx of transactions(); track tx.id) {
       <div class="transaction-item">
         <div class="transaction-item__left">
-          <div class="transaction-item__icon-box" [class.is-income]="tx.type === 'income'">
-            @if (tx.isImageIcon) {
-            <img [src]="tx.icon" [alt]="tx.category" class="transaction-item__icon-img">
-            } @else {
-            <span class="transaction-item__raw-icon">{{ tx.icon }}</span>
-            }
+          <div class="transaction-item__icon-container">
+            <div class="transaction-item__icon-box"
+            [style.background-color]="tx.categoryColor + '1A'" 
+            [style.color]="tx.categoryColor"
+            >
+              @if (tx.isImageIcon) {
+                <img [src]="tx.icon" [alt]="tx.category" class="transaction-item__category-img">
+              } @else {
+                <span class="transaction-item__raw-icon">{{ tx.icon }}</span>
+              }
+            </div>
+
+            <div class="transaction-item__status-badge" [class.is-income]="tx.type === 'income'">
+              <img 
+                [src]="tx.statusIcon"
+                alt="status"
+              >
+            </div>
           </div>
+
           <div class="transaction-item__info">
             <span class="transaction-item__title">{{ tx.title }}</span>
             <span class="transaction-item__category">{{ tx.category }}</span>

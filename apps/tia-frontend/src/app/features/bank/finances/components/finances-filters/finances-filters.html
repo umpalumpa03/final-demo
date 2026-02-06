@@ -3,7 +3,7 @@
     <div class="finances-filters__actions">
       @for (option of filterOptions(); track option.type) {
         <app-button
-          [icon]="option.icon"
+          [icon]="activeFilter() === option.type ? option.activeIcon : option.icon"
           [variant]="activeFilter() === option.type ? 'default' : 'outline'"
           (click)="filterChange.emit(option.type)"
         >

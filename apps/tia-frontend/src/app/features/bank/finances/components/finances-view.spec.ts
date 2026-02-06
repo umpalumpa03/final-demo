@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinancesView } from './finances-view';
-import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { By } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('FinancesView', () => {
   let component: FinancesView;
@@ -12,54 +12,62 @@ describe('FinancesView', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinancesView, ReactiveFormsModule],
-      providers: [provideCharts(withDefaultRegisterables())],
-      schemas: [NO_ERRORS_SCHEMA]
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinancesView);
     component = fixture.componentInstance;
 
-    fixture.componentRef.setInput('financeTitle', 'Title');
-    fixture.componentRef.setInput('financeSubTitle', 'Sub');
-    fixture.componentRef.setInput('activeFilter', 'custom');
-    fixture.componentRef.setInput('loading', false);
-    fixture.componentRef.setInput('error', null);
+    fixture.componentRef.setInput('financeTitle', 'Dashboard');
+    fixture.componentRef.setInput('financeSubTitle', 'Overview');
+    fixture.componentRef.setInput('activeFilter', 'month');
     fixture.componentRef.setInput('filterOptions', []);
-    fixture.componentRef.setInput('summaryCards', [{ label: 'T', value: '1' }]);
-    fixture.componentRef.setInput('charts', []);
-    fixture.componentRef.setInput('categories', []);
-    fixture.componentRef.setInput('transactions', []);
     fixture.componentRef.setInput('filterForm', new FormGroup({
-      fromDate: new FormControl('2026-01-01'),
-      toDate: new FormControl('2026-01-31')
+       selectedMonth: new FormControl(''),
+       fromDate: new FormControl(''),
+       toDate: new FormControl('')
     }));
-
+    fixture.componentRef.setInput('charts', []);
+    
     fixture.detectChanges();
   });
 
-  it('should cover template loops and validation', () => {
-    const form = component.filterForm();
-    const fromControl = component.getControl('fromDate');
-    
-    fromControl.setErrors({ required: true });
-    fromControl.markAsTouched();
-    expect(component.isFromDateInvalid).toBe(true);
+  it('should create the component', () => {
+    expect(component).toBeTruthy();
+  });
 
-    form.setErrors({ dateRangeInvalid: true });
-    expect(component.isRangeInvalid).toBe(true);
+  it('should render all child sections', () => {
+    const selectors = [
+      'app-library-title',
+      'app-finances-filters',
+      'app-finances-summary',
+      'app-finances-charts',
+      'app-finances-breakdown',
+      'app-finances-transactions'
+    ];
 
+    selectors.forEach(selector => {
+      const element = fixture.nativeElement.querySelector(selector);
+      expect(element).not.toBeNull();
+    });
+  });
+
+
+  it('should emit filterChange when app-finances-filters triggers it', () => {
     const spy = vi.spyOn(component.filterChange, 'emit');
-    component.filterChange.emit('month' as any);
-    expect(spy).toHaveBeenCalled();
+    const filtersEl = fixture.debugElement.query(By.css('app-finances-filters'));
+
+    filtersEl.triggerEventHandler('filterChange', 'custom');
+
+    expect(spy).toHaveBeenCalledWith('custom');
   });
 
-  it('should cover empty states', () => {
-    fixture.componentRef.setInput('summaryCards', []);
-    fixture.componentRef.setInput('loading', false);
-    fixture.componentRef.setInput('error', null);
-    fixture.detectChanges();
-    
-    const noDataMsg = fixture.nativeElement.querySelector('.no-data');
-    expect(noDataMsg).toBeTruthy();
+  it('should emit filterChange when app-finances-summary triggers retry', () => {
+    const spy = vi.spyOn(component.filterChange, 'emit');
+    const summaryEl = fixture.debugElement.query(By.css('app-finances-summary'));
+
+    summaryEl.triggerEventHandler('retry', 'month');
+
+    expect(spy).toHaveBeenCalledWith('month');
   });
 });

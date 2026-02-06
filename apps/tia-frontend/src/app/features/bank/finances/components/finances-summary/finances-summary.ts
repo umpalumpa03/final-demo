@@ -18,6 +18,7 @@ export class FinancesSummary {
   public readonly error = input<string | null>(null);
   public readonly summaryCards = input<SummaryCard[]>([]);
   public readonly activeFilter = input<FilterType | null>(null);
+  public readonly comparisonLabel = input<string>('');
   
   public readonly retry = output<FilterType>();
 }

@@ -3,13 +3,15 @@ import { FilterOption, SelectOption } from '../models/filter.model';
 export const FINANCES_FILTER_OPTIONS: FilterOption[] = [
   { 
     label: 'By Month', 
-    icon: 'finances-bymonth.svg', 
+    icon: 'finances-bymonthwhite.svg', 
+    activeIcon: 'finances-bymonth.svg',
     type: 'month',
     variant:"default",
   },
   { 
     label: 'Custom Date', 
     icon: 'finances-bymonthwhite.svg', 
+    activeIcon: 'finances-bymonth.svg',
     type: 'custom',
     variant:"outline",
 }
@@ -29,19 +31,33 @@ export const CATEGORY_ICONS: Record<string, string> = {
   'Food & Dining': '/images/svg/finances/finances-food.svg',
   'Shopping': '/images/svg/finances/finances-shopping.svg',
   'Transportation': '/images/svg/finances/finances-transport.svg',
+  'Housing': '/images/svg/finances/finances-housing.svg',
+  'Healthcare': '/images/svg/finances/finances-healthcare.svg',
   'Transfer': '/images/svg/finances/finances-transfer.svg',
   'Bills & Utilities': '/images/svg/finances/finances-bills.svg',
   'Entertainment': '/images/svg/finances/finances-entertainment.svg',
-  'Income': '/images/svg/finances/finances-income.svg',
-  'Expense':'images/svg/finances/finances-expense.svg',
+  'Income': '/images/svg/finances/finances-income-abs.svg',
+  'Expense': '/images/svg/finances/financess-expense-abs.svg', 
+  'Travel': '/images/svg/finances/finances-travel.svg',
   'Other': '/images/svg/finances/finances-other.svg',
 
 } as const;
 
 
+export const CATEGORY_COLORS: Record<string, string> = {
+  'Transfer': '#84CC16',
+  'Bills & Utilities': '#F97316',
+  'Other': '#A855F7', 
+  'Food & Dining': '#3B82F6',
+  'Travel':'#06B6D4',
+  'Shopping': '#10B981',
+  'Transportation': '#F59E0B',
+  'Entertainment': '#8B5CF6'
+} as const;
 
-export const getMonthOptions = (activeMonths: string[] = []): SelectOption[] => {
-  const allMonths: SelectOption[] = [
+
+export const getMonthOptions = (): SelectOption[] => {
+  return [
     { label: 'February 2026', value: '2026-02-01' },
     { label: 'January 2026', value: '2026-01-01' },
     { label: 'December 2025', value: '2025-12-01' },
@@ -55,16 +71,7 @@ export const getMonthOptions = (activeMonths: string[] = []): SelectOption[] => 
     { label: 'April 2025', value: '2025-04-01' },
     { label: 'March 2025', value: '2025-03-01' },
     { label: 'February 2025', value: '2025-02-01' },
-  ] as const;
-
-  if (!activeMonths || activeMonths.length === 0) {
-    return allMonths;
-  }
-
-  return allMonths.filter(month => {
-    const date = new Date(month.value as string);
-    const shortMonthName = date.toLocaleString('en-US', { month: 'short' });
-
-    return activeMonths.includes(shortMonthName);
-  });
+  ];
 };
+
+

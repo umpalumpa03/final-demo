@@ -20,7 +20,7 @@
           <app-statistic-card
             [label]="card.label"
             [value]="card.value"
-            [change]="card.change"
+            [change]="card.change + ' ' + card.comparisonLabel"
             [changeType]="card.changeType"
             [icon]="card.icon"
           ></app-statistic-card>

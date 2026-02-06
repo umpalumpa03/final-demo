@@ -7,7 +7,7 @@ import { FinancesSummary } from '../components/finances-summary/finances-summary
 import { FinancesCharts } from '../components/finances-charts/finances-charts';
 import { FinancesBreakdown } from '../components/finances-breakdown/finances-breakdown';
 import { FinancesTransactions } from '../components/finances-transactions/finances-transactions';
-
+import {RouteLoader} from "../../../../shared/lib/feedback/route-loader/route-loader";
 import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
 
 import {
@@ -18,6 +18,10 @@ import {
   CategoryBreakdown,
   Transaction,
   SelectOption,
+  DailySpendingFooter,
+  SavingsFooter,
+  IncomeVsExpensesFooter,
+  TopCategoryFooter,
 } from '../models/filter.model';
 
 @Component({
@@ -30,7 +34,8 @@ import {
     FinancesSummary,
     FinancesCharts,
     FinancesBreakdown,
-    FinancesTransactions
+    FinancesTransactions,
+    RouteLoader
   ],
   templateUrl: './finances-view.html',
   styleUrl: './finances-view.scss',
@@ -49,6 +54,11 @@ export class FinancesView {
   public readonly categories = input<CategoryBreakdown[]>([]);
   public readonly transactions = input<Transaction[]>([]);
   public readonly summaryCards = input<SummaryCard[]>([]);
+
+  public readonly incomeVsExpensesFooter = input<IncomeVsExpensesFooter | null>(null);
+  public readonly topCategoriesFooter = input<TopCategoryFooter[]>([]);
+  public readonly savingsFooter = input<SavingsFooter | null>(null);
+  public readonly dailySpendingFooter = input<DailySpendingFooter | null>(null);
 
   public readonly loading = input<boolean>(false);
   public readonly error = input<string | null>(null);

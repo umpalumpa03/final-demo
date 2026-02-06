@@ -13,5 +13,10 @@
     [categories]="store.categoriesWithIcons()"
     [transactions]="store.transactionsWithIcons()"
     (filterChange)="onFilterChange($event)"
+    [incomeVsExpensesFooter]="store.incomeVsExpensesFooter()"
+    [topCategoriesFooter]="store.topCategoriesFooter()"
+    [savingsFooter]="store.savingsFooter()"
+    [dailySpendingFooter]="store.dailySpendingFooter()"
+
   ></app-finances-view>
 </div>
