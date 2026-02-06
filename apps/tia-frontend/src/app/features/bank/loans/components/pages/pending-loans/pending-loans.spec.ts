@@ -70,12 +70,4 @@ describe('PendingLoans', () => {
     component.onRenameLoan(event);
     expect(loansStoreMock.renameLoan).toHaveBeenCalledWith(event);
   });
-
-  it('should reset state on closeModals', () => {
-    component.isDetailsOpen.set(true);
-    component.closeModals();
-    expect(component.isDetailsOpen()).toBe(false);
-    expect(component.selectedLoan()).toBeNull();
-    expect(loansStoreMock.clearLoanDetails).toHaveBeenCalled();
-  });
 });

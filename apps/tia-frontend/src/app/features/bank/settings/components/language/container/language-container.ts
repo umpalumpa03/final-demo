@@ -4,7 +4,6 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import { LanguageSwitcher } from '../components/language-switcher/language-switcher';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SettingsBody } from '../../../shared/ui/settings-body/settings-body';
 import { LanguageSelection } from '../components/language-selection/language-selection';
@@ -13,11 +12,10 @@ import { LanguagesStore } from '../store/languages.store';
 @Component({
   selector: 'app-language-container',
   imports: [
-    LanguageSwitcher,
     TranslatePipe,
     SettingsBody,
     LanguageSelection,
-  ],
+],
   providers: [LanguagesStore],
   templateUrl: './language-container.html',
   styleUrl: './language-container.scss',

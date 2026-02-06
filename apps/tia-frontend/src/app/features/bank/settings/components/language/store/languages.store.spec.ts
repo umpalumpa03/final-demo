@@ -51,11 +51,13 @@ describe('LanguagesStore', () => {
   it('should update language successfully', async () => {
     languageService.updateUserLanguage.mockReturnValue(of({ success: true }));
 
-    store.updateLanguage('english');
+    store.updateLanguage('english').subscribe();
 
     await vi.waitFor(() => {
       expect(store.isLoading()).toBe(false);
     });
+
+    expect(store.hasError()).toBe(false);
   });
 
   it('should reset state', () => {

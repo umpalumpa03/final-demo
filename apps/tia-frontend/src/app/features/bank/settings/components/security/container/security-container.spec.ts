@@ -59,4 +59,34 @@ describe('SecurityContainer', () => {
       SecurityActions.changePassword({ currentPassword: 'c', newPassword: 'n' }),
     );
   });
+
+  it('should compute alertType as error when error exists', () => {
+    store.overrideSelector(SecuritySelectors.selectSecurityError, 'Test error');
+    store.overrideSelector(SecuritySelectors.selectSecuritySuccess, false);
+    refresh();
+
+    expect(component.alertType()).toBe('error');
+  });
+
+  it('should compute alertMessage from error when error exists', () => {
+    store.overrideSelector(SecuritySelectors.selectSecurityError, 'Test error message');
+    store.overrideSelector(SecuritySelectors.selectSecuritySuccess, false);
+    refresh();
+
+    expect(component.alertMessage()).toBe('Test error message');
+  });
+
+  it('should clear alert timeout and dispatch clear actions on onAlertClose', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
+
+    store.overrideSelector(SecuritySelectors.selectSecurityError, 'Test error');
+    refresh();
+
+    component.onAlertClose();
+
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+    expect(dispatchSpy).toHaveBeenCalledWith(SecurityActions.clearError());
+    expect(dispatchSpy).toHaveBeenCalledWith(SecurityActions.clearSuccess());
+  });
 });

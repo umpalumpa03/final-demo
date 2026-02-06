@@ -16,7 +16,7 @@ import { fromEvent, Observable } from 'rxjs';
 import { NotificationsData } from '../components/header-notifications/models/notification.model';
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
 import { NotificationsStore } from '../components/header-notifications/store/notifications.store';
-import { selectSavedAvatarUrl } from '../../../../store/profile-photo/profile-photo.selectors';
+import { selectSavedAvatarUrl } from '../../../../features/bank/settings/components/profile-photo/store/profile-photo/profile-photo.selectors';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NotificationsContainer } from '../components/header-notifications/container/notifications-container';
 

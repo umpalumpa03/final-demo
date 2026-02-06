@@ -12,11 +12,9 @@
   (modalOpenAction)="handleModalToggle()"
   (formSubmit)="handleFormSubmit($event)"
   (categorySelected)="onCategorySelected($event)"
-  (itemDeleteIcon)="onItemDeleteAction($event)"
   (deleteTemplateModal)="deleteTemplate()"
-  (itemEditIcon)="onItemEditAction($event)"
-  (groupDeleteIcon)="onGroupDeleteAction($event)"
+  (treeAction)="onTreeAction($event)"
   (deleteGroupModal)="deleteGroup()"
-  (groupEditIcon)="onGroupEditAction($event)"
   (treeItemMoved)="templateMoved($event)"
+  [selectAll]="selectAll()"
 ></app-paybill-templates>

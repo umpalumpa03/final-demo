@@ -43,47 +43,32 @@ describe('CreateAccountComponent', () => {
     vi.clearAllMocks();
   });
 
-  it('should create', () => {
+  it('should create and emit events', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should emit closeModal when handleClose is called', () => {
-    const spy = vi.spyOn(component.closeModal, 'emit');
-    component.handleClose();
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('should emit submitForm when handleSubmit is called', () => {
-    const spy = vi.spyOn(component.submitForm, 'emit');
-    component.handleSubmit();
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('should emit backdropClick with MouseEvent when handleBackdropClick is called', () => {
-    const spy = vi.spyOn(component.backdropClick, 'emit');
+    const closeSpy = vi.spyOn(component.closeModal, 'emit');
+    const submitSpy = vi.spyOn(component.submitForm, 'emit');
+    const backdropSpy = vi.spyOn(component.backdropClick, 'emit');
     const mockEvent = new MouseEvent('click');
+
+    component.handleClose();
+    expect(closeSpy).toHaveBeenCalled();
+    component.handleSubmit();
+    expect(submitSpy).toHaveBeenCalled();
     component.handleBackdropClick(mockEvent);
-    expect(spy).toHaveBeenCalledWith(mockEvent);
+    expect(backdropSpy).toHaveBeenCalledWith(mockEvent);
   });
 
-  it('should update accountTypeOptions when accountTypes input changes', () => {
-    const newAccountTypes: AccountType[] = [AccountType.current];
-    TestBed.runInInjectionContext(() => {
-      fixture.componentRef.setInput('accountTypes', newAccountTypes);
-    });
-    fixture.detectChanges();
-    const options = component.accountTypeOptions();
-    expect(options).toHaveLength(1);
-    expect(options[0].value).toBe(AccountType.current);
-  });
+  it('should compute and update options', () => {
+    expect(component.accountTypeOptions().length).toBeGreaterThan(0);
+    expect(component.accountTypeOptions()[0].value).toBe(AccountType.current);
+    expect(component.currencyOptions().length).toBe(3);
 
-  it('should update currencyOptions when currencies input changes', () => {
-    const newCurrencies = ['USD', 'EUR'];
     TestBed.runInInjectionContext(() => {
-      fixture.componentRef.setInput('currencies', newCurrencies);
+      fixture.componentRef.setInput('accountTypes', [AccountType.current]);
+      fixture.componentRef.setInput('currencies', ['USD', 'EUR']);
     });
     fixture.detectChanges();
-    const options = component.currencyOptions();
-    expect(options).toHaveLength(2);
+    expect(component.accountTypeOptions()).toHaveLength(1);
+    expect(component.currencyOptions()).toHaveLength(2);
   });
 });

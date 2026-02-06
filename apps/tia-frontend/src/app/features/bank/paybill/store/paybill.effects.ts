@@ -168,14 +168,24 @@ export class PaybillEffect {
     return this.actions$.pipe(
       ofType(PaybillActions.proceedPaymentSuccess),
       withLatestFrom(this.store.select(selectPaymentPayload)),
-      map(([{ response }, payload]) => {
+      switchMap(([{ response }, payload]) => {
         const amount = payload?.amount ?? 0;
+        const challengeId = response.verify?.challengeId;
 
-        if (amount >= 50 && response.verify?.challengeId) {
-          return PaybillActions.setPaymentStep({ step: 'OTP' });
+        if (amount > 50 && challengeId) {
+          this.router.navigate(['/bank/paybill/pay/otp-verification']);
+          return of(PaybillActions.setPaymentStep({ step: 'OTP' }));
         }
 
-        return PaybillActions.setPaymentStep({ step: 'SUCCESS' });
+        if (challengeId) {
+          return of(
+            PaybillActions.confirmPayment({
+              payload: { challengeId, code: '6767' },
+            }),
+          );
+        }
+
+        return of(PaybillActions.setPaymentStep({ step: 'SUCCESS' }));
       }),
     );
   });
@@ -190,6 +200,7 @@ export class PaybillEffect {
               this.router.navigate(['/bank/paybill/pay/payment-success']);
 
               return of(
+                PaybillActions.setPaymentStep({ step: 'SUCCESS' }),
                 PaybillActions.addNotification({
                   notificationType: 'success',
                   message: 'OTP Verified Successfully',
@@ -322,7 +333,6 @@ export class PaybillEffect {
     );
   });
 
-  // All success notifications
   actionSuccess$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(
@@ -344,7 +354,6 @@ export class PaybillEffect {
     );
   });
 
-  // All failure notifications
   actionFailure$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(
@@ -510,6 +519,8 @@ export class PaybillEffect {
               return of(
                 TemplatesPageActions.moveTemplateSuccess({
                   message: 'Item removed successfully',
+                  groupId,
+                  templateId,
                 }),
               );
             }
@@ -520,6 +531,8 @@ export class PaybillEffect {
                 map(() =>
                   TemplatesPageActions.moveTemplateSuccess({
                     message: 'Item moved successfully',
+                    groupId,
+                    templateId,
                   }),
                 ),
               );
@@ -533,6 +546,30 @@ export class PaybillEffect {
             ),
           ),
         ),
+      ),
+    );
+  });
+
+  createTemplate$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TemplatesPageActions.createTemplate),
+      switchMap(({ serviceId, identification, nickname }) =>
+        this.paybillService
+          .createTemplate(serviceId, identification, nickname)
+          .pipe(
+            map((response) =>
+              TemplatesPageActions.createTemplateSuccess({
+                message: response.message || 'Template saved successfully',
+              }),
+            ),
+            catchError((error) =>
+              of(
+                TemplatesPageActions.createTemplateFailure({
+                  error: this.getErrorMessage(error),
+                }),
+              ),
+            ),
+          ),
       ),
     );
   });

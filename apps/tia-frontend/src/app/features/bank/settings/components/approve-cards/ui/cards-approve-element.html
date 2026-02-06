@@ -1,0 +1,54 @@
+<div class="approve-card">
+  <div class="approve-card__item">
+    <div class="approve-card__display">
+      <div class="approve-card__img-box">
+        <img
+          class="approve-card__icon"
+          src="images/svg/settings/approve-cards/card-icon.svg"
+          alt=""
+        />
+      </div>
+
+      <div class="approve-card__content">
+        <div class="approve-card__header">
+          <h3 class="approve-card__title">{{title()}}</h3>
+          <div class="approve-card__badge">
+            <img
+              class="approve-card__badge-icon"
+              src="images/svg/settings/approve-cards/favorite.svg"
+              alt=""
+            />
+            <span>{{status()}}</span>
+          </div>
+        </div>
+
+        <div class="approve-card__email">{{email()}}</div>
+
+        <div class="approve-card__details">
+          <span>{{network()}}</span>
+          <span class="approve-card__details--bold">{{balance()}}</span>
+          <span>{{creationDate()}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="approve-card__actions">
+      @for(button of buttons; track button.id) {
+      <button
+        class="approve-card__btn"
+        [class]="'approve-card__btn--' + button.id"
+        (click)="onAction(button.id)"
+        [attr.aria-label]="button.label"
+      >
+        <img
+          class="approve-card__btn-icon"
+          [src]="'images/svg/settings/approve-cards/' + button.icon"
+          alt=""
+        />
+
+        <span class="approve-card__btn-text">{{ button.label }}</span>
+      </button>
+      }
+    </div>
+  </div>
+</div>
