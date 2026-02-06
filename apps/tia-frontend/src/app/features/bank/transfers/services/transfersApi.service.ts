@@ -13,7 +13,6 @@ export class TransfersApiService {
   private readonly baseURL = `${environment.apiUrl}/transfers`;
   private readonly http = inject(HttpClient);
 
-  // validate recipient
   public lookupByPhone(phoneNumber: string): Observable<RecipientResponse> {
     return this.http.post<RecipientResponse>(
       `${this.baseURL}/tia-transfer/lookup-recipient-by-personal-info`,
@@ -24,7 +23,6 @@ export class TransfersApiService {
     );
   }
 
-  // validate recipient by IBAN
   public lookupByIban(iban: string): Observable<RecipientResponse> {
     return this.http.post<RecipientResponse>(
       `${this.baseURL}/tia-transfer/lookup-recipient-by-iban`,
@@ -32,7 +30,6 @@ export class TransfersApiService {
     );
   }
 
-  // Get transfer fee
   public getFee(
     senderAccountId: string,
     amountToSend: number,
@@ -57,6 +54,30 @@ export class TransfersApiService {
     );
   }
 
+  public getConversionRate(
+    from: string,
+    to: string,
+    amount: number = 1
+  ): Observable<{
+    success: boolean;
+    query: { from: string; to: string; amount: number };
+    result: number;
+    rate: number;
+  }> {
+    return this.http.get<{
+      success: boolean;
+      query: { from: string; to: string; amount: number };
+      result: number;
+      rate: number;
+    }>(`${environment.apiUrl}/exchange-rates/convert`, {
+      params: {
+        from,
+        to,
+        amount: amount.toString(),
+      },
+    });
+  }
+
   public transferToOwn(payload: {
     senderAccountId: string;
     receiverAccountId: string;
@@ -65,6 +86,19 @@ export class TransfersApiService {
   }): Observable<TransferResponse> {
     return this.http.post<TransferResponse>(
       `${this.baseURL}/between-own-accounts`,
+      payload,
+    )
+  }
+
+  public transferCrossCurrency(payload: {
+    senderAccountId: string;
+    receiverAccountId: string;
+    description: string;
+    amountToSend: number;
+    isReverse: boolean;
+  }): Observable<TransferResponse> {
+    return this.http.post<TransferResponse>(
+      `${this.baseURL}/convert`,
       payload,
     )
   }

@@ -144,4 +144,79 @@ export class TransferInternalService {
       )
       .subscribe();
   }
+
+  public handleCrossCurrencyTransfer(isReverse: boolean): void {
+    const senderAccount = this.transferStore.senderAccount();
+    const receiverAccount = this.transferStore.receiverOwnAccount();
+    const amount = this.transferStore.amount();
+    const description = this.transferStore.description();
+
+    if (!senderAccount?.id || !receiverAccount?.id || amount <= 0) {
+      return;
+    }
+
+    this.transferStore.setLoading(true);
+    this.transferStore.setError('');
+
+    this.transfersApi
+      .transferCrossCurrency({
+        senderAccountId: senderAccount.id,
+        receiverAccountId: receiverAccount.id,
+        description: description || 'Cross-currency transfer',
+        amountToSend: amount,
+        isReverse: isReverse,
+      })
+      .pipe(
+        tap((response) => {
+          this.transferStore.setLoading(false);
+
+          if (response.verify?.challengeId) {
+            this.transferStore.setChallengeId(response.verify.challengeId);
+
+            if (response.verify.method === null) {
+              this.verifyTransfer();
+            } else {
+              this.transferStore.setRequiresOtp(true);
+              this.router.navigate(['/bank/transfers/verify']);
+            }
+          } else {
+            this.transferStore.setTransferSuccess(true);
+            this.store.dispatch(
+              AccountsActions.loadAccounts({ forceRefresh: true }),
+            );
+          }
+        }),
+        catchError((error) => {
+          this.transferStore.setLoading(false);
+          this.transferStore.setError(error?.error?.message || 'Transfer failed');
+          return of(null);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
+  }
+
+  public fetchConversionRate(
+    from: string,
+    to: string,
+    onSuccess: (rate: number) => void,
+    onError?: () => void
+  ): void {
+    this.transfersApi
+      .getConversionRate(from, to, 1)
+      .pipe(
+        tap((response) => {
+          if (response.success) {
+            onSuccess(response.rate);
+          }
+        }),
+        catchError((error) => {
+          console.error('Failed to fetch conversion rate:', error);
+          onError?.();
+          return of(null);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
+  }
 }

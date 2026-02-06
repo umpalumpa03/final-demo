@@ -63,10 +63,26 @@ export class InternalAmount implements OnInit {
   public readonly requiresOtp = this.transferStore.requiresOtp;
   public readonly errorFromState = this.transferStore.error;
 
+  public readonly activeInput = signal<'source' | 'destination'>('source');
+  public readonly conversionRate = signal<number>(0);
+  public readonly isConversionMode = computed(() =>
+    this.selectedSenderAccount()?.currency !== this.selectedRecipientAccount()?.currency
+  );
+
   public readonly amountInput = this.fb.control(
     this.transferStore.amount() || '',
     [Validators.required, Validators.min(0.01)],
   );
+
+  public readonly sourceAmountConfig = computed(() => ({
+    label: `${this.translate.instant('transfers.internal.amount.send')} (${this.selectedSenderAccount()?.currency || ''})`,
+    placeholder: '0.00',
+  }));
+
+  public readonly destinationAmountInput = this.fb.control('', [
+    Validators.required,
+    Validators.min(0.01),
+  ]);
 
   public readonly descriptionInput = this.fb.control(
     this.transferStore.description() || '',
@@ -78,6 +94,11 @@ export class InternalAmount implements OnInit {
 
   public readonly amountConfig = computed(() => ({
     label: `${this.translate.instant('transfers.internal.amount.label')} (${this.currency()})`,
+    placeholder: '0.00',
+  }));
+
+  public readonly destinationAmountConfig = computed(() => ({
+    label: `${this.translate.instant('transfers.internal.amount.receive')} (${this.selectedRecipientAccount()?.currency || ''})`,
     placeholder: '0.00',
   }));
 
@@ -101,8 +122,12 @@ export class InternalAmount implements OnInit {
   });
 
   public readonly isTransferDisabled = computed(() => {
-    const isInvalid = this.amountInput.status !== 'VALID';
-    return isInvalid || this.isLoading() || this.hasInsufficientBalance();
+    if (this.isConversionMode()) {
+      const sourceValid = this.amountInput.status === 'VALID';
+      const destValid = this.destinationAmountInput.status === 'VALID';
+      return !sourceValid || !destValid || this.isLoading() || this.hasInsufficientBalance();
+    }
+    return this.amountInput.status !== 'VALID' || this.isLoading() || this.hasInsufficientBalance();
   });
 
   constructor() {
@@ -116,6 +141,20 @@ export class InternalAmount implements OnInit {
         }, 3000);
       }
     });
+
+    effect(() => {
+      const sender = this.selectedSenderAccount();
+      const receiver = this.selectedRecipientAccount();
+
+      if (sender && receiver && sender.currency !== receiver.currency) {
+        this.transferInternalService.fetchConversionRate(
+          sender.currency,
+          receiver.currency,
+          (rate) => this.conversionRate.set(rate),
+          () => this.conversionRate.set(0)
+        );
+      }
+    });
   }
 
   public ngOnInit(): void {
@@ -123,12 +162,47 @@ export class InternalAmount implements OnInit {
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((value) => {
+          if (this.isConversionMode()) {
+            this.activeInput.set('source');
+            this.updateDestinationAmount(Number(value));
+          }
           this.transferInternalService.handleAmountInput(Number(value));
         }),
       )
       .subscribe();
 
+    this.destinationAmountInput.valueChanges
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((value) => {
+          if (this.isConversionMode()) {
+            this.activeInput.set('destination');
+            this.updateSourceAmount(Number(value));
+          }}),
+      )
+      .subscribe();
+
     this.triggerToast('transfers.internal.amount.accountsSelected');
+  }
+
+  private updateDestinationAmount(sourceAmount: number): void {
+    if (!this.conversionRate()) return;
+
+    const converted = sourceAmount * this.conversionRate();
+    this.destinationAmountInput.setValue(
+      converted.toFixed(2),
+      { emitEvent: false }
+    );
+  }
+
+  private updateSourceAmount(destinationAmount: number): void {
+    if (!this.conversionRate()) return;
+
+    const converted = destinationAmount / this.conversionRate();
+    this.amountInput.setValue(
+      converted.toFixed(2),
+      { emitEvent: false }
+    );
   }
 
   public onGoBack(): void {
@@ -139,9 +213,22 @@ export class InternalAmount implements OnInit {
   }
 
   public onTransfer(): void {
-    if (this.amountInput.valid) {
+    if (this.isConversionMode()) {
       this.transferStore.setDescription(this.descriptionInput.value || '');
-      this.transferInternalService.handleToOwnTransfer();
+
+      const isReverse = this.activeInput() === 'destination';
+      const amount = isReverse
+        ? Number(this.destinationAmountInput.value)
+        : Number(this.amountInput.value);
+
+      this.transferStore.setAmount(amount);
+      this.transferInternalService.handleCrossCurrencyTransfer(isReverse);
+    } else {
+
+      if (this.amountInput.valid) {
+        this.transferStore.setDescription(this.descriptionInput.value || '');
+        this.transferInternalService.handleToOwnTransfer();
+      }
     }
   }
 
