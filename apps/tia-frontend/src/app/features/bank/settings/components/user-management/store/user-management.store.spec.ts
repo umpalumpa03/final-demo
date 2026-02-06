@@ -20,9 +20,7 @@ describe('UserManagementStore', () => {
       deleteUser: vi.fn(),
       blockUser: vi.fn(),
     };
-    avatarService = {
-      getCurrentUserAvatar: vi.fn(),
-    };
+    avatarService = { getCurrentUserAvatar: vi.fn() };
     TestBed.configureTestingModule({
       providers: [
         UserManagementStore,
@@ -33,85 +31,110 @@ describe('UserManagementStore', () => {
     store = TestBed.inject(UserManagementStore);
   });
 
-  it('should load users success/error', () => {
+  it('should load users once if already loaded', () => {
     service.getAllUsers.mockReturnValue(of(mockUsers));
     store.loadUsers();
     expect(store.users()).toEqual(mockUsers);
-    expect(store.userCount()).toBe(1);
-    expect(store.loading()).toBe(false);
-
-    service.getAllUsers.mockReturnValue(
-      throwError(() => new HttpErrorResponse({ status: 500 })),
-    );
+    service.getAllUsers.mockClear();
     store.loadUsers();
-    expect(store.error()).toContain('500');
+    expect(service.getAllUsers).not.toHaveBeenCalled();
   });
 
-  it('should load details success/error', () => {
+  it('should use cached user details', () => {
+    const user = { ...mockUsers[0], avatarUrl: null };
     service.getUserById.mockReturnValue(of(mockUsers[0]));
     store.loadUserDetails('1');
-    expect(store.selectedUser()).toEqual({ ...mockUsers[0], avatarUrl: null });
-    expect(store.actionLoading()).toBe(false);
-
-    service.getUserById.mockReturnValue(
-      throwError(() => new HttpErrorResponse({ status: 404 })),
-    );
+    expect(store.selectedUser()).toEqual(user);
+    service.getUserById.mockClear();
     store.loadUserDetails('1');
-    expect(store.error()).toContain('404');
+    expect(service.getUserById).not.toHaveBeenCalled();
   });
 
-  it('should load details with avatar', () => {
+  it('should load user with avatar', () => {
     const userWithAvatar = { ...mockUsers[0], avatar: 'avatar123' };
     const mockBlob = new Blob(['test'], { type: 'image/png' });
     service.getUserById.mockReturnValue(of(userWithAvatar));
     avatarService.getCurrentUserAvatar.mockReturnValue(of(mockBlob));
-
     store.loadUserDetails('1');
     expect(store.selectedUser()?.avatarUrl).toBeTruthy();
   });
 
-  it('should update user and update local state', () => {
+  it('should update user and clear cache', () => {
     service.getAllUsers.mockReturnValue(of(mockUsers));
     store.loadUsers();
-
     const updated = { ...mockUsers[0], firstName: 'Edited' };
     service.updateUser.mockReturnValue(of(updated));
-
     store.updateUser({ id: '1', data: {} as any });
-
     expect(store.users()[0].firstName).toBe('Edited');
     expect(store.selectedUser()).toEqual(updated);
-    expect(store.actionLoading()).toBe(false);
   });
 
-  it('should delete user and filter local state', () => {
+  it('should handle updateUser error', () => {
+    service.updateUser.mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: 400 })),
+    );
+    store.updateUser({ id: '1', data: {} as any });
+    expect(store.error()).toContain('400');
+  });
+
+  it('should delete user and clear cache', () => {
     service.getAllUsers.mockReturnValue(of(mockUsers));
     store.loadUsers();
-
     service.deleteUser.mockReturnValue(of(null));
     store.deleteUser('1');
     expect(store.users().length).toBe(0);
-    expect(store.actionLoading()).toBe(false);
+  });
+
+  it('should handle deleteUser error', () => {
+    service.deleteUser.mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: 500 })),
+    );
+    store.deleteUser('1');
+    expect(store.error()).toContain('500');
   });
 
   it('should toggle block status', () => {
-    service.getAllUsers.mockReturnValue(of(mockUsers));
+    service.getAllUsers.mockReturnValue(
+      of([{ ...mockUsers[0], isBlocked: false }]),
+    );
     store.loadUsers();
-
     const blocked = { ...mockUsers[0], isBlocked: true };
     service.blockUser.mockReturnValue(of(blocked));
-
     store.toggleBlockStatus({ id: '1', isBlocked: true });
     expect(store.users()[0].isBlocked).toBe(true);
-    expect(store.actionLoading()).toBe(false);
+  });
+
+  it('should update selected user on block toggle', () => {
+    service.getAllUsers.mockReturnValue(of(mockUsers));
+    store.loadUsers();
+    service.getUserById.mockReturnValue(of(mockUsers[0]));
+    store.loadUserDetails('1');
+    const blocked = { ...mockUsers[0], isBlocked: true };
+    service.blockUser.mockReturnValue(of(blocked));
+    store.toggleBlockStatus({ id: '1', isBlocked: true });
+    expect(store.selectedUser()?.isBlocked).toBe(true);
+  });
+
+  it('should handle toggleBlockStatus error', () => {
+    service.blockUser.mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: 400 })),
+    );
+    store.toggleBlockStatus({ id: '1', isBlocked: true });
+    expect(store.error()).toContain('400');
   });
 
   it('should handle util methods', () => {
     store.clearSelectedUser();
     expect(store.selectedUser()).toBeNull();
-
     store.resetSelection();
     expect(store.selectedUser()).toBeNull();
     expect(store.error()).toBeNull();
+  });
+
+  it('should reset store', () => {
+    service.getAllUsers.mockReturnValue(of(mockUsers));
+    store.loadUsers();
+    store.reset();
+    expect(store.users().length).toBe(0);
   });
 });

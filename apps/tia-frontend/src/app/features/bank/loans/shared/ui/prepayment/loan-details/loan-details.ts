@@ -52,7 +52,7 @@ export class LoanDetails {
       const isOpen = this.isOpen();
 
       if (loan && !isLoading && isOpen) {
-        setTimeout(() => this.checkScrollPosition(), 100);
+        this.checkScrollPosition();
       }
     });
   }

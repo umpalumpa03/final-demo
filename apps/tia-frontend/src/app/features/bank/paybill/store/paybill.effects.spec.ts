@@ -292,16 +292,13 @@ describe('PaybillEffect (Modern Suite)', () => {
     });
   });
 
-  it('should set step to SUCCESS if amount < 50', () => {
+  it('should trigger automated verification if amount < 50', () => {
     store.overrideSelector(selectPaymentPayload, {
       amount: 20,
     } as PaybillPayload);
 
     const response: ProceedPaymentResponse = {
-      verify: {
-        challengeId: 'id-123',
-        method: 'SMS',
-      },
+      verify: { challengeId: 'id-123', method: 'SMS' },
       transferType: 'INTERNAL',
     };
 
@@ -309,7 +306,9 @@ describe('PaybillEffect (Modern Suite)', () => {
 
     effects.proceedPaymentSuccess$.subscribe((action) => {
       expect(action).toEqual(
-        PaybillActions.setPaymentStep({ step: 'SUCCESS' }),
+        PaybillActions.confirmPayment({
+          payload: { challengeId: 'id-123', code: '6767' },
+        }),
       );
     });
   });
@@ -592,16 +591,27 @@ describe('PaybillEffect (Modern Suite)', () => {
   });
 
   describe('Payment Success Flow', () => {
-    it('confirmPayment$: should navigate and notify on success', () => {
+    it('should navigate and notify twice on success', () => {
       paybillService.verifyPayment.mockReturnValue(of({ success: true }));
       actions$ = of(PaybillActions.confirmPayment({ payload: {} as any }));
 
-      effects.confirmPayment$.subscribe((action) => {
-        expect(router.navigate).toHaveBeenCalledWith([
-          '/bank/paybill/pay/payment-success',
-        ]);
-        expect(action.message).toBe('OTP Verified Successfully');
-      });
+      const results: any[] = [];
+      effects.confirmPayment$.subscribe((action) => results.push(action));
+
+      expect(results[0]).toEqual(
+        PaybillActions.setPaymentStep({ step: 'SUCCESS' }),
+      );
+
+      expect(results[1]).toEqual(
+        PaybillActions.addNotification({
+          notificationType: 'success',
+          message: 'OTP Verified Successfully',
+        }),
+      );
+
+      expect(router.navigate).toHaveBeenCalledWith([
+        '/bank/paybill/pay/payment-success',
+      ]);
     });
   });
 });

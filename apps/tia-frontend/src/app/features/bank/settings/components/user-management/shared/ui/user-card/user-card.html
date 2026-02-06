@@ -39,13 +39,13 @@
 
         <button class="action-btn">
             @if (!user().isBlocked) {
-            <app-button [isLoading]="isLoading()" [isDisabled]="isLoading()" variant="outline"
-                [icon]="isLoading() ? null : './block.svg'" (click)="toggleBlock()">
+            <app-button [isLoading]="isLoading()" [isDisabled]="isLoading()" variant="outline" icon="./block.svg"
+                (click)="toggleBlock()">
                 Block
             </app-button>
             } @else {
-            <app-button [isLoading]="isLoading()" [isDisabled]="isLoading()" variant="outline"
-                [icon]="isLoading() ? null : './unblock.svg'" (click)="toggleBlock()">
+            <app-button [isLoading]="isLoading()" [isDisabled]="isLoading()" variant="outline" icon="./unblock.svg"
+                (click)="toggleBlock()">
                 Unblock
             </app-button>
             }

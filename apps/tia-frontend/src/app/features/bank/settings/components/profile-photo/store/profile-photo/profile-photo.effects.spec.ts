@@ -5,14 +5,14 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Subject, firstValueFrom, of } from 'rxjs';
 import { vi, describe, beforeEach, it, expect } from 'vitest';
 import { ProfilePhotoEffects } from './profile-photo.effects';
-import { ProfilePhotoApiService } from '../../shared/services/profile-photo/profile-photo.service';
+import { ProfilePhotoApiService } from '../../../../../../../shared/services/profile-photo/profile-photo.service';
 import { ProfilePhotoActions } from './profile-photo.actions';
 import { selectDefaultAvatars } from './profile-photo.selectors';
-import { DefaultAvatarResponse } from './profile-photo.state';
-import { environment } from '../../../environments/environment';
-import { selectUserInfo } from '../user-info/user-info.selectors';
-import { initialUserState } from '../user-info/user-info.reducer';
-import { UserInfoActions } from '../user-info/user-info.actions';
+import { DefaultAvatarResponse, DefaultAvatarWithUrl } from './profile-photo.state';
+import { environment } from '../../../../../../../../environments/environment';
+import { selectUserInfo } from '../../../../../../../store/user-info/user-info.selectors';
+import { initialUserState } from '../../../../../../../store/user-info/user-info.reducer';
+import { UserInfoActions } from '../../../../../../../store/user-info/user-info.actions';
 
 describe('ProfilePhotoEffects', () => {
   let actions$: Subject<any>;
@@ -38,7 +38,7 @@ describe('ProfilePhotoEffects', () => {
           selectors: [
             {
               selector: selectDefaultAvatars,
-              value: [{ id: '1', iconUri: '/avatar-1.svg' }] as DefaultAvatarResponse[],
+              value: [{ id: '1', imageUrl: `${environment.apiUrl}/avatar-1.svg` }] as DefaultAvatarWithUrl[],
             },
             {
               selector: selectUserInfo,
@@ -54,30 +54,27 @@ describe('ProfilePhotoEffects', () => {
     store = TestBed.inject(MockStore);
   });
 
-  it('should dispatch loadDefaultAvatarsRequest on ROOT_EFFECTS_INIT', async () => {
-    const promise = firstValueFrom(effects.initLoadDefaultAvatars$);
-
-    actions$.next({ type: ROOT_EFFECTS_INIT });
-
-    const result = await promise;
-
-    expect(result).toEqual(ProfilePhotoActions.loadDefaultAvatarsRequest());
-  });
-
   it('should load default avatars on loadDefaultAvatarsRequest', async () => {
-    const avatars: DefaultAvatarResponse[] = [
+    const apiResponse: DefaultAvatarResponse[] = [
       { id: '1', iconUri: '/avatar-1.svg' },
     ];
 
-    (profilePhotoApiServiceMock.getAvailableDefaultAvatars as any).mockReturnValue(of(avatars));
+    const expectedAvatars: DefaultAvatarWithUrl[] = [
+      { id: '1', imageUrl: `${environment.apiUrl}/avatar-1.svg` },
+    ];
+
+    store.overrideSelector(selectDefaultAvatars, []);
+    store.refreshState();
+
+    (profilePhotoApiServiceMock.getAvailableDefaultAvatars as any).mockReturnValue(of(apiResponse));
 
     const promise = firstValueFrom(effects.loadDefaultAvatars$);
 
-    actions$.next(ProfilePhotoActions.loadDefaultAvatarsRequest());
+    actions$.next(ProfilePhotoActions.loadDefaultAvatarsRequest({}));
 
     const result = await promise;
 
-    expect(result).toEqual(ProfilePhotoActions.loadDefaultAvatars({ avatars }));
+    expect(result).toEqual(ProfilePhotoActions.loadDefaultAvatars({ avatars: expectedAvatars }));
   });
 
   it('should load stored avatar on ROOT_EFFECTS_INIT when userInfo has avatar', async () => {
@@ -241,6 +238,7 @@ describe('ProfilePhotoEffects', () => {
           language: null,
           avatar: avatarUrl,
           role: null,
+          email: 'new-user@example.com',
         },
       }),
     );

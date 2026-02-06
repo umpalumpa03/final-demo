@@ -46,7 +46,7 @@
     <footer>
         <app-button variant="outline" (click)="close.emit()">Cancel</app-button>
 
-        <app-button [isLoading]="isLoading()" [icon]="isLoading() ? null : './white-edit.svg'"
+        <app-button [isLoading]="isLoading()" icon="./white-edit.svg"
             [isDisabled]="form.invalid || form.pristine || isLoading()" (click)="onSave()">
             Save Changes
         </app-button>
