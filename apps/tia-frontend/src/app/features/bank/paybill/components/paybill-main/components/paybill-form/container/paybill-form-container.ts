@@ -98,8 +98,7 @@ export class PaybillFormContainer {
   });
 
   public onVerifyAccount(event: PaybillFormVerifyEvent): void {
-    const identification = this.dynamicForm.buildIdentification(event.value);
-    this.verifyAccount(identification);
+    this.verifyAccount(event.value);
   }
 
   public onSaveAsTemplate(nickname: string): void {
@@ -107,8 +106,7 @@ export class PaybillFormContainer {
   }
 
   public onProceedToPayment(event: PaybillFormProceedEvent): void {
-    const identification = this.dynamicForm.buildIdentification(event.value);
-    this.proceedToPayment(event.amount, identification);
+    this.proceedToPayment(event.amount, event.value);
   }
 
   public verifyAccount(formValues: PaybillDynamicFormValues): void {
