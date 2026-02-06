@@ -1,36 +1,47 @@
 <section class="banner-carousel">
   <div class="banner-carousel__viewport">
-    @for (slide of slides(); track $index) { @if ($index === currentIndex()) {
-    <div
-      class="banner-carousel__slide"
-      [style.background-image]="'url(' + slide.imagePath + ')'"
-      role="group"
-      aria-roledescription="slide"
-    >
+    @for (slide of slides(); track slide.title) { @if ($index ===
+    currentIndex()) {
+    <div class="banner-carousel__slide">
       <div
-        class="banner-carousel__content"
-        [class]="'banner-carousel__content--' + slide.contentPosition"
-      >
-        <h2 class="banner-carousel__title">{{ slide.title }}</h2>
-        <p class="banner-carousel__description">{{ slide.description }}</p>
+        class="banner-carousel__image"
+        [style.background-image]="'url(' + slide.imagePath + ')'"
+      ></div>
 
-        <app-button (click)="navigateTo(slide.pageUrl)"
-          >{{ slide.buttonText || 'Learn More' }}</app-button
+      <div class="banner-carousel__container">
+        <div
+          class="banner-carousel__content"
+          [class]="'banner-carousel__content--' + slide.contentPosition"
         >
+          <h1 class="banner-carousel__title">{{ slide.title }}</h1>
+          <p class="banner-carousel__description">{{ slide.description }}</p>
+
+          <div class="banner-carousel__actions">
+            <app-button (click)="navigateTo(slide.pageUrl)">
+              {{ slide.buttonText || 'Learn More' }}
+            </app-button>
+          </div>
+        </div>
       </div>
     </div>
     } }
   </div>
 
-  <nav class="banner-carousel__indicators" aria-label="Carousel Navigation">
-    @for (slide of slides(); track $index) {
-    <button
-      type="button"
-      class="banner-carousel__dot"
-      [class.banner-carousel__dot--active]="$index === currentIndex()"
-      (click)="goTo($index)"
-      [aria-label]="'Go to slide ' + ($index + 1)"
-    ></button>
-    }
-  </nav>
+  <div class="banner-carousel__footer">
+    <div class="banner-carousel__indicators">
+      @for (slide of slides(); track $index) {
+      <button
+        type="button"
+        class="banner-carousel__dot"
+        [class.banner-carousel__dot--active]="$index === currentIndex()"
+        (click)="goTo($index)"
+      ></button>
+      }
+    </div>
+
+    <div class="banner-carousel__nav">
+      <button class="banner-carousel__arrow" (click)="prev()">‹</button>
+      <button class="banner-carousel__arrow" (click)="next()">›</button>
+    </div>
+  </div>
 </section>

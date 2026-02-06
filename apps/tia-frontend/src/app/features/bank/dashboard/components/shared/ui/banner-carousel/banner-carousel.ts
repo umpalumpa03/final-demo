@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { BannerSlide } from '../../models/banner.model';
-import { ButtonComponent } from "@tia/shared/lib/primitives/button/button";
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 
 @Component({
   selector: 'app-banner-carousel',
@@ -20,6 +20,16 @@ export class BannerCarousel {
   private readonly router = inject(Router);
   public readonly slides = input.required<BannerSlide[]>();
   protected readonly currentIndex = signal(0);
+
+  protected next(): void {
+    this.currentIndex.update((i) => (i + 1) % this.slides().length);
+  }
+
+  protected prev(): void {
+    this.currentIndex.update(
+      (i) => (i - 1 + this.slides().length) % this.slides().length,
+    );
+  }
 
   protected goTo(index: number): void {
     this.currentIndex.set(index);
