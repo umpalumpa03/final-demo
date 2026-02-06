@@ -7,7 +7,7 @@ const CORE_TRANSLATION_FILES = [
   'common',
   'auth',
   'sidebar',
-  'header-notifications'
+  'header-notifications',
 ] as const;
 
 export class LazyTranslateLoader implements TranslateLoader {
@@ -21,16 +21,7 @@ export class LazyTranslateLoader implements TranslateLoader {
     const requests = CORE_TRANSLATION_FILES.map((file) =>
       this.http
         .get<TranslationObject>(`${this.prefix}${lang}/${file}${this.suffix}`)
-        .pipe(
-          map((translations) => ({ [file]: translations })),
-          catchError((error) => {
-            console.warn(
-              `Translation file not found: ${lang}/${file}${this.suffix}`,
-              error,
-            );
-            return of({ [file]: {} });
-          }),
-        ),
+        .pipe(map((translations) => ({ [file]: translations }))),
     );
 
     return forkJoin(requests).pipe(

@@ -2,9 +2,9 @@ import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import {
   TranslationLoaderService,
-  TranslationModule,
 } from './translation-loader.service';
 import { Observable } from 'rxjs';
+import { TranslationModule } from './model';
 
 export function translationResolver(
   modules: TranslationModule | TranslationModule[],

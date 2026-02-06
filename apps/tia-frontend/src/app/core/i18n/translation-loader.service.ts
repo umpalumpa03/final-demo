@@ -1,28 +1,18 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService, TranslationObject } from '@ngx-translate/core';
-import { Observable, of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { Observable, of, forkJoin } from 'rxjs';
+import { catchError, tap, map } from 'rxjs/operators';
+import { TranslationModule } from './model';
 
-export type TranslationModule =
-  | 'auth'
-  | 'dashboard'
-  | 'loans'
-  | 'my-finances'
-  | 'transactions'
-  | 'settings'
-  | 'transfers'
-  | 'paybill'
-  | 'messaging'
-  | 'my-products';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TranslationLoaderService {
-  private http = inject(HttpClient);
-  private translate = inject(TranslateService);
-  private loadedModules = new Set<string>();
+  private readonly http = inject(HttpClient);
+  private readonly translate = inject(TranslateService);
+  private readonly loadedModules = new Set<string>();
 
   public loadTranslations(
     modules: TranslationModule | TranslationModule[],
@@ -40,36 +30,21 @@ export class TranslationLoaderService {
     }
 
     const requests = modulesToLoad.map((module) =>
-      this.http.get<TranslationObject>(`/i18n/${currentLang}/${module}.json`).pipe(
-        tap((translations) => {
-          this.translate.setTranslation(
-            currentLang,
-            { [module]: translations } as TranslationObject,
-            true,
-          );
-          this.loadedModules.add(`${currentLang}-${module}`);
-        }),
-        catchError((error) => {
-          console.warn(
-            `Failed to load translation module: ${currentLang}/${module}`,
-            error,
-          );
-          return of(null);
-        }),
-      ),
+      this.http
+        .get<TranslationObject>(`/i18n/${currentLang}/${module}.json`)
+        .pipe(
+          tap((translations) => {
+            this.translate.setTranslation(
+              currentLang,
+              { [module]: translations } as TranslationObject,
+              true,
+            );
+            this.loadedModules.add(`${currentLang}-${module}`);
+          }),
+        ),
     );
 
-    return new Observable((observer) => {
-      Promise.all(requests.map((req) => req.toPromise())).then(
-        () => {
-          observer.next();
-          observer.complete();
-        },
-        (error) => {
-          observer.error(error);
-        },
-      );
-    });
+    return forkJoin(requests).pipe(map(() => void 0));
   }
 
   public preloadModules(modules: TranslationModule[]): Observable<void> {
