@@ -16,6 +16,7 @@ import { ExchangeRatesEffects } from 'apps/tia-frontend/src/app/store/exchange-r
 import { AccountsEffects } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.effects';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { AuthGuard } from '../core/auth/guards/auth-guard';
+import { translationResolver } from '../core/i18n';
 
 export const bankRoutes: Routes = [
   {
@@ -45,6 +46,7 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'dashboard',
+        resolve: { translations: translationResolver('dashboard') },
         loadComponent: () =>
           import(
             '../features/bank/dashboard/container/dashboard-container'
@@ -52,6 +54,7 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'products',
+        resolve: { translations: translationResolver('my-products') },
         loadChildren: () =>
           import('../features/bank/products/products.routes').then(
             (c) => c.productsRoutes,
@@ -59,6 +62,7 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'transactions',
+        resolve: { translations: translationResolver('transactions') },
         loadComponent: () =>
           import(
             '../features/bank/transactions/container/transactions-container'
@@ -66,6 +70,7 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'transfers',
+        resolve: { translations: translationResolver('transfers') },
         loadChildren: () =>
           import('../features/bank/transfers/transfers.routes').then(
             (r) => r.transfersRoutes,
@@ -73,6 +78,7 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'loans',
+        resolve: { translations: translationResolver('loans') },
         loadChildren: () =>
           import('../features/bank/loans/loans.routes').then(
             (c) => c.loansRoutes,
@@ -80,6 +86,7 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'finances',
+        resolve: { translations: translationResolver('my-finances') },
         providers: [
           FinancesStore,
           FinancesService,
@@ -92,6 +99,7 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'paybill',
+        resolve: { translations: translationResolver('paybill') },
         loadChildren: () =>
           import('../features/bank/paybill/paybill.routes').then(
             (r) => r.PAYBILL_ROUTES,
@@ -103,6 +111,7 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'settings',
+        resolve: { translations: translationResolver('settings') },
         loadChildren: () =>
           import('../features/bank/settings/settings.routes').then(
             (r) => r.settingsRoutes,
@@ -110,6 +119,7 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'messaging',
+        resolve: { translations: translationResolver('messaging') },
         loadChildren: () =>
           import('../features/bank/messaging/messaging.routes').then(
             (r) => r.messagingRoutes,

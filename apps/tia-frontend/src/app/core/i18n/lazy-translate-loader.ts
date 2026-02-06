@@ -3,23 +3,14 @@ import { TranslateLoader, TranslationObject } from '@ngx-translate/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-const TRANSLATION_FILES = [
+const CORE_TRANSLATION_FILES = [
   'common',
   'auth',
-  'dashboard',
-  'loans',
-  'my-finances',
-  'transactions',
-  'settings',
-  'transfers',
-  'paybill',
-  'messaging',
-  'my-products',
   'sidebar',
-  'header-notifications',
+  'header-notifications'
 ] as const;
 
-export class MultiFileTranslateLoader implements TranslateLoader {
+export class LazyTranslateLoader implements TranslateLoader {
   constructor(
     private http: HttpClient,
     private prefix = '/i18n/',
@@ -27,7 +18,7 @@ export class MultiFileTranslateLoader implements TranslateLoader {
   ) {}
 
   getTranslation(lang: string): Observable<TranslationObject> {
-    const requests = TRANSLATION_FILES.map((file) =>
+    const requests = CORE_TRANSLATION_FILES.map((file) =>
       this.http
         .get<TranslationObject>(`${this.prefix}${lang}/${file}${this.suffix}`)
         .pipe(
@@ -53,8 +44,8 @@ export class MultiFileTranslateLoader implements TranslateLoader {
   }
 }
 
-export function createMultiFileTranslateLoader(
+export function createLazyTranslateLoader(
   http: HttpClient,
-): MultiFileTranslateLoader {
-  return new MultiFileTranslateLoader(http, '/i18n/', '.json');
+): LazyTranslateLoader {
+  return new LazyTranslateLoader(http, '/i18n/', '.json');
 }

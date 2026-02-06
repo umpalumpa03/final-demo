@@ -17,6 +17,7 @@ import { LanguagesStore } from '../../store/languages.store';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@tia/shared/services/settings-language/alert.service';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
+import { TranslationLoaderService } from 'apps/tia-frontend/src/app/core/i18n';
 
 @Component({
   selector: 'app-language-selection',
@@ -36,6 +37,7 @@ export class LanguageSelection implements OnInit {
   private translateService = inject(TranslateService);
   public alertService = inject(AlertService);
   private destroyRef = inject(DestroyRef);
+  private translationLoader = inject(TranslationLoaderService);
 
   public languages = input.required<Language[]>();
   public isLoading = input.required<boolean>();
@@ -69,11 +71,20 @@ export class LanguageSelection implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
-            this.translateService.use(selected.value);
-            this.alertService.showAlert(
-              'success',
-              this.translateService.instant('settings.language.saveSuccess'),
-            );
+            this.translationLoader.clearCache();
+
+            this.translateService.use(selected.value).subscribe(() => {
+              this.translationLoader
+                .loadTranslations('settings')
+                .subscribe(() => {
+                  this.alertService.showAlert(
+                    'success',
+                    this.translateService.instant(
+                      'settings.language.saveSuccess',
+                    ),
+                  );
+                });
+            });
           },
           error: () => {
             this.alertService.showAlert(
