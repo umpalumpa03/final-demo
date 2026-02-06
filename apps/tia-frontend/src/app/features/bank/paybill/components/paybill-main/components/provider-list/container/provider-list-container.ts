@@ -7,11 +7,10 @@ import {
 import { ProviderList } from '../components/provider-list-items/provider-list';
 import { PaybillMainFacade } from '../../../services/paybill-main-facade';
 import {
-  PaybillFormProceedEvent,
   PaybillFormVerifyEvent,
   PaybillProvider,
 } from '../../../shared/models/paybill.model';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import {
   getCurrentHeader,
   getDisplayItems,
@@ -26,6 +25,7 @@ import {
 })
 export class ProviderListContainer {
   protected readonly facade = inject(PaybillMainFacade);
+  private readonly router = inject(Router);
 
   // methods for handling navigation
 
@@ -86,6 +86,14 @@ export class ProviderListContainer {
 
   // action handling
 
+  public selectParentId(childId: string): void {
+    const currentUrl = this.router.url.split('?')[0];
+    const base = currentUrl.endsWith('/')
+      ? currentUrl.slice(0, -1)
+      : currentUrl;
+    this.router.navigateByUrl(`${base}/${childId}`);
+  }
+
   public onProviderSelected(providerId: string): void {
     const category = this.facade.activeCategory();
     if (!category?.providers) return;
@@ -98,15 +106,11 @@ export class ProviderListContainer {
 
       this.facade.selectProvider(providerId);
     } else {
-      this.facade.selectParentId(provider.id);
+      this.selectParentId(provider.id);
     }
   }
 
   public onVerifyAccount(data: PaybillFormVerifyEvent): void {
     this.facade.verifyAccount(data.value);
-  }
-
-  public onProceedToPayment(data: PaybillFormProceedEvent): void {
-    this.facade.proceedToPayment(data.amount, data.value);
   }
 }

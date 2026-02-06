@@ -121,31 +121,10 @@ export class PaybillMainFacade {
     return !!provider?.isFinal;
   });
 
-
-  public readonly formattedCategories = computed(() => {
-    const query = this.searchQuery().toLowerCase().trim();
-    let cats = this.categories().map((cat) => {
-      const lookupKey = cat.id.toLowerCase();
-      const config = CATEGORY_UI_MAP[lookupKey] || { iconBgColor: '#F5F5F5' };
-      return {
-        ...cat,
-        iconBgColor: config.iconBgColor,
-        iconBgPath: config.iconBgPath,
-        count: cat.providers?.length || 0,
-      };
-    });
-
-    if (query) {
-      cats = cats.filter((c) => c.name.toLowerCase().includes(query));
-    }
-    return cats;
-  });
-
   public readonly activeCategoryUI = computed(() => {
     const category = this.activeCategory();
     return category ? CATEGORY_UI_MAP[category.id.toLowerCase()] || null : null;
   });
-
 
   public readonly searchInputConfig = computed<InputConfig>(() => ({
     placeholder: `Search active providers...`,
@@ -156,23 +135,6 @@ export class PaybillMainFacade {
 
   public readonly showSearch = computed(() => !this.isFormView());
   public readonly isRootProviderView = computed(() => !this.selectedParentId());
-
-  public readonly successSummaryItems = computed(() => {
-    try {
-      const provider = this.activeProvider();
-      const payload = this.paymentPayload();
-
-      if (!provider || !payload) {
-        return [];
-      }
-
-      const items = getSuccessSummaryItems(provider, payload);
-
-      return items || [];
-    } catch (e) {
-      return [];
-    }
-  });
 
   public setSearchQuery(query: string): void {
     this.searchQuery.set(query);
@@ -187,14 +149,6 @@ export class PaybillMainFacade {
     this.store.dispatch(
       PaybillActions.loadPaymentDetails({ serviceId: providerId }),
     );
-  }
-
-  public selectParentId(childId: string): void {
-    const currentUrl = this.router.url.split('?')[0];
-    const base = currentUrl.endsWith('/')
-      ? currentUrl.slice(0, -1)
-      : currentUrl;
-    this.router.navigateByUrl(`${base}/${childId}`);
   }
 
   public verifyAccount(formValues: PaybillDynamicFormValues): void {
@@ -222,28 +176,6 @@ export class PaybillMainFacade {
     }
   }
 
-  public proceedToPayment(
-    amount: number,
-    formValues: PaybillDynamicFormValues,
-  ): void {
-    const provider = this.activeProvider();
-
-    if (provider) {
-      this.store.dispatch(PaybillActions.setTransactionProvider({ provider }));
-
-      this.store.dispatch(
-        PaybillActions.setPaymentPayload({
-          data: {
-            identification: buildDynamicIdentification(formValues),
-            amount: amount,
-          },
-        }),
-      );
-
-      this.store.dispatch(PaybillActions.setPaymentStep({ step: 'CONFIRM' }));
-      this.router.navigate(['/bank/paybill/pay/confirm-payment']);
-    }
-  }
   public confirmPayment(): void {
     const provider = this.activeProvider();
     const data = this.paymentPayload();
@@ -291,22 +223,5 @@ export class PaybillMainFacade {
     this.store.dispatch(PaybillActions.clearAllNotifications());
     this.store.dispatch(PaybillActions.setPaymentStep({ step: 'DETAILS' }));
     this.router.navigate(['bank/paybill/pay']);
-  }
-
-  public saveAsTemplate(customNickname?: string): void {
-    const provider = this.activeProvider();
-    const payload = this.paymentPayload();
-
-    if (provider && payload) {
-      this.store.dispatch(
-        TemplatesPageActions.createTemplate({
-          serviceId: provider.id,
-          identification: payload.identification,
-          nickname: customNickname || provider.name || 'My Template',
-        }),
-      );
-    } else {
-      return;
-    }
   }
 }
