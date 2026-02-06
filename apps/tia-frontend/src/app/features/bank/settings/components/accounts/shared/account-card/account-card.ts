@@ -17,8 +17,11 @@ export class AccountCard {
     if (this.isFavorite()) return 'Favorite';
     return '';
   });
-  public accountName = input.required<string>();
-  public accountType = input.required<string>()
+  public name = input.required<string>();
+  public type = input.required<string>()
+  public currency = input.required<string>();
+  public balance = input.required<string>()
+  public iban = input.required<string>()
   public clickFaforite = output<boolean | null>();
   public clickHideUnhide = output<boolean | null>();
   public clickFriendlyName = output<boolean>();

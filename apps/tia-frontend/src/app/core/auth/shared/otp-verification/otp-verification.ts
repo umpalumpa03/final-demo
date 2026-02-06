@@ -40,6 +40,7 @@ import { translateConfig } from '@tia/shared/utils/translate-config/config-trans
 import { OTP_VERIFY_FORM } from '../../config/inputs.config';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Routes } from '../../models/tokens.model';
+import { ErrorPage } from '../error-page/error-page';
 
 @Component({
   selector: 'app-otp-verification',
@@ -50,7 +51,7 @@ import { Routes } from '../../models/tokens.model';
     TextInput,
     SimpleAlerts,
     TranslatePipe,
-    RouteLoader,
+    ErrorPage,
   ],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
@@ -70,17 +71,16 @@ export class OtpVerification implements OnInit {
   public noMoreAttempsRedirectRoute = input<string | null>(null);
   public phoneErrorMessage = input<string | null>(null);
   public isBtnRowDirection = input<boolean>(false);
-  public isDisabled = input<boolean>(false);
   public isTimerDisplayed = input<boolean>(true);
   public onErrorRedirect = input<boolean>(true);
   public inputOtpConfig = input<IOtpVerificationConfig>();
-
+  public redirectUrl = input<string>();
+  public redirectText = input<string>();
 
   public onBackOut = output<void>();
   public onTimeout = output<void>();
   public isVerifyCalled = output<IVerified>();
   public isResendCalled = output<boolean>();
-  public clickedOnCancl = output<void>();
   public customError = output<void>();
 
   public resendTries = signal<number>(3);
@@ -90,6 +90,7 @@ export class OtpVerification implements OnInit {
   public countdown = signal<number>(0);
   public isResendActive = signal<boolean>(false);
   public isLimitExeeded = signal<boolean>(false);
+  public isErrorPageVisible = signal<boolean>(false);
 
   public isHeaderVisible = computed(
     () =>
@@ -214,6 +215,10 @@ export class OtpVerification implements OnInit {
     effect(() => {
       if (this.effectiveRemainingAttempts() === 0) {
         this.isLimitExeeded.set(true);
+        this.customError.emit();
+        if (this.onErrorRedirect()) {
+          this.isErrorPageVisible.set(true);
+        }
       }
     });
 
@@ -262,6 +267,10 @@ export class OtpVerification implements OnInit {
       return;
     }
 
+    if (!this.onErrorRedirect()) {
+      this.isLoading.set(true);
+    }
+
     const currentForm = this.activeForm();
 
     if (currentForm.invalid) {
@@ -296,11 +305,14 @@ export class OtpVerification implements OnInit {
 
     setTimeout(() => {
       this.otpForm.reset();
-    }, 0);
-
-    setTimeout(() => {
       this.otpComponent()?.focusFirst();
     }, 0);
+
+    if (!this.onErrorRedirect()) {
+      setTimeout(() => {
+        this.isLoading.set(false);
+      }, 2000);
+    }
   }
 
   public handleAutoSubmit(code: string): void {

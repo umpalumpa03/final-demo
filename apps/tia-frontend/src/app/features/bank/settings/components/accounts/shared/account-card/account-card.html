@@ -16,7 +16,7 @@
         </div>
         <div class="account-card__content">
           <div class="account-card__title-row">
-            <h3 class="account-card__title">{{accountName()}}</h3>
+            <h3 class="account-card__title">{{name()}}</h3>
             @switch(badge()) { @case('Hidden') {
             <app-badges
               [text]="badge()"
@@ -33,10 +33,10 @@
             ></app-badges>
             } @default { } }
           </div>
-          <div class="account-card__number">**** **** **** 1234</div>
+          <div class="account-card__number">{{iban()}}</div>
           <div class="account-card__meta">
-            <span class="account-card__type">{{accountType()}}</span>
-            <span class="account-card__balance">$25,430.50</span>
+            <span class="account-card__type">{{type()}}</span>
+            <span class="account-card__balance">{{currency()}} {{balance()}}</span>
           </div>
         </div>
       </div>

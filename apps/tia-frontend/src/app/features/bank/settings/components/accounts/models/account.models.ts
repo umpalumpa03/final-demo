@@ -4,6 +4,7 @@ export interface IAccounts {
   currency: string;
   iban: string;
   name: string;
+  balance: string
   friendlyName: string;
   isHidden: boolean | null;
   order: number | null;

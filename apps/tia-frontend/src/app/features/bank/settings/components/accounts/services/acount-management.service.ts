@@ -1,13 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
-import {
-  catchError,
-  finalize,
-  Observable,
-  switchMap,
-  tap,
-  throwError,
-} from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { Observable, switchMap } from 'rxjs';
 import {
   IAccounts,
   IFavoriteRequest,
@@ -20,27 +13,9 @@ import { environment } from 'apps/tia-frontend/src/environments/environment';
 export class AccountManagementService {
   private http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}/settings`;
-  public isLoading = signal(false);
-  public accountsList = signal<IAccounts[]>([]);
-  private refreshCallback?: () => void;
 
-  public setRefreshCallback(callback: () => void): void {
-    this.refreshCallback = callback;
-  }
-
-  public getAllAcounts(): Observable<IAccounts[]> {
-    this.isLoading.set(true);
-    return this.http.get<IAccounts[]>(`${this.baseUrl}/accounts`).pipe(
-      tap((accounts) => {
-        this.accountsList.set(accounts);
-      }),
-      catchError((err) => {
-        this.accountsList.set([]);
-        this.isLoading.set(false);
-        return throwError(() => err);
-      }),
-      finalize(() => this.isLoading.set(false)),
-    );
+  public getAllAccounts(): Observable<IAccounts[]> {
+    return this.http.get<IAccounts[]>(`${this.baseUrl}/accounts`);
   }
 
   public markAccountFavoriteStatus(
@@ -67,66 +42,39 @@ export class AccountManagementService {
     );
   }
 
-  public handleFavoriteStatus(
+  public toggleFavorite(
     id: string,
     isFavorite: boolean | null,
   ): Observable<IAccounts[]> {
-    this.isLoading.set(true);
     return this.markAccountFavoriteStatus({
       accountId: id,
       isFavorite: !isFavorite,
-    }).pipe(
-      tap(() => {
-        if (this.refreshCallback) {
-          this.refreshCallback();
-        }
-      }),
-      catchError((err) => {
-        this.isLoading.set(false);
-        return throwError(() => err);
-      }),
-      finalize(() => this.isLoading.set(false)),
-    );
+    });
   }
 
-  public handleAccountVisibility(
+  public toggleVisibility(
     id: string,
     isHidden: boolean | null,
   ): Observable<IAccounts[]> {
-    this.isLoading.set(true);
     const nextHidden = !(isHidden ?? false);
+
     const removeFavoriteIfHidden$ = nextHidden
       ? this.markAccountFavoriteStatus({
           accountId: id,
           isFavorite: false,
-        })
-      : null;
+        }).pipe(
+          switchMap(() =>
+            this.updateAccountVisibility({
+              accountId: id,
+              isHidden: nextHidden,
+            }),
+          ),
+        )
+      : this.updateAccountVisibility({
+          accountId: id,
+          isHidden: nextHidden,
+        });
 
-    return (
-      removeFavoriteIfHidden$
-        ? removeFavoriteIfHidden$.pipe(
-            switchMap(() =>
-              this.updateAccountVisibility({
-                accountId: id,
-                isHidden: nextHidden,
-              }),
-            ),
-          )
-        : this.updateAccountVisibility({
-            accountId: id,
-            isHidden: nextHidden,
-          })
-    ).pipe(
-      tap(() => {
-        if (this.refreshCallback) {
-          this.refreshCallback();
-        }
-      }),
-      catchError((err) => {
-        this.isLoading.set(false);
-        return throwError(() => err);
-      }),
-      finalize(() => this.isLoading.set(false)),
-    );
+    return removeFavoriteIfHidden$;
   }
 }

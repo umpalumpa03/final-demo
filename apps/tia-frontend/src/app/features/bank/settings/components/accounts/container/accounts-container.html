@@ -7,7 +7,7 @@
   gap="1.6rem"
   flexDirection="column"
 >
-  @if (isLoading()) {
+  @if (store.loading()) {
     <div class="accounts-skeleton-grid">
       @for (i of [1,2,3]; track i) {
         <div class="accounts-card-skeleton">
@@ -25,14 +25,17 @@
       }
     </div>
   } @else {
-    @if (accountsList().length > 0) {
-      @for (item of accountsList(); track item.id) {
+    @if (store.accounts()?.length) {
+      @for (item of store.accounts()!; track item.id) {
         <div class="card-wrapper">
           <app-account-card
             [isFavorite]="item.isFavorite"
             [isHidden]="item.isHidden"
-            [accountName]="item.name"
-            [accountType]="item.type"
+            [name]="item.name"
+            [type]="item.type"
+            [iban]="item.iban"
+            [balance]="item.balance"
+            [currency]="item.currency"
             (clickFaforite)="handleFavorite(item.id, $event)"
             (clickHideUnhide)="handleVisibility(item.id, $event)"
             (clickFriendlyName)="handleFriendlyName(item.id)"
