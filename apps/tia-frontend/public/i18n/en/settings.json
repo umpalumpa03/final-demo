@@ -51,6 +51,7 @@
         "title": "Profile Photo",
         "subtitle": "Upload a new profile photo or choose a default avatar",
         "uploadCustomPhoto": "Upload a new profile photo",
+        "dragOrChooseFile": "Drag a photo here or choose a file.",
         "chooseFile": "Choose File",
         "defaultAvatar": "Or Choose a Default Avatar",
         "loadingDefaultAvatars": "Loading avatars...",
