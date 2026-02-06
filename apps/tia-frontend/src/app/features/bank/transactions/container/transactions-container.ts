@@ -15,7 +15,6 @@ import {
   selectIsLoading,
   selectItems,
   selectTotalTransactions,
-  selectTransactionsLoaded,
 } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
 import { TRANSACTIONS_BASE_CONFIG } from '../config/transaction-data';
 import { convertTransactionData } from '../utils/data-converter.utils';
@@ -84,7 +83,6 @@ export class TransactionsContainer implements OnInit {
     { initialValue: [] as string[] },
   );
 
-  private readonly isLoaded = this.store.selectSignal(selectTransactionsLoaded);
   private readonly currentFilters = this.store.selectSignal(selectFilters);
 
   public items = this.store.selectSignal(selectItems);
@@ -156,9 +154,7 @@ export class TransactionsContainer implements OnInit {
 
   public ngOnInit(): void {
     this.store.dispatch(TransactionActions.enter());
-
     const filters = this.currentFilters();
-
     const needsReset = filters.pageLimit !== 20 || !!filters.pageCursor;
 
     if (needsReset) {
@@ -171,12 +167,8 @@ export class TransactionsContainer implements OnInit {
         }),
       );
     } else {
-      if (!this.isLoaded()) {
-        this.store.dispatch(TransactionActions.loadTransactions());
-      }
+      this.store.dispatch(TransactionActions.loadTransactions({}));
     }
-
-    this.store.dispatch(TransactionActions.loadCategories());
     this.store.dispatch(AccountsActions.loadAccounts());
   }
 

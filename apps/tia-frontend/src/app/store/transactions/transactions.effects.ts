@@ -5,6 +5,7 @@ import {
   catchError,
   debounceTime,
   EMPTY,
+  filter,
   map,
   of,
   switchMap,
@@ -12,7 +13,11 @@ import {
 } from 'rxjs';
 
 import { Store } from '@ngrx/store';
-import { selectFilters, selectNextCursor } from './transactions.selector';
+import {
+  selectFilters,
+  selectNextCursor,
+  selectTransactionsLoaded,
+} from './transactions.selector';
 import { TransactionApiService } from '@tia/shared/services/transactions-service/transactions.api.service';
 
 export const updateFiltersEffects = createEffect(
@@ -20,7 +25,7 @@ export const updateFiltersEffects = createEffect(
     return actions$.pipe(
       ofType(TransactionActions.updateFilters),
       debounceTime(400),
-      map(() => TransactionActions.loadTransactions()),
+      map(() => TransactionActions.loadTransactions({})),
     );
   },
   { functional: true },
@@ -36,7 +41,16 @@ export const loadTransactionsEffect = createEffect(
       withLatestFrom(
         store.select(selectFilters),
         store.select(selectNextCursor),
+        store.select(selectTransactionsLoaded),
       ),
+      filter(([action, , , loaded]) => {
+        if (action.type === TransactionActions.loadMore.type) {
+          return true;
+        }
+        const forceRefresh = (action as { forceRefresh?: boolean })
+          .forceRefresh;
+        return !!forceRefresh || !loaded;
+      }),
       switchMap(([action, filters, nextCursor]) => {
         if (action.type === TransactionActions.loadMore.type && !nextCursor) {
           return EMPTY;
@@ -50,6 +64,7 @@ export const loadTransactionsEffect = createEffect(
         } else {
           apiFilters.pageCursor = undefined;
         }
+
         return transactionService.getTransactions(apiFilters).pipe(
           map((response) => {
             if (isLoadMore) {
@@ -65,7 +80,6 @@ export const loadTransactionsEffect = createEffect(
   },
   { functional: true },
 );
-
 export const loadTotalEffect = createEffect(
   (
     actions$ = inject(Actions),

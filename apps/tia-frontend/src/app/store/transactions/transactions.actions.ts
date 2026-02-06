@@ -14,7 +14,7 @@ export const TransactionActions = createActionGroup({
 
     'Update Filters': props<{ filters: Partial<ITransactionFilter> }>(),
 
-    'Load Transactions': emptyProps(),
+    'Load Transactions': props<{ forceRefresh?: boolean }>(),
 
     'Load Transactions Success': props<{
       response: PaginatedResponse<ITransactions>;
