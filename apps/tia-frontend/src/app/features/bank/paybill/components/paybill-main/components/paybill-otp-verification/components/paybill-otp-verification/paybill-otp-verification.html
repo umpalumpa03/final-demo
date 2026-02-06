@@ -54,6 +54,8 @@
         (isVerifyCalled)="onVerify($event)"
         (isResendCalled)="onResend()"
         (onBackOut)="onCancel()"
+        [customRemainingAttempts]="3"
+        noMoreAttempsRedirectRoute="/bank/paybill/pay"
       />
     </div>
   </div>
