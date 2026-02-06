@@ -1,10 +1,13 @@
 @if (alertType()) {
   <div class="security-container__alert-container">
-    <app-alert-types-with-icons
+    <app-dismissible-alerts
       class="security-container__alert"
       [alertType]="alertType()!"
+      [alertTitle]="alertType()!"
       [alertMessage]="alertMessage()"
-    ></app-alert-types-with-icons>
+      [alertId]="0"
+      (dismissed)="onAlertClose()"
+    ></app-dismissible-alerts>
   </div>
 }
 

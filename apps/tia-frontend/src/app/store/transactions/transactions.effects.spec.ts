@@ -13,7 +13,11 @@ import {
   loadTransactionsEffect,
   updateFiltersEffects,
 } from './transactions.effects';
-import { selectFilters, selectNextCursor } from './transactions.selector';
+import {
+  selectFilters,
+  selectNextCursor,
+  selectTransactionsLoaded,
+} from './transactions.selector';
 import { TransactionApiService } from '@tia/shared/services/transactions-service/transactions.api.service';
 
 describe('Transaction Effects', () => {
@@ -40,6 +44,7 @@ describe('Transaction Effects', () => {
     });
 
     store = TestBed.inject(MockStore);
+    store.overrideSelector(selectTransactionsLoaded, false);
   });
 
   afterEach(() => {
@@ -59,7 +64,7 @@ describe('Transaction Effects', () => {
     vi.advanceTimersByTime(399);
     expect(result).toBeUndefined();
     vi.advanceTimersByTime(1);
-    expect(result).toEqual(TransactionActions.loadTransactions());
+    expect(result).toEqual(TransactionActions.loadTransactions({}));
   });
 
   it('loads transactions successfully', () => {
@@ -67,19 +72,21 @@ describe('Transaction Effects', () => {
     const filters = { pageLimit: 20 };
     store.overrideSelector(selectFilters, filters);
     store.overrideSelector(selectNextCursor, null);
+    store.overrideSelector(selectTransactionsLoaded, false);
     transactionService.getTransactions.mockReturnValue(of(response));
 
-    actions$ = of(TransactionActions.loadTransactions());
+    actions$ = of(TransactionActions.loadTransactions({}));
 
     TestBed.runInInjectionContext(() =>
       loadTransactionsEffect(actions$, store, transactionService).subscribe(
         (action) => {
           expect(action).toEqual(
-            TransactionActions.loadSuccess({ response } as any),
+            TransactionActions.loadTransactionsSuccess({ response } as any),
           );
-          expect(transactionService.getTransactions).toHaveBeenCalledWith(
-            filters,
-          );
+          expect(transactionService.getTransactions).toHaveBeenCalledWith({
+            ...filters,
+            pageCursor: undefined,
+          });
         },
       ),
     );
@@ -89,9 +96,10 @@ describe('Transaction Effects', () => {
     const error = 'Network Error';
     store.overrideSelector(selectFilters, {});
     store.overrideSelector(selectNextCursor, null);
+    store.overrideSelector(selectTransactionsLoaded, false);
     transactionService.getTransactions.mockReturnValue(throwError(() => error));
 
-    actions$ = of(TransactionActions.loadTransactions());
+    actions$ = of(TransactionActions.loadTransactions({}));
 
     TestBed.runInInjectionContext(() =>
       loadTransactionsEffect(actions$, store, transactionService).subscribe(
@@ -106,6 +114,7 @@ describe('Transaction Effects', () => {
     const filters = { pageLimit: 10 };
     store.overrideSelector(selectFilters, filters);
     store.overrideSelector(selectNextCursor, cursor);
+
     transactionService.getTransactions.mockReturnValue(
       of({ items: [], pageInfo: {} }),
     );
@@ -113,7 +122,9 @@ describe('Transaction Effects', () => {
     actions$ = of(TransactionActions.loadMore());
 
     TestBed.runInInjectionContext(() =>
-      loadTransactionsEffect(actions$, store, transactionService).subscribe(),
+      loadTransactionsEffect(actions$, store, transactionService).subscribe(
+        () => {},
+      ),
     );
 
     expect(transactionService.getTransactions).toHaveBeenCalledWith({
@@ -136,6 +147,42 @@ describe('Transaction Effects', () => {
 
     expect(transactionService.getTransactions).not.toHaveBeenCalled();
     expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('skips loading when data is already loaded and no forceRefresh', () => {
+    store.overrideSelector(selectTransactionsLoaded, true);
+    actions$ = of(TransactionActions.loadTransactions({}));
+
+    const spy = vi.fn();
+    TestBed.runInInjectionContext(() =>
+      loadTransactionsEffect(actions$, store, transactionService).subscribe(
+        spy,
+      ),
+    );
+
+    expect(transactionService.getTransactions).not.toHaveBeenCalled();
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('loads transactions when forceRefresh is true despite loaded data', () => {
+    const response = { items: [], pageInfo: {} };
+    store.overrideSelector(selectTransactionsLoaded, true);
+    store.overrideSelector(selectFilters, {});
+    store.overrideSelector(selectNextCursor, null);
+    transactionService.getTransactions.mockReturnValue(of(response));
+
+    actions$ = of(TransactionActions.loadTransactions({ forceRefresh: true }));
+
+    TestBed.runInInjectionContext(() =>
+      loadTransactionsEffect(actions$, store, transactionService).subscribe(
+        (action) => {
+          expect(action).toEqual(
+            TransactionActions.loadTransactionsSuccess({ response } as any),
+          );
+        },
+      ),
+    );
+    expect(transactionService.getTransactions).toHaveBeenCalled();
   });
 
   it('loads total successfully', () => {

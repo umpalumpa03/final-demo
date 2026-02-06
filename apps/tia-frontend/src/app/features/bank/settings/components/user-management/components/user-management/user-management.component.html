@@ -29,8 +29,7 @@
     @for (user of pagination.visibleItems(); track user.id) {
     @let userId = user.id;
     <app-user-card [user]="user" (onDetails)="details(userId)" (onEdit)="onEdit(userId)" (onDelete)="deleteUser(userId)"
-        (onBlockToggle)="block(userId, user.isBlocked)"
-        [isLoading]="store.actionLoading() && actionProcessingId() === userId">
+        (onBlockToggle)="block(userId, user.isBlocked)" [isLoading]="store.processingIds().includes(userId)">
     </app-user-card>
     }
     }

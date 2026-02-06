@@ -13,11 +13,16 @@ export const TransactionActions = createActionGroup({
     Enter: emptyProps(),
 
     'Update Filters': props<{ filters: Partial<ITransactionFilter> }>(),
-    'Load Transactions': emptyProps(),
-    'Load More': emptyProps(),
-    'Load Success': props<{
+
+    'Load Transactions': props<{ forceRefresh?: boolean }>(),
+
+    'Load Transactions Success': props<{
       response: PaginatedResponse<ITransactions>;
     }>(),
+
+    'Load More': emptyProps(),
+    'Load Success': props<{ response: PaginatedResponse<ITransactions> }>(),
+
     'Load Total Success': props<{ total: number }>(),
     'Load Failure': props<{ error: unknown }>(),
 
@@ -30,7 +35,13 @@ export const TransactionActions = createActionGroup({
     'Create Category Failure': props<{ error: string }>(),
 
     'Assign Category': props<{ transactionId: string; categoryId: string }>(),
-    'Assign Category Success': props<{ transactionId: string; categoryId: string}>(),
+    'Assign Category Success': props<{
+      transactionId: string;
+      categoryId: string;
+    }>(),
     'Assign Category Failure': props<{ error: string }>(),
+
+    'Set Transaction To Repeat': props<{ transaction: ITransactions }>(),
+    'Clear Transaction To Repeat': emptyProps(),
   },
 });

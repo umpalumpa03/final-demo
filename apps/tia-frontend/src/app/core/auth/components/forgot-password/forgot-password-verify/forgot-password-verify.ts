@@ -15,6 +15,7 @@ import { forgotPasswordSegments } from '../forgot-password.routes';
 import { IVerified } from '../../../models/otp-verification.models';
 import { TokenService } from '../../../services/token.service';
 import { Routes } from '../../../models/tokens.model';
+import { otpVerificationConfig } from '../../../config/otp-verification.config';
 
 @Component({
   selector: 'app-forgot-password-verify',
@@ -26,6 +27,7 @@ export class ForgotPasswordVerify implements OnInit {
   private authService = inject(AuthService);
   private tokenService = inject(TokenService)
   private router = inject(Router);
+  public otpInputConfig = otpVerificationConfig['forgot-password']
 
   public readonly errorMessage = signal<string | null>(null);
 
