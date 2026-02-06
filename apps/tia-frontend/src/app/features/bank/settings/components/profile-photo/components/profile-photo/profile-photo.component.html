@@ -98,7 +98,46 @@
       </app-button>
     </div>
   </app-basic-card>
+
+  <app-ui-modal
+    [isOpen]="isUploadModalOpen()"
+    (closed)="uploadModalClosed.emit()"
+  >
+    <div
+      class="profile-photo-upload-modal"
+      (dragover)="dragOver.emit($event)"
+      (dragleave)="dragLeave.emit($event)"
+      (drop)="fileDrop.emit($event)"
+    >
+      <header class="profile-photo-upload-modal__header">
+        <h3>{{ 'settings.profile-photo.uploadCustomPhoto' | translate }}</h3>
+        <p>{{ 'settings.profile-photo.subtitle' | translate }}</p>
+      </header>
+
+      <main class="profile-photo-upload-modal__body">
+        <div
+          class="profile-photo-upload-modal__dropzone"
+          [class.profile-photo-upload-modal__dropzone--active]="isDragOver()"
+        >
+          <p>
+            {{ 'settings.profile-photo.dragOrChooseFile' | translate }}
+          </p>
+          <app-button
+            variant="default"
+            size="default"
+            (click)="fileInput.click()"
+          >
+            {{ 'settings.profile-photo.chooseFile' | translate }}
+          </app-button>
+          <input
+            #fileInput
+            type="file"
+            accept="image/png,image/jpeg"
+            class="profile-photo-upload-modal__file-input"
+            (change)="fileInputChange.emit($event)"
+          />
+        </div>
+      </main>
+    </div>
+  </app-ui-modal>
 </div>
-
-
-
