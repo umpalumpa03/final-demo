@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Verify } from './verify';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TranslateModule } from '@ngx-translate/core';
-import { NavigationStart, Router, RouterEvent } from '@angular/router';
+import { Router, RouterEvent } from '@angular/router';
 import { Subject } from 'rxjs';
 import { LoanVerifyState } from '../../../state/loan-verify.state';
 import { signal } from '@angular/core';
@@ -12,7 +12,6 @@ describe('Verify', () => {
   let fixture: ComponentFixture<Verify>;
   let routerEvents$: Subject<RouterEvent>;
 
-  // Mock the state service
   const mockVerifyState = {
     otpConfig: signal({}),
   };

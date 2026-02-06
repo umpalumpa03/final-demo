@@ -1,12 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  effect,
-  ElementRef,
   input,
   output,
-  signal,
-  viewChild,
 } from '@angular/core';
 import { ILoanDetails } from '../../../models/loan.model';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';

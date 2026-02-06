@@ -18,7 +18,6 @@ import { PrepaymentCalculationPayload } from '../../../models/prepayment.model';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { startWith, map } from 'rxjs';
-import { translateConfig } from '../../../../../../../shared/utils/translate-config/config-translator.util';
 import { LoansStore } from '../../../../store/loans.store';
 import { LoanPrepaymentState } from '../../../state/loan-prepayment.state';
 
