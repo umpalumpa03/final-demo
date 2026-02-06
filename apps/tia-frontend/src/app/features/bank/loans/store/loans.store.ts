@@ -17,7 +17,7 @@ import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/account
 import { toTitleCase } from '../shared/utils/titlecase.util';
 import { LoansService } from '../shared/services/loans.service';
 import { loansInitialState } from './loans.state';
-import { LoanAlertType } from '../shared/models/loan.model';
+import { ILoanDetails, LoanAlertType } from '../shared/models/loan.model';
 import {
   PrepaymentCalculationPayload,
   IInitiatePrepaymentRequest,
@@ -338,6 +338,47 @@ export const LoansStore = signalStore(
           }),
         ),
       ),
+
+      openDetails(id: string) {
+        this.loadLoanDetails(id);
+        patchState(store, { isDetailsOpen: true, isPrepaymentOpen: false });
+      },
+
+      openPrepayment(loan: ILoanDetails) {
+        patchState(store, {
+          isDetailsOpen: false,
+          isPrepaymentOpen: true,
+          activePrepaymentLoan: loan,
+        });
+      },
+
+      closeModals() {
+        patchState(store, {
+          isDetailsOpen: false,
+          isPrepaymentOpen: false,
+          selectedLoanDetails: null,
+          activePrepaymentLoan: null,
+        });
+      },
+
+      navigateDetails(direction: number) {
+        const currentDetails = store.selectedLoanDetails();
+        const list = store.filteredLoans();
+
+        if (!currentDetails || list.length === 0) return;
+
+        const currentIndex = list.findIndex((l) => l.id === currentDetails.id);
+        if (currentIndex === -1) return;
+
+        let newIndex = currentIndex + direction;
+
+        if (newIndex < 0) newIndex = list.length - 1;
+        if (newIndex >= list.length) newIndex = 0;
+
+        const nextLoan = list[newIndex];
+
+        this.openDetails(nextLoan.id);
+      },
     };
   }),
 

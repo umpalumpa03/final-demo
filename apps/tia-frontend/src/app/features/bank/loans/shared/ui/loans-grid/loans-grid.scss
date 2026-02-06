@@ -1,0 +1,6 @@
+@use "../../../../../../shared/styles/mixins" as *;
+
+.loans-grid {
+    @include display-flex(column);
+    gap: 1rem;
+}
