@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PaybillOtpVerification } from '../../../paybill-otp-verification/components/paybill-otp-verification/paybill-otp-verification';
+import { PaybillOtpVerification } from './paybill-otp-verification';
 import { TranslateModule } from '@ngx-translate/core';
+import { provideRouter } from '@angular/router';
 import {
   PaybillPayload,
   PaybillProvider,
@@ -26,6 +27,7 @@ describe('PaybillOtpVerification', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PaybillOtpVerification, TranslateModule.forRoot()],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PaybillOtpVerification);
@@ -41,25 +43,61 @@ describe('PaybillOtpVerification', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit verify with code when handleVerify is called', () => {
-    const spy = vi.spyOn(component.verify, 'emit');
-    const otpCode = '123456';
+  describe('Summary Items Calculation', () => {
+    it('should calculate summary items correctly based on inputs', () => {
+      const items = component['summaryItems']();
 
-    component.verify.emit(otpCode);
+      expect(items.length).toBe(3);
+      expect(items[0].value).toBe('Mock Provider');
+      expect(items[1].value).toBe('123456');
+      expect(items[2].value).toBe('100');
+    });
 
-    expect(spy).toHaveBeenCalledWith(otpCode);
+    it('should fallback to serviceName if provider name is missing', () => {
+      fixture.componentRef.setInput('provider', {
+        ...mockProvider,
+        name: undefined,
+      });
+      fixture.detectChanges();
+
+      const items = component['summaryItems']();
+      expect(items[0].value).toBe('Service');
+    });
   });
 
-  describe('User Actions', () => {
+  describe('User Actions & Events', () => {
     it('should update currentCode signal when onOtpComplete is called', () => {
       const testCode = '1234';
       component.onOtpComplete(testCode);
       expect(component.currentCode()).toBe(testCode);
     });
 
-    it('should emit resendCode output when onOtpResend is called', () => {
+    it('should emit verify with code when onVerify is called with valid event', () => {
+      const spy = vi.spyOn(component.verify, 'emit');
+      const mockEvent = { isCalled: true, otp: '123456' };
+
+      component.onVerify(mockEvent as any);
+
+      expect(spy).toHaveBeenCalledWith('123456');
+    });
+
+    it('should NOT emit verify if the event is invalid', () => {
+      const spy = vi.spyOn(component.verify, 'emit');
+
+      component.onVerify({ isCalled: false } as any);
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should emit cancelPayment when onCancel is called', () => {
+      const spy = vi.spyOn(component.cancelPayment, 'emit');
+      component.onCancel();
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should emit resendCode when onResend is called', () => {
       const spy = vi.spyOn(component.resendCode, 'emit');
-      component.onOtpResend();
+      component.onResend();
       expect(spy).toHaveBeenCalled();
     });
   });

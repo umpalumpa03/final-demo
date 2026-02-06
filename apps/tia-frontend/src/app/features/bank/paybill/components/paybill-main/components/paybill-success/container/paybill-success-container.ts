@@ -1,11 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   OnInit,
 } from '@angular/core';
 import { PaybillSuccess } from '../components/paybill-success/paybill-success';
 import { PaybillMainFacade } from '../../../services/paybill-main-facade';
+import { getSuccessSummaryItems } from '../../../shared/utils/paybill.config';
 
 @Component({
   selector: 'app-paybill-success-container',
@@ -22,6 +24,23 @@ export class PaybillSuccessContainer implements OnInit {
       this.facade.resetFlow();
     }
   }
+
+  public readonly successSummaryItems = computed(() => {
+    try {
+      const provider = this.facade.activeProvider();
+      const payload = this.facade.paymentPayload();
+
+      if (!provider || !payload) {
+        return [];
+      }
+
+      const items = getSuccessSummaryItems(provider, payload);
+
+      return items || [];
+    } catch (e) {
+      return [];
+    }
+  });
 
   public onPayAnother(): void {
     this.facade.resetFlow();
