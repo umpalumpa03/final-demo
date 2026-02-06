@@ -18,8 +18,10 @@
 <app-loan-case-drawer
   [isOpen]="!!store.selectedLoanId()"
   [loanDetails]="store.selectedLoanDetails()"
+  [loanDetailsResponse]="store.selectedLoanDetailsResponse()"
   [userInfo]="store.selectedUserInfo()"
   [isUserInfoLoading]="store.userInfoLoading()"
+  [isLoanDetailsLoading]="store.loanDetailsLoading()"
   [isActionLoading]="store.actionLoading()"
   [actionError]="store.actionError()"
   (closed)="onDrawerClose()"

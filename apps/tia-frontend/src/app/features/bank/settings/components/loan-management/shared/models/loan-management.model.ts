@@ -5,7 +5,7 @@ export const LOAN_APPROVAL_STATUS = {
 
 export type LoanApprovalStatusType =
   (typeof LOAN_APPROVAL_STATUS)[keyof typeof LOAN_APPROVAL_STATUS];
-export type CreditScoreBadge = 'Poor' | 'Fair' | 'Good' | 'Excellent';
+export type CreditScoreBadge = 'Poor' | 'Fair' | 'Good' | 'Very Good' | 'Excellent';
 
 export interface LoanAddress {
   street: string;
@@ -59,6 +59,26 @@ export interface ApproveLoanResponse {
   rejectionReason?: string;
 }
 
+export interface LoanDetails {
+  loanAmount: number;
+  loanPurpose: string;
+  loanTermMonths: number;
+  interestRate: number;
+  monthlyPayment: number;
+  requestDate: string;
+}
+
+export interface RiskAssessment {
+  debtToIncomeRatio: number;
+  loanToIncomeRatio: number;
+  totalInterest: number;
+}
+
+export interface LoanDetailsResponse {
+  loanDetails: LoanDetails;
+  riskAssessment: RiskAssessment;
+}
+
 export interface LoanManagementState {
   pendingApprovals: PendingApproval[];
   loading: boolean;
@@ -66,6 +86,8 @@ export interface LoanManagementState {
   selectedLoanId: string | null;
   userInfoCache: Record<string, UserInfo>;
   userInfoLoading: boolean;
+  loanDetailsCache: Record<string, LoanDetailsResponse>;
+  loanDetailsLoading: boolean;
   actionLoading: boolean;
   actionError: string | null;
 }

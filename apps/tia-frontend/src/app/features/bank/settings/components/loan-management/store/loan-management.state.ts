@@ -7,6 +7,8 @@ export const loanManagementInitialState: LoanManagementState = {
   selectedLoanId: null,
   userInfoCache: {},
   userInfoLoading: false,
+  loanDetailsCache: {},
+  loanDetailsLoading: false,
   actionLoading: false,
   actionError: null,
 };

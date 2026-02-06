@@ -10,18 +10,18 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   CreditScoreBadge,
+  LoanDetailsResponse,
   PendingApproval,
   UserInfo,
 } from '../../shared/models/loan-management.model';
-import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 import { BadgeCustomColor } from '@tia/shared/lib/primitives/badges/models/badges.models';
+
 @Component({
   selector: 'app-loan-case-drawer',
   imports: [
-    UiModal,
     ButtonComponent,
     Skeleton,
     CurrencyPipe,
@@ -34,11 +34,12 @@ import { BadgeCustomColor } from '@tia/shared/lib/primitives/badges/models/badge
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoanCaseDrawer {
-  private readonly DEFAULT_INTEREST_RATE = 5.5;
   public readonly isOpen = input.required<boolean>();
   public readonly loanDetails = input<PendingApproval | null>(null);
+  public readonly loanDetailsResponse = input<LoanDetailsResponse | null>(null);
   public readonly userInfo = input<UserInfo | null>(null);
   public readonly isUserInfoLoading = input<boolean>(false);
+  public readonly isLoanDetailsLoading = input<boolean>(false);
   public readonly isActionLoading = input<boolean>(false);
   public readonly actionError = input<string | null>(null);
 
@@ -71,60 +72,32 @@ export class LoanCaseDrawer {
       Poor: 'rose',
       Fair: 'amber',
       Good: 'teal',
+      'Very Good': 'cyan',
       Excellent: 'lime',
     };
     return colorMap[badge] || 'slate';
   });
 
   public readonly interestRate = computed(() => {
-    return `${this.DEFAULT_INTEREST_RATE}%`;
+    return this.loanDetailsResponse()?.loanDetails.interestRate ?? 0;
   });
 
   public readonly monthlyPayment = computed(() => {
-    const loan = this.loanDetails();
-    if (!loan) return 0;
-
-    const principal = loan.loanAmount;
-    const months = loan.months;
-    const annualRate = this.DEFAULT_INTEREST_RATE / 100;
-    const monthlyRate = annualRate / 12;
-
-    if (monthlyRate === 0) {
-      return principal / months;
-    }
-
-    const payment =
-      (principal * (monthlyRate * Math.pow(1 + monthlyRate, months))) /
-      (Math.pow(1 + monthlyRate, months) - 1);
-
-    return Math.round(payment);
+    return this.loanDetailsResponse()?.loanDetails.monthlyPayment ?? 0;
   });
 
   public readonly totalInterest = computed(() => {
-    const loan = this.loanDetails();
-    if (!loan) return 0;
-
-    const totalPayments = this.monthlyPayment() * loan.months;
-    return Math.round(totalPayments - loan.loanAmount);
+    return this.loanDetailsResponse()?.riskAssessment.totalInterest ?? 0;
   });
 
   public readonly debtToIncomeRatio = computed(() => {
-    const user = this.userInfo();
-    if (!user || !user.annualIncome) return 0;
-
-    const monthlyIncome = user.annualIncome / 12;
-    const ratio = (this.monthlyPayment() / monthlyIncome) * 100;
-    return ratio.toFixed(1);
+    return this.loanDetailsResponse()?.riskAssessment.debtToIncomeRatio ?? 0;
   });
 
   public readonly loanToIncomeRatio = computed(() => {
-    const loan = this.loanDetails();
-    const user = this.userInfo();
-    if (!loan || !user || !user.annualIncome) return 0;
-
-    const ratio = (loan.loanAmount / user.annualIncome) * 100;
-    return ratio.toFixed(1);
+    return this.loanDetailsResponse()?.riskAssessment.loanToIncomeRatio ?? 0;
   });
+
   public onClose(): void {
     this.showDeclineForm.set(false);
     this.declineReason.set('');

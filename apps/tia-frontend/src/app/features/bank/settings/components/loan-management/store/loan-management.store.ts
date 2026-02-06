@@ -11,9 +11,7 @@ import {
   catchError,
   EMPTY,
   filter,
-  of,
   pipe,
-  shareReplay,
   switchMap,
   tap,
 } from 'rxjs';
@@ -22,13 +20,9 @@ import { LoanManagementApiService } from '../shared/services/loan-management-api
 import { loanManagementInitialState } from './loan-management.state';
 import {
   LOAN_APPROVAL_STATUS,
+  LoanDetailsResponse,
   UserInfo,
 } from '../shared/models/loan-management.model';
-
-const userInfoRequests = new Map<
-  string,
-  ReturnType<LoanManagementApiService['getUserInfo']>
->();
 
 export const LoanManagementStore = signalStore(
   withState(loanManagementInitialState),
@@ -46,29 +40,25 @@ export const LoanManagementStore = signalStore(
       if (!loan?.userId) return null;
       return store.userInfoCache()[loan.userId] ?? null;
     }),
+    selectedLoanDetailsResponse: computed(() => {
+      const selectedId = store.selectedLoanId();
+      if (!selectedId) return null;
+      return store.loanDetailsCache()[selectedId] ?? null;
+    }),
     hasPendingApprovals: computed(() => store.pendingApprovals().length > 0),
     pendingCount: computed(() => store.pendingApprovals().length),
   })),
 
   withMethods((store) => {
     const api = inject(LoanManagementApiService);
+
     const fetchUserInfo = (userId: string | undefined) => {
       if (!userId) {
         patchState(store, { userInfoLoading: false });
         return EMPTY;
       }
-      const cached = store.userInfoCache()[userId];
-      if (cached) {
-        patchState(store, { userInfoLoading: false });
-        return of(cached);
-      }
-      let request$ = userInfoRequests.get(userId);
-      if (!request$) {
-        request$ = api.getUserInfo(userId).pipe(shareReplay(1));
-        userInfoRequests.set(userId, request$);
-      }
 
-      return request$.pipe(
+      return api.getUserInfo(userId).pipe(
         tap((userInfo: UserInfo) => {
           patchState(store, {
             userInfoCache: {
@@ -77,11 +67,27 @@ export const LoanManagementStore = signalStore(
             },
             userInfoLoading: false,
           });
-          userInfoRequests.delete(userId);
         }),
         catchError(() => {
-          userInfoRequests.delete(userId);
           patchState(store, { userInfoLoading: false });
+          return EMPTY;
+        }),
+      );
+    };
+
+    const fetchLoanDetails = (loanId: string) => {
+      return api.getLoanDetails(loanId).pipe(
+        tap((loanDetails: LoanDetailsResponse) => {
+          patchState(store, {
+            loanDetailsCache: {
+              ...store.loanDetailsCache(),
+              [loanId]: loanDetails,
+            },
+            loanDetailsLoading: false,
+          });
+        }),
+        catchError(() => {
+          patchState(store, { loanDetailsLoading: false });
           return EMPTY;
         }),
       );
@@ -110,19 +116,22 @@ export const LoanManagementStore = signalStore(
           ),
         ),
       ),
+
       selectLoan: rxMethod<string | null>(
         pipe(
           tap((loanId) => {
             patchState(store, {
               selectedLoanId: loanId,
               userInfoLoading: !!loanId,
+              loanDetailsLoading: !!loanId,
               actionError: null,
             });
           }),
           filter((loanId): loanId is string => loanId !== null),
           switchMap((loanId) => {
             const loan = store.pendingApprovals().find((l) => l.id === loanId);
-            return fetchUserInfo(loan?.userId);
+            fetchUserInfo(loan?.userId).subscribe();
+            return fetchLoanDetails(loanId);
           }),
         ),
       ),
@@ -155,14 +164,17 @@ export const LoanManagementStore = signalStore(
               .pipe(
                 tap(() => {
                   const newUserInfoCache = { ...store.userInfoCache() };
+                  const newLoanDetailsCache = { ...store.loanDetailsCache() };
                   if (userId) {
                     delete newUserInfoCache[userId];
                   }
+                  delete newLoanDetailsCache[loanId];
 
                   patchState(store, {
                     actionLoading: false,
                     selectedLoanId: null,
                     userInfoCache: newUserInfoCache,
+                    loanDetailsCache: newLoanDetailsCache,
                   });
                 }),
                 catchError((err: HttpErrorResponse) => {
@@ -211,14 +223,17 @@ export const LoanManagementStore = signalStore(
               .pipe(
                 tap(() => {
                   const newUserInfoCache = { ...store.userInfoCache() };
+                  const newLoanDetailsCache = { ...store.loanDetailsCache() };
                   if (userId) {
                     delete newUserInfoCache[userId];
                   }
+                  delete newLoanDetailsCache[loanId];
 
                   patchState(store, {
                     actionLoading: false,
                     selectedLoanId: null,
                     userInfoCache: newUserInfoCache,
+                    loanDetailsCache: newLoanDetailsCache,
                   });
                 }),
                 catchError((err: HttpErrorResponse) => {

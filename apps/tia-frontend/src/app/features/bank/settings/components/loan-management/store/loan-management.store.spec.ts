@@ -6,48 +6,71 @@ import { LoanManagementStore } from './loan-management.store';
 import { LoanManagementApiService } from '../shared/services/loan-management-api.service';
 import {
   PendingApproval,
-  LoanApprovalDetails,
+  LoanDetailsResponse,
   UserInfo,
   LOAN_APPROVAL_STATUS,
 } from '../shared/models/loan-management.model';
 
-// Mock data
 const mockPendingApprovals: PendingApproval[] = [
   {
     id: 'loan-1',
-    loanAmount: 25000,
-    months: 60,
-    purpose: 'Home Renovation',
     userId: 'user-1',
+    userFullName: 'Michael Scott',
+    loanAmount: 25000,
+    accountId: 'acc-1',
+    months: 60,
+    purpose: 'home_improvement',
+    status: 1,
+    statusName: 'Pending',
+    address: {
+      street: '123 Main St',
+      city: 'Scranton',
+      region: 'PA',
+      postalCode: '18503',
+    },
+    contactPerson: {
+      name: 'Dwight Schrute',
+      relationship: 'Friend',
+      phone: '555-1234',
+      email: 'dwight@example.com',
+    },
     createdAt: '2026-01-14T10:00:00Z',
-    interestRate: 5.5,
-    monthlyPayment: 475,
-    userName: 'Michael Scott',
-    creditScore: 720,
   },
   {
     id: 'loan-2',
-    loanAmount: 15000,
-    months: 48,
-    purpose: 'Car Purchase',
     userId: 'user-2',
+    userFullName: 'Pam Beesly',
+    loanAmount: 15000,
+    accountId: 'acc-2',
+    months: 48,
+    purpose: 'car_purchase',
+    status: 1,
+    statusName: 'Pending',
+    address: {
+      street: '456 Oak Ave',
+      city: 'Scranton',
+      region: 'PA',
+      postalCode: '18504',
+    },
+    contactPerson: {
+      name: 'Jim Halpert',
+      relationship: 'Spouse',
+      phone: '555-5678',
+      email: 'jim@example.com',
+    },
     createdAt: '2026-01-13T10:00:00Z',
-    interestRate: 6.2,
-    monthlyPayment: 355,
-    userName: 'Pam Beesly',
-    creditScore: 680,
   },
 ];
 
-const mockLoanDetails: LoanApprovalDetails = {
-  id: 'loan-1',
-  loanAmount: 25000,
-  months: 60,
-  purpose: 'Home Renovation',
-  userId: 'user-1',
-  createdAt: '2026-01-14T10:00:00Z',
-  interestRate: 5.5,
-  monthlyPayment: 475,
+const mockLoanDetailsResponse: LoanDetailsResponse = {
+  loanDetails: {
+    loanAmount: 25000,
+    loanPurpose: 'home_improvement',
+    loanTermMonths: 60,
+    interestRate: 5.5,
+    monthlyPayment: 475,
+    requestDate: '2026-01-14T10:00:00Z',
+  },
   riskAssessment: {
     debtToIncomeRatio: 7.8,
     loanToIncomeRatio: 33.3,
@@ -56,23 +79,21 @@ const mockLoanDetails: LoanApprovalDetails = {
 };
 
 const mockUserInfo: UserInfo = {
-  id: 'user-1',
-  firstName: 'Michael',
-  lastName: 'Scott',
+  fullName: 'Michael Scott',
   email: 'michael@example.com',
-  phone: '+1 (555) 123-4567',
-  creditScore: 720,
-  creditScoreRating: 'Good',
+  phoneNumber: '+1 (555) 123-4567',
   employmentStatus: 'Employed',
   address: '123 Main St, Scranton, PA 18503',
   annualIncome: 75000,
+  creditScore: 720,
+  creditScoreBadge: 'Good',
 };
 
 describe('LoanManagementStore', () => {
   let store: InstanceType<typeof LoanManagementStore>;
   let apiServiceMock: {
     getPendingApprovals: ReturnType<typeof vi.fn>;
-    getPendingApprovalDetails: ReturnType<typeof vi.fn>;
+    getLoanDetails: ReturnType<typeof vi.fn>;
     getUserInfo: ReturnType<typeof vi.fn>;
     approveLoan: ReturnType<typeof vi.fn>;
   };
@@ -80,7 +101,7 @@ describe('LoanManagementStore', () => {
   beforeEach(() => {
     apiServiceMock = {
       getPendingApprovals: vi.fn().mockReturnValue(of(mockPendingApprovals)),
-      getPendingApprovalDetails: vi.fn().mockReturnValue(of(mockLoanDetails)),
+      getLoanDetails: vi.fn().mockReturnValue(of(mockLoanDetailsResponse)),
       getUserInfo: vi.fn().mockReturnValue(of(mockUserInfo)),
       approveLoan: vi.fn().mockReturnValue(of({ id: 'loan-1', status: 1 })),
     };
@@ -122,23 +143,24 @@ describe('LoanManagementStore', () => {
 
   describe('selectLoan', () => {
     it('should fetch loan details and user info when selecting a loan', () => {
+      store.loadPendingApprovals();
       store.selectLoan('loan-1');
       expect(store.selectedLoanId()).toBe('loan-1');
-      expect(apiServiceMock.getPendingApprovalDetails).toHaveBeenCalledWith(
-        'loan-1',
-      );
-      expect(store.detailsCache()['loan-1']).toEqual(mockLoanDetails);
+      expect(apiServiceMock.getLoanDetails).toHaveBeenCalledWith('loan-1');
+      expect(store.loanDetailsCache()['loan-1']).toEqual(mockLoanDetailsResponse);
     });
 
-    it('should use cached details and not make duplicate API call', () => {
+    it('should fetch fresh data on each selection', () => {
+      store.loadPendingApprovals();
       store.selectLoan('loan-1');
-      expect(apiServiceMock.getPendingApprovalDetails).toHaveBeenCalledTimes(1);
+      expect(apiServiceMock.getLoanDetails).toHaveBeenCalledTimes(1);
       store.clearSelection();
       store.selectLoan('loan-1');
-      expect(apiServiceMock.getPendingApprovalDetails).toHaveBeenCalledTimes(1);
+      expect(apiServiceMock.getLoanDetails).toHaveBeenCalledTimes(2);
     });
 
     it('should cancel previous request when selecting different loan (switchMap)', () => {
+      store.loadPendingApprovals();
       store.selectLoan('loan-1');
       store.selectLoan('loan-2');
       expect(store.selectedLoanId()).toBe('loan-2');
@@ -153,11 +175,11 @@ describe('LoanManagementStore', () => {
       expect(store.userInfoLoading()).toBe(false);
     });
 
-    it('should use cached user info and not make duplicate API call', () => {
+    it('should fetch fresh user info on each call', () => {
       store.loadUserInfo('user-1');
       expect(apiServiceMock.getUserInfo).toHaveBeenCalledTimes(1);
       store.loadUserInfo('user-1');
-      expect(apiServiceMock.getUserInfo).toHaveBeenCalledTimes(1);
+      expect(apiServiceMock.getUserInfo).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -179,9 +201,9 @@ describe('LoanManagementStore', () => {
     it('should invalidate caches after successful approval', () => {
       store.loadPendingApprovals();
       store.selectLoan('loan-1');
-      expect(store.detailsCache()['loan-1']).toBeDefined();
+      expect(store.loanDetailsCache()['loan-1']).toBeDefined();
       store.approveLoan('loan-1');
-      expect(store.detailsCache()['loan-1']).toBeUndefined();
+      expect(store.loanDetailsCache()['loan-1']).toBeUndefined();
       expect(store.selectedLoanId()).toBeNull();
     });
 
@@ -219,12 +241,20 @@ describe('LoanManagementStore', () => {
   });
 
   describe('computed signals', () => {
-    it('selectedLoanDetails should return cached details for selected loan', () => {
+    it('selectedLoanDetails should return pending approval for selected loan', () => {
+      store.loadPendingApprovals();
       store.selectLoan('loan-1');
-      expect(store.selectedLoanDetails()).toEqual(mockLoanDetails);
+      expect(store.selectedLoanDetails()).toEqual(mockPendingApprovals[0]);
+    });
+
+    it('selectedLoanDetailsResponse should return cached details response', () => {
+      store.loadPendingApprovals();
+      store.selectLoan('loan-1');
+      expect(store.selectedLoanDetailsResponse()).toEqual(mockLoanDetailsResponse);
     });
 
     it('selectedUserInfo should return cached user info for selected loan', () => {
+      store.loadPendingApprovals();
       store.selectLoan('loan-1');
       expect(store.selectedUserInfo()).toEqual(mockUserInfo);
     });
@@ -243,6 +273,7 @@ describe('LoanManagementStore', () => {
 
   describe('clearSelection', () => {
     it('should clear selected loan and action error', () => {
+      store.loadPendingApprovals();
       store.selectLoan('loan-1');
       expect(store.selectedLoanId()).toBe('loan-1');
       store.clearSelection();
