@@ -19,19 +19,23 @@ export const selectCurrentAccounts = createSelector(
   selectAccounts,
   (accounts) =>
     (accounts ?? [])
-      .filter((account) => account.type === AccountType.current)
+      .filter(
+        (account) => account.type === AccountType.current && !account.isHidden,
+      )
       .sort((a, b) => (b.isFavorite ? 1 : 0) - (a.isFavorite ? 1 : 0)),
 );
 
 export const selectSavingAccounts = createSelector(selectAccounts, (accounts) =>
   (accounts ?? [])
-    .filter((account) => account.type === AccountType.saving)
+    .filter(
+      (account) => account.type === AccountType.saving && !account.isHidden,
+    )
     .sort((a, b) => (b.isFavorite ? 1 : 0) - (a.isFavorite ? 1 : 0)),
 );
 
 export const selectCardAccounts = createSelector(selectAccounts, (accounts) =>
   (accounts ?? [])
-    .filter((account) => account.type === AccountType.card)
+    .filter((account) => account.type === AccountType.card && !account.isHidden)
     .sort((a, b) => (b.isFavorite ? 1 : 0) - (a.isFavorite ? 1 : 0)),
 );
 
