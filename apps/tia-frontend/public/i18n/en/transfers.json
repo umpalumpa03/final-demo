@@ -19,6 +19,7 @@
       "verify": "Verify Recipient",
       "accountsTitle": "Select your account to transfer from",
       "disabledTooltip": "Please enter recipient details and select an account",
+      "ownPhoneError": "You cannot transfer to your own phone number",
       "recipientNotFound": "Recipient not found. Please check the phone number or IBAN and try again.",
       "errors": {
         "invalidFormat": "Invalid format. Enter IBAN or phone (+995...)",
