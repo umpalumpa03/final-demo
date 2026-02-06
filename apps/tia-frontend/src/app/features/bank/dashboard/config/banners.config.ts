@@ -21,7 +21,7 @@ export const bannerSlides: BannerSlide[] = [
     imagePath: 'images/png/dashboard/banners/loans_banner.png',
     title: 'dashboard.banners.loans.title',
     description: 'dashboard.banners.loans.description',
-    pageUrl: '/bank/products/loans',
+    pageUrl: '/bank/loans/all',
     buttonText: 'dashboard.banners.loans.button',
     contentPosition: 'right',
   },
