@@ -5,20 +5,16 @@
   @include display-flex(column);
   @include flex-center(column, center, center);
   width: 100%;
-  height: 100%;
-
-  &__card {
-    width: 100%;
-  }
 }
 
 .success-header {
   @include display-flex(column);
   align-items: center;
-  margin-top: 2.4rem;
-  margin-bottom: 3.2rem;
+  margin-top: 4.8rem;
+  margin-bottom: 4rem;
+  padding-right: 2.4rem;
 
-  .success-icon-container {
+  &__icon-container {
     width: 8rem;
     height: 8rem;
     border-radius: 50%;
@@ -27,30 +23,48 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: 4.8rem;
-    background-image: url('/images/svg/paybill/checkmark.svg')
+    background-image: url('/images/svg/paybill/checkmark.svg');
+    box-shadow: 0 0.8rem 2.4rem rgba($green-400, 0.2);
   }
 
-  .success-title {
+  &__title {
     @include font-inter(700, 3rem, 3.6rem);
     color: var(--color-fg);
     text-align: center;
-    margin-bottom: 0.8rem;
+    margin: 0 0 0.8rem 0;
   }
 
-  .success-description {
+  &__description {
     @include font-inter(400, 1.6rem, 2.4rem);
     color: $gray-700;
     text-align: center;
-    letter-spacing: -0.031rem;
+    max-width: 32rem;
+    margin: 0;
   }
 }
 
-.success-footer {
-  margin-top: auto;
+.confirm-container {
+  @include display-flex(column);
+  padding-right: 2.4rem;
   width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.6rem;
-  padding-top: 3.2rem;
+  flex: 1;
 
+  &__summary {
+    margin-bottom: 3.2rem;
+  }
+
+  &__actions {
+    @include flex-center(row, stretch, center);
+    gap: 1.6rem;
+    margin-top: auto;
+    padding-top: 3.2rem;
+
+    .btn-secondary {
+      flex: 1;
+    }
+
+    .btn-primary {
+      flex: 1;
+    }
+  }
 }

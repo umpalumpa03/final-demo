@@ -2,10 +2,11 @@
   [provider]="facade.activeProvider()!"
   [summary]="facade.paymentPayload()!"
   [details]="facade.verifiedDetails()!"
-  (confirm)="onFinalConfirm()"
+  (confirm)="confirmPayment()"
   [iconBgColor]="facade.activeCategoryUI()!.iconBgColor"
   [iconBgPath]="facade.activeCategoryUI()!.iconBgPath"
   (cancelPayment)="onBackToDetails()"
   [currentAccounts]="facade.storeAccounts()"
   [(selectedAccountId)]="facade.selectedSenderAccountId"
+  [isLoading]="facade.isLoading()"
 />

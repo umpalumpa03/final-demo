@@ -10,7 +10,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Tabs } from '@tia/shared/lib/navigation/tabs/tabs';
 import { TabItem } from '@tia/shared/lib/navigation/models/tab.model';
 import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
-import { getTransferTabs } from '../config/transfer-tabs.config';
+import { getTransferTabs } from '../components/transfers-external/config/transfer-tabs.config';
 import { TransferStore } from '../store/transfers.store';
 
 @Component({

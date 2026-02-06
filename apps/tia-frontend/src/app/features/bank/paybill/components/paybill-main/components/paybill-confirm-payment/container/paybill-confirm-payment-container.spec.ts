@@ -4,56 +4,54 @@ import { PaybillMainFacade } from '../../../services/paybill-main-facade';
 import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { PaybillActions } from '../../../../../store/paybill.actions';
 
 describe('PaybillConfirmPaymentContainer', () => {
   let component: PaybillConfirmPaymentContainer;
   let fixture: ComponentFixture<PaybillConfirmPaymentContainer>;
   let facadeMock: any;
+  let store: MockStore;
 
   beforeEach(async () => {
     facadeMock = {
-      // 🔹 METHODS used in container
-      confirmPayment: vi.fn(),
       backToDetails: vi.fn(),
-      storeAccounts: vi.fn(() => []),
-
-      // 🔹 SIGNALS used directly or indirectly by template/children
+      storeAccounts: signal([]),
+      isLoading: signal(false),
       activeProvider: signal({
         id: 'provider-1',
         name: 'Test Provider',
       }),
-
       paymentPayload: signal({
+        identification: { accountNumber: '123456' },
         amount: 100,
         currency: 'GEL',
       }),
-
-      selectedSenderAccount: signal({
-        iban: 'GE00TB123456789',
-        name: 'Main Account',
-      }),
-
+      selectedSenderAccountId: signal('sender-123'),
       verifiedDetails: signal({
         subscriberId: '123456',
         customerName: 'John Doe',
+        valid: true,
       }),
-
       activeCategoryUI: signal({
-        icon: 'electricity',
-        title: 'Utilities',
+        iconBgColor: '#fff',
+        iconBgPath: 'path/to/icon',
       }),
     };
 
     await TestBed.configureTestingModule({
       imports: [PaybillConfirmPaymentContainer, TranslateModule.forRoot()],
-      providers: [{ provide: PaybillMainFacade, useValue: facadeMock }],
-      schemas: [NO_ERRORS_SCHEMA], // ignore child component templates
+      providers: [
+        { provide: PaybillMainFacade, useValue: facadeMock },
+        provideMockStore(),
+      ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
+    store = TestBed.inject(MockStore);
     fixture = TestBed.createComponent(PaybillConfirmPaymentContainer);
     component = fixture.componentInstance;
 
-    // 🚀 This used to crash — now all computeds have valid data
     fixture.detectChanges();
   });
 
@@ -61,9 +59,21 @@ describe('PaybillConfirmPaymentContainer', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call confirmPayment on facade when onFinalConfirm is triggered', () => {
-    component.onFinalConfirm();
-    expect(facadeMock.confirmPayment).toHaveBeenCalledTimes(1);
+  it('should dispatch proceedPayment action when confirmPayment is triggered', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+    component.confirmPayment();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      PaybillActions.proceedPayment({
+        payload: {
+          serviceId: 'provider-1',
+          identification: { accountNumber: '123456' },
+          amount: 100,
+          senderAccountId: 'sender-123',
+        },
+      }),
+    );
   });
 
   it('should call backToDetails on facade when onBackToDetails is triggered', () => {

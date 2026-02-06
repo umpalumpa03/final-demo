@@ -21,6 +21,7 @@ import {
   CATEGORY_SELECT_CONFIG,
   NEW_CATEGORY_INPUT_CONFIG,
 } from '../../config/categorize-modal.config';
+import { TranslateModule, TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-categorize-modal',
@@ -32,6 +33,8 @@ import {
     DatePipe,
     ReactiveFormsModule,
     SimpleAlerts,
+    TranslateModule,
+    TranslatePipe
   ],
   templateUrl: './categorize-modal.html',
   styleUrl: './categorize-modal.scss',
@@ -39,12 +42,14 @@ import {
 })
 export class CategorizeModal {
   private readonly fb = inject(FormBuilder);
+  private translate = inject(TranslateService);
+
+  public readonly modalConfig = CATEGORIZE_MODAL_CONFIG;
+  public readonly selectConfig = CATEGORY_SELECT_CONFIG;
+  public readonly inputConfig = NEW_CATEGORY_INPUT_CONFIG;
 
   public title = signal(CATEGORIZE_MODAL_CONFIG.title);
   public subTitle = signal(CATEGORIZE_MODAL_CONFIG.subTitle);
-
-  public readonly selectConfig = CATEGORY_SELECT_CONFIG;
-  public readonly inputConfig = NEW_CATEGORY_INPUT_CONFIG;
 
   public transaction = input<ITransactions | null>(null);
   public selectCategoryOptions = input.required<SelectOption[]>();
@@ -80,7 +85,12 @@ export class CategorizeModal {
       this.createCategory.emit(categoryName);
       this.form.controls.newCategoryName.reset();
 
-      this.successMessage.set(`Category "${categoryName}" added successfully!`);
+      const msg = this.translate.instant(
+        'transactions.categorize_modal.messages.success_added',
+        { name: categoryName },
+      );
+
+      this.successMessage.set(msg);
 
       setTimeout(() => {
         this.successMessage.set(null);

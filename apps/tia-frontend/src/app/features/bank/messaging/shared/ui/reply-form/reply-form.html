@@ -1,0 +1,26 @@
+<div class="reply-card">
+  <form [formGroup]="form" class="reply-card__content">
+    <div class="reply-card__form">
+      <h3 class="reply-card__title">Your Reply</h3>
+      <lib-textarea
+        formControlName="body"
+        [config]="{ 
+          placeholder: 'Type your reply...', 
+          rows: 3, 
+          resizable: 'none',
+          maxHeight: 16
+          }"
+      >
+      </lib-textarea>
+      <div class="reply-card__actions">
+        <app-button variant="outline" (click)="onCancel()"
+          >Cancel</app-button
+        >
+        <app-button [icon]="'send-email.svg'" (click)="onSendReply()"
+          >Send Reply</app-button
+        >
+      </div>
+    </div>
+    <app-avatar size="md" tone="solid" initials="ME"></app-avatar>
+  </form>
+</div>

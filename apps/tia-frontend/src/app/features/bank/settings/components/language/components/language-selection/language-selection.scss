@@ -1,0 +1,40 @@
+@use '../../../../../../../shared/styles/mixins' as *;
+
+.container {
+    @include display-flex(column);
+    gap: 2rem;
+
+    &__alert {
+        position: fixed;
+        top: 2rem;
+        right: 2rem;
+        z-index: 9999;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    &__cards {
+        @include flex-center(row, flex-start, stretch);
+        gap: 2rem;
+        flex-wrap: wrap;
+
+        & > * {
+            flex: 1;
+        }
+    }
+
+    &__actions {
+        @include flex-center(row, flex-end, center);
+        padding-top: 1rem;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(40rem);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
