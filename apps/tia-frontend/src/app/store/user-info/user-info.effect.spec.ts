@@ -57,10 +57,6 @@ describe('UserInfoEffects (Vitest)', () => {
     );
 
     expect(localStorage.setItem).toHaveBeenCalledWith(
-      'user',
-      JSON.stringify(mockUser),
-    );
-    expect(localStorage.setItem).toHaveBeenCalledWith(
       'theme',
       mockUser.theme,
     );

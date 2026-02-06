@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { TestBed } from '@angular/core/testing';
 import { firstValueFrom, of, throwError } from 'rxjs';
+import { TestBed } from '@angular/core/testing';
+import { CanActivateFn } from '@angular/router';
 
 import { GuestGuard } from './guest-guard';
 import { TokenService } from '../services/token.service';
@@ -52,10 +53,6 @@ describe('GuestGuard', () => {
     expect(value).toEqual({ redirect: [Routes.SIGN_IN] });
   });
 });
-import { TestBed } from '@angular/core/testing';
-import { CanActivateFn } from '@angular/router';
-
-import { guestGuard } from './guest-guard';
 
 describe('guestGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) => 
