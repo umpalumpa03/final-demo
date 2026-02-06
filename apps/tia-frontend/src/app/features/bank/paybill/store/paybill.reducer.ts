@@ -211,7 +211,7 @@ export const paybillReducer = createReducer(
     (state, { templateGroup }) => ({
       ...state,
       loading: false,
-      templateGroups: [...state.templateGroups, templateGroup],
+      templateGroups: [templateGroup, ...state.templateGroups],
     }),
   ),
 
@@ -255,6 +255,12 @@ export const paybillReducer = createReducer(
     selectedProvider: provider,
     selectedProviderId: provider.id,
     selectedCategoryId: state.selectedCategoryId || provider.categoryId || null,
+  })),
+
+  on(PaybillActions.loadPaymentDetails, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
   })),
 
   on(PaybillActions.loadPaymentDetailsSuccess, (state, { details }) => ({
@@ -308,6 +314,15 @@ export const paybillReducer = createReducer(
     loading: false,
     error: null,
     templateGroups: state.templateGroups.filter((t) => t.id !== groupId),
+    templates: state.templates.map((item) => {
+      if (item.groupId === groupId) {
+        return {
+          ...item,
+          groupId: null,
+        };
+      }
+      return item;
+    }),
   })),
 
   on(TemplatesPageActions.renameTemplateGroupFailure, (state, { error }) => ({
@@ -339,4 +354,50 @@ export const paybillReducer = createReducer(
       }),
     }),
   ),
+
+  on(TemplatesPageActions.moveTemplate, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+  on(
+    TemplatesPageActions.moveTemplateSuccess,
+    (state, { groupId, templateId }) => ({
+      ...state,
+      loading: false,
+      error: null,
+      templates: state.templates.map((item) => {
+        if (item.id === templateId) {
+          return {
+            ...item,
+            groupId,
+          };
+        }
+        return item;
+      }),
+    }),
+  ),
+
+  on(TemplatesPageActions.moveTemplateFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
+
+  on(TemplatesPageActions.createTemplate, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
+  on(TemplatesPageActions.createTemplateSuccess, (state) => ({
+    ...state,
+    loading: false,
+  })),
+
+  on(TemplatesPageActions.createTemplateFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
 );

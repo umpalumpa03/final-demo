@@ -26,7 +26,6 @@ export class PaybillFormContainer {
   protected readonly dynamicForm = inject(PaybillDynamicForm);
   private readonly fb = inject(NonNullableFormBuilder);
 
-  
   // sync form data with service
   private readonly formSync = effect(() => {
     const fields = this.paybillFacade.paymentFields();
@@ -44,7 +43,6 @@ export class PaybillFormContainer {
     }
   });
 
-
   public readonly paybillForm = this.fb.group({
     amount: [0, [Validators.required, Validators.max(9999)]],
   });
@@ -52,6 +50,10 @@ export class PaybillFormContainer {
   public onVerifyAccount(event: PaybillFormVerifyEvent): void {
     const identification = this.dynamicForm.buildIdentification(event.value);
     this.paybillFacade.verifyAccount(identification);
+  }
+
+  public onSaveAsTemplate(nickname: string): void {
+    this.paybillFacade.saveAsTemplate(nickname);
   }
 
   public onProceedToPayment(event: PaybillFormProceedEvent): void {

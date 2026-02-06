@@ -67,7 +67,7 @@ export const MessagingStore = signalStore(
                                 if (currentDetail) {
                                     patchState(store, {
                                         mails: isFavoritesPage
-                                            ? store.mails().filter(mail => mail.id !== mailId) 
+                                            ? store.mails().filter(mail => mail.id !== mailId)
                                             : store.mails().map(mail =>
                                                 mail.id === mailId ? { ...mail, isFavorite } : mail
                                             ),
@@ -249,6 +249,21 @@ export const MessagingStore = signalStore(
                     }),
                 ),
             ),
+
+            getMailReplies: rxMethod<number>(
+                pipe(
+                    tap(() => patchState(store, { isLoading: true })),
+                    switchMap((mailId) => messagingService.getMailReplies(mailId).pipe(
+                        tap((replies) => {
+                            patchState(store, { mailReplies: replies }, { isLoading: false });
+                        }),
+                        catchError((error) => {
+                            patchState(store, { error: 'Failed to load mail replies' });
+                            return of([]);
+                        }),
+                    ))
+                )
+            ),
         };
     }),
     withMethods((store) => {
@@ -313,7 +328,7 @@ export const MessagingStore = signalStore(
                     tap(() => patchState(store, { isLoading: true })),
                     switchMap(({ mailId, data }) => messagingService.sendDraft(mailId, data).pipe(
                         tap(() => {
-                            patchState(store, { mails: [], pagination: { hasNextPage: false, nextCursor: null } }, 
+                            patchState(store, { mails: [], pagination: { hasNextPage: false, nextCursor: null } },
                                 { isLoading: false, successMessage: 'Draft sent successfully' });
                             store.loadMails('drafts');
                             inboxService.fetchInboxCount();
@@ -330,17 +345,21 @@ export const MessagingStore = signalStore(
                     )),
                 )
             ),
-
-            getMailReplies: rxMethod<number>(
+            
+            sendMailReply: rxMethod<{ mailId: number; body: string }>(
                 pipe(
-                    tap(() => patchState(store, { isLoading: true })),
-                    switchMap((mailId) => messagingService.getMailReplies(mailId).pipe(
-                        tap((replies) => {
-                            patchState(store, { mailReplies: replies }, { isLoading: false });
+                    tap(() => patchState(store)),
+                    switchMap(({ mailId, body }) => messagingService.sendMailReply(mailId, body).pipe(
+                        tap(() => {
+                            store.getMailReplies(mailId);
+                            patchState(store, {
+                                isLoading: false,
+                                successMessage: 'Reply sent successfully'
+                            });
                         }),
                         catchError((error) => {
-                            patchState(store, { error: 'Failed to load mail replies' });
-                            return of([]);
+                            patchState(store, { error: 'Failed to send mail reply' });
+                            return of(null);
                         }),
                     ))
                 )

@@ -35,4 +35,19 @@ describe('PaybillConfirmPayment', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should auto-select the favorite account and emit accountChanged', () => {
+    const mockAccounts = [
+      { label: 'Standard', value: 'acc-1', isFavorite: false },
+      { label: 'Favorite', value: 'acc-2', isFavorite: true },
+    ];
+
+    const emitSpy = vi.spyOn(component.accountChanged, 'emit');
+
+    fixture.componentRef.setInput('currentAccounts', mockAccounts);
+    fixture.detectChanges();
+
+    expect(component.selectedAccountId()).toBe('acc-2');
+    expect(emitSpy).toHaveBeenCalledWith('acc-2');
+  });
 });

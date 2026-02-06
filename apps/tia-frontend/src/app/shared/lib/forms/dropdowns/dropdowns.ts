@@ -39,7 +39,7 @@ export class Dropdowns extends BaseInput implements OnInit {
 
   public override readonly value = model<SelectValue>(null);
 
-  public readonly height = input<string>('4.4rem');
+  public readonly height = input<string>('3.6rem');
 
   public readonly isOpen = signal(false);
   protected readonly zIndex = signal(4);

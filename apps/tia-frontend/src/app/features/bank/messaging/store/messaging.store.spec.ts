@@ -460,4 +460,33 @@ describe('MessagingStore', () => {
     });
   });
 
+  it('should send mail reply successfully', async () => {
+    const mockReplies = [
+      { id: 1, subject: 'Re: Test', body: 'Reply 1', createdAt: '2024-01-01' }
+    ];
+
+    mockMessagingService.sendMailReply = vi.fn().mockReturnValue(of(null));
+    mockMessagingService.getMailReplies = vi.fn().mockReturnValue(of(mockReplies));
+
+    store.sendMailReply({ mailId: 1, body: 'This is my reply' });
+
+    await vi.waitFor(() => {
+      expect(mockMessagingService.sendMailReply).toHaveBeenCalledWith(1, 'This is my reply');
+      expect(mockMessagingService.getMailReplies).toHaveBeenCalledWith(1);
+      expect(store.successMessage?.()).toBe('Reply sent successfully');
+      expect(store.isLoading()).toBe(false);
+    });
+  });
+
+  it('should handle send mail reply error', async () => {
+    mockMessagingService.sendMailReply = vi.fn().mockReturnValue(
+      throwError(() => new Error('Failed to send reply'))
+    );
+
+    store.sendMailReply({ mailId: 1, body: 'This is my reply' });
+
+    await vi.waitFor(() => {
+      expect(store.error()).toBe('Failed to send mail reply');
+    });
+  });
 });

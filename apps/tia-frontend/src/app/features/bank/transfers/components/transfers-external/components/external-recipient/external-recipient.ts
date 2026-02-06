@@ -22,16 +22,16 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { InputConfig } from '@tia/shared/lib/forms/models/input.model';
-import { recipientValidator } from '../../../../validators/transfer-validator';
-import { TransferValidationService } from '../../../../services/transfer-validation.service';
+import { recipientValidator } from '../../validators/transfer-validator';
+import { TransferValidationService } from '../../services/transfer-validation.service';
 import {
   getErrorMessage,
   getSuccessMessage,
-} from '../../../../utils/transfers-external.utils';
+} from '../../utils/transfers-external.utils';
 import { RecipientType } from '../../../../models/transfers.state.model';
 import { TransferStore } from '../../../../store/transfers.store';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
-import { TransferExternalService } from '../../../../services/transfer.external.service';
+import { TransferRecipientService } from '../../services/transfer-recipient.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 
@@ -52,7 +52,7 @@ import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 })
 export class ExternalRecipient implements OnInit {
   private readonly translate = inject(TranslateService);
-  private readonly transferExternalService = inject(TransferExternalService);
+  private readonly recipientService = inject(TransferRecipientService);
   private readonly fb = inject(FormBuilder);
   private readonly validationService = inject(TransferValidationService);
   private readonly destroyRef = inject(DestroyRef);
@@ -153,7 +153,7 @@ export class ExternalRecipient implements OnInit {
 
   public onVerify(): void {
     if (this.recipientInput.valid && this.recipientInput.value) {
-      this.transferExternalService.verifyRecipient(this.recipientInput.value);
+      this.recipientService.verifyRecipient(this.recipientInput.value);
     }
   }
   onDone(): void {}

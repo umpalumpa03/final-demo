@@ -16,7 +16,9 @@
   (itemEdited)="onItemEditAction($event)"
   (groupRemoved)="onGroupDeleteAction($event)"
   (groupEdited)="onGroupEditAction($event)"
+  (itemMoved)="itemMoved($event)"
   [isLoading]="isLoading()"
+  [selectAll]="selectAll()"
 >
   <div class="templates__header">
     <app-library-title
@@ -36,7 +38,11 @@
   </div>
 </app-tree-container>
 
-<app-ui-modal class="modal" [isOpen]="isModalOpen()" (closed)="toggleModal()">
+<app-ui-modal
+  class="modal"
+  [isOpen]="isModalOpen()"
+  (closed)="modalOpenAction.emit()"
+>
   @if (currentModalConfig(); as config) {
   <app-library-title
     [title]="config.title"
@@ -47,7 +53,7 @@
 
   <main>
     @if (form) {
-    <form [formGroup]="form" (ngSubmit)="onSubmit(config.formSubmitType)">
+    <form [formGroup]="form" (ngSubmit)="onFormSubmit(config.formSubmitType)">
       @if (config.fields?.length) { @for (field of config.fields; track
       field.controlName) { @if(field.type === 'dropdown') {
       <lib-select
@@ -66,7 +72,11 @@
       } } }
 
       <div class="modal__buttons">
-        <app-button type="button" variant="outline" (click)="toggleModal()">
+        <app-button
+          type="button"
+          variant="outline"
+          (click)="modalOpenAction.emit()"
+        >
           Cancel
         </app-button>
         <app-button [variant]="config.submitButtonType" type="submit">
@@ -81,7 +91,11 @@
     }
 
     <div class="modal__buttons">
-      <app-button variant="outline" type="button" (click)="toggleModal()">
+      <app-button
+        variant="outline"
+        type="button"
+        (click)="modalOpenAction.emit()"
+      >
         Cancel
       </app-button>
       <app-button

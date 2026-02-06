@@ -169,7 +169,7 @@ export class TransactionsContainer implements OnInit {
     } else {
       this.store.dispatch(TransactionActions.loadTransactions({}));
     }
-    this.store.dispatch(AccountsActions.loadAccounts());
+    this.store.dispatch(AccountsActions.loadAccounts({}));
   }
 
   public onFiltersChange(filters: Partial<ITransactionFilter>) {

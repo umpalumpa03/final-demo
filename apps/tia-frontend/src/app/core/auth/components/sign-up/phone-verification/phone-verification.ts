@@ -6,6 +6,7 @@ import { OtpVerification } from '../../../shared/otp-verification/otp-verificati
 import { TokenService } from '../../../services/token.service';
 import { IVerified } from '../../../models/otp-verification.models';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Routes } from '../../../models/tokens.model';
 
 @Component({
   selector: 'app-phone-verification',
@@ -28,8 +29,8 @@ export class PhoneVerification {
     }
   }
 
-  public handlePhoneTimer(): void {
+  public clearedBackout(): void {
     this.tokenService.clearAllToken();
-    this.router.navigate(['/auth/sign-in']);
+    this.router.navigate([Routes.SIGN_IN]);
   }
 }

@@ -54,7 +54,7 @@ describe('LanguageService', () => {
   });
 
   describe('updateUserLanguage', () => {
-    it('should call POST with correct URL and body', () => {
+    it('should call PUT with correct URL and body', () => {
       const mockResponse = { successs: true };
       const language = 'ka';
 
@@ -65,7 +65,7 @@ describe('LanguageService', () => {
       const req = httpMock.expectOne(
         `${BASE_URL}/settings/update-user-language`,
       );
-      expect(req.request.method).toBe('POST');
+      expect(req.request.method).toBe('PUT');
       expect(req.request.body).toEqual({ language: 'ka' });
       req.flush(mockResponse);
     });

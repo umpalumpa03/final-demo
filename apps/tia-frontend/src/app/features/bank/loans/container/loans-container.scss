@@ -55,9 +55,9 @@
 
 .loans-alert-positioner {
     position: absolute;
-    bottom: 2rem;
-    right: 2rem;
-    z-index: 9999;
+    top: 0.5rem;
+    right: 1rem;
+    z-index: 10000;
     animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 

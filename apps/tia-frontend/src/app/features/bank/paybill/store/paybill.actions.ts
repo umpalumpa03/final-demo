@@ -118,5 +118,24 @@ export const TemplatesPageActions = createActionGroup({
     'Rename Template Group Failure': props<{
       error: string;
     }>(),
+    'Move Template': props<{
+      groupId: string | null;
+      templateId: string;
+    }>(),
+    'Move Template Success': props<{
+      message: string;
+      groupId: string | null;
+      templateId: string;
+    }>(),
+    'Move Template Failure': props<{
+      error: string;
+    }>(),
+    'Create Template': props<{
+      serviceId: string;
+      identification: PaybillIdentification;
+      nickname: string;
+    }>(),
+    'Create Template Success': props<{ message: string }>(),
+    'Create Template Failure': props<{ error: string }>(),
   },
 });
