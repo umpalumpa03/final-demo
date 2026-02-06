@@ -1,10 +1,14 @@
 <div class="otp-verification">
   @if(isHeaderVisible()) {
   <div class="otp-verification__icon" aria-hidden="true">
-    <img [src]="iconUrl()" />
+    <img [src]="inputOtpConfig()?.iconUrl" />
   </div>
-  <h2 class="otp-verification__title">{{ title() | translate }}</h2>
-  <p class="otp-verification__subtext">{{ subText() | translate}}</p>
+  <h2 class="otp-verification__title">
+    {{ inputOtpConfig()?.title| translate }}
+  </h2>
+  <p class="otp-verification__subtext">
+    {{ inputOtpConfig()?.subText| translate}}
+  </p>
   } @if (!isLoading()) {
   <form class="auth-form" [formGroup]="activeForm()" (ngSubmit)="onSubmit()">
     @if(timerType() === 'otp'){
@@ -39,9 +43,7 @@
       alertType="error"
       [alertMessage]="phoneErrorMessage() ?? 'An error occurred'"
     ></app-simple-alerts>
-    } 
-    
-    @if(isTimerDisplayed()) {
+    } @if(isTimerDisplayed()) {
     <div class="timer-compact">
       <div class="timer-compact__timer">
         <span
@@ -74,7 +76,7 @@
 
     <div
       class="auth-form__wrapper"
-      [style.flex-direction]="isHeaderVisible() || isBtnRowDirection() ? 'column' : 'row-reverse'"
+      [style.flex-direction]="isBtnRowDirection() ? 'row-reverse' : 'column'"
     >
       <div class="auth-form__wrapper__btn">
         <app-button
@@ -83,7 +85,7 @@
           [fullWidth]="true"
           variant="default"
         >
-          {{ submitBtnName() | translate}}
+          {{ inputOtpConfig()?.submitBtnName | translate}}
         </app-button>
       </div>
 
@@ -93,7 +95,7 @@
           class="otp-verification__back"
           (click)="resgisterBackout()"
           variant="outline"
-          >{{ backLinkText() | translate}}</app-button
+          >{{ inputOtpConfig()?.backLinkText | translate}}</app-button
         >
       </div>
     </div>

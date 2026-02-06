@@ -95,7 +95,7 @@ export class SignUp {
       .subscribe();
   }
 
-  public handleCurrentUsername(username: string) {
+  public handleCurrentUsername(username: string):void {
     if (username.length > 2) {
       this.usernameSource$.next(username);
     }
