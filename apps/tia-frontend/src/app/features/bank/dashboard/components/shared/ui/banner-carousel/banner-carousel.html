@@ -2,19 +2,21 @@
   <div class="banner-carousel__viewport">
     @for (slide of slides(); track slide.title) { @if ($index ===
     currentIndex()) {
-    <div class="banner-carousel__slide">
+    <div
+      class="banner-carousel__slide"
+      [class]="'banner-carousel__slide--' + slide.contentPosition"
+    >
       <div
         class="banner-carousel__image"
         [style.background-image]="'url(' + slide.imagePath + ')'"
       ></div>
 
       <div class="banner-carousel__container">
-        <div
-          class="banner-carousel__content"
-          [class]="'banner-carousel__content--' + slide.contentPosition"
-        >
+        <div class="banner-carousel__content">
           <h1 class="banner-carousel__title">{{ slide.title | translate}}</h1>
-          <p class="banner-carousel__description">{{ slide.description | translate}}</p>
+          <p class="banner-carousel__description">
+            {{ slide.description | translate}}
+          </p>
 
           <div class="banner-carousel__actions">
             <app-button (click)="navigateTo(slide.pageUrl)">
