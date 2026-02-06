@@ -6,26 +6,20 @@ import {
   ROOT_EFFECTS_INIT,
 } from '@ngrx/effects';
 import { ProfilePhotoActions } from './profile-photo.actions';
-import { ProfilePhotoApiService } from '../../shared/services/profile-photo/profile-photo.service';
+import { ProfilePhotoApiService } from '../../../../../../../shared/services/profile-photo/profile-photo.service';
 import { Store } from '@ngrx/store';
 import { catchError, concat, filter, map, of, switchMap, withLatestFrom } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../../../../../environments/environment';
 import { selectDefaultAvatars } from './profile-photo.selectors';
-import { selectUserInfo } from '../user-info/user-info.selectors';
-import { UserInfoActions } from '../user-info/user-info.actions';
+import { selectUserInfo } from '../../../../../../../store/user-info/user-info.selectors';
+import { UserInfoActions } from '../../../../../../../store/user-info/user-info.actions';
+
 
 @Injectable()
 export class ProfilePhotoEffects {
   private actions$ = inject(Actions);
   private profilePhotoApiService = inject(ProfilePhotoApiService);
   private store = inject(Store);
-
-  public initLoadDefaultAvatars$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(ROOT_EFFECTS_INIT),
-      map(() => ProfilePhotoActions.loadDefaultAvatarsRequest()),
-    ),
-  );
 
   public initLoadUserInfo$ = createEffect(() =>
     this.actions$.pipe(
@@ -41,21 +35,36 @@ export class ProfilePhotoEffects {
   public loadDefaultAvatars$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProfilePhotoActions.loadDefaultAvatarsRequest),
-      switchMap(() =>
-        this.profilePhotoApiService.getAvailableDefaultAvatars().pipe(
-          map((avatars) =>
-            ProfilePhotoActions.loadDefaultAvatars({ avatars }),
-          ),
+      withLatestFrom(this.store.select(selectDefaultAvatars)),
+      switchMap(([{ forceRefresh }, avatars]) => {
+        const shouldFetch =
+          !!forceRefresh || !avatars || avatars.length === 0;
+
+        if (!shouldFetch) {
+          return of(ProfilePhotoActions.loadDefaultAvatars({ avatars }));
+        }
+
+        return this.profilePhotoApiService.getAvailableDefaultAvatars().pipe(
+          map((fetchedAvatars) => {
+            const avatarsWithUrls = fetchedAvatars.map(avatar => ({
+              id: avatar.id,
+              imageUrl: `${environment.apiUrl}${avatar.iconUri}`
+            }));
+            return ProfilePhotoActions.loadDefaultAvatars({ avatars: avatarsWithUrls });
+          }),
           catchError((error) => {
             return concat(
               of(ProfilePhotoActions.loadDefaultAvatars({ avatars: [] })),
-              of(ProfilePhotoActions.loadDefaultAvatarsFailure({ 
-                error: error.message || 'Failed to load default avatars' 
-              })),
+              of(
+                ProfilePhotoActions.loadDefaultAvatarsFailure({
+                  error:
+                    error.message || 'Failed to load default avatars',
+                }),
+              ),
             );
           }),
-        ),
-      ),
+        );
+      }),
     ),
   );
 

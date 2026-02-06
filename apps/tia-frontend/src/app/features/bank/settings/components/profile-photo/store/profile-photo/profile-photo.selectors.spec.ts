@@ -8,6 +8,7 @@ import {
   selectAvatarType,
 } from './profile-photo.selectors';
 import { ProfilePhotoState } from './profile-photo.state';
+import { environment } from '../../../../../../../../environments/environment';
 
 describe('ProfilePhoto Selectors', () => {
   interface RootState {
@@ -15,7 +16,7 @@ describe('ProfilePhoto Selectors', () => {
   }
 
   const getInitialState = (): ProfilePhotoState => ({
-    defaultAvatars: [{ id: 'avatar-1', iconUri: '/avatars/1.png' }],
+    defaultAvatars: [{ id: 'avatar-1', imageUrl: `${environment.apiUrl}/avatars/1.png` }],
     defaultAvatarsLoading: false,
     defaultAvatarsError: null,
     selectedAvatarId: 'avatar-1',
@@ -36,7 +37,8 @@ describe('ProfilePhoto Selectors', () => {
   it('should select default avatars', () => {
     const initialState = getInitialState();
     const featureState: RootState = { ProfilePhoto: initialState };
-    const result = selectDefaultAvatars(featureState);
+    const featureStateResult = selectProfilePhotoFeatureState(featureState);
+    const result = selectDefaultAvatars.projector(featureStateResult);
     expect(result).toEqual(initialState.defaultAvatars);
   });
 

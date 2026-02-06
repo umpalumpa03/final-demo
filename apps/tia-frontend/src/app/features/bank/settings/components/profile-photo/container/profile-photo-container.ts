@@ -1,18 +1,17 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ProfilePhotoComponent } from '../components/profile-photo/profile-photo.component';
 import { AlertType } from '../shared/models/profile-photo.models';
-import { ProfilePhotoActions } from '../../../../../../store/profile-photo/profile-photo.actions';
+import { ProfilePhotoActions } from '../store/profile-photo/profile-photo.actions';
 import {
   selectDefaultAvatars,
   selectDefaultAvatarsLoading,
   selectSelectedAvatarId,
   selectCurrentAvatarUrl,
   selectUploadedFileName,
-} from '../../../../../../store/profile-photo/profile-photo.selectors';
+} from '../store/profile-photo/profile-photo.selectors';
 import { selectUserInfo } from '../../../../../../store/user-info/user-info.selectors';
 import { TranslateService } from '@ngx-translate/core';
-import { environment } from '../../../../../../../environments/environment';
 
 @Component({
   selector: 'app-profile-photo-container',
@@ -21,7 +20,7 @@ import { environment } from '../../../../../../../environments/environment';
   styleUrl: './profile-photo-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProfilePhotoContainer implements OnDestroy {
+export class ProfilePhotoContainer implements OnInit, OnDestroy {
   private readonly store = inject(Store);
   private readonly translate = inject(TranslateService);
 
@@ -40,8 +39,7 @@ export class ProfilePhotoContainer implements OnDestroy {
   private objectUrl: string | null = null;
   private alertTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
-public constructor() {
-
+  public constructor() {
     effect(() => {
       const fileName = this.uploadedFileName();
       if (!fileName && this.objectUrl) {
@@ -49,6 +47,10 @@ public constructor() {
         this.objectUrl = null;
       }
     });
+  }
+
+  public ngOnInit(): void {
+    this.store.dispatch(ProfilePhotoActions.loadDefaultAvatarsRequest({}));
   }
 
   public ngOnDestroy(): void {
@@ -79,9 +81,18 @@ public constructor() {
     }, autoHideMs);
   }
 
+  public onAlertClose(): void {
+    if (this.alertTimeoutId) {
+      clearTimeout(this.alertTimeoutId);
+      this.alertTimeoutId = null;
+    }
+    this.alertKind.set(null);
+    this.alertMessage.set('');
+  }
+
   public onFileSelected(file: File): void {
     const allowedTypes = ['image/png', 'image/jpeg'];
-    const maxSizeBytes = 1024 * 1024; 
+    const maxSizeBytes = 1024*1024; 
 
     const isValidType = allowedTypes.includes(file.type);
     const isValidSize = file.size <= maxSizeBytes;
@@ -122,9 +133,8 @@ public constructor() {
     }
     this.uploadedFile = null;
 
-    const imageUrl = `${environment.apiUrl}${avatar.iconUri}`;
     this.store.dispatch(
-      ProfilePhotoActions.selectDefaultAvatar({ avatarId, imageUrl })
+      ProfilePhotoActions.selectDefaultAvatar({ avatarId, imageUrl: avatar.imageUrl })
     );
   }
 
