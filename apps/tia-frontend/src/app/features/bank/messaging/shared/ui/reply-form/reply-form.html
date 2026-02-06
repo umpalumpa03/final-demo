@@ -1,11 +1,13 @@
 <div class="reply-card">
   <form [formGroup]="form" class="reply-card__content">
     <div class="reply-card__form">
-      <h3 class="reply-card__title">Your Reply</h3>
+      <h3 class="reply-card__title">
+        {{ 'messaging.mail-form.yourReply' | translate }}
+      </h3>
       <lib-textarea
         formControlName="body"
         [config]="{ 
-          placeholder: 'Type your reply...', 
+          placeholder: 'messaging.mail-form.typeYourReply' | translate, 
           rows: 3, 
           resizable: 'none',
           maxHeight: 16
@@ -13,11 +15,17 @@
       >
       </lib-textarea>
       <div class="reply-card__actions">
-        <app-button variant="outline" (click)="onCancel()" [fullWidth]="isExtraSmall() ? true : false"
-          >Cancel</app-button
+        <app-button
+          variant="outline"
+          (click)="onCancel()"
+          [fullWidth]="isExtraSmall() ? true : false"
+          >{{ 'messaging.compose.cancel' | translate }}</app-button
         >
-        <app-button [icon]="'send-email.svg'" (click)="onSendReply()" [fullWidth]="isExtraSmall() ? true : false"
-          >Send Reply</app-button
+        <app-button
+          [icon]="'send-email.svg'"
+          (click)="onSendReply()"
+          [fullWidth]="isExtraSmall() ? true : false"
+          >{{ 'messaging.mail-form.sendReply' | translate }}</app-button
         >
       </div>
     </div>

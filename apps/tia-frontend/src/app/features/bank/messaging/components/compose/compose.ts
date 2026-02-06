@@ -12,10 +12,11 @@ import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-typ
 import { Store } from '@ngrx/store';
 import { userInfoFeature } from 'apps/tia-frontend/src/app/store/user-info/user-info.reducer';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-compose',
-  imports: [UiModal, ReactiveFormsModule, EmailChipsInput, TextInput, Textarea, ButtonComponent, Checkboxes, AlertTypesWithIcons],
+  imports: [UiModal, ReactiveFormsModule, EmailChipsInput, TextInput, Textarea, ButtonComponent, Checkboxes, AlertTypesWithIcons, TranslatePipe],
   templateUrl: './compose.html',
   styleUrl: './compose.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

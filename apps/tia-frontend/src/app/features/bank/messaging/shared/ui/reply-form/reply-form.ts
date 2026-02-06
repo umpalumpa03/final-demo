@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Avatar } from '@tia/shared/lib/data-display/avatars/avatar';
 import { Textarea } from '@tia/shared/lib/forms/textarea/textarea';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -7,7 +8,7 @@ import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/break
 
 @Component({
   selector: 'app-reply-form',
-  imports: [ReactiveFormsModule, Avatar, Textarea, ButtonComponent],
+  imports: [ReactiveFormsModule, Avatar, Textarea, ButtonComponent, TranslatePipe],
   templateUrl: './reply-form.html',
   styleUrl: './reply-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
