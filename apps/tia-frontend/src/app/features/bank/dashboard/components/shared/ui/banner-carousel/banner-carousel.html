@@ -1,1 +1,36 @@
-<p>banner-carousel works!</p>
+<section class="banner-carousel">
+  <div class="banner-carousel__viewport">
+    @for (slide of slides(); track $index) { @if ($index === currentIndex()) {
+    <div
+      class="banner-carousel__slide"
+      [style.background-image]="'url(' + slide.imagePath + ')'"
+      role="group"
+      aria-roledescription="slide"
+    >
+      <div
+        class="banner-carousel__content"
+        [class]="'banner-carousel__content--' + slide.contentPosition"
+      >
+        <h2 class="banner-carousel__title">{{ slide.title }}</h2>
+        <p class="banner-carousel__description">{{ slide.description }}</p>
+
+        <app-button (click)="navigateTo(slide.pageUrl)"
+          >{{ slide.buttonText || 'Learn More' }}</app-button
+        >
+      </div>
+    </div>
+    } }
+  </div>
+
+  <nav class="banner-carousel__indicators" aria-label="Carousel Navigation">
+    @for (slide of slides(); track $index) {
+    <button
+      type="button"
+      class="banner-carousel__dot"
+      [class.banner-carousel__dot--active]="$index === currentIndex()"
+      (click)="goTo($index)"
+      [aria-label]="'Go to slide ' + ($index + 1)"
+    ></button>
+    }
+  </nav>
+</section>
