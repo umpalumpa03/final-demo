@@ -1,62 +1,14 @@
-<!-- @let ui = facade.activeCategoryUI(); @let category = facade.activeCategory();
-@let provider = facade.activeProvider(); -->
-
 <div class="paybill-main">
-  <div class="paybill-main__stage-wrapper">
-    <!-- @if (facade.showSearch()) {
-    <div class="paybill-main__search">
-      <lib-text-input
-        [formControl]="searchControl"
-        [config]="facade.searchInputConfig()"
-      ></lib-text-input>
-    </div>
-    } @if (provider && provider.id) { @switch(facade.currentStep()){
-    @case('DETAILS'){
-    <app-paybill-form
-      [provider]="provider"
-      [verifiedDetails]="facade.verifiedDetails()"
-      [iconBgColor]="ui?.iconBgColor!"
-      [iconBgPath]="ui?.iconBgPath"
-      (verify)="onVerifyAccount($event)"
-      (pay)="onProceedToPayment($event)"
+  @if (facade.showSearch()) {
+  <div class="paybill-main__search-container">
+    <lib-text-input
+      [formControl]="searchControl"
+      [config]="searchInputConfig"
     />
-    } @case('CONFIRM'){
-    <app-paybill-confirm-payment
-      [provider]="provider"
-      [summary]="facade.paymentPayload()!"
-      [details]="facade.verifiedDetails()!"
-      (confirm)="onFinalConfirm()"
-      [iconBgColor]="ui?.iconBgColor!"
-      [iconBgPath]="ui!.iconBgPath"
-      (cancelPayment)="onBackToDetails()"
-      [currentAccounts]="facade.storeAccounts()"
-      [(selectedAccountId)]="facade.selectedSenderAccountId"
-    />
-    } @case('OTP'){
-    <app-paybill-otp-verification
-      [provider]="provider"
-      [summary]="facade.paymentPayload()!"
-      (verify)="onOtpVerified($event)"
-      (cancelPayment)="onBackToDetails()"
-    />
-    } @case('SUCCESS') {
-    <app-paybill-success
-      [items]="facade.successSummaryItems()"
-      [headerTitle]="provider.name!"
-      [iconBgColor]="ui?.iconBgColor!"
-      [iconBgPath]="ui?.iconBgPath!"
-      (payAnother)="onResetFlow()"
-      (goDashboard)="onGoDashboard()"
-    />
-    } } }@else if (category) { @defer (on immediate) {
-    } } @else {
-    <app-category-grid
-      (selected)="facade.selectCategory($event)"
-      [categories]="facade.formattedCategories()"
-      [isLoading]="facade.isLoading()"
-    />
-    } -->
+  </div>
+  }
 
+  <div class="paybill-main__stage-wrapper">
     <router-outlet></router-outlet>
   </div>
 </div>

@@ -1,10 +1,12 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { PaybillTemplates } from './paybill-templates';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { JsonPipe } from '@angular/common';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import {
+  ModalType,
+  HeaderCtaAction,
+  CrudActionType,
+} from '../models/paybill-templates.model';
 
 describe('PaybillTemplates', () => {
   let component: PaybillTemplates;
@@ -12,104 +14,103 @@ describe('PaybillTemplates', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PaybillTemplates, TranslateModule.forRoot()],
-      schemas: [NO_ERRORS_SCHEMA],
-    })
-      .overrideComponent(PaybillTemplates, {
-        set: {
-          imports: [ReactiveFormsModule, JsonPipe, TranslateModule],
-        },
-      })
-      .compileComponents();
+      imports: [
+        PaybillTemplates,
+        TranslateModule.forRoot(),
+        ReactiveFormsModule,
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(PaybillTemplates);
     component = fixture.componentInstance;
 
     fixture.componentRef.setInput('templateGroups', []);
     fixture.componentRef.setInput('templates', []);
+    fixture.componentRef.setInput('isLoading', false);
     fixture.componentRef.setInput('templateCategories', []);
 
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  describe('Item Actions', () => {
-    it('should emit itemDeleteIcon when onItemDeleteAction is triggered', () => {
-      const emitSpy = vi.spyOn(component.itemDeleteIcon, 'emit');
-      component.onItemDeleteAction('item-123');
-      expect(emitSpy).toHaveBeenCalledWith('item-123');
+  describe('Outputs & Actions', () => {
+    it('should emit headerButtonAction when header button is clicked', () => {
+      const spy = vi.spyOn(component.headerButtonAction, 'emit');
+      component.handleHeaderButtonClick(HeaderCtaAction.CreateGroup);
+      expect(spy).toHaveBeenCalledWith(HeaderCtaAction.CreateGroup);
     });
 
-    it('should emit itemEditIcon when onItemEditAction is triggered', () => {
-      const emitSpy = vi.spyOn(component.itemEditIcon, 'emit');
-      component.onItemEditAction('item-456');
-      expect(emitSpy).toHaveBeenCalledWith('item-456');
-    });
-  });
+    it('should emit treeAction for all tree operations', () => {
+      const spy = vi.spyOn(component.treeAction, 'emit');
 
-  describe('Group Actions', () => {
-    it('should emit GroupEditIcon when onGroupEditAction is triggered', () => {
-      const emitSpy = vi.spyOn(component.GroupEditIcon, 'emit');
-      component.onGroupEditAction('group-1');
-      expect(emitSpy).toHaveBeenCalledWith('group-1');
+      component.onItemDeleteAction('1');
+      expect(spy).toHaveBeenCalledWith({ type: 'item-delete', id: '1' });
+
+      component.onGroupEditAction('2');
+      expect(spy).toHaveBeenCalledWith({ type: 'group-edit', id: '2' });
     });
 
-    it('should emit GroupDeleteIcon when onGroupDeleteAction is triggered', () => {
-      const emitSpy = vi.spyOn(component.GroupDeleteIcon, 'emit');
-      component.onGroupDeleteAction('group-2');
-      expect(emitSpy).toHaveBeenCalledWith('group-2');
+    it('should handle CRUD action mapping', () => {
+      const spy = vi.spyOn(component.deleteTemplateModal, 'emit');
+      component.onActionHandler(CrudActionType.DeleteTemplate);
+      expect(spy).toHaveBeenCalled();
     });
   });
 
-  describe('Template Actions', () => {
-    it('should NOT emit categorySelected for other controls', () => {
-      const spy = vi.spyOn(component.categorySelected, 'emit');
-      const mockEvent = { target: { value: 'cat-123' } } as unknown as Event;
+  describe('Form & Modal Logic', () => {
+    it('should compute the correct activeForm based on activeModal input', () => {
+      fixture.componentRef.setInput('activeModal', ModalType.Group);
+      expect(component.activeForm()).toBe(component['createGroupForm']);
 
-      component.onDropdownChange('other-control', mockEvent);
+      fixture.componentRef.setInput('activeModal', ModalType.RenameTemplate);
+      expect(component.activeForm()).toBe(component['editTemplateForm']);
+    });
 
+    it('should emit formSubmit only if form is valid', () => {
+      const spy = vi.spyOn(component.formSubmit, 'emit');
+      fixture.componentRef.setInput('activeModal', ModalType.Group);
+
+      component.onFormSubmit('create-group');
       expect(spy).not.toHaveBeenCalled();
+
+      // Make form valid
+      component.activeForm()?.patchValue({ name: 'Test Group' });
+      component.onFormSubmit('create-group');
+
+      expect(spy).toHaveBeenCalledWith({
+        type: 'create-group',
+        values: expect.objectContaining({ name: 'Test Group' }),
+      });
     });
+  });
 
-    it('should NOT emit categorySelected if value is empty', () => {
-      const spy = vi.spyOn(component.categorySelected, 'emit');
-      const mockEvent = { target: { value: '' } } as unknown as Event;
-
-      component.onDropdownChange('category', mockEvent);
-
-      expect(spy).not.toHaveBeenCalled();
-    });
-    it('should emit deleteTemplateModal with "asd" when action is "deleteTemplate"', () => {
-      const emitSpy = vi.spyOn(component.deleteTemplateModal, 'emit');
-      component.onActionHandler('deleteTemplate');
-
-      expect(emitSpy).toHaveBeenCalledWith('asd');
-    });
-
-    it('should NOT emit deleteTemplateModal for other actions', () => {
-      const emitSpy = vi.spyOn(component.deleteTemplateModal, 'emit');
-      component.onActionHandler('someOtherAction');
-      component.onActionHandler(undefined);
-      expect(emitSpy).not.toHaveBeenCalled();
-    });
-
-    it('should emit categorySelected when category dropdown changes with value', () => {
-      const spy = vi.spyOn(component.categorySelected, 'emit');
-
-      const mockEvent = { target: { value: 'cat-123' } } as unknown as Event;
-
-      component.onDropdownChange('category', mockEvent);
-
-      expect(spy).toHaveBeenCalledWith('cat-123');
-    });
-    it('should return null for unknown modal type', () => {
-      fixture.componentRef.setInput('activeModal', null);
+  describe('Effects', () => {
+    it('should patch form values when currentModalConfig changes', async () => {
+      fixture.componentRef.setInput('activeModal', ModalType.RenameGroup);
       fixture.detectChanges();
 
-      expect(component.activeForm()).toBeNull();
+      fixture.componentRef.setInput('currentModalConfig', {
+        initialValues: { name: 'Old Name' },
+      });
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const activeFormValue = component.activeForm()?.value;
+
+      expect(activeFormValue).toEqual(
+        expect.objectContaining({
+          name: 'Old Name',
+        }),
+      );
+    });
+  });
+
+  describe('Dropdown Logic', () => {
+    it('should emit categorySelected on dropdown change', () => {
+      const spy = vi.spyOn(component.categorySelected, 'emit');
+      const mockEvent = { target: { value: 'cat_123' } } as any;
+
+      component.onDropdownChange('category', mockEvent);
+      expect(spy).toHaveBeenCalledWith('cat_123');
     });
   });
 });

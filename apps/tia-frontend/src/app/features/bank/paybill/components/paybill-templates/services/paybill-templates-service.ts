@@ -36,13 +36,54 @@ export class PaybillTemplatesService {
     );
   }
 
-  public deleteTemplateGroups(groupId: string) {
-    return this.http.delete(`${this.baseUrl}/template-groups/${groupId}`);
-  }
-
   public deleteTemplate(templateId: string): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(
       `${this.baseUrl}/templates/${templateId}`,
+    );
+  }
+
+  public renameTemplate(
+    templateId: string,
+    newName: string,
+  ): Observable<Templates> {
+    return this.http.patch<Templates>(
+      `${this.baseUrl}/templates/${templateId}`,
+      {
+        nickname: newName,
+      },
+    );
+  }
+
+  public deleteGroup(groupId: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(
+      `${this.baseUrl}/template-groups/${groupId}`,
+    );
+  }
+
+  public renameGroup(
+    groupId: string,
+    groupName: string,
+  ): Observable<TemplateGroups> {
+    return this.http.patch<TemplateGroups>(
+      `${this.baseUrl}/template-groups/${groupId}`,
+      { groupName },
+    );
+  }
+
+  public removeTemplateFromGroup(templateId: string): Observable<Templates> {
+    return this.http.patch<Templates>(
+      `${this.baseUrl}/templates/${templateId}/ungroup`,
+      {},
+    );
+  }
+
+  public addTemplateToGroup(
+    groupId: string | null,
+    template: string,
+  ): Observable<TemplateGroups> {
+    return this.http.patch<TemplateGroups>(
+      `${this.baseUrl}/template-groups/${groupId}/add-templates`,
+      { templateIds: [template] },
     );
   }
 }

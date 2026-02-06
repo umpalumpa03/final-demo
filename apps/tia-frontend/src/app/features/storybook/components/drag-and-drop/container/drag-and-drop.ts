@@ -104,6 +104,5 @@ export class DragAndDropContainer {
   public onCheckedItemsChange(itemIds: string[]): void {}
 
   public movenotAllowed(event: boolean): void {
-    console.log(event);
   }
 }

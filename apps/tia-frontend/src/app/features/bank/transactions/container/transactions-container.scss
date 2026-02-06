@@ -4,15 +4,9 @@
   margin-bottom: 2.4rem;
 }
 
-.transaction-table-wrapper {
-  @include flex-center(column, flex-start, flex-start);
-  &__scroll-container {
-    width: 100%;
-    max-height: 60rem;
-    overflow-y: scroll;
-    margin-top: 3rem;
-    &::-webkit-scrollbar {
-      overflow: clip;
-    }
-  }
+.alert-message {
+  position: fixed;
+  z-index: 1121;
+  top: 7rem;
+  right: 1rem;
 }

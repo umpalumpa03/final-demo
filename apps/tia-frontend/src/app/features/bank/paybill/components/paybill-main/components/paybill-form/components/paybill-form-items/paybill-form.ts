@@ -12,11 +12,7 @@ import {
   PaybillFormVerifyEvent,
   PaybillProvider,
 } from '../../../../shared/models/paybill.model';
-import {
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
@@ -28,6 +24,9 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map, startWith } from 'rxjs';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
+import { PaybillDynamicField } from '../../../../../../services/paybill-dynamic-form/models/dynamic-form.model';
+import { DynamicInputs } from '../../../../../shared/dynamic-inputs/dynamic-inputs';
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 
 @Component({
   selector: 'app-paybill-form',
@@ -39,85 +38,76 @@ import { translateConfig } from '@tia/shared/utils/translate-config/config-trans
     PaymentSummary,
     CurrencyPipe,
     TranslatePipe,
+    DynamicInputs,
+    Skeleton,
   ],
   templateUrl: './paybill-form.html',
   styleUrl: './paybill-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillForm {
+  protected readonly translate = inject(TranslateService);
+
+  // inputs from smart parent
+
+  public readonly paybillForm = input.required<FormGroup>();
   public readonly provider = input<PaybillProvider | null>(null);
+  public readonly fields = input.required<PaybillDynamicField[]>();
+  public readonly verifiedDetails = input<BillDetails | null>(null);
   public readonly isLoading = input<boolean>(false);
   public readonly iconBgColor = input<string>('#F0F9FF');
   public readonly iconBgPath = input<string>();
-  public readonly verifiedDetails = input<
-    BillDetails | null,
-    BillDetails | null
-  >(null, {
-    transform: (details) => {
-      if (details?.valid) {
-        this.paybillForm.patchValue(
-          { amount: details.amountDue },
-          { emitEvent: false },
-        );
-      }
-      return details;
-    },
-  });
+  public readonly saveTemplate = output<string>();
 
-  private readonly fb = inject(NonNullableFormBuilder);
-  private readonly translate = inject(TranslateService);
+  // output buton events
 
   public readonly verify = output<PaybillFormVerifyEvent>();
   public readonly pay = output<PaybillFormProceedEvent>();
-  public readonly saveTemplate = output<void>();
 
-  public paybillForm = this.fb.group({
-    value: ['', [Validators.required, Validators.minLength(5)]],
-    amount: [
-      0,
-      [Validators.required, Validators.min(0.01), Validators.max(9999)],
-    ],
-  });
-
-  public readonly paybillConfig = toSignal(
-    this.translate.onLangChange.pipe(
-      startWith({ lang: this.translate.getCurrentLang(), translations: null }),
-      map(() =>
-        translateConfig(paybillInputConfig, (key) =>
-          this.translate.instant(key),
-        ),
-      ),
-    ),
-    {
-      initialValue: translateConfig(paybillInputConfig, (key) =>
-        this.translate.instant(key),
-      ),
-    },
-  );
+  // computed dynamic signal data
 
   public readonly isVerified = computed(() => !!this.verifiedDetails()?.valid);
+
   protected readonly summaryItems = computed(() =>
     mapBillSummaryFields(this.verifiedDetails()),
   );
 
+  public readonly paybillConfig = toSignal(
+    this.translate.onLangChange.pipe(
+      startWith({ lang: this.translate.getCurrentLang() }),
+      map(() =>
+        translateConfig(paybillInputConfig, (k) => this.translate.instant(k)),
+      ),
+    ),
+    {
+      initialValue: translateConfig(paybillInputConfig, (k) =>
+        this.translate.instant(k),
+      ),
+    },
+  );
+
+  public onSaveTemplate(): void {
+    const defaultNickname = this.provider()?.name || '';
+    this.saveTemplate.emit(defaultNickname);
+  }
+
   public onSubmit(): void {
     if (this.isLoading()) return;
 
-    const identifierControl = this.paybillForm.controls.value;
+    const form = this.paybillForm();
+    const formValues = form.getRawValue();
 
     if (!this.isVerified()) {
-      if (identifierControl.valid) {
-        this.verify.emit({ value: identifierControl.value });
+      if (form.valid) {
+        this.verify.emit({ value: formValues });
       } else {
-        identifierControl.markAsTouched();
+        form.markAllAsTouched();
       }
-    } else {
-      if (this.paybillForm.valid) {
-        this.pay.emit({
-          value: identifierControl.value,
-          amount: this.paybillForm.controls.amount.value,
-        });
-      }
+    } else if (form.valid) {
+      this.pay.emit({
+        amount: formValues.amount ?? 0,
+        value: formValues,
+      });
     }
   }
 }

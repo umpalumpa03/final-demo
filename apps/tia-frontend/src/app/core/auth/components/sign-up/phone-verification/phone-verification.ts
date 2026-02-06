@@ -7,6 +7,7 @@ import { TokenService } from '../../../services/token.service';
 import { IVerified } from '../../../models/otp-verification.models';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Routes } from '../../../models/tokens.model';
+import { otpVerificationConfig } from '../../../config/otp-verification.config';
 
 @Component({
   selector: 'app-phone-verification',
@@ -19,6 +20,7 @@ export class PhoneVerification {
   private router = inject(Router);
   private tokenService = inject(TokenService);
   private destroyRef = inject(DestroyRef);
+  public inputOtpConfig = otpVerificationConfig['sign-up']
   
   public PhoneOtpError = this.authService.otpError;
 

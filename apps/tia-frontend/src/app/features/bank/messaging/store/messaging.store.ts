@@ -58,28 +58,33 @@ export const MessagingStore = signalStore(
 
             togleFavorite: rxMethod<{ mailId: number; isFavorite: boolean }>(
                 pipe(
-                    tap(() => patchState(store, { isLoading: true })),
+                    tap(() => patchState(store, { isFavoriteLoading: true })),
                     switchMap(({ mailId, isFavorite }) =>
                         messagingService.togleFavorite(mailId, isFavorite).pipe(
                             tap(() => {
                                 const currentDetail = store.emailDetail?.();
+                                const isFavoritesPage = store.currentType() === 'favorites';
                                 if (currentDetail) {
                                     patchState(store, {
-                                        mails: store.mails().map(mail =>
-                                            mail.id === mailId ? { ...mail, isFavorite } : mail
-                                        ),
+                                        mails: isFavoritesPage
+                                            ? store.mails().filter(mail => mail.id !== mailId)
+                                            : store.mails().map(mail =>
+                                                mail.id === mailId ? { ...mail, isFavorite } : mail
+                                            ),
                                         emailDetail: { ...currentDetail, isFavorite }
                                     });
                                 } else {
                                     patchState(store, {
-                                        mails: store.mails().map(mail =>
-                                            mail.id === mailId ? { ...mail, isFavorite } : mail
-                                        )
+                                        mails: isFavoritesPage
+                                            ? store.mails().filter(mail => mail.id !== mailId)
+                                            : store.mails().map(mail =>
+                                                mail.id === mailId ? { ...mail, isFavorite } : mail
+                                            )
                                     });
                                 }
                             })
                         )),
-                    tap(() => patchState(store, { isLoading: false }))
+                    tap(() => patchState(store, { isFavoriteLoading: false }))
                 )
             ),
         };
@@ -244,6 +249,21 @@ export const MessagingStore = signalStore(
                     }),
                 ),
             ),
+
+            getMailReplies: rxMethod<number>(
+                pipe(
+                    tap(() => patchState(store, { isLoading: true })),
+                    switchMap((mailId) => messagingService.getMailReplies(mailId).pipe(
+                        tap((replies) => {
+                            patchState(store, { mailReplies: replies }, { isLoading: false });
+                        }),
+                        catchError((error) => {
+                            patchState(store, { error: 'Failed to load mail replies' });
+                            return of([]);
+                        }),
+                    ))
+                )
+            ),
         };
     }),
     withMethods((store) => {
@@ -267,7 +287,7 @@ export const MessagingStore = signalStore(
                                 store.getDraftTotalCount(0);
                             } else if (store.currentType() === 'important') {
                                 store.getTotalCount('importants');
-                            } 
+                            }
                         }),
                         catchError((error) => {
                             patchState(store, {
@@ -290,7 +310,7 @@ export const MessagingStore = signalStore(
 
             getEmailById: rxMethod<number>(
                 pipe(
-                    tap(() => patchState(store, { isLoading: true })),
+                    tap(() => patchState(store, { isLoading: true, mailReplies: [] })),
                     switchMap((mailId) => messagingService.getEmailById(mailId).pipe(
                         tap((emailDetail) => {
                             patchState(store, { emailDetail }, { isLoading: false });
@@ -308,7 +328,8 @@ export const MessagingStore = signalStore(
                     tap(() => patchState(store, { isLoading: true })),
                     switchMap(({ mailId, data }) => messagingService.sendDraft(mailId, data).pipe(
                         tap(() => {
-                            patchState(store, { mails: [], pagination: { hasNextPage: false, nextCursor: null }  }, { isLoading: false, successMessage: 'Draft sent successfully' });
+                            patchState(store, { mails: [], pagination: { hasNextPage: false, nextCursor: null } },
+                                { isLoading: false, successMessage: 'Draft sent successfully' });
                             store.loadMails('drafts');
                             inboxService.fetchInboxCount();
                             store.getUnreadImportantCount();
@@ -322,6 +343,25 @@ export const MessagingStore = signalStore(
                             return of(null);
                         }),
                     )),
+                )
+            ),
+            
+            sendMailReply: rxMethod<{ mailId: number; body: string }>(
+                pipe(
+                    tap(() => patchState(store)),
+                    switchMap(({ mailId, body }) => messagingService.sendMailReply(mailId, body).pipe(
+                        tap(() => {
+                            store.getMailReplies(mailId);
+                            patchState(store, {
+                                isLoading: false,
+                                successMessage: 'Reply sent successfully'
+                            });
+                        }),
+                        catchError((error) => {
+                            patchState(store, { error: 'Failed to send mail reply' });
+                            return of(null);
+                        }),
+                    ))
                 )
             ),
         };

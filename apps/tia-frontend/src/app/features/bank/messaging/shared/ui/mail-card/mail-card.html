@@ -15,6 +15,7 @@
   }
   <app-avatar
     size="md"
+    [tone]="isCurrentUser() ? 'solid' : 'soft'"
     [initials]="getInitials(mail()?.senderEmail ?? '')"
   ></app-avatar>
   <div class="mail-card__content">

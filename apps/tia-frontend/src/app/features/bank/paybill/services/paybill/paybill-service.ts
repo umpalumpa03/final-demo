@@ -5,6 +5,7 @@ import {
   ConfirmPaymentPayload,
   PaybillCategory,
   PaybillIdentification,
+  PaybillPaymentDetails,
   PaybillProvider,
   ProceedPaymentPayload,
   ProceedPaymentResponse,
@@ -54,5 +55,25 @@ export class PaybillService {
       `${this.baseUrl}/verify`,
       payload,
     );
+  }
+
+  public getPaymentDetails(
+    serviceId: string,
+  ): Observable<PaybillPaymentDetails> {
+    return this.http.get<PaybillPaymentDetails>(
+      `${this.baseUrl}/payment-details/${serviceId}`,
+    );
+  }
+
+  public createTemplate(
+    serviceId: string,
+    identification: PaybillIdentification,
+    nickname: string,
+  ): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.baseUrl}/templates`, {
+      serviceId,
+      identification,
+      nickname,
+    });
   }
 }

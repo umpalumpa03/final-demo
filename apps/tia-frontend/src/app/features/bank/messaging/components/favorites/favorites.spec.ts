@@ -7,6 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Mail } from '../../store/messaging.state';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 
 describe('Favorites', () => {
   let component: Favorites;
@@ -15,6 +16,7 @@ describe('Favorites', () => {
   let mockMessagingStore: any;
   let mockNavigationService: any;
   let mockRouter: any;
+  let mockStore: any;
 
   const mockMails: Mail[] = [
     {
@@ -66,12 +68,17 @@ describe('Favorites', () => {
       navigate: vi.fn(),
     };
 
+    mockStore = {
+      selectSignal: vi.fn().mockReturnValue(signal('test@example.com')),
+    };
+
     await TestBed.configureTestingModule({
       imports: [Favorites, TranslateModule.forRoot()],
       providers: [
         { provide: MessagingStore, useValue: mockMessagingStore },
         { provide: NavigationService, useValue: mockNavigationService },
         { provide: Router, useValue: mockRouter },
+        { provide: Store, useValue: mockStore }
       ],
     }).compileComponents();
 
@@ -96,8 +103,9 @@ describe('Favorites', () => {
     expect(mockMessagingStore.getTotalCount).toHaveBeenCalledWith('favorite');
   });
 
-  it('should NOT load favorites when coming from favorites page', () => {
+  it('should NOT load favorites when coming from favorites page with existing mails', () => {
     mockNavigationService.previous.mockReturnValue('/bank/messaging/favorites');
+    mockMessagingStore.mails.set([{ id: 1 }, { id: 2 }]);
 
     fixture.detectChanges();
 

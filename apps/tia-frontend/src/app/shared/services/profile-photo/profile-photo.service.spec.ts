@@ -7,7 +7,7 @@ import { ProfilePhotoApiService } from './profile-photo.service';
 import { environment } from '../../../../environments/environment';
 import {
  UploadAvatarResponse,
-} from '../../../store/profile-photo/profile-photo.state';
+} from '../../../features/bank/settings/components/profile-photo/store/profile-photo/profile-photo.state';
 
 describe('ProfilePhotoApiService', () => {
   let service: ProfilePhotoApiService;

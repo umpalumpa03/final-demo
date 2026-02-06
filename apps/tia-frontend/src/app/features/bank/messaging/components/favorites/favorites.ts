@@ -8,6 +8,8 @@ import { MailCard } from '../../shared/ui/mail-card/mail-card';
 import { Router } from '@angular/router';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import { NavigationService } from '../../services/navigation.service';
+import { Store } from '@ngrx/store';
+import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
 
 @Component({
   selector: 'app-favorites',
@@ -17,15 +19,17 @@ import { NavigationService } from '../../services/navigation.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Favorites implements OnInit {
-  private messagingStore = inject(MessagingStore);
-  private router = inject(Router);
-  public mails = computed(() => {
+  private readonly messagingStore = inject(MessagingStore);
+  private readonly router = inject(Router);
+  private readonly store = inject(Store);
+  public readonly mails = computed(() => {
     return this.messagingStore.mails()
   });
-  public isLoading = this.messagingStore.isLoading;
-  public selectedMailIds = signal<Set<number>>(new Set());
-  public total = computed(() => this.messagingStore.total()['favorite'] ?? 0);
-  private nav = inject(NavigationService);
+  public readonly isLoading = this.messagingStore.isLoading;
+  public readonly selectedMailIds = signal<Set<number>>(new Set());
+  public readonly total = computed(() => this.messagingStore.total()['favorite'] ?? 0);
+  private readonly nav = inject(NavigationService);
+  public readonly currentUserEmail = computed(() => this.store.selectSignal(selectCurrentUserEmail)() ?? '');
 
   public isAllSelected(): boolean {
     return this.selectedMailIds().size === this.mails().length && this.mails().length > 0;
@@ -63,10 +67,10 @@ export class Favorites implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!(this.nav.previous()?.includes('favorites'))) {
+    if (!(this.nav.previous()?.includes('favorites') && this.messagingStore.mails().length > 0)) {
       this.messagingStore.loadMails('favorites');
     }
-      this.messagingStore.getTotalCount('favorite');
+    this.messagingStore.getTotalCount('favorite');
   }
 
   public markAsRead(mailId: number): void {

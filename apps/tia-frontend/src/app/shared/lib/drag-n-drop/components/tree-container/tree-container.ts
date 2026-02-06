@@ -7,6 +7,7 @@ import {
   output,
   linkedSignal,
   signal,
+  effect,
 } from '@angular/core';
 import { DragBase } from '../../base/drag-base';
 import {
@@ -21,10 +22,11 @@ import { UNGROUPED_ID } from '../../constants/drag.constants';
 import { ButtonVariant } from '@tia/shared/lib/primitives/button/button.model';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { ErrorStateVariant } from '@tia/shared/lib/feedback/models/error-state.model';
+import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 
 @Component({
   selector: 'app-tree-container',
-  imports: [DraggableCard, ErrorStates],
+  imports: [DraggableCard, ErrorStates, RouteLoader],
   templateUrl: './tree-container.html',
   styleUrl: './tree-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,6 +57,9 @@ export class TreeContainer extends DragBase {
   public readonly noCardBorder = input(false);
   public readonly cardBackground = input(false);
   public readonly badgeLabel = input('Items:');
+  public readonly selectAll = input(false);
+
+  public readonly isLoading = input(false);
 
   public readonly errorVariant = input<ErrorStateVariant>('not-found');
   public readonly errorHeader = input('');
@@ -95,7 +100,7 @@ export class TreeContainer extends DragBase {
     computation: (newGroups) => {
       const base = [...newGroups];
       if (!base.some((g) => g.id === UNGROUPED_ID)) {
-        base.unshift({
+        base.push({
           id: UNGROUPED_ID,
           groupName: this.ungroupedTitle(),
           expanded: true,
@@ -114,6 +119,31 @@ export class TreeContainer extends DragBase {
       this.internalItems(),
     ),
   );
+  public groupHasCheckbox(groupId: string): boolean {
+    return (
+      this.hasCheckbox() && (this.itemsByGroup()[groupId]?.length ?? 0) > 0
+    );
+  }
+
+  constructor() {
+    super();
+
+    effect(() => {
+      const shouldSelectAll = this.selectAll();
+      const items = this.internalItems();
+
+      if (shouldSelectAll) {
+        const allIds = new Set(items.map((i) => i.id));
+        this.checkedItemIds.set(allIds);
+      } else {
+        this.checkedItemIds.set(new Set());
+      }
+
+      this.checkedItemsChange.emit(
+        this.treeService.getCheckedItemIds(this.checkedItemIds()),
+      );
+    });
+  }
 
   public toggleExpanded(id: string): void {
     this.internalGroups.update((groups) =>
@@ -138,19 +168,24 @@ export class TreeContainer extends DragBase {
     const items = this.internalItems();
     const groups = this.internalGroups();
 
-    const dragGroup = groups.find((g) => g.id === dragId);
-    if (dragGroup) {
+    const isGroupDrag = dragId.startsWith('group:');
+
+    if (isGroupDrag) {
+      const normalizedDragId = dragId.replace('group:', '');
       const normalizedDropId = dropId.startsWith('group:')
         ? dropId.replace('group:', '')
         : dropId;
+      const dragGroup = groups.find((g) => g.id === normalizedDragId);
+      if (!dragGroup) return;
+
       const newGroups = this.calculateReorderedItems(
         groups,
-        dragId,
+        normalizedDragId,
         normalizedDropId,
       );
       if (newGroups !== groups) {
         this.internalGroups.set(newGroups);
-        this.groupsChange.emit(newGroups.filter((g) => g.id !== UNGROUPED_ID));
+        this.groupsChange.emit([...newGroups]);
       }
       return;
     }
@@ -209,22 +244,10 @@ export class TreeContainer extends DragBase {
   }
 
   public onRemoveItem(id: string): void {
-    // const updated = this.treeService.removeItem(this.internalItems(), id);
-    // this.internalItems.set(updated);
-    // this.itemsChange.emit(updated);
     this.itemRemoved.emit(id);
   }
 
   public onRemoveGroup(id: string): void {
-    // const { groups, items } = this.treeService.removeGroup(
-    //   this.internalGroups(),
-    //   this.internalItems(),
-    //   id,
-    // );
-    // this.internalGroups.set(groups);
-    // this.internalItems.set(items);
-    // this.groupsChange.emit(groups.filter((g) => g.id !== UNGROUPED_ID));
-    // this.itemsChange.emit(items);
     this.groupRemoved.emit(id);
   }
 

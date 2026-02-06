@@ -405,4 +405,88 @@ describe('MessagingStore', () => {
       expect(store.isSearching()).toBe(false);
     });
   });
+
+  it('should get mail replies successfully', async () => {
+    const mockReplies = [
+      { id: 1, subject: 'Re: Test', body: 'Reply 1', createdAt: '2024-01-01' },
+      { id: 2, subject: 'Re: Test', body: 'Reply 2', createdAt: '2024-01-02' }
+    ];
+
+    mockMessagingService.getMailReplies = vi.fn().mockReturnValue(of(mockReplies));
+
+    store.getMailReplies(1);
+  });
+
+  it('should reset mailReplies when getting email by id', async () => {
+    const mockEmailDetail = {
+      id: 1,
+      subject: 'Test Email',
+      body: 'Test Body',
+      senderEmail: 'sender@test.com',
+      recipient: 'receiver@test.com',
+      createdAt: '2024-01-01T00:00:00.000Z'
+    };
+    mockMessagingService.getEmailById = vi.fn().mockReturnValue(of(mockEmailDetail));
+    store.getEmailById(1);
+  });
+
+  it('should call getDraftTotalCount when deleting all mails from drafts', async () => {
+    const initialMails = [
+      { id: 1, subject: 'Draft 1' },
+      { id: 2, subject: 'Draft 2' }
+    ];
+
+    mockMessagingService.deleteMail.mockReturnValue(of(null));
+    mockMessagingService.getDraftTotalCount = vi.fn().mockReturnValue(of({ count: 0 }));
+    mockMessagingService.getImportantUnreadCount = vi.fn().mockReturnValue(of({ count: 0 }));
+    mockMessagingService.getInbox.mockReturnValue(of({
+      items: initialMails,
+      pagination: { hasNextPage: false, nextCursor: null }
+    }));
+
+    store.loadMails('drafts');
+
+    await vi.waitFor(() => {
+      expect(store.currentType()).toBe('drafts');
+      expect(store.mails().length).toBe(2);
+    });
+
+    store.deleteAllMails([1, 2]);
+
+    await vi.waitFor(() => {
+      expect(store.mails().length).toBe(0);
+      expect(mockMessagingService.getDraftTotalCount).toHaveBeenCalled();
+      expect(mockInboxService.fetchInboxCount).toHaveBeenCalled();
+    });
+  });
+
+  it('should send mail reply successfully', async () => {
+    const mockReplies = [
+      { id: 1, subject: 'Re: Test', body: 'Reply 1', createdAt: '2024-01-01' }
+    ];
+
+    mockMessagingService.sendMailReply = vi.fn().mockReturnValue(of(null));
+    mockMessagingService.getMailReplies = vi.fn().mockReturnValue(of(mockReplies));
+
+    store.sendMailReply({ mailId: 1, body: 'This is my reply' });
+
+    await vi.waitFor(() => {
+      expect(mockMessagingService.sendMailReply).toHaveBeenCalledWith(1, 'This is my reply');
+      expect(mockMessagingService.getMailReplies).toHaveBeenCalledWith(1);
+      expect(store.successMessage?.()).toBe('Reply sent successfully');
+      expect(store.isLoading()).toBe(false);
+    });
+  });
+
+  it('should handle send mail reply error', async () => {
+    mockMessagingService.sendMailReply = vi.fn().mockReturnValue(
+      throwError(() => new Error('Failed to send reply'))
+    );
+
+    store.sendMailReply({ mailId: 1, body: 'This is my reply' });
+
+    await vi.waitFor(() => {
+      expect(store.error()).toBe('Failed to send mail reply');
+    });
+  });
 });

@@ -9,7 +9,8 @@
 
     <main class="main">
         @let user = userData();
-        @if (isLoading()) {
+
+        @if (isLoading() && !user) {
         <div class="loader-container">
             <app-route-loader variant="pulsing" />
         </div>
@@ -38,14 +39,15 @@
                 <lib-select formControlName="role" height="3.6rem" [options]="select.options" [config]="select.config">
                 </lib-select>
             </div>
-
         </form>
         }
     </main>
 
     <footer>
         <app-button variant="outline" (click)="close.emit()">Cancel</app-button>
-        <app-button [isDisabled]="form.invalid || form.pristine" (click)="onSave()">
+
+        <app-button [isLoading]="isLoading()" icon="./white-edit.svg"
+            [isDisabled]="form.invalid || form.pristine || isLoading()" (click)="onSave()">
             Save Changes
         </app-button>
     </footer>

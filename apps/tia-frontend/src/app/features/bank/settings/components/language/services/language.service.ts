@@ -4,7 +4,9 @@ import { environment } from '../../../../../../../environments/environment';
 import { TLanguages } from '../models/language.model';
 import { Observable } from 'rxjs';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class LanguageService {
   private readonly BASE_URL = environment.apiUrl;
   private readonly AVAILABLE_LANGUAGES_ENDPOINT =
@@ -22,9 +24,11 @@ export class LanguageService {
   public updateUserLanguage(
     language: string,
   ): Observable<{ successs: boolean }> {
-    return this.http.post<{ successs: boolean }>(
+    return this.http.put<{ successs: boolean }>(
       `${this.BASE_URL}${this.UPDATE_LANGUAGE_ENDPOINT}`,
-      { language },
+      {
+        language
+      }
     );
   }
 }

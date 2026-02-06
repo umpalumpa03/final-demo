@@ -1,0 +1,34 @@
+<div class="card" [class.card--selected]="isSelected()" (click)="onCardClick()">
+    <div class="card__header">
+        <div class="card__flag">
+            <img [src]="language().flagUrl" [alt]="language().name + ' flag'" />
+        </div>
+        <div class="card__info">
+            <h3 class="card__title">{{ language().name }}</h3>
+            <p class="card__native">{{ language().nativeName }}</p>
+        </div>
+        @if(isSelected()) {
+        <div class="card__checkmark">
+            <img src="images/svg/settings/language/active-lang-tick2.svg" alt="Active Language Tick" />
+        </div>
+        }
+    </div>
+
+    <div class="card__details">
+        <div class="card__detail">
+            <img src="images/svg/settings/language/region.svg" alt="region icon">
+            <span>{{ language().region }}</span>
+        </div>
+        <div class="card__detail">
+            <img src="images/svg/settings/language/speakers.svg" alt="speakers icon">
+            <span>{{ language().speakerCount }} speakers</span>
+        </div>
+    </div>
+
+    @if(isSelected()) {
+    <div class="card__badge">
+        <img src="images/svg/settings/language/active-lang-crown.svg" alt="Active Language Crown" />
+        <span>Active Language</span>
+    </div>
+    }
+</div>

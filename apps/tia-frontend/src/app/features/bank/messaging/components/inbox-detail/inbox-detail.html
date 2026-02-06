@@ -1,15 +1,34 @@
 <app-email-detail [data]="emailDetail()">
   <div class="button-container">
-    <app-button [icon]="'reply.svg'">Reply</app-button>
+    <app-button [icon]="'reply.svg'" (click)="onReply()">Reply</app-button>
     <app-button
       variant="outline"
       [icon]="'favorite.svg'"
       (click)="toggleFavorite()"
+      [isLoading]="isFavoriteLoading()"
       >{{ isFavorite() ? 'Unfavorite' : 'Mark as Favorite' }}</app-button
     >
-    <app-button variant="outline" [icon]="'red-trash.svg'" (click)="onDelete($event)">Delete</app-button>
+    <app-button
+      variant="outline"
+      [icon]="'red-trash.svg'"
+      (click)="onDelete($event)"
+      >Delete</app-button
+    >
   </div>
 </app-email-detail>
+@if (mailReplies().length) { @for (reply of mailReplies(); track reply.id) {
+<app-replies-card
+  [reply]="reply"
+  [currentUserEmail]="currentUserEmail()"
+></app-replies-card>
+} } @if (isReplyOpen()) {
+<div #replyCard>
+  <app-reply-form
+    (sendReply)="onSendReply($event)"
+    (cancel)="onCancelReply()"
+  ></app-reply-form>
+</div>
+}
 <app-ui-modal [isOpen]="isDeleteModalOpen()" (closed)="onCancelDelete()">
   <div class="delete-account">
     <header class="delete-account__header">

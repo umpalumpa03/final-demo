@@ -2,14 +2,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { vi } from 'vitest';
-import { ProfilePhotoActions } from '../../../../../../store/profile-photo/profile-photo.actions';
+import { ProfilePhotoActions } from '../../../../../../features/bank/settings/components/profile-photo/store/profile-photo/profile-photo.actions';
 import { ProfilePhotoContainer } from './profile-photo-container';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { DefaultAvatarResponse } from '../../../../../../store/profile-photo/profile-photo.state';
+import { DefaultAvatarResponse, DefaultAvatarWithUrl } from '../../../../../../features/bank/settings/components/profile-photo/store/profile-photo/profile-photo.state';
 import {
   selectDefaultAvatars,
   selectSelectedAvatarId,
-} from '../../../../../../store/profile-photo/profile-photo.selectors';
+  selectUploadedFileName,
+} from '../../../../../../features/bank/settings/components/profile-photo/store/profile-photo/profile-photo.selectors';
+import { environment } from '../../../../../../../environments/environment';
 
 describe('ProfilePhotoContainer', () => {
   let component: ProfilePhotoContainer;
@@ -126,7 +128,7 @@ describe('ProfilePhotoContainer', () => {
   
     ];
 
-    store.overrideSelector(selectDefaultAvatars, avatars);
+    store.overrideSelector(selectDefaultAvatars, avatars.map(avatar => ({ ...avatar, imageUrl: `${environment.apiUrl}${avatar.iconUri}` })) as DefaultAvatarWithUrl[]);
     store.refreshState();
 
     component.onSelectDefaultAvatar('avatar-1');
@@ -137,6 +139,50 @@ describe('ProfilePhotoContainer', () => {
         imageUrl: expect.stringContaining('/avatars/1.png'),
       }),
     );
+  });
+
+  it('should show error alert when file size is too large', () => {
+    const translate = TestBed.inject(TranslateService);
+    vi.spyOn(translate, 'instant').mockReturnValue('File too large');
+    const largeContent = new Array(1024*1024 + 1).fill('a').join('');
+    component.onFileSelected(new File([largeContent], 'large-photo.png', { type: 'image/png' }));
+    expect(component.alertKind()).toBe('error');
+  });
+
+  it('should dispatch loadDefaultAvatarsRequest on ngOnInit', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    component.ngOnInit();
+    expect(dispatchSpy).toHaveBeenCalledWith(ProfilePhotoActions.loadDefaultAvatarsRequest({}));
+  });
+
+  it('should cleanup in ngOnDestroy', () => {
+    const revokeSpy = vi.spyOn(URL, 'revokeObjectURL');
+    const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
+    (component as any).objectUrl = 'blob:photo';
+    (component as any).alertTimeoutId = setTimeout(() => {}, 100);
+    component.ngOnDestroy();
+    expect(revokeSpy).toHaveBeenCalled();
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+  });
+
+  it('should clear alert when onAlertClose is called', () => {
+    const translate = TestBed.inject(TranslateService);
+    vi.spyOn(translate, 'instant').mockReturnValue('Test');
+    component.onFileSelected(new File(['content'], 'photo.gif', { type: 'image/gif' }));
+    component.onAlertClose();
+    expect(component.alertKind()).toBeNull();
+  });
+
+  it('should handle edge cases', () => {
+    const revokeSpy = vi.spyOn(URL, 'revokeObjectURL');
+    store.overrideSelector(selectDefaultAvatars, []);
+    store.refreshState();
+    component.onSelectDefaultAvatar('non-existent');
+    (component as any).objectUrl = 'blob:photo';
+    store.overrideSelector(selectUploadedFileName, null);
+    store.refreshState();
+    fixture.detectChanges();
+    expect(revokeSpy).toHaveBeenCalled();
   });
 
 });
