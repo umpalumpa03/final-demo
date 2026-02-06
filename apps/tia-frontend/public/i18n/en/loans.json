@@ -55,7 +55,7 @@
       "name": "Full Name",
       "relationship": "Relationship",
       "number": "Phone Number",
-      "email": "Email Address *"
+      "email": "Email Address"
     },
     "review_box": {
       "title": "Application Review",

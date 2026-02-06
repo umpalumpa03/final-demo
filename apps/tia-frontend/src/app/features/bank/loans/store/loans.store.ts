@@ -253,31 +253,41 @@ export const LoansStore = signalStore(
         ),
       ),
 
-      loadMonths: rxMethod<void>(
+      loadMonths: rxMethod<{ forceRefresh?: boolean }>(
         pipe(
-          switchMap(() =>
-            loansService.getLoanMonths().pipe(
+          switchMap(({ forceRefresh }) => {
+            const currentMonths = store.months();
+            if (currentMonths.length > 0 && !forceRefresh) {
+              return EMPTY;
+            }
+
+            return loansService.getLoanMonths().pipe(
               tap((months) => patchState(store, { months })),
               catchError((error) => {
                 patchState(store, { error: error.message });
                 return EMPTY;
               }),
-            ),
-          ),
+            );
+          }),
         ),
       ),
 
-      loadPurposes: rxMethod<void>(
+      loadPurposes: rxMethod<{ forceRefresh?: boolean }>(
         pipe(
-          switchMap(() =>
-            loansService.getPurposes().pipe(
+          switchMap(({ forceRefresh }) => {
+            const currentPurposes = store.purposes();
+            if (currentPurposes.length > 0 && !forceRefresh) {
+              return EMPTY;
+            }
+
+            return loansService.getPurposes().pipe(
               tap((purposes) => patchState(store, { purposes, error: null })),
               catchError((error) => {
                 patchState(store, { error: error.message });
                 return EMPTY;
               }),
-            ),
-          ),
+            );
+          }),
         ),
       ),
 
