@@ -17,46 +17,46 @@ describe('user-info selectors', () => {
   const state: any = { 'user-info': slice };
 
   it('selectUserLoading returns loading', () => {
-    expect(selectUserLoading(state)).toBe(true);
+    expect((selectUserLoading as any).projector(slice)).toBe(true);
   });
 
   it('selectUserError returns error', () => {
-    expect(selectUserError(state)).toBe('e');
+    expect((selectUserError as any).projector(slice)).toBe('e');
   });
 
   it('shoul d select current user email', () => {
     slice.email = 'test@example.com';
-    expect(selectCurrentUserEmail(state)).toBe('test@example.com');
+    expect((selectCurrentUserEmail as any).projector(slice)).toBe('test@example.com');
   });
 
   it('selectUserLoaded returns loaded', () => {
     slice.loaded = true;
-    expect(selectUserLoaded(state)).toBe(true);
+    expect((selectUserLoaded as any).projector(slice)).toBe(true);
   });
 
   it('selectUserInfo returns the state', () => {
-    expect(selectUserInfo(state)).toBe(slice);
+    expect((selectUserInfo as any).projector(slice)).toBe(slice);
   });
 
   it('selectUserFullName returns fullName', () => {
-    expect(selectUserFullName(state)).toBe('X');
+    expect((selectUserFullName as any).projector(slice)).toBe('X');
   });
 
   it('selectUserTheme returns theme', () => {
-    expect(selectUserTheme(state)).toBe('t');
+    expect((selectUserTheme as any).projector(slice)).toBe('t');
   });
 
   it('selectUserLanguage returns language', () => {
-    expect(selectUserLanguage(state)).toBe('l');
+    expect((selectUserLanguage as any).projector(slice)).toBe('l');
   });
 
   it('selectUserAvatar returns avatar', () => {
     slice.avatar = 'url';
-    expect(selectUserAvatar(state)).toBe('url');
+    expect((selectUserAvatar as any).projector(slice)).toBe('url');
   });
 
   it('selectUserRole returns role', () => {
     slice.role = 'SUPPORT';
-    expect(selectUserRole(state)).toBe('SUPPORT');
+    expect((selectUserRole as any).projector(slice)).toBe('SUPPORT');
   });
 });
