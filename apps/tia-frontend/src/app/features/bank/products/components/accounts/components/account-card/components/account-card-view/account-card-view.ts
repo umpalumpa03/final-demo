@@ -18,6 +18,7 @@ import { ButtonComponent } from '../../../../../../../../../shared/lib/primitive
 import { BasicCard } from '../../../../../../../../../shared/lib/cards/basic-card/basic-card';
 import { TextInput } from '../../../../../../../../../shared/lib/forms/input-field/text-input';
 import { TransferPermissionsModalComponent } from '../transfer-permissions-modal/transfer-permissions-modal';
+import { Badges } from '../../../../../../../../../shared/lib/primitives/badges/badges';
 import { VALID_PERMISSION_VALUES } from '../../../../config/transfer-permissions.config';
 
 @Component({
@@ -30,6 +31,7 @@ import { VALID_PERMISSION_VALUES } from '../../../../config/transfer-permissions
     BasicCard,
     TextInput,
     TransferPermissionsModalComponent,
+    Badges,
   ],
   templateUrl: './account-card-view.html',
   styleUrl: './account-card-view.scss',

@@ -33,9 +33,12 @@
             {{ displayName() }}
           </h3>
           @if (account().status === 'active') {
-          <span class="account-card__header-info-badge"
-            >{{ 'my-products.accounts.card.active' | translate }}</span
-          >
+          <app-badges
+            [variant]="'default'"
+            [size]="'medium'"
+            [shape]="'pill'"
+            [text]="'my-products.accounts.card.active' | translate"
+          ></app-badges>
           } @if (account().isFavorite) {
           <div class="account-card__header-favorite">
             <img

@@ -24,6 +24,7 @@ describe('AccountCardViewComponent', () => {
     openedAt: '2026-01-01',
     closedAt: '',
     isFavorite: false,
+    isHidden: false,
   };
 
   const setAccount = (account = mockAccount) => {

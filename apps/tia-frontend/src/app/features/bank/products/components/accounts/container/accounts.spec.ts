@@ -136,6 +136,7 @@ describe('Accounts', () => {
       openedAt: '2026-01-01',
       closedAt: '',
       isFavorite: false,
+      isHidden: false,
     };
     store.overrideSelector(selectors.selectAccounts, [mockAccount]);
     store.refreshState();
