@@ -1,5 +1,5 @@
 @if (!isDismissed()) {
-<div class="dismissible-alerts" [class]="iconAlertClass()">
+<div class="dismissible-alerts" [class]="iconAlertClass()" [style.max-width]="customMaxwidth()">
   <div class="dismissible-alerts__icon">
     <img
       class="dismissible-alerts__image"
