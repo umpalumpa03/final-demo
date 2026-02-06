@@ -1,4 +1,47 @@
-
 <div class="global-bank-wrapper">
-    <p>dashboard-container works!</p>
+  <app-library-title
+    [title]="pageTitle()"
+    [subtitle]="pageSubtitle()"
+  ></app-library-title>
+  <app-drag-container
+    [hasNoStyle]="true"
+    [items]="myItems()"
+    [layout]="'grid'"
+    [columns]="gridColumns"
+    [colspans]="dynamicColspans()"
+    (itemsChange)="onItemsChange($event)"
+    containerTitle=""
+    containerDescription=""
+  >
+    @for (item of myItems(); track item.id) {
+    <app-draggable-card
+      [hasMinHeight]="$index !== 0"
+      [itemData]="item"
+      [hasViewOption]="true"
+      (viewOptionChange)="onToggleVisibility($event, item.id)"
+      [showHeadings]="false"
+      [class.bank-dashboard__widget--primary]="$index === 0"
+      [class.bank-dashboard__widget--collapsed]="$index === 0 && item.isHidden"
+      [hasPagination]="!!item.hasPagination"
+      [hasAddOption]="!!item.hasAdd"
+      [hasButton]="!!item.hasButton"
+      buttonContent="Refresh"
+      (buttonClick)="onWidgetRefresh(item)"
+      (add)="onWidgetAdd(item)"
+      (paginationChange)="onPaginationChange($event)"
+      [paginationVariants]="[5,10,15,20]"
+      appDragItem
+    >
+      @if (!($index === 0 && item.isHidden)) {
+      <div class="bank-dashboard__content">
+        @switch (item.type) { @case ('transactions') {
+        <app-widget-transactions [isLarge]="$index === 0" /> } @case
+        ('accounts') { <app-widget-accounts [isLarge]="$index === 0" /> } @case
+        ('exchange') { <app-widget-exchange [isLarge]="$index === 0" /> } }
+      </div>
+      }
+    </app-draggable-card>
+
+    }
+  </app-drag-container>
 </div>

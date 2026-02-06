@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
@@ -7,7 +12,22 @@ import { TextInput } from '../../../../shared/lib/forms/input-field/text-input';
 import { BasicAlerts } from '../../../../shared/lib/alerts/components/basic-alerts/basic-alerts';
 import { StatisticCard } from '../../../../shared/lib/cards/statistic-card/statistic-card';
 import { Spinner } from '../../../../shared/lib/feedback/spinner/spinner';
-import { FilterOption, FilterType, SummaryCard } from '../models/filter.model';
+import {
+  FilterOption,
+  FilterType,
+  SummaryCard,
+  ChartConfig,
+  CategoryBreakdown,
+  Transaction,
+} from '../models/filter.model';
+import {
+  ChartConfiguration,
+  ChartData,
+  ChartOptions,
+  ChartType,
+} from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
+import { CategoryItem } from '../../../../shared/lib/categories/category-item';
 
 @Component({
   selector: 'app-finances-view',
@@ -19,7 +39,9 @@ import { FilterOption, FilterType, SummaryCard } from '../models/filter.model';
     TextInput,
     BasicAlerts,
     StatisticCard,
-    Spinner
+    Spinner,
+    BaseChartDirective,
+    CategoryItem,
   ],
   templateUrl: './finances-view.html',
   styleUrl: './finances-view.scss',
@@ -28,22 +50,42 @@ import { FilterOption, FilterType, SummaryCard } from '../models/filter.model';
 export class FinancesView {
   public readonly financeTitle = input.required<string>();
   public readonly financeSubTitle = input.required<string>();
+
   public readonly activeFilter = input.required<string>();
   public readonly filterOptions = input.required<FilterOption[]>();
   public readonly filterForm = input.required<FormGroup>();
+
   public readonly loading = input<boolean>(false);
   public readonly error = input<string | null>(null);
   public readonly summaryCards = input<SummaryCard[]>([]);
+  public readonly categories = input<CategoryBreakdown[]>([]);
+  public readonly transactions = input<Transaction[]>([]);
+
+  public readonly charts = input.required<ChartConfig[]>();
 
   public readonly filterChange = output<FilterType>();
-  public readonly dateInput = output<{ field: 'fromDate' | 'toDate'; event: Event }>();
+  public readonly dateInput = output<{
+    field: 'fromDate' | 'toDate';
+    event: Event;
+  }>();
+
+  public readonly chartOptions: ChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+    },
+  };
 
   public getControl(name: string): FormControl {
     return this.filterForm().get(name) as FormControl;
   }
 
   public get isRangeInvalid(): boolean {
-    return this.filterForm().hasError('dateRangeInvalid') && this.filterForm().touched;
+    return (
+      this.filterForm().hasError('dateRangeInvalid') &&
+      this.filterForm().touched
+    );
   }
 
   public get isToDateInvalid(): boolean {

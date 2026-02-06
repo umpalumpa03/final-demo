@@ -3,5 +3,9 @@
   [accountIcon]="accountIcon()"
   [formattedBalance]="formattedBalance()"
   [formattedDate]="formattedDate()"
+  [isRenaming]="isRenaming()"
+  [renameError]="renameError()"
   (transfer)="handleTransfer()"
+  (rename)="handleRename($event)"
+  (renameSuccess)="handleRenameSuccess()"
 />

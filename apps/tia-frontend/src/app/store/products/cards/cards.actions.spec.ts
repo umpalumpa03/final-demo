@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import * as CardsActions from './cards.actions';
-import { CardAccount } from '../../../features/bank/products/components/cards/models/card-account.model';
-import { CardDetail } from '../../../features/bank/products/components/cards/models/card-detail.model';
+import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
+import { CardAccount } from '@tia/shared/models/cards/card-account.model';
+
 
 describe('Cards Actions', () => {
   const mockAccounts: CardAccount[] = [
@@ -116,4 +117,42 @@ describe('Cards Actions', () => {
       expect(action.error).toBe(error);
     });
   });
+  it('should create openCardDetailsModal action', () => {
+  const action = CardsActions.openCardDetailsModal({ cardId: 'card-1' });
+  expect(action.type).toBe('[Cards] Open Card Details Modal');
+  expect(action.cardId).toBe('card-1');
+});
+
+it('should create closeCardDetailsModal action', () => {
+  const action = CardsActions.closeCardDetailsModal();
+  expect(action.type).toBe('[Cards] Close Card Details Modal');
+});
+describe('card transactions actions', () => {
+  it('should create loadCardTransactions action', () => {
+    const action = CardsActions.loadCardTransactions({ cardId: 'card-1' });
+    expect(action.type).toBe('[Cards] Load Card Transactions');
+    expect(action.cardId).toBe('card-1');
+  });
+
+  it('should create loadCardTransactionsSuccess action', () => {
+    const transactions = [{ id: 'tx-1' }] as any[];
+    const action = CardsActions.loadCardTransactionsSuccess({
+      cardId: 'card-1',
+      transactions,
+      total: 5,
+    });
+    expect(action.type).toBe('[Cards] Load Card Transactions Success');
+    expect(action.transactions).toEqual(transactions);
+    expect(action.total).toBe(5);
+  });
+
+  it('should create loadCardTransactionsFailure action', () => {
+    const action = CardsActions.loadCardTransactionsFailure({
+      cardId: 'card-1',
+      error: 'Failed',
+    });
+    expect(action.type).toBe('[Cards] Load Card Transactions Failure');
+    expect(action.error).toBe('Failed');
+  });
+});
 });

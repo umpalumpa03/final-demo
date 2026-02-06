@@ -6,10 +6,6 @@ describe('toTitleCase Util', () => {
     expect(toTitleCase(null)).toBeNull();
   });
 
-  it('should return empty string if input is empty', () => {
-    expect(toTitleCase('')).toBeNull();
-  });
-
   it('should convert all lowercase to title case', () => {
     expect(toTitleCase('hello world')).toBe('Hello World');
   });

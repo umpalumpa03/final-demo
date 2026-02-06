@@ -1,0 +1,47 @@
+
+@use '../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../shared/styles/palette' as *;
+
+
+.create-card {
+  @include display-flex(column);
+  gap: 2.4rem;
+  padding: 1rem;
+  max-width: 60rem;
+  width: 100%;
+  overflow-y: auto;
+  max-height: 90vh;
+
+  &::-webkit-scrollbar {
+    width: 0.8rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--color-secondary);
+    border-radius: 1rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border-radius: 1rem;
+
+    &:hover {
+      background: var(--color-accent);
+    }
+  }
+
+  &__header {
+    @include display-flex(column);
+    gap: 0.8rem;
+  }
+
+  &__title {
+    @include font-inter(600, 1.8rem, 1.8rem);
+    color: var(--color-fg);
+  }
+
+  &__subtitle {
+    @include font-inter(400, 1.4rem, 2rem);
+    color: $gray-600;
+  }
+}

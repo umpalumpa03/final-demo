@@ -1,16 +1,52 @@
 @use '../shared/styles/mixins' as *;
+@use '../shared/styles/palette' as *;
 
-.bank-container-wrapper {
+.bank-container {
   @include display-flex(row);
-  width: 100vw;
+  height: 100vh;
+
+  &__content {
+    @include display-flex(column);
+    flex: 1;
+    min-width: 0;
+    position: relative;
+  }
+
+  &__router-area {
+    @include display-flex(column);
+    position: relative;
+    flex: 1;
+    box-shadow:
+      inset 4px 0 8px -4px rgba(0, 0, 0, 0.1),
+      inset 0 4px 8px -4px rgba(0, 0, 0, 0.1);
+  }
+
+  &__loader-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: $white;
+    z-index: 50;
+    @include flex-center(row, center, center);
+    box-shadow:
+      inset 4px 0 8px -4px rgba(0, 0, 0, 0.1),
+      inset 0 4px 8px -4px rgba(0, 0, 0, 0.1);
+  }
 }
 
-.bank-container-sidebar {
-  flex-shrink: 0;
-}
+.inactivity-overlay {
+  @include flex-center(column);
 
-.bank-container-content {
-  @include display-flex(column);
-  flex: 1;
-  min-width: 0;
+  &__circle {
+    width: 6.4rem;
+    height: 6.4rem;
+    border-radius: 50%;
+    @include flex-center();
+
+    &--timer {
+      background: $blue-royal-secondary;
+      color: $blue-800;
+      @include font-inter(600, 2.8rem);
+      margin-top: 2.4rem;
+    }
+  }
 }

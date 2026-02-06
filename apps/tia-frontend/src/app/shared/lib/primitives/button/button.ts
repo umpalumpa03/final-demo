@@ -1,10 +1,12 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy,computed } from '@angular/core';
 import { ButtonVariant, ButtonSize } from './button.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-button', 
   templateUrl: './button.html',
   styleUrl: './button.scss',
+  imports:[CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonComponent {
@@ -15,4 +17,14 @@ export class ButtonComponent {
   public readonly fullWidth = input<boolean>(false);
   public readonly icon = input<string | null>('');
   public readonly type = input<'button' | 'submit' | 'reset'>('button');
+  public readonly customColor = input<string>('');
+  public readonly iconWidth = input<string>(''); 
+  public readonly iconHeight = input<string>('');
+
+  public readonly iconStyles = computed(() => ({
+    'width': this.iconWidth(),
+    'height': this.iconHeight()
+  }));
+
 }
+

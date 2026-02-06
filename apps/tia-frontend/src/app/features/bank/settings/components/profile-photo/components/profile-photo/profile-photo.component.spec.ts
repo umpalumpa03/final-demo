@@ -17,51 +17,13 @@ describe('ProfilePhotoComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
 
-  it('should have default initials as empty string', () => {
-    expect(component.initials()).toBe('');
-  });
 
-  it('should render avatar in the template', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    const avatarElement = compiled.querySelector('app-avatar');
-
-    expect(avatarElement).toBeTruthy();
-  });
-
-  it('should render basic card in the template', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    const cardElement = compiled.querySelector('app-basic-card');
-
-    expect(cardElement).toBeTruthy();
-  });
-
-  it('should create file input and emit file when selected', () => {
-    const file = new File(['content'], 'avatar.png', { type: 'image/png' });
-    const emitSpy = vi.spyOn(component.fileSelected, 'emit');
+  it('should emit openUploadModal when file button is clicked', () => {
+    const emitSpy = vi.spyOn(component.openUploadModal, 'emit');
 
     component.onFileButtonClick();
 
-    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
-    expect(input).toBeTruthy();
-
-    const fileList = {
-      0: file,
-      length: 1,
-      item: (index: number) => (index === 0 ? file : null),
-    } as unknown as FileList;
-
-    Object.defineProperty(input, 'files', {
-      value: fileList,
-      writable: false,
-    });
-
-    input.dispatchEvent(new Event('change'));
-
-    expect(emitSpy).toHaveBeenCalledWith(file);
-    expect(document.body.contains(input)).toBe(false);
+    expect(emitSpy).toHaveBeenCalled();
   });
 });

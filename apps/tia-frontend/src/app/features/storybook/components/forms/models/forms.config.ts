@@ -1,44 +1,34 @@
-export const COUNTRY_OPTIONS = [
-  { label: 'United States', value: 'us' },
-  { label: 'Canada', value: 'ca' },
-  { label: 'United Kingdom', value: 'uk' },
-  { label: 'Germany', value: 'de' },
-  { label: 'France', value: 'fr' },
-  { label: 'Australia', value: 'au' },
-  { label: 'Other', value: 'other' },
-];
-
 export const REGISTATION_FORM = {
   firstName: {
-    label: 'FirstName',
+    label: 'auth.sign-up.firstname',
     required: false,
     placeholder: 'Jhon',
   },
   lastName: {
-    label: 'LastName',
+    label: 'auth.sign-up.lastname',
     required: false,
     placeholder: 'Doe',
   },
   email: {
-    label: 'Email',
+    label: 'auth.sign-up.email',
     required: false,
     placeholder: 'jonh@example.com',
   },
   password: {
-    label: 'Password',
+    label: 'auth.sign-up.password',
     required: false,
     placeholder: '••••••••',
   },
   confirmPassword: {
-    label: 'Confirm Password',
+    label: 'auth.sign-up.confirmPassword',
     required: false,
     placeholder: '••••••••',
     errorMessage: 'Passwords do not match',
   },
   username: {
-    label: 'Username',
+    label: 'auth.sign-up.username',
     required: false,
-    placeholder: 'Enter your username',
+    placeholder: 'Johndoe',
   },
 } as const;
 

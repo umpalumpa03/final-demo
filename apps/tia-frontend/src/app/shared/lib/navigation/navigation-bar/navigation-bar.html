@@ -15,11 +15,23 @@
         [routerLink]="item.route"
         routerLinkActive="navigation__item--active"
         #rla="routerLinkActive"
-        [routerLinkActiveOptions]="{ exact: false }"
+        [routerLinkActiveOptions]="{ exact: item.exact || false }"
+        [class.navigation__link--custom-padding]="customPadding() !== '0'"
       >
         @if (item.icon) {
 
-        <img [src]="item.icon" [alt]="item.label" class="navigation__img" />
+        <div class="navigation__icon-wrapper">
+          <img [src]="item.icon" [alt]="item.label" class="navigation__img" />
+
+          @if (item.count && item.count > 0 && collapsed()) {
+          <div
+            class="navigation__count navigation__count--badge"
+            [class.navigation__count--activecount]="item.activeCount"
+          >
+            {{ item.count > 99 ? '99+' : item.count }}
+          </div>
+          }
+        </div>
 
         } @if (!collapsed()) {
 
@@ -27,16 +39,14 @@
 
         }
       </a>
-
+      
       @if (item.count && item.count > 0 && !collapsed()) {
-
       <div
         class="navigation__count"
-        [class.navigation__count--active]="rla.isActive"
+        [class.navigation__count--activecount]="item.activeCount"
       >
         {{ item.count > 99 ? '99+' : item.count }}
       </div>
-
       }
     </li>
 

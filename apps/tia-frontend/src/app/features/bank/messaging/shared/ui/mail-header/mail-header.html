@@ -1,7 +1,54 @@
 <header class="header">
-    <div class="header__info">
-        <h2 class="header__info__title">{{ page() }}</h2>
-        <p class="header__info__count">{{ messageCount() }}</p>
-        <p class="header__info__count">{{ 'messaging.compose.title' | translate }}</p>
+  <div class="header__info">
+    <h2 class="header__info__title">{{ page() }}</h2>
+    <p class="header__info__count">{{ messageCount() }}</p>
+    <p class="header__info__count">
+      {{ 'messaging.compose.title' | translate }}
+    </p>
+  </div>
+  @if(!isSent() && !(messageCount() == 0)){
+  <div class="header__action">
+    <div class="header__action">
+      @if(showBulkActions()){
+      <app-button
+        variant="destructive"
+        icon="trash-icon.svg"
+        (click)="onDeleteClick()"
+      ></app-button>
+      @if(!isDraft()){
+      <app-button
+        variant="default"
+        icon="mail-read.svg"
+        (click)="bulkRead.emit()"
+      ></app-button>
+      } }
     </div>
+    <div class="header__checkbox">
+      <lib-checkboxes
+        [checked]="isAllSelected() ?? false"
+        (checkedChange)="toggleSelectAll.emit($event)"
+      ></lib-checkboxes>
+      <p>{{ 'messaging.mail-header.selectAll' | translate }}</p>
+    </div>
+  </div>
+  }
 </header>
+
+<app-ui-modal [isOpen]="isDeleteModalOpen()" (closed)="onCancelDelete()">
+  <div class="delete-account">
+    <header class="delete-account__header">
+      <app-library-title
+        [title]="'messaging.deleteModal.title' | translate"
+        [subtitle]="'messaging.deleteModal.subtitle' | translate"
+      ></app-library-title>
+    </header>
+    <footer class="delete-account__footer">
+      <app-button variant="outline" (click)="onCancelDelete()"
+        >{{ 'messaging.deleteModal.cancel' | translate }}</app-button
+      >
+      <app-button variant="destructive" (click)="onConfirmDelete()"
+        >{{ 'messaging.deleteModal.delete' | translate }}</app-button
+      >
+    </footer>
+  </div>
+</app-ui-modal>

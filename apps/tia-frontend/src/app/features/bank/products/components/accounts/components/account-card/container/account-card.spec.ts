@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { AccountCardComponent } from './account-card';
 import { AccountType } from '../../../../../../../../shared/models/accounts/accounts.model';
+import { provideTranslateService } from '@ngx-translate/core';
 
 describe('AccountCardComponent', () => {
   let component: AccountCardComponent;
@@ -11,7 +12,6 @@ describe('AccountCardComponent', () => {
     id: '1',
     userId: 'user1',
     permission: 1,
-    accountNumber: '1234567890',
     friendlyName: 'Test Account',
     type: AccountType.current,
     balance: 1000,
@@ -19,9 +19,8 @@ describe('AccountCardComponent', () => {
     iban: 'DE89370400440532013000',
     name: 'Test Account',
     status: 'active',
-    isActive: true,
-    createdAt: '2024-01-01',
-    openedAt: '2024-01-01',
+    createdAt: '2026-01-01',
+    openedAt: '2026-01-01',
     closedAt: '',
     isFavorite: false,
   };
@@ -29,48 +28,65 @@ describe('AccountCardComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AccountCardComponent],
+      providers: [provideTranslateService()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccountCardComponent);
     component = fixture.componentInstance;
     TestBed.runInInjectionContext(() => {
       fixture.componentRef.setInput('account', mockAccount);
+      fixture.componentRef.setInput('isRenaming', false);
     });
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should create and format currency', () => {
     expect(component).toBeTruthy();
-  });
-  it('should format currency correctly', () => {
-    const formatted = component.formatCurrency(1000.5);
-    expect(formatted).toBe('1,000.50');
+    expect(component.formatCurrency(1000.5)).toBe('1,000.50');
   });
 
-  it('should return correct icon for current account type', () => {
-    const icon = component.getAccountIcon(AccountType.current);
-    expect(icon).toBe('/images/svg/account/wallet.svg');
+  it('should return correct icon for account types', () => {
+    expect(component.getAccountIcon(AccountType.current)).toBe(
+      '/images/svg/account/wallet.svg',
+    );
+    expect(component.getAccountIcon(AccountType.saving)).toBe(
+      '/images/svg/account/piggy-bank.svg',
+    );
   });
 
-  it('should emit transfer with account id when handleTransfer is called', () => {
-    const spy = vi.spyOn(component.transfer, 'emit');
+  it('should emit transfer and rename events', () => {
+    const transferSpy = vi.spyOn(component.transfer, 'emit');
+    const renameSpy = vi.spyOn(component.rename, 'emit');
     component.handleTransfer();
-    expect(spy).toHaveBeenCalledWith('1');
+    expect(transferSpy).toHaveBeenCalledWith('1');
+    component.handleRename('New Account Name');
+    expect(renameSpy).toHaveBeenCalledWith({
+      accountId: '1',
+      friendlyName: 'New Account Name',
+    });
   });
 
-  it('should compute accountIcon from account type', () => {
+  it('should compute account properties and update on changes', () => {
     expect(component['accountIcon']()).toBe('/images/svg/account/wallet.svg');
-  });
+    expect(component['formattedBalance']()).toBeDefined();
+    expect(component['formattedDate']()).toBeDefined();
 
-  it('should compute formattedBalance from account balance', () => {
-    const formatted = component['formattedBalance']();
-    expect(formatted).toBeDefined();
-    expect(typeof formatted).toBe('string');
-  });
-
-  it('should compute formattedDate from account createdAt', () => {
-    const formatted = component['formattedDate']();
-    expect(formatted).toBeDefined();
-    expect(typeof formatted).toBe('string');
+    TestBed.runInInjectionContext(() => {
+      fixture.componentRef.setInput('account', {
+        ...mockAccount,
+        type: AccountType.saving,
+        balance: 5000,
+        createdAt: '2025-12-25',
+      });
+    });
+    expect(component['accountIcon']()).toBe(
+      '/images/svg/account/piggy-bank.svg',
+    );
+    expect(component['formattedBalance']()).toContain('5');
+    expect(typeof component['formattedDate']()).toBe('string');
   });
 });

@@ -1,201 +1,186 @@
+
 import { describe, it, expect } from 'vitest';
-import * as fromSelectors from './cards.selectors';
+import {
+  selectAllAccounts,
+  selectCardGroups,
+  selectAccountById,
+  selectCardDetailsByAccountId,
+  selectCardDetailById,
+  selectCardCreationData,
+  selectIsCreateModalOpen,
+  selectLoading,
+  selectError,
+  selectCardDesigns,
+  selectCardCategories,
+  selectCardTypes,
+  selectIsCreating,
+  selectCreateError,
+  selectShowSuccessAlert,
+  selectCardCreationDataLoading,
+  selectIsCardDetailsModalOpen,
+  selectSelectedCardIdForModal,
+  selectCardDetailsModalData,
+  selectCardTransactions,
+  selectCardTransactionsLoading,
+  selectCardTransactionsError,
+  selectCardTransactionsTotalCount,
+  selectCardTransactionsByCardId,
+  selectCardTransactionsTotalByCardId,
+} from './cards.selectors';
 import { CardsState } from './cards.state';
-import { CardAccount } from '../../../features/bank/products/components/cards/models/card-account.model';
-import { CardDetail } from '../../../features/bank/products/components/cards/models/card-detail.model';
+import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 
-describe('Cards Selectors', () => {
-  const mockAccounts: CardAccount[] = [
-    {
-      id: 'acc1',
-      iban: 'GE29TIA7890123456789012',
-      name: 'Main GEL Account',
-      balance: 4500000,
-      currency: 'GEL',
-      status: 'active',
-      cardIds: ['card1', 'card2'],
-      openedAt: '2026-01-18T01:10:50.948Z',
+describe('CardsSelectors - Full Coverage', () => {
+const mockState: CardsState = {
+  accounts: [
+    { id: 'acc-1', iban: 'GE123', name: 'Main', balance: 1000, currency: 'GEL', status: 'ACTIVE', cardIds: ['card-1'], openedAt: '2024-01-01' },
+  ],
+  cardImages: { 'card-1': 'base64image' },
+  cardDetails: {
+    'card-1': {
+      id: 'card-1', accountId: 'acc-1', type: 'DEBIT' as const, network: 'VISA' as const,
+      design: 'blue', cardName: 'My Card', status: 'ACTIVE' as const,
+      allowOnlinePayments: true, allowInternational: true, allowAtm: true,
+      createdAt: '2024-01-01', updatedAt: '2024-01-01',
     },
-    {
-      id: 'acc2',
-      iban: 'GE29TIA7890123456789013',
-      name: 'USD Current',
-      balance: 2500000,
-      currency: 'USD',
-      status: 'active',
-      cardIds: [],
-      openedAt: '2026-01-18T01:10:50.948Z',
-    },
-  ];
+  },
+  loading: false,
+  error: 'some error',
+  cardDetailsLoading: false,
+  cardDetailsError: 'details error',
+  designs: [{ id: 'blue', designName: 'Blue', uri: 'uri1' }],
+  categories: [{ value: 'DEBIT' as const, displayName: 'Debit' }],
+  types: [{ value: 'VISA' as const, displayName: 'Visa' }],
+  isCreating: true,
+  createError: 'create failed',
+  isCreateModalOpen: true,
+  showSuccessAlert: true,
+  isCardDetailsModalOpen: false,
+  selectedCardIdForModal: null,
+  cardTransactions: {},
+  cardTransactionsLoading: false,
+  cardTransactionsError: null,
+  cardTransactionsTotalCount: {},
+};
 
-  const mockCardDetail1: CardDetail = {
-    id: 'card1',
-    accountId: 'acc1',
-    type: 'DEBIT',
-    network: 'VISA',
-    design: 'MIDNIGHT_GRADIENT',
-    cardName: 'Main Visa',
-    status: 'ACTIVE',
-    allowOnlinePayments: true,
-    allowInternational: true,
-    allowAtm: true,
-    createdAt: '2026-01-18T01:10:50.948Z',
-    updatedAt: '2026-01-18T01:10:50.948Z',
-  };
-
-  const mockCardDetail2: CardDetail = {
-    id: 'card2',
-    accountId: 'acc1',
-    type: 'CREDIT',
-    network: 'MASTERCARD',
-    design: 'OCEAN_BLUE',
-    cardName: 'Secondary Card',
-    status: 'ACTIVE',
-    allowOnlinePayments: true,
-    allowInternational: false,
-    allowAtm: true,
-    createdAt: '2026-01-18T01:10:50.948Z',
-    updatedAt: '2026-01-18T01:10:50.948Z',
-  };
-
-  const mockCardDetails: Record<string, CardDetail> = {
-    card1: mockCardDetail1,
-    card2: mockCardDetail2,
-  };
-
-  const mockState: CardsState = {
-    accounts: mockAccounts,
-    cardImages: {
-      card1: 'data:image/svg+xml;base64,image1',
-      card2: 'data:image/svg+xml;base64,image2',
-    },
-    cardDetails: mockCardDetails,
-    loading: false,
-    error: null,
-  };
-
-  describe('selectAllAccounts', () => {
-    it('should select all accounts', () => {
-      const result = fromSelectors.selectAllAccounts.projector(mockState);
-      expect(result).toEqual(mockAccounts);
-    });
+  it('should select all accounts', () => {
+    expect(selectAllAccounts.projector(mockState)).toEqual(mockState.accounts);
   });
 
-  describe('selectCardImages', () => {
-    it('should select card images', () => {
-      const result = fromSelectors.selectCardImages.projector(mockState);
-      expect(result).toEqual(mockState.cardImages);
-    });
+  it('should select card groups', () => {
+    const result = selectCardGroups.projector(mockState.accounts, mockState.cardImages);
+    expect(result[0].cardImages[0].cardId).toBe('card-1');
   });
 
-  describe('selectCardDetails', () => {
-    it('should select card details', () => {
-      const result = fromSelectors.selectCardDetails.projector(mockState);
-      expect(result).toEqual(mockCardDetails);
-    });
+  it('should select account by id', () => {
+    expect(selectAccountById('acc-1').projector(mockState.accounts)?.id).toBe('acc-1');
+    expect(selectAccountById('unknown').projector(mockState.accounts)).toBeUndefined();
   });
 
-  describe('selectLoading', () => {
-    it('should select loading state', () => {
-      const result = fromSelectors.selectLoading.projector(mockState);
-      expect(result).toBe(false);
-    });
+  it('should select card details by account id', () => {
+    const result = selectCardDetailsByAccountId('acc-1').projector(
+      mockState.accounts[0],
+      mockState.cardDetails,
+      mockState.cardImages
+    );
+    expect(result.length).toBe(1);
+    expect(result[0].cardId).toBe('card-1');
+
+    const empty = selectCardDetailsByAccountId('unknown').projector(
+      undefined,
+      mockState.cardDetails,
+      mockState.cardImages
+    );
+    expect(empty).toEqual([]);
   });
 
-  describe('selectError', () => {
-    it('should select error', () => {
-      const result = fromSelectors.selectError.projector(mockState);
-      expect(result).toBeNull();
-    });
+  it('should select card detail by id', () => {
+    expect(selectCardDetailById('card-1').projector(mockState.cardDetails, mockState.cardImages)?.cardId).toBe('card-1');
+    expect(selectCardDetailById('unknown').projector(mockState.cardDetails, mockState.cardImages)).toBeNull();
   });
 
-  describe('selectCardGroups', () => {
-    it('should combine accounts with their card images', () => {
-      const result = fromSelectors.selectCardGroups.projector(
-        mockState.accounts,
-        mockState.cardImages
-      );
-
-      expect(result).toHaveLength(2);
-      expect(result[0].account).toEqual(mockAccounts[0]);
-      expect(result[0].cardImages).toHaveLength(2);
-      expect(result[0].cardImages[0].cardId).toBe('card1');
-      expect(result[0].cardImages[1].cardId).toBe('card2');
-    });
-
-    it('should filter out cards without images', () => {
-      const partialImages = {
-        card1: 'data:image/svg+xml;base64,image1',
-      };
-
-      const result = fromSelectors.selectCardGroups.projector(
-        mockState.accounts,
-        partialImages
-      );
-
-      expect(result[0].cardImages).toHaveLength(1);
-      expect(result[0].cardImages[0].cardId).toBe('card1');
-    });
-
-    it('should return empty cardImages for accounts with no cards', () => {
-      const result = fromSelectors.selectCardGroups.projector(
-        mockState.accounts,
-        mockState.cardImages
-      );
-
-      expect(result[1].cardImages).toHaveLength(0);
-    });
+  it('should select card creation data', () => {
+    const result = selectCardCreationData.projector(mockState.designs, mockState.categories, mockState.types, mockState.accounts);
+    expect(result.designs).toEqual(mockState.designs);
+    expect(result.accounts).toEqual(mockState.accounts);
   });
 
-  describe('selectAccountById', () => {
-    it('should select account by id', () => {
-      const selector = fromSelectors.selectAccountById('acc1');
-      const result = selector.projector(mockState.accounts);
-      expect(result).toEqual(mockAccounts[0]);
-    });
-
-    it('should return undefined for non-existent account', () => {
-      const selector = fromSelectors.selectAccountById('nonexistent');
-      const result = selector.projector(mockState.accounts);
-      expect(result).toBeUndefined();
-    });
+  it('should select isCreateModalOpen', () => {
+    expect(selectIsCreateModalOpen.projector(mockState)).toBe(true);
   });
 
-  describe('selectCardDetailsByAccountId', () => {
-    it('should select all card details for an account', () => {
-      const selector = fromSelectors.selectCardDetailsByAccountId('acc1');
-      const result = selector.projector(
-        mockAccounts[0],
-        mockState.cardDetails,
-        mockState.cardImages
-      );
-
-      expect(result).toHaveLength(2);
-      expect(result[0].cardId).toBe('card1');
-      expect(result[0].details).toEqual(mockCardDetail1);
-      expect(result[0].imageBase64).toBe('data:image/svg+xml;base64,image1');
-      expect(result[1].cardId).toBe('card2');
-      expect(result[1].details).toEqual(mockCardDetail2);
-      expect(result[1].imageBase64).toBe('data:image/svg+xml;base64,image2');
-    });
-
-    it('should return empty array when account not found', () => {
-      const selector = fromSelectors.selectCardDetailsByAccountId('nonexistent');
-      const result = selector.projector(undefined, mockState.cardDetails, mockState.cardImages);
-      expect(result).toEqual([]);
-    });
-
-    it('should filter out cards without both details and images', () => {
-      const selector = fromSelectors.selectCardDetailsByAccountId('acc1');
-      const partialDetails = { card1: mockCardDetail1 };
-      const result = selector.projector(
-        mockAccounts[0],
-        partialDetails,
-        mockState.cardImages
-      );
-
-      expect(result).toHaveLength(1);
-      expect(result[0].cardId).toBe('card1');
-    });
+  it('should select loading', () => {
+    expect(selectLoading.projector(mockState)).toBe(false);
   });
+
+  it('should select error', () => {
+    expect(selectError.projector(mockState)).toBe('some error');
+  });
+
+  it('should select card designs', () => {
+    expect(selectCardDesigns.projector(mockState)).toEqual(mockState.designs);
+  });
+
+  it('should select card categories', () => {
+    expect(selectCardCategories.projector(mockState)).toEqual(mockState.categories);
+  });
+
+  it('should select card types', () => {
+    expect(selectCardTypes.projector(mockState)).toEqual(mockState.types);
+  });
+
+  it('should select isCreating', () => {
+    expect(selectIsCreating.projector(mockState)).toBe(true);
+  });
+
+  it('should select createError', () => {
+    expect(selectCreateError.projector(mockState)).toBe('create failed');
+  });
+
+  it('should select showSuccessAlert', () => {
+    expect(selectShowSuccessAlert.projector(mockState)).toBe(true);
+  });
+
+  it('should select cardCreationDataLoading', () => {
+    expect(selectCardCreationDataLoading.projector(mockState)).toBe(false);
+  });
+  it('should select isCardDetailsModalOpen', () => {
+  expect(selectIsCardDetailsModalOpen.projector({ ...mockState, isCardDetailsModalOpen: true })).toBe(true);
+});
+
+it('should select selectedCardIdForModal', () => {
+  expect(selectSelectedCardIdForModal.projector({ ...mockState, selectedCardIdForModal: 'card-1' })).toBe('card-1');
+});
+
+it('should select card details modal data', () => {
+  const result = selectCardDetailsModalData.projector('card-1', mockState.cardDetails, mockState.cardImages, mockState.accounts);
+  expect(result?.cardId).toBe('card-1');
+  expect(result?.formattedBalance).toBeDefined();
+});
+it('should select cardTransactions', () => {
+  expect(selectCardTransactions.projector(mockState)).toEqual({});
+});
+
+it('should select cardTransactionsLoading', () => {
+  expect(selectCardTransactionsLoading.projector(mockState)).toBe(false);
+});
+
+it('should select cardTransactionsError', () => {
+  expect(selectCardTransactionsError.projector(mockState)).toBeNull();
+});
+
+it('should select cardTransactionsTotalCount', () => {
+  expect(selectCardTransactionsTotalCount.projector(mockState)).toEqual({});
+});
+
+it('should select transactions by cardId', () => {
+  const transactions = [{ id: 'tx-1' }] as ITransactions[];
+  expect(selectCardTransactionsByCardId('card-1').projector({ 'card-1': transactions })).toEqual(transactions);
+  expect(selectCardTransactionsByCardId('unknown').projector({})).toEqual([]);
+});
+
+it('should select total by cardId', () => {
+  expect(selectCardTransactionsTotalByCardId('card-1').projector({ 'card-1': 10 })).toBe(10);
+  expect(selectCardTransactionsTotalByCardId('unknown').projector({})).toBe(0);
+});
 });

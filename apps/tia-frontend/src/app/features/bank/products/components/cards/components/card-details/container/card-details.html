@@ -1,1 +1,71 @@
-<p>card-details works!</p>
+
+<div class="card-details">
+  @if (loading$ | async) {
+    <div class="card-details__loading">
+      <app-route-loader variant="pulsing" />
+    </div>
+  } @else if (error$ | async; as errorMsg) {
+    <app-error-states
+      variant="failed"
+      header="Failed to Load Card"
+      [message]="errorMsg"
+      buttonMessage="Retry"
+      (buttonClick)="handleRetry()"
+    />
+  } @else if (cardData$ | async; as data) {
+    <div class="card-details__header">
+      <app-button
+        variant="ghost"
+        [icon]="'left-arrow.svg'"
+        (click)="handleBack()"
+      >
+       {{'my-products.card.card-details.backToCards' | translate }}
+      </app-button>
+    </div>
+
+    <app-card-image
+      [imageBase64]="data.imageBase64"
+      [cardName]="data.details.cardName"
+    />
+
+    <app-basic-card
+      title="Card Information"
+      subtitle="Details about your Personal Card"
+      maxWidth="100%"
+      padding="2rem"
+    >
+ <app-card-info-section
+  [cardName]="data.details.cardName"
+  [cardType]="data.details.type"
+  [currency]="data.currency"
+  [status]="data.details.status"
+  [isActiveStatus]="data.isActiveStatus"
+  [formattedBalance]="data.formattedBalance"
+  [shouldShowCreditLimit]="data.shouldShowCreditLimit"
+  [formattedCreditLimit]="data.formattedCreditLimit"
+/>
+    </app-basic-card>
+
+    <app-basic-card
+      title="{{'my-products.card.card-details.cardTitle' | translate }}"
+      subtitle="{{'my-products.card.card-details.manageYourCard' | translate }}"
+      maxWidth="100%"
+      padding="2rem"
+    >
+      <app-quick-actions-section
+        (transferOwnClicked)="handleTransferOwn()"
+        (transferExternalClicked)="handleTransferExternal()"
+        (paybillClicked)="handlePaybill()"
+        (viewTransactionsClicked)="handleViewTransactions()"
+          (viewSensitiveDetailsClicked)="handleOpenDetailsModal()"
+
+      />
+    </app-basic-card>
+  }
+</div>
+@if (isDetailsModalOpen$ | async; as isModalOpen) {
+  <app-card-details-modal
+    [isOpen]="isModalOpen"
+    (closed)="handleCloseDetailsModal()"
+  />
+}

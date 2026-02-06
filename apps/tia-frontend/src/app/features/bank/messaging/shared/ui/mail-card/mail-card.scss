@@ -11,17 +11,27 @@
     border-bottom: 0.063rem solid $gray-50;
     position: relative;
     animation: slideIn 0.3s ease-out;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    word-break: break-word;
+    width: 100%;
 
     &:hover {
         box-shadow: 0 0.2rem 0.8rem $gray-200;
     }
 
     &--unread {
-        background-color: $white;
+        background-color: var(--color-bg);
+
+        .mail-card__sender,
+        .mail-card__subject {
+            font-weight: 600;
+        }
     }
 
     &--read {
-        background-color: var(--color-bg);
+        background-color: $white;
     }
 
     &__content {
@@ -38,6 +48,7 @@
     &__header {
         @include flex-center(row, space-between);
         gap: 1.2rem;
+        min-width: 0;
     }
 
     &__date {
@@ -49,11 +60,20 @@
     &__subject {
         @include font-inter(500, 1.4rem, 2rem);
         color: var(--color-fg);
+        text-overflow: ellipsis;
+        white-space: normal;
+        word-break: break-all;
+        flex: 1 1 0;
+        min-width: 0;
     }
 
     &__preview {
         @include font-inter(400, 1.2rem, 1.6rem);
         color: $gray-700;
+    }
+
+    &__subject,
+    &__preview {
         display: -webkit-box;
         -webkit-line-clamp: 1;
         line-clamp: 1;
@@ -62,8 +82,15 @@
     }
 
     &__actions {
-        @include flex-center(row, center, center);
+        @include flex-center();
         gap: 1rem;
+
+        &-btn--favorite,
+        &-btn--important {
+            width: 1.6rem;
+            height: 1.6rem;
+            flex-shrink: 0;
+        }
     }
 
     &__icons {
@@ -75,6 +102,72 @@
 .mail-card__action-btn--read:hover,
 .mail-card__action-btn--delete:hover {
     filter: invert(24%) sepia(98%) saturate(7472%) hue-rotate(210deg) brightness(97%) contrast(101%);
+}
+
+.delete-account {
+    &__header {
+        margin-bottom: 1.6rem;
+    }
+
+    &__footer {
+        @include flex-center($justify: flex-end);
+        gap: 1.2rem;
+    }
+}
+
+@media (max-width: 530px) {
+  .mail-card {
+    gap: 0.8rem;
+    padding: 1rem;
+    flex-wrap: wrap;
+
+    &__content {
+      flex: 1;
+      min-width: 0;
+      width: 100%;
+      order: 2;
+    }
+
+    &__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.4rem;
+    }
+
+    &__sender {
+      @include font-inter(400, 1.2rem, 1.6rem);
+    }
+
+    &__date {
+      @include font-inter(400, 1.1rem, 1.4rem);
+    }
+
+    &__subject {
+      @include font-inter(500, 1.3rem, 1.8rem);
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+    }
+
+    &__preview {
+      @include font-inter(400, 1.1rem, 1.6rem);
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+    }
+
+    &__actions {
+      order: 3;
+      margin-left: auto;
+      gap: 0.6rem;
+    }
+
+    &__icons {
+      gap: 0.4rem;
+    }
+
+    & > app-avatar {
+      order: 1;
+    }
+  }
 }
 
 @keyframes slideIn {

@@ -92,6 +92,16 @@ describe('LoansService', () => {
     req.flush(updatedLoan);
   });
 
+  it('should get loan by id', () => {
+    const loanId = '1';
+    service.getLoanById(loanId).subscribe((res) => {
+      expect(res).toEqual(mockLoan);
+    });
+    const req = httpMock.expectOne(`${apiUrl}/${loanId}`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockLoan);
+  });
+
   it('should get loan months', () => {
     const mockResponse = [6, 12, 24];
     service
@@ -116,5 +126,33 @@ describe('LoansService', () => {
       .subscribe((res) => expect(res).toEqual(mockOptions));
     const req = httpMock.expectOne(`${apiUrl}/loan-prepayment-options`);
     req.flush(mockOptions);
+  });
+
+  it('should initiate prepayment', () => {
+    const payload = { loanId: '1', amount: 500 } as any;
+    const mockResponse = { verify: { challengeId: '123' } };
+
+    service
+      .initiatePrepayment(payload)
+      .subscribe((res) => expect(res).toEqual(mockResponse));
+
+    const req = httpMock.expectOne(`${apiUrl}/loan-prepayment`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+    req.flush(mockResponse);
+  });
+
+  it('should verify prepayment', () => {
+    const payload = { challengeId: '123', code: '0000' };
+    const mockResponse = { success: true };
+
+    service
+      .verifyPrepayment(payload)
+      .subscribe((res) => expect(res).toEqual(mockResponse));
+
+    const req = httpMock.expectOne(`${apiUrl}/verify-prepayment`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+    req.flush(mockResponse);
   });
 });

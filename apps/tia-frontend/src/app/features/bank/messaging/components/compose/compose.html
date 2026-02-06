@@ -1,0 +1,97 @@
+<app-ui-modal [isOpen]="isOpen()" (closed)="onClose()">
+  <div class="compose-modal">
+    <div class="modal-heading">
+      <h3>{{ 'messaging.compose.composeHeader' | translate }} </h3>
+      <p>{{ 'messaging.compose.title' | translate }}</p>
+    </div>
+
+    <form [formGroup]="form" class="form-inputs">
+      <div class="input-container">
+        <app-email-chips-input
+          #toInput
+          [label]="'messaging.compose.to' | translate"
+          [placeholder]="'recipient@example.com'"
+          [searchResults]="filteredSearchResults()"
+          [isSearching]="store.isSearching()"
+          [allowMultiple]="false"
+          (searchQuery)="onSearchEmails($event)"
+          (emailSelected)="onToEmailSelected($event)"
+          (invalidToEmail)="onInvalidToEmail($event)"
+        />
+      </div>
+
+      <div class="input-container">
+        <app-email-chips-input
+          #ccInput
+          [label]="'messaging.compose.cc' | translate"
+          [placeholder]="'cc1@example.com, cc2@example.com'"
+          [searchResults]="filteredSearchResultsCc()"
+          [isSearching]="store.isSearching()"
+          [allowMultiple]="true"
+          (searchQuery)="onSearchEmails($event)"
+          (emailSelected)="onCcEmailSelected($event)"
+          (emailRemoved)="onCcEmailRemoved($event)"
+          (invalidCcEmail)="onInvalidCcEmail($event)"
+        />
+      </div>
+      <div class="input-container">
+        <lib-text-input
+          [config]="{ 
+            label: 'messaging.compose.subject' | translate, 
+            placeholder: 'messaging.compose.subjectPlaceholder' | translate
+            }"
+          formControlName="subject"
+        ></lib-text-input>
+      </div>
+      <lib-textarea
+        [config]="{ 
+          label: 'messaging.compose.message' | translate, 
+          placeholder: 'messaging.compose.messagePlaceholder' | translate, 
+          rows: 2, 
+          resizable: 'none',
+          maxHeight: 16
+          }"
+        formControlName="body"
+      ></lib-textarea>
+      <div>
+        @if (role() === 'SUPPORT') {
+        <lib-checkboxes
+          formControlName="isImportant"
+          [config]="{label: 'messaging.compose.markAsImportant' | translate}"
+        ></lib-checkboxes>
+        }
+      </div>
+      <div class="buttons-container">
+        <app-button
+          variant="outline"
+          (click)="onClose()"
+          [fullWidth]="isExtraSmall() ? true : false"
+          >{{ 'messaging.compose.cancel' | translate }}</app-button
+        >
+        <app-button
+          variant="outline"
+          icon="save-draft.svg"
+          (click)="onSaveDraft()"
+          [fullWidth]="isExtraSmall() ? true : false"
+          >{{ 'messaging.compose.saveDraft' | translate }}</app-button
+        >
+        <app-button
+          variant="default"
+          icon="send-email.svg"
+          (click)="onSendEmail()"
+          [fullWidth]="isExtraSmall() ? true : false"
+          >{{ 'messaging.compose.send' | translate }}</app-button
+        >
+      </div>
+    </form>
+    <div
+      class="fade-alert-container"
+      [class.fade-alert--visible]="invalidForm()"
+    >
+      <app-alert-types-with-icons
+        [alertType]="'error'"
+        [alertMessage]="errorMesage()"
+      ></app-alert-types-with-icons>
+    </div>
+  </div>
+</app-ui-modal>

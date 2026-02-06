@@ -1,157 +1,243 @@
 import { describe, it, expect } from 'vitest';
 import { cardsReducer } from './cards.reducer';
-import { initialCardsState, CardsState } from './cards.state';
+import { initialCardsState } from './cards.state';
 import * as CardsActions from './cards.actions';
-import { CardAccount } from '../../../features/bank/products/components/cards/models/card-account.model';
-import { CardDetail } from '../../../features/bank/products/components/cards/models/card-detail.model';
 
-describe('Cards Reducer', () => {
-  const mockAccounts: CardAccount[] = [
-    {
-      id: 'acc1',
-      iban: 'GE29TIA7890123456789012',
-      name: 'Main GEL Account',
-      balance: 4500000,
-      currency: 'GEL',
-      status: 'active',
-      cardIds: ['card1'],
-      openedAt: '2026-01-18T01:10:50.948Z',
-    },
-  ];
-
-  const mockCardDetail: CardDetail = {
-    id: 'card1',
-    accountId: 'acc1',
-    type: 'DEBIT',
-    network: 'VISA',
-    design: 'MIDNIGHT_GRADIENT',
-    cardName: 'Main Visa',
-    status: 'ACTIVE',
-    allowOnlinePayments: true,
-    allowInternational: true,
-    allowAtm: true,
-    createdAt: '2026-01-18T01:10:50.948Z',
-    updatedAt: '2026-01-18T01:10:50.948Z',
-  };
-
-  const cardId = 'card1';
-  const imageBase64 = 'data:image/svg+xml;base64,test';
-
-  describe('unknown action', () => {
-    it('should return the default state', () => {
-      const action = { type: 'Unknown' } as any;
-      const state = cardsReducer(initialCardsState, action);
-      expect(state).toBe(initialCardsState);
-    });
+describe('CardsReducer', () => {
+  it('should set loading true on loadCardAccounts', () => {
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.loadCardAccounts(),
+    );
+    expect(state.loading).toBe(true);
+    expect(state.error).toBeNull();
   });
 
-  describe('loadCardAccounts', () => {
-    it('should set loading to true and clear error', () => {
-      const action = CardsActions.loadCardAccounts();
-      const state = cardsReducer(initialCardsState, action);
-
-      expect(state.loading).toBe(true);
-      expect(state.error).toBeNull();
-    });
+  it('should set accounts on loadCardAccountsSuccess', () => {
+    const mockAccounts = [
+      {
+        id: 'acc-1',
+        iban: 'GE123',
+        name: 'Main',
+        balance: 1000,
+        currency: 'GEL',
+        status: 'ACTIVE',
+        cardIds: ['card-1'],
+        openedAt: '2024-01-01',
+      },
+    ];
+    const state = cardsReducer(
+      { ...initialCardsState, loading: true },
+      CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts }),
+    );
+    expect(state.accounts).toEqual(mockAccounts);
+    expect(state.loading).toBe(false);
   });
 
-  describe('loadCardAccountsSuccess', () => {
-    it('should populate accounts and set loading to false', () => {
-      const action = CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts });
-      const state = cardsReducer(initialCardsState, action);
-
-      expect(state.accounts).toEqual(mockAccounts);
-      expect(state.loading).toBe(false);
-      expect(state.error).toBeNull();
-    });
+  it('should set error on loadCardAccountsFailure', () => {
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.loadCardAccountsFailure({ error: 'Error' }),
+    );
+    expect(state.error).toBe('Error');
+    expect(state.loading).toBe(false);
   });
 
-  describe('loadCardAccountsFailure', () => {
-    it('should set error and loading to false', () => {
-      const error = 'Error loading accounts';
-      const action = CardsActions.loadCardAccountsFailure({ error });
-      const state = cardsReducer(initialCardsState, action);
-
-      expect(state.error).toBe(error);
-      expect(state.loading).toBe(false);
-    });
+  it('should add image on loadCardImageSuccess', () => {
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.loadCardImageSuccess({
+        cardId: 'card-1',
+        imageBase64: 'base64_abc',
+      }),
+    );
+    expect(state.cardImages['card-1']).toBe('base64_abc');
   });
 
-  describe('loadCardImage', () => {
-    it('should not modify state when loading image', () => {
-      const action = CardsActions.loadCardImage({ cardId });
-      const state = cardsReducer(initialCardsState, action);
-      expect(state).toEqual(initialCardsState);
-    });
+  it('should set cardDetailsLoading on loadCardDetails', () => {
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.loadCardDetails({ cardId: 'card-1' }),
+    );
+    expect(state.cardDetailsLoading).toBe(true);
+    expect(state.cardDetailsError).toBeNull();
   });
 
-  describe('loadCardImageSuccess', () => {
-    it('should add card image to state', () => {
-      const action = CardsActions.loadCardImageSuccess({ cardId, imageBase64 });
-      const state = cardsReducer(initialCardsState, action);
-      expect(state.cardImages[cardId]).toBe(imageBase64);
-    });
+  it('should add details on loadCardDetailsSuccess', () => {
+    const mockDetails = {
+      id: 'card-1',
+      accountId: 'acc-1',
+      type: 'DEBIT' as const,
+      network: 'VISA' as const,
+      design: 'blue',
+      cardName: 'My Card',
+      status: 'ACTIVE' as const,
+      allowOnlinePayments: true,
+      allowInternational: true,
+      allowAtm: true,
+      createdAt: '2024-01-01',
+      updatedAt: '2024-01-01',
+    };
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.loadCardDetailsSuccess({
+        cardId: 'card-1',
+        details: mockDetails,
+      }),
+    );
+    expect(state.cardDetails['card-1']).toEqual(mockDetails);
+    expect(state.cardDetailsLoading).toBe(false);
+  });
 
-    it('should update existing card image', () => {
-      const oldImage = 'old-image';
-      const newImage = 'new-image';
+  it('should set cardDetailsError on loadCardDetailsFailure', () => {
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.loadCardDetailsFailure({
+        cardId: 'card-1',
+        error: 'Detail failed',
+      }),
+    );
+    expect(state.cardDetailsError).toBe('Detail failed');
+    expect(state.cardDetailsLoading).toBe(false);
+  });
 
-      const stateWithImage: CardsState = {
+  it('should set loading on loadCardCreationData', () => {
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.loadCardCreationData(),
+    );
+    expect(state.loading).toBe(true);
+  });
+
+  it('should set creation data on loadCardCreationDataSuccess', () => {
+    const mockData = {
+      designs: [{ id: 'blue', designName: 'Blue', uri: 'uri1' }],
+      categories: [{ value: 'DEBIT' as const, displayName: 'Debit' }],
+      types: [{ value: 'VISA' as const, displayName: 'Visa' }],
+    };
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.loadCardCreationDataSuccess(mockData),
+    );
+    expect(state.designs).toEqual(mockData.designs);
+    expect(state.loading).toBe(false);
+  });
+
+  it('should set error on loadCardCreationDataFailure', () => {
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.loadCardCreationDataFailure({ error: 'Failed' }),
+    );
+    expect(state.error).toBe('Failed');
+    expect(state.loading).toBe(false);
+  });
+
+  it('should set isCreating on createCard', () => {
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.createCard({
+        request: {
+          accountId: 'acc-1',
+          design: 'blue',
+          cardName: 'Test',
+          cardCategory: 'DEBIT',
+          cardType: 'VISA',
+        },
+      }),
+    );
+    expect(state.isCreating).toBe(true);
+    expect(state.createError).toBeNull();
+  });
+
+  it('should close modal and show alert on createCardSuccess', () => {
+    const state = cardsReducer(
+      { ...initialCardsState, isCreating: true, isCreateModalOpen: true },
+      CardsActions.createCardSuccess(),
+    );
+    expect(state.isCreating).toBe(false);
+    expect(state.isCreateModalOpen).toBe(false);
+    expect(state.showSuccessAlert).toBe(true);
+  });
+
+  it('should set createError on createCardFailure', () => {
+    const state = cardsReducer(
+      { ...initialCardsState, isCreating: true },
+      CardsActions.createCardFailure({ error: 'Create failed' }),
+    );
+    expect(state.isCreating).toBe(false);
+    expect(state.createError).toBe('Create failed');
+  });
+
+  it('should open modal on openCreateCardModal', () => {
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.openCreateCardModal(),
+    );
+    expect(state.isCreateModalOpen).toBe(true);
+  });
+
+  it('should close modal and clear error on closeCreateCardModal', () => {
+    const state = cardsReducer(
+      { ...initialCardsState, isCreateModalOpen: true, createError: 'err' },
+      CardsActions.closeCreateCardModal(),
+    );
+    expect(state.isCreateModalOpen).toBe(false);
+    expect(state.createError).toBeNull();
+  });
+
+  it('should hide success alert on hideSuccessAlert', () => {
+    const state = cardsReducer(
+      { ...initialCardsState, showSuccessAlert: true },
+      CardsActions.hideSuccessAlert(),
+    );
+    expect(state.showSuccessAlert).toBe(false);
+  });
+  it('should open card details modal', () => {
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.openCardDetailsModal({ cardId: 'card-1' }),
+    );
+    expect(state.isCardDetailsModalOpen).toBe(true);
+    expect(state.selectedCardIdForModal).toBe('card-1');
+  });
+
+  it('should close card details modal', () => {
+    const state = cardsReducer(
+      {
         ...initialCardsState,
-        cardImages: { [cardId]: oldImage },
-      };
-
-      const action = CardsActions.loadCardImageSuccess({ cardId, imageBase64: newImage });
-      const state = cardsReducer(stateWithImage, action);
-      expect(state.cardImages[cardId]).toBe(newImage);
-    });
+        isCardDetailsModalOpen: true,
+        selectedCardIdForModal: 'card-1',
+      },
+      CardsActions.closeCardDetailsModal(),
+    );
+    expect(state.isCardDetailsModalOpen).toBe(false);
+    expect(state.selectedCardIdForModal).toBeNull();
   });
+});
+it('should handle card transactions actions', () => {
+  let state = cardsReducer(
+    initialCardsState,
+    CardsActions.loadCardTransactions({ cardId: 'card-1' }),
+  );
+  expect(state.cardTransactionsLoading).toBe(true);
 
-  describe('loadCardImageFailure', () => {
-    it('should not modify state on failure', () => {
-      const error = 'Failed to load image';
-      const action = CardsActions.loadCardImageFailure({ cardId, error });
-      const state = cardsReducer(initialCardsState, action);
-      expect(state).toEqual(initialCardsState);
-    });
-  });
+  const transactions = [{ id: 'tx-1' }] as any[];
+  state = cardsReducer(
+    state,
+    CardsActions.loadCardTransactionsSuccess({
+      cardId: 'card-1',
+      transactions,
+      total: 5,
+    }),
+  );
+  expect(state.cardTransactions['card-1']).toEqual(transactions);
+  expect(state.cardTransactionsTotalCount['card-1']).toBe(5);
+  expect(state.cardTransactionsLoading).toBe(false);
 
-  describe('loadCardDetails', () => {
-    it('should not modify state when loading card details', () => {
-      const action = CardsActions.loadCardDetails({ cardId });
-      const state = cardsReducer(initialCardsState, action);
-      expect(state).toEqual(initialCardsState);
-    });
-  });
-
-  describe('loadCardDetailsSuccess', () => {
-    it('should add card details to state', () => {
-      const action = CardsActions.loadCardDetailsSuccess({ cardId, details: mockCardDetail });
-      const state = cardsReducer(initialCardsState, action);
-      expect(state.cardDetails[cardId]).toEqual(mockCardDetail);
-    });
-
-    it('should update existing card details', () => {
-      const oldDetails: CardDetail = { ...mockCardDetail, cardName: 'Old Name' };
-      const newDetails: CardDetail = { ...mockCardDetail, cardName: 'New Name' };
-
-      const stateWithDetails: CardsState = {
-        ...initialCardsState,
-        cardDetails: { [cardId]: oldDetails },
-      };
-
-      const action = CardsActions.loadCardDetailsSuccess({ cardId, details: newDetails });
-      const state = cardsReducer(stateWithDetails, action);
-      expect(state.cardDetails[cardId]).toEqual(newDetails);
-    });
-  });
-
-  describe('loadCardDetailsFailure', () => {
-    it('should not modify state on failure', () => {
-      const error = 'Failed to load card details';
-      const action = CardsActions.loadCardDetailsFailure({ cardId, error });
-      const state = cardsReducer(initialCardsState, action);
-      expect(state).toEqual(initialCardsState);
-    });
-  });
+  state = cardsReducer(
+    initialCardsState,
+    CardsActions.loadCardTransactionsFailure({ cardId: 'card-1', error: 'Failed' }),
+  );
+  expect(state.cardTransactionsError).toBe('Failed');
+  expect(state.cardTransactionsLoading).toBe(false);
 });

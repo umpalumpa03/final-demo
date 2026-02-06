@@ -1,0 +1,16 @@
+@use '../../../../../../shared/styles/mixins' as *;
+
+.security-container {
+  &__alert-container {
+    position: fixed;
+    top: 7rem;
+    right: 1rem;
+    z-index: 1000;
+    width: 50rem;
+  }
+
+  &__alert {
+    width: 100%;
+  }
+}
+

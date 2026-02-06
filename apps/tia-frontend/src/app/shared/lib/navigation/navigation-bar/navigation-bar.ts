@@ -18,7 +18,8 @@ export class NavigationBar {
   public readonly items = input.required<NavigationItem[]>();
   public readonly orientation = input<NavigationOrientation>('horizontal');
   public readonly activeItem = input<string>();
-  public collapsed = input<boolean>(false);
+  public readonly collapsed = input<boolean>(false);
+  public readonly customPadding = input<string>('0');
   public readonly routeWithActive = computed(() => {
     return this.items().map((item) => ({
       ...item,

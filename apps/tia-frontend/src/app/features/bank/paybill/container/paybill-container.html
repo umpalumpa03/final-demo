@@ -1,11 +1,32 @@
-<section class="paybill-container">
+<section class="global-bank-wrapper">
+  <div class="paybill-container__notification-stack">
+    @for (toast of notifications(); track toast.id) {
+    <div class="paybill-container__notification-item">
+      <app-dismissible-alerts
+        [alertType]="toast.notificationType"
+        [alertMessage]="toast.message"
+        [alertTitle]="toast.notificationType === 'warning' ? 'Action Failed' : 'Success'"
+        (close)="handleDismiss(toast.id!)"
+      />
+    </div>
+    }
+  </div>
+
   <header class="paybill-container__header">
     <app-breadcrumbs
       [breadcrumbs]="breadcrumbs()"
-      (click)="handleNativeClick($event)"
+      class="paybill-container__header__breadcrumb"
     />
-    <app-library-title [title]="paybillTitle" [subtitle]="paybillSubtitle" />
-    <app-tabs [tabs]="navigationConfig" orientation="horizontal"></app-tabs>
+    <app-library-title
+      [title]="'paybill.shared.title' | translate"
+      [subtitle]="'paybill.shared.description' | translate"
+      class="paybill-container__header__title-container"
+    />
+    <app-tabs
+      class="paybill-container__header__navigation"
+      [tabs]="navigationConfig"
+      orientation="horizontal"
+    ></app-tabs>
   </header>
 
   <main class="paybill-container__content">

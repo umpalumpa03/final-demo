@@ -1,0 +1,52 @@
+@let cfg = userState.newConfig();
+<main>
+    <div class="search-box">
+        <lib-text-input [config]="cfg" type="search" (valueChange)="onSearch($event)">
+        </lib-text-input>
+    </div>
+
+    @if (store.loading()) {
+    @for (item of [1, 2, 3, 4]; track item) {
+    <div class="skeleton">
+        <div class="skeleton__content">
+            <app-skeleton variant="circle" height="4.8rem"></app-skeleton>
+            <div class="skeleton__text">
+                <app-skeleton width="15rem" height="1.2rem"></app-skeleton>
+                <app-skeleton width="20rem" height="1rem"></app-skeleton>
+            </div>
+        </div>
+
+        <div class="skeleton__actions">
+            <app-skeleton width="8rem" height="3.6rem"></app-skeleton>
+            <app-skeleton width="8rem" height="3.6rem"></app-skeleton>
+            <app-skeleton width="8rem" height="3.6rem"></app-skeleton>
+            <app-skeleton width="8rem" height="3.6rem"></app-skeleton>
+        </div>
+    </div>
+    }
+    }
+    @else {
+    @for (user of pagination.visibleItems(); track user.id) {
+    @let userId = user.id;
+    <app-user-card [user]="user" (onDetails)="details(userId)" (onEdit)="onEdit(userId)" (onDelete)="deleteUser(userId)"
+        (onBlockToggle)="block(userId, user.isBlocked)" [isLoading]="store.processingIds().includes(userId)">
+    </app-user-card>
+    }
+    }
+
+    <app-user-details-modal [isOpen]="modalService.isDetailsOpen" [userData]="store.selectedUser()"
+        [isLoading]="store.actionLoading()" (close)="onCloseModal()">
+    </app-user-details-modal>
+
+    <app-confirm-modal [isOpen]="modalService.isDeleteOpen" [isLoading]="store.actionLoading()" (close)="onCloseModal()"
+        (deleteUser)="onConfirmDelete()">
+    </app-confirm-modal>
+
+    <app-user-edit-modal [isOpen]="modalService.isEditOpen" [userData]="store.selectedUser()"
+        [isLoading]="store.actionLoading()" (close)="onCloseModal()" (save)="onUpdateUser($event)">
+    </app-user-edit-modal>
+
+    <app-pagination [currentPage]="pagination.currentPage()" [totalPages]="pagination.totalPages()"
+        (pageChange)="onPageChange($event)">>
+    </app-pagination>
+</main>

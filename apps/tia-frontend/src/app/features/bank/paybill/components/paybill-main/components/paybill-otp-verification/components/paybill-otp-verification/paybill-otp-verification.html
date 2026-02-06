@@ -1,0 +1,62 @@
+<app-basic-card
+  maxWidth="100%"
+  padding="0rem 0 2.4rem 2.4rem"
+  minHeight="65rem"
+  justifyContent="space-between"
+>
+  <header class="category-header">
+    <div class="category-header__icon-box">
+      <div
+        class="category-header__icon-background"
+        [style.background-color]="iconBgColor()"
+      >
+        <img
+          [src]="iconBgPath()"
+          class="category-header__img"
+          alt="Service Icon"
+        />
+      </div>
+    </div>
+
+    <div class="category-header__text">
+      <h2 class="category-header__title">
+        {{ 'paybill.main.otp.title' | translate }}
+      </h2>
+      <p class="category-header__subtitle">
+        {{ 'paybill.main.otp.subtitle' | translate }}
+      </p>
+    </div>
+  </header>
+
+  <div class="confirm-container">
+    <div class="confirm-container__alert">
+      <app-alert-types-with-icons
+        alertType="information"
+        [alertMessage]="'paybill.main.otp.alert_message' | translate"
+      />
+    </div>
+
+    <div class="confirm-container__summary">
+      <app-payment-summary
+        [items]="summaryItems()"
+        [headerTitle]="'paybill.main.otp.summary_title' | translate"
+        type="otp"
+      />
+    </div>
+
+    <div class="otp-verification">
+      <app-otp-verification
+        type="otp"
+        timerType="otp"
+        [inputOtpConfig]="otpConfig"
+        [errorMessage]="errorMessage()"
+        [isBtnRowDirection]="true"
+        (isVerifyCalled)="onVerify($event)"
+        (isResendCalled)="onResend()"
+        (onBackOut)="onCancel()"
+        [customRemainingAttempts]="3"
+        noMoreAttempsRedirectRoute="/bank/paybill/pay"
+      />
+    </div>
+  </div>
+</app-basic-card>

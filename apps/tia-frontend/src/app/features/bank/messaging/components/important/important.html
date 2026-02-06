@@ -1,19 +1,41 @@
 <app-mail-header
   [page]="'messaging.routes.important' | translate"
-  [messageCount]="0"
+  [messageCount]="total()"
+  [isAllSelected]="isAllSelected()"
+  (toggleSelectAll)="toggleSelectAll($event)"
+  [showBulkActions]="hasBulkSelection()"
+  (bulkDelete)="deleteSelectedMails()"
+  (bulkRead)="markSelectedAsRead()"
 ></app-mail-header>
-@if(isLoading()){
+@if(isLoading() && !mails().length){
 <div class="loading-state">
-  <app-route-loader variant="full-page" text="Loading messages..." />
+  <app-route-loader variant="pulsing" />
 </div>
-} @else if(error()) {
-<div>{{ error()}}</div>
-} @else if(mails().length === 0) {
+} @else if(!mails().length) {
 <app-empty-card></app-empty-card>
 }@else {
-<div>
-  @for (mail of mails(); track mail.id) {
-  <app-mail-card [mail]="mail"> </app-mail-card>
-  }
+<div class="inbox-container">
+  <app-scroll-area
+    [height]="'80vh'"
+    [hideBorder]="true"
+    (scrollBottom)="onScrollBottom()"
+  >
+    @for (mail of mails(); track mail.id) {
+    <app-mail-card
+      [mail]="mail"
+      [checked]="selectedMailIds().has(mail.id)"
+      (checkedChange)="onMailChecked(mail.id, $event)"
+      (markAsRead)="markAsRead(mail.id)"
+      (deleteMail)="deleteMail(mail.id)"
+      (cardClick)="goToDetail($event)"
+      [currentUserEmail]="currentUserEmail()"
+    >
+    </app-mail-card>
+    } @if (isLoading()) {
+    <div class="loading-more-indicator">
+      <app-route-loader variant="pulsing" [fillContainer]="true" />
+    </div>
+    }
+  </app-scroll-area>
 </div>
 }

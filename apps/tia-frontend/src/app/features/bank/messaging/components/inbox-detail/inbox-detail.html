@@ -1,0 +1,54 @@
+<app-email-detail [data]="emailDetail()">
+  <div class="button-container">
+    <app-button [icon]="'reply.svg'" (click)="onReply()">
+      {{ isMobile() ? '' : ('messaging.mail-detail.reply' | translate) }}
+    </app-button>
+    <app-button
+      variant="outline"
+      [icon]="'favorite.svg'"
+      (click)="toggleFavorite()"
+      [isLoading]="isFavoriteLoading()"
+      >{{ isMobile() ? '' : isFavorite() ?
+      ('messaging.mail-detail.unmarkAsFavorite' | translate) :
+      ('messaging.mail-detail.markAsFavorite' | translate) }}</app-button
+    >
+    <app-button
+      variant="outline"
+      [icon]="'red-trash.svg'"
+      (click)="onDelete($event)"
+      >{{ isMobile() ? '' : ('messaging.mail-detail.delete' | translate)
+      }}</app-button
+    >
+  </div>
+</app-email-detail>
+@if (mailReplies().length) { @for (reply of mailReplies(); track reply.id) {
+<app-replies-card
+  [reply]="reply"
+  [currentUserEmail]="currentUserEmail()"
+></app-replies-card>
+} } @if (isReplyOpen()) {
+<div #replyCard>
+  <app-reply-form
+    (sendReply)="onSendReply($event)"
+    (cancel)="onCancelReply()"
+  ></app-reply-form>
+</div>
+}
+<app-ui-modal [isOpen]="isDeleteModalOpen()" (closed)="onCancelDelete()">
+  <div class="delete-account">
+    <header class="delete-account__header">
+      <app-library-title
+        [title]="'messaging.deleteModal.title' | translate"
+        [subtitle]="'messaging.deleteModal.subtitle' | translate"
+      ></app-library-title>
+    </header>
+    <footer class="delete-account__footer">
+      <app-button variant="outline" (click)="onCancelDelete()"
+        >{{ 'messaging.deleteModal.cancel' | translate }}</app-button
+      >
+      <app-button variant="destructive" (click)="onConfirmDelete()"
+        >{{ 'messaging.deleteModal.delete' | translate }}</app-button
+      >
+    </footer>
+  </div>
+</app-ui-modal>

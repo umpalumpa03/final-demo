@@ -1,12 +1,16 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ILoan, LoanMonthsResponse } from '../models/loan.model';
+import { ILoan, ILoanDetails, LoanMonthsResponse } from '../models/loan.model';
 import { environment } from '../../../../../../environments/environment';
 import { LoanPurpose } from '../models/loan-request.model';
 import {
   IFullPrepaymentResponse,
+  IInitiatePrepaymentRequest,
+  IInitiatePrepaymentResponse,
   IPrepaymentCalcResponse,
+  IVerifyPrepaymentRequest,
+  IVerifyPrepaymentResponse,
   PrepaymentOption,
 } from '../models/prepayment.model';
 
@@ -35,6 +39,10 @@ export class LoansService {
       `${this.loansApiUrl}/update-friendly-name/${loanId}`,
       { friendlyName },
     );
+  }
+
+  public getLoanById(id: string): Observable<ILoanDetails> {
+    return this.http.get<ILoanDetails>(`${this.loansApiUrl}/${id}`);
   }
 
   public getLoanMonths(): Observable<LoanMonthsResponse> {
@@ -72,6 +80,24 @@ export class LoansService {
   ): Observable<IFullPrepaymentResponse> {
     return this.http.get<IFullPrepaymentResponse>(
       `${this.loansApiUrl}/calculate-full-prepayment/{loanId}?loanId=${loanId}`,
+    );
+  }
+
+  public initiatePrepayment(
+    payload: IInitiatePrepaymentRequest,
+  ): Observable<IInitiatePrepaymentResponse> {
+    return this.http.post<IInitiatePrepaymentResponse>(
+      `${this.loansApiUrl}/loan-prepayment`,
+      payload,
+    );
+  }
+
+  public verifyPrepayment(
+    payload: IVerifyPrepaymentRequest,
+  ): Observable<IVerifyPrepaymentResponse> {
+    return this.http.post<IVerifyPrepaymentResponse>(
+      `${this.loansApiUrl}/verify-prepayment`,
+      payload,
     );
   }
 }

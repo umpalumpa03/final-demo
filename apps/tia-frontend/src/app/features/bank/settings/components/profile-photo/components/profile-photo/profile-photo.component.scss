@@ -1,6 +1,6 @@
+@use 'sass:color';
 @use '../../../../../../../shared/styles/mixins' as *;
 @use '../../../../../../../shared/styles/palette' as *;
-
 
 .profile-photo {
   display: block;
@@ -8,18 +8,30 @@
 
   &__alert-container {
     position: fixed;
-    top: 1rem;
-    right: 1.6rem;
+    top: 7rem;
+    right: 1rem;
     z-index: 1000;
     width: 50rem;
+    display: flex;
+    align-items: flex-start;
   }
 
   &__alert {
     width: 100%;
   }
 
+  &__alert-close {
+    margin-left: 2rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--color-fg-muted, #5b6270);
+  }
+
   &__upload-section {
-    @include display-flex(column);
+    @include display-flex(column, wrap);
     gap: 1.6rem;
   }
 
@@ -48,6 +60,15 @@
     display: block;
   }
 
+  &__default-avatar {
+    width: 4.8rem;
+    height: 4.8rem;
+
+    .avatar__text {
+      display: none;
+    }
+  }
+
   &__defaults-section {
     margin-top: 2.4rem;
   }
@@ -61,10 +82,9 @@
   }
 
   &__defaults-list {
-    @include display-flex(row);
+    @include display-flex(row, wrap);
     gap: 1.2rem;
     margin-top: 1.6rem;
-    @include display-flex( wrap);
   }
 
   &__avatar-button {
@@ -91,9 +111,71 @@
 
 
   &__footer {
-   @include flex-center();
+   @include display-flex(row, wrap);
     gap: 1.2rem;
     margin-top: 2.4rem;
+    margin-bottom: 1rem;
   }
 }
 
+.profile-photo-upload-modal {
+  padding: 2.4rem;
+
+  &__header {
+    margin-bottom: 1.6rem;
+
+    h3 {
+      margin: 0 0 0.4rem;
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
+
+    p {
+      margin: 0;
+      font-size: 1.4rem;
+      color: #4b5563;
+    }
+  }
+
+  &__body {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__dropzone {
+    width: 100%;
+    max-width: 40rem;
+    min-height: 16rem;
+    border-radius: 0.8rem;
+    border: 1px dashed #9ca3af;
+    background-color: #f9fafb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    text-align: center;
+    padding: 1.6rem;
+    transition: background-color 0.15s ease, border-color 0.15s ease,
+      box-shadow 0.15s ease;
+
+    p {
+      margin: 0;
+      font-size: 1.4rem;
+      color: #4b5563;
+    }
+  }
+
+  &__dropzone--active {
+    border-color: #2563eb;
+    background-color: #eff6ff;
+    box-shadow: 0 0 0 2px color.adjust(#2563eb, $alpha: -0.7);
+  }
+
+  &__or {
+    font-size: 1.2rem;
+    color: #9ca3af;
+  }  &__file-input {
+    display: none;
+  }
+}

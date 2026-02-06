@@ -1,0 +1,35 @@
+
+
+@use "../../../../../../../../shared/styles/mixins" as *;
+@use "../../../../../../../../shared/styles/palette" as *;
+
+.card-details {
+  @include display-flex(column);
+  gap: 3.2rem;
+  padding: 3.2rem;
+  min-height: 100vh;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    gap: 2rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1.6rem;
+    gap: 1.6rem;
+  }
+
+  &__loading,
+  &__error {
+    @include font-inter(400, 1.6rem, 1.5rem);
+    padding: 4rem;
+    text-align: center;
+  }
+
+  &__error {
+    background-color: $red-50;
+    color: $red-700;
+    border-radius: 0.8rem;
+  }
+
+}

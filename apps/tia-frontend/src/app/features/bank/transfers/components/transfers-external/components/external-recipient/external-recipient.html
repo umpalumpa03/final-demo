@@ -4,13 +4,41 @@
       {{'transfers.external.recipient.title' | translate}}
     </h1>
   </header>
-  <div class="external-recipient__form">
-    <div class="external-recipient__input">
-      <lib-text-input [config]="recipientInputConfig"></lib-text-input>
+
+  <div class="external-recipient__form-group">
+    <div class="external-recipient__input-col">
+      <lib-text-input
+        [formControl]="recipientInput"
+        [config]="recipientInputConfig()"
+        [state]="recipientInput.valid && recipientInput.value ? 'success' : 'default'"
+      ></lib-text-input>
     </div>
-    <app-button>
-      Verify Recipient
-      <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />
-    </app-button>
+
+    <div class="external-recipient__button-col">
+      <app-tooltip
+        [content]="'transfers.external.recipient.disabledTooltip' | translate"
+        placement="top"
+        [disabled]="!!(recipientInput.valid && recipientInput.value)"
+      >
+        <app-button
+          (click)="onVerify()"
+          [isDisabled]="!recipientInput.valid || !recipientInput.value "
+          [isLoading]="isLoading()"
+          [fullWidth]="isMobile()"
+        >
+          {{'transfers.external.recipient.verify' | translate}}
+          <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />
+        </app-button>
+      </app-tooltip>
+    </div>
   </div>
 </main>
+
+@if (showError()) {
+<div class="external-recipient__error-toast">
+  <app-alert-types-with-icons
+    [alertType]="'error'"
+    [alertMessage]="errorMessage() | translate"
+  />
+</div>
+}

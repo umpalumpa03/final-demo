@@ -1,8 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import {
-  TRANSACTION_FEATURE_KEY,
-  TransactionState,
-} from './transactions.reducer';
+import { TRANSACTION_FEATURE_KEY } from './transactions.reducer';
+import { TransactionState } from './models/transactions-store.models';
 
 export const selectTransactionState = createFeatureSelector<TransactionState>(
   TRANSACTION_FEATURE_KEY,
@@ -16,6 +14,11 @@ export const selectItems = createSelector(
 export const selectIsLoading = createSelector(
   selectTransactionState,
   (state) => state.isLoading,
+);
+
+export const selectTransactionsLoaded = createSelector(
+  selectTransactionState,
+  (state) => state.loaded,
 );
 
 export const selectFilters = createSelector(
@@ -33,9 +36,51 @@ export const selectError = createSelector(
   (state) => state.error,
 );
 
+export const selectTotalTransactions = createSelector(
+  selectTransactionState,
+  (state) => state.total,
+);
+
+export const selectCategoriesRaw = createSelector(
+  selectTransactionState,
+  (state) => state.categories || [],
+);
+
+export const selectCategoryOptions = createSelector(
+  selectCategoriesRaw,
+  (categories) => {
+    return categories.map((cat) => ({
+      label: cat.categoryName,
+      value: cat.categoryName,
+    }));
+  },
+);
+
+export const selectCategoryOptionsForModal = createSelector(
+  selectCategoriesRaw,
+  (categories) => {
+    return categories.map((cat) => ({
+      label: cat.categoryName,
+      value: cat.id,
+    }));
+  },
+);
+
 export const selectTransactionViewModel = createSelector(
   selectItems,
   selectIsLoading,
   selectFilters,
-  (items, isLoading, filters) => ({ items, isLoading, filters }),
+  selectTotalTransactions,
+  selectCategoryOptions,
+  (items, isLoading, filters, total, categoryOptions) => ({
+    items,
+    isLoading,
+    filters,
+    total,
+    categoryOptions,
+  }),
+);
+export const selectTransactionToRepeat = createSelector(
+  selectTransactionState,
+  (state) => state.transactionToRepeat,
 );

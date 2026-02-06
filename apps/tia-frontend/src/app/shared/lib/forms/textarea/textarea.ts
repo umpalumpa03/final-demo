@@ -17,7 +17,6 @@ import { generateUniqueId } from '../base/utils/input.util';
 
 @Component({
   selector: 'lib-textarea',
-  standalone: true,
   imports: [],
   templateUrl: './textarea.html',
   styleUrls: ['./textarea.scss'],
@@ -69,9 +68,28 @@ export class Textarea extends BaseInput implements AfterViewInit {
 
   private adjustHeight(): void {
     const el = this.textareaRef?.nativeElement;
+    const cfg = this.mergedConfig();
+
     if (!el) return;
 
+    if (cfg.resizable !== 'none' && cfg.resizable !== undefined) {
+      return;
+    }
+
     this.renderer.setStyle(el, 'height', 'auto');
-    this.renderer.setStyle(el, 'height', el.scrollHeight + 'px');
+    this.renderer.setStyle(el, 'overflow-y', 'hidden');
+
+    const PIXELS_PER_REM = 10;
+
+    const scrollHeightRem = el.scrollHeight / PIXELS_PER_REM;
+    const maxHeightRem = cfg.maxHeight || Infinity;
+
+    if (scrollHeightRem > maxHeightRem) {
+      this.renderer.setStyle(el, 'height', `${maxHeightRem}rem`);
+      this.renderer.setStyle(el, 'overflow-y', 'auto');
+    } else {
+      this.renderer.setStyle(el, 'height', `${scrollHeightRem}rem`);
+      this.renderer.setStyle(el, 'overflow-y', 'hidden');
+    }
   }
 }

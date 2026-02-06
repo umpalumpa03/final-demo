@@ -1,0 +1,70 @@
+<app-basic-card
+  [minWidth]="'100%'"
+  [width]="'100%'"
+  [padding]="'2.4rem'"
+  [title]="'transactions.filters.title' | translate"
+  [subtitle]="'transactions.filters.subtitle' | translate"
+  [height]="'calc(100vh -6rem)'"
+>
+  <div class="transactions-filters">
+    <div class="transactions-filters__heading">
+      @if(hasActiveFilter()){
+      <app-button
+        [type]="'reset'"
+        [variant]="'outline'"
+        [icon]="'x-icon.svg'"
+        (click)="resetFilters()"
+      >
+        {{ 'transactions.filters.reset_all' | translate }}
+      </app-button>
+      }
+    </div>
+
+    <form [formGroup]="filterForm" class="transactions-filters__form">
+      @for (field of filtersConfig(); track field.controlName) {
+
+      <div class="transactions-filters__form__input-wrapper">
+        @if (field.type === 'select') {
+
+        <lib-select
+          [formControlName]="field.controlName"
+          [options]="field.options || []"
+          [config]="{
+             label: (field.uiConfig.label | translate),
+             placeholder: (field.uiConfig.placeholder | translate),
+          }"
+          [height]="'3.6rem'"
+        >
+        </lib-select>
+
+        } @else {
+
+        <lib-text-input
+          [formControlName]="field.controlName"
+          [type]="field.inputType || 'text'"
+          [config]="{
+             label: (field.uiConfig.label | translate),
+             placeholder: (field.uiConfig.placeholder | translate)
+          }"
+        >
+        </lib-text-input>
+        }
+      </div>
+      }
+    </form>
+
+    @if (activeFilters().length > 0) {
+    <div class="transactions-filters__active-filters">
+      @for (filter of activeFilters(); track filter.key) {
+      <app-button
+        [variant]="'outline'"
+        [icon]="'x-icon.svg'"
+        (click)="removeFilter(filter.key)"
+      >
+        {{ filter.displayText }}
+      </app-button>
+      }
+    </div>
+    }
+  </div>
+</app-basic-card>

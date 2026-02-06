@@ -1,237 +1,155 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
-import { AccountCards } from './account-cards';
-import { loadCardDetails } from '../../../../../../../../store/products/cards/cards.actions';
+import { of, firstValueFrom } from 'rxjs';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { loadAccountCardsPage } from '../../../../../../../../store/products/cards/cards.actions';
+import { TranslateModule } from '@ngx-translate/core';
+import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 import {
   selectAllAccounts,
   selectCardDetailsByAccountId,
+  selectCardDetailsLoading,
+  selectCardDetailsError,
 } from '../../../../../../../../store/products/cards/cards.selectors';
-import { CardAccount } from '../../../models/card-account.model';
-import { CardWithDetails } from '../../../models/card-image.model';
-import { DebugElement } from '@angular/core';
-import { By } from '@angular/platform-browser';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { AccountCards } from '../../account-cards/container/account-cards';
 
 describe('AccountCards', () => {
   let component: AccountCards;
   let fixture: ComponentFixture<AccountCards>;
-  let mockStore: {
-    select: ReturnType<typeof vi.fn>;
-    dispatch: ReturnType<typeof vi.fn>;
-  };
-  let mockRouter: {
-    navigate: ReturnType<typeof vi.fn>;
+  let store: { select: ReturnType<typeof vi.fn>; dispatch: ReturnType<typeof vi.fn> };
+  let router: { navigate: ReturnType<typeof vi.fn> };
+
+  const mockAccount: CardAccount = {
+    id: 'acc-1',
+    iban: 'GE123',
+    name: 'Main',
+    balance: 1000,
+    currency: 'GEL',
+    status: 'ACTIVE',
+    cardIds: ['card-1', 'card-2'],
+    openedAt: '2024-01-01',
   };
 
-  const mockAccountId = 'acc1';
-  
-  const mockAccounts: CardAccount[] = [
+  const mockCards = [
     {
-      id: 'acc1',
-      iban: 'GE29TIA7890123456789012',
-      name: 'Main GEL Account',
-      balance: 4500000,
-      currency: 'GEL',
-      status: 'active',
-      cardIds: ['card1', 'card2'],
-      openedAt: '2026-01-18T01:10:50.948Z',
-    },
-  ];
-
-  const mockCardsWithDetails: CardWithDetails[] = [
-    {
-      cardId: 'card1',
+      cardId: 'card-1',
       details: {
-        id: 'card1',
-        accountId: 'acc1',
-        type: 'DEBIT',
-        network: 'VISA',
-        design: 'MIDNIGHT_GRADIENT',
-        cardName: 'Main Visa',
-        status: 'ACTIVE',
+        id: 'card-1',
+        accountId: 'acc-1',
+        type: 'DEBIT' as const,
+        network: 'VISA' as const,
+        design: 'blue',
+        cardName: 'Card One',
+        status: 'ACTIVE' as const,
         allowOnlinePayments: true,
         allowInternational: true,
         allowAtm: true,
-        createdAt: '2026-01-18T01:10:50.948Z',
-        updatedAt: '2026-01-18T01:10:50.948Z',
+        createdAt: '2024-01-01',
+        updatedAt: '2024-01-01',
       },
-      imageBase64: 'data:image/svg+xml;base64,test1',
-    },
-    {
-      cardId: 'card2',
-      details: {
-        id: 'card2',
-        accountId: 'acc1',
-        type: 'CREDIT',
-        network: 'MASTERCARD',
-        design: 'OCEAN_BLUE',
-        cardName: 'Premium Credit',
-        status: 'ACTIVE',
-        creditLimit: 5000,
-        allowOnlinePayments: true,
-        allowInternational: true,
-        allowAtm: true,
-        createdAt: '2026-01-18T01:10:50.948Z',
-        updatedAt: '2026-01-18T01:10:50.948Z',
-      },
-      imageBase64: 'data:image/svg+xml;base64,test2',
+      imageBase64: 'img1',
     },
   ];
 
-  const setupTestBed = async (accounts: CardAccount[] = mockAccounts, cards: CardWithDetails[] = mockCardsWithDetails) => {
-    mockStore.select.mockImplementation((selector: unknown) => {
-      if (selector === selectAllAccounts) {
-        return of(accounts);
-      }
-      return of(cards);
+  beforeEach(() => {
+    store = { select: vi.fn(), dispatch: vi.fn() };
+    router = { navigate: vi.fn() };
+
+    TestBed.configureTestingModule({
+      imports: [AccountCards, TranslateModule.forRoot()],
+      providers: [
+        { provide: Store, useValue: store },
+        { provide: Router, useValue: router },
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { paramMap: { get: () => 'acc-1' } } },
+        },
+      ],
+      schemas: [NO_ERRORS_SCHEMA], // ignore unknown child components
     });
+  });
 
+  function setupStore(
+    accounts = [mockAccount],
+    cards = mockCards,
+    loading = false,
+    error: string | null = null
+  ) {
+    store.select = vi.fn((selector) => {
+      if (selector === selectAllAccounts) return of(accounts);
+      if (selector === selectCardDetailsLoading) return of(loading);
+      if (selector === selectCardDetailsError) return of(error);
+      if (selector === selectCardDetailsByAccountId) return of(cards);
+      return of(null);
+    });
+  }
+
+  function createComponent() {
     fixture = TestBed.createComponent(AccountCards);
     component = fixture.componentInstance;
-  };
-
-  beforeEach(async () => {
-    mockStore = {
-      select: vi.fn(),
-      dispatch: vi.fn(),
-    };
-
-    mockRouter = {
-      navigate: vi.fn(),
-    };
-
-    const activatedRoute = {
-      snapshot: {
-        paramMap: {
-          get: vi.fn().mockReturnValue(mockAccountId),
-        },
-      },
-    };
-
-    await TestBed.configureTestingModule({
-      imports: [AccountCards],
-      providers: [
-        { provide: Store, useValue: mockStore },
-        { provide: Router, useValue: mockRouter },
-        { provide: ActivatedRoute, useValue: activatedRoute },
-      ],
-    }).compileComponents();
-
-    await setupTestBed();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should load accounts on init', () => {
     fixture.detectChanges();
-    expect(mockStore.select).toHaveBeenCalledWith(selectAllAccounts);
+  }
+
+  it('should dispatch loadAccountCardsPage on init', () => {
+    setupStore();
+    createComponent();
+    expect(store.dispatch).toHaveBeenCalledWith(
+      loadAccountCardsPage({ accountId: 'acc-1' })
+    );
   });
 
-  it('should load card details for account', () => {
-    fixture.detectChanges();
-    expect(mockStore.select).toHaveBeenCalled();
+  it('should navigate to card details on card click', () => {
+    setupStore();
+    createComponent();
+    component.handleCardClick('card-1');
+    expect(router.navigate).toHaveBeenCalledWith([
+      '/bank/products/cards/details',
+      'card-1',
+    ]);
   });
 
-  it('should dispatch loadCardDetails for each cardId', async () => {
-    fixture.detectChanges();
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    expect(mockStore.dispatch).toHaveBeenCalledWith(loadCardDetails({ cardId: 'card1' }));
-    expect(mockStore.dispatch).toHaveBeenCalledWith(loadCardDetails({ cardId: 'card2' }));
+  it('should emit success viewState', async () => {
+    setupStore([mockAccount], mockCards, false, null);
+    createComponent();
+    const state = await firstValueFrom(component['viewState$']);
+    expect(state).toBe('success');
   });
 
-  it('should compute vm correctly with account and cards', async () => {
-    fixture.detectChanges();
-    await fixture.whenStable();
-    
-    const vmValue = component['vm']();
-    
-    expect(vmValue).toBeDefined();
-    expect(vmValue?.account.id).toBe(mockAccountId);
-    expect(vmValue?.cards).toHaveLength(2);
+  it('should emit loading viewState', async () => {
+    setupStore([mockAccount], mockCards, true, null);
+    createComponent();
+    const state = await firstValueFrom(component['viewState$']);
+    expect(state).toBe('loading');
   });
 
-  it('should return null vm when account not found', async () => {
-    await setupTestBed([], []);
-    fixture.detectChanges();
-    await fixture.whenStable();
-    
-    expect(component['vm']()).toBeNull();
+  it('should emit error viewState', async () => {
+    setupStore([mockAccount], mockCards, false, 'some error');
+    createComponent();
+    const state = await firstValueFrom(component['viewState$']);
+    expect(state).toBe('error');
   });
 
-  describe('handleCardClick', () => {
-    it('should navigate to card details', () => {
-      component['handleCardClick']('card1');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/products/cards/details', 'card1']);
-    });
+  it('should emit no-account viewState when no accounts', async () => {
+    setupStore([]);
+    createComponent();
+    const state = await firstValueFrom(component['viewState$']);
+    expect(state).toBe('no-account');
   });
 
-  describe('shouldShowCreditLimit', () => {
-    it('should return true for credit card with credit limit', () => {
-      expect(component['shouldShowCreditLimit'](mockCardsWithDetails[1])).toBe(true);
-    });
-
-    it('should return false for debit card', () => {
-      expect(component['shouldShowCreditLimit'](mockCardsWithDetails[0])).toBe(false);
-    });
-
-    it('should return false for credit card without credit limit', () => {
-      const creditCardNoLimit: CardWithDetails = {
-        ...mockCardsWithDetails[1],
-        details: { ...mockCardsWithDetails[1].details, creditLimit: undefined },
-      };
-      
-      expect(component['shouldShowCreditLimit'](creditCardNoLimit)).toBe(false);
-    });
+  it('should emit correct cardsLabel', async () => {
+    setupStore([mockAccount], mockCards);
+    createComponent();
+    const label = await firstValueFrom(component['cardsLabel$']);
+    expect(label).toBe('2 Cards');
   });
 
-  describe('template rendering', () => {
-    const detectChangesAndWait = async () => {
-      fixture.detectChanges();
-      await fixture.whenStable();
-      fixture.detectChanges();
-    };
-
-    it('should display account information', async () => {
-      await detectChangesAndWait();
-      
-      const accountName = fixture.nativeElement.querySelector('.account-cards__account-name');
-      const accountNumber = fixture.nativeElement.querySelector('.account-cards__account-number');
-      
-      expect(accountName?.textContent).toContain('Main GEL Account');
-      expect(accountNumber?.textContent).toContain('GE29TIA7890123456789012');
-    });
-
-    it('should display cards count badge', async () => {
-      await detectChangesAndWait();
-      expect(fixture.nativeElement.querySelector('app-badges')).toBeTruthy();
-    });
-
-    it('should render card grid when cards are loaded', async () => {
-      await detectChangesAndWait();
-      
-      const cardElements = fixture.debugElement.queryAll(By.css('.account-cards__card'));
-      expect(cardElements.length).toBeGreaterThan(0);
-    });
-
-    it('should show loading state when cards array is empty', async () => {
-      await setupTestBed(mockAccounts, []);
-      await detectChangesAndWait();
-      
-      const loading = fixture.nativeElement.querySelector('.account-cards__loading');
-      expect(loading?.textContent).toContain('Loading cards...');
-    });
-
-    it('should show error when account not found', async () => {
-      await setupTestBed([], []);
-      await detectChangesAndWait();
-      
-      const error = fixture.nativeElement.querySelector('.account-cards__error');
-      expect(error?.textContent).toContain('Account not found');
-    });
+  it('should emit empty cardsLabel when no account', async () => {
+    setupStore([]);
+    createComponent();
+    const label = await firstValueFrom(component['cardsLabel$']);
+    expect(label).toBe('');
   });
 });

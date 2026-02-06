@@ -1,0 +1,36 @@
+
+<app-ui-modal [isOpen]="isOpen()" (closed)="onClose()">
+  @if (viewData$ | async; as view) {
+    <div class="create-card">
+      <div class="create-card__header">
+        <h2 class="create-card__title">{{'my-products.card.create-card-modal.newCard' | translate }}</h2>
+        <p class="create-card__subtitle">
+          {{'my-products.card.create-card-modal.subtitle' | translate }}
+        </p>
+      </div>
+
+      <app-card-preview
+        [isLoading]="view.isLoading"
+        [designUri]="view.selectedDesignUri"
+      />
+
+      <app-design-selector
+        [designs]="view.designs"
+        [selectedDesign]="selectedDesignId"
+        [isLoading]="view.isLoading"
+        (designSelected)="onDesignSelected($event)"
+      />
+
+      <app-create-card-form
+        [formGroup]="cardForm"
+        [categoryOptions]="view.categoryOptions"
+        [typeOptions]="view.typeOptions"
+        [accountOptions]="view.accountOptions"
+        [isCreating]="view.isCreating"
+        [createError]="view.createError"
+        (formSubmit)="onFormSubmit()"
+        (formCancel)="onFormCancel()"
+      />
+    </div>
+  }
+</app-ui-modal>

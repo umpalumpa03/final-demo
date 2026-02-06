@@ -6,6 +6,8 @@ import {
   TreeItemMovedEvent,
   TreeItemReorderedEvent,
 } from '@tia/shared/lib/drag-n-drop/model/drag.model';
+import { TranslateModule } from '@ngx-translate/core';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('DragAndDropContainer', () => {
   let component: DragAndDropContainer;
@@ -13,13 +15,15 @@ describe('DragAndDropContainer', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DragAndDropContainer],
+      imports: [DragAndDropContainer, TranslateModule.forRoot()],
+      providers: [
+        { provide: 'ANIMATION_MODULE_TYPE', useValue: 'NoopAnimations' },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DragAndDropContainer);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    await fixture.whenStable();
   });
 
   it('should create', () => {
@@ -34,7 +38,6 @@ describe('DragAndDropContainer', () => {
     component.onItemAdded('1');
     component.onViewOptionChanged({ id: '1', isViewable: true });
     component.onPaginationChanged({ id: '1', value: 20 });
-
     expect(true).toBe(true);
   });
 
@@ -50,11 +53,9 @@ describe('DragAndDropContainer', () => {
       boardId: 'todo',
       newOrder: 1,
     };
-
     component.onCardMoved(movedEvent);
     component.onCardReordered(reorderEvent);
     component.onCardRemoved('1');
-
     expect(true).toBe(true);
   });
 
@@ -73,7 +74,6 @@ describe('DragAndDropContainer', () => {
 
     component.onTreeGroupsChange([]);
     expect(component.treeGroups).toEqual([]);
-
     component.onTreeItemsChange([]);
     expect(component.treeItems).toEqual([]);
 
@@ -86,11 +86,9 @@ describe('DragAndDropContainer', () => {
   it('should execute custom container event handlers', () => {
     component.onItemsChange([]);
     expect(component.myItems).toEqual([]);
-
     component.onRemove('1');
     component.onEdit('1');
     component.onContainerOrderChange(['1']);
-
     expect(true).toBe(true);
   });
 });

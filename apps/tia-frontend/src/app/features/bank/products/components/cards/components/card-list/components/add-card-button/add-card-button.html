@@ -1,0 +1,24 @@
+<app-basic-card
+  [hasHover]="true"
+  [maxWidth]="'100%'"
+  [display]="'flex'"
+  [flexDirection]="'column'"
+  [alignItems]="'center'"
+  [justifyContent]="'center'"
+  [minHeight]="'22rem'"
+  [borderColor]="'var( --color-gray-200)'"
+  [gap]="'0.8rem'"
+  (click)="handleClick()"
+>
+  <app-button
+    size="large"
+    [variant]="'ghost'"
+    [icon]="'adding.svg'"
+    type="button"
+    
+    [iconWidth]="'10rem'"
+  [iconHeight]="'10rem'"
+ 
+  />
+  <span class="add-card-button__text">{{'my-products.card.card-list.add-card-button.getNewCard' | translate }}</span>
+</app-basic-card>

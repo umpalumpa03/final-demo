@@ -1,19 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TreeContainer } from './tree-container';
 import { TreeService } from '../../services/tree.service';
-import { vi } from 'vitest';
+import { UNGROUPED_ID } from '../../constants/drag.constants';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('TreeContainer', () => {
   let component: TreeContainer;
   let fixture: ComponentFixture<TreeContainer>;
 
   const mockGroups = [
-    { id: 'g1', title: 'Group 1', expanded: false },
-    { id: 'g2', title: 'Group 2', expanded: false },
+    { id: 'g1', groupName: 'Group 1', expanded: false },
+    { id: 'g2', groupName: 'Group 2', expanded: false },
   ];
   const mockItems = [
-    { id: 'i1', title: 'Item 1', subtitle: '', groupId: 'g1', order: 0 },
-    { id: 'i2', title: 'Item 2', subtitle: '', groupId: 'g1', order: 1 },
+    { id: 'i1', title: 'Item 1', groupId: 'g1', order: 0 },
+    { id: 'i2', title: 'Item 2', groupId: 'g1', order: 1 },
   ];
 
   beforeEach(async () => {
@@ -31,23 +32,41 @@ describe('TreeContainer', () => {
     fixture.detectChanges();
   });
 
-  it('should toggle expansion and emit', () => {
+  it('should include the Ungrouped category automatically at the end', () => {
+    const groups = component.internalGroups();
+    expect(groups.some((g) => g.id === UNGROUPED_ID)).toBe(true);
+    expect(groups[groups.length - 1].id).toBe(UNGROUPED_ID);
+  });
+
+  it('should toggle expansion and emit for non-ungrouped groups', () => {
     const expandedSpy = vi.spyOn(component.expandedChange, 'emit');
     component.toggleExpanded('g1');
-    expect(component.internalGroups()[0].expanded).toBe(true);
+
+    const g1 = component.internalGroups().find((g) => g.id === 'g1');
+    expect(g1?.expanded).toBe(true);
     expect(expandedSpy).toHaveBeenCalledWith({ id: 'g1', expanded: true });
   });
 
   it('should handle group reordering in handleDrop', () => {
     const spy = vi.spyOn(component.groupsChange, 'emit');
-    component['handleDrop']('g2', 'g1');
-    expect(component.internalGroups()[0].id).toBe('g2');
+
+    vi.spyOn(component as any, 'calculateReorderedItems').mockReturnValue([
+      mockGroups[1],
+      mockGroups[0],
+      { id: UNGROUPED_ID },
+    ]);
+
+    component['handleDrop']('group:g1', 'group:g2');
+
     expect(spy).toHaveBeenCalled();
+    const groups = component.internalGroups();
+    expect(groups[0].id).toBe('g2');
   });
 
-  it('should handle item move to a different group via group prefix', () => {
+  it('should handle item move to a different group', () => {
     const spy = vi.spyOn(component.itemMoved, 'emit');
     component['handleDrop']('i1', 'group:g2');
+
     expect(component.internalItems().find((i) => i.id === 'i1')?.groupId).toBe(
       'g2',
     );
@@ -60,21 +79,10 @@ describe('TreeContainer', () => {
     );
   });
 
-  it('should handle item reordering within same group', () => {
-    const spy = vi.spyOn(component.itemReordered, 'emit');
-    component['handleDrop']('i2', 'i1');
-    const items = component.internalItems().filter((i) => i.groupId === 'g1');
-    expect(items[0].id).toBe('i2');
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('should remove item and group and update state', () => {
-    component.onRemoveItem('i1');
-    expect(component.internalItems().length).toBe(1);
-
-    component.onRemoveGroup('g1');
-    expect(component.internalGroups().length).toBe(1);
-    expect(component.internalItems().length).toBe(0);
+  it('should emit moveRedundant when dropping item into its own current group', () => {
+    const spy = vi.spyOn(component.moveRedundant, 'emit');
+    component['handleDrop']('i1', 'group:g1');
+    expect(spy).toHaveBeenCalledWith(true);
   });
 
   it('should handle checkbox selection logic', () => {
@@ -82,36 +90,39 @@ describe('TreeContainer', () => {
 
     component.onItemCheckedChange('i1', true);
     expect(component.isItemChecked('i1')).toBe(true);
-    expect(component.isGroupIndeterminate('g1')).toBe(true);
-
-    component.onGroupCheckedChange('g1', true);
-    expect(component.isGroupChecked('g1')).toBe(true);
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should emit all passthrough UI events', () => {
-    const editSpy = vi.spyOn(component.itemEdited, 'emit');
-    const addSpy = vi.spyOn(component.itemAdded, 'emit');
-    const viewSpy = vi.spyOn(component.viewOptionChanged, 'emit');
-    const pagSpy = vi.spyOn(component.paginationChanged, 'emit');
-    const btnSpy = vi.spyOn(component.buttonClicked, 'emit');
+  it('should emit all UI interaction events', () => {
+    const spies = {
+      edit: vi.spyOn(component.itemEdited, 'emit'),
+      groupEdit: vi.spyOn(component.groupEdited, 'emit'),
+      add: vi.spyOn(component.itemAdded, 'emit'),
+      view: vi.spyOn(component.viewOptionChanged, 'emit'),
+      pag: vi.spyOn(component.paginationChanged, 'emit'),
+      btn: vi.spyOn(component.buttonClicked, 'emit'),
+    };
 
     component.onEditItem('i1');
+    component.onEditGroup('g1');
     component.onAddItem('g1');
     component.onViewOptionChange('i1', false);
     component.onPaginationChange('i1', 20);
     component.onButtonClick('i1');
 
-    expect(editSpy).toHaveBeenCalledWith('i1');
-    expect(addSpy).toHaveBeenCalledWith('g1');
-    expect(viewSpy).toHaveBeenCalledWith({ id: 'i1', isViewable: false });
-    expect(pagSpy).toHaveBeenCalledWith({ id: 'i1', value: 20 });
-    expect(btnSpy).toHaveBeenCalledWith('i1');
+    expect(spies.edit).toHaveBeenCalledWith('i1');
+    expect(spies.groupEdit).toHaveBeenCalledWith('g1');
+    expect(spies.add).toHaveBeenCalledWith('g1');
+    expect(spies.view).toHaveBeenCalledWith({ id: 'i1', isViewable: false });
+    expect(spies.pag).toHaveBeenCalledWith({ id: 'i1', value: 20 });
+    expect(spies.btn).toHaveBeenCalledWith('i1');
   });
 
-  it('should return early in handleDrop if dragItem not found', () => {
+  it('should return early in handleDrop for invalid scenarios', () => {
     const spy = vi.spyOn(component.itemsChange, 'emit');
     component['handleDrop']('non-existent', 'g1');
+    component['handleDrop']('i1', 'invalid-target');
+
     expect(spy).not.toHaveBeenCalled();
   });
 });

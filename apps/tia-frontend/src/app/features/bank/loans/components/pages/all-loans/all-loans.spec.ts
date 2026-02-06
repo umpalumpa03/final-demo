@@ -1,42 +1,51 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AllLoans } from './all-loans';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { LoansActions } from '../../../store/loans.actions';
-import { selectAllLoans } from '../../../store/loans.selectors';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
+import { LoansContainer } from '../../../container/loans-container';
+import { LoansStore } from '../../../store/loans.store';
+import { signal } from '@angular/core';
 
 describe('AllLoans', () => {
   let component: AllLoans;
   let fixture: ComponentFixture<AllLoans>;
-  let store: MockStore;
+  let globalStore: MockStore;
+  let loansStoreMock: any;
+  let loansContainerMock: any;
 
   const mockLoans = [
-    { id: 'loan-approved', status: 2, loanAmount: 5000 },
-    { id: 'loan-pending', status: 1, loanAmount: 2000 },
+    { id: 'loan-1', status: 2, loanAmount: 5000 },
+    { id: 'loan-2', status: 1, loanAmount: 2000 },
   ];
+  const mockLoanDetails = { id: 'loan-1', status: 2, loanAmount: 5000 };
 
-  const initialState = {
-    loans_local: {
-      loans: mockLoans,
-      loading: false,
-      error: null,
-      months: [],
-      purposes: [],
-    },
-  };
   beforeEach(async () => {
+    loansStoreMock = {
+      loansWithAccountInfo: signal(mockLoans),
+      selectedLoanDetails: signal(null),
+      detailsLoading: signal(false),
+      loadLoans: vi.fn(),
+      loadLoanDetails: vi.fn(),
+      renameLoan: vi.fn(),
+      clearLoanDetails: vi.fn(),
+    };
+
+    loansContainerMock = {
+      isModalOpen: { set: vi.fn() },
+    };
+
     await TestBed.configureTestingModule({
-      imports: [AllLoans],
+      imports: [AllLoans, TranslateModule.forRoot()],
       providers: [
-        provideMockStore({
-          initialState,
-          selectors: [{ selector: selectAllLoans, value: mockLoans }],
-        }),
+        provideMockStore(),
+        { provide: LoansStore, useValue: loansStoreMock },
+        { provide: LoansContainer, useValue: loansContainerMock },
       ],
     }).compileComponents();
 
-    store = TestBed.inject(MockStore);
-    vi.spyOn(store, 'dispatch');
+    globalStore = TestBed.inject(MockStore);
+    vi.spyOn(globalStore, 'dispatch');
 
     fixture = TestBed.createComponent(AllLoans);
     component = fixture.componentInstance;
@@ -51,36 +60,35 @@ describe('AllLoans', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should open details only for approved loans (status 2)', () => {
-    component.onCardClick('loan-approved');
+  it('should call loadLoans on init', () => {
+    expect(loansStoreMock.loadLoans).toHaveBeenCalledWith({ status: null });
+  });
+
+  it('should open details when valid card is clicked', () => {
+    component.onCardClick('loan-1');
     expect(component.isDetailsOpen()).toBe(true);
-    expect(component.selectedLoan()?.id).toBe('loan-approved');
+    expect(component.selectedLoan()?.id).toBe('loan-1');
+    expect(loansStoreMock.loadLoanDetails).toHaveBeenCalledWith('loan-1');
   });
 
-  it('should not open details for non-approved loans', () => {
-    component.onCardClick('loan-pending');
-    expect(component.isDetailsOpen()).toBe(false);
-    expect(component.selectedLoan()).toBeNull();
-  });
-
-  it('should handle renameLoan dispatch', () => {
+  it('should handle renameLoan', () => {
     const event = { id: '1', name: 'Updated' };
     component.onRenameLoan(event);
-    expect(store.dispatch).toHaveBeenCalledWith(LoansActions.renameLoan(event));
+    expect(loansStoreMock.renameLoan).toHaveBeenCalledWith(event);
   });
 
-  it('should open prepayment modal and close details', () => {
-    const loan = { id: '1', status: 2 } as any;
-    component.onOpenPrepayment(loan);
-    expect(component.isPrepaymentOpen()).toBe(true);
-    expect(component.isDetailsOpen()).toBe(false);
-    expect(component.selectedLoan()).toEqual(loan);
-  });
-
-  it('should reset state on closeModals', () => {
+  it('should close all modals and reset state', () => {
     component.isDetailsOpen.set(true);
+    component.isPrepaymentOpen.set(true);
+    component.selectedLoan.set(mockLoans[0] as any);
+    component.prepaymentLoan.set(mockLoanDetails as any);
+
     component.closeModals();
+
     expect(component.isDetailsOpen()).toBe(false);
+    expect(component.isPrepaymentOpen()).toBe(false);
     expect(component.selectedLoan()).toBeNull();
+    expect(component.prepaymentLoan()).toBeNull();
+    expect(loansStoreMock.clearLoanDetails).toHaveBeenCalled();
   });
 });

@@ -2,7 +2,6 @@
 @use '../../../../styles/mixins' as *;
 
 .simple-alerts {
-  max-width: 105.3rem;
   width: 100%;
   background: var(--color-bg);
   border: 0.08rem solid $blue-200;
@@ -50,6 +49,14 @@
   &--warning {
     background: $yellow-50;
     border: 0.08rem solid $yellow-200;
+    .simple-alerts__message {
+      color: $brown-700;
+    }
+  }
+
+  &--error {
+    background: $red-50;
+    border: 0.08rem solid $red-900;
     .simple-alerts__message {
       color: $brown-700;
     }

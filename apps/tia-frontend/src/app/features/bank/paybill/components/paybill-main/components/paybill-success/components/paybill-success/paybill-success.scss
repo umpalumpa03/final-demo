@@ -1,0 +1,70 @@
+@use '../../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../../shared/styles/palette' as *;
+
+.success-layout {
+  @include display-flex(column);
+  @include flex-center(column, center, center);
+  width: 100%;
+}
+
+.success-header {
+  @include display-flex(column);
+  align-items: center;
+  margin-top: 4.8rem;
+  margin-bottom: 4rem;
+  padding-right: 2.4rem;
+
+  &__icon-container {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    margin-bottom: 2.4rem;
+    background-color: $green-200;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 4.8rem;
+    background-image: url('/images/svg/paybill/checkmark.svg');
+    box-shadow: 0 0.8rem 2.4rem rgba($green-400, 0.2);
+  }
+
+  &__title {
+    @include font-inter(700, 3rem, 3.6rem);
+    color: var(--color-fg);
+    text-align: center;
+    margin: 0 0 0.8rem 0;
+  }
+
+  &__description {
+    @include font-inter(400, 1.6rem, 2.4rem);
+    color: $gray-700;
+    text-align: center;
+    max-width: 32rem;
+    margin: 0;
+  }
+}
+
+.confirm-container {
+  @include display-flex(column);
+  padding-right: 2.4rem;
+  width: 100%;
+  flex: 1;
+
+  &__summary {
+    margin-bottom: 3.2rem;
+  }
+
+  &__actions {
+    @include flex-center(row, stretch, center);
+    gap: 1.6rem;
+    margin-top: auto;
+    padding-top: 3.2rem;
+
+    .btn-secondary {
+      flex: 1;
+    }
+
+    .btn-primary {
+      flex: 1;
+    }
+  }
+}

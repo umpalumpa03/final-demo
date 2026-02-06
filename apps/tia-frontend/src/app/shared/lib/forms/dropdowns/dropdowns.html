@@ -10,7 +10,7 @@
 
     <div class="select__control">
         <div class="select__trigger" [id]="cfg.id" (click)="toggleDropdown($event)" tabindex="0"
-            [style.height]="mergedConfig().height">
+            [style.height]="height()">
             <span class="select__value" [class.select__value--placeholder]="!value()">
                 {{ displayValue() }}
             </span>
@@ -18,7 +18,7 @@
         </div>
 
         @if (isOpen()) {
-        <ul class="select__dropdown">
+        <ul class="select__dropdown" [style.max-height]="dropdownMaxHeight()">
             @for (option of options(); track option.value) {
             <li class="select__option" [class.select__option--selected]="value() === option.value"
                 [class.select__option--disabled]="option.disabled" (click)="selectOption(option)">

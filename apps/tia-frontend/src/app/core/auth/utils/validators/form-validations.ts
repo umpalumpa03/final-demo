@@ -21,7 +21,7 @@ export const passwordMatchValidator: ValidatorFn = (
 export function passwordValidator(
   control: AbstractControl,
 ): ValidationErrors | null {
-  const value = control.value
+  const value = control.value;
 
   const errors = {
     minLength: value.length >= 8,
@@ -34,4 +34,22 @@ export function passwordValidator(
   const isValid = Object.values(errors).every(Boolean);
 
   return isValid ? null : { passwordRules: errors };
+}
+
+export function numberValidator(
+  control: AbstractControl,
+): ValidationErrors | null {
+  const value = control.value;
+
+  if (!value) return null;
+
+  const errors = {
+    notNineChars: value.length !== 9,
+    mustStartWithFive: !value.startsWith('5'),
+    isNotNumber: isNaN(Number(value))
+  };
+
+  const hasError = Object.values(errors).some(error => error === true);
+
+  return hasError ? { numberRules: errors } : null;
 }

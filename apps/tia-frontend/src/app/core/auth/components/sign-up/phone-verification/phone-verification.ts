@@ -1,52 +1,38 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
-import { catchError, EMPTY, tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
 import { TokenService } from '../../../services/token.service';
-import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
+import { IVerified } from '../../../models/otp-verification.models';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Routes } from '../../../models/tokens.model';
+import { otpVerificationConfig } from '../../../config/otp-verification.config';
 
 @Component({
   selector: 'app-phone-verification',
-  imports: [ReactiveFormsModule, TextInput ,ButtonComponent],
+  imports: [ReactiveFormsModule, OtpVerification],
   templateUrl: './phone-verification.html',
-  styleUrl: './phone-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PhoneVerification {
-  private fb = inject(FormBuilder);
   private authService = inject(AuthService);
-  private router = inject(Router)
-  private tokenService = inject(TokenService)
+  private router = inject(Router);
+  private tokenService = inject(TokenService);
+  private destroyRef = inject(DestroyRef);
+  public inputOtpConfig = otpVerificationConfig['sign-up']
+  
+  public PhoneOtpError = this.authService.otpError;
 
-  public setPhoneNumberForm = this.fb.nonNullable.group({
-    phoneNumber: [ '',[Validators.required],
-    ],
-  });
+  public submit(event: IVerified): void {
+    if (event.isCalled) {
+      let telNumber = event.otp;
+      this.authService.sendPhoneVerificationCode(telNumber!).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+    }
+  }
 
-  public errorMessage = signal<string>('') 
-
-  public submit():void {
-    let telNumber = this.setPhoneNumberForm.getRawValue().phoneNumber;
-    this.authService
-      .sendVerificationCode(telNumber)
-      .pipe(
-        tap((res) => {
-          this.errorMessage.set('')
-          // Challenge id localStorage 🚩🚩 - ეს ეიაი არ გეგონოთ ჩვენი რედფლეგია
-          this.tokenService.setChallengeId(res.challengeId)
-          this.router.navigate(['/auth/otp']);
-
-        }),
-        catchError((err) => {
-          const messages = err.error?.message;
-
-          this.errorMessage.set(messages[0]);
-
-          return EMPTY;
-        }),
-      )
-      .subscribe();
+  public clearedBackout(): void {
+    this.tokenService.clearAllToken();
+    this.router.navigate([Routes.SIGN_IN]);
   }
 }

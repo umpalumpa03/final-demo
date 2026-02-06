@@ -1,11 +1,10 @@
-@use '../../../../../../shared/styles/palette' as *;
-@use '../../../../../../shared/styles/mixins' as *;
+@use "../../../../../../shared/styles/palette" as *;
+@use "../../../../../../shared/styles/mixins" as *;
 
 .header {
     @include flex-center(row, space-between, center);
     border-bottom: 0.063rem solid $gray-200;
     padding: 0 1.2rem 1.2rem;
-
 
     &__info {
         @include flex-center(column, flex-start, start);
@@ -19,5 +18,39 @@
             @include font-inter(400, 1.2rem, 1.6rem);
             color: $gray-700;
         }
+    }
+
+    &__checkbox {
+        @include flex-center();
+        gap: 0.5rem;
+    }
+
+    &__action {
+        @include flex-center(row);
+        gap: 0.8rem;
+
+        app-button {
+            animation: fadeIn 0.3s ease-out;
+        }
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.delete-account {
+    &__header {
+        margin-bottom: 1.6rem;
+    }
+
+    &__footer {
+        @include flex-center($justify: flex-end);
+        gap: 1.2rem;
     }
 }

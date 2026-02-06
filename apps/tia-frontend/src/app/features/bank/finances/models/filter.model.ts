@@ -1,3 +1,4 @@
+import { ChartData, ChartType } from "chart.js";
 import { ButtonVariant } from "../../../../shared/lib/primitives/button/button.model";
 
 export type FilterType = 'month' | 'custom';
@@ -31,4 +32,46 @@ export interface FinancialSummaryResponse {
   expensesChange: number;
   savingsChange: number;
   savingsRateChange: number;
+}
+
+export interface ChartConfig {
+  title: string;
+  type: ChartType; 
+  data: ChartData<ChartType> | undefined;
+}
+
+export interface CategoryBreakdown {
+  category: string;
+  amount: number;
+  percentage: number;
+  icon?: string;
+  color: string;
+  isImageIcon?: boolean;
+}
+
+export interface IncomeVsExpenses {
+  month: string;
+  income: number;
+  expenses: number;
+}
+
+export interface SavingsTrend {
+  month: string;
+  savings: number;
+}
+
+export interface DailySpending {
+  day: number;
+  amount: number;
+}
+
+export interface Transaction {
+  id: string;      
+  title: string;   
+  category: string;
+  amount: number;  
+  date: string;   
+  type: 'expense' | 'income'; 
+  icon?:string;
+  isImageIcon?: boolean;
 }

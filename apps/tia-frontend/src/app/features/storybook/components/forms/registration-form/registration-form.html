@@ -5,7 +5,7 @@
       <lib-text-input
         type="text"
         formControlName="firstName"
-        [config]="inputConfig.firstName"
+        [config]="inputConfig().firstName"
       ></lib-text-input>
     </div>
 
@@ -13,7 +13,7 @@
       <lib-text-input
         type="text"
         formControlName="lastName"
-        [config]="inputConfig.lastName"
+        [config]="inputConfig().lastName"
       ></lib-text-input>
     </div>
   </div>
@@ -22,18 +22,24 @@
     <lib-text-input
       type="text"
       formControlName="username"
-      [config]="inputConfig.username"
+      [config]="inputConfig().username"
     ></lib-text-input>
   </div>
-
+  <!-- ეს დროებითია  -->
+  @if(!usernameError() && usernameError() !== null) {
+  <div class="error">User not available</div>
+  }
   <div class="registration__field">
     <lib-text-input
       type="email"
       formControlName="email"
-      [config]="inputConfig.email"
+      [config]="inputConfig().email"
     ></lib-text-input>
   </div>
-  }
+  <!-- ესეც -->
+  @if(!emailError() && emailError() !== null) {
+  <div class="error">Email not available</div>
+  } }
 
   <div class="registration__field">
     <lib-text-input
@@ -46,8 +52,8 @@
   @if (showPasswordRules()) {
   <div class="registration__field registration__password-strength">
     <div class="registration__password-strength__title">
-      <p>Password Strength: </p>
-      <span>{{ passwordStrength() }}</span>
+      <p>{{'auth.sign-up.passwordStrength' | translate}}</p>
+      <span>{{ passwordStrength() | translate}}</span>
     </div>
 
     @if (passwordRules()) {
@@ -65,31 +71,26 @@
         [class.password-failed]="!minLength()"
         [class.password-passed]="minLength()"
       >
-        x At least 8 characters
+        x {{'auth.sign-up.min8' | translate}}
       </li>
       <li
         [class.password-failed]="!uppercaseLowercase()"
         [class.password-passed]="uppercaseLowercase()"
       >
-        x Uppercase & lowercase letters
+        x {{'auth.sign-up.letters' | translate}}
       </li>
       <li
         [class.password-failed]="!numberRule()"
         [class.password-passed]="numberRule()"
       >
-        x At least one number
+        x At {{'auth.sign-up.numbers' | translate}}
       </li>
       <li
         [class.password-failed]="!specialRule()"
         [class.password-passed]="specialRule()"
       >
-        x Special character (optional)
+        x {{'auth.sign-up.specialChar' | translate}}
       </li>
-      } @else {
-      <li class="password-failed">✕ At least 8 characters</li>
-      <li class="password-failed">✕ Uppercase & lowercase letters</li>
-      <li class="password-failed">✕ At least one number</li>
-      <li class="password-failed">✕ Special character</li>
       }
     </ul>
   </div>
@@ -97,13 +98,15 @@
 
   <div class="registration__field">
     <lib-text-input
-      type="password"    
+      type="password"
       formControlName="confirmPassword"
-      [config]="inputConfig.confirmPassword"
+      [config]="inputConfig().confirmPassword"
     ></lib-text-input>
   </div>
 
   <div class="registration__field">
-    <app-button type="submit" [fullWidth]="true">{{ buttonText() }}</app-button>
+    <app-button type="submit" [fullWidth]="true"
+      >{{ buttonText() | translate}}</app-button
+    >
   </div>
 </form>

@@ -1,34 +1,68 @@
-import { inject, Injectable, signal } from '@angular/core';
 import {
   ILoginRequest,
   IMfaVerifyRequest,
+  OtpResponse,
+  SendVerificationResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordVerifyRequest,
+  CreateNewPasswordRequest,
+  ResendOtpRequest,
   IRefreshTokenRequest,
 } from '../models/authRequest.models';
-import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
 import {
+  CreateNewPasswordResponse,
+  ForgotPasswordResponse,
+  ForgotPasswordVerifyResponse,
   IloginResponse,
   ILogoutResponse,
   IMfaVerifyResponse,
+  IsAvailableBaseResponse,
   ISignUpResponse,
-  OtpResponse,
-  SendVerificationResponse,
+  phoneOtpError,
+  ResendOtpResponse,
 } from '../models/authResponse.model';
+import {
+  catchError,
+  debounceTime,
+  EMPTY,
+  finalize,
+  Observable,
+  tap,
+  throwError,
+} from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 import { TokenService } from './token.service';
 import { IRegistrationForm } from '../../../features/storybook/components/forms/models/contact-forms.model';
+import { inject, Injectable, signal } from '@angular/core';
+import { Routes } from '../models/tokens.model';
+import { Store } from '@ngrx/store';
+import { UserInfoActions } from '../../../store/user-info/user-info.actions';
+import { MonitorInactivity } from './monitor-inacticity.service';
+import { Subscription } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private tokenService = inject(TokenService);
-  private accessToken!: string;
-  private refreshToken!: string;
+  private store = inject(Store);
+  private monitorInactivity = inject(MonitorInactivity);
   private challengeId!: string;
   public isLoginLoading = signal<boolean>(false);
-  public loginError = signal<string | null>(null);
+  public errorMessage = signal<boolean | null>(false);
+  private baseUrl = `${environment.apiUrl}/auth`;
+  public otpError = signal<OtpResponse | null>(null);
+  public resendRetryCounter = signal<number>(0);
+  private inactivitySubscription?: Subscription;
+  public isAuthenticated = signal<boolean>(false);
+
+  constructor() {
+    if (this.tokenService.accessToken) {
+      this.startInactivityMonitoring();
+    }
+  }
 
   public setChellangeId(id: string) {
     this.challengeId = id;
@@ -38,83 +72,122 @@ export class AuthService {
     return this.challengeId;
   }
 
-  public loginPostRequest(user: ILoginRequest): Observable<IloginResponse> {
-    this.isLoginLoading.set(true);
-    return this.http
-      .post<IloginResponse>(`${environment.apiUrl}/auth/login`, user)
-      .pipe(
-        tap((res) => {
-          if (res.status === 'mfa_required') {
-            this.setChellangeId(res.challengeId!);
-            this.router.navigate(['/auth/otp-verify']);
-          } else if (res.status === 'phone_verification_required') {
-            this.tokenService.setVerifyToken(res.verification_token!);
-            this.router.navigate(['/auth/phone']);
-          }
-        }),
-        catchError((err) => {
-          this.loginError.set(err?.error?.message ?? 'Incorrect credentials');
-          this.isLoginLoading.set(false);
-          return throwError(() => err);
-        }),
-        finalize(() => this.isLoginLoading.set(false)),
-      );
+  public isUsernameAvailable(
+    username: string,
+  ): Observable<IsAvailableBaseResponse> {
+    const params = { username };
+
+    return this.http.get<IsAvailableBaseResponse>(
+      `${environment.apiUrl}/users/check-username`,
+      { params },
+    );
   }
 
-  public isLoggedIn(): boolean {
-    return this.tokenService.accessToken ? true : false;
+  public isEmailAvailable(email: string): Observable<IsAvailableBaseResponse> {
+    const params = { email };
+
+    return this.http.get<IsAvailableBaseResponse>(
+      `${environment.apiUrl}/users/check-email`,
+      { params },
+    );
+  }
+
+  public loginPostRequest(user: ILoginRequest): Observable<IloginResponse> {
+    this.isLoginLoading.set(true);
+    this.tokenService.clearAllToken();
+    return this.http.post<IloginResponse>(`${this.baseUrl}/login`, user).pipe(
+      tap((res) => {
+        if (res.status === 'mfa_required') {
+          this.setChellangeId(res.challengeId!);
+          this.router.navigate([Routes.OTP_SIGN_IN]);
+        }
+
+        if (res.status === 'phone_verification_required') {
+          this.tokenService.setVerifyToken(res.verification_token!);
+          if (res.challengeId && res.reason === 'phone_unverified') {
+            this.setChellangeId(res.challengeId);
+            this.router.navigate([Routes.OTP_SIGN_UP]);
+          } else {
+            this.router.navigate([Routes.PHONE]);
+          }
+        }
+      }),
+      catchError((err) => {
+        this.errorMessage.set(true);
+        return throwError(() => err);
+      }),
+      finalize(() => this.isLoginLoading.set(false)),
+    );
   }
 
   public refreshTokenPostRequest(
     refreshToken: IRefreshTokenRequest,
   ): Observable<IMfaVerifyResponse> {
     return this.http
-      .post<IMfaVerifyResponse>(`${environment.apiUrl}/aსuth/refresh`, refreshToken)
+      .post<IMfaVerifyResponse>(`${this.baseUrl}/refresh`, refreshToken)
       .pipe(
         tap((res) => {
           if (res.access_token && res.refresh_token) {
             this.tokenService.setAccessToken(res.access_token);
             this.tokenService.setRefreshToken(res.refresh_token);
           }
+        }),
+        catchError((err) => {
+          this.errorMessage.set(true);
+          return throwError(() => err);
         }),
       );
   }
 
   public logout(): Observable<ILogoutResponse> {
-    return this.http
-      .post<ILogoutResponse>(`${environment.apiUrl}/auth/logout`, {})
-      .pipe(
-        tap((res) => {
-          if (res.success === true) {
-            this.tokenService.clearAccessToken();
-          }
-        }),
-      );
+    return this.http.post<ILogoutResponse>(`${this.baseUrl}/logout`, {}).pipe(
+      tap((res) => {
+        if (res.success === true) {
+          this.stopInactivityMonitoring();
+          this.tokenService.clearAuthToken();
+          this.tokenService.clearUserInfo();
+          this.router.navigate([Routes.SIGN_IN]);
+        }
+      }),
+    );
   }
 
   public verifyMfa(verify: IMfaVerifyRequest): Observable<IMfaVerifyResponse> {
     this.isLoginLoading.set(true);
+
     return this.http
-      .post<IMfaVerifyResponse>(`${environment.apiUrl}/auth/mfa/verify`, verify)
+      .post<IMfaVerifyResponse>(`${this.baseUrl}/mfa/verify`, verify)
       .pipe(
+        debounceTime(300),
         tap((res) => {
           if (res.access_token && res.refresh_token) {
             this.tokenService.setAccessToken(res.access_token);
             this.tokenService.setRefreshToken(res.refresh_token);
-            this.router.navigate(['/bank/dashboard']);
+            this.store.dispatch(UserInfoActions.loadUser());
+            this.startInactivityMonitoring();
+            this.router.navigate([Routes.DASHBOARD]);
           }
+        }),
+        catchError((err) => {
+          const errorData: phoneOtpError = err.error;
+          this.otpError.set(errorData);
+
+          this.errorMessage.set(true);
+
+          setTimeout(() => this.otpError.set(null), 2000);
+          return EMPTY;
+        }),
+        finalize(() => {
+          this.isLoginLoading.set(false);
         }),
       );
   }
 
   public signUpUser(userData: IRegistrationForm): Observable<ISignUpResponse> {
-    return this.http.post<ISignUpResponse>(
-      `${environment.apiUrl}/auth/signup`,
-      userData,
-    );
+    return this.http.post<ISignUpResponse>(`${this.baseUrl}/signup`, userData);
   }
 
-  public sendVerificationCode(
+  public sendPhoneVerificationCode(
     phoneNumber: string,
   ): Observable<SendVerificationResponse> {
     const token =
@@ -124,25 +197,197 @@ export class AuthService {
       Authorization: `Bearer ${token}`,
     });
 
-    return this.http.post<SendVerificationResponse>(
-      `${environment.apiUrl}/auth/phone`,
-      { phone: phoneNumber },
-      { headers },
+    this.isLoginLoading.set(true);
+    return this.http
+      .post<SendVerificationResponse>(
+        `${this.baseUrl}/phone`,
+        { phone: phoneNumber },
+        { headers },
+      )
+      .pipe(
+        debounceTime(300),
+        tap((res) => {
+          this.setChellangeId(res.challengeId);
+          this.otpError.set(null);
+          this.router.navigate([Routes.OTP_SIGN_UP]);
+        }),
+        catchError((err) => {
+          const errorData: phoneOtpError = err.error;
+          this.otpError.set(errorData);
+
+          setTimeout(() => this.otpError.set(null), 2000);
+          return EMPTY;
+        }),
+        finalize(() => this.isLoginLoading.set(false)),
+      );
+  }
+
+  public verifyPhoneOtpCode(code: string): Observable<OtpResponse> {
+    const token =
+      this.tokenService.getSignUpToken || this.tokenService.verifyToken;
+    const challengeId = this.getChallengeId();
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    this.isLoginLoading.set(true);
+    return this.http
+      .post<OtpResponse>(
+        `${this.baseUrl}/phone/verify`,
+        { challengeId, code },
+        { headers },
+      )
+      .pipe(
+        debounceTime(300),
+        tap(() => {
+          this.tokenService.clearAuthToken();
+          this.otpError.set(null);
+          this.router.navigate([Routes.SIGN_IN]);
+          this.tokenService.clearSignUpToken();
+        }),
+        catchError((err) => {
+          const errorData = err.error as OtpResponse;
+          this.otpError.set(errorData);
+
+          setTimeout(() => {
+            this.otpError.set(null);
+          }, 2000);
+
+          return throwError(() => err);
+        }),
+        finalize(() => {
+          this.isLoginLoading.set(false);
+        }),
+      );
+  }
+
+  public forgotPasswordRequest(
+    email: string,
+  ): Observable<ForgotPasswordResponse> {
+    const payload: ForgotPasswordRequest = { email };
+    return this.http
+      .post<ForgotPasswordResponse>(`${this.baseUrl}/forgot-password`, payload)
+      .pipe(
+        tap((res) => {
+          this.setChellangeId(res.challengeId);
+        }),
+      );
+  }
+
+  public verifyForgotPasswordOtp(
+    code: string,
+  ): Observable<ForgotPasswordVerifyResponse> {
+    this.isLoginLoading.set(true);
+    this.tokenService.clearAccessToken();
+    const payload: ForgotPasswordVerifyRequest = {
+      challengeId: this.getChallengeId(),
+      code,
+    };
+    return this.http
+      .post<ForgotPasswordVerifyResponse>(
+        `${this.baseUrl}/forgot-password/verify`,
+        payload,
+      )
+      .pipe(
+        tap((res) => {
+          if (res.access_token) {
+            this.tokenService.setAccessToken(res.access_token);
+          }
+        }),
+        finalize(() => this.isLoginLoading.set(false)),
+      );
+  }
+
+  public createNewPassword(
+    password: string,
+  ): Observable<CreateNewPasswordResponse> {
+    const token = this.tokenService.accessToken;
+    if (!token) {
+      return throwError(
+        () => new Error('Missing forgot password access token'),
+      );
+    }
+
+    this.isLoginLoading.set(true);
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    const payload: CreateNewPasswordRequest = { password };
+    return this.http
+      .post<CreateNewPasswordResponse>(
+        `${this.baseUrl}/create-new-password`,
+        payload,
+        { headers },
+      )
+      .pipe(
+        finalize(() => {
+          this.isLoginLoading.set(false);
+          this.tokenService.clearAccessToken();
+        }),
+      );
+  }
+
+  public resendPhoneOtp(): Observable<ResendOtpResponse> {
+    const challengeId = this.getChallengeId();
+    if (!challengeId) {
+      return throwError(() => new Error('Missing forgot password challengeId'));
+    }
+
+    const payload: ResendOtpRequest = { challengeId };
+    return this.http.post<ResendOtpResponse>(
+      `${this.baseUrl}/phone/otp-resend`,
+      payload,
     );
   }
 
-  public verifyOtpCode(code: string): Observable<OtpResponse> {
-    const token = this.tokenService.getSignUpToken;
-    const challengeId = this.tokenService.getChallengeId;
+  public resendVerificationCode(): Observable<OtpResponse> {
+    if (this.resendRetryCounter() >= 5) {
+      this.resendRetryCounter.set(0);
+      return throwError(() => new Error('MAX_ATTEMPTS_REACHED'));
+    }
+
+    const challengeId = this.getChallengeId();
+    const token =
+      this.tokenService.accessToken || this.tokenService.getSignUpToken;
+
+    if (this.tokenService.accessToken) {
+      this.resendRetryCounter.update((r) => r + 1);
+    }
 
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
 
     return this.http.post<OtpResponse>(
-      `${environment.apiUrl}/auth/phone/verify`,
-      { challengeId, code },
+      `${this.baseUrl}/mfa/otp-resend`,
+      { challengeId },
       { headers },
     );
+  }
+
+  private startInactivityMonitoring(): void {
+    this.inactivitySubscription = this.monitorInactivity.inactivity$
+      .pipe(
+        tap((isInactive) => {
+          if (isInactive === true) {
+            this.logout().subscribe();
+          }
+        }),
+      )
+      .subscribe();
+  }
+
+  private stopInactivityMonitoring(): void {
+    if (this.inactivitySubscription) {
+      this.inactivitySubscription.unsubscribe();
+      this.inactivitySubscription = undefined;
+    }
+  }
+
+  public logoutSideEffects() {
+    this.isAuthenticated.set(false);
+    this.tokenService.clearAuthToken();
+    this.stopInactivityMonitoring();
   }
 }

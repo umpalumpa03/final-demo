@@ -44,4 +44,13 @@ describe('Dropdowns', () => {
     expect(component['value']()).toBe(2);
     expect(component.isOpen()).toBe(false);
   });
+
+  it('should set default value from config on init', () => {
+    fixture.componentRef.setInput('config', { value: 1 });
+    component.value.set(null as any);
+
+    component.ngOnInit();
+
+    expect(component.value()).toBe(1);
+  });
 });

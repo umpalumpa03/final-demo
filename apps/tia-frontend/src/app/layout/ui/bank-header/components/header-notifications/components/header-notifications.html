@@ -1,0 +1,162 @@
+@if(isOpen()) {
+<div
+  class="header-notifications"
+  [style.top.px]="isMobile() ? null : top()"
+  [style.left.px]="isMobile() ? null : left()"
+  [class.mobile]="isMobile()"
+  [class.blurred]="isLoading()"
+>
+  @if(isMobile() && !isLoading()) {
+  <button
+    class="header-notifications__close"
+    (click)="onCloseClick()"
+    aria-label="Close notifications"
+  >
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path d="M18 6L6 18M6 6l12 12" />
+    </svg>
+  </button>
+  } @if (isLoading()) {
+  <div class="header-notifications__main__loader">
+    <app-route-loader variant="pulsing" />
+  </div>
+  }
+
+  <header class="header-notifications__header">
+    <div
+      class="header-notifications__header__info"
+      [style.flex-direction]="isMobile() ? 'column' : 'row'"
+      [style.align-items]="isMobile() ? 'flex-start' : null"
+    >
+      <h3>{{ 'header-notifications.title' | translate }}</h3>
+      <span
+        >{{ unreadLeft() }} {{ 'header-notifications.message' | translate
+        }}</span
+      >
+    </div>
+    @if (selectedItems().length && !isLoading()) {
+    <app-button
+      variant="destructive"
+      [fullWidth]="true"
+      icon="trash-icon.svg"
+      style="width: 100%"
+      class="header-notifications__header__button"
+      (click)="OnDeleteMultipleClick(selectedItems())"
+      [class.hidden]="!selectedItems().length || isLoading()"
+    >
+      Delete ({{ selectedItems().length }})
+    </app-button>
+    }
+  </header>
+
+  <main class="header-notifications__main">
+    @if(isEmpty()) {
+    <app-error-states
+      variant="not-found"
+      [header]="'header-notifications.errorMessage' | translate"
+      [message]="'header-notifications.errorDescription' | translate "
+      width="100%"
+      maxWidth="100%"
+      height="95%"
+      [border]="false"
+      [showButton]="false"
+      [isCentered]="false"
+    />}@else if (!isLoading()) {
+    <header class="header-notifications__main__header">
+      <label class="header-notifications__main__header__select">
+        <lib-checkboxes
+          [checked]="isAllSelected()"
+          (change)="onSelectAllClicked(notificationItems())"
+          [isIntermediate]="isIndeterminate()"
+        ></lib-checkboxes>
+        Select All
+      </label>
+      <div class="header-notifications__main__header__cta--all">
+        <button
+          (click)="onMarkAllClick()"
+          [disabled]="!notificationItems().length"
+          class="header-notifications__main__header__cta--all__tooltip-trigger"
+          data-tooltip="Mark all as read"
+        >
+          <img
+            class="header-notifications__main__header__cta--all__read"
+            src="images/svg/header-notifications/read.svg"
+            alt="read all icon"
+          />
+        </button>
+        <p>/</p>
+        <button
+          (click)="onDeleteAllClicked()"
+          [disabled]="!notificationItems().length"
+          class="header-notifications__main__header__cta--all__tooltip-trigger"
+          data-tooltip="delete all"
+        >
+          <img
+            class="header-notifications__main__header__cta--all__delete"
+            src="images/svg/header-notifications/delete.svg"
+            alt="delete all icon"
+          />
+        </button>
+      </div>
+    </header>
+    <app-scroll-area
+      (scrollBottom)="onScrollBottom()"
+      [hideBorder]="true"
+      [height]="isMobile() ? '97% ': '95%'"
+      [isLoading]="isFetching()"
+    >
+      @for (item of notificationItems(); track item.id) {
+      <div
+        class="header-notifications__main__item"
+        [class.unread]="!item.isRead"
+        [appVisibleInViewport]="item.id"
+        [isRead]="item.isRead"
+        (becameVisible)="onItemBecameVisible($event)"
+      >
+        <div class="header-notifications__main__item__checkbox">
+          <lib-checkboxes
+            (change)="onSelectItemClicked(item.id)"
+            [checked]="isItemSelected(item.id)"
+          ></lib-checkboxes>
+        </div>
+        <div class="header-notifications__main__item__content">
+          <h4 [class.unread]="!item.isRead">{{item.title}}</h4>
+
+          <p class="header-notifications__main__item__content__date">
+            {{ item.createdAt | date: 'yyyy-MM-dd HH:mm' }}
+          </p>
+          <span class="header-notifications__main__item__content__type">
+            {{ item.type | titlecase }}
+          </span>
+        </div>
+        <div class="header-notifications__main__item__cta">
+          @if(!item.isRead) {
+          <span class="header-notifications__main__item__cta--icon"></span>
+          }
+
+          <button (click)="onTrashIconClick(item.id)">
+            <img
+              class="header-notifications__main__item__cta--delete"
+              src="images/svg/header-notifications/delete.svg"
+              alt="delete icon"
+            />
+          </button>
+        </div>
+      </div>
+      } @if(isFetching()) {
+      <div class="header-notifications__main__data--fetching">
+        <app-route-loader variant="pulsing" />
+      </div>
+      }
+    </app-scroll-area>
+    }
+  </main>
+</div>
+}

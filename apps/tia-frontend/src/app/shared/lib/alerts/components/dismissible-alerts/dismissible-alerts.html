@@ -1,5 +1,5 @@
 @if (!isDismissed()) {
-<div class="dismissible-alerts" [class]="iconAlertClass()">
+<div class="dismissible-alerts" [class]="iconAlertClass()" [style.max-width]="customMaxwidth()">
   <div class="dismissible-alerts__icon">
     <img
       class="dismissible-alerts__image"
@@ -13,7 +13,7 @@
       {{alertMessage() | firstUpper}}
     </div>
   </div>
-  <button class="dismissible-alerts__close-btn" (click)="onDismiss()">
+  <button type="button" class="dismissible-alerts__close-btn" (click)="onDismiss()">
     <img src="images/svg/alerts/close.svg" alt="close icon" />
   </button>
 </div>

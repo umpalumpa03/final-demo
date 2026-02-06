@@ -22,8 +22,10 @@
         [flexDirection]="card.flexDirection"
         [alignItems]="card.alignItems"
         [justifyContent]="card.justifyContent"
-            [padding]="card.padding"
-[minHeight]="card.minHeight"
+        [padding]="card.padding"
+        [minHeight]="card.minHeight"
+        [borderColor]="card.borderColor ?? ''"
+        [gap]="card.gap"
       >
         @if (card.hasFooter) {
         <div class="card-footer" card-footer>
@@ -46,7 +48,6 @@
         [change]="card.change"
         [changeType]="card.changeType"
         [icon]="card.icon"
-    
       />
       }
     </div>

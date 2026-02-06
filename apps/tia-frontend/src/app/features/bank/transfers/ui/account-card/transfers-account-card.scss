@@ -1,0 +1,199 @@
+@use '../../../../../shared/styles/mixins' as *;
+@use '../../../../../shared/styles/palette' as *;
+
+.transfers-account-card {
+  @include display-flex(row);
+  align-items: center;
+  gap: 1.6rem;
+  padding: 2rem;
+  background: $white;
+  border: 0.2rem solid $gray-200;
+  border-radius: 1.2rem;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:hover {
+    border-color: $blue-300;
+    background: $blue-50;
+    transform: translateY(-0.2rem);
+    box-shadow:
+      0 0.4rem 1.2rem rgba(14, 165, 233, 0.08),
+      0 0.2rem 0.4rem rgba(14, 165, 233, 0.04);
+  }
+
+  &--selected {
+    background: $blue-ocean-secondary;
+    border-color: $blue-ocean;
+
+    &:hover {
+      background: $blue-ocean-secondary;
+      border-color: $blue-ocean;
+    }
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+
+    &:hover {
+      border-color: $gray-200;
+      background: $white;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .transfers-account-card__icon {
+      background: $gray-200;
+    }
+
+    .transfers-account-card__name,
+    .transfers-account-card__balance {
+      color: $gray-500;
+    }
+
+    .transfers-account-card__currency {
+      background: $gray-200;
+      color: $gray-600;
+    }
+
+    .transfers-account-card__iban {
+      color: $gray-400;
+    }
+  }
+
+  &__icon {
+    @include flex-center();
+    width: 5.6rem;
+    height: 5.6rem;
+    background: $blue-200;
+    border-radius: 1.2rem;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+
+  &__icon-img {
+    @include svg-icon(2.8rem);
+  }
+
+  &__content {
+    @include display-flex(column);
+    gap: 1.2rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__header {
+    @include display-flex(row);
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  &__name {
+    @include font-inter(600, 1.6rem, 2.4rem);
+    color: var(--color-fg);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__currency {
+    @include font-inter(600, 1.4rem, 2rem);
+    padding: 0.4rem 1.2rem;
+    background: $blue-100;
+    color: $blue-600;
+    border-radius: 0.6rem;
+    flex-shrink: 0;
+  }
+
+  &__details {
+    @include display-flex(column);
+    gap: 0.4rem;
+  }
+
+  &__balance {
+    @include font-inter(700, 2rem, 2.8rem);
+    color: $blue-950;
+  }
+
+  &__iban {
+    @include font-inter(400, 1.3rem, 2rem);
+    color: $gray-600;
+    letter-spacing: 0.05rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__check {
+    @include flex-center();
+    position: absolute;
+    top: 50%;
+    right: 2rem;
+    transform: translateY(-50%);
+    width: 3.2rem;
+    height: 3.2rem;
+    background: $blue-ocean;
+    border-radius: 50%;
+    box-shadow: 0 0.2rem 0.8rem rgba(2, 132, 199, 0.3);
+  }
+
+  &__check-icon {
+    @include svg-icon(1.8rem);
+    filter: brightness(0) invert(1);
+  }
+
+  @media (max-width: 480px) {
+    @include display-flex(column);
+    align-items: flex-start;
+    padding: 1.6rem;
+    gap: 1.2rem;
+
+    &__icon {
+      width: 4.8rem;
+      height: 4.8rem;
+    }
+
+    &__header {
+      width: 100%;
+    }
+
+    &__check {
+      top: 1.6rem;
+      right: 1.6rem;
+      transform: none;
+      width: 2.8rem;
+      height: 2.8rem;
+    }
+
+    &__balance {
+      font-size: 1.8rem;
+    }
+  }
+
+  @media (max-width: 360px) {
+    padding: 1.2rem;
+    gap: 1rem;
+
+    &__name {
+      font-size: 1.4rem;
+    }
+
+    &__balance {
+      font-size: 1.6rem;
+    }
+
+    &__iban {
+      font-size: 1.2rem;
+    }
+
+    &__currency {
+      padding: 0.2rem 0.8rem;
+      font-size: 1.2rem;
+    }
+  }
+}

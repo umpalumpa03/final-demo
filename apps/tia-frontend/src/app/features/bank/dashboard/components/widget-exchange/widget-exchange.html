@@ -1,0 +1,55 @@
+<div class="exchange-rates">
+  <h2 class="exchange-rates__title">{{ 'dashboard.widgets.exchange.subtitle' | translate }}</h2>
+  @for (rate of exchangeRates$ | async; track rate.code) {
+  <div class="exchange-rate-card">
+    <div class="exchange-rate-card__info">
+      <div class="exchange-rate-card__icon">{{ rate.symbol }}</div>
+      <div class="exchange-rate-card__details-left">
+        <div class="exchange-rate-card__currency">{{ rate.code }}/USD</div>
+        <div
+          class="exchange-rate-card__change"
+          [class.exchange-rate-card__change--positive]="rate.isPositive"
+          [class.exchange-rate-card__change--negative]="!rate.isPositive"
+        >
+          <img
+            [src]="rate.isPositive ? '/images/svg/dashboard/arrow-up.svg' : '/images/svg/dashboard/arrow-down.svg'"
+            [alt]="rate.isPositive ? 'up' : 'down'"
+            class="exchange-rate-card__arrow"
+          />
+          {{ rate.changePercent | number:'1.2-2' }}%
+        </div>
+      </div>
+    </div>
+    <div class="exchange-rate-card__details-right">
+      <div class="exchange-rate-card__rate">
+        {{ rate.rate | number:'1.4-4' }}
+      </div>
+      <div
+        class="exchange-rate-card__rate-change"
+        [class.exchange-rate-card__rate-change--positive]="rate.isPositive"
+        [class.exchange-rate-card__rate-change--negative]="!rate.isPositive"
+      >
+        {{ rate.isPositive ? '+' : '' }}{{ (rate.rate - rate.previousRate) |
+        number:'1.4-4' }}
+      </div>
+    </div>
+  </div>
+  }
+</div>
+
+@if (isLoading$ | async) {
+  <app-route-loader variant="pulsing"  [fillContainer] = 'true'>
+  </app-route-loader>
+} @else if (error$ | async) {
+  <div class="widget-error">
+    <app-error-states
+      variant="failed"
+      header="Failed to load"
+      message="Could not load exchange rates"
+      buttonMessage="Retry"
+      (buttonClick)="retryLoad()"
+      [border]="false"
+    >
+    </app-error-states>
+  </div>
+}

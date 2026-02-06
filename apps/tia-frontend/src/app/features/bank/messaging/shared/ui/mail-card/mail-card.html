@@ -1,18 +1,26 @@
 @if(mail()){
 <div
   class="mail-card"
-  [class.mail-card--read]="mail()?.isRead"
+  [class.mail-card--read]="mail()?.isRead && !isSent() && !isDraft()"
   [class.mail-card--unread]="!mail()?.isRead"
   (click)="onCardClick()"
 >
+  @if(!isSent()){
+  <lib-checkboxes
+    [checked]="checked()"
+    (checkedChange)="onCheckboxChange($event)"
+    (click)="$event.stopPropagation()"
+  >
+  </lib-checkboxes>
+  }
   <app-avatar
-    size="md"
+    [size]="isExtraSmall() ? 'sm' : 'md'"
+    [tone]="isCurrentUser() ? 'solid' : 'soft'"
     [initials]="getInitials(mail()?.senderEmail ?? '')"
   ></app-avatar>
-
   <div class="mail-card__content">
     <div class="mail-card__header">
-      <span class="mail-card__sender">{{ mail()?.senderEmail }}</span>
+      <span class="mail-card__sender">{{ !isSent() ? mail()?.senderEmail : mail()?.receiverEmail }}</span>
       <span class="mail-card__date"
         >{{ mail()?.createdAt | date:'MMM d' }}</span
       >
@@ -21,21 +29,17 @@
       <div class="mail-card__subject">{{ mail()?.subject }}</div>
       <div class="mail-card__icons">
         @if(mail()?.isFavorite){
-        <button
+        <div
           class="mail-card__action-btn mail-card__action-btn--favorite"
-          (click)="onToggleFavorite($event)"
-          title="Favorite"
         >
           <img src="/images/svg/messaging/mail-favorite.svg" alt="Favorite" />
-        </button>
+        </div>
         } @if(mail()?.isImportant){
-        <button
+        <div
           class="mail-card__action-btn--important"
-          (click)="onToggleImportant($event)"
-          title="Important"
         >
           <img src="/images/svg/messaging/mail-important.svg" alt="Important" />
-        </button>
+        </div>
         }
       </div>
     </div>
@@ -44,16 +48,18 @@
   </div>
 
   <div class="mail-card__actions">
+    @if(!isSent()){ @if(!isDraft()){
     <button
       class="mail-card__action-btn--read"
-      (click)="onToggleRead($event)"
-      [title]="mail()?.isRead ? 'Mark as unread' : 'Mark as read'"
+      (click)="onMarkAsRead($event)"
+      title="Mark as read"
     >
       <img
         src="/images/svg/messaging/{{mail()?.isRead ? 'read' : 'unread'}}.svg"
         [alt]="mail()?.isRead ? 'Read' : 'Unread'"
       />
     </button>
+    }
     <button
       class="mail-card__action-btn mail-card__action-btn--delete"
       (click)="onDelete($event)"
@@ -61,6 +67,25 @@
     >
       <img src="/images/svg/messaging/delete.svg" alt="Delete" />
     </button>
+    <app-ui-modal [isOpen]="isDeleteModalOpen()" (closed)="onCancelDelete()">
+      <div class="delete-account">
+        <header class="delete-account__header">
+          <app-library-title
+            [title]="'messaging.deleteModal.title' | translate"
+            [subtitle]="'messaging.deleteModal.subtitle' | translate"
+          ></app-library-title>
+        </header>
+        <footer class="delete-account__footer">
+          <app-button variant="outline" (click)="onCancelDelete()"
+            >{{ 'messaging.deleteModal.cancel' | translate }}</app-button
+          >
+          <app-button variant="destructive" (click)="onConfirmDelete()"
+            >{{ 'messaging.deleteModal.delete' | translate }}</app-button
+          >
+        </footer>
+      </div>
+    </app-ui-modal>
+    }
   </div>
 </div>
 }

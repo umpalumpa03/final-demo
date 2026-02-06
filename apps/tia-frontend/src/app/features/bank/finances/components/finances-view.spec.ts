@@ -1,7 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinancesView } from './finances-view';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 describe('FinancesView', () => {
   let component: FinancesView;
@@ -10,16 +12,23 @@ describe('FinancesView', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinancesView, ReactiveFormsModule],
+      providers: [provideCharts(withDefaultRegisterables())],
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinancesView);
     component = fixture.componentInstance;
 
-    fixture.componentRef.setInput('financeTitle', 'Test Title');
-    fixture.componentRef.setInput('financeSubTitle', 'Test Sub');
-    fixture.componentRef.setInput('activeFilter', 'month');
-    fixture.componentRef.setInput('filterOptions', [{ label: 'Month', type: 'month' }]);
-    fixture.componentRef.setInput('summaryCards', []);
+    fixture.componentRef.setInput('financeTitle', 'Title');
+    fixture.componentRef.setInput('financeSubTitle', 'Sub');
+    fixture.componentRef.setInput('activeFilter', 'custom');
+    fixture.componentRef.setInput('loading', false);
+    fixture.componentRef.setInput('error', null);
+    fixture.componentRef.setInput('filterOptions', []);
+    fixture.componentRef.setInput('summaryCards', [{ label: 'T', value: '1' }]);
+    fixture.componentRef.setInput('charts', []);
+    fixture.componentRef.setInput('categories', []);
+    fixture.componentRef.setInput('transactions', []);
     fixture.componentRef.setInput('filterForm', new FormGroup({
       fromDate: new FormControl('2026-01-01'),
       toDate: new FormControl('2026-01-31')
@@ -28,19 +37,29 @@ describe('FinancesView', () => {
     fixture.detectChanges();
   });
 
-  it('should create component', () => {
-    expect(component).toBeTruthy();
+  it('should cover template loops and validation', () => {
+    const form = component.filterForm();
+    const fromControl = component.getControl('fromDate');
+    
+    fromControl.setErrors({ required: true });
+    fromControl.markAsTouched();
+    expect(component.isFromDateInvalid).toBe(true);
+
+    form.setErrors({ dateRangeInvalid: true });
+    expect(component.isRangeInvalid).toBe(true);
+
+    const spy = vi.spyOn(component.filterChange, 'emit');
+    component.filterChange.emit('month' as any);
+    expect(spy).toHaveBeenCalled();
   });
 
-  it('should return correct form control via getControl', () => {
-    const control = component.getControl('fromDate');
-    expect(control).toBeInstanceOf(FormControl);
-    expect(control.value).toBe('2026-01-01');
-  });
-
-  it('should emit filterChange output', () => {
-    const emitSpy = vi.spyOn(component.filterChange, 'emit');
-    component.filterChange.emit('custom' as any);
-    expect(emitSpy).toHaveBeenCalledWith('custom');
+  it('should cover empty states', () => {
+    fixture.componentRef.setInput('summaryCards', []);
+    fixture.componentRef.setInput('loading', false);
+    fixture.componentRef.setInput('error', null);
+    fixture.detectChanges();
+    
+    const noDataMsg = fixture.nativeElement.querySelector('.no-data');
+    expect(noDataMsg).toBeTruthy();
   });
 });

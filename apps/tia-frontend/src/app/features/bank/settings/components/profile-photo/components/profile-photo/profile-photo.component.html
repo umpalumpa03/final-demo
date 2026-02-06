@@ -1,11 +1,14 @@
 <div class="profile-photo">
   @if (alertType()) {
   <div class="profile-photo__alert-container">
-    <app-alert-types-with-icons
+    <app-dismissible-alerts
       class="profile-photo__alert"
       [alertType]="alertType()!"
+      [alertTitle]="alertType()!"
       [alertMessage]="alertMessage()"
-    ></app-alert-types-with-icons>
+      [alertId]="0"
+      (dismissed)="alertClose.emit()"
+    ></app-dismissible-alerts>
   </div>
   }
 
@@ -26,12 +29,14 @@
             alt="Profile photo"
             class="profile-photo__avatar-main-image"
           />
+          } @else if (defaultAvatarsLoading()) {
+          <app-spinner size="6rem"></app-spinner>
           } @else {
           <app-avatar
             [initials]="initials()"
-            size="xl"
+            size="lg"
             tone="solid"
-            color="blue"
+           class="profile-photo__default-avatar"
           ></app-avatar>
           }
         </div>
@@ -65,7 +70,7 @@
           (click)="onDefaultAvatarClick(avatar.id)"
         >
           <img
-            [src]="getAvatarUrl(avatar.iconUri)"
+            [src]="avatar.imageUrl"
             alt="Default avatar"
             class="profile-photo__avatar-image"
           />
@@ -93,7 +98,46 @@
       </app-button>
     </div>
   </app-basic-card>
+
+  <app-ui-modal
+    [isOpen]="isUploadModalOpen()"
+    (closed)="uploadModalClosed.emit()"
+  >
+    <div
+      class="profile-photo-upload-modal"
+      (dragover)="dragOver.emit($event)"
+      (dragleave)="dragLeave.emit($event)"
+      (drop)="fileDrop.emit($event)"
+    >
+      <header class="profile-photo-upload-modal__header">
+        <h3>{{ 'settings.profile-photo.uploadCustomPhoto' | translate }}</h3>
+        <p>{{ 'settings.profile-photo.subtitle' | translate }}</p>
+      </header>
+
+      <main class="profile-photo-upload-modal__body">
+        <div
+          class="profile-photo-upload-modal__dropzone"
+          [class.profile-photo-upload-modal__dropzone--active]="isDragOver()"
+        >
+          <p>
+            {{ 'settings.profile-photo.dragOrChooseFile' | translate }}
+          </p>
+          <app-button
+            variant="default"
+            size="default"
+            (click)="fileInput.click()"
+          >
+            {{ 'settings.profile-photo.chooseFile' | translate }}
+          </app-button>
+          <input
+            #fileInput
+            type="file"
+            accept="image/png,image/jpeg"
+            class="profile-photo-upload-modal__file-input"
+            (change)="fileInputChange.emit($event)"
+          />
+        </div>
+      </main>
+    </div>
+  </app-ui-modal>
 </div>
-
-
-

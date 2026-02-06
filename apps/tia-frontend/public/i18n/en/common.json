@@ -8,7 +8,12 @@
     "back": "Back",
     "next": "Next",
     "close": "Close",
-    "logout":"Log Out"
+    "logout": "Log Out",
+    "continue": "Continue",
+    "stay": "Stay",
+    "leave": "Leave",
+    "ungrouped": "Ungrouped",
+    "resend": "Resend"
   },
   "labels": {
     "loading": "Loading...",
@@ -16,11 +21,17 @@
     "success": "Operation successful",
     "noData": "No data available"
   },
+  "alertMessages": {
+    "success": "success",
+    "successMessage": "Your changes have been saved successfully!"
+  },
   "validation": {
     "required": "This field is required",
     "email": "Please enter a valid email",
     "minLength": "Minimum {{min}} characters required",
-    "maxLength": "Maximum {{max}} characters allowed"
+    "maxLength": "Maximum {{max}} characters allowed",
+    "unsavedChanges": "You have unsaved changes. Do you really want to leave?",
+    "confirmAction": "Confirm your action"
   },
   "navigation": {
     "dashboard": "Dashboard",

@@ -32,21 +32,25 @@ export type LayoutType = 'grid' | 'list';
 
 export interface TreeGroupConfig {
   id: string;
-  title: string;
+  groupName: string;
+  templateCount?: number;
   subtitle?: string;
   icon?: string;
   expanded?: boolean;
 }
 
 export interface TreeItem extends DraggableItemType {
-  groupId: string;
+  groupId: string | null;
   order: number;
+  serviceId?: string;
+  accountNumber?: string;
+  amountDue?: number;
 }
 
 export interface TreeItemMovedEvent {
   itemId: string;
-  fromGroupId: string;
-  toGroupId: string;
+  fromGroupId: string | null;
+  toGroupId: string | null;
   newOrder: number;
 }
 

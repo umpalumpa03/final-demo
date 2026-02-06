@@ -63,7 +63,7 @@ export interface TableConfig {
 
 export type TransactionAction = 'repeat' | 'categorize';
 
-export interface TransactionActionEvent {
+export interface  TransactionActionEvent {
   action: TransactionAction;
   rowId: string;
   rowData?: PrintedData[];

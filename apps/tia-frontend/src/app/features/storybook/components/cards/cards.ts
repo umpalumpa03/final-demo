@@ -22,7 +22,7 @@ import { CategoryCard } from '@tia/shared/lib/cards/category-card/category-card'
     LibraryTitle,
     StatisticCard,
     ButtonComponent,
-    CategoryCard,
+    CategoryCard,BasicCard
   ],
   templateUrl: './cards.html',
   styleUrl: './cards.scss',

@@ -6,11 +6,18 @@
   },
   "compose": {
     "compose": "Compose",
-    "title": "messages",
+    "composeHeader": "Compose Email",
+    "title": "Create a new email message",
     "to": "To",
+    "cc": "CC (Optional)",
     "subject": "Subject",
-    "body": "Message",
-    "send": "Send"
+    "subjectPlaceholder": "Email subject",
+    "message": "Message",
+    "messagePlaceholder": "Type your message here...",
+    "markAsImportant": "Mark as important",
+    "send": "Send",
+    "saveDraft": "Save Draft",
+    "cancel": "Cancel"
   },
   "routes": {
     "inbox": "Inbox",
@@ -18,5 +25,49 @@
     "drafts": "Drafts",
     "important": "Important",
     "favorites": "Favorites"
+  },
+  "mail-header": {
+    "selectAll": "Select All"
+  },
+  "mail-detail": {
+    "draft": "Draft: ",
+    "from": "From: ",
+    "to": "To: ",
+    "reply": "Reply",
+    "markAsFavorite": "Mark as favorite",
+    "unmarkAsFavorite": "Unfavorite",
+    "delete": "Delete"
+  },
+  "mail-form": {
+    "sendReply": "Send Reply",
+    "yourReply": "Your Reply",
+    "typeYourReply": "Type your reply..."
+  },
+  "deleteModal": {
+    "title": "Delete Email",
+    "subtitle": "Are you sure you want to delete this email? This action cannot be undone.",
+    "cancel": "Cancel",
+    "delete": "Delete"
+  },
+  "storeErrors": {
+    "loadTotalCount": "Failed to load total count",
+    "loadDraftsTotalCount": "Failed to load drafts total count",
+    "loadImportantUnreadCount": "Failed to load important unread count",
+    "toggleFavorite": "Failed to toggle favorite",
+    "loadMails": "Failed to load mails",
+    "markAsRead": "Failed to mark mail as read",
+    "deleteMail": "Failed to delete mail",
+    "deleteMails": "Failed to delete mails",
+    "searchFailed": "Search failed",
+    "loadMailReplies": "Failed to load mail replies",
+    "sendEmail": "Failed to send email",
+    "loadEmailDetail": "Failed to load email detail",
+    "sendDraft": "Failed to send draft",
+    "sendMailReply": "Failed to send mail reply"
+  },
+  "storeSuccess": {
+    "emailSent": "Email sent successfully",
+    "draftSent": "Draft sent successfully",
+    "replySent": "Reply sent successfully"
   }
 }

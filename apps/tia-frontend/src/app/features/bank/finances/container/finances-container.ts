@@ -1,22 +1,26 @@
-import { Component, inject, OnInit, computed, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
-import { FinancesStore } from '../store/finances.store';
-import {
-  FINANCES_FILTER_OPTIONS,
-  CARDS_CONFIG,
-} from '../config/filter-options.models';
-import { FilterType, SummaryCard } from '../models/filter.model';
+import { 
+  Component, 
+  inject, 
+  OnInit, 
+  DestroyRef, 
+  ChangeDetectionStrategy 
+} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { dateRangeValidator } from '../validators/date-range.validator';
+
+import { FinancesStore } from '../store/finances.store';
 import { FinancesView } from '../components/finances-view';
+import { FINANCES_FILTER_OPTIONS } from '../config/filter-options.config';
+import { FilterType } from '../models/filter.model';
+import { dateRangeValidator } from '../validators/date-range.validator';
 
 @Component({
   selector: 'app-finances-container',
   imports: [FinancesView],
   templateUrl: './finances-container.html',
   styleUrl: './finances-container.scss',
-  changeDetection:ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FinancesContainer implements OnInit {
   readonly store = inject(FinancesStore);
@@ -24,6 +28,7 @@ export class FinancesContainer implements OnInit {
 
   public readonly financeTitle = 'My Finances';
   public readonly financeSubTitle = 'Track your income, expenses, and savings';
+  
   readonly filterOptions = FINANCES_FILTER_OPTIONS;
   activeFilter: FilterType = 'month';
 
@@ -41,35 +46,9 @@ export class FinancesContainer implements OnInit {
     { validators: dateRangeValidator('fromDate', 'toDate') },
   );
 
-  public readonly summaryCardsData = computed<SummaryCard[]>(() => {
-    const storeData = this.store.summary();
-    if (!storeData) return [];
-
-    return CARDS_CONFIG.map((config) => {
-      const calculatedType = config.dynamicType
-        ? storeData[config.key] >= 0
-          ? 'positive'
-          : 'negative'
-        : config.type;
-      const finalType: 'positive' | 'negative' =
-        calculatedType === 'positive' || calculatedType === 'negative'
-          ? calculatedType
-          : 'positive';
-
-      return {
-        label: config.label,
-        value: config.isPct
-          ? `${storeData[config.key]}%`
-          : this.formatCurrency(storeData[config.key] as number),
-        change: `${storeData[config.changeKey] >= 0 ? '+' : ''}${storeData[config.changeKey]}%`,
-        changeType: finalType,
-        icon: `images/svg/cards/${config.icon}.svg`,
-      };
-    });
-  });
-
-  ngOnInit() {
+  ngOnInit(): void {
     this.fetchData();
+    
     this.filterForm.valueChanges
       .pipe(
         debounceTime(500),
@@ -80,28 +59,23 @@ export class FinancesContainer implements OnInit {
       .subscribe(() => this.fetchData());
   }
 
+ 
   public onFilterChange(type: FilterType): void {
     this.activeFilter = type;
     this.fetchData();
   }
 
-  private fetchData() {
+ 
+  private fetchData(): void {
     const { fromDate, toDate } = this.filterForm.getRawValue();
-    this.store.loadSummary({
+    this.store.loadAllData({
       from: fromDate ?? '',
       to: this.activeFilter === 'custom' ? (toDate ?? undefined) : undefined,
     });
   }
 
-  private formatCurrency(value: number): string {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-    }).format(value);
-  }
-
-  public handleInput(controlName: 'fromDate' | 'toDate', event: Event) {
+ 
+  public handleInput(controlName: 'fromDate' | 'toDate', event: Event): void {
     const target = event.target as HTMLInputElement;
     this.filterForm
       .get(controlName)

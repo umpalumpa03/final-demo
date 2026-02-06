@@ -2,18 +2,20 @@
 @use '../../../../shared/styles/mixins' as *;
 
 .sign-in {
-  &__header {
-    @include font-inter(700, 3.6rem, 4rem);
-    margin-bottom: 4rem;
-  }
+  @include display-flex(column);
+  gap: 4rem;
+  max-height: 100vh;
 
   &__form {
     @include display-flex(column);
-    gap: 1.6rem;
-    margin-bottom: 1.6rem;
+    gap: 2.6rem;
+    margin-bottom: 2.6rem;
+    height: 100%;
   }
 
-  &__switch, &__link {
+  &__switch,
+  &__link {
+    color: $gray-700;
     font-size: 1.4rem;
   }
 
@@ -22,7 +24,12 @@
     cursor: pointer;
   }
 
-  &__switch {
+  &__switch,
+  &__loader {
     @include flex-center();
+  }
+
+  &__loader {
+    height: 65%;
   }
 }

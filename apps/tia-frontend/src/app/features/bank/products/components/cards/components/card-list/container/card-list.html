@@ -1,62 +1,44 @@
+@if (viewData$ | async; as data) {
 <div class="card-list">
-  @if (vm$ | async; as vm) {
-    @if (vm.loading) {
-      <div class="card-list__loading">Loading...</div>
-    }
-    
-    @if (vm.error; as errorMsg) {
-      <div class="card-list__error">{{ errorMsg }}</div>
-    }
-    
-    @for (group of vm.cardGroups; track group.account.id) {
-      <div class="card-list__group">
-        <div class="card-list__account-header">
-          <div class="card-list__account-info">
-            <span class="card-list__account-name">{{ group.account.name }}</span>
-            <span class="card-list__account-number">{{ group.account.iban }}</span>
-          </div>
-          <app-badges
-            [label]="group.cardImages.length + ' Card' + (group.cardImages.length !== 1 ? 's' : '')"
-            variant="secondary"
-            size="small"
-            shape="rounded"
-          ></app-badges>
-        </div>
-        
-        @if (group.cardImages.length > 0) {
-          <div class="card-list__cards-wrapper">
-            <div class="card-list__cards">
-              @for (cardImage of group.cardImages; track cardImage.cardId; let idx = $index) {
-                <div 
-                  class="card-list__card" 
-                  [class.card-list__card--stacked]="idx !== getCardIndex(group.account.id)"
-                  [class.card-list__card--active]="idx === getCardIndex(group.account.id)"
-                  [style.z-index]="idx === getCardIndex(group.account.id) ? 100 : group.cardImages.length - idx"
-                  (click)="handleCardClick(group, cardImage.cardId, idx)"
-                >
-                  <img 
-                    [src]="cardImage.imageBase64" 
-                    [alt]="'Card ending in ' + cardImage.cardId.slice(-4)"
-                    class="card-list__card-image"
-                  />
-                </div>
-              }
-            </div>
-            
-            @if (group.cardImages.length > 1) {
-              <button 
-                class="card-list__view-all-button"
-                (click)="handleViewAllCards(group.account.id)"
-                type="button"
-              >
-                Click to view all cards
-              </button>
-            }
-          </div>
-        } @else {
-          <div class="card-list__no-cards">No cards available for this account</div>
-        }
-      </div>
-    }
+  <div class="card-list__header">
+    <h1 class="card-list__title"> {{'my-products.card.card-list.myCards' | translate }}</h1>
+    <h2 class="card-list__subtitle">{{'my-products.card.card-list.manageAccounts' | translate }}</h2>
+  </div>
+  @if (data.showSuccessAlert) {
+<div class="card-list__alert-container">
+  <app-simple-alerts
+    alertType="success"
+    alertMessage="{{'my-products.card.card-list.alertMessage' | translate }}"
+  />
+</div>
+}
+
+  @if (data.loading) {
+  <div class="card-list__loading">
+    <app-route-loader variant="pulsing" />
+  </div>
+  } @else if (data.error; as errorMsg) {
+  <app-error-states
+    variant="failed"
+    header="Loading Failed"
+    [message]="errorMsg"
+    buttonMessage="Retry"
+  />
+  } @else { @for (group of data.groups; track group.account.id)
+  {
+  <div class="card-list__group">
+    <app-card-group-item
+      [group]="group"
+      (cardClicked)="handleCardClick($event)"
+      (viewAllClicked)="handleViewAllCards($event)"
+    />
+  </div>
+  }
+  <app-add-card-button (clicked)="handleOpenModal()" />
   }
 </div>
+
+@if (data.isModalOpen) {
+<app-create-card [isOpen]="data.isModalOpen" (closed)="handleCloseModal()" />
+} 
+}

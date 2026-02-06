@@ -1,0 +1,22 @@
+<div class="transaction-card-header">
+  <div class="transaction-card-header__card-visual">
+    <img
+      [src]="imageBase64()"
+      [alt]="cardName()"
+      class="transaction-card-header__image"
+    />
+  </div>
+  
+  <div class="transaction-card-header__info">
+    <h3 class="transaction-card-header__card-name">{{ cardName() }}</h3>
+    <p class="transaction-card-header__card-number">{{ maskedNumber() }}</p>
+    <p class="transaction-card-header__linked-account">
+      Linked to: {{ linkedAccountName() }}
+    </p>
+  </div>
+
+  <div class="transaction-card-header__total">
+    <p class="transaction-card-header__total-label">Total Transactions</p>
+    <p class="transaction-card-header__total-count">{{ totalTransactions() }}</p>
+  </div>
+</div>

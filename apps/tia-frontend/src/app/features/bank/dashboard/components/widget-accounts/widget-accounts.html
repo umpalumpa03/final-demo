@@ -1,0 +1,56 @@
+<app-scroll-area
+  [height]="widgetHeight()"
+  [hideBorder]="true"
+  scrollbar="hidden"
+>
+
+  <div class="accounts">
+    <h2 class="accounts__title">{{ 'dashboard.widgets.accounts.subtitle' | translate }}</h2>
+
+    @for (account of accounts$ | async; track account.id) {
+    <div class="account-card">
+      <div class="account-card__header">
+        <div class="account-card__header-top">
+          {{ account.friendlyName }}
+          <span class="account-card__header-top--iban">
+            ****{{ account.iban.slice(-4) }}
+          </span>
+        </div>
+        <div class="account-card__header-bottom"></div>
+      </div>
+
+      <div class="account-card__balance">
+        {{account.currency | currencySymbol }}{{ account.balance | number: '1.2-2' }}
+      </div>
+    </div>
+    }
+  </div>
+
+  @if (isLoading$ | async) {
+      <app-route-loader variant="pulsing"  [fillContainer] = 'true'>
+      </app-route-loader>
+  } @else if (error$ | async) {
+    <div class="widget-error">
+      <app-error-states
+        variant="failed"
+        header="Failed to load"
+        message="Could not load accounts"
+        buttonMessage="Retry"
+        (buttonClick)="retryLoad()"
+        [border]="false"
+      >
+      </app-error-states>
+    </div>
+  } @else if (isEmpty$ | async) {
+    <div class="widget-error">
+      <app-error-states
+        variant="not-found"
+        header="Empty"
+        message="Could not find any accounts"
+        [showButton]="false"
+        [border]="false"
+      >
+      </app-error-states>
+    </div>
+  }
+</app-scroll-area>

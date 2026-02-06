@@ -1,0 +1,12 @@
+@use '../../../../shared/styles/palette' as *;
+@use '../../../../shared/styles/mixins' as *;
+.transaction-filters-wrapper {
+  margin-bottom: 2.4rem;
+}
+
+.alert-message {
+  position: fixed;
+  z-index: 1121;
+  top: 7rem;
+  right: 1rem;
+}

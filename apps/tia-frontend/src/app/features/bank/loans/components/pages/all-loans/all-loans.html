@@ -1,31 +1,24 @@
 <section class="loans">
-    @for (loan of loans$ | async; track loan.id) {
+    @for (loan of loans(); track loan.id) {
     <lib-loan-card [loan]="loan" (cardClick)="onCardClick($event)" (rename)="onRenameLoan($event)">
     </lib-loan-card>
     } @empty {
-    <p>No loans found.</p>
+    <app-error-states variant="not-found" [header]="'loans.empty.all.title' | translate"
+        [message]="'loans.empty.all.message' | translate" [buttonMessage]="'loans.empty.all.button' | translate"
+        [border]="false" width="100%" height="30rem" (buttonClick)="onRequestLoan()">
+    </app-error-states>
     }
 </section>
 
-<app-loan-details [isOpen]="isDetailsOpen()" [loan]="selectedLoan()" (close)="closeModals()"
-    (calculatePrepayment)="onOpenPrepayment($event)">
+<app-loan-details [isOpen]="isDetailsOpen()" [loan]="selectedLoanDetails()" [isLoading]="isDetailsLoading()"
+    (close)="closeModals()" (calculatePrepayment)="onOpenPrepayment($event)">
 </app-loan-details>
 
 <app-ui-modal [isOpen]="isPrepaymentOpen()" (closed)="closeModals()">
+    @let activePrepayment = prepaymentLoan();
 
-    @if (selectedLoan(); as loan) {
-    <div class="modal-content-wrapper">
-
-        @if (step() === 'options') {
-        <app-prepayment-option-step [loan]="loan" (cancel)="closeModals()" (calculate)="onCalculatePrepayment($event)">
-        </app-prepayment-option-step>
-        }
-
-        @if (step() === 'review' && calculationResult(); as result) {
-        <app-prepayment-review [calculationResult]="result" (cancel)="step.set('options')" (confirmPay)="onFinalPay()">
-        </app-prepayment-review>
-        }
-
-    </div>
+    @if (activePrepayment) {
+    <app-prepayment-container [loan]="activePrepayment" (close)="closeModals()">
+    </app-prepayment-container>
     }
 </app-ui-modal>

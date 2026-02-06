@@ -1,6 +1,7 @@
+@if (isLoading()) {
+<div class="global-loading">
+  <app-route-loader variant="pulsing"></app-route-loader>
+</div>
+}
 
-  <a routerLink="/auth" routerLinkActive="active">A</a>
-  <a routerLink="/bank" routerLinkActive="active">B</a>
-  <a routerLink="/storybook" routerLinkActive="active">S</a>
-
-  <router-outlet></router-outlet>
+<router-outlet></router-outlet>

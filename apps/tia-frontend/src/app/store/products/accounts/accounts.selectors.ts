@@ -6,10 +6,13 @@ export const {
   selectAccounts,
   selectSelectedAccountId,
   selectIsLoading,
+  selectIsFetching,
   selectError,
   selectIsCreating,
   selectCreateError,
   selectIsCreateModalOpen,
+  selectIsUpdatingFriendlyName,
+  selectUpdateFriendlyNameError,
 } = accountsFeature;
 
 export const selectCurrentAccounts = createSelector(
@@ -51,4 +54,16 @@ export const selectAccountOptions = createSelector(selectAccounts, (accounts) =>
     label: `${acc.friendlyName || acc.name} (${acc.currency}) - ${acc.balance} ${acc.currency}`,
     value: acc.id,
   })),
+);
+
+export const selectGelAccountOptions = createSelector(
+  selectAccounts,
+  (accounts) =>
+    (accounts ?? [])
+      .filter((acc) => acc.currency === 'GEL')
+      .map((acc) => ({
+        label: `${acc.friendlyName || acc.name} (${acc.currency}) - ${acc.balance} ${acc.currency}`,
+        value: acc.id,
+        isFavorite: acc.isFavorite,
+      })),
 );
