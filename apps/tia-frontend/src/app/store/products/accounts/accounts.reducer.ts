@@ -1,6 +1,7 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { initialAccountsState } from './accounts.state';
 import { AccountsActions } from './accounts.actions';
+import { UserInfoActions } from '../../user-info/user-info.actions';
 
 export const accountsFeature = createFeature({
   name: 'accounts',
@@ -91,6 +92,7 @@ export const accountsFeature = createFeature({
       isUpdatingFriendlyName: false,
       updateFriendlyNameError: error,
     })),
+    on(UserInfoActions.loadUser, () => initialAccountsState),
   ),
 });
 

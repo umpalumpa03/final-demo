@@ -21,6 +21,7 @@ describe('Accounts Reducer', () => {
     openedAt: '2026-01-01',
     closedAt: '',
     isFavorite: false,
+    isHidden: false,
   };
 
   const mockAccount2 = {
@@ -38,6 +39,7 @@ describe('Accounts Reducer', () => {
     openedAt: '2026-01-02',
     closedAt: '',
     isFavorite: true,
+    isHidden: false,
   };
 
   it('should return initial state', () => {

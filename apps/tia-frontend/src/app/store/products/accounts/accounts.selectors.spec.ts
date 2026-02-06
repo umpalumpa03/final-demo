@@ -27,6 +27,7 @@ describe('Accounts Selectors', () => {
       openedAt: '2026-01-01',
       closedAt: '',
       isFavorite: true,
+      isHidden: false,
     },
     {
       id: '2',
@@ -43,6 +44,7 @@ describe('Accounts Selectors', () => {
       openedAt: '2026-01-01',
       closedAt: '',
       isFavorite: false,
+      isHidden: false,
     },
   ];
 
@@ -140,6 +142,7 @@ describe('Accounts Selectors', () => {
       openedAt: '2026-01-01',
       closedAt: '',
       isFavorite: false,
+      isHidden: false,
     };
     const result = selectGelAccountOptions.projector([
       ...mockAccounts,
