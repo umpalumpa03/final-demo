@@ -43,7 +43,9 @@
   [isOpen]="isModalOpen()"
   (closed)="modalOpenAction.emit()"
 >
-  @if (currentModalConfig(); as config) {
+  @if (selectLoading()) {
+  <app-spinner size="large"></app-spinner>
+  } @if (!selectLoading() && currentModalConfig(); as config) {
   <app-library-title
     [title]="config.title"
     [subtitle]="config.subtitle"
@@ -58,11 +60,10 @@
       field.controlName) { @if(field.type === 'dropdown') {
       <lib-select
         [formControlName]="field.controlName"
-        [options]="templateCategories()"
         [config]="{ label: field.label, placeholder: field.placeholder }"
-        (selectionChange)="onDropdownChange(field.controlName, $event)"
+        [options]="templateCategories()"
+        (valueChange)="onCategorySelect($event)"
       ></lib-select>
-
       }@else {
       <lib-text-input
         [formControlName]="field.controlName"

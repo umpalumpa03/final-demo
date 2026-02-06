@@ -105,15 +105,8 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
         controlName: 'serviceProvider',
         required: true,
       },
-      {
-        type: 'text',
-        label: 'Account Number *',
-        placeholder: 'Enter account number',
-        controlName: 'accountNumber',
-        required: true,
-      },
     ],
-    formSubmitType: 'create-group',
+    formSubmitType: 'create-template',
   },
 
   [ModalType.RenameTemplate]: {

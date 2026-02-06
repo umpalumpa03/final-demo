@@ -9,6 +9,9 @@ import {
 import { PaybillTemplates } from '../components/paybill-templates';
 import { Store } from '@ngrx/store';
 import {
+  selectActiveCategory,
+  selectActiveProvider,
+  selectActiveProviderOption,
   selectCategories,
   selectLoading,
   selectProviders,
@@ -28,6 +31,7 @@ import {
   TreeItemMoved,
 } from '../models/paybill-templates.model';
 import { ModalConfig } from '../configs/cta-buttons.config';
+import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
 
 @Component({
   selector: 'app-paybill-templates-container',
@@ -118,6 +122,7 @@ export class PaybillTemplatesContainer implements OnInit {
         );
       }
     },
+    'create-template': (values) => {},
   };
 
   // On Init Load Data
@@ -239,5 +244,29 @@ export class PaybillTemplatesContainer implements OnInit {
 
     action(id);
     this.handleModalToggle();
+  }
+
+  public providerOption = this.store.selectSignal(selectActiveProviderOption);
+  public providerOption2 = this.store.selectSignal(selectActiveCategory);
+  public providerOption3 = this.store.selectSignal(selectProviders);
+  public selectLoading = this.store.selectSignal(selectLoading);
+
+  public counter = 0;
+  // Create Template Logic - to be implemented
+  onCategorySelect(category: InputFieldValue): void {
+    if (category === '') {
+      return;
+    }
+    console.log(category);
+    if (this.counter === 0) {
+      this.store.dispatch(
+        PaybillActions.selectCategory({ categoryId: category as string }),
+      );
+      this.counter++;
+    }
+
+    console.log(this.providerOption2());
+
+    console.log(this.selectLoading());
   }
 }

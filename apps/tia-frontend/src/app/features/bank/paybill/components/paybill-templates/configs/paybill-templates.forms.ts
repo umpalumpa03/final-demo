@@ -14,7 +14,6 @@ export function createTemplateForm(fb: FormBuilder) {
     name: ['', Validators.required],
     category: ['', Validators.required],
     serviceProvider: ['', Validators.required],
-    accountNumber: ['', Validators.required],
   });
 }
 

@@ -248,21 +248,21 @@ export class PaybillEffect {
     );
   });
 
-  selectCategoryNavigation$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(PaybillActions.selectCategory),
-        tap(({ categoryId }) => {
-          if (categoryId.toUpperCase() !== 'TEMPLATES') {
-            this.router.navigate([
-              '/bank/paybill/pay',
-              categoryId.toLowerCase(),
-            ]);
-          }
-        }),
-      ),
-    { dispatch: false },
-  );
+  // selectCategoryNavigation$ = createEffect(
+  //   () =>
+  //     this.actions$.pipe(
+  //       ofType(PaybillActions.selectCategory),
+  //       tap(({ categoryId }) => {
+  //         if (categoryId.toUpperCase() !== 'TEMPLATES') {
+  //           this.router.navigate([
+  //             '/bank/paybill/pay',
+  //             categoryId.toLowerCase(),
+  //           ]);
+  //         }
+  //       }),
+  //     ),
+  //   { dispatch: false },
+  // );
 
   selectProviderNavigation$ = createEffect(
     () =>

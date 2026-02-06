@@ -63,6 +63,12 @@ export const selectActiveProvider = createSelector(
   },
 );
 
+export const selectActiveProviderOption = createSelector(
+  selectActiveProvider,
+  (provider) =>
+    provider ? [{ label: provider.name ?? '', value: provider.id }] : [],
+);
+
 export const selectLoading = createSelector(
   selectPaybillState,
   (state) => state.loading,
@@ -137,6 +143,5 @@ export const selectTemplatesGroupWithConfigs = createSelector(
 
 export const selectPaymentFields = createSelector(
   selectPaybillState,
-  (state) => state.paymentDetails?.fields ?? []
+  (state) => state.paymentDetails?.fields ?? [],
 );
-

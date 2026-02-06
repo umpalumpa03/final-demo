@@ -6,6 +6,7 @@ import {
   inject,
   input,
   output,
+  signal,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TreeContainer } from '@tia/shared/lib/drag-n-drop/components/tree-container/tree-container';
@@ -36,6 +37,8 @@ import {
   createGroupForm,
   createTemplateForm,
 } from '../configs/paybill-templates.forms';
+import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
+import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 
 @Component({
   selector: 'app-paybill-templates',
@@ -48,6 +51,7 @@ import {
     LibraryTitle,
     Dropdowns,
     ReactiveFormsModule,
+    Spinner,
   ],
   templateUrl: './paybill-templates.html',
   styleUrl: './paybill-templates.scss',
@@ -174,24 +178,28 @@ export class PaybillTemplates {
       });
     }
   }
-  // /////////////////////////////////////////////
-  //  RIGHT NOW UNUSED LOGIC KEPT FOR REFERENCE //
-  // /////////////////////////////////////////////
+  // // /////////////////////////////////////////////
+  // //  RIGHT NOW UNUSED LOGIC KEPT FOR REFERENCE //
+  // // /////////////////////////////////////////////
   public templateCategories = input.required<
     {
       label: string;
       value: string;
     }[]
   >();
-  public templateProviders = input<PaybillProvider[]>();
+  public serviceProvider = input.required<
+    {
+      label: string;
+      value: string;
+    }[]
+  >();
 
-  public categorySelected = output<string>();
+  // public templateProviders = input<PaybillProvider[]>();
 
-  onDropdownChange(controlName: string, event: Event) {
-    const value = (event.target as HTMLSelectElement).value;
+  public categorySelected = output<InputFieldValue>();
+  public selectLoading = input<boolean>(false);
 
-    if (controlName === 'category' && value) {
-      this.categorySelected.emit(value);
-    }
+  onCategorySelect(category: InputFieldValue): void {
+    this.categorySelected.emit(category);
   }
 }

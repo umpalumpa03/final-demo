@@ -4,17 +4,25 @@
   [activeModal]="modalType()"
   [isModalOpen]="isModalOpen()"
   [currentModalConfig]="currentModalConfig()"
-  [templateCategories]="categoryOptions()"
-  [templateProviders]="templateProviders()"
   [selectedDeleteItem]="selectedItemName()"
   [isLoading]="isLoading()"
+  [templateCategories]="categoryOptions()"
+  [serviceProvider]="providerOption()"
   (headerButtonAction)="handleHeaderAction($event)"
   (modalOpenAction)="handleModalToggle()"
   (formSubmit)="handleFormSubmit($event)"
-  (categorySelected)="onCategorySelected($event)"
   (deleteTemplateModal)="deleteTemplate()"
   (treeAction)="onTreeAction($event)"
   (deleteGroupModal)="deleteGroup()"
   (treeItemMoved)="templateMoved($event)"
   [selectAll]="selectAll()"
+  [serviceProvider]="categoryOptions()"
+  (categorySelected)="onCategorySelect($event)"
+  [selectLoading]="selectLoading()"
 ></app-paybill-templates>
+
+<!-- [serviceProvider]="serivceProvider()" -->
+<!-- 
+  [templateProviders]="templateProviders()" 
+    (categorySelected)="onCategorySelected($event)"
+  -->

@@ -63,7 +63,8 @@ export interface HeaderCtaButton {
 export type formSubmitType =
   | 'create-group'
   | 'rename-template'
-  | 'rename-group';
+  | 'rename-group'
+  | 'create-template';
 export interface FormSubmitPayload {
   type: formSubmitType;
   values: Record<string, string>;

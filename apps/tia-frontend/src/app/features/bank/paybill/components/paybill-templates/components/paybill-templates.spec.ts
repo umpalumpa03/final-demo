@@ -103,14 +103,4 @@ describe('PaybillTemplates', () => {
       );
     });
   });
-
-  describe('Dropdown Logic', () => {
-    it('should emit categorySelected on dropdown change', () => {
-      const spy = vi.spyOn(component.categorySelected, 'emit');
-      const mockEvent = { target: { value: 'cat_123' } } as any;
-
-      component.onDropdownChange('category', mockEvent);
-      expect(spy).toHaveBeenCalledWith('cat_123');
-    });
-  });
 });
