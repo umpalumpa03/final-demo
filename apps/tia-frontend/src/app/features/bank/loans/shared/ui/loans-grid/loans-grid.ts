@@ -17,15 +17,15 @@ import { TranslatePipe } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoansGrid {
-  loans = input.required<ILoan[]>();
-  variant = input<'default' | 'colored'>('default');
-  emptyConfig = input.required<{
+  public readonly loans = input.required<ILoan[]>();
+  public readonly variant = input<'default' | 'colored'>('default');
+  public readonly emptyConfig = input.required<{
     title: string;
     message: string;
     button: string;
   }>();
 
-  cardClick = output<string>();
-  rename = output<{ id: string; name: string }>();
-  emptyClick = output<void>();
+  public readonly cardClick = output<string>();
+  public readonly rename = output<{ id: string; name: string }>();
+  public readonly emptyClick = output<void>();
 }
