@@ -25,7 +25,7 @@ export interface PaybillErrorPayload {
 export interface PaybillState {
   categories: PaybillCategory[];
   providers: PaybillProvider[];
-  filteredProviders?: PaybillProvider[];
+  filteredProviders?: PaybillProvider[][];
   selectedCategoryId: string | null;
   selectedProviderId: string | null;
   loading: boolean;
@@ -39,6 +39,7 @@ export interface PaybillState {
   templates: Templates[];
   notifications: PaybillNotification[];
   paymentDetails: PaybillPaymentDetails | null;
+  currentLevel: number;
 }
 
 export const initialPaybillState: PaybillState = {
@@ -58,4 +59,5 @@ export const initialPaybillState: PaybillState = {
   notifications: [],
   paymentDetails: null,
   filteredProviders: [],
+  currentLevel: 0,
 };

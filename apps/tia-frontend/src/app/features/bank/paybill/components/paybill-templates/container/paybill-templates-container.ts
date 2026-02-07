@@ -261,10 +261,11 @@ export class PaybillTemplatesContainer implements OnInit {
   public parentProviderOptions = this.store.selectSignal(
     selectProvidersDropdown,
   );
-  public childProviderOptions = this.store.selectSignal(
-    selectFilteredProviders,
+  public childProviderOptions = computed(() =>
+    this.store.selectSignal(selectFilteredProviders)(),
   );
 
+  public currentLevel = signal<number>(0);
   public isCategorySelected = computed(
     () => this.store.selectSignal(selectSelectedCategoryId)() !== null,
   );
@@ -279,16 +280,22 @@ export class PaybillTemplatesContainer implements OnInit {
     this.store.dispatch(
       PaybillActions.selectCategory({ categoryId: category as string }),
     );
+
+    this.currentLevel.set(0);
   }
 
-  onParentProviderSelect(providerId: string): void {
-    if (!providerId) return;
+  onParentProviderSelect(info: any): void {
+    if (!info.providerId) return;
 
-    this.store.dispatch(PaybillActions.selectProvider({ providerId }));
-  }
+    const currentLevel = info.index;
 
-  onChildProviderSelect(providerId: string): void {
-    // Handle final provider selection
-    console.log('Final provider selected:', providerId);
+    this.store.dispatch(
+      TemplatesPageActions.selectProvider({
+        providerId: info.providerId,
+        level: currentLevel,
+      }),
+    );
+
+    console.log(currentLevel, '____CURRENT_____');
   }
 }

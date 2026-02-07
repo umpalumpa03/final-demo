@@ -137,5 +137,16 @@ export const TemplatesPageActions = createActionGroup({
     }>(),
     'Create Template Success': props<{ message: string }>(),
     'Create Template Failure': props<{ error: string }>(),
+    'Select Provider': props<{
+      providerId: string;
+      level: number;
+    }>(),
+    'Load Child Providers Success': props<{
+      providers: PaybillProvider[];
+      level: number;
+    }>(),
+    'Load Child Providers Failure': props<{
+      error: string;
+    }>(),
   },
 });

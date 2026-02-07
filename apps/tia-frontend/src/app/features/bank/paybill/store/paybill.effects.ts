@@ -18,6 +18,7 @@ import { PaybillActions, TemplatesPageActions } from './paybill.actions';
 import {
   selectNotifications,
   selectPaymentPayload,
+  selectProviders,
   selectSelectedCategoryId,
   selectSelectedProviderId,
 } from './paybill.selectors';
@@ -573,4 +574,28 @@ export class PaybillEffect {
       ),
     );
   });
+
+  loadChildProviders$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TemplatesPageActions.selectProvider),
+      withLatestFrom(this.store.select(selectProviders)),
+      map(([{ providerId, level }, allProviders]) => {
+        const childProviders = allProviders.filter(
+          (p) => p.parentId === providerId,
+        );
+
+        return TemplatesPageActions.loadChildProvidersSuccess({
+          providers: childProviders,
+          level: level + 1,
+        });
+      }),
+      catchError((error) =>
+        of(
+          TemplatesPageActions.loadChildProvidersFailure({
+            error: error.message,
+          }),
+        ),
+      ),
+    ),
+  );
 }

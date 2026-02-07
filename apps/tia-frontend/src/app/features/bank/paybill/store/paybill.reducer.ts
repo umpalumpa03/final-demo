@@ -1,6 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { PaybillActions, TemplatesPageActions } from './paybill.actions';
 import { initialPaybillState } from './paybill.state';
+import { PaybillProvider } from '../components/paybill-main/shared/models/paybill.model';
 
 export const paybillReducer = createReducer(
   initialPaybillState,
@@ -35,15 +36,22 @@ export const paybillReducer = createReducer(
     selectedProviderId: null,
     selectedProvider: null,
     providers: [],
+    filteredProviders: [],
     loading: true,
     error: null,
   })),
+  on(PaybillActions.loadProvidersSuccess, (state, { providers }) => {
+    const fitered = state.selectedProviderId
+      ? providers.filter((p) => p.parentId === state.selectedProviderId)
+      : providers.filter((p) => !p.parentId);
 
-  on(PaybillActions.loadProvidersSuccess, (state, { providers }) => ({
-    ...state,
-    providers,
-    loading: false,
-  })),
+    return {
+      ...state,
+      providers,
+      filteredProviders: [fitered],
+      loading: false,
+    };
+  }),
 
   on(PaybillActions.loadProvidersFailure, (state, { error }) => ({
     ...state,
@@ -396,6 +404,81 @@ export const paybillReducer = createReducer(
   })),
 
   on(TemplatesPageActions.createTemplateFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
+
+  on(TemplatesPageActions.selectProvider, (state, { providerId, level }) => ({
+    ...state,
+    selectedProviderId: providerId,
+    currentLevel: level,
+    loading: true,
+  })),
+
+  // on(
+  //   TemplatesPageActions.loadChildProvidersSuccess,
+  //   (state, { providers, level }) => {
+  //     if (providers.length === 0) {
+  //       return {
+  //         ...state,
+  //         loading: false,
+  //       };
+  //     }
+
+  //     if (state.filteredProviders && state.filteredProviders.length > level) {
+  //       return {
+  //         ...state,
+  //         filteredProviders: state.filteredProviders.slice(0, level + 1),
+  //         loading: false,
+  //       };
+  //     }
+
+  //     const newFilteredProviders = [...(state.filteredProviders || [])];
+
+  //     newFilteredProviders[level] = providers;
+
+  //     const trimmed = newFilteredProviders.slice(0, level + 1);
+
+  //     return {
+  //       ...state,
+  //       filteredProviders: trimmed,
+  //       loading: false,
+  //     };
+  //   },
+  // ),
+
+  on(
+    TemplatesPageActions.loadChildProvidersSuccess,
+    (state, { providers, level }) => {
+      // Get existing levels or empty array
+      const currentLevels = state.filteredProviders || [];
+
+      console.log(currentLevels.length, level);
+
+      let newFilteredProviders: PaybillProvider[][];
+      // if (currentLevels.length > level) {
+      //   // currentLevels.splice(level);
+      //   console.log(currentLevels);
+      //   newFilteredProviders = [...currentLevels, providers];
+      // }
+
+      if (providers.length === 0) {
+        newFilteredProviders = currentLevels.slice(0, level);
+      } else {
+        const levelsBefore = currentLevels.slice(0, level);
+        newFilteredProviders = [...levelsBefore, providers];
+      }
+
+      return {
+        ...state,
+        filteredProviders: newFilteredProviders,
+        loading: false,
+      };
+    },
+  ),
+
+  on(TemplatesPageActions.loadChildProvidersFailure, (state, { error }) => ({
     ...state,
     loading: false,
     error,

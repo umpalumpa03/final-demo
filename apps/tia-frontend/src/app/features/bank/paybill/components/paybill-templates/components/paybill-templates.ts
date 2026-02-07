@@ -3,10 +3,8 @@ import {
   Component,
   computed,
   effect,
-  inject,
   input,
   output,
-  signal,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TreeContainer } from '@tia/shared/lib/drag-n-drop/components/tree-container/tree-container';
@@ -29,22 +27,9 @@ import {
 } from '../models/paybill-templates.model';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { PaybillProvider } from '../../paybill-main/shared/models/paybill.model';
-import {
-  createEditGroupForm,
-  createEditTemplateForm,
-  createGroupForm,
-  createTemplateForm,
-} from '../configs/paybill-templates.forms';
-import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
-import { distinctUntilChanged, tap } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-paybill-templates',
@@ -187,7 +172,6 @@ export class PaybillTemplates {
   // //  RIGHT NOW UNUSED LOGIC KEPT FOR REFERENCE //
   // // /////////////////////////////////////////////
   public parentProviders = input.required<{ label: string; value: string }[]>();
-  public childProviders = input.required<{ label: string; value: string }[]>();
 
   public templateCategories = input.required<
     {
@@ -200,15 +184,8 @@ export class PaybillTemplates {
 
   public categorySelected = output<string>();
   public parentProviderSelected = output<string>();
-  public childProviderSelected = output<string>();
 
   public selectLoading = input<boolean>(false);
-
-  public showChildProviders = computed(() => {
-    const form = this.createTemplateForm();
-    const parentValue = form.get('parentProvider')?.value;
-    return parentValue && this.childProviders().length > 0;
-  });
 
   ngOnInit() {
     const form = this.createTemplateForm();
@@ -218,9 +195,6 @@ export class PaybillTemplates {
       ?.valueChanges.pipe(distinctUntilChanged())
       .subscribe((value) => {
         this.categorySelected.emit(value);
-        // Reset dependent fields
-        form.get('parentProvider')?.reset();
-        form.get('childProvider')?.reset();
       });
   }
 
@@ -230,12 +204,18 @@ export class PaybillTemplates {
         return this.templateCategories();
       case 'parentProvider':
         return this.parentProviders();
-      case 'childProvider':
-        return this.childProviders();
       default:
         return [];
     }
   }
 
   public isCategorySelected = input<boolean>(false);
+  public childProviderOptions = input<{ label: string; value: string }[][]>([
+    [],
+  ]);
+
+  public childProviderSelected = output<{ providerId: any; index: number }>();
+  public onChildProviderChange(providerId: any, index: number) {
+    this.childProviderSelected.emit({ providerId, index });
+  }
 }

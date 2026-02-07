@@ -63,15 +63,19 @@
         [config]="{ label: field.label, placeholder: field.placeholder }"
         [options]="getDropdownOptions(field.controlName)"
       ></lib-select>
-      {{isCategorySelected()}} }@else {
+      }@else {
       <lib-text-input
         [formControlName]="field.controlName"
         [type]="field.type"
         [config]="{ label: field.label, placeholder: field.placeholder }"
       />
-      } } @if(isCategorySelected()) {
-      <lib-select [options]="[{ label: 'asd', value: 'ggggg' }]"></lib-select>
-      } }
+      } } @if(isCategorySelected()) { @for (item of childProviderOptions();
+      track $index) {
+      <lib-select
+        [options]="childProviderOptions()[$index]"
+        (valueChange)="onChildProviderChange($event, $index)"
+      ></lib-select>
+      } } }
 
       <div class="modal__buttons">
         <app-button

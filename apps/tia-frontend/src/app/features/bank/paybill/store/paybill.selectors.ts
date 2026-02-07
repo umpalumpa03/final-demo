@@ -41,9 +41,8 @@ export const selectActiveCategory = createSelector(
 );
 
 export const selectProvidersDropdown = createSelector(
-  selectPaybillState,
   selectActiveCategory,
-  (state, activeCategory) => {
+  (activeCategory) => {
     if (!activeCategory) return [];
 
     return activeCategory.providers
@@ -57,16 +56,19 @@ export const selectProvidersDropdown = createSelector(
 
 export const selectFilteredProviders = createSelector(
   selectPaybillState,
-  selectActiveCategory,
-  (state, activeCategory) => {
-    if (!activeCategory || state.selectedProviderId === null) return [];
+  (state) => {
+    if (!state.filteredProviders || state.filteredProviders.length === 0) {
+      return [];
+    }
 
-    return activeCategory.providers
-      .filter((provider) => provider.parentId === state.selectedProviderId)
-      .map((provider) => ({
-        label: provider.name ?? '',
-        value: provider.id,
-      }));
+    const mapped = state.filteredProviders.map((levelProviders) =>
+      levelProviders.map((item) => ({
+        label: item.name ?? '',
+        value: item.id,
+        isFinal: item.isFinal,
+      })),
+    );
+    return mapped;
   },
 );
 
