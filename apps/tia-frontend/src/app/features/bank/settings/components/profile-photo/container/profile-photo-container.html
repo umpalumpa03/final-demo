@@ -7,14 +7,6 @@
   [alertMessage]="alertMessage()"
   [isUploadModalOpen]="isUploadModalOpen()"
   [isDragOver]="isDragOver()"
-  [pId]="pId()"
-  [phoneNumber]="phoneNumber()"
-  [personalInfoLoading]="personalInfoLoading()"
-  [personalInfoUpdated]="personalInfoUpdated()"
-  [personalInfoError]="personalInfoError()"
-  [editedPId]="editedPId()"
-  [isEditingPId]="isEditingPId()"
-  [isPersonalNumberUnchanged]="isPersonalNumberUnchanged()"
   (openUploadModal)="onOpenUploadModal()"
   (uploadModalClosed)="onCloseUploadModal()"
   (dragOver)="onDragOver($event)"
@@ -25,9 +17,20 @@
   (removePhoto)="onRemovePhoto()"
   (saveChanges)="onSaveChanges()"
   (selectDefaultAvatar)="onSelectDefaultAvatar($event)"
+>
+</app-profile-photo>
+
+<app-user-info
+  [pId]="pId()"
+  [phoneNumber]="phoneNumber()"
+  [personalInfoLoading]="personalInfoLoading()"
+  [personalInfoUpdated]="personalInfoUpdated()"
+  [personalInfoError]="personalInfoError()"
+  [editedPId]="editedPId()"
+  [isEditingPId]="isEditingPId()"
+  [isPersonalNumberUnchanged]="isPersonalNumberUnchanged()"
   (updatePersonalNumber)="onUpdatePersonalNumber($event)"
   (editPersonalNumber)="onEditPersonalNumber()"
   (personalNumberChange)="onPersonalNumberChange($event)"
   (cancelEditPersonalNumber)="onCancelEditPersonalNumber()"
->
-</app-profile-photo>
+></app-user-info>

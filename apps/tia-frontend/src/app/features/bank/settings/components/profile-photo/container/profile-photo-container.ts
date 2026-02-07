@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ProfilePhotoComponent } from '../components/profile-photo/profile-photo.component';
+import { UserInfoComponent } from '../components/user-info/user-info.component';
 import { AlertType } from '../shared/models/profile-photo.models';
 import { ProfilePhotoActions } from '../store/profile-photo/profile-photo.actions';
 import {
@@ -26,7 +27,7 @@ import {
 
 @Component({
   selector: 'app-profile-photo-container',
-  imports: [ProfilePhotoComponent],
+  imports: [ProfilePhotoComponent, UserInfoComponent],
   templateUrl: './profile-photo-container.html',
   styleUrl: './profile-photo-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

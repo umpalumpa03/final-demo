@@ -14,7 +14,6 @@ import { AlertType } from '../../shared/models/profile-photo.models';
 import { Avatar } from '@tia/shared/lib/data-display/avatars/avatar';
 import { DefaultAvatarWithUrl } from '../../store/profile-photo/profile-photo.state';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
-import { UserInfoComponent } from '../user-info/user-info.component';
 
 @Component({
   selector: 'app-profile-photo',
@@ -26,7 +25,6 @@ import { UserInfoComponent } from '../user-info/user-info.component';
     Spinner,
     Avatar,
     UiModal,
-    UserInfoComponent,
   ],
   templateUrl: './profile-photo.component.html',
   styleUrl: './profile-photo.component.scss',
@@ -42,14 +40,6 @@ export class ProfilePhotoComponent {
   public readonly alertMessage = input<string>('');
   public readonly isUploadModalOpen = input<boolean>(false);
   public readonly isDragOver = input<boolean>(false);
-  public readonly pId = input<string | null>(null);
-  public readonly phoneNumber = input<string | null>(null);
-  public readonly personalInfoLoading = input<boolean>(false);
-  public readonly personalInfoUpdated = input<boolean>(false);
-  public readonly personalInfoError = input<string | null>(null);
-  public readonly editedPId = input<string>('');
-  public readonly isEditingPId = input<boolean>(false);
-  public readonly isPersonalNumberUnchanged = input<boolean>(false);
 
   public readonly openUploadModal = output<void>();
   public readonly alertClose = output<void>();
@@ -61,10 +51,6 @@ export class ProfilePhotoComponent {
   public readonly dragLeave = output<DragEvent>();
   public readonly fileDrop = output<DragEvent>();
   public readonly fileInputChange = output<Event>();
-  public readonly updatePersonalNumber = output<string | null>();
-  public readonly editPersonalNumber = output<void>();
-  public readonly personalNumberChange = output<string | number | boolean | FileList | null>();
-  public readonly cancelEditPersonalNumber = output<void>();
 
   public onFileButtonClick(): void {
     this.openUploadModal.emit();
