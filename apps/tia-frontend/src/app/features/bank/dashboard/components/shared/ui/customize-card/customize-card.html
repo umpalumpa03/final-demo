@@ -1,0 +1,19 @@
+<button
+  class="customize_card"
+  [class.customize_card__is__selected]="isSelected()"
+  (click)="toggle()"
+  type="button"
+>
+  <div class="customize_card__content">
+    <div
+      class="customize_card__icon"
+      [style.mask-image]="'url(' + iconPath() + ')'"
+      [style.-webkit-mask-image]="'url(' + iconPath() + ')'"
+    ></div>
+    <span class="customize_card__title">{{ title() | translate }}</span>
+  </div>
+
+  <div class="customize_card__indicator">
+    <div class="customize_card__dot"></div>
+  </div>
+</button>

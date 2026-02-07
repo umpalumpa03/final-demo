@@ -1,0 +1,14 @@
+@mixin icon__mask($path, $size: 2.4rem, $color: currentColor) {
+  display: inline-block;
+  width: $size;
+  height: $size;
+  background-color: $color;
+  mask-image: url($path);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-image: url($path);
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
