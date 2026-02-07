@@ -132,13 +132,15 @@ export const MessagingStore = signalStore(
                                 const existingMails = store.mails();
                                 const existingIds = new Set(existingMails.map(m => m.id));
                                 const newMails = response.items.filter(item => !existingIds.has(item.id));
-                                
+
                                 patchState(store, {
                                     mails: [...existingMails, ...newMails],
                                     pagination: response.pagination,
                                     isLoading: false,
                                     error: null,
                                 });
+                                inboxService.fetchInboxCount();
+                                store.getUnreadImportantCount();
                             }),
                             catchError((error) => {
                                 patchState(store, {
@@ -307,8 +309,8 @@ export const MessagingStore = signalStore(
                     tap(() => patchState(store, { isLoading: true })),
                     switchMap((emailData) => messagingService.sendEmail(emailData).pipe(
                         tap(() => {
-                            patchState(store, 
-                                { mails: [], pagination: { hasNextPage: false, nextCursor: null } }, 
+                            patchState(store,
+                                { mails: [], pagination: { hasNextPage: false, nextCursor: null } },
                                 { isLoading: false, successMessage: translate.instant('messaging.storeSuccess.emailSent') });
 
                             store.loadMails(store.currentType());
