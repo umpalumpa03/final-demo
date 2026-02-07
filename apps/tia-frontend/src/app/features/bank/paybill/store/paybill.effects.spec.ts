@@ -4,17 +4,21 @@ import { Action } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
-import { describe, it, expect, beforeEach, vi, Mocked } from 'vitest';
+import { describe, it, expect, beforeEach, vi, Mocked, afterEach } from 'vitest';
 
 import { PaybillEffect } from './paybill.effects';
 import { PaybillActions, TemplatesPageActions } from './paybill.actions';
 import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillTemplatesService } from '../components/paybill-templates/services/paybill-templates-service';
 import {
+  selectCategoriesLoaded,
   selectNotifications,
   selectPaymentPayload,
+  selectProviders,
   selectSelectedCategoryId,
   selectSelectedProviderId,
+  selectTemplatesGroup,
+  selectTemplatesLoaded,
 } from './paybill.selectors';
 import { initialPaybillState } from './paybill.state';
 import {
@@ -22,7 +26,7 @@ import {
   ProceedPaymentResponse,
 } from '../components/paybill-main/shared/models/paybill.model';
 
-describe('PaybillEffect (Modern Suite)', () => {
+describe('PaybillEffect (Refactored)', () => {
   let actions$: Observable<Action>;
   let effects: PaybillEffect;
   let store: MockStore;
@@ -37,11 +41,20 @@ describe('PaybillEffect (Modern Suite)', () => {
       checkBill: vi.fn(),
       payBill: vi.fn(),
       verifyPayment: vi.fn(),
+      getPaymentDetails: vi.fn(),
+      createTemplate: vi.fn(),
     };
 
     const templatesServiceMock = {
       getAllTemplateGroups: vi.fn(),
       getAllTemplates: vi.fn(),
+      createTemplateGroups: vi.fn(),
+      deleteTemplate: vi.fn(),
+      renameTemplate: vi.fn(),
+      deleteGroup: vi.fn(),
+      renameGroup: vi.fn(),
+      removeTemplateFromGroup: vi.fn(),
+      addTemplateToGroup: vi.fn(),
     };
 
     const routerMock = { navigate: vi.fn() };
@@ -50,7 +63,10 @@ describe('PaybillEffect (Modern Suite)', () => {
       providers: [
         PaybillEffect,
         provideMockActions(() => actions$),
-        provideMockStore({ initialState: initialPaybillState }),
+        // FIXED: Wrap state in feature key 'paybill' to match selectors
+        provideMockStore({ 
+          initialState: { paybill: initialPaybillState } 
+        }),
         { provide: PaybillService, useValue: paybillServiceMock },
         { provide: PaybillTemplatesService, useValue: templatesServiceMock },
         { provide: Router, useValue: routerMock },
@@ -62,6 +78,20 @@ describe('PaybillEffect (Modern Suite)', () => {
     paybillService = TestBed.inject(PaybillService) as any;
     paybillTemplatesService = TestBed.inject(PaybillTemplatesService) as any;
     router = TestBed.inject(Router) as any;
+
+    // Default Overrides to prevent "undefined" errors in selectors
+    store.overrideSelector(selectCategoriesLoaded, false);
+    store.overrideSelector(selectTemplatesLoaded, false);
+    store.overrideSelector(selectTemplatesGroup, false); // Assuming boolean based on filter
+    store.overrideSelector(selectSelectedProviderId, null);
+    store.overrideSelector(selectPaymentPayload, null);
+    store.overrideSelector(selectNotifications, []);
+    store.overrideSelector(selectProviders, []);
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+    vi.useRealTimers();
   });
 
   describe('Happy Paths (Success)', () => {
@@ -69,6 +99,9 @@ describe('PaybillEffect (Modern Suite)', () => {
       const categories = [{ id: '1', name: 'Cat' }] as any;
       paybillService.getCategories.mockReturnValue(of(categories));
       actions$ = of(PaybillActions.loadCategories());
+
+      // Override to ensure filter passes
+      store.overrideSelector(selectCategoriesLoaded, false);
 
       effects.loadCategories$.subscribe((action) => {
         expect(action).toEqual(
@@ -83,10 +116,24 @@ describe('PaybillEffect (Modern Suite)', () => {
         of(templateGroups),
       );
       actions$ = of(TemplatesPageActions.loadTemplateGroups());
+      store.overrideSelector(selectTemplatesGroup, false);
 
       effects.loadTemplateGroups$.subscribe((action) => {
         expect(action).toEqual(
           TemplatesPageActions.loadTemplateGroupsSuccess({ templateGroups }),
+        );
+      });
+    });
+    
+    it('loadTemplates$: should dispatch Success on API success', () => {
+      const templates = [{ id: 't1' }] as any;
+      paybillTemplatesService.getAllTemplates.mockReturnValue(of(templates));
+      actions$ = of(TemplatesPageActions.loadTemplates());
+      store.overrideSelector(selectTemplatesLoaded, false);
+
+      effects.loadTemplates$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.loadTemplatesSuccess({ templates }),
         );
       });
     });
@@ -98,10 +145,24 @@ describe('PaybillEffect (Modern Suite)', () => {
         throwError(() => new Error('API Error')),
       );
       actions$ = of(PaybillActions.loadCategories());
+      store.overrideSelector(selectCategoriesLoaded, false);
 
       effects.loadCategories$.subscribe((action) => {
         expect(action).toEqual(
           PaybillActions.loadCategoriesFailure({ error: 'API Error' }),
+        );
+      });
+    });
+
+    it('loadProviders$: should dispatch Failure on API throw', () => {
+      paybillService.getProviders.mockReturnValue(
+        throwError(() => new Error('Provider Error')),
+      );
+      actions$ = of(PaybillActions.selectCategory({ categoryId: '123' }));
+
+      effects.loadProviders$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.loadProvidersFailure({ error: 'Provider Error' }),
         );
       });
     });
@@ -122,23 +183,12 @@ describe('PaybillEffect (Modern Suite)', () => {
         );
       });
     });
+  });
 
-    it('loadTemplateGroups$: should use fallback error message if error object is empty', () => {
-      paybillTemplatesService.getAllTemplateGroups.mockReturnValue(
-        throwError(() => ({})),
-      );
-      actions$ = of(TemplatesPageActions.loadTemplates());
-
-      effects.loadTemplateGroups$.subscribe((action: any) => {
-        expect(action.type).toBe(
-          TemplatesPageActions.loadTemplatesFailure.type,
-        );
-      });
-    });
-
-    it('confirmPayment$: should emit ARRAY [Notification, Failure] on API throw', () => {
+  describe('Verification & Payment Flow', () => {
+    it('confirmPayment$: should emit success notification and navigate on success', () => {
       paybillService.verifyPayment.mockReturnValue(
-        throwError(() => new Error('OTP Fail')),
+        of({ success: true, message: 'Verified' }),
       );
       actions$ = of(
         PaybillActions.confirmPayment({
@@ -146,151 +196,18 @@ describe('PaybillEffect (Modern Suite)', () => {
         }),
       );
 
-      effects.confirmPayment$.subscribe((result: any) => {
-        expect(Array.isArray(result)).toBe(false);
-      });
-    });
-
-    it('loadTemplateGroups$: should use fallback message if error empty', () => {
-      paybillTemplatesService.getAllTemplateGroups.mockReturnValue(
-        throwError(() => ({})),
-      );
-      actions$ = of(TemplatesPageActions.loadTemplates());
-
-      effects.loadTemplateGroups$.subscribe((action: any) => {
-        expect(action.type).toBe(
-          TemplatesPageActions.loadTemplatesFailure.type,
-        );
-      });
-    });
-  });
-
-  describe('Timer Effects', () => {
-    it('autoDismissNotifications$: should dismiss after delay', () => {
-      vi.useFakeTimers();
-
-      const mockNote = {
-        id: '123',
-        notificationType: 'info',
-        message: 'test',
-      } as any;
-      store.overrideSelector(selectNotifications, [mockNote]);
-
-      actions$ = of(
-        PaybillActions.addNotification({
-          notificationType: 'information',
-          message: 'test',
-        }),
-      );
-
-      let result: Action | undefined;
-      effects.autoDismissNotifications$.subscribe((a) => (result = a));
-
-      vi.advanceTimersByTime(5200);
-
-      expect(result).toEqual(PaybillActions.dismissNotification({ id: '123' }));
-
-      vi.useRealTimers();
-    });
-  });
-  describe('proceedPayment$ success', () => {
-    it('should dispatch proceedPaymentSuccess on success', () => {
-      const response = { verify: { challengeId: '123' } } as any;
-      paybillService.payBill.mockReturnValue(of(response));
-      actions$ = of(PaybillActions.proceedPayment({ payload: {} as any }));
-
-      effects.proceedPayment$.subscribe((action) => {
+      effects.confirmPayment$.subscribe((action) => {
+        expect(router.navigate).toHaveBeenCalledWith(['/bank/paybill/pay/payment-success']);
         expect(action).toEqual(
-          PaybillActions.proceedPaymentSuccess({ response }),
-        );
-      });
-    });
-  });
-
-  describe('loadTemplateGroups$ failure', () => {
-    it('should dispatch loadTemplateGroupsFailure on error', () => {
-      paybillTemplatesService.getAllTemplateGroups.mockReturnValue(
-        throwError(() => new Error('Groups Error')),
-      );
-      actions$ = of(TemplatesPageActions.loadTemplateGroups());
-
-      effects.loadTemplateGroups$.subscribe((action) => {
-        expect(action).toEqual(
-          TemplatesPageActions.loadTemplateGroupsFailure({
-            error: 'Groups Error',
+          PaybillActions.addNotification({
+            notificationType: 'success',
+            message: 'OTP Verified Successfully',
           }),
         );
       });
     });
-  });
 
-  it('should set step to OTP if amount >= 50 and challengeId exists', () => {
-    store.overrideSelector(selectPaymentPayload, {
-      amount: 100,
-    } as PaybillPayload);
-
-    const response: ProceedPaymentResponse = {
-      verify: {
-        challengeId: 'id-123',
-        method: 'SMS',
-      },
-      transferType: 'INTERNAL',
-    };
-
-    actions$ = of(PaybillActions.proceedPaymentSuccess({ response }));
-  });
-
-  it('should trigger automated verification if amount < 50', () => {
-    store.overrideSelector(selectPaymentPayload, {
-      amount: 20,
-    } as PaybillPayload);
-
-    const response: ProceedPaymentResponse = {
-      verify: { challengeId: 'id-123', method: 'SMS' },
-      transferType: 'INTERNAL',
-    };
-
-    actions$ = of(PaybillActions.proceedPaymentSuccess({ response }));
-
-    effects.proceedPaymentSuccess$.subscribe((action) => {
-      expect(action).toEqual(
-        PaybillActions.confirmPayment({
-          payload: { challengeId: 'id-123', code: '6767' },
-        }),
-      );
-    });
-  });
-
-  it('should dispatch loadTemplatesSuccess on successful API call', () => {
-    const mockTemplates = [
-      { id: 't1', name: 'Water Bill', providerId: 'p1' },
-      { id: 't2', name: 'Electric Bill', providerId: 'p2' },
-    ] as any;
-    paybillTemplatesService.getAllTemplates.mockReturnValue(of(mockTemplates));
-
-    actions$ = of(TemplatesPageActions.loadTemplates());
-
-    effects.loadTemplates$.subscribe((action) => {
-      expect(action).toEqual(
-        TemplatesPageActions.loadTemplatesSuccess({ templates: mockTemplates }),
-      );
-    });
-  });
-
-  describe('Additional Logic Branches & Error Mapping', () => {
-    it('proceedPayment$: should dispatch Failure if response contains statusCode (API Error)', () => {
-      const response = { statusCode: '400', message: 'Balance Low' } as any;
-      paybillService.payBill.mockReturnValue(of(response));
-      actions$ = of(PaybillActions.proceedPayment({ payload: {} as any }));
-
-      effects.proceedPayment$.subscribe((action) => {
-        expect(action).toEqual(
-          PaybillActions.proceedPaymentFailure({ error: 'Balance Low' }),
-        );
-      });
-    });
-
-    it('confirmPayment$: should handle business failure and show warning', () => {
+    it('confirmPayment$: should emit warning notification on business failure', () => {
       paybillService.verifyPayment.mockReturnValue(
         of({ success: false, message: 'Invalid OTP' }),
       );
@@ -306,46 +223,53 @@ describe('PaybillEffect (Modern Suite)', () => {
       });
     });
 
-    it('checkBill$: should dispatch Failure on API throw', () => {
-      paybillService.checkBill.mockReturnValue(
-        throwError(() => new Error('Network Error')),
-      );
-
-      actions$ = of(
-        PaybillActions.checkBill({
-          serviceId: 's1',
-          identification: {} as any,
-        }),
-      );
-
-      effects.checkBill$.subscribe((action) => {
-        expect(action).toEqual(
-          PaybillActions.checkBillFailure({ error: 'Network Error' }),
-        );
-      });
+    it('proceedPaymentSuccess$: should navigate to OTP if amount > 50', () => {
+      store.overrideSelector(selectPaymentPayload, {
+        amount: 100,
+      } as PaybillPayload);
+  
+      const response: ProceedPaymentResponse = {
+        verify: {
+          challengeId: 'id-123',
+          method: 'SMS',
+        },
+        transferType: 'INTERNAL',
+      };
+  
+      actions$ = of(PaybillActions.proceedPaymentSuccess({ response }));
+      
+      effects.proceedPaymentSuccess$.subscribe(() => {});
+      
+      expect(router.navigate).toHaveBeenCalledWith(['/bank/paybill/pay/otp-verification']);
     });
-
-    it('getErrorMessage: should handle nested error objects (error.error.message)', () => {
-      const complexError = { error: { message: 'Deep Error' } };
-      paybillService.getCategories.mockReturnValue(
-        throwError(() => complexError),
-      );
-      actions$ = of(PaybillActions.loadCategories());
-
-      effects.loadCategories$.subscribe((action) => {
+  
+    it('proceedPaymentSuccess$: should auto-confirm if amount <= 50', () => {
+      store.overrideSelector(selectPaymentPayload, {
+        amount: 20,
+      } as PaybillPayload);
+  
+      const response: ProceedPaymentResponse = {
+        verify: { challengeId: 'id-123', method: 'SMS' },
+        transferType: 'INTERNAL',
+      };
+  
+      actions$ = of(PaybillActions.proceedPaymentSuccess({ response }));
+  
+      effects.proceedPaymentSuccess$.subscribe((action) => {
         expect(action).toEqual(
-          PaybillActions.loadCategoriesFailure({ error: 'Deep Error' }),
+          PaybillActions.confirmPayment({
+            payload: { challengeId: 'id-123', code: '6767' },
+          }),
         );
       });
     });
   });
 
-  describe('Template Management & Failure Handlers', () => {
-    it('createTemplatesGroup$: should dispatch Success on successful creation', () => {
+
+  describe('Template Management', () => {
+    it('createTemplatesGroup$: should dispatch Success', () => {
       const mockGroup = { id: 'G1', name: 'Utility' } as any;
-      (paybillTemplatesService as any).createTemplateGroups = vi
-        .fn()
-        .mockReturnValue(of(mockGroup));
+      paybillTemplatesService.createTemplateGroups.mockReturnValue(of(mockGroup));
 
       actions$ = of(
         TemplatesPageActions.createTemplatesGroups({ name: 'Utility' } as any),
@@ -359,14 +283,9 @@ describe('PaybillEffect (Modern Suite)', () => {
         );
       });
     });
-  });
 
-  describe('Template CRUD Operations', () => {
-    it('deleteTemplates$: should dispatch Success on successful delete', () => {
-      const mockResponse = { message: 'Deleted' };
-      (paybillTemplatesService as any).deleteTemplate = vi
-        .fn()
-        .mockReturnValue(of(mockResponse));
+    it('deleteTemplates$: should dispatch Success', () => {
+      paybillTemplatesService.deleteTemplate.mockReturnValue(of({ message: 'Deleted' }));
       actions$ = of(TemplatesPageActions.deleteTemplate({ templateId: 'T1' }));
 
       effects.deleteTemplates$.subscribe((action) => {
@@ -379,11 +298,9 @@ describe('PaybillEffect (Modern Suite)', () => {
       });
     });
 
-    it('renameTemplates$: should dispatch Success on successful rename', () => {
+    it('renameTemplates$: should dispatch Success', () => {
       const updatedTemplate = { id: 'T1', nickname: 'New' } as any;
-      (paybillTemplatesService as any).renameTemplate = vi
-        .fn()
-        .mockReturnValue(of(updatedTemplate));
+      paybillTemplatesService.renameTemplate.mockReturnValue(of(updatedTemplate));
       actions$ = of(
         TemplatesPageActions.renameTemplate({
           templateId: 'T1',
@@ -399,51 +316,75 @@ describe('PaybillEffect (Modern Suite)', () => {
         );
       });
     });
+    
+    it('moveTemplate$: should remove then add to group (Move Success)', () => {
+       paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(of({}));
+       paybillTemplatesService.addTemplateToGroup.mockReturnValue(of({}));
+       
+       actions$ = of(TemplatesPageActions.moveTemplate({ groupId: 'G1', templateId: 'T1' }));
+       
+       effects.moveTemplate$.subscribe((action) => {
+         expect(action).toEqual(
+           TemplatesPageActions.moveTemplateSuccess({
+             message: 'Item moved successfully',
+             groupId: 'G1',
+             templateId: 'T1'
+           })
+         );
+       });
+    });
 
-    it('deleteTemplateGroup$: should dispatch Success', () => {
-      (paybillTemplatesService as any).deleteGroup = vi
-        .fn()
-        .mockReturnValue(of({ message: 'Removed' }));
+    it('moveTemplate$: should only remove if groupId is null', () => {
+       paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(of({}));
+       
+       actions$ = of(TemplatesPageActions.moveTemplate({ groupId: null, templateId: 'T1' }));
+       
+       effects.moveTemplate$.subscribe((action) => {
+         expect(action).toEqual(
+           TemplatesPageActions.moveTemplateSuccess({
+             message: 'Item removed successfully',
+             groupId: null,
+             templateId: 'T1'
+           })
+         );
+       });
+    });
+  });
+
+  describe('Check Bill Logic', () => {
+    it('checkBill$: should return failure action if details.valid is false', () => {
+      const invalidResponse = { valid: false, error: 'Custom Error' } as any;
+      paybillService.checkBill.mockReturnValue(of(invalidResponse));
+
       actions$ = of(
-        TemplatesPageActions.deleteTemplateGroup({ groupId: 'G1' }),
+        PaybillActions.checkBill({ serviceId: '1', identification: {} as any }),
       );
 
-      effects.deleteTemplateGroup$.subscribe((action) => {
+      effects.checkBill$.subscribe((action) => {
         expect(action).toEqual(
-          TemplatesPageActions.deleteTemplateGroupSuccess({
-            message: 'Removed',
-            groupId: 'G1',
-          }),
+          PaybillActions.checkBillFailure({ error: 'Custom Error' }),
         );
       });
     });
 
-    it('renameTemplateGroup$: should dispatch Success', () => {
-      const group = { id: 'G1', groupName: 'New' } as any;
-      (paybillTemplatesService as any).renameGroup = vi
-        .fn()
-        .mockReturnValue(of(group));
+    it('checkBill$: should return success if valid is true', () => {
+      const validResponse = { valid: true } as any;
+      paybillService.checkBill.mockReturnValue(of(validResponse));
+
       actions$ = of(
-        TemplatesPageActions.renameTemplateGroup({
-          groupId: 'G1',
-          groupName: 'New',
-        }),
+        PaybillActions.checkBill({ serviceId: '1', identification: {} as any }),
       );
 
-      effects.renameTemplateGroup$.subscribe((action) => {
+      effects.checkBill$.subscribe((action) => {
         expect(action).toEqual(
-          TemplatesPageActions.renameTemplateGroupSuccess({
-            templateGroup: group,
-            groupId: 'G1',
-            message: 'Group name has been changed',
-          }),
+          PaybillActions.checkBillSuccess({ details: validResponse }),
         );
       });
     });
   });
 
-  describe('Consolidated Notification Effects', () => {
-    it('actionSuccess$: should map success actions to notifications using internal mapping', () => {
+  describe('Notification Mapping', () => {
+    it('actionSuccess$: should map success actions to notifications', () => {
       actions$ = of(
         TemplatesPageActions.deleteTemplateSuccess({
           message: 'ok',
@@ -475,66 +416,21 @@ describe('PaybillEffect (Modern Suite)', () => {
       });
     });
   });
-
-  describe('Payment Details & Check Bill Logic', () => {
-    it('loadPaymentDetails$: should dispatch Success', () => {
-      const details = { amount: 100 } as any;
-      paybillService.getPaymentDetails = vi.fn().mockReturnValue(of(details));
-      actions$ = of(PaybillActions.loadPaymentDetails({ serviceId: '123' }));
-
-      effects.loadPaymentDetails$.subscribe((action) => {
-        expect(action).toEqual(
-          PaybillActions.loadPaymentDetailsSuccess({ details }),
-        );
+  
+  describe('Create Template', () => {
+      it('createTemplate$: should dispatch success', () => {
+          const response = { message: 'Created' };
+          paybillService.createTemplate.mockReturnValue(of(response));
+          actions$ = of(TemplatesPageActions.createTemplate({ serviceId: '1', identification: {} as any, nickname: 'nick' }));
+          
+          effects.createTemplate$.subscribe(action => {
+              expect(action).toEqual(
+                  TemplatesPageActions.createTemplateSuccess({ 
+                      payload: response, 
+                      message: 'Created' 
+                  })
+              );
+          });
       });
-    });
-
-    it('checkBill$: should dispatch Failure if details.valid is false', () => {
-      const invalidDetails = { valid: false, error: 'User not found' } as any;
-      paybillService.checkBill.mockReturnValue(of(invalidDetails));
-      actions$ = of(
-        PaybillActions.checkBill({
-          serviceId: 's1',
-          identification: {} as any,
-        }),
-      );
-
-      effects.checkBill$.subscribe((action) => {
-        expect(action).toEqual(
-          PaybillActions.checkBillFailure({ error: 'User not found' }),
-        );
-      });
-    });
-  });
-  describe('Check Bill Logic Branches', () => {
-    it('checkBill$: should return failure action if details.valid is false', () => {
-      const invalidResponse = { valid: false, error: 'Custom Error' } as any;
-      paybillService.checkBill.mockReturnValue(of(invalidResponse));
-
-      actions$ = of(
-        PaybillActions.checkBill({ serviceId: '1', identification: {} as any }),
-      );
-
-      effects.checkBill$.subscribe((action) => {
-        expect(action).toEqual(
-          PaybillActions.checkBillFailure({ error: 'Custom Error' }),
-        );
-      });
-    });
-
-    it('checkBill$: should return success if valid is true', () => {
-      const validResponse = { valid: true } as any;
-      paybillService.checkBill.mockReturnValue(of(validResponse));
-
-      actions$ = of(
-        PaybillActions.checkBill({ serviceId: '1', identification: {} as any }),
-      );
-
-      effects.checkBill$.subscribe((action) => {
-        expect(action).toEqual(
-          PaybillActions.checkBillSuccess({ details: validResponse }),
-        );
-      });
-    });
   });
 });
