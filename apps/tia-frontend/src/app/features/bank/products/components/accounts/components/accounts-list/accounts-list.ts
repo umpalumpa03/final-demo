@@ -34,7 +34,6 @@ import { Skeleton } from '../../../../../../../shared/lib/feedback/skeleton/skel
     AccountCardComponent,
     RouteLoader,
     ErrorStates,
-    ScrollArea,
     LibraryTitle,
     Badges,
     ButtonComponent,
