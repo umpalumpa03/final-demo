@@ -6,9 +6,8 @@ import {
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { Store } from '@ngrx/store';
 import { TransferStore } from 'apps/tia-frontend/src/app/features/bank/transfers/store/transfers.store';
-import { selectAccounts, selectIsLoading } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
+import { selectAccounts, selectError, selectIsLoading } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { selectError } from 'apps/tia-frontend/src/app/store/loans/loans.reducer';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { AccountData } from 'apps/tia-frontend/src/app/features/bank/transfers/models/transfers.state.model';
 import { Account } from '@tia/shared/models/accounts/accounts.model';

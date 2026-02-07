@@ -114,6 +114,9 @@ describe('InternalFromAccount', () => {
 
   describe('onContinue', () => {
     it('should navigate to to-account page', () => {
+      mockTransferStore.senderAccount.set(mockAccounts[0]);
+      fixture.detectChanges();
+
       component.onContinue();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/transfers/internal/to-account']);
     });

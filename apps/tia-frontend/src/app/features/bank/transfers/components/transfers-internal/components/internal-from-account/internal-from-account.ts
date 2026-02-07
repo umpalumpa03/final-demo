@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
-import { selectAccounts, selectIsLoading } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
+import { selectAccounts, selectError, selectIsLoading } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { TransferStore } from 'apps/tia-frontend/src/app/features/bank/transfers/store/transfers.store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -12,7 +12,6 @@ import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { AccountData } from 'apps/tia-frontend/src/app/features/bank/transfers/models/transfers.state.model';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
-import { selectError } from 'apps/tia-frontend/src/app/store/loans/loans.reducer';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';

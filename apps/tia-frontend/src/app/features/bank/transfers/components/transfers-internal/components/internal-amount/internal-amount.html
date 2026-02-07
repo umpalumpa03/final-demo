@@ -60,17 +60,22 @@
   <section class="internal-amount__form">
     <div class="internal-amount__input-group">
       @if (isConversionMode()) {
+
+        <div class="internal-amount__conversion-header">
+          <h3 class="internal-amount__section-title">
+            {{ 'transfers.internal.amount.currencyExchange' | translate }}
+          </h3>
+          <div class="internal-amount__rate-badge">
+            <span>Rate: 1 {{ selectedSenderAccount()?.currency }} = {{ conversionRate() | number: '1.2-4' }} {{ selectedRecipientAccount()?.currency }}</span>
+          </div>
+        </div>
+
         <div class="internal-amount__input-group">
           <lib-text-input
             [formControl]="amountInput"
             [config]="sourceAmountConfig()"
             type="number"
           />
-        </div>
-
-        <div class="internal-amount__conversion-indicator">
-          <img src="images/svg/transfers/exchange.svg" alt="exchange" />
-          <span>1 {{ selectedSenderAccount()?.currency }} = {{ conversionRate() | number: '1.2-4' }} {{ selectedRecipientAccount()?.currency }}</span>
         </div>
 
         <div class="internal-amount__input-group">

@@ -1,11 +1,12 @@
-import {ChangeDetectionStrategy,
+import {
+  ChangeDetectionStrategy,
   Component,
   inject,
   computed,
   signal,
   OnInit,
   DestroyRef,
-  effect,
+  effect, Signal
 } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -17,12 +18,13 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
-import { tap } from 'rxjs';
+import { of, tap } from 'rxjs';
 import { SuccessModal } from '@tia/shared/lib/overlay/ui-success-modal/ui-success-modal';
 import { Router } from '@angular/router';
 import { OtpModal } from '@tia/shared/lib/overlay/ui-otp-modal/otp-modal';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
+
 
 @Component({
   selector: 'app-internal-amount',
@@ -54,6 +56,7 @@ export class InternalAmount implements OnInit {
   public readonly showSuccess = signal(false);
   public readonly showError = signal(false);
   public readonly currentToastMessage = signal('');
+
 
   public readonly isLoading = this.transferStore.isLoading;
   public readonly selectedSenderAccount = this.transferStore.senderAccount;
@@ -132,11 +135,22 @@ export class InternalAmount implements OnInit {
     }
   );
 
+  private readonly amountValue = toSignal(this.amountInput.valueChanges, {
+    initialValue: this.amountInput.value,
+  });
+
+  private readonly destinationAmountValue = toSignal(
+    this.destinationAmountInput.valueChanges,
+    {
+      initialValue: this.destinationAmountInput.value,
+    }
+  );
+
   public readonly isTransferDisabled = computed(() => {
     if (this.isConversionMode()) {
-      const sourceValid = this.amountStatus() === 'VALID';
-      const destValid = this.destinationAmountStatus() === 'VALID';
-      return !sourceValid || !destValid || this.isLoading() || this.hasInsufficientBalance();
+      const hasAmount = (this.amountValue() && Number(this.amountValue()) >= 0.01) ||
+        (this.destinationAmountValue() && Number(this.destinationAmountValue()) >= 0.01);
+      return !hasAmount || this.isLoading() || this.hasInsufficientBalance();
     }
     return this.amountStatus() !== 'VALID' || this.isLoading() || this.hasInsufficientBalance();
   });
@@ -169,6 +183,7 @@ export class InternalAmount implements OnInit {
   }
 
   public ngOnInit(): void {
+
     this.amountInput.valueChanges
       .pipe(
         takeUntilDestroyed(this.destroyRef),

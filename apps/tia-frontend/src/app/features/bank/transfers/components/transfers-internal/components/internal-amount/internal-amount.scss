@@ -11,6 +11,33 @@
     margin-bottom: 3.2rem;
   }
 
+  &__conversion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  &__section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;}
+
+  &__rate-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: var(--primary-light, #e3f2fd);
+    border-radius: 1.5rem;
+
+    span {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--primary, #2563eb);
+    }
+  }
+
   &__title {
     @include font-inter(600, 2rem, 2.8rem);
     color: var(--color-fg);

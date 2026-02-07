@@ -38,6 +38,7 @@ describe('InternalToAccount', () => {
 
     mockTransferStore = {
       receiverOwnAccount: signal(null),
+      senderAccount: signal(null),
     };
 
     mockLocation = {

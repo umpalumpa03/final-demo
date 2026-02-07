@@ -1,82 +1,104 @@
 import { TestBed } from '@angular/core/testing';
 import { TransferInternalService } from './transfer.internal.service';
 import { TransferStore } from '../store/transfers.store';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { signal } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
+import { TransfersApiService } from './transfersApi.service';
 
-describe('TransferInternalService', () => {
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+
+describe('TransferInternalService — account select coverage', () => {
   let service: TransferInternalService;
-  let mockStore: any;
+
+  const transferStoreMock = {
+    setSenderAccount: vi.fn(),
+    setReceiverOwnAccount: vi.fn(),
+  };
 
   beforeEach(() => {
-    mockStore = {
-      setSenderAccount: vi.fn(),
-      setReceiverOwnAccount: vi.fn(),
-    };
-
     TestBed.configureTestingModule({
       providers: [
         TransferInternalService,
-        { provide: TransferStore, useValue: mockStore },
+
+        // required deps
+        { provide: TransferStore, useValue: transferStoreMock },
+        { provide: Store, useValue: { dispatch: vi.fn() } },
+        { provide: Router, useValue: { navigate: vi.fn() } },
+        { provide: Location, useValue: { back: vi.fn() } },
+        { provide: TransfersApiService, useValue: {} },
       ],
     });
 
     service = TestBed.inject(TransferInternalService);
+    vi.clearAllMocks();
   });
+
+  // -----------------------------
+  // handleFromAccountSelect
+  // -----------------------------
 
   describe('handleFromAccountSelect', () => {
-    it('should deselect account when clicking the same account', () => {
-      const account = { id: 'acc1', name: 'Account 1' } as any;
-      const currentSelection = { id: 'acc1', name: 'Account 1' } as any;
+    it('deselects when clicking same account', () => {
+      const acc = { id: '1' } as any;
 
-      service.handleFromAccountSelect(account, currentSelection);
+      service.handleFromAccountSelect(acc, acc);
 
-      expect(mockStore.setSenderAccount).toHaveBeenCalledWith(null);
+      expect(transferStoreMock.setSenderAccount)
+        .toHaveBeenCalledWith(null);
     });
 
-    it('should select account when clicking different account', () => {
-      const account = { id: 'acc2', name: 'Account 2' } as any;
-      const currentSelection = { id: 'acc1', name: 'Account 1' } as any;
+    it('selects when clicking different account', () => {
+      const acc = { id: '2' } as any;
+      const current = { id: '1' } as any;
 
-      service.handleFromAccountSelect(account, currentSelection);
+      service.handleFromAccountSelect(acc, current);
 
-      expect(mockStore.setSenderAccount).toHaveBeenCalledWith(account);
+      expect(transferStoreMock.setSenderAccount)
+        .toHaveBeenCalledWith(acc);
     });
 
-    it('should select account when no current selection exists', () => {
-      const account = { id: 'acc1', name: 'Account 1' } as any;
+    it('selects when nothing selected', () => {
+      const acc = { id: '1' } as any;
 
-      service.handleFromAccountSelect(account, null);
+      service.handleFromAccountSelect(acc, null);
 
-      expect(mockStore.setSenderAccount).toHaveBeenCalledWith(account);
+      expect(transferStoreMock.setSenderAccount)
+        .toHaveBeenCalledWith(acc);
     });
   });
 
+  // -----------------------------
+  // handleToAccountSelect
+  // -----------------------------
+
   describe('handleToAccountSelect', () => {
-    it('should deselect account when clicking the same account', () => {
-      const account = { id: 'acc1', name: 'Account 1' } as any;
-      const currentSelected = { id: 'acc1', name: 'Account 1' } as any;
+    it('deselects when clicking same account', () => {
+      const acc = { id: '1' } as any;
 
-      service.handleToAccountSelect(account, currentSelected);
+      service.handleToAccountSelect(acc, acc);
 
-      expect(mockStore.setReceiverOwnAccount).toHaveBeenCalledWith(null);
+      expect(transferStoreMock.setReceiverOwnAccount)
+        .toHaveBeenCalledWith(null);
     });
 
-    it('should select account when clicking different account', () => {
-      const account = { id: 'acc2', name: 'Account 2' } as any;
-      const currentSelected = { id: 'acc1', name: 'Account 1' } as any;
+    it('selects when clicking different account', () => {
+      const acc = { id: '2' } as any;
+      const current = { id: '1' } as any;
 
-      service.handleToAccountSelect(account, currentSelected);
+      service.handleToAccountSelect(acc, current);
 
-      expect(mockStore.setReceiverOwnAccount).toHaveBeenCalledWith(account);
+      expect(transferStoreMock.setReceiverOwnAccount)
+        .toHaveBeenCalledWith(acc);
     });
 
-    it('should select account when no current selection exists', () => {
-      const account = { id: 'acc1', name: 'Account 1' } as any;
+    it('selects when nothing selected', () => {
+      const acc = { id: '1' } as any;
 
-      service.handleToAccountSelect(account, null);
+      service.handleToAccountSelect(acc, null);
 
-      expect(mockStore.setReceiverOwnAccount).toHaveBeenCalledWith(account);
+      expect(transferStoreMock.setReceiverOwnAccount)
+        .toHaveBeenCalledWith(acc);
     });
   });
 });

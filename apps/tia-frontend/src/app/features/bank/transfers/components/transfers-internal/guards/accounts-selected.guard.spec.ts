@@ -1,41 +1,63 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { TransferStore } from '../../../store/transfers.store';
-import { accountsSelectedGuard } from './accounts-selected.guard';
+import { internalAccountsSelectedGuard } from './accounts-selected.guard';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { signal } from '@angular/core';
 
-describe('accountsSelectedGuard', () => {
-  let router: Router;
+describe('internalAccountsSelectedGuard', () => {
   let mockStore: any;
+  let routerMock: any;
 
   beforeEach(() => {
     mockStore = {
       senderAccount: signal<any>(null),
-      selectedRecipientAccount: signal<any>(null),
-      recipientType: signal<string | null>(null),
-      manualRecipientName: signal<string>(''),
+      receiverOwnAccount: signal<any>(null),
+    };
+
+    routerMock = {
+      parseUrl: vi.fn((url: string) => url),
     };
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: Router, useValue: { navigate: vi.fn() } },
         { provide: TransferStore, useValue: mockStore },
+        { provide: Router, useValue: routerMock },
       ],
     });
-
-    router = TestBed.inject(Router);
   });
 
-  it('should return true if both sender and recipient accounts are selected', () => {
-    mockStore.senderAccount.set({ id: 'sender-1' });
-    mockStore.selectedRecipientAccount.set({ id: 'recipient-1' });
+  it('returns true when both accounts selected', () => {
+    mockStore.senderAccount.set({ id: 's1' });
+    mockStore.receiverOwnAccount.set({ id: 'r1' });
 
     const result = TestBed.runInInjectionContext(() =>
-      accountsSelectedGuard({} as any, {} as any),
+      internalAccountsSelectedGuard({} as any, {} as any),
     );
 
     expect(result).toBe(true);
-    expect(router.navigate).not.toHaveBeenCalled();
+    expect(routerMock.parseUrl).not.toHaveBeenCalled();
+  });
+
+  it('redirects when sender missing', () => {
+    mockStore.receiverOwnAccount.set({ id: 'r1' });
+
+    const result = TestBed.runInInjectionContext(() =>
+      internalAccountsSelectedGuard({} as any, {} as any),
+    );
+
+    expect(result).toBe('/bank/transfers/internal');
+    expect(routerMock.parseUrl)
+      .toHaveBeenCalledWith('/bank/transfers/internal');
+  });
+
+  it('redirects when recipient missing', () => {
+    mockStore.senderAccount.set({ id: 's1' });
+
+    const result = TestBed.runInInjectionContext(() =>
+      internalAccountsSelectedGuard({} as any, {} as any),
+    );
+
+    expect(result).toBe('/bank/transfers/internal');
   });
 });
