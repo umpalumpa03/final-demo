@@ -7,9 +7,7 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import {
-  PendingCard,
-} from '../shared/model/approve-cards.model';
+import { PendingCard } from '../shared/model/approve-cards.model';
 import { ApproveCardsStore } from '../store/approve-cards.store';
 import { CardsApproveElement } from '../approve-card-element/cards-approve-element';
 import { buttonEmit } from '../shared/model/approve-card-element.model';
@@ -43,13 +41,14 @@ export class ApproveCards implements OnInit {
   public cardInfo = signal<PendingCard[]>([]);
   public permissionsOverlay = signal<boolean>(false);
   public activeCardId = signal<string | null>(null);
+  public permissionsSavedCard = signal<string | null>(null);
 
   public readonly activeCard = computed(() =>
     this.store.cards().find((card) => card.id === this.activeCardId()),
   );
 
-  public readonly cardName = computed(() =>
-    this.activeCard()?.nickname ?? 'Unknown Card',
+  public readonly cardName = computed(
+    () => this.activeCard()?.nickname ?? 'Unknown Card',
   );
 
   public readonly fullName = computed(() => {
@@ -110,6 +109,11 @@ export class ApproveCards implements OnInit {
     this.activeCardId.set(id);
     this.permissionsOverlay.set(true);
     console.log(this.cardPermissionsForm.getRawValue(), '__Form');
+  }
+
+  public onSavePermissions() {
+    const values = this.cardPermissionsForm.getRawValue();
+    this.permissionsSavedCard.set(this.activeCardId());
   }
 
   // Empty Cards - retry

@@ -17,6 +17,7 @@ export class CardsApproveElement {
   public readonly network = input<string>('');
   public readonly balance = input<string>('');
   public readonly creationDate = input<string>('');
+  public readonly marked = input<boolean>(false);
 
   public readonly buttons:ActionButton[] = APPROVE_CARD_BUTTONS;
   

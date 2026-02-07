@@ -36,6 +36,11 @@
     </div>
 
     <div class="approve-card__actions">
+      @if(marked()) {
+        <button (click)="onAction('permissions')">
+          <img class="approve-card__marked" src="images/svg/settings/approve-cards/settings.svg" alt="settings icon">
+        </button>
+      }
       @for(button of buttons; track button.id) {
       <button
         class="approve-card__btn"

@@ -113,8 +113,8 @@
       color: $green-600;
       border-color: $green-600;
       &:hover {
-      background: $green-50;
-    }
+        background: $green-50;
+      }
     }
 
     &--decline {
@@ -122,7 +122,19 @@
       border-color: $red-700;
 
       &:hover {
-      background: $red-50;    }
+        background: $red-50;
+      }
+    }
+  }
+
+  &__marked {
+    display: inline-block;
+    margin-right: 1rem;
+    cursor: pointer;
+    transition: transform 0.5s ease-in-out;
+
+    &:hover {
+      transform: rotate(120deg);
     }
   }
 }

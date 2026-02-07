@@ -15,6 +15,7 @@
     [balance]="''"
     [creationDate]="card.createdAt"
     (cardAction)="handleAction($event)"
+    [marked]="permissionsSavedCard() === card.id"
   />
   } @empty {
   <app-error-states
@@ -35,6 +36,8 @@
     [items]="mappedPermissions()"
     [accOrCardName]="cardName()"
     [name]="fullName()"
+    (save)="onSavePermissions()"
+    (cancel)="closeModal()"
   ></app-permissions-modal>
 </app-ui-modal>
 }
