@@ -109,23 +109,6 @@ export const closeCardDetailsModal = createAction(
   '[Cards] Close Card Details Modal',
 );
 
-export const loadCardTransactions = createAction(
-  '[Cards] Load Card Transactions',
-  props<{ cardId: string }>(),
-);
-
-export const loadCardTransactionsSuccess = createAction(
-  '[Cards] Load Card Transactions Success',
-  props<{ cardId: string; transactions: ITransactions[]; total: number }>(),
-);
-
-export const loadCardTransactionsFailure = createAction(
-  '[Cards] Load Card Transactions Failure',
-  props<{ cardId: string; error: string }>(),
-);
-export const clearCardTransactionsError = createAction(
-  '[Cards] Clear Card Transactions Error'
-);
 export const loadCardImagesComplete = createAction(
   '[Cards] Load Card Images Complete',
 );

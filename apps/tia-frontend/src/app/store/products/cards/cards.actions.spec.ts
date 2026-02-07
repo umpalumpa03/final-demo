@@ -127,35 +127,8 @@ it('should create closeCardDetailsModal action', () => {
   const action = CardsActions.closeCardDetailsModal();
   expect(action.type).toBe('[Cards] Close Card Details Modal');
 });
-describe('card transactions actions', () => {
-  it('should create loadCardTransactions action', () => {
-    const action = CardsActions.loadCardTransactions({ cardId: 'card-1' });
-    expect(action.type).toBe('[Cards] Load Card Transactions');
-    expect(action.cardId).toBe('card-1');
-  });
 
-  it('should create loadCardTransactionsSuccess action', () => {
-    const transactions = [{ id: 'tx-1' }] as any[];
-    const action = CardsActions.loadCardTransactionsSuccess({
-      cardId: 'card-1',
-      transactions,
-      total: 5,
-    });
-    expect(action.type).toBe('[Cards] Load Card Transactions Success');
-    expect(action.transactions).toEqual(transactions);
-    expect(action.total).toBe(5);
-  });
-
-  it('should create loadCardTransactionsFailure action', () => {
-    const action = CardsActions.loadCardTransactionsFailure({
-      cardId: 'card-1',
-      error: 'Failed',
-    });
-    expect(action.type).toBe('[Cards] Load Card Transactions Failure');
-    expect(action.error).toBe('Failed');
-  });
   
-});
 describe('updateCardName actions', () => {
   it('should create updateCardName action', () => {
     const action = CardsActions.updateCardName({ cardId: 'card-1', cardName: 'New Name' });

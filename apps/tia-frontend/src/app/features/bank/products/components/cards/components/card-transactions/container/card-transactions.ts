@@ -1,35 +1,34 @@
+
 import {
   ChangeDetectionStrategy,
   Component,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { combineLatest, map, of, switchMap } from 'rxjs';
+import { combineLatest, map, of, switchMap, filter, take, BehaviorSubject, tap, takeUntil, Subject } from 'rxjs';
 import {
-  loadCardTransactions,
   loadCardDetails,
   loadCardAccounts,
-  clearCardTransactionsError,
 } from '../../../../../../../../store/products/cards/cards.actions';
 import {
   selectCardDetailById,
-  selectCardTransactionsByCardId,
-  selectCardTransactionsLoading,
-  selectCardTransactionsError,
-  selectCardTransactionsTotalByCardId,
   selectAccountById,
-  selectCardTransactions,
 } from '../../../../../../../../store/products/cards/cards.selectors';
+
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
-import { TranslatePipe } from '@ngx-translate/core';
 import { TransactionCardHeader } from '../components/transaction-card-header/transaction-card-header';
 import { TransactionList } from '../components/transaction-list/transaction-list';
+import { selectError, selectIsLoading, selectItems, selectNextCursor, selectTotalTransactions } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
+import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
+import { createEffect } from '@ngrx/effects';
+import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
 
 @Component({
   selector: 'app-card-transactions',
@@ -42,7 +41,7 @@ import { TransactionList } from '../components/transaction-list/transaction-list
     BasicCard,
     ErrorStates,
     TransactionCardHeader,
-    TransactionList,
+    TransactionList,Pagination
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -53,30 +52,36 @@ export class CardTransactions implements OnInit {
 
   private readonly cardId = this.route.snapshot.paramMap.get('cardId') || '';
 
-  protected readonly loading$ = this.store.select(
-    selectCardTransactionsLoading,
-  );
-  protected readonly error$ = this.store.select(selectCardTransactionsError);
+  protected readonly loading$ = this.store.select(selectIsLoading);
+  protected readonly error$ = this.store.select(selectError);
+  protected readonly transactions$ = this.store.select(selectItems);
+protected readonly totalCount$ = this.transactions$.pipe(
+  map(transactions => transactions.length)
+);
 
-  protected readonly transactions$ = this.store.select(
-    selectCardTransactionsByCardId(this.cardId),
-  );
-  protected readonly totalCount$ = this.store.select(
-    selectCardTransactionsTotalByCardId(this.cardId),
-  );
+  private readonly currentPageSubject = new BehaviorSubject<number>(1);
+protected readonly currentPage$ = this.currentPageSubject.asObservable();
+protected readonly itemsPerPage = 20;
+  private readonly destroy$ = new Subject<void>();
 
   protected readonly cardHeaderData$ = combineLatest([
     this.store.select(selectCardDetailById(this.cardId)),
   ]).pipe(
-    map(([cardData]) => {
-      if (!cardData) return null;
+    switchMap(([cardData]) => {
+      if (!cardData?.details?.accountId) return of(null);
 
-      return {
-        cardId: this.cardId,
-        imageBase64: cardData.imageBase64,
-        cardName: cardData.details.cardName,
-        maskedNumber: '•••• •••• •••• ' + this.cardId.slice(-4),
-      };
+      return this.store.select(selectAccountById(cardData.details.accountId)).pipe(
+        map((account) => {
+          if (!account) return null;
+
+          return {
+            cardId: this.cardId,
+            imageBase64: cardData.imageBase64,
+            cardName: cardData.details.cardName,
+            maskedNumber: '•••• •••• •••• ' + account.iban.slice(-4),
+          };
+        })
+      );
     }),
   );
 
@@ -90,9 +95,36 @@ export class CardTransactions implements OnInit {
         .pipe(map((account) => account?.name || 'N/A'));
     }),
   );
-  ngOnInit(): void {
-    this.loadData();
-  }
+
+
+
+ngOnInit(): void {
+  this.store.dispatch(TransactionActions.enter());
+  this.loadData();
+  
+  const accountIban$ = this.store.select(selectCardDetailById(this.cardId)).pipe(
+    filter(cardData => !!cardData?.details?.accountId),
+    take(1),
+    switchMap(cardData => 
+      this.store.select(selectAccountById(cardData!.details.accountId)).pipe(
+        filter(account => !!account?.iban),
+        take(1)
+      )
+    ),
+    tap(account => {
+      this.store.dispatch(TransactionActions.updateFilters({ 
+        filters: { accountIban: account!.iban, pageLimit: 100 } 
+      }));
+    }),
+    takeUntil(this.destroy$)
+  );
+
+  accountIban$.subscribe();
+
+  this.autoLoadAllTransactions();
+}
+
+
 
   protected handleBack(): void {
     this.router.navigate(['/bank/products/cards/details', this.cardId]);
@@ -102,20 +134,54 @@ export class CardTransactions implements OnInit {
     this.loadData();
   }
 
-  private loadData(): void {
-    this.store.dispatch(clearCardTransactionsError());
-    this.store.dispatch(loadCardAccounts());
-    this.store.dispatch(loadCardDetails({ cardId: this.cardId }));
-    this.store.dispatch(loadCardTransactions({ cardId: this.cardId }));
-  }
+
+private loadData(): void {
+  this.store.dispatch(loadCardAccounts());
+  this.store.dispatch(loadCardDetails({ cardId: this.cardId }));
+}
+
+
 
   protected readonly isLoading$ = combineLatest([
-    this.store.select(selectCardTransactionsLoading),
+    this.store.select(selectIsLoading),
     this.store.select(selectCardDetailById(this.cardId)),
-    this.store.select(selectCardTransactionsByCardId(this.cardId)),
+    this.store.select(selectItems),
   ]).pipe(
     map(([loading, cardData, transactions]) => {
       return loading && (!cardData || transactions.length === 0);
     }),
   );
+  protected readonly paginatedTransactions$ = combineLatest([
+  this.transactions$,
+  this.currentPage$,
+]).pipe(
+  map(([transactions, page]) => {
+    const startIndex = (page - 1) * this.itemsPerPage;
+    return transactions.slice(startIndex, startIndex + this.itemsPerPage);
+  })
+);
+
+  protected readonly totalPages$ = this.transactions$.pipe(
+  map(transactions => Math.ceil(transactions.length / this.itemsPerPage))
+);
+
+
+  protected handlePageChange(page: number): void {
+  this.currentPageSubject.next(page);
 }
+  ngOnDestroy(): void { 
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private autoLoadAllTransactions(): void {
+  this.store.select(selectNextCursor).pipe(
+    filter(cursor => cursor !== null),
+    tap(() => {
+      this.store.dispatch(TransactionActions.loadMore());
+    }),
+    takeUntil(this.destroy$)
+  ).subscribe();
+}
+}
+

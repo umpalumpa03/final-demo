@@ -117,38 +117,7 @@ export const cardsReducer = createReducer(
     selectedCardIdForModal: null,
   })),
 
-  on(CardsActions.loadCardTransactions, (state) => ({
-    ...state,
-    cardTransactionsLoading: true,
-    cardTransactionsError: null,
-  })),
 
-  on(
-    CardsActions.loadCardTransactionsSuccess,
-    (state, { cardId, transactions, total }) => ({
-      ...state,
-      cardTransactions: {
-        ...state.cardTransactions,
-        [cardId]: transactions,
-      },
-      cardTransactionsTotalCount: {
-        ...state.cardTransactionsTotalCount,
-        [cardId]: total,
-      },
-      cardTransactionsLoading: false,
-      cardTransactionsError: null,
-    }),
-  ),
-
-  on(CardsActions.loadCardTransactionsFailure, (state, { error }) => ({
-    ...state,
-    cardTransactionsLoading: false,
-    cardTransactionsError: error,
-  })),
-  on(CardsActions.clearCardTransactionsError, (state) => ({
-    ...state,
-    cardTransactionsError: null,
-  })),
 
   on(CardsActions.loadCardAccountsSuccess, (state, { accounts }) => ({
   ...state,

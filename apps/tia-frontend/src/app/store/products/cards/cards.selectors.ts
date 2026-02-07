@@ -6,7 +6,6 @@ import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
 import { CardDesign } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-design.model';
 import { CardCategory } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-category.model';
 import { CardType } from '../../../features/bank/products/components/cards/models/card-type.model';
-import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 import { CardSensitiveData } from '../../../features/bank/products/components/cards/models/card-sensitive-data.model';
 
 export const selectCardsState = createFeatureSelector<CardsState>('cards');
@@ -220,40 +219,7 @@ export const selectCardDetailsModalData = createSelector(
     };
   },
 );
-export const selectCardTransactions = createSelector(
-  selectCardsState,
-  (state: CardsState): Record<string, ITransactions[]> =>
-    state.cardTransactions,
-);
 
-export const selectCardTransactionsLoading = createSelector(
-  selectCardsState,
-  (state: CardsState): boolean => state.cardTransactionsLoading,
-);
-
-export const selectCardTransactionsError = createSelector(
-  selectCardsState,
-  (state: CardsState): string | null => state.cardTransactionsError,
-);
-
-export const selectCardTransactionsTotalCount = createSelector(
-  selectCardsState,
-  (state: CardsState): Record<string, number> =>
-    state.cardTransactionsTotalCount,
-);
-
-export const selectCardTransactionsByCardId = (cardId: string) =>
-  createSelector(
-    selectCardTransactions,
-    (transactions: Record<string, ITransactions[]>): ITransactions[] =>
-      transactions[cardId] || [],
-  );
-
-export const selectCardTransactionsTotalByCardId = (cardId: string) =>
-  createSelector(
-    selectCardTransactionsTotalCount,
-    (totals: Record<string, number>): number => totals[cardId] || 0,
-  );
 export const selectCardImagesLoading = createSelector(
   selectCardsState,
   (state: CardsState): boolean => state.cardImagesLoading,

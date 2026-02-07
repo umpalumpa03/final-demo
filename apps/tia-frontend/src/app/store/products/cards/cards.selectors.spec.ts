@@ -20,12 +20,6 @@ import {
   selectIsCardDetailsModalOpen,
   selectSelectedCardIdForModal,
   selectCardDetailsModalData,
-  selectCardTransactions,
-  selectCardTransactionsLoading,
-  selectCardTransactionsError,
-  selectCardTransactionsTotalCount,
-  selectCardTransactionsByCardId,
-  selectCardTransactionsTotalByCardId,
   selectCardImagesLoading,
   selectIsUpdatingCardName,
   selectUpdateCardNameError,
@@ -68,10 +62,6 @@ const mockState: CardsState = {
   showSuccessAlert: true,
   isCardDetailsModalOpen: false,
   selectedCardIdForModal: null,
-  cardTransactions: {},
-  cardTransactionsLoading: false,
-  cardTransactionsError: null,
-  cardTransactionsTotalCount: {},
   cardImagesLoading: false,
   isUpdatingCardName: false,
   updateCardNameError: null,
@@ -179,32 +169,7 @@ it('should select card details modal data', () => {
   expect(result?.cardId).toBe('card-1');
   expect(result?.formattedBalance).toBeDefined();
 });
-it('should select cardTransactions', () => {
-  expect(selectCardTransactions.projector(mockState)).toEqual({});
-});
 
-it('should select cardTransactionsLoading', () => {
-  expect(selectCardTransactionsLoading.projector(mockState)).toBe(false);
-});
-
-it('should select cardTransactionsError', () => {
-  expect(selectCardTransactionsError.projector(mockState)).toBeNull();
-});
-
-it('should select cardTransactionsTotalCount', () => {
-  expect(selectCardTransactionsTotalCount.projector(mockState)).toEqual({});
-});
-
-it('should select transactions by cardId', () => {
-  const transactions = [{ id: 'tx-1' }] as ITransactions[];
-  expect(selectCardTransactionsByCardId('card-1').projector({ 'card-1': transactions })).toEqual(transactions);
-  expect(selectCardTransactionsByCardId('unknown').projector({})).toEqual([]);
-});
-
-it('should select total by cardId', () => {
-  expect(selectCardTransactionsTotalByCardId('card-1').projector({ 'card-1': 10 })).toBe(10);
-  expect(selectCardTransactionsTotalByCardId('unknown').projector({})).toBe(0);
-});
 it('should select cardImagesLoading', () => {
   expect(selectCardImagesLoading.projector({ ...mockState, cardImagesLoading: true })).toBe(true);
 });
