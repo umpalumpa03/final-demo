@@ -1,7 +1,8 @@
 {
   "page": {
     "title": "Dashboard",
-    "subtitle": "Welcome back! Here's your financial overview."
+    "subtitle": "Welcome back! Here's your financial overview.",
+    "customize-label": "Personalize your experience"
   },
   "widgets": {
     "transactions": {

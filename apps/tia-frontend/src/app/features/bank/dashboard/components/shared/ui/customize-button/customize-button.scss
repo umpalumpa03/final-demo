@@ -28,7 +28,7 @@
     flex-shrink: 0;
     &__customize {
       @include icon__mask(
-        '/images/svg/paybill/right.svg',
+        '/images/svg/dashboard/customize.svg',
         2rem,
         var(--color-primary)
       );
