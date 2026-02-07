@@ -22,6 +22,7 @@ export interface Account {
   openedAt: string;
   closedAt: string;
   isFavorite: boolean;
+  isHidden: boolean;
 }
 
 export interface CreateAccountConfig {

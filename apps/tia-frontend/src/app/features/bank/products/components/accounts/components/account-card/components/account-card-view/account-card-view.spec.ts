@@ -24,6 +24,7 @@ describe('AccountCardViewComponent', () => {
     openedAt: '2026-01-01',
     closedAt: '',
     isFavorite: false,
+    isHidden: false,
   };
 
   const setAccount = (account = mockAccount) => {
@@ -55,10 +56,11 @@ describe('AccountCardViewComponent', () => {
     vi.clearAllMocks();
   });
 
-  it('should create and open transfer modal', () => {
+  it('should create and emit transfer event', () => {
     expect(component).toBeTruthy();
+    const spy = vi.spyOn(component.transfer, 'emit');
     component.handleOpenTransferModal();
-    expect(component['showTransferModal']()).toBe(true);
+    expect(spy).toHaveBeenCalled();
   });
 
   it('should compute displayName from friendlyName or name', () => {
@@ -110,29 +112,6 @@ describe('AccountCardViewComponent', () => {
     expect(component['canMakeTransfer']()).toBe(true);
     setAccount({ ...mockAccount, permission: 999 });
     expect(component['canMakeTransfer']()).toBe(false);
-  });
-  it('should handle permission selected and navigate to correct route', () => {
-    const navigateSpy = vi.spyOn(component['router'], 'navigate');
-    component.handlePermissionSelected(1);
-    expect(navigateSpy).toHaveBeenCalledWith(['/bank/transfers/internal'], {
-      queryParams: { accountId: '1' },
-    });
-    expect(component['showTransferModal']()).toBe(false);
-  });
-
-  it('should navigate to external transfer for permission 2', () => {
-    const navigateSpy = vi.spyOn(component['router'], 'navigate');
-    component.handlePermissionSelected(2);
-    expect(navigateSpy).toHaveBeenCalledWith(['/bank/transfers/external'], {
-      queryParams: { accountId: '1' },
-    });
-  });
-  it('should navigate to paybill for permission 8', () => {
-    const navigateSpy = vi.spyOn(component['router'], 'navigate');
-    component.handlePermissionSelected(8);
-    expect(navigateSpy).toHaveBeenCalledWith(['/bank/paybill'], {
-      queryParams: { accountId: '1' },
-    });
   });
   it('should handle rename click and set editing state', () => {
     component.handleRenameClick();

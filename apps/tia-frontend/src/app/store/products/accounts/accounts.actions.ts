@@ -15,7 +15,7 @@ export const AccountsActions = createActionGroup({
     'Fetch More Accounts Success': props<{ accounts: Account[] }>(),
     'Fetch More Accounts Failure': props<{ error: string }>(),
 
-    'Select Account': props<{ accountId: string | null }>(),
+    'Select Account': props<{ account: Account | null }>(),
 
     'Create Account': props<{ request: CreateAccountRequest }>(),
     'Create Account Success': props<{ account: Account }>(),
