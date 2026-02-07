@@ -1,1 +1,11 @@
-<h1>approve accounts container</h1>
+<app-ui-modal [isOpen]="false">
+  <app-permissions-modal
+    [modalTitle]="'Modify Account Permissions'"
+    [modalSubtitle]="'Configure permissions for this account request'"
+    [title]="'Account permissions'"
+    [form]="permissionsForm"
+    [items]="store.permissions()"
+    [accOrCardName]="'FLEXAACCOUNT'"
+    [name]="'John Doe'"
+  ></app-permissions-modal>
+</app-ui-modal>

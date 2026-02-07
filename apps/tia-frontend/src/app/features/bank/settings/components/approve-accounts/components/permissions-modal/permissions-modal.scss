@@ -1,0 +1,6 @@
+@use '../../../../../../../shared/styles/mixins' as *;
+.button-container {
+  width: 100%;
+  @include flex-center(row, flex-end, center);
+  gap: 0.8rem;
+}

@@ -1,0 +1,26 @@
+<app-library-title [title]="modalTitle()"></app-library-title>
+<app-list-display [items]="cardOrAccHolder()"> </app-list-display>
+<form class="list-container" [formGroup]="form()">
+  @if (title()) {
+  <h3>{{ title() }}</h3>
+  }
+  <div>
+    @for (item of items(); track item.value) {
+    <lib-checkboxes
+      [formControlName]="item.value.toString()"
+      [config]="{
+            label: item.label,
+            id: 'checkbox-' + item.value,
+            variant: 'outlined' 
+          }"
+    ></lib-checkboxes>
+    }
+  </div>
+</form>
+
+<div class="button-container">
+  <app-button [variant]="'default'" [icon]="'confirm-icon.svg'">
+    Save Permissions
+  </app-button>
+  <app-button [variant]="'outline'">Cancel</app-button>
+</div>
