@@ -25,7 +25,7 @@ export const mapToWidgetItem = (payload: IWidgetPayload): IWidgetItem => {
     isHidden: !payload.isActive,
     hasFullWidth: payload.hasFullWidth,
     order: payload.order,
-    title: catalogItem?.title || payload.widgetName,
-    subtitle: catalogItem?.subtitle || '',
+    title: '',
+    subtitle: '',
   };
 };

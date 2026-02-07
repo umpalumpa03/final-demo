@@ -1,14 +1,9 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  computed,
   DestroyRef,
   ElementRef,
   inject,
-  input,
-  OnDestroy,
-  OnInit,
   ViewChild,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
@@ -21,7 +16,6 @@ import {
 } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
 import {
   AsyncPipe,
-  CurrencyPipe,
   DatePipe,
   DecimalPipe,
 } from '@angular/common';
@@ -32,7 +26,6 @@ import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/contai
 import { BaseWidget } from '../shared/base-widget.config';
 import { CurrencySymbolPipe } from 'apps/tia-frontend/src/app/features/bank/dashboard/pipes/currency-symbols.pipe';
 import { TranslateModule } from '@ngx-translate/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-widget-transactions',
