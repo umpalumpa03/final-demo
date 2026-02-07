@@ -114,5 +114,22 @@ describe('PaybillTemplates', () => {
       component.onChildProviderChange('p1', 0);
       expect(spy).toHaveBeenCalledWith({ providerId: 'p1', index: 0 });
     });
+
+    it('should reset form but not patch if initialValues are missing', () => {
+      const activeForm = component.createGroupForm();
+      const patchSpy = vi.spyOn(activeForm, 'patchValue');
+
+      fixture.componentRef.setInput('activeModal', ModalType.Group);
+      fixture.componentRef.setInput('currentModalConfig', { 
+        initialValues: null 
+      });
+
+      fixture.detectChanges();
+
+      expect(patchSpy).not.toHaveBeenCalled();
+      expect(activeForm.pristine).toBe(true);
+    });
   });
+
+  
 });

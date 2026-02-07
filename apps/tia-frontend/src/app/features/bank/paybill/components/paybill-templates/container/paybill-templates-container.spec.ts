@@ -8,6 +8,7 @@ import {
 } from '../../../store/paybill.actions';
 import { HeaderCtaAction, ModalType } from '../models/paybill-templates.model';
 import { signal } from '@angular/core';
+import { selectPaymentFields } from '../../../store/paybill.selectors';
 
 describe('PaybillTemplatesContainer', () => {
   let component: PaybillTemplatesContainer;
@@ -92,6 +93,22 @@ describe('PaybillTemplatesContainer', () => {
     );
   });
 
+  describe('Lifecycle Hooks', () => {
+    it('should dispatch initialization actions on ngOnInit', () => {
+      component.ngOnInit();
+
+      expect(store.dispatch).toHaveBeenCalledWith(
+        PaybillActions.clearSelection(),
+      );
+      expect(store.dispatch).toHaveBeenCalledWith(
+        TemplatesPageActions.loadTemplateGroups(),
+      );
+      expect(store.dispatch).toHaveBeenCalledWith(
+        TemplatesPageActions.loadTemplates(),
+      );
+    });
+  });
+
   it('should return null or merged config', () => {
     component.modalType.set(null);
     expect(component.currentModalConfig()).toBeNull();
@@ -101,5 +118,63 @@ describe('PaybillTemplatesContainer', () => {
     expect(component.currentModalConfig()?.initialValues).toEqual({
       currentName: 'Test',
     });
+  });
+
+  it('deleteGroup: should dispatch deleteTemplateGroup action and close modal when ID is selected', () => {
+    component.selectedId.set('g-200');
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    const toggleSpy = vi.spyOn(component, 'handleModalToggle');
+
+    component.deleteGroup();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      TemplatesPageActions.deleteTemplateGroup({ groupId: 'g-200' }),
+    );
+    expect(toggleSpy).toHaveBeenCalled();
+  });
+
+  it('withSelectedId branch: should return early and do nothing if no ID is selected', () => {
+    component.selectedId.set('');
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    const toggleSpy = vi.spyOn(component, 'handleModalToggle');
+
+    component.deleteTemplate();
+
+    expect(dispatchSpy).not.toHaveBeenCalled();
+    expect(toggleSpy).not.toHaveBeenCalled();
+  });
+
+  it('should dispatch selectCategory and reset currentLevel when a category is provided', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    component.currentLevel.set(5);
+
+    component.onCategorySelect('UTIL');
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      PaybillActions.selectCategory({ categoryId: 'UTIL' }),
+    );
+    expect(component.currentLevel()).toBe(0);
+  });
+
+  it('should return early and do nothing if category is null (Guard Branch)', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+    component.onCategorySelect(null as any);
+
+    expect(dispatchSpy).not.toHaveBeenCalled();
+  });
+
+  it('should dispatch selectProvider with correct payload when valid info is provided', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    const providerInfo = { providerId: 'p-101', index: 1 };
+
+    component.onParentProviderSelect(providerInfo);
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      TemplatesPageActions.selectProvider({
+        providerId: 'p-101',
+        level: 1,
+      }),
+    );
   });
 });
