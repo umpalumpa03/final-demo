@@ -53,22 +53,6 @@ export class UserInfoEffects {
     ),
   );
 
-  public updateWidgetState$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(UserInfoActions.updateWidgetState),
-      switchMap(({ id, updates }) =>
-        this.widgetService.updateWidget(id, updates).pipe(
-          map((widget) => UserInfoActions.updateWidgetStateSuccess({ widget })),
-          catchError((error) =>
-            of(
-              UserInfoActions.updateWidgetStateError({ error: error.message }),
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
-
   public createWidget$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserInfoActions.createWidget),
@@ -96,7 +80,7 @@ export class UserInfoEffects {
           ),
           catchError((error) =>
             of(
-              UserInfoActions.updateWidgetStateError({ error: error.message }),
+              UserInfoActions.updateWidgetsBulkError({ error: error.message }),
             ),
           ),
         );
@@ -127,9 +111,7 @@ export class UserInfoEffects {
         this.widgetService.deleteWidget(id).pipe(
           map(() => UserInfoActions.deleteWidgetSuccess({ id })),
           catchError((error) =>
-            of(
-              UserInfoActions.updateWidgetStateError({ error: error.message }),
-            ),
+            of(UserInfoActions.deleteWidgetError({ error: error.message })),
           ),
         ),
       ),

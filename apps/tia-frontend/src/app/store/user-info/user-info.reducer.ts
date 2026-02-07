@@ -97,22 +97,6 @@ export const userInfoFeature = createFeature({
       widgetsLoaded: true,
     })),
 
-    on(UserInfoActions.updateWidgetStateSuccess, (state, { widget }) => ({
-      ...state,
-      widgets: state.widgets
-        .map((w) => {
-          if (w.dbId === widget.dbId) {
-            return {
-              ...w,
-              ...widget,
-              isHidden: widget.isActive === false,
-            };
-          }
-          return w;
-        })
-        .sort((a, b) => (a.order || 99) - (b.order || 99)),
-    })),
-
     on(UserInfoActions.updateWidgetsBulkSuccess, (state, { widgets }) => ({
       ...state,
       widgets: state.widgets
@@ -123,11 +107,7 @@ export const userInfoFeature = createFeature({
             : w;
         })
         .sort((a, b) => (a.order || 99) - (b.order || 99)),
-    })),
-
-    on(UserInfoActions.deleteWidgetSuccess, (state, { id }) => ({
-      ...state,
-      widgets: state.widgets.filter((w) => w.dbId !== id),
+      widgetsLoading: false,
     })),
 
     on(
@@ -147,12 +127,16 @@ export const userInfoFeature = createFeature({
     })),
 
     on(
+      UserInfoActions.loadUserError,
       UserInfoActions.loadWidgetsError,
       UserInfoActions.createWidgetError,
-      UserInfoActions.updateWidgetStateError,
-      (state) => ({
+      UserInfoActions.updateWidgetsBulkError,
+      UserInfoActions.deleteWidgetError,
+      (state, { error }) => ({
         ...state,
+        loading: false,
         widgetsLoading: false,
+        error,
       }),
     ),
   ),
