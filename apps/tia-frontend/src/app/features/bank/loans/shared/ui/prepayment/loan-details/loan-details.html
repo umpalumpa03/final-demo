@@ -1,6 +1,6 @@
 @let loanData = loan();
 
-<app-ui-modal [isOpen]="isOpen()" (closed)="close.emit()">
+<app-ui-modal [isOpen]="isOpen()" (closed)="close.emit()" [hasNavigation]="true" (navigate)="navigate.emit($event)">
     <div class="loan-modal">
 
         <header class="loan-modal__header">
@@ -23,7 +23,7 @@
         }
         @else if (loanData) {
 
-        <div class="loan-modal__body" #scrollContainer (scroll)="onScroll()">
+        <div class="loan-modal__body">
 
             <div class="loan-modal__status">
                 <span class="loan-modal__status-label">{{ 'loans.details.status_label' | translate }}</span>
@@ -144,13 +144,6 @@
             }
         </div>
 
-        @if (showScrollButton()) {
-        <div class="loan-modal__scroll-btn-wrapper">
-            <button class="scroll-btn" (click)="scrollToBottom()">
-                <img src="./images/svg/feature-loans/down-arrow.svg" alt="Scroll to Bottom button">
-            </button>
-        </div>
-        }
 
         }
 

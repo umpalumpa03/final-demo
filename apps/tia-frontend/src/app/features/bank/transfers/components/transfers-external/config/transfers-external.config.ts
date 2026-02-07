@@ -22,14 +22,13 @@ export const getRecipientIconByType = (type: string | null): string => {
   }
 };
 
-
 export const transferOtpConfig = {
-  'extrenal': {
-    title: 'auth.otp-sign-in.title',
-    subText: 'auth.otp-sign-in.subText',
-    submitBtnName: 'auth.otp-sign-in.submitBtnName',
-    backLink: '/auth/sign-in',
-    backLinkText: 'auth.otp-sign-in.backLinkText',
+  extrenal: {
+    title: 'transfers.external.otp.title',
+    subText: 'transfers.external.otp.description',
+    submitBtnName: 'transfers.external.otp.submit',
+    backLink: '/bank/transfers/external/amount',
+    backLinkText: 'common.buttons.cancel',
     iconUrl: 'images/svg/auth/secured-blue.svg',
-  }
+  },
 } as const;

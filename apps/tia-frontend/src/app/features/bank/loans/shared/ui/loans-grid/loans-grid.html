@@ -1,0 +1,12 @@
+<div class="loans-grid">
+    @for (loan of loans(); track loan.id) {
+    <lib-loan-card [loan]="loan" [variant]="variant()" (cardClick)="cardClick.emit($event)"
+        (rename)="rename.emit($event)">
+    </lib-loan-card>
+    } @empty {
+    <app-error-states variant="not-found" [header]="emptyConfig().title | translate"
+        [message]="emptyConfig().message | translate" [buttonMessage]="emptyConfig().button | translate"
+        [border]="false" width="100%" height="30rem" (buttonClick)="emptyClick.emit()">
+    </app-error-states>
+    }
+</div>

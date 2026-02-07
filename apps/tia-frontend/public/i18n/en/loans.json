@@ -47,28 +47,29 @@
     "all": "All Loans ",
     "approved": "Approved ",
     "pending": "Pending ",
-    "declined": "Declined "
-  },
-  "empty": {
-    "all": {
-      "title": "No Loans Found",
-      "message": "You don't have any loans yet.",
-      "button": "Request New Loan"
-    },
-    "approved": {
-      "title": "No Approved Loans",
-      "message": "You don't have any active approved loans at the moment.",
-      "button": "View All Loans"
-    },
-    "pending": {
-      "title": "No Pending Applications",
-      "message": "You don't have any loan applications currently under review.",
-      "button": "View All Loans"
-    },
-    "declined": {
-      "title": "No Declined Loans",
-      "message": "You don't have any declined loan applications.",
-      "button": "View All Loans"
+    "declined": "Declined ",
+    "search": "Search loan by name...",
+    "empty": {
+      "all": {
+        "title": "No Loans Found",
+        "message": "You don't have any loans yet.",
+        "button": "Request New Loan"
+      },
+      "approved": {
+        "title": "No Approved Loans",
+        "message": "You don't have any active approved loans at the moment.",
+        "button": "View All Loans"
+      },
+      "pending": {
+        "title": "No Pending Applications",
+        "message": "You don't have any loan applications currently under review.",
+        "button": "View All Loans"
+      },
+      "declined": {
+        "title": "No Declined Loans",
+        "message": "You don't have any declined loan applications.",
+        "button": "View All Loans"
+      }
     }
   },
 
@@ -95,7 +96,7 @@
       "name": "Full Name",
       "relationship": "Relationship",
       "number": "Phone Number",
-      "email": "Email Address *"
+      "email": "Email Address"
     },
     "review_box": {
       "title": "Application Review",

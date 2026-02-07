@@ -17,36 +17,42 @@ describe('ExternalAccounts', () => {
   let fixture: ComponentFixture<ExternalAccounts>;
   let store: MockStore;
 
-  const mockStoreValues = {
-    isLoading: signal(false),
-    error: signal<string | null>(null),
-    recipientInfo: signal<any>(null),
-    recipientInput: signal(''),
-    recipientType: signal<string | null>(null),
-    senderAccount: signal<any>(null),
-    selectedRecipientAccount: signal<any>(null),
-    isVerified: signal(false),
-    setIsVerified: vi.fn(),
-  };
-
-  const mockRecipientService = {
-    isRecipientAccountDisabled: vi.fn().mockReturnValue(false),
-    isSenderAccountDisabled: vi.fn().mockReturnValue(false),
-    handleRetryRecipientLookup: vi.fn(),
-  };
-
-  const mockSelectionService = {
-    handleRecipientAccountSelect: vi.fn(),
-    handleSenderAccountSelect: vi.fn(),
-    handleContinue: vi.fn(),
-  };
-
-  const mockBreakpointService = {
-    isMobile: signal(false),
-  };
+  let mockStoreValues: any;
+  let mockRecipientService: any;
+  let mockSelectionService: any;
+  let mockBreakpointService: any;
 
   beforeEach(async () => {
-    vi.useFakeTimers(); 
+    vi.useFakeTimers();
+
+    mockStoreValues = {
+      isLoading: signal(false),
+      error: signal<string | null>(null),
+      recipientInfo: signal<any>(null),
+      recipientInput: signal(''),
+      recipientType: signal<string | null>(null),
+      senderAccount: signal<any>(null),
+      selectedRecipientAccount: signal<any>(null),
+      isVerified: signal(false),
+      setIsVerified: vi.fn(),
+      setError: vi.fn((val: string) => mockStoreValues.error.set(val)),
+    };
+
+    mockRecipientService = {
+      isRecipientAccountDisabled: vi.fn().mockReturnValue(false),
+      isSenderAccountDisabled: vi.fn().mockReturnValue(false),
+      handleRetryRecipientLookup: vi.fn(),
+    };
+
+    mockSelectionService = {
+      handleRecipientAccountSelect: vi.fn(),
+      handleSenderAccountSelect: vi.fn(),
+      handleContinue: vi.fn(),
+    };
+
+    mockBreakpointService = {
+      isMobile: signal(false),
+    };
 
     await TestBed.configureTestingModule({
       imports: [
@@ -75,11 +81,14 @@ describe('ExternalAccounts', () => {
     fixture = TestBed.createComponent(ExternalAccounts);
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
+
+    store.refreshState();
   });
 
   afterEach(() => {
     vi.useRealTimers();
     vi.clearAllMocks();
+    store.resetSelectors();
   });
 
   it('should dispatch loadAccounts on init if store is empty', () => {
@@ -93,7 +102,7 @@ describe('ExternalAccounts', () => {
     mockStoreValues.isVerified.set(true);
 
     fixture.detectChanges();
-    await Promise.resolve(); 
+    await Promise.resolve();
 
     expect(component.showSuccess()).toBe(true);
     expect(mockStoreValues.setIsVerified).toHaveBeenCalledWith(false);
@@ -124,11 +133,13 @@ describe('ExternalAccounts', () => {
     mockStoreValues.senderAccount.set(null);
     fixture.detectChanges();
     expect(component.isContinueDisabled()).toBe(true);
+
     mockStoreValues.recipientType.set('iban-different-bank');
     mockStoreValues.senderAccount.set({ id: 's1' });
     component.recipientNameInput.setValue('');
     fixture.detectChanges();
     expect(component.isContinueDisabled()).toBe(true);
+
     component.recipientNameInput.setValue('Giorgi');
     fixture.detectChanges();
     expect(component.isContinueDisabled()).toBe(false);
