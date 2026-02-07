@@ -19,12 +19,55 @@
     [border]="false"
   >
   </app-error-states>
-  } @else if (isLoading()) {
-  <app-route-loader
-    [variant]="'pulsing'"
-    [text]="'my-products.accounts.loading' | translate"
-  />
-  } @else if (hasNoAccounts()) {
+  } @else if (isLoading()) { @for (section of accountSections(); track
+  section.key) {
+  <section class="accounts-list__section">
+    <div class="accounts-list__section-header">
+      <img [src]="section.icon" alt="" class="accounts-list__section-icon" />
+      <app-library-title title="{{ section.title }}"></app-library-title>
+      <app-skeleton
+        [width]="'4rem'"
+        [height]="'2.4rem'"
+        [variant]="'rectangle'"
+      />
+    </div>
+
+    <div class="accounts-list__carousel">
+      <div class="accounts-list__carousel-viewport">
+        <div class="accounts-list__section-grid">
+          @for (i of skeletonItems(); track i) {
+          <div class="accounts-list__skel-card">
+            <div class="skel">
+              <div class="skel__head">
+                <app-skeleton [variant]="'circle'" [height]="'4.8rem'" />
+                <div class="skel__creds">
+                  <app-skeleton [width]="'60%'" [height]="'1.8rem'" />
+                  <app-skeleton [width]="'80%'" [height]="'1.2rem'" />
+                </div>
+              </div>
+              <div class="skel__body">
+                <app-skeleton [width]="'40%'" [height]="'1.2rem'" />
+                <app-skeleton [width]="'70%'" [height]="'2.2rem'" />
+              </div>
+              <div class="skel__body">
+                <app-skeleton [width]="'100%'" [height]="'1.2rem'" />
+                <app-skeleton [width]="'100%'" [height]="'1.2rem'" />
+              </div>
+              <div class="skel__body">
+                <app-skeleton
+                  [width]="'100%'"
+                  [height]="'4rem'"
+                  [variant]="'rectangle'"
+                />
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+  } } @else if (hasNoAccounts()) {
   <app-error-states
     [variant]="'not-found'"
     [header]="'my-products.accounts.noAccounts' | translate"
@@ -48,33 +91,68 @@
       </app-badges>
     </div>
 
-    <app-scroll-area
-      [direction]="'horizontal'"
-      [height]="'auto'"
-      [scrollbar]="'hidden'"
-      [hideBorder]="true"
-    >
-      <div class="accounts-list__section-grid">
-        @for (account of getAccountsBySection(section); track account.id) {
-        <app-account-card
-          [account]="account"
-          [isRenaming]="isRenamingAccount()"
-          [renameError]="renameError()"
-          (transfer)="handleTransfer($event)"
-          (rename)="handleRenameClick($event)"
-          (renameSuccess)="handleRenameSuccess()"
-        />
+    <div class="accounts-list__carousel">
+      <div
+        class="accounts-list__carousel-button-container accounts-list__carousel-button-container--prev"
+      >
+        @if (needsPagination(section) && canGoPrevious(section.key)) {
+        <app-button
+          [variant]="'secondary'"
+          [size]="'icon'"
+          (click)="goToPrevious(section.key)"
+          [icon]="'left-arrow.svg'"
+        >
+        </app-button>
         }
       </div>
-      @if (isFetching()) {
-      <div class="accounts-list__section-loader">
-        <app-route-loader
-          [variant]="'pulsing'"
-          [text]="'my-products.accounts.loadingMore' | translate"
-        />
+
+      <div class="accounts-list__carousel-viewport">
+        <div
+          class="accounts-list__section-grid"
+          [style.transform]="getTransformOffset(section.key)"
+        >
+          @for (account of getAccountsBySection(section); track account.id) {
+          <app-account-card
+            [account]="account"
+            [isRenaming]="isRenamingAccount()"
+            [renameError]="renameError()"
+            (transfer)="handleTransfer($event)"
+            (rename)="handleRenameClick($event)"
+            (renameSuccess)="handleRenameSuccess()"
+          />
+          }
+        </div>
       </div>
-      }
-    </app-scroll-area>
+
+      <div
+        class="accounts-list__carousel-button-container accounts-list__carousel-button-container--next"
+      >
+        @if (needsPagination(section) && canGoNext(section)) {
+        <app-button
+          [variant]="'secondary'"
+          [size]="'icon'"
+          (click)="goToNext(section.key)"
+          [icon]="'left-arrow.svg'"
+        >
+        </app-button>
+        }
+      </div>
+    </div>
+    @if (isFetching()) {
+    <div class="accounts-list__section-loader">
+      <app-route-loader
+        [variant]="'pulsing'"
+        [text]="'my-products.accounts.loadingMore' | translate"
+      />
+    </div>
+    }
   </section>
   } }
 </div>
+
+<app-transfer-permissions-modal
+  [isOpen]="showTransferModal()"
+  [accountPermission]="selectedAccountPermission()"
+  (permissionSelected)="handlePermissionSelected($event)"
+  (closed)="handleModalClosed()"
+></app-transfer-permissions-modal>

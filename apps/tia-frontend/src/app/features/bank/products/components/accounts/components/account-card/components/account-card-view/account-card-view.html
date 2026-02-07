@@ -1,5 +1,7 @@
 <app-basic-card
   [padding]="'0 2.4rem'"
+  [maxWidth]="'100%'"
+  [hasHover]="true"
   (mousedown)="onMouseDown($event)"
   (mousemove)="onMouseMove($event)"
   (mouseup)="onMouseUp()"
@@ -33,9 +35,20 @@
             {{ displayName() }}
           </h3>
           @if (account().status === 'active') {
-          <span class="account-card__header-info-badge"
-            >{{ 'my-products.accounts.card.active' | translate }}</span
-          >
+          <app-badges
+            [variant]="'default'"
+            [size]="'medium'"
+            [shape]="'pill'"
+            [text]="'my-products.accounts.card.active' | translate"
+          ></app-badges>
+          } @if (account().isFavorite) {
+          <div class="account-card__header-favorite">
+            <img
+              src="images/svg/settings/approve-cards/favorite.svg"
+              alt="favorite"
+              class="account-card__header-favorite-icon"
+            />
+          </div>
           }
         </div>
         <p class="account-card__header-info-number">{{ account().iban }}</p>
@@ -87,10 +100,3 @@
     </div>
   </div>
 </app-basic-card>
-
-<app-transfer-permissions-modal
-  [isOpen]="showTransferModal()"
-  [accountPermission]="account().permission"
-  (permissionSelected)="handlePermissionSelected($event)"
-  (closed)="showTransferModal.set(false)"
-></app-transfer-permissions-modal>

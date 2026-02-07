@@ -1,11 +1,25 @@
 @use "../../../../../../../../shared/styles/mixins" as *;
 @use "../../../../../../../../shared/styles/palette" as *;
-@use "../../../../../../../../shared/styles/themes" as *;
 
 .user-card {
+    @include flex-center($justify: space-between);
+    width: 100%;
+    gap: 2rem;
+
+    @media (max-width: 1280px) {
+        flex-direction: column;
+        gap: 1.6rem;
+    }
+
     &__left {
         @include flex-center($align: center, $justify: flex-start);
         gap: 1.6rem;
+        flex: 1;
+        min-width: 0;
+
+        @media (max-width: 640px) {
+            gap: 1.2rem;
+        }
     }
 
     &__avatar {
@@ -17,14 +31,27 @@
         color: var(--color-primary);
         flex-shrink: 0;
 
-        svg {
-            @include svg-icon(2.4rem);
+        img {
+            width: 2.4rem;
+            height: 2.4rem;
+        }
+
+        @media (max-width: 640px) {
+            width: 4rem;
+            height: 4rem;
+
+            img {
+                width: 2rem;
+                height: 2rem;
+            }
         }
     }
 
     &__info {
         @include flex-center($direction: column, $justify: flex-start, $align: flex-start);
         gap: 0.8rem;
+        min-width: 0;
+        flex: 1;
     }
 
     &__name {
@@ -37,6 +64,10 @@
         @include font-inter(400, 1.4rem);
         color: $gray-600;
         margin: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+        word-break: break-word;
     }
 
     &__meta {
@@ -44,10 +75,12 @@
         gap: 1.2rem;
         margin-top: 0.2rem;
         font-size: 1.4rem;
+        flex-wrap: wrap;
     }
 
     &__role {
         color: $gray-600;
+        text-transform: capitalize;
     }
 
     &__status {
@@ -56,8 +89,33 @@
     }
 
     &__actions {
-        @include flex-center;
+        @include flex-center($justify: flex-start);
         gap: 1rem;
         margin-left: auto;
+        flex-wrap: wrap;
+
+        @media (max-width: 1440px) {
+            gap: 0.8rem;
+        }
+
+        @media (max-width: 1280px) {
+            margin-left: 0;
+            width: 100%;
+            justify-content: center;
+        }
+
+        @media (max-width: 900px) {
+            .button-text {
+                display: none;
+            }
+        }
+
+        @media (max-width: 400px) {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            > div {
+                @include flex-center;
+            }
+        }
     }
 }
