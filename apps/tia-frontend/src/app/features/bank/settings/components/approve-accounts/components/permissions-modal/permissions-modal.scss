@@ -1,0 +1,36 @@
+@use '../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../shared/styles/palette' as *;
+.modal-permission-wrapper {
+  max-width: 100%;
+  @include display-flex(column);
+  gap: 2.4rem;
+}
+.list-container {
+  @include display-flex(column);
+  gap: 1.6rem;
+  h3 {
+    color: $blue-1000;
+    @include font-inter(600, 1.8rem, 2.7rem);
+  }
+  &__checkbox {
+    @include display-flex(column);
+    gap: 1.6rem;
+  }
+}
+.counter-text {
+  background-color: $gray-25;
+  padding: 1.7rem;
+  border-radius: 1rem;
+  p {
+    @include font-inter(400, 1.4rem, 2rem);
+    color: $gray-700;
+    span {
+      font-weight: 700;
+    }
+  }
+}
+.button-container {
+  width: 100%;
+  @include flex-center(row, flex-end, center);
+  gap: 1.6rem;
+}

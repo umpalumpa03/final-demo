@@ -1,23 +1,30 @@
 <div class="list-display">
   @for (item of items(); track item.id) {
-    <div
-      class="list-display__card"
-      [class.list-display__card--interactive]="selectable()"
-      (click)="onSelect(item)"
-    >
-      <div class="list-display__avatar">{{ item.initials }}</div>
-      <div class="list-display__content">
-        <p class="list-display__name">{{ item.name }}</p>
-        <div class="list-display__meta">
-          <span [class]="statusClass(item.statusTone)"></span>
-          <span class="list-display__role">{{ item.role }}</span>
-        </div>
-      </div>
-      @if (item.badge) {
-        <span [class]="badgeClass(item.badge.tone)">
-          {{ item.badge.label }}
-        </span>
-      }
+  <div
+    class="list-display__card"
+    [class.list-display__card--interactive]="selectable()"
+    (click)="onSelect(item)"
+  >
+    <div class="list-display__avatar">
+      @if(ifImage()){
+      <img
+        src="/images/svg/data-display/card-display-aprove.svg"
+        alt=""
+      />
+      } @else{
+        {{ item.initials }} 
+    }
     </div>
+    <div class="list-display__content">
+      <p class="list-display__name">{{ item.name }}</p>
+      <div class="list-display__meta">
+        <span [class]="statusClass(item.statusTone)"></span>
+        <span class="list-display__role">{{ item.role }}</span>
+      </div>
+    </div>
+    @if (item.badge) {
+    <span [class]="badgeClass(item.badge.tone)"> {{ item.badge.label }} </span>
+    }
+  </div>
   }
 </div>
