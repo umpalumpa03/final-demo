@@ -1,9 +1,9 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { AccountPermissionsStore } from '../store/aprove-accounts.store';
 import { FormBuilder, FormControl, FormRecord } from '@angular/forms';
-import { PermissionsModal } from "../components/permissions-modal/permissions-modal";
-import { UiModal } from "@tia/shared/lib/overlay/ui-modal/ui-modal";
+import { PermissionsModal } from '../components/permissions-modal/permissions-modal';
+import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 
 @Component({
   selector: 'app-approve-accounts-container',
@@ -16,6 +16,7 @@ import { UiModal } from "@tia/shared/lib/overlay/ui-modal/ui-modal";
 export class ApproveAccountsContainer {
   public readonly store = inject(AccountPermissionsStore);
   public readonly fb = inject(FormBuilder);
+  public selectIds = signal<number[]>([]);
 
   public ngOnInit(): void {
     this.store.loadPermissions();
@@ -40,13 +41,13 @@ export class ApproveAccountsContainer {
       });
     });
   }
-  public save() {
+  public save(): void {
     const formValue = this.permissionsForm.getRawValue();
 
-    const selectedIds = Object.keys(formValue)
-      .filter((key) => formValue[key] === true)
-      .map((key) => Number(key));
-
-    console.log('Saved Id-ს :', selectedIds);
+    this.selectIds.set(
+      Object.keys(formValue)
+        .filter((key) => formValue[key] === true)
+        .map((key) => Number(key)),
+    );
   }
 }
