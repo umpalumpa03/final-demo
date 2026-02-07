@@ -87,7 +87,7 @@ export class PaybillTemplatesService {
     );
   }
 
-  public addTemplate(payload: any): Observable<Templates> {
-    return this.http.post<Templates>(`${this.baseUrl}/templates`, payload);
-  }
+  // public addTemplate(payload: any): Observable<Templates> {
+  //   return this.http.post<Templates>(`${this.baseUrl}/templates`, payload);
+  // }
 }

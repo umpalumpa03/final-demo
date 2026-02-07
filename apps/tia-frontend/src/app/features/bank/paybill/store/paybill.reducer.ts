@@ -41,14 +41,14 @@ export const paybillReducer = createReducer(
     error: null,
   })),
   on(PaybillActions.loadProvidersSuccess, (state, { providers }) => {
-    const fitered = state.selectedProviderId
+    const filtered = state.selectedProviderId
       ? providers.filter((p) => p.parentId === state.selectedProviderId)
       : providers.filter((p) => !p.parentId);
 
     return {
       ...state,
       providers,
-      filteredProviders: [fitered],
+      filteredProviders: [filtered],
       loading: false,
     };
   }),
@@ -76,13 +76,6 @@ export const paybillReducer = createReducer(
     loading: true,
     error: null,
   })),
-
-  on(PaybillActions.checkBill, (state) => ({
-    ...state,
-    loading: true,
-    error: null,
-  })),
-
   on(PaybillActions.checkBillSuccess, (state, { details }) => ({
     ...state,
     verifiedDetails: details,
@@ -392,23 +385,6 @@ export const paybillReducer = createReducer(
     error,
   })),
 
-  on(TemplatesPageActions.createTemplate, (state) => ({
-    ...state,
-    loading: true,
-    error: null,
-  })),
-
-  on(TemplatesPageActions.createTemplateSuccess, (state) => ({
-    ...state,
-    loading: false,
-  })),
-
-  on(TemplatesPageActions.createTemplateFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    error,
-  })),
-
   on(TemplatesPageActions.selectProvider, (state, { providerId, level }) => ({
     ...state,
     selectedProviderId: providerId,
@@ -445,14 +421,14 @@ export const paybillReducer = createReducer(
     error,
   })),
 
-  on(TemplatesPageActions.createTemplate2, (state) => ({
+  on(TemplatesPageActions.createTemplate, (state) => ({
     ...state,
     loading: true,
     error: null,
   })),
 
   on(
-    TemplatesPageActions.createTemplate2Success,
+    TemplatesPageActions.createTemplateSuccess,
     (state, { payload, message }) => ({
       ...state,
       loading: false,

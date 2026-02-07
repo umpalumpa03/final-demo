@@ -135,15 +135,10 @@ export const TemplatesPageActions = createActionGroup({
       identification: PaybillIdentification;
       nickname: string;
     }>(),
-    // Shared gasatania
-    'Create Template2': props<{
-      payload: any;
-    }>(),
-    'Create Template2 Success': props<{
+    'Create Template Success': props<{
       payload: any;
       message: string;
     }>(),
-    'Create Template Success': props<{ message: string }>(),
     'Create Template Failure': props<{ error: string }>(),
     'Select Provider': props<{
       providerId: string;
