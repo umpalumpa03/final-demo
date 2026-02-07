@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { PillItem } from '@tia/shared/lib/navigation/models/pills.model';
 import { PillsNav } from "@tia/shared/lib/navigation/pills-nav/pills-nav";
 import { PILLARRAY } from '../../config/tabs-data';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-pills-component',
@@ -9,10 +10,18 @@ import { PILLARRAY } from '../../config/tabs-data';
   templateUrl: './pills-component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PillsComponent {
-  public readonly pillsData = signal<PillItem[]>(PILLARRAY);
+export class PillsComponent implements OnInit {
+  private translate = inject(TranslateService);
+
+  public readonly pillsData = signal<PillItem[]>(PILLARRAY(this.translate));
 
   public readonly selectedPill = signal<PillItem | null>(null);
+
+  ngOnInit(): void {
+    this.translate.onLangChange.subscribe(() => {
+      this.pillsData.set(PILLARRAY(this.translate));
+    });
+  }
 
   public onPillSelected(pill: PillItem): void {
     this.selectedPill.set(pill);

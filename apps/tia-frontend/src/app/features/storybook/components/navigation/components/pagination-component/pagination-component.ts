@@ -1,14 +1,16 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-pagination-component',
-  imports: [Pagination],
+  imports: [Pagination, TranslatePipe],
   templateUrl: './pagination-component.html',
   styleUrl: './pagination-component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaginationComponent {
+  public translate = inject(TranslateService);
   public readonly defaultCurrentPage = signal<number>(1);
   public readonly defaultTotalPages = signal<number>(3);
   public readonly ellipsisCurrentPage = signal<number>(10);

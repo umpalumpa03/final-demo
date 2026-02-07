@@ -7,7 +7,76 @@
   "alerts": {},
   "badges": {},
   "tables": {},
-  "navigation": {},
+  "navigation": {
+    "title": "Navigation Components",
+    "subtitle": "Navigation components including tabs, breadcrumbs, and pagination",
+    "sections": {
+      "tabs": {
+        "title": "Tabs",
+        "overview": "Overview",
+        "analytics": "Analytics",
+        "reports": "Reports",
+        "settings": "Settings",
+        "cardTitle": "Overview Content",
+        "cardContent": "This is the overview tab content. It displays general information."
+      },
+      "verticalTabs": {
+        "title": "Vertical Tabs",
+        "account": "Account",
+        "notifications": "Notifications",
+        "preferences": "Preferences",
+        "cardTitle": "Account Settings",
+        "cardContent": "Manage your account settings and preferences."
+      },
+      "breadcrumbs": {
+        "title": "Breadcrumbs",
+        "default": "Default Breadcrumbs",
+        "withIcons": "With Icons",
+        "longPath": "Long Path:",
+        "home": "Home",
+        "products": "Products",
+        "current": "Current Page",
+        "category": "Categories",
+        "electronics": "Electronics",
+        "productDetails": "Product Details",
+        "dashboard": "Dashboard",
+        "settings": "Settings",
+        "security": "Security",
+        "twoFactorAuth": "Two-Factor Authentication"
+      },
+      "pagination": {
+        "title": "Pagination",
+        "default": "Default Pagination",
+        "withEllipsis": "With Ellipsis",
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "horizontalNavigation": {
+        "title": "Horizontal Navigation",
+        "dashboard": "Dashboard",
+        "projects": "Projects",
+        "team": "Team",
+        "calendar": "Calendar",
+        "disabled": "Disabled"
+      },
+      "verticalNavigation": {
+        "title": "Vertical Navigation",
+        "home": "Home",
+        "search": "Search",
+        "profile": "Profile",
+        "notifications": "Notifications",
+        "settings": "Settings",
+        "disabled": "Disabled Item"
+      },
+      "pillsNavigation": {
+        "title": "Pills Navigation",
+        "all": "All",
+        "active": "Active",
+        "completed": "Completed",
+        "archived": "Archived"
+      }
+    }
+  },
   "feedback": {},
   "layout": {},
   "data-display": {},
