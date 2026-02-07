@@ -21,6 +21,7 @@ describe('Accounts Reducer', () => {
     openedAt: '2026-01-01',
     closedAt: '',
     isFavorite: false,
+    isHidden: false,
   };
 
   const mockAccount2 = {
@@ -38,6 +39,7 @@ describe('Accounts Reducer', () => {
     openedAt: '2026-01-02',
     closedAt: '',
     isFavorite: true,
+    isHidden: false,
   };
 
   it('should return initial state', () => {
@@ -47,7 +49,7 @@ describe('Accounts Reducer', () => {
   });
 
   it('should handle loadAccounts', () => {
-    const action = AccountsActions.AccountsActions.loadAccounts();
+    const action = AccountsActions.AccountsActions.loadAccounts({});
     const state = accountsReducer(initialAccountsState, action);
     expect(state.isLoading).toBe(true);
     expect(state.error).toBeNull();
@@ -74,10 +76,10 @@ describe('Accounts Reducer', () => {
 
   it('should handle selectAccount', () => {
     const action = AccountsActions.AccountsActions.selectAccount({
-      accountId: '1',
+      account: mockAccount,
     });
     const state = accountsReducer(initialAccountsState, action);
-    expect(state.selectedAccountId).toBe('1');
+    expect(state.selectedAccountId).toEqual(mockAccount);
   });
 
   it('should handle createAccount', () => {
