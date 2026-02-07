@@ -48,6 +48,7 @@
       "selectRecipientAccount": "Select Recipient Account",
       "selectSenderAccount": "Select Your Account",
       "selectBothAccounts": "Please select both accounts",
+      "noPermission": "This card does not have transfer permission. Please choose a different account.",
       "recipientName": {
         "label": "Recipient Name",
         "placeholder": "Enter recipient's full name"
@@ -68,6 +69,11 @@
         "header": "Failed to Load Your Accounts",
         "message": "Unable to load your accounts. Please try again."
       }
+    },
+    "otp": {
+      "title": "Verify Transaction",
+      "description": "Enter the 4 digit code sent to your registered phone number",
+      "submit": "Verify and Transfer"
     },
     "amount": {
       "title": "Transfer Amount",

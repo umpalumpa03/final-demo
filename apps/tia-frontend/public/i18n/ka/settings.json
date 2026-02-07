@@ -1,90 +1,118 @@
 {
-    "title": "პარამეტრები",
-    "sections": {
-        "profile": "პროფილი",
-        "security": "უსაფრთხოება",
-        "notifications": "შეტყობინებები",
-        "language": "ენა",
-        "appearance": "გარეგნობა",
-        "user-management": "მომხმარებელთა მართვა",
-        "approve-accounts": "ანგარიშების დამტკიცება",
-        "approve-cards": "ბარათების დამტკიცება",
-        "loan-management": "სესხების მართვა",
-        "profile-photo": "პროფილის ფოტო",
-        "accounts": "ანგარიშები"
+  "title": "პარამეტრები",
+  "sections": {
+    "profile": "პროფილი",
+    "security": "უსაფრთხოება",
+    "notifications": "შეტყობინებები",
+    "language": "ენა",
+    "appearance": "გარეგნობა",
+    "user-management": "მომხმარებელთა მართვა",
+    "approve-accounts": "ანგარიშების დამტკიცება",
+    "approve-cards": "ბარათების დამტკიცება",
+    "loan-management": "სესხების მართვა",
+    "profile-photo": "პროფილის ფოტო",
+    "accounts": "ანგარიშები"
+  },
+  "language": {
+    "title": "ენა & რეგიონი",
+    "subtitle": "აირჩიეთ სასურველი ენა თქვენი გამოცდილების პერსონალიზაციისთვის",
+    "current": "მიმდინარე ენა",
+    "available": "ხელმისაწვდომი ენები",
+    "english": "ინგლისური",
+    "georgian": "ქართული",
+    "saveSuccess": "ენა წარმატებით განახლდა!",
+    "saveError": "ენის განახლება ვერ მოხერხდა. გთხოვთ სცადოთ ხელახლა."
+  },
+  "appearance": {
+    "title": "გარეგნობა",
+    "subtitle": "მოირგეთ თქვენი ვიზუალური გამოცდილება",
+    "cardsTitle": "თემის არჩევა",
+    "theme": "თემა",
+    "light": "ნათელი",
+    "dark": "მუქი",
+    "system": "სისტემური",
+    "saveSuccess": "თემა წარმატებით შეინახა!",
+    "saveError": "თემის შენახვა ვერ მოხერხდა. გთხოვთ სცადოთ ხელახლა."
+  },
+  "profile-photo": {
+    "title": "პროფილის ფოტო",
+    "subtitle": "ატვირთეთ ახალი პროფილის ფოტო ან აირჩიეთ ნაგულისხმები ფოტო ",
+    "uploadCustomPhoto": "ატვირთეთ ახალი პროფილის ფოტო",
+    "dragOrChooseFile": "გადმოიტანე ფოტო აქ ან აირჩიე ფაილი.",
+    "chooseFile": "ფაილის არჩევა",
+    "defaultAvatar": "ნაგულისხმები ფოტოები",
+    "loadingDefaultAvatars": "ნაგულისხმები ფოტოები იტვირთება...",
+    "profilePictureChangedSuccessfully": "პროფილის ფოტო წარმატებით შეიცვალა",
+    "profilePictureRemovedSuccessfully": "პროფილის ფოტო წარმატებით წაიშლა",
+    "change": "შენახვა",
+    "remove": "ფოტოს წაშლა",
+    "invalidFileAlert": "გთხოვთ აირჩიოთ ნაგულისხმები ფოტო (PNG ან JPG ფორმატი, მაქსიმალური ზომა — 1 MB)"
+  },
+  "security": {
+    "title": "უსაფრთხოების პარამეტრები",
+    "changePassword": "პაროლის შეცვლა",
+    "changePasswordSubtitle": "განაახლეთ თქვენი პაროლი ანგარიშის უსაფრთხოებისთვის",
+    "currentPassword": "მიმდინარე პაროლი",
+    "currentPasswordPlaceholder": "შეიყვანეთ მიმდინარე პაროლი",
+    "newPassword": "ახალი პაროლი",
+    "newPasswordPlaceholder": "შეიყვანეთ ახალი პაროლი",
+    "confirmNewPassword": "დაადასტურეთ ახალი პაროლი",
+    "confirmNewPasswordPlaceholder": "დაადასტურეთ ახალი პაროლი",
+    "updatePassword": "პაროლის განახლება",
+    "twoFactorAuth": "ორი ფაქტორიანი ავთენტიფიკაცია"
+  },
+  "user-management": {
+    "title": "მომხმარებელთა მართვა",
+    "subtitle": "მართე მომხმარებლები, როლები და წვდომა უფლებებზე",
+    "placeholder": "მოძებნე იუზერები სახელი, იმეილის და ზედმეტსახელით...",
+    "addUser": "მომხმარებლის დამატება",
+    "removeUser": "მომხმარებლის წაშლა",
+    "buttons": {
+      "details": "დეტალები",
+      "edit": "რედაქტირება",
+      "delete": "წაშლა",
+      "block": "დაბლოკვა",
+      "unblock": "განბლოკვა"
     },
-    "language": {
-        "title": "ენა & რეგიონი",
-        "subtitle": "აირჩიეთ სასურველი ენა თქვენი გამოცდილების პერსონალიზაციისთვის",
-        "current": "მიმდინარე ენა",
-        "available": "ხელმისაწვდომი ენები",
-        "english": "ინგლისური",
-        "georgian": "ქართული",
-        "saveSuccess": "ენა წარმატებით განახლდა!",
-        "saveError": "ენის განახლება ვერ მოხერხდა. გთხოვთ სცადოთ ხელახლა."
+    "details": {
+      "title": "მომხმარებლის დეტალები",
+      "desc": "იხილეთ დეტალური ინფორმაცია მომხმარებლის შესახებ.",
+      "blocked": "დაბლოკილი",
+      "active": "აქტიური",
+      "username": "ზედმეტსახელი",
+      "created": "შემქნილია",
+      "close": "დახურვა"
     },
-    "appearance": {
-        "title": "გარეგნობა",
-        "subtitle": "მოირგეთ თქვენი ვიზუალური გამოცდილება",
-        "cardsTitle": "თემის არჩევა",
-        "theme": "თემა",
-        "light": "ნათელი",
-        "dark": "მუქი",
-        "system": "სისტემური",
-        "saveSuccess": "თემა წარმატებით შეინახა!",
-        "saveError": "თემის შენახვა ვერ მოხერხდა. გთხოვთ სცადოთ ხელახლა."
+    "edit": {
+      "title": "მომხმარებლის დეტალები",
+      "desc": "დაარედაქტირე მომხმარებლის ინფორმაცია",
+      "cancel": "გაუქმება",
+      "save": "შეინახე ცვლილებები"
     },
-    "profile-photo": {
-        "title": "პროფილის ფოტო",
-        "subtitle": "ატვირთეთ ახალი პროფილის ფოტო ან აირჩიეთ ნაგულისხმები ფოტო ",
-        "uploadCustomPhoto": "ატვირთეთ ახალი პროფილის ფოტო",
-        "dragOrChooseFile": "გადმოიტანე ფოტო აქ ან აირჩიე ფაილი.",
-        "chooseFile": "ფაილის არჩევა",
-        "defaultAvatar": "ნაგულისხმები ფოტოები",
-        "loadingDefaultAvatars": "ნაგულისხმები ფოტოები იტვირთება...",
-        "profilePictureChangedSuccessfully": "პროფილის ფოტო წარმატებით შეიცვალა",
-        "profilePictureRemovedSuccessfully": "პროფილის ფოტო წარმატებით წაიშლა",
-        "change": "შენახვა",
-        "remove": "ფოტოს წაშლა",
-        "invalidFileAlert": "გთხოვთ აირჩიოთ ნაგულისხმები ფოტო (PNG ან JPG ფორმატი, მაქსიმალური ზომა — 1 MB)"
-    },
-    "security": {
-        "title": "უსაფრთხოების პარამეტრები",
-        "changePassword": "პაროლის შეცვლა",
-        "changePasswordSubtitle": "განაახლეთ თქვენი პაროლი ანგარიშის უსაფრთხოებისთვის",
-        "currentPassword": "მიმდინარე პაროლი",
-        "currentPasswordPlaceholder": "შეიყვანეთ მიმდინარე პაროლი",
-        "newPassword": "ახალი პაროლი",
-        "newPasswordPlaceholder": "შეიყვანეთ ახალი პაროლი",
-        "confirmNewPassword": "დაადასტურეთ ახალი პაროლი",
-        "confirmNewPasswordPlaceholder": "დაადასტურეთ ახალი პაროლი",
-        "updatePassword": "პაროლის განახლება",
-        "twoFactorAuth": "ორი ფაქტორიანი ავთენტიფიკაცია"
-    },
-    "user-management": {
-        "title": "მომხმარებელთა მართვა",
-        "subtitle": "მართე მომხმარებლები, როლები და წვდომა უფლებებზე",
-        "placeholder": "მოძებნე იუზერები სახელი, იმეილის და ზედმეტსახელით...",
-        "addUser": "მომხმარებლის დამატება",
-        "removeUser": "მომხმარებლის წაშლა"
-    },
-    "approve-accounts": {
-        "title": "ანგარიშების დამტკიცება",
-        "pendingApprovals": "მიმდინარე დამტკიცებები"
-    },
-    "approve-cards": {
-        "title": "ბარათების დამტკიცება",
-        "pendingCards": "მიმდინარე ბარათები"
-    },
-    "loan-management": {
-        "title": "სესხების მართვა",
-        "viewLoans": "სესხების ნახვა",
-        "approveLoan": "სესხის დამტკიცება",
-        "rejectLoan": "სესხის უარყოფა"
-    },
-    "accounts": {
-        "title": "ანგარიშები",
-        "savings": "სავაჭრო ანგარიში",
-        "checking": "შემოწმების ანგარიში"
+    "delete": {
+      "title": "მომხმარების წაშლა",
+      "desc": "დარწმუნებული ხართ, რომ გსურთ ამ მომხმარებლის წაშლა? ამ მოქმედების გაუქმება შეუძლებელია.",
+      "cancel": "გაუქმება",
+      "delete": "წაშლა"
     }
+  },
+  "approve-accounts": {
+    "title": "ანგარიშების დამტკიცება",
+    "pendingApprovals": "მიმდინარე დამტკიცებები"
+  },
+  "approve-cards": {
+    "title": "ბარათების დამტკიცება",
+    "pendingCards": "მიმდინარე ბარათები"
+  },
+  "loan-management": {
+    "title": "სესხების მართვა",
+    "viewLoans": "სესხების ნახვა",
+    "approveLoan": "სესხის დამტკიცება",
+    "rejectLoan": "სესხის უარყოფა"
+  },
+  "accounts": {
+    "title": "ანგარიშები",
+    "savings": "სავაჭრო ანგარიში",
+    "checking": "შემოწმების ანგარიში"
+  }
 }

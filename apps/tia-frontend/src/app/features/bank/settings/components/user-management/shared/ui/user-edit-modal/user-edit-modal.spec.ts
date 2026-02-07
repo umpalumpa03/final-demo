@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserEditModal } from './user-edit-modal';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('UserEditModal', () => {
   let component: UserEditModal;
@@ -21,7 +22,7 @@ describe('UserEditModal', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UserEditModal],
+      imports: [UserEditModal, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserEditModal);

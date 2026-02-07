@@ -8,4 +8,5 @@ export type TranslationModule =
   | 'transfers'
   | 'paybill'
   | 'messaging'
-  | 'my-products';
+  | 'my-products'
+  | 'storybook';

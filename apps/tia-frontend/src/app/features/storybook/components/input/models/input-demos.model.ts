@@ -26,9 +26,10 @@ export interface InputDemo {
 }
 
 export interface SpecialInputDemo {
-  type: TextInputType,
-  label: string,
-  validation?: InputValidation
+  type: TextInputType;
+  label: string;
+  placeholder?: string;
+  validation?: InputValidation;
 }
 
 export interface TextareaDemo {
@@ -62,9 +63,8 @@ export interface SelectDemo {
   initialValue: SelectValue | null;
 }
 
-
 export interface OtpDemo {
-    config: OtpConfig;      
-    initialValue: string;   
-    title?: string;
+  config: OtpConfig;
+  initialValue: string;
+  title?: string;
 }

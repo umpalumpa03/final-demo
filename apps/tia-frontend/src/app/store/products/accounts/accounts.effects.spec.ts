@@ -34,6 +34,7 @@ describe('AccountsEffects', () => {
     openedAt: '2026-01-01',
     closedAt: '',
     isFavorite: false,
+    isHidden: false,
   };
 
   beforeEach(() => {

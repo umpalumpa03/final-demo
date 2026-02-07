@@ -75,7 +75,6 @@ export class OtpVerification implements OnInit {
   public onErrorRedirect = input<boolean>(true);
   public inputOtpConfig = input<IOtpVerificationConfig>();
 
-
   public onBackOut = output<void>();
   public onTimeout = output<void>();
   public isVerifyCalled = output<IVerified>();
@@ -85,7 +84,7 @@ export class OtpVerification implements OnInit {
 
   public resendTries = signal<number>(3);
   public internalRemainingAttempts = signal<number | null>(null);
-  public isLoading = signal(false);
+  public isLoading = input(false);
   public submitError = signal<string | null>(null);
   public countdown = signal<number>(0);
   public isResendActive = signal<boolean>(false);
@@ -214,6 +213,7 @@ export class OtpVerification implements OnInit {
     effect(() => {
       if (this.effectiveRemainingAttempts() === 0) {
         this.isLimitExeeded.set(true);
+        this.customError.emit();
       }
     });
 
