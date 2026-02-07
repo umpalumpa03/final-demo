@@ -12,7 +12,7 @@
   overflow: hidden;
 
   &__header {
-    @include flex-center(row);
+    @include flex-center();
     flex-wrap: wrap;
     gap: 1rem;
     max-width: 100%;
@@ -56,7 +56,7 @@
       @include flex-center(column, flex-start, flex-start);
 
       &-title {
-        @include flex-center(row, flex-start);
+        @include flex-center($justify: flex-start);
         gap: 0.5rem;
         margin-bottom: 0.25rem;
         flex-wrap: wrap;
@@ -85,19 +85,10 @@
           }
 
           &:focus {
-            outline: 2px solid $blue-500;
-            outline-offset: 2px;
+            outline: 0.2rem solid $blue-500;
+            outline-offset: 0.2rem;
           }
         }
-      }
-      &-badge {
-        display: inline-block;
-        padding: 0.3rem 0.7rem;
-        background: $blue-500;
-        color: $white;
-        border-radius: 1.2rem;
-        @include font-arimo(500, 1.1rem, 1.2);
-        text-transform: uppercase;
       }
       &-number {
         @include font-arimo(400, 1.2rem, 1.5);
@@ -118,7 +109,7 @@
         }
 
         &-buttons {
-          @include flex-center(row, flex-start);
+          @include flex-center($justify: flex-start);
           gap: 0.5rem;
         }
 
@@ -207,7 +198,6 @@
       &-label {
         @include font-arimo(400, 1rem, 1.2);
         color: $gray-600;
-        text-transform: uppercase;
         letter-spacing: 0.05rem;
         flex-shrink: 0;
       }
@@ -335,11 +325,11 @@
 
       &-info {
         &-name {
-          @include font-arimo(500, 1.2rem, 1.2);
+          @include font-arimo(500, 1.5rem, 1.2);
         }
 
         &-number {
-          @include font-arimo(400, 1rem, 1.5);
+          @include font-arimo(400, 1.1rem, 1.5);
         }
       }
     }

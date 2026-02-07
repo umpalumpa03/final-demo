@@ -19,7 +19,6 @@ import {
   GroupedAccounts,
 } from '../../../../../../../shared/models/accounts/accounts.model';
 import { ErrorStates } from '../../../../../../../shared/lib/feedback/error-states/error-states';
-import { ScrollArea } from '../../../../../../../shared/lib/layout/components/scroll-area/container/scroll-area';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { Badges } from '../../../../../../../shared/lib/primitives/badges/badges';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -34,7 +33,6 @@ import { Skeleton } from '../../../../../../../shared/lib/feedback/skeleton/skel
     AccountCardComponent,
     RouteLoader,
     ErrorStates,
-    ScrollArea,
     LibraryTitle,
     Badges,
     ButtonComponent,
