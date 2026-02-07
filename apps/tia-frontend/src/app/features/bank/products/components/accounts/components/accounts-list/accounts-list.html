@@ -153,6 +153,7 @@
 <app-transfer-permissions-modal
   [isOpen]="showTransferModal()"
   [accountPermission]="selectedAccountPermission()"
+  [accountCurrency]="selectedAccountCurrency()"
   (permissionSelected)="handlePermissionSelected($event)"
   (closed)="handleModalClosed()"
 ></app-transfer-permissions-modal>

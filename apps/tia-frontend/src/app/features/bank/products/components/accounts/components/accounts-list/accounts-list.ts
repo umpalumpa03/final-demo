@@ -72,6 +72,7 @@ export class AccountsListComponent implements OnInit {
   public showTransferModal = signal<boolean>(false);
   public selectedAccountForTransfer = signal<string | null>(null);
   public selectedAccountPermission = signal<number>(0);
+  public selectedAccountCurrency = signal<string>('');
   public selectedPermissionValue = signal<number>(0);
 
   private router = inject(Router);
@@ -189,6 +190,7 @@ export class AccountsListComponent implements OnInit {
     if (account) {
       this.selectedAccountForTransfer.set(accountId);
       this.selectedAccountPermission.set(account.permission);
+      this.selectedAccountCurrency.set(account.currency);
       this.showTransferModal.set(true);
     }
   }
