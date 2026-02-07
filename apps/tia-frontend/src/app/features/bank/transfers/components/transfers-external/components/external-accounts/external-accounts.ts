@@ -70,6 +70,12 @@ export class ExternalAccounts implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly breakpointService = inject(BreakpointService);
   public readonly showSuccess = signal(false);
+  public readonly showError = signal(false);
+  public readonly hasFetchError = computed(() => {
+    const error = this.transferStore.error();
+    return error && error !== 'transfers.external.accounts.noPermission';
+  });
+
   public readonly isFullWidth = computed(() =>
     this.breakpointService.isMobile(),
   );
@@ -153,6 +159,21 @@ export class ExternalAccounts implements OnInit {
         const timeout = setTimeout(() => {
           this.showSuccess.set(false);
         }, 3000);
+
+        return () => clearTimeout(timeout);
+      }
+      return;
+    });
+    effect(() => {
+      const error = this.transferStore.error();
+      if (error === 'transfers.external.accounts.noPermission') {
+        untracked(() => {
+          this.showError.set(true);
+        });
+        const timeout = setTimeout(() => {
+          this.showError.set(false);
+          this.transferStore.setError('');
+        }, 5000);
 
         return () => clearTimeout(timeout);
       }
