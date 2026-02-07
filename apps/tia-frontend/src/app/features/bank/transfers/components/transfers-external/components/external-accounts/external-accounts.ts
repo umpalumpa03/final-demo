@@ -31,6 +31,7 @@ import {
   selectIsLoading,
   selectAccounts,
   selectError,
+  selectSelectedAccount,
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { TransferRecipientService } from '../../services/transfer-recipient.service';
@@ -69,8 +70,11 @@ export class ExternalAccounts implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly translate = inject(TranslateService);
   private readonly breakpointService = inject(BreakpointService);
+
   public readonly showSuccess = signal(false);
   public readonly showError = signal(false);
+  public readonly currencyMismatchError = signal(false);
+
   public readonly hasFetchError = computed(() => {
     const error = this.transferStore.error();
     return error && error !== 'transfers.external.accounts.noPermission';
@@ -86,15 +90,33 @@ export class ExternalAccounts implements OnInit {
     this.transferStore.selectedRecipientAccount(),
   );
 
-  public readonly senderAccounts = toSignal(this.store.select(selectAccounts), {
-    initialValue: [],
+  private readonly rawSenderAccounts = toSignal(
+    this.store.select(selectAccounts),
+    {
+      initialValue: [],
+    },
+  );
+
+  public readonly senderAccounts = computed(() => {
+    const accounts = this.rawSenderAccounts();
+    if (!accounts) return [];
+    return [...accounts].sort((a, b) => {
+      const aFav = a.isFavorite ? 1 : 0;
+      const bFav = b.isFavorite ? 1 : 0;
+      return bFav - aFav;
+    });
   });
+
   public readonly isLoadingSenderAccounts = toSignal(
     this.store.select(selectIsLoading),
     { initialValue: false },
   );
   public readonly senderAccountsError = toSignal(
     this.store.select(selectError),
+    { initialValue: null },
+  );
+  public readonly preSelectedAccount = toSignal(
+    this.store.select(selectSelectedAccount),
     { initialValue: null },
   );
 
@@ -127,13 +149,14 @@ export class ExternalAccounts implements OnInit {
 
   public readonly recipientAccounts = computed(() => {
     const info = this.transferStore.recipientInfo();
-
     if (!info) return [];
 
-    if (info.accounts) return info.accounts;
+    let accounts: RecipientAccount[] = [];
 
-    if (info.currency) {
-      return [
+    if (info.accounts) {
+      accounts = [...info.accounts];
+    } else if (info.currency) {
+      accounts = [
         {
           id: 'iban-recipient',
           iban: this.transferStore.recipientInput(),
@@ -141,13 +164,18 @@ export class ExternalAccounts implements OnInit {
         },
       ];
     }
-
-    return [];
+    return accounts.sort((a, b) => {
+      const aFav = (a as any).isFavorite ? 1 : 0;
+      const bFav = (b as any).isFavorite ? 1 : 0;
+      return bFav - aFav;
+    });
   });
+
   private readonly recipientNameStatus = toSignal(
     this.recipientNameInput.statusChanges,
     { initialValue: this.recipientNameInput.status },
   );
+
   constructor() {
     effect(() => {
       const isVerified = this.transferStore.isVerified();
@@ -165,6 +193,17 @@ export class ExternalAccounts implements OnInit {
       return;
     });
     effect(() => {
+      const mismatch = this.currencyMismatchError();
+      if (mismatch) {
+        const timeout = setTimeout(() => {
+          this.currencyMismatchError.set(false);
+        }, 5000);
+        return () => clearTimeout(timeout);
+      }
+      return;
+    });
+
+    effect(() => {
       const error = this.transferStore.error();
       if (error === 'transfers.external.accounts.noPermission') {
         untracked(() => {
@@ -179,7 +218,70 @@ export class ExternalAccounts implements OnInit {
       }
       return;
     });
+
+    effect(() => {
+      const preSelected = this.preSelectedAccount();
+      const currentSender = this.selectedSenderAccount();
+      const recipientAccount = this.selectedRecipientAccount();
+      const isExternal = this.isExternalIban();
+
+      if (!preSelected) return;
+      if (currentSender) return;
+
+      untracked(() => {
+        if (isExternal) {
+          this.store.dispatch(AccountsActions.selectAccount({ account: null }));
+          return;
+        }
+        if (
+          recipientAccount &&
+          preSelected.currency !== recipientAccount.currency
+        ) {
+          this.currencyMismatchError.set(true);
+          this.store.dispatch(AccountsActions.selectAccount({ account: null }));
+          return;
+        }
+
+        this.currencyMismatchError.set(false);
+        this.transferStore.setSenderAccount(preSelected);
+        this.store.dispatch(AccountsActions.selectAccount({ account: null }));
+      });
+    });
+
+    effect(() => {
+      const sAccounts = this.senderAccounts();
+      const rAccounts = this.recipientAccounts();
+      const currentSender = this.selectedSenderAccount();
+      const currentRecipient = this.selectedRecipientAccount();
+      const isExternal = this.isExternalIban();
+
+      untracked(() => {
+        if (!isExternal && rAccounts.length > 0 && !currentRecipient) {
+          const firstRecipient = rAccounts[0];
+          if ((firstRecipient as any).isFavorite) {
+            this.transferStore.setSelectedRecipientAccount(firstRecipient);
+          }
+        }
+
+        if (sAccounts.length > 0 && !currentSender) {
+          const firstSender = sAccounts[0];
+          const updatedRecipient = this.selectedRecipientAccount(); 
+
+          const isFav = firstSender.isFavorite;
+          const isDisabled = this.recipientService.isSenderAccountDisabled(
+            firstSender,
+            updatedRecipient,
+            isExternal,
+          );
+
+          if (isFav && !isDisabled) {
+            this.transferStore.setSenderAccount(firstSender);
+          }
+        }
+      });
+    });
   }
+
   public ngOnInit(): void {
     const accounts = this.senderAccounts();
     const isLoading = this.isLoadingSenderAccounts();
@@ -188,6 +290,7 @@ export class ExternalAccounts implements OnInit {
       this.store.dispatch(AccountsActions.loadAccounts({}));
     }
   }
+
   public readonly isContinueDisabled = computed(() => {
     const hasSender = !!this.selectedSenderAccount();
     const loading = this.isLoading();
