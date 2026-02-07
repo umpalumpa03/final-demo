@@ -7,7 +7,15 @@ import {
 } from '@ngrx/signals';
 import { computed, inject } from '@angular/core';
 import { FinancesService } from '../services/finances.service';
-import { pipe, switchMap, tap, catchError, EMPTY, forkJoin } from 'rxjs';
+import {
+  pipe,
+  switchMap,
+  tap,
+  catchError,
+  EMPTY,
+  forkJoin,
+  filter,
+} from 'rxjs';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import {
   FinancialSummaryResponse,
@@ -18,8 +26,13 @@ import {
   ChartConfig,
   SummaryCard,
   Transaction,
+  TopCategoryFooter,
 } from '../models/filter.model';
-import { CARDS_CONFIG, CATEGORY_ICONS } from '../config/filter-options.config';
+import {
+  CARDS_CONFIG,
+  CATEGORY_COLORS,
+  CATEGORY_ICONS,
+} from '../config/filter-options.config';
 import { ChartData } from 'chart.js';
 
 export const FinancesStore = signalStore(
@@ -36,19 +49,42 @@ export const FinancesStore = signalStore(
   withMethods((store, service = inject(FinancesService)) => ({
     loadAllData: rxMethod<{ from: string; to?: string }>(
       pipe(
+        filter((params) => !!params.from),
         tap(() => patchState(store, { loading: true, error: null })),
         switchMap(({ from, to }) =>
           forkJoin({
             summary: service.getSummary(from, to),
             categories: service.getCategories(from, to),
-            transactions: service.getRecentTransactions(6),
-            incomeVsExpenses: service.getIncomeVsExpenses(),
-            savingsTrend: service.getSavingsTrend(),
             dailySpending: service.getDailySpending(from, to),
+            incomeVsExpenses: service.getIncomeVsExpenses(12),
+            savingsTrend: service.getSavingsTrend(12),
+            transactions: service.getRecentTransactions(6),
           }).pipe(
-            tap((res) => patchState(store, { ...res, loading: false })),
-            catchError(() => {
-              patchState(store, { loading: false, error: 'Data sync failed' });
+            tap((res) => {
+              if (!res.summary) {
+                patchState(store, {
+                  ...res,
+                  loading: false,
+                  error: 'No data found for this period',
+                });
+              } else {
+                patchState(store, {
+                  ...res,
+                  loading: false,
+                  error: null,
+                });
+              }
+            }),
+            catchError((err) => {
+              let errorMessage =
+                'An unexpected error occurred, Looks like you lose the connection';
+              if (err.status === 401)
+                errorMessage = 'Session expired. Please login again.';
+              if (err.status === 500)
+                errorMessage =
+                  'Server is currently unavailable. Try again later.';
+
+              patchState(store, { loading: false, error: errorMessage });
               return EMPTY;
             }),
           ),
@@ -82,6 +118,7 @@ export const FinancesStore = signalStore(
           label: config.label,
           value: config.isPct ? `${val}%` : formatUSD(val),
           change: `${changeVal >= 0 ? '+' : ''}${changeVal}%`,
+          comparisonLabel: 'from last month',
           changeType:
             calculatedType === 'positive' || calculatedType === 'negative'
               ? calculatedType
@@ -142,19 +179,23 @@ export const FinancesStore = signalStore(
       }),
     );
 
-    const dailyChartData = computed(
-      (): ChartData<'bar'> => ({
-        labels: store.dailySpending().map((d) => `Day ${d.day}`),
+    const dailyChartData = computed((): ChartData<'bar'> => {
+      const sortedSpending = [...store.dailySpending()].sort(
+        (a, b) => a.day - b.day,
+      );
+
+      return {
+        labels: sortedSpending.map((d) => `Day ${d.day}`),
         datasets: [
           {
-            data: store.dailySpending().map((d) => d.amount),
+            data: sortedSpending.map((d) => d.amount),
             label: 'Spent',
             backgroundColor: '#8B5CF6',
             borderRadius: 4,
           },
         ],
-      }),
-    );
+      };
+    });
 
     const charts = computed((): ChartConfig[] => [
       { title: 'Income vs Expenses', type: 'line', data: mainChartData() },
@@ -166,6 +207,10 @@ export const FinancesStore = signalStore(
     const categoriesWithIcons = computed(() => {
       return store.categories().map((cat) => ({
         ...cat,
+        color:
+          cat.color === '#6B7280' && CATEGORY_COLORS[cat.category]
+            ? CATEGORY_COLORS[cat.category]
+            : cat.color,
         icon: CATEGORY_ICONS[cat.category] || cat.icon || '',
       }));
     });
@@ -173,6 +218,7 @@ export const FinancesStore = signalStore(
     const transactionsWithIcons = computed(() => {
       return store.transactions().map((tx) => {
         let iconValue = CATEGORY_ICONS[tx.category];
+        const categoryColor = CATEGORY_COLORS[tx.category] || '#6B7280';
 
         if (!iconValue) {
           iconValue =
@@ -184,13 +230,79 @@ export const FinancesStore = signalStore(
         const finalIcon =
           iconValue || tx.icon || (tx.type === 'income' ? '💰' : '💸');
 
+        const statusIconPath = `/images/svg/finances/finances-${
+          tx.type === 'income' ? 'income-abs' : 'expense-abs'
+        }.svg`;
+
         return {
           ...tx,
           icon: finalIcon,
           isImageIcon:
             typeof finalIcon === 'string' && finalIcon.startsWith('/'),
+          statusIcon: statusIconPath,
+          categoryColor,
         };
       });
+    });
+
+    const incomeVsExpensesFooter = computed(() => {
+      const summary = store.summary();
+      if (!summary) return null;
+      const net = summary.totalIncome - summary.totalExpenses;
+      return {
+        income: formatUSD(summary.totalIncome),
+        expenses: formatUSD(summary.totalExpenses),
+        net: formatUSD(net),
+        isNetPositive: net >= 0,
+      };
+    });
+
+    const topCategoriesFooter = computed<TopCategoryFooter[]>(() => {
+      const summary = store.summary();
+
+      return [...store.categories()]
+        .sort((a, b) => b.amount - a.amount)
+        .slice(0, 3)
+        .map((cat) => ({
+          ...cat,
+          formattedAmount: formatUSD(cat.amount),
+          percentage: summary?.totalExpenses
+            ? ((cat.amount / summary.totalExpenses) * 100).toFixed(1)
+            : '0',
+        }));
+    });
+
+    const savingsFooter = computed(() => {
+      const savingsData = store.savingsTrend();
+      if (savingsData.length === 0) return null;
+
+      const currentMonthSavings = savingsData[savingsData.length - 1].savings;
+      const averageSavings =
+        savingsData.reduce((acc, curr) => acc + curr.savings, 0) /
+        savingsData.length;
+
+      return {
+        current: formatUSD(currentMonthSavings),
+        average: formatUSD(averageSavings),
+        period: savingsData.length,
+      };
+    });
+
+    const dailySpendingFooter = computed(() => {
+      const dailyData = store.dailySpending();
+      if (dailyData.length === 0) return null;
+
+      const amounts = dailyData.map((d) => d.amount);
+      const average =
+        amounts.reduce((acc, curr) => acc + curr, 0) / amounts.length;
+      const highest = Math.max(...amounts);
+      const lowest = Math.min(...amounts);
+
+      return {
+        average: formatUSD(average),
+        highest: formatUSD(highest),
+        lowest: formatUSD(lowest),
+      };
     });
 
     return {
@@ -202,6 +314,10 @@ export const FinancesStore = signalStore(
       dailyChartData,
       categoriesWithIcons,
       transactionsWithIcons,
+      incomeVsExpensesFooter,
+      topCategoriesFooter,
+      savingsFooter,
+      dailySpendingFooter,
     };
   }),
 );

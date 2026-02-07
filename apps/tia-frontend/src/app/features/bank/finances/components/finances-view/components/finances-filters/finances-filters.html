@@ -1,0 +1,71 @@
+<section class="finances-filters">
+  <div class="finances-filters__container">
+    <div class="finances-filters__actions">
+      @for (option of filterOptions(); track option.type) {
+        <app-button
+          [icon]="activeFilter() === option.type ? option.activeIcon : option.icon"
+          [variant]="activeFilter() === option.type ? 'default' : 'outline'"
+          (click)="filterChange.emit(option.type)"
+        >
+          {{ option.label }}
+        </app-button>
+      }
+    </div>
+
+    <div class="finances-filters__inputs">
+      @if (activeFilter() === null) {
+        <div class="finances-filters__info-badge">
+          <p>Showing data for the <strong>past 12 months</strong></p>
+        </div>
+      } 
+      
+      @if (activeFilter() === 'month') {
+        <div class="finances-filters__input-item">
+          <label class="finances-filters__label">Select Month:</label>
+          <div class="finances-filters__control-wrapper">
+            <lib-select
+              [options]="monthOptions()"
+              [config]="{ placeholder: 'Choose...' }"
+              [formControl]="getControl('selectedMonth')"
+            ></lib-select>
+          </div>
+        </div>
+      } 
+
+      @if (activeFilter() === 'custom') {
+        <div class="finances-filters__range-group">
+          <div class="finances-filters__input-item">
+            <label class="finances-filters__label">From:</label>
+            <div class="finances-filters__control-wrapper">
+              <lib-text-input
+                type="date"
+                [config]="{ placeholder: 'YYYY-MM-DD' }"
+                [formControl]="getControl('fromDate')"
+              ></lib-text-input>
+            </div>
+          </div>
+
+          <div class="finances-filters__input-item">
+            <label class="finances-filters__label">To:</label>
+            <div class="finances-filters__control-wrapper">
+              <lib-text-input
+                type="date"
+                [config]="{ placeholder: 'YYYY-MM-DD' }"
+                [formControl]="getControl('toDate')"
+              ></lib-text-input>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  @if (filterForm().hasError('dateRangeInvalid') && activeFilter() === 'custom') {
+    <div class="finances-filters__error-message">
+      <app-basic-alerts 
+        alertType="error" 
+        alertMessage="The 'From' date cannot be later than the 'To' date."
+      ></app-basic-alerts>
+    </div>
+  }
+</section>

@@ -7,10 +7,7 @@ import {
   OnInit,
   output,
 } from '@angular/core';
-import {
-  LOAN_FORM_CONFIG,
-  NUMBER_REGEX,
-} from '../../config/loan-request.config';
+import { NUMBER_REGEX } from '../../config/loan-request.config';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -19,15 +16,11 @@ import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { IDropdownOption, ILoanRequest } from '../../models/loan-request.model';
 import { Store } from '@ngrx/store';
 import { CommonModule } from '@angular/common';
-import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
-import { getTodayDate } from '../../utils/gettoday.util';
 import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { startWith, map } from 'rxjs';
-import { translateConfig } from '../../../../../../shared/utils/translate-config/config-translator.util';
+import { TranslatePipe } from '@ngx-translate/core';
 import { LoansStore } from '../../../store/loans.store';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
+import { LoanRequestState } from '../../state/loan-request.state';
 
 @Component({
   selector: 'app-request-modal',
@@ -42,31 +35,19 @@ import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/account
   ],
   templateUrl: './request-modal.html',
   styleUrl: './request-modal.scss',
+  providers: [LoanRequestState],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RequestModal implements OnInit {
+  public readonly loanState = inject(LoanRequestState);
+
   private readonly fb = inject(FormBuilder);
   private readonly globalStore = inject(Store);
   private readonly store = inject(LoansStore);
-  private readonly translate = inject(TranslateService);
 
   public readonly isOpen = input.required<boolean>();
   public readonly close = output<void>();
   public readonly submit = output<ILoanRequest>();
-
-  protected readonly cfg = toSignal(
-    this.translate.onLangChange.pipe(
-      startWith({ lang: this.translate.getCurrentLang(), translations: null }),
-      map(() =>
-        translateConfig(LOAN_FORM_CONFIG, (key) => this.translate.instant(key)),
-      ),
-    ),
-    {
-      initialValue: translateConfig(LOAN_FORM_CONFIG, (key) =>
-        this.translate.instant(key),
-      ),
-    },
-  );
 
   protected readonly termOptions = this.store.loanMonthsOptions;
   protected readonly purposeOptions = this.store.purposeOptions;
@@ -82,16 +63,9 @@ export class RequestModal implements OnInit {
       }));
   });
 
-  protected readonly dateConfig = computed(() => ({
-    ...this.cfg()?.date,
-    min: getTodayDate(),
-  }));
-
   public ngOnInit(): void {
-    this.store.loadMonths();
-    this.store.loadPurposes();
-
-    this.globalStore.dispatch(AccountsActions.loadAccounts({}));
+    this.store.loadMonths({});
+    this.store.loadPurposes({});
   }
 
   public readonly form = this.fb.group({
