@@ -50,6 +50,16 @@ export class DashboardContainer implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly breakpointService = inject(BreakpointService);
 
+  protected readonly isCustomizing = signal(false);
+
+  public openCustomization(): void {
+    this.isCustomizing.set(true);
+  }
+
+  public closeCustomization(): void {
+    this.isCustomizing.set(false);
+  }
+
   protected readonly myItems = signal<(IWidgetItem & { isHidden?: boolean })[]>(
     [...widgetItems],
   );

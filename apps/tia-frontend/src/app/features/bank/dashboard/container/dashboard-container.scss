@@ -5,3 +5,41 @@
   margin: 2.4rem 0 3.2rem 0;
   width: 100%;
 }
+
+.bank-dashboard__header-actions {
+  margin: 0 0 2.4rem 0; // Consistent spacing with your banner
+  width: 100%;
+}
+
+.customize-trigger {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 1.6rem;
+  background: rgba($white, 0.5);
+  border: 1px solid $gray-200;
+  border-radius: 1.6rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    color: $gray-700;
+    @include font-inter(500, 1.4rem);
+
+    span {
+      font-size: 2rem;
+      color: var(--color-primary);
+    }
+  }
+
+  &:hover {
+    background: $white;
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 12px rgba($black, 0.05);
+    transform: translateY(-1px);
+  }
+}

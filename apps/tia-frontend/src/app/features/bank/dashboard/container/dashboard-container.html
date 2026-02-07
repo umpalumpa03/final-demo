@@ -8,6 +8,15 @@
     <app-banner-carousel [slides]="bannerConfig()" />
   </div>
 
+  <div class="bank-dashboard__header-actions">
+    <button class="customize-trigger" (click)="openCustomization()">
+      <div class="customize-trigger__label">
+        <span>dashboard_customize</span>
+        {{ 'dashboard.customize.label' | translate }}
+      </div>
+    </button>
+  </div>
+
   <app-drag-container
     [hasNoStyle]="true"
     [items]="myItems()"
