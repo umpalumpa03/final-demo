@@ -1,14 +1,61 @@
 <main class="internal-accounts">
   <header class="internal-accounts__header">
-    <h1 class="internal-accounts__title">
-      {{ 'transfers.internal.accounts.title' | translate }}
-    </h1>
+
+    <div class="internal-accounts__sender-account">
+
+      @if (selectedFromAccount(); as account) {
+        <div class="internal-accounts__from-card">
+          <div class="internal-accounts__from-card__header">
+            <h3 class="internal-accounts__sender-account__title">
+              {{ 'transfers.internal.step-1' | translate }}
+            </h3>
+          </div>
+          <div class="internal-accounts__from-card__body">
+            <div class="internal-accounts__from-card__icon">
+              <img src="images/svg/transfers/cardicon.svg" alt="Account Icon" />
+            </div>
+
+            <div class="internal-accounts__from-card__content">
+              <div class="internal-accounts__from-card__name">
+                {{ selectedFromAccount()?.friendlyName || selectedFromAccount()?.name }}
+              </div>
+
+              <div class="internal-accounts__from-card__details">
+                <app-badges
+                  [variant]="'default'"
+                  [text]="selectedFromAccount()?.currency || ''"
+                  [size]="'small'"
+                  [shape]="'pill'"
+                />
+                <span class="internal-accounts__from-card__iban">
+                  **** **** **** {{ getLastFourDigits(selectedFromAccount()?.iban || '') }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
   </header>
 
   <section class="internal-accounts__sender-accounts">
-    <h2 class="internal-accounts__sender-accounts-title">
-      {{ 'transfers.internal.accounts.selectSenderAccount' | translate }}
-    </h2>
+    <div class = 'internal-accounts__sender-accounts__header'>
+      <h2 class="internal-accounts__sender-accounts__header-title">
+        {{ 'transfers.internal.accounts.selectSenderAccount' | translate }}
+      </h2>
+
+      <app-button
+        variant="outline"
+        size="default"
+        [fullWidth]="isFullWidth()"
+        (click)="onSwapAccounts()"
+      >
+        <img src = 'images/svg/transfers/swap.svg' alt = "swap"/>
+        {{ 'common.buttons.swap' | translate }}
+      </app-button>
+    </div>
+
 
     @if (isLoading()) {
       <div class="internal-accounts__loader-wrapper">

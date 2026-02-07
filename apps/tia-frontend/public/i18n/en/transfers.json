@@ -9,6 +9,7 @@
   "internal": {
     "intTitle": "Transfer Between Your Accounts",
     "intDescription": "Move money easily between your accounts",
+    "step-1": "STEP 1: FROM ACCOUNT",
     "accounts": {
       "title": "Recipient Details",
       "recipientVerified": "Recipient verified successfully!",
