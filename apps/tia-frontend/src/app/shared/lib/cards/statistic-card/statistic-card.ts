@@ -13,4 +13,8 @@ export class StatisticCard {
   public readonly change = input.required<string>();
   public readonly changeType = input.required<'positive' | 'negative'>();
   public readonly icon = input.required<string>();
+  public readonly width = input<string>();
+  public readonly height = input<string>();
+  public readonly minWidth = input<string>();
+  public readonly maxWidth = input<string>();
 }

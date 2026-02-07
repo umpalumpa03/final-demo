@@ -1,0 +1,15 @@
+<div class="card-otp-modal-content">
+  <app-otp-verification
+    [type]="'otp'"
+    [timeLimit]="1"
+    [timerType]="'otp'"
+    [errorMessage]="errorMessage()"
+    [isTimerDisplayed]="true"
+    [inputOtpConfig]="otpConfig"
+    (isVerifyCalled)="handleVerify($event)"
+    (onBackOut)="handleCancel()"
+    (isResendCalled)="handleResend()"
+    [remainingAttempts]="remainingAttempts()"
+    [onErrorRedirect]="false"
+  />
+</div>

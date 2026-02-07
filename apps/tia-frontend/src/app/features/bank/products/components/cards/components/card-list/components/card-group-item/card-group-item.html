@@ -1,3 +1,4 @@
+
 <div class="card-group-item">
   <div class="card-group-item__header">
     <div class="card-group-item__info">
@@ -23,32 +24,30 @@
   </div>
 
   @if (group().cardImages.length > 0) {
-
-  <div class="card-group-item__cards-wrapper">
-    <app-card-stack
-      [cards]="group().cards"
-      [hasMultipleCards]="group().cardImages.length > 1"
-      (cardClicked)="handleCardClick($event)"
+    <div class="card-group-item__cards-wrapper">
+      <app-card-stack
+        [cards]="group().cards"
+        [hasMultipleCards]="group().cardImages.length > 1"
+        [isLoading]="isLoading()"
+        (cardClicked)="handleCardClick($event)"
+      />
+      @if(group().cardImages.length > 1){
+        <button
+          class="card-group-item__view-all-button"
+          (click)="handleViewAllClick()"
+          type="button"
+        >
+          {{'my-products.card.card-list.card-group-item.allCards' | translate }}
+        </button>
+      }
+    </div>
+  } @else {
+    <app-badges
+      text=" {{'my-products.card.card-list.card-group-item.noCard' | translate }}"
+      variant="info"
+      size="medium"
+      shape="rounded"
+      [disabled]="true"
     />
-    @if(group().cardImages.length > 1){
-    <button
-      class="card-group-item__view-all-button"
-      (click)="handleViewAllClick()"
-      type="button"
-    >
-      {{'my-products.card.card-list.card-group-item.allCards' | translate }}
-    </button>
-
-    }
-  </div>
-
-  }@else {
-  <app-badges
-    text=" {{'my-products.card.card-list.card-group-item.noCard' | translate }}"
-    variant="info"
-    size="medium"
-    shape="rounded"
-    [disabled]="true"
-  />
   }
 </div>

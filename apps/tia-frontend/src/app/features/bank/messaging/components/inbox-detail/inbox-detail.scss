@@ -1,4 +1,5 @@
 @use "../../../../../shared/styles/mixins" as *;
+@use "../../../../../shared/styles/palette" as *;
 
 .button-container {
     @include display-flex(row, flex-start);
@@ -14,4 +15,9 @@
         @include flex-center($justify: flex-end);
         gap: 1.2rem;
     }
+}
+
+.delete-btn {
+    @include font-inter(500, 1.4rem, 2rem);
+    color: $red-700;;
 }

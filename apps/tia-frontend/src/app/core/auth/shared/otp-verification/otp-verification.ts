@@ -85,7 +85,7 @@ export class OtpVerification implements OnInit {
 
   public resendTries = signal<number>(3);
   public internalRemainingAttempts = signal<number | null>(null);
-  public isLoading = signal(false);
+  public isLoading = input(false);
   public submitError = signal<string | null>(null);
   public countdown = signal<number>(0);
   public isResendActive = signal<boolean>(false);

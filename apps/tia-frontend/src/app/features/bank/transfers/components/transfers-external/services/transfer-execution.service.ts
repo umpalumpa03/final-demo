@@ -1,4 +1,5 @@
 import { inject, Injectable, DestroyRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, of, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -12,6 +13,19 @@ export class TransferExecutionService {
   private readonly transfersApi = inject(TransfersApiService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly store = inject(Store);
+  private readonly router = inject(Router);
+
+  private handleTransferError(error: any): void {
+    this.transferStore.setLoading(false);
+
+    if (error.status === 400 || error.error?.statusCode === 400) {
+      this.transferStore.setSenderAccount(null);
+      this.transferStore.setError('transfers.external.accounts.noPermission');
+      this.router.navigate(['/bank/transfers/external/accounts']);
+    } else {
+      this.transferStore.setError(error?.error?.message || 'Transfer failed');
+    }
+  }
 
   public handleSameBankTransfer(): void {
     const senderAccount = this.transferStore.senderAccount();
@@ -45,11 +59,7 @@ export class TransferExecutionService {
           }
         }),
         catchError((error) => {
-          this.transferStore.setLoading(false);
-          this.transferStore.setError(
-            error?.error?.message || 'Transfer failed',
-          );
-
+          this.handleTransferError(error);
           return of(null);
         }),
         takeUntilDestroyed(this.destroyRef),
@@ -96,11 +106,7 @@ export class TransferExecutionService {
           }
         }),
         catchError((error) => {
-          this.transferStore.setLoading(false);
-          this.transferStore.setError(
-            error?.error?.message || 'Transfer Failed',
-          );
-
+          this.handleTransferError(error);
           return of(null);
         }),
         takeUntilDestroyed(this.destroyRef),
@@ -136,8 +142,7 @@ export class TransferExecutionService {
           this.transferStore.setLoading(false);
         }),
         catchError((error) => {
-          this.transferStore.setLoading(false);
-          this.transferStore.setError(error?.error?.message);
+          this.handleTransferError(error);
           return of(null);
         }),
         takeUntilDestroyed(this.destroyRef),

@@ -29,7 +29,7 @@
     <div class="external-accounts__spinner-wrapper">
       <app-spinner />
     </div>
-    } @else if (error()) {
+    } @else if (hasFetchError()) {
     <div class="external-accounts__error-wrapper">
       <app-error-states
         [variant]="'failed'"
@@ -128,6 +128,7 @@
         size="default"
         [fullWidth]="isFullWidth()"
         (click)="onContinue()"
+        [class.button--disabled]="isContinueDisabled()"
         [isDisabled]="isContinueDisabled()"
       >
         {{ 'common.buttons.continue' | translate }}
@@ -142,6 +143,13 @@
   <app-alert-types-with-icons
     [alertType]="'success'"
     [alertMessage]="'transfers.external.accounts.recipientVerified' | translate"
+  />
+</div>
+} @if (showError()) {
+<div class="external-accounts__success-toast">
+  <app-alert-types-with-icons
+    [alertType]="'error'"
+    [alertMessage]="'transfers.external.accounts.noPermission' | translate"
   />
 </div>
 }

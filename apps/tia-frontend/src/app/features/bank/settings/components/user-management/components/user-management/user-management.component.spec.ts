@@ -5,6 +5,7 @@ import { UserManagementState } from '../../shared/state/user-management.state';
 import { UserModalService } from '../../shared/services/user-modal.service';
 import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('UserManagementComponent', () => {
   let component: UserManagementComponent;
@@ -58,7 +59,9 @@ describe('UserManagementComponent', () => {
       userCache: signal({}),
     };
 
-    await TestBed.configureTestingModule({ imports: [UserManagementComponent] })
+    await TestBed.configureTestingModule({
+      imports: [UserManagementComponent, TranslateModule.forRoot()],
+    })
       .overrideComponent(UserManagementComponent, {
         set: {
           providers: [
