@@ -75,6 +75,7 @@ describe('RegistrationForm', () => {
 
     component.registrationForm.get('firstName')?.setValue('Al');
     component.registrationForm.get('lastName')?.setValue('Ng');
+    component.registrationForm.get('birthday')?.setValue('11-11-2001');
     component.registrationForm.get('email')?.setValue('a@b.com');
     component.registrationForm.get('username')?.setValue('alice');
     component.registrationForm.get('password')?.setValue('Aa12345@');
