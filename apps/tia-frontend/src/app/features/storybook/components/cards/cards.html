@@ -26,6 +26,7 @@
         [minHeight]="card.minHeight"
         [borderColor]="card.borderColor ?? ''"
         [gap]="card.gap"
+        [backgroundColor]="card.backgroundColor"
       >
         @if (card.hasFooter) {
         <div class="card-footer" card-footer>
@@ -48,6 +49,10 @@
         [change]="card.change"
         [changeType]="card.changeType"
         [icon]="card.icon"
+        [width]="card.width"
+        [height]="card.height"
+        [minWidth]="card.minWidth"
+        [maxWidth]="card.maxWidth"
       />
       }
     </div>

@@ -12,10 +12,13 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 import { Account } from '../../../../../../../../../shared/models/accounts/accounts.model';
 import { ButtonComponent } from '../../../../../../../../../shared/lib/primitives/button/button';
 import { BasicCard } from '../../../../../../../../../shared/lib/cards/basic-card/basic-card';
 import { TextInput } from '../../../../../../../../../shared/lib/forms/input-field/text-input';
+import { Badges } from '../../../../../../../../../shared/lib/primitives/badges/badges';
+import { VALID_PERMISSION_VALUES } from '../../../../config/transfer-permissions.config';
 
 @Component({
   selector: 'app-account-card-view',
@@ -26,6 +29,7 @@ import { TextInput } from '../../../../../../../../../shared/lib/forms/input-fie
     ButtonComponent,
     BasicCard,
     TextInput,
+    Badges,
   ],
   templateUrl: './account-card-view.html',
   styleUrl: './account-card-view.scss',
@@ -49,8 +53,15 @@ export class AccountCardViewComponent {
   protected displayName = computed(
     () => this.account().friendlyName || this.account().name,
   );
+  protected canMakeTransfer = computed(() => {
+    const permission = this.account().permission;
+    return VALID_PERMISSION_VALUES.includes(
+      permission as (typeof VALID_PERMISSION_VALUES)[number],
+    );
+  });
 
   private elementRef = inject(ElementRef);
+  private router = inject(Router);
   private dragStart = signal<number | null>(null);
 
   constructor() {
@@ -93,7 +104,7 @@ export class AccountCardViewComponent {
     });
   }
 
-  public handleTransfer(): void {
+  public handleOpenTransferModal(): void {
     this.transfer.emit();
   }
 

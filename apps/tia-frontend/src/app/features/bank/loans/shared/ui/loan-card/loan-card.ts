@@ -86,6 +86,10 @@ export class LoanCard {
   }
 
   protected onSave(): void {
+    if (!this.isEditing()) {
+      return;
+    }
+
     if (this.nameControl.invalid) {
       return;
     }

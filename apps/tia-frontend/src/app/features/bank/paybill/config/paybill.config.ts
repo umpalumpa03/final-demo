@@ -32,3 +32,10 @@ export const buildDynamicIdentification = (
 
   return sanitized;
 };
+
+  export const paybillSearchConfig = {
+    placeholder: `Search active providers...`,
+    prefixIcon: 'images/svg/search.svg',
+    clearable: true,
+    ariaLabel: 'Search providers',
+  } as const;

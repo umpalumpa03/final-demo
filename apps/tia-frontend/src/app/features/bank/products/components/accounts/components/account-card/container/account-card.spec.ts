@@ -23,6 +23,7 @@ describe('AccountCardComponent', () => {
     openedAt: '2026-01-01',
     closedAt: '',
     isFavorite: false,
+    isHidden: false,
   };
 
   beforeEach(async () => {
@@ -44,71 +45,49 @@ describe('AccountCardComponent', () => {
     vi.clearAllMocks();
   });
 
-  it('should create', () => {
+  it('should create and format currency', () => {
     expect(component).toBeTruthy();
+    expect(component.formatCurrency(1000.5)).toBe('1,000.50');
   });
 
-  it('should format currency correctly', () => {
-    const formatted = component.formatCurrency(1000.5);
-    expect(formatted).toBe('1,000.50');
+  it('should return correct icon for account types', () => {
+    expect(component.getAccountIcon(AccountType.current)).toBe(
+      '/images/svg/account/wallet.svg',
+    );
+    expect(component.getAccountIcon(AccountType.saving)).toBe(
+      '/images/svg/account/piggy-bank.svg',
+    );
   });
 
-  it('should return correct icon for current account type', () => {
-    const icon = component.getAccountIcon(AccountType.current);
-    expect(icon).toBe('/images/svg/account/wallet.svg');
-  });
-
-  it('should emit transfer with account id when handleTransfer is called', () => {
-    const spy = vi.spyOn(component.transfer, 'emit');
+  it('should emit transfer and rename events', () => {
+    const transferSpy = vi.spyOn(component.transfer, 'emit');
+    const renameSpy = vi.spyOn(component.rename, 'emit');
     component.handleTransfer();
-    expect(spy).toHaveBeenCalledWith('1');
-  });
-
-  it('should emit rename with account id and friendly name when handleRename is called', () => {
-    const spy = vi.spyOn(component.rename, 'emit');
+    expect(transferSpy).toHaveBeenCalledWith('1');
     component.handleRename('New Account Name');
-    expect(spy).toHaveBeenCalledWith({
+    expect(renameSpy).toHaveBeenCalledWith({
       accountId: '1',
       friendlyName: 'New Account Name',
     });
   });
 
-  it('should compute accountIcon from account type', () => {
+  it('should compute account properties and update on changes', () => {
     expect(component['accountIcon']()).toBe('/images/svg/account/wallet.svg');
-  });
+    expect(component['formattedBalance']()).toBeDefined();
+    expect(component['formattedDate']()).toBeDefined();
 
-  it('should update computed accountIcon when account type changes', () => {
     TestBed.runInInjectionContext(() => {
       fixture.componentRef.setInput('account', {
         ...mockAccount,
         type: AccountType.saving,
+        balance: 5000,
+        createdAt: '2025-12-25',
       });
     });
     expect(component['accountIcon']()).toBe(
       '/images/svg/account/piggy-bank.svg',
     );
-  });
-
-  it('should update computed formattedBalance when account balance changes', () => {
-    TestBed.runInInjectionContext(() => {
-      fixture.componentRef.setInput('account', {
-        ...mockAccount,
-        balance: 5000,
-      });
-    });
-    const formatted = component['formattedBalance']();
-    expect(formatted).toContain('5');
-  });
-
-  it('should update computed formattedDate when account createdAt changes', () => {
-    TestBed.runInInjectionContext(() => {
-      fixture.componentRef.setInput('account', {
-        ...mockAccount,
-        createdAt: '2025-12-25',
-      });
-    });
-    const formatted = component['formattedDate']();
-    expect(formatted).toBeDefined();
-    expect(typeof formatted).toBe('string');
+    expect(component['formattedBalance']()).toContain('5');
+    expect(typeof component['formattedDate']()).toBe('string');
   });
 });

@@ -1,0 +1,12 @@
+@if (isOpen()) {
+<app-ui-modal [isOpen]="isOpen()" (closed)="handleClose()">
+  <app-card-otp-modal-content
+    [isLoading]="(otpLoading$ | async) ?? false"
+    [errorMessage]="(otpError$ | async) ?? null"
+    (verifyClicked)="handleVerifyOtp($event)"
+
+    (cancelClicked)="handleClose()"
+    (resendClicked)="handleResendOtp()"
+[remainingAttempts]="(remainingAttempts$ | async) ?? null"  />
+</app-ui-modal>
+}

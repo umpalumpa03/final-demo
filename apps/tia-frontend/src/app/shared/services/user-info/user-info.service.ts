@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { IUserInfo, User } from '@tia/shared/models/user-info/user-info.models';
 import { environment } from '../../../../environments/environment';
-import { EMPTY, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UserInfoService {
@@ -11,7 +11,6 @@ export class UserInfoService {
 
   public getUserInfo(): Observable<IUserInfo> {
     return this.http.get<IUserInfo>(`${this.baseUrl}/current-user`);
-    return EMPTY
   }
 
   public searchByEmail(query: string): Observable<User[]> {

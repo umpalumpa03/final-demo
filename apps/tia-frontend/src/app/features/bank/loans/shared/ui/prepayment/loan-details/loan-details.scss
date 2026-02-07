@@ -72,12 +72,7 @@
         scroll-behavior: smooth;
 
         overflow-y: auto;
-
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-        &::-webkit-scrollbar {
-            display: none;
-        }
+        @include custom-scrollbar;
     }
 
     &__status {
@@ -140,7 +135,7 @@
         gap: 2.4rem 1.6rem;
 
         &-item {
-            @include display-flex(column);
+            @include flex-center(column, $justify: flex-start);
             gap: 0.4rem;
             background-color: $gray-25;
             border-radius: 1rem;
@@ -244,8 +239,7 @@
         pointer-events: auto;
         @include flex-center;
         gap: 0.8rem;
-        background-color: $gray-800;
-        color: $white;
+        background-color: var(--color-primary);
         padding: 1rem;
         border-radius: 50%;
         cursor: pointer;
@@ -262,7 +256,7 @@
         }
 
         &:hover {
-            background-color: var(--color-primary);
+            background-color: var(--color-fg);
         }
     }
 }

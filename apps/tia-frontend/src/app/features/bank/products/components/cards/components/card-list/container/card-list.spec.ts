@@ -3,6 +3,7 @@ import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { Router } from '@angular/router';
 import { CardList } from './card-list';
 import * as CardsActions from '../../../../../../../../store/products/cards/cards.actions';
+import { selectCardImagesLoading } from '../../../../../../../../store/products/cards/cards.selectors';
 
 describe('CardList', () => {
   let component: CardList;
@@ -15,7 +16,11 @@ describe('CardList', () => {
     await TestBed.configureTestingModule({
       imports: [CardList],
       providers: [
-        provideMockStore(),
+        provideMockStore({
+          selectors: [
+            { selector: selectCardImagesLoading, value: false }
+          ]
+        }),
         { provide: Router, useValue: { navigate: vi.fn() } }
       ]
     }).compileComponents();

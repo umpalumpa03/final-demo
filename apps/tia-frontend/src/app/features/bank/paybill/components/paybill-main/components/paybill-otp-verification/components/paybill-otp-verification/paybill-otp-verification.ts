@@ -6,8 +6,6 @@ import {
   model,
   output,
 } from '@angular/core';
-import { Otp } from '@tia/shared/lib/forms/otp/otp';
-import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { PaymentSummary } from '../../../../shared/ui/payment-summary/payment-summary';
@@ -15,18 +13,19 @@ import {
   PaybillPayload,
   PaybillProvider,
 } from '../../../../shared/models/paybill.model';
-import { otpConfiguration } from '../../config/otp.config';
 import { TranslatePipe } from '@ngx-translate/core';
+import { OtpVerification } from 'apps/tia-frontend/src/app/core/auth/shared/otp-verification/otp-verification';
+import { IVerified } from 'apps/tia-frontend/src/app/core/auth/models/otp-verification.models';
+import { otpConfiguration } from '../../config/otp.config';
 
 @Component({
   selector: 'app-paybill-otp-verification',
   imports: [
-    Otp,
-    ButtonComponent,
     AlertTypesWithIcons,
     BasicCard,
     PaymentSummary,
-    TranslatePipe
+    TranslatePipe,
+    OtpVerification,
   ],
   templateUrl: './paybill-otp-verification.html',
   styleUrl: './paybill-otp-verification.scss',
@@ -37,6 +36,7 @@ export class PaybillOtpVerification {
   public readonly provider = input<PaybillProvider | null>(null);
   public readonly iconBgColor = input<string>('#F0F9FF');
   public readonly iconBgPath = input<string>();
+  public readonly errorMessage = input<string | null>(null);
 
   public readonly verify = output<string>();
   public readonly cancelPayment = output<void>();
@@ -72,13 +72,17 @@ export class PaybillOtpVerification {
     this.currentCode.set(code);
   }
 
-  public onOtpResend(): void {
+  public onCancel(): void {
+    this.cancelPayment.emit();
+  }
+
+  public onResend(): void {
     this.resendCode.emit();
   }
 
-  public handleVerify(): void {
-    if (this.currentCode().length === 4) {
-      this.verify.emit(this.currentCode());
+  public onVerify(event: IVerified): void {
+    if (event.isCalled && event.otp) {
+      this.verify.emit(event.otp);
     }
   }
 }

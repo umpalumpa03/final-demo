@@ -9,10 +9,11 @@ import { RepliesCard } from '../../shared/ui/replies-card/replies-card';
 import { ReplyForm } from '../../shared/ui/reply-form/reply-form';
 import { Store } from '@ngrx/store';
 import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sent-draft-detail',
-  imports: [EmailDetail, ButtonComponent, UiModal, LibraryTitle, RepliesCard, ReplyForm],
+  imports: [EmailDetail, ButtonComponent, UiModal, LibraryTitle, RepliesCard, ReplyForm, TranslatePipe],
   templateUrl: './sent-draft-detail.html',
   styleUrl: './sent-draft-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -17,9 +17,7 @@ describe('WidgetTransactions', () => {
 
     TestBed.configureTestingModule({
       imports: [WidgetTransactions],
-      providers: [
-        { provide: Store, useValue: mockStore }
-      ]
+      providers: [{ provide: Store, useValue: mockStore }],
     });
 
     const fixture = TestBed.createComponent(WidgetTransactions);
@@ -54,17 +52,15 @@ describe('WidgetTransactions', () => {
     component.loadMore();
 
     expect(mockStore.dispatch).toHaveBeenCalledWith(
-      TransactionActions.loadMore()
+      TransactionActions.loadMore(),
     );
   });
 
-  it('should dispatch enter action on retryLoad', () => {
+  it('should dispatch loadTransactions action on retryLoad', () => {
     component.retryLoad();
 
     expect(mockStore.dispatch).toHaveBeenCalledWith(
-      TransactionActions.enter()
+      TransactionActions.loadTransactions({ forceRefresh: true }),
     );
   });
-
-
 });
