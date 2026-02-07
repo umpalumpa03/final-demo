@@ -2,7 +2,7 @@ import { Account } from '../../../shared/models/accounts/accounts.model';
 
 export interface AccountsState {
   accounts: Account[];
-  selectedAccountId: string | null;
+  selectedAccountId: Account | null;
   isLoading: boolean;
   isFetching: boolean;
   error: string | null;

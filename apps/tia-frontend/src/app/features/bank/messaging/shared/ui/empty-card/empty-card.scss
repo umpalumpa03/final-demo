@@ -19,6 +19,7 @@
     &__title {
         @include font-inter(400, 1.4rem, 2rem);
         color: $gray-500;
+        text-align: center;
     }
 }
 

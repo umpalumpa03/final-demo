@@ -29,6 +29,10 @@
     color: $blue-700;
     @include flex-center(row, center, center);
     @include font-arimo(600, 1.6rem, 2.4rem);
+    img {
+      width: 2rem;
+      height: 2rem;
+    }
   }
 
   &__content {

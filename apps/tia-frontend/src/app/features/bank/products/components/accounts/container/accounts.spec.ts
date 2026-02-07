@@ -121,13 +121,35 @@ describe('Accounts', () => {
     component.handleCreateErrorAlertDismissed();
     expect(component['showCreateErrorAlert']()).toBe(false);
 
+    const mockAccount = {
+      id: 'acc-123',
+      userId: 'user-1',
+      permission: 1,
+      type: AccountType.current,
+      iban: 'GE89NB0000000123456789',
+      friendlyName: 'Test Account',
+      name: 'Test Account',
+      status: 'active',
+      balance: 1000,
+      currency: 'USD',
+      createdAt: '2026-01-01',
+      openedAt: '2026-01-01',
+      closedAt: '',
+      isFavorite: false,
+      isHidden: false,
+    };
+    store.overrideSelector(selectors.selectAccounts, [mockAccount]);
+    store.refreshState();
+
     const dispatchSpy = vi.spyOn(store, 'dispatch');
     const navigateSpy = vi.spyOn(router, 'navigate');
-    component.handleTransfer('acc-123');
+    component.handleTransfer({ accountId: 'acc-123', permissionValue: 1 });
     expect(dispatchSpy).toHaveBeenCalledWith(
-      AccountsActions.selectAccount({ accountId: 'acc-123' }),
+      AccountsActions.selectAccount({ account: mockAccount }),
     );
-    expect(navigateSpy).toHaveBeenCalledWith(['/bank/transfers/internal']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/bank/transfers/internal'], {
+      queryParams: { accountId: 'acc-123' },
+    });
 
     component.handleRetry();
     expect(dispatchSpy).toHaveBeenCalledWith(

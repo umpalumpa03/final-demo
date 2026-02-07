@@ -1,7 +1,73 @@
 @use '../../../../shared/styles/mixins' as *;
 @use '../../../../shared/styles/palette' as *;
 
-.bank-dashboard__banner {
-  margin: 2.4rem 0 3.2rem 0;
+.scrollbar {
+  @include custom-scrollbar;
+}
+
+.bank-dashboard {
+  &__banner {
+    margin: 2.4rem 0 3.2rem 0;
+    width: 100%;
+  }
+
+  &__header-actions {
+    margin: 0 0 2.4rem 0;
+    width: 100%;
+  }
+}
+
+.customize-shell {
+  &__title {
+    @include font-inter(700, 2rem, 2.8rem);
+    color: var(--color-fg);
+    margin-bottom: 3.2rem;
+    text-align: center;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.4rem;
+    padding-bottom: 2rem;
+    min-height: 10rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.6rem;
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .customize-card-pulsing {
+    grid-column: 1 / -1;
+    @include flex-center();
+    width: 100%;
+  }
+}
+
+.dashboard-loading-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.4rem;
   width: 100%;
+
+  .skeleton-wrapper {
+    width: 100%;
+
+    &.hero {
+      grid-column: span 2;
+    }
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+
+    .skeleton-wrapper.hero {
+      grid-column: span 1;
+    }
+  }
 }

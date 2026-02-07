@@ -213,6 +213,7 @@ export class OtpVerification implements OnInit {
     effect(() => {
       if (this.effectiveRemainingAttempts() === 0) {
         this.isLimitExeeded.set(true);
+        this.customError.emit();
       }
     });
 

@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserCard } from './user-card';
 import { IUser } from '../../models/users.model';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('UserCard', () => {
   let component: UserCard;
@@ -19,7 +20,7 @@ describe('UserCard', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UserCard],
+      imports: [UserCard, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserCard);
