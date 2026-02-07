@@ -180,4 +180,101 @@ describe('Paybill Selectors', () => {
       expect(result[1].expanded).toBe(false);
     });
   });
+
+  describe('selectProvidersDropdown', () => {
+    it('should filter providers with parentId null and map to dropdown items', () => {
+      const activeCategory = {
+        providers: [
+          { id: '1', name: 'Parent', parentId: null },
+          { id: '2', name: 'Child', parentId: '1' },
+          { id: '3', name: 'Another Parent', parentId: null },
+        ],
+      } as any;
+
+      const result =
+        Selectors.selectProvidersDropdown.projector(activeCategory);
+
+      expect(result).toHaveLength(2);
+      expect(result[0]).toEqual({ label: 'Parent', value: '1' });
+      expect(result).not.toContainEqual({ label: 'Child', value: '2' });
+    });
+
+    it('should return empty array if activeCategory is null', () => {
+      expect(Selectors.selectProvidersDropdown.projector(null)).toEqual([]);
+    });
+  });
+
+  describe('selectFilteredProviders', () => {
+    it('should map nested filtered providers correctly', () => {
+      const state = {
+        filteredProviders: [
+          [
+            { id: 'p1', name: 'Prov 1', isFinal: true },
+            { id: 'p2', name: 'Prov 2', isFinal: false },
+          ],
+        ],
+      } as any;
+
+      const result = Selectors.selectFilteredProviders.projector(state);
+
+      expect(result[0][0]).toEqual({
+        label: 'Prov 1',
+        value: 'p1',
+        isFinal: true,
+      });
+      expect(result[0]).toHaveLength(2);
+    });
+
+    it('should return empty array if filteredProviders is missing or empty', () => {
+      expect(
+        Selectors.selectFilteredProviders.projector({
+          filteredProviders: [],
+        } as any),
+      ).toEqual([]);
+      expect(Selectors.selectFilteredProviders.projector({} as any)).toEqual(
+        [],
+      );
+    });
+  });
+
+  describe('Loaded State Selectors', () => {
+    it('should return false if collections are empty', () => {
+      expect(Selectors.selectCategoriesLoaded.projector([])).toBe(false);
+      expect(Selectors.selectTemplatesLoaded.projector([])).toBe(false);
+      expect(Selectors.selectTemplateGroupsLoaded.projector([])).toBe(false);
+    });
+  });
+
+  describe('selectPaymentDetails Selectors', () => {
+    it('should select payment fields and serviceId', () => {
+      const stateWithDetails = {
+        ...initialPaybillState,
+        paymentDetails: {
+          serviceId: 'SERV-123',
+          fields: [{ name: 'account', type: 'text' }],
+        },
+      } as any;
+
+      expect(
+        Selectors.selectPaymentFields.projector(stateWithDetails),
+      ).toHaveLength(1);
+      expect(Selectors.selectServiceId.projector(stateWithDetails)).toBe(
+        'SERV-123',
+      );
+    });
+
+    it('should return empty array for fields if paymentDetails is null', () => {
+      expect(Selectors.selectPaymentFields.projector({} as any)).toEqual([]);
+    });
+  });
+
+  describe('selectNotifications', () => {
+    it('should return notifications from state', () => {
+      const notifications = [{ id: 1, message: 'Test' }] as any;
+      const state = { ...initialPaybillState, notifications };
+      expect(Selectors.selectNotifications.projector(state)).toEqual(
+        notifications,
+      );
+    });
+  });
 });

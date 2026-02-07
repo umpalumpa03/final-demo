@@ -100,7 +100,6 @@ describe('Paybill Reducer', () => {
   });
 
   describe('Payment Processing', () => {
-
     it('setPaymentPayload: should update payload', () => {
       const data = { amount: 100 } as any;
       const action = PaybillActions.setPaymentPayload({ data });
@@ -567,5 +566,78 @@ describe('Paybill Reducer', () => {
     expect(temp2?.groupId).toBe('group-456');
 
     expect(result.loading).toBe(false);
+  });
+
+  describe('Template Movement & Creation', () => {
+    it('moveTemplate: should set loading true', () => {
+      const action = TemplatesPageActions.moveTemplate({
+        templateId: 't1',
+        groupId: 'g1',
+      });
+      const result = paybillReducer(initialPaybillState, action);
+      expect(result.loading).toBe(true);
+    });
+
+    it('moveTemplateSuccess: should update the groupId of a specific template', () => {
+      const state = {
+        ...initialPaybillState,
+        templates: [
+          { id: 't1', groupId: 'old' },
+          { id: 't2', groupId: 'other' },
+        ] as any,
+      };
+      const action = TemplatesPageActions.moveTemplateSuccess({
+        templateId: 't1',
+        groupId: 'new-group',
+      } as any);
+
+      const result = paybillReducer(state, action);
+      const moved = result.templates.find((t) => t.id === 't1');
+      expect(moved?.groupId).toBe('new-group');
+      expect(result.templates.find((t) => t.id === 't2')?.groupId).toBe(
+        'other',
+      );
+    });
+
+    it('createTemplateSuccess: should add new template to the list', () => {
+      const state = {
+        ...initialPaybillState,
+        templates: [{ id: 't1' }] as any,
+      };
+      const newTemplate = { id: 't2', nickname: 'New' } as any;
+      const action = TemplatesPageActions.createTemplateSuccess({
+        payload: newTemplate,
+        message: 'Success',
+      } as any);
+
+      const result = paybillReducer(state, action);
+      expect(result.templates).toHaveLength(2);
+      expect(result.templates[1].id).toBe('t2');
+    });
+  });
+
+  describe('Complex UI Interactions', () => {
+    it('TemplatesPageActions.selectProvider: should update level and set loading', () => {
+      const action = TemplatesPageActions.selectProvider({
+        providerId: 'p1',
+        level: 2,
+      });
+      const result = paybillReducer(initialPaybillState, action);
+
+      expect(result.selectedProviderId).toBe('p1');
+      expect(result.currentLevel).toBe(2);
+      expect(result.loading).toBe(true);
+    });
+
+    it('loadTemplates: should not set loading true if templates already exist', () => {
+      const state = {
+        ...initialPaybillState,
+        templates: [{ id: 't1' }] as any,
+      };
+      const action = TemplatesPageActions.loadTemplates();
+      const result = paybillReducer(state, action);
+
+      expect(result.loading).toBe(false);
+    });
   });
 });

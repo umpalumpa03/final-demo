@@ -4,7 +4,15 @@ import { Action } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
-import { describe, it, expect, beforeEach, vi, Mocked, afterEach } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  vi,
+  Mocked,
+  afterEach,
+} from 'vitest';
 
 import { PaybillEffect } from './paybill.effects';
 import { PaybillActions, TemplatesPageActions } from './paybill.actions';
@@ -64,8 +72,8 @@ describe('PaybillEffect (Refactored)', () => {
         PaybillEffect,
         provideMockActions(() => actions$),
         // FIXED: Wrap state in feature key 'paybill' to match selectors
-        provideMockStore({ 
-          initialState: { paybill: initialPaybillState } 
+        provideMockStore({
+          initialState: { paybill: initialPaybillState },
         }),
         { provide: PaybillService, useValue: paybillServiceMock },
         { provide: PaybillTemplatesService, useValue: templatesServiceMock },
@@ -124,7 +132,7 @@ describe('PaybillEffect (Refactored)', () => {
         );
       });
     });
-    
+
     it('loadTemplates$: should dispatch Success on API success', () => {
       const templates = [{ id: 't1' }] as any;
       paybillTemplatesService.getAllTemplates.mockReturnValue(of(templates));
@@ -197,7 +205,9 @@ describe('PaybillEffect (Refactored)', () => {
       );
 
       effects.confirmPayment$.subscribe((action) => {
-        expect(router.navigate).toHaveBeenCalledWith(['/bank/paybill/pay/payment-success']);
+        expect(router.navigate).toHaveBeenCalledWith([
+          '/bank/paybill/pay/payment-success',
+        ]);
         expect(action).toEqual(
           PaybillActions.addNotification({
             notificationType: 'success',
@@ -227,7 +237,7 @@ describe('PaybillEffect (Refactored)', () => {
       store.overrideSelector(selectPaymentPayload, {
         amount: 100,
       } as PaybillPayload);
-  
+
       const response: ProceedPaymentResponse = {
         verify: {
           challengeId: 'id-123',
@@ -235,26 +245,28 @@ describe('PaybillEffect (Refactored)', () => {
         },
         transferType: 'INTERNAL',
       };
-  
+
       actions$ = of(PaybillActions.proceedPaymentSuccess({ response }));
-      
+
       effects.proceedPaymentSuccess$.subscribe(() => {});
-      
-      expect(router.navigate).toHaveBeenCalledWith(['/bank/paybill/pay/otp-verification']);
+
+      expect(router.navigate).toHaveBeenCalledWith([
+        '/bank/paybill/pay/otp-verification',
+      ]);
     });
-  
+
     it('proceedPaymentSuccess$: should auto-confirm if amount <= 50', () => {
       store.overrideSelector(selectPaymentPayload, {
         amount: 20,
       } as PaybillPayload);
-  
+
       const response: ProceedPaymentResponse = {
         verify: { challengeId: 'id-123', method: 'SMS' },
         transferType: 'INTERNAL',
       };
-  
+
       actions$ = of(PaybillActions.proceedPaymentSuccess({ response }));
-  
+
       effects.proceedPaymentSuccess$.subscribe((action) => {
         expect(action).toEqual(
           PaybillActions.confirmPayment({
@@ -265,11 +277,12 @@ describe('PaybillEffect (Refactored)', () => {
     });
   });
 
-
   describe('Template Management', () => {
     it('createTemplatesGroup$: should dispatch Success', () => {
       const mockGroup = { id: 'G1', name: 'Utility' } as any;
-      paybillTemplatesService.createTemplateGroups.mockReturnValue(of(mockGroup));
+      paybillTemplatesService.createTemplateGroups.mockReturnValue(
+        of(mockGroup),
+      );
 
       actions$ = of(
         TemplatesPageActions.createTemplatesGroups({ name: 'Utility' } as any),
@@ -285,7 +298,9 @@ describe('PaybillEffect (Refactored)', () => {
     });
 
     it('deleteTemplates$: should dispatch Success', () => {
-      paybillTemplatesService.deleteTemplate.mockReturnValue(of({ message: 'Deleted' }));
+      paybillTemplatesService.deleteTemplate.mockReturnValue(
+        of({ message: 'Deleted' }),
+      );
       actions$ = of(TemplatesPageActions.deleteTemplate({ templateId: 'T1' }));
 
       effects.deleteTemplates$.subscribe((action) => {
@@ -300,7 +315,9 @@ describe('PaybillEffect (Refactored)', () => {
 
     it('renameTemplates$: should dispatch Success', () => {
       const updatedTemplate = { id: 'T1', nickname: 'New' } as any;
-      paybillTemplatesService.renameTemplate.mockReturnValue(of(updatedTemplate));
+      paybillTemplatesService.renameTemplate.mockReturnValue(
+        of(updatedTemplate),
+      );
       actions$ = of(
         TemplatesPageActions.renameTemplate({
           templateId: 'T1',
@@ -316,38 +333,42 @@ describe('PaybillEffect (Refactored)', () => {
         );
       });
     });
-    
+
     it('moveTemplate$: should remove then add to group (Move Success)', () => {
-       paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(of({}));
-       paybillTemplatesService.addTemplateToGroup.mockReturnValue(of({}));
-       
-       actions$ = of(TemplatesPageActions.moveTemplate({ groupId: 'G1', templateId: 'T1' }));
-       
-       effects.moveTemplate$.subscribe((action) => {
-         expect(action).toEqual(
-           TemplatesPageActions.moveTemplateSuccess({
-             message: 'Item moved successfully',
-             groupId: 'G1',
-             templateId: 'T1'
-           })
-         );
-       });
+      paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(of({}));
+      paybillTemplatesService.addTemplateToGroup.mockReturnValue(of({}));
+
+      actions$ = of(
+        TemplatesPageActions.moveTemplate({ groupId: 'G1', templateId: 'T1' }),
+      );
+
+      effects.moveTemplate$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.moveTemplateSuccess({
+            message: 'Item moved successfully',
+            groupId: 'G1',
+            templateId: 'T1',
+          }),
+        );
+      });
     });
 
     it('moveTemplate$: should only remove if groupId is null', () => {
-       paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(of({}));
-       
-       actions$ = of(TemplatesPageActions.moveTemplate({ groupId: null, templateId: 'T1' }));
-       
-       effects.moveTemplate$.subscribe((action) => {
-         expect(action).toEqual(
-           TemplatesPageActions.moveTemplateSuccess({
-             message: 'Item removed successfully',
-             groupId: null,
-             templateId: 'T1'
-           })
-         );
-       });
+      paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(of({}));
+
+      actions$ = of(
+        TemplatesPageActions.moveTemplate({ groupId: null, templateId: 'T1' }),
+      );
+
+      effects.moveTemplate$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.moveTemplateSuccess({
+            message: 'Item removed successfully',
+            groupId: null,
+            templateId: 'T1',
+          }),
+        );
+      });
     });
   });
 
@@ -416,21 +437,217 @@ describe('PaybillEffect (Refactored)', () => {
       });
     });
   });
-  
+
   describe('Create Template', () => {
-      it('createTemplate$: should dispatch success', () => {
-          const response = { message: 'Created' };
-          paybillService.createTemplate.mockReturnValue(of(response));
-          actions$ = of(TemplatesPageActions.createTemplate({ serviceId: '1', identification: {} as any, nickname: 'nick' }));
-          
-          effects.createTemplate$.subscribe(action => {
-              expect(action).toEqual(
-                  TemplatesPageActions.createTemplateSuccess({ 
-                      payload: response, 
-                      message: 'Created' 
-                  })
-              );
-          });
+    it('createTemplate$: should dispatch success', () => {
+      const response = { message: 'Created' };
+      paybillService.createTemplate.mockReturnValue(of(response));
+      actions$ = of(
+        TemplatesPageActions.createTemplate({
+          serviceId: '1',
+          identification: {} as any,
+          nickname: 'nick',
+        }),
+      );
+
+      effects.createTemplate$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.createTemplateSuccess({
+            payload: response,
+            message: 'Created',
+          }),
+        );
       });
+    });
+  });
+
+  describe('checkBillAndCreateTemplate$', () => {
+    it('should create template on successful bill check', () => {
+      paybillService.checkBill.mockReturnValue(of({ valid: true } as any));
+
+      actions$ = of(
+        TemplatesPageActions.checkBillForTemplate({
+          serviceId: 'S1',
+          identification: {} as any,
+          nickname: 'MyTemplate',
+        }),
+      );
+
+      effects.checkBillAndCreateTemplate$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.createTemplate({
+            nickname: 'MyTemplate',
+            serviceId: 'S1',
+            identification: {} as any,
+          }),
+        );
+      });
+    });
+
+    it('should dispatch failure when bill check returns invalid', () => {
+      paybillService.checkBill.mockReturnValue(
+        of({ valid: false, error: 'Invalid bill' } as any),
+      );
+
+      actions$ = of(
+        TemplatesPageActions.checkBillForTemplate({
+          serviceId: 'S1',
+          identification: {} as any,
+          nickname: 'MyTemplate',
+        }),
+      );
+
+      effects.checkBillAndCreateTemplate$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.checkBillForTemplateFailure({
+            error: 'Invalid bill',
+          }),
+        );
+      });
+    });
+  });
+
+  describe('loadChildProviders$', () => {
+    it('should load payment details when NO children exist', () => {
+      store.overrideSelector(selectProviders, [{ id: 'P1' }] as any);
+
+      actions$ = of(
+        TemplatesPageActions.selectProvider({ providerId: 'P1', level: 0 }),
+      );
+
+      const results: any[] = [];
+      effects.loadChildProviders$.subscribe((action) => {
+        results.push(action);
+      });
+
+      expect(results).toHaveLength(3);
+      expect(results[1]).toEqual(
+        PaybillActions.loadPaymentDetails({ serviceId: 'P1' }),
+      );
+    });
+
+    it('should only load child providers when children exist', () => {
+      const allProviders = [
+        { id: 'P1', parentId: null },
+        { id: 'P2', parentId: 'P1' },
+      ] as any;
+      store.overrideSelector(selectProviders, allProviders);
+
+      actions$ = of(
+        TemplatesPageActions.selectProvider({ providerId: 'P1', level: 0 }),
+      );
+
+      const results: any[] = [];
+      effects.loadChildProviders$.subscribe((action) => {
+        results.push(action);
+      });
+
+      expect(results).toHaveLength(1);
+    });
+  });
+
+  describe('loadPaymentDetails$', () => {
+    it('should dispatch success on load', () => {
+      const details = { serviceId: 'S1', fields: [] } as any;
+      paybillService.getPaymentDetails.mockReturnValue(of(details));
+      actions$ = of(PaybillActions.loadPaymentDetails({ serviceId: 'S1' }));
+
+      effects.loadPaymentDetails$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.loadPaymentDetailsSuccess({ details }),
+        );
+      });
+    });
+
+    it('should dispatch failure on error', () => {
+      paybillService.getPaymentDetails.mockReturnValue(
+        throwError(() => new Error('Load failed')),
+      );
+      actions$ = of(PaybillActions.loadPaymentDetails({ serviceId: 'S1' }));
+
+      effects.loadPaymentDetails$.subscribe((action) => {
+        expect(action).toEqual(
+          PaybillActions.loadPaymentDetailsFailure({ error: 'Load failed' }),
+        );
+      });
+    });
+  });
+  describe('renameTemplateGroup$', () => {
+    it('should dispatch success on rename', () => {
+      const response = { id: 'G1', name: 'New Name' } as any;
+      paybillTemplatesService.renameGroup.mockReturnValue(of(response));
+      actions$ = of(
+        TemplatesPageActions.renameTemplateGroup({
+          groupId: 'G1',
+          groupName: 'New Name',
+        }),
+      );
+
+      effects.renameTemplateGroup$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.renameTemplateGroupSuccess({
+            templateGroup: response,
+            groupId: 'G1',
+            message: 'Group name has been changed',
+          }),
+        );
+      });
+    });
+
+    it('should dispatch failure on error', () => {
+      paybillTemplatesService.renameGroup.mockReturnValue(
+        throwError(() => new Error('Rename failed')),
+      );
+      actions$ = of(
+        TemplatesPageActions.renameTemplateGroup({
+          groupId: 'G1',
+          groupName: 'New',
+        }),
+      );
+
+      effects.renameTemplateGroup$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.renameTemplateGroupFailure({
+            error: 'Rename failed',
+          }),
+        );
+      });
+    });
+  });
+  describe('deleteTemplateGroup$', () => {
+    it('should dispatch success on delete', () => {
+      paybillTemplatesService.deleteGroup.mockReturnValue(
+        of({ message: 'Deleted' }),
+      );
+      actions$ = of(
+        TemplatesPageActions.deleteTemplateGroup({ groupId: 'G1' }),
+      );
+
+      effects.deleteTemplateGroup$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.deleteTemplateGroupSuccess({
+            message: 'Deleted',
+            groupId: 'G1',
+          }),
+        );
+      });
+    });
+
+    it('should dispatch failure on error', () => {
+      paybillTemplatesService.deleteGroup.mockReturnValue(
+        throwError(() => new Error('Delete failed')),
+      );
+      actions$ = of(
+        TemplatesPageActions.deleteTemplateGroup({ groupId: 'G1' }),
+      );
+
+      effects.deleteTemplateGroup$.subscribe((action) => {
+        expect(action).toEqual(
+          TemplatesPageActions.deleteTemplateGroupFailure({
+            error: 'Delete failed',
+          }),
+        );
+      });
+    });
   });
 });

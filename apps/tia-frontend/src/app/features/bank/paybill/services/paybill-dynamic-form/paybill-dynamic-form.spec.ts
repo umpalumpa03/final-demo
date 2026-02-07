@@ -75,4 +75,55 @@ describe('PaybillDynamicForm', () => {
       expect(form.contains('acc')).toBe(true);
     });
   });
+  describe('updateAmountValidators', () => {
+    it('should return early if amount control does not exist', () => {
+      const form = new FormGroup({});
+
+      service.updateAmountValidators(form, true);
+
+      expect(form.contains('amount')).toBe(false);
+    });
+
+    it('should set validators with min when isVerified is true', () => {
+      const form = new FormGroup({
+        amount: new FormControl(0),
+      });
+
+      service.updateAmountValidators(form, true);
+
+      const amountControl = form.get('amount');
+      amountControl?.setValue(0);
+      expect(amountControl?.valid).toBe(false);
+
+      amountControl?.setValue(0.01);
+      expect(amountControl?.valid).toBe(true);
+    });
+
+    it('should set validators without min when isVerified is false', () => {
+      const form = new FormGroup({
+        amount: new FormControl(0),
+      });
+
+      service.updateAmountValidators(form, false);
+
+      const amountControl = form.get('amount');
+      amountControl?.setValue(0);
+      expect(amountControl?.valid).toBe(true);
+    });
+
+    it('should enforce max validator of 9999', () => {
+      const form = new FormGroup({
+        amount: new FormControl(0),
+      });
+
+      service.updateAmountValidators(form, true);
+
+      const amountControl = form.get('amount');
+      amountControl?.setValue(10000);
+      expect(amountControl?.valid).toBe(false);
+
+      amountControl?.setValue(9999);
+      expect(amountControl?.valid).toBe(true);
+    });
+  });
 });
