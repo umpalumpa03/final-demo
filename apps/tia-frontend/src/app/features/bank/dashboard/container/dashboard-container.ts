@@ -5,6 +5,7 @@ import {
   computed,
   OnInit,
   inject,
+  effect,
 } from '@angular/core';
 import { DragContainer } from '../../../../shared/lib/drag-n-drop/components/drag-container/drag-container';
 import { DraggableCard } from '../../../../shared/lib/drag-n-drop/components/draggable-card/draggable-card';
@@ -31,6 +32,8 @@ import { CustomizeButton } from '../components/shared/ui/customize-button/custom
 import { UiSheetModal } from '@tia/shared/lib/overlay/ui-sheet-modal/ui-sheet-modal';
 import { CustomizeCard } from '../components/shared/ui/customize-card/customize-card';
 import { WidgetsService } from '../services/widgets-service';
+import { UserInfoActions } from 'apps/tia-frontend/src/app/store/user-info/user-info.actions';
+import { selectUserWidgets } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
 @Component({
   selector: 'app-dashboard-container',
   imports: [
@@ -68,10 +71,7 @@ export class DashboardContainer implements OnInit {
     this.isCustomizing.set(false);
   }
 
-  protected readonly myItems = signal<(IWidgetItem & { isHidden?: boolean })[]>(
-    [...widgetItems],
-  );
-
+  protected readonly myItems = signal<IWidgetItem[]>([]);
   protected readonly bannerConfig = signal(bannerSlides);
 
   protected readonly pageTitle = computed(() =>
@@ -97,6 +97,13 @@ export class DashboardContainer implements OnInit {
     this.myItems.set(newItems);
   }
 
+  private readonly syncWidgets = effect(() => {
+    const storeWidgets = this.store.selectSignal(selectUserWidgets)();
+    if (storeWidgets.length > 0) {
+      this.myItems.set(storeWidgets);
+    }
+  });
+
   public onContainerOrderChange(ids: string[]): void {}
 
   public onToggleVisibility(isSelected: boolean, id: string): void {
@@ -105,12 +112,16 @@ export class DashboardContainer implements OnInit {
     if (!widget) return;
 
     if (widget.dbId) {
-      this.widgetService
-        .updateWidget(widget.dbId, { isActive: isSelected })
-        .subscribe();
+      this.store.dispatch(
+        UserInfoActions.updateWidgetState({
+          id: widget.dbId,
+          isSelected,
+        }),
+      );
     } else if (isSelected) {
       this.widgetService.createWidget(widget).subscribe();
     }
+
     this.myItems.update((items) =>
       items.map((item) =>
         item.id === id ? { ...item, isHidden: !isSelected } : item,
@@ -138,11 +149,8 @@ export class DashboardContainer implements OnInit {
   public readonly gridColumns = { default: 2, md: 0, sm: 0 };
 
   ngOnInit(): void {
-    this.store.dispatch(
-      TransactionActions.updateFilters({
-        filters: { pageLimit: 10 },
-      }),
-    );
+    this.store.dispatch(UserInfoActions.loadWidgets());
+
     this.store.dispatch(loadExchangeRates({ baseCurrency: 'USD' }));
     this.store.dispatch(AccountsActions.loadAccounts({}));
   }

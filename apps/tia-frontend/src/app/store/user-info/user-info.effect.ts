@@ -2,15 +2,26 @@ import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { UserInfoService } from '@tia/shared/services/user-info/user-info.service';
 import { UserInfoActions } from './user-info.actions';
-import { switchMap, map, tap, catchError } from 'rxjs/operators';
+import {
+  switchMap,
+  map,
+  tap,
+  catchError,
+  withLatestFrom,
+  filter,
+} from 'rxjs/operators';
 import { of } from 'rxjs';
 import { WidgetsService } from '../../features/bank/dashboard/services/widgets-service';
+import { Store } from '@ngrx/store';
+import { selectUserLoaded } from './user-info.selectors';
 
 @Injectable()
 export class UserInfoEffects {
-  private actions$ = inject(Actions);
-  private userInfoService = inject(UserInfoService);
-  private widgetService = inject(WidgetsService);
+  private readonly actions$ = inject(Actions);
+  private readonly userInfoService = inject(UserInfoService);
+  private readonly widgetService = inject(WidgetsService);
+  private readonly store = inject(Store);
+
   public loadUser$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserInfoActions.loadUser),
@@ -43,12 +54,18 @@ export class UserInfoEffects {
 
   public loadWidgets$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(UserInfoActions.loadWidgets, UserInfoActions.loadUserSuccess),
+      ofType(UserInfoActions.loadWidgets),
+      withLatestFrom(this.store.select(selectUserLoaded)),
+      filter(([_, loaded]) => !loaded),
       switchMap(() =>
         this.widgetService.getWidgets().pipe(
           map((widgets) => UserInfoActions.loadWidgetsSuccess({ widgets })),
           catchError((error) =>
-            of(UserInfoActions.loadWidgetsError({ error: error.message })),
+            of(
+              UserInfoActions.loadWidgetsError({
+                error: error.message || 'error',
+              }),
+            ),
           ),
         ),
       ),
