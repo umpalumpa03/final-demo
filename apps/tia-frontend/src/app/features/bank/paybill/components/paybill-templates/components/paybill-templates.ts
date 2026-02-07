@@ -19,8 +19,10 @@ import {
   formSubmitType,
   HeaderCtaAction,
   HeaderCtaButton,
+  MappedProviderForDropdown,
   ModalInfo,
   ModalType,
+  ProviderTypeForStore,
   TemplateGroups,
   TreeAction,
   TreeItemMoved,
@@ -30,6 +32,7 @@ import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { distinctUntilChanged } from 'rxjs';
+import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
 
 @Component({
   selector: 'app-paybill-templates',
@@ -171,16 +174,9 @@ export class PaybillTemplates {
   // // /////////////////////////////////////////////
   // //  RIGHT NOW UNUSED LOGIC KEPT FOR REFERENCE //
   // // /////////////////////////////////////////////
-  public parentProviders = input.required<{ label: string; value: string }[]>();
+  public parentProviders = input.required<MappedProviderForDropdown[]>();
 
-  public templateCategories = input.required<
-    {
-      label: string;
-      value: string;
-    }[]
-  >();
-
-  // public templateProviders = input<PaybillProvider[]>();
+  public templateCategories = input.required<MappedProviderForDropdown[]>();
 
   public categorySelected = output<string>();
   public parentProviderSelected = output<string>();
@@ -189,7 +185,6 @@ export class PaybillTemplates {
 
   ngOnInit() {
     const form = this.createTemplateForm();
-    // Category selection
     form
       .get('category')
       ?.valueChanges.pipe(distinctUntilChanged())
@@ -210,12 +205,10 @@ export class PaybillTemplates {
   }
 
   public isCategorySelected = input<boolean>(false);
-  public childProviderOptions = input<{ label: string; value: string }[][]>([
-    [],
-  ]);
+  public childProviderOptions = input<MappedProviderForDropdown[][]>([[]]);
 
-  public childProviderSelected = output<{ providerId: any; index: number }>();
-  public onChildProviderChange(providerId: any, index: number) {
+  public childProviderSelected = output<ProviderTypeForStore>();
+  public onChildProviderChange(providerId: InputFieldValue, index: number) {
     this.childProviderSelected.emit({ providerId, index });
   }
 }

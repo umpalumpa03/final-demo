@@ -27,6 +27,7 @@ import {
   formSubmitType,
   HeaderCtaAction,
   ModalType,
+  ProviderTypeForStore,
   TreeAction,
   TreeItemMoved,
 } from '../models/paybill-templates.model';
@@ -271,7 +272,6 @@ export class PaybillTemplatesContainer implements OnInit {
   );
   public selectLoading = this.store.selectSignal(selectLoading);
 
-  // Create Template Logic - to be implemented
   onCategorySelect(category: InputFieldValue): void {
     if (category === '') {
       return;
@@ -284,18 +284,16 @@ export class PaybillTemplatesContainer implements OnInit {
     this.currentLevel.set(0);
   }
 
-  onParentProviderSelect(info: any): void {
+  onParentProviderSelect(info: ProviderTypeForStore): void {
     if (!info.providerId) return;
 
     const currentLevel = info.index;
 
     this.store.dispatch(
       TemplatesPageActions.selectProvider({
-        providerId: info.providerId,
+        providerId: info.providerId as string,
         level: currentLevel,
       }),
     );
-
-    console.log(currentLevel, '____CURRENT_____');
   }
 }

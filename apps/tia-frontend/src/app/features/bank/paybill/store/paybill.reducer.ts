@@ -416,52 +416,14 @@ export const paybillReducer = createReducer(
     loading: true,
   })),
 
-  // on(
-  //   TemplatesPageActions.loadChildProvidersSuccess,
-  //   (state, { providers, level }) => {
-  //     if (providers.length === 0) {
-  //       return {
-  //         ...state,
-  //         loading: false,
-  //       };
-  //     }
-
-  //     if (state.filteredProviders && state.filteredProviders.length > level) {
-  //       return {
-  //         ...state,
-  //         filteredProviders: state.filteredProviders.slice(0, level + 1),
-  //         loading: false,
-  //       };
-  //     }
-
-  //     const newFilteredProviders = [...(state.filteredProviders || [])];
-
-  //     newFilteredProviders[level] = providers;
-
-  //     const trimmed = newFilteredProviders.slice(0, level + 1);
-
-  //     return {
-  //       ...state,
-  //       filteredProviders: trimmed,
-  //       loading: false,
-  //     };
-  //   },
-  // ),
-
   on(
     TemplatesPageActions.loadChildProvidersSuccess,
     (state, { providers, level }) => {
-      // Get existing levels or empty array
       const currentLevels = state.filteredProviders || [];
 
       console.log(currentLevels.length, level);
 
       let newFilteredProviders: PaybillProvider[][];
-      // if (currentLevels.length > level) {
-      //   // currentLevels.splice(level);
-      //   console.log(currentLevels);
-      //   newFilteredProviders = [...currentLevels, providers];
-      // }
 
       if (providers.length === 0) {
         newFilteredProviders = currentLevels.slice(0, level);
