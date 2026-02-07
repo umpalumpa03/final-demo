@@ -165,8 +165,8 @@ export class ExternalAccounts implements OnInit {
       ];
     }
     return accounts.sort((a, b) => {
-      const aFav = (a as any).isFavorite ? 1 : 0;
-      const bFav = (b as any).isFavorite ? 1 : 0;
+      const aFav = (a as Account).isFavorite ? 1 : 0;
+      const bFav = (b as Account).isFavorite ? 1 : 0;
       return bFav - aFav;
     });
   });
@@ -258,14 +258,14 @@ export class ExternalAccounts implements OnInit {
       untracked(() => {
         if (!isExternal && rAccounts.length > 0 && !currentRecipient) {
           const firstRecipient = rAccounts[0];
-          if ((firstRecipient as any).isFavorite) {
+          if ((firstRecipient as Account).isFavorite) {
             this.transferStore.setSelectedRecipientAccount(firstRecipient);
           }
         }
 
         if (sAccounts.length > 0 && !currentSender) {
           const firstSender = sAccounts[0];
-          const updatedRecipient = this.selectedRecipientAccount(); 
+          const updatedRecipient = this.selectedRecipientAccount();
 
           const isFav = firstSender.isFavorite;
           const isDisabled = this.recipientService.isSenderAccountDisabled(
