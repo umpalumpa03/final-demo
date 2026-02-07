@@ -7,7 +7,6 @@
   [selectedDeleteItem]="selectedItemName()"
   [isLoading]="isLoading()"
   [templateCategories]="categoryOptions()"
-  [serviceProviders]="providerOptions()"
   (headerButtonAction)="handleHeaderAction($event)"
   (modalOpenAction)="handleModalToggle()"
   (formSubmit)="handleFormSubmit($event)"
@@ -18,9 +17,16 @@
   [selectAll]="selectAll()"
   (categorySelected)="onCategorySelect($event)"
   [selectLoading]="selectLoading()"
-  (providerSelected)="onProviderSelect($event)"
   [createTemplateForm]="createTemplateForm"
   [editTemplateForm]="editTemplateForm"
   [editGroupForm]="editGroupForm"
   [createGroupForm]="createGroupForm"
+  [templateCategories]="categoryOptions()"
+  [parentProviders]="parentProviderOptions()"
+  [childProviders]="childProviderOptions()"
+  [selectLoading]="isLoading()"
+  [isCategorySelected]="isCategorySelected()"
 ></app-paybill-templates>
+
+<!-- (providerSelected)="onProviderSelect($event)" -->
+<!-- [serviceProviders]="parentProviderOptions()" -->

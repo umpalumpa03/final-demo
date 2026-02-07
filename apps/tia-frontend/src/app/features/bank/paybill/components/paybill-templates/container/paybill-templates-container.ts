@@ -10,9 +10,11 @@ import { PaybillTemplates } from '../components/paybill-templates';
 import { Store } from '@ngrx/store';
 import {
   selectCategories,
+  selectFilteredProviders,
   selectLoading,
   selectProviders,
   selectProvidersDropdown,
+  selectSelectedCategoryId,
   selectTemplatesAsTreeItems,
   selectTemplatesGroupWithConfigs,
 } from '../../../store/paybill.selectors';
@@ -254,7 +256,18 @@ export class PaybillTemplatesContainer implements OnInit {
     this.handleModalToggle();
   }
 
-  public providerOptions = this.store.selectSignal(selectProvidersDropdown);
+  // ///////////////////////////////////////////////////////////////
+
+  public parentProviderOptions = this.store.selectSignal(
+    selectProvidersDropdown,
+  );
+  public childProviderOptions = this.store.selectSignal(
+    selectFilteredProviders,
+  );
+
+  public isCategorySelected = computed(
+    () => this.store.selectSignal(selectSelectedCategoryId)() !== null,
+  );
   public selectLoading = this.store.selectSignal(selectLoading);
 
   // Create Template Logic - to be implemented
@@ -262,20 +275,20 @@ export class PaybillTemplatesContainer implements OnInit {
     if (category === '') {
       return;
     }
+
     this.store.dispatch(
       PaybillActions.selectCategory({ categoryId: category as string }),
     );
-    ModalConfig.template.fields?.push({
-      label: '',
-      type: 'dropdown',
-      placeholder: 'Choose Provider',
-      controlName: 'serviceProvider',
-    });
   }
 
-  onProviderSelect(provider: any) {
-    this.store.dispatch(
-      PaybillActions.selectProvider({ providerId: provider }),
-    );
+  onParentProviderSelect(providerId: string): void {
+    if (!providerId) return;
+
+    this.store.dispatch(PaybillActions.selectProvider({ providerId }));
+  }
+
+  onChildProviderSelect(providerId: string): void {
+    // Handle final provider selection
+    console.log('Final provider selected:', providerId);
   }
 }

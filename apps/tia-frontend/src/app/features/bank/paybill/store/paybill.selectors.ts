@@ -46,23 +46,27 @@ export const selectProvidersDropdown = createSelector(
   (state, activeCategory) => {
     if (!activeCategory) return [];
 
-    if (state.selectedCategoryId !== null) {
-      const filteredProviders = activeCategory.providers.filter(
-        (categories) => {
-          return categories.parentId === state.selectedProviderId;
-        },
-      );
-
-      console.log(filteredProviders);
-    }
-
-    const category = activeCategory.providers
+    return activeCategory.providers
       .filter((provider) => provider.parentId === null)
       .map((provider) => ({
         label: provider.name ?? '',
         value: provider.id,
       }));
-    return category;
+  },
+);
+
+export const selectFilteredProviders = createSelector(
+  selectPaybillState,
+  selectActiveCategory,
+  (state, activeCategory) => {
+    if (!activeCategory || state.selectedProviderId === null) return [];
+
+    return activeCategory.providers
+      .filter((provider) => provider.parentId === state.selectedProviderId)
+      .map((provider) => ({
+        label: provider.name ?? '',
+        value: provider.id,
+      }));
   },
 );
 

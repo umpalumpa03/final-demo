@@ -186,13 +186,10 @@ export class PaybillTemplates {
   // // /////////////////////////////////////////////
   // //  RIGHT NOW UNUSED LOGIC KEPT FOR REFERENCE //
   // // /////////////////////////////////////////////
+  public parentProviders = input.required<{ label: string; value: string }[]>();
+  public childProviders = input.required<{ label: string; value: string }[]>();
+
   public templateCategories = input.required<
-    {
-      label: string;
-      value: string;
-    }[]
-  >();
-  public serviceProviders = input.required<
     {
       label: string;
       value: string;
@@ -202,44 +199,43 @@ export class PaybillTemplates {
   // public templateProviders = input<PaybillProvider[]>();
 
   public categorySelected = output<string>();
-  public providerSelected = output<string>();
+  public parentProviderSelected = output<string>();
+  public childProviderSelected = output<string>();
+
   public selectLoading = input<boolean>(false);
 
-  // ngOnInit() {
-  //   console.log(this.createTemplateForm.value);
-  //   this.createTemplateForm
-  //     .get('category')
-  //     ?.valueChanges.pipe(distinctUntilChanged())
-  //     .subscribe((value) => {
-  //       this.categorySelected.emit(value);
-  //       (this.createTemplateForm as any).addControl(
-  //         'serviceProvider',
-  //         this.fb.nonNullable.control('', Validators.required),
-  //       );
-  //       console.log(this.createTemplateForm.value);
-  //     });
-  //   this.createTemplateForm
-  //     .get('serviceProvider')
-  //     ?.valueChanges.pipe(
-  //       distinctUntilChanged(),
-  //       tap((value) => {
-  //         this.providerSelected.emit(value);
-  //         console.log(this.createTemplateForm.value);
-  //       }),
-  //     )
-  //     .subscribe();
-  // }
+  public showChildProviders = computed(() => {
+    const form = this.createTemplateForm();
+    const parentValue = form.get('parentProvider')?.value;
+    return parentValue && this.childProviders().length > 0;
+  });
+
+  ngOnInit() {
+    const form = this.createTemplateForm();
+    // Category selection
+    form
+      .get('category')
+      ?.valueChanges.pipe(distinctUntilChanged())
+      .subscribe((value) => {
+        this.categorySelected.emit(value);
+        // Reset dependent fields
+        form.get('parentProvider')?.reset();
+        form.get('childProvider')?.reset();
+      });
+  }
 
   getDropdownOptions(controlName: string) {
     switch (controlName) {
       case 'category':
         return this.templateCategories();
-
-      case 'serviceProvider':
-        return this.serviceProviders();
-
+      case 'parentProvider':
+        return this.parentProviders();
+      case 'childProvider':
+        return this.childProviders();
       default:
         return [];
     }
   }
+
+  public isCategorySelected = input<boolean>(false);
 }
