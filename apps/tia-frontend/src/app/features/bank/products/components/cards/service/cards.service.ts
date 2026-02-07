@@ -12,6 +12,11 @@ import {
 } from '../models/create-card-request.model';
 import { environment } from '../../../../../../../environments/environment';
 import { CardTypesResponse } from '../models/card-type.model';
+import {
+  CardOtpChallengeResponse,
+  CardSensitiveData,
+  VerifyCardOtpRequest,
+} from '../models/card-sensitive-data.model';
 
 @Injectable({
   providedIn: 'root',
@@ -53,6 +58,28 @@ export class CardsService {
   createCard(request: CreateCardRequest): Observable<CreateCardResponse> {
     return this.http.post<CreateCardResponse>(
       `${this.apiUrl}/request-card`,
+      request,
+    );
+  }
+  updateCardName(
+    cardId: string,
+    cardName: string,
+  ): Observable<{ success: boolean }> {
+    return this.http.put<{ success: boolean }>(
+      `${this.apiUrl}/update-card-name/${cardId}`,
+      { cardName },
+    );
+  }
+  requestCardOtp(cardId: string): Observable<CardOtpChallengeResponse> {
+    return this.http.post<CardOtpChallengeResponse>(
+      `${this.apiUrl}/card-detailed-info/${cardId}`,
+      {},
+    );
+  }
+
+  verifyCardOtp(request: VerifyCardOtpRequest): Observable<CardSensitiveData> {
+    return this.http.post<CardSensitiveData>(
+      `${this.apiUrl}/card-detailed-info/verify`,
       request,
     );
   }
