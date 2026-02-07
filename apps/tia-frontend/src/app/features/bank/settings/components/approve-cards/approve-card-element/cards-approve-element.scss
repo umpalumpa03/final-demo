@@ -93,11 +93,16 @@
     gap: 1rem;
     border-radius: 0.8rem;
     border: 0.063rem solid $blue-400;
-    background: $blue-100;
     padding: 0.8rem 1.6rem;
+    background: $white;
     font-size: 1.4rem;
     color: $blue-800;
     cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+
+    &:hover {
+      background: $blue-100;
+    }
 
     &-icon {
       width: 1.6rem;
@@ -107,10 +112,17 @@
     &--approve {
       color: $green-600;
       border-color: $green-600;
+      &:hover {
+      background: $green-50;
     }
+    }
+
     &--decline {
       color: $red-700;
       border-color: $red-700;
+
+      &:hover {
+      background: $red-50;    }
     }
   }
 }

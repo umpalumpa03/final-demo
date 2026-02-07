@@ -10,6 +10,7 @@ import { computed, inject } from '@angular/core';
 import { ApproveCardsService } from '../shared/services/approve-cards.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, of, pipe, switchMap, tap } from 'rxjs';
+import { UpdateCardStatusRequest } from '../shared/model/approve-cards.model';
 
 export const ApproveCardsStore = signalStore(
   withState(initialApproveCardsState),
@@ -25,11 +26,26 @@ export const ApproveCardsStore = signalStore(
         switchMap(() =>
           service.getPendingCards().pipe(
             tap((card) => {
+              console.log(card, '__CARD');
               patchState(store, { cards: card, isLoading: false });
             }),
             catchError((err) => {
               patchState(store, { error: err.message, isLoading: false });
               return of([]);
+            }),
+          ),
+        ),
+      ),
+    ),
+
+    updateStatus: rxMethod<UpdateCardStatusRequest>(
+      pipe(
+        tap(() => patchState(store, { isLoading: true, error: null })),
+        switchMap((request) =>
+          service.changeCardStatus(request).pipe(
+            tap(() => {
+              const remainingCards = store.cards().filter(card => card.id !== request.cardId)
+              patchState(store, { cards: remainingCards, isLoading: false, error: null });
             }),
           ),
         ),
