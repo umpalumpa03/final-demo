@@ -26,8 +26,11 @@
 
         <div class="approve-card__details">
           <span>{{network()}}</span>
-          <span class="approve-card__details--bold">{{balance()}}</span>
-          <span>{{creationDate()}}</span>
+          @if(balance()) {
+            <span class="approve-card__details--bold">{{balance()}}</span>
+          }
+          <span>{{creationDate() | date: 'dd/MM/yyyy'}}</span>
+
         </div>
       </div>
     </div>

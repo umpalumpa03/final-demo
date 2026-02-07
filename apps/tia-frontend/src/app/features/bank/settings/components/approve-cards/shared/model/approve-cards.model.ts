@@ -26,10 +26,9 @@ export interface PendingCard {
   account: CardAccount;
 }
 
-export type CardApprovalStatus = 'APPROVED' | 'REJECTED';
+export type CardApprovalStatus = 'ACTIVE' | 'PENDING' | 'CANCELLED';
 
-export type CardPermission = 'allowAtm' | 'allowInternational';
-
+export type CardPermission = 'allowAtm' | 'allowInternational' | 'allowOnlinePayments';
 
 export interface UpdateCardStatusRequest {
   cardId: string; 
@@ -37,3 +36,7 @@ export interface UpdateCardStatusRequest {
   permissions: CardPermission[];
 }
 
+export interface CardCatalogItemResponse {
+  value: CardPermission;
+  displayName: string;
+}

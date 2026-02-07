@@ -1,19 +1,32 @@
 <main class="approve-card">
   @if (store.isLoading()) {
-  <p>Loading cards...</p>
-  } @else { @for(card of store.cards(); track card.id) {
-  <app-cards-approve-element
-    [id]="card.id"
-    [title]="card.nickname"
-    [status]="card.status"
-    [email]="card.cardholderName"
-    [network]="card.network"
-    [balance]="''"
-    [creationDate]="card.createdAt"
-    (cardAction)="handleAction($event)"
-  >
-  </app-cards-approve-element>
-  } @empty {
-  <p>No cards found.</p>
-  } }
+    
+    @for(card of store.cards(); track card.id) {
+      <app-skeleton width="100%" height="6.3rem" />
+    } @empty {
+      <div class="approve-card__spinner">
+        <app-spinner size="6rem"></app-spinner>
+      </div>
+    }
+
+  } @else { 
+    @for(card of store.cards(); track card.id) {
+      <app-cards-approve-element
+        [id]="card.id"
+        [title]="card.nickname"
+        [status]="card.status"
+        [email]="card.cardholderName"
+        [network]="card.network"
+        [balance]="''"
+        [creationDate]="card.createdAt"
+        (cardAction)="handleAction($event)"
+      />
+    } @empty {
+      <app-error-states
+        variant="not-found"
+        header="No Cards Found"
+        message="We couldn't find any cards to display."
+      />
+    } 
+  }
 </main>
