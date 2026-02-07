@@ -31,9 +31,8 @@ export const REGISTATION_FORM = {
     placeholder: 'Johndoe',
   },
   birthDate: {
-    label: 'auth.sign-up.username',
+    label: 'auth.sign-up.birthDate',
     required: false,
-    placeholder: 'Johndoe',
     min: '1990-01-01',
     max: '2008-12-31'
   },
