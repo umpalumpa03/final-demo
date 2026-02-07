@@ -1,7 +1,14 @@
-
-
 @if (isOpen()) {
 <app-ui-modal [isOpen]="isOpen()" (closed)="handleClose()">
+
+  @if (globalAlert$ | async; as alert) {
+  <div class="card-details-modal__global-alert">
+    <app-simple-alerts
+      [alertType]="alert.alertType"
+      [alertMessage]="alert.message"
+    />
+  </div>
+}
   @if (modalData$ | async; as data) {
   <app-card-details-modal-content
     [cardName]="data.details.cardName"
@@ -14,10 +21,18 @@
     [shouldShowCreditLimit]="data.shouldShowCreditLimit"
     [formattedCreditLimit]="data.formattedCreditLimit"
     [isUpdating]="(isUpdating$ | async) ?? false"
+    [cardSensitiveData]="(cardSensitiveData$ | async) ?? null"
     (requestOtpClicked)="handleRequestOtp()"
     (closeClicked)="handleClose()"
     (cardNameUpdated)="handleCardNameUpdate(data.cardId, $event)"
   />
   }
 </app-ui-modal>
-}
+} @if (isOtpModalOpen$ | async) { @if (selectedCardIdForOtp$ | async; as cardId)
+{
+<app-card-otp-modal
+  [isOpen]="true"
+  [cardId]="cardId"
+  (closed)="handleCloseOtpModal()"
+/>
+} }

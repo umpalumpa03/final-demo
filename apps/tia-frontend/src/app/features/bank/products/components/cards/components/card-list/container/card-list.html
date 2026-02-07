@@ -1,21 +1,21 @@
-
-
 @if (viewData$ | async; as data) {
 <div class="card-list">
   <div class="card-list__header">
-    <h1 class="card-list__title"> {{'my-products.card.card-list.myCards' | translate }}</h1>
-    <h2 class="card-list__subtitle">{{'my-products.card.card-list.manageAccounts' | translate }}</h2>
+    <h1 class="card-list__title">
+      {{'my-products.card.card-list.myCards' | translate }}
+    </h1>
+    <h2 class="card-list__subtitle">
+      {{'my-products.card.card-list.manageAccounts' | translate }}
+    </h2>
   </div>
   @if (data.showSuccessAlert) {
-<div class="card-list__alert-container">
-  <app-simple-alerts
-    alertType="success"
-    alertMessage="{{'my-products.card.card-list.alertMessage' | translate }}"
-  />
-</div>
-}
-
-  @if (data.loading) {
+  <div class="card-list__alert-container">
+    <app-simple-alerts
+      alertType="success"
+      alertMessage="{{'my-products.card.card-list.alertMessage' | translate }}"
+    />
+  </div>
+  } @if (data.loading) {
   <div class="card-list__loading">
     <app-route-loader variant="pulsing" />
   </div>
@@ -26,22 +26,20 @@
     [message]="errorMsg"
     buttonMessage="Retry"
   />
-  } @else { 
-    @for (group of data.groups; track group.account.id) {
-      <div class="card-list__group">
-        <app-card-group-item
-          [group]="group"
-          [isLoading]="data.cardImagesLoading"
-          (cardClicked)="handleCardClick($event)"
-          (viewAllClicked)="handleViewAllCards($event)"
-        />
-      </div>
-    }
-    <app-add-card-button (clicked)="handleOpenModal()" />
+  } @else { @for (group of data.groups; track group.account.id) {
+  <div class="card-list__group">
+    <app-card-group-item
+      [group]="group"
+      [isLoading]="data.cardImagesLoading"
+      (cardClicked)="handleCardClick($event)"
+      (viewAllClicked)="handleViewAllCards($event)"
+    />
+  </div>
+  }
+  <app-add-card-button (clicked)="handleOpenModal()" />
   }
 </div>
 
 @if (data.isModalOpen) {
 <app-create-card [isOpen]="data.isModalOpen" (closed)="handleCloseModal()" />
-} 
-}
+} }

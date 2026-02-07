@@ -28,9 +28,7 @@ describe('CardDetailsModalContent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+
 
   it('should emit requestOtpClicked', () => {
     const spy = vi.fn();
@@ -77,5 +75,18 @@ describe('CardDetailsModalContent', () => {
     component['onSave']();
 
     expect(spy).not.toHaveBeenCalled();
+  });
+  it('should display sensitive data when provided', () => {
+    const sensitiveData = {
+      cardNumber: '4532 1234 5678 9012',
+      cvv: '123',
+      expiryDate: '12/28',
+      cardholderName: 'JOHN DOE',
+    };
+
+    fixture.componentRef.setInput('cardSensitiveData', sensitiveData);
+    fixture.detectChanges();
+
+    expect(component['cardSensitiveData']()).toEqual(sensitiveData);
   });
 });

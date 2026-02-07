@@ -21,6 +21,8 @@ describe('CardsEffects', () => {
     getCardTypes: ReturnType<typeof vi.fn>;
     createCard: ReturnType<typeof vi.fn>;
     updateCardName: ReturnType<typeof vi.fn>;
+    requestCardOtp: ReturnType<typeof vi.fn>;
+    verifyCardOtp: ReturnType<typeof vi.fn>;
   };
   let store: { select: ReturnType<typeof vi.fn> };
 
@@ -45,7 +47,9 @@ describe('CardsEffects', () => {
       getCardCategories: vi.fn(), 
       getCardTypes: vi.fn(), 
       createCard: vi.fn(),
-      updateCardName: vi.fn()
+      updateCardName: vi.fn(),
+      requestCardOtp: vi.fn(),
+      verifyCardOtp: vi.fn()
     };
     store = { select: vi.fn(() => of([])) };
 
@@ -246,6 +250,52 @@ describe('CardsEffects', () => {
 
     expect(await firstValueFrom(effects.updateCardName$)).toEqual(
       CardsActions.updateCardNameFailure({ cardId: 'card-1', error: 'Update failed' })
+    );
+  });
+
+  it('should request card OTP successfully', async () => {
+    const mockResponse = { challengeId: 'ch-123', method: 'sms' };
+    cardsService.requestCardOtp.mockReturnValue(of(mockResponse));
+    actions$ = of(CardsActions.requestCardOtp({ cardId: 'card-1' }));
+
+    expect(await firstValueFrom(effects.requestCardOtp$)).toEqual(
+      CardsActions.requestCardOtpSuccess({ challengeId: 'ch-123' })
+    );
+  });
+
+  it('should handle request card OTP failure', async () => {
+    cardsService.requestCardOtp.mockReturnValue(throwError(() => new Error('Failed')));
+    actions$ = of(CardsActions.requestCardOtp({ cardId: 'card-1' }));
+
+    expect(await firstValueFrom(effects.requestCardOtp$)).toEqual(
+      CardsActions.requestCardOtpFailure({ error: 'Failed' })
+    );
+  });
+
+  it('should verify card OTP successfully', async () => {
+    const mockData = { cardNumber: '1234', cvv: '123', expiryDate: '12/28', cardholderName: 'John' };
+    cardsService.verifyCardOtp.mockReturnValue(of(mockData));
+    actions$ = of(CardsActions.verifyCardOtp({ challengeId: 'ch-1', code: '1111', cardId: 'card-1' }));
+
+    expect(await firstValueFrom(effects.verifyCardOtp$)).toEqual(
+      CardsActions.verifyCardOtpSuccess({ cardId: 'card-1', sensitiveData: mockData })
+    );
+  });
+
+  it('should handle verify card OTP failure', async () => {
+    cardsService.verifyCardOtp.mockReturnValue(throwError(() => new Error('Invalid')));
+    actions$ = of(CardsActions.verifyCardOtp({ challengeId: 'ch-1', code: '1111', cardId: 'card-1' }));
+
+    expect(await firstValueFrom(effects.verifyCardOtp$)).toEqual(
+      CardsActions.verifyCardOtpFailure({ error: 'Invalid' })
+    );
+  });
+
+  it('should dispatch requestCardOtp when modal opens', async () => {
+    actions$ = of(CardsActions.openCardOtpModal({ cardId: 'card-1' }));
+
+    expect(await firstValueFrom(effects.openCardOtpModal$)).toEqual(
+      CardsActions.requestCardOtp({ cardId: 'card-1' })
     );
   });
 });

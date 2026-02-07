@@ -6,6 +6,7 @@ import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
 import { CreateCardRequest } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/create-card-request.model';
 import { CardType } from '../../../features/bank/products/components/cards/models/card-type.model';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
+import { CardSensitiveData } from '../../../features/bank/products/components/cards/models/card-sensitive-data.model';
 
 export const loadCardAccounts = createAction('[Cards] Load Card Accounts');
 
@@ -142,3 +143,50 @@ export const updateCardNameFailure = createAction(
   '[Cards] Update Card Name Failure',
   props<{ cardId: string; error: string }>(),
 );
+export const requestCardOtp = createAction(
+  '[Cards] Request Card OTP',
+  props<{ cardId: string }>(),
+);
+
+export const requestCardOtpSuccess = createAction(
+  '[Cards] Request Card OTP Success',
+  props<{ challengeId: string }>(),
+);
+
+export const requestCardOtpFailure = createAction(
+  '[Cards] Request Card OTP Failure',
+  props<{ error: string }>(),
+);
+
+export const verifyCardOtp = createAction(
+  '[Cards] Verify Card OTP',
+  props<{ challengeId: string; code: string; cardId: string }>(),
+);
+
+export const verifyCardOtpSuccess = createAction(
+  '[Cards] Verify Card OTP Success',
+  props<{ cardId: string; sensitiveData: CardSensitiveData }>(),
+);
+
+export const verifyCardOtpFailure = createAction(
+  '[Cards] Verify Card OTP Failure',
+  props<{ error: string }>(),
+);
+
+export const openCardOtpModal = createAction(
+  '[Cards] Open Card OTP Modal',
+  props<{ cardId: string }>(),
+);
+
+export const closeCardOtpModal = createAction(
+  '[Cards] Close Card OTP Modal',
+);
+
+export const clearCardSensitiveData = createAction(
+  '[Cards] Clear Card Sensitive Data',
+);
+export const showGlobalAlert = createAction(
+  '[Cards] Show Global Alert', 
+  props<{ message: string; alertType: 'success' | 'error' }>()
+);
+export const hideGlobalAlert = createAction('[Cards] Hide Global Alert');

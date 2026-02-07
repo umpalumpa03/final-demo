@@ -1,10 +1,18 @@
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { CardDetailsModal } from './card-details-modal';
-import { TranslateModule } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { selectCardDetailsModalData, selectIsUpdatingCardName } from 'apps/tia-frontend/src/app/store/products/cards/cards.selectors';
-import { updateCardName } from 'apps/tia-frontend/src/app/store/products/cards/cards.actions';
+import {
+  closeCardOtpModal,
+  openCardOtpModal,
+  updateCardName,
+} from 'apps/tia-frontend/src/app/store/products/cards/cards.actions';
+import { provideRouter } from '@angular/router';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
+import { selectCardDetailsModalData } from 'apps/tia-frontend/src/app/store/products/cards/cards.selectors';
 
 describe('CardDetailsModal', () => {
   let component: CardDetailsModal;
@@ -46,35 +54,43 @@ describe('CardDetailsModal', () => {
     isActiveStatus: true,
   };
 
+  const initialState = {
+    cards: {
+      isOtpModalOpen: false,
+      selectedCardIdForOtp: null,
+      globalAlert: null,
+      cardSensitiveData: {},
+      isUpdatingCardName: false,
+      cardDetails: {
+        'card-1': mockModalData.details,
+      },
+      cardImages: {
+        'card-1': 'base64image',
+      },
+      accounts: [mockModalData.account],
+    },
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CardDetailsModal, TranslateModule.forRoot()],
-      providers: [
-        provideMockStore({
-          selectors: [
-            { selector: selectCardDetailsModalData, value: mockModalData },
-            { selector: selectIsUpdatingCardName, value: false },
-          ],
-        }),
-      ],
+      imports: [CardDetailsModal,TranslateModule.forRoot()],
+      providers: [provideRouter([]), provideMockStore({ initialState })],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     store = TestBed.inject(MockStore);
     fixture = TestBed.createComponent(CardDetailsModal);
     component = fixture.componentInstance;
-  });
-
-  it('should create', () => {
     fixture.componentRef.setInput('isOpen', true);
     fixture.detectChanges();
-    expect(component).toBeTruthy();
   });
+
 
   it('should emit closed event', () => {
     const spy = vi.fn();
     component.closed.subscribe(spy);
 
-    component['handleClose']();
+    component.handleClose();
 
     expect(spy).toHaveBeenCalled();
   });
@@ -82,10 +98,80 @@ describe('CardDetailsModal', () => {
   it('should dispatch updateCardName action', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
 
-    component['handleCardNameUpdate']('card-1', 'New Name');
+    component.handleCardNameUpdate('card-1', 'New Name');
 
     expect(dispatchSpy).toHaveBeenCalledWith(
-      updateCardName({ cardId: 'card-1', cardName: 'New Name' })
+      updateCardName({ cardId: 'card-1', cardName: 'New Name' }),
     );
+  });
+it('should dispatch openCardOtpModal action when cardId exists', () => {
+  store.overrideSelector(selectCardDetailsModalData, mockModalData);
+  store.refreshState();
+  
+  const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+  component.handleRequestOtp();
+
+  expect(dispatchSpy).toHaveBeenCalledWith(
+    openCardOtpModal({ cardId: 'card-1' }),
+  );
+});
+
+  it('should dispatch closeCardOtpModal action', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+    component.handleCloseOtpModal();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(closeCardOtpModal());
+  });
+
+  it('should combine modalData and cardSensitiveData observables', async () => {
+    const updatedState = {
+      ...initialState,
+      cards: {
+        ...initialState.cards,
+        cardSensitiveData: {
+          'card-1': {
+            cardNumber: '1234567890123456',
+            cvv: '123',
+            expiryDate: '12/28',
+            cardholderName: 'John Doe',
+          },
+        },
+      },
+    };
+
+    store.setState(updatedState);
+
+    const data = await firstValueFrom(component.cardSensitiveData$);
+    
+    expect(data).toEqual({
+  "cardNumber": "1234567890123456",
+  "cardholderName": "John Doe",
+  "cvv": "123",
+  "expiryDate": "12/28",
+}
+);
+  });
+
+  it('should return null when modalData cardId is missing', async () => {
+    const stateWithoutCardId = {
+      ...initialState,
+      cards: {
+        ...initialState.cards,
+        cardDetails: {},
+        cardImages: {},
+      },
+    };
+
+    store.setState(stateWithoutCardId);
+
+    const data = await firstValueFrom(component.cardSensitiveData$);
+    expect(data).toBeNull();
+  });
+
+  it('should return null when sensitiveData for cardId does not exist', async () => {
+    const data = await firstValueFrom(component.cardSensitiveData$);
+    expect(data).toBeNull();
   });
 });

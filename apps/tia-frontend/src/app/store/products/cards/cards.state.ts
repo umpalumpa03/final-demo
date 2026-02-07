@@ -4,6 +4,7 @@ import { CardDesign } from 'apps/tia-frontend/src/app/features/bank/products/com
 import { CardCategory } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-category.model';
 import { CardType } from '../../../features/bank/products/components/cards/models/card-type.model';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
+import { CardSensitiveData } from '../../../features/bank/products/components/cards/models/card-sensitive-data.model';
 
 export interface CardsState {
   accounts: CardAccount[];
@@ -29,7 +30,15 @@ export interface CardsState {
     cardImagesLoading: boolean;
      isUpdatingCardName: boolean;
   updateCardNameError: string | null;
-
+  cardSensitiveData: Record<string, CardSensitiveData>;
+  challengeId: string | null;
+  isOtpModalOpen: boolean;
+  selectedCardIdForOtp: string | null;
+  otpLoading: boolean;
+  otpError: string | null;
+  showOtpSuccessAlert: boolean;
+globalAlert: { message: string; alertType: 'success' | 'error' } | null;
+otpRemainingAttempts: number;
 }
 
 export const initialCardsState: CardsState = {
@@ -56,5 +65,13 @@ export const initialCardsState: CardsState = {
   cardImagesLoading: true,
   isUpdatingCardName: false,
   updateCardNameError: null,
-
+cardSensitiveData: {},
+  challengeId: null,
+  isOtpModalOpen: false,
+  selectedCardIdForOtp: null,
+  otpLoading: false,
+  otpError: null,
+  showOtpSuccessAlert: false,
+  globalAlert: null,
+otpRemainingAttempts: 3
 };

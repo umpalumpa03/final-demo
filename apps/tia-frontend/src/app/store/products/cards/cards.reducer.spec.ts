@@ -312,3 +312,60 @@ it('should set error on updateCardNameFailure', () => {
   expect(state.updateCardNameError).toBe('Failed');
   expect(state.isUpdatingCardName).toBe(false);
 });
+
+describe('OTP reducer', () => {
+  it('should set otpLoading on requestCardOtp', () => {
+    const state = cardsReducer(initialCardsState, CardsActions.requestCardOtp({ cardId: 'card-1' }));
+    expect(state.otpLoading).toBe(true);
+    expect(state.otpError).toBeNull();
+  });
+
+  it('should set challengeId on requestCardOtpSuccess', () => {
+    const state = cardsReducer(initialCardsState, CardsActions.requestCardOtpSuccess({ challengeId: 'ch-123' }));
+    expect(state.challengeId).toBe('ch-123');
+    expect(state.otpLoading).toBe(false);
+  });
+
+  it('should set error on requestCardOtpFailure', () => {
+    const state = cardsReducer(initialCardsState, CardsActions.requestCardOtpFailure({ error: 'Failed' }));
+    expect(state.otpError).toBe('Failed');
+    expect(state.otpLoading).toBe(false);
+  });
+
+  it('should set otpLoading on verifyCardOtp', () => {
+    const state = cardsReducer(initialCardsState, CardsActions.verifyCardOtp({ challengeId: 'ch-1', code: '1111', cardId: 'card-1' }));
+    expect(state.otpLoading).toBe(true);
+  });
+
+  it('should set sensitive data on verifyCardOtpSuccess', () => {
+    const sensitiveData = { cardNumber: '1234', cvv: '123', expiryDate: '12/28', cardholderName: 'John' };
+    const state = cardsReducer(initialCardsState, CardsActions.verifyCardOtpSuccess({ cardId: 'card-1', sensitiveData }));
+    expect(state.cardSensitiveData['card-1']).toEqual(sensitiveData);
+    expect(state.isOtpModalOpen).toBe(false);
+    expect(state.showOtpSuccessAlert).toBe(true);
+  });
+
+  it('should set error on verifyCardOtpFailure', () => {
+    const state = cardsReducer(initialCardsState, CardsActions.verifyCardOtpFailure({ error: 'Invalid' }));
+    expect(state.otpError).toBe('Invalid');
+    expect(state.otpLoading).toBe(false);
+  });
+
+  it('should open OTP modal', () => {
+    const state = cardsReducer(initialCardsState, CardsActions.openCardOtpModal({ cardId: 'card-1' }));
+    expect(state.isOtpModalOpen).toBe(true);
+    expect(state.selectedCardIdForOtp).toBe('card-1');
+  });
+
+  it('should close OTP modal', () => {
+    const state = cardsReducer({ ...initialCardsState, isOtpModalOpen: true, selectedCardIdForOtp: 'card-1', challengeId: 'ch-1' }, CardsActions.closeCardOtpModal());
+    expect(state.isOtpModalOpen).toBe(false);
+    expect(state.selectedCardIdForOtp).toBeNull();
+    expect(state.challengeId).toBeNull();
+  });
+
+  it('should clear sensitive data', () => {
+    const state = cardsReducer({ ...initialCardsState, cardSensitiveData: { 'card-1': { cardNumber: '1234', cvv: '123', expiryDate: '12/28', cardholderName: 'John' } } }, CardsActions.clearCardSensitiveData());
+    expect(state.cardSensitiveData).toEqual({});
+  });
+});

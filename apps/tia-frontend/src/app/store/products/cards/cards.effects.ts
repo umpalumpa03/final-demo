@@ -18,6 +18,7 @@ import {
   selectAllAccounts,
   selectCardDetailById,
   selectCardDetails,
+  selectOtpRemainingAttempts,
 } from './cards.selectors';
 import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 import { CardsService } from '../../../features/bank/products/components/cards/service/cards.service';
@@ -44,38 +45,41 @@ export class CardsEffects {
       ),
     ),
   );
-loadCardImages$ = createEffect(() =>
-  this.actions$.pipe(
-    ofType(CardsActions.loadCardAccountsSuccess),
-    switchMap(({ accounts }) => {
-      const allCardIds = accounts.flatMap((account) => account.cardIds);
+  loadCardImages$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CardsActions.loadCardAccountsSuccess),
+      switchMap(({ accounts }) => {
+        const allCardIds = accounts.flatMap((account) => account.cardIds);
 
-      if (allCardIds.length === 0) {
-        return of(CardsActions.loadCardImagesComplete());
-      }
+        if (allCardIds.length === 0) {
+          return of(CardsActions.loadCardImagesComplete());
+        }
 
-      return forkJoin(
-        allCardIds.map((cardId) =>
-          this.cardsService.getCardImage(cardId).pipe(
-            map((imageBase64) =>
-              CardsActions.loadCardImageSuccess({ cardId, imageBase64 }),
-            ),
-            catchError(() =>
-              of(
-                CardsActions.loadCardImageFailure({
-                  cardId,
-                  error: 'IMAGE_LOAD_FAILED',
-                }),
+        return forkJoin(
+          allCardIds.map((cardId) =>
+            this.cardsService.getCardImage(cardId).pipe(
+              map((imageBase64) =>
+                CardsActions.loadCardImageSuccess({ cardId, imageBase64 }),
+              ),
+              catchError(() =>
+                of(
+                  CardsActions.loadCardImageFailure({
+                    cardId,
+                    error: 'IMAGE_LOAD_FAILED',
+                  }),
+                ),
               ),
             ),
           ),
-        ),
-      ).pipe(
-        mergeMap((actions) => [...actions, CardsActions.loadCardImagesComplete()]),
-      );
-    }),
-  ),
-);
+        ).pipe(
+          mergeMap((actions) => [
+            ...actions,
+            CardsActions.loadCardImagesComplete(),
+          ]),
+        );
+      }),
+    ),
+  );
   loadCardDetails$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CardsActions.loadCardDetails),
@@ -279,21 +283,113 @@ loadCardImages$ = createEffect(() =>
     ),
   );
   updateCardName$ = createEffect(() =>
-  this.actions$.pipe(
-    ofType(CardsActions.updateCardName),
-    switchMap(({ cardId, cardName }) =>
-      this.cardsService.updateCardName(cardId, cardName).pipe(
-        map(() => CardsActions.updateCardNameSuccess({ cardId, cardName })),
-        catchError((error) =>
-          of(
-            CardsActions.updateCardNameFailure({
-              cardId,
-              error: error.message || 'Failed to update card name',
-            }),
+    this.actions$.pipe(
+      ofType(CardsActions.updateCardName),
+      switchMap(({ cardId, cardName }) =>
+        this.cardsService.updateCardName(cardId, cardName).pipe(
+          map(() => CardsActions.updateCardNameSuccess({ cardId, cardName })),
+          catchError((error) =>
+            of(
+              CardsActions.updateCardNameFailure({
+                cardId,
+                error: error.message || 'Failed to update card name',
+              }),
+            ),
           ),
         ),
       ),
     ),
+  );
+  requestCardOtp$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CardsActions.requestCardOtp),
+      switchMap(({ cardId }) =>
+        this.cardsService.requestCardOtp(cardId).pipe(
+          map((response) =>
+            CardsActions.requestCardOtpSuccess({
+              challengeId: response.challengeId,
+            }),
+          ),
+          catchError((error) =>
+            of(
+              CardsActions.requestCardOtpFailure({
+                error: error.message || 'Failed to request OTP',
+              }),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+verifyCardOtp$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(CardsActions.verifyCardOtp),
+    switchMap(({ challengeId, code, cardId }) =>
+      this.cardsService.verifyCardOtp({ challengeId, code }).pipe(
+        map((sensitiveData) =>
+          CardsActions.verifyCardOtpSuccess({ cardId, sensitiveData }),
+        ),
+        catchError((error) => {
+          const errorMessage = error.status === 400 || error.error?.message === 'Invalid OTP' 
+            ? 'OTP code is not correct' 
+            : error.error?.message || error.message || 'Failed to verify OTP';
+          return of(CardsActions.verifyCardOtpFailure({ error: errorMessage }));
+        }),
+      ),
+    ),
   ),
 );
+  openCardOtpModal$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CardsActions.openCardOtpModal),
+      map(({ cardId }) => CardsActions.requestCardOtp({ cardId })),
+    ),
+  );
+  showOtpSentAlert$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(CardsActions.requestCardOtpSuccess),
+    map(() => CardsActions.showGlobalAlert({ message: 'OTP sent successfully', alertType: 'success' })),
+  ),
+);
+
+showOtpVerifiedAlert$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(CardsActions.verifyCardOtpSuccess),
+    map(() => CardsActions.showGlobalAlert({ message: 'Card details retrieved successfully', alertType: 'success' })),
+  ),
+);
+
+showOtpErrorAlert$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(CardsActions.verifyCardOtpFailure),
+    switchMap(({ error }) =>
+      this.store.select(selectOtpRemainingAttempts).pipe(
+        take(1),
+        mergeMap((attempts) => {
+          const message = attempts > 0 
+            ? `${error} (Remaining attempts: ${attempts})`
+            : error;
+          
+          if (attempts === 0) {
+            return [
+              CardsActions.showGlobalAlert({ message, alertType: 'error' }),
+              CardsActions.closeCardOtpModal()
+            ];
+          }
+          
+          return [CardsActions.showGlobalAlert({ message, alertType: 'error' })];
+        }),
+      ),
+    ),
+  ),
+);
+hideAlertAfterDelay$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(CardsActions.showGlobalAlert),
+    delay(3000),
+    map(() => CardsActions.hideGlobalAlert()),
+  ),
+);
+
 }

@@ -1,8 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
-  effect,
   input,
   linkedSignal,
   output,
@@ -14,6 +12,7 @@ import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { CardSensitiveData } from '../../../../models/card-sensitive-data.model';
 
 @Component({
   selector: 'app-card-details-modal-content',
@@ -30,21 +29,22 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardDetailsModalContent {
-  readonly cardName = input.required<string>();
-  readonly cardType = input.required<string>();
-  readonly currency = input.required<string>();
-  readonly status = input.required<string>();
-  readonly isActiveStatus = input.required<boolean>();
-  readonly formattedBalance = input.required<string>();
-  readonly shouldShowCreditLimit = input.required<boolean>();
-  readonly formattedCreditLimit = input.required<string>();
-  readonly cardCategory = input.required<string>();
-  readonly requestOtpClicked = output<void>();
-  readonly closeClicked = output<void>();
-  readonly isUpdating = input.required<boolean>();
-  readonly cardNameUpdated = output<string>();
-
-  protected readonly displayedName = linkedSignal(() => this.cardName());
+ public readonly cardName = input.required<string>();
+ public readonly cardType = input.required<string>();
+ public readonly currency = input.required<string>();
+ public readonly status = input.required<string>();
+ public readonly isActiveStatus = input.required<boolean>();
+ public readonly formattedBalance = input.required<string>();
+ public readonly shouldShowCreditLimit = input.required<boolean>();
+ public readonly formattedCreditLimit = input.required<string>();
+ public readonly cardCategory = input.required<string>();
+ public readonly requestOtpClicked = output<void>();
+ public readonly closeClicked = output<void>();
+ public readonly isUpdating = input.required<boolean>();
+ public readonly cardNameUpdated = output<string>();
+ public readonly cardSensitiveData = input<CardSensitiveData | null>(null);
+ public  readonly displayedName = linkedSignal(() => this.cardName());
+  protected readonly copiedField = signal<string | null>(null);
 
   protected handleRequestOtp(): void {
     this.requestOtpClicked.emit();
@@ -86,5 +86,10 @@ export class CardDetailsModalContent {
     }
 
     this.isEditing.set(false);
+  }
+  protected copyToClipboard(text: string, field: string): void {
+    navigator.clipboard.writeText(text);
+    this.copiedField.set(field);
+    setTimeout(() => this.copiedField.set(null), 2000);
   }
 }

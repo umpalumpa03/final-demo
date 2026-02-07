@@ -8,8 +8,10 @@
       {{'my-products.card.card-details-modal.card-details-modal-content.cardSubtitle'
       | translate }}
     </h2>
-    <h3 class="card-details-modal__info-heading">  {{'my-products.card.card-details-modal.card-details-modal-content.cardInfo'
-      | translate }}</h3>
+    <h3 class="card-details-modal__info-heading">
+      {{'my-products.card.card-details-modal.card-details-modal-content.cardInfo'
+      | translate }}
+    </h3>
   </div>
 
   <app-basic-card
@@ -19,27 +21,30 @@
   >
     <div class="card-details-modal__info-flex">
       <div class="card-details-modal__info-item">
-  <span class="card-details-modal__label"
-    >{{'my-products.card.card-details-modal.card-details-modal-content.cardName'
-    | translate }}</span
-  >
-  @if (isEditing()) {
-    <lib-text-input 
-      [formControl]="nameControl" 
-      (blur)="onBlur()" 
-      (keydown.enter)="onSave()"
-      (click)="$event.stopPropagation()" 
-      [config]="{ margin: '0' }"
-    />
-  } @else {
-    <div class="card-details-modal__name-wrapper" (click)="enableEdit($event)">
-      <span class="card-details-modal__value">{{ displayedName() }}</span>
-      <div class="card-details-modal__edit-icon">
-        <img src="./images/svg/cards/edit-pencil.svg" alt="Edit">
+        <span class="card-details-modal__label"
+          >{{'my-products.card.card-details-modal.card-details-modal-content.cardName'
+          | translate }}</span
+        >
+        @if (isEditing()) {
+        <lib-text-input
+          [formControl]="nameControl"
+          (blur)="onBlur()"
+          (keydown.enter)="onSave()"
+          (click)="$event.stopPropagation()"
+          [config]="{ margin: '0' }"
+        />
+        } @else {
+        <div
+          class="card-details-modal__name-wrapper"
+          (click)="enableEdit($event)"
+        >
+          <span class="card-details-modal__value">{{ displayedName() }}</span>
+          <div class="card-details-modal__edit-icon">
+            <img src="./images/svg/cards/edit-pencil.svg" alt="Edit" />
+          </div>
+        </div>
+        }
       </div>
-    </div>
-  }
-</div>
 
       <div class="card-details-modal__info-item">
         <span class="card-details-modal__label"
@@ -99,7 +104,6 @@
       </div>
     </div>
   </app-basic-card>
-
   <app-basic-card
     [padding]="'1.6rem'"
     [borderColor]="'#BEDBFF'"
@@ -107,6 +111,65 @@
     [backgroundColor]="'#F0F9FF'"
     [minHeight]="'15rem'"
   >
+    @if (cardSensitiveData()) {
+    <div class="card-details-modal__sensitive-details">
+      <h3 class="card-details-modal__sensitive-title">
+        {{'my-products.card.card-details-modal.card-details-modal-content.sensitiveDetails'
+        | translate }}
+      </h3>
+
+      <div class="card-details-modal__sensitive-item">
+        <span class="card-details-modal__label">Full Card Number</span>
+        <div class="card-details-modal__sensitive-value">
+          <span>{{ cardSensitiveData()!.cardNumber }}</span>
+          @if (copiedField() === 'cardNumber') {
+          <img src="./images/svg/cards/selected.svg" alt="Copied" />
+          } @else {
+          <img
+            src="./images/svg/cards/copy-icon.svg"
+            alt="Copy"
+            (click)="copyToClipboard(cardSensitiveData()!.cardNumber, 'cardNumber')"
+          />
+          }
+        </div>
+
+      </div>
+
+      <div class="card-details-modal__sensitive-item">
+        <span class="card-details-modal__label">CVV</span>
+        <div class="card-details-modal__sensitive-value">
+          <div class="card-details-modal__sensitive-value">
+            <span>{{ cardSensitiveData()!.cvv }}</span>
+            @if (copiedField() === 'cvv') {
+            <img src="./images/svg/cards/selected.svg" alt="Copied" />
+            } @else {
+            <img
+              src="./images/svg/cards/copy-icon.svg"
+              alt="Copy"
+              (click)="copyToClipboard(cardSensitiveData()!.cvv, 'cvv')"
+            />
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="card-details-modal__sensitive-item">
+        <span class="card-details-modal__label">Expiration Date</span>
+        <div class="card-details-modal__sensitive-value">
+          <span>{{ cardSensitiveData()!.expiryDate }}</span>
+          @if (copiedField() === 'expiryDate') {
+          <img src="./images/svg/cards/selected.svg" alt="Copied" />
+          } @else {
+          <img
+            src="./images/svg/cards/copy-icon.svg"
+            alt="Copy"
+            (click)="copyToClipboard(cardSensitiveData()!.expiryDate, 'expiryDate')"
+          />
+          }
+        </div>
+      </div>
+    </div>
+    } @else {
     <div class="card-details-modal__sensitive-header">
       <div class="card-details-modal__sensitive-icon">
         <img [src]="'/images/svg/cards/eye.svg'" alt="View" />
@@ -130,6 +193,7 @@
         </app-button>
       </div>
     </div>
+    }
   </app-basic-card>
 
   <div class="card-details-modal__footer">

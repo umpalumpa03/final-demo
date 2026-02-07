@@ -198,4 +198,85 @@ on(CardsActions.updateCardNameFailure, (state, { error }) => ({
   isUpdatingCardName: false,
   updateCardNameError: error,
 })),
+on(CardsActions.requestCardOtp, (state) => ({
+  ...state,
+  otpLoading: true,
+  otpError: null,
+})),
+
+on(CardsActions.requestCardOtpSuccess, (state, { challengeId }) => ({
+  ...state,
+  challengeId,
+  otpLoading: false,
+  otpError: null,
+})),
+
+on(CardsActions.requestCardOtpFailure, (state, { error }) => ({
+  ...state,
+  otpLoading: false,
+  otpError: error,
+})),
+
+on(CardsActions.verifyCardOtp, (state) => ({
+  ...state,
+  otpLoading: true,
+  otpError: null,
+})),
+
+on(CardsActions.verifyCardOtpSuccess, (state, { cardId, sensitiveData }) => ({
+  ...state,
+  cardSensitiveData: {
+    ...state.cardSensitiveData,
+    [cardId]: sensitiveData,
+  },
+  otpLoading: false,
+  otpError: null,
+  isOtpModalOpen: false,
+  showOtpSuccessAlert: true,
+})),
+
+on(CardsActions.verifyCardOtpFailure, (state, { error }) => ({
+  ...state,
+  otpLoading: false,
+  otpError: error,
+  otpRemainingAttempts: state.otpRemainingAttempts - 1,
+})),
+
+on(CardsActions.openCardOtpModal, (state, { cardId }) => ({
+  ...state,
+  isOtpModalOpen: true,
+  selectedCardIdForOtp: cardId,
+  otpError: null,
+})),
+
+on(CardsActions.closeCardOtpModal, (state) => ({
+  ...state,
+  isOtpModalOpen: false,
+  selectedCardIdForOtp: null,
+  otpError: null,
+  challengeId: null,
+})),
+
+on(CardsActions.clearCardSensitiveData, (state) => ({
+  ...state,
+  cardSensitiveData: {},
+  showOtpSuccessAlert: false,
+})),
+on(CardsActions.showGlobalAlert, (state, { message, alertType }) => ({
+  ...state,
+  globalAlert: { message, alertType },
+})),
+
+on(CardsActions.hideGlobalAlert, (state) => ({
+  ...state,
+  globalAlert: null,
+})),
+on(CardsActions.openCardOtpModal, (state, { cardId }) => ({
+  ...state,
+  isOtpModalOpen: true,
+  selectedCardIdForOtp: cardId,
+  otpError: null,
+  otpRemainingAttempts: 3,
+})),
+
 );

@@ -11,12 +11,30 @@ import { CardDetailsModalContent } from '../../components/card-details-modal-con
 import { Store } from '@ngrx/store';
 import {
   selectCardDetailsModalData,
+  selectCardSensitiveData,
+  selectGlobalAlert,
+  selectIsOtpModalOpen,
   selectIsUpdatingCardName,
+  selectSelectedCardIdForOtp,
+  selectShowOtpSuccessAlert,
 } from 'apps/tia-frontend/src/app/store/products/cards/cards.selectors';
-import { updateCardName } from 'apps/tia-frontend/src/app/store/products/cards/cards.actions';
+import {
+  closeCardOtpModal,
+  openCardOtpModal,
+  updateCardName,
+} from 'apps/tia-frontend/src/app/store/products/cards/cards.actions';
+import { CardOtpModal } from '../../../otp-modal/container/card-otp-modal/card-otp-modal';
+import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
+import { combineLatest, map } from 'rxjs';
 @Component({
   selector: 'app-card-details-modal',
-  imports: [AsyncPipe, UiModal, CardDetailsModalContent],
+  imports: [
+    AsyncPipe,
+    UiModal,
+    CardDetailsModalContent,
+    CardOtpModal,
+    SimpleAlerts,
+  ],
   templateUrl: './card-details-modal.html',
   styleUrl: './card-details-modal.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,19 +42,41 @@ import { updateCardName } from 'apps/tia-frontend/src/app/store/products/cards/c
 export class CardDetailsModal {
   private readonly store = inject(Store);
 
-  readonly isOpen = input.required<boolean>();
-  readonly closed = output<void>();
+  public readonly isOpen = input.required<boolean>();
+  public readonly closed = output<void>();
 
   protected readonly modalData$ = this.store.select(selectCardDetailsModalData);
   protected readonly isUpdating$ = this.store.select(selectIsUpdatingCardName);
-
-  protected handleClose(): void {
+  protected readonly isOtpModalOpen$ = this.store.select(selectIsOtpModalOpen);
+  protected readonly selectedCardIdForOtp$ = this.store.select(
+    selectSelectedCardIdForOtp,
+  );
+  protected readonly globalAlert$ = this.store.select(selectGlobalAlert);
+  public handleClose(): void {
     this.closed.emit();
   }
 
-  protected handleRequestOtp(): void {}
+  public handleRequestOtp(): void {
+    const cardId = this.store.selectSignal(selectCardDetailsModalData)()
+      ?.cardId;
+    if (cardId) {
+      this.store.dispatch(openCardOtpModal({ cardId }));
+    }
+  }
 
-  protected handleCardNameUpdate(cardId: string, cardName: string): void {
+  public handleCardNameUpdate(cardId: string, cardName: string): void {
     this.store.dispatch(updateCardName({ cardId, cardName }));
   }
+  public handleCloseOtpModal(): void {
+    this.store.dispatch(closeCardOtpModal());
+  }
+  public readonly cardSensitiveData$ = combineLatest([
+    this.modalData$,
+    this.store.select(selectCardSensitiveData),
+  ]).pipe(
+    map(([modalData, sensitiveData]) => {
+      if (!modalData?.cardId) return null;
+      return sensitiveData[modalData.cardId] || null;
+    }),
+  );
 }

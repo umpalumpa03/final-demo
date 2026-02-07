@@ -7,6 +7,7 @@ import { CardDesign } from 'apps/tia-frontend/src/app/features/bank/products/com
 import { CardCategory } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-category.model';
 import { CardType } from '../../../features/bank/products/components/cards/models/card-type.model';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
+import { CardSensitiveData } from '../../../features/bank/products/components/cards/models/card-sensitive-data.model';
 
 export const selectCardsState = createFeatureSelector<CardsState>('cards');
 
@@ -265,4 +266,55 @@ export const selectIsUpdatingCardName = createSelector(
 export const selectUpdateCardNameError = createSelector(
   selectCardsState,
   (state: CardsState): string | null => state.updateCardNameError,
+);
+export const selectCardSensitiveData = createSelector(
+  selectCardsState,
+  (state: CardsState): Record<string, CardSensitiveData> =>
+    state.cardSensitiveData,
+);
+
+export const selectChallengeId = createSelector(
+  selectCardsState,
+  (state: CardsState): string | null => state.challengeId,
+);
+
+export const selectIsOtpModalOpen = createSelector(
+  selectCardsState,
+  (state: CardsState): boolean => state.isOtpModalOpen,
+);
+
+export const selectSelectedCardIdForOtp = createSelector(
+  selectCardsState,
+  (state: CardsState): string | null => state.selectedCardIdForOtp,
+);
+
+export const selectOtpLoading = createSelector(
+  selectCardsState,
+  (state: CardsState): boolean => state.otpLoading,
+);
+
+export const selectOtpError = createSelector(
+  selectCardsState,
+  (state: CardsState): string | null => state.otpError,
+);
+
+export const selectShowOtpSuccessAlert = createSelector(
+  selectCardsState,
+  (state: CardsState): boolean => state.showOtpSuccessAlert,
+);
+
+export const selectCardSensitiveDataById = (cardId: string) =>
+  createSelector(
+    selectCardSensitiveData,
+    (data: Record<string, CardSensitiveData>): CardSensitiveData | null =>
+      data[cardId] || null,
+  );
+export const selectGlobalAlert = createSelector(
+  selectCardsState,
+  (state: CardsState): { message: string; alertType: 'success' | 'error' } | null =>
+    state.globalAlert,
+);
+export const selectOtpRemainingAttempts = createSelector(
+  selectCardsState,
+  (state: CardsState): number => state.otpRemainingAttempts,
 );

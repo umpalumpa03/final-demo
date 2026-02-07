@@ -108,4 +108,29 @@ describe('CardsService', () => {
   expect(req.request.body).toEqual({ cardName });
   req.flush(mockResponse);
 });
+it('should request card OTP', () => {
+  const mockResponse = { challengeId: 'ch-123', method: 'sms' };
+
+  service.requestCardOtp('card-1').subscribe((response) => {
+    expect(response).toEqual(mockResponse);
+  });
+
+  const req = httpMock.expectOne(`${apiUrl}/card-detailed-info/card-1`);
+  expect(req.request.method).toBe('POST');
+  req.flush(mockResponse);
+});
+
+it('should verify card OTP', () => {
+  const mockRequest = { challengeId: 'ch-123', code: '1111' };
+  const mockResponse = { cardNumber: '1234', cvv: '123', expiryDate: '12/28', cardholderName: 'John' };
+
+  service.verifyCardOtp(mockRequest).subscribe((response) => {
+    expect(response).toEqual(mockResponse);
+  });
+
+  const req = httpMock.expectOne(`${apiUrl}/card-detailed-info/verify`);
+  expect(req.request.method).toBe('POST');
+  expect(req.request.body).toEqual(mockRequest);
+  req.flush(mockResponse);
+});
 });
