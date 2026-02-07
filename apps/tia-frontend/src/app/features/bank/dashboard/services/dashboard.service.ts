@@ -35,7 +35,7 @@ export class DashboardService {
 
     this.updateStream$
       .pipe(
-        debounceTime(1000),
+        debounceTime(1500),
         tap((allWidgets) => this.persistChanges(allWidgets)),
         takeUntilDestroyed(),
       )
@@ -85,7 +85,7 @@ export class DashboardService {
     const existingWidget = this.myItems().find((w) => w.id === id);
     const widgetIndex = this.myItems().findIndex((w) => w.id === id);
 
-    if (widgetIndex === -1 && isSelected) {
+    if (isSelected && widgetIndex === -1) {
       const catalogWidget = this.widgetCatalog().find((w) => w.id === id);
       if (catalogWidget) {
         const activeCount = this.visibleItems().length;
@@ -100,13 +100,14 @@ export class DashboardService {
           }),
         );
       }
-    } else if (!isSelected && widgetIndex > 0 && existingWidget?.dbId) {
+    } else if (!isSelected && existingWidget?.dbId) {
       this.store.dispatch(
         UserInfoActions.deleteWidget({ id: existingWidget.dbId }),
       );
+
       this.myItems.update((items) => items.filter((i) => i.id !== id));
-    } else if (widgetIndex === 0) {
-      this.foldWidget(isSelected, id);
+
+      this.dirtyIds.delete(id);
     }
   }
 
