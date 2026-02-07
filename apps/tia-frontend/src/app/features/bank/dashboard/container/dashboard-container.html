@@ -58,26 +58,25 @@
   </app-drag-container>
 
   <app-ui-sheet-modal
-  [isOpen]="isCustomizing()"
-  direction="bottom"
-  (closed)="closeCustomization()"
->
-  <div class="customize-shell">
-    <h2 class="customize-shell__title">{{ 'dashboard.customize.title' | translate }}</h2>
-    
-    <div class="customize-shell__list">
-      @for (item of myItems(); track item.id) {
-        <div class="customize-shell__item">
-          <span class="customize-shell__name">{{ item.title | translate }}</span>
-          <button 
-            (click)="onToggleVisibility(!item.isHidden, item.id)"
-            [class.active]="!item.isHidden"
-          >
-            {{ item.isHidden ? 'Show' : 'Hide' }}
-          </button>
-        </div>
-      }
+    [isOpen]="isCustomizing()"
+    direction="bottom"
+    (closed)="closeCustomization()"
+  >
+    <div class="customize-shell">
+      <h2 class="customize-shell__title">
+        {{ 'dashboard.page.customize-label' | translate }}
+      </h2>
+
+      <div class="customize-shell__grid">
+        @for (item of myItems(); track item.id) {
+        <app-customize-card
+          [title]="item.title"
+          [iconPath]="'/images/svg/dashboard/' + item.type + '.svg'"
+          [isSelected]="!item.isHidden"
+          (selectionChange)="onToggleVisibility($event, item.id)"
+        />
+        }
+      </div>
     </div>
-  </div>
-</app-ui-sheet-modal>
+  </app-ui-sheet-modal>
 </div>

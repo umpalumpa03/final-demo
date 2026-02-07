@@ -10,3 +10,27 @@
   margin: 0 0 2.4rem 0;
   width: 100%;
 }
+.customize-shell {
+  &__title {
+    @include font-inter(700, 2rem, 2.8rem);
+    color: var(--color-fg);
+    margin-bottom: 3.2rem;
+    text-align: center;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.4rem;
+    padding-bottom: 2rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.6rem;
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}

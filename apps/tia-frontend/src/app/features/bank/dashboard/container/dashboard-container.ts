@@ -29,6 +29,7 @@ import { BannerCarousel } from '../components/shared/ui/banner-carousel/banner-c
 import { bannerSlides } from '../config/banners.config';
 import { CustomizeButton } from "../components/shared/ui/customize-button/customize-button";
 import { UiSheetModal } from "@tia/shared/lib/overlay/ui-sheet-modal/ui-sheet-modal";
+import { CustomizeCard } from "../components/shared/ui/customize-card/customize-card";
 @Component({
   selector: 'app-dashboard-container',
   imports: [
@@ -42,7 +43,8 @@ import { UiSheetModal } from "@tia/shared/lib/overlay/ui-sheet-modal/ui-sheet-mo
     TranslateModule,
     BannerCarousel,
     CustomizeButton,
-    UiSheetModal
+    UiSheetModal,
+    CustomizeCard
 ],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
