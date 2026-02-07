@@ -12,6 +12,9 @@ export const initialUserState: IUserState = {
   loaded: false,
   loading: false,
   error: null,
+  widgets: [],
+  widgetsLoading: false,
+  widgetsLoaded: false,
 };
 
 export const userInfoFeature = createFeature({
@@ -82,6 +85,60 @@ export const userInfoFeature = createFeature({
       loading: false,
       error: null,
     })),
+    on(UserInfoActions.loadWidgets, (state) => ({
+      ...state,
+      widgetsLoading: true,
+    })),
+
+    on(UserInfoActions.loadWidgetsSuccess, (state, { widgets }) => ({
+      ...state,
+      widgets: [...widgets].sort((a, b) => (a.order || 99) - (b.order || 99)),
+      widgetsLoading: false,
+      widgetsLoaded: true,
+    })),
+
+    on(UserInfoActions.updateWidgetsBulkSuccess, (state, { widgets }) => ({
+      ...state,
+      widgets: state.widgets
+        .map((w) => {
+          const updated = widgets.find((u) => u.dbId === w.dbId);
+          return updated
+            ? { ...w, ...updated, isHidden: updated.isActive === false }
+            : w;
+        })
+        .sort((a, b) => (a.order || 99) - (b.order || 99)),
+      widgetsLoading: false,
+    })),
+
+    on(
+      UserInfoActions.loadWidgets,
+      UserInfoActions.createWidget,
+      UserInfoActions.deleteWidget,
+      (state) => ({
+        ...state,
+        widgetsLoading: true,
+      }),
+    ),
+
+    on(UserInfoActions.deleteWidgetSuccess, (state, { id }) => ({
+      ...state,
+      widgets: state.widgets.filter((w) => w.dbId !== id),
+      widgetsLoading: false,
+    })),
+
+    on(
+      UserInfoActions.loadUserError,
+      UserInfoActions.loadWidgetsError,
+      UserInfoActions.createWidgetError,
+      UserInfoActions.updateWidgetsBulkError,
+      UserInfoActions.deleteWidgetError,
+      (state, { error }) => ({
+        ...state,
+        loading: false,
+        widgetsLoading: false,
+        error,
+      }),
+    ),
   ),
 });
 
