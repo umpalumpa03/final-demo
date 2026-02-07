@@ -12,6 +12,8 @@ export const initialUserState: IUserState = {
   loaded: false,
   loading: false,
   error: null,
+  widgets: [],
+  widgetsLoading: false,
 };
 
 export const userInfoFeature = createFeature({
@@ -81,6 +83,21 @@ export const userInfoFeature = createFeature({
       role: role,
       loading: false,
       error: null,
+    })),
+    on(UserInfoActions.loadWidgets, (state) => ({
+      ...state,
+      widgetsLoading: true,
+    })),
+
+    on(UserInfoActions.loadWidgetsSuccess, (state, { widgets }) => ({
+      ...state,
+      widgets,
+      widgetsLoading: false,
+    })),
+
+    on(UserInfoActions.updateWidgetStateSuccess, (state, { widget }) => ({
+      ...state,
+      widgets: state.widgets.map((w) => (w.dbId === widget.dbId ? widget : w)),
     })),
   ),
 });

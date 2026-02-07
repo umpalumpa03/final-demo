@@ -27,9 +27,10 @@ import { Router } from '@angular/router';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { BannerCarousel } from '../components/shared/ui/banner-carousel/banner-carousel';
 import { bannerSlides } from '../config/banners.config';
-import { CustomizeButton } from "../components/shared/ui/customize-button/customize-button";
-import { UiSheetModal } from "@tia/shared/lib/overlay/ui-sheet-modal/ui-sheet-modal";
-import { CustomizeCard } from "../components/shared/ui/customize-card/customize-card";
+import { CustomizeButton } from '../components/shared/ui/customize-button/customize-button';
+import { UiSheetModal } from '@tia/shared/lib/overlay/ui-sheet-modal/ui-sheet-modal';
+import { CustomizeCard } from '../components/shared/ui/customize-card/customize-card';
+import { WidgetsService } from '../services/widgets-service';
 @Component({
   selector: 'app-dashboard-container',
   imports: [
@@ -44,8 +45,8 @@ import { CustomizeCard } from "../components/shared/ui/customize-card/customize-
     BannerCarousel,
     CustomizeButton,
     UiSheetModal,
-    CustomizeCard
-],
+    CustomizeCard,
+  ],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,6 +56,7 @@ export class DashboardContainer implements OnInit {
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
   private readonly breakpointService = inject(BreakpointService);
+  private readonly widgetService = inject(WidgetsService);
 
   protected readonly isCustomizing = signal(false);
 
@@ -97,10 +99,21 @@ export class DashboardContainer implements OnInit {
 
   public onContainerOrderChange(ids: string[]): void {}
 
-  public onToggleVisibility(isVisible: boolean, id: string): void {
+  public onToggleVisibility(isSelected: boolean, id: string): void {
+    const widget = this.myItems().find((w) => w.id === id);
+
+    if (!widget) return;
+
+    if (widget.dbId) {
+      this.widgetService
+        .updateWidget(widget.dbId, { isActive: isSelected })
+        .subscribe();
+    } else if (isSelected) {
+      this.widgetService.createWidget(widget).subscribe();
+    }
     this.myItems.update((items) =>
       items.map((item) =>
-        item.id === id ? { ...item, isHidden: !isVisible } : item,
+        item.id === id ? { ...item, isHidden: !isSelected } : item,
       ),
     );
   }
