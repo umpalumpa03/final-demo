@@ -59,14 +59,12 @@ export class WidgetTransactions extends BaseWidget {
   }
 
   ngOnInit(): void {
-    this.store.dispatch(TransactionActions.enter());
     this.store.dispatch(
       TransactionActions.loadTransactions({ forceRefresh: true }),
     );
   }
 
   public retryLoad(): void {
-    this.store.dispatch(TransactionActions.enter());
     this.store.dispatch(
       TransactionActions.loadTransactions({ forceRefresh: true }),
     );

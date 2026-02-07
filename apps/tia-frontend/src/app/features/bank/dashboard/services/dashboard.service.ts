@@ -26,16 +26,13 @@ export class DashboardService {
   private dirtyIds = new Set<string>();
 
   constructor() {
-    effect(
-      () => {
-        const storeWidgets = this.store.selectSignal(selectUserWidgets)();
+    effect(() => {
+      const storeWidgets = this.store.selectSignal(selectUserWidgets)();
 
-        if (this.dirtyIds.size === 0) {
-          this.myItems.set(storeWidgets);
-        }
-      },
-      { allowSignalWrites: true },
-    );
+      if (this.dirtyIds.size === 0) {
+        this.myItems.set(storeWidgets);
+      }
+    });
 
     this.updateStream$
       .pipe(
