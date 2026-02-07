@@ -15,27 +15,28 @@ export class DashboardService {
   public readonly widgetCatalog = signal(catalog);
 
   public readonly visibleItems = computed(() =>
-    this.myItems().filter((item, index) => index === 0 || !item.isHidden),
+    this.myItems().filter((item, index) => {
+      if (item.type === 'transactions') return true;
+
+      return !item.isHidden;
+    }),
   );
 
   private readonly updateStream$ = new Subject<IWidgetItem[]>();
   private dirtyIds = new Set<string>();
 
   constructor() {
-    effect(
-      () => {
-        const storeWidgets = this.store.selectSignal(selectUserWidgets)();
+    effect(() => {
+      const storeWidgets = this.store.selectSignal(selectUserWidgets)();
 
-        if (this.dirtyIds.size === 0) {
-          this.myItems.set(storeWidgets);
-        }
-      },
-      { allowSignalWrites: true },
-    );
+      if (this.dirtyIds.size === 0) {
+        this.myItems.set(storeWidgets);
+      }
+    });
 
     this.updateStream$
       .pipe(
-        debounceTime(1000),
+        debounceTime(1500),
         tap((allWidgets) => this.persistChanges(allWidgets)),
         takeUntilDestroyed(),
       )
@@ -85,7 +86,7 @@ export class DashboardService {
     const existingWidget = this.myItems().find((w) => w.id === id);
     const widgetIndex = this.myItems().findIndex((w) => w.id === id);
 
-    if (widgetIndex === -1 && isSelected) {
+    if (isSelected && widgetIndex === -1) {
       const catalogWidget = this.widgetCatalog().find((w) => w.id === id);
       if (catalogWidget) {
         const activeCount = this.visibleItems().length;
@@ -100,13 +101,14 @@ export class DashboardService {
           }),
         );
       }
-    } else if (!isSelected && widgetIndex > 0 && existingWidget?.dbId) {
+    } else if (!isSelected && existingWidget?.dbId) {
       this.store.dispatch(
         UserInfoActions.deleteWidget({ id: existingWidget.dbId }),
       );
+
       this.myItems.update((items) => items.filter((i) => i.id !== id));
-    } else if (widgetIndex === 0) {
-      this.foldWidget(isSelected, id);
+
+      this.dirtyIds.delete(id);
     }
   }
 
