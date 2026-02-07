@@ -5,7 +5,7 @@ import {
   setupMessagingTest,
   cleanupMessagingTest,
   mockMailsResponse,
-} from './messaging.test-setup';
+} from './messaging.test-helpers';
 
 describe('Messaging Integration - Send Draft Flow', () => {
   let ctx: TestContext;

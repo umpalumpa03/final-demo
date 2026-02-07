@@ -5,7 +5,7 @@ import {
   setupMessagingTest,
   cleanupMessagingTest,
   mockMailsResponse,
-} from './messaging.test-setup';
+} from './messaging.test-helpers';
 
 describe('Messaging Integration - Delete Mail Flow', () => {
   let ctx: TestContext;

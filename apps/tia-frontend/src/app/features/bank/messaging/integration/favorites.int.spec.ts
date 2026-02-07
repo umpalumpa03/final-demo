@@ -5,7 +5,7 @@ import {
   setupMessagingTest,
   cleanupMessagingTest,
   mockMails,
-} from './messaging.test-setup';
+} from './messaging.test-helpers';
 
 describe('Messaging Integration - Toggle Favorite Flow', () => {
   let ctx: TestContext;

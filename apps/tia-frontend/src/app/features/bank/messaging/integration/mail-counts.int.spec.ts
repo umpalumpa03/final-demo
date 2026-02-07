@@ -4,7 +4,7 @@ import {
   TestContext,
   setupMessagingTest,
   cleanupMessagingTest,
-} from './messaging.test-setup';
+} from './messaging.test-helpers';
 
 describe('Messaging Integration - Get Mail Counts Flow', () => {
   let ctx: TestContext;

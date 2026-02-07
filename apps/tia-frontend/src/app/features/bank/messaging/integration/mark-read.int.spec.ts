@@ -5,7 +5,7 @@ import {
   setupMessagingTest,
   cleanupMessagingTest,
   mockMailsResponse,
-} from './messaging.test-setup';
+} from './messaging.test-helpers';
 
 describe('Messaging Integration - Mark as Read Flow', () => {
   let ctx: TestContext;

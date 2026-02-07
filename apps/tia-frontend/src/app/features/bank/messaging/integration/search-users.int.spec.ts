@@ -4,7 +4,7 @@ import {
   setupMessagingTest,
   cleanupMessagingTest,
   mockUsers,
-} from './messaging.test-setup';
+} from './messaging.test-helpers';
 
 describe('Messaging Integration - Search Users Flow', () => {
   let ctx: TestContext;

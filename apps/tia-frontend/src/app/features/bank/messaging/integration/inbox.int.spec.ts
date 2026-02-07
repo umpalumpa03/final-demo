@@ -7,7 +7,7 @@ import {
   cleanupMessagingTest,
   mockMails,
   mockMailsResponse,
-} from './messaging.test-setup';
+} from './messaging.test-helpers';
 
 describe('Messaging Integration - Load Inbox Flow', () => {
   let ctx: TestContext;
