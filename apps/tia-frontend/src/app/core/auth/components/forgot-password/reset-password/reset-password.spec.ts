@@ -48,17 +48,21 @@ describe('ResetPassword', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/auth', 'verify-otp-reset']);
   });
 
-  it('Feature: submit calls API and navigates to success route on success', async () => {
+  it('Feature: submit calls API and navigates to success route on success', () => {
+    vi.useFakeTimers();
+    
     const formValue = { password: 'Aa1!aaaa', confirmPassword: 'Aa1!aaaa' } as any;
 
     component.submit(formValue);
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    vi.advanceTimersByTime(2000);
 
     expect(authServiceMock.createNewPassword).toHaveBeenCalledWith('Aa1!aaaa');
     expect(router.navigate).toHaveBeenCalledWith(['/auth', 'success']);
     expect(component.alertState()?.type).toBe('success');
     expect(component.isSubmitting()).toBe(false);
+    
+    vi.useRealTimers();
   });
 
   it('Feature: submit sets reset-specific error message when API responds 400', () => {

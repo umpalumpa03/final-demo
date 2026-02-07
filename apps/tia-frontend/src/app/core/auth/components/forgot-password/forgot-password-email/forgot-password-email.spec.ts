@@ -48,7 +48,9 @@ describe('ForgotPasswordEmail', () => {
     fixture.detectChanges();
   });
 
-  it('submit: validates form, calls API on valid input, navigates on success, and handles all error types', async () => {
+  it('submit: validates form, calls API on valid input, navigates on success, and handles all error types', () => {
+    vi.useFakeTimers();
+    
     component.submit();
     expect(authServiceMock.forgotPasswordRequest).not.toHaveBeenCalled();
     expect(component.isSubmitting()).toBe(false);
@@ -56,7 +58,7 @@ describe('ForgotPasswordEmail', () => {
     component.form.controls.email.setValue('user@test.com');
     component.submit();
     
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    vi.advanceTimersByTime(2000);
     
     expect(authServiceMock.forgotPasswordRequest).toHaveBeenCalledWith(
       'user@test.com',
@@ -117,6 +119,8 @@ describe('ForgotPasswordEmail', () => {
       'Unable to send reset code. Please try again.',
     );
     expect(component.isSubmitting()).toBe(false);
+    
+    vi.useRealTimers();
   });
 
   it('emailConfig: returns appropriate errorMessage based on form validation state', () => {
