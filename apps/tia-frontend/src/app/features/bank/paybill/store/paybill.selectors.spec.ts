@@ -34,7 +34,6 @@ describe('Paybill Selectors', () => {
     loading: true,
     error: 'Error',
     verifiedDetails: { valid: true } as any,
-    currentStep: 'OTP',
     paymentPayload: { amount: 100 } as any,
     challengeId: '123-abc',
   };
@@ -57,7 +56,6 @@ describe('Paybill Selectors', () => {
       expect(Selectors.selectVerifiedDetails.projector(fullState)).toEqual({
         valid: true,
       });
-      expect(Selectors.selectCurrentStep.projector(fullState)).toBe('OTP');
 
       expect(Selectors.selectPaymentPayload.projector(fullState)).toEqual({
         amount: 100,

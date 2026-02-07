@@ -54,7 +54,6 @@ export class PaybillFormContainer {
         }),
       );
 
-      this.store.dispatch(PaybillActions.setPaymentStep({ step: 'CONFIRM' }));
       this.router.navigate(['/bank/paybill/pay/confirm-payment']);
     }
   }

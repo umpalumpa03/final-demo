@@ -159,6 +159,7 @@ export class PaybillTemplatesContainer implements OnInit {
 
   // On Init Load Data
   ngOnInit(): void {
+    this.store.dispatch(PaybillActions.clearSelection());
     this.store.dispatch(TemplatesPageActions.loadTemplateGroups());
     this.store.dispatch(TemplatesPageActions.loadTemplates());
   }

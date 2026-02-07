@@ -100,11 +100,6 @@ describe('Paybill Reducer', () => {
   });
 
   describe('Payment Processing', () => {
-    it('setPaymentStep: should update step', () => {
-      const action = PaybillActions.setPaymentStep({ step: 'OTP' });
-      const result = paybillReducer(initialPaybillState, action);
-      expect(result.currentStep).toBe('OTP');
-    });
 
     it('setPaymentPayload: should update payload', () => {
       const data = { amount: 100 } as any;
@@ -331,15 +326,13 @@ describe('Paybill Reducer', () => {
       const state = {
         ...initialPaybillState,
         verifiedDetails: { amount: 10 } as any,
-        currentStep: 'CONFIRM',
         selectedProviderId: 'p1',
       };
       const action = PaybillActions.resetPaymentForm();
       const result = paybillReducer(state, action);
 
       expect(result.verifiedDetails).toBeNull();
-      expect(result.currentStep).toBe('DETAILS');
-      expect(result.selectedProviderId).toBe('p1'); // Should persist
+      expect(result.selectedProviderId).toBe('p1');
     });
 
     it('setTransactionProvider: should set provider and try to infer category', () => {
@@ -357,14 +350,12 @@ describe('Paybill Reducer', () => {
         ...initialPaybillState,
         selectedProviderId: 'p1',
         paymentPayload: { acc: '123' } as any,
-        currentStep: 'SUCCESS',
       };
       const action = PaybillActions.clearSelection();
       const result = paybillReducer(state, action);
 
       expect(result.selectedProviderId).toBeNull();
       expect(result.paymentPayload).toBeNull();
-      expect(result.currentStep).toBe('DETAILS');
       expect(result.providers).toEqual([]);
     });
   });

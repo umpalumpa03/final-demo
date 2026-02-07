@@ -8,7 +8,7 @@ export const paybillReducer = createReducer(
 
   on(PaybillActions.loadCategories, (state) => ({
     ...state,
-    loading: true,
+    loading: state.categories.length === 0,
     error: null,
   })),
 
@@ -66,9 +66,14 @@ export const paybillReducer = createReducer(
     selectedProvider: null,
     verifiedDetails: null,
     providers: [],
-    currentStep: 'DETAILS',
     paymentPayload: null,
     challengeId: null,
+    filteredProviders: [],
+    paymentDetails: null,
+    notifications: [],
+    currentLevel: 0,
+    error: null,
+    loading: false,
   })),
 
   on(PaybillActions.checkBill, (state) => ({
@@ -87,11 +92,6 @@ export const paybillReducer = createReducer(
     ...state,
     loading: false,
     error,
-  })),
-
-  on(PaybillActions.setPaymentStep, (state, { step }) => ({
-    ...state,
-    currentStep: step,
   })),
 
   on(PaybillActions.setPaymentPayload, (state, { data }) => ({
@@ -122,11 +122,11 @@ export const paybillReducer = createReducer(
     error,
   })),
 
-  on(TemplatesPageActions.loadTemplateGroups, (state) => ({
-    ...state,
-    loading: true,
-    error: null,
-  })),
+on(TemplatesPageActions.loadTemplateGroups, (state) => ({
+  ...state,
+  loading: state.templateGroups.length === 0, 
+  error: null,
+})),
 
   on(
     TemplatesPageActions.loadTemplateGroupsSuccess,
@@ -175,7 +175,6 @@ export const paybillReducer = createReducer(
     PaybillActions.clearAllNotifications,
     PaybillActions.selectCategory,
     PaybillActions.selectProvider,
-    PaybillActions.clearSelection,
     (state) => ({
       ...state,
       notifications: [],
@@ -185,7 +184,7 @@ export const paybillReducer = createReducer(
 
   on(TemplatesPageActions.loadTemplates, (state) => ({
     ...state,
-    loading: true,
+    loading: state.templates.length === 0,
     error: null,
   })),
 
@@ -245,7 +244,6 @@ export const paybillReducer = createReducer(
   on(PaybillActions.resetPaymentForm, (state) => ({
     ...state,
     verifiedDetails: null,
-    currentStep: 'DETAILS',
     error: null,
     challengeId: null,
     paymentDetails: null,

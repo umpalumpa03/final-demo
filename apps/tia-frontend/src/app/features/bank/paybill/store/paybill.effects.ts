@@ -6,6 +6,7 @@ import {
   concatMap,
   delay,
   EMPTY,
+  filter,
   map,
   mergeMap,
   of,
@@ -15,10 +16,13 @@ import {
 import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillActions, TemplatesPageActions } from './paybill.actions';
 import {
+  selectCategoriesLoaded,
   selectNotifications,
   selectPaymentPayload,
   selectProviders,
   selectSelectedProviderId,
+  selectTemplatesGroup,
+  selectTemplatesLoaded,
 } from './paybill.selectors';
 import { ProceedPaymentResponse } from '../components/paybill-main/shared/models/paybill.model';
 import { PaybillTemplatesService } from '../components/paybill-templates/services/paybill-templates-service';
@@ -58,6 +62,8 @@ export class PaybillEffect {
   loadCategories$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PaybillActions.loadCategories),
+      withLatestFrom(this.store.select(selectCategoriesLoaded)),
+      filter(([action, loaded]) => !loaded),
       mergeMap(() =>
         this.paybillService.getCategories().pipe(
           map((categories) =>
@@ -75,28 +81,25 @@ export class PaybillEffect {
     );
   });
 
-  loadProviders$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        ofType(PaybillActions.selectCategory),
-        mergeMap(({ categoryId }) =>
-          this.paybillService.getProviders(categoryId).pipe(
-            map((providers) =>
-              PaybillActions.loadProvidersSuccess({ providers }),
-            ),
-            catchError((error) =>
-              of(
-                PaybillActions.loadProvidersFailure({
-                  error: this.getErrorMessage(error),
-                }),
-              ),
+  loadProviders$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(PaybillActions.selectCategory),
+      mergeMap(({ categoryId }) =>
+        this.paybillService.getProviders(categoryId).pipe(
+          map((providers) =>
+            PaybillActions.loadProvidersSuccess({ providers }),
+          ),
+          catchError((error) =>
+            of(
+              PaybillActions.loadProvidersFailure({
+                error: this.getErrorMessage(error),
+              }),
             ),
           ),
         ),
-      );
-    },
-    { functional: true },
-  );
+      ),
+    );
+  });
 
   autoSelectProviderAfterLoad$ = createEffect(() => {
     return this.actions$.pipe(
@@ -108,7 +111,7 @@ export class PaybillEffect {
             PaybillActions.selectProvider({ providerId: selectedProviderId }),
           );
         }
-        return of();
+        return EMPTY;
       }),
     );
   });
@@ -173,7 +176,7 @@ export class PaybillEffect {
 
         if (amount > 50 && challengeId) {
           this.router.navigate(['/bank/paybill/pay/otp-verification']);
-          return of(PaybillActions.setPaymentStep({ step: 'OTP' }));
+          return EMPTY;
         }
 
         if (challengeId) {
@@ -184,7 +187,7 @@ export class PaybillEffect {
           );
         }
 
-        return of(PaybillActions.setPaymentStep({ step: 'SUCCESS' }));
+        return EMPTY;
       }),
     );
   });
@@ -199,7 +202,6 @@ export class PaybillEffect {
               this.router.navigate(['/bank/paybill/pay/payment-success']);
 
               return of(
-                PaybillActions.setPaymentStep({ step: 'SUCCESS' }),
                 PaybillActions.addNotification({
                   notificationType: 'success',
                   message: 'OTP Verified Successfully',
@@ -261,6 +263,8 @@ export class PaybillEffect {
   loadTemplateGroups$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(TemplatesPageActions.loadTemplateGroups),
+      withLatestFrom(this.store.select(selectTemplatesGroup)),
+      filter(([action,loaded]) => !loaded),
       mergeMap(() =>
         this.payBillTemplatesService.getAllTemplateGroups().pipe(
           map((templateGroups) =>
@@ -281,6 +285,8 @@ export class PaybillEffect {
   loadTemplates$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(TemplatesPageActions.loadTemplates),
+      withLatestFrom(this.store.select(selectTemplatesLoaded)),
+      filter(([action, loaded]) => !loaded),
       mergeMap(() =>
         this.payBillTemplatesService.getAllTemplates().pipe(
           map((templates) =>

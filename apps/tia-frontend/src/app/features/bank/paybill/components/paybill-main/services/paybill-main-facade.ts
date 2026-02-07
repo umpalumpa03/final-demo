@@ -21,15 +21,13 @@ export class PaybillMainFacade {
   public readonly selectedSenderAccountId = signal<string | null>(null);
 
   public init(): void {
-    this.store.dispatch(AccountsActions.loadAccounts({}));
+    this.store.dispatch(PaybillActions.clearSelection());
+    this.store.dispatch(PaybillActions.loadCategories());
     this.searchQuery.set('');
   }
 
   // select state from store
 
-  public readonly currentStep = this.store.selectSignal(
-    PAYBILL_SELECTORS.selectCurrentStep,
-  );
   public readonly paymentPayload = this.store.selectSignal(
     PAYBILL_SELECTORS.selectPaymentPayload,
   );
@@ -149,7 +147,6 @@ export class PaybillMainFacade {
 
   public backToDetails(): void {
     this.store.dispatch(PaybillActions.clearAllNotifications());
-    this.store.dispatch(PaybillActions.setPaymentStep({ step: 'DETAILS' }));
     this.router.navigate(['bank/paybill/pay']);
   }
 }

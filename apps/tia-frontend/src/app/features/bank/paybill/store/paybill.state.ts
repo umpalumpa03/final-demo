@@ -32,7 +32,6 @@ export interface PaybillState {
   error: string | null;
   selectedProvider: PaybillProvider | null;
   verifiedDetails: BillDetails | null;
-  currentStep: string;
   paymentPayload: PaybillPayload | null;
   challengeId: string | null;
   templateGroups: TemplateGroups[];
@@ -51,7 +50,6 @@ export const initialPaybillState: PaybillState = {
   providers: [],
   error: null,
   verifiedDetails: null,
-  currentStep: 'DETAILS',
   paymentPayload: null,
   challengeId: null,
   templateGroups: [],

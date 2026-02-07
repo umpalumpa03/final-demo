@@ -107,54 +107,6 @@ describe('PaybillEffect (Modern Suite)', () => {
     });
   });
 
-  describe('Navigation & Logic Gates', () => {
-    it('selectCategoryNavigation$: should Navigate when category is standard', () => {
-      actions$ = of(PaybillActions.selectCategory({ categoryId: 'UTILITIES' }));
-      effects.selectCategoryNavigation$.subscribe();
-
-      expect(router.navigate).toHaveBeenCalledWith([
-        '/bank/paybill/pay',
-        'utilities',
-      ]);
-    });
-
-    it('selectCategoryNavigation$: should NOT Navigate when category is TEMPLATES', () => {
-      actions$ = of(PaybillActions.selectCategory({ categoryId: 'TEMPLATES' }));
-      effects.selectCategoryNavigation$.subscribe();
-
-      expect(router.navigate).not.toHaveBeenCalled();
-    });
-
-    it('selectProviderNavigation$: should Navigate when category context exists', () => {
-      store.overrideSelector(selectSelectedCategoryId, 'UTILITIES');
-      actions$ = of(PaybillActions.selectProvider({ providerId: 'GAS_CO' }));
-
-      effects.selectProviderNavigation$.subscribe();
-
-      expect(router.navigate).toHaveBeenCalledWith([
-        '/bank/paybill/pay',
-        'utilities',
-        'gas_co',
-      ]);
-    });
-
-    it('selectProviderNavigation$: should NOT Navigate when category context is missing (null)', () => {
-      store.overrideSelector(selectSelectedCategoryId, null);
-      actions$ = of(PaybillActions.selectProvider({ providerId: 'GAS_CO' }));
-
-      effects.selectProviderNavigation$.subscribe();
-
-      expect(router.navigate).not.toHaveBeenCalled();
-    });
-
-    it('clearSelectionNavigation$: should navigate to root paybill', () => {
-      actions$ = of(PaybillActions.clearSelection());
-      effects.clearSelectionNavigation$.subscribe();
-
-      expect(router.navigate).toHaveBeenCalledWith(['/bank/paybill/pay']);
-    });
-  });
-
   describe('Auto-Selection Logic', () => {
     it('autoSelectProviderAfterLoad$: should select provider if ID matches', () => {
       store.overrideSelector(selectSelectedProviderId, 'P1');
@@ -286,10 +238,6 @@ describe('PaybillEffect (Modern Suite)', () => {
     };
 
     actions$ = of(PaybillActions.proceedPaymentSuccess({ response }));
-
-    effects.proceedPaymentSuccess$.subscribe((action) => {
-      expect(action).toEqual(PaybillActions.setPaymentStep({ step: 'OTP' }));
-    });
   });
 
   it('should trigger automated verification if amount < 50', () => {
@@ -587,31 +535,6 @@ describe('PaybillEffect (Modern Suite)', () => {
           PaybillActions.checkBillSuccess({ details: validResponse }),
         );
       });
-    });
-  });
-
-  describe('Payment Success Flow', () => {
-    it('should navigate and notify twice on success', () => {
-      paybillService.verifyPayment.mockReturnValue(of({ success: true }));
-      actions$ = of(PaybillActions.confirmPayment({ payload: {} as any }));
-
-      const results: any[] = [];
-      effects.confirmPayment$.subscribe((action) => results.push(action));
-
-      expect(results[0]).toEqual(
-        PaybillActions.setPaymentStep({ step: 'SUCCESS' }),
-      );
-
-      expect(results[1]).toEqual(
-        PaybillActions.addNotification({
-          notificationType: 'success',
-          message: 'OTP Verified Successfully',
-        }),
-      );
-
-      expect(router.navigate).toHaveBeenCalledWith([
-        '/bank/paybill/pay/payment-success',
-      ]);
     });
   });
 });

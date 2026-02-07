@@ -106,11 +106,6 @@ export const selectVerifiedDetails = createSelector(
   (state) => state.verifiedDetails,
 );
 
-export const selectCurrentStep = createSelector(
-  selectPaybillState,
-  (state) => state.currentStep,
-);
-
 export const selectPaymentPayload = createSelector(
   selectPaybillState,
   (state) => state.paymentPayload,
@@ -168,6 +163,8 @@ export const selectTemplatesGroupWithConfigs = createSelector(
     })),
 );
 
+
+// check loaded state
 export const selectPaymentFields = createSelector(
   selectPaybillState,
   (state) => state.paymentDetails?.fields ?? [],
@@ -176,4 +173,19 @@ export const selectPaymentFields = createSelector(
 export const selectServiceId = createSelector(
   selectPaybillState,
   (state) => state.paymentDetails?.serviceId,
+);
+
+export const selectCategoriesLoaded = createSelector(
+  selectCategories,
+  (categories) => categories.length > 0,
+);
+
+export const selectTemplatesLoaded = createSelector(
+  selectTemplates,
+  (templates) => templates.length > 0,
+);
+
+export const selectTemplateGroupsLoaded = createSelector(
+  selectTemplatesGroup,
+  (groups) => groups.length > 0,
 );

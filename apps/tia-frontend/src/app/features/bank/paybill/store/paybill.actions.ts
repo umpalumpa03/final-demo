@@ -35,7 +35,6 @@ export const PaybillActions = createActionGroup({
     'Check Bill Success': props<{ details: BillDetails }>(),
     'Check Bill Failure': props<{ error: string }>(),
     'Clear Selection': emptyProps(),
-    'Set Payment Step': props<{ step: string }>(),
     'Set Payment Payload': props<{ data: PaybillPayload }>(),
     'Proceed Payment': props<{ payload: ProceedPaymentPayload }>(),
     'Proceed Payment Success': props<{ response: ProceedPaymentResponse }>(),
