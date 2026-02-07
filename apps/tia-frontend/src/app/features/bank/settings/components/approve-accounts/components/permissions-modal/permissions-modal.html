@@ -3,7 +3,8 @@
     [title]="modalTitle()"
     [subtitle]="modalSubtitle()"
   ></app-library-title>
-  <app-list-display [items]="cardOrAccHolder()"> </app-list-display>
+  <app-list-display [items]="cardOrAccHolder()" [ifImage]="true">
+  </app-list-display>
   <form class="list-container" [formGroup]="form()">
     @if (title()) {
     <h3>{{ title() }}</h3>
