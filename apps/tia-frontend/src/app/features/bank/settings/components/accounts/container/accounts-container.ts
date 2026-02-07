@@ -12,10 +12,11 @@ import { SettingsBody } from '../../../shared/ui/settings-body/settings-body';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { Router } from '@angular/router';
 import { ChangeName } from '../components/change-name/change-name';
+import { ScrollArea } from "@tia/shared/lib/layout/components/scroll-area/container/scroll-area";
 
 @Component({
   selector: 'app-accounts-container',
-  imports: [AccountCard, Skeleton, SettingsBody, ErrorStates, ChangeName],
+  imports: [AccountCard, Skeleton, SettingsBody, ErrorStates, ChangeName, ScrollArea],
   providers: [AccountsStore],
   templateUrl: './accounts-container.html',
   styleUrl: './accounts-container.scss',
