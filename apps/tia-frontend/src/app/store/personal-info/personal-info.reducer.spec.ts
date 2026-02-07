@@ -14,7 +14,7 @@ describe('personalInfoReducer', () => {
   it('should set loading true and clear error on loadPersonalInfo', () => {
     const state = personalInfoReducer(
       initialPersonalInfoState,
-      PersonalInfoActions.loadPersonalInfo(),
+      PersonalInfoActions.loadPersonalInfo({}),
     );
     expect(state.loading).toBe(true);
     expect(state.error).toBeNull();

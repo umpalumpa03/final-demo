@@ -109,5 +109,11 @@ export const profilePhotoFeature = createFeature({
       ...state,
       userInitials: initials,
     })),
+    on(ProfilePhotoActions.resetProfilePhoto, (state) => ({
+      ...initialState,
+      defaultAvatars: state.defaultAvatars,
+      defaultAvatarsLoading: state.defaultAvatarsLoading,
+      defaultAvatarsError: state.defaultAvatarsError,
+    })),
   ),
 });

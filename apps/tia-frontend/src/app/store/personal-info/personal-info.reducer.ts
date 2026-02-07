@@ -55,6 +55,9 @@ export const personalInfoFeature = createFeature({
             loading: false,
             error: error,
         })),
+        on(PersonalInfoActions.resetPersonalInfo, () => ({
+            ...initialPersonalInfoState,
+        })),
     ),
 });
 

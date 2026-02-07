@@ -3,19 +3,61 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PersonalInfoApiService } from '../../shared/services/personal-info/personal-info.api.service';
 import { PersonalInfoActions } from './pesronal-info.actions';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, EMPTY, map, of, switchMap, withLatestFrom } from 'rxjs';
 import { UpdatePersonalInfoDto } from './personal-info.state';
+import { Store } from '@ngrx/store';
+import { selectPersonalInfo } from './personal-info.selectors';
+import { UserInfoActions } from '../user-info/user-info.actions';
 
 @Injectable()
 export class PersonalInfoEffects {
   private readonly actions$ = inject(Actions);
   private readonly api = inject(PersonalInfoApiService);
+  private readonly store = inject(Store);
+
+  resetPersonalInfoOnUserChange$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserInfoActions.loadUser),
+      map(() => PersonalInfoActions.resetPersonalInfo()),
+    ),
+  );
+
+  loadPersonalInfoAfterUserLoad$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserInfoActions.loadUserSuccess),
+      withLatestFrom(this.store.select(selectPersonalInfo)),
+      switchMap(([, personalInfo]) => {
+        const hasData = !!(personalInfo?.pId || personalInfo?.phoneNumber);
+        if (!hasData) {
+          return of(PersonalInfoActions.loadPersonalInfo({ forceRefresh: true }));
+        }
+        return EMPTY;
+      }),
+    ),
+  );
 
   loadPersonalInfo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(PersonalInfoActions.loadPersonalInfo),
-      switchMap(() =>
-        this.api.getPersonalInfo().pipe(
+      withLatestFrom(this.store.select(selectPersonalInfo)),
+      switchMap(([{ forceRefresh }, personalInfo]) => {
+        const hasData = !!(personalInfo?.pId || personalInfo?.phoneNumber);
+        const shouldFetch = !!forceRefresh || !hasData;
+
+        if (!shouldFetch) {
+          return of(
+            PersonalInfoActions.loadPersonalInfoSuccess({
+              personalInfo: {
+                pId: personalInfo!.pId,
+                phoneNumber: personalInfo!.phoneNumber,
+                loading: false,
+                error: null,
+              },
+            }),
+          );
+        }
+
+        return this.api.getPersonalInfo().pipe(
           map((dto) =>
             PersonalInfoActions.loadPersonalInfoSuccess({
               personalInfo: {
@@ -33,8 +75,8 @@ export class PersonalInfoEffects {
               }),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     ),
   );
 

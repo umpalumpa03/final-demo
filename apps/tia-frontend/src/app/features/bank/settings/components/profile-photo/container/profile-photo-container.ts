@@ -160,7 +160,7 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.store.dispatch(ProfilePhotoActions.loadDefaultAvatarsRequest({}));
-    this.store.dispatch(PersonalInfoActions.loadPersonalInfo());
+    this.store.dispatch(PersonalInfoActions.loadPersonalInfo({}));
   }
 
   public ngOnDestroy(): void {

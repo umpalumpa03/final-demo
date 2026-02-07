@@ -21,5 +21,6 @@ export const ProfilePhotoActions = createActionGroup({
     'Load Stored Avatar': emptyProps(),
     'Set User Initials': props<{ initials: string }>(),
     'Clear Current Avatar': emptyProps(),
+    'Reset Profile Photo': emptyProps(),
   },
 });

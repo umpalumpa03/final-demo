@@ -10,7 +10,7 @@ import { ProfilePhotoApiService } from '../../../../../../../shared/services/pro
 import { Store } from '@ngrx/store';
 import { catchError, concat, filter, map, of, switchMap, withLatestFrom } from 'rxjs';
 import { environment } from '../../../../../../../../environments/environment';
-import { selectDefaultAvatars, selectSavedAvatarUrl } from './profile-photo.selectors';
+import { selectDefaultAvatars, selectSavedAvatarUrl, selectAvatarId } from './profile-photo.selectors';
 import { selectUserInfo } from '../../../../../../../store/user-info/user-info.selectors';
 import { UserInfoActions } from '../../../../../../../store/user-info/user-info.actions';
 
@@ -65,6 +65,47 @@ export class ProfilePhotoEffects {
           }),
         );
       }),
+    ),
+  );
+
+  public resetProfilePhotoOnUserChange$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserInfoActions.loadUser),
+      map(() => ProfilePhotoActions.resetProfilePhoto()),
+    ),
+  );
+
+  public resetProfilePhotoOnUserLoad$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserInfoActions.loadUserSuccess),
+      withLatestFrom(
+        this.store.select(selectUserInfo),
+        this.store.select(selectAvatarId),
+      ),
+      map(([, userInfo, currentAvatarId]) => {
+        const userAvatar = userInfo?.avatar;
+        
+        if (!userAvatar) {
+          return null;
+        }
+
+        let newAvatarId: string | null = null;
+        if (userAvatar.includes('/current-user-avatar/')) {
+          const avatarIdMatch = userAvatar.match(/\/current-user-avatar\/([^\/]+)$/);
+          if (avatarIdMatch && avatarIdMatch[1]) {
+            newAvatarId = avatarIdMatch[1];
+          }
+        } else {
+          newAvatarId = userAvatar;
+        }
+
+        if (currentAvatarId && currentAvatarId !== newAvatarId) {
+          return ProfilePhotoActions.resetProfilePhoto();
+        }
+
+        return null;
+      }),
+      filter((action): action is ReturnType<typeof ProfilePhotoActions.resetProfilePhoto> => action !== null),
     ),
   );
 
