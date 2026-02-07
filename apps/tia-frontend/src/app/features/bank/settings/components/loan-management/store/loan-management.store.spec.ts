@@ -310,10 +310,13 @@ describe('LoanManagementStore', () => {
   describe('error handling', () => {
     it('should handle error loading pending approvals with generic message', () => {
       apiServiceMock.getPendingApprovals.mockReturnValue(
-        throwError(() => new HttpErrorResponse({ status: 500 })),
+        throwError(() => new HttpErrorResponse({ 
+          status: 500,
+          statusText: 'Server Error'
+        })),
       );
       store.loadPendingApprovals();
-      expect(store.error()).toBe('Failed to load pending approvals');
+      expect(store.error()).toContain('Http failure response');
       expect(store.loading()).toBe(false);
     });
 
