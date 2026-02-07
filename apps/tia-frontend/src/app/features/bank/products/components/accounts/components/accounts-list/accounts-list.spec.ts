@@ -27,6 +27,7 @@ describe('AccountsListComponent', () => {
     openedAt: '2026-01-01',
     closedAt: '',
     isFavorite: false,
+    isHidden: false,
   };
 
   const mockAccountSections = [
@@ -83,8 +84,12 @@ describe('AccountsListComponent', () => {
 
     component.handleOpenModal();
     expect(openSpy).toHaveBeenCalled();
-    component.handleTransfer('account-123');
-    expect(transferSpy).toHaveBeenCalledWith('account-123');
+    component.handleTransfer('1');
+    component.handlePermissionSelected(1);
+    expect(transferSpy).toHaveBeenCalledWith({
+      accountId: '1',
+      permissionValue: 1,
+    });
     component.handleRetry();
     expect(retrySpy).toHaveBeenCalled();
     component.handleRenameClick({
@@ -122,5 +127,44 @@ describe('AccountsListComponent', () => {
     expect(component.getAccountsBySection(mockAccountSections[0]).length).toBe(
       0,
     );
+  });
+  it('should handle pagination correctly', () => {
+    expect(component.getCurrentPage('current')).toBe(0);
+    component.goToNext('current');
+    expect(component.getCurrentPage('current')).toBe(1);
+    component.goToPrevious('current');
+    expect(component.getCurrentPage('current')).toBe(0);
+  });
+  it('should update items per page on resize', () => {
+    component.updateItemsPerPage(500);
+    expect(component['itemsPerPage']()).toBe(1);
+    component.updateItemsPerPage(1000);
+    expect(component['itemsPerPage']()).toBe(2);
+    component.updateItemsPerPage(1500);
+    expect(component['itemsPerPage']()).toBe(3);
+  });
+
+  it('should handle modal closed', () => {
+    component.handleModalClosed();
+    expect(component.showTransferModal()).toBe(false);
+    expect(component.selectedAccountForTransfer()).toBeNull();
+    expect(component.selectedAccountPermission()).toBe(0);
+  });
+
+  it('should handle rename success', () => {
+    const renameSpy = vi.spyOn(component.renameSuccess, 'emit');
+    component.handleRenameSuccess();
+    expect(renameSpy).toHaveBeenCalled();
+  });
+  it('should handle transfer with valid account', () => {
+    component.handleTransfer('1');
+    expect(component.selectedAccountForTransfer()).toBe('1');
+    expect(component.selectedAccountPermission()).toBe(1);
+    expect(component.showTransferModal()).toBe(true);
+  });
+  it('should not emit transfer if no account selected', () => {
+    const transferSpy = vi.spyOn(component.transfer, 'emit');
+    component.handlePermissionSelected(1);
+    expect(transferSpy).not.toHaveBeenCalled();
   });
 });

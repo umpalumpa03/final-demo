@@ -1,19 +1,24 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  computed, DestroyRef, ElementRef,
+  DestroyRef,
+  ElementRef,
   inject,
-  input, OnDestroy, ViewChild
+  ViewChild,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import {
   selectItems,
   selectIsLoading,
-  selectError, selectNextCursor
+  selectError,
+  selectNextCursor,
 } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
-import { AsyncPipe, CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
+import {
+  AsyncPipe,
+  DatePipe,
+  DecimalPipe,
+} from '@angular/common';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { map } from 'rxjs';
@@ -21,11 +26,19 @@ import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/contai
 import { BaseWidget } from '../shared/base-widget.config';
 import { CurrencySymbolPipe } from 'apps/tia-frontend/src/app/features/bank/dashboard/pipes/currency-symbols.pipe';
 import { TranslateModule } from '@ngx-translate/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-widget-transactions',
-  imports: [AsyncPipe, DatePipe, RouteLoader, ErrorStates, ScrollArea, CurrencySymbolPipe, DecimalPipe, TranslateModule],
+  imports: [
+    AsyncPipe,
+    DatePipe,
+    RouteLoader,
+    ErrorStates,
+    ScrollArea,
+    CurrencySymbolPipe,
+    DecimalPipe,
+    TranslateModule,
+  ],
   templateUrl: './widget-transactions.html',
   styleUrl: './widget-transactions.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,8 +58,18 @@ export class WidgetTransactions extends BaseWidget {
     this.loadMore();
   }
 
+  ngOnInit(): void {
+    this.store.dispatch(TransactionActions.enter());
+    this.store.dispatch(
+      TransactionActions.loadTransactions({ forceRefresh: true }),
+    );
+  }
+
   public retryLoad(): void {
     this.store.dispatch(TransactionActions.enter());
+    this.store.dispatch(
+      TransactionActions.loadTransactions({ forceRefresh: true }),
+    );
   }
 
   public loadMore(): void {
