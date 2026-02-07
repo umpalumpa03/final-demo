@@ -13,5 +13,59 @@
   "data-display": {},
   "overlays": {},
   "drag-and-drop": {
+    "title": "Drag & Drop Components",
+    "subtitle": "Interactive drag-and-drop interfaces for reordering and organizing content",
+    "sections": {
+      "draggableCards": {
+        "title": "Draggable Cards",
+        "description": "Drag cards to reorder them in a grid layout",
+        "item": "Item",
+        "dragToReorder": "drag to reorder",
+        "play": "Play"
+      },
+      "sortableList": {
+        "title": "Sortable List",
+        "description": "Drag cards to reorder them in a grid layout"
+      },
+      "kanbanBoard": {
+        "title": "Kanban Board",
+        "description": "Manage your tasks across different stages",
+        "columns": {
+          "todo": "To Do",
+          "inProgress": "In Progress",
+          "done": "Done"
+        },
+        "task": "Task"
+      },
+      "addContent": {
+        "title": "Add Content of Your Choice",
+        "description": "Drag Cards to reorder them in a grid layout",
+        "contentLabel": "Content of your choice",
+        "month": "Jan 2026"
+      },
+      "treeView": {
+        "title": "Tree View",
+        "description": "Drag items to reorder or move between groups",
+        "group": "Group",
+        "items": "Items",
+        "groupDescriptions": {
+          "first": "First group",
+          "second": "Second group",
+          "third": "Third group"
+        },
+        "ungrouped": "Ungrouped",
+        "child": "Child",
+        "dragToReorder": "Drag to reorder"
+      }
+    },
+    "howToUse": {
+      "title": "How to Use Drag & Drop",
+      "steps": {
+        "step1": "Click and hold on an item with the grip icon",
+        "step2": "Drag the item to a new position",
+        "step3": "Release to drop the item in its new location",
+        "step4": "For Kanban boards, drag tasks between columns to change status"
+      }
+    }
   }
 }
