@@ -10,10 +10,18 @@ import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Avatar } from '@tia/shared/lib/data-display/avatars/avatar';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-details-modal',
-  imports: [UiModal, CommonModule, ButtonComponent, RouteLoader, Avatar],
+  imports: [
+    UiModal,
+    CommonModule,
+    ButtonComponent,
+    RouteLoader,
+    Avatar,
+    TranslatePipe,
+  ],
   templateUrl: './user-details-modal.html',
   styleUrl: './user-details-modal.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

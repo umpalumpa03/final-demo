@@ -25,6 +25,7 @@ public readonly hasHover = input<boolean>(false);
   public readonly minHeight = input<string>(); 
   public readonly padding = input<string>();    
 public readonly borderColor = input<string>('');
-  public readonly gap = input<string>()
+  public readonly gap = input<string>(); 
+  public readonly backgroundColor=input<string>(); 
 
 }

@@ -202,15 +202,89 @@ describe('EmailChipsInput', () => {
     expect(component.selectedEmails()).toEqual(['user1@test.com']);
   });
 
-//   it('should handle onInputBlur and validate email', async () => {
-//   fixture.componentRef.setInput('searchResults', mockUsers);
-//   component.inputControl.setValue('user1@test.com');
+  it('should clear selected user', () => {
+    const emailSelectedSpy = vi.fn();
+    component.emailSelected.subscribe(emailSelectedSpy);
 
-//   component.onInputBlur();
+    component.clearSelectUser();
 
-//   await new Promise(resolve => setTimeout(resolve, 250));
+    expect(emailSelectedSpy).toHaveBeenCalledWith({} as User);
+  });
 
-//   expect(component.inputControl.value).toBe('user1@test.com');
-//   expect(component.showDropdown()).toBe(false);
-// });
+  it('should emit false for invalid email when query is empty in single mode', () => {
+    const invalidToEmailSpy = vi.fn();
+    component.invalidToEmail.subscribe(invalidToEmailSpy);
+
+    const event = { target: { value: '' } } as any;
+    component.onSearchInput(event);
+
+    expect(invalidToEmailSpy).toHaveBeenCalledWith(false);
+    expect(component.showDropdown()).toBe(false);
+  });
+
+  it('should emit false for invalid email when query is empty in multiple mode', () => {
+    fixture.componentRef.setInput('allowMultiple', true);
+    const invalidCcEmailSpy = vi.fn();
+    component.invalidCcEmail.subscribe(invalidCcEmailSpy);
+
+    const event = { target: { value: '' } } as any;
+    component.onSearchInput(event);
+
+    expect(invalidCcEmailSpy).toHaveBeenCalledWith(false);
+    expect(component.showDropdown()).toBe(false);
+  });
+
+  it('should wrap navigation from last to first on ArrowDown', () => {
+    fixture.componentRef.setInput('searchResults', mockUsers);
+    component.highlightedIndex.set(1); 
+    
+    const event = new KeyboardEvent('keydown', { key: 'ArrowDown' });
+    component.onKeyDown(event);
+
+    expect(component.highlightedIndex()).toBe(0);
+  });
+
+  it('should wrap navigation from first to last on ArrowUp', () => {
+    fixture.componentRef.setInput('searchResults', mockUsers);
+    component.highlightedIndex.set(0); 
+    
+    const event = new KeyboardEvent('keydown', { key: 'ArrowUp' });
+    component.onKeyDown(event);
+
+    expect(component.highlightedIndex()).toBe(1);
+  });
+
+  it('should set error when Enter pressed with invalid email', () => {
+    fixture.componentRef.setInput('searchResults', mockUsers);
+    component.inputControl.setValue('invalid@test.com');
+    
+    const event = new KeyboardEvent('keydown', { key: 'Enter' });
+    component.onKeyDown(event);
+
+    expect(component.inputControl.errors).toEqual({ notFound: true });
+  });
+
+  it('should emit validation outputs on reset', () => {
+    const invalidCcEmailSpy = vi.fn();
+    const invalidToEmailSpy = vi.fn();
+    component.invalidCcEmail.subscribe(invalidCcEmailSpy);
+    component.invalidToEmail.subscribe(invalidToEmailSpy);
+
+    component.reset();
+
+    expect(invalidCcEmailSpy).toHaveBeenCalledWith(false);
+    expect(invalidToEmailSpy).toHaveBeenCalledWith(false);
+  });
+
+  it('should handle onInputBlur with valid email in single mode', async () => {
+    fixture.componentRef.setInput('searchResults', mockUsers);
+    component.inputControl.setValue('user1@test.com');
+
+    component.onInputBlur();
+
+    await new Promise(resolve => setTimeout(resolve, 250));
+
+    expect(component.inputControl.value).toBe('user1@test.com');
+    expect(component.showDropdown()).toBe(false);
+  });
 });
