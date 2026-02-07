@@ -28,6 +28,7 @@ import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/break
 import { BannerCarousel } from '../components/shared/ui/banner-carousel/banner-carousel';
 import { bannerSlides } from '../config/banners.config';
 import { CustomizeButton } from "../components/shared/ui/customize-button/customize-button";
+import { UiSheetModal } from "@tia/shared/lib/overlay/ui-sheet-modal/ui-sheet-modal";
 @Component({
   selector: 'app-dashboard-container',
   imports: [
@@ -40,7 +41,8 @@ import { CustomizeButton } from "../components/shared/ui/customize-button/custom
     LibraryTitle,
     TranslateModule,
     BannerCarousel,
-    CustomizeButton
+    CustomizeButton,
+    UiSheetModal
 ],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',

@@ -56,4 +56,28 @@
 
     }
   </app-drag-container>
+
+  <app-ui-sheet-modal
+  [isOpen]="isCustomizing()"
+  direction="bottom"
+  (closed)="closeCustomization()"
+>
+  <div class="customize-shell">
+    <h2 class="customize-shell__title">{{ 'dashboard.customize.title' | translate }}</h2>
+    
+    <div class="customize-shell__list">
+      @for (item of myItems(); track item.id) {
+        <div class="customize-shell__item">
+          <span class="customize-shell__name">{{ item.title | translate }}</span>
+          <button 
+            (click)="onToggleVisibility(!item.isHidden, item.id)"
+            [class.active]="!item.isHidden"
+          >
+            {{ item.isHidden ? 'Show' : 'Hide' }}
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</app-ui-sheet-modal>
 </div>

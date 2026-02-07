@@ -15,6 +15,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class CustomizeButton {
   public readonly label = input.required<string>();
-  public readonly iconClass = input<string>('icon__customize'); //
+  public readonly iconClass = input<string>('icon__customize');
   public readonly clicked = output<void>();
 }
