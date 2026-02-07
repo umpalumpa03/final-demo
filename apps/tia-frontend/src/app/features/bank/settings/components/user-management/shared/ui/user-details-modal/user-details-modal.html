@@ -4,9 +4,9 @@
     <header>
         <div class="icon">
             <img src="./images/svg/settings/user-management/person.svg" alt="Person Image">
-            <h1>User Details</h1>
+            <h1>{{'settings.user-management.details.title' | translate}}</h1>
         </div>
-        <p>View detailed information about the user.</p>
+        <p>{{'settings.user-management.details.detailed' | translate}}</p>
     </header>
 
     <main class="main">
@@ -28,27 +28,28 @@
                 <p>
                     {{ user.role | lowercase }}
                     @if(user.isBlocked) {
-                    <strong>Blocked</strong>
+                    <strong>{{'settings.user-management.details.blocked' | translate}}</strong>
                     } @else {
-                    <strong>Active</strong>
+                    <strong>{{'settings.user-management.details.active' | translate}}</strong>
                     }
                 </p>
             </div>
         </div>
 
         <div>
-            <h4>Username</h4>
+            <h4>{{'settings.user-management.details.username' | translate}}</h4>
             <p>{{ user.username }}</p>
         </div>
 
         <div>
-            <h4>Created At</h4>
+            <h4>{{'settings.user-management.details.created' | translate}}</h4>
             <p>{{ user.createdAt | date:'dd/MM/yyyy, HH:mm:ss' }}</p>
         </div>
         }
     </main>
 
     <footer>
-        <app-button variant="outline" (click)="close.emit()">Close</app-button>
+        <app-button variant="outline" (click)="close.emit()">{{'settings.user-management.details.close' |
+            translate}}</app-button>
     </footer>
 </app-ui-modal>
