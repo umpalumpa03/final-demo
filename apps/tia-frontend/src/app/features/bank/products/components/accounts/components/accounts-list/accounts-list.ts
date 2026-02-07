@@ -70,7 +70,6 @@ export class AccountsListComponent implements OnInit {
   onResize(event: Event): void {
     const target = event.target as Window;
     this.updateItemsPerPage(target.innerWidth);
-    // Reset pagination when screen size changes
     this.currentPageBySection.set({});
   }
 

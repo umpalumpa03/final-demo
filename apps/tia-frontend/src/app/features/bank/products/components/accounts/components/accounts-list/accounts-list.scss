@@ -63,9 +63,9 @@
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
       app-account-card {
-        flex: 0 0 calc((100% - 4.8rem) / 3);
-        min-width: calc((100% - 4.8rem) / 3);
-        max-width: calc((100% - 4.8rem) / 3);
+        flex: 0 0 calc((100% - 1.8rem) / 3);
+        min-width: calc((100% - 1.8rem) / 3);
+        max-width: calc((100% - 1.8rem) / 3);
       }
     }
 
