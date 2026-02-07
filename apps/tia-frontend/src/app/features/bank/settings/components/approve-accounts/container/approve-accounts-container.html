@@ -1,4 +1,4 @@
-<app-ui-modal [isOpen]="false">
+<app-ui-modal [isOpen]="true">
   <app-permissions-modal
     [modalTitle]="'Modify Account Permissions'"
     [modalSubtitle]="'Configure permissions for this account request'"
@@ -7,5 +7,6 @@
     [items]="store.permissions()"
     [accOrCardName]="'FLEXAACCOUNT'"
     [name]="'John Doe'"
+    (save)="save()"
   ></app-permissions-modal>
 </app-ui-modal>

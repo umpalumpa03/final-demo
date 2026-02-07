@@ -1,26 +1,39 @@
-<app-library-title [title]="modalTitle()"></app-library-title>
-<app-list-display [items]="cardOrAccHolder()"> </app-list-display>
-<form class="list-container" [formGroup]="form()">
-  @if (title()) {
-  <h3>{{ title() }}</h3>
-  }
-  <div>
-    @for (item of items(); track item.value) {
-    <lib-checkboxes
-      [formControlName]="item.value.toString()"
-      [config]="{
+<div class="modal-permission-wrapper">
+  <app-library-title
+    [title]="modalTitle()"
+    [subtitle]="modalSubtitle()"
+  ></app-library-title>
+  <app-list-display [items]="cardOrAccHolder()"> </app-list-display>
+  <form class="list-container" [formGroup]="form()">
+    @if (title()) {
+    <h3>{{ title() }}</h3>
+    }
+    <div class="list-container__checkbox">
+      @for (item of items(); track item.value) {
+      <lib-checkboxes
+        [formControlName]="item.value.toString()"
+        [config]="{
             label: item.label,
             id: 'checkbox-' + item.value,
             variant: 'outlined' 
           }"
-    ></lib-checkboxes>
-    }
+      ></lib-checkboxes>
+      }
+    </div>
+  </form>
+  <div class="counter-text">
+    <p>
+      <span>{{activeCount()}} of {{totalCount()}} </span> permissions enabled
+    </p>
   </div>
-</form>
-
-<div class="button-container">
-  <app-button [variant]="'default'" [icon]="'confirm-icon.svg'">
-    Save Permissions
-  </app-button>
-  <app-button [variant]="'outline'">Cancel</app-button>
+  <div class="button-container">
+    <app-button
+      [variant]="'default'"
+      [icon]="'confirm-icon-white.svg'"
+      (click)="save.emit()"
+    >
+      Save Permissions
+    </app-button>
+    <app-button [variant]="'outline'">Cancel</app-button>
+  </div>
 </div>
