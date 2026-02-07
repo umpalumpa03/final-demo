@@ -1,3 +1,4 @@
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CardGroupItem } from './card-group-item';
 import { CardGroupView } from '../../models/card-list-view.model';
@@ -22,6 +23,7 @@ describe('CardGroupItem', () => {
     fixture = TestBed.createComponent(CardGroupItem);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('group', mockGroup);
+    fixture.componentRef.setInput('isLoading', false);
   });
 
   it('should emit cardClicked with full data', () => {

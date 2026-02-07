@@ -11,7 +11,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddCardButton {
-  readonly clicked = output<void>();
+  public readonly clicked = output<void>();
 
   public handleClick(): void {
     this.clicked.emit();
