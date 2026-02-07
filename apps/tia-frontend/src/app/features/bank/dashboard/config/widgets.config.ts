@@ -1,5 +1,4 @@
-import { signal } from '@angular/core';
-import { IWidgetItem } from '../models/widgets.model';
+import { bannerSlides } from './banners.config';
 
 export const widgetItems = [
   {
@@ -48,3 +47,10 @@ export const catalog = [
     type: 'exchange',
   },
 ] as const;
+
+export const DASHBOARD_CONFIG = {
+  GRID_COLUMNS: { default: 2, md: 0, sm: 0 },
+  BANNER_SLIDES: bannerSlides,
+  WIDGET_CATALOG: catalog,
+  PERSISTENCE_DEBOUNCE: 1000,
+} as const;

@@ -1,11 +1,13 @@
 import { DraggableItemType } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 
+export type IWidgetTypes = 'transactions' | 'accounts' | 'exchange';
+
 export interface IWidgetItem extends DraggableItemType {
   widgetName?: string; 
   dbId?: string;       
   isActive?: boolean;  
   order?: number;      
-  type?: 'transactions' | 'accounts' | 'exchange';
+  type?: IWidgetTypes;
   isHidden?: boolean;  
   hasFullWidth?: boolean;
   hasPagination?: boolean;

@@ -11,16 +11,15 @@ import {
   filter,
 } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
-import { WidgetsService } from '../../features/bank/dashboard/services/widgets-service';
+import { WidgetsApiService } from '../../shared/services/user-info/widgets-service.api';
 import { Store } from '@ngrx/store';
-import { selectUserLoaded, selectWidgetsLoaded } from './user-info.selectors';
-import { IWidgetItem } from '../../features/bank/dashboard/models/widgets.model';
+import { selectWidgetsLoaded } from './user-info.selectors';
 
 @Injectable()
 export class UserInfoEffects {
   private readonly actions$ = inject(Actions);
   private readonly userInfoService = inject(UserInfoService);
-  private readonly widgetService = inject(WidgetsService);
+  private readonly widgetService = inject(WidgetsApiService);
   private readonly store = inject(Store);
 
   public loadUser$ = createEffect(() =>
