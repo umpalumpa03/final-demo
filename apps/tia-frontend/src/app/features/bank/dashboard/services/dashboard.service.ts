@@ -48,11 +48,13 @@ export class DashboardService {
       (item) => !visibleIds.has(item.id),
     );
 
-    const newVisibleList = reorderedVisibleItems.map((item, index) => ({
+const newVisibleList = reorderedVisibleItems.map((item, index) => ({
       ...item,
       order: index + 1,
-      hasFullWidth: index === 0,
-      isHidden: index === 0 ? item.isHidden : false,
+      // The first item is still the logical 'Hero'
+      hasFullWidth: index === 0, 
+      // PRESERVE the isHidden state for all items during drag
+      isHidden: !!item.isHidden,
     }));
 
     newVisibleList.forEach((item) => this.dirtyIds.add(item.id));
@@ -67,20 +69,17 @@ export class DashboardService {
   }
 
   public foldWidget(isSelected: boolean, id: string): void {
-    const widgetIndex = this.myItems().findIndex((w) => w.id === id);
+    this.dirtyIds.add(id);
 
-    if (widgetIndex === 0) {
-      this.dirtyIds.add(id);
-      const updatedList = this.myItems().map((i) =>
-        i.id === id ? { ...i, isHidden: !isSelected } : i,
-      );
+    this.myItems.update((items) =>
+      items.map((i) => (i.id === id ? { ...i, isHidden: !isSelected } : i)),
+    );
 
-      this.myItems.set(updatedList);
-      this.updateStream$.next(updatedList);
-      this.store.dispatch(
-        UserInfoActions.loadWidgetsSuccess({ widgets: updatedList }),
-      );
-    }
+    // Sync state for persistence and immediate store update
+    this.updateStream$.next(this.myItems());
+    this.store.dispatch(
+      UserInfoActions.loadWidgetsSuccess({ widgets: this.myItems() }),
+    );
   }
 
   public toggleCatalogWidget(isSelected: boolean, id: string): void {

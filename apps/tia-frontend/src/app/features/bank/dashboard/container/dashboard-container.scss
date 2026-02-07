@@ -48,3 +48,26 @@
     width: 100%;
   }
 }
+
+.dashboard-loading-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.4rem;
+  width: 100%;
+
+  .skeleton-wrapper {
+    width: 100%;
+
+    &.hero {
+      grid-column: span 2;
+    }
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+
+    .skeleton-wrapper.hero {
+      grid-column: span 1;
+    }
+  }
+}

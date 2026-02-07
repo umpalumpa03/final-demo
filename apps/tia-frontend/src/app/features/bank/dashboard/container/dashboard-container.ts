@@ -36,6 +36,7 @@ import {
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { DashboardService } from '../services/dashboard.service';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 @Component({
   selector: 'app-dashboard-container',
   imports: [
@@ -63,6 +64,7 @@ export class DashboardContainer implements OnInit {
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
   private readonly dashService = inject(DashboardService);
+  private readonly breakpointService = inject(BreakpointService);
 
   protected readonly myItems = this.dashService.myItems;
   protected readonly widgetCatalog = this.dashService.widgetCatalog;
@@ -71,7 +73,19 @@ export class DashboardContainer implements OnInit {
 
   protected readonly isCustomizing = signal(false);
   protected readonly bannerConfig = signal(bannerSlides);
-  public readonly gridColumns = { default: 2, md: 0, sm: 0 };
+  protected readonly gridColumns = computed(() => {
+    const itemCount = this.visibleItems().length;
+    const isVertical = this.breakpointService.isXsMobile() || itemCount < 3;
+
+    return isVertical
+      ? { default: 1, md: 1, sm: 1 }
+      : { default: 2, md: 2, sm: 1 };
+  });
+
+  protected readonly isHeroMode = computed(
+    () =>
+      this.visibleItems().length >= 3 && !this.breakpointService.isXsMobile(),
+  );
 
   protected readonly pageTitle = computed(() =>
     this.translate.instant('dashboard.page.title'),
@@ -96,13 +110,17 @@ export class DashboardContainer implements OnInit {
   }
 
   protected isWidgetActive(id: string): boolean {
-    const widget = this.myItems().find((w) => w.id === id);
-    return !!widget && !widget.isHidden;
+    return this.myItems().some((w) => w.id === id);
   }
 
   public dynamicColspans = computed(() => {
     const items = this.visibleItems();
-    return items.map((_, index) => (index === 0 ? 2 : 1));
+    const isVertical = this.breakpointService.isXsMobile() || items.length < 3;
+
+    return items.map((_, index) => {
+      if (isVertical) return 1;
+      return index === 0 ? 2 : 1;
+    });
   });
 
   public onWidgetRefresh(): void {
