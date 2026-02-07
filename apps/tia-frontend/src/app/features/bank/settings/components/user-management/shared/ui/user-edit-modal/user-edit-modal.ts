@@ -15,6 +15,7 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { USER_ROLE } from '../../config/user-edit.config';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-edit-modal',
@@ -26,6 +27,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
     TextInput,
     Dropdowns,
     ReactiveFormsModule,
+    TranslatePipe,
   ],
   templateUrl: './user-edit-modal.html',
   styleUrl: './user-edit-modal.scss',

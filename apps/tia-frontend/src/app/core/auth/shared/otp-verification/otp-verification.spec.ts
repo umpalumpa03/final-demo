@@ -94,7 +94,7 @@ describe('OtpVerification', () => {
     vi.useRealTimers();
   });
 
-  it('should compute unitedError and disable button when errors are set', () => {
+  it('should compute unitedError and allow retry when errors are set', () => {
     fixture.componentRef.setInput('errorMessage', 'Invalid code');
     fixture.componentRef.setInput('remainingAttempts', 2);
     fixture.componentRef.setInput('onErrorRedirect', true);
@@ -102,7 +102,7 @@ describe('OtpVerification', () => {
 
     expect(component.unitedError()).toContain('Invalid code');
     expect(component.unitedError()).toContain('Remaining attempts: 2');
-    expect(component.isButtonDisabled()).toBe(true);
+    expect(component.isButtonDisabled()).toBe(false);
   });
 
   it('should disable button when phoneErrorMessage is set', () => {

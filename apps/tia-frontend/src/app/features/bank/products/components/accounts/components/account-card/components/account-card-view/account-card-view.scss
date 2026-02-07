@@ -205,6 +205,7 @@
     @include flex-center();
     gap: 0.75rem;
     padding: 1rem;
+    min-height: 4.4rem;
 
     &-icon {
       font-size: 1.6rem;

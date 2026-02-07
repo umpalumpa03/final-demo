@@ -5,7 +5,7 @@
       [icon]="'plus-icon.svg'"
       [fullWidth]="true"
       (click)="isComposeOpen.set(true)"
-      >{{ 'messaging.compose.compose' | translate }}</app-button
+      >{{ isMobile() ? '' : 'messaging.compose.compose' | translate }}</app-button
     >
     <app-compose
       [isOpen]="isComposeOpen()"
@@ -14,6 +14,7 @@
     <app-navigation-bar
       [items]="messageRoutes()"
       [orientation]="'vertical'"
+      [collapsed]="isMobile()"
     ></app-navigation-bar>
   </div>
   <div class="messaging-container__content">

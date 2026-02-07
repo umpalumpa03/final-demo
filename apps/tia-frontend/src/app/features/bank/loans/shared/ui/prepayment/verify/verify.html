@@ -1,29 +1,6 @@
 <div class="otp-step">
-    <header class="otp-step__header">
-        <div class="otp-step__header-text">
-            <div class="icon">
-                <img src="./images/svg/feature-loans/prepayment.svg" alt="OTP">
-                <h3 class="otp-step__title">{{ 'loans.prepayment_wizard.step_otp.title' | translate }}</h3>
-            </div>
-            <p class="otp-step__subtitle">{{ 'loans.prepayment_wizard.step_otp.subtitle' | translate }}</p>
-        </div>
-    </header>
-
-    <div class="otp-step__body">
-        <div class="otp-step__form" [formGroup]="form">
-            <h4 class="otp-step__section-title">{{ 'loans.prepayment_wizard.step_otp.section' | translate }}</h4>
-            <lib-otp formControlName="otp" [config]="inputConfig"></lib-otp>
-
-            <app-button variant="default" [icon]="isLoading() ? null : './calculate.svg'" (click)="onSubmit()"
-                [isDisabled]="form.invalid || isLoading()" [isLoading]="isLoading()">
-                {{ 'loans.prepayment_wizard.step_otp.button' | translate }}
-            </app-button>
-        </div>
-    </div>
-
-    <footer class="otp-step__footer">
-        <app-button variant="outline" (click)="cancel.emit()">
-            {{ 'loans.buttons.cancel' | translate }}
-        </app-button>
-    </footer>
+    <app-otp-verification type="otp" timerType="otp" [timeLimit]="1" [remainingAttempts]="3" [isTimerDisplayed]="false"
+        [isLoading]="isLoading()" [errorMessage]="errorMessage()" [inputOtpConfig]="verifyState.otpConfig()"
+        (isVerifyCalled)="onVerify($event)" [noMoreAttempsRedirectRoute]="routes.ALL" (onBackOut)="cancel.emit()">
+    </app-otp-verification>
 </div>

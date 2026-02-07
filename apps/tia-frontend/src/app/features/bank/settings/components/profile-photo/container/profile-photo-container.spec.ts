@@ -8,8 +8,12 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DefaultAvatarResponse, DefaultAvatarWithUrl } from '../../../../../../features/bank/settings/components/profile-photo/store/profile-photo/profile-photo.state';
 import {
   selectDefaultAvatars,
+  selectCurrentAvatarUrl,
   selectSelectedAvatarId,
   selectUploadedFileName,
+  selectAvatarId,
+  selectAvatarType,
+  selectSavedAvatarUrl,
 } from '../../../../../../features/bank/settings/components/profile-photo/store/profile-photo/profile-photo.selectors';
 import { environment } from '../../../../../../../environments/environment';
 
@@ -72,6 +76,9 @@ describe('ProfilePhotoContainer', () => {
 
     component.onRemovePhoto();
 
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      ProfilePhotoActions.removeAvatar(),
+    );
     expect(dispatchSpy).toHaveBeenCalledWith(
       ProfilePhotoActions.removeAvatarRequest(),
     );
@@ -183,6 +190,100 @@ describe('ProfilePhotoContainer', () => {
     store.refreshState();
     fixture.detectChanges();
     expect(revokeSpy).toHaveBeenCalled();
+  });
+
+  it('should open and close upload modal correctly', () => {
+    component.onOpenUploadModal();
+    expect(component.isUploadModalOpen()).toBe(true);
+
+ 
+    (component as any).isDragOver.set(true);
+    component.onCloseUploadModal();
+    expect(component.isUploadModalOpen()).toBe(false);
+    expect(component.isDragOver()).toBe(false);
+  });
+
+  it('should set drag state on drag over and leave', () => {
+    const dragEvent = {
+      preventDefault: vi.fn(),
+    } as unknown as DragEvent;
+
+    component.onDragOver(dragEvent);
+    expect(dragEvent.preventDefault).toHaveBeenCalled();
+    expect(component.isDragOver()).toBe(true);
+
+    const leaveEvent = {
+      preventDefault: vi.fn(),
+    } as unknown as DragEvent;
+
+    component.onDragLeave(leaveEvent);
+    expect(leaveEvent.preventDefault).toHaveBeenCalled();
+    expect(component.isDragOver()).toBe(false);
+  });
+
+  it('should ignore file input change when there are no files', () => {
+    const store = TestBed.inject(Store);
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+    const input = document.createElement('input');
+    Object.defineProperty(input, 'files', {
+      value: null,
+      writable: false,
+    });
+
+    const event = new Event('change');
+    Object.defineProperty(event, 'target', { value: input });
+
+    component.onFileInputChange(event);
+
+    expect(dispatchSpy).not.toHaveBeenCalled();
+  });
+
+  it('should ignore file drop when there are no files', () => {
+    const onFileSelectedSpy = vi.spyOn(component as any, 'onFileSelected');
+
+    const event = {
+      preventDefault: vi.fn(),
+      dataTransfer: {
+        files: { length: 0 } as unknown as FileList,
+      },
+    } as unknown as DragEvent;
+
+    component.onFileDrop(event);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(onFileSelectedSpy).not.toHaveBeenCalled();
+    expect(component.isDragOver()).toBe(false);
+  });
+
+  it('should revert to saved avatar and clear unsaved changes on removePhoto', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+    const file = new File(['content'], 'temp.png', { type: 'image/png' });
+    (component as any).uploadedFile = file;
+
+    store.overrideSelector(selectSavedAvatarUrl, 'https://images/saved.png');
+    store.overrideSelector(selectCurrentAvatarUrl, 'blob:temp');
+    store.overrideSelector(selectAvatarId, 'avatar-1');
+    store.overrideSelector(selectAvatarType, 'default');
+    store.overrideSelector(selectUploadedFileName, 'temp.png');
+    store.refreshState();
+
+    component.onRemovePhoto();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      ProfilePhotoActions.setCurrentAvatar({
+        avatarId: 'avatar-1',
+        avatarType: 'default',
+        avatarUrl: 'https://images/saved.png',
+      }),
+    );
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      ProfilePhotoActions.clearUploadedFile(),
+    );
+    expect(dispatchSpy).not.toHaveBeenCalledWith(
+      ProfilePhotoActions.removeAvatarRequest(),
+    );
   });
 
 });

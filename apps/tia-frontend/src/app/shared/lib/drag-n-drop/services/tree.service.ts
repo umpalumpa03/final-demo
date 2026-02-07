@@ -108,9 +108,10 @@ export class TreeService {
     items: TreeItem[],
     checkedItemIds: Set<string>,
   ): Set<string> {
+    const groupItems = items.filter((i) =>
+      groupId === UNGROUPED_ID ? i.groupId === null : i.groupId === groupId,
+    );
     const newSet = new Set(checkedItemIds);
-    const targetGroupId = groupId === UNGROUPED_ID ? null : groupId;
-    const groupItems = items.filter((i) => i.groupId === targetGroupId);
     for (const item of groupItems) {
       checked ? newSet.add(item.id) : newSet.delete(item.id);
     }
@@ -132,8 +133,9 @@ export class TreeService {
     items: TreeItem[],
     checkedItemIds: Set<string>,
   ): boolean {
-    const targetGroupId = groupId === UNGROUPED_ID ? null : groupId;
-    const groupItems = items.filter((i) => i.groupId === targetGroupId);
+    const groupItems = items.filter((i) =>
+      groupId === UNGROUPED_ID ? i.groupId === null : i.groupId === groupId,
+    );
     return (
       groupItems.length > 0 && groupItems.every((i) => checkedItemIds.has(i.id))
     );
@@ -144,8 +146,9 @@ export class TreeService {
     items: TreeItem[],
     checkedItemIds: Set<string>,
   ): boolean {
-    const targetGroupId = groupId === UNGROUPED_ID ? null : groupId;
-    const groupItems = items.filter((i) => i.groupId === targetGroupId);
+    const groupItems = items.filter((i) =>
+      groupId === UNGROUPED_ID ? i.groupId === null : i.groupId === groupId,
+    );
     const checkedCount = groupItems.filter((i) =>
       checkedItemIds.has(i.id),
     ).length;

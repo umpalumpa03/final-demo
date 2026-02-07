@@ -172,7 +172,7 @@ export class PaybillEffect {
         const amount = payload?.amount ?? 0;
         const challengeId = response.verify?.challengeId;
 
-        if (amount >= 50 && challengeId) {
+        if (amount > 50 && challengeId) {
           this.router.navigate(['/bank/paybill/pay/otp-verification']);
           return of(PaybillActions.setPaymentStep({ step: 'OTP' }));
         }

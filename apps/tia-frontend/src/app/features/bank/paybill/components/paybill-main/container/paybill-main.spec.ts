@@ -18,6 +18,7 @@ describe('PaybillMain', () => {
       setSearchQuery: vi.fn(),
       activeProvider: signal(null),
       isLoading: signal(false),
+      showSearch: signal(true),
     } as unknown as Partial<PaybillMainFacade>;
 
     await TestBed.configureTestingModule({
@@ -45,11 +46,8 @@ describe('PaybillMain', () => {
 
   it('should call setSearchQuery after debounce time', () => {
     const query = 'Internet';
-
     component.searchControl.setValue(query);
-
     vi.advanceTimersByTime(300);
-
     expect(facadeMock.setSearchQuery).toHaveBeenCalledWith(query);
   });
 
@@ -57,9 +55,7 @@ describe('PaybillMain', () => {
     component.searchControl.setValue('A');
     component.searchControl.setValue('AB');
     component.searchControl.setValue('ABC');
-
     vi.advanceTimersByTime(300);
-
     expect(facadeMock.setSearchQuery).toHaveBeenCalledTimes(1);
     expect(facadeMock.setSearchQuery).toHaveBeenCalledWith('ABC');
   });

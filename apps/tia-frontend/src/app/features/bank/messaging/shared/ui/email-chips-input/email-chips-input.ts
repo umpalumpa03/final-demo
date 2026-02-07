@@ -48,11 +48,19 @@ export class EmailChipsInput {
       this.emailSelected.emit({ email: query } as User);
     }
 
-    const found = this.searchResults().some(u => u.email === query);
-    if (this.allowMultiple()) {
-      this.invalidCcEmail.emit(!found);
+    if (!query) {
+      if (this.allowMultiple()) {
+        this.invalidCcEmail.emit(false);
+      } else {
+        this.invalidToEmail.emit(false);
+      }
     } else {
-      this.invalidToEmail.emit(!found);
+      const found = this.searchResults().some(u => u.email === query);
+      if (this.allowMultiple()) {
+        this.invalidCcEmail.emit(!found);
+      } else {
+        this.invalidToEmail.emit(!found);
+      }
     }
 
     this.highlightedIndex.set(-1);
@@ -200,9 +208,14 @@ export class EmailChipsInput {
         if (!found) {
           this.inputControl.setErrors?.({ notFound: true });
           this.inputControl.setValue('');
+          this.invalidCcEmail.emit(false);
         } else {
           this.selectUser(this.searchResults().find(u => u.email === value)!);
         }
+      } else if (!value && this.allowMultiple()) {
+        this.invalidCcEmail.emit(false);
+      } else if (!value && !this.allowMultiple()) {
+        this.invalidToEmail.emit(false);
       }
     }, 200);
   }
@@ -211,5 +224,7 @@ export class EmailChipsInput {
     this.inputControl.setValue('');
     this.selectedEmails.set([]);
     this.closeDropdown();
+    this.invalidCcEmail.emit(false);
+    this.invalidToEmail.emit(false);
   }
 }

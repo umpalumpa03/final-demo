@@ -5,6 +5,7 @@ import { InboxService } from '@tia/shared/services/messages/inbox.service';
 import { of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { User } from './messaging.state';
+import { TranslateService } from '@ngx-translate/core';
 
 describe('MessagingStore', () => {
   let store: InstanceType<typeof MessagingStore>;
@@ -34,7 +35,13 @@ describe('MessagingStore', () => {
       providers: [
         MessagingStore,
         { provide: MessagingService, useValue: mockMessagingService },
-        { provide: InboxService, useValue: mockInboxService }
+        { provide: InboxService, useValue: mockInboxService },
+        {
+          provide: TranslateService,
+          useValue: {
+            instant: vi.fn((key: string) => key)
+          }
+        }
       ]
     });
 
@@ -70,7 +77,7 @@ describe('MessagingStore', () => {
     store.loadMails('inbox');
 
     await vi.waitFor(() => {
-      expect(store.error()).toBe('Failed to load mails');
+      expect(store.error()).toBe('messaging.storeErrors.loadMails');
       expect(store.isLoading()).toBe(false);
     });
   });
@@ -251,7 +258,7 @@ describe('MessagingStore', () => {
     store.getEmailById(1);
 
     await vi.waitFor(() => {
-      expect(store.error()).toBe('Failed to load email detail');
+      expect(store.error()).toBe('messaging.storeErrors.loadEmailDetail');
     });
   });
   it('should get draft total count successfully', async () => {
@@ -366,7 +373,7 @@ describe('MessagingStore', () => {
     store.sendDraft(draftData);
 
     await vi.waitFor(() => {
-      expect(store.error()).toBe('Failed to send draft');
+      expect(store.error()).toBe('messaging.storeErrors.sendDraft');
       expect(store.isLoading()).toBe(false);
     });
   });
@@ -379,7 +386,7 @@ describe('MessagingStore', () => {
     store.getUnreadImportantCount();
 
     await vi.waitFor(() => {
-      expect(store.error()).toBe('Failed to load important unread count');
+      expect(store.error()).toBe('messaging.storeErrors.loadImportantUnreadCount');
     });
   });
 
@@ -400,7 +407,7 @@ describe('MessagingStore', () => {
     store.searchMails('test');
 
     await vi.waitFor(() => {
-      expect(store.error()).toBe('Search failed');
+      expect(store.error()).toBe('messaging.storeErrors.searchFailed');
       expect(store.searchResults()).toEqual([]);
       expect(store.isSearching()).toBe(false);
     });
@@ -473,7 +480,7 @@ describe('MessagingStore', () => {
     await vi.waitFor(() => {
       expect(mockMessagingService.sendMailReply).toHaveBeenCalledWith(1, 'This is my reply');
       expect(mockMessagingService.getMailReplies).toHaveBeenCalledWith(1);
-      expect(store.successMessage?.()).toBe('Reply sent successfully');
+      expect(store.successMessage?.()).toBe('messaging.storeSuccess.replySent');
       expect(store.isLoading()).toBe(false);
     });
   });
@@ -486,7 +493,7 @@ describe('MessagingStore', () => {
     store.sendMailReply({ mailId: 1, body: 'This is my reply' });
 
     await vi.waitFor(() => {
-      expect(store.error()).toBe('Failed to send mail reply');
+      expect(store.error()).toBe('messaging.storeErrors.sendMailReply');
     });
   });
 });
