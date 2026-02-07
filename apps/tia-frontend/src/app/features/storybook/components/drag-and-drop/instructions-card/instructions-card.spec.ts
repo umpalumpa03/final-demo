@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { InstructionsCard } from './instructions-card';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('InstructionsCard', () => {
   let component: InstructionsCard;
@@ -7,12 +8,12 @@ describe('InstructionsCard', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InstructionsCard],
+      imports: [InstructionsCard, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(InstructionsCard);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges(); 
   });
 
   it('should create', () => {
