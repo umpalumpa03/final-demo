@@ -7,8 +7,8 @@
           <img src="images/svg/sidebar-nav/loans.svg" alt="Loan" />
         </div>
         <div class="loan-drawer__header-text">
-          <h2 class="loan-drawer__title">Loan Application Details</h2>
-          <p class="loan-drawer__subtitle">Review the loan application and user information</p>
+          <h2 class="loan-drawer__title">{{ labels().title }}</h2>
+          <p class="loan-drawer__subtitle">{{ labels().subtitle }}</p>
         </div>
       </div>
       <button
@@ -32,7 +32,7 @@
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
           </div>
-          <h3 class="loan-drawer__section-title">Applicant Information</h3>
+          <h3 class="loan-drawer__section-title">{{ labels().applicantSection }}</h3>
         </div>
 
         @if (isUserInfoLoading()) {
@@ -40,31 +40,31 @@
         } @else if (userInfo()) {
           <div class="loan-drawer__fields">
             <div class="loan-drawer__field">
-              <span class="loan-drawer__label">Full Name</span>
+              <span class="loan-drawer__label">{{ labels().fullName }}</span>
               <span class="loan-drawer__value">{{ userInfo()?.fullName }}</span>
             </div>
             <div class="loan-drawer__field">
-              <span class="loan-drawer__label">Email</span>
+              <span class="loan-drawer__label">{{ labels().email }}</span>
               <span class="loan-drawer__value">{{ userInfo()?.email }}</span>
             </div>
             <div class="loan-drawer__field">
-              <span class="loan-drawer__label">Phone Number</span>
+              <span class="loan-drawer__label">{{ labels().phoneNumber }}</span>
               <span class="loan-drawer__value">{{ userInfo()?.phoneNumber }}</span>
             </div>
             <div class="loan-drawer__field">
-              <span class="loan-drawer__label">Employment Status</span>
+              <span class="loan-drawer__label">{{ labels().employmentStatus }}</span>
               <span class="loan-drawer__value">{{ userInfo()?.employmentStatus }}</span>
             </div>
             <div class="loan-drawer__field loan-drawer__field--full">
-              <span class="loan-drawer__label">Address</span>
+              <span class="loan-drawer__label">{{ labels().address }}</span>
               <span class="loan-drawer__value">{{ userInfo()?.address }}</span>
             </div>
             <div class="loan-drawer__field">
-              <span class="loan-drawer__label">Annual Income</span>
+              <span class="loan-drawer__label">{{ labels().annualIncome }}</span>
               <span class="loan-drawer__value">{{ userInfo()?.annualIncome | currency:'USD':'symbol':'1.0-0' }}</span>
             </div>
             <div class="loan-drawer__field">
-              <span class="loan-drawer__label">Credit Score</span>
+              <span class="loan-drawer__label">{{ labels().creditScore }}</span>
               <span class="loan-drawer__value loan-drawer__value--with-badge">
                 {{ userInfo()?.creditScore }}
                 <app-badges
@@ -77,7 +77,7 @@
             </div>
           </div>
         } @else {
-          <p class="loan-drawer__empty">Applicant information unavailable</p>
+          <p class="loan-drawer__empty">{{ labels().applicantUnavailable }}</p>
         }
       </section>
 
@@ -87,8 +87,8 @@
             <div class="loan-drawer__section-icon loan-drawer__section-icon--loan">
               <img src="images/svg/sidebar-nav/loans.svg" alt="Loan" />
             </div>
-            <h3 class="loan-drawer__section-title">Loan Details</h3>
-          </div>
+          <h3 class="loan-drawer__section-title">{{ labels().loanSection }}</h3>
+        </div>
 
           @if (isLoanDetailsLoading()) {
             <app-skeleton [width]="'100%'" [height]="'12rem'"></app-skeleton>
@@ -96,27 +96,27 @@
             <div class="loan-drawer__card">
               <div class="loan-drawer__fields">
                 <div class="loan-drawer__field">
-                  <span class="loan-drawer__label">Loan Amount</span>
+                  <span class="loan-drawer__label">{{ labels().loanAmount }}</span>
                   <span class="loan-drawer__value loan-drawer__value--bold">{{ loanDetailsResponse()?.loanDetails?.loanAmount | currency:'USD':'symbol':'1.0-0' }}</span>
                 </div>
                 <div class="loan-drawer__field">
-                  <span class="loan-drawer__label">Loan Purpose</span>
+                  <span class="loan-drawer__label">{{ labels().loanPurpose }}</span>
                   <span class="loan-drawer__value loan-drawer__value--capitalize">{{ loanDetailsResponse()?.loanDetails?.loanPurpose }}</span>
                 </div>
                 <div class="loan-drawer__field">
-                  <span class="loan-drawer__label">Loan Term</span>
-                  <span class="loan-drawer__value">{{ loanDetailsResponse()?.loanDetails?.loanTermMonths }} months</span>
+                  <span class="loan-drawer__label">{{ labels().loanTerm }}</span>
+                  <span class="loan-drawer__value">{{ loanDetailsResponse()?.loanDetails?.loanTermMonths }} {{ labels().months }}</span>
                 </div>
                 <div class="loan-drawer__field">
-                  <span class="loan-drawer__label">Interest Rate</span>
+                  <span class="loan-drawer__label">{{ labels().interestRate }}</span>
                   <span class="loan-drawer__value">{{ interestRate() }}% APR</span>
                 </div>
                 <div class="loan-drawer__field">
-                  <span class="loan-drawer__label">Monthly Payment</span>
+                  <span class="loan-drawer__label">{{ labels().monthlyPayment }}</span>
                   <span class="loan-drawer__value loan-drawer__value--accent">{{ monthlyPayment() | currency:'USD':'symbol':'1.0-0' }}</span>
                 </div>
                 <div class="loan-drawer__field">
-                  <span class="loan-drawer__label">Request Date</span>
+                  <span class="loan-drawer__label">{{ labels().requestDate }}</span>
                   <span class="loan-drawer__value">{{ loanDetailsResponse()?.loanDetails?.requestDate | date:'dd/MM/yyyy' }}</span>
                 </div>
               </div>
@@ -131,23 +131,23 @@
             <div class="loan-drawer__section-icon loan-drawer__section-icon--risk">
               <img src="images/svg/auth/secured-blue.svg" alt="Risk" />
             </div>
-            <h3 class="loan-drawer__section-title">Risk Assessment</h3>
-          </div>
+          <h3 class="loan-drawer__section-title">{{ labels().riskSection }}</h3>
+        </div>
 
           @if (isLoanDetailsLoading()) {
             <app-skeleton [width]="'100%'" [height]="'10rem'"></app-skeleton>
           } @else {
             <div class="loan-drawer__risk-card">
               <div class="loan-drawer__risk-row">
-                <span class="loan-drawer__risk-label">Debt-to-Income Ratio</span>
+                <span class="loan-drawer__risk-label">{{ labels().debtToIncome }}</span>
                 <span class="loan-drawer__risk-value">{{ debtToIncomeRatio() }}%</span>
               </div>
               <div class="loan-drawer__risk-row">
-                <span class="loan-drawer__risk-label">Loan-to-Income Ratio</span>
+                <span class="loan-drawer__risk-label">{{ labels().loanToIncome }}</span>
                 <span class="loan-drawer__risk-value">{{ loanToIncomeRatio() }}%</span>
               </div>
               <div class="loan-drawer__risk-row loan-drawer__risk-row--last">
-                <span class="loan-drawer__risk-label">Total Interest</span>
+                <span class="loan-drawer__risk-label">{{ labels().totalInterest }}</span>
                 <span class="loan-drawer__risk-value">{{ totalInterest() | currency:'USD':'symbol':'1.0-0' }}</span>
               </div>
             </div>
@@ -155,18 +155,12 @@
         </section>
       }
 
-      @if (actionError()) {
-        <div class="loan-drawer__error">
-          {{ actionError() }}
-        </div>
-      }
-
       @if (showDeclineForm()) {
         <section class="loan-drawer__section loan-drawer__section--decline">
-          <h3 class="loan-drawer__section-title">Reason for Declining</h3>
+          <h3 class="loan-drawer__section-title">{{ labels().declineSection }}</h3>
           <textarea
             class="loan-drawer__textarea"
-            placeholder="Please provide a reason for declining this loan application..."
+            [placeholder]="labels().declinePlaceholder"
             [value]="declineReason()"
             (input)="onReasonChange($any($event.target).value)"
             rows="3"
@@ -181,7 +175,7 @@
           [variant]="'outline'"
           (click)="onClose()"
         >
-          Close
+          {{ labels().close }}
         </app-button>
         <app-button
           [variant]="'destructive'"
@@ -193,7 +187,7 @@
             <line x1="15" y1="9" x2="9" y2="15"></line>
             <line x1="9" y1="9" x2="15" y2="15"></line>
           </svg>
-          Decline Loan
+          {{ labels().decline }}
         </app-button>
         <app-button
           [variant]="'success'"
@@ -204,7 +198,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
-          Approve Loan
+          {{ labels().approve }}
         </app-button>
       } @else {
         <app-button
@@ -212,7 +206,7 @@
           [isDisabled]="isActionLoading()"
           (click)="onCancelDecline()"
         >
-          Cancel
+          {{ labels().cancel }}
         </app-button>
         <app-button
           [variant]="'destructive'"
@@ -220,7 +214,7 @@
           [isLoading]="isActionLoading()"
           (click)="onConfirmDecline()"
         >
-          Confirm Decline
+          {{ labels().confirmDecline }}
         </app-button>
       }
     </footer>

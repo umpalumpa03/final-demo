@@ -1,17 +1,21 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  effect,
   inject,
   OnInit,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
+import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
 import { LoanManagementStore } from '../store/loan-management.store';
 import { PendingApprovalsTable } from '../components/pending-approvals-table/pending-approvals-table';
 import { LoanCaseDrawer } from '../components/loan-case-drawer/loan-case-drawer';
+import { useLoanManagementConfig } from '../shared/config/loan-management.config';
 
 @Component({
   selector: 'app-loan-management-container',
-  imports: [BasicCard, PendingApprovalsTable, LoanCaseDrawer],
+  imports: [BasicCard, PendingApprovalsTable, LoanCaseDrawer, DismissibleAlerts],
   templateUrl: './loan-management-container.html',
   styleUrl: './loan-management-container.scss',
   providers: [LoanManagementStore],
@@ -20,10 +24,24 @@ import { LoanCaseDrawer } from '../components/loan-case-drawer/loan-case-drawer'
 export class LoanManagementContainer implements OnInit {
   protected readonly store = inject(LoanManagementStore);
 
-  protected readonly config = {
-    title: 'Loan Management',
-    subtitle: 'Review and process pending loan applications',
-  };
+  protected readonly config = toSignal(useLoanManagementConfig(), {
+    initialValue: { title: '', subtitle: '' },
+  });
+
+  constructor() {
+    effect(() => {
+      const message = this.store.successMessage();
+      if (message) {
+        setTimeout(() => this.store.clearSuccessMessage(), 4000);
+      }
+    });
+    effect(() => {
+      const error = this.store.actionError();
+      if (error) {
+        setTimeout(() => this.store.clearError(), 4000);
+      }
+    });
+  }
 
   public ngOnInit(): void {
     this.store.loadPendingApprovals();

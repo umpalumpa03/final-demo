@@ -2,10 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   input,
   output,
   signal,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -18,6 +20,7 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 import { BadgeCustomColor } from '@tia/shared/lib/primitives/badges/models/badges.models';
+import { useLoanDrawerConfig } from '../../shared/config/loan-drawer.config';
 
 @Component({
   selector: 'app-loan-case-drawer',
@@ -34,6 +37,19 @@ import { BadgeCustomColor } from '@tia/shared/lib/primitives/badges/models/badge
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoanCaseDrawer {
+  protected readonly labels = toSignal(useLoanDrawerConfig(), {
+    initialValue: {
+      title: '', subtitle: '', applicantSection: '', loanSection: '',
+      riskSection: '', declineSection: '', fullName: '', email: '',
+      phoneNumber: '', employmentStatus: '', address: '', annualIncome: '',
+      creditScore: '', applicantUnavailable: '', loanAmount: '', loanPurpose: '',
+      loanTerm: '', interestRate: '', monthlyPayment: '', requestDate: '',
+      months: '', debtToIncome: '', loanToIncome: '', totalInterest: '',
+      declinePlaceholder: '', close: '', decline: '', approve: '', cancel: '',
+      confirmDecline: '',
+    },
+  });
+
   public readonly isOpen = input.required<boolean>();
   public readonly loanDetails = input<PendingApproval | null>(null);
   public readonly loanDetailsResponse = input<LoanDetailsResponse | null>(null);
@@ -41,7 +57,6 @@ export class LoanCaseDrawer {
   public readonly isUserInfoLoading = input<boolean>(false);
   public readonly isLoanDetailsLoading = input<boolean>(false);
   public readonly isActionLoading = input<boolean>(false);
-  public readonly actionError = input<string | null>(null);
 
   public readonly closed = output<void>();
   public readonly approve = output<string>();
@@ -49,6 +64,18 @@ export class LoanCaseDrawer {
 
   public readonly showDeclineForm = signal<boolean>(false);
   public readonly declineReason = signal<string>('');
+
+  constructor() {
+    effect(() => {
+      const details = this.loanDetails();
+      const isOpen = this.isOpen();
+
+      if (!isOpen || details) {
+        this.showDeclineForm.set(false);
+        this.declineReason.set('');
+      }
+    });
+  }
 
   public readonly canApprove = computed(
     () =>

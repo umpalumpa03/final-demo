@@ -149,7 +149,7 @@ export const LoanManagementStore = signalStore(
       approveLoan: rxMethod<string>(
         pipe(
           tap(() =>
-            patchState(store, { actionLoading: true, actionError: null }),
+            patchState(store, { actionLoading: true, actionError: null, successMessage: null }),
           ),
           switchMap((loanId) => {
             const loan = store.pendingApprovals().find((l) => l.id === loanId);
@@ -178,6 +178,7 @@ export const LoanManagementStore = signalStore(
                     selectedLoanId: null,
                     userInfoCache: newUserInfoCache,
                     loanDetailsCache: newLoanDetailsCache,
+                    successMessage: 'The loan has been approved.',
                   });
                 }),
                 catchError((err: HttpErrorResponse) => {
@@ -207,7 +208,7 @@ export const LoanManagementStore = signalStore(
       rejectLoan: rxMethod<{ loanId: string; reason: string }>(
         pipe(
           tap(() =>
-            patchState(store, { actionLoading: true, actionError: null }),
+            patchState(store, { actionLoading: true, actionError: null, successMessage: null }),
           ),
           switchMap(({ loanId, reason }) => {
             const loan = store.pendingApprovals().find((l) => l.id === loanId);
@@ -237,6 +238,7 @@ export const LoanManagementStore = signalStore(
                     selectedLoanId: null,
                     userInfoCache: newUserInfoCache,
                     loanDetailsCache: newLoanDetailsCache,
+                    successMessage: 'The loan has been rejected.',
                   });
                 }),
                 catchError((err: HttpErrorResponse) => {
@@ -270,6 +272,9 @@ export const LoanManagementStore = signalStore(
       },
       clearError(): void {
         patchState(store, { error: null, actionError: null });
+      },
+      clearSuccessMessage(): void {
+        patchState(store, { successMessage: null });
       },
     };
   }),

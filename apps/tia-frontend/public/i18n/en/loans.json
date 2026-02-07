@@ -1,4 +1,44 @@
 {
+  "management": {
+    "title": "Loan Management",
+    "subtitle": "Review and process pending loan applications",
+    "drawer": {
+      "title": "Loan Application Details",
+      "subtitle": "Review the loan application and user information",
+      "applicantSection": "Applicant Information",
+      "loanSection": "Loan Details",
+      "riskSection": "Risk Assessment",
+      "declineSection": "Reason for Declining",
+      "applicantUnavailable": "Applicant information unavailable",
+      "declinePlaceholder": "Please provide a reason for declining this loan application...",
+      "fields": {
+        "fullName": "Full Name",
+        "email": "Email",
+        "phoneNumber": "Phone Number",
+        "employmentStatus": "Employment Status",
+        "address": "Address",
+        "annualIncome": "Annual Income",
+        "creditScore": "Credit Score",
+        "loanAmount": "Loan Amount",
+        "loanPurpose": "Loan Purpose",
+        "loanTerm": "Loan Term",
+        "interestRate": "Interest Rate",
+        "monthlyPayment": "Monthly Payment",
+        "requestDate": "Request Date",
+        "months": "months",
+        "debtToIncome": "Debt-to-Income Ratio",
+        "loanToIncome": "Loan-to-Income Ratio",
+        "totalInterest": "Total Interest"
+      },
+      "buttons": {
+        "close": "Close",
+        "decline": "Decline Loan",
+        "approve": "Approve Loan",
+        "cancel": "Cancel",
+        "confirmDecline": "Confirm Decline"
+      }
+    }
+  },
   "dashboard": {
     "title": "My Loans",
     "description": "Manage your loan applications and track payments",

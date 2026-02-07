@@ -90,4 +90,5 @@ export interface LoanManagementState {
   loanDetailsLoading: boolean;
   actionLoading: boolean;
   actionError: string | null;
+  successMessage: string | null;
 }
