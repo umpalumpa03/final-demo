@@ -8,7 +8,7 @@
       variant="outline"
       [icon]="'red-trash.svg'"
       (click)="onDelete($event)"
-      >{{ 'messaging.mail-detail.delete' | translate }}</app-button
+      ><span class="delete-btn">{{ 'messaging.mail-detail.delete' | translate }}</span></app-button
     >
   </div>
   } @else if (fromSent) {
