@@ -172,3 +172,8 @@ export const selectPaymentFields = createSelector(
   selectPaybillState,
   (state) => state.paymentDetails?.fields ?? [],
 );
+
+export const selectServiceId = createSelector(
+  selectPaybillState,
+  (state) => state.paymentDetails?.serviceId,
+);

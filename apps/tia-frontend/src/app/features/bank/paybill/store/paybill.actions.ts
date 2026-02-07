@@ -135,6 +135,14 @@ export const TemplatesPageActions = createActionGroup({
       identification: PaybillIdentification;
       nickname: string;
     }>(),
+    // Shared gasatania
+    'Create Template2': props<{
+      payload: any;
+    }>(),
+    'Create Template2 Success': props<{
+      payload: any;
+      message: string;
+    }>(),
     'Create Template Success': props<{ message: string }>(),
     'Create Template Failure': props<{ error: string }>(),
     'Select Provider': props<{
@@ -146,6 +154,14 @@ export const TemplatesPageActions = createActionGroup({
       level: number;
     }>(),
     'Load Child Providers Failure': props<{
+      error: string;
+    }>(),
+    'Check Bill For Template': props<{
+      serviceId: string;
+      identification: Record<string, string>;
+      nickname: string;
+    }>(),
+    'Check Bill for Template Failure': props<{
       error: string;
     }>(),
   },

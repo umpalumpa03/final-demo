@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   OnInit,
   signal,
@@ -12,11 +13,14 @@ import {
   selectCategories,
   selectFilteredProviders,
   selectLoading,
+  selectPaymentFields,
   selectProviders,
   selectProvidersDropdown,
   selectSelectedCategoryId,
+  selectServiceId,
   selectTemplatesAsTreeItems,
   selectTemplatesGroupWithConfigs,
+  selectVerifiedDetails,
 } from '../../../store/paybill.selectors';
 import {
   PaybillActions,
@@ -40,6 +44,7 @@ import {
   createGroupForm,
   createTemplateForm,
 } from '../configs/paybill-templates.forms';
+import { PaybillDynamicForm } from '../../../services/paybill-dynamic-form/paybill-dynamic-form';
 
 @Component({
   selector: 'app-paybill-templates-container',
@@ -56,6 +61,7 @@ export class PaybillTemplatesContainer implements OnInit {
 
   // //////////////////
   private readonly store = inject(Store);
+  private readonly payBill = inject(PaybillDynamicForm);
 
   // Store Selections
   public readonly templateGroups = this.store.selectSignal(
@@ -137,7 +143,18 @@ export class PaybillTemplatesContainer implements OnInit {
         );
       }
     },
-    'create-template': (values) => {},
+    'create-template': (values) => {
+      const serviceId = this.serviceId()!;
+      const { name, category, ...identification } = values;
+
+      this.store.dispatch(
+        TemplatesPageActions.checkBillForTemplate({
+          serviceId,
+          identification,
+          nickname: name,
+        }),
+      );
+    },
   };
 
   // On Init Load Data
@@ -177,7 +194,10 @@ export class PaybillTemplatesContainer implements OnInit {
 
   public handleFormSubmit(payload: FormSubmitPayload): void {
     this.formSubmitHandlers[payload.type]?.(payload.values);
-    this.handleModalToggle();
+
+    if (payload.type !== 'create-template') {
+      this.handleModalToggle();
+    }
   }
 
   public onTreeAction(event: TreeAction): void {
@@ -257,43 +277,80 @@ export class PaybillTemplatesContainer implements OnInit {
     this.handleModalToggle();
   }
 
-  // ///////////////////////////////////////////////////////////////
+  // Create Template Logic
 
-  public parentProviderOptions = this.store.selectSignal(
+  // Checks for loading state
+  public selectLoading = this.store.selectSignal(selectLoading);
+
+  // Here I get options to loop through and create visual in dumb component
+  public readonly parentProviderOptions = this.store.selectSignal(
     selectProvidersDropdown,
   );
-  public childProviderOptions = computed(() =>
+
+  public readonly childProviderOptions = computed(() =>
     this.store.selectSignal(selectFilteredProviders)(),
   );
 
-  public currentLevel = signal<number>(0);
-  public isCategorySelected = computed(
+  // Setting Current Level to track what is the level of child
+  public readonly currentLevel = signal<number>(0);
+
+  // Check If the main category was selected
+  public readonly isCategorySelected = computed(
     () => this.store.selectSignal(selectSelectedCategoryId)() !== null,
   );
-  public selectLoading = this.store.selectSignal(selectLoading);
 
-  onCategorySelect(category: InputFieldValue): void {
-    if (category === '') {
-      return;
-    }
+  // This is the last thing in the dropdown logic that I save to post it on back
+  public readonly serviceId = this.store.selectSignal(selectServiceId);
+
+  // Form Sync effect to create dynamic fields
+  private readonly formSyncEffect = effect(() => {
+    this.syncFormWithPaymentFields();
+  });
+
+  // Event Handlers for dynamic form
+  public onCategorySelect(category: InputFieldValue): void {
+    if (!category) return;
 
     this.store.dispatch(
       PaybillActions.selectCategory({ categoryId: category as string }),
     );
-
     this.currentLevel.set(0);
   }
 
-  onParentProviderSelect(info: ProviderTypeForStore): void {
+  public onParentProviderSelect(info: ProviderTypeForStore): void {
     if (!info.providerId) return;
-
-    const currentLevel = info.index;
 
     this.store.dispatch(
       TemplatesPageActions.selectProvider({
         providerId: info.providerId as string,
-        level: currentLevel,
+        level: info.index,
       }),
     );
+  }
+
+  // ES GASATANIA IDEASHI AR MCHIRDEBA
+  public readonly paymentField = computed(() =>
+    this.store.selectSignal(selectPaymentFields)(),
+  );
+
+  public readonly verifiedDetails = this.store.selectSignal(
+    selectVerifiedDetails,
+  );
+
+  // ////////////////////////////////////
+
+  // HELPER --> THIS IS SHARED SO THIS MUSTN'T BE HERE
+  private syncFormWithPaymentFields(): void {
+    const fields = this.paymentField();
+    const details = this.verifiedDetails();
+
+    this.payBill.syncFormControls(this.createTemplateForm, fields);
+
+    if (details?.valid && details.amountDue !== undefined) {
+      this.createTemplateForm.patchValue(
+        { name: '', category: '' },
+        { emitEvent: false },
+      );
+    }
   }
 }

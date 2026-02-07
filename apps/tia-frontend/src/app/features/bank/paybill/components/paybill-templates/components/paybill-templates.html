@@ -54,7 +54,7 @@
   <main>
     @if(selectLoading()) {
     <app-spinner size="large"></app-spinner>
-    } @else if (form) {
+    } @if (form) {
     <form [formGroup]="form" (ngSubmit)="onFormSubmit(config.formSubmitType)">
       @if (config.fields?.length) { @for (field of config.fields; track
       field.controlName) { @if(field.type === 'dropdown') {
@@ -80,7 +80,12 @@
           (valueChange)="onChildProviderChange($event, $index)"
         ></lib-select>
       </div>
-      } } }
+      } }
+      <app-dynamic-inputs
+        [form]="createTemplateForm()"
+        [fields]="paymentFields()"
+      ></app-dynamic-inputs>
+      }
 
       <div class="modal__buttons">
         <app-button

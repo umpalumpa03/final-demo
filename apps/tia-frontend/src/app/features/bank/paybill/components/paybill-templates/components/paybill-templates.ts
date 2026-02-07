@@ -33,6 +33,9 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { distinctUntilChanged } from 'rxjs';
 import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
+import { DynamicInputs } from '../../shared/dynamic-inputs/dynamic-inputs';
+import { PaybillDynamicField } from '../../../services/paybill-dynamic-form/models/dynamic-form.model';
+import { PaybillField } from '../../paybill-main/shared/models/paybill.model';
 
 @Component({
   selector: 'app-paybill-templates',
@@ -46,6 +49,7 @@ import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
     Dropdowns,
     ReactiveFormsModule,
     Spinner,
+    DynamicInputs,
   ],
   templateUrl: './paybill-templates.html',
   styleUrl: './paybill-templates.scss',
@@ -175,14 +179,23 @@ export class PaybillTemplates {
   // //  RIGHT NOW UNUSED LOGIC KEPT FOR REFERENCE //
   // // /////////////////////////////////////////////
   public parentProviders = input.required<MappedProviderForDropdown[]>();
-
   public templateCategories = input.required<MappedProviderForDropdown[]>();
 
+  // Outputs to change state in store
   public categorySelected = output<string>();
   public parentProviderSelected = output<string>();
 
+  // Add loading state in form
   public selectLoading = input<boolean>(false);
 
+  // Field that adds dynamically after everything is chosen
+  public paymentFields = input.required<PaybillDynamicField[]>();
+
+  //
+  public isCategorySelected = input<boolean>(false);
+  public childProviderOptions = input<MappedProviderForDropdown[][]>([[]]);
+
+  // Here I listen for form category change to emit the value and start the cycle
   ngOnInit() {
     const form = this.createTemplateForm();
     form
@@ -193,7 +206,8 @@ export class PaybillTemplates {
       });
   }
 
-  getDropdownOptions(controlName: string) {
+  // Helper method to give me what kind of data is returned to me
+  public getDropdownOptions(controlName: string): MappedProviderForDropdown[] {
     switch (controlName) {
       case 'category':
         return this.templateCategories();
@@ -203,9 +217,6 @@ export class PaybillTemplates {
         return [];
     }
   }
-
-  public isCategorySelected = input<boolean>(false);
-  public childProviderOptions = input<MappedProviderForDropdown[][]>([[]]);
 
   public childProviderSelected = output<ProviderTypeForStore>();
   public onChildProviderChange(providerId: InputFieldValue, index: number) {

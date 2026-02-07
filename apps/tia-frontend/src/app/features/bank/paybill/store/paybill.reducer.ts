@@ -421,8 +421,6 @@ export const paybillReducer = createReducer(
     (state, { providers, level }) => {
       const currentLevels = state.filteredProviders || [];
 
-      console.log(currentLevels.length, level);
-
       let newFilteredProviders: PaybillProvider[][];
 
       if (providers.length === 0) {
@@ -436,6 +434,7 @@ export const paybillReducer = createReducer(
         ...state,
         filteredProviders: newFilteredProviders,
         loading: false,
+        selectedProvider: null,
       };
     },
   ),
@@ -445,4 +444,19 @@ export const paybillReducer = createReducer(
     loading: false,
     error,
   })),
+
+  on(TemplatesPageActions.createTemplate2, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
+  on(
+    TemplatesPageActions.createTemplate2Success,
+    (state, { payload, message }) => ({
+      ...state,
+      loading: false,
+      templates: [...state.templates, payload],
+    }),
+  ),
 );

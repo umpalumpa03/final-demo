@@ -364,6 +364,7 @@ export class PaybillEffect {
         TemplatesPageActions.createTemplatesGroupsFailure,
         TemplatesPageActions.loadTemplateGroupsFailure,
         TemplatesPageActions.loadTemplatesFailure,
+        TemplatesPageActions.checkBillForTemplateFailure,
         PaybillActions.checkBillFailure,
         PaybillActions.proceedPaymentFailure,
         PaybillActions.loadCategoriesFailure,
@@ -579,21 +580,87 @@ export class PaybillEffect {
     this.actions$.pipe(
       ofType(TemplatesPageActions.selectProvider),
       withLatestFrom(this.store.select(selectProviders)),
-      map(([{ providerId, level }, allProviders]) => {
+      mergeMap(([{ providerId, level }, allProviders]) => {
         const childProviders = allProviders.filter(
           (p) => p.parentId === providerId,
         );
+        if (childProviders.length === 0) {
+          return [
+            TemplatesPageActions.loadChildProvidersSuccess({
+              providers: childProviders,
+              level: level + 1,
+            }),
+            PaybillActions.loadPaymentDetails({ serviceId: providerId }),
+            PaybillActions.selectProvider({ providerId }),
+          ];
+        }
 
-        return TemplatesPageActions.loadChildProvidersSuccess({
-          providers: childProviders,
-          level: level + 1,
-        });
+        return [
+          TemplatesPageActions.loadChildProvidersSuccess({
+            providers: childProviders,
+            level: level + 1,
+          }),
+        ];
       }),
       catchError((error) =>
         of(
           TemplatesPageActions.loadChildProvidersFailure({
             error: error.message,
           }),
+        ),
+      ),
+    ),
+  );
+
+  // SHAREDSHIA GASATANI
+  createTemp$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TemplatesPageActions.createTemplate2),
+      switchMap((payload) =>
+        this.payBillTemplatesService.addTemplate(payload).pipe(
+          map((response) =>
+            TemplatesPageActions.createTemplate2Success({
+              payload: response,
+              message: 'Template saved successfully',
+            }),
+          ),
+          catchError((error) =>
+            of(
+              TemplatesPageActions.createTemplateFailure({
+                error: this.getErrorMessage(error),
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
+
+  checkBillAndCreateTemplate$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TemplatesPageActions.checkBillForTemplate),
+      switchMap(({ serviceId, identification, nickname }) =>
+        this.paybillService.checkBill(serviceId, identification).pipe(
+          map((response) => {
+            if (!response.valid || response.error) {
+              return TemplatesPageActions.checkBillForTemplateFailure({
+                error: response.error || 'Bill check failed', // Already a string ✓
+              });
+            }
+
+            return TemplatesPageActions.createTemplate({
+              nickname,
+              serviceId,
+              identification,
+            });
+          }),
+          catchError((error) =>
+            of(
+              TemplatesPageActions.checkBillForTemplateFailure({
+                error: this.getErrorMessage(error), // ← Convert to string here
+              }),
+            ),
+          ),
         ),
       ),
     ),
