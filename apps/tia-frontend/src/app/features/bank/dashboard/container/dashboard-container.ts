@@ -27,6 +27,7 @@ import { Router } from '@angular/router';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { BannerCarousel } from '../components/shared/ui/banner-carousel/banner-carousel';
 import { bannerSlides } from '../config/banners.config';
+import { CustomizeButton } from "../components/shared/ui/customize-button/customize-button";
 @Component({
   selector: 'app-dashboard-container',
   imports: [
@@ -39,7 +40,8 @@ import { bannerSlides } from '../config/banners.config';
     LibraryTitle,
     TranslateModule,
     BannerCarousel,
-  ],
+    CustomizeButton
+],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

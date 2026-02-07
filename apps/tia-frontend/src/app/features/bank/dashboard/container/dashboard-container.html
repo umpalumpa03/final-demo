@@ -9,12 +9,10 @@
   </div>
 
   <div class="bank-dashboard__header-actions">
-    <button class="customize-trigger" (click)="openCustomization()">
-      <div class="customize-trigger__label">
-        <span>dashboard_customize</span>
-        {{ 'dashboard.customize.label' | translate }}
-      </div>
-    </button>
+    <app-customize-button
+      label="dashboard.customize.label"
+      (clicked)="openCustomization()"
+    />
   </div>
 
   <app-drag-container
