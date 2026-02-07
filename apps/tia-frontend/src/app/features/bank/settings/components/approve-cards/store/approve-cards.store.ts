@@ -26,7 +26,6 @@ export const ApproveCardsStore = signalStore(
         switchMap(() =>
           service.getPendingCards().pipe(
             tap((card) => {
-              console.log(card, '__CARD');
               patchState(store, { cards: card, isLoading: false });
             }),
             catchError((err) => {
@@ -58,7 +57,6 @@ export const ApproveCardsStore = signalStore(
         switchMap(() => 
           service.getCardPermissions().pipe(
             tap((permissions)=> {
-              console.log(permissions, "__PERMISSIONS")
               patchState(store, { permissions,isLoading:false, error:null})}),
             catchError((err)=> {
               patchState(store, {isLoading:false, error:err.message});

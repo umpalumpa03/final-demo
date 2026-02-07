@@ -132,7 +132,6 @@ export class ApproveCards implements OnInit {
   }
 
   public onSavePermissions() {
-    const rawValues = this.cardPermissionsForm.getRawValue();
     const cardId = this.activeCardId();
 
     if (!cardId) return;
@@ -141,8 +140,6 @@ export class ApproveCards implements OnInit {
 
     this.closeModal();
   }
-
-  // Empty Cards - retry
 
   private handleApprove(id: string): void {
     if (this.permissionsSavedCard() === id) {
@@ -159,7 +156,7 @@ export class ApproveCards implements OnInit {
         status: 'ACTIVE',
         permissions: permissions,
       });
-      this.permissionsSavedCard.set(null);
+      this.clearPermissionsState()
     } else {
       this.store.updateStatus({
         cardId: id,
@@ -196,17 +193,26 @@ export class ApproveCards implements OnInit {
     this.permissionsOverlay.set(false);
   }
 
-  onConfirmCancel() {
+  public onConfirmCancel():void  {
     this.confirmDialogAnswer.set(false);
     this.closeConfirmModal();
     this.pendingId.set(null);
   }
 
-  onConfirmAccept() {
+  public onConfirmAccept():void  {
+    this.clearPermissionsState();
+
     this.confirmDialogAnswer.set(true);
     this.closeConfirmModal();
-    this.permissionsSavedCard.set(null);
-    this.cardPermissionsForm.reset();
     this.handlePermissions(this.pendingId()!);
   }
+
+  public retryLoading():void {
+     this.store.load();
+  }
+
+  private clearPermissionsState(): void {
+  this.permissionsSavedCard.set(null);
+  this.cardPermissionsForm.reset();
+}
 }

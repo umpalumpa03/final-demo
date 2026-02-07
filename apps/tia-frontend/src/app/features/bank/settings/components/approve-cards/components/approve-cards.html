@@ -22,6 +22,7 @@
     variant="not-found"
     header="No Cards Found"
     message="We couldn't find any cards to display."
+    (buttonClick)="retryLoading()"
   />
   } }
 </main>
@@ -46,13 +47,13 @@
   <app-ui-modal [isOpen]="confirmModalActive()" (closed)="closeConfirmModal()">
     <div class="confirm-dialog">
         <header class="confirm-dialog__header">
-            <h3 class="confirm-dialog__title">{{'common.validation.confirmAction' | translate}}</h3>
-            <p class="confirm-dialog__subtitle">{{'common.validation.unsavedChanges' | translate}}</p>
+            <h3 class="confirm-dialog__title">Reset Changes?</h3>
+            <p class="confirm-dialog__subtitle">Switching cards will clear the permissions you already have selected.</p>
           </header>
           
           <footer class="confirm-dialog__footer">
-            <app-button variant="outline" (click)="onConfirmCancel()"> {{'common.buttons.stay' | translate}} </app-button>
-            <app-button variant="destructive" (click)="onConfirmAccept()"> {{'common.buttons.leave' | translate}} </app-button>
+            <app-button variant="outline" (click)="onConfirmCancel()">Go back</app-button>
+            <app-button variant="destructive" (click)="onConfirmAccept()">Discard and switch</app-button>
           </footer>
         </div>
     </app-ui-modal>

@@ -13,11 +13,24 @@
     border-radius: 1rem;
     background-color: $white;
     border: 0.19rem solid $gray-200;
+
+    @media (max-width: 900px) {
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 500px) {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
   }
 
   &__display {
     @include flex-center($justify: start);
     gap: 1.6rem;
+
+    @media (max-width: 500px) {
+      @include display-flex(column);
+    }
   }
 
   &__img-box {
@@ -28,7 +41,7 @@
   }
 
   &__icon {
-    width: 2.4rem;
+    min-width: 2.4rem;
   }
 
   &__content {
@@ -39,6 +52,10 @@
   &__header {
     @include flex-center($justify: start);
     gap: 0.8rem;
+
+    @media (max-width: 500px) {
+      @include display-flex(column-reverse);
+    }
   }
 
   &__title {
@@ -47,7 +64,18 @@
     line-height: 2.7rem;
     letter-spacing: -0.044rem;
     color: $blue-1000;
-    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 13rem;
+
+    @media (max-width: 900px) {
+      width: 7.5rem;
+    }
+
+    @media (max-width: 500px) {
+      width: fit-content;
+    }
   }
 
   &__badge {
@@ -86,6 +114,15 @@
   &__actions {
     @include display-flex();
     gap: 0.6rem;
+
+    @media (max-width: 900px) {
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 500px) {
+      @include display-flex(column);
+      width: 100%;
+    }
   }
 
   &__btn {
