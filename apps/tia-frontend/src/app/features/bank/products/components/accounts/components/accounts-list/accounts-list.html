@@ -106,3 +106,10 @@
   </section>
   } }
 </div>
+
+<app-transfer-permissions-modal
+  [isOpen]="showTransferModal()"
+  [accountPermission]="selectedAccountPermission()"
+  (permissionSelected)="handlePermissionSelected($event)"
+  (closed)="handleModalClosed()"
+></app-transfer-permissions-modal>

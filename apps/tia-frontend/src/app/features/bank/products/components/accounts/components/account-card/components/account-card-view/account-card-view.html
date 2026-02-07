@@ -98,10 +98,3 @@
     </div>
   </div>
 </app-basic-card>
-
-<app-transfer-permissions-modal
-  [isOpen]="showTransferModal()"
-  [accountPermission]="account().permission"
-  (permissionSelected)="handlePermissionSelected($event)"
-  (closed)="showTransferModal.set(false)"
-></app-transfer-permissions-modal>

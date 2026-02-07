@@ -158,11 +158,29 @@ export class Accounts implements OnInit {
     }
   }
 
-  public handleTransfer(accountId: string): void {
+  public handleTransfer(data: {
+    accountId: string;
+    permissionValue: number;
+  }): void {
     const accounts = this.accountsSignal();
-    const account = accounts?.find((acc) => acc.id === accountId) || null;
+    const account = accounts?.find((acc) => acc.id === data.accountId) || null;
     this.store.dispatch(AccountsActions.selectAccount({ account }));
-    this.router.navigate(['/bank/transfers/internal']);
+
+    const permissionMap: { [key: number]: string } = {
+      1: '/bank/transfers/internal',
+      2: '/bank/transfers/external',
+      4: '/bank/transfers/external',
+      8: '/bank/paybill',
+      16: '/bank/paybill',
+      32: '/bank/loans',
+    };
+
+    const route = permissionMap[data.permissionValue];
+    if (route) {
+      this.router.navigate([route], {
+        queryParams: { accountId: data.accountId },
+      });
+    }
   }
 
   public handleRetry(): void {

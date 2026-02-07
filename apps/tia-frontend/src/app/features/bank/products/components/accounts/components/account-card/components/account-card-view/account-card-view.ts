@@ -17,7 +17,6 @@ import { Account } from '../../../../../../../../../shared/models/accounts/accou
 import { ButtonComponent } from '../../../../../../../../../shared/lib/primitives/button/button';
 import { BasicCard } from '../../../../../../../../../shared/lib/cards/basic-card/basic-card';
 import { TextInput } from '../../../../../../../../../shared/lib/forms/input-field/text-input';
-import { TransferPermissionsModalComponent } from '../transfer-permissions-modal/transfer-permissions-modal';
 import { Badges } from '../../../../../../../../../shared/lib/primitives/badges/badges';
 import { VALID_PERMISSION_VALUES } from '../../../../config/transfer-permissions.config';
 
@@ -30,7 +29,6 @@ import { VALID_PERMISSION_VALUES } from '../../../../config/transfer-permissions
     ButtonComponent,
     BasicCard,
     TextInput,
-    TransferPermissionsModalComponent,
     Badges,
   ],
   templateUrl: './account-card-view.html',
@@ -52,7 +50,6 @@ export class AccountCardViewComponent {
   protected isEditing = signal<boolean>(false);
   protected newName = signal<string>('');
   protected renamingAccountId = signal<string | null>(null);
-  protected showTransferModal = signal<boolean>(false);
   protected displayName = computed(
     () => this.account().friendlyName || this.account().name,
   );
@@ -108,26 +105,7 @@ export class AccountCardViewComponent {
   }
 
   public handleOpenTransferModal(): void {
-    this.showTransferModal.set(true);
-  }
-
-  public handlePermissionSelected(permissionValue: number): void {
-    this.showTransferModal.set(false);
-    const permissionMap: { [key: number]: string } = {
-      1: '/bank/transfers/internal',
-      2: '/bank/transfers/external',
-      4: '/bank/transfers/external',
-      8: '/bank/paybill',
-      16: '/bank/paybill',
-      32: '/bank/loans',
-    };
-
-    const route = permissionMap[permissionValue];
-    if (route) {
-      this.router.navigate([route], {
-        queryParams: { accountId: this.account().id },
-      });
-    }
+    this.transfer.emit();
   }
 
   public handleRenameClick(): void {

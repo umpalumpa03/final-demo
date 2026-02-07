@@ -7,9 +7,11 @@ import {
   OnInit,
   output,
   signal,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 import { AccountCardComponent } from '../account-card/container/account-card';
 import { RouteLoader } from '../../../../../../../shared/lib/feedback/route-loader/route-loader';
 import {
@@ -21,6 +23,7 @@ import { ScrollArea } from '../../../../../../../shared/lib/layout/components/sc
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { Badges } from '../../../../../../../shared/lib/primitives/badges/badges';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { TransferPermissionsModalComponent } from '../account-card/components/transfer-permissions-modal/transfer-permissions-modal';
 
 @Component({
   selector: 'app-accounts-list',
@@ -34,6 +37,7 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
     LibraryTitle,
     Badges,
     ButtonComponent,
+    TransferPermissionsModalComponent,
   ],
   templateUrl: './accounts-list.html',
   styleUrl: './accounts-list.scss',
@@ -52,15 +56,21 @@ export class AccountsListComponent implements OnInit {
   public renameError = input<string | null>(null);
 
   public openModal = output<void>();
-  public transfer = output<string>();
+  public transfer = output<{ accountId: string; permissionValue: number }>();
   public retry = output<void>();
   public renameAccount = output<{ accountId: string; friendlyName: string }>();
   public renameSuccess = output<void>();
 
   private readonly ITEMS_PER_PAGE = 3;
-  private readonly GAP_SIZE = 2.4; // rem
+  private readonly GAP_SIZE = 2.4;
   public currentPageBySection = signal<Record<string, number>>({});
   private itemsPerPage = signal<number>(3);
+  public showTransferModal = signal<boolean>(false);
+  public selectedAccountForTransfer = signal<string | null>(null);
+  public selectedAccountPermission = signal<number>(0);
+  public selectedPermissionValue = signal<number>(0);
+
+  private router = inject(Router);
 
   ngOnInit(): void {
     this.updateItemsPerPage(window.innerWidth);
@@ -162,7 +172,35 @@ export class AccountsListComponent implements OnInit {
   }
 
   public handleTransfer(accountId: string): void {
-    this.transfer.emit(accountId);
+    const accounts = this.accountsGrouped();
+    if (!accounts) return;
+
+    const allAccounts = [
+      ...(accounts.current || []),
+      ...(accounts.saving || []),
+      ...(accounts.card || []),
+    ];
+
+    const account = allAccounts.find((acc) => acc.id === accountId);
+    if (account) {
+      this.selectedAccountForTransfer.set(accountId);
+      this.selectedAccountPermission.set(account.permission);
+      this.showTransferModal.set(true);
+    }
+  }
+
+  public handlePermissionSelected(permissionValue: number): void {
+    const accountId = this.selectedAccountForTransfer();
+    if (accountId) {
+      this.showTransferModal.set(false);
+      this.transfer.emit({ accountId, permissionValue });
+    }
+  }
+
+  public handleModalClosed(): void {
+    this.showTransferModal.set(false);
+    this.selectedAccountForTransfer.set(null);
+    this.selectedAccountPermission.set(0);
   }
 
   public handleRetry(): void {

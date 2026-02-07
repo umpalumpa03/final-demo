@@ -143,11 +143,13 @@ describe('Accounts', () => {
 
     const dispatchSpy = vi.spyOn(store, 'dispatch');
     const navigateSpy = vi.spyOn(router, 'navigate');
-    component.handleTransfer('acc-123');
+    component.handleTransfer({ accountId: 'acc-123', permissionValue: 1 });
     expect(dispatchSpy).toHaveBeenCalledWith(
       AccountsActions.selectAccount({ account: mockAccount }),
     );
-    expect(navigateSpy).toHaveBeenCalledWith(['/bank/transfers/internal']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/bank/transfers/internal'], {
+      queryParams: { accountId: 'acc-123' },
+    });
 
     component.handleRetry();
     expect(dispatchSpy).toHaveBeenCalledWith(
