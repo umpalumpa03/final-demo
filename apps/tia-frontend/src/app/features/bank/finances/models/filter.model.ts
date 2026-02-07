@@ -114,3 +114,13 @@ export interface TopCategoryFooter {
   icon?: string;
   isImageIcon?: boolean;
 }
+
+
+export interface FullFinancialData {
+  summary: FinancialSummaryResponse;
+  categories: CategoryBreakdown[];
+  dailySpending: DailySpending[];
+  incomeVsExpenses: IncomeVsExpenses[];
+  savingsTrend: SavingsTrend[];
+  transactions: Transaction[];
+}

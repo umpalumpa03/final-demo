@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Transaction } from '../../../../models/filter.model';
+import { TranslatePipe } from "@ngx-translate/core";
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-finances-transactions',
-  imports: [CommonModule],
+  imports: [TranslatePipe,CommonModule],
   templateUrl: './finances-transactions.html',
   styleUrl: './finances-transactions.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
