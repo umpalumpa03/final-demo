@@ -1,10 +1,11 @@
 import { Component, input, output } from '@angular/core';
 import { APPROVE_CARD_BUTTONS } from '../config/approve-card-element.config';
 import { ActionButton, buttonEmit, CardAction } from '../shared/model/approve-card-element.model';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-cards-approve-element',
-  imports: [],
+  imports: [DatePipe],
   templateUrl: './cards-approve-element.html',
   styleUrl: './cards-approve-element.scss',
 })

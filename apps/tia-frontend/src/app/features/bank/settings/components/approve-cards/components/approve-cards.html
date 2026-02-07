@@ -22,7 +22,11 @@
         (cardAction)="handleAction($event)"
       />
     } @empty {
-      <p>No cards found.</p>
+      <app-error-states
+        variant="not-found"
+        header="No Cards Found"
+        message="We couldn't find any cards to display."
+      />
     } 
   }
 </main>

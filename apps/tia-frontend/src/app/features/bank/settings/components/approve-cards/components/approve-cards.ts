@@ -13,10 +13,11 @@ import {
 } from '../shared/model/approve-card-element.model';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 
 @Component({
   selector: 'app-approve-cards',
-  imports: [CardsApproveElement, Skeleton, Spinner],
+  imports: [CardsApproveElement, Skeleton, Spinner, ErrorStates],
   templateUrl: './approve-cards.html',
   providers: [ApproveCardsStore],
   styleUrl: './approve-cards.scss',
@@ -26,6 +27,8 @@ export class ApproveCards implements OnInit {
   public readonly store = inject(ApproveCardsStore);
 
   public cardInfo = signal<PendingCard[]>([]);
+
+  public perrmissionsOverlay = signal<boolean>(false);
 
   ngOnInit():void {
     this.store.load();
@@ -65,6 +68,8 @@ export class ApproveCards implements OnInit {
     })
   }
 
-  private handlePermissions(id: string): void {}
+  private handlePermissions(id: string): void {
+    this.perrmissionsOverlay.set(true)
+  }
   
 }
