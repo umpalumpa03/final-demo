@@ -105,13 +105,6 @@ describe('InternalFromAccount', () => {
     });
   });
 
-  describe('onGoBack', () => {
-    it('should call location.back()', () => {
-      component.onGoBack();
-      expect(mockLocation.back).toHaveBeenCalled();
-    });
-  });
-
   describe('onContinue', () => {
     it('should navigate to to-account page', () => {
       mockTransferStore.senderAccount.set(mockAccounts[0]);

@@ -95,10 +95,6 @@ export class InternalFromAccount implements OnInit {
     this.store.dispatch(AccountsActions.loadAccounts({}));
   }
 
-  public onGoBack(): void {
-    this.location.back();
-  }
-
   public onContinue() {
     if (this.isContinueDisabled()) {
       return;
