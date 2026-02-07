@@ -150,4 +150,25 @@ describe('DashboardContainer', () => {
 
     expect(colspans.every((c) => c === 1)).toBe(true);
   });
+
+  it('should use 1 column if item count is < 3 (regardless of screen size)', () => {
+    mockDashService.visibleItems.set([{ id: '1' }, { id: '2' }]);
+    mockBreakpointService.isXsMobile.set(false);
+
+    const columns = component['gridColumns']();
+    expect(columns.default).toBe(1);
+  });
+
+  it('should use 1 column if screen is XS Mobile (regardless of item count)', () => {
+    mockDashService.visibleItems.set([
+      { id: '1' },
+      { id: '2' },
+      { id: '3' },
+      { id: '4' },
+    ]);
+    mockBreakpointService.isXsMobile.set(true);
+
+    const columns = component['gridColumns']();
+    expect(columns.default).toBe(1);
+  });
 });
