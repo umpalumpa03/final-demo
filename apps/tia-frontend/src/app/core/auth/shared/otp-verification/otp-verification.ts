@@ -38,7 +38,6 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 import { OTP_VERIFY_FORM } from '../../config/inputs.config';
-import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Routes } from '../../models/tokens.model';
 import { ErrorPage } from '../error-page/error-page';
 
@@ -76,6 +75,7 @@ export class OtpVerification implements OnInit {
   public inputOtpConfig = input<IOtpVerificationConfig>();
   public redirectUrl = input<string>();
   public redirectText = input<string>();
+  public isButtonLoading = input<boolean>(false);
 
   public onBackOut = output<void>();
   public onTimeout = output<void>();
@@ -85,7 +85,7 @@ export class OtpVerification implements OnInit {
 
   public resendTries = signal<number>(3);
   public internalRemainingAttempts = signal<number | null>(null);
-  public isLoading = input(false);
+  public isLoading = signal(false);
   public submitError = signal<string | null>(null);
   public countdown = signal<number>(0);
   public isResendActive = signal<boolean>(false);
@@ -242,7 +242,9 @@ export class OtpVerification implements OnInit {
     }
 
     this.countdown.set(this.maxTime());
-    this.startTimer();
+    if (this.isTimerDisplayed()) {
+      this.startTimer();
+    }
   }
 
   private startTimer(): void {
@@ -267,7 +269,7 @@ export class OtpVerification implements OnInit {
       return;
     }
 
-    if (!this.onErrorRedirect()) {
+    if (!this.onErrorRedirect() || this.isButtonLoading()) {
       this.isLoading.set(true);
     }
 
@@ -303,16 +305,18 @@ export class OtpVerification implements OnInit {
       otp: otp,
     });
 
+    if (!this.onErrorRedirect() || this.isButtonLoading()) {
+      setTimeout(() => {
+        this.isLoading.set(false);
+        this.otpForm.reset();
+        this.otpComponent()?.focusFirst();
+      }, 2000);
+    }
+
     setTimeout(() => {
       this.otpForm.reset();
       this.otpComponent()?.focusFirst();
     }, 0);
-
-    if (!this.onErrorRedirect()) {
-      setTimeout(() => {
-        this.isLoading.set(false);
-      }, 2000);
-    }
   }
 
   public handleAutoSubmit(code: string): void {

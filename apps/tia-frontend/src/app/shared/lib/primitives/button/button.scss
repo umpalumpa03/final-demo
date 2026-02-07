@@ -22,7 +22,7 @@
   outline: none;
 
   &--default {
-    background-color: var(--color-primary);
+    background-color: var(--btn-color, var(--color-primary));
     color: $white;
     &:hover:not(:disabled) {
       filter: brightness(0.9);

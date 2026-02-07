@@ -13,6 +13,7 @@ export const statusClassMap: Record<BadgeStatus, string> = {
   'in-progress': 'badge--in-progress',
   'featured': 'badge--featured',
   'premium': 'badge--premium',
+  'favorite': 'badge--favorite',
   'done': 'badge--done',
   'todo': 'badge--todo',
 };
@@ -24,6 +25,7 @@ export const statusIconMap: Record<BadgeStatus, string> = {
   'in-progress': 'images/svg/badges/badges-inProgress.svg',
   'featured': 'images/svg/badges/badges-featured.svg',
   'premium': 'images/svg/badges/badges-premium.svg',
+  'favorite': 'images/svg/badges/badges-featured.svg',
   'done': '',
   'todo': '',
 };
@@ -35,6 +37,7 @@ export const statusAltTextMap: Record<BadgeStatus, string> = {
   'in-progress': 'In progress status icon',
   'featured': 'Featured status icon',
   'premium': 'Premium status icon',
+  'favorite': 'Favorite status icon',
   'done': 'Done status icon',
   'todo': 'Todo status icon',
 };
@@ -46,6 +49,7 @@ export const statusTextMap: Record<BadgeStatus, string> = {
   'in-progress': 'In Progress',
   'featured': 'Featured',
   'premium': 'Premium',
+  'favorite': 'Favorite',
   'done': 'Done',
   'todo': 'Todo',
 };

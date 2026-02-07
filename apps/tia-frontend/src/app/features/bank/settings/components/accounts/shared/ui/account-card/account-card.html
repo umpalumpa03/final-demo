@@ -25,10 +25,9 @@
             ></app-badges>
             } @case('Favorite') {
             <app-badges
+              status="favorite"
               [text]="badge()"
-              status="featured"
-              customColor="#FEF9C2"
-              size="small"
+              customColor="amber"
             ></app-badges>
             } @default { } }
           </div>
