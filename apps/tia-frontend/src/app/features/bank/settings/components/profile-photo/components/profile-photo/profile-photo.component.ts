@@ -40,6 +40,7 @@ export class ProfilePhotoComponent {
   public readonly alertMessage = input<string>('');
   public readonly isUploadModalOpen = input<boolean>(false);
   public readonly isDragOver = input<boolean>(false);
+  public readonly savingChanges = input<boolean>(false);
 
   public readonly openUploadModal = output<void>();
   public readonly alertClose = output<void>();

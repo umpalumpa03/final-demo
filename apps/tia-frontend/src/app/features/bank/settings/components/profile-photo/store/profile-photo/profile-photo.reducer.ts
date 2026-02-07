@@ -14,6 +14,7 @@ const initialState: ProfilePhotoState = {
   avatarId: null,
   avatarType: null,
   userInitials: null,
+  savingChanges: false,
 };
 
 export const profilePhotoFeature = createFeature({
@@ -58,6 +59,7 @@ export const profilePhotoFeature = createFeature({
       savedAvatarUrl: avatarUrl,
       uploadedFileName: null,
       selectedAvatarId: avatarType === 'default' ? avatarId : null,
+      savingChanges: false,
     })),
     on(ProfilePhotoActions.removeAvatar, (state) => ({
       ...state,
@@ -67,10 +69,12 @@ export const profilePhotoFeature = createFeature({
       savedAvatarUrl: null,
       avatarId: null,
       avatarType: null,
+      savingChanges: false,
     })),
     on(ProfilePhotoActions.clearUploadedFile, (state) => ({
       ...state,
       uploadedFileName: null,
+      ...(state.savingChanges && { savingChanges: false }),
     })),
     on(ProfilePhotoActions.clearCurrentAvatar, (state) => ({
       ...state,
@@ -82,7 +86,25 @@ export const profilePhotoFeature = createFeature({
       ...state,
       selectedAvatarId: avatarId,
       uploadedFileName: null,
+      savingChanges: true,
     })),
+    on(ProfilePhotoActions.uploadAvatarRequest, (state) => ({
+      ...state,
+      savingChanges: true,
+    })),
+    on(ProfilePhotoActions.removeAvatarRequest, (state) => ({
+      ...state,
+      savingChanges: true,
+    })),
+    on(
+      ProfilePhotoActions.uploadAvatarFailure,
+      ProfilePhotoActions.selectDefaultAvatarFailure,
+      ProfilePhotoActions.removeAvatarFailure,
+      (state) => ({
+        ...state,
+        savingChanges: false,
+      }),
+    ),
     on(ProfilePhotoActions.setUserInitials, (state, { initials }) => ({
       ...state,
       userInitials: initials,

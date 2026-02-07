@@ -38,6 +38,7 @@
           variant="default"
           size="default"
           (click)="onSavePersonalNumber()"
+          [isLoading]="personalInfoLoading()"
           [isDisabled]="personalInfoLoading() || isPersonalNumberUnchanged()"
         >
           {{ 'settings.profile-photo.savePersonalNumber' | translate }}

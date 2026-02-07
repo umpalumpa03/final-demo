@@ -9,6 +9,7 @@ export interface ProfilePhotoState {
   avatarId: string | null;
   avatarType: 'default' | 'custom' | null;
   userInitials: string | null;
+  savingChanges: boolean;
 }
 
 

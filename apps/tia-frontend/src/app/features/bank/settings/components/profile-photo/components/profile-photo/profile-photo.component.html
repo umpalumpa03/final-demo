@@ -92,6 +92,7 @@
       <app-button
         variant="default"
         size="default"
+        [isLoading]="savingChanges()"
         (click)="saveChanges.emit()"
       >
         {{ 'settings.profile-photo.change' | translate }}

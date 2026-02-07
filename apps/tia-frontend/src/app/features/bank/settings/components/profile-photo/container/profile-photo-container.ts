@@ -13,6 +13,7 @@ import {
   selectAvatarId,
   selectAvatarType,
   selectSavedAvatarUrl,
+  selectSavingChanges,
 } from '../store/profile-photo/profile-photo.selectors';
 import { selectUserInfo } from '../../../../../../store/user-info/user-info.selectors';
 import { TranslateService } from '@ngx-translate/core';
@@ -44,6 +45,7 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   public readonly avatarId = this.store.selectSignal(selectAvatarId);
   public readonly avatarType = this.store.selectSignal(selectAvatarType);
   public readonly savedAvatarUrl = this.store.selectSignal(selectSavedAvatarUrl);
+  public readonly savingChanges = this.store.selectSignal(selectSavingChanges);
   public readonly userInfo = this.store.selectSignal(selectUserInfo);
   public readonly personalInfo = this.store.selectSignal(selectPersonalInfo);
   public readonly pId = this.store.selectSignal(selectPId);
@@ -87,6 +89,7 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   private objectUrl: string | null = null;
   private alertTimeoutId: ReturnType<typeof setTimeout> | null = null;
   private isUpdatingPersonalInfo = false;
+  private originalPIdBeforeUpdate: string | null = null;
 
   public constructor() {
     effect(() => {
@@ -132,6 +135,7 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
           );
           this.personalInfoUpdated.set(true);
           setTimeout(() => this.personalInfoUpdated.set(false), 0);
+          this.originalPIdBeforeUpdate = null; 
         } else if (error) {
           this.showAlert(
             'error',
@@ -139,7 +143,14 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
           );
         
           if (this.isEditingPId()) {
-            this.editedPId.set(this.pId() || '');
+            const originalValue = this.originalPIdBeforeUpdate || '';
+            this.editedPId.set(originalValue);
+            if (this.originalPIdBeforeUpdate !== null) {
+              this.store.dispatch(
+                PersonalInfoActions.loadPersonalInfoPId({ pId: this.originalPIdBeforeUpdate })
+              );
+            }
+            this.originalPIdBeforeUpdate = null;
           }
         }
         this.isUpdatingPersonalInfo = false;
@@ -399,6 +410,9 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
     if (currentPId === pId) {
       return;
     }
+
+    
+    this.originalPIdBeforeUpdate = currentPId;
 
     this.isUpdatingPersonalInfo = true;
     this.store.dispatch(
