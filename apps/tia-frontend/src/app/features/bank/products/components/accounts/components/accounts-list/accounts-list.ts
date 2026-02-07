@@ -24,6 +24,7 @@ import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/share
 import { Badges } from '../../../../../../../shared/lib/primitives/badges/badges';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TransferPermissionsModalComponent } from '../account-card/components/transfer-permissions-modal/transfer-permissions-modal';
+import { Skeleton } from '../../../../../../../shared/lib/feedback/skeleton/skeleton';
 
 @Component({
   selector: 'app-accounts-list',
@@ -38,6 +39,7 @@ import { TransferPermissionsModalComponent } from '../account-card/components/tr
     Badges,
     ButtonComponent,
     TransferPermissionsModalComponent,
+    Skeleton,
   ],
   templateUrl: './accounts-list.html',
   styleUrl: './accounts-list.scss',
@@ -62,8 +64,12 @@ export class AccountsListComponent implements OnInit {
   public renameSuccess = output<void>();
 
   private readonly ITEMS_PER_PAGE = 3;
-  private readonly GAP_SIZE = 2.4;
+  private readonly GAP_SIZE = 2;
   public currentPageBySection = signal<Record<string, number>>({});
+
+  public skeletonItems = computed(() =>
+    Array.from({ length: this.itemsPerPage() }, (_, i) => i + 1),
+  );
   private itemsPerPage = signal<number>(3);
   public showTransferModal = signal<boolean>(false);
   public selectedAccountForTransfer = signal<string | null>(null);
