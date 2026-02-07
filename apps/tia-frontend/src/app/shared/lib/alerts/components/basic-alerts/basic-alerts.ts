@@ -20,7 +20,8 @@ export class BasicAlerts {
   public readonly alertType = input<BaseAlertType>('default');
   public readonly alertTitle = input<string>('Default Alert');
   public readonly alertMessage = input<string>(DEFAULT_MESSAGE);
-
+  public readonly customMaxwidth = input<string>('105.3rem');
+  
  public readonly alertClass = computed(() => {
   const type = this.alertType();
   const state = this.alertState();

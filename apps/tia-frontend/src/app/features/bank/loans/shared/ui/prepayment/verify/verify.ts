@@ -6,45 +6,49 @@ import {
   input,
   output,
 } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
-import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { VERIFY_LOAN } from '../../../config/loan-verify.config';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Otp } from '@tia/shared/lib/forms/otp/otp';
+import { OtpVerification } from 'apps/tia-frontend/src/app/core/auth/shared/otp-verification/otp-verification';
+import { IVerified } from 'apps/tia-frontend/src/app/core/auth/models/otp-verification.models';
+import { LoanVerifyState } from '../../../state/loan-verify.state';
+import { LOANS_ROUTES } from '../../../config/loans-redirect.config';
+import { NavigationStart, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter, tap } from 'rxjs';
 
 @Component({
   selector: 'app-verify',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    Otp,
-    ButtonComponent,
-    TranslatePipe,
-  ],
+  imports: [CommonModule, OtpVerification],
   templateUrl: './verify.html',
   styleUrl: './verify.scss',
+  providers: [LoanVerifyState],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Verify {
-  private fb = inject(FormBuilder);
-
+  private readonly router = inject(Router);
+  public readonly verifyState = inject(LoanVerifyState);
   public readonly isLoading = input<boolean>(false);
 
-  public inputConfig = VERIFY_LOAN;
+  public readonly errorMessage = input<string | null>(null);
+  public readonly routes = LOANS_ROUTES;
 
-  public cancel = output<void>();
-  public verify = output<string>();
+  public readonly cancel = output<void>();
+  public readonly verify = output<string>();
+  public readonly resend = output<void>();
 
-  public form = this.fb.group({
-    otp: ['', [Validators.required, Validators.minLength(4)]],
-  });
+  public readonly closeModal = output<void>();
 
-  public onSubmit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
+  constructor() {
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationStart),
+        takeUntilDestroyed(),
+        tap(() => this.closeModal.emit()),
+      )
+      .subscribe();
+  }
+
+  public onVerify(event: IVerified): void {
+    if (event.otp) {
+      this.verify.emit(event.otp);
     }
-    this.verify.emit(this.form.controls.otp.value!);
   }
 }

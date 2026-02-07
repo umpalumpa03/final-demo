@@ -74,64 +74,53 @@ describe('AccountsListComponent', () => {
     vi.clearAllMocks();
   });
 
-  it('should create', () => {
+  it('should create and emit events', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should emit events correctly', () => {
-    const openModalSpy = vi.spyOn(component.openModal, 'emit');
+    const openSpy = vi.spyOn(component.openModal, 'emit');
     const transferSpy = vi.spyOn(component.transfer, 'emit');
     const retrySpy = vi.spyOn(component.retry, 'emit');
-    const renameAccountSpy = vi.spyOn(component.renameAccount, 'emit');
+    const renameSpy = vi.spyOn(component.renameAccount, 'emit');
 
     component.handleOpenModal();
-    expect(openModalSpy).toHaveBeenCalled();
-
+    expect(openSpy).toHaveBeenCalled();
     component.handleTransfer('account-123');
     expect(transferSpy).toHaveBeenCalledWith('account-123');
-
     component.handleRetry();
     expect(retrySpy).toHaveBeenCalled();
-
-    const renameData = { accountId: 'acc-1', friendlyName: 'New Name' };
-    component.handleRenameClick(renameData);
-    expect(renameAccountSpy).toHaveBeenCalledWith(renameData);
+    component.handleRenameClick({
+      accountId: 'acc-1',
+      friendlyName: 'New Name',
+    });
+    expect(renameSpy).toHaveBeenCalledWith({
+      accountId: 'acc-1',
+      friendlyName: 'New Name',
+    });
   });
 
-  it('should compute hasNoAccounts correctly', () => {
+  it('should compute hasNoAccounts and visibleSections', () => {
     expect(component.hasNoAccounts()).toBe(false);
+    expect(component.visibleSections().length).toBeGreaterThan(0);
+    expect(component.visibleSections()[0].key).toBe(AccountType.current);
 
     setInputs({ current: [], saving: [], card: [] });
     expect(component.hasNoAccounts()).toBe(true);
-
-    setInputs(null);
-    expect(component.hasNoAccounts()).toBe(false);
-  });
-
-  it('should compute visibleSections correctly', () => {
-    const visible = component.visibleSections();
-    expect(visible.length).toBeGreaterThan(0);
-    expect(visible[0].key).toBe(AccountType.current);
-
-    setInputs({ current: [], saving: [], card: [] });
     expect(component.visibleSections().length).toBe(0);
 
     setInputs(null);
+    expect(component.hasNoAccounts()).toBe(false);
     expect(component.visibleSections().length).toBe(0);
   });
 
   it('should return accounts by section', () => {
-    const accounts = component.getAccountsBySection(mockAccountSections[0]);
-    expect(accounts.length).toBe(1);
-    expect(accounts[0].id).toBe('1');
-
-    const emptyAccounts = component.getAccountsBySection(
-      mockAccountSections[1],
+    expect(component.getAccountsBySection(mockAccountSections[0])).toEqual([
+      mockAccount,
+    ]);
+    expect(component.getAccountsBySection(mockAccountSections[1]).length).toBe(
+      0,
     );
-    expect(emptyAccounts.length).toBe(0);
-
     setInputs(null);
-    const nullAccounts = component.getAccountsBySection(mockAccountSections[0]);
-    expect(nullAccounts.length).toBe(0);
+    expect(component.getAccountsBySection(mockAccountSections[0]).length).toBe(
+      0,
+    );
   });
 });

@@ -47,16 +47,13 @@ describe('ThemeEffects', () => {
   });
 
   it('should apply theme from action payload', () => {
-    actions$ = of(ThemeActions.setTheme({ theme: 'ocean-blue' }));
+    actions$ = of(ThemeActions.setTheme({ theme: 'oceanBlue' }));
 
     effects.syncTheme$.subscribe();
 
     expect(setAttributeSpy).toHaveBeenCalledWith('data-theme', 'oceanBlue');
 
-    expect(localStorageMock.setItem).toHaveBeenCalledWith(
-      'theme',
-      'ocean-blue',
-    );
+    expect(localStorageMock.setItem).toHaveBeenCalledWith('theme', 'oceanBlue');
   });
 
   it('should load saved theme from localStorage after initialization', () => {

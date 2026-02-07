@@ -5,7 +5,8 @@
     "cards": "ბარათები"
   },
   "cards": {
-    "title": "ბარათები",
+    "title": "ჩემი ბარათები",
+    "subtitle": "მართეთ თქვენი საკრედიტო და სადებეტო ბარათები ანგარიშების მიხედვით",
     "credit": "საკრედიტო ბარათები",
     "debit": "სადებეტო ბარათები"
   },
@@ -61,67 +62,71 @@
       "created": "შექმნის თარიღი",
       "makeTransfer": "გადარიცხვა"
     },
+    "transfer-modal": {
+      "title": "გადარიცხვის ტიპის არჩევა",
+      "description": "აირჩიეთ გადარიცხვის ტიპი, რომელიც გსურთ",
+      "transfer-own-accounts": "გადარიცხვა საკუთარ ანგარიშებს შორის",
+      "transfer-same-bank": "გადარიცხვა იმავე ბანკის სხვა ანგარიშზე",
+      "transfer-foreign-currency": "გადარიცხვა იმავე ბანკის სხვა ანგარიშებზე უცხო ვალუტაში",
+      "pay-bills": "გადასახადების გადახდა",
+      "pay-fines": "ჯარიმების გადახდა",
+      "pay-loan": "სესხის გადახდა"
+    },
     "success": "წარმატებით განხორციელდა",
     "error": "შეცდომა",
     "information": "ინფორმაცია",
     "accountNameUpdatedSuccessfully": "ანგარიშის სახელი წარმატებით განახლდა",
     "accountCreationRequestSent": "ანგარიშის შექმნის მოთხოვნა გადაეგზავნა ადმინისტრატორს დასადასტურებლად",
     "failedToCreateAccount": "ანგარიშის შექმნა ვერ მოხერხდა"
-  }, 
-  "card":{
-    "card-list":{
-      "add-card-button":{
-        "getNewCard":"ახალი ბარათის დამატება"
-
-      }, 
-       "card-group-item":{
-        "allCards":"ყველა ბარათის ნახვა", 
-                "noCard":"ბარათი არ არის დამატებული" 
-
-
-
+  },
+  "card": {
+    "card-list": {
+      "add-card-button": {
+        "getNewCard": "ახალი ბარათის დამატება"
       },
-        "myCards":"ჩემი ბარათები", 
+      "card-group-item": {
+        "allCards": "ყველა ბარათის ნახვა",
+        "noCard": "ბარათი არ არის დამატებული"
+      },
+      "myCards": "ჩემი ბარათები",
       "manageAccounts": "მართეთ თქვენი ანგარიშები",
-            "alertType":"წარმატებით შეიქმნა!", 
-      "alertMessage":"ახალი ბარათი დამატებულია!"
-
-    }, 
-     "account-cards":{
-      "backToCards":"ბარათების გვერდზე დაბრუნება", 
-      "accountNotFound":"ანგარიში არ მოიძებნა", 
-        "card-grid":{
+      "alertType": "წარმატებით შეიქმნა!",
+      "alertMessage": "ახალი ბარათი დამატებულია!"
+    },
+    "account-cards": {
+      "backToCards": "ბარათების გვერდზე დაბრუნება",
+      "accountNotFound": "ანგარიში არ მოიძებნა",
+      "card-grid": {
         "avaliableAmount": "ხელმისაწვდომი"
       }
-    }, 
-    "card-details":{
-      "backToCards":"ბარათების გვერდზე დაბრუნება", 
-          "cardTitle":"სწრაფი მოქმედებები",
-      "manageYourCard":"მართეთ თქვენი ბარათი და ტრანზაქციები",
-  
-      "card-info-section": {
-        "cardName": "ბარათის სახელი", 
-        "cardType": "ბარათის ტიპი", 
-        "currency": "ვალუტა",
-        "Status": "სტატუსი", 
-        "totalBalance": "სულ ბალანსი", 
-        "avaliableLimit":"ხელმისაწვდომი ლიმიტი"
-      }, 
-      "quick-actions-section":{
-        "transferOwnAccount":"გადარიცხვა საკუთარ ანგარიშზე", 
-        "transferSomeoneElse":"სხვასთან გადარიცხვა",
-        "payPaybill":"გადასახადების გადახდა",
-        "ViewSensitiveDetails":"ბარათის დეტალების ნახვა",
-        "ViewTransactions":"ტრანსაქციების ნახვა"
-      }
+    },
+    "card-details": {
+      "backToCards": "ბარათების გვერდზე დაბრუნება",
+      "cardTitle": "სწრაფი მოქმედებები",
+      "manageYourCard": "მართეთ თქვენი ბარათი და ტრანზაქციები",
 
-    }, 
-     "create-card-modal":{
-      "newCard": "ახალი ბარათის დამატება", 
-      "subtitle":"დაამატეთ სადებეტო ან საკრედიტო ბარათი თქვენს ანგარიშზე", 
-      "cardPreview":{
-        "cardPreview":"ბარათის მიმოხილვა",
-        "SelectDesign":"შეარჩიეთ დიზაინი"
+      "card-info-section": {
+        "cardName": "ბარათის სახელი",
+        "cardType": "ბარათის ტიპი",
+        "currency": "ვალუტა",
+        "Status": "სტატუსი",
+        "totalBalance": "სულ ბალანსი",
+        "avaliableLimit": "ხელმისაწვდომი ლიმიტი"
+      },
+      "quick-actions-section": {
+        "transferOwnAccount": "გადარიცხვა საკუთარ ანგარიშზე",
+        "transferSomeoneElse": "სხვასთან გადარიცხვა",
+        "payPaybill": "გადასახადების გადახდა",
+        "ViewSensitiveDetails": "ბარათის დეტალების ნახვა",
+        "ViewTransactions": "ტრანსაქციების ნახვა"
+      }
+    },
+    "create-card-modal": {
+      "newCard": "ახალი ბარათის დამატება",
+      "subtitle": "დაამატეთ სადებეტო ან საკრედიტო ბარათი თქვენს ანგარიშზე",
+      "cardPreview": {
+        "cardPreview": "ბარათის მიმოხილვა",
+        "SelectDesign": "შეარჩიეთ დიზაინი"
       }
 
     }, 
@@ -147,6 +152,4 @@
 
 
   }
-
-
 }

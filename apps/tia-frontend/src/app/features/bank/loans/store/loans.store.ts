@@ -17,10 +17,11 @@ import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/account
 import { toTitleCase } from '../shared/utils/titlecase.util';
 import { LoansService } from '../shared/services/loans.service';
 import { loansInitialState } from './loans.state';
-import { LoanAlertType } from '../shared/models/loan.model';
+import { ILoanDetails, LoanAlertType } from '../shared/models/loan.model';
 import {
   PrepaymentCalculationPayload,
   IInitiatePrepaymentRequest,
+  IVerifyPrepaymentResponse,
 } from '../shared/models/prepayment.model';
 import { PrepaymentCalculationResult } from '../shared/models/prepayment.model';
 
@@ -96,9 +97,22 @@ export const LoansStore = signalStore(
   withComputed((store) => ({
     filteredLoans: computed(() => {
       const status = store.filterStatus();
+      const query = store.searchQuery().toLowerCase().trim();
       const loans = store.loansWithAccountInfo();
-      if (status === null) return loans;
-      return loans.filter((l) => l.status === status);
+
+      let result =
+        status === null ? loans : loans.filter((l) => l.status === status);
+
+      if (query) {
+        result = result.filter((l) => {
+          const friendlyName = (l.friendlyName || '').toLowerCase();
+          const purpose = (l.purpose || '').toLowerCase();
+
+          return friendlyName.includes(query) || purpose.includes(query);
+        });
+      }
+
+      return result;
     }),
   })),
 
@@ -118,6 +132,9 @@ export const LoansStore = signalStore(
       hideAlert() {
         patchState(store, { alertMessage: null, alertType: null });
       },
+      setSearchQuery(query: string) {
+        patchState(store, { searchQuery: query });
+      },
 
       _triggerAutoHide: rxMethod<void>(
         pipe(
@@ -129,7 +146,9 @@ export const LoansStore = signalStore(
       loadLoans: rxMethod<{ status?: number | null; forceChange?: boolean }>(
         pipe(
           tap(({ status }) => {
-            patchState(store, { filterStatus: status ?? null });
+            if (status !== undefined) {
+              patchState(store, { filterStatus: status });
+            }
           }),
           switchMap(({ forceChange }) => {
             const currentLoans = store.loans();
@@ -148,7 +167,19 @@ export const LoansStore = signalStore(
                   friendlyName: toTitleCase(l.friendlyName),
                   accountName: l.accountName || '',
                 }));
-                patchState(store, { loans: mappedLoans, loading: false });
+
+                const counts = {
+                  all: loans.length,
+                  approved: loans.filter((l) => l.status === 2).length,
+                  pending: loans.filter((l) => l.status === 1).length,
+                  declined: loans.filter((l) => l.status === 3).length,
+                };
+
+                patchState(store, {
+                  loans: mappedLoans,
+                  dashboardCounts: counts,
+                  loading: false,
+                });
               }),
               catchError((error) => {
                 patchState(store, { error: error.message, loading: false });
@@ -156,25 +187,6 @@ export const LoansStore = signalStore(
               }),
             );
           }),
-        ),
-      ),
-
-      loadCounts: rxMethod<void>(
-        pipe(
-          switchMap(() =>
-            loansService.getAllLoans().pipe(
-              tap((loans) => {
-                const counts = {
-                  all: loans.length,
-                  approved: loans.filter((l) => l.status === 2).length,
-                  pending: loans.filter((l) => l.status === 1).length,
-                  declined: loans.filter((l) => l.status === 3).length,
-                };
-                patchState(store, { dashboardCounts: counts });
-              }),
-              catchError(() => EMPTY),
-            ),
-          ),
         ),
       ),
 
@@ -242,31 +254,41 @@ export const LoansStore = signalStore(
         ),
       ),
 
-      loadMonths: rxMethod<void>(
+      loadMonths: rxMethod<{ forceRefresh?: boolean }>(
         pipe(
-          switchMap(() =>
-            loansService.getLoanMonths().pipe(
+          switchMap(({ forceRefresh }) => {
+            const currentMonths = store.months();
+            if (currentMonths.length > 0 && !forceRefresh) {
+              return EMPTY;
+            }
+
+            return loansService.getLoanMonths().pipe(
               tap((months) => patchState(store, { months })),
               catchError((error) => {
                 patchState(store, { error: error.message });
                 return EMPTY;
               }),
-            ),
-          ),
+            );
+          }),
         ),
       ),
 
-      loadPurposes: rxMethod<void>(
+      loadPurposes: rxMethod<{ forceRefresh?: boolean }>(
         pipe(
-          switchMap(() =>
-            loansService.getPurposes().pipe(
+          switchMap(({ forceRefresh }) => {
+            const currentPurposes = store.purposes();
+            if (currentPurposes.length > 0 && !forceRefresh) {
+              return EMPTY;
+            }
+
+            return loansService.getPurposes().pipe(
               tap((purposes) => patchState(store, { purposes, error: null })),
               catchError((error) => {
                 patchState(store, { error: error.message });
                 return EMPTY;
               }),
-            ),
-          ),
+            );
+          }),
         ),
       ),
 
@@ -320,6 +342,47 @@ export const LoansStore = signalStore(
           }),
         ),
       ),
+
+      openDetails(id: string) {
+        this.loadLoanDetails(id);
+        patchState(store, { isDetailsOpen: true, isPrepaymentOpen: false });
+      },
+
+      openPrepayment(loan: ILoanDetails) {
+        patchState(store, {
+          isDetailsOpen: false,
+          isPrepaymentOpen: true,
+          activePrepaymentLoan: loan,
+        });
+      },
+
+      closeModals() {
+        patchState(store, {
+          isDetailsOpen: false,
+          isPrepaymentOpen: false,
+          selectedLoanDetails: null,
+          activePrepaymentLoan: null,
+        });
+      },
+
+      navigateDetails(direction: number) {
+        const currentDetails = store.selectedLoanDetails();
+        const list = store.filteredLoans();
+
+        if (!currentDetails || list.length === 0) return;
+
+        const currentIndex = list.findIndex((l) => l.id === currentDetails.id);
+        if (currentIndex === -1) return;
+
+        let newIndex = currentIndex + direction;
+
+        if (newIndex < 0) newIndex = list.length - 1;
+        if (newIndex >= list.length) newIndex = 0;
+
+        const nextLoan = list[newIndex];
+
+        this.openDetails(nextLoan.id);
+      },
     };
   }),
 
@@ -388,21 +451,26 @@ export const LoansStore = signalStore(
           tap(() => patchState(store, { actionLoading: true, error: null })),
           switchMap(({ payload }) =>
             loansService.verifyPrepayment(payload).pipe(
-              tap(() => {
+              tap((response: IVerifyPrepaymentResponse) => {
+                if (response.success === false) {
+                  throw new Error(response.message || 'Invalid code');
+                }
+
                 patchState(store, {
                   activeChallengeId: null,
                   calculationResult: null,
                   actionLoading: false,
                   loanDetailsCache: {},
                 });
-
                 store.loadLoans({ forceChange: true });
-                store.loadCounts();
               }),
+
               catchError((error) => {
+                const errorMsg = error.message || 'Verification failed';
+
                 patchState(store, {
                   actionLoading: false,
-                  error: error.message,
+                  error: errorMsg,
                 });
                 return EMPTY;
               }),

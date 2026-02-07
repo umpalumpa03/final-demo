@@ -7,6 +7,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Mail } from '../../store/messaging.state';
 import { Store } from '@ngrx/store';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('InboxDetail', () => {
   let component: InboxDetail;
@@ -58,7 +59,7 @@ describe('InboxDetail', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [InboxDetail],
+      imports: [InboxDetail, TranslateModule.forRoot()],
       providers: [
         { provide: MessagingStore, useValue: mockMessagingStore },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },

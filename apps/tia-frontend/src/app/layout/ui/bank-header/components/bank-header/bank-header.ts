@@ -23,8 +23,21 @@ export class BankHeader {
   public hasUnread = input<boolean>(false);
   public inboxCount = input<number>(0);
   public avatarUrl = input<string | null | undefined>(null);
+  public fullName = input<string>('');
 
   public hasInboxMessages = computed(() => this.inboxCount() > 0);
+
+  public initials = computed(() => {
+    const name = this.fullName();
+    if (!name) return '';
+    return name
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  });
+
   public onNotificationClick = output<ElementRef | null>();
 
   public onNotification(): void {
