@@ -129,8 +129,12 @@ export const MessagingStore = signalStore(
                     switchMap((type) =>
                         messagingService.getInbox(type, store.limit(), store?.pagination?.()?.nextCursor ?? null).pipe(
                             tap((response) => {
+                                const existingMails = store.mails();
+                                const existingIds = new Set(existingMails.map(m => m.id));
+                                const newMails = response.items.filter(item => !existingIds.has(item.id));
+                                
                                 patchState(store, {
-                                    mails: [...store.mails(), ...response.items],
+                                    mails: [...existingMails, ...newMails],
                                     pagination: response.pagination,
                                     isLoading: false,
                                     error: null,
