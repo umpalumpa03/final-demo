@@ -69,5 +69,8 @@
     "emailSent": "Email sent successfully",
     "draftSent": "Draft sent successfully",
     "replySent": "Reply sent successfully"
+  },
+  "emptyStates": {
+    "noMessages": "No Messages"
   }
 }
