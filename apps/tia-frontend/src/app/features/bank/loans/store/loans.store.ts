@@ -21,9 +21,7 @@ import { ILoanDetails, LoanAlertType } from '../shared/models/loan.model';
 import {
   PrepaymentCalculationPayload,
   IInitiatePrepaymentRequest,
-  IVerifyPrepaymentResponse,
 } from '../shared/models/prepayment.model';
-import { PrepaymentCalculationResult } from '../shared/models/prepayment.model';
 
 export const LoansStore = signalStore(
   withState(loansInitialState),
@@ -32,56 +30,90 @@ export const LoansStore = signalStore(
     const globalStore = inject(Store);
     const accountsSignal = globalStore.selectSignal(selectAccounts);
 
+    const loansWithAccountInfo = computed(() => {
+      const currentAccounts = accountsSignal() || [];
+      const areAccountsLoaded = currentAccounts.length > 0;
+
+      return store.loans().map((loan) => {
+        const matchedAccount = currentAccounts.find(
+          (acc) => String(acc.id) === String(loan.accountId),
+        );
+        let accName = 'Loading Account...';
+        if (matchedAccount) {
+          accName = matchedAccount.friendlyName || matchedAccount.name;
+        } else if (areAccountsLoaded) {
+          accName = 'Unknown Account';
+        }
+        return { ...loan, accountName: accName };
+      });
+    });
+
+    const accountFilteredLoans = computed(() => {
+      const allLoans = loansWithAccountInfo();
+      const accountId = store.filterAccountId();
+      if (!accountId) return allLoans;
+      return allLoans.filter((l) => String(l.accountId) === String(accountId));
+    });
+
     return {
-      loansWithAccountInfo: computed(() => {
-        const currentAccounts = accountsSignal() || [];
-        const areAccountsLoaded = currentAccounts.length > 0;
+      loansWithAccountInfo,
+      activeAccountName: computed(() => {
+        const id = store.filterAccountId();
+        if (!id) return null;
 
-        return store.loans().map((loan) => {
-          const matchedAccount = currentAccounts.find(
-            (acc) => String(acc.id) === String(loan.accountId),
-          );
-          let accName = 'Loading Account...';
-          if (matchedAccount) {
-            accName = matchedAccount.friendlyName || matchedAccount.name;
-          } else if (areAccountsLoaded) {
-            accName = `Unknown Account`;
-          }
+        const accounts = accountsSignal() || [];
+        const account = accounts.find((a) => String(a.id) === String(id));
 
-          return { ...loan, accountName: accName };
-        });
+        return account
+          ? account.friendlyName || account.name
+          : 'Selected Account';
       }),
 
-      loanCounts: computed(() => store.dashboardCounts()),
+      loanCounts: computed(() => {
+        const loans = accountFilteredLoans();
+        return {
+          all: loans.length,
+          pending: loans.filter((l) => l.status === 1).length,
+          approved: loans.filter((l) => l.status === 2).length,
+          declined: loans.filter((l) => l.status === 3).length,
+        };
+      }),
+      filteredLoans: computed(() => {
+        let result = accountFilteredLoans();
+        const status = store.filterStatus();
+        const query = store.searchQuery().toLowerCase().trim();
 
+        if (status !== null) {
+          result = result.filter((l) => l.status === status);
+        }
+        if (query) {
+          result = result.filter((l) => {
+            const friendlyName = (l.friendlyName || '').toLowerCase();
+            const purpose = (l.purpose || '').toLowerCase();
+            const amount = String(l.loanAmount || '');
+            return (
+              friendlyName.includes(query) ||
+              purpose.includes(query) ||
+              amount.includes(query)
+            );
+          });
+        }
+        return result;
+      }),
       loanMonthsOptions: computed(() =>
-        (store.months() || []).map((m) => ({
-          label: `${m} Months`,
-          value: m,
-        })),
+        (store.months() || []).map((m) => ({ label: `${m} Months`, value: m })),
       ),
-
       purposeOptions: computed(() =>
         (store.purposes() || []).map((p) => ({
           label: p.displayText,
           value: p.value,
         })),
       ),
-
       alert: computed(() => {
         const message = store.alertMessage();
         const type = store.alertType();
-
-        if (message && type) {
-          return {
-            message,
-            type: type,
-          };
-        }
-
-        return null;
+        return message && type ? { message, type } : null;
       }),
-
       prepaymentTypeOptions: computed(() =>
         store
           .prepaymentOptions()
@@ -93,32 +125,6 @@ export const LoansStore = signalStore(
       ),
     };
   }),
-
-  withComputed((store) => ({
-    filteredLoans: computed(() => {
-      const status = store.filterStatus();
-      const query = store.searchQuery().toLowerCase().trim();
-      const accountFilter = store.filterAccountId();
-      const loans = store.loansWithAccountInfo();
-
-      let result =
-        status === null ? loans : loans.filter((l) => l.status === status);
-
-      if (accountFilter) {
-        result = result.filter((l) => l.accountId === accountFilter);
-      }
-
-      if (query) {
-        result = result.filter((l) => {
-          const friendlyName = (l.friendlyName || '').toLowerCase();
-          const purpose = (l.purpose || '').toLowerCase();
-          return friendlyName.includes(query) || purpose.includes(query);
-        });
-      }
-
-      return result;
-    }),
-  })),
 
   withMethods((store) => {
     const loansService = inject(LoansService);
@@ -142,6 +148,17 @@ export const LoansStore = signalStore(
       setSearchQuery(query: string) {
         patchState(store, { searchQuery: query });
       },
+      reset() {
+        patchState(store, loansInitialState);
+      },
+      closeModals() {
+        patchState(store, {
+          isDetailsOpen: false,
+          isPrepaymentOpen: false,
+          selectedLoanDetails: null,
+          activePrepaymentLoan: null,
+        });
+      },
 
       _triggerAutoHide: rxMethod<void>(
         pipe(
@@ -153,19 +170,13 @@ export const LoansStore = signalStore(
       loadLoans: rxMethod<{ status?: number | null; forceChange?: boolean }>(
         pipe(
           tap(({ status }) => {
-            if (status !== undefined) {
+            if (status !== undefined)
               patchState(store, { filterStatus: status });
-            }
           }),
           switchMap(({ forceChange }) => {
             const currentLoans = store.loans();
-
-            if (currentLoans.length > 0 && !forceChange) {
-              return EMPTY;
-            }
-
+            if (currentLoans.length > 0 && !forceChange) return EMPTY;
             patchState(store, { loading: true, error: null });
-
             return loansService.getAllLoans().pipe(
               tap((loans) => {
                 const mappedLoans = loans.map((l) => ({
@@ -174,19 +185,7 @@ export const LoansStore = signalStore(
                   friendlyName: toTitleCase(l.friendlyName),
                   accountName: l.accountName || '',
                 }));
-
-                const counts = {
-                  all: loans.length,
-                  approved: loans.filter((l) => l.status === 2).length,
-                  pending: loans.filter((l) => l.status === 1).length,
-                  declined: loans.filter((l) => l.status === 3).length,
-                };
-
-                patchState(store, {
-                  loans: mappedLoans,
-                  dashboardCounts: counts,
-                  loading: false,
-                });
+                patchState(store, { loans: mappedLoans, loading: false });
               }),
               catchError((error) => {
                 patchState(store, { error: error.message, loading: false });
@@ -208,7 +207,6 @@ export const LoansStore = signalStore(
           ),
           switchMap((id) => {
             const cachedDetails = store.loanDetailsCache()[id];
-
             if (cachedDetails) {
               patchState(store, {
                 selectedLoanDetails: cachedDetails,
@@ -216,7 +214,6 @@ export const LoansStore = signalStore(
               });
               return EMPTY;
             }
-
             return loansService.getLoanById(id).pipe(
               tap((details) =>
                 patchState(store, (state) => ({
@@ -264,11 +261,7 @@ export const LoansStore = signalStore(
       loadMonths: rxMethod<{ forceRefresh?: boolean }>(
         pipe(
           switchMap(({ forceRefresh }) => {
-            const currentMonths = store.months();
-            if (currentMonths.length > 0 && !forceRefresh) {
-              return EMPTY;
-            }
-
+            if (store.months().length > 0 && !forceRefresh) return EMPTY;
             return loansService.getLoanMonths().pipe(
               tap((months) => patchState(store, { months })),
               catchError((error) => {
@@ -283,11 +276,7 @@ export const LoansStore = signalStore(
       loadPurposes: rxMethod<{ forceRefresh?: boolean }>(
         pipe(
           switchMap(({ forceRefresh }) => {
-            const currentPurposes = store.purposes();
-            if (currentPurposes.length > 0 && !forceRefresh) {
-              return EMPTY;
-            }
-
+            if (store.purposes().length > 0 && !forceRefresh) return EMPTY;
             return loansService.getPurposes().pipe(
               tap((purposes) => patchState(store, { purposes, error: null })),
               catchError((error) => {
@@ -302,12 +291,8 @@ export const LoansStore = signalStore(
       loadPrepaymentOptions: rxMethod<{ forceRefresh?: boolean }>(
         pipe(
           switchMap(({ forceRefresh }) => {
-            const currentOptions = store.prepaymentOptions();
-
-            if (!forceRefresh && currentOptions.length > 0) {
+            if (!forceRefresh && store.prepaymentOptions().length > 0)
               return EMPTY;
-            }
-
             return loansService.getPrepaymentOptions().pipe(
               tap((options) =>
                 patchState(store, { prepaymentOptions: options, error: null }),
@@ -335,9 +320,8 @@ export const LoansStore = signalStore(
                     payload.amount!,
                     payload.loanPartialPaymentType!,
                   );
-
             return request$.pipe(
-              tap((result: PrepaymentCalculationResult) =>
+              tap((result) =>
                 patchState(store, {
                   calculationResult: result,
                   actionLoading: false,
@@ -355,47 +339,6 @@ export const LoansStore = signalStore(
           }),
         ),
       ),
-
-      openDetails(id: string) {
-        this.loadLoanDetails(id);
-        patchState(store, { isDetailsOpen: true, isPrepaymentOpen: false });
-      },
-
-      openPrepayment(loan: ILoanDetails) {
-        patchState(store, {
-          isDetailsOpen: false,
-          isPrepaymentOpen: true,
-          activePrepaymentLoan: loan,
-        });
-      },
-
-      closeModals() {
-        patchState(store, {
-          isDetailsOpen: false,
-          isPrepaymentOpen: false,
-          selectedLoanDetails: null,
-          activePrepaymentLoan: null,
-        });
-      },
-
-      navigateDetails(direction: number) {
-        const currentDetails = store.selectedLoanDetails();
-        const list = store.filteredLoans();
-
-        if (!currentDetails || list.length === 0) return;
-
-        const currentIndex = list.findIndex((l) => l.id === currentDetails.id);
-        if (currentIndex === -1) return;
-
-        let newIndex = currentIndex + direction;
-
-        if (newIndex < 0) newIndex = list.length - 1;
-        if (newIndex >= list.length) newIndex = 0;
-
-        const nextLoan = list[newIndex];
-
-        this.openDetails(nextLoan.id);
-      },
     };
   }),
 
@@ -407,6 +350,19 @@ export const LoansStore = signalStore(
       showAlert(message: string, alertType: LoanAlertType) {
         patchState(store, { alertMessage: message, alertType });
         store._triggerAutoHide();
+      },
+
+      openDetails(id: string) {
+        store.loadLoanDetails(id);
+        patchState(store, { isDetailsOpen: true, isPrepaymentOpen: false });
+      },
+
+      openPrepayment(loan: ILoanDetails) {
+        patchState(store, {
+          isDetailsOpen: false,
+          isPrepaymentOpen: true,
+          activePrepaymentLoan: loan,
+        });
       },
 
       initiatePrepayment: rxMethod<{ payload: IInitiatePrepaymentRequest }>(
@@ -432,24 +388,19 @@ export const LoansStore = signalStore(
               }),
               catchError((err: HttpErrorResponse) => {
                 const backendMsg = err.error?.message;
-
                 const isInsufficient =
                   err.status === 400 &&
                   backendMsg === 'Insufficient funds in payment account';
-
                 const displayMsg = isInsufficient
                   ? 'Insufficient funds in payment account'
                   : backendMsg || err.message || 'An unexpected error occurred';
-
                 patchState(store, {
                   actionLoading: false,
                   alertMessage: displayMsg,
                   alertType: 'error',
                   error: displayMsg,
                 });
-
                 store._triggerAutoHide();
-
                 return EMPTY;
               }),
             ),
@@ -464,11 +415,9 @@ export const LoansStore = signalStore(
           tap(() => patchState(store, { actionLoading: true, error: null })),
           switchMap(({ payload }) =>
             loansService.verifyPrepayment(payload).pipe(
-              tap((response: IVerifyPrepaymentResponse) => {
-                if (response.success === false) {
+              tap((response) => {
+                if (response.success === false)
                   throw new Error(response.message || 'Invalid code');
-                }
-
                 patchState(store, {
                   activeChallengeId: null,
                   calculationResult: null,
@@ -477,13 +426,10 @@ export const LoansStore = signalStore(
                 });
                 store.loadLoans({ forceChange: true });
               }),
-
               catchError((error) => {
-                const errorMsg = error.message || 'Verification failed';
-
                 patchState(store, {
                   actionLoading: false,
-                  error: errorMsg,
+                  error: error.message || 'Verification failed',
                 });
                 return EMPTY;
               }),
@@ -502,9 +448,24 @@ export const LoansStore = signalStore(
           ),
         ),
       ),
+    };
+  }),
 
-      reset() {
-        patchState(store, loansInitialState);
+  withMethods((store) => {
+    return {
+      navigateDetails(direction: number) {
+        const currentDetails = store.selectedLoanDetails();
+        const list = store.filteredLoans();
+        if (!currentDetails || list.length === 0) return;
+
+        const currentIndex = list.findIndex((l) => l.id === currentDetails.id);
+        if (currentIndex === -1) return;
+
+        let newIndex = currentIndex + direction;
+        if (newIndex < 0) newIndex = list.length - 1;
+        if (newIndex >= list.length) newIndex = 0;
+
+        store.openDetails(list[newIndex].id);
       },
     };
   }),

@@ -4,13 +4,17 @@ import {
   DestroyRef,
   inject,
   signal,
+  computed,
+  OnInit,
+  OnDestroy,
 } from '@angular/core';
 import { LoanHeader } from '../shared/ui/loan-header/loan-header';
 import { LoanNavigation } from '../shared/ui/loan-navigation/loan-navigation';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RequestModal } from '../shared/ui/request-modal/request-modal';
 import { Store } from '@ngrx/store';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors'; // Import Selector
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { LoansStore } from '../store/loans.store';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
@@ -22,6 +26,7 @@ import { LoanDetails } from '../shared/ui/prepayment/loan-details/loan-details';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { PrepaymentContainer } from '../shared/ui/prepayment/prepayment-container/prepayment-container';
 import { LoanDashboardState } from '../shared/state/loan-dashboard.state';
+import { Badges } from '@tia/shared/lib/primitives/badges/badges'; // Import Badges
 
 @Component({
   selector: 'app-loans-container',
@@ -36,19 +41,23 @@ import { LoanDashboardState } from '../shared/state/loan-dashboard.state';
     LoanDetails,
     UiModal,
     PrepaymentContainer,
+    Badges,
   ],
   templateUrl: './loans-container.html',
   styleUrl: './loans-container.scss',
   providers: [LoanDashboardState],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoansContainer {
+export class LoansContainer implements OnInit, OnDestroy {
   private globalStore = inject(Store);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
   public readonly loanDashboardState = inject(LoanDashboardState);
   protected readonly store = inject(LoansStore);
+
+  public readonly activeAccountName = this.store.activeAccountName;
 
   public accountId = signal<string | null>(null);
 
@@ -86,9 +95,16 @@ export class LoansContainer {
         const accountId = params['accountId'] || null;
 
         this.accountId.set(accountId);
-
         this.store.setAccountFilter(accountId);
       });
+  }
+
+  public onDismissAccountFilter(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { accountId: null },
+      queryParamsHandling: 'merge',
+    });
   }
 
   ngOnDestroy(): void {

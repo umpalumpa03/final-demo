@@ -23,6 +23,8 @@ export class PendingLoans {
   }
 
   public navigateToAll(): void {
-    this.router.navigate([LOANS_ROUTES.ALL]);
+    this.router.navigate([LOANS_ROUTES.ALL], {
+      queryParamsHandling: 'merge',
+    });
   }
 }
