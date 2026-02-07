@@ -29,5 +29,12 @@ export const UserInfoActions = createActionGroup({
     'Create Widget Success': props<{ widget: IWidgetItem }>(),
     'Create Widget Error': props<{ error: string }>(),
     'Update Widget State Error': props<{ error: string }>(),
+    'Update Widgets Bulk': props<{
+      updates: { id: string; updates: Partial<IWidgetItem> }[];
+    }>(),
+    'Update Widgets Bulk Success': props<{ widgets: IWidgetItem[] }>(),
+    'Delete Widget': props<{ id: string }>(),
+    'Delete Widget Success': props<{ id: string }>(),
+    'Delete Widget Error': props<{ error: string }>(),
   },
 });

@@ -10,7 +10,7 @@ import {
   withLatestFrom,
   filter,
 } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { WidgetsService } from '../../features/bank/dashboard/services/widgets-service';
 import { Store } from '@ngrx/store';
 import { selectUserLoaded, selectWidgetsLoaded } from './user-info.selectors';
@@ -83,6 +83,27 @@ export class UserInfoEffects {
     ),
   );
 
+  public updateWidgetsBulk$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserInfoActions.updateWidgetsBulk),
+      switchMap(({ updates }) => {
+        const requests = updates.map((u) =>
+          this.widgetService.updateWidget(u.id, u.updates),
+        );
+        return forkJoin(requests).pipe(
+          map((widgets) =>
+            UserInfoActions.updateWidgetsBulkSuccess({ widgets }),
+          ),
+          catchError((error) =>
+            of(
+              UserInfoActions.updateWidgetStateError({ error: error.message }),
+            ),
+          ),
+        );
+      }),
+    ),
+  );
+
   public loadWidgets$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserInfoActions.loadWidgets),
@@ -93,6 +114,22 @@ export class UserInfoEffects {
           map((widgets) => UserInfoActions.loadWidgetsSuccess({ widgets })),
           catchError((error) =>
             of(UserInfoActions.loadWidgetsError({ error: error.message })),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  public deleteWidget$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserInfoActions.deleteWidget),
+      switchMap(({ id }) =>
+        this.widgetService.deleteWidget(id).pipe(
+          map(() => UserInfoActions.deleteWidgetSuccess({ id })),
+          catchError((error) =>
+            of(
+              UserInfoActions.updateWidgetStateError({ error: error.message }),
+            ),
           ),
         ),
       ),

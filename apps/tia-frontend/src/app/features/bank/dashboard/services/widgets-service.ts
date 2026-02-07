@@ -33,7 +33,7 @@ export class WidgetsService {
             return {
               ...w,
               dbId: w.id,
-              isHidden: !w.isActive,
+              isHidden: w.isActive === false,
               id: normalizedId,
               type: normalizedId as any,
 
@@ -87,5 +87,9 @@ export class WidgetsService {
           };
         }),
       );
+  }
+
+  public deleteWidget(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 }

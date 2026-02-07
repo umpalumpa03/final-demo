@@ -39,6 +39,9 @@ import {
   selectWidgetsLoading,
 } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
+import { debounceTime, Subject, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader";
 @Component({
   selector: 'app-dashboard-container',
   imports: [
@@ -55,7 +58,8 @@ import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
     UiSheetModal,
     CustomizeCard,
     Skeleton,
-  ],
+    RouteLoader
+],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -70,8 +74,23 @@ export class DashboardContainer implements OnInit {
   protected readonly isCustomizing = signal(false);
   protected readonly widgetCatalog = signal(catalog);
 
+  private readonly updateStream$ = new Subject<IWidgetItem[]>();
+  private dirtyIds = new Set<string>();
+
+  constructor() {
+    this.updateStream$
+      .pipe(
+        debounceTime(1000),
+        takeUntilDestroyed(),
+        tap((allWidgets) => {
+          this.persistChanges(allWidgets);
+        }),
+      )
+      .subscribe();
+  }
+
   protected readonly visibleItems = computed(() =>
-    this.myItems().filter((item) => !item.isHidden),
+    this.myItems().filter((item, index) => index === 0 || !item.isHidden),
   );
 
   public openCustomization(): void {
@@ -106,42 +125,52 @@ export class DashboardContainer implements OnInit {
     }
     return items.map((_, index) => (index === 0 ? 2 : 1));
   });
-
   public onItemsChange(reorderedVisibleItems: IWidgetItem[]): void {
-    const hiddenItems = this.myItems().filter((item) => item.isHidden);
+    const visibleIds = new Set(reorderedVisibleItems.map((i) => i.id));
+    const hiddenItems = this.myItems().filter(
+      (item) => !visibleIds.has(item.id),
+    );
 
     const newVisibleList = reorderedVisibleItems.map((item, index) => ({
       ...item,
       order: index + 1,
       hasFullWidth: index === 0,
+      isHidden: index === 0 ? item.isHidden : false,
     }));
+
+    newVisibleList.forEach((item) => this.dirtyIds.add(item.id));
 
     const newMasterList = [...newVisibleList, ...hiddenItems];
 
     this.store.dispatch(
       UserInfoActions.loadWidgetsSuccess({ widgets: newMasterList }),
     );
-
     this.myItems.set(newMasterList);
+    this.updateStream$.next(newMasterList);
+  }
 
-    newVisibleList.forEach((item) => {
-      if (item.dbId) {
-        const catalogInfo = this.widgetCatalog().find((c) => c.id === item.id);
+  private persistChanges(allWidgets: IWidgetItem[]): void {
+    const updates = allWidgets
 
-        this.store.dispatch(
-          UserInfoActions.updateWidgetState({
-            id: item.dbId,
-            updates: {
-              order: item.order,
-              hasFullWidth: item.hasFullWidth,
-              isActive: true,
-              isHidden: false,
-              widgetName: catalogInfo ? catalogInfo.title : item.title,
-            },
-          }),
-        );
-      }
-    });
+      .filter((item) => !!item.dbId && this.dirtyIds.has(item.id))
+      .map((item, index) => ({
+        id: item.dbId!,
+        updates: {
+          order: item.order,
+          hasFullWidth: item.hasFullWidth,
+
+          isHidden: !!item.isHidden,
+          widgetName:
+            this.widgetCatalog().find((c) => c.id === item.id)?.title ||
+            item.title,
+        },
+      }));
+
+    this.dirtyIds.clear();
+
+    if (updates.length > 0) {
+      this.store.dispatch(UserInfoActions.updateWidgetsBulk({ updates }));
+    }
   }
 
   private readonly syncWidgets = effect(() => {
@@ -151,47 +180,52 @@ export class DashboardContainer implements OnInit {
 
   public onContainerOrderChange(ids: string[]): void {}
 
-  public onToggleVisibility(isSelected: boolean, id: string): void {
-    const catalogWidget = this.widgetCatalog().find((w) => w.id === id);
-    const existingWidget = this.myItems().find((w) => w.id === id);
+  public onFoldWidget(isSelected: boolean, id: string): void {
+    const widgetIndex = this.myItems().findIndex((w) => w.id === id);
 
-    if (!catalogWidget) return;
+    if (widgetIndex === 0) {
+      this.dirtyIds.add(id);
 
-    if (existingWidget?.dbId) {
+      this.myItems.update((items) =>
+        items.map((i) => (i.id === id ? { ...i, isHidden: !isSelected } : i)),
+      );
+
+      this.updateStream$.next(this.myItems());
+
       this.store.dispatch(
-        UserInfoActions.updateWidgetState({
-          id: existingWidget.dbId,
-          updates: {
-            isHidden: !isSelected,
-            widgetName: catalogWidget.title,
-            hasFullWidth: existingWidget.hasFullWidth,
-            order: existingWidget.order,
-          },
-        }),
+        UserInfoActions.loadWidgetsSuccess({ widgets: this.myItems() }),
       );
-    } else if (isSelected) {
-      const activeCount = this.visibleItems().length;
-      const newOrder = activeCount + 1;
-
-      const newWidget: IWidgetItem = {
-        ...catalogWidget,
-        order: newOrder,
-        hasFullWidth: newOrder === 1,
-        isHidden: false,
-      };
-
-      this.store.dispatch(UserInfoActions.createWidget({ widget: newWidget }));
     }
+  }
 
-    this.myItems.update((items) => {
-      const exists = items.some((i) => i.id === id);
-      if (!exists && isSelected) {
-        return [...items, { ...catalogWidget, isHidden: false }];
+  public onToggleCatalogWidget(isSelected: boolean, id: string): void {
+    const existingWidget = this.myItems().find((w) => w.id === id);
+    const widgetIndex = this.myItems().findIndex((w) => w.id === id);
+
+    if (widgetIndex === -1 && isSelected) {
+      const catalogWidget = this.widgetCatalog().find((w) => w.id === id);
+      if (catalogWidget) {
+        const activeCount = this.visibleItems().length;
+        const newOrder = activeCount + 1;
+        this.store.dispatch(
+          UserInfoActions.createWidget({
+            widget: {
+              ...catalogWidget,
+              order: newOrder,
+              hasFullWidth: newOrder === 1,
+              isHidden: false,
+            },
+          }),
+        );
       }
-      return items.map((i) =>
-        i.id === id ? { ...i, isHidden: !isSelected } : i,
+    } else if (!isSelected && widgetIndex > 0 && existingWidget?.dbId) {
+      this.store.dispatch(
+        UserInfoActions.deleteWidget({ id: existingWidget.dbId }),
       );
-    });
+      this.myItems.update((items) => items.filter((i) => i.id !== id));
+    } else if (widgetIndex === 0) {
+      this.onFoldWidget(isSelected, id);
+    }
   }
 
   public onWidgetRefresh(item: IWidgetItem): void {
@@ -209,6 +243,10 @@ export class DashboardContainer implements OnInit {
         filters: { pageLimit: item },
       }),
     );
+
+    this.store.dispatch(
+      TransactionActions.loadTransactions({ forceRefresh: true }),
+    );
   }
 
   public readonly gridColumns = { default: 2, md: 0, sm: 0 };
@@ -219,7 +257,7 @@ export class DashboardContainer implements OnInit {
     if (!areWidgetsLoaded) {
       this.store.dispatch(UserInfoActions.loadWidgets({}));
     }
-
+    this.store.dispatch(TransactionActions.enter());
     this.store.dispatch(loadExchangeRates({ baseCurrency: 'USD' }));
     this.store.dispatch(AccountsActions.loadAccounts({}));
   }

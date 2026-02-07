@@ -105,14 +105,56 @@ export const userInfoFeature = createFeature({
             return {
               ...w,
               ...widget,
-              isHidden: !widget.isActive,
+              isHidden: widget.isActive === false,
             };
           }
           return w;
         })
-
         .sort((a, b) => (a.order || 99) - (b.order || 99)),
     })),
+
+    on(UserInfoActions.updateWidgetsBulkSuccess, (state, { widgets }) => ({
+      ...state,
+      widgets: state.widgets
+        .map((w) => {
+          const updated = widgets.find((u) => u.dbId === w.dbId);
+          return updated
+            ? { ...w, ...updated, isHidden: updated.isActive === false }
+            : w;
+        })
+        .sort((a, b) => (a.order || 99) - (b.order || 99)),
+    })),
+
+    on(UserInfoActions.deleteWidgetSuccess, (state, { id }) => ({
+      ...state,
+      widgets: state.widgets.filter((w) => w.dbId !== id),
+    })),
+
+    on(
+      UserInfoActions.loadWidgets,
+      UserInfoActions.createWidget,
+      UserInfoActions.deleteWidget,
+      (state) => ({
+        ...state,
+        widgetsLoading: true,
+      }),
+    ),
+
+    on(UserInfoActions.deleteWidgetSuccess, (state, { id }) => ({
+      ...state,
+      widgets: state.widgets.filter((w) => w.dbId !== id),
+      widgetsLoading: false,
+    })),
+
+    on(
+      UserInfoActions.loadWidgetsError,
+      UserInfoActions.createWidgetError,
+      UserInfoActions.updateWidgetStateError,
+      (state) => ({
+        ...state,
+        widgetsLoading: false,
+      }),
+    ),
   ),
 });
 
