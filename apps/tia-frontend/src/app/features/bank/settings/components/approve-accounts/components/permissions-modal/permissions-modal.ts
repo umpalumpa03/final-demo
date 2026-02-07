@@ -6,6 +6,7 @@ import { ListDisplay } from '@tia/shared/lib/data-display/list-display/list-disp
 import { ListDisplayItem } from '@tia/shared/lib/data-display/models/list-display.models';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
+import { CardCatalogItemResponse } from '../../../approve-cards/shared/model/approve-cards.model';
 
 @Component({
   selector: 'app-permissions-modal',
@@ -21,7 +22,7 @@ import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/share
 })
 export class PermissionsModal {
   public readonly form = input.required<FormGroup>();
-  public readonly items = input.required<IAccountsPermissions[]>();
+  public readonly items = input.required<IAccountsPermissions[] | CardCatalogItemResponse[]>();
   public readonly title = input<string>('');
   public readonly modalTitle = input<string>('');
   public readonly modalSubtitle = input<string>('');

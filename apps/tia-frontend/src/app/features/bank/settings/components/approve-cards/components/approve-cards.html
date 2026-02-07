@@ -1,49 +1,40 @@
 <main class="approve-card">
-  @if (store.isLoading()) {
-    
-    @for(card of store.cards(); track card.id) {
-      <app-skeleton width="100%" height="6.3rem" />
-    } @empty {
-      <div class="approve-card__spinner">
-        <app-spinner size="6rem"></app-spinner>
-      </div>
-    }
-
-  } @else { 
-    @for(card of store.cards(); track card.id) {
-      <app-cards-approve-element
-        [id]="card.id"
-        [title]="card.nickname"
-        [status]="card.status"
-        [email]="card.cardholderName"
-        [network]="card.network"
-        [balance]="''"
-        [creationDate]="card.createdAt"
-        (cardAction)="handleAction($event)"
-      />
-    } @empty {
-      <app-error-states
-        variant="not-found"
-        header="No Cards Found"
-        message="We couldn't find any cards to display."
-      />
-    } 
-  }
+  @if (store.isLoading()) { @for(card of store.cards(); track card.id) {
+  <app-skeleton width="100%" height="6.3rem" />
+  } @empty {
+  <div class="approve-card__spinner">
+    <app-spinner size="6rem"></app-spinner>
+  </div>
+  } } @else { @for(card of store.cards(); track card.id) {
+  <app-cards-approve-element
+    [id]="card.id"
+    [title]="card.nickname"
+    [status]="card.status"
+    [email]="card.cardholderName"
+    [network]="card.network"
+    [balance]="''"
+    [creationDate]="card.createdAt"
+    (cardAction)="handleAction($event)"
+  />
+  } @empty {
+  <app-error-states
+    variant="not-found"
+    header="No Cards Found"
+    message="We couldn't find any cards to display."
+  />
+  } }
 </main>
 
-<!-- <app-ui-modal [isOpen]="false">
+@if(permissionsOverlay()) {
+<app-ui-modal [isOpen]="permissionsOverlay()" (closed)="closeModal()">
   <app-permissions-modal
     [modalTitle]="'Modify Card Permissions'"
-     [modalSubtitle]="'Configure permissions for this account request'"
+    [modalSubtitle]="'Configure permissions for this Card request'"
     [title]="'Card permissions'"
-  ></app-permissions-modal>
-</app-ui-modal> -->
-
-
-    <!--
-        [form]="permissionsForm"
-    
-    [items]="store.permissions()"
+    [form]="cardPermissionsForm"
+    [items]="mappedPermissions()"
     [accOrCardName]="'FLEXAACCOUNT'"
     [name]="'John Doe'"
-     -->
+  ></app-permissions-modal>
+</app-ui-modal>
+}
