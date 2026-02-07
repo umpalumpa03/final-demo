@@ -99,6 +99,21 @@
     </div>
   </app-basic-card>
 
+  <app-user-info
+    [pId]="pId()"
+    [phoneNumber]="phoneNumber()"
+    [personalInfoLoading]="personalInfoLoading()"
+    [personalInfoUpdated]="personalInfoUpdated()"
+    [personalInfoError]="personalInfoError()"
+    [editedPId]="editedPId()"
+    [isEditingPId]="isEditingPId()"
+    [isPersonalNumberUnchanged]="isPersonalNumberUnchanged()"
+    (updatePersonalNumber)="updatePersonalNumber.emit($event)"
+    (editPersonalNumber)="editPersonalNumber.emit()"
+    (personalNumberChange)="personalNumberChange.emit($event)"
+    (cancelEditPersonalNumber)="cancelEditPersonalNumber.emit()"
+  ></app-user-info>
+
   <app-ui-modal
     [isOpen]="isUploadModalOpen()"
     (closed)="uploadModalClosed.emit()"

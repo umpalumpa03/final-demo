@@ -15,6 +15,14 @@ import {
 } from '../store/profile-photo/profile-photo.selectors';
 import { selectUserInfo } from '../../../../../../store/user-info/user-info.selectors';
 import { TranslateService } from '@ngx-translate/core';
+import { PersonalInfoActions } from '../../../../../../store/personal-info/pesronal-info.actions';
+import {
+  selectPersonalInfo,
+  selectPId,
+  selectPhoneNumber,
+  selectPersonalInfoLoading,
+  selectPersonalInfoError,
+} from '../../../../../../store/personal-info/personal-info.selectors';
 
 @Component({
   selector: 'app-profile-photo-container',
@@ -36,6 +44,21 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   public readonly avatarType = this.store.selectSignal(selectAvatarType);
   public readonly savedAvatarUrl = this.store.selectSignal(selectSavedAvatarUrl);
   public readonly userInfo = this.store.selectSignal(selectUserInfo);
+  public readonly personalInfo = this.store.selectSignal(selectPersonalInfo);
+  public readonly pId = this.store.selectSignal(selectPId);
+  public readonly phoneNumber = this.store.selectSignal(selectPhoneNumber);
+  public readonly personalInfoLoading = this.store.selectSignal(selectPersonalInfoLoading);
+  public readonly personalInfoError = this.store.selectSignal(selectPersonalInfoError);
+  public readonly personalInfoUpdated = signal<boolean>(false);
+
+
+  public readonly editedPId = signal<string>('');
+  public readonly isEditingPId = signal<boolean>(false);
+  public readonly isPersonalNumberUnchanged = computed(() => {
+    const currentPId = this.pId()?.trim() || '';
+    const editedPId = this.editedPId()?.trim() || '';
+    return currentPId === editedPId;
+  });
 
   public readonly alertKind = signal<AlertType | null>(null);
   public readonly alertMessage = signal<string>('');
@@ -46,6 +69,7 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   private uploadedFile: File | null = null;
   private objectUrl: string | null = null;
   private alertTimeoutId: ReturnType<typeof setTimeout> | null = null;
+  private isUpdatingPersonalInfo = false;
 
   public constructor() {
     effect(() => {
@@ -55,10 +79,60 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
         this.objectUrl = null;
       }
     });
+
+   
+    effect(() => {
+      const currentPId = this.pId();
+      if (!this.isEditingPId()) {
+        this.editedPId.set(currentPId || '');
+      }
+    });
+
+
+    effect(() => {
+      const updated = this.personalInfoUpdated();
+      if (updated && this.isEditingPId()) {
+        this.isEditingPId.set(false);
+      }
+    });
+
+
+    let previousLoading = false;
+    effect(() => {
+      const personalInfo = this.personalInfo();
+      const error = this.personalInfoError();
+      const loading = personalInfo?.loading ?? false;
+      
+      const loadingFinished = previousLoading && !loading;
+      previousLoading = loading;
+
+    
+      if (loadingFinished && this.isUpdatingPersonalInfo) {
+        if (error === null) {
+          this.showAlert(
+            'success',
+            this.translate.instant('settings.profile-photo.personalNumberUpdated'),
+          );
+          this.personalInfoUpdated.set(true);
+          setTimeout(() => this.personalInfoUpdated.set(false), 0);
+        } else if (error) {
+          this.showAlert(
+            'error',
+            error,
+          );
+        
+          if (this.isEditingPId()) {
+            this.editedPId.set(this.pId() || '');
+          }
+        }
+        this.isUpdatingPersonalInfo = false;
+      }
+    });
   }
 
   public ngOnInit(): void {
     this.store.dispatch(ProfilePhotoActions.loadDefaultAvatarsRequest({}));
+    this.store.dispatch(PersonalInfoActions.loadPersonalInfo());
   }
 
   public ngOnDestroy(): void {
@@ -265,6 +339,45 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
         ProfilePhotoActions.selectDefaultAvatarRequest({ avatarId })
       );
     }
+  }
+
+  public onEditPersonalNumber(): void {
+    this.isEditingPId.set(true);
+  }
+
+  public onPersonalNumberChange(value: string | number | boolean | FileList | null): void {
+    this.editedPId.set(value ? String(value) : '');
+  }
+
+  public onCancelEditPersonalNumber(): void {
+    this.isEditingPId.set(false);
+    this.editedPId.set(this.pId() || '');
+  }
+
+  public onUpdatePersonalNumber(pId: string | null): void {
+    if (!pId || pId.length !== 11) {
+      this.showAlert(
+        'error',
+        this.translate.instant('settings.profile-photo.invalidPersonalNumber'),
+      );
+      return;
+    }
+
+ 
+    const currentPId = this.pId();
+    if (currentPId === pId) {
+      return;
+    }
+
+    this.isUpdatingPersonalInfo = true;
+    this.store.dispatch(
+      PersonalInfoActions.updatePersonalInfo({
+        personalInfo: {
+          ...this.personalInfo(),
+          pId,
+        },
+      })
+    );
   }
 }
 

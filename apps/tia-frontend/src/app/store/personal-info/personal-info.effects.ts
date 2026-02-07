@@ -1,9 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { HttpErrorResponse } from '@angular/common/http';
 import { PersonalInfoApiService } from '../../shared/services/personal-info/personal-info.api.service';
 import { PersonalInfoActions } from './pesronal-info.actions';
-import { catchError, map,  of, switchMap } from 'rxjs';
-import {  UpdatePersonalInfoDto } from './personal-info.state';
+import { catchError, map, of, switchMap } from 'rxjs';
+import { UpdatePersonalInfoDto } from './personal-info.state';
 
 @Injectable()
 export class PersonalInfoEffects {
@@ -56,13 +57,32 @@ export class PersonalInfoEffects {
               },
             }),
           ),
-          catchError((error) =>
-            of(
+          catchError((error: HttpErrorResponse | Error) => {
+            let errorMessage = 'Update personal info error';
+            
+            if (error instanceof HttpErrorResponse) {
+          
+              if (typeof error.error === 'string') {
+                errorMessage = error.error;
+              } else if (error.error?.message) {
+                if (Array.isArray(error.error.message)) {
+                  errorMessage = error.error.message[0];
+                } else {
+                  errorMessage = error.error.message;
+                }
+              } else if (error.message) {
+                errorMessage = error.message;
+              }
+            } else if (error instanceof Error) {
+              errorMessage = error.message;
+            }
+            
+            return of(
               PersonalInfoActions.updatePersonalInfoFailure({
-                error: error.message ?? 'Update personal info error',
+                error: errorMessage,
               }),
-            ),
-          ),
+            );
+          }),
         );
       }),
     ),

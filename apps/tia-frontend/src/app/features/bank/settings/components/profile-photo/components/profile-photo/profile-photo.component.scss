@@ -110,11 +110,40 @@
   }
 
 
+      &__personal-info-content {
+    @include display-flex(column);
+    gap: 1.6rem;
+ 
+  }
+
+  &__info-item {
+    @include display-flex(column);
+    gap: 0.8rem;
+  }
+
+  &__info-label {
+    @include font-inter(500, 1.4rem, 1);
+    color: var(--color-fg);
+  }
+
+  &__info-value {
+    @include font-inter(400, 1.4rem, 1);
+    color: var(--color-fg-muted);
+  }
+
+  &__info-item lib-text-input {
+    margin-top: 0.4rem;
+  }
+
   &__footer {
    @include display-flex(row, wrap);
     gap: 1.2rem;
     margin-top: 2.4rem;
     margin-bottom: 1rem;
+  }
+
+  &__personal-info-card {
+    margin-top: 2.4rem;
   }
 }
 

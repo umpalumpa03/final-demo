@@ -1,0 +1,56 @@
+<div class="user-info">
+  <app-basic-card
+    title="{{ 'settings.profile-photo.personalInfo' | translate }}"
+    [hasFooter]="true"
+    [maxWidth]="'100%'"
+    [width]="'100%'"
+  >
+    <div class="user-info__content">
+      <div class="user-info__item">
+        <span class="user-info__label">{{ 'settings.profile-photo.phoneNumber' | translate }}:</span>
+        <span class="user-info__value">{{ phoneNumber() || '-' }}</span>
+      </div>
+      <div class="user-info__item">
+        <span class="user-info__label">{{ 'settings.profile-photo.personalNumber' | translate }}:</span>
+        @if (isEditingPId()) {
+          <lib-text-input
+            [config]="{ placeholder: 'Enter personal number', validation: { maxLength: 11, minLength: 11 } }"
+            [ngModel]="editedPId()"
+            (valueChange)="onPersonalNumberChange($event)"
+            size="medium"
+            type="number"
+          ></lib-text-input>
+        } @else {
+          <span class="user-info__value">{{ pId() || '-' }}</span>
+        }
+      </div>
+    </div>
+    <div card-footer class="user-info__footer">
+      @if (isEditingPId()) {
+        <app-button
+          variant="default"
+          size="default"
+          (click)="onCancelEdit()"
+        >
+          {{ 'settings.profile-photo.cancel' | translate }}
+        </app-button>
+        <app-button
+          variant="default"
+          size="default"
+          (click)="onSavePersonalNumber()"
+          [isDisabled]="personalInfoLoading() || isPersonalNumberUnchanged()"
+        >
+          {{ 'settings.profile-photo.savePersonalNumber' | translate }}
+        </app-button>
+      } @else {
+        <app-button
+          variant="default"
+          size="default"
+          (click)="onEditPersonalNumber()"
+        >
+          {{ 'settings.profile-photo.edit' | translate }}
+        </app-button>
+      }
+    </div>
+  </app-basic-card>
+</div>

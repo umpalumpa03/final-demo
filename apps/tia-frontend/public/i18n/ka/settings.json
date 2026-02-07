@@ -46,7 +46,16 @@
         "profilePictureRemovedSuccessfully": "პროფილის ფოტო წარმატებით წაიშლა",
         "change": "შენახვა",
         "remove": "ფოტოს წაშლა",
-        "invalidFileAlert": "გთხოვთ აირჩიოთ ნაგულისხმები ფოტო (PNG ან JPG ფორმატი, მაქსიმალური ზომა — 1 MB)"
+        "invalidFileAlert": "გთხოვთ აირჩიოთ ნაგულისხმები ფოტო (PNG ან JPG ფორმატი, მაქსიმალური ზომა — 1 MB)",
+        "personalInfo": "პირადი ინფორმაცია",
+        "phoneNumber": "ტელეფონის ნომერი",
+        "personalNumber": "პირადი ნომერი",
+        "edit": "რედაქტირება",
+        "cancel": "გაუქმება",
+        "savePersonalNumber": "პირადი ნომრის შენახვა",
+        "personalNumberUpdated": "პირადი ნომერი წარმატებით განახლდა",
+        "personalNumberExists": "პირადი ნომერი უკვე არსებობს",
+        "invalidPersonalNumber": "პირადი ნომერი უნდა შედგებოდეს  11 ციფრისგან"
     },
     "security": {
         "title": "უსაფრთხოების პარამეტრები",

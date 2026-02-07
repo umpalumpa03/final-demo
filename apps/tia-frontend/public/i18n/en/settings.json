@@ -59,7 +59,16 @@
         "profilePictureRemovedSuccessfully": "Your profile picture removed successfully",
         "change": "Save Changes",
         "remove": "Remove Photo",
-        "invalidFileAlert": "Unfortunately, your photo could not be uploaded. The avatar image file to upload (PNG/JPG only, max 1MB)."
+        "invalidFileAlert": "Unfortunately, your photo could not be uploaded. The avatar image file to upload (PNG/JPG only, max 1MB).",
+        "personalInfo": "Personal Information",
+        "phoneNumber": "Phone Number",
+        "personalNumber": "Personal Number",
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "savePersonalNumber": "Save Personal Number",
+        "personalNumberUpdated": "Personal number updated successfully",
+        "personalNumberExists": "Personal number already exists",
+        "invalidPersonalNumber": "Personal number must be exactly 11 digits"
     },
     "security": {
         "title": "Security Settings",

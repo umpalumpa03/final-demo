@@ -1,0 +1,40 @@
+@use 'sass:color';
+@use '../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../shared/styles/palette' as *;
+
+.user-info {
+  display: block;
+  width: 100%;
+  margin-top: 2.4rem;
+
+  &__content {
+    @include display-flex(column);
+    gap: 1.6rem;
+  }
+
+  &__item {
+    @include display-flex(column);
+    gap: 0.8rem;
+  }
+
+  &__label {
+    @include font-inter(500, 1.4rem, 1);
+    color: var(--color-fg);
+  }
+
+  &__value {
+    @include font-inter(400, 1.4rem, 1);
+    color: var(--color-fg-muted);
+  }
+
+  &__item lib-text-input {
+    margin-top: 0.4rem;
+  }
+
+  &__footer {
+    @include display-flex(row, wrap);
+    gap: 1.2rem;
+    margin-top: 2.4rem;
+    margin-bottom: 1rem;
+  }
+}
