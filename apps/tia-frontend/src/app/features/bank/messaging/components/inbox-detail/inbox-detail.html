@@ -16,8 +16,10 @@
       variant="outline"
       [icon]="'red-trash.svg'"
       (click)="onDelete($event)"
-      >{{ isMobile() ? '' : ('messaging.mail-detail.delete' | translate)
-      }}</app-button
+      ><span class="delete-btn"
+        >{{ isMobile() ? '' : ('messaging.mail-detail.delete' | translate)
+        }}</span
+      ></app-button
     >
   </div>
 </app-email-detail>

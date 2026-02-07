@@ -8,10 +8,11 @@ import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { IUser } from '../../models/users.model';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-card',
-  imports: [BasicCard, ButtonComponent, CommonModule],
+  imports: [BasicCard, ButtonComponent, CommonModule, TranslatePipe],
   templateUrl: './user-card.html',
   styleUrl: './user-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
