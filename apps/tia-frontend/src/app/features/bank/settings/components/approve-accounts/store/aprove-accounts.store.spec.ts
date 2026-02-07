@@ -3,6 +3,7 @@ import { ApproveAccountsApiService } from '../service/approve-accounts.api.servi
 import { of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AccountPermissionsStore } from './aprove-accounts.store';
+import { HttpErrorResponse } from '@angular/common/http';
 
 describe('AccountPermissionsStore', () => {
   let store: InstanceType<typeof AccountPermissionsStore>;
@@ -47,16 +48,30 @@ describe('AccountPermissionsStore', () => {
 
   it('should handle API errors correctly and log the error', () => {
     const errorMsg = 'Internal Server Error';
+    const errorResponse = new HttpErrorResponse({
+      error: 'Server Error',
+      status: 500,
+      statusText: 'Internal Server Error',
+    });
+
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    apiServiceMock.getAccountPermissions.mockReturnValue(throwError(() => errorMsg));
+
+    apiServiceMock.getAccountPermissions.mockReturnValue(
+      throwError(() => errorResponse),
+    );
 
     store.loadPermissions();
 
     expect(apiServiceMock.getAccountPermissions).toHaveBeenCalled();
     expect(store.isLoading()).toBe(false);
-    
-    expect(store.error()).toBe(errorMsg); 
-    
+    const simpleError = { message: errorMsg };
+    apiServiceMock.getAccountPermissions.mockReturnValue(
+      throwError(() => simpleError),
+    );
+
+    store.loadPermissions();
+    expect(store.error()).toBe(errorMsg);
+
     consoleSpy.mockRestore();
   });
 });
