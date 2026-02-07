@@ -9,6 +9,7 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { FormsModule } from '@angular/forms';
+import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 
 @Component({
   selector: 'app-user-info',
@@ -18,6 +19,7 @@ import { FormsModule } from '@angular/forms';
     TranslatePipe,
     TextInput,
     FormsModule,
+    Tooltip,
   ],
   templateUrl: './user-info.component.html',
   styleUrl: './user-info.component.scss',
@@ -31,28 +33,38 @@ export class UserInfoComponent {
   public readonly personalInfoUpdated = input<boolean>(false);
   public readonly personalInfoError = input<string | null>(null);
   public readonly editedPId = input<string>('');
-  public readonly isEditingPId = input<boolean>(false);
+  public readonly isEditing = input<boolean>(false);
   public readonly isPersonalNumberUnchanged = input<boolean>(false);
-
+  public readonly editedPhoneNumber = input<string>('');
+  public readonly isPhoneNumberUnchanged = input<boolean>(false);
+  public readonly phoneUpdateLoading = input<boolean>(false);
+  public readonly saveDisabledReason = input<string | null>(null);
 
   public readonly updatePersonalNumber = output<string | null>();
-  public readonly editPersonalNumber = output<void>();
+  public readonly edit = output<void>();
   public readonly personalNumberChange = output<string | number | boolean | FileList | null>();
-  public readonly cancelEditPersonalNumber = output<void>();
+  public readonly cancelEdit = output<void>();
+  public readonly updatePhoneNumber = output<string | null>();
+  public readonly phoneNumberChange = output<string | number | boolean | FileList | null>();
+  public readonly save = output<void>();
 
   public onPersonalNumberChange(value: string | number | boolean | FileList | null): void {
     this.personalNumberChange.emit(value);
   }
 
-  public onEditPersonalNumber(): void {
-    this.editPersonalNumber.emit();
+  public onEdit(): void {
+    this.edit.emit();
   }
 
   public onCancelEdit(): void {
-    this.cancelEditPersonalNumber.emit();
+    this.cancelEdit.emit();
   }
 
-  public onSavePersonalNumber(): void {
-    this.updatePersonalNumber.emit(this.editedPId() || null);
+  public onSave(): void {
+    this.save.emit();
+  }
+
+  public onPhoneNumberChange(value: string | number | boolean | FileList | null): void {
+    this.phoneNumberChange.emit(value);
   }
 }

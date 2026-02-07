@@ -9,6 +9,11 @@ describe('personalInfoReducer', () => {
     phoneNumber: '555999333',
     loading: false,
     error: null,
+    phoneUpdateChallengeId: null,
+    phoneUpdateLoading: false,
+    phoneUpdateError: null,
+    phoneUpdatePendingPhone: null,
+    phoneUpdateResendCount: 0,
   };
 
   it('should set loading true and clear error on loadPersonalInfo', () => {
@@ -73,6 +78,11 @@ describe('personalInfoReducer', () => {
       phoneNumber: '555999333',
       loading: true,
       error: 'Some error',
+      phoneUpdateChallengeId: 'challenge-123',
+      phoneUpdateLoading: true,
+      phoneUpdateError: 'OTP error',
+      phoneUpdatePendingPhone: '555123456',
+      phoneUpdateResendCount: 2,
     };
     const state = personalInfoReducer(
       populatedState,

@@ -32,9 +32,23 @@
   }
 
   &__footer {
-    @include display-flex(row, wrap);
-    gap: 1.2rem;
     margin-top: 2.4rem;
     margin-bottom: 1rem;
+  }
+
+  &__footer-content {
+    @include display-flex(column);
+    gap: 0.8rem;
+  }
+
+  &__validation-message {
+    @include font-inter(400, 1.2rem, 1.4);
+    color: var(--color-fg-muted);
+    padding: 0.4rem 0;
+  }
+
+  &__footer-buttons {
+    @include display-flex(row, wrap);
+    gap: 1.2rem;
   }
 }

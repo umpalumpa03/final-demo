@@ -65,10 +65,19 @@
         "personalNumber": "Personal Number",
         "edit": "Edit",
         "cancel": "Cancel",
+        "save": "Save",
         "savePersonalNumber": "Save Personal Number",
         "personalNumberUpdated": "Personal number updated successfully",
         "personalNumberExists": "Personal number already exists",
-        "invalidPersonalNumber": "Personal number must be exactly 11 digits"
+        "invalidPersonalNumber": "Personal number must be exactly 11 digits",
+        "invalidPhoneNumber": "Phone number must be at least 9 digits",
+        "noChangesToSave": "No changes to save",
+        "verifyPhoneUpdate": "Verify Phone Number Update",
+        "otpDescription": "Enter the OTP code sent to you via SMS",
+        "verify": "Verify",
+        "didntReceiveCode": "Didn't receive the code?",
+        "phoneNumberUpdated": "Phone number updated successfully",
+        "maxResendReached": "Maximum resend limit reached"
   },
   "security": {
     "title": "Security Settings",

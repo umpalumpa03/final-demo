@@ -114,6 +114,10 @@ export const profilePhotoFeature = createFeature({
       defaultAvatars: state.defaultAvatars,
       defaultAvatarsLoading: state.defaultAvatarsLoading,
       defaultAvatarsError: state.defaultAvatarsError,
+     
+      savedAvatarUrl: state.savedAvatarUrl,
+      avatarId: state.avatarId,
+      avatarType: state.avatarType,
     })),
   ),
 });
