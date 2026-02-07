@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserDetailsModal } from './user-details-modal';
 import { IUserDetail } from '../../models/users.model';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('UserDetailsModal', () => {
   let component: UserDetailsModal;
@@ -24,7 +25,7 @@ describe('UserDetailsModal', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UserDetailsModal],
+      imports: [UserDetailsModal, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserDetailsModal);
