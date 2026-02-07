@@ -89,12 +89,18 @@
     },
     "details": {
       "title": "User Details",
-      "detailed": "View detailed information about the user.",
+      "desc": "View detailed information about the user.",
       "blocked": "Blocked",
       "active": "Active",
       "username": "Username",
       "created": "Created At",
       "close": "Close"
+    },
+    "edit": {
+      "title": "User Details",
+      "desc": "Edit user information.",
+      "cancel": "Cancel",
+      "save": "Save Changes"
     }
   },
   "approve-accounts": {
