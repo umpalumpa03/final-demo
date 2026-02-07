@@ -1,4 +1,9 @@
-<div class="statistic-card">
+<div class="statistic-card"
+     [style.width]="width()"
+     [style.height]="height()"
+     [style.min-width]="minWidth()"
+     [style.max-width]="maxWidth()"
+>
   <div class="statistic-card__header">
     <span class="statistic-card__label">{{ label() }}</span>
     <img [src]="icon()" [alt]="label()" class="statistic-card__icon" />

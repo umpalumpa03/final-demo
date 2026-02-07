@@ -23,6 +23,7 @@ describe('ExternalRecipient', () => {
       isLoading: signal(false),
       error: signal<string>(''),
       recipientInput: signal(''),
+      setError: vi.fn((val: string) => mockStore.error.set(val)),
     };
 
     mockValidationService = {

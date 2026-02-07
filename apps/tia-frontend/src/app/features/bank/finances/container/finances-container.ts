@@ -1,17 +1,20 @@
-import { 
-  Component, 
-  inject, 
-  OnInit, 
-  DestroyRef, 
-  ChangeDetectionStrategy 
+import {
+  Component,
+  inject,
+  OnInit,
+  DestroyRef,
+  ChangeDetectionStrategy,
+  signal,
+  computed,
+  effect,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, filter } from 'rxjs';
+import { FormControl, FormGroup } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { FinancesStore } from '../store/finances.store';
-import { FinancesView } from '../components/finances-view';
-import { FINANCES_FILTER_OPTIONS } from '../config/filter-options.config';
+import { FinancesView } from '../components/finances-view/container/finances-view';
+import { FINANCES_FILTER_OPTIONS, getMonthOptions } from '../config/filter-options.config';
 import { FilterType } from '../models/filter.model';
 import { dateRangeValidator } from '../validators/date-range.validator';
 
@@ -20,65 +23,96 @@ import { dateRangeValidator } from '../validators/date-range.validator';
   imports: [FinancesView],
   templateUrl: './finances-container.html',
   styleUrl: './finances-container.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinancesContainer implements OnInit {
   readonly store = inject(FinancesStore);
   private readonly destroyRef = inject(DestroyRef);
 
+ 
+
   public readonly financeTitle = 'My Finances';
   public readonly financeSubTitle = 'Track your income, expenses, and savings';
-  
+
+  public readonly monthOptions = signal(getMonthOptions());
+
+  public activeFilter = signal<FilterType | null>(null);
   readonly filterOptions = FINANCES_FILTER_OPTIONS;
-  activeFilter: FilterType = 'month';
 
   public readonly filterForm = new FormGroup(
     {
-      fromDate: new FormControl('2026-01-15', [
-        Validators.required,
-        Validators.pattern(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/),
-      ]),
-      toDate: new FormControl('2026-01-31', [
-        Validators.required,
-        Validators.pattern(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/),
-      ]),
+      selectedMonth: new FormControl(''),
+      fromDate: new FormControl(''),
+      toDate: new FormControl(''),
     },
     { validators: dateRangeValidator('fromDate', 'toDate') },
   );
 
   ngOnInit(): void {
     this.fetchData();
-    
+
     this.filterForm.valueChanges
       .pipe(
         debounceTime(500),
-        filter(() => this.filterForm.valid),
-        distinctUntilChanged((prev, curr) => prev === curr),
+        distinctUntilChanged(
+          (prev, curr) => prev === curr,
+        ),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(() => this.fetchData());
+      .subscribe(() => {
+        if (this.filterForm.valid) {
+          this.fetchData();
+        }
+      });
   }
 
- 
   public onFilterChange(type: FilterType): void {
-    this.activeFilter = type;
-    this.fetchData();
+    const newType = this.activeFilter() === type ? null : type;
+    this.activeFilter.set(newType);
+
+    this.filterForm.patchValue(
+      {
+        selectedMonth: '',
+        fromDate: '',
+        toDate: '',
+      },
+      { emitEvent: false },
+    );
+
+    if (newType === null) {
+      this.fetchData();
+    }
   }
 
- 
   private fetchData(): void {
-    const { fromDate, toDate } = this.filterForm.getRawValue();
-    this.store.loadAllData({
-      from: fromDate ?? '',
-      to: this.activeFilter === 'custom' ? (toDate ?? undefined) : undefined,
-    });
+    const { selectedMonth, fromDate, toDate } = this.filterForm.getRawValue();
+    const currentFilter = this.activeFilter();
+
+    let params: { from: string; to?: string } | null = null;
+
+    if (currentFilter === 'month') {
+      if (selectedMonth) {
+        params = { from: selectedMonth };
+      }
+    } else if (currentFilter === 'custom') {
+      if (fromDate && toDate) {
+        params = { from: fromDate, to: toDate };
+      }
+    } else {
+      const lastYear = new Date();
+      lastYear.setFullYear(lastYear.getFullYear() - 1);
+      params = {
+        from: lastYear.toISOString().split('T')[0],
+        to: new Date().toISOString().split('T')[0],
+      };
+    }
+
+    if (params) {
+      this.store.loadAllData(params);
+    }
   }
 
- 
-  public handleInput(controlName: 'fromDate' | 'toDate', event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.filterForm
-      .get(controlName)
-      ?.setValue(target.value, { emitEvent: true });
+  public getControl(name: string): FormControl {
+    return this.filterForm.get(name) as FormControl;
   }
 }

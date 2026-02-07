@@ -4,6 +4,9 @@
   [class.button--loading]="isLoading()"
   [class.button--full-width]="fullWidth()"
   [disabled]="isDisabled() || isLoading()"
+  [style.--btn-width]="customWidth()"
+  [style.--btn-height]="customHeight()"
+  [style.--btn-color]="customColor()"
 >
   @if (isLoading()) {
   <span class="button__spinner"></span>
@@ -11,10 +14,12 @@
 
   <span class="button__content">
       @if (icon()) {
-      <div class="button__icon" [class.button__icon--loading]="isLoading()">
+      <div class="button__icon" [class.button__icon--loading]="isLoading()"
+      [style.--icon-w]="iconWidth()" 
+      [style.--icon-h]="iconHeight()"
+      >
         <img [src]="'/images/svg/button-icons/' + icon()" 
               alt="icon"
-              [ngStyle]="iconStyles()"
         >
       </div>
     }

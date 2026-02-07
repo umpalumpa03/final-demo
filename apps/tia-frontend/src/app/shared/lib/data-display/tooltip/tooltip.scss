@@ -13,7 +13,7 @@
 
   &__content {
     position: absolute;
-    z-index: 10;
+    z-index: 9999;
     padding: 0.6rem 1rem;
     border-radius: 0.8rem;
     background-color: $blue-700;
@@ -21,6 +21,13 @@
     @include font-arimo(500, 1.2rem, 1.6rem);
     white-space: nowrap;
     box-shadow: 0 0.6rem 1.2rem rgba($black, 0.15);
+
+    @media (max-width: 450px) {
+      white-space: normal;
+      max-width: 20rem;
+      left: 50%;
+      transform: translateX(-50%);
+    }
   }
 
   &__content--top {
