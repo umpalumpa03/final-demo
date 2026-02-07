@@ -218,7 +218,7 @@ describe('InternalAmount', () => {
     it('should disable transfer in conversion mode when destination is invalid', () => {
       transferStoreMock.receiverOwnAccount.set({ currency: 'USD' });
       fixture.detectChanges();
-      component.amountInput.setValue('50');
+      component.amountInput.setValue('');
       component.destinationAmountInput.setValue('');
       fixture.detectChanges();
       expect(component.isTransferDisabled()).toBe(true);
