@@ -5,7 +5,7 @@
         </lib-text-input>
     </div>
 
-    @if (store.loading()) {
+    @if (!store.loading()) {
     @for (item of [1, 2, 3, 4]; track item) {
     <div class="skeleton">
         <div class="skeleton__content">
