@@ -189,4 +189,26 @@
       }
     }
   }
+
+  @media (max-width: 425px) {
+    &__section {
+      &-grid {
+        gap: 1.9rem;
+        app-account-card {
+          flex: 0 0 calc(100% - 2rem);
+        }
+      }
+    }
+
+    &__skel-card {
+      flex: 0 0 calc(100% - 2rem);
+    }
+
+    &__carousel {
+      &-button-container {
+        width: 2rem;
+        padding: 0 0.25rem;
+      }
+    }
+  }
 }

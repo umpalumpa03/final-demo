@@ -4,9 +4,12 @@
 .account-card {
   @include display-flex(column, wrap);
   gap: 1.25rem;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100%;
   max-width: 100%;
+  min-height: 30rem;
+  min-width: 16rem;
+  overflow: hidden;
 
   &__header {
     @include flex-center(row);
@@ -21,6 +24,14 @@
       &-icon {
         width: 1.8rem;
         height: 1.8rem;
+      }
+
+      &--small-screen {
+        display: none;
+      }
+
+      &--large-screen {
+        display: flex;
       }
     }
 
@@ -365,6 +376,42 @@
     &__actions {
       gap: 0.5rem;
       padding: 0.75rem;
+    }
+  }
+}
+
+@media (max-width: 425px) {
+  .account-card {
+    &__header {
+      &-favorite {
+        &--small-screen {
+          display: flex;
+        }
+
+        &--large-screen {
+          display: none;
+        }
+      }
+
+      &-info {
+        &-title {
+          flex-wrap: wrap;
+          align-items: center;
+
+          h3 {
+            flex-basis: auto;
+          }
+
+          .account-card__header-favorite--small-screen {
+            flex-basis: auto;
+            flex-shrink: 0;
+          }
+
+          app-badges {
+            flex-basis: 100%;
+          }
+        }
+      }
     }
   }
 }
