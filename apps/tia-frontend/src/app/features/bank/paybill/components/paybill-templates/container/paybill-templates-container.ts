@@ -304,7 +304,10 @@ export class PaybillTemplatesContainer implements OnInit {
 
   // Form Sync effect to create dynamic fields
   private readonly formSyncEffect = effect(() => {
-    this.syncFormWithPaymentFields();
+    this.payBill.syncFormWithPaymentFields(this.createTemplateForm, {
+      name: '',
+      category: '',
+    });
   });
 
   // Event Handlers for dynamic form
@@ -328,7 +331,7 @@ export class PaybillTemplatesContainer implements OnInit {
     );
   }
 
-  // ES GASATANIA IDEASHI AR MCHIRDEBA
+  // Create dynamic form fields
   public readonly paymentField = computed(() =>
     this.store.selectSignal(selectPaymentFields)(),
   );
@@ -336,21 +339,4 @@ export class PaybillTemplatesContainer implements OnInit {
   public readonly verifiedDetails = this.store.selectSignal(
     selectVerifiedDetails,
   );
-
-  // ////////////////////////////////////
-
-  // HELPER --> THIS IS SHARED SO THIS MUSTN'T BE HERE
-  private syncFormWithPaymentFields(): void {
-    const fields = this.paymentField();
-    const details = this.verifiedDetails();
-
-    this.payBill.syncFormControls(this.createTemplateForm, fields);
-
-    if (details?.valid && details.amountDue !== undefined) {
-      this.createTemplateForm.patchValue(
-        { name: '', category: '' },
-        { emitEvent: false },
-      );
-    }
-  }
 }
