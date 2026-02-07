@@ -292,10 +292,16 @@ export const LoansStore = signalStore(
         ),
       ),
 
-      loadPrepaymentOptions: rxMethod<void>(
+      loadPrepaymentOptions: rxMethod<{ forceRefresh?: boolean }>(
         pipe(
-          switchMap(() =>
-            loansService.getPrepaymentOptions().pipe(
+          switchMap(({ forceRefresh }) => {
+            const currentOptions = store.prepaymentOptions();
+
+            if (!forceRefresh && currentOptions.length > 0) {
+              return EMPTY;
+            }
+
+            return loansService.getPrepaymentOptions().pipe(
               tap((options) =>
                 patchState(store, { prepaymentOptions: options, error: null }),
               ),
@@ -303,8 +309,8 @@ export const LoansStore = signalStore(
                 patchState(store, { error: error.message });
                 return EMPTY;
               }),
-            ),
-          ),
+            );
+          }),
         ),
       ),
 
