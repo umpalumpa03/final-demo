@@ -98,16 +98,20 @@ export const LoansStore = signalStore(
     filteredLoans: computed(() => {
       const status = store.filterStatus();
       const query = store.searchQuery().toLowerCase().trim();
+      const accountFilter = store.filterAccountId();
       const loans = store.loansWithAccountInfo();
 
       let result =
         status === null ? loans : loans.filter((l) => l.status === status);
 
+      if (accountFilter) {
+        result = result.filter((l) => l.accountId === accountFilter);
+      }
+
       if (query) {
         result = result.filter((l) => {
           const friendlyName = (l.friendlyName || '').toLowerCase();
           const purpose = (l.purpose || '').toLowerCase();
-
           return friendlyName.includes(query) || purpose.includes(query);
         });
       }
@@ -122,6 +126,9 @@ export const LoansStore = signalStore(
     return {
       setFilter(status: number | null) {
         patchState(store, { filterStatus: status });
+      },
+      setAccountFilter(accountId: string | null) {
+        patchState(store, { filterAccountId: accountId });
       },
       clearLoanDetails() {
         patchState(store, { selectedLoanDetails: null, detailsLoading: false });
