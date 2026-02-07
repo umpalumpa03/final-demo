@@ -11,11 +11,17 @@ import {
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { of } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { signal } from '@angular/core';
+import { DashboardService } from '../services/dashboard.service';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
+import { UserInfoActions } from 'apps/tia-frontend/src/app/store/user-info/user-info.actions';
 
 describe('DashboardContainer', () => {
   let component: DashboardContainer;
   let mockStore: any;
   let mockRouter: any;
+  let mockDashService: any;
+  let mockBreakpointService: any;
 
   const mockTranslate = {
     instant: (key: string) => key,
@@ -26,10 +32,24 @@ describe('DashboardContainer', () => {
   beforeEach(() => {
     mockStore = {
       dispatch: vi.fn(),
+      selectSignal: vi.fn((selector) => signal(false)),
     };
 
     mockRouter = {
       navigate: vi.fn(),
+    };
+
+    mockDashService = {
+      myItems: signal([]),
+      widgetCatalog: signal([]),
+      visibleItems: signal([]),
+      updateItemsOnDrag: vi.fn(),
+      foldWidget: vi.fn(),
+      toggleCatalogWidget: vi.fn(),
+    };
+
+    mockBreakpointService = {
+      isXsMobile: signal(false),
     };
 
     TestBed.configureTestingModule({
@@ -38,6 +58,8 @@ describe('DashboardContainer', () => {
         { provide: Store, useValue: mockStore },
         { provide: Router, useValue: mockRouter },
         { provide: TranslateService, useValue: mockTranslate },
+        { provide: DashboardService, useValue: mockDashService },
+        { provide: BreakpointService, useValue: mockBreakpointService },
       ],
     });
 
@@ -48,102 +70,42 @@ describe('DashboardContainer', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize myItems signal with widgetItems', () => {
-    expect(component['myItems']()).toBeDefined();
-    expect(Array.isArray(component['myItems']())).toBe(true);
-  });
-
   it('should dispatch actions on ngOnInit', () => {
     component.ngOnInit();
 
     expect(mockStore.dispatch).toHaveBeenCalledWith(
-      TransactionActions.updateFilters({
-        filters: { pageLimit: 10 },
-      }),
+      UserInfoActions.loadWidgets({}),
     );
-
+    expect(mockStore.dispatch).toHaveBeenCalledWith(TransactionActions.enter());
     expect(mockStore.dispatch).toHaveBeenCalledWith(
       loadExchangeRates({ baseCurrency: 'USD' }),
     );
-
     expect(mockStore.dispatch).toHaveBeenCalledWith(
-      AccountsActions.loadAccounts(),
+      AccountsActions.loadAccounts({}),
     );
-
-    expect(mockStore.dispatch).toHaveBeenCalledTimes(3);
   });
 
-  it('should update items when onItemsChange is called', () => {
-    const newItems = [
-      {
-        id: '1',
-        title: 'Test Widget',
-        subtitle: 'Test Subtitle',
-        type: 'test' as any,
-      },
-    ];
-
+  it('should delegate drag changes to DashboardService', () => {
+    const newItems = [{ id: '1' }] as any;
     component.onItemsChange(newItems);
-
-    expect(component['myItems']()).toEqual(newItems);
+    expect(mockDashService.updateItemsOnDrag).toHaveBeenCalledWith(newItems);
   });
 
-  it('should toggle visibility of a widget', () => {
-    component['myItems'].set([
-      {
-        id: '1',
-        title: 'Widget 1',
-        subtitle: 'Subtitle 1',
-        type: 'transactions' as any,
-        isHidden: false,
-      },
-      {
-        id: '2',
-        title: 'Widget 2',
-        subtitle: 'Subtitle 2',
-        type: 'accounts' as any,
-        isHidden: false,
-      },
-    ]);
-
-    component.onToggleVisibility(false, '1');
-
-    const items = component['myItems']();
-    expect(items[0].isHidden).toBe(true);
-    expect(items[1].isHidden).toBe(false);
+  it('should delegate widget folding to DashboardService', () => {
+    component.onFoldWidget(true, 'widget-1');
+    expect(mockDashService.foldWidget).toHaveBeenCalledWith(true, 'widget-1');
   });
 
-  it('should keep other items unchanged when toggling visibility', () => {
-    component['myItems'].set([
-      {
-        id: '1',
-        title: 'Widget 1',
-        subtitle: 'Subtitle 1',
-        type: 'transactions' as any,
-      },
-      {
-        id: '2',
-        title: 'Widget 2',
-        subtitle: 'Subtitle 2',
-        type: 'accounts' as any,
-      },
-    ]);
-
-    component.onToggleVisibility(true, '1');
-
-    const items = component['myItems']();
-    expect(items[1].id).toBe('2');
+  it('should delegate catalog toggling to DashboardService', () => {
+    component.onToggleCatalogWidget(false, 'widget-2');
+    expect(mockDashService.toggleCatalogWidget).toHaveBeenCalledWith(
+      false,
+      'widget-2',
+    );
   });
 
   it('should dispatch exchange rate actions on widget refresh', () => {
-    const mockWidget = {
-      id: '1',
-      title: 'Test',
-      subtitle: 'Test Subtitle',
-      type: 'exchange' as any,
-    };
-
-    component.onWidgetRefresh(mockWidget);
+    component.onWidgetRefresh();
 
     expect(mockStore.dispatch).toHaveBeenCalledWith(clearExchangeRates());
     expect(mockStore.dispatch).toHaveBeenCalledWith(
@@ -152,66 +114,40 @@ describe('DashboardContainer', () => {
   });
 
   it('should navigate to accounts page on widget add', () => {
-    const mockWidget = {
-      id: '1',
-      title: 'Test',
-      subtitle: 'Test Subtitle',
-      type: 'accounts' as any,
-    };
-
-    component.onWidgetAdd(mockWidget);
-
+    component.onWidgetAdd();
     expect(mockRouter.navigate).toHaveBeenCalledWith([
       '/bank/products/accounts',
     ]);
   });
 
-  it('should dispatch pagination change action', () => {
+  it('should dispatch pagination change and reload actions', () => {
     const pageLimit = 20;
-
     component.onPaginationChange(pageLimit);
 
     expect(mockStore.dispatch).toHaveBeenCalledWith(
-      TransactionActions.updateFilters({
-        filters: { pageLimit: 20 },
-      }),
+      TransactionActions.updateFilters({ filters: { pageLimit: 20 } }),
+    );
+    expect(mockStore.dispatch).toHaveBeenCalledWith(
+      TransactionActions.loadTransactions({ forceRefresh: true }),
     );
   });
 
-  it('should compute dynamic colspans correctly', () => {
-    component['myItems'].set([
-      {
-        id: '1',
-        title: 'Widget 1',
-        subtitle: 'Subtitle 1',
-        type: 'transactions' as any,
-      },
-      {
-        id: '2',
-        title: 'Widget 2',
-        subtitle: 'Subtitle 2',
-        type: 'accounts' as any,
-      },
-      {
-        id: '3',
-        title: 'Widget 3',
-        subtitle: 'Subtitle 3',
-        type: 'exchange' as any,
-      },
-    ]);
+  it('should compute dynamic colspans based on visible items', () => {
+    mockDashService.visibleItems.set([{ id: '1' }, { id: '2' }, { id: '3' }]);
 
-    const colspans = component['dynamicColspans']();
+    const colspans = component.dynamicColspans();
 
     expect(colspans[0]).toBe(2);
     expect(colspans[1]).toBe(1);
     expect(colspans[2]).toBe(1);
   });
 
-  it('should handle empty items array', () => {
-    component['myItems'].set([]);
+  it('should compute horizontal colspans (all 1) on mobile', () => {
+    mockBreakpointService.isXsMobile.set(true);
+    mockDashService.visibleItems.set([{ id: '1' }, { id: '2' }]);
 
-    const colspans = component['dynamicColspans']();
+    const colspans = component.dynamicColspans();
 
-    expect(colspans).toEqual([]);
+    expect(colspans.every((c) => c === 1)).toBe(true);
   });
 });

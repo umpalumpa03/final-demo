@@ -30,19 +30,19 @@ export const widgetItems = [
 export const catalog = [
   {
     id: 'transactions',
-    title: 'Recent Transactions',
+    title: 'dashboard.widgets.transactions.title',
     subtitle: 'dashboard.widgets.transactions.desc',
     type: 'transactions',
   },
   {
     id: 'accounts',
-    title: 'Accounts',
+    title: 'dashboard.widgets.accounts.title',
     subtitle: 'dashboard.widgets.accounts.desc',
     type: 'accounts',
   },
   {
     id: 'exchange',
-    title: 'Currency Exchange',
+    title: 'dashboard.widgets.exchange.title',
     subtitle: 'dashboard.widgets.exchange.desc',
     type: 'exchange',
   },
