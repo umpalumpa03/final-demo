@@ -25,37 +25,37 @@
   }
 }
 
-.card {
+.pending-approvals__card {
   width: 100%;
   @include flex-center;
   gap: 1.6rem;
   cursor: pointer;
 
-  &__middle {
+  &-middle {
     flex: 1;
     @include display-flex(column);
     gap: 0.4rem;
     overflow: hidden;
   }
 
-  &__header-row {
+  &-header-row {
     @include display-flex(row, wrap);
     align-items: center;
     gap: 0.8rem;
   }
 
-  &__title {
+  &-title {
     @include font-arimo(600, 1.8rem, 1.2);
     color: $blue-1000;
   }
 
-  &__subtitle {
+  &-subtitle {
     @include font-arimo(400, 1.4rem, 1.2);
     color: $gray-700;
     margin-bottom: 0.4rem;
   }
 
-  &__details {
+  &-details {
     @include display-flex(row, wrap);
     gap: 1.6rem;
     @include font-arimo(400, 1.4rem, 1.2);
@@ -72,7 +72,7 @@
     }
   }
 
-  &__action {
+  &-action {
     @include flex-center;
     color: $gray-400;
     margin-left: auto;
@@ -92,18 +92,18 @@
     }
   }
 
-  .card {
+  .pending-approvals__card {
     gap: 1.2rem;
 
-    &__title {
+    &-title {
       font-size: 1.6rem;
     }
 
-    &__subtitle {
+    &-subtitle {
       font-size: 1.2rem;
     }
 
-    &__details {
+    &-details {
       gap: 1.2rem;
       font-size: 1.2rem;
     }
@@ -125,27 +125,27 @@
     }
   }
 
-  .card {
+  .pending-approvals__card {
     gap: 1rem;
 
-    &__middle {
+    &-middle {
       gap: 0.3rem;
     }
 
-    &__header-row {
+    &-header-row {
       gap: 0.6rem;
     }
 
-    &__title {
+    &-title {
       font-size: 1.4rem;
     }
 
-    &__subtitle {
+    &-subtitle {
       font-size: 1.1rem;
       margin-bottom: 0.3rem;
     }
 
-    &__details {
+    &-details {
       gap: 1rem;
       font-size: 1.1rem;
 
@@ -154,7 +154,7 @@
       }
     }
 
-    &__action {
+    &-action {
       width: 2rem;
       height: 2rem;
     }
@@ -162,7 +162,7 @@
 }
 
 @media (max-width: 600px) {
-  .card__action {
+  .pending-approvals__card-action {
     position: absolute;
     top: 2rem;
     right: 2rem;
@@ -180,24 +180,24 @@
     }
   }
 
-  .card {
+  .pending-approvals__card {
     flex-direction: column;
     text-align: center;
     gap: 0.8rem;
 
-    &__title {
+    &-title {
       font-size: 1.3rem;
     }
 
-    &__subtitle {
+    &-subtitle {
       font-size: 1rem;
     }
 
-    &__header-row {
+    &-header-row {
       @include flex-center(column);
     }
 
-    &__details {
+    &-details {
       @include flex-center;
       font-size: 1rem;
 

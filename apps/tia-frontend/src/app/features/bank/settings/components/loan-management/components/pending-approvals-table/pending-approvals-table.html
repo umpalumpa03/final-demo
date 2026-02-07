@@ -45,7 +45,7 @@
           gap="0"
           (click)="onRowClick(approval.id)"
         >
-          <div class="card">
+          <div class="pending-approvals__card">
             <!-- Avatar using library component -->
             <app-avatar
               [initials]="getInitials(approval.userFullName)"
@@ -54,10 +54,10 @@
             />
 
             <!-- Content -->
-            <div class="card__middle">
+            <div class="pending-approvals__card-middle">
               <!-- Header Row: Name + Badge -->
-              <div class="card__header-row">
-                <h3 class="card__title">{{ approval.userFullName }}</h3>
+              <div class="pending-approvals__card-header-row">
+                <h3 class="pending-approvals__card-title">{{ approval.userFullName }}</h3>
                 <app-badges
                   [status]="'pending'"
                   [size]="'small'"
@@ -66,10 +66,10 @@
               </div>
 
               <!-- Subtitle: Purpose + Amount -->
-              <p class="card__subtitle">{{ approval.purpose }} - {{ approval.loanAmount | currency:'USD':'symbol':'1.0-0' }}</p>
+              <p class="pending-approvals__card-subtitle">{{ approval.purpose }} - {{ approval.loanAmount | currency:'USD':'symbol':'1.0-0' }}</p>
 
               <!-- Details Row -->
-              <div class="card__details">
+              <div class="pending-approvals__card-details">
                 <div>
                   <strong>{{ approval.months }} months</strong>
                 </div>
@@ -80,7 +80,7 @@
             </div>
 
             <!-- Arrow -->
-            <div class="card__action">
+            <div class="pending-approvals__card-action">
               <img src="./images/svg/feature-loans/arrow.svg" alt="">
             </div>
           </div>

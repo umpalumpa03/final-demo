@@ -3,11 +3,13 @@
   <div class="loan-drawer">
     <header class="loan-drawer__header">
       <div class="loan-drawer__header-content">
-        <div class="loan-drawer__header-icon">
-          <img src="images/svg/sidebar-nav/loans.svg" alt="Loan" />
-        </div>
         <div class="loan-drawer__header-text">
-          <h2 class="loan-drawer__title">{{ labels().title }}</h2>
+          <div class="loan-drawer__title-row">
+            <div class="loan-drawer__header-icon">
+              <img src="images/svg/sidebar-nav/loans.svg" alt="Loan" />
+            </div>
+            <h2 class="loan-drawer__title">{{ labels().title }}</h2>
+          </div>
           <p class="loan-drawer__subtitle">{{ labels().subtitle }}</p>
         </div>
       </div>
@@ -16,10 +18,7 @@
         (click)="onClose()"
         aria-label="Close"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
+        <img src="images/svg/button-icons/x-icon.svg" alt="Close" />
       </button>
     </header>
 
@@ -27,10 +26,7 @@
       <section class="loan-drawer__section">
         <div class="loan-drawer__section-header">
           <div class="loan-drawer__section-icon loan-drawer__section-icon--user">
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
+            <img src="images/svg/feature-loans/person.svg" alt="User" />
           </div>
           <h3 class="loan-drawer__section-title">{{ labels().applicantSection }}</h3>
         </div>
@@ -87,8 +83,8 @@
             <div class="loan-drawer__section-icon loan-drawer__section-icon--loan">
               <img src="images/svg/sidebar-nav/loans.svg" alt="Loan" />
             </div>
-          <h3 class="loan-drawer__section-title">{{ labels().loanSection }}</h3>
-        </div>
+            <h3 class="loan-drawer__section-title">{{ labels().loanSection }}</h3>
+          </div>
 
           @if (isLoanDetailsLoading()) {
             <app-skeleton [width]="'100%'" [height]="'12rem'"></app-skeleton>
@@ -131,8 +127,8 @@
             <div class="loan-drawer__section-icon loan-drawer__section-icon--risk">
               <img src="images/svg/auth/secured-blue.svg" alt="Risk" />
             </div>
-          <h3 class="loan-drawer__section-title">{{ labels().riskSection }}</h3>
-        </div>
+            <h3 class="loan-drawer__section-title">{{ labels().riskSection }}</h3>
+          </div>
 
           @if (isLoanDetailsLoading()) {
             <app-skeleton [width]="'100%'" [height]="'10rem'"></app-skeleton>
@@ -177,27 +173,31 @@
         >
           {{ labels().close }}
         </app-button>
-        <app-button
-          [variant]="'destructive'"
-          [isDisabled]="!loanDetails() || isActionLoading()"
-          (click)="onShowDeclineForm()"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="15" y1="9" x2="9" y2="15"></line>
-            <line x1="9" y1="9" x2="15" y2="15"></line>
-          </svg>
-          {{ labels().decline }}
-        </app-button>
+        <span class="loan-drawer__decline-btn">
+          <app-button
+            [variant]="'outline'"
+            [isDisabled]="!loanDetails() || isActionLoading()"
+            (click)="onShowDeclineForm()"
+          >
+            <img
+              class="loan-drawer__action-icon"
+              src="images/svg/button-icons/red_X.svg"
+              alt="Decline"
+            />
+            {{ labels().decline }}
+          </app-button>
+        </span>
         <app-button
           [variant]="'success'"
           [isDisabled]="!canApprove()"
           [isLoading]="isActionLoading()"
           (click)="onApprove()"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
+          <img
+            class="loan-drawer__action-icon"
+            src="images/svg/button-icons/approve.svg"
+            alt="Approve"
+          />
           {{ labels().approve }}
         </app-button>
       } @else {
