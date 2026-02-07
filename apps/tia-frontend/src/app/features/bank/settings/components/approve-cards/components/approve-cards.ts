@@ -14,10 +14,14 @@ import {
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
+import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
+import { PermissionsModal } from '../../approve-accounts/components/permissions-modal/permissions-modal';
+import { FormBuilder } from '@angular/forms';
+import { ApproveCardsService } from '../shared/services/approve-cards.service';
 
 @Component({
   selector: 'app-approve-cards',
-  imports: [CardsApproveElement, Skeleton, Spinner, ErrorStates],
+  imports: [CardsApproveElement, Skeleton, Spinner, ErrorStates, PermissionsModal, UiModal],
   templateUrl: './approve-cards.html',
   providers: [ApproveCardsStore],
   styleUrl: './approve-cards.scss',
@@ -26,12 +30,19 @@ import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states'
 export class ApproveCards implements OnInit {
   public readonly store = inject(ApproveCardsStore);
 
+  public readonly fb = inject(FormBuilder);
+
+  public cardPermissionsForm = this.fb.nonNullable.group({
+
+  });
+
   public cardInfo = signal<PendingCard[]>([]);
 
   public perrmissionsOverlay = signal<boolean>(false);
 
   ngOnInit():void {
     this.store.load();
+    this.store.loadPerrmisions();
   }
 
   public handleAction(event: buttonEmit): void {
@@ -51,6 +62,7 @@ export class ApproveCards implements OnInit {
     }
   }
 
+  // Empty Cards - retry 
   // Dynamic Permissions To add
   private handleApprove(id:string):void {
     this.store.updateStatus({

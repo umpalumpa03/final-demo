@@ -51,5 +51,22 @@ export const ApproveCardsStore = signalStore(
         ),
       ),
     ),
+
+    loadPerrmisions: rxMethod<void>(
+      pipe(
+        tap(() => patchState(store, { isLoading:true, error:null})),
+        switchMap(() => 
+          service.getCardPermissions().pipe(
+            tap((permissions)=> {
+              console.log(permissions, "__PERMISSIONS")
+              patchState(store, { permissions,isLoading:false, error:null})}),
+            catchError((err)=> {
+              patchState(store, {isLoading:false, error:err.message});
+              return of([]);
+            })
+          )
+        )
+      )
+    )
   })),
 );
