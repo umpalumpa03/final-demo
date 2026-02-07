@@ -1,0 +1,86 @@
+@use '../../../../../../../shared/styles/palette' as *;
+@use '../../../../../../../shared/styles/mixins' as *;
+
+.customize_card {
+  width: 100%;
+  padding: 1.6rem 2rem;
+  background: $white;
+  border: 1px solid $gray-200;
+  border-radius: 2rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  @include flex-center($justify: space-between, $align: center);
+
+  &__content {
+    @include flex-center($align: center);
+    gap: 1.6rem;
+  }
+
+  &__icon {
+    display: inline-block;
+    width: 3.2rem;
+    height: 3.2rem;
+    background-color: $gray-400;
+    transition: background-color 0.3s ease;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+  }
+
+  &__title {
+    @include font-inter(600, 1.5rem, 2rem);
+    color: $gray-800;
+  }
+
+  &__indicator {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    background: $gray-50;
+    border: 2px solid $gray-200;
+    @include flex-center;
+    transition: all 0.3s ease;
+  }
+
+  &__dot {
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    background: transparent;
+    transition: transform 0.2s ease;
+  }
+
+  &__is__selected {
+    background: var(--color-bg);
+    border-color: var(--color-primary);
+    box-shadow: 0 10px 15px -3px rgba($black, 0.05);
+
+    .customize_card__icon {
+      background-color: var(--color-primary);
+    }
+
+    .customize_card__title {
+      color: var(--color-fg);
+    }
+
+    .customize_card__indicator {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    .customize_card__dot {
+      background: $white;
+      transform: scale(1.2);
+    }
+  }
+
+  &:hover:not(.customize_card__is__selected) {
+    border-color: var(--color-muted);
+    background: $gray-25;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba($black, 0.02);
+  }
+}
