@@ -29,15 +29,14 @@
   &__from-card {
     @include display-flex(column);
     gap: 0.8rem;
-    background: $blue-ocean-secondary;
+    background: $blue-royal-background;
     border: 0.1rem solid $blue-ocean-muted;
     border-radius: 1.2rem;
     overflow: hidden;
     padding: 1.6rem;
 
     &__body {
-      @include display-flex(row);
-      align-items: center;
+      @include flex-center(row, flex-start, center);
       gap: 1.6rem;
     }
 
@@ -70,8 +69,7 @@
     }
 
     &__details {
-      @include display-flex(row);
-      align-items: center;
+      @include flex-center(row, flex-start, center);
       gap: 1.2rem;
     }
 
@@ -126,8 +124,8 @@
   &__sender-accounts {
     margin-bottom: 3.2rem;
     &__header{
-      @include display-flex(row);
-      justify-content: space-between;
+      @include flex-center(row, space-between, center);
+      margin-bottom: 2rem;
     }
   }
 
@@ -137,7 +135,6 @@
   &__sender-accounts__header-title {
     @include font-inter(600, 1.8rem, 2.4rem);
     color: var(--color-fg);
-    margin-bottom: 2rem;
   }
 
   &__accounts-grid {
@@ -163,9 +160,7 @@
   }
 
   &__footer {
-    @include display-flex(row);
-    justify-content: space-between;
-    align-items: center;
+    @include flex-center(row, space-between, center);
     gap: 1.6rem;
     margin-top: 4rem;
     padding-top: 2.4rem;
