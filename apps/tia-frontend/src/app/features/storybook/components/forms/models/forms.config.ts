@@ -30,6 +30,13 @@ export const REGISTATION_FORM = {
     required: false,
     placeholder: 'Johndoe',
   },
+  birthDate: {
+    label: 'auth.sign-up.username',
+    required: false,
+    placeholder: 'Johndoe',
+    min: '1990-01-01',
+    max: '2008-12-31'
+  },
 } as const;
 
 export const PASSWORD_RULE_MESSAGES = {
