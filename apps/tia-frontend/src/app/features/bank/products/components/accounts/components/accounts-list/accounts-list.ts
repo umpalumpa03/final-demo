@@ -2,8 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  HostListener,
   input,
+  OnInit,
   output,
+  signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -17,6 +20,7 @@ import { ErrorStates } from '../../../../../../../shared/lib/feedback/error-stat
 import { ScrollArea } from '../../../../../../../shared/lib/layout/components/scroll-area/container/scroll-area';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { Badges } from '../../../../../../../shared/lib/primitives/badges/badges';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 
 @Component({
   selector: 'app-accounts-list',
@@ -29,12 +33,13 @@ import { Badges } from '../../../../../../../shared/lib/primitives/badges/badges
     ScrollArea,
     LibraryTitle,
     Badges,
+    ButtonComponent,
   ],
   templateUrl: './accounts-list.html',
   styleUrl: './accounts-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountsListComponent {
+export class AccountsListComponent implements OnInit {
   public accountsGrouped = input.required<GroupedAccounts | null>();
   public isLoading = input.required<boolean>();
 
@@ -51,6 +56,23 @@ export class AccountsListComponent {
   public retry = output<void>();
   public renameAccount = output<{ accountId: string; friendlyName: string }>();
   public renameSuccess = output<void>();
+
+  private readonly ITEMS_PER_PAGE = 3;
+  private readonly GAP_SIZE = 2.4; // rem
+  public currentPageBySection = signal<Record<string, number>>({});
+  private itemsPerPage = signal<number>(3);
+
+  ngOnInit(): void {
+    this.updateItemsPerPage(window.innerWidth);
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    const target = event.target as Window;
+    this.updateItemsPerPage(target.innerWidth);
+    // Reset pagination when screen size changes
+    this.currentPageBySection.set({});
+  }
 
   public hasNoAccounts = computed(() => {
     const grouped = this.accountsGrouped();
@@ -77,6 +99,63 @@ export class AccountsListComponent {
     const grouped = this.groupedAccountsMemo();
     if (!grouped) return [];
     return grouped[section.key as keyof GroupedAccounts];
+  }
+
+  public getTransformOffset(sectionKey: string): string {
+    const currentPage = this.getCurrentPage(sectionKey);
+    const itemsPerPage = this.itemsPerPage();
+    const gapsPerPage = itemsPerPage - 1;
+    const totalGapOffset = currentPage * gapsPerPage * this.GAP_SIZE;
+    const percentOffset = currentPage * 100;
+    return `translateX(calc(-${percentOffset}% - ${totalGapOffset}rem))`;
+  }
+
+  public updateItemsPerPage(width: number): void {
+    if (width <= 768) {
+      this.itemsPerPage.set(1);
+    } else if (width <= 1224) {
+      this.itemsPerPage.set(2);
+    } else {
+      this.itemsPerPage.set(3);
+    }
+  }
+
+  public getCurrentPage(sectionKey: string): number {
+    return this.currentPageBySection()[sectionKey] ?? 0;
+  }
+
+  public getTotalPages(section: AccountSection): number {
+    const accounts = this.getAccountsBySection(section);
+    return Math.ceil(accounts.length / this.itemsPerPage());
+  }
+
+  public needsPagination(section: AccountSection): boolean {
+    const accounts = this.getAccountsBySection(section);
+    return accounts.length > this.itemsPerPage();
+  }
+
+  public canGoPrevious(sectionKey: string): boolean {
+    return this.getCurrentPage(sectionKey) > 0;
+  }
+
+  public canGoNext(section: AccountSection): boolean {
+    const currentPage = this.getCurrentPage(section.key);
+    const totalPages = this.getTotalPages(section);
+    return currentPage < totalPages - 1;
+  }
+
+  public goToPrevious(sectionKey: string): void {
+    this.currentPageBySection.update((pages) => ({
+      ...pages,
+      [sectionKey]: Math.max(0, (pages[sectionKey] ?? 0) - 1),
+    }));
+  }
+
+  public goToNext(sectionKey: string): void {
+    this.currentPageBySection.update((pages) => ({
+      ...pages,
+      [sectionKey]: (pages[sectionKey] ?? 0) + 1,
+    }));
   }
 
   public handleOpenModal(): void {

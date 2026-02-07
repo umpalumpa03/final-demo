@@ -48,33 +48,61 @@
       </app-badges>
     </div>
 
-    <app-scroll-area
-      [direction]="'horizontal'"
-      [height]="'auto'"
-      [scrollbar]="'hidden'"
-      [hideBorder]="true"
-    >
-      <div class="accounts-list__section-grid">
-        @for (account of getAccountsBySection(section); track account.id) {
-        <app-account-card
-          [account]="account"
-          [isRenaming]="isRenamingAccount()"
-          [renameError]="renameError()"
-          (transfer)="handleTransfer($event)"
-          (rename)="handleRenameClick($event)"
-          (renameSuccess)="handleRenameSuccess()"
-        />
+    <div class="accounts-list__carousel">
+      <div
+        class="accounts-list__carousel-button-container accounts-list__carousel-button-container--prev"
+      >
+        @if (needsPagination(section) && canGoPrevious(section.key)) {
+        <app-button
+          [variant]="'secondary'"
+          [size]="'icon'"
+          (click)="goToPrevious(section.key)"
+          [icon]="'left-arrow.svg'"
+        >
+        </app-button>
         }
       </div>
-      @if (isFetching()) {
-      <div class="accounts-list__section-loader">
-        <app-route-loader
-          [variant]="'pulsing'"
-          [text]="'my-products.accounts.loadingMore' | translate"
-        />
+
+      <div class="accounts-list__carousel-viewport">
+        <div
+          class="accounts-list__section-grid"
+          [style.transform]="getTransformOffset(section.key)"
+        >
+          @for (account of getAccountsBySection(section); track account.id) {
+          <app-account-card
+            [account]="account"
+            [isRenaming]="isRenamingAccount()"
+            [renameError]="renameError()"
+            (transfer)="handleTransfer($event)"
+            (rename)="handleRenameClick($event)"
+            (renameSuccess)="handleRenameSuccess()"
+          />
+          }
+        </div>
       </div>
-      }
-    </app-scroll-area>
+
+      <div
+        class="accounts-list__carousel-button-container accounts-list__carousel-button-container--next"
+      >
+        @if (needsPagination(section) && canGoNext(section)) {
+        <app-button
+          [variant]="'secondary'"
+          [size]="'icon'"
+          (click)="goToNext(section.key)"
+          [icon]="'left-arrow.svg'"
+        >
+        </app-button>
+        }
+      </div>
+    </div>
+    @if (isFetching()) {
+    <div class="accounts-list__section-loader">
+      <app-route-loader
+        [variant]="'pulsing'"
+        [text]="'my-products.accounts.loadingMore' | translate"
+      />
+    </div>
+    }
   </section>
   } }
 </div>
