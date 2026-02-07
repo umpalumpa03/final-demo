@@ -1,3 +1,6 @@
+import { signal } from '@angular/core';
+import { IWidgetItem } from '../models/widgets.model';
+
 export const widgetItems = [
   {
     id: '1',
@@ -22,5 +25,26 @@ export const widgetItems = [
     icon: 'images/svg/dashboard/rates.svg',
     type: 'exchange',
     hasButton: true,
+  },
+] as const;
+
+export const catalog = [
+  {
+    id: 'transactions',
+    title: 'Recent Transactions',
+    subtitle: 'dashboard.widgets.transactions.desc',
+    type: 'transactions',
+  },
+  {
+    id: 'accounts',
+    title: 'Accounts',
+    subtitle: 'dashboard.widgets.accounts.desc',
+    type: 'accounts',
+  },
+  {
+    id: 'exchange',
+    title: 'Currency Exchange',
+    subtitle: 'dashboard.widgets.exchange.desc',
+    type: 'exchange',
   },
 ] as const;

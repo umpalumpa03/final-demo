@@ -13,7 +13,8 @@ import {
 import { of } from 'rxjs';
 import { WidgetsService } from '../../features/bank/dashboard/services/widgets-service';
 import { Store } from '@ngrx/store';
-import { selectUserLoaded } from './user-info.selectors';
+import { selectUserLoaded, selectWidgetsLoaded } from './user-info.selectors';
+import { IWidgetItem } from '../../features/bank/dashboard/models/widgets.model';
 
 @Injectable()
 export class UserInfoEffects {
@@ -52,19 +53,15 @@ export class UserInfoEffects {
     ),
   );
 
-  public loadWidgets$ = createEffect(() =>
+  public updateWidgetState$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(UserInfoActions.loadWidgets),
-      withLatestFrom(this.store.select(selectUserLoaded)),
-      filter(([_, loaded]) => !loaded),
-      switchMap(() =>
-        this.widgetService.getWidgets().pipe(
-          map((widgets) => UserInfoActions.loadWidgetsSuccess({ widgets })),
+      ofType(UserInfoActions.updateWidgetState),
+      switchMap(({ id, updates }) =>
+        this.widgetService.updateWidget(id, updates).pipe(
+          map((widget) => UserInfoActions.updateWidgetStateSuccess({ widget })),
           catchError((error) =>
             of(
-              UserInfoActions.loadWidgetsError({
-                error: error.message || 'error',
-              }),
+              UserInfoActions.updateWidgetStateError({ error: error.message }),
             ),
           ),
         ),
@@ -72,18 +69,33 @@ export class UserInfoEffects {
     ),
   );
 
-  public toggleWidget$ = createEffect(() =>
+  public createWidget$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(UserInfoActions.updateWidgetState),
-      switchMap(({ id, isSelected }) => {
-        return this.widgetService
-          .updateWidget(id, { isHidden: !isSelected })
-          .pipe(
-            map((widget) =>
-              UserInfoActions.updateWidgetStateSuccess({ widget }),
-            ),
-          );
-      }),
+      ofType(UserInfoActions.createWidget),
+      switchMap(({ widget }) =>
+        this.widgetService.createWidget(widget).pipe(
+          map(() => UserInfoActions.loadWidgets({ force: true })),
+          catchError((error) =>
+            of(UserInfoActions.createWidgetError({ error: error.message })),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  public loadWidgets$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserInfoActions.loadWidgets),
+      withLatestFrom(this.store.select(selectWidgetsLoaded)),
+      filter(([action, loaded]) => action.force || !loaded),
+      switchMap(() =>
+        this.widgetService.getWidgets().pipe(
+          map((widgets) => UserInfoActions.loadWidgetsSuccess({ widgets })),
+          catchError((error) =>
+            of(UserInfoActions.loadWidgetsError({ error: error.message })),
+          ),
+        ),
+      ),
     ),
   );
 }

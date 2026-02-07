@@ -25,7 +25,7 @@
     containerTitle=""
     containerDescription=""
   >
-    @for (item of myItems(); track item.id) {
+    @for (item of visibleItems(); track item.id) { @if(!item.isHidden){
     <app-draggable-card
       [hasMinHeight]="$index !== 0"
       [itemData]="item"
@@ -53,8 +53,7 @@
       </div>
       }
     </app-draggable-card>
-
-    }
+    } }
   </app-drag-container>
 
   <app-ui-sheet-modal
@@ -68,11 +67,11 @@
       </h2>
 
       <div class="customize-shell__grid">
-        @for (item of myItems(); track item.id) {
+        @for (item of widgetCatalog(); track item.id) {
         <app-customize-card
           [title]="item.title"
           [iconPath]="'/images/svg/dashboard/' + item.type + '.svg'"
-          [isSelected]="!item.isHidden"
+          [isSelected]="isWidgetActive(item.id)"
           (selectionChange)="onToggleVisibility($event, item.id)"
         />
         }

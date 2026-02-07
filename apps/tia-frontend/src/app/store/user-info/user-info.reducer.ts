@@ -14,6 +14,7 @@ export const initialUserState: IUserState = {
   error: null,
   widgets: [],
   widgetsLoading: false,
+  widgetsLoaded: false,
 };
 
 export const userInfoFeature = createFeature({
@@ -93,11 +94,14 @@ export const userInfoFeature = createFeature({
       ...state,
       widgets,
       widgetsLoading: false,
+      widgetsLoaded: true,
     })),
 
     on(UserInfoActions.updateWidgetStateSuccess, (state, { widget }) => ({
       ...state,
-      widgets: state.widgets.map((w) => (w.dbId === widget.dbId ? widget : w)),
+      widgets: state.widgets.map((w) =>
+        w.dbId === widget.dbId ? { ...w, isHidden: !widget.isActive } : w,
+      ),
     })),
   ),
 });

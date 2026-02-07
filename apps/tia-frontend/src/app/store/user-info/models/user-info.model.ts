@@ -7,4 +7,5 @@ export interface IUserState extends IUserInfo {
   error: string | null;
   widgets: IWidgetItem[]; 
   widgetsLoading: boolean;
+  widgetsLoaded: boolean,
 }

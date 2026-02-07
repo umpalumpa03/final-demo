@@ -14,7 +14,7 @@ import { IWidgetItem } from '../models/widgets.model';
 import { WidgetTransactions } from '../components/widget-transactions/widget-transactions';
 import { WidgetAccounts } from '../components/widget-accounts/widget-accounts';
 import { WidgetExchange } from '../components/widget-exchange/widget-exchange';
-import { widgetItems } from '../config/widgets.config';
+import { catalog, widgetItems } from '../config/widgets.config';
 import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import { Store } from '@ngrx/store';
@@ -62,6 +62,11 @@ export class DashboardContainer implements OnInit {
   private readonly widgetService = inject(WidgetsService);
 
   protected readonly isCustomizing = signal(false);
+  protected readonly widgetCatalog = signal(catalog);
+
+  protected readonly visibleItems = computed(() =>
+    this.myItems().filter((item) => !item.isHidden),
+  );
 
   public openCustomization(): void {
     this.isCustomizing.set(true);
@@ -81,15 +86,18 @@ export class DashboardContainer implements OnInit {
   protected readonly pageSubtitle = computed(() =>
     this.translate.instant('dashboard.page.subtitle'),
   );
-  public dynamicColspans = computed(() => {
-    const items = this.myItems();
 
+  protected isWidgetActive(id: string): boolean {
+    const activeWidget = this.myItems().find((w) => w.id === id);
+    return !!activeWidget && !activeWidget.isHidden;
+  }
+  public dynamicColspans = computed(() => {
+    const items = this.visibleItems();
     const isMobile = this.breakpointService.isMobile();
 
     if (isMobile) {
       return items.map(() => 2);
     }
-
     return items.map((_, index) => (index === 0 ? 2 : 1));
   });
 
@@ -99,34 +107,52 @@ export class DashboardContainer implements OnInit {
 
   private readonly syncWidgets = effect(() => {
     const storeWidgets = this.store.selectSignal(selectUserWidgets)();
-    if (storeWidgets.length > 0) {
-      this.myItems.set(storeWidgets);
-    }
+    this.myItems.set(storeWidgets);
   });
 
   public onContainerOrderChange(ids: string[]): void {}
 
   public onToggleVisibility(isSelected: boolean, id: string): void {
-    const widget = this.myItems().find((w) => w.id === id);
+    const catalogWidget = this.widgetCatalog().find((w) => w.id === id);
+    const existingWidget = this.myItems().find((w) => w.id === id);
 
-    if (!widget) return;
+    if (!catalogWidget) return;
 
-    if (widget.dbId) {
+    if (existingWidget?.dbId) {
       this.store.dispatch(
         UserInfoActions.updateWidgetState({
-          id: widget.dbId,
-          isSelected,
+          id: existingWidget.dbId,
+          updates: {
+            isHidden: !isSelected,
+            widgetName: catalogWidget.title,
+            hasFullWidth: existingWidget.hasFullWidth,
+            order: existingWidget.order,
+          },
         }),
       );
     } else if (isSelected) {
-      this.widgetService.createWidget(widget).subscribe();
+      const activeCount = this.visibleItems().length;
+      const newOrder = activeCount + 1;
+
+      const newWidget: IWidgetItem = {
+        ...catalogWidget,
+        order: newOrder,
+        hasFullWidth: newOrder === 1,
+        isHidden: false,
+      };
+
+      this.store.dispatch(UserInfoActions.createWidget({ widget: newWidget }));
     }
 
-    this.myItems.update((items) =>
-      items.map((item) =>
-        item.id === id ? { ...item, isHidden: !isSelected } : item,
-      ),
-    );
+    this.myItems.update((items) => {
+      const exists = items.some((i) => i.id === id);
+      if (!exists && isSelected) {
+        return [...items, { ...catalogWidget, isHidden: false }];
+      }
+      return items.map((i) =>
+        i.id === id ? { ...i, isHidden: !isSelected } : i,
+      );
+    });
   }
 
   public onWidgetRefresh(item: IWidgetItem): void {
@@ -149,8 +175,7 @@ export class DashboardContainer implements OnInit {
   public readonly gridColumns = { default: 2, md: 0, sm: 0 };
 
   ngOnInit(): void {
-    this.store.dispatch(UserInfoActions.loadWidgets());
-
+    this.store.dispatch(UserInfoActions.loadWidgets({}));
     this.store.dispatch(loadExchangeRates({ baseCurrency: 'USD' }));
     this.store.dispatch(AccountsActions.loadAccounts({}));
   }

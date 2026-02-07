@@ -11,48 +11,78 @@ export class WidgetsService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/dashboard-widgets`;
 
-  public readonly userWidgets = signal<IWidgetItem[]>([]);
+  private normalizeId(backendName: string): string {
+    const lower = backendName.toLowerCase();
+
+    if (lower.includes('transaction')) return 'transactions';
+
+    if (lower.includes('exchange')) return 'exchange';
+
+    if (lower.includes('account')) return 'accounts';
+
+    return lower.replace(/\s+/g, '-');
+  }
 
   public getWidgets(): Observable<IWidgetItem[]> {
-    return this.http.get<any[]>(this.baseUrl).pipe(
-      map((widgets) =>
-        widgets.map((w) => ({
-          ...w,
-          dbId: w.id,
-          isHidden: !w.isActive,
-          id: w.widgetName.toLowerCase(),
-        })),
+    return this.http.get<IWidgetItem[]>(this.baseUrl).pipe(
+      map((widgets: any[]) =>
+        widgets.map((w) => {
+          const normalizedId = w.widgetName
+            ? this.normalizeId(w.widgetName)
+            : '';
+
+          return {
+            ...w,
+            dbId: w.id,
+            isHidden: !w.isActive,
+            id: normalizedId,
+            type: normalizedId as any,
+          };
+        }),
       ),
-      tap((widgets) => this.userWidgets.set(widgets)),
     );
   }
 
-  public createWidget(widget: Partial<IWidgetItem>): Observable<IWidgetItem> {
+  public createWidget(widget: IWidgetItem): Observable<IWidgetItem> {
     const payload = {
       widgetName: widget.title,
-      hasFullWidth: widget.hasFullWidth ?? false,
-      isCollapsed: widget.isHidden ?? false,
+      hasFullWidth: widget.hasFullWidth,
+      isCollapsed: widget.isHidden,
       isActive: true,
-      order: this.userWidgets().length + 1,
+      order: widget.order,
     };
 
-    return this.http.post<IWidgetItem>(this.baseUrl, payload).pipe(
-      tap((newWidget) => {
-        this.userWidgets.update((current) => [...current, newWidget]);
-      }),
-    );
+    return this.http.post<IWidgetItem>(this.baseUrl, payload);
   }
 
   public updateWidget(
-    id: string,
+    dbId: string,
     updates: Partial<IWidgetItem>,
   ): Observable<IWidgetItem> {
-    return this.http.patch<IWidgetItem>(`${this.baseUrl}/${id}`, updates).pipe(
-      tap((updated) => {
-        this.userWidgets.update((current) =>
-          current.map((w) => (w.id === id ? updated : w)),
-        );
-      }),
-    );
+    const payload: any = {
+      isActive: updates.isHidden !== undefined ? !updates.isHidden : undefined,
+    };
+
+    if (updates.widgetName) payload.widgetName = updates.widgetName;
+    if (updates.hasFullWidth !== undefined)
+      payload.hasFullWidth = updates.hasFullWidth;
+    if (updates.order !== undefined) payload.order = updates.order;
+
+    return this.http
+      .patch<IWidgetItem>(`${this.baseUrl}/${dbId}`, payload)
+      .pipe(
+        map((res: any) => {
+          const normalizedId = this.normalizeId(
+            res.widgetName || updates.widgetName || '',
+          );
+          return {
+            ...res,
+            dbId: res.id,
+            isHidden: !res.isActive,
+            id: normalizedId,
+            type: normalizedId as any,
+          };
+        }),
+      );
   }
 }

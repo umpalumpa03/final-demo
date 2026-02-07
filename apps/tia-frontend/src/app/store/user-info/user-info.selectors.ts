@@ -63,3 +63,8 @@ export const selectWidgetsLoading = createSelector(
   selectUserInfoState,
   (state) => state.widgetsLoading,
 );
+
+export const selectWidgetsLoaded = createSelector(
+  selectUserInfoState,
+  (state) => state.widgetsLoaded
+);
