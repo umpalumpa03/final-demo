@@ -10,7 +10,7 @@ import { ProfilePhotoApiService } from '../../../../../../../shared/services/pro
 import { Store } from '@ngrx/store';
 import { catchError, concat, filter, map, of, switchMap, withLatestFrom } from 'rxjs';
 import { environment } from '../../../../../../../../environments/environment';
-import { selectDefaultAvatars } from './profile-photo.selectors';
+import { selectDefaultAvatars, selectSavedAvatarUrl } from './profile-photo.selectors';
 import { selectUserInfo } from '../../../../../../../store/user-info/user-info.selectors';
 import { UserInfoActions } from '../../../../../../../store/user-info/user-info.actions';
 
@@ -189,6 +189,43 @@ export class ProfilePhotoEffects {
           }),
         ),
       ),
+    ),
+  );
+
+  public loadUserInitials$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(
+        ROOT_EFFECTS_INIT,
+        UserInfoActions.loadUserSuccess,
+        ProfilePhotoActions.removeAvatar,
+      ),
+      withLatestFrom(
+        this.store.select(selectUserInfo),
+        this.store.select(selectSavedAvatarUrl),
+      ),
+      filter(([, userInfo, savedAvatarUrl]) => {
+     return !savedAvatarUrl && !!userInfo?.fullName;
+      }),
+      map(([, userInfo]) => {
+        const fullName = userInfo!.fullName!;
+        const nameParts = fullName.trim().split(/\s+/).filter(part => part.length > 0);
+        
+        if (nameParts.length === 0) {
+          return null;
+        }
+        
+        let initials: string;
+        if (nameParts.length === 1) {
+          initials = nameParts[0].charAt(0).toUpperCase();
+        } else {
+          const firstInitial = nameParts[0].charAt(0).toUpperCase();
+          const lastInitial = nameParts[nameParts.length - 1].charAt(0).toUpperCase();
+          initials = `${firstInitial}.${lastInitial}`;
+        }
+        
+        return ProfilePhotoActions.setUserInitials({ initials });
+      }),
+      filter((action): action is ReturnType<typeof ProfilePhotoActions.setUserInitials> => action !== null),
     ),
   );
 

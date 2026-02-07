@@ -13,6 +13,7 @@ const initialState: ProfilePhotoState = {
   savedAvatarUrl: null,
   avatarId: null,
   avatarType: null,
+  userInitials: null,
 };
 
 export const profilePhotoFeature = createFeature({
@@ -71,10 +72,20 @@ export const profilePhotoFeature = createFeature({
       ...state,
       uploadedFileName: null,
     })),
+    on(ProfilePhotoActions.clearCurrentAvatar, (state) => ({
+      ...state,
+      currentAvatarUrl: null,
+      selectedAvatarId: null,
+      uploadedFileName: null,
+    })),
     on(ProfilePhotoActions.selectDefaultAvatarRequest, (state, { avatarId }) => ({
       ...state,
       selectedAvatarId: avatarId,
       uploadedFileName: null,
+    })),
+    on(ProfilePhotoActions.setUserInitials, (state, { initials }) => ({
+      ...state,
+      userInitials: initials,
     })),
   ),
 });

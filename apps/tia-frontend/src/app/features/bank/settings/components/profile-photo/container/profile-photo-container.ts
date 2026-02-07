@@ -61,6 +61,22 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
     return currentPId === editedPId;
   });
 
+  public readonly userInitials = computed(() => {
+    const fullName = this.userInfo()?.fullName;
+    if (!fullName) return '';
+    
+    const nameParts = fullName.trim().split(/\s+/).filter(part => part.length > 0);
+    if (nameParts.length === 0) return '';
+    
+    if (nameParts.length === 1) {
+      return nameParts[0].charAt(0).toUpperCase();
+    }
+    
+    const firstInitial = nameParts[0].charAt(0).toUpperCase();
+    const lastInitial = nameParts[nameParts.length - 1].charAt(0).toUpperCase();
+    return `${firstInitial}.${lastInitial}`;
+  });
+
   public readonly alertKind = signal<AlertType | null>(null);
   public readonly alertMessage = signal<string>('');
   public readonly alertType = computed<AlertType | null>(() => this.alertKind());
@@ -309,8 +325,8 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
       this.objectUrl = null;
     }
     this.uploadedFile = null;
-    this.store.dispatch(ProfilePhotoActions.removeAvatar());
-    this.store.dispatch(ProfilePhotoActions.removeAvatarRequest());
+    
+    this.store.dispatch(ProfilePhotoActions.clearCurrentAvatar());
   }
 
   public onSaveChanges(): void {
@@ -339,6 +355,20 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
       this.store.dispatch(
         ProfilePhotoActions.selectDefaultAvatarRequest({ avatarId })
       );
+      return;
+    }
+
+
+    if (this.savedAvatarUrl() && !this.currentAvatarUrl()) {
+    
+      this.store.dispatch(ProfilePhotoActions.removeAvatar());
+      this.store.dispatch(ProfilePhotoActions.removeAvatarRequest());
+      
+     
+      const initials = this.userInitials();
+      if (initials) {
+        this.store.dispatch(ProfilePhotoActions.setUserInitials({ initials }));
+      }
     }
   }
 

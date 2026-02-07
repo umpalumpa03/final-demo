@@ -38,6 +38,12 @@ describe('ProfilePhotoContainer', () => {
               avatarId: null,
               avatarType: null,
             },
+            personalInfo: {
+              pId: null,
+              phoneNumber: null,
+              loading: false,
+              error: null,
+            },
           },
         }),
       ],
@@ -285,5 +291,4 @@ describe('ProfilePhotoContainer', () => {
       ProfilePhotoActions.removeAvatarRequest(),
     );
   });
-
 });

@@ -19,5 +19,7 @@ export const ProfilePhotoActions = createActionGroup({
     'Select Default Avatar Request': props<{ avatarId: string }>(),
     'Select Default Avatar Failure': props<{ error: string }>(),
     'Load Stored Avatar': emptyProps(),
+    'Set User Initials': props<{ initials: string }>(),
+    'Clear Current Avatar': emptyProps(),
   },
 });

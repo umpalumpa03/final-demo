@@ -55,7 +55,7 @@ export const PILL_BADGES: PillBadgeItem[] = [
   { variant: 'default', text: 'Pill Shape', size: 'medium' , shape:'pill'  },
   { variant: 'secondary', text: 'Category', size: 'medium' , shape:'pill' },
   { variant: 'outline', text: 'Tag', size: 'medium' , shape:'pill' },
-  { variant: 'default', text: 'React', size: 'medium' , shape:'pill' },
+  { variant: 'default', text: 'Angular', size: 'medium' , shape:'pill' },
   { customColor: 'lime', text: 'TypeScript', size: 'medium' , shape:'pill' },
   { customColor: 'indigo', text: 'CSS', size: 'medium' , shape:'pill' },
   { customColor: 'amber', text: 'JavaScript', size: 'medium' , shape:'pill' },

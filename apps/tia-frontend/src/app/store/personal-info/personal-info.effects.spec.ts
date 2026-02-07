@@ -7,6 +7,7 @@ import { PersonalInfoEffects } from './personal-info.effects';
 import { PersonalInfoApiService } from '../../shared/services/personal-info/personal-info.api.service';
 import { PersonalInfoActions } from './pesronal-info.actions';
 import { PersonalInfoDto } from './personal-info.state';
+import { HttpErrorResponse } from '@angular/common/http';
 
 describe('PersonalInfoEffects (Vitest)', () => {
   let actions$: Observable<Action>;
@@ -114,6 +115,22 @@ describe('PersonalInfoEffects (Vitest)', () => {
         error: 'Update failed',
       }),
     );
+  });
+
+  it('should dispatch loadPersonalInfoFailure when getPersonalInfo fails', async () => {
+    (apiService.getPersonalInfo as any).mockReturnValue(throwError(() => new Error('Load failed')));
+    actions$ = of(PersonalInfoActions.loadPersonalInfo());
+    const action = await firstValueFrom(effects.loadPersonalInfo$);
+    expect(action).toEqual(PersonalInfoActions.loadPersonalInfoFailure({ error: 'Load failed' }));
+  });
+
+  it('should handle HttpErrorResponse with array message', async () => {
+    (apiService.updatePersonalInfo as any).mockReturnValue(
+      throwError(() => new HttpErrorResponse({ error: { message: ['First error'] }, status: 400 })),
+    );
+    actions$ = of(PersonalInfoActions.updatePersonalInfo({ personalInfo: basePersonalInfoPayload }));
+    const action = await firstValueFrom(effects.updatePersonalInfo$);
+    expect(action).toEqual(PersonalInfoActions.updatePersonalInfoFailure({ error: 'First error' }));
   });
 });
 

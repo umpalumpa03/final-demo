@@ -38,8 +38,9 @@ export const personalInfoFeature = createFeature({
             ...state,
             pId: pId,
         })),
-        on(PersonalInfoActions.updatePersonalInfo, (state) => ({
+        on(PersonalInfoActions.updatePersonalInfo, (state, { personalInfo }) => ({
             ...state,
+            ...personalInfo,
             loading: true,
             error: null,
         })),
