@@ -39,17 +39,16 @@
             </div>
 
             <div class="action-btn">
-                @if (!user().isBlocked) {
-                <app-button [isLoading]="isLoading()" [isDisabled]="isLoading()" variant="outline" icon="./block.svg"
-                    (click)="toggleBlock()">
-                    <span class="button-text">{{'settings.user-management.buttons.block' | translate}}</span>
+                @let blocked = user().isBlocked;
+
+                <app-button [isLoading]="isLoading()" [isDisabled]="isLoading()" variant="outline"
+                    [icon]="blocked ? './unblock.svg' : './block.svg'" (click)="toggleBlock()">
+                    <span class="button-text">
+                        {{!blocked ?
+                        ('settings.user-management.buttons.block' | translate) :
+                        ('settings.user-management.buttons.unblock' | translate)}}
+                    </span>
                 </app-button>
-                } @else {
-                <app-button [isLoading]="isLoading()" [isDisabled]="isLoading()" variant="outline" icon="./unblock.svg"
-                    (click)="toggleBlock()">
-                    <span class="button-text">{{'settings.user-management.buttons.unblock' | translate}}</span>
-                </app-button>
-                }
             </div>
         </div>
     </div>
