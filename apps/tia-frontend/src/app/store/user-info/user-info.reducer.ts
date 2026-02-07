@@ -99,9 +99,19 @@ export const userInfoFeature = createFeature({
 
     on(UserInfoActions.updateWidgetStateSuccess, (state, { widget }) => ({
       ...state,
-      widgets: state.widgets.map((w) =>
-        w.dbId === widget.dbId ? { ...w, isHidden: !widget.isActive } : w,
-      ),
+      widgets: state.widgets
+        .map((w) => {
+          if (w.dbId === widget.dbId) {
+            return {
+              ...w,
+              ...widget,
+              isHidden: !widget.isActive,
+            };
+          }
+          return w;
+        })
+
+        .sort((a, b) => (a.order || 99) - (b.order || 99)),
     })),
   ),
 });

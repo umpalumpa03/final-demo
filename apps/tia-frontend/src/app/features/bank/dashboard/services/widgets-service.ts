@@ -24,21 +24,24 @@ export class WidgetsService {
   }
 
   public getWidgets(): Observable<IWidgetItem[]> {
-    return this.http.get<IWidgetItem[]>(this.baseUrl).pipe(
-      map((widgets: any[]) =>
-        widgets.map((w) => {
-          const normalizedId = w.widgetName
-            ? this.normalizeId(w.widgetName)
-            : '';
+    return this.http.get<any[]>(this.baseUrl).pipe(
+      map((widgets) =>
+        widgets
+          .filter((w) => w.widgetName && w.widgetName.trim() !== '')
+          .map((w) => {
+            const normalizedId = this.normalizeId(w.widgetName);
+            return {
+              ...w,
+              dbId: w.id,
+              isHidden: !w.isActive,
+              id: normalizedId,
+              type: normalizedId as any,
 
-          return {
-            ...w,
-            dbId: w.id,
-            isHidden: !w.isActive,
-            id: normalizedId,
-            type: normalizedId as any,
-          };
-        }),
+              order: w.order || 99,
+            };
+          })
+
+          .sort((a, b) => a.order - b.order),
       ),
     );
   }

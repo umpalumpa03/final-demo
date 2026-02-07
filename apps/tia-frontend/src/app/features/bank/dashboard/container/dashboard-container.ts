@@ -101,8 +101,41 @@ export class DashboardContainer implements OnInit {
     return items.map((_, index) => (index === 0 ? 2 : 1));
   });
 
-  public onItemsChange(newItems: IWidgetItem[]): void {
-    this.myItems.set(newItems);
+  public onItemsChange(reorderedVisibleItems: IWidgetItem[]): void {
+    const hiddenItems = this.myItems().filter((item) => item.isHidden);
+
+    const newVisibleList = reorderedVisibleItems.map((item, index) => ({
+      ...item,
+      order: index + 1,
+      hasFullWidth: index === 0,
+    }));
+
+    const newMasterList = [...newVisibleList, ...hiddenItems];
+
+    this.store.dispatch(
+      UserInfoActions.loadWidgetsSuccess({ widgets: newMasterList }),
+    );
+
+    this.myItems.set(newMasterList);
+
+    newVisibleList.forEach((item) => {
+      if (item.dbId) {
+        const catalogInfo = this.widgetCatalog().find((c) => c.id === item.id);
+
+        this.store.dispatch(
+          UserInfoActions.updateWidgetState({
+            id: item.dbId,
+            updates: {
+              order: item.order,
+              hasFullWidth: item.hasFullWidth,
+              isActive: true,
+              isHidden: false,
+              widgetName: catalogInfo ? catalogInfo.title : item.title,
+            },
+          }),
+        );
+      }
+    });
   }
 
   private readonly syncWidgets = effect(() => {
