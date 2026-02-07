@@ -87,7 +87,7 @@
     },
     "approve-cards": {
         "title": "Approve Cards",
-        "pendingCards": "Pending Cards"
+        "subtitle": "Review and approve card requests"
     },
     "loan-management": {
         "title": "Loan Management",

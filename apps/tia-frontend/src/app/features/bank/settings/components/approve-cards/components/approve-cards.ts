@@ -7,7 +7,9 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { CardCatalogItemResponse, PendingCard } from '../shared/model/approve-cards.model';
+import {
+  PendingCard,
+} from '../shared/model/approve-cards.model';
 import { ApproveCardsStore } from '../store/approve-cards.store';
 import { CardsApproveElement } from '../approve-card-element/cards-approve-element';
 import { buttonEmit } from '../shared/model/approve-card-element.model';
@@ -41,6 +43,19 @@ export class ApproveCards implements OnInit {
   public cardInfo = signal<PendingCard[]>([]);
   public permissionsOverlay = signal<boolean>(false);
   public activeCardId = signal<string | null>(null);
+
+  public readonly activeCard = computed(() =>
+    this.store.cards().find((card) => card.id === this.activeCardId()),
+  );
+
+  public readonly cardName = computed(() =>
+    this.activeCard()?.nickname ?? 'Unknown Card',
+  );
+
+  public readonly fullName = computed(() => {
+    const user = this.activeCard()?.user;
+    return user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+  });
 
   public readonly cardPermissionsForm: FormRecord<FormControl<boolean>> =
     this.fb.record<FormControl<boolean>>({});
