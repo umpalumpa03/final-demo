@@ -4,10 +4,11 @@ import { Spinner } from '../../../../../../../shared/lib/feedback/spinner/spinne
 import { BasicAlerts } from '../../../../../../../shared/lib/alerts/components/basic-alerts/basic-alerts';
 import { ButtonComponent } from '../../../../../../../shared/lib/primitives/button/button';
 import { SummaryCard, FilterType } from '../../../../models/filter.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-finances-summary',
-  imports: [StatisticCard, Spinner, BasicAlerts, ButtonComponent],
+  imports: [StatisticCard, Spinner, BasicAlerts, ButtonComponent, TranslatePipe],
   templateUrl: './finances-summary.html',
   styleUrl: './finances-summary.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

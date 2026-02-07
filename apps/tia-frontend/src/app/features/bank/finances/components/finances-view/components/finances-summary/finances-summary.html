@@ -2,7 +2,7 @@
   @if (loading()) {
     <div class="finances-summary__loading-wrapper">
       <app-spinner size="3rem"></app-spinner>
-      <span>Syncing your finances...</span>
+      <span>{{ 'my-finances.finances.status.syncing' | translate }}</span>
     </div>
   }
 
@@ -10,7 +10,7 @@
     <div class="finances-summary__error-state">
       <app-basic-alerts alertType="error" [alertMessage]="error()!"></app-basic-alerts>
       <app-button variant="outline" (click)="retry.emit(activeFilter()!)">
-        Try Again
+        {{ 'my-finances.finances.status.retry' | translate }}
       </app-button>
     </div>
   } @else {
@@ -18,9 +18,9 @@
       @for (card of summaryCards(); track card.label) {
         <div class="finances-summary__card-wrapper">
           <app-statistic-card
-            [label]="card.label"
+            [label]="card.label | translate"
             [value]="card.value"
-            [change]="card.change + ' ' + card.comparisonLabel"
+            [change]="card.change + ' ' + (card.comparisonLabel | translate)"
             [changeType]="card.changeType"
             [icon]="card.icon"
             [maxWidth]="'100%'"
@@ -29,7 +29,7 @@
         </div>
       } @empty {
         @if (!loading()) {
-          <p class="no-data">We couldn't find any records for the selected range.</p>
+          <p class="no-data">{{ 'my-finances.finances.status.no_records' | translate }}</p>
         }
       }
     </div>

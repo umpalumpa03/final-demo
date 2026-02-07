@@ -1,10 +1,11 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FinancesContainer } from './finances-container';
 import { FinancesStore } from '../store/finances.store';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component, signal, Input, Output, EventEmitter } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FinancesView } from '../components/finances-view/container/finances-view';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-finances-view',
@@ -28,7 +29,9 @@ class MockFinancesView {
   @Input() topCategoriesFooter: any;
   @Input() savingsFooter: any;
   @Input() dailySpendingFooter: any;
+  @Input() isRefreshing: any;
   @Output() filterChange = new EventEmitter<any>();
+  @Output() update = new EventEmitter<void>();
 }
 
 describe('FinancesContainer', () => {
@@ -47,16 +50,16 @@ describe('FinancesContainer', () => {
     topCategoriesFooter: signal([]),
     savingsFooter: signal(null),
     dailySpendingFooter: signal(null),
+    isRefreshing: signal(false),
   };
 
   beforeEach(async () => {
-    vi.useFakeTimers();
-    
     await TestBed.configureTestingModule({
       imports: [
         FinancesContainer, 
         ReactiveFormsModule,
-        MockFinancesView
+        MockFinancesView,
+        TranslateModule.forRoot()
       ],
       providers: [
         { provide: FinancesStore, useValue: storeMock }
@@ -74,36 +77,63 @@ describe('FinancesContainer', () => {
     vi.clearAllMocks();
   });
 
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
   it('should create and call loadAllData on init', () => {
     fixture.detectChanges(); 
     expect(component).toBeTruthy();
     expect(storeMock.loadAllData).toHaveBeenCalled();
   });
 
-  it('should handle filter toggle and reset form', () => {
+  it('should handle filter change to month and reset form', () => {
     fixture.detectChanges();
     component.onFilterChange('month');
-    expect(component.activeFilter()).toBe('month');
     
-    component.onFilterChange('month'); 
-    expect(component.activeFilter()).toBeNull();
+    expect(component.activeFilter()).toBe('month');
+    expect(component.filterForm.get('selectedMonth')?.value).toBe('');
   });
 
-  it('should trigger fetchData after 500ms on valid form change', async () => {
+  it('should handle update trigger (force refresh)', () => {
     fixture.detectChanges();
     vi.clearAllMocks();
+    
+    component.onUpdateData();
+    
+    expect(storeMock.loadAllData).toHaveBeenCalledWith(expect.objectContaining({
+      force: true
+    }));
+  });
 
+  it('should call loadAllData with specific month when month filter is active', () => {
+    fixture.detectChanges();
+    component.activeFilter.set('month');
+    component.filterForm.patchValue({ selectedMonth: '2024-05' });
+    
+    (component as any).fetchData();
+    
+    expect(storeMock.loadAllData).toHaveBeenCalledWith(expect.objectContaining({
+      from: '2024-05'
+    }));
+  });
+
+  it('should call loadAllData with date range when custom filter is active', () => {
+    fixture.detectChanges();
     component.activeFilter.set('custom');
-    component.filterForm.patchValue({
-      fromDate: '2024-01-01',
-      toDate: '2024-01-31'
+    component.filterForm.patchValue({ 
+      fromDate: '2024-01-01', 
+      toDate: '2024-01-10' 
     });
+    
+    (component as any).fetchData();
+    
+    expect(storeMock.loadAllData).toHaveBeenCalledWith({
+      from: '2024-01-01',
+      to: '2024-01-10',
+      force: false
+    });
+  });
 
-    vi.advanceTimersByTime(500);
-    expect(storeMock.loadAllData).toHaveBeenCalled();
+
+  it('should return form control via getControl', () => {
+    const control = component.getControl('fromDate');
+    expect(control).toBe(component.filterForm.get('fromDate'));
   });
 });
