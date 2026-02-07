@@ -48,12 +48,12 @@ export class DashboardService {
       (item) => !visibleIds.has(item.id),
     );
 
-const newVisibleList = reorderedVisibleItems.map((item, index) => ({
+    const newVisibleList = reorderedVisibleItems.map((item, index) => ({
       ...item,
       order: index + 1,
-      // The first item is still the logical 'Hero'
-      hasFullWidth: index === 0, 
-      // PRESERVE the isHidden state for all items during drag
+
+      hasFullWidth: index === 0,
+
       isHidden: !!item.isHidden,
     }));
 
@@ -75,7 +75,6 @@ const newVisibleList = reorderedVisibleItems.map((item, index) => ({
       items.map((i) => (i.id === id ? { ...i, isHidden: !isSelected } : i)),
     );
 
-    // Sync state for persistence and immediate store update
     this.updateStream$.next(this.myItems());
     this.store.dispatch(
       UserInfoActions.loadWidgetsSuccess({ widgets: this.myItems() }),
