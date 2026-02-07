@@ -20,7 +20,10 @@ export const UserInfoActions = createActionGroup({
     'Load Widgets': props<{ force?: boolean }>(),
     'Load Widgets Success': props<{ widgets: IWidgetItem[] }>(),
     'Load Widgets Error': props<{ error: string }>(),
-    'Update Widget State': props<{ id: string; updates: Partial<IWidgetItem> }>(),
+    'Update Widget State': props<{
+      id: string;
+      updates: Partial<IWidgetItem>;
+    }>(),
     'Update Widget State Success': props<{ widget: IWidgetItem }>(),
     'Create Widget': props<{ widget: IWidgetItem }>(),
     'Create Widget Success': props<{ widget: IWidgetItem }>(),

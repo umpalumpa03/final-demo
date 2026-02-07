@@ -1,6 +1,10 @@
 @use '../../../../shared/styles/mixins' as *;
 @use '../../../../shared/styles/palette' as *;
 
+.scrollbar{
+  @include custom-scrollbar
+}
+
 .bank-dashboard__banner {
   margin: 2.4rem 0 3.2rem 0;
   width: 100%;

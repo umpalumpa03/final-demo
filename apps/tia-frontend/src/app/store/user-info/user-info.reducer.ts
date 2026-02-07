@@ -92,7 +92,7 @@ export const userInfoFeature = createFeature({
 
     on(UserInfoActions.loadWidgetsSuccess, (state, { widgets }) => ({
       ...state,
-      widgets,
+      widgets: [...widgets].sort((a, b) => (a.order || 99) - (b.order || 99)),
       widgetsLoading: false,
       widgetsLoaded: true,
     })),

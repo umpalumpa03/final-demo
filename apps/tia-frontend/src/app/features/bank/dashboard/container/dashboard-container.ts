@@ -33,7 +33,12 @@ import { UiSheetModal } from '@tia/shared/lib/overlay/ui-sheet-modal/ui-sheet-mo
 import { CustomizeCard } from '../components/shared/ui/customize-card/customize-card';
 import { WidgetsService } from '../services/widgets-service';
 import { UserInfoActions } from 'apps/tia-frontend/src/app/store/user-info/user-info.actions';
-import { selectUserWidgets } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
+import {
+  selectUserWidgets,
+  selectWidgetsLoaded,
+  selectWidgetsLoading,
+} from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 @Component({
   selector: 'app-dashboard-container',
   imports: [
@@ -49,6 +54,7 @@ import { selectUserWidgets } from 'apps/tia-frontend/src/app/store/user-info/use
     CustomizeButton,
     UiSheetModal,
     CustomizeCard,
+    Skeleton,
   ],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
@@ -59,7 +65,7 @@ export class DashboardContainer implements OnInit {
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
   private readonly breakpointService = inject(BreakpointService);
-  private readonly widgetService = inject(WidgetsService);
+  protected readonly isLoading = this.store.selectSignal(selectWidgetsLoading);
 
   protected readonly isCustomizing = signal(false);
   protected readonly widgetCatalog = signal(catalog);
@@ -208,7 +214,12 @@ export class DashboardContainer implements OnInit {
   public readonly gridColumns = { default: 2, md: 0, sm: 0 };
 
   ngOnInit(): void {
-    this.store.dispatch(UserInfoActions.loadWidgets({}));
+    const areWidgetsLoaded = this.store.selectSignal(selectWidgetsLoaded)();
+
+    if (!areWidgetsLoaded) {
+      this.store.dispatch(UserInfoActions.loadWidgets({}));
+    }
+
     this.store.dispatch(loadExchangeRates({ baseCurrency: 'USD' }));
     this.store.dispatch(AccountsActions.loadAccounts({}));
   }
