@@ -10,6 +10,7 @@ import { PersonalInfoDto, personalInfoState } from './personal-info.state';
 import { HttpErrorResponse } from '@angular/common/http';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { selectPersonalInfo } from './personal-info.selectors';
+import { UserInfoActions } from '../user-info/user-info.actions';
 
 describe('PersonalInfoEffects (Vitest)', () => {
   let actions$: Observable<Action>;
@@ -193,6 +194,21 @@ describe('PersonalInfoEffects (Vitest)', () => {
     );
 
     expect(apiService.getPersonalInfo).toHaveBeenCalledTimes(1);
+  });
+
+  it('should reset personal info on user change', async () => {
+    actions$ = of(UserInfoActions.loadUser());
+    const action = await firstValueFrom(effects.resetPersonalInfoOnUserChange$);
+    expect(action).toEqual(PersonalInfoActions.resetPersonalInfo());
+  });
+
+  it('should handle HttpErrorResponse with string error', async () => {
+    (apiService.updatePersonalInfo as any).mockReturnValue(
+      throwError(() => new HttpErrorResponse({ error: 'String error', status: 400 })),
+    );
+    actions$ = of(PersonalInfoActions.updatePersonalInfo({ personalInfo: basePersonalInfoPayload }));
+    const action = await firstValueFrom(effects.updatePersonalInfo$);
+    expect(action).toEqual(PersonalInfoActions.updatePersonalInfoFailure({ error: 'String error' }));
   });
 });
 

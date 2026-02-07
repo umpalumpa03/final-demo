@@ -66,5 +66,19 @@ describe('personalInfoReducer', () => {
     expect(state.pId).toBe('new');
     expect(state.phoneNumber).toBe('222');
   });
+
+  it('should reset to initial state on resetPersonalInfo', () => {
+    const populatedState: personalInfoState = {
+      pId: '12345678901',
+      phoneNumber: '555999333',
+      loading: true,
+      error: 'Some error',
+    };
+    const state = personalInfoReducer(
+      populatedState,
+      PersonalInfoActions.resetPersonalInfo(),
+    );
+    expect(state).toEqual(initialPersonalInfoState);
+  });
 });
 
