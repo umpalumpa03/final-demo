@@ -2,13 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import { DashboardService } from './dashboard.service';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { UserInfoActions } from 'apps/tia-frontend/src/app/store/user-info/user-info.actions';
-import { signal } from '@angular/core';
+import { signal, WritableSignal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { IWidgetItem } from '../models/widgets.model';
 
 describe('DashboardService', () => {
   let service: DashboardService;
   let store: MockStore;
+  let mockStoreSignal: WritableSignal<IWidgetItem[]>;
 
   const mockWidgets: IWidgetItem[] = [
     {
@@ -19,6 +20,7 @@ describe('DashboardService', () => {
       hasFullWidth: true,
       isHidden: false,
       type: 'transactions',
+      subtitle: 'gela',
     },
     {
       id: '2',
@@ -28,20 +30,22 @@ describe('DashboardService', () => {
       hasFullWidth: false,
       isHidden: false,
       type: 'accounts',
+      subtitle: 'gela',
     },
   ];
 
   beforeEach(() => {
+    mockStoreSignal = signal(mockWidgets);
+
     TestBed.configureTestingModule({
       providers: [DashboardService, provideMockStore({ initialState: {} })],
     });
 
     store = TestBed.inject(MockStore);
 
-    vi.spyOn(store, 'selectSignal').mockReturnValue(signal(mockWidgets));
+    vi.spyOn(store, 'selectSignal').mockReturnValue(mockStoreSignal);
 
     service = TestBed.inject(DashboardService);
-
     service.widgetCatalog.set(mockWidgets);
   });
 
@@ -91,15 +95,6 @@ describe('DashboardService', () => {
         UserInfoActions.deleteWidget({ id: 'db-2' }),
       );
     });
-
-    it('should delegate to foldWidget if toggling the hero widget', () => {
-      const foldSpy = vi.spyOn(service, 'foldWidget');
-      service.myItems.set(mockWidgets);
-
-      service.toggleCatalogWidget(false, '1');
-
-      expect(foldSpy).toHaveBeenCalledWith(false, '1');
-    });
   });
 
   describe('Persistence Logic (Manual Trigger for Coverage)', () => {
@@ -123,16 +118,29 @@ describe('DashboardService', () => {
       expect((service as any).dirtyIds.size).toBe(0);
     });
 
-    it('should not dispatch if no items are marked dirty', () => {
+    it('should synchronize myItems with store widgets when dirtyIds is empty', () => {
+      const newStoreWidgets = [
+        ...mockWidgets,
+        { id: '3', title: 'New Widget' } as any,
+      ];
+
+      mockStoreSignal.set(newStoreWidgets);
+      TestBed.flushEffects();
+
+      expect(service.myItems()).toEqual(newStoreWidgets);
+    });
+
+    it('should toggle visibility, add to dirtyIds, and dispatch success', () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
-      (service as any).dirtyIds.clear();
+      service.myItems.set(mockWidgets);
 
-      (service as any).persistChanges(mockWidgets);
+      service.foldWidget(false, '1');
 
-      const bulkCalls = dispatchSpy.mock.calls.filter(
-        (c) => c[0].type === UserInfoActions.updateWidgetsBulk.type,
+      expect((service as any).dirtyIds.has('1')).toBe(true);
+      expect(service.myItems()[0].isHidden).toBe(true);
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        UserInfoActions.loadWidgetsSuccess({ widgets: service.myItems() })
       );
-      expect(bulkCalls.length).toBe(0);
     });
   });
 });
