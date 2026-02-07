@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { DragCard } from '@tia/shared/lib/drag-n-drop/components/drag-card/drag-card';
 import {
   DraggableItemType,
@@ -25,7 +31,7 @@ import { DraggableCard } from '@tia/shared/lib/drag-n-drop/components/draggable-
 import { DragContainer } from '@tia/shared/lib/drag-n-drop/components/drag-container/drag-container';
 import { DragItemDirective } from '@tia/shared/lib/drag-n-drop/directives/drag-item.directive';
 import { TreeContainer } from '@tia/shared/lib/drag-n-drop/components/tree-container/tree-container';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-drag-and-drop-container',
@@ -44,15 +50,31 @@ import { TranslatePipe } from '@ngx-translate/core';
   styleUrl: './drag-and-drop.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DragAndDropContainer {
-  public items: DraggableItemType[] = [...items];
-  public listItems: DraggableItemType[] = [...items];
-  public boards: BoardConfig[] = [...boards];
-  public kanbanItems: KanbanItem[] = [...kanbanItems];
-  public myItems: DraggableItemType[] = [...items];
-  public treeGroups: TreeGroupConfig[] = [...treeGroups];
-  public treeItems: TreeItem[] = [...treeItems];
+export class DragAndDropContainer implements OnInit {
+  private translate = inject(TranslateService);
+
+  public items: DraggableItemType[] = [...items(this.translate)];
+  public listItems: DraggableItemType[] = [...items(this.translate)];
+  public boards = signal<BoardConfig[]>([...boards(this.translate)]);
+  public kanbanItems: KanbanItem[] = [...kanbanItems(this.translate)];
+  public myItems: DraggableItemType[] = [...items(this.translate)];
+  public treeGroups = signal<TreeGroupConfig[]>([
+    ...treeGroups(this.translate),
+  ]);
+  public treeItems = signal<TreeItem[]>([...treeItems(this.translate)]);
   public canDelete = true;
+
+  ngOnInit() {
+    this.translate.onLangChange.subscribe(() => {
+      this.items = [...items(this.translate)];
+      this.listItems = [...items(this.translate)];
+      this.boards.set([...boards(this.translate)]);
+      this.kanbanItems = [...kanbanItems(this.translate)];
+      this.myItems = [...items(this.translate)];
+      this.treeGroups.set([...treeGroups(this.translate)]);
+      this.treeItems.set([...treeItems(this.translate)]);
+    });
+  }
 
   public onItemRemoved(id: string): void {}
 
@@ -88,11 +110,11 @@ export class DragAndDropContainer {
   public onContainerOrderChange(ids: string[]): void {}
 
   public onTreeGroupsChange(groups: TreeGroupConfig[]): void {
-    this.treeGroups = groups;
+    this.treeGroups.set(groups);
   }
 
   public onTreeItemsChange(items: TreeItem[]): void {
-    this.treeItems = items;
+    this.treeItems.set(items);
   }
 
   public onTreeItemMoved(event: TreeItemMovedEvent): void {}
@@ -103,6 +125,5 @@ export class DragAndDropContainer {
 
   public onCheckedItemsChange(itemIds: string[]): void {}
 
-  public movenotAllowed(event: boolean): void {
-  }
+  public movenotAllowed(event: boolean): void {}
 }
