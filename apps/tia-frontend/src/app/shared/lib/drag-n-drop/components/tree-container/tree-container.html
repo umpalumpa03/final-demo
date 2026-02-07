@@ -67,7 +67,7 @@
             [hasPagination]="hasPagination()"
             [paginationVariants]="paginationVariants()"
             [hasCheckbox]="hasCheckbox()"
-            [checked]="isItemChecked(item.id)"
+            [checked]="checkedItemIds().has(item.id)"
             (dragStart)="onDragStartHandler(item.id, $event)"
             (remove)="onRemoveItem(item.id)"
             (edit)="onEditItem(item.id)"

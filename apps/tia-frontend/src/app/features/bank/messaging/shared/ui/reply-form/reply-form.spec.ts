@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReplyForm } from './reply-form';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ReplyForm', () => {
   let component: ReplyForm;
@@ -7,7 +8,7 @@ describe('ReplyForm', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReplyForm],
+      imports: [ReplyForm, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ReplyForm);

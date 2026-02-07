@@ -143,8 +143,8 @@ describe('LoansStore', () => {
   });
 
   it('should map options correctly', () => {
-    store.loadMonths();
-    store.loadPurposes();
+    store.loadMonths({});
+    store.loadPurposes({});
     store.loadPrepaymentOptions();
     TestBed.tick();
     expect(store.loanMonthsOptions()).toEqual([
@@ -165,30 +165,6 @@ describe('LoansStore', () => {
     expect(store.alert()).toEqual({ message: 'Test', type: 'success' });
     store.hideAlert();
     expect(store.alert()).toBeNull();
-  });
-
-  it('should load counts', () => {
-    svc.getAllLoans.mockReturnValue(of([loan1, loan2, loan3]));
-    store.loadCounts();
-    TestBed.tick();
-    expect(store.loanCounts()).toEqual({
-      all: 3,
-      approved: 1,
-      pending: 1,
-      declined: 1,
-    });
-  });
-
-  it('should handle loadCounts error', () => {
-    svc.getAllLoans.mockReturnValue(throwError(() => new Error('Fail')));
-    store.loadCounts();
-    TestBed.tick();
-    expect(store.loanCounts()).toEqual({
-      all: 0,
-      approved: 0,
-      pending: 0,
-      declined: 0,
-    });
   });
 
   it('should load and clear loan details', () => {
@@ -347,5 +323,79 @@ describe('LoansStore', () => {
     );
     TestBed.tick();
     expect(svc.getAllLoans).toHaveBeenCalled();
+  });
+
+  it('should filter loans by search query', () => {
+    const loanA = { ...loan1, friendlyName: 'Apple Loan' };
+    const loanB = { ...loan2, friendlyName: 'Banana Loan', purpose: 'Fruit' };
+    svc.getAllLoans.mockReturnValue(of([loanA, loanB]));
+
+    store.loadLoans({ status: null });
+    TestBed.tick();
+
+    store.setSearchQuery('Apple');
+    expect(store.filteredLoans().length).toBe(1);
+    expect(store.filteredLoans()[0].id).toBe('1');
+
+    store.setSearchQuery('Fruit');
+    expect(store.filteredLoans().length).toBe(1);
+    expect(store.filteredLoans()[0].id).toBe('2');
+
+    store.setSearchQuery('Carrot');
+    expect(store.filteredLoans().length).toBe(0);
+  });
+
+  it('should use cache for months and purposes if available', () => {
+    store.loadMonths({});
+    store.loadPurposes({});
+    TestBed.tick();
+    expect(svc.getLoanMonths).toHaveBeenCalledTimes(1);
+    expect(svc.getPurposes).toHaveBeenCalledTimes(1);
+
+    store.loadMonths({});
+    store.loadPurposes({});
+    TestBed.tick();
+    expect(svc.getLoanMonths).toHaveBeenCalledTimes(1);
+    expect(svc.getPurposes).toHaveBeenCalledTimes(1);
+
+    store.loadMonths({ forceRefresh: true });
+    store.loadPurposes({ forceRefresh: true });
+    TestBed.tick();
+    expect(svc.getLoanMonths).toHaveBeenCalledTimes(2);
+    expect(svc.getPurposes).toHaveBeenCalledTimes(2);
+  });
+
+  it('should use cache for loan details', () => {
+    store.loadLoanDetails('1');
+    TestBed.tick();
+    expect(svc.getLoanById).toHaveBeenCalledTimes(1);
+
+    store.loadLoanDetails('1');
+    TestBed.tick();
+    expect(svc.getLoanById).toHaveBeenCalledTimes(1);
+  });
+
+  it('should manage modal states', () => {
+    store.openDetails('1');
+    TestBed.tick();
+    expect(store.isDetailsOpen()).toBe(true);
+    expect(store.isPrepaymentOpen()).toBe(false);
+
+    const mockLoan: any = { id: '1' };
+    store.openPrepayment(mockLoan);
+    expect(store.isDetailsOpen()).toBe(false);
+    expect(store.isPrepaymentOpen()).toBe(true);
+    expect(store.activePrepaymentLoan()).toEqual(mockLoan);
+
+    store.closeModals();
+    expect(store.isDetailsOpen()).toBe(false);
+    expect(store.isPrepaymentOpen()).toBe(false);
+    expect(store.selectedLoanDetails()).toBeNull();
+  });
+
+  it('should reset state', () => {
+    store.setFilter(1);
+    store.reset();
+    expect(store.filterStatus()).toBeNull();
   });
 });

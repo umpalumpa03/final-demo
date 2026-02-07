@@ -12,12 +12,19 @@ import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { AlertType } from '../../shared/models/profile-photo.models';
 import { Avatar } from '@tia/shared/lib/data-display/avatars/avatar';
 import { DefaultAvatarWithUrl } from '../../store/profile-photo/profile-photo.state';
-
-
+import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 
 @Component({
   selector: 'app-profile-photo',
-  imports: [BasicCard, ButtonComponent, DismissibleAlerts, TranslatePipe, Spinner, Avatar],
+  imports: [
+    BasicCard,
+    ButtonComponent,
+    DismissibleAlerts,
+    TranslatePipe,
+    Spinner,
+    Avatar,
+    UiModal,
+  ],
   templateUrl: './profile-photo.component.html',
   styleUrl: './profile-photo.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,29 +37,22 @@ export class ProfilePhotoComponent {
   public readonly selectedAvatarId = input<string | null>(null);
   public readonly alertType = input<AlertType | null>(null);
   public readonly alertMessage = input<string>('');
-  public readonly fileSelected = output<File>();
+  public readonly isUploadModalOpen = input<boolean>(false);
+  public readonly isDragOver = input<boolean>(false);
+
+  public readonly openUploadModal = output<void>();
   public readonly alertClose = output<void>();
   public readonly removePhoto = output<void>();
   public readonly saveChanges = output<void>();
   public readonly selectDefaultAvatar = output<string>();
+  public readonly uploadModalClosed = output<void>();
+  public readonly dragOver = output<DragEvent>();
+  public readonly dragLeave = output<DragEvent>();
+  public readonly fileDrop = output<DragEvent>();
+  public readonly fileInputChange = output<Event>();
 
   public onFileButtonClick(): void {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/png,image/jpeg';
-    input.style.display = 'none';
-    
-    input.addEventListener('change', (event: Event) => {
-      const fileInput = event.target as HTMLInputElement;
-      if (fileInput.files && fileInput.files.length > 0) {
-        this.fileSelected.emit(fileInput.files[0]);
-      }
-
-      document.body.removeChild(input);
-    });
-    
-    document.body.appendChild(input);
-    input.click();
+    this.openUploadModal.emit();
   }
 
   public onDefaultAvatarClick(avatarId: string): void {

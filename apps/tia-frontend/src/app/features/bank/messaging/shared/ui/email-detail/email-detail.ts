@@ -5,10 +5,11 @@ import { Avatar } from '@tia/shared/lib/data-display/avatars/avatar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteLoader } from "@tia/shared/lib/feedback/route-loader/route-loader";
 import { MessagingStore } from '../../../store/messaging.store';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-email-detail',
-  imports: [Avatar, DatePipe, RouteLoader],
+  imports: [Avatar, DatePipe, RouteLoader, TranslatePipe],
   templateUrl: './email-detail.html',
   styleUrl: './email-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

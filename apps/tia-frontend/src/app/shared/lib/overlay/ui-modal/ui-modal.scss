@@ -1,5 +1,5 @@
-@use '../../../styles/mixins' as *;
-@use '../../../styles/palette' as *;
+@use "../../../styles/mixins" as *;
+@use "../../../styles/palette" as *;
 
 .ui-modal {
   @include flex-center;
@@ -8,6 +8,58 @@
   background: rgba($black, 0.5);
   z-index: 9999;
   cursor: default;
+
+  &__nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: $white;
+    @include flex-center;
+    cursor: pointer;
+    z-index: 10;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    img {
+      width: 2.4rem;
+      height: 2.4rem;
+    }
+
+    &.prev {
+      left: 2rem;
+      img {
+        transform: rotate(90deg);
+      }
+    }
+
+    &.next {
+      right: 2rem;
+      img {
+        transform: rotate(-90deg);
+      }
+    }
+
+    @media (max-width: 600px) {
+      background-color: var(--color-fg);
+      img {
+        filter: brightness(0) saturate(100%) invert(94%) sepia(100%) saturate(26%) hue-rotate(9deg) brightness(104%)
+          contrast(109%);
+      }
+      &.next {
+        right: 0.5rem;
+      }
+
+      &.prev {
+        left: 0.5rem;
+      }
+    }
+  }
 
   &__card {
     @include display-flex(column);
@@ -55,7 +107,7 @@
 
     &::before,
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       top: 50%;
       left: 50%;

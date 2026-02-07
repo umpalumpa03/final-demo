@@ -1,43 +1,32 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { DashboardContainer } from 'apps/tia-frontend/src/app/features/bank/dashboard/container/dashboard-container';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { WidgetAccounts } from './widget-accounts';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { TranslateModule } from '@ngx-translate/core';
 
-describe('DashboardContainer', () => {
-  let component: DashboardContainer;
-  let fixture: ComponentFixture<DashboardContainer>;
-  let store: MockStore;
+import {
+  selectAccounts,
+  selectError,
+  selectIsLoading,
+} from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
 
-  const initialState = {
-    accounts: {
-      accounts: [],
-      isLoading: false,
-      error: null
-    },
-    transactions: {
-      items: []
-    },
-    ExchangeRates: {
-      ExchangeRates: [],
-      loading: false,
-      error: false
-    }
-  };
+describe('WidgetAccounts', () => {
+  let component: WidgetAccounts;
+  let fixture: ComponentFixture<WidgetAccounts>;
+  let store: MockStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        DashboardContainer,
-        TranslateModule.forRoot()
-      ],
-      providers: [
-        provideMockStore({ initialState })
-      ]
+      imports: [WidgetAccounts, TranslateModule.forRoot()],
+      providers: [provideMockStore()],
     }).compileComponents();
 
     store = TestBed.inject(MockStore);
-    fixture = TestBed.createComponent(DashboardContainer);
+
+    store.overrideSelector(selectAccounts, []);
+    store.overrideSelector(selectIsLoading, false);
+    store.overrideSelector(selectError, null);
+
+    fixture = TestBed.createComponent(WidgetAccounts);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

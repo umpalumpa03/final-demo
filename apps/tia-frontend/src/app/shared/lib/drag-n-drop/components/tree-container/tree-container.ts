@@ -91,6 +91,7 @@ export class TreeContainer extends DragBase {
     source: this.items,
     computation: (newItems) => [...newItems],
   });
+  private previousSelectAll: boolean | null = null;
 
   public readonly internalGroups = linkedSignal<
     TreeGroupConfig[],
@@ -131,6 +132,10 @@ export class TreeContainer extends DragBase {
     effect(() => {
       const shouldSelectAll = this.selectAll();
       const items = this.internalItems();
+      if (this.previousSelectAll === shouldSelectAll) {
+        return;
+      }
+      this.previousSelectAll = shouldSelectAll;
 
       if (shouldSelectAll) {
         const allIds = new Set(items.map((i) => i.id));
@@ -258,6 +263,7 @@ export class TreeContainer extends DragBase {
       this.internalItems(),
       this.checkedItemIds(),
     );
+
     this.checkedItemIds.set(updated);
     this.checkedItemsChange.emit(this.treeService.getCheckedItemIds(updated));
   }
@@ -289,7 +295,9 @@ export class TreeContainer extends DragBase {
   }
 
   public isItemChecked(itemId: string): boolean {
-    return this.checkedItemIds().has(itemId);
+    const result = this.checkedItemIds().has(itemId);
+    console.log('isItemChecked:', itemId, result);
+    return result;
   }
 
   public onEditItem(id: string): void {

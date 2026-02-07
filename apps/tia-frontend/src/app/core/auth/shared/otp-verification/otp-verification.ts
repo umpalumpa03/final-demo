@@ -40,7 +40,6 @@ import { translateConfig } from '@tia/shared/utils/translate-config/config-trans
 import { OTP_VERIFY_FORM } from '../../config/inputs.config';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Routes } from '../../models/tokens.model';
-import { ɵɵRouterLink } from '@angular/router/testing';
 
 @Component({
   selector: 'app-otp-verification',
@@ -52,7 +51,6 @@ import { ɵɵRouterLink } from '@angular/router/testing';
     SimpleAlerts,
     TranslatePipe,
     RouteLoader,
-    ɵɵRouterLink,
   ],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
@@ -69,6 +67,7 @@ export class OtpVerification implements OnInit {
   public errorMessage = input<string | null>(null);
   public remainingAttempts = input<number | null>(null);
   public customRemainingAttempts = input<number | null>(null);
+  public noMoreAttempsRedirectRoute = input<string | null>(null);
   public phoneErrorMessage = input<string | null>(null);
   public isBtnRowDirection = input<boolean>(false);
   public isDisabled = input<boolean>(false);
@@ -80,10 +79,12 @@ export class OtpVerification implements OnInit {
   public onTimeout = output<void>();
   public isVerifyCalled = output<IVerified>();
   public isResendCalled = output<boolean>();
+  public clickedOnCancl = output<void>();
   public customError = output<void>();
 
   public resendTries = signal<number>(3);
-  public isLoading = signal(false);
+  public internalRemainingAttempts = signal<number | null>(null);
+  public isLoading = input(false);
   public submitError = signal<string | null>(null);
   public countdown = signal<number>(0);
   public isResendActive = signal<boolean>(false);
@@ -102,10 +103,19 @@ export class OtpVerification implements OnInit {
     return limit * 60;
   });
 
+  public effectiveRemainingAttempts = computed(() => {
+    const internalAttempts = this.internalRemainingAttempts();
+
+    if (internalAttempts !== null) {
+      return internalAttempts;
+    }
+
+    return this.remainingAttempts();
+  });
+
   public unitedError = computed(() => {
     const error = this.errorMessage();
-    const attempts = this.remainingAttempts();
-    const customAttempts = this.customRemainingAttempts();
+    const attempts = this.effectiveRemainingAttempts();
 
     if (!this.onErrorRedirect()) {
       this.customError.emit();
@@ -116,34 +126,22 @@ export class OtpVerification implements OnInit {
       return `${error} (Remaining attempts: ${attempts})`;
     }
 
-    if (error && customAttempts !== null && customAttempts > 0) {
-      return `${error} (Remaining attempts: ${customAttempts})`;
-    }
-
-    if (attempts === 0 || customAttempts === 0) {
-      this.router.navigate([Routes.ERROR_PAGE]);
+    if (attempts === 0) {
+      const redirectRoute = this.noMoreAttempsRedirectRoute();
+      this.router.navigate([redirectRoute || Routes.ERROR_PAGE]);
     }
 
     return '';
   });
 
   public isButtonDisabled = computed(() => {
-    if (
-      this.unitedError() ||
-      this.phoneErrorMessage() ||
-      this.submitError() ||
-      this.isLimitExeeded()
-    ) {
+    if (this.isLimitExeeded() || this.phoneErrorMessage()) {
       return true;
     }
 
     if (this.isResendActive()) {
       return true;
     }
-
-    setTimeout(() => {
-      this.otpComponent()?.focusFirst();
-    }, 0);
 
     return false;
   });
@@ -213,13 +211,31 @@ export class OtpVerification implements OnInit {
     });
 
     effect(() => {
-      if (this.remainingAttempts() === 0) {
+      if (this.effectiveRemainingAttempts() === 0) {
         this.isLimitExeeded.set(true);
+        this.customError.emit();
+      }
+    });
+
+    effect(() => {
+      if (!this.isButtonDisabled()) {
+        setTimeout(() => {
+          this.otpComponent()?.focusFirst();
+        }, 0);
       }
     });
   }
 
   public ngOnInit(): void {
+    const customAttempts = this.customRemainingAttempts();
+    const parentAttempts = this.remainingAttempts();
+
+    if (customAttempts !== null) {
+      this.internalRemainingAttempts.set(customAttempts);
+    } else if (parentAttempts !== null) {
+      this.internalRemainingAttempts.set(parentAttempts);
+    }
+
     this.countdown.set(this.maxTime());
     this.startTimer();
   }
@@ -267,6 +283,12 @@ export class OtpVerification implements OnInit {
       otp = rawValue.code;
     }
 
+    if (this.internalRemainingAttempts() !== null) {
+      this.internalRemainingAttempts.update((value) =>
+        value !== null && value > 0 ? value - 1 : value,
+      );
+    }
+
     this.isVerifyCalled.emit({
       isCalled: true,
       otp: otp,
@@ -274,6 +296,10 @@ export class OtpVerification implements OnInit {
 
     setTimeout(() => {
       this.otpForm.reset();
+    }, 0);
+
+    setTimeout(() => {
+      this.otpComponent()?.focusFirst();
     }, 0);
   }
 

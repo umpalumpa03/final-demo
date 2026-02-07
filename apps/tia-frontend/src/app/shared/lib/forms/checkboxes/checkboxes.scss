@@ -5,6 +5,16 @@
     @include display-flex(column);
     gap: 0.4rem;
 
+    &::after {
+        content: url("/images/svg/library-input/checkbox-checked.svg");
+        position: absolute;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+        z-index: -1;
+        visibility: hidden;
+    }
+
     &--disabled {
         opacity: 0.6;
         cursor: not-allowed;
