@@ -15,7 +15,11 @@ export class DashboardService {
   public readonly widgetCatalog = signal(catalog);
 
   public readonly visibleItems = computed(() =>
-    this.myItems().filter((item, index) => index === 0 || !item.isHidden),
+    this.myItems().filter((item, index) => {
+      if (item.type === 'transactions') return true;
+
+      return !item.isHidden;
+    }),
   );
 
   private readonly updateStream$ = new Subject<IWidgetItem[]>();
