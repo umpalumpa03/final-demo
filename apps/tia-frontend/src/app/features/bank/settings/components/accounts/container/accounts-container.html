@@ -25,23 +25,55 @@
       }
     </div>
   } @else {
-    @if (store.accounts()?.length) {
-      @for (item of store.accounts()!; track item.id) {
-        <div class="card-wrapper">
-          <app-account-card
-            [isFavorite]="item.isFavorite"
-            [isHidden]="item.isHidden"
-            [name]="item.name"
-            [type]="item.type"
-            [iban]="item.iban"
-            [balance]="item.balance"
-            [currency]="item.currency"
-            (clickFaforite)="handleFavorite(item.id, $event)"
-            (clickHideUnhide)="handleVisibility(item.id, $event)"
-            (clickFriendlyName)="handleFriendlyName(item.id)"
-          ></app-account-card>
-        </div>
+    @if(store.accounts()?.length) {
+      @if (store.accounts()?.length) {
+        @for (item of store.accounts()!; track item.id) {
+          <div class="card-wrapper">
+            <app-account-card
+              [isFavorite]="item.isFavorite"
+              [isHidden]="item.isHidden"
+              [name]="item.friendlyName"
+              [type]="item.type"
+              [iban]="item.iban"
+              [balance]="item.balance"
+              [currency]="item.currency"
+              [isVisibilityLoading]="isVisibilityLoading(item.id)"
+              [isFavoriteLoading]="isFavoriteLoading(item.id)"
+              [isChangeNameLoading]="isChangeNameLoading(item.id)"
+              (clickFaforite)="handleFavorite(item.id, $event)"
+              (clickHideUnhide)="handleVisibility(item.id, $event)"
+              (clickFriendlyName)="openChangeName(item.id, item.friendlyName, item.iban)"
+            ></app-account-card>
+          </div>
+        }
+      }
+    } @else {
+      @if(store.error()) {
+        <app-error-states
+          maxWidth="86rem"
+          message="We couldn't find any data to display."
+          (buttonClick)="failRetryClick()"
+          [border]="false"
+        />
+      } @else {
+        <app-error-states
+          maxWidth="86rem"
+          variant="not-found"
+          header="No Data Found"
+          message="We couldn't find any data to display."
+          buttonMessage="Go Back"
+          [border]="false"
+          (buttonClick)="backButtonClick()"
+        />
       }
     }
   }
 </app-settings-body>
+
+<app-change-name
+  [isOpen]="changeNameOpen()"
+  [initialName]="changeNameInitial()"
+  [initialAccountNumber]="changeNameAccountNumber()"
+  (submit)="submitChangeName($event)"
+  (close)="closeChangeName()"
+></app-change-name>

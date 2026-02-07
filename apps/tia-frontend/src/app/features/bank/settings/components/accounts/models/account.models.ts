@@ -1,6 +1,8 @@
+import { AccountType } from '@tia/shared/models/accounts/accounts.model';
+
 export interface IAccounts {
   id: string;
-  type: string;
+  type: AccountType;
   currency: string;
   iban: string;
   name: string;
@@ -25,4 +27,8 @@ export interface IFavoriteRequest extends IAccountRequestBase {
 
 export interface IFriendlyNameRequest extends IAccountRequestBase {
   friendlyName: string;
+}
+
+export interface IUpdateResponses {
+  success: string;
 }

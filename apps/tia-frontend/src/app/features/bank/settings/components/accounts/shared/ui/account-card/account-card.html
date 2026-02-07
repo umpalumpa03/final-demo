@@ -11,8 +11,7 @@
     <div class="account-card__inner">
       <div class="account-card__left">
         <div class="account-card__avatar">
-          <!-- icon will be placxed -->
-          <span class="account-card__avatar-icon"></span>
+          <img src="" [src]="accountIcon()" class="account-card__avatar-icon" />
         </div>
         <div class="account-card__content">
           <div class="account-card__title-row">
@@ -36,13 +35,16 @@
           <div class="account-card__number">{{iban()}}</div>
           <div class="account-card__meta">
             <span class="account-card__type">{{type()}}</span>
-            <span class="account-card__balance">{{currency()}} {{balance()}}</span>
+            <span class="account-card__balance"
+              >{{currency()}} {{balance()}}</span
+            >
           </div>
         </div>
       </div>
 
       <div class="account-card__actions">
         <app-button
+          [isLoading]="isChangeNameLoading()"
           variant="outline"
           size="small"
           iconWidth="1.4rem"
@@ -56,14 +58,16 @@
           size="small"
           iconWidth="1.4rem"
           iconHeight="1.4rem"
-          [customColor]="isFavorite()? '#f0b100' : ''"
+          [customColor]="isFavorite()? '#F0B100' : ''"
           (click)="onFavoriteClick()"
           [icon]="isFavorite() ? 'favorited.svg' : 'non-favorite.svg'"
+          [isLoading]="isFavoriteLoading()"
         >
           {{ isFavorite() ? 'Favorited' : 'Favorite' }}
         </app-button>
 
         <app-button
+          [isLoading]="isVisibilityLoading()"
           variant="outline"
           size="small"
           iconWidth="1.4rem"

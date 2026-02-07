@@ -1,15 +1,19 @@
-import { Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
+import { AccountUtils } from '@tia/shared/utils/accounts-icons/account.utils';
+import { AccountType } from '@tia/shared/models/accounts/accounts.model';
 
 @Component({
   selector: 'app-account-card',
   imports: [BasicCard, ButtonComponent, Badges],
   templateUrl: './account-card.html',
   styleUrl: './account-card.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountCard {
+  private readonly accountUtils = new AccountUtils();
   public isFavorite = input.required<boolean | null>();
   public isHidden = input.required<boolean | null>();
   public readonly badge = computed<string>(() => {
@@ -18,13 +22,20 @@ export class AccountCard {
     return '';
   });
   public name = input.required<string>();
-  public type = input.required<string>()
+  public type = input.required<AccountType>();
   public currency = input.required<string>();
-  public balance = input.required<string>()
-  public iban = input.required<string>()
+  public balance = input.required<string>();
+  public iban = input.required<string>();
+  public isVisibilityLoading = input<boolean>(false);
+  public isFavoriteLoading = input<boolean>(false);
+  public isChangeNameLoading = input<boolean>(false);
   public clickFaforite = output<boolean | null>();
   public clickHideUnhide = output<boolean | null>();
   public clickFriendlyName = output<boolean>();
+
+  protected accountIcon = computed(() =>
+    this.accountUtils.getAccountIcon(this.type()),
+  );
 
   public onFavoriteClick(): void {
     this.clickFaforite.emit(this.isFavorite());

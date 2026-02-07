@@ -1,9 +1,4 @@
-import {
-  patchState,
-  signalStore,
-  withMethods,
-  withState,
-} from '@ngrx/signals';
+import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, EMPTY } from 'rxjs';
@@ -19,9 +14,7 @@ export const AccountsStore = signalStore(
         tap(() => patchState(store, { loading: true, error: null })),
         switchMap(() =>
           service.getAllAccounts().pipe(
-            tap((accounts) =>
-              patchState(store, { accounts, loading: false }),
-            ),
+            tap((accounts) => patchState(store, { accounts, loading: false })),
             catchError(() => {
               patchState(store, {
                 accounts: [],
@@ -37,42 +30,132 @@ export const AccountsStore = signalStore(
 
     toggleFavorite: rxMethod<{ id: string; isFavorite: boolean | null }>(
       pipe(
-        tap(() => patchState(store, { loading: true, error: null })),
+        tap(({ id }) => {
+          const currentIds = new Set(store.favoriteLoadingIds());
+          currentIds.add(id);
+          patchState(store, { favoriteLoadingIds: currentIds, error: null });
+        }),
         switchMap(({ id, isFavorite }) =>
-          service.toggleFavorite(id, isFavorite).pipe(
-            switchMap(() => service.getAllAccounts()),
-            tap((accounts) =>
-              patchState(store, { accounts, loading: false }),
+          service
+            .markAccountFavoriteStatus({
+              accountId: id,
+              isFavorite: !isFavorite,
+            })
+            .pipe(
+              tap(() => {
+                const currentIds = new Set(store.favoriteLoadingIds());
+                currentIds.delete(id);
+                const newFavorite = !isFavorite;
+                const accounts =
+                  store
+                    .accounts()
+                    ?.map((account) =>
+                      account.id === id
+                        ? { ...account, isFavorite: newFavorite }
+                        : newFavorite
+                          ? { ...account, isFavorite: false }
+                          : account,
+                    ) ?? null;
+                patchState(store, { accounts, favoriteLoadingIds: currentIds });
+              }),
+              catchError(() => {
+                const currentIds = new Set(store.favoriteLoadingIds());
+                currentIds.delete(id);
+                patchState(store, {
+                  favoriteLoadingIds: currentIds,
+                  error: 'Failed to update favorite status',
+                });
+                return EMPTY;
+              }),
             ),
-            catchError(() => {
-              patchState(store, {
-                loading: false,
-                error: 'Failed to update favorite status',
-              });
-              return EMPTY;
-            }),
-          ),
         ),
       ),
     ),
 
     toggleVisibility: rxMethod<{ id: string; isHidden: boolean | null }>(
       pipe(
-        tap(() => patchState(store, { loading: true, error: null })),
+        tap(({ id }) => {
+          const currentIds = new Set(store.visibilityLoadingIds());
+          currentIds.add(id);
+          patchState(store, { visibilityLoadingIds: currentIds, error: null });
+        }),
         switchMap(({ id, isHidden }) =>
-          service.toggleVisibility(id, isHidden).pipe(
-            switchMap(() => service.getAllAccounts()),
-            tap((accounts) =>
-              patchState(store, { accounts, loading: false }),
+          service
+            .updateAccountVisibility({ accountId: id, isHidden: !isHidden })
+            .pipe(
+              tap(() => {
+                const currentIds = new Set(store.visibilityLoadingIds());
+                currentIds.delete(id);
+                const nextHidden = !(isHidden ?? false);
+                const accounts =
+                  store.accounts()?.map((account) =>
+                    account.id === id
+                      ? {
+                          ...account,
+                          isHidden: nextHidden,
+                          ...(nextHidden ? { isFavorite: false } : {}),
+                        }
+                      : account,
+                  ) ?? null;
+                patchState(store, {
+                  accounts,
+                  visibilityLoadingIds: currentIds,
+                });
+              }),
+              catchError(() => {
+                const currentIds = new Set(store.visibilityLoadingIds());
+                currentIds.delete(id);
+                patchState(store, {
+                  visibilityLoadingIds: currentIds,
+                  error: 'Failed to update visibility',
+                });
+                return EMPTY;
+              }),
             ),
-            catchError(() => {
-              patchState(store, {
-                loading: false,
-                error: 'Failed to update visibility',
-              });
-              return EMPTY;
-            }),
-          ),
+        ),
+      ),
+    ),
+
+    changeFriendlyName: rxMethod<{ id: string; friendlyName: string }>(
+      pipe(
+        tap(({ id }) => {
+          const currentIds = new Set(store.changeNameLoadingIds());
+          currentIds.add(id);
+          patchState(store, { changeNameLoadingIds: currentIds, error: null });
+        }),
+        switchMap(({ id, friendlyName }) =>
+          service
+            .updateAccountFriendlyName({
+              accountId: id,
+              friendlyName: friendlyName,
+            })
+            .pipe(
+              tap(() => {
+                const currentIds = new Set(store.changeNameLoadingIds());
+                currentIds.delete(id);
+                const accounts =
+                  store
+                    .accounts()
+                    ?.map((account) =>
+                      account.id === id
+                        ? { ...account, friendlyName }
+                        : account,
+                    ) ?? null;
+                patchState(store, {
+                  accounts,
+                  changeNameLoadingIds: currentIds,
+                });
+              }),
+              catchError(() => {
+                const currentIds = new Set(store.changeNameLoadingIds());
+                currentIds.delete(id);
+                patchState(store, {
+                  changeNameLoadingIds: currentIds,
+                  error: 'Failed to change friendly name',
+                });
+                return EMPTY;
+              }),
+            ),
         ),
       ),
     ),

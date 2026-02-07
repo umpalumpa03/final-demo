@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { AccountUtils } from './account.utils';
-import { AccountType } from '../../../../../../shared/models/accounts/accounts.model';
+import { AccountType } from '@tia/shared/models/accounts/accounts.model';
 
 describe('AccountUtils', () => {
   let service: AccountUtils;
