@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ConfirmModal } from './confirm-modal';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ConfirmModal', () => {
   let component: ConfirmModal;
@@ -8,7 +9,7 @@ describe('ConfirmModal', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ConfirmModal],
+      imports: [ConfirmModal, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ConfirmModal);
