@@ -7,7 +7,10 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { PendingCard } from '../shared/model/approve-cards.model';
+import {
+  CardPermission,
+  PendingCard,
+} from '../shared/model/approve-cards.model';
 import { ApproveCardsStore } from '../store/approve-cards.store';
 import { CardsApproveElement } from '../approve-card-element/cards-approve-element';
 import { buttonEmit } from '../shared/model/approve-card-element.model';
@@ -18,7 +21,8 @@ import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { PermissionsModal } from '../../approve-accounts/components/permissions-modal/permissions-modal';
 import { FormBuilder, FormControl, FormRecord } from '@angular/forms';
 import { IAccountsPermissions } from '../../approve-accounts/models/account-permissions.models';
-
+import { TranslatePipe } from '@ngx-translate/core';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 @Component({
   selector: 'app-approve-cards',
   imports: [
@@ -28,6 +32,8 @@ import { IAccountsPermissions } from '../../approve-accounts/models/account-perm
     ErrorStates,
     PermissionsModal,
     UiModal,
+    TranslatePipe,
+    ButtonComponent,
   ],
   templateUrl: './approve-cards.html',
   providers: [ApproveCardsStore],
@@ -39,9 +45,15 @@ export class ApproveCards implements OnInit {
   public readonly fb = inject(FormBuilder);
 
   public cardInfo = signal<PendingCard[]>([]);
+
   public permissionsOverlay = signal<boolean>(false);
+  public confirmModalActive = signal<boolean>(false);
+
   public activeCardId = signal<string | null>(null);
   public permissionsSavedCard = signal<string | null>(null);
+
+  private confirmDialogAnswer = signal<boolean>(false);
+  private pendingId = signal<string | null>(null);
 
   public readonly activeCard = computed(() =>
     this.store.cards().find((card) => card.id === this.activeCardId()),
@@ -106,24 +118,55 @@ export class ApproveCards implements OnInit {
   }
 
   private handlePermissions(id: string): void {
+    if (
+      this.permissionsSavedCard() !== null &&
+      this.permissionsSavedCard() !== id
+    ) {
+      this.confirmModalActive.set(true);
+      this.pendingId.set(id);
+      return;
+    }
+
     this.activeCardId.set(id);
     this.permissionsOverlay.set(true);
-    console.log(this.cardPermissionsForm.getRawValue(), '__Form');
   }
 
   public onSavePermissions() {
-    const values = this.cardPermissionsForm.getRawValue();
-    this.permissionsSavedCard.set(this.activeCardId());
+    const rawValues = this.cardPermissionsForm.getRawValue();
+    const cardId = this.activeCardId();
+
+    if (!cardId) return;
+
+    this.permissionsSavedCard.set(cardId);
+
+    this.closeModal();
   }
 
   // Empty Cards - retry
-  // Dynamic Permissions To add
+
   private handleApprove(id: string): void {
-    this.store.updateStatus({
-      cardId: id,
-      status: 'ACTIVE',
-      permissions: [],
-    });
+    if (this.permissionsSavedCard() === id) {
+      let permissions: CardPermission[] = [];
+      const rawValues = this.cardPermissionsForm.getRawValue();
+
+      Object.entries(rawValues).forEach(([key, isEnabled]) => {
+        if (isEnabled) {
+          permissions.push(key as CardPermission);
+        }
+      });
+      this.store.updateStatus({
+        cardId: id,
+        status: 'ACTIVE',
+        permissions: permissions,
+      });
+      this.permissionsSavedCard.set(null);
+    } else {
+      this.store.updateStatus({
+        cardId: id,
+        status: 'ACTIVE',
+        permissions: [],
+      });
+    }
   }
 
   private handleDecline(id: string): void {
@@ -135,6 +178,35 @@ export class ApproveCards implements OnInit {
   }
 
   public closeModal(): void {
+    if (this.activeCardId() !== this.permissionsSavedCard()) {
+      this.cardPermissionsForm.reset();
+    }
     this.permissionsOverlay.set(false);
+  }
+
+  public closeConfirmModal(): void {
+    this.confirmModalActive.set(false);
+  }
+
+  public cancelPermissionChanges(): void {
+    if (this.permissionsSavedCard() === this.activeCardId()) {
+      this.permissionsSavedCard.set(null);
+    }
+    this.cardPermissionsForm.reset();
+    this.permissionsOverlay.set(false);
+  }
+
+  onConfirmCancel() {
+    this.confirmDialogAnswer.set(false);
+    this.closeConfirmModal();
+    this.pendingId.set(null);
+  }
+
+  onConfirmAccept() {
+    this.confirmDialogAnswer.set(true);
+    this.closeConfirmModal();
+    this.permissionsSavedCard.set(null);
+    this.cardPermissionsForm.reset();
+    this.handlePermissions(this.pendingId()!);
   }
 }

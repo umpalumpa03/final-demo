@@ -27,17 +27,33 @@
 </main>
 
 @if(permissionsOverlay()) {
-<app-ui-modal [isOpen]="permissionsOverlay()" (closed)="closeModal()">
-  <app-permissions-modal
-    [modalTitle]="'Modify Card Permissions'"
-    [modalSubtitle]="'Configure permissions for this Card request'"
-    [title]="'Card permissions'"
-    [form]="cardPermissionsForm"
-    [items]="mappedPermissions()"
-    [accOrCardName]="cardName()"
-    [name]="fullName()"
-    (save)="onSavePermissions()"
-    (cancel)="closeModal()"
-  ></app-permissions-modal>
-</app-ui-modal>
+  <app-ui-modal [isOpen]="permissionsOverlay()" (closed)="closeModal()">
+    <app-permissions-modal
+      [modalTitle]="'Modify Card Permissions'"
+      [modalSubtitle]="'Configure permissions for this Card request'"
+      [title]="'Card permissions'"
+      [form]="cardPermissionsForm"
+      [items]="mappedPermissions()"
+      [accOrCardName]="cardName()"
+      [name]="fullName()"
+      (save)="onSavePermissions()"
+      (cancel)="cancelPermissionChanges()"
+    ></app-permissions-modal>
+  </app-ui-modal>
+}
+
+@if(confirmModalActive()) {
+  <app-ui-modal [isOpen]="confirmModalActive()" (closed)="closeConfirmModal()">
+    <div class="confirm-dialog">
+        <header class="confirm-dialog__header">
+            <h3 class="confirm-dialog__title">{{'common.validation.confirmAction' | translate}}</h3>
+            <p class="confirm-dialog__subtitle">{{'common.validation.unsavedChanges' | translate}}</p>
+          </header>
+          
+          <footer class="confirm-dialog__footer">
+            <app-button variant="outline" (click)="onConfirmCancel()"> {{'common.buttons.stay' | translate}} </app-button>
+            <app-button variant="destructive" (click)="onConfirmAccept()"> {{'common.buttons.leave' | translate}} </app-button>
+          </footer>
+        </div>
+    </app-ui-modal>
 }
