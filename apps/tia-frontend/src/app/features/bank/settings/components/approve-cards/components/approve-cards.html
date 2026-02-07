@@ -1,3 +1,4 @@
+<app-scroll-area height="51rem" [hideBorder]="true">
 <main class="approve-card">
   @if (store.isLoading()) { @for(card of store.cards(); track card.id) {
   <app-skeleton width="100%" height="6.3rem" />
@@ -10,7 +11,7 @@
     [id]="card.id"
     [title]="card.nickname"
     [status]="card.status"
-    [email]="card.cardholderName"
+    [email]="card.user.email"
     [network]="card.network"
     [balance]="''"
     [creationDate]="card.createdAt"
@@ -58,3 +59,4 @@
         </div>
     </app-ui-modal>
 }
+</app-scroll-area>

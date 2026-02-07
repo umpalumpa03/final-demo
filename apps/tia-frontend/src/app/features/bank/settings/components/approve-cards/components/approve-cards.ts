@@ -21,8 +21,9 @@ import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { PermissionsModal } from '../../approve-accounts/components/permissions-modal/permissions-modal';
 import { FormBuilder, FormControl, FormRecord } from '@angular/forms';
 import { IAccountsPermissions } from '../../approve-accounts/models/account-permissions.models';
-import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
+
 @Component({
   selector: 'app-approve-cards',
   imports: [
@@ -32,8 +33,8 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
     ErrorStates,
     PermissionsModal,
     UiModal,
-    TranslatePipe,
     ButtonComponent,
+    ScrollArea
   ],
   templateUrl: './approve-cards.html',
   providers: [ApproveCardsStore],

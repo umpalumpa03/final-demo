@@ -149,7 +149,7 @@
   },
   "approve-cards": {
     "title": "ბარათების დამტკიცება",
-    "pendingCards": "მიმდინარე ბარათები"
+    "subtitle": "მიმდინარე ბარათები"
   },
   "loan-management": {
     "title": "სესხების მართვა",
