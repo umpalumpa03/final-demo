@@ -281,4 +281,242 @@ describe('LoanManagementStore', () => {
       expect(store.actionError()).toBeNull();
     });
   });
+
+  describe('clearError', () => {
+    it('should clear both error and actionError', () => {
+      apiServiceMock.getPendingApprovals.mockReturnValue(
+        throwError(() => new HttpErrorResponse({ status: 500 })),
+      );
+      store.loadPendingApprovals();
+      expect(store.error()).toBeTruthy();
+      
+      store.clearError();
+      expect(store.error()).toBeNull();
+      expect(store.actionError()).toBeNull();
+    });
+  });
+
+  describe('clearSuccessMessage', () => {
+    it('should clear success message', () => {
+      store.loadPendingApprovals();
+      store.approveLoan('loan-1');
+      expect(store.successMessage()).toBe('The loan has been approved.');
+      
+      store.clearSuccessMessage();
+      expect(store.successMessage()).toBeNull();
+    });
+  });
+
+  describe('error handling', () => {
+    it('should handle error loading pending approvals with generic message', () => {
+      apiServiceMock.getPendingApprovals.mockReturnValue(
+        throwError(() => new HttpErrorResponse({ status: 500 })),
+      );
+      store.loadPendingApprovals();
+      expect(store.error()).toBe('Failed to load pending approvals');
+      expect(store.loading()).toBe(false);
+    });
+
+    it('should handle error loading pending approvals with custom message', () => {
+      apiServiceMock.getPendingApprovals.mockReturnValue(
+        throwError(
+          () =>
+            new HttpErrorResponse({
+              status: 500,
+              error: { message: 'Custom error message' },
+            }),
+        ),
+      );
+      store.loadPendingApprovals();
+      expect(store.error()).toBe('Custom error message');
+    });
+
+    it('should handle getUserInfo error gracefully', () => {
+      apiServiceMock.getUserInfo.mockReturnValue(
+        throwError(() => new HttpErrorResponse({ status: 500 })),
+      );
+      store.loadUserInfo('user-1');
+      expect(store.userInfoLoading()).toBe(false);
+    });
+
+    it('should handle getLoanDetails error gracefully', () => {
+      apiServiceMock.getLoanDetails.mockReturnValue(
+        throwError(() => new HttpErrorResponse({ status: 500 })),
+      );
+      store.loadPendingApprovals();
+      store.selectLoan('loan-1');
+      expect(store.loanDetailsLoading()).toBe(false);
+    });
+
+    it('should handle 404 error when approving loan', () => {
+      apiServiceMock.approveLoan.mockReturnValue(
+        throwError(
+          () =>
+            new HttpErrorResponse({
+              status: 404,
+              error: { message: 'Not found' },
+            }),
+        ),
+      );
+      store.loadPendingApprovals();
+      store.approveLoan('loan-1');
+      expect(store.actionError()).toBe('Loan already processed by another user.');
+    });
+
+    it('should handle 403 error when approving loan', () => {
+      apiServiceMock.approveLoan.mockReturnValue(
+        throwError(
+          () =>
+            new HttpErrorResponse({
+              status: 403,
+              error: { message: 'Forbidden' },
+            }),
+        ),
+      );
+      store.loadPendingApprovals();
+      store.approveLoan('loan-1');
+      expect(store.actionError()).toBe('Access denied. Support role required.');
+    });
+
+    it('should handle 404 error when rejecting loan', () => {
+      apiServiceMock.approveLoan.mockReturnValue(
+        throwError(
+          () =>
+            new HttpErrorResponse({
+              status: 404,
+              error: { message: 'Not found' },
+            }),
+        ),
+      );
+      store.loadPendingApprovals();
+      store.rejectLoan({ loanId: 'loan-1', reason: 'Test reason' });
+      expect(store.actionError()).toBe('Loan already processed by another user.');
+    });
+
+    it('should handle 403 error when rejecting loan', () => {
+      apiServiceMock.approveLoan.mockReturnValue(
+        throwError(
+          () =>
+            new HttpErrorResponse({
+              status: 403,
+              error: { message: 'Forbidden' },
+            }),
+        ),
+      );
+      store.loadPendingApprovals();
+      store.rejectLoan({ loanId: 'loan-1', reason: 'Test reason' });
+      expect(store.actionError()).toBe('Access denied. Support role required.');
+    });
+
+    it('should handle error reloading list after approve failure', () => {
+      apiServiceMock.approveLoan.mockReturnValue(
+        throwError(() => new HttpErrorResponse({ status: 500 })),
+      );
+      apiServiceMock.getPendingApprovals.mockReturnValue(
+        throwError(() => new HttpErrorResponse({ status: 500 })),
+      );
+      
+      store.loadPendingApprovals();
+      apiServiceMock.getPendingApprovals.mockClear();
+      store.approveLoan('loan-1');
+      
+      expect(apiServiceMock.getPendingApprovals).toHaveBeenCalled();
+    });
+
+    it('should handle error reloading list after reject failure', () => {
+      apiServiceMock.approveLoan.mockReturnValue(
+        throwError(() => new HttpErrorResponse({ status: 500 })),
+      );
+      apiServiceMock.getPendingApprovals.mockReturnValue(
+        throwError(() => new HttpErrorResponse({ status: 500 })),
+      );
+      
+      store.loadPendingApprovals();
+      apiServiceMock.getPendingApprovals.mockClear();
+      store.rejectLoan({ loanId: 'loan-1', reason: 'Test' });
+      
+      expect(apiServiceMock.getPendingApprovals).toHaveBeenCalled();
+    });
+  });
+
+  describe('selectLoan with null', () => {
+    it('should handle selecting null loan ID', () => {
+      store.loadPendingApprovals();
+      store.selectLoan('loan-1');
+      expect(store.selectedLoanId()).toBe('loan-1');
+      
+      store.selectLoan(null);
+      expect(store.selectedLoanId()).toBeNull();
+      expect(store.actionError()).toBeNull();
+    });
+  });
+
+  describe('fetchUserInfo with undefined userId', () => {
+    it('should handle undefined userId gracefully', () => {
+      const loan = {
+        ...mockPendingApprovals[0],
+        userId: undefined,
+      };
+      apiServiceMock.getPendingApprovals.mockReturnValue(of([loan]));
+      
+      store.loadPendingApprovals();
+      store.selectLoan(loan.id);
+      
+      expect(store.userInfoLoading()).toBe(false);
+    });
+  });
+
+  describe('computed signals edge cases', () => {
+    it('should return null for selectedLoanDetails when no loan selected', () => {
+      expect(store.selectedLoanDetails()).toBeNull();
+    });
+
+    it('should return null for selectedLoanDetailsResponse when no loan selected', () => {
+      expect(store.selectedLoanDetailsResponse()).toBeNull();
+    });
+
+    it('should return null for selectedUserInfo when no loan selected', () => {
+      expect(store.selectedUserInfo()).toBeNull();
+    });
+
+    it('should return null for selectedUserInfo when loan has no userId', () => {
+      const loanWithoutUserId = {
+        ...mockPendingApprovals[0],
+        userId: undefined,
+      };
+      apiServiceMock.getPendingApprovals.mockReturnValue(of([loanWithoutUserId]));
+      
+      store.loadPendingApprovals();
+      store.selectLoan(loanWithoutUserId.id);
+      
+      expect(store.selectedUserInfo()).toBeNull();
+    });
+  });
+
+  describe('success messages', () => {
+    it('should set success message after approving loan', () => {
+      store.loadPendingApprovals();
+      store.approveLoan('loan-1');
+      expect(store.successMessage()).toBe('The loan has been approved.');
+    });
+
+    it('should set success message after rejecting loan', () => {
+      store.loadPendingApprovals();
+      store.rejectLoan({ loanId: 'loan-1', reason: 'Test' });
+      expect(store.successMessage()).toBe('The loan has been rejected.');
+    });
+
+    it('should clear success message before new action', () => {
+      store.loadPendingApprovals();
+      store.approveLoan('loan-1');
+      expect(store.successMessage()).toBeTruthy();
+      
+      apiServiceMock.getPendingApprovals.mockReturnValue(of(mockPendingApprovals));
+      store.loadPendingApprovals();
+      store.approveLoan('loan-2');
+      
+      // Success message should be cleared at start of new action
+      expect(store.actionLoading()).toBe(false);
+    });
+  });
 });
