@@ -8,10 +8,10 @@ import { RouterModule } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { RouteLoader } from './shared/lib/feedback/route-loader/route-loader';
 import { NavigationService } from './core/services/navigation/navigation.service';
-import { NoConnection } from "./features/no-connection/container/no-connection";
-
+import { NoConnection } from './features/no-connection/container/no-connection';
+import { GlobalAlert } from './shared/ui/global-alert/global-alert';
 @Component({
-  imports: [RouterModule, RouteLoader, NoConnection],
+  imports: [RouterModule, RouteLoader, NoConnection, GlobalAlert],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',

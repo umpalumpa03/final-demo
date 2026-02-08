@@ -1,5 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
-import { NOTES_DATA } from 'apps/tia-frontend/src/app/features/storybook/components/colorpalettes/config/palette-data.config';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+} from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { getNotesData } from 'apps/tia-frontend/src/app/features/storybook/components/colorpalettes/config/palette-data.config';
 
 @Component({
   selector: 'app-notes',
@@ -9,6 +15,7 @@ import { NOTES_DATA } from 'apps/tia-frontend/src/app/features/storybook/compone
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Notes {
-  public readonly notes = computed(() => NOTES_DATA);
+  private readonly translate = inject(TranslateService);
+  public readonly notes = computed(() => getNotesData(this.translate));
   public readonly theme = computed(() => 'oceanblue');
 }

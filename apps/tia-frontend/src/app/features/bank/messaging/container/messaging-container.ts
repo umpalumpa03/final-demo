@@ -7,12 +7,11 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
 import { Compose } from "../components/compose/compose";
 import { MessagingStore } from '../store/messaging.store';
-import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 
 @Component({
   selector: 'app-messaging-container',
-  imports: [RouterModule, NavigationBar, Compose, ButtonComponent, TranslatePipe, DismissibleAlerts],
+  imports: [RouterModule, NavigationBar, Compose, ButtonComponent, TranslatePipe],
   templateUrl: './messaging-container.html',
   styleUrl: './messaging-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -22,8 +21,6 @@ export class MessagingContainer {
   public readonly inboxService = inject(InboxService);
   public readonly isComposeOpen = signal(false);
   private readonly messagingStore = inject(MessagingStore);
-  public readonly error = this.messagingStore.error;
-  public readonly successMessage = this.messagingStore.successMessage;
   private readonly breakpointService = inject(BreakpointService);
 
   public readonly isExtraSmall = this.breakpointService.isExtraSmall;
@@ -57,21 +54,6 @@ export class MessagingContainer {
         routes[3] = { ...routes[3], count: importantCount ?? 0 };
         return [...routes];
       });
-    });
-
-    effect(() => {
-      const message = this.successMessage?.();
-      const error = this.error?.();
-      if (message) {
-        setTimeout(() => {
-          this.messagingStore.clearSuccessMessage();
-        }, 4000);
-      }
-      if (error) {
-        setTimeout(() => {
-          this.messagingStore.clearError();
-        }, 4000);
-      }
     });
   }
 

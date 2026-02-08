@@ -65,7 +65,7 @@ describe('Messaging Integration - Mail Replies Flow', () => {
     getRepliesReq.flush([]);
 
     await vi.waitFor(() => {
-      expect(ctx.store.successMessage?.()).toBe('messaging.storeSuccess.replySent');
+      expect(ctx.alertService.success).toHaveBeenCalledWith('messaging.storeSuccess.replySent', { variant: 'dismissible', title: 'Success!' });
     });
   });
 });

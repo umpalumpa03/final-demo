@@ -56,7 +56,7 @@ describe('Messaging Integration - Load Inbox Flow', () => {
     req.flush({ message: 'Failed to load' }, { status: 500, statusText: 'Server Error' });
 
     await vi.waitFor(() => {
-      expect(ctx.store.error()).toBe('messaging.storeErrors.loadMails');
+      expect(ctx.alertService.error).toHaveBeenCalledWith('messaging.storeErrors.loadMails', { variant: 'dismissible', title: 'Oops!' });
       expect(ctx.store.isLoading()).toBe(false);
     });
   });
