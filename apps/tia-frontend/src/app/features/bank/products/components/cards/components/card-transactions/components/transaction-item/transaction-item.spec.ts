@@ -78,4 +78,29 @@ describe('TransactionItem', () => {
     
     expect(component['iconClass']()).toBe('transaction-item__icon--income');
   });
+  it('should compute correct icon class for debit', () => {
+  fixture.componentRef.setInput('description', 'Test');
+  fixture.componentRef.setInput('date', 'Jan 1');
+  fixture.componentRef.setInput('category', 'Test');
+  fixture.componentRef.setInput('referenceNumber', 'REF001');
+  fixture.componentRef.setInput('amount', '-100');
+  fixture.componentRef.setInput('status', 'completed');
+  fixture.componentRef.setInput('transactionType', 'debit');
+  fixture.detectChanges();
+  
+  expect(component['iconClass']()).toBe('transaction-item__icon--outcome');
+});
+
+it('should compute correct icon class for credit', () => {
+  fixture.componentRef.setInput('description', 'Test');
+  fixture.componentRef.setInput('date', 'Jan 1');
+  fixture.componentRef.setInput('category', 'Test');
+  fixture.componentRef.setInput('referenceNumber', 'REF001');
+  fixture.componentRef.setInput('amount', '+100');
+  fixture.componentRef.setInput('status', 'completed');
+  fixture.componentRef.setInput('transactionType', 'credit');
+  fixture.detectChanges();
+  
+  expect(component['iconClass']()).toBe('transaction-item__icon--income');
+});
 });

@@ -208,4 +208,5 @@ export class CardTransactions implements OnInit {
       )
       .subscribe();
   }
+  
 }
