@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
+import { CredentialsService } from '../../services/credentials.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Routes } from '../../models/tokens.model';
@@ -22,6 +23,8 @@ import { map, startWith } from 'rxjs';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 import { AuthHeader } from '../../shared/auth-header/auth-header';
+import { ILoginRequest } from '../../models/authRequest.models';
+import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
 
 @Component({
   selector: 'app-sign-in',
@@ -33,6 +36,7 @@ import { AuthHeader } from '../../shared/auth-header/auth-header';
     SimpleAlerts,
     TranslatePipe,
     AuthHeader,
+    Checkboxes,
   ],
   templateUrl: './sign-in.html',
   styleUrl: './sign-in.scss',
@@ -42,6 +46,7 @@ export class SignIn {
   public signUpRoute = Routes.SIGN_UP;
   public forgotPasswordRoute = Routes.ROTGOT_PASSWORD;
   private authService = inject(AuthService);
+  private credentialsService = inject(CredentialsService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
   private translate = inject(TranslateService);
@@ -78,8 +83,12 @@ export class SignIn {
   );
 
   public loginForm = this.fb.nonNullable.group({
-    username: ['', [Validators.required, Validators.minLength(2)]],
+    username: [
+      this.credentialsService.initialUsername(),
+      [Validators.required, Validators.minLength(2)],
+    ],
     password: ['', Validators.required],
+    checkbox: [this.credentialsService.initialCheckboxValue()],
   });
 
   public submit(): void {
@@ -88,7 +97,28 @@ export class SignIn {
       return;
     }
 
-    this.authService.loginPostRequest(this.loginForm.getRawValue()).subscribe();
+    if (this.loginForm.value.checkbox && this.loginForm.value.username) {
+      const credentials = {
+        username: this.loginForm.value.username,
+        save: this.loginForm.value.checkbox,
+      };
+
+      this.credentialsService.saveCredentials(credentials);
+    } else {
+      this.credentialsService.clear();
+    }
+
+    const loginRequest = {
+      ...this.loginForm.value,
+    };
+
+    if ('checkbox' in loginRequest) {
+      delete loginRequest['checkbox'];
+    }
+
+    this.authService
+      .loginPostRequest(loginRequest as ILoginRequest)
+      .subscribe();
   }
 
   public navigateToSignUp(event: Event): void {

@@ -1,6 +1,86 @@
-import { describe, it, expect } from 'vitest';
 import { userInfoReducer, initialUserState } from './user-info.reducer';
 import { UserInfoActions } from './user-info.actions';
+import { describe, it, expect } from 'vitest';
+
+
+describe('userInfoReducer', () => {
+  it('sets loading on loadUser', () => {
+    const state = userInfoReducer(initialUserState, UserInfoActions.loadUser());
+    expect(state.loading).toBe(true);
+    expect(state.error).toBeNull();
+  });
+
+  it('applies loadUserSuccess', () => {
+    const user = { fullName: 'John', email: 'a@b.com', role: null } as any;
+    const state = userInfoReducer(initialUserState, UserInfoActions.loadUserSuccess({ user }));
+    expect(state.fullName).toBe('John');
+    expect(state.email).toBe('a@b.com');
+    expect(state.loaded).toBe(true);
+    expect(state.loading).toBe(false);
+  });
+
+  it('applies loadUserError', () => {
+    const state = userInfoReducer(initialUserState, UserInfoActions.loadUserError({ error: 'fail' }));
+    expect(state.loading).toBe(false);
+    expect(state.error).toBe('fail');
+  });
+
+  it('loads widgets and sorts them on success', () => {
+    const widgets = [
+      { dbId: '1', order: 5 } as any,
+      { dbId: '2', order: 1 } as any,
+      { dbId: '3' } as any,
+    ];
+    const state = userInfoReducer(initialUserState, UserInfoActions.loadWidgetsSuccess({ widgets }));
+    expect(state.widgets.length).toBe(3);
+    expect(state.widgets[0].dbId).toBe('2');
+    expect(state.widgets[2].dbId).toBe('3');
+    expect(state.widgetsLoaded).toBe(true);
+    expect(state.widgetsLoading).toBe(false);
+  });
+
+  it('updateWidgetsBulkSuccess merges and hides inactive', () => {
+    const start = { ...initialUserState, widgets: [ { dbId: 'a', order: 1, isHidden: false }, { dbId: 'b', order: 2 } ] as any };
+    const updates = [ { dbId: 'a', order: 3, isActive: false } as any ];
+    const state = userInfoReducer(start, UserInfoActions.updateWidgetsBulkSuccess({ widgets: updates }));
+    expect(state.widgets.find((w) => w.dbId === 'a')!.order).toBe(3);
+    expect(state.widgets.find((w) => w.dbId === 'a')!.isHidden).toBe(true);
+  });
+
+  it('deleteWidgetSuccess removes widget', () => {
+    const start = { ...initialUserState, widgets: [ { dbId: 'x' } as any, { dbId: 'y' } as any ] as any };
+    const state = userInfoReducer(start, UserInfoActions.deleteWidgetSuccess({ id: 'x' }));
+    expect(state.widgets.find((w) => w.dbId === 'x')).toBeUndefined();
+    expect(state.widgetsLoading).toBe(false);
+  });
+
+  it('error actions set error and reset loading flags', () => {
+    const actions = [
+      UserInfoActions.loadUserError({ error: 'e' }),
+      UserInfoActions.loadWidgetsError({ error: 'e' }),
+      UserInfoActions.createWidgetError({ error: 'e' }),
+      UserInfoActions.updateWidgetsBulkError({ error: 'e' }),
+      UserInfoActions.deleteWidgetError({ error: 'e' }),
+    ];
+    actions.forEach((a) => {
+      const s = userInfoReducer(initialUserState, a as any);
+      expect(s.loading).toBe(false);
+      expect(s.widgetsLoading).toBe(false);
+      expect(s.error).toBe('e');
+    });
+  });
+
+  it('sets onboarding and birthday fields', () => {
+    const s1 = userInfoReducer(initialUserState, UserInfoActions.loadHasCompletedOnboarding({ onboCompleted: true }));
+    expect(s1.hasCompletedOnboarding).toBe(true);
+
+    const s2 = userInfoReducer(initialUserState, UserInfoActions.loadBirthday({ birthDay: '2000-01-01' }));
+    expect(s2.birthday).toBe('2000-01-01');
+
+    const s3 = userInfoReducer(initialUserState, UserInfoActions.loadBirthdayModalClosed({ colsedBirthdayModal: 2020 }));
+    expect(s3.birthdayModalClosedYear).toBe(2020);
+  });
+});
 
 describe('userInfoReducer', () => {
   it('sets loading on loadUser', () => {

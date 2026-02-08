@@ -62,7 +62,10 @@ describe('SignIn', () => {
     component.submit();
 
     expect(authMock.loginPostRequest).toHaveBeenCalledWith(
-      component.loginForm.getRawValue(),
+      {
+        username: 'ab',
+        password: 'secret',
+      },
     );
   });
 
