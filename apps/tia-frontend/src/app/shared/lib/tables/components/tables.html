@@ -109,7 +109,11 @@
           @if(cell.category || cell.accountName || cell.date) {
           <div class="table__body__row__item__container">
             <div class="table__body__row__item__container__header">
-              <h3>{{ cell.value }}</h3>
+              <h3
+                class="table__body__row__item__container__header__text--ellipsis"
+              >
+                {{ cell.value }}
+              </h3>
               <span>
                 <img src="images/svg/transactions/tag.svg" alt="tag" />
                 {{ cell.category}}

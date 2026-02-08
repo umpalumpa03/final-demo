@@ -418,7 +418,8 @@ export const transactionsTable: TableConfig = {
       info: [
         {
           type: 'text',
-          value: 'Grocery Shopping',
+          value:
+            'Grocery Shopping Grocery Shopping Grocery Shopping Grocery Shopping',
           category: 'Shopping',
           accountName: 'Main Account',
           date: '2026-01-13T00:00:00Z',
