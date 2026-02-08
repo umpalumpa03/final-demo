@@ -119,19 +119,31 @@ describe('AccountsApiService', () => {
     req.flush(mockAccount);
   });
 
-  it('should map currencies to array of values', () => {
+  it('should map currencies to array of values', async () => {
     const mockCurrencies = [
       { value: 'USD', label: 'US Dollar' },
       { value: 'EUR', label: 'Euro' },
       { value: 'GEL', label: 'Georgian Lari' },
     ];
 
-    service.getCurrencies().subscribe((currencies) => {
-      expect(currencies).toEqual(['USD', 'EUR', 'GEL']);
-    });
+    await new Promise<void>((resolve, reject) => {
+      service.getCurrencies().subscribe({
+        next: (currencies) => {
+          if (currencies.length) {
+            try {
+              expect(currencies).toEqual(['USD', 'EUR', 'GEL']);
+              resolve();
+            } catch (err) {
+              reject(err);
+            }
+          }
+        },
+        error: reject,
+      });
 
-    const req = httpMock.expectOne(`${apiUrl}/catalogs/currencies`);
-    expect(req.request.method).toBe('GET');
-    req.flush(mockCurrencies);
+      const req = httpMock.expectOne(`${apiUrl}/catalogs/currencies`);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockCurrencies);
+    });
   });
 });
