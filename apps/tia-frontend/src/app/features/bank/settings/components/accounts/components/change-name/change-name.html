@@ -1,8 +1,13 @@
 <app-ui-modal [isOpen]="isOpen()" (closed)="onClose()">
   <header>
     <div class="modal-header">
-      <img class="modal-header__icon" src="images/svg/settings/account-management/edit.svg" />
-      <h1 class="modal-header__title">{{ 'settings.accounts.changeFriendlyName' | translate }}</h1>
+      <img
+        class="modal-header__icon"
+        src="images/svg/settings/account-management/edit.svg"
+      />
+      <h1 class="modal-header__title">
+        {{ 'settings.accounts.changeFriendlyName' | translate }}
+      </h1>
     </div>
     <p class="modal-header__subtitle">
       {{ 'settings.accounts.changeFriendlyNameSubtitle' | translate:{ name:
@@ -34,17 +39,17 @@
   </main>
 
   <footer>
-    <app-button variant="outline" (click)="onClose()"
-      >{{ 'settings.accounts.cancel' | translate }}</app-button
-    >
+    <app-button [variant]="actions.modal.cancel.variant" (click)="onClose()">
+      {{ actions.modal.cancel.label | translate }}
+    </app-button>
     <app-button
-      variant="default"
-      icon="confirm-icon-white.svg"
-      iconWidth="1.2rem"
+      [iconWidth]="actions.modal.save.iconWidth"
+      [variant]="actions.modal.save.variant"
+      [icon]="actions.modal.save.icon"
       [isDisabled]="nameForm.invalid"
       (click)="onSubmit()"
     >
-      {{ 'settings.accounts.saveChanges' | translate }}
+      {{ actions.modal.save.label | translate }}
     </app-button>
   </footer>
 </app-ui-modal>

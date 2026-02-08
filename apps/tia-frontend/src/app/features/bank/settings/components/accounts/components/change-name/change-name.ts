@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TranslatePipe } from '@ngx-translate/core';
+import { ACCOUNT_ACTIONS } from '../../config/accounts.config';
 
 @Component({
   selector: 'app-change-name',
@@ -34,6 +35,8 @@ export class ChangeName {
   public readonly submit = output<string>();
   public readonly initialName = input<string | undefined>();
   public readonly initialAccountNumber = input<string | null>(null);
+
+  public readonly actions = ACCOUNT_ACTIONS;
 
   public nameForm = this.fb.group({
     name: ['', Validators.required],

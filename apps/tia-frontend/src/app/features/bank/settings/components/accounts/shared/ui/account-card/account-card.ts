@@ -1,19 +1,28 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  output,
+} from '@angular/core';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 import { AccountUtils } from '@tia/shared/utils/accounts-icons/account.utils';
 import { AccountType } from '@tia/shared/models/accounts/accounts.model';
+import { TranslatePipe } from '@ngx-translate/core';
+import { ACCOUNT_ACTIONS } from '../../../config/accounts.config';
 
 @Component({
   selector: 'app-account-card',
-  imports: [BasicCard, ButtonComponent, Badges],
+  imports: [BasicCard, ButtonComponent, Badges, TranslatePipe],
   templateUrl: './account-card.html',
   styleUrl: './account-card.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountCard {
   private readonly accountUtils = new AccountUtils();
+  public readonly actions = ACCOUNT_ACTIONS;
   public isFavorite = input.required<boolean | null>();
   public isHidden = input.required<boolean | null>();
   public readonly badge = computed<string>(() => {

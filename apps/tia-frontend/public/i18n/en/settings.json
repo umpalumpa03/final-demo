@@ -129,6 +129,15 @@
     "accountName": "Account Name",
     "accountNumber": "Account Number",
     "saveChanges": "Save Changes",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "changeButton": "Change name",
+    "favoriteButton": "Favorite",
+    "favoritedButton": "Favorited",
+    "hideButton": "Hide",
+    "showButton": "Show",
+    "errorMessage": "Failed to fetch the data",
+    "warningHeader": "No Data Found",
+    "warningMessage": "We couldn't find any data to display.",
+    "warningBtn": "Go Back"
   }
 }

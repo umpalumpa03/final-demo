@@ -13,10 +13,13 @@ import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states'
 import { Router } from '@angular/router';
 import { ChangeName } from '../components/change-name/change-name';
 import { ScrollArea } from "@tia/shared/lib/layout/components/scroll-area/container/scroll-area";
+import { TranslatePipe } from '@ngx-translate/core';
+import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
+import { ERROR_STATE } from '../config/accounts.config';
 
 @Component({
   selector: 'app-accounts-container',
-  imports: [AccountCard, Skeleton, SettingsBody, ErrorStates, ChangeName, ScrollArea],
+  imports: [AccountCard, Skeleton, SettingsBody, ErrorStates, ChangeName, ScrollArea, TranslatePipe, DismissibleAlerts],
   providers: [AccountsStore],
   templateUrl: './accounts-container.html',
   styleUrl: './accounts-container.scss',
@@ -29,6 +32,7 @@ export class AccountsContainer implements OnInit {
   public readonly changeNameAccountId = signal<string | null>(null);
   public readonly changeNameInitial = signal<string>('');
   public readonly changeNameAccountNumber = signal<string | null>(null);
+  public readonly errorState = ERROR_STATE;
 
   public ngOnInit(): void {
     this.store.loadAccounts();

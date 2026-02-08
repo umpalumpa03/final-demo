@@ -1,11 +1,11 @@
 <app-basic-card
-  maxWidth="100%"
-  minHeight="11.4rem"
-  padding="1.8rem"
-  borderColor="#E5E7EB"
-  alignItems="center"
-  gap="0"
-  flexDirection="row"
+  [flexDirection]="actions.basic.flexDirection"
+  [borderColor]="actions.basic.borderColor"
+  [alignItems]="actions.basic.alignItems"
+  [minHeight]="actions.basic.minHeight"
+  [maxWidth]="actions.basic.maxWidth"
+  [padding]="actions.basic.padding"
+  [gap]="actions.basic.gap"
 >
   <div class="account-card">
     <div class="account-card__inner">
@@ -43,38 +43,40 @@
 
       <div class="account-card__actions">
         <app-button
+          [iconHeight]="actions.nameBtn.iconHeight"
+          [iconWidth]="actions.nameBtn.iconWidth"
+          [variant]="actions.nameBtn.variant"
+          [size]="actions.nameBtn.size"
+          [icon]="actions.nameBtn.icon"
           [isLoading]="isChangeNameLoading()"
-          variant="outline"
-          size="small"
-          iconWidth="1.4rem"
-          iconHeight="1.4rem"
-          icon="edit.svg"
           (click)="onFriendlyNameClick()"
-          >Change name</app-button
+          >{{'settings.accounts.changeButton' | translate}}</app-button
         >
         <app-button
-          [variant]="isFavorite() ? 'default' : 'outline'"
-          size="small"
-          iconWidth="1.4rem"
-          iconHeight="1.4rem"
-          [customColor]="isFavorite()? '#F0B100' : ''"
+          [variant]="isFavorite() ? actions.favorite.variantActive : actions.favorite.variantInactive"
+          [size]="actions.favorite.size"
+          [iconWidth]="actions.favorite.iconWidth"
+          [iconHeight]="actions.favorite.iconHeight"
+          [customColor]="isFavorite() ? actions.favorite.customColor : ''"
           (click)="onFavoriteClick()"
-          [icon]="isFavorite() ? 'favorited.svg' : 'non-favorite.svg'"
+          [icon]="isFavorite() ? actions.favorite.icons.active : actions.favorite.icons.inactive"
           [isLoading]="isFavoriteLoading()"
         >
-          {{ isFavorite() ? 'Favorited' : 'Favorite' }}
+          {{ (isFavorite() ? actions.favorite.labels.active :
+          actions.favorite.labels.inactive) | translate }}
         </app-button>
 
         <app-button
           [isLoading]="isVisibilityLoading()"
-          variant="outline"
-          size="small"
-          iconWidth="1.4rem"
-          iconHeight="1.4rem"
+          [variant]="actions.visibility.variant"
+          [size]="actions.visibility.size"
+          [iconWidth]="actions.visibility.iconWidth"
+          [iconHeight]="actions.visibility.iconHeight"
           (click)="onHideUnhideClick()"
-          [icon]="isHidden() ? 'eye.svg' : 'eye-hide.svg'"
+          [icon]="isHidden() ? actions.visibility.icons.hidden : actions.visibility.icons.visible"
         >
-          {{ isHidden() ? 'Show' : 'Hide' }}
+          {{ (isHidden() ? actions.visibility.labels.hidden :
+          actions.visibility.labels.visible) | translate }}
         </app-button>
       </div>
     </div>

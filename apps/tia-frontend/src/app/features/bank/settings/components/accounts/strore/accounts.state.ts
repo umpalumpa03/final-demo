@@ -7,6 +7,7 @@ export interface IAccountsState {
   favoriteLoadingIds: Set<string>;
   changeNameLoadingIds: Set<string>;
   error: string | null;
+  successMessage: string | null;
 }
 
 export const initialState: IAccountsState = {
@@ -16,4 +17,5 @@ export const initialState: IAccountsState = {
   favoriteLoadingIds: new Set(),
   changeNameLoadingIds: new Set(),
   error: null,
+  successMessage: null,
 };

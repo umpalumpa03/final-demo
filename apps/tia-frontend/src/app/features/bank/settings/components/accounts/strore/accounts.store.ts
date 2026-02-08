@@ -13,9 +13,17 @@ export const AccountsStore = signalStore(
   withMethods((store, service = inject(AccountManagementService)) => {
     const globalStore = inject(Store);
     return {
+      clearError(): void {
+        patchState(store, { error: null });
+      },
+
+      clearSuccessMessage(): void {
+        patchState(store, { successMessage: null });
+      },
+
       loadAccounts: rxMethod<void>(
         pipe(
-          tap(() => patchState(store, { loading: true, error: null })),
+          tap(() => patchState(store, { loading: true, error: null, successMessage: null })),
           switchMap(() =>
             service.getAllAccounts().pipe(
               tap((accounts) =>
@@ -39,7 +47,7 @@ export const AccountsStore = signalStore(
           tap(({ id }) => {
             const currentIds = new Set(store.favoriteLoadingIds());
             currentIds.add(id);
-            patchState(store, { favoriteLoadingIds: currentIds, error: null });
+            patchState(store, { favoriteLoadingIds: currentIds, error: null, successMessage: null });
           }),
           switchMap(({ id, isFavorite }) =>
             service
@@ -65,6 +73,7 @@ export const AccountsStore = signalStore(
                   patchState(store, {
                     accounts,
                     favoriteLoadingIds: currentIds,
+                    successMessage: 'Favorite status updated successfully',
                   });
                   globalStore.dispatch(
                     AccountsActions.loadAccounts({ forceRefresh: true }),
@@ -92,6 +101,7 @@ export const AccountsStore = signalStore(
             patchState(store, {
               visibilityLoadingIds: currentIds,
               error: null,
+              successMessage: null,
             });
           }),
           switchMap(({ id, isHidden }) =>
@@ -115,6 +125,7 @@ export const AccountsStore = signalStore(
                   patchState(store, {
                     accounts,
                     visibilityLoadingIds: currentIds,
+                    successMessage: 'Account visibility updated successfully',
                   });
                   globalStore.dispatch(
                     AccountsActions.loadAccounts({ forceRefresh: true }),
@@ -142,6 +153,7 @@ export const AccountsStore = signalStore(
             patchState(store, {
               changeNameLoadingIds: currentIds,
               error: null,
+              successMessage: null,
             });
           }),
           switchMap(({ id, friendlyName }) =>
@@ -165,6 +177,7 @@ export const AccountsStore = signalStore(
                   patchState(store, {
                     accounts,
                     changeNameLoadingIds: currentIds,
+                    successMessage: 'Account name changed successfully',
                   });
                   globalStore.dispatch(
                     AccountsActions.loadAccounts({ forceRefresh: true }),
