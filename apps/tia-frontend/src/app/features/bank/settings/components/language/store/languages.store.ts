@@ -1,6 +1,6 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { inject } from '@angular/core';
-import { LanguageService } from '../services/language.service';
+import { LanguageService } from '../services/language-api.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, of, Observable } from 'rxjs';
 import { Language, LanguagesState } from '../models/language.model';
