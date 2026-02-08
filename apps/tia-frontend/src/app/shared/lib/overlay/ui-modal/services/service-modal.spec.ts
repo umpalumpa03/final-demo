@@ -12,114 +12,125 @@ vi.mock('../config/ui-modal.config', () => ({
 
 describe('ModalResponsiveService', () => {
   let service: ModalResponsiveService;
-  let documentMock: Document;
-
-  class MockResizeObserver {
-    observe = vi.fn();
-    unobserve = vi.fn();
-    disconnect = vi.fn();
-    static lastCallback: any;
-    constructor(callback: any) {
-      MockResizeObserver.lastCallback = callback;
-    }
-  }
+  let mockDocument: any;
+  let lastObserverCallback: (() => void) | null = null;
 
   beforeEach(() => {
+    mockDocument = {
+      getElementById: vi.fn(),
+      body: {
+        contains: vi.fn().mockReturnValue(true),
+      },
+    };
+
+    vi.mocked(modalConfig.calculateModalPositions).mockReturnValue({
+      isFallback: false,
+      spotlightStyle: {} as any,
+      cardStyle: {} as any,
+    });
+
+    const MockResizeObserver = vi.fn().mockImplementation(function (cb) {
+      lastObserverCallback = cb;
+      return {
+        observe: vi.fn(),
+        unobserve: vi.fn(),
+        disconnect: vi.fn(),
+      };
+    });
     vi.stubGlobal('ResizeObserver', MockResizeObserver);
 
-    vi.stubGlobal(
-      'requestAnimationFrame',
-      vi.fn((cb) => setTimeout(cb, 0)),
-    );
-    vi.stubGlobal(
-      'cancelAnimationFrame',
-      vi.fn((id) => clearTimeout(id)),
-    );
+    vi.stubGlobal('requestAnimationFrame', vi.fn().mockReturnValue(123));
+    vi.stubGlobal('cancelAnimationFrame', vi.fn());
 
     TestBed.configureTestingModule({
       providers: [
         ModalResponsiveService,
         { provide: PLATFORM_ID, useValue: 'browser' },
-        { provide: DOCUMENT, useValue: document },
+        { provide: DOCUMENT, useValue: mockDocument },
       ],
     });
 
     service = TestBed.inject(ModalResponsiveService);
-    documentMock = TestBed.inject(DOCUMENT);
-    vi.clearAllMocks();
   });
 
   afterEach(() => {
+    service.stopTracking();
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
+    lastObserverCallback = null;
   });
 
-  it('should cover server-side guard', () => {
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        ModalResponsiveService,
-        { provide: PLATFORM_ID, useValue: 'server' },
-      ],
-    });
-    const serverService = TestBed.inject(ModalResponsiveService);
-    const spy = vi.spyOn(serverService, 'updatePosition');
-    serverService.startTracking('id', 0, 0, 'top' as any, {});
-    expect(spy).not.toHaveBeenCalled();
-  });
+  describe('Tracking Logic', () => {
+    it('should skip tracking if not in browser', () => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [
+          ModalResponsiveService,
+          { provide: PLATFORM_ID, useValue: 'server' },
+        ],
+      });
+      const serverService = TestBed.inject(ModalResponsiveService);
+      const updateSpy = vi.spyOn(serverService, 'updatePosition');
 
-  it('should track an element and start observer', () => {
-    const el = document.createElement('div');
-    document.body.appendChild(el);
+      serverService.startTracking('any-id', 0, 0, 'top' as any, {});
 
-    vi.mocked(modalConfig.calculateModalPositions).mockReturnValue({
-      spotlightStyle: {} as any,
-      cardStyle: {} as any,
-      isFallback: false,
+      expect(updateSpy).not.toHaveBeenCalled();
     });
 
-    service.startTracking(el, 8, 16, 'bottom' as any, {});
+    it('should track an element and start observer', () => {
+      const mockEl = { nodeType: 1 } as any;
 
-    expect(modalConfig.toggleBodyScroll).toHaveBeenCalledWith(true);
-    expect(service.isFallback()).toBe(false);
+      vi.spyOn(mockDocument, 'getElementById').mockReturnValue(mockEl);
 
-    document.body.removeChild(el);
-  });
+      const updateSpy = vi.spyOn(service, 'updatePosition');
 
-  it('should handle fallback when element is missing', () => {
-    vi.mocked(modalConfig.calculateModalPositions).mockReturnValue({
-      spotlightStyle: null,
-      cardStyle: null,
-      isFallback: true,
+      service.startTracking('my-id', 8, 16, 'bottom' as any, {});
+
+      expect(updateSpy).toHaveBeenCalledWith(mockEl, 8, 16, 'bottom', {});
+
+      expect(modalConfig.toggleBodyScroll).toHaveBeenCalledWith(true);
     });
 
-    service.updatePosition(null, 0, 0, 'bottom' as any, {});
+    it('should handle fallback when element is missing', () => {
+      vi.spyOn(mockDocument, 'getElementById').mockReturnValue(null);
 
-    expect(service.isFallback()).toBe(true);
-    expect(modalConfig.toggleBodyScroll).toHaveBeenCalledWith(false);
-  });
+      vi.mocked(modalConfig.calculateModalPositions).mockReturnValue({
+        isFallback: true,
+        spotlightStyle: null,
+        cardStyle: null,
+      });
 
-  it('should call updatePosition on ResizeObserver callback', () => {
-    const el = document.createElement('div');
-    const spy = vi.spyOn(service, 'updatePosition');
+      service.startTracking('missing-id', 0, 0, 'top' as any, {});
 
-    vi.mocked(modalConfig.calculateModalPositions).mockReturnValue({
-      isFallback: false,
-      spotlightStyle: {} as any,
-      cardStyle: {} as any,
+      expect(service.isFallback()).toBe(true);
+      expect(modalConfig.toggleBodyScroll).toHaveBeenCalledWith(false);
+
+      expect(window.requestAnimationFrame).toHaveBeenCalled();
     });
 
-    service.updatePosition(el, 8, 16, 'bottom' as any, {});
-    spy.mockClear();
+    it('should call updatePosition on ResizeObserver callback', () => {
+      const mockEl = { nodeType: 1 } as any;
+      vi.spyOn(mockDocument, 'getElementById').mockReturnValue(mockEl);
 
-    MockResizeObserver.lastCallback();
-    expect(spy).toHaveBeenCalled();
-  });
+      service.startTracking('my-id', 0, 0, 'top' as any, {});
 
-  it('should clean up on stopTracking', () => {
-    (service as any).rafId = 123;
-    service.stopTracking();
-    expect(global.cancelAnimationFrame).toHaveBeenCalledWith(123);
-    expect(modalConfig.toggleBodyScroll).toHaveBeenCalledWith(false);
+      const updateSpy = vi.spyOn(service, 'updatePosition');
+
+      expect(lastObserverCallback).toBeTruthy();
+      if (lastObserverCallback) {
+        lastObserverCallback();
+      }
+
+      expect(updateSpy).toHaveBeenCalled();
+    });
+
+    it('should clean up on stopTracking', () => {
+      (service as any).rafId = 123;
+
+      service.stopTracking();
+
+      expect(global.cancelAnimationFrame).toHaveBeenCalledWith(123);
+      expect(modalConfig.toggleBodyScroll).toHaveBeenCalledWith(false);
+    });
   });
 });
