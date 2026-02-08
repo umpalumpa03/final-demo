@@ -43,12 +43,12 @@
     pointer-events: none;
     background: $gray-25;
     border-color: $gray-50;
-    transform: none !important;
-    box-shadow: none !important;
+    transform: none;
+    box-shadow: none;
 
     &:hover {
-      background: $gray-25 !important;
-      border-color: $gray-50 !important;
+      background: $gray-25;
+      border-color: $gray-50;
     }
 
     .transfers-account-card__icon {
@@ -57,7 +57,7 @@
     }
 
     .transfers-account-card__name {
-      color: $gray-400; 
+      color: $gray-400;
     }
 
     .transfers-account-card__balance {
