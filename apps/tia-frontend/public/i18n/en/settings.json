@@ -98,6 +98,10 @@
       "permissions": "Permissions",
       "approve": "Approve",
       "decline": "Decline"
+    },
+    "alertMessages": {
+      "successDesc": "Card status updated successfully!",
+      "errorDesc": "Failed to update card status."
     }
   },
   "loan-management": {

@@ -37,7 +37,7 @@ import { ApproveCardsState } from '../shared/state/approve-cards.state';
     UiModal,
     ButtonComponent,
     ScrollArea,
-    AlertTypesWithIcons
+    AlertTypesWithIcons,
   ],
   templateUrl: './approve-cards.html',
   providers: [ApproveCardsStore],
@@ -59,6 +59,18 @@ export class ApproveCards implements OnInit {
 
   private confirmDialogAnswer = signal<boolean>(false);
   private pendingId = signal<string | null>(null);
+
+  public readonly alertDescription = computed(() => {
+    const status = this.store.success();
+    const config = this.userState.newConfig();
+
+    if (!status) return '';
+
+    const messages = config.alertMessages;
+    const key = `${status}Desc` as keyof typeof messages;
+
+    return messages[key] ?? '';
+  });
 
   public readonly activeCard = computed(() =>
     this.store.cards().find((card) => card.id === this.activeCardId()),
@@ -161,7 +173,7 @@ export class ApproveCards implements OnInit {
         status: 'ACTIVE',
         permissions: permissions,
       });
-      this.clearPermissionsState()
+      this.clearPermissionsState();
     } else {
       this.store.updateStatus({
         cardId: id,
@@ -198,13 +210,13 @@ export class ApproveCards implements OnInit {
     this.permissionsOverlay.set(false);
   }
 
-  public onConfirmCancel():void  {
+  public onConfirmCancel(): void {
     this.confirmDialogAnswer.set(false);
     this.closeConfirmModal();
     this.pendingId.set(null);
   }
 
-  public onConfirmAccept():void  {
+  public onConfirmAccept(): void {
     this.clearPermissionsState();
 
     this.confirmDialogAnswer.set(true);
@@ -212,12 +224,12 @@ export class ApproveCards implements OnInit {
     this.handlePermissions(this.pendingId()!);
   }
 
-  public retryLoading():void {
-     this.store.load();
+  public retryLoading(): void {
+    this.store.load();
   }
 
   private clearPermissionsState(): void {
-  this.permissionsSavedCard.set(null);
-  this.cardPermissionsForm.reset();
-}
+    this.permissionsSavedCard.set(null);
+    this.cardPermissionsForm.reset();
+  }
 }

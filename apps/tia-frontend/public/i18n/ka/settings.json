@@ -160,6 +160,10 @@
       "permissions": "უფლებები",
       "approve": "დამტკიცება",
       "decline": "უარყოფა"
+    },
+    "alertMessages": {
+      "successDesc": "ბარათის სტატუსი წარამტები განახლდა!",
+      "errorDesc": "სტატუსის განახლება ვერ მოხერხდა."
     }
   },
   "loan-management": {

@@ -24,7 +24,9 @@
   },
   "alertMessages": {
     "success": "success",
-    "successMessage": "Your changes have been saved successfully!"
+    "error": "error",
+    "warning": "warning",
+    "info": "info"
   },
   "validation": {
     "required": "This field is required",

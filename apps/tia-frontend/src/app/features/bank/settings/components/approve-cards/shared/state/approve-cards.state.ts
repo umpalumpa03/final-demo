@@ -8,6 +8,10 @@ export class ApproveCardsState {
   public newConfig = signal({
     title: this.translate.instant('settings.approve-cards.title'),
     subtitle: this.translate.instant('settings.approve-cards.subtitle'),
+    alertMessages: {
+      successDesc: this.translate.instant('settings.approve-cards.alertMessages.successDesc'),
+      errorDesc: this.translate.instant('settings.approve-cards.alertMessages.errorDesc')
+    },
     confirmOverlay: {
       title: this.translate.instant('settings.approve-cards.confirmOverlay.title'),
       subtitle: this.translate.instant('settings.approve-cards.confirmOverlay.subtitle'),

@@ -2,6 +2,7 @@ import {
   patchState,
   signalStore,
   withComputed,
+  withHooks,
   withMethods,
   withState,
 } from '@ngrx/signals';
@@ -51,12 +52,12 @@ export const ApproveCardsStore = signalStore(
                 cards: remainingCards,
                 isLoading: false,
                 error: null,
-                success: 'Card status updated successfully!',
+               success: 'success',
               });
 
               setTimeout(() => {
                 patchState(store, { success: null });
-              }, 5000);
+              }, 4000);
             }),
           ),
         ),
@@ -69,7 +70,11 @@ export const ApproveCardsStore = signalStore(
         switchMap(() =>
           service.getCardPermissions().pipe(
             tap((permissions) => {
-              patchState(store, { permissions, isLoading: false, error: null });
+              patchState(store, {
+                permissions,
+                isLoading: false,
+                error: null,
+              });
             }),
             catchError((err) => {
               patchState(store, { isLoading: false, error: err.message });
