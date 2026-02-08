@@ -95,4 +95,20 @@ export class PaybillDynamicForm {
       form.patchValue(values, { emitEvent: false });
     }
   }
+
+  public resetFormToInitialState(
+    form: FormGroup,
+    initialFields: Record<string, string | number>,
+  ): void {
+    const staticKeys = Object.keys(initialFields);
+    const currentKeys = Object.keys(form.controls);
+
+    currentKeys.forEach((key) => {
+      if (!staticKeys.includes(key)) {
+        form.removeControl(key);
+      }
+    });
+
+    form.reset(initialFields);
+  }
 }
