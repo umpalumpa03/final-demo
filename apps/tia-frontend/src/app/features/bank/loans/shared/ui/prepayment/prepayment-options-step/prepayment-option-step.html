@@ -20,8 +20,7 @@
         </div>
 
         <div class="prepayment-step__radios">
-            <lib-radios [config]="cfg.calcRadios()" [options]="calculationOptions()"
-                formControlName="calculationOption">
+            <lib-radios [config]="cfg.calcRadios()" [options]="cfg.radioOptions()" formControlName="calculationOption">
             </lib-radios>
         </div>
     </form>
