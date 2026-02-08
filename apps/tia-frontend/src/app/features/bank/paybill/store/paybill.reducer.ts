@@ -70,10 +70,14 @@ export const paybillReducer = createReducer(
     challengeId: null,
     filteredProviders: [],
     paymentDetails: null,
-    notifications: [],
     currentLevel: 0,
     error: null,
     loading: false,
+  })),
+
+  on(TemplatesPageActions.clearPaymentDetails, (state) => ({
+    ...state,
+    paymentDetails: null,
   })),
 
   on(PaybillActions.checkBill, (state) => ({
@@ -122,11 +126,11 @@ export const paybillReducer = createReducer(
     error,
   })),
 
-on(TemplatesPageActions.loadTemplateGroups, (state) => ({
-  ...state,
-  loading: state.templateGroups.length === 0, 
-  error: null,
-})),
+  on(TemplatesPageActions.loadTemplateGroups, (state) => ({
+    ...state,
+    loading: state.templateGroups.length === 0,
+    error: null,
+  })),
 
   on(
     TemplatesPageActions.loadTemplateGroupsSuccess,

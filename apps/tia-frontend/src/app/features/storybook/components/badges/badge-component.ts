@@ -1,46 +1,58 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import {
-  VARIANTS,
+  getVariants,
   STATUSES,
-  SIZES,
-  COUNT_BADGES,
-  DISMISSIBLE_BADGES,
-  PILL_BADGES,
+  getSizes,
+  getCountBadges,
+  getDismissibleBadges,
+  getPillBadges,
   DOT_BADGES,
   SKILL_BADGES,
   CATEGORY_BADGES,
-  BADGE_STATES,
-  CUSTOM_COLORS,
+  getBadgeStates,
+  getCustomColors,
 } from './config/badge-data.config';
-import { DismissibleBadgeItem } from './models/badge-component.models';
+import { BadgeStateItem, DismissibleBadgeItem } from './models/badge-component.models';
 import { LibraryTitle } from '../../shared/library-title/library-title';
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 
 @Component({
   selector: 'app-badge-component',
-  imports: [Badges, LibraryTitle],
+  imports: [Badges, LibraryTitle, TranslatePipe],
   templateUrl: './badge-component.html',
   styleUrl: './badge-component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BadgeComponent {
-  public readonly variants = signal(VARIANTS);
+export class BadgeComponent implements OnInit {
+  private readonly translate = inject(TranslateService);
+
+  public readonly variants = signal(getVariants(this.translate));
   public readonly statuses = signal(STATUSES);
-  public readonly sizes = signal(SIZES);
-  public readonly countBadges = signal(COUNT_BADGES);
+  public readonly sizes = signal(getSizes(this.translate));
+  public readonly countBadges = signal(getCountBadges(this.translate));
   public readonly dismissibleBadges =
-    signal<DismissibleBadgeItem[]>(DISMISSIBLE_BADGES);
-  public readonly pillBadges = signal(PILL_BADGES);
+    signal<DismissibleBadgeItem[]>(getDismissibleBadges(this.translate));
+  public readonly pillBadges = signal(getPillBadges(this.translate));
   public readonly dotBadges = signal(DOT_BADGES);
   public readonly skillBadges = signal(SKILL_BADGES);
   public readonly categoryBadges = signal(CATEGORY_BADGES);
-  public readonly badgeStates = signal(BADGE_STATES);
-  public readonly customColors = signal(CUSTOM_COLORS);
+  public readonly badgeStates = signal(getBadgeStates(this.translate));
+  public readonly customColors = signal(getCustomColors(this.translate));
   public readonly simpleBadgeSelected = signal(false);
-  public readonly title = 'Badges';
-  public readonly subtitle =
-    'Badge components for labels, status indicators, and counts';
+
+  ngOnInit(): void {
+    this.translate.onLangChange.subscribe(() => {
+      this.variants.set(getVariants(this.translate));
+      this.sizes.set(getSizes(this.translate));
+      this.countBadges.set(getCountBadges(this.translate));
+      this.dismissibleBadges.set(getDismissibleBadges(this.translate));
+      this.pillBadges.set(getPillBadges(this.translate));
+      this.badgeStates.set(getBadgeStates(this.translate));
+      this.customColors.set(getCustomColors(this.translate));
+    });
+  }
 
   public onDismissBadge(id: string): void {
     this.dismissibleBadges.update((badges) =>
@@ -60,10 +72,12 @@ export class BadgeComponent {
     this.simpleBadgeSelected.set(selected);
   }
 
-  public getStateLabel(item: { disabled?: boolean; selected?: boolean; text?: string }): string {
-    if (item.disabled) return 'Disabled:';
-    if (item.selected) return 'Selected:';
-    if (item.text === 'Hover Me') return 'Hovered:';
-    return 'Default:';
+  public getStateLabel(item: BadgeStateItem): string {
+    if (item.disabled) return this.translate.instant('storybook.badges.badgeStates.disabledLabel');
+    if (item.selected) return this.translate.instant('storybook.badges.badgeStates.selectedLabel');
+    if (item.id === 'hover') {
+      return this.translate.instant('storybook.badges.badgeStates.hovered');
+    }
+    return this.translate.instant('storybook.badges.badgeStates.default');
   }
 }

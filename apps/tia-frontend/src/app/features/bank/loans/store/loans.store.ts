@@ -23,9 +23,14 @@ import {
   IInitiatePrepaymentRequest,
 } from '../shared/models/prepayment.model';
 
+function getErrorMessage(error: HttpErrorResponse): string {
+  return (
+    error.error?.message || error.message || 'An unexpected error occurred'
+  );
+}
+
 export const LoansStore = signalStore(
   withState(loansInitialState),
-
   withComputed((store) => {
     const globalStore = inject(Store);
     const accountsSignal = globalStore.selectSignal(selectAccounts);
@@ -176,8 +181,12 @@ export const LoansStore = signalStore(
           switchMap(({ forceChange }) => {
             const currentLoans = store.loans();
             if (currentLoans.length > 0 && !forceChange) return EMPTY;
+
             patchState(store, { loading: true, error: null });
-            return loansService.getAllLoans().pipe(
+
+            const currentStatus = store.filterStatus() ?? undefined;
+
+            return loansService.getAllLoans(currentStatus).pipe(
               tap((loans) => {
                 const mappedLoans = loans.map((l) => ({
                   ...l,
@@ -187,8 +196,11 @@ export const LoansStore = signalStore(
                 }));
                 patchState(store, { loans: mappedLoans, loading: false });
               }),
-              catchError((error) => {
-                patchState(store, { error: error.message, loading: false });
+              catchError((error: HttpErrorResponse) => {
+                patchState(store, {
+                  error: getErrorMessage(error),
+                  loading: false,
+                });
                 return EMPTY;
               }),
             );
@@ -225,9 +237,9 @@ export const LoansStore = signalStore(
                   },
                 })),
               ),
-              catchError((error) => {
+              catchError((error: HttpErrorResponse) => {
                 patchState(store, {
-                  error: error.message,
+                  error: getErrorMessage(error),
                   detailsLoading: false,
                 });
                 return EMPTY;
@@ -249,8 +261,8 @@ export const LoansStore = signalStore(
                   );
                 patchState(store, { loans: updatedLoans });
               }),
-              catchError((error) => {
-                patchState(store, { error: error.message });
+              catchError((error: HttpErrorResponse) => {
+                patchState(store, { error: getErrorMessage(error) });
                 return EMPTY;
               }),
             ),
@@ -264,8 +276,8 @@ export const LoansStore = signalStore(
             if (store.months().length > 0 && !forceRefresh) return EMPTY;
             return loansService.getLoanMonths().pipe(
               tap((months) => patchState(store, { months })),
-              catchError((error) => {
-                patchState(store, { error: error.message });
+              catchError((error: HttpErrorResponse) => {
+                patchState(store, { error: getErrorMessage(error) });
                 return EMPTY;
               }),
             );
@@ -279,8 +291,8 @@ export const LoansStore = signalStore(
             if (store.purposes().length > 0 && !forceRefresh) return EMPTY;
             return loansService.getPurposes().pipe(
               tap((purposes) => patchState(store, { purposes, error: null })),
-              catchError((error) => {
-                patchState(store, { error: error.message });
+              catchError((error: HttpErrorResponse) => {
+                patchState(store, { error: getErrorMessage(error) });
                 return EMPTY;
               }),
             );
@@ -297,8 +309,8 @@ export const LoansStore = signalStore(
               tap((options) =>
                 patchState(store, { prepaymentOptions: options, error: null }),
               ),
-              catchError((error) => {
-                patchState(store, { error: error.message });
+              catchError((error: HttpErrorResponse) => {
+                patchState(store, { error: getErrorMessage(error) });
                 return EMPTY;
               }),
             );
@@ -327,11 +339,11 @@ export const LoansStore = signalStore(
                   actionLoading: false,
                 }),
               ),
-              catchError((error) => {
+              catchError((error: HttpErrorResponse) => {
                 patchState(store, {
                   calculationResult: null,
                   actionLoading: false,
-                  error: error.message,
+                  error: getErrorMessage(error),
                 });
                 return EMPTY;
               }),
@@ -394,6 +406,7 @@ export const LoansStore = signalStore(
                 const displayMsg = isInsufficient
                   ? 'Insufficient funds in payment account'
                   : backendMsg || err.message || 'An unexpected error occurred';
+
                 patchState(store, {
                   actionLoading: false,
                   alertMessage: displayMsg,
@@ -426,10 +439,15 @@ export const LoansStore = signalStore(
                 });
                 store.loadLoans({ forceChange: true });
               }),
-              catchError((error) => {
+              catchError((error: any) => {
+                const msg =
+                  error instanceof HttpErrorResponse
+                    ? getErrorMessage(error)
+                    : error.message || 'Verification failed';
+
                 patchState(store, {
                   actionLoading: false,
-                  error: error.message || 'Verification failed',
+                  error: msg,
                 });
                 return EMPTY;
               }),

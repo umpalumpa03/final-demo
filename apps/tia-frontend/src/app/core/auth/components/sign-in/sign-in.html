@@ -15,6 +15,10 @@
       [config]="signInConfig().password"
       type="password"
     ></lib-text-input>
+    <lib-checkboxes
+      [config]="signInConfig().checkbox"
+      formControlName="checkbox"
+    ></lib-checkboxes>
     } @if(errorMessage()) {
     <app-simple-alerts
       [alertType]="alertTypes.error.type"
