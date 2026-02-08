@@ -1,6 +1,25 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ContactForms } from './contact-form';
 import { vi } from 'vitest';
+import { FormsDemoState } from '../state/forms-demo.state';
+import { TranslateModule } from '@ngx-translate/core';
+const mockFormsDemo = {
+  contactForm: () => ({
+    name: { label: 'Name', required: true },
+    email: { label: 'Email', required: true },
+    message: { label: 'Message', required: true },
+    checkbox: { label: 'Subscribe', required: true },
+  }),
+  titles: () => ({
+    contact: 'Contact',
+    registration: 'Registration',
+    settings: 'Settings',
+    inline: 'Inline',
+    validation: 'Validation',
+    multiStep: 'MultiStep',
+    layout: 'Layout',
+  }),
+};
 
 describe('ContactForms', () => {
   let component: ContactForms;
@@ -8,7 +27,10 @@ describe('ContactForms', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ContactForms],
+      imports: [ContactForms, TranslateModule.forRoot()],
+      providers: [
+        { provide: FormsDemoState, useValue: mockFormsDemo },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContactForms);
