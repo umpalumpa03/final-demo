@@ -53,7 +53,7 @@ describe('Messaging Integration - Send Draft Flow', () => {
     importantReq2.flush({ count: 0 });
 
     await vi.waitFor(() => {
-      expect(ctx.store.successMessage?.()).toBe('messaging.storeSuccess.draftSent');
+      expect(ctx.alertService.success).toHaveBeenCalledWith('messaging.storeSuccess.draftSent', { variant: 'dismissible', title: 'Success!' });
     });
   });
 
@@ -76,7 +76,7 @@ describe('Messaging Integration - Send Draft Flow', () => {
     );
 
     await vi.waitFor(() => {
-      expect(ctx.store.error()).toBe('messaging.storeErrors.sendDraft');
+      expect(ctx.alertService.error).toHaveBeenCalledWith('messaging.storeErrors.sendDraft', { variant: 'dismissible', title: 'Oops!' });
       expect(ctx.store.isLoading()).toBe(false);
     });
   });
