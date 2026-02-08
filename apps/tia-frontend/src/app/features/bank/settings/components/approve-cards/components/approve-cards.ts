@@ -24,6 +24,7 @@ import { IAccountsPermissions } from '../../approve-accounts/models/account-perm
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
+import { ApproveCardsState } from '../shared/state/approve-cards.state';
 
 @Component({
   selector: 'app-approve-cards',
@@ -46,6 +47,7 @@ import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-typ
 export class ApproveCards implements OnInit {
   public readonly store = inject(ApproveCardsStore);
   public readonly fb = inject(FormBuilder);
+  public readonly userState = inject(ApproveCardsState);
 
   public cardInfo = signal<PendingCard[]>([]);
 

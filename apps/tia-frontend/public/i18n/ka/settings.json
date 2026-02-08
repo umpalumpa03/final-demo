@@ -90,57 +90,57 @@
       "save": "შეინახე ცვლილებები"
     },
     "profile-photo": {
-        "title": "პროფილის ფოტო",
-        "subtitle": "ატვირთეთ ახალი პროფილის ფოტო ან აირჩიეთ ნაგულისხმები ფოტო ",
-        "uploadCustomPhoto": "ატვირთეთ ახალი პროფილის ფოტო",
-        "dragOrChooseFile": "გადმოიტანე ფოტო აქ ან აირჩიე ფაილი.",
-        "chooseFile": "ფაილის არჩევა",
-        "defaultAvatar": "ნაგულისხმები ფოტოები",
-        "loadingDefaultAvatars": "ნაგულისხმები ფოტოები იტვირთება...",
-        "profilePictureChangedSuccessfully": "პროფილის ფოტო წარმატებით შეიცვალა",
-        "profilePictureRemovedSuccessfully": "პროფილის ფოტო წარმატებით წაიშლა",
-        "change": "შენახვა",
-        "remove": "ფოტოს წაშლა",
-        "invalidFileAlert": "გთხოვთ აირჩიოთ ნაგულისხმები ფოტო (PNG ან JPG ფორმატი, მაქსიმალური ზომა — 1 MB)"
+      "title": "პროფილის ფოტო",
+      "subtitle": "ატვირთეთ ახალი პროფილის ფოტო ან აირჩიეთ ნაგულისხმები ფოტო ",
+      "uploadCustomPhoto": "ატვირთეთ ახალი პროფილის ფოტო",
+      "dragOrChooseFile": "გადმოიტანე ფოტო აქ ან აირჩიე ფაილი.",
+      "chooseFile": "ფაილის არჩევა",
+      "defaultAvatar": "ნაგულისხმები ფოტოები",
+      "loadingDefaultAvatars": "ნაგულისხმები ფოტოები იტვირთება...",
+      "profilePictureChangedSuccessfully": "პროფილის ფოტო წარმატებით შეიცვალა",
+      "profilePictureRemovedSuccessfully": "პროფილის ფოტო წარმატებით წაიშლა",
+      "change": "შენახვა",
+      "remove": "ფოტოს წაშლა",
+      "invalidFileAlert": "გთხოვთ აირჩიოთ ნაგულისხმები ფოტო (PNG ან JPG ფორმატი, მაქსიმალური ზომა — 1 MB)"
     },
     "security": {
-        "title": "უსაფრთხოების პარამეტრები",
-        "changePassword": "პაროლის შეცვლა",
-        "changePasswordSubtitle": "განაახლეთ თქვენი პაროლი ანგარიშის უსაფრთხოებისთვის",
-        "currentPassword": "მიმდინარე პაროლი",
-        "currentPasswordPlaceholder": "შეიყვანეთ მიმდინარე პაროლი",
-        "newPassword": "ახალი პაროლი",
-        "newPasswordPlaceholder": "შეიყვანეთ ახალი პაროლი",
-        "confirmNewPassword": "დაადასტურეთ ახალი პაროლი",
-        "confirmNewPasswordPlaceholder": "დაადასტურეთ ახალი პაროლი",
-        "updatePassword": "პაროლის განახლება",
-        "twoFactorAuth": "ორი ფაქტორიანი ავთენტიფიკაცია"
+      "title": "უსაფრთხოების პარამეტრები",
+      "changePassword": "პაროლის შეცვლა",
+      "changePasswordSubtitle": "განაახლეთ თქვენი პაროლი ანგარიშის უსაფრთხოებისთვის",
+      "currentPassword": "მიმდინარე პაროლი",
+      "currentPasswordPlaceholder": "შეიყვანეთ მიმდინარე პაროლი",
+      "newPassword": "ახალი პაროლი",
+      "newPasswordPlaceholder": "შეიყვანეთ ახალი პაროლი",
+      "confirmNewPassword": "დაადასტურეთ ახალი პაროლი",
+      "confirmNewPasswordPlaceholder": "დაადასტურეთ ახალი პაროლი",
+      "updatePassword": "პაროლის განახლება",
+      "twoFactorAuth": "ორი ფაქტორიანი ავთენტიფიკაცია"
     },
     "user-management": {
-        "title": "მომხმარებელთა მართვა",
-        "subtitle": "მართე მომხმარებლები, როლები და წვდომა უფლებებზე",
-        "placeholder": "მოძებნე იუზერები სახელი, იმეილის და ზედმეტსახელით...",
-        "addUser": "მომხმარებლის დამატება",
-        "removeUser": "მომხმარებლის წაშლა"
+      "title": "მომხმარებელთა მართვა",
+      "subtitle": "მართე მომხმარებლები, როლები და წვდომა უფლებებზე",
+      "placeholder": "მოძებნე იუზერები სახელი, იმეილის და ზედმეტსახელით...",
+      "addUser": "მომხმარებლის დამატება",
+      "removeUser": "მომხმარებლის წაშლა"
     },
     "approve-accounts": {
-        "title": "ანგარიშების დამტკიცება",
-        "pendingApprovals": "მიმდინარე დამტკიცებები"
+      "title": "ანგარიშების დამტკიცება",
+      "pendingApprovals": "მიმდინარე დამტკიცებები"
     },
     "approve-cards": {
-        "title": "ბარათების დამტკიცება",
-        "subtitle": "მიმდინარე ბარათების განხილვა და დამტკიცება"
+      "title": "ბარათების დამტკიცება",
+      "subtitle": "მიმდინარე ბარათების განხილვა და დამტკიცება"
     },
     "loan-management": {
-        "title": "სესხების მართვა",
-        "viewLoans": "სესხების ნახვა",
-        "approveLoan": "სესხის დამტკიცება",
-        "rejectLoan": "სესხის უარყოფა"
+      "title": "სესხების მართვა",
+      "viewLoans": "სესხების ნახვა",
+      "approveLoan": "სესხის დამტკიცება",
+      "rejectLoan": "სესხის უარყოფა"
     },
     "accounts": {
-        "title": "ანგარიშები",
-        "savings": "სავაჭრო ანგარიში",
-        "checking": "შემოწმების ანგარიში"
+      "title": "ანგარიშები",
+      "savings": "სავაჭრო ანგარიში",
+      "checking": "შემოწმების ანგარიში"
     }
   },
   "approve-accounts": {
@@ -149,7 +149,18 @@
   },
   "approve-cards": {
     "title": "ბარათების დამტკიცება",
-    "subtitle": "მიმდინარე ბარათები"
+    "subtitle": "მიმდინარე ბარათები",
+    "confirmOverlay": {
+      "title": "მიმდინარე ცვლილებების გაუქმება",
+      "subtitle": "დაადასტურეთ ბარათი, წინააღმდეგ შემთხვევაში ბარათის გადაცვლისას თქვენს მიერ შეტანილი უფლებები განულდება.",
+      "cancelAction": "უკან დაბრუნება",
+      "confirmAction": "გაუქმება და გადართვა"
+    },
+    "buttons": {
+      "permissions": "უფლებები",
+      "approve": "დამტკიცება",
+      "decline": "უარყოფა"
+    }
   },
   "loan-management": {
     "title": "სესხების მართვა",

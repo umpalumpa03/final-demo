@@ -15,11 +15,10 @@
     border: 0.19rem solid $gray-200;
 
     @media (max-width: 900px) {
-      flex-wrap: wrap;
+      @include display-flex($wrap:wrap);
     }
 
     @media (max-width: 500px) {
-      flex-wrap: wrap;
       justify-content: center;
     }
   }
