@@ -22,5 +22,7 @@ export const loansInitialState: ILoansState = {
   actionLoading: false,
   alertMessage: null,
   alertType: null,
+  hasLoadedAll: false,
+  loadedSubsetStatus: null,
   dashboardCounts: { all: 0, approved: 0, pending: 0, declined: 0 },
 };

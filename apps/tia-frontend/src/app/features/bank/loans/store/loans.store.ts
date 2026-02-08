@@ -175,18 +175,19 @@ export const LoansStore = signalStore(
       loadLoans: rxMethod<{ status?: number | null; forceChange?: boolean }>(
         pipe(
           tap(({ status }) => {
-            if (status !== undefined)
+            if (status !== undefined) {
               patchState(store, { filterStatus: status });
+            }
           }),
           switchMap(({ forceChange }) => {
             const currentLoans = store.loans();
-            if (currentLoans.length > 0 && !forceChange) return EMPTY;
+            if (currentLoans.length > 0 && !forceChange) {
+              return EMPTY;
+            }
 
             patchState(store, { loading: true, error: null });
 
-            const currentStatus = store.filterStatus() ?? undefined;
-
-            return loansService.getAllLoans(currentStatus).pipe(
+            return loansService.getAllLoans().pipe(
               tap((loans) => {
                 const mappedLoans = loans.map((l) => ({
                   ...l,
@@ -194,7 +195,11 @@ export const LoansStore = signalStore(
                   friendlyName: toTitleCase(l.friendlyName),
                   accountName: l.accountName || '',
                 }));
-                patchState(store, { loans: mappedLoans, loading: false });
+
+                patchState(store, {
+                  loans: mappedLoans,
+                  loading: false,
+                });
               }),
               catchError((error: HttpErrorResponse) => {
                 patchState(store, {

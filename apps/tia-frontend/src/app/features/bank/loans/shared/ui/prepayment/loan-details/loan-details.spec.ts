@@ -2,14 +2,19 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoanDetails } from './loan-details';
 import { TranslateModule } from '@ngx-translate/core';
 import { signal } from '@angular/core';
+import { LoansStore } from '../../../../store/loans.store';
 
 describe('LoanDetails', () => {
   let component: LoanDetails;
   let fixture: ComponentFixture<LoanDetails>;
+  const storeMock = {
+    loadPrepaymentOptions: vi.fn(),
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [LoanDetails, TranslateModule.forRoot()],
+      providers: [{ provide: LoansStore, useValue: storeMock }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoanDetails);
