@@ -105,7 +105,11 @@
         [fullWidth]="true"
         (click)="handleOpenTransferModal()"
       >
-        <span class="account-card__actions-icon">⇄</span>
+        <img
+          src="/images/svg/account/transfer.svg"
+          alt="transfer"
+          class="account-card__actions-icon"
+        />
         {{ 'my-products.accounts.card.makeTransfer' | translate }}
       </app-button>
       }

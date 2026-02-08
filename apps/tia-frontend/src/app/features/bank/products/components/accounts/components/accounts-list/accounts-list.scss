@@ -88,6 +88,8 @@
     }
 
     &-button-container {
+      position: relative;
+      z-index: 100;
       width: 4rem;
       flex-shrink: 0;
       @include flex-center(row);
@@ -193,7 +195,7 @@
   @media (max-width: 425px) {
     &__section {
       &-grid {
-        gap: 1.9rem;
+        gap: 2.2rem;
         app-account-card {
           flex: 0 0 calc(100% - 2rem);
         }
@@ -206,8 +208,8 @@
 
     &__carousel {
       &-button-container {
-        width: 2rem;
-        padding: 0 0.25rem;
+        width: 1rem;
+        padding: 0 0.5rem 0 0;
       }
     }
   }
