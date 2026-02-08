@@ -52,24 +52,40 @@
   @let form = activeForm();
 
   <main>
-    @if (form) {
+    @if(selectLoading()) {
+    <app-spinner size="large"></app-spinner>
+    } @if (form) {
     <form [formGroup]="form" (ngSubmit)="onFormSubmit(config.formSubmitType)">
       @if (config.fields?.length) { @for (field of config.fields; track
       field.controlName) { @if(field.type === 'dropdown') {
-      <lib-select
-        [formControlName]="field.controlName"
-        [options]="templateCategories()"
-        [config]="{ label: field.label, placeholder: field.placeholder }"
-        (selectionChange)="onDropdownChange(field.controlName, $event)"
-      ></lib-select>
-
+      <div class="modal__dynamic-dropdown">
+        <lib-select
+          [formControlName]="field.controlName"
+          [config]="{ label: field.label, placeholder: field.placeholder }"
+          [options]="getDropdownOptions(field.controlName)"
+          class="modal__dropdown"
+        ></lib-select>
+      </div>
       }@else {
       <lib-text-input
         [formControlName]="field.controlName"
         [type]="field.type"
         [config]="{ label: field.label, placeholder: field.placeholder }"
       />
-      } } }
+      } } @if(isCategorySelected()) { @for (item of childProviderOptions();
+      track $index) {
+      <div class="modal__dynamic-dropdown">
+        <lib-select
+          [options]="childProviderOptions()[$index]"
+          (valueChange)="onChildProviderChange($event, $index)"
+        ></lib-select>
+      </div>
+      } }
+      <app-dynamic-inputs
+        [form]="createTemplateForm()"
+        [fields]="paymentFields()"
+      ></app-dynamic-inputs>
+      }
 
       <div class="modal__buttons">
         <app-button

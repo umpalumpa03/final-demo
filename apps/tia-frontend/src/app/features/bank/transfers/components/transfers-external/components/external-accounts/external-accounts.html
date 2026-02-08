@@ -138,7 +138,7 @@
   </footer>
 </main>
 
-@if (showSuccess()) {
+@if (showSuccess() && !currencyMismatchError()) {
 <div class="external-accounts__success-toast">
   <app-alert-types-with-icons
     [alertType]="'success'"
@@ -150,6 +150,13 @@
   <app-alert-types-with-icons
     [alertType]="'error'"
     [alertMessage]="'transfers.external.accounts.noPermission' | translate"
+  />
+</div>
+}@if (currencyMismatchError()) {
+<div class="external-accounts__success-toast">
+  <app-alert-types-with-icons
+    [alertType]="'warning'"
+    [alertMessage]="'transfers.external.accounts.currencyMismatch' | translate"
   />
 </div>
 }

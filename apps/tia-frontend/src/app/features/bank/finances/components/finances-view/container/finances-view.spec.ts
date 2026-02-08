@@ -11,9 +11,16 @@ describe('FinancesView', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinancesView, ReactiveFormsModule],
+      imports: [ReactiveFormsModule],
       schemas: [NO_ERRORS_SCHEMA],
-    }).compileComponents();
+    })
+    .overrideComponent(FinancesView, {
+      set: {
+        imports: [ReactiveFormsModule],
+        providers: []
+      }
+    })
+    .compileComponents();
 
     fixture = TestBed.createComponent(FinancesView);
     component = fixture.componentInstance;
@@ -23,11 +30,12 @@ describe('FinancesView', () => {
     fixture.componentRef.setInput('activeFilter', 'month');
     fixture.componentRef.setInput('filterOptions', []);
     fixture.componentRef.setInput('filterForm', new FormGroup({
-       selectedMonth: new FormControl(''),
+       selectedMonth: new FormControl('1'),
        fromDate: new FormControl(''),
        toDate: new FormControl('')
     }));
     fixture.componentRef.setInput('charts', []);
+    fixture.componentRef.setInput('loading', false);
     
     fixture.detectChanges();
   });
@@ -36,7 +44,21 @@ describe('FinancesView', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render all child sections', () => {
+  it('should render the loader instead of content when loading is true', () => {
+    fixture.componentRef.setInput('loading', true);
+    fixture.detectChanges();
+
+    const loader = fixture.debugElement.query(By.css('app-route-loader'));
+    expect(loader).toBeTruthy();
+    
+    const summary = fixture.nativeElement.querySelector('app-finances-summary');
+    expect(summary).toBeNull();
+  });
+
+  it('should render all child sections when loading is false', () => {
+    fixture.componentRef.setInput('loading', false);
+    fixture.detectChanges();
+
     const selectors = [
       'app-library-title',
       'app-finances-filters',
@@ -52,7 +74,6 @@ describe('FinancesView', () => {
     });
   });
 
-
   it('should emit filterChange when app-finances-filters triggers it', () => {
     const spy = vi.spyOn(component.filterChange, 'emit');
     const filtersEl = fixture.debugElement.query(By.css('app-finances-filters'));
@@ -60,6 +81,15 @@ describe('FinancesView', () => {
     filtersEl.triggerEventHandler('filterChange', 'custom');
 
     expect(spy).toHaveBeenCalledWith('custom');
+  });
+
+  it('should emit update event when filter triggers it', () => {
+    const spy = vi.spyOn(component.update, 'emit');
+    const filtersEl = fixture.debugElement.query(By.css('app-finances-filters'));
+
+    filtersEl.triggerEventHandler('update', null);
+
+    expect(spy).toHaveBeenCalled();
   });
 
   it('should emit filterChange when app-finances-summary triggers retry', () => {

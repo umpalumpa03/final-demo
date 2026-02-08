@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   OnInit,
   signal,
@@ -10,10 +11,16 @@ import { PaybillTemplates } from '../components/paybill-templates';
 import { Store } from '@ngrx/store';
 import {
   selectCategories,
+  selectFilteredProviders,
   selectLoading,
+  selectPaymentFields,
   selectProviders,
+  selectProvidersDropdown,
+  selectSelectedCategoryId,
+  selectServiceId,
   selectTemplatesAsTreeItems,
   selectTemplatesGroupWithConfigs,
+  selectVerifiedDetails,
 } from '../../../store/paybill.selectors';
 import {
   PaybillActions,
@@ -24,10 +31,20 @@ import {
   formSubmitType,
   HeaderCtaAction,
   ModalType,
+  ProviderTypeForStore,
   TreeAction,
   TreeItemMoved,
 } from '../models/paybill-templates.model';
 import { ModalConfig } from '../configs/cta-buttons.config';
+import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
+import { FormBuilder } from '@angular/forms';
+import {
+  createEditGroupForm,
+  createEditTemplateForm,
+  createGroupForm,
+  createTemplateForm,
+} from '../configs/paybill-templates.forms';
+import { PaybillDynamicForm } from '../../../services/paybill-dynamic-form/paybill-dynamic-form';
 
 @Component({
   selector: 'app-paybill-templates-container',
@@ -36,7 +53,15 @@ import { ModalConfig } from '../configs/cta-buttons.config';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillTemplatesContainer implements OnInit {
+  private readonly fb = inject(FormBuilder);
+  public createTemplateForm = createTemplateForm(this.fb);
+  public editTemplateForm = createEditTemplateForm(this.fb);
+  public editGroupForm = createEditGroupForm(this.fb);
+  public createGroupForm = createGroupForm(this.fb);
+
+  // //////////////////
   private readonly store = inject(Store);
+  private readonly payBill = inject(PaybillDynamicForm);
 
   // Store Selections
   public readonly templateGroups = this.store.selectSignal(
@@ -118,10 +143,23 @@ export class PaybillTemplatesContainer implements OnInit {
         );
       }
     },
+    'create-template': (values) => {
+      const serviceId = this.serviceId()!;
+      const { name, category, ...identification } = values;
+
+      this.store.dispatch(
+        TemplatesPageActions.checkBillForTemplate({
+          serviceId,
+          identification,
+          nickname: name,
+        }),
+      );
+    },
   };
 
   // On Init Load Data
   ngOnInit(): void {
+    this.store.dispatch(PaybillActions.clearSelection());
     this.store.dispatch(TemplatesPageActions.loadTemplateGroups());
     this.store.dispatch(TemplatesPageActions.loadTemplates());
   }
@@ -155,13 +193,12 @@ export class PaybillTemplatesContainer implements OnInit {
     }
   }
 
-  public onCategorySelected(categoryId: string): void {
-    this.store.dispatch(PaybillActions.selectCategory({ categoryId }));
-  }
-
   public handleFormSubmit(payload: FormSubmitPayload): void {
     this.formSubmitHandlers[payload.type]?.(payload.values);
-    this.handleModalToggle();
+
+    if (payload.type !== 'create-template') {
+      this.handleModalToggle();
+    }
   }
 
   public onTreeAction(event: TreeAction): void {
@@ -240,4 +277,67 @@ export class PaybillTemplatesContainer implements OnInit {
     action(id);
     this.handleModalToggle();
   }
+
+  // Create Template Logic
+
+  // Checks for loading state
+  public selectLoading = this.store.selectSignal(selectLoading);
+
+  // Here I get options to loop through and create visual in dumb component
+  public readonly parentProviderOptions = this.store.selectSignal(
+    selectProvidersDropdown,
+  );
+
+  public readonly childProviderOptions = computed(() =>
+    this.store.selectSignal(selectFilteredProviders)(),
+  );
+
+  // Setting Current Level to track what is the level of child
+  public readonly currentLevel = signal<number>(0);
+
+  // Check If the main category was selected
+  public readonly isCategorySelected = computed(
+    () => this.store.selectSignal(selectSelectedCategoryId)() !== null,
+  );
+
+  // This is the last thing in the dropdown logic that I save to post it on back
+  public readonly serviceId = this.store.selectSignal(selectServiceId);
+
+  // Form Sync effect to create dynamic fields
+  private readonly formSyncEffect = effect(() => {
+    this.payBill.syncFormWithPaymentFields(this.createTemplateForm, {
+      name: '',
+      category: '',
+    });
+  });
+
+  // Event Handlers for dynamic form
+  public onCategorySelect(category: InputFieldValue): void {
+    if (!category) return;
+
+    this.store.dispatch(
+      PaybillActions.selectCategory({ categoryId: category as string }),
+    );
+    this.currentLevel.set(0);
+  }
+
+  public onParentProviderSelect(info: ProviderTypeForStore): void {
+    if (!info.providerId) return;
+
+    this.store.dispatch(
+      TemplatesPageActions.selectProvider({
+        providerId: info.providerId as string,
+        level: info.index,
+      }),
+    );
+  }
+
+  // Create dynamic form fields
+  public readonly paymentField = computed(() =>
+    this.store.selectSignal(selectPaymentFields)(),
+  );
+
+  public readonly verifiedDetails = this.store.selectSignal(
+    selectVerifiedDetails,
+  );
 }

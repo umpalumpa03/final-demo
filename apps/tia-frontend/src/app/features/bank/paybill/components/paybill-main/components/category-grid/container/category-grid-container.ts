@@ -9,6 +9,7 @@ import { PaybillMainFacade } from '../../../services/paybill-main-facade';
 import { CATEGORY_UI_MAP } from '../config/category.config';
 import { Store } from '@ngrx/store';
 import { PaybillActions } from '../../../../../store/paybill.actions';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-category-grid-container',
@@ -20,6 +21,8 @@ import { PaybillActions } from '../../../../../store/paybill.actions';
 export class CategoryGridContainer {
   protected readonly facade = inject(PaybillMainFacade);
   private readonly store = inject(Store);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   public readonly formattedCategories = computed(() => {
     const query = this.facade.searchQuery().toLowerCase().trim();
@@ -42,5 +45,6 @@ export class CategoryGridContainer {
 
   public selectCategory(categoryId: string): void {
     this.store.dispatch(PaybillActions.selectCategory({ categoryId }));
+    this.router.navigate([categoryId], { relativeTo: this.route });
   }
 }
