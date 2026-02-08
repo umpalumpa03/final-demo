@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../../../../../environments/environment';
-import { PendingCard, UpdateCardStatusRequest } from '../model/approve-cards.model';
+import { CardCatalogItemResponse, PendingCard, UpdateCardStatusRequest } from '../model/approve-cards.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -15,7 +15,11 @@ export class ApproveCardsService {
     return this.http.get<PendingCard[]>(`${this.apiUrl}/pending`);
   }
 
-  public changeCardStatus(request: UpdateCardStatusRequest): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/pending`, request);
+  public changeCardStatus(updatedCard: UpdateCardStatusRequest): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/change-card-status`, updatedCard);
+  }
+
+  public getCardPermissions(): Observable<CardCatalogItemResponse[]> {
+    return this.http.get<CardCatalogItemResponse[]>(`${this.apiUrl}/catalog/permissions`);
   }
 }

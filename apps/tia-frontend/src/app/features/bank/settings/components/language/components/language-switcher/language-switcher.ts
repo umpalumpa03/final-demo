@@ -6,7 +6,7 @@ import {
   signal,
 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { LanguageService } from '../../services/language.service';
+import { LanguageService } from '../../services/language-api.service';
 
 @Component({
   selector: 'app-language-switcher',
@@ -48,11 +48,12 @@ export class LanguageSwitcher {
   }
 
   public switchLanguage(languageCode: string): void {
-    const langCodeForApi =
-      languageCode === 'ka' ? 'georgian' : 'english';
-    const subscription = this.languageService.updateUserLanguage(langCodeForApi).subscribe();
+    const langCodeForApi = languageCode === 'ka' ? 'georgian' : 'english';
+    const subscription = this.languageService
+      .updateUserLanguage(langCodeForApi)
+      .subscribe();
     this.destroyRef.onDestroy(() => subscription.unsubscribe());
-    
+
     this.currentLanguage.set(languageCode);
     this.translate.use(languageCode);
     localStorage.setItem('language', languageCode);

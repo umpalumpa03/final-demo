@@ -1,7 +1,6 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { UserInfoActions } from './user-info.actions';
 import { IUserState } from './models/user-info.model';
-import { closeCardDetailsModal } from '../products/cards/cards.actions';
 
 export const initialUserState: IUserState = {
   fullName: null,
@@ -129,14 +128,6 @@ export const userInfoFeature = createFeature({
       widgets: state.widgets.filter((w) => w.dbId !== id),
       widgetsLoading: false,
     })),
-
-    on(
-      UserInfoActions.updateOnboardingStatusSuccess,
-      (state, { completed }) => ({
-        ...state,
-        hasCompletedOnboarding: completed,
-      }),
-    ),
 
     on(
       UserInfoActions.loadUserError,

@@ -79,6 +79,7 @@ export class ExternalAmount implements OnInit {
   public readonly requiresOtp = this.transferStore.requiresOtp;
   public readonly errorFromState = this.transferStore.error;
   public readonly otpConfig = transferOtpConfig['extrenal'];
+  public readonly noAttemptsLeft = signal(false);
 
   public readonly isExternalIban = computed(
     () => this.transferStore.recipientType() === 'iban-different-bank',
@@ -195,6 +196,7 @@ export class ExternalAmount implements OnInit {
   }
   public onOtpClose(): void {
     this.transferStore.setRequiresOtp(false);
+    this.noAttemptsLeft.set(false);
   }
   public onOtpVerify(event: IVerified): void {
     const otpCode = event.otp;
@@ -207,7 +209,10 @@ export class ExternalAmount implements OnInit {
   public resendOtp(isCalled: boolean): void {
     // console.log(isCalled);
   }
-  handleNoMoreAttempts(): void {
-    this.transferStore.reset();
+  public handleNoMoreAttempts(): void {
+    this.noAttemptsLeft.set(true);
+    setTimeout(() => {
+      this.transferStore.reset();
+    }, 3000);
   }
 }

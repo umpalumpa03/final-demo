@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppearanceContainer } from './appearance-container';
 import { Store } from '@ngrx/store';
-import { AppearanceService } from '../services/appearance.service';
+import { AppearanceService } from '../services/appearance-api.service';
 import { Observable, of } from 'rxjs';
 import { signal } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';

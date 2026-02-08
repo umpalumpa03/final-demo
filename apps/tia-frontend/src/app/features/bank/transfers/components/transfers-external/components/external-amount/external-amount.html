@@ -159,7 +159,7 @@
   (done)="onSuccessDone()"
 ></app-success-modal>
 <app-ui-modal [isOpen]="requiresOtp()" (closed)="onOtpClose()">
-  @if(isLoading() ) {
+  @if(isLoading() && !noAttemptsLeft()) {
   <div class="external-amount__otp-loader">
     <app-route-loader variant="pulsing"></app-route-loader>
   </div>
@@ -172,11 +172,12 @@
     (onBackOut)="onOtpClose()"
     [timeLimit]="1"
     [errorMessage]="errorFromState()"
-    [remainingAttempts]="3"
+    [customRemainingAttempts]="3"
     [inputOtpConfig]="otpConfig"
     [isBtnRowDirection]="true"
-    noMoreAttempsRedirectRoute="/bank/transfers"
     (customError)="handleNoMoreAttempts()"
+    redirectUrl="/bank/transfers"
+    redirectText="Transfers Page"
   ></app-otp-verification>
 </app-ui-modal>
 @if (showSuccess()) {

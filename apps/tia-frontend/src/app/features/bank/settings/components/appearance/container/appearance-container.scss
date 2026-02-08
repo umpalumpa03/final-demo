@@ -28,6 +28,11 @@
         @include flex-center(column, flex-start, stretch);
         gap: 0.8rem;
         position: relative;
+        transition: border-color 0.2s ease;
+
+        &:hover {
+            border-color: $blue-300;
+        }
 
         &.active {
             border-color: $blue-500;
@@ -61,8 +66,8 @@
 
     &__alert {
         position: fixed;
-        top: 2rem;
-        right: 2rem;
+        top: 7rem;
+        right: 1rem;
         z-index: 9999;
         min-width: 32rem;
         animation: slideIn 0.3s ease-out;

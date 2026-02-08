@@ -13,26 +13,35 @@
     border-radius: 2.4rem;
     background-color: $white;
     margin-bottom: 2rem;
-    border: 0.1rem solid $gray-50;
+    border: 0.1rem solid $gray-200;
     box-shadow:
-      0 0.4rem 0.6rem -0.1px rgba($black, 0.02),
-      0 1rem 1.5rem -3rem rgba($black, 0.05),
-      0 2rem 2.5rem -5rem rgba($black, 0.03);
+      0 1.2rem 2.4rem -0.4rem rgba($black, 0.08),
+      0 0.4rem 0.6rem -0.2rem rgba($black, 0.03);
+
+    transition: box-shadow 0.3s ease;
+  }
+
+  &__track {
+    @include display-flex;
+    height: 100%;
+    width: 100%;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
   }
 
   &__slide {
-    position: absolute;
-    inset: 0;
+    position: relative;
+    flex: 0 0 100%;
+    height: 100%;
     @include flex-center(row, $align: center);
-    animation: simpleFade 0.4s ease-out;
 
-    &--left {
+    &__left {
       @include banner-position(left, 0 auto 0 0, 80% 50%);
     }
-    &--right {
+    &__right {
       @include banner-position(right, 0 0 0 auto, 20% 50%);
     }
-    &--center {
+    &__center {
       @include banner-position(center, 0 auto, center);
     }
   }
@@ -53,7 +62,7 @@
   }
 
   &__content {
-    max-width: 48rem;
+    max-width: 38rem;
     color: var(--color-fg);
   }
 
@@ -74,10 +83,12 @@
     @include flex-center(row, space-between, center);
     padding: 0 0.8rem;
   }
+
   &__indicators {
     @include display-flex();
     gap: 0.8rem;
   }
+
   &__dot {
     width: 0.8rem;
     height: 0.8rem;
@@ -86,16 +97,19 @@
     border: none;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    &--active {
+
+    &__active {
       background: var(--color-primary);
       width: 2.4rem;
       border-radius: 1rem;
     }
   }
+
   &__nav {
     @include display-flex();
     gap: 1rem;
   }
+
   &__arrow {
     width: 4rem;
     height: 4rem;
@@ -107,6 +121,7 @@
     cursor: pointer;
     @include flex-center;
     transition: all 0.2s ease;
+
     &:hover {
       border-color: var(--color-primary);
       color: var(--color-primary);
@@ -115,11 +130,23 @@
     }
   }
 
+  @media (max-width: 1240px) {
+    &__content {
+      max-width: 30rem;
+    }
+  }
+
+  @media (max-width: 1068px) {
+    &__content {
+      max-width: 25rem;
+    }
+  }
+
   @media (max-width: 768px) {
     &__slide {
-      &--left,
-      &--right,
-      &--center {
+      &__left,
+      &__right,
+      &__center {
         .banner-carousel__content {
           margin: 0 auto;
           text-align: center;
@@ -130,12 +157,12 @@
           background-position: center;
         }
       }
-      &--left {
+      &__left {
         .banner-carousel__image {
           background-position: 95% 50%;
         }
       }
-      &--right {
+      &__right {
         .banner-carousel__image {
           background-position: 20% 50%;
         }
@@ -147,14 +174,5 @@
     &__container {
       padding: 0 2.4rem;
     }
-  }
-}
-
-@keyframes simpleFade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
   }
 }

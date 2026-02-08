@@ -1,7 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  inject,
   input,
+  OnInit,
   output,
 } from '@angular/core';
 import { ILoanDetails } from '../../../models/loan.model';
@@ -12,6 +14,7 @@ import { CLOSE_VARIANT } from '../../../config/loan-details.config';
 import { PurposeFormatPipe } from '../../../pipes/purpose.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
+import { LoansStore } from '../../../../store/loans.store';
 
 @Component({
   selector: 'app-loan-details',
@@ -27,7 +30,8 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
   styleUrl: './loan-details.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoanDetails {
+export class LoanDetails implements OnInit {
+  private readonly store = inject(LoansStore);
   public readonly buttonVariant = CLOSE_VARIANT;
 
   public readonly loan = input<ILoanDetails | null>(null);
@@ -39,7 +43,9 @@ export class LoanDetails {
   public readonly close = output<void>();
   public readonly calculatePrepayment = output<ILoanDetails>();
 
-  constructor() {}
+  public ngOnInit(): void {
+    this.store.loadPrepaymentOptions({});
+  }
 
   protected onCalculate(): void {
     const currentLoan = this.loan();

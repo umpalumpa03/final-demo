@@ -6,11 +6,13 @@ import { of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { User } from './messaging.state';
 import { TranslateService } from '@ngx-translate/core';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 describe('MessagingStore', () => {
   let store: InstanceType<typeof MessagingStore>;
   let mockMessagingService: any;
   let mockInboxService: any;
+  let mockAlertService: any;
 
   const mockUsers: User[] = [
     { id: '1', email: 'user1@test.com', username: 'user1', firstName: 'User', lastName: 'One' },
@@ -31,11 +33,20 @@ describe('MessagingStore', () => {
       fetchInboxCount: vi.fn()
     };
 
+    mockAlertService = {
+      success: vi.fn(),
+      error: vi.fn(),
+      warning: vi.fn(),
+      info: vi.fn(),
+      clearAlert: vi.fn()
+    };
+
     TestBed.configureTestingModule({
       providers: [
         MessagingStore,
         { provide: MessagingService, useValue: mockMessagingService },
         { provide: InboxService, useValue: mockInboxService },
+        { provide: AlertService, useValue: mockAlertService },
         {
           provide: TranslateService,
           useValue: {
@@ -77,7 +88,7 @@ describe('MessagingStore', () => {
     store.loadMails('inbox');
 
     await vi.waitFor(() => {
-      expect(store.error()).toBe('messaging.storeErrors.loadMails');
+      expect(mockAlertService.error).toHaveBeenCalledWith('messaging.storeErrors.loadMails', { variant: 'dismissible', title: 'Oops!' });
       expect(store.isLoading()).toBe(false);
     });
   });
@@ -258,7 +269,7 @@ describe('MessagingStore', () => {
     store.getEmailById(1);
 
     await vi.waitFor(() => {
-      expect(store.error()).toBe('messaging.storeErrors.loadEmailDetail');
+      expect(mockAlertService.error).toHaveBeenCalledWith('messaging.storeErrors.loadEmailDetail', { variant: 'dismissible', title: 'Oops!' });
     });
   });
   it('should get draft total count successfully', async () => {
@@ -343,16 +354,6 @@ describe('MessagingStore', () => {
       expect(store.isLoading()).toBe(false);
     });
   });
-  it('should clear success message', () => {
-    store.clearSuccessMessage();
-    expect(store.successMessage?.()).toBe('');
-  });
-
-  it('should clear error', () => {
-    store.clearError();
-    expect(store.error()).toBeUndefined();
-  });
-
   it('should handle send draft error', async () => {
     const draftData = {
       mailId: 1,
@@ -373,7 +374,7 @@ describe('MessagingStore', () => {
     store.sendDraft(draftData);
 
     await vi.waitFor(() => {
-      expect(store.error()).toBe('messaging.storeErrors.sendDraft');
+      expect(mockAlertService.error).toHaveBeenCalledWith('messaging.storeErrors.sendDraft', { variant: 'dismissible', title: 'Oops!' });
       expect(store.isLoading()).toBe(false);
     });
   });
@@ -386,7 +387,7 @@ describe('MessagingStore', () => {
     store.getUnreadImportantCount();
 
     await vi.waitFor(() => {
-      expect(store.error()).toBe('messaging.storeErrors.loadImportantUnreadCount');
+      expect(mockAlertService.error).toHaveBeenCalledWith('messaging.storeErrors.loadImportantUnreadCount', { variant: 'dismissible', title: 'Oops!' });
     });
   });
 
@@ -407,7 +408,7 @@ describe('MessagingStore', () => {
     store.searchMails('test');
 
     await vi.waitFor(() => {
-      expect(store.error()).toBe('messaging.storeErrors.searchFailed');
+      expect(mockAlertService.error).toHaveBeenCalledWith('messaging.storeErrors.searchFailed', { variant: 'dismissible', title: 'Oops!' });
       expect(store.searchResults()).toEqual([]);
       expect(store.isSearching()).toBe(false);
     });
@@ -480,7 +481,7 @@ describe('MessagingStore', () => {
     await vi.waitFor(() => {
       expect(mockMessagingService.sendMailReply).toHaveBeenCalledWith(1, 'This is my reply');
       expect(mockMessagingService.getMailReplies).toHaveBeenCalledWith(1);
-      expect(store.successMessage?.()).toBe('messaging.storeSuccess.replySent');
+      expect(mockAlertService.success).toHaveBeenCalledWith('messaging.storeSuccess.replySent', { variant: 'dismissible', title: 'Success!' });
       expect(store.isLoading()).toBe(false);
     });
   });
@@ -493,7 +494,7 @@ describe('MessagingStore', () => {
     store.sendMailReply({ mailId: 1, body: 'This is my reply' });
 
     await vi.waitFor(() => {
-      expect(store.error()).toBe('messaging.storeErrors.sendMailReply');
+      expect(mockAlertService.error).toHaveBeenCalledWith('messaging.storeErrors.sendMailReply', { variant: 'dismissible', title: 'Oops!' });
     });
   });
 });
