@@ -4,6 +4,7 @@ import {
   computed,
   effect,
   input,
+  OnInit,
   output,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -30,12 +31,10 @@ import {
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { distinctUntilChanged } from 'rxjs';
 import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
 import { DynamicInputs } from '../../shared/dynamic-inputs/dynamic-inputs';
 import { PaybillDynamicField } from '../../../services/paybill-dynamic-form/models/dynamic-form.model';
-import { PaybillField } from '../../paybill-main/shared/models/paybill.model';
 
 @Component({
   selector: 'app-paybill-templates',
@@ -48,14 +47,13 @@ import { PaybillField } from '../../paybill-main/shared/models/paybill.model';
     LibraryTitle,
     Dropdowns,
     ReactiveFormsModule,
-    Spinner,
     DynamicInputs,
   ],
   templateUrl: './paybill-templates.html',
   styleUrl: './paybill-templates.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PaybillTemplates {
+export class PaybillTemplates implements OnInit {
   // Forms
   public createGroupForm = input.required<FormGroup>();
   public createTemplateForm = input.required<FormGroup>();
