@@ -5,6 +5,7 @@ import {
   catchError,
   debounceTime,
   EMPTY,
+  filter,
   map,
   of,
   switchMap,
@@ -12,7 +13,11 @@ import {
 } from 'rxjs';
 
 import { Store } from '@ngrx/store';
-import { selectFilters, selectNextCursor } from './transactions.selector';
+import {
+  selectFilters,
+  selectNextCursor,
+  selectTransactionsLoaded,
+} from './transactions.selector';
 import { TransactionApiService } from '@tia/shared/services/transactions-service/transactions.api.service';
 
 export const updateFiltersEffects = createEffect(
@@ -20,7 +25,7 @@ export const updateFiltersEffects = createEffect(
     return actions$.pipe(
       ofType(TransactionActions.updateFilters),
       debounceTime(400),
-      map(() => TransactionActions.loadTransactions()),
+      map(() => TransactionActions.loadTransactions({})),
     );
   },
   { functional: true },
@@ -32,27 +37,42 @@ export const loadTransactionsEffect = createEffect(
     transactionService = inject(TransactionApiService),
   ) => {
     return actions$.pipe(
-      ofType(
-        TransactionActions.enter,
-        TransactionActions.loadTransactions,
-        TransactionActions.loadMore,
-      ),
+      ofType(TransactionActions.loadTransactions, TransactionActions.loadMore),
       withLatestFrom(
         store.select(selectFilters),
         store.select(selectNextCursor),
+        store.select(selectTransactionsLoaded),
       ),
+      filter(([action, , , loaded]) => {
+        if (action.type === TransactionActions.loadMore.type) {
+          return true;
+        }
+        const forceRefresh = (action as { forceRefresh?: boolean })
+          .forceRefresh;
+        return !!forceRefresh || !loaded;
+      }),
       switchMap(([action, filters, nextCursor]) => {
         if (action.type === TransactionActions.loadMore.type && !nextCursor) {
           return EMPTY;
         }
 
         const apiFilters = { ...filters };
-        if (action.type === TransactionActions.loadMore.type && nextCursor) {
+        const isLoadMore = action.type === TransactionActions.loadMore.type;
+
+        if (isLoadMore && nextCursor) {
           apiFilters.pageCursor = nextCursor;
+        } else {
+          apiFilters.pageCursor = undefined;
         }
 
         return transactionService.getTransactions(apiFilters).pipe(
-          map((response) => TransactionActions.loadSuccess({ response })),
+          map((response) => {
+            if (isLoadMore) {
+              return TransactionActions.loadSuccess({ response });
+            } else {
+              return TransactionActions.loadTransactionsSuccess({ response });
+            }
+          }),
           catchError((error) => of(TransactionActions.loadFailure({ error }))),
         );
       }),
@@ -60,7 +80,6 @@ export const loadTransactionsEffect = createEffect(
   },
   { functional: true },
 );
-
 export const loadTotalEffect = createEffect(
   (
     actions$ = inject(Actions),

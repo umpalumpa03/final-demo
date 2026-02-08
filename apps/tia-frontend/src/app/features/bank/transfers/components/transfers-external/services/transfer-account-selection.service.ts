@@ -1,25 +1,101 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, Signal, effect, untracked } from '@angular/core';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { TransferStore } from '../../../store/transfers.store';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { RecipientAccount } from '../../../models/transfers.state.model';
+import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+import { TransferRecipientService } from './transfer-recipient.service';
 
 @Injectable()
 export class TransferAccountSelectionService {
   private readonly router = inject(Router);
   private readonly transferStore = inject(TransferStore);
+  private readonly store = inject(Store);
+  private readonly recipientService = inject(TransferRecipientService);
+
+  public initAutoSelectionLogic(
+    senderAccounts: Signal<Account[]>,
+    recipientAccounts: Signal<RecipientAccount[]>,
+    isExternal: Signal<boolean>,
+    preSelectedAccount: Signal<Account | null | undefined>,
+    onCurrencyMismatch: () => void,
+  ): void {
+    effect(() => {
+      const preSelected = preSelectedAccount();
+      const currentSender = this.transferStore.senderAccount();
+      const recipientAccount = this.transferStore.selectedRecipientAccount();
+      const isExt = isExternal();
+
+      if (!preSelected || currentSender) return;
+
+      untracked(() => {
+        if (isExt) {
+          this.store.dispatch(AccountsActions.selectAccount({ account: null }));
+          return;
+        }
+        if (
+          recipientAccount &&
+          preSelected.currency !== recipientAccount.currency
+        ) {
+          onCurrencyMismatch();
+          this.store.dispatch(AccountsActions.selectAccount({ account: null }));
+          return;
+        }
+
+        this.transferStore.setSenderAccount(preSelected);
+        this.store.dispatch(AccountsActions.selectAccount({ account: null }));
+      });
+    });
+
+    effect(() => {
+      const sAccounts = senderAccounts();
+      const rAccounts = recipientAccounts();
+      const currentSender = this.transferStore.senderAccount();
+      const currentRecipient = this.transferStore.selectedRecipientAccount();
+      const isExt = isExternal();
+
+      untracked(() => {
+        if (!isExt && rAccounts.length > 0 && !currentRecipient) {
+          const firstRecipient = rAccounts[0];
+          if ((firstRecipient as Account).isFavorite) {
+            this.transferStore.setSelectedRecipientAccount(firstRecipient);
+          }
+        }
+
+        if (sAccounts.length > 0 && !currentSender) {
+          const firstSender = sAccounts[0];
+          const updatedRecipient =
+            this.transferStore.selectedRecipientAccount();
+
+          const isFav = firstSender.isFavorite;
+          const isDisabled = this.recipientService.isSenderAccountDisabled(
+            firstSender,
+            updatedRecipient,
+            isExt,
+          );
+
+          if (isFav && !isDisabled) {
+            this.transferStore.setSenderAccount(firstSender);
+          }
+        }
+      });
+    });
+  }
 
   public handleRecipientAccountSelect(
     account: RecipientAccount,
     currentSelected: RecipientAccount | null,
   ): void {
-    // reset amount if selecting different account
+    if (account.id === 'iban-recipient' && currentSelected?.id === account.id) {
+      return;
+    }
+
     if (currentSelected?.id !== account.id) {
       this.transferStore.setAmount(0);
       this.transferStore.setInsufficientBalance(false);
     }
 
-    // toggle if clicking same account, deselect it
     if (currentSelected?.id === account.id) {
       this.transferStore.setSelectedRecipientAccount(null);
     } else {
@@ -56,7 +132,6 @@ export class TransferAccountSelectionService {
       if (isExternalIban && recipientName) {
         this.transferStore.setManualRecipientName(recipientName);
       }
-
       this.router.navigate(['/bank/transfers/external/amount']);
     }
   }

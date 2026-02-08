@@ -1,0 +1,55 @@
+<section class="banner-carousel">
+  <div class="banner-carousel__viewport">
+    <div
+      class="banner-carousel__track"
+      [style.transform]="'translateX(-' + (currentIndex() * 100) + '%)'"
+    >
+      @for (slide of slides(); track slide.title) {
+      <div
+        class="banner-carousel__slide"
+        [class]="'banner-carousel__slide__' + slide.contentPosition"
+      >
+        <div
+          class="banner-carousel__image"
+          [style.background-image]="'url(' + slide.imagePath + ')'"
+        ></div>
+
+        <div class="banner-carousel__container">
+          <div class="banner-carousel__content">
+            <h1 class="banner-carousel__title">
+              {{ slide.title | translate }}
+            </h1>
+            <p class="banner-carousel__description">
+              {{ slide.description | translate }}
+            </p>
+
+            <div class="banner-carousel__actions">
+              <app-button (click)="navigateTo(slide.pageUrl)">
+                {{ (slide.buttonText | translate) || 'Learn More' }}
+              </app-button>
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <div class="banner-carousel__footer">
+    <div class="banner-carousel__indicators">
+      @for (slide of slides(); track $index) {
+      <button
+        type="button"
+        class="banner-carousel__dot"
+        [class.banner-carousel__dot__active]="$index === currentIndex()"
+        (click)="goTo($index)"
+      ></button>
+      }
+    </div>
+
+    <div class="banner-carousel__nav">
+      <button class="banner-carousel__arrow" (click)="prev()">‹</button>
+      <button class="banner-carousel__arrow" (click)="next()">›</button>
+    </div>
+  </div>
+</section>

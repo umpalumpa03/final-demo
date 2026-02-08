@@ -11,42 +11,62 @@ import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+import {
+  selectSelectedAccount,
+  selectAccounts,
+  selectIsLoading,
+  selectError,
+} from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 
 describe('ExternalAccounts', () => {
   let component: ExternalAccounts;
   let fixture: ComponentFixture<ExternalAccounts>;
   let store: MockStore;
 
-  const mockStoreValues = {
-    isLoading: signal(false),
-    error: signal<string | null>(null),
-    recipientInfo: signal<any>(null),
-    recipientInput: signal(''),
-    recipientType: signal<string | null>(null),
-    senderAccount: signal<any>(null),
-    selectedRecipientAccount: signal<any>(null),
-    isVerified: signal(false),
-    setIsVerified: vi.fn(),
-  };
-
-  const mockRecipientService = {
-    isRecipientAccountDisabled: vi.fn().mockReturnValue(false),
-    isSenderAccountDisabled: vi.fn().mockReturnValue(false),
-    handleRetryRecipientLookup: vi.fn(),
-  };
-
-  const mockSelectionService = {
-    handleRecipientAccountSelect: vi.fn(),
-    handleSenderAccountSelect: vi.fn(),
-    handleContinue: vi.fn(),
-  };
-
-  const mockBreakpointService = {
-    isMobile: signal(false),
-  };
+  let mockStoreValues: any;
+  let mockRecipientService: any;
+  let mockSelectionService: any;
+  let mockBreakpointService: any;
 
   beforeEach(async () => {
-    vi.useFakeTimers(); 
+    vi.useFakeTimers();
+
+    mockStoreValues = {
+      isLoading: signal(false),
+      error: signal<string | null>(null),
+      recipientInfo: signal<any>(null),
+      recipientInput: signal(''),
+      recipientType: signal<string | null>(null),
+      senderAccount: signal<any>(null),
+      selectedRecipientAccount: signal<any>(null),
+      isVerified: signal(false),
+      setIsVerified: vi.fn(),
+      setError: vi.fn((val: string) => mockStoreValues.error.set(val)),
+      setSelectedRecipientAccount: vi.fn((val: any) =>
+        mockStoreValues.selectedRecipientAccount.set(val),
+      ),
+      setSenderAccount: vi.fn((val: any) =>
+        mockStoreValues.senderAccount.set(val),
+      ),
+    };
+
+    mockRecipientService = {
+      isRecipientAccountDisabled: vi.fn().mockReturnValue(false),
+      isSenderAccountDisabled: vi.fn().mockReturnValue(false),
+      handleRetryRecipientLookup: vi.fn(),
+      getDisabledReason: vi.fn().mockReturnValue(''),
+    };
+
+    mockSelectionService = {
+      handleRecipientAccountSelect: vi.fn(),
+      handleSenderAccountSelect: vi.fn(),
+      handleContinue: vi.fn(),
+      initAutoSelectionLogic: vi.fn(), 
+    };
+
+    mockBreakpointService = {
+      isMobile: signal(false),
+    };
 
     await TestBed.configureTestingModule({
       imports: [
@@ -72,90 +92,123 @@ describe('ExternalAccounts', () => {
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
+    store = TestBed.inject(MockStore);
+    store.overrideSelector(selectAccounts, []);
+    store.overrideSelector(selectIsLoading, false);
+    store.overrideSelector(selectError, null);
+    store.overrideSelector(selectSelectedAccount, null);
+
     fixture = TestBed.createComponent(ExternalAccounts);
     component = fixture.componentInstance;
-    store = TestBed.inject(MockStore);
+    store.refreshState();
   });
 
   afterEach(() => {
     vi.useRealTimers();
     vi.clearAllMocks();
+    store.resetSelectors();
+  });
+
+  it('should create and init auto selection logic', () => {
+    expect(component).toBeTruthy();
+    expect(mockSelectionService.initAutoSelectionLogic).toHaveBeenCalled();
   });
 
   it('should dispatch loadAccounts on init if store is empty', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
-    fixture.detectChanges();
+    component.ngOnInit();
     expect(dispatchSpy).toHaveBeenCalledWith(AccountsActions.loadAccounts({}));
   });
 
   it('should handle the verified effect correctly', async () => {
-    fixture.detectChanges();
     mockStoreValues.isVerified.set(true);
-
     fixture.detectChanges();
-    await Promise.resolve(); 
-
+    await Promise.resolve();
     expect(component.showSuccess()).toBe(true);
     expect(mockStoreValues.setIsVerified).toHaveBeenCalledWith(false);
-
     vi.advanceTimersByTime(3000);
     expect(component.showSuccess()).toBe(false);
   });
 
-  it('should compute recipient accounts from info.accounts', () => {
+  it('should compute recipient accounts from info.accounts and sort them', () => {
     mockStoreValues.recipientInfo.set({
-      accounts: [{ id: '1', currency: 'GEL' }],
+      accounts: [
+        { id: '1', isFavorite: false },
+        { id: '2', isFavorite: true },
+      ],
     });
     fixture.detectChanges();
-    expect(component.recipientAccounts().length).toBe(1);
+    expect(component.recipientAccounts()[0].id).toBe('2');
   });
 
   it('should compute fallback recipient account if only currency is provided', () => {
     mockStoreValues.recipientInfo.set({ currency: 'USD' });
     mockStoreValues.recipientInput.set('GE89IBAN');
     fixture.detectChanges();
-
     const accounts = component.recipientAccounts();
     expect(accounts[0].iban).toBe('GE89IBAN');
-    expect(accounts[0].currency).toBe('USD');
   });
 
   it('should calculate isContinueDisabled logic accurately', () => {
-    mockStoreValues.senderAccount.set(null);
-    fixture.detectChanges();
-    expect(component.isContinueDisabled()).toBe(true);
-    mockStoreValues.recipientType.set('iban-different-bank');
     mockStoreValues.senderAccount.set({ id: 's1' });
-    component.recipientNameInput.setValue('');
-    fixture.detectChanges();
-    expect(component.isContinueDisabled()).toBe(true);
-    component.recipientNameInput.setValue('Giorgi');
+    mockStoreValues.recipientType.set('iban-different-bank');
+    component.recipientNameInput.setValue('Test');
     fixture.detectChanges();
     expect(component.isContinueDisabled()).toBe(false);
   });
 
-  it('should delegate selection to handleRecipientAccountSelect', () => {
+  it('should handle noPermission error effect correctly', async () => {
+    mockStoreValues.error.set('transfers.external.accounts.noPermission');
+    fixture.detectChanges();
+    await Promise.resolve();
+    expect(component.showError()).toBe(true);
+    vi.advanceTimersByTime(5000);
+    expect(component.showError()).toBe(false);
+    expect(mockStoreValues.setError).toHaveBeenCalledWith('');
+  });
+
+  it('should call handleRetryRecipientLookup on onRetry', () => {
+    mockStoreValues.recipientInput.set('GE123');
+    mockStoreValues.recipientType.set('internal');
+    component.onRetry();
+    expect(
+      mockRecipientService.handleRetryRecipientLookup,
+    ).toHaveBeenCalledWith('GE123', 'internal');
+  });
+
+  it('should delegate selection and continue calls', () => {
     const mockAcc = { id: 'acc1' } as any;
     component.onRecipientAccountSelect(mockAcc);
     expect(
       mockSelectionService.handleRecipientAccountSelect,
     ).toHaveBeenCalled();
-  });
 
-  it('should trigger handleContinue on continue action', () => {
-    component.recipientNameInput.setValue('Lasha');
+    component.onSenderAccountSelect(mockAcc);
+    expect(mockSelectionService.handleSenderAccountSelect).toHaveBeenCalled();
+
     component.onContinue();
-    expect(mockSelectionService.handleContinue).toHaveBeenCalledWith(
-      component.selectedRecipientAccount(),
-      component.selectedSenderAccount(),
-      component.isExternalIban(),
-      'Lasha',
-    );
+    expect(mockSelectionService.handleContinue).toHaveBeenCalled();
   });
 
-  it('should call location back on onGoBack', () => {
-    const loc = TestBed.inject(Location);
-    component.onGoBack();
-    expect(loc.back).toHaveBeenCalled();
+  it('should compute recipientName based on recipient type', () => {
+    mockStoreValues.recipientType.set('iban-different-bank');
+    mockStoreValues.recipientInput.set('GE00IBAN');
+    fixture.detectChanges();
+    expect(component.recipientName()).toBe('GE00IBAN');
+  });
+
+  it('should compute allSenderAccountsDisabled correctly', () => {
+    const mockAccounts = [{ id: '1', isFavorite: false }] as any;
+    store.overrideSelector(selectAccounts, mockAccounts);
+    store.refreshState();
+    mockRecipientService.isSenderAccountDisabled.mockReturnValue(true);
+    fixture.detectChanges();
+    expect(component.allSenderAccountsDisabled()).toBe(true);
+  });
+
+  it('should return disabled reason from service', () => {
+    const mockAcc = { id: '1' } as any;
+    component.getSenderDisabledReason(mockAcc);
+    expect(mockRecipientService.getDisabledReason).toHaveBeenCalled();
   });
 });

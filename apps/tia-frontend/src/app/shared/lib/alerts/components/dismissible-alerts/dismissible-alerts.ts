@@ -13,6 +13,7 @@ export class DismissibleAlerts {
   public readonly alertTitle = input<string>('default title');
   public readonly alertType = input<DismissibleAlertType>('information');
   public alertMessage = input<string>('Default Alert Message');
+  public readonly customMaxwidth = input<string>('105.3rem');
   
   public readonly alertId = input<number>(0);
   public readonly dismissed = output<number>();

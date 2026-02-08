@@ -6,7 +6,7 @@
   @include font-inter(500, 1.4rem);
   @include flex-center(row, center, center);
 
-  width: max-content;
+  max-width: 100%;
   height: 3.6rem;
   display: inline-flex;
   position: relative;
@@ -22,7 +22,7 @@
   outline: none;
 
   &--default {
-    background-color: var(--color-primary);
+    background-color: var(--btn-color, var(--color-primary));
     color: $white;
     &:hover:not(:disabled) {
       filter: brightness(0.9);
@@ -136,8 +136,8 @@
     flex-shrink: 0;
 
     img {
-      width: 1.8rem;
-      height: 1.8rem;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
       display: block;
     }
@@ -162,6 +162,8 @@
     border-color: var(--btn-custom-color);
     color: $white; 
   }
+
+  
 }
 
 @keyframes rotate {

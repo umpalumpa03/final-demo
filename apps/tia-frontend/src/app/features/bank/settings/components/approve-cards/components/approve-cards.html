@@ -1,0 +1,72 @@
+@let newCfg = userState.newConfig();
+<app-scroll-area height="51rem" [hideBorder]="true">
+<main class="approve-card">
+  @if (store.isLoading()) { @for(card of store.cards(); track card.id) {
+  <app-skeleton width="100%" height="6.3rem" />
+  } @empty {
+  <div class="approve-card__spinner">
+    <app-spinner size="6rem"></app-spinner>
+  </div>
+  } } @else { @for(card of store.cards(); track card.id) {
+  <app-cards-approve-element
+    [id]="card.id"
+    [title]="card.nickname"
+    [status]="card.status"
+    [email]="card.user.email"
+    [network]="card.network"
+    [balance]="''"
+    [creationDate]="card.createdAt"
+    (cardAction)="handleAction($event)"
+    [marked]="permissionsSavedCard() === card.id"
+  />
+  } @empty {
+  <app-error-states
+    variant="not-found"
+    header="No Cards Found"
+    message="We couldn't find any cards to display."
+    (buttonClick)="retryLoading()"
+  />
+  } }
+</main>
+
+@if(permissionsOverlay()) {
+  <app-ui-modal [isOpen]="permissionsOverlay()" (closed)="closeModal()">
+    <app-permissions-modal
+      [modalTitle]="'Modify Card Permissions'"
+      [modalSubtitle]="'Configure permissions for this Card request'"
+      [title]="'Card permissions'"
+      [form]="cardPermissionsForm"
+      [items]="mappedPermissions()"
+      [accOrCardName]="cardName()"
+      [name]="fullName()"
+      (save)="onSavePermissions()"
+      (cancel)="cancelPermissionChanges()"
+    ></app-permissions-modal>
+  </app-ui-modal>
+}
+
+@if(confirmModalActive()) {
+  <app-ui-modal [isOpen]="confirmModalActive()" (closed)="closeConfirmModal()">
+    <div class="confirm-dialog">
+        <header class="confirm-dialog__header">
+            <h3 class="confirm-dialog__title">{{ newCfg.confirmOverlay.title }}</h3>
+            <p class="confirm-dialog__subtitle">{{ newCfg.confirmOverlay.subtitle }}</p>
+          </header>
+          
+          <footer class="confirm-dialog__footer">
+            <app-button variant="outline" (click)="onConfirmCancel()">{{ newCfg.confirmOverlay.cancelAction }}</app-button>
+            <app-button variant="destructive" (click)="onConfirmAccept()">{{ newCfg.confirmOverlay.confirmAction }}</app-button>
+          </footer>
+        </div>
+    </app-ui-modal>
+}
+</app-scroll-area>
+
+@if(store.success()) {
+  <div class="approve-card__alert">
+    <app-alert-types-with-icons
+      [alertType]="'success'"
+      [alertMessage]="alertDescription()"
+    ></app-alert-types-with-icons>
+  </div>
+}

@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+} from '@angular/core';
 import {
   ListDisplayItem,
   ListDisplayTone,
@@ -15,6 +20,7 @@ export class ListDisplay {
   public readonly items = input<ListDisplayItem[]>([]);
   public readonly selectable = input(false);
   public readonly selected = output<ListDisplayItem>();
+  public readonly ifImage = input<boolean>(false);
 
   public onSelect(item: ListDisplayItem): void {
     if (!this.selectable()) {

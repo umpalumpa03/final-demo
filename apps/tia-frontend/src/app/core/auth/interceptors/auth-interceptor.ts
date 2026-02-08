@@ -5,7 +5,7 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, Observable, switchMap } from 'rxjs';
+import { catchError, Observable, switchMap, throwIfEmpty } from 'rxjs';
 import { PUBLIC_ENDPOINTS, Routes } from '../models/tokens.model';
 import { TokenService } from '../services/token.service';
 import { AuthService } from '../services/auth.service';
@@ -27,9 +27,10 @@ export const authInterceptor: HttpInterceptorFn = (
   const accessToken = tokenService.accessToken;
   const isPublic = PUBLIC_ENDPOINTS.some((url) => req.url.includes(url));
 
-  const authReq = !isPublic && accessToken
-    ? req.clone({ setHeaders: { Authorization: `Bearer ${accessToken}` } })
-    : req;
+  const authReq =
+    !isPublic && accessToken
+      ? req.clone({ setHeaders: { Authorization: `Bearer ${accessToken}` } })
+      : req;
 
   return next(authReq).pipe(
     catchError((err) => {
@@ -38,6 +39,12 @@ export const authInterceptor: HttpInterceptorFn = (
       }
 
       if (isPublic) {
+        return throwError(() => err);
+      }
+
+      if (req.url.includes('/auth/refresh')) {
+        tokenService.clearAuthToken();
+        router.navigate([Routes.SIGN_IN]);
         return throwError(() => err);
       }
 
@@ -82,10 +89,19 @@ export const authInterceptor: HttpInterceptorFn = (
 
       return refreshSubject.pipe(
         filter((token) => token != null),
+        throwIfEmpty(() => new Error('Token refresh failed')),
         take(1),
         switchMap((token) =>
           next(req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })),
         ),
+        catchError((err) => {
+          refreshInProgress = false;
+          refreshSubject.next(null);
+          tokenService.clearAuthToken();
+          router.navigate([Routes.SIGN_IN]);
+
+          return throwError(() => err);
+        }),
       );
     }),
   );

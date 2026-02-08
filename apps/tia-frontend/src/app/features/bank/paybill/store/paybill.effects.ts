@@ -6,6 +6,7 @@ import {
   concatMap,
   delay,
   EMPTY,
+  filter,
   map,
   mergeMap,
   of,
@@ -16,10 +17,13 @@ import {
 import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillActions, TemplatesPageActions } from './paybill.actions';
 import {
+  selectCategoriesLoaded,
   selectNotifications,
   selectPaymentPayload,
-  selectSelectedCategoryId,
+  selectProviders,
   selectSelectedProviderId,
+  selectTemplatesGroup,
+  selectTemplatesLoaded,
 } from './paybill.selectors';
 import { ProceedPaymentResponse } from '../components/paybill-main/shared/models/paybill.model';
 import { PaybillTemplatesService } from '../components/paybill-templates/services/paybill-templates-service';
@@ -47,6 +51,8 @@ export class PaybillEffect {
       'Group renamed successfully',
     '[Paybill Templates Page] Move Template Success':
       'Template moved successfully',
+    '[Paybill Templates Page] Create Template Success':
+      'Template created successfully',
   };
 
   private getErrorMessage(error: any): string {
@@ -59,6 +65,8 @@ export class PaybillEffect {
   loadCategories$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PaybillActions.loadCategories),
+      withLatestFrom(this.store.select(selectCategoriesLoaded)),
+      filter(([action, loaded]) => !loaded),
       mergeMap(() =>
         this.paybillService.getCategories().pipe(
           map((categories) =>
@@ -76,28 +84,25 @@ export class PaybillEffect {
     );
   });
 
-  loadProviders$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        ofType(PaybillActions.selectCategory),
-        mergeMap(({ categoryId }) =>
-          this.paybillService.getProviders(categoryId).pipe(
-            map((providers) =>
-              PaybillActions.loadProvidersSuccess({ providers }),
-            ),
-            catchError((error) =>
-              of(
-                PaybillActions.loadProvidersFailure({
-                  error: this.getErrorMessage(error),
-                }),
-              ),
+  loadProviders$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(PaybillActions.selectCategory),
+      mergeMap(({ categoryId }) =>
+        this.paybillService.getProviders(categoryId).pipe(
+          map((providers) =>
+            PaybillActions.loadProvidersSuccess({ providers }),
+          ),
+          catchError((error) =>
+            of(
+              PaybillActions.loadProvidersFailure({
+                error: this.getErrorMessage(error),
+              }),
             ),
           ),
         ),
-      );
-    },
-    { functional: true },
-  );
+      ),
+    );
+  });
 
   autoSelectProviderAfterLoad$ = createEffect(() => {
     return this.actions$.pipe(
@@ -109,7 +114,7 @@ export class PaybillEffect {
             PaybillActions.selectProvider({ providerId: selectedProviderId }),
           );
         }
-        return of();
+        return EMPTY;
       }),
     );
   });
@@ -172,9 +177,9 @@ export class PaybillEffect {
         const amount = payload?.amount ?? 0;
         const challengeId = response.verify?.challengeId;
 
-        if (amount >= 50 && challengeId) {
+        if (amount > 50 && challengeId) {
           this.router.navigate(['/bank/paybill/pay/otp-verification']);
-          return of(PaybillActions.setPaymentStep({ step: 'OTP' }));
+          return EMPTY;
         }
 
         if (challengeId) {
@@ -185,7 +190,7 @@ export class PaybillEffect {
           );
         }
 
-        return of(PaybillActions.setPaymentStep({ step: 'SUCCESS' }));
+        return EMPTY;
       }),
     );
   });
@@ -200,7 +205,6 @@ export class PaybillEffect {
               this.router.navigate(['/bank/paybill/pay/payment-success']);
 
               return of(
-                PaybillActions.setPaymentStep({ step: 'SUCCESS' }),
                 PaybillActions.addNotification({
                   notificationType: 'success',
                   message: 'OTP Verified Successfully',
@@ -248,54 +252,22 @@ export class PaybillEffect {
     );
   });
 
-  selectCategoryNavigation$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(PaybillActions.selectCategory),
-        tap(({ categoryId }) => {
-          if (categoryId.toUpperCase() !== 'TEMPLATES') {
-            this.router.navigate([
-              '/bank/paybill/pay',
-              categoryId.toLowerCase(),
-            ]);
-          }
-        }),
-      ),
-    { dispatch: false },
-  );
-
-  selectProviderNavigation$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(PaybillActions.selectProvider),
-        withLatestFrom(this.store.select(selectSelectedCategoryId)),
-        tap(([{ providerId }, categoryId]) => {
-          if (categoryId) {
-            this.router.navigate([
-              '/bank/paybill/pay',
-              categoryId.toLowerCase(),
-              providerId.toLowerCase(),
-            ]);
-          }
-        }),
-      ),
-    { dispatch: false },
-  );
-
-  clearSelectionNavigation$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(PaybillActions.clearSelection),
-        tap(() => {
-          this.router.navigate(['/bank/paybill/pay']);
-        }),
-      ),
-    { dispatch: false },
-  );
+  // clearSelectionNavigation$ = createEffect(
+  //   () =>
+  //     this.actions$.pipe(
+  //       ofType(PaybillActions.clearSelection),
+  //       tap(() => {
+  //         this.router.navigate(['/bank/paybill/pay']);
+  //       }),
+  //     ),
+  //   { dispatch: false },
+  // );
 
   loadTemplateGroups$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(TemplatesPageActions.loadTemplateGroups),
+      withLatestFrom(this.store.select(selectTemplatesGroup)),
+      filter(([_, groups]) => !groups || groups.length === 0),
       mergeMap(() =>
         this.payBillTemplatesService.getAllTemplateGroups().pipe(
           map((templateGroups) =>
@@ -316,6 +288,8 @@ export class PaybillEffect {
   loadTemplates$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(TemplatesPageActions.loadTemplates),
+      withLatestFrom(this.store.select(selectTemplatesLoaded)),
+      filter(([action, loaded]) => !loaded),
       mergeMap(() =>
         this.payBillTemplatesService.getAllTemplates().pipe(
           map((templates) =>
@@ -342,6 +316,7 @@ export class PaybillEffect {
         TemplatesPageActions.createTemplatesGroupsSuccess,
         TemplatesPageActions.renameTemplateGroupSuccess,
         TemplatesPageActions.moveTemplateSuccess,
+        TemplatesPageActions.createTemplateSuccess,
       ),
       map((action) =>
         PaybillActions.addNotification({
@@ -363,6 +338,7 @@ export class PaybillEffect {
         TemplatesPageActions.createTemplatesGroupsFailure,
         TemplatesPageActions.loadTemplateGroupsFailure,
         TemplatesPageActions.loadTemplatesFailure,
+        TemplatesPageActions.checkBillForTemplateFailure,
         PaybillActions.checkBillFailure,
         PaybillActions.proceedPaymentFailure,
         PaybillActions.loadCategoriesFailure,
@@ -559,6 +535,7 @@ export class PaybillEffect {
           .pipe(
             map((response) =>
               TemplatesPageActions.createTemplateSuccess({
+                payload: response,
                 message: response.message || 'Template saved successfully',
               }),
             ),
@@ -573,4 +550,72 @@ export class PaybillEffect {
       ),
     );
   });
+
+  loadChildProviders$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TemplatesPageActions.selectProvider),
+      withLatestFrom(this.store.select(selectProviders)),
+      mergeMap(([{ providerId, level }, allProviders]) => {
+        const childProviders = allProviders.filter(
+          (p) => p.parentId === providerId,
+        );
+        if (childProviders.length === 0) {
+          return [
+            TemplatesPageActions.loadChildProvidersSuccess({
+              providers: childProviders,
+              level: level + 1,
+            }),
+            PaybillActions.loadPaymentDetails({ serviceId: providerId }),
+            PaybillActions.selectProvider({ providerId }),
+          ];
+        }
+
+        return [
+          TemplatesPageActions.loadChildProvidersSuccess({
+            providers: childProviders,
+            level: level + 1,
+          }),
+        ];
+      }),
+      catchError((error) =>
+        of(
+          TemplatesPageActions.loadChildProvidersFailure({
+            error: error.message,
+          }),
+        ),
+      ),
+    ),
+  );
+
+  checkBillAndCreateTemplate$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TemplatesPageActions.checkBillForTemplate),
+      switchMap(({ serviceId, identification, nickname }) =>
+        this.paybillService.checkBill(serviceId, identification).pipe(
+          map((response) => {
+            if (!response.valid || response.error) {
+              return TemplatesPageActions.checkBillForTemplateFailure({
+                error: response.error || 'Bill check failed',
+              });
+            }
+
+            return TemplatesPageActions.createTemplate({
+              nickname,
+              serviceId,
+              identification,
+            });
+          }),
+          catchError((error) =>
+            of(
+              TemplatesPageActions.checkBillForTemplateFailure({
+                error: this.getErrorMessage(error),
+              }),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+
 }

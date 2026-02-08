@@ -61,6 +61,7 @@ export class ExternalRecipient implements OnInit {
   public isMobile = this.breakpointService.isMobile;
 
   public readonly showError = signal(false);
+  public readonly errorMessage = signal('');
   public readonly isLoading = computed(() => this.transferStore.isLoading());
   public readonly recipientInputConfig = signal<InputConfig>(
     getRecipientInputConfig(this.translate),
@@ -76,8 +77,12 @@ export class ExternalRecipient implements OnInit {
 
       if (error) {
         this.showError.set(true);
+        this.errorMessage.set(error);
+        this.recipientInput.reset();
+        this.clearMessages();
         setTimeout(() => {
           this.showError.set(false);
+          this.transferStore.setError('');
         }, 5000);
       }
     });
@@ -156,5 +161,4 @@ export class ExternalRecipient implements OnInit {
       this.recipientService.verifyRecipient(this.recipientInput.value);
     }
   }
-  onDone(): void {}
 }

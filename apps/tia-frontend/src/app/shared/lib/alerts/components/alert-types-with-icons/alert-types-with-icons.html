@@ -1,4 +1,4 @@
-<div class="alert-icons" [class]="iconAlertClass()">
+<div class="alert-icons" [class]="iconAlertClass()" [style.max-width]="customMaxwidth()">
   <div class="alert-icons__wrapper">
     <img
       class="alert-icons__image"
@@ -7,7 +7,7 @@
     />
   </div>
   <div class="alert-icons__content">
-    <div class="alert-icons__title">{{alertType() | firstUpper}}</div>
+    <div class="alert-icons__title">{{ translationKey() | translate | firstUpper }}</div>
     <div class="alert-icons__message">
       {{alertMessage() | firstUpper}}
     </div>

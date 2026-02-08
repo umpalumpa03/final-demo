@@ -2,22 +2,28 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  HostListener,
   input,
+  OnInit,
   output,
+  signal,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 import { AccountCardComponent } from '../account-card/container/account-card';
-import { ButtonComponent } from '../../../../../../../shared/lib/primitives/button/button';
 import { RouteLoader } from '../../../../../../../shared/lib/feedback/route-loader/route-loader';
 import {
   AccountSection,
   GroupedAccounts,
 } from '../../../../../../../shared/models/accounts/accounts.model';
 import { ErrorStates } from '../../../../../../../shared/lib/feedback/error-states/error-states';
-import { ScrollArea } from '../../../../../../../shared/lib/layout/components/scroll-area/container/scroll-area';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { Badges } from '../../../../../../../shared/lib/primitives/badges/badges';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { TransferPermissionsModalComponent } from '../account-card/components/transfer-permissions-modal/transfer-permissions-modal';
+import { Skeleton } from '../../../../../../../shared/lib/feedback/skeleton/skeleton';
 
 @Component({
   selector: 'app-accounts-list',
@@ -25,18 +31,19 @@ import { Badges } from '../../../../../../../shared/lib/primitives/badges/badges
     CommonModule,
     TranslatePipe,
     AccountCardComponent,
-    ButtonComponent,
     RouteLoader,
     ErrorStates,
-    ScrollArea,
     LibraryTitle,
     Badges,
+    ButtonComponent,
+    TransferPermissionsModalComponent,
+    Skeleton,
   ],
   templateUrl: './accounts-list.html',
   styleUrl: './accounts-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountsListComponent {
+export class AccountsListComponent implements OnInit {
   public accountsGrouped = input.required<GroupedAccounts | null>();
   public isLoading = input.required<boolean>();
 
@@ -49,18 +56,45 @@ export class AccountsListComponent {
   public renameError = input<string | null>(null);
 
   public openModal = output<void>();
-  public transfer = output<string>();
+  public transfer = output<{ accountId: string; permissionValue: number }>();
   public retry = output<void>();
   public renameAccount = output<{ accountId: string; friendlyName: string }>();
   public renameSuccess = output<void>();
+
+  private readonly ITEMS_PER_PAGE = 3;
+  private readonly GAP_SIZE = 2;
+  public currentPageBySection = signal<Record<string, number>>({});
+
+  public skeletonItems = computed(() =>
+    Array.from({ length: this.itemsPerPage() }, (_, i) => i + 1),
+  );
+  private itemsPerPage = signal<number>(3);
+  public showTransferModal = signal<boolean>(false);
+  public selectedAccountForTransfer = signal<string | null>(null);
+  public selectedAccountPermission = signal<number>(0);
+  public selectedAccountCurrency = signal<string>('');
+  public selectedPermissionValue = signal<number>(0);
+
+  private router = inject(Router);
+
+  ngOnInit(): void {
+    this.updateItemsPerPage(window.innerWidth);
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    const target = event.target as Window;
+    this.updateItemsPerPage(target.innerWidth);
+    this.currentPageBySection.set({});
+  }
 
   public hasNoAccounts = computed(() => {
     const grouped = this.accountsGrouped();
     if (!grouped) return false;
     return (
-      grouped.current.length === 0 &&
-      grouped.saving.length === 0 &&
-      grouped.card.length === 0
+      (grouped.current?.length ?? 0) === 0 &&
+      (grouped.saving?.length ?? 0) === 0 &&
+      (grouped.card?.length ?? 0) === 0
     );
   });
 
@@ -81,12 +115,98 @@ export class AccountsListComponent {
     return grouped[section.key as keyof GroupedAccounts];
   }
 
+  public getTransformOffset(sectionKey: string): string {
+    const currentPage = this.getCurrentPage(sectionKey);
+    const itemsPerPage = this.itemsPerPage();
+    const gapsPerPage = itemsPerPage - 1;
+    const totalGapOffset = currentPage * gapsPerPage * this.GAP_SIZE;
+    const percentOffset = currentPage * 100;
+    return `translateX(calc(-${percentOffset}% - ${totalGapOffset}rem))`;
+  }
+
+  public updateItemsPerPage(width: number): void {
+    if (width <= 768) {
+      this.itemsPerPage.set(1);
+    } else if (width <= 1224) {
+      this.itemsPerPage.set(2);
+    } else {
+      this.itemsPerPage.set(3);
+    }
+  }
+
+  public getCurrentPage(sectionKey: string): number {
+    return this.currentPageBySection()[sectionKey] ?? 0;
+  }
+
+  public getTotalPages(section: AccountSection): number {
+    const accounts = this.getAccountsBySection(section);
+    return Math.ceil(accounts.length / this.itemsPerPage());
+  }
+
+  public needsPagination(section: AccountSection): boolean {
+    const accounts = this.getAccountsBySection(section);
+    return accounts.length > this.itemsPerPage();
+  }
+
+  public canGoPrevious(sectionKey: string): boolean {
+    return this.getCurrentPage(sectionKey) > 0;
+  }
+
+  public canGoNext(section: AccountSection): boolean {
+    const currentPage = this.getCurrentPage(section.key);
+    const totalPages = this.getTotalPages(section);
+    return currentPage < totalPages - 1;
+  }
+
+  public goToPrevious(sectionKey: string): void {
+    this.currentPageBySection.update((pages) => ({
+      ...pages,
+      [sectionKey]: Math.max(0, (pages[sectionKey] ?? 0) - 1),
+    }));
+  }
+
+  public goToNext(sectionKey: string): void {
+    this.currentPageBySection.update((pages) => ({
+      ...pages,
+      [sectionKey]: (pages[sectionKey] ?? 0) + 1,
+    }));
+  }
+
   public handleOpenModal(): void {
     this.openModal.emit();
   }
 
   public handleTransfer(accountId: string): void {
-    this.transfer.emit(accountId);
+    const accounts = this.accountsGrouped();
+    if (!accounts) return;
+
+    const allAccounts = [
+      ...(accounts.current || []),
+      ...(accounts.saving || []),
+      ...(accounts.card || []),
+    ];
+
+    const account = allAccounts.find((acc) => acc.id === accountId);
+    if (account) {
+      this.selectedAccountForTransfer.set(accountId);
+      this.selectedAccountPermission.set(account.permission);
+      this.selectedAccountCurrency.set(account.currency);
+      this.showTransferModal.set(true);
+    }
+  }
+
+  public handlePermissionSelected(permissionValue: number): void {
+    const accountId = this.selectedAccountForTransfer();
+    if (accountId) {
+      this.showTransferModal.set(false);
+      this.transfer.emit({ accountId, permissionValue });
+    }
+  }
+
+  public handleModalClosed(): void {
+    this.showTransferModal.set(false);
+    this.selectedAccountForTransfer.set(null);
+    this.selectedAccountPermission.set(0);
   }
 
   public handleRetry(): void {

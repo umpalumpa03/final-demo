@@ -1,3 +1,4 @@
+@if(!isErrorPageVisible()) {
 <div class="otp-verification">
   @if(isHeaderVisible()) {
   <div class="otp-verification__icon" aria-hidden="true">
@@ -9,7 +10,8 @@
   <p class="otp-verification__subtext">
     {{ inputOtpConfig()?.subText| translate}}
   </p>
-  } @if (!isLoading()) {
+  }
+
   <form class="auth-form" [formGroup]="activeForm()" (ngSubmit)="onSubmit()">
     @if(timerType() === 'otp'){
     <div class="otp-field">
@@ -19,6 +21,7 @@
         [isCentered]="true"
         (completed)="handleAutoSubmit($event)"
         [config]="formConfig().otp"
+        [isOtpLoading]="isLoading()"
       ></lib-otp>
     </div>
     } @else {
@@ -84,6 +87,7 @@
           type="submit"
           [fullWidth]="true"
           variant="default"
+          [isLoading]="isLoading()"
         >
           {{ inputOtpConfig()?.submitBtnName | translate}}
         </app-button>
@@ -94,16 +98,13 @@
           [fullWidth]="true"
           class="otp-verification__back"
           (click)="resgisterBackout()"
-          [routerLink]="inputOtpConfig()?.backLink"
           variant="outline"
           >{{ inputOtpConfig()?.backLinkText | translate}}</app-button
         >
       </div>
     </div>
   </form>
-  } @else {
-  <div class="sign-in sign-in-loader">
-    <app-route-loader variant="pulsing"></app-route-loader>
-  </div>
-  }
 </div>
+} @else {
+  <app-error-page [redirectUrl]="redirectUrl()" [redirectText]="redirectText()"></app-error-page>
+}

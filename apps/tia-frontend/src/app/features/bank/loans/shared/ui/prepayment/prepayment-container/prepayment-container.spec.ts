@@ -23,14 +23,13 @@ describe('PrepaymentContainer', () => {
       calculationResult: signal(null),
       activeChallengeId: signal(null),
       error: signal(null),
-
+      prepaymentTypeOptions: signal([]),
       clearCalculationResult: vi.fn(),
       calculatePrepayment: vi.fn(),
       initiatePrepayment: vi.fn(),
       verifyPrepayment: vi.fn(),
 
       loadPrepaymentOptions: vi.fn(),
-      prepaymentTypeOptions: signal([]),
     };
 
     await TestBed.configureTestingModule({
@@ -51,7 +50,6 @@ describe('PrepaymentContainer', () => {
   it('should create and clear result on init', () => {
     expect(component).toBeTruthy();
     expect(loansStoreMock.clearCalculationResult).toHaveBeenCalled();
-    expect(loansStoreMock.loadPrepaymentOptions).toHaveBeenCalled();
     expect(component.step()).toBe('options');
   });
 
@@ -63,10 +61,40 @@ describe('PrepaymentContainer', () => {
     });
   });
 
+  it('should switch step to review when calculationResult updates', () => {
+    loansStoreMock.calculationResult.set({ displayedInfo: [] });
+    fixture.detectChanges();
+    expect(component.step()).toBe('review');
+  });
+
   it('should switch step to otp when activeChallengeId updates', () => {
     loansStoreMock.activeChallengeId.set('chal-123');
     fixture.detectChanges();
     expect(component.step()).toBe('otp');
+  });
+
+  it('should close modal if on otp step, challenge is gone, and no error', () => {
+    const spy = vi.spyOn(component.close, 'emit');
+
+    component.step.set('otp');
+    loansStoreMock.activeChallengeId.set(null);
+    loansStoreMock.error.set(null);
+
+    fixture.detectChanges();
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should NOT close modal if error exists', () => {
+    const spy = vi.spyOn(component.close, 'emit');
+
+    component.step.set('otp');
+    loansStoreMock.activeChallengeId.set(null);
+    loansStoreMock.error.set('Invalid Code');
+
+    fixture.detectChanges();
+
+    expect(spy).not.toHaveBeenCalled();
   });
 
   it('should call verifyPrepayment', () => {
@@ -78,16 +106,21 @@ describe('PrepaymentContainer', () => {
     });
   });
 
-  it('should initiate prepayment with correct logic', () => {
-    const payload = { loanId: '1', type: 'partial', amount: 500 } as any;
+  it('should initiate prepayment with correct logic (Full Payment)', () => {
+    loansStoreMock.calculationResult.set({
+      displayedInfo: [{ text: 'Remaining principal', amount: 999 }],
+    });
+
+    const payload = { loanId: '1', type: 'full' } as any;
     component.onCalculate(payload);
+    fixture.detectChanges();
 
     component.onProceedToOtp();
 
     expect(loansStoreMock.initiatePrepayment).toHaveBeenCalledWith({
       payload: expect.objectContaining({
-        amount: 500,
-        loanPrepaymentOption: 'partial',
+        amount: 999,
+        loanPrepaymentOption: 'full',
       }),
     });
   });

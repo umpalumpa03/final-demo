@@ -1,4 +1,44 @@
 {
+  "management": {
+    "title": "Loan Management",
+    "subtitle": "Review and process pending loan applications",
+    "drawer": {
+      "title": "Loan Application Details",
+      "subtitle": "Review the loan application and user information",
+      "applicantSection": "Applicant Information",
+      "loanSection": "Loan Details",
+      "riskSection": "Risk Assessment",
+      "declineSection": "Reason for Declining",
+      "applicantUnavailable": "Applicant information unavailable",
+      "declinePlaceholder": "Please provide a reason for declining this loan application...",
+      "fields": {
+        "fullName": "Full Name",
+        "email": "Email",
+        "phoneNumber": "Phone Number",
+        "employmentStatus": "Employment Status",
+        "address": "Address",
+        "annualIncome": "Annual Income",
+        "creditScore": "Credit Score",
+        "loanAmount": "Loan Amount",
+        "loanPurpose": "Loan Purpose",
+        "loanTerm": "Loan Term",
+        "interestRate": "Interest Rate",
+        "monthlyPayment": "Monthly Payment",
+        "requestDate": "Request Date",
+        "months": "months",
+        "debtToIncome": "Debt-to-Income Ratio",
+        "loanToIncome": "Loan-to-Income Ratio",
+        "totalInterest": "Total Interest"
+      },
+      "buttons": {
+        "close": "Close",
+        "decline": "Decline Loan",
+        "approve": "Approve Loan",
+        "cancel": "Cancel",
+        "confirmDecline": "Confirm Decline"
+      }
+    }
+  },
   "dashboard": {
     "title": "My Loans",
     "description": "Manage your loan applications and track payments",
@@ -7,28 +47,29 @@
     "all": "All Loans ",
     "approved": "Approved ",
     "pending": "Pending ",
-    "declined": "Declined "
-  },
-  "empty": {
-    "all": {
-      "title": "No Loans Found",
-      "message": "You don't have any loans yet.",
-      "button": "Request New Loan"
-    },
-    "approved": {
-      "title": "No Approved Loans",
-      "message": "You don't have any active approved loans at the moment.",
-      "button": "View All Loans"
-    },
-    "pending": {
-      "title": "No Pending Applications",
-      "message": "You don't have any loan applications currently under review.",
-      "button": "View All Loans"
-    },
-    "declined": {
-      "title": "No Declined Loans",
-      "message": "You don't have any declined loan applications.",
-      "button": "View All Loans"
+    "declined": "Declined ",
+    "search": "Search loan by name...",
+    "empty": {
+      "all": {
+        "title": "No Loans Found",
+        "message": "You don't have any loans yet.",
+        "button": "Request New Loan"
+      },
+      "approved": {
+        "title": "No Approved Loans",
+        "message": "You don't have any active approved loans at the moment.",
+        "button": "View All Loans"
+      },
+      "pending": {
+        "title": "No Pending Applications",
+        "message": "You don't have any loan applications currently under review.",
+        "button": "View All Loans"
+      },
+      "declined": {
+        "title": "No Declined Loans",
+        "message": "You don't have any declined loan applications.",
+        "button": "View All Loans"
+      }
     }
   },
 
@@ -55,7 +96,7 @@
       "name": "Full Name",
       "relationship": "Relationship",
       "number": "Phone Number",
-      "email": "Email Address *"
+      "email": "Email Address"
     },
     "review_box": {
       "title": "Application Review",
@@ -118,9 +159,9 @@
       "cancel": "Cancel"
     },
     "form": {
-      "type_label": "Prepayment Type *",
-      "amount_label": "Prepayment Amount *",
-      "calc_option_label": "Calculation Option *"
+      "type_label": "Prepayment Type",
+      "amount_label": "Prepayment Amount",
+      "calc_option_label": "Calculation Option"
     },
     "radio_options": {
       "reduce_monthly_label": "Reduce Monthly Payment",

@@ -16,9 +16,10 @@ import { fromEvent, Observable } from 'rxjs';
 import { NotificationsData } from '../components/header-notifications/models/notification.model';
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
 import { NotificationsStore } from '../components/header-notifications/store/notifications.store';
-import { selectSavedAvatarUrl } from '../../../../store/profile-photo/profile-photo.selectors';
+import { selectSavedAvatarUrl } from '../../../../features/bank/settings/components/profile-photo/store/profile-photo/profile-photo.selectors';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NotificationsContainer } from '../components/header-notifications/container/notifications-container';
+import { selectUserFullName } from '../../../../store/user-info/user-info.selectors'; // Add this
 
 @Component({
   selector: 'app-bank-header-container',
@@ -41,6 +42,9 @@ export class BankHeaderContainer implements OnInit {
   public notificationsItems$!: Observable<NotificationsData>;
   public inboxCount = computed(() => this.inboxService.inboxCount());
   public avatarUrl = toSignal(this.store.select(selectSavedAvatarUrl));
+  public fullName = toSignal(this.store.select(selectUserFullName), {
+    initialValue: '',
+  }); // Add this
 
   readonly notificationsContainerRef = viewChild(NotificationsContainer, {
     read: ElementRef,

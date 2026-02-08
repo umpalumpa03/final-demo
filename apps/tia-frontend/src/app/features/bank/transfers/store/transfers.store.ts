@@ -3,8 +3,8 @@ import {
   withState,
   withMethods,
   patchState,
-  withHooks,
-  getState,
+  // withHooks,
+  // getState,
 } from '@ngrx/signals';
 import { initialTransferState } from './transfers.state';
 import {
@@ -110,9 +110,9 @@ export const TransferStore = signalStore(
                 isVerified: true,
               });
             }),
-            catchError((error) => {
+            catchError(() => {
               patchState(store, {
-                error: error.message || 'Failed to find recipient',
+                error: 'transfers.external.recipient.recipientNotFound',
                 isLoading: false,
               });
               return of(null);
@@ -125,12 +125,12 @@ export const TransferStore = signalStore(
       patchState(store, initialTransferState);
     },
   })),
-  withHooks({
-    onInit(store) {
-      effect(() => {
-        const state = getState(store);
-        console.log(' stateeee', state);
-      });
-    },
-  }),
+  // withHooks({
+  //   onInit(store) {
+  //     effect(() => {
+  //       const state = getState(store);
+  //       console.log(' stateeee', state);
+  //     });
+  //   },
+  // }),
 );

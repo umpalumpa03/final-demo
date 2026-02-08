@@ -1,45 +1,73 @@
 @use '../../../../shared/styles/mixins' as *;
 @use '../../../../shared/styles/palette' as *;
 
+.scrollbar {
+  @include custom-scrollbar;
+}
 
-.my-custom-layout {
-  @include display-flex(column);
-  gap: 1.2rem;
-  padding: 0.8rem 0;
-
-  &__tag {
-    color: var(--color-primary);
-    border-radius: 2rem;
-    font-size: 1.4rem;
-    font-weight: 600;
+.bank-dashboard {
+  &__banner {
+    margin: 2.4rem 0 3.2rem 0;
+    width: 100%;
   }
 
-  &__text {
-    @include font-inter(400, 1.6rem, 2.4rem);
+  &__header-actions {
+    margin: 0 0 2.4rem 0;
+    width: 100%;
+  }
+}
+
+.customize-shell {
+  &__title {
+    @include font-inter(700, 2rem, 2.8rem);
     color: var(--color-fg);
-    margin: 0;
+    margin-bottom: 3.2rem;
+    text-align: center;
   }
 
-  &__meta {
-    @include flex-center(row, flex-start, center);
-    gap: 0.8rem;
-    margin-top: 0.4rem;
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.4rem;
+    padding-bottom: 2rem;
+    min-height: 10rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.6rem;
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
   }
 
-  &__id {
-    @include font-inter(500, 1.2rem);
-    color: $gray-400;
+  .customize-card-pulsing {
+    grid-column: 1 / -1;
+    @include flex-center();
+    width: 100%;
+  }
+}
+
+.dashboard-loading-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.4rem;
+  width: 100%;
+
+  .skeleton-wrapper {
+    width: 100%;
+
+    &.hero {
+      grid-column: span 2;
+    }
   }
 
-  &__dot {
-    width: 0.4rem;
-    height: 0.4rem;
-    background-color: $gray-200;
-    border-radius: 50%;
-  }
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
 
-  &__date {
-    @include font-inter(400, 1.2rem);
-    color: $gray-400;
+    .skeleton-wrapper.hero {
+      grid-column: span 1;
+    }
   }
 }

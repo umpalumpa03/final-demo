@@ -1,78 +1,64 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, EventEmitter, Output, Input, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { signal } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ProviderListContainer } from './provider-list-container';
-import { ProviderList } from '../components/provider-list-items/provider-list';
 import { PaybillMainFacade } from '../../../services/paybill-main-facade';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { PaybillActions } from '../../../../../store/paybill.actions';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-
-@Component({
-  selector: 'app-provider-list',
-  template: '',
-  standalone: true,
-  inputs: [
-    'headerTitle',
-    'providers',
-    'iconBgColor',
-    'iconBgPath',
-    'subtitle',
-    'isRoot',
-    'isLoading',
-  ],
-})
-class MockProviderListComponent {
-  @Output() selected = new EventEmitter<string>();
-}
-
-@Component({
-  selector: 'router-outlet',
-  template: '',
-  standalone: true,
-})
-class MockRouterOutlet {}
 
 describe('ProviderListContainer', () => {
   let component: ProviderListContainer;
   let fixture: ComponentFixture<ProviderListContainer>;
-  let mockFacade: any;
+  let store: MockStore;
+  let router: Router;
+
+  const mockFacade = {
+    searchQuery: signal(''),
+    selectedParentId: signal<string | null>(null),
+    activeCategory: signal({
+      name: 'Utilities',
+      id: 'util',
+      providers: [
+        { id: '1', name: 'Gas Provider', isFinal: true, parentId: null },
+        { id: '2', name: 'Water Group', isFinal: false, parentId: null },
+        { id: '3', name: 'Sub Water', isFinal: true, parentId: '2' },
+      ],
+    }),
+    isLoading: signal(false),
+    isFormView: signal(false),
+    showSearch: signal(true),
+    activeCategoryUI: signal({ iconBgColor: '#fff', iconBgPath: 'icon.svg' }),
+    isRootProviderView: signal(true),
+    resetPaymentForm: vi.fn(),
+  };
 
   beforeEach(async () => {
-    mockFacade = {
-      isFormView: signal(false),
-      activeCategory: signal({
-        description: 'Test Category',
-        providers: [
-          { id: '1', name: 'Final Provider', isFinal: true },
-          { id: '2', name: 'Parent Provider', isFinal: false },
-        ],
-      }),
-      activeCategoryUI: signal({ iconBgColor: '#fff', iconBgPath: 'icon.svg' }),
-      providerListHeader: signal('Select Provider'),
-      filteredProviders: signal([]),
-      isRootProviderView: signal(true),
-      isLoading: signal(false),
-      activeProvider: signal(null),
-      verifiedDetails: signal(null),
-
-      resetPaymentForm: vi.fn(),
-      selectProvider: vi.fn(),
-      selectParentId: vi.fn(),
-      verifyAccount: vi.fn(),
-      proceedToPayment: vi.fn(),
-    };
-
     await TestBed.configureTestingModule({
       imports: [ProviderListContainer],
-      providers: [{ provide: PaybillMainFacade, useValue: mockFacade }],
-    })
-      .overrideComponent(ProviderListContainer, {
-        remove: { imports: [ProviderList, RouterOutlet] },
-        add: { imports: [MockProviderListComponent, MockRouterOutlet] },
-      })
-      .compileComponents();
+      providers: [
+        { provide: PaybillMainFacade, useValue: mockFacade },
+        {
+          provide: Router,
+          useValue: {
+            navigate: vi.fn(),
+            navigateByUrl: vi.fn(),
+            url: '/bank/paybill/pay/util',
+          },
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: {} },
+        },
+        provideMockStore(),
+      ],
+    }).compileComponents();
 
+    store = TestBed.inject(MockStore);
+    router = TestBed.inject(Router);
     fixture = TestBed.createComponent(ProviderListContainer);
     component = fixture.componentInstance;
+
     fixture.detectChanges();
   });
 
@@ -80,43 +66,65 @@ describe('ProviderListContainer', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('Provider Selection Logic', () => {
-    it('should select provider and reset form when provider is FINAL', () => {
-      component.onProviderSelected('1');
+  describe('Computed Signal Reactivity', () => {
+    it('should filter providers based on search query', () => {
+      mockFacade.searchQuery.set('gas');
 
-      expect(mockFacade.resetPaymentForm).toHaveBeenCalled();
-      expect(mockFacade.selectProvider).toHaveBeenCalledWith('1');
-      expect(mockFacade.selectParentId).not.toHaveBeenCalled();
+      const filtered = component.filteredProviders();
+      expect(filtered.length).toBe(1);
+      expect(filtered[0].name).toBe('Gas Provider');
     });
 
-    it('should select parent ID when provider is NOT final (is a group)', () => {
-      component.onProviderSelected('2');
-
-      expect(mockFacade.selectParentId).toHaveBeenCalledWith('2');
-      expect(mockFacade.selectProvider).not.toHaveBeenCalled();
-    });
-
-    it('should do nothing if provider is not found', () => {
-      component.onProviderSelected('999');
-
-      expect(mockFacade.selectProvider).not.toHaveBeenCalled();
-      expect(mockFacade.selectParentId).not.toHaveBeenCalled();
+    it('should resolve providerListHeader title dynamically', () => {
+      const header = component.providerListHeader();
+      expect(header).toBeDefined();
     });
   });
 
-  describe('Event Delegation', () => {
-    it('should delegate account verification to facade', () => {
-      const mockEvent = { value: '123456' };
-      component.onVerifyAccount(mockEvent as any);
+  describe('Navigation and Actions', () => {
+    it('should handle FINAL provider: reset form, dispatch actions, and navigate relatively', () => {
+      const dispatchSpy = vi.spyOn(store, 'dispatch');
 
-      expect(mockFacade.verifyAccount).toHaveBeenCalledWith('123456');
+      component.onProviderSelected('1');
+
+      expect(mockFacade.resetPaymentForm).toHaveBeenCalled();
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        PaybillActions.selectProvider({ providerId: '1' }),
+      );
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        PaybillActions.loadPaymentDetails({ serviceId: '1' }),
+      );
+
+      expect(router.navigate).toHaveBeenCalledWith(
+        ['1'],
+        expect.objectContaining({ relativeTo: expect.anything() }),
+      );
     });
 
-    it('should delegate payment progression to facade', () => {
-      const mockEvent = { amount: 100, value: '123456' };
-      component.onProceedToPayment(mockEvent as any);
+    it('should handle GROUP provider: navigateByUrl to hierarchical path', () => {
+      component.onProviderSelected('2');
 
-      expect(mockFacade.proceedToPayment).toHaveBeenCalledWith(100, '123456');
+      expect(router.navigateByUrl).toHaveBeenCalledWith(
+        '/bank/paybill/pay/util/2',
+      );
+    });
+
+    it('should return early if the provider ID is invalid', () => {
+      const dispatchSpy = vi.spyOn(store, 'dispatch');
+      component.onProviderSelected('ghost-id');
+      expect(dispatchSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Internal Utilities', () => {
+    it('selectParentId should strip query parameters from the base URL', () => {
+      (router as any).url = '/bank/paybill/pay/util?search=gas';
+
+      component.selectParentId('99');
+
+      expect(router.navigateByUrl).toHaveBeenCalledWith(
+        '/bank/paybill/pay/util/99',
+      );
     });
   });
 });

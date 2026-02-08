@@ -15,6 +15,7 @@ export type BadgeStatus =
   | 'premium'
   | 'done'
   | 'todo'
+  | 'favorite'
   | (string & {});
 
 export type BadgeSize = 'small' | 'medium' | 'large';
@@ -25,7 +26,7 @@ export type BadgeDotType = 'online' | 'away' | 'offline' | 'live';
 
 export type BadgeSkill =
   | 'javascript'
-  | 'react'
+  | 'angular'
   | 'nodejs'
   | 'typescript'
   | 'css'

@@ -12,6 +12,14 @@ import {
 } from '../../../shared/models/paybill.model';
 import { PaybillDynamicForm } from '../../../../../services/paybill-dynamic-form/paybill-dynamic-form';
 import { NonNullableFormBuilder, Validators } from '@angular/forms';
+import { PaybillDynamicFormValues } from '../../../../../services/paybill-dynamic-form/models/dynamic-form.model';
+import { Store } from '@ngrx/store';
+import {
+  PaybillActions,
+  TemplatesPageActions,
+} from '../../../../../store/paybill.actions';
+import { buildDynamicIdentification } from '../../../../../config/paybill.config';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-paybill-form-container',
@@ -25,39 +33,94 @@ export class PaybillFormContainer {
   protected readonly paybillFacade = inject(PaybillMainFacade);
   protected readonly dynamicForm = inject(PaybillDynamicForm);
   private readonly fb = inject(NonNullableFormBuilder);
+  private store = inject(Store);
+  private router = inject(Router);
+
+  public proceedToPayment(
+    amount: number,
+    formValues: PaybillDynamicFormValues,
+  ): void {
+    const provider = this.paybillFacade.activeProvider();
+
+    if (provider) {
+      this.store.dispatch(PaybillActions.setTransactionProvider({ provider }));
+
+      this.store.dispatch(
+        PaybillActions.setPaymentPayload({
+          data: {
+            identification: buildDynamicIdentification(formValues),
+            amount: amount,
+          },
+        }),
+      );
+
+      this.router.navigate(['/bank/paybill/pay/confirm-payment']);
+    }
+  }
 
   // sync form data with service
   private readonly formSync = effect(() => {
-    const fields = this.paybillFacade.paymentFields();
-    const details = this.paybillFacade.verifiedDetails();
-    const isVerified = !!details?.valid;
-
-    this.dynamicForm.syncFormControls(this.paybillForm, fields);
-    this.dynamicForm.updateAmountValidators(this.paybillForm, isVerified);
-
-    if (isVerified && details?.amountDue !== undefined) {
-      this.paybillForm.patchValue(
-        { amount: details.amountDue },
-        { emitEvent: false },
-      );
-    }
+    this.dynamicForm.syncFormWithPaymentFields(
+      this.paybillForm,
+      { amount: 0 },
+      true,
+    );
   });
+
+  public saveAsTemplate(customNickname?: string): void {
+    const provider = this.paybillFacade.activeProvider();
+    const payload = this.paybillFacade.paymentPayload();
+
+    if (provider && payload) {
+      this.store.dispatch(
+        TemplatesPageActions.createTemplate({
+          serviceId: provider.id,
+          identification: payload.identification,
+          nickname: customNickname || provider.name || 'My Template',
+        }),
+      );
+    } else {
+      return;
+    }
+  }
 
   public readonly paybillForm = this.fb.group({
     amount: [0, [Validators.required, Validators.max(9999)]],
   });
 
   public onVerifyAccount(event: PaybillFormVerifyEvent): void {
-    const identification = this.dynamicForm.buildIdentification(event.value);
-    this.paybillFacade.verifyAccount(identification);
+    this.verifyAccount(event.value);
   }
 
   public onSaveAsTemplate(nickname: string): void {
-    this.paybillFacade.saveAsTemplate(nickname);
+    this.saveAsTemplate(nickname);
   }
 
   public onProceedToPayment(event: PaybillFormProceedEvent): void {
-    const identification = this.dynamicForm.buildIdentification(event.value);
-    this.paybillFacade.proceedToPayment(event.amount, identification);
+    this.proceedToPayment(event.amount, event.value);
+  }
+
+  public verifyAccount(formValues: PaybillDynamicFormValues): void {
+    const provider = this.paybillFacade.activeProvider();
+
+    const identification = this.dynamicForm.buildIdentification(formValues);
+
+    if (provider) {
+      this.store.dispatch(
+        PaybillActions.checkBill({
+          serviceId: provider.id,
+          identification,
+        }),
+      );
+
+      this.store.dispatch(
+        PaybillActions.setPaymentPayload({
+          data: {
+            identification,
+            amount: formValues.amount || 0,
+          },
+        }),
+      );
+    }
   }
 }

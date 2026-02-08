@@ -5,7 +5,8 @@
     "cards": "Cards"
   },
   "cards": {
-    "title": "Cards",
+    "title": "My Cards",
+    "subtitle": "Manage your credit and debit cards grouped by account",
     "credit": "Credit Cards",
     "debit": "Debit Cards"
   },
@@ -60,6 +61,16 @@
       "type": "Type",
       "created": "Created",
       "makeTransfer": "Make Transfer"
+    },
+    "transfer-modal": {
+      "title": "Select Transfer Type",
+      "description": "Choose the type of transfer you want to make",
+      "transfer-own-accounts": "Transfer between own accounts",
+      "transfer-same-bank": "Transfer to other accounts in the same bank",
+      "transfer-foreign-currency": "Transfer to other accounts in the same bank in foreign currency",
+      "pay-bills": "Pay Bills",
+      "pay-fines": "Pay Fines",
+      "pay-loan": "Pay Loan"
     },
     "success": "Success",
     "error": "Error",

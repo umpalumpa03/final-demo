@@ -1,73 +1,73 @@
 <div class="navigation">
   <app-library-title
-    title="Navigation Components"
-    subtitle="Navigation components including tabs, breadcrumbs, and pagination"
+    [title]="'storybook.navigation.title' | translate"
+    [subtitle]="'storybook.navigation.subtitle' | translate"
   >
   </app-library-title>
-  <app-showcase-card title="Tabs">
+  <app-showcase-card [title]="'storybook.navigation.sections.tabs.title' | translate">
     <div class="navigation__card">
       <div class="navigation__card--tabs">
         <app-tabs [tabs]="tabs()" [orientation]="'horizontal'"></app-tabs>
       </div>
       <div class="navigation__card--title">
-        <h4 class="navigation__card--title-heading">Overview Content</h4>
+        <h4 class="navigation__card--title-heading">{{ 'storybook.navigation.sections.tabs.cardTitle' | translate }}</h4>
         <p class="navigation__card--title-desc">
-          This is the overview tab content. It displays general information.
+          {{ 'storybook.navigation.sections.tabs.cardContent' | translate }}
         </p>
         <router-outlet></router-outlet>
       </div>
     </div>
   </app-showcase-card>
-  <app-showcase-card title="Tabs">
+  <app-showcase-card [title]="'storybook.navigation.sections.verticalTabs.title' | translate">
     <div class="navigation__card">
       <div class="navigation__card--tabs-vertical">
         <app-tabs [tabs]="tabs2()" [orientation]="'vertical'"></app-tabs>
       </div>
 
       <div class="navigation__card--title">
-        <h4 class="navigation__card--title-heading">Account Settings</h4>
+        <h4 class="navigation__card--title-heading">{{ 'storybook.navigation.sections.verticalTabs.cardTitle' | translate }}</h4>
         <p class="navigation__card--title-desc">
-          Manage your account settings and preferences.
+          {{ 'storybook.navigation.sections.verticalTabs.cardContent' | translate }}
         </p>
       </div>
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="Breadcrumbs">
+  <app-showcase-card [title]="'storybook.navigation.sections.breadcrumbs.title' | translate">
     <div class="navigation__card">
       <div class="navigation__card__example">
-        <h4 class="navigation__card__example__heading">Default Breadcrumbs:</h4>
+        <h4 class="navigation__card__example__heading">{{ 'storybook.navigation.sections.breadcrumbs.default' | translate }}:</h4>
         <app-breadcrumbs [breadcrumbs]="breadcrumbs()"></app-breadcrumbs>
       </div>
       <div class="navigation__card__example">
-        <h4 class="navigation__card__example__heading">With Icons:</h4>
+        <h4 class="navigation__card__example__heading">{{ 'storybook.navigation.sections.breadcrumbs.withIcons' | translate }}:</h4>
         <app-breadcrumbs [breadcrumbs]="breadcrumbs2()"></app-breadcrumbs>
       </div>
       <div class="navigation__card__example">
-        <h4 class="navigation__card__example__heading">Long Path:</h4>
+        <h4 class="navigation__card__example__heading">{{ 'storybook.navigation.sections.breadcrumbs.longPath' | translate }}</h4>
         <app-breadcrumbs [breadcrumbs]="breadcrumbs3()"></app-breadcrumbs>
       </div>
     </div>
   </app-showcase-card>
-  <app-showcase-card title="Pagination">
+  <app-showcase-card [title]="'storybook.navigation.sections.pagination.title' | translate">
     <div class="navigation__card">
       <app-pagination-component></app-pagination-component>
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="Horizontal Navigation">
+  <app-showcase-card [title]="'storybook.navigation.sections.horizontalNavigation.title' | translate">
     <div class="navigation__card">
       <app-horizontal-nav-bar></app-horizontal-nav-bar>
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="Vertical Navigation">
+  <app-showcase-card [title]="'storybook.navigation.sections.verticalNavigation.title' | translate">
     <div class="navigation__card">
       <app-nav-bar></app-nav-bar>
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="Pills Navigation">
+  <app-showcase-card [title]="'storybook.navigation.sections.pillsNavigation.title' | translate">
     <div class="navigation__card">
       <app-pills-component></app-pills-component>
     </div>

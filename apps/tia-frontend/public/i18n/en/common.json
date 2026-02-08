@@ -13,7 +13,8 @@
     "stay": "Stay",
     "leave": "Leave",
     "ungrouped": "Ungrouped",
-    "resend": "Resend"
+    "resend": "Resend",
+    "swap": "Swap Accounts"
   },
   "labels": {
     "loading": "Loading...",
@@ -23,7 +24,9 @@
   },
   "alertMessages": {
     "success": "success",
-    "successMessage": "Your changes have been saved successfully!"
+    "error": "error",
+    "warning": "warning",
+    "info": "info"
   },
   "validation": {
     "required": "This field is required",
@@ -43,5 +46,13 @@
     "paybills": "Paybill",
     "settings": "Settings",
     "messaging": "Messaging"
+  },
+  "no-connection": {
+    "title": "No Internet Connection",
+    "description": "Your device is currently offline. Please check your internet connection and try again."
+  },
+  "reconnected": {
+    "title": "Connection Restored",
+    "description": "Your internet connection has been restored successfully."
   }
 }

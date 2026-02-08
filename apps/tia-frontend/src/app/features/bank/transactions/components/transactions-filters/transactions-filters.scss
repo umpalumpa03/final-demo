@@ -15,7 +15,10 @@
     @include display-flex(row, wrap);
     gap: 1.6rem;
     &__input-wrapper {
-      width: 23.5%;
+      width: calc((100% - (1.6rem * 3)) / 4);
+      @media (max-width: 800px) {
+        width: calc((100% - (1.6rem * 1)) / 2);
+      }
     }
   }
 }

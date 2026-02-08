@@ -21,11 +21,20 @@ describe('LoansContainer', () => {
     loansStoreMock = {
       loading: signal(false),
       alert: signal(null),
-      loadCounts: vi.fn(),
       reset: vi.fn(),
+      setSearchQuery: vi.fn(),
       loanCounts: signal({ all: 0, approved: 0, pending: 0, declined: 0 }),
       loanMonthsOptions: signal([]),
+      setAccountFilter: vi.fn(),
+      activeAccountName: signal('Mock Account'),
       purposeOptions: signal([]),
+      isDetailsOpen: signal(false),
+      isPrepaymentOpen: signal(false),
+      activePrepaymentLoan: signal(null),
+      selectedLoanDetails: signal(null),
+      detailsLoading: signal(false),
+      closeModals: vi.fn(),
+      navigateDetails: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -53,8 +62,7 @@ describe('LoansContainer', () => {
 
   it('should initialize data loading on init', () => {
     expect(globalStore.dispatch).toHaveBeenCalledWith(
-      AccountsActions.loadAccounts({ forceRefresh: true }),
+      AccountsActions.loadAccounts({}),
     );
-    expect(loansStoreMock.loadCounts).toHaveBeenCalled();
   });
 });

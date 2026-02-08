@@ -2,9 +2,9 @@
     <header>
         <div class="icon">
             <img src="./images/svg/settings/user-management/person.svg" alt="Person Image">
-            <h1>User Details</h1>
+            <h1>{{'settings.user-management.edit.title' | translate}}</h1>
         </div>
-        <p>Edit user information.</p>
+        <p>{{'settings.user-management.edit.desc' | translate}}</p>
     </header>
 
     <main class="main">
@@ -44,11 +44,12 @@
     </main>
 
     <footer>
-        <app-button variant="outline" (click)="close.emit()">Cancel</app-button>
+        <app-button variant="outline" (click)="close.emit()">{{'settings.user-management.edit.cancel' |
+            translate}}</app-button>
 
         <app-button [isLoading]="isLoading()" icon="./white-edit.svg"
             [isDisabled]="form.invalid || form.pristine || isLoading()" (click)="onSave()">
-            Save Changes
+            {{'settings.user-management.edit.save' | translate}}
         </app-button>
     </footer>
 </app-ui-modal>

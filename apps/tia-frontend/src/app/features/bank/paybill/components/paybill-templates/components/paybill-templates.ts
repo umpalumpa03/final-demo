@@ -3,8 +3,8 @@ import {
   Component,
   computed,
   effect,
-  inject,
   input,
+  OnInit,
   output,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -20,22 +20,21 @@ import {
   formSubmitType,
   HeaderCtaAction,
   HeaderCtaButton,
+  MappedProviderForDropdown,
   ModalInfo,
   ModalType,
+  ProviderTypeForStore,
   TemplateGroups,
   TreeAction,
   TreeItemMoved,
 } from '../models/paybill-templates.model';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { PaybillProvider } from '../../paybill-main/shared/models/paybill.model';
-import {
-  createEditGroupForm,
-  createEditTemplateForm,
-  createGroupForm,
-  createTemplateForm,
-} from '../configs/paybill-templates.forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { distinctUntilChanged } from 'rxjs';
+import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
+import { DynamicInputs } from '../../shared/dynamic-inputs/dynamic-inputs';
+import { PaybillDynamicField } from '../../../services/paybill-dynamic-form/models/dynamic-form.model';
 
 @Component({
   selector: 'app-paybill-templates',
@@ -48,18 +47,18 @@ import {
     LibraryTitle,
     Dropdowns,
     ReactiveFormsModule,
+    DynamicInputs,
   ],
   templateUrl: './paybill-templates.html',
   styleUrl: './paybill-templates.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PaybillTemplates {
+export class PaybillTemplates implements OnInit {
   // Forms
-  private readonly fb = inject(FormBuilder);
-  protected readonly createGroupForm = createGroupForm(this.fb);
-  protected readonly createTemplateForm = createTemplateForm(this.fb);
-  protected readonly editTemplateForm = createEditTemplateForm(this.fb);
-  protected readonly editGroupForm = createEditGroupForm(this.fb);
+  public createGroupForm = input.required<FormGroup>();
+  public createTemplateForm = input.required<FormGroup>();
+  public editTemplateForm = input.required<FormGroup>();
+  public editGroupForm = input.required<FormGroup>();
 
   // Config for tree build
   public templateGroups = input.required<TemplateGroups[]>();
@@ -134,13 +133,13 @@ export class PaybillTemplates {
   public activeForm = computed(() => {
     switch (this.activeModal()) {
       case ModalType.Group:
-        return this.createGroupForm;
+        return this.createGroupForm();
       case ModalType.Template:
-        return this.createTemplateForm;
+        return this.createTemplateForm();
       case ModalType.RenameTemplate:
-        return this.editTemplateForm;
+        return this.editTemplateForm();
       case ModalType.RenameGroup:
-        return this.editGroupForm;
+        return this.editGroupForm();
       default:
         return null;
     }
@@ -174,24 +173,51 @@ export class PaybillTemplates {
       });
     }
   }
-  // /////////////////////////////////////////////
-  //  RIGHT NOW UNUSED LOGIC KEPT FOR REFERENCE //
-  // /////////////////////////////////////////////
-  public templateCategories = input.required<
-    {
-      label: string;
-      value: string;
-    }[]
-  >();
-  public templateProviders = input<PaybillProvider[]>();
+  // // /////////////////////////////////////////////
+  // //  RIGHT NOW UNUSED LOGIC KEPT FOR REFERENCE //
+  // // /////////////////////////////////////////////
+  public parentProviders = input.required<MappedProviderForDropdown[]>();
+  public templateCategories = input.required<MappedProviderForDropdown[]>();
 
+  // Outputs to change state in store
   public categorySelected = output<string>();
+  public parentProviderSelected = output<string>();
 
-  onDropdownChange(controlName: string, event: Event) {
-    const value = (event.target as HTMLSelectElement).value;
+  // Add loading state in form
+  public selectLoading = input<boolean>(false);
 
-    if (controlName === 'category' && value) {
-      this.categorySelected.emit(value);
+  // Field that adds dynamically after everything is chosen
+  public paymentFields = input.required<PaybillDynamicField[]>();
+
+  //
+  public isCategorySelected = input<boolean>(false);
+  public childProviderOptions = input<MappedProviderForDropdown[][]>([[]]);
+
+  // Here I listen for form category change to emit the value and start the cycle
+  ngOnInit() {
+    const form = this.createTemplateForm();
+    form
+      .get('category')
+      ?.valueChanges.pipe(distinctUntilChanged())
+      .subscribe((value) => {
+        this.categorySelected.emit(value);
+      });
+  }
+
+  // Helper method to give me what kind of data is returned to me
+  public getDropdownOptions(controlName: string): MappedProviderForDropdown[] {
+    switch (controlName) {
+      case 'category':
+        return this.templateCategories();
+      case 'parentProvider':
+        return this.parentProviders();
+      default:
+        return [];
     }
+  }
+
+  public childProviderSelected = output<ProviderTypeForStore>();
+  public onChildProviderChange(providerId: InputFieldValue, index: number) {
+    this.childProviderSelected.emit({ providerId, index });
   }
 }

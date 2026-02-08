@@ -4,8 +4,8 @@ export interface ITransactions {
   id: string;
   userId: string;
   amount: number;
-  transactionType: string;
-  transferType: string;
+  transactionType: 'credit' | 'debit';
+  transferType: 'BillPayment' | 'ToSomeoneSameBank' | 'ToSomeoneOtherBank' | 'Loan' | string;
   currency: Currency;
   description: string;
   debitAccountNumber: string;

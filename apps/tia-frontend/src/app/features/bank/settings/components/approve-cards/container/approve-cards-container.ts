@@ -1,12 +1,18 @@
-import { ChangeDetectionStrategy, Component, } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, } from '@angular/core';
+import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
+import { ApproveCards } from '../components/approve-cards';
+import { ApproveCardsState } from '../shared/state/approve-cards.state';
+import { ApproveCardsStore } from '../store/approve-cards.store';
 
 
 @Component({
   selector: 'app-approve-cards-container',
-  imports: [],
+  imports: [BasicCard, ApproveCards],
   templateUrl: './approve-cards-container.html',
   styleUrl: './approve-cards-container.scss',
+  providers: [ApproveCardsState, ApproveCardsStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApproveCardsContainer {
+  public readonly userState = inject(ApproveCardsState);
 }

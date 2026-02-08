@@ -5,7 +5,7 @@ import { environment } from '../../../../environments/environment';
 import {
   DefaultAvatarResponse,
   UploadAvatarResponse,
-} from '../../../store/profile-photo/profile-photo.state';
+} from '../../../features/bank/settings/components/profile-photo/store/profile-photo/profile-photo.state';
 
 @Injectable({ providedIn: 'root' })
 export class ProfilePhotoApiService {

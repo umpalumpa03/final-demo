@@ -1,102 +1,160 @@
 {
-    "title": "Settings",
-    "sections": {
-        "profile": "Profile",
-        "security": "Security",
-        "notifications": "Notifications",
-        "language": "Language",
-        "accounts": "Accounts",
-        "appearance": "Appearance",
-        "user-management": "User Management",
-        "approve-accounts": "Approve Accounts",
-        "approve-cards": "Approve Cards",
-        "loan-management": "Loan Management",
-        "profile-photo": "Profile Photo"
+  "title": "Settings",
+  "sections": {
+    "profile": "Profile",
+    "security": "Security",
+    "notifications": "Notifications",
+    "language": "Language",
+    "accounts": "Accounts",
+    "appearance": "Appearance",
+    "user-management": "User Management",
+    "approve-accounts": "Approve Accounts",
+    "approve-cards": "Approve Cards",
+    "loan-management": "Loan Management",
+    "profile-photo": "Profile Photo"
+  },
+  "language": {
+    "title": "Language & Region",
+    "subtitle": "Choose your preferred language to personalize your experience",
+    "current": "Current Language",
+    "available": "Available Languages",
+    "english": "English",
+    "georgian": "Georgian",
+    "saveSuccess": "Language updated successfully!",
+    "saveError": "Failed to update language. Please try again."
+  },
+  "appearance": {
+    "title": "Appearance",
+    "subtitle": "Customize your visual experience",
+    "themes": {
+      "oceanBlue": {
+        "name": "Ocean Blue",
+        "description": "Light and refreshing blue theme"
+      },
+      "royalBlue": {
+        "name": "Royal Blue",
+        "description": "Classic and elegant blue theme"
+      },
+      "deepBlue": {
+        "name": "Deep Blue",
+        "description": "Rich and sophisticated blue theme"
+      }
     },
-    "language": {
-        "title": "Language & Region",
-        "subtitle": "Choose your preferred language to personalize your experience",
-        "current": "Current Language",
-        "available": "Available Languages",
-        "english": "English",
-        "georgian": "Georgian",
-        "saveSuccess": "Language updated successfully!",
-        "saveError": "Failed to update language. Please try again."
+    "cardsTitle": "Select Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "saveSuccess": "Theme saved successfully!",
+    "saveError": "Failed to save theme. Please try again."
+  },
+  "profile-photo": {
+    "title": "Profile Photo",
+    "subtitle": "Upload a new profile photo or choose a default avatar",
+    "uploadCustomPhoto": "Upload a new profile photo",
+    "dragOrChooseFile": "Drag a photo here or choose a file.",
+    "chooseFile": "Choose File",
+    "defaultAvatar": "Or Choose a Default Avatar",
+    "loadingDefaultAvatars": "Loading avatars...",
+    "profilePictureChangedSuccessfully": "Your profile picture changed successfully",
+    "profilePictureRemovedSuccessfully": "Your profile picture removed successfully",
+    "change": "Save Changes",
+    "remove": "Remove Photo",
+    "invalidFileAlert": "Unfortunately, your photo could not be uploaded. The avatar image file to upload (PNG/JPG only, max 1MB)."
+  },
+  "security": {
+    "title": "Security Settings",
+    "changePassword": "Change Password",
+    "changePasswordSubtitle": "Update your password to keep your account secure",
+    "currentPassword": "Current Password",
+    "currentPasswordPlaceholder": "Enter current password",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Enter new password",
+    "confirmNewPassword": "Confirm New Password",
+    "confirmNewPasswordPlaceholder": "Confirm new password",
+    "updatePassword": "Update Password",
+    "twoFactorAuth": "Two-Factor Authentication"
+  },
+  "user-management": {
+    "title": "User Management",
+    "subtitle": "Manage users, roles, and access permissions",
+    "placeholder": "Search users by name, email, username...",
+    "addUser": "Add User",
+    "removeUser": "Remove User",
+    "buttons": {
+      "details": "Details",
+      "edit": "Edit",
+      "delete": "Delete",
+      "block": "Block",
+      "unblock": "Unblock"
     },
-    "appearance": {
-        "title": "Appearance",
-        "subtitle": "Customize your visual experience",
-        "themes": {
-            "oceanBlue": {
-                "name": "Ocean Blue",
-                "description": "Light and refreshing blue theme"
-            },
-            "royalBlue": {
-                "name": "Royal Blue",
-                "description": "Classic and elegant blue theme"
-            },
-            "deepBlue": {
-                "name": "Deep Blue",
-                "description": "Rich and sophisticated blue theme"
-            }
-        },
-        "cardsTitle": "Select Theme",
-        "light": "Light",
-        "dark": "Dark",
-        "system": "System",
-        "saveSuccess": "Theme saved successfully!",
-        "saveError": "Failed to save theme. Please try again."
+    "details": {
+      "title": "User Details",
+      "desc": "View detailed information about the user.",
+      "blocked": "Blocked",
+      "active": "Active",
+      "username": "Username",
+      "created": "Created At",
+      "close": "Close"
     },
-    "profile-photo": {
-        "title": "Profile Photo",
-        "subtitle": "Upload a new profile photo or choose a default avatar",
-        "uploadCustomPhoto": "Upload a new profile photo",
-        "chooseFile": "Choose File",
-        "defaultAvatar": "Or Choose a Default Avatar",
-        "loadingDefaultAvatars": "Loading avatars...",
-        "profilePictureChangedSuccessfully": "Your profile picture changed successfully",
-        "profilePictureRemovedSuccessfully": "Your profile picture removed successfully",
-        "change": "Save Changes",
-        "remove": "Remove Photo",
-        "invalidFileAlert": "Unfortunately, your photo could not be uploaded. The avatar image file to upload (PNG/JPG only, max 1MB)."
+    "edit": {
+      "title": "User Details",
+      "desc": "Edit user information.",
+      "cancel": "Cancel",
+      "save": "Save Changes"
     },
-    "security": {
-        "title": "Security Settings",
-        "changePassword": "Change Password",
-        "changePasswordSubtitle": "Update your password to keep your account secure",
-        "currentPassword": "Current Password",
-        "currentPasswordPlaceholder": "Enter current password",
-        "newPassword": "New Password",
-        "newPasswordPlaceholder": "Enter new password",
-        "confirmNewPassword": "Confirm New Password",
-        "confirmNewPasswordPlaceholder": "Confirm new password",
-        "updatePassword": "Update Password",
-        "twoFactorAuth": "Two-Factor Authentication"
-    },
-    "user-management": {
-        "title": "User Management",
-        "subtitle": "Manage users, roles, and access permissions",
-        "placeholder": "Search users by name, email, username...",
-        "addUser": "Add User",
-        "removeUser": "Remove User"
-    },
-    "approve-accounts": {
-        "title": "Approve Accounts",
-        "pendingApprovals": "Pending Approvals"
-    },
-    "approve-cards": {
-        "title": "Approve Cards",
-        "pendingCards": "Pending Cards"
-    },
-    "loan-management": {
-        "title": "Loan Management",
-        "viewLoans": "View Loans",
-        "approveLoan": "Approve Loan",
-        "rejectLoan": "Reject Loan"
-    },
-    "accounts": {
-        "title": "Accounts",
-        "savings": "Savings Account",
-        "checking": "Checking Account"
+    "delete": {
+      "title": "Delete User",
+      "desc": "Are you sure you want to delete this user? This action cannot be undone.",
+      "cancel": "Cancel",
+      "delete": "Delete"
     }
+  },
+  "approve-accounts": {
+    "title": "Approve Accounts",
+    "pendingApprovals": "Pending Approvals"
+  },
+ "approve-cards": {
+    "title": "Approve Cards",
+    "subtitle": "Pending Cards",
+    "confirmOverlay": {
+      "title": "Reset Changes?",
+      "subtitle": "Please approve your card. otherwise, switching will clear the permissions you have already selected.",
+      "cancelAction": "Go back",
+      "confirmAction": "Discard and switch"
+    },
+    "buttons": {
+      "permissions": "Permissions",
+      "approve": "Approve",
+      "decline": "Decline"
+    },
+    "alertMessages": {
+      "successDesc": "Card status updated successfully!",
+      "errorDesc": "Failed to update card status."
+    }
+  },
+  "loan-management": {
+    "title": "Loan Management",
+    "viewLoans": "View Loans",
+    "approveLoan": "Approve Loan",
+    "rejectLoan": "Reject Loan"
+  },
+  "accounts": {
+    "changeFriendlyName": "Change Account Name",
+    "changeFriendlyNameSubtitle": "Update the name for Main Account",
+    "accountName": "Account Name",
+    "accountNumber": "Account Number",
+    "saveChanges": "Save Changes",
+    "cancel": "Cancel",
+    "changeButton": "Change name",
+    "favoriteButton": "Favorite",
+    "favoritedButton": "Favorited",
+    "hideButton": "Hide",
+    "showButton": "Show",
+    "title": "My Accounts",
+    "subtitle": "Manage your accounts, set favorites, and control visibility",
+    "errorMessage": "Failed to fetch the data",
+    "warningHeader": "No Data Found",
+    "warningMessage": "We couldn't find any data to display.",
+    "warningBtn": "Go Back"
+  }
 }

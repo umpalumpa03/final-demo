@@ -1,0 +1,30 @@
+<section class="finances-breakdown">
+  <div class="finances-breakdown__card">
+    <div class="finances-breakdown__header">
+      <h3 class="breakdown-title">
+        {{ 'my-finances.finances.charts.category_breakdown' | translate }}
+      </h3>
+      <p class="breakdown-subtitle">
+        {{ 'my-finances.finances.charts.category_breakdown_desc' | translate }}
+      </p>
+    </div>
+
+    <div class="finances-breakdown__list">
+      @for (item of categories(); track item.category) {
+      <app-category-item
+        [label]="item.category"
+        [amount]="item.amount"
+        [percentage]="item.percentage"
+        [color]="item.color"
+        [icon]="item.icon || ''"
+      ></app-category-item>
+      } @empty { 
+        @if (!loading()) {
+          <p class="no-data">
+            {{ 'my-finances.finances.errors.no_data' | translate }}
+          </p>
+        } 
+      }
+    </div>
+  </div>
+</section>

@@ -22,8 +22,8 @@
     @include display-flex(column);
     align-items: center;
     position: fixed;
-    top: 2rem;
     left: 1.5rem;
+    top: 1.2rem;
     z-index: 200;
   }
 
@@ -118,7 +118,6 @@
     background: $white;
     border: none;
     border-radius: 50%;
-    // z-index: 25;
     box-shadow: 0px 2px 4px rgba($black, 0.1);
     cursor: pointer;
 
@@ -137,7 +136,7 @@
     @include flex-center(row, flex-start, center);
     gap: 1.2rem;
     min-height: 6.5rem;
-    padding: 0 1.6rem;
+    padding: 1.2rem 1.6rem;
     cursor: pointer;
     text-decoration: none;
 
@@ -157,11 +156,24 @@
     flex-shrink: 0;
   }
 
+  &__header-info {
+    @include display-flex(column);
+    gap: 0.1rem;
+    overflow: hidden;
+  }
+
   &__header-title {
     @include font-inter(600, 2rem);
+    line-height: 1.2;
     color: var(--color-fg);
     white-space: nowrap;
-    overflow: hidden;
+  }
+
+  &__header-slogan {
+    @include font-inter(400, 1rem);
+    color: $gray-800;
+    white-space: nowrap;
+    opacity: 0.8;
   }
 
   app-navigation-bar {
@@ -222,5 +234,23 @@
     inset: 0;
     background: rgba($white, 0.85);
     z-index: 300;
+  }
+}
+.confirm-account {
+  @include display-flex(column);
+  width: 100%;
+
+  &__header {
+    margin-bottom: 2.4rem;
+  }
+
+  &__footer {
+    @include flex-center($justify: flex-end);
+    gap: 0.8rem;
+    margin-top: 2.4rem;
+
+    app-button {
+      min-width: 10rem;
+    }
   }
 }

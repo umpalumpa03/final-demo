@@ -2,16 +2,25 @@
 @use './app/shared/styles/variables' as *;
 @use './app/shared/styles/palette' as *;
 @use './app/shared/styles/themes' as *;
-
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+:root {
+  --body-font-family: 'Inter', sans-serif;
+}
 
 html {
   font-size: 62.5%;
 }
 
-body {
-  font-family: $primary-font;
+[lang='ka'] {
+  --body-font-family: 'Noto Sans Georgian', sans-serif !important;
 }
+
+body {
+  font-family: var(--body-font-family) !important;
+}
+
 .global-bank-wrapper {
   height: calc(100vh - 6.5rem);
   width: 100%;

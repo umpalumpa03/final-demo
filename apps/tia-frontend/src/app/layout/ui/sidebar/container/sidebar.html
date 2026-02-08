@@ -45,7 +45,12 @@
   <a class="sidebar__header" routerLink="/bank/dashboard">
     <div class="sidebar__header-icon">T</div>
     @if (!isCollapsed()) {
-    <div class="sidebar__header-title">TIA</div>
+    <div class="sidebar__header-info">
+      <div class="sidebar__header-title">TIA</div>
+      <div class="sidebar__header-slogan">
+        A Single Source of Truth for Finance
+      </div>
+    </div>
     }
   </a>
 
@@ -68,20 +73,25 @@
   </footer>
 </aside>
 } @if (showLogoutConfirm() && !isLoggingOut()) {
-<div class="sidebar__overlay">
-  <app-alerts-with-actions
-    [alertTitle]="''"
-    [alertMessage]="'sidebar.sidebar.logout.message' | translate"
-    [alertType]="'default'"
-  >
-    <app-button variant="outline" (click)="cancelLogout()">
-      {{ 'common.buttons.cancel' | translate }}
-    </app-button>
-    <app-button variant="default" (click)="confirmLogout()">
-      {{ 'common.buttons.logout' | translate }}
-    </app-button>
-  </app-alerts-with-actions>
-</div>
+<app-ui-modal [isOpen]="showLogoutConfirm()" (closed)="cancelLogout()">
+  <div class="confirm-account">
+    <header class="confirm-account__header">
+      <app-library-title
+        [title]="'sidebar.sidebar.logout.title' | translate"
+        [subtitle]="'sidebar.sidebar.logout.message' | translate"
+      ></app-library-title>
+    </header>
+
+    <footer class="confirm-account__footer">
+      <app-button variant="outline" (click)="cancelLogout()">
+        {{ 'common.buttons.cancel' | translate }}
+      </app-button>
+      <app-button (click)="confirmLogout()">
+        {{ 'common.buttons.logout' | translate }}
+      </app-button>
+    </footer>
+  </div>
+</app-ui-modal>
 } @if (isLoggingOut()) {
 <div class="sidebar__loader-overlay">
   <app-route-loader variant="pulsing"></app-route-loader>

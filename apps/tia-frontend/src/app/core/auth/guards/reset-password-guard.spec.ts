@@ -16,8 +16,8 @@ describe('ResetPasswordGuard', () => {
     });
   });
 
-  it('returns true when accessToken exists and no refreshToken', () => {
-    TestBed.overrideProvider(TokenService as any, { useValue: { accessToken: 'a', refreshToken: null } });
+  it('returns true when resetPasswordToken exists', () => {
+    TestBed.overrideProvider(TokenService as any, { useValue: { resetPasswordToken: 'reset-token' } });
     const result = TestBed.runInInjectionContext(() => ResetPasswordGuard({} as any, {} as any));
     expect(result).toBe(true);
   });

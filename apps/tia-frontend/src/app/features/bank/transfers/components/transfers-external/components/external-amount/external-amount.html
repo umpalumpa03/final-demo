@@ -4,7 +4,7 @@
       {{ 'transfers.external.amount.title' | translate }}
     </h1>
   </header>
- 
+
   <section class="external-amount__summary">
     <div class="external-amount__summary-grid">
       <div
@@ -27,13 +27,13 @@
           </div>
         </div>
       </div>
- 
+
       <div class="external-amount__summary-divider">
         <div class="external-amount__transfer-circle">
           <img src="images/svg/transfers/transfer.svg" alt="transfer" />
         </div>
       </div>
- 
+
       <div
         class="external-amount__summary-item external-amount__summary-item--to"
       >
@@ -61,9 +61,9 @@
       </div>
     </div>
   </section>
- 
+
   <div class="external-amount__divider"></div>
- 
+
   <section class="external-amount__form">
     <div class="external-amount__input-group">
       <lib-text-input
@@ -71,7 +71,7 @@
         [config]="amountConfig()"
         type="number"
       />
- 
+
       <div class="external-amount__info-row">
         <p class="external-amount__available">
           {{ 'transfers.external.amount.available' | translate }}
@@ -79,7 +79,7 @@
             >{{ availableBalance() | number: '1.2-2' }} {{ currency() }}</span
           >
         </p>
- 
+
         <div class="external-amount__fee-wrapper">
           @if (isFeeLoading() && amountInput.value) {
           <span class="external-amount__fee-loading">
@@ -94,7 +94,7 @@
             >
           </div>
           }
- 
+
           <div class="external-amount__fee-item">
             <span>{{ 'transfers.external.amount.total' | translate }}:</span>
             <strong
@@ -105,14 +105,14 @@
           }
         </div>
       </div>
- 
+
       @if (hasInsufficientBalance() && amountInput.value) {
       <p class="external-amount__error">
         {{ 'transfers.external.amount.insufficientBalance' | translate }}
       </p>
       }
     </div>
- 
+
     <div class="external-amount__input-group">
       <lib-text-input
         [formControl]="descriptionInput"
@@ -120,7 +120,7 @@
       />
     </div>
   </section>
- 
+
   <footer class="external-amount__footer">
     <app-button
       variant="outline"
@@ -131,7 +131,7 @@
       <img src="images/svg/transfers/go-back.svg" alt="back" />
       {{ 'common.buttons.back' | translate }}
     </app-button>
- 
+
     <app-tooltip
       [content]="'transfers.external.amount.enterValidAmount' | translate"
       placement="top"
@@ -158,45 +158,28 @@
   (closed)="onSuccessDone()"
   (done)="onSuccessDone()"
 ></app-success-modal>
-<!-- <app-otp-modal
-  [isOpen]="requiresOtp()"
-  [title]="'Verify Transfer'"
-  [description]="'Enter the code sent to your phone.'"
-  [verifyOtpTitle]="'Verify'"
-  [isLoading]="isLoading()"
-  [hasResend]="true"
-  [resendText]="'Didn\'t receive the code?'"
-  (closed)="onOtpClose()"
-  (verify)="onOtpVerify($event)"
-  (resend)="onResendOtp()"
-></app-otp-modal> -->
- 
 <app-ui-modal [isOpen]="requiresOtp()" (closed)="onOtpClose()">
+  @if(isLoading() && !noAttemptsLeft()) {
+  <div class="external-amount__otp-loader">
+    <app-route-loader variant="pulsing"></app-route-loader>
+  </div>
+  }
   <app-otp-verification
     type="otp"
     (isVerifyCalled)="onOtpVerify($event)"
     (isResendCalled)="resendOtp($event)"
     timerType="otp"
+    (onBackOut)="onOtpClose()"
     [timeLimit]="1"
     [errorMessage]="errorFromState()"
-    [remainingAttempts]="5"
+    [customRemainingAttempts]="3"
     [inputOtpConfig]="otpConfig"
     [isBtnRowDirection]="true"
+    (customError)="handleNoMoreAttempts()"
+    redirectUrl="/bank/transfers"
+    redirectText="Transfers Page"
   ></app-otp-verification>
 </app-ui-modal>
-<!-- //type - otp
-(isVerifyCalled) -> returns output on verify click
-(isResendCalled) -<> returns output on resend links
-////
-if in component resend logic is needed see below
-timerType="otp" -> MUST
-[timeLimit]="1" -> MUST
-[remainingAttempts]="5" ->mMUST
-///
-[errorMessage]="errorFromState()" -> error meesage
-[inputOtpConfig]="otpConfig" -> all different data
-[isBtnRowDirection]="true" -> false becomes columns -->
- 
 @if (showSuccess()) {
 <div class="external-amount__success-toast">
   <app-alert-types-with-icons
@@ -210,13 +193,11 @@ timerType="otp" -> MUST
 </div>
 }
 <!-- only need to show when no otp needed// -->
-@if(showError() && errorFromState()) {
+@if(showError() && errorFromState() && !requiresOtp()) {
 <div class="external-amount__error-toast">
   <app-alert-types-with-icons
     [alertType]="'error'"
     [alertMessage]="'transfers.external.amount.transferError' | translate"
   ></app-alert-types-with-icons>
 </div>
- 
 }
- 

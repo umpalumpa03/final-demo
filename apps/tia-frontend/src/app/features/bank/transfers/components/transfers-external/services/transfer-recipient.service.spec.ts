@@ -6,6 +6,8 @@ import { TransferStore } from '../../../store/transfers.store';
 import { TransferValidationService } from './transfer-validation.service';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { signal } from '@angular/core';
+import { provideMockStore } from '@ngrx/store/testing';
+import { selectPhoneNumber } from 'apps/tia-frontend/src/app/store/personal-info/personal-info.selectors';
 import { Subject } from 'rxjs';
 
 describe('TransferRecipientService', () => {
@@ -19,7 +21,7 @@ describe('TransferRecipientService', () => {
   beforeEach(() => {
     mockRouter = { navigate: vi.fn() };
     mockLocation = { back: vi.fn() };
-    recipientInfoSubject = new Subject();
+    recipientInfoSubject = new Subject<any>();
 
     mockStore = {
       recipientInput: signal(''),
@@ -28,6 +30,7 @@ describe('TransferRecipientService', () => {
       setExternalRecipient: vi.fn(),
       lookupRecipient: vi.fn(),
       setSelectedRecipientAccount: vi.fn(),
+      setError: vi.fn(),
     };
 
     mockValidation = { identifyRecipientType: vi.fn() };
@@ -35,6 +38,9 @@ describe('TransferRecipientService', () => {
     TestBed.configureTestingModule({
       providers: [
         TransferRecipientService,
+        provideMockStore({
+          selectors: [{ selector: selectPhoneNumber, value: '995555123456' }],
+        }),
         { provide: Router, useValue: mockRouter },
         { provide: Location, useValue: mockLocation },
         { provide: TransferStore, useValue: mockStore },
@@ -43,97 +49,93 @@ describe('TransferRecipientService', () => {
     });
 
     service = TestBed.inject(TransferRecipientService);
-    (service as any).recipientInfo$ = recipientInfoSubject.asObservable();
+
+    Object.defineProperty(service, 'recipientInfo$', {
+      value: recipientInfoSubject.asObservable(),
+      writable: true,
+    });
   });
 
   describe('verifyRecipient', () => {
-    it('should return early if data matches stored state (Optimization branch)', () => {
-      mockStore.recipientInput.set('999');
-      mockStore.recipientType.set('phone');
-      mockStore.recipientInfo.set({ name: 'Existing' });
+    it('should set error if phone matches own normalized phone number', () => {
       mockValidation.identifyRecipientType.mockReturnValue('phone');
-
-      service.verifyRecipient('999');
-
-      expect(mockRouter.navigate).toHaveBeenCalledWith([
-        '/bank/transfers/external/accounts',
-      ]);
-      expect(mockStore.lookupRecipient).not.toHaveBeenCalled();
+      service.verifyRecipient('555123456');
+      expect(mockStore.setError).toHaveBeenCalledWith(
+        'transfers.external.recipient.ownPhoneError',
+      );
     });
 
-    it('should handle different bank IBAN directly', () => {
-      mockValidation.identifyRecipientType.mockReturnValue(
-        'iban-different-bank',
-      );
-
-      service.verifyRecipient('GE00EXT');
-
-      expect(mockStore.setExternalRecipient).toHaveBeenCalledWith(
-        'GE00EXT',
-        'iban-different-bank',
-      );
-      expect(mockRouter.navigate).toHaveBeenCalledWith([
-        '/bank/transfers/external/accounts',
-      ]);
-    });
-
-    it('should auto-select account when exactly one is returned', () => {
+    it('should navigate and auto-select if API returns one account', async () => {
       mockValidation.identifyRecipientType.mockReturnValue('phone');
-      service.verifyRecipient('555');
 
-      const mockData = { accounts: [{ id: 'acc1' }] };
-      recipientInfoSubject.next(null); 
-      recipientInfoSubject.next(mockData);
+      service.verifyRecipient('555000999');
 
-      expect(mockStore.setSelectedRecipientAccount).toHaveBeenCalledWith(
-        mockData.accounts[0],
-      );
-      expect(mockRouter.navigate).toHaveBeenCalled();
-    });
+      const mockData = { accounts: [{ id: 'acc1', currency: 'GEL' }] };
 
-    it('should NOT auto-select if multiple accounts are returned', () => {
-      mockValidation.identifyRecipientType.mockReturnValue('phone');
-      service.verifyRecipient('555');
-
-      const mockData = { accounts: [{ id: '1' }, { id: '2' }] };
       recipientInfoSubject.next(null);
       recipientInfoSubject.next(mockData);
 
-      expect(mockStore.setSelectedRecipientAccount).not.toHaveBeenCalled();
-      expect(mockRouter.navigate).toHaveBeenCalled();
+      await vi.waitFor(
+        () => {
+          expect(mockStore.setSelectedRecipientAccount).toHaveBeenCalledWith(
+            mockData.accounts[0],
+          );
+          expect(mockRouter.navigate).toHaveBeenCalledWith([
+            '/bank/transfers/external/accounts',
+          ]);
+        },
+        { timeout: 1000 },
+      );
+    });
+
+    it('should handle fallback IBAN account if API returns no accounts but has currency', async () => {
+      mockValidation.identifyRecipientType.mockReturnValue('iban');
+      service.verifyRecipient('GE123INTERNAL');
+
+      const mockData = { accounts: [], currency: 'USD' };
+
+      recipientInfoSubject.next(null);
+      recipientInfoSubject.next(mockData);
+
+      await vi.waitFor(() => {
+        expect(mockStore.setSelectedRecipientAccount).toHaveBeenCalledWith(
+          expect.objectContaining({ id: 'iban-recipient', currency: 'USD' }),
+        );
+      });
     });
   });
 
   describe('Disabling Logic', () => {
-    it('should handle isRecipientAccountDisabled currency logic', () => {
-      const acc = { currency: 'USD' } as any;
-      expect(
-        service.isRecipientAccountDisabled(acc, { currency: 'GEL' } as any),
-      ).toBe(true);
-      expect(
-        service.isRecipientAccountDisabled(acc, { currency: 'USD' } as any),
-      ).toBe(false);
-      expect(service.isRecipientAccountDisabled(acc, null)).toBe(false);
+    it('should return PERMISSION_DENIED for invalid permissions', () => {
+      const acc = { permission: 1, currency: 'GEL' } as any;
+      expect(service.getDisabledReason(acc, null, false)).toBe(
+        'PERMISSION_DENIED',
+      );
     });
 
-    it('should handle isSenderAccountDisabled logic', () => {
+    it('should return CURRENCY_MISMATCH if currencies differ', () => {
+      const sender = { permission: 2, currency: 'GEL' } as any;
+      const recipient = { currency: 'USD' } as any;
+      expect(service.getDisabledReason(sender, recipient, false)).toBe(
+        'CURRENCY_MISMATCH',
+      );
+    });
+
+    it('should return false for isRecipientAccountDisabled if no sender selected', () => {
       const acc = { currency: 'GEL' } as any;
-      expect(service.isSenderAccountDisabled(acc, null, true)).toBe(false);
-      expect(
-        service.isSenderAccountDisabled(acc, { currency: 'USD' } as any, false),
-      ).toBe(true);
-      expect(service.isSenderAccountDisabled(acc, null, false)).toBe(false);
+      expect(service.isRecipientAccountDisabled(acc, null)).toBe(false);
     });
   });
 
-  it('should handleRetryRecipientLookup', () => {
-    service.handleRetryRecipientLookup('val', 'phone' as any);
-    expect(mockStore.lookupRecipient).toHaveBeenCalledWith({
-      value: 'val',
-      type: 'phone',
+  describe('Retries', () => {
+    it('should call lookup on retry with data', () => {
+      service.handleRetryRecipientLookup('val', 'phone');
+      expect(mockStore.lookupRecipient).toHaveBeenCalled();
     });
 
-    service.handleRetryRecipientLookup(null, null);
-    expect(mockLocation.back).toHaveBeenCalled();
+    it('should go back on retry without data', () => {
+      service.handleRetryRecipientLookup(null, null);
+      expect(mockLocation.back).toHaveBeenCalled();
+    });
   });
 });

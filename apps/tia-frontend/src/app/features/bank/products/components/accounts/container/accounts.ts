@@ -21,6 +21,7 @@ import {
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import {
   selectAccountsGrouped,
+  selectAccounts,
   selectError,
   selectIsLoading,
   selectIsFetching,
@@ -76,6 +77,7 @@ export class Accounts implements OnInit {
   protected readonly accountsGroupedSignal = this.store.selectSignal(
     selectAccountsGrouped,
   );
+  protected readonly accountsSignal = this.store.selectSignal(selectAccounts);
   protected readonly isLoadingSignal = this.store.selectSignal(selectIsLoading);
   protected readonly isCreatingAccountSignal =
     this.store.selectSignal(selectIsCreating);
@@ -156,9 +158,29 @@ export class Accounts implements OnInit {
     }
   }
 
-  public handleTransfer(accountId: string): void {
-    this.store.dispatch(AccountsActions.selectAccount({ accountId }));
-    this.router.navigate(['/bank/transfers/internal']);
+  public handleTransfer(data: {
+    accountId: string;
+    permissionValue: number;
+  }): void {
+    const accounts = this.accountsSignal();
+    const account = accounts?.find((acc) => acc.id === data.accountId) || null;
+    this.store.dispatch(AccountsActions.selectAccount({ account }));
+
+    const permissionMap: { [key: number]: string } = {
+      1: '/bank/transfers/internal',
+      2: '/bank/transfers/external',
+      4: '/bank/transfers/external',
+      8: '/bank/paybill',
+      16: '/bank/paybill',
+      32: '/bank/loans',
+    };
+
+    const route = permissionMap[data.permissionValue];
+    if (route) {
+      this.router.navigate([route], {
+        queryParams: { accountId: data.accountId },
+      });
+    }
   }
 
   public handleRetry(): void {

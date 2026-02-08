@@ -1,3 +1,4 @@
+@let cfg = loanPrepayment;
 <div class="prepayment-step">
     <header class="prepayment-step__header">
         <div class="prepayment-step__header-icon">
@@ -11,16 +12,15 @@
         <h4 class="prepayment-step__section-title">{{ 'loans.prepayment_wizard.step_setup.section' | translate }}</h4>
 
         <div class="prepayment-step__form-grid">
-            <lib-select [config]="cfg().typeSelect" [options]="(typeOptions()) ?? []" formControlName="type">
+            <lib-select [config]="cfg.select()" [options]="(typeOptions()) ?? []" formControlName="type">
             </lib-select>
 
-            <lib-text-input type="number" [config]="cfg().amountInput" formControlName="amount">
+            <lib-text-input type="number" [config]="cfg.amountInput()" formControlName="amount">
             </lib-text-input>
         </div>
 
         <div class="prepayment-step__radios">
-            <lib-radios [config]="cfg().calculationRadios" [options]="calculationOptions()"
-                formControlName="calculationOption">
+            <lib-radios [config]="cfg.calcRadios()" [options]="cfg.radioOptions()" formControlName="calculationOption">
             </lib-radios>
         </div>
     </form>

@@ -1,13 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoanCard } from './loan-card';
 import { ILoan } from '../../models/loan.model';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { LOAN_ICONS } from '../../config/loan-icons.config';
 
 describe('LoanCard', () => {
   let component: LoanCard;
   let fixture: ComponentFixture<LoanCard>;
-
   const baseLoan: ILoan = {
     id: '1',
     loanAmount: 5000,
@@ -26,11 +25,14 @@ describe('LoanCard', () => {
     await TestBed.configureTestingModule({
       imports: [LoanCard],
     }).compileComponents();
-
     fixture = TestBed.createComponent(LoanCard);
     component = fixture.componentInstance;
-
     updateInput(baseLoan);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   function updateInput(
@@ -46,49 +48,55 @@ describe('LoanCard', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should handle Status 2 (Approved) - Colored', () => {
-    updateInput({ ...baseLoan, status: 2 }, 'colored');
-
+  it('should handle Default Variant config', () => {
+    updateInput(baseLoan, 'default');
     const config = (component as any).config();
 
-    expect(config.badgeClass).toBe('badge--approved');
-    expect(config.iconSrc).toBe(LOAN_ICONS.approve);
-    expect(config.iconClass).toBe('card__icon--green');
-    expect((component as any).showPaymentDetails()).toBe(true);
-  });
-
-  it('should handle Default Case (Unknown Status) - Colored', () => {
-    updateInput({ ...baseLoan, status: 99 }, 'colored');
-
-    const config = (component as any).config();
-
-    expect(config.badgeClass).toBe('badge--gray');
-    expect(config.iconSrc).toBe(LOAN_ICONS.default);
     expect(config.iconClass).toBe('card__icon--blue');
+    expect(config.iconSrc).toBe(LOAN_ICONS.default);
   });
 
-  // it('should enable edit mode and focus input', async () => {
-  //   const event = { stopPropagation: vi.fn() } as any;
+  it('should enable edit mode and focus', () => {
+    vi.useFakeTimers();
+    const mockEvent = { stopPropagation: vi.fn() } as any;
 
-  //   (component as any).isEditing.set(false);
-  //   (component as any).enableEdit(event);
-  //   fixture.detectChanges();
+    (component as any).enableEdit(mockEvent);
 
-  //   expect(event.stopPropagation).toHaveBeenCalled();
-  //   expect((component as any).isEditing()).toBe(true);
+    expect(mockEvent.stopPropagation).toHaveBeenCalled();
+    expect((component as any).isEditing()).toBe(true);
+    expect((component as any).nameControl.value).toBe(baseLoan.friendlyName);
 
-  //   expect((component as any).nameControl.value).toBe('My Loan');
+    vi.advanceTimersByTime(1);
+  });
 
-  //   await new Promise((resolve) => setTimeout(resolve, 0));
-  // });
-
-  it('should emit rename if name changed and valid', () => {
+  it('should not save if not in editing mode', () => {
     const spy = vi.spyOn(component.rename, 'emit');
-    (component as any).nameControl.setValue('New Name');
+    (component as any).isEditing.set(false);
 
     (component as any).onSave();
 
-    expect(spy).toHaveBeenCalledWith({ id: '1', name: 'New Name' });
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('should not save if name is invalid', () => {
+    const spy = vi.spyOn(component.rename, 'emit');
+    (component as any).isEditing.set(true);
+    (component as any).nameControl.setValue('');
+
+    (component as any).onSave();
+
+    expect(spy).not.toHaveBeenCalled();
+    expect((component as any).isEditing()).toBe(true);
+  });
+
+  it('should close edit mode but NOT emit if name is unchanged', () => {
+    const spy = vi.spyOn(component.rename, 'emit');
+    (component as any).isEditing.set(true);
+    (component as any).nameControl.setValue(baseLoan.friendlyName);
+
+    (component as any).onSave();
+
+    expect(spy).not.toHaveBeenCalled();
     expect((component as any).isEditing()).toBe(false);
   });
 });

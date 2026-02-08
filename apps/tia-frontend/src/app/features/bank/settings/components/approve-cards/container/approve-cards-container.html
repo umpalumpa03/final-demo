@@ -1,1 +1,10 @@
-<h1>approve cards container</h1>
+@let newCfg = userState.newConfig();
+<app-basic-card
+  maxWidth="100%"
+  height="fit-content"
+  padding="2.4rem"
+  [title]="newCfg.title"
+  [subtitle]="newCfg.subtitle"
+>
+  <app-approve-cards></app-approve-cards>
+</app-basic-card>

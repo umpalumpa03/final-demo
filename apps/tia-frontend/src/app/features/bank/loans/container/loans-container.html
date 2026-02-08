@@ -31,12 +31,40 @@
         </div>
         }
 
+
         <div [style.display]="isLoading() ? 'none' : 'block'">
+            <div class="loans-filter-row">
+                <lib-text-input type="search" (valueChange)="onSearch($event)"
+                    [config]="loanDashboardState.searchCfg()"></lib-text-input>
+
+                @if (activeAccountName()) {
+                <div class="loans-filter-badge">
+                    <app-badges variant="default" [text]="activeAccountName() || ''" size="medium" shape="rounded"
+                        [dismissible]="true" (dismissed)="onDismissAccountFilter()">
+                    </app-badges>
+                </div>
+                }
+            </div>
+
             <router-outlet></router-outlet>
         </div>
+
         @if (isModalOpen()) {
-        <app-request-modal [isOpen]="isModalOpen()" (close)="isModalOpen.set(false)">
-        </app-request-modal>
+        <app-request-modal [isOpen]="isModalOpen()" (close)="isModalOpen.set(false)" />
         }
+
+        @if (store.isDetailsOpen()) {
+        <app-loan-details [isOpen]="store.isDetailsOpen()" [loan]="store.selectedLoanDetails()"
+            [isLoading]="store.detailsLoading()" (calculatePrepayment)="store.openPrepayment($event)"
+            (close)="store.closeModals()" (navigate)="store.navigateDetails($event)">
+        </app-loan-details>
+        }
+
+        <app-ui-modal [isOpen]="store.isPrepaymentOpen()" (closed)="store.closeModals()">
+            @let prepayLoan = store.activePrepaymentLoan();
+            @if (prepayLoan) {
+            <app-prepayment-container [loan]="prepayLoan" (close)="store.closeModals()" />
+            }
+        </app-ui-modal>
     </main>
 </div>

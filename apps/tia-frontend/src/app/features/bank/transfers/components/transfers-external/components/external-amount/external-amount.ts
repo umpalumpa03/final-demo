@@ -22,7 +22,6 @@ import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/break
 import { tap } from 'rxjs';
 import { SuccessModal } from '@tia/shared/lib/overlay/ui-success-modal/ui-success-modal';
 import { Router } from '@angular/router';
-import { OtpModal } from '@tia/shared/lib/overlay/ui-otp-modal/otp-modal';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
@@ -80,7 +79,7 @@ export class ExternalAmount implements OnInit {
   public readonly requiresOtp = this.transferStore.requiresOtp;
   public readonly errorFromState = this.transferStore.error;
   public readonly otpConfig = transferOtpConfig['extrenal'];
-  
+  public readonly noAttemptsLeft = signal(false);
 
   public readonly isExternalIban = computed(
     () => this.transferStore.recipientType() === 'iban-different-bank',
@@ -197,6 +196,7 @@ export class ExternalAmount implements OnInit {
   }
   public onOtpClose(): void {
     this.transferStore.setRequiresOtp(false);
+    this.noAttemptsLeft.set(false);
   }
   public onOtpVerify(event: IVerified): void {
     const otpCode = event.otp;
@@ -206,8 +206,13 @@ export class ExternalAmount implements OnInit {
   }
   public onResendOtp(): void {}
 
-
   public resendOtp(isCalled: boolean): void {
     // console.log(isCalled);
+  }
+  public handleNoMoreAttempts(): void {
+    this.noAttemptsLeft.set(true);
+    setTimeout(() => {
+      this.transferStore.reset();
+    }, 3000);
   }
 }
