@@ -1,5 +1,4 @@
 @use "../../../../../reset" as *;
-@use "../../../styles/variables" as *;
 @use "../../../styles/palette" as *;
 @use "../../../styles/mixins" as *;
 
@@ -51,6 +50,35 @@ $field-height: 3.6rem;
     &--readonly {
       cursor: not-allowed;
     }
+  }
+
+  &__caps-indicator {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    right: 4rem;
+
+    width: 2.4rem;
+    height: 2.4rem;
+
+    @include flex-center;
+
+    background-color: $blue-400;
+    border-radius: 0.6rem;
+  }
+
+  &__caps-icon {
+    width: 1.6rem;
+    height: 1.6rem;
+
+    background-image: url("/images/svg/library-input/capslock.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7498%) hue-rotate(326deg) brightness(101%)
+      contrast(101%);
   }
 
   &__icon {

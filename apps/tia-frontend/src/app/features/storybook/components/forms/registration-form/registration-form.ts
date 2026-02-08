@@ -124,6 +124,7 @@ export class RegistrationForm {
       firstName: ['', [Validators.required, Validators.minLength(2)]],
       lastName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
+      birthday: ['', Validators.required],
       password: ['', [passwordValidator]],
       confirmPassword: ['', [Validators.required]],
       username: [
@@ -304,7 +305,17 @@ export class RegistrationForm {
       return;
     }
 
-    const regRequest = { ...this.registrationForm.value };
+    const birthDay = this.registrationForm
+        .value.birthday
+        ?.split('-')
+        .reverse()
+        .join('-');
+
+    const regRequest = {
+      ...this.registrationForm.value,
+      birthday: birthDay,
+    };
+
     if ('confirmPassword' in regRequest) delete regRequest['confirmPassword'];
 
     this.submitRegistrationForm.emit(regRequest as IRegistrationForm);
