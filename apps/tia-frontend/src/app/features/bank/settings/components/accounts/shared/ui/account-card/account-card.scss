@@ -7,6 +7,11 @@
   &__inner {
     @include flex-center($justify: space-between);
     gap: 1.6rem;
+
+    @media (max-width: 768px) {
+      @include flex-center(column, $align: flex-start);
+      gap: 1rem;
+    }
   }
 
   &__left {
@@ -41,13 +46,14 @@
     text-overflow: ellipsis;
   }
 
-  &__number, &__type {
+  &__number,
+  &__type {
     @include font-inter(400, 1.4rem);
     color: $gray-700;
   }
 
   &__meta {
-	@include flex-center($justify: flex-start);
+    @include flex-center($justify: flex-start);
     gap: 0.8rem;
   }
 
@@ -59,16 +65,8 @@
   &__actions {
     @include flex-center();
     gap: 0.8rem;
-  }
 
-  @media (max-width: 640px) {
-    &__inner {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-
-    &__actions {
+    @media (max-width: 768px) {
       width: 100%;
       justify-content: space-between;
     }

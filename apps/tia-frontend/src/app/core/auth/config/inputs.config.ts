@@ -9,6 +9,9 @@ export const SIGN_IN_FORM = {
     label: 'auth.sign-in.passwordLabel',
     placeholder: 'auth.sign-in.usernamePlaceholder',
   },
+  checkbox: {
+    label: 'auth.sign-in.checkbox',
+  },
 } as const;
 
 export const OTP_VERIFY_FORM = {

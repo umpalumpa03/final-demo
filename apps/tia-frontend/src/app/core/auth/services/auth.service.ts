@@ -390,4 +390,12 @@ export class AuthService {
     this.tokenService.clearAuthToken();
     this.stopInactivityMonitoring();
   }
+
+  public initialUsername(): string {
+    return localStorage.getItem('credentials.username') || '';
+  }
+
+  public initialCheckboxValue(): boolean {
+    return Boolean(localStorage.getItem('credentials.save')) || false;
+  }
 }
