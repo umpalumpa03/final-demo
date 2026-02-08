@@ -52,6 +52,7 @@ export class ProfilePhotoComponent {
   public readonly dragLeave = output<DragEvent>();
   public readonly fileDrop = output<DragEvent>();
   public readonly fileInputChange = output<Event>();
+  public readonly imageError = output<void>();
 
   public onFileButtonClick(): void {
     this.openUploadModal.emit();
@@ -59,5 +60,9 @@ export class ProfilePhotoComponent {
 
   public onDefaultAvatarClick(avatarId: string): void {
     this.selectDefaultAvatar.emit(avatarId);
+  }
+
+  public onImageError(): void {
+    this.imageError.emit();
   }
 }

@@ -146,6 +146,7 @@ export class AuthService {
           this.stopInactivityMonitoring();
           this.tokenService.clearAuthToken();
           this.tokenService.clearUserInfo();
+          this.store.dispatch(UserInfoActions.logout());
           this.router.navigate([Routes.SIGN_IN]);
         }
       }),

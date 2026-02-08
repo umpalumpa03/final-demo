@@ -566,5 +566,11 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
       );
     }
   }
+
+  public onImageLoadError(): void {
+    // Clear the avatar URL when image fails to load (e.g., bad request, not found)
+    // This will cause the component to fall back to showing initials
+    this.store.dispatch(ProfilePhotoActions.clearCurrentAvatar());
+  }
 }
 

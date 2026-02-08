@@ -28,6 +28,7 @@
             [src]="photoUrl()!"
             alt="Profile photo"
             class="profile-photo__avatar-main-image"
+            (error)="onImageError()"
           />
           } @else if (defaultAvatarsLoading()) {
           <app-spinner size="6rem"></app-spinner>
