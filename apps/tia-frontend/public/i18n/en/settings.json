@@ -22,6 +22,7 @@
     "georgian": "Georgian",
     "saveSuccess": "Language updated successfully!",
     "saveError": "Failed to update language. Please try again.",
+    "saveChanges": "Save Changes",
     "languages": {
       "en": {
         "location": "Global",
@@ -55,7 +56,8 @@
     "dark": "Dark",
     "system": "System",
     "saveSuccess": "Theme saved successfully!",
-    "saveError": "Failed to save theme. Please try again."
+    "saveError": "Failed to save theme. Please try again.",
+    "saveChanges": "Save Changes"
   },
   "profile-photo": {
     "title": "Profile Photo",
