@@ -26,7 +26,7 @@ export type BadgeDotType = 'online' | 'away' | 'offline' | 'live';
 
 export type BadgeSkill =
   | 'javascript'
-  | 'react'
+  | 'angular'
   | 'nodejs'
   | 'typescript'
   | 'css'
