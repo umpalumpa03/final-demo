@@ -18,6 +18,7 @@ export class UiModal {
 
   public hasNavigation = input<boolean>(false);
   public navigate = output<number>();
+  public hasScroll = input<boolean>(false);
 
   public close(): void {
     this.closed.emit();

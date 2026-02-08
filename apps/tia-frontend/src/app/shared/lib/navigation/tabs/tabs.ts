@@ -12,4 +12,5 @@ import { TabItem } from '../models/tab.model';
 export class Tabs {
   public readonly tabs = input<TabItem[]>();
   public readonly orientation = input<'horizontal' | 'vertical'>('horizontal');
+  public readonly hasQueryHandling = input<boolean>(false);
 }

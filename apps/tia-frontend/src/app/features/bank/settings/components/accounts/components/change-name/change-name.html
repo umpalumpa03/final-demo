@@ -1,0 +1,55 @@
+<app-ui-modal [isOpen]="isOpen()" (closed)="onClose()">
+  <header>
+    <div class="modal-header">
+      <img
+        class="modal-header__icon"
+        src="images/svg/settings/account-management/edit.svg"
+      />
+      <h1 class="modal-header__title">
+        {{ 'settings.accounts.changeFriendlyName' | translate }}
+      </h1>
+    </div>
+    <p class="modal-header__subtitle">
+      {{ 'settings.accounts.changeFriendlyNameSubtitle' | translate:{ name:
+      initialName() } }}
+    </p>
+  </header>
+
+  <main class="main">
+    <form [formGroup]="nameForm" (ngSubmit)="onSubmit()" class="main__edit">
+      <label class="main__edit__label"
+        >{{ 'settings.accounts.accountName' | translate }}</label
+      >
+      <div>
+        <lib-text-input
+          formControlName="name"
+          [config]="{placeholder: initialName()}"
+        ></lib-text-input>
+      </div>
+
+      <div class="main__edit__account-number">
+        <label class="main__edit__label"
+          >{{ 'settings.accounts.accountNumber' | translate }}</label
+        >
+        <div class="main__edit__account-number__number">
+          <span>{{ accountNumber(initialAccountNumber()) }}</span>
+        </div>
+      </div>
+    </form>
+  </main>
+
+  <footer>
+    <app-button [variant]="actions.modal.cancel.variant" (click)="onClose()">
+      {{ actions.modal.cancel.label | translate }}
+    </app-button>
+    <app-button
+      [iconWidth]="actions.modal.save.iconWidth"
+      [variant]="actions.modal.save.variant"
+      [icon]="actions.modal.save.icon"
+      [isDisabled]="nameForm.invalid"
+      (click)="onSubmit()"
+    >
+      {{ actions.modal.save.label | translate }}
+    </app-button>
+  </footer>
+</app-ui-modal>

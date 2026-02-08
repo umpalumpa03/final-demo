@@ -119,9 +119,9 @@
       "cancel": "Cancel"
     },
     "form": {
-      "type_label": "Prepayment Type *",
-      "amount_label": "Prepayment Amount *",
-      "calc_option_label": "Calculation Option *"
+      "type_label": "Prepayment Type",
+      "amount_label": "Prepayment Amount",
+      "calc_option_label": "Calculation Option"
     },
     "radio_options": {
       "reduce_monthly_label": "Reduce Monthly Payment",

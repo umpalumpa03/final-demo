@@ -15,6 +15,7 @@ export type BadgeStatus =
   | 'premium'
   | 'done'
   | 'todo'
+  | 'favorite'
   | (string & {});
 
 export type BadgeSize = 'small' | 'medium' | 'large';

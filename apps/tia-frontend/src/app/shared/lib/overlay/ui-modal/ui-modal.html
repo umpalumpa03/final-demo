@@ -12,8 +12,8 @@
   </button>
   }
 
-  <div class="ui-modal__card" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" role="dialog"
-    aria-modal="true" tabindex="0">
+  <div class="ui-modal__card" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()"
+    [class.ui-modal__card--scroll]="hasScroll()" role="dialog" aria-modal="true" tabindex="0">
     <button type="button" class="ui-modal__close" (click)="close()" aria-label="Close">
       <span class="ui-modal__close-icon"></span>
     </button>

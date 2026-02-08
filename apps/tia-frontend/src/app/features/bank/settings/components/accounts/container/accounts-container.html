@@ -1,1 +1,92 @@
-<h1>accounts container</h1>
+@let accounts = store.accounts();
+@let error = store.error();
+@let success = store.successMessage();
+
+@if (error || success) {
+  <div class="fade-alert-container fade-alert--visible">
+    <app-dismissible-alerts
+      [alertType]="error ? 'error' : 'success'"
+      [alertTitle]="error ? 'Error!' : 'Success!'"
+      [alertMessage]="error ?? success ?? ''"
+    />
+  </div>
+}
+
+<app-settings-body
+  [title]="'settings.accounts.title' | translate"
+  [subTitle]="'settings.accounts.subtitle' | translate"
+>
+  <app-scroll-area
+    height="62rem"
+    [hideBorder]="true"
+    scrollbar="hidden"
+  >
+    @if (store.loading()) {
+      <div class="accounts-skeleton-grid">
+        @for (i of [1,2,3]; track i) {
+          <div class="accounts-card-skeleton">
+            <div class="skeleton-header">
+              <app-skeleton variant="circle" height="4rem" width="4rem"></app-skeleton>
+              <div class="skeleton-titles">
+                <app-skeleton variant="text" height="1.6rem" width="9rem"></app-skeleton>
+                <app-skeleton variant="text" height="1.2rem" width="5rem"></app-skeleton>
+              </div>
+            </div>
+            <div class="skeleton-body">
+              <app-skeleton height="6rem"></app-skeleton>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+        @if (accounts?.length) {
+          @for (item of store.accounts()!; track item.id) {
+            <div class="card-wrapper">
+              <app-account-card
+                [isFavorite]="item.isFavorite"
+                [isHidden]="item.isHidden"
+                [name]="item.friendlyName"
+                [type]="item.type"
+                [iban]="item.iban"
+                [balance]="item.balance"
+                [currency]="item.currency"
+                [isVisibilityLoading]="isVisibilityLoading(item.id)"
+                [isFavoriteLoading]="isFavoriteLoading(item.id)"
+                [isChangeNameLoading]="isChangeNameLoading(item.id)"
+                (clickFaforite)="handleFavorite(item.id, $event)"
+                (clickHideUnhide)="handleVisibility(item.id, $event)"
+                (clickFriendlyName)="openChangeName(item.id, item.friendlyName, item.iban)"
+              ></app-account-card>
+            </div>
+          }
+        } @else {
+        @if(store.error()) {
+          <app-error-states
+            [maxWidth]="errorState.maxWidth"
+            [message]="errorState.error.message"
+            (buttonClick)="failRetryClick()"
+            [border]="false"
+          />
+        } @else {
+          <app-error-states
+            [maxWidth]="errorState.maxWidth"
+            [variant]="errorState.warning.variant"
+            [header]="errorState.warning.header"
+            [message]="errorState.warning.message"
+            [buttonMessage]="errorState.warning.button"
+            [border]="false"
+            (buttonClick)="backButtonClick()"
+          />
+        }
+      }
+    }
+  </app-scroll-area>
+</app-settings-body>
+
+<app-change-name
+  [isOpen]="changeNameOpen()"
+  [initialName]="changeNameInitial()"
+  [initialAccountNumber]="changeNameAccountNumber()"
+  (submit)="submitChangeName($event)"
+  (close)="closeChangeName()"
+></app-change-name>
