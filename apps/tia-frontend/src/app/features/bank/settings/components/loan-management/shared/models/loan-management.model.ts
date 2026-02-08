@@ -3,9 +3,17 @@ export const LOAN_APPROVAL_STATUS = {
   REJECTED: 3,
 } as const;
 
-export type LoanApprovalStatusType =
-  (typeof LOAN_APPROVAL_STATUS)[keyof typeof LOAN_APPROVAL_STATUS];
-export type CreditScoreBadge = 'Poor' | 'Fair' | 'Good' | 'Very Good' | 'Excellent';
+export const CREDIT_SCORE_BADGE = {
+  POOR: 'Poor',
+  FAIR: 'Fair',
+  GOOD: 'Good',
+  VERY_GOOD: 'Very Good',
+  EXCELLENT: 'Excellent',
+} as const;
+
+export type LoanApprovalStatusType = (typeof LOAN_APPROVAL_STATUS)[keyof typeof LOAN_APPROVAL_STATUS];
+
+export type CreditScoreBadge = (typeof CREDIT_SCORE_BADGE)[keyof typeof CREDIT_SCORE_BADGE];
 
 export interface LoanAddress {
   street: string;

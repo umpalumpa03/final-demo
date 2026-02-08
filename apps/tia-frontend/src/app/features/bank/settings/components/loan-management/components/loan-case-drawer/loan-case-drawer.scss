@@ -310,6 +310,77 @@
       opacity: 0.9;
     }
   }
+
+  &__btn {
+    @include flex-center(row, center, center);
+    @include font-inter(500, 1.4rem);
+    height: 3.6rem;
+    gap: 0.8rem;
+    padding: 0 1.6rem;
+    border: 0.1rem solid transparent;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    line-height: 2.4rem;
+    box-sizing: border-box;
+    outline: none;
+    position: relative;
+
+    &--outline {
+      background-color: transparent;
+      border-color: $blue-royal;
+      color: $blue-royal-foreground;
+
+      &:hover:not(:disabled) {
+        background-color: rgba($blue-royal, 0.05);
+      }
+    }
+
+    &--success {
+      background-color: $green-600;
+      color: $white;
+
+      &:hover:not(:disabled) {
+        background-color: $green-900;
+      }
+    }
+
+    &--destructive {
+      background-color: $red-600;
+      color: $white;
+
+      &:hover:not(:disabled) {
+        background-color: $red-700;
+      }
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    &--loading {
+      opacity: 0.5;
+      cursor: wait;
+      pointer-events: none;
+    }
+  }
+
+  &__btn-spinner {
+    width: 1.8rem;
+    height: 1.8rem;
+    border: 0.2rem solid currentColor;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    animation: btn-rotate 0.8s linear infinite;
+  }
+}
+
+@keyframes btn-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @media (max-width: 1024px) {
@@ -397,10 +468,8 @@
 
 @media (max-width: 780px) {
   .loan-drawer {
-    width: 100%;
-    max-width: 100%;
-    max-height: 100vh;
-    border-radius: 0;
+    width: 38rem;
+    max-width: 92vw;
 
     &__header {
       padding: 1rem 1.25rem;
@@ -494,13 +563,345 @@
     }
 
     &__footer {
-      flex-direction: column;
-      padding: 0.75rem 1rem;
-      gap: 0.5rem;
+      gap: 0.75rem;
+      padding: 0.875rem 1.25rem;
+    }
 
-      app-button {
-        width: 100%;
+    &__btn {
+      height: 3.2rem;
+      padding: 0 1.2rem;
+      font-size: 1.2rem;
+    }
+
+    &__decline-btn {
+      height: 3.2rem;
+      padding: 0 1.2rem;
+      @include font-inter(500, 1.2rem);
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .loan-drawer {
+    width: 32rem;
+    max-width: 90vw;
+
+    &__header {
+      padding: 0.875rem 1rem;
+    }
+
+    &__header-icon {
+      width: 3rem;
+      height: 3rem;
+
+      svg,
+      img {
+        width: 1.8rem;
+        height: 1.8rem;
       }
+    }
+
+    &__title {
+      font-size: 1rem;
+    }
+
+    &__subtitle {
+      font-size: 0.85rem;
+    }
+
+    &__close-btn {
+      width: 2.4rem;
+      height: 2.4rem;
+
+      svg,
+      img {
+        width: 1.4rem;
+        height: 1.4rem;
+      }
+    }
+
+    &__content {
+      padding: 0.875rem 1rem;
+    }
+
+    &__section {
+      margin-bottom: 1rem;
+
+      &--decline {
+        padding: 1rem;
+        margin-top: 1rem;
+      }
+    }
+
+    &__section-header {
+      gap: 0.5rem;
+      margin-bottom: 0.875rem;
+    }
+
+    &__section-icon {
+      width: 1.4rem;
+      height: 1.4rem;
+
+      svg,
+      img {
+        width: 1.4rem;
+        height: 1.4rem;
+      }
+    }
+
+    &__section-title {
+      font-size: 0.95rem;
+    }
+
+    &__fields {
+      row-gap: 1rem;
+    }
+
+    &__field {
+      gap: 0.3rem;
+    }
+
+    &__label,
+    &__risk-label {
+      font-size: 0.85rem;
+    }
+
+    &__value,
+    &__risk-value {
+      font-size: 1rem;
+    }
+
+    &__card {
+      padding: 0.875rem;
+      border-radius: 0.6rem;
+    }
+
+    &__risk-card {
+      border-radius: 0.6rem;
+    }
+
+    &__risk-row {
+      padding: 0.5rem 0.875rem;
+      margin-bottom: 0.875rem;
+    }
+
+    &__textarea {
+      min-height: 8rem;
+      padding: 0.75rem;
+      font-size: 1.2rem;
+      margin-top: 0.75rem;
+    }
+
+    &__footer {
+      gap: 0.625rem;
+      padding: 0.75rem 1rem;
+    }
+
+    &__btn {
+      height: 3rem;
+      padding: 0 1rem;
+      font-size: 1.1rem;
+    }
+
+    &__action-icon {
+      @include svg-icon(1.3rem);
+    }
+
+    &__decline-btn {
+      height: 3rem;
+      padding: 0 1rem;
+      @include font-inter(500, 1.1rem);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .loan-drawer {
+    width: 28rem;
+    max-width: 88vw;
+
+    &__header {
+      padding: 0.75rem 0.875rem;
+    }
+
+    &__title {
+      font-size: 0.95rem;
+    }
+
+    &__subtitle {
+      font-size: 0.8rem;
+    }
+
+    &__content {
+      padding: 0.75rem 0.875rem;
+    }
+
+    &__label,
+    &__risk-label {
+      font-size: 0.8rem;
+    }
+
+    &__value,
+    &__risk-value {
+      font-size: 0.95rem;
+    }
+
+    &__textarea {
+      min-height: 7rem;
+      font-size: 1.1rem;
+    }
+
+    &__footer {
+      @include flex-center(column, center, center);
+      gap: 0.5rem;
+      padding: 0.625rem 0.875rem;
+    }
+
+    &__btn {
+      width: 70%;
+      font-size: 1.4rem;
+    }
+
+    &__action-icon {
+      @include svg-icon(1.2rem);
+    }
+
+    &__decline-btn {
+      width: 70%;
+      @include font-inter(500, 1.4rem);
+    }
+  }
+}
+
+@media (max-width: 360px) {
+  .loan-drawer {
+    width: 26rem;
+    max-width: 86vw;
+
+    &__header {
+      padding: 0.625rem 0.75rem;
+    }
+
+    &__header-icon {
+      width: 2.6rem;
+      height: 2.6rem;
+
+      svg,
+      img {
+        width: 1.6rem;
+        height: 1.6rem;
+      }
+    }
+
+    &__title {
+      font-size: 0.9rem;
+    }
+
+    &__subtitle {
+      font-size: 0.75rem;
+    }
+
+    &__close-btn {
+      width: 2.2rem;
+      height: 2.2rem;
+
+      svg,
+      img {
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+    }
+
+    &__content {
+      padding: 0.625rem 0.75rem;
+    }
+
+    &__section {
+      margin-bottom: 0.875rem;
+
+      &--decline {
+        padding: 0.875rem;
+        margin-top: 0.875rem;
+      }
+    }
+
+    &__section-header {
+      gap: 0.4rem;
+      margin-bottom: 0.75rem;
+    }
+
+    &__section-icon {
+      width: 1.2rem;
+      height: 1.2rem;
+
+      svg,
+      img {
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+    }
+
+    &__section-title {
+      font-size: 0.875rem;
+    }
+
+    &__fields {
+      row-gap: 0.875rem;
+    }
+
+    &__field {
+      gap: 0.25rem;
+    }
+
+    &__label,
+    &__risk-label {
+      font-size: 0.75rem;
+    }
+
+    &__value,
+    &__risk-value {
+      font-size: 0.875rem;
+    }
+
+    &__card {
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+    }
+
+    &__risk-card {
+      border-radius: 0.5rem;
+    }
+
+    &__risk-row {
+      padding: 0.4rem 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    &__textarea {
+      min-height: 6.5rem;
+      padding: 0.625rem;
+      font-size: 1rem;
+      margin-top: 0.625rem;
+    }
+
+    &__footer {
+      @include flex-center(column, center, center);
+      gap: 0.4rem;
+      padding: 0.5rem 0.75rem;
+    }
+
+    &__btn {
+      width: 70%;
+      font-size: 1.4rem;
+    }
+
+    &__action-icon {
+      @include svg-icon(1rem);
+    }
+
+    &__decline-btn {
+      width: 70%;
+      @include font-inter(500, 1.4rem);
     }
   }
 }

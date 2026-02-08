@@ -167,12 +167,12 @@
 
     <footer class="loan-drawer__footer">
       @if (!showDeclineForm()) {
-        <app-button
-          variant="outline"
+        <button
+          class="loan-drawer__btn loan-drawer__btn--outline"
           (click)="onClose()"
         >
           {{ labels().close }}
-        </app-button>
+        </button>
         <button
           class="loan-drawer__decline-btn"
           [disabled]="!loanDetails() || isActionLoading()"
@@ -186,35 +186,43 @@
           />
           {{ labels().decline }}
         </button>
-        <app-button
-          variant="success"
-          [isDisabled]="!canApprove()"
-          [isLoading]="isActionLoading()"
+        <button
+          class="loan-drawer__btn loan-drawer__btn--success"
+          [class.loan-drawer__btn--loading]="isActionLoading()"
+          [disabled]="!canApprove()"
           (click)="onApprove()"
         >
-          <img
-            class="loan-drawer__action-icon"
-            src="images/svg/button-icons/approve.svg"
-            alt="Approve"
-          />
-          {{ labels().approve }}
-        </app-button>
+          @if (isActionLoading()) {
+            <span class="loan-drawer__btn-spinner"></span>
+          } @else {
+            <img
+              class="loan-drawer__action-icon"
+              src="images/svg/button-icons/approve.svg"
+              alt="Approve"
+            />
+            {{ labels().approve }}
+          }
+        </button>
       } @else {
-        <app-button
-          variant="outline"
-          [isDisabled]="isActionLoading()"
+        <button
+          class="loan-drawer__btn loan-drawer__btn--outline"
+          [disabled]="isActionLoading()"
           (click)="onCancelDecline()"
         >
           {{ labels().cancel }}
-        </app-button>
-        <app-button
-          variant="destructive"
-          [isDisabled]="!canDecline()"
-          [isLoading]="isActionLoading()"
+        </button>
+        <button
+          class="loan-drawer__btn loan-drawer__btn--destructive"
+          [class.loan-drawer__btn--loading]="isActionLoading()"
+          [disabled]="!canDecline()"
           (click)="onConfirmDecline()"
         >
-          {{ labels().confirmDecline }}
-        </app-button>
+          @if (isActionLoading()) {
+            <span class="loan-drawer__btn-spinner"></span>
+          } @else {
+            {{ labels().confirmDecline }}
+          }
+        </button>
       }
     </footer>
   </div>

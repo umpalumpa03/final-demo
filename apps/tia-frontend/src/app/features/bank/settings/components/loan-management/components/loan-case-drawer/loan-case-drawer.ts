@@ -16,7 +16,6 @@ import {
   PendingApproval,
   UserInfo,
 } from '../../shared/models/loan-management.model';
-import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 import { BadgeCustomColor } from '@tia/shared/lib/primitives/badges/models/badges.models';
@@ -25,7 +24,6 @@ import { useLoanDrawerConfig } from '../../shared/config/loan-drawer.config';
 @Component({
   selector: 'app-loan-case-drawer',
   imports: [
-    ButtonComponent,
     Skeleton,
     CurrencyPipe,
     DatePipe,
