@@ -108,7 +108,50 @@
   },
   "forms": {},
   "cards": {},
-  "alerts": {},
+  "alerts": {
+    "TITLES": {
+      "PAGE_MAIN": "Alerts & Notifications",
+      "PAGE_SUB": "Alert components for displaying important messages to users",
+      "BASIC": "Basic Alerts",
+      "ICONS": "Alert Types with Icons",
+      "DISMISSIBLE": "Dismissible Alerts",
+      "ACTIONS": "Alerts with Actions",
+      "SIMPLE": "Simple Alerts (No Title)",
+      "STATES": "Alert States"
+    },
+    "DATA": {
+      "DEFAULT_TITLE": "Default Alert",
+      "DEFAULT_MSG": "This is a default alert with important information.",
+      "ERROR_TITLE": "Error Alert",
+      "ERROR_MSG": "This is an error alert indicating something went wrong.",
+      "SUCCESS_SAVE": "Your changes have been saved successfully!",
+      "CONFIRM_ACTION": "Confirm Action",
+      "CONFIRM_MSG": "This action cannot be undone. Are you sure you want to continue?",
+      
+      "NEW_FEATURE_TITLE": "New Feature Available",
+      "NEW_FEATURE_MSG": "Check out our latest updates and improvements.",
+      "PROFILE_UPDATE_TITLE": "Profile Updated",
+      "PAYMENT_TITLE": "Payment Due Soon",
+      "PAYMENT_MSG": "Your subscription will renew in 3 days.",
+
+      "UPDATE_TITLE": "Update Available",
+      "UPDATE_MSG": "A new version of the application is available.",
+      "BTN_UPDATE": "Update Now",
+      "BTN_LATER": "Remind Me Later",
+      "BTN_CONFIRM": "Confirm",
+      "BTN_CANCEL": "Cancel",
+
+      "SIMPLE_INFO_MSG": "This is a simple informational message without a title.",
+      "SAVE_WORK_MSG": "Please save your work before closing.",
+
+      "NORMAL_STATE_TITLE": "Normal State",
+      "NORMAL_STATE_MSG": "This is the normal state of an alert.",
+      "INACTIVE_STATE_TITLE": "Dimmed/Inactive State",
+      "INACTIVE_STATE_MSG": "This alert appears dimmed or inactive.",
+      "ACTIVE_STATE_TITLE": "Emphasized State",
+      "ACTIVE_STATE_MSG": "This alert is emphasized with stronger borders and shadow."
+    }
+  },
   "badges": {
     "title": "Badges",
     "subtitle": "Badge components for labels, status indicators, and counts",
