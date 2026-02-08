@@ -28,6 +28,10 @@ export class TransfersAccountCard {
   private isAccount(data: AccountData): data is Account {
     return 'balance' in data;
   }
+  protected readonly isFavorite = computed(() => {
+    const data = this.cardData();
+    return this.isAccount(data) && data.isFavorite;
+  });
 
   protected readonly displayName = computed(() => {
     const data = this.cardData();

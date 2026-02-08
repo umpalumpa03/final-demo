@@ -64,9 +64,7 @@
   }
 
   &__footer {
-    @include display-flex(row);
-    justify-content: space-between;
-    align-items: center;
+    @include flex-center(row, end, center);
     gap: 1.6rem;
     margin-top: 4rem;
     padding-top: 2.4rem;

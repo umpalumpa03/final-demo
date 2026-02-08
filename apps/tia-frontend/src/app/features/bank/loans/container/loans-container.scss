@@ -51,6 +51,12 @@
             }
         }
     }
+
+    .loans-filter-row {
+        @include display-flex(column);
+        gap: 0.8rem;
+        margin-bottom: 1.6rem;
+    }
 }
 
 .loans-alert-positioner {

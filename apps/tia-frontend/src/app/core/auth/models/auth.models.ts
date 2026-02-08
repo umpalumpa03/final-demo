@@ -11,4 +11,5 @@ export interface IFeature {
   features: IFeaturePanel[];
 }
 
-export type TimerType =  "phone" | "otp"
+export type TimerType = 'phone' | 'otp';
+export type Credentials = { username?: string; save?: boolean };

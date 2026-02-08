@@ -13,7 +13,8 @@
     "stay": "Stay",
     "leave": "Leave",
     "ungrouped": "Ungrouped",
-    "resend": "Resend"
+    "resend": "Resend",
+    "swap": "Swap Accounts"
   },
   "labels": {
     "loading": "Loading...",
@@ -43,5 +44,13 @@
     "paybills": "Paybill",
     "settings": "Settings",
     "messaging": "Messaging"
+  },
+  "no-connection": {
+    "title": "No Internet Connection",
+    "description": "Your device is currently offline. Please check your internet connection and try again."
+  },
+  "reconnected": {
+    "title": "Connection Restored",
+    "description": "Your internet connection has been restored successfully."
   }
 }

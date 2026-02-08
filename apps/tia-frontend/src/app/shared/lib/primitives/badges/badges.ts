@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import {
   BadgeSize,
   BadgeStatus,
@@ -29,6 +30,8 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Badges {
+  private readonly translate = inject(TranslateService, { optional: true });
+
   public readonly variant = input<BadgeVariant>();
   public readonly text = input<string>('');
   public readonly status = input<BadgeStatus>();
@@ -127,21 +130,34 @@ export class Badges {
   public readonly badgeText = computed(() => {
     const currentStatus = this.status();
     if (currentStatus) {
+      if (this.translate) {
+        const statusKey = currentStatus === 'in-progress' ? 'inProgress' : currentStatus;
+        return this.translate.instant(`storybook.badges.status.${statusKey}`) || statusTextMap[currentStatus];
+      }
       return statusTextMap[currentStatus];
     }
 
     const currentDot = this.dot();
     if (currentDot) {
+      if (this.translate) {
+        return this.translate.instant(`storybook.badges.dot.${currentDot}`) || dotTextMap[currentDot];
+      }
       return dotTextMap[currentDot];
     }
 
     const skillKey = this.skill();
     if (skillKey) {
+      if (this.translate) {
+        return this.translate.instant(`storybook.badges.skills.${skillKey}`) || skillPresetMap[skillKey].text;
+      }
       return skillPresetMap[skillKey].text;
     }
 
     const categoryKey = this.category();
     if (categoryKey) {
+      if (this.translate) {
+        return this.translate.instant(`storybook.badges.categories.${categoryKey}`) || categoryPresetMap[categoryKey].text;
+      }
       return categoryPresetMap[categoryKey].text;
     }
 

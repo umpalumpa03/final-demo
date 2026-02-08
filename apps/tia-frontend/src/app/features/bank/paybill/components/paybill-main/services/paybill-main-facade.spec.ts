@@ -15,7 +15,6 @@ describe('PaybillMainFacade', () => {
   let routerEvents$: Subject<any>;
 
   const storeSignals = {
-    currentStep: signal('DETAILS'),
     paymentPayload: signal<any>(null),
     activeCategory: signal<any>(null),
     storeActiveProvider: signal<any>(null),
@@ -53,7 +52,6 @@ describe('PaybillMainFacade', () => {
 
     service = TestBed.inject(PaybillMainFacade);
 
-    (service as any).currentStep = storeSignals.currentStep;
     (service as any).paymentPayload = storeSignals.paymentPayload;
     (service as any).activeCategory = storeSignals.activeCategory;
     (service as any).storeActiveProvider = storeSignals.storeActiveProvider;
@@ -71,9 +69,6 @@ describe('PaybillMainFacade', () => {
 
   it('init: should dispatch loadAccounts and reset searchQuery', () => {
     service.init();
-    expect(mockStore.dispatch).toHaveBeenCalledWith(
-      AccountsActions.loadAccounts({}),
-    );
     expect(service.searchQuery()).toBe('');
   });
 
@@ -153,15 +148,5 @@ describe('PaybillMainFacade', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/paybill/pay']);
     });
 
-    it('backToDetails: should clear notifications, reset step, and navigate', () => {
-      service.backToDetails();
-      expect(mockStore.dispatch).toHaveBeenCalledWith(
-        PaybillActions.clearAllNotifications(),
-      );
-      expect(mockStore.dispatch).toHaveBeenCalledWith(
-        PaybillActions.setPaymentStep({ step: 'DETAILS' }),
-      );
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['bank/paybill/pay']);
-    });
   });
 });

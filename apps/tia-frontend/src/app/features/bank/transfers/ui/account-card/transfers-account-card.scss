@@ -32,6 +32,10 @@
       background: $blue-ocean-secondary;
       border-color: $blue-ocean;
     }
+
+    .transfers-account-card__favorite {
+      border-color: $blue-ocean;
+    }
   }
 
   &--disabled {
@@ -63,6 +67,27 @@
     .transfers-account-card__iban {
       color: $gray-400;
     }
+  }
+
+  // --- Favorite Badge Styles ---
+  &__favorite {
+    @include flex-center();
+    position: absolute;
+    top: -1rem;
+    left: 1.2rem;
+    width: 2.8rem;
+    height: 2.8rem;
+    background: $white;
+    border: 0.2rem solid $gray-200;
+    border-radius: 50%;
+    box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.08);
+    z-index: 2;
+    transition: all 0.2s ease;
+  }
+
+  &__favorite-icon {
+    @include svg-icon(1.6rem);
+
   }
 
   &__icon {
@@ -152,6 +177,13 @@
     align-items: flex-start;
     padding: 1.6rem;
     gap: 1.2rem;
+
+    &__favorite {
+      top: -0.8rem;
+      left: 1rem;
+      width: 2.4rem;
+      height: 2.4rem;
+    }
 
     &__icon {
       width: 4.8rem;

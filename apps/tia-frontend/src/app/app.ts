@@ -8,8 +8,10 @@ import { RouterModule } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { RouteLoader } from './shared/lib/feedback/route-loader/route-loader';
 import { NavigationService } from './core/services/navigation/navigation.service';
+import { NoConnection } from "./features/no-connection/container/no-connection";
+
 @Component({
-  imports: [RouterModule, RouteLoader],
+  imports: [RouterModule, RouteLoader, NoConnection],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',

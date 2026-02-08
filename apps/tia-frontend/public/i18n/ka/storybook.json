@@ -109,9 +109,179 @@
   "forms": {},
   "cards": {},
   "alerts": {},
-  "badges": {},
+  "badges": {
+    "title": "ბეიჯები",
+    "subtitle": "ბეიჯის კომპონენტები ეტიკეტების, სტატუსის ინდიკატორებისა და რაოდენობებისთვის",
+    "sections": {
+      "variants": "ვარიანტები",
+      "statusBadges": "სტატუსის ბეიჯები",
+      "sizes": "ზომები",
+      "countBadges": "რაოდენობის ბეიჯები",
+      "interactiveBadges": "ინტერაქტიული ბეიჯები (გაუქმებადი)",
+      "pillBadges": "მომრგვალო/კაფსულის ფორმის ბეიჯები",
+      "dotIndicators": "წერტილოვანი ინდიკატორებით",
+      "badgeGroups": "ბეიჯების ჯგუფები",
+      "badgeStates": "ბეიჯების მდგომარეობები",
+      "customColors": "მორგებული ფერები",
+      "skills": "უნარები:",
+      "categories": "კატეგორიები:"
+    },
+    "variants": {
+      "default": "ნაგულისხმევი",
+      "secondary": "მეორადი",
+      "destructive": "გაუქმებადი",
+      "outline": "კონტური"
+    },
+    "sizes": {
+      "small": "პატარა",
+      "medium": "საშუალო",
+      "large": "დიდი"
+    },
+    "countBadges": {
+      "messages": "შეტყობინებები",
+      "notifications": "სიახლეები",
+      "updates": "განახლებები",
+      "cartItems": "კალათის ელემენტები",
+      "unread": "წაუკითხავი",
+      "new": "ახალი"
+    },
+    "dismissible": {
+      "tag1": "ტეგ 1",
+      "tag2": "ტეგ 2",
+      "tag3": "ტეგ 3",
+      "tag4": "ტეგ 4"
+    },
+    "pillBadges": {
+      "pillShape": "კაფსულის ფორმა",
+      "category": "კატეგორია",
+      "tag": "ტეგი",
+      "angular": "Angular",
+      "typescript": "TypeScript",
+      "css": "CSS",
+      "javascript": "JavaScript"
+    },
+    "badgeStates": {
+      "normal": "სტანდარტული",
+      "hoverMe": "მიიტანეთ მაუსი",
+      "disabled": "გათიშული",
+      "selected": "არჩეული",
+      "default": "ნაგულისხმევი:",
+      "hovered": "მაუსით დაფარული:",
+      "disabledLabel": "გათიშული:",
+      "selectedLabel": "არჩეული:"
+    },
+    "customColors": {
+      "pink": "ვარდისფერი",
+      "indigo": "ინდიგო",
+      "teal": "ცისფერი-მწვანე",
+      "rose": "წითელი",
+      "cyan": "ცისფერი",
+      "amber": "ქარვისფერი",
+      "lime": "ლაიმი",
+      "slate": "მუქი ნაცრისფერი"
+    },
+    "status": {
+      "active": "აქტიური",
+      "pending": "მოლოდინში",
+      "inactive": "არააქტიური",
+      "inProgress": "პროცესშია",
+      "featured": "რეკომენდირებული",
+      "premium": "პრემიუმი",
+      "favorite": "ფავორიტი",
+      "done": "დასრულებული",
+      "todo": "გასაკეთებელი"
+    },
+    "dot": {
+      "online": "აქტიური",
+      "away": "გასული",
+      "offline": "არააქტიური",
+      "live": "პირდაპირი ეთერი"
+    },
+    "skills": {
+      "javascript": "JavaScript",
+      "angular": "Angular",
+      "nodejs": "Node.js",
+      "typescript": "TypeScript",
+      "css": "CSS",
+      "html": "HTML"
+    },
+    "categories": {
+      "technology": "ტექნოლოგია",
+      "design": "დიზაინი",
+      "marketing": "მარკეტინგი"
+    }
+  },
   "tables": {},
-  "navigation": {},
+  "navigation": {
+    "title": "ნავიგაციის კომპონენტები",
+    "subtitle": "ნავიგაციის კომპონენტები, მათ შორის ტაბები, ნავიგაციის ბილიკი და გვერდების გადართვა",
+    "sections": {
+      "tabs": {
+        "title": "ტაბები",
+        "overview": "მიმოხილვა",
+        "analytics": "ანალიტიკა",
+        "reports": "ანგარიშები",
+        "settings": "პარამეტრები",
+        "cardTitle": "მიმოხილვის შინაარსი",
+        "cardContent": "ეს არის მიმოხილვის ტაბის შინაარსი. აქ ნაჩვენებია ზოგადი ინფორმაცია."
+      },
+      "verticalTabs": {
+        "title": "ვერტიკალური ტაბები",
+        "account": "ანგარიში",
+        "notifications": "შეტყობინებები",
+        "preferences": "პრეფერენციები",
+        "cardTitle": "ანგარიშის პარამეტრები",
+        "cardContent": "მართეთ თქვენი ანგარიშის პარამეტრები და პრეფერენციები."
+      },
+      "breadcrumbs": {
+        "title": "ნავიგაციის ბილიკი",
+        "default": "ნაგულისხმევი ბილიკი",
+        "withIcons": "ხატულებით",
+        "longPath": "გრძელი ბილიკი:",
+        "home": "მთავარი",
+        "products": "პროდუქტები",
+        "current": "მიმდინარე გვერდი",
+        "category": "კატეგორიები",
+        "electronics": "ელექტრონიკა",
+        "productDetails": "პროდუქტის დეტალები",
+        "dashboard": "მართვის პანელი",
+        "settings": "პარამეტრები",
+        "security": "უსაფრთხოება",
+        "twoFactorAuth": "ორფაქტორიანი ავთენტიფიკაცია"
+      },
+      "pagination": {
+        "title": "გვერდების გადართვა",
+        "default": "ნაგულისხმევი გადართვა",
+        "withEllipsis": "მრავალწერტილით",
+        "previous": "წინა",
+        "next": "შემდეგი"
+      },
+      "horizontalNavigation": {
+        "title": "ჰორიზონტალური ნავიგაცია",
+        "dashboard": "მართვის პანელი",
+        "projects": "პროექტები",
+        "team": "გუნდი",
+        "calendar": "კალენდარი",
+        "disabled": "გამორთული"
+      },
+      "verticalNavigation": {
+        "title": "ვერტიკალური ნავიგაცია",
+        "home": "მთავარი",
+        "search": "ძიება",
+        "profile": "პროფილი",
+        "notifications": "შეტყობინებები",
+        "settings": "პარამეტრები",
+        "disabled": "გამორთული ელემენტი"
+      },
+      "pillsNavigation": {
+        "title": "ღილაკებით ნავიგაცია",
+        "all": "ყველა",
+        "active": "აქტიური",
+        "completed": "დასრულებული",
+        "archived": "დაარქივებული"
+      }
+    }
+  },
   "feedback": {},
   "layout": {},
   "data-display": {},

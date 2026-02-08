@@ -1,13 +1,17 @@
 <div class="pagination">
-  <h4 class="pagination__title">Default Pagination:</h4>
+  <h4 class="pagination__title">{{ 'storybook.navigation.sections.pagination.default' | translate }}:</h4>
   <app-pagination
     [currentPage]="defaultCurrentPage()"
     [totalPages]="defaultTotalPages()"
     (pageChange)="onDefaultPageChange($event)"
+    [config]="{
+          previousLabel: translate.instant('storybook.navigation.sections.pagination.previous'),
+          nextLabel: translate.instant('storybook.navigation.sections.pagination.next')
+    }"
   ></app-pagination>
 </div>
 
-<!-- ეს კომენტარი არის იმისთვის, რომ დაინახოთ როგორ ემუშავება პაგინაციის კომპონენტი 
+<!-- ეს კომენტარი არის იმისთვის, რომ დაინახოთ როგორ ემუშავება პაგინაციის კომპონენტი
 დატას html-ში -->
 
 <!-- <div>
@@ -17,15 +21,15 @@
 </div> -->
 
 <div class="pagination">
-  <h4 class="pagination__title">With Ellipsis:</h4>
+  <h4 class="pagination__title">{{ 'storybook.navigation.sections.pagination.withEllipsis' | translate }}:</h4>
   <app-pagination
     [currentPage]="ellipsisCurrentPage()"
     [totalPages]="ellipsisTotalPages()"
     [config]="{
           showEllipsis: true,
           maxVisiblePages: 7,
-          previousLabel: 'Previous',
-          nextLabel: 'Next'
+          previousLabel: translate.instant('storybook.navigation.sections.pagination.previous'),
+          nextLabel: translate.instant('storybook.navigation.sections.pagination.next')
         }"
     (pageChange)="onEllipsisPageChange($event)"
   ></app-pagination>

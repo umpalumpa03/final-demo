@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TransactionsFilters } from './transactions-filters';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TranslateModule } from '@ngx-translate/core';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('TransactionsFilters', () => {
   let component: TransactionsFilters;
@@ -10,17 +10,18 @@ describe('TransactionsFilters', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        TransactionsFilters, //
-        TranslateModule.forRoot(),
+      imports: [TransactionsFilters, TranslateModule.forRoot()],
+      providers: [
+        { provide: 'ANIMATION_MODULE_TYPE', useValue: 'NoopAnimations' },
       ],
-      providers: [provideAnimationsAsync()],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TransactionsFilters);
     component = fixture.componentInstance;
 
     fixture.componentRef.setInput('categoryOptions', []);
+
     fixture.detectChanges();
   });
 
@@ -40,6 +41,7 @@ describe('TransactionsFilters', () => {
     };
 
     component.filterForm.patchValue(mockFormValue as any);
+
     vi.advanceTimersByTime(400);
 
     expect(emitSpy).toHaveBeenCalledWith(

@@ -1,1 +1,193 @@
-<p>internal-amount works!</p>
+<main class="internal-amount">
+  <header class="internal-amount__header">
+    <h1 class="internal-amount__title">
+      {{ 'transfers.internal.amount.title' | translate }}
+    </h1>
+  </header>
+
+  <section class="internal-amount__summary">
+    <div class="internal-amount__summary-grid">
+      <div class="internal-amount__summary-item internal-amount__summary-item--from">
+        <span class="internal-amount__summary-label">
+          {{ 'transfers.internal.amount.from' | translate }}
+        </span>
+        <div class="internal-amount__summary-content">
+          <div class="internal-amount__summary-icon">
+            <img src="images/svg/transfers/cardicon.svg" alt="account" />
+          </div>
+          <div class="internal-amount__summary-details">
+            <p class="internal-amount__summary-name">
+              {{ selectedSenderAccount()?.friendlyName }}
+            </p>
+            <p class="internal-amount__summary-sub">
+              {{ selectedSenderAccount()?.currency }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="internal-amount__summary-divider">
+        <div class="internal-amount__transfer-circle">
+          <img src="images/svg/transfers/transfer.svg" alt="transfer" />
+        </div>
+      </div>
+
+      <div class="internal-amount__summary-item internal-amount__summary-item--to">
+        <div class="internal-amount__summary-to-wrapper">
+          <span class="internal-amount__summary-label">
+            {{ 'transfers.internal.amount.to' | translate }}
+          </span>
+          <div class="internal-amount__summary-content">
+            <div class="internal-amount__summary-initials">
+              {{ recipientInitials() }}
+            </div>
+            <div class="internal-amount__summary-details">
+              <p class="internal-amount__summary-name">
+                {{ selectedRecipientAccount()?.friendlyName }}
+              </p>
+              <p class="internal-amount__summary-sub">
+                {{ selectedRecipientAccount()?.currency }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="internal-amount__divider"></div>
+
+  <section class="internal-amount__form">
+    <div class="internal-amount__input-group">
+      @if (isConversionMode()) {
+
+        <div class="internal-amount__conversion-header">
+          <h3 class="internal-amount__section-title">
+            {{ 'transfers.internal.amount.currencyExchange' | translate }}
+          </h3>
+          <div class="internal-amount__rate-badge">
+            <span>Rate: 1 {{ selectedSenderAccount()?.currency }} = {{ conversionRate() | number: '1.2-4' }} {{ selectedRecipientAccount()?.currency }}</span>
+          </div>
+        </div>
+
+        <div class="internal-amount__input-group">
+          <lib-text-input
+            [formControl]="amountInput"
+            [config]="sourceAmountConfig()"
+            type="number"
+          />
+        </div>
+
+        <div class="internal-amount__input-group">
+          <lib-text-input
+            [formControl]="destinationAmountInput"
+            [config]="destinationAmountConfig()"
+            type="number"
+          />
+        </div>
+      }
+      @else {
+        <div class="internal-amount__input-group">
+          <lib-text-input
+            [formControl]="amountInput"
+            [config]="amountConfig()"
+            type="number"
+          />
+        </div>
+      }
+
+
+
+      <div class="internal-amount__info-row">
+        <p class="internal-amount__available">
+          {{ 'transfers.internal.amount.available' | translate }}
+          <span>{{ availableBalance() | number: '1.2-2' }} {{ currency() }}</span>
+        </p>
+
+        <div class="internal-amount__fee-wrapper">
+          @if (amountInput.value) {
+            <div class="internal-amount__fee-item">
+              <span>{{ 'transfers.internal.amount.total' | translate }}:</span>
+              <strong>{{ (amountInput.value) | number: '1.2-2' }} {{ currency() }}</strong>
+            </div>
+          }
+        </div>
+      </div>
+
+      @if (hasInsufficientBalance() && amountInput.value) {
+        <p class="internal-amount__error">
+          {{ 'transfers.internal.amount.insufficientBalance' | translate }}
+        </p>
+      }
+    </div>
+
+    <div class="internal-amount__input-group">
+      <lib-text-input
+        [formControl]="descriptionInput"
+        [config]="descriptionConfig()"
+      />
+    </div>
+  </section>
+
+  <footer class="internal-amount__footer">
+    <app-button
+      variant="outline"
+      size="default"
+      [fullWidth]="isMobile()"
+      (click)="onGoBack()"
+    >
+      <img src="images/svg/transfers/go-back.svg" alt="back" />
+      {{ 'common.buttons.back' | translate }}
+    </app-button>
+
+    <app-tooltip
+      [content]="'transfers.internal.amount.enterValidAmount' | translate"
+      placement="top"
+      [disabled]="!isTransferDisabled()"
+    >
+      <app-button
+        variant="default"
+        size="default"
+        [fullWidth]="isMobile()"
+        (click)="onTransfer()"
+        [isDisabled]="isTransferDisabled()"
+      >
+        {{ 'transfers.internal.amount.transferButton' | translate }}
+        <img src="images/svg/transfers/check.svg" alt="check" />
+      </app-button>
+    </app-tooltip>
+  </footer>
+</main>
+
+<app-success-modal
+  [title]="'transfers.confirmation.title' | translate"
+  [description]="'transfers.confirmation.success' | translate"
+  [buttonText]="'common.buttons.close' | translate"
+  [isOpen]="successfulTransfer()"
+  (closed)="onSuccessDone()"
+  (done)="onSuccessDone()"
+></app-success-modal>
+
+@if (showSuccess()) {
+  <div class="internal-amount__success-toast">
+    <app-alert-types-with-icons
+      [alertType]="'success'"
+      [alertMessage]="currentToastMessage() | translate"
+    />
+  </div>
+}
+
+@if (isLoading() && !requiresOtp()) {
+  <div class="internal-amount__loader-overlay">
+    <app-route-loader variant="pulsing"></app-route-loader>
+  </div>
+}
+
+@if (showError() && errorFromState()) {
+  <div class="internal-amount__error-toast">
+    <app-alert-types-with-icons
+      [alertType]="'error'"
+      [alertMessage]="'transfers.internal.amount.transferError' | translate"
+    ></app-alert-types-with-icons>
+  </div>
+}

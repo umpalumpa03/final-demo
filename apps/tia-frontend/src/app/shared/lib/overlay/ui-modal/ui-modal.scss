@@ -79,6 +79,10 @@
       outline: 0.2rem solid var(--color-primary);
       outline-offset: 0.2rem;
     }
+
+    &--scroll {
+      padding-right: 0;
+    }
   }
 
   &__close {
