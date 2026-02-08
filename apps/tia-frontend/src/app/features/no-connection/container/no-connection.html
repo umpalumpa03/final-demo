@@ -1,4 +1,4 @@
-<app-ui-modal [isOpen]="isModalOpen()">
+<app-ui-modal [isOpen]="isModalOpen()" [hideExit]="true">
     <div class="dialog" [class.dialog--reconnected]="isReconnected()">
         <div class="dialog__icon" [class.dialog__icon--reconnected]="isReconnected()">
             @if (isReconnected()) {
