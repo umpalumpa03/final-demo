@@ -26,12 +26,12 @@ describe('personal-info selectors', () => {
   };
 
   it('selectPersonalInfo should return full state', () => {
-    const result = selectPersonalInfo(initialState);
+    const result = selectPersonalInfo.projector(initialState.personalInfo);
     expect(result).toEqual(initialState.personalInfo);
   });
 
   it('selectPId should return pId', () => {
-    const result = selectPId(initialState);
+    const result = selectPId.projector(initialState.personalInfo);
     expect(result).toBe('12345678901');
   });
 
