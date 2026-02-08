@@ -6,6 +6,7 @@ import {
   HostListener,
   inject,
   input,
+  OnInit,
   output,
   signal,
 } from '@angular/core';
@@ -20,7 +21,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   templateUrl: './notifications-container.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NotificationsContainer {
+export class NotificationsContainer implements OnInit {
   readonly store = inject(NotificationsStore);
 
   // From Parent Container Logic to open modal and get notifications element
@@ -41,11 +42,16 @@ export class NotificationsContainer {
     });
   }
 
+  ngOnInit(): void {
+    this.store.fetchUnreadCount();
+  }
+
   // Store Details
   public notificationItems = this.store.items;
   public isLoading = this.store.isLoading;
   public hasError = this.store.hasError;
-  public unreadLeft = this.store.unreadNotificationsNumber;
+  // public unreadLeft = this.store.unreadNotificationsNumber;
+  public unreadLeft = this.store.unreadCount;
   public isFetching = this.store.isFetching;
   public isEmpty = this.store.isEmpty;
 
