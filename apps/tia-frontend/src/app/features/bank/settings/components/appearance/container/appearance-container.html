@@ -29,7 +29,7 @@
     </div>
     }
 </app-settings-body>
-<app-ui-modal [isOpen]="isModalOpen()" (closed)="toggleModal()">
+<app-ui-modal [isOpen]="isModalOpen()" (closed)="onLeave()">
     <div class="confirm-dialog">
         <header class="confirm-dialog__header">
             <h3 class="confirm-dialog__title">{{'common.validation.confirmAction' | translate}}</h3>
