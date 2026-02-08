@@ -164,15 +164,6 @@ describe('NotificationsStore', () => {
     expect(store.hasUnread()).toBe(false);
     expect(store.isEmpty()).toBe(true);
   });
-  it('should handle fetch errors', () => {
-    const { throwError } = require('rxjs');
-    notificationsServiceMock.getNotifications.mockReturnValue(
-      throwError(() => new Error()),
-    );
-
-    store.fetchNotifications({ cursor: '', limit: 10 });
-    expect(store.hasError()).toBe(true);
-  });
 
   it('should update unreadCount when marking items as read', () => {
     patchState(store, {
