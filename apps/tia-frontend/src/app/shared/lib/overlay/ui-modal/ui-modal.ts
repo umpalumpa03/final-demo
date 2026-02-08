@@ -17,6 +17,7 @@ import {
 } from './models/modal-positions.model';
 import {
   calculateModalPositions,
+  ModalPlacement,
   toggleBodyScroll,
 } from './config/ui-modal.config';
 
@@ -46,6 +47,8 @@ export class UiModal implements OnDestroy {
   protected readonly spotlightStyle = signal<Record<string, string>>({});
   protected readonly cardStyle = signal<Record<string, string>>({});
   protected readonly hasTarget = computed(() => !!this.target());
+
+  public readonly placement = input<ModalPlacement>('bottom');
 
   protected get isTracking(): boolean {
     return !!this.target() && this.isOpen();
@@ -79,12 +82,12 @@ export class UiModal implements OnDestroy {
   }
 
   private startObserver(el: HTMLElement): void {
-    toggleBodyScroll(true); // Disable body scroll
+    toggleBodyScroll(true);
     this.updatePosition(el);
 
     this.observer = new ResizeObserver(() => this.updatePosition(el));
     this.observer.observe(el);
-    this.observer.observe(this.document.body); // Track window resize via body
+    this.observer.observe(this.document.body);
   }
 
   private updatePosition(el: HTMLElement): void {
@@ -92,6 +95,7 @@ export class UiModal implements OnDestroy {
       el,
       this.targetPadding(),
       this.targetGap(),
+      this.placement(),
     );
 
     this.spotlightStyle.set(spotlightStyle);
@@ -99,7 +103,7 @@ export class UiModal implements OnDestroy {
   }
 
   private stopTracking(): void {
-    toggleBodyScroll(false); // Enable body scroll
+    toggleBodyScroll(false);
 
     if (this.observer) {
       this.observer.disconnect();
