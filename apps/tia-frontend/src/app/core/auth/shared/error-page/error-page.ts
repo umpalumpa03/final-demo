@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
+  input,
   signal,
 } from '@angular/core';
 import { Router } from '@angular/router';
@@ -16,7 +17,9 @@ import { Routes } from '../../models/tokens.model';
 })
 export class ErrorPage {
   private router = inject(Router);
-  public timer = signal(5);
+  public timer = signal(3);
+  public redirectUrl = input<string>();
+  public redirectText = input<string>();
 
   constructor() {
     this.startTimer();
@@ -28,7 +31,7 @@ export class ErrorPage {
 
       if (this.timer() <= 0) {
         clearInterval(interval);
-        this.router.navigate([Routes.SIGN_IN]);
+        this.router.navigate([this.redirectUrl() || Routes.SIGN_IN]);
       }
     }, 1000);
   }

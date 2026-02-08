@@ -38,8 +38,8 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 import { OTP_VERIFY_FORM } from '../../config/inputs.config';
-import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Routes } from '../../models/tokens.model';
+import { ErrorPage } from '../error-page/error-page';
 
 @Component({
   selector: 'app-otp-verification',
@@ -50,7 +50,7 @@ import { Routes } from '../../models/tokens.model';
     TextInput,
     SimpleAlerts,
     TranslatePipe,
-    RouteLoader,
+    ErrorPage,
   ],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
@@ -70,25 +70,27 @@ export class OtpVerification implements OnInit {
   public noMoreAttempsRedirectRoute = input<string | null>(null);
   public phoneErrorMessage = input<string | null>(null);
   public isBtnRowDirection = input<boolean>(false);
-  public isDisabled = input<boolean>(false);
   public isTimerDisplayed = input<boolean>(true);
   public onErrorRedirect = input<boolean>(true);
   public inputOtpConfig = input<IOtpVerificationConfig>();
+  public redirectUrl = input<string>();
+  public redirectText = input<string>();
+  public isButtonLoading = input<boolean>(false);
 
   public onBackOut = output<void>();
   public onTimeout = output<void>();
   public isVerifyCalled = output<IVerified>();
   public isResendCalled = output<boolean>();
-  public clickedOnCancl = output<void>();
   public customError = output<void>();
 
   public resendTries = signal<number>(3);
   public internalRemainingAttempts = signal<number | null>(null);
-  public isLoading = input(false);
+  public isLoading = signal(false);
   public submitError = signal<string | null>(null);
   public countdown = signal<number>(0);
   public isResendActive = signal<boolean>(false);
   public isLimitExeeded = signal<boolean>(false);
+  public isErrorPageVisible = signal<boolean>(false);
 
   public isHeaderVisible = computed(
     () =>
@@ -214,6 +216,9 @@ export class OtpVerification implements OnInit {
       if (this.effectiveRemainingAttempts() === 0) {
         this.isLimitExeeded.set(true);
         this.customError.emit();
+        if (this.onErrorRedirect()) {
+          this.isErrorPageVisible.set(true);
+        }
       }
     });
 
@@ -237,7 +242,9 @@ export class OtpVerification implements OnInit {
     }
 
     this.countdown.set(this.maxTime());
-    this.startTimer();
+    if (this.isTimerDisplayed()) {
+      this.startTimer();
+    }
   }
 
   private startTimer(): void {
@@ -260,6 +267,10 @@ export class OtpVerification implements OnInit {
   public onSubmit(): void {
     if (this.isButtonDisabled()) {
       return;
+    }
+
+    if (!this.onErrorRedirect() || this.isButtonLoading()) {
+      this.isLoading.set(true);
     }
 
     const currentForm = this.activeForm();
@@ -294,11 +305,16 @@ export class OtpVerification implements OnInit {
       otp: otp,
     });
 
-    setTimeout(() => {
-      this.otpForm.reset();
-    }, 0);
+    if (!this.onErrorRedirect() || this.isButtonLoading()) {
+      setTimeout(() => {
+        this.isLoading.set(false);
+        this.otpForm.reset();
+        this.otpComponent()?.focusFirst();
+      }, 2000);
+    }
 
     setTimeout(() => {
+      this.otpForm.reset();
       this.otpComponent()?.focusFirst();
     }, 0);
   }
