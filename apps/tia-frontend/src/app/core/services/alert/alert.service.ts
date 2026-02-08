@@ -1,4 +1,5 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, NavigationStart } from '@angular/router';
 import { filter } from 'rxjs';
 import {
@@ -28,7 +29,10 @@ export class AlertService {
 
   constructor() {
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationStart))
+      .pipe(
+        filter((event) => event instanceof NavigationStart),
+        takeUntilDestroyed(),
+      )
       .subscribe(() => this.clearAlert());
   }
 
