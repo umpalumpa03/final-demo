@@ -17,6 +17,8 @@ describe('ModalResponsiveService', () => {
   let mockResizeObserver: any;
 
   beforeEach(() => {
+    vi.clearAllMocks();
+
     mockDocument = document.implementation.createHTMLDocument('Test');
 
     if (!mockDocument.body) {
@@ -113,6 +115,7 @@ describe('ModalResponsiveService', () => {
       service.startTracking('hidden-element', 0, 0, 'top', {});
 
       expect(service.isFallback()).toBe(true);
+
       expect(modalConfig.toggleBodyScroll).toHaveBeenCalledWith(false);
     });
   });
@@ -176,14 +179,12 @@ describe('ModalResponsiveService', () => {
 
       (service as any).rafId = 999;
 
-      const cancelSpy = vi.mocked(global.cancelAnimationFrame);
-      const toggleSpy = vi.mocked(modalConfig.toggleBodyScroll);
+      vi.clearAllMocks();
 
       service.stopTracking();
 
-      expect(cancelSpy).toHaveBeenCalledWith(999);
-
-      expect(toggleSpy).toHaveBeenCalledWith(false);
+      expect(global.cancelAnimationFrame).toHaveBeenCalledWith(999);
+      expect(modalConfig.toggleBodyScroll).toHaveBeenCalledWith(false);
     });
 
     it('should handle stopTracking when nothing is tracking', () => {
