@@ -6,6 +6,7 @@ import { ListDisplay } from '@tia/shared/lib/data-display/list-display/list-disp
 import { ListDisplayItem } from '@tia/shared/lib/data-display/models/list-display.models';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
+import { CardCatalogItemResponse } from '../../../approve-cards/shared/model/approve-cards.model';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { startWith, switchMap } from 'rxjs';
 

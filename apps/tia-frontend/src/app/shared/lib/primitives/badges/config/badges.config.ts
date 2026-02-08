@@ -81,7 +81,7 @@ interface CategoryPresetConfig {
 
 export const skillPresetMap: Record<BadgeSkill, BadgePresetConfig> = {
   javascript: { text: 'JavaScript', variant: 'outline' },
-  react: { text: 'React', variant: 'outline' },
+  angular: { text: 'Angular', variant: 'outline' },
   nodejs: { text: 'Node.js', variant: 'outline' },
   typescript: { text: 'TypeScript', variant: 'outline' },
   css: { text: 'CSS', variant: 'outline' },

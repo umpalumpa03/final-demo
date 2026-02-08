@@ -8,10 +8,13 @@ import {
 import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { AccountData } from '../../models/transfers.state.model';
 import { DecimalPipe } from '@angular/common';
+import { DisabledReason } from '../../components/transfers-external/models/transfer.external.model';
+import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-transfers-account-card',
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, Tooltip, TranslatePipe],
   templateUrl: './transfers-account-card.html',
   styleUrl: './transfers-account-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,6 +25,7 @@ export class TransfersAccountCard {
   public icon = input<string | null>(null);
   public isSelected = input<boolean>(false);
   public isDisabled = input<boolean>(false);
+  public disabledReason = input<DisabledReason>(null);
 
   public cardClicked = output<AccountData>();
 
@@ -55,4 +59,14 @@ export class TransfersAccountCard {
       this.cardClicked.emit(this.cardData());
     }
   }
+  protected readonly tooltipMessage = computed(() => {
+    const reason = this.disabledReason();
+    if (reason === 'CURRENCY_MISMATCH') {
+      return 'transfers.external.accounts.reasons.currencyMismatch';
+    }
+    if (reason === 'PERMISSION_DENIED') {
+      return 'transfers.external.accounts.reasons.noPermission';
+    }
+    return null;
+  });
 }
