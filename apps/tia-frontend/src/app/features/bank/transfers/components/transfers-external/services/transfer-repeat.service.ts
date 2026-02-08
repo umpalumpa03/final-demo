@@ -8,6 +8,7 @@ import { TransfersApiService } from '../../../services/transfersApi.service';
 import { TransferValidationService } from './transfer-validation.service';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { TransferMeta } from '../models/transfer.external.model';
+import { Account } from '@tia/shared/models/accounts/accounts.model';
 
 @Injectable()
 export class TransferRepeatService {
@@ -51,7 +52,7 @@ export class TransferRepeatService {
       });
   }
 
-  private handleExternalBank(meta: TransferMeta, senderAccount: any): void {
+  private handleExternalBank(meta: TransferMeta, senderAccount: Account): void {
     this.transferStore.setExternalRecipient(
       meta.recipientIban,
       'iban-different-bank',
@@ -65,7 +66,7 @@ export class TransferRepeatService {
 
   private handleSameBank(
     meta: TransferMeta,
-    senderAccount: any,
+    senderAccount: Account,
     recipientType: 'phone' | 'iban-same-bank',
   ): void {
     this.transferStore.setLoading(true);
