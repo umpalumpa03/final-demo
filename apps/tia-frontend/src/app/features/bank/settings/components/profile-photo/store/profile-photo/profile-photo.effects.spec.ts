@@ -287,7 +287,7 @@ describe('ProfilePhotoEffects', () => {
 
     const result = await promise;
 
-    expect(result).toEqual(ProfilePhotoActions.setUserInitials({ initials: 'J.D' }));
+    expect(result).toEqual(ProfilePhotoActions.setUserInitials({ initials: 'JD' }));
   });
 
   it('should reset profile photo when avatar changes on user load', async () => {

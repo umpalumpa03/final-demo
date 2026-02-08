@@ -403,6 +403,9 @@ describe('ProfilePhotoContainer', () => {
       widgets: [],
       widgetsLoading: false,
       widgetsLoaded: false,
+      hasCompletedOnboarding: false,
+      birthday: null,
+      birthdayModalClosedYear: null,
     });
     store.refreshState();
 
@@ -410,7 +413,7 @@ describe('ProfilePhotoContainer', () => {
     component.onSaveChanges();
 
     expect(dispatchSpy).toHaveBeenCalledWith(ProfilePhotoActions.removeAvatar());
-    expect(dispatchSpy).toHaveBeenCalledWith(ProfilePhotoActions.setUserInitials({ initials: 'J.D' }));
+    expect(dispatchSpy).toHaveBeenCalledWith(ProfilePhotoActions.setUserInitials({ initials: 'JD' }));
   });
 
   it('should handle onPersonalNumberChange', () => {

@@ -160,7 +160,7 @@ describe('profilePhotoFeature reducer', () => {
       savedAvatarUrl: '/avatar-1.svg',
       avatarId: 'avatar-1',
       avatarType: 'default',
-      userInitials: 'J.D',
+      userInitials: 'JD',
       savingChanges: true,
     };
 
@@ -197,10 +197,10 @@ describe('profilePhotoFeature reducer', () => {
   it('should handle setUserInitials', () => {
     const state = profilePhotoFeature.reducer(
       initialState,
-      ProfilePhotoActions.setUserInitials({ initials: 'J.D' }),
+      ProfilePhotoActions.setUserInitials({ initials: 'JD' }),
     );
 
-    expect(state.userInitials).toBe('J.D');
+    expect(state.userInitials).toBe('JD');
   });
 
   it('should handle loadDefaultAvatarsRequest', () => {

@@ -267,7 +267,7 @@ export class ProfilePhotoEffects {
         } else {
           const firstInitial = nameParts[0].charAt(0).toUpperCase();
           const lastInitial = nameParts[nameParts.length - 1].charAt(0).toUpperCase();
-          initials = `${firstInitial}.${lastInitial}`;
+          initials = `${firstInitial}${lastInitial}`;
         }
         
         return ProfilePhotoActions.setUserInitials({ initials });
