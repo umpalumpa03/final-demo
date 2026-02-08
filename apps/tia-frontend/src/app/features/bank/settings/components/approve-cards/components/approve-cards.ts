@@ -23,6 +23,7 @@ import { FormBuilder, FormControl, FormRecord } from '@angular/forms';
 import { IAccountsPermissions } from '../../approve-accounts/models/account-permissions.models';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
+import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 
 @Component({
   selector: 'app-approve-cards',
@@ -34,7 +35,8 @@ import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/contai
     PermissionsModal,
     UiModal,
     ButtonComponent,
-    ScrollArea
+    ScrollArea,
+    AlertTypesWithIcons
   ],
   templateUrl: './approve-cards.html',
   providers: [ApproveCardsStore],

@@ -8,7 +8,7 @@
 
   &__spinner {
     align-self: center;
-    margin-top: 2rem; 
+    margin-top: 2rem;
   }
 }
 
@@ -39,5 +39,24 @@
   &__subtitle {
     @include font-arimo(400, 1.6rem, 2.4rem);
     color: $gray-700;
+  }
+}
+
+.approve-card__alert {
+  position: absolute;
+  z-index: 10;
+  right: 2rem;
+  top: 1rem;
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
 }

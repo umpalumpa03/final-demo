@@ -2,8 +2,9 @@ import { inject } from '@angular/core';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { ApproveAccountsApiService } from '../service/approve-accounts.api.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { pipe, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, pipe, switchMap, tap } from 'rxjs';
 import { initialStateAccountPermissions } from './config/aprove-accounts.state';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export const AccountPermissionsStore = signalStore(
   withState(initialStateAccountPermissions),
@@ -21,17 +22,19 @@ export const AccountPermissionsStore = signalStore(
                   isLoading: false,
                 });
               },
-              error: (err: string) => {
-                console.log(err);
+              error: (err: HttpErrorResponse) => {
+                const errorMsg = err.message || 'Unknown Error';
                 patchState(store, {
                   isLoading: false,
-                  error: err,
+                  error: errorMsg,
                 });
               },
             }),
+            catchError(() => EMPTY),
           ),
         ),
       ),
     ),
   })),
+  
 );

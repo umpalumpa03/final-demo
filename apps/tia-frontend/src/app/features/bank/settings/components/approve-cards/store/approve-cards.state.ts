@@ -6,6 +6,7 @@ export interface ApproveCardsState {
   isLoading: boolean;
   error: string | null;
   filter: 'ALL' | 'URGENT'; 
+  success: string | null;
 }
 
 export const initialApproveCardsState: ApproveCardsState = {
@@ -13,5 +14,6 @@ export const initialApproveCardsState: ApproveCardsState = {
   permissions: [],
   isLoading: false,
   error: null,
-  filter: 'ALL'
+  filter: 'ALL',
+  success: null,
 };

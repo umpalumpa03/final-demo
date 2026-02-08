@@ -43,8 +43,20 @@ export const ApproveCardsStore = signalStore(
         switchMap((request) =>
           service.changeCardStatus(request).pipe(
             tap(() => {
-              const remainingCards = store.cards().filter(card => card.id !== request.cardId)
-              patchState(store, { cards: remainingCards, isLoading: false, error: null });
+              const remainingCards = store
+                .cards()
+                .filter((card) => card.id !== request.cardId);
+
+              patchState(store, {
+                cards: remainingCards,
+                isLoading: false,
+                error: null,
+                success: 'Card status updated successfully!',
+              });
+
+              setTimeout(() => {
+                patchState(store, { success: null });
+              }, 5000);
             }),
           ),
         ),
@@ -53,18 +65,19 @@ export const ApproveCardsStore = signalStore(
 
     loadPerrmisions: rxMethod<void>(
       pipe(
-        tap(() => patchState(store, { isLoading:true, error:null})),
-        switchMap(() => 
+        tap(() => patchState(store, { isLoading: true, error: null })),
+        switchMap(() =>
           service.getCardPermissions().pipe(
-            tap((permissions)=> {
-              patchState(store, { permissions,isLoading:false, error:null})}),
-            catchError((err)=> {
-              patchState(store, {isLoading:false, error:err.message});
+            tap((permissions) => {
+              patchState(store, { permissions, isLoading: false, error: null });
+            }),
+            catchError((err) => {
+              patchState(store, { isLoading: false, error: err.message });
               return of([]);
-            })
-          )
-        )
-      )
-    )
+            }),
+          ),
+        ),
+      ),
+    ),
   })),
 );

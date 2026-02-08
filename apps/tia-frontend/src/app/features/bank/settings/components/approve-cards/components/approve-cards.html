@@ -60,3 +60,12 @@
     </app-ui-modal>
 }
 </app-scroll-area>
+
+@if(store.success()) {
+  <div class="approve-card__alert">
+    <app-alert-types-with-icons
+      [alertType]="'success'"
+      [alertMessage]="store.success()!"
+    ></app-alert-types-with-icons>
+  </div>
+}
