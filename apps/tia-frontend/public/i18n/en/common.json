@@ -13,7 +13,8 @@
     "stay": "Stay",
     "leave": "Leave",
     "ungrouped": "Ungrouped",
-    "resend": "Resend"
+    "resend": "Resend",
+    "swap": "Swap Accounts"
   },
   "labels": {
     "loading": "Loading...",
