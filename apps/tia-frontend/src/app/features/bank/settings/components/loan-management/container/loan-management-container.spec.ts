@@ -5,6 +5,7 @@ import { TranslationLoaderService } from '../../../../../../core/i18n';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { LoanManagementStore } from '../store/loan-management.store';
 
 describe('LoanManagementContainer', () => {
   let component: LoanManagementContainer;
@@ -18,6 +19,7 @@ describe('LoanManagementContainer', () => {
     await TestBed.configureTestingModule({
       imports: [LoanManagementContainer, TranslateModule.forRoot(), HttpClientTestingModule],
       providers: [
+        LoanManagementStore,
         { provide: TranslationLoaderService, useValue: mockTranslationLoader },
       ],
     }).compileComponents();
@@ -33,6 +35,8 @@ describe('LoanManagementContainer', () => {
 
   it('should load pending approvals on init', () => {
     const loadSpy = vi.spyOn(component['store'], 'loadPendingApprovals');
+    const shouldLoadSpy = vi.spyOn(component['store'], 'shouldLoadInitialData');
+    shouldLoadSpy.mockReturnValue(true);
     component.ngOnInit();
     expect(loadSpy).toHaveBeenCalled();
   });

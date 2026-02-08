@@ -244,8 +244,12 @@ describe('LoanCaseDrawer', () => {
       expect(rejectSpy).not.toHaveBeenCalled();
     });
 
-    it('should update decline reason when onReasonChange is called', () => {
-      component.onReasonChange('New reason');
+    it('should update decline reason when onReasonInput is called', () => {
+      const mockEvent = {
+        target: { value: 'New reason' }
+      } as unknown as Event;
+      
+      component.onReasonInput(mockEvent);
       expect(component.declineReason()).toBe('New reason');
     });
   });
