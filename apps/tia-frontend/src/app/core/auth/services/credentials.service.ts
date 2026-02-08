@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-
-export type Credentials = { username?: string; save?: boolean };
+import { Credentials } from '../models/auth.models';
 
 @Injectable({ providedIn: 'root' })
 export class CredentialsService {
