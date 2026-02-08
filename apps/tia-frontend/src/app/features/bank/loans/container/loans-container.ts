@@ -1,10 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   inject,
   signal,
-  computed,
   OnInit,
   OnDestroy,
 } from '@angular/core';
@@ -14,7 +12,6 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RequestModal } from '../shared/ui/request-modal/request-modal';
 import { Store } from '@ngrx/store';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
-import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors'; // Import Selector
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { LoansStore } from '../store/loans.store';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
@@ -26,7 +23,7 @@ import { LoanDetails } from '../shared/ui/prepayment/loan-details/loan-details';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { PrepaymentContainer } from '../shared/ui/prepayment/prepayment-container/prepayment-container';
 import { LoanDashboardState } from '../shared/state/loan-dashboard.state';
-import { Badges } from '@tia/shared/lib/primitives/badges/badges'; // Import Badges
+import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 
 @Component({
   selector: 'app-loans-container',
@@ -52,7 +49,6 @@ export class LoansContainer implements OnInit, OnDestroy {
   private globalStore = inject(Store);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private destroyRef = inject(DestroyRef);
 
   public readonly loanDashboardState = inject(LoanDashboardState);
   protected readonly store = inject(LoansStore);
@@ -90,13 +86,16 @@ export class LoansContainer implements OnInit, OnDestroy {
     this.globalStore.dispatch(AccountsActions.loadAccounts({}));
 
     this.route.queryParams
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((params) => {
-        const accountId = params['accountId'] || null;
+      .pipe(
+        takeUntilDestroyed(),
+        tap((params) => {
+          const accountId = params['accountId'] || null;
 
-        this.accountId.set(accountId);
-        this.store.setAccountFilter(accountId);
-      });
+          this.accountId.set(accountId);
+          this.store.setAccountFilter(accountId);
+        }),
+      )
+      .subscribe();
   }
 
   public onDismissAccountFilter(): void {
