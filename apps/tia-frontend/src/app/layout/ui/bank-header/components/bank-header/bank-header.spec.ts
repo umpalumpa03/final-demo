@@ -1,21 +1,23 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { BankHeader } from './bank-header';
-import { ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 describe('BankHeader', () => {
+  let fixture: ComponentFixture<BankHeader>;
+  let component: BankHeader;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [BankHeader],
       providers: [{ provide: ActivatedRoute, useValue: {} }],
     }).compileComponents();
+
+    fixture = TestBed.createComponent(BankHeader);
+    component = fixture.componentInstance;
   });
 
   it('should compute hasInboxMessages based on inboxCount', () => {
-    const fixture = TestBed.createComponent(BankHeader);
-    const component = fixture.componentInstance;
-
     fixture.componentRef.setInput('inboxCount', 0);
     expect(component.hasInboxMessages()).toBe(false);
 
@@ -23,35 +25,42 @@ describe('BankHeader', () => {
     expect(component.hasInboxMessages()).toBe(true);
   });
 
-  it('should emit onNotificationClick when bellRef is present', () => {
-    const fixture = TestBed.createComponent(BankHeader);
-    const component = fixture.componentInstance;
-    const emitSpy = vi.spyOn(component.onNotificationClick, 'emit');
+  it('should compute initials correctly', () => {
+    fixture.componentRef.setInput('fullName', 'John Doe');
+    expect(component.initials()).toBe('JD');
 
-    const mockEl = { nativeElement: {} } as ElementRef;
-    vi.spyOn(component, 'bellRef').mockReturnValue(mockEl);
-
-    component.onNotification();
-
-    expect(emitSpy).toHaveBeenCalledWith(mockEl);
+    fixture.componentRef.setInput('fullName', 'single');
+    expect(component.initials()).toBe('S');
   });
 
-  it('should not emit if bellRef is undefined', () => {
-    const fixture = TestBed.createComponent(BankHeader);
-    const component = fixture.componentInstance;
+  it('should emit onNotificationClick when bellRef is present', () => {
     const emitSpy = vi.spyOn(component.onNotificationClick, 'emit');
-
-    vi.spyOn(component, 'bellRef').mockReturnValue(undefined);
+    
+    fixture.detectChanges(); 
 
     component.onNotification();
 
-    expect(emitSpy).not.toHaveBeenCalled();
+    if (window.innerWidth < 550) {
+      expect(emitSpy).toHaveBeenCalledWith(null);
+    } else {
+      expect(emitSpy).toHaveBeenCalled();
+      expect(emitSpy.mock.calls[0][0]).not.toBeNull();
+    }
+  });
+
+  it('should handle small screen logic for notification emission', () => {
+    const emitSpy = vi.spyOn(component.onNotificationClick, 'emit');
+    
+    vi.stubGlobal('innerWidth', 500);
+    fixture.detectChanges();
+
+    component.onNotification();
+    expect(emitSpy).toHaveBeenCalledWith(null);
+    
+    vi.unstubAllGlobals();
   });
 
   it('should accept hasUnread input', () => {
-    const fixture = TestBed.createComponent(BankHeader);
-    const component = fixture.componentInstance;
-
     fixture.componentRef.setInput('hasUnread', true);
     expect(component.hasUnread()).toBe(true);
   });

@@ -24,6 +24,7 @@ describe('PaybillTemplates', () => {
     component = fixture.componentInstance;
 
     const fb = TestBed.inject(FormBuilder);
+    
     fixture.componentRef.setInput('createGroupForm', fb.group({}));
     fixture.componentRef.setInput('createTemplateForm', fb.group({}));
     fixture.componentRef.setInput('editTemplateForm', fb.group({}));
@@ -34,12 +35,20 @@ describe('PaybillTemplates', () => {
     fixture.componentRef.setInput('parentProviders', []);
     fixture.componentRef.setInput('templateCategories', []);
     fixture.componentRef.setInput('paymentFields', []);
+    fixture.componentRef.setInput('activeModal', null);
 
     fixture.detectChanges();
   });
 
   it('activeForm: should compute correctly based on activeModal', () => {
     fixture.componentRef.setInput('activeModal', ModalType.Group);
+    fixture.detectChanges();
+    
     expect(component.activeForm()).toBe(component.createGroupForm());
+  });
+
+  it('should initialize with correct default values', () => {
+    expect(component.isLoading()).toBe(false);
+    expect(component.templateGroups()).toEqual([]);
   });
 });
