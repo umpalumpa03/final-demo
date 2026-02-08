@@ -109,7 +109,109 @@
   "forms": {},
   "cards": {},
   "alerts": {},
-  "badges": {},
+  "badges": {
+    "title": "Badges",
+    "subtitle": "Badge components for labels, status indicators, and counts",
+    "sections": {
+      "variants": "Variants",
+      "statusBadges": "Status Badges",
+      "sizes": "Sizes",
+      "countBadges": "Count Badges",
+      "interactiveBadges": "Interactive Badges (Dismissible)",
+      "pillBadges": "Rounded/Pill Badges",
+      "dotIndicators": "With Dot Indicators",
+      "badgeGroups": "Badge Groups",
+      "badgeStates": "Badge States",
+      "customColors": "Custom Colors",
+      "skills": "Skills:",
+      "categories": "Categories:"
+    },
+    "variants": {
+      "default": "Default",
+      "secondary": "Secondary",
+      "destructive": "Destructive",
+      "outline": "Outline"
+    },
+    "sizes": {
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large"
+    },
+    "countBadges": {
+      "messages": "Messages",
+      "notifications": "Notifications",
+      "updates": "Updates",
+      "cartItems": "Cart Items",
+      "unread": "Unread",
+      "new": "New"
+    },
+    "dismissible": {
+      "tag1": "Tag 1",
+      "tag2": "Tag 2",
+      "tag3": "Tag 3",
+      "tag4": "Tag 4"
+    },
+    "pillBadges": {
+      "pillShape": "Pill Shape",
+      "category": "Category",
+      "tag": "Tag",
+      "angular": "Angular",
+      "typescript": "TypeScript",
+      "css": "CSS",
+      "javascript": "JavaScript"
+    },
+    "badgeStates": {
+      "normal": "Normal Badge",
+      "hoverMe": "Hover Me",
+      "disabled": "Disabled",
+      "selected": "Selected",
+      "default": "Default:",
+      "hovered": "Hovered:",
+      "disabledLabel": "Disabled:",
+      "selectedLabel": "Selected:"
+    },
+    "customColors": {
+      "pink": "Pink",
+      "indigo": "Indigo",
+      "teal": "Teal",
+      "rose": "Rose",
+      "cyan": "Cyan",
+      "amber": "Amber",
+      "lime": "Lime",
+      "slate": "Slate"
+    },
+    "status": {
+      "active": "Active",
+      "pending": "Pending",
+      "inactive": "Inactive",
+      "inProgress": "In Progress",
+      "featured": "Featured",
+      "premium": "Premium",
+      "favorite": "Favorite",
+      "done": "Done",
+      "todo": "Todo"
+    },
+    "dot": {
+      "online": "Online",
+      "away": "Away",
+      "offline": "Offline",
+      "live": "Live"
+    },
+    "skills": {
+      "javascript": "JavaScript",
+      "react": "React",
+      "angular": "Angular",
+      "nodejs": "Node.js",
+      "typescript": "TypeScript",
+      "css": "CSS",
+      "html": "HTML"
+    },
+    "categories": {
+      "technology": "Technology",
+      "design": "Design",
+      "marketing": "Marketing"
+    }
+  },
   "tables": {},
   "navigation": {
     "title": "Navigation Components",
