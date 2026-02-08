@@ -30,10 +30,12 @@ describe('ApproveCardsStore', () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    vi.clearAllMocks();
   });
 
   it('should initialize with default state', () => {
     expect(store.cards()).toEqual([]);
+    expect(store.permissions()).toEqual([]);
     expect(store.isLoading()).toBe(false);
     expect(store.error()).toBeNull();
     expect(store.success()).toBeNull();
@@ -41,7 +43,7 @@ describe('ApproveCardsStore', () => {
   });
 
   it('should load cards and update state on success', () => {
-    const mockCards = [{ id: '1', nickname: 'Test' }];
+    const mockCards = [{ id: '1', nickname: 'Test Card' }];
     serviceMock.getPendingCards.mockReturnValue(of(mockCards));
 
     store.load();
@@ -53,32 +55,55 @@ describe('ApproveCardsStore', () => {
 
   it('should handle errors during load', () => {
     serviceMock.getPendingCards.mockReturnValue(
-      throwError(() => new Error('Fail')),
+      throwError(() => new Error('Load Failed')),
     );
 
     store.load();
 
-    expect(store.error()).toBe('Fail');
+    expect(store.error()).toBe('Load Failed');
     expect(store.isLoading()).toBe(false);
   });
 
-  it('should load permissions and update state', () => {
+  it('should call service for permissions when cache is empty', () => {
     const mockPerms = [{ value: 'atm', displayName: 'ATM' }];
     serviceMock.getCardPermissions.mockReturnValue(of(mockPerms));
 
     store.loadPerrmisions();
 
+    expect(serviceMock.getCardPermissions).toHaveBeenCalledTimes(1);
     expect(store.permissions()).toEqual(mockPerms);
     expect(store.isLoading()).toBe(false);
   });
 
-  it('should update card status, show success message, and clear it after timeout', async () => {
-    const mockCard = { id: '123', nickname: 'Test' };
-    serviceMock.changeCardStatus.mockReturnValue(of({}));
+  it('should not call service and use cache if permissions already exist', () => {
+    const mockPerms = [{ value: 'web', displayName: 'Web Shop' }];
+    serviceMock.getCardPermissions.mockReturnValue(of(mockPerms));
 
+    store.loadPerrmisions();
+    expect(serviceMock.getCardPermissions).toHaveBeenCalledTimes(1);
+
+    store.loadPerrmisions();
+    expect(serviceMock.getCardPermissions).toHaveBeenCalledTimes(1);
+    expect(store.permissions()).toEqual(mockPerms);
+  });
+
+  it('should handle errors during loadPermissions', () => {
+    serviceMock.getCardPermissions.mockReturnValue(
+      throwError(() => new Error('Permissions Error')),
+    );
+
+    store.loadPerrmisions();
+
+    expect(store.error()).toBe('Permissions Error');
+    expect(store.isLoading()).toBe(false);
+  });
+
+  it('should update card status and clear success after timeout', async () => {
+    const mockCard = { id: 'card_1', nickname: 'Visa' };
+    serviceMock.changeCardStatus.mockReturnValue(of({}));
     patchState(store, { cards: [mockCard] });
 
-    store.updateStatus({ cardId: '123', status: 'ACTIVE', permissions: [] });
+    store.updateStatus({ cardId: 'card_1', status: 'ACTIVE', permissions: [] });
 
     await Promise.resolve();
 
@@ -86,18 +111,14 @@ describe('ApproveCardsStore', () => {
     expect(store.success()).toBe('success');
 
     vi.advanceTimersByTime(4000);
-
     expect(store.success()).toBeNull();
   });
 
-  it('should handle errors during loadPermissions', () => {
-    serviceMock.getCardPermissions.mockReturnValue(
-      throwError(() => new Error('Perm Fail')),
-    );
-
-    store.loadPerrmisions();
-
-    expect(store.error()).toBe('Perm Fail');
+  it('should toggle loading state correctly during permissions fetch', () => {
+    serviceMock.getCardPermissions.mockReturnValue(of([]));
+    
     expect(store.isLoading()).toBe(false);
+    store.loadPerrmisions();
+    expect(store.isLoading()).toBe(false); 
   });
 });

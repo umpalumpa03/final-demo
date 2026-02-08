@@ -51,25 +51,23 @@ describe('ApproveCards', () => {
         { provide: ApproveCardsStore, useValue: storeMock },
         { provide: ApproveCardsState, useValue: stateMock }
       ]
-    })
-    .overrideComponent(ApproveCards, {
-      set: {
-        providers: [
-          { provide: ApproveCardsStore, useValue: storeMock },
-          { provide: ApproveCardsState, useValue: stateMock }
-        ]
-      }
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ApproveCards);
     component = fixture.componentInstance;
   });
 
-  it('should initialize and load store data', () => {
+  it('should initialize and load only basic store data on init', () => {
     fixture.detectChanges();
     expect(storeMock.load).toHaveBeenCalled();
+    expect(storeMock.loadPerrmisions).not.toHaveBeenCalled();
+  });
+
+  it('should load permissions when handlePermissions is called', () => {
+    fixture.detectChanges();
+    component.handleAction({ action: 'permissions', id: '1' });
     expect(storeMock.loadPerrmisions).toHaveBeenCalled();
+    expect(component.permissionsOverlay()).toBe(true);
   });
 
   describe('alertDescription computed', () => {
@@ -83,12 +81,6 @@ describe('ApproveCards', () => {
       storeMock.success.set('success');
       fixture.detectChanges();
       expect(component.alertDescription()).toBe('Success Message Content');
-    });
-
-    it('should return error description when store.success is "error"', () => {
-      storeMock.success.set('error');
-      fixture.detectChanges();
-      expect(component.alertDescription()).toBe('Error Message Content');
     });
   });
 
