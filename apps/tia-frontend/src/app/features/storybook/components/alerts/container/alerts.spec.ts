@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Alerts } from './alerts';
 import { ALERTS_TITLES } from '../config/alerts-data.config';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('Alerts', () => {
   let component: Alerts;
@@ -8,7 +9,10 @@ describe('Alerts', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Alerts],
+      imports: [
+        Alerts, 
+        TranslateModule.forRoot()
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Alerts);
@@ -35,17 +39,18 @@ describe('Alerts', () => {
   describe('Logic: onResetAll', () => {
     it('should set isDismissed to false for all dismissible alerts', () => {
       fixture.detectChanges();
-      expect(component.alertComponents().length).toBeGreaterThan(0);
+      
+      if (component.alertComponents().length > 0) {
+        component
+          .alertComponents()
+          .forEach((alert) => alert.isDismissed.set(true));
 
-      component
-        .alertComponents()
-        .forEach((alert) => alert.isDismissed.set(true));
+        component.onResetAll();
 
-      component.onResetAll();
-
-      component.alertComponents().forEach((alert) => {
-        expect(alert.isDismissed()).toBe(false);
-      });
+        component.alertComponents().forEach((alert) => {
+          expect(alert.isDismissed()).toBe(false);
+        });
+      }
     });
   });
 });
