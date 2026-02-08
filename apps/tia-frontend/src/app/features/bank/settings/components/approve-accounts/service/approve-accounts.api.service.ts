@@ -42,7 +42,7 @@ export class ApproveAccountsApiService {
     permissions: IUpdateAccountPermission,
   ): Observable<SuccessResponse> {
     return this.http.put<SuccessResponse>(
-      `${this.apiUrl}/accounts/modify-account-permissions`,
+      `${this.apiUrl}/accounts/modify-account-permission`,
       permissions,
     );
   }
