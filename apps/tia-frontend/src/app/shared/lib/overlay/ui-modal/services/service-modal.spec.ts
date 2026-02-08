@@ -1,7 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { ModalResponsiveService } from './service-modal';
 import { DOCUMENT } from '@angular/common';
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import {
+  vi,
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  beforeAll,
+} from 'vitest';
 import * as modalConfig from '../config/ui-modal.config';
 import { PLATFORM_ID } from '@angular/core';
 
@@ -16,8 +24,13 @@ describe('ModalResponsiveService', () => {
   let lastObserverCallback: ResizeObserverCallback | null = null;
   let mockResizeObserver: any;
 
+  beforeAll(() => {
+    TestBed.resetTestingModule();
+  });
+
   beforeEach(() => {
     vi.clearAllMocks();
+    TestBed.resetTestingModule();
 
     mockDocument = document.implementation.createHTMLDocument('Test');
 
@@ -74,11 +87,14 @@ describe('ModalResponsiveService', () => {
   });
 
   afterEach(() => {
-    service.stopTracking();
-    vi.restoreAllMocks();
+    if (service) {
+      service.stopTracking();
+    }
     vi.unstubAllGlobals();
+    vi.clearAllMocks();
     lastObserverCallback = null;
     mockResizeObserver = null;
+    TestBed.resetTestingModule();
   });
 
   describe('Element Tracking - Fallback Path', () => {
@@ -123,6 +139,7 @@ describe('ModalResponsiveService', () => {
   describe('State Management', () => {
     it('should update signals when updatePosition is called directly', () => {
       const mockEl = mockDocument.createElement('div');
+      mockEl.style.position = 'relative';
       mockDocument.body.appendChild(mockEl);
 
       vi.mocked(modalConfig.calculateModalPositions).mockReturnValue({
@@ -265,7 +282,8 @@ describe('ModalResponsiveService', () => {
 
       placements.forEach((placement) => {
         service.updatePosition(mockEl, 0, 0, placement, {});
-        expect(modalConfig.calculateModalPositions).toHaveBeenCalledWith(
+
+        expect(modalConfig.calculateModalPositions).toHaveBeenLastCalledWith(
           mockEl,
           0,
           0,
@@ -284,7 +302,7 @@ describe('ModalResponsiveService', () => {
 
       service.updatePosition(mockEl, 5, 10, 'top', offset);
 
-      expect(modalConfig.calculateModalPositions).toHaveBeenCalledWith(
+      expect(modalConfig.calculateModalPositions).toHaveBeenLastCalledWith(
         mockEl,
         5,
         10,
