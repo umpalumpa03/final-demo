@@ -5,8 +5,20 @@ import {
   HostListener,
   ChangeDetectionStrategy,
   computed,
+  DOCUMENT,
+  inject,
+  effect,
+  signal,
+  OnDestroy,
 } from '@angular/core';
-import { ModalPosition, SpotlightConfig } from './models/modal-positions.model';
+import {
+  ModalCardConfig,
+  ModalSpotlightConfig,
+} from './models/modal-positions.model';
+import {
+  calculateModalPositions,
+  toggleBodyScroll,
+} from './config/ui-modal.config';
 
 @Component({
   selector: 'app-ui-modal',
@@ -14,7 +26,11 @@ import { ModalPosition, SpotlightConfig } from './models/modal-positions.model';
   styleUrls: ['./ui-modal.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UiModal {
+export class UiModal implements OnDestroy {
+  private readonly document = inject(DOCUMENT);
+  private observer: ResizeObserver | null = null;
+  private rafId: number | null = null;
+
   public readonly isOpen = input.required<boolean>();
   public readonly closed = output<void>();
 
@@ -23,35 +39,78 @@ export class UiModal {
   public readonly hasScroll = input<boolean>(false);
   public readonly hideExit = input<boolean>(false);
 
-  public readonly spotlight = input<SpotlightConfig | null>(null);
-  public cardPosition = input<ModalPosition | null>(null);
+  public readonly target = input<HTMLElement | string | null>(null);
+  public readonly targetPadding = input<number>(8);
+  public readonly targetGap = input<number>(16);
 
-  protected spotlightStyle = computed(() => {
-    const config = this.spotlight();
-    if (!config) return {};
+  protected readonly spotlightStyle = signal<Record<string, string>>({});
+  protected readonly cardStyle = signal<Record<string, string>>({});
+  protected readonly hasTarget = computed(() => !!this.target());
 
-    return {
-      top: `${config.top}px`,
-      left: `${config.left}px`,
-      width: `${config.width}px`,
-      height: `${config.height}px`,
+  protected get isTracking(): boolean {
+    return !!this.target() && this.isOpen();
+  }
+
+  private readonly resolvedTarget = signal<HTMLElement | null>(null);
+
+  constructor() {
+    effect(() => {
+      const targetInput = this.target();
+      if (this.isOpen() && targetInput) {
+        this.resolveAndTrack(targetInput);
+      } else {
+        this.stopTracking();
+      }
+    });
+  }
+
+  private resolveAndTrack(input: HTMLElement | string) {
+    const find = () => {
+      const el =
+        typeof input === 'string' ? this.document.getElementById(input) : input;
+
+      if (el) {
+        this.startObserver(el);
+      } else {
+        this.rafId = requestAnimationFrame(find);
+      }
     };
-  });
+    find();
+  }
 
-  protected cardStyle = computed(() => {
-    const pos = this.cardPosition();
-    if (!pos) return {};
+  private startObserver(el: HTMLElement): void {
+    toggleBodyScroll(true); // Disable body scroll
+    this.updatePosition(el);
 
-    return {
-      position: 'absolute',
-      margin: '0',
-      top: pos.top ?? 'auto',
-      left: pos.left ?? 'auto',
-      right: pos.right ?? 'auto',
-      bottom: pos.bottom ?? 'auto',
-      transform: pos.transform ?? 'none',
-    };
-  });
+    this.observer = new ResizeObserver(() => this.updatePosition(el));
+    this.observer.observe(el);
+    this.observer.observe(this.document.body); // Track window resize via body
+  }
+
+  private updatePosition(el: HTMLElement): void {
+    const { spotlightStyle, cardStyle } = calculateModalPositions(
+      el,
+      this.targetPadding(),
+      this.targetGap(),
+    );
+
+    this.spotlightStyle.set(spotlightStyle);
+    this.cardStyle.set(cardStyle);
+  }
+
+  private stopTracking(): void {
+    toggleBodyScroll(false); // Enable body scroll
+
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = null;
+    }
+
+    if (this.rafId) {
+      cancelAnimationFrame(this.rafId);
+      this.rafId = null;
+    }
+  }
 
   public close(): void {
     this.closed.emit();
@@ -84,5 +143,9 @@ export class UiModal {
     if (this.isOpen() && this.hasNavigation()) {
       this.navigate.emit(1);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.stopTracking();
   }
 }
