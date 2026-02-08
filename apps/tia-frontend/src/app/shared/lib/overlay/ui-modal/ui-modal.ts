@@ -4,7 +4,9 @@ import {
   output,
   HostListener,
   ChangeDetectionStrategy,
+  computed,
 } from '@angular/core';
+import { ModalPosition, SpotlightConfig } from './models/modal-positions.model';
 
 @Component({
   selector: 'app-ui-modal',
@@ -20,6 +22,36 @@ export class UiModal {
   public readonly navigate = output<number>();
   public readonly hasScroll = input<boolean>(false);
   public readonly hideExit = input<boolean>(false);
+
+  public readonly spotlight = input<SpotlightConfig | null>(null);
+  public cardPosition = input<ModalPosition | null>(null);
+
+  protected spotlightStyle = computed(() => {
+    const config = this.spotlight();
+    if (!config) return {};
+
+    return {
+      top: `${config.top}px`,
+      left: `${config.left}px`,
+      width: `${config.width}px`,
+      height: `${config.height}px`,
+    };
+  });
+
+  protected cardStyle = computed(() => {
+    const pos = this.cardPosition();
+    if (!pos) return {};
+
+    return {
+      position: 'absolute',
+      margin: '0',
+      top: pos.top ?? 'auto',
+      left: pos.left ?? 'auto',
+      right: pos.right ?? 'auto',
+      bottom: pos.bottom ?? 'auto',
+      transform: pos.transform ?? 'none',
+    };
+  });
 
   public close(): void {
     this.closed.emit();
