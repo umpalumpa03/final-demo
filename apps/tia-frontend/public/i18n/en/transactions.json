@@ -1,0 +1,52 @@
+{
+  "title": "Transactions",
+  "filters": {
+    "search": "Search transactions",
+    "category": "Category",
+    "all_categories": "All Categories",
+    "min_amount": "Min Amount",
+    "max_amount": "Max Amount",
+    "account": "Account",
+    "select_account": "Select Account",
+    "currency": "Currency",
+    "all": "All",
+    "date_from": "Date From",
+    "date_to": "Date To",
+    "placeholder_date": "YYYY-MM-DD",
+    "reset_all": "Reset All",
+    "any": "Any",
+    "title": "Filters",
+    "subtitle": "Apply filters to refine your transaction list"
+  },
+  "table": {
+    "headers": {
+      "details": "Details",
+      "amount": "Amount",
+      "actions": "Actions"
+    },
+    "loading": "Loading",
+    "showing_text": "Showing {{fetched}} of {{total}} transactions"
+  },
+  "categorize_modal": {
+    "title": "Categorize Transaction",
+    "subtitle": "Assign a category to this transaction for better organization",
+    "labels": {
+      "select_category": "Select Category",
+      "placeholder_category": "Select category",
+      "custom_category": "Or Add Custom Category",
+      "enter_category_name": "Enter category name"
+    },
+    "buttons": {
+      "add": "Add",
+      "cancel": "Cancel",
+      "save": "Save Category"
+    },
+    "messages": {
+      "success_added": "Category \"{{name}}\" added successfully!"
+    }
+  },
+  "alerts": {
+    "income_warning": "Income transactions cannot be repeated.",
+    "loan_warning": "Loan payments cannot be repeated manually."
+  }
+}

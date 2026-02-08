@@ -1,0 +1,39 @@
+{
+  "page": {
+    "title": "Dashboard",
+    "subtitle": "Welcome back! Here's your financial overview.",
+    "customize-label": "Personalize your experience"
+  },
+  "widgets": {
+    "transactions": {
+      "loadMore": "Load More",
+      "title": "Recent Transactions",
+      "subtitle": "Your latest account activity"
+    },
+    "accounts": {
+      "title": "Accounts",
+      "subtitle": "Your account balances and activity"
+    },
+    "exchange": {
+      "title": "Exchange Rates",
+      "subtitle": "Live currency exchange rates"
+    }
+  },
+  "banners": {
+    "paybills": {
+      "title": "Pay Bills Instantly",
+      "description": "Settle your utilities, internet, and mobile balance in just a few clicks.",
+      "button": "Pay Now"
+    },
+    "transfers": {
+      "title": "Easy Transfers",
+      "description": "Send money to any account safely and quickly with our improved system.",
+      "button": "Transfer"
+    },
+    "loans": {
+      "title": "Flexible Loans",
+      "description": "Apply for a personalized loan with competitive rates tailored for you.",
+      "button": "Apply Now"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "products": "My Products",
+    "transactions": "Transactions",
+    "transfers": "Transfers",
+    "loans": "Loans",
+    "finances": "Finances",
+    "paybill": "Paybill",
+    "settings": "Settings",
+    "storybook": "Storybook",
+    "logout": {
+      "title": "Logout",
+      "message": "Are you sure you want to log out?"
+    }
+  }
+}
