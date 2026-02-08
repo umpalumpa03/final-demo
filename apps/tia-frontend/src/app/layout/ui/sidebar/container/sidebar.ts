@@ -16,12 +16,13 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'apps/tia-frontend/src/app/core/auth/services/auth.service';
 import { NavigationItem } from '@tia/shared/lib/navigation/models/nav-bar.model';
 import { getSidebarItems } from '../config/routes.config';
-import { AlertsWithActions } from '@tia/shared/lib/alerts/components/alerts-with-actions/alerts-with-actions';
 import { BreakpointService } from '../../../../core/services/breakpoints/breakpoint.service';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { userInfoFeature } from 'apps/tia-frontend/src/app/store/user-info/user-info.reducer';
 import { Store } from '@ngrx/store';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
+import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
+import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 
 @Component({
   selector: 'app-sidebar',
@@ -29,9 +30,10 @@ import { Router, RouterModule } from '@angular/router';
     NavigationBar,
     ButtonComponent,
     TranslatePipe,
-    AlertsWithActions,
     RouteLoader,
-    RouterModule
+    RouterModule,
+    UiModal,
+    LibraryTitle,
   ],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
