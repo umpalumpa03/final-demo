@@ -1,11 +1,14 @@
-import { IUserInfo } from "@tia/shared/models/user-info/user-info.models";
-import { IWidgetItem } from "../../../features/bank/dashboard/models/widgets.model";
+import { IUserInfo } from '@tia/shared/models/user-info/user-info.models';
+import { IWidgetItem } from '../../../features/bank/dashboard/models/widgets.model';
 
 export interface IUserState extends IUserInfo {
   loaded: boolean;
   loading: boolean;
   error: string | null;
-  widgets: IWidgetItem[]; 
+  widgets: IWidgetItem[];
   widgetsLoading: boolean;
-  widgetsLoaded: boolean,
+  widgetsLoaded: boolean;
+  hasCompletedOnboarding: boolean;
+  birthday: string | null;
+  birthdayModalClosedYear: number | null;
 }

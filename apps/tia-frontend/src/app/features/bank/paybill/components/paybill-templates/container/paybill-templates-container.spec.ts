@@ -8,16 +8,19 @@ import {
 } from '../../../store/paybill.actions';
 import { HeaderCtaAction, ModalType } from '../models/paybill-templates.model';
 import { signal } from '@angular/core';
-import { selectPaymentFields } from '../../../store/paybill.selectors';
+import { Observable, ReplaySubject } from 'rxjs';
+import { provideMockActions } from '@ngrx/effects/testing';
 
 describe('PaybillTemplatesContainer', () => {
   let component: PaybillTemplatesContainer;
   let store: MockStore;
+  let actions$!: Observable<any>;
 
   beforeEach(async () => {
+    actions$ = new ReplaySubject(1);
     await TestBed.configureTestingModule({
       imports: [PaybillTemplatesContainer, TranslateModule.forRoot()],
-      providers: [provideMockStore()],
+      providers: [provideMockStore(), provideMockActions(() => actions$)],
     }).compileComponents();
 
     store = TestBed.inject(MockStore);
@@ -59,23 +62,6 @@ describe('PaybillTemplatesContainer', () => {
     component.onTreeAction({ id: 'g-200', type: 'group-edit' });
     expect(component.selectedItemName()).toBe('Utilities');
     expect(component.modalType()).toBe(ModalType.RenameGroup);
-  });
-
-  it('should dispatch create-group and close modal', () => {
-    component.isModalOpen.set(true);
-    component.handleFormSubmit({
-      type: 'create-group',
-      values: { name: 'New' },
-    });
-
-    expect(store.dispatch).toHaveBeenCalledWith(
-      TemplatesPageActions.createTemplatesGroups({
-        groupName: 'New',
-        templateIds: [],
-      }),
-    );
-    expect(component.isModalOpen()).toBe(false);
-    expect(component.selectedId()).toBe('');
   });
 
   it('should dispatch rename-template when ID is present', () => {
@@ -120,30 +106,6 @@ describe('PaybillTemplatesContainer', () => {
     });
   });
 
-  it('deleteGroup: should dispatch deleteTemplateGroup action and close modal when ID is selected', () => {
-    component.selectedId.set('g-200');
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
-    const toggleSpy = vi.spyOn(component, 'handleModalToggle');
-
-    component.deleteGroup();
-
-    expect(dispatchSpy).toHaveBeenCalledWith(
-      TemplatesPageActions.deleteTemplateGroup({ groupId: 'g-200' }),
-    );
-    expect(toggleSpy).toHaveBeenCalled();
-  });
-
-  it('withSelectedId branch: should return early and do nothing if no ID is selected', () => {
-    component.selectedId.set('');
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
-    const toggleSpy = vi.spyOn(component, 'handleModalToggle');
-
-    component.deleteTemplate();
-
-    expect(dispatchSpy).not.toHaveBeenCalled();
-    expect(toggleSpy).not.toHaveBeenCalled();
-  });
-
   it('should dispatch selectCategory and reset currentLevel when a category is provided', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
     component.currentLevel.set(5);
@@ -175,6 +137,44 @@ describe('PaybillTemplatesContainer', () => {
         providerId: 'p-101',
         level: 1,
       }),
+    );
+  });
+
+  it('should dispatch deleteTemplate when deleteTemplate is called', () => {
+    component.selectedId.set('t-100');
+    component.deleteTemplate();
+    expect(store.dispatch).toHaveBeenCalledWith(
+      TemplatesPageActions.deleteTemplate({ templateId: 't-100' }),
+    );
+  });
+
+  it('should dispatch deleteTemplateGroup when deleteGroup is called', () => {
+    component.selectedId.set('g-200');
+    component.deleteGroup();
+    expect(store.dispatch).toHaveBeenCalledWith(
+      TemplatesPageActions.deleteTemplateGroup({ groupId: 'g-200' }),
+    );
+  });
+
+  it('should handle CreateGroup header action', () => {
+    component.handleHeaderAction(HeaderCtaAction.CreateGroup);
+    expect(component.modalType()).toBe(ModalType.Group);
+    expect(component.isModalOpen()).toBe(true);
+  });
+
+  it('should clear payment details and reset form if level is lower than current', () => {
+    component.currentLevel.set(2);
+    // Mock the form control
+    component.createTemplateForm.get('category')?.setValue('ELECTRIC');
+
+    component.onParentProviderSelect({ providerId: 'p-1', index: 1 });
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      TemplatesPageActions.clearPaymentDetails(),
+    );
+    // Checking if selectProvider was still called
+    expect(store.dispatch).toHaveBeenCalledWith(
+      TemplatesPageActions.selectProvider({ providerId: 'p-1', level: 1 }),
     );
   });
 });

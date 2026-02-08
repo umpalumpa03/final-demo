@@ -11,6 +11,7 @@ import {
   mergeMap,
   of,
   switchMap,
+  tap,
   withLatestFrom,
 } from 'rxjs';
 import { PaybillService } from '../services/paybill/paybill-service';
@@ -50,6 +51,8 @@ export class PaybillEffect {
       'Group renamed successfully',
     '[Paybill Templates Page] Move Template Success':
       'Template moved successfully',
+    '[Paybill Templates Page] Create Template Success':
+      'Template created successfully',
   };
 
   private getErrorMessage(error: any): string {
@@ -264,7 +267,7 @@ export class PaybillEffect {
     return this.actions$.pipe(
       ofType(TemplatesPageActions.loadTemplateGroups),
       withLatestFrom(this.store.select(selectTemplatesGroup)),
-      filter(([action,loaded]) => !loaded),
+      filter(([_, groups]) => !groups || groups.length === 0),
       mergeMap(() =>
         this.payBillTemplatesService.getAllTemplateGroups().pipe(
           map((templateGroups) =>
@@ -313,6 +316,7 @@ export class PaybillEffect {
         TemplatesPageActions.createTemplatesGroupsSuccess,
         TemplatesPageActions.renameTemplateGroupSuccess,
         TemplatesPageActions.moveTemplateSuccess,
+        TemplatesPageActions.createTemplateSuccess,
       ),
       map((action) =>
         PaybillActions.addNotification({
@@ -612,4 +616,6 @@ export class PaybillEffect {
       ),
     ),
   );
+
+
 }
