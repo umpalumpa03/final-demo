@@ -54,7 +54,6 @@ import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
     RouteLoader,
     Tooltip,
   ],
-  providers: [],
   templateUrl: './external-accounts.html',
   styleUrl: './external-accounts.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -92,19 +91,14 @@ export class ExternalAccounts implements OnInit {
 
   private readonly rawSenderAccounts = toSignal(
     this.store.select(selectAccounts),
-    {
-      initialValue: [],
-    },
+    { initialValue: [] },
   );
 
   public readonly senderAccounts = computed(() => {
-    const accounts = this.rawSenderAccounts();
-    if (!accounts) return [];
-    return [...accounts].sort((a, b) => {
-      const aFav = a.isFavorite ? 1 : 0;
-      const bFav = b.isFavorite ? 1 : 0;
-      return bFav - aFav;
-    });
+    const accounts = this.rawSenderAccounts() || [];
+    return [...accounts].sort(
+      (a, b) => (b.isFavorite ? 1 : 0) - (a.isFavorite ? 1 : 0),
+    );
   });
 
   public readonly isLoadingSenderAccounts = toSignal(
@@ -122,7 +116,6 @@ export class ExternalAccounts implements OnInit {
 
   public readonly isLoading = computed(() => this.transferStore.isLoading());
   public readonly error = computed(() => this.transferStore.error());
-
   public readonly isExternalIban = computed(
     () => this.transferStore.recipientType() === 'iban-different-bank',
   );
@@ -130,6 +123,10 @@ export class ExternalAccounts implements OnInit {
   public readonly recipientNameInput = this.fb.control('', [
     Validators.required,
   ]);
+  private readonly recipientNameStatus = toSignal(
+    this.recipientNameInput.statusChanges,
+    { initialValue: this.recipientNameInput.status },
+  );
 
   public readonly recipientNameConfig = computed(() => ({
     label: this.translate.instant(
@@ -141,168 +138,104 @@ export class ExternalAccounts implements OnInit {
   }));
 
   public readonly recipientName = computed(() => {
-    if (this.isExternalIban()) {
-      return this.transferStore.recipientInput();
-    }
+    if (this.isExternalIban()) return this.transferStore.recipientInput();
     return this.transferStore.recipientInfo()?.fullName || '';
   });
 
   public readonly recipientAccounts = computed(() => {
     const info = this.transferStore.recipientInfo();
     if (!info) return [];
-
-    let accounts: RecipientAccount[] = [];
-
-    if (info.accounts) {
-      accounts = [...info.accounts];
-    } else if (info.currency) {
-      accounts = [
-        {
-          id: 'iban-recipient',
-          iban: this.transferStore.recipientInput(),
-          currency: info.currency,
-        },
-      ];
-    }
-    return accounts.sort((a, b) => {
-      const aFav = (a as Account).isFavorite ? 1 : 0;
-      const bFav = (b as Account).isFavorite ? 1 : 0;
-      return bFav - aFav;
-    });
+    let accounts: RecipientAccount[] = info.accounts
+      ? [...info.accounts]
+      : info.currency
+        ? [
+            {
+              id: 'iban-recipient',
+              iban: this.transferStore.recipientInput(),
+              currency: info.currency,
+            },
+          ]
+        : [];
+    return accounts.sort(
+      (a, b) =>
+        ((b as Account).isFavorite ? 1 : 0) -
+        ((a as Account).isFavorite ? 1 : 0),
+    );
   });
 
-  private readonly recipientNameStatus = toSignal(
-    this.recipientNameInput.statusChanges,
-    { initialValue: this.recipientNameInput.status },
-  );
-
   constructor() {
+    this.initFeedbackEffects();
+    this.accountSelectionService.initAutoSelectionLogic(
+      this.senderAccounts,
+      this.recipientAccounts,
+      this.isExternalIban,
+      this.preSelectedAccount,
+      () => this.currencyMismatchError.set(true),
+    );
+  }
+
+  private initFeedbackEffects(): void {
     effect(() => {
-      const isVerified = this.transferStore.isVerified();
-      if (isVerified) {
+      if (this.transferStore.isVerified()) {
         untracked(() => {
           this.showSuccess.set(true);
           this.transferStore.setIsVerified(false);
         });
-        const timeout = setTimeout(() => {
-          this.showSuccess.set(false);
-        }, 3000);
-
-        return () => clearTimeout(timeout);
+        setTimeout(() => this.showSuccess.set(false), 3000);
       }
-      return;
-    });
-    effect(() => {
-      const mismatch = this.currencyMismatchError();
-      if (mismatch) {
-        const timeout = setTimeout(() => {
-          this.currencyMismatchError.set(false);
-        }, 5000);
-        return () => clearTimeout(timeout);
-      }
-      return;
     });
 
     effect(() => {
-      const error = this.transferStore.error();
-      if (error === 'transfers.external.accounts.noPermission') {
-        untracked(() => {
-          this.showError.set(true);
-        });
-        const timeout = setTimeout(() => {
+      if (this.currencyMismatchError()) {
+        setTimeout(() => this.currencyMismatchError.set(false), 5000);
+      }
+    });
+
+    effect(() => {
+      if (
+        this.transferStore.error() ===
+        'transfers.external.accounts.noPermission'
+      ) {
+        untracked(() => this.showError.set(true));
+        setTimeout(() => {
           this.showError.set(false);
           this.transferStore.setError('');
         }, 5000);
-
-        return () => clearTimeout(timeout);
       }
-      return;
-    });
-
-    effect(() => {
-      const preSelected = this.preSelectedAccount();
-      const currentSender = this.selectedSenderAccount();
-      const recipientAccount = this.selectedRecipientAccount();
-      const isExternal = this.isExternalIban();
-
-      if (!preSelected) return;
-      if (currentSender) return;
-
-      untracked(() => {
-        if (isExternal) {
-          this.store.dispatch(AccountsActions.selectAccount({ account: null }));
-          return;
-        }
-        if (
-          recipientAccount &&
-          preSelected.currency !== recipientAccount.currency
-        ) {
-          this.currencyMismatchError.set(true);
-          this.store.dispatch(AccountsActions.selectAccount({ account: null }));
-          return;
-        }
-
-        this.currencyMismatchError.set(false);
-        this.transferStore.setSenderAccount(preSelected);
-        this.store.dispatch(AccountsActions.selectAccount({ account: null }));
-      });
-    });
-
-    effect(() => {
-      const sAccounts = this.senderAccounts();
-      const rAccounts = this.recipientAccounts();
-      const currentSender = this.selectedSenderAccount();
-      const currentRecipient = this.selectedRecipientAccount();
-      const isExternal = this.isExternalIban();
-
-      untracked(() => {
-        if (!isExternal && rAccounts.length > 0 && !currentRecipient) {
-          const firstRecipient = rAccounts[0];
-          if ((firstRecipient as Account).isFavorite) {
-            this.transferStore.setSelectedRecipientAccount(firstRecipient);
-          }
-        }
-
-        if (sAccounts.length > 0 && !currentSender) {
-          const firstSender = sAccounts[0];
-          const updatedRecipient = this.selectedRecipientAccount();
-
-          const isFav = firstSender.isFavorite;
-          const isDisabled = this.recipientService.isSenderAccountDisabled(
-            firstSender,
-            updatedRecipient,
-            isExternal,
-          );
-
-          if (isFav && !isDisabled) {
-            this.transferStore.setSenderAccount(firstSender);
-          }
-        }
-      });
     });
   }
 
   public ngOnInit(): void {
-    const accounts = this.senderAccounts();
-    const isLoading = this.isLoadingSenderAccounts();
-
-    if ((!accounts || accounts.length === 0) && !isLoading) {
+    if (
+      (!this.senderAccounts() || this.senderAccounts().length === 0) &&
+      !this.isLoadingSenderAccounts()
+    ) {
       this.store.dispatch(AccountsActions.loadAccounts({}));
     }
   }
+  public readonly allSenderAccountsDisabled = computed(() => {
+    const accounts = this.senderAccounts();
+    if (accounts.length === 0) return false;
 
-  public readonly isContinueDisabled = computed(() => {
-    const hasSender = !!this.selectedSenderAccount();
-    const loading = this.isLoading();
-    const isExternal = this.isExternalIban();
-    const hasRecipient = !!this.selectedRecipientAccount();
-
-    const isNameInvalid = isExternal && this.recipientNameStatus() !== 'VALID';
-
-    return (
-      !hasSender || loading || (!hasRecipient && !isExternal) || isNameInvalid
+    return accounts.every((account) =>
+      this.recipientService.isSenderAccountDisabled(
+        account,
+        this.selectedRecipientAccount(),
+        this.isExternalIban(),
+      ),
     );
   });
+  public readonly isContinueDisabled = computed(() => {
+    const isNameInvalid =
+      this.isExternalIban() && this.recipientNameStatus() !== 'VALID';
+    return (
+      !this.selectedSenderAccount() ||
+      this.isLoading() ||
+      (!this.selectedRecipientAccount() && !this.isExternalIban()) ||
+      isNameInvalid
+    );
+  });
+
   public getSenderDisabledReason(account: Account) {
     return this.recipientService.getDisabledReason(
       account,
@@ -311,56 +244,47 @@ export class ExternalAccounts implements OnInit {
     );
   }
 
-  public isRecipientAccountDisabled = (account: RecipientAccount): boolean => {
-    return this.recipientService.isRecipientAccountDisabled(
+  public isRecipientAccountDisabled = (account: RecipientAccount) =>
+    this.recipientService.isRecipientAccountDisabled(
       account,
       this.selectedSenderAccount(),
     );
-  };
 
-  public isSenderAccountDisabled = (account: Account): boolean => {
-    return this.recipientService.isSenderAccountDisabled(
+  public isSenderAccountDisabled = (account: Account) =>
+    this.recipientService.isSenderAccountDisabled(
       account,
       this.selectedRecipientAccount(),
       this.isExternalIban(),
     );
-  };
 
-  public onRecipientAccountSelect(account: Account | RecipientAccount): void {
+  public onRecipientAccountSelect = (account: Account | RecipientAccount) =>
     this.accountSelectionService.handleRecipientAccountSelect(
       account as RecipientAccount,
       this.selectedRecipientAccount(),
     );
-  }
 
-  public onSenderAccountSelect(account: AccountData): void {
+  public onSenderAccountSelect = (account: AccountData) =>
     this.accountSelectionService.handleSenderAccountSelect(
       account as Account,
       this.selectedSenderAccount(),
     );
-  }
 
-  public onRetrySenderAccounts(): void {
+  public onRetrySenderAccounts = () =>
     this.store.dispatch(AccountsActions.loadAccounts({}));
-  }
 
-  public onRetry(): void {
+  public onRetry = () =>
     this.recipientService.handleRetryRecipientLookup(
       this.transferStore.recipientInput(),
       this.transferStore.recipientType(),
     );
-  }
 
-  public onGoBack(): void {
-    this.location.back();
-  }
+  public onGoBack = () => this.location.back();
 
-  public onContinue(): void {
+  public onContinue = () =>
     this.accountSelectionService.handleContinue(
       this.selectedRecipientAccount(),
       this.selectedSenderAccount(),
       this.isExternalIban(),
       this.recipientNameInput.value,
     );
-  }
 }

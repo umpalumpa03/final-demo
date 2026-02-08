@@ -94,6 +94,7 @@
     },
     "accounts": {
       "title": "Recipient Details",
+      "allAccountsDisabled": "None of your accounts have the required permissions or matching currency for this transfer.",
       "recipientVerified": "Recipient verified successfully!",
       "selectRecipientAccount": "Select Recipient Account",
       "selectSenderAccount": "Select Your Account",
