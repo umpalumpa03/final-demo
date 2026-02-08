@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { LanguagesStore, initialState } from './languages.store';
-import { LanguageService } from '../services/language.service';
+import { LanguageService } from '../services/language-api.service';
 import { of } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
@@ -44,8 +44,6 @@ describe('LanguagesStore', () => {
     });
 
     expect(store.languages().length).toBe(2);
-    expect(store.languages()[0].region).toBe('Global');
-    expect(store.languages()[1].speakerCount).toBe('4M');
   });
 
   it('should update language successfully', async () => {

@@ -1,3 +1,4 @@
+@let newCfg = userState.newConfig();
 <app-scroll-area height="51rem" [hideBorder]="true">
 <main class="approve-card">
   @if (store.isLoading()) { @for(card of store.cards(); track card.id) {
@@ -48,13 +49,13 @@
   <app-ui-modal [isOpen]="confirmModalActive()" (closed)="closeConfirmModal()">
     <div class="confirm-dialog">
         <header class="confirm-dialog__header">
-            <h3 class="confirm-dialog__title">Reset Changes?</h3>
-            <p class="confirm-dialog__subtitle">Switching cards will clear the permissions you already have selected.</p>
+            <h3 class="confirm-dialog__title">{{ newCfg.confirmOverlay.title }}</h3>
+            <p class="confirm-dialog__subtitle">{{ newCfg.confirmOverlay.subtitle }}</p>
           </header>
           
           <footer class="confirm-dialog__footer">
-            <app-button variant="outline" (click)="onConfirmCancel()">Go back</app-button>
-            <app-button variant="destructive" (click)="onConfirmAccept()">Discard and switch</app-button>
+            <app-button variant="outline" (click)="onConfirmCancel()">{{ newCfg.confirmOverlay.cancelAction }}</app-button>
+            <app-button variant="destructive" (click)="onConfirmAccept()">{{ newCfg.confirmOverlay.confirmAction }}</app-button>
           </footer>
         </div>
     </app-ui-modal>
@@ -65,7 +66,7 @@
   <div class="approve-card__alert">
     <app-alert-types-with-icons
       [alertType]="'success'"
-      [alertMessage]="store.success()!"
+      [alertMessage]="alertDescription()"
     ></app-alert-types-with-icons>
   </div>
 }

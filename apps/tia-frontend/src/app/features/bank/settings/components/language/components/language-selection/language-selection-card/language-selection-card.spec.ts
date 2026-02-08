@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LanguageSelectionCard } from './language-selection-card';
 import { Language } from '../../../models/language.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 const mockLanguage: Language = {
   id: 'english',
@@ -18,7 +19,7 @@ describe('LanguageSelectionCard', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LanguageSelectionCard],
+      imports: [LanguageSelectionCard, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LanguageSelectionCard);

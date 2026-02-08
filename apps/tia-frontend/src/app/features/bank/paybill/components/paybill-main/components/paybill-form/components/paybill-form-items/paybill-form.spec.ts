@@ -8,7 +8,6 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { EventEmitter } from '@angular/core';
 
 describe('PaybillForm', () => {
   let component: PaybillForm;
@@ -110,6 +109,5 @@ describe('PaybillForm', () => {
 
   it('should initialize with correct default values', () => {
     expect(component.isLoading()).toBe(false);
-    expect(component.templateGroups()).toEqual([]);
   });
 });

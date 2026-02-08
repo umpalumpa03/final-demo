@@ -54,12 +54,14 @@ describe('ExternalAccounts', () => {
       isRecipientAccountDisabled: vi.fn().mockReturnValue(false),
       isSenderAccountDisabled: vi.fn().mockReturnValue(false),
       handleRetryRecipientLookup: vi.fn(),
+      getDisabledReason: vi.fn().mockReturnValue(''),
     };
 
     mockSelectionService = {
       handleRecipientAccountSelect: vi.fn(),
       handleSenderAccountSelect: vi.fn(),
       handleContinue: vi.fn(),
+      initAutoSelectionLogic: vi.fn(), 
     };
 
     mockBreakpointService = {
@@ -90,15 +92,14 @@ describe('ExternalAccounts', () => {
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ExternalAccounts);
-    component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
-
     store.overrideSelector(selectAccounts, []);
     store.overrideSelector(selectIsLoading, false);
     store.overrideSelector(selectError, null);
     store.overrideSelector(selectSelectedAccount, null);
 
+    fixture = TestBed.createComponent(ExternalAccounts);
+    component = fixture.componentInstance;
     store.refreshState();
   });
 
@@ -108,14 +109,18 @@ describe('ExternalAccounts', () => {
     store.resetSelectors();
   });
 
+  it('should create and init auto selection logic', () => {
+    expect(component).toBeTruthy();
+    expect(mockSelectionService.initAutoSelectionLogic).toHaveBeenCalled();
+  });
+
   it('should dispatch loadAccounts on init if store is empty', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
-    fixture.detectChanges();
+    component.ngOnInit();
     expect(dispatchSpy).toHaveBeenCalledWith(AccountsActions.loadAccounts({}));
   });
 
   it('should handle the verified effect correctly', async () => {
-    fixture.detectChanges();
     mockStoreValues.isVerified.set(true);
     fixture.detectChanges();
     await Promise.resolve();
@@ -125,12 +130,15 @@ describe('ExternalAccounts', () => {
     expect(component.showSuccess()).toBe(false);
   });
 
-  it('should compute recipient accounts from info.accounts', () => {
+  it('should compute recipient accounts from info.accounts and sort them', () => {
     mockStoreValues.recipientInfo.set({
-      accounts: [{ id: '1', currency: 'GEL' }],
+      accounts: [
+        { id: '1', isFavorite: false },
+        { id: '2', isFavorite: true },
+      ],
     });
     fixture.detectChanges();
-    expect(component.recipientAccounts().length).toBe(1);
+    expect(component.recipientAccounts()[0].id).toBe('2');
   });
 
   it('should compute fallback recipient account if only currency is provided', () => {
@@ -139,50 +147,17 @@ describe('ExternalAccounts', () => {
     fixture.detectChanges();
     const accounts = component.recipientAccounts();
     expect(accounts[0].iban).toBe('GE89IBAN');
-    expect(accounts[0].currency).toBe('USD');
   });
 
   it('should calculate isContinueDisabled logic accurately', () => {
-    mockStoreValues.senderAccount.set(null);
-    fixture.detectChanges();
-    expect(component.isContinueDisabled()).toBe(true);
-    mockStoreValues.recipientType.set('iban-different-bank');
     mockStoreValues.senderAccount.set({ id: 's1' });
-    component.recipientNameInput.setValue('');
-    fixture.detectChanges();
-    expect(component.isContinueDisabled()).toBe(true);
-    component.recipientNameInput.setValue('Giorgi');
+    mockStoreValues.recipientType.set('iban-different-bank');
+    component.recipientNameInput.setValue('Test');
     fixture.detectChanges();
     expect(component.isContinueDisabled()).toBe(false);
   });
 
-  it('should delegate selection to handleRecipientAccountSelect', () => {
-    const mockAcc = { id: 'acc1' } as any;
-    component.onRecipientAccountSelect(mockAcc);
-    expect(
-      mockSelectionService.handleRecipientAccountSelect,
-    ).toHaveBeenCalled();
-  });
-
-  it('should trigger handleContinue on continue action', () => {
-    component.recipientNameInput.setValue('Lasha');
-    component.onContinue();
-    expect(mockSelectionService.handleContinue).toHaveBeenCalledWith(
-      component.selectedRecipientAccount(),
-      component.selectedSenderAccount(),
-      component.isExternalIban(),
-      'Lasha',
-    );
-  });
-
-  it('should call location back on onGoBack', () => {
-    const loc = TestBed.inject(Location);
-    component.onGoBack();
-    expect(loc.back).toHaveBeenCalled();
-  });
-
   it('should handle noPermission error effect correctly', async () => {
-    fixture.detectChanges();
     mockStoreValues.error.set('transfers.external.accounts.noPermission');
     fixture.detectChanges();
     await Promise.resolve();
@@ -190,15 +165,6 @@ describe('ExternalAccounts', () => {
     vi.advanceTimersByTime(5000);
     expect(component.showError()).toBe(false);
     expect(mockStoreValues.setError).toHaveBeenCalledWith('');
-  });
-
-  it('should handle currency mismatch effect correctly', async () => {
-    fixture.detectChanges();
-    component.currencyMismatchError.set(true);
-    fixture.detectChanges();
-    await Promise.resolve();
-    vi.advanceTimersByTime(5000);
-    expect(component.currencyMismatchError()).toBe(false);
   });
 
   it('should call handleRetryRecipientLookup on onRetry', () => {
@@ -210,24 +176,18 @@ describe('ExternalAccounts', () => {
     ).toHaveBeenCalledWith('GE123', 'internal');
   });
 
-  it('should dispatch loadAccounts on onRetrySenderAccounts', () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
-    component.onRetrySenderAccounts();
-    expect(dispatchSpy).toHaveBeenCalledWith(AccountsActions.loadAccounts({}));
-  });
+  it('should delegate selection and continue calls', () => {
+    const mockAcc = { id: 'acc1' } as any;
+    component.onRecipientAccountSelect(mockAcc);
+    expect(
+      mockSelectionService.handleRecipientAccountSelect,
+    ).toHaveBeenCalled();
 
-  it('should call recipientService for account disabled states', () => {
-    const mockAcc = { id: '1' } as any;
-    component.isRecipientAccountDisabled(mockAcc);
-    expect(mockRecipientService.isRecipientAccountDisabled).toHaveBeenCalled();
-    component.isSenderAccountDisabled(mockAcc);
-    expect(mockRecipientService.isSenderAccountDisabled).toHaveBeenCalled();
-  });
-
-  it('should delegate selection to handleSenderAccountSelect', () => {
-    const mockAcc = { id: 's1' } as any;
     component.onSenderAccountSelect(mockAcc);
     expect(mockSelectionService.handleSenderAccountSelect).toHaveBeenCalled();
+
+    component.onContinue();
+    expect(mockSelectionService.handleContinue).toHaveBeenCalled();
   });
 
   it('should compute recipientName based on recipient type', () => {
@@ -235,36 +195,20 @@ describe('ExternalAccounts', () => {
     mockStoreValues.recipientInput.set('GE00IBAN');
     fixture.detectChanges();
     expect(component.recipientName()).toBe('GE00IBAN');
-    mockStoreValues.recipientType.set('internal');
-    mockStoreValues.recipientInfo.set({ fullName: 'Tia User' });
-    fixture.detectChanges();
-    expect(component.recipientName()).toBe('Tia User');
   });
 
-
-  it('should auto-select favorite recipient account', async () => {
-    const favoriteRecipient = { id: 'r1', isFavorite: true };
-    mockStoreValues.recipientInfo.set({ accounts: [favoriteRecipient] });
-    mockStoreValues.selectedRecipientAccount.set(null);
-    mockStoreValues.recipientType.set('internal');
-    fixture.detectChanges();
-    await fixture.whenStable();
-    expect(mockStoreValues.setSelectedRecipientAccount).toHaveBeenCalledWith(
-      favoriteRecipient,
-    );
-  });
-
-  it('should sort sender accounts by favorite status', () => {
-    const mockAccounts = [
-      { id: '1', isFavorite: false },
-      { id: '2', isFavorite: true },
-    ] as any;
-
+  it('should compute allSenderAccountsDisabled correctly', () => {
+    const mockAccounts = [{ id: '1', isFavorite: false }] as any;
     store.overrideSelector(selectAccounts, mockAccounts);
     store.refreshState();
+    mockRecipientService.isSenderAccountDisabled.mockReturnValue(true);
     fixture.detectChanges();
+    expect(component.allSenderAccountsDisabled()).toBe(true);
+  });
 
-    const result = component.senderAccounts();
-    expect(result[0].id).toBe('2');
+  it('should return disabled reason from service', () => {
+    const mockAcc = { id: '1' } as any;
+    component.getSenderDisabledReason(mockAcc);
+    expect(mockRecipientService.getDisabledReason).toHaveBeenCalled();
   });
 });

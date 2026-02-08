@@ -24,6 +24,7 @@ import { IAccountsPermissions } from '../../approve-accounts/models/account-perm
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
+import { ApproveCardsState } from '../shared/state/approve-cards.state';
 
 @Component({
   selector: 'app-approve-cards',
@@ -36,16 +37,17 @@ import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-typ
     UiModal,
     ButtonComponent,
     ScrollArea,
-    AlertTypesWithIcons
+    AlertTypesWithIcons,
   ],
   templateUrl: './approve-cards.html',
-  providers: [ApproveCardsStore],
+  providers: [],
   styleUrl: './approve-cards.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApproveCards implements OnInit {
   public readonly store = inject(ApproveCardsStore);
   public readonly fb = inject(FormBuilder);
+  public readonly userState = inject(ApproveCardsState);
 
   public cardInfo = signal<PendingCard[]>([]);
 
@@ -57,6 +59,18 @@ export class ApproveCards implements OnInit {
 
   private confirmDialogAnswer = signal<boolean>(false);
   private pendingId = signal<string | null>(null);
+
+  public readonly alertDescription = computed(() => {
+    const status = this.store.success();
+    const config = this.userState.newConfig();
+
+    if (!status) return '';
+
+    const messages = config.alertMessages;
+    const key = `${status}Desc` as keyof typeof messages;
+
+    return messages[key] ?? '';
+  });
 
   public readonly activeCard = computed(() =>
     this.store.cards().find((card) => card.id === this.activeCardId()),
@@ -100,7 +114,6 @@ export class ApproveCards implements OnInit {
 
   ngOnInit(): void {
     this.store.load();
-    this.store.loadPerrmisions();
   }
 
   public handleAction(event: buttonEmit): void {
@@ -121,6 +134,8 @@ export class ApproveCards implements OnInit {
   }
 
   private handlePermissions(id: string): void {
+    this.store.loadPerrmisions();
+
     if (
       this.permissionsSavedCard() !== null &&
       this.permissionsSavedCard() !== id
@@ -159,7 +174,7 @@ export class ApproveCards implements OnInit {
         status: 'ACTIVE',
         permissions: permissions,
       });
-      this.clearPermissionsState()
+      this.clearPermissionsState();
     } else {
       this.store.updateStatus({
         cardId: id,
@@ -196,13 +211,13 @@ export class ApproveCards implements OnInit {
     this.permissionsOverlay.set(false);
   }
 
-  public onConfirmCancel():void  {
+  public onConfirmCancel(): void {
     this.confirmDialogAnswer.set(false);
     this.closeConfirmModal();
     this.pendingId.set(null);
   }
 
-  public onConfirmAccept():void  {
+  public onConfirmAccept(): void {
     this.clearPermissionsState();
 
     this.confirmDialogAnswer.set(true);
@@ -210,12 +225,12 @@ export class ApproveCards implements OnInit {
     this.handlePermissions(this.pendingId()!);
   }
 
-  public retryLoading():void {
-     this.store.load();
+  public retryLoading(): void {
+    this.store.load();
   }
 
   private clearPermissionsState(): void {
-  this.permissionsSavedCard.set(null);
-  this.cardPermissionsForm.reset();
-}
+    this.permissionsSavedCard.set(null);
+    this.cardPermissionsForm.reset();
+  }
 }

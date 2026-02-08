@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CardsApproveElement } from './cards-approve-element';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { By } from '@angular/platform-browser';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('CardsApproveElement', () => {
   let component: CardsApproveElement;
@@ -9,7 +10,10 @@ describe('CardsApproveElement', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CardsApproveElement],
+      imports: [
+        CardsApproveElement, 
+        TranslateModule.forRoot()
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CardsApproveElement);

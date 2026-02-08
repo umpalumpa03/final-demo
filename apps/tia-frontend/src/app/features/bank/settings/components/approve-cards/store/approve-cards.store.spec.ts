@@ -1,4 +1,4 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ApproveCardsStore } from './approve-cards.store';
 import { ApproveCardsService } from '../shared/services/approve-cards.service';
 import { of, throwError } from 'rxjs';
@@ -10,6 +10,8 @@ describe('ApproveCardsStore', () => {
   let serviceMock: any;
 
   beforeEach(() => {
+    vi.useFakeTimers();
+
     serviceMock = {
       getPendingCards: vi.fn(),
       changeCardStatus: vi.fn(),
@@ -28,10 +30,12 @@ describe('ApproveCardsStore', () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    vi.clearAllMocks();
   });
 
   it('should initialize with default state', () => {
     expect(store.cards()).toEqual([]);
+    expect(store.permissions()).toEqual([]);
     expect(store.isLoading()).toBe(false);
     expect(store.error()).toBeNull();
     expect(store.success()).toBeNull();
@@ -39,7 +43,7 @@ describe('ApproveCardsStore', () => {
   });
 
   it('should load cards and update state on success', () => {
-    const mockCards = [{ id: '1', nickname: 'Test' }];
+    const mockCards = [{ id: '1', nickname: 'Test Card' }];
     serviceMock.getPendingCards.mockReturnValue(of(mockCards));
 
     store.load();
@@ -50,44 +54,71 @@ describe('ApproveCardsStore', () => {
   });
 
   it('should handle errors during load', () => {
-    serviceMock.getPendingCards.mockReturnValue(throwError(() => new Error('Fail')));
+    serviceMock.getPendingCards.mockReturnValue(
+      throwError(() => new Error('Load Failed')),
+    );
 
     store.load();
 
-    expect(store.error()).toBe('Fail');
+    expect(store.error()).toBe('Load Failed');
     expect(store.isLoading()).toBe(false);
   });
 
-  it('should load permissions and update state', () => {
+  it('should call service for permissions when cache is empty', () => {
     const mockPerms = [{ value: 'atm', displayName: 'ATM' }];
     serviceMock.getCardPermissions.mockReturnValue(of(mockPerms));
 
     store.loadPerrmisions();
 
+    expect(serviceMock.getCardPermissions).toHaveBeenCalledTimes(1);
     expect(store.permissions()).toEqual(mockPerms);
     expect(store.isLoading()).toBe(false);
   });
 
-  it('should update card status, show success message, and clear it after 5s', () => {
-    vi.useFakeTimers();
-    patchState(store, { cards: [{ id: '1' }, { id: '2' }] as any });
-    serviceMock.changeCardStatus.mockReturnValue(of(null));
+  it('should not call service and use cache if permissions already exist', () => {
+    const mockPerms = [{ value: 'web', displayName: 'Web Shop' }];
+    serviceMock.getCardPermissions.mockReturnValue(of(mockPerms));
 
-    store.updateStatus({ cardId: '1', status: 'ACTIVE', permissions: [] });
+    store.loadPerrmisions();
+    expect(serviceMock.getCardPermissions).toHaveBeenCalledTimes(1);
 
-    expect(store.cards().length).toBe(1);
-    expect(store.success()).toBe('Card status updated successfully!');
-
-    vi.advanceTimersByTime(5000);
-    expect(store.success()).toBeNull();
+    store.loadPerrmisions();
+    expect(serviceMock.getCardPermissions).toHaveBeenCalledTimes(1);
+    expect(store.permissions()).toEqual(mockPerms);
   });
 
   it('should handle errors during loadPermissions', () => {
-    serviceMock.getCardPermissions.mockReturnValue(throwError(() => new Error('Perm Fail')));
+    serviceMock.getCardPermissions.mockReturnValue(
+      throwError(() => new Error('Permissions Error')),
+    );
 
     store.loadPerrmisions();
 
-    expect(store.error()).toBe('Perm Fail');
+    expect(store.error()).toBe('Permissions Error');
     expect(store.isLoading()).toBe(false);
+  });
+
+  it('should update card status and clear success after timeout', async () => {
+    const mockCard = { id: 'card_1', nickname: 'Visa' };
+    serviceMock.changeCardStatus.mockReturnValue(of({}));
+    patchState(store, { cards: [mockCard] });
+
+    store.updateStatus({ cardId: 'card_1', status: 'ACTIVE', permissions: [] });
+
+    await Promise.resolve();
+
+    expect(store.cards().length).toBe(0);
+    expect(store.success()).toBe('success');
+
+    vi.advanceTimersByTime(4000);
+    expect(store.success()).toBeNull();
+  });
+
+  it('should toggle loading state correctly during permissions fetch', () => {
+    serviceMock.getCardPermissions.mockReturnValue(of([]));
+    
+    expect(store.isLoading()).toBe(false);
+    store.loadPerrmisions();
+    expect(store.isLoading()).toBe(false); 
   });
 });

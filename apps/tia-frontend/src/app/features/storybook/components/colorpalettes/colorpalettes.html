@@ -1,23 +1,22 @@
 <div class="colorpalettes-container">
   <header class="colorpalettes-header">
-    <app-library-title
-      [title]="title"
-      subtitle="Three beautiful blue color schemes for your components"
-    />
+    <app-library-title [title]="title" [subtitle]="subtitle" />
   </header>
   <div class="colorpalettes-content">
     @for (palette of colorPalettesData; track palette.id) {
     <app-showcase-card
       [title]="palette.title"
       [subtitle]="palette.subtitle"
-      [class]="palette.scssClass"
+      [attr.class]="palette.scssClass"
     >
       <app-palettes [theme]="palette.theme"></app-palettes>
     </app-showcase-card>
     }
   </div>
   <div class="colorpalettes-content">
-    <app-showcase-card title="Color Application Examples">
+    <app-showcase-card
+      [title]="'storybook.palette.application.title' | translate"
+    >
       @for (palette of colorPalettesData; track palette.id) {
       <div class="color-application">
         <app-color-application
@@ -29,7 +28,7 @@
     </app-showcase-card>
   </div>
   <div class="colorpalettes-content">
-    <app-showcase-card title="Accessibility & Usage Notes">
+    <app-showcase-card [title]="'storybook.palette.notes.title' | translate">
       <app-notes></app-notes>
     </app-showcase-card>
   </div>
