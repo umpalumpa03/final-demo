@@ -11,6 +11,7 @@ import { TransferExecutionService } from './components/transfers-external/servic
 import {
   internalAccountsSelectedGuard
 } from 'apps/tia-frontend/src/app/features/bank/transfers/components/transfers-internal/guards/accounts-selected.guard';
+import { TransferRepeatService } from './components/transfers-external/services/transfer-repeat.service';
 export const transfersRoutes: Routes = [
   {
     path: '',
@@ -20,6 +21,7 @@ export const transfersRoutes: Routes = [
       TransferAccountSelectionService,
       TransferAmountService,
       TransferExecutionService,
+      TransferRepeatService
     ],
     loadComponent: () =>
       import('./container/transfers-container').then(

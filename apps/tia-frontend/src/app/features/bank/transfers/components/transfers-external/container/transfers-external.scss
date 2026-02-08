@@ -51,4 +51,8 @@
     width: 100%;
     @include display-flex(column);
   }
+  &__loader {
+    @include flex-center();
+    min-height: 30rem;
+  }
 }
