@@ -17,12 +17,12 @@ import { NoConnectionService } from '../service/no-connection.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NoConnection implements OnInit {
-  private noConnectionService = inject(NoConnectionService);
+  private readonly noConnectionService = inject(NoConnectionService);
 
   public isModalOpen = signal(false);
   public isReconnected = signal(false);
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (!this.noConnectionService.isOnline()) {
       this.isModalOpen.set(true);
     }

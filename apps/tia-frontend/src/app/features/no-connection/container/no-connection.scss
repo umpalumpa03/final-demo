@@ -86,9 +86,7 @@
     }
 
     &__icon {
-        @include display-flex(row);
-        align-items: center;
-        justify-content: center;
+        @include flex-center(row, center, center);
         width: 8rem;
         height: 8rem;
         color: $red-500;
