@@ -7,6 +7,7 @@ export const initialUserState: IUserState = {
   email: null,
   theme: localStorage.getItem('theme'),
   language: localStorage.getItem('language'),
+  hasCompletedOnboarding: false,
   avatar: null,
   role: null,
   loaded: false,
@@ -125,6 +126,14 @@ export const userInfoFeature = createFeature({
       widgets: state.widgets.filter((w) => w.dbId !== id),
       widgetsLoading: false,
     })),
+
+    on(
+      UserInfoActions.updateOnboardingStatusSuccess,
+      (state, { completed }) => ({
+        ...state,
+        hasCompletedOnboarding: completed,
+      }),
+    ),
 
     on(
       UserInfoActions.loadUserError,
