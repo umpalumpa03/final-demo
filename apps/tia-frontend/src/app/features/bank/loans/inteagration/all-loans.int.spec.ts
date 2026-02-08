@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { environment } from '../../../../../environments/environment';
 import {
   TestContext,
@@ -7,6 +7,7 @@ import {
   mockLoansList,
   mockLoanResponse,
 } from './loans.test-helpers';
+import { patchState } from '@ngrx/signals';
 
 describe('Loans Integration - View Loans Flow', () => {
   let ctx: TestContext;
@@ -90,5 +91,42 @@ describe('Loans Integration - View Loans Flow', () => {
       expect(ctx.loansStore.loading()).toBe(false);
       expect(ctx.loansStore.error()).toBe('Server Error');
     });
+  });
+
+  it('should use cached details on second visit (Performance Check)', async () => {
+    const loanId = 'loan-1';
+
+    ctx.loansStore.loadLoanDetails(loanId);
+    const req = ctx.httpMock.expectOne(`${environment.apiUrl}/loans/${loanId}`);
+    req.flush({ ...mockLoanResponse, id: loanId });
+
+    ctx.loansStore.clearLoanDetails();
+
+    ctx.loansStore.loadLoanDetails(loanId);
+
+    ctx.httpMock.expectNone(`${environment.apiUrl}/loans/${loanId}`);
+
+    expect(ctx.loansStore.selectedLoanDetails()).toBeTruthy();
+    expect(ctx.loansStore.selectedLoanDetails()?.id).toBe(loanId);
+  });
+
+  it('should navigate to next loan details', async () => {
+    patchState(ctx.loansStore as any, {
+      loans: [
+        { ...mockLoanResponse, id: 'loan-1' },
+        { ...mockLoanResponse, id: 'loan-2' },
+      ],
+    });
+
+    ctx.loansStore.loadLoanDetails('loan-1');
+    const req1 = ctx.httpMock.expectOne(`${environment.apiUrl}/loans/loan-1`);
+    req1.flush({ ...mockLoanResponse, id: 'loan-1' });
+
+    ctx.loansStore.navigateDetails(1);
+    const req2 = ctx.httpMock.expectOne(`${environment.apiUrl}/loans/loan-2`);
+    expect(req2.request.method).toBe('GET');
+    req2.flush({ ...mockLoanResponse, id: 'loan-2' });
+
+    expect(ctx.loansStore.selectedLoanDetails()?.id).toBe('loan-2');
   });
 });
