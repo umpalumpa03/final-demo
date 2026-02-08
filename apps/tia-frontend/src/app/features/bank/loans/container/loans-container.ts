@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   inject,
   signal,
   OnInit,
@@ -49,6 +50,7 @@ export class LoansContainer implements OnInit, OnDestroy {
   private globalStore = inject(Store);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   public readonly loanDashboardState = inject(LoanDashboardState);
   protected readonly store = inject(LoansStore);
@@ -87,7 +89,7 @@ export class LoansContainer implements OnInit, OnDestroy {
 
     this.route.queryParams
       .pipe(
-        takeUntilDestroyed(),
+        takeUntilDestroyed(this.destroyRef),
         tap((params) => {
           const accountId = params['accountId'] || null;
 
