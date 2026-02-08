@@ -1,4 +1,4 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ApproveCardsStore } from './approve-cards.store';
 import { ApproveCardsService } from '../shared/services/approve-cards.service';
 import { of, throwError } from 'rxjs';
@@ -10,6 +10,8 @@ describe('ApproveCardsStore', () => {
   let serviceMock: any;
 
   beforeEach(() => {
+    vi.useFakeTimers();
+
     serviceMock = {
       getPendingCards: vi.fn(),
       changeCardStatus: vi.fn(),
@@ -50,7 +52,9 @@ describe('ApproveCardsStore', () => {
   });
 
   it('should handle errors during load', () => {
-    serviceMock.getPendingCards.mockReturnValue(throwError(() => new Error('Fail')));
+    serviceMock.getPendingCards.mockReturnValue(
+      throwError(() => new Error('Fail')),
+    );
 
     store.load();
 
@@ -68,22 +72,28 @@ describe('ApproveCardsStore', () => {
     expect(store.isLoading()).toBe(false);
   });
 
-  it('should update card status, show success message, and clear it after 5s', () => {
-    vi.useFakeTimers();
-    patchState(store, { cards: [{ id: '1' }, { id: '2' }] as any });
-    serviceMock.changeCardStatus.mockReturnValue(of(null));
+  it('should update card status, show success message, and clear it after timeout', async () => {
+    const mockCard = { id: '123', nickname: 'Test' };
+    serviceMock.changeCardStatus.mockReturnValue(of({}));
 
-    store.updateStatus({ cardId: '1', status: 'ACTIVE', permissions: [] });
+    patchState(store, { cards: [mockCard] });
 
-    expect(store.cards().length).toBe(1);
-    expect(store.success()).toBe('Card status updated successfully!');
+    store.updateStatus({ cardId: '123', status: 'ACTIVE', permissions: [] });
 
-    vi.advanceTimersByTime(5000);
+    await Promise.resolve();
+
+    expect(store.cards().length).toBe(0);
+    expect(store.success()).toBe('success');
+
+    vi.advanceTimersByTime(4000);
+
     expect(store.success()).toBeNull();
   });
 
   it('should handle errors during loadPermissions', () => {
-    serviceMock.getCardPermissions.mockReturnValue(throwError(() => new Error('Perm Fail')));
+    serviceMock.getCardPermissions.mockReturnValue(
+      throwError(() => new Error('Perm Fail')),
+    );
 
     store.loadPerrmisions();
 

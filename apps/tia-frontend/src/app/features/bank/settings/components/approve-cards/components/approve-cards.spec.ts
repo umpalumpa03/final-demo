@@ -4,11 +4,14 @@ import { ApproveCardsStore } from '../store/approve-cards.store';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FormBuilder } from '@angular/forms';
 import { signal } from '@angular/core';
+import { ApproveCardsState } from '../shared/state/approve-cards.state';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ApproveCards', () => {
   let component: ApproveCards;
   let fixture: ComponentFixture<ApproveCards>;
   let storeMock: any;
+  let stateMock: any;
 
   beforeEach(async () => {
     storeMock = {
@@ -29,17 +32,31 @@ describe('ApproveCards', () => {
       ])
     };
 
+    stateMock = {
+      newConfig: signal({
+        alertMessages: {
+          successDesc: 'Success Message Content',
+          errorDesc: 'Error Message Content'
+        }
+      })
+    };
+
     await TestBed.configureTestingModule({
-      imports: [ApproveCards],
+      imports: [
+        ApproveCards, 
+        TranslateModule.forRoot()
+      ],
       providers: [
         FormBuilder,
-        { provide: ApproveCardsStore, useValue: storeMock }
+        { provide: ApproveCardsStore, useValue: storeMock },
+        { provide: ApproveCardsState, useValue: stateMock }
       ]
     })
     .overrideComponent(ApproveCards, {
       set: {
         providers: [
-          { provide: ApproveCardsStore, useValue: storeMock }
+          { provide: ApproveCardsStore, useValue: storeMock },
+          { provide: ApproveCardsState, useValue: stateMock }
         ]
       }
     })
@@ -53,6 +70,26 @@ describe('ApproveCards', () => {
     fixture.detectChanges();
     expect(storeMock.load).toHaveBeenCalled();
     expect(storeMock.loadPerrmisions).toHaveBeenCalled();
+  });
+
+  describe('alertDescription computed', () => {
+    it('should return empty string when store.success is null', () => {
+      storeMock.success.set(null);
+      fixture.detectChanges();
+      expect(component.alertDescription()).toBe('');
+    });
+
+    it('should return success description when store.success is "success"', () => {
+      storeMock.success.set('success');
+      fixture.detectChanges();
+      expect(component.alertDescription()).toBe('Success Message Content');
+    });
+
+    it('should return error description when store.success is "error"', () => {
+      storeMock.success.set('error');
+      fixture.detectChanges();
+      expect(component.alertDescription()).toBe('Error Message Content');
+    });
   });
 
   it('should sync FormRecord controls when permissions change via effect', async () => {
