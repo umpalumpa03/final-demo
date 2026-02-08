@@ -1,5 +1,7 @@
 <app-basic-card
   [padding]="'0 2.4rem'"
+  [maxWidth]="'100%'"
+  [hasHover]="true"
   (mousedown)="onMouseDown($event)"
   (mousemove)="onMouseMove($event)"
   (mouseup)="onMouseUp()"
@@ -32,10 +34,33 @@
           >
             {{ displayName() }}
           </h3>
-          @if (account().status === 'active') {
-          <span class="account-card__header-info-badge"
-            >{{ 'my-products.accounts.card.active' | translate }}</span
+          @if (account().isFavorite) {
+          <div
+            class="account-card__header-favorite account-card__header-favorite--small-screen"
           >
+            <img
+              src="images/svg/settings/approve-cards/favorite.svg"
+              alt="favorite"
+              class="account-card__header-favorite-icon"
+            />
+          </div>
+          } @if (account().status === 'active') {
+          <app-badges
+            [variant]="'default'"
+            [size]="'medium'"
+            [shape]="'pill'"
+            [text]="'my-products.accounts.card.active' | translate"
+          ></app-badges>
+          } @if (account().isFavorite) {
+          <div
+            class="account-card__header-favorite account-card__header-favorite--large-screen"
+          >
+            <img
+              src="images/svg/settings/approve-cards/favorite.svg"
+              alt="favorite"
+              class="account-card__header-favorite-icon"
+            />
+          </div>
           }
         </div>
         <p class="account-card__header-info-number">{{ account().iban }}</p>
@@ -80,17 +105,14 @@
         [fullWidth]="true"
         (click)="handleOpenTransferModal()"
       >
-        <span class="account-card__actions-icon">⇄</span>
+        <img
+          src="/images/svg/account/transfer.svg"
+          alt="transfer"
+          class="account-card__actions-icon"
+        />
         {{ 'my-products.accounts.card.makeTransfer' | translate }}
       </app-button>
       }
     </div>
   </div>
 </app-basic-card>
-
-<app-transfer-permissions-modal
-  [isOpen]="showTransferModal()"
-  [accountPermission]="account().permission"
-  (permissionSelected)="handlePermissionSelected($event)"
-  (closed)="showTransferModal.set(false)"
-></app-transfer-permissions-modal>

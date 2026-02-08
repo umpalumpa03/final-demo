@@ -52,6 +52,7 @@ export default defineConfig(() => ({
         '**/*.provider.ts',
         '**/*.constants.ts',
         '**/i18n/**',
+        '**/*.test-helpers.ts',
       ],
     },
   },

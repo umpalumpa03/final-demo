@@ -13,11 +13,13 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UiModal {
-  public isOpen = input.required<boolean>();
-  public closed = output<void>();
+  public readonly isOpen = input.required<boolean>();
+  public readonly closed = output<void>();
 
-  public hasNavigation = input<boolean>(false);
-  public navigate = output<number>();
+  public readonly hasNavigation = input<boolean>(false);
+  public readonly navigate = output<number>();
+  public readonly hasScroll = input<boolean>(false);
+  public readonly hideExit = input<boolean>(false);
 
   public close(): void {
     this.closed.emit();

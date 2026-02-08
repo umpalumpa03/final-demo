@@ -25,6 +25,7 @@ export interface ILoansState {
   detailsLoading: boolean;
   months: number[];
   purposes: LoanPurpose[];
+  filterAccountId: string | null;
   isDetailsOpen: boolean;
   isPrepaymentOpen: boolean;
   activePrepaymentLoan: ILoanDetails | null;

@@ -40,7 +40,7 @@
   >
     @for (item of visibleItems(); track item.id) {
     <app-draggable-card
-      [hasMinHeight]="!isHeroMode() || $index !== 0"
+      [hasMinHeight]="!item.isHidden && (!isHeroMode() || $index !== 0)"
       [itemData]="item"
       [hasViewOption]="item.type === 'transactions'"
       (viewOptionChange)="onFoldWidget($event, item.id)"

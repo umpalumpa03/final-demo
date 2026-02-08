@@ -1,4 +1,4 @@
-import { TransferPermission } from '../components/account-card/components/transfer-permissions-modal/model/transfer-permission.model';
+import { TransferPermission } from '../model/transfer-permission.model';
 
 export const TRANSFER_PERMISSIONS: TransferPermission[] = [
   {

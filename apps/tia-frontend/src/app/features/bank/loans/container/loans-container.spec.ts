@@ -25,6 +25,8 @@ describe('LoansContainer', () => {
       setSearchQuery: vi.fn(),
       loanCounts: signal({ all: 0, approved: 0, pending: 0, declined: 0 }),
       loanMonthsOptions: signal([]),
+      setAccountFilter: vi.fn(),
+      activeAccountName: signal('Mock Account'),
       purposeOptions: signal([]),
       isDetailsOpen: signal(false),
       isPrepaymentOpen: signal(false),

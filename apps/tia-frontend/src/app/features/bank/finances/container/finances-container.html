@@ -1,7 +1,7 @@
 <div class="global-bank-wrapper">
   <app-finances-view
-    [financeTitle]="financeTitle"
-    [financeSubTitle]="financeSubTitle"
+    [financeTitle]="financeTitle | translate"
+    [financeSubTitle]="financeSubTitle| translate"
     [activeFilter]="activeFilter()"
     [filterOptions]="filterOptions"
     [filterForm]="filterForm"
@@ -17,6 +17,8 @@
     [topCategoriesFooter]="store.topCategoriesFooter()"
     [savingsFooter]="store.savingsFooter()"
     [dailySpendingFooter]="store.dailySpendingFooter()"
+    [isRefreshing]="store.isRefreshing()"
+    (update)="onUpdateData()"
 
   ></app-finances-view>
 </div>

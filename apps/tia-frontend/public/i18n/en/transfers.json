@@ -8,7 +8,57 @@
   },
   "internal": {
     "intTitle": "Transfer Between Your Accounts",
-    "intDescription": "Move money seamlessly between your accounts"
+    "intDescription": "Move money easily between your accounts",
+    "step-1": "STEP 1: FROM ACCOUNT",
+    "accounts": {
+      "title": "Recipient Details",
+      "recipientVerified": "Recipient verified successfully!",
+      "selectRecipientAccount": "Select recipient account",
+      "selectSenderAccount": "Select your account",
+      "selectBothAccounts": "Please select both accounts",
+      "recipientName": {
+        "label": "Recipient Name",
+        "placeholder": "Enter recipient's full name"
+      },
+      "noAccounts": {
+        "header": "No Accounts Found",
+        "message": "No active accounts found for this recipient."
+      },
+      "noSenderAccounts": {
+        "header": "No Accounts Available",
+        "message": "You don't have an account to transfer from."
+      },
+      "error": {
+        "header": "An Error Occurred",
+        "message": "Accounts could not be loaded. Please try again."
+      },
+      "senderError": {
+        "header": "Failed to Load Your Accounts",
+        "message": "Your accounts could not be loaded. Please try again."
+      }
+    },
+    "amount": {
+      "title": "Transfer Amount",
+      "label": "Amount",
+      "from": "From",
+      "to": "To",
+      "currencyExchange": "Currency Exchange",
+      "available": "Available:",
+      "fee": "Fee",
+      "total": "Total amount to be deducted",
+      "loadingFee": "Calculating total amount...",
+      "transferButton": "Transfer Money",
+      "accountsSelected": "Accounts selected successfully!",
+      "insufficientBalance": "Insufficient balance",
+      "transferError": "Transfer failed. Please try again.",
+      "enterValidAmount": "Please enter a valid amount",
+      "send": "You send: ",
+      "receive": "Recipient Receives: ",
+      "description": {
+        "label": "Description (optional)",
+        "placeholder": "Add a note for this transfer"
+      }
+    }
   },
   "external": {
     "extTitle": "Transfer to Other Account",
@@ -49,6 +99,7 @@
       "selectSenderAccount": "Select Your Account",
       "selectBothAccounts": "Please select both accounts",
       "noPermission": "This card does not have transfer permission. Please choose a different account.",
+      "currencyMismatch": "Selected account currency does not match recipient's currency. Please select a different account.",
       "recipientName": {
         "label": "Recipient Name",
         "placeholder": "Enter recipient's full name"

@@ -51,38 +51,6 @@ export class PrepaymentOptionStep {
 
   protected readonly typeOptions = this.store.prepaymentTypeOptions;
 
-  protected readonly calculationOptions = toSignal(
-    this.translate.onLangChange.pipe(
-      startWith({ lang: this.translate.getCurrentLang(), translations: null }),
-      map(() => this.getTranslatedOptions()),
-    ),
-    { initialValue: this.getTranslatedOptions() },
-  );
-
-  private getTranslatedOptions(): RadioOption[] {
-    const t = (key: string) => this.translate.instant(key);
-    const prefix = 'loans.prepayment_wizard.radio_options';
-
-    return PREPAYMENT_CALC_OPTIONS.map((opt) => {
-      let labelKey = '';
-      let descKey = '';
-
-      if (opt.value === 'reduceMonthlyPayment') {
-        labelKey = `${prefix}.reduce_monthly_label`;
-        descKey = `${prefix}.reduce_monthly_desc`;
-      } else if (opt.value === 'reduceEndDateOfLoan') {
-        labelKey = `${prefix}.reduce_term_label`;
-        descKey = `${prefix}.reduce_term_desc`;
-      }
-
-      return {
-        ...opt,
-        label: t(labelKey || opt.label),
-        description: descKey ? t(descKey) : opt.description,
-      };
-    });
-  }
-
   public readonly form = this.fb.group({
     type: ['', Validators.required],
     amount: [null as number | null, [Validators.required, Validators.min(50)]],
@@ -107,7 +75,7 @@ export class PrepaymentOptionStep {
   }
 
   public ngOnInit(): void {
-    this.store.loadPrepaymentOptions();
+    this.store.loadPrepaymentOptions({});
 
     const currentLoan = this.loan();
     if (currentLoan && currentLoan.loanAmount) {
@@ -119,11 +87,6 @@ export class PrepaymentOptionStep {
   }
 
   public onCalculate(): void {
-    if (this.form.invalid && this.form.get('type')?.value !== 'full') {
-      this.form.markAllAsTouched();
-      return;
-    }
-
     const rawValue = this.form.getRawValue();
 
     const payload: PrepaymentCalculationPayload = {

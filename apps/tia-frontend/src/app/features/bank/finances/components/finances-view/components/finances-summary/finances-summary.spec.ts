@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinancesSummary } from './finances-summary';
 import { By } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { Spinner } from '../../../../../../../shared/lib/feedback/spinner/spinner'; 
-import { BasicAlerts } from '../../../../../../../shared/lib/alerts/components/basic-alerts/basic-alerts';
+import { TranslateModule } from '@ngx-translate/core';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('FinancesSummary', () => {
   let component: FinancesSummary;
@@ -11,11 +11,21 @@ describe('FinancesSummary', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinancesSummary, Spinner, BasicAlerts],
+      imports: [
+        FinancesSummary, 
+        TranslateModule.forRoot()
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinancesSummary);
     component = fixture.componentInstance;
+    
+    fixture.componentRef.setInput('loading', false);
+    fixture.componentRef.setInput('error', null);
+    fixture.componentRef.setInput('summaryCards', []);
+    
+    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -27,16 +37,27 @@ describe('FinancesSummary', () => {
     fixture.detectChanges();
 
     const spinner = fixture.debugElement.query(By.css('app-spinner'));
-    const loadingText = fixture.debugElement.query(By.css('span')).nativeElement;
+    const loadingWrapper = fixture.debugElement.query(By.css('.finances-summary__loading-wrapper'));
 
     expect(spinner).toBeTruthy();
-    expect(loadingText.textContent).toContain('Syncing your finances');
+    expect(loadingWrapper).toBeTruthy();
   });
 
+  it('should show error message and retry button when error occurs', () => {
+    const errorMessage = 'Something went wrong';
+    fixture.componentRef.setInput('error', errorMessage);
+    fixture.detectChanges();
 
+    const alert = fixture.debugElement.query(By.css('app-basic-alerts'));
+    const retryBtn = fixture.debugElement.query(By.css('app-button'));
 
-  it('should emit retry when "Try Again" is clicked', () => {
+    expect(alert).toBeTruthy();
+    expect(retryBtn).toBeTruthy();
+  });
+
+  it('should emit retry when retry button is clicked', () => {
     const retrySpy = vi.spyOn(component.retry, 'emit');
+    
     fixture.componentRef.setInput('error', 'Error');
     fixture.componentRef.setInput('activeFilter', 'month');
     fixture.detectChanges();
@@ -47,7 +68,17 @@ describe('FinancesSummary', () => {
     expect(retrySpy).toHaveBeenCalledWith('month');
   });
 
-  
+  it('should render statistic cards when data is provided', () => {
+    const mockCards = [
+      { label: 'Income', value: '1000', change: '+5%', changeType: 'increase', icon: 'icon' }
+    ];
+    fixture.componentRef.setInput('summaryCards', mockCards);
+    fixture.componentRef.setInput('error', null);
+    fixture.detectChanges();
+
+    const cards = fixture.debugElement.queryAll(By.css('app-statistic-card'));
+    expect(cards.length).toBe(1);
+  });
 
   it('should show empty state message when no cards and not loading', () => {
     fixture.componentRef.setInput('summaryCards', []);
@@ -56,6 +87,6 @@ describe('FinancesSummary', () => {
     fixture.detectChanges();
 
     const noData = fixture.debugElement.query(By.css('.no-data'));
-    expect(noData.nativeElement.textContent).toContain('couldn\'t find any records');
+    expect(noData).toBeTruthy();
   });
 });

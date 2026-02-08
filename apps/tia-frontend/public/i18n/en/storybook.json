@@ -1,0 +1,244 @@
+{
+  "palettes": {},
+  "buttons": {},
+  "inputs": {
+    "title": "Input Components",
+    "subtitle": "Form input components with various types and states",
+    "textInput": {
+      "title": "Text Inputs",
+      "default": {
+        "label": "Default Input",
+        "placeholder": "Enter text..."
+      },
+      "disabled": {
+        "label": "Disabled Input",
+        "placeholder": "Cannot edit this"
+      },
+      "readonly": {
+        "label": "Read-only Input",
+        "placeholder": "Read-only value"
+      },
+      "error": {
+        "label": "Input with Error",
+        "placeholder": "Enter valid data",
+        "errorMessage": "This field is required"
+      },
+      "success": {
+        "label": "Input with Success",
+        "placeholder": "Valid input",
+        "successMessage": "Looks good!"
+      }
+    },
+    "specialInput": {
+      "title": "Special Input Types",
+      "email": "Email Input",
+      "search": "Search Input",
+      "password": "Password Input",
+      "number": "Number Input",
+      "date": "Date Input",
+      "time": "Time Input",
+      "color": "Color Input",
+      "file": "File Input",
+      "url": "URL Input",
+      "phone": "Phone Input",
+      "placeholder": "Type here..."
+    },
+    "textarea": {
+      "title": "Textarea",
+      "default": {
+        "label": "Default Textarea",
+        "placeholder": "Type your message here..."
+      },
+      "disabled": {
+        "label": "Disabled Textarea",
+        "placeholder": "Cannot edit this"
+      },
+      "maxLength": {
+        "label": "Textarea with Max Length",
+        "placeholder": "Maximum 100 characters"
+      }
+    },
+    "checkboxes": {
+      "title": "Checkboxes",
+      "terms": "Accept terms and conditions (State: Unchecked)",
+      "default": "Default Checked",
+      "disabled": "Disabled Checkbox",
+      "disabledChecked": "Disabled & Checked"
+    },
+    "radio": {
+      "title": "Radio Buttons",
+      "opt1": "Option 1 (Selected)",
+      "opt2": "Option 2",
+      "opt3": "Option 3",
+      "optDisabled": "Disabled Option"
+    },
+    "switches": {
+      "title": "Switches",
+      "toggle": "Toggle Feature (State: OFF)",
+      "default": "Default Enabled",
+      "disabled": "Disabled Switch",
+      "disabledChecked": "Disabled & Checked"
+    },
+    "dropdown": {
+      "title": "Select Dropdown",
+      "default": {
+        "label": "Select an Option",
+        "placeholder": "Choose an option..."
+      },
+      "disabled": {
+        "label": "Disabled Select",
+        "placeholder": "Disabled select"
+      },
+      "options": {
+        "opt1": "Option 1",
+        "opt2": "Option 2",
+        "opt3": "Option 3"
+      }
+    },
+    "sliders": {
+      "title": "Sliders",
+      "volume": "Volume",
+      "disabled": "Disabled Slider",
+      "step": "Step Slider (25% increments)"
+    },
+    "otp": {
+      "title": "OTP Input",
+      "label": "Security PIN"
+    }
+  },
+  "forms": {},
+  "cards": {},
+  "alerts": {},
+  "badges": {},
+  "tables": {},
+  "navigation": {
+    "title": "Navigation Components",
+    "subtitle": "Navigation components including tabs, breadcrumbs, and pagination",
+    "sections": {
+      "tabs": {
+        "title": "Tabs",
+        "overview": "Overview",
+        "analytics": "Analytics",
+        "reports": "Reports",
+        "settings": "Settings",
+        "cardTitle": "Overview Content",
+        "cardContent": "This is the overview tab content. It displays general information."
+      },
+      "verticalTabs": {
+        "title": "Vertical Tabs",
+        "account": "Account",
+        "notifications": "Notifications",
+        "preferences": "Preferences",
+        "cardTitle": "Account Settings",
+        "cardContent": "Manage your account settings and preferences."
+      },
+      "breadcrumbs": {
+        "title": "Breadcrumbs",
+        "default": "Default Breadcrumbs",
+        "withIcons": "With Icons",
+        "longPath": "Long Path:",
+        "home": "Home",
+        "products": "Products",
+        "current": "Current Page",
+        "category": "Categories",
+        "electronics": "Electronics",
+        "productDetails": "Product Details",
+        "dashboard": "Dashboard",
+        "settings": "Settings",
+        "security": "Security",
+        "twoFactorAuth": "Two-Factor Authentication"
+      },
+      "pagination": {
+        "title": "Pagination",
+        "default": "Default Pagination",
+        "withEllipsis": "With Ellipsis",
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "horizontalNavigation": {
+        "title": "Horizontal Navigation",
+        "dashboard": "Dashboard",
+        "projects": "Projects",
+        "team": "Team",
+        "calendar": "Calendar",
+        "disabled": "Disabled"
+      },
+      "verticalNavigation": {
+        "title": "Vertical Navigation",
+        "home": "Home",
+        "search": "Search",
+        "profile": "Profile",
+        "notifications": "Notifications",
+        "settings": "Settings",
+        "disabled": "Disabled Item"
+      },
+      "pillsNavigation": {
+        "title": "Pills Navigation",
+        "all": "All",
+        "active": "Active",
+        "completed": "Completed",
+        "archived": "Archived"
+      }
+    }
+  },
+  "feedback": {},
+  "layout": {},
+  "data-display": {},
+  "overlays": {},
+  "drag-and-drop": {
+    "title": "Drag & Drop Components",
+    "subtitle": "Interactive drag-and-drop interfaces for reordering and organizing content",
+    "sections": {
+      "draggableCards": {
+        "title": "Draggable Cards",
+        "description": "Drag cards to reorder them in a grid layout",
+        "item": "Item",
+        "dragToReorder": "drag to reorder",
+        "play": "Play"
+      },
+      "sortableList": {
+        "title": "Sortable List",
+        "description": "Drag cards to reorder them in a grid layout"
+      },
+      "kanbanBoard": {
+        "title": "Kanban Board",
+        "description": "Manage your tasks across different stages",
+        "columns": {
+          "todo": "To Do",
+          "inProgress": "In Progress",
+          "done": "Done"
+        },
+        "task": "Task"
+      },
+      "addContent": {
+        "title": "Add Content of Your Choice",
+        "description": "Drag Cards to reorder them in a grid layout",
+        "contentLabel": "Content of your choice",
+        "month": "Jan 2026"
+      },
+      "treeView": {
+        "title": "Tree View",
+        "description": "Drag items to reorder or move between groups",
+        "group": "Group",
+        "items": "Items",
+        "groupDescriptions": {
+          "first": "First group",
+          "second": "Second group",
+          "third": "Third group"
+        },
+        "ungrouped": "Ungrouped",
+        "child": "Child",
+        "dragToReorder": "Drag to reorder"
+      }
+    },
+    "howToUse": {
+      "title": "How to Use Drag & Drop",
+      "steps": {
+        "step1": "Click and hold on an item with the grip icon",
+        "step2": "Drag the item to a new position",
+        "step3": "Release to drop the item in its new location",
+        "step4": "For Kanban boards, drag tasks between columns to change status"
+      }
+    }
+  }
+}

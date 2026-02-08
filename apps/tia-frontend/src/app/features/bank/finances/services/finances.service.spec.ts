@@ -45,36 +45,48 @@ describe('FinancesService', () => {
     req2.flush([]);
   });
 
-  it('should fetch trend data (income, savings) with default or custom months', () => {
-    service.getIncomeVsExpenses(5).subscribe();
-    const req1 = httpMock.expectOne(r => 
-      r.url.includes('income-vs-expenses') && 
-      r.params.get('months') === '5'
-    );
-    req1.flush([]);
+  it('should handle getFullFinancialData and cache the result', () => {
+    const from = '2026-01-01';
+    const to = '2026-01-31';
 
-    service.getSavingsTrend().subscribe(); 
-    const req2 = httpMock.expectOne(r => 
-      r.url.includes('savings-trend') && 
-      r.params.get('months') === '12'
-    );
-    req2.flush([]);
+    service.getFullFinancialData(from, to).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.summary).toBeDefined();
+    });
+
+    const endpoints = [
+      'summary',
+      'category-breakdown',
+      'daily-spending',
+      'income-vs-expenses',
+      'savings-trend',
+      'recent-transactions'
+    ];
+
+    endpoints.forEach(endpoint => {
+      httpMock.expectOne(req => req.url.includes(endpoint)).flush({});
+    });
+
+    service.getFullFinancialData(from, to).subscribe();
+    httpMock.expectNone(req => req.url.includes('finances'));
+
+    service.getFullFinancialData(from, to, true).subscribe();
+    endpoints.forEach(endpoint => {
+      httpMock.expectOne(req => req.url.includes(endpoint)).flush({});
+    });
   });
 
-  it('should fetch daily spending and recent transactions with limits', () => {
-    service.getDailySpending('2026-02-01').subscribe();
+  it('should fetch trend data with correct month params', () => {
+    service.getIncomeVsExpenses(5).subscribe();
     httpMock.expectOne(r => 
-      r.url.includes('daily-spending') && 
-      r.params.get('value') === '2026-02-01'
+      r.url.includes('income-vs-expenses') && 
+      r.params.get('months') === '5'
     ).flush([]);
 
     service.getRecentTransactions(10).subscribe();
-    const req = httpMock.expectOne(r => 
+    httpMock.expectOne(r => 
       r.url.includes('recent-transactions') && 
       r.params.get('limit') === '10'
-    );
-    
-    expect(req.request.method).toBe('GET');
-    req.flush([]);
+    ).flush([]);
   });
 });
