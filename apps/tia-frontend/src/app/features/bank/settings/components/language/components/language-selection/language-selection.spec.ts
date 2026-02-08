@@ -61,7 +61,7 @@ describe('LanguageSelection', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [LanguageSelection, TranslateModule.forRoot()],
+      imports: [LanguageSelection],
       providers: [
         { provide: LanguagesStore, useValue: mockLanguagesStore },
         { provide: TranslateService, useValue: mockTranslateService },
