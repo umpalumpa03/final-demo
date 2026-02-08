@@ -1,13 +1,287 @@
 {
   "palettes": {},
   "buttons": {},
-  "inputs": {},
+  "inputs": {
+    "title": "შეყვანის კომპონენტები",
+    "subtitle": "ფორმის შეყვანის კომპონენტები სხვადასხვა ტიპებითა და მდგომარეობებით",
+    "textInput": {
+      "title": "ტექსტური ველები",
+      "default": {
+        "label": "ნაგულისხმევი ველი",
+        "placeholder": "შეიყვანეთ ტექსტი..."
+      },
+      "disabled": {
+        "label": "გათიშული ველი",
+        "placeholder": "რედაქტირება შეუძლებელია"
+      },
+      "readonly": {
+        "label": "მხოლოდ კითხვადი ველი",
+        "placeholder": "მხოლოდ კითხვადი მნიშვნელობა"
+      },
+      "error": {
+        "label": "ველი შეცდომით",
+        "placeholder": "შეიყვანეთ ვალიდური მონაცემები",
+        "errorMessage": "ველი სავალდებულოა"
+      },
+      "success": {
+        "label": "ველი წარმატებით",
+        "placeholder": "ვალიდური შენატანი",
+        "successMessage": "მშვენიერია!"
+      }
+    },
+    "specialInput": {
+      "title": "სპეციალური ტიპის ველები",
+      "email": "ელ. ფოსტის ველი",
+      "search": "ძებნის ველი",
+      "password": "პაროლის ველი",
+      "number": "რიცხვითი ველი",
+      "date": "თარიღის ველი",
+      "time": "დროის ველი",
+      "color": "ფერის ველი",
+      "file": "ფაილის ველი",
+      "url": "ბმულის (URL) ველი",
+      "phone": "ტელეფონის ველი",
+      "placeholder": "აკრიფეთ აქ..."
+    },
+    "textarea": {
+      "title": "ტექსტური არე (Textarea)",
+      "default": {
+        "label": "ნაგულისხმევი ტექსტური არე",
+        "placeholder": "აკრიფეთ თქვენი შეტყობინება..."
+      },
+      "disabled": {
+        "label": "გათიშული ტექსტური არე",
+        "placeholder": "რედაქტირება შეუძლებელია"
+      },
+      "maxLength": {
+        "label": "ტექსტური არე ლიმიტით",
+        "placeholder": "მაქსიმუმ 100 სიმბოლო"
+      }
+    },
+    "checkboxes": {
+      "title": "მოსანიშნი ველები",
+      "terms": "ვეთანხმები წესებსა და პირობებს (მდგომარეობა: მოუნიშნავი)",
+      "default": "ნაგულისხმევად მონიშნული",
+      "disabled": "გათიშული მოსანიშნი ველი",
+      "disabledChecked": "გათიშული და მონიშნული"
+    },
+    "radio": {
+      "title": "ასარჩევი ღილაკები (Radio)",
+      "opt1": "ვარიანტი 1 (არჩეული)",
+      "opt2": "ვარიანტი 2",
+      "opt3": "ვარიანტი 3",
+      "optDisabled": "გათიშული ვარიანტი"
+    },
+    "switches": {
+      "title": "გადამრთველები",
+      "toggle": "ფუნქციის ჩართვა (მდგომარეობა: გამორთული)",
+      "default": "ნაგულისხმევად ჩართული",
+      "disabled": "გათიშული გადამრთველი",
+      "disabledChecked": "გათიშული და ჩართული"
+    },
+    "dropdown": {
+      "title": "ჩამოსაშლელი სია",
+      "default": {
+        "label": "აირჩიეთ ვარიანტი",
+        "placeholder": "აირჩიეთ..."
+      },
+      "disabled": {
+        "label": "გათიშული სია",
+        "placeholder": "გათიშული სია"
+      },
+      "options": {
+        "opt1": "ვარიანტი 1",
+        "opt2": "ვარიანტი 2",
+        "opt3": "ვარიანტი 3"
+      }
+    },
+    "sliders": {
+      "title": "სლაიდერები",
+      "volume": "ხმა",
+      "disabled": "გათიშული სლაიდერი",
+      "step": "ბიჯური სლაიდერი (25%-იანი ზრდა)"
+    },
+    "otp": {
+      "title": "OTP ველი",
+      "label": "უსაფრთხოების კოდი"
+    }
+  },
   "forms": {},
   "cards": {},
   "alerts": {},
-  "badges": {},
+  "badges": {
+    "title": "ბეიჯები",
+    "subtitle": "ბეიჯის კომპონენტები ეტიკეტების, სტატუსის ინდიკატორებისა და რაოდენობებისთვის",
+    "sections": {
+      "variants": "ვარიანტები",
+      "statusBadges": "სტატუსის ბეიჯები",
+      "sizes": "ზომები",
+      "countBadges": "რაოდენობის ბეიჯები",
+      "interactiveBadges": "ინტერაქტიული ბეიჯები (გაუქმებადი)",
+      "pillBadges": "მომრგვალო/კაფსულის ფორმის ბეიჯები",
+      "dotIndicators": "წერტილოვანი ინდიკატორებით",
+      "badgeGroups": "ბეიჯების ჯგუფები",
+      "badgeStates": "ბეიჯების მდგომარეობები",
+      "customColors": "მორგებული ფერები",
+      "skills": "უნარები:",
+      "categories": "კატეგორიები:"
+    },
+    "variants": {
+      "default": "ნაგულისხმევი",
+      "secondary": "მეორადი",
+      "destructive": "გაუქმებადი",
+      "outline": "კონტური"
+    },
+    "sizes": {
+      "small": "პატარა",
+      "medium": "საშუალო",
+      "large": "დიდი"
+    },
+    "countBadges": {
+      "messages": "შეტყობინებები",
+      "notifications": "სიახლეები",
+      "updates": "განახლებები",
+      "cartItems": "კალათის ელემენტები",
+      "unread": "წაუკითხავი",
+      "new": "ახალი"
+    },
+    "dismissible": {
+      "tag1": "ტეგ 1",
+      "tag2": "ტეგ 2",
+      "tag3": "ტეგ 3",
+      "tag4": "ტეგ 4"
+    },
+    "pillBadges": {
+      "pillShape": "კაფსულის ფორმა",
+      "category": "კატეგორია",
+      "tag": "ტეგი",
+      "angular": "Angular",
+      "typescript": "TypeScript",
+      "css": "CSS",
+      "javascript": "JavaScript"
+    },
+    "badgeStates": {
+      "normal": "სტანდარტული",
+      "hoverMe": "მიიტანეთ მაუსი",
+      "disabled": "გათიშული",
+      "selected": "არჩეული",
+      "default": "ნაგულისხმევი:",
+      "hovered": "მაუსით დაფარული:",
+      "disabledLabel": "გათიშული:",
+      "selectedLabel": "არჩეული:"
+    },
+    "customColors": {
+      "pink": "ვარდისფერი",
+      "indigo": "ინდიგო",
+      "teal": "ცისფერი-მწვანე",
+      "rose": "წითელი",
+      "cyan": "ცისფერი",
+      "amber": "ქარვისფერი",
+      "lime": "ლაიმი",
+      "slate": "მუქი ნაცრისფერი"
+    },
+    "status": {
+      "active": "აქტიური",
+      "pending": "მოლოდინში",
+      "inactive": "არააქტიური",
+      "inProgress": "პროცესშია",
+      "featured": "რეკომენდირებული",
+      "premium": "პრემიუმი",
+      "favorite": "ფავორიტი",
+      "done": "დასრულებული",
+      "todo": "გასაკეთებელი"
+    },
+    "dot": {
+      "online": "აქტიური",
+      "away": "გასული",
+      "offline": "არააქტიური",
+      "live": "პირდაპირი ეთერი"
+    },
+    "skills": {
+      "javascript": "JavaScript",
+      "angular": "Angular",
+      "nodejs": "Node.js",
+      "typescript": "TypeScript",
+      "css": "CSS",
+      "html": "HTML"
+    },
+    "categories": {
+      "technology": "ტექნოლოგია",
+      "design": "დიზაინი",
+      "marketing": "მარკეტინგი"
+    }
+  },
   "tables": {},
-  "navigation": {},
+  "navigation": {
+    "title": "ნავიგაციის კომპონენტები",
+    "subtitle": "ნავიგაციის კომპონენტები, მათ შორის ტაბები, ნავიგაციის ბილიკი და გვერდების გადართვა",
+    "sections": {
+      "tabs": {
+        "title": "ტაბები",
+        "overview": "მიმოხილვა",
+        "analytics": "ანალიტიკა",
+        "reports": "ანგარიშები",
+        "settings": "პარამეტრები",
+        "cardTitle": "მიმოხილვის შინაარსი",
+        "cardContent": "ეს არის მიმოხილვის ტაბის შინაარსი. აქ ნაჩვენებია ზოგადი ინფორმაცია."
+      },
+      "verticalTabs": {
+        "title": "ვერტიკალური ტაბები",
+        "account": "ანგარიში",
+        "notifications": "შეტყობინებები",
+        "preferences": "პრეფერენციები",
+        "cardTitle": "ანგარიშის პარამეტრები",
+        "cardContent": "მართეთ თქვენი ანგარიშის პარამეტრები და პრეფერენციები."
+      },
+      "breadcrumbs": {
+        "title": "ნავიგაციის ბილიკი",
+        "default": "ნაგულისხმევი ბილიკი",
+        "withIcons": "ხატულებით",
+        "longPath": "გრძელი ბილიკი:",
+        "home": "მთავარი",
+        "products": "პროდუქტები",
+        "current": "მიმდინარე გვერდი",
+        "category": "კატეგორიები",
+        "electronics": "ელექტრონიკა",
+        "productDetails": "პროდუქტის დეტალები",
+        "dashboard": "მართვის პანელი",
+        "settings": "პარამეტრები",
+        "security": "უსაფრთხოება",
+        "twoFactorAuth": "ორფაქტორიანი ავთენტიფიკაცია"
+      },
+      "pagination": {
+        "title": "გვერდების გადართვა",
+        "default": "ნაგულისხმევი გადართვა",
+        "withEllipsis": "მრავალწერტილით",
+        "previous": "წინა",
+        "next": "შემდეგი"
+      },
+      "horizontalNavigation": {
+        "title": "ჰორიზონტალური ნავიგაცია",
+        "dashboard": "მართვის პანელი",
+        "projects": "პროექტები",
+        "team": "გუნდი",
+        "calendar": "კალენდარი",
+        "disabled": "გამორთული"
+      },
+      "verticalNavigation": {
+        "title": "ვერტიკალური ნავიგაცია",
+        "home": "მთავარი",
+        "search": "ძიება",
+        "profile": "პროფილი",
+        "notifications": "შეტყობინებები",
+        "settings": "პარამეტრები",
+        "disabled": "გამორთული ელემენტი"
+      },
+      "pillsNavigation": {
+        "title": "ღილაკებით ნავიგაცია",
+        "all": "ყველა",
+        "active": "აქტიური",
+        "completed": "დასრულებული",
+        "archived": "დაარქივებული"
+      }
+    }
+  },
   "feedback": {},
   "layout": {},
   "data-display": {},

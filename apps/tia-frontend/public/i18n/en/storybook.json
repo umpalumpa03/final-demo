@@ -1,13 +1,288 @@
 {
   "palettes": {},
   "buttons": {},
-  "inputs": {},
+  "inputs": {
+    "title": "Input Components",
+    "subtitle": "Form input components with various types and states",
+    "textInput": {
+      "title": "Text Inputs",
+      "default": {
+        "label": "Default Input",
+        "placeholder": "Enter text..."
+      },
+      "disabled": {
+        "label": "Disabled Input",
+        "placeholder": "Cannot edit this"
+      },
+      "readonly": {
+        "label": "Read-only Input",
+        "placeholder": "Read-only value"
+      },
+      "error": {
+        "label": "Input with Error",
+        "placeholder": "Enter valid data",
+        "errorMessage": "This field is required"
+      },
+      "success": {
+        "label": "Input with Success",
+        "placeholder": "Valid input",
+        "successMessage": "Looks good!"
+      }
+    },
+    "specialInput": {
+      "title": "Special Input Types",
+      "email": "Email Input",
+      "search": "Search Input",
+      "password": "Password Input",
+      "number": "Number Input",
+      "date": "Date Input",
+      "time": "Time Input",
+      "color": "Color Input",
+      "file": "File Input",
+      "url": "URL Input",
+      "phone": "Phone Input",
+      "placeholder": "Type here..."
+    },
+    "textarea": {
+      "title": "Textarea",
+      "default": {
+        "label": "Default Textarea",
+        "placeholder": "Type your message here..."
+      },
+      "disabled": {
+        "label": "Disabled Textarea",
+        "placeholder": "Cannot edit this"
+      },
+      "maxLength": {
+        "label": "Textarea with Max Length",
+        "placeholder": "Maximum 100 characters"
+      }
+    },
+    "checkboxes": {
+      "title": "Checkboxes",
+      "terms": "Accept terms and conditions (State: Unchecked)",
+      "default": "Default Checked",
+      "disabled": "Disabled Checkbox",
+      "disabledChecked": "Disabled & Checked"
+    },
+    "radio": {
+      "title": "Radio Buttons",
+      "opt1": "Option 1 (Selected)",
+      "opt2": "Option 2",
+      "opt3": "Option 3",
+      "optDisabled": "Disabled Option"
+    },
+    "switches": {
+      "title": "Switches",
+      "toggle": "Toggle Feature (State: OFF)",
+      "default": "Default Enabled",
+      "disabled": "Disabled Switch",
+      "disabledChecked": "Disabled & Checked"
+    },
+    "dropdown": {
+      "title": "Select Dropdown",
+      "default": {
+        "label": "Select an Option",
+        "placeholder": "Choose an option..."
+      },
+      "disabled": {
+        "label": "Disabled Select",
+        "placeholder": "Disabled select"
+      },
+      "options": {
+        "opt1": "Option 1",
+        "opt2": "Option 2",
+        "opt3": "Option 3"
+      }
+    },
+    "sliders": {
+      "title": "Sliders",
+      "volume": "Volume",
+      "disabled": "Disabled Slider",
+      "step": "Step Slider (25% increments)"
+    },
+    "otp": {
+      "title": "OTP Input",
+      "label": "Security PIN"
+    }
+  },
   "forms": {},
   "cards": {},
   "alerts": {},
-  "badges": {},
+  "badges": {
+    "title": "Badges",
+    "subtitle": "Badge components for labels, status indicators, and counts",
+    "sections": {
+      "variants": "Variants",
+      "statusBadges": "Status Badges",
+      "sizes": "Sizes",
+      "countBadges": "Count Badges",
+      "interactiveBadges": "Interactive Badges (Dismissible)",
+      "pillBadges": "Rounded/Pill Badges",
+      "dotIndicators": "With Dot Indicators",
+      "badgeGroups": "Badge Groups",
+      "badgeStates": "Badge States",
+      "customColors": "Custom Colors",
+      "skills": "Skills:",
+      "categories": "Categories:"
+    },
+    "variants": {
+      "default": "Default",
+      "secondary": "Secondary",
+      "destructive": "Destructive",
+      "outline": "Outline"
+    },
+    "sizes": {
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large"
+    },
+    "countBadges": {
+      "messages": "Messages",
+      "notifications": "Notifications",
+      "updates": "Updates",
+      "cartItems": "Cart Items",
+      "unread": "Unread",
+      "new": "New"
+    },
+    "dismissible": {
+      "tag1": "Tag 1",
+      "tag2": "Tag 2",
+      "tag3": "Tag 3",
+      "tag4": "Tag 4"
+    },
+    "pillBadges": {
+      "pillShape": "Pill Shape",
+      "category": "Category",
+      "tag": "Tag",
+      "angular": "Angular",
+      "typescript": "TypeScript",
+      "css": "CSS",
+      "javascript": "JavaScript"
+    },
+    "badgeStates": {
+      "normal": "Normal Badge",
+      "hoverMe": "Hover Me",
+      "disabled": "Disabled",
+      "selected": "Selected",
+      "default": "Default:",
+      "hovered": "Hovered:",
+      "disabledLabel": "Disabled:",
+      "selectedLabel": "Selected:"
+    },
+    "customColors": {
+      "pink": "Pink",
+      "indigo": "Indigo",
+      "teal": "Teal",
+      "rose": "Rose",
+      "cyan": "Cyan",
+      "amber": "Amber",
+      "lime": "Lime",
+      "slate": "Slate"
+    },
+    "status": {
+      "active": "Active",
+      "pending": "Pending",
+      "inactive": "Inactive",
+      "inProgress": "In Progress",
+      "featured": "Featured",
+      "premium": "Premium",
+      "favorite": "Favorite",
+      "done": "Done",
+      "todo": "Todo"
+    },
+    "dot": {
+      "online": "Online",
+      "away": "Away",
+      "offline": "Offline",
+      "live": "Live"
+    },
+    "skills": {
+      "javascript": "JavaScript",
+      "react": "React",
+      "angular": "Angular",
+      "nodejs": "Node.js",
+      "typescript": "TypeScript",
+      "css": "CSS",
+      "html": "HTML"
+    },
+    "categories": {
+      "technology": "Technology",
+      "design": "Design",
+      "marketing": "Marketing"
+    }
+  },
   "tables": {},
-  "navigation": {},
+  "navigation": {
+    "title": "Navigation Components",
+    "subtitle": "Navigation components including tabs, breadcrumbs, and pagination",
+    "sections": {
+      "tabs": {
+        "title": "Tabs",
+        "overview": "Overview",
+        "analytics": "Analytics",
+        "reports": "Reports",
+        "settings": "Settings",
+        "cardTitle": "Overview Content",
+        "cardContent": "This is the overview tab content. It displays general information."
+      },
+      "verticalTabs": {
+        "title": "Vertical Tabs",
+        "account": "Account",
+        "notifications": "Notifications",
+        "preferences": "Preferences",
+        "cardTitle": "Account Settings",
+        "cardContent": "Manage your account settings and preferences."
+      },
+      "breadcrumbs": {
+        "title": "Breadcrumbs",
+        "default": "Default Breadcrumbs",
+        "withIcons": "With Icons",
+        "longPath": "Long Path:",
+        "home": "Home",
+        "products": "Products",
+        "current": "Current Page",
+        "category": "Categories",
+        "electronics": "Electronics",
+        "productDetails": "Product Details",
+        "dashboard": "Dashboard",
+        "settings": "Settings",
+        "security": "Security",
+        "twoFactorAuth": "Two-Factor Authentication"
+      },
+      "pagination": {
+        "title": "Pagination",
+        "default": "Default Pagination",
+        "withEllipsis": "With Ellipsis",
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "horizontalNavigation": {
+        "title": "Horizontal Navigation",
+        "dashboard": "Dashboard",
+        "projects": "Projects",
+        "team": "Team",
+        "calendar": "Calendar",
+        "disabled": "Disabled"
+      },
+      "verticalNavigation": {
+        "title": "Vertical Navigation",
+        "home": "Home",
+        "search": "Search",
+        "profile": "Profile",
+        "notifications": "Notifications",
+        "settings": "Settings",
+        "disabled": "Disabled Item"
+      },
+      "pillsNavigation": {
+        "title": "Pills Navigation",
+        "all": "All",
+        "active": "Active",
+        "completed": "Completed",
+        "archived": "Archived"
+      }
+    }
+  },
   "feedback": {},
   "layout": {},
   "data-display": {},

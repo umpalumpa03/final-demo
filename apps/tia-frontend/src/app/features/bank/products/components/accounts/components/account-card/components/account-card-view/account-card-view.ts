@@ -18,7 +18,11 @@ import { ButtonComponent } from '../../../../../../../../../shared/lib/primitive
 import { BasicCard } from '../../../../../../../../../shared/lib/cards/basic-card/basic-card';
 import { TextInput } from '../../../../../../../../../shared/lib/forms/input-field/text-input';
 import { Badges } from '../../../../../../../../../shared/lib/primitives/badges/badges';
-import { VALID_PERMISSION_VALUES } from '../../../../config/transfer-permissions.config';
+import {
+  VALID_PERMISSION_VALUES,
+  TRANSFER_PERMISSIONS,
+} from '../../../../config/transfer-permissions.config';
+import { filterPermissionsByCurrency } from '../../../../utils/transfer-permissions.utils';
 
 @Component({
   selector: 'app-account-card-view',
@@ -55,13 +59,26 @@ export class AccountCardViewComponent {
   );
   protected canMakeTransfer = computed(() => {
     const permission = this.account().permission;
-    return VALID_PERMISSION_VALUES.includes(
-      permission as (typeof VALID_PERMISSION_VALUES)[number],
+    const currency = this.account().currency;
+
+    if (
+      !VALID_PERMISSION_VALUES.includes(
+        permission as (typeof VALID_PERMISSION_VALUES)[number],
+      )
+    ) {
+      return false;
+    }
+
+    const availablePermissions = filterPermissionsByCurrency(
+      TRANSFER_PERMISSIONS,
+      permission,
+      currency,
     );
+
+    return availablePermissions.length > 0;
   });
 
   private elementRef = inject(ElementRef);
-  private router = inject(Router);
   private dragStart = signal<number | null>(null);
 
   constructor() {

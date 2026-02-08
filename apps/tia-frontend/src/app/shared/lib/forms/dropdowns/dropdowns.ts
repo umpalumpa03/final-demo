@@ -125,7 +125,7 @@ export class Dropdowns extends BaseInput implements OnInit {
     this.value.set(option.value);
 
     this.onChange(option.value);
-    this.valueChange.emit(option.value);
+    // this.valueChange.emit(option.value);
     this.isOpen.set(false);
   }
 }

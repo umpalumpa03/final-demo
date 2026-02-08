@@ -14,13 +14,17 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { FinancesStore } from '../store/finances.store';
 import { FinancesView } from '../components/finances-view/container/finances-view';
-import { FINANCES_FILTER_OPTIONS, getMonthOptions } from '../config/filter-options.config';
+import {
+  FINANCES_FILTER_OPTIONS,
+  getMonthOptions,
+} from '../config/filter-options.config';
 import { FilterType } from '../models/filter.model';
 import { dateRangeValidator } from '../validators/date-range.validator';
+import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-finances-container',
-  imports: [FinancesView],
+  imports: [FinancesView, TranslatePipe],
   templateUrl: './finances-container.html',
   styleUrl: './finances-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,10 +33,8 @@ export class FinancesContainer implements OnInit {
   readonly store = inject(FinancesStore);
   private readonly destroyRef = inject(DestroyRef);
 
- 
-
-  public readonly financeTitle = 'My Finances';
-  public readonly financeSubTitle = 'Track your income, expenses, and savings';
+  public readonly financeTitle = 'my-finances.finances.header.title';
+  public readonly financeSubTitle = 'my-finances.finances.header.subtitle';
 
   public readonly monthOptions = signal(getMonthOptions());
 
@@ -54,9 +56,7 @@ export class FinancesContainer implements OnInit {
     this.filterForm.valueChanges
       .pipe(
         debounceTime(500),
-        distinctUntilChanged(
-          (prev, curr) => prev === curr,
-        ),
+        distinctUntilChanged((prev, curr) => prev === curr),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => {
@@ -64,6 +64,11 @@ export class FinancesContainer implements OnInit {
           this.fetchData();
         }
       });
+  }
+
+  public onUpdateData(): void {
+    console.log('Update button clicked! Refreshing...');
+    this.fetchData(true);
   }
 
   public onFilterChange(type: FilterType): void {
@@ -84,21 +89,17 @@ export class FinancesContainer implements OnInit {
     }
   }
 
-  private fetchData(): void {
+  private fetchData(force = false): void {
     const { selectedMonth, fromDate, toDate } = this.filterForm.getRawValue();
     const currentFilter = this.activeFilter();
 
     let params: { from: string; to?: string } | null = null;
 
-    if (currentFilter === 'month') {
-      if (selectedMonth) {
-        params = { from: selectedMonth };
-      }
-    } else if (currentFilter === 'custom') {
-      if (fromDate && toDate) {
-        params = { from: fromDate, to: toDate };
-      }
-    } else {
+    if (currentFilter === 'month' && selectedMonth) {
+      params = { from: selectedMonth };
+    } else if (currentFilter === 'custom' && fromDate && toDate) {
+      params = { from: fromDate, to: toDate };
+    } else if (currentFilter === null) {
       const lastYear = new Date();
       lastYear.setFullYear(lastYear.getFullYear() - 1);
       params = {
@@ -108,7 +109,7 @@ export class FinancesContainer implements OnInit {
     }
 
     if (params) {
-      this.store.loadAllData(params);
+      this.store.loadAllData({ ...params, force });
     }
   }
 

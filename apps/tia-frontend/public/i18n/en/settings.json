@@ -142,8 +142,22 @@
     "rejectLoan": "Reject Loan"
   },
   "accounts": {
-    "title": "Accounts",
-    "savings": "Savings Account",
-    "checking": "Checking Account"
+    "changeFriendlyName": "Change Account Name",
+    "changeFriendlyNameSubtitle": "Update the name for Main Account",
+    "accountName": "Account Name",
+    "accountNumber": "Account Number",
+    "saveChanges": "Save Changes",
+    "cancel": "Cancel",
+    "changeButton": "Change name",
+    "favoriteButton": "Favorite",
+    "favoritedButton": "Favorited",
+    "hideButton": "Hide",
+    "showButton": "Show",
+    "title": "My Accounts",
+    "subtitle": "Manage your accounts, set favorites, and control visibility",
+    "errorMessage": "Failed to fetch the data",
+    "warningHeader": "No Data Found",
+    "warningMessage": "We couldn't find any data to display.",
+    "warningBtn": "Go Back"
   }
 }

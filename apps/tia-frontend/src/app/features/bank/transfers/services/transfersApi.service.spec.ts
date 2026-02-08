@@ -23,7 +23,7 @@ describe('TransfersApiService', () => {
   });
 
   afterEach(() => {
-    httpMock.verify(); 
+    httpMock.verify();
   });
 
   it('should lookup by phone with correct payload', () => {
@@ -108,5 +108,39 @@ describe('TransfersApiService', () => {
     const req2 = httpMock.expectOne(`${baseUrl}/verify`);
     expect(req2.request.body).toEqual({ challengeId: 'ch-2' });
     req2.flush({});
+  });
+
+  describe('getConversionRate', () => {
+    it('should return conversion rate observable', () => {
+      const result = service.getConversionRate('EUR', 'USD', 100);
+      expect(result).toBeDefined();
+    });
+  });
+
+  describe('transferToOwn', () => {
+    it('should return transfer observable', () => {
+      const payload = {
+        senderAccountId: 'acc-1',
+        receiverAccountId: 'acc-2',
+        description: 'Test',
+        amountToSend: 100,
+      };
+      const result = service.transferToOwn(payload);
+      expect(result).toBeDefined();
+    });
+  });
+
+  describe('transferCrossCurrency', () => {
+    it('should return transfer observable', () => {
+      const payload = {
+        senderAccountId: 'acc-1',
+        receiverAccountId: 'acc-2',
+        description: 'Test',
+        amountToSend: 100,
+        isReverse: false,
+      };
+      const result = service.transferCrossCurrency(payload);
+      expect(result).toBeDefined();
+    });
   });
 });

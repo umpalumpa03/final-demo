@@ -1,13 +1,13 @@
 <div class="badge-wrapper">
   <header class="badge-wrapper__title">
     <app-library-title
-      [title]="title"
-      [subtitle]="subtitle"
+      [title]="'storybook.badges.title' | translate"
+      [subtitle]="'storybook.badges.subtitle' | translate"
     ></app-library-title>
   </header>
 
   <div class="badge-demo">
-    <h3 class="badge-demo__title">Variants</h3>
+    <h3 class="badge-demo__title">{{ 'storybook.badges.sections.variants' | translate }}</h3>
 
     <div class="badge-demo__row">
       @for (item of variants(); track item.variant) {
@@ -23,7 +23,7 @@
   </div>
 
   <div class="badge-demo">
-    <h3 class="badge-demo__title">Status Badges</h3>
+    <h3 class="badge-demo__title">{{ 'storybook.badges.sections.statusBadges' | translate }}</h3>
 
     <div class="badge-demo__row">
       @for (item of statuses(); track item.status) {
@@ -33,7 +33,7 @@
   </div>
 
   <div class="badge-demo">
-    <h3 class="badge-demo__title">Sizes</h3>
+    <h3 class="badge-demo__title">{{ 'storybook.badges.sections.sizes' | translate }}</h3>
 
     <div class="badge-demo__row">
       @for (item of sizes(); track item.size) {
@@ -49,7 +49,7 @@
   </div>
 
   <div class="badge-demo">
-    <h3 class="badge-demo__title">Count Badges</h3>
+    <h3 class="badge-demo__title">{{ 'storybook.badges.sections.countBadges' | translate }}</h3>
 
     <div class="badge-demo__list">
       @for (item of countBadges(); track item.label) {
@@ -66,7 +66,7 @@
   </div>
 
   <div class="badge-demo">
-    <h3 class="badge-demo__title">Interactive Badges (Dismissible)</h3>
+    <h3 class="badge-demo__title">{{ 'storybook.badges.sections.interactiveBadges' | translate }}</h3>
 
     <div class="badge-demo__row">
       @for (item of dismissibleBadges(); track item.id) {
@@ -86,7 +86,7 @@
   </div>
 
   <div class="badge-demo">
-    <h3 class="badge-demo__title">Rounded/Pill Badges</h3>
+    <h3 class="badge-demo__title">{{ 'storybook.badges.sections.pillBadges' | translate }}</h3>
 
     <div class="badge-demo__row">
       @for (item of pillBadges(); track item.text) {
@@ -104,7 +104,7 @@
   </div>
 
   <div class="badge-demo">
-    <h3 class="badge-demo__title">With Dot Indicators</h3>
+    <h3 class="badge-demo__title">{{ 'storybook.badges.sections.dotIndicators' | translate }}</h3>
 
     <div class="badge-demo__row">
       @for (item of dotBadges(); track item.dot) {
@@ -115,10 +115,10 @@
   </div>
   
   <div class="badge-demo">
-    <h3 class="badge-demo__title">Badge Groups</h3>
+    <h3 class="badge-demo__title">{{ 'storybook.badges.sections.badgeGroups' | translate }}</h3>
 
     <div class="badge-demo__group">
-      <p class="badge-demo__subtitle">Skills:</p>
+      <p class="badge-demo__subtitle">{{ 'storybook.badges.sections.skills' | translate }}</p>
       <div class="badge-demo__row">
         @for (item of skillBadges(); track item.skill) {
           <app-badges
@@ -128,7 +128,7 @@
         }
       </div>
 
-      <p class="badge-demo__subtitle">Categories:</p>
+      <p class="badge-demo__subtitle">{{ 'storybook.badges.sections.categories' | translate }}</p>
       <div class="badge-demo__row">
         @for (item of categoryBadges(); track item.category) {
           <app-badges
@@ -141,7 +141,7 @@
   </div>
 
   <div class="badge-demo">
-    <h3 class="badge-demo__title">Badge States</h3>
+    <h3 class="badge-demo__title">{{ 'storybook.badges.sections.badgeStates' | translate }}</h3>
 
     <div class="badge-demo__states-list">
       @for (item of badgeStates(); track item.id) {
@@ -166,7 +166,7 @@
   </div>
 
   <div class="badge-demo">
-    <h3 class="badge-demo__title">Custom Colors</h3>
+    <h3 class="badge-demo__title">{{ 'storybook.badges.sections.customColors' | translate }}</h3>
 
     <div class="badge-demo__row">
       @for (item of customColors(); track item.customColor) {

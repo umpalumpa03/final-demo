@@ -118,9 +118,9 @@
       "cancel": "გაუქმება"
     },
     "form": {
-      "type_label": "დაფარვის ტიპი *",
-      "amount_label": "დაფარვის თანხა *",
-      "calc_option_label": "გაანგარიშების მეთოდი *"
+      "type_label": "დაფარვის ტიპი",
+      "amount_label": "დაფარვის თანხა",
+      "calc_option_label": "გაანგარიშების მეთოდი"
     },
     "radio_options": {
       "reduce_monthly_label": "ყოველთვიური გადასახადის შემცირება",

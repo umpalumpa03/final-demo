@@ -17,6 +17,10 @@
     margin-top: 2rem;
     width: 100%;
 
+    &__refresh {
+    margin-left: auto; 
+  }
+
     @media (min-width: 1024px) {
       @include flex-center(row, flex-start);
       gap: 3.2rem;

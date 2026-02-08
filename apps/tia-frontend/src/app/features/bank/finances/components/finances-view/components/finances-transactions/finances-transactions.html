@@ -1,8 +1,8 @@
 <section class="finances-details-grid">
   <div class="finances-card">
     <div class="finances-card__header">
-      <h3 class="card-title">Recent Transactions</h3>
-      <p class="card-subtitle">Latest financial activity</p>
+      <h3 class="card-title">{{ 'my-finances.finances.transactions.title' | translate }}</h3>
+      <p class="card-subtitle">{{ 'my-finances.finances.transactions.subtitle' | translate }}</p>
     </div>
     <div class="finances-card__list">
       @for (tx of transactions(); track tx.id) {

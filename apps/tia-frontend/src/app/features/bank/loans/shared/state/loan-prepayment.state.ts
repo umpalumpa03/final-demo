@@ -1,5 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { RadioOption } from '../models/prepayment.model';
 
 @Injectable()
 export class LoanPrepaymentState {
@@ -24,4 +25,25 @@ export class LoanPrepaymentState {
     ),
     hasBorder: true,
   });
+
+  public radioOptions = signal<RadioOption[]>([
+    {
+      label: this.translate.instant(
+        'loans.prepayment_wizard.radio_options.reduce_monthly_label',
+      ),
+      value: 'reduceMonthlyPayment',
+      description: this.translate.instant(
+        'loans.prepayment_wizard.radio_options.reduce_monthly_desc',
+      ),
+    },
+    {
+      label: this.translate.instant(
+        'loans.prepayment_wizard.radio_options.reduce_term_label',
+      ),
+      value: 'reduceLoanPeriod',
+      description: this.translate.instant(
+        'loans.prepayment_wizard.radio_options.reduce_term_desc',
+      ),
+    },
+  ]);
 }

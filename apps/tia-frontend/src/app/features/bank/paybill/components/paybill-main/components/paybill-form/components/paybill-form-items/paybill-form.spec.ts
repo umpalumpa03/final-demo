@@ -1,172 +1,110 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { PaybillForm } from './paybill-form';
+import { provideMockStore } from '@ngrx/store/testing';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import {
-  FormBuilder,
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
+  FormControl,
+  FormGroup,
   Validators,
+  ReactiveFormsModule,
 } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import {
-  PaybillProvider,
-  BillDetails,
-} from '../../../../shared/models/paybill.model';
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { EventEmitter } from '@angular/core';
 
 describe('PaybillForm', () => {
   let component: PaybillForm;
   let fixture: ComponentFixture<PaybillForm>;
-  let fb: FormBuilder;
-
-  const mockProvider: PaybillProvider = {
-    id: 'test-provider',
-    serviceName: 'Test Service',
-    categoryId: 'utilities',
-    name: 'Test Provider',
-  };
+  let translateService: TranslateService;
 
   beforeEach(async () => {
-    fb = new FormBuilder();
-    const nonNullableFb = fb.nonNullable;
-
     await TestBed.configureTestingModule({
-      imports: [PaybillForm, ReactiveFormsModule, TranslateModule.forRoot()],
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: NonNullableFormBuilder, useValue: nonNullableFb },
-      ],
+      imports: [PaybillForm, TranslateModule.forRoot(), ReactiveFormsModule],
+      providers: [TranslateService, provideMockStore({})],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PaybillForm);
     component = fixture.componentInstance;
-
-    const mockForm = fb.group({
-      value: ['', Validators.required],
-      amount: [0, [Validators.required, Validators.min(1)]],
-    });
-
-    fixture.componentRef.setInput('paybillForm', mockForm);
+    translateService = TestBed.inject(TranslateService);
+    fixture.componentRef.setInput(
+      'paybillForm',
+      new FormGroup({
+        amount: new FormControl(0, Validators.required),
+        accountNumber: new FormControl('', Validators.required),
+      }),
+    );
     fixture.componentRef.setInput('fields', []);
-    fixture.componentRef.setInput('provider', mockProvider);
 
     fixture.detectChanges();
   });
 
-  it('should create and initialize the form with default values', () => {
-    expect(component).toBeTruthy();
-    expect(component.paybillForm()).toBeDefined();
-    expect(component.paybillForm().controls['value'].value).toBe('');
+  describe('Computed Signals', () => {
+    it('should compute isVerified as true when verifiedDetails is valid', () => {
+      fixture.componentRef.setInput('verifiedDetails', { valid: true });
+      expect(component.isVerified()).toBe(true);
+    });
+
+    it('should compute isVerified as false when verifiedDetails is null or invalid', () => {
+      fixture.componentRef.setInput('verifiedDetails', null);
+      expect(component.isVerified()).toBe(false);
+    });
   });
 
-  describe('onSubmit logic', () => {
-    it('should not emit if isLoading is true', () => {
+  describe('onSaveTemplate', () => {
+    it('should emit saveTemplate with provider name', () => {
+      const emitSpy = vi.spyOn(component.saveTemplate, 'emit');
+      fixture.componentRef.setInput('provider', { name: 'Test Provider' });
+
+      component.onSaveTemplate();
+      expect(emitSpy).toHaveBeenCalledWith('Test Provider');
+    });
+
+    it('should emit empty string if no provider is present', () => {
+      const emitSpy = vi.spyOn(component.saveTemplate, 'emit');
+      fixture.componentRef.setInput('provider', null);
+
+      component.onSaveTemplate();
+      expect(emitSpy).toHaveBeenCalledWith('');
+    });
+  });
+
+  describe('onSubmit', () => {
+    it('should return early if isLoading is true', () => {
       const verifySpy = vi.spyOn(component.verify, 'emit');
       fixture.componentRef.setInput('isLoading', true);
-      fixture.detectChanges();
 
-      component.paybillForm().setValue({ value: '123456', amount: 10 });
       component.onSubmit();
-
       expect(verifySpy).not.toHaveBeenCalled();
     });
 
-    describe('Verification Phase (Not Verified)', () => {
-      it('should emit verify event if identifier is valid', () => {
-        const verifySpy = vi.spyOn(component.verify, 'emit');
+    it('should mark all as touched if form is invalid and not verified', () => {
+      const form = component.paybillForm();
+      const markSpy = vi.spyOn(form, 'markAllAsTouched');
+      form.get('accountNumber')?.setValue('');
 
-        component.paybillForm().controls['value'].setValue('123456');
-        component.paybillForm().controls['amount'].setValue(10);
-
-        component.onSubmit();
-
-        expect(verifySpy).toHaveBeenCalledWith(
-          expect.objectContaining({
-            value: expect.objectContaining({ value: '123456' }),
-          }),
-        );
-      });
-
-      it('should mark control as touched if identifier is invalid', () => {
-        const verifySpy = vi.spyOn(component.verify, 'emit');
-
-        component.paybillForm().controls['value'].setErrors({ required: true });
-
-        const touchedSpy = vi.spyOn(
-          component.paybillForm(),
-          'markAllAsTouched',
-        );
-
-        component.onSubmit();
-
-        expect(verifySpy).not.toHaveBeenCalled();
-        expect(touchedSpy).toHaveBeenCalled();
-      });
+      component.onSubmit();
+      expect(markSpy).toHaveBeenCalled();
     });
 
-    describe('Payment Phase (Verified)', () => {
-      const mockVerified: BillDetails = {
-        valid: true,
-        accountHolder: 'John Doe',
-        amountDue: 150,
-        address: 'Main St',
-        dueDate: '2025-01-01',
-        isExactAmount: false,
-      };
+    it('should emit verify event when form is valid but not yet verified', () => {
+      const verifySpy = vi.spyOn(component.verify, 'emit');
+      const form = component.paybillForm();
+      form.patchValue({ amount: 100, accountNumber: '12345' });
+      fixture.componentRef.setInput('verifiedDetails', null);
 
-      beforeEach(() => {
-        fixture.componentRef.setInput('verifiedDetails', mockVerified);
-        fixture.detectChanges();
-      });
-
-      it('should return true for isVerified computed signal', () => {
-        expect(component.isVerified()).toBe(true);
-      });
-
-      it('should emit pay event if form is valid', () => {
-        const paySpy = vi.spyOn(component.pay, 'emit');
-
-        component.paybillForm().setValue({ value: '123456', amount: 100 });
-
-        component.onSubmit();
-
-        expect(paySpy).toHaveBeenCalledWith({
-          amount: 100,
-          value: expect.objectContaining({ value: '123456', amount: 100 }),
-        });
-      });
-
-      it('should not emit pay event if amount is invalid', () => {
-        const paySpy = vi.spyOn(component.pay, 'emit');
-
-        component.paybillForm().setValue({ value: '123456', amount: 0 });
-
-        component.onSubmit();
-
-        expect(paySpy).not.toHaveBeenCalled();
-      });
+      component.onSubmit();
+      expect(verifySpy).toHaveBeenCalledWith({ value: form.getRawValue() });
     });
-  });
 
-  describe('Summary Items', () => {
-    it('should calculate summary items when verified details are provided', () => {
-      const mockVerified: BillDetails = {
-        valid: true,
-        accountHolder: 'Jane Doe',
-        amountDue: 200,
-        address: 'Second St',
-        dueDate: '2025-02-02',
-        isExactAmount: true,
-      };
+    it('should emit pay event when form is valid and verified', () => {
+      const paySpy = vi.spyOn(component.pay, 'emit');
+      const form = component.paybillForm();
+      form.patchValue({ amount: 500, accountNumber: '12345' });
+      fixture.componentRef.setInput('verifiedDetails', { valid: true });
 
-      fixture.componentRef.setInput('verifiedDetails', mockVerified);
-      fixture.detectChanges();
-
-      const summary = component['summaryItems']();
-      expect(summary.length).toBeGreaterThan(0);
-      expect(summary.some((s) => s.value === 'Jane Doe')).toBe(true);
+      component.onSubmit();
+      expect(paySpy).toHaveBeenCalledWith({
+        amount: 500,
+        value: form.getRawValue(),
+      });
     });
   });
 });

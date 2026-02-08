@@ -20,10 +20,42 @@ export const FINANCES_FILTER_OPTIONS: FilterOption[] = [
 
 
 export const CARDS_CONFIG = [
-  { label: 'Total Income', key: 'totalIncome', changeKey: 'incomeChange', icon: 'finances-cards-income', type: 'positive', isPct: false, dynamicType: false },
-  { label: 'Total Expenses', key: 'totalExpenses', changeKey: 'expensesChange', icon: 'finances-cards-expense', type: 'negative', isPct: false, dynamicType: false },
-  { label: 'Total Savings', key: 'totalSavings', changeKey: 'savingsChange', icon: 'finances-card-savings', type: 'positive', isPct: false, dynamicType: true },
-  { label: 'Savings Rate', key: 'savingsRate', changeKey: 'savingsRateChange', icon: 'finances-cards-rate', type: 'positive', isPct: true, dynamicType: false }
+  { 
+    label: 'my-finances.finances.summary.total_income', 
+    key: 'totalIncome', 
+    changeKey: 'incomeChange', 
+    icon: 'finances-cards-income', 
+    type: 'positive', 
+    isPct: false, 
+    dynamicType: false 
+  },
+  { 
+    label: 'my-finances.finances.summary.total_expenses', 
+    key: 'totalExpenses', 
+    changeKey: 'expensesChange', 
+    icon: 'finances-cards-expense', 
+    type: 'negative', 
+    isPct: false, 
+    dynamicType: false 
+  },
+  { 
+    label: 'my-finances.finances.summary.total_savings', 
+    key: 'totalSavings', 
+    changeKey: 'savingsChange', 
+    icon: 'finances-card-savings', 
+    type: 'positive', 
+    isPct: false, 
+    dynamicType: true 
+  },
+  { 
+    label: 'my-finances.finances.summary.savings_rate', 
+    key: 'savingsRate', 
+    changeKey: 'savingsRateChange', 
+    icon: 'finances-cards-rate', 
+    type: 'positive', 
+    isPct: true, 
+    dynamicType: false 
+  }
 ] as const;
 
 
