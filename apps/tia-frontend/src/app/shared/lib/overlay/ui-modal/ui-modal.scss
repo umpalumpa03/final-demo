@@ -1,5 +1,5 @@
-@use "../../../styles/mixins" as *;
-@use "../../../styles/palette" as *;
+@use '../../../styles/mixins' as *;
+@use '../../../styles/palette' as *;
 
 .ui-modal {
   @include flex-center;
@@ -8,6 +8,22 @@
   background: rgba($black, 0.5);
   z-index: 9999;
   cursor: default;
+
+  &--tutorial {
+    background: transparent;
+    display: block;
+    pointer-events: auto;
+  }
+
+  &__spotlight {
+    position: absolute;
+    border-radius: 0.8rem;
+    box-shadow: 0 0 0 9999px rgba($black, 0.5);
+    border: 2px solid $white;
+    transition: all 0.3s ease-in-out;
+    pointer-events: none;
+    z-index: 1;
+  }
 
   &__nav-btn {
     position: absolute;
@@ -48,8 +64,8 @@
     @media (max-width: 600px) {
       background-color: var(--color-fg);
       img {
-        filter: brightness(0) saturate(100%) invert(94%) sepia(100%) saturate(26%) hue-rotate(9deg) brightness(104%)
-          contrast(109%);
+        filter: brightness(0) saturate(100%) invert(94%) sepia(100%)
+          saturate(26%) hue-rotate(9deg) brightness(104%) contrast(109%);
       }
       &.next {
         right: 0.5rem;
@@ -70,10 +86,13 @@
     border: 0.08rem solid $blue-400;
     border-radius: 1rem;
     padding: 2.48rem;
-    box-shadow:
-      0 1rem 1.5rem -0.3rem rgba($black, 0.1),
-      0 0.4rem 0.6rem -0.4rem rgba($black, 0.1);
+    box-shadow: 0 1rem 1.5rem -0.3rem rgba($black, 0.1);
     outline: none;
+    z-index: 10;
+    transition:
+      top 0.3s ease,
+      left 0.3s ease,
+      transform 0.3s ease;
 
     &:focus-visible {
       outline: 0.2rem solid var(--color-primary);
@@ -111,7 +130,7 @@
 
     &::before,
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       top: 50%;
       left: 50%;
