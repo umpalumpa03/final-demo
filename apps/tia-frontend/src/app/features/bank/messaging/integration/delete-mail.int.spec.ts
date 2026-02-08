@@ -110,7 +110,7 @@ describe('Messaging Integration - Delete Mail Flow', () => {
     );
 
     await vi.waitFor(() => {
-      expect(ctx.store.error()).toBe('messaging.storeErrors.deleteMail');
+      expect(ctx.alertService.error).toHaveBeenCalledWith('messaging.storeErrors.deleteMail', { variant: 'dismissible', title: 'Oops!' });
     });
   });
 });
