@@ -39,37 +39,70 @@
   }
 
   &--disabled {
-    opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
+    background: $gray-25;
+    border-color: $gray-50;
+    transform: none;
+    box-shadow: none;
 
     &:hover {
-      border-color: $gray-200;
-      background: $white;
-      transform: none;
-      box-shadow: none;
+      background: $gray-25;
+      border-color: $gray-50;
     }
 
     .transfers-account-card__icon {
-      background: $gray-200;
+      background: $blue-royal-background;
+      filter: grayscale(1) opacity(0.3);
     }
 
-    .transfers-account-card__name,
+    .transfers-account-card__name {
+      color: $gray-400;
+    }
+
     .transfers-account-card__balance {
-      color: $gray-500;
+      color: $gray-400;
     }
 
     .transfers-account-card__currency {
-      background: $gray-200;
-      color: $gray-600;
+      background: $gray-50;
+      color: $gray-400;
+      border: 0.1rem solid $gray-200;
     }
 
     .transfers-account-card__iban {
       color: $gray-400;
     }
+
+    .transfers-account-card__info {
+      pointer-events: auto;
+
+      img {
+        color: $blue-royal;
+        filter: drop-shadow(0 0.2rem 0.4rem rgba($blue-royal, 0.2));
+      }
+    }
   }
 
-  // --- Favorite Badge Styles ---
+  &__info {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    z-index: 30;
+    cursor: help;
+    @include flex-center();
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    img {
+      @include svg-icon(2.2rem);
+      color: $blue-600;
+    }
+  }
+
   &__favorite {
     @include flex-center();
     position: absolute;
@@ -87,7 +120,6 @@
 
   &__favorite-icon {
     @include svg-icon(1.6rem);
-
   }
 
   &__icon {
@@ -177,6 +209,11 @@
     align-items: flex-start;
     padding: 1.6rem;
     gap: 1.2rem;
+
+    &__info {
+      top: 0.8rem;
+      right: 0.8rem;
+    }
 
     &__favorite {
       top: -0.8rem;
