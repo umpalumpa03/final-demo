@@ -22,7 +22,6 @@ export class PaybillMainFacade {
 
   public init(): void {
     this.store.dispatch(PaybillActions.clearSelection());
-    this.store.dispatch(PaybillActions.loadCategories());
     this.searchQuery.set('');
   }
 

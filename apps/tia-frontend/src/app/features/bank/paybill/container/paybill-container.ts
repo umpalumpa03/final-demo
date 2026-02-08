@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   inject,
+  OnInit,
 } from '@angular/core';
 import { Breadcrumbs } from '@tia/shared/lib/navigation/breadcrumbs/breadcrumbs';
 import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
@@ -38,7 +39,7 @@ import { BreadcrumbService } from '../services/breadcrumb/breadcrumb';
   styleUrl: './paybill-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PaybillContainer {
+export class PaybillContainer implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly store = inject(Store);
   private readonly breadcrumbService = inject(BreadcrumbService);
@@ -63,7 +64,6 @@ export class PaybillContainer {
   public handleDismiss(id: string): void {
     this.store.dispatch(PaybillActions.dismissNotification({ id }));
   }
-
 
   public handleCategorySelect(category: PaybillCategory): void {
     this.store.dispatch(
@@ -92,5 +92,9 @@ export class PaybillContainer {
         this.handleCategorySelect(category);
       }
     }
+  }
+
+  ngOnInit(): void {
+    this.store.dispatch(PaybillActions.loadCategories());
   }
 }
