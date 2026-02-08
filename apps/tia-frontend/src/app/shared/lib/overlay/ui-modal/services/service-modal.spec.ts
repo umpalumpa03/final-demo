@@ -15,12 +15,15 @@ describe('ModalResponsiveService', () => {
   let documentMock: Document;
 
   beforeEach(() => {
-    global.ResizeObserver = vi.fn().mockImplementation((cb) => ({
-      observe: vi.fn(),
-      unobserve: vi.fn(),
-
-      trigger: () => cb(),
-    }));
+    vi.stubGlobal(
+      'ResizeObserver',
+      vi.fn().mockImplementation((cb) => ({
+        observe: vi.fn(),
+        unobserve: vi.fn(),
+        disconnect: vi.fn(),
+        trigger: () => cb(),
+      })),
+    );
 
     vi.stubGlobal(
       'requestAnimationFrame',
@@ -48,6 +51,7 @@ describe('ModalResponsiveService', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
   });
 
   it('should be created', () => {

@@ -1,4 +1,4 @@
-import { ModalOffset } from '../models/modal-positions.model';
+import { ModalCardConfig, ModalOffset } from '../models/modal-positions.model';
 
 export type ModalPlacement = 'top' | 'bottom' | 'left' | 'right';
 
@@ -31,7 +31,10 @@ export function calculateModalPositions(
     borderRadius: '0.8rem',
   };
 
-  const cardStyle: Record<string, any> = { position: 'fixed', zIndex: '20' };
+  const cardStyle: ModalCardConfig = {
+    position: 'fixed',
+    zIndex: '20',
+  };
 
   switch (placement) {
     case 'top':

@@ -10,7 +10,11 @@ import {
   ModalPlacement,
   toggleBodyScroll,
 } from '../config/ui-modal.config';
-import { ModalOffset } from '../models/modal-positions.model';
+import {
+  ModalCardConfig,
+  ModalOffset,
+  ModalSpotlightConfig,
+} from '../models/modal-positions.model';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
@@ -22,8 +26,8 @@ export class ModalResponsiveService {
   private readonly platformId = inject(PLATFORM_ID);
 
   // lokaluri state
-  public readonly spotlightStyle = signal<Record<string, string>>({});
-  public readonly cardStyle = signal<Record<string, string>>({});
+  public readonly spotlightStyle = signal<ModalSpotlightConfig | null>(null);
+  public readonly cardStyle = signal<ModalCardConfig | null>(null);
   public readonly isFallback = signal<boolean>(false);
 
   private observer: ResizeObserver | null = null;
@@ -74,13 +78,13 @@ export class ModalResponsiveService {
     this.isFallback.set(isFallback);
 
     if (isFallback) {
-      this.spotlightStyle.set({} as Record<string, string>);
-      this.cardStyle.set({} as Record<string, string>);
+      this.spotlightStyle.set(null);
+      this.cardStyle.set(null);
       toggleBodyScroll(false);
       this.cleanupObserver();
     } else {
-      this.spotlightStyle.set(spotlightStyle as Record<string, string>);
-      this.cardStyle.set(cardStyle as Record<string, string>);
+      this.spotlightStyle.set(spotlightStyle);
+      this.cardStyle.set(cardStyle);
       toggleBodyScroll(true);
 
       if (el && !this.observer) {
