@@ -1,6 +1,8 @@
+<lib-text-input [formControl]="searchControl" [config]="searchInputConfig" />
+
 <app-paybill-templates
-  [templateGroups]="templateGroups()"
-  [templates]="templates()"
+  [templateGroups]="displayGroups()"
+  [templates]="displayTemplates()"
   [activeModal]="modalType()"
   [isModalOpen]="isModalOpen()"
   [currentModalConfig]="currentModalConfig()"
@@ -29,6 +31,3 @@
   (childProviderSelected)="onParentProviderSelect($event)"
   [paymentFields]="paymentField()"
 ></app-paybill-templates>
-
-<!-- (providerSelected)="onProviderSelect($event)" -->
-<!-- [serviceProviders]="parentProviderOptions()" -->
