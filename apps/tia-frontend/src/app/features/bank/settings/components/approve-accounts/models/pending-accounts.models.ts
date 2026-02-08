@@ -20,7 +20,13 @@ export interface BankAccount {
 
 export interface IUpdateAccountStatus {
   accountId: string;
-  updateStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
+  updatedStatus:
+    | 'PENDING'
+    | 'APPROVED'
+    | 'REJECTED'
+    | 'ACTIVE'
+    | 'active'
+    | 'closed';
 }
 
 export interface SuccessResponse {
