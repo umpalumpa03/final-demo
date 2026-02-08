@@ -4,42 +4,44 @@
   (ngSubmit)="submitHorizontalLayout()"
 >
   <div class="layout__flex">
-    <span>Horizontal Layout</span>
+    <span>{{'storybook.forms.horizontal.subtitle' | translate}}</span>
     <div class="layout__horizontal">
-      <span>Name:</span>
+      <span>{{'storybook.forms.horizontal.firstName' | translate}}</span>
       <div class="layout__field layout__horizontal__field">
         <lib-text-input
           type="text"
           formControlName="firstName"
-          [config]="horizontalConfigs.firstName"
+          [config]="horizontalConfigs().firstName"
         ></lib-text-input>
       </div>
     </div>
 
     <div class="layout__horizontal">
-      <span>Email:</span>
+      <span>{{'storybook.forms.horizontal.email' | translate}}</span>
       <div class="layout__field layout__horizontal__field">
         <lib-text-input
           type="email"
           formControlName="email"
-          [config]="horizontalConfigs.email"
+          [config]="horizontalConfigs().email"
         ></lib-text-input>
       </div>
     </div>
 
     <div class="layout__horizontal">
-      <span>Message:</span>
+      <span>{{'storybook.forms.horizontal.message' | translate}}</span>
       <div class="layout__field layout__horizontal__field">
         <lib-textarea
           type="text"
           formControlName="message"
-          [config]="horizontalConfigs.message"
+          [config]="horizontalConfigs().message"
         ></lib-textarea>
       </div>
     </div>
 
     <div class="layout__field">
-      <app-button type="submit" [fullWidth]="true">Submit</app-button>
+      <app-button type="submit" [fullWidth]="true"
+        >{{'storybook.forms.horizontal.btn' | translate}}</app-button
+      >
     </div>
   </div>
 </form>

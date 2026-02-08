@@ -49,14 +49,16 @@ export class AuthService {
   private tokenService = inject(TokenService);
   private store = inject(Store);
   private monitorInactivity = inject(MonitorInactivity);
-  private challengeId!: string;
+
+  public isAuthenticated = signal<boolean>(false);
   public isLoginLoading = signal<boolean>(false);
   public errorMessage = signal<boolean | null>(false);
-  private baseUrl = `${environment.apiUrl}/auth`;
-  public otpError = signal<OtpResponse | null>(null);
   public resendRetryCounter = signal<number>(0);
+  public otpError = signal<OtpResponse | null>(null);
+
+  private challengeId!: string;
+  private baseUrl = `${environment.apiUrl}/auth`;
   private inactivitySubscription?: Subscription;
-  public isAuthenticated = signal<boolean>(false);
 
   constructor() {
     if (this.tokenService.accessToken) {

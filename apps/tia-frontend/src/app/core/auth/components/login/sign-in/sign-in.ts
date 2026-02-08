@@ -5,25 +5,26 @@ import {
   HostListener,
   inject,
   signal,
+  AfterViewInit,
 } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
-import { CredentialsService } from '../../services/credentials.service';
+import { AuthService } from '../../../services/auth.service';
+import { CredentialsService } from '../../../services/credentials.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Routes } from '../../models/tokens.model';
+import { Routes } from '../../../models/tokens.model';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import {
   ALERTS_DISMISSIBLE_DATA,
   SIGN_IN_FORM,
-} from '../../config/inputs.config';
+} from '../../../config/inputs.config';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map, startWith } from 'rxjs';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
-import { AuthHeader } from '../../shared/auth-header/auth-header';
-import { ILoginRequest } from '../../models/authRequest.models';
+import { AuthHeader } from '../../../shared/auth-header/auth-header';
+import { ILoginRequest } from '../../../models/authRequest.models';
 import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
 
 @Component({

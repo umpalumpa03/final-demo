@@ -3,7 +3,7 @@
     <lib-text-input
       type="text"
       formControlName="name"
-      [config]="nameConfig.name"
+      [config]="nameConfig().name"
     ></lib-text-input>
   </div>
 
@@ -11,25 +11,27 @@
     <lib-text-input
       type="email"
       formControlName="email"
-      [config]="nameConfig.message"
+      [config]="nameConfig().email"
     ></lib-text-input>
   </div>
 
   <div class="contact__form--fields">
     <lib-textarea
       formControlName="message"
-      [config]="nameConfig.message"
+      [config]="nameConfig().message"
     ></lib-textarea>
   </div>
 
   <div class="contact__form--subscribe">
     <lib-checkboxes
       formControlName="subscribe"
-      [config]="nameConfig.checkbox"
+      [config]="nameConfig().checkbox"
     ></lib-checkboxes>
   </div>
 
   <div class="contact__form--submit">
-    <app-button type="submit" [fullWidth]="true">Submit</app-button>
+    <app-button type="submit" [fullWidth]="true"
+      >{{'storybook.forms.contact.form.btnName' | translate}}</app-button
+    >
   </div>
 </form>

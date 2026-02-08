@@ -3,10 +3,12 @@
     <lib-text-input
       type="email"
       formControlName="email"
-      [config]="emailConfigs.message"
+      [config]="emailConfigs().message"
     ></lib-text-input>
   </div>
   <div>
-    <app-button type="submit">Subscribe</app-button>
+    <app-button type="submit"
+      >{{'storybook.forms.inline.sub' | translate}}</app-button
+    >
   </div>
 </form>
