@@ -16,7 +16,7 @@ import { SettingsBody } from '../../../shared/ui/settings-body/settings-body';
 import { themesConfig } from '../config/appearance.config';
 import { selectActiveTheme } from 'apps/tia-frontend/src/app/store/theme/theme.selectors';
 import { ThemeActions } from 'apps/tia-frontend/src/app/store/theme/theme.actions';
-import { AppearanceService } from '../services/appearance.service';
+import { AppearanceService } from '../services/appearance-api.service';
 import { TAvailableThemes } from '../models/appearance.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';

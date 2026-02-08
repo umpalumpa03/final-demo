@@ -49,18 +49,23 @@ describe('ForgotPasswordEmail', () => {
   });
 
   it('submit: validates form, calls API on valid input, navigates on success, and handles all error types', () => {
+    vi.useFakeTimers();
+    
     component.submit();
     expect(authServiceMock.forgotPasswordRequest).not.toHaveBeenCalled();
     expect(component.isSubmitting()).toBe(false);
 
     component.form.controls.email.setValue('user@test.com');
     component.submit();
+    
+    vi.advanceTimersByTime(2000);
+    
     expect(authServiceMock.forgotPasswordRequest).toHaveBeenCalledWith(
       'user@test.com',
     );
     expect(authServiceMock.setChellangeId).toHaveBeenCalledWith('challenge-1');
     expect(router.navigate).toHaveBeenCalledWith([Routes.OTP_FORGOT_PASSWORD]);
-    expect(component.submitError()).toBeNull();
+    expect(component.alertState()?.type).toBe('success');
     expect(component.isSubmitting()).toBe(false);
 
     // 404 error - should show "User not found"
@@ -75,7 +80,7 @@ describe('ForgotPasswordEmail', () => {
     );
     component.form.controls.email.setValue('notfound@test.com');
     component.submit();
-    expect(component.submitError()).toBe('User not found');
+    expect(component.alertState()?.message).toBe('User not found');
     expect(component.isSubmitting()).toBe(false);
 
     // 400 error with array message - should use first item
@@ -90,7 +95,7 @@ describe('ForgotPasswordEmail', () => {
     );
     component.form.controls.email.setValue('bad@test.com');
     component.submit();
-    expect(component.submitError()).toBe('email must be an email');
+    expect(component.alertState()?.message).toBe('email must be an email');
 
     authServiceMock.forgotPasswordRequest.mockReturnValue(
       throwError(
@@ -103,17 +108,19 @@ describe('ForgotPasswordEmail', () => {
     );
     component.form.controls.email.setValue('another@test.com');
     component.submit();
-    expect(component.submitError()).toBe('Invalid email');
+    expect(component.alertState()?.message).toBe('Invalid email');
 
     authServiceMock.forgotPasswordRequest.mockReturnValue(
       throwError(() => new Error('boom')),
     );
     component.form.controls.email.setValue('error@test.com');
     component.submit();
-    expect(component.submitError()).toBe(
+    expect(component.alertState()?.message).toBe(
       'Unable to send reset code. Please try again.',
     );
     expect(component.isSubmitting()).toBe(false);
+    
+    vi.useRealTimers();
   });
 
   it('emailConfig: returns appropriate errorMessage based on form validation state', () => {

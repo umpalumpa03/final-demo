@@ -1,5 +1,5 @@
-@use "../../../styles/mixins" as *;
-@use "../../../styles/palette" as *;
+@use '../../../styles/mixins' as *;
+@use '../../../styles/palette' as *;
 
 .ui-modal {
   @include flex-center;
@@ -8,6 +8,22 @@
   background: rgba($black, 0.5);
   z-index: 9999;
   cursor: default;
+
+  &--tutorial {
+    background: transparent;
+    display: block;
+    pointer-events: auto;
+  }
+
+  &__spotlight {
+    position: fixed;
+    z-index: 10;
+    border: 0.3rem solid $blue-400;
+    border-radius: 0.8rem;
+    box-shadow: 0 0 0 9999px rgba($black, 0.5);
+    pointer-events: none;
+    transition: all 0.3s ease-out;
+  }
 
   &__nav-btn {
     position: absolute;
@@ -19,37 +35,32 @@
     background: $white;
     @include flex-center;
     cursor: pointer;
-    z-index: 10;
+    z-index: 30;
     transition: transform 0.2s;
-
     &:hover {
       transform: translateY(-50%) scale(1.1);
     }
-
     img {
       width: 2.4rem;
       height: 2.4rem;
     }
-
     &.prev {
       left: 2rem;
       img {
         transform: rotate(90deg);
       }
     }
-
     &.next {
       right: 2rem;
       img {
         transform: rotate(-90deg);
       }
     }
-
     @media (max-width: 600px) {
       background-color: var(--color-fg);
       img {
-        filter: brightness(0) saturate(100%) invert(94%) sepia(100%) saturate(26%) hue-rotate(9deg) brightness(104%)
-          contrast(109%);
+        filter: brightness(0) saturate(100%) invert(94%) sepia(100%)
+          saturate(26%) hue-rotate(9deg) brightness(104%) contrast(109%);
       }
       &.next {
         right: 0.5rem;
@@ -64,6 +75,7 @@
   &__card {
     @include display-flex(column);
     position: relative;
+
     max-width: 54.2rem;
     width: 100%;
     background: var(--color-bg);
@@ -74,6 +86,13 @@
       0 1rem 1.5rem -0.3rem rgba($black, 0.1),
       0 0.4rem 0.6rem -0.4rem rgba($black, 0.1);
     outline: none;
+    z-index: 20;
+    transition:
+      top 0.3s ease,
+      left 0.3s ease,
+      right 0.3s ease,
+      bottom 0.3s ease,
+      transform 0.3s ease;
 
     &:focus-visible {
       outline: 0.2rem solid var(--color-primary);
@@ -111,13 +130,13 @@
 
     &::before,
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       top: 50%;
       left: 50%;
       width: 100%;
       height: 0.13333rem;
-      background-color: #0c4a6e;
+      background-color: var(--color-fg);
     }
 
     &::before {

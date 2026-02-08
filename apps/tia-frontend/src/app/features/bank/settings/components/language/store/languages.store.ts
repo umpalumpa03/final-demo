@@ -1,6 +1,6 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { inject } from '@angular/core';
-import { LanguageService } from '../services/language.service';
+import { LanguageService } from '../services/language-api.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, of, Observable } from 'rxjs';
 import { Language, LanguagesState } from '../models/language.model';
@@ -12,8 +12,8 @@ export const initialState: LanguagesState = {
       value: 'en',
       name: 'English',
       nativeName: 'English',
-      region: 'Global',
-      speakerCount: '1.5B',
+      region: 'settings.language.languages.en.location',
+      speakerCount: 'settings.language.languages.en.speakers',
       flagUrl: 'images/png/settings/us-flag.png',
     },
     {
@@ -21,8 +21,8 @@ export const initialState: LanguagesState = {
       value: 'ka',
       name: 'Georgian',
       nativeName: 'ქართული',
-      region: 'Georgia & Caucasus',
-      speakerCount: '4M',
+      region: 'settings.language.languages.ka.location',
+      speakerCount: 'settings.language.languages.ka.speakers',
       flagUrl: 'images/png/settings/ge-flag.png',
     },
   ],
