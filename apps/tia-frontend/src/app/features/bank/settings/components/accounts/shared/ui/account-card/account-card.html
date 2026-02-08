@@ -1,0 +1,84 @@
+<app-basic-card
+  [flexDirection]="actions.basic.flexDirection"
+  [borderColor]="actions.basic.borderColor"
+  [alignItems]="actions.basic.alignItems"
+  [minHeight]="actions.basic.minHeight"
+  [maxWidth]="actions.basic.maxWidth"
+  [padding]="actions.basic.padding"
+  [gap]="actions.basic.gap"
+>
+  <div class="account-card">
+    <div class="account-card__inner">
+      <div class="account-card__left">
+        <div class="account-card__avatar">
+          <img src="" [src]="accountIcon()" class="account-card__avatar-icon" />
+        </div>
+        <div class="account-card__content">
+          <div class="account-card__title-row">
+            <h3 class="account-card__title">{{name()}}</h3>
+            @switch(badge()) { @case('Hidden') {
+            <app-badges
+              [text]="badge()"
+              variant="outline"
+              shape="rounded"
+              size="small"
+            ></app-badges>
+            } @case('Favorite') {
+            <app-badges
+              status="favorite"
+              [text]="badge()"
+              customColor="amber"
+            ></app-badges>
+            } @default { } }
+          </div>
+          <div class="account-card__number">{{iban()}}</div>
+          <div class="account-card__meta">
+            <span class="account-card__type">{{type()}}</span>
+            <span class="account-card__balance"
+              >{{currency()}} {{balance()}}</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="account-card__actions">
+        <app-button
+          [iconHeight]="actions.nameBtn.iconHeight"
+          [iconWidth]="actions.nameBtn.iconWidth"
+          [variant]="actions.nameBtn.variant"
+          [size]="actions.nameBtn.size"
+          [icon]="actions.nameBtn.icon"
+          [isLoading]="isChangeNameLoading()"
+          (click)="onFriendlyNameClick()"
+          >{{'settings.accounts.changeButton' | translate}}</app-button
+        >
+        <app-button
+          [variant]="isFavorite() ? actions.favorite.variantActive : actions.favorite.variantInactive"
+          [size]="actions.favorite.size"
+          [iconWidth]="actions.favorite.iconWidth"
+          [iconHeight]="actions.favorite.iconHeight"
+          [customColor]="isFavorite() ? actions.favorite.customColor : ''"
+          (click)="onFavoriteClick()"
+          [icon]="isFavorite() ? actions.favorite.icons.active : actions.favorite.icons.inactive"
+          [isLoading]="isFavoriteLoading()"
+        >
+          {{ (isFavorite() ? actions.favorite.labels.active :
+          actions.favorite.labels.inactive) | translate }}
+        </app-button>
+
+        <app-button
+          [isLoading]="isVisibilityLoading()"
+          [variant]="actions.visibility.variant"
+          [size]="actions.visibility.size"
+          [iconWidth]="actions.visibility.iconWidth"
+          [iconHeight]="actions.visibility.iconHeight"
+          (click)="onHideUnhideClick()"
+          [icon]="isHidden() ? actions.visibility.icons.hidden : actions.visibility.icons.visible"
+        >
+          {{ (isHidden() ? actions.visibility.labels.hidden :
+          actions.visibility.labels.visible) | translate }}
+        </app-button>
+      </div>
+    </div>
+  </div>
+</app-basic-card>

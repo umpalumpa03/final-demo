@@ -3,95 +3,94 @@ import { NavigationItem } from "@tia/shared/lib/navigation/models/nav-bar.model"
 import { PillItem } from "@tia/shared/lib/navigation/models/pills.model";
 import { TabItem } from "apps/tia-frontend/src/app/shared/lib/navigation/models/tab.model";
 import { Item } from "../components/models/pills-data.model";
+import { TranslateService } from "@ngx-translate/core";
 
-export const TABS: TabItem[] = [
-    { label: 'Overview', route: '/storybook/navigation', exact: true },
-    { label: 'Analytics', route: 'test', exact: true },
-    { label: 'Reports', route: 'reports', exact: true },
-    { label: 'Settings', route: 'reports', exact: true }
-] as const;
+export const TABS = (translate: TranslateService): TabItem[] => [
+    { label: translate.instant('storybook.navigation.sections.tabs.analytics'), route: '/storybook/navigation', exact: true },
+    { label: translate.instant('storybook.navigation.sections.tabs.reports'), route: 'reports', exact: true },
+    { label: translate.instant('storybook.navigation.sections.tabs.settings'), route: 'test', exact: true }
+];
 
-export const TABS2: TabItem[] = [
-    { label: 'Account', icon: 'images/svg/notification-icons/account.svg', route: '/storybook/navigation', exact: true },
-    { label: 'Notifications', icon: 'images/svg/notification-icons/notifications.svg', route: 'test', exact: true },
-    { label: 'Preferences', icon: 'images/svg/notification-icons/setting.svg', route: '', exact: true },
-] as const;
+export const TABS2 = (translate: TranslateService): TabItem[] => [
+    { label: translate.instant('storybook.navigation.sections.verticalTabs.account'), icon: 'images/svg/notification-icons/account.svg', route: '/storybook/navigation', exact: true },
+    { label: translate.instant('storybook.navigation.sections.verticalTabs.notifications'), icon: 'images/svg/notification-icons/notifications.svg', route: 'test', exact: true },
+    { label: translate.instant('storybook.navigation.sections.verticalTabs.preferences'), icon: 'images/svg/notification-icons/setting.svg', route: 'reports', exact: true },
+];
 
-export const BREADCRUMBS: Breadcrumb[] = [
-    { label: 'Home', route: '/storybook/navigation' },
-    { label: 'Products', route: 'test' },
-    { label: 'Current Page', route: '' },
-] as const;
+export const BREADCRUMBS = (translate: TranslateService): Breadcrumb[] => [
+    { label: translate.instant('storybook.navigation.sections.breadcrumbs.home'), route: '/storybook/navigation' },
+    { label: translate.instant('storybook.navigation.sections.breadcrumbs.products'), route: 'test' },
+    { label: translate.instant('storybook.navigation.sections.breadcrumbs.current'), route: '' },
+];
 
-export const BREADCRUMBS2: Breadcrumb[] = [
-    { label: 'Account', icon: 'images/svg/notification-icons/home.svg', route: '/storybook/navigation' },
-    { label: 'Notifications', route: 'test' },
-    { label: 'Preferences', route: '' },
-] as const;
+export const BREADCRUMBS2 = (translate: TranslateService): Breadcrumb[] => [
+    { label: translate.instant('storybook.navigation.sections.breadcrumbs.home'), icon: 'images/svg/notification-icons/home.svg', route: '/storybook/navigation' },
+    { label: translate.instant('storybook.navigation.sections.verticalTabs.notifications'), route: 'test' },
+    { label: translate.instant('storybook.navigation.sections.verticalTabs.preferences'), route: '' },
+];
 
+export const BREADCRUMBS3 = (translate: TranslateService): Breadcrumb[] => [
+    { label: translate.instant('storybook.navigation.sections.breadcrumbs.home'), route: '/storybook/navigation' },
+    { label: translate.instant('storybook.navigation.sections.breadcrumbs.dashboard'), route: 'test' },
+    { label: translate.instant('storybook.navigation.sections.breadcrumbs.settings'), route: '' },
+    { label: translate.instant('storybook.navigation.sections.breadcrumbs.security'), route: '' },
+    { label: translate.instant('storybook.navigation.sections.breadcrumbs.twoFactorAuth'), route: '' },
+];
 
-export const BREADCRUMBS3: Breadcrumb[] = [
-    { label: 'Home', route: '/storybook/navigation' },
-    { label: 'Dashboard', route: 'test' },
-    { label: 'Settings', route: '' },
-    { label: 'Security', route: '' },
-    { label: 'Two-Factor Authentication', route: '' },
-] as const;
-
-export const VERTICALNAVBARS: NavigationItem[] = [
+export const VERTICALNAVBARS = (translate: TranslateService): NavigationItem[] => [
     {
-        label: 'Home',
+        label: translate.instant('storybook.navigation.sections.verticalNavigation.home'),
         icon: 'images/svg/notification-icons/home-gray.svg',
         route: '/storybook/navigation',
         exact: true
     },
     {
-        label: 'Search',
+        label: translate.instant('storybook.navigation.sections.verticalNavigation.search'),
         icon: 'images/svg/notification-icons/search.svg',
         route: 'test',
         exact: true
     },
     {
-        label: 'Profile',
+        label: translate.instant('storybook.navigation.sections.verticalNavigation.profile'),
         icon: 'images/svg/notification-icons/profile.svg',
         route: 'reports',
         exact: true
     },
     {
-        label: 'Notifications',
+        label: translate.instant('storybook.navigation.sections.verticalNavigation.notifications'),
         icon: 'images/svg/notification-icons/notification-gray.svg',
         route: 'test',
         exact: true
     },
     {
-        label: 'Settings',
+        label: translate.instant('storybook.navigation.sections.verticalNavigation.settings'),
         icon: 'images/svg/notification-icons/setting-gray.svg',
         route: 'reports',
         exact: true
     },
     {
-        label: 'Disabled Item',
+        label: translate.instant('storybook.navigation.sections.verticalNavigation.disabled'),
         icon: 'images/svg/notification-icons/menu-bar.svg',
         route: '/disabled',
         disabled: true,
         exact: true
     }
-] as const;
+];
 
-export const HORIZONTALNAVBARS: NavigationItem[] = [
-    { label: 'Dashboard', route: '/storybook/navigation', exact: true },
-    { label: 'Projects', route: 'test', exact: true },
-    { label: 'Team', route: 'reports', exact: true },
-    { label: 'Calendar', route: 'test', exact: true },
-    { label: 'Disabled', route: 'report', disabled: true, exact: true }
-] as const;
+export const HORIZONTALNAVBARS = (translate: TranslateService): NavigationItem[] => [
+    { label: translate.instant('storybook.navigation.sections.horizontalNavigation.dashboard'), route: '/storybook/navigation', exact: true },
+    { label: translate.instant('storybook.navigation.sections.horizontalNavigation.projects'), route: 'test', exact: true },
+    { label: translate.instant('storybook.navigation.sections.horizontalNavigation.team'), route: 'reports', exact: true },
+    { label: translate.instant('storybook.navigation.sections.horizontalNavigation.calendar'), route: 'test', exact: true },
+    { label: translate.instant('storybook.navigation.sections.horizontalNavigation.disabled'), route: 'report', disabled: true, exact: true }
+];
 
-export const PILLARRAY: PillItem[] = [
-    { id: 'all', label: 'All' },
-    { id: 'active', label: 'Active' },
-    { id: 'completed', label: 'Completed' },
-    { id: 'archived', label: 'Archived' }
-] as const;
+export const PILLARRAY = (translate: TranslateService): PillItem[] => [
+    { id: 'all', label: translate.instant('storybook.navigation.sections.pillsNavigation.all') },
+    { id: 'active', label: translate.instant('storybook.navigation.sections.pillsNavigation.active') },
+    { id: 'completed', label: translate.instant('storybook.navigation.sections.pillsNavigation.completed') },
+    { id: 'archived', label: translate.instant('storybook.navigation.sections.pillsNavigation.archived') }
+];
 
 export const ITEMS: Item[] = [
   { id: 1, status: 'active', name: 'Task 1' },

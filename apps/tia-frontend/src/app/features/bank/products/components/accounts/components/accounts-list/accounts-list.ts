@@ -19,7 +19,6 @@ import {
   GroupedAccounts,
 } from '../../../../../../../shared/models/accounts/accounts.model';
 import { ErrorStates } from '../../../../../../../shared/lib/feedback/error-states/error-states';
-import { ScrollArea } from '../../../../../../../shared/lib/layout/components/scroll-area/container/scroll-area';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { Badges } from '../../../../../../../shared/lib/primitives/badges/badges';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -73,6 +72,7 @@ export class AccountsListComponent implements OnInit {
   public showTransferModal = signal<boolean>(false);
   public selectedAccountForTransfer = signal<string | null>(null);
   public selectedAccountPermission = signal<number>(0);
+  public selectedAccountCurrency = signal<string>('');
   public selectedPermissionValue = signal<number>(0);
 
   private router = inject(Router);
@@ -190,6 +190,7 @@ export class AccountsListComponent implements OnInit {
     if (account) {
       this.selectedAccountForTransfer.set(accountId);
       this.selectedAccountPermission.set(account.permission);
+      this.selectedAccountCurrency.set(account.currency);
       this.showTransferModal.set(true);
     }
   }
