@@ -92,7 +92,7 @@ export const accountsFeature = createFeature({
       isUpdatingFriendlyName: false,
       updateFriendlyNameError: error,
     })),
-    // on(UserInfoActions.loadUser, () => initialAccountsState),
+    on(UserInfoActions.loadUser, () => initialAccountsState),
   ),
 });
 

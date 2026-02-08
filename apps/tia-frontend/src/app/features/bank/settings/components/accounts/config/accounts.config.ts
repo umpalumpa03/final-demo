@@ -65,7 +65,7 @@ export const ACCOUNT_ACTIONS= {
     },
     save: {
       variant: 'default',
-      icon: 'confirm-icon-white.svg',
+      icon: 'white-confirm-icon.svg',
       iconWidth: '1.2rem',
       label: 'settings.accounts.saveChanges',
     },
