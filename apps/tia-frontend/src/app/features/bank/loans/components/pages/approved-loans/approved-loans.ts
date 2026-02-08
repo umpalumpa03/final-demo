@@ -28,6 +28,8 @@ export class ApprovedLoans implements OnInit {
   }
 
   public navigateToAll(): void {
-    this.router.navigate([LOANS_ROUTES.ALL]);
+    this.router.navigate([LOANS_ROUTES.ALL], {
+      queryParamsHandling: 'merge',
+    });
   }
 }

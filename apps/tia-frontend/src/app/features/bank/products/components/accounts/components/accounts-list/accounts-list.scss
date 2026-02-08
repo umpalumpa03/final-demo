@@ -4,11 +4,13 @@
 .accounts-list {
   margin: 0 auto;
   padding-top: 2rem;
+  @include display-flex(column);
+  gap: 2rem;
 
   &__header {
     @include font-arimo();
     @include flex-center(row, space-between);
-    margin-bottom: 2rem;
+    margin: 0;
 
     &-info {
       @include display-flex(column);
@@ -41,12 +43,10 @@
   }
 
   &__section {
-    margin-bottom: 2rem;
-
     &-header {
       @include flex-center(row, flex-start, flex-start);
       gap: 0.75rem;
-      margin-bottom: 1rem;
+      margin: 2rem 0 2rem 5rem;
     }
 
     &-icon {
@@ -57,7 +57,6 @@
     &-grid {
       @include display-flex(row);
       gap: 4rem;
-      padding: 1rem 0;
       flex-wrap: nowrap;
       width: 100%;
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -84,10 +83,13 @@
     &-viewport {
       flex: 1;
       overflow: hidden;
+      padding: 0.5rem 0;
       width: 100%;
     }
 
     &-button-container {
+      position: relative;
+      z-index: 100;
       width: 4rem;
       flex-shrink: 0;
       @include flex-center(row);
@@ -144,7 +146,7 @@
     &__section {
       &-grid {
         app-account-card {
-          flex: 0 0 calc((100% - 6rem) / 2);
+          flex: 0 0 calc((100% - 5rem) / 2);
         }
       }
     }
@@ -169,7 +171,8 @@
     &__section {
       &-grid {
         app-account-card {
-          flex: 0 0 calc(100% - 3.8rem);
+          flex: 0 0 calc(100% - 3.6rem);
+          max-width: 96%;
         }
       }
     }
@@ -186,6 +189,29 @@
 
       &-arrow {
         font-size: 1rem;
+      }
+    }
+  }
+
+  @media (max-width: 425px) {
+    &__section {
+      &-grid {
+        gap: 2.2rem;
+        app-account-card {
+          flex: 0 0 calc(100% - 1rem);
+          max-width: 94%;
+        }
+      }
+    }
+
+    &__skel-card {
+      flex: 0 0 calc(100% - 2rem);
+    }
+
+    &__carousel {
+      &-button-container {
+        width: 1rem;
+        padding: 0 0.5rem 0 0;
       }
     }
   }
