@@ -40,7 +40,7 @@ import { ApproveCardsState } from '../shared/state/approve-cards.state';
     AlertTypesWithIcons,
   ],
   templateUrl: './approve-cards.html',
-  providers: [ApproveCardsStore],
+  providers: [],
   styleUrl: './approve-cards.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -114,7 +114,6 @@ export class ApproveCards implements OnInit {
 
   ngOnInit(): void {
     this.store.load();
-    this.store.loadPerrmisions();
   }
 
   public handleAction(event: buttonEmit): void {
@@ -135,6 +134,8 @@ export class ApproveCards implements OnInit {
   }
 
   private handlePermissions(id: string): void {
+    this.store.loadPerrmisions();
+
     if (
       this.permissionsSavedCard() !== null &&
       this.permissionsSavedCard() !== id

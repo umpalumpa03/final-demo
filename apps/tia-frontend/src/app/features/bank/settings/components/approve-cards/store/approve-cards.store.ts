@@ -10,7 +10,7 @@ import { initialApproveCardsState } from './approve-cards.state';
 import { computed, inject } from '@angular/core';
 import { ApproveCardsService } from '../shared/services/approve-cards.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, of, pipe, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, of, pipe, switchMap, tap } from 'rxjs';
 import { UpdateCardStatusRequest } from '../shared/model/approve-cards.model';
 
 export const ApproveCardsStore = signalStore(
@@ -52,7 +52,7 @@ export const ApproveCardsStore = signalStore(
                 cards: remainingCards,
                 isLoading: false,
                 error: null,
-               success: 'success',
+                success: 'success',
               });
 
               setTimeout(() => {
@@ -66,9 +66,14 @@ export const ApproveCardsStore = signalStore(
 
     loadPerrmisions: rxMethod<void>(
       pipe(
-        tap(() => patchState(store, { isLoading: true, error: null })),
-        switchMap(() =>
-          service.getCardPermissions().pipe(
+        switchMap(() => {
+          if (store.permissions().length > 0) {
+            return EMPTY;
+          }
+
+          patchState(store, { isLoading: true, error: null });
+
+          return service.getCardPermissions().pipe(
             tap((permissions) => {
               patchState(store, {
                 permissions,
@@ -78,10 +83,10 @@ export const ApproveCardsStore = signalStore(
             }),
             catchError((err) => {
               patchState(store, { isLoading: false, error: err.message });
-              return of([]);
+              return EMPTY;
             }),
-          ),
-        ),
+          );
+        }),
       ),
     ),
   })),
