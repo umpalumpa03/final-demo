@@ -20,6 +20,10 @@ export const UserInfoActions = createActionGroup({
     'Load Widgets': props<{ force?: boolean }>(),
     'Load Widgets Success': props<{ widgets: IWidgetItem[] }>(),
     'Load Widgets Error': props<{ error: string }>(),
+    'Load has completed onboarding': props<{ onboCompleted: boolean }>(),
+    'Load birthday': props<{ birthDay: string }>(),
+    'Load birthday modal closed': props<{ colsedBirthdayModal: number | null }>(),
+
 
     'Create Widget': props<{ widget: IWidgetItem }>(),
     'Create Widget Success': props<{ widget: IWidgetItem }>(),

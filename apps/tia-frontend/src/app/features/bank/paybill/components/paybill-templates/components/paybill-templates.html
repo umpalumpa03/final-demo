@@ -52,9 +52,7 @@
   @let form = activeForm();
 
   <main>
-    @if(selectLoading()) {
-    <app-spinner size="large"></app-spinner>
-    } @if (form) {
+    @if (form) {
     <form [formGroup]="form" (ngSubmit)="onFormSubmit(config.formSubmitType)">
       @if (config.fields?.length) { @for (field of config.fields; track
       field.controlName) { @if(field.type === 'dropdown') {
@@ -95,7 +93,11 @@
         >
           Cancel
         </app-button>
-        <app-button [variant]="config.submitButtonType" type="submit">
+        <app-button
+          [variant]="config.submitButtonType"
+          type="submit"
+          [isLoading]="selectLoading()"
+        >
           {{ config.submitLabel }}
         </app-button>
       </div>
@@ -118,6 +120,7 @@
         [variant]="config.submitButtonType"
         type="submit"
         (click)="onActionHandler(config.submitAction)"
+        [isLoading]="isLoading()"
       >
         {{ config.submitLabel }}
       </app-button>
