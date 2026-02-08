@@ -1,10 +1,4 @@
-import {
-  DOCUMENT,
-  inject,
-  Injectable,
-  PLATFORM_ID,
-  signal,
-} from '@angular/core';
+import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import {
   calculateModalPositions,
   ModalPlacement,
@@ -15,8 +9,7 @@ import {
   ModalOffset,
   ModalSpotlightConfig,
 } from '../models/modal-positions.model';
-import { isPlatformBrowser } from '@angular/common';
-
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 @Injectable({
   providedIn: 'root',
 })
@@ -34,7 +27,7 @@ export class ModalResponsiveService {
   private rafId: number | null = null;
 
   // trackingis metodebi
-public startTracking(
+  public startTracking(
     target: HTMLElement | string,
     padding: number,
     gap: number,
@@ -49,11 +42,7 @@ public startTracking(
         typeof target === 'string'
           ? this.document.getElementById(target)
           : target;
-      if (
-        el &&
-        el.offsetParent !== null &&
-        this.document.body.contains(el)
-      ) {
+      if (el && el.offsetParent !== null && this.document.body.contains(el)) {
         this.updatePosition(el, padding, gap, placement, offset);
       } else {
         this.updatePosition(null, padding, gap, placement, offset);
