@@ -117,24 +117,37 @@
         "cardPreview": "Card Preview",
         "SelectDesign": "Select a design"
       }
-    }, 
-     "card-details-modal":{
-      "card-details-modal-content":{
-        "cardDetails": "Card Details", 
-        "cardInfo":"card Information",
-        "cardSubtitle":"View your card information and sensitive details", 
-        "cardName":"Card Name", 
-        "cardType": "Card Type", 
-        "cardCategory": "Card Category", 
-        "cardStatus": "Status", 
-        "creditLimit": "Credit Limit", 
-        "avaliableAmount": "Available Amount", 
-        "sensitiveDetails": "View Sensitive Details", 
-        "sensitiveSubtitle": "   To view full card number, CVV, and expiration date, please verify your identity using OTP", 
-        "requestOtp": "Request OTP", 
-        "closeBtn": "Close"
-        
+    },
+    "card-details-modal": {
+      "card-details-modal-content": {
+        "cardDetails": "Card Details",
+        "cardInfo": "card Information",
+        "cardSubtitle": "View your card information and sensitive details",
+        "cardName": "Card Name",
+        "cardType": "Card Type",
+        "cardCategory": "Card Category",
+        "cardStatus": "Status",
+        "creditLimit": "Credit Limit",
+        "avaliableAmount": "Available Amount",
+        "sensitiveDetails": "View Sensitive Details",
+        "sensitiveSubtitle": "   To view full card number, CVV, and expiration date, please verify your identity using OTP",
+        "requestOtp": "Request OTP",
+        "closeBtn": "Close", 
+        "fullNumber": "Full Card Number", 
+        "expirationDate":"Expiration Date"
       }
+    }, 
+    "card-transactions":{
+      "backToCard":"Back to Card Details", 
+      "transaction-card-header":{
+        "linkedTo":"ბარათი ეკუთვნის: ", 
+        "totalTransactions": "ტრანზაქციების რაოდენობა:"
+      }, 
+      "transaction-list":{
+        "noTransactions": "No transactions found"
+      }
+
+
     }
   }
 }
