@@ -1,8 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, switchMap, of, tap } from 'rxjs';
+import { catchError, map, switchMap, of } from 'rxjs';
 import { LoanCreateService } from '@tia/shared/services/loans/loan-create.service';
 import { LoansCreateActions } from './loans.actions';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable()
 export class LoanCreateEffects {
@@ -16,13 +17,16 @@ export class LoanCreateEffects {
         this.loanCreate.requestLoan(request).pipe(
           map((loan) => LoansCreateActions.requestLoanSuccess({ loan })),
 
-          catchError((error) =>
-            of(
+          catchError((error: HttpErrorResponse) => {
+            const errorMsg =
+              error.error?.message || error.message || 'Error requesting loan';
+
+            return of(
               LoansCreateActions.requestLoanFailure({
-                error: error.message || 'Error requesting loan',
+                error: errorMsg,
               }),
-            ),
-          ),
+            );
+          }),
         ),
       ),
     ),
