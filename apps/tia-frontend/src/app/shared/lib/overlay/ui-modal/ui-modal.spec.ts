@@ -35,6 +35,8 @@ describe('UiModal Integration', () => {
 
   afterEach(() => {
     vi.clearAllMocks();
+    vi.restoreAllMocks();
+    TestBed.resetTestingModule();
   });
 
   describe('Tracking Effect Logic', () => {
