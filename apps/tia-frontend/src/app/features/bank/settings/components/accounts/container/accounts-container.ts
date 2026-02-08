@@ -57,6 +57,7 @@ export class AccountsContainer implements OnInit {
   public handleVisibility(id: string, isHidden: boolean | null): void {
     this.store.toggleVisibility({ id, isHidden });
   }
+  
   public openChangeName(
     id: string,
     friendlyName: string,

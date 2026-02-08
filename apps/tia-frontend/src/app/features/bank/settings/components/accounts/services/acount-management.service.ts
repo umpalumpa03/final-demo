@@ -8,7 +8,7 @@ import {
   IUpdateResponses,
   IVisibilityRequest,
 } from '../models/account.models';
-import { environment } from 'apps/tia-frontend/src/environments/environment';
+import { environment } from '../../../../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AccountManagementService {
