@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   TransferInternalService
@@ -6,9 +6,8 @@ import {
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { Store } from '@ngrx/store';
 import { TransferStore } from 'apps/tia-frontend/src/app/features/bank/transfers/store/transfers.store';
-import { selectAccounts, selectIsLoading } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
+import { selectAccounts, selectError, selectIsLoading } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { selectError } from 'apps/tia-frontend/src/app/store/loans/loans.reducer';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { AccountData } from 'apps/tia-frontend/src/app/features/bank/transfers/models/transfers.state.model';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
@@ -21,6 +20,7 @@ import {
   TransfersAccountCard
 } from 'apps/tia-frontend/src/app/features/bank/transfers/ui/account-card/transfers-account-card';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 
 
 @Component({
@@ -31,10 +31,12 @@ import { TranslatePipe } from '@ngx-translate/core';
     ErrorStates,
     RouteLoader,
     TransfersAccountCard,
-    TranslatePipe
+    TranslatePipe,
+    Badges
   ],
   templateUrl: './internal-to-account.html',
   styleUrl: './internal-to-account.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InternalToAccount {
   private readonly transferStore = inject(TransferStore);
@@ -51,9 +53,14 @@ export class InternalToAccount {
 
   public readonly showSuccess = signal(false);
   public readonly selectedToAccount = computed(() => this.transferStore.receiverOwnAccount());
+  public readonly selectedFromAccount = computed(() => this.transferStore.senderAccount());
 
   public readonly isContinueDisabled = computed(() => {
     return !this.selectedToAccount();
+  })
+
+  public readonly transferableAccounts = computed(() => {
+    return this.accounts().filter(account => account.id !== this.selectedFromAccount()?.id)
   })
 
   ngOnInit() {
@@ -76,7 +83,25 @@ export class InternalToAccount {
   }
 
   public onContinue() {
-
+    if (this.isContinueDisabled()) {
+      return;
+    }
+    this.router.navigate(['/bank/transfers/internal/amount'])
   }
 
+  public getLastFourDigits(iban: string): string {
+    return iban.slice(-4);
+  }
+
+  public onSwapAccounts() {
+    const currentSender = this.selectedFromAccount();
+    const currentRecipient = this.selectedToAccount();
+
+    if (!currentSender || !currentRecipient) {
+      return;
+    }
+
+    this.transferStore.setSenderAccount(currentRecipient as Account);
+    this.transferStore.setReceiverOwnAccount(currentSender as Account);
+  }
 }

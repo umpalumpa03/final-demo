@@ -35,7 +35,7 @@
       </div>
     } @else {
       <div class="internal-accounts__accounts-grid">
-        @for (account of accounts(); track account.id) {
+        @for (account of transferableAccounts(); track account.id) {
           <app-transfers-account-card
             [cardData]="account"
             [mode]="'sender'"
@@ -48,16 +48,6 @@
   </section>
 
   <footer class="internal-accounts__footer">
-    <app-button
-      variant="outline"
-      size="default"
-      [fullWidth]="isFullWidth()"
-      (click)="onGoBack()"
-    >
-      <img src="images/svg/transfers/go-back.svg" alt="back" />
-      {{ 'common.buttons.back' | translate }}
-    </app-button>
-
     <app-button
       variant="default"
       size="default"

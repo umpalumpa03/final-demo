@@ -98,22 +98,8 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
         controlName: 'category',
         required: true,
       },
-      {
-        type: 'dropdown',
-        label: 'Service Provider *',
-        placeholder: 'e.g., Power Company',
-        controlName: 'serviceProvider',
-        required: true,
-      },
-      {
-        type: 'text',
-        label: 'Account Number *',
-        placeholder: 'Enter account number',
-        controlName: 'accountNumber',
-        required: true,
-      },
     ],
-    formSubmitType: 'create-group',
+    formSubmitType: 'create-template',
   },
 
   [ModalType.RenameTemplate]: {

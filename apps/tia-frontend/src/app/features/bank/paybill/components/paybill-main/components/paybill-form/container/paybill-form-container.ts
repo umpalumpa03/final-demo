@@ -54,26 +54,17 @@ export class PaybillFormContainer {
         }),
       );
 
-      this.store.dispatch(PaybillActions.setPaymentStep({ step: 'CONFIRM' }));
       this.router.navigate(['/bank/paybill/pay/confirm-payment']);
     }
   }
 
   // sync form data with service
   private readonly formSync = effect(() => {
-    const fields = this.paybillFacade.paymentFields();
-    const details = this.paybillFacade.verifiedDetails();
-    const isVerified = !!details?.valid;
-
-    this.dynamicForm.syncFormControls(this.paybillForm, fields);
-    this.dynamicForm.updateAmountValidators(this.paybillForm, isVerified);
-
-    if (isVerified && details?.amountDue !== undefined) {
-      this.paybillForm.patchValue(
-        { amount: details.amountDue },
-        { emitEvent: false },
-      );
-    }
+    this.dynamicForm.syncFormWithPaymentFields(
+      this.paybillForm,
+      { amount: 0 },
+      true,
+    );
   });
 
   public saveAsTemplate(customNickname?: string): void {

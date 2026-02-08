@@ -3,8 +3,10 @@ import {
   Component,
   computed,
   effect,
+  inject,
   input,
   model,
+  OnInit,
   output,
   untracked,
 } from '@angular/core';
@@ -24,6 +26,8 @@ import {
   mapConfirmSummaryFields,
 } from '../../config/translate.config';
 import { TranslatePipe } from '@ngx-translate/core';
+import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-paybill-confirm-payment',
@@ -39,7 +43,9 @@ import { TranslatePipe } from '@ngx-translate/core';
   styleUrl: './paybill-confirm-payment.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PaybillConfirmPayment {
+export class PaybillConfirmPayment implements OnInit {
+  private readonly store = inject(Store);
+
   // Inputs
 
   public readonly provider = input.required<PaybillProvider>();
@@ -77,6 +83,10 @@ export class PaybillConfirmPayment {
         }
       }
     });
+  }
+
+  ngOnInit(): void {
+    this.store.dispatch(AccountsActions.loadAccounts({}));
   }
 
   public handleAccountChange(id: string): void {

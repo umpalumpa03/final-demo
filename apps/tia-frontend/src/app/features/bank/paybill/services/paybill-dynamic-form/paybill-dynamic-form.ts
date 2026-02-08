@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PaybillIdentification } from '../../components/paybill-main/shared/models/paybill.model';
 import {
@@ -6,11 +6,18 @@ import {
   PaybillDynamicFormValues,
 } from './models/dynamic-form.model';
 import { InputConfig } from '@tia/shared/lib/forms/models/input.model';
+import {
+  selectPaymentFields,
+  selectVerifiedDetails,
+} from '../../store/paybill.selectors';
+import { Store } from '@ngrx/store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PaybillDynamicForm {
+  private readonly store = inject(Store);
+
   public syncFormControls(
     form: FormGroup,
     fields: PaybillDynamicField[],
@@ -65,5 +72,27 @@ export class PaybillDynamicForm {
 
     amountControl.setValidators(validators);
     amountControl.updateValueAndValidity({ emitEvent: false });
+  }
+
+  public syncFormWithPaymentFields(
+    form: FormGroup,
+    initialFields: Record<string, string | number>,
+    amountValidator?: boolean,
+  ): void {
+    const fields = this.store.selectSignal(selectPaymentFields)();
+    const details = this.store.selectSignal(selectVerifiedDetails)();
+    const isVerified = !!details?.valid;
+
+    this.syncFormControls(form, fields);
+    if (amountValidator) {
+      this.updateAmountValidators(form, isVerified);
+    }
+
+    if (isVerified && details.amountDue !== undefined) {
+      const values = amountValidator
+        ? { amount: details.amountDue }
+        : initialFields;
+      form.patchValue(values, { emitEvent: false });
+    }
   }
 }

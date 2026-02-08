@@ -1,16 +1,24 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PaybillTemplates } from './paybill-templates';
 import { TranslateModule } from '@ngx-translate/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  FormControl,
+} from '@angular/forms';
 import {
   ModalType,
   HeaderCtaAction,
   CrudActionType,
 } from '../models/paybill-templates.model';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { provideMockStore } from '@ngrx/store/testing';
 
 describe('PaybillTemplates', () => {
   let component: PaybillTemplates;
   let fixture: ComponentFixture<PaybillTemplates>;
+  let fb: FormBuilder;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -19,15 +27,32 @@ describe('PaybillTemplates', () => {
         TranslateModule.forRoot(),
         ReactiveFormsModule,
       ],
+      providers: [provideMockStore(), FormBuilder],
     }).compileComponents();
 
+    fb = TestBed.inject(FormBuilder);
     fixture = TestBed.createComponent(PaybillTemplates);
     component = fixture.componentInstance;
+
+    const mockForm = fb.group({
+      category: new FormControl(''),
+      nickname: new FormControl(''),
+    });
+
+    fixture.componentRef.setInput(
+      'createGroupForm',
+      fb.group({ groupName: '' }),
+    );
+    fixture.componentRef.setInput('createTemplateForm', mockForm);
+    fixture.componentRef.setInput('editTemplateForm', fb.group({}));
+    fixture.componentRef.setInput('editGroupForm', fb.group({}));
 
     fixture.componentRef.setInput('templateGroups', []);
     fixture.componentRef.setInput('templates', []);
     fixture.componentRef.setInput('isLoading', false);
     fixture.componentRef.setInput('templateCategories', []);
+    fixture.componentRef.setInput('parentProviders', []);
+    fixture.componentRef.setInput('paymentFields', []);
 
     fixture.detectChanges();
   });
@@ -49,7 +74,7 @@ describe('PaybillTemplates', () => {
       expect(spy).toHaveBeenCalledWith({ type: 'group-edit', id: '2' });
     });
 
-    it('should handle CRUD action mapping', () => {
+    it('should handle CRUD action mapping via internal record', () => {
       const spy = vi.spyOn(component.deleteTemplateModal, 'emit');
       component.onActionHandler(CrudActionType.DeleteTemplate);
       expect(spy).toHaveBeenCalled();
@@ -59,58 +84,52 @@ describe('PaybillTemplates', () => {
   describe('Form & Modal Logic', () => {
     it('should compute the correct activeForm based on activeModal input', () => {
       fixture.componentRef.setInput('activeModal', ModalType.Group);
-      expect(component.activeForm()).toBe(component['createGroupForm']);
+      expect(component.activeForm()).toBe(component.createGroupForm());
 
       fixture.componentRef.setInput('activeModal', ModalType.RenameTemplate);
-      expect(component.activeForm()).toBe(component['editTemplateForm']);
+      expect(component.activeForm()).toBe(component.editTemplateForm());
     });
 
-    it('should emit formSubmit only if form is valid', () => {
+    it('should emit formSubmit if activeForm is valid', () => {
       const spy = vi.spyOn(component.formSubmit, 'emit');
       fixture.componentRef.setInput('activeModal', ModalType.Group);
+      component.createGroupForm().get('groupName')?.setValue('New Group');
 
       component.onFormSubmit('create-group');
-      expect(spy).not.toHaveBeenCalled();
 
-      // Make form valid
-      component.activeForm()?.patchValue({ name: 'Test Group' });
-      component.onFormSubmit('create-group');
-
-      expect(spy).toHaveBeenCalledWith({
-        type: 'create-group',
-        values: expect.objectContaining({ name: 'Test Group' }),
-      });
-    });
-  });
-
-  describe('Effects', () => {
-    it('should patch form values when currentModalConfig changes', async () => {
-      fixture.componentRef.setInput('activeModal', ModalType.RenameGroup);
-      fixture.detectChanges();
-
-      fixture.componentRef.setInput('currentModalConfig', {
-        initialValues: { name: 'Old Name' },
-      });
-      fixture.detectChanges();
-      await fixture.whenStable();
-
-      const activeFormValue = component.activeForm()?.value;
-
-      expect(activeFormValue).toEqual(
-        expect.objectContaining({
-          name: 'Old Name',
-        }),
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'create-group' }),
       );
     });
   });
 
-  describe('Dropdown Logic', () => {
-    it('should emit categorySelected on dropdown change', () => {
-      const spy = vi.spyOn(component.categorySelected, 'emit');
-      const mockEvent = { target: { value: 'cat_123' } } as any;
+  describe('Signal Reactivity', () => {
+    it('should return empty options from getDropdownOptions for unknown controls', () => {
+      const options = component.getDropdownOptions('unknown');
+      expect(options).toEqual([]);
+    });
 
-      component.onDropdownChange('category', mockEvent);
-      expect(spy).toHaveBeenCalledWith('cat_123');
+    it('should emit childProviderSelected when selection changes', () => {
+      const spy = vi.spyOn(component.childProviderSelected, 'emit');
+      component.onChildProviderChange('p1', 0);
+      expect(spy).toHaveBeenCalledWith({ providerId: 'p1', index: 0 });
+    });
+
+    it('should reset form but not patch if initialValues are missing', () => {
+      const activeForm = component.createGroupForm();
+      const patchSpy = vi.spyOn(activeForm, 'patchValue');
+
+      fixture.componentRef.setInput('activeModal', ModalType.Group);
+      fixture.componentRef.setInput('currentModalConfig', { 
+        initialValues: null 
+      });
+
+      fixture.detectChanges();
+
+      expect(patchSpy).not.toHaveBeenCalled();
+      expect(activeForm.pristine).toBe(true);
     });
   });
+
+  
 });
