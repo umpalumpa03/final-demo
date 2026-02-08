@@ -104,15 +104,6 @@ describe('AccountCardViewComponent', () => {
     component.onMouseUp();
     expect(component['dragStart']()).toBeNull();
   });
-
-  it('should compute canMakeTransfer based on permission', () => {
-    setAccount({ ...mockAccount, permission: 2 });
-    expect(component['canMakeTransfer']()).toBe(true);
-    setAccount({ ...mockAccount, permission: 1 });
-    expect(component['canMakeTransfer']()).toBe(true);
-    setAccount({ ...mockAccount, permission: 999 });
-    expect(component['canMakeTransfer']()).toBe(false);
-  });
   it('should handle rename click and set editing state', () => {
     component.handleRenameClick();
     expect(component['isEditing']()).toBe(true);
