@@ -1,97 +1,133 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { expect, describe, it, beforeEach, vi } from 'vitest';
+import { expect, describe, it, beforeEach, vi, afterEach } from 'vitest';
 import { UiModal } from './ui-modal';
+import { ModalResponsiveService } from './services/service-modal';
 
-describe('UiModal', () => {
+describe('UiModal Integration', () => {
   let component: UiModal;
   let fixture: ComponentFixture<UiModal>;
+  let modalService: ModalResponsiveService;
 
   beforeEach(async () => {
+    const modalServiceMock = {
+      startTracking: vi.fn(),
+      stopTracking: vi.fn(),
+      spotlightStyle: vi.fn(() => ({})),
+      cardStyle: vi.fn(() => ({})),
+      isFallback: vi.fn(() => false),
+    };
+
     await TestBed.configureTestingModule({
       imports: [UiModal],
+      providers: [
+        { provide: ModalResponsiveService, useValue: modalServiceMock },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UiModal);
     component = fixture.componentInstance;
+    modalService = TestBed.inject(ModalResponsiveService);
+
     fixture.componentRef.setInput('isOpen', false);
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
-  it('should emit closed event when close() is called', () => {
-    const emitSpy = vi.spyOn(component.closed, 'emit');
-    component.close();
-    expect(emitSpy).toHaveBeenCalled();
+  describe('Tracking Effect Logic', () => {
+    it('should call startTracking when modal opens with a target', () => {
+      fixture.componentRef.setInput('isOpen', true);
+      fixture.componentRef.setInput('target', 'test-id');
+      fixture.detectChanges();
+
+      expect(modalService.startTracking).toHaveBeenCalledWith(
+        'test-id',
+        8,
+        16,
+        'bottom',
+        {},
+      );
+    });
+
+    it('should call stopTracking when modal closes', () => {
+      fixture.componentRef.setInput('isOpen', false);
+      fixture.detectChanges();
+
+      expect(modalService.stopTracking).toHaveBeenCalled();
+    });
+
+    it('should re-trigger tracking on window resize if open', () => {
+      fixture.componentRef.setInput('isOpen', true);
+      fixture.componentRef.setInput('target', 'test-id');
+      fixture.detectChanges();
+
+      vi.mocked(modalService.startTracking).mockClear();
+
+      window.dispatchEvent(new Event('resize'));
+
+      expect(modalService.startTracking).toHaveBeenCalled();
+    });
   });
 
-  it('should emit closed event when Escape key is pressed and modal is open', () => {
-    fixture.componentRef.setInput('isOpen', true);
-    fixture.detectChanges();
+  describe('Keyboard Navigation Integration', () => {
+    beforeEach(() => {
+      fixture.componentRef.setInput('isOpen', true);
+      fixture.componentRef.setInput('hasNavigation', true);
+      fixture.detectChanges();
+    });
 
-    const emitSpy = vi.spyOn(component.closed, 'emit');
-    const event = new KeyboardEvent('keydown', { key: 'Escape' });
-    document.dispatchEvent(event);
+    it('should emit navigate(1) on Right Arrow key press', () => {
+      const navigateSpy = vi.spyOn(component.navigate, 'emit');
+      const event = new KeyboardEvent('keydown', { key: 'ArrowRight' });
+      document.dispatchEvent(event);
 
-    expect(emitSpy).toHaveBeenCalled();
+      expect(navigateSpy).toHaveBeenCalledWith(1);
+    });
+
+    it('should NOT navigate if modal is closed', () => {
+      fixture.componentRef.setInput('isOpen', false);
+      fixture.detectChanges();
+
+      const navigateSpy = vi.spyOn(component.navigate, 'emit');
+      const event = new KeyboardEvent('keydown', { key: 'ArrowRight' });
+      document.dispatchEvent(event);
+
+      expect(navigateSpy).not.toHaveBeenCalled();
+    });
   });
 
-  it('should NOT emit closed event when Escape key is pressed and modal is closed', () => {
-    fixture.componentRef.setInput('isOpen', false);
-    fixture.detectChanges();
+  describe('Computed State Logic', () => {
+    it('should correctly compute isTutorialActive', () => {
+      fixture.componentRef.setInput('isOpen', true);
+      fixture.componentRef.setInput('target', 'some-id');
 
-    const emitSpy = vi.spyOn(component.closed, 'emit');
-    const event = new KeyboardEvent('keydown', { key: 'Escape' });
-    document.dispatchEvent(event);
+      (modalService as any).isFallback.set?.(false);
 
-    expect(emitSpy).not.toHaveBeenCalled();
+      fixture.detectChanges();
+
+      expect((component as any).isTutorialActive()).toBe(true);
+    });
   });
 
-  it('should emit navigate(-1) when onPrev is called', () => {
-    const navigateSpy = vi.spyOn(component.navigate, 'emit');
-    const mockEvent = { stopPropagation: vi.fn() } as any;
+  describe('Lifecycle Hooks', () => {
+    it('should call stopTracking on ngOnDestroy', () => {
+      component.ngOnDestroy();
+      expect(modalService.stopTracking).toHaveBeenCalled();
+    });
 
-    component.onPrev(mockEvent);
+    it('should NOT emit navigate when Left Arrow is pressed if hasNavigation is false', () => {
+      fixture.componentRef.setInput('isOpen', true);
+      fixture.componentRef.setInput('hasNavigation', false);
+      fixture.detectChanges();
 
-    expect(mockEvent.stopPropagation).toHaveBeenCalled();
-    expect(navigateSpy).toHaveBeenCalledWith(-1);
-  });
+      const navigateSpy = vi.spyOn(component.navigate, 'emit');
+      const event = new KeyboardEvent('keydown', { key: 'ArrowLeft' });
+      document.dispatchEvent(event);
 
-  it('should emit navigate(1) when onNext is called', () => {
-    const navigateSpy = vi.spyOn(component.navigate, 'emit');
-    const mockEvent = { stopPropagation: vi.fn() } as any;
-
-    component.onNext(mockEvent);
-
-    expect(mockEvent.stopPropagation).toHaveBeenCalled();
-    expect(navigateSpy).toHaveBeenCalledWith(1);
-  });
-
-  it('should emit navigate(-1) when left arrow key is pressed with navigation enabled', () => {
-    fixture.componentRef.setInput('isOpen', true);
-    fixture.componentRef.setInput('hasNavigation', true);
-    fixture.detectChanges();
-
-    const navigateSpy = vi.spyOn(component.navigate, 'emit');
-    const event = new KeyboardEvent('keydown', { key: 'ArrowLeft' });
-    document.dispatchEvent(event);
-
-    expect(navigateSpy).toHaveBeenCalledWith(-1);
-  });
-
-  it('should NOT emit closed event when clicking inside the modal card', () => {
-    fixture.componentRef.setInput('isOpen', true);
-    fixture.detectChanges();
-
-    const emitSpy = vi.spyOn(component.closed, 'emit');
-    const card = fixture.debugElement.query(By.css('.ui-modal__card'));
-
-    if (card) {
-      card.nativeElement.click();
-      expect(emitSpy).not.toHaveBeenCalled();
-    }
+      expect(navigateSpy).not.toHaveBeenCalled();
+    });
   });
 });

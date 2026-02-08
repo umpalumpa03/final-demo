@@ -74,13 +74,13 @@ export class ModalResponsiveService {
     this.isFallback.set(isFallback);
 
     if (isFallback) {
-      this.spotlightStyle.set({});
-      this.cardStyle.set({});
+      this.spotlightStyle.set({} as Record<string, string>);
+      this.cardStyle.set({} as Record<string, string>);
       toggleBodyScroll(false);
       this.cleanupObserver();
     } else {
-      this.spotlightStyle.set(spotlightStyle!);
-      this.cardStyle.set(cardStyle!);
+      this.spotlightStyle.set(spotlightStyle as Record<string, string>);
+      this.cardStyle.set(cardStyle as Record<string, string>);
       toggleBodyScroll(true);
 
       if (el && !this.observer) {
