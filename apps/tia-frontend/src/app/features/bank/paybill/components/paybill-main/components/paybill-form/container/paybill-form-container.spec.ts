@@ -7,7 +7,7 @@ import { PaybillDynamicForm } from '../../../../../services/paybill-dynamic-form
 import { ReactiveFormsModule } from '@angular/forms';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { provideRouter } from '@angular/router';
+import { Router } from '@angular/router';
 import {
   PaybillActions,
   TemplatesPageActions,
@@ -38,21 +38,30 @@ describe('PaybillFormContainer', () => {
   let mockFacade: any;
   let mockDynamicForm: any;
   let store: MockStore;
+  let router: Router;
 
   beforeEach(async () => {
     mockFacade = {
-      activeProvider: signal({ name: 'Test Provider', id: '1' }),
+      activeProvider: signal({
+        name: 'Test Provider',
+        id: 'p1',
+        categoryId: 'cat1',
+      }),
       verifiedDetails: signal(null),
       activeCategoryUI: signal({ iconBgColor: '#fff', iconBgPath: '' }),
       paymentFields: signal([]),
-      paymentPayload: signal({ identification: { accountNumber: '123' } }),
+      paymentPayload: signal({
+        identification: { accountNumber: '123' },
+        amount: 0,
+      }),
       isLoading: signal(false),
     };
 
     mockDynamicForm = {
-      syncFormControls: vi.fn(),
-      updateAmountValidators: vi.fn(),
-      buildIdentification: vi.fn((val) => ({ accountNumber: val })),
+      syncFormWithPaymentFields: vi.fn(),
+      buildIdentification: vi.fn((val) => ({
+        accountNumber: val.accountNumber || val,
+      })),
     };
 
     await TestBed.configureTestingModule({
@@ -60,8 +69,8 @@ describe('PaybillFormContainer', () => {
       providers: [
         { provide: PaybillMainFacade, useValue: mockFacade },
         { provide: PaybillDynamicForm, useValue: mockDynamicForm },
+        { provide: Router, useValue: { navigate: vi.fn() } },
         provideMockStore(),
-        provideRouter([]),
       ],
     })
       .overrideComponent(PaybillFormContainer, {
@@ -71,6 +80,7 @@ describe('PaybillFormContainer', () => {
       .compileComponents();
 
     store = TestBed.inject(MockStore);
+    router = TestBed.inject(Router);
     fixture = TestBed.createComponent(PaybillFormContainer);
     component = fixture.componentInstance;
 
@@ -84,14 +94,16 @@ describe('PaybillFormContainer', () => {
   describe('Account Verification', () => {
     it('should dispatch checkBill and setPaymentPayload on onVerifyAccount', () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
-      const eventData = { value: '123' };
+      const eventData = { value: { accountNumber: '123' } };
 
       component.onVerifyAccount(eventData as any);
 
-      expect(mockDynamicForm.buildIdentification).toHaveBeenCalledWith('123');
+      expect(mockDynamicForm.buildIdentification).toHaveBeenCalledWith(
+        eventData.value,
+      );
       expect(dispatchSpy).toHaveBeenCalledWith(
         PaybillActions.checkBill({
-          serviceId: '1',
+          serviceId: 'p1',
           identification: { accountNumber: '123' },
         }),
       );
@@ -112,7 +124,7 @@ describe('PaybillFormContainer', () => {
 
       expect(dispatchSpy).toHaveBeenCalledWith(
         TemplatesPageActions.createTemplate({
-          serviceId: '1',
+          serviceId: 'p1',
           identification: { accountNumber: '123' },
           nickname: nickname,
         }),
@@ -131,7 +143,7 @@ describe('PaybillFormContainer', () => {
       );
     });
 
-    it('should return early and NOT dispatch if provider or payload is missing', () => {
+    it('should return early and NOT dispatch if provider is missing', () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
       mockFacade.activeProvider.set(null);
 
@@ -142,11 +154,12 @@ describe('PaybillFormContainer', () => {
   });
 
   describe('Payment Processing', () => {
-    it('should dispatch transaction and payload actions on onProceedToPayment', () => {
+    it('should dispatch actions and navigate on proceedToPayment', () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
-      const eventData = { value: '456', amount: 100 };
+      const formValues = { accountNumber: '456' };
+      const amount = 100;
 
-      component.onProceedToPayment(eventData as any);
+      component.proceedToPayment(amount, formValues as any);
 
       expect(dispatchSpy).toHaveBeenCalledWith(
         PaybillActions.setTransactionProvider({
@@ -155,18 +168,15 @@ describe('PaybillFormContainer', () => {
       );
 
       expect(dispatchSpy).toHaveBeenCalledWith(
-        PaybillActions.setPaymentStep({ step: 'CONFIRM' }),
+        expect.objectContaining({
+          type: PaybillActions.setPaymentPayload.type,
+          data: expect.objectContaining({ amount: 100 }),
+        }),
       );
-    });
-  });
 
-  describe('Form Synchronization (Effect)', () => {
-    it('should call dynamic form sync methods when payment fields update', () => {
-      mockFacade.paymentFields.set([{ id: 'test' }]);
-      fixture.detectChanges();
-
-      expect(mockDynamicForm.syncFormControls).toHaveBeenCalled();
-      expect(mockDynamicForm.updateAmountValidators).toHaveBeenCalled();
+      expect(router.navigate).toHaveBeenCalledWith([
+        '/bank/paybill/pay/confirm-payment',
+      ]);
     });
   });
 });
