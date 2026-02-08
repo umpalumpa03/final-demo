@@ -6,7 +6,6 @@ import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
 import { CardDesign } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-design.model';
 import { CardCategory } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-category.model';
 import { CardType } from '../../../features/bank/products/components/cards/models/card-type.model';
-import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 import { CardSensitiveData } from '../../../features/bank/products/components/cards/models/card-sensitive-data.model';
 
 export const selectCardsState = createFeatureSelector<CardsState>('cards');
@@ -220,40 +219,7 @@ export const selectCardDetailsModalData = createSelector(
     };
   },
 );
-export const selectCardTransactions = createSelector(
-  selectCardsState,
-  (state: CardsState): Record<string, ITransactions[]> =>
-    state.cardTransactions,
-);
 
-export const selectCardTransactionsLoading = createSelector(
-  selectCardsState,
-  (state: CardsState): boolean => state.cardTransactionsLoading,
-);
-
-export const selectCardTransactionsError = createSelector(
-  selectCardsState,
-  (state: CardsState): string | null => state.cardTransactionsError,
-);
-
-export const selectCardTransactionsTotalCount = createSelector(
-  selectCardsState,
-  (state: CardsState): Record<string, number> =>
-    state.cardTransactionsTotalCount,
-);
-
-export const selectCardTransactionsByCardId = (cardId: string) =>
-  createSelector(
-    selectCardTransactions,
-    (transactions: Record<string, ITransactions[]>): ITransactions[] =>
-      transactions[cardId] || [],
-  );
-
-export const selectCardTransactionsTotalByCardId = (cardId: string) =>
-  createSelector(
-    selectCardTransactionsTotalCount,
-    (totals: Record<string, number>): number => totals[cardId] || 0,
-  );
 export const selectCardImagesLoading = createSelector(
   selectCardsState,
   (state: CardsState): boolean => state.cardImagesLoading,
@@ -317,4 +283,37 @@ export const selectGlobalAlert = createSelector(
 export const selectOtpRemainingAttempts = createSelector(
   selectCardsState,
   (state: CardsState): number => state.otpRemainingAttempts,
+);
+
+export const selectCurrentCardIndex = createSelector(
+  selectCardsState,
+  (state: CardsState): number => state.currentCardIndex,
+);
+
+export const selectCurrentAccountId = createSelector(
+  selectCardsState,
+  (state: CardsState): string | null => state.currentAccountId,
+);
+
+export const selectCurrentAccountCardIds = createSelector(
+  selectCurrentAccountId,
+  selectAllAccounts,
+  (accountId: string | null, accounts: CardAccount[]): string[] => {
+    if (!accountId) return [];
+    const account = accounts.find(acc => acc.id === accountId);
+    return account?.cardIds || [];
+  }
+);
+
+export const selectCanNavigateNext = createSelector(
+  selectCurrentCardIndex,
+  selectCurrentAccountCardIds,
+  (index: number, cardIds: string[]): boolean => {
+    return index < cardIds.length - 1;
+  }
+);
+
+export const selectCanNavigatePrevious = createSelector(
+  selectCurrentCardIndex,
+  (index: number): boolean => index > 0
 );

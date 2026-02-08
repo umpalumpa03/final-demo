@@ -10,7 +10,7 @@
     "settings": "Settings",
     "storybook": "Storybook",
     "logout": {
-      "title": "Logout",
+      "title": "Log Out",
       "message": "Are you sure you want to log out?"
     }
   }

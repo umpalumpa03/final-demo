@@ -1,0 +1,17 @@
+@if (alertService.isVisible()) {
+<div class="global-alert">
+  @if (alertService.alertVariant() === 'dismissible') {
+    <app-dismissible-alerts
+      [alertType]="alertService.alertType()!"
+      [alertTitle]="alertService.alertTitle()"
+      [alertMessage]="alertService.alertMessage()"
+      (dismissed)="alertService.clearAlert()"
+    />
+  } @else {
+    <app-alert-types-with-icons
+      [alertType]="alertService.alertType()!"
+      [alertMessage]="alertService.alertMessage()"
+    />
+  }
+</div>
+}

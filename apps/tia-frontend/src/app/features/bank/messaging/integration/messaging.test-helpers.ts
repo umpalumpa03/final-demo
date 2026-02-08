@@ -5,6 +5,7 @@ import { provideHttpClientTesting, HttpTestingController } from '@angular/common
 import { MessagingStore } from '../store/messaging.store';
 import { MessagingService } from '../services/messaging-api.service';
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 import { Mail, MailsResponse, User } from '../store/messaging.state';
 import { vi } from 'vitest';
 
@@ -64,12 +65,21 @@ export interface TestContext {
   httpMock: HttpTestingController;
   store: InstanceType<typeof MessagingStore>;
   inboxService: any;
+  alertService: any;
 }
 
 export async function setupMessagingTest(): Promise<TestContext> {
   const inboxService = {
     fetchInboxCount: vi.fn(),
     inboxCount: () => 0,
+  };
+
+  const alertService = {
+    success: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn(),
+    info: vi.fn(),
+    clearAlert: vi.fn(),
   };
 
   await TestBed.configureTestingModule({
@@ -83,13 +93,17 @@ export async function setupMessagingTest(): Promise<TestContext> {
         provide: InboxService,
         useValue: inboxService,
       },
+      {
+        provide: AlertService,
+        useValue: alertService,
+      },
     ],
   }).compileComponents();
 
   const httpMock = TestBed.inject(HttpTestingController);
   const store = TestBed.inject(MessagingStore);
 
-  return { httpMock, store, inboxService };
+  return { httpMock, store, inboxService, alertService };
 }
 
 export function cleanupMessagingTest(httpMock: HttpTestingController): void {

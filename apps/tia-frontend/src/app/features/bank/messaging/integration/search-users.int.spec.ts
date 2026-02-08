@@ -60,7 +60,7 @@ describe('Messaging Integration - Search Users Flow', () => {
       { status: 500, statusText: 'Server Error' }
     );
 
-    expect(ctx.store.error()).toBe('messaging.storeErrors.searchFailed');
+    expect(ctx.alertService.error).toHaveBeenCalledWith('messaging.storeErrors.searchFailed', { variant: 'dismissible', title: 'Oops!' });
     expect(ctx.store.searchResults()).toEqual([]);
     expect(ctx.store.isSearching()).toBe(false);
   });

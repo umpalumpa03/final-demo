@@ -57,7 +57,7 @@ describe('Messaging Integration - View Email Detail Flow', () => {
     );
 
     await vi.waitFor(() => {
-      expect(ctx.store.error()).toBe('messaging.storeErrors.loadEmailDetail');
+      expect(ctx.alertService.error).toHaveBeenCalledWith('messaging.storeErrors.loadEmailDetail', { variant: 'dismissible', title: 'Oops!' });
       expect(ctx.store.isLoading()).toBe(false);
     });
   });
