@@ -175,8 +175,9 @@
     [remainingAttempts]="3"
     [inputOtpConfig]="otpConfig"
     [isBtnRowDirection]="true"
-    noMoreAttempsRedirectRoute="/bank/transfers"
     (customError)="handleNoMoreAttempts()"
+    redirectUrl="/bank/transfers"
+    redirectText="random text"
   ></app-otp-verification>
 </app-ui-modal>
 @if (showSuccess()) {
