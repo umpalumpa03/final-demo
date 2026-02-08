@@ -37,6 +37,7 @@ export interface NotificationsState {
   isFetching: boolean;
   selectedItems: string[];
   unreadCount: number;
+  hasFetched: boolean;
 }
 
 export type FetchParams = {

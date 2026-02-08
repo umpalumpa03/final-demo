@@ -24,6 +24,7 @@ export const initialState: NotificationsState = {
   isFetching: false,
   hasError: false,
   limitPerPage: 10,
+  hasFetched: false,
 };
 
 export const NotificationsStore = signalStore(
@@ -66,9 +67,6 @@ export const NotificationsStore = signalStore(
           switchMap(() =>
             notificationsService.getUnreadCount().pipe(
               tap((response) => {
-                console.log(response);
-              }),
-              tap((response) => {
                 patchState(store, {
                   unreadCount: response.count,
                 });
@@ -80,6 +78,10 @@ export const NotificationsStore = signalStore(
 
       fetchNotifications: rxMethod<FetchParams>(
         pipe(
+          filter(({ cursor }) => {
+            if (cursor) return true;
+            return !store.hasFetched();
+          }),
           tap(({ cursor }) => {
             cursor
               ? patchState(store, {
@@ -101,6 +103,7 @@ export const NotificationsStore = signalStore(
                     pageInfo: response.pageInfo,
                     isLoading: false,
                     isFetching: false,
+                    hasFetched: true,
                   });
                 },
                 error: () =>
