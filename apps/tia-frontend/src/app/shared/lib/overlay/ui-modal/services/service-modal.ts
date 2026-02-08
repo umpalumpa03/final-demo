@@ -34,7 +34,7 @@ export class ModalResponsiveService {
   private rafId: number | null = null;
 
   // trackingis metodebi
-  public startTracking(
+public startTracking(
     target: HTMLElement | string,
     padding: number,
     gap: number,
@@ -49,8 +49,11 @@ export class ModalResponsiveService {
         typeof target === 'string'
           ? this.document.getElementById(target)
           : target;
-
-      if (el && el.offsetParent !== null && this.document.body.contains(el)) {
+      if (
+        el &&
+        el.offsetParent !== null &&
+        this.document.body.contains(el)
+      ) {
         this.updatePosition(el, padding, gap, placement, offset);
       } else {
         this.updatePosition(null, padding, gap, placement, offset);
