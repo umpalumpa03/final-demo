@@ -109,7 +109,108 @@
   "forms": {},
   "cards": {},
   "alerts": {},
-  "badges": {},
+  "badges": {
+    "title": "ბეიჯები",
+    "subtitle": "ბეიჯის კომპონენტები ეტიკეტების, სტატუსის ინდიკატორებისა და რაოდენობებისთვის",
+    "sections": {
+      "variants": "ვარიანტები",
+      "statusBadges": "სტატუსის ბეიჯები",
+      "sizes": "ზომები",
+      "countBadges": "რაოდენობის ბეიჯები",
+      "interactiveBadges": "ინტერაქტიული ბეიჯები (გაუქმებადი)",
+      "pillBadges": "მომრგვალო/კაფსულის ფორმის ბეიჯები",
+      "dotIndicators": "წერტილოვანი ინდიკატორებით",
+      "badgeGroups": "ბეიჯების ჯგუფები",
+      "badgeStates": "ბეიჯების მდგომარეობები",
+      "customColors": "მორგებული ფერები",
+      "skills": "უნარები:",
+      "categories": "კატეგორიები:"
+    },
+    "variants": {
+      "default": "ნაგულისხმევი",
+      "secondary": "მეორადი",
+      "destructive": "გაუქმებადი",
+      "outline": "კონტური"
+    },
+    "sizes": {
+      "small": "პატარა",
+      "medium": "საშუალო",
+      "large": "დიდი"
+    },
+    "countBadges": {
+      "messages": "შეტყობინებები",
+      "notifications": "სიახლეები",
+      "updates": "განახლებები",
+      "cartItems": "კალათის ელემენტები",
+      "unread": "წაუკითხავი",
+      "new": "ახალი"
+    },
+    "dismissible": {
+      "tag1": "ტეგ 1",
+      "tag2": "ტეგ 2",
+      "tag3": "ტეგ 3",
+      "tag4": "ტეგ 4"
+    },
+    "pillBadges": {
+      "pillShape": "კაფსულის ფორმა",
+      "category": "კატეგორია",
+      "tag": "ტეგი",
+      "angular": "Angular",
+      "typescript": "TypeScript",
+      "css": "CSS",
+      "javascript": "JavaScript"
+    },
+    "badgeStates": {
+      "normal": "სტანდარტული",
+      "hoverMe": "მიიტანეთ მაუსი",
+      "disabled": "გათიშული",
+      "selected": "არჩეული",
+      "default": "ნაგულისხმევი:",
+      "hovered": "მაუსით დაფარული:",
+      "disabledLabel": "გათიშული:",
+      "selectedLabel": "არჩეული:"
+    },
+    "customColors": {
+      "pink": "ვარდისფერი",
+      "indigo": "ინდიგო",
+      "teal": "ცისფერი-მწვანე",
+      "rose": "წითელი",
+      "cyan": "ცისფერი",
+      "amber": "ქარვისფერი",
+      "lime": "ლაიმი",
+      "slate": "მუქი ნაცრისფერი"
+    },
+    "status": {
+      "active": "აქტიური",
+      "pending": "მოლოდინში",
+      "inactive": "არააქტიური",
+      "inProgress": "პროცესშია",
+      "featured": "რეკომენდირებული",
+      "premium": "პრემიუმი",
+      "favorite": "ფავორიტი",
+      "done": "დასრულებული",
+      "todo": "გასაკეთებელი"
+    },
+    "dot": {
+      "online": "აქტიური",
+      "away": "გასული",
+      "offline": "არააქტიური",
+      "live": "პირდაპირი ეთერი"
+    },
+    "skills": {
+      "javascript": "JavaScript",
+      "angular": "Angular",
+      "nodejs": "Node.js",
+      "typescript": "TypeScript",
+      "css": "CSS",
+      "html": "HTML"
+    },
+    "categories": {
+      "technology": "ტექნოლოგია",
+      "design": "დიზაინი",
+      "marketing": "მარკეტინგი"
+    }
+  },
   "tables": {},
   "navigation": {
     "title": "ნავიგაციის კომპონენტები",
