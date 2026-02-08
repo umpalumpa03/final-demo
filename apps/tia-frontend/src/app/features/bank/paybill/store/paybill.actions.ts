@@ -158,5 +158,7 @@ export const TemplatesPageActions = createActionGroup({
     'Check Bill for Template Failure': props<{
       error: string;
     }>(),
+
+    'Clear Payment Details': emptyProps(),
   },
 });
