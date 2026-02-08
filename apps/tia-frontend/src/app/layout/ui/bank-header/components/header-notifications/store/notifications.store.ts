@@ -10,7 +10,6 @@ import { computed, inject } from '@angular/core';
 import { Notifications } from '../service/notifications';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { filter, forkJoin, pipe, switchMap, tap } from 'rxjs';
-import { toObservable } from '@angular/core/rxjs-interop';
 
 export const initialState: NotificationsState = {
   items: [],
@@ -25,13 +24,10 @@ export const initialState: NotificationsState = {
   isFetching: false,
   hasError: false,
   limitPerPage: 10,
-
-  notificationsLoaded: false,
-  unreadCountLoaded: false,
-  hasUnreadLoaded: false,
 };
 
 export const NotificationsStore = signalStore(
+  { providedIn: 'root' },
   withState(initialState),
   withComputed((store) => ({
     isEmpty: computed(() => !store.isLoading() && store.items().length === 0),
@@ -49,9 +45,6 @@ export const NotificationsStore = signalStore(
   })),
   withMethods((store) => {
     const notificationsService = inject(Notifications);
-    const notificationsLoaded$ = toObservable(store.notificationsLoaded);
-    const unreadCountLoaded$ = toObservable(store.unreadCountLoaded);
-    const hasUnreadLoaded$ = toObservable(store.hasUnreadLoaded);
 
     return {
       hasUnreadNotifications: rxMethod<void>(

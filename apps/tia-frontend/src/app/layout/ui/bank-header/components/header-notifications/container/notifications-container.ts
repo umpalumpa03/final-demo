@@ -6,6 +6,7 @@ import {
   HostListener,
   inject,
   input,
+  OnInit,
   output,
   signal,
 } from '@angular/core';
@@ -20,7 +21,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   templateUrl: './notifications-container.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NotificationsContainer {
+export class NotificationsContainer implements OnInit {
   readonly store = inject(NotificationsStore);
 
   // From Parent Container Logic to open modal and get notifications element
@@ -39,6 +40,10 @@ export class NotificationsContainer {
       width: window.innerWidth,
       height: window.innerHeight,
     });
+  }
+
+  ngOnInit(): void {
+    this.store.fetchUnreadCount();
   }
 
   // Store Details

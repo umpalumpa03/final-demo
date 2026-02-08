@@ -27,7 +27,6 @@ import { selectUserFullName } from '../../../../store/user-info/user-info.select
   templateUrl: './bank-header-container.html',
   styleUrl: './bank-header-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [NotificationsStore],
 })
 export class BankHeaderContainer implements OnInit {
   readonly notificationsStore = inject(NotificationsStore);
@@ -74,7 +73,6 @@ export class BankHeaderContainer implements OnInit {
 
   ngOnInit(): void {
     this.notificationsStore.hasUnreadNotifications();
-    this.notificationsStore.fetchUnreadCount();
     this.inboxService.fetchInboxCount();
   }
 
@@ -95,6 +93,5 @@ export class BankHeaderContainer implements OnInit {
 
   public closeAndReset(): void {
     this.isModalOpen.set(false);
-    this.notificationsStore.resetState();
   }
 }
