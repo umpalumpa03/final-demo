@@ -7,6 +7,11 @@
   gap: 2rem;
   width: 100%;
 
+  @media (max-width:768px){
+    @include flex-center(column, flex-start, flex-start)
+    
+  }
+
   &__card-visual {
     flex-shrink: 0;
   }
@@ -40,6 +45,10 @@
   &__total {
     @include flex-center(column, end,end);
     gap: 0.4rem;
+      @media (max-width:768px){
+    @include flex-center(column, flex-start, flex-start)
+    
+  }
 
   }
 

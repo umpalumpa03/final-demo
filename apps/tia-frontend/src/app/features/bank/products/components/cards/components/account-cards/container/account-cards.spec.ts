@@ -68,7 +68,7 @@ describe('AccountCards', () => {
           useValue: { snapshot: { paramMap: { get: () => 'acc-1' } } },
         },
       ],
-      schemas: [NO_ERRORS_SCHEMA], // ignore unknown child components
+      schemas: [NO_ERRORS_SCHEMA],
     });
   });
 
@@ -152,4 +152,22 @@ describe('AccountCards', () => {
     const label = await firstValueFrom(component['cardsLabel$']);
     expect(label).toBe('');
   });
+  it('should dispatch setCurrentCardIndex and navigate on card click', () => {
+  setupStore();
+  createComponent();
+  
+  component.handleCardClick('card-1');
+  
+  expect(store.dispatch).toHaveBeenCalledWith(
+    expect.objectContaining({
+      type: '[Cards] Set Current Card Index',
+      cardIndex: 0,
+      accountId: 'acc-1'
+    })
+  );
+  expect(router.navigate).toHaveBeenCalledWith([
+    '/bank/products/cards/details',
+    'card-1',
+  ]);
+});
 });

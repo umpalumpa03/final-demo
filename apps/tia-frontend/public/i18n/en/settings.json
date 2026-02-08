@@ -113,9 +113,24 @@
     "title": "Approve Accounts",
     "pendingApprovals": "Pending Approvals"
   },
-  "approve-cards": {
+ "approve-cards": {
     "title": "Approve Cards",
-    "pendingCards": "Pending Cards"
+    "subtitle": "Pending Cards",
+    "confirmOverlay": {
+      "title": "Reset Changes?",
+      "subtitle": "Please approve your card. otherwise, switching will clear the permissions you have already selected.",
+      "cancelAction": "Go back",
+      "confirmAction": "Discard and switch"
+    },
+    "buttons": {
+      "permissions": "Permissions",
+      "approve": "Approve",
+      "decline": "Decline"
+    },
+    "alertMessages": {
+      "successDesc": "Card status updated successfully!",
+      "errorDesc": "Failed to update card status."
+    }
   },
   "loan-management": {
     "title": "Loan Management",
