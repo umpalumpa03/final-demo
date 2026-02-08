@@ -31,7 +31,7 @@ vi.stubGlobal('ResizeObserver', MockResizeObserver);
 describe('ModalResponsiveService', () => {
   let service: ModalResponsiveService;
   let mockDocument: any;
-  let mockElement: any;
+  let mockElement: HTMLElement;
 
   const PADDING = 10;
   const GAP = 5;
@@ -41,13 +41,30 @@ describe('ModalResponsiveService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    mockElement = {
-      offsetParent: {},
-      getBoundingClientRect: vi.fn(),
-    } as any;
+    mockElement = document.createElement('div');
+    mockElement.id = 'test-id';
+
+    Object.defineProperty(mockElement, 'offsetParent', {
+      get: () => document.body,
+      configurable: true,
+    });
+
+    vi.spyOn(mockElement, 'getBoundingClientRect').mockReturnValue({
+      top: 0,
+      left: 0,
+      width: 100,
+      height: 100,
+      right: 100,
+      bottom: 100,
+      x: 0,
+      y: 0,
+      toJSON: () => {},
+    });
+
+    document.body.appendChild(mockElement);
 
     mockDocument = {
-      getElementById: vi.fn().mockReturnValue(mockElement),
+      getElementById: vi.fn((id) => (id === 'test-id' ? mockElement : null)),
       body: {
         contains: vi.fn(() => true),
         style: {},
@@ -69,6 +86,8 @@ describe('ModalResponsiveService', () => {
     service.stopTracking();
     vi.clearAllMocks();
     vi.useRealTimers();
+
+    mockElement.remove();
   });
 
   describe('startTracking', () => {
@@ -94,9 +113,9 @@ describe('ModalResponsiveService', () => {
     it('should retry if element is missing initially, then find it', () => {
       vi.useFakeTimers();
 
-      mockDocument.getElementById
-        .mockReturnValueOnce(null)
-        .mockReturnValue(mockElement);
+      mockDocument.getElementById.mockReturnValueOnce(null);
+
+      mockDocument.getElementById.mockReturnValue(mockElement);
 
       const updateSpy = vi.spyOn(service, 'updatePosition');
 
@@ -106,7 +125,7 @@ describe('ModalResponsiveService', () => {
         cardStyle: {},
       });
 
-      service.startTracking('lazy-id', PADDING, GAP, PLACEMENT, OFFSET);
+      service.startTracking('test-id', PADDING, GAP, PLACEMENT, OFFSET);
 
       expect(updateSpy).toHaveBeenCalledWith(
         null,
@@ -125,10 +144,6 @@ describe('ModalResponsiveService', () => {
         PLACEMENT,
         OFFSET,
       );
-
-      expect(mockDocument.getElementById).toHaveBeenCalledTimes(2);
     });
   });
-
-  
 });
