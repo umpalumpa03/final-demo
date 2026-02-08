@@ -303,6 +303,13 @@ export class ExternalAccounts implements OnInit {
       !hasSender || loading || (!hasRecipient && !isExternal) || isNameInvalid
     );
   });
+  public getSenderDisabledReason(account: Account) {
+    return this.recipientService.getDisabledReason(
+      account,
+      this.selectedRecipientAccount(),
+      this.isExternalIban(),
+    );
+  }
 
   public isRecipientAccountDisabled = (account: RecipientAccount): boolean => {
     return this.recipientService.isRecipientAccountDisabled(

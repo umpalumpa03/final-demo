@@ -16,6 +16,7 @@ import {
   RecipientType,
 } from '../../../models/transfers.state.model';
 import { selectPhoneNumber } from 'apps/tia-frontend/src/app/store/personal-info/personal-info.selectors';
+import { DisabledReason } from '../models/transfer.external.model';
 
 @Injectable()
 export class TransferRecipientService {
@@ -121,15 +122,37 @@ export class TransferRecipientService {
     return senderCurrency ? account.currency !== senderCurrency : false;
   }
 
+  public getDisabledReason(
+    account: Account,
+    selectedRecipientAccount: RecipientAccount | null,
+    isExternalIban: boolean,
+  ): DisabledReason {
+    const { permission, currency } = account;
+
+    if (permission === 2 && currency !== 'GEL') return 'PERMISSION_DENIED';
+    if (permission === 4 && currency === 'GEL') return 'PERMISSION_DENIED';
+    if (permission !== 2 && permission !== 4) return 'PERMISSION_DENIED';
+
+    if (!isExternalIban && selectedRecipientAccount) {
+      if (account.currency !== selectedRecipientAccount.currency) {
+        return 'CURRENCY_MISMATCH';
+      }
+    }
+
+    return null;
+  }
+
   public isSenderAccountDisabled(
     account: Account,
     selectedRecipientAccount: RecipientAccount | null,
     isExternalIban: boolean,
   ): boolean {
-    // external iban no filtering
-    if (isExternalIban) return false;
-    const recipientCurrency = selectedRecipientAccount?.currency;
-    // disable if recipient is selected and currencies don't match
-    return recipientCurrency ? account.currency !== recipientCurrency : false;
+    return (
+      this.getDisabledReason(
+        account,
+        selectedRecipientAccount,
+        isExternalIban,
+      ) !== null
+    );
   }
 }
