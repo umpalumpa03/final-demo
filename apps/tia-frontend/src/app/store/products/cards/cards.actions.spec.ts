@@ -3,7 +3,6 @@ import * as CardsActions from './cards.actions';
 import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
 import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 
-
 describe('Cards Actions', () => {
   const mockAccounts: CardAccount[] = [
     {
@@ -42,7 +41,9 @@ describe('Cards Actions', () => {
 
   describe('loadCardAccountsSuccess', () => {
     it('should create action with accounts payload', () => {
-      const action = CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts });
+      const action = CardsActions.loadCardAccountsSuccess({
+        accounts: mockAccounts,
+      });
       expect(action.type).toBe('[Cards] Load Card Accounts Success');
       expect(action.accounts).toEqual(mockAccounts);
     });
@@ -100,7 +101,10 @@ describe('Cards Actions', () => {
   describe('loadCardDetailsSuccess', () => {
     it('should create action with cardId and details payload', () => {
       const cardId = 'card1';
-      const action = CardsActions.loadCardDetailsSuccess({ cardId, details: mockCardDetail });
+      const action = CardsActions.loadCardDetailsSuccess({
+        cardId,
+        details: mockCardDetail,
+      });
       expect(action.type).toBe('[Cards] Load Card Details Success');
       expect(action.cardId).toBe(cardId);
       expect(action.details).toEqual(mockCardDetail);
@@ -118,31 +122,60 @@ describe('Cards Actions', () => {
     });
   });
   it('should create openCardDetailsModal action', () => {
-  const action = CardsActions.openCardDetailsModal({ cardId: 'card-1' });
-  expect(action.type).toBe('[Cards] Open Card Details Modal');
-  expect(action.cardId).toBe('card-1');
-});
-
-it('should create closeCardDetailsModal action', () => {
-  const action = CardsActions.closeCardDetailsModal();
-  expect(action.type).toBe('[Cards] Close Card Details Modal');
-});
-
-  
-describe('updateCardName actions', () => {
-  it('should create updateCardName action', () => {
-    const action = CardsActions.updateCardName({ cardId: 'card-1', cardName: 'New Name' });
-    expect(action.type).toBe('[Cards] Update Card Name');
+    const action = CardsActions.openCardDetailsModal({ cardId: 'card-1' });
+    expect(action.type).toBe('[Cards] Open Card Details Modal');
+    expect(action.cardId).toBe('card-1');
   });
 
-  it('should create updateCardNameSuccess action', () => {
-    const action = CardsActions.updateCardNameSuccess({ cardId: 'card-1', cardName: 'New Name' });
-    expect(action.type).toBe('[Cards] Update Card Name Success');
+  it('should create closeCardDetailsModal action', () => {
+    const action = CardsActions.closeCardDetailsModal();
+    expect(action.type).toBe('[Cards] Close Card Details Modal');
   });
 
-  it('should create updateCardNameFailure action', () => {
-    const action = CardsActions.updateCardNameFailure({ cardId: 'card-1', error: 'Failed' });
-    expect(action.type).toBe('[Cards] Update Card Name Failure');
+  describe('updateCardName actions', () => {
+    it('should create updateCardName action', () => {
+      const action = CardsActions.updateCardName({
+        cardId: 'card-1',
+        cardName: 'New Name',
+      });
+      expect(action.type).toBe('[Cards] Update Card Name');
+    });
+
+    it('should create updateCardNameSuccess action', () => {
+      const action = CardsActions.updateCardNameSuccess({
+        cardId: 'card-1',
+        cardName: 'New Name',
+      });
+      expect(action.type).toBe('[Cards] Update Card Name Success');
+    });
+
+    it('should create updateCardNameFailure action', () => {
+      const action = CardsActions.updateCardNameFailure({
+        cardId: 'card-1',
+        error: 'Failed',
+      });
+      expect(action.type).toBe('[Cards] Update Card Name Failure');
+    });
   });
-});
+  describe('Navigation actions', () => {
+    it('should create setCurrentCardIndex action', () => {
+      const action = CardsActions.setCurrentCardIndex({
+        cardIndex: 2,
+        accountId: 'acc-1',
+      });
+      expect(action.type).toBe('[Cards] Set Current Card Index');
+      expect(action.cardIndex).toBe(2);
+      expect(action.accountId).toBe('acc-1');
+    });
+
+    it('should create navigateToNextCard action', () => {
+      const action = CardsActions.navigateToNextCard();
+      expect(action.type).toBe('[Cards] Navigate To Next Card');
+    });
+
+    it('should create navigateToPreviousCard action', () => {
+      const action = CardsActions.navigateToPreviousCard();
+      expect(action.type).toBe('[Cards] Navigate To Previous Card');
+    });
+  });
 });

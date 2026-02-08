@@ -33,6 +33,8 @@ export interface CardsState {
   otpError: string | null;
   showOtpSuccessAlert: boolean;
 globalAlert: { message: string; alertType: 'success' | 'error' } | null;
+currentCardIndex: number;
+currentAccountId: string | null;
 otpRemainingAttempts: number;
 }
 
@@ -64,5 +66,7 @@ cardSensitiveData: {},
   otpError: null,
   showOtpSuccessAlert: false,
   globalAlert: null,
-otpRemainingAttempts: 3
+otpRemainingAttempts: 3, 
+currentCardIndex: 0,
+currentAccountId: null,
 };

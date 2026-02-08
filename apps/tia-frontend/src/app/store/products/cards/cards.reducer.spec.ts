@@ -342,4 +342,36 @@ describe('OTP reducer', () => {
     const state = cardsReducer({ ...initialCardsState, cardSensitiveData: { 'card-1': { cardNumber: '1234', cvv: '123', expiryDate: '12/28', cardholderName: 'John' } } }, CardsActions.clearCardSensitiveData());
     expect(state.cardSensitiveData).toEqual({});
   });
+  describe('Navigation reducers', () => {
+  it('should set current card index and account id', () => {
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.setCurrentCardIndex({ cardIndex: 1, accountId: 'acc-1' })
+    );
+    expect(state.currentCardIndex).toBe(1);
+    expect(state.currentAccountId).toBe('acc-1');
+  });
+
+  it('should navigate to next card with circular loop', () => {
+    const stateWithAccount = {
+      ...initialCardsState,
+      currentCardIndex: 2,
+      currentAccountId: 'acc-1',
+      accounts: [{ id: 'acc-1', cardIds: ['card-1', 'card-2', 'card-3'] } as any],
+    };
+    const state = cardsReducer(stateWithAccount, CardsActions.navigateToNextCard());
+    expect(state.currentCardIndex).toBe(0);
+  });
+
+  it('should navigate to previous card with circular loop', () => {
+    const stateWithAccount = {
+      ...initialCardsState,
+      currentCardIndex: 0,
+      currentAccountId: 'acc-1',
+      accounts: [{ id: 'acc-1', cardIds: ['card-1', 'card-2', 'card-3'] } as any],
+    };
+    const state = cardsReducer(stateWithAccount, CardsActions.navigateToPreviousCard());
+    expect(state.currentCardIndex).toBe(2);
+  });
+});
 });

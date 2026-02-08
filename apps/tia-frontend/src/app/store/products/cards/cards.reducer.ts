@@ -248,4 +248,32 @@ on(CardsActions.openCardOtpModal, (state, { cardId }) => ({
   otpRemainingAttempts: 3,
 })),
 
+on(CardsActions.setCurrentCardIndex, (state, { cardIndex, accountId }) => ({
+  ...state,
+  currentCardIndex: cardIndex,
+  currentAccountId: accountId,
+})),
+
+on(CardsActions.navigateToNextCard, (state) => {
+  const account = state.accounts.find(acc => acc.id === state.currentAccountId);
+  if (!account || account.cardIds.length === 0) return state;
+  const maxIndex = account.cardIds.length - 1;
+  const nextIndex = state.currentCardIndex >= maxIndex ? 0 : state.currentCardIndex + 1;
+  return {
+    ...state,
+    currentCardIndex: nextIndex,
+  };
+}),
+
+on(CardsActions.navigateToPreviousCard, (state) => {
+  const account = state.accounts.find(acc => acc.id === state.currentAccountId);
+  if (!account || account.cardIds.length === 0) return state;
+  const maxIndex = account.cardIds.length - 1;
+  const previousIndex = state.currentCardIndex <= 0 ? maxIndex : state.currentCardIndex - 1;
+  return {
+    ...state,
+    currentCardIndex: previousIndex,
+  };
+}),
+
 );

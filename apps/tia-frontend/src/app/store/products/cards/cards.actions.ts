@@ -173,3 +173,16 @@ export const showGlobalAlert = createAction(
   props<{ message: string; alertType: 'success' | 'error' }>()
 );
 export const hideGlobalAlert = createAction('[Cards] Hide Global Alert');
+
+export const setCurrentCardIndex = createAction(
+  '[Cards] Set Current Card Index',
+  props<{ cardIndex: number; accountId: string }>()
+);
+
+export const navigateToNextCard = createAction(
+  '[Cards] Navigate To Next Card'
+);
+
+export const navigateToPreviousCard = createAction(
+  '[Cards] Navigate To Previous Card'
+);

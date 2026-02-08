@@ -284,3 +284,36 @@ export const selectOtpRemainingAttempts = createSelector(
   selectCardsState,
   (state: CardsState): number => state.otpRemainingAttempts,
 );
+
+export const selectCurrentCardIndex = createSelector(
+  selectCardsState,
+  (state: CardsState): number => state.currentCardIndex,
+);
+
+export const selectCurrentAccountId = createSelector(
+  selectCardsState,
+  (state: CardsState): string | null => state.currentAccountId,
+);
+
+export const selectCurrentAccountCardIds = createSelector(
+  selectCurrentAccountId,
+  selectAllAccounts,
+  (accountId: string | null, accounts: CardAccount[]): string[] => {
+    if (!accountId) return [];
+    const account = accounts.find(acc => acc.id === accountId);
+    return account?.cardIds || [];
+  }
+);
+
+export const selectCanNavigateNext = createSelector(
+  selectCurrentCardIndex,
+  selectCurrentAccountCardIds,
+  (index: number, cardIds: string[]): boolean => {
+    return index < cardIds.length - 1;
+  }
+);
+
+export const selectCanNavigatePrevious = createSelector(
+  selectCurrentCardIndex,
+  (index: number): boolean => index > 0
+);

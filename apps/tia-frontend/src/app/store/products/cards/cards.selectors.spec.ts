@@ -31,6 +31,9 @@ import {
   selectOtpError,
   selectShowOtpSuccessAlert,
   selectCardSensitiveDataById,
+  selectCurrentCardIndex,
+  selectCurrentAccountId,
+  selectCurrentAccountCardIds,
 } from './cards.selectors';
 import { CardsState } from './cards.state';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
@@ -74,6 +77,8 @@ const mockState: CardsState = {
   showOtpSuccessAlert: false,
   globalAlert: null,
   otpRemainingAttempts: 3,
+  currentCardIndex: 0,
+  currentAccountId: 'acc-1',
 };
   it('should select all accounts', () => {
     expect(selectAllAccounts.projector(mockState)).toEqual(mockState.accounts);
@@ -213,5 +218,17 @@ it('should select sensitive data by cardId', () => {
   const data = { cardNumber: '1234', cvv: '123', expiryDate: '12/28', cardholderName: 'John' };
   expect(selectCardSensitiveDataById('card-1').projector({ 'card-1': data })).toEqual(data);
   expect(selectCardSensitiveDataById('unknown').projector({})).toBeNull();
+});
+it('should select currentCardIndex', () => {
+  expect(selectCurrentCardIndex.projector({ ...mockState, currentCardIndex: 2 })).toBe(2);
+});
+
+it('should select currentAccountId', () => {
+  expect(selectCurrentAccountId.projector({ ...mockState, currentAccountId: 'acc-1' })).toBe('acc-1');
+});
+
+it('should select current account card ids', () => {
+  const result = selectCurrentAccountCardIds.projector('acc-1', mockState.accounts);
+  expect(result).toEqual(['card-1']);
 });
 });
