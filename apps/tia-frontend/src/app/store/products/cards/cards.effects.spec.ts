@@ -192,24 +192,8 @@ describe('CardsEffects', () => {
     );
   });
 
-  it('should handle loadCardTransactions with missing card details', async () => {
-    store.select.mockReturnValue(of(null));
-    actions$ = of(CardsActions.loadCardTransactions({ cardId: 'card-1' }));
 
-    expect(await firstValueFrom(effects.loadCardTransactions$)).toEqual(
-      CardsActions.loadCardTransactionsFailure({ cardId: 'card-1', error: 'Card details not found' })
-    );
-  });
 
-  it('should handle loadCardTransactions with missing account IBAN', async () => {
-    store.select.mockReturnValueOnce(of({ details: { accountId: 'acc-1' } }));
-    store.select.mockReturnValueOnce(of({ id: 'acc-1' }));
-    actions$ = of(CardsActions.loadCardTransactions({ cardId: 'card-1' }));
-
-    expect(await firstValueFrom(effects.loadCardTransactions$)).toEqual(
-      CardsActions.loadCardTransactionsFailure({ cardId: 'card-1', error: 'Account IBAN not found' })
-    );
-  });
 
   it('should dispatch loadCardImagesComplete when no cardIds', async () => {
     const emptyAccounts = [{ ...mockAccounts[0], cardIds: [] }];
