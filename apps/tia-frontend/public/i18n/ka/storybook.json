@@ -111,7 +111,76 @@
   "alerts": {},
   "badges": {},
   "tables": {},
-  "navigation": {},
+  "navigation": {
+    "title": "ნავიგაციის კომპონენტები",
+    "subtitle": "ნავიგაციის კომპონენტები, მათ შორის ტაბები, ნავიგაციის ბილიკი და გვერდების გადართვა",
+    "sections": {
+      "tabs": {
+        "title": "ტაბები",
+        "overview": "მიმოხილვა",
+        "analytics": "ანალიტიკა",
+        "reports": "ანგარიშები",
+        "settings": "პარამეტრები",
+        "cardTitle": "მიმოხილვის შინაარსი",
+        "cardContent": "ეს არის მიმოხილვის ტაბის შინაარსი. აქ ნაჩვენებია ზოგადი ინფორმაცია."
+      },
+      "verticalTabs": {
+        "title": "ვერტიკალური ტაბები",
+        "account": "ანგარიში",
+        "notifications": "შეტყობინებები",
+        "preferences": "პრეფერენციები",
+        "cardTitle": "ანგარიშის პარამეტრები",
+        "cardContent": "მართეთ თქვენი ანგარიშის პარამეტრები და პრეფერენციები."
+      },
+      "breadcrumbs": {
+        "title": "ნავიგაციის ბილიკი",
+        "default": "ნაგულისხმევი ბილიკი",
+        "withIcons": "ხატულებით",
+        "longPath": "გრძელი ბილიკი:",
+        "home": "მთავარი",
+        "products": "პროდუქტები",
+        "current": "მიმდინარე გვერდი",
+        "category": "კატეგორიები",
+        "electronics": "ელექტრონიკა",
+        "productDetails": "პროდუქტის დეტალები",
+        "dashboard": "მართვის პანელი",
+        "settings": "პარამეტრები",
+        "security": "უსაფრთხოება",
+        "twoFactorAuth": "ორფაქტორიანი ავთენტიფიკაცია"
+      },
+      "pagination": {
+        "title": "გვერდების გადართვა",
+        "default": "ნაგულისხმევი გადართვა",
+        "withEllipsis": "მრავალწერტილით",
+        "previous": "წინა",
+        "next": "შემდეგი"
+      },
+      "horizontalNavigation": {
+        "title": "ჰორიზონტალური ნავიგაცია",
+        "dashboard": "მართვის პანელი",
+        "projects": "პროექტები",
+        "team": "გუნდი",
+        "calendar": "კალენდარი",
+        "disabled": "გამორთული"
+      },
+      "verticalNavigation": {
+        "title": "ვერტიკალური ნავიგაცია",
+        "home": "მთავარი",
+        "search": "ძიება",
+        "profile": "პროფილი",
+        "notifications": "შეტყობინებები",
+        "settings": "პარამეტრები",
+        "disabled": "გამორთული ელემენტი"
+      },
+      "pillsNavigation": {
+        "title": "ღილაკებით ნავიგაცია",
+        "all": "ყველა",
+        "active": "აქტიური",
+        "completed": "დასრულებული",
+        "archived": "დაარქივებული"
+      }
+    }
+  },
   "feedback": {},
   "layout": {},
   "data-display": {},
