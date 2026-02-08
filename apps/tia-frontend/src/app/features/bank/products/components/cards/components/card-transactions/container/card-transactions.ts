@@ -1,8 +1,10 @@
+
 import {
   ChangeDetectionStrategy,
   Component,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -42,6 +44,7 @@ import {
   selectTotalTransactions,
 } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
+import { createEffect } from '@ngrx/effects';
 import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
 
 @Component({
@@ -71,8 +74,8 @@ export class CardTransactions implements OnInit {
   protected readonly error$ = this.store.select(selectError);
   protected readonly transactions$ = this.store.select(selectItems);
   protected readonly totalCount$ = this.transactions$.pipe(
-  map((transactions) => transactions?.length || 0)
-);
+    map((transactions) => transactions.length),
+  );
 
   private readonly currentPageSubject = new BehaviorSubject<number>(1);
   protected readonly currentPage$ = this.currentPageSubject.asObservable();
@@ -180,7 +183,7 @@ export class CardTransactions implements OnInit {
 
   protected readonly totalPages$ = this.transactions$.pipe(
     map((transactions) => {
-      if (!transactions) return 1;
+      if (!transactions) return 0;
       return Math.ceil(transactions.length / this.itemsPerPage);
     }),
   );
