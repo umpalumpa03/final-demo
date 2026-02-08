@@ -23,6 +23,8 @@
     "saveSuccess": "Language updated successfully!",
     "saveError": "Failed to update language. Please try again.",
     "saveChanges": "Save Changes",
+    "infoTitle": "Language Settings",
+    "infoDescription": "Changing your language will update all text throughout the application. You can switch between languages at any time from this page.",
     "languages": {
       "en": {
         "location": "Global",

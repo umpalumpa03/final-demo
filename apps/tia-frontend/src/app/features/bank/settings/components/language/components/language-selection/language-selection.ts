@@ -19,6 +19,7 @@ import { AlertService } from '@tia/shared/services/settings-language/alert.servi
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { TranslationLoaderService } from 'apps/tia-frontend/src/app/core/i18n';
 import { tap } from 'rxjs';
+import { LanguageInfo } from "./language-info/language-info";
 
 @Component({
   selector: 'app-language-selection',
@@ -28,8 +29,9 @@ import { tap } from 'rxjs';
     ErrorStates,
     ButtonComponent,
     AlertTypesWithIcons,
-    TranslatePipe
-  ],
+    TranslatePipe,
+    LanguageInfo
+],
   templateUrl: './language-selection.html',
   styleUrl: './language-selection.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
