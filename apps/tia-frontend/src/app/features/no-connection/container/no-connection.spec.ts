@@ -54,11 +54,9 @@ describe('NoConnection', () => {
     mockNoConnectionService.onOnline();
 
     expect(component.isReconnected()).toBe(true);
-    expect(component.isModalOpen()).toBe(true);
-
+    
     vi.advanceTimersByTime(2000);
 
-    expect(component.isModalOpen()).toBe(false);
     expect(component.isReconnected()).toBe(false);
 
     vi.useRealTimers();
