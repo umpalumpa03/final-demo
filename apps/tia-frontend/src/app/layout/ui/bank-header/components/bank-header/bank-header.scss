@@ -37,11 +37,11 @@
       }
 
       &:active {
-        outline: 3px solid rgba($blue-800, 0.3);
+        outline: none;
       }
 
       &.active {
-        outline: 3px solid rgba($blue-800, 0.3);
+        outline: none;
       }
 
       .avatar-image {

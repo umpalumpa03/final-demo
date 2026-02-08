@@ -24,7 +24,9 @@
   },
   "alertMessages": {
     "success": "წარმატება",
-    "successMessage": "თქვენი ცვლილებები წარმატებით შეინახა!"
+    "error": "შეცდომა",
+    "warning": "გაფრთხილება",
+    "info": "ინფორმაცია"
   },
   "validation": {
     "required": "ეს ველი სავალდებულოა",

@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AlertTypesWithIcons } from './alert-types-with-icons';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('AlertTypesWithIcons', () => {
   let component: AlertTypesWithIcons;
@@ -7,11 +8,18 @@ describe('AlertTypesWithIcons', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AlertTypesWithIcons],
+      imports: [
+        AlertTypesWithIcons,
+        TranslateModule.forRoot()
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AlertTypesWithIcons);
     component = fixture.componentInstance;
+    
+    fixture.componentRef.setInput('alertType', 'information');
+    fixture.componentRef.setInput('alertMessage', 'Default Alert Message');
+    
     fixture.detectChanges();
   });
 
@@ -22,9 +30,11 @@ describe('AlertTypesWithIcons', () => {
   describe('Computed Logic', () => {
     it('should calculate effectiveImgName based on type', () => {
       fixture.componentRef.setInput('alertType', 'error');
+      fixture.detectChanges();
       expect(component.effectiveImgName()).toBe('default');
 
       fixture.componentRef.setInput('alertType', 'success');
+      fixture.detectChanges();
       expect(component.effectiveImgName()).toBe('success');
     });
   });

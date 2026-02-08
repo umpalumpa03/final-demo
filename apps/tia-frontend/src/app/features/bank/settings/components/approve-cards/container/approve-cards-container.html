@@ -1,5 +1,10 @@
-<app-basic-card maxWidth="100%" height="fit-content" padding="2.4rem" [title]="'Approve Cards'"
-    [subtitle]="'Review and approve card requests'">
-
-    <app-approve-cards></app-approve-cards>
+@let newCfg = userState.newConfig();
+<app-basic-card
+  maxWidth="100%"
+  height="fit-content"
+  padding="2.4rem"
+  [title]="newCfg.title"
+  [subtitle]="newCfg.subtitle"
+>
+  <app-approve-cards></app-approve-cards>
 </app-basic-card>
