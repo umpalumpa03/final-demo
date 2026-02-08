@@ -12,8 +12,17 @@ export interface BankAccount {
   type: 'card' | 'savings' | string;
   currency: 'USD' | 'GEL' | 'EUR' | string;
   name: string;
-  status: 'pending' | 'active' | 'declined';
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
   balance: string;
   createdAt: string;
   user: IUser;
+}
+
+export interface IUpdateAccountStatus {
+  accountId: string;
+  updateStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
+}
+
+export interface SuccessResponse {
+  success: boolean;
 }

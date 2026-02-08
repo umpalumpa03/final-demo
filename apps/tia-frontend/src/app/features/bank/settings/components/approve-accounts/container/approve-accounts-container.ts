@@ -18,8 +18,25 @@ export class ApproveAccountsContainer {
   public readonly fb = inject(FormBuilder);
   public selectIds = signal<number[]>([]);
 
+  public isModalOpen = signal<boolean>(false);
+
+  public activeAccount = computed(() => {
+    const acc = this.store.selectedAccount();
+
+    return acc ? acc.name : '';
+  });
+
+  public onChangePermission(accountId: string): void {
+    this.store.selectAccount(accountId);
+
+    this.permissionsForm.reset();
+
+    this.isModalOpen.set(true);
+  }
+
   public ngOnInit(): void {
     this.store.loadPermissions();
+    this.store.loadPendingAccounts();
   }
 
   public readonly permissionsForm: FormRecord<FormControl<boolean>> =
