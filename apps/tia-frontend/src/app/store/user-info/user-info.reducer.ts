@@ -8,7 +8,6 @@ export const initialUserState: IUserState = {
   email: null,
   theme: localStorage.getItem('theme'),
   language: localStorage.getItem('language'),
-  hasCompletedOnboarding: false,
   avatar: null,
   role: null,
   loaded: false,
