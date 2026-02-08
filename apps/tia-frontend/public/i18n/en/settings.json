@@ -21,7 +21,17 @@
     "english": "English",
     "georgian": "Georgian",
     "saveSuccess": "Language updated successfully!",
-    "saveError": "Failed to update language. Please try again."
+    "saveError": "Failed to update language. Please try again.",
+    "languages": {
+      "en": {
+        "location": "Global",
+        "speakers": "1.5B speakers"
+      },
+      "ka": {
+        "location": "Georgia & Caucasus",
+        "speakers": "4M speakers"
+      }
+    }
   },
   "appearance": {
     "title": "Appearance",
