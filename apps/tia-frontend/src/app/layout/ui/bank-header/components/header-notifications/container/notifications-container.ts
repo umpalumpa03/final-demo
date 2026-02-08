@@ -45,7 +45,8 @@ export class NotificationsContainer {
   public notificationItems = this.store.items;
   public isLoading = this.store.isLoading;
   public hasError = this.store.hasError;
-  public unreadLeft = this.store.unreadNotificationsNumber;
+  // public unreadLeft = this.store.unreadNotificationsNumber;
+  public unreadLeft = this.store.unreadCount;
   public isFetching = this.store.isFetching;
   public isEmpty = this.store.isEmpty;
 

@@ -74,7 +74,7 @@ export class BankHeaderContainer implements OnInit {
 
   ngOnInit(): void {
     this.notificationsStore.hasUnreadNotifications();
-
+    this.notificationsStore.fetchUnreadCount();
     this.inboxService.fetchInboxCount();
   }
 
