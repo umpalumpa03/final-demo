@@ -263,15 +263,6 @@ describe('ProfilePhotoEffects', () => {
     );
   });
 
-  it('should reset profile photo on user change', async () => {
-    const promise = firstValueFrom(effects.resetProfilePhotoOnUserChange$);
-
-    actions$.next(UserInfoActions.loadUser());
-
-    const result = await promise;
-
-    expect(result).toEqual(ProfilePhotoActions.resetProfilePhoto());
-  });
 
   it('should set user initials when no saved avatar and user has fullName', async () => {
     store.overrideSelector(selectUserInfo, {

@@ -17,6 +17,11 @@ describe('personal-info selectors', () => {
       phoneNumber: '555999333',
       loading: true,
       error: 'ERR',
+      phoneUpdateChallengeId: null,
+      phoneUpdateLoading: false,
+      phoneUpdateError: null,
+      phoneUpdatePendingPhone: null,
+      phoneUpdateResendCount: 0,
     },
   };
 
@@ -41,6 +46,11 @@ describe('personal-info selectors', () => {
       phoneNumber: '',
       loading: false,
       error: null,
+      phoneUpdateChallengeId: null,
+      phoneUpdateLoading: false,
+      phoneUpdateError: null,
+      phoneUpdatePendingPhone: null,
+      phoneUpdateResendCount: 0,
     };
     const result = selectPhoneNumber.projector(emptyState);
     expect(result).toBe('');

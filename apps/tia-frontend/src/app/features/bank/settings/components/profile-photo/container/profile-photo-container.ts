@@ -485,7 +485,7 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
 
   
     if (phoneChanged) {
-      if (!editedPhone || editedPhone.length < 9) {
+      if (!editedPhone || editedPhone.length !== 9) {
         this.showAlert(
           'error',
           this.translate.instant('settings.profile-photo.invalidPhoneNumber'),

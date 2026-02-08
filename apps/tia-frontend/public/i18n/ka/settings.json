@@ -57,7 +57,7 @@
         "personalNumberUpdated": "პირადი ნომერი წარმატებით განახლდა",
         "personalNumberExists": "პირადი ნომერი უკვე არსებობს",
         "invalidPersonalNumber": "პირადი ნომერი უნდა შედგებოდეს  11 ციფრისგან",
-        "invalidPhoneNumber": "ტელეფონის ნომერი უნდა შედგებოდეს მინიმუმ 9 ციფრისგან",
+        "invalidPhoneNumber": "ტელეფონის ნომერი უნდა შედგებოდეს ზუსტად 9 ციფრისგან",
         "noChangesToSave": "შესანახად საჭიროა ცვლილებები",
         "verifyPhoneUpdate": "ტელეფონის ნომრის განახლების დადასტურება",
         "otpDescription": "შეიყვანეთ OTP კოდი, რომელიც გამოგეგზავნათ SMS-ით",

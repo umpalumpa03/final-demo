@@ -90,5 +90,54 @@ describe('personalInfoReducer', () => {
     );
     expect(state).toEqual(initialPersonalInfoState);
   });
+
+  it('should update state on updatePersonalInfoSuccess', () => {
+    const existing = { ...initialPersonalInfoState, pId: 'old', phoneNumber: '111' };
+    const update = { ...mockPersonalInfo, pId: 'new', phoneNumber: '222', loading: false, error: null };
+    const state = personalInfoReducer(
+      existing,
+      PersonalInfoActions.updatePersonalInfoSuccess({ personalInfo: update }),
+    );
+    expect(state.pId).toBe('new');
+    expect(state.phoneNumber).toBe('222');
+    expect(state.loading).toBe(false);
+    expect(state.error).toBeNull();
+  });
+
+  it('should handle initiatePhoneUpdate actions', () => {
+    const phone = '555123456';
+    let state = personalInfoReducer(initialPersonalInfoState, PersonalInfoActions.initiatePhoneUpdate({ phone }));
+    expect(state.phoneUpdateLoading).toBe(true);
+    expect(state.phoneUpdatePendingPhone).toBe(phone);
+
+    state = personalInfoReducer(state, PersonalInfoActions.initiatePhoneUpdateSuccess({ challengeId: 'challenge-123', method: 'SMS' }));
+    expect(state.phoneUpdateChallengeId).toBe('challenge-123');
+    expect(state.phoneUpdateLoading).toBe(false);
+  });
+
+  it('should handle verifyPhoneUpdate actions', () => {
+    let state = personalInfoReducer(initialPersonalInfoState, PersonalInfoActions.verifyPhoneUpdate({ challengeId: 'challenge-123', code: '123456' }));
+    expect(state.phoneUpdateLoading).toBe(true);
+
+    const existing = { ...initialPersonalInfoState, phoneUpdatePendingPhone: '555123456' };
+    state = personalInfoReducer(existing, PersonalInfoActions.verifyPhoneUpdateSuccess({ message: 'Success' }));
+    expect(state.phoneNumber).toBe('555123456');
+    expect(state.phoneUpdateLoading).toBe(false);
+  });
+
+  it('should handle resendPhoneOTP and resetPhoneUpdate actions', () => {
+    let state = personalInfoReducer(initialPersonalInfoState, PersonalInfoActions.resendPhoneOTP({ challengeId: 'challenge-123' }));
+    expect(state.phoneUpdateLoading).toBe(true);
+
+    const existing = { ...initialPersonalInfoState, phoneUpdateResendCount: 1 };
+    state = personalInfoReducer(existing, PersonalInfoActions.resendPhoneOTPSuccess());
+    expect(state.phoneUpdateResendCount).toBe(2);
+
+    const existingWithData: personalInfoState = { ...initialPersonalInfoState, phoneUpdateChallengeId: 'challenge-123', phoneUpdatePendingPhone: '555123456', phoneUpdateResendCount: 2 };
+    state = personalInfoReducer(existingWithData, PersonalInfoActions.resetPhoneUpdate());
+    expect(state.phoneUpdateChallengeId).toBeNull();
+    expect(state.phoneUpdatePendingPhone).toBeNull();
+    expect(state.phoneUpdateResendCount).toBe(0);
+  });
 });
 

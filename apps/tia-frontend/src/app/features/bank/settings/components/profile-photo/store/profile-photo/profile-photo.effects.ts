@@ -68,13 +68,6 @@ export class ProfilePhotoEffects {
     ),
   );
 
-  // Disabled to prevent avatar from being reset when navigating to settings
-  // public resetProfilePhotoOnUserChange$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(UserInfoActions.loadUser),
-  //     map(() => ProfilePhotoActions.resetProfilePhoto()),
-  //   ),
-  // );
 
   public resetProfilePhotoOnUserLoad$ = createEffect(() =>
     this.actions$.pipe(

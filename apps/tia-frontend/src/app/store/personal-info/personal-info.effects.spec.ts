@@ -19,6 +19,9 @@ describe('PersonalInfoEffects (Vitest)', () => {
   let apiService: {
     getPersonalInfo: ReturnType<typeof vi.fn>;
     updatePersonalInfo: ReturnType<typeof vi.fn>;
+    initiatePhoneUpdate: ReturnType<typeof vi.fn>;
+    verifyPhoneUpdate: ReturnType<typeof vi.fn>;
+    resendPhoneOtp: ReturnType<typeof vi.fn>;
   };
 
   const mockDto: PersonalInfoDto = {
@@ -26,17 +29,25 @@ describe('PersonalInfoEffects (Vitest)', () => {
     phone: '555999333',
   };
 
-  const basePersonalInfoPayload = {
+  const basePersonalInfoPayload: personalInfoState = {
     pId: '12345678901',
     phoneNumber: '555999333',
     loading: false,
     error: null,
+    phoneUpdateChallengeId: null,
+    phoneUpdateLoading: false,
+    phoneUpdateError: null,
+    phoneUpdatePendingPhone: null,
+    phoneUpdateResendCount: 0,
   };
 
   beforeEach(() => {
     apiService = {
       getPersonalInfo: vi.fn(),
       updatePersonalInfo: vi.fn(),
+      initiatePhoneUpdate: vi.fn(),
+      verifyPhoneUpdate: vi.fn(),
+      resendPhoneOtp: vi.fn(),
     };
 
     actions$ = of(PersonalInfoActions.loadPersonalInfo({}));
@@ -47,7 +58,20 @@ describe('PersonalInfoEffects (Vitest)', () => {
         provideMockActions(() => actions$),
         provideMockStore({
           selectors: [
-            { selector: selectPersonalInfo, value: { pId: null, phoneNumber: null, loading: false, error: null } },
+            { 
+              selector: selectPersonalInfo, 
+              value: { 
+                pId: null, 
+                phoneNumber: null, 
+                loading: false, 
+                error: null,
+                phoneUpdateChallengeId: null,
+                phoneUpdateLoading: false,
+                phoneUpdateError: null,
+                phoneUpdatePendingPhone: null,
+                phoneUpdateResendCount: 0,
+              } 
+            },
           ],
         }),
         { provide: PersonalInfoApiService, useValue: apiService },
@@ -74,6 +98,11 @@ describe('PersonalInfoEffects (Vitest)', () => {
           phoneNumber: mockDto.phone,
           loading: false,
           error: null,
+          phoneUpdateChallengeId: null,
+          phoneUpdateLoading: false,
+          phoneUpdateError: null,
+          phoneUpdatePendingPhone: null,
+          phoneUpdateResendCount: 0,
         },
       }),
     );
@@ -149,6 +178,11 @@ describe('PersonalInfoEffects (Vitest)', () => {
       phoneNumber: '555999333',
       loading: false,
       error: null,
+      phoneUpdateChallengeId: null,
+      phoneUpdateLoading: false,
+      phoneUpdateError: null,
+      phoneUpdatePendingPhone: null,
+      phoneUpdateResendCount: 0,
     };
 
     store.overrideSelector(selectPersonalInfo, cachedPersonalInfo);
@@ -159,7 +193,17 @@ describe('PersonalInfoEffects (Vitest)', () => {
 
     expect(action).toEqual(
       PersonalInfoActions.loadPersonalInfoSuccess({
-        personalInfo: cachedPersonalInfo,
+        personalInfo: {
+          pId: cachedPersonalInfo.pId,
+          phoneNumber: cachedPersonalInfo.phoneNumber,
+          loading: false,
+          error: null,
+          phoneUpdateChallengeId: cachedPersonalInfo.phoneUpdateChallengeId,
+          phoneUpdateLoading: cachedPersonalInfo.phoneUpdateLoading,
+          phoneUpdateError: cachedPersonalInfo.phoneUpdateError,
+          phoneUpdatePendingPhone: cachedPersonalInfo.phoneUpdatePendingPhone,
+          phoneUpdateResendCount: cachedPersonalInfo.phoneUpdateResendCount,
+        },
       }),
     );
 
@@ -172,6 +216,11 @@ describe('PersonalInfoEffects (Vitest)', () => {
       phoneNumber: '555999333',
       loading: false,
       error: null,
+      phoneUpdateChallengeId: null,
+      phoneUpdateLoading: false,
+      phoneUpdateError: null,
+      phoneUpdatePendingPhone: null,
+      phoneUpdateResendCount: 0,
     };
 
     store.overrideSelector(selectPersonalInfo, cachedPersonalInfo);
@@ -189,6 +238,11 @@ describe('PersonalInfoEffects (Vitest)', () => {
           phoneNumber: mockDto.phone,
           loading: false,
           error: null,
+          phoneUpdateChallengeId: cachedPersonalInfo.phoneUpdateChallengeId,
+          phoneUpdateLoading: cachedPersonalInfo.phoneUpdateLoading,
+          phoneUpdateError: cachedPersonalInfo.phoneUpdateError,
+          phoneUpdatePendingPhone: cachedPersonalInfo.phoneUpdatePendingPhone,
+          phoneUpdateResendCount: cachedPersonalInfo.phoneUpdateResendCount,
         },
       }),
     );
@@ -202,6 +256,16 @@ describe('PersonalInfoEffects (Vitest)', () => {
     expect(action).toEqual(PersonalInfoActions.resetPersonalInfo());
   });
 
+  it('should load personal info after user load when no data exists', async () => {
+    store.overrideSelector(selectPersonalInfo, { ...basePersonalInfoPayload, pId: null, phoneNumber: null });
+    store.refreshState();
+
+    actions$ = of(UserInfoActions.loadUserSuccess({ user: {} as any }));
+    const action = await firstValueFrom(effects.loadPersonalInfoAfterUserLoad$);
+
+    expect(action).toEqual(PersonalInfoActions.loadPersonalInfo({ forceRefresh: true }));
+  });
+
   it('should handle HttpErrorResponse with string error', async () => {
     (apiService.updatePersonalInfo as any).mockReturnValue(
       throwError(() => new HttpErrorResponse({ error: 'String error', status: 400 })),
@@ -209,6 +273,107 @@ describe('PersonalInfoEffects (Vitest)', () => {
     actions$ = of(PersonalInfoActions.updatePersonalInfo({ personalInfo: basePersonalInfoPayload }));
     const action = await firstValueFrom(effects.updatePersonalInfo$);
     expect(action).toEqual(PersonalInfoActions.updatePersonalInfoFailure({ error: 'String error' }));
+  });
+
+  it('should handle initiatePhoneUpdate', async () => {
+    const phone = '555123456';
+    const mockResponse = { challengeId: 'challenge-123', method: 'SMS' };
+
+    (apiService.initiatePhoneUpdate as any).mockReturnValue(of(mockResponse));
+    actions$ = of(PersonalInfoActions.initiatePhoneUpdate({ phone }));
+    const action = await firstValueFrom(effects.initiatePhoneUpdate$);
+
+    expect(action).toEqual(PersonalInfoActions.initiatePhoneUpdateSuccess({ challengeId: mockResponse.challengeId, method: mockResponse.method }));
+    expect(apiService.initiatePhoneUpdate).toHaveBeenCalledWith(phone);
+  });
+
+  it('should handle verifyPhoneUpdate', async () => {
+    const challengeId = 'challenge-123';
+    const code = '123456';
+    const mockResponse = { message: 'Phone number updated successfully' };
+
+    (apiService.verifyPhoneUpdate as any).mockReturnValue(of(mockResponse));
+    actions$ = of(PersonalInfoActions.verifyPhoneUpdate({ challengeId, code }));
+    const action = await firstValueFrom(effects.verifyPhoneUpdate$);
+
+    expect(action).toEqual(PersonalInfoActions.verifyPhoneUpdateSuccess({ message: mockResponse.message }));
+    expect(apiService.verifyPhoneUpdate).toHaveBeenCalledWith(challengeId, code);
+  });
+
+  it('should handle resendPhoneOtp', async () => {
+    const challengeId = 'challenge-123';
+
+    (apiService.resendPhoneOtp as any).mockReturnValue(of({ success: true }));
+    actions$ = of(PersonalInfoActions.resendPhoneOTP({ challengeId }));
+    const action = await firstValueFrom(effects.resendPhoneOtp$);
+
+    expect(action).toEqual(PersonalInfoActions.resendPhoneOTPSuccess());
+    expect(apiService.resendPhoneOtp).toHaveBeenCalledWith(challengeId);
+  });
+
+  it('should handle updatePersonalInfo error', async () => {
+    (apiService.updatePersonalInfo as any).mockReturnValue(throwError(() => new Error('Update failed')));
+    actions$ = of(PersonalInfoActions.updatePersonalInfo({ personalInfo: basePersonalInfoPayload }));
+    const action = await firstValueFrom(effects.updatePersonalInfo$);
+    expect(action).toEqual(PersonalInfoActions.updatePersonalInfoFailure({ error: 'Update failed' }));
+  });
+
+  it('should handle initiatePhoneUpdate error', async () => {
+    (apiService.initiatePhoneUpdate as any).mockReturnValue(throwError(() => new Error('Failed')));
+    actions$ = of(PersonalInfoActions.initiatePhoneUpdate({ phone: '555123456' }));
+    const action = await firstValueFrom(effects.initiatePhoneUpdate$);
+    expect(action).toEqual(PersonalInfoActions.initiatePhoneUpdateFailure({ error: 'Failed' }));
+  });
+
+  it('should handle verifyPhoneUpdate error', async () => {
+    (apiService.verifyPhoneUpdate as any).mockReturnValue(throwError(() => new Error('Failed')));
+    actions$ = of(PersonalInfoActions.verifyPhoneUpdate({ challengeId: 'challenge-123', code: '123456' }));
+    const action = await firstValueFrom(effects.verifyPhoneUpdate$);
+    expect(action).toEqual(PersonalInfoActions.verifyPhoneUpdateFailure({ error: 'Failed' }));
+  });
+
+  it('should handle resendPhoneOtp error', async () => {
+    (apiService.resendPhoneOtp as any).mockReturnValue(throwError(() => new Error('Failed')));
+    actions$ = of(PersonalInfoActions.resendPhoneOTP({ challengeId: 'challenge-123' }));
+    const action = await firstValueFrom(effects.resendPhoneOtp$);
+    expect(action).toEqual(PersonalInfoActions.resendPhoneOTPFailure({ error: 'Failed' }));
+  });
+
+  it('should handle updatePersonalInfo HttpErrorResponse with array message', async () => {
+    (apiService.updatePersonalInfo as any).mockReturnValue(throwError(() => new HttpErrorResponse({ error: { message: ['Error'] }, status: 400 })));
+    actions$ = of(PersonalInfoActions.updatePersonalInfo({ personalInfo: basePersonalInfoPayload }));
+    const action = await firstValueFrom(effects.updatePersonalInfo$);
+    expect(action).toEqual(PersonalInfoActions.updatePersonalInfoFailure({ error: 'Error' }));
+  });
+
+  it('should handle initiatePhoneUpdate HttpErrorResponse with string error', async () => {
+    (apiService.initiatePhoneUpdate as any).mockReturnValue(throwError(() => new HttpErrorResponse({ error: 'String error', status: 400 })));
+    actions$ = of(PersonalInfoActions.initiatePhoneUpdate({ phone: '555123456' }));
+    const action = await firstValueFrom(effects.initiatePhoneUpdate$);
+    expect(action).toEqual(PersonalInfoActions.initiatePhoneUpdateFailure({ error: 'String error' }));
+  });
+
+  it('should handle verifyPhoneUpdate HttpErrorResponse with array message', async () => {
+    (apiService.verifyPhoneUpdate as any).mockReturnValue(throwError(() => new HttpErrorResponse({ error: { message: ['Error'] }, status: 400 })));
+    actions$ = of(PersonalInfoActions.verifyPhoneUpdate({ challengeId: 'challenge-123', code: '123456' }));
+    const action = await firstValueFrom(effects.verifyPhoneUpdate$);
+    expect(action).toEqual(PersonalInfoActions.verifyPhoneUpdateFailure({ error: 'Error' }));
+  });
+
+  it('should handle HttpErrorResponse errors in phone update effects', async () => {
+    (apiService.initiatePhoneUpdate as any).mockReturnValue(throwError(() => new HttpErrorResponse({ error: { message: 'Error' }, status: 400 })));
+    actions$ = of(PersonalInfoActions.initiatePhoneUpdate({ phone: '555123456' }));
+    const action = await firstValueFrom(effects.initiatePhoneUpdate$);
+    expect(action).toEqual(PersonalInfoActions.initiatePhoneUpdateFailure({ error: 'Error' }));
+  });
+
+  it('should handle updatePersonalInfo with error.message', async () => {
+    const error = new HttpErrorResponse({ error: {}, status: 400 });
+    Object.defineProperty(error, 'message', { value: 'Error message', writable: true });
+    (apiService.updatePersonalInfo as any).mockReturnValue(throwError(() => error));
+    actions$ = of(PersonalInfoActions.updatePersonalInfo({ personalInfo: basePersonalInfoPayload }));
+    const action = await firstValueFrom(effects.updatePersonalInfo$);
+    expect(action).toEqual(PersonalInfoActions.updatePersonalInfoFailure({ error: 'Error message' }));
   });
 });
 

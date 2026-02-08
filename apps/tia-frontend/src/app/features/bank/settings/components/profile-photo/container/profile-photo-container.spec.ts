@@ -15,7 +15,7 @@ import {
   selectAvatarType,
   selectSavedAvatarUrl,
 } from '../../../../../../features/bank/settings/components/profile-photo/store/profile-photo/profile-photo.selectors';
-import { selectPId, selectPersonalInfo } from '../../../../../../store/personal-info/personal-info.selectors';
+import { selectPId, selectPersonalInfo, selectPhoneNumber, selectPhoneUpdateChallengeId, selectPhoneUpdateResendCount } from '../../../../../../store/personal-info/personal-info.selectors';
 import { selectUserInfo } from '../../../../../../store/user-info/user-info.selectors';
 import { PersonalInfoActions } from '../../../../../../store/personal-info/pesronal-info.actions';
 import { environment } from '../../../../../../../environments/environment';
@@ -309,50 +309,79 @@ describe('ProfilePhotoContainer', () => {
 
   it('should handle edit and cancel personal number', () => {
     store.overrideSelector(selectPId, '12345678901');
+    store.overrideSelector(selectPhoneNumber, '555123456');
     store.refreshState();
 
-    component.onEditPersonalNumber();
-    expect(component.isEditingPId()).toBe(true);
+    component.onEdit();
+    expect(component.isEditing()).toBe(true);
 
-    component.onCancelEditPersonalNumber();
-    expect(component.isEditingPId()).toBe(false);
+    component.onCancelEdit();
+    expect(component.isEditing()).toBe(false);
     expect(component.editedPId()).toBe('12345678901');
+    expect(component.editedPhoneNumber()).toBe('555123456');
   });
 
   it('should validate personal number length on update', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
+    const translate = TestBed.inject(TranslateService);
+    vi.spyOn(translate, 'instant').mockReturnValue('Personal number must be exactly 11 digits');
 
-    component.onUpdatePersonalNumber('12345');
+    store.overrideSelector(selectPId, '12345678901');
+    store.overrideSelector(selectPhoneNumber, '555123456');
+    store.refreshState();
+
+    component.onEdit();
+    component.onPersonalNumberChange('12345');
+    component.onSave();
 
     expect(dispatchSpy).not.toHaveBeenCalled();
+    expect(component.alertKind()).toBe('error');
   });
 
   it('should dispatch updatePersonalInfo when personal number is valid and different', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
 
     store.overrideSelector(selectPId, '12345678901');
+    store.overrideSelector(selectPhoneNumber, '555123456');
     store.overrideSelector(selectPersonalInfo, {
       pId: '12345678901',
       phoneNumber: '555123456',
       loading: false,
       error: null,
+      phoneUpdateChallengeId: null,
+      phoneUpdateLoading: false,
+      phoneUpdateError: null,
+      phoneUpdatePendingPhone: null,
+      phoneUpdateResendCount: 0,
     });
     store.refreshState();
 
-    component.onUpdatePersonalNumber('98765432109');
+    component.onEdit();
+    component.onPersonalNumberChange('98765432109');
+    component.onSave();
 
-    expect(dispatchSpy).toHaveBeenCalled();
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      PersonalInfoActions.updatePersonalInfo({
+        personalInfo: expect.objectContaining({
+          pId: '98765432109',
+        }),
+      })
+    );
   });
 
   it('should not update personal number when it is the same', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
 
     store.overrideSelector(selectPId, '12345678901');
+    store.overrideSelector(selectPhoneNumber, '555123456');
     store.refreshState();
 
-    component.onUpdatePersonalNumber('12345678901');
+    component.onEdit();
+    component.onPersonalNumberChange('12345678901');
+    component.onSave();
 
     expect(dispatchSpy).not.toHaveBeenCalled();
+    expect(component.isEditing()).toBe(false);
   });
 
   it('should set user initials when removing avatar with saved avatar', () => {
@@ -391,4 +420,95 @@ describe('ProfilePhotoContainer', () => {
     component.onPersonalNumberChange(null);
     expect(component.editedPId()).toBe('');
   });
+
+  it('should validate phone number length - must be exactly 9 digits', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    const translate = TestBed.inject(TranslateService);
+    vi.spyOn(translate, 'instant').mockReturnValue('Phone number must be exactly 9 digits');
+
+    store.overrideSelector(selectPId, '12345678901');
+    store.overrideSelector(selectPhoneNumber, '555123456');
+    store.refreshState();
+
+    component.onEdit();
+    component.onPhoneNumberChange('5551234567'); 
+    component.onSave();
+
+    expect(dispatchSpy).not.toHaveBeenCalled();
+    expect(component.alertKind()).toBe('error');
+    expect(component.alertMessage()).toBe('Phone number must be exactly 9 digits');
+  });
+
+
+
+  it('should dispatch initiatePhoneUpdate when phone number is valid and different', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+    store.overrideSelector(selectPId, '12345678901');
+    store.overrideSelector(selectPhoneNumber, '555123456');
+    store.refreshState();
+
+    component.onEdit();
+    component.onPhoneNumberChange('555987654');
+    component.onSave();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      PersonalInfoActions.initiatePhoneUpdate({ phone: '555987654' })
+    );
+  });
+
+  it('should handle onOtpModalClosed', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    store.overrideSelector(selectPhoneUpdateChallengeId, 'challenge-123');
+    store.overrideSelector(selectPhoneNumber, '555123456');
+    store.refreshState();
+
+    component.onOtpModalClosed();
+
+    expect(component.isOtpModalOpen()).toBe(false);
+    expect(dispatchSpy).toHaveBeenCalledWith(PersonalInfoActions.resetPhoneUpdate());
+  });
+
+  it('should handle onVerifyOtp', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    store.overrideSelector(selectPhoneUpdateChallengeId, 'challenge-123');
+    store.refreshState();
+
+    component.onVerifyOtp('123456');
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      PersonalInfoActions.verifyPhoneUpdate({ challengeId: 'challenge-123', code: '123456' })
+    );
+  });
+
+  it('should handle onResendOtp', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    const translate = TestBed.inject(TranslateService);
+    vi.spyOn(translate, 'instant').mockReturnValue('Max resend reached');
+    store.overrideSelector(selectPhoneUpdateChallengeId, 'challenge-123');
+    store.overrideSelector(selectPhoneUpdateResendCount, 2);
+    store.refreshState();
+
+    component.onResendOtp();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      PersonalInfoActions.resendPhoneOTP({ challengeId: 'challenge-123' })
+    );
+  });
+
+  it('should show alert when resend count is 3 or more', () => {
+    const translate = TestBed.inject(TranslateService);
+    vi.spyOn(translate, 'instant').mockReturnValue('Max resend reached');
+    store.overrideSelector(selectPhoneUpdateChallengeId, 'challenge-123');
+    store.overrideSelector(selectPhoneUpdateResendCount, 3);
+    store.refreshState();
+
+    component.onResendOtp();
+
+    expect(component.alertKind()).toBe('error');
+  });
+
+
+
+
 });

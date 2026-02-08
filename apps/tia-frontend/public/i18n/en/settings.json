@@ -70,7 +70,7 @@
         "personalNumberUpdated": "Personal number updated successfully",
         "personalNumberExists": "Personal number already exists",
         "invalidPersonalNumber": "Personal number must be exactly 11 digits",
-        "invalidPhoneNumber": "Phone number must be at least 9 digits",
+        "invalidPhoneNumber": "Phone number must be exactly 9 digits",
         "noChangesToSave": "No changes to save",
         "verifyPhoneUpdate": "Verify Phone Number Update",
         "otpDescription": "Enter the OTP code sent to you via SMS",
