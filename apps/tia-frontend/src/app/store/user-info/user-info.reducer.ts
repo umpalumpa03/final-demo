@@ -1,6 +1,7 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { UserInfoActions } from './user-info.actions';
 import { IUserState } from './models/user-info.model';
+import { closeCardDetailsModal } from '../products/cards/cards.actions';
 
 export const initialUserState: IUserState = {
   fullName: null,
@@ -15,6 +16,9 @@ export const initialUserState: IUserState = {
   widgets: [],
   widgetsLoading: false,
   widgetsLoaded: false,
+  hasCompletedOnboarding: false,
+  birthday: null,
+  birthdayModalClosedYear: null,
 };
 
 export const userInfoFeature = createFeature({
@@ -137,6 +141,33 @@ export const userInfoFeature = createFeature({
         loading: false,
         widgetsLoading: false,
         error,
+      }),
+    ),
+
+    on(
+      UserInfoActions.loadHasCompletedOnboarding,
+      (state, { onboCompleted }) => ({
+        ...state,
+        hasCompletedOnboarding: onboCompleted,
+        loading: false,
+        error: null,
+      }),
+    ),
+
+    on(UserInfoActions.loadBirthday, (state, { birthDay }) => ({
+      ...state,
+      birthday: birthDay,
+      loading: false,
+      error: null,
+    })),
+
+    on(
+      UserInfoActions.loadBirthdayModalClosed,
+      (state, { colsedBirthdayModal }) => ({
+        ...state,
+        birthdayModalClosedYear: colsedBirthdayModal,
+        loading: false,
+        error: null,
       }),
     ),
   ),

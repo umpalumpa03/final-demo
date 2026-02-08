@@ -50,7 +50,6 @@ export const authInterceptor: HttpInterceptorFn = (
 
       const refreshToken = tokenService.refreshToken;
       if (!refreshToken) {
-        console.log('No refresh token available');
         tokenService.clearAuthToken();
         router.navigate([Routes.SIGN_IN]);
         return throwError(() => err);
@@ -78,8 +77,6 @@ export const authInterceptor: HttpInterceptorFn = (
               );
             }),
             catchError((err) => {
-              console.log('beka25');
-
               refreshInProgress = false;
               refreshSubject.next(null);
               tokenService.clearAuthToken();
@@ -98,7 +95,6 @@ export const authInterceptor: HttpInterceptorFn = (
           next(req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })),
         ),
         catchError((err) => {
-          console.log('Queued request failed - refresh was invalid');
           refreshInProgress = false;
           refreshSubject.next(null);
           tokenService.clearAuthToken();
