@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { PillItem } from '@tia/shared/lib/navigation/models/pills.model';
 import { PillsNav } from "@tia/shared/lib/navigation/pills-nav/pills-nav";
 import { PILLARRAY } from '../../config/tabs-data';

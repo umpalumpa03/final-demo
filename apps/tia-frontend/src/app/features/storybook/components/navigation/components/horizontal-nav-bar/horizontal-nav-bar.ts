@@ -16,7 +16,7 @@ export class HorizontalNavBar implements OnInit {
   public readonly activeHorizontal = signal<string>(this.translate.instant('storybook.navigation.sections.horizontalNavigation.dashboard'));
   public readonly horizontalItems = signal<NavigationItem[]>(HORIZONTALNAVBARS(this.translate));
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.translate.onLangChange.subscribe(() => {
       this.activeHorizontal.set(this.translate.instant('storybook.navigation.sections.horizontalNavigation.dashboard'));
       this.horizontalItems.set(HORIZONTALNAVBARS(this.translate));
