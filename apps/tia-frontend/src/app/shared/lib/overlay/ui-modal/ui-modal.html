@@ -1,13 +1,13 @@
 @if (isOpen()) {
 <div
   class="ui-modal"
-  [class.ui-modal--tutorial]="hasTarget()"
+  [class.ui-modal--tutorial]="isTutorialActive()"
   (click)="close()"
   (keydown.escape)="close()"
   role="button"
   tabindex="-1"
 >
-  @if (isTracking) {
+  @if (isTutorialActive()) {
   <div class="ui-modal__spotlight" [style]="spotlightStyle()"></div>
   } @if (hasNavigation()) {
   <button class="ui-modal__nav-btn prev" (click)="onPrev($event)">

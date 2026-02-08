@@ -12,14 +12,12 @@ import {
   OnDestroy,
 } from '@angular/core';
 import {
-  ModalCardConfig,
-  ModalSpotlightConfig,
-} from './models/modal-positions.model';
-import {
   calculateModalPositions,
   ModalPlacement,
   toggleBodyScroll,
 } from './config/ui-modal.config';
+import { ModalOffset } from './models/modal-positions.model';
+import { ModalResponsiveService } from './services/service-modal';
 
 @Component({
   selector: 'app-ui-modal',
@@ -28,103 +26,67 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UiModal implements OnDestroy {
-  private readonly document = inject(DOCUMENT);
-  private observer: ResizeObserver | null = null;
-  private rafId: number | null = null;
+  protected readonly modalService = inject(ModalResponsiveService);
 
   public readonly isOpen = input.required<boolean>();
   public readonly closed = output<void>();
-
   public readonly hasNavigation = input<boolean>(false);
   public readonly navigate = output<number>();
   public readonly hasScroll = input<boolean>(false);
   public readonly hideExit = input<boolean>(false);
-
   public readonly target = input<HTMLElement | string | null>(null);
   public readonly targetPadding = input<number>(8);
   public readonly targetGap = input<number>(16);
+  public readonly placement = input<ModalPlacement>('bottom');
+  public readonly offset = input<ModalOffset>({});
 
-  protected readonly spotlightStyle = signal<Record<string, string>>({});
-  protected readonly cardStyle = signal<Record<string, string>>({});
+  protected readonly spotlightStyle = this.modalService.spotlightStyle;
+  protected readonly cardStyle = this.modalService.cardStyle;
+  protected readonly isFallback = this.modalService.isFallback;
   protected readonly hasTarget = computed(() => !!this.target());
 
-  public readonly placement = input<ModalPlacement>('bottom');
-
-  protected get isTracking(): boolean {
-    return !!this.target() && this.isOpen();
-  }
-
-  private readonly resolvedTarget = signal<HTMLElement | null>(null);
+  protected readonly isTutorialActive = computed(() => {
+    return this.hasTarget() && !this.isFallback() && this.isOpen();
+  });
 
   constructor() {
     effect(() => {
       const targetInput = this.target();
       if (this.isOpen() && targetInput) {
-        this.resolveAndTrack(targetInput);
+        this.modalService.startTracking(
+          targetInput,
+          this.targetPadding(),
+          this.targetGap(),
+          this.placement(),
+          this.offset(),
+        );
       } else {
-        this.stopTracking();
+        this.modalService.stopTracking();
       }
     });
   }
 
-  private resolveAndTrack(input: HTMLElement | string) {
-    const find = () => {
-      const el =
-        typeof input === 'string' ? this.document.getElementById(input) : input;
-
-      if (el) {
-        this.startObserver(el);
-      } else {
-        this.rafId = requestAnimationFrame(find);
-      }
-    };
-    find();
-  }
-
-  private startObserver(el: HTMLElement): void {
-    toggleBodyScroll(true);
-    this.updatePosition(el);
-
-    this.observer = new ResizeObserver(() => this.updatePosition(el));
-    this.observer.observe(el);
-    this.observer.observe(this.document.body);
-  }
-
-  private updatePosition(el: HTMLElement): void {
-    const { spotlightStyle, cardStyle } = calculateModalPositions(
-      el,
-      this.targetPadding(),
-      this.targetGap(),
-      this.placement(),
-    );
-
-    this.spotlightStyle.set(spotlightStyle);
-    this.cardStyle.set(cardStyle);
-  }
-
-  private stopTracking(): void {
-    toggleBodyScroll(false);
-
-    if (this.observer) {
-      this.observer.disconnect();
-      this.observer = null;
-    }
-
-    if (this.rafId) {
-      cancelAnimationFrame(this.rafId);
-      this.rafId = null;
+  @HostListener('window:resize')
+  public onWindowResize(): void {
+    const t = this.target();
+    if (this.isOpen() && t) {
+      this.modalService.startTracking(
+        t,
+        this.targetPadding(),
+        this.targetGap(),
+        this.placement(),
+        this.offset(),
+      );
     }
   }
 
   public close(): void {
     this.closed.emit();
   }
-
   public onPrev(e: Event): void {
     e.stopPropagation();
     this.navigate.emit(-1);
   }
-
   public onNext(e: Event): void {
     e.stopPropagation();
     this.navigate.emit(1);
@@ -137,19 +99,15 @@ export class UiModal implements OnDestroy {
 
   @HostListener('document:keydown.arrowleft')
   onArrowLeft(): void {
-    if (this.isOpen() && this.hasNavigation()) {
-      this.navigate.emit(-1);
-    }
+    if (this.isOpen() && this.hasNavigation()) this.navigate.emit(-1);
   }
 
   @HostListener('document:keydown.arrowright')
   onArrowRight(): void {
-    if (this.isOpen() && this.hasNavigation()) {
-      this.navigate.emit(1);
-    }
+    if (this.isOpen() && this.hasNavigation()) this.navigate.emit(1);
   }
 
   ngOnDestroy(): void {
-    this.stopTracking();
+    this.modalService.stopTracking();
   }
 }

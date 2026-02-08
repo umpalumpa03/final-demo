@@ -14,3 +14,10 @@ export interface ModalCardConfig {
   width?: string;
   transform?: string;
 }
+
+export interface ModalOffset {
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+}
