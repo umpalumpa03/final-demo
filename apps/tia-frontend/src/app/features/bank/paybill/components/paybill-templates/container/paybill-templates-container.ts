@@ -45,6 +45,8 @@ import {
   createTemplateForm,
 } from '../configs/paybill-templates.forms';
 import { PaybillDynamicForm } from '../../../services/paybill-dynamic-form/paybill-dynamic-form';
+import { Actions, ofType } from '@ngrx/effects';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-paybill-templates-container',
@@ -62,6 +64,25 @@ export class PaybillTemplatesContainer implements OnInit {
   // //////////////////
   private readonly store = inject(Store);
   private readonly payBill = inject(PaybillDynamicForm);
+  private readonly actions$ = inject(Actions);
+
+  private readonly successListener = this.actions$
+    .pipe(
+      ofType(
+        TemplatesPageActions.createTemplateSuccess,
+        TemplatesPageActions.createTemplatesGroupsSuccess,
+        TemplatesPageActions.renameTemplateSuccess,
+        TemplatesPageActions.renameTemplateGroupSuccess,
+        TemplatesPageActions.deleteTemplateSuccess,
+        TemplatesPageActions.deleteTemplateGroupSuccess,
+      ),
+      takeUntilDestroyed(),
+    )
+    .subscribe(() => {
+      if (this.isModalOpen()) {
+        this.handleModalToggle();
+      }
+    });
 
   // Store Selections
   public readonly templateGroups = this.store.selectSignal(
@@ -191,14 +212,12 @@ export class PaybillTemplatesContainer implements OnInit {
       this.selectedId.set('');
       this.selectedItemName.set('');
     }
+    // To clear store after closing modal
+    this.store.dispatch(PaybillActions.clearSelection());
   }
 
   public handleFormSubmit(payload: FormSubmitPayload): void {
     this.formSubmitHandlers[payload.type]?.(payload.values);
-
-    if (payload.type !== 'create-template') {
-      this.handleModalToggle();
-    }
   }
 
   public onTreeAction(event: TreeAction): void {
@@ -275,11 +294,9 @@ export class PaybillTemplatesContainer implements OnInit {
     if (!id) return;
 
     action(id);
-    this.handleModalToggle();
   }
 
   // Create Template Logic
-
   // Checks for loading state
   public selectLoading = this.store.selectSignal(selectLoading);
 
@@ -315,6 +332,13 @@ export class PaybillTemplatesContainer implements OnInit {
   public onCategorySelect(category: InputFieldValue): void {
     if (!category) return;
 
+    this.store.dispatch(PaybillActions.clearSelection());
+
+    this.payBill.resetFormToInitialState(this.createTemplateForm, {
+      name: '',
+      category: category as string,
+    });
+
     this.store.dispatch(
       PaybillActions.selectCategory({ categoryId: category as string }),
     );
@@ -323,6 +347,19 @@ export class PaybillTemplatesContainer implements OnInit {
 
   public onParentProviderSelect(info: ProviderTypeForStore): void {
     if (!info.providerId) return;
+
+    this.store.dispatch(TemplatesPageActions.clearPaymentDetails());
+
+    if (info.index < this.currentLevel()) {
+      this.store.dispatch(TemplatesPageActions.clearPaymentDetails());
+
+      const currentCategory =
+        this.createTemplateForm.get('category')?.value || '';
+      this.payBill.resetFormToInitialState(this.createTemplateForm, {
+        name: '',
+        category: currentCategory,
+      });
+    }
 
     this.store.dispatch(
       TemplatesPageActions.selectProvider({
