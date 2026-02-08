@@ -111,5 +111,6 @@ export class LoansContainer implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.store.reset();
     this.store.setSearchQuery('');
+    this.globalStore.dispatch(AccountsActions.selectAccount({ account: null }));
   }
 }
