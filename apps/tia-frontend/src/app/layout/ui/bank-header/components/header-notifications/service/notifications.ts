@@ -5,6 +5,7 @@ import {
   HasUnreadNotifications,
   NotificationsData,
   successMessage,
+  UnreadCount,
 } from '../models/notification.model';
 import { environment } from '../../../../../../../environments/environment';
 
@@ -53,5 +54,9 @@ export class Notifications {
 
   public markNotificationRead(id: string): Observable<successMessage> {
     return this.http.patch<successMessage>(`${this.baseUrl}/${id}/read`, {});
+  }
+
+  public getUnreadCount(): Observable<UnreadCount> {
+    return this.http.get<UnreadCount>(`${this.baseUrl}/unread-count`);
   }
 }

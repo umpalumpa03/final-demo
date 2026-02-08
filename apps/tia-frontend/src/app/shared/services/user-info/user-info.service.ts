@@ -19,4 +19,15 @@ export class UserInfoService {
       params,
     });
   }
+
+  public updateOnboardingStatus(
+    completed: boolean,
+  ): Observable<{ success: boolean }> {
+    const body = { hasCompletedOnboarding: completed };
+
+    return this.http.put<{ success: boolean }>(
+      `${this.baseUrl}/onboarding-status`,
+      body,
+    );
+  }
 }

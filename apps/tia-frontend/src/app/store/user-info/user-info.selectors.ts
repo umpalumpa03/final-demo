@@ -66,5 +66,10 @@ export const selectWidgetsLoading = createSelector(
 
 export const selectWidgetsLoaded = createSelector(
   selectUserInfoState,
-  (state) => state.widgetsLoaded
+  (state) => state.widgetsLoaded,
+);
+
+export const selectOnboardingStatus = createSelector(
+  selectUserInfoState,
+  (state) => state.hasCompletedOnboarding,
 );

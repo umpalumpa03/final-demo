@@ -1,9 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  QueryList,
-  viewChildren,
-  ViewChildren,
+  viewChildren,inject
 } from '@angular/core';
 import { LibraryTitle } from '../../../shared/library-title/library-title';
 import { ShowcaseCard } from '../../../shared/showcase-card/showcase-card';
@@ -23,6 +21,8 @@ import {
   ALERTS_TITLES,
 } from '../config/alerts-data.config';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { TranslatePipe } from '@ngx-translate/core';
+import { AlertsState } from '../state/alerts.state';
 
 @Component({
   selector: 'app-alerts',
@@ -35,15 +35,15 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
     AlertsWithActions,
     SimpleAlerts,
     ButtonComponent,
+    TranslatePipe
   ],
   templateUrl: './alerts.html',
   styleUrl: './alerts.scss',
+  providers: [AlertsState],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Alerts {
-  public readonly pageTitle: string = 'Alerts & Notifications';
-  public readonly pageSubtitle: string =
-    'Alert components for displaying important messages to users';
+  public readonly alertsState = inject(AlertsState)
 
   public readonly titles = ALERTS_TITLES;
 

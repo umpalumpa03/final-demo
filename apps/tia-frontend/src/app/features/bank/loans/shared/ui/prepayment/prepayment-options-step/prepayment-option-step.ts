@@ -10,14 +10,11 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { CommonModule } from '@angular/common';
 import { Radios } from '@tia/shared/lib/forms/radios/radios';
-import { RadioOption } from '@tia/shared/lib/forms/models/radios.model';
-import { PREPAYMENT_CALC_OPTIONS } from '../../../config/loan-prepayment.config';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ILoan } from '../../../models/loan.model';
 import { PrepaymentCalculationPayload } from '../../../models/prepayment.model';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { startWith, map } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
 import { LoansStore } from '../../../../store/loans.store';
 import { LoanPrepaymentState } from '../../../state/loan-prepayment.state';
 
@@ -40,7 +37,6 @@ import { LoanPrepaymentState } from '../../../state/loan-prepayment.state';
 export class PrepaymentOptionStep {
   private readonly store = inject(LoansStore);
   private readonly fb = inject(FormBuilder);
-  private readonly translate = inject(TranslateService);
   public readonly loanPrepayment = inject(LoanPrepaymentState);
 
   public readonly loan = input.required<ILoan>();
@@ -75,8 +71,6 @@ export class PrepaymentOptionStep {
   }
 
   public ngOnInit(): void {
-    this.store.loadPrepaymentOptions({});
-
     const currentLoan = this.loan();
     if (currentLoan && currentLoan.loanAmount) {
       this.form.controls.amount.addValidators([
