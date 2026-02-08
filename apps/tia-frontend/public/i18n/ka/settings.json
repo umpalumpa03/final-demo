@@ -111,8 +111,22 @@
     "rejectLoan": "სესხის უარყოფა"
   },
   "accounts": {
-    "title": "ანგარიშები",
-    "savings": "სავაჭრო ანგარიში",
-    "checking": "შემოწმების ანგარიში"
+    "changeFriendlyName": "ანგარიშის სახელის შეცვლა",
+    "changeFriendlyNameSubtitle": "განაახლეთ მთავარი ანგარიშის სახელი",
+    "accountName": "ანგარიშის სახელი",
+    "accountNumber": "ანგარიშის ნომერი",
+    "saveChanges": "შენახვა",
+    "cancel": "გაუქმება",
+    "changeButton": "სახელის შეცვლა",
+    "favoriteButton": "ძირითადად არჩევა",
+    "favoritedButton": "ძირითადი ანგარიში",
+    "hideButton": "დამალვა",
+    "showButton": "გამოჩენა",
+    "title": "ჩემი ანგარიშები",
+    "subtitle": "მართეთ თქვენი ანგარიშები, დააყენეთ ძირითადი ანგარიში და აკონტროლეთ ხილვადობა",
+    "errorMessage": "მონაცემების მიღება ვერ მოხერხდა",
+    "warningHeader": "მონაცემები ვერ მოიძებნა",
+    "warningMessage": "ჩვენ ვერ ვიპოვნეთ დასაჩვენებელი მონაცემები.",
+    "warningBtn": "უკან დაბრუნება"
   }
 }
