@@ -2,20 +2,35 @@
   @for (chart of charts(); track chart.title) {
   <div class="finances-charts__card">
     <div class="chart-header">
-      <h3 class="chart-title">{{ chart.title }}</h3>
+      <h3 class="chart-title">
+        @switch (chart.title) { 
+          @case ('Income vs Expenses') { {{ 'my-finances.finances.charts.income_vs_expenses' | translate }} } 
+          @case ('Spending by Category') { {{ 'my-finances.finances.charts.spending_by_category' | translate }} } 
+          @case ('Savings Trend') { {{ 'my-finances.finances.charts.savings_trend' | translate }} } 
+          @case ('Daily Spending') { {{ 'my-finances.finances.charts.daily_spending' | translate }} } 
+          @default { {{ chart.title }} } 
+        }
+      </h3>
+
       <p class="chart-subtitle">
         @switch (chart.title) { 
-          @case ('Income vs Expenses') { Monthly comparison over time } 
-          @case ('Spending by Category') { Breakdown of expenses this month } 
-          @case ('Savings Trend') { Monthly savings over time } 
-          @default { Spending pattern throughout the month } 
+          @case ('Income vs Expenses') { {{ 'my-finances.finances.charts.income_vs_expenses_desc' | translate }} } 
+          @case ('Spending by Category') { {{ 'my-finances.finances.charts.spending_by_category_desc' | translate }} } 
+          @case ('Savings Trend') { {{ 'my-finances.finances.charts.savings_trend_desc' | translate }} } 
+          @case ('Daily Spending') { {{ 'my-finances.finances.charts.daily_spending_desc' | translate }} } 
+          @default { {{ chart.title }} } 
         }
       </p>
     </div>
 
     <div class="chart-container">
       @if (chart.data) {
-      <canvas baseChart [data]="chart.data" [options]="chartOptions" [type]="chart.type"></canvas>
+      <canvas
+        baseChart
+        [data]="chart.data"
+        [options]="chartOptions"
+        [type]="chart.type"
+      ></canvas>
       } @else {
       <div class="chart-loading"><app-spinner size="2rem"></app-spinner></div>
       }
@@ -36,10 +51,12 @@
         </div>
       </div>
       } 
-
+      
       @if (chart.title === 'Spending by Category' && topCategoriesFooter().length > 0) {
       <div class="footer-summary">
-        <h4 class="footer-title">Top Categories - {{ selectedMonthLabel() }}</h4>
+        <h4 class="footer-title">
+          {{ 'my-finances.finances.charts.spending_by_category' | translate }} - {{ selectedMonthLabel() }}
+        </h4>
         @for (cat of topCategoriesFooter().slice(0, 3); track cat.category) {
         <div class="category-item">
           <div class="cat-info">
@@ -51,7 +68,7 @@
         }
       </div>
       } 
-
+      
       @if (chart.title === 'Savings Trend' && savingsFooter(); as data) {
       <div class="footer-summary summary-flex">
         <div class="summary-item">
@@ -63,8 +80,8 @@
           <p class="stat-value purple">{{ data.average }}</p>
         </div>
       </div>
-      }
-
+      } 
+      
       @if (chart.title === 'Daily Spending' && dailySpendingFooter(); as data) {
       <div class="footer-summary summary-grid-three">
         <div class="summary-item">

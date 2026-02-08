@@ -1,60 +1,155 @@
-import { TestBed } from '@angular/core/testing';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
-import { provideHttpClient } from '@angular/common/http';
-import { ApproveCardsService } from '../shared/services/approve-cards.service';
-import { environment } from '../../../../../../../environments/environment';
-import { UpdateCardStatusRequest, CardPermission } from '../shared/model/approve-cards.model';
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ApproveCards } from './approve-cards';
+import { ApproveCardsStore } from '../store/approve-cards.store';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { FormBuilder } from '@angular/forms';
+import { signal } from '@angular/core';
 
-describe('ApproveCardsService', () => {
-  let service: ApproveCardsService;
-  let httpMock: HttpTestingController;
+describe('ApproveCards', () => {
+  let component: ApproveCards;
+  let fixture: ComponentFixture<ApproveCards>;
+  let storeMock: any;
 
-  const url = `${environment.apiUrl}/cards`;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        ApproveCardsService,
-      ],
-    });
-
-    service = TestBed.inject(ApproveCardsService);
-    httpMock = TestBed.inject(HttpTestingController);
-  });
-
-  afterEach(() => httpMock.verify());
-
-  it('should fetch pending cards via GET', () => {
-    const mockCards = [{ id: '1', nickname: 'Test Card' }] as any;
-
-    service.getPendingCards().subscribe((cards) => {
-      expect(cards).toEqual(mockCards);
-    });
-
-    const req = httpMock.expectOne(`${url}/pending`);
-    expect(req.request.method).toBe('GET');
-    req.flush(mockCards);
-  });
-
-  it('should update card status via PUT', () => {
-    const mockRequest: UpdateCardStatusRequest = {
-      cardId: '123',
-      status: 'APPROVED' as any,
-      permissions: ['allowAtm' as CardPermission]
+  beforeEach(async () => {
+    storeMock = {
+      load: vi.fn(),
+      loadPerrmisions: vi.fn(),
+      updateStatus: vi.fn(),
+      isLoading: signal(false),
+      error: signal(null),
+      success: signal(null),
+      cards: signal([{ 
+        id: '1', 
+        nickname: 'Test Card', 
+        user: { firstName: 'John', lastName: 'Doe' } 
+      }]),
+      permissions: signal([
+        { value: 'allowAtm', displayName: 'ATM' },
+        { value: 'allowOnline', displayName: 'Online' }
+      ])
     };
 
-    service.changeCardStatus(mockRequest).subscribe();
+    await TestBed.configureTestingModule({
+      imports: [ApproveCards],
+      providers: [
+        FormBuilder,
+        { provide: ApproveCardsStore, useValue: storeMock }
+      ]
+    })
+    .overrideComponent(ApproveCards, {
+      set: {
+        providers: [
+          { provide: ApproveCardsStore, useValue: storeMock }
+        ]
+      }
+    })
+    .compileComponents();
 
-    const req = httpMock.expectOne(`${url}/pending`);
-    expect(req.request.method).toBe('PUT');
-    expect(req.request.body).toEqual(mockRequest);
+    fixture = TestBed.createComponent(ApproveCards);
+    component = fixture.componentInstance;
+  });
+
+  it('should initialize and load store data', () => {
+    fixture.detectChanges();
+    expect(storeMock.load).toHaveBeenCalled();
+    expect(storeMock.loadPerrmisions).toHaveBeenCalled();
+  });
+
+  it('should sync FormRecord controls when permissions change via effect', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(component.cardPermissionsForm.contains('allowAtm')).toBe(true);
+    expect(component.cardPermissionsForm.contains('allowOnline')).toBe(true);
+  });
+
+  it('should compute card name and full name correctly', () => {
+    fixture.detectChanges();
+    component.activeCardId.set('1');
+    fixture.detectChanges();
     
-    req.flush(null);
+    expect(component.cardName()).toBe('Test Card');
+    expect(component.fullName()).toBe('John Doe');
+  });
+
+  it('should approve with permissions if card is saved', () => {
+    fixture.detectChanges();
+    component.activeCardId.set('1');
+    component.onSavePermissions();
+    
+    component.cardPermissionsForm.get('allowAtm')?.setValue(true);
+    component['handleApprove']('1');
+
+    expect(storeMock.updateStatus).toHaveBeenCalledWith(expect.objectContaining({
+      permissions: ['allowAtm'],
+      status: 'ACTIVE'
+    }));
+  });
+
+  it('should handle handleAction branching', () => {
+    fixture.detectChanges();
+    const permSpy = vi.spyOn(component as any, 'handlePermissions');
+    const approveSpy = vi.spyOn(component as any, 'handleApprove');
+    const declineSpy = vi.spyOn(component as any, 'handleDecline');
+
+    component.handleAction({ action: 'permissions', id: '1' });
+    expect(permSpy).toHaveBeenCalledWith('1');
+
+    component.handleAction({ action: 'approve', id: '1' });
+    expect(approveSpy).toHaveBeenCalledWith('1');
+
+    component.handleAction({ action: 'decline', id: '1' });
+    expect(declineSpy).toHaveBeenCalledWith('1');
+  });
+
+  it('should decline a card', () => {
+    fixture.detectChanges();
+    component['handleDecline']('1');
+    expect(storeMock.updateStatus).toHaveBeenCalledWith({
+      cardId: '1',
+      status: 'CANCELLED',
+      permissions: []
+    });
+  });
+
+  it('should retry loading from store', () => {
+    fixture.detectChanges();
+    component.retryLoading();
+    expect(storeMock.load).toHaveBeenCalledTimes(2);
+  });
+
+  it('should open confirm modal if switching cards with unsaved permissions', () => {
+    fixture.detectChanges();
+    component.permissionsSavedCard.set('old-id');
+    component['handlePermissions']('new-id');
+    expect(component.confirmModalActive()).toBe(true);
+  });
+
+  it('should reset state on confirm accept', () => {
+    fixture.detectChanges();
+    component.permissionsSavedCard.set('1');
+    const permSpy = vi.spyOn(component as any, 'handlePermissions');
+    (component as any).pendingId.set('2');
+
+    component.onConfirmAccept();
+
+    expect(component.permissionsSavedCard()).toBeNull();
+    expect(component.confirmModalActive()).toBe(false);
+    expect(permSpy).toHaveBeenCalledWith('2');
+  });
+
+  it('should close confirm modal on onConfirmCancel', () => {
+    fixture.detectChanges();
+    component.confirmModalActive.set(true);
+    component.onConfirmCancel();
+    expect(component.confirmModalActive()).toBe(false);
+  });
+
+  it('should clear state on cancelPermissionChanges', () => {
+    fixture.detectChanges();
+    component.permissionsSavedCard.set('1');
+    component.activeCardId.set('1');
+    component.cancelPermissionChanges();
+    expect(component.permissionsSavedCard()).toBeNull();
+    expect(component.permissionsOverlay()).toBe(false);
   });
 });

@@ -31,6 +31,7 @@ export class TextInput extends BaseInput {
   protected readonly icons = INPUT_ICONS;
 
   protected readonly uniqueId: string = `text-input-${++TextInput.idCounter}`;
+  protected readonly isCapsLockOn = signal<boolean>(false);
 
   protected readonly labelIconUrl = computed(() => {
     const iconPath = this.mergedConfig().labelIconUrl;
@@ -100,6 +101,18 @@ export class TextInput extends BaseInput {
     }
     return null;
   });
+
+  protected checkCapsLock(event: Event): void {
+    if (event instanceof KeyboardEvent) {
+      const isOn = event.getModifierState('CapsLock');
+      this.isCapsLockOn.set(isOn);
+    }
+  }
+
+  protected override handleBlur(event: FocusEvent): void {
+    this.isCapsLockOn.set(false);
+    super.handleBlur(event);
+  }
 
   protected togglePasswordVisibility(): void {
     this.showPasswordVisibility.update((v) => !v);

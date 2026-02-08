@@ -2,8 +2,8 @@
   <div class="drag-frame__container">
     <div class="drag-frame__header">
       <app-library-title
-        [title]="'Drag & Drop Components'"
-        [subtitle]="'Interactive drag-and-drop interfaces for reordering and organizing content'"
+        [title]="'storybook.drag-and-drop.title' | translate"
+        [subtitle]="'storybook.drag-and-drop.subtitle' | translate"
       ></app-library-title>
     </div>
     <div class="drag-frame__content">
@@ -14,8 +14,8 @@
         layout="grid"
         [columns]="{ default: 2, md: 1, sm: 1 }"
         (orderChange)="onOrderChange($event)"
-        cardTitle="Draggable Cards"
-        cardDescription="Drag cards to reorder them in a grid layout"
+        [cardTitle]="'storybook.drag-and-drop.sections.draggableCards.title' | translate"
+        [cardDescription]="'storybook.drag-and-drop.sections.draggableCards.description' | translate"
         [editable]="true"
         [hasButton]="true"
         [hasAddOption]="true"
@@ -31,13 +31,15 @@
         [canDelete]="canDelete"
         layout="list"
         (orderChange)="onOrderChangeList($event)"
-        cardTitle="Sortable List"
-        cardDescription="Drag cards to reorder them in a grid layout"
+        [cardTitle]="'storybook.drag-and-drop.sections.sortableList.title' | translate"
+        [cardDescription]="'storybook.drag-and-drop.sections.sortableList.description' | translate"
         [hasViewOption]="true"
         [hasPagination]="true"
       />
       <app-kanban-board
-        [boards]="boards"
+        [boardTitle]="'storybook.drag-and-drop.sections.kanbanBoard.title' | translate"
+        [boardDescription]="'storybook.drag-and-drop.sections.kanbanBoard.description' | translate"
+        [boards]="boards()"
         [items]="kanbanItems"
         [canDelete]="true"
         (itemsChange)="kanbanItems = $event"
@@ -50,8 +52,8 @@
         [items]="myItems"
         [layout]="'grid'"
         [columns]="{ default: 2, md: 1, sm: 1 }"
-        [colspans]="[2, 1, 1,2]"
-        [containerTitle]="'Add Content of Your Choice'"
+        [colspans]="[2, 1, 1, 2]"
+        [containerTitle]="'storybook.drag-and-drop.sections.addContent.title' | translate"
         (itemsChange)="onItemsChange($event)"
         (orderChange)="onContainerOrderChange($event)"
       >
@@ -64,30 +66,34 @@
           (edit)="onEdit(item.id)"
           appDragItem
         >
-          <!-- your custom content here -->
           <div class="my-custom-layout">
-            <span class="my-custom-layout__tag">Content of your choice</span>
+            <span class="my-custom-layout__tag"
+              >{{ 'storybook.drag-and-drop.sections.addContent.contentLabel' |
+              translate }}</span
+            >
             <p class="my-custom-layout__text">{{ item.subtitle }}</p>
 
             <div class="my-custom-layout__meta">
               <span class="my-custom-layout__id">#{{ item.id }}</span>
               <div class="my-custom-layout__dot"></div>
-              <span class="my-custom-layout__date">Jan 2026</span>
+              <span class="my-custom-layout__date"
+                >{{ 'storybook.drag-and-drop.sections.addContent.month' |
+                translate }}</span
+              >
             </div>
           </div>
         </app-draggable-card>
         }
       </app-drag-container>
 
-      <!-- tree -->
       <app-tree-container
-        [groups]="treeGroups"
-        [items]="treeItems"
+        [groups]="treeGroups()"
+        [items]="treeItems()"
         [canDelete]="true"
         [editable]="true"
         [hasCheckbox]="true"
-        containerTitle="Tree View"
-        containerDescription="Drag items to reorder or move between groups"
+        [containerTitle]="'storybook.drag-and-drop.sections.treeView.title' | translate"
+        [containerDescription]="'storybook.drag-and-drop.sections.treeView.description' | translate"
         (groupsChange)="onTreeGroupsChange($event)"
         (itemsChange)="onTreeItemsChange($event)"
         (itemMoved)="onTreeItemMoved($event)"

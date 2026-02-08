@@ -5,7 +5,7 @@
         <img
           class="approve-card__icon"
           src="images/svg/settings/approve-cards/card-icon.svg"
-          alt=""
+          alt="Card icon"
         />
       </div>
 
@@ -16,7 +16,7 @@
             <img
               class="approve-card__badge-icon"
               src="images/svg/settings/approve-cards/favorite.svg"
-              alt=""
+              alt="star-icon"
             />
             <span>{{status()}}</span>
           </div>
@@ -26,13 +26,21 @@
 
         <div class="approve-card__details">
           <span>{{network()}}</span>
-          <span class="approve-card__details--bold">{{balance()}}</span>
-          <span>{{creationDate()}}</span>
+          @if(balance()) {
+            <span class="approve-card__details--bold">{{balance()}}</span>
+          }
+          <span>{{creationDate() | date: 'dd/MM/yyyy'}}</span>
+
         </div>
       </div>
     </div>
 
     <div class="approve-card__actions">
+      @if(marked()) {
+        <button (click)="onAction('permissions')">
+          <img class="approve-card__marked" src="images/svg/settings/approve-cards/settings.svg" alt="settings icon">
+        </button>
+      }
       @for(button of buttons; track button.id) {
       <button
         class="approve-card__btn"
@@ -43,7 +51,7 @@
         <img
           class="approve-card__btn-icon"
           [src]="'images/svg/settings/approve-cards/' + button.icon"
-          alt=""
+          alt="settings icon"
         />
 
         <span class="approve-card__btn-text">{{ button.label }}</span>

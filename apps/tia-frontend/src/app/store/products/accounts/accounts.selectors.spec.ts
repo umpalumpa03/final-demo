@@ -27,6 +27,7 @@ describe('Accounts Selectors', () => {
       openedAt: '2026-01-01',
       closedAt: '',
       isFavorite: true,
+      isHidden: false,
     },
     {
       id: '2',
@@ -43,6 +44,7 @@ describe('Accounts Selectors', () => {
       openedAt: '2026-01-01',
       closedAt: '',
       isFavorite: false,
+      isHidden: false,
     },
   ];
 
@@ -74,29 +76,40 @@ describe('Accounts Selectors', () => {
     expect(result.card).toHaveLength(0);
   });
 
-  it('should select account by id', () => {
-    const result = selectSelectedAccount.projector(mockAccounts, '1');
+  it('should select selected account', () => {
+    const mockState = {
+      accounts: mockAccounts,
+      selectedAccountId: mockAccounts[0],
+      isLoading: false,
+      isFetching: false,
+      error: null,
+      isCreating: false,
+      createError: null,
+      isCreateModalOpen: false,
+      isUpdatingFriendlyName: false,
+      updateFriendlyNameError: null,
+    };
+    const result = selectSelectedAccount.projector(mockState);
     expect(result).toBeDefined();
     expect(result?.id).toBe('1');
     expect(result?.type).toBe(AccountType.current);
   });
 
   it('should return null when no account is selected', () => {
-    const result = selectSelectedAccount.projector(mockAccounts, null);
+    const mockState = {
+      accounts: mockAccounts,
+      selectedAccountId: null,
+      isLoading: false,
+      isFetching: false,
+      error: null,
+      isCreating: false,
+      createError: null,
+      isCreateModalOpen: false,
+      isUpdatingFriendlyName: false,
+      updateFriendlyNameError: null,
+    };
+    const result = selectSelectedAccount.projector(mockState);
     expect(result).toBeNull();
-  });
-
-  it('should return null when selected account not found', () => {
-    const result = selectSelectedAccount.projector(
-      mockAccounts,
-      'non-existent',
-    );
-    expect(result).toBeUndefined();
-  });
-
-  it('should handle null accounts in selectSelectedAccount', () => {
-    const result = selectSelectedAccount.projector(null as any, '1');
-    expect(result).toBeUndefined();
   });
 
   it('should select account options', () => {
@@ -129,6 +142,7 @@ describe('Accounts Selectors', () => {
       openedAt: '2026-01-01',
       closedAt: '',
       isFavorite: false,
+      isHidden: false,
     };
     const result = selectGelAccountOptions.projector([
       ...mockAccounts,

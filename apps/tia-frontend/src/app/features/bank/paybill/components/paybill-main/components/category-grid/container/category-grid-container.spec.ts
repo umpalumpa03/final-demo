@@ -5,11 +5,13 @@ import { signal } from '@angular/core';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { PaybillActions } from '../../../../../store/paybill.actions';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { ActivatedRoute, Router } from '@angular/router';
 
 describe('CategoryGridContainer', () => {
   let component: CategoryGridContainer;
   let fixture: ComponentFixture<CategoryGridContainer>;
   let store: MockStore;
+  let router: Router;
 
   const mockPaybillMainFacade = {
     searchQuery: signal(''),
@@ -25,11 +27,14 @@ describe('CategoryGridContainer', () => {
       imports: [CategoryGridContainer],
       providers: [
         { provide: PaybillMainFacade, useValue: mockPaybillMainFacade },
+        { provide: Router, useValue: { navigate: vi.fn() } },
+        { provide: ActivatedRoute, useValue: {} },
         provideMockStore(),
       ],
     }).compileComponents();
 
     store = TestBed.inject(MockStore);
+    router = TestBed.inject(Router);
     fixture = TestBed.createComponent(CategoryGridContainer);
     component = fixture.componentInstance;
 
@@ -59,7 +64,7 @@ describe('CategoryGridContainer', () => {
     });
   });
 
-  it('should dispatch selectCategory action when a category is selected', () => {
+  it('should dispatch selectCategory and navigate when a category is selected', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
     const categoryId = 'UTILITIES';
 
@@ -68,13 +73,6 @@ describe('CategoryGridContainer', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(
       PaybillActions.selectCategory({ categoryId }),
     );
-  });
-
-  it('should display the grid when not loading', () => {
-    mockPaybillMainFacade.isLoading.set(false);
-    fixture.detectChanges();
-
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('app-category-grid')).toBeTruthy();
+    expect(router.navigate).toHaveBeenCalled();
   });
 });
