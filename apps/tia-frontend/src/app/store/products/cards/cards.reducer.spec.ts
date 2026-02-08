@@ -214,33 +214,7 @@ describe('CardsReducer', () => {
     expect(state.selectedCardIdForModal).toBeNull();
   });
 });
-it('should handle card transactions actions', () => {
-  let state = cardsReducer(
-    initialCardsState,
-    CardsActions.loadCardTransactions({ cardId: 'card-1' }),
-  );
-  expect(state.cardTransactionsLoading).toBe(true);
 
-  const transactions = [{ id: 'tx-1' }] as any[];
-  state = cardsReducer(
-    state,
-    CardsActions.loadCardTransactionsSuccess({
-      cardId: 'card-1',
-      transactions,
-      total: 5,
-    }),
-  );
-  expect(state.cardTransactions['card-1']).toEqual(transactions);
-  expect(state.cardTransactionsTotalCount['card-1']).toBe(5);
-  expect(state.cardTransactionsLoading).toBe(false);
-
-  state = cardsReducer(
-    initialCardsState,
-    CardsActions.loadCardTransactionsFailure({ cardId: 'card-1', error: 'Failed' }),
-  );
-  expect(state.cardTransactionsError).toBe('Failed');
-  expect(state.cardTransactionsLoading).toBe(false);
-});
 it('should set cardImagesLoading on loadCardAccountsSuccess', () => {
   const mockAccounts = [
     {
@@ -368,4 +342,36 @@ describe('OTP reducer', () => {
     const state = cardsReducer({ ...initialCardsState, cardSensitiveData: { 'card-1': { cardNumber: '1234', cvv: '123', expiryDate: '12/28', cardholderName: 'John' } } }, CardsActions.clearCardSensitiveData());
     expect(state.cardSensitiveData).toEqual({});
   });
+  describe('Navigation reducers', () => {
+  it('should set current card index and account id', () => {
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.setCurrentCardIndex({ cardIndex: 1, accountId: 'acc-1' })
+    );
+    expect(state.currentCardIndex).toBe(1);
+    expect(state.currentAccountId).toBe('acc-1');
+  });
+
+  it('should navigate to next card with circular loop', () => {
+    const stateWithAccount = {
+      ...initialCardsState,
+      currentCardIndex: 2,
+      currentAccountId: 'acc-1',
+      accounts: [{ id: 'acc-1', cardIds: ['card-1', 'card-2', 'card-3'] } as any],
+    };
+    const state = cardsReducer(stateWithAccount, CardsActions.navigateToNextCard());
+    expect(state.currentCardIndex).toBe(0);
+  });
+
+  it('should navigate to previous card with circular loop', () => {
+    const stateWithAccount = {
+      ...initialCardsState,
+      currentCardIndex: 0,
+      currentAccountId: 'acc-1',
+      accounts: [{ id: 'acc-1', cardIds: ['card-1', 'card-2', 'card-3'] } as any],
+    };
+    const state = cardsReducer(stateWithAccount, CardsActions.navigateToPreviousCard());
+    expect(state.currentCardIndex).toBe(2);
+  });
+});
 });

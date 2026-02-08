@@ -59,7 +59,7 @@ describe('Messaging Integration - Send Email Flow', () => {
     totalCountReq.flush({ count: 10 });
 
     await vi.waitFor(() => {
-      expect(ctx.store.successMessage?.()).toBe('messaging.storeSuccess.emailSent');
+      expect(ctx.alertService.success).toHaveBeenCalledWith('messaging.storeSuccess.emailSent', { variant: 'dismissible', title: 'Success!' });
     });
   });
 
@@ -82,7 +82,7 @@ describe('Messaging Integration - Send Email Flow', () => {
     );
 
     await vi.waitFor(() => {
-      expect(ctx.store.error()).toBe('messaging.storeErrors.sendEmail');
+      expect(ctx.alertService.error).toHaveBeenCalledWith('messaging.storeErrors.sendEmail', { variant: 'dismissible', title: 'Oops!' });
       expect(ctx.store.isLoading()).toBe(false);
     });
   });

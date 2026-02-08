@@ -7,7 +7,7 @@ export const ResetPasswordGuard: CanActivateFn = () => {
   const tokenService = inject(TokenService);
   const router = inject(Router);
 
-  return tokenService.accessToken && !tokenService.refreshToken
+  return tokenService.resetPasswordToken
     ? true
     : router.navigate([Routes.SIGN_IN]);
 };

@@ -117,38 +117,7 @@ export const cardsReducer = createReducer(
     selectedCardIdForModal: null,
   })),
 
-  on(CardsActions.loadCardTransactions, (state) => ({
-    ...state,
-    cardTransactionsLoading: true,
-    cardTransactionsError: null,
-  })),
 
-  on(
-    CardsActions.loadCardTransactionsSuccess,
-    (state, { cardId, transactions, total }) => ({
-      ...state,
-      cardTransactions: {
-        ...state.cardTransactions,
-        [cardId]: transactions,
-      },
-      cardTransactionsTotalCount: {
-        ...state.cardTransactionsTotalCount,
-        [cardId]: total,
-      },
-      cardTransactionsLoading: false,
-      cardTransactionsError: null,
-    }),
-  ),
-
-  on(CardsActions.loadCardTransactionsFailure, (state, { error }) => ({
-    ...state,
-    cardTransactionsLoading: false,
-    cardTransactionsError: error,
-  })),
-  on(CardsActions.clearCardTransactionsError, (state) => ({
-    ...state,
-    cardTransactionsError: null,
-  })),
 
   on(CardsActions.loadCardAccountsSuccess, (state, { accounts }) => ({
   ...state,
@@ -278,5 +247,33 @@ on(CardsActions.openCardOtpModal, (state, { cardId }) => ({
   otpError: null,
   otpRemainingAttempts: 3,
 })),
+
+on(CardsActions.setCurrentCardIndex, (state, { cardIndex, accountId }) => ({
+  ...state,
+  currentCardIndex: cardIndex,
+  currentAccountId: accountId,
+})),
+
+on(CardsActions.navigateToNextCard, (state) => {
+  const account = state.accounts.find(acc => acc.id === state.currentAccountId);
+  if (!account || account.cardIds.length === 0) return state;
+  const maxIndex = account.cardIds.length - 1;
+  const nextIndex = state.currentCardIndex >= maxIndex ? 0 : state.currentCardIndex + 1;
+  return {
+    ...state,
+    currentCardIndex: nextIndex,
+  };
+}),
+
+on(CardsActions.navigateToPreviousCard, (state) => {
+  const account = state.accounts.find(acc => acc.id === state.currentAccountId);
+  if (!account || account.cardIds.length === 0) return state;
+  const maxIndex = account.cardIds.length - 1;
+  const previousIndex = state.currentCardIndex <= 0 ? maxIndex : state.currentCardIndex - 1;
+  return {
+    ...state,
+    currentCardIndex: previousIndex,
+  };
+}),
 
 );

@@ -1,5 +1,99 @@
 {
-  "palettes": {},
+  "palette": {
+    "title": "Color Palettes",
+    "subtitle": "Three beautiful blue color schemes for your components",
+    "colorNames": {
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "accent": "Accent",
+      "muted": "Muted",
+      "background": "Background",
+      "foreground": "Foreground"
+    },
+    "themes": {
+      "oceanBlue": {
+        "title": "Ocean Blue",
+        "subtitle": "Light and refreshing theme perfect for modern applications",
+        "label": "Ocean Blue Theme"
+      },
+      "royalBlue": {
+        "title": "Royal Blue",
+        "subtitle": "Rich and elegant theme with vibrant blue tones",
+        "label": "Royal Blue Theme"
+      },
+      "deepBlue": {
+        "title": "Deep Blue",
+        "subtitle": "Professional and modern theme with sophisticated blues",
+        "label": "Deep Blue Theme"
+      }
+    },
+    "application": {
+      "title": "Color Application Examples",
+      "oceanBlue": {
+        "primary": {
+          "title": "Ocean Primary",
+          "description": "Clean and refreshing design with excellent readability"
+        },
+        "accent": {
+          "title": "Ocean Accent",
+          "description": "Soft accents for secondary elements"
+        },
+        "muted": {
+          "title": "Ocean Muted",
+          "description": "Perfect for backgrounds and subtle elements"
+        }
+      },
+      "royalBlue": {
+        "primary": {
+          "title": "Royal Primary",
+          "description": "Bold and elegant with strong visual presence"
+        },
+        "accent": {
+          "title": "Royal Accent",
+          "description": "Vibrant accents for emphasis"
+        },
+        "muted": {
+          "title": "Royal Muted",
+          "description": "Gentle backgrounds for content areas"
+        }
+      },
+      "deepBlue": {
+        "primary": {
+          "title": "Deep Primary",
+          "description": "Professional and sophisticated appearance"
+        },
+        "accent": {
+          "title": "Deep Accent",
+          "description": "Neutral accents for modern interfaces"
+        },
+        "muted": {
+          "title": "Deep Muted",
+          "description": "Subtle backgrounds for corporate design"
+        }
+      }
+    },
+    "notes": {
+      "title": "Accessibility & Usage Notes",
+      "items": {
+        "highContrast": {
+          "title": "High Contrast",
+          "description": "All three themes maintain WCAG AA compliant contrast ratios for optimal readability"
+        },
+        "consistentHierarchy": {
+          "title": "Consistent Hierarchy",
+          "description": "Primary, secondary, and accent colors are carefully balanced for visual hierarchy"
+        },
+        "flexibleApplication": {
+          "title": "Flexible Application",
+          "description": "Each palette works beautifully for dashboards, landing pages, and web applications"
+        },
+        "easySwitching": {
+          "title": "Easy Switching",
+          "description": "Use the palette selector in the header to instantly switch between themes"
+        }
+      }
+    }
+  },
   "buttons": {},
   "inputs": {
     "title": "Input Components",
@@ -186,7 +280,109 @@
   },
   "cards": {},
   "alerts": {},
-  "badges": {},
+  "badges": {
+    "title": "Badges",
+    "subtitle": "Badge components for labels, status indicators, and counts",
+    "sections": {
+      "variants": "Variants",
+      "statusBadges": "Status Badges",
+      "sizes": "Sizes",
+      "countBadges": "Count Badges",
+      "interactiveBadges": "Interactive Badges (Dismissible)",
+      "pillBadges": "Rounded/Pill Badges",
+      "dotIndicators": "With Dot Indicators",
+      "badgeGroups": "Badge Groups",
+      "badgeStates": "Badge States",
+      "customColors": "Custom Colors",
+      "skills": "Skills:",
+      "categories": "Categories:"
+    },
+    "variants": {
+      "default": "Default",
+      "secondary": "Secondary",
+      "destructive": "Destructive",
+      "outline": "Outline"
+    },
+    "sizes": {
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large"
+    },
+    "countBadges": {
+      "messages": "Messages",
+      "notifications": "Notifications",
+      "updates": "Updates",
+      "cartItems": "Cart Items",
+      "unread": "Unread",
+      "new": "New"
+    },
+    "dismissible": {
+      "tag1": "Tag 1",
+      "tag2": "Tag 2",
+      "tag3": "Tag 3",
+      "tag4": "Tag 4"
+    },
+    "pillBadges": {
+      "pillShape": "Pill Shape",
+      "category": "Category",
+      "tag": "Tag",
+      "angular": "Angular",
+      "typescript": "TypeScript",
+      "css": "CSS",
+      "javascript": "JavaScript"
+    },
+    "badgeStates": {
+      "normal": "Normal Badge",
+      "hoverMe": "Hover Me",
+      "disabled": "Disabled",
+      "selected": "Selected",
+      "default": "Default:",
+      "hovered": "Hovered:",
+      "disabledLabel": "Disabled:",
+      "selectedLabel": "Selected:"
+    },
+    "customColors": {
+      "pink": "Pink",
+      "indigo": "Indigo",
+      "teal": "Teal",
+      "rose": "Rose",
+      "cyan": "Cyan",
+      "amber": "Amber",
+      "lime": "Lime",
+      "slate": "Slate"
+    },
+    "status": {
+      "active": "Active",
+      "pending": "Pending",
+      "inactive": "Inactive",
+      "inProgress": "In Progress",
+      "featured": "Featured",
+      "premium": "Premium",
+      "favorite": "Favorite",
+      "done": "Done",
+      "todo": "Todo"
+    },
+    "dot": {
+      "online": "Online",
+      "away": "Away",
+      "offline": "Offline",
+      "live": "Live"
+    },
+    "skills": {
+      "javascript": "JavaScript",
+      "react": "React",
+      "angular": "Angular",
+      "nodejs": "Node.js",
+      "typescript": "TypeScript",
+      "css": "CSS",
+      "html": "HTML"
+    },
+    "categories": {
+      "technology": "Technology",
+      "design": "Design",
+      "marketing": "Marketing"
+    }
+  },
   "tables": {},
   "navigation": {
     "title": "Navigation Components",

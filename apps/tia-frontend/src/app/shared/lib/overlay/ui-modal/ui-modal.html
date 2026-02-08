@@ -1,22 +1,43 @@
 @if (isOpen()) {
-<div class="ui-modal" (click)="close()" (keydown.escape)="close()" role="button" tabindex="-1"
-  aria-label="Close modal overlay">
-
-  @if (hasNavigation()) {
+<div
+  class="ui-modal"
+  [class.ui-modal--tutorial]="isTutorialActive()"
+  (click)="close()"
+  (keydown.escape)="close()"
+  role="button"
+  tabindex="-1"
+>
+  @if (isTutorialActive()) {
+  <div class="ui-modal__spotlight" [style]="spotlightStyle()"></div>
+  } @if (hasNavigation()) {
   <button class="ui-modal__nav-btn prev" (click)="onPrev($event)">
-    <img src="./images/svg/overlay/arrow.svg" alt="Previous">
+    <img src="./images/svg/overlay/arrow.svg" alt="Previous" />
   </button>
-
   <button class="ui-modal__nav-btn next" (click)="onNext($event)">
-    <img src="./images/svg/overlay/arrow.svg" alt="Next">
+    <img src="./images/svg/overlay/arrow.svg" alt="Next" />
   </button>
   }
 
-  <div class="ui-modal__card" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()"
-    [class.ui-modal__card--scroll]="hasScroll()" role="dialog" aria-modal="true" tabindex="0">
-    <button type="button" class="ui-modal__close" (click)="close()" aria-label="Close">
+  <div
+    class="ui-modal__card"
+    [class.ui-modal__card--scroll]="hasScroll()"
+    [style]="cardStyle()"
+    (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
+    role="dialog"
+    aria-modal="true"
+    tabindex="0"
+  >
+    @if(!hideExit()){
+    <button
+      type="button"
+      class="ui-modal__close"
+      (click)="close()"
+      aria-label="Close"
+    >
       <span class="ui-modal__close-icon"></span>
     </button>
+    }
 
     <ng-content></ng-content>
   </div>

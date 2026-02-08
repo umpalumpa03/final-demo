@@ -294,7 +294,7 @@ export class AuthService {
       .pipe(
         tap((res) => {
           if (res.access_token) {
-            this.tokenService.setAccessToken(res.access_token);
+            this.tokenService.setResetPasswordToken(res.access_token);
           }
         }),
         finalize(() => this.isLoginLoading.set(false)),
@@ -304,10 +304,10 @@ export class AuthService {
   public createNewPassword(
     password: string,
   ): Observable<CreateNewPasswordResponse> {
-    const token = this.tokenService.accessToken;
+    const token = this.tokenService.resetPasswordToken;
     if (!token) {
       return throwError(
-        () => new Error('Missing forgot password access token'),
+        () => new Error('Missing reset password token'),
       );
     }
 
@@ -325,7 +325,7 @@ export class AuthService {
       .pipe(
         finalize(() => {
           this.isLoginLoading.set(false);
-          this.tokenService.clearAccessToken();
+          this.tokenService.clearResetPasswordToken();
         }),
       );
   }

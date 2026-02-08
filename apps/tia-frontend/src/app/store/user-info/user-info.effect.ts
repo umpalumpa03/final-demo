@@ -116,4 +116,24 @@ export class UserInfoEffects {
       ),
     ),
   );
+
+  public updateOnboarding$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserInfoActions.updateOnboardingStatus),
+      switchMap(({ completed }) =>
+        this.userInfoService.updateOnboardingStatus(completed).pipe(
+          map(() =>
+            UserInfoActions.updateOnboardingStatusSuccess({ completed }),
+          ),
+          catchError((error) =>
+            of(
+              UserInfoActions.updateOnboardingStatusError({
+                error: error.message,
+              }),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

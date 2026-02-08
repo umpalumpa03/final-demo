@@ -1,7 +1,6 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { UserInfoActions } from './user-info.actions';
 import { IUserState } from './models/user-info.model';
-import { closeCardDetailsModal } from '../products/cards/cards.actions';
 
 export const initialUserState: IUserState = {
   fullName: null,

@@ -11,8 +11,9 @@
       [date]="formatDate(transaction.createdAt)"
       [category]="getCategoryName(transaction.category)"
       [referenceNumber]="transaction.id.substring(0, 6).toUpperCase()"
-      [amount]="formatAmount(transaction.amount, transaction.currency)"
+[amount]="formatAmount(transaction.amount, transaction.currency, transaction.transactionType)"
       [status]="'completed'"
+       [transactionType]="transaction.transactionType"
     />
     }
   </div>

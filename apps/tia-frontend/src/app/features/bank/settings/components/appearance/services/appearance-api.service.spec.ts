@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
-import { AppearanceService } from './appearance.service';
+import { AppearanceService } from './appearance-api.service';
 import { environment } from '../../../../../../../environments/environment';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 

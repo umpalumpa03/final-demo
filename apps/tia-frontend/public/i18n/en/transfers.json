@@ -94,12 +94,17 @@
     },
     "accounts": {
       "title": "Recipient Details",
+      "allAccountsDisabled": "None of your accounts have the required permissions or matching currency for this transfer.",
       "recipientVerified": "Recipient verified successfully!",
       "selectRecipientAccount": "Select Recipient Account",
       "selectSenderAccount": "Select Your Account",
       "selectBothAccounts": "Please select both accounts",
       "noPermission": "This card does not have transfer permission. Please choose a different account.",
       "currencyMismatch": "Selected account currency does not match recipient's currency. Please select a different account.",
+      "reasons": {
+        "currencyMismatch": "The currency of this account does not match the recipient's currency.",
+        "noPermission": "This account type does not have permission for transfers in this currency."
+      },
       "recipientName": {
         "label": "Recipient Name",
         "placeholder": "Enter recipient's full name"
@@ -144,6 +149,11 @@
         "label": "Description (optional)",
         "placeholder": "Add a note for this transfer"
       }
+    },
+    "stepper": {
+      "recipient": "Recipient",
+      "accounts": "Accounts",
+      "amount": "Amount"
     }
   },
   "confirmation": {

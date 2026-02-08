@@ -21,7 +21,20 @@
     "english": "English",
     "georgian": "Georgian",
     "saveSuccess": "Language updated successfully!",
-    "saveError": "Failed to update language. Please try again."
+    "saveError": "Failed to update language. Please try again.",
+    "saveChanges": "Save Changes",
+    "infoTitle": "Language Settings",
+    "infoDescription": "Changing your language will update all text throughout the application. You can switch between languages at any time from this page.",
+    "languages": {
+      "en": {
+        "location": "Global",
+        "speakers": "1.5B speakers"
+      },
+      "ka": {
+        "location": "Georgia & Caucasus",
+        "speakers": "4M speakers"
+      }
+    }
   },
   "appearance": {
     "title": "Appearance",
@@ -45,7 +58,8 @@
     "dark": "Dark",
     "system": "System",
     "saveSuccess": "Theme saved successfully!",
-    "saveError": "Failed to save theme. Please try again."
+    "saveError": "Failed to save theme. Please try again.",
+    "saveChanges": "Save Changes"
   },
   "profile-photo": {
     "title": "Profile Photo",
@@ -113,9 +127,24 @@
     "title": "Approve Accounts",
     "pendingApprovals": "Pending Approvals"
   },
-  "approve-cards": {
+ "approve-cards": {
     "title": "Approve Cards",
-    "pendingCards": "Pending Cards"
+    "subtitle": "Pending Cards",
+    "confirmOverlay": {
+      "title": "Reset Changes?",
+      "subtitle": "Please approve your card. otherwise, switching will clear the permissions you have already selected.",
+      "cancelAction": "Go back",
+      "confirmAction": "Discard and switch"
+    },
+    "buttons": {
+      "permissions": "Permissions",
+      "approve": "Approve",
+      "decline": "Decline"
+    },
+    "alertMessages": {
+      "successDesc": "Card status updated successfully!",
+      "errorDesc": "Failed to update card status."
+    }
   },
   "loan-management": {
     "title": "Loan Management",

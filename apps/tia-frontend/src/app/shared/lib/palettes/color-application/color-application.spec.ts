@@ -1,11 +1,35 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ColorApplication } from './color-application';
-import {
-  colorApplication,
-  OCEANBLUE_APPLICATION_DATA,
-  ROYALBLUE_APPLICATION_DATA,
-  DEEPBLUE_APPLICATION_DATA,
-} from 'apps/tia-frontend/src/app/features/storybook/components/colorpalettes/config/palette-data.config';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { of } from 'rxjs';
+
+class FakeLoader implements TranslateLoader {
+  getTranslation() {
+    return of({
+      storybook: {
+        palette: {
+          application: {
+            oceanBlue: {
+              primary: { title: 'P', description: 'D' },
+              accent: { title: 'A', description: 'D' },
+              muted: { title: 'M', description: 'D' },
+            },
+            royalBlue: {
+              primary: { title: 'P', description: 'D' },
+              accent: { title: 'A', description: 'D' },
+              muted: { title: 'M', description: 'D' },
+            },
+            deepBlue: {
+              primary: { title: 'P', description: 'D' },
+              accent: { title: 'A', description: 'D' },
+              muted: { title: 'M', description: 'D' },
+            },
+          },
+        },
+      },
+    });
+  }
+}
 
 describe('ColorApplication', () => {
   let component: ColorApplication;
@@ -13,7 +37,12 @@ describe('ColorApplication', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ColorApplication],
+      imports: [
+        ColorApplication,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeLoader },
+        }),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ColorApplication);
@@ -25,24 +54,17 @@ describe('ColorApplication', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have oceanblue as default theme and themeLabel optional', () => {
+  it('should have oceanblue as default theme', () => {
     expect(component.theme()).toBe('oceanblue');
-    expect(typeof component.theme()).toBe('string');
-    expect(component.themeLabel()).toBeUndefined();
   });
 
-  it('should return oceanblue applications with required properties', () => {
+  it('should return 3 applications with valid structure', () => {
     const apps = component.applications();
-    expect(apps).toEqual(OCEANBLUE_APPLICATION_DATA);
-    expect(Array.isArray(apps)).toBe(true);
-    expect(apps.length).toBeGreaterThanOrEqual(3);
-
+    expect(apps.length).toBe(3);
     apps.forEach((app) => {
       expect(app).toHaveProperty('title');
       expect(app).toHaveProperty('description');
       expect(app).toHaveProperty('modifier');
-      expect(app.title.trim().length).toBeGreaterThan(0);
-      expect(app.description.trim().length).toBeGreaterThan(0);
     });
   });
 
@@ -51,26 +73,6 @@ describe('ColorApplication', () => {
     const modifiers = apps.map((app) => app.modifier);
     const uniqueModifiers = new Set(modifiers);
     expect(uniqueModifiers.size).toBe(modifiers.length);
-  });
-
-  it('should have all three theme variations with consistent structure', () => {
-    expect(colorApplication).toHaveProperty('oceanblue');
-    expect(colorApplication).toHaveProperty('royalblue');
-    expect(colorApplication).toHaveProperty('deepblue');
-
-    expect(colorApplication['royalblue']).toEqual(ROYALBLUE_APPLICATION_DATA);
-    expect(colorApplication['deepblue']).toEqual(DEEPBLUE_APPLICATION_DATA);
-
-    const themes = ['oceanblue', 'royalblue', 'deepblue'] as const;
-    themes.forEach((theme) => {
-      const apps = colorApplication[theme];
-      expect(apps.length).toBe(3);
-      apps.forEach((app) => {
-        expect(app).toHaveProperty('title');
-        expect(app).toHaveProperty('description');
-        expect(app).toHaveProperty('modifier');
-      });
-    });
   });
 
   it('should not mutate application data', () => {

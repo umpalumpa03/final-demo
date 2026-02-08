@@ -1,6 +1,5 @@
-
-@use "../../../../../../../../shared/styles/mixins" as *;
-@use "../../../../../../../../shared/styles/palette" as *;
+@use '../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../shared/styles/palette' as *;
 
 .account-cards {
   @include display-flex(column);
@@ -9,10 +8,19 @@
   &__account-info {
     @include flex-center(row, flex-start, flex-start);
     gap: 1.6rem;
-
-  
   }
-
+  &__card {
+    @include display-flex(column);
+    gap: 1.5rem;
+  }
+  &__card-info {
+    @include display-flex(column);
+    gap: 1rem;
+  }
+  &__card-meta {
+    @include display-flex(column);
+    gap: 0.5rem;
+  }
 
   &__grid {
     display: grid;
