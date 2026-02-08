@@ -46,9 +46,7 @@ export class TransferRecipientService {
 
     // check if phone matches user's own number
     if (currentType === 'phone' && this.isOwnPhoneNumber(value)) {
-      this.transferStore.setError(
-        'transfers.external.recipient.ownPhoneError',
-      );
+      this.transferStore.setError('transfers.external.recipient.ownPhoneError');
       return;
     }
 
@@ -80,13 +78,23 @@ export class TransferRecipientService {
           filter((info) => !!info),
           take(1),
           tap((info) => {
-            // auto-select single account
-            const accounts = info?.accounts || [];
-            if (accounts.length === 1) {
+            let accounts = info?.accounts || [];
+            if (accounts.length === 0 && info?.currency) {
+              accounts = [
+                {
+                  id: 'iban-recipient',
+                  iban: value,
+                  currency: info.currency,
+                },
+              ];
+              this.transferStore.setSelectedRecipientAccount(accounts[0]);
+            } else if (accounts.length === 1) {
               this.transferStore.setSelectedRecipientAccount(accounts[0]);
             }
+
             this.router.navigate(['/bank/transfers/external/accounts']);
           }),
+
           takeUntilDestroyed(this.destroyRef),
         )
         .subscribe();

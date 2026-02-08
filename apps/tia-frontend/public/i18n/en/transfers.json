@@ -99,6 +99,7 @@
       "selectSenderAccount": "Select Your Account",
       "selectBothAccounts": "Please select both accounts",
       "noPermission": "This card does not have transfer permission. Please choose a different account.",
+      "currencyMismatch": "Selected account currency does not match recipient's currency. Please select a different account.",
       "recipientName": {
         "label": "Recipient Name",
         "placeholder": "Enter recipient's full name"
