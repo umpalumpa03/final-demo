@@ -48,6 +48,9 @@ export const LoanManagementStore = signalStore(
     }),
     hasPendingApprovals: computed(() => store.pendingApprovals().length > 0),
     pendingCount: computed(() => store.pendingApprovals().length),
+    shouldLoadInitialData: computed(() => 
+      !store.hasInitialLoad() && !store.loading()
+    ),
   })),
 
   withMethods((store) => {
@@ -101,7 +104,7 @@ export const LoanManagementStore = signalStore(
           switchMap(() =>
             api.getPendingApprovals().pipe(
               tap((pendingApprovals) => {
-                patchState(store, { pendingApprovals, loading: false });
+                patchState(store, { pendingApprovals, loading: false, hasInitialLoad: true });
               }),
               catchError((err: HttpErrorResponse) => {
                 const errorMsg =

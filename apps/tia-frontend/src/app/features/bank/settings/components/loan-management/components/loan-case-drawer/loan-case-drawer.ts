@@ -155,7 +155,8 @@ export class LoanCaseDrawer {
     }
   }
 
-  public onReasonChange(value: string): void {
-    this.declineReason.set(value);
+  public onReasonInput(event: Event): void {
+    const target = event.target as HTMLTextAreaElement;
+    this.declineReason.set(target.value);
   }
 }

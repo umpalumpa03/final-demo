@@ -18,7 +18,6 @@ import { useLoanManagementConfig } from '../shared/config/loan-management.config
   imports: [BasicCard, PendingApprovalsTable, LoanCaseDrawer, DismissibleAlerts],
   templateUrl: './loan-management-container.html',
   styleUrl: './loan-management-container.scss',
-  providers: [LoanManagementStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoanManagementContainer implements OnInit {
@@ -44,7 +43,9 @@ export class LoanManagementContainer implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.store.loadPendingApprovals();
+    if (this.store.shouldLoadInitialData()) {
+      this.store.loadPendingApprovals();
+    }
   }
 
   protected onRowClick(loanId: string): void {

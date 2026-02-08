@@ -1,19 +1,18 @@
+@use '../../../../../../shared/styles/mixins' as *;
+
 .loan-management-container {
   width: 100%;
 
   &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    @include flex-center(row, space-between, center);
     padding: 1rem 1.5rem;
     border-bottom: 0.1rem solid var(--border-color);
     background-color: var(--bg-secondary);
   }
 
   &__count {
-    font-size: 0.875rem;
+    @include font-inter(500, 0.875rem, 1.5);
     color: var(--text-secondary);
-    font-weight: 500;
   }
 }
 

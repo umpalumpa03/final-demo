@@ -12,4 +12,5 @@ export const loanManagementInitialState: LoanManagementState = {
   actionLoading: false,
   actionError: null,
   successMessage: null,
+  hasInitialLoad: false,
 };

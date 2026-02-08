@@ -284,18 +284,31 @@
     background-color: $blue-100;
   }
 
-  &__decline-btn {
-    app-button {
-      --color-primary: #{$blue-400};
-      --color-fg: #{$red-700};
-      --color-bg: transparent;
-    }
+  &__action-icon {
+    @include svg-icon(1.6rem);
+    display: inline-block;
   }
 
-  &__action-icon {
-    width: 1.6rem;
-    height: 1.6rem;
-    display: inline-block;
+  &__decline-btn {
+    @include flex-center(row, flex-start, center);
+    gap: 1rem;
+    border-radius: 0.8rem;
+    border: 0.063rem solid $red-700;
+    background: $blue-100;
+    padding: 0.8rem 1.6rem;
+    @include font-arimo(400, 1.4rem, 1.5);
+    color: $red-700;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
+      opacity: 0.9;
+    }
   }
 }
 

@@ -158,7 +158,7 @@
             class="loan-drawer__textarea"
             [placeholder]="labels().declinePlaceholder"
             [value]="declineReason()"
-            (input)="onReasonChange($any($event.target).value)"
+            (input)="onReasonInput($event)"
             rows="3"
           ></textarea>
         </section>
@@ -168,27 +168,26 @@
     <footer class="loan-drawer__footer">
       @if (!showDeclineForm()) {
         <app-button
-          [variant]="'outline'"
+          variant="outline"
           (click)="onClose()"
         >
           {{ labels().close }}
         </app-button>
-        <span class="loan-drawer__decline-btn">
-          <app-button
-            [variant]="'outline'"
-            [isDisabled]="!loanDetails() || isActionLoading()"
-            (click)="onShowDeclineForm()"
-          >
-            <img
-              class="loan-drawer__action-icon"
-              src="images/svg/button-icons/red_X.svg"
-              alt="Decline"
-            />
-            {{ labels().decline }}
-          </app-button>
-        </span>
+        <button
+          class="loan-drawer__decline-btn"
+          [disabled]="!loanDetails() || isActionLoading()"
+          (click)="onShowDeclineForm()"
+          aria-label="Decline"
+        >
+          <img
+            class="loan-drawer__action-icon"
+            src="images/svg/button-icons/red_X.svg"
+            alt="Decline"
+          />
+          {{ labels().decline }}
+        </button>
         <app-button
-          [variant]="'success'"
+          variant="success"
           [isDisabled]="!canApprove()"
           [isLoading]="isActionLoading()"
           (click)="onApprove()"
@@ -202,14 +201,14 @@
         </app-button>
       } @else {
         <app-button
-          [variant]="'outline'"
+          variant="outline"
           [isDisabled]="isActionLoading()"
           (click)="onCancelDecline()"
         >
           {{ labels().cancel }}
         </app-button>
         <app-button
-          [variant]="'destructive'"
+          variant="destructive"
           [isDisabled]="!canDecline()"
           [isLoading]="isActionLoading()"
           (click)="onConfirmDecline()"

@@ -91,4 +91,5 @@ export interface LoanManagementState {
   actionLoading: boolean;
   actionError: string | null;
   successMessage: string | null;
+  hasInitialLoad: boolean;
 }

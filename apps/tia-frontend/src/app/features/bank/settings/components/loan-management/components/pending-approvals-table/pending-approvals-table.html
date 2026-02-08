@@ -1,5 +1,4 @@
 <div class="pending-approvals">
-  <!-- Loading State -->
   @if (isLoading()) {
     <div class="pending-approvals__loading">
       <app-spinner size="large"></app-spinner>
@@ -7,7 +6,6 @@
     </div>
   }
 
-  <!-- Error State -->
   @if (showError()) {
     <div class="pending-approvals__error">
       <app-error-states
@@ -19,7 +17,6 @@
     </div>
   }
 
-  <!-- Empty State -->
   @if (showEmptyState()) {
     <app-error-states
       variant="not-found"
@@ -32,7 +29,6 @@
     ></app-error-states>
   }
 
-  <!-- List -->
   @if (showList()) {
     <div class="pending-approvals__list">
       @for (approval of approvals(); track approval.id) {
@@ -46,16 +42,13 @@
           (click)="onRowClick(approval.id)"
         >
           <div class="pending-approvals__card">
-            <!-- Avatar using library component -->
             <app-avatar
               [initials]="getInitials(approval.userFullName)"
               [size]="'lg'"
               [color]="'blue'"
             />
 
-            <!-- Content -->
             <div class="pending-approvals__card-middle">
-              <!-- Header Row: Name + Badge -->
               <div class="pending-approvals__card-header-row">
                 <h3 class="pending-approvals__card-title">{{ approval.userFullName }}</h3>
                 <app-badges
@@ -65,10 +58,8 @@
                 />
               </div>
 
-              <!-- Subtitle: Purpose + Amount -->
               <p class="pending-approvals__card-subtitle">{{ approval.purpose }} - {{ approval.loanAmount | currency:'USD':'symbol':'1.0-0' }}</p>
 
-              <!-- Details Row -->
               <div class="pending-approvals__card-details">
                 <div>
                   <strong>{{ approval.months }} months</strong>
@@ -79,7 +70,6 @@
               </div>
             </div>
 
-            <!-- Arrow -->
             <div class="pending-approvals__card-action">
               <img src="./images/svg/feature-loans/arrow.svg" alt="">
             </div>

@@ -4,17 +4,12 @@ import { map, switchMap } from 'rxjs';
 import { TranslationLoaderService } from '../../../../../../../core/i18n';
 
 export const LOAN_DRAWER_TRANSLATION_KEYS = {
-  // Header
   title: 'loans.management.drawer.title',
   subtitle: 'loans.management.drawer.subtitle',
-
-  // Section titles
   applicantSection: 'loans.management.drawer.applicantSection',
   loanSection: 'loans.management.drawer.loanSection',
   riskSection: 'loans.management.drawer.riskSection',
   declineSection: 'loans.management.drawer.declineSection',
-
-  // Applicant fields
   fullName: 'loans.management.drawer.fields.fullName',
   email: 'loans.management.drawer.fields.email',
   phoneNumber: 'loans.management.drawer.fields.phoneNumber',
@@ -23,8 +18,6 @@ export const LOAN_DRAWER_TRANSLATION_KEYS = {
   annualIncome: 'loans.management.drawer.fields.annualIncome',
   creditScore: 'loans.management.drawer.fields.creditScore',
   applicantUnavailable: 'loans.management.drawer.applicantUnavailable',
-
-  // Loan fields
   loanAmount: 'loans.management.drawer.fields.loanAmount',
   loanPurpose: 'loans.management.drawer.fields.loanPurpose',
   loanTerm: 'loans.management.drawer.fields.loanTerm',
@@ -32,16 +25,10 @@ export const LOAN_DRAWER_TRANSLATION_KEYS = {
   monthlyPayment: 'loans.management.drawer.fields.monthlyPayment',
   requestDate: 'loans.management.drawer.fields.requestDate',
   months: 'loans.management.drawer.fields.months',
-
-  // Risk fields
   debtToIncome: 'loans.management.drawer.fields.debtToIncome',
   loanToIncome: 'loans.management.drawer.fields.loanToIncome',
   totalInterest: 'loans.management.drawer.fields.totalInterest',
-
-  // Decline form
   declinePlaceholder: 'loans.management.drawer.declinePlaceholder',
-
-  // Buttons
   close: 'loans.management.drawer.buttons.close',
   decline: 'loans.management.drawer.buttons.decline',
   approve: 'loans.management.drawer.buttons.approve',
