@@ -11,6 +11,97 @@
     padding: 0 1rem;
   }
 
+  &__sender-account {
+    margin-bottom: 3.2rem;
+
+    &__header {
+      margin-bottom: 1.6rem;
+    }
+
+    &__title {
+      @include font-inter(600, 1.4rem, 2rem);
+      color: $blue-ocean;
+      text-transform: uppercase;
+      letter-spacing: 0.05rem;
+    }
+  }
+
+  &__from-card {
+    @include display-flex(column);
+    gap: 0.8rem;
+    background: $blue-royal-background;
+    border: 0.1rem solid $blue-ocean-muted;
+    border-radius: 1.2rem;
+    overflow: hidden;
+    padding: 1.6rem;
+
+    &__body {
+      @include flex-center(row, flex-start, center);
+      gap: 1.6rem;
+    }
+
+    &__icon {
+      @include flex-center();
+      width: 4rem;
+      height: 4rem;
+      background: $blue-200;
+      border-radius: 1.2rem;
+      flex-shrink: 0;
+
+      img {
+        @include svg-icon(2rem);
+      }
+    }
+
+    &__content {
+      @include display-flex(column);
+      gap: 0.2rem;
+      flex: 1;
+      min-width: 0;
+    }
+
+    &__name {
+      @include font-inter(600, 1.6rem, 2.4rem);
+      color: var(--color-fg);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &__details {
+      @include flex-center(row, flex-start, center);
+      gap: 1.2rem;
+    }
+
+    &__iban {
+      @include font-inter(400, 1.3rem, 2rem);
+      color: $gray-600;
+      letter-spacing: 0.05rem;
+    }
+
+    @media (max-width: 480px) {
+      padding: 1.2rem;
+      gap: 1.2rem;
+
+      &__icon {
+        width: 4rem;
+        height: 4rem;
+
+        img {
+          @include svg-icon(2rem);
+        }
+      }
+
+      &__name {
+        font-size: 1.4rem;
+      }
+
+      &__iban {
+        font-size: 1.2rem;
+      }
+    }
+  }
+
   &__header {
     margin-bottom: 3.2rem;
   }
@@ -32,13 +123,18 @@
   &__recipient-accounts,
   &__sender-accounts {
     margin-bottom: 3.2rem;
+    &__header{
+      @include flex-center(row, space-between, center);
+      margin-bottom: 2rem;
+    }
   }
 
+
+
   &__recipient-accounts-title,
-  &__sender-accounts-title {
+  &__sender-accounts__header-title {
     @include font-inter(600, 1.8rem, 2.4rem);
     color: var(--color-fg);
-    margin-bottom: 2rem;
   }
 
   &__accounts-grid {
@@ -64,9 +160,7 @@
   }
 
   &__footer {
-    @include display-flex(row);
-    justify-content: space-between;
-    align-items: center;
+    @include flex-center(row, space-between, center);
     gap: 1.6rem;
     margin-top: 4rem;
     padding-top: 2.4rem;

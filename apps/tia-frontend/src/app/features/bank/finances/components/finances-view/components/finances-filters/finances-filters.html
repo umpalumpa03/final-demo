@@ -7,7 +7,7 @@
           [variant]="activeFilter() === option.type ? 'default' : 'outline'"
           (click)="filterChange.emit(option.type)"
         >
-          {{ option.label }}
+          {{ 'my-finances.finances.filters.' + option.type | translate }}
         </app-button>
       }
     </div>
@@ -15,17 +15,17 @@
     <div class="finances-filters__inputs">
       @if (activeFilter() === null) {
         <div class="finances-filters__info-badge">
-          <p>Showing data for the <strong>past 12 months</strong></p>
+          <p>{{ 'my-finances.finances.filters.twelve_months' | translate }}</p>
         </div>
       } 
       
       @if (activeFilter() === 'month') {
         <div class="finances-filters__input-item">
-          <label class="finances-filters__label">Select Month:</label>
+          <label class="finances-filters__label">{{ 'my-finances.finances.filters.select_month' | translate }}</label>
           <div class="finances-filters__control-wrapper">
             <lib-select
               [options]="monthOptions()"
-              [config]="{ placeholder: 'Choose...' }"
+              [config]="{ placeholder: ('my-finances.finances.filters.placeholder' | translate) }"
               [formControl]="getControl('selectedMonth')"
             ></lib-select>
           </div>
@@ -35,7 +35,7 @@
       @if (activeFilter() === 'custom') {
         <div class="finances-filters__range-group">
           <div class="finances-filters__input-item">
-            <label class="finances-filters__label">From:</label>
+            <label class="finances-filters__label">{{ 'my-finances.finances.filters.from' | translate }}</label>
             <div class="finances-filters__control-wrapper">
               <lib-text-input
                 type="date"
@@ -46,7 +46,7 @@
           </div>
 
           <div class="finances-filters__input-item">
-            <label class="finances-filters__label">To:</label>
+            <label class="finances-filters__label">{{ 'my-finances.finances.filters.to' | translate }}</label>
             <div class="finances-filters__control-wrapper">
               <lib-text-input
                 type="date"
@@ -57,6 +57,14 @@
           </div>
         </div>
       }
+
+      <app-button
+        variant="outline"
+        [isLoading]="isRefreshing()"
+        (click)="update.emit()"
+      >
+        {{ 'my-finances.finances.filters.update_btn' | translate }}
+      </app-button>
     </div>
   </div>
 
@@ -64,7 +72,7 @@
     <div class="finances-filters__error-message">
       <app-basic-alerts 
         alertType="error" 
-        alertMessage="The 'From' date cannot be later than the 'To' date."
+        [alertMessage]="'my-finances.finances.errors.date_range' | translate"
       ></app-basic-alerts>
     </div>
   }

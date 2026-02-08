@@ -60,6 +60,8 @@ export class FinancesView {
 
   public readonly loading = input<boolean>(false);
   public readonly error = input<string | null>(null);
+  public readonly isRefreshing = input<boolean>(false);
+  public readonly update = output<void>();
 
   public readonly filterChange = output<FilterType>();
 }

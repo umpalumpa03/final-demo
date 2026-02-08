@@ -5,6 +5,16 @@
   [class.transfers-account-card--recipient]="mode() === 'recipient'"
   (click)="onCardClick()"
 >
+  @if (isFavorite()) {
+  <div class="transfers-account-card__favorite">
+    <img
+      src="images/svg/transfers/star.svg"
+      alt="Favorite"
+      class="transfers-account-card__favorite-icon"
+    />
+  </div>
+  }
+
   <div class="transfers-account-card__icon">
     <img
       [src]="cardIcon()"
@@ -35,7 +45,11 @@
 
   @if (isSelected()) {
   <div class="transfers-account-card__check">
-    <img src="images/svg/transfers/check.svg" alt="Selected" />
+    <img
+      src="images/svg/transfers/check.svg"
+      alt="Selected"
+      class="transfers-account-card__check-icon"
+    />
   </div>
   }
 </div>

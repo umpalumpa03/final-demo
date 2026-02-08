@@ -1,3 +1,4 @@
+import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
 import { ButtonVariant } from '@tia/shared/lib/primitives/button/button.model';
 
 export interface TemplateGroups {
@@ -63,7 +64,8 @@ export interface HeaderCtaButton {
 export type formSubmitType =
   | 'create-group'
   | 'rename-template'
-  | 'rename-group';
+  | 'rename-group'
+  | 'create-template';
 export interface FormSubmitPayload {
   type: formSubmitType;
   values: Record<string, string>;
@@ -99,3 +101,13 @@ export type TreeAction =
   | { type: 'item-edit'; id: string }
   | { type: 'group-delete'; id: string }
   | { type: 'group-edit'; id: string };
+
+export interface ProviderTypeForStore {
+  providerId: InputFieldValue;
+  index: number;
+}
+
+export interface MappedProviderForDropdown {
+  label: string;
+  value: string;
+}

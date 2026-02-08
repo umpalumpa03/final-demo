@@ -13,8 +13,6 @@ import {
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import {
   AsyncPipe,
-  CurrencyPipe,
-  DatePipe,
   DecimalPipe,
 } from '@angular/common';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';

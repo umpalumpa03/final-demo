@@ -1,0 +1,52 @@
+@use '../../../../../../../shared/styles/palette' as *;
+@use '../../../../../../../shared/styles/mixins' as *;
+@use '../../styles/button-mixins' as *;
+
+.customize-button {
+  width: 100%;
+  padding: 1.4rem 2rem;
+  background: $white;
+  border: 1px solid $gray-200;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  @include flex-center($justify: space-between, $align: center);
+
+  &__left {
+    @include flex-center($align: center);
+    gap: 1.2rem;
+  }
+
+  &__text {
+    @include font-inter(500, 1.4rem);
+    color: $gray-700;
+  }
+
+  .icon {
+    transition: all 0.2s ease;
+    display: inline-block;
+    flex-shrink: 0;
+    &__customize {
+      @include icon__mask(
+        '/images/svg/dashboard/customize.svg',
+        2rem,
+        var(--color-primary)
+      );
+    }
+
+    &__arrow__right {
+      @include icon__mask('/images/svg/paybill/right.svg', 1.8rem, $gray-400);
+    }
+  }
+
+  &:hover {
+    border-color: var(--color-primary);
+    background: $gray-25;
+    box-shadow: 0 4px 12px rgba($black, 0.05);
+
+    .icon__arrow__right {
+      background-color: var(--color-primary);
+      transform: translateX(3px);
+    }
+  }
+}

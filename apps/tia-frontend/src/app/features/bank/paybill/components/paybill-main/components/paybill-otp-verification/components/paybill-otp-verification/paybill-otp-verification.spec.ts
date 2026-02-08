@@ -7,6 +7,7 @@ import {
   PaybillProvider,
 } from '../../../../shared/models/paybill.model';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('PaybillOtpVerification', () => {
   let component: PaybillOtpVerification;
@@ -28,6 +29,7 @@ describe('PaybillOtpVerification', () => {
     await TestBed.configureTestingModule({
       imports: [PaybillOtpVerification, TranslateModule.forRoot()],
       providers: [provideRouter([])],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PaybillOtpVerification);
@@ -84,7 +86,7 @@ describe('PaybillOtpVerification', () => {
     it('should NOT emit verify if the event is invalid', () => {
       const spy = vi.spyOn(component.verify, 'emit');
 
-      component.onVerify({ isCalled: false } as any);
+      component.onVerify({ isCalled: false, otp: '1234' } as any);
 
       expect(spy).not.toHaveBeenCalled();
     });

@@ -5,25 +5,27 @@
 
     <div class="settings__nav-group">
       @for(navItem of navItems; track navItem.routerLink) {
-        <div class="settings__nav-link-container">
-          <a [routerLink]="navItem.routerLink" routerLinkActive="active">
-            <img [src]="navItem.src" [alt]="navItem.alt">
-            {{ navItem.translateString | translate }}
-          </a>
-        </div>
+      <div class="settings__nav-link-container">
+        <a [routerLink]="navItem.routerLink" routerLinkActive="active">
+          <img [src]="navItem.src" [alt]="navItem.alt">
+          {{ navItem.translateString | translate }}
+        </a>
+      </div>
       }
     </div>
 
+    @if (isAdmin()) {
     <div class="settings__nav-group--admin">
       @for(navItem of adminNavItems; track navItem.routerLink) {
-        <div class="settings__nav-link-container">
-          <a [routerLink]="navItem.routerLink" routerLinkActive="active">
-            <img [src]="navItem.src" [alt]="navItem.alt">
-            {{ navItem.translateString | translate }}
-          </a>
-        </div>
+      <div class="settings__nav-link-container">
+        <a [routerLink]="navItem.routerLink" routerLinkActive="active">
+          <img [src]="navItem.src" [alt]="navItem.alt">
+          {{ navItem.translateString | translate }}
+        </a>
+      </div>
       }
     </div>
-    
- </nav>
+    }
+
+  </nav>
 </div>

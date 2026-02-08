@@ -13,13 +13,15 @@ export class TransferAccountSelectionService {
     account: RecipientAccount,
     currentSelected: RecipientAccount | null,
   ): void {
-    // reset amount if selecting different account
+    if (account.id === 'iban-recipient' && currentSelected?.id === account.id) {
+      return;
+    }
+
     if (currentSelected?.id !== account.id) {
       this.transferStore.setAmount(0);
       this.transferStore.setInsufficientBalance(false);
     }
 
-    // toggle if clicking same account, deselect it
     if (currentSelected?.id === account.id) {
       this.transferStore.setSelectedRecipientAccount(null);
     } else {
