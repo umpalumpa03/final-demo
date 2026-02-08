@@ -7,12 +7,13 @@ import { vi, describe, beforeEach, it, expect } from 'vitest';
 import { ProfilePhotoEffects } from './profile-photo.effects';
 import { ProfilePhotoApiService } from '../../../../../../../shared/services/profile-photo/profile-photo.service';
 import { ProfilePhotoActions } from './profile-photo.actions';
-import { selectDefaultAvatars } from './profile-photo.selectors';
+import { selectDefaultAvatars, selectSavedAvatarUrl, selectAvatarId } from './profile-photo.selectors';
 import { DefaultAvatarResponse, DefaultAvatarWithUrl } from './profile-photo.state';
 import { environment } from '../../../../../../../../environments/environment';
 import { selectUserInfo } from '../../../../../../../store/user-info/user-info.selectors';
 import { initialUserState } from '../../../../../../../store/user-info/user-info.reducer';
 import { UserInfoActions } from '../../../../../../../store/user-info/user-info.actions';
+import { throwError } from 'rxjs';
 
 describe('ProfilePhotoEffects', () => {
   let actions$: Subject<any>;
@@ -43,6 +44,14 @@ describe('ProfilePhotoEffects', () => {
             {
               selector: selectUserInfo,
               value: initialUserState,
+            },
+            {
+              selector: selectSavedAvatarUrl,
+              value: null,
+            },
+            {
+              selector: selectAvatarId,
+              value: null,
             },
           ],
         }),
@@ -252,6 +261,79 @@ describe('ProfilePhotoEffects', () => {
         avatarUrl,
       }),
     );
+  });
+
+
+  it('should set user initials when no saved avatar and user has fullName', async () => {
+    store.overrideSelector(selectUserInfo, {
+      ...initialUserState,
+      fullName: 'John Doe',
+    });
+    store.overrideSelector(selectSavedAvatarUrl, null);
+    store.refreshState();
+
+    const promise = firstValueFrom(effects.loadUserInitials$);
+
+    actions$.next(UserInfoActions.loadUserSuccess({
+      user: {
+        fullName: 'John Doe',
+        theme: null,
+        language: null,
+        avatar: null,
+        role: null,
+        email: 'john@example.com',
+      },
+    }));
+
+    const result = await promise;
+
+    expect(result).toEqual(ProfilePhotoActions.setUserInitials({ initials: 'JD' }));
+  });
+
+  it('should reset profile photo when avatar changes on user load', async () => {
+    const oldAvatarId = 'old-avatar-123';
+    const newAvatarId = 'new-avatar-456';
+    const avatarUrl = `${environment.apiUrl}/settings/current-user-avatar/${newAvatarId}`;
+
+    store.overrideSelector(selectUserInfo, {
+      ...initialUserState,
+      fullName: 'TestUser',
+      avatar: avatarUrl,
+    });
+    store.overrideSelector(selectAvatarId, oldAvatarId);
+    store.refreshState();
+
+    const promise = firstValueFrom(effects.resetProfilePhotoOnUserLoad$);
+
+    actions$.next(
+      UserInfoActions.loadUserSuccess({
+        user: {
+          fullName: 'TestUser',
+          theme: null,
+          language: null,
+          avatar: avatarUrl,
+          role: null,
+          email: 'test@example.com',
+        },
+      }),
+    );
+
+    const result = await promise;
+
+    expect(result).toEqual(ProfilePhotoActions.resetProfilePhoto());
+  });
+
+  it('should handle removeAvatar error', async () => {
+    const error = new Error('Remove failed');
+    (profilePhotoApiServiceMock.removeUserAvatar as any).mockReturnValue(throwError(() => error));
+
+    const promise = firstValueFrom(effects.removeAvatar$);
+
+    actions$.next(ProfilePhotoActions.removeAvatarRequest());
+
+    const result = await promise;
+
+    expect(result).toEqual(ProfilePhotoActions.clearUploadedFile());
   });
 
 });

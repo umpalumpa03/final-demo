@@ -42,5 +42,6 @@ export const UserInfoActions = createActionGroup({
     'Update Onboarding Status': props<{ completed: boolean }>(),
     'Update Onboarding Status Success': props<{ completed: boolean }>(),
     'Update Onboarding Status Error': props<{ error: string }>(),
+    'Logout': emptyProps(),
   },
 });

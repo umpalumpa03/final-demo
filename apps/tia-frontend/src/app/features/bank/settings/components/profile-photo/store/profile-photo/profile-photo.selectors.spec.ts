@@ -25,6 +25,8 @@ describe('ProfilePhoto Selectors', () => {
     savedAvatarUrl: 'saved-url',
     avatarId: 'avatar-1',
     avatarType: 'default',
+    userInitials: 'AB',
+    savingChanges: false,
   });
 
   it('should select feature state', () => {

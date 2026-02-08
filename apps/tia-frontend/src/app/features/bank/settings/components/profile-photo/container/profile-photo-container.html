@@ -3,10 +3,12 @@
   [defaultAvatarsLoading]="defaultAvatarsLoading()"
   [selectedAvatarId]="selectedAvatarId()"
   [photoUrl]="currentAvatarUrl()"
+  [initials]="userInitials()"
   [alertType]="alertType()"
   [alertMessage]="alertMessage()"
   [isUploadModalOpen]="isUploadModalOpen()"
   [isDragOver]="isDragOver()"
+  [savingChanges]="savingChanges()"
   (openUploadModal)="onOpenUploadModal()"
   (uploadModalClosed)="onCloseUploadModal()"
   (dragOver)="onDragOver($event)"
@@ -17,5 +19,39 @@
   (removePhoto)="onRemovePhoto()"
   (saveChanges)="onSaveChanges()"
   (selectDefaultAvatar)="onSelectDefaultAvatar($event)"
+  (imageError)="onImageLoadError()"
 >
 </app-profile-photo>
+
+<app-user-info
+  [pId]="pId()"
+  [phoneNumber]="phoneNumber()"
+  [personalInfoLoading]="personalInfoLoading()"
+  [personalInfoUpdated]="personalInfoUpdated()"
+  [personalInfoError]="personalInfoError()"
+  [editedPId]="editedPId()"
+  [isEditing]="isEditing()"
+  [isPersonalNumberUnchanged]="isPersonalNumberUnchanged()"
+  [editedPhoneNumber]="editedPhoneNumber()"
+  [isPhoneNumberUnchanged]="isPhoneNumberUnchanged()"
+  [phoneUpdateLoading]="phoneUpdateLoading()"
+  [saveDisabledReason]="saveDisabledReason()"
+  (edit)="onEdit()"
+  (personalNumberChange)="onPersonalNumberChange($event)"
+  (phoneNumberChange)="onPhoneNumberChange($event)"
+  (cancelEdit)="onCancelEdit()"
+  (save)="onSave()"
+></app-user-info>
+
+<app-otp-modal
+  [isOpen]="isOtpModalOpen()"
+  [title]="'settings.profile-photo.verifyPhoneUpdate' | translate"
+  [description]="'settings.profile-photo.otpDescription' | translate"
+  [verifyOtpTitle]="'settings.profile-photo.verify' | translate"
+  [isLoading]="phoneUpdateLoading()"
+  [hasResend]="phoneUpdateResendCount() < 3"
+  [resendText]="'settings.profile-photo.didntReceiveCode' | translate"
+  (closed)="onOtpModalClosed()"
+  (verify)="onVerifyOtp($event)"
+  (resend)="onResendOtp()"
+></app-otp-modal>

@@ -3,6 +3,7 @@ import {
   Component,
   input,
   output,
+  effect,
 } from '@angular/core';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -39,6 +40,7 @@ export class ProfilePhotoComponent {
   public readonly alertMessage = input<string>('');
   public readonly isUploadModalOpen = input<boolean>(false);
   public readonly isDragOver = input<boolean>(false);
+  public readonly savingChanges = input<boolean>(false);
 
   public readonly openUploadModal = output<void>();
   public readonly alertClose = output<void>();
@@ -50,6 +52,7 @@ export class ProfilePhotoComponent {
   public readonly dragLeave = output<DragEvent>();
   public readonly fileDrop = output<DragEvent>();
   public readonly fileInputChange = output<Event>();
+  public readonly imageError = output<void>();
 
   public onFileButtonClick(): void {
     this.openUploadModal.emit();
@@ -57,5 +60,9 @@ export class ProfilePhotoComponent {
 
   public onDefaultAvatarClick(avatarId: string): void {
     this.selectDefaultAvatar.emit(avatarId);
+  }
+
+  public onImageError(): void {
+    this.imageError.emit();
   }
 }
