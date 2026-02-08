@@ -96,6 +96,7 @@
     "accounts": {
       "title": "მიმღების დეტალები",
       "recipientVerified": "მიმღები წარმატებით გადამოწმდა!",
+      "allAccountsDisabled": "თქვენს არცერთ ანგარიშს არ აქვს ამ გადარიცხვისთვის საჭირო უფლება ან შესაბამისი ვალუტა.",
       "selectRecipientAccount": "აირჩიეთ მიმღების ანგარიში",
       "selectSenderAccount": "აირჩიეთ თქვენი ანგარიში",
       "selectBothAccounts": "გთხოვთ აირჩიოთ ორივე ანგარიში",
