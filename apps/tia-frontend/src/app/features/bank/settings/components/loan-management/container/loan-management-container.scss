@@ -1,0 +1,45 @@
+@use '../../../../../../shared/styles/mixins' as *;
+
+.loan-management-container {
+  width: 100%;
+
+  &__header {
+    @include flex-center(row, space-between, center);
+    padding: 1rem 1.5rem;
+    border-bottom: 0.1rem solid var(--border-color);
+    background-color: var(--bg-secondary);
+  }
+
+  &__count {
+    @include font-inter(500, 0.875rem, 1.5);
+    color: var(--text-secondary);
+  }
+}
+
+.alert-toast {
+  position: fixed;
+  top: 5rem;
+  right: 5rem;
+  z-index: 1000;
+  animation: slideInBounce 0.5s ease-out;
+}
+
+@keyframes slideInBounce {
+  0% {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+
+  60% {
+    transform: translateX(-1rem);
+    opacity: 1;
+  }
+
+  80% {
+    transform: translateX(0.5rem);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}

@@ -5,10 +5,11 @@ import {
   output,
 } from '@angular/core';
 import { Language } from '../../../models/language.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-language-selection-card',
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './language-selection-card.html',
   styleUrl: './language-selection-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

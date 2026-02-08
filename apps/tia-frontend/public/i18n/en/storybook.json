@@ -1,5 +1,99 @@
 {
-  "palettes": {},
+  "palette": {
+    "title": "Color Palettes",
+    "subtitle": "Three beautiful blue color schemes for your components",
+    "colorNames": {
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "accent": "Accent",
+      "muted": "Muted",
+      "background": "Background",
+      "foreground": "Foreground"
+    },
+    "themes": {
+      "oceanBlue": {
+        "title": "Ocean Blue",
+        "subtitle": "Light and refreshing theme perfect for modern applications",
+        "label": "Ocean Blue Theme"
+      },
+      "royalBlue": {
+        "title": "Royal Blue",
+        "subtitle": "Rich and elegant theme with vibrant blue tones",
+        "label": "Royal Blue Theme"
+      },
+      "deepBlue": {
+        "title": "Deep Blue",
+        "subtitle": "Professional and modern theme with sophisticated blues",
+        "label": "Deep Blue Theme"
+      }
+    },
+    "application": {
+      "title": "Color Application Examples",
+      "oceanBlue": {
+        "primary": {
+          "title": "Ocean Primary",
+          "description": "Clean and refreshing design with excellent readability"
+        },
+        "accent": {
+          "title": "Ocean Accent",
+          "description": "Soft accents for secondary elements"
+        },
+        "muted": {
+          "title": "Ocean Muted",
+          "description": "Perfect for backgrounds and subtle elements"
+        }
+      },
+      "royalBlue": {
+        "primary": {
+          "title": "Royal Primary",
+          "description": "Bold and elegant with strong visual presence"
+        },
+        "accent": {
+          "title": "Royal Accent",
+          "description": "Vibrant accents for emphasis"
+        },
+        "muted": {
+          "title": "Royal Muted",
+          "description": "Gentle backgrounds for content areas"
+        }
+      },
+      "deepBlue": {
+        "primary": {
+          "title": "Deep Primary",
+          "description": "Professional and sophisticated appearance"
+        },
+        "accent": {
+          "title": "Deep Accent",
+          "description": "Neutral accents for modern interfaces"
+        },
+        "muted": {
+          "title": "Deep Muted",
+          "description": "Subtle backgrounds for corporate design"
+        }
+      }
+    },
+    "notes": {
+      "title": "Accessibility & Usage Notes",
+      "items": {
+        "highContrast": {
+          "title": "High Contrast",
+          "description": "All three themes maintain WCAG AA compliant contrast ratios for optimal readability"
+        },
+        "consistentHierarchy": {
+          "title": "Consistent Hierarchy",
+          "description": "Primary, secondary, and accent colors are carefully balanced for visual hierarchy"
+        },
+        "flexibleApplication": {
+          "title": "Flexible Application",
+          "description": "Each palette works beautifully for dashboards, landing pages, and web applications"
+        },
+        "easySwitching": {
+          "title": "Easy Switching",
+          "description": "Use the palette selector in the header to instantly switch between themes"
+        }
+      }
+    }
+  },
   "buttons": {},
   "inputs": {
     "title": "Input Components",

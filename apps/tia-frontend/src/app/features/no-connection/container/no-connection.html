@@ -2,21 +2,9 @@
     <div class="dialog" [class.dialog--reconnected]="isReconnected()">
         <div class="dialog__icon" [class.dialog__icon--reconnected]="isReconnected()">
             @if (isReconnected()) {
-            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle class="dialog__icon-circle-success" cx="32" cy="32" r="30" stroke="currentColor"
-                    stroke-width="4" />
-                <path class="dialog__icon-check" d="M20 32L28 40L44 24" stroke="currentColor" stroke-width="4"
-                    stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
+                <img src="images/svg/no-connection/is-connected.svg" alt="is connected icon">
             } @else {
-            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle class="dialog__icon-circle" cx="32" cy="32" r="30" stroke="currentColor" stroke-width="4" />
-                <path class="dialog__icon-slash" d="M10 10L54 54" stroke="currentColor" stroke-width="4"
-                    stroke-linecap="round" />
-                <path class="dialog__icon-wifi"
-                    d="M16 28C21.5228 22.4772 29.7239 20 32 20C34.2761 20 42.4772 22.4772 48 28M20 36C23.6863 32.3137 28.3137 30 32 30C35.6863 30 40.3137 32.3137 44 36M28 44C29.1046 42.8954 30.5523 42 32 42C33.4477 42 34.8954 42.8954 36 44"
-                    stroke="currentColor" stroke-width="3" stroke-linecap="round" />
-            </svg>
+                <img src="images/svg/no-connection/not-connected.svg" alt="not connected icon">
             }
         </div>
         <h3 class="dialog__title">

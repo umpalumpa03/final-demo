@@ -1,4 +1,3 @@
-
 <div class="card-details">
   @if (loading$ | async) {
     <div class="card-details__loading">
@@ -23,10 +22,39 @@
       </app-button>
     </div>
 
-    <app-card-image
-      [imageBase64]="data.imageBase64"
-      [cardName]="data.details.cardName"
-    />
+@if (hasMultipleCards$ | async) {
+      <div class="card-details__carousel">
+       
+
+        <app-card-image
+          [imageBase64]="data.imageBase64"
+          [cardName]="data.details.cardName"
+        />
+        <div class="card-details__btns">
+           <app-button
+          variant="outline"
+          icon="arrowLeft.svg"
+          (click)="handlePreviousCard()"
+        >
+        </app-button>
+
+        <app-button
+          variant="outline"
+          icon="arrowRight.svg"
+          (click)="handleNextCard()"
+        >
+        </app-button>
+        </div>
+        
+
+        
+      </div>
+    } @else {
+      <app-card-image
+        [imageBase64]="data.imageBase64"
+        [cardName]="data.details.cardName"
+      />
+    }
 
     <app-basic-card
       title="Card Information"
@@ -34,16 +62,16 @@
       maxWidth="100%"
       padding="2rem"
     >
- <app-card-info-section
-  [cardName]="data.details.cardName"
-  [cardType]="data.details.type"
-  [currency]="data.currency"
-  [status]="data.details.status"
-  [isActiveStatus]="data.isActiveStatus"
-  [formattedBalance]="data.formattedBalance"
-  [shouldShowCreditLimit]="data.shouldShowCreditLimit"
-  [formattedCreditLimit]="data.formattedCreditLimit"
-/>
+      <app-card-info-section
+        [cardName]="data.details.cardName"
+        [cardType]="data.details.type"
+        [currency]="data.currency"
+        [status]="data.details.status"
+        [isActiveStatus]="data.isActiveStatus"
+        [formattedBalance]="data.formattedBalance"
+        [shouldShowCreditLimit]="data.shouldShowCreditLimit"
+        [formattedCreditLimit]="data.formattedCreditLimit"
+      />
     </app-basic-card>
 
     <app-basic-card
@@ -57,8 +85,7 @@
         (transferExternalClicked)="handleTransferExternal()"
         (paybillClicked)="handlePaybill()"
         (viewTransactionsClicked)="handleViewTransactions()"
-          (viewSensitiveDetailsClicked)="handleOpenDetailsModal()"
-
+        (viewSensitiveDetailsClicked)="handleOpenDetailsModal()"
       />
     </app-basic-card>
   }

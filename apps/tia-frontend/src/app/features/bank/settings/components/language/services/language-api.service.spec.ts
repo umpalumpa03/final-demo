@@ -4,7 +4,7 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { LanguageService } from './language.service';
+import { LanguageService } from './language-api.service';
 import { environment } from '../../../../../../../environments/environment';
 
 describe('LanguageService', () => {

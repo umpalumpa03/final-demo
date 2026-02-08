@@ -30,10 +30,11 @@ export const AccountPermissionsStore = signalStore(
                 });
               },
             }),
-            catchError(() => EMPTY)
+            catchError(() => EMPTY),
           ),
         ),
       ),
     ),
   })),
+  
 );

@@ -1,16 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CardsApproveElement } from './cards-approve-element';
+import { LanguageInfo } from './language-info';
+import { TranslateModule } from '@ngx-translate/core';
 
-describe('CardsApproveElement', () => {
-  let component: CardsApproveElement;
-  let fixture: ComponentFixture<CardsApproveElement>;
+describe('LanguageInfo', () => {
+  let component: LanguageInfo;
+  let fixture: ComponentFixture<LanguageInfo>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CardsApproveElement],
+      imports: [LanguageInfo, TranslateModule.forRoot()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CardsApproveElement);
+    fixture = TestBed.createComponent(LanguageInfo);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
