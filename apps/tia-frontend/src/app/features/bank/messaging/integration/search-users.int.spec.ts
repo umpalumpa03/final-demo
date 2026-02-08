@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   TestContext,
   setupMessagingTest,
@@ -10,17 +10,19 @@ describe('Messaging Integration - Search Users Flow', () => {
   let ctx: TestContext;
 
   beforeEach(async () => {
+    vi.useFakeTimers();
     ctx = await setupMessagingTest();
   });
 
   afterEach(() => {
+    vi.useRealTimers();
     cleanupMessagingTest(ctx.httpMock);
   });
 
   it('should search users by email', async () => {
     ctx.store.searchMails('user');
 
-    await new Promise(resolve => setTimeout(resolve, 350));
+    await vi.advanceTimersByTimeAsync(350);
 
     const req = ctx.httpMock.expectOne(
       (request) =>
@@ -31,27 +33,23 @@ describe('Messaging Integration - Search Users Flow', () => {
     expect(req.request.method).toBe('GET');
     req.flush(mockUsers);
 
-    await vi.waitFor(() => {
-      expect(ctx.store.searchResults()).toEqual(mockUsers);
-      expect(ctx.store.isSearching()).toBe(false);
-    });
+    expect(ctx.store.searchResults()).toEqual(mockUsers);
+    expect(ctx.store.isSearching()).toBe(false);
   });
 
   it('should handle empty search query', async () => {
     ctx.store.searchMails('');
 
-    await new Promise(resolve => setTimeout(resolve, 350));
+    await vi.advanceTimersByTimeAsync(350);
 
-    await vi.waitFor(() => {
-      expect(ctx.store.searchResults()).toEqual([]);
-      expect(ctx.store.isSearching()).toBe(false);
-    }, { timeout: 500 });
+    expect(ctx.store.searchResults()).toEqual([]);
+    expect(ctx.store.isSearching()).toBe(false);
   });
 
   it('should handle search error', async () => {
     ctx.store.searchMails('test');
 
-    await new Promise(resolve => setTimeout(resolve, 350));
+    await vi.advanceTimersByTimeAsync(350);
 
     const req = ctx.httpMock.expectOne((request) =>
       request.url.includes('/users/search-by-email')
@@ -62,10 +60,8 @@ describe('Messaging Integration - Search Users Flow', () => {
       { status: 500, statusText: 'Server Error' }
     );
 
-    await vi.waitFor(() => {
-      expect(ctx.store.error()).toBe('messaging.storeErrors.searchFailed');
-      expect(ctx.store.searchResults()).toEqual([]);
-      expect(ctx.store.isSearching()).toBe(false);
-    });
+    expect(ctx.store.error()).toBe('messaging.storeErrors.searchFailed');
+    expect(ctx.store.searchResults()).toEqual([]);
+    expect(ctx.store.isSearching()).toBe(false);
   });
 });

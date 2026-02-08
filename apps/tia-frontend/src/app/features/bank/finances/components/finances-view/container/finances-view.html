@@ -9,6 +9,8 @@
   [filterForm]="filterForm()"
   [monthOptions]="monthOptions()"
   (filterChange)="filterChange.emit($event)"
+  (update)="update.emit()"
+  [isRefreshing]="isRefreshing()"
 ></app-finances-filters>
 
 <div class="finances-content-area">

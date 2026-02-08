@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable, of, tap } from 'rxjs';
 import {
   FinancialSummaryResponse,
   CategoryBreakdown,
@@ -9,6 +9,7 @@ import {
   SavingsTrend,
   DailySpending,
   Transaction,
+  FullFinancialData,
 } from '../models/filter.model';
 
 @Injectable()
@@ -16,10 +17,32 @@ export class FinancesService {
   private http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
 
+  private cache = new Map<string, FullFinancialData>();
+
+
   private getParams(from: string, to?: string): HttpParams {
     let params = new HttpParams().set('value', from);
     if (to) params = params.set('value2', to);
     return params;
+  }
+
+  public getFullFinancialData(from: string, to?: string, force = false): Observable<FullFinancialData> {
+    const cacheKey = `${from}_${to || 'no-to'}`;
+
+    if (!force && this.cache.has(cacheKey)) {
+      return of(this.cache.get(cacheKey)!); 
+    }
+
+    return forkJoin({
+      summary: this.getSummary(from, to),
+      categories: this.getCategories(from, to),
+      dailySpending: this.getDailySpending(from, to),
+      incomeVsExpenses: this.getIncomeVsExpenses(12),
+      savingsTrend: this.getSavingsTrend(12),
+      transactions: this.getRecentTransactions(6),
+    }).pipe(
+      tap(data => this.cache.set(cacheKey, data))
+    );
   }
 
   public getSummary(from: string, to?: string) {

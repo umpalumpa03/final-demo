@@ -29,4 +29,27 @@ describe('TextInput', () => {
 
     expect(config).toBeDefined();
   });
+
+  it('should manage Caps Lock state correctly', () => {
+    const capsOnEvent = new KeyboardEvent('keydown');
+    vi.spyOn(capsOnEvent, 'getModifierState').mockImplementation(
+      (key) => key === 'CapsLock',
+    );
+
+    (component as any).checkCapsLock(capsOnEvent);
+    expect((component as any).isCapsLockOn()).toBe(true);
+
+    const capsOffEvent = new KeyboardEvent('keydown');
+    vi.spyOn(capsOffEvent, 'getModifierState').mockReturnValue(false);
+
+    (component as any).checkCapsLock(capsOffEvent);
+    expect((component as any).isCapsLockOn()).toBe(false);
+
+    (component as any).isCapsLockOn.set(true);
+    const blurEvent = new FocusEvent('blur');
+
+    (component as any).handleBlur(blurEvent);
+
+    expect((component as any).isCapsLockOn()).toBe(false);
+  });
 });

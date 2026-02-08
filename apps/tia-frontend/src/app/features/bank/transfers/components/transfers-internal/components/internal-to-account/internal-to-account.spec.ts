@@ -38,6 +38,7 @@ describe('InternalToAccount', () => {
 
     mockTransferStore = {
       receiverOwnAccount: signal(null),
+      senderAccount: signal(null),
     };
 
     mockLocation = {
@@ -135,4 +136,36 @@ describe('InternalToAccount', () => {
       expect(component.isFullWidth()).toBe(false);
     });
   });
+
+  describe('onContinue', () => {
+    it('should navigate to amount page when account is selected', () => {
+      mockTransferStore.receiverOwnAccount.set(mockAccounts[0]);
+      fixture.detectChanges();
+
+      component.onContinue();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/transfers/internal/amount']);
+    });
+
+    it('should not navigate when no account is selected', () => {
+      mockTransferStore.receiverOwnAccount.set(null);
+      fixture.detectChanges();
+
+      component.onContinue();
+
+      expect(mockRouter.navigate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getLastFourDigits', () => {
+    it('should return last 4 digits of IBAN', () => {
+      const iban = 'GB82WEST12345698765432';
+      expect(component.getLastFourDigits(iban)).toBe('5432');
+    });
+
+    it('should handle empty IBAN', () => {
+      expect(component.getLastFourDigits('')).toBe('');
+    });
+  });
+
 });

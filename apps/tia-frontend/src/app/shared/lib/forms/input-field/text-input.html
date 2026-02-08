@@ -2,9 +2,9 @@
 
 @if (cfg.label) {
 <label [for]="mergedConfig().id" class="text-input__label">
-
-    @if (labelIconUrl(); as iconUrl) {
-    <div class="text-input__label-icon" [style.background-image]="iconUrl">
+    @let labelIcon = labelIconUrl();
+    @if (labelIcon) {
+    <div class="text-input__label-icon" [style.background-image]="labelIcon">
     </div>
     }
 
@@ -20,11 +20,11 @@
     [class.text-input__wrapper--disabled]="isDisabled()" [class.text-input__wrapper--readonly]="isReadonly()"
     [style.margin]="mergedConfig().margin">
 
-    @if (prefixIconUrl(); as iconUrl) {
+    @let prefixIcon = prefixIconUrl();
+    @if (prefixIcon) {
     <div class="text-input__icon text-input__icon--prefix" [class.text-input__icon--error]="hasError()"
         [class.text-input__icon--success]="hasSuccess()">
-
-        <div class="text-input__icon-svg" aria-hidden="true" [style.background-image]="iconUrl">
+        <div class="text-input__icon-svg" aria-hidden="true" [style.background-image]="prefixIcon">
         </div>
     </div>
     }
@@ -33,15 +33,22 @@
         [placeholder]="mergedConfig().placeholder" [disabled]="isDisabled()" [readOnly]="isReadonly()"
         [min]="mergedConfig().min" [max]="mergedConfig().max" [name]="cfg.name || ''"
         [autocomplete]="mergedConfig().autocomplete || 'off'" [class]="fieldClasses()" (input)="handleInput($event)"
-        (blur)="handleBlur($event)" (focus)="handleFocus($event)" />
+        (blur)="handleBlur($event)" (focus)="handleFocus($event)" (keydown)="checkCapsLock($event)"
+        (keyup)="checkCapsLock($event)" (click)="checkCapsLock($event)" />
+
 
     @if (isPasswordType()) {
     <button type="button" class="text-input__icon text-input__icon--suffix" (click)="togglePasswordVisibility()">
-
         <div class="text-input__icon-svg" aria-hidden="true" [style.background-image]="suffixIconUrl()"
             [style.-webkit-mask-image]="suffixIconUrl()">
         </div>
     </button>
+
+    @if(isCapsLockOn() && !isDisabled()) {
+    <div class="text-input__caps-indicator" title="Caps Lock is On">
+        <div class="text-input__caps-icon"></div>
+    </div>
+    }
     }
 </div>
 
@@ -50,14 +57,18 @@
     <span [id]="messageId()" class="text-input__message text-input__message--error">
         {{ errorMessage() }}
     </span>
-    } @else if (hasWarning()) {
+    }
+    @else if (hasWarning()) {
     <span [id]="messageId()" class="text-input__message text-input__message--warning">
         {{ config().warningMessage }}
-    </span>} @else if (hasSuccess() && cfg.successMessage) {
+    </span>
+    }
+    @else if (hasSuccess() && cfg.successMessage) {
     <span [id]="messageId()" class="text-input__message text-input__message--success">
         {{ cfg.successMessage }}
     </span>
-    } @else if (cfg.helperText) {
+    }
+    @else if (cfg.helperText) {
     <span [id]="messageId()" class="text-input__message text-input__message--helper">
         {{ cfg.helperText }}
     </span>
