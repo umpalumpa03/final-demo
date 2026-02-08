@@ -149,6 +149,11 @@
         "label": "Description (optional)",
         "placeholder": "Add a note for this transfer"
       }
+    },
+    "stepper": {
+      "recipient": "Recipient",
+      "accounts": "Accounts",
+      "amount": "Amount"
     }
   },
   "confirmation": {
