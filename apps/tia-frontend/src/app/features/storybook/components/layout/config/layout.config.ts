@@ -161,27 +161,27 @@ export const scrollAreaContent: ScrollAreaItem[] = [
 export const scrollAreaContent2: ScrollAreaCardItem[] = [
   {
     id: 1,
-    title: 'storybook.layout.scrollAreaContent2.0.title',
+    title: 'storybook.layout.scrollAreaContent2.title',
   },
   {
     id: 2,
-    title: 'storybook.layout.scrollAreaContent2.1.title',
+    title: 'storybook.layout.scrollAreaContent2.title',
   },
   {
     id: 3,
-    title: 'storybook.layout.scrollAreaContent2.2.title',
+    title: 'storybook.layout.scrollAreaContent2.title',
   },
   {
     id: 4,
-    title: 'storybook.layout.scrollAreaContent2.3.title',
+    title: 'storybook.layout.scrollAreaContent2.title',
   },
   {
     id: 5,
-    title: 'storybook.layout.scrollAreaContent2.4.title',
+    title: 'storybook.layout.scrollAreaContent2.title',
   },
   {
     id: 6,
-    title: 'storybook.layout.scrollAreaContent2.5.title',
+    title: 'storybook.layout.scrollAreaContent2.title',
   },
 ] as const;
 
@@ -222,7 +222,7 @@ export const flexLayoutConfig: FlexLayoutConfig[] = [
     title: 'storybook.layout.flex.2.title',
     variant: undefined,
     wrap: true,
-    items: flexWrapContent.map((item, index) => ({ id: item.id, label: `storybook.layout.flex.2.items.${index}.label` })),
+    items: flexWrapContent.map((item) => ({ id: item.id, label: `storybook.layout.flex.2.items.label` })),
   },
 ] as const;
 
