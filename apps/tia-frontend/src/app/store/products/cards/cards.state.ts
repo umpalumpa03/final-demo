@@ -22,8 +22,8 @@ export interface CardsState {
   showSuccessAlert: boolean;
   isCardDetailsModalOpen: boolean;
   selectedCardIdForModal: string | null;
-    cardImagesLoading: boolean;
-     isUpdatingCardName: boolean;
+  cardImagesLoading: boolean;
+  isUpdatingCardName: boolean;
   updateCardNameError: string | null;
   cardSensitiveData: Record<string, CardSensitiveData>;
   challengeId: string | null;
@@ -32,10 +32,14 @@ export interface CardsState {
   otpLoading: boolean;
   otpError: string | null;
   showOtpSuccessAlert: boolean;
-globalAlert: { message: string; alertType: 'success' | 'error' } | null;
-currentCardIndex: number;
-currentAccountId: string | null;
-otpRemainingAttempts: number;
+  globalAlert: { message: string; alertType: 'success' | 'error' } | null;
+  currentCardIndex: number;
+  currentAccountId: string | null;
+  otpRemainingAttempts: number;
+   accountsLoaded: boolean;
+  cardCreationDataLoaded: boolean;
+  loadedCardDetailsIds: string[];
+  loadedCardImageIds: string[];
 }
 
 export const initialCardsState: CardsState = {
@@ -58,7 +62,7 @@ export const initialCardsState: CardsState = {
   cardImagesLoading: true,
   isUpdatingCardName: false,
   updateCardNameError: null,
-cardSensitiveData: {},
+  cardSensitiveData: {},
   challengeId: null,
   isOtpModalOpen: false,
   selectedCardIdForOtp: null,
@@ -66,7 +70,11 @@ cardSensitiveData: {},
   otpError: null,
   showOtpSuccessAlert: false,
   globalAlert: null,
-otpRemainingAttempts: 3, 
-currentCardIndex: 0,
-currentAccountId: null,
+  otpRemainingAttempts: 3,
+  currentCardIndex: 0,
+  currentAccountId: null,
+  accountsLoaded: false,
+  cardCreationDataLoaded: false,
+  loadedCardDetailsIds: [],
+  loadedCardImageIds: [],
 };

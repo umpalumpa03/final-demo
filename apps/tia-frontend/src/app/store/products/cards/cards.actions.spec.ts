@@ -34,7 +34,7 @@ describe('Cards Actions', () => {
 
   describe('loadCardAccounts', () => {
     it('should create action', () => {
-      const action = CardsActions.loadCardAccounts();
+      const action = CardsActions.loadCardAccounts({});
       expect(action.type).toBe('[Cards] Load Card Accounts');
     });
   });
@@ -178,4 +178,21 @@ describe('Cards Actions', () => {
       expect(action.type).toBe('[Cards] Navigate To Previous Card');
     });
   });
+  it('should create loadCardAccounts with forceRefresh true', () => {
+  const action = CardsActions.loadCardAccounts({ forceRefresh: true });
+  expect(action.type).toBe('[Cards] Load Card Accounts');
+  expect(action.forceRefresh).toBe(true);
+});
+
+it('should create loadCardAccounts with forceRefresh false', () => {
+  const action = CardsActions.loadCardAccounts({ forceRefresh: false });
+  expect(action.type).toBe('[Cards] Load Card Accounts');
+  expect(action.forceRefresh).toBe(false);
+});
+
+it('should create loadCardAccounts without forceRefresh', () => {
+  const action = CardsActions.loadCardAccounts({});
+  expect(action.type).toBe('[Cards] Load Card Accounts');
+  expect(action.forceRefresh).toBeUndefined();
+});
 });

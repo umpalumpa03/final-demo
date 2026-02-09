@@ -7,7 +7,7 @@ describe('CardsReducer', () => {
   it('should set loading true on loadCardAccounts', () => {
     const state = cardsReducer(
       initialCardsState,
-      CardsActions.loadCardAccounts(),
+      CardsActions.loadCardAccounts({}),
     );
     expect(state.loading).toBe(true);
     expect(state.error).toBeNull();
@@ -104,7 +104,7 @@ describe('CardsReducer', () => {
   it('should set loading on loadCardCreationData', () => {
     const state = cardsReducer(
       initialCardsState,
-      CardsActions.loadCardCreationData(),
+      CardsActions.loadCardCreationData({}),
     );
     expect(state.loading).toBe(true);
   });
