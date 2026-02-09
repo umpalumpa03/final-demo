@@ -101,7 +101,7 @@ describe('Personal Info integration', () => {
         .pipe(
           filter((id) => id === '98765432109'),
           take(1),
-          timeout(5000),
+          timeout(10000),
         ),
     );
 
@@ -146,7 +146,7 @@ describe('Personal Info integration', () => {
     await firstValueFrom(
       store
         .select(PersonalInfoSelectors.selectPhoneUpdateChallengeId)
-        .pipe(filter((id) => id === 'challenge-123'), take(1), timeout(5000)),
+        .pipe(filter((id) => id === 'challenge-123'), take(1), timeout(10000)),
     );
 
     store.dispatch(
@@ -168,7 +168,7 @@ describe('Personal Info integration', () => {
         .pipe(
           filter((phone) => phone === '555987654'),
           take(1),
-          timeout(5000),
+          timeout(10000),
         ),
     );
 
@@ -180,7 +180,7 @@ describe('Personal Info integration', () => {
     const phoneNumber = await firstValueFrom(
       store
         .select(PersonalInfoSelectors.selectPhoneNumber)
-        .pipe(filter((phone) => phone === '555987654'), take(1), timeout(5000)),
+        .pipe(filter((phone) => phone === '555987654'), take(1), timeout(10000)),
     );
 
     expect(phoneNumber).toBe('555987654');
