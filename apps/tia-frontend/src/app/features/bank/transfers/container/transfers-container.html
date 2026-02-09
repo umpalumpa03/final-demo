@@ -1,4 +1,11 @@
 <div class="global-bank-wrapper">
+  @if (isLoadingMeta()) {
+  <div class="transfers__loader-wrapper">
+    <div class="transfers__loader">
+      <app-route-loader variant="pulsing"></app-route-loader>
+    </div>
+  </div>
+  } @else {
   <div class="transfers_wrapper">
     <app-library-title
       [title]="'transfers.title'| translate"
@@ -8,4 +15,5 @@
   </div>
 
   <router-outlet></router-outlet>
+  }
 </div>

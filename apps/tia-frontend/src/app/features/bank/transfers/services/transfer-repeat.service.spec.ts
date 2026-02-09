@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { TransferRepeatService } from './transfer-repeat.service';
-import { TransferStore } from '../../../store/transfers.store';
-import { TransfersApiService } from '../../../services/transfersApi.service';
-import { TransferValidationService } from './transfer-validation.service';
+import { TransferStore } from '../store/transfers.store';
+import { TransfersApiService } from './transfersApi.service';
+import { TransferValidationService } from '../components/transfers-external/services/transfer-validation.service';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { of, throwError } from 'rxjs';

@@ -3,11 +3,11 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, of, tap, take } from 'rxjs';
-import { TransferStore } from '../../../store/transfers.store';
-import { TransfersApiService } from '../../../services/transfersApi.service';
-import { TransferValidationService } from './transfer-validation.service';
+import { TransferStore } from '../store/transfers.store';
+import { TransfersApiService } from './transfersApi.service';
+import { TransferValidationService } from '../components/transfers-external/services/transfer-validation.service';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
-import { TransferMeta } from '../models/transfer.external.model';
+import { ITransactions } from 'apps/tia-frontend/src/app/shared/models/transactions/transactions.models';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
 
 @Injectable()
@@ -19,9 +19,30 @@ export class TransferRepeatService {
   private readonly validationService = inject(TransferValidationService);
   private readonly destroyRef = inject(DestroyRef);
 
-  public initRepeatTransfer(meta: TransferMeta): void {
+  public initRepeatTransfer(transaction: ITransactions): void {
+    const isInternal = transaction.transferType === 'ToOwnAccount';
+
+    if (isInternal) {
+      this.handleInternalTransfer(transaction);
+    } else {
+      this.handleExternalTransfer(transaction);
+    }
+  }
+
+  private handleInternalTransfer(transaction: ITransactions): void {
+    // TODO: implement internal transfer repeat logic
+    this.router.navigate(['/bank/transfers/internal/amount']);
+  }
+
+  private handleExternalTransfer(transaction: ITransactions): void {
+    if (!transaction.creditAccountNumber) {
+      this.transferStore.setError('transfers.repeat.invalidIban');
+      this.router.navigate(['/bank/transfers/external']);
+      return;
+    }
+
     const recipientType = this.validationService.identifyRecipientType(
-      meta.recipientIban,
+      transaction.creditAccountNumber,
     );
 
     if (!recipientType) {
@@ -35,7 +56,7 @@ export class TransferRepeatService {
       .pipe(take(1))
       .subscribe((accounts) => {
         const senderAccount = accounts.find(
-          (acc) => acc.id === meta.senderAccountId,
+          (acc) => acc.iban === transaction.debitAccountNumber,
         );
 
         if (!senderAccount) {
@@ -45,34 +66,40 @@ export class TransferRepeatService {
         }
 
         if (recipientType === 'iban-different-bank') {
-          this.handleExternalBank(meta, senderAccount);
+          this.handleExternalBank(transaction, senderAccount);
         } else {
-          this.handleSameBank(meta, senderAccount, recipientType);
+          this.handleSameBank(transaction, senderAccount, recipientType);
         }
       });
   }
 
-  private handleExternalBank(meta: TransferMeta, senderAccount: Account): void {
+  private handleExternalBank(
+    transaction: ITransactions,
+    senderAccount: Account,
+  ): void {
     this.transferStore.setExternalRecipient(
-      meta.recipientIban,
+      transaction.creditAccountNumber!,
       'iban-different-bank',
     );
-    this.transferStore.setManualRecipientName(meta.recipientName || '');
+    this.transferStore.setManualRecipientName(
+      transaction.meta?.['recipientName'] || '',
+    );
     this.transferStore.setSenderAccount(senderAccount);
-    this.transferStore.setAmount(meta.amount);
-    this.transferStore.setDescription(meta.description);
+    this.transferStore.setAmount(transaction.amount);
+    this.transferStore.setDescription(transaction.description);
+    this.transferStore.updateFeeInfo(0, transaction.amount);
     this.router.navigate(['/bank/transfers/external/amount']);
   }
 
   private handleSameBank(
-    meta: TransferMeta,
+    transaction: ITransactions,
     senderAccount: Account,
     recipientType: 'phone' | 'iban-same-bank',
   ): void {
     this.transferStore.setLoading(true);
 
     this.transfersApi
-      .lookupByIban(meta.recipientIban)
+      .lookupByIban(transaction.creditAccountNumber!)
       .pipe(
         tap((recipientInfo) => {
           let recipientAccount = null;
@@ -82,11 +109,15 @@ export class TransferRepeatService {
               recipientInfo.accounts.find(
                 (acc) => acc.currency === senderAccount.currency,
               ) || recipientInfo.accounts[0];
-          } else if (recipientInfo.currency) {
+          } else if (
+            recipientInfo.currency &&
+            transaction.creditAccountNumber
+          ) {
             recipientAccount = {
               id: 'iban-recipient',
-              iban: meta.recipientIban,
+              iban: transaction.creditAccountNumber,
               currency: recipientInfo.currency,
+              name: recipientInfo.fullName,
             };
           }
 
@@ -101,13 +132,14 @@ export class TransferRepeatService {
 
           this.transferStore.setRecipientInfo(
             recipientInfo,
-            meta.recipientIban,
+            transaction.creditAccountNumber!,
             recipientType,
           );
           this.transferStore.setSelectedRecipientAccount(recipientAccount);
           this.transferStore.setSenderAccount(senderAccount);
-          this.transferStore.setAmount(meta.amount);
-          this.transferStore.setDescription(meta.description);
+          this.transferStore.setAmount(transaction.amount);
+          this.transferStore.setDescription(transaction.description);
+          this.transferStore.updateFeeInfo(0, transaction.amount);
           this.transferStore.setLoading(false);
 
           this.router.navigate(['/bank/transfers/external/amount']);

@@ -61,7 +61,7 @@ describe('ExternalAccounts', () => {
       handleRecipientAccountSelect: vi.fn(),
       handleSenderAccountSelect: vi.fn(),
       handleContinue: vi.fn(),
-      initAutoSelectionLogic: vi.fn(), 
+      initAutoSelectionLogic: vi.fn(),
     };
 
     mockBreakpointService = {
