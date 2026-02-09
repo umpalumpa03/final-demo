@@ -4,13 +4,13 @@
   (ngSubmit)="submitTwoColumnLayout()"
 >
   <div class="layout__flex">
-    <span>Two Column Layout</span>
+    <span>{{'storybook.forms.row.subtitle' | translate}}</span>
     <div class="layout__row">
       <div class="layout__field">
         <lib-text-input
           type="text"
           formControlName="firstName"
-          [config]="rowConfigs.firstName"
+          [config]="rowConfigs().firstName"
         ></lib-text-input>
       </div>
 
@@ -18,7 +18,7 @@
         <lib-text-input
           type="text"
           formControlName="lastName"
-          [config]="rowConfigs.lastName"
+          [config]="rowConfigs().lastName"
         ></lib-text-input>
       </div>
     </div>
@@ -28,7 +28,7 @@
         <lib-text-input
           type="email"
           formControlName="email"
-          [config]="rowConfigs.email"
+          [config]="rowConfigs().email"
         ></lib-text-input>
       </div>
 
@@ -36,13 +36,15 @@
         <lib-text-input
           type="tel"
           formControlName="phone"
-          [config]="rowConfigs.phone"
+          [config]="rowConfigs().phone"
         ></lib-text-input>
       </div>
     </div>
 
     <div class="layout__field">
-      <app-button type="submit" [fullWidth]="true">Submit</app-button>
+      <app-button type="submit" [fullWidth]="true"
+        >{{'storybook.forms.row.btn' | translate}}</app-button
+      >
     </div>
   </div>
 </form>

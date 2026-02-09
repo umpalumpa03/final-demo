@@ -1,7 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ValidationForm } from './validation-form';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsDemoState } from '../state/forms-demo.state';
+import { TranslateService } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach } from 'vitest';
+
+const mockTranslate = {
+  instant: (k: string) => k,
+  get: (k: string) => ({ subscribe: (fn: any) => { fn(k); return { unsubscribe() {} }; } }),
+  stream: (k: string) => ({ subscribe: (fn: any) => { fn(k); return { unsubscribe() {} }; } }),
+  onLangChange: { subscribe: () => ({ unsubscribe() {} }) },
+};
+const mockFormsDemo = { validationForm: () => ({ success: {}, error: {}, warning: {} }) };
+import { ReactiveFormsModule } from '@angular/forms';
 
 describe('ValidationForm', () => {
   let component: ValidationForm;
@@ -10,6 +20,10 @@ describe('ValidationForm', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ValidationForm, ReactiveFormsModule],
+      providers: [
+        { provide: FormsDemoState, useValue: mockFormsDemo },
+        { provide: TranslateService, useValue: mockTranslate },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ValidationForm);

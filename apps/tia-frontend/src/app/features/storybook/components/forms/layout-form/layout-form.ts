@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ColumnLayout } from "./column-layout/column-layout";
-import { HorizontalLayout } from "./horizontal-layout/horizontal-layout";
+import { ColumnLayout } from './column-layout/column-layout';
+import { HorizontalLayout } from './horizontal-layout/horizontal-layout';
 
 @Component({
   selector: 'app-layout-form',

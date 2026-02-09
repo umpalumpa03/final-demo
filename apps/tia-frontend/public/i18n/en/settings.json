@@ -185,6 +185,7 @@
     "title": "My Accounts",
     "subtitle": "Manage your accounts, set favorites, and control visibility",
     "errorMessage": "Failed to fetch the data",
+    "errorBtn": "Retry",
     "warningHeader": "No Data Found",
     "warningMessage": "We couldn't find any data to display.",
     "warningBtn": "Go Back"

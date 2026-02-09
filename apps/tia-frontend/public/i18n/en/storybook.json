@@ -200,7 +200,84 @@
       "label": "Security PIN"
     }
   },
-  "forms": {},
+  "forms": {
+    "formsTitle": "Forms",
+    "formsSubtitle": "Complete form examples with various input types and layouts",
+    "contact": {
+      "title": "Contact Form",
+      "form": {
+        "name": "Name",
+        "email": "Email",
+        "message": "Message",
+        "messageInfo": "Type your message here...",
+        "checkbox": "Subscribe to newsletter",
+        "btnName": "Submit"
+      }
+    },
+    "row": {
+      "subtitle": "Two Column Layout",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phone": "Phone",
+      "btn": "Submit"
+    },
+    "horizontal": {
+      "subtitle": "Horizontal Layout",
+      "firstName": "First Name",
+      "email": "Email",
+      "message": "Message",
+      "btn": "Submit"
+    },
+    "step": {
+      "from": "From",
+      "to": "To",
+      "amount": "Amount"
+    },
+    "multi": {
+      "name": "Name",
+      "bio": "Message",
+      "back": "Back",
+      "step": "Next Step",
+      "finish": "Finish",
+      "messageInfo": "Type your message here..."
+    },
+    "inline": {
+      "sub": "Subscribe"
+    },
+    "planOptions": {
+      "subtitle": "Plan Selection",
+      "free": "Free",
+      "freeDesc": "Basic features",
+      "pro": "Pro",
+      "proDesc": "Advanced features - $9.99/month",
+      "enterprise": "Enterprise",
+      "enterpriseDesc": "All features - $29.99/month",
+      "subtitle2": "Notification Preferences",
+      "option1": "Email Notifications",
+      "option2": "Push Notifications",
+      "option3": "SMS Notifications",
+      "btn1": "Cancel",
+      "btn2": "Save Changes"
+    },
+    "validation": {
+      "successLabel": "Valid Input",
+      "successMessage": "Email format is correct",
+      "errorLabel": "Invalid Input",
+      "errorMessage": "Please enter a valid email address",
+      "warningLabel": "Warning Input",
+      "warningMessage": "Temporary email addresses may not receive notifications"
+    },
+    "titles": {
+      "contact": "Contact Form",
+      "registration": "Registration Form",
+      "settings": "Settings Form",
+      "inline": "Inline Form",
+      "validation": "Form with Validation",
+      "multiStep": "Multi-step Form Progress",
+      "layout": "Form Layout"
+    }
+  },
   "cards": {},
   "alerts": {
     "TITLES": {
