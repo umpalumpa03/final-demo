@@ -1,6 +1,63 @@
 {
   "palettes": {},
-  "buttons": {},
+  "buttons": {
+    "title": "Buttons",
+    "subtitle": "A comprehensive showcase of all components with their various states",
+    "sections": {
+      "variants": "Variants",
+      "sizes": "Sizes",
+      "states": "States",
+      "icons": "With Icons",
+      "interactive": "Interactive Examples",
+      "groups": "Button Groups",
+      "fullWidth": "Full Width"
+    },
+    "variants": {
+      "default": "Default",
+      "secondary": "Secondary",
+      "destructive": "Destructive",
+      "outline": "Outline",
+      "ghost": "Ghost",
+      "link": "Link"
+    },
+    "sizes": {
+      "sm": "Small",
+      "default": "Default",
+      "lg": "Large"
+    },
+    "states": {
+      "defaultLabel": "Default:",
+      "clickMe": "Click Me",
+      "disabledLabel": "Disabled",
+      "disabledButton": "Disabled Button",
+      "disabledSecondary": "Disabled Secondary",
+      "loadingLabel": "Loading",
+      "loading": "Loading...",
+      "clickToLoad": "Click to Load"
+    },
+    "icons": {
+      "send": "Send Email",
+      "download": "Download",
+      "delete": "Delete",
+      "confirm": "Confirm",
+      "addNew": "Add New",
+      "settings": "Settings",
+      "iconOnly": "Icon Only"
+    },
+    "interactive": {
+      "like": "Like (42)",
+      "download": "Download File"
+    },
+    "groups": {
+      "left": "Left",
+      "center": "Center",
+      "right": "Right"
+    },
+    "fullWidth": {
+      "label": "Full Width Button",
+      "outline": "Full Width Outline"
+    }
+  },
   "inputs": {
     "title": "Input Components",
     "subtitle": "Form input components with various types and states",
