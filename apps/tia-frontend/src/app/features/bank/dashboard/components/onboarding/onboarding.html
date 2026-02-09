@@ -1,0 +1,8 @@
+@if (isModalOpen()) {
+@let step = currentStepData();
+
+<app-onboarding-modal [page]="currentPage()" [title]="step.title" [desc]="step.desc" (next)="onNext()" (prev)="onPrev()"
+    (skip)="finishOnboarding()">
+
+</app-onboarding-modal>
+}
