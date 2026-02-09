@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 import { PendingApprovalsTable } from './pending-approvals-table';
 import { PendingApproval } from '../../shared/models/loan-management.model';
 
@@ -10,29 +11,23 @@ describe('PendingApprovalsTable', () => {
   const mockApprovals: PendingApproval[] = [
     {
       id: 'loan-1',
+      userId: 'user-1',
       userFullName: 'John Doe',
-      userEmail: 'john@example.com',
       loanAmount: 50000,
-      loanPurpose: 'home_improvement',
-      loanTerm: 36,
-      requestDate: '2024-01-15T10:00:00Z',
-      status: 'pending',
-    },
-    {
-      id: 'loan-2',
-      userFullName: 'Jane Smith',
-      userEmail: 'jane@example.com',
-      loanAmount: 75000,
-      loanPurpose: 'debt_consolidation',
-      loanTerm: 48,
-      requestDate: '2024-01-16T14:30:00Z',
-      status: 'pending',
+      accountId: 'acc-1',
+      months: 36,
+      purpose: 'home_improvement',
+      status: 1,
+      statusName: 'pending',
+      address: { street: '123 Main St', city: 'Test', region: 'Test', postalCode: '12345' },
+      contactPerson: { name: 'Jane', relationship: 'spouse', phone: '555-0100', email: 'jane@test.com' },
+      createdAt: '2024-01-15T10:00:00Z',
     },
   ];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PendingApprovalsTable],
+      imports: [PendingApprovalsTable, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PendingApprovalsTable);
@@ -41,110 +36,95 @@ describe('PendingApprovalsTable', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create with default input values', () => {
     expect(component).toBeTruthy();
+    expect(component.isLoading()).toBe(false);
+    expect(component.error()).toBeNull();
+    expect(component.approvals()).toEqual([]);
   });
 
-  describe('computed properties', () => {
-    it('should calculate hasApprovals correctly', () => {
-      fixture.componentRef.setInput('approvals', []);
-      fixture.detectChanges();
-      expect(component.hasApprovals()).toBe(false);
+  it('hasApprovals should return true when approvals exist and false when empty', () => {
+    expect(component.hasApprovals()).toBe(false);
 
-      fixture.componentRef.setInput('approvals', mockApprovals);
-      fixture.detectChanges();
-      expect(component.hasApprovals()).toBe(true);
-    });
-
-    it('should show empty state when no approvals, not loading, and no error', () => {
-      fixture.componentRef.setInput('approvals', []);
-      fixture.componentRef.setInput('isLoading', false);
-      fixture.componentRef.setInput('error', null);
-      fixture.detectChanges();
-
-      expect(component.showEmptyState()).toBe(true);
-    });
-
-    it('should not show empty state when loading', () => {
-      fixture.componentRef.setInput('approvals', []);
-      fixture.componentRef.setInput('isLoading', true);
-      fixture.componentRef.setInput('error', null);
-      fixture.detectChanges();
-
-      expect(component.showEmptyState()).toBe(false);
-    });
-
-    it('should show error when error exists and not loading', () => {
-      fixture.componentRef.setInput('approvals', []);
-      fixture.componentRef.setInput('isLoading', false);
-      fixture.componentRef.setInput('error', 'Failed to load');
-      fixture.detectChanges();
-
-      expect(component.showError()).toBe(true);
-    });
-
-    it('should show list when has approvals, not loading, and no error', () => {
-      fixture.componentRef.setInput('approvals', mockApprovals);
-      fixture.componentRef.setInput('isLoading', false);
-      fixture.componentRef.setInput('error', null);
-      fixture.detectChanges();
-
-      expect(component.showList()).toBe(true);
-    });
-
-    it('should not show list when loading', () => {
-      fixture.componentRef.setInput('approvals', mockApprovals);
-      fixture.componentRef.setInput('isLoading', true);
-      fixture.componentRef.setInput('error', null);
-      fixture.detectChanges();
-
-      expect(component.showList()).toBe(false);
-    });
+    fixture.componentRef.setInput('approvals', mockApprovals);
+    fixture.detectChanges();
+    expect(component.hasApprovals()).toBe(true);
   });
 
-  describe('getInitials', () => {
-    it('should return initials from full name', () => {
-      expect(component.getInitials('John Doe')).toBe('JD');
-      expect(component.getInitials('Jane Mary Smith')).toBe('JM');
-      expect(component.getInitials('Alice')).toBe('A');
-    });
+  it('showEmptyState should be true only when not loading, no error, and no approvals', () => {
+    fixture.componentRef.setInput('isLoading', false);
+    fixture.componentRef.setInput('error', null);
+    fixture.componentRef.setInput('approvals', []);
+    fixture.detectChanges();
+    expect(component.showEmptyState()).toBe(true);
 
-    it('should return empty string for empty name', () => {
-      expect(component.getInitials('')).toBe('');
-    });
+    fixture.componentRef.setInput('isLoading', true);
+    fixture.detectChanges();
+    expect(component.showEmptyState()).toBe(false);
 
-    it('should return uppercase initials', () => {
-      expect(component.getInitials('john doe')).toBe('JD');
-    });
+    fixture.componentRef.setInput('isLoading', false);
+    fixture.componentRef.setInput('approvals', mockApprovals);
+    fixture.detectChanges();
+    expect(component.showEmptyState()).toBe(false);
 
-    it('should limit to 2 characters', () => {
-      expect(component.getInitials('John Paul George Ringo')).toBe('JP');
-    });
+    fixture.componentRef.setInput('approvals', []);
+    fixture.componentRef.setInput('error', 'Some error');
+    fixture.detectChanges();
+    expect(component.showEmptyState()).toBe(false);
   });
 
-  describe('actions', () => {
-    it('should emit rowClick event with loan ID when onRowClick is called', () => {
-      const rowClickSpy = vi.fn();
-      component.rowClick.subscribe(rowClickSpy);
+  it('showError should be true when error exists and not loading, false otherwise', () => {
+    fixture.componentRef.setInput('isLoading', false);
+    fixture.componentRef.setInput('error', 'Failed to load');
+    fixture.detectChanges();
+    expect(component.showError()).toBe(true);
 
-      component.onRowClick('loan-123');
+    fixture.componentRef.setInput('isLoading', true);
+    fixture.detectChanges();
+    expect(component.showError()).toBe(false);
 
-      expect(rowClickSpy).toHaveBeenCalledWith('loan-123');
-    });
-
-    it('should emit reload event when onReload is called', () => {
-      const reloadSpy = vi.fn();
-      component.reload.subscribe(reloadSpy);
-
-      component.onReload();
-
-      expect(reloadSpy).toHaveBeenCalled();
-    });
+    fixture.componentRef.setInput('isLoading', false);
+    fixture.componentRef.setInput('error', null);
+    fixture.detectChanges();
+    expect(component.showError()).toBe(false);
   });
 
-  describe('pendingIcon', () => {
-    it('should have pendingIcon defined', () => {
-      expect(component.pendingIcon).toBeDefined();
-    });
+  it('showList should be true when has approvals, not loading, and no error', () => {
+    fixture.componentRef.setInput('approvals', mockApprovals);
+    fixture.componentRef.setInput('isLoading', false);
+    fixture.componentRef.setInput('error', null);
+    fixture.detectChanges();
+    expect(component.showList()).toBe(true);
+
+    fixture.componentRef.setInput('isLoading', true);
+    fixture.detectChanges();
+    expect(component.showList()).toBe(false);
+
+    fixture.componentRef.setInput('isLoading', false);
+    fixture.componentRef.setInput('error', 'error');
+    fixture.detectChanges();
+    expect(component.showList()).toBe(false);
+  });
+
+  it('getInitials should extract uppercase initials from a full name, limited to 2 characters', () => {
+    expect(component.getInitials('John Doe')).toBe('JD');
+    expect(component.getInitials('jane mary smith')).toBe('JM');
+    expect(component.getInitials('Alice')).toBe('A');
+    expect(component.getInitials('John Paul George Ringo')).toBe('JP');
+    expect(component.getInitials('')).toBe('');
+  });
+
+  it('onRowClick should emit rowClick with the given loan ID', () => {
+    const spy = vi.fn();
+    component.rowClick.subscribe(spy);
+    component.onRowClick('loan-123');
+    expect(spy).toHaveBeenCalledWith('loan-123');
+  });
+
+  it('onReload should emit reload event', () => {
+    const spy = vi.fn();
+    component.reload.subscribe(spy);
+    component.onReload();
+    expect(spy).toHaveBeenCalled();
   });
 });

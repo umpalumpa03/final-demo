@@ -10,6 +10,7 @@ import { AspectRatioItem } from '../models/aspect-ratio.models';
 })
 export class AspectRatio {
   public items = input<AspectRatioItem[]>([]);
+  public cardTextSuffix = input<string>('Aspect Ratio');
   public selected = output<AspectRatioItem>();
 
   public onSelect(item: AspectRatioItem): void {

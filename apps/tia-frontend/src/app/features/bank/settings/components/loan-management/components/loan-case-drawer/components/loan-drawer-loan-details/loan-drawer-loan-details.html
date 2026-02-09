@@ -1,0 +1,43 @@
+@if (loanDetails()) {
+  <section class="loan-drawer__section">
+    <div class="loan-drawer__section-header">
+      <div class="loan-drawer__section-icon loan-drawer__section-icon--loan">
+        <img src="images/svg/sidebar-nav/loans.svg" alt="Loan" />
+      </div>
+      <h3 class="loan-drawer__section-title">{{ labels().loanSection }}</h3>
+    </div>
+
+    @if (isLoading()) {
+      <app-skeleton [width]="'100%'" [height]="'12rem'"></app-skeleton>
+    } @else {
+      <div class="loan-drawer__card">
+        <div class="loan-drawer__fields">
+          <div class="loan-drawer__field">
+            <span class="loan-drawer__label">{{ labels().loanAmount }}</span>
+            <span class="loan-drawer__value loan-drawer__value--bold">{{ loanDetailsResponse()?.loanDetails?.loanAmount | currency:'USD':'symbol':'1.0-0' }}</span>
+          </div>
+          <div class="loan-drawer__field">
+            <span class="loan-drawer__label">{{ labels().loanPurpose }}</span>
+            <span class="loan-drawer__value loan-drawer__value--capitalize">{{ loanDetailsResponse()?.loanDetails?.loanPurpose }}</span>
+          </div>
+          <div class="loan-drawer__field">
+            <span class="loan-drawer__label">{{ labels().loanTerm }}</span>
+            <span class="loan-drawer__value">{{ loanDetailsResponse()?.loanDetails?.loanTermMonths }} {{ labels().months }}</span>
+          </div>
+          <div class="loan-drawer__field">
+            <span class="loan-drawer__label">{{ labels().interestRate }}</span>
+            <span class="loan-drawer__value">{{ interestRate() }}% APR</span>
+          </div>
+          <div class="loan-drawer__field">
+            <span class="loan-drawer__label">{{ labels().monthlyPayment }}</span>
+            <span class="loan-drawer__value loan-drawer__value--accent">{{ monthlyPayment() | currency:'USD':'symbol':'1.0-0' }}</span>
+          </div>
+          <div class="loan-drawer__field">
+            <span class="loan-drawer__label">{{ labels().requestDate }}</span>
+            <span class="loan-drawer__value">{{ loanDetailsResponse()?.loanDetails?.requestDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+    }
+  </section>
+}

@@ -285,7 +285,157 @@
   },
   "feedback": {},
   "layout": {},
-  "data-display": {},
+  "data-display": {
+    "title": "Data Display",
+    "subtitle": "Avatars, aspect ratios, tooltips, and hover cards",
+    "sections": {
+      "avatars": {
+        "title": "Avatars",
+        "sizes": "Sizes:",
+        "withInitials": "With Initials:",
+        "withColors": "With Colors:",
+        "avatarGroup": "Avatar Group:",
+        "withStatus": "With Status:",
+        "users": {
+          "loggedIn": { "firstName": "Nikoloz", "lastName": "Maghaldadze" },
+          "additional1": { "firstName": "Alex", "lastName": "Brown" },
+          "additional2": { "firstName": "Mia", "lastName": "Johnson" },
+          "additional3": { "firstName": "Sophia", "lastName": "King" }
+        },
+        "colorInitials": {
+          "0": "JD",
+          "1": "AB",
+          "2": "MJ",
+          "3": "SK",
+          "4": "EW"
+        },
+        "groupInitials": {
+          "0": "JC",
+          "1": "AE",
+          "2": "MS",
+          "3": "SH",
+          "4": "LW",
+          "5": "BM",
+          "6": "RG",
+          "7": "TW",
+          "8": "NP"
+        },
+        "statusInitials": {
+          "0": "JD",
+          "1": "AB",
+          "2": "MJ",
+          "3": "SK"
+        }
+      },
+      "aspectRatio": {
+        "title": "Aspect Ratio",
+        "noRatios": "No aspect ratios available.",
+        "aspectRatioSuffix": "Aspect Ratio",
+        "descriptions": {
+          "video": "Video",
+          "standard": "Standard",
+          "square": "Square",
+          "ultrawide": "Ultrawide"
+        }
+      },
+      "tooltips": {
+        "title": "Tooltips",
+        "items": {
+          "topDefault": "Top (default)",
+          "bottom": "Bottom",
+          "left": "Left",
+          "right": "Right",
+          "hoverMe": "Hover me",
+          "tooltipOnTop": "Tooltip on top",
+          "tooltipOnBottom": "Tooltip on bottom",
+          "tooltipOnLeft": "Tooltip on left",
+          "tooltipOnRight": "Tooltip on right",
+          "janeDoe": "Jane Doe",
+          "primaryAction": "Primary action"
+        }
+      },
+      "hoverCards": {
+        "title": "Hover Cards",
+        "items": {
+          "johndoeHandle": "@johndoe",
+          "johndoeName": "John Doe",
+          "johndoeRole": "Product Designer",
+          "johndoeDetail": "Building thoughtful UI patterns for the data display suite.",
+          "janedoeHandle": "@janedoe",
+          "janedoeName": "Jane Adams",
+          "janedoeRole": "Frontend Engineer",
+          "janedoeDetail": "Focused on accessible, reusable hover interactions.",
+          "alexHandle": "Hover for details",
+          "alexName": "Alex Diaz",
+          "alexRole": "Design Lead",
+          "alexDetail": "Exploring rich previews for documentation content."
+        }
+      },
+      "cards": {
+        "title": "Cards",
+        "items": {
+          "totalUsersLabel": "Total Users",
+          "totalUsersValue": "1,234",
+          "totalUsersChange": "+12% from last month",
+          "activeSessionsLabel": "Active Sessions",
+          "activeSessionsValue": "456",
+          "activeSessionsChange": "+8% from last hour",
+          "revenueLabel": "Revenue",
+          "revenueValue": "$12.5K",
+          "revenueChange": "-3% from last week",
+          "conversionLabel": "Conversion",
+          "conversionValue": "3.2%",
+          "conversionChange": "No change"
+        }
+      },
+      "listDisplay": {
+        "title": "List Display",
+        "items": {
+          "johnName": "John Doe",
+          "johnRole": "Admin",
+          "johnBadge": "Admin",
+          "janeName": "Jane Smith",
+          "janeRole": "Editor",
+          "janeBadge": "Editor",
+          "bobName": "Bob Johnson",
+          "bobRole": "User",
+          "bobBadge": "User",
+          "aliceName": "Alice Brown",
+          "aliceRole": "User",
+          "aliceBadge": "User"
+        }
+      },
+      "keyValueDisplay": {
+        "title": "Key-Value Display",
+        "userInfo": "User Information",
+        "items": {
+          "fullNameLabel": "Full Name:",
+          "fullNameValue": "John Doe",
+          "emailLabel": "Email:",
+          "emailValue": "john@example.com",
+          "roleLabel": "Role:",
+          "roleValue": "Administrator",
+          "statusLabel": "Status:",
+          "statusValue": "Active",
+          "memberLabel": "Member Since:",
+          "memberValue": "Jan 2024"
+        }
+      },
+      "timelineDisplay": {
+        "title": "Timeline Display",
+        "items": {
+          "deployTitle": "Deployed to production",
+          "deployTimestamp": "2 hours ago",
+          "reviewTitle": "Code review completed",
+          "reviewTimestamp": "5 hours ago",
+          "prTitle": "Pull request opened",
+          "prTimestamp": "1 day ago",
+          "featureTitle": "Feature development started",
+          "featureTimestamp": "2 days ago"
+        }
+      }
+    }
+  },
   "overlays": {},
   "drag-and-drop": {
     "title": "Drag & Drop Components",

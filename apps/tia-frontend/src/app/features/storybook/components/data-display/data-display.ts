@@ -1,9 +1,16 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AspectRatio } from '../../../../shared/lib/data-display/aspect-ratio/aspect-ratio';
 import { AspectRatioItem } from '../../../../shared/lib/data-display/models/aspect-ratio.models';
 import { Avatar } from '../../../../shared/lib/data-display/avatars/avatar';
 import { AvatarGroup } from '../../../../shared/lib/data-display/avatars/avatar-groups/avatar-group';
-import { StatisticCard } from '../../../../shared/lib/cards/statistic-card/statistic-card';
 import {
   AvatarGroupItem,
   AvatarUserProfile,
@@ -15,24 +22,24 @@ import { TimelineDisplay } from '../../../../shared/lib/data-display/timeline-di
 import { Tooltip } from '../../../../shared/lib/data-display/tooltip/tooltip';
 import { LibraryTitle } from '../../shared/library-title/library-title';
 import { ShowcaseCard } from '../../shared/showcase-card/showcase-card';
-import { ASPECT_RATIO_ITEMS } from './config/aspect-ratio-data';
+import { getAspectRatioItems } from './config/aspect-ratio-data';
 import {
-  ADDITIONAL_USERS,
   AVATAR_SIZES,
-  COLOR_AVATARS,
-  GROUP_AVATARS,
-  LOGGED_IN_USER,
-  STATUS_AVATARS,
+  getLoggedInUser,
+  getAdditionalUsers,
+  getColorAvatars,
+  getGroupAvatars,
+  getStatusAvatars,
 } from './config/avatars-data';
-import { HOVER_CARD_ITEMS } from './config/hover-card-data';
-import { STATISTICS_CARDS_DATA } from './config/cards-data';
+import { getHoverCardItems } from './config/hover-card-data';
+import { getStatisticsCardsData } from './config/cards-data';
 import {
-  KEY_VALUE_ITEMS,
-  KEY_VALUE_TITLE,
+  getKeyValueItems,
+  getKeyValueTitle,
 } from './config/key-value-display-data';
-import { TOOLTIP_DEMO_ITEMS } from './config/tooltip-data';
-import { LIST_DISPLAY_ITEMS } from './config/list-display-data';
-import { TIMELINE_ITEMS } from './config/timeline-display-data';
+import { getTooltipDemoItems } from './config/tooltip-data';
+import { getListDisplayItems } from './config/list-display-data';
+import { getTimelineItems } from './config/timeline-display-data';
 
 @Component({
   selector: 'app-data-display',
@@ -47,23 +54,22 @@ import { TIMELINE_ITEMS } from './config/timeline-display-data';
     ListDisplay,
     KeyValueDisplay,
     TimelineDisplay,
+    TranslatePipe,
   ],
   templateUrl: './data-display.html',
   styleUrl: './data-display.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DataDisplay {
-  public readonly title = 'Data Display';
-  public readonly subtitle =
-    'Avatars, aspect ratios, tooltips, and hover cards';
+export class DataDisplay implements OnInit {
+  private readonly translate = inject(TranslateService);
 
-  private readonly loggedInUser = signal<AvatarUserProfile>(LOGGED_IN_USER);
-  private readonly additionalUsers = signal<AvatarUserProfile[]>(ADDITIONAL_USERS);
+  private readonly loggedInUser = signal<AvatarUserProfile>(getLoggedInUser(this.translate));
+  private readonly additionalUsers = signal<AvatarUserProfile[]>(getAdditionalUsers(this.translate));
 
   public readonly sizes = signal(AVATAR_SIZES);
-  public readonly colorAvatars = signal<AvatarGroupItem[]>(COLOR_AVATARS);
-  public readonly groupAvatars = signal<AvatarGroupItem[]>(GROUP_AVATARS);
-  public readonly statusAvatars = signal<AvatarGroupItem[]>(STATUS_AVATARS);
+  public readonly colorAvatars = signal<AvatarGroupItem[]>(getColorAvatars(this.translate));
+  public readonly groupAvatars = signal<AvatarGroupItem[]>(getGroupAvatars(this.translate));
+  public readonly statusAvatars = signal<AvatarGroupItem[]>(getStatusAvatars(this.translate));
 
   public readonly initialsUsers = computed(() => [
     this.loggedInUser(),
@@ -78,7 +84,7 @@ export class DataDisplay {
     })),
   );
 
-  public readonly ratios = signal<AspectRatioItem[]>(ASPECT_RATIO_ITEMS);
+  public readonly ratios = signal<AspectRatioItem[]>(getAspectRatioItems(this.translate));
   public readonly selectedRatioId = signal<string | null>(null);
   public readonly selectedRatio = computed<AspectRatioItem | null>(() => {
     const selectedId = this.selectedRatioId();
@@ -88,13 +94,31 @@ export class DataDisplay {
     return this.ratios().find((item) => item.id === selectedId) ?? null;
   });
 
-  public readonly tooltipItems = signal(TOOLTIP_DEMO_ITEMS);
-  public readonly hoverCardItems = signal(HOVER_CARD_ITEMS);
-  public readonly statisticCardItems = signal(STATISTICS_CARDS_DATA);
-  public readonly listDisplayItems = signal(LIST_DISPLAY_ITEMS);
-  public readonly keyValueTitle = signal(KEY_VALUE_TITLE);
-  public readonly keyValueItems = signal(KEY_VALUE_ITEMS);
-  public readonly timelineItems = signal(TIMELINE_ITEMS);
+  public readonly tooltipItems = signal(getTooltipDemoItems(this.translate));
+  public readonly hoverCardItems = signal(getHoverCardItems(this.translate));
+  public readonly statisticCardItems = signal(getStatisticsCardsData(this.translate));
+  public readonly listDisplayItems = signal(getListDisplayItems(this.translate));
+  public readonly keyValueTitle = signal(getKeyValueTitle(this.translate));
+  public readonly keyValueItems = signal(getKeyValueItems(this.translate));
+  public readonly timelineItems = signal(getTimelineItems(this.translate));
+
+  ngOnInit(): void {
+    this.translate.onLangChange.subscribe(() => {
+      this.loggedInUser.set(getLoggedInUser(this.translate));
+      this.additionalUsers.set(getAdditionalUsers(this.translate));
+      this.colorAvatars.set(getColorAvatars(this.translate));
+      this.groupAvatars.set(getGroupAvatars(this.translate));
+      this.statusAvatars.set(getStatusAvatars(this.translate));
+      this.ratios.set(getAspectRatioItems(this.translate));
+      this.tooltipItems.set(getTooltipDemoItems(this.translate));
+      this.hoverCardItems.set(getHoverCardItems(this.translate));
+      this.statisticCardItems.set(getStatisticsCardsData(this.translate));
+      this.listDisplayItems.set(getListDisplayItems(this.translate));
+      this.keyValueTitle.set(getKeyValueTitle(this.translate));
+      this.keyValueItems.set(getKeyValueItems(this.translate));
+      this.timelineItems.set(getTimelineItems(this.translate));
+    });
+  }
 
   public onRatioSelected(item: AspectRatioItem): void {
     this.selectedRatioId.set(item.id);

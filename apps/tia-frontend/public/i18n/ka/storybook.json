@@ -284,7 +284,157 @@
   },
   "feedback": {},
   "layout": {},
-  "data-display": {},
+  "data-display": {
+    "title": "მონაცემების ჩვენება",
+    "subtitle": "ავატარები, პროპორციები, მინიშნებები და ჰოვერ-ბარათები",
+    "sections": {
+      "avatars": {
+        "title": "ავატარები",
+        "sizes": "ზომები:",
+        "withInitials": "ინიციალებით:",
+        "withColors": "ფერებით:",
+        "avatarGroup": "ავატარების ჯგუფი:",
+        "withStatus": "სტატუსით:",
+        "users": {
+          "loggedIn": { "firstName": "ნიკოლოზ", "lastName": "მაღალდაძე" },
+          "additional1": { "firstName": "ალექს", "lastName": "ბრაუნი" },
+          "additional2": { "firstName": "მია", "lastName": "ჯონსონი" },
+          "additional3": { "firstName": "სოფია", "lastName": "კინგი" }
+        },
+        "colorInitials": {
+          "0": "ჯდ",
+          "1": "აბ",
+          "2": "მჯ",
+          "3": "სკ",
+          "4": "ეუ"
+        },
+        "groupInitials": {
+          "0": "ჯც",
+          "1": "აე",
+          "2": "მს",
+          "3": "სჰ",
+          "4": "ლუ",
+          "5": "ბმ",
+          "6": "რგ",
+          "7": "თუ",
+          "8": "ნპ"
+        },
+        "statusInitials": {
+          "0": "ჯდ",
+          "1": "აბ",
+          "2": "მჯ",
+          "3": "სკ"
+        }
+      },
+      "aspectRatio": {
+        "title": "პროპორცია",
+        "noRatios": "პროპორციები არ არის ხელმისაწვდომი.",
+        "aspectRatioSuffix": "პროპორცია",
+        "descriptions": {
+          "video": "ვიდეო",
+          "standard": "სტანდარტული",
+          "square": "კვადრატული",
+          "ultrawide": "ულტრა ფართო"
+        }
+      },
+      "tooltips": {
+        "title": "მინიშნებები",
+        "items": {
+          "topDefault": "ზემოდან (ნაგულისხმევი)",
+          "bottom": "ქვემოდან",
+          "left": "მარცხნიდან",
+          "right": "მარჯვნიდან",
+          "hoverMe": "მიიტანეთ მაუსი",
+          "tooltipOnTop": "მინიშნება ზემოდან",
+          "tooltipOnBottom": "მინიშნება ქვემოდან",
+          "tooltipOnLeft": "მინიშნება მარცხნიდან",
+          "tooltipOnRight": "მინიშნება მარჯვნიდან",
+          "janeDoe": "ჯეინ დოუ",
+          "primaryAction": "მთავარი მოქმედება"
+        }
+      },
+      "hoverCards": {
+        "title": "ჰოვერ-ბარათები",
+        "items": {
+          "johndoeHandle": "@ჯონდოუ",
+          "johndoeName": "ჯონ დოუ",
+          "johndoeRole": "პროდუქტის დიზაინერი",
+          "johndoeDetail": "მონაცემების ჩვენების კომპონენტებისთვის გააზრებული UI შაბლონების შექმნა.",
+          "janedoeHandle": "@ჯეინდოუ",
+          "janedoeName": "ჯეინ ადამსი",
+          "janedoeRole": "ფრონტენდ ინჟინერი",
+          "janedoeDetail": "ხელმისაწვდომ და მრავალჯერად ჰოვერ ინტერაქციებზე ფოკუსირება.",
+          "alexHandle": "მიიტანეთ დეტალებისთვის",
+          "alexName": "ალექს დიაზი",
+          "alexRole": "დიზაინის ხელმძღვანელი",
+          "alexDetail": "დოკუმენტაციის კონტენტისთვის მდიდარი წინასწარი ნახვის შესწავლა."
+        }
+      },
+      "cards": {
+        "title": "ბარათები",
+        "items": {
+          "totalUsersLabel": "მომხმარებლების რაოდენობა",
+          "totalUsersValue": "1,234",
+          "totalUsersChange": "+12% წინა თვიდან",
+          "activeSessionsLabel": "აქტიური სესიები",
+          "activeSessionsValue": "456",
+          "activeSessionsChange": "+8% წინა საათიდან",
+          "revenueLabel": "შემოსავალი",
+          "revenueValue": "$12.5K",
+          "revenueChange": "-3% წინა კვირიდან",
+          "conversionLabel": "კონვერსია",
+          "conversionValue": "3.2%",
+          "conversionChange": "ცვლილების გარეშე"
+        }
+      },
+      "listDisplay": {
+        "title": "სიის ჩვენება",
+        "items": {
+          "johnName": "ჯონ დოუ",
+          "johnRole": "ადმინისტრატორი",
+          "johnBadge": "ადმინი",
+          "janeName": "ჯეინ სმიტი",
+          "janeRole": "რედაქტორი",
+          "janeBadge": "რედაქტორი",
+          "bobName": "ბობ ჯონსონი",
+          "bobRole": "მომხმარებელი",
+          "bobBadge": "მომხმარებელი",
+          "aliceName": "ელის ბრაუნი",
+          "aliceRole": "მომხმარებელი",
+          "aliceBadge": "მომხმარებელი"
+        }
+      },
+      "keyValueDisplay": {
+        "title": "გასაღები-მნიშვნელობის ჩვენება",
+        "userInfo": "მომხმარებლის ინფორმაცია",
+        "items": {
+          "fullNameLabel": "სრული სახელი:",
+          "fullNameValue": "ჯონ დოუ",
+          "emailLabel": "ელ. ფოსტა:",
+          "emailValue": "john@example.com",
+          "roleLabel": "როლი:",
+          "roleValue": "ადმინისტრატორი",
+          "statusLabel": "სტატუსი:",
+          "statusValue": "აქტიური",
+          "memberLabel": "წევრი:",
+          "memberValue": "იან 2024"
+        }
+      },
+      "timelineDisplay": {
+        "title": "ქრონოლოგიის ჩვენება",
+        "items": {
+          "deployTitle": "პროდაქშენზე გაშვებულია",
+          "deployTimestamp": "2 საათის წინ",
+          "reviewTitle": "კოდის განხილვა დასრულებულია",
+          "reviewTimestamp": "5 საათის წინ",
+          "prTitle": "Pull request გახსნილია",
+          "prTimestamp": "1 დღის წინ",
+          "featureTitle": "ფუნქციონალის შემუშავება დაწყებულია",
+          "featureTimestamp": "2 დღის წინ"
+        }
+      }
+    }
+  },
   "overlays": {},
   "drag-and-drop": {
     "title": "ელემენტების გადაადგილება",
