@@ -7,8 +7,8 @@ import {
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { map, combineLatest } from 'rxjs';
-import { loadAccountCardsPage } from '../../../../../../../../store/products/cards/cards.actions';
+import { map, combineLatest, take, tap } from 'rxjs';
+import { loadAccountCardsPage, setCurrentCardIndex } from '../../../../../../../../store/products/cards/cards.actions';
 import {
   selectAllAccounts,
   selectCardDetailsByAccountId,
@@ -80,27 +80,43 @@ protected readonly viewState$ = combineLatest([
   })
 );
 
-  protected readonly cardsLabel$ = this.accountData$.pipe(
-    map((data) => {
-      if (!data) return '';
-      const count = data.account.cardIds.length;
-      return `${count} Card${count !== 1 ? 's' : ''}`;
-    }),
-  );
 
-  ngOnInit(): void {
-    this.store.dispatch(loadAccountCardsPage({ accountId: this.accountId }));
-  }
+protected readonly cardsLabel$ = this.accountData$.pipe(
+  map((data) => {
+    if (!data) return { count: '0', key: 'my-products.card.account-cards.account-header.cardCountPlural' };
+    const count = data.account.cardIds.length;
+    return {
+      count: `${count}`,
+      key: count === 1 
+        ? 'my-products.card.account-cards.account-header.cardCount' 
+        : 'my-products.card.account-cards.account-header.cardCountPlural'
+    };
+  }),
+);
+ngOnInit(): void {
+  this.store.dispatch(loadAccountCardsPage({ accountId: this.accountId }));
+}
+
 
   public handleCardClick(cardId: string): void {
-    this.router.navigate(['/bank/products/cards/details', cardId]);
-  }
+  this.accountData$.pipe(
+    take(1),
+    tap(data => {
+      if (data) {
+        const index = data.account.cardIds.indexOf(cardId);
+        this.store.dispatch(setCurrentCardIndex({ cardIndex: index, accountId: this.accountId }));
+      }
+    })
+  ).subscribe();
+  
+  this.router.navigate(['/bank/products/cards/details', cardId]);
+}
 
   public handleBackClick(): void {
     this.router.navigate(['/bank/products/cards/list']);
   }
 
-  public handleRetry(): void {
-    this.store.dispatch(loadAccountCardsPage({ accountId: this.accountId }));
-  }
+ public handleRetry(): void {
+  this.store.dispatch(loadAccountCardsPage({ accountId: this.accountId }));
+}
 }

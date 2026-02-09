@@ -46,6 +46,7 @@ export const cardsReducer = createReducer(
     },
     cardDetailsLoading: false,
     cardDetailsError: null,
+     loadedCardDetailsIds: [...state.loadedCardDetailsIds, cardId], 
   })),
   on(CardsActions.loadCardDetailsFailure, (state, { error }) => ({
     ...state,
@@ -66,6 +67,7 @@ export const cardsReducer = createReducer(
       types,
       loading: false,
       error: null,
+      cardCreationDataLoaded: true,
     }),
   ),
   on(CardsActions.loadCardCreationDataFailure, (state, { error }) => ({
@@ -117,45 +119,14 @@ export const cardsReducer = createReducer(
     selectedCardIdForModal: null,
   })),
 
-  on(CardsActions.loadCardTransactions, (state) => ({
-    ...state,
-    cardTransactionsLoading: true,
-    cardTransactionsError: null,
-  })),
 
-  on(
-    CardsActions.loadCardTransactionsSuccess,
-    (state, { cardId, transactions, total }) => ({
-      ...state,
-      cardTransactions: {
-        ...state.cardTransactions,
-        [cardId]: transactions,
-      },
-      cardTransactionsTotalCount: {
-        ...state.cardTransactionsTotalCount,
-        [cardId]: total,
-      },
-      cardTransactionsLoading: false,
-      cardTransactionsError: null,
-    }),
-  ),
-
-  on(CardsActions.loadCardTransactionsFailure, (state, { error }) => ({
-    ...state,
-    cardTransactionsLoading: false,
-    cardTransactionsError: error,
-  })),
-  on(CardsActions.clearCardTransactionsError, (state) => ({
-    ...state,
-    cardTransactionsError: null,
-  })),
-
-  on(CardsActions.loadCardAccountsSuccess, (state, { accounts }) => ({
+on(CardsActions.loadCardAccountsSuccess, (state, { accounts }) => ({
   ...state,
   accounts,
   loading: false,
   error: null,
-  cardImagesLoading: true,
+  cardImagesLoading: accounts.flatMap(a => a.cardIds).some(id => !state.loadedCardImageIds.includes(id)),
+  accountsLoaded: true,
 })),
 
 on(CardsActions.loadCardImageSuccess, (state, { cardId, imageBase64 }) => ({
@@ -164,6 +135,7 @@ on(CardsActions.loadCardImageSuccess, (state, { cardId, imageBase64 }) => ({
     ...state.cardImages,
     [cardId]: imageBase64,
   },
+   loadedCardImageIds: [...state.loadedCardImageIds, cardId],
 })),
 
 on(CardsActions.loadCardImageFailure, (state) => ({
@@ -278,5 +250,33 @@ on(CardsActions.openCardOtpModal, (state, { cardId }) => ({
   otpError: null,
   otpRemainingAttempts: 3,
 })),
+
+on(CardsActions.setCurrentCardIndex, (state, { cardIndex, accountId }) => ({
+  ...state,
+  currentCardIndex: cardIndex,
+  currentAccountId: accountId,
+})),
+
+on(CardsActions.navigateToNextCard, (state) => {
+  const account = state.accounts.find(acc => acc.id === state.currentAccountId);
+  if (!account || account.cardIds.length === 0) return state;
+  const maxIndex = account.cardIds.length - 1;
+  const nextIndex = state.currentCardIndex >= maxIndex ? 0 : state.currentCardIndex + 1;
+  return {
+    ...state,
+    currentCardIndex: nextIndex,
+  };
+}),
+
+on(CardsActions.navigateToPreviousCard, (state) => {
+  const account = state.accounts.find(acc => acc.id === state.currentAccountId);
+  if (!account || account.cardIds.length === 0) return state;
+  const maxIndex = account.cardIds.length - 1;
+  const previousIndex = state.currentCardIndex <= 0 ? maxIndex : state.currentCardIndex - 1;
+  return {
+    ...state,
+    currentCardIndex: previousIndex,
+  };
+}),
 
 );

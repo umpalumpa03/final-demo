@@ -4,6 +4,9 @@
 .card-details-modal {
   @include display-flex(column);
   gap: 2.2rem;
+  max-height: 90vh;
+  overflow: auto;
+
   &__title {
     @include font-inter(600, 1.8rem, 1.8rem);
     color: var(--color-fg);

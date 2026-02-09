@@ -1,17 +1,4 @@
 <div class="profile-photo">
-  @if (alertType()) {
-  <div class="profile-photo__alert-container">
-    <app-dismissible-alerts
-      class="profile-photo__alert"
-      [alertType]="alertType()!"
-      [alertTitle]="alertType()!"
-      [alertMessage]="alertMessage()"
-      [alertId]="0"
-      (dismissed)="alertClose.emit()"
-    ></app-dismissible-alerts>
-  </div>
-  }
-
   <app-basic-card
     title="{{ 'settings.profile-photo.title' | translate }}"
     subtitle="{{ 'settings.profile-photo.subtitle' | translate }}"
@@ -28,6 +15,7 @@
             [src]="photoUrl()!"
             alt="Profile photo"
             class="profile-photo__avatar-main-image"
+            (error)="onImageError()"
           />
           } @else if (defaultAvatarsLoading()) {
           <app-spinner size="6rem"></app-spinner>
@@ -92,6 +80,7 @@
       <app-button
         variant="default"
         size="default"
+        [isLoading]="savingChanges()"
         (click)="saveChanges.emit()"
       >
         {{ 'settings.profile-photo.change' | translate }}

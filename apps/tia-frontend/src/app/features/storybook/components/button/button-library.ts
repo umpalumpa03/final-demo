@@ -1,36 +1,39 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
-import {ButtonComponent} from "../../../../shared/lib/primitives/button/button"
+import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
+import { ButtonComponent } from "../../../../shared/lib/primitives/button/button";
 import { ButtonGroupComponent } from '../../../../shared/lib/primitives/button-group/button-group.component';
-import { TitleCasePipe } from '@angular/common';
 import { LibraryTitle } from '../../shared/library-title/library-title';
 import { ShowcaseCard } from "../../shared/showcase-card/showcase-card";
-import * as CONFIG from './button-config/button-library.config'
+import { ButtonDemoState } from './state/button-demos.state';
 
 @Component({
   selector: 'app-button-library',
-  imports: [ButtonComponent, ButtonGroupComponent, TitleCasePipe, LibraryTitle, ShowcaseCard],
+  imports: [
+    ButtonComponent, 
+    ButtonGroupComponent, 
+    LibraryTitle, 
+    ShowcaseCard
+  ],
   templateUrl: './button-library.html',
   styleUrl: './button-library.scss',
+  providers: [ButtonDemoState],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonLibraryComponent {
+  private readonly state = inject(ButtonDemoState);
   protected readonly isInteractiveLoading = signal(false);
 
-  
-  protected readonly variants = signal(CONFIG.BUTTON_VARIANTS);
-  protected readonly sizes = signal(CONFIG.BUTTON_SIZES);
-  protected readonly stateExamples = signal(CONFIG.STATE_EXAMPLES); 
-  protected readonly iconButtons = signal(CONFIG.ICON_BUTTONS);
-  protected readonly iconOnlyButtons = signal(CONFIG.ICON_ONLY_BUTTONS);
-  protected readonly interactiveItems = signal(CONFIG.INTERACTIVE_EXAMPLES);
-  protected readonly buttonGroups = signal(CONFIG.BUTTON_GROUPS); 
-  public readonly title:string = "Buttons";
-  public readonly subtitle:string = "A comprehensive showcase of all components with their various states"
-
+  protected readonly pageInfo = this.state.pageInfo;
+  protected readonly sectionTitles = this.state.titles;
+  protected readonly variants = this.state.variants;
+  protected readonly sizes = this.state.sizes;
+  protected readonly stateExamples = this.state.stateExamples;
+  protected readonly iconButtons = this.state.iconButtons;
+  protected readonly interactiveItems = this.state.interactiveItems; 
+  protected readonly buttonGroups = this.state.buttonGroups;
+  protected readonly labels = this.state.labels;
 
   protected toggleLoading(): void {
     this.isInteractiveLoading.set(true);
     setTimeout(() => this.isInteractiveLoading.set(false), 2000);
   }
 }
-

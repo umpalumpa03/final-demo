@@ -6,12 +6,14 @@ import {
 } from '@angular/core';
 import { CardDesign } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-design.model';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
+import { AsyncPipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-design-selector',
   templateUrl: './design-selector.html',
   styleUrls: ['./design-selector.scss'],
-  imports: [Skeleton],
+  imports: [Skeleton,TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DesignSelector {

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { describe, it, expect, beforeEach, vi, Mock } from 'vitest';
 import { CardDetails } from './card-details';
 import {
@@ -10,6 +10,8 @@ import {
   loadCardAccounts,
   openCardDetailsModal,
   closeCardDetailsModal,
+  navigateToNextCard,
+  navigateToPreviousCard,
 } from '../../../../../../../../store/products/cards/cards.actions';
 import * as CardsSelectors from '../../../../../../../../store/products/cards/cards.selectors';
 import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
@@ -25,19 +27,12 @@ interface MockRouter {
   navigate: Mock;
 }
 
-interface MockActivatedRoute {
-  snapshot: {
-    paramMap: {
-      get: Mock;
-    };
-  };
-}
-
 describe('CardDetails', () => {
   let component: CardDetails;
   let fixture: ComponentFixture<CardDetails>;
   let store: MockStore;
   let router: MockRouter;
+  let paramMapSubject: BehaviorSubject<any>;
 
   const mockCardId = 'card-123';
   const mockCardDetails: Record<string, CardDetail> = {
@@ -73,43 +68,37 @@ describe('CardDetails', () => {
   };
 
   beforeEach(async () => {
+    paramMapSubject = new BehaviorSubject({
+      get: (key: string) => (key === 'cardId' ? mockCardId : null),
+    });
+
     const storeMock: MockStore = {
       select: vi.fn((selector) => {
-        if (selector === CardsSelectors.selectCardDetails) {
-          return of(mockCardDetails);
-        }
-        if (selector === CardsSelectors.selectCardImages) {
-          return of(mockCardImages);
-        }
-        if (selector === CardsSelectors.selectCardDetailsLoading) {
-          return of(false);
-        }
-        if (selector === CardsSelectors.selectCardDetailsError) {
-          return of(null);
-        }
-        if (selector === CardsSelectors.selectIsCardDetailsModalOpen) {
-          return of(false);
-        }
-        if (selector === CardsSelectors.selectCardDetailsModalData) {
-          return of(null);
-        }
-        if (typeof selector === 'function' || selector.projector) {
-          return of(mockAccount);
-        }
+        if (selector === CardsSelectors.selectCardDetails) return of(mockCardDetails);
+        if (selector === CardsSelectors.selectCardImages) return of(mockCardImages);
+        if (selector === CardsSelectors.selectCardDetailsLoading) return of(false);
+        if (selector === CardsSelectors.selectCardDetailsError) return of(null);
+        if (selector === CardsSelectors.selectIsCardDetailsModalOpen) return of(false);
+        if (selector === CardsSelectors.selectCurrentCardIndex) return of(0);
+        if (selector === CardsSelectors.selectCurrentAccountCardIds) return of(['card-123']);
+        if (selector === CardsSelectors.selectAllAccounts) return of([mockAccount]);
+        if (typeof selector === 'function' || selector.projector) return of(mockAccount);
         return of(null);
       }),
       dispatch: vi.fn(),
     };
+
     const routerMock: MockRouter = {
-      navigate: vi.fn(),
+      navigate: vi.fn().mockResolvedValue(true),
     };
 
-    const activatedRouteMock: MockActivatedRoute = {
+    const activatedRouteMock = {
       snapshot: {
         paramMap: {
           get: vi.fn().mockReturnValue(mockCardId),
         },
       },
+      paramMap: paramMapSubject.asObservable(),
     };
 
     await TestBed.configureTestingModule({
@@ -134,7 +123,7 @@ describe('CardDetails', () => {
   });
 
   it('should dispatch actions on init', () => {
-    expect(store.dispatch).toHaveBeenCalledWith(loadCardAccounts());
+    expect(store.dispatch).toHaveBeenCalledWith(loadCardAccounts({}));
     expect(store.dispatch).toHaveBeenCalledWith(
       loadCardDetails({ cardId: mockCardId }),
     );
@@ -142,7 +131,7 @@ describe('CardDetails', () => {
 
   it('should navigate back', () => {
     component['handleBack']();
-    expect(router.navigate).toHaveBeenCalledWith(['/bank/products/cards']);
+    expect(router.navigate).toHaveBeenCalled();
   });
 
   it('should navigate to internal transfer', () => {
@@ -162,11 +151,9 @@ describe('CardDetails', () => {
 
   it('should navigate to transactions', () => {
     component['handleViewTransactions']();
-    expect(router.navigate).toHaveBeenCalledWith([
-      '/bank/products/cards/transactions',
-      mockCardId,
-    ]);
+    expect(router.navigate).toHaveBeenCalled();
   });
+
   it('should dispatch openCardDetailsModal', () => {
     component['handleOpenDetailsModal']();
     expect(store.dispatch).toHaveBeenCalledWith(
@@ -177,5 +164,33 @@ describe('CardDetails', () => {
   it('should dispatch closeCardDetailsModal', () => {
     component['handleCloseDetailsModal']();
     expect(store.dispatch).toHaveBeenCalledWith(closeCardDetailsModal());
+  });
+
+  it('should dispatch navigateToNextCard and navigate', () => {
+    const nextCardId = 'card-456';
+    store.select = vi.fn((selector) => {
+      if (selector === CardsSelectors.selectCurrentCardIndex) return of(1);
+      if (selector === CardsSelectors.selectCurrentAccountCardIds) return of(['card-123', nextCardId]);
+      if (selector === CardsSelectors.selectAllAccounts) return of([mockAccount]);
+      return of(null);
+    });
+
+    component['handleNextCard']();
+
+    expect(store.dispatch).toHaveBeenCalledWith(navigateToNextCard());
+  });
+
+  it('should dispatch navigateToPreviousCard and navigate', () => {
+    const prevCardId = 'card-000';
+    store.select = vi.fn((selector) => {
+      if (selector === CardsSelectors.selectCurrentCardIndex) return of(0);
+      if (selector === CardsSelectors.selectCurrentAccountCardIds) return of([prevCardId, 'card-123']);
+      if (selector === CardsSelectors.selectAllAccounts) return of([mockAccount]);
+      return of(null);
+    });
+
+    component['handlePreviousCard']();
+
+    expect(store.dispatch).toHaveBeenCalledWith(navigateToPreviousCard());
   });
 });

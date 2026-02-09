@@ -18,9 +18,10 @@
             (selected)="onLanguageSelect($event)" />
         }
     </div>
+    <app-language-info />
     <div class="container__actions">
         <app-button (click)="onSave()" [isDisabled]="!selectedLanguage()">
-            Save Changes
+            {{'settings.language.saveChanges' | translate}}
         </app-button>
     </div>
     }

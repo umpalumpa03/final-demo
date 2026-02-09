@@ -53,6 +53,7 @@ export enum HeaderCtaAction {
   SelectAll = 'selectAll',
   CreateTemplate = 'createTemplate',
   CreateGroup = 'createGroup',
+  Pay = 'pay',
 }
 
 export interface HeaderCtaButton {
@@ -65,7 +66,8 @@ export type formSubmitType =
   | 'create-group'
   | 'rename-template'
   | 'rename-group'
-  | 'create-template';
+  | 'create-template'
+  | 'confirm-payment';
 export interface FormSubmitPayload {
   type: formSubmitType;
   values: Record<string, string>;
@@ -94,6 +96,7 @@ export enum CrudActionType {
   RenameTemplate = 'renameTemplate',
   DeleteGroup = 'deleteGroup',
   RenameGroup = 'renameGroup',
+  ConfirmPayment = 'confirmPayment',
 }
 
 export type TreeAction =

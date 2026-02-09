@@ -15,9 +15,16 @@ import { CardListApiService } from '@tia/shared/services/cards/card-list.service
 import { Store } from '@ngrx/store';
 import {
   selectAccountById,
+  selectAccountsLoaded,
   selectAllAccounts,
+  selectCardCategories,
+  selectCardCreationDataLoaded,
+  selectCardDesigns,
   selectCardDetailById,
   selectCardDetails,
+  selectCardTypes,
+  selectIsCardDetailLoaded,
+  selectLoadedCardImageIds,
   selectOtpRemainingAttempts,
 } from './cards.selectors';
 import { CardAccount } from '@tia/shared/models/cards/card-account.model';
@@ -32,103 +39,157 @@ export class CardsEffects {
   private readonly store = inject(Store);
   private readonly transactionApiService = inject(TransactionApiService);
 
-  loadCardAccounts$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CardsActions.loadCardAccounts),
-      switchMap(() =>
-        this.cardListApiService.getCardAccounts().pipe(
-          map((accounts) => CardsActions.loadCardAccountsSuccess({ accounts })),
-          catchError((error) =>
-            of(CardsActions.loadCardAccountsFailure({ error: error.message })),
-          ),
-        ),
+ loadCardAccounts$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(CardsActions.loadCardAccounts),
+    switchMap(({ forceRefresh = false }) =>
+      combineLatest([
+        this.store.select(selectAccountsLoaded),
+        this.store.select(selectAllAccounts),
+      ]).pipe(
+        take(1),
+        switchMap(([isLoaded, accounts]) => {
+          if (isLoaded && !forceRefresh) {
+            return of(CardsActions.loadCardAccountsSuccess({ accounts }));
+          }
+          return this.cardListApiService.getCardAccounts().pipe(
+            map((accounts) => CardsActions.loadCardAccountsSuccess({ accounts })),
+            catchError((error) =>
+              of(CardsActions.loadCardAccountsFailure({ error: error.message })),
+            ),
+          );
+        }),
       ),
     ),
-  );
-  loadCardImages$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CardsActions.loadCardAccountsSuccess),
-      switchMap(({ accounts }) => {
-        const allCardIds = accounts.flatMap((account) => account.cardIds);
+  ),
+);
+ 
+loadCardImages$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(CardsActions.loadCardAccountsSuccess),
+    switchMap(({ accounts }) => {
+      const allCardIds = accounts.flatMap((account) => account.cardIds);
 
-        if (allCardIds.length === 0) {
-          return of(CardsActions.loadCardImagesComplete());
-        }
+      if (allCardIds.length === 0) {
+        return of(CardsActions.loadCardImagesComplete());
+      }
 
-        return forkJoin(
-          allCardIds.map((cardId) =>
-            this.cardsService.getCardImage(cardId).pipe(
-              map((imageBase64) =>
-                CardsActions.loadCardImageSuccess({ cardId, imageBase64 }),
-              ),
-              catchError(() =>
-                of(
-                  CardsActions.loadCardImageFailure({
-                    cardId,
-                    error: 'IMAGE_LOAD_FAILED',
-                  }),
+      return this.store.select(selectLoadedCardImageIds).pipe(
+        take(1),
+        switchMap((loadedIds) => {
+          const unloadedCardIds = allCardIds.filter(
+            (cardId) => !loadedIds.includes(cardId),
+          );
+
+          if (unloadedCardIds.length === 0) {
+            return of(CardsActions.loadCardImagesComplete());
+          }
+
+          return forkJoin(
+            unloadedCardIds.map((cardId) =>
+              this.cardsService.getCardImage(cardId).pipe(
+                map((imageBase64) =>
+                  CardsActions.loadCardImageSuccess({ cardId, imageBase64 }),
+                ),
+                catchError(() =>
+                  of(
+                    CardsActions.loadCardImageFailure({
+                      cardId,
+                      error: 'IMAGE_LOAD_FAILED',
+                    }),
+                  ),
                 ),
               ),
             ),
-          ),
-        ).pipe(
-          mergeMap((actions) => [
-            ...actions,
-            CardsActions.loadCardImagesComplete(),
-          ]),
-        );
-      }),
-    ),
-  );
-  loadCardDetails$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CardsActions.loadCardDetails),
-      mergeMap(({ cardId }) =>
-        this.cardListApiService.getCardDetails(cardId).pipe(
-          map((details) =>
-            CardsActions.loadCardDetailsSuccess({ cardId, details }),
-          ),
-          catchError((error) =>
-            of(
-              CardsActions.loadCardDetailsFailure({
-                cardId,
-                error: error.message,
-              }),
+          ).pipe(
+            mergeMap((actions) => [
+              ...actions,
+              CardsActions.loadCardImagesComplete(),
+            ]),
+          );
+        }),
+      );
+    }),
+  ),
+);
+loadCardDetails$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(CardsActions.loadCardDetails),
+    mergeMap(({ cardId, forceRefresh = false }) =>
+      combineLatest([
+        this.store.select(selectIsCardDetailLoaded(cardId)),
+        this.store.select(selectCardDetails),
+      ]).pipe(
+        take(1),
+        switchMap(([isLoaded, allDetails]) => {
+          if (isLoaded && !forceRefresh) {
+            const details = allDetails[cardId];
+            return of(CardsActions.loadCardDetailsSuccess({ cardId, details }));
+          }
+          return this.cardListApiService.getCardDetails(cardId).pipe(
+            map((details) =>
+              CardsActions.loadCardDetailsSuccess({ cardId, details }),
             ),
-          ),
-        ),
+            catchError((error) =>
+              of(
+                CardsActions.loadCardDetailsFailure({
+                  cardId,
+                  error: error.message,
+                }),
+              ),
+            ),
+          );
+        }),
       ),
     ),
-  );
-
-  loadCardCreationData$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CardsActions.loadCardCreationData),
-      switchMap(() =>
-        forkJoin({
-          designs: this.cardsService.getCardDesigns(),
-          categories: this.cardsService.getCardCategories(),
-          types: this.cardsService.getCardTypes(),
-        }).pipe(
-          map(({ designs, categories, types }) =>
-            CardsActions.loadCardCreationDataSuccess({
-              designs,
-              categories,
-              types,
-            }),
-          ),
-          catchError((error) =>
-            of(
-              CardsActions.loadCardCreationDataFailure({
-                error: error.message || 'Failed to load card creation data',
+  ),
+);
+loadCardCreationData$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(CardsActions.loadCardCreationData),
+    switchMap(({ forceRefresh = false }) =>
+      combineLatest([
+        this.store.select(selectCardCreationDataLoaded),
+        this.store.select(selectCardDesigns),
+        this.store.select(selectCardCategories),
+        this.store.select(selectCardTypes),
+      ]).pipe(
+        take(1),
+        switchMap(([isLoaded, designs, categories, types]) => {
+          if (isLoaded && !forceRefresh) {
+            return of(
+              CardsActions.loadCardCreationDataSuccess({
+                designs,
+                categories,
+                types,
+              }),
+            );
+          }
+          return forkJoin({
+            designs: this.cardsService.getCardDesigns(),
+            categories: this.cardsService.getCardCategories(),
+            types: this.cardsService.getCardTypes(),
+          }).pipe(
+            map(({ designs, categories, types }) =>
+              CardsActions.loadCardCreationDataSuccess({
+                designs,
+                categories,
+                types,
               }),
             ),
-          ),
-        ),
+            catchError((error) =>
+              of(
+                CardsActions.loadCardCreationDataFailure({
+                  error: error.message || 'Failed to load card creation data',
+                }),
+              ),
+            ),
+          );
+        }),
       ),
     ),
-  );
-
+  ),
+);
   createCard$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CardsActions.createCard),
@@ -147,39 +208,39 @@ export class CardsEffects {
     ),
   );
 
+
   createCardSuccess$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CardsActions.createCardSuccess),
-      map(() => CardsActions.loadCardAccounts()),
-    ),
-  );
-
+  this.actions$.pipe(
+    ofType(CardsActions.createCardSuccess),
+    map(() => CardsActions.loadCardAccounts({ forceRefresh: false })), 
+  ),
+);
   loadAccountCardsPage$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CardsActions.loadAccountCardsPage),
-      switchMap(({ accountId }) =>
-        this.store.select(selectAllAccounts).pipe(
-          take(1),
-          switchMap((accounts: CardAccount[]) => {
-            const actions = [];
+  this.actions$.pipe(
+    ofType(CardsActions.loadAccountCardsPage),
+    switchMap(({ accountId }) =>
+      this.store.select(selectAllAccounts).pipe(
+        take(1),
+        switchMap((accounts: CardAccount[]) => {
+          const actions = [];
 
-            if (accounts.length === 0) {
-              actions.push(CardsActions.loadCardAccounts());
-            } else {
-              const account = accounts.find((acc) => acc.id === accountId);
-              if (account?.cardIds && account.cardIds.length > 0) {
-                account.cardIds.forEach((cardId) => {
-                  actions.push(CardsActions.loadCardDetails({ cardId }));
-                });
-              }
+          if (accounts.length === 0) {
+            actions.push(CardsActions.loadCardAccounts({})); 
+          } else {
+            const account = accounts.find((acc) => acc.id === accountId);
+            if (account?.cardIds && account.cardIds.length > 0) {
+              account.cardIds.forEach((cardId) => {
+                actions.push(CardsActions.loadCardDetails({ cardId })); 
+              });
             }
+          }
 
-            return actions;
-          }),
-        ),
+          return actions;
+        }),
       ),
     ),
-  );
+  ),
+);
 
   hideSuccessAlertAfterDelay$ = createEffect(() =>
     this.actions$.pipe(
@@ -188,100 +249,14 @@ export class CardsEffects {
       map(() => CardsActions.hideSuccessAlert()),
     ),
   );
+
   loadCardCreationDataOnModalOpen$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CardsActions.openCreateCardModal),
-      map(() => CardsActions.loadCardCreationData()),
-    ),
-  );
+  this.actions$.pipe(
+    ofType(CardsActions.openCreateCardModal),
+    map(() => CardsActions.loadCardCreationData({})), 
+  ),
+);
 
-  loadCardTransactions$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CardsActions.loadCardTransactions),
-      switchMap(({ cardId }) =>
-        this.store.select(selectCardDetailById(cardId)).pipe(
-          take(1),
-          switchMap((cardData) => {
-            if (!cardData?.details?.accountId) {
-              return of(
-                CardsActions.loadCardTransactionsFailure({
-                  cardId,
-                  error: 'Card details not found',
-                }),
-              );
-            }
-
-            return this.store
-              .select(selectAccountById(cardData.details.accountId))
-              .pipe(
-                take(1),
-                switchMap((account) => {
-                  if (!account?.iban) {
-                    return of(
-                      CardsActions.loadCardTransactionsFailure({
-                        cardId,
-                        error: 'Account IBAN not found',
-                      }),
-                    );
-                  }
-
-                  return this.transactionApiService
-                    .getTransactions({
-                      accountIban: account.iban,
-                      pageLimit: 20,
-                    })
-                    .pipe(
-                      map((response) =>
-                        CardsActions.loadCardTransactionsSuccess({
-                          cardId,
-                          transactions: response.items || [],
-                          total: response.items?.length || 0,
-                        }),
-                      ),
-                      catchError((error) =>
-                        of(
-                          CardsActions.loadCardTransactionsFailure({
-                            cardId,
-                            error:
-                              error.message || 'Failed to load transactions',
-                          }),
-                        ),
-                      ),
-                    );
-                }),
-              );
-          }),
-        ),
-      ),
-    ),
-  );
-  loadCardTransactionsWhenReady$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CardsActions.loadCardDetailsSuccess),
-      switchMap(({ cardId }) =>
-        combineLatest([
-          this.store.select(selectCardDetailById(cardId)).pipe(skip(1)),
-          this.store.select(selectAllAccounts),
-        ]).pipe(
-          take(1),
-          switchMap(([cardData, accounts]) => {
-            if (!cardData?.details?.accountId || accounts.length === 0) {
-              return EMPTY;
-            }
-
-            const account = accounts.find(
-              (acc) => acc.id === cardData.details.accountId,
-            );
-
-            if (account) {
-              return of(CardsActions.loadCardTransactions({ cardId }));
-            }
-            return EMPTY;
-          }),
-        ),
-      ),
-    ),
-  );
   updateCardName$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CardsActions.updateCardName),

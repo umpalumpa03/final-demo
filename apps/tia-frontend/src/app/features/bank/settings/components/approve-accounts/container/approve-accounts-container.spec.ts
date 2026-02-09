@@ -1,30 +1,37 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApproveAccountsContainer } from './approve-accounts-container';
-import { AccountPermissionsStore } from '../store/aprove-accounts.store';
-import { signal, WritableSignal } from '@angular/core';
+import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { IAccountsPermissions } from '../../../shared/models/approve-models/accounts-models/account-permissions.models';
+import { BankAccount } from '../../../shared/models/approve-models/accounts-models/pending-accounts.models';
+import { AccountPermissionsStore } from '../store/approve-accounts.store';
 
 describe('ApproveAccountsContainer', () => {
   let component: ApproveAccountsContainer;
   let fixture: ComponentFixture<ApproveAccountsContainer>;
-  let mockPermissionsSignal: WritableSignal<any[]>;
+  let mockStore: any;
 
   beforeEach(async () => {
-    mockPermissionsSignal = signal([]);
+    mockStore = {
+      permissions: signal<IAccountsPermissions[]>([]),
+      pendingAccounts: signal<BankAccount[]>([]),
+      isLoading: signal(false),
+      error: signal(null),
+      loadPermissions: vi.fn(),
+      loadPendingAccounts: vi.fn(),
+      savePermissions: vi.fn(),
+      updateStatus: vi.fn(),
+    };
 
     await TestBed.configureTestingModule({
       imports: [ApproveAccountsContainer],
+      schemas: [NO_ERRORS_SCHEMA],
     })
       .overrideComponent(ApproveAccountsContainer, {
         set: {
+          imports: [],
           providers: [
-            {
-              provide: AccountPermissionsStore,
-              useValue: {
-                loadPermissions: vi.fn(),
-                permissions: mockPermissionsSignal,
-              },
-            },
+            { provide: AccountPermissionsStore, useValue: mockStore },
           ],
         },
       })
@@ -32,33 +39,171 @@ describe('ApproveAccountsContainer', () => {
 
     fixture = TestBed.createComponent(ApproveAccountsContainer);
     component = fixture.componentInstance;
+
     fixture.detectChanges();
   });
 
-  it('should init correctly and call loadPermissions', () => {
+  it('should init correctly and call load methods', () => {
     expect(component).toBeTruthy();
-    const store = fixture.debugElement.injector.get(AccountPermissionsStore);
-    expect(store.loadPermissions).toHaveBeenCalled();
+    expect(mockStore.loadPermissions).toHaveBeenCalled();
+    expect(mockStore.loadPendingAccounts).toHaveBeenCalled();
   });
 
-  it('should generate form from store data and save selected IDs correctly', () => {
-    mockPermissionsSignal.set([
-      { value: 10, name: 'Perm A' },
-      { value: 20, name: 'Perm B' },
+  it('should sync form controls when permissions signal updates', () => {
+    mockStore.permissions.set([
+      { value: 1, label: 'View Balance' },
+      { value: 4, label: 'Transfer' },
     ]);
     fixture.detectChanges();
 
     const form = component.permissionsForm;
-    expect(form.contains('10')).toBe(true);
-    expect(form.contains('20')).toBe(true);
+    expect(form.contains('1')).toBe(true);
+    expect(form.contains('4')).toBe(true);
+    expect(form.contains('2')).toBe(false);
+  });
 
-    form.patchValue({
-      '10': true,
-      '20': false,
+  it('should map permissions correctly for UI', () => {
+    mockStore.permissions.set([
+      { value: 1, label: 'View Balance' },
+      { value: 2, label: 'Transfer' },
+    ]);
+    fixture.detectChanges();
+
+    const mapped = component.mappedPermissions();
+    expect(mapped.length).toBe(2);
+    expect(mapped[0].label).toBe('View Balance');
+    expect(mapped[0].value).toBe(1);
+  });
+
+  it('should correctly compute account details based on activeAccountId', () => {
+    const mockAccount = {
+      id: 'acc-1',
+      name: 'Test Business',
+      user: { firstName: 'John', lastName: 'Doe' },
+    } as any;
+
+    mockStore.pendingAccounts.set([mockAccount]);
+
+    component.activeAccountId.set('acc-1');
+    fixture.detectChanges();
+
+    expect(component.accountName()).toBe('Test Business');
+    expect(component.fullName()).toBe('John Doe');
+  });
+
+  it('should open modal and stage account ID on save', () => {
+    const accountId = 'acc-123';
+
+    component.handleAction({ action: 'permissions', id: accountId });
+
+    expect(component.activeAccountId()).toBe(accountId);
+    expect(component.permissionsOverlay()).toBe(true);
+
+    component.onSavePermissions();
+
+    expect(component.permissionsSavedAccount()).toBe(accountId);
+    expect(component.permissionsOverlay()).toBe(false);
+  });
+
+  it('should calculate bitwise sum and save permissions on approve', () => {
+    const accountId = 'acc-123';
+
+    mockStore.permissions.set([
+      { value: 1, label: 'A' },
+      { value: 2, label: 'B' },
+      { value: 4, label: 'C' },
+    ]);
+    fixture.detectChanges();
+
+    component.activeAccountId.set(accountId);
+    component.permissionsSavedAccount.set(accountId);
+
+    component.permissionsForm.patchValue({
+      '1': true,
+      '2': false,
+      '4': true,
     });
 
-    component.save();
+    component.handleAction({ action: 'approve', id: accountId });
 
-    expect(component.selectIds()).toEqual([10]);
+    expect(mockStore.savePermissions).toHaveBeenCalledWith({
+      accountId: accountId,
+      permissions: 5,
+    });
+
+    expect(mockStore.updateStatus).toHaveBeenCalledWith({
+      accountId: accountId,
+      updatedStatus: 'active',
+    });
+
+    expect(component.permissionsSavedAccount()).toBeNull();
+  });
+
+  it('should update status to closed on decline', () => {
+    const accountId = 'acc-999';
+    component.handleAction({ action: 'decline', id: accountId });
+
+    expect(mockStore.updateStatus).toHaveBeenCalledWith({
+      accountId: accountId,
+      updatedStatus: 'closed',
+    });
+  });
+
+  it('should call loadPendingAccounts on retry', () => {
+    component.retryLoading();
+    expect(mockStore.loadPendingAccounts).toHaveBeenCalledTimes(2);
+  });
+
+  it('should reset state on cancel changes', () => {
+    component.activeAccountId.set('acc-1');
+    component.permissionsSavedAccount.set('acc-1');
+    component.permissionsOverlay.set(true);
+
+    component.cancelPermissionChanges();
+
+    expect(component.permissionsSavedAccount()).toBeNull();
+    expect(component.permissionsOverlay()).toBe(false);
+  });
+
+  it('should trigger confirmation modal when switching accounts with unsaved changes', () => {
+    component.permissionsSavedAccount.set('acc-1');
+    component.handleAction({ action: 'permissions', id: 'acc-2' });
+
+    expect(component.confirmModalActive()).toBe(true);
+    expect(component.permissionsOverlay()).toBe(false);
+  });
+
+  it('should close confirm modal and reset pending ID on confirm cancel', () => {
+    component.confirmModalActive.set(true);
+    component.onConfirmCancel();
+
+    expect(component.confirmModalActive()).toBe(false);
+  });
+
+  it('should switch account and reset state on confirm accept', () => {
+    component.permissionsSavedAccount.set('acc-1');
+    component.handleAction({ action: 'permissions', id: 'acc-2' });
+
+    expect(component.confirmModalActive()).toBe(true);
+
+    component.onConfirmAccept();
+
+    expect(component.permissionsSavedAccount()).toBeNull();
+    expect(component.confirmModalActive()).toBe(false);
+    expect(component.activeAccountId()).toBe('acc-2');
+    expect(component.permissionsOverlay()).toBe(true);
+  });
+
+  it('should close modal and reset form if account is not saved', () => {
+    component.activeAccountId.set('acc-1');
+    component.permissionsSavedAccount.set('acc-2');
+    component.permissionsOverlay.set(true);
+
+    const resetSpy = vi.spyOn(component.permissionsForm, 'reset');
+
+    component.closeModal();
+
+    expect(component.permissionsOverlay()).toBe(false);
+    expect(resetSpy).toHaveBeenCalled();
   });
 });

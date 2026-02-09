@@ -1,0 +1,37 @@
+<ng-template #modalContent>
+    <div class="modal__title">
+        <div class="img">
+            <img src="./images/svg/onboarding/about.svg" alt="Onboarding About Image">
+        </div>
+        <div class="text">
+            <h1>{{title()}}</h1>
+            <p>{{desc()}}</p>
+        </div>
+    </div>
+
+    <div class="onboarding-content">
+        <ng-content></ng-content>
+    </div>
+
+    <footer>
+        <div class="buttons">
+            @if (page() >= 2) {
+            <app-button variant="outline" (click)="prev.emit()">Previous</app-button>
+            }
+
+            @if (page() == 6) {
+            <app-button variant="default" (click)="next.emit()">Finish ></app-button>
+            } @else {
+            <app-button variant="default" (click)="next.emit()">Next ></app-button>
+            }
+        </div>
+        <p class="skip-text" (click)="skip.emit()">
+            Skip tour ({{page()}}/6)
+        </p>
+    </footer>
+</ng-template>
+
+<app-ui-modal [isOpen]="true" (closed)="skip.emit()" [target]="target() ?? null"
+    [placement]="page() === 2 ? 'right' : 'bottom'" [offset]="offset()">
+    <ng-container *ngTemplateOutlet="modalContent"></ng-container>
+</app-ui-modal>

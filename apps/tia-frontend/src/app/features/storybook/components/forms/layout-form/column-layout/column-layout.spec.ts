@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ColumnLayout } from './column-layout';
+import { FormsDemoState } from '../../state/forms-demo.state';
+import { TranslateModule } from '@ngx-translate/core';
+const mockFormsDemo = { rowForm: () => ({ firstName: {}, lastName: {}, email: {}, phone: {} }) };
 
 describe('ColumnLayout', () => {
   let fixture: ComponentFixture<ColumnLayout>;
@@ -7,7 +10,10 @@ describe('ColumnLayout', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ColumnLayout],
+      imports: [ColumnLayout, TranslateModule.forRoot()],
+      providers: [
+        { provide: FormsDemoState, useValue: mockFormsDemo },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ColumnLayout);

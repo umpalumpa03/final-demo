@@ -1,140 +1,144 @@
-import { AlertActionItem, AlertBasicItem, AlertDismissibleItem, AlertIconItem, AlertSimpleItem } from "../models/alert.model";
+import {
+  AlertActionItem,
+  AlertBasicItem,
+  AlertDismissibleItem,
+  AlertIconItem,
+  AlertSimpleItem,
+} from '../models/alert.model';
 
 export const ALERTS_TITLES = {
-  BASIC: 'Basic Alerts',
-  ICONS: 'Alert Types with Icons',
-  DISMISSIBLE: 'Dismissible Alerts',
-  ACTIONS: 'Alerts with Actions',
-  SIMPLE: 'Simple Alerts (No Title)',
-  STATES: 'Alert States'
+  BASIC: 'storybook.alerts.TITLES.BASIC',
+  ICONS: 'storybook.alerts.TITLES.ICONS',
+  DISMISSIBLE: 'storybook.alerts.TITLES.DISMISSIBLE',
+  ACTIONS: 'storybook.alerts.TITLES.ACTIONS',
+  SIMPLE: 'storybook.alerts.TITLES.SIMPLE',
+  STATES: 'storybook.alerts.TITLES.STATES',
 } as const;
 
 export const ALERTS_CONFIG = Object.values(ALERTS_TITLES);
 
 export const ALERTS_BASIC_DATA: AlertBasicItem[] = [
-  { 
-    id: 1, 
-    type: 'default', 
+  {
+    id: 1,
+    type: 'default',
     state: 'default',
-    title: 'Default Alert', 
-    message: 'This is a default alert with important information.' 
+    title: 'storybook.alerts.DATA.DEFAULT_TITLE',
+    message: 'storybook.alerts.DATA.DEFAULT_MSG',
   },
-  { 
-    id: 2, 
-    type: 'error', 
+  {
+    id: 2,
+    type: 'error',
     state: 'default',
-    title: 'Error Alert', 
-    message: 'This is an error alert indicating something went wrong.' 
-  }
+    title: 'storybook.alerts.DATA.ERROR_TITLE',
+    message: 'storybook.alerts.DATA.ERROR_MSG',
+  },
 ] as const;
 
 export const ALERTS_ICONS_DATA: AlertIconItem[] = [
-  { 
-    id: 1, 
-    type: 'information', 
-    message: 'This is an informational message to provide additional context.' 
+  {
+    id: 1,
+    type: 'information',
+    message: 'storybook.alerts.DATA.DEFAULT_MSG',
   },
-  { 
-    id: 2, 
-    type: 'success', 
-    message: 'Your changes have been saved successfully!.' 
+  {
+    id: 2,
+    type: 'success',
+    message: 'storybook.alerts.DATA.SUCCESS_SAVE',
   },
-  { 
-    id: 3, 
-    type: 'warning', 
-    message: 'Please review your input before proceeding.' 
+  {
+    id: 3,
+    type: 'warning',
+    message: 'storybook.alerts.DATA.CONFIRM_MSG',
   },
-  { 
-    id: 4, 
-    type: 'error', 
-    message: 'An error occurred while processing your request.' 
-  }
+  {
+    id: 4,
+    type: 'error',
+    message: 'storybook.alerts.DATA.ERROR_MSG',
+  },
 ] as const;
 
-export const ALERTS_DISMISSIBLE_DATA: AlertDismissibleItem[] = [ 
-   { 
-    id: 1, 
-    type: 'information', 
-    title: 'New Feature Available', 
-    message: 'Check out our latest updates and improvements.' 
+export const ALERTS_DISMISSIBLE_DATA: AlertDismissibleItem[] = [
+  {
+    id: 1,
+    type: 'information',
+    title: 'storybook.alerts.DATA.NEW_FEATURE_TITLE',
+    message: 'storybook.alerts.DATA.NEW_FEATURE_MSG',
   },
-  { 
-    id: 2, 
-    type: 'success', 
-    title: 'Profile Updated', 
-    message: 'Your profile information has been updated successfully.' 
+  {
+    id: 2,
+    type: 'success',
+    title: 'storybook.alerts.DATA.PROFILE_UPDATE_TITLE',
+    message: 'storybook.alerts.DATA.SUCCESS_SAVE',
   },
-  { 
-    id: 3, 
-    type: 'warning', 
-    title: 'Payment Due Soon', 
-    message: 'Your subscription will renew in 3 days.' 
-  }
+  {
+    id: 3,
+    type: 'warning',
+    title: 'storybook.alerts.DATA.PAYMENT_TITLE',
+    message: 'storybook.alerts.DATA.PAYMENT_MSG',
+  },
 ] as const;
 
-export const ALERTS_ACTIONS_DATA:AlertActionItem[] = [
-   { 
-    id: 1, 
-    type: 'default', 
-    title: 'Update Available', 
-    message: 'A new version of the application is available.',
-    btnOneType: 'default', 
-    btnTwoType: 'outline', 
-    btnOneText: 'Update Now', 
-    btnTwoText: 'Remind Me Later' 
+export const ALERTS_ACTIONS_DATA: AlertActionItem[] = [
+  {
+    id: 1,
+    type: 'default',
+    title: 'storybook.alerts.DATA.UPDATE_TITLE',
+    message: 'storybook.alerts.DATA.UPDATE_MSG',
+    btnOneType: 'default',
+    btnTwoType: 'outline',
+    btnOneText: 'storybook.alerts.DATA.BTN_UPDATE',
+    btnTwoText: 'storybook.alerts.DATA.BTN_LATER',
   },
-  { 
-    id: 2, 
-    type: 'error', 
-    title: 'Confirm Action', 
-    message: 'This action cannot be undone. Are you sure you want to continue?', 
-    btnOneType: 'destructive', 
-    btnTwoType: 'outline', 
-    btnOneText: 'Confirm', 
-    btnTwoText: 'Cancel'
+  {
+    id: 2,
+    type: 'error',
+    title: 'storybook.alerts.DATA.CONFIRM_ACTION',
+    message: 'storybook.alerts.DATA.CONFIRM_MSG',
+    btnOneType: 'destructive',
+    btnTwoType: 'outline',
+    btnOneText: 'storybook.alerts.DATA.BTN_CONFIRM',
+    btnTwoText: 'storybook.alerts.DATA.BTN_CANCEL',
   },
-] as const; 
- 
+] as const;
 
-
-export const ALERTS_SIMPLE_DATA:AlertSimpleItem[] = [
-   { 
-    id: 1, 
-    type: 'information', 
-    message: 'This is a simple informational message without a title.', 
+export const ALERTS_SIMPLE_DATA: AlertSimpleItem[] = [
+  {
+    id: 1,
+    type: 'information',
+    message: 'storybook.alerts.DATA.SIMPLE_INFO_MSG',
   },
-  { 
-    id: 2, 
-    type: 'success', 
-    message: 'Operation completed successfully.', 
+  {
+    id: 2,
+    type: 'success',
+    message: 'storybook.alerts.DATA.SUCCESS_SAVE',
   },
-  { 
-    id: 3, 
-    type: 'warning', 
-    message: 'Please save your work before closing. ', 
+  {
+    id: 3,
+    type: 'warning',
+    message: 'storybook.alerts.DATA.SAVE_WORK_MSG',
   },
-] as const; 
+] as const;
 
 export const ALERTS_STATES_DATA: AlertBasicItem[] = [
-  { 
+  {
     id: 1,
-    type: 'default', 
-    state: 'default', 
-    title: 'Normal State',
-    message: 'This is the normal state of an alert.', 
+    type: 'default',
+    state: 'default',
+    title: 'storybook.alerts.DATA.NORMAL_STATE_TITLE',
+    message: 'storybook.alerts.DATA.NORMAL_STATE_MSG',
   },
-  { 
-    id: 2, 
-    type: 'default', 
-    state: 'inactive', 
-    title: 'Dimmed/Inactive State',
-    message: 'This alert appears dimmed or inactive.', 
+  {
+    id: 2,
+    type: 'default',
+    state: 'inactive',
+    title: 'storybook.alerts.DATA.INACTIVE_STATE_TITLE',
+    message: 'storybook.alerts.DATA.INACTIVE_STATE_MSG',
   },
-  { 
-    id: 3, 
-    type: 'default', 
-    state: 'active', 
-    title: 'Emphasized State',
-    message: 'This alert is emphasized with stronger borders and shadow.', 
-  }
+  {
+    id: 3,
+    type: 'default',
+    state: 'active',
+    title: 'storybook.alerts.DATA.ACTIVE_STATE_TITLE',
+    message: 'storybook.alerts.DATA.ACTIVE_STATE_MSG',
+  },
 ] as const;

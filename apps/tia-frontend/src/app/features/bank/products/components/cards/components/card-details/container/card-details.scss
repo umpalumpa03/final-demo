@@ -31,5 +31,13 @@
     color: $red-700;
     border-radius: 0.8rem;
   }
+  &__carousel{
+    @include flex-center(column); 
+    gap: 2rem;
+  }
+  &__btns{
+    @include display-flex; 
+    gap: 2rem;
+  }
 
 }

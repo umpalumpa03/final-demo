@@ -37,6 +37,11 @@ export const UserInfoActions = createActionGroup({
 
     'Delete Widget': props<{ id: string }>(),
     'Delete Widget Success': props<{ id: string }>(),
-    'Delete Widget Error': props<{ error: string }>(), 
+    'Delete Widget Error': props<{ error: string }>(),
+
+    'Update Onboarding Status': props<{ completed: boolean }>(),
+    'Update Onboarding Status Success': props<{ completed: boolean }>(),
+    'Update Onboarding Status Error': props<{ error: string }>(),
+    'Logout': emptyProps(),
   },
 });

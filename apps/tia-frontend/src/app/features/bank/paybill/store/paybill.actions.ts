@@ -160,5 +160,8 @@ export const TemplatesPageActions = createActionGroup({
     }>(),
 
     'Clear Payment Details': emptyProps(),
+    'Add Checked Items': props<{
+      selectedItems: string[];
+    }>(),
   },
 });

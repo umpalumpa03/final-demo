@@ -41,8 +41,8 @@ export class RegistrationForm {
   private translate = inject(TranslateService);
   public readonly isRegistration = input<boolean>(true);
   public readonly buttonText = input<string>('auth.sign-up.buttonText');
-  public readonly usernameError = input<boolean | null>();
-  public readonly emailError = input<boolean | null>();
+  public readonly usernameError = input<boolean | null>(null);
+  public readonly emailError = input<boolean | null>(null);
   public readonly passwordTouched = signal<boolean>(false);
   public readonly passwordInteracted = signal<boolean>(false);
 

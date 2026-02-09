@@ -86,7 +86,9 @@
       },
       "card-group-item": {
         "allCards": "ყველა ბარათის ნახვა",
-        "noCard": "ბარათი არ არის დამატებული"
+        "noCard": "ბარათი არ არის დამატებული",
+        "cardCount": "ბარათი",
+        "cardCountPlural": "ბარათი"
       },
       "myCards": "ჩემი ბარათები",
       "manageAccounts": "მართეთ თქვენი ანგარიშები",
@@ -98,12 +100,18 @@
       "accountNotFound": "ანგარიში არ მოიძებნა",
       "card-grid": {
         "avaliableAmount": "ხელმისაწვდომი"
+      },
+      "account-header": {
+        "cardCount": "ბარათი",
+        "cardCountPlural": "ბარათი"
       }
     },
     "card-details": {
       "backToCards": "ბარათების გვერდზე დაბრუნება",
       "cardTitle": "სწრაფი მოქმედებები",
       "manageYourCard": "მართეთ თქვენი ბარათი და ტრანზაქციები",
+         "cardInfo":"ბარათის ინფორმაცია", 
+      "cardDetails":"ბარათის დეტალური ინფორმაცია",
 
       "card-info-section": {
         "cardName": "ბარათის სახელი",
@@ -117,7 +125,7 @@
         "transferOwnAccount": "გადარიცხვა საკუთარ ანგარიშზე",
         "transferSomeoneElse": "სხვასთან გადარიცხვა",
         "payPaybill": "გადასახადების გადახდა",
-        "ViewSensitiveDetails": "ბარათის დეტალების ნახვა",
+        "ViewSensitiveDetails": "ბარათის დეტალები",
         "ViewTransactions": "ტრანსაქციების ნახვა"
       }
     },
@@ -127,29 +135,52 @@
       "cardPreview": {
         "cardPreview": "ბარათის მიმოხილვა",
         "SelectDesign": "შეარჩიეთ დიზაინი"
+      }, 
+      "create-card-form":{
+        "cancelBtn":"გაუქმება", 
+        "creating": "მუშავდება", 
+        "createCard": "დამატება"
+      }, 
+      "design-selector":{
+        "cardDesign":"შეარჩიეთ ბარათის დიზაინი"
       }
-
-    }, 
-    "card-details-modal":{
-      "card-details-modal-content":{
-        "cardDetails": "ბარათის დეტალები", 
-        "cardSubtitle":"იხილეთ ბარათის დეტალები",
-        "cardInfo":"ბარათის ინფორმაცია", 
-        "cardName":"ბარათის სახელი", 
-        "cardType": "ბარათის ტიპი", 
-        "cardCategory": "ბარათის კატეგორია", 
-        "cardStatus": "ბარათის სტატუსი", 
-        "creditLimit": "საკრედიტო ლიმიტი", 
-        "avaliableAmount": "ხელმისაწვდომი თანხა", 
-        "sensitiveDetails": "ბარათის დაფარული ინფორმაცია", 
-        "sensitiveSubtitle": "გთხოვთ გაიაროთ OTP ვერიფიკაცია, რომ იხილოთ ბარათის ნომერი, CVV და მოქმედების ვადა", 
-        "requestOtp": "OTP-ს გაგზავნა", 
-        "closeBtn": "დახურვა"
-        
+    },
+    "card-details-modal": {
+      "card-details-modal-content": {
+        "cardDetails": "ბარათის დეტალები",
+        "cardSubtitle": "იხილეთ ბარათის დეტალები",
+        "cardInfo": "ბარათის ინფორმაცია",
+        "cardName": "ბარათის სახელი",
+        "cardType": "ბარათის ტიპი",
+        "cardCategory": "ბარათის კატეგორია",
+        "cardStatus": "ბარათის სტატუსი",
+        "creditLimit": "საკრედიტო ლიმიტი",
+        "avaliableAmount": "ხელმისაწვდომი თანხა",
+        "sensitiveDetails": "ბარათის დაფარული ინფორმაცია",
+        "sensitiveSubtitle": "გთხოვთ გაიაროთ OTP ვერიფიკაცია, რომ იხილოთ ბარათის ნომერი, CVV და მოქმედების ვადა",
+        "requestOtp": "OTP-ს გაგზავნა",
+        "closeBtn": "დახურვა",
+        "fullNumber": "სრული ბარათის ნომერი",
+        "expirationDate": "მოქმედების ვადა"
       }
+    },
+    "card-transactions": {
+      "backToCard": "ბარათის დეტალებზე დაბრუნება",
+            "transactionHistory":"ტრანზაქციების ისტორია",
+      "allTransactions":"ბარათის ყველა ტრანზაქცია",
+      "transaction-card-header": {
+        "linkedTo": "ბარათი ეკუთვნის: ",
+        "totalTransactions": "ტრანზაქციების რაოდენობა:"
+      },
+      "transaction-list": {
+        "noTransactions": "ტრანზაქციები არ მოიძებნა"
+      }
+    },
+    "card-otp-modal": {
+      "title": "ბარათის დეტალების ვერიფიკაცია",
+      "subText": "შეიყვანეთ 4 ციფრი, რათა იხილოთ ბარათის დაფარული ინფორმაცია",
+      "submitBtn": "OTP ვერიფიკაცია",
+      "cancel": "გაუქმება"
     }
-
-
-
   }
 }

@@ -15,12 +15,16 @@
         <span class="card-group-item__number">{{ group().account.iban }}</span>
       </div>
     </div>
-    <app-badges
-      [text]="group().cardCountLabel"
-      variant="info"
-      size="large"
-      shape="rounded"
-    />
+
+
+@if (group().cardImages.length > 0) {
+  <app-badges
+    [text]="group().cardCountLabel + ' ' + (group().cardCountKey | translate)"
+    variant="info"
+    size="large"
+    shape="rounded"
+  />
+}
   </div>
 
   @if (group().cardImages.length > 0) {

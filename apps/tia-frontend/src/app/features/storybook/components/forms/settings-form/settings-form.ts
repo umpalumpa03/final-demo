@@ -11,17 +11,24 @@ import { Switches } from '@tia/shared/lib/forms/switches/switches';
 import { ISettingsForm } from '../models/contact-forms.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Router } from '@angular/router';
-import { PLAN_OPTION } from '../models/forms.config';
+import { FormsDemoState } from '../state/forms-demo.state';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-settings-form',
-  imports: [Radios, Switches, ReactiveFormsModule, ButtonComponent],
+  imports: [
+    Radios,
+    Switches,
+    ReactiveFormsModule,
+    ButtonComponent,
+    TranslatePipe,
+  ],
   templateUrl: './settings-form.html',
   styleUrl: './settings-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsForm {
-  public planOptions = PLAN_OPTION;
+  public readonly planOptions = inject(FormsDemoState).planOptions;
 
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
@@ -29,7 +36,7 @@ export class SettingsForm {
   public readonly twoColumnLayoutForm = output<ISettingsForm>();
 
   public settingControl = this.fb.nonNullable.group({
-    plan: [this.planOptions[0]?.value ?? null, Validators.required],
+    plan: [this.planOptions()[0]?.value ?? null, Validators.required],
     email: [true],
     push: [false],
     sms: [false],

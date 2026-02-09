@@ -44,6 +44,7 @@ export interface TableRowCell {
   highlighted?: boolean;
   transactionType?: string;
   info?: PrintedData[];
+  hasMeta?: boolean;
 }
 
 export interface TableActionEvent {
@@ -61,9 +62,9 @@ export interface TableConfig {
   rows: TableRowCell[];
 }
 
-export type TransactionAction = 'repeat' | 'categorize';
+export type TransactionAction = 'repeat' | 'categorize' | 'extract';
 
-export interface  TransactionActionEvent {
+export interface TransactionActionEvent {
   action: TransactionAction;
   rowId: string;
   rowData?: PrintedData[];

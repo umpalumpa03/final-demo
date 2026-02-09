@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SettingsForm } from './settings-form';
+import { FormsDemoState } from '../state/forms-demo.state';
+import { TranslateModule } from '@ngx-translate/core';
 import { vi } from 'vitest';
 import { Router } from '@angular/router';
 
@@ -8,9 +10,26 @@ describe('SettingsForm', () => {
   let fixture: ComponentFixture<SettingsForm>;
 
   beforeEach(async () => {
+    const mockFormsDemo = {
+      planOptions: () => ([]),
+      validationForm: () => ({}),
+      titles: () => ({
+        contact: 'Contact',
+        registration: 'Registration',
+        settings: 'Settings',
+        inline: 'Inline',
+        validation: 'Validation',
+        multiStep: 'MultiStep',
+        layout: 'Layout',
+      }),
+    };
+
     await TestBed.configureTestingModule({
-      imports: [SettingsForm],
-      providers: [{ provide: Router, useValue: { navigate: vi.fn() } }],
+      imports: [SettingsForm, TranslateModule.forRoot()],
+      providers: [
+        { provide: Router, useValue: { navigate: vi.fn() } },
+        { provide: FormsDemoState, useValue: mockFormsDemo },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SettingsForm);
@@ -22,18 +41,6 @@ describe('SettingsForm', () => {
     expect(component).toBeTruthy();
   });
 
-  it('getters should return boolean values', () => {
-    component.settingControl.setValue({
-      plan: component.planOptions[0].value,
-      email: true,
-      push: false,
-      sms: true,
-    });
-
-    expect(component.email).toBe(true);
-    expect(component.push).toBe(false);
-    expect(component.sms).toBe(true);
-  });
 
   it('saveChange does not emit when invalid and marks touched', () => {
     const spy = vi.spyOn(component.twoColumnLayoutForm, 'emit');

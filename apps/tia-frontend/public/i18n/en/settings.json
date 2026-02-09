@@ -11,7 +11,7 @@
     "approve-accounts": "Approve Accounts",
     "approve-cards": "Approve Cards",
     "loan-management": "Loan Management",
-    "profile-photo": "Profile Photo"
+    "profile-photo": "Profile"
   },
   "language": {
     "title": "Language & Region",
@@ -21,7 +21,20 @@
     "english": "English",
     "georgian": "Georgian",
     "saveSuccess": "Language updated successfully!",
-    "saveError": "Failed to update language. Please try again."
+    "saveError": "Failed to update language. Please try again.",
+    "saveChanges": "Save Changes",
+    "infoTitle": "Language Settings",
+    "infoDescription": "Changing your language will update all text throughout the application. You can switch between languages at any time from this page.",
+    "languages": {
+      "en": {
+        "location": "Global",
+        "speakers": "1.5B speakers"
+      },
+      "ka": {
+        "location": "Georgia & Caucasus",
+        "speakers": "4M speakers"
+      }
+    }
   },
   "appearance": {
     "title": "Appearance",
@@ -45,7 +58,8 @@
     "dark": "Dark",
     "system": "System",
     "saveSuccess": "Theme saved successfully!",
-    "saveError": "Failed to save theme. Please try again."
+    "saveError": "Failed to save theme. Please try again.",
+    "saveChanges": "Save Changes"
   },
   "profile-photo": {
     "title": "Profile Photo",
@@ -59,7 +73,26 @@
     "profilePictureRemovedSuccessfully": "Your profile picture removed successfully",
     "change": "Save Changes",
     "remove": "Remove Photo",
-    "invalidFileAlert": "Unfortunately, your photo could not be uploaded. The avatar image file to upload (PNG/JPG only, max 1MB)."
+    "invalidFileAlert": "Unfortunately, your photo could not be uploaded. The avatar image file to upload (PNG/JPG only, max 1MB).",
+        "personalInfo": "Personal Information",
+        "phoneNumber": "Phone Number",
+        "personalNumber": "Personal Number",
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "save": "Save",
+        "savePersonalNumber": "Save Personal Number",
+        "personalNumberUpdated": "Personal number updated successfully",
+        "personalNumberExists": "Personal number already exists",
+        "invalidPersonalNumber": "Personal number must be exactly 11 digits",
+        "invalidPhoneNumber": "Phone number must be exactly 9 digits",
+        "noChangesToSave": "No changes to save",
+        "verifyPhoneUpdate": "Verify Phone Number Update",
+        "otpDescription": "Enter the OTP code sent to you via SMS",
+        "verify": "Verify",
+        "didntReceiveCode": "Didn't receive the code?",
+        "phoneNumberUpdated": "Phone number updated successfully",
+        "maxResendReached": "Maximum resend limit reached",
+        "startTour": "Start Tour"
   },
   "security": {
     "title": "Security Settings",
@@ -72,7 +105,8 @@
     "confirmNewPassword": "Confirm New Password",
     "confirmNewPasswordPlaceholder": "Confirm new password",
     "updatePassword": "Update Password",
-    "twoFactorAuth": "Two-Factor Authentication"
+    "twoFactorAuth": "Two-Factor Authentication",
+    "passwordChangedSuccessfully": "Password changed successfully"
   },
   "user-management": {
     "title": "User Management",
@@ -153,6 +187,7 @@
     "title": "My Accounts",
     "subtitle": "Manage your accounts, set favorites, and control visibility",
     "errorMessage": "Failed to fetch the data",
+    "errorBtn": "Retry",
     "warningHeader": "No Data Found",
     "warningMessage": "We couldn't find any data to display.",
     "warningBtn": "Go Back"

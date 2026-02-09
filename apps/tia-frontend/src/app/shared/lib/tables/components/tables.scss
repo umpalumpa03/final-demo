@@ -67,20 +67,36 @@
             @include display-flex();
             gap: 0.8rem;
             margin-bottom: 0.4rem;
+            min-width: 0;
+            overflow: hidden;
 
             h3 {
               @include font-inter(500, 1.6rem, 2.4rem);
               color: $blue-1000;
               letter-spacing: -0.031rem;
+              min-width: 0;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+
+            &__text--ellipsis {
+              display: block;
+              max-width: 100%;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
             }
 
             span {
               @include font-inter(500, 1.2rem, 1.6rem);
-              @include display-flex($wrap: wrap);
+              @include display-flex($wrap: nowrap);
               gap: 0.8rem;
               border: 0.06rem solid $blue-400;
               padding: 0.4rem 0.8rem;
               border-radius: 0.8rem;
+              flex-shrink: 0;
+              white-space: nowrap;
             }
           }
           &__desc {

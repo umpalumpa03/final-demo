@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ContactForms } from './contact-form/contact-form';
 import { RegistrationForm } from './registration-form/registration-form';
 import { InlineForm } from './inline-form/inline-form';
@@ -7,8 +7,9 @@ import { LibraryTitle } from '../../shared/library-title/library-title';
 import { LayoutForm } from './layout-form/layout-form';
 import { SettingsForm } from './settings-form/settings-form';
 import { ShowcaseCard } from '../../shared/showcase-card/showcase-card';
-import { MultistepForms } from "./multistep-form/multistep-forms";
+import { MultistepForms } from './multistep-form/multistep-forms';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
+import { FormsDemoState } from './state/forms-demo.state';
 
 @Component({
   selector: 'app-forms',
@@ -22,14 +23,16 @@ import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
     SettingsForm,
     ShowcaseCard,
     MultistepForms,
-    Skeleton
-],
+    Skeleton,
+  ],
+  providers: [FormsDemoState],
   templateUrl: './forms.html',
   styleUrl: './forms.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Forms {
-  public readonly title = 'Forms';
-  public readonly subtitle =
-    'Complete form examples with various input types and layouts';
+  protected readonly state = inject(FormsDemoState);
+
+  protected readonly pageInfo = this.state.pageInfo;
+  protected readonly titles = this.state.titles;
 }

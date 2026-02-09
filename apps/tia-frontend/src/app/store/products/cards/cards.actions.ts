@@ -5,10 +5,9 @@ import { CardDesign } from 'apps/tia-frontend/src/app/features/bank/products/com
 import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
 import { CreateCardRequest } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/create-card-request.model';
 import { CardType } from '../../../features/bank/products/components/cards/models/card-type.model';
-import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 import { CardSensitiveData } from '../../../features/bank/products/components/cards/models/card-sensitive-data.model';
 
-export const loadCardAccounts = createAction('[Cards] Load Card Accounts');
+export const loadCardAccounts = createAction('[Cards] Load Card Accounts',props<{ forceRefresh?: boolean }>(),);
 
 export const loadCardAccountsSuccess = createAction(
   '[Cards] Load Card Accounts Success',
@@ -22,7 +21,7 @@ export const loadCardAccountsFailure = createAction(
 
 export const loadCardImage = createAction(
   '[Cards] Load Card Image',
-  props<{ cardId: string }>(),
+  props<{ cardId: string; forceRefresh?: boolean }>(),
 );
 
 export const loadCardImageSuccess = createAction(
@@ -37,7 +36,7 @@ export const loadCardImageFailure = createAction(
 
 export const loadCardDetails = createAction(
   '[Cards] Load Card Details',
-  props<{ cardId: string }>(),
+  props<{ cardId: string; forceRefresh?: boolean }>(),
 );
 
 export const loadCardDetailsSuccess = createAction(
@@ -61,7 +60,7 @@ export const loadAccountCardsPage = createAction(
 );
 
 export const loadCardCreationData = createAction(
-  '[Cards] Load Card Creation Data',
+  '[Cards] Load Card Creation Data',props<{ forceRefresh?: boolean }>(),
 );
 
 export const loadCardCreationDataSuccess = createAction(
@@ -109,23 +108,6 @@ export const closeCardDetailsModal = createAction(
   '[Cards] Close Card Details Modal',
 );
 
-export const loadCardTransactions = createAction(
-  '[Cards] Load Card Transactions',
-  props<{ cardId: string }>(),
-);
-
-export const loadCardTransactionsSuccess = createAction(
-  '[Cards] Load Card Transactions Success',
-  props<{ cardId: string; transactions: ITransactions[]; total: number }>(),
-);
-
-export const loadCardTransactionsFailure = createAction(
-  '[Cards] Load Card Transactions Failure',
-  props<{ cardId: string; error: string }>(),
-);
-export const clearCardTransactionsError = createAction(
-  '[Cards] Clear Card Transactions Error'
-);
 export const loadCardImagesComplete = createAction(
   '[Cards] Load Card Images Complete',
 );
@@ -190,3 +172,16 @@ export const showGlobalAlert = createAction(
   props<{ message: string; alertType: 'success' | 'error' }>()
 );
 export const hideGlobalAlert = createAction('[Cards] Hide Global Alert');
+
+export const setCurrentCardIndex = createAction(
+  '[Cards] Set Current Card Index',
+  props<{ cardIndex: number; accountId: string }>()
+);
+
+export const navigateToNextCard = createAction(
+  '[Cards] Navigate To Next Card'
+);
+
+export const navigateToPreviousCard = createAction(
+  '[Cards] Navigate To Previous Card'
+);

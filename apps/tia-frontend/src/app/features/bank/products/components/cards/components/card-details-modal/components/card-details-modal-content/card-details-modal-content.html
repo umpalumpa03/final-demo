@@ -60,7 +60,7 @@
           | translate }}</span
         >
         <app-badges
-          [variant]="isActiveStatus() ? 'default' : 'default'"
+          [variant]="'default'"
           [text]="cardCategory()"
           size="medium"
           shape="rounded"
@@ -119,7 +119,8 @@
       </h3>
 
       <div class="card-details-modal__sensitive-item">
-        <span class="card-details-modal__label">Full Card Number</span>
+        <span class="card-details-modal__label">{{'my-products.card.card-details-modal.card-details-modal-content.fullNumber'
+          | translate }}</span>
         <div class="card-details-modal__sensitive-value">
           <span>{{ cardSensitiveData()!.cardNumber }}</span>
           @if (copiedField() === 'cardNumber') {
@@ -154,7 +155,7 @@
       </div>
 
       <div class="card-details-modal__sensitive-item">
-        <span class="card-details-modal__label">Expiration Date</span>
+        <span class="card-details-modal__label">{{'my-products.card.card-details-modal.card-details-modal-content.expirationDate'| translate }}</span>
         <div class="card-details-modal__sensitive-value">
           <span>{{ cardSensitiveData()!.expiryDate }}</span>
           @if (copiedField() === 'expiryDate') {

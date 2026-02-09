@@ -68,7 +68,7 @@ describe('AccountCards', () => {
           useValue: { snapshot: { paramMap: { get: () => 'acc-1' } } },
         },
       ],
-      schemas: [NO_ERRORS_SCHEMA], // ignore unknown child components
+      schemas: [NO_ERRORS_SCHEMA],
     });
   });
 
@@ -139,17 +139,42 @@ describe('AccountCards', () => {
     expect(state).toBe('no-account');
   });
 
-  it('should emit correct cardsLabel', async () => {
-    setupStore([mockAccount], mockCards);
-    createComponent();
-    const label = await firstValueFrom(component['cardsLabel$']);
-    expect(label).toBe('2 Cards');
+it('should emit correct cardsLabel', async () => {
+  setupStore([mockAccount], mockCards);
+  createComponent();
+  const label = await firstValueFrom(component['cardsLabel$']);
+  expect(label).toEqual({
+    count: '2',
+    key: 'my-products.card.account-cards.account-header.cardCountPlural'
   });
+});
 
-  it('should emit empty cardsLabel when no account', async () => {
-    setupStore([]);
-    createComponent();
-    const label = await firstValueFrom(component['cardsLabel$']);
-    expect(label).toBe('');
+
+it('should emit empty cardsLabel when no account', async () => {
+  setupStore([]);
+  createComponent();
+  const label = await firstValueFrom(component['cardsLabel$']);
+  expect(label).toEqual({
+    count: '0',
+    key: 'my-products.card.account-cards.account-header.cardCountPlural'
   });
+});
+  it('should dispatch setCurrentCardIndex and navigate on card click', () => {
+  setupStore();
+  createComponent();
+  
+  component.handleCardClick('card-1');
+  
+  expect(store.dispatch).toHaveBeenCalledWith(
+    expect.objectContaining({
+      type: '[Cards] Set Current Card Index',
+      cardIndex: 0,
+      accountId: 'acc-1'
+    })
+  );
+  expect(router.navigate).toHaveBeenCalledWith([
+    '/bank/products/cards/details',
+    'card-1',
+  ]);
+});
 });

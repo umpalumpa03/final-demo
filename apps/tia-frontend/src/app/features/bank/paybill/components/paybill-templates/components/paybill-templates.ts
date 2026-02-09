@@ -2,7 +2,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
+  inject,
   input,
   OnInit,
   output,
@@ -31,10 +33,13 @@ import {
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { distinctUntilChanged } from 'rxjs';
+import { distinctUntilChanged, tap } from 'rxjs';
 import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
 import { DynamicInputs } from '../../shared/dynamic-inputs/dynamic-inputs';
 import { PaybillDynamicField } from '../../../services/paybill-dynamic-form/models/dynamic-form.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { SelectedItems } from '../shared/ui/selected-items/selected-items';
+import { PaymentDistribution } from '../shared/ui/payment-distribution/payment-distribution';
 
 @Component({
   selector: 'app-paybill-templates',
@@ -48,6 +53,8 @@ import { PaybillDynamicField } from '../../../services/paybill-dynamic-form/mode
     Dropdowns,
     ReactiveFormsModule,
     DynamicInputs,
+    SelectedItems,
+    PaymentDistribution,
   ],
   templateUrl: './paybill-templates.html',
   styleUrl: './paybill-templates.scss',
@@ -81,6 +88,7 @@ export class PaybillTemplates implements OnInit {
     [CrudActionType.RenameTemplate]: () => this.editTemplateModal.emit(),
     [CrudActionType.DeleteGroup]: () => this.deleteGroupModal.emit(),
     [CrudActionType.RenameGroup]: () => this.renameGroupModal.emit(),
+    [CrudActionType.ConfirmPayment]: () => this.payAction.emit(),
   };
 
   // Final Actions for CRUD Modals
@@ -88,6 +96,7 @@ export class PaybillTemplates implements OnInit {
   public editTemplateModal = output<void>();
   public deleteGroupModal = output<void>();
   public renameGroupModal = output<void>();
+  public payAction = output<void>();
   public formSubmit = output<FormSubmitPayload>();
 
   // Modal Opener Action
@@ -193,15 +202,19 @@ export class PaybillTemplates implements OnInit {
   public isCategorySelected = input<boolean>(false);
   public childProviderOptions = input<MappedProviderForDropdown[][]>([[]]);
 
+  private readonly destroyRef = inject(DestroyRef);
+
   // Here I listen for form category change to emit the value and start the cycle
   ngOnInit() {
     const form = this.createTemplateForm();
     form
       .get('category')
-      ?.valueChanges.pipe(distinctUntilChanged())
-      .subscribe((value) => {
-        this.categorySelected.emit(value);
-      });
+      ?.valueChanges.pipe(
+        distinctUntilChanged(),
+        tap((value) => this.categorySelected.emit(value)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 
   // Helper method to give me what kind of data is returned to me
@@ -219,5 +232,15 @@ export class PaybillTemplates implements OnInit {
   public childProviderSelected = output<ProviderTypeForStore>();
   public onChildProviderChange(providerId: InputFieldValue, index: number) {
     this.childProviderSelected.emit({ providerId, index });
+  }
+
+  // Implement payment logic
+  public selectedItems = input<string[]>();
+  public markedCheckbox = output<string[]>();
+  public onTemplateChecked(event: string[]) {
+    this.markedCheckbox.emit(event);
+  }
+  public paySelected(event: string | string[]) {
+    this.headerButtonAction.emit(HeaderCtaAction.Pay);
   }
 }

@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 import { TransactionItem } from '../transaction-item/transaction-item';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-transaction-list',
   templateUrl: './transaction-list.html',
   styleUrls: ['./transaction-list.scss'],
-  imports: [TransactionItem],
+  imports: [TransactionItem,TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransactionList {
@@ -21,10 +22,16 @@ export class TransactionList {
     });
   }
 
-  protected formatAmount(amount: number | string, currency: string): string {
-    const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-    return `-${currency} ${numAmount.toFixed(2)}`;
-  }
+protected formatAmount(
+  amount: number | string, 
+  currency: string, 
+  transactionType: string
+): string {
+  const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+  const absoluteAmount = Math.abs(numAmount);
+  const sign = transactionType === 'debit' ? '-' : '+';
+  return `${sign}${currency} ${absoluteAmount.toFixed(2)}`;
+}
   protected getCategoryName(
     category: string | { categoryName: string } | null,
   ): string {

@@ -640,4 +640,77 @@ describe('Paybill Reducer', () => {
       expect(result.loading).toBe(false);
     });
   });
+
+  it('addCheckedItems: should update the selectedItems list', () => {
+    const mockItems = [{ id: '123', nickname: 'Electric Bill' }] as any;
+    const action = TemplatesPageActions.addCheckedItems({
+      selectedItems: mockItems,
+    });
+
+    const result = paybillReducer(initialPaybillState, action);
+
+    expect(result.selectedItems).toEqual(mockItems);
+    expect(result.selectedItems.length).toBe(1);
+  });
+
+  it('checkBillSuccess: should update verifiedDetails and clear loading when valid', () => {
+    const details = { valid: true, firstName: 'John' } as any;
+    const state = { ...initialPaybillState, loading: true };
+    const action = PaybillActions.checkBillSuccess({ details });
+
+    const result = paybillReducer(state, action);
+
+    expect(result.verifiedDetails).toEqual(details);
+    expect(result.loading).toBe(false);
+    expect(result.error).toBeNull();
+  });
+
+  it('renameTemplateSuccess: should return state unchanged if template ID not found', () => {
+    const state = {
+      ...initialPaybillState,
+      templates: [{ id: 't1', nickname: 'Original' }] as any,
+    };
+    const action = TemplatesPageActions.renameTemplateSuccess({
+      template: { id: 'non-existent', nickname: 'New' } as any,
+    });
+    const result = paybillReducer(state, action);
+    expect(result.templates[0].nickname).toBe('Original');
+  });
+  describe('Payment & Verification Edge Cases', () => {
+    it('confirmPayment: should set loading and clear error', () => {
+      const state = { ...initialPaybillState, error: 'err' };
+      const action = PaybillActions.confirmPayment({
+        payload: {} as any,
+      });
+      const result = paybillReducer(state, action);
+      expect(result.loading).toBe(true);
+      expect(result.error).toBeNull();
+    });
+
+    it('clearPaymentDetails: should nullify the details', () => {
+      const state = { ...initialPaybillState, paymentDetails: { x: 1 } as any };
+      const action = TemplatesPageActions.clearPaymentDetails();
+      const result = paybillReducer(state, action);
+      expect(result.paymentDetails).toBeNull();
+    });
+
+    it('loadPaymentDetails: should set loading true', () => {
+      const action = PaybillActions.loadPaymentDetails({
+        serviceId: 'mock-service-id',
+      });
+      const result = paybillReducer(initialPaybillState, action);
+      expect(result.loading).toBe(true);
+    });
+
+    it('checkBill: should set loading true and clear error', () => {
+      const state = { ...initialPaybillState, error: 'fail' };
+      const action = PaybillActions.checkBill({
+        serviceId: 'test-service',
+        identification: {} as any,
+      });
+      const result = paybillReducer(state, action);
+      expect(result.loading).toBe(true);
+      expect(result.error).toBeNull();
+    });
+  });
 });

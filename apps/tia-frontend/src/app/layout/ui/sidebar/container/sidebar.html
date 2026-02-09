@@ -1,29 +1,14 @@
 @if (isMobile()) {
 <div class="sidebar__mobile-menu">
-  <button
-    class="sidebar__mobile-toggle"
-    [class.sidebar__mobile-toggle--open]="isDropdownOpen()"
-    (click)="toggleDropdown()"
-    aria-label="Toggle menu"
-  >
-    <img
-      src="images/svg/sidebar-nav/arrow-left.svg"
-      alt="toggle menu"
-      class="sidebar__mobile-toggle-icon"
-      [class.sidebar__mobile-toggle-icon--open]="isDropdownOpen()"
-    />
+  <button class="sidebar__mobile-toggle" [class.sidebar__mobile-toggle--open]="isDropdownOpen()"
+    (click)="toggleDropdown()" aria-label="Toggle menu">
+    <img src="images/svg/sidebar-nav/arrow-left.svg" alt="toggle menu" class="sidebar__mobile-toggle-icon"
+      [class.sidebar__mobile-toggle-icon--open]="isDropdownOpen()" />
   </button>
 
-  <div
-    class="sidebar__dropdown"
-    [class.sidebar__dropdown--open]="isDropdownOpen()"
-  >
-    <app-navigation-bar
-      [orientation]="'vertical'"
-      [items]="items()"
-      [collapsed]="true"
-      (click)="closeDropdown()"
-    ></app-navigation-bar>
+  <div class="sidebar__dropdown" [class.sidebar__dropdown--open]="isDropdownOpen()">
+    <app-navigation-bar [orientation]="'vertical'" [items]="items()" [collapsed]="true"
+      (click)="closeDropdown()"></app-navigation-bar>
 
     <div class="sidebar__dropdown-footer">
       <button class="sidebar__dropdown-logout" (click)="onLogout()">
@@ -35,11 +20,8 @@
 } @if (!isMobile()) {
 <aside class="sidebar" [class.sidebar--collapsed]="isCollapsed()">
   <button class="sidebar__collapse-btn" (click)="toggleCollapse()">
-    <img
-      src="images/svg/sidebar-nav/arrow-left.svg"
-      alt="collapse"
-      [class.sidebar__collapse-btn--rotated]="isCollapsed()"
-    />
+    <img src="images/svg/sidebar-nav/arrow-left.svg" alt="collapse"
+      [class.sidebar__collapse-btn--rotated]="isCollapsed()" />
   </button>
 
   <a class="sidebar__header" routerLink="/bank/dashboard">
@@ -54,19 +36,12 @@
     }
   </a>
 
-  <app-navigation-bar
-    [orientation]="'vertical'"
-    [items]="items()"
-    [collapsed]="isCollapsed()"
-  ></app-navigation-bar>
+  <app-navigation-bar [orientation]="'vertical'" [items]="items()" [collapsed]="isCollapsed()"></app-navigation-bar>
 
   <footer class="sidebar__footer">
     <app-button (click)="onLogout()" [fullWidth]="true" variant="ghost">
       <img src="images/svg/sidebar-nav/logout.svg" alt="logout icon" />
-      <span
-        class="sidebar__logout"
-        [class.sidebar__logout-text--hidden]="isCollapsed()"
-      >
+      <span class="sidebar__logout" [class.sidebar__logout-text--hidden]="isCollapsed()">
         {{ 'common.buttons.logout' | translate }}
       </span>
     </app-button>
@@ -76,10 +51,8 @@
 <app-ui-modal [isOpen]="showLogoutConfirm()" (closed)="cancelLogout()">
   <div class="confirm-account">
     <header class="confirm-account__header">
-      <app-library-title
-        [title]="'sidebar.sidebar.logout.title' | translate"
-        [subtitle]="'sidebar.sidebar.logout.message' | translate"
-      ></app-library-title>
+      <app-library-title [title]="'sidebar.sidebar.logout.title' | translate"
+        [subtitle]="'sidebar.sidebar.logout.message' | translate"></app-library-title>
     </header>
 
     <footer class="confirm-account__footer">

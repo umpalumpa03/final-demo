@@ -39,6 +39,9 @@ describe('Accounts Integration - Rename Account Flow', () => {
 
     req.flush(updatedAccount);
 
+    const settingsReq = ctx.httpMock.expectOne(req => req.url.includes('/settings/accounts'));
+    settingsReq.flush({});
+
     expect(receivedAccount.friendlyName).toBe(newFriendlyName);
   });
 
