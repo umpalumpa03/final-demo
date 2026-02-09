@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PersonalInfoApiService } from '../../shared/services/personal-info/personal-info.api.service';
 import { PersonalInfoActions } from './pesronal-info.actions';
-import { catchError, EMPTY, map, of, switchMap, withLatestFrom } from 'rxjs';
+import { catchError, exhaustMap, map, of, switchMap, withLatestFrom } from 'rxjs';
 import { UpdatePersonalInfoDto } from './personal-info.state';
 import { Store } from '@ngrx/store';
 import { selectPersonalInfo } from './personal-info.selectors';
@@ -22,29 +22,18 @@ export class PersonalInfoEffects {
     ),
   );
 
-  loadPersonalInfoAfterUserLoad$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(UserInfoActions.loadUserSuccess),
-      withLatestFrom(this.store.select(selectPersonalInfo)),
-      switchMap(([, personalInfo]) => {
-        const hasData = !!(personalInfo?.pId || personalInfo?.phoneNumber);
-        if (!hasData) {
-          return of(PersonalInfoActions.loadPersonalInfo({ forceRefresh: true }));
-        }
-        return EMPTY;
-      }),
-    ),
-  );
-
   loadPersonalInfo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(PersonalInfoActions.loadPersonalInfo),
       withLatestFrom(this.store.select(selectPersonalInfo)),
-      switchMap(([{ forceRefresh }, personalInfo]) => {
-        const hasData = !!(personalInfo?.pId || personalInfo?.phoneNumber);
-        const shouldFetch = !!forceRefresh || !hasData;
-
-        if (!shouldFetch) {
+      exhaustMap(([{ forceRefresh }, personalInfo]) => {
+       
+        const hasPId = !!personalInfo?.pId;
+        const hasPhoneNumber = !!(personalInfo?.phoneNumber && personalInfo.phoneNumber.trim() !== '');
+        const hasValidData = hasPId || hasPhoneNumber;
+        
+    
+        if (hasValidData && !forceRefresh) {
           return of(
             PersonalInfoActions.loadPersonalInfoSuccess({
               personalInfo: {
@@ -62,6 +51,7 @@ export class PersonalInfoEffects {
           );
         }
 
+      
         return this.api.getPersonalInfo().pipe(
           map((dto) =>
             PersonalInfoActions.loadPersonalInfoSuccess({
