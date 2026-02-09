@@ -47,6 +47,7 @@ export class UserInfoComponent {
   public readonly updatePhoneNumber = output<string | null>();
   public readonly phoneNumberChange = output<string | number | boolean | FileList | null>();
   public readonly save = output<void>();
+  public readonly startTour = output<void>();
 
   public onPersonalNumberChange(value: string | number | boolean | FileList | null): void {
     this.personalNumberChange.emit(value);
@@ -66,5 +67,9 @@ export class UserInfoComponent {
 
   public onPhoneNumberChange(value: string | number | boolean | FileList | null): void {
     this.phoneNumberChange.emit(value);
+  }
+
+  public onStartTour(): void {
+    this.startTour.emit();
   }
 }
