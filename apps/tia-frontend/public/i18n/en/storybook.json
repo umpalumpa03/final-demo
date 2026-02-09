@@ -668,56 +668,56 @@
       {
         "title": "What is this component library?",
         "content":
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?"
+        "This is a comprehensive UI component library built with Angular, providing reusable and accessible components for building modern web applications. It includes buttons, forms, navigation, and many other essential UI elements."
       },
       {
         "title": "How do I use these components?",
         "content":
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?"
+          "Each component can be imported directly into your Angular application. Simply import the component, add it to your template, and configure it using the provided inputs and outputs. Documentation and examples are available for each component."
       },
       {
         "title": "Are these components accessible?",
         "content":
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?"
+          "Yes, all components are built with accessibility in mind, following WCAG guidelines. They include proper ARIA attributes, keyboard navigation support, and screen reader compatibility to ensure an inclusive user experience."
       },
       {
         "title": "Can I customize the styling?",
         "content":
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?"
+          "Absolutely! Components support theme customization through CSS variables and custom styling. You can override default styles using SCSS mixins and apply your brand colors to match your design system."
       },
       {
         "title": "Can I customize the styling?",
         "content":
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?"
+          "Absolutely! Components support theme customization through CSS variables and custom styling. You can override default styles using SCSS mixins and apply your brand colors to match your design system."
       }
     ],
     "multiAccordionContent": [
       {
         "title": "Features",
         "content":
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?"
+          "Our component library includes over 50 pre-built components, dark mode support, responsive design, TypeScript support, comprehensive documentation, and regular updates with new features and improvements."
       },
       {
         "title": "Installation",
         "content":
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?"
+          "Install the library using npm or yarn package manager. Import the required modules in your Angular application, configure the theme settings, and start using components in your templates immediately."
       },
       {
         "title": "Documentation",
         "content":
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?"
+          "Complete documentation is available online, including API references, usage examples, best practices, and migration guides. Each component has detailed documentation with live demos and code snippets."
       }
     ],
     "collapsibleContent": [
       {
         "title": "Click To Expand",
         "content":
-          "This content is dynamic and passed from the parent configuration."
+          "This collapsible section contains additional information that can be shown or hidden by clicking the header. It's useful for organizing content and improving page readability."
       },
       {
         "title": "Default Open",
         "content":
-          "This collapsible section is open by default and contains specific project details."
+          "This section is expanded by default, making important content immediately visible to users. You can configure which sections should be open on initial load."
       }
     ],
     "scrollAreaContent": [
@@ -740,26 +740,9 @@
         "content": "Item 6 - This is a scrollable content area with many items"
       }
     ],
-    "scrollAreaContent2": [
-      {
-        "title": "Card 1"
-      },
-      {
-        "title": "Card 2"
-      },
-      {
-        "title": "Card 3"
-      },
-      {
-        "title": "Card 4"
-      },
-      {
-        "title": "Card 5"
-      },
-      {
-        "title": "Card 6"
-      }
-    ],
+    "scrollAreaContent2": {
+      "title": "Card"
+    },
     "grid": [
       {
         "title": "Two Column Grid",
@@ -808,18 +791,9 @@
       },
       {
         "title": "Flex Wrap:",
-        "items": [
-          { "label": "Item 1" },
-          { "label": "Item 2" },
-          { "label": "Item 3" },
-          { "label": "Item 4" },
-          { "label": "Item 5" },
-          { "label": "Item 6" },
-          { "label": "Item 7" },
-          { "label": "Item 8" },
-          { "label": "Item 9" },
-          { "label": "Item 10" }
-        ]
+        "items": { 
+          "label": "Item" 
+        }
       }
     ]
   },
