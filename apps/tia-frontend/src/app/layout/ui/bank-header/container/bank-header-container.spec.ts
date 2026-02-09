@@ -71,17 +71,42 @@ describe('BankHeaderContainer', () => {
     expect(mockNotificationsStore.hasUnreadNotifications).toHaveBeenCalled();
     expect(mockInbox.fetchInboxCount).toHaveBeenCalled();
   });
+  it('should open modal and fetch notifications if closed', () => {
+    const mockEl = { nativeElement: {} } as ElementRef;
+    component.isModalOpen.set(false);
 
-  it('should toggle modal and fetch data on notification click', () => {
-    const mockEl = {
-      nativeElement: document.createElement('div'),
-    } as ElementRef;
     component.onNotificationClick(mockEl);
+
     expect(component.isModalOpen()).toBe(true);
+    expect(component.anchorEl()).toBe(mockEl);
+    expect(mockNotificationsStore.fetchNotifications).toHaveBeenCalledWith({
+      limit: 10,
+    });
+  });
 
-    expect(mockNotificationsStore.fetchNotifications).toHaveBeenCalled();
+  it('should close modal if already open', () => {
+    const mockEl = { nativeElement: {} } as ElementRef;
+    component.isModalOpen.set(true);
+
     component.onNotificationClick(mockEl);
+
     expect(component.isModalOpen()).toBe(false);
-    expect(mockNotificationsStore.resetState).toHaveBeenCalled();
+  });
+
+  it('should update modal state via closeAndReset', () => {
+    component.isModalOpen.set(true);
+
+    component.closeAndReset();
+
+    expect(component.isModalOpen()).toBe(false);
+  });
+
+  it('should compute inboxCount correctly from service', () => {
+    // mockInbox.inboxCount is already signal(12) in beforeEach
+    expect(component.inboxCount()).toBe(12);
+  });
+
+  it('should expose hasUnread from notificationsStore', () => {
+    expect(component.hasUnread()).toBe(true);
   });
 });

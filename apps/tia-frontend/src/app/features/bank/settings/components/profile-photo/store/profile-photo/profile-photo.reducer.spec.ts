@@ -14,6 +14,8 @@ describe('profilePhotoFeature reducer', () => {
     savedAvatarUrl: null,
     avatarId: null,
     avatarType: null,
+    userInitials: null,
+    savingChanges: false,
   };
 
   it('should return the default state when action is unknown', () => {
@@ -95,6 +97,8 @@ describe('profilePhotoFeature reducer', () => {
       savedAvatarUrl: '/avatar-1.svg',
       avatarId: 'avatar-1',
       avatarType: 'default',
+      userInitials: null,
+      savingChanges: false,
     };
 
     const state = profilePhotoFeature.reducer(
@@ -114,6 +118,8 @@ describe('profilePhotoFeature reducer', () => {
     const populatedState: ProfilePhotoState = {
       ...initialState,
       uploadedFileName: 'photo.png',
+      userInitials: null,
+      savingChanges: false,
     };
 
     const state = profilePhotoFeature.reducer(
@@ -130,6 +136,8 @@ describe('profilePhotoFeature reducer', () => {
     const populatedState: ProfilePhotoState = {
       ...initialState,
       uploadedFileName: 'photo.png',
+      userInitials: null,
+      savingChanges: false,
     };
 
     const state = profilePhotoFeature.reducer(
@@ -139,6 +147,103 @@ describe('profilePhotoFeature reducer', () => {
 
     expect(state.selectedAvatarId).toBe('avatar-1');
     expect(state.uploadedFileName).toBeNull();
+  });
+
+  it('should handle resetProfilePhoto', () => {
+    const populatedState: ProfilePhotoState = {
+      defaultAvatars: [{ id: '1', imageUrl: '/avatar-1.svg' }],
+      defaultAvatarsLoading: true,
+      defaultAvatarsError: 'Error',
+      selectedAvatarId: 'avatar-1',
+      uploadedFileName: 'photo.png',
+      currentAvatarUrl: '/avatar-1.svg',
+      savedAvatarUrl: '/avatar-1.svg',
+      avatarId: 'avatar-1',
+      avatarType: 'default',
+      userInitials: 'JD',
+      savingChanges: true,
+    };
+
+    const state = profilePhotoFeature.reducer(
+      populatedState,
+      ProfilePhotoActions.resetProfilePhoto(),
+    );
+
+    expect(state.defaultAvatars).toEqual([{ id: '1', imageUrl: '/avatar-1.svg' }]);
+    expect(state.selectedAvatarId).toBeNull();
+    expect(state.currentAvatarUrl).toBeNull();
+    expect(state.userInitials).toBeNull();
+    expect(state.savingChanges).toBe(false);
+  });
+
+  it('should handle clearCurrentAvatar', () => {
+    const populatedState: ProfilePhotoState = {
+      ...initialState,
+      currentAvatarUrl: '/avatar-1.svg',
+      selectedAvatarId: 'avatar-1',
+      uploadedFileName: 'photo.png',
+    };
+
+    const state = profilePhotoFeature.reducer(
+      populatedState,
+      ProfilePhotoActions.clearCurrentAvatar(),
+    );
+
+    expect(state.currentAvatarUrl).toBeNull();
+    expect(state.selectedAvatarId).toBeNull();
+    expect(state.uploadedFileName).toBeNull();
+  });
+
+  it('should handle setUserInitials', () => {
+    const state = profilePhotoFeature.reducer(
+      initialState,
+      ProfilePhotoActions.setUserInitials({ initials: 'JD' }),
+    );
+
+    expect(state.userInitials).toBe('JD');
+  });
+
+  it('should handle loadDefaultAvatarsRequest', () => {
+    const state = profilePhotoFeature.reducer(
+      initialState,
+      ProfilePhotoActions.loadDefaultAvatarsRequest({}),
+    );
+
+    expect(state.defaultAvatarsLoading).toBe(true);
+    expect(state.defaultAvatarsError).toBeNull();
+  });
+
+  it('should handle loadDefaultAvatarsFailure', () => {
+    const state = profilePhotoFeature.reducer(
+      initialState,
+      ProfilePhotoActions.loadDefaultAvatarsFailure({ error: 'Error loading avatars' }),
+    );
+
+    expect(state.defaultAvatarsLoading).toBe(false);
+    expect(state.defaultAvatarsError).toBe('Error loading avatars');
+  });
+
+  it('should handle uploadAvatarRequest', () => {
+    const state = profilePhotoFeature.reducer(
+      initialState,
+      ProfilePhotoActions.uploadAvatarRequest({ file: new File([''], 'test.png') }),
+    );
+
+    expect(state.savingChanges).toBe(true);
+  });
+
+  it('should handle uploadAvatarFailure', () => {
+    const stateWithSaving: ProfilePhotoState = {
+      ...initialState,
+      savingChanges: true,
+    };
+
+    const state = profilePhotoFeature.reducer(
+      stateWithSaving,
+      ProfilePhotoActions.uploadAvatarFailure({ error: 'Upload failed' }),
+    );
+
+    expect(state.savingChanges).toBe(false);
   });
 });
 
