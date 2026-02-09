@@ -1,0 +1,47 @@
+@use "../../../../../../../../shared/styles/palette" as *;
+@use "../../../../../../../../shared/styles/mixins" as *;
+
+.modal__title {
+    @include display-flex;
+    gap: 1.2rem;
+    .img {
+        min-width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+        @include flex-center;
+        background: linear-gradient(135deg, #2b7fff 0%, #155dfc 100%);
+        box-shadow:
+            0px 4px 6px -4px rgba($blue-500, 0.5),
+            0px 10px 15px -3px rgba($blue-500, 0.5);
+    }
+    .text {
+        @include display-flex(column);
+        gap: 0.8rem;
+        h1 {
+            @include font-inter(500, 1.8rem);
+            color: $blue-800;
+        }
+
+        p {
+            @include font-inter(400, 1.4rem);
+            color: $gray-700;
+        }
+    }
+}
+
+footer {
+    @include flex-center(column);
+    @include font-inter(500, 1.2rem);
+    gap: 1.6rem;
+
+    margin-top: 4rem;
+
+    .buttons {
+        align-self: flex-end;
+        @include display-flex($wrap: wrap);
+        gap: 0.8rem;
+    }
+    .skip-text {
+        cursor: pointer;
+    }
+}
