@@ -1,30 +1,30 @@
 <div class="layout">
     <header class="layout__header">
-        <app-library-title title="Layout Components" subtitle="Structural components for organizing content" />
+        <app-library-title [title]="'storybook.layout.title' | translate" [subtitle]="'storybook.layout.subtitle' | translate" />
     </header>
     <main class="layout__main">
-        <app-showcase-card title="Separators">
+        <app-showcase-card [title]="'storybook.layout.sections.separators.title' | translate">
             <div class="section">
                 <div class="section__item">
-                    <h4 class="section__title">Horizontal Separator:</h4>
+                    <h4 class="section__title">{{ 'storybook.layout.sections.separators.example-1.title' | translate }}:</h4>
                     <div class="section__example section__example--horizontal">
-                        <span>Content above</span>
+                        <span>{{ 'storybook.layout.sections.separators.example-1.content-1' | translate }}</span>
                         <app-separator orientation="horizontal" thickness="0.1rem" margin="1.2rem" />
-                        <span>Content below</span>
+                        <span>{{ 'storybook.layout.sections.separators.example-1.content-2' | translate }}</span>
                     </div>
                 </div>
                 <div class="section__item">
-                    <h4 class="section__title">Vertical Separator:</h4>
+                    <h4 class="section__title">{{ 'storybook.layout.sections.separators.example-2.title' | translate }}:</h4>
                     <div class="section__example section__example--vertical">
-                        <span>Left</span>
+                        <span>{{ 'storybook.layout.sections.separators.example-2.content-1' | translate }}</span>
                         <app-separator orientation="vertical" thickness="0.1rem" />
-                        <span>Center</span>
+                        <span>{{ 'storybook.layout.sections.separators.example-2.content-2' | translate }}</span>
                         <app-separator orientation="vertical" thickness="0.1rem" />
-                        <span>Right</span>
+                        <span>{{ 'storybook.layout.sections.separators.example-2.content-3' | translate }}</span>
                     </div>
                 </div>
                 <div class="section__item">
-                    <h4 class="section__title">With Text:</h4>
+                    <h4 class="section__title">{{ 'storybook.layout.sections.separators.example-3.title' | translate }}:</h4>
                     <div class="section__example">
                         <app-separator orientation="horizontal" thickness="0.1rem" label="OR" margin="1.2rem" />
                     </div>
@@ -32,62 +32,62 @@
             </div>
         </app-showcase-card>
 
-        <app-showcase-card title="Scroll Area">
+        <app-showcase-card [title]="'storybook.layout.sections.scrollArea.title' | translate">
             <section class="section">
                 <div class="section__item">
-                    <h4 class="section__title">Vertical Scroll:</h4>
+                    <h4 class="section__title">{{'storybook.layout.sections.scrollArea.example-1' | translate }}:</h4>
                     <app-scroll-area height="19.6rem">
                         @for(item of scrollAreaContent(); track item.id) {
-                        <p>{{ item.content }}</p>
+                        <p>{{ item.content | translate }}</p>
                         }
                     </app-scroll-area>
                 </div>
             </section>
             <section class="section">
                 <div class="section__item">
-                    <h4 class="section__title">Horizontal Scroll:</h4>
+                    <h4 class="section__title">{{'storybook.layout.sections.scrollArea.example-2' | translate }}:</h4>
                     <app-scroll-area direction="horizontal" height="18rem">
                         @for(item of scrollAreaContent2(); track item.id) {
-                        <div class="scroll-item">{{ item.title }}</div>
+                        <div class="scroll-item">{{ item.title | translate }}</div>
                         }
                     </app-scroll-area>
                 </div>
             </section>
         </app-showcase-card>
 
-        <app-showcase-card title="Collapsible">
+        <app-showcase-card [title]="'storybook.layout.sections.collapsible' | translate">
             <section class="section">
                 @for(item of collapsibleData(); track item.id){
                 <div class="section__item">
                     <app-collapsible [config]="item">
-                        <p class="text-secondary">{{ item.content }}</p>
+                        <p class="text-secondary">{{ item.content | translate }}</p>
                     </app-collapsible>
                 </div>
                 }
             </section>
         </app-showcase-card>
 
-        <app-showcase-card title="Accordion">
+        <app-showcase-card [title]="'storybook.layout.sections.accordion' | translate">
             <section class="section">
                 <div class="section__item">
                     <app-accordion [multi]="false">
                         @for(item of accordionContent(); track item.id; let last = $last) {
-                        <app-accordion-item [title]="item.title" [isLast]="last">
-                            <p>{{item.content}}</p>
+                        <app-accordion-item [title]="item.title | translate" [isLast]="last">
+                            <p>{{item.content | translate}}</p>
                         </app-accordion-item>
                         }
                     </app-accordion>
                 </div>
             </section>
         </app-showcase-card>
-        <app-showcase-card title="Multiple Accordion (Multiple Open)">
+        <app-showcase-card [title]="'storybook.layout.sections.multiAccordion' | translate">
             <section class="section">
                 <div class="section__item">
                     <app-accordion [multi]="true">
                         @for(item of multiAccordionContent(); track item.id; let last = $last)
                         {
-                        <app-accordion-item [title]="item.title" [isLast]="last">
-                            <p>{{item.content}}</p>
+                        <app-accordion-item [title]="item.title | translate" [isLast]="last">
+                            <p>{{item.content | translate}}</p>
                         </app-accordion-item>
                         }
                     </app-accordion>
@@ -95,14 +95,14 @@
             </section>
         </app-showcase-card>
 
-        <app-showcase-card title="Resizable Panels">
+        <app-showcase-card [title]="'storybook.layout.sections.resizablePanels.title' | translate">
             <section class="section">
                 @for (config of resizablePanelsConfig(); track config.id) {
                 <div class="section__item">
-                    <h4 class="section__title">{{ config.title }}</h4>
+                    <h4 class="section__title">{{ config.title | translate }}:</h4>
                     <app-resizable-panels [orientation]="config.orientation" [panelSize]="config.panelSize">
                         @for (panel of config.panels; track panel.id) {
-                        <div class="panel">{{ panel.label }}</div>
+                        <div class="panel">{{ panel.label | translate }}</div>
                         }
                     </app-resizable-panels>
                 </div>
@@ -110,14 +110,14 @@
             </section>
         </app-showcase-card>
 
-        <app-showcase-card title="Grid Layouts">
+        <app-showcase-card [title]="'storybook.layout.sections.grid' | translate">
             <section class="section">
                 @for (config of gridLayoutConfig(); track config.id) {
                 <div class="section__item">
-                    <h4 class="section__title">{{ config.title }}</h4>
+                    <h4 class="section__title">{{ config.title | translate }}:</h4>
                     <app-grid-layout [cols]="config.cols" gap="1.6rem">
                         @for (item of config.items; track item.id) {
-                        <div class="grid-item">{{ item.label }}</div>
+                        <div class="grid-item">{{ item.label | translate }}</div>
                         }
                     </app-grid-layout>
                 </div>
@@ -125,14 +125,14 @@
             </section>
         </app-showcase-card>
 
-        <app-showcase-card title="Flex Layouts">
+        <app-showcase-card [title]="'storybook.layout.sections.flex' | translate">
             <section class="section">
                 @for (config of flexLayoutConfig(); track config.id) {
                 <div class="section__item">
-                    <h4 class="section__title">{{ config.title }}</h4>
+                    <h4 class="section__title">{{ config.title | translate }}:</h4>
                     <app-flex-layout [variant]="config.variant" [wrap]="config.wrap" gap="1.6rem">
                         @for (item of config.items; track item.id) {
-                        <div [class]="getFlexItemClass(config.wrap)">{{ item.label }}</div>
+                        <div [class]="getFlexItemClass(config.wrap)">{{ item.label | translate }}</div>
                         }
                     </app-flex-layout>
                 </div>

@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 import { TransactionItem } from '../transaction-item/transaction-item';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-transaction-list',
   templateUrl: './transaction-list.html',
   styleUrls: ['./transaction-list.scss'],
-  imports: [TransactionItem],
+  imports: [TransactionItem,TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransactionList {

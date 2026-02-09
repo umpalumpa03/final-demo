@@ -257,6 +257,64 @@
       "label": "Security PIN"
     }
   },
+  "forms": {},
+  "cards": {
+     "pageTitle": "Cards",
+    "pageSubtitle": "Card components with various layouts and content types",
+    "basicCard": "Basic Cards",
+    "StatisticsCards": "Statistics Cards",
+    "categoryCards": "Category Cards",
+    "cancelBtn": "Cancel",
+    "submitBtn": "Submit",
+     "basic1": {
+      "title": "Card Title",
+      "subtitle": "Card description goes here",
+      "content": "This is the main content area of the card. You can put any content here."
+    },
+    "basic2": {
+      "title": "With Footer",
+      "subtitle": "Card with action buttons",
+      "content": "This card includes a footer with action buttons."
+    },
+    "basic3": {
+      "title": "Hover Effect",
+      "subtitle": "Hover over this card",
+      "content": "This card has hover effects applied."
+    },
+    "stats": {
+      "revenue": {
+        "label": "Total Revenue",
+        "value": "$45,231.89",
+        "change": "+20.1% from last month"
+      },
+      "subscriptions": {
+        "label": "Subscriptions",
+        "value": "+2,350",
+        "change": "+180.1% from last month"
+      },
+      "sales": {
+        "label": "Sales",
+        "value": "+12,234",
+        "change": "+19% from last month"
+      },
+      "active": {
+        "label": "Active Now",
+        "value": "+573",
+        "change": "-4% from last hour"
+      }
+    },
+    "category": {
+      "utilities": {
+        "title": "Utilities",
+        "subtitle": "Electricity, Water, Gas"
+      },
+      "internet": {
+        "title": "Internet & TV",
+        "subtitle": "Internet, Cable TV"
+      }
+    }
+  },
+  "alerts": {},
   "forms": {
     "formsTitle": "Forms",
     "formsSubtitle": "Complete form examples with various input types and layouts",
@@ -555,7 +613,216 @@
     }
   },
   "feedback": {},
-  "layout": {},
+  "layout": {
+    "title": "Layout Components",
+    "subtitle": "Structural components for organizing content",
+    "sections": {
+      "separators": {
+        "title": "Separators",
+        "example-1": {
+          "title": "Horizontal Separator",
+          "content-1": "Content above",
+          "content-2": "Content below"
+        },
+        "example-2": {
+          "title": "Vertical Separator",
+          "content-1": "Left",
+          "content-2": "Center",
+          "content-3": "Right"
+        },
+        "example-3": {
+          "title": "With Text"
+        }
+      },
+      "accordion": "Accordion",
+      "multiAccordion": "Multiple Accordion (Multiple Open)",
+      "collapsible": "Collapsible",
+      "scrollArea": {
+        "title": "Scroll Area",
+        "example-1": "Vertical Scroll",
+        "example-2": "Horizontal Scroll"
+      },
+      "resizablePanels": {
+        "title": "Resizable Panels",
+        "example-1": {
+          "title": "Horizontal Resize",
+          "content-1": "Left Panel",
+          "content-2": "Right Panel"
+        },
+        "example-2": {
+          "title": "Three Panel Layout",
+          "content-1": "Sidebar",
+          "content-2": "Main Content",
+          "content-3": "Details"
+        },
+        "example-3": {
+          "title": "Vertical Resize",
+          "content-1": "Top Panel",
+          "content-2": "Bottom Panel"
+        }
+      },
+      "grid": "Grid Layouts",
+      "flex": "Flex Layouts"
+    },
+    "accordionContent": [
+      {
+        "title": "What is this component library?",
+        "content":
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?"
+      },
+      {
+        "title": "How do I use these components?",
+        "content":
+          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?"
+      },
+      {
+        "title": "Are these components accessible?",
+        "content":
+          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?"
+      },
+      {
+        "title": "Can I customize the styling?",
+        "content":
+          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?"
+      },
+      {
+        "title": "Can I customize the styling?",
+        "content":
+          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?"
+      }
+    ],
+    "multiAccordionContent": [
+      {
+        "title": "Features",
+        "content":
+          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?"
+      },
+      {
+        "title": "Installation",
+        "content":
+          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?"
+      },
+      {
+        "title": "Documentation",
+        "content":
+          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?"
+      }
+    ],
+    "collapsibleContent": [
+      {
+        "title": "Click To Expand",
+        "content":
+          "This content is dynamic and passed from the parent configuration."
+      },
+      {
+        "title": "Default Open",
+        "content":
+          "This collapsible section is open by default and contains specific project details."
+      }
+    ],
+    "scrollAreaContent": [
+      {
+        "content": "Item 1 - This is a scrollable content area with many items"
+      },
+      {
+        "content": "Item 2 - This is a scrollable content area with many items"
+      },
+      {
+        "content": "Item 3 - This is a scrollable content area with many items"
+      },
+      {
+        "content": "Item 4 - This is a scrollable content area with many items"
+      },
+      {
+        "content": "Item 5 - This is a scrollable content area with many items"
+      },
+      {
+        "content": "Item 6 - This is a scrollable content area with many items"
+      }
+    ],
+    "scrollAreaContent2": [
+      {
+        "title": "Card 1"
+      },
+      {
+        "title": "Card 2"
+      },
+      {
+        "title": "Card 3"
+      },
+      {
+        "title": "Card 4"
+      },
+      {
+        "title": "Card 5"
+      },
+      {
+        "title": "Card 6"
+      }
+    ],
+    "grid": [
+      {
+        "title": "Two Column Grid",
+        "items": [
+          { "label": "Column 1" },
+          { "label": "Column 2" }
+        ]
+      },
+      {
+        "title": "Three Column Grid",
+        "items": [
+          { "label": "Column 1" },
+          { "label": "Column 2" },
+          { "label": "Column 3" }
+        ]
+      },
+      {
+        "title": "Four Column Grid",
+        "items": [
+          { "label": "Column 1" },
+          { "label": "Column 2" },
+          { "label": "Column 3" },
+          { "label": "Column 4" }
+        ]
+      },
+      {
+        "title": "Asymmetric (2:1)",
+        "items": [
+          { "label": "Wide Column (2/3)" },
+          { "label": "Narrow (1/3)" }
+        ]
+      }
+    ],
+    "flex": [
+      {
+        "title": "Space Between:",
+        "items": [
+          { "label": "Left" },
+          { "label": "Center" },
+          { "label": "Right" }
+        ]
+      },
+      {
+        "title": "Centered:",
+        "items": [{ "label": "Centered Content" }]
+      },
+      {
+        "title": "Flex Wrap:",
+        "items": [
+          { "label": "Item 1" },
+          { "label": "Item 2" },
+          { "label": "Item 3" },
+          { "label": "Item 4" },
+          { "label": "Item 5" },
+          { "label": "Item 6" },
+          { "label": "Item 7" },
+          { "label": "Item 8" },
+          { "label": "Item 9" },
+          { "label": "Item 10" }
+        ]
+      }
+    ]
+  },
   "data-display": {},
   "overlays": {},
   "drag-and-drop": {

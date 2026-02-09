@@ -46,6 +46,7 @@ export const cardsReducer = createReducer(
     },
     cardDetailsLoading: false,
     cardDetailsError: null,
+     loadedCardDetailsIds: [...state.loadedCardDetailsIds, cardId], 
   })),
   on(CardsActions.loadCardDetailsFailure, (state, { error }) => ({
     ...state,
@@ -66,6 +67,7 @@ export const cardsReducer = createReducer(
       types,
       loading: false,
       error: null,
+      cardCreationDataLoaded: true,
     }),
   ),
   on(CardsActions.loadCardCreationDataFailure, (state, { error }) => ({
@@ -118,13 +120,13 @@ export const cardsReducer = createReducer(
   })),
 
 
-
-  on(CardsActions.loadCardAccountsSuccess, (state, { accounts }) => ({
+on(CardsActions.loadCardAccountsSuccess, (state, { accounts }) => ({
   ...state,
   accounts,
   loading: false,
   error: null,
-  cardImagesLoading: true,
+  cardImagesLoading: accounts.flatMap(a => a.cardIds).some(id => !state.loadedCardImageIds.includes(id)),
+  accountsLoaded: true,
 })),
 
 on(CardsActions.loadCardImageSuccess, (state, { cardId, imageBase64 }) => ({
@@ -133,6 +135,7 @@ on(CardsActions.loadCardImageSuccess, (state, { cardId, imageBase64 }) => ({
     ...state.cardImages,
     [cardId]: imageBase64,
   },
+   loadedCardImageIds: [...state.loadedCardImageIds, cardId],
 })),
 
 on(CardsActions.loadCardImageFailure, (state) => ({

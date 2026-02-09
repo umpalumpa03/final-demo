@@ -219,7 +219,7 @@ export class CardDetails implements OnInit {
   }
 
   private loadCardData(cardId: string): void {
-    this.store.dispatch(loadCardAccounts());
+    this.store.dispatch(loadCardAccounts({}));
     this.store.dispatch(loadCardDetails({ cardId }));
   }
   protected readonly hasMultipleCards$ = combineLatest([

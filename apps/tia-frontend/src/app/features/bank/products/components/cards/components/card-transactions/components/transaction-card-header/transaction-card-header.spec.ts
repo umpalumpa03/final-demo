@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TransactionCardHeader } from './transaction-card-header';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('TransactionCardHeader', () => {
   let component: TransactionCardHeader;
@@ -7,7 +8,7 @@ describe('TransactionCardHeader', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TransactionCardHeader],
+      imports: [TransactionCardHeader,TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TransactionCardHeader);

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { AccountHeader } from './account-header';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('AccountHeader', () => {
   let component: AccountHeader;
@@ -19,7 +20,7 @@ describe('AccountHeader', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [AccountHeader],
+      imports: [AccountHeader,TranslateModule.forRoot()],
     });
 
     fixture = TestBed.createComponent(AccountHeader);
