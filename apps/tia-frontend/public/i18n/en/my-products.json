@@ -86,7 +86,9 @@
       },
       "card-group-item": {
         "allCards": "Click to view all cards",
-        "noCard": "No cards avaliable"
+        "noCard": "No cards avaliable",
+        "cardCount": "Card",
+        "cardCountPlural": "Cards"
       },
       "myCards": "My Cards",
       "manageAccounts": "Manage your bank accounts",
@@ -96,6 +98,10 @@
     "account-cards": {
       "card-grid": {
         "avaliableAmount": "Available"
+      },
+      "account-header": {
+        "cardCount": "Card",
+        "cardCountPlural": "Cards"
       },
       "backToCards": "Back to Cards",
       "accountNotFound": "Account not found"
@@ -143,22 +149,26 @@
         "sensitiveDetails": "View Sensitive Details",
         "sensitiveSubtitle": "   To view full card number, CVV, and expiration date, please verify your identity using OTP",
         "requestOtp": "Request OTP",
-        "closeBtn": "Close", 
-        "fullNumber": "Full Card Number", 
-        "expirationDate":"Expiration Date"
+        "closeBtn": "Close",
+        "fullNumber": "Full Card Number",
+        "expirationDate": "Expiration Date"
       }
-    }, 
-    "card-transactions":{
-      "backToCard":"Back to Card Details", 
-      "transaction-card-header":{
-        "linkedTo":"ბარათი ეკუთვნის: ", 
+    },
+    "card-transactions": {
+      "backToCard": "Back to Card Details",
+      "transaction-card-header": {
+        "linkedTo": "ბარათი ეკუთვნის: ",
         "totalTransactions": "ტრანზაქციების რაოდენობა:"
-      }, 
-      "transaction-list":{
+      },
+      "transaction-list": {
         "noTransactions": "No transactions found"
       }
-
-
-    }
+    }, 
+    "card-otp-modal": {
+  "title": "Verify Card Details",
+  "subText": "Enter the 4-digit code to view sensitive card information",
+  "submitBtn": "Verify OTP",
+  "cancel": "Cancel"
+}
   }
 }

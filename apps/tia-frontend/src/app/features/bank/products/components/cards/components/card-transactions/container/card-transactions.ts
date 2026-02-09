@@ -157,7 +157,7 @@ export class CardTransactions implements OnInit {
   }
 
   private loadData(): void {
-    this.store.dispatch(loadCardAccounts());
+    this.store.dispatch(loadCardAccounts({}));
     this.store.dispatch(loadCardDetails({ cardId: this.cardId }));
   }
 

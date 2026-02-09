@@ -86,7 +86,9 @@
       },
       "card-group-item": {
         "allCards": "ყველა ბარათის ნახვა",
-        "noCard": "ბარათი არ არის დამატებული"
+        "noCard": "ბარათი არ არის დამატებული",
+        "cardCount": "ბარათი",
+        "cardCountPlural": "ბარათი"
       },
       "myCards": "ჩემი ბარათები",
       "manageAccounts": "მართეთ თქვენი ანგარიშები",
@@ -98,6 +100,10 @@
       "accountNotFound": "ანგარიში არ მოიძებნა",
       "card-grid": {
         "avaliableAmount": "ხელმისაწვდომი"
+      },
+      "account-header": {
+        "cardCount": "ბარათი",
+        "cardCountPlural": "ბარათი"
       }
     },
     "card-details": {
@@ -128,28 +134,29 @@
         "cardPreview": "ბარათის მიმოხილვა",
         "SelectDesign": "შეარჩიეთ დიზაინი"
       }
-
-    }, 
-    "card-details-modal":{
-      "card-details-modal-content":{
-        "cardDetails": "ბარათის დეტალები", 
-        "cardSubtitle":"იხილეთ ბარათის დეტალები",
-        "cardInfo":"ბარათის ინფორმაცია", 
-        "cardName":"ბარათის სახელი", 
-        "cardType": "ბარათის ტიპი", 
-        "cardCategory": "ბარათის კატეგორია", 
-        "cardStatus": "ბარათის სტატუსი", 
-        "creditLimit": "საკრედიტო ლიმიტი", 
-        "avaliableAmount": "ხელმისაწვდომი თანხა", 
-        "sensitiveDetails": "ბარათის დაფარული ინფორმაცია", 
-        "sensitiveSubtitle": "გთხოვთ გაიაროთ OTP ვერიფიკაცია, რომ იხილოთ ბარათის ნომერი, CVV და მოქმედების ვადა", 
-        "requestOtp": "OTP-ს გაგზავნა", 
+    },
+    "card-details-modal": {
+      "card-details-modal-content": {
+        "cardDetails": "ბარათის დეტალები",
+        "cardSubtitle": "იხილეთ ბარათის დეტალები",
+        "cardInfo": "ბარათის ინფორმაცია",
+        "cardName": "ბარათის სახელი",
+        "cardType": "ბარათის ტიპი",
+        "cardCategory": "ბარათის კატეგორია",
+        "cardStatus": "ბარათის სტატუსი",
+        "creditLimit": "საკრედიტო ლიმიტი",
+        "avaliableAmount": "ხელმისაწვდომი თანხა",
+        "sensitiveDetails": "ბარათის დაფარული ინფორმაცია",
+        "sensitiveSubtitle": "გთხოვთ გაიაროთ OTP ვერიფიკაცია, რომ იხილოთ ბარათის ნომერი, CVV და მოქმედების ვადა",
+        "requestOtp": "OTP-ს გაგზავნა",
         "closeBtn": "დახურვა"
-        
       }
+    },
+    "card-otp-modal": {
+      "title": "ბარათის დეტალების ვერიფიკაცია",
+      "subText": "შეიყვანეთ 4 ციფრი, რათა იხილოთ ბარათის დაფარული ინფორმაცია",
+      "submitBtn": "OTP ვერიფიკაცია",
+      "cancel": "გაუქმება"
     }
-
-
-
   }
 }
