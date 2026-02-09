@@ -63,5 +63,39 @@ describe("PersonalInfoApiService (vitest)", () => {
     expect(req.request.body).toEqual({ pId: payload.pId });
     req.flush(mockResponse);
   });
+
+  it("should call POST initiatePhoneUpdate with phone", () => {
+    const phone = "555123456";
+    const mockResponse = {
+      challengeId: "challenge-123",
+      method: "SMS",
+    };
+
+    service.initiatePhoneUpdate(phone).subscribe((res) => {
+      expect(res).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${baseUrl}/update-phone`);
+    expect(req.request.method).toBe("POST");
+    expect(req.request.body).toEqual({ phone });
+    req.flush(mockResponse);
+  });
+
+  it("should call POST verifyPhoneUpdate with challengeId and code", () => {
+    const challengeId = "challenge-123";
+    const code = "123456";
+    const mockResponse = { message: "Phone number updated successfully" };
+
+    service.verifyPhoneUpdate(challengeId, code).subscribe((res) => {
+      expect(res).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${baseUrl}/verify-new-phone-otp`);
+    expect(req.request.method).toBe("POST");
+    expect(req.request.body).toEqual({ challengeId, code });
+    req.flush(mockResponse);
+  });
+
+
 });
 

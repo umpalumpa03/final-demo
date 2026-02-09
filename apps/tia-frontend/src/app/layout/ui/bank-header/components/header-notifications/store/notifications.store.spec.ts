@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { patchState } from '@ngrx/signals';
 import { NotificationsStore } from './notifications.store';
 import { Notifications } from '../service/notifications';
 import { of } from 'rxjs';
@@ -22,6 +23,7 @@ describe('NotificationsStore', () => {
       deleteAll: vi.fn(() => of(null)),
       markNotificationRead: vi.fn(() => of(null)),
       deleteMultiple: vi.fn(() => of(null)),
+      fetchUnreadCount: vi.fn(),
     };
 
     TestBed.configureTestingModule({
@@ -46,11 +48,6 @@ describe('NotificationsStore', () => {
     expect(store.items().length).toBe(1);
     expect(store.isLoading()).toBe(false);
     expect(store.isEmpty()).toBe(false);
-  });
-
-  it('should compute unreadNotificationsNumber correctly', () => {
-    store.fetchNotifications({ cursor: '', limit: 10 });
-    expect(store.unreadNotificationsNumber()).toBe(1);
   });
 
   it('should toggle item selection', () => {
@@ -79,16 +76,6 @@ describe('NotificationsStore', () => {
       '1',
     );
     expect(store.items().length).toBe(0);
-  });
-
-  it('should mark items as read', () => {
-    store.fetchNotifications({ cursor: '', limit: 10 });
-    store.markItemsRead(['1']);
-
-    expect(notificationsServiceMock.markNotificationRead).toHaveBeenCalledWith(
-      '1',
-    );
-    expect(store.unreadNotificationsNumber()).toBe(0);
   });
 
   it('should append items when fetching with a cursor', () => {
@@ -176,5 +163,38 @@ describe('NotificationsStore', () => {
     expect(store.isLoading()).toBe(false);
     expect(store.hasUnread()).toBe(false);
     expect(store.isEmpty()).toBe(true);
+  });
+
+  it('should update unreadCount when marking items as read', () => {
+    patchState(store, {
+      items: [{ id: '1', isRead: false }],
+      unreadCount: 1,
+    });
+
+    store.markItemsRead(['1']);
+
+    expect(store.unreadCount()).toBe(0);
+    expect(store.items()[0].isRead).toBe(true);
+  });
+
+  it('should compute isIndeterminate correctly', () => {
+    patchState(store, {
+      items: [{ id: '1' }, { id: '2' }],
+      selectedItems: ['1'],
+    });
+    expect(store.isIndeterminate()).toBe(true);
+  });
+
+  it('should fetch unread count from service', () => {
+    notificationsServiceMock.getUnreadCount = vi.fn(() => of({ count: 5 }));
+    store.fetchUnreadCount();
+    expect(store.unreadCount()).toBe(5);
+  });
+
+  it('should mark all as read', () => {
+    patchState(store, { items: [{ id: '1', isRead: false }], unreadCount: 1 });
+    store.markAllAsRead();
+    expect(store.unreadCount()).toBe(0);
+    expect(store.items()[0].isRead).toBe(true);
   });
 });

@@ -8,6 +8,7 @@ import {
   TemplateGroups,
   Templates,
 } from '../models/paybill-templates.model';
+import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 
 @Injectable({
   providedIn: 'root',
@@ -87,7 +88,25 @@ export class PaybillTemplatesService {
     );
   }
 
-  // public addTemplate(payload: any): Observable<Templates> {
-  //   return this.http.post<Templates>(`${this.baseUrl}/templates`, payload);
-  // }
+  // Filter Logic
+  public filterTemplatesAndGroups(
+    searchValue: string,
+    templates: TreeItem[],
+    groups: TemplateGroups[],
+  ): { templates: TreeItem[]; groups: TemplateGroups[] } {
+    const lowerSearchTerm = searchValue.toLowerCase().trim();
+
+    if (!lowerSearchTerm) {
+      return { templates, groups };
+    }
+
+    const filteredTemplates = templates.filter((template) =>
+      template.title?.toLowerCase().includes(lowerSearchTerm),
+    );
+    const filteredGroups = groups.filter((group) =>
+      group.groupName?.toLowerCase().includes(lowerSearchTerm),
+    );
+
+    return { templates: filteredTemplates, groups: filteredGroups };
+  }
 }
