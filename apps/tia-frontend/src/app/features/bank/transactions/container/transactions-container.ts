@@ -22,7 +22,6 @@ import {
   TableConfig,
   TransactionActionEvent,
 } from '@tia/shared/lib/tables/models/table.model';
-import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Tables } from '@tia/shared/lib/tables/components/tables';
 import { TransactionsFilters } from '../components/transactions-filters/transactions-filters';
@@ -52,7 +51,6 @@ import {
 @Component({
   selector: 'app-transactions-container',
   imports: [
-    ButtonComponent,
     RouteLoader,
     Tables,
     TransactionsFilters,

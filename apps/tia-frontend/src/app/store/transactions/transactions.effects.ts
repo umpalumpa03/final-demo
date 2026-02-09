@@ -43,22 +43,19 @@ export const loadTransactionsEffect = createEffect(
         store.select(selectNextCursor),
         store.select(selectTransactionsLoaded),
       ),
-      filter(([action, , , loaded]) => {
-        if (action.type === TransactionActions.loadMore.type) {
-          return true;
-        }
+      switchMap(([action, filters, nextCursor, loaded]) => {
+        const isLoadMore = action.type === TransactionActions.loadMore.type;
         const forceRefresh = (action as { forceRefresh?: boolean })
           .forceRefresh;
-        return !!forceRefresh || !loaded;
-      }),
-      switchMap(([action, filters, nextCursor]) => {
-        if (action.type === TransactionActions.loadMore.type && !nextCursor) {
+
+        if (isLoadMore && !nextCursor) {
           return EMPTY;
+        }
+        if (!isLoadMore && loaded && !forceRefresh) {
+          return of(TransactionActions.loadTransactionsCached());
         }
 
         const apiFilters = { ...filters };
-        const isLoadMore = action.type === TransactionActions.loadMore.type;
-
         if (isLoadMore && nextCursor) {
           apiFilters.pageCursor = nextCursor;
         } else {

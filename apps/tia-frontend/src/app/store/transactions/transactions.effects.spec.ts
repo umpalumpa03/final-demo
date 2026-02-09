@@ -270,4 +270,17 @@ describe('Transaction Effects', () => {
       }),
     );
   });
+  it('should dispatch loadTransactionsCached when data is already loaded and no forceRefresh', () => {
+    store.overrideSelector(selectTransactionsLoaded, true);
+    actions$ = of(TransactionActions.loadTransactions({}));
+
+    TestBed.runInInjectionContext(() =>
+      loadTransactionsEffect(actions$, store, transactionService).subscribe(
+        (action) => {
+          expect(action).toEqual(TransactionActions.loadTransactionsCached());
+        },
+      ),
+    );
+    expect(transactionService.getTransactions).not.toHaveBeenCalled();
+  });
 });
