@@ -29,7 +29,6 @@ export class Onboarding {
       2: 'onboard-sidebar',
       3: 'onboard-messaging',
       4: 'onboard-notifications',
-      5: null,
     };
 
     return targets[this.currentPage()];
