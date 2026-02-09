@@ -6,16 +6,23 @@ import { Store } from '@ngrx/store';
 import { vi } from 'vitest';
 import * as SecuritySelectors from '../store/security.selectors';
 import { SecurityActions } from '../store/security.actions';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 describe('SecurityContainer', () => {
   let component: SecurityContainer;
   let fixture: ComponentFixture<SecurityContainer>;
   let store: MockStore;
   let translate: TranslateService;
+  let mockAlertService: any;
 
   const refresh = () => (store.refreshState(), fixture.detectChanges());
 
   beforeEach(async () => {
+    mockAlertService = {
+      success: vi.fn(),
+      error: vi.fn(),
+    };
+
     await TestBed.configureTestingModule({
       imports: [SecurityContainer, TranslateModule.forRoot()],
       providers: [
@@ -26,6 +33,7 @@ describe('SecurityContainer', () => {
             { selector: SecuritySelectors.selectSecuritySuccess, value: false },
           ],
         }),
+        { provide: AlertService, useValue: mockAlertService },
       ],
     }).compileComponents();
 
@@ -65,28 +73,41 @@ describe('SecurityContainer', () => {
     store.overrideSelector(SecuritySelectors.selectSecuritySuccess, false);
     refresh();
 
-    expect(component.alertType()).toBe('error');
+    expect(mockAlertService.error).toHaveBeenCalledWith(
+      'Test error',
+      { variant: 'dismissible', title: 'Oops!' },
+    );
   });
 
   it('should compute alertMessage from error when error exists', () => {
-    store.overrideSelector(SecuritySelectors.selectSecurityError, 'Test error message');
+    store.overrideSelector(
+      SecuritySelectors.selectSecurityError,
+      'Test error message',
+    );
     store.overrideSelector(SecuritySelectors.selectSecuritySuccess, false);
     refresh();
 
-    expect(component.alertMessage()).toBe('Test error message');
+    expect(mockAlertService.error).toHaveBeenCalledWith(
+      'Test error message',
+      { variant: 'dismissible', title: 'Oops!' },
+    );
   });
 
-  it('should clear alert timeout and dispatch clear actions on onAlertClose', () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
-    const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
+  it('should show success alert when success is true', () => {
+    const translateSpy = vi
+      .spyOn(translate, 'instant')
+      .mockReturnValue('Password changed successfully');
 
-    store.overrideSelector(SecuritySelectors.selectSecurityError, 'Test error');
+    store.overrideSelector(SecuritySelectors.selectSecurityError, null);
+    store.overrideSelector(SecuritySelectors.selectSecuritySuccess, true);
     refresh();
 
-    component.onAlertClose();
-
-    expect(clearTimeoutSpy).toHaveBeenCalled();
-    expect(dispatchSpy).toHaveBeenCalledWith(SecurityActions.clearError());
-    expect(dispatchSpy).toHaveBeenCalledWith(SecurityActions.clearSuccess());
+    expect(translateSpy).toHaveBeenCalledWith(
+      'settings.security.passwordChangedSuccessfully',
+    );
+    expect(mockAlertService.success).toHaveBeenCalledWith(
+      'Password changed successfully',
+      { variant: 'dismissible', title: 'Success!' },
+    );
   });
 });

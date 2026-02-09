@@ -317,3 +317,34 @@ export const selectCanNavigatePrevious = createSelector(
   selectCurrentCardIndex,
   (index: number): boolean => index > 0
 );
+export const selectAccountsLoaded = createSelector(
+  selectCardsState,
+  (state: CardsState): boolean => state.accountsLoaded,
+);
+
+export const selectCardCreationDataLoaded = createSelector(
+  selectCardsState,
+  (state: CardsState): boolean => state.cardCreationDataLoaded,
+);
+
+export const selectLoadedCardDetailsIds = createSelector(
+  selectCardsState,
+  (state: CardsState): string[] => state.loadedCardDetailsIds,
+);
+
+export const selectLoadedCardImageIds = createSelector(
+  selectCardsState,
+  (state: CardsState): string[] => state.loadedCardImageIds,
+);
+
+export const selectIsCardDetailLoaded = (cardId: string) =>
+  createSelector(
+    selectLoadedCardDetailsIds,
+    (ids: string[]): boolean => ids.includes(cardId),
+  );
+
+export const selectIsCardImageLoaded = (cardId: string) =>
+  createSelector(
+    selectLoadedCardImageIds,
+    (ids: string[]): boolean => ids.includes(cardId),
+  );

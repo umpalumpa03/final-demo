@@ -16,4 +16,5 @@ export interface CardGroupView {
   cardCountLabel: string;
   activeIndex: number;
   cards: CardImageView[];
+  cardCountKey: string;  
 }

@@ -5,10 +5,9 @@ import { CardDesign } from 'apps/tia-frontend/src/app/features/bank/products/com
 import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
 import { CreateCardRequest } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/create-card-request.model';
 import { CardType } from '../../../features/bank/products/components/cards/models/card-type.model';
-import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 import { CardSensitiveData } from '../../../features/bank/products/components/cards/models/card-sensitive-data.model';
 
-export const loadCardAccounts = createAction('[Cards] Load Card Accounts');
+export const loadCardAccounts = createAction('[Cards] Load Card Accounts',props<{ forceRefresh?: boolean }>(),);
 
 export const loadCardAccountsSuccess = createAction(
   '[Cards] Load Card Accounts Success',
@@ -22,7 +21,7 @@ export const loadCardAccountsFailure = createAction(
 
 export const loadCardImage = createAction(
   '[Cards] Load Card Image',
-  props<{ cardId: string }>(),
+  props<{ cardId: string; forceRefresh?: boolean }>(),
 );
 
 export const loadCardImageSuccess = createAction(
@@ -37,7 +36,7 @@ export const loadCardImageFailure = createAction(
 
 export const loadCardDetails = createAction(
   '[Cards] Load Card Details',
-  props<{ cardId: string }>(),
+  props<{ cardId: string; forceRefresh?: boolean }>(),
 );
 
 export const loadCardDetailsSuccess = createAction(
@@ -61,7 +60,7 @@ export const loadAccountCardsPage = createAction(
 );
 
 export const loadCardCreationData = createAction(
-  '[Cards] Load Card Creation Data',
+  '[Cards] Load Card Creation Data',props<{ forceRefresh?: boolean }>(),
 );
 
 export const loadCardCreationDataSuccess = createAction(

@@ -80,17 +80,22 @@ protected readonly viewState$ = combineLatest([
   })
 );
 
-  protected readonly cardsLabel$ = this.accountData$.pipe(
-    map((data) => {
-      if (!data) return '';
-      const count = data.account.cardIds.length;
-      return `${count} Card${count !== 1 ? 's' : ''}`;
-    }),
-  );
 
-  ngOnInit(): void {
-    this.store.dispatch(loadAccountCardsPage({ accountId: this.accountId }));
-  }
+protected readonly cardsLabel$ = this.accountData$.pipe(
+  map((data) => {
+    if (!data) return { count: '0', key: 'my-products.card.account-cards.account-header.cardCountPlural' };
+    const count = data.account.cardIds.length;
+    return {
+      count: `${count}`,
+      key: count === 1 
+        ? 'my-products.card.account-cards.account-header.cardCount' 
+        : 'my-products.card.account-cards.account-header.cardCountPlural'
+    };
+  }),
+);
+ngOnInit(): void {
+  this.store.dispatch(loadAccountCardsPage({ accountId: this.accountId }));
+}
 
 
   public handleCardClick(cardId: string): void {
@@ -111,7 +116,7 @@ protected readonly viewState$ = combineLatest([
     this.router.navigate(['/bank/products/cards/list']);
   }
 
-  public handleRetry(): void {
-    this.store.dispatch(loadAccountCardsPage({ accountId: this.accountId }));
-  }
+ public handleRetry(): void {
+  this.store.dispatch(loadAccountCardsPage({ accountId: this.accountId }));
+}
 }
