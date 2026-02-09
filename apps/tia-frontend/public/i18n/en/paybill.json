@@ -10,6 +10,10 @@
 
   "main": {
     "category": "Select Category",
+    "tooltip": {
+      "check_details": "Please correctly check the details",
+      "check_amount": "Please enter correct amount"
+    },
     "summary": {
       "customer_name": "Customer Name:",
       "bill_period": "Bill Period:",

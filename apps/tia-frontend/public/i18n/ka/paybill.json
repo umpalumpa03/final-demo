@@ -10,6 +10,10 @@
 
   "main": {
     "category": "აირჩიე კატეგორია",
+    "tooltip": {
+      "check_details": "შეყვანილი ინფორმაცია გადაამოწმეთ",
+      "check_amount": "შეიყვანეთ თანხის სწორი ოდენობა"
+    },
     "summary": {
       "customer_name": "აბონენტი:",
       "bill_period": "პერიოდი:",
