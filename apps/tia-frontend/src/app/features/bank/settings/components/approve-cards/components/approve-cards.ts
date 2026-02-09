@@ -7,24 +7,22 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import {
-  CardPermission,
-  PendingCard,
-} from '../shared/model/approve-cards.model';
+
 import { ApproveCardsStore } from '../store/approve-cards.store';
-import { CardsApproveElement } from '../approve-card-element/cards-approve-element';
-import { buttonEmit } from '../shared/model/approve-card-element.model';
+import { CardsApproveElement } from '../../../shared/ui/approve-ui/approve-card-element/cards-approve-element';
+import { buttonEmit } from '../../../shared/models/approve-models/cards-models/approve-card-element.model';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
-import { PermissionsModal } from '../../approve-accounts/components/permissions-modal/permissions-modal';
+import { PermissionsModal } from '../../../shared/ui/approve-ui/permissions-modal/permissions-modal';
 import { FormBuilder, FormControl, FormRecord } from '@angular/forms';
-import { IAccountsPermissions } from '../../approve-accounts/models/account-permissions.models';
+import { CardPermission, PendingCard } from '../../../shared/models/approve-models/cards-models/approve-cards.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { ApproveCardsState } from '../shared/state/approve-cards.state';
+import { IAccountsPermissions } from '../../../shared/models/approve-models/accounts-models/account-permissions.models';
 
 @Component({
   selector: 'app-approve-cards',

@@ -1,8 +1,8 @@
 import { Component, input, output } from '@angular/core';
-import { APPROVE_CARD_BUTTONS } from '../config/approve-card-element.config';
-import { ActionButton, buttonEmit, CardAction } from '../shared/model/approve-card-element.model';
+import { APPROVE_CARD_BUTTONS } from '../../../../components/approve-cards/config/approve-card-element.config';
 import { DatePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
+import { ActionButton, buttonEmit, CardAction } from '../../../models/approve-models/cards-models/approve-card-element.model';
 
 @Component({
   selector: 'app-cards-approve-element',

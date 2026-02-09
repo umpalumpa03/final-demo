@@ -2,15 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../../../../environments/environment';
 import { Observable } from 'rxjs';
-import {
-  IAccountsPermissions,
-  IUpdateAccountPermission,
-} from '../models/account-permissions.models';
-import {
-  BankAccount,
-  IUpdateAccountStatus,
-  SuccessResponse,
-} from '../models/pending-accounts.models';
+import { IAccountsPermissions } from '../../../shared/models/approve-models/accounts-models/account-permissions.models';
+import { BankAccount, IUpdateAccountStatus, SuccessResponse } from '../../../shared/models/approve-models/accounts-models/pending-accounts.models';
+import { IUpdateAccountPermission } from '../../../shared/models/approve-models/accounts-models/account-permissions.models';
+
 
 @Injectable({
   providedIn: 'root',

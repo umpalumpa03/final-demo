@@ -1,4 +1,4 @@
-import { CardCatalogItemResponse, PendingCard } from '../shared/model/approve-cards.model';
+import { CardCatalogItemResponse, PendingCard } from "../../../shared/models/approve-models/cards-models/approve-cards.model";
 
 export interface ApproveCardsState {
   cards: PendingCard[];

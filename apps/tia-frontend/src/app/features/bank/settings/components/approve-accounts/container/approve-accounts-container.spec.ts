@@ -3,8 +3,8 @@ import { ApproveAccountsContainer } from './approve-accounts-container';
 import { AccountPermissionsStore } from '../store/approve-accounts.store';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { IAccountsPermissions } from '../models/account-permissions.models';
-import { BankAccount } from '../models/pending-accounts.models';
+import { IAccountsPermissions } from '../../../shared/models/approve-models/accounts-models/account-permissions.models';
+import { BankAccount } from '../../../shared/models/approve-models/accounts-models/pending-accounts.models';
 
 describe('ApproveAccountsContainer', () => {
   let component: ApproveAccountsContainer;
