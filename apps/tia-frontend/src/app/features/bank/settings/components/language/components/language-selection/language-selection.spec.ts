@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LanguageSelection } from './language-selection';
 import { LanguagesStore } from '../../store/languages.store';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@tia/shared/services/settings-language/alert.service';
 import { Language } from '../../models/language.model';
 import { vi } from 'vitest';

@@ -1,0 +1,37 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        @keyframes drawCircle {
+            from {
+                stroke-dashoffset: 188;
+            }
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes drawCheck {
+            from {
+                stroke-dashoffset: 40;
+            }
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+    
+        .dialog__icon-circle-success {
+            stroke-dasharray: 188;
+            stroke-dashoffset: 188;
+            animation: drawCircle 0.6s ease-out forwards;
+        }
+
+        .dialog__icon-check {
+            stroke-dasharray: 40;
+            stroke-dashoffset: 40;
+            animation: drawCheck 0.4s ease-out 0.6s forwards;
+        }
+    </style>
+    <circle class="dialog__icon-circle-success" cx="32" cy="32" r="30" stroke="currentColor"
+        stroke-width="4" />
+    <path class="dialog__icon-check" d="M20 32L28 40L44 24" stroke="currentColor" stroke-width="4"
+        stroke-linecap="round" stroke-linejoin="round" />
+</svg>

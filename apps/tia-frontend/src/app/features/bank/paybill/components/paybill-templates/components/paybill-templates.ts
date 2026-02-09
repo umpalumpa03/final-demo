@@ -2,7 +2,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
+  inject,
   input,
   OnInit,
   output,
@@ -31,10 +33,11 @@ import {
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { distinctUntilChanged } from 'rxjs';
+import { distinctUntilChanged, tap } from 'rxjs';
 import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
 import { DynamicInputs } from '../../shared/dynamic-inputs/dynamic-inputs';
 import { PaybillDynamicField } from '../../../services/paybill-dynamic-form/models/dynamic-form.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-paybill-templates',
@@ -193,15 +196,19 @@ export class PaybillTemplates implements OnInit {
   public isCategorySelected = input<boolean>(false);
   public childProviderOptions = input<MappedProviderForDropdown[][]>([[]]);
 
+  private readonly destroyRef = inject(DestroyRef);
+
   // Here I listen for form category change to emit the value and start the cycle
   ngOnInit() {
     const form = this.createTemplateForm();
     form
       .get('category')
-      ?.valueChanges.pipe(distinctUntilChanged())
-      .subscribe((value) => {
-        this.categorySelected.emit(value);
-      });
+      ?.valueChanges.pipe(
+        distinctUntilChanged(),
+        tap((value) => this.categorySelected.emit(value)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 
   // Helper method to give me what kind of data is returned to me

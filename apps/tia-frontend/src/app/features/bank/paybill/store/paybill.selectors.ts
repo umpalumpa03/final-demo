@@ -163,7 +163,6 @@ export const selectTemplatesGroupWithConfigs = createSelector(
     })),
 );
 
-
 // check loaded state
 export const selectPaymentFields = createSelector(
   selectPaybillState,

@@ -5,6 +5,7 @@ export enum TokenKey {
   SIGNUP = 'signup_token',
   CHALLENGE = 'challenge_id',
   USER = 'user',
+  RESET_PASSWORD = 'reset_password_token',
 }
 
 export enum Routes {

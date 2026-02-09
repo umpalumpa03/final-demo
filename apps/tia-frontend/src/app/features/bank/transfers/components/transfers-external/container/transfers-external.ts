@@ -1,22 +1,39 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  computed,
+} from '@angular/core';
 import { RouterOutlet, Router } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { StepperHeader } from 'apps/tia-frontend/src/app/features/storybook/components/forms/multistep-form/stepper-header/stepper-header';
 
 @Component({
   selector: 'app-transfers-external',
+  standalone: true,
   imports: [RouterOutlet, TranslatePipe, StepperHeader],
   templateUrl: './transfers-external.html',
   styleUrl: './transfers-external.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransfersExternal {
-  private router = inject(Router);
-  public steps = [
-    { key: 'recipient', label: 'Recipient' },
-    { key: 'accounts', label: 'Accounts' },
-    { key: 'amount', label: 'Amount' },
-  ];
+  private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
+
+  public readonly steps = computed(() => [
+    {
+      key: 'recipient',
+      label: this.translate.instant('transfers.external.stepper.recipient'),
+    },
+    {
+      key: 'accounts',
+      label: this.translate.instant('transfers.external.stepper.accounts'),
+    },
+    {
+      key: 'amount',
+      label: this.translate.instant('transfers.external.stepper.amount'),
+    },
+  ]);
 
   public get currentStep(): number {
     const url = this.router.url;

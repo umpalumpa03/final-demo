@@ -14,11 +14,12 @@ import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { LanguagesStore } from '../../store/languages.store';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@tia/shared/services/settings-language/alert.service';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { TranslationLoaderService } from 'apps/tia-frontend/src/app/core/i18n';
 import { tap } from 'rxjs';
+import { LanguageInfo } from "./language-info/language-info";
 
 @Component({
   selector: 'app-language-selection',
@@ -28,7 +29,9 @@ import { tap } from 'rxjs';
     ErrorStates,
     ButtonComponent,
     AlertTypesWithIcons,
-  ],
+    TranslatePipe,
+    LanguageInfo
+],
   templateUrl: './language-selection.html',
   styleUrl: './language-selection.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

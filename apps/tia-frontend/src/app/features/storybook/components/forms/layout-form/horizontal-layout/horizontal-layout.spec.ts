@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HorizontalLayout } from './horizontal-layout';
+import { FormsDemoState } from '../../state/forms-demo.state';
+import { TranslateModule } from '@ngx-translate/core';
+const mockFormsDemo = { horizontalForm: () => ({ firstName: {}, message: {}, email: {} }) };
 
 describe('HorizontalLayout', () => {
   let fixture: ComponentFixture<HorizontalLayout>;
@@ -7,7 +10,10 @@ describe('HorizontalLayout', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HorizontalLayout],
+      imports: [HorizontalLayout, TranslateModule.forRoot()],
+      providers: [
+        { provide: FormsDemoState, useValue: mockFormsDemo },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HorizontalLayout);

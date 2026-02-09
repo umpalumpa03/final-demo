@@ -37,6 +37,7 @@ import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { DashboardService } from '../services/dashboard.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
+import { Onboarding } from '../components/onboarding/onboarding';
 @Component({
   selector: 'app-dashboard-container',
   imports: [
@@ -54,6 +55,7 @@ import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/break
     CustomizeCard,
     Skeleton,
     RouteLoader,
+    Onboarding,
   ],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',

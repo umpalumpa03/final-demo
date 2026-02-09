@@ -28,11 +28,13 @@ describe('AuthService', () => {
       setAccessToken: vi.fn(),
       setRefreshToken: vi.fn(),
       setVerifyToken: vi.fn(),
+      setResetPasswordToken: vi.fn(),
       clearAuthToken: vi.fn(),
       clearUserInfo: vi.fn(),
       clearAccessToken: vi.fn(),
       clearSignUpToken: vi.fn(),
       accessToken: 'test-access-token',
+      resetPasswordToken: 'test-reset-password-token',
       verifyToken: 'test-verify-token',
       getSignUpToken: 'test-signup-token',
     };
@@ -384,7 +386,7 @@ describe('AuthService', () => {
         service.verifyForgotPasswordOtp(code).subscribe({
           next: () => {
             expect(tokenService.clearAccessToken).toHaveBeenCalled();
-            expect(tokenService.setAccessToken).toHaveBeenCalledWith('forgot-access-token');
+            expect(tokenService.setResetPasswordToken).toHaveBeenCalledWith('forgot-access-token');
             resolve();
           },
         });
@@ -414,19 +416,19 @@ describe('AuthService', () => {
       const req = httpMock.expectOne(`${baseUrl}/create-new-password`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual({ password });
-      expect(req.request.headers.get('Authorization')).toBe('Bearer test-access-token');
+      expect(req.request.headers.get('Authorization')).toBe('Bearer test-reset-password-token');
       req.flush(mockResponse);
       await promise;
     });
 
     it('should throw error when token is missing', async () => {
-      (tokenService as any).accessToken = null;
+      (tokenService as any).resetPasswordToken = null;
       const password = 'newPassword123';
 
       const promise = new Promise<void>((resolve) => {
         service.createNewPassword(password).subscribe({
           error: (err) => {
-            expect(err.message).toBe('Missing forgot password access token');
+            expect(err.message).toBe('Missing reset password token');
             resolve();
           },
         });

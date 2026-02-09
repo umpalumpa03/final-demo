@@ -1,5 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MultistepForms } from './multistep-forms';
+import { FormsDemoState } from '../state/forms-demo.state';
+import { TranslateModule } from '@ngx-translate/core';
+const mockFormsDemo = {
+  stepForm: () => ([{ label: 'from', key: 'from' }, { label: 'to', key: 'to' }, { label: 'amount', key: 'amount' }]),
+  multiForm: () => ({
+    name: { label: 'Name', required: true, placeholder: '' },
+    bio: { label: 'Bio', required: true, placeholder: '' },
+  }),
+};
 
 describe('MultistepForms', () => {
   let component: MultistepForms;
@@ -7,7 +16,10 @@ describe('MultistepForms', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MultistepForms],
+      imports: [MultistepForms, TranslateModule.forRoot()],
+      providers: [
+        { provide: FormsDemoState, useValue: mockFormsDemo },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MultistepForms);
@@ -25,11 +37,11 @@ describe('MultistepForms', () => {
     expect(component.canBack()).toBe(false);
     expect(component.canNext()).toBe(true);
     expect(component.isLastStep()).toBe(false);
-    expect(component.currentStepConfig()).toEqual(component.stepsConfig[0]);
+    expect(component.currentStepConfig()).toEqual(component.stepsConfig()[0]);
   });
 
   it('should navigate next and previous and clamp at bounds', () => {
-    const total = component.totalSteps;
+    const total = component.totalSteps();
 
     component.next();
     component.next();

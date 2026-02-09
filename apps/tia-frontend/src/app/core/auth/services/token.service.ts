@@ -19,6 +19,10 @@ export class TokenService {
     localStorage.setItem(TokenKey.SIGNUP, token);
   }
 
+  public setResetPasswordToken(token: string): void {
+    localStorage.setItem(TokenKey.RESET_PASSWORD, token);
+  }
+
   public clearAuthToken(): void {
     localStorage.removeItem(TokenKey.ACCESS);
     localStorage.removeItem(TokenKey.REFRESH);
@@ -41,6 +45,10 @@ export class TokenService {
     localStorage.removeItem(TokenKey.SIGNUP);
   }
 
+  public clearResetPasswordToken(): void {
+    localStorage.removeItem(TokenKey.RESET_PASSWORD);
+  }
+
   public clearUserInfo(): void {
     localStorage.removeItem(TokenKey.USER);
   }
@@ -50,6 +58,7 @@ export class TokenService {
     localStorage.removeItem(TokenKey.REFRESH);
     localStorage.removeItem(TokenKey.VERIFY);
     localStorage.removeItem(TokenKey.SIGNUP);
+    localStorage.removeItem(TokenKey.RESET_PASSWORD);
   }
 
   public get accessToken() {
@@ -66,5 +75,9 @@ export class TokenService {
 
   public get getSignUpToken(): string | null {
     return localStorage.getItem(TokenKey.SIGNUP);
+  }
+
+  public get resetPasswordToken(): string | null {
+    return localStorage.getItem(TokenKey.RESET_PASSWORD);
   }
 }

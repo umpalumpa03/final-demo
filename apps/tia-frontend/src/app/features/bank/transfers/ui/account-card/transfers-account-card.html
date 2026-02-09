@@ -5,7 +5,13 @@
   [class.transfers-account-card--recipient]="mode() === 'recipient'"
   (click)="onCardClick()"
 >
-  @if (isFavorite()) {
+  @if (isDisabled() && tooltipMessage()) {
+  <div class="transfers-account-card__info">
+    <app-tooltip [content]="tooltipMessage() | translate" placement="top">
+      <img src="images/svg/transfers/info.svg" alt="Info" />
+    </app-tooltip>
+  </div>
+  } @if (isFavorite()) {
   <div class="transfers-account-card__favorite">
     <img
       src="images/svg/transfers/star.svg"
