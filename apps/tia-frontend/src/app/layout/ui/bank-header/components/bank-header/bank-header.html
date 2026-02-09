@@ -1,37 +1,19 @@
 <div class="bank-header-wrapper">
   <div class="bank-header-wrapper__container">
-    <div
-      class="bank-header-wrapper__container__messaging"
-      routerLink="messaging"
-      routerLinkActive="active"
-    >
-      <img
-        src="images/svg/bank-header/header-messaging.svg"
-        alt="messaging icon"
-      />
+    <div class="bank-header-wrapper__container__messaging" id="onboard-messaging" routerLink="messaging"
+      routerLinkActive="active">
+      <img src="images/svg/bank-header/header-messaging.svg" alt="messaging icon" />
       @if (hasInboxMessages()) {
-      <app-badges
-        variant="destructive"
-        [text]="inboxCount().toString()"
-        shape="rounded"
-      ></app-badges>
+      <app-badges variant="destructive" [text]="inboxCount().toString()" shape="rounded"></app-badges>
       }
     </div>
-    <div class="bank-header-wrapper__container__notifications" #bell>
-      <img
-        (click)="onNotification()"
-        src="images/svg/bank-header/header-bell.svg"
-        alt="notification icon"
-      />
+    <div class="bank-header-wrapper__container__notifications" id="onboard-notifications" #bell>
+      <img (click)="onNotification()" src="images/svg/bank-header/header-bell.svg" alt="notification icon" />
       @if (hasUnread()) {
       <span class="badge"></span>
       }
     </div>
-    <div
-      class="bank-header-wrapper__container__avatar"
-      routerLink="settings"
-      routerLinkActive="active"
-    >
+    <div class="bank-header-wrapper__container__avatar" routerLink="settings" routerLinkActive="active">
       @if (avatarUrl()) {
       <img [src]="avatarUrl()" alt="user avatar" class="avatar-image" />
       } @else {
