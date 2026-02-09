@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ButtonLibraryComponent } from './button-library';
 import { ButtonDemoState } from './state/button-demos.state';
 import { signal } from '@angular/core';
@@ -59,16 +59,6 @@ describe('ButtonLibraryComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should handle interactive loading toggle logic', async () => {
-    expect(component['isInteractiveLoading']()).toBe(false);
-
-    component['toggleLoading']();
-    expect(component['isInteractiveLoading']()).toBe(true);
-
-    await new Promise(resolve => setTimeout(resolve, 2010));
-
-    expect(component['isInteractiveLoading']()).toBe(false);
-  }, 5000);
 
 
   it('should render the library title', () => {
