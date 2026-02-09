@@ -40,20 +40,17 @@ describe('Loans Integration - View Loans Flow', () => {
   it('should filter loans by status (Approved)', async () => {
     ctx.loansStore.loadLoans({ status: 2, forceChange: true });
 
-    const req = ctx.httpMock.expectOne(
-      (req) => req.url.includes('/loans') && req.params.get('status') === '2',
-    );
+    const req = ctx.httpMock.expectOne(`${environment.apiUrl}/loans`);
     expect(req.request.method).toBe('GET');
 
-    const approvedLoans = mockLoansList.filter((l) => l.status === 2);
-    req.flush(approvedLoans);
+    req.flush(mockLoansList);
 
     await vi.waitFor(() => {
-      expect(ctx.loansStore.loans().length).toBe(1);
-      expect(ctx.loansStore.loans()[0].status).toBe(2);
+      const visibleLoans = ctx.loansStore.filteredLoans();
+      expect(visibleLoans.length).toBe(1);
+      expect(visibleLoans[0].status).toBe(2);
     });
   });
-
   it('should load loan details by ID', async () => {
     const loanId = 'loan-1';
 

@@ -20,27 +20,4 @@
   <div class="messaging-container__content">
     <router-outlet></router-outlet>
   </div>
-  @if(error()) {
-  <div
-    class="fade-alert-container"
-    [class.fade-alert--visible]="error()"
-  >
-    <app-dismissible-alerts
-      [alertType]="'error'"
-      [alertTitle]="'Oops!'"
-      [alertMessage]="error() || 'An unexpected error occurred.'"
-    ></app-dismissible-alerts>
-  </div>
-  } @else if (successMessage?.()) {
-  <div
-    class="fade-alert-container"
-    [class.fade-alert--visible]="successMessage?.()"
-  >
-    <app-dismissible-alerts
-      [alertType]="'success'"
-      [alertTitle]="'Success!'"
-      [alertMessage]="successMessage?.() ?? ''"
-    ></app-dismissible-alerts>
-  </div>
-  }
 </div>

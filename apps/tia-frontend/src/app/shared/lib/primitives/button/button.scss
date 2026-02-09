@@ -43,7 +43,7 @@
     color: $white;
     &:hover:not(:disabled) {
       background-color: $red-700;
-    }   
+    }
   }
 
   &--success {
@@ -53,7 +53,6 @@
       background-color: $green-900;
     }
   }
-  
 
   &--outline {
     background-color: var(--color-bg);
@@ -80,7 +79,6 @@
     &:hover:not(:disabled) {
       text-decoration: underline;
     }
-    
   }
 
   &--small {
@@ -115,7 +113,8 @@
   }
 
   &:disabled,
-  &--disabled, &--loading {
+  &--disabled,
+  &--loading {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
@@ -130,8 +129,8 @@
   }
 
   &__icon {
-    width: auto;
-    height: auto;
+    width: var(--icon-w, auto);
+    height: var(--icon-h, auto);
     @include flex-center();
     flex-shrink: 0;
 
@@ -157,16 +156,18 @@
     flex-shrink: 0;
   }
 
-  &[style*="--btn-custom-color"] {
+  &[style*='--btn-custom-color'] {
     background-color: var(--btn-custom-color);
     border-color: var(--btn-custom-color);
-    color: $white; 
+    color: $white;
   }
-
-  
 }
 
 @keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

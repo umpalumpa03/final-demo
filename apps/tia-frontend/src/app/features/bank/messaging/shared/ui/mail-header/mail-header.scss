@@ -35,6 +35,20 @@
     }
 }
 
+@media (max-width: 550px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+
+        &__action {
+            width: 100%;
+            justify-content: flex-end;
+            min-height: 3.6rem;
+        }
+    }
+}
+
 @keyframes fadeIn {
     0% {
         opacity: 0;

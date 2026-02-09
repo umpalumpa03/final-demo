@@ -1,12 +1,84 @@
-<app-ui-modal [isOpen]="true">
-  <app-permissions-modal
-    [modalTitle]="'Modify Account Permissions'"
-    [modalSubtitle]="'Configure permissions for this account request'"
-    [title]="'Account permissions'"
-    [form]="permissionsForm"
-    [items]="store.permissions()"
-    [accOrCardName]="'FLEXAACCOUNT'"
-    [name]="'John Doe'"
-    (save)="save()"
-  ></app-permissions-modal>
-</app-ui-modal>
+<app-basic-card
+  [width]="'100%'"
+  [minWidth]="'100%'"
+  [height]="'fit-content'"
+  padding="2.4rem"
+  [title]="'Approve Accounts'"
+  [subtitle]="'Review and approve account requests'"
+>
+  <app-scroll-area [hideBorder]="true" [height]="'50rem'">
+    <main class="approve-card">
+      @if (store.isLoading()) { @for(item of [1,2,3]; track item) {
+      <app-skeleton width="100%" height="6.3rem" />
+      } } @else { @for(account of store.pendingAccounts(); track account.id) {
+      <app-cards-approve-element
+        [id]="account.id"
+        [title]="account.name"
+        [status]="account.status"
+        [email]="account.user.email"
+        [network]="account.type"
+        [balance]="account.balance"
+        [creationDate]="account.createdAt"
+        [marked]="permissionsSavedAccount() === account.id"
+        (cardAction)="handleAction($event)"
+      />
+      } @empty {
+      <app-error-states
+        variant="not-found"
+        header="No Accounts Found"
+        message="We couldn't find any pending accounts."
+        (buttonClick)="retryLoading()"
+      />
+
+      } }
+    </main>
+
+    @if(permissionsOverlay()) {
+    <app-ui-modal [isOpen]="permissionsOverlay()" (closed)="closeModal()">
+      <app-permissions-modal
+        [modalTitle]="'Modify Account Permissions'"
+        [modalSubtitle]="'Configure permissions for this Account request'"
+        [title]="'Account permissions'"
+        [form]="permissionsForm"
+        [items]="mappedPermissions()"
+        [accOrCardName]="accountName()"
+        [name]="fullName()"
+        (save)="onSavePermissions()"
+        (cancel)="cancelPermissionChanges()"
+      ></app-permissions-modal>
+    </app-ui-modal>
+    } @if(confirmModalActive()) {
+    <app-ui-modal
+      [isOpen]="confirmModalActive()"
+      (closed)="closeConfirmModal()"
+    >
+      <div class="confirm-dialog">
+        <header class="confirm-dialog__header">
+          <h3 class="confirm-dialog__title">Reset Changes?</h3>
+          <p class="confirm-dialog__subtitle">
+            Switching accounts will clear the permissions you selected.
+          </p>
+        </header>
+
+        <footer class="confirm-dialog__footer">
+          <app-button variant="outline" (click)="onConfirmCancel()"
+            >Go back</app-button
+          >
+          <app-button variant="destructive" (click)="onConfirmAccept()"
+            >Discard and switch</app-button
+          >
+        </footer>
+      </div>
+    </app-ui-modal>
+    }
+  </app-scroll-area>
+
+  @if(store.error()) {
+  <div class="approve-card__alert">
+    <app-alert-types-with-icons
+      [alertType]="'error'"
+      [alertMessage]="store.error()!"
+    ></app-alert-types-with-icons>
+  </div>
+  }
+</app-basic-card>

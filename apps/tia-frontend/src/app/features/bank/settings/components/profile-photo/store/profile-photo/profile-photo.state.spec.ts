@@ -12,6 +12,8 @@ describe('ProfilePhotoState', () => {
       savedAvatarUrl: null,
       avatarId: null,
       avatarType: null,
+      userInitials: null,
+      savingChanges: false,
     };
 
     expect(state.defaultAvatars).toEqual([]);
