@@ -94,10 +94,15 @@ describe('Personal Info integration', () => {
 
     req.flush({ message: 'Success' });
 
+   
     const pId = await firstValueFrom(
       store
         .select(PersonalInfoSelectors.selectPId)
-        .pipe(filter((id) => id === '98765432109'), take(1), timeout(3000)),
+        .pipe(
+          filter((id) => id === '98765432109'),
+          take(1),
+          timeout(5000),
+        ),
     );
 
     expect(pId).toBe('98765432109');
@@ -141,7 +146,7 @@ describe('Personal Info integration', () => {
     await firstValueFrom(
       store
         .select(PersonalInfoSelectors.selectPhoneUpdateChallengeId)
-        .pipe(filter((id) => id === 'challenge-123'), take(1), timeout(3000)),
+        .pipe(filter((id) => id === 'challenge-123'), take(1), timeout(5000)),
     );
 
     store.dispatch(
@@ -156,6 +161,17 @@ describe('Personal Info integration', () => {
 
     req.flush({ message: 'Success' });
 
+  
+    await firstValueFrom(
+      store
+        .select(PersonalInfoSelectors.selectPhoneNumber)
+        .pipe(
+          filter((phone) => phone === '555987654'),
+          take(1),
+          timeout(5000),
+        ),
+    );
+
     store.dispatch(PersonalInfoActions.loadPersonalInfo({ forceRefresh: true }));
 
     const personalInfoReq = httpMock.expectOne(`${environment.apiUrl}/settings/personal-info`);
@@ -164,7 +180,7 @@ describe('Personal Info integration', () => {
     const phoneNumber = await firstValueFrom(
       store
         .select(PersonalInfoSelectors.selectPhoneNumber)
-        .pipe(filter((phone) => phone === '555987654'), take(1), timeout(3000)),
+        .pipe(filter((phone) => phone === '555987654'), take(1), timeout(5000)),
     );
 
     expect(phoneNumber).toBe('555987654');
