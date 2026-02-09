@@ -4,6 +4,7 @@
 .modal__title {
     @include display-flex;
     gap: 1.2rem;
+
     .img {
         min-width: 4rem;
         height: 4rem;
@@ -14,9 +15,11 @@
             0px 4px 6px -4px rgba($blue-500, 0.5),
             0px 10px 15px -3px rgba($blue-500, 0.5);
     }
+
     .text {
         @include display-flex(column);
         gap: 0.8rem;
+
         h1 {
             @include font-inter(500, 1.8rem);
             color: $blue-800;
@@ -33,7 +36,6 @@ footer {
     @include flex-center(column);
     @include font-inter(500, 1.2rem);
     gap: 1.6rem;
-
     margin-top: 4rem;
 
     .buttons {
