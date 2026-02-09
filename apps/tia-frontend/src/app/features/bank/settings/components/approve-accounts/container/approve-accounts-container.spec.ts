@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApproveAccountsContainer } from './approve-accounts-container';
-import { AccountPermissionsStore } from '../store/approve-accounts.store';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { IAccountsPermissions } from '../models/account-permissions.models';
 import { BankAccount } from '../models/pending-accounts.models';
+import { AccountPermissionsStore } from '../store/approve-accounts.store';
 
 describe('ApproveAccountsContainer', () => {
   let component: ApproveAccountsContainer;
@@ -29,6 +29,7 @@ describe('ApproveAccountsContainer', () => {
     })
       .overrideComponent(ApproveAccountsContainer, {
         set: {
+          imports: [],
           providers: [
             { provide: AccountPermissionsStore, useValue: mockStore },
           ],
@@ -181,8 +182,8 @@ describe('ApproveAccountsContainer', () => {
 
   it('should switch account and reset state on confirm accept', () => {
     component.permissionsSavedAccount.set('acc-1');
-    component.handleAction({ action: 'permissions', id: 'acc-2' }); 
-    
+    component.handleAction({ action: 'permissions', id: 'acc-2' });
+
     expect(component.confirmModalActive()).toBe(true);
 
     component.onConfirmAccept();
@@ -195,7 +196,7 @@ describe('ApproveAccountsContainer', () => {
 
   it('should close modal and reset form if account is not saved', () => {
     component.activeAccountId.set('acc-1');
-    component.permissionsSavedAccount.set('acc-2'); 
+    component.permissionsSavedAccount.set('acc-2');
     component.permissionsOverlay.set(true);
 
     const resetSpy = vi.spyOn(component.permissionsForm, 'reset');
