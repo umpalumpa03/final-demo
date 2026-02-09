@@ -41,4 +41,7 @@ footer {
         @include display-flex($wrap: wrap);
         gap: 0.8rem;
     }
+    .skip-text {
+        cursor: pointer;
+    }
 }
