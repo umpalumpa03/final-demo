@@ -2,6 +2,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   inject,
   OnInit,
   signal,
@@ -18,8 +19,7 @@ import {
   take,
   BehaviorSubject,
   tap,
-  takeUntil,
-  Subject,
+
 } from 'rxjs';
 import {
   loadCardDetails,
@@ -48,6 +48,9 @@ import {
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
 import { TranslatePipe } from '@ngx-translate/core';
+import { CardAccount } from '@tia/shared/models/cards/card-account.model';
+import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-card-transactions',
@@ -83,7 +86,9 @@ export class CardTransactions implements OnInit {
   private readonly currentPageSubject = new BehaviorSubject<number>(1);
   protected readonly currentPage$ = this.currentPageSubject.asObservable();
   protected readonly itemsPerPage = 20;
-  private readonly destroy$ = new Subject<void>();
+ 
+    private readonly destroyRef = inject(DestroyRef);
+
 
   protected readonly cardHeaderData$ = combineLatest([
     this.store.select(selectCardDetailById(this.cardId)),
@@ -163,10 +168,7 @@ protected readonly isLoading$ = combineLatest([
   protected handlePageChange(page: number): void {
     this.currentPageSubject.next(page);
   }
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+
 
   private autoLoadAllTransactions(): void {
     this.store
@@ -176,7 +178,7 @@ protected readonly isLoading$ = combineLatest([
         tap(() => {
           this.store.dispatch(TransactionActions.loadMore());
         }),
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
   }
@@ -210,13 +212,13 @@ private initializeTransactionFilters(): void {
           }),
         );
     }),
-    takeUntil(this.destroy$),
+    takeUntilDestroyed(this.destroyRef),
   ).subscribe();
 }
 
 private updateTransactionFiltersIfNeeded(
-  account: any,
-  currentFilters: any,
+ account: CardAccount | undefined,
+  currentFilters: ITransactionFilter,
   loaded: boolean
 ): void {
   if (!account?.iban) return;

@@ -1,3 +1,4 @@
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
@@ -17,6 +18,8 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
+import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
+import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 interface MockStore {
   select: Mock;
   dispatch: Mock;
@@ -114,11 +117,6 @@ describe('CardTransactions', () => {
     expect(component['currentPageSubject'].value).toBe(2);
   });
 
-  it('should cleanup on destroy', () => {
-    const destroySpy = vi.spyOn(component['destroy$'], 'next');
-    component.ngOnDestroy();
-    expect(destroySpy).toHaveBeenCalled();
-  });
 
   it('should calculate total pages correctly', () => {
     let pages = 0;
@@ -226,15 +224,7 @@ describe('CardTransactions', () => {
     component['totalPages$'].subscribe((r) => (result = r));
     expect(result).toBe(0);
   });
-  it('should handle ngOnDestroy cleanup', () => {
-  const nextSpy = vi.spyOn(component['destroy$'], 'next');
-  const completeSpy = vi.spyOn(component['destroy$'], 'complete');
-  
-  component.ngOnDestroy();
-  
-  expect(nextSpy).toHaveBeenCalled();
-  expect(completeSpy).toHaveBeenCalled();
-});
+
 
 
 it('should dispatch loadMore when cursor is not null', async () => {
@@ -332,9 +322,22 @@ it('should return false in isLoading$ when not loading', () => {
   component['isLoading$'].subscribe((r) => (result = r));
   expect(result).toBe(false);
 });
+
 it('should dispatch enter and updateFilters when account iban differs', () => {
-  const mockAccount = { id: 'acc-1', iban: 'GE999999', name: 'Test' };
-  const mockFilters = { accountIban: 'GE123456', pageLimit: 100 };
+  const mockAccount: CardAccount = { 
+    id: 'acc-1', 
+    iban: 'GE999999', 
+    name: 'Test',
+    balance: 1000,
+    currency: 'GEL',
+    status: 'ACTIVE',
+    cardIds: [],
+    openedAt: '2024-01-01'
+  };
+  const mockFilters: ITransactionFilter = { 
+    accountIban: 'GE123456', 
+    pageLimit: 100 
+  };
   
   store.dispatch = vi.fn();
   
@@ -349,8 +352,20 @@ it('should dispatch enter and updateFilters when account iban differs', () => {
 });
 
 it('should not dispatch when account has no iban', () => {
-  const mockAccount = { id: 'acc-1', iban: null, name: 'Test' };
-  const mockFilters = { accountIban: 'GE123456', pageLimit: 100 };
+  const mockAccount: CardAccount = { 
+    id: 'acc-1', 
+    iban: '', 
+    name: 'Test',
+    balance: 1000,
+    currency: 'GEL',
+    status: 'ACTIVE',
+    cardIds: [],
+    openedAt: '2024-01-01'
+  };
+  const mockFilters: ITransactionFilter = { 
+    accountIban: 'GE123456', 
+    pageLimit: 100 
+  };
   
   store.dispatch = vi.fn();
   
