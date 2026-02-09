@@ -1,17 +1,4 @@
 <div class="profile-photo">
-  @if (alertType()) {
-  <div class="profile-photo__alert-container">
-    <app-dismissible-alerts
-      class="profile-photo__alert"
-      [alertType]="alertType()!"
-      [alertTitle]="alertType()!"
-      [alertMessage]="alertMessage()"
-      [alertId]="0"
-      (dismissed)="alertClose.emit()"
-    ></app-dismissible-alerts>
-  </div>
-  }
-
   <app-basic-card
     title="{{ 'settings.profile-photo.title' | translate }}"
     subtitle="{{ 'settings.profile-photo.subtitle' | translate }}"

@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ProfilePhotoComponent } from '../components/profile-photo/profile-photo.component';
 import { UserInfoComponent } from '../components/user-info/user-info.component';
-import { AlertType } from '../shared/models/profile-photo.models';
 import { ProfilePhotoActions } from '../store/profile-photo/profile-photo.actions';
 import { OtpModal } from '../../../../../../shared/lib/overlay/ui-otp-modal/otp-modal';
 import {
@@ -23,6 +22,7 @@ import { UserInfoActions } from '../../../../../../store/user-info/user-info.act
 import { Routes } from '../../../../../../core/auth/models/tokens.model';
 import { TranslateService } from '@ngx-translate/core';
 import { PersonalInfoActions } from '../../../../../../store/personal-info/pesronal-info.actions';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 import {
   selectPersonalInfo,
   selectPId,
@@ -46,6 +46,7 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   private readonly store = inject(Store);
   private readonly translate = inject(TranslateService);
   private readonly router = inject(Router);
+  private readonly alertService = inject(AlertService);
 
   public readonly defaultAvatars = this.store.selectSignal(selectDefaultAvatars);
   public readonly defaultAvatarsLoading = this.store.selectSignal(selectDefaultAvatarsLoading);
@@ -109,15 +110,11 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
     return `${firstInitial}${lastInitial}`;
   });
 
-  public readonly alertKind = signal<AlertType | null>(null);
-  public readonly alertMessage = signal<string>('');
-  public readonly alertType = computed<AlertType | null>(() => this.alertKind());
   public readonly isUploadModalOpen = signal<boolean>(false);
   public readonly isDragOver = signal<boolean>(false);
   
   private uploadedFile: File | null = null;
   private objectUrl: string | null = null;
-  private alertTimeoutId: ReturnType<typeof setTimeout> | null = null;
   private isUpdatingPersonalInfo = false;
   private originalPIdBeforeUpdate: string | null = null;
   private originalPhoneBeforeUpdate: string | null = null;
@@ -167,18 +164,15 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
     
       if (loadingFinished && this.isUpdatingPersonalInfo) {
         if (error === null) {
-          this.showAlert(
-            'success',
+          this.alertService.success(
             this.translate.instant('settings.profile-photo.personalNumberUpdated'),
+            { variant: 'dismissible', title: 'Success!' },
           );
           this.personalInfoUpdated.set(true);
           setTimeout(() => this.personalInfoUpdated.set(false), 0);
           this.originalPIdBeforeUpdate = null; 
         } else if (error) {
-          this.showAlert(
-            'error',
-            error,
-          );
+          this.alertService.error(error, { variant: 'dismissible', title: 'Oops!' });
         
           if (this.isEditing()) {
             const originalValue = this.originalPIdBeforeUpdate || '';
@@ -219,9 +213,9 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
 
  
       if (challengeIdCleared && !error && loadingFinished) {
-        this.showAlert(
-          'success',
+        this.alertService.success(
           this.translate.instant('settings.profile-photo.phoneNumberUpdated'),
+          { variant: 'dismissible', title: 'Success!' },
         );
         this.isEditing.set(false);
         this.isOtpModalOpen.set(false);
@@ -230,7 +224,7 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
       
  
       if (loadingFinished && error && challengeId) {
-        this.showAlert('error', error);
+        this.alertService.error(error, { variant: 'dismissible', title: 'Oops!' });
       }
     });
   }
@@ -245,36 +239,6 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
       URL.revokeObjectURL(this.objectUrl);
       this.objectUrl = null;
     }
-
-    if (this.alertTimeoutId) {
-      clearTimeout(this.alertTimeoutId);
-      this.alertTimeoutId = null;
-    }
-  }
-
-  private showAlert(kind: AlertType, message: string, autoHideMs = 3500): void {
-    if (this.alertTimeoutId) {
-      clearTimeout(this.alertTimeoutId);
-      this.alertTimeoutId = null;
-    }
-
-    this.alertKind.set(kind);
-    this.alertMessage.set(message);
-
-    this.alertTimeoutId = setTimeout(() => {
-      this.alertKind.set(null);
-      this.alertMessage.set('');
-      this.alertTimeoutId = null;
-    }, autoHideMs);
-  }
-
-  public onAlertClose(): void {
-    if (this.alertTimeoutId) {
-      clearTimeout(this.alertTimeoutId);
-      this.alertTimeoutId = null;
-    }
-    this.alertKind.set(null);
-    this.alertMessage.set('');
   }
 
   public onOpenUploadModal(): void {
@@ -329,9 +293,9 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
     const isValidSize = file.size <= maxSizeBytes;
 
     if (!isValidType || !isValidSize) {
-      this.showAlert(
-        'error',
+      this.alertService.error(
         this.translate.instant('settings.profile-photo.invalidFileAlert'),
+        { variant: 'dismissible', title: 'Oops!' },
       );
       return;
     }
@@ -404,9 +368,9 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
     }
 
    
-    this.showAlert(
-      'warning',
+    this.alertService.warning(
       this.translate.instant('settings.profile-photo.profilePictureRemovedSuccessfully'),
+      { variant: 'dismissible', title: 'Success!' },
     );
     if (this.objectUrl) {
       URL.revokeObjectURL(this.objectUrl);
@@ -422,9 +386,9 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
     const avatarId = this.selectedAvatarId();
 
     if (file) {
-      this.showAlert(
-        'success',
+      this.alertService.success(
         this.translate.instant('settings.profile-photo.profilePictureChangedSuccessfully'),
+        { variant: 'dismissible', title: 'Success!' },
       );
       if (this.objectUrl) {
         URL.revokeObjectURL(this.objectUrl);
@@ -436,9 +400,9 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
     }
 
     if (avatarId) {
-      this.showAlert(
-        'success',
+      this.alertService.success(
         this.translate.instant('settings.profile-photo.profilePictureChangedSuccessfully'),
+        { variant: 'dismissible', title: 'Success!' },
       );
       this.store.dispatch(
         ProfilePhotoActions.selectDefaultAvatarRequest({ avatarId })
@@ -490,9 +454,9 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   
     if (phoneChanged) {
       if (!editedPhone || editedPhone.length !== 9) {
-        this.showAlert(
-          'error',
+        this.alertService.error(
           this.translate.instant('settings.profile-photo.invalidPhoneNumber'),
+          { variant: 'dismissible', title: 'Oops!' },
         );
         return;
       }
@@ -501,9 +465,9 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
    
     if (pIdChanged) {
       if (!editedPId || editedPId.length !== 11) {
-        this.showAlert(
-          'error',
+        this.alertService.error(
           this.translate.instant('settings.profile-photo.invalidPersonalNumber'),
+          { variant: 'dismissible', title: 'Oops!' },
         );
         return;
       }
@@ -564,9 +528,9 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
         PersonalInfoActions.resendPhoneOTP({ challengeId })
       );
     } else if (resendCount >= 3) {
-      this.showAlert(
-        'error',
+      this.alertService.error(
         this.translate.instant('settings.profile-photo.maxResendReached'),
+        { variant: 'dismissible', title: 'Oops!' },
       );
     }
   }

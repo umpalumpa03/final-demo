@@ -92,7 +92,8 @@
         "confirmNewPassword": "დაადასტურეთ ახალი პაროლი",
         "confirmNewPasswordPlaceholder": "დაადასტურეთ ახალი პაროლი",
         "updatePassword": "პაროლის განახლება",
-        "twoFactorAuth": "ორი ფაქტორიანი ავთენტიფიკაცია"
+        "twoFactorAuth": "ორი ფაქტორიანი ავთენტიფიკაცია",
+        "passwordChangedSuccessfully": "პაროლი წარმატებით შეიცვალა"
     },
     "user-management": {
         "title": "მომხმარებელთა მართვა",
