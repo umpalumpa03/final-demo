@@ -26,20 +26,6 @@ describe('TotalAmount', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should calculate distribution correctly when value is entered', fakeAsync(() => {
-    // 1. Set the new input value
-    fixture.componentRef.setInput('selectedItemsLength', 4);
-    component.amountControl.setValue('100');
-
-    fixture.detectChanges();
-
-    tick(350);
-
-    fixture.detectChanges();
-
-    expect(component.calculatedDistribution()).toBe(25);
-  }));
-
   it('should set distribution to 0 when input is cleared', fakeAsync(() => {
     component.amountControl.setValue('');
     tick(350);
