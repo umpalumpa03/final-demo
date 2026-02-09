@@ -188,3 +188,8 @@ export const selectTemplateGroupsLoaded = createSelector(
   selectTemplatesGroup,
   (groups) => groups.length > 0,
 );
+
+export const selectSelectedTemplates = createSelector(
+  selectPaybillState,
+  (state) => state.selectedItems,
+);

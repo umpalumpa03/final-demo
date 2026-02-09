@@ -19,22 +19,31 @@
   (itemMoved)="itemMoved($event)"
   [isLoading]="isLoading()"
   [selectAll]="selectAll()"
+  (checkedItemsChange)="onTemplateChecked($event)"
+  (buttonClicked)="paySelected($event)"
 >
   <div class="templates__header">
-    <app-library-title
-      [title]="'paybill.templates.title' | translate"
-      [subtitle]="'paybill.templates.description' | translate"
-    >
-    </app-library-title>
-    <div class="templates__header__cta">
-      @for (button of headerButtons; track button.action) {
-      <app-button
-        [variant]="button.variant"
-        (click)="handleHeaderButtonClick(button.action)"
-        >{{ button.textKey | translate}}</app-button
+    <div class="templates__header__main-content">
+      <app-library-title
+        [title]="'paybill.templates.title' | translate"
+        [subtitle]="'paybill.templates.description' | translate"
       >
-      }
+      </app-library-title>
+      <div class="templates__header__cta">
+        @for (button of headerButtons; track button.action) {
+        <app-button
+          [variant]="button.variant"
+          (click)="handleHeaderButtonClick(button.action)"
+          >{{ button.textKey | translate}}</app-button
+        >
+        }
+      </div>
     </div>
+    @if(selectedItems()?.length) {
+    <app-selected-items
+      (paySelectedClick)="paySelected(selectedItems() ?? [])"
+    ></app-selected-items>
+    }
   </div>
 </app-tree-container>
 
@@ -102,7 +111,14 @@
         </app-button>
       </div>
     </form>
-    }@else {
+    }@else if(config.formSubmitType === 'confirm-payment') {
+    <div class="payment__modal">
+      <app-selected-items [forModal]="true"></app-selected-items>
+      <app-payment-distribution
+        [selectedItemsLength]="selectedItems()!.length"
+      ></app-payment-distribution>
+    </div>
+    } @else {
     <div class="modal__identifier">{{ selectedDeleteItem() }}</div>
     @if (config.description) {
     <p class="modal__warning">{{ config.description }}</p>

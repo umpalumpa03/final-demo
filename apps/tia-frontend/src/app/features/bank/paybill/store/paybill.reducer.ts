@@ -237,6 +237,7 @@ export const paybillReducer = createReducer(
       loading: false,
       error: null,
       templates: state.templates.filter((t) => t.id !== templateId),
+      selectedItems: state.selectedItems.filter((id) => id !== templateId),
     }),
   ),
   on(TemplatesPageActions.deleteTemplateFailure, (state, { error }) => ({
@@ -433,5 +434,10 @@ export const paybillReducer = createReducer(
     ...state,
     loading: false,
     templates: [...state.templates, payload],
+  })),
+
+  on(TemplatesPageActions.addCheckedItems, (state, { selectedItems }) => ({
+    ...state,
+    selectedItems,
   })),
 );
