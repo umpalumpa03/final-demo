@@ -9,7 +9,7 @@ import { provideHttpClientTesting, HttpTestingController } from '@angular/common
 import { environment } from '../../../../../../../environments/environment';
 import { Store } from '@ngrx/store';
 import * as PersonalInfoSelectors from '../../../../../../store/personal-info/personal-info.selectors';
-import { take, timeout, filter } from 'rxjs';
+import { take, timeout, filter, combineLatest } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
 import { PersonalInfoActions } from '../../../../../../store/personal-info/pesronal-info.actions';
 
@@ -94,17 +94,19 @@ describe('Personal Info integration', () => {
 
     req.flush({ message: 'Success' });
 
-   
-    const pId = await firstValueFrom(
-      store
-        .select(PersonalInfoSelectors.selectPId)
-        .pipe(
-          filter((id) => id === '98765432109'),
-          take(1),
-          timeout(10000),
-        ),
+  
+    const [loading, pId] = await firstValueFrom(
+      combineLatest([
+        store.select(PersonalInfoSelectors.selectPersonalInfoLoading),
+        store.select(PersonalInfoSelectors.selectPId),
+      ]).pipe(
+        filter(([isLoading, id]) => !isLoading && id === '98765432109'),
+        take(1),
+        timeout(10000),
+      ),
     );
 
+    expect(loading).toBe(false);
     expect(pId).toBe('98765432109');
   });
 
@@ -161,8 +163,19 @@ describe('Personal Info integration', () => {
 
     req.flush({ message: 'Success' });
 
-  
+    
     await firstValueFrom(
+      store
+        .select(PersonalInfoSelectors.selectPhoneUpdateLoading)
+        .pipe(
+          filter((loading) => !loading),
+          take(1),
+          timeout(10000),
+        ),
+    );
+
+  
+    const phoneAfterVerify = await firstValueFrom(
       store
         .select(PersonalInfoSelectors.selectPhoneNumber)
         .pipe(
@@ -171,18 +184,26 @@ describe('Personal Info integration', () => {
           timeout(10000),
         ),
     );
+    expect(phoneAfterVerify).toBe('555987654');
 
     store.dispatch(PersonalInfoActions.loadPersonalInfo({ forceRefresh: true }));
 
     const personalInfoReq = httpMock.expectOne(`${environment.apiUrl}/settings/personal-info`);
     personalInfoReq.flush({ pId: '12345678901', phone: '555987654' });
 
-    const phoneNumber = await firstValueFrom(
-      store
-        .select(PersonalInfoSelectors.selectPhoneNumber)
-        .pipe(filter((phone) => phone === '555987654'), take(1), timeout(10000)),
+ 
+    const [loading, phoneNumber] = await firstValueFrom(
+      combineLatest([
+        store.select(PersonalInfoSelectors.selectPersonalInfoLoading),
+        store.select(PersonalInfoSelectors.selectPhoneNumber),
+      ]).pipe(
+        filter(([isLoading, phone]) => !isLoading && phone === '555987654'),
+        take(1),
+        timeout(10000),
+      ),
     );
 
+    expect(loading).toBe(false);
     expect(phoneNumber).toBe('555987654');
   });
 
