@@ -86,7 +86,9 @@
       },
       "card-group-item": {
         "allCards": "Click to view all cards",
-        "noCard": "No cards avaliable"
+        "noCard": "No cards avaliable",
+        "cardCount": "Card",
+        "cardCountPlural": "Cards"
       },
       "myCards": "My Cards",
       "manageAccounts": "Manage your bank accounts",
@@ -97,6 +99,10 @@
       "card-grid": {
         "avaliableAmount": "Available"
       },
+      "account-header": {
+        "cardCount": "Card",
+        "cardCountPlural": "Cards"
+      },
       "backToCards": "Back to Cards",
       "accountNotFound": "Account not found"
     },
@@ -104,6 +110,8 @@
       "backToCards": "Back to Cards",
       "cardTitle": "Quick Actions",
       "manageYourCard": "Manage your card and transactions",
+      "cardInfo":"Card Informatoin", 
+      "cardDetails":"Details about your Personal Card",
 
       "card-info-section": {
         "cardName": "Card Name",
@@ -127,25 +135,52 @@
       "cardPreview": {
         "cardPreview": "Card Preview",
         "SelectDesign": "Select a design"
+      },
+      "create-card-form":{
+        "cancelBtn":"Cancel", 
+        "creating": "Creating...", 
+        "createCard": "create Card"
+      }, 
+        "design-selector":{
+        "cardDesign":"Choose Card Design"
       }
-    }, 
-     "card-details-modal":{
-      "card-details-modal-content":{
-        "cardDetails": "Card Details", 
-        "cardInfo":"card Information",
-        "cardSubtitle":"View your card information and sensitive details", 
-        "cardName":"Card Name", 
-        "cardType": "Card Type", 
-        "cardCategory": "Card Category", 
-        "cardStatus": "Status", 
-        "creditLimit": "Credit Limit", 
-        "avaliableAmount": "Available Amount", 
-        "sensitiveDetails": "View Sensitive Details", 
-        "sensitiveSubtitle": "   To view full card number, CVV, and expiration date, please verify your identity using OTP", 
-        "requestOtp": "Request OTP", 
-        "closeBtn": "Close"
-        
+    },
+    "card-details-modal": {
+      "card-details-modal-content": {
+        "cardDetails": "Card Details",
+        "cardInfo": "card Information",
+        "cardSubtitle": "View your card information and sensitive details",
+        "cardName": "Card Name",
+        "cardType": "Card Type",
+        "cardCategory": "Card Category",
+        "cardStatus": "Status",
+        "creditLimit": "Credit Limit",
+        "avaliableAmount": "Available Amount",
+        "sensitiveDetails": "View Sensitive Details",
+        "sensitiveSubtitle": "   To view full card number, CVV, and expiration date, please verify your identity using OTP",
+        "requestOtp": "Request OTP",
+        "closeBtn": "Close",
+        "fullNumber": "Full Card Number",
+        "expirationDate": "Expiration Date"
       }
+    },
+    "card-transactions": {
+      "backToCard": "Back to Card Details",
+      "transactionHistory":"Transaction History",
+      "allTransactions":"All transactions made with this card",
+      "transaction-card-header": {
+        "linkedTo": "Linked to: ",
+        "totalTransactions": "Total Transactions"
+      },
+      "transaction-list": {
+        "noTransactions": "No transactions found"
+      }
+    },
+    "card-otp-modal": {
+      "title": "Verify Card Details",
+      "subText": "Enter the 4-digit code to view sensitive card information",
+      "submitBtn": "Verify OTP",
+      "cancel": "Cancel"
     }
   }
 }

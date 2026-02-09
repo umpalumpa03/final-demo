@@ -72,124 +72,116 @@ export interface ResizablePanelConfig {
 export const accordionContent: AccordionItem[] = [
   {
     id: '1',
-    title: 'What is this component library?',
-    content:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?',
+    title: 'storybook.layout.accordionContent.0.title',
+    content: 'storybook.layout.accordionContent.0.content',
   },
   {
     id: '2',
-    title: 'How do I use these components?',
-    content:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?',
+    title: 'storybook.layout.accordionContent.1.title',
+    content: 'storybook.layout.accordionContent.1.content',
   },
   {
     id: '3',
-    title: 'Are these components accessible?',
-    content:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?',
+    title: 'storybook.layout.accordionContent.2.title',
+    content: 'storybook.layout.accordionContent.2.content',
   },
   {
     id: '4',
-    title: 'Can I customize the styling?',
-    content:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?',
+    title: 'storybook.layout.accordionContent.3.title',
+    content: 'storybook.layout.accordionContent.3.content',
   },
   {
     id: '5',
-    title: 'Can I customize the styling?',
-    content:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?',
+    title: 'storybook.layout.accordionContent.4.title',
+    content: 'storybook.layout.accordionContent.4.content',
   },
 ] as const;
 
 export const multiAccordionContent: AccordionItem[] = [
   {
     id: '1',
-    title: 'Features',
-    content:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?',
+    title: 'storybook.layout.multiAccordionContent.0.title',
+    content: 'storybook.layout.multiAccordionContent.0.content',
   },
   {
     id: '2',
-    title: 'Installation',
-    content:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?',
+    title: 'storybook.layout.multiAccordionContent.1.title',
+    content: 'storybook.layout.multiAccordionContent.1.content',
   },
   {
     id: '3',
-    title: 'Documentation',
-    content:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus voluptatum dolor cumque, quaerat magnam eveniet quisquam sint eaque itaque ex?',
+    title: 'storybook.layout.multiAccordionContent.2.title',
+    content: 'storybook.layout.multiAccordionContent.2.content',
   },
 ] as const;
 
 export const collapsibleConfig: CollapsibleItem[] = [
   {
     id: 1,
-    title: 'Click To Expand',
+    title: 'storybook.layout.collapsibleContent.0.title',
     content:
-      'This content is dynamic and passed from the parent configuration.',
+      'storybook.layout.collapsibleContent.0.content',
   },
   {
     id: 2,
-    title: 'Default Open',
+    title: 'storybook.layout.collapsibleContent.1.title',
     isOpenDefault: true,
     content:
-      'This collapsible section is open by default and contains specific project details.',
+      'storybook.layout.collapsibleContent.1.content',
   },
 ] as const;
 
 export const scrollAreaContent: ScrollAreaItem[] = [
   {
     id: 1,
-    content: 'Item 1 - This is a scrollable content area with many items',
+    content: 'storybook.layout.scrollAreaContent.0.content',
   },
   {
     id: 2,
-    content: 'Item 2 - This is a scrollable content area with many items',
+    content: 'storybook.layout.scrollAreaContent.1.content',
   },
   {
     id: 3,
-    content: 'Item 3 - This is a scrollable content area with many items',
+    content: 'storybook.layout.scrollAreaContent.2.content',
   },
   {
     id: 4,
-    content: 'Item 4 - This is a scrollable content area with many items',
+    content: 'storybook.layout.scrollAreaContent.3.content',
   },
   {
     id: 5,
-    content: 'Item 5 - This is a scrollable content area with many items',
+    content: 'storybook.layout.scrollAreaContent.4.content',
   },
   {
     id: 6,
-    content: 'Item 6 - This is a scrollable content area with many',
+    content: 'storybook.layout.scrollAreaContent.5.content',
   },
 ] as const;
 
 export const scrollAreaContent2: ScrollAreaCardItem[] = [
   {
     id: 1,
-    title: 'Card 1',
+    title: 'storybook.layout.scrollAreaContent2.title',
   },
   {
     id: 2,
-    title: 'Card 2',
+    title: 'storybook.layout.scrollAreaContent2.title',
   },
   {
     id: 3,
-    title: 'Card 3',
+    title: 'storybook.layout.scrollAreaContent2.title',
   },
   {
     id: 4,
-    title: 'Card 4',
+    title: 'storybook.layout.scrollAreaContent2.title',
   },
   {
     id: 5,
-    title: 'Card 5',
+    title: 'storybook.layout.scrollAreaContent2.title',
   },
   {
     id: 6,
-    title: 'Card 6',
+    title: 'storybook.layout.scrollAreaContent2.title',
   },
 ] as const;
 
@@ -209,69 +201,69 @@ export const flexWrapContent: FlexWrapItem[] = [
 export const flexLayoutConfig: FlexLayoutConfig[] = [
   {
     id: 1,
-    title: 'Space Between:',
+    title: 'storybook.layout.flex.0.title',
     variant: 'space-between',
     wrap: false,
     items: [
-      { id: 1, label: 'Left' },
-      { id: 2, label: 'Center' },
-      { id: 3, label: 'Right' },
+      { id: 1, label: 'storybook.layout.flex.0.items.0.label' },
+      { id: 2, label: 'storybook.layout.flex.0.items.1.label' },
+      { id: 3, label: 'storybook.layout.flex.0.items.2.label' },
     ],
   },
   {
     id: 2,
-    title: 'Centered:',
+    title: 'storybook.layout.flex.1.title',
     variant: 'center',
     wrap: false,
-    items: [{ id: 1, label: 'Centered Content' }],
+    items: [{ id: 1, label: 'storybook.layout.flex.1.items.0.label' }],
   },
   {
     id: 3,
-    title: 'Flex Wrap:',
+    title: 'storybook.layout.flex.2.title',
     variant: undefined,
     wrap: true,
-    items: flexWrapContent.map((item) => ({ id: item.id, label: item.title })),
+    items: flexWrapContent.map((item) => ({ id: item.id, label: `storybook.layout.flex.2.items.label` })),
   },
 ] as const;
 
 export const gridLayoutConfig: GridLayoutConfig[] = [
   {
     id: 1,
-    title: 'Two Column Grid:',
+    title: 'storybook.layout.grid.0.title',
     cols: '2',
     items: [
-      { id: 1, label: 'Column 1' },
-      { id: 2, label: 'Column 2' },
+      { id: 1, label: 'storybook.layout.grid.0.items.0.label' },
+      { id: 2, label: 'storybook.layout.grid.0.items.1.label' },
     ],
   },
   {
     id: 2,
-    title: 'Three Column Grid:',
+    title: 'storybook.layout.grid.1.title',
     cols: '3',
     items: [
-      { id: 1, label: 'Column 1' },
-      { id: 2, label: 'Column 2' },
-      { id: 3, label: 'Column 3' },
+      { id: 1, label: 'storybook.layout.grid.1.items.0.label' },
+      { id: 2, label: 'storybook.layout.grid.1.items.1.label' },
+      { id: 3, label: 'storybook.layout.grid.1.items.2.label' },
     ],
   },
   {
     id: 3,
-    title: 'Four Column Grid:',
+    title: 'storybook.layout.grid.2.title',
     cols: '4',
     items: [
-      { id: 1, label: 'Column 1' },
-      { id: 2, label: 'Column 2' },
-      { id: 3, label: 'Column 3' },
-      { id: 4, label: 'Column 4' },
+      { id: 1, label: 'storybook.layout.grid.2.items.0.label' },
+      { id: 2, label: 'storybook.layout.grid.2.items.1.label' },
+      { id: 3, label: 'storybook.layout.grid.2.items.2.label' },
+      { id: 4, label: 'storybook.layout.grid.2.items.3.label' },
     ],
   },
   {
     id: 4,
-    title: 'Asymmetric (2:1):',
+    title: 'storybook.layout.grid.3.title',
     cols: '2-1',
     items: [
-      { id: 1, label: 'Wide Column (2/3)' },
-      { id: 2, label: 'Narrow (1/3)' },
+      { id: 1, label: 'storybook.layout.grid.3.items.0.label' },
+      { id: 2, label: 'storybook.layout.grid.3.items.1.label' },
     ],
   },
 ] as const;
@@ -279,33 +271,33 @@ export const gridLayoutConfig: GridLayoutConfig[] = [
 export const resizablePanelsConfig: ResizablePanelConfig[] = [
   {
     id: 1,
-    title: 'Horizontal Resize:',
+    title: 'storybook.layout.sections.resizablePanels.example-1.title',
     orientation: 'horizontal',
     panelSize: 2,
     panels: [
-      { id: 1, label: 'Left Panel' },
-      { id: 2, label: 'Right Panel' },
+      { id: 1, label: 'storybook.layout.sections.resizablePanels.example-1.content-1' },
+      { id: 2, label: 'storybook.layout.sections.resizablePanels.example-1.content-2' },
     ],
   },
   {
     id: 2,
-    title: 'Three Panel Layout:',
+    title: 'storybook.layout.sections.resizablePanels.example-2.title',
     orientation: 'horizontal',
     panelSize: 3,
     panels: [
-      { id: 1, label: 'Sidebar' },
-      { id: 2, label: 'Main Content' },
-      { id: 3, label: 'Details' },
+      { id: 1, label: 'storybook.layout.sections.resizablePanels.example-2.content-1' },
+      { id: 2, label: 'storybook.layout.sections.resizablePanels.example-2.content-2' },
+      { id: 3, label: 'storybook.layout.sections.resizablePanels.example-2.content-3' },
     ],
   },
   {
     id: 3,
-    title: 'Vertical Resize:',
+    title: 'storybook.layout.sections.resizablePanels.example-3.title',
     orientation: 'vertical',
     panelSize: 2,
     panels: [
-      { id: 1, label: 'Top Panel' },
-      { id: 2, label: 'Bottom Panel' },
+      { id: 1, label: 'storybook.layout.sections.resizablePanels.example-3.content-1' },
+      { id: 2, label: 'storybook.layout.sections.resizablePanels.example-3.content-2' },
     ],
   },
 ] as const;

@@ -2,6 +2,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   inject,
   OnInit,
   signal,
@@ -18,8 +19,7 @@ import {
   take,
   BehaviorSubject,
   tap,
-  takeUntil,
-  Subject,
+
 } from 'rxjs';
 import {
   loadCardDetails,
@@ -38,14 +38,19 @@ import { TransactionCardHeader } from '../components/transaction-card-header/tra
 import { TransactionList } from '../components/transaction-list/transaction-list';
 import {
   selectError,
+  selectFilters,
   selectIsLoading,
   selectItems,
   selectNextCursor,
   selectTotalTransactions,
+  selectTransactionsLoaded,
 } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
-import { createEffect } from '@ngrx/effects';
 import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
+import { TranslatePipe } from '@ngx-translate/core';
+import { CardAccount } from '@tia/shared/models/cards/card-account.model';
+import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-card-transactions',
@@ -60,6 +65,7 @@ import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
     TransactionCardHeader,
     TransactionList,
     Pagination,
+    TranslatePipe
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -80,7 +86,9 @@ export class CardTransactions implements OnInit {
   private readonly currentPageSubject = new BehaviorSubject<number>(1);
   protected readonly currentPage$ = this.currentPageSubject.asObservable();
   protected readonly itemsPerPage = 20;
-  private readonly destroy$ = new Subject<void>();
+ 
+    private readonly destroyRef = inject(DestroyRef);
+
 
   protected readonly cardHeaderData$ = combineLatest([
     this.store.select(selectCardDetailById(this.cardId)),
@@ -116,37 +124,6 @@ export class CardTransactions implements OnInit {
     }),
   );
 
-  ngOnInit(): void {
-    this.store.dispatch(TransactionActions.enter());
-    this.loadData();
-
-    const accountIban$ = this.store
-      .select(selectCardDetailById(this.cardId))
-      .pipe(
-        filter((cardData) => !!cardData?.details?.accountId),
-        take(1),
-        switchMap((cardData) =>
-          this.store
-            .select(selectAccountById(cardData!.details.accountId))
-            .pipe(
-              filter((account) => !!account?.iban),
-              take(1),
-            ),
-        ),
-        tap((account) => {
-          this.store.dispatch(
-            TransactionActions.updateFilters({
-              filters: { accountIban: account!.iban, pageLimit: 100 },
-            }),
-          );
-        }),
-        takeUntil(this.destroy$),
-      );
-
-    accountIban$.subscribe();
-
-    this.autoLoadAllTransactions();
-  }
 
   protected handleBack(): void {
     this.router.navigate(['/bank/products/cards/details', this.cardId]);
@@ -157,19 +134,19 @@ export class CardTransactions implements OnInit {
   }
 
   private loadData(): void {
-    this.store.dispatch(loadCardAccounts());
+    this.store.dispatch(loadCardAccounts({}));
     this.store.dispatch(loadCardDetails({ cardId: this.cardId }));
   }
+protected readonly isLoading$ = combineLatest([
+  this.store.select(selectIsLoading),
+  this.store.select(selectCardDetailById(this.cardId)),
+  this.store.select(selectItems),
+]).pipe(
+  map(([loading, cardData, transactions]) => {
+    return loading && (!cardData || !transactions || transactions.length === 0);
+  }),
+);
 
-  protected readonly isLoading$ = combineLatest([
-    this.store.select(selectIsLoading),
-    this.store.select(selectCardDetailById(this.cardId)),
-    this.store.select(selectItems),
-  ]).pipe(
-    map(([loading, cardData, transactions]) => {
-      return loading && (!cardData || transactions.length === 0);
-    }),
-  );
   protected readonly paginatedTransactions$ = combineLatest([
     this.transactions$,
     this.currentPage$,
@@ -191,10 +168,7 @@ export class CardTransactions implements OnInit {
   protected handlePageChange(page: number): void {
     this.currentPageSubject.next(page);
   }
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+
 
   private autoLoadAllTransactions(): void {
     this.store
@@ -204,9 +178,61 @@ export class CardTransactions implements OnInit {
         tap(() => {
           this.store.dispatch(TransactionActions.loadMore());
         }),
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
   }
+  
+
+
+  ngOnInit(): void {
+  this.loadData();
+  this.initializeTransactionFilters();
+  this.autoLoadAllTransactions();
+}
+
+private initializeTransactionFilters(): void {
+  combineLatest([
+    this.store.select(selectCardDetailById(this.cardId)),
+    this.store.select(selectFilters),
+    this.store.select(selectTransactionsLoaded)
+  ]).pipe(
+    take(1),
+    switchMap(([cardData, currentFilters, loaded]) => {
+      if (!cardData?.details?.accountId) {
+        return of(null);
+      }
+
+      return this.store
+        .select(selectAccountById(cardData.details.accountId))
+        .pipe(
+          take(1),
+          tap((account) => {
+            this.updateTransactionFiltersIfNeeded(account, currentFilters, loaded);
+          }),
+        );
+    }),
+    takeUntilDestroyed(this.destroyRef),
+  ).subscribe();
+}
+
+private updateTransactionFiltersIfNeeded(
+ account: CardAccount | undefined,
+  currentFilters: ITransactionFilter,
+  loaded: boolean
+): void {
+  if (!account?.iban) return;
+
+  const needsUpdate = currentFilters.accountIban !== account.iban || !loaded;
+  
+  if (needsUpdate) {
+    this.store.dispatch(TransactionActions.enter());
+    this.store.dispatch(
+      TransactionActions.updateFilters({
+        filters: { accountIban: account.iban, pageLimit: 100 },
+      }),
+    );
+  }
+}
   
 }

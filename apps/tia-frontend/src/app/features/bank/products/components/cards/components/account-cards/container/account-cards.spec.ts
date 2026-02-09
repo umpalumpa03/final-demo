@@ -139,19 +139,26 @@ describe('AccountCards', () => {
     expect(state).toBe('no-account');
   });
 
-  it('should emit correct cardsLabel', async () => {
-    setupStore([mockAccount], mockCards);
-    createComponent();
-    const label = await firstValueFrom(component['cardsLabel$']);
-    expect(label).toBe('2 Cards');
+it('should emit correct cardsLabel', async () => {
+  setupStore([mockAccount], mockCards);
+  createComponent();
+  const label = await firstValueFrom(component['cardsLabel$']);
+  expect(label).toEqual({
+    count: '2',
+    key: 'my-products.card.account-cards.account-header.cardCountPlural'
   });
+});
 
-  it('should emit empty cardsLabel when no account', async () => {
-    setupStore([]);
-    createComponent();
-    const label = await firstValueFrom(component['cardsLabel$']);
-    expect(label).toBe('');
+
+it('should emit empty cardsLabel when no account', async () => {
+  setupStore([]);
+  createComponent();
+  const label = await firstValueFrom(component['cardsLabel$']);
+  expect(label).toEqual({
+    count: '0',
+    key: 'my-products.card.account-cards.account-header.cardCountPlural'
   });
+});
   it('should dispatch setCurrentCardIndex and navigate on card click', () => {
   setupStore();
   createComponent();

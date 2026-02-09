@@ -1,16 +1,3 @@
-@if (alertType()) {
-  <div class="security-container__alert-container">
-    <app-dismissible-alerts
-      class="security-container__alert"
-      [alertType]="alertType()!"
-      [alertTitle]="alertType()!"
-      [alertMessage]="alertMessage()"
-      [alertId]="0"
-      (dismissed)="onAlertClose()"
-    ></app-dismissible-alerts>
-  </div>
-}
-
 <app-security
   [isLoading]="isLoading()"
   [error]="error()"
