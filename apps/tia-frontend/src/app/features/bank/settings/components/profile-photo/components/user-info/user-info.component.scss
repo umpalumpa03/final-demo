@@ -25,10 +25,21 @@
   &__value {
     @include font-inter(400, 1.4rem, 1);
     color: var(--color-fg-muted);
+
+    &--phone {
+      @include font-inter(400, 1.8rem, 1);
+    }
+
+    &--personal {
+      @include font-inter(400, 1.8rem, 1);
+    }
   }
 
   &__item lib-text-input {
     margin-top: 0.4rem;
+    ::ng-deep .text-input__field {
+      @include font-inter(400, 1.8rem, 1);
+    }
   }
 
   &__footer {
