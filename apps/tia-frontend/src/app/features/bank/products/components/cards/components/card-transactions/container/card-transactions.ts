@@ -119,45 +119,7 @@ export class CardTransactions implements OnInit {
     }),
   );
 
-ngOnInit(): void {
-  this.loadData();
 
-  combineLatest([
-    this.store.select(selectCardDetailById(this.cardId)),
-    this.store.select(selectFilters),
-    this.store.select(selectTransactionsLoaded)
-  ]).pipe(
-    take(1),
-    switchMap(([cardData, currentFilters, loaded]) => {
-      if (!cardData?.details?.accountId) {
-        return of(null);
-      }
-
-      return this.store
-        .select(selectAccountById(cardData.details.accountId))
-        .pipe(
-          take(1),
-          tap((account) => {
-            if (!account?.iban) return;
-
-            const needsUpdate = currentFilters.accountIban !== account.iban || !loaded;
-            
-            if (needsUpdate) {
-              this.store.dispatch(TransactionActions.enter());
-              this.store.dispatch(
-                TransactionActions.updateFilters({
-                  filters: { accountIban: account.iban, pageLimit: 100 },
-                }),
-              );
-            }
-          }),
-        );
-    }),
-    takeUntil(this.destroy$),
-  ).subscribe();
-
-  this.autoLoadAllTransactions();
-}
   protected handleBack(): void {
     this.router.navigate(['/bank/products/cards/details', this.cardId]);
   }
@@ -170,16 +132,16 @@ ngOnInit(): void {
     this.store.dispatch(loadCardAccounts({}));
     this.store.dispatch(loadCardDetails({ cardId: this.cardId }));
   }
+protected readonly isLoading$ = combineLatest([
+  this.store.select(selectIsLoading),
+  this.store.select(selectCardDetailById(this.cardId)),
+  this.store.select(selectItems),
+]).pipe(
+  map(([loading, cardData, transactions]) => {
+    return loading && (!cardData || !transactions || transactions.length === 0);
+  }),
+);
 
-  protected readonly isLoading$ = combineLatest([
-    this.store.select(selectIsLoading),
-    this.store.select(selectCardDetailById(this.cardId)),
-    this.store.select(selectItems),
-  ]).pipe(
-    map(([loading, cardData, transactions]) => {
-      return loading && (!cardData || transactions.length === 0);
-    }),
-  );
   protected readonly paginatedTransactions$ = combineLatest([
     this.transactions$,
     this.currentPage$,
@@ -218,5 +180,57 @@ ngOnInit(): void {
       )
       .subscribe();
   }
+  
+
+
+  ngOnInit(): void {
+  this.loadData();
+  this.initializeTransactionFilters();
+  this.autoLoadAllTransactions();
+}
+
+private initializeTransactionFilters(): void {
+  combineLatest([
+    this.store.select(selectCardDetailById(this.cardId)),
+    this.store.select(selectFilters),
+    this.store.select(selectTransactionsLoaded)
+  ]).pipe(
+    take(1),
+    switchMap(([cardData, currentFilters, loaded]) => {
+      if (!cardData?.details?.accountId) {
+        return of(null);
+      }
+
+      return this.store
+        .select(selectAccountById(cardData.details.accountId))
+        .pipe(
+          take(1),
+          tap((account) => {
+            this.updateTransactionFiltersIfNeeded(account, currentFilters, loaded);
+          }),
+        );
+    }),
+    takeUntil(this.destroy$),
+  ).subscribe();
+}
+
+private updateTransactionFiltersIfNeeded(
+  account: any,
+  currentFilters: any,
+  loaded: boolean
+): void {
+  if (!account?.iban) return;
+
+  const needsUpdate = currentFilters.accountIban !== account.iban || !loaded;
+  
+  if (needsUpdate) {
+    this.store.dispatch(TransactionActions.enter());
+    this.store.dispatch(
+      TransactionActions.updateFilters({
+        filters: { accountIban: account.iban, pageLimit: 100 },
+      }),
+    );
+  }
+}
   
 }
