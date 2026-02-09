@@ -7,6 +7,7 @@ import {
   EMPTY,
   filter,
   map,
+  mergeMap,
   of,
   switchMap,
   withLatestFrom,
@@ -83,8 +84,8 @@ export const loadTotalEffect = createEffect(
     transactionService = inject(TransactionApiService),
   ) => {
     return actions$.pipe(
-      ofType(TransactionActions.enter, TransactionActions.loadTransactions),
-      switchMap(() => {
+      ofType(TransactionActions.loadTransactions),
+      mergeMap((action) => {
         return transactionService.getTransactionsTotal().pipe(
           map((total) => TransactionActions.loadTotalSuccess({ total })),
           catchError(() => EMPTY),

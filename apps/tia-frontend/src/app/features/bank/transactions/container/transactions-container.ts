@@ -146,7 +146,15 @@ export class TransactionsContainer implements OnInit {
         ...h,
         title: this.translate.instant(h.title),
       })),
-      rows: this.items().map(convertTransactionData),
+      rows: this.items().map((transaction) => {
+        const formattedRow = convertTransactionData(transaction);
+
+        return {
+          ...formattedRow,
+          hasMeta:
+            !!transaction.meta && Object.keys(transaction.meta).length > 0,
+        };
+      }),
     };
   });
 
@@ -175,7 +183,8 @@ export class TransactionsContainer implements OnInit {
   }
 
   public loadProducts(): void {
-    if (this.items().length % 20 === 0 && !this.isLoading()) {
+    const itemsLength = this.items().length;
+    if (itemsLength > 0 && itemsLength % 20 === 0 && !this.isLoading()) {
       this.store.dispatch(TransactionActions.loadMore());
     }
   }
