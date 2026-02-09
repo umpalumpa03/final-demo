@@ -17,7 +17,7 @@
             type="tel"
           ></lib-text-input>
         } @else {
-          <span class="user-info__value">{{ phoneNumber() || '-' }}</span>
+          <span class="user-info__value user-info__value--phone">{{ phoneNumber() || '-' }}</span>
         }
       </div>
       <div class="user-info__item">
@@ -31,7 +31,7 @@
             type="number"
           ></lib-text-input>
         } @else {
-          <span class="user-info__value">{{ pId() || '-' }}</span>
+          <span class="user-info__value user-info__value--personal">{{ pId() || '-' }}</span>
         }
       </div>
     </div>
@@ -74,13 +74,22 @@
           </div>
         </div>
       } @else {
-        <app-button
-          variant="default"
-          size="default"
-          (click)="onEdit()"
-        >
-          {{ 'settings.profile-photo.edit' | translate }}
-        </app-button>
+        <div class="user-info__footer-buttons">
+          <app-button
+            variant="default"
+            size="default"
+            (click)="onEdit()"
+          >
+            {{ 'settings.profile-photo.edit' | translate }}
+          </app-button>
+          <app-button
+            variant="outline"
+            size="default"
+            (click)="onStartTour()"
+          >
+            {{ 'settings.profile-photo.startTour' | translate }}
+          </app-button>
+        </div>
       }
     </div>
   </app-basic-card>

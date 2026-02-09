@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ProfilePhotoComponent } from '../components/profile-photo/profile-photo.component';
 import { UserInfoComponent } from '../components/user-info/user-info.component';
@@ -18,6 +19,8 @@ import {
   selectSavingChanges,
 } from '../store/profile-photo/profile-photo.selectors';
 import { selectUserInfo } from '../../../../../../store/user-info/user-info.selectors';
+import { UserInfoActions } from '../../../../../../store/user-info/user-info.actions';
+import { Routes } from '../../../../../../core/auth/models/tokens.model';
 import { TranslateService } from '@ngx-translate/core';
 import { PersonalInfoActions } from '../../../../../../store/personal-info/pesronal-info.actions';
 import {
@@ -42,6 +45,7 @@ import {
 export class ProfilePhotoContainer implements OnInit, OnDestroy {
   private readonly store = inject(Store);
   private readonly translate = inject(TranslateService);
+  private readonly router = inject(Router);
 
   public readonly defaultAvatars = this.store.selectSignal(selectDefaultAvatars);
   public readonly defaultAvatarsLoading = this.store.selectSignal(selectDefaultAvatarsLoading);
@@ -570,6 +574,11 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   public onImageLoadError(): void {
 
     this.store.dispatch(ProfilePhotoActions.clearCurrentAvatar());
+  }
+
+  public onStartTour(): void {
+    this.store.dispatch(UserInfoActions.updateOnboardingStatus({ completed: false }));
+    this.router.navigate([Routes.DASHBOARD]);
   }
 }
 
