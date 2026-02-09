@@ -2,9 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
 } from '@angular/core';
-import { colorApplication } from 'apps/tia-frontend/src/app/features/storybook/components/colorpalettes/config/palette-data.config';
+import { TranslateService } from '@ngx-translate/core';
+import { getColorApplication } from 'apps/tia-frontend/src/app/features/storybook/components/colorpalettes/config/palette-data.config';
 import { ThemeType } from 'apps/tia-frontend/src/app/features/storybook/components/colorpalettes/model/color-palette.models';
 
 @Component({
@@ -15,7 +17,11 @@ import { ThemeType } from 'apps/tia-frontend/src/app/features/storybook/componen
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ColorApplication {
+  private readonly translate = inject(TranslateService);
   public readonly theme = input<ThemeType>('oceanblue');
   public readonly themeLabel = input<string>();
-  public readonly applications = computed(() => colorApplication[this.theme()]);
+  public readonly applications = computed(() => {
+    const colorApplication = getColorApplication(this.translate);
+    return colorApplication[this.theme() as keyof typeof colorApplication];
+  });
 }

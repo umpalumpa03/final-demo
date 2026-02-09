@@ -3,8 +3,9 @@ import {
   HttpClientTestingModule,
   HttpTestingController,
 } from '@angular/common/http/testing';
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { AccountsApiService } from './accounts.api.service';
+import { AccountsStore } from '../../../features/bank/settings/components/accounts/strore/accounts.store';
 import { environment } from '../../../../environments/environment';
 import {
   AccountType,
@@ -14,13 +15,24 @@ import {
 describe('AccountsApiService', () => {
   let service: AccountsApiService;
   let httpMock: HttpTestingController;
+  let mockStore: any;
   const apiUrl = `${environment.apiUrl}/accounts`;
 
   beforeEach(() => {
     TestBed.resetTestingModule();
+    mockStore = {
+      invalidate: vi.fn(),
+      loadAccounts: vi.fn(),
+    };
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [AccountsApiService],
+      providers: [
+        AccountsApiService,
+        {
+          provide: AccountsStore,
+          useValue: mockStore,
+        },
+      ],
     });
     service = TestBed.inject(AccountsApiService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -77,5 +89,61 @@ describe('AccountsApiService', () => {
     req = httpMock.expectOne(`${apiUrl}/1/transfer`);
     expect(req.request.method).toBe('POST');
     req.flush(null);
+  });
+
+  it('should update friendly name and trigger store invalidation', () => {
+    const accountId = 'acc-123';
+    const newFriendlyName = 'My Updated Account';
+    const mockAccount = {
+      id: accountId,
+      friendlyName: newFriendlyName,
+      balance: 1000,
+      isActive: true,
+      accountNumber: '456',
+      createdAt: '2026-01-01',
+      type: AccountType.saving,
+      currency: 'USD',
+    };
+
+    service.updateFriendlyName(accountId, newFriendlyName).subscribe((result) => {
+      expect(result).toEqual(mockAccount);
+      expect(mockStore.invalidate).toHaveBeenCalled();
+      expect(mockStore.loadAccounts).toHaveBeenCalled();
+    });
+
+    const req = httpMock.expectOne(
+      `${apiUrl}/update-friendly-name/${accountId}`,
+    );
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({ friendlyName: newFriendlyName });
+    req.flush(mockAccount);
+  });
+
+  it('should map currencies to array of values', async () => {
+    const mockCurrencies = [
+      { value: 'USD', label: 'US Dollar' },
+      { value: 'EUR', label: 'Euro' },
+      { value: 'GEL', label: 'Georgian Lari' },
+    ];
+
+    await new Promise<void>((resolve, reject) => {
+      service.getCurrencies().subscribe({
+        next: (currencies) => {
+          if (currencies.length) {
+            try {
+              expect(currencies).toEqual(['USD', 'EUR', 'GEL']);
+              resolve();
+            } catch (err) {
+              reject(err);
+            }
+          }
+        },
+        error: reject,
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/catalogs/currencies`);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockCurrencies);
+    });
   });
 });

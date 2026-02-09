@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../../../../../environments/environment';
-import { CardCatalogItemResponse, PendingCard, UpdateCardStatusRequest } from '../model/approve-cards.model';
+import { CardCatalogItemResponse, PendingCard, UpdateCardStatusRequest } from '../../../../shared/models/approve-models/cards-models/approve-cards.model';
 import { Observable } from 'rxjs';
 
 @Injectable({

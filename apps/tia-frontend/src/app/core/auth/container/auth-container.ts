@@ -23,7 +23,6 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
   imports: [RouterOutlet, SidePanel, LanguageSwitcher, RouteLoader],
   templateUrl: './auth-container.html',
   styleUrl: './auth-container.scss',
-  providers: [TokenService, AuthService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthContainer implements OnInit {

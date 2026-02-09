@@ -100,7 +100,7 @@ describe('Messaging Integration - Mark as Read Flow', () => {
     );
 
     await vi.waitFor(() => {
-      expect(ctx.store.error()).toBe('messaging.storeErrors.markMailAsRead');
+      expect(ctx.alertService.error).toHaveBeenCalledWith('messaging.storeErrors.markMailAsRead', { variant: 'dismissible', title: 'Oops!' });
     });
   });
 });

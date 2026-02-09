@@ -49,14 +49,16 @@ export class AuthService {
   private tokenService = inject(TokenService);
   private store = inject(Store);
   private monitorInactivity = inject(MonitorInactivity);
-  private challengeId!: string;
+
+  public isAuthenticated = signal<boolean>(false);
   public isLoginLoading = signal<boolean>(false);
   public errorMessage = signal<boolean | null>(false);
-  private baseUrl = `${environment.apiUrl}/auth`;
-  public otpError = signal<OtpResponse | null>(null);
   public resendRetryCounter = signal<number>(0);
+  public otpError = signal<OtpResponse | null>(null);
+
+  private challengeId!: string;
+  private baseUrl = `${environment.apiUrl}/auth`;
   private inactivitySubscription?: Subscription;
-  public isAuthenticated = signal<boolean>(false);
 
   constructor() {
     if (this.tokenService.accessToken) {
@@ -146,6 +148,7 @@ export class AuthService {
           this.stopInactivityMonitoring();
           this.tokenService.clearAuthToken();
           this.tokenService.clearUserInfo();
+          this.store.dispatch(UserInfoActions.logout());
           this.router.navigate([Routes.SIGN_IN]);
         }
       }),
@@ -292,7 +295,7 @@ export class AuthService {
       .pipe(
         tap((res) => {
           if (res.access_token) {
-            this.tokenService.setAccessToken(res.access_token);
+            this.tokenService.setResetPasswordToken(res.access_token);
           }
         }),
         finalize(() => this.isLoginLoading.set(false)),
@@ -302,10 +305,10 @@ export class AuthService {
   public createNewPassword(
     password: string,
   ): Observable<CreateNewPasswordResponse> {
-    const token = this.tokenService.accessToken;
+    const token = this.tokenService.resetPasswordToken;
     if (!token) {
       return throwError(
-        () => new Error('Missing forgot password access token'),
+        () => new Error('Missing reset password token'),
       );
     }
 
@@ -323,7 +326,7 @@ export class AuthService {
       .pipe(
         finalize(() => {
           this.isLoginLoading.set(false);
-          this.tokenService.clearAccessToken();
+          this.tokenService.clearResetPasswordToken();
         }),
       );
   }

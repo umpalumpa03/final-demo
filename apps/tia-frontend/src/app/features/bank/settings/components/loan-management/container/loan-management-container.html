@@ -1,1 +1,47 @@
-<h1>loan management container</h1>
+@if (store.successMessage()) {
+  <div class="alert-toast">
+    <app-dismissible-alerts
+      alertType="success"
+      alertTitle="Success!"
+      [alertMessage]="store.successMessage()!"
+    ></app-dismissible-alerts>
+  </div>
+}
+@if (store.actionError()) {
+  <div class="alert-toast">
+    <app-dismissible-alerts
+      alertType="error"
+      alertTitle="Oops!"
+      [alertMessage]="store.actionError()!"
+    ></app-dismissible-alerts>
+  </div>
+}
+<app-basic-card
+  maxWidth="100%"
+  height="fit-content"
+  padding="2.4rem"
+  [title]="config().title"
+  [subtitle]="config().subtitle"
+>
+  <div class="loan-management-container">
+    <app-pending-approvals-table
+      [approvals]="store.pendingApprovals()"
+      [isLoading]="store.loading()"
+      [error]="store.error()"
+      (rowClick)="onRowClick($event)"
+      (reload)="onReload()"
+    ></app-pending-approvals-table>
+  </div>
+</app-basic-card>
+<app-loan-case-drawer
+  [isOpen]="!!store.selectedLoanId()"
+  [loanDetails]="store.selectedLoanDetails()"
+  [loanDetailsResponse]="store.selectedLoanDetailsResponse()"
+  [userInfo]="store.selectedUserInfo()"
+  [isUserInfoLoading]="store.userInfoLoading()"
+  [isLoanDetailsLoading]="store.loanDetailsLoading()"
+  [isActionLoading]="store.actionLoading()"
+  (closed)="onDrawerClose()"
+  (approve)="onApprove($event)"
+  (reject)="onReject($event)"
+></app-loan-case-drawer>

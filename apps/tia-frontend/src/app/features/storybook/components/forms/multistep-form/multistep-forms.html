@@ -2,40 +2,41 @@
 
 <form class="multi-step" [formGroup]="form">
   <div class="multi-step__field">
-    <app-stepper-header [content]="stepsConfig" [step]="currentStep()" />
+    <app-stepper-header [content]="stepsConfig()" [step]="currentStep()" />
   </div>
 
-  @for (config of stepsConfig; track config.key) { @if (config.key === stepsConfig[step - 1].key) {
+  @for (config of stepsConfig(); track config.key) { @if (config.key ===
+  stepsConfig()[step - 1].key) {
   <form class="multi-step__field" [formGroupName]="config.key">
     @if (isFrom(config)) {
     <lib-text-input
       type="text"
       formControlName="name"
-      [config]="multiConfig.name"
+      [config]="multiConfig().name"
     ></lib-text-input>
     <lib-textarea
       formControlName="bio"
-      [config]="multiConfig.bio"
+      [config]="multiConfig().bio"
     ></lib-textarea>
     } @if (isTo(config)) {
     <lib-text-input
       type="text"
       formControlName="name"
-      [config]="multiConfig.name"
+      [config]="multiConfig().name"
     ></lib-text-input>
     <lib-textarea
       formControlName="bio"
-      [config]="multiConfig.bio"
+      [config]="multiConfig().bio"
     ></lib-textarea>
     } @if (isAmount(config)) {
     <lib-text-input
       type="text"
       formControlName="name"
-      [config]="multiConfig.name"
+      [config]="multiConfig().name"
     ></lib-text-input>
     <lib-textarea
       formControlName="bio"
-      [config]="multiConfig.bio"
+      [config]="multiConfig().bio"
     ></lib-textarea>
     }
   </form>
@@ -50,18 +51,18 @@
           variant="outline"
           type="button"
           (click)="previous()"
-          >Back</app-button
+          >{{'storybook.forms.multi.step' | translate}}</app-button
         >
       </div>
       } @if (canNext()) {
       <div class="multi-step__field">
         <app-button [fullWidth]="true" (click)="next()" type="button">
-          Next Step
+          {{'storybook.forms.multi.step' | translate}}
         </app-button>
       </div>
       } @else if (isLastStep()) {
       <div class="multi-step__field">
-        <app-button [fullWidth]="true" type="submit">Finish</app-button>
+        <app-button [fullWidth]="true" type="submit">{{'storybook.forms.multi.finish' | translate}}</app-button>
       </div>
       }
     </div>

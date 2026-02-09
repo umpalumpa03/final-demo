@@ -120,4 +120,66 @@ describe('PaybillTemplatesService', () => {
     expect(req.request.body).toEqual({ templateIds: [templateId] });
     req.flush({});
   });
+
+  it('should create template group', () => {
+    const groupInfo = { groupName: 'New Group', templateIds: [] } as any;
+
+    service.createTemplateGroups(groupInfo).subscribe();
+
+    const req = httpMock.expectOne(
+      `${environment.apiUrl}/paybill/template-groups`,
+    );
+    expect(req.request.method).toBe('POST');
+    req.flush({ id: '1', groupName: 'New Group', templateCount: 0 });
+  });
+
+  it('should delete template', () => {
+    service.deleteTemplate('temp-1').subscribe();
+
+    const req = httpMock.expectOne(
+      `${environment.apiUrl}/paybill/templates/temp-1`,
+    );
+    expect(req.request.method).toBe('DELETE');
+    req.flush({ message: 'Deleted' });
+  });
+
+  it('should filter templates by search term', () => {
+    const templates = [
+      { id: '1', title: 'Internet' },
+      { id: '2', title: 'Water' },
+    ] as any;
+    const groups = [] as any;
+
+    const result = service.filterTemplatesAndGroups(
+      'internet',
+      templates,
+      groups,
+    );
+
+    expect(result.templates.length).toBe(1);
+    expect(result.templates[0].title).toBe('Internet');
+  });
+
+  it('should filter groups by search term', () => {
+    const templates = [] as any;
+    const groups = [
+      { id: '1', groupName: 'Bills' },
+      { id: '2', groupName: 'Utilities' },
+    ] as any;
+
+    const result = service.filterTemplatesAndGroups('bills', templates, groups);
+
+    expect(result.groups.length).toBe(1);
+    expect(result.groups[0].groupName).toBe('Bills');
+  });
+
+  it('should return all when search is empty', () => {
+    const templates = [{ id: '1', title: 'Test' }] as any;
+    const groups = [{ id: '1', groupName: 'Group' }] as any;
+
+    const result = service.filterTemplatesAndGroups('', templates, groups);
+
+    expect(result.templates.length).toBe(1);
+    expect(result.groups.length).toBe(1);
+  });
 });

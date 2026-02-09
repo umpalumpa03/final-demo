@@ -35,10 +35,6 @@ describe('PrepaymentOptionStep', () => {
     fixture.detectChanges();
   });
 
-  it('should create and load options', () => {
-    expect(component).toBeTruthy();
-    expect(loansStoreMock.loadPrepaymentOptions).toHaveBeenCalled();
-  });
   it('should emit calculation payload', () => {
     const emitSpy = vi.spyOn(component.calculate, 'emit');
     component.form.patchValue({

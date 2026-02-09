@@ -67,7 +67,6 @@ export class FinancesContainer implements OnInit {
   }
 
   public onUpdateData(): void {
-    console.log('Update button clicked! Refreshing...');
     this.fetchData(true);
   }
 

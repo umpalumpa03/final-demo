@@ -25,9 +25,15 @@
     width: 4rem;
     height: 4rem;
     border-radius: 50%;
-    background-color: $red-50;
     color: $red-600;
     flex-shrink: 0;
+      &--income {
+      background-color: $green-50;
+    }
+
+    &--outcome {
+      background-color: $red-50;
+    }
   }
 
   &__details {

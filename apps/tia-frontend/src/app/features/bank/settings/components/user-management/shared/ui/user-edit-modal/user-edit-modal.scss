@@ -74,7 +74,8 @@ header {
 footer {
     margin-left: auto;
     gap: 1rem;
-    @include display-flex;
+    @include display-flex($wrap: wrap);
+    justify-content: flex-start;
 
     @media (min-width: 640px) {
         @include flex-center($justify: flex-end, $align: flex-start);

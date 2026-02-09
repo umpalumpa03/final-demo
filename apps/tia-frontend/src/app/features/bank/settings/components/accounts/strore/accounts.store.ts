@@ -1,13 +1,14 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { pipe, switchMap, tap, catchError, EMPTY } from 'rxjs';
+import { pipe, switchMap, tap, catchError, filter, EMPTY } from 'rxjs';
 import { AccountManagementService } from '../services/acount-management.service';
 import { initialState } from './accounts.state';
 import { Store } from '@ngrx/store';
 import { AccountsActions } from '../../../../../../store/products/accounts/accounts.actions';
 
 export const AccountsStore = signalStore(
+  { providedIn: 'root' },
   withState(initialState),
 
   withMethods((store, service = inject(AccountManagementService)) => {
@@ -21,18 +22,24 @@ export const AccountsStore = signalStore(
         patchState(store, { successMessage: null });
       },
 
+      invalidate(): void {
+        patchState(store, { loaded: false });
+      },
+
       loadAccounts: rxMethod<void>(
         pipe(
+          filter(() => !store.loaded() && !store.loading()),
           tap(() => patchState(store, { loading: true, error: null, successMessage: null })),
           switchMap(() =>
             service.getAllAccounts().pipe(
               tap((accounts) =>
-                patchState(store, { accounts, loading: false }),
+                patchState(store, { accounts, loading: false, loaded: true }),
               ),
               catchError(() => {
                 patchState(store, {
                   accounts: [],
                   loading: false,
+                  loaded: false,
                   error: 'Failed to load accounts',
                 });
                 return EMPTY;

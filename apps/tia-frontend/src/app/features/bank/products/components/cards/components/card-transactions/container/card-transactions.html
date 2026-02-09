@@ -1,3 +1,5 @@
+
+
 <div class="card-transactions">
   @if (isLoading$ | async) {
     <div class="card-transactions__loading">
@@ -7,7 +9,6 @@
     <app-error-states
       variant="failed"
       header="Failed to Load Transactions"
-      [message]="errorMsg"
       buttonMessage="Retry"
       (buttonClick)="handleRetry()"
     />
@@ -47,8 +48,16 @@
       [padding]="'2rem'"
     >
       <app-transaction-list
-        [transactions]="(transactions$ | async) || []"
+        [transactions]="(paginatedTransactions$ | async) || []"
       />
+      
+      @if ((totalPages$ | async) ?? 0 > 1) {
+        <app-pagination
+          [currentPage]="(currentPage$ | async) ?? 1"
+          [totalPages]="(totalPages$ | async) ?? 1"
+          (pageChange)="handlePageChange($event)"
+        />
+      }
     </app-basic-card>
   }
 </div>

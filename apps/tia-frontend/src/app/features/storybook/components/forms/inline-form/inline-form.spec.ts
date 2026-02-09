@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { InlineForm } from './inline-form';
+import { FormsDemoState } from '../state/forms-demo.state';
+import { TranslateModule } from '@ngx-translate/core';
+const mockFormsDemo = { inlineForm: () => ({ message: { required: false, placeholder: '' } }) };
 
 describe('InlineForm', () => {
   let component: InlineForm;
@@ -7,7 +10,10 @@ describe('InlineForm', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InlineForm],
+      imports: [InlineForm, TranslateModule.forRoot()],
+      providers: [
+        { provide: FormsDemoState, useValue: mockFormsDemo },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(InlineForm);

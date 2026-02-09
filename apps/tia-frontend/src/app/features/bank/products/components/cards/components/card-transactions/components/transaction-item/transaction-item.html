@@ -1,10 +1,13 @@
 <div class="transaction-item">
   <div class="transaction-item__icon">
+     <div class="transaction-item__icon" [ngClass]="iconClass()">
     <img
-      [src]="'/images/svg/cards/arrow.svg'"
-      alt="outcome"
-      class="card-group-item__icon"
+      [src]="iconPath()"
+      alt="transaction type"
+      class="transaction-item__icon-image"
     />
+  </div>
+
   </div>
 
   <div class="transaction-item__details">

@@ -6,7 +6,7 @@ import {
 import { provideHttpClient } from '@angular/common/http';
 import { ApproveCardsService } from './approve-cards.service';
 import { environment } from '../../../../../../../../environments/environment';
-import { CardPermission } from '../model/approve-cards.model';
+import { CardPermission } from '../../../../shared/models/approve-models/cards-models/approve-cards.model';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe('ApproveCardsService', () => {

@@ -10,10 +10,12 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { catchError, EMPTY, finalize, merge, tap } from 'rxjs';
+import { catchError, delay, EMPTY, finalize, merge, tap } from 'rxjs';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
+import { DismissibleAlertType } from '@tia/shared/lib/alerts/shared/models/alert.models';
 import { AuthService } from '../../../services/auth.service';
 import { Routes } from '../../../models/tokens.model';
 import { AuthHeader } from '../../../shared/auth-header/auth-header';
@@ -27,6 +29,7 @@ import { AuthHeader } from '../../../shared/auth-header/auth-header';
     RouterLink,
     TranslatePipe,
     AuthHeader,
+    DismissibleAlerts,
   ],
   templateUrl: './forgot-password-email.html',
   styleUrl: './forgot-password-email.scss',
@@ -44,7 +47,7 @@ export class ForgotPasswordEmail {
   public readonly isSubmitting = computed(() =>
     this.authService.isLoginLoading(),
   );
-  public readonly submitError = signal<string | null>(null);
+  public readonly alertState = signal<{ type: DismissibleAlertType; title: string; message: string } | null>(null);
 
   public readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -75,7 +78,7 @@ export class ForgotPasswordEmail {
   });
 
   public submit(): void {
-    this.submitError.set(null);
+    this.alertState.set(null);
     this.form.markAllAsTouched();
 
     if (this.form.invalid) return;
@@ -87,21 +90,35 @@ export class ForgotPasswordEmail {
       .pipe(
         tap((response) => {
           this.authService.setChellangeId(response.challengeId);
-          this.router.navigate([Routes.OTP_FORGOT_PASSWORD]);
+          this.alertState.set({
+            type: 'success',
+            title: 'Success!',
+            message: 'Reset code sent to your email',
+          });
         }),
+        delay(1500),
+        tap(() => this.router.navigate([Routes.OTP_FORGOT_PASSWORD])),
         catchError((error) => {
           const httpError = error as HttpErrorResponse;
           if (httpError?.status === 404) {
-            this.submitError.set(httpError.error?.message || 'User not found');
+            this.alertState.set({
+              type: 'error',
+              title: 'Oops!',
+              message: httpError.error?.message || 'User not found',
+            });
           } else if (httpError?.status === 400) {
             const message = httpError.error?.message;
-            this.submitError.set(
-              Array.isArray(message) ? message[0] : message || 'Invalid email',
-            );
+            this.alertState.set({
+              type: 'error',
+              title: 'Oops!',
+              message: Array.isArray(message) ? message[0] : message || 'Invalid email',
+            });
           } else {
-            this.submitError.set(
-              'Unable to send reset code. Please try again.',
-            );
+            this.alertState.set({
+              type: 'warning',
+              title: 'Warning',
+              message: 'Unable to send reset code. Please try again.',
+            });
           }
           return EMPTY;
         }),

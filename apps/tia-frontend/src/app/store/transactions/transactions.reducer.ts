@@ -97,4 +97,8 @@ export const transactionReducer = createReducer(
     ...state,
     transactionToRepeat: null,
   })),
+  on(TransactionActions.loadTransactionsCached, (state) => ({
+    ...state,
+    isLoading: false,
+  })),
 );
