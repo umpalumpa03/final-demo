@@ -2,9 +2,9 @@
   <div class="selected__container__description">
     <img src="images/svg/paybill/selected.svg" alt="selected icon" />
     @if (forModal()) {
-    <span>{{ selectedItems()?.length }} bill(s) selected for payment</span>
+    <span>{{ selectedItems().length }} bill(s) selected for payment</span>
     }@else {
-    <span>{{ selectedItems()?.length }} template(s) selected</span>
+    <span>{{ selectedItems().length }} template(s) selected</span>
     }
   </div>
   @if (!forModal()) {

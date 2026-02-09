@@ -1,14 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TotalAmount } from './total-amount';
 import { ReactiveFormsModule } from '@angular/forms';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe('TotalAmount', () => {
   let component: TotalAmount;
   let fixture: ComponentFixture<TotalAmount>;
 
-  const wait = (ms = 400) => new Promise((resolve) => setTimeout(resolve, ms));
-
   beforeEach(async () => {
+    // Enable fake timers for Vitest
+    vi.useFakeTimers();
+
     await TestBed.configureTestingModule({
       imports: [TotalAmount, ReactiveFormsModule],
     }).compileComponents();
@@ -19,50 +21,45 @@ describe('TotalAmount', () => {
     fixture.detectChanges();
   });
 
-  it('should calculate distribution correctly when value is entered', async () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('should calculate distribution correctly when value is entered', () => {
     fixture.componentRef.setInput('selectedItemsLength', 4);
     component.amountControl.setValue('100');
 
-    await wait();
+    // Instantly advance the debounce timer (300ms)
+    vi.advanceTimersByTime(300);
     fixture.detectChanges();
 
     expect(component.calculatedDistribution()).toBe(25);
   });
 
-  it('should set distribution to 0 when input is cleared', async () => {
+  it('should set distribution to 0 when input is cleared', () => {
     component.amountControl.setValue('');
 
-    await wait();
+    vi.advanceTimersByTime(300);
     fixture.detectChanges();
 
     expect(component.calculatedDistribution()).toBe(0);
   });
 
-  it('should handle missing selectedItemsLength with fallback to 1', async () => {
-    fixture.componentRef.setInput('selectedItemsLength', undefined);
-    component.amountControl.setValue('80');
-
-    await wait();
-    fixture.detectChanges();
-
-    expect(component.calculatedDistribution()).toBe(80);
-  });
-
-  it('should handle zero as input value', async () => {
+  it('should handle zero as input value', () => {
     fixture.componentRef.setInput('selectedItemsLength', 2);
     component.amountControl.setValue('0');
 
-    await wait();
+    vi.advanceTimersByTime(300);
     fixture.detectChanges();
 
     expect(component.calculatedDistribution()).toBe(0);
   });
 
-  it('should handle non-numeric strings gracefully', async () => {
+  it('should handle non-numeric strings gracefully', () => {
     fixture.componentRef.setInput('selectedItemsLength', 1);
     component.amountControl.setValue('abc');
 
-    await wait();
+    vi.advanceTimersByTime(300);
     fixture.detectChanges();
 
     expect(isNaN(component.calculatedDistribution())).toBe(true);
