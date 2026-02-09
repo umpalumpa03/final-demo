@@ -82,7 +82,8 @@
         "amount": "თანხა:",
         "unknown_service": "უცნობი სერვისი"
       }
-    }
+    },
+    "navigate": "უკან დაბრუნება"
   },
 
   "templates": {

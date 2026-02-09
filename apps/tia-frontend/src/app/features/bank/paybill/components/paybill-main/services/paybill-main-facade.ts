@@ -71,7 +71,7 @@ export class PaybillMainFacade {
     return this.storeActiveProvider();
   });
 
-  private readonly urlSegments = toSignal(
+  public readonly urlSegments = toSignal(
     this.router.events.pipe(
       filter((e) => e instanceof NavigationEnd),
       map(() => {

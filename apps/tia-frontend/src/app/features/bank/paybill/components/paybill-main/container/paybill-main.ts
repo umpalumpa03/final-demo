@@ -12,10 +12,11 @@ import { PaybillMainFacade } from '../services/paybill-main-facade';
 import { RouterModule } from '@angular/router';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { paybillSearchConfig } from '../../../config/paybill.config';
+import { BackNavigation } from "../shared/ui/back-navigation/back-navigation";
 
 @Component({
   selector: 'app-paybill-main',
-  imports: [ReactiveFormsModule, RouterModule, TextInput],
+  imports: [ReactiveFormsModule, RouterModule, TextInput, BackNavigation],
   templateUrl: './paybill-main.html',
   styleUrl: './paybill-main.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

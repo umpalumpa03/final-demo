@@ -5,7 +5,8 @@
     "navigation": {
       "label1": "Paybill",
       "label2": "Templates"
-    }
+    },
+    "navigate": "Navigate To"
   },
 
   "main": {
@@ -82,7 +83,8 @@
         "amount": "Amount:",
         "unknown_service": "Unknown Service"
       }
-    }
+    },
+    "navigate": "Navigate to"
   },
   "templates": {
     "title": "Saved Templates",
