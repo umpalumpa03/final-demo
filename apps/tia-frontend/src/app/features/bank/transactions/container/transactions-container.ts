@@ -22,7 +22,6 @@ import {
   TableConfig,
   TransactionActionEvent,
 } from '@tia/shared/lib/tables/models/table.model';
-import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Tables } from '@tia/shared/lib/tables/components/tables';
 import { TransactionsFilters } from '../components/transactions-filters/transactions-filters';
@@ -52,7 +51,6 @@ import {
 @Component({
   selector: 'app-transactions-container',
   imports: [
-    ButtonComponent,
     RouteLoader,
     Tables,
     TransactionsFilters,
@@ -148,7 +146,15 @@ export class TransactionsContainer implements OnInit {
         ...h,
         title: this.translate.instant(h.title),
       })),
-      rows: this.items().map(convertTransactionData),
+      rows: this.items().map((transaction) => {
+        const formattedRow = convertTransactionData(transaction);
+
+        return {
+          ...formattedRow,
+          hasMeta:
+            !!transaction.meta && Object.keys(transaction.meta).length > 0,
+        };
+      }),
     };
   });
 
@@ -177,7 +183,8 @@ export class TransactionsContainer implements OnInit {
   }
 
   public loadProducts(): void {
-    if (this.items().length % 20 === 0 && !this.isLoading()) {
+    const itemsLength = this.items().length;
+    if (itemsLength > 0 && itemsLength % 20 === 0 && !this.isLoading()) {
       this.store.dispatch(TransactionActions.loadMore());
     }
   }

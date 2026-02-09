@@ -11,7 +11,7 @@
     "approve-accounts": "Approve Accounts",
     "approve-cards": "Approve Cards",
     "loan-management": "Loan Management",
-    "profile-photo": "Profile Photo"
+    "profile-photo": "Profile"
   },
   "language": {
     "title": "Language & Region",
@@ -73,7 +73,26 @@
     "profilePictureRemovedSuccessfully": "Your profile picture removed successfully",
     "change": "Save Changes",
     "remove": "Remove Photo",
-    "invalidFileAlert": "Unfortunately, your photo could not be uploaded. The avatar image file to upload (PNG/JPG only, max 1MB)."
+    "invalidFileAlert": "Unfortunately, your photo could not be uploaded. The avatar image file to upload (PNG/JPG only, max 1MB).",
+        "personalInfo": "Personal Information",
+        "phoneNumber": "Phone Number",
+        "personalNumber": "Personal Number",
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "save": "Save",
+        "savePersonalNumber": "Save Personal Number",
+        "personalNumberUpdated": "Personal number updated successfully",
+        "personalNumberExists": "Personal number already exists",
+        "invalidPersonalNumber": "Personal number must be exactly 11 digits",
+        "invalidPhoneNumber": "Phone number must be exactly 9 digits",
+        "noChangesToSave": "No changes to save",
+        "verifyPhoneUpdate": "Verify Phone Number Update",
+        "otpDescription": "Enter the OTP code sent to you via SMS",
+        "verify": "Verify",
+        "didntReceiveCode": "Didn't receive the code?",
+        "phoneNumberUpdated": "Phone number updated successfully",
+        "maxResendReached": "Maximum resend limit reached",
+        "startTour": "Start Tour"
   },
   "security": {
     "title": "Security Settings",
@@ -167,6 +186,7 @@
     "title": "My Accounts",
     "subtitle": "Manage your accounts, set favorites, and control visibility",
     "errorMessage": "Failed to fetch the data",
+    "errorBtn": "Retry",
     "warningHeader": "No Data Found",
     "warningMessage": "We couldn't find any data to display.",
     "warningBtn": "Go Back"

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   AccountsTestContext,
-  setupAccountsTestWithStore,
+  setupAccountsTest,
   cleanupAccountsTest,
   mockAccount,
   mockAccount2,
@@ -13,7 +13,7 @@ describe('Accounts Integration - Transfer Flow', () => {
   let ctx: AccountsTestContext;
 
   beforeEach(async () => {
-    ctx = await setupAccountsTestWithStore();
+    ctx = await setupAccountsTest();
   });
 
   afterEach(() => {

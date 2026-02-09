@@ -1,8 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { Router } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ProfilePhotoComponent } from '../components/profile-photo/profile-photo.component';
+import { UserInfoComponent } from '../components/user-info/user-info.component';
 import { AlertType } from '../shared/models/profile-photo.models';
 import { ProfilePhotoActions } from '../store/profile-photo/profile-photo.actions';
+import { OtpModal } from '../../../../../../shared/lib/overlay/ui-otp-modal/otp-modal';
 import {
   selectDefaultAvatars,
   selectDefaultAvatarsLoading,
@@ -12,13 +16,28 @@ import {
   selectAvatarId,
   selectAvatarType,
   selectSavedAvatarUrl,
+  selectSavingChanges,
 } from '../store/profile-photo/profile-photo.selectors';
 import { selectUserInfo } from '../../../../../../store/user-info/user-info.selectors';
+import { UserInfoActions } from '../../../../../../store/user-info/user-info.actions';
+import { Routes } from '../../../../../../core/auth/models/tokens.model';
 import { TranslateService } from '@ngx-translate/core';
+import { PersonalInfoActions } from '../../../../../../store/personal-info/pesronal-info.actions';
+import {
+  selectPersonalInfo,
+  selectPId,
+  selectPhoneNumber,
+  selectPersonalInfoLoading,
+  selectPersonalInfoError,
+  selectPhoneUpdateChallengeId,
+  selectPhoneUpdateLoading,
+  selectPhoneUpdateError,
+  selectPhoneUpdateResendCount,
+} from '../../../../../../store/personal-info/personal-info.selectors';
 
 @Component({
   selector: 'app-profile-photo-container',
-  imports: [ProfilePhotoComponent],
+  imports: [ProfilePhotoComponent, UserInfoComponent, OtpModal, TranslatePipe],
   templateUrl: './profile-photo-container.html',
   styleUrl: './profile-photo-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,6 +45,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class ProfilePhotoContainer implements OnInit, OnDestroy {
   private readonly store = inject(Store);
   private readonly translate = inject(TranslateService);
+  private readonly router = inject(Router);
 
   public readonly defaultAvatars = this.store.selectSignal(selectDefaultAvatars);
   public readonly defaultAvatarsLoading = this.store.selectSignal(selectDefaultAvatarsLoading);
@@ -35,7 +55,59 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   public readonly avatarId = this.store.selectSignal(selectAvatarId);
   public readonly avatarType = this.store.selectSignal(selectAvatarType);
   public readonly savedAvatarUrl = this.store.selectSignal(selectSavedAvatarUrl);
+  public readonly savingChanges = this.store.selectSignal(selectSavingChanges);
   public readonly userInfo = this.store.selectSignal(selectUserInfo);
+  public readonly personalInfo = this.store.selectSignal(selectPersonalInfo);
+  public readonly pId = this.store.selectSignal(selectPId);
+  public readonly phoneNumber = this.store.selectSignal(selectPhoneNumber);
+  public readonly personalInfoLoading = this.store.selectSignal(selectPersonalInfoLoading);
+  public readonly personalInfoError = this.store.selectSignal(selectPersonalInfoError);
+  public readonly personalInfoUpdated = signal<boolean>(false);
+  public readonly phoneUpdateChallengeId = this.store.selectSignal(selectPhoneUpdateChallengeId);
+  public readonly phoneUpdateLoading = this.store.selectSignal(selectPhoneUpdateLoading);
+  public readonly phoneUpdateError = this.store.selectSignal(selectPhoneUpdateError);
+  public readonly phoneUpdateResendCount = this.store.selectSignal(selectPhoneUpdateResendCount);
+
+  public readonly editedPId = signal<string>('');
+  public readonly isEditing = signal<boolean>(false);
+  public readonly isPersonalNumberUnchanged = computed(() => {
+    const currentPId = this.pId()?.trim() || '';
+    const editedPId = this.editedPId()?.trim() || '';
+    return currentPId === editedPId;
+  });
+
+  public readonly editedPhoneNumber = signal<string>('');
+  public readonly isPhoneNumberUnchanged = computed(() => {
+    const currentPhone = this.phoneNumber()?.trim() || '';
+    const editedPhone = this.editedPhoneNumber()?.trim() || '';
+    return currentPhone === editedPhone;
+  });
+  public readonly isOtpModalOpen = signal<boolean>(false);
+  public readonly saveDisabledReason = computed(() => {
+    if (this.phoneUpdateLoading() || this.personalInfoLoading()) {
+      return null; 
+    }
+    if (this.isPhoneNumberUnchanged() && this.isPersonalNumberUnchanged()) {
+      return this.translate.instant('settings.profile-photo.noChangesToSave');
+    }
+    return null;
+  });
+
+  public readonly userInitials = computed(() => {
+    const fullName = this.userInfo()?.fullName;
+    if (!fullName) return '';
+    
+    const nameParts = fullName.trim().split(/\s+/).filter(part => part.length > 0);
+    if (nameParts.length === 0) return '';
+    
+    if (nameParts.length === 1) {
+      return nameParts[0].charAt(0).toUpperCase();
+    }
+    
+    const firstInitial = nameParts[0].charAt(0).toUpperCase();
+    const lastInitial = nameParts[nameParts.length - 1].charAt(0).toUpperCase();
+    return `${firstInitial}${lastInitial}`;
+  });
 
   public readonly alertKind = signal<AlertType | null>(null);
   public readonly alertMessage = signal<string>('');
@@ -46,6 +118,9 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   private uploadedFile: File | null = null;
   private objectUrl: string | null = null;
   private alertTimeoutId: ReturnType<typeof setTimeout> | null = null;
+  private isUpdatingPersonalInfo = false;
+  private originalPIdBeforeUpdate: string | null = null;
+  private originalPhoneBeforeUpdate: string | null = null;
 
   public constructor() {
     effect(() => {
@@ -55,10 +130,114 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
         this.objectUrl = null;
       }
     });
+
+   
+    effect(() => {
+      const currentPId = this.pId();
+      if (!this.isEditing()) {
+        this.editedPId.set(currentPId || '');
+      }
+    });
+
+    effect(() => {
+      const currentPhone = this.phoneNumber();
+      if (!this.isEditing()) {
+        this.editedPhoneNumber.set(currentPhone || '');
+      }
+    });
+
+
+    effect(() => {
+      const updated = this.personalInfoUpdated();
+      if (updated && this.isEditing()) {
+        this.isEditing.set(false);
+      }
+    });
+
+
+    let previousLoading = false;
+    effect(() => {
+      const personalInfo = this.personalInfo();
+      const error = this.personalInfoError();
+      const loading = personalInfo?.loading ?? false;
+      
+      const loadingFinished = previousLoading && !loading;
+      previousLoading = loading;
+
+    
+      if (loadingFinished && this.isUpdatingPersonalInfo) {
+        if (error === null) {
+          this.showAlert(
+            'success',
+            this.translate.instant('settings.profile-photo.personalNumberUpdated'),
+          );
+          this.personalInfoUpdated.set(true);
+          setTimeout(() => this.personalInfoUpdated.set(false), 0);
+          this.originalPIdBeforeUpdate = null; 
+        } else if (error) {
+          this.showAlert(
+            'error',
+            error,
+          );
+        
+          if (this.isEditing()) {
+            const originalValue = this.originalPIdBeforeUpdate || '';
+            this.editedPId.set(originalValue);
+            if (this.originalPIdBeforeUpdate !== null) {
+              this.store.dispatch(
+                PersonalInfoActions.loadPersonalInfoPId({ pId: this.originalPIdBeforeUpdate })
+              );
+            }
+            this.originalPIdBeforeUpdate = null;
+          }
+        }
+        this.isUpdatingPersonalInfo = false;
+      }
+    });
+
+
+    effect(() => {
+      const challengeId = this.phoneUpdateChallengeId();
+      if (challengeId && !this.isOtpModalOpen()) {
+        this.isOtpModalOpen.set(true);
+      }
+    });
+
+ 
+    let previousChallengeId: string | null = null;
+    let previousPhoneUpdateLoading = false;
+    
+    effect(() => {
+      const challengeId = this.phoneUpdateChallengeId();
+      const loading = this.phoneUpdateLoading();
+      const error = this.phoneUpdateError();
+      const loadingFinished = previousPhoneUpdateLoading && !loading;
+      const challengeIdCleared = previousChallengeId !== null && challengeId === null;
+      
+      previousChallengeId = challengeId;
+      previousPhoneUpdateLoading = loading;
+
+ 
+      if (challengeIdCleared && !error && loadingFinished) {
+        this.showAlert(
+          'success',
+          this.translate.instant('settings.profile-photo.phoneNumberUpdated'),
+        );
+        this.isEditing.set(false);
+        this.isOtpModalOpen.set(false);
+        this.store.dispatch(PersonalInfoActions.loadPersonalInfo({ forceRefresh: true }));
+      }
+      
+ 
+      if (loadingFinished && error && challengeId) {
+        this.showAlert('error', error);
+      }
+    });
   }
 
   public ngOnInit(): void {
     this.store.dispatch(ProfilePhotoActions.loadDefaultAvatarsRequest({}));
+    this.store.dispatch(PersonalInfoActions.loadPersonalInfo({}));
   }
 
   public ngOnDestroy(): void {
@@ -234,8 +413,8 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
       this.objectUrl = null;
     }
     this.uploadedFile = null;
-    this.store.dispatch(ProfilePhotoActions.removeAvatar());
-    this.store.dispatch(ProfilePhotoActions.removeAvatarRequest());
+    
+    this.store.dispatch(ProfilePhotoActions.clearCurrentAvatar());
   }
 
   public onSaveChanges(): void {
@@ -264,7 +443,142 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
       this.store.dispatch(
         ProfilePhotoActions.selectDefaultAvatarRequest({ avatarId })
       );
+      return;
     }
+
+
+    if (this.savedAvatarUrl() && !this.currentAvatarUrl()) {
+    
+      this.store.dispatch(ProfilePhotoActions.removeAvatar());
+      this.store.dispatch(ProfilePhotoActions.removeAvatarRequest());
+      
+     
+      const initials = this.userInitials();
+      if (initials) {
+        this.store.dispatch(ProfilePhotoActions.setUserInitials({ initials }));
+      }
+    }
+  }
+
+  public onEdit(): void {
+    this.isEditing.set(true);
+  }
+
+  public onPersonalNumberChange(value: string | number | boolean | FileList | null): void {
+    this.editedPId.set(value ? String(value) : '');
+  }
+
+  public onPhoneNumberChange(value: string | number | boolean | FileList | null): void {
+    this.editedPhoneNumber.set(value ? String(value) : '');
+  }
+
+  public onCancelEdit(): void {
+    this.isEditing.set(false);
+    this.editedPId.set(this.pId() || '');
+    this.editedPhoneNumber.set(this.phoneNumber() || '');
+  }
+
+  public onSave(): void {
+    const editedPhone = this.editedPhoneNumber()?.trim() || '';
+    const editedPId = this.editedPId()?.trim() || '';
+    const currentPhone = this.phoneNumber()?.trim() || '';
+    const currentPId = this.pId()?.trim() || '';
+
+    const phoneChanged = editedPhone !== currentPhone;
+    const pIdChanged = editedPId !== currentPId;
+
+  
+    if (phoneChanged) {
+      if (!editedPhone || editedPhone.length !== 9) {
+        this.showAlert(
+          'error',
+          this.translate.instant('settings.profile-photo.invalidPhoneNumber'),
+        );
+        return;
+      }
+    }
+
+   
+    if (pIdChanged) {
+      if (!editedPId || editedPId.length !== 11) {
+        this.showAlert(
+          'error',
+          this.translate.instant('settings.profile-photo.invalidPersonalNumber'),
+        );
+        return;
+      }
+    }
+
+   
+    if (!phoneChanged && !pIdChanged) {
+      this.isEditing.set(false);
+      return;
+    }
+
+
+    if (pIdChanged) {
+      this.originalPIdBeforeUpdate = currentPId;
+      this.isUpdatingPersonalInfo = true;
+      this.store.dispatch(
+        PersonalInfoActions.updatePersonalInfo({
+          personalInfo: {
+            ...this.personalInfo(),
+            pId: editedPId,
+          },
+        })
+      );
+    }
+
+
+    if (phoneChanged) {
+      this.originalPhoneBeforeUpdate = currentPhone;
+      this.store.dispatch(
+        PersonalInfoActions.initiatePhoneUpdate({ phone: editedPhone })
+      );
+    }
+  }
+
+  public onOtpModalClosed(): void {
+    this.isOtpModalOpen.set(false);
+    if (this.phoneUpdateChallengeId()) {
+      this.store.dispatch(PersonalInfoActions.resetPhoneUpdate());
+
+      this.editedPhoneNumber.set(this.originalPhoneBeforeUpdate || this.phoneNumber() || '');
+    }
+  }
+
+  public onVerifyOtp(code: string): void {
+    const challengeId = this.phoneUpdateChallengeId();
+    if (challengeId) {
+      this.store.dispatch(
+        PersonalInfoActions.verifyPhoneUpdate({ challengeId, code })
+      );
+    }
+  }
+
+  public onResendOtp(): void {
+    const challengeId = this.phoneUpdateChallengeId();
+    const resendCount = this.phoneUpdateResendCount();
+    if (challengeId && resendCount < 3) {
+      this.store.dispatch(
+        PersonalInfoActions.resendPhoneOTP({ challengeId })
+      );
+    } else if (resendCount >= 3) {
+      this.showAlert(
+        'error',
+        this.translate.instant('settings.profile-photo.maxResendReached'),
+      );
+    }
+  }
+
+  public onImageLoadError(): void {
+
+    this.store.dispatch(ProfilePhotoActions.clearCurrentAvatar());
+  }
+
+  public onStartTour(): void {
+    this.store.dispatch(UserInfoActions.updateOnboardingStatus({ completed: false }));
+    this.router.navigate([Routes.DASHBOARD]);
   }
 }
 

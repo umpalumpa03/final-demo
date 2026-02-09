@@ -616,6 +616,4 @@ export class PaybillEffect {
       ),
     ),
   );
-
-
 }

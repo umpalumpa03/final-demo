@@ -10,7 +10,8 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Textarea } from '@tia/shared/lib/forms/textarea/textarea';
 import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { CONTACT_FORM } from '../models/forms.config';
+import { FormsDemoState } from '../state/forms-demo.state';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-contact-form',
@@ -20,6 +21,7 @@ import { CONTACT_FORM } from '../models/forms.config';
     Textarea,
     Checkboxes,
     ButtonComponent,
+    TranslatePipe
   ],
   templateUrl: './contact-form.html',
   styleUrl: './contact-form.scss',
@@ -28,7 +30,7 @@ import { CONTACT_FORM } from '../models/forms.config';
 export class ContactForms {
   private fb = inject(FormBuilder);
   public submitForm = output<IContactForm>();
-  public nameConfig = CONTACT_FORM;
+  public readonly nameConfig = inject(FormsDemoState).contactForm;
 
   public contactForm = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.minLength(2)]],

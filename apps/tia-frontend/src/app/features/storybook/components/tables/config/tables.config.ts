@@ -386,13 +386,14 @@ export const transactionsTable: TableConfig = {
   itemsPerPage: 2,
   headers: [
     { title: 'Details', align: 'left', width: '47%' },
-    { title: 'Amount', align: 'right', width: '25%' },
+    { title: 'Amount', align: 'right', width: '22%' },
     { title: 'Actions', align: 'right', width: '28%' },
   ],
   rows: [
     {
       id: '1',
       transactionType: 'credit',
+      hasMeta: true,
       info: [
         {
           type: 'text',
@@ -413,10 +414,12 @@ export const transactionsTable: TableConfig = {
     {
       id: '2',
       transactionType: 'debit',
+      hasMeta: false,
       info: [
         {
           type: 'text',
-          value: 'Grocery Shopping',
+          value:
+            'Grocery Shopping Grocery Shopping Grocery Shopping Grocery Shopping',
           category: 'Shopping',
           accountName: 'Main Account',
           date: '2026-01-13T00:00:00Z',
@@ -433,6 +436,7 @@ export const transactionsTable: TableConfig = {
     {
       id: '3',
       transactionType: 'credit',
+      hasMeta: true,
       info: [
         {
           type: 'text',
@@ -453,6 +457,7 @@ export const transactionsTable: TableConfig = {
     {
       id: '4',
       transactionType: 'credit',
+      hasMeta: true,
       info: [
         {
           type: 'text',

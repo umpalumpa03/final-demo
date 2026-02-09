@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   inject,
   OnInit,
@@ -32,12 +33,13 @@ import {
   HeaderCtaAction,
   ModalType,
   ProviderTypeForStore,
+  TemplateGroups,
   TreeAction,
   TreeItemMoved,
 } from '../models/paybill-templates.model';
 import { ModalConfig } from '../configs/cta-buttons.config';
 import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   createEditGroupForm,
   createEditTemplateForm,
@@ -47,10 +49,23 @@ import {
 import { PaybillDynamicForm } from '../../../services/paybill-dynamic-form/paybill-dynamic-form';
 import { Actions, ofType } from '@ngrx/effects';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
+import {
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  startWith,
+  switchMap,
+  tap,
+} from 'rxjs';
+import { paybillSearchConfig } from '../configs/search.config';
+import { PaybillTemplatesService } from '../services/paybill-templates-service';
+import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 
 @Component({
   selector: 'app-paybill-templates-container',
-  imports: [PaybillTemplates],
+  imports: [PaybillTemplates, TextInput, ReactiveFormsModule],
   templateUrl: './paybill-templates-container.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -65,6 +80,7 @@ export class PaybillTemplatesContainer implements OnInit {
   private readonly store = inject(Store);
   private readonly payBill = inject(PaybillDynamicForm);
   private readonly actions$ = inject(Actions);
+  private paybillTemplateService = inject(PaybillTemplatesService);
 
   private readonly successListener = this.actions$
     .pipe(
@@ -178,11 +194,62 @@ export class PaybillTemplatesContainer implements OnInit {
     },
   };
 
+  public readonly searchControl = new FormControl('');
+  private readonly destroyRef = inject(DestroyRef);
+  public readonly searchInputConfig = paybillSearchConfig;
+
+  // This is needed to set filtered item and then below logic apply to show the output
+  public readonly filteredTemplates = signal<TreeItem[]>([]);
+  public readonly filteredGroups = signal<TemplateGroups[]>([]);
+
+  // Computed values that return filtered or original data
+  public readonly displayTemplates = computed(() => {
+    const filtered = this.filteredTemplates();
+    return filtered.length > 0 || this.searchControl.value
+      ? filtered
+      : this.templates();
+  });
+
+  public readonly displayGroups = computed(() => {
+    const filtered = this.filteredGroups();
+    return filtered.length > 0 || this.searchControl.value
+      ? filtered
+      : this.templateGroups();
+  });
+
   // On Init Load Data
   ngOnInit(): void {
     this.store.dispatch(PaybillActions.clearSelection());
     this.store.dispatch(TemplatesPageActions.loadTemplateGroups());
     this.store.dispatch(TemplatesPageActions.loadTemplates());
+
+    // This Logic is for search filter (NO SUPPORT FROM BACKEND NEED TO HANDLE IN FRONT)
+    this.searchControl.valueChanges
+      .pipe(
+        startWith(''),
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+        switchMap((searchValue) =>
+          combineLatest([
+            this.store.select(selectTemplatesAsTreeItems),
+            this.store.select(selectTemplatesGroupWithConfigs),
+          ]).pipe(
+            map(([templates, groups]) =>
+              this.paybillTemplateService.filterTemplatesAndGroups(
+                searchValue ?? '',
+                templates,
+                groups,
+              ),
+            ),
+          ),
+        ),
+        tap((filtered) => {
+          this.filteredTemplates.set(filtered.templates);
+          this.filteredGroups.set(filtered.groups);
+        }),
+      )
+      .subscribe();
   }
 
   // Handles to determine what is modals type based on clicks in header
@@ -334,8 +401,10 @@ export class PaybillTemplatesContainer implements OnInit {
 
     this.store.dispatch(PaybillActions.clearSelection());
 
+    const currentName = this.createTemplateForm.get('name')?.value;
+
     this.payBill.resetFormToInitialState(this.createTemplateForm, {
-      name: '',
+      name: currentName || '',
       category: category as string,
     });
 

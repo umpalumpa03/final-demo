@@ -10,7 +10,7 @@ import {
   AccountType,
 } from '@tia/shared/models/accounts/accounts.model';
 import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.service';
-import { MockStore } from '@ngrx/store/testing';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
 
 export const mockAccount: Account = {
   id: 'acc-123',
@@ -79,24 +79,6 @@ export interface AccountsTestContext {
 }
 
 export async function setupAccountsTest(): Promise<AccountsTestContext> {
-  await TestBed.configureTestingModule({
-    providers: [
-      provideTranslateService(),
-      provideHttpClient(),
-      provideHttpClientTesting(),
-      AccountsApiService,
-    ],
-  }).compileComponents();
-
-  const httpMock = TestBed.inject(HttpTestingController);
-  const apiService = TestBed.inject(AccountsApiService);
-
-  return { httpMock, apiService };
-}
-
-export async function setupAccountsTestWithStore(): Promise<AccountsTestContext> {
-  const { provideMockStore } = await import('@ngrx/store/testing');
-
   await TestBed.configureTestingModule({
     providers: [
       provideTranslateService(),

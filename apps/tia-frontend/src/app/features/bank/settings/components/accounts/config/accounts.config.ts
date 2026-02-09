@@ -2,6 +2,7 @@ export const ERROR_STATE = {
   maxWidth: '86rem',
   error: {
     message: 'settings.accounts.errorMessage',
+    button: 'settings.accounts.errorBtn'
   },
   warning: {
     variant: 'not-found',
