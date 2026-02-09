@@ -1,12 +1,12 @@
 <div class="forms__lib">
   <header class="forms__lib__header">
     <app-library-title
-      [title]="title"
-      [subtitle]="subtitle"
+      [title]="pageInfo().title"
+      [subtitle]="pageInfo().subtitle"
     ></app-library-title>
   </header>
 
-  <app-showcase-card title="Contact Form">
+  <app-showcase-card [title]="titles().contact">
     @defer {
     <app-contact-form></app-contact-form>
     } @placeholder {
@@ -14,7 +14,7 @@
     }
   </app-showcase-card>
 
-  <app-showcase-card title="Registration Form">
+  <app-showcase-card [title]="titles().registration">
     @defer {
     <app-registration-form [isRegistration]="true"></app-registration-form>
     } @placeholder {
@@ -22,23 +22,23 @@
     }
   </app-showcase-card>
 
-  <app-showcase-card title="Settings Form">
+  <app-showcase-card [title]="titles().settings">
     <app-settings-form navigateRoute=""></app-settings-form>
   </app-showcase-card>
 
-  <app-showcase-card title="Inline Form">
+  <app-showcase-card [title]="titles().inline">
     <app-inline-form></app-inline-form>
   </app-showcase-card>
 
-  <app-showcase-card title="Form with Validation">
+  <app-showcase-card [title]="titles().validation">
     <app-validation-form></app-validation-form>
   </app-showcase-card>
 
-  <app-showcase-card title="Multi-step Form Progress">
+  <app-showcase-card [title]="titles().multiStep">
     <app-multistep-forms></app-multistep-forms>
   </app-showcase-card>
 
-  <app-showcase-card title="Form Layout">
+  <app-showcase-card [title]="titles().layout">
     <app-layout-form></app-layout-form>
   </app-showcase-card>
 </div>

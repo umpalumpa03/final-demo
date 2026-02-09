@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, HostBinding, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
-import { VALIDATION_FORM } from '../models/forms.config';
+import { FormsDemoState } from '../state/forms-demo.state';
 
 @Component({
   selector: 'app-validation-form',
@@ -12,7 +12,7 @@ import { VALIDATION_FORM } from '../models/forms.config';
 })
 export class ValidationForm {
   private fb = inject(FormBuilder);
-  public validationConfig = VALIDATION_FORM;
+  public readonly validationConfig = inject(FormsDemoState).validationForm;
 
   public contactForm = this.fb.nonNullable.group({
     valid: ['john@example.com', Validators.email],

@@ -91,7 +91,8 @@
         "verify": "Verify",
         "didntReceiveCode": "Didn't receive the code?",
         "phoneNumberUpdated": "Phone number updated successfully",
-        "maxResendReached": "Maximum resend limit reached"
+        "maxResendReached": "Maximum resend limit reached",
+        "startTour": "Start Tour"
   },
   "security": {
     "title": "Security Settings",
@@ -185,6 +186,7 @@
     "title": "My Accounts",
     "subtitle": "Manage your accounts, set favorites, and control visibility",
     "errorMessage": "Failed to fetch the data",
+    "errorBtn": "Retry",
     "warningHeader": "No Data Found",
     "warningMessage": "We couldn't find any data to display.",
     "warningBtn": "Go Back"

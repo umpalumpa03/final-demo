@@ -11,6 +11,7 @@ export interface ITransactions {
   debitAccountNumber: string;
   creditAccountNumber: string | null;
   category: TransactionCategoryInterface | string;
+  meta?: Record<string, string> | null;
   convertionInfo?: ConvertionInfo;
   createdAt: string;
   updatedAt: string;

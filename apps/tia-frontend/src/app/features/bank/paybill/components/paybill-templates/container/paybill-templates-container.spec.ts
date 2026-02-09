@@ -177,4 +177,106 @@ describe('PaybillTemplatesContainer', () => {
       TemplatesPageActions.selectProvider({ providerId: 'p-1', level: 1 }),
     );
   });
+
+  it('should close modal and clear state', () => {
+    component.isModalOpen.set(true);
+    component.modalType.set(ModalType.DeleteTemplate);
+    component.selectedId.set('t-100');
+    component.selectedItemName.set('Test');
+
+    component.handleModalToggle();
+
+    expect(component.isModalOpen()).toBe(false);
+    expect(component.modalType()).toBeNull();
+    expect(component.selectedId()).toBe('');
+    expect(component.selectedItemName()).toBe('');
+  });
+
+  it('should dispatch create group action', () => {
+    component.handleFormSubmit({
+      type: 'create-group',
+      values: { name: 'New Group' },
+    });
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      TemplatesPageActions.createTemplatesGroups({
+        groupName: 'New Group',
+        templateIds: [],
+      }),
+    );
+  });
+
+  it('should dispatch rename group action', () => {
+    component.selectedId.set('g-1');
+    component.handleFormSubmit({
+      type: 'rename-group',
+      values: { name: 'Updated Group' },
+    });
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      TemplatesPageActions.renameTemplateGroup({
+        groupId: 'g-1',
+        groupName: 'Updated Group',
+      }),
+    );
+  });
+
+  it('should dispatch moveTemplate when templateMoved is called', () => {
+    component.templateMoved({
+      itemId: 't-1',
+      fromGroupId: 'g-1',
+      toGroupId: 'g-2',
+      newOrder: 1,
+    });
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      TemplatesPageActions.moveTemplate({
+        groupId: 'g-2',
+        templateId: 't-1',
+      }),
+    );
+  });
+
+  it('should handle item-edit action', () => {
+    component.onTreeAction({ id: 't-100', type: 'item-edit' });
+    expect(component.modalType()).toBe(ModalType.RenameTemplate);
+  });
+
+  it('should handle group-delete action', () => {
+    component.onTreeAction({ id: 'g-200', type: 'group-delete' });
+    expect(component.modalType()).toBe(ModalType.DeleteGroup);
+  });
+
+  it('should not dispatch if providerId is null', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    dispatchSpy.mockClear();
+
+    component.onParentProviderSelect({ providerId: null, index: 1 });
+
+    expect(dispatchSpy).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: expect.stringContaining('selectProvider'),
+      }),
+    );
+  });
+
+  it('should return filtered templates when search has value', () => {
+    component.filteredTemplates.set([{ id: '1', title: 'Filtered' }] as any);
+    component.searchControl.setValue('test');
+
+    const result = component.displayTemplates();
+
+    expect(result.length).toBe(1);
+    expect(result[0].title).toBe('Filtered');
+  });
+
+  it('should return original templates when no filter', () => {
+    component.filteredTemplates.set([]);
+    component.searchControl.setValue('');
+
+    const result = component.displayTemplates();
+
+    expect(result.length).toBe(1);
+    expect(result[0].title).toBe('Electric Bill');
+  });
 });
