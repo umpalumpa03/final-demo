@@ -9,7 +9,7 @@ import { provideHttpClientTesting, HttpTestingController } from '@angular/common
 import { environment } from '../../../../../../../environments/environment';
 import { Store } from '@ngrx/store';
 import * as PersonalInfoSelectors from '../../../../../../store/personal-info/personal-info.selectors';
-import { take, timeout, filter, combineLatest } from 'rxjs';
+import { take, timeout, filter } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
 import { PersonalInfoActions } from '../../../../../../store/personal-info/pesronal-info.actions';
 
@@ -94,19 +94,22 @@ describe('Personal Info integration', () => {
 
     req.flush({ message: 'Success' });
 
-  
-    const [loading, pId] = await firstValueFrom(
-      combineLatest([
-        store.select(PersonalInfoSelectors.selectPersonalInfoLoading),
-        store.select(PersonalInfoSelectors.selectPId),
-      ]).pipe(
-        filter(([isLoading, id]) => !isLoading && id === '98765432109'),
-        take(1),
-        timeout(10000),
-      ),
+ 
+    await firstValueFrom(
+      store
+        .select(PersonalInfoSelectors.selectPersonalInfoLoading)
+        .pipe(
+          filter((isLoading) => !isLoading),
+          take(1),
+          timeout(10000),
+        ),
     );
 
-    expect(loading).toBe(false);
+   
+    const pId = await firstValueFrom(
+      store.select(PersonalInfoSelectors.selectPId).pipe(take(1), timeout(1000)),
+    );
+
     expect(pId).toBe('98765432109');
   });
 
@@ -163,7 +166,7 @@ describe('Personal Info integration', () => {
 
     req.flush({ message: 'Success' });
 
-    
+ 
     await firstValueFrom(
       store
         .select(PersonalInfoSelectors.selectPhoneUpdateLoading)
@@ -176,13 +179,7 @@ describe('Personal Info integration', () => {
 
   
     const phoneAfterVerify = await firstValueFrom(
-      store
-        .select(PersonalInfoSelectors.selectPhoneNumber)
-        .pipe(
-          filter((phone) => phone === '555987654'),
-          take(1),
-          timeout(10000),
-        ),
+      store.select(PersonalInfoSelectors.selectPhoneNumber).pipe(take(1), timeout(1000)),
     );
     expect(phoneAfterVerify).toBe('555987654');
 
@@ -191,19 +188,22 @@ describe('Personal Info integration', () => {
     const personalInfoReq = httpMock.expectOne(`${environment.apiUrl}/settings/personal-info`);
     personalInfoReq.flush({ pId: '12345678901', phone: '555987654' });
 
- 
-    const [loading, phoneNumber] = await firstValueFrom(
-      combineLatest([
-        store.select(PersonalInfoSelectors.selectPersonalInfoLoading),
-        store.select(PersonalInfoSelectors.selectPhoneNumber),
-      ]).pipe(
-        filter(([isLoading, phone]) => !isLoading && phone === '555987654'),
-        take(1),
-        timeout(10000),
-      ),
+   
+    await firstValueFrom(
+      store
+        .select(PersonalInfoSelectors.selectPersonalInfoLoading)
+        .pipe(
+          filter((isLoading) => !isLoading),
+          take(1),
+          timeout(10000),
+        ),
     );
 
-    expect(loading).toBe(false);
+
+    const phoneNumber = await firstValueFrom(
+      store.select(PersonalInfoSelectors.selectPhoneNumber).pipe(take(1), timeout(1000)),
+    );
+
     expect(phoneNumber).toBe('555987654');
   });
 
