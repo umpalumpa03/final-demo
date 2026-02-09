@@ -15,49 +15,51 @@
       </div>
 
       <div class="finances-filters__inputs">
-        @if (activeFilter() === null) {
-          <div class="finances-filters__info-badge">
-            <p>{{ 'my-finances.finances.filters.twelve_months' | translate }}</p>
-          </div>
-        } 
-        
-        @if (activeFilter() === 'month') {
-          <div class="finances-filters__input-item">
-            <label class="finances-filters__label">{{ 'my-finances.finances.filters.select_month' | translate }}</label>
-            <div class="finances-filters__control-wrapper">
-              <lib-select
-                [options]="monthOptions()"
-                [config]="{ placeholder: ('my-finances.finances.filters.placeholder' | translate) }"
-                [formControl]="getControl('selectedMonth')"
-              ></lib-select>
+        @switch (activeFilter()) {
+          @case (null) {
+            <div class="finances-filters__info-badge">
+              <p>{{ 'my-finances.finances.filters.twelve_months' | translate }}</p>
             </div>
-          </div>
-        } 
+          }
 
-        @if (activeFilter() === 'custom') {
-          <div class="finances-filters__range-group">
+          @case ('month') {
             <div class="finances-filters__input-item">
-              <label class="finances-filters__label">{{ 'my-finances.finances.filters.from' | translate }}</label>
+              <label class="finances-filters__label">{{ 'my-finances.finances.filters.select_month' | translate }}</label>
               <div class="finances-filters__control-wrapper">
-                <lib-text-input
-                  type="date"
-                  [config]="{ placeholder: 'YYYY-MM-DD' }"
-                  [formControl]="getControl('fromDate')"
-                ></lib-text-input>
+                <lib-select
+                  [options]="monthOptions()"
+                  [config]="{ placeholder: ('my-finances.finances.filters.placeholder' | translate) }"
+                  [formControl]="getControl('selectedMonth')"
+                ></lib-select>
               </div>
             </div>
+          }
 
-            <div class="finances-filters__input-item">
-              <label class="finances-filters__label">{{ 'my-finances.finances.filters.to' | translate }}</label>
-              <div class="finances-filters__control-wrapper">
-                <lib-text-input
-                  type="date"
-                  [config]="{ placeholder: 'YYYY-MM-DD' }"
-                  [formControl]="getControl('toDate')"
-                ></lib-text-input>
+          @case ('custom') {
+            <div class="finances-filters__range-group">
+              <div class="finances-filters__input-item">
+                <label class="finances-filters__label">{{ 'my-finances.finances.filters.from' | translate }}</label>
+                <div class="finances-filters__control-wrapper">
+                  <lib-text-input
+                    type="date"
+                    [config]="{ placeholder: 'YYYY-MM-DD' }"
+                    [formControl]="getControl('fromDate')"
+                  ></lib-text-input>
+                </div>
+              </div>
+
+              <div class="finances-filters__input-item">
+                <label class="finances-filters__label">{{ 'my-finances.finances.filters.to' | translate }}</label>
+                <div class="finances-filters__control-wrapper">
+                  <lib-text-input
+                    type="date"
+                    [config]="{ placeholder: 'YYYY-MM-DD' }"
+                    [formControl]="getControl('toDate')"
+                  ></lib-text-input>
+                </div>
               </div>
             </div>
-          </div>
+          }
         }
       </div>
     </div>
