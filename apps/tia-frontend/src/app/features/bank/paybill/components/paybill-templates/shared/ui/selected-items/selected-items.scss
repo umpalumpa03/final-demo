@@ -1,0 +1,20 @@
+@use '../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../shared/styles/palette' as *;
+
+.selected__container {
+  @include flex-center($justify: space-between);
+  background-color: $gray-100;
+  padding: 1.6rem 2.2rem;
+  border: 1px solid $blue-200;
+  border-radius: 1rem;
+
+  &__description {
+    @include flex-center($justify: flex-start);
+    gap: 0.8rem;
+
+    span {
+      @include font-inter(600, 1.6rem, 2.4rem);
+      color: $blue-950;
+    }
+  }
+}
