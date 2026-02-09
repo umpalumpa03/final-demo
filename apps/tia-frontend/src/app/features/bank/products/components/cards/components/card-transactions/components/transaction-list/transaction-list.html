@@ -1,7 +1,7 @@
 <div class="transaction-list">
   @if (transactions().length === 0) {
   <div class="transaction-list__empty">
-    <p class="transaction-list__empty-text">No transactions found</p>
+    <p class="transaction-list__empty-text">{{'my-products.card.card-transactions.transaction-list.noTransactions' | translate }}</p>
   </div>
   } @else {
   <div class="transaction-list__items">

@@ -107,7 +107,62 @@
     }
   },
   "forms": {},
-  "cards": {},
+  "cards": {
+     "pageTitle": "Cards",
+    "pageSubtitle": "Card components with various layouts and content types",
+    "basicCard": "Basic Cards",
+    "StatisticsCards": "Statistics Cards",
+    "categoryCards": "Category Cards",
+    "cancelBtn": "Cancel",
+    "submitBtn": "Submit",
+     "basic1": {
+      "title": "Card Title",
+      "subtitle": "Card description goes here",
+      "content": "This is the main content area of the card. You can put any content here."
+    },
+    "basic2": {
+      "title": "With Footer",
+      "subtitle": "Card with action buttons",
+      "content": "This card includes a footer with action buttons."
+    },
+    "basic3": {
+      "title": "Hover Effect",
+      "subtitle": "Hover over this card",
+      "content": "This card has hover effects applied."
+    },
+    "stats": {
+      "revenue": {
+        "label": "Total Revenue",
+        "value": "$45,231.89",
+        "change": "+20.1% from last month"
+      },
+      "subscriptions": {
+        "label": "Subscriptions",
+        "value": "+2,350",
+        "change": "+180.1% from last month"
+      },
+      "sales": {
+        "label": "Sales",
+        "value": "+12,234",
+        "change": "+19% from last month"
+      },
+      "active": {
+        "label": "Active Now",
+        "value": "+573",
+        "change": "-4% from last hour"
+      }
+    },
+    "category": {
+      "utilities": {
+        "title": "Utilities",
+        "subtitle": "Electricity, Water, Gas"
+      },
+      "internet": {
+        "title": "Internet & TV",
+        "subtitle": "Internet, Cable TV"
+      }
+    }
+  },
   "alerts": {},
   "badges": {
     "title": "Badges",

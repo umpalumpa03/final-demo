@@ -70,14 +70,14 @@ describe('CardsEffects', () => {
 
   it('should load card accounts successfully', async () => {
     cardListApiService.getCardAccounts.mockReturnValue(of(mockAccounts));
-    actions$ = of(CardsActions.loadCardAccounts());
+    actions$ = of(CardsActions.loadCardAccounts({}));
 
     expect(await firstValueFrom(effects.loadCardAccounts$)).toEqual(CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts }));
   });
 
   it('should handle card accounts load failure', async () => {
     cardListApiService.getCardAccounts.mockReturnValue(throwError(() => new Error('Load failed')));
-    actions$ = of(CardsActions.loadCardAccounts());
+    actions$ = of(CardsActions.loadCardAccounts({}));
 
     expect(await firstValueFrom(effects.loadCardAccounts$)).toEqual(CardsActions.loadCardAccountsFailure({ error: 'Load failed' }));
   });
@@ -107,7 +107,7 @@ describe('CardsEffects', () => {
     cardsService.getCardDesigns.mockReturnValue(of([{ id: 'blue', designName: 'Blue', uri: 'uri1' }]));
     cardsService.getCardCategories.mockReturnValue(of([{ value: 'DEBIT' as const, displayName: 'Debit' }]));
     cardsService.getCardTypes.mockReturnValue(of([{ value: 'VISA' as const, displayName: 'Visa' }]));
-    actions$ = of(CardsActions.loadCardCreationData());
+    actions$ = of(CardsActions.loadCardCreationData({}));
 
     expect(await firstValueFrom(effects.loadCardCreationData$)).toEqual(CardsActions.loadCardCreationDataSuccess({
       designs: [{ id: 'blue', designName: 'Blue', uri: 'uri1' }],
@@ -133,14 +133,14 @@ describe('CardsEffects', () => {
   it('should reload accounts after card creation success', async () => {
     actions$ = of(CardsActions.createCardSuccess());
 
-    expect(await firstValueFrom(effects.createCardSuccess$)).toEqual(CardsActions.loadCardAccounts());
+    expect(await firstValueFrom(effects.createCardSuccess$)).toEqual(CardsActions.loadCardAccounts({}));
   });
 
   it('should dispatch loadCardAccounts when store has no accounts', async () => {
     store.select.mockReturnValue(of([]));
     actions$ = of(CardsActions.loadAccountCardsPage({ accountId: 'acc-1' }));
 
-    expect(await firstValueFrom(effects.loadAccountCardsPage$)).toEqual(CardsActions.loadCardAccounts());
+    expect(await firstValueFrom(effects.loadAccountCardsPage$)).toEqual(CardsActions.loadCardAccounts({}));
   });
 
   it('should dispatch loadCardDetails for each cardId', async () => {
@@ -171,7 +171,7 @@ describe('CardsEffects', () => {
   it('should load creation data when modal opens', async () => {
     actions$ = of(CardsActions.openCreateCardModal());
 
-    expect(await firstValueFrom(effects.loadCardCreationDataOnModalOpen$)).toEqual(CardsActions.loadCardCreationData());
+    expect(await firstValueFrom(effects.loadCardCreationDataOnModalOpen$)).toEqual(CardsActions.loadCardCreationData({}));
   });
 
   it('should handle image load failure in loadCardImages$', async () => {
@@ -185,7 +185,7 @@ describe('CardsEffects', () => {
 
   it('should handle card creation data failure', async () => {
     cardsService.getCardDesigns.mockReturnValue(throwError(() => new Error('Failed')));
-    actions$ = of(CardsActions.loadCardCreationData());
+    actions$ = of(CardsActions.loadCardCreationData({}));
 
     expect(await firstValueFrom(effects.loadCardCreationData$)).toEqual(
       CardsActions.loadCardCreationDataFailure({ error: 'Failed' })
@@ -282,4 +282,27 @@ describe('CardsEffects', () => {
       CardsActions.requestCardOtp({ cardId: 'card-1' })
     );
   });
+  it('should skip API call when accounts already loaded and no forceRefresh', async () => {
+  const cachedAccounts = [
+    { id: 'acc-1', iban: 'GE123', name: 'Main', balance: 1000, currency: 'GEL', status: 'ACTIVE', cardIds: ['card-1'], openedAt: '2024-01-01' },
+  ];
+  
+  store.select = vi.fn((selector) => {
+    if (selector.name?.includes('selectAccountsLoaded')) {
+      return of(true);
+    }
+    if (selector.name?.includes('selectAllAccounts')) {
+      return of(cachedAccounts);
+    }
+    return of(null);
+  });
+
+  cardListApiService.getCardAccounts = vi.fn();
+  actions$ = of(CardsActions.loadCardAccounts({}));
+
+  expect(await firstValueFrom(effects.loadCardAccounts$)).toEqual(
+    CardsActions.loadCardAccountsSuccess({ accounts: cachedAccounts })
+  );
+  expect(cardListApiService.getCardAccounts).not.toHaveBeenCalled();
+});
 });

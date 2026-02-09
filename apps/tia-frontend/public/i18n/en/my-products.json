@@ -110,6 +110,8 @@
       "backToCards": "Back to Cards",
       "cardTitle": "Quick Actions",
       "manageYourCard": "Manage your card and transactions",
+      "cardInfo":"Card Informatoin", 
+      "cardDetails":"Details about your Personal Card",
 
       "card-info-section": {
         "cardName": "Card Name",
@@ -133,6 +135,14 @@
       "cardPreview": {
         "cardPreview": "Card Preview",
         "SelectDesign": "Select a design"
+      },
+      "create-card-form":{
+        "cancelBtn":"Cancel", 
+        "creating": "Creating...", 
+        "createCard": "create Card"
+      }, 
+        "design-selector":{
+        "cardDesign":"Choose Card Design"
       }
     },
     "card-details-modal": {
@@ -156,19 +166,21 @@
     },
     "card-transactions": {
       "backToCard": "Back to Card Details",
+      "transactionHistory":"Transaction History",
+      "allTransactions":"All transactions made with this card",
       "transaction-card-header": {
-        "linkedTo": "ბარათი ეკუთვნის: ",
-        "totalTransactions": "ტრანზაქციების რაოდენობა:"
+        "linkedTo": "Linked to: ",
+        "totalTransactions": "Total Transactions"
       },
       "transaction-list": {
         "noTransactions": "No transactions found"
       }
-    }, 
+    },
     "card-otp-modal": {
-  "title": "Verify Card Details",
-  "subText": "Enter the 4-digit code to view sensitive card information",
-  "submitBtn": "Verify OTP",
-  "cancel": "Cancel"
-}
+      "title": "Verify Card Details",
+      "subText": "Enter the 4-digit code to view sensitive card information",
+      "submitBtn": "Verify OTP",
+      "cancel": "Cancel"
+    }
   }
 }

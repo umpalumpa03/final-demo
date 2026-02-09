@@ -38,14 +38,16 @@ import { TransactionCardHeader } from '../components/transaction-card-header/tra
 import { TransactionList } from '../components/transaction-list/transaction-list';
 import {
   selectError,
+  selectFilters,
   selectIsLoading,
   selectItems,
   selectNextCursor,
   selectTotalTransactions,
+  selectTransactionsLoaded,
 } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
-import { createEffect } from '@ngrx/effects';
 import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-card-transactions',
@@ -60,6 +62,7 @@ import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
     TransactionCardHeader,
     TransactionList,
     Pagination,
+    TranslatePipe
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -116,38 +119,45 @@ export class CardTransactions implements OnInit {
     }),
   );
 
-  ngOnInit(): void {
-    this.store.dispatch(TransactionActions.enter());
-    this.loadData();
+ngOnInit(): void {
+  this.loadData();
 
-    const accountIban$ = this.store
-      .select(selectCardDetailById(this.cardId))
-      .pipe(
-        filter((cardData) => !!cardData?.details?.accountId),
-        take(1),
-        switchMap((cardData) =>
-          this.store
-            .select(selectAccountById(cardData!.details.accountId))
-            .pipe(
-              filter((account) => !!account?.iban),
-              take(1),
-            ),
-        ),
-        tap((account) => {
-          this.store.dispatch(
-            TransactionActions.updateFilters({
-              filters: { accountIban: account!.iban, pageLimit: 100 },
-            }),
-          );
-        }),
-        takeUntil(this.destroy$),
-      );
+  combineLatest([
+    this.store.select(selectCardDetailById(this.cardId)),
+    this.store.select(selectFilters),
+    this.store.select(selectTransactionsLoaded)
+  ]).pipe(
+    take(1),
+    switchMap(([cardData, currentFilters, loaded]) => {
+      if (!cardData?.details?.accountId) {
+        return of(null);
+      }
 
-    accountIban$.subscribe();
+      return this.store
+        .select(selectAccountById(cardData.details.accountId))
+        .pipe(
+          take(1),
+          tap((account) => {
+            if (!account?.iban) return;
 
-    this.autoLoadAllTransactions();
-  }
+            const needsUpdate = currentFilters.accountIban !== account.iban || !loaded;
+            
+            if (needsUpdate) {
+              this.store.dispatch(TransactionActions.enter());
+              this.store.dispatch(
+                TransactionActions.updateFilters({
+                  filters: { accountIban: account.iban, pageLimit: 100 },
+                }),
+              );
+            }
+          }),
+        );
+    }),
+    takeUntil(this.destroy$),
+  ).subscribe();
 
+  this.autoLoadAllTransactions();
+}
   protected handleBack(): void {
     this.router.navigate(['/bank/products/cards/details', this.cardId]);
   }

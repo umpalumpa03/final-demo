@@ -41,7 +41,7 @@ export class CardOtpModalContent {
 
 private readonly translate: TranslateService = inject(TranslateService);
 
-protected readonly otpConfig: IOtpVerificationConfig = {
+public readonly otpConfig: IOtpVerificationConfig = {
   iconUrl: '/images/svg/auth/secured-blue.svg',
   title: this.translate.instant('my-products.card.card-otp-modal.title'),
   subText: this.translate.instant('my-products.card.card-otp-modal.subText'),

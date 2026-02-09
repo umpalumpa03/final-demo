@@ -89,7 +89,7 @@ describe('CardTransactions', () => {
   });
 
   it('should dispatch actions on init', () => {
-    expect(store.dispatch).toHaveBeenCalledWith(loadCardAccounts());
+    expect(store.dispatch).toHaveBeenCalledWith(loadCardAccounts({}));
     expect(store.dispatch).toHaveBeenCalledWith(
       loadCardDetails({ cardId: mockCardId }),
     );

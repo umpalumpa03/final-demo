@@ -11,12 +11,12 @@
     <h3 class="transaction-card-header__card-name">{{ cardName() }}</h3>
     <p class="transaction-card-header__card-number">{{ maskedNumber() }}</p>
     <p class="transaction-card-header__linked-account">
-      Linked to: {{ linkedAccountName() }}
+     {{'my-products.card.card-transactions.transaction-card-header.linkedTo' | translate }}{{ linkedAccountName() }}
     </p>
   </div>
 
   <div class="transaction-card-header__total">
-    <p class="transaction-card-header__total-label">Total Transactions</p>
+    <p class="transaction-card-header__total-label">{{'my-products.card.card-transactions.transaction-card-header.totalTransactions' | translate }}</p>
     <p class="transaction-card-header__total-count">{{ totalTransactions() }}</p>
   </div>
 </div>
