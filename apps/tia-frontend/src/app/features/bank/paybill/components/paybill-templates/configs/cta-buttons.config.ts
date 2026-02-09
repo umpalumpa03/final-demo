@@ -140,7 +140,7 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
     subtitle: 'Review selected bills before payment',
     submitLabel: 'Confirm & Pay All',
     submitButtonType: 'default',
-    submitAction: CrudActionType.DeleteGroup,
-    formSubmitType: 'create-group',
+    submitAction: CrudActionType.ConfirmPayment,
+    formSubmitType: 'confirm-payment',
   },
 } as const;

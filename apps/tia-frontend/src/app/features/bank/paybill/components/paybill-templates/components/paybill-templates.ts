@@ -38,6 +38,8 @@ import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
 import { DynamicInputs } from '../../shared/dynamic-inputs/dynamic-inputs';
 import { PaybillDynamicField } from '../../../services/paybill-dynamic-form/models/dynamic-form.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { SelectedItems } from '../shared/ui/selected-items/selected-items';
+import { PaymentDistribution } from '../shared/ui/payment-distribution/payment-distribution';
 
 @Component({
   selector: 'app-paybill-templates',
@@ -51,6 +53,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     Dropdowns,
     ReactiveFormsModule,
     DynamicInputs,
+    SelectedItems,
+    PaymentDistribution,
   ],
   templateUrl: './paybill-templates.html',
   styleUrl: './paybill-templates.scss',
@@ -84,6 +88,7 @@ export class PaybillTemplates implements OnInit {
     [CrudActionType.RenameTemplate]: () => this.editTemplateModal.emit(),
     [CrudActionType.DeleteGroup]: () => this.deleteGroupModal.emit(),
     [CrudActionType.RenameGroup]: () => this.renameGroupModal.emit(),
+    [CrudActionType.ConfirmPayment]: () => this.payAction.emit(),
   };
 
   // Final Actions for CRUD Modals
@@ -91,6 +96,7 @@ export class PaybillTemplates implements OnInit {
   public editTemplateModal = output<void>();
   public deleteGroupModal = output<void>();
   public renameGroupModal = output<void>();
+  public payAction = output<void>();
   public formSubmit = output<FormSubmitPayload>();
 
   // Modal Opener Action
@@ -226,5 +232,15 @@ export class PaybillTemplates implements OnInit {
   public childProviderSelected = output<ProviderTypeForStore>();
   public onChildProviderChange(providerId: InputFieldValue, index: number) {
     this.childProviderSelected.emit({ providerId, index });
+  }
+
+  // Implement payment logic
+  public selectedItems = input<string[]>();
+  public markedCheckbox = output<string[]>();
+  public onTemplateChecked(event: string[]) {
+    this.markedCheckbox.emit(event);
+  }
+  public paySelected(event: string | string[]) {
+    this.headerButtonAction.emit(HeaderCtaAction.Pay);
   }
 }

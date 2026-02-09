@@ -18,6 +18,7 @@ import {
   selectProviders,
   selectProvidersDropdown,
   selectSelectedCategoryId,
+  selectSelectedTemplates,
   selectServiceId,
   selectTemplatesAsTreeItems,
   selectTemplatesGroupWithConfigs,
@@ -192,6 +193,9 @@ export class PaybillTemplatesContainer implements OnInit {
         }),
       );
     },
+    'confirm-payment': (values) => {
+      // ShOULD ADD
+    },
   };
 
   public readonly searchControl = new FormControl('');
@@ -264,6 +268,10 @@ export class PaybillTemplatesContainer implements OnInit {
         break;
       case HeaderCtaAction.CreateGroup:
         this.modalType.set(ModalType.Group);
+        this.handleModalToggle();
+        break;
+      case HeaderCtaAction.Pay:
+        this.modalType.set(ModalType.ConfirmPayment);
         this.handleModalToggle();
         break;
     }
@@ -446,4 +454,15 @@ export class PaybillTemplatesContainer implements OnInit {
   public readonly verifiedDetails = this.store.selectSignal(
     selectVerifiedDetails,
   );
+
+  // Implement Payment Logic
+  public selectedItems = this.store.selectSignal(selectSelectedTemplates);
+
+  public onItemChecked(selectedItems: any) {
+    this.store.dispatch(
+      TemplatesPageActions.addCheckedItems({
+        selectedItems,
+      }),
+    );
+  }
 }
