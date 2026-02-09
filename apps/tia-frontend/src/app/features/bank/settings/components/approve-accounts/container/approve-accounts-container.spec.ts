@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApproveAccountsContainer } from './approve-accounts-container';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { IAccountsPermissions } from '../models/account-permissions.models';
-import { BankAccount } from '../models/pending-accounts.models';
+import { IAccountsPermissions } from '../../../shared/models/approve-models/accounts-models/account-permissions.models';
+import { BankAccount } from '../../../shared/models/approve-models/accounts-models/pending-accounts.models';
 import { AccountPermissionsStore } from '../store/approve-accounts.store';
 
 describe('ApproveAccountsContainer', () => {

@@ -1,4 +1,4 @@
-import { CardPermission } from "../../approve-cards/shared/model/approve-cards.model";
+import { CardPermission } from "../cards-models/approve-cards.model";
 
 export interface IAccountsPermissions {
   value: number | CardPermission;

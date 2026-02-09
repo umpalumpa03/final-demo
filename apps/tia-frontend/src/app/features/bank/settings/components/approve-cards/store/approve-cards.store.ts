@@ -11,7 +11,7 @@ import { computed, inject } from '@angular/core';
 import { ApproveCardsService } from '../shared/services/approve-cards.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, EMPTY, of, pipe, switchMap, tap } from 'rxjs';
-import { UpdateCardStatusRequest } from '../shared/model/approve-cards.model';
+import { UpdateCardStatusRequest } from '../../../shared/models/approve-models/cards-models/approve-cards.model';
 
 export const ApproveCardsStore = signalStore(
   withState(initialApproveCardsState),

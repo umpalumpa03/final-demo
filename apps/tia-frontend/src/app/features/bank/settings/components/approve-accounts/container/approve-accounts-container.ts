@@ -9,19 +9,19 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormControl, FormRecord } from '@angular/forms';
 import { AccountPermissionsStore } from '../store/approve-accounts.store';
-import { PermissionsModal } from '../components/permissions-modal/permissions-modal';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
-import { IAccountsPermissions } from '../models/account-permissions.models';
-import { buttonEmit } from '../../approve-cards/shared/model/approve-card-element.model';
+import { IAccountsPermissions } from '../../../shared/models/approve-models/accounts-models/account-permissions.models';
+import { buttonEmit } from '../../../shared/models/approve-models/cards-models/approve-card-element.model';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
-import { CardsApproveElement } from '../../approve-cards/approve-card-element/cards-approve-element';
+import { CardsApproveElement } from '../../../shared/ui/approve-ui/approve-card-element/cards-approve-element';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { calculateBitwiseSum } from '../utils/permission.utils';
 import { formatUserFullName } from '../utils/user-formatter.utils';
+import { PermissionsModal } from '../../../shared/ui/approve-ui/permissions-modal/permissions-modal';
 
 @Component({
   selector: 'app-approve-accounts-container',

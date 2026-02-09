@@ -7,8 +7,8 @@ import {
 import { provideHttpClient } from '@angular/common/http';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { environment } from '../../../../../../../environments/environment';
-import { IUpdateAccountStatus } from '../models/pending-accounts.models';
-import { IUpdateAccountPermission } from '../models/account-permissions.models';
+import { IUpdateAccountStatus } from '../../../shared/models/approve-models/accounts-models/pending-accounts.models';
+import { IUpdateAccountPermission } from '../../../shared/models/approve-models/accounts-models/account-permissions.models'
 
 describe('ApproveAccountsApiService', () => {
   let service: ApproveAccountsApiService;

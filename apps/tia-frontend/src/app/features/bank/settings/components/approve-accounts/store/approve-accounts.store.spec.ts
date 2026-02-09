@@ -3,8 +3,7 @@ import { ApproveAccountsApiService } from '../service/approve-accounts.api.servi
 import { of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AccountPermissionsStore } from './approve-accounts.store';
-import { HttpErrorResponse } from '@angular/common/http';
-import { BankAccount } from '../models/pending-accounts.models';
+import { BankAccount } from '../../../shared/models/approve-models/accounts-models/pending-accounts.models';
 
 describe('AccountPermissionsStore', () => {
   let store: InstanceType<typeof AccountPermissionsStore>;

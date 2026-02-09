@@ -1,4 +1,4 @@
-import { ActionButton } from "../shared/model/approve-card-element.model";
+import { ActionButton } from "../../../shared/models/approve-models/cards-models/approve-card-element.model";
 
 export const APPROVE_CARD_BUTTONS: ActionButton[] = [
   { id: 'permissions', label: 'settings.approve-cards.buttons.permissions', icon: 'permissions.svg' },

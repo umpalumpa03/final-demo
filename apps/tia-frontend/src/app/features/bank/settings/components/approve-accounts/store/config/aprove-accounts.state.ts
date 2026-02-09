@@ -1,5 +1,5 @@
-import { IAccountsPermissions } from '../../models/account-permissions.models';
-import { BankAccount } from '../../models/pending-accounts.models';
+import { IAccountsPermissions } from "../../../../shared/models/approve-models/accounts-models/account-permissions.models";
+import { BankAccount } from '../../../../shared/models/approve-models/accounts-models/pending-accounts.models';
 
 export interface IAccountPermissionState {
   permissions: IAccountsPermissions[];

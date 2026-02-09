@@ -11,8 +11,8 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, EMPTY, pipe, switchMap, tap } from 'rxjs';
 import { initialStateAccountPermissions } from './config/aprove-accounts.state';
 import { HttpErrorResponse } from '@angular/common/http';
-import { IUpdateAccountStatus } from '../models/pending-accounts.models';
-import { IUpdateAccountPermission } from '../models/account-permissions.models';
+import { IUpdateAccountStatus } from '../../../shared/models/approve-models/accounts-models/pending-accounts.models';
+import { IUpdateAccountPermission } from '../../../shared/models/approve-models/accounts-models/account-permissions.models';
 
 export const AccountPermissionsStore = signalStore(
   withState(initialStateAccountPermissions),
