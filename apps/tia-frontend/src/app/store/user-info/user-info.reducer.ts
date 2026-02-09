@@ -169,6 +169,10 @@ export const userInfoFeature = createFeature({
         error: null,
       }),
     ),
+
+    on(UserInfoActions.logout, () => ({
+      ...initialUserState,
+    })),
   ),
 });
 

@@ -18,4 +18,16 @@ export class PersonalInfoApiService {
     public updatePersonalInfo(payload: UpdatePersonalInfoDto): Observable<{ message: string }> {
         return this.http.put<{ message: string }>(this.baseUrl, payload);
     }
+
+    public initiatePhoneUpdate(phone: string): Observable<{ challengeId: string; method: string }> {
+        return this.http.post<{ challengeId: string; method: string }>(`${this.baseUrl}/update-phone`, { phone });
+    }
+
+    public verifyPhoneUpdate(challengeId: string, code: string): Observable<{ message: string }> {
+        return this.http.post<{ message: string }>(`${this.baseUrl}/verify-new-phone-otp`, { challengeId, code });
+    }
+
+    public resendPhoneOtp(challengeId: string): Observable<{ success: boolean }> {
+        return this.http.post<{ success: boolean }>(`${this.baseUrl}/resend-phone-otp`, { challengeId });
+    }
 }

@@ -28,3 +28,28 @@ export const selectPhoneNumber = createSelector(
   selectPersonalInfoState,
   (state) => state.phoneNumber,
 );
+
+export const selectPhoneUpdateChallengeId = createSelector(
+  selectPersonalInfoState,
+  (state) => state.phoneUpdateChallengeId,
+);
+
+export const selectPhoneUpdateLoading = createSelector(
+  selectPersonalInfoState,
+  (state) => state.phoneUpdateLoading,
+);
+
+export const selectPhoneUpdateError = createSelector(
+  selectPersonalInfoState,
+  (state) => state.phoneUpdateError,
+);
+
+export const selectPhoneUpdatePendingPhone = createSelector(
+  selectPersonalInfoState,
+  (state) => state.phoneUpdatePendingPhone,
+);
+
+export const selectPhoneUpdateResendCount = createSelector(
+  selectPersonalInfoState,
+  (state) => state.phoneUpdateResendCount,
+);

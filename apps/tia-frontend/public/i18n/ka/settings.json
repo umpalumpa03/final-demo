@@ -1,27 +1,27 @@
 {
-  "title": "პარამეტრები",
-  "sections": {
-    "profile": "პროფილი",
-    "security": "უსაფრთხოება",
-    "notifications": "შეტყობინებები",
-    "language": "ენა",
-    "appearance": "გარეგნობა",
-    "user-management": "მომხმარებელთა მართვა",
-    "approve-accounts": "ანგარიშების დამტკიცება",
-    "approve-cards": "ბარათების დამტკიცება",
-    "loan-management": "სესხების მართვა",
-    "profile-photo": "პროფილის ფოტო",
-    "accounts": "ანგარიშები"
-  },
-  "language": {
-    "title": "ენა & რეგიონი",
-    "subtitle": "აირჩიეთ სასურველი ენა თქვენი გამოცდილების პერსონალიზაციისთვის",
-    "current": "მიმდინარე ენა",
-    "available": "ხელმისაწვდომი ენები",
-    "english": "ინგლისური",
-    "georgian": "ქართული",
-    "saveSuccess": "ენა წარმატებით განახლდა!",
-    "saveError": "ენის განახლება ვერ მოხერხდა. გთხოვთ სცადოთ ხელახლა.",
+    "title": "პარამეტრები",
+    "sections": {
+        "profile": "პროფილი",
+        "security": "უსაფრთხოება",
+        "notifications": "შეტყობინებები",
+        "language": "ენა",
+        "appearance": "გარეგნობა",
+        "user-management": "მომხმარებელთა მართვა",
+        "approve-accounts": "ანგარიშების დამტკიცება",
+        "approve-cards": "ბარათების დამტკიცება",
+        "loan-management": "სესხების მართვა",
+        "profile-photo": "პირადი ინფორმაცია",
+        "accounts": "ანგარიშები"
+    },
+    "language": {
+        "title": "ენა & რეგიონი",
+        "subtitle": "აირჩიეთ სასურველი ენა თქვენი გამოცდილების პერსონალიზაციისთვის",
+        "current": "მიმდინარე ენა",
+        "available": "ხელმისაწვდომი ენები",
+        "english": "ინგლისური",
+        "georgian": "ქართული",
+        "saveSuccess": "ენა წარმატებით განახლდა!",
+        "saveError": "ენის განახლება ვერ მოხერხდა. გთხოვთ სცადოთ ხელახლა.",
     "saveChanges": "შენახვა",
     "infoTitle": "ენის პარამეტრები",
     "infoDescription": "ენის შეცვლა განაახლებს ყველა ტექსტს აპლიკაციაში. თქვენ შეგიძლიათ ნებისმიერ დროს შეცვალოთ ენა ამ გვერდიდან.",
@@ -35,88 +35,78 @@
         "speakers": "4 მილიონი მოსაუბრე"
       }
     }
-  },
-  "appearance": {
-    "title": "გარეგნობა",
-    "subtitle": "მოირგეთ თქვენი ვიზუალური გამოცდილება",
-    "cardsTitle": "თემის არჩევა",
-    "theme": "თემა",
-    "light": "ნათელი",
-    "dark": "მუქი",
-    "system": "სისტემური",
-    "saveSuccess": "თემა წარმატებით შეინახა!",
-    "saveError": "თემის შენახვა ვერ მოხერხდა. გთხოვთ სცადოთ ხელახლა.",
+    },
+    "appearance": {
+        "title": "გარეგნობა",
+        "subtitle": "მოირგეთ თქვენი ვიზუალური გამოცდილება",
+        "cardsTitle": "თემის არჩევა",
+        "theme": "თემა",
+        "light": "ნათელი",
+        "dark": "მუქი",
+        "system": "სისტემური",
+        "saveSuccess": "თემა წარმატებით შეინახა!",
+        "saveError": "თემის შენახვა ვერ მოხერხდა. გთხოვთ სცადოთ ხელახლა.",
     "saveChanges": "შენახვა"
-  },
-  "profile-photo": {
-    "title": "პროფილის ფოტო",
-    "subtitle": "ატვირთეთ ახალი პროფილის ფოტო ან აირჩიეთ ნაგულისხმები ფოტო ",
-    "uploadCustomPhoto": "ატვირთეთ ახალი პროფილის ფოტო",
-    "dragOrChooseFile": "გადმოიტანე ფოტო აქ ან აირჩიე ფაილი.",
-    "chooseFile": "ფაილის არჩევა",
-    "defaultAvatar": "ნაგულისხმები ფოტოები",
-    "loadingDefaultAvatars": "ნაგულისხმები ფოტოები იტვირთება...",
-    "profilePictureChangedSuccessfully": "პროფილის ფოტო წარმატებით შეიცვალა",
-    "profilePictureRemovedSuccessfully": "პროფილის ფოტო წარმატებით წაიშლა",
-    "change": "შენახვა",
-    "remove": "ფოტოს წაშლა",
-    "invalidFileAlert": "გთხოვთ აირჩიოთ ნაგულისხმები ფოტო (PNG ან JPG ფორმატი, მაქსიმალური ზომა — 1 MB)"
-  },
-  "security": {
-    "title": "უსაფრთხოების პარამეტრები",
-    "changePassword": "პაროლის შეცვლა",
-    "changePasswordSubtitle": "განაახლეთ თქვენი პაროლი ანგარიშის უსაფრთხოებისთვის",
-    "currentPassword": "მიმდინარე პაროლი",
-    "currentPasswordPlaceholder": "შეიყვანეთ მიმდინარე პაროლი",
-    "newPassword": "ახალი პაროლი",
-    "newPasswordPlaceholder": "შეიყვანეთ ახალი პაროლი",
-    "confirmNewPassword": "დაადასტურეთ ახალი პაროლი",
-    "confirmNewPasswordPlaceholder": "დაადასტურეთ ახალი პაროლი",
-    "updatePassword": "პაროლის განახლება",
-    "twoFactorAuth": "ორი ფაქტორიანი ავთენტიფიკაცია"
-  },
-  "user-management": {
-    "title": "მომხმარებელთა მართვა",
-    "subtitle": "მართე მომხმარებლები, როლები და წვდომა უფლებებზე",
-    "placeholder": "მოძებნე იუზერები სახელი, იმეილის და ზედმეტსახელით...",
-    "addUser": "მომხმარებლის დამატება",
-    "removeUser": "მომხმარებლის წაშლა",
-    "buttons": {
-      "details": "დეტალები",
-      "edit": "რედაქტირება",
-      "delete": "წაშლა",
-      "block": "დაბლოკვა",
-      "unblock": "განბლოკვა"
     },
-    "details": {
-      "title": "მომხმარებლის დეტალები",
-      "desc": "იხილეთ დეტალური ინფორმაცია მომხმარებლის შესახებ.",
-      "blocked": "დაბლოკილი",
-      "active": "აქტიური",
-      "username": "ზედმეტსახელი",
-      "created": "შემქნილია",
-      "close": "დახურვა"
+    "profile-photo": {
+        "title": "პროფილის ფოტო",
+        "subtitle": "ატვირთეთ ახალი პროფილის ფოტო ან აირჩიეთ ნაგულისხმები ფოტო ",
+        "uploadCustomPhoto": "ატვირთეთ ახალი პროფილის ფოტო",
+        "dragOrChooseFile": "გადმოიტანე ფოტო აქ ან აირჩიე ფაილი.",
+        "chooseFile": "ფაილის არჩევა",
+        "defaultAvatar": "ნაგულისხმები ფოტოები",
+        "loadingDefaultAvatars": "ნაგულისხმები ფოტოები იტვირთება...",
+        "profilePictureChangedSuccessfully": "პროფილის ფოტო წარმატებით შეიცვალა",
+        "profilePictureRemovedSuccessfully": "პროფილის ფოტო წარმატებით წაიშლა",
+        "change": "შენახვა",
+        "remove": "ფოტოს წაშლა",
+        "invalidFileAlert": "გთხოვთ აირჩიოთ ნაგულისხმები ფოტო (PNG ან JPG ფორმატი, მაქსიმალური ზომა — 1 MB)",
+        "personalInfo": "პირადი ინფორმაცია",
+        "phoneNumber": "ტელეფონის ნომერი",
+        "personalNumber": "პირადი ნომერი",
+        "edit": "რედაქტირება",
+        "cancel": "გაუქმება",
+        "save": "შენახვა",
+        "savePersonalNumber": "პირადი ნომრის შენახვა",
+        "personalNumberUpdated": "პირადი ნომერი წარმატებით განახლდა",
+        "personalNumberExists": "პირადი ნომერი უკვე არსებობს",
+        "invalidPersonalNumber": "პირადი ნომერი უნდა შედგებოდეს  11 ციფრისგან",
+        "invalidPhoneNumber": "ტელეფონის ნომერი უნდა შედგებოდეს ზუსტად 9 ციფრისგან",
+        "noChangesToSave": "შესანახად საჭიროა ცვლილებები",
+        "verifyPhoneUpdate": "ტელეფონის ნომრის განახლების დადასტურება",
+        "otpDescription": "შეიყვანეთ OTP კოდი, რომელიც გამოგეგზავნათ SMS-ით",
+        "verify": "დადასტურება",
+        "didntReceiveCode": "კოდი არ მიგიღიათ?",
+        "phoneNumberUpdated": "ტელეფონის ნომერი წარმატებით განახლდა",
+        "maxResendReached": "მაქსიმალური რაოდენობის გაგზავნა მიღწეულია"
     },
-    "edit": {
-      "title": "მომხმარებლის დეტალები",
-      "desc": "დაარედაქტირე მომხმარებლის ინფორმაცია",
-      "cancel": "გაუქმება",
-      "save": "შეინახე ცვლილებები"
+    "security": {
+        "title": "უსაფრთხოების პარამეტრები",
+        "changePassword": "პაროლის შეცვლა",
+        "changePasswordSubtitle": "განაახლეთ თქვენი პაროლი ანგარიშის უსაფრთხოებისთვის",
+        "currentPassword": "მიმდინარე პაროლი",
+        "currentPasswordPlaceholder": "შეიყვანეთ მიმდინარე პაროლი",
+        "newPassword": "ახალი პაროლი",
+        "newPasswordPlaceholder": "შეიყვანეთ ახალი პაროლი",
+        "confirmNewPassword": "დაადასტურეთ ახალი პაროლი",
+        "confirmNewPasswordPlaceholder": "დაადასტურეთ ახალი პაროლი",
+        "updatePassword": "პაროლის განახლება",
+        "twoFactorAuth": "ორი ფაქტორიანი ავთენტიფიკაცია"
     },
-    "delete": {
-      "title": "მომხმარების წაშლა",
-      "desc": "დარწმუნებული ხართ, რომ გსურთ ამ მომხმარებლის წაშლა? ამ მოქმედების გაუქმება შეუძლებელია.",
-      "cancel": "გაუქმება",
-      "delete": "წაშლა"
-    }
-  },
-  "approve-accounts": {
-    "title": "ანგარიშების დამტკიცება",
-    "pendingApprovals": "მიმდინარე დამტკიცებები"
-  },
-  "approve-cards": {
-    "title": "ბარათების დამტკიცება",
-    "subtitle": "მიმდინარე ბარათები",
+    "user-management": {
+        "title": "მომხმარებელთა მართვა",
+        "subtitle": "მართე მომხმარებლები, როლები და წვდომა უფლებებზე",
+        "placeholder": "მოძებნე იუზერები სახელი, იმეილის და ზედმეტსახელით...",
+        "addUser": "მომხმარებლის დამატება",
+        "removeUser": "მომხმარებლის წაშლა"
+    },
+    "approve-accounts": {
+        "title": "ანგარიშების დამტკიცება",
+        "pendingApprovals": "მიმდინარე დამტკიცებები"
+    },
+    "approve-cards": {
+        "title": "ბარათების დამტკიცება",
+        "subtitle": "მიმდინარე ბარათები",
     "confirmOverlay": {
       "title": "მიმდინარე ცვლილებების გაუქმება",
       "subtitle": "დაადასტურეთ ბარათი, წინააღმდეგ შემთხვევაში ბარათის გადაცვლისას თქვენს მიერ შეტანილი უფლებები განულდება.",
@@ -132,24 +122,24 @@
       "successDesc": "ბარათის სტატუსი წარამტები განახლდა!",
       "errorDesc": "სტატუსის განახლება ვერ მოხერხდა."
     }
-  },
-  "loan-management": {
-    "title": "სესხების მართვა",
-    "viewLoans": "სესხების ნახვა",
-    "approveLoan": "სესხის დამტკიცება",
-    "rejectLoan": "სესხის უარყოფა"
-  },
-  "accounts": {
-    "changeFriendlyName": "ანგარიშის სახელის შეცვლა",
+    },
+    "loan-management": {
+        "title": "სესხების მართვა",
+        "viewLoans": "სესხების ნახვა",
+        "approveLoan": "სესხის დამტკიცება",
+        "rejectLoan": "სესხის უარყოფა"
+    },
+    "accounts": {
+        "changeFriendlyName": "ანგარიშის სახელის შეცვლა",
     "changeFriendlyNameSubtitle": "განაახლეთ მთავარი ანგარიშის სახელი",
     "accountName": "ანგარიშის სახელი",
     "accountNumber": "ანგარიშის ნომერი",
-    "saveChanges": "შენახვა",
+        "saveChanges": "შენახვა",
     "cancel": "გაუქმება",
     "changeButton": "სახელის შეცვლა",
     "favoriteButton": "ძირითადად არჩევა",
     "favoritedButton": "ძირითადი ანგარიში",
-    "hideButton": "დამალვა",
+        "hideButton": "დამალვა",
     "showButton": "გამოჩენა",
     "title": "ჩემი ანგარიშები",
     "subtitle": "მართეთ თქვენი ანგარიშები, დააყენეთ ძირითადი ანგარიში და აკონტროლეთ ხილვადობა",
@@ -157,5 +147,5 @@
     "warningHeader": "მონაცემები ვერ მოიძებნა",
     "warningMessage": "ჩვენ ვერ ვიპოვნეთ დასაჩვენებელი მონაცემები.",
     "warningBtn": "უკან დაბრუნება"
-  }
+    }
 }
