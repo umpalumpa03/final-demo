@@ -25,4 +25,4 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
     title: "You're All Set!",
     desc: 'You now know how to navigate and use your dashboard effectively. You can restart this tour anytime by clicking the help button in the top right. Happy banking!',
   },
-];
+] as const;
