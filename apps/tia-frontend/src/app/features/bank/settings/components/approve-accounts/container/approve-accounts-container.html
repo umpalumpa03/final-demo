@@ -1,12 +1,12 @@
 <app-basic-card
   [width]="'100%'"
   [minWidth]="'100%'"
-  [height]="'calc(100vh - 33.1rem)'"
+  [height]="'fit-content'"
   padding="2.4rem"
   [title]="'Approve Accounts'"
   [subtitle]="'Review and approve account requests'"
 >
-  <app-scroll-area [hideBorder]="true" [height]="'51rem'">
+  <app-scroll-area [hideBorder]="true" [height]="'50rem'">
     <main class="approve-card">
       @if (store.isLoading()) { @for(item of [1,2,3]; track item) {
       <app-skeleton width="100%" height="6.3rem" />

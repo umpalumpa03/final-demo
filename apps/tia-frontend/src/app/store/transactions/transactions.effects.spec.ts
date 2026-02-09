@@ -148,20 +148,26 @@ describe('Transaction Effects', () => {
     expect(transactionService.getTransactions).not.toHaveBeenCalled();
     expect(spy).not.toHaveBeenCalled();
   });
-
   it('skips loading when data is already loaded and no forceRefresh', () => {
     store.overrideSelector(selectTransactionsLoaded, true);
-    actions$ = of(TransactionActions.loadTransactions({}));
-
+    store.overrideSelector(selectFilters, {});
+    store.overrideSelector(selectNextCursor, '');
+    store.refreshState();
     const spy = vi.fn();
-    TestBed.runInInjectionContext(() =>
-      loadTransactionsEffect(actions$, store, transactionService).subscribe(
-        spy,
-      ),
-    );
+    actions$ = of(TransactionActions.loadTransactions({}));
+    TestBed.runInInjectionContext(() => {
+      loadTransactionsEffect().subscribe(spy);
 
+      expect(spy).toHaveBeenCalledWith(
+        TransactionActions.loadTransactionsCached(),
+      );
+      expect(transactionService.getTransactions).not.toHaveBeenCalled();
+    });
+
+    expect(spy).toHaveBeenCalledWith(
+      TransactionActions.loadTransactionsCached(),
+    );
     expect(transactionService.getTransactions).not.toHaveBeenCalled();
-    expect(spy).not.toHaveBeenCalled();
   });
 
   it('loads transactions when forceRefresh is true despite loaded data', () => {
