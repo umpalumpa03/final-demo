@@ -100,6 +100,7 @@
       "selectSenderAccount": "Select Your Account",
       "selectBothAccounts": "Please select both accounts",
       "noPermission": "This card does not have transfer permission. Please choose a different account.",
+      "senderNotFound": "Your account used for this transfer no longer exists. Please select a different account.",
       "currencyMismatch": "Selected account currency does not match recipient's currency. Please select a different account.",
       "reasons": {
         "currencyMismatch": "The currency of this account does not match the recipient's currency.",
@@ -159,5 +160,12 @@
   "confirmation": {
     "title": "Transfer Successful!",
     "success": "Your transfer has been completed successfully"
+  },
+  "repeat": {
+    "invalidIban": "Invalid recipient IBAN.",
+    "recipientNotFound": "Recipient no longer exists.",
+    "recipientAccountNotFound": "Recipient account no longer exists.",
+    "senderNotFound": "Your account no longer exists. Please select a different account.",
+    "senderNoPermission": "Your account does not have permission for this transfer."
   }
 }

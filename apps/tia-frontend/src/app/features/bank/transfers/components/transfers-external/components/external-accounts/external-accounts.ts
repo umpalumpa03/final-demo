@@ -78,7 +78,10 @@ export class ExternalAccounts implements OnInit {
 
   public readonly hasFetchError = computed(() => {
     const error = this.transferStore.error();
-    return error && error !== 'transfers.external.accounts.noPermission';
+    return (
+      error === 'transfers.repeat.recipientNotFound' ||
+      error === 'transfers.repeat.recipientAccountNotFound'
+    );
   });
 
   public readonly isFullWidth = computed(() =>
@@ -218,9 +221,12 @@ export class ExternalAccounts implements OnInit {
     });
 
     effect(() => {
+      const error = this.transferStore.error();
       if (
-        this.transferStore.error() ===
-        'transfers.external.accounts.noPermission'
+        error === 'transfers.external.accounts.senderNotFound' ||
+        error === 'transfers.external.accounts.noPermission' ||
+        error === 'transfers.repeat.senderNotFound' ||
+        error === 'transfers.repeat.senderNoPermission'
       ) {
         untracked(() => this.showError.set(true));
         setTimeout(() => {

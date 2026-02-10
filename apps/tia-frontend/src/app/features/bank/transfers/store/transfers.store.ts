@@ -94,9 +94,9 @@ export const TransferStore = signalStore(
         error: null,
       });
     },
-    // setRepeatTransfer(isRepeatTransfer: boolean) {
-    //   patchState(store, { isRepeatTransfer });
-    // },
+    setRecipientInput(input: string) {
+      patchState(store, { recipientInput: input });
+    },
     lookupRecipient: rxMethod<{ value: string; type: RecipientType }>(
       pipe(
         tap(({ value, type }) =>

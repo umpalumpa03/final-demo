@@ -24,12 +24,6 @@ export class TransferAmountService {
   }
 
   public handleAmountInput(amount: number): void {
-    console.log('recipientType:', this.transferStore.recipientType());
-    console.log(
-      'isExternalBank:',
-      this.transferStore.recipientType() === 'iban-different-bank',
-    );
-
     const numericAmount = Number(amount);
     this.transferStore.setAmount(numericAmount);
 
