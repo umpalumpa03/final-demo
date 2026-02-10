@@ -110,7 +110,7 @@ describe('Inbox', () => {
     fixture.detectChanges();
 
     expect(mockMessagingStore.loadMails).not.toHaveBeenCalled();
-    expect(mockMessagingStore.getTotalCount).not.toHaveBeenCalled();
+    expect(mockMessagingStore.getTotalCount).toHaveBeenCalledWith('inbox');
   });
 
   it('should handle individual mail selection', () => {

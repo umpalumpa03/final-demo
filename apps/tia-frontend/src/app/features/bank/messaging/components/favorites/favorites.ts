@@ -30,6 +30,7 @@ export class Favorites implements OnInit {
   public readonly total = computed(() => this.messagingStore.total()['favorite'] ?? 0);
   private readonly nav = inject(NavigationService);
   public readonly currentUserEmail = computed(() => this.store.selectSignal(selectCurrentUserEmail)() ?? '');
+  public readonly isDeleting = computed(() => !!this.messagingStore.isDeleting?.());
 
   public isAllSelected(): boolean {
     return this.selectedMailIds().size === this.mails().length && this.mails().length > 0;

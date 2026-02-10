@@ -1,7 +1,11 @@
 <header class="header">
   <div class="header__info">
     <h2 class="header__info__title">{{ page() }}</h2>
-    <p class="header__info__count">{{ messageCount() }}</p>
+    <div class="header__info__count-container">
+      @if((messageCount() ?? 0) > 0) {
+      <p class="header__info__count">{{ messageCount() }}</p>
+      }
+    </div>
     <p class="header__info__count">
       {{ 'messaging.compose.title' | translate }}
     </p>
@@ -14,6 +18,7 @@
         variant="destructive"
         icon="trash-icon.svg"
         (click)="onDeleteClick()"
+        [isLoading]="isDeleting()"
       ></app-button>
       @if(!isDraft()){
       <app-button
@@ -46,7 +51,11 @@
       <app-button variant="outline" (click)="onCancelDelete()"
         >{{ 'messaging.deleteModal.cancel' | translate }}</app-button
       >
-      <app-button variant="destructive" (click)="onConfirmDelete()"
+      <app-button
+        variant="destructive"
+        (click)="onConfirmDelete()"
+        [isLoading]="isDeleting()"
+        icon="trash-icon.svg"
         >{{ 'messaging.deleteModal.delete' | translate }}</app-button
       >
     </footer>
