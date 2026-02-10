@@ -19,6 +19,7 @@ import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { TransactionsFacadeService } from '../services/transactions-facade.service';
 import { TransactionsViewModelService } from '../services/transactions-view-model.service';
 import { TransactionsActionsService } from '../services/transactions-actions.service';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 
 @Component({
   selector: 'app-transactions-container',
@@ -34,6 +35,7 @@ import { TransactionsActionsService } from '../services/transactions-actions.ser
     LibraryTitle,
     TranslatePipe,
     TranslateModule,
+    ButtonComponent,
   ],
   providers: [
     TransactionsFacadeService,
@@ -63,5 +65,8 @@ export class TransactionsContainer implements OnInit {
 
     if (event.action === 'categorize') this.actions.openCategorizeModal(trx);
     if (event.action === 'repeat') this.actions.handleRepeatAction(trx);
+    if (event.action === 'extract') {
+      this.actions.exportSingleTransaction(trx);
+    }
   }
 }

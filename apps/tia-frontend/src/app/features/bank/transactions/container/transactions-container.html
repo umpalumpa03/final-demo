@@ -2,7 +2,7 @@
   <app-library-title
     [title]="'transactions.title' | translate"
   ></app-library-title>
-  <div class="transaction-filters-wrapper">
+  <div class="transaction-wrapper">
     <app-transactions-filters
       [categoryOptions]="facade.categoryOptions()"
       [accountOptions]="vm.accountOptions()"
@@ -27,6 +27,17 @@
     [title]="'transactions.title' | translate"
     [subtitle]="vm.totalTransactionsString()"
   >
+    <div class="transaction-wrapper__extract-all">
+      <app-button
+        variant="outline"
+        [icon]="'extract.svg'"
+        (click)="actions.exportTransactionsTable()"
+        iconHeight="16px"
+        iconWidth="16px"
+        >Export Table</app-button
+      >
+    </div>
+
     <app-scroll-area
       [height]="'calc(calc(100vh - 45.4rem) - 12rem)'"
       [hideBorder]="true"

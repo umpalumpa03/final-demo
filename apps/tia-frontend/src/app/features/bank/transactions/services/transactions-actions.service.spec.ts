@@ -5,7 +5,18 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
+import * as XLSX from 'xlsx';
 
+vi.mock('xlsx', () => {
+  return {
+    utils: {
+      json_to_sheet: vi.fn(),
+      book_new: vi.fn(),
+      book_append_sheet: vi.fn(),
+    },
+    writeFile: vi.fn(),
+  };
+});
 describe('TransactionsActionsService', () => {
   let service: TransactionsActionsService;
   let router: Router;
@@ -22,6 +33,7 @@ describe('TransactionsActionsService', () => {
   const mockFacade = {
     assignCategory: vi.fn(),
     setTransactionToRepeat: vi.fn(),
+    items: vi.fn(),
   };
 
   beforeEach(() => {
@@ -116,6 +128,61 @@ describe('TransactionsActionsService', () => {
       service.handleRepeatAction(trx);
 
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/transfers/']);
+    });
+  });
+  describe('Export Logic', () => {
+    const mockTrx = {
+      id: '123',
+      createdAt: '2022-01-01',
+      amount: 100,
+      currency: 'GEL',
+      description: 'Test Desc',
+      transactionType: 'debit',
+      transferType: 'BillPayment',
+      category: 'Groceries',
+    } as any;
+
+    it('should show alert if there is no data to export', () => {
+      mockFacade.items.mockReturnValue([]);
+
+      const spyAlert = vi.spyOn(service, 'showValidationAlert');
+
+      service.exportTransactionsTable();
+      expect(spyAlert).toHaveBeenCalledWith(
+        'warning',
+        'transactions.alerts.no_data_to_export',
+      );
+      expect(XLSX.writeFile).not.toHaveBeenCalled();
+    });
+
+    it('should export table correctly (Category as String)', () => {
+      mockFacade.items.mockReturnValue([mockTrx]);
+
+      service.exportTransactionsTable();
+
+      expect(XLSX.utils.json_to_sheet).toHaveBeenCalled();
+      expect(XLSX.utils.book_new).toHaveBeenCalled();
+      expect(XLSX.utils.book_append_sheet).toHaveBeenCalled();
+      expect(XLSX.writeFile).toHaveBeenCalled();
+      const fileNameArgs = vi.mocked(XLSX.writeFile).mock.calls[0][1];
+      expect(fileNameArgs).toContain('Transactions_Table_');
+      expect(fileNameArgs).toContain('.xlsx');
+    });
+
+    it('should export single transaction correctly (Category as Object)', () => {
+      const objCatTrx = {
+        ...mockTrx,
+        id: '999',
+        category: { categoryName: 'Tech' },
+      };
+
+      service.exportSingleTransaction(objCatTrx);
+
+      expect(XLSX.utils.json_to_sheet).toHaveBeenCalled();
+      expect(XLSX.writeFile).toHaveBeenCalled();
+
+      const fileNameArgs = vi.mocked(XLSX.writeFile).mock.calls[0][1];
+      expect(fileNameArgs).toBe('Transaction_999.xlsx');
     });
   });
 });

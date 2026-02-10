@@ -1,7 +1,11 @@
 @use '../../../../shared/styles/palette' as *;
 @use '../../../../shared/styles/mixins' as *;
-.transaction-filters-wrapper {
+.transaction-wrapper {
   margin-bottom: 2.4rem;
+  &__extract-all {
+    position: absolute;
+    right: 4.5rem;
+  }
 }
 
 .alert-message {

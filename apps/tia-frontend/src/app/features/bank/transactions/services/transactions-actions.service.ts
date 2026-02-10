@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SimpleAlertType } from '@tia/shared/lib/alerts/shared/models/alert.models';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 import { TransactionsFacadeService } from './transactions-facade.service';
+import * as XLSX from 'xlsx';
 
 @Injectable()
 export class TransactionsActionsService {
@@ -66,5 +67,62 @@ export class TransactionsActionsService {
     }
 
     this.router.navigate([route]);
+  }
+
+  public exportSingleTransaction(transaction: ITransactions): void {
+    const exportData = [this.mapToExportRow(transaction)];
+
+    this.generateAndDownloadExcel(exportData, `Transaction_${transaction.id}`);
+  }
+
+  public exportTransactionsTable(): void {
+    const data = this.facade.items();
+
+    if (!data || data.length === 0) {
+      this.showValidationAlert(
+        'warning',
+        'transactions.alerts.no_data_to_export',
+      );
+      return;
+    }
+
+    const exportData = data.map((item) => this.mapToExportRow(item));
+
+    this.generateAndDownloadExcel(
+      exportData,
+      `Transactions_Table_${new Date().toISOString().slice(0, 10)}`,
+    );
+  }
+  private mapToExportRow(item: ITransactions): any {
+    let categoryName = 'Uncategorized';
+
+    if (typeof item.category === 'string') {
+      categoryName = item.category;
+    } else if (item.category && item.category.categoryName) {
+      categoryName = item.category.categoryName;
+    }
+
+    return {
+      ID: item.id,
+      Date: item.createdAt,
+      Amount: item.amount,
+      Currency: item.currency,
+      Description: item.description,
+      Category: categoryName,
+      Status: item.transactionType,
+      TransferType: item.transferType,
+    };
+  }
+
+  private generateAndDownloadExcel(data: any[], fileNamePrefix: string): void {
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Data');
+
+    const fileName = fileNamePrefix.endsWith('.xlsx')
+      ? fileNamePrefix
+      : `${fileNamePrefix}.xlsx`;
+
+    XLSX.writeFile(wb, fileName);
   }
 }
