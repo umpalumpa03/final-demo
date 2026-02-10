@@ -19,45 +19,90 @@
     </app-simple-alerts>
   </div>
   }
-  <app-basic-card
-    [maxWidth]="'100%'"
-    [width]="'100%'"
-    [padding]="'2.4rem'"
-    [height]="'calc(100vh - 45.4rem)'"
-    [title]="'transactions.title' | translate"
-    [subtitle]="vm.totalTransactionsString()"
-  >
-    <div class="transaction-wrapper__extract-all">
-      <app-button
-        variant="outline"
-        [icon]="'extract.svg'"
-        (click)="actions.exportTransactionsTable()"
-        iconHeight="16px"
-        iconWidth="16px"
-        >Export Table</app-button
-      >
-    </div>
-
-    <app-scroll-area
-      [height]="'calc(calc(100vh - 45.4rem) - 12rem)'"
-      [hideBorder]="true"
-      (scrollBottom)="facade.loadMore()"
+  <div class="transaction-wrapper__card-relative-wrapper">
+    <app-basic-card
+      [maxWidth]="'100%'"
+      [width]="'100%'"
+      [padding]="'2.4rem'"
+      [height]="'calc(100vh - 45.4rem)'"
+      [title]="'transactions.title' | translate"
+      [subtitle]="vm.totalTransactionsString()"
     >
-      @if(facade.isLoading() && facade.items().length === 0){
-      <app-route-loader variant="pulsing" [fillContainer]="true">
-      </app-route-loader>
-      } @else {
-      <app-tables
-        [tableConfig]="vm.tableConfig()"
-        (transactionClickedOutput)="onTableAction($event)"
-      ></app-tables>
-      } @if(facade.isLoading() && facade.items().length > 0){
-      <div class="loading-more">
-        <app-route-loader variant="pulsing"></app-route-loader>
+      @if(!facade.transactionError() && !vm.isEmpty()){
+      <div class="transaction-wrapper__extract-all">
+        <app-button
+          variant="outline"
+          [icon]="'extract.svg'"
+          (click)="actions.exportTransactionsTable()"
+          iconHeight="16px"
+          iconWidth="16px"
+          >Export Table</app-button
+        >
       </div>
       }
-    </app-scroll-area>
-  </app-basic-card>
+
+      <app-scroll-area
+        [height]="'calc(calc(100vh - 45.4rem) - 12rem)'"
+        [hideBorder]="true"
+        (scrollBottom)="facade.loadMore()"
+      >
+        @if(facade.isLoading() && facade.items().length === 0){
+        <app-route-loader variant="pulsing" [fillContainer]="true">
+        </app-route-loader>
+        } @else if (facade.transactionError()) {
+        <div
+          class="widget-error"
+          style="
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          "
+        >
+          <app-error-states
+            variant="failed"
+            header="Failed to load"
+            message="Could not load transactions"
+            buttonMessage="Retry"
+            (buttonClick)="retryLoad()"
+            [border]="false"
+          >
+          </app-error-states>
+        </div>
+
+        } @else if (vm.isEmpty()) {
+        <div
+          class="widget-error"
+          style="
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          "
+        >
+          <app-error-states
+            variant="not-found"
+            header="No transactions"
+            message="There are no transactions available"
+            [showButton]="false"
+            [border]="false"
+          >
+          </app-error-states>
+        </div>
+
+        } @else {
+        <app-tables
+          [tableConfig]="vm.tableConfig()"
+          (transactionClickedOutput)="onTableAction($event)"
+        ></app-tables>
+        } @if (facade.isLoading() && !vm.isEmpty()) {
+        <div class="loading-more">
+          <app-route-loader variant="pulsing"></app-route-loader>
+        </div>
+        }
+      </app-scroll-area>
+    </app-basic-card>
+  </div>
   <app-ui-modal
     [isOpen]="actions.isCategorizeModalOpen()"
     (closed)="actions.closeCategorizeModal()"

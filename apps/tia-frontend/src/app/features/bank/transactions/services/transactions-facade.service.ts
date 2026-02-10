@@ -4,6 +4,7 @@ import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions
 import {
   selectCategoryOptions,
   selectCategoryOptionsForModal,
+  selectError,
   selectFilters,
   selectIsLoading,
   selectItems,
@@ -27,6 +28,7 @@ export class TransactionsFacadeService {
   public isLoading = this.store.selectSignal(selectIsLoading);
   public filters = this.store.selectSignal(selectFilters);
   public totalTransactions = this.store.selectSignal(selectTotalTransactions);
+  public transactionError = this.store.selectSignal(selectError);
 
   public categoryOptions = this.store.selectSignal(selectCategoryOptions);
   public categoryOptionsForModal = this.store.selectSignal(
@@ -81,6 +83,12 @@ export class TransactionsFacadeService {
   public setTransactionToRepeat(transaction: ITransactions): void {
     this.store.dispatch(
       TransactionActions.setTransactionToRepeat({ transaction }),
+    );
+  }
+
+  public retryLoad(): void {
+    this.store.dispatch(
+      TransactionActions.loadTransactions({ forceRefresh: true }),
     );
   }
 }

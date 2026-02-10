@@ -20,6 +20,7 @@ import { TransactionsFacadeService } from '../services/transactions-facade.servi
 import { TransactionsViewModelService } from '../services/transactions-view-model.service';
 import { TransactionsActionsService } from '../services/transactions-actions.service';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { ErrorStates } from "@tia/shared/lib/feedback/error-states/error-states";
 
 @Component({
   selector: 'app-transactions-container',
@@ -36,7 +37,8 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
     TranslatePipe,
     TranslateModule,
     ButtonComponent,
-  ],
+    ErrorStates
+],
   providers: [
     TransactionsFacadeService,
     TransactionsViewModelService,
@@ -57,6 +59,10 @@ export class TransactionsContainer implements OnInit {
 
   public onFiltersChange(filters: Partial<ITransactionFilter>) {
     this.facade.updateFilters(filters);
+  }
+
+  public retryLoad(): void {
+    this.facade.retryLoad();
   }
 
   public onTableAction(event: TransactionActionEvent): void {

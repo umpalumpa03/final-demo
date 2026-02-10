@@ -13,6 +13,8 @@ export class TransactionsViewModelService {
 
   private currentLang = toSignal(this.translate.onLangChange);
 
+  public isEmpty = computed(() => this.facade.items().length === 0);
+
   public currencyOptions = computed(() => {
     return this.facade
       .currencyList()
