@@ -32,6 +32,7 @@ import { CardGroupItem } from '../components/card-group-item/card-group-item';
 import { AddCardButton } from '../components/add-card-button/add-card-button';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 
 @Component({
   selector: 'app-card-list',
@@ -45,7 +46,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     ErrorStates,
     CardGroupItem,
     AddCardButton,
-    TranslatePipe,
+    TranslatePipe,Skeleton
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
