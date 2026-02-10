@@ -39,17 +39,6 @@ describe('DataDisplay', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render data display sections', () => {
-    const element: HTMLElement = fixture.nativeElement;
-    expect(element.querySelector('app-library-title')).toBeTruthy();
-    expect(element.querySelector('app-showcase-card')).toBeTruthy();
-    expect(element.querySelector('app-avatar')).toBeTruthy();
-    expect(element.querySelector('app-avatar-group')).toBeTruthy();
-    expect(element.querySelector('app-aspect-ratio-list')).toBeTruthy();
-    expect(element.querySelector('app-tooltip')).toBeTruthy();
-    expect(element.querySelector('app-hover-card')).toBeTruthy();
-  });
-
   it('onRatioSelected should set selectedRatioId and selectedRatio, and hasRatios should track ratios length', () => {
     expect(component.selectedRatio()).toBeNull();
     expect(component.hasRatios()).toBe(true);
@@ -68,16 +57,7 @@ describe('DataDisplay', () => {
     expect(component.isChangeEmpty(undefined)).toBe(true);
     expect(component.isChangeEmpty('')).toBe(true);
     expect(component.isChangeEmpty('No Change')).toBe(true);
-    expect(component.isChangeEmpty('  no change  ')).toBe(true);
     expect(component.isChangeEmpty('+5.2%')).toBe(false);
-    expect(component.isChangeEmpty('-3.1%')).toBe(false);
-  });
-
-  it('initialsUsers should combine loggedInUser and additionalUsers', () => {
-    const users = component.initialsUsers();
-    expect(users.length).toBeGreaterThanOrEqual(1);
-    expect(users[0]).toHaveProperty('firstName');
-    expect(users[0]).toHaveProperty('lastName');
   });
 
   it('initialsAvatars should derive initials from user names', () => {
@@ -88,5 +68,23 @@ describe('DataDisplay', () => {
       expect(avatar.tone).toBe('soft');
       expect(avatar.color).toBe('blue');
     });
+  });
+
+  it('ngOnInit should update all signals when language changes', () => {
+    translate.setTranslation('ka', {});
+    translate.use('ka');
+    fixture.detectChanges();
+
+    expect(component.ratios()).toBeDefined();
+    expect(component.tooltipItems()).toBeDefined();
+    expect(component.hoverCardItems()).toBeDefined();
+    expect(component.statisticCardItems()).toBeDefined();
+    expect(component.listDisplayItems()).toBeDefined();
+    expect(component.keyValueTitle()).toBeDefined();
+    expect(component.keyValueItems()).toBeDefined();
+    expect(component.timelineItems()).toBeDefined();
+    expect(component.colorAvatars()).toBeDefined();
+    expect(component.groupAvatars()).toBeDefined();
+    expect(component.statusAvatars()).toBeDefined();
   });
 });

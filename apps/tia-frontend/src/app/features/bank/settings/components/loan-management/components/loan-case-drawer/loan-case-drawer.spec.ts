@@ -94,6 +94,11 @@ describe('LoanCaseDrawer', () => {
     expect(spy).toHaveBeenCalledWith('loan-123');
   });
 
+  it('onShowDeclineForm should set showDeclineForm to true', () => {
+    component.onShowDeclineForm();
+    expect(component.showDeclineForm()).toBe(true);
+  });
+
   it('onCancelDecline should reset decline form and reason', () => {
     component.showDeclineForm.set(true);
     component.declineReason.set('Test reason');
@@ -116,5 +121,11 @@ describe('LoanCaseDrawer', () => {
     component.declineReason.set('Risk assessment failed');
     component.onConfirmDecline();
     expect(spy).toHaveBeenCalledWith({ loanId: 'loan-123', reason: 'Risk assessment failed' });
+  });
+
+  it('onReasonInput should update declineReason from event target value', () => {
+    const mockEvent = { target: { value: 'New reason' } } as unknown as Event;
+    component.onReasonInput(mockEvent);
+    expect(component.declineReason()).toBe('New reason');
   });
 });

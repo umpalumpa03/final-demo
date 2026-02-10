@@ -44,7 +44,7 @@ describe('ResetPassword', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/auth', 'verify-otp-reset']);
   });
 
-  it('submit should call API, navigate on success, and handle 400 errors', () => {
+  it('submit should call API, navigate on success, and handle 400 and generic errors', () => {
     vi.useFakeTimers();
 
     const formValue = { password: 'Aa1!aaaa', confirmPassword: 'Aa1!aaaa' } as any;
@@ -62,6 +62,13 @@ describe('ResetPassword', () => {
     component.submit(formValue);
     expect(component.alertState()?.type).toBe('error');
     expect(component.alertState()?.message).toBe('Unable to reset password. Please try again.');
+
+    authServiceMock.createNewPassword.mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: 500 })),
+    );
+    component.submit(formValue);
+    expect(component.alertState()?.type).toBe('warning');
+    expect(component.alertState()?.message).toBe('Something went wrong. Please try again.');
 
     vi.useRealTimers();
   });

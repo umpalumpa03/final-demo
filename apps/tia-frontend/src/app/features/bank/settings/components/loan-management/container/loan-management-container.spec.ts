@@ -67,4 +67,28 @@ describe('LoanManagementContainer', () => {
     component['onReject'](rejectData);
     expect(spy).toHaveBeenCalledWith(rejectData);
   });
+
+  it('auto-dismiss effect should clear success message after timeout', () => {
+    vi.useFakeTimers();
+    const clearSpy = vi.spyOn(component['store'], 'clearSuccessMessage');
+
+    component['store'].successMessage.set('Loan approved');
+    fixture.detectChanges();
+    vi.advanceTimersByTime(5000);
+
+    expect(clearSpy).toHaveBeenCalled();
+    vi.useRealTimers();
+  });
+
+  it('auto-dismiss effect should clear action error after timeout', () => {
+    vi.useFakeTimers();
+    const clearSpy = vi.spyOn(component['store'], 'clearError');
+
+    component['store'].actionError.set('Something went wrong');
+    fixture.detectChanges();
+    vi.advanceTimersByTime(5000);
+
+    expect(clearSpy).toHaveBeenCalled();
+    vi.useRealTimers();
+  });
 });

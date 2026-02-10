@@ -85,6 +85,12 @@ describe('ForgotPasswordVerify', () => {
     expect(component.errorMessage()).toBe('Invalid code');
   });
 
+  it('onOtpInputChanged should clear errorMessage when it exists', () => {
+    component.errorMessage.set('Invalid code');
+    component.onOtpInputChanged();
+    expect(component.errorMessage()).toBeNull();
+  });
+
   it('resendOtp should call resendVerificationCode only when isCalled is true', () => {
     component.resendOtp(true);
     expect(authServiceMock.resendVerificationCode).toHaveBeenCalled();

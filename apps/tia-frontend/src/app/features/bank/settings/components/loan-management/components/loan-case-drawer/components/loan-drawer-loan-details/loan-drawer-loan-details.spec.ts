@@ -44,7 +44,10 @@ describe('LoanDrawerLoanDetails', () => {
     fixture.detectChanges();
   });
 
-  it('computed properties should return correct values when loanDetailsResponse is provided', () => {
+  it('computed properties should return 0 when null and correct values when loanDetailsResponse is provided', () => {
+    expect(component.interestRate()).toBe(0);
+    expect(component.monthlyPayment()).toBe(0);
+
     fixture.componentRef.setInput('loanDetailsResponse', mockLoanDetailsResponse);
     fixture.detectChanges();
     expect(component.interestRate()).toBe(5.5);

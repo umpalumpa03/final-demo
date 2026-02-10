@@ -32,10 +32,24 @@ describe('LoanDrawerFooter', () => {
     expect(spy).toHaveBeenCalled();
   });
 
+  it('onShowDecline should emit showDecline event', () => {
+    const spy = vi.fn();
+    component.showDecline.subscribe(spy);
+    component.onShowDecline();
+    expect(spy).toHaveBeenCalled();
+  });
+
   it('onApprove should emit approve event', () => {
     const spy = vi.fn();
     component.approve.subscribe(spy);
     component.onApprove();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('onCancelDecline should emit cancelDecline event', () => {
+    const spy = vi.fn();
+    component.cancelDecline.subscribe(spy);
+    component.onCancelDecline();
     expect(spy).toHaveBeenCalled();
   });
 

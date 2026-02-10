@@ -52,7 +52,7 @@ describe('ForgotPasswordEmail', () => {
     expect(component.emailConfig().errorMessage).toBeUndefined();
   });
 
-  it('submit should skip when form invalid, call API on valid input, navigate on success, and handle errors', () => {
+  it('submit should skip when form invalid, call API on valid input, navigate on success, and handle all error types', () => {
     vi.useFakeTimers();
 
     component.submit();
@@ -80,6 +80,21 @@ describe('ForgotPasswordEmail', () => {
     component.form.controls.email.setValue('bad@test.com');
     component.submit();
     expect(component.alertState()?.message).toBe('email must be an email');
+
+    authServiceMock.forgotPasswordRequest.mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: 400, error: { message: 'Invalid email' } })),
+    );
+    component.form.controls.email.setValue('another@test.com');
+    component.submit();
+    expect(component.alertState()?.message).toBe('Invalid email');
+
+    authServiceMock.forgotPasswordRequest.mockReturnValue(
+      throwError(() => new Error('boom')),
+    );
+    component.form.controls.email.setValue('error@test.com');
+    component.submit();
+    expect(component.alertState()?.type).toBe('warning');
+    expect(component.alertState()?.message).toBe('Unable to send reset code. Please try again.');
 
     vi.useRealTimers();
   });
