@@ -653,7 +653,7 @@ export class PaybillEffect {
                   categoryId,
                   serviceId,
                 ]);
-
+                
                 return [
                   PaybillActions.selectCategory({ categoryId }),
                   PaybillActions.loadProvidersSuccess({ providers }),
