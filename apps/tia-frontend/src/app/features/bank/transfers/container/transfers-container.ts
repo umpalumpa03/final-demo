@@ -10,7 +10,7 @@ import {
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { filter, take } from 'rxjs';
+import { filter, take, switchMap, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Tabs } from '@tia/shared/lib/navigation/tabs/tabs';
 import { TabItem } from '@tia/shared/lib/navigation/models/tab.model';
@@ -45,28 +45,29 @@ export class TransfersContainer implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.store
       .select(selectTransactionToRepeat)
-      .pipe(take(1))
-      .subscribe((transaction) => {
-        if (transaction) {
+      .pipe(
+        take(1),
+        filter((transaction) => !!transaction),
+        tap((transaction) => {
           this.isLoadingMeta.set(true);
-          const navSubscription = this.router.events
-            .pipe(
-              filter((event) => event instanceof NavigationEnd),
-              take(1),
-              takeUntilDestroyed(this.destroyRef),
-            )
-            .subscribe(() => {
-              this.stopLoading();
-            });
-          this.repeatService.initRepeatTransfer(transaction);
+          this.repeatService.initRepeatTransfer(transaction!);
+
           setTimeout(() => {
             if (this.isLoadingMeta()) {
               this.stopLoading();
-              navSubscription.unsubscribe();
             }
-          }, 1000);
-        }
-      });
+          }, 5000);
+        }),
+        switchMap(() =>
+          this.router.events.pipe(
+            filter((event) => event instanceof NavigationEnd),
+            take(1),
+          ),
+        ),
+        tap(() => this.stopLoading()),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 
   private stopLoading(): void {

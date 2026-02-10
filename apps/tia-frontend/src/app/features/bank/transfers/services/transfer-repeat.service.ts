@@ -2,7 +2,7 @@ import { inject, Injectable, DestroyRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { catchError, of, tap, take } from 'rxjs';
+import { catchError, of, tap, take, switchMap, map } from 'rxjs';
 import { TransferStore } from '../store/transfers.store';
 import { TransfersApiService } from './transfersApi.service';
 import { TransferValidationService } from '../components/transfers-external/services/transfer-validation.service';
@@ -74,36 +74,39 @@ export class TransferRepeatService {
 
     this.store
       .select(selectAccounts)
-      .pipe(take(1))
-      .subscribe((accounts) => {
-        const senderAccount = accounts.find(
-          (acc) => acc.iban === transaction.debitAccountNumber,
-        );
+      .pipe(
+        take(1),
+        map((accounts) =>
+          accounts.find((acc) => acc.iban === transaction.debitAccountNumber),
+        ),
+        tap((senderAccount) => {
+          if (!senderAccount) {
+            this.transferStore.setError(
+              'transfers.external.accounts.senderNotFound',
+            );
+            this.router.navigate(['/bank/transfers/external/accounts']);
+            return;
+          }
 
-        if (!senderAccount) {
-          this.transferStore.setError(
-            'transfers.external.accounts.senderNotFound',
-          );
-          this.router.navigate(['/bank/transfers/external/accounts']);
-          return;
-        }
+          if (
+            !this.utilsService.isSenderAccountValid(senderAccount, null, true)
+          ) {
+            this.transferStore.setError(
+              'transfers.external.accounts.noPermission',
+            );
+            this.router.navigate(['/bank/transfers/external/accounts']);
+            return;
+          }
 
-        if (
-          !this.utilsService.isSenderAccountValid(senderAccount, null, true)
-        ) {
-          this.transferStore.setError(
-            'transfers.external.accounts.noPermission',
-          );
-          this.router.navigate(['/bank/transfers/external/accounts']);
-          return;
-        }
-
-        this.transferStore.setSenderAccount(senderAccount);
-        this.transferStore.setAmount(transaction.amount);
-        this.transferStore.setDescription(transaction.description);
-        this.transferStore.updateFeeInfo(0, transaction.amount);
-        this.router.navigate(['/bank/transfers/external/amount']);
-      });
+          this.transferStore.setSenderAccount(senderAccount);
+          this.transferStore.setAmount(transaction.amount);
+          this.transferStore.setDescription(transaction.description);
+          this.transferStore.updateFeeInfo(0, transaction.amount);
+          this.router.navigate(['/bank/transfers/external/amount']);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 
   private handleSameBank(
@@ -115,7 +118,7 @@ export class TransferRepeatService {
     this.transfersApi
       .lookupByIban(transaction.creditAccountNumber!)
       .pipe(
-        tap((recipientInfo) => {
+        map((recipientInfo) => {
           let recipientAccount: RecipientAccount | null = null;
 
           if (recipientInfo.accounts && recipientInfo.accounts.length > 0) {
@@ -135,6 +138,9 @@ export class TransferRepeatService {
             };
           }
 
+          return { recipientInfo, recipientAccount };
+        }),
+        tap(({ recipientInfo, recipientAccount }) => {
           if (!recipientAccount) {
             this.transferStore.setRecipientInput(
               transaction.creditAccountNumber!,
@@ -154,46 +160,55 @@ export class TransferRepeatService {
           );
           this.transferStore.setSelectedRecipientAccount(recipientAccount);
           this.transferStore.setLoading(false);
-
-          this.store
-            .select(selectAccounts)
-            .pipe(take(1))
-            .subscribe((accounts) => {
-              const senderAccount = accounts.find(
-                (acc) => acc.iban === transaction.debitAccountNumber,
-              );
-
-              if (!senderAccount) {
-                this.transferStore.setError(
-                  'transfers.external.accounts.senderNotFound',
-                );
-                this.router.navigate(['/bank/transfers/external/accounts']);
-                return;
-              }
-
-              if (
-                !this.utilsService.isSenderAccountValid(
-                  senderAccount,
-                  recipientAccount,
-                  false,
-                )
-              ) {
-                this.transferStore.setError(
-                  'transfers.repeat.senderNoPermission',
-                );
-                this.router.navigate(['/bank/transfers/external/accounts']);
-                return;
-              }
-
-              this.transferStore.setSenderAccount(senderAccount);
-              this.transferStore.setAmount(transaction.amount);
-              this.transferStore.setDescription(transaction.description);
-              this.transferStore.updateFeeInfo(0, transaction.amount);
-
-              this.router.navigate(['/bank/transfers/external/amount']);
-            });
         }),
-        catchError((error) => {
+        switchMap(({ recipientAccount }) => {
+          if (!recipientAccount) {
+            return of(null);
+          }
+
+          return this.store.select(selectAccounts).pipe(
+            take(1),
+            map((accounts) => ({
+              senderAccount: accounts.find(
+                (acc) => acc.iban === transaction.debitAccountNumber,
+              ),
+              recipientAccount,
+            })),
+          );
+        }),
+        tap((result) => {
+          if (!result) return;
+
+          const { senderAccount, recipientAccount } = result;
+
+          if (!senderAccount) {
+            this.transferStore.setError(
+              'transfers.external.accounts.senderNotFound',
+            );
+            this.router.navigate(['/bank/transfers/external/accounts']);
+            return;
+          }
+
+          if (
+            !this.utilsService.isSenderAccountValid(
+              senderAccount,
+              recipientAccount,
+              false,
+            )
+          ) {
+            this.transferStore.setError('transfers.repeat.senderNoPermission');
+            this.router.navigate(['/bank/transfers/external/accounts']);
+            return;
+          }
+
+          this.transferStore.setSenderAccount(senderAccount);
+          this.transferStore.setAmount(transaction.amount);
+          this.transferStore.setDescription(transaction.description);
+          this.transferStore.updateFeeInfo(0, transaction.amount);
+
+          this.router.navigate(['/bank/transfers/external/amount']);
+        }),
+        catchError(() => {
           this.transferStore.setRecipientInput(
             transaction.creditAccountNumber!,
           );

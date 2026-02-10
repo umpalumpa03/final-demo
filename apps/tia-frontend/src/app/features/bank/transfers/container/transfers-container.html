@@ -1,9 +1,7 @@
 <div class="global-bank-wrapper">
   @if (isLoadingMeta()) {
-  <div class="transfers__loader-wrapper">
-    <div class="transfers__loader">
-      <app-route-loader variant="pulsing"></app-route-loader>
-    </div>
+  <div class="transfers__loader">
+    <app-route-loader variant="pulsing"></app-route-loader>
   </div>
   } @else {
   <div class="transfers_wrapper">
