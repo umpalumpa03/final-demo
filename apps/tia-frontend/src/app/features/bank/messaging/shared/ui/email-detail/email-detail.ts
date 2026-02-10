@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { EmailDetailData } from '../../../store/messaging.state';
 import { DatePipe } from '@angular/common';
 import { Avatar } from '@tia/shared/lib/data-display/avatars/avatar';
@@ -20,6 +20,7 @@ export class EmailDetail {
   private readonly route = inject(ActivatedRoute);
   private readonly messagingStore = inject(MessagingStore);
   public readonly isLoading = this.messagingStore.isLoading;
+  public readonly ccRecipientsFormatted = computed(() => this.data()?.ccRecipients?.join(', ') ?? '');
 
   public getInitials(email?: string): string {
     if (!email) return '';

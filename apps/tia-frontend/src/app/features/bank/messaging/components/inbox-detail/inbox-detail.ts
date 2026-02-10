@@ -11,7 +11,8 @@ import { ReplyForm } from '../../shared/ui/reply-form/reply-form';
 import { Store } from '@ngrx/store';
 import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 @Component({
   selector: 'app-inbox-detail',
@@ -25,7 +26,8 @@ export class InboxDetail implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly store = inject(Store);
-  private readonly fb = inject(FormBuilder);
+  private readonly alertService = inject(AlertService);
+  private readonly translate = inject(TranslateService);
   public readonly deleteMail = output<number>();
   public readonly isFavoriteLoading = computed(() => !!this.messagingStore.isFavoriteLoading?.());
   private readonly emailId = this.route.snapshot.paramMap.get('id') || '';
@@ -38,12 +40,17 @@ export class InboxDetail implements OnInit {
   private readonly breakpointService = inject(BreakpointService);
   public readonly isMobile = this.breakpointService.isMobile;
   public readonly isDeleting = computed(() => !!this.messagingStore.isDeleting?.());
+  public readonly deleteSuccess = computed(() => !!this.messagingStore.deleteSuccess?.());
   private readonly isDeletePending = signal(false);
   private readonly deletingEffect = effect(() => {
     if (this.isDeletePending() && !this.isDeleting()) {
       this.isDeletePending.set(false);
       this.isDeleteModalOpen.set(false);
-      this.router.navigate(['..'], { relativeTo: this.route });
+      if (this.deleteSuccess()) {
+        this.router.navigate(['..'], { relativeTo: this.route }).then(() => {
+          this.alertService.success(this.translate.instant('messaging.storeSuccess.mailDeleted'), { variant: 'dismissible', title: 'Success!' });
+        });
+      }
     }
   });
 

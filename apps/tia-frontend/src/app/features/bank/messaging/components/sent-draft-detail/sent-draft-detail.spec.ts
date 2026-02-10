@@ -8,6 +8,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Mail } from '../../store/messaging.state';
 import { Store } from '@ngrx/store';
 import { TranslateModule } from '@ngx-translate/core';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 describe('SentDraftDetail', () => {
   let component: SentDraftDetail;
@@ -16,6 +17,7 @@ describe('SentDraftDetail', () => {
   let mockMessagingStore: any;
   let mockRouter: any;
   let mockStore: any;
+  let mockAlertService: any;
 
   const mockMail: Mail = {
     id: 1,
@@ -41,14 +43,20 @@ describe('SentDraftDetail', () => {
       sendMailReply: vi.fn(),
       isLoading: signal(false),
       isDeleting: signal(false),
+      deleteSuccess: signal(false),
     };
 
     mockRouter = {
-      navigate: vi.fn(),
+      navigate: vi.fn().mockReturnValue(Promise.resolve(true)),
     };
 
     mockStore = {
       selectSignal: vi.fn().mockReturnValue(signal('test@example.com')),
+    };
+
+    mockAlertService = {
+      success: vi.fn(),
+      error: vi.fn(),
     };
 
     const mockActivatedRoute = {
@@ -68,7 +76,8 @@ describe('SentDraftDetail', () => {
         { provide: MessagingStore, useValue: mockMessagingStore },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
-        { provide: Store, useValue: mockStore }
+        { provide: Store, useValue: mockStore },
+        { provide: AlertService, useValue: mockAlertService }
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
@@ -114,7 +123,8 @@ describe('SentDraftDetail', () => {
         { provide: MessagingStore, useValue: mockMessagingStore },
         { provide: ActivatedRoute, useValue: mockActivatedRouteWithSent },
         { provide: Router, useValue: mockRouter },
-        { provide: Store, useValue: mockStore }
+        { provide: Store, useValue: mockStore },
+        { provide: AlertService, useValue: mockAlertService }
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
@@ -154,6 +164,7 @@ describe('SentDraftDetail', () => {
     expect(mockRouter.navigate).not.toHaveBeenCalled();
 
     mockMessagingStore.isDeleting.set(false);
+    mockMessagingStore.deleteSuccess.set(true);
     fixture.detectChanges();
 
     expect(component.isDeleteModalOpen()).toBe(false);
