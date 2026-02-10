@@ -624,7 +624,7 @@ export class PaybillEffect {
         const match = categories.find((cat) =>
           cat.providers?.some((p) => p.id === serviceId),
         );
-        const categoryId = match?.id || 'utilities';
+        const categoryId = match?.id || 'utilities'; // es gahardulia jerjerobit bibi tu chaamatebs am infos kargi iqneba
 
         this.router.navigate(['/bank/paybill/pay', categoryId, serviceId]);
 

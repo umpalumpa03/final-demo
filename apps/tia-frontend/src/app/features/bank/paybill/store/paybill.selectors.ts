@@ -1,6 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { PaybillState } from './paybill.state';
-import { filter } from 'rxjs';
 
 export const selectPaybillState =
   createFeatureSelector<PaybillState>('paybill');

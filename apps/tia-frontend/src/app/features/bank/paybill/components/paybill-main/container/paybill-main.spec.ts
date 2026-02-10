@@ -1,14 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PaybillMain } from './paybill-main';
 import { PaybillMainFacade } from '../services/paybill-main-facade';
-import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
+import { signal } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe('PaybillMain', () => {
   let component: PaybillMain;
   let fixture: ComponentFixture<PaybillMain>;
-  let facadeMock: Partial<PaybillMainFacade>;
+  let facadeMock: any;
 
   beforeEach(async () => {
     vi.useFakeTimers();
@@ -16,15 +18,24 @@ describe('PaybillMain', () => {
     facadeMock = {
       init: vi.fn(),
       setSearchQuery: vi.fn(),
+      clearRepeatTransaction: vi.fn(),
+
       activeProvider: signal(null),
       isLoading: signal(false),
       showSearch: signal(true),
-    } as unknown as Partial<PaybillMainFacade>;
+      activeCategory: signal(null),
+      selectedParentId: signal(null),
+      isRootProviderView: signal(false),
+    };
 
     await TestBed.configureTestingModule({
-      imports: [PaybillMain, TranslateModule.forRoot()],
+      imports: [
+        PaybillMain,
+        ReactiveFormsModule,
+        RouterModule.forRoot([]),
+        TranslateModule.forRoot(),
+      ],
       providers: [{ provide: PaybillMainFacade, useValue: facadeMock }],
-      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PaybillMain);
@@ -34,29 +45,26 @@ describe('PaybillMain', () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
-  it('should create', () => {
+  it('should create and initialize', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should call facade.init on ngOnInit', () => {
     expect(facadeMock.init).toHaveBeenCalled();
   });
 
-  it('should call setSearchQuery after debounce time', () => {
-    const query = 'Internet';
-    component.searchControl.setValue(query);
+  it('should debounce search input changes', () => {
+    component.searchControl.setValue('TBC Bank');
+
+    expect(facadeMock.setSearchQuery).not.toHaveBeenCalled();
+
     vi.advanceTimersByTime(300);
-    expect(facadeMock.setSearchQuery).toHaveBeenCalledWith(query);
+
+    expect(facadeMock.setSearchQuery).toHaveBeenCalledWith('TBC Bank');
   });
 
-  it('should only call setSearchQuery once for multiple rapid changes', () => {
-    component.searchControl.setValue('A');
-    component.searchControl.setValue('AB');
-    component.searchControl.setValue('ABC');
-    vi.advanceTimersByTime(300);
-    expect(facadeMock.setSearchQuery).toHaveBeenCalledTimes(1);
-    expect(facadeMock.setSearchQuery).toHaveBeenCalledWith('ABC');
+  it('should cleanup on destroy', () => {
+    component.ngOnDestroy();
+    expect(facadeMock.clearRepeatTransaction).toHaveBeenCalled();
   });
 });
