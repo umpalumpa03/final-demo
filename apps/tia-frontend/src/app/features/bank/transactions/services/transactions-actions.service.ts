@@ -5,6 +5,7 @@ import { SimpleAlertType } from '@tia/shared/lib/alerts/shared/models/alert.mode
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 import { TransactionsFacadeService } from './transactions-facade.service';
 import * as XLSX from 'xlsx';
+import { ITransactionExportRow } from '../models/transactions-excel.models';
 
 @Injectable()
 export class TransactionsActionsService {
@@ -93,7 +94,7 @@ export class TransactionsActionsService {
       `Transactions_Table_${new Date().toISOString().slice(0, 10)}`,
     );
   }
-  private mapToExportRow(item: ITransactions): any {
+  private mapToExportRow(item: ITransactions): ITransactionExportRow {
     let categoryName = 'Uncategorized';
 
     if (typeof item.category === 'string') {
@@ -114,7 +115,7 @@ export class TransactionsActionsService {
     };
   }
 
-  private generateAndDownloadExcel(data: any[], fileNamePrefix: string): void {
+  private generateAndDownloadExcel<T>(data: T[], fileNamePrefix: string): void {
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Data');
