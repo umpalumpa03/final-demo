@@ -42,6 +42,8 @@ describe('TransactionsContainer', () => {
   };
 
   beforeEach(async () => {
+    mockRouter.navigate.mockClear();
+
     await TestBed.configureTestingModule({
       imports: [TransactionsContainer, TranslateModule.forRoot()],
       schemas: [NO_ERRORS_SCHEMA],

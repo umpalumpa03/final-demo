@@ -78,14 +78,20 @@
       </div>
 
       <div class="paybill-form-container__actions">
-        <app-button
-          class="btn-submit"
-          type="submit"
-          [fullWidth]="true"
-          [isDisabled]="paybillForm().invalid || isLoading()"
+        <app-tooltip
+          class="tooltip"
+          [content]="'paybill.main.tooltip.check_amount' | translate"
+          [disabled]="paybillForm().valid"
         >
-          {{ 'paybill.main.form.continue_btn' | translate }}
-        </app-button>
+          <app-button
+            type="submit"
+            class="btn-submit"
+            [fullWidth]="true"
+            [isDisabled]="paybillForm().invalid || isLoading()"
+          >
+            {{ 'paybill.main.form.continue_btn' | translate }}
+          </app-button>
+        </app-tooltip>
 
         <app-button
           variant="secondary"
@@ -99,14 +105,19 @@
     </div>
     } @else {
     <div class="paybill-form-container__actions">
-      <app-button
-        class="btn-submit"
-        type="submit"
-        [fullWidth]="true"
-        [isDisabled]="paybillForm().invalid || isLoading()"
+      <app-tooltip
+        [content]="'paybill.main.tooltip.check_details' | translate"
+        [disabled]="paybillForm().valid"
       >
-        {{ 'paybill.main.form.continue_btn' | translate }}
-      </app-button>
+        <app-button
+          class="btn-submit"
+          type="submit"
+          [fullWidth]="true"
+          [isDisabled]="paybillForm().invalid || isLoading()"
+        >
+          {{ 'paybill.main.form.continue_btn' | translate }}
+        </app-button>
+      </app-tooltip>
     </div>
     }
   </form>

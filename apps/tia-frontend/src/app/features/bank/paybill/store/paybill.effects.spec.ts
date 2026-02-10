@@ -19,6 +19,7 @@ import { PaybillActions, TemplatesPageActions } from './paybill.actions';
 import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillTemplatesService } from '../components/paybill-templates/services/paybill-templates-service';
 import {
+  selectCategories,
   selectCategoriesLoaded,
   selectNotifications,
   selectPaymentPayload,
@@ -33,6 +34,7 @@ import {
   PaybillPayload,
   ProceedPaymentResponse,
 } from '../components/paybill-main/shared/models/paybill.model';
+import { selectTransactionToRepeat } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
 
 describe('PaybillEffect (Refactored)', () => {
   let actions$: Observable<Action>;
@@ -71,7 +73,7 @@ describe('PaybillEffect (Refactored)', () => {
       providers: [
         PaybillEffect,
         provideMockActions(() => actions$),
-        // FIXED: Wrap state in feature key 'paybill' to match selectors
+
         provideMockStore({
           initialState: { paybill: initialPaybillState },
         }),
@@ -87,10 +89,9 @@ describe('PaybillEffect (Refactored)', () => {
     paybillTemplatesService = TestBed.inject(PaybillTemplatesService) as any;
     router = TestBed.inject(Router) as any;
 
-    // Default Overrides to prevent "undefined" errors in selectors
     store.overrideSelector(selectCategoriesLoaded, false);
     store.overrideSelector(selectTemplatesLoaded, false);
-    store.overrideSelector(selectTemplatesGroup, false); // Assuming boolean based on filter
+    store.overrideSelector(selectTemplatesGroup, false);
     store.overrideSelector(selectSelectedProviderId, null);
     store.overrideSelector(selectPaymentPayload, null);
     store.overrideSelector(selectNotifications, []);
@@ -108,7 +109,6 @@ describe('PaybillEffect (Refactored)', () => {
       paybillService.getCategories.mockReturnValue(of(categories));
       actions$ = of(PaybillActions.loadCategories());
 
-      // Override to ensure filter passes
       store.overrideSelector(selectCategoriesLoaded, false);
 
       effects.loadCategories$.subscribe((action) => {
@@ -648,6 +648,26 @@ describe('PaybillEffect (Refactored)', () => {
           }),
         );
       });
+    });
+
+    it('should use default "utilities" category if provider not found', () => {
+      const mockTransaction = {
+        amount: 50,
+        meta: { serviceId: 'unknown-service', identification: '123' },
+      };
+
+      store.overrideSelector(selectTransactionToRepeat, mockTransaction as any);
+      store.overrideSelector(selectCategories, []);
+
+      actions$ = of(PaybillActions.initRepeatProcess());
+
+      effects.hydrateFromRepeatTransaction$.subscribe();
+
+      expect(router.navigate).toHaveBeenCalledWith([
+        '/bank/paybill/pay',
+        'utilities',
+        'unknown-service',
+      ]);
     });
   });
 });

@@ -9,6 +9,9 @@
         flex-wrap: wrap;
         gap: 0.8rem;
         margin-bottom: 0.8rem;
+        max-height: 10rem;
+        overflow-y: auto;
+        @include custom-scrollbar;
     }
 
     .search-results {

@@ -6,6 +6,11 @@
   width: 100%;
   gap: 2.4rem;
 
+  &__nav-container {
+    height: 3.6rem;
+    @include flex-center($align: center, $justify: flex-start);
+  }
+
   &__search-container {
     max-width: 60rem;
     width: 100%;

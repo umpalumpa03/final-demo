@@ -1,3 +1,4 @@
+@if (hasValidState()) {
 <app-paybill-otp-verification
   [provider]="facade.activeProvider()"
   [summary]="facade.paymentPayload()!"
@@ -5,4 +6,22 @@
   (cancelPayment)="onBackToDetails()"
   [iconBgColor]="facade.activeCategoryUI()?.iconBgColor || '#F0F9FF'"
   [iconBgPath]="facade.activeCategoryUI()?.iconBgPath"
+  [isLoading]="facade.isLoading()"
 />
+} @else {
+<app-basic-card
+  maxWidth="100%"
+  padding="0rem 0 2.4rem 2.4rem"
+  minHeight="65rem"
+  justifyContent="center"
+>
+  <app-error-states
+    variant="failed"
+    header="Verification Data Missing"
+    message="We couldn't find your payment details. Please restart the payment process."
+    buttonMessage="Back to Categories"
+    [border]="false"
+    (buttonClick)="onBackToDetails()"
+  />
+</app-basic-card>
+}
