@@ -59,13 +59,21 @@ export class PaybillFormContainer {
   }
 
   // sync form data with service
-  private readonly formSync = effect(() => {
+private readonly formSync = effect(() => {
+  const fields = this.paybillFacade.paymentFields();
+  const payload = this.paybillFacade.paymentPayload();
+
+  if (fields.length > 0) {
     this.dynamicForm.syncFormWithPaymentFields(
       this.paybillForm,
-      { amount: 0 },
+      { 
+        ...payload?.identification, 
+        amount: payload?.amount ?? 0 
+      }, 
       true,
     );
-  });
+  }
+});
 
   public saveAsTemplate(customNickname?: string): void {
     const provider = this.paybillFacade.activeProvider();

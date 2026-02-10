@@ -35,6 +35,7 @@ export interface TransferState {
   totalWithFee: number;
   hasInsufficientBalance: boolean;
   isFeeLoading: boolean;
+  // isRepeatTransfer: boolean;
 
   //derived state
   recipientType: RecipientType | null; // from validation, values: 'phone','iban-same-bank' , 'iban-different-bank'

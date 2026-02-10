@@ -11,6 +11,7 @@ import { selectOnboardingStatus } from 'apps/tia-frontend/src/app/store/user-inf
 import { OnboardingModal } from './shared/ui/onboarding-modal/onboarding-modal';
 import { UserInfoActions } from 'apps/tia-frontend/src/app/store/user-info/user-info.actions';
 import { ONBOARDING_STEPS } from './shared/config/onboarding.config';
+import { OnboardingTarget } from './shared/models/onboarding.model';
 
 @Component({
   selector: 'app-onboarding',
@@ -22,6 +23,16 @@ import { ONBOARDING_STEPS } from './shared/config/onboarding.config';
 export class Onboarding {
   private readonly store = inject(Store);
   public readonly close = output<void>();
+
+  public readonly target = computed<OnboardingTarget>(() => {
+    const targets: Record<number, OnboardingTarget> = {
+      2: 'onboard-sidebar',
+      3: 'onboard-messaging',
+      4: 'onboard-notifications',
+    };
+
+    return targets[this.currentPage()];
+  });
 
   public hasCompletedOnboarding = this.store.selectSignal(
     selectOnboardingStatus,

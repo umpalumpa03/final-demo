@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, output, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, inject, output, signal, ViewChild } from '@angular/core';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessagingStore } from '../../store/messaging.store';
@@ -9,7 +9,8 @@ import { RepliesCard } from '../../shared/ui/replies-card/replies-card';
 import { ReplyForm } from '../../shared/ui/reply-form/reply-form';
 import { Store } from '@ngrx/store';
 import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 @Component({
   selector: 'app-sent-draft-detail',
@@ -23,6 +24,8 @@ export class SentDraftDetail {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly store = inject(Store);
+  private readonly alertService = inject(AlertService);
+  private readonly translate = inject(TranslateService);
   public readonly deleteMail = output<number>();
   public readonly isDeleteModalOpen = signal(false);
 
@@ -32,6 +35,20 @@ export class SentDraftDetail {
   public readonly mailReplies = computed(() => this.messagingStore.mailReplies?.() || []);
   public readonly isReplyOpen = signal(false);
   public readonly currentUserEmail = computed(() => this.store.selectSignal(selectCurrentUserEmail)() ?? '');
+  public readonly isDeleting = computed(() => !!this.messagingStore.isDeleting?.());
+  public readonly deleteSuccess = computed(() => !!this.messagingStore.deleteSuccess?.());
+  private readonly isDeletePending = signal(false);
+  private readonly deletingEffect = effect(() => {
+    if (this.isDeletePending() && !this.isDeleting()) {
+      this.isDeletePending.set(false);
+      this.isDeleteModalOpen.set(false);
+      if (this.deleteSuccess()) {
+        this.router.navigate(['..'], { relativeTo: this.route }).then(() => {
+          this.alertService.success(this.translate.instant('messaging.storeSuccess.mailDeleted'), { variant: 'dismissible', title: 'Success!' });
+        });
+      }
+    }
+  });
 
   @ViewChild('replyCard') replyCard?: ElementRef;
 
@@ -71,10 +88,9 @@ export class SentDraftDetail {
   public onConfirmDelete(): void {
     const mail = this.emailDetail?.();
     if (mail) {
+      this.isDeletePending.set(true);
       this.deleteMail.emit(mail.id);
       this.messagingStore.deleteMail(mail.id);
-      this.isDeleteModalOpen.set(false);
-      this.router.navigate(['..'], { relativeTo: this.route });
     }
   }
 

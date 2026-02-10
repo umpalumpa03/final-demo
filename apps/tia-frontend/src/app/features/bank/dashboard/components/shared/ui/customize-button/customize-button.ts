@@ -17,4 +17,5 @@ export class CustomizeButton {
   public readonly label = input.required<string>();
   public readonly iconClass = input<string>('icon__customize');
   public readonly clicked = output<void>();
+  public readonly customMaxSize = input('100%');
 }

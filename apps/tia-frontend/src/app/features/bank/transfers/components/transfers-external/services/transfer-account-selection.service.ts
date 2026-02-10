@@ -5,14 +5,14 @@ import { TransferStore } from '../../../store/transfers.store';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { RecipientAccount } from '../../../models/transfers.state.model';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
-import { TransferRecipientService } from './transfer-recipient.service';
+import { TransferUtilsService } from '../../../services/transfer-utils.service';
 
 @Injectable()
 export class TransferAccountSelectionService {
   private readonly router = inject(Router);
   private readonly transferStore = inject(TransferStore);
   private readonly store = inject(Store);
-  private readonly recipientService = inject(TransferRecipientService);
+  private readonly utilsService = inject(TransferUtilsService);
 
   public initAutoSelectionLogic(
     senderAccounts: Signal<Account[]>,
@@ -30,24 +30,35 @@ export class TransferAccountSelectionService {
       if (!preSelected || currentSender) return;
 
       untracked(() => {
-        if (isExt) {
-          this.store.dispatch(AccountsActions.selectAccount({ account: null }));
-          return;
-        }
-        if (
-          recipientAccount &&
-          preSelected.currency !== recipientAccount.currency
-        ) {
-          onCurrencyMismatch();
+        const isValid = this.utilsService.isSenderAccountValid(
+          preSelected,
+          recipientAccount,
+          isExt,
+        );
+
+        if (!isValid) {
+          if (
+            !isExt &&
+            recipientAccount &&
+            preSelected.currency !== recipientAccount.currency
+          ) {
+            onCurrencyMismatch();
+          }
+
+          // Clear the pre-selection from the global store since it's invalid for this context
           this.store.dispatch(AccountsActions.selectAccount({ account: null }));
           return;
         }
 
+        // It's valid! Set it as the sender
         this.transferStore.setSenderAccount(preSelected);
+
+        // Clear the global "pre-selection" so it doesn't try to re-apply on subsequent changes
         this.store.dispatch(AccountsActions.selectAccount({ account: null }));
       });
     });
 
+    // Effect 2: Handle Favorite Auto-selection
     effect(() => {
       const sAccounts = senderAccounts();
       const rAccounts = recipientAccounts();
@@ -62,20 +73,19 @@ export class TransferAccountSelectionService {
             this.transferStore.setSelectedRecipientAccount(firstRecipient);
           }
         }
-
         if (sAccounts.length > 0 && !currentSender) {
           const firstSender = sAccounts[0];
           const updatedRecipient =
             this.transferStore.selectedRecipientAccount();
 
           const isFav = firstSender.isFavorite;
-          const isDisabled = this.recipientService.isSenderAccountDisabled(
+          const isValid = this.utilsService.isSenderAccountValid(
             firstSender,
             updatedRecipient,
             isExt,
           );
 
-          if (isFav && !isDisabled) {
+          if (isFav && isValid) {
             this.transferStore.setSenderAccount(firstSender);
           }
         }

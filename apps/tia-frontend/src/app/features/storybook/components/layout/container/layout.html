@@ -47,8 +47,8 @@
                 <div class="section__item">
                     <h4 class="section__title">{{'storybook.layout.sections.scrollArea.example-2' | translate }}:</h4>
                     <app-scroll-area direction="horizontal" height="18rem">
-                        @for(item of scrollAreaContent2(); track item.id) {
-                        <div class="scroll-item">{{ item.title | translate }}</div>
+                        @for(item of scrollAreaContent2(); track item.id; let i = $index) {
+                        <div class="scroll-item">{{ item.title | translate }} {{i + 1}}</div>
                         }
                     </app-scroll-area>
                 </div>
@@ -131,8 +131,8 @@
                 <div class="section__item">
                     <h4 class="section__title">{{ config.title | translate }}:</h4>
                     <app-flex-layout [variant]="config.variant" [wrap]="config.wrap" gap="1.6rem">
-                        @for (item of config.items; track item.id) {
-                        <div [class]="getFlexItemClass(config.wrap)">{{ item.label | translate }}</div>
+                        @for (item of config.items; track item.id; let i = $index) {
+                        <div [class]="getFlexItemClass(config.wrap)">{{ item.label | translate }} {{i + 1}}</div>
                         }
                     </app-flex-layout>
                 </div>

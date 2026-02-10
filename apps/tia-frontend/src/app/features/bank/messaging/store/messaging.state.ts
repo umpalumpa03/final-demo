@@ -48,6 +48,8 @@ export interface MailingState {
   importantCount?: number;
   mailReplies?: EmailRepliesData[];
   isFavoriteLoading?: boolean;
+  isDeleting?: boolean;
+  deleteSuccess?: boolean;
 }
 
 export interface SendEmailRequest {
@@ -105,4 +107,6 @@ export const initialState: MailingState = {
   importantCount: 0,
   mailReplies: [],
   isFavoriteLoading: false,
+  isDeleting: false,
+  deleteSuccess: false,
 };

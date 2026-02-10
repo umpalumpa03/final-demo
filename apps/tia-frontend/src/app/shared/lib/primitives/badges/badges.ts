@@ -132,7 +132,15 @@ export class Badges {
     if (currentStatus) {
       if (this.translate) {
         const statusKey = currentStatus === 'in-progress' ? 'inProgress' : currentStatus;
-        return this.translate.instant(`storybook.badges.status.${statusKey}`) || statusTextMap[currentStatus];
+        const statusI18nKey = `storybook.badges.status.${statusKey}`;
+        const translatedStatus = this.translate.instant(statusI18nKey);
+
+     
+        if (translatedStatus && translatedStatus !== statusI18nKey) {
+          return translatedStatus;
+        }
+
+        return statusTextMap[currentStatus];
       }
       return statusTextMap[currentStatus];
     }
@@ -140,7 +148,14 @@ export class Badges {
     const currentDot = this.dot();
     if (currentDot) {
       if (this.translate) {
-        return this.translate.instant(`storybook.badges.dot.${currentDot}`) || dotTextMap[currentDot];
+        const dotI18nKey = `storybook.badges.dot.${currentDot}`;
+        const translatedDot = this.translate.instant(dotI18nKey);
+
+        if (translatedDot && translatedDot !== dotI18nKey) {
+          return translatedDot;
+        }
+
+        return dotTextMap[currentDot];
       }
       return dotTextMap[currentDot];
     }
@@ -148,7 +163,14 @@ export class Badges {
     const skillKey = this.skill();
     if (skillKey) {
       if (this.translate) {
-        return this.translate.instant(`storybook.badges.skills.${skillKey}`) || skillPresetMap[skillKey].text;
+        const skillI18nKey = `storybook.badges.skills.${skillKey}`;
+        const translatedSkill = this.translate.instant(skillI18nKey);
+
+        if (translatedSkill && translatedSkill !== skillI18nKey) {
+          return translatedSkill;
+        }
+
+        return skillPresetMap[skillKey].text;
       }
       return skillPresetMap[skillKey].text;
     }
@@ -156,7 +178,14 @@ export class Badges {
     const categoryKey = this.category();
     if (categoryKey) {
       if (this.translate) {
-        return this.translate.instant(`storybook.badges.categories.${categoryKey}`) || categoryPresetMap[categoryKey].text;
+        const categoryI18nKey = `storybook.badges.categories.${categoryKey}`;
+        const translatedCategory = this.translate.instant(categoryI18nKey);
+
+        if (translatedCategory && translatedCategory !== categoryI18nKey) {
+          return translatedCategory;
+        }
+
+        return categoryPresetMap[categoryKey].text;
       }
       return categoryPresetMap[categoryKey].text;
     }

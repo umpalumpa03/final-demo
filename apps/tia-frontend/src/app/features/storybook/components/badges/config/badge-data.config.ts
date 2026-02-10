@@ -27,7 +27,7 @@ export const STATUSES: StatusBadgeItem[] = [
   { status: 'in-progress', size: 'medium' },
   { status: 'featured', size: 'medium' },
   { status: 'premium', size: 'medium' },
- 
+  { status: 'favorite', size: 'medium' },
 ] as const;
 
 export const getSizes = (translate: TranslateService): SizeBadgeItem[] => [

@@ -72,7 +72,7 @@ export const paybillReducer = createReducer(
     paymentDetails: null,
     currentLevel: 0,
     error: null,
-    loading: false,
+    selectedSenderAccountId: null,
   })),
 
   on(TemplatesPageActions.clearPaymentDetails, (state) => ({
@@ -101,6 +101,8 @@ export const paybillReducer = createReducer(
   on(PaybillActions.setPaymentPayload, (state, { data }) => ({
     ...state,
     paymentPayload: data,
+    selectedSenderAccountId:
+      data.senderAccountId || state.selectedSenderAccountId,
   })),
 
   on(PaybillActions.proceedPayment, (state) => ({
@@ -237,7 +239,9 @@ export const paybillReducer = createReducer(
       loading: false,
       error: null,
       templates: state.templates.filter((t) => t.id !== templateId),
-      selectedItems: state.selectedItems.filter((id) => id !== templateId),
+      selectedItems: state.selectedItems.filter(
+        (item) => item.id !== templateId,
+      ),
     }),
   ),
   on(TemplatesPageActions.deleteTemplateFailure, (state, { error }) => ({
@@ -439,5 +443,21 @@ export const paybillReducer = createReducer(
   on(TemplatesPageActions.addCheckedItems, (state, { selectedItems }) => ({
     ...state,
     selectedItems,
+  })),
+
+  on(TemplatesPageActions.setDistributedAmount, (state, { amount }) => ({
+    ...state,
+    distributedAmount: amount,
+  })),
+  on(TemplatesPageActions.setTotalAmount, (state, { amount }) => ({
+    ...state,
+    totalAmount: amount,
+  })),
+
+  on(TemplatesPageActions.clearPaymentInfo, (state) => ({
+    ...state,
+    totalAmount: 0,
+    distributedAmount: 0,
+    selectedItems: [],
   })),
 );

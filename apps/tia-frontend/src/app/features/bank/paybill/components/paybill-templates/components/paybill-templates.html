@@ -20,7 +20,7 @@
   [isLoading]="isLoading()"
   [selectAll]="selectAll()"
   (checkedItemsChange)="onTemplateChecked($event)"
-  (buttonClicked)="paySelected($event)"
+  (buttonClicked)="singleItemSelected($event)"
 >
   <div class="templates__header">
     <div class="templates__header__main-content">
@@ -40,9 +40,7 @@
       </div>
     </div>
     @if(selectedItems()?.length) {
-    <app-selected-items
-      (paySelectedClick)="paySelected(selectedItems() ?? [])"
-    ></app-selected-items>
+    <app-selected-items (paySelectedClick)="paySelected()"></app-selected-items>
     }
   </div>
 </app-tree-container>
@@ -116,7 +114,31 @@
       <app-selected-items [forModal]="true"></app-selected-items>
       <app-payment-distribution
         [selectedItemsLength]="selectedItems()!.length"
+        (isDistribution)="paymentTypeChanged($event)"
       ></app-payment-distribution>
+      <app-bills-list [isDistribution]="isDistribution()"></app-bills-list>
+      <app-total-amount></app-total-amount>
+      <app-account-select
+        [maxVisible]="5"
+        [isHeader]="true"
+      ></app-account-select>
+      <div class="modal__buttons">
+        <app-button
+          variant="outline"
+          type="button"
+          (click)="modalOpenAction.emit()"
+        >
+          Cancel
+        </app-button>
+        <app-button
+          [variant]="config.submitButtonType"
+          type="submit"
+          (click)="onActionHandler(config.submitAction)"
+          [isLoading]="isLoading()"
+        >
+          {{ config.submitLabel }}
+        </app-button>
+      </div>
     </div>
     } @else {
     <div class="modal__identifier">{{ selectedDeleteItem() }}</div>
