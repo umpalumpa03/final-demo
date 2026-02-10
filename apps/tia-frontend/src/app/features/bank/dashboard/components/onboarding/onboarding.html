@@ -4,5 +4,13 @@
 <app-onboarding-modal [page]="currentPage()" [title]="step.title" [desc]="step.desc" [target]="target()"
     (next)="onNext()" (prev)="onPrev()" (skip)="finishOnboarding()">
 
+    @if (currentPage() === 2) {
+    <app-navigation-hub />
+    }
+
+    @if (currentPage() === 5) {
+    <app-customizable-widgets />
+    }
+
 </app-onboarding-modal>
 }

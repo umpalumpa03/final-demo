@@ -10,6 +10,7 @@ import {
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { OnboardingTarget } from '../../models/onboarding.model';
+import { ModalOffset } from '@tia/shared/lib/overlay/ui-modal/models/modal-positions.model';
 import { NgTemplateOutlet } from '@angular/common';
 import { ModalResponsiveService } from '@tia/shared/lib/overlay/ui-modal/services/service-modal';
 
@@ -23,23 +24,39 @@ import { ModalResponsiveService } from '@tia/shared/lib/overlay/ui-modal/service
 export class OnboardingModal {
   private readonly modalService = inject(ModalResponsiveService);
   private readonly LAST_PAGE = 6;
-  private readonly OFFSET_THRESHOLD = 2;
 
   public readonly page = input.required<number>();
   public readonly title = input.required<string>();
   public readonly desc = input.required<string>();
   public readonly target = input<OnboardingTarget | null>(null);
 
-  public readonly offset = computed(() =>
-    this.page() > this.OFFSET_THRESHOLD ? { left: -300 } : { left: 0 },
-  );
+  private readonly PAGE_OFFSETS: Record<number, ModalOffset> = {
+    1: {},
+    2: { top: 100 },
+    3: { left: -300 },
+    4: { left: -300 },
+    5: { left: -300 },
+    6: {},
+  };
+
+  private readonly MOBILE_PAGE_OFFSETS: Record<number, ModalOffset> = {
+    2: { left: 250 },
+  };
+
+  public readonly offset = computed(() => {
+    const isMobile = this.target() === 'onboard-sidebar-mobile';
+    if (isMobile && this.MOBILE_PAGE_OFFSETS[this.page()]) {
+      return this.MOBILE_PAGE_OFFSETS[this.page()];
+    }
+    return this.PAGE_OFFSETS[this.page()] ?? {};
+  });
 
   public readonly showPrevButton = computed(() => this.page() >= 2);
   public readonly nextButtonLabel = computed(() =>
     this.page() === this.LAST_PAGE ? 'Finish >' : 'Next >',
   );
   public readonly placement = computed(() =>
-    this.page() === 2 ? 'right' : 'bottom',
+    this.target() === 'onboard-sidebar' ? 'right' : 'bottom',
   );
 
   public readonly next = output<void>();

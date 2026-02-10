@@ -16,13 +16,17 @@
     <footer>
         <div class="buttons">
             @if (page() >= 2) {
-            <app-button variant="outline" (click)="prev.emit()">Previous</app-button>
+            <app-button variant="outline" (click)="prev.emit()" [icon]="'prev.svg'">Previous</app-button>
             }
 
             @if (page() == 6) {
-            <app-button variant="default" (click)="next.emit()">Finish ></app-button>
+            <app-button variant="default" (click)="next.emit()">Finish 
+                <img src="images/svg/onboarding/finish.svg" alt="Finish">
+            </app-button>
             } @else {
-            <app-button variant="default" (click)="next.emit()">Next ></app-button>
+            <app-button variant="default" (click)="next.emit()">Next 
+                <img src="images/svg/onboarding/next.svg" alt="Next">
+            </app-button>
             }
         </div>
         <p class="skip-text" (click)="skip.emit()">
@@ -32,6 +36,6 @@
 </ng-template>
 
 <app-ui-modal [isOpen]="true" (closed)="skip.emit()" [target]="target() ?? null"
-    [placement]="page() === 2 ? 'right' : 'bottom'" [offset]="offset()">
+    [placement]="placement()" [offset]="offset()">
     <ng-container *ngTemplateOutlet="modalContent"></ng-container>
 </app-ui-modal>
