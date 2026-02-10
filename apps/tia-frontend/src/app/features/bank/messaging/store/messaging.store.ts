@@ -180,14 +180,16 @@ export const MessagingStore = signalStore(
                         tap(() => {
                             patchState(store, {
                                 mails: store.mails().filter(mail => mail.id !== mailId),
-                                isDeleting: false
+                                isDeleting: false,
+                                deleteSuccess: true
                             });
+                            alertService.success(translate.instant('messaging.storeSuccess.mailDeleted'), { variant: 'dismissible', title: 'Success!' });
                             inboxService.fetchInboxCount();
                             store.getUnreadImportantCount();
                             updateTotalCountByType();
                         }),
                         catchError(() => {
-                            patchState(store, { isDeleting: false });
+                            patchState(store, { isDeleting: false, deleteSuccess: false });
                             alertService.error(translate.instant('messaging.storeErrors.deleteMail'), { variant: 'dismissible', title: 'Oops!' });
                             return of(null);
                         })
@@ -204,14 +206,16 @@ export const MessagingStore = signalStore(
                             tap(() => {
                                 patchState(store, {
                                     mails: store.mails().filter(mail => !ids.includes(mail.id)),
-                                    isDeleting: false
+                                    isDeleting: false,
+                                    deleteSuccess: true
                                 });
+                                alertService.success(translate.instant('messaging.storeSuccess.mailDeleted'), { variant: 'dismissible', title: 'Success!' });
                                 inboxService.fetchInboxCount();
                                 store.getUnreadImportantCount();
                                 updateTotalCountByType();
                             }),
                             catchError(() => {
-                                patchState(store, { isDeleting: false });
+                                patchState(store, { isDeleting: false, deleteSuccess: false });
                                 alertService.error(translate.instant('messaging.storeErrors.deleteAllMails'), { variant: 'dismissible', title: 'Oops!' });
                                 return of(null);
                             })

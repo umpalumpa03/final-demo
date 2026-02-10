@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { TransferAccountSelectionService } from './transfer-account-selection.service';
 import { TransferStore } from '../../../store/transfers.store';
-import { TransferRecipientService } from './transfer-recipient.service';
+import { TransferUtilsService } from '../../../services/transfer-utils.service';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { signal } from '@angular/core';
@@ -12,25 +12,21 @@ describe('TransferAccountSelectionService', () => {
   let service: TransferAccountSelectionService;
   let mockRouter: any;
   let mockTransferStore: any;
-  let mockRecipientService: any;
+  let mockUtils: any;
   let store: MockStore;
 
   beforeEach(() => {
     mockRouter = { navigate: vi.fn() };
-
     mockTransferStore = {
       senderAccount: signal(null),
       selectedRecipientAccount: signal(null),
+      setSenderAccount: vi.fn(),
+      setSelectedRecipientAccount: vi.fn(),
       setAmount: vi.fn(),
       setInsufficientBalance: vi.fn(),
-      setSelectedRecipientAccount: vi.fn(),
-      setSenderAccount: vi.fn(),
       setManualRecipientName: vi.fn(),
     };
-
-    mockRecipientService = {
-      isSenderAccountDisabled: vi.fn().mockReturnValue(false),
-    };
+    mockUtils = { isSenderAccountValid: vi.fn() };
 
     TestBed.configureTestingModule({
       providers: [
@@ -38,7 +34,7 @@ describe('TransferAccountSelectionService', () => {
         provideMockStore(),
         { provide: Router, useValue: mockRouter },
         { provide: TransferStore, useValue: mockTransferStore },
-        { provide: TransferRecipientService, useValue: mockRecipientService },
+        { provide: TransferUtilsService, useValue: mockUtils },
       ],
     });
 
@@ -46,162 +42,112 @@ describe('TransferAccountSelectionService', () => {
     store = TestBed.inject(MockStore);
   });
 
-  describe('initAutoSelectionLogic', () => {
-    it('should dispatch selectAccount null if isExternal is true', () => {
-      const dispatchSpy = vi.spyOn(store, 'dispatch');
-      const preSelected = { id: 's1', currency: 'GEL' } as any;
+  it('should auto-select valid pre-selected account', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    const acc = { id: '1', currency: 'GEL' } as any;
+    mockUtils.isSenderAccountValid.mockReturnValue(true);
 
-      TestBed.runInInjectionContext(() => {
-        service.initAutoSelectionLogic(
-          signal([]),
-          signal([]),
-          signal(true),
-          signal(preSelected),
-          vi.fn(),
-        );
-      });
-
-      TestBed.flushEffects();
-
-      expect(dispatchSpy).toHaveBeenCalledWith(
-        AccountsActions.selectAccount({ account: null }),
+    TestBed.runInInjectionContext(() => {
+      service.initAutoSelectionLogic(
+        signal([]),
+        signal([]),
+        signal(false),
+        signal(acc),
+        vi.fn(),
       );
     });
 
-    it('should handle currency mismatch', () => {
-      const onMismatch = vi.fn();
-      const preSelected = { id: 's1', currency: 'USD' } as any;
-      const recipient = { id: 'r1', currency: 'GEL' } as any;
+    TestBed.flushEffects();
+    expect(mockTransferStore.setSenderAccount).toHaveBeenCalledWith(acc);
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      AccountsActions.selectAccount({ account: null }),
+    );
+  });
 
-      mockTransferStore.selectedRecipientAccount.set(recipient);
+  it('should trigger mismatch callback on invalid currency pre-selection', () => {
+    const onMismatch = vi.fn();
+    const acc = { id: '1', currency: 'USD' } as any;
+    const recipient = { currency: 'GEL' } as any;
+    mockTransferStore.selectedRecipientAccount.set(recipient);
+    mockUtils.isSenderAccountValid.mockReturnValue(false);
 
-      TestBed.runInInjectionContext(() => {
-        service.initAutoSelectionLogic(
-          signal([]),
-          signal([]),
-          signal(false),
-          signal(preSelected),
-          onMismatch,
-        );
-      });
-
-      TestBed.flushEffects();
-
-      expect(onMismatch).toHaveBeenCalled();
-    });
-
-    it('should auto-select favorite recipient if available', () => {
-      const favoriteRecipient = { id: 'r1', isFavorite: true } as any;
-
-      TestBed.runInInjectionContext(() => {
-        service.initAutoSelectionLogic(
-          signal([]),
-          signal([favoriteRecipient]),
-          signal(false),
-          signal(null),
-          vi.fn(),
-        );
-      });
-
-      TestBed.flushEffects();
-
-      expect(
-        mockTransferStore.setSelectedRecipientAccount,
-      ).toHaveBeenCalledWith(favoriteRecipient);
-    });
-
-    it('should auto-select favorite sender if available and not disabled', () => {
-      const favoriteSender = { id: 's1', isFavorite: true } as any;
-      mockRecipientService.isSenderAccountDisabled.mockReturnValue(false);
-
-      TestBed.runInInjectionContext(() => {
-        service.initAutoSelectionLogic(
-          signal([favoriteSender]),
-          signal([]),
-          signal(false),
-          signal(null),
-          vi.fn(),
-        );
-      });
-
-      TestBed.flushEffects();
-
-      expect(mockTransferStore.setSenderAccount).toHaveBeenCalledWith(
-        favoriteSender,
+    TestBed.runInInjectionContext(() => {
+      service.initAutoSelectionLogic(
+        signal([]),
+        signal([]),
+        signal(false),
+        signal(acc),
+        onMismatch,
       );
     });
+
+    TestBed.flushEffects();
+    expect(onMismatch).toHaveBeenCalled();
   });
 
-  describe('handleRecipientAccountSelect', () => {
-    it('should reset amount and select new account if IDs differ', () => {
-      const current = { id: 'old' } as any;
-      const next = { id: 'new' } as any;
+  it('should auto-select favorite recipient and sender', () => {
+    const favRecipient = { id: 'r1', isFavorite: true } as any;
+    const favSender = { id: 's1', isFavorite: true } as any;
+    mockUtils.isSenderAccountValid.mockReturnValue(true);
 
-      service.handleRecipientAccountSelect(next, current);
-
-      expect(mockTransferStore.setAmount).toHaveBeenCalledWith(0);
-      expect(
-        mockTransferStore.setSelectedRecipientAccount,
-      ).toHaveBeenCalledWith(next);
-    });
-
-    it('should not reset if same account and is iban-recipient', () => {
-      const acc = { id: 'iban-recipient' } as any;
-      service.handleRecipientAccountSelect(acc, acc);
-      expect(mockTransferStore.setAmount).not.toHaveBeenCalled();
-    });
-
-    it('should deselect if same account is clicked (non-iban)', () => {
-      const acc = { id: 'r1' } as any;
-      service.handleRecipientAccountSelect(acc, acc);
-      expect(
-        mockTransferStore.setSelectedRecipientAccount,
-      ).toHaveBeenCalledWith(null);
-    });
-  });
-
-  describe('handleSenderAccountSelect', () => {
-    it('should reset amount and select sender if IDs differ', () => {
-      const current = { id: 's1' } as any;
-      const next = { id: 's2' } as any;
-
-      service.handleSenderAccountSelect(next, current);
-
-      expect(mockTransferStore.setAmount).toHaveBeenCalledWith(0);
-      expect(mockTransferStore.setSenderAccount).toHaveBeenCalledWith(next);
-    });
-
-    it('should toggle sender off if clicked again', () => {
-      const acc = { id: 's1' } as any;
-      service.handleSenderAccountSelect(acc, acc);
-      expect(mockTransferStore.setSenderAccount).toHaveBeenCalledWith(null);
-    });
-  });
-
-  describe('handleContinue', () => {
-    it('should navigate and set manual name for external IBAN', () => {
-      const sender = { id: 's1' } as any;
-      service.handleContinue(null, sender, true, 'John Doe');
-      expect(mockTransferStore.setManualRecipientName).toHaveBeenCalledWith(
-        'John Doe',
+    TestBed.runInInjectionContext(() => {
+      service.initAutoSelectionLogic(
+        signal([favSender]),
+        signal([favRecipient]),
+        signal(false),
+        signal(null),
+        vi.fn(),
       );
-      expect(mockRouter.navigate).toHaveBeenCalledWith([
-        '/bank/transfers/external/amount',
-      ]);
     });
 
-    it('should navigate for internal transfer with recipient', () => {
-      const sender = { id: 's1' } as any;
-      const recipient = { id: 'r1' } as any;
-      service.handleContinue(recipient, sender, false, null);
-      expect(mockRouter.navigate).toHaveBeenCalledWith([
-        '/bank/transfers/external/amount',
-      ]);
-    });
+    TestBed.flushEffects();
+    expect(mockTransferStore.setSelectedRecipientAccount).toHaveBeenCalledWith(
+      favRecipient,
+    );
+    expect(mockTransferStore.setSenderAccount).toHaveBeenCalledWith(favSender);
+  });
 
-    it('should not navigate if conditions are not met', () => {
-      service.handleContinue(null, null, false, null);
-      expect(mockRouter.navigate).not.toHaveBeenCalled();
-    });
+  it('should handle recipient selection and deselection', () => {
+    const acc = { id: 'r1' } as any;
+    service.handleRecipientAccountSelect(acc, null);
+    expect(mockTransferStore.setSelectedRecipientAccount).toHaveBeenCalledWith(
+      acc,
+    );
+    expect(mockTransferStore.setAmount).toHaveBeenCalledWith(0);
+
+    service.handleRecipientAccountSelect(acc, acc);
+    expect(mockTransferStore.setSelectedRecipientAccount).toHaveBeenCalledWith(
+      null,
+    );
+  });
+
+  it('should handle sender selection and deselection', () => {
+    const acc = { id: 's1' } as any;
+    service.handleSenderAccountSelect(acc, null);
+    expect(mockTransferStore.setSenderAccount).toHaveBeenCalledWith(acc);
+    expect(mockTransferStore.setAmount).toHaveBeenCalledWith(0);
+
+    service.handleSenderAccountSelect(acc, acc);
+    expect(mockTransferStore.setSenderAccount).toHaveBeenCalledWith(null);
+  });
+
+  it('should navigate on handleContinue', () => {
+    service.handleContinue(
+      { id: 'r1' } as any,
+      { id: 's1' } as any,
+      false,
+      null,
+    );
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/bank/transfers/external/amount',
+    ]);
+  });
+
+  it('should set manual name on continue for external iban', () => {
+    service.handleContinue(null, { id: 's1' } as any, true, 'John');
+    expect(mockTransferStore.setManualRecipientName).toHaveBeenCalledWith(
+      'John',
+    );
+    expect(mockRouter.navigate).toHaveBeenCalled();
   });
 });

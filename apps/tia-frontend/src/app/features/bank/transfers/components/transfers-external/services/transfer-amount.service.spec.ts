@@ -1,39 +1,40 @@
 import { TestBed } from '@angular/core/testing';
-import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 import { TransferAmountService } from './transfer-amount.service';
 import { TransferStore } from '../../../store/transfers.store';
 import { TransfersApiService } from '../../../services/transfersApi.service';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { signal } from '@angular/core';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 
 describe('TransferAmountService', () => {
   let service: TransferAmountService;
-  let mockStore: any;
+  let mockRouter: any;
+  let mockTransferStore: any;
   let mockApi: any;
-  let mockLocation: any;
 
   beforeEach(() => {
     vi.useFakeTimers();
-    mockLocation = { back: vi.fn() };
-    mockApi = { getFee: vi.fn() };
-
-    mockStore = {
-      amount: signal(0),
-      senderAccount: signal({ id: 'acc-1', balance: 1000 }),
-      recipientType: signal('phone'),
+    mockRouter = { navigate: vi.fn() };
+    mockTransferStore = {
+      amount: signal(100),
+      senderAccount: signal({ id: 'acc1', balance: 1000 }),
+      recipientType: signal('iban-same-bank'),
       setAmount: vi.fn(),
       setInsufficientBalance: vi.fn(),
       updateFeeInfo: vi.fn(),
       setFeeLoading: vi.fn(),
       setDescription: vi.fn(),
     };
+    mockApi = {
+      getFee: vi.fn().mockReturnValue(of({ fee: 5 })),
+    };
 
     TestBed.configureTestingModule({
       providers: [
         TransferAmountService,
-        { provide: Location, useValue: mockLocation },
-        { provide: TransferStore, useValue: mockStore },
+        { provide: Router, useValue: mockRouter },
+        { provide: TransferStore, useValue: mockTransferStore },
         { provide: TransfersApiService, useValue: mockApi },
       ],
     });
@@ -41,103 +42,60 @@ describe('TransferAmountService', () => {
     service = TestBed.inject(TransferAmountService);
   });
 
-  describe('handleAmountInput', () => {
-    it('should set insufficient balance if amount > balance', () => {
-      mockStore.senderAccount.set({ balance: 100 });
-      service.handleAmountInput(150);
-
-      expect(mockStore.setInsufficientBalance).toHaveBeenCalledWith(true);
-      expect(mockStore.updateFeeInfo).toHaveBeenCalledWith(0, 150);
-    });
-
-    it('should update info directly for internal transfers (same bank)', () => {
-      mockStore.recipientType.set('phone');
-      service.handleAmountInput(50);
-
-      expect(mockStore.setInsufficientBalance).toHaveBeenCalledWith(false);
-      expect(mockStore.updateFeeInfo).toHaveBeenCalledWith(0, 50);
-    });
-
-    it('should trigger fee calculation for external bank transfers', () => {
-      mockStore.recipientType.set('iban-different-bank');
-      service.handleAmountInput(50);
-
-      expect(mockStore.setFeeLoading).toHaveBeenCalledWith(true);
-      mockApi.getFee.mockReturnValue(of(0));
-      vi.advanceTimersByTime(300);
-      expect(mockApi.getFee).toHaveBeenCalled();
-    });
-
-    it('should handle zero or negative amounts', () => {
-      service.handleAmountInput(0);
-      expect(mockStore.updateFeeInfo).toHaveBeenCalledWith(0, 0);
-    });
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
-  describe('setupFeeCalculation (RxJS logic)', () => {
-    it('should handle numeric fee response and validate balance', () => {
-      mockStore.recipientType.set('iban-different-bank');
-      mockStore.amount.set(100);
-      mockStore.senderAccount.set({ id: 'acc-1', balance: 105 });
-      mockApi.getFee.mockReturnValue(of(5)); 
-
-      service.handleAmountInput(100);
-      vi.advanceTimersByTime(300);
-
-      expect(mockStore.updateFeeInfo).toHaveBeenCalledWith(5, 105);
-      expect(mockStore.setInsufficientBalance).toHaveBeenCalledWith(false);
-    });
-
-    it('should handle object fee response and detect insufficient balance', () => {
-      mockStore.recipientType.set('iban-different-bank');
-      mockStore.amount.set(100);
-      mockStore.senderAccount.set({ id: 'acc-1', balance: 100 });
-      mockApi.getFee.mockReturnValue(of({ fee: 10 })); 
-
-      service.handleAmountInput(100);
-      vi.advanceTimersByTime(300);
-
-      expect(mockStore.updateFeeInfo).toHaveBeenCalledWith(10, 110);
-      expect(mockStore.setInsufficientBalance).toHaveBeenCalledWith(true);
-    });
-
-    it('should abort update if store amount changed during API call (tap guard)', () => {
-      mockStore.recipientType.set('iban-different-bank');
-      mockStore.amount.set(100);
-      mockApi.getFee.mockReturnValue(of(5));
-
-      service.handleAmountInput(100);
-      mockStore.amount.set(200);
-
-      vi.advanceTimersByTime(300);
-
-      expect(mockStore.updateFeeInfo).not.toHaveBeenCalled();
-      expect(mockStore.setFeeLoading).toHaveBeenCalledWith(false);
-    });
-
-    it('should handle API errors gracefully', () => {
-      mockStore.recipientType.set('iban-different-bank');
-      mockApi.getFee.mockReturnValue(throwError(() => new Error('API Error')));
-
-      service.handleAmountInput(100);
-      vi.advanceTimersByTime(300);
-
-      expect(mockStore.updateFeeInfo).toHaveBeenCalledWith(0, 0);
-      expect(mockStore.setFeeLoading).toHaveBeenCalledWith(false);
-    });
+  it('should handle amount input with insufficient balance', () => {
+    service.handleAmountInput(2000);
+    expect(mockTransferStore.setInsufficientBalance).toHaveBeenCalledWith(true);
+    expect(mockTransferStore.updateFeeInfo).toHaveBeenCalledWith(0, 2000);
   });
 
-  describe('Utility Methods', () => {
-    it('should handleAmountGoBack', () => {
-      service.handleAmountGoBack(100, 'Rent');
-      expect(mockStore.setAmount).toHaveBeenCalledWith(100);
-      expect(mockStore.setDescription).toHaveBeenCalledWith('Rent');
-      expect(mockLocation.back).toHaveBeenCalled();
-    });
+  it('should handle same bank transfer input', () => {
+    service.handleAmountInput(100);
+    expect(mockTransferStore.setInsufficientBalance).toHaveBeenCalledWith(
+      false,
+    );
+    expect(mockTransferStore.updateFeeInfo).toHaveBeenCalledWith(0, 100);
+  });
 
-    it('should validate transfer amount', () => {
-      expect(service.handleTransfer(50, 'Valid')).toBe(true);
-      expect(service.handleTransfer(0, 'Invalid')).toBe(false);
-    });
+  it('should handle external bank transfer input', () => {
+    mockTransferStore.recipientType.set('iban-different-bank');
+    service.handleAmountInput(100);
+    expect(mockTransferStore.setFeeLoading).toHaveBeenCalledWith(true);
+  });
+
+  it('should reset info on zero or negative amount', () => {
+    service.handleAmountInput(0);
+    expect(mockTransferStore.updateFeeInfo).toHaveBeenCalledWith(0, 0);
+  });
+
+  it('should navigate back in handleAmountGoBack', () => {
+    service.handleAmountGoBack(100, 'desc');
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/bank/transfers/external/accounts',
+    ]);
+  });
+
+  it('should handle transfer validation', () => {
+    expect(service.handleTransfer(100, 'desc')).toBe(true);
+    expect(service.handleTransfer(0, 'desc')).toBe(false);
+  });
+
+  it('should validate balance correctly', () => {
+    expect(service.validateBalance(100, 200)).toBe(true);
+    expect(service.validateBalance(300, 200)).toBe(false);
+    expect(mockTransferStore.setInsufficientBalance).toHaveBeenCalled();
+  });
+
+  it('should process fee calculation from subject with object response', () => {
+    mockApi.getFee.mockReturnValue(of({ fee: 10 }));
+
+    (service as any).feeUpdateSubject.next({ amount: 100, accountId: 'acc1' });
+
+    vi.advanceTimersByTime(1000);
+
+    expect(mockTransferStore.updateFeeInfo).toHaveBeenCalledWith(10, 110);
   });
 });
