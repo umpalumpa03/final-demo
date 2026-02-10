@@ -4,6 +4,7 @@ import { TransferRepeatService } from './transfer-repeat.service';
 import { TransferStore } from '../store/transfers.store';
 import { TransfersApiService } from './transfersApi.service';
 import { TransferValidationService } from '../components/transfers-external/services/transfer-validation.service';
+import { TransferUtilsService } from './transfer-utils.service';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { of, throwError } from 'rxjs';
@@ -15,38 +16,37 @@ describe('TransferRepeatService', () => {
   let mockTransferStore: any;
   let mockApi: any;
   let mockValidation: any;
+  let mockUtils: any;
   let store: MockStore;
 
-  const mockMeta = {
-    senderAccountId: 's123',
-    recipientIban: 'GE00TEST',
-    recipientName: 'John Doe',
+  const mockTransaction = {
+    transferType: 'External',
+    creditAccountNumber: 'GE00TEST',
+    debitAccountNumber: 'GE00SENDER',
     amount: 100,
-    description: 'Repeat Test',
-  };
+    description: 'Repeat',
+    currency: 'GEL',
+    meta: { recipientName: 'John Doe' },
+  } as any;
 
   beforeEach(() => {
     mockRouter = { navigate: vi.fn() };
-
     mockTransferStore = {
       setError: vi.fn(),
       setLoading: vi.fn(),
+      setRecipientInput: vi.fn(),
       setExternalRecipient: vi.fn(),
       setManualRecipientName: vi.fn(),
       setSenderAccount: vi.fn(),
       setAmount: vi.fn(),
       setDescription: vi.fn(),
+      updateFeeInfo: vi.fn(),
       setRecipientInfo: vi.fn(),
       setSelectedRecipientAccount: vi.fn(),
     };
-
-    mockApi = {
-      lookupByIban: vi.fn(),
-    };
-
-    mockValidation = {
-      identifyRecipientType: vi.fn(),
-    };
+    mockApi = { lookupByIban: vi.fn() };
+    mockValidation = { identifyRecipientType: vi.fn() };
+    mockUtils = { isSenderAccountValid: vi.fn() };
 
     TestBed.configureTestingModule({
       providers: [
@@ -55,7 +55,7 @@ describe('TransferRepeatService', () => {
           selectors: [
             {
               selector: selectAccounts,
-              value: [{ id: 's123', currency: 'GEL' }],
+              value: [{ iban: 'GE00SENDER', currency: 'GEL' }],
             },
           ],
         }),
@@ -63,6 +63,7 @@ describe('TransferRepeatService', () => {
         { provide: TransferStore, useValue: mockTransferStore },
         { provide: TransfersApiService, useValue: mockApi },
         { provide: TransferValidationService, useValue: mockValidation },
+        { provide: TransferUtilsService, useValue: mockUtils },
       ],
     });
 
@@ -70,82 +71,132 @@ describe('TransferRepeatService', () => {
     store = TestBed.inject(MockStore);
   });
 
-  it('should set error and navigate back if IBAN is invalid', () => {
+  it('should navigate to internal amount if transferType is ToOwnAccount', () => {
+    service.initRepeatTransfer({ transferType: 'ToOwnAccount' } as any);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/bank/transfers/internal/amount',
+    ]);
+  });
+
+  it('should handle invalid IBAN or empty credit account', () => {
     mockValidation.identifyRecipientType.mockReturnValue(null);
-
-    service.initRepeatTransfer(mockMeta);
-
+    service.initRepeatTransfer({ ...mockTransaction, creditAccountNumber: '' });
     expect(mockTransferStore.setError).toHaveBeenCalledWith(
       'transfers.repeat.invalidIban',
     );
     expect(mockRouter.navigate).toHaveBeenCalledWith([
-      '/bank/transfers/external',
+      '/bank/transfers/external/recipient',
     ]);
   });
 
-  it('should set error if sender account is not found in store', () => {
-    mockValidation.identifyRecipientType.mockReturnValue('phone');
-    store.overrideSelector(selectAccounts, []);
-    store.refreshState();
+  describe('handleExternalBank', () => {
+    it('should navigate to amount on successful external setup', () => {
+      mockValidation.identifyRecipientType.mockReturnValue(
+        'iban-different-bank',
+      );
+      mockUtils.isSenderAccountValid.mockReturnValue(true);
 
-    service.initRepeatTransfer(mockMeta);
+      service.initRepeatTransfer(mockTransaction);
 
-    expect(mockTransferStore.setError).toHaveBeenCalledWith(
-      'transfers.repeat.senderNotFound',
-    );
-    expect(mockRouter.navigate).toHaveBeenCalledWith([
-      '/bank/transfers/external/accounts',
-    ]);
+      expect(mockTransferStore.setSenderAccount).toHaveBeenCalled();
+      expect(mockRouter.navigate).toHaveBeenCalledWith([
+        '/bank/transfers/external/amount',
+      ]);
+    });
+
+    it('should set error if sender account is not found', () => {
+      mockValidation.identifyRecipientType.mockReturnValue(
+        'iban-different-bank',
+      );
+      store.overrideSelector(selectAccounts, []);
+      store.refreshState();
+
+      service.initRepeatTransfer(mockTransaction);
+      expect(mockTransferStore.setError).toHaveBeenCalledWith(
+        'transfers.external.accounts.senderNotFound',
+      );
+    });
+
+    it('should set error if sender account is invalid via utils', () => {
+      mockValidation.identifyRecipientType.mockReturnValue(
+        'iban-different-bank',
+      );
+      mockUtils.isSenderAccountValid.mockReturnValue(false);
+
+      service.initRepeatTransfer(mockTransaction);
+      expect(mockTransferStore.setError).toHaveBeenCalledWith(
+        'transfers.external.accounts.noPermission',
+      );
+    });
   });
 
-  it('should handle external bank (different bank) path correctly', () => {
-    mockValidation.identifyRecipientType.mockReturnValue('iban-different-bank');
+  describe('handleSameBank', () => {
+    it('should handle successful lookup and sender validation', async () => {
+      mockValidation.identifyRecipientType.mockReturnValue('iban-same-bank');
+      const mockInfo = { accounts: [{ currency: 'GEL', id: 'r1' }] };
+      mockApi.lookupByIban.mockReturnValue(of(mockInfo));
+      mockUtils.isSenderAccountValid.mockReturnValue(true);
 
-    service.initRepeatTransfer(mockMeta);
+      service.initRepeatTransfer(mockTransaction);
+      await new Promise((r) => setTimeout(r, 0));
 
-    expect(mockTransferStore.setExternalRecipient).toHaveBeenCalledWith(
-      mockMeta.recipientIban,
-      'iban-different-bank',
-    );
-    expect(mockTransferStore.setManualRecipientName).toHaveBeenCalledWith(
-      mockMeta.recipientName,
-    );
-    expect(mockRouter.navigate).toHaveBeenCalledWith([
-      '/bank/transfers/external/amount',
-    ]);
-  });
+      expect(mockTransferStore.setSelectedRecipientAccount).toHaveBeenCalled();
+      expect(mockRouter.navigate).toHaveBeenCalledWith([
+        '/bank/transfers/external/amount',
+      ]);
+    });
 
-  it('should handle same bank path with successful API lookup', async () => {
-    mockValidation.identifyRecipientType.mockReturnValue('iban-same-bank');
-    const mockRecipientInfo = {
-      accounts: [{ id: 'r1', currency: 'GEL', iban: 'GE00TEST' }],
-      fullName: 'Recipient User',
-    };
-    mockApi.lookupByIban.mockReturnValue(of(mockRecipientInfo));
+    it('should handle fallback recipient account creation', async () => {
+      mockValidation.identifyRecipientType.mockReturnValue('phone');
+      mockApi.lookupByIban.mockReturnValue(
+        of({ accounts: [], currency: 'GEL', fullName: 'Test' }),
+      );
+      mockUtils.isSenderAccountValid.mockReturnValue(true);
 
-    service.initRepeatTransfer(mockMeta);
+      service.initRepeatTransfer(mockTransaction);
+      await new Promise((r) => setTimeout(r, 0));
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(
+        mockTransferStore.setSelectedRecipientAccount,
+      ).toHaveBeenCalledWith(expect.objectContaining({ id: 'iban-recipient' }));
+    });
 
-    expect(mockTransferStore.setLoading).toHaveBeenCalledWith(true);
-    expect(mockTransferStore.setRecipientInfo).toHaveBeenCalled();
-    expect(mockTransferStore.setSelectedRecipientAccount).toHaveBeenCalled();
-    expect(mockRouter.navigate).toHaveBeenCalledWith([
-      '/bank/transfers/external/amount',
-    ]);
-    expect(mockTransferStore.setLoading).toHaveBeenCalledWith(false);
-  });
+    it('should handle recipient account not found', async () => {
+      mockValidation.identifyRecipientType.mockReturnValue('phone');
+      mockApi.lookupByIban.mockReturnValue(of({ accounts: [] }));
+      service.initRepeatTransfer(mockTransaction);
+      await new Promise((r) => setTimeout(r, 0));
 
-  it('should handle same bank path when recipient has no accounts but has currency (fallback)', async () => {
-    mockValidation.identifyRecipientType.mockReturnValue('phone');
-    const mockRecipientInfo = { accounts: [], currency: 'USD' };
-    mockApi.lookupByIban.mockReturnValue(of(mockRecipientInfo));
+      expect(mockTransferStore.setError).toHaveBeenCalledWith(
+        'transfers.repeat.recipientAccountNotFound',
+      );
+    });
 
-    service.initRepeatTransfer(mockMeta);
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    it('should handle same bank sender permission error', async () => {
+      mockValidation.identifyRecipientType.mockReturnValue('iban-same-bank');
+      mockApi.lookupByIban.mockReturnValue(
+        of({ accounts: [{ currency: 'GEL' }] }),
+      );
+      mockUtils.isSenderAccountValid.mockReturnValue(false);
 
-    expect(mockTransferStore.setSelectedRecipientAccount).toHaveBeenCalledWith(
-      expect.objectContaining({ id: 'iban-recipient', currency: 'USD' }),
-    );
+      service.initRepeatTransfer(mockTransaction);
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(mockTransferStore.setError).toHaveBeenCalledWith(
+        'transfers.repeat.senderNoPermission',
+      );
+    });
+
+    it('should handle lookup API error', async () => {
+      mockValidation.identifyRecipientType.mockReturnValue('iban-same-bank');
+      mockApi.lookupByIban.mockReturnValue(throwError(() => new Error('404')));
+
+      service.initRepeatTransfer(mockTransaction);
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(mockTransferStore.setError).toHaveBeenCalledWith(
+        'transfers.repeat.recipientNotFound',
+      );
+    });
   });
 });

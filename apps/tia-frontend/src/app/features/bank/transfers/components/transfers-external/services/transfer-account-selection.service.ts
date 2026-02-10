@@ -30,24 +30,35 @@ export class TransferAccountSelectionService {
       if (!preSelected || currentSender) return;
 
       untracked(() => {
-        if (isExt) {
-          this.store.dispatch(AccountsActions.selectAccount({ account: null }));
-          return;
-        }
-        if (
-          recipientAccount &&
-          preSelected.currency !== recipientAccount.currency
-        ) {
-          onCurrencyMismatch();
+        const isValid = this.utilsService.isSenderAccountValid(
+          preSelected,
+          recipientAccount,
+          isExt,
+        );
+
+        if (!isValid) {
+          if (
+            !isExt &&
+            recipientAccount &&
+            preSelected.currency !== recipientAccount.currency
+          ) {
+            onCurrencyMismatch();
+          }
+
+          // Clear the pre-selection from the global store since it's invalid for this context
           this.store.dispatch(AccountsActions.selectAccount({ account: null }));
           return;
         }
 
+        // It's valid! Set it as the sender
         this.transferStore.setSenderAccount(preSelected);
+
+        // Clear the global "pre-selection" so it doesn't try to re-apply on subsequent changes
         this.store.dispatch(AccountsActions.selectAccount({ account: null }));
       });
     });
 
+    // Effect 2: Handle Favorite Auto-selection
     effect(() => {
       const sAccounts = senderAccounts();
       const rAccounts = recipientAccounts();
@@ -62,7 +73,6 @@ export class TransferAccountSelectionService {
             this.transferStore.setSelectedRecipientAccount(firstRecipient);
           }
         }
-
         if (sAccounts.length > 0 && !currentSender) {
           const firstSender = sAccounts[0];
           const updatedRecipient =
