@@ -226,12 +226,28 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
       if (loadingFinished && error && challengeId) {
         this.alertService.error(error, { variant: 'dismissible', title: 'Oops!' });
       }
+
+      if (loadingFinished && error && !challengeId) {
+        this.alertService.error(error, { variant: 'dismissible', title: 'Oops!' });
+        const phoneToRestore = this.originalPhoneBeforeUpdate || this.phoneNumber() || '';
+        this.editedPhoneNumber.set(phoneToRestore);
+        this.store.dispatch(PersonalInfoActions.resetPhoneUpdate());
+        this.originalPhoneBeforeUpdate = null;
+      }
     });
   }
 
   public ngOnInit(): void {
     this.store.dispatch(ProfilePhotoActions.loadDefaultAvatarsRequest({}));
-    this.store.dispatch(PersonalInfoActions.loadPersonalInfo({}));
+    
+    
+    const currentPId = this.pId();
+    const currentPhone = this.phoneNumber();
+    const hasCachedData = !!(currentPId || (currentPhone && currentPhone.trim() !== ''));
+    
+    if (!hasCachedData) {
+      this.store.dispatch(PersonalInfoActions.loadPersonalInfo({}));
+    }
   }
 
   public ngOnDestroy(): void {

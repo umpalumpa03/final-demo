@@ -1,4 +1,10 @@
-import { Component, inject, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  input,
+  output,
+} from '@angular/core';
 import { Store } from '@ngrx/store';
 import { selectSelectedTemplates } from '../../../../../store/paybill.selectors';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -8,6 +14,7 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
   imports: [ButtonComponent],
   templateUrl: './selected-items.html',
   styleUrl: './selected-items.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectedItems {
   private readonly store = inject(Store);
