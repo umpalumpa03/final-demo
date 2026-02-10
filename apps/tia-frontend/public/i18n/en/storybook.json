@@ -257,7 +257,6 @@
       "label": "Security PIN"
     }
   },
-  "forms": {},
   "cards": {
      "pageTitle": "Cards",
     "pageSubtitle": "Card components with various layouts and content types",
@@ -314,7 +313,6 @@
       }
     }
   },
-  "alerts": {},
   "forms": {
     "formsTitle": "Forms",
     "formsSubtitle": "Complete form examples with various input types and layouts",
@@ -393,7 +391,6 @@
       "layout": "Form Layout"
     }
   },
-  "cards": {},
   "alerts": {
     "TITLES": {
       "PAGE_MAIN": "Alerts & Notifications",
@@ -613,7 +610,6 @@
     }
   },
   "feedback": {},
-  "layout": {},
   "data-display": {
     "title": "Data Display",
     "subtitle": "Avatars, aspect ratios, tooltips, and hover cards",
@@ -949,7 +945,6 @@
       }
     ]
   },
-  "data-display": {},
   "overlays": {},
   "drag-and-drop": {
     "title": "Drag & Drop Components",
