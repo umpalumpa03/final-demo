@@ -3,17 +3,9 @@ import { Router } from '@angular/router';
 import { TransferAmountService } from './transfer-amount.service';
 import { TransferStore } from '../../../store/transfers.store';
 import { TransfersApiService } from '../../../services/transfersApi.service';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { signal } from '@angular/core';
-import { of,  } from 'rxjs';
-
-vi.mock('rxjs', async () => {
-  const actual = await vi.importActual('rxjs');
-  return {
-    ...actual,
-    debounceTime: () => (source: any) => source,
-  };
-});
+import { of } from 'rxjs';
 
 describe('TransferAmountService', () => {
   let service: TransferAmountService;
@@ -22,6 +14,7 @@ describe('TransferAmountService', () => {
   let mockApi: any;
 
   beforeEach(() => {
+    vi.useFakeTimers();
     mockRouter = { navigate: vi.fn() };
     mockTransferStore = {
       amount: signal(100),
@@ -47,6 +40,10 @@ describe('TransferAmountService', () => {
     });
 
     service = TestBed.inject(TransferAmountService);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('should handle amount input with insufficient balance', () => {
@@ -94,7 +91,11 @@ describe('TransferAmountService', () => {
 
   it('should process fee calculation from subject with object response', () => {
     mockApi.getFee.mockReturnValue(of({ fee: 10 }));
+
     (service as any).feeUpdateSubject.next({ amount: 100, accountId: 'acc1' });
+
+    vi.advanceTimersByTime(1000);
+
     expect(mockTransferStore.updateFeeInfo).toHaveBeenCalledWith(10, 110);
   });
 });
