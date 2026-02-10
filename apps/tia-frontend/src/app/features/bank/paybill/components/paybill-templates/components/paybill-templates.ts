@@ -8,6 +8,7 @@ import {
   input,
   OnInit,
   output,
+  signal,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TreeContainer } from '@tia/shared/lib/drag-n-drop/components/tree-container/tree-container';
@@ -27,6 +28,7 @@ import {
   ModalType,
   ProviderTypeForStore,
   TemplateGroups,
+  Templates,
   TreeAction,
   TreeItemMoved,
 } from '../models/paybill-templates.model';
@@ -40,6 +42,9 @@ import { PaybillDynamicField } from '../../../services/paybill-dynamic-form/mode
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SelectedItems } from '../shared/ui/selected-items/selected-items';
 import { PaymentDistribution } from '../shared/ui/payment-distribution/payment-distribution';
+import { BillsList } from '../shared/ui/bills-list/bills-list';
+import { TotalAmount } from '../shared/ui/total-amount/total-amount';
+import { AccountSelect } from '../../shared/account-select/account-select';
 
 @Component({
   selector: 'app-paybill-templates',
@@ -55,6 +60,9 @@ import { PaymentDistribution } from '../shared/ui/payment-distribution/payment-d
     DynamicInputs,
     SelectedItems,
     PaymentDistribution,
+    BillsList,
+    TotalAmount,
+    AccountSelect,
   ],
   templateUrl: './paybill-templates.html',
   styleUrl: './paybill-templates.scss',
@@ -235,12 +243,25 @@ export class PaybillTemplates implements OnInit {
   }
 
   // Implement payment logic
-  public selectedItems = input<string[]>();
+  public selectedItems = input<Templates[]>();
   public markedCheckbox = output<string[]>();
+  public selectedItem = output<string>();
   public onTemplateChecked(event: string[]) {
     this.markedCheckbox.emit(event);
   }
-  public paySelected(event: string | string[]) {
+
+  public singleItemSelected(id: string) {
+    this.selectedItem.emit(id);
     this.headerButtonAction.emit(HeaderCtaAction.Pay);
+  }
+
+  public paySelected() {
+    this.headerButtonAction.emit(HeaderCtaAction.Pay);
+  }
+
+  public isDistribution = signal<boolean>(false);
+  public calculatedDistribution = input();
+  paymentTypeChanged(value: boolean): void {
+    this.isDistribution.set(value);
   }
 }

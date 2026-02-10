@@ -193,3 +193,13 @@ export const selectSelectedTemplates = createSelector(
   selectPaybillState,
   (state) => state.selectedItems,
 );
+
+export const selectDistributedAmount = createSelector(
+  selectPaybillState,
+  (state) => state.distributedAmount,
+);
+
+export const selectTotalAmount = createSelector(
+  selectPaybillState,
+  (state) => state.totalAmount,
+);

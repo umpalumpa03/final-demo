@@ -1,0 +1,10 @@
+@if(isHeader()) {
+<h3 class="accounts__header">Payment Account</h3>
+}
+
+<lib-select
+  [options]="currentAccounts()!"
+  [(value)]="selectedAccountId"
+  [config]="{placeholder: 'Please choose a GEL account',   height: '4rem',}"
+  [maxVisibleItems]="maxVisible()"
+/>
