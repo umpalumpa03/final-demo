@@ -25,12 +25,19 @@ import {
   selectTemplatesGroup,
   selectTemplatesLoaded,
 } from './paybill.selectors';
-import { ProceedPaymentResponse } from '../components/paybill-main/shared/models/paybill.model';
+import {
+  PaybillIdentification,
+  ProceedPaymentResponse,
+} from '../components/paybill-main/shared/models/paybill.model';
 import { PaybillTemplatesService } from '../components/paybill-templates/services/paybill-templates-service';
 import { Router } from '@angular/router';
 import { PaybillErrorPayload } from './paybill.state';
 import { selectTransactionToRepeat } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
-import { IPaybillTransactions } from '../components/shared/models/transactions.model';
+import {
+  IPaybillTransactions,
+  PaybillTransactionMeta,
+} from '../components/shared/models/transactions.model';
+import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 
 @Injectable()
 export class PaybillEffect {
@@ -618,22 +625,29 @@ export class PaybillEffect {
       filter(([_, transaction]) => !!transaction),
 
       switchMap(([_, transaction, categories]) => {
-        const tx = transaction as unknown as IPaybillTransactions;
-        const { serviceId, identification, senderAccountId } = tx.meta;
+        const tx = transaction as unknown as ITransactions;
 
-        const match = categories.find((cat) =>
-          cat.providers?.some((p) => p.id === serviceId),
-        );
-        const categoryId = match?.id || 'utilities'; // es gahardulia jerjerobit bibi tu chaamatebs am infos kargi iqneba
+        const meta = tx.meta as unknown as PaybillTransactionMeta;
+
+        const serviceId = meta?.serviceId;
+        const senderAccountId = meta?.senderAccountId;
+        const identification = meta?.identification as PaybillIdentification;
+
+        let categoryId = meta?.categoryId;
+
+        if (!categoryId) {
+          const match = categories.find((cat) =>
+            cat.providers?.some((p) => p.id === serviceId),
+          );
+          categoryId = match!.id;
+        }
 
         this.router.navigate(['/bank/paybill/pay', categoryId, serviceId]);
 
         return [
           PaybillActions.loadPaymentDetails({ serviceId }),
-
           PaybillActions.selectCategory({ categoryId }),
           PaybillActions.selectProvider({ providerId: serviceId }),
-
           PaybillActions.checkBill({ serviceId, identification }),
           PaybillActions.setPaymentPayload({
             data: {
