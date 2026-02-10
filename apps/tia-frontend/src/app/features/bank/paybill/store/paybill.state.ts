@@ -39,7 +39,10 @@ export interface PaybillState {
   notifications: PaybillNotification[];
   paymentDetails: PaybillPaymentDetails | null;
   currentLevel: number;
-  selectedItems: string[];
+  selectedItems: Templates[];
+  distributedAmount: number;
+  totalAmount: number;
+  selectedSenderAccountId?: string | null;
 }
 
 export const initialPaybillState: PaybillState = {
@@ -60,4 +63,7 @@ export const initialPaybillState: PaybillState = {
   filteredProviders: [],
   currentLevel: 0,
   selectedItems: [],
+  distributedAmount: 0,
+  totalAmount: 0,
+  selectedSenderAccountId: null,
 };

@@ -1,6 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { PaybillState } from './paybill.state';
-import { filter } from 'rxjs';
 
 export const selectPaybillState =
   createFeatureSelector<PaybillState>('paybill');
@@ -192,4 +191,19 @@ export const selectTemplateGroupsLoaded = createSelector(
 export const selectSelectedTemplates = createSelector(
   selectPaybillState,
   (state) => state.selectedItems,
+);
+
+export const selectDistributedAmount = createSelector(
+  selectPaybillState,
+  (state) => state.distributedAmount,
+);
+
+export const selectTotalAmount = createSelector(
+  selectPaybillState,
+  (state) => state.totalAmount,
+);
+
+export const selectSelectedSenderAccountId = createSelector(
+  selectPaybillState,
+  (state) => state.selectedSenderAccountId
 );

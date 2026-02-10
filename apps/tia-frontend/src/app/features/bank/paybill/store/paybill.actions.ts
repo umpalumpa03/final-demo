@@ -50,6 +50,7 @@ export const PaybillActions = createActionGroup({
     'Load Payment Details': props<{ serviceId: string }>(),
     'Load Payment Details Success': props<{ details: PaybillPaymentDetails }>(),
     'Load Payment Details Failure': props<{ error: string }>(),
+    'Init Repeat Process': emptyProps(),
   },
 });
 
@@ -161,7 +162,10 @@ export const TemplatesPageActions = createActionGroup({
 
     'Clear Payment Details': emptyProps(),
     'Add Checked Items': props<{
-      selectedItems: string[];
+      selectedItems: Templates[];
     }>(),
+    'Set Distributed Amount': props<{ amount: number }>(),
+    'Set total Amount': props<{ amount: number }>(),
+    'Clear Payment Info': emptyProps(),
   },
 });

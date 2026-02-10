@@ -39,8 +39,8 @@
         </div>
         @if(data()?.ccRecipients?.length) {
         <div>
-          <span class="email-detail__meta-label">CC:</span>
-          <span>{{ data()?.ccRecipients }}</span>
+          <span class="email-detail__meta-label">CC: </span>
+          <span>{{ ccRecipientsFormatted() }}</span>
         </div>
         }
 

@@ -3,6 +3,7 @@ import {
   Component,
   DestroyRef,
   inject,
+  OnDestroy,
   OnInit,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -12,15 +13,16 @@ import { PaybillMainFacade } from '../services/paybill-main-facade';
 import { RouterModule } from '@angular/router';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { paybillSearchConfig } from '../../../config/paybill.config';
+import { BackNavigation } from '../shared/ui/back-navigation/back-navigation';
 
 @Component({
   selector: 'app-paybill-main',
-  imports: [ReactiveFormsModule, RouterModule, TextInput],
+  imports: [ReactiveFormsModule, RouterModule, TextInput, BackNavigation],
   templateUrl: './paybill-main.html',
   styleUrl: './paybill-main.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PaybillMain implements OnInit {
+export class PaybillMain implements OnInit, OnDestroy {
   public readonly facade = inject(PaybillMainFacade);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -38,6 +40,10 @@ export class PaybillMain implements OnInit {
         tap((val) => this.facade.setSearchQuery(val || '')),
       )
       .subscribe();
+  }
+
+  public ngOnDestroy(): void {
+    this.facade.clearRepeatTransaction();
   }
 
   public readonly searchInputConfig = paybillSearchConfig;

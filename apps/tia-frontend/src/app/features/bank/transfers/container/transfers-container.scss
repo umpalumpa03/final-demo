@@ -1,7 +1,19 @@
 @use '../../../../shared/styles/mixins' as *;
 @use '../../../../shared/styles/palette' as *;
+
+.global-bank-wrapper {
+  min-height: 100%;
+}
+
 .transfers_wrapper {
   @include display-flex(column);
   gap: 3.2rem;
-  padding:0 0 3.2rem 0;
+  padding: 0 0 3.2rem 0;
+}
+
+.transfers__loader {
+  @include display-flex(column);
+  @include flex-center();
+  width: 100%;
+  height: calc(100vh - 20rem);
 }

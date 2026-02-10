@@ -32,7 +32,9 @@
     "chart.js": "^4.5.1",
     "express": "^4.21.2",
     "ng2-charts": "^8.0.0",
+    "ngx-confetti-explosion": "^4.0.1",
     "rxjs": "~7.8.0",
+    "xlsx": "^0.18.5",
     "zone.js": "0.16.0"
   },
   "devDependencies": {

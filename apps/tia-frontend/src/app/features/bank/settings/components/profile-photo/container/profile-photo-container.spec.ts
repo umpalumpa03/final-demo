@@ -337,7 +337,7 @@ describe('ProfilePhotoContainer', () => {
       'Personal number must be exactly 11 digits',
     );
 
-    store.overrideSelector(selectPId, '12345678901');
+    store.overrideSelector(selectPId, null);
     store.overrideSelector(selectPhoneNumber, '555123456');
     store.refreshState();
 
@@ -355,10 +355,10 @@ describe('ProfilePhotoContainer', () => {
   it('should dispatch updatePersonalInfo when personal number is valid and different', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
 
-    store.overrideSelector(selectPId, '12345678901');
+    store.overrideSelector(selectPId, null);
     store.overrideSelector(selectPhoneNumber, '555123456');
     store.overrideSelector(selectPersonalInfo, {
-      pId: '12345678901',
+      pId: null,
       phoneNumber: '555123456',
       loading: false,
       error: null,
@@ -430,12 +430,27 @@ describe('ProfilePhotoContainer', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(ProfilePhotoActions.setUserInitials({ initials: 'JD' }));
   });
 
-  it('should handle onPersonalNumberChange', () => {
+  it('should handle onPersonalNumberChange when no existing pId', () => {
+    store.overrideSelector(selectPId, null);
+    store.refreshState();
+
     component.onPersonalNumberChange('12345678901');
     expect(component.editedPId()).toBe('12345678901');
 
     component.onPersonalNumberChange(null);
     expect(component.editedPId()).toBe('');
+  });
+
+  it('should ignore onPersonalNumberChange when pId already exists', () => {
+    store.overrideSelector(selectPId, '12345678901');
+    store.refreshState();
+
+    component.onEdit();
+    const initialEdited = component.editedPId();
+
+    component.onPersonalNumberChange('98765432109');
+
+    expect(component.editedPId()).toBe(initialEdited);
   });
 
   it('should validate phone number length - must be exactly 9 digits', () => {

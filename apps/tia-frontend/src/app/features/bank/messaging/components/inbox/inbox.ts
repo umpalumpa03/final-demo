@@ -24,6 +24,7 @@ export class Inbox implements OnInit {
   private readonly nav = inject(NavigationService);
   private readonly store = inject(Store);
   public readonly loadsMoreMails = signal(false);
+  public readonly isDeleting = computed(() => !!this.messagingStore.isDeleting?.());
 
   public readonly mails = computed(() => {
     return this.messagingStore.mails()
@@ -69,9 +70,9 @@ export class Inbox implements OnInit {
   }
 
   ngOnInit(): void {
+    this.messagingStore.getTotalCount('inbox');
     if (!(this.nav.previous()?.includes('inbox') && this.messagingStore.mails().length > 0)) {
       this.messagingStore.loadMails('inbox');
-      this.messagingStore.getTotalCount('inbox');
     }
   }
 

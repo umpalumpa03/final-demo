@@ -44,6 +44,8 @@ describe('TransactionsContainer', () => {
   };
 
   beforeEach(async () => {
+    mockRouter.navigate.mockClear();
+
     await TestBed.configureTestingModule({
       imports: [
         TransactionsContainer,
@@ -269,9 +271,11 @@ describe('TransactionsContainer', () => {
   it('should navigate to internal transfers for OwnAccount repeat', () => {
     const trx = {
       transactionType: 'debit',
-      transferType: 'OwnAccount',
+      transferType: 'OwnAccountSameCurrency',
     } as ITransactions;
+
     component.onRepeatAction(trx);
+
     expect(mockRouter.navigate).toHaveBeenCalledWith([
       '/bank/transfers/internal',
     ]);
@@ -282,20 +286,22 @@ describe('TransactionsContainer', () => {
       transactionType: 'debit',
       transferType: 'ToSomeoneSameBank',
     } as ITransactions;
+
     component.onRepeatAction(trx);
+
     expect(mockRouter.navigate).toHaveBeenCalledWith([
-      '/bank/transfers/external',
+      '/bank/transfers/external/amount',
     ]);
   });
 
-  it('should navigate to regular transfers for unknown type repeat', () => {
+  it('should navigate to transfers root for unknown type repeat', () => {
     const trx = {
       transactionType: 'debit',
       transferType: 'Unknown',
     } as ITransactions;
+
     component.onRepeatAction(trx);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([
-      '/bank/transfers/regular',
-    ]);
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/transfers/']);
   });
 });
