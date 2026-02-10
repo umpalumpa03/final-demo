@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, output, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, inject, output, signal, ViewChild } from '@angular/core';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessagingStore } from '../../store/messaging.store';
@@ -32,6 +32,15 @@ export class SentDraftDetail {
   public readonly mailReplies = computed(() => this.messagingStore.mailReplies?.() || []);
   public readonly isReplyOpen = signal(false);
   public readonly currentUserEmail = computed(() => this.store.selectSignal(selectCurrentUserEmail)() ?? '');
+  public readonly isDeleting = computed(() => !!this.messagingStore.isDeleting?.());
+  private readonly isDeletePending = signal(false);
+  private readonly deletingEffect = effect(() => {
+    if (this.isDeletePending() && !this.isDeleting()) {
+      this.isDeletePending.set(false);
+      this.isDeleteModalOpen.set(false);
+      this.router.navigate(['..'], { relativeTo: this.route });
+    }
+  });
 
   @ViewChild('replyCard') replyCard?: ElementRef;
 
@@ -71,10 +80,9 @@ export class SentDraftDetail {
   public onConfirmDelete(): void {
     const mail = this.emailDetail?.();
     if (mail) {
+      this.isDeletePending.set(true);
       this.deleteMail.emit(mail.id);
       this.messagingStore.deleteMail(mail.id);
-      this.isDeleteModalOpen.set(false);
-      this.router.navigate(['..'], { relativeTo: this.route });
     }
   }
 
