@@ -1,0 +1,23 @@
+@use '../../styles/mixins' as *;
+@use '../../styles/palette' as *;
+
+.pill-paging {
+  @include display-flex;
+  gap: 0.8rem;
+
+  &__dot {
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    background: $gray-200;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &__active {
+      background: var(--color-primary);
+      width: 2.4rem;
+      border-radius: 1rem;
+    }
+  }
+}

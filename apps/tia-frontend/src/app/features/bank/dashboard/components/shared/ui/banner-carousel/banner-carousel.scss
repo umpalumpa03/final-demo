@@ -89,22 +89,6 @@
     gap: 0.8rem;
   }
 
-  &__dot {
-    width: 0.8rem;
-    height: 0.8rem;
-    border-radius: 50%;
-    background: $gray-200;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    &__active {
-      background: var(--color-primary);
-      width: 2.4rem;
-      border-radius: 1rem;
-    }
-  }
-
   &__nav {
     @include display-flex();
     gap: 1rem;
@@ -119,8 +103,9 @@
     color: $gray-700;
     font-size: 2.2rem;
     cursor: pointer;
-    @include flex-center;
     transition: all 0.2s ease;
+    text-align: center;
+    vertical-align:middle;
 
     &:hover {
       border-color: var(--color-primary);

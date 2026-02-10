@@ -1,5 +1,8 @@
 <div class="global-bank-wrapper scrollbar">
-  <app-library-title [title]="pageTitle()" [subtitle]="pageSubtitle()"></app-library-title>
+  <app-library-title
+    [title]="pageTitle()"
+    [subtitle]="pageSubtitle()"
+  ></app-library-title>
 
   <!-- DROEBITIA ES WESIT GADAEWYOBA -->
   <div class="bank-dashboard__onboard">
@@ -10,7 +13,11 @@
   </div>
 
   <div class="bank-dashboard__header-actions">
-    <app-customize-button label="dashboard.page.customize-label" (clicked)="openCustomization()" />
+    <app-customize-button
+      customMaxSize="18%"
+      label="dashboard.page.customize-label"
+      (clicked)="openCustomization()"
+    />
   </div>
 
   @if (isLoading()) {
@@ -26,17 +33,35 @@
     }
   </div>
   }@else {
-  <app-drag-container [hasNoStyle]="true" [items]="myItems()" [layout]="'grid'" [columns]="gridColumns()"
-    [colspans]="dynamicColspans()" (itemsChange)="onItemsChange($event)" containerTitle="" containerDescription="">
+  <app-drag-container
+    [hasNoStyle]="true"
+    [items]="myItems()"
+    [layout]="'grid'"
+    [columns]="gridColumns()"
+    [colspans]="dynamicColspans()"
+    (itemsChange)="onItemsChange($event)"
+    containerTitle=""
+    containerDescription=""
+  >
     @for (item of visibleItems(); track item.id) {
-    <app-draggable-card [hasMinHeight]="!item.isHidden && (!isHeroMode() || $index !== 0)" [itemData]="item"
-      [hasViewOption]="item.type === 'transactions'" (viewOptionChange)="onFoldWidget($event, item.id)"
-      [showHeadings]="true" [class.bank-dashboard__widget--primary]="$index === 0"
+    <app-draggable-card
+      [hasMinHeight]="!item.isHidden && (!isHeroMode() || $index !== 0)"
+      [itemData]="item"
+      [hasViewOption]="item.type === 'transactions'"
+      (viewOptionChange)="onFoldWidget($event, item.id)"
+      [showHeadings]="true"
+      [class.bank-dashboard__widget--primary]="$index === 0"
       [class.bank-dashboard__widget--collapsed]="item.isHidden"
-      [hasPagination]="item.type === 'transactions' || !!item.hasPagination" [hasAddOption]="!!item.hasAdd"
-      [hasButton]="item.type === 'exchange'" buttonContent="Refresh" (buttonClick)="onWidgetRefresh()"
-      (add)="onWidgetAdd()" (paginationChange)="onPaginationChange($event)" [paginationVariants]="[5,10,15,20]"
-      appDragItem>
+      [hasPagination]="item.type === 'transactions' || !!item.hasPagination"
+      [hasAddOption]="!!item.hasAdd"
+      [hasButton]="item.type === 'exchange'"
+      buttonContent="Refresh"
+      (buttonClick)="onWidgetRefresh()"
+      (add)="onWidgetAdd()"
+      (paginationChange)="onPaginationChange($event)"
+      [paginationVariants]="[5,10,15,20]"
+      appDragItem
+    >
       @if (!item.isHidden) {
       <div class="bank-dashboard__content">
         @switch (item.type) { @case ('transactions') {
@@ -51,7 +76,11 @@
 
   }
 
-  <app-ui-sheet-modal [isOpen]="isCustomizing()" direction="bottom" (closed)="closeCustomization()">
+  <app-ui-sheet-modal
+    [isOpen]="isCustomizing()"
+    direction="bottom"
+    (closed)="closeCustomization()"
+  >
     <div class="customize-shell">
       <h2 class="customize-shell__title">
         {{ 'dashboard.page.customize-label' | translate }}
@@ -63,8 +92,12 @@
           <app-route-loader variant="pulsing" />
         </div>
         } @else { @for (item of widgetCatalog(); track item.id) {
-        <app-customize-card [title]="item.title" [iconPath]="'/images/svg/dashboard/' + item.type + '.svg'"
-          [isSelected]="isWidgetActive(item.id)" (selectionChange)="onToggleCatalogWidget($event, item.id)" />
+        <app-customize-card
+          [title]="item.title"
+          [iconPath]="'/images/svg/dashboard/' + item.type + '.svg'"
+          [isSelected]="isWidgetActive(item.id)"
+          (selectionChange)="onToggleCatalogWidget($event, item.id)"
+        />
         } }
       </div>
     </div>
