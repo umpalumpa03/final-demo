@@ -22,7 +22,8 @@
       </div>
       <div class="user-info__item">
         <span class="user-info__label">{{ 'settings.profile-photo.personalNumber' | translate }}:</span>
-        @if (isEditing()) {
+      @if (isEditing()) {
+        @if (!pId()) {
           <lib-text-input
             [config]="{ placeholder: 'Enter personal number', validation: { maxLength: 11, minLength: 11 } }"
             [ngModel]="editedPId()"
@@ -31,8 +32,11 @@
             type="number"
           ></lib-text-input>
         } @else {
-          <span class="user-info__value user-info__value--personal">{{ pId() || '-' }}</span>
+          <span class="user-info__value user-info__value--personal">{{ pId() }}</span>
         }
+      } @else {
+        <span class="user-info__value user-info__value--personal">{{ pId() || '-' }}</span>
+      }
       </div>
     </div>
     <div card-footer class="user-info__footer">
