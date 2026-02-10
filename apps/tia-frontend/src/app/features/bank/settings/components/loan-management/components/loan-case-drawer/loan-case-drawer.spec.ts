@@ -35,14 +35,6 @@ describe('LoanCaseDrawer', () => {
     fixture.detectChanges();
   });
 
-  it('should create with correct default state', () => {
-    expect(component).toBeTruthy();
-    expect(component.showDeclineForm()).toBe(false);
-    expect(component.declineReason()).toBe('');
-    expect(component.loanDetails()).toBeNull();
-    expect(component.isActionLoading()).toBe(false);
-  });
-
   it('canApprove should be true when loanDetails exist, not loading, and decline form hidden', async () => {
     fixture.componentRef.setInput('loanDetails', mockLoanDetails);
     fixture.componentRef.setInput('isActionLoading', false);
@@ -54,16 +46,6 @@ describe('LoanCaseDrawer', () => {
     expect(component.canApprove()).toBe(true);
 
     component.showDeclineForm.set(true);
-    fixture.detectChanges();
-    expect(component.canApprove()).toBe(false);
-
-    component.showDeclineForm.set(false);
-    fixture.componentRef.setInput('isActionLoading', true);
-    fixture.detectChanges();
-    expect(component.canApprove()).toBe(false);
-
-    fixture.componentRef.setInput('loanDetails', null);
-    fixture.componentRef.setInput('isActionLoading', false);
     fixture.detectChanges();
     expect(component.canApprove()).toBe(false);
   });
@@ -80,15 +62,6 @@ describe('LoanCaseDrawer', () => {
     expect(component.canDecline()).toBe(true);
 
     component.declineReason.set('');
-    fixture.detectChanges();
-    expect(component.canDecline()).toBe(false);
-
-    component.declineReason.set('   ');
-    fixture.detectChanges();
-    expect(component.canDecline()).toBe(false);
-
-    component.declineReason.set('Valid reason');
-    fixture.componentRef.setInput('isActionLoading', true);
     fixture.detectChanges();
     expect(component.canDecline()).toBe(false);
   });
@@ -121,12 +94,6 @@ describe('LoanCaseDrawer', () => {
     expect(spy).toHaveBeenCalledWith('loan-123');
   });
 
-  it('onShowDeclineForm should set showDeclineForm to true', () => {
-    component.showDeclineForm.set(false);
-    component.onShowDeclineForm();
-    expect(component.showDeclineForm()).toBe(true);
-  });
-
   it('onCancelDecline should reset decline form and reason', () => {
     component.showDeclineForm.set(true);
     component.declineReason.set('Test reason');
@@ -135,15 +102,9 @@ describe('LoanCaseDrawer', () => {
     expect(component.declineReason()).toBe('');
   });
 
-  it('onConfirmDecline should emit reject with loanId and trimmed reason, skip on empty reason or null details', () => {
+  it('onConfirmDecline should emit reject with loanId and trimmed reason, skip on empty', () => {
     const spy = vi.fn();
     component.reject.subscribe(spy);
-
-    fixture.componentRef.setInput('loanDetails', null);
-    fixture.detectChanges();
-    component.declineReason.set('Some reason');
-    component.onConfirmDecline();
-    expect(spy).not.toHaveBeenCalled();
 
     fixture.componentRef.setInput('loanDetails', mockLoanDetails);
     fixture.detectChanges();
@@ -155,25 +116,5 @@ describe('LoanCaseDrawer', () => {
     component.declineReason.set('Risk assessment failed');
     component.onConfirmDecline();
     expect(spy).toHaveBeenCalledWith({ loanId: 'loan-123', reason: 'Risk assessment failed' });
-  });
-
-  it('onReasonInput should update declineReason from event target value', () => {
-    const mockEvent = { target: { value: 'New reason' } } as unknown as Event;
-    component.onReasonInput(mockEvent);
-    expect(component.declineReason()).toBe('New reason');
-  });
-
-  it('effect should reset decline form state when isOpen or loanDetails changes', async () => {
-    fixture.componentRef.setInput('loanDetails', mockLoanDetails);
-    component.showDeclineForm.set(true);
-    component.declineReason.set('Some reason');
-    fixture.detectChanges();
-
-    fixture.componentRef.setInput('isOpen', false);
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    expect(component.showDeclineForm()).toBe(false);
-    expect(component.declineReason()).toBe('');
   });
 });

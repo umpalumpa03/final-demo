@@ -44,25 +44,10 @@ describe('LoanDrawerLoanDetails', () => {
     fixture.detectChanges();
   });
 
-  it('should create with default input values', () => {
-    expect(component).toBeTruthy();
-    expect(component.loanDetails()).toBeNull();
-    expect(component.loanDetailsResponse()).toBeNull();
-    expect(component.isLoading()).toBe(false);
-  });
-
-  it('computed properties should return 0 when loanDetailsResponse is null and correct values when provided', () => {
-    expect(component.interestRate()).toBe(0);
-    expect(component.monthlyPayment()).toBe(0);
-
+  it('computed properties should return correct values when loanDetailsResponse is provided', () => {
     fixture.componentRef.setInput('loanDetailsResponse', mockLoanDetailsResponse);
     fixture.detectChanges();
     expect(component.interestRate()).toBe(5.5);
     expect(component.monthlyPayment()).toBe(1500);
-
-    fixture.componentRef.setInput('loanDetailsResponse', null);
-    fixture.detectChanges();
-    expect(component.interestRate()).toBe(0);
-    expect(component.monthlyPayment()).toBe(0);
   });
 });

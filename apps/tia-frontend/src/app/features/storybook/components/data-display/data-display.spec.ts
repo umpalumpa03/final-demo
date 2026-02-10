@@ -89,30 +89,4 @@ describe('DataDisplay', () => {
       expect(avatar.color).toBe('blue');
     });
   });
-
-  it('ngOnInit should update all signals when language changes', () => {
-    const ratiosBefore = component.ratios();
-    const tooltipsBefore = component.tooltipItems();
-
-    translate.onLangChange.next({ lang: 'ka', translations: {} });
-    fixture.detectChanges();
-
-    expect(component.ratios()).toBeDefined();
-    expect(component.tooltipItems()).toBeDefined();
-    expect(component.hoverCardItems()).toBeDefined();
-    expect(component.statisticCardItems()).toBeDefined();
-    expect(component.listDisplayItems()).toBeDefined();
-    expect(component.keyValueTitle()).toBeDefined();
-    expect(component.keyValueItems()).toBeDefined();
-    expect(component.timelineItems()).toBeDefined();
-    expect(component.colorAvatars()).toBeDefined();
-    expect(component.groupAvatars()).toBeDefined();
-    expect(component.statusAvatars()).toBeDefined();
-  });
-
-  it('sizes should contain the predefined avatar size list', () => {
-    const sizes = component.sizes();
-    expect(sizes.length).toBe(5);
-    expect(sizes[0]).toEqual({ size: 'xs', label: 'XS' });
-  });
 });

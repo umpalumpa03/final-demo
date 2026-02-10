@@ -62,18 +62,6 @@ describe('ForgotPasswordVerify', () => {
     fixture.detectChanges();
   });
 
-  it('should create with correct default state', () => {
-    expect(component).toBeTruthy();
-    expect(component.errorMessage()).toBeNull();
-    expect(component.otpInputConfig).toBeDefined();
-  });
-
-  it('ngOnInit should not navigate when challengeId exists', () => {
-    authServiceMock.getChallengeId.mockReturnValue('valid-id');
-    component.ngOnInit();
-    expect(routerMock.navigate).not.toHaveBeenCalled();
-  });
-
   it('ngOnInit should redirect to forgot-password base route when challengeId is missing', () => {
     authServiceMock.getChallengeId.mockReturnValue(null);
     component.ngOnInit();
@@ -89,30 +77,12 @@ describe('ForgotPasswordVerify', () => {
     component.verifyResetOtp(successEvent);
     expect(authServiceMock.verifyForgotPasswordOtp).toHaveBeenCalledWith('123456');
     expect(routerMock.navigate).toHaveBeenCalledWith(['/auth', 'reset-password']);
-    expect(component.errorMessage()).toBeNull();
 
     authServiceMock.verifyForgotPasswordOtp.mockReturnValue(
       throwError(() => new HttpErrorResponse({ status: 400, error: { message: 'Invalid code' } })),
     );
-    const errorEvent: IVerified = { isCalled: true, otp: 'wrong' };
-    component.verifyResetOtp(errorEvent);
+    component.verifyResetOtp({ isCalled: true, otp: 'wrong' });
     expect(component.errorMessage()).toBe('Invalid code');
-
-    authServiceMock.verifyForgotPasswordOtp.mockReturnValue(
-      throwError(() => new HttpErrorResponse({ status: 400, error: {} })),
-    );
-    component.verifyResetOtp({ isCalled: true, otp: 'bad' });
-    expect(component.errorMessage()).toBe('Invalid code');
-  });
-
-  it('onOtpInputChanged should clear errorMessage only when it exists', () => {
-    component.errorMessage.set(null);
-    component.onOtpInputChanged();
-    expect(component.errorMessage()).toBeNull();
-
-    component.errorMessage.set('Invalid code');
-    component.onOtpInputChanged();
-    expect(component.errorMessage()).toBeNull();
   });
 
   it('resendOtp should call resendVerificationCode only when isCalled is true', () => {

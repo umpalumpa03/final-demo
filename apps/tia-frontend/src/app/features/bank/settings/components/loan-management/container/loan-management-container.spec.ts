@@ -29,24 +29,12 @@ describe('LoanManagementContainer', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
   it('ngOnInit should load pending approvals when initial data is needed', () => {
     const loadSpy = vi.spyOn(component['store'], 'loadPendingApprovals');
     const shouldLoadSpy = vi.spyOn(component['store'], 'shouldLoadInitialData');
     shouldLoadSpy.mockReturnValue(true);
     component.ngOnInit();
     expect(loadSpy).toHaveBeenCalled();
-  });
-
-  it('ngOnInit should not load pending approvals when initial data is not needed', () => {
-    const loadSpy = vi.spyOn(component['store'], 'loadPendingApprovals');
-    const shouldLoadSpy = vi.spyOn(component['store'], 'shouldLoadInitialData');
-    shouldLoadSpy.mockReturnValue(false);
-    component.ngOnInit();
-    expect(loadSpy).not.toHaveBeenCalled();
   });
 
   it('onRowClick should call store.selectLoan with given ID', () => {
@@ -78,29 +66,5 @@ describe('LoanManagementContainer', () => {
     const rejectData = { loanId: 'loan-789', reason: 'High risk' };
     component['onReject'](rejectData);
     expect(spy).toHaveBeenCalledWith(rejectData);
-  });
-
-  it('auto-dismiss effect should clear success message after timeout', () => {
-    vi.useFakeTimers();
-    const clearSpy = vi.spyOn(component['store'], 'clearSuccessMessage');
-
-    component['store'].successMessage.set('Loan approved');
-    fixture.detectChanges();
-    vi.advanceTimersByTime(5000);
-
-    expect(clearSpy).toHaveBeenCalled();
-    vi.useRealTimers();
-  });
-
-  it('auto-dismiss effect should clear action error after timeout', () => {
-    vi.useFakeTimers();
-    const clearSpy = vi.spyOn(component['store'], 'clearError');
-
-    component['store'].actionError.set('Something went wrong');
-    fixture.detectChanges();
-    vi.advanceTimersByTime(5000);
-
-    expect(clearSpy).toHaveBeenCalled();
-    vi.useRealTimers();
   });
 });

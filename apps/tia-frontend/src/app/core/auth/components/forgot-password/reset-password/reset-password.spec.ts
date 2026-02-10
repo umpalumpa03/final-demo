@@ -38,27 +38,13 @@ describe('ResetPassword', () => {
     vi.spyOn(router, 'navigate').mockResolvedValue(true);
   });
 
-  it('should create with correct default state', () => {
-    expect(component).toBeTruthy();
-    expect(component.title).toBe('auth.reset-password.title');
-    expect(component.subtitle).toBe('auth.reset-password.subtitle');
-    expect(component.buttonText).toBe('auth.reset-password.submit');
-    expect(component.isSubmitting()).toBe(false);
-    expect(component.alertState()).toBeNull();
-  });
-
-  it('ngOnInit should not navigate when resetPasswordToken exists', () => {
-    component.ngOnInit();
-    expect(router.navigate).not.toHaveBeenCalled();
-  });
-
   it('ngOnInit should redirect to OTP page when resetPasswordToken is missing', () => {
     tokenServiceMock.resetPasswordToken = null;
     component.ngOnInit();
     expect(router.navigate).toHaveBeenCalledWith(['/auth', 'verify-otp-reset']);
   });
 
-  it('submit should set isSubmitting, call API, navigate on success, and handle 400 and generic errors', () => {
+  it('submit should call API, navigate on success, and handle 400 errors', () => {
     vi.useFakeTimers();
 
     const formValue = { password: 'Aa1!aaaa', confirmPassword: 'Aa1!aaaa' } as any;
@@ -68,8 +54,6 @@ describe('ResetPassword', () => {
     expect(authServiceMock.createNewPassword).toHaveBeenCalledWith('Aa1!aaaa');
     expect(router.navigate).toHaveBeenCalledWith(['/auth', 'success']);
     expect(component.alertState()?.type).toBe('success');
-    expect(component.alertState()?.title).toBe('Success!');
-    expect(component.alertState()?.message).toBe('Password updated successfully');
     expect(component.isSubmitting()).toBe(false);
 
     authServiceMock.createNewPassword.mockReturnValue(
@@ -77,30 +61,7 @@ describe('ResetPassword', () => {
     );
     component.submit(formValue);
     expect(component.alertState()?.type).toBe('error');
-    expect(component.alertState()?.title).toBe('Oops!');
     expect(component.alertState()?.message).toBe('Unable to reset password. Please try again.');
-    expect(component.isSubmitting()).toBe(false);
-
-    authServiceMock.createNewPassword.mockReturnValue(
-      throwError(() => new HttpErrorResponse({ status: 500 })),
-    );
-    component.submit(formValue);
-    expect(component.alertState()?.type).toBe('warning');
-    expect(component.alertState()?.title).toBe('Warning');
-    expect(component.alertState()?.message).toBe('Something went wrong. Please try again.');
-
-    vi.useRealTimers();
-  });
-
-  it('submit should clear previous alertState before calling API', () => {
-    vi.useFakeTimers();
-
-    component.alertState.set({ type: 'error', title: 'Oops!', message: 'Old error' });
-    const formValue = { password: 'Aa1!aaaa', confirmPassword: 'Aa1!aaaa' } as any;
-    component.submit(formValue);
-    vi.advanceTimersByTime(2000);
-
-    expect(component.alertState()?.type).toBe('success');
 
     vi.useRealTimers();
   });

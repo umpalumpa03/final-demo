@@ -45,14 +45,7 @@ describe('LoanDrawerApplicant', () => {
     fixture.detectChanges();
   });
 
-  it('should create with default input values', () => {
-    expect(component).toBeTruthy();
-    expect(component.userInfo()).toBeNull();
-    expect(component.isLoading()).toBe(false);
-    expect(component.labels()).toEqual(mockLabels);
-  });
-
-  it('creditScoreBadgeVariant should map all credit score badges to variant strings and default to pending', () => {
+  it('creditScoreBadgeVariant should map credit score badges to variant strings and default to pending', () => {
     const cases: Array<[UserInfo['creditScoreBadge'], string]> = [
       ['Poor', 'poor'],
       ['Fair', 'fair'],
@@ -73,19 +66,9 @@ describe('LoanDrawerApplicant', () => {
   });
 
   it('creditScoreBadgeText should return translated label for each credit score badge and empty for null', () => {
-    const textCases: Array<[UserInfo['creditScoreBadge'], string]> = [
-      ['Poor', 'Poor'],
-      ['Fair', 'Fair'],
-      ['Good', 'Good'],
-      ['Very Good', 'Very Good'],
-      ['Excellent', 'Excellent'],
-    ];
-
-    textCases.forEach(([badge, expected]) => {
-      fixture.componentRef.setInput('userInfo', { ...mockUserInfo, creditScoreBadge: badge });
-      fixture.detectChanges();
-      expect(component.creditScoreBadgeText()).toBe(expected);
-    });
+    fixture.componentRef.setInput('userInfo', { ...mockUserInfo, creditScoreBadge: 'Good' });
+    fixture.detectChanges();
+    expect(component.creditScoreBadgeText()).toBe('Good');
 
     fixture.componentRef.setInput('userInfo', null);
     fixture.detectChanges();

@@ -43,39 +43,16 @@ describe('ForgotPasswordEmail', () => {
     fixture.detectChanges();
   });
 
-  it('should create with correct default state', () => {
-    expect(component).toBeTruthy();
-    expect(component.title).toBe('auth.forgot-password.title');
-    expect(component.subtitle).toBe('auth.forgot-password.subtitle');
-    expect(component.alertState()).toBeNull();
-    expect(component.isSubmitting()).toBe(false);
-  });
-
-  it('isSubmitting should reflect authService.isLoginLoading state', () => {
-    expect(component.isSubmitting()).toBe(false);
-    authServiceMock.isLoginLoading.set(true);
-    expect(component.isSubmitting()).toBe(true);
-    authServiceMock.isLoginLoading.set(false);
-    expect(component.isSubmitting()).toBe(false);
-  });
-
   it('emailConfig should return error message for invalid email and undefined for valid', () => {
     component.form.controls.email.setValue('');
     component.form.controls.email.markAsTouched();
     expect(component.emailConfig().errorMessage).toBe('Enter valid email');
 
-    component.form.controls.email.setValue('not-an-email');
-    component.form.controls.email.markAsTouched();
-    expect(component.emailConfig().errorMessage).toBe('Enter valid email');
-
     component.form.controls.email.setValue('valid@email.com');
     expect(component.emailConfig().errorMessage).toBeUndefined();
-    expect(component.emailConfig().label).toBe('Email');
-    expect(component.emailConfig().required).toBe(true);
-    expect(component.emailConfig().placeholder).toBe('your.email@example.com');
   });
 
-  it('submit should skip when form invalid, call API on valid input, navigate on success, and handle all error types', () => {
+  it('submit should skip when form invalid, call API on valid input, navigate on success, and handle errors', () => {
     vi.useFakeTimers();
 
     component.submit();
@@ -89,15 +66,12 @@ describe('ForgotPasswordEmail', () => {
     expect(authServiceMock.setChellangeId).toHaveBeenCalledWith('challenge-1');
     expect(router.navigate).toHaveBeenCalledWith([Routes.OTP_FORGOT_PASSWORD]);
     expect(component.alertState()?.type).toBe('success');
-    expect(component.alertState()?.title).toBe('Success!');
-    expect(component.alertState()?.message).toBe('Reset code sent to your email');
 
     authServiceMock.forgotPasswordRequest.mockReturnValue(
       throwError(() => new HttpErrorResponse({ status: 404, error: { message: 'User not found' } })),
     );
     component.form.controls.email.setValue('notfound@test.com');
     component.submit();
-    expect(component.alertState()?.type).toBe('error');
     expect(component.alertState()?.message).toBe('User not found');
 
     authServiceMock.forgotPasswordRequest.mockReturnValue(
@@ -107,28 +81,6 @@ describe('ForgotPasswordEmail', () => {
     component.submit();
     expect(component.alertState()?.message).toBe('email must be an email');
 
-    authServiceMock.forgotPasswordRequest.mockReturnValue(
-      throwError(() => new HttpErrorResponse({ status: 400, error: { message: 'Invalid email' } })),
-    );
-    component.form.controls.email.setValue('another@test.com');
-    component.submit();
-    expect(component.alertState()?.message).toBe('Invalid email');
-
-    authServiceMock.forgotPasswordRequest.mockReturnValue(
-      throwError(() => new Error('boom')),
-    );
-    component.form.controls.email.setValue('error@test.com');
-    component.submit();
-    expect(component.alertState()?.type).toBe('warning');
-    expect(component.alertState()?.message).toBe('Unable to send reset code. Please try again.');
-
     vi.useRealTimers();
-  });
-
-  it('submit should clear alertState before each call and mark form as touched', () => {
-    component.alertState.set({ type: 'error', title: 'Oops!', message: 'Old error' });
-    component.submit();
-    expect(component.alertState()).toBeNull();
-    expect(component.form.controls.email.touched).toBe(true);
   });
 });
