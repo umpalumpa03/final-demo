@@ -19,13 +19,21 @@ import { selectPId, selectPersonalInfo, selectPhoneNumber, selectPhoneUpdateChal
 import { selectUserInfo } from '../../../../../../store/user-info/user-info.selectors';
 import { PersonalInfoActions } from '../../../../../../store/personal-info/pesronal-info.actions';
 import { environment } from '../../../../../../../environments/environment';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 describe('ProfilePhotoContainer', () => {
   let component: ProfilePhotoContainer;
   let fixture: ComponentFixture<ProfilePhotoContainer>;
   let store: MockStore;
+  let mockAlertService: any;
 
   beforeEach(async () => {
+    mockAlertService = {
+      success: vi.fn(),
+      error: vi.fn(),
+      warning: vi.fn(),
+    };
+
     await TestBed.configureTestingModule({
       imports: [ProfilePhotoContainer, TranslateModule.forRoot()],
       providers: [
@@ -49,6 +57,7 @@ describe('ProfilePhotoContainer', () => {
             },
           },
         }),
+        { provide: AlertService, useValue: mockAlertService },
       ],
     }).compileComponents();
 
@@ -120,7 +129,9 @@ describe('ProfilePhotoContainer', () => {
 
   it('should show error alert when file type is invalid', () => {
     const translate = TestBed.inject(TranslateService);
-    const translateSpy = vi.spyOn(translate, 'instant').mockReturnValue('Invalid file type');
+    const translateSpy = vi
+      .spyOn(translate, 'instant')
+      .mockReturnValue('Invalid file type');
     const store = TestBed.inject(Store);
     const dispatchSpy = vi.spyOn(store, 'dispatch');
 
@@ -128,9 +139,13 @@ describe('ProfilePhotoContainer', () => {
 
     component.onFileSelected(file);
 
-    expect(translateSpy).toHaveBeenCalledWith('settings.profile-photo.invalidFileAlert');
-    expect(component.alertKind()).toBe('error');
-    expect(component.alertMessage()).toBe('Invalid file type');
+    expect(translateSpy).toHaveBeenCalledWith(
+      'settings.profile-photo.invalidFileAlert',
+    );
+    expect(mockAlertService.error).toHaveBeenCalledWith(
+      'Invalid file type',
+      { variant: 'dismissible', title: 'Oops!' },
+    );
     expect(dispatchSpy).not.toHaveBeenCalled();
   });
 
@@ -157,9 +172,14 @@ describe('ProfilePhotoContainer', () => {
   it('should show error alert when file size is too large', () => {
     const translate = TestBed.inject(TranslateService);
     vi.spyOn(translate, 'instant').mockReturnValue('File too large');
-    const largeContent = new Array(1024*1024 + 1).fill('a').join('');
-    component.onFileSelected(new File([largeContent], 'large-photo.png', { type: 'image/png' }));
-    expect(component.alertKind()).toBe('error');
+    const largeContent = new Array(1024 * 1024 + 1).fill('a').join('');
+    component.onFileSelected(
+      new File([largeContent], 'large-photo.png', { type: 'image/png' }),
+    );
+    expect(mockAlertService.error).toHaveBeenCalledWith(
+      'File too large',
+      { variant: 'dismissible', title: 'Oops!' },
+    );
   });
 
   it('should dispatch loadDefaultAvatarsRequest on ngOnInit', () => {
@@ -170,20 +190,9 @@ describe('ProfilePhotoContainer', () => {
 
   it('should cleanup in ngOnDestroy', () => {
     const revokeSpy = vi.spyOn(URL, 'revokeObjectURL');
-    const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
     (component as any).objectUrl = 'blob:photo';
-    (component as any).alertTimeoutId = setTimeout(() => {}, 100);
     component.ngOnDestroy();
     expect(revokeSpy).toHaveBeenCalled();
-    expect(clearTimeoutSpy).toHaveBeenCalled();
-  });
-
-  it('should clear alert when onAlertClose is called', () => {
-    const translate = TestBed.inject(TranslateService);
-    vi.spyOn(translate, 'instant').mockReturnValue('Test');
-    component.onFileSelected(new File(['content'], 'photo.gif', { type: 'image/gif' }));
-    component.onAlertClose();
-    expect(component.alertKind()).toBeNull();
   });
 
   it('should handle edge cases', () => {
@@ -324,7 +333,9 @@ describe('ProfilePhotoContainer', () => {
   it('should validate personal number length on update', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
     const translate = TestBed.inject(TranslateService);
-    vi.spyOn(translate, 'instant').mockReturnValue('Personal number must be exactly 11 digits');
+    vi.spyOn(translate, 'instant').mockReturnValue(
+      'Personal number must be exactly 11 digits',
+    );
 
     store.overrideSelector(selectPId, '12345678901');
     store.overrideSelector(selectPhoneNumber, '555123456');
@@ -335,7 +346,10 @@ describe('ProfilePhotoContainer', () => {
     component.onSave();
 
     expect(dispatchSpy).not.toHaveBeenCalled();
-    expect(component.alertKind()).toBe('error');
+    expect(mockAlertService.error).toHaveBeenCalledWith(
+      'Personal number must be exactly 11 digits',
+      { variant: 'dismissible', title: 'Oops!' },
+    );
   });
 
   it('should dispatch updatePersonalInfo when personal number is valid and different', () => {
@@ -427,19 +441,23 @@ describe('ProfilePhotoContainer', () => {
   it('should validate phone number length - must be exactly 9 digits', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
     const translate = TestBed.inject(TranslateService);
-    vi.spyOn(translate, 'instant').mockReturnValue('Phone number must be exactly 9 digits');
+    vi.spyOn(translate, 'instant').mockReturnValue(
+      'Phone number must be exactly 9 digits',
+    );
 
     store.overrideSelector(selectPId, '12345678901');
     store.overrideSelector(selectPhoneNumber, '555123456');
     store.refreshState();
 
     component.onEdit();
-    component.onPhoneNumberChange('5551234567'); 
+    component.onPhoneNumberChange('5551234567');
     component.onSave();
 
     expect(dispatchSpy).not.toHaveBeenCalled();
-    expect(component.alertKind()).toBe('error');
-    expect(component.alertMessage()).toBe('Phone number must be exactly 9 digits');
+    expect(mockAlertService.error).toHaveBeenCalledWith(
+      'Phone number must be exactly 9 digits',
+      { variant: 'dismissible', title: 'Oops!' },
+    );
   });
 
 
@@ -508,7 +526,10 @@ describe('ProfilePhotoContainer', () => {
 
     component.onResendOtp();
 
-    expect(component.alertKind()).toBe('error');
+    expect(mockAlertService.error).toHaveBeenCalledWith(
+      'Max resend reached',
+      { variant: 'dismissible', title: 'Oops!' },
+    );
   });
 
 

@@ -4,8 +4,6 @@
   [selectedAvatarId]="selectedAvatarId()"
   [photoUrl]="currentAvatarUrl()"
   [initials]="userInitials()"
-  [alertType]="alertType()"
-  [alertMessage]="alertMessage()"
   [isUploadModalOpen]="isUploadModalOpen()"
   [isDragOver]="isDragOver()"
   [savingChanges]="savingChanges()"
@@ -15,7 +13,6 @@
   (dragLeave)="onDragLeave($event)"
   (fileDrop)="onFileDrop($event)"
   (fileInputChange)="onFileInputChange($event)"
-  (alertClose)="onAlertClose()"
   (removePhoto)="onRemovePhoto()"
   (saveChanges)="onSaveChanges()"
   (selectDefaultAvatar)="onSelectDefaultAvatar($event)"
@@ -41,6 +38,7 @@
   (phoneNumberChange)="onPhoneNumberChange($event)"
   (cancelEdit)="onCancelEdit()"
   (save)="onSave()"
+  (startTour)="onStartTour()"
 ></app-user-info>
 
 <app-otp-modal

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, OnInit, output, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, inject, OnInit, output, signal, ViewChild } from '@angular/core';
 import { EmailDetail } from '../../shared/ui/email-detail/email-detail';
 import { MessagingStore } from '../../store/messaging.store';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -37,6 +37,15 @@ export class InboxDetail implements OnInit {
   public readonly currentUserEmail = computed(() => this.store.selectSignal(selectCurrentUserEmail)() ?? '');
   private readonly breakpointService = inject(BreakpointService);
   public readonly isMobile = this.breakpointService.isMobile;
+  public readonly isDeleting = computed(() => !!this.messagingStore.isDeleting?.());
+  private readonly isDeletePending = signal(false);
+  private readonly deletingEffect = effect(() => {
+    if (this.isDeletePending() && !this.isDeleting()) {
+      this.isDeletePending.set(false);
+      this.isDeleteModalOpen.set(false);
+      this.router.navigate(['..'], { relativeTo: this.route });
+    }
+  });
 
   @ViewChild('replyCard') replyCard?: ElementRef;
 
@@ -82,10 +91,9 @@ export class InboxDetail implements OnInit {
   public onConfirmDelete(): void {
     const mail = this.emailDetail?.();
     if (mail) {
+      this.isDeletePending.set(true);
       this.deleteMail.emit(mail.id);
       this.messagingStore.deleteMail(mail.id);
-      this.isDeleteModalOpen.set(false);
-      this.router.navigate(['..'], { relativeTo: this.route });
     }
   }
 

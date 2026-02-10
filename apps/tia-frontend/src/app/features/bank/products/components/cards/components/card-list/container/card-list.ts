@@ -70,7 +70,9 @@ export class CardList implements OnInit {
     map(([groups, activeIndexMap]): CardGroupView[] =>
       groups.map((group) => ({
         ...group,
-        cardCountLabel: `${group.cardImages.length} Card${group.cardImages.length !== 1 ? 's' : ''}`,
+        cardCountLabel: `${group.cardImages.length}`,
+cardCountKey: group.cardImages.length === 1 ? 'my-products.card.card-list.card-group-item.cardCount' : 'my-products.card.card-list.card-group-item.cardCountPlural',
+
         activeIndex: activeIndexMap[group.account.id] ?? 0,
         cards: group.cardImages.map((cardImage, idx) => ({
           ...cardImage,
@@ -88,7 +90,7 @@ export class CardList implements OnInit {
   );
 
   ngOnInit(): void {
-    this.store.dispatch(loadCardAccounts());
+    this.store.dispatch(loadCardAccounts({}));
   }
 
   public handleCardClick(data: {

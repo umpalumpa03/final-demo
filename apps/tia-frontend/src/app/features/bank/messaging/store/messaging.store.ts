@@ -175,16 +175,19 @@ export const MessagingStore = signalStore(
 
             deleteMail: rxMethod<number>(
                 pipe(
+                    tap(() => patchState(store, { isDeleting: true })),
                     switchMap((mailId) => messagingService.deleteMail(mailId).pipe(
                         tap(() => {
                             patchState(store, {
-                                mails: store.mails().filter(mail => mail.id !== mailId)
+                                mails: store.mails().filter(mail => mail.id !== mailId),
+                                isDeleting: false
                             });
                             inboxService.fetchInboxCount();
                             store.getUnreadImportantCount();
                             updateTotalCountByType();
                         }),
                         catchError(() => {
+                            patchState(store, { isDeleting: false });
                             alertService.error(translate.instant('messaging.storeErrors.deleteMail'), { variant: 'dismissible', title: 'Oops!' });
                             return of(null);
                         })
@@ -194,18 +197,21 @@ export const MessagingStore = signalStore(
 
             deleteAllMails: rxMethod<number[]>(
                 pipe(
+                     tap(() => patchState(store, { isDeleting: true })),
                     switchMap((ids) => {
                         const deleteObservables = ids.map(id => messagingService.deleteMail(id));
                         return forkJoin(deleteObservables).pipe(
                             tap(() => {
                                 patchState(store, {
-                                    mails: store.mails().filter(mail => !ids.includes(mail.id))
+                                    mails: store.mails().filter(mail => !ids.includes(mail.id)),
+                                    isDeleting: false
                                 });
                                 inboxService.fetchInboxCount();
                                 store.getUnreadImportantCount();
                                 updateTotalCountByType();
                             }),
                             catchError(() => {
+                                patchState(store, { isDeleting: false });
                                 alertService.error(translate.instant('messaging.storeErrors.deleteAllMails'), { variant: 'dismissible', title: 'Oops!' });
                                 return of(null);
                             })
@@ -312,8 +318,13 @@ export const MessagingStore = signalStore(
                             store.getUnreadImportantCount();
                             store.getDraftTotalCount(0);
                             switch (store.currentType()) {
+                                case 'drafts':
+                                    break;
                                 case 'important':
                                     store.getTotalCount('importants');
+                                    break;
+                                case 'favorites':
+                                    store.getTotalCount('favorite');
                                     break;
                                 default:
                                     store.getTotalCount(store.currentType());

@@ -94,7 +94,64 @@
       }
     }
   },
-  "buttons": {},
+  "buttons": {
+    "title": "Buttons",
+    "subtitle": "Full overview of all components along with their various states",
+    "sections": {
+      "variants": "Variants",
+      "sizes": "Sizes",
+      "states": "States",
+      "icons": "With Icons",
+      "interactive": "Interactive Examples",
+      "groups": "Button Groups",
+      "fullWidth": "Full Width"
+    },
+    "variants": {
+      "default": "Default",
+      "secondary": "Secondary",
+      "destructive": "Destructive",
+      "outline": "Outline",
+      "ghost": "Ghost",
+      "link": "Link"
+    },
+    "sizes": {
+      "sm": "Small",
+      "default": "Default",
+      "lg": "Large"
+    },
+    "states": {
+      "defaultLabel": "Default:",
+      "clickMe": "Click Me",
+      "disabledLabel": "Disabled",
+      "disabledButton": "Disabled Button",
+      "disabledSecondary": "Disabled Secondary",
+      "loadingLabel": "Loading",
+      "loading": "Loading...",
+      "clickToLoad": "Click to Load"
+    },
+    "icons": {
+      "send": "Send Email",
+      "download": "Download",
+      "delete": "Delete",
+      "confirm": "Confirm",
+      "addNew": "Add New",
+      "settings": "Settings",
+      "iconOnly": "Icon Only"
+    },
+    "interactive": {
+      "like": "Like (42)",
+      "download": "Download File"
+    },
+    "groups": {
+      "left": "Left",
+      "center": "Center",
+      "right": "Right"
+    },
+    "fullWidth": {
+      "label": "Full Width Button",
+      "outline": "Full Width Outline"
+    }
+  },
   "inputs": {
     "title": "Input Components",
     "subtitle": "Form input components with various types and states",
@@ -200,6 +257,64 @@
       "label": "Security PIN"
     }
   },
+  "forms": {},
+  "cards": {
+     "pageTitle": "Cards",
+    "pageSubtitle": "Card components with various layouts and content types",
+    "basicCard": "Basic Cards",
+    "StatisticsCards": "Statistics Cards",
+    "categoryCards": "Category Cards",
+    "cancelBtn": "Cancel",
+    "submitBtn": "Submit",
+     "basic1": {
+      "title": "Card Title",
+      "subtitle": "Card description goes here",
+      "content": "This is the main content area of the card. You can put any content here."
+    },
+    "basic2": {
+      "title": "With Footer",
+      "subtitle": "Card with action buttons",
+      "content": "This card includes a footer with action buttons."
+    },
+    "basic3": {
+      "title": "Hover Effect",
+      "subtitle": "Hover over this card",
+      "content": "This card has hover effects applied."
+    },
+    "stats": {
+      "revenue": {
+        "label": "Total Revenue",
+        "value": "$45,231.89",
+        "change": "+20.1% from last month"
+      },
+      "subscriptions": {
+        "label": "Subscriptions",
+        "value": "+2,350",
+        "change": "+180.1% from last month"
+      },
+      "sales": {
+        "label": "Sales",
+        "value": "+12,234",
+        "change": "+19% from last month"
+      },
+      "active": {
+        "label": "Active Now",
+        "value": "+573",
+        "change": "-4% from last hour"
+      }
+    },
+    "category": {
+      "utilities": {
+        "title": "Utilities",
+        "subtitle": "Electricity, Water, Gas"
+      },
+      "internet": {
+        "title": "Internet & TV",
+        "subtitle": "Internet, Cable TV"
+      }
+    }
+  },
+  "alerts": {},
   "forms": {
     "formsTitle": "Forms",
     "formsSubtitle": "Complete form examples with various input types and layouts",
@@ -298,7 +413,7 @@
       "SUCCESS_SAVE": "Your changes have been saved successfully!",
       "CONFIRM_ACTION": "Confirm Action",
       "CONFIRM_MSG": "This action cannot be undone. Are you sure you want to continue?",
-      
+
       "NEW_FEATURE_TITLE": "New Feature Available",
       "NEW_FEATURE_MSG": "Check out our latest updates and improvements.",
       "PROFILE_UPDATE_TITLE": "Profile Updated",
@@ -498,7 +613,190 @@
     }
   },
   "feedback": {},
-  "layout": {},
+  "layout": {
+    "title": "Layout Components",
+    "subtitle": "Structural components for organizing content",
+    "sections": {
+      "separators": {
+        "title": "Separators",
+        "example-1": {
+          "title": "Horizontal Separator",
+          "content-1": "Content above",
+          "content-2": "Content below"
+        },
+        "example-2": {
+          "title": "Vertical Separator",
+          "content-1": "Left",
+          "content-2": "Center",
+          "content-3": "Right"
+        },
+        "example-3": {
+          "title": "With Text"
+        }
+      },
+      "accordion": "Accordion",
+      "multiAccordion": "Multiple Accordion (Multiple Open)",
+      "collapsible": "Collapsible",
+      "scrollArea": {
+        "title": "Scroll Area",
+        "example-1": "Vertical Scroll",
+        "example-2": "Horizontal Scroll"
+      },
+      "resizablePanels": {
+        "title": "Resizable Panels",
+        "example-1": {
+          "title": "Horizontal Resize",
+          "content-1": "Left Panel",
+          "content-2": "Right Panel"
+        },
+        "example-2": {
+          "title": "Three Panel Layout",
+          "content-1": "Sidebar",
+          "content-2": "Main Content",
+          "content-3": "Details"
+        },
+        "example-3": {
+          "title": "Vertical Resize",
+          "content-1": "Top Panel",
+          "content-2": "Bottom Panel"
+        }
+      },
+      "grid": "Grid Layouts",
+      "flex": "Flex Layouts"
+    },
+    "accordionContent": [
+      {
+        "title": "What is this component library?",
+        "content":
+        "This is a comprehensive UI component library built with Angular, providing reusable and accessible components for building modern web applications. It includes buttons, forms, navigation, and many other essential UI elements."
+      },
+      {
+        "title": "How do I use these components?",
+        "content":
+          "Each component can be imported directly into your Angular application. Simply import the component, add it to your template, and configure it using the provided inputs and outputs. Documentation and examples are available for each component."
+      },
+      {
+        "title": "Are these components accessible?",
+        "content":
+          "Yes, all components are built with accessibility in mind, following WCAG guidelines. They include proper ARIA attributes, keyboard navigation support, and screen reader compatibility to ensure an inclusive user experience."
+      },
+      {
+        "title": "Can I customize the styling?",
+        "content":
+          "Absolutely! Components support theme customization through CSS variables and custom styling. You can override default styles using SCSS mixins and apply your brand colors to match your design system."
+      },
+      {
+        "title": "Can I customize the styling?",
+        "content":
+          "Absolutely! Components support theme customization through CSS variables and custom styling. You can override default styles using SCSS mixins and apply your brand colors to match your design system."
+      }
+    ],
+    "multiAccordionContent": [
+      {
+        "title": "Features",
+        "content":
+          "Our component library includes over 50 pre-built components, dark mode support, responsive design, TypeScript support, comprehensive documentation, and regular updates with new features and improvements."
+      },
+      {
+        "title": "Installation",
+        "content":
+          "Install the library using npm or yarn package manager. Import the required modules in your Angular application, configure the theme settings, and start using components in your templates immediately."
+      },
+      {
+        "title": "Documentation",
+        "content":
+          "Complete documentation is available online, including API references, usage examples, best practices, and migration guides. Each component has detailed documentation with live demos and code snippets."
+      }
+    ],
+    "collapsibleContent": [
+      {
+        "title": "Click To Expand",
+        "content":
+          "This collapsible section contains additional information that can be shown or hidden by clicking the header. It's useful for organizing content and improving page readability."
+      },
+      {
+        "title": "Default Open",
+        "content":
+          "This section is expanded by default, making important content immediately visible to users. You can configure which sections should be open on initial load."
+      }
+    ],
+    "scrollAreaContent": [
+      {
+        "content": "Item 1 - This is a scrollable content area with many items"
+      },
+      {
+        "content": "Item 2 - This is a scrollable content area with many items"
+      },
+      {
+        "content": "Item 3 - This is a scrollable content area with many items"
+      },
+      {
+        "content": "Item 4 - This is a scrollable content area with many items"
+      },
+      {
+        "content": "Item 5 - This is a scrollable content area with many items"
+      },
+      {
+        "content": "Item 6 - This is a scrollable content area with many items"
+      }
+    ],
+    "scrollAreaContent2": {
+      "title": "Card"
+    },
+    "grid": [
+      {
+        "title": "Two Column Grid",
+        "items": [
+          { "label": "Column 1" },
+          { "label": "Column 2" }
+        ]
+      },
+      {
+        "title": "Three Column Grid",
+        "items": [
+          { "label": "Column 1" },
+          { "label": "Column 2" },
+          { "label": "Column 3" }
+        ]
+      },
+      {
+        "title": "Four Column Grid",
+        "items": [
+          { "label": "Column 1" },
+          { "label": "Column 2" },
+          { "label": "Column 3" },
+          { "label": "Column 4" }
+        ]
+      },
+      {
+        "title": "Asymmetric (2:1)",
+        "items": [
+          { "label": "Wide Column (2/3)" },
+          { "label": "Narrow (1/3)" }
+        ]
+      }
+    ],
+    "flex": [
+      {
+        "title": "Space Between:",
+        "items": [
+          { "label": "Left" },
+          { "label": "Center" },
+          { "label": "Right" }
+        ]
+      },
+      {
+        "title": "Centered:",
+        "items": [{ "label": "Centered Content" }]
+      },
+      {
+        "title": "Flex Wrap:",
+        "items": { 
+          "label": "Item" 
+        }
+      }
+    ]
+  },
   "data-display": {},
   "overlays": {},
   "drag-and-drop": {

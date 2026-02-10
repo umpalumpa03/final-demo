@@ -18,7 +18,9 @@ import {
   selectProviders,
   selectProvidersDropdown,
   selectSelectedCategoryId,
+  selectSelectedTemplates,
   selectServiceId,
+  selectTemplates,
   selectTemplatesAsTreeItems,
   selectTemplatesGroupWithConfigs,
   selectVerifiedDetails,
@@ -192,6 +194,9 @@ export class PaybillTemplatesContainer implements OnInit {
         }),
       );
     },
+    'confirm-payment': (values) => {
+      // ShOULD ADD
+    },
   };
 
   public readonly searchControl = new FormControl('');
@@ -266,6 +271,10 @@ export class PaybillTemplatesContainer implements OnInit {
         this.modalType.set(ModalType.Group);
         this.handleModalToggle();
         break;
+      case HeaderCtaAction.Pay:
+        this.modalType.set(ModalType.ConfirmPayment);
+        this.handleModalToggle();
+        break;
     }
   }
 
@@ -278,6 +287,8 @@ export class PaybillTemplatesContainer implements OnInit {
       this.modalType.set(null);
       this.selectedId.set('');
       this.selectedItemName.set('');
+
+      this.store.dispatch(TemplatesPageActions.clearPaymentInfo());
     }
     // To clear store after closing modal
     this.store.dispatch(PaybillActions.clearSelection());
@@ -446,4 +457,42 @@ export class PaybillTemplatesContainer implements OnInit {
   public readonly verifiedDetails = this.store.selectSignal(
     selectVerifiedDetails,
   );
+
+  // Implement Payment Logic
+  public selectedItems = this.store.selectSignal(selectSelectedTemplates);
+  public originalTemplates = this.store.selectSignal(selectTemplates);
+
+  public onItemChecked(selectedIds: string[]) {
+    const selectedTemplates = [];
+
+    for (const id of selectedIds) {
+      const template = this.originalTemplates().find((t) => t.id === id);
+
+      if (template) {
+        selectedTemplates.push(template);
+      }
+    }
+
+    this.store.dispatch(
+      TemplatesPageActions.addCheckedItems({
+        selectedItems: selectedTemplates,
+      }),
+    );
+  }
+  public onSelectedItem(selectedItemId: string) {
+    this.store.dispatch(TemplatesPageActions.clearPaymentInfo());
+    const selectedTemplates = [];
+    const template = this.originalTemplates().find(
+      (t) => t.id === selectedItemId,
+    );
+
+    if (template) {
+      selectedTemplates.push(template);
+    }
+    this.store.dispatch(
+      TemplatesPageActions.addCheckedItems({
+        selectedItems: selectedTemplates,
+      }),
+    );
+  }
 }

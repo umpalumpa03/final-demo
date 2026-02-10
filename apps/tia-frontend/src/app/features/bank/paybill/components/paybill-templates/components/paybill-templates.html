@@ -19,22 +19,29 @@
   (itemMoved)="itemMoved($event)"
   [isLoading]="isLoading()"
   [selectAll]="selectAll()"
+  (checkedItemsChange)="onTemplateChecked($event)"
+  (buttonClicked)="singleItemSelected($event)"
 >
   <div class="templates__header">
-    <app-library-title
-      [title]="'paybill.templates.title' | translate"
-      [subtitle]="'paybill.templates.description' | translate"
-    >
-    </app-library-title>
-    <div class="templates__header__cta">
-      @for (button of headerButtons; track button.action) {
-      <app-button
-        [variant]="button.variant"
-        (click)="handleHeaderButtonClick(button.action)"
-        >{{ button.textKey | translate}}</app-button
+    <div class="templates__header__main-content">
+      <app-library-title
+        [title]="'paybill.templates.title' | translate"
+        [subtitle]="'paybill.templates.description' | translate"
       >
-      }
+      </app-library-title>
+      <div class="templates__header__cta">
+        @for (button of headerButtons; track button.action) {
+        <app-button
+          [variant]="button.variant"
+          (click)="handleHeaderButtonClick(button.action)"
+          >{{ button.textKey | translate}}</app-button
+        >
+        }
+      </div>
     </div>
+    @if(selectedItems()?.length) {
+    <app-selected-items (paySelectedClick)="paySelected()"></app-selected-items>
+    }
   </div>
 </app-tree-container>
 
@@ -102,7 +109,38 @@
         </app-button>
       </div>
     </form>
-    }@else {
+    }@else if(config.formSubmitType === 'confirm-payment') {
+    <div class="payment__modal">
+      <app-selected-items [forModal]="true"></app-selected-items>
+      <app-payment-distribution
+        [selectedItemsLength]="selectedItems()!.length"
+        (isDistribution)="paymentTypeChanged($event)"
+      ></app-payment-distribution>
+      <app-bills-list [isDistribution]="isDistribution()"></app-bills-list>
+      <app-total-amount></app-total-amount>
+      <app-account-select
+        [maxVisible]="5"
+        [isHeader]="true"
+      ></app-account-select>
+      <div class="modal__buttons">
+        <app-button
+          variant="outline"
+          type="button"
+          (click)="modalOpenAction.emit()"
+        >
+          Cancel
+        </app-button>
+        <app-button
+          [variant]="config.submitButtonType"
+          type="submit"
+          (click)="onActionHandler(config.submitAction)"
+          [isLoading]="isLoading()"
+        >
+          {{ config.submitLabel }}
+        </app-button>
+      </div>
+    </div>
+    } @else {
     <div class="modal__identifier">{{ selectedDeleteItem() }}</div>
     @if (config.description) {
     <p class="modal__warning">{{ config.description }}</p>

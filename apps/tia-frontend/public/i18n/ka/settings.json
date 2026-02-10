@@ -78,7 +78,8 @@
         "verify": "დადასტურება",
         "didntReceiveCode": "კოდი არ მიგიღიათ?",
         "phoneNumberUpdated": "ტელეფონის ნომერი წარმატებით განახლდა",
-        "maxResendReached": "მაქსიმალური რაოდენობის გაგზავნა მიღწეულია"
+        "maxResendReached": "მაქსიმალური რაოდენობის გაგზავნა მიღწეულია",
+        "startTour": "ტურის დაწყება"
     },
     "security": {
         "title": "უსაფრთხოების პარამეტრები",
@@ -91,7 +92,8 @@
         "confirmNewPassword": "დაადასტურეთ ახალი პაროლი",
         "confirmNewPasswordPlaceholder": "დაადასტურეთ ახალი პაროლი",
         "updatePassword": "პაროლის განახლება",
-        "twoFactorAuth": "ორი ფაქტორიანი ავთენტიფიკაცია"
+        "twoFactorAuth": "ორი ფაქტორიანი ავთენტიფიკაცია",
+        "passwordChangedSuccessfully": "პაროლი წარმატებით შეიცვალა"
     },
     "user-management": {
         "title": "მომხმარებელთა მართვა",

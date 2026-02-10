@@ -39,7 +39,8 @@ import { CardsState } from './cards.state';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 
 describe('CardsSelectors - Full Coverage', () => {
-const mockState: CardsState = {
+
+  const mockState: CardsState = {
   accounts: [
     { id: 'acc-1', iban: 'GE123', name: 'Main', balance: 1000, currency: 'GEL', status: 'ACTIVE', cardIds: ['card-1'], openedAt: '2024-01-01' },
   ],
@@ -79,8 +80,13 @@ const mockState: CardsState = {
   otpRemainingAttempts: 3,
   currentCardIndex: 0,
   currentAccountId: 'acc-1',
+  accountsLoaded: true,
+  cardCreationDataLoaded: true,
+  loadedCardDetailsIds: ['card-1'],
+  loadedCardImageIds: ['card-1'],
 };
-  it('should select all accounts', () => {
+
+it('should select all accounts', () => {
     expect(selectAllAccounts.projector(mockState)).toEqual(mockState.accounts);
   });
 

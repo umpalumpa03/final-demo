@@ -30,4 +30,7 @@
   [childProviderOptions]="childProviderOptions()"
   (childProviderSelected)="onParentProviderSelect($event)"
   [paymentFields]="paymentField()"
+  [selectedItems]="selectedItems()"
+  (markedCheckbox)="onItemChecked($event)"
+  (selectedItem)="onSelectedItem($event)"
 ></app-paybill-templates>

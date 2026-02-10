@@ -36,7 +36,7 @@ describe('CardList', () => {
 
   it('should dispatch loadCardAccounts on init', () => {
     component.ngOnInit();
-    expect(dispatchSpy).toHaveBeenCalledWith(CardsActions.loadCardAccounts());
+    expect(dispatchSpy).toHaveBeenCalledWith(CardsActions.loadCardAccounts({}));
   });
 
   it('should navigate to card details when single card', () => {

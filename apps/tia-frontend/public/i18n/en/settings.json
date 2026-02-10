@@ -91,7 +91,8 @@
         "verify": "Verify",
         "didntReceiveCode": "Didn't receive the code?",
         "phoneNumberUpdated": "Phone number updated successfully",
-        "maxResendReached": "Maximum resend limit reached"
+        "maxResendReached": "Maximum resend limit reached",
+        "startTour": "Start Tour"
   },
   "security": {
     "title": "Security Settings",
@@ -104,7 +105,8 @@
     "confirmNewPassword": "Confirm New Password",
     "confirmNewPasswordPlaceholder": "Confirm new password",
     "updatePassword": "Update Password",
-    "twoFactorAuth": "Two-Factor Authentication"
+    "twoFactorAuth": "Two-Factor Authentication",
+    "passwordChangedSuccessfully": "Password changed successfully"
   },
   "user-management": {
     "title": "User Management",

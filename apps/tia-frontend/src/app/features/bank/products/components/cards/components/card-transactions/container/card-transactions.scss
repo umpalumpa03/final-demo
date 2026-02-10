@@ -1,11 +1,19 @@
-@use "../../../../../../../../shared/styles/mixins" as *;
-@use "../../../../../../../../shared/styles/palette" as *;
+@use '../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../shared/styles/palette' as *;
 
 .card-transactions {
   @include display-flex(column);
   gap: 3.2rem;
   padding: 3.2rem;
-
+  &__title {
+    @include font-inter(500, 1.6rem, 1.6rem);
+    color: var(--color-fg);
+  }
+  &__subtitle {
+    @include font-inter(400, 1.6rem, 2.4rem);
+    margin-top: 1rem;
+    color: $blue-600;
+  }
 
   @media (max-width: 768px) {
     gap: 2rem;
@@ -28,6 +36,4 @@
     color: $red-700;
     border-radius: 0.8rem;
   }
-
-
 }

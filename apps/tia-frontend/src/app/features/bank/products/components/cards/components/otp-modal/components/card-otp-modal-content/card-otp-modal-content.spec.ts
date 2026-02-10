@@ -46,20 +46,35 @@ describe('CardOtpModalContent', () => {
     expect(spy).toHaveBeenCalled();
   });
   it('should not emit verifyClicked when isCalled is false', () => {
-  const spy = vi.fn();
-  component.verifyClicked.subscribe(spy);
+    const spy = vi.fn();
+    component.verifyClicked.subscribe(spy);
 
-  component.handleVerify({ isCalled: false, otp: '1111' });
+    component.handleVerify({ isCalled: false, otp: '1111' });
 
-  expect(spy).not.toHaveBeenCalled();
-});
+    expect(spy).not.toHaveBeenCalled();
+  });
 
-it('should not emit verifyClicked when otp is null', () => {
-  const spy = vi.fn();
-  component.verifyClicked.subscribe(spy);
+  it('should not emit verifyClicked when otp is null', () => {
+    const spy = vi.fn();
+    component.verifyClicked.subscribe(spy);
 
-  component.handleVerify({ isCalled: true, otp: null });
+    component.handleVerify({ isCalled: true, otp: null });
 
-  expect(spy).not.toHaveBeenCalled();
-});
+    expect(spy).not.toHaveBeenCalled();
+  });
+  it('should emit resendClicked', () => {
+    const spy = vi.fn();
+    component.resendClicked.subscribe(spy);
+
+    component.handleResend();
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should have otpConfig initialized', () => {
+    expect(component.otpConfig).toBeDefined();
+    expect(component.otpConfig.iconUrl).toBe(
+      '/images/svg/auth/secured-blue.svg',
+    );
+  });
 });

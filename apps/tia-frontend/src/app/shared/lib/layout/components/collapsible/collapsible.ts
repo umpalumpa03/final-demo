@@ -6,10 +6,11 @@ import {
   signal,
 } from '@angular/core';
 import { CollapsibleConfig } from './models/collapsible.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-collapsible',
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './collapsible.html',
   styleUrl: './collapsible.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

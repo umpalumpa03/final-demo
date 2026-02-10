@@ -8,6 +8,7 @@ import {
   input,
   OnInit,
   output,
+  signal,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TreeContainer } from '@tia/shared/lib/drag-n-drop/components/tree-container/tree-container';
@@ -27,6 +28,7 @@ import {
   ModalType,
   ProviderTypeForStore,
   TemplateGroups,
+  Templates,
   TreeAction,
   TreeItemMoved,
 } from '../models/paybill-templates.model';
@@ -38,6 +40,11 @@ import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
 import { DynamicInputs } from '../../shared/dynamic-inputs/dynamic-inputs';
 import { PaybillDynamicField } from '../../../services/paybill-dynamic-form/models/dynamic-form.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { SelectedItems } from '../shared/ui/selected-items/selected-items';
+import { PaymentDistribution } from '../shared/ui/payment-distribution/payment-distribution';
+import { BillsList } from '../shared/ui/bills-list/bills-list';
+import { TotalAmount } from '../shared/ui/total-amount/total-amount';
+import { AccountSelect } from '../../shared/account-select/account-select';
 
 @Component({
   selector: 'app-paybill-templates',
@@ -51,6 +58,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     Dropdowns,
     ReactiveFormsModule,
     DynamicInputs,
+    SelectedItems,
+    PaymentDistribution,
+    BillsList,
+    TotalAmount,
+    AccountSelect,
   ],
   templateUrl: './paybill-templates.html',
   styleUrl: './paybill-templates.scss',
@@ -84,6 +96,7 @@ export class PaybillTemplates implements OnInit {
     [CrudActionType.RenameTemplate]: () => this.editTemplateModal.emit(),
     [CrudActionType.DeleteGroup]: () => this.deleteGroupModal.emit(),
     [CrudActionType.RenameGroup]: () => this.renameGroupModal.emit(),
+    [CrudActionType.ConfirmPayment]: () => this.payAction.emit(),
   };
 
   // Final Actions for CRUD Modals
@@ -91,6 +104,7 @@ export class PaybillTemplates implements OnInit {
   public editTemplateModal = output<void>();
   public deleteGroupModal = output<void>();
   public renameGroupModal = output<void>();
+  public payAction = output<void>();
   public formSubmit = output<FormSubmitPayload>();
 
   // Modal Opener Action
@@ -226,5 +240,28 @@ export class PaybillTemplates implements OnInit {
   public childProviderSelected = output<ProviderTypeForStore>();
   public onChildProviderChange(providerId: InputFieldValue, index: number) {
     this.childProviderSelected.emit({ providerId, index });
+  }
+
+  // Implement payment logic
+  public selectedItems = input<Templates[]>();
+  public markedCheckbox = output<string[]>();
+  public selectedItem = output<string>();
+  public onTemplateChecked(event: string[]) {
+    this.markedCheckbox.emit(event);
+  }
+
+  public singleItemSelected(id: string) {
+    this.selectedItem.emit(id);
+    this.headerButtonAction.emit(HeaderCtaAction.Pay);
+  }
+
+  public paySelected() {
+    this.headerButtonAction.emit(HeaderCtaAction.Pay);
+  }
+
+  public isDistribution = signal<boolean>(false);
+  public calculatedDistribution = input();
+  paymentTypeChanged(value: boolean): void {
+    this.isDistribution.set(value);
   }
 }
