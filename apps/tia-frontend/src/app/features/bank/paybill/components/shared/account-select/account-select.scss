@@ -1,0 +1,7 @@
+@use '../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../shared/styles/palette' as *;
+.accounts__header {
+  @include font-inter(500, 1.4rem, 1.4rem);
+  color: var(--color-fg);
+  margin-bottom: 1rem;
+}
