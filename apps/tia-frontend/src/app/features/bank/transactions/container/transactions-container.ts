@@ -152,7 +152,10 @@ export class TransactionsContainer implements OnInit {
         return {
           ...formattedRow,
           hasMeta:
-            !!transaction.meta && Object.keys(transaction.meta).length > 0,
+            (!!transaction.meta && Object.keys(transaction.meta).length > 0) ||
+            transaction.transferType === 'ToSomeoneSameBank' ||
+            (transaction.transferType === 'OwnAccountSameCurrency' &&
+              transaction.transactionType !== 'credit'),
         };
       }),
     };
@@ -245,17 +248,17 @@ export class TransactionsContainer implements OnInit {
       TransactionActions.setTransactionToRepeat({ transaction }),
     );
 
-    let route = '/bank/transfers/regular';
+    let route = '/bank/transfers/';
 
     if (transaction.transferType === 'BillPayment') {
       route = '/bank/paybill';
-    } else if (transaction.transferType === 'OwnAccount') {
+    } else if (transaction.transferType === 'OwnAccountSameCurrency') {
       route = '/bank/transfers/internal';
     } else if (
       transaction.transferType === 'ToSomeoneSameBank' ||
       transaction.transferType === 'ToSomeoneOtherBank'
     ) {
-      route = '/bank/transfers/external';
+      route = '/bank/transfers/external/amount';
     }
 
     this.router.navigate([route]);

@@ -4,13 +4,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, catchError, debounceTime, of, switchMap, tap } from 'rxjs';
 import { TransferStore } from '../../../store/transfers.store';
 import { TransfersApiService } from '../../../services/transfersApi.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class TransferAmountService {
-  private readonly location = inject(Location);
   private readonly transferStore = inject(TransferStore);
   private readonly transfersApi = inject(TransfersApiService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
 
   private readonly feeUpdateSubject = new Subject<{
     amount: number;
@@ -56,7 +57,7 @@ export class TransferAmountService {
   public handleAmountGoBack(amount: number, description: string): void {
     this.transferStore.setAmount(amount);
     this.transferStore.setDescription(description);
-    this.location.back();
+    this.router.navigate(['/bank/transfers/external/accounts']);
   }
 
   public handleTransfer(amount: number, description: string): boolean {
