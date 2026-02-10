@@ -203,3 +203,8 @@ export const selectTotalAmount = createSelector(
   selectPaybillState,
   (state) => state.totalAmount,
 );
+
+export const selectSelectedSenderAccountId = createSelector(
+  selectPaybillState,
+  (state) => state.selectedSenderAccountId
+);

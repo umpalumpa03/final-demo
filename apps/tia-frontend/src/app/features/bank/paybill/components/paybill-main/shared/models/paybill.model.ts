@@ -37,6 +37,7 @@ export interface BillDetails {
 export interface PaybillPayload {
   identification: PaybillIdentification;
   amount: number;
+  senderAccountId?: string;
 }
 
 export interface VerifyChallenge {

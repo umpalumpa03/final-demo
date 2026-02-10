@@ -622,54 +622,50 @@ export class PaybillEffect {
     ),
   );
 
-  hydrateFromRepeatTransaction$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(PaybillActions.initRepeatProcess),
-      withLatestFrom(this.store.select(selectTransactionToRepeat)),
-      filter(([_, transaction]) => !!transaction),
-      switchMap(([_, transaction]) => {
-        const tx = transaction as unknown as ITransactions;
-        const { serviceId, identification } = tx.meta;
+hydrateFromRepeatTransaction$ = createEffect(() => {
+  return this.actions$.pipe(
+    ofType(PaybillActions.initRepeatProcess),
+    withLatestFrom(this.store.select(selectTransactionToRepeat)),
+    filter(([_, transaction]) => !!transaction),
+    switchMap(([_, transaction]) => {
+      const tx = transaction as unknown as ITransactions;
+      const { serviceId, identification, senderAccountId } = tx.meta;
 
-        return this.paybillService.getCategories().pipe(
-          switchMap((categories) => {
-            const providerSearches = categories.map((cat) =>
-              this.paybillService.getProviders(cat.id).pipe(
-                map((providers) => ({ categoryId: cat.id, providers })),
-                catchError(() => of({ categoryId: cat.id, providers: [] })),
-              ),
-            );
+      return this.paybillService.getCategories().pipe(
+        switchMap((categories) => {
+          const providerSearches = categories.map((cat) =>
+            this.paybillService.getProviders(cat.id).pipe(
+              map((providers) => ({ categoryId: cat.id, providers })),
+              catchError(() => of({ categoryId: cat.id, providers: [] })),
+            ),
+          );
 
-            return forkJoin(providerSearches).pipe(
-              map((results) => {
-                const match = results.find((r) =>
-                  r.providers.some((p) => p.id === serviceId),
-                );
-                const categoryId = match?.categoryId || 'utilities';
-                const providers = match?.providers || [];
+          return forkJoin(providerSearches).pipe(
+            map((results) => {
+              const match = results.find((r) =>
+                r.providers.some((p) => p.id === serviceId),
+              );
+              const categoryId = match?.categoryId || 'utilities';
+              const providers = match?.providers || [];
 
-                this.router.navigate([
-                  '/bank/paybill/pay',
-                  categoryId,
-                  serviceId,
-                ]);
-                
-                return [
-                  PaybillActions.selectCategory({ categoryId }),
-                  PaybillActions.loadProvidersSuccess({ providers }),
-                  PaybillActions.selectProvider({ providerId: serviceId }),
-                  PaybillActions.loadPaymentDetails({ serviceId }),
-                  PaybillActions.checkBill({ serviceId, identification }),
-                  PaybillActions.setPaymentPayload({
-                    data: { identification, amount: tx.amount },
-                  }),
-                ];
-              }),
-            );
-          }),
-        );
-      }),
-      switchMap((actions) => actions),
-    );
-  });
+              this.router.navigate(['/bank/paybill/pay', categoryId, serviceId]);
+              
+              return [
+                PaybillActions.selectCategory({ categoryId }),
+                PaybillActions.loadProvidersSuccess({ providers }),
+                PaybillActions.selectProvider({ providerId: serviceId }),
+                PaybillActions.loadPaymentDetails({ serviceId }),
+                PaybillActions.checkBill({ serviceId, identification }),
+                PaybillActions.setPaymentPayload({
+                  data: { identification, amount: tx.amount, senderAccountId },
+                }),
+              ];
+            }),
+          );
+        }),
+      );
+    }),
+    switchMap((actions) => actions),
+  );
+});
 }

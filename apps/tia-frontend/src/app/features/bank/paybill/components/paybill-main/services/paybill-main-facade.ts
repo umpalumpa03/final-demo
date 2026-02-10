@@ -18,7 +18,6 @@ export class PaybillMainFacade {
   private readonly router = inject(Router);
   private readonly dynamicFormService = inject(PaybillDynamicForm);
   public readonly searchQuery = signal('');
-  public readonly selectedSenderAccountId = signal<string | null>(null);
 
   public init(): void {
     this.store.dispatch(PaybillActions.clearSelection());
@@ -55,6 +54,10 @@ export class PaybillMainFacade {
 
   public readonly paymentFields = this.store.selectSignal(
     PAYBILL_SELECTORS.selectPaymentFields,
+  );
+
+  public readonly selectedSenderAccountId = this.store.selectSignal(
+    PAYBILL_SELECTORS.selectSelectedSenderAccountId,
   );
 
   // Computed data for smart components
@@ -152,5 +155,16 @@ export class PaybillMainFacade {
 
   public clearRepeatTransaction(): void {
     this.store.dispatch(TransactionActions.clearTransactionToRepeat());
+    this.store.dispatch(PaybillActions.clearSelection());
+  }
+
+  public updateSenderAccount(senderAccountId: string | null): void {
+    if(!senderAccountId) return;
+    const current = this.paymentPayload();
+    if (current) {
+      this.store.dispatch(PaybillActions.setPaymentPayload({
+        data: { ...current, senderAccountId }
+      }));
+    }
   }
 }
