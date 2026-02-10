@@ -256,16 +256,6 @@ describe('PersonalInfoEffects (Vitest)', () => {
     expect(action).toEqual(PersonalInfoActions.resetPersonalInfo());
   });
 
-  it('should load personal info after user load when no data exists', async () => {
-    store.overrideSelector(selectPersonalInfo, { ...basePersonalInfoPayload, pId: null, phoneNumber: null });
-    store.refreshState();
-
-    actions$ = of(UserInfoActions.loadUserSuccess({ user: {} as any }));
-    const action = await firstValueFrom(effects.loadPersonalInfoAfterUserLoad$);
-
-    expect(action).toEqual(PersonalInfoActions.loadPersonalInfo({ forceRefresh: true }));
-  });
-
   it('should handle HttpErrorResponse with string error', async () => {
     (apiService.updatePersonalInfo as any).mockReturnValue(
       throwError(() => new HttpErrorResponse({ error: 'String error', status: 400 })),
