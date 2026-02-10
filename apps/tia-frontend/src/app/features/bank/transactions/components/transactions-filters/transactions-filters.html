@@ -61,7 +61,7 @@
         [icon]="'x-icon.svg'"
         (click)="removeFilter(filter.key)"
       >
-        {{ filter.displayText }}
+        {{ filter.label | translate }} : {{ filter.value }}
       </app-button>
       }
     </div>

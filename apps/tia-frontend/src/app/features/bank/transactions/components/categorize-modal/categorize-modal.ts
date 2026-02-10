@@ -21,7 +21,11 @@ import {
   CATEGORY_SELECT_CONFIG,
   NEW_CATEGORY_INPUT_CONFIG,
 } from '../../config/categorize-modal.config';
-import { TranslateModule, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslatePipe,
+  TranslateService,
+} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-categorize-modal',
@@ -34,7 +38,7 @@ import { TranslateModule, TranslatePipe, TranslateService } from '@ngx-translate
     ReactiveFormsModule,
     SimpleAlerts,
     TranslateModule,
-    TranslatePipe
+    TranslatePipe,  
   ],
   templateUrl: './categorize-modal.html',
   styleUrl: './categorize-modal.scss',

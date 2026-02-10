@@ -18,7 +18,8 @@ export interface FilterConfig {
 
 export interface ActiveFilter {
   key: string;
-  displayText: string;
+  label: string;
+  value: any;
 }
 
 export interface FilterFormValues {

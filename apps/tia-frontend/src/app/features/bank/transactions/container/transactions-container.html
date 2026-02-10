@@ -4,17 +4,17 @@
   ></app-library-title>
   <div class="transaction-filters-wrapper">
     <app-transactions-filters
-      [categoryOptions]="categoryOptions()"
-      [accountOptions]="accountOptions()"
-      [currencyOptions]="currencyOptions()"
-      (filterChange)="onFiltersChange($event)"
+      [categoryOptions]="facade.categoryOptions()"
+      [accountOptions]="vm.accountOptions()"
+      [currencyOptions]="vm.currencyOptions()"
+      (filterChange)="facade.updateFilters($event)"
     ></app-transactions-filters>
   </div>
-  @if (alertMessage()) {
+  @if (actions.alertMessage()) {
   <div class="alert-message">
     <app-simple-alerts
-      [alertType]="alertType()"
-      [alertMessage]="alertMessage()!"
+      [alertType]="actions.alertType()"
+      [alertMessage]="actions.alertMessage()!"
     >
     </app-simple-alerts>
   </div>
@@ -25,22 +25,22 @@
     [padding]="'2.4rem'"
     [height]="'calc(100vh - 45.4rem)'"
     [title]="'transactions.title' | translate"
-    [subtitle]="totalTransactionsString()"
+    [subtitle]="vm.totalTransactionsString()"
   >
     <app-scroll-area
       [height]="'calc(calc(100vh - 45.4rem) - 12rem)'"
       [hideBorder]="true"
-      (scrollBottom)="loadProducts()"
+      (scrollBottom)="facade.loadMore()"
     >
-      @if(isLoading() && items().length === 0){
+      @if(facade.isLoading() && facade.items().length === 0){
       <app-route-loader variant="pulsing" [fillContainer]="true">
       </app-route-loader>
       } @else {
       <app-tables
-        [tableConfig]="tableConfig()"
+        [tableConfig]="vm.tableConfig()"
         (transactionClickedOutput)="onTableAction($event)"
       ></app-tables>
-      } @if(isLoading() && items().length > 0){
+      } @if(facade.isLoading() && facade.items().length > 0){
       <div class="loading-more">
         <app-route-loader variant="pulsing"></app-route-loader>
       </div>
@@ -48,16 +48,16 @@
     </app-scroll-area>
   </app-basic-card>
   <app-ui-modal
-    [isOpen]="isCategorizeModalOpen()"
-    (closed)="closeCategorizeModal()"
+    [isOpen]="actions.isCategorizeModalOpen()"
+    (closed)="actions.closeCategorizeModal()"
   >
-    @if(selectedTransaction(); as trx) {
+    @if(actions.selectedTransaction(); as trx) {
     <app-categorize-modal
       [transaction]="trx"
-      [selectCategoryOptions]="categoryOptionsForModal()"
-      (save)="onCategorizeSave($event)"
-      (cancel)="closeCategorizeModal()"
-      (createCategory)="onCategoryCreate($event)"
+      [selectCategoryOptions]="facade.categoryOptionsForModal()"
+      (save)="actions.saveCategory($event.transactionId, $event.categoryId)"
+      (cancel)="actions.closeCategorizeModal()"
+      (createCategory)="facade.createCategory($event)"
     ></app-categorize-modal>
     }
   </app-ui-modal>

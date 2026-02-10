@@ -30,6 +30,7 @@ export function getActiveFilters(
     .filter(([_, value]) => isValidValue(value))
     .map(([key, value]) => {
       const field = config.find((c) => c.controlName === key);
+
       const label = field?.uiConfig.label || key;
 
       let displayValue = value;
@@ -43,7 +44,8 @@ export function getActiveFilters(
 
       return {
         key,
-        displayText: `${label}: ${displayValue}`,
+        label, 
+        value: displayValue,
       };
     });
 }
