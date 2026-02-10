@@ -48,6 +48,7 @@
 <app-ui-modal
   class="modal"
   [isOpen]="isModalOpen()"
+  [class.modal--hidden]="isPaymentModalHidden()"
   (closed)="modalOpenAction.emit()"
 >
   @if (currentModalConfig(); as config) {
@@ -168,7 +169,7 @@
   }
 </app-ui-modal>
 
-<app-ui-modal [isOpen]="false">
+<app-ui-modal [isOpen]="isOtpModalOpen()">
   <app-otp-verification
     type="otp"
     timerType="otp"

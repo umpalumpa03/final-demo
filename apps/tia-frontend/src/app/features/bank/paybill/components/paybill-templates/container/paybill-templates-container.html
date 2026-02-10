@@ -33,5 +33,7 @@
   [selectedItems]="selectedItems()"
   (markedCheckbox)="onItemChecked($event)"
   (selectedItem)="onSelectedItem($event)"
-  (payAction)="onPayAction($event)"
+  (payAction)="onPayAction()"
+  [isOtpModalOpen]="isOtpModalOpen()"
+  [isPaymentModalHidden]="isPaymentModalHidden()"
 ></app-paybill-templates>

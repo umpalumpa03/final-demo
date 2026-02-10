@@ -8,6 +8,7 @@ import {
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import {
   selectDistributedAmount,
+  selectSelectedSenderAccountId,
   selectSelectedTemplates,
 } from '../../../../../store/paybill.selectors';
 import { Store } from '@ngrx/store';
@@ -15,6 +16,7 @@ import { KeyValuePipe } from '@angular/common';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TemplatesPageActions } from '../../../../../store/paybill.actions';
+import { BillPaymentRequest } from '../../../models/paybill-templates.model';
 
 @Component({
   selector: 'app-bills-list',
@@ -83,14 +85,16 @@ export class BillsList {
       this.store.dispatch(
         TemplatesPageActions.setTotalAmount({ amount: +total! }),
       );
-      // this.store.dispatch(
-      //   TemplatesPageActions.setPaymentsForm({ payments: this.buildPayload }),
-      // );
+      this.store.dispatch(
+        TemplatesPageActions.setPaymentsForm({ payments: this.buildPayload() }),
+      );
     });
   }
 
-  public buildPayload() {
-    const senderAccountId = 'asdasd';
+  public buildPayload(): BillPaymentRequest[] {
+    const senderAccountId = this.store.selectSignal(
+      selectSelectedSenderAccountId,
+    );
     const items = this.selectedItems();
     const formValues = this.payForm.getRawValue() as Record<string, string>;
 
@@ -98,7 +102,7 @@ export class BillsList {
       serviceId: item.serviceId,
       identification: item.identification,
       amount: +formValues[item.id],
-      senderAccountId,
+      senderAccountId: senderAccountId()!,
     }));
   }
 }

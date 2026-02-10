@@ -465,4 +465,16 @@ export const paybillReducer = createReducer(
     ...state,
     paymentsForm: payments,
   })),
+  on(
+    TemplatesPageActions.setSenderId,
+    (state, { selectedSenderAccountId }) => ({
+      ...state,
+      selectedSenderAccountId,
+    }),
+  ),
+  on(TemplatesPageActions.payManyBillsSuccess, (state, { response }) => ({
+    ...state,
+    loading: false,
+    challengeId: response.verify?.challengeId ?? null,
+  })),
 );

@@ -13,6 +13,7 @@ import { Store } from '@ngrx/store';
 import {
   selectCategories,
   selectFilteredProviders,
+  selectFormPayload,
   selectLoading,
   selectPaymentFields,
   selectProviders,
@@ -493,8 +494,17 @@ export class PaybillTemplatesContainer implements OnInit {
       }),
     );
   }
+  public isOtpModalOpen = signal(false);
+  public isPaymentModalHidden = signal(false);
 
-  public onPayAction(event: any) {
-    console.log(event);
+  public onPayAction() {
+    this.isPaymentModalHidden.set(true);
+    this.isOtpModalOpen.set(true);
+
+    // this.store.dispatch(
+    //   TemplatesPageActions.payManyBills({
+    //     payments: this.billsList.buildPayload(),
+    //   }),
+    // );
   }
 }

@@ -11,6 +11,7 @@ import {
   ProceedPaymentResponse,
 } from '../components/paybill-main/shared/models/paybill.model';
 import {
+  BillPaymentRequest,
   CreateTemplateGroupResponse,
   TemplateGroups,
   Templates,
@@ -167,6 +168,10 @@ export const TemplatesPageActions = createActionGroup({
     'Set Distributed Amount': props<{ amount: number }>(),
     'Set total Amount': props<{ amount: number }>(),
     'Clear Payment Info': emptyProps(),
-    'Set Payments Form': props<{ payments: Templates[] }>(),
+    'Set Payments Form': props<{ payments: BillPaymentRequest[] }>(),
+    'Set Sender Id': props<{ selectedSenderAccountId: string }>(),
+    'Pay Many Bills': props<{ payments: BillPaymentRequest[] }>(),
+    'Pay Many Bills Success': props<{ response: ProceedPaymentResponse }>(),
+    'Pay Many Bills Failure': props<{ error: string }>(),
   },
 });

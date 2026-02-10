@@ -268,4 +268,7 @@ export class PaybillTemplates implements OnInit {
   paymentTypeChanged(value: boolean): void {
     this.isDistribution.set(value);
   }
+
+  public isOtpModalOpen = input<boolean>(false);
+  public isPaymentModalHidden = input<boolean>(false);
 }

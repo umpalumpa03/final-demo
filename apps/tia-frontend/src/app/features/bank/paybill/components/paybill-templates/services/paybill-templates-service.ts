@@ -3,12 +3,14 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../../../../environments/environment';
 import { Observable } from 'rxjs';
 import {
+  BillPaymentRequest,
   CreateTemplateGroup,
   CreateTemplateGroupResponse,
   TemplateGroups,
   Templates,
 } from '../models/paybill-templates.model';
 import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
+import { ProceedPaymentResponse } from '../../paybill-main/shared/models/paybill.model';
 
 @Injectable({
   providedIn: 'root',
@@ -85,6 +87,15 @@ export class PaybillTemplatesService {
     return this.http.patch<TemplateGroups>(
       `${this.baseUrl}/template-groups/${groupId}/add-templates`,
       { templateIds: [template] },
+    );
+  }
+
+  public payManyBills(
+    payload: BillPaymentRequest[],
+  ): Observable<ProceedPaymentResponse> {
+    return this.http.patch<ProceedPaymentResponse>(
+      `${this.baseUrl}/pay-many/`,
+      payload,
     );
   }
 
