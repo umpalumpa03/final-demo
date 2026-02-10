@@ -3,7 +3,6 @@ import {
   mapFormIntoTransactionFilter,
   getActiveFilters,
 } from './transactions-filters.utils';
-import { FilterConfig } from '../models/transactions-filters.models';
 
 describe('TransactionsFilters Utils', () => {
   describe('mapFormIntoTransactionFilter', () => {
@@ -30,7 +29,7 @@ describe('TransactionsFilters Utils', () => {
   });
 
   describe('getActiveFilters', () => {
-    const mockConfig: FilterConfig[] = [
+    const mockConfig: any[] = [
       {
         controlName: 'name',
         type: 'input',
@@ -61,22 +60,24 @@ describe('TransactionsFilters Utils', () => {
 
       const result = getActiveFilters(formValues as any, mockConfig);
       expect(result).toHaveLength(2);
-
       expect(result[0]).toEqual({
         key: 'name',
-        displayText: 'Name: John',
+        label: 'Name',
+        value: 'John',
       });
 
       expect(result[1]).toEqual({
         key: 'status',
-        displayText: 'Status: Active',
+        label: 'Status',
+        value: 'Active',
       });
     });
 
     it('should fallback to value if select option is not found', () => {
       const formValues = { status: '99' };
       const result = getActiveFilters(formValues as any, mockConfig);
-      expect(result[0].displayText).toBe('Status: 99');
+      expect(result[0].label).toBe('Status');
+      expect(result[0].value).toBe('99');
     });
   });
 });

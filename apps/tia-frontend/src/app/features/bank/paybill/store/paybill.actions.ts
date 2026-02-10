@@ -50,6 +50,7 @@ export const PaybillActions = createActionGroup({
     'Load Payment Details': props<{ serviceId: string }>(),
     'Load Payment Details Success': props<{ details: PaybillPaymentDetails }>(),
     'Load Payment Details Failure': props<{ error: string }>(),
+    'Init Repeat Process': emptyProps(),
   },
 });
 

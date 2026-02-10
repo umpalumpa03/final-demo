@@ -1,9 +1,23 @@
 @use '../../../../shared/styles/palette' as *;
 @use '../../../../shared/styles/mixins' as *;
-.transaction-filters-wrapper {
+.transaction-wrapper {
   margin-bottom: 2.4rem;
+  position: relative;
+  &__card-relative-wrapper {
+    position: relative;
+    display: block;
+  }
+  &__widget-error {
+    height: 100%;
+    @include flex-center();
+  }
+  &__extract-all {
+    position: absolute;
+    top: 1rem;
+    right: 2.4rem;
+    z-index: 10;
+  }
 }
-
 .alert-message {
   position: fixed;
   z-index: 1121;

@@ -6,24 +6,21 @@
   ></app-simple-alerts>
 </div>
 }
+<div class="categorize-modal">
+  <div class="categorize-modal__heading">
+    <h3>{{modalConfig.title | translate}}</h3>
+    <p>{{modalConfig.subTitle | translate}}</p>
+  </div>
 
-<app-basic-card
-  [title]="modalConfig.title | translate"
-  [subtitle]="modalConfig.subTitle | translate"
-  [maxWidth]="'51.1rem'"
-  [width]="'100%'"
-  [borderColor]="'transparent'"
->
-  @if (transaction()) { @let trx = transaction();
-  <div class="transaction-summary">
-    <div class="transaction-summary__title">{{ trx?.description }}</div>
-    <div class="transaction-summary__meta">
+  @let trx = transaction(); @if (trx) {
+  <div class="categorize-modal__transaction-summary">
+    <div class="categorize-modal__title">{{ trx?.description }}</div>
+    <div class="categorize-modal__meta">
       {{ trx?.currency }} {{ trx?.amount }} • <br />
       {{ trx?.createdAt | date:'dd/MM/yyyy' }}
     </div>
   </div>
   }
-
   <form [formGroup]="form" class="categorize-form">
     <div class="categorize-form__group">
       <lib-select
@@ -77,4 +74,4 @@
       </app-button>
     </div>
   </form>
-</app-basic-card>
+</div>

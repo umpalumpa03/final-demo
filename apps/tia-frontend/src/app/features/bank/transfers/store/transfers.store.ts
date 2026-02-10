@@ -81,6 +81,22 @@ export const TransferStore = signalStore(
     setError(error: string) {
       patchState(store, { error: error });
     },
+    setRecipientInfo(
+      recipientInfo: RecipientResponse,
+      recipientInput: string,
+      recipientType: RecipientType,
+    ) {
+      patchState(store, {
+        recipientInfo,
+        recipientInput,
+        recipientType,
+        isLoading: false,
+        error: null,
+      });
+    },
+    setRecipientInput(input: string) {
+      patchState(store, { recipientInput: input });
+    },
     lookupRecipient: rxMethod<{ value: string; type: RecipientType }>(
       pipe(
         tap(({ value, type }) =>

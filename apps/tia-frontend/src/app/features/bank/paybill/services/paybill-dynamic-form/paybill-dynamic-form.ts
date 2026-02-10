@@ -84,15 +84,36 @@ export class PaybillDynamicForm {
     const isVerified = !!details?.valid;
 
     this.syncFormControls(form, fields);
+
     if (amountValidator) {
       this.updateAmountValidators(form, isVerified);
     }
 
-    if (isVerified && details.amountDue !== undefined) {
-      const values = amountValidator
-        ? { amount: details.amountDue }
-        : initialFields;
-      form.patchValue(values, { emitEvent: false });
+    const patchData = Object.entries(initialFields).reduce<
+      Record<string, string | number>
+    >((acc, [key, value]) => {
+      const incomingValue = value;
+      const currentControlValue = form.get(key)?.value;
+
+      const hasIncomingData =
+        incomingValue !== '' &&
+        incomingValue !== null &&
+        incomingValue !== undefined;
+      const isCurrentEmpty =
+        currentControlValue === '' ||
+        currentControlValue === null ||
+        currentControlValue === undefined;
+
+      if (hasIncomingData || isCurrentEmpty) {
+        acc[key] = incomingValue;
+      }
+      return acc;
+    }, {});
+
+    form.patchValue(patchData, { emitEvent: false });
+
+    if (isVerified && (details?.amountDue ?? 0) > 0) {
+      form.patchValue({ amount: details?.amountDue }, { emitEvent: false });
     }
   }
 

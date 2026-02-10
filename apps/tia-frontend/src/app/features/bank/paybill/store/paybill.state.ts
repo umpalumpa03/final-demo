@@ -42,6 +42,7 @@ export interface PaybillState {
   selectedItems: Templates[];
   distributedAmount: number;
   totalAmount: number;
+  selectedSenderAccountId?: string | null;
 }
 
 export const initialPaybillState: PaybillState = {
@@ -64,4 +65,5 @@ export const initialPaybillState: PaybillState = {
   selectedItems: [],
   distributedAmount: 0,
   totalAmount: 0,
+  selectedSenderAccountId: null,
 };

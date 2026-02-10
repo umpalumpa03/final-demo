@@ -7,6 +7,7 @@
   [iconBgPath]="facade.activeCategoryUI()!.iconBgPath"
   (cancelPayment)="onBackToDetails()"
   [currentAccounts]="facade.storeAccounts()"
-  [(selectedAccountId)]="facade.selectedSenderAccountId"
+  [selectedAccountId]="facade.selectedSenderAccountId()!"
+  (selectedAccountIdChange)="facade.updateSenderAccount($event)"
   [isLoading]="facade.isLoading()"
 />

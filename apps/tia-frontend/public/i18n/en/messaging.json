@@ -68,7 +68,8 @@
   "storeSuccess": {
     "emailSent": "Email sent successfully",
     "draftSent": "Draft sent successfully",
-    "replySent": "Reply sent successfully"
+    "replySent": "Reply sent successfully",
+    "mailDeleted": "Mail deleted successfully"
   },
   "emptyStates": {
     "noMessages": "No Messages"
