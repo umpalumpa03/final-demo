@@ -72,6 +72,11 @@ export class Onboarding {
     this.currentPage.update((v) => v - 1);
   }
 
+  public goTo(index: number): void {
+    console.log('Going to page: 1111111111', index);
+    this.currentPage.set(index);
+  }
+
   public finishOnboarding(): void {
     this.isDismissed.set(true);
     this.store.dispatch(
