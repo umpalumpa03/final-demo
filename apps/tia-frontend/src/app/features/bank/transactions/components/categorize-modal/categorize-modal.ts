@@ -1,13 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   inject,
   input,
   output,
   signal,
 } from '@angular/core';
-import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -21,12 +19,15 @@ import {
   CATEGORY_SELECT_CONFIG,
   NEW_CATEGORY_INPUT_CONFIG,
 } from '../../config/categorize-modal.config';
-import { TranslateModule, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslatePipe,
+  TranslateService,
+} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-categorize-modal',
   imports: [
-    BasicCard,
     Dropdowns,
     TextInput,
     ButtonComponent,
@@ -34,7 +35,7 @@ import { TranslateModule, TranslatePipe, TranslateService } from '@ngx-translate
     ReactiveFormsModule,
     SimpleAlerts,
     TranslateModule,
-    TranslatePipe
+    TranslatePipe,
   ],
   templateUrl: './categorize-modal.html',
   styleUrl: './categorize-modal.scss',
@@ -48,8 +49,8 @@ export class CategorizeModal {
   public readonly selectConfig = CATEGORY_SELECT_CONFIG;
   public readonly inputConfig = NEW_CATEGORY_INPUT_CONFIG;
 
-  public title = signal(CATEGORIZE_MODAL_CONFIG.title);
-  public subTitle = signal(CATEGORIZE_MODAL_CONFIG.subTitle);
+  public title = CATEGORIZE_MODAL_CONFIG.title;
+  public subTitle = CATEGORIZE_MODAL_CONFIG.subTitle;
 
   public transaction = input<ITransactions | null>(null);
   public selectCategoryOptions = input.required<SelectOption[]>();
