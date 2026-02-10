@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, output, signal } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
@@ -20,6 +20,14 @@ export class MailHeader {
   public readonly isSent = input<boolean>(false);
   public readonly isDraft = input<boolean>(false);
   public readonly isDeleteModalOpen = signal(false);
+  public readonly isDeleting = input<boolean>(false);
+  private readonly isDeletePending = signal(false);
+  private readonly deletingEffect = effect(() => {
+    if (this.isDeletePending() && !this.isDeleting()) {
+      this.isDeletePending.set(false);
+      this.isDeleteModalOpen.set(false);
+    }
+  });
 
   public readonly showBulkActions = input<boolean>(false);
   public readonly bulkDelete = output<void>();
@@ -34,7 +42,7 @@ export class MailHeader {
   }
 
   public onConfirmDelete(): void {
-    this.isDeleteModalOpen.set(false);
+    this.isDeletePending.set(true);
     this.bulkDelete.emit();
   }
 
