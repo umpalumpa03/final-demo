@@ -38,6 +38,10 @@ describe('PaybillOtpVerificationContainer', () => {
         amount: 100,
         identification: { accountNumber: '123' },
       }),
+      verifiedDetails: signal({
+        customerName: 'Giorgi Burduladze',
+        amount: 100,
+      }),
       isLoading: signal(false),
       challengeId: signal<string | null>('chal-123'),
 

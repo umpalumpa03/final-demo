@@ -37,14 +37,11 @@
 
   <div class="banner-carousel__footer">
     <div class="banner-carousel__indicators">
-      @for (slide of slides(); track $index) {
-      <button
-        type="button"
-        class="banner-carousel__dot"
-        [class.banner-carousel__dot__active]="$index === currentIndex()"
-        (click)="goTo($index)"
-      ></button>
-      }
+      <app-pill-paging
+        [total]="slides().length"
+        [currentIndex]="currentIndex()"
+        (goTo)="goTo($event)"
+      />
     </div>
 
     <div class="banner-carousel__nav">
