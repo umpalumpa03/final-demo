@@ -460,4 +460,9 @@ export const paybillReducer = createReducer(
     distributedAmount: 0,
     selectedItems: [],
   })),
+
+  on(TemplatesPageActions.setPaymentsForm, (state, { payments }) => ({
+    ...state,
+    paymentsForm: payments,
+  })),
 );

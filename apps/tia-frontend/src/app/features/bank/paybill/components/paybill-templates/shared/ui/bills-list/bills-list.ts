@@ -4,7 +4,6 @@ import {
   effect,
   inject,
   input,
-  OnInit,
 } from '@angular/core';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import {
@@ -16,8 +15,6 @@ import { KeyValuePipe } from '@angular/common';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TemplatesPageActions } from '../../../../../store/paybill.actions';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-bills-list',
@@ -34,14 +31,6 @@ export class BillsList {
 
   public payForm = this.fb.group({});
   public isDistribution = input.required<boolean>();
-
-  private formValues = toSignal(
-    this.payForm.valueChanges.pipe(
-      startWith(this.payForm.getRawValue()),
-      map(() => this.payForm.getRawValue()),
-    ),
-    { initialValue: {} },
-  );
 
   constructor() {
     effect(() => {
@@ -68,15 +57,13 @@ export class BillsList {
 
     effect(() => {
       const distributed = this.distributedAmount();
-      const items = this.selectedItems();
-
       if (distributed !== 0) {
-        items.forEach((item) => {
+        this.selectedItems().forEach((item) => {
           const control = this.payForm.get(item.id);
           control?.setValue(distributed.toFixed(2), { emitEvent: false });
         });
       } else {
-        items.forEach((item) => {
+        this.selectedItems().forEach((item) => {
           const control = this.payForm.get(item.id);
           control?.setValue(item.amountDue.toFixed(2), { emitEvent: false });
         });
@@ -84,7 +71,7 @@ export class BillsList {
     });
 
     effect(() => {
-      const values = this.formValues();
+      const values = this.payForm.getRawValue();
 
       if (!values || Object.keys(values).length === 0) return;
 
@@ -96,6 +83,22 @@ export class BillsList {
       this.store.dispatch(
         TemplatesPageActions.setTotalAmount({ amount: +total! }),
       );
+      // this.store.dispatch(
+      //   TemplatesPageActions.setPaymentsForm({ payments: this.buildPayload }),
+      // );
     });
+  }
+
+  public buildPayload() {
+    const senderAccountId = 'asdasd';
+    const items = this.selectedItems();
+    const formValues = this.payForm.getRawValue() as Record<string, string>;
+
+    return items.map((item) => ({
+      serviceId: item.serviceId,
+      identification: item.identification,
+      amount: +formValues[item.id],
+      senderAccountId,
+    }));
   }
 }

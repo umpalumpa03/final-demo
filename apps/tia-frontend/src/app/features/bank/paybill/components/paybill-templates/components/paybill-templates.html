@@ -167,3 +167,20 @@
   </main>
   }
 </app-ui-modal>
+
+<app-ui-modal [isOpen]="false">
+  <app-otp-verification
+    type="otp"
+    timerType="otp"
+    [timeLimit]="1"
+    [customRemainingAttempts]="3"
+    [isBtnRowDirection]="true"
+    redirectUrl="/bank/paybill/templates"
+    redirectText="Paybills Template"
+  ></app-otp-verification>
+</app-ui-modal>
+
+<!-- (isVerifyCalled)="" -->
+<!-- (isResendCalled)="resendOtp($event)" -->
+
+<app-success-modal [isOpen]="false"></app-success-modal>

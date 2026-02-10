@@ -58,11 +58,13 @@ export class PaymentDistribution implements OnInit {
             ? +value / (this.selectedItemsLength() ?? 1)
             : 0;
 
-          this.store.dispatch(
-            TemplatesPageActions.setTotalAmount({
-              amount: +value!,
-            }),
-          );
+          if (this.distributionMode() === 'equal') {
+            this.store.dispatch(
+              TemplatesPageActions.setTotalAmount({
+                amount: +value!,
+              }),
+            );
+          }
 
           this.store.dispatch(
             TemplatesPageActions.setDistributedAmount({

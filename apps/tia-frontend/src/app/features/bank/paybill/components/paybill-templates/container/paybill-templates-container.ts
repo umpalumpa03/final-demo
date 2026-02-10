@@ -194,9 +194,7 @@ export class PaybillTemplatesContainer implements OnInit {
         }),
       );
     },
-    'confirm-payment': (values) => {
-      // ShOULD ADD
-    },
+    'confirm-payment': (values) => {},
   };
 
   public readonly searchControl = new FormControl('');
@@ -494,5 +492,9 @@ export class PaybillTemplatesContainer implements OnInit {
         selectedItems: selectedTemplates,
       }),
     );
+  }
+
+  public onPayAction(event: any) {
+    console.log(event);
   }
 }

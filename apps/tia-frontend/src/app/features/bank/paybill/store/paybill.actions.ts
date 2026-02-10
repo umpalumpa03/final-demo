@@ -167,5 +167,6 @@ export const TemplatesPageActions = createActionGroup({
     'Set Distributed Amount': props<{ amount: number }>(),
     'Set total Amount': props<{ amount: number }>(),
     'Clear Payment Info': emptyProps(),
+    'Set Payments Form': props<{ payments: Templates[] }>(),
   },
 });
