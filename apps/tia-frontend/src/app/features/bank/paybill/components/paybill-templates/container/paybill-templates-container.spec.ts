@@ -106,18 +106,6 @@ describe('PaybillTemplatesContainer', () => {
     });
   });
 
-  it('should dispatch selectCategory and reset currentLevel when a category is provided', () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
-    component.currentLevel.set(5);
-
-    component.onCategorySelect('UTIL');
-
-    expect(dispatchSpy).toHaveBeenCalledWith(
-      PaybillActions.selectCategory({ categoryId: 'UTIL' }),
-    );
-    expect(component.currentLevel()).toBe(0);
-  });
-
   it('should return early and do nothing if category is null (Guard Branch)', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
 
@@ -278,5 +266,90 @@ describe('PaybillTemplatesContainer', () => {
 
     expect(result.length).toBe(1);
     expect(result[0].title).toBe('Electric Bill');
+  });
+
+  it('should handle modal submission for RenameTemplate', () => {
+    component.selectedId.set('t-100');
+
+    component.handleFormSubmit({
+      type: 'rename-template',
+      values: { name: 'New Nickname' },
+    });
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      TemplatesPageActions.renameTemplate({
+        templateId: 't-100',
+        nickName: 'New Nickname',
+      }),
+    );
+  });
+  it('should compute categoryOptions correctly from templateCategories', () => {
+    (component as any).templateCategories.set([
+      { id: 'cat-1', name: 'Utilities' },
+      { id: 'cat-2', name: 'Government' },
+    ]);
+
+    expect(component.categoryOptions()).toEqual([
+      { label: 'Utilities', value: 'cat-1' },
+      { label: 'Government', value: 'cat-2' },
+    ]);
+  });
+
+  it('should dispatch checkBillForTemplate on create-template form submission', () => {
+    (component as any).serviceId = signal('service-777');
+    const formValues = {
+      name: 'Electric Bill',
+      category: 'cat-1',
+      accountNumber: '12345',
+    };
+
+    component.handleFormSubmit({
+      type: 'create-template',
+      values: formValues,
+    });
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      TemplatesPageActions.checkBillForTemplate({
+        serviceId: 'service-777',
+        identification: { accountNumber: '12345' },
+        nickname: 'Electric Bill',
+      }),
+    );
+  });
+
+  it('should handle category selection and reset form state', () => {
+    const payBillService = (component as any).payBill;
+    const resetSpy = vi.spyOn(payBillService, 'resetFormToInitialState');
+
+    component.onCategorySelect('UTILITY_ID');
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      PaybillActions.selectCategory({ categoryId: 'UTILITY_ID' }),
+    );
+    expect(component.currentLevel()).toBe(0);
+    expect(resetSpy).toHaveBeenCalled();
+  });
+
+  it('should close modal automatically on success actions', () => {
+    const mockSuccessProps = {
+      template: { id: 't-100' } as any,
+      message: 'Success',
+    };
+
+    component.isModalOpen.set(true);
+    const toggleSpy = vi.spyOn(component, 'handleModalToggle');
+
+    // Trigger the success listener via the mocked actions stream
+    (actions$ as ReplaySubject<any>).next(
+      TemplatesPageActions.renameTemplateSuccess(mockSuccessProps),
+    );
+
+    expect(toggleSpy).toHaveBeenCalled();
+  });
+
+  it('should handle HeaderCtaAction.Pay by setting modal type to ConfirmPayment', () => {
+    component.handleHeaderAction(HeaderCtaAction.Pay);
+    expect(component.modalType()).toBe(ModalType.ConfirmPayment);
+    expect(component.isModalOpen()).toBe(true);
   });
 });

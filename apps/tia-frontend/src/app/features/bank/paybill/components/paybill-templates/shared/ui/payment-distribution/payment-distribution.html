@@ -1,3 +1,4 @@
+@if((selectedItemsLength() ?? 0) > 1) {
 <div class="payment__distribution">
   <h3>Payment Distribution</h3>
   <div class="payment__distribution__buttons">
@@ -17,9 +18,18 @@
     </app-button>
   </div>
 </div>
-
-@if(distributionMode() === 'equal') {
-<app-total-amount
-  [selectedItemsLength]="selectedItemsLength()"
-></app-total-amount>
+} @if(distributionMode() === 'equal') {
+<div class="equal-distribution__container">
+  <h3>Total Amount to Distribute</h3>
+  <div class="equal-distribution__container__input">
+    <label for="">$</label>
+    <lib-text-input
+      [config]="{prefixIcon: '', placeholder: 'Amount to distribute',}"
+      [formControl]="amountControl"
+    />
+  </div>
+  @if (distributedAmount()) {
+  <span>{{ distributedAmount() | currency }} per bill</span>
+  }
+</div>
 }

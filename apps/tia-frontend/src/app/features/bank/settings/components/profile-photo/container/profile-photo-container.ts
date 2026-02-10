@@ -74,6 +74,12 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   public readonly isPersonalNumberUnchanged = computed(() => {
     const currentPId = this.pId()?.trim() || '';
     const editedPId = this.editedPId()?.trim() || '';
+
+  
+    if (currentPId) {
+      return true;
+    }
+
     return currentPId === editedPId;
   });
 
@@ -226,12 +232,28 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
       if (loadingFinished && error && challengeId) {
         this.alertService.error(error, { variant: 'dismissible', title: 'Oops!' });
       }
+
+      if (loadingFinished && error && !challengeId) {
+        this.alertService.error(error, { variant: 'dismissible', title: 'Oops!' });
+        const phoneToRestore = this.originalPhoneBeforeUpdate || this.phoneNumber() || '';
+        this.editedPhoneNumber.set(phoneToRestore);
+        this.store.dispatch(PersonalInfoActions.resetPhoneUpdate());
+        this.originalPhoneBeforeUpdate = null;
+      }
     });
   }
 
   public ngOnInit(): void {
     this.store.dispatch(ProfilePhotoActions.loadDefaultAvatarsRequest({}));
-    this.store.dispatch(PersonalInfoActions.loadPersonalInfo({}));
+    
+    
+    const currentPId = this.pId();
+    const currentPhone = this.phoneNumber();
+    const hasCachedData = !!(currentPId || (currentPhone && currentPhone.trim() !== ''));
+    
+    if (!hasCachedData) {
+      this.store.dispatch(PersonalInfoActions.loadPersonalInfo({}));
+    }
   }
 
   public ngOnDestroy(): void {
@@ -429,6 +451,10 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   }
 
   public onPersonalNumberChange(value: string | number | boolean | FileList | null): void {
+    const currentPId = this.pId()?.trim() || '';
+    if (currentPId) {
+      return;
+    }
     this.editedPId.set(value ? String(value) : '');
   }
 
@@ -449,7 +475,9 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
     const currentPId = this.pId()?.trim() || '';
 
     const phoneChanged = editedPhone !== currentPhone;
-    const pIdChanged = editedPId !== currentPId;
+
+    const canEditPId = !currentPId;
+    const pIdChanged = canEditPId && editedPId !== currentPId;
 
   
     if (phoneChanged) {

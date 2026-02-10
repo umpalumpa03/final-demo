@@ -1,0 +1,33 @@
+<div class="bill">
+  <app-scroll-area
+    [height]="selectedItems().length > 1 ? '20rem' : 'auto'"
+    [hideBorder]="true"
+  >
+    <form [formGroup]="payForm">
+      @for (item of selectedItems(); track item.id) {
+      <div class="bill__item">
+        <div class="bill__item__wrapper">
+          <img src="images/svg/paybill/favorite.svg" alt="favorite svg" />
+          <div class="bill__item__wrapper__info">
+            <h3>{{ item.nickname }}</h3>
+            <p>{{ item.serviceId }}</p>
+            @for (identification of (item.identification | keyvalue) ; track
+            $index) {
+            <p>{{ identification.value }}</p>
+            }
+          </div>
+        </div>
+        <div class="bill__item__input">
+          <label>$</label>
+          <lib-text-input
+            [formControlName]="item.id"
+            type="number"
+            [config]="{prefixIcon: '', placeholder: '0.00'}"
+            [state]="payForm.get(item.id)?.disabled ? 'disabled' : 'default'"
+          />
+        </div>
+      </div>
+      }
+    </form>
+  </app-scroll-area>
+</div>

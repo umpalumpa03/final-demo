@@ -20,6 +20,7 @@ import {
   selectSelectedCategoryId,
   selectSelectedTemplates,
   selectServiceId,
+  selectTemplates,
   selectTemplatesAsTreeItems,
   selectTemplatesGroupWithConfigs,
   selectVerifiedDetails,
@@ -286,6 +287,8 @@ export class PaybillTemplatesContainer implements OnInit {
       this.modalType.set(null);
       this.selectedId.set('');
       this.selectedItemName.set('');
+
+      this.store.dispatch(TemplatesPageActions.clearPaymentInfo());
     }
     // To clear store after closing modal
     this.store.dispatch(PaybillActions.clearSelection());
@@ -457,11 +460,38 @@ export class PaybillTemplatesContainer implements OnInit {
 
   // Implement Payment Logic
   public selectedItems = this.store.selectSignal(selectSelectedTemplates);
+  public originalTemplates = this.store.selectSignal(selectTemplates);
 
-  public onItemChecked(selectedItems: any) {
+  public onItemChecked(selectedIds: string[]) {
+    const selectedTemplates = [];
+
+    for (const id of selectedIds) {
+      const template = this.originalTemplates().find((t) => t.id === id);
+
+      if (template) {
+        selectedTemplates.push(template);
+      }
+    }
+
     this.store.dispatch(
       TemplatesPageActions.addCheckedItems({
-        selectedItems,
+        selectedItems: selectedTemplates,
+      }),
+    );
+  }
+  public onSelectedItem(selectedItemId: string) {
+    this.store.dispatch(TemplatesPageActions.clearPaymentInfo());
+    const selectedTemplates = [];
+    const template = this.originalTemplates().find(
+      (t) => t.id === selectedItemId,
+    );
+
+    if (template) {
+      selectedTemplates.push(template);
+    }
+    this.store.dispatch(
+      TemplatesPageActions.addCheckedItems({
+        selectedItems: selectedTemplates,
       }),
     );
   }
