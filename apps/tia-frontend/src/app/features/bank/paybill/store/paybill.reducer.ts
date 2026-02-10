@@ -72,7 +72,6 @@ export const paybillReducer = createReducer(
     paymentDetails: null,
     currentLevel: 0,
     error: null,
-    loading: false,
     selectedSenderAccountId: null
   })),
 
