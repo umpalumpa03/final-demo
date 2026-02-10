@@ -94,20 +94,15 @@ describe('Personal Info integration', () => {
 
     req.flush({ message: 'Success' });
 
- 
-    await firstValueFrom(
+  
+    const pId = await firstValueFrom(
       store
-        .select(PersonalInfoSelectors.selectPersonalInfoLoading)
+        .select(PersonalInfoSelectors.selectPId)
         .pipe(
-          filter((isLoading) => !isLoading),
+          filter((id) => id === '98765432109'),
           take(1),
           timeout(10000),
         ),
-    );
-
-   
-    const pId = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPId).pipe(take(1), timeout(1000)),
     );
 
     expect(pId).toBe('98765432109');
@@ -166,20 +161,15 @@ describe('Personal Info integration', () => {
 
     req.flush({ message: 'Success' });
 
- 
-    await firstValueFrom(
+  
+    const phoneAfterVerify = await firstValueFrom(
       store
-        .select(PersonalInfoSelectors.selectPhoneUpdateLoading)
+        .select(PersonalInfoSelectors.selectPhoneNumber)
         .pipe(
-          filter((loading) => !loading),
+          filter((phone) => phone === '555987654'),
           take(1),
           timeout(10000),
         ),
-    );
-
-  
-    const phoneAfterVerify = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPhoneNumber).pipe(take(1), timeout(1000)),
     );
     expect(phoneAfterVerify).toBe('555987654');
 
@@ -188,20 +178,15 @@ describe('Personal Info integration', () => {
     const personalInfoReq = httpMock.expectOne(`${environment.apiUrl}/settings/personal-info`);
     personalInfoReq.flush({ pId: '12345678901', phone: '555987654' });
 
-   
-    await firstValueFrom(
+  
+    const phoneNumber = await firstValueFrom(
       store
-        .select(PersonalInfoSelectors.selectPersonalInfoLoading)
+        .select(PersonalInfoSelectors.selectPhoneNumber)
         .pipe(
-          filter((isLoading) => !isLoading),
+          filter((phone) => phone === '555987654'),
           take(1),
           timeout(10000),
         ),
-    );
-
-
-    const phoneNumber = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPhoneNumber).pipe(take(1), timeout(1000)),
     );
 
     expect(phoneNumber).toBe('555987654');
