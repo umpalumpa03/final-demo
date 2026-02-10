@@ -35,11 +35,13 @@
       </div>
     } @else {
       <div class="internal-accounts__accounts-grid">
-        @for (account of transferableAccounts(); track account.id) {
+        @for (account of accounts(); track account.id) {
           <app-transfers-account-card
             [cardData]="account"
             [mode]="'sender'"
             [isSelected]="selectedFromAccount()?.id === account.id"
+            [isDisabled]="isAccountDisabled(account)"
+            [disabledReason]="getDisabledReason(account)"
             (cardClicked)="onAccountSelect($event)"
           />
         }
@@ -69,3 +71,6 @@
     />
   </div>
 }
+
+
+

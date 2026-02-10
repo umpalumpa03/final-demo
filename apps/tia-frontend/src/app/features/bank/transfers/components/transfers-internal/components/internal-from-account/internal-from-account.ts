@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } 
 import { selectAccounts, selectError, selectIsLoading } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { TransferStore } from 'apps/tia-frontend/src/app/features/bank/transfers/store/transfers.store';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import {
@@ -17,11 +16,13 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
 import {
   TransferInternalService
 } from 'apps/tia-frontend/src/app/features/bank/transfers/services/transfer.internal.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
+import {
+  DisabledReason
+} from 'apps/tia-frontend/src/app/features/bank/transfers/components/transfers-internal/models/transfers.internal.model';
 
 @Component({
   selector: 'app-internal-from-account',
@@ -40,7 +41,6 @@ import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/break
 export class InternalFromAccount implements OnInit {
   private readonly transferStore = inject(TransferStore);
   private readonly store = inject(Store);
-  private readonly location = inject(Location);
   private readonly breakpointService = inject(BreakpointService);
   private readonly router = inject(Router);
   private readonly transferInternalService = inject(TransferInternalService);
@@ -51,18 +51,17 @@ export class InternalFromAccount implements OnInit {
     this.breakpointService.isMobile()
   );
 
-  public readonly accounts = toSignal(
+  private readonly rawAccounts = toSignal(
     this.store.select(selectAccounts),
     { initialValue: [] }
   );
 
-  public readonly transferableAccounts = computed(() => {
-    const allAccounts = this.accounts();
-
-    return allAccounts.filter(account =>
-      account.permission && (account.permission & 1) === 1,
+  public readonly accounts = computed(() => {
+    const allAccounts = this.rawAccounts() || [];
+    return [...allAccounts].sort(
+      (a, b) => (b.isFavorite ? 1 : 0) - (a.isFavorite ? 1 : 0)
     );
-  })
+  });
 
   public readonly isLoading = toSignal(
     this.store.select(selectIsLoading),
@@ -84,9 +83,26 @@ export class InternalFromAccount implements OnInit {
     this.store.dispatch(AccountsActions.loadAccounts({}));
   }
 
+  public isAccountDisabled(account: Account): boolean {
+    return !account.permission || (account.permission & 1) !== 1;
+  }
+
+  public getDisabledReason(account: Account): DisabledReason {
+    if (this.isAccountDisabled(account)) {
+      return 'PERMISSION_DENIED';
+    }
+    return null;
+  }
+
   public onAccountSelect(account: AccountData) {
+    const accountData = account as Account;
+
+    if (this.isAccountDisabled(accountData)) {
+      return;
+    }
+
     this.transferInternalService.handleFromAccountSelect(
-      account as Account,
+      accountData,
       this.selectedFromAccount()
     );
   }
