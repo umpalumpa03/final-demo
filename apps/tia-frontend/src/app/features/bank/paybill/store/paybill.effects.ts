@@ -7,7 +7,6 @@ import {
   delay,
   EMPTY,
   filter,
-  forkJoin,
   map,
   mergeMap,
   of,
@@ -17,6 +16,7 @@ import {
 import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillActions, TemplatesPageActions } from './paybill.actions';
 import {
+  selectCategories,
   selectCategoriesLoaded,
   selectNotifications,
   selectPaymentPayload,
@@ -611,57 +611,39 @@ export class PaybillEffect {
   hydrateFromRepeatTransaction$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PaybillActions.initRepeatProcess),
-      withLatestFrom(this.store.select(selectTransactionToRepeat)),
+      withLatestFrom(
+        this.store.select(selectTransactionToRepeat),
+        this.store.select(selectCategories),
+      ),
       filter(([_, transaction]) => !!transaction),
 
-      switchMap(([_, transaction]) => {
+      switchMap(([_, transaction, categories]) => {
         const tx = transaction as unknown as IPaybillTransactions;
         const { serviceId, identification, senderAccountId } = tx.meta;
-        this.store.dispatch(PaybillActions.loadPaymentDetails({ serviceId }));
 
-        return this.paybillService.getCategories().pipe(
-          switchMap((categories) => {
-            const providerSearches = categories.map((cat) =>
-              this.paybillService.getProviders(cat.id).pipe(
-                map((providers) => ({ categoryId: cat.id, providers })),
-                catchError(() => of({ categoryId: cat.id, providers: [] })),
-              ),
-            );
-
-            return forkJoin(providerSearches).pipe(
-              map((results) => {
-                const match = results.find((r) =>
-                  r.providers.some((p) => p.id === serviceId),
-                );
-                const categoryId = match?.categoryId || 'utilities';
-                const providers = match?.providers || [];
-
-                this.router.navigate([
-                  '/bank/paybill/pay',
-                  categoryId,
-                  serviceId,
-                ]);
-
-                return [
-                  PaybillActions.selectCategory({ categoryId }),
-                  PaybillActions.loadProvidersSuccess({ providers }),
-                  PaybillActions.selectProvider({ providerId: serviceId }),
-                  PaybillActions.loadPaymentDetails({ serviceId }),
-                  PaybillActions.checkBill({ serviceId, identification }),
-                  PaybillActions.setPaymentPayload({
-                    data: {
-                      identification,
-                      amount: tx.amount,
-                      senderAccountId,
-                    },
-                  }),
-                ];
-              }),
-            );
-          }),
+        const match = categories.find((cat) =>
+          cat.providers?.some((p) => p.id === serviceId),
         );
+        const categoryId = match?.id || 'utilities';
+
+        this.router.navigate(['/bank/paybill/pay', categoryId, serviceId]);
+
+        return [
+          PaybillActions.loadPaymentDetails({ serviceId }),
+
+          PaybillActions.selectCategory({ categoryId }),
+          PaybillActions.selectProvider({ providerId: serviceId }),
+
+          PaybillActions.checkBill({ serviceId, identification }),
+          PaybillActions.setPaymentPayload({
+            data: {
+              identification,
+              amount: tx.amount,
+              senderAccountId,
+            },
+          }),
+        ];
       }),
-      switchMap((actions) => (Array.isArray(actions) ? actions : [actions])),
     );
   });
 }
