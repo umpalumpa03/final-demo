@@ -35,11 +35,12 @@ describe('InboxDetail', () => {
       emailDetail: signal<Mail | null>(mockMail),
       mailReplies: signal([]),
       getEmailById: vi.fn(),
-      getMailReplies: vi.fn(), 
+      getMailReplies: vi.fn(),
       deleteMail: vi.fn(),
       togleFavorite: vi.fn(),
       isLoading: signal(false),
       isFavoriteLoading: signal(false),
+      isDeleting: signal(false),
     };
 
     mockRouter = {
@@ -106,7 +107,7 @@ describe('InboxDetail', () => {
     expect(component.isDeleteModalOpen()).toBe(true);
   });
 
-  it('should confirm delete and navigate back', () => {
+  it('should confirm delete and navigate back after delete completes', () => {
     fixture.detectChanges();
 
     const emitSpy = vi.spyOn(component.deleteMail, 'emit');
@@ -116,6 +117,16 @@ describe('InboxDetail', () => {
 
     expect(emitSpy).toHaveBeenCalledWith(1);
     expect(mockMessagingStore.deleteMail).toHaveBeenCalledWith(1);
+
+    mockMessagingStore.isDeleting.set(true);
+    fixture.detectChanges();
+
+    expect(component.isDeleteModalOpen()).toBe(true);
+    expect(mockRouter.navigate).not.toHaveBeenCalled();
+
+    mockMessagingStore.isDeleting.set(false);
+    fixture.detectChanges();
+
     expect(component.isDeleteModalOpen()).toBe(false);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['..'], {
       relativeTo: TestBed.inject(ActivatedRoute),
