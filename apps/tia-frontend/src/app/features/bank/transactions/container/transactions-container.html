@@ -50,15 +50,7 @@
         <app-route-loader variant="pulsing" [fillContainer]="true">
         </app-route-loader>
         } @else if (facade.transactionError()) {
-        <div
-          class="widget-error"
-          style="
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          "
-        >
+        <div class="transaction-wrapper__widget-error">
           <app-error-states
             variant="failed"
             header="Failed to load"
@@ -71,15 +63,7 @@
         </div>
 
         } @else if (vm.isEmpty()) {
-        <div
-          class="widget-error"
-          style="
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          "
-        >
+        <div class="transaction-wrapper__widget-error">
           <app-error-states
             variant="not-found"
             header="No transactions"
@@ -107,7 +91,8 @@
     [isOpen]="actions.isCategorizeModalOpen()"
     (closed)="actions.closeCategorizeModal()"
   >
-    @if(actions.selectedTransaction(); as trx) {
+    @let trx = actions.selectedTransaction(); 
+    @if(trx ) {
     <app-categorize-modal
       [transaction]="trx"
       [selectCategoryOptions]="facade.categoryOptionsForModal()"

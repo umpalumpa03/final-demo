@@ -7,6 +7,10 @@
     position: relative;
     display: block;
   }
+  &__widget-error {
+    height: 100%;
+    @include flex-center();
+  }
   &__extract-all {
     position: absolute;
     top: 1rem;

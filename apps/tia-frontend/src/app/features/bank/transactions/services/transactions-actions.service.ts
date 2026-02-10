@@ -9,14 +9,14 @@ import { ITransactionExportRow } from '../models/transactions-excel.models';
 
 @Injectable()
 export class TransactionsActionsService {
-  private router = inject(Router);
-  private translate = inject(TranslateService);
-  private facade = inject(TransactionsFacadeService);
+  private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
+  private readonly facade = inject(TransactionsFacadeService);
 
-  public isCategorizeModalOpen = signal<boolean>(false);
-  public selectedTransaction = signal<ITransactions | null>(null);
-  public alertMessage = signal<string | null>(null);
-  public alertType = signal<SimpleAlertType>('warning');
+  public readonly isCategorizeModalOpen = signal<boolean>(false);
+  public readonly selectedTransaction = signal<ITransactions | null>(null);
+  public readonly alertMessage = signal<string | null>(null);
+  public readonly alertType = signal<SimpleAlertType>('warning');
 
   public showValidationAlert(type: SimpleAlertType, messageKey: string): void {
     this.alertType.set(type);
@@ -72,7 +72,6 @@ export class TransactionsActionsService {
 
   public exportSingleTransaction(transaction: ITransactions): void {
     const exportData = [this.mapToExportRow(transaction)];
-
     this.generateAndDownloadExcel(exportData, `Transaction_${transaction.id}`);
   }
 
@@ -94,6 +93,7 @@ export class TransactionsActionsService {
       `Transactions_Table_${new Date().toISOString().slice(0, 10)}`,
     );
   }
+
   private mapToExportRow(item: ITransactions): ITransactionExportRow {
     let categoryName = 'Uncategorized';
 

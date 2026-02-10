@@ -49,8 +49,8 @@ export class CategorizeModal {
   public readonly selectConfig = CATEGORY_SELECT_CONFIG;
   public readonly inputConfig = NEW_CATEGORY_INPUT_CONFIG;
 
-  public title = signal(CATEGORIZE_MODAL_CONFIG.title);
-  public subTitle = signal(CATEGORIZE_MODAL_CONFIG.subTitle);
+  public title = CATEGORIZE_MODAL_CONFIG.title;
+  public subTitle = CATEGORIZE_MODAL_CONFIG.subTitle;
 
   public transaction = input<ITransactions | null>(null);
   public selectCategoryOptions = input.required<SelectOption[]>();

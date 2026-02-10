@@ -21,24 +21,31 @@ import {
 
 @Injectable()
 export class TransactionsFacadeService {
-  private store = inject(Store);
-  private accountsService = inject(AccountsApiService);
+  private readonly store = inject(Store);
+  private readonly accountsService = inject(AccountsApiService);
 
-  public items = this.store.selectSignal(selectItems);
-  public isLoading = this.store.selectSignal(selectIsLoading);
-  public filters = this.store.selectSignal(selectFilters);
-  public totalTransactions = this.store.selectSignal(selectTotalTransactions);
-  public transactionError = this.store.selectSignal(selectError);
+  public readonly items = this.store.selectSignal(selectItems);
+  public readonly isLoading = this.store.selectSignal(selectIsLoading);
+  public readonly filters = this.store.selectSignal(selectFilters);
+  public readonly totalTransactions = this.store.selectSignal(
+    selectTotalTransactions,
+  );
+  public readonly transactionError = this.store.selectSignal(selectError);
 
-  public categoryOptions = this.store.selectSignal(selectCategoryOptions);
-  public categoryOptionsForModal = this.store.selectSignal(
+  public readonly categoryOptions = this.store.selectSignal(
+    selectCategoryOptions,
+  );
+  public readonly categoryOptionsForModal = this.store.selectSignal(
     selectCategoryOptionsForModal,
   );
-  public accounts = this.store.selectSignal(selectAccounts);
+  public readonly accounts = this.store.selectSignal(selectAccounts);
 
-  public currencyList = toSignal(this.accountsService.getCurrencies(), {
-    initialValue: [] as string[],
-  });
+  public readonly currencyList = toSignal(
+    this.accountsService.getCurrencies(),
+    {
+      initialValue: [] as string[],
+    },
+  );
 
   public initializePage(): void {
     this.store.dispatch(TransactionActions.enter());

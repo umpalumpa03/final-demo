@@ -21,6 +21,7 @@ describe('TransactionsContainer', () => {
     loadMore: vi.fn(),
     createCategory: vi.fn(),
     categoryOptionsForModal: vi.fn(() => []),
+    retryLoad: vi.fn(),
   };
 
   const mockVm = {
@@ -39,11 +40,10 @@ describe('TransactionsContainer', () => {
     selectedTransaction: vi.fn(() => null),
     closeCategorizeModal: vi.fn(),
     saveCategory: vi.fn(),
+    exportSingleTransaction: vi.fn(),
   };
 
   beforeEach(async () => {
-    mockRouter.navigate.mockClear();
-
     await TestBed.configureTestingModule({
       imports: [TransactionsContainer, TranslateModule.forRoot()],
       schemas: [NO_ERRORS_SCHEMA],
@@ -80,6 +80,11 @@ describe('TransactionsContainer', () => {
     expect(mockFacade.updateFilters).toHaveBeenCalledWith(filters);
   });
 
+  it('should delegate retry load to facade', () => {
+    component.retryLoad();
+    expect(mockFacade.retryLoad).toHaveBeenCalled();
+  });
+
   describe('onTableAction', () => {
     const mockTrx = { id: '123', amount: 100 };
 
@@ -97,12 +102,18 @@ describe('TransactionsContainer', () => {
       expect(mockActions.handleRepeatAction).toHaveBeenCalledWith(mockTrx);
     });
 
+    it('should handle extract action if action is extract', () => {
+      component.onTableAction({ action: 'extract', rowId: '123' } as any);
+      expect(mockActions.exportSingleTransaction).toHaveBeenCalledWith(mockTrx);
+    });
+
     it('should do nothing if transaction is not found', () => {
       mockFacade.items.mockReturnValue([]);
       component.onTableAction({ action: 'categorize', rowId: '999' } as any);
 
       expect(mockActions.openCategorizeModal).not.toHaveBeenCalled();
       expect(mockActions.handleRepeatAction).not.toHaveBeenCalled();
+      expect(mockActions.exportSingleTransaction).not.toHaveBeenCalled();
     });
   });
 });

@@ -27,13 +27,14 @@ export function getActiveFilters(
   if (!formValues) return [];
 
   return Object.entries(formValues)
-    .filter(([_, value]) => isValidValue(value))
+    .filter((entry): entry is [string, string | number] =>
+      isValidValue(entry[1]),
+    )
     .map(([key, value]) => {
       const field = config.find((c) => c.controlName === key);
-
       const label = field?.uiConfig.label || key;
 
-      let displayValue = value;
+      let displayValue: string | number = value;
 
       if (field?.type === 'select' && field.options) {
         const selectedOption = field.options.find((opt) => opt.value === value);
@@ -44,11 +45,14 @@ export function getActiveFilters(
 
       return {
         key,
-        label, 
+        label,
         value: displayValue,
       };
     });
 }
-function isValidValue(value: unknown): boolean {
+
+function isValidValue(
+  value: string | number | null | undefined,
+): value is string | number {
   return value !== null && value !== '' && value !== undefined;
 }

@@ -8,20 +8,20 @@ import { TableConfig } from '@tia/shared/lib/tables/models/table.model';
 
 @Injectable()
 export class TransactionsViewModelService {
-  private facade = inject(TransactionsFacadeService);
-  private translate = inject(TranslateService);
+  private readonly facade = inject(TransactionsFacadeService);
+  private readonly translate = inject(TranslateService);
 
-  private currentLang = toSignal(this.translate.onLangChange);
+  private readonly currentLang = toSignal(this.translate.onLangChange);
 
-  public isEmpty = computed(() => this.facade.items().length === 0);
+  public readonly isEmpty = computed(() => this.facade.items().length === 0);
 
-  public currencyOptions = computed(() => {
+  public readonly currencyOptions = computed(() => {
     return this.facade
       .currencyList()
       .map((curr) => ({ label: curr, value: curr }));
   });
 
-  public accountOptions = computed(() => {
+  public readonly accountOptions = computed(() => {
     const accountsList = this.facade.accounts();
     if (!accountsList) return [];
     return accountsList.map((acc) => ({
@@ -30,7 +30,7 @@ export class TransactionsViewModelService {
     }));
   });
 
-  public totalTransactionsString = computed(() => {
+  public readonly totalTransactionsString = computed(() => {
     this.currentLang();
     const total = this.facade.totalTransactions().toString();
     const itemsFetched = this.facade.items().length.toString();
@@ -41,7 +41,7 @@ export class TransactionsViewModelService {
     });
   });
 
-  public tableConfig = computed<TableConfig>(() => {
+  public readonly tableConfig = computed<TableConfig>(() => {
     this.currentLang();
 
     return {

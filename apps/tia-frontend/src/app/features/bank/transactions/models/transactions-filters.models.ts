@@ -19,7 +19,7 @@ export interface FilterConfig {
 export interface ActiveFilter {
   key: string;
   label: string;
-  value: any;
+  value: string | number ;
 }
 
 export interface FilterFormValues {

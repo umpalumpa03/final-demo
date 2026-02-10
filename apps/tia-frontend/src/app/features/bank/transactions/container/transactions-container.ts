@@ -20,7 +20,7 @@ import { TransactionsFacadeService } from '../services/transactions-facade.servi
 import { TransactionsViewModelService } from '../services/transactions-view-model.service';
 import { TransactionsActionsService } from '../services/transactions-actions.service';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { ErrorStates } from "@tia/shared/lib/feedback/error-states/error-states";
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 
 @Component({
   selector: 'app-transactions-container',
@@ -37,8 +37,8 @@ import { ErrorStates } from "@tia/shared/lib/feedback/error-states/error-states"
     TranslatePipe,
     TranslateModule,
     ButtonComponent,
-    ErrorStates
-],
+    ErrorStates,
+  ],
   providers: [
     TransactionsFacadeService,
     TransactionsViewModelService,
@@ -49,9 +49,9 @@ import { ErrorStates } from "@tia/shared/lib/feedback/error-states/error-states"
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransactionsContainer implements OnInit {
-  protected facade = inject(TransactionsFacadeService);
-  protected vm = inject(TransactionsViewModelService);
-  protected actions = inject(TransactionsActionsService);
+  public readonly facade = inject(TransactionsFacadeService);
+  public readonly vm = inject(TransactionsViewModelService);
+  public readonly actions = inject(TransactionsActionsService);
 
   public ngOnInit(): void {
     this.facade.initializePage();
