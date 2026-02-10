@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  booleanAttribute,
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -30,6 +31,8 @@ export class Otp extends BaseInput implements AfterViewInit {
   public readonly isOtpLoading = input<boolean>(false);
 
   public readonly completed = output<string>();
+
+  public readonly autoFocus = input<boolean>(true);
 
   private readonly defaultId: string = generateUniqueId('lib-otp');
 
@@ -190,11 +193,12 @@ export class Otp extends BaseInput implements AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
-    queueMicrotask(() => {
-      this.otpBoxes()[0]?.nativeElement.focus();
-    });
+    if (this.autoFocus()) {
+      queueMicrotask(() => {
+        this.otpBoxes()[0]?.nativeElement.focus();
+      });
+    }
   }
-
   public focusFirst(): void {
     const firstInput = this.otpBoxes()[0]?.nativeElement;
     if (firstInput) {
