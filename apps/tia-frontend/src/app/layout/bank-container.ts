@@ -41,6 +41,6 @@ export class BankContainer implements OnInit {
 
   ngOnInit(): void {
     //temporary
-    this.store.dispatch(PersonalInfoActions.loadPersonalInfo({}));
+    // this.store.dispatch(PersonalInfoActions.loadPersonalInfo({}));
   }
 }
