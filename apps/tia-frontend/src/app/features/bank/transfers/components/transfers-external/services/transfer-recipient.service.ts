@@ -46,13 +46,11 @@ export class TransferRecipientService {
     const hasExistingData = this.transferStore.recipientInfo();
     const currentType = this.validationService.identifyRecipientType(value);
 
-    // check if phone matches user's own number
     if (currentType === 'phone' && this.isOwnPhoneNumber(value)) {
       this.transferStore.setError('transfers.external.recipient.ownPhoneError');
       return;
     }
 
-    // skip api call if value and type match existing data
     if (
       value === storedValue &&
       currentType === storedType &&
@@ -63,17 +61,14 @@ export class TransferRecipientService {
     }
 
     if (currentType) {
-      // external bank iban, no api call, save locally and navigate
       if (currentType === 'iban-different-bank') {
         this.transferStore.setExternalRecipient(value, currentType);
         this.router.navigate(['/bank/transfers/external/accounts']);
         return;
       }
 
-      // phone or same bank iban, call api to lookup recipient
       this.transferStore.lookupRecipient({ value, type: currentType });
 
-      // wait for new api response and navigate
       this.recipientInfo$
         .pipe(
           skip(1),
@@ -119,7 +114,6 @@ export class TransferRecipientService {
     selectedSenderAccount: Account | null,
   ): boolean {
     const senderCurrency = selectedSenderAccount?.currency;
-    // disable if sender is selected and currencies don't match
     return senderCurrency ? account.currency !== senderCurrency : false;
   }
 

@@ -49,22 +49,29 @@ export class TransfersContainer implements OnInit, OnDestroy {
       .subscribe((transaction) => {
         if (transaction) {
           this.isLoadingMeta.set(true);
-          this.repeatService.initRepeatTransfer(transaction);
-
-          this.router.events
+          const navSubscription = this.router.events
             .pipe(
               filter((event) => event instanceof NavigationEnd),
               take(1),
               takeUntilDestroyed(this.destroyRef),
             )
             .subscribe(() => {
-              this.isLoadingMeta.set(false);
-              this.store.dispatch(
-                TransactionActions.clearTransactionToRepeat(),
-              );
+              this.stopLoading();
             });
+          this.repeatService.initRepeatTransfer(transaction);
+          setTimeout(() => {
+            if (this.isLoadingMeta()) {
+              this.stopLoading();
+              navSubscription.unsubscribe();
+            }
+          }, 1000);
         }
       });
+  }
+
+  private stopLoading(): void {
+    this.isLoadingMeta.set(false);
+    this.store.dispatch(TransactionActions.clearTransactionToRepeat());
   }
 
   public ngOnDestroy(): void {

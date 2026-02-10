@@ -163,7 +163,7 @@
   },
   "repeat": {
     "invalidIban": "Invalid recipient IBAN.",
-    "recipientNotFound": "Recipient no longer exists.",
+    "recipientNotFound": "Recipient's account no longer exists.",
     "recipientAccountNotFound": "Recipient account no longer exists.",
     "senderNotFound": "Your account no longer exists. Please select a different account.",
     "senderNoPermission": "Your account does not have permission for this transfer."

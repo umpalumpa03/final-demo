@@ -164,7 +164,7 @@
   },
   "repeat": {
     "invalidIban": "არასწორი მიმღების IBAN.",
-    "recipientNotFound": "მიმღები აღარ არსებობს.",
+    "recipientNotFound": "მიმღების ანგარიში აღარ არსებობს.",
     "recipientAccountNotFound": "მიმღების ანგარიში აღარ არსებობს.",
     "senderNotFound": "თქვენი ანგარიში აღარ არსებობს. გთხოვთ აირჩიოთ სხვა ანგარიში.",
     "senderNoPermission": "თქვენს ანგარიშს არ აქვს ამ გადარიცხვის უფლება."

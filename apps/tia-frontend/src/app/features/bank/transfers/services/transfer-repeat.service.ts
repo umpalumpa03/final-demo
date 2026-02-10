@@ -9,7 +9,6 @@ import { TransferValidationService } from '../components/transfers-external/serv
 import { TransferUtilsService } from './transfer-utils.service';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { ITransactions } from 'apps/tia-frontend/src/app/shared/models/transactions/transactions.models';
-// import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { RecipientAccount } from '../models/transfers.state.model';
 
 @Injectable()

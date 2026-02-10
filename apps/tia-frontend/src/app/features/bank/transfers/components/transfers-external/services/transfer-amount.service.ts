@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class TransferAmountService {
-  // private readonly location = inject(Location);
   private readonly transferStore = inject(TransferStore);
   private readonly transfersApi = inject(TransfersApiService);
   private readonly destroyRef = inject(DestroyRef);
