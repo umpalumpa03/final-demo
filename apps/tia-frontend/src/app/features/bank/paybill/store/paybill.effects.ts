@@ -7,6 +7,7 @@ import {
   delay,
   EMPTY,
   filter,
+  forkJoin,
   map,
   mergeMap,
   of,
@@ -17,6 +18,7 @@ import {
 import { PaybillService } from '../services/paybill/paybill-service';
 import { PaybillActions, TemplatesPageActions } from './paybill.actions';
 import {
+  selectCategories,
   selectCategoriesLoaded,
   selectNotifications,
   selectPaymentPayload,
@@ -29,6 +31,20 @@ import { ProceedPaymentResponse } from '../components/paybill-main/shared/models
 import { PaybillTemplatesService } from '../components/paybill-templates/services/paybill-templates-service';
 import { Router } from '@angular/router';
 import { PaybillErrorPayload } from './paybill.state';
+import { selectTransactionToRepeat } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
+
+export interface TransactionMeta {
+  serviceId: string;
+  senderAccountId: string;
+  identification: Record<string, string>;
+}
+
+export interface ITransactions {
+  id: string;
+  amount: number;
+  description: string;
+  meta: TransactionMeta;
+}
 
 @Injectable()
 export class PaybillEffect {
@@ -251,17 +267,6 @@ export class PaybillEffect {
       }),
     );
   });
-
-  // clearSelectionNavigation$ = createEffect(
-  //   () =>
-  //     this.actions$.pipe(
-  //       ofType(PaybillActions.clearSelection),
-  //       tap(() => {
-  //         this.router.navigate(['/bank/paybill/pay']);
-  //       }),
-  //     ),
-  //   { dispatch: false },
-  // );
 
   loadTemplateGroups$ = createEffect(() => {
     return this.actions$.pipe(
@@ -616,4 +621,55 @@ export class PaybillEffect {
       ),
     ),
   );
+
+  hydrateFromRepeatTransaction$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(PaybillActions.initRepeatProcess),
+      withLatestFrom(this.store.select(selectTransactionToRepeat)),
+      filter(([_, transaction]) => !!transaction),
+      switchMap(([_, transaction]) => {
+        const tx = transaction as unknown as ITransactions;
+        const { serviceId, identification } = tx.meta;
+
+        return this.paybillService.getCategories().pipe(
+          switchMap((categories) => {
+            const providerSearches = categories.map((cat) =>
+              this.paybillService.getProviders(cat.id).pipe(
+                map((providers) => ({ categoryId: cat.id, providers })),
+                catchError(() => of({ categoryId: cat.id, providers: [] })),
+              ),
+            );
+
+            return forkJoin(providerSearches).pipe(
+              map((results) => {
+                const match = results.find((r) =>
+                  r.providers.some((p) => p.id === serviceId),
+                );
+                const categoryId = match?.categoryId || 'utilities';
+                const providers = match?.providers || [];
+
+                this.router.navigate([
+                  '/bank/paybill/pay',
+                  categoryId,
+                  serviceId,
+                ]);
+
+                return [
+                  PaybillActions.selectCategory({ categoryId }),
+                  PaybillActions.loadProvidersSuccess({ providers }),
+                  PaybillActions.selectProvider({ providerId: serviceId }),
+                  PaybillActions.loadPaymentDetails({ serviceId }),
+                  PaybillActions.checkBill({ serviceId, identification }),
+                  PaybillActions.setPaymentPayload({
+                    data: { identification, amount: tx.amount },
+                  }),
+                ];
+              }),
+            );
+          }),
+        );
+      }),
+      switchMap((actions) => actions),
+    );
+  });
 }

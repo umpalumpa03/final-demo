@@ -22,6 +22,7 @@ export class PaybillMainFacade {
 
   public init(): void {
     this.store.dispatch(PaybillActions.clearSelection());
+    this.store.dispatch(PaybillActions.initRepeatProcess());
     this.searchQuery.set('');
   }
 

@@ -458,4 +458,16 @@ export const paybillReducer = createReducer(
     distributedAmount: 0,
     selectedItems: [],
   })),
+  on(PaybillActions.selectProvider, (state, { providerId }) => {
+    const provider = state.providers.find(
+      (p) => p.id.toLowerCase() === providerId.toLowerCase(),
+    );
+
+    return {
+      ...state,
+      selectedProviderId: providerId,
+      selectedProvider: provider || null,
+      verifiedDetails: null,
+    };
+  }),
 );
