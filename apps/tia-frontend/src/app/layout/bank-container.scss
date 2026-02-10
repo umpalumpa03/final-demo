@@ -35,6 +35,7 @@
 
 .inactivity-overlay {
   @include flex-center(column);
+  text-align: center;
 
   &__circle {
     width: 6.4rem;
