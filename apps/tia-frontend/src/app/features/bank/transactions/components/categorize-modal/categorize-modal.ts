@@ -1,13 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   inject,
   input,
   output,
   signal,
 } from '@angular/core';
-import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -30,7 +28,6 @@ import {
 @Component({
   selector: 'app-categorize-modal',
   imports: [
-    BasicCard,
     Dropdowns,
     TextInput,
     ButtonComponent,
@@ -38,7 +35,7 @@ import {
     ReactiveFormsModule,
     SimpleAlerts,
     TranslateModule,
-    TranslatePipe,  
+    TranslatePipe,
   ],
   templateUrl: './categorize-modal.html',
   styleUrl: './categorize-modal.scss',

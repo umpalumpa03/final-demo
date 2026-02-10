@@ -3,12 +3,12 @@
   position: relative;
   &__heading {
     position: absolute;
-    top: -6.5rem;
-    right: 2.5rem;
+    top: -10rem;
+    right: -2rem;
   }
 
   &__active-filters {
-    @include display-flex();
+    @include display-flex(row, wrap);
     gap: 1.2rem;
   }
   &__form {
@@ -17,8 +17,11 @@
     &__input-wrapper {
       width: calc((100% - (1.6rem * 3)) / 4);
       @media (max-width: 800px) {
-        width: calc((100% - (1.6rem * 1)) / 2);
+        width: calc((100% - (0.4rem * 1)) / 2);
       }
+    }
+    @media (max-width: 800px) {
+      gap: 0.4rem;
     }
   }
 }

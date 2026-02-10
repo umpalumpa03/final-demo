@@ -54,10 +54,12 @@ export class TransactionsViewModelService {
           ...formattedRow,
           hasMeta:
             (!!transaction.meta && Object.keys(transaction.meta).length > 0) ||
-            transaction.transferType === 'ToSomeoneSameBank' ||
-            transaction.transferType === 'ToSomeoneOtherBank' ||
-            transaction.transferType === 'ToSomeoneSameBank' ||
-            (transaction.transferType === 'OwnAccountSameCurrency' &&
+            ([
+              'ToSomeoneSameBank',
+              'ToSomeoneOtherBank',
+              'OwnAccountSameCurrency',
+              'OwnAccountDifferentCurrency',
+            ].includes(transaction.transferType) &&
               transaction.transactionType !== 'credit'),
         };
       }),
