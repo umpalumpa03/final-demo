@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { selectAccounts, selectError, selectIsLoading } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { TransferStore } from 'apps/tia-frontend/src/app/features/bank/transfers/store/transfers.store';
 import { Store } from '@ngrx/store';
@@ -46,6 +46,7 @@ export class InternalFromAccount implements OnInit {
   private readonly transferInternalService = inject(TransferInternalService);
 
   public readonly showSuccess = signal(false);
+  public readonly showError = signal(false);
 
   public readonly isFullWidth = computed(() =>
     this.breakpointService.isMobile()
@@ -73,11 +74,35 @@ export class InternalFromAccount implements OnInit {
     { initialValue: null }
   );
 
+  public readonly transferError = computed(() => this.transferStore.error());
+
+  public readonly hasRepeatError = computed(() => {
+    const error = this.transferError();
+    return (
+      error === 'transfers.repeat.senderNotFound' ||
+      error === 'transfers.repeat.senderNoPermission' ||
+      error === 'transfers.repeat.recipientAccountNotFound'
+    );
+  });
+
   public readonly selectedFromAccount = computed(() => this.transferStore.senderAccount());
 
   public readonly isContinueDisabled = computed(() => {
     return !this.selectedFromAccount();
   });
+
+  constructor() {
+    effect(() => {
+      const error = this.transferError();
+      if (error && this.hasRepeatError()) {
+        this.showError.set(true);
+        setTimeout(() => {
+          this.showError.set(false);
+          this.transferStore.setError('');
+        }, 5000);
+      }
+    });
+  }
 
   ngOnInit() {
     this.store.dispatch(AccountsActions.loadAccounts({}));

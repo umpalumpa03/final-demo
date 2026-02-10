@@ -72,5 +72,14 @@
   </div>
 }
 
+@if (showError()) {
+  <div class="internal-accounts__success-toast">
+    <app-alert-types-with-icons
+      [alertType]="'error'"
+      [alertMessage]="transferError() | translate"
+    />
+  </div>
+}
+
 
 

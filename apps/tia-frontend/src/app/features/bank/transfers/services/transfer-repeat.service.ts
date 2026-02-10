@@ -32,7 +32,47 @@ export class TransferRepeatService {
   }
 
   private handleInternalTransfer(transaction: ITransactions): void {
-    this.router.navigate(['/bank/transfers/internal/amount']);
+    this.store
+      .select(selectAccounts)
+      .pipe(
+        take(1),
+        map((accounts) => ({
+          senderAccount: accounts.find(
+            (acc) => acc.id === transaction.debitAccountNumber,
+          ),
+          receiverAccount: accounts.find(
+            (acc) => acc.id === transaction.creditAccountNumber,
+          ),
+        })),
+        tap(({ senderAccount, receiverAccount }) => {
+          if (!senderAccount) {
+            this.transferStore.setError('transfers.repeat.senderNotFound');
+            this.router.navigate(['/bank/transfers/internal/from-account']);
+            return;
+          }
+
+          if (!senderAccount.permission || (senderAccount.permission & 1) !== 1) {
+            this.transferStore.setError('transfers.repeat.senderNoPermission');
+            this.router.navigate(['/bank/transfers/internal/from-account']);
+            return;
+          }
+
+          if (!receiverAccount) {
+            this.transferStore.setError('transfers.repeat.recipientAccountNotFound');
+            this.router.navigate(['/bank/transfers/internal/from-account']);
+            return;
+          }
+
+          this.transferStore.setSenderAccount(senderAccount);
+          this.transferStore.setReceiverOwnAccount(receiverAccount);
+          this.transferStore.setAmount(transaction.amount);
+          this.transferStore.setDescription(transaction.description || '');
+
+          this.router.navigate(['/bank/transfers/internal/amount']);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 
   private handleExternalTransfer(transaction: ITransactions): void {

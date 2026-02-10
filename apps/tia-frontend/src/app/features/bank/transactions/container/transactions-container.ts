@@ -154,7 +154,8 @@ export class TransactionsContainer implements OnInit {
           hasMeta:
             (!!transaction.meta && Object.keys(transaction.meta).length > 0) ||
             transaction.transferType === 'ToSomeoneSameBank' ||
-            (transaction.transferType === 'OwnAccountSameCurrency' &&
+            transaction.transferType === 'ToSomeoneOtherBank' ||
+            (transaction.transferType === 'ToOwnAccount' &&
               transaction.transactionType !== 'credit'),
         };
       }),
@@ -252,7 +253,7 @@ export class TransactionsContainer implements OnInit {
 
     if (transaction.transferType === 'BillPayment') {
       route = '/bank/paybill';
-    } else if (transaction.transferType === 'OwnAccountSameCurrency') {
+    } else if (transaction.transferType === 'ToOwnAccount') {
       route = '/bank/transfers/internal';
     } else if (
       transaction.transferType === 'ToSomeoneSameBank' ||
