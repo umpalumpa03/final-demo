@@ -20,6 +20,7 @@
     [accountForm]="accountForm()"
     [accountTypes]="accountTypeValues"
     [currencies]="(currencyValues | async) ?? []"
+    [isCreating]="isCreatingAccountSignal()"
     (closeModal)="handleCloseModal()"
     (submitForm)="handleCreateAccount(accountForm().value)"
   />
