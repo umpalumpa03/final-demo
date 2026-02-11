@@ -3,7 +3,7 @@ import { FinancesView } from './finances-view';
 import { By } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('FinancesView', () => {
   let component: FinancesView;
@@ -12,12 +12,13 @@ describe('FinancesView', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
-      schemas: [NO_ERRORS_SCHEMA],
+      schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA], 
     })
     .overrideComponent(FinancesView, {
       set: {
         imports: [ReactiveFormsModule],
-        providers: []
+        providers: [],
+        schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA]
       }
     })
     .compileComponents();
