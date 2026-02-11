@@ -2,6 +2,7 @@ export interface PaybillTransactionMeta {
   serviceId: string;
   senderAccountId: string;
   identification: Record<string, string>;
+  categoryId:string;
 }
 
 export interface IPaybillTransactions {
