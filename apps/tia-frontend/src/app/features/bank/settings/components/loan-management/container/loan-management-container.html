@@ -20,9 +20,11 @@
   maxWidth="100%"
   height="fit-content"
   padding="2.4rem"
-  [title]="config().title"
-  [subtitle]="config().subtitle"
 >
+  <div class="loan-header">
+    <h3 class="loan-header__title">{{ config().title }}</h3>
+    <p class="loan-header__subtitle">{{ config().subtitle }}</p>
+  </div>
   <div class="loan-management-container">
     <app-pending-approvals-table
       [approvals]="store.pendingApprovals()"

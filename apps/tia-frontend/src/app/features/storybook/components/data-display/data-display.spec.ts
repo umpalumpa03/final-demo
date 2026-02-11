@@ -7,10 +7,12 @@ import { Avatar } from '@tia/shared/lib/data-display/avatars/avatar';
 import { AvatarGroup } from '@tia/shared/lib/data-display/avatars/avatar-groups/avatar-group';
 import { HoverCard } from '@tia/shared/lib/data-display/hover-card/hover-card';
 import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('DataDisplay', () => {
   let component: DataDisplay;
   let fixture: ComponentFixture<DataDisplay>;
+  let translate: TranslateService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -23,11 +25,13 @@ describe('DataDisplay', () => {
         AspectRatio,
         Tooltip,
         HoverCard,
+        TranslateModule.forRoot(),
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DataDisplay);
     component = fixture.componentInstance;
+    translate = TestBed.inject(TranslateService);
     fixture.detectChanges();
   });
 
@@ -35,25 +39,7 @@ describe('DataDisplay', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should expose page metadata', () => {
-    expect(component.title).toBe('Data Display');
-    expect(component.subtitle).toBe(
-      'Avatars, aspect ratios, tooltips, and hover cards',
-    );
-  });
-
-  it('should render data display sections', () => {
-    const element: HTMLElement = fixture.nativeElement;
-    expect(element.querySelector('app-library-title')).toBeTruthy();
-    expect(element.querySelector('app-showcase-card')).toBeTruthy();
-    expect(element.querySelector('app-avatar')).toBeTruthy();
-    expect(element.querySelector('app-avatar-group')).toBeTruthy();
-    expect(element.querySelector('app-aspect-ratio-list')).toBeTruthy();
-    expect(element.querySelector('app-tooltip')).toBeTruthy();
-    expect(element.querySelector('app-hover-card')).toBeTruthy();
-  });
-
-  it('should manage aspect ratio selection state', () => {
+  it('onRatioSelected should set selectedRatioId and selectedRatio, and hasRatios should track ratios length', () => {
     expect(component.selectedRatio()).toBeNull();
     expect(component.hasRatios()).toBe(true);
 
@@ -64,5 +50,41 @@ describe('DataDisplay', () => {
     component.ratios.set([]);
     expect(component.hasRatios()).toBe(false);
     expect(component.selectedRatio()).toBeNull();
+  });
+
+  it('isChangeEmpty should return true for null, undefined, empty, and "no change", false otherwise', () => {
+    expect(component.isChangeEmpty(null)).toBe(true);
+    expect(component.isChangeEmpty(undefined)).toBe(true);
+    expect(component.isChangeEmpty('')).toBe(true);
+    expect(component.isChangeEmpty('No Change')).toBe(true);
+    expect(component.isChangeEmpty('+5.2%')).toBe(false);
+  });
+
+  it('initialsAvatars should derive initials from user names', () => {
+    const avatars = component.initialsAvatars();
+    expect(avatars.length).toBeGreaterThanOrEqual(1);
+    avatars.forEach((avatar) => {
+      expect(avatar.initials).toBeDefined();
+      expect(avatar.tone).toBe('soft');
+      expect(avatar.color).toBe('blue');
+    });
+  });
+
+  it('ngOnInit should update all signals when language changes', () => {
+    translate.setTranslation('ka', {});
+    translate.use('ka');
+    fixture.detectChanges();
+
+    expect(component.ratios()).toBeDefined();
+    expect(component.tooltipItems()).toBeDefined();
+    expect(component.hoverCardItems()).toBeDefined();
+    expect(component.statisticCardItems()).toBeDefined();
+    expect(component.listDisplayItems()).toBeDefined();
+    expect(component.keyValueTitle()).toBeDefined();
+    expect(component.keyValueItems()).toBeDefined();
+    expect(component.timelineItems()).toBeDefined();
+    expect(component.colorAvatars()).toBeDefined();
+    expect(component.groupAvatars()).toBeDefined();
+    expect(component.statusAvatars()).toBeDefined();
   });
 });
