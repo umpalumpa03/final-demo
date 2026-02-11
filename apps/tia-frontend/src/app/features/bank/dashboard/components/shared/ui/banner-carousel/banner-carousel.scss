@@ -108,17 +108,20 @@
     vertical-align: middle;
     @include flex-center();
 
-    &__left {
+    &__left,
+    &__right {
       width: 2.4rem;
       height: 2.4rem;
+    }
+
+    &__left {
       background: url('/images/svg/dashboard/arrow-left.svg') no-repeat center /
         contain;
     }
 
     &__right {
-      width: 2.4rem;
-      height: 2.4rem;
-      background: url('/images/svg/dashboard/arrow-right.svg') no-repeat center / contain;
+      background: url('/images/svg/dashboard/arrow-right.svg') no-repeat
+        center / contain;
     }
 
     &:hover {
