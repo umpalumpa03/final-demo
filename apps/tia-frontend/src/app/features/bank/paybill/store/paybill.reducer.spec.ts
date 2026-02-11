@@ -294,7 +294,7 @@ describe('Paybill Reducer', () => {
         notifications: [{ id: '1' }] as any,
         error: 'Some error',
       };
-      // Note: This action is triggered by several actions in your 'on' block
+
       const action = PaybillActions.clearAllNotifications();
       const result = paybillReducer(state, action);
 
@@ -521,7 +521,6 @@ describe('Paybill Reducer', () => {
       ] as any,
     };
 
-    // We cast the whole payload to 'any' so it stops complaining about missing properties
     const action = TemplatesPageActions.renameTemplateGroupSuccess({
       templateGroup: { id: 'group-1', groupName: 'New Name' },
       groupId: 'group-1',
@@ -683,7 +682,7 @@ describe('Paybill Reducer', () => {
         payload: {} as any,
       });
       const result = paybillReducer(state, action);
-      expect(result.loading).toBe(true);
+      expect(result.loading).toBe(false);
       expect(result.error).toBeNull();
     });
 

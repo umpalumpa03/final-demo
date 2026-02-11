@@ -633,7 +633,7 @@ export class PaybillEffect {
         const senderAccountId = meta?.senderAccountId;
         const identification = meta?.identification as PaybillIdentification;
 
-        let categoryId = meta?.categoryId;
+        let categoryId = meta?.categoryId || 'utilities';
 
         if (!categoryId) {
           const match = categories.find((cat) =>
