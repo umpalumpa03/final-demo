@@ -105,7 +105,21 @@
     cursor: pointer;
     transition: all 0.2s ease;
     text-align: center;
-    vertical-align:middle;
+    vertical-align: middle;
+    @include flex-center();
+
+    &__left {
+      width: 2.4rem;
+      height: 2.4rem;
+      background: url('/images/svg/dashboard/arrow-left.svg') no-repeat center /
+        contain;
+    }
+
+    &__right {
+      width: 2.4rem;
+      height: 2.4rem;
+      background: url('/images/svg/dashboard/arrow-right.svg') no-repeat center / contain;
+    }
 
     &:hover {
       border-color: var(--color-primary);

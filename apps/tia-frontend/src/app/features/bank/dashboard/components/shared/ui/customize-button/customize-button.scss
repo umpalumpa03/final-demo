@@ -14,10 +14,9 @@
   @include flex-center($justify: space-between, $align: center);
 
   &__left {
-    @include flex-center($align: center);
+    @include flex-center($align: center,$justify:flex-start);
     min-width: 0;
     flex: 1;
-    justify-content: flex-start;
   }
 
   &__text {
