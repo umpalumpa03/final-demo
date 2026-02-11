@@ -36,7 +36,24 @@
         "approve": "Approve Loan",
         "cancel": "Cancel",
         "confirmDecline": "Confirm Decline"
+      },
+      "creditScoreBadge": {
+        "Poor": "Poor",
+        "Fair": "Fair",
+        "Good": "Good",
+        "Very Good": "Very Good",
+        "Excellent": "Excellent"
       }
+    },
+    "table": {
+      "pendingBadge": "Pending",
+      "loading": "Loading pending approvals...",
+      "errorHeader": "Error Loading Approvals",
+      "errorDefault": "An error occurred",
+      "retry": "Retry",
+      "emptyHeader": "No Pending Approvals",
+      "emptyMessage": "All loan applications have been processed.",
+      "months": "months"
     }
   },
   "dashboard": {
