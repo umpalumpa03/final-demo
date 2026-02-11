@@ -12,7 +12,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { Router } from '@angular/router';
 import { Account } from '../../../../../../../../../shared/models/accounts/accounts.model';
 import { ButtonComponent } from '../../../../../../../../../shared/lib/primitives/button/button';
 import { BasicCard } from '../../../../../../../../../shared/lib/cards/basic-card/basic-card';
@@ -20,7 +19,6 @@ import { TextInput } from '../../../../../../../../../shared/lib/forms/input-fie
 import { Badges } from '../../../../../../../../../shared/lib/primitives/badges/badges';
 import { TRANSFER_PERMISSIONS } from '../../../../config/transfer-permissions.config';
 import { filterPermissionsByCurrency } from '../../../../utils/transfer-permissions.utils';
-
 @Component({
   selector: 'app-account-card-view',
   imports: [
