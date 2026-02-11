@@ -3,12 +3,12 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as PAYBILL_SELECTORS from '../../../store/paybill.selectors';
 import { selectGelAccountOptions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
-import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { CATEGORY_UI_MAP } from '../components/category-grid/config/category.config';
 import { PaybillActions } from '../../../store/paybill.actions';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 import { PaybillDynamicForm } from '../../../services/paybill-dynamic-form/paybill-dynamic-form';
+import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 
 @Injectable({
   providedIn: 'root',
@@ -18,10 +18,10 @@ export class PaybillMainFacade {
   private readonly router = inject(Router);
   private readonly dynamicFormService = inject(PaybillDynamicForm);
   public readonly searchQuery = signal('');
-  public readonly selectedSenderAccountId = signal<string | null>(null);
 
   public init(): void {
     this.store.dispatch(PaybillActions.clearSelection());
+    this.store.dispatch(PaybillActions.initRepeatProcess());
     this.searchQuery.set('');
   }
 
@@ -56,6 +56,10 @@ export class PaybillMainFacade {
     PAYBILL_SELECTORS.selectPaymentFields,
   );
 
+  public readonly selectedSenderAccountId = this.store.selectSignal(
+    PAYBILL_SELECTORS.selectSelectedSenderAccountId,
+  );
+
   // Computed data for smart components
 
   public readonly activeProvider = computed(() => {
@@ -71,7 +75,7 @@ export class PaybillMainFacade {
     return this.storeActiveProvider();
   });
 
-  private readonly urlSegments = toSignal(
+  public readonly urlSegments = toSignal(
     this.router.events.pipe(
       filter((e) => e instanceof NavigationEnd),
       map(() => {
@@ -147,5 +151,20 @@ export class PaybillMainFacade {
   public backToDetails(): void {
     this.store.dispatch(PaybillActions.clearAllNotifications());
     this.router.navigate(['bank/paybill/pay']);
+  }
+
+  public clearRepeatTransaction(): void {
+    this.store.dispatch(TransactionActions.clearTransactionToRepeat());
+    this.store.dispatch(PaybillActions.clearSelection());
+  }
+
+  public updateSenderAccount(senderAccountId: string | null): void {
+    if(!senderAccountId) return;
+    const current = this.paymentPayload();
+    if (current) {
+      this.store.dispatch(PaybillActions.setPaymentPayload({
+        data: { ...current, senderAccountId }
+      }));
+    }
   }
 }

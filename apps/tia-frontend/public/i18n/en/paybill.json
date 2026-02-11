@@ -5,11 +5,16 @@
     "navigation": {
       "label1": "Paybill",
       "label2": "Templates"
-    }
+    },
+    "navigate": "Navigate To"
   },
 
   "main": {
     "category": "Select Category",
+    "tooltip": {
+      "check_details": "Please correctly check the details",
+      "check_amount": "Please enter correct amount"
+    },
     "summary": {
       "customer_name": "Customer Name:",
       "bill_period": "Bill Period:",
@@ -78,7 +83,8 @@
         "amount": "Amount:",
         "unknown_service": "Unknown Service"
       }
-    }
+    },
+    "navigate": "Navigate to"
   },
   "templates": {
     "title": "Saved Templates",

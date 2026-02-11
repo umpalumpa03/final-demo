@@ -150,11 +150,11 @@
     [alertMessage]="'transfers.external.accounts.recipientVerified' | translate"
   />
 </div>
-} @if (showError()) {
+}@if (showError()) {
 <div class="external-accounts__success-toast">
   <app-alert-types-with-icons
     [alertType]="'error'"
-    [alertMessage]="'transfers.external.accounts.noPermission' | translate"
+    [alertMessage]="error() | translate"
   />
 </div>
 }@if (currencyMismatchError()) {

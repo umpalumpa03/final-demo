@@ -1,0 +1,11 @@
+<div class="pill-paging">
+  @for (item of pageArray(); track item) {
+  <button
+    type="button"
+    class="pill-paging__dot"
+    [class.pill-paging__dot__active]="$index === currentIndex()"
+    (click)="goTo.emit($index)"
+    [attr.aria-label]="'Go to page ' + ($index + 1)"
+  ></button>
+  }
+</div>

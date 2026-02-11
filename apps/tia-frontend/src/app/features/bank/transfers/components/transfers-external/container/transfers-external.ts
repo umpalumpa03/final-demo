@@ -10,7 +10,6 @@ import { StepperHeader } from 'apps/tia-frontend/src/app/features/storybook/comp
 
 @Component({
   selector: 'app-transfers-external',
-  standalone: true,
   imports: [RouterOutlet, TranslatePipe, StepperHeader],
   templateUrl: './transfers-external.html',
   styleUrl: './transfers-external.scss',

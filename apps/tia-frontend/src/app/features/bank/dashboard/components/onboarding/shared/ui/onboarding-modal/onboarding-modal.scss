@@ -19,6 +19,7 @@
     .text {
         @include display-flex(column);
         gap: 0.8rem;
+        margin-bottom: 2rem;
 
         h1 {
             @include font-inter(500, 1.8rem);
@@ -36,7 +37,14 @@ footer {
     @include flex-center(column);
     @include font-inter(500, 1.2rem);
     gap: 1.6rem;
-    margin-top: 4rem;
+    padding-top: 1rem;
+    border-top: 0.1rem solid $gray-200;
+
+    .footer-content {
+        width: 100%;
+        @include flex-center($justify: space-between);
+        gap: 1.2rem;
+    }
 
     .buttons {
         align-self: flex-end;
@@ -45,5 +53,28 @@ footer {
     }
     .skip-text {
         cursor: pointer;
+        color: $gray-600;
+        @include font-inter(500, 1.2rem, 1.6rem);
+
+        &:hover {
+            color: $gray-800;
+        }
+    }
+}
+
+@media (max-width: 440px) {
+    footer {
+        .footer-content {
+            flex-direction: column;
+        }
+
+        .buttons {
+            width: 100%;
+            justify-content: space-between;
+
+            &:has(> *:only-child) {
+                justify-content: flex-end;
+            }
+        }
     }
 }

@@ -1,6 +1,6 @@
 @if (isMobile()) {
 <div class="sidebar__mobile-menu">
-  <button class="sidebar__mobile-toggle" [class.sidebar__mobile-toggle--open]="isDropdownOpen()"
+  <button class="sidebar__mobile-toggle" id="onboard-sidebar-mobile" [class.sidebar__mobile-toggle--open]="isDropdownOpen()"
     (click)="toggleDropdown()" aria-label="Toggle menu">
     <img src="images/svg/sidebar-nav/arrow-left.svg" alt="toggle menu" class="sidebar__mobile-toggle-icon"
       [class.sidebar__mobile-toggle-icon--open]="isDropdownOpen()" />
