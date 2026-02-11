@@ -1,0 +1,52 @@
+<section class="loan-drawer__section">
+  <div class="loan-drawer__section-header">
+    <div class="loan-drawer__section-icon loan-drawer__section-icon--user">
+      <img src="images/svg/feature-loans/person.svg" alt="User" />
+    </div>
+    <h3 class="loan-drawer__section-title">{{ labels().applicantSection }}</h3>
+  </div>
+
+  @if (isLoading()) {
+    <app-skeleton [width]="'100%'" [height]="'12rem'"></app-skeleton>
+  } @else if (userInfo()) {
+    <div class="loan-drawer__fields">
+      <div class="loan-drawer__field">
+        <span class="loan-drawer__label">{{ labels().fullName }}</span>
+        <span class="loan-drawer__value">{{ userInfo()?.fullName }}</span>
+      </div>
+      <div class="loan-drawer__field">
+        <span class="loan-drawer__label">{{ labels().email }}</span>
+        <span class="loan-drawer__value">{{ userInfo()?.email }}</span>
+      </div>
+      <div class="loan-drawer__field">
+        <span class="loan-drawer__label">{{ labels().phoneNumber }}</span>
+        <span class="loan-drawer__value">{{ userInfo()?.phoneNumber }}</span>
+      </div>
+      <div class="loan-drawer__field">
+        <span class="loan-drawer__label">{{ labels().employmentStatus }}</span>
+        <span class="loan-drawer__value">{{ userInfo()?.employmentStatus }}</span>
+      </div>
+      <div class="loan-drawer__field loan-drawer__field--full">
+        <span class="loan-drawer__label">{{ labels().address }}</span>
+        <span class="loan-drawer__value">{{ userInfo()?.address }}</span>
+      </div>
+      <div class="loan-drawer__field">
+        <span class="loan-drawer__label">{{ labels().annualIncome }}</span>
+        <span class="loan-drawer__value">{{ userInfo()?.annualIncome | currency:'USD':'symbol':'1.0-0' }}</span>
+      </div>
+      <div class="loan-drawer__field">
+        <span class="loan-drawer__label">{{ labels().creditScore }}</span>
+        <span class="loan-drawer__value loan-drawer__value--with-badge">
+          {{ userInfo()?.creditScore }}
+          <app-loan-badge
+            [text]="creditScoreBadgeText()"
+            [variant]="creditScoreBadgeVariant()"
+            [size]="'medium'"
+          />
+        </span>
+      </div>
+    </div>
+  } @else {
+    <p class="loan-drawer__empty">{{ labels().applicantUnavailable }}</p>
+  }
+</section>

@@ -1,3 +1,5 @@
+import { TranslateService } from '@ngx-translate/core';
+
 export type HoverCardTriggerVariant = 'link' | 'button';
 
 export interface HoverCardItem {
@@ -9,29 +11,29 @@ export interface HoverCardItem {
   variant: HoverCardTriggerVariant;
 }
 
-export const HOVER_CARD_ITEMS: HoverCardItem[] = [
+export const getHoverCardItems = (translate: TranslateService): HoverCardItem[] => [
   {
-    handle: '@johndoe',
+    handle: translate.instant('storybook.data-display.sections.hoverCards.items.johndoeHandle'),
     initials: 'JD',
-    name: 'John Doe',
-    role: 'Product Designer',
-    detail: 'Building thoughtful UI patterns for the data display suite.',
+    name: translate.instant('storybook.data-display.sections.hoverCards.items.johndoeName'),
+    role: translate.instant('storybook.data-display.sections.hoverCards.items.johndoeRole'),
+    detail: translate.instant('storybook.data-display.sections.hoverCards.items.johndoeDetail'),
     variant: 'link',
   },
   {
-    handle: '@janedoe',
+    handle: translate.instant('storybook.data-display.sections.hoverCards.items.janedoeHandle'),
     initials: 'JA',
-    name: 'Jane Adams',
-    role: 'Frontend Engineer',
-    detail: 'Focused on accessible, reusable hover interactions.',
+    name: translate.instant('storybook.data-display.sections.hoverCards.items.janedoeName'),
+    role: translate.instant('storybook.data-display.sections.hoverCards.items.janedoeRole'),
+    detail: translate.instant('storybook.data-display.sections.hoverCards.items.janedoeDetail'),
     variant: 'link',
   },
   {
-    handle: 'Hover for details',
+    handle: translate.instant('storybook.data-display.sections.hoverCards.items.alexHandle'),
     initials: 'AD',
-    name: 'Alex Diaz',
-    role: 'Design Lead',
-    detail: 'Exploring rich previews for documentation content.',
+    name: translate.instant('storybook.data-display.sections.hoverCards.items.alexName'),
+    role: translate.instant('storybook.data-display.sections.hoverCards.items.alexRole'),
+    detail: translate.instant('storybook.data-display.sections.hoverCards.items.alexDetail'),
     variant: 'button',
   },
 ];

@@ -2,6 +2,8 @@ import { ModalCardConfig, ModalOffset } from '../models/modal-positions.model';
 
 export type ModalPlacement = 'top' | 'bottom' | 'left' | 'right';
 
+const MOBILE_BREAKPOINT = 768;
+
 export function calculateModalPositions(
   target: HTMLElement | null,
   padding: number,
@@ -36,12 +38,15 @@ export function calculateModalPositions(
     zIndex: '20',
   };
 
+  const isMobile = window.innerWidth <= MOBILE_BREAKPOINT;
+
   switch (placement) {
     case 'top':
       cardStyle['bottom'] =
         `${window.innerHeight - rect.top + gap + (offset.bottom ?? 0)}px`;
-      cardStyle['left'] =
-        `calc(${rect.left + rect.width / 2}px + ${offset.left ?? 0}px)`;
+      cardStyle['left'] = isMobile
+        ? '50%'
+        : `calc(${rect.left + rect.width / 2}px + ${offset.left ?? 0}px)`;
       cardStyle['transform'] = 'translateX(-50%)';
       break;
     case 'left':
@@ -59,8 +64,9 @@ export function calculateModalPositions(
       break;
     default:
       cardStyle['top'] = `${rect.bottom + gap + (offset.top ?? 0)}px`;
-      cardStyle['left'] =
-        `calc(${rect.left + rect.width / 2}px + ${offset.left ?? 0}px)`;
+      cardStyle['left'] = isMobile
+        ? '50%'
+        : `calc(${rect.left + rect.width / 2}px + ${offset.left ?? 0}px)`;
       cardStyle['transform'] = 'translateX(-50%)';
   }
 

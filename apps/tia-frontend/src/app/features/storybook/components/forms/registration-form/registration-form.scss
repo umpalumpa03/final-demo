@@ -6,6 +6,7 @@
 .registration {
   @extend %flex-stack;
   width: 44.8rem;
+  max-width: 100%;
 
   @media (max-width: 780px) {
     width: 40rem;

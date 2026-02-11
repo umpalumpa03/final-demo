@@ -1,0 +1,251 @@
+@use '../../../../../../../../../shared/styles/palette' as *;
+@use '../../../../../../../../../shared/styles/mixins' as *;
+
+.loan-drawer {
+  &__section {
+    margin-bottom: 1.875rem;
+
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+  }
+
+  &__section-header {
+    @include flex-center(row, flex-start, center);
+    gap: 0.75rem;
+    margin-bottom: 1.125rem;
+  }
+
+  &__section-icon {
+    @include flex-center;
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+
+    svg {
+      @include svg-icon(2rem);
+    }
+
+    img {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    &--user {
+      background: none;
+    }
+  }
+
+  &__section-title {
+    @include font-arimo(600, 1.2rem, 1.2);
+    color: $blue-1000;
+    margin: 0;
+  }
+
+  &__fields {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+    row-gap: 1.6rem;
+  }
+
+  &__field {
+    @include display-flex(column);
+    gap: 0.4rem;
+
+    &--full {
+      grid-column: 1 / -1;
+    }
+  }
+
+  &__label {
+    @include font-arimo(400, 1.2rem, 1.2);
+    color: $gray-600;
+  }
+
+  &__value {
+    @include font-arimo(500, 1.4rem, 1.2);
+    color: $blue-1000;
+
+    &--with-badge {
+      @include flex-center(row, flex-start, center);
+      gap: 0.5625rem;
+    }
+  }
+
+  &__empty {
+    @include font-arimo(400, 1.2rem, 1.2);
+    color: $gray-600;
+    text-align: center;
+    padding: 2.25rem;
+    margin: 0;
+  }
+}
+
+@media (max-width: 1024px) {
+  .loan-drawer {
+    &__section-icon {
+      width: 1.8rem;
+      height: 1.8rem;
+
+      svg,
+      img {
+        width: 1.8rem;
+        height: 1.8rem;
+      }
+    }
+
+    &__section-title {
+      font-size: 1.1rem;
+    }
+
+    &__label {
+      font-size: 1rem;
+    }
+
+    &__value {
+      font-size: 1.2rem;
+    }
+  }
+}
+
+@media (max-width: 780px) {
+  .loan-drawer {
+    &__section {
+      margin-bottom: 1.25rem;
+    }
+
+    &__section-icon {
+      width: 1.6rem;
+      height: 1.6rem;
+
+      svg,
+      img {
+        width: 1.6rem;
+        height: 1.6rem;
+      }
+    }
+
+    &__section-title {
+      font-size: 1rem;
+    }
+
+    &__fields {
+      grid-template-columns: 1fr;
+      justify-content: stretch;
+      row-gap: 1.2rem;
+    }
+
+    &__field--full {
+      grid-column: 1;
+    }
+
+    &__label {
+      font-size: 0.9rem;
+    }
+
+    &__value {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .loan-drawer {
+    &__section {
+      margin-bottom: 1rem;
+    }
+
+    &__section-header {
+      gap: 0.5rem;
+      margin-bottom: 0.875rem;
+    }
+
+    &__section-icon {
+      width: 1.4rem;
+      height: 1.4rem;
+
+      svg,
+      img {
+        width: 1.4rem;
+        height: 1.4rem;
+      }
+    }
+
+    &__section-title {
+      font-size: 0.95rem;
+    }
+
+    &__fields {
+      row-gap: 1rem;
+    }
+
+    &__field {
+      gap: 0.3rem;
+    }
+
+    &__label {
+      font-size: 0.85rem;
+    }
+
+    &__value {
+      font-size: 1rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .loan-drawer {
+    &__label {
+      font-size: 0.8rem;
+    }
+
+    &__value {
+      font-size: 0.95rem;
+    }
+  }
+}
+
+@media (max-width: 360px) {
+  .loan-drawer {
+    &__section {
+      margin-bottom: 0.875rem;
+    }
+
+    &__section-header {
+      gap: 0.4rem;
+      margin-bottom: 0.75rem;
+    }
+
+    &__section-icon {
+      width: 1.2rem;
+      height: 1.2rem;
+
+      svg,
+      img {
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+    }
+
+    &__section-title {
+      font-size: 0.875rem;
+    }
+
+    &__fields {
+      row-gap: 0.875rem;
+    }
+
+    &__field {
+      gap: 0.25rem;
+    }
+
+    &__label {
+      font-size: 0.75rem;
+    }
+
+    &__value {
+      font-size: 0.875rem;
+    }
+  }
+}
