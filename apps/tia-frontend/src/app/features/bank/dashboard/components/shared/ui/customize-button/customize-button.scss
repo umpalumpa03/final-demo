@@ -15,7 +15,6 @@
 
   &__left {
     @include flex-center($align: center);
-    gap: 1.2rem;
     min-width: 0;
     flex: 1;
     justify-content: flex-start;
