@@ -60,11 +60,19 @@ export class PaybillFormContainer {
 
   // sync form data with service
   private readonly formSync = effect(() => {
-    this.dynamicForm.syncFormWithPaymentFields(
-      this.paybillForm,
-      { amount: 0 },
-      true,
-    );
+    const fields = this.paybillFacade.paymentFields();
+    const payload = this.paybillFacade.paymentPayload();
+
+    if (fields.length > 0) {
+      this.dynamicForm.syncFormWithPaymentFields(
+        this.paybillForm,
+        {
+          ...payload?.identification,
+          amount: payload?.amount ?? 0,
+        },
+        true,
+      );
+    }
   });
 
   public saveAsTemplate(customNickname?: string): void {
@@ -85,7 +93,14 @@ export class PaybillFormContainer {
   }
 
   public readonly paybillForm = this.fb.group({
-    amount: [0, [Validators.required, Validators.max(9999)]],
+    amount: [
+      0,
+      [
+        Validators.required,
+        Validators.max(9999),
+        Validators.pattern(/^\d+(\.\d{1,2})?$/),
+      ],
+    ],
   });
 
   public onVerifyAccount(event: PaybillFormVerifyEvent): void {

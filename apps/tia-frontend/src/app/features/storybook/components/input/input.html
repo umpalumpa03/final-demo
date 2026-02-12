@@ -94,7 +94,7 @@
         <div class="gallery__input-stack">
             @for (otp of otpDemos(); track otp.title) {
             <div class="gallery__input-wrapper">
-                <lib-otp [config]="otp.config" [value]="otp.initialValue">
+                <lib-otp [config]="otp.config" [autoFocus]="false" [value]="otp.initialValue">
                 </lib-otp>
             </div>
             }

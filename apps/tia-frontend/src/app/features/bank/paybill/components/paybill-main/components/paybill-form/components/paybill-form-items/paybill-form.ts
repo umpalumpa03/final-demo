@@ -27,6 +27,7 @@ import { translateConfig } from '@tia/shared/utils/translate-config/config-trans
 import { PaybillDynamicField } from '../../../../../../services/paybill-dynamic-form/models/dynamic-form.model';
 import { DynamicInputs } from '../../../../../shared/dynamic-inputs/dynamic-inputs';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
+import { Tooltip } from "@tia/shared/lib/data-display/tooltip/tooltip";
 
 @Component({
   selector: 'app-paybill-form',
@@ -40,7 +41,8 @@ import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
     TranslatePipe,
     DynamicInputs,
     Skeleton,
-  ],
+    Tooltip
+],
   templateUrl: './paybill-form.html',
   styleUrl: './paybill-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

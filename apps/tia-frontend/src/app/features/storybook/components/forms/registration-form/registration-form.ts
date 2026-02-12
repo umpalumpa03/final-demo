@@ -107,7 +107,7 @@ export class RegistrationForm {
         }
       };
 
-      ['firstName', 'lastName', 'email', 'username'].forEach(toggle);
+      ['firstName', 'lastName', 'email', 'username', 'birthday'].forEach(toggle);
     });
 
     effect(() => {

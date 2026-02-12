@@ -74,6 +74,12 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   public readonly isPersonalNumberUnchanged = computed(() => {
     const currentPId = this.pId()?.trim() || '';
     const editedPId = this.editedPId()?.trim() || '';
+
+  
+    if (currentPId) {
+      return true;
+    }
+
     return currentPId === editedPId;
   });
 
@@ -445,6 +451,10 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   }
 
   public onPersonalNumberChange(value: string | number | boolean | FileList | null): void {
+    const currentPId = this.pId()?.trim() || '';
+    if (currentPId) {
+      return;
+    }
     this.editedPId.set(value ? String(value) : '');
   }
 
@@ -465,7 +475,9 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
     const currentPId = this.pId()?.trim() || '';
 
     const phoneChanged = editedPhone !== currentPhone;
-    const pIdChanged = editedPId !== currentPId;
+
+    const canEditPId = !currentPId;
+    const pIdChanged = canEditPId && editedPId !== currentPId;
 
   
     if (phoneChanged) {

@@ -15,15 +15,19 @@
     <div class="header__action">
       @if(showBulkActions()){
       <app-button
+        iconWidth="1.6rem"
         variant="destructive"
         icon="trash-icon.svg"
+        size="small"
         (click)="onDeleteClick()"
         [isLoading]="isDeleting()"
       ></app-button>
       @if(!isDraft()){
       <app-button
+        iconWidth="1.6rem"
         variant="default"
         icon="mail-read.svg"
+        size="small"
         (click)="bulkRead.emit()"
       ></app-button>
       } }

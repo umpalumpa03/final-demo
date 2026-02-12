@@ -1,0 +1,40 @@
+@use "../../../../../../../../../../shared/styles/palette" as *;
+@use "../../../../../../../../../../shared/styles/mixins" as *;
+
+.nav-card {
+    @include display-flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.2rem;
+    border-radius: 1.2rem;
+    background-color: $gray-25;
+    transition: background-color 0.2s ease;
+
+    &__icon {
+        @include flex-center;
+        min-width: 4rem;
+        height: 4rem;
+        border-radius: 1rem;
+        background: linear-gradient(145deg, $blue-100 0%, $blue-200 100%);
+
+        img {
+            width: 2rem;
+            height: 2rem;
+        }
+    }
+
+    &__content {
+        @include display-flex(column);
+        gap: 0.2rem;
+    }
+
+    &__title {
+        @include font-inter(600, 1.4rem);
+        color: $blue-1000;
+    }
+
+    &__desc {
+        @include font-inter(400, 1.2rem);
+        color: $gray-600;
+    }
+}

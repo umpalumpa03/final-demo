@@ -1,0 +1,12 @@
+@if (showDeclineForm()) {
+  <section class="loan-drawer__section loan-drawer__section--decline">
+    <h3 class="loan-drawer__section-title">{{ labels().declineSection }}</h3>
+    <textarea
+      class="loan-drawer__textarea"
+      [placeholder]="labels().declinePlaceholder"
+      [value]="declineReason()"
+      (input)="onReasonInput($event)"
+      rows="3"
+    ></textarea>
+  </section>
+}

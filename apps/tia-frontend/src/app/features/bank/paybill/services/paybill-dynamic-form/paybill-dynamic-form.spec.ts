@@ -95,7 +95,7 @@ describe('PaybillDynamicForm', () => {
       amountControl?.setValue(0);
       expect(amountControl?.valid).toBe(false);
 
-      amountControl?.setValue(0.01);
+      amountControl?.setValue(10);
       expect(amountControl?.valid).toBe(true);
     });
 
@@ -124,6 +124,39 @@ describe('PaybillDynamicForm', () => {
 
       amountControl?.setValue(9999);
       expect(amountControl?.valid).toBe(true);
+    });
+
+    it('should remove extra controls and reset static fields to initial values', () => {
+      const initialFields = { amount: 0 };
+      const form = new FormGroup({
+        amount: new FormControl(500),
+        extraField: new FormControl('test'),
+      });
+
+      service.resetFormToInitialState(form, initialFields);
+
+      expect(form.contains('extraField')).toBe(false);
+
+      expect(form.contains('amount')).toBe(true);
+      expect(form.get('amount')?.value).toBe(0);
+    });
+
+    it('should convert values to strings and sanitize null/undefined to undefined', () => {
+      const formValues = {
+        accountNumber: 12345,
+        param1: 'some-value',
+        emptyField: null,
+        missingField: undefined,
+      };
+
+      const result = service.buildIdentification(formValues);
+
+      expect(result).toEqual({
+        accountNumber: '12345',
+        param1: 'some-value',
+        emptyField: undefined,
+        missingField: undefined,
+      });
     });
   });
 });

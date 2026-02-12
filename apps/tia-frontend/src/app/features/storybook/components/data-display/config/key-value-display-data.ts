@@ -1,23 +1,37 @@
+import { TranslateService } from '@ngx-translate/core';
 import { KeyValueDisplayItem } from '../../../../../shared/lib/data-display/models/key-value-display.models';
 
-export const KEY_VALUE_TITLE = 'User Information';
+export const getKeyValueTitle = (translate: TranslateService): string =>
+  translate.instant('storybook.data-display.sections.keyValueDisplay.userInfo');
 
-export const KEY_VALUE_ITEMS: KeyValueDisplayItem[] = [
-  { id: 'full-name', label: 'Full Name:', value: 'John Doe' },
-  { id: 'email', label: 'Email:', value: 'john@example.com' },
+export const getKeyValueItems = (translate: TranslateService): KeyValueDisplayItem[] => [
+  {
+    id: 'full-name',
+    label: translate.instant('storybook.data-display.sections.keyValueDisplay.items.fullNameLabel'),
+    value: translate.instant('storybook.data-display.sections.keyValueDisplay.items.fullNameValue'),
+  },
+  {
+    id: 'email',
+    label: translate.instant('storybook.data-display.sections.keyValueDisplay.items.emailLabel'),
+    value: translate.instant('storybook.data-display.sections.keyValueDisplay.items.emailValue'),
+  },
   {
     id: 'role',
-    label: 'Role:',
-    value: 'Administrator',
+    label: translate.instant('storybook.data-display.sections.keyValueDisplay.items.roleLabel'),
+    value: translate.instant('storybook.data-display.sections.keyValueDisplay.items.roleValue'),
     valueType: 'badge',
     badgeTone: 'blue',
   },
   {
     id: 'status',
-    label: 'Status:',
-    value: 'Active',
+    label: translate.instant('storybook.data-display.sections.keyValueDisplay.items.statusLabel'),
+    value: translate.instant('storybook.data-display.sections.keyValueDisplay.items.statusValue'),
     valueType: 'badge',
     badgeTone: 'green',
   },
-  { id: 'member', label: 'Member Since:', value: 'Jan 2024' },
+  {
+    id: 'member',
+    label: translate.instant('storybook.data-display.sections.keyValueDisplay.items.memberLabel'),
+    value: translate.instant('storybook.data-display.sections.keyValueDisplay.items.memberValue'),
+  },
 ];

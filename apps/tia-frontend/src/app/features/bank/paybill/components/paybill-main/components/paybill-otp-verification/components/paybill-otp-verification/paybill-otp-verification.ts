@@ -37,6 +37,7 @@ export class PaybillOtpVerification {
   public readonly iconBgColor = input<string>('#F0F9FF');
   public readonly iconBgPath = input<string>();
   public readonly errorMessage = input<string | null>(null);
+  public readonly isLoading = input(false);
 
   public readonly verify = output<string>();
   public readonly cancelPayment = output<void>();

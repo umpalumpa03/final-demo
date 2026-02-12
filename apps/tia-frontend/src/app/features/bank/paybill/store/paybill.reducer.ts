@@ -72,7 +72,7 @@ export const paybillReducer = createReducer(
     paymentDetails: null,
     currentLevel: 0,
     error: null,
-    loading: false,
+    selectedSenderAccountId: null,
   })),
 
   on(TemplatesPageActions.clearPaymentDetails, (state) => ({
@@ -101,6 +101,8 @@ export const paybillReducer = createReducer(
   on(PaybillActions.setPaymentPayload, (state, { data }) => ({
     ...state,
     paymentPayload: data,
+    selectedSenderAccountId:
+      data.senderAccountId || state.selectedSenderAccountId,
   })),
 
   on(PaybillActions.proceedPayment, (state) => ({
@@ -149,7 +151,7 @@ export const paybillReducer = createReducer(
 
   on(PaybillActions.confirmPayment, (state) => ({
     ...state,
-    loading: true,
+    loading: false,
     error: null,
   })),
 

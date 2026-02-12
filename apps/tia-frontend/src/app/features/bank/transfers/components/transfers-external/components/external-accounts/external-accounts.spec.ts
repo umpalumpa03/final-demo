@@ -10,6 +10,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import {
   selectSelectedAccount,
@@ -27,6 +28,7 @@ describe('ExternalAccounts', () => {
   let mockRecipientService: any;
   let mockSelectionService: any;
   let mockBreakpointService: any;
+  let mockRouter: any;
 
   beforeEach(async () => {
     vi.useFakeTimers();
@@ -40,6 +42,7 @@ describe('ExternalAccounts', () => {
       senderAccount: signal<any>(null),
       selectedRecipientAccount: signal<any>(null),
       isVerified: signal(false),
+      manualRecipientName: signal(''),
       setIsVerified: vi.fn(),
       setError: vi.fn((val: string) => mockStoreValues.error.set(val)),
       setSelectedRecipientAccount: vi.fn((val: any) =>
@@ -61,11 +64,15 @@ describe('ExternalAccounts', () => {
       handleRecipientAccountSelect: vi.fn(),
       handleSenderAccountSelect: vi.fn(),
       handleContinue: vi.fn(),
-      initAutoSelectionLogic: vi.fn(), 
+      initAutoSelectionLogic: vi.fn(),
     };
 
     mockBreakpointService = {
       isMobile: signal(false),
+    };
+
+    mockRouter = {
+      navigate: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -79,6 +86,7 @@ describe('ExternalAccounts', () => {
         { provide: TransferStore, useValue: mockStoreValues },
         { provide: BreakpointService, useValue: mockBreakpointService },
         { provide: TransferRecipientService, useValue: mockRecipientService },
+        { provide: Router, useValue: mockRouter },
         {
           provide: TransferAccountSelectionService,
           useValue: mockSelectionService,
@@ -122,8 +130,7 @@ describe('ExternalAccounts', () => {
 
   it('should handle the verified effect correctly', async () => {
     mockStoreValues.isVerified.set(true);
-    fixture.detectChanges();
-    await Promise.resolve();
+    TestBed.flushEffects();
     expect(component.showSuccess()).toBe(true);
     expect(mockStoreValues.setIsVerified).toHaveBeenCalledWith(false);
     vi.advanceTimersByTime(3000);
@@ -137,14 +144,12 @@ describe('ExternalAccounts', () => {
         { id: '2', isFavorite: true },
       ],
     });
-    fixture.detectChanges();
     expect(component.recipientAccounts()[0].id).toBe('2');
   });
 
   it('should compute fallback recipient account if only currency is provided', () => {
     mockStoreValues.recipientInfo.set({ currency: 'USD' });
     mockStoreValues.recipientInput.set('GE89IBAN');
-    fixture.detectChanges();
     const accounts = component.recipientAccounts();
     expect(accounts[0].iban).toBe('GE89IBAN');
   });
@@ -153,14 +158,12 @@ describe('ExternalAccounts', () => {
     mockStoreValues.senderAccount.set({ id: 's1' });
     mockStoreValues.recipientType.set('iban-different-bank');
     component.recipientNameInput.setValue('Test');
-    fixture.detectChanges();
     expect(component.isContinueDisabled()).toBe(false);
   });
 
   it('should handle noPermission error effect correctly', async () => {
     mockStoreValues.error.set('transfers.external.accounts.noPermission');
-    fixture.detectChanges();
-    await Promise.resolve();
+    TestBed.flushEffects();
     expect(component.showError()).toBe(true);
     vi.advanceTimersByTime(5000);
     expect(component.showError()).toBe(false);
@@ -193,7 +196,6 @@ describe('ExternalAccounts', () => {
   it('should compute recipientName based on recipient type', () => {
     mockStoreValues.recipientType.set('iban-different-bank');
     mockStoreValues.recipientInput.set('GE00IBAN');
-    fixture.detectChanges();
     expect(component.recipientName()).toBe('GE00IBAN');
   });
 
@@ -202,7 +204,6 @@ describe('ExternalAccounts', () => {
     store.overrideSelector(selectAccounts, mockAccounts);
     store.refreshState();
     mockRecipientService.isSenderAccountDisabled.mockReturnValue(true);
-    fixture.detectChanges();
     expect(component.allSenderAccountsDisabled()).toBe(true);
   });
 
@@ -210,5 +211,12 @@ describe('ExternalAccounts', () => {
     const mockAcc = { id: '1' } as any;
     component.getSenderDisabledReason(mockAcc);
     expect(mockRecipientService.getDisabledReason).toHaveBeenCalled();
+  });
+
+  it('should set manual name in ngOnInit if external iban', () => {
+    mockStoreValues.recipientType.set('iban-different-bank');
+    mockStoreValues.manualRecipientName.set('Saved Name');
+    component.ngOnInit();
+    expect(component.recipientNameInput.value).toBe('Saved Name');
   });
 });
