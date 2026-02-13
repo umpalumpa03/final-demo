@@ -17,6 +17,7 @@ import {
   closeCardDetailsModal,
   navigateToNextCard,
   navigateToPreviousCard,
+  setCurrentCardIndex,
 } from '../../../../../../../../store/products/cards/cards.actions';
 import {
   selectCardDetails,
@@ -39,6 +40,8 @@ import { QuickActionsSection } from '../components/quick-actions-section/quick-a
 import { CardViewData } from '../../../models/card-view-data.model';
 import { TranslatePipe } from '@ngx-translate/core';
 import { CardDetailsModal } from '../../card-details-modal/container/card-details-modal/card-details-modal';
+import { PillsComponent } from 'apps/tia-frontend/src/app/features/storybook/components/navigation/components/pills-component/pills-component';
+import { PillPaging } from '@tia/shared/ui/pill-paging/pill-paging';
 
 @Component({
   selector: 'app-card-details',
@@ -55,6 +58,7 @@ import { CardDetailsModal } from '../../card-details-modal/container/card-detail
     QuickActionsSection,
     TranslatePipe,
     CardDetailsModal,
+    PillPaging,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -65,14 +69,20 @@ export class CardDetails implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly cardId$ = this.route.paramMap.pipe(
-    map(params => params.get('cardId') || '')
+    map((params) => params.get('cardId') || ''),
   );
 
   protected readonly loading$ = this.store.select(selectCardDetailsLoading);
   protected readonly error$ = this.store.select(selectCardDetailsError);
-  protected readonly isDetailsModalOpen$ = this.store.select(selectIsCardDetailsModalOpen);
-  protected readonly currentCardIndex$ = this.store.select(selectCurrentCardIndex);
-  protected readonly currentAccountCardIds$ = this.store.select(selectCurrentAccountCardIds);
+  protected readonly isDetailsModalOpen$ = this.store.select(
+    selectIsCardDetailsModalOpen,
+  );
+  protected readonly currentCardIndex$ = this.store.select(
+    selectCurrentCardIndex,
+  );
+  protected readonly currentAccountCardIds$ = this.store.select(
+    selectCurrentAccountCardIds,
+  );
 
   protected readonly cardData$ = combineLatest([
     this.cardId$,
@@ -114,36 +124,42 @@ export class CardDetails implements OnInit {
   );
 
   ngOnInit(): void {
-    this.cardId$.pipe(
-      takeUntilDestroyed(this.destroyRef),
-      tap(cardId => this.loadCardData(cardId))
-    ).subscribe();
+    this.cardId$
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((cardId) => this.loadCardData(cardId)),
+      )
+      .subscribe();
   }
 
   protected handleBack(): void {
-  combineLatest([
-    this.cardData$,
-    this.store.select(selectAllAccounts)
-  ]).pipe(
-    take(1),
-    takeUntilDestroyed(this.destroyRef),
-    tap(([cardData, accounts]) => {
-      if (!cardData?.details.accountId) {
-        this.router.navigate(['/bank/products/cards']);
-        return;
-      }
-      
-      const account = accounts.find(acc => acc.id === cardData.details.accountId);
-      const hasMultipleCards = (account?.cardIds.length || 0) > 1;
-      
-      if (hasMultipleCards) {
-        this.router.navigate(['/bank/products/cards/account', cardData.details.accountId]);
-      } else {
-        this.router.navigate(['/bank/products/cards']);
-      }
-    })
-  ).subscribe();
-}
+    combineLatest([this.cardData$, this.store.select(selectAllAccounts)])
+      .pipe(
+        take(1),
+        takeUntilDestroyed(this.destroyRef),
+        tap(([cardData, accounts]) => {
+          if (!cardData?.details.accountId) {
+            this.router.navigate(['/bank/products/cards']);
+            return;
+          }
+
+          const account = accounts.find(
+            (acc) => acc.id === cardData.details.accountId,
+          );
+          const hasMultipleCards = (account?.cardIds.length || 0) > 1;
+
+          if (hasMultipleCards) {
+            this.router.navigate([
+              '/bank/products/cards/account',
+              cardData.details.accountId,
+            ]);
+          } else {
+            this.router.navigate(['/bank/products/cards']);
+          }
+        }),
+      )
+      .subscribe();
+  }
 
   protected handleTransferOwn(): void {
     this.router.navigate(['/bank/transfers/internal']);
@@ -158,78 +174,115 @@ export class CardDetails implements OnInit {
   }
 
   protected handleViewTransactions(): void {
-    this.cardId$.pipe(
-      take(1),
-      tap(cardId => this.router.navigate(['/bank/products/cards/transactions', cardId]))
-    ).subscribe();
+    this.cardId$
+      .pipe(
+        take(1),
+        tap((cardId) =>
+          this.router.navigate(['/bank/products/cards/transactions', cardId]),
+        ),
+      )
+      .subscribe();
   }
 
   protected handleRetry(): void {
-    this.cardId$.pipe(
-      take(1),
-      tap(cardId => this.loadCardData(cardId))
-    ).subscribe();
+    this.cardId$
+      .pipe(
+        take(1),
+        tap((cardId) => this.loadCardData(cardId)),
+      )
+      .subscribe();
   }
 
   protected handleOpenDetailsModal(): void {
-    this.cardId$.pipe(
-      take(1),
-      tap(cardId => this.store.dispatch(openCardDetailsModal({ cardId })))
-    ).subscribe();
+    this.cardId$
+      .pipe(
+        take(1),
+        tap((cardId) => this.store.dispatch(openCardDetailsModal({ cardId }))),
+      )
+      .subscribe();
   }
 
   protected handleCloseDetailsModal(): void {
     this.store.dispatch(closeCardDetailsModal());
   }
 
-  protected handleNextCard(): void {
-    this.store.dispatch(navigateToNextCard());
-    
-    combineLatest([
-      this.currentCardIndex$,
-      this.currentAccountCardIds$
-    ]).pipe(
-      take(1),
-      takeUntilDestroyed(this.destroyRef),
-      tap(([index, cardIds]) => {
-        const nextCardId = cardIds[index];
-        if (nextCardId) {
-          this.router.navigate(['/bank/products/cards/details', nextCardId]);
-        }
-      })
-    ).subscribe();
-  }
 
-  protected handlePreviousCard(): void {
-    this.store.dispatch(navigateToPreviousCard());
-    
-    combineLatest([
-      this.currentCardIndex$,
-      this.currentAccountCardIds$
-    ]).pipe(
-      take(1),
-      takeUntilDestroyed(this.destroyRef),
-      tap(([index, cardIds]) => {
-        const previousCardId = cardIds[index];
-        if (previousCardId) {
-          this.router.navigate(['/bank/products/cards/details', previousCardId]);
-        }
-      })
-    ).subscribe();
-  }
 
   private loadCardData(cardId: string): void {
     this.store.dispatch(loadCardAccounts({}));
     this.store.dispatch(loadCardDetails({ cardId }));
   }
   protected readonly hasMultipleCards$ = combineLatest([
-  this.cardData$,
-  this.store.select(selectAllAccounts)
-]).pipe(
-  map(([cardData, accounts]) => {
-    if (!cardData?.details.accountId) return false;
-    const account = accounts.find(acc => acc.id === cardData.details.accountId);
-    return (account?.cardIds.length || 0) > 1;
-  })
-);
+    this.cardData$,
+    this.store.select(selectAllAccounts),
+  ]).pipe(
+    map(([cardData, accounts]) => {
+      if (!cardData?.details.accountId) return false;
+      const account = accounts.find(
+        (acc) => acc.id === cardData.details.accountId,
+      );
+      return (account?.cardIds.length || 0) > 1;
+    }),
+  );
+
+  protected handleGoToCard(index: number): void {
+    combineLatest([this.currentAccountCardIds$, this.cardData$])
+      .pipe(
+        take(1),
+        takeUntilDestroyed(this.destroyRef),
+        tap(([cardIds, cardData]) => {
+          const targetCardId = cardIds[index];
+          if (targetCardId && cardData?.details.accountId) {
+            this.store.dispatch(
+              setCurrentCardIndex({
+                cardIndex: index,
+                accountId: cardData.details.accountId,
+              }),
+            );
+            this.router.navigate([
+              '/bank/products/cards/details',
+              targetCardId,
+            ]);
+          }
+        }),
+      )
+      .subscribe();
+  }
+
+  protected handleNextCard(): void {
+    this.store.dispatch(navigateToNextCard());
+
+    combineLatest([this.currentCardIndex$, this.currentAccountCardIds$])
+      .pipe(
+        take(1),
+        takeUntilDestroyed(this.destroyRef),
+        tap(([index, cardIds]) => {
+          const nextCardId = cardIds[index];
+          if (nextCardId) {
+            this.router.navigate(['/bank/products/cards/details', nextCardId]);
+          }
+        }),
+      )
+      .subscribe();
+  }
+
+  protected handlePreviousCard(): void {
+    this.store.dispatch(navigateToPreviousCard());
+
+    combineLatest([this.currentCardIndex$, this.currentAccountCardIds$])
+      .pipe(
+        take(1),
+        takeUntilDestroyed(this.destroyRef),
+        tap(([index, cardIds]) => {
+          const previousCardId = cardIds[index];
+          if (previousCardId) {
+            this.router.navigate([
+              '/bank/products/cards/details',
+              previousCardId,
+            ]);
+          }
+        }),
+      )
+      .subscribe();
+  }
 }
