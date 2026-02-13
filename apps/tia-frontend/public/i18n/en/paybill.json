@@ -15,6 +15,17 @@
       "check_details": "Please correctly check the details",
       "check_amount": "Please enter correct amount"
     },
+    "identifiers": {
+      "accountNumber": "Account Number",
+      "personalNumber": "Personal Number",
+      "tenantId": "Tenant ID",
+      "customerCode": "Customer Code",
+      "phoneNumber": "Mobile Number",
+      "amount": "Amount",
+      "policyNumber": "Policy Number",
+      "meterNumber": "Meter Number",
+      "propertyCode": "Property Code"
+    },
     "summary": {
       "customer_name": "Customer Name:",
       "bill_period": "Bill Period:",
