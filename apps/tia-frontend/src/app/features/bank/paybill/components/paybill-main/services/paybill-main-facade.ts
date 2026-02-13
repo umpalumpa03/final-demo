@@ -76,23 +76,24 @@ export class PaybillMainFacade {
 
   // Computed data for smart components
 
-  public readonly activeProvider = computed(() => {
+public readonly activeProvider = computed(() => {
     const urlId = this.selectedParentId();
     const category = this.activeCategory();
     const storeProvider = this.storeActiveProvider();
 
     if (
       storeProvider &&
-      storeProvider.id.toLowerCase() === urlId?.toLowerCase()
+      (!urlId || storeProvider.id.toLowerCase() === urlId.toLowerCase())
     ) {
       return storeProvider;
     }
 
     if (urlId && category?.providers) {
-      return this.findProviderRecursive(category.providers, urlId);
+      const found = this.findProviderRecursive(category.providers, urlId);
+      if (found) return found;
     }
 
-    return null;
+    return storeProvider || null;
   });
 
   private findProviderRecursive(
