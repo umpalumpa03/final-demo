@@ -75,4 +75,40 @@ describe('LanguagesStore', () => {
     expect(store.hasError()).toBe(false);
     expect(store.hasLoaded()).toBe(false);
   });
+
+  it('should not refetch when already loaded and force is false', async () => {
+    const mockResponse = [
+      { value: 'english', displayName: 'English' },
+      { value: 'georgian', displayName: 'ქართული' },
+    ];
+    languageService.getAvailableLanguages.mockReturnValue(of(mockResponse));
+
+    store.fetchLanguages({ force: false });
+
+    await vi.waitFor(() => {
+      expect(store.hasLoaded()).toBe(true);
+    });
+
+    store.fetchLanguages({ force: false });
+
+    expect(languageService.getAvailableLanguages).toHaveBeenCalledTimes(1);
+  });
+
+  it('should refetch when force is true', async () => {
+    const mockResponse = [
+      { value: 'english', displayName: 'English' },
+      { value: 'georgian', displayName: 'ქართული' },
+    ];
+    languageService.getAvailableLanguages.mockReturnValue(of(mockResponse));
+
+    store.fetchLanguages({ force: false });
+
+    await vi.waitFor(() => {
+      expect(store.hasLoaded()).toBe(true);
+    });
+
+    store.fetchLanguages({ force: true });
+
+    expect(languageService.getAvailableLanguages).toHaveBeenCalledTimes(2);
+  });
 });
