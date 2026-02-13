@@ -1,5 +1,6 @@
 {
   "title": "Settings",
+  "subtitle": "Manage your preferences and application settings",
   "sections": {
     "profile": "Profile",
     "security": "Security",

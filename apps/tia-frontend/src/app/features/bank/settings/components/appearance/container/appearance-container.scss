@@ -11,9 +11,13 @@
     }
     
     &__cards {
-        display: flex;
-        flex-wrap: wrap;
+        @include display-flex(row, wrap);
         gap: 1.6rem;
+
+        &--mobile {
+            padding: 1.2rem;
+            @include display-flex(column);
+        }
 
         & > * {
             flex: 1;
