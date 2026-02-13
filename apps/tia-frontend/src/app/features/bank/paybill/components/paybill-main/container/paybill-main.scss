@@ -4,10 +4,10 @@
 .paybill-main {
   @include display-flex(column);
   width: 100%;
-  gap: 2.4rem;
+  gap: 1.6rem;
 
   &__nav-container {
-    height: 3.6rem;
+    width: 100%;
     @include flex-center($align: center, $justify: flex-start);
   }
 
@@ -19,5 +19,6 @@
   &__stage-wrapper {
     @include display-flex(column);
     width: 100%;
+    flex: 1;
   }
 }

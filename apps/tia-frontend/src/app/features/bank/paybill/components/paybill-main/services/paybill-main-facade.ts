@@ -1,4 +1,11 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import {
+  computed,
+  effect,
+  inject,
+  Injectable,
+  signal,
+  untracked,
+} from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as PAYBILL_SELECTORS from '../../../store/paybill.selectors';
@@ -39,6 +46,26 @@ export class PaybillMainFacade {
     }
   }
 
+  constructor() {
+    effect(() => {
+      const provider = this.activeProvider();
+
+      if (provider?.isFinal) {
+        const fields = untracked(() => this.paymentFields());
+
+        if (!fields || fields.length === 0) {
+          untracked(() => {
+            this.store.dispatch(
+              PaybillActions.loadPaymentDetails({
+                serviceId: provider.id,
+              }),
+            );
+          });
+        }
+      }
+    });
+  }
+
   // select state from store
 
   public readonly paymentPayload = this.store.selectSignal(
@@ -76,7 +103,7 @@ export class PaybillMainFacade {
 
   // Computed data for smart components
 
-public readonly activeProvider = computed(() => {
+  public readonly activeProvider = computed(() => {
     const urlId = this.selectedParentId();
     const category = this.activeCategory();
     const storeProvider = this.storeActiveProvider();

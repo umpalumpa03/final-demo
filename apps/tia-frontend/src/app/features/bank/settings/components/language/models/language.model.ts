@@ -19,4 +19,6 @@ export interface LanguagesState {
   languages: Language[];
   isLoading: boolean;
   hasError: boolean;
+  isRefreshing: boolean;
+  hasLoaded: boolean;
 }
