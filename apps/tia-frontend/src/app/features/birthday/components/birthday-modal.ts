@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { selectUserInfo } from '../../../store/user-info/user-info.selectors'; 
 import { ButtonComponent } from '../../../shared/lib/primitives/button/button';
-import { BIRTHDAY_EMOJIS } from '../config/birthday-config';
+import { BIRTHDAY_EMOJIS } from '../config/birthday.config';
 import { BirthdayLogicService } from '../services/birthday-logic.service';
 
 @Component({
