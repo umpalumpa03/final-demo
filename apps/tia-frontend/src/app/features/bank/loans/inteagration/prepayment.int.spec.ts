@@ -1,160 +1,246 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { environment } from '../../../../../environments/environment';
-import { patchState } from '@ngrx/signals';
+import { TestBed } from '@angular/core/testing';
 import {
-  TestContext,
-  setupLoansTest,
-  cleanupLoansTest,
-  mockLoanResponse,
-} from './loans.test-helpers';
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
+import { LoansStore } from '../store/loans.store';
+import { LoansService } from '../shared/services/loans.service';
+import { AlertService } from '@tia/shared/services/settings-language/alert.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Store } from '@ngrx/store';
 
 describe('Loans Integration - Prepayment Wizard Flow', () => {
-  let ctx: TestContext;
+  let store: InstanceType<typeof LoansStore>;
+  let httpMock: HttpTestingController;
+  let alertService: AlertService;
 
-  const approvedLoanDetails = {
-    ...mockLoanResponse,
-    id: 'loan-approved',
-    status: 2,
-    remainingBalance: 5000,
-    accountName: 'Test Acc',
-    userId: 'user-1',
-    currency: 'GEL',
-    address: {},
-    contactPerson: {},
-    interestRate: 10,
-    totalInterest: 500,
-    totalAmountToPay: 5500,
-    remainingPayments: 10,
-    firstPaymentDate: '2026-01-01',
-    lastPaymentDate: '2027-01-01',
-    approvedAt: '2026-01-01',
-  };
-
-  beforeEach(async () => {
-    ctx = await setupLoansTest();
-
-    patchState(ctx.loansStore as any, {
-      selectedLoanDetails: approvedLoanDetails as any,
-      activePrepaymentLoan: approvedLoanDetails as any,
-      isPrepaymentOpen: true,
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule, TranslateModule.forRoot()],
+      providers: [
+        LoansStore,
+        LoansService,
+        AlertService,
+        TranslateService,
+        { provide: Store, useValue: { selectSignal: () => () => [] } },
+      ],
     });
+
+    store = TestBed.inject(LoansStore);
+    httpMock = TestBed.inject(HttpTestingController);
+    alertService = TestBed.inject(AlertService);
   });
 
   afterEach(() => {
-    cleanupLoansTest(ctx.httpMock);
+    httpMock.verify();
   });
 
-  it('should complete partial prepayment flow successfully', async () => {
-    const payload = {
-      loanId: 'loan-approved',
-      type: 'partial',
-      amount: 1000,
-      loanPartialPaymentType: 'reduceMonthlyPayment',
+  it('should complete partial prepayment flow successfully', () => {
+    const mockLoan = {
+      id: 'loan-123',
+      loanAmount: 10000,
+      accountId: 'acc-1',
+      status: 2,
     };
 
-    ctx.loansStore.calculatePrepayment({ payload: payload as any });
+    const mockCalculationResult = {
+      displayedInfo: [
+        {
+          label: 'New Monthly Payment',
+          value: '450',
+          text: 'New Monthly Payment',
+          amount: 450,
+        }, // Added text/amount to match interface
+        {
+          label: 'Total Interest Saved',
+          value: '1200',
+          text: 'Total Interest Saved',
+          amount: 1200,
+        },
+      ],
+    };
 
-    expect(ctx.loansStore.actionLoading()).toBe(true);
-
-    const calcReq = ctx.httpMock.expectOne((req) =>
-      req.url.includes('/calculate-partial-prepayment'),
-    );
-    expect(calcReq.request.params.get('amount')).toBe('1000');
-
-    calcReq.flush({
-      displayedInfo: [{ text: 'New Monthly Payment', amount: 200 }],
-    });
-
-    await vi.waitFor(() => {
-      expect(ctx.loansStore.calculationResult()).toBeTruthy();
-      expect(ctx.loansStore.actionLoading()).toBe(false);
-    });
-
-    ctx.loansStore.initiatePrepayment({
-      payload: {
-        ...payload,
-        loanPrepaymentOption: 'partial',
-        paymentAccountId: 'acc-123',
-      } as any,
-    });
-
-    const initReq = ctx.httpMock.expectOne(
-      `${environment.apiUrl}/loans/loan-prepayment`,
-    );
-    initReq.flush({
+    const mockInitiateResponse = {
       success: true,
-      message: 'OTP Sent',
-      verify: { challengeId: 'challenge-123', method: 'sms' },
+      message: 'Success',
+      verify: { challengeId: 'challenge-abc', method: 'SMS' },
+    };
+
+    const mockVerifyResponse = {
+      success: true,
+      message: 'Payment completed successfully',
+    };
+
+    // 1. Calculate Prepayment
+    store.calculatePrepayment({
+      payload: {
+        loanId: mockLoan.id,
+        type: 'partial',
+        amount: 1000,
+        loanPartialPaymentType: 'reduceMonthlyPayment',
+      },
     });
 
-    await vi.waitFor(() => {
-      expect(ctx.loansStore.activeChallengeId()).toBe('challenge-123');
-
-      const alert = ctx.loansStore.alert();
-      expect(alert).toBeTruthy();
-      expect(alert?.message).toMatch(/otp_sent|OTP sent/i);
-    });
-
-    ctx.loansStore.verifyPrepayment({
-      payload: { challengeId: 'challenge-123', code: '1234' },
-    });
-
-    const verifyReq = ctx.httpMock.expectOne(
-      `${environment.apiUrl}/loans/verify-prepayment`,
+    // FIX: Match the Service URL (GET request to /calculate-partial-prepayment)
+    const calcReq = httpMock.expectOne(
+      (req) =>
+        req.url.includes('/loans/calculate-partial-prepayment') &&
+        req.method === 'GET' &&
+        req.params.get('loanId') === mockLoan.id &&
+        req.params.get('amount') === '1000' &&
+        req.params.get('option') === 'reduceMonthlyPayment',
     );
-    verifyReq.flush({ success: true, message: 'Paid successfully' });
+    calcReq.flush(mockCalculationResult);
 
-    const reloadReq = ctx.httpMock.expectOne(
-      (req) => req.url.includes('/loans') && req.method === 'GET',
+    expect(store.calculationResult()).toEqual(mockCalculationResult);
+
+    // 2. Initiate Prepayment
+    store.initiatePrepayment({
+      payload: {
+        loanId: mockLoan.id,
+        paymentAccountId: mockLoan.accountId,
+        amount: 1000,
+        loanPrepaymentOption: 'partial',
+        loanPartialPaymentType: 'reduceMonthlyPayment',
+      },
+    });
+
+    // FIX: Match the Service URL (POST request to /loan-prepayment)
+    const initiateReq = httpMock.expectOne(
+      (req) =>
+        req.url.includes('/loans/loan-prepayment') && req.method === 'POST',
+    );
+    initiateReq.flush(mockInitiateResponse);
+
+    expect(store.activeChallengeId()).toBe('challenge-abc');
+
+    // 3. Verify Prepayment
+    store.verifyPrepayment({
+      payload: {
+        challengeId: 'challenge-abc',
+        code: '123456',
+      },
+    });
+
+    // FIX: Match the Service URL (POST request to /verify-prepayment)
+    const verifyReq = httpMock.expectOne(
+      (req) =>
+        req.url.includes('/loans/verify-prepayment') && req.method === 'POST',
+    );
+    verifyReq.flush(mockVerifyResponse);
+
+    expect(store.activeChallengeId()).toBeNull();
+    expect(store.calculationResult()).toBeNull();
+    expect(store.loanDetailsCache()).toEqual({});
+    expect(store.actionLoading()).toBe(false);
+
+    // 4. Reload Loans
+    store.loadLoans({ forceChange: true });
+
+    const reloadReq = httpMock.expectOne(
+      (req) =>
+        req.url.endsWith('/loans') && // Be careful not to match /loans/something-else
+        req.method === 'GET',
     );
 
-    const updatedLoanList = [
+    const mockUpdatedLoans = [
       {
-        ...mockLoanResponse,
-        id: 'loan-approved',
-        remainingBalance: 4000,
+        ...mockLoan,
+        loanAmount: 9000,
+        friendlyName: 'Car Loan',
+        purpose: 'Vehicle',
       },
     ];
 
-    reloadReq.flush(updatedLoanList);
+    reloadReq.flush(mockUpdatedLoans);
 
-    await vi.waitFor(() => {
-      expect(ctx.loansStore.activeChallengeId()).toBeNull();
-      expect(ctx.loansStore.calculationResult()).toBeNull();
-
-      const loan = ctx.loansStore.loans()[0] as any;
-      expect(loan.remainingBalance).toBe(4000);
-    });
+    expect(store.loans().length).toBe(1);
+    expect(store.loans()[0].loanAmount).toBe(9000);
   });
 
-  it('should handle insufficient funds error during initiation', async () => {
-    patchState(ctx.loansStore as any, {
-      calculationResult: { displayedInfo: [] } as any,
-    });
-
-    ctx.loansStore.initiatePrepayment({
+  it('should handle prepayment verification failure', () => {
+    store.initiatePrepayment({
       payload: {
-        loanId: '1',
-        loanPrepaymentOption: 'full',
-        paymentAccountId: '1',
+        loanId: 'loan-123',
+        paymentAccountId: 'acc-1',
+        amount: 1000,
+        loanPrepaymentOption: 'partial',
+        loanPartialPaymentType: 'reduceMonthlyPayment',
       },
     });
 
-    const req = ctx.httpMock.expectOne(
-      `${environment.apiUrl}/loans/loan-prepayment`,
+    const initiateReq = httpMock.expectOne((req) =>
+      req.url.includes('/loans/loan-prepayment'),
     );
-
-    req.flush(
-      { message: 'Insufficient funds in payment account' },
-      { status: 400, statusText: 'Bad Request' },
-    );
-
-    await vi.waitFor(() => {
-      const alert = ctx.loansStore.alert();
-      expect(alert).toBeTruthy();
-      expect(alert?.message).toMatch(/insufficient_funds|Insufficient funds/i);
-      expect(alert?.type).toBe('error');
-      expect(ctx.loansStore.actionLoading()).toBe(false);
+    initiateReq.flush({
+      success: true,
+      message: 'Success',
+      verify: { challengeId: 'challenge-abc', method: 'SMS' },
     });
+
+    store.verifyPrepayment({
+      payload: {
+        challengeId: 'challenge-abc',
+        code: 'wrong-code',
+      },
+    });
+
+    const verifyReq = httpMock.expectOne((req) =>
+      req.url.includes('/loans/verify-prepayment'),
+    );
+
+    verifyReq.flush({
+      success: false,
+      message: 'Invalid verification code',
+    });
+
+    expect(store.error()).toBeTruthy();
+    expect(store.actionLoading()).toBe(false);
+    expect(store.activeChallengeId()).toBe('challenge-abc');
+  });
+
+  it('should clear cache after successful prepayment', () => {
+    store.loadLoanDetails('loan-123');
+
+    const detailsReq = httpMock.expectOne((req) =>
+      req.url.includes('/loans/loan-123'),
+    );
+    detailsReq.flush({
+      id: 'loan-123',
+      loanAmount: 10000,
+      friendlyName: 'Car Loan',
+    });
+
+    expect(Object.keys(store.loanDetailsCache()).length).toBe(1);
+
+    store.initiatePrepayment({
+      payload: {
+        loanId: 'loan-123',
+        loanPrepaymentOption: 'partial',
+        paymentAccountId: 'acc-1',
+        amount: 1000,
+        loanPartialPaymentType: 'full',
+      },
+    });
+
+    const initiateReq = httpMock.expectOne((req) =>
+      req.url.includes('/loans/loan-prepayment'),
+    );
+    initiateReq.flush({
+      success: true,
+      message: 'Success',
+      verify: { challengeId: 'challenge-abc', method: 'SMS' },
+    });
+
+    store.verifyPrepayment({
+      payload: { challengeId: 'challenge-abc', code: '123456' },
+    });
+
+    const verifyReq = httpMock.expectOne((req) =>
+      req.url.includes('/loans/verify-prepayment'),
+    );
+    verifyReq.flush({ success: true, message: 'Success' });
+
+    expect(store.loanDetailsCache()).toEqual({});
   });
 });

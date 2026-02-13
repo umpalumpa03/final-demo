@@ -32,7 +32,6 @@ export class AllLoans implements OnInit {
     this.container.isModalOpen.set(true);
   }
 
-  // Define retry logic
   public loadData(): void {
     this.store.loadLoans({ status: null, forceChange: true });
   }

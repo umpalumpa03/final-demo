@@ -1,10 +1,6 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { environment } from '../../../../../environments/environment';
-import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
-import {
-  selectLoading,
-  selectError,
-} from 'apps/tia-frontend/src/app/store/loans/loans.reducer';
+
 import {
   TestContext,
   setupLoansTest,
@@ -23,33 +19,32 @@ describe('Loans Integration - Request Loan Flow', () => {
   afterEach(() => {
     cleanupLoansTest(ctx.httpMock);
   });
+
   it('should request loan successfully', async () => {
-    ctx.globalStore.dispatch(
-      LoansCreateActions.requestLoan({ request: mockLoanRequest }),
-    );
+    ctx.loansStore.requestLoan(mockLoanRequest);
+
+    expect(ctx.loansStore.loading()).toBe(true);
 
     const req = ctx.httpMock.expectOne(`${environment.apiUrl}/loans/request`);
     expect(req.request.method).toBe('POST');
     req.flush(mockLoanResponse);
 
-    const reloadReq = ctx.httpMock.expectOne(
-      (r) => r.url.includes('/loans') && r.method === 'GET',
-    );
-    reloadReq.flush([]);
-
     await vi.waitFor(() => {
-      const loadingSignal = ctx.globalStore.selectSignal(selectLoading);
-      const errorSignal = ctx.globalStore.selectSignal(selectError);
+      expect(ctx.loansStore.loading()).toBe(false);
+      expect(ctx.loansStore.error()).toBeNull();
 
-      expect(loadingSignal()).toBe(false);
-      expect(errorSignal()).toBeNull();
+      const loans = ctx.loansStore.loans();
+      expect(loans.length).toBeGreaterThan(0);
+      expect(loans[0].id).toBe(mockLoanResponse.id);
+
+      const alert = ctx.loansStore.alert();
+      expect(alert?.type).toBe('success');
+      expect(alert?.message).toBeTruthy();
     });
   });
 
   it('should handle request loan failure', async () => {
-    ctx.globalStore.dispatch(
-      LoansCreateActions.requestLoan({ request: mockLoanRequest }),
-    );
+    ctx.loansStore.requestLoan(mockLoanRequest);
 
     const req = ctx.httpMock.expectOne(`${environment.apiUrl}/loans/request`);
 
@@ -59,11 +54,13 @@ describe('Loans Integration - Request Loan Flow', () => {
     );
 
     await vi.waitFor(() => {
-      const loadingSignal = ctx.globalStore.selectSignal(selectLoading);
-      const errorSignal = ctx.globalStore.selectSignal(selectError);
+      expect(ctx.loansStore.loading()).toBe(false);
 
-      expect(loadingSignal()).toBe(false);
-      expect(errorSignal()).toBe('Insufficient funds');
+      expect(ctx.loansStore.error()).toBe('Insufficient funds');
+
+      const alert = ctx.loansStore.alert();
+      expect(alert?.type).toBe('error');
+      expect(alert?.message).toBe('Insufficient funds');
     });
   });
 });

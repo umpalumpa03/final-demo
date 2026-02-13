@@ -13,21 +13,34 @@ describe('AllLoans', () => {
   let loansStoreMock: any;
   let loansContainerMock: any;
 
-  const mockLoans = [
-    { id: 'loan-1', status: 2, loanAmount: 5000 },
-    { id: 'loan-2', status: 1, loanAmount: 2000 },
-  ];
+  const mockLoans = [{ id: 'loan-1', status: 2, loanAmount: 5000 }];
 
   beforeEach(async () => {
     loansStoreMock = {
       loansWithAccountInfo: signal(mockLoans),
       filteredLoans: signal(mockLoans),
       loadLoans: vi.fn(),
+      // Must be signals for template access store.error()
+      error: signal(null),
+      loading: signal(false),
+
+      // Mock methods used in template
+      openDetails: vi.fn(),
+      renameLoan: vi.fn(),
+      isDetailsOpen: signal(false),
+      isPrepaymentOpen: signal(false),
+      selectedLoanDetails: signal(null),
+      activePrepaymentLoan: signal(null),
+      detailsLoading: signal(false),
+      closeModals: vi.fn(),
+      navigateDetails: vi.fn(),
+      openPrepayment: vi.fn(),
     };
 
     loansContainerMock = {
-      isModalOpen: { set: vi.fn() },
+      isModalOpen: signal(false),
     };
+    (loansContainerMock.isModalOpen as any).set = vi.fn();
 
     await TestBed.configureTestingModule({
       imports: [AllLoans, TranslateModule.forRoot()],
@@ -52,6 +65,9 @@ describe('AllLoans', () => {
   });
 
   it('should call loadLoans on init', () => {
-    expect(loansStoreMock.loadLoans).toHaveBeenCalledWith({ status: null });
+    expect(loansStoreMock.loadLoans).toHaveBeenCalledWith({
+      status: null,
+      forceChange: true,
+    });
   });
 });

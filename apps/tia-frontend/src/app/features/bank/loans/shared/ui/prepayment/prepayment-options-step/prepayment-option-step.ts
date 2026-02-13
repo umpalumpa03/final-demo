@@ -18,6 +18,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LoansStore } from '../../../../store/loans.store';
 import { LoanPrepaymentState } from '../../../state/loan-prepayment.state';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-prepayment-option-step',
@@ -56,19 +57,17 @@ export class PrepaymentOptionStep {
 
   constructor() {
     this.form.controls.type.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe((type) => {
-        const amountCtrl = this.form.controls.amount;
-        const calcCtrl = this.form.controls.calculationOption;
+      .pipe(
+        tap((type) => {
+          const isFull = type === 'full';
+          const { amount, calculationOption } = this.form.controls;
 
-        if (type === 'full') {
-          amountCtrl.disable();
-          calcCtrl.disable();
-        } else {
-          amountCtrl.enable();
-          calcCtrl.enable();
-        }
-      });
+          isFull ? amount.disable() : amount.enable();
+          isFull ? calculationOption.disable() : calculationOption.enable();
+        }),
+        takeUntilDestroyed(),
+      )
+      .subscribe();
   }
 
   public ngOnInit(): void {

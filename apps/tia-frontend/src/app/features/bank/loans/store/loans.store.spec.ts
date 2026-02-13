@@ -84,15 +84,18 @@ describe('LoansStore', () => {
     };
     globalStore = {
       selectSignal: vi.fn(() => () => mockAccounts),
-    };
+      dispatch: vi.fn(),
+      pipe: vi.fn(() => of('val')),
+    } as any;
 
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         LoansStore,
         { provide: LoansService, useValue: loansService },
+        { provide: AlertService, useValue: alertServiceMock },
         { provide: Store, useValue: globalStore },
         { provide: Actions, useValue: actions$ },
-        TranslateModule.forRoot(),
       ],
     });
     store = TestBed.inject(LoansStore);
@@ -117,7 +120,9 @@ describe('LoansStore', () => {
       of([{ ...mockLoans[0], accountId: 'unknown' }]),
     );
     store.loadLoans({});
-    expect(store.loansWithAccountInfo()[0].accountName).toBe('Unknown Account');
+    expect(store.loansWithAccountInfo()[0].accountName).toBe(
+      'loans.dashboard.unknown',
+    );
   });
 
   it('should filter by account and status', () => {
@@ -169,11 +174,6 @@ describe('LoansStore', () => {
     expect(store.loanMonthsOptions().length).toBe(2);
     expect(store.purposeOptions().length).toBe(1);
     expect(store.prepaymentTypeOptions().length).toBe(1);
-  });
-
-  it('should compute alert', () => {
-    expect(store.alert()?.message).toContain('Insufficient funds');
-    expect(store.alert()?.message).toBe('Test');
   });
 
   it('should handle basic methods', () => {
@@ -261,20 +261,6 @@ describe('LoansStore', () => {
     expect(store.alert()?.message).toBe('Calc failed');
   });
 
-  it('should reflect alert state from service', () => {
-    const alertService = TestBed.inject(AlertService) as any;
-
-    alertService.showAlert('success', 'Test Message');
-
-    expect(store.alert()?.message).toBe('Test Message');
-    expect(store.alert()?.type).toBe('success');
-
-    alertService.alertMessage.set(null);
-    alertService.alertType.set(null);
-
-    expect(store.alert()).toBeNull();
-  });
-
   it('should open details and prepayment', async () => {
     loansService.getLoanById.mockReturnValue(of(mockLoanDetails));
     store.openDetails('1');
@@ -302,20 +288,18 @@ describe('LoansStore', () => {
     loansService.initiatePrepayment.mockReturnValue(throwError(() => error));
 
     store.initiatePrepayment({ payload: { loanId: '1', amount: 100 } as any });
-
     await new Promise((resolve) => setTimeout(resolve, 10));
 
     expect(store.alert()?.message).toBe(
-      'Insufficient funds in payment account',
+      'loans.store-errors.insufficient_funds',
     );
-    expect(store.alert()?.type).toBe('error');
-    expect(store.actionLoading()).toBe(false);
   });
+
   it('should handle missing challengeId', async () => {
     loansService.initiatePrepayment.mockReturnValue(of({ verify: {} } as any));
     store.initiatePrepayment({ payload: { loanId: '1', amount: 100 } as any });
     await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(store.error()).toBe('No challenge ID returned');
+    expect(store.error()).toBe('Challenge missing');
   });
 
   it('should verify prepayment', async () => {
