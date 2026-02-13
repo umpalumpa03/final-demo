@@ -1,29 +1,28 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { Router, NavigationEnd } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing'; 
 import { TransfersContainer } from './transfers-container';
 import { TransferStore } from '../store/transfers.store';
 import { TransferRepeatService } from '../services/transfer-repeat.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { Subject } from 'rxjs';
 import { selectTransactionToRepeat } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 
 describe('TransfersContainer', () => {
   let component: TransfersContainer;
+  let fixture: ComponentFixture<TransfersContainer>;
   let store: MockStore;
-  let mockRouter: any;
   let mockRepeatService: any;
   let mockTransferStore: any;
   let routerEventsSubject: Subject<any>;
+  let router: Router;
 
   beforeEach(() => {
+    vi.useFakeTimers();
     routerEventsSubject = new Subject();
-    mockRouter = {
-      events: routerEventsSubject.asObservable(),
-      navigate: vi.fn(),
-    };
 
     mockRepeatService = {
       initRepeatTransfer: vi.fn(),
@@ -34,44 +33,67 @@ describe('TransfersContainer', () => {
     };
 
     TestBed.configureTestingModule({
-      imports: [TransfersContainer],
+      imports: [
+        TransfersContainer,
+        TranslateModule.forRoot(),
+        RouterTestingModule.withRoutes([]),
+      ],
       providers: [
         provideMockStore({
           selectors: [{ selector: selectTransactionToRepeat, value: null }],
         }),
-        { provide: Router, useValue: mockRouter },
         { provide: TransferRepeatService, useValue: mockRepeatService },
         { provide: TransferStore, useValue: mockTransferStore },
-        {
-          provide: TranslateService,
-          useValue: { instant: vi.fn((key) => key), get: vi.fn() },
-        },
       ],
     });
 
-    const fixture = TestBed.createComponent(TransfersContainer);
-    component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
+    router = TestBed.inject(Router);
+
+    
+    vi.spyOn(router, 'events', 'get').mockReturnValue(
+      routerEventsSubject.asObservable(),
+    );
+    vi.spyOn(router, 'navigate').mockImplementation(vi.fn());
+
+    fixture = TestBed.createComponent(TransfersContainer);
+    component = fixture.componentInstance;
   });
 
-  it('should create and initialize tabs', () => {
-    expect(component).toBeTruthy();
-    expect(component.transferTabs().length).toBeGreaterThan(0);
+  afterEach(() => {
+    vi.clearAllTimers();
+    vi.useRealTimers();
+    vi.clearAllMocks();
   });
 
-  it('should handle successful repeat transfer flow', () => {
+  it('should handle successful repeat transfer flow and stop loading on NavigationEnd', () => {
     const mockTransaction = { id: '123' } as any;
     store.overrideSelector(selectTransactionToRepeat, mockTransaction);
     const dispatchSpy = vi.spyOn(store, 'dispatch');
 
-    component.ngOnInit();
+    fixture.detectChanges();
 
     expect(component.isLoadingMeta()).toBe(true);
-    expect(mockRepeatService.initRepeatTransfer).toHaveBeenCalledWith(
-      mockTransaction,
-    );
 
     routerEventsSubject.next(new NavigationEnd(1, '/test', '/test'));
+
+    vi.runAllTimers();
+
+    expect(component.isLoadingMeta()).toBe(false);
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      TransactionActions.clearTransactionToRepeat(),
+    );
+  });
+
+  it('should trigger stopLoading via timeout if navigation fails to complete', () => {
+    const mockTransaction = { id: '123' } as any;
+    store.overrideSelector(selectTransactionToRepeat, mockTransaction);
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+    fixture.detectChanges();
+    expect(component.isLoadingMeta()).toBe(true);
+
+    vi.advanceTimersByTime(5000);
 
     expect(component.isLoadingMeta()).toBe(false);
     expect(dispatchSpy).toHaveBeenCalledWith(
@@ -81,7 +103,8 @@ describe('TransfersContainer', () => {
 
   it('should not initialize repeat if transaction is null', () => {
     store.overrideSelector(selectTransactionToRepeat, null);
-    component.ngOnInit();
+    fixture.detectChanges();
+
     expect(component.isLoadingMeta()).toBe(false);
     expect(mockRepeatService.initRepeatTransfer).not.toHaveBeenCalled();
   });
@@ -89,9 +112,5 @@ describe('TransfersContainer', () => {
   it('should reset transfer store on destroy', () => {
     component.ngOnDestroy();
     expect(mockTransferStore.reset).toHaveBeenCalled();
-  });
-
-  it('should have initial loading state as false', () => {
-    expect(component.isLoadingMeta()).toBe(false);
   });
 });

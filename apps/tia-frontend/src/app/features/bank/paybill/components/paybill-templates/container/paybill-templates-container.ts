@@ -13,6 +13,7 @@ import { Store } from '@ngrx/store';
 import {
   selectCategories,
   selectFilteredProviders,
+  selectFormPayload,
   selectLoading,
   selectPaymentFields,
   selectProviders,
@@ -194,9 +195,7 @@ export class PaybillTemplatesContainer implements OnInit {
         }),
       );
     },
-    'confirm-payment': (values) => {
-      // ShOULD ADD
-    },
+    'confirm-payment': (values) => {},
   };
 
   public readonly searchControl = new FormControl('');
@@ -240,13 +239,13 @@ export class PaybillTemplatesContainer implements OnInit {
             this.store.select(selectTemplatesAsTreeItems),
             this.store.select(selectTemplatesGroupWithConfigs),
           ]).pipe(
-            map(([templates, groups]) =>
-              this.paybillTemplateService.filterTemplatesAndGroups(
+            map(([templates, groups]) => {
+              return this.paybillTemplateService.filterTemplatesAndGroups(
                 searchValue ?? '',
                 templates,
                 groups,
-              ),
-            ),
+              );
+            }),
           ),
         ),
         tap((filtered) => {
@@ -284,10 +283,13 @@ export class PaybillTemplatesContainer implements OnInit {
     this.isModalOpen.update((val) => !val);
 
     if (willClose) {
+      if (this.selectAll()) {
+        this.selectAll.update((val) => !val);
+      }
+
       this.modalType.set(null);
       this.selectedId.set('');
       this.selectedItemName.set('');
-
       this.store.dispatch(TemplatesPageActions.clearPaymentInfo());
     }
     // To clear store after closing modal
@@ -494,5 +496,18 @@ export class PaybillTemplatesContainer implements OnInit {
         selectedItems: selectedTemplates,
       }),
     );
+  }
+  public isOtpModalOpen = signal(false);
+  public isPaymentModalHidden = signal(false);
+
+  public onPayAction() {
+    this.isPaymentModalHidden.set(true);
+    this.isOtpModalOpen.set(true);
+
+    // this.store.dispatch(
+    //   TemplatesPageActions.payManyBills({
+    //     payments: this.billsList.buildPayload(),
+    //   }),
+    // );
   }
 }

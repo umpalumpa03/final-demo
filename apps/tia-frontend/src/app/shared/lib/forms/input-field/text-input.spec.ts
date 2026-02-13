@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TextInput } from './text-input';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('TextInput', () => {
   let component: TextInput;
@@ -9,7 +10,7 @@ describe('TextInput', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TextInput, ReactiveFormsModule],
+      imports: [TextInput, ReactiveFormsModule, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TextInput);
@@ -26,7 +27,6 @@ describe('TextInput', () => {
     fixture.detectChanges();
 
     const config = component['mergedConfig']();
-
     expect(config).toBeDefined();
   });
 
@@ -51,5 +51,48 @@ describe('TextInput', () => {
     (component as any).handleBlur(blurEvent);
 
     expect((component as any).isCapsLockOn()).toBe(false);
+  });
+
+  describe('Date Validation', () => {
+    it('should validate min date constraint', () => {
+      fixture.componentRef.setInput('type', 'date');
+      fixture.componentRef.setInput('config', { min: '2023-01-01' });
+      fixture.detectChanges();
+
+      const event = { target: { value: '2022-12-31', type: 'date' } } as any;
+
+      component['handleInput'](event);
+
+      const errors = component['internalValidationErrors']();
+      expect(errors.length).toBe(1);
+      expect(errors[0].type).toBe('min');
+    });
+
+    it('should validate max date constraint', () => {
+      fixture.componentRef.setInput('type', 'date');
+      fixture.componentRef.setInput('config', { max: '2023-12-31' });
+      fixture.detectChanges();
+
+      const event = { target: { value: '2024-01-01', type: 'date' } } as any;
+      component['handleInput'](event);
+
+      const errors = component['internalValidationErrors']();
+      expect(errors.length).toBe(1);
+      expect(errors[0].type).toBe('max');
+    });
+
+    it('should clear errors when input becomes valid or empty', () => {
+      fixture.componentRef.setInput('type', 'date');
+      fixture.componentRef.setInput('config', { min: '2023-01-01' });
+      fixture.detectChanges();
+
+      let event = { target: { value: '2020-01-01', type: 'date' } } as any;
+      component['handleInput'](event);
+      expect(component['internalValidationErrors']().length).toBe(1);
+
+      event = { target: { value: '', type: 'date' } } as any;
+      component['handleInput'](event);
+      expect(component['internalValidationErrors']().length).toBe(0);
+    });
   });
 });

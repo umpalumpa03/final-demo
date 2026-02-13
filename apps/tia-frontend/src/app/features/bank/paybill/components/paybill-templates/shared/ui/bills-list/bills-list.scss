@@ -4,7 +4,7 @@
 .bill {
   &__item {
     @include flex-center($justify: space-between);
-    background-color: $gray-25;
+    background-color: $white;
     padding: 1.2rem;
     margin-bottom: 0.8rem;
 
