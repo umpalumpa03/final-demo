@@ -1,7 +1,4 @@
-export type OtpVerificationType =
-  | 'otp'
-  | 'sign-up'
-  | 'forgot-password'
+export type OtpVerificationType = 'otp' | 'sign-up' | 'forgot-password';
 
 export interface IOtpVerificationConfig {
   title?: string;
