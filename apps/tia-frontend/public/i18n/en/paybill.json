@@ -35,6 +35,12 @@
         "date_time": "Date & Time"
       }
     },
+    "error": {
+      "verification_missing_title": "Verification Data Missing",
+      "payment_missing_title": "Payment Data Missing",
+      "missing_data_message": "We couldn't find your payment details. Please restart the payment process.",
+      "back_to_categories": "Back to Categories"
+    },
     "form": {
       "subtitle": "Enter your bill details",
       "account_label": "Account Number / Customer ID",
