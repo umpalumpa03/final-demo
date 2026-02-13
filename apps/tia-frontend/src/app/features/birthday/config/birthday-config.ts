@@ -1,4 +1,4 @@
-import { BirthdayEmoji } from "../models/birthday-models";
+import { BirthdayEmoji } from "../models/birthday-model";
 
 export const BIRTHDAY_EMOJIS: BirthdayEmoji[] = [
   { name: 'header', svgPath: 'images/svg/birthday/birthday-top-icon.svg' },
