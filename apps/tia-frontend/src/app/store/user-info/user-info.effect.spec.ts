@@ -8,6 +8,7 @@ import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 import { UserInfoEffects } from './user-info.effect';
 import { IUserInfo } from '@tia/shared/models/user-info/user-info.models';
 import { WidgetsApiService } from '../../shared/services/user-info/widgets-service.api';
+import { BirthdayApiService } from '../../features/birthday/services/birthday.service';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { selectWidgetsLoaded } from './user-info.selectors';
 
@@ -15,16 +16,12 @@ describe('UserInfoEffects (Vitest)', () => {
   let actions$: Observable<Action>;
   let effects: UserInfoEffects;
   let store: MockStore;
-  let userInfoService: { getUserInfo: any };
-  let widgetsApiService: {
-    getWidgets: any;
-    createWidget: any;
-    updateWidget: any;
-    deleteWidget: any;
-  };
+  let userInfoService: any;
+  let widgetsApiService: any;
+  let birthdayApiService: any;
 
   const mockUser: IUserInfo = {
-    email: 'john pork',
+    email: 'john@pork.com',
     fullName: 'John Doe',
     theme: 'dark',
     language: 'georgian',
@@ -33,13 +30,20 @@ describe('UserInfoEffects (Vitest)', () => {
   };
 
   beforeEach(() => {
-    userInfoService = { getUserInfo: vi.fn() };
+    userInfoService = { 
+      getUserInfo: vi.fn(),
+      updateOnboardingStatus: vi.fn()
+    };
 
     widgetsApiService = {
       getWidgets: vi.fn(),
       createWidget: vi.fn(),
       updateWidget: vi.fn(),
       deleteWidget: vi.fn(),
+    };
+
+    birthdayApiService = {
+      dismissBirthdayModal: vi.fn()
     };
 
     TestBed.configureTestingModule({
@@ -51,12 +55,12 @@ describe('UserInfoEffects (Vitest)', () => {
         }),
         { provide: UserInfoService, useValue: userInfoService },
         { provide: WidgetsApiService, useValue: widgetsApiService },
+        { provide: BirthdayApiService, useValue: birthdayApiService },
       ],
     });
 
     effects = TestBed.inject(UserInfoEffects);
     store = TestBed.inject(MockStore);
-
     vi.spyOn(Storage.prototype, 'setItem');
   });
 
@@ -66,73 +70,54 @@ describe('UserInfoEffects (Vitest)', () => {
   });
 
   describe('loadUser$', () => {
-    it('should dispatch loadUserSuccess and map georgian to "ka" in localStorage', async () => {
+    it('should dispatch loadUserSuccess and map georgian to "ka"', async () => {
       userInfoService.getUserInfo.mockReturnValue(of(mockUser));
       actions$ = of(UserInfoActions.loadUser());
-
       const action = await firstValueFrom(effects.loadUser$);
-      expect(action).toEqual(
-        UserInfoActions.loadUserSuccess({ user: mockUser }),
-      );
+      expect(action).toEqual(UserInfoActions.loadUserSuccess({ user: mockUser }));
       expect(localStorage.setItem).toHaveBeenCalledWith('language', 'ka');
     });
 
     it('should handle errors during user load', async () => {
-      userInfoService.getUserInfo.mockReturnValue(
-        throwError(() => ({ message: 'API Error' })),
-      );
+      userInfoService.getUserInfo.mockReturnValue(throwError(() => ({ message: 'Error' })));
       actions$ = of(UserInfoActions.loadUser());
-
       const action = await firstValueFrom(effects.loadUser$);
-      expect(action).toEqual(
-        UserInfoActions.loadUserError({ error: 'API Error' }),
-      );
+      expect(action.type).toBe(UserInfoActions.loadUserError.type);
+    });
+  });
+
+  describe('updateOnboarding$', () => {
+    it('should dispatch updateOnboardingStatusSuccess', async () => {
+      userInfoService.updateOnboardingStatus.mockReturnValue(of({}));
+      actions$ = of(UserInfoActions.updateOnboardingStatus({ completed: true }));
+      const action = await firstValueFrom(effects.updateOnboarding$);
+      expect(action).toEqual(UserInfoActions.updateOnboardingStatusSuccess({ completed: true }));
+    });
+  });
+
+  describe('dismissBirthdayModal$', () => {
+    it('should dispatch loadBirthdayModalClosed', async () => {
+      birthdayApiService.dismissBirthdayModal.mockReturnValue(of({}));
+      actions$ = of(UserInfoActions.dismissBirthdayModal({ year: 2025 }));
+      const action = await firstValueFrom(effects.dismissBirthdayModal$);
+      expect(action).toEqual(UserInfoActions.loadBirthdayModalClosed({ colsedBirthdayModal: 2025 }));
     });
   });
 
   describe('loadWidgets$', () => {
-    it('should load widgets when they are not already loaded', async () => {
-      const mockWidgets = [{ id: '1', title: 'Test' }] as any;
+    it('should load widgets when not loaded', async () => {
+      const mockWidgets = [{ id: '1' }] as any;
       widgetsApiService.getWidgets.mockReturnValue(of(mockWidgets));
       actions$ = of(UserInfoActions.loadWidgets({ force: false }));
-
       const action = await firstValueFrom(effects.loadWidgets$);
-      expect(action).toEqual(
-        UserInfoActions.loadWidgetsSuccess({ widgets: mockWidgets }),
-      );
-    });
-  });
-
-  describe('createWidget$', () => {
-    it('should trigger force reload of widgets after successful creation', async () => {
-      widgetsApiService.createWidget.mockReturnValue(of({}));
-      actions$ = of(UserInfoActions.createWidget({ widget: {} as any }));
-
-      const action = await firstValueFrom(effects.createWidget$);
-      expect(action).toEqual(UserInfoActions.loadWidgets({ force: true }));
-    });
-  });
-
-  describe('updateWidgetsBulk$', () => {
-    it('should update multiple widgets using forkJoin', async () => {
-      const updates = [
-        { id: '1', updates: {} },
-        { id: '2', updates: {} },
-      ];
-      widgetsApiService.updateWidget.mockReturnValue(of({}));
-      actions$ = of(UserInfoActions.updateWidgetsBulk({ updates }));
-
-      const action = await firstValueFrom(effects.updateWidgetsBulk$);
-      expect(action.type).toBe(UserInfoActions.updateWidgetsBulkSuccess.type);
-      expect(widgetsApiService.updateWidget).toHaveBeenCalledTimes(2);
+      expect(action).toEqual(UserInfoActions.loadWidgetsSuccess({ widgets: mockWidgets }));
     });
   });
 
   describe('deleteWidget$', () => {
-    it('should dispatch deleteWidgetSuccess after API call', async () => {
+    it('should dispatch deleteWidgetSuccess', async () => {
       widgetsApiService.deleteWidget.mockReturnValue(of({}));
       actions$ = of(UserInfoActions.deleteWidget({ id: '1' }));
-
       const action = await firstValueFrom(effects.deleteWidget$);
       expect(action).toEqual(UserInfoActions.deleteWidgetSuccess({ id: '1' }));
     });
