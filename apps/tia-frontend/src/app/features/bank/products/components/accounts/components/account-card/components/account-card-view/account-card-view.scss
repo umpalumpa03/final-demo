@@ -9,7 +9,7 @@
   max-width: 100%;
   min-height: 30rem;
   min-width: 16rem;
-  overflow: hidden;
+  overflow: visible;
 
   &__header {
     @include flex-center();
@@ -55,20 +55,28 @@
       min-width: 0;
       @include flex-center(column, flex-start, flex-start);
 
+      app-tooltip {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        margin-bottom: 0.25rem;
+      }
+
       &-title {
         @include flex-center($justify: flex-start);
         gap: 0.5rem;
-        margin-bottom: 0.25rem;
         width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        min-width: 0;
+        flex-wrap: nowrap;
+
+        app-badges {
+          flex-shrink: 0;
+        }
 
         &-wrapper {
           @include flex-center($justify: flex-start);
           gap: 0.5rem;
           cursor: pointer;
-          padding: 0.25rem 0.5rem;
           border-radius: 0.4rem;
           transition: background-color 0.2s ease;
           flex: 1;
@@ -378,6 +386,11 @@
           flex-wrap: wrap;
           align-items: center;
 
+          app-tooltip {
+            flex: 1 1 0;
+            min-width: 0;
+          }
+
           h3 {
             flex-basis: auto;
             @include font-arimo(500, 1.8rem, 1.2);
@@ -389,7 +402,8 @@
           }
 
           app-badges {
-            flex-basis: 100%;
+            flex-basis: auto;
+            flex-shrink: 0;
           }
         }
       }

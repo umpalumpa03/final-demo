@@ -22,11 +22,11 @@
           (keydown.enter)="handleSave()"
         />
         } @else {
-        <div class="account-card__header-info-title">
-          <app-tooltip
-            [content]="'my-products.accounts.card.clickToRename' | translate"
-            [placement]="'bottom'"
-          >
+        <app-tooltip
+          [content]="'my-products.accounts.card.clickToRename' | translate"
+          [placement]="'top'"
+        >
+          <div class="account-card__header-info-title">
             <div
               class="account-card__header-info-title-wrapper"
               (click)="handleRenameClick()"
@@ -43,36 +43,36 @@
                 <img src="/images/svg/account/edit.svg" alt="Edit" />
               </div>
             </div>
-          </app-tooltip>
-          @if (account().isFavorite) {
-          <div
-            class="account-card__header-favorite account-card__header-favorite--small-screen"
-          >
-            <img
-              src="images/svg/settings/approve-cards/favorite.svg"
-              alt="favorite"
-              class="account-card__header-favorite-icon"
-            />
+            @if (account().isFavorite) {
+            <div
+              class="account-card__header-favorite account-card__header-favorite--small-screen"
+            >
+              <img
+                src="images/svg/settings/approve-cards/favorite.svg"
+                alt="favorite"
+                class="account-card__header-favorite-icon"
+              />
+            </div>
+            } @if (account().status === 'active') {
+            <app-badges
+              [variant]="'default'"
+              [size]="'medium'"
+              [shape]="'pill'"
+              [text]="'my-products.accounts.card.active' | translate"
+            ></app-badges>
+            } @if (account().isFavorite) {
+            <div
+              class="account-card__header-favorite account-card__header-favorite--large-screen"
+            >
+              <img
+                src="images/svg/settings/approve-cards/favorite.svg"
+                alt="favorite"
+                class="account-card__header-favorite-icon"
+              />
+            </div>
+            }
           </div>
-          } @if (account().status === 'active') {
-          <app-badges
-            [variant]="'default'"
-            [size]="'medium'"
-            [shape]="'pill'"
-            [text]="'my-products.accounts.card.active' | translate"
-          ></app-badges>
-          } @if (account().isFavorite) {
-          <div
-            class="account-card__header-favorite account-card__header-favorite--large-screen"
-          >
-            <img
-              src="images/svg/settings/approve-cards/favorite.svg"
-              alt="favorite"
-              class="account-card__header-favorite-icon"
-            />
-          </div>
-          }
-        </div>
+        </app-tooltip>
         <p class="account-card__header-info-number">{{ account().iban }}</p>
         } @if (isEditing() && renameError()) {
         <p class="account-card__header-info-edit-error">{{ renameError() }}</p>

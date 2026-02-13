@@ -55,7 +55,7 @@
       "save": "შენახვა",
       "saving": "მიმდინარეობს შენახვა...",
       "cancel": "გაუქმება",
-      "clickToRename": "დააჭირეთ ანგარიშს სახელის შესაცვლელად",
+      "clickToRename": "დააჭირეთ სახელის შესაცვლელად",
       "active": "აქტიური",
       "availableBalance": "ხელმისაწვდომი ბალანსი",
       "type": "ტიპი",
@@ -110,8 +110,8 @@
       "backToCards": "ბარათების გვერდზე დაბრუნება",
       "cardTitle": "სწრაფი მოქმედებები",
       "manageYourCard": "მართეთ თქვენი ბარათი და ტრანზაქციები",
-         "cardInfo":"ბარათის ინფორმაცია", 
-      "cardDetails":"ბარათის დეტალური ინფორმაცია",
+      "cardInfo": "ბარათის ინფორმაცია",
+      "cardDetails": "ბარათის დეტალური ინფორმაცია",
 
       "card-info-section": {
         "cardName": "ბარათის სახელი",
@@ -135,14 +135,14 @@
       "cardPreview": {
         "cardPreview": "ბარათის მიმოხილვა",
         "SelectDesign": "შეარჩიეთ დიზაინი"
-      }, 
-      "create-card-form":{
-        "cancelBtn":"გაუქმება", 
-        "creating": "მუშავდება", 
+      },
+      "create-card-form": {
+        "cancelBtn": "გაუქმება",
+        "creating": "მუშავდება",
         "createCard": "დამატება"
-      }, 
-      "design-selector":{
-        "cardDesign":"შეარჩიეთ ბარათის დიზაინი"
+      },
+      "design-selector": {
+        "cardDesign": "შეარჩიეთ ბარათის დიზაინი"
       }
     },
     "card-details-modal": {
@@ -166,8 +166,8 @@
     },
     "card-transactions": {
       "backToCard": "ბარათის დეტალებზე დაბრუნება",
-            "transactionHistory":"ტრანზაქციების ისტორია",
-      "allTransactions":"ბარათის ყველა ტრანზაქცია",
+      "transactionHistory": "ტრანზაქციების ისტორია",
+      "allTransactions": "ბარათის ყველა ტრანზაქცია",
       "transaction-card-header": {
         "linkedTo": "ბარათი ეკუთვნის: ",
         "totalTransactions": "ტრანზაქციების რაოდენობა:"
