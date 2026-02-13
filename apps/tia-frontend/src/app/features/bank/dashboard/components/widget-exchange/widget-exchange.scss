@@ -13,6 +13,10 @@
   }
 }
 
+.loader-wrapper{
+  height: 33rem;
+}
+
 .exchange-rate-card {
   @include display-flex(row);
   justify-content: space-between;
