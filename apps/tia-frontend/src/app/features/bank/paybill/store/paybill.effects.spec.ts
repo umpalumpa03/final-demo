@@ -742,4 +742,23 @@ describe('PaybillEffect (Refactored)', () => {
       );
     });
   });
+
+  it('moveTemplate$: should only remove if groupId is null', () => {
+    paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(of());
+
+    actions$ = of(
+      TemplatesPageActions.moveTemplate({ groupId: null, templateId: 'T1' }),
+    );
+
+    effects.moveTemplate$.subscribe((action) => {
+      expect(action).toEqual(
+        TemplatesPageActions.moveTemplateSuccess({
+          message: 'Item removed successfully',
+          groupId: null,
+          templateId: 'T1',
+        }),
+      );
+      expect(paybillTemplatesService.addTemplateToGroup).not.toHaveBeenCalled();
+    });
+  });
 });
