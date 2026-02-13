@@ -5,6 +5,8 @@
 .profile-photo {
   display: block;
   width: 100%;
+  position: relative;
+
 
   &__alert-container {
     position: fixed;
@@ -72,17 +74,16 @@
     margin-top: 2.4rem;
   }
 
-  &__defaults-loading {
-    @include flex-center();
-    gap: 0.8rem;
-    margin-top: 1.6rem;
-    color: var(--color-fg);
-  }
-
   &__defaults-list {
     @include display-flex(row, wrap);
     gap: 1.2rem;
     margin-top: 1.6rem;
+  }
+
+  &__skeleton-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   &__avatar-button {

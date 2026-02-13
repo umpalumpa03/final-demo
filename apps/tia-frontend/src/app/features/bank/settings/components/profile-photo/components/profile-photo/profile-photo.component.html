@@ -17,8 +17,6 @@
             class="profile-photo__avatar-main-image"
             (error)="onImageError()"
           />
-          } @else if (defaultAvatarsLoading()) {
-          <app-spinner size="6rem"></app-spinner>
           } @else {
           <app-avatar
             [initials]="initials()"
@@ -41,10 +39,13 @@
 
     <div class="profile-photo__defaults-section">
       <h3 class="profile-photo__section-title">{{ 'settings.profile-photo.defaultAvatar' | translate }}</h3>
-      @if (defaultAvatarsLoading()) {
-      <div class="profile-photo__defaults-loading">
-        <app-spinner size="6rem"></app-spinner>
-        <span>{{ 'settings.profile-photo.loadingDefaultAvatars' | translate }}</span>
+      @if (defaultAvatarsLoading() || savingChanges()) {
+      <div class="profile-photo__defaults-list">
+        @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <div class="profile-photo__skeleton-avatar">
+          <app-skeleton variant="circle" height="4.8rem" width="4.8rem"></app-skeleton>
+        </div>
+        }
       </div>
       } @else {
       <div class="profile-photo__defaults-list">

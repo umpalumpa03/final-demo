@@ -7,10 +7,10 @@ import {
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TranslatePipe } from '@ngx-translate/core';
-import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { Avatar } from '@tia/shared/lib/data-display/avatars/avatar';
 import { DefaultAvatarWithUrl } from '../../store/profile-photo/profile-photo.state';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 
 @Component({
   selector: 'app-profile-photo',
@@ -18,9 +18,9 @@ import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
     BasicCard,
     ButtonComponent,
     TranslatePipe,
-    Spinner,
     Avatar,
     UiModal,
+    Skeleton,
   ],
   templateUrl: './profile-photo.component.html',
   styleUrl: './profile-photo.component.scss',
