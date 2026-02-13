@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
 import { LibraryTitle } from '../../../shared/library-title/library-title';
 import { Tables } from '@tia/shared/lib/tables/components/tables';
 import { TableConfig } from '@tia/shared/lib/tables/models/table.model';
@@ -14,26 +19,35 @@ import {
   strippedTable,
   transactionsTable,
 } from '../config/tables.config';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-tables-layout',
-  imports: [LibraryTitle, Tables, ShowcaseCard],
+  imports: [LibraryTitle, Tables, ShowcaseCard, TranslatePipe],
   templateUrl: './tables-layout.html',
   styleUrl: './tables-layout.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TablesLayout {
-  public basicConfig = signal<TableConfig>({ ...basicTable });
-  public rowConfig = signal<TableConfig>({ ...rowTable });
-  public actionsConfig = signal<TableConfig>({ ...actionsTable });
-  public sortableConfig = signal<TableConfig>({ ...sortableTable });
-  public strippedConfig = signal<TableConfig>({ ...strippedTable });
-  public compactConfig = signal<TableConfig>({ ...compactTable });
-  public rowStatesConfig = signal<TableConfig>({ ...rowStates });
-  public transactionsConfig = signal<TableConfig>({ ...transactionsTable });
+  private translate = inject(TranslateService);
+  public basicConfig = signal<TableConfig>(basicTable(this.translate));
+  public rowConfig = signal<TableConfig>(rowTable(this.translate));
+  public actionsConfig = signal<TableConfig>(actionsTable(this.translate));
+  public sortableConfig = signal<TableConfig>(sortableTable(this.translate));
+  public strippedConfig = signal<TableConfig>(strippedTable(this.translate));
+  public compactConfig = signal<TableConfig>(compactTable(this.translate));
+  public rowStatesConfig = signal<TableConfig>(rowStates(this.translate));
+  public transactionsConfig = signal<TableConfig>(
+    transactionsTable(this.translate),
+  );
 
-  private readonly rowsPaginationData: TableConfig['rows'] = rowsForPagination;
-  private readonly rowsInitialPageData: TableConfig['rows'] = basicTable.rows;
+  // Accessing row data now requires calling the function first
+  private readonly rowsPaginationData: TableConfig['rows'] = rowsForPagination(
+    this.translate,
+  );
+  private readonly rowsInitialPageData: TableConfig['rows'] = basicTable(
+    this.translate,
+  ).rows;
 
   public isLoading = signal<boolean>(false);
   public hasError = signal<boolean>(false);
