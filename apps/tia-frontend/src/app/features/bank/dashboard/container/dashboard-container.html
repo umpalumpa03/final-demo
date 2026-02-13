@@ -37,9 +37,10 @@
   }@else { @if (visibleItems().length === 0) {
   <app-error-states
     variant="not-found"
-    header="No Widgets Available"
-    message="You do not have any widgets"
+    [header]="'dashboard.page.not-available' | translate"
+    [message]="'dashboard.page.not-available-subtitle' | translate"
     [showButton]="false"
+    maxWidth="100%"
   />
   }@else{
   <app-drag-container
