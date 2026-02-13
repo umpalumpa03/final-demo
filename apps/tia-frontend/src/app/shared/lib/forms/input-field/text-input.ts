@@ -5,7 +5,7 @@ import {
   ChangeDetectionStrategy,
   inject,
 } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core'; // 1. Import TranslateService
+import { TranslateService } from '@ngx-translate/core';
 import { BaseInput } from '../base/base-input';
 import { TEXT_INPUT_CONFIGS } from '../config/text-input.config';
 import { TextInputTypeConfig } from './models/text-input.model';
