@@ -62,7 +62,9 @@ import { Tooltip } from "@tia/shared/lib/data-display/tooltip/tooltip";
     RouteLoader,
     Onboarding,
     ErrorStates,
-    Tooltip
+    Tooltip,
+    BirthdayModalComponent,
+    UiModal
 ],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
