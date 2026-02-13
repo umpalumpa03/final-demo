@@ -9,6 +9,8 @@ import {
   catchError,
   withLatestFrom,
   filter,
+  mergeMap,
+  debounceTime,
 } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { WidgetsApiService } from '../../shared/services/user-info/widgets-service.api';
@@ -55,7 +57,7 @@ export class UserInfoEffects {
   public createWidget$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserInfoActions.createWidget),
-      switchMap(({ widget }) =>
+      mergeMap(({ widget }) =>
         this.widgetService.createWidget(widget).pipe(
           map(() => UserInfoActions.loadWidgets({ force: true })),
           catchError((error) =>
@@ -92,6 +94,7 @@ export class UserInfoEffects {
       ofType(UserInfoActions.loadWidgets),
       withLatestFrom(this.store.select(selectWidgetsLoaded)),
       filter(([action, loaded]) => action.force || !loaded),
+      debounceTime(100),
       switchMap(() =>
         this.widgetService.getWidgets().pipe(
           map((widgets) => UserInfoActions.loadWidgetsSuccess({ widgets })),
@@ -106,7 +109,7 @@ export class UserInfoEffects {
   public deleteWidget$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserInfoActions.deleteWidget),
-      switchMap(({ id }) =>
+      mergeMap(({ id }) =>
         this.widgetService.deleteWidget(id).pipe(
           map(() => UserInfoActions.deleteWidgetSuccess({ id })),
           catchError((error) =>
