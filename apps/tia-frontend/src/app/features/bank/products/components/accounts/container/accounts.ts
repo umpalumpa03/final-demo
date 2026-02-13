@@ -117,7 +117,9 @@ export class Accounts implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.store.dispatch(AccountsActions.loadActiveAccounts({}));
+    this.store.dispatch(
+      AccountsActions.loadActiveAccounts({ forceRefresh: true }),
+    );
 
     if (this.router.url.includes('/create')) {
       this.store.dispatch(AccountsActions.openCreateModal());
