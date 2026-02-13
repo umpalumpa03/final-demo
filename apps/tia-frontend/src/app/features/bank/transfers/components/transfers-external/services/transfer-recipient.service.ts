@@ -33,6 +33,12 @@ export class TransferRecipientService {
   );
   private readonly userPhone = toSignal(this.store.select(selectPhoneNumber));
 
+  constructor() {
+    if (!this.userPhone()) {
+      this.store.dispatch(PersonalInfoActions.loadPersonalInfo({}));
+    }
+  }
+
   private isOwnPhoneNumber(value: string): boolean {
     const userPhone = this.userPhone() || '';
     const normalize = (phone: string) =>
