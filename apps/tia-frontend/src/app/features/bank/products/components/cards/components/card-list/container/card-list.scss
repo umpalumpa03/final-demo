@@ -27,19 +27,10 @@
 
   &__alert-container {
     position: fixed;
-    bottom: 2rem;
-    right: 2rem;
+    top: 7rem;
+    right: 1rem;
     z-index: 49;
 
-    @media (max-width: 768px) {
-      bottom: 1.6rem;
-      right: 1.6rem;
-    }
-
-    @media (max-width: 480px) {
-      bottom: 1rem;
-      right: 1rem;
-      left: 1rem;
-    }
+   
   }
 }
