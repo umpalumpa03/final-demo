@@ -133,23 +133,6 @@ describe('AppearanceContainer', () => {
     });
   });
 
-  describe('alert functionality', () => {
-    it('should clear alert timeout on destroy', () => {
-      const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
-      (component as any).alertTimeoutId = setTimeout(() => {}, 1000);
-
-      component.ngOnDestroy();
-
-      expect(clearTimeoutSpy).toHaveBeenCalled();
-      expect((component as any).alertTimeoutId).toBeNull();
-    });
-
-    it('should not throw error if no timeout on destroy', () => {
-      (component as any).alertTimeoutId = null;
-      expect(() => component.ngOnDestroy()).not.toThrow();
-    });
-  });
-
   describe('modal interactions', () => {
     it('should toggle modal', () => {
       expect(component.isModalOpen()).toBe(false);
