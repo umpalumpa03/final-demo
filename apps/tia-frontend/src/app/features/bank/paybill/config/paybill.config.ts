@@ -38,5 +38,5 @@ export const paybillSearchConfig = {
   prefixIcon: 'images/svg/library-input/search.svg',
   clearable: true,
   ariaLabel: 'Search providers',
-  margin: '0'
+  margin: '0rem 0rem 1rem 0rem'
 } as const;
