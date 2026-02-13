@@ -34,6 +34,8 @@ import {
 import { getAccountSections } from '../config/accounts.config';
 import { DismissibleAlerts } from '../../../../../../shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
 import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.service';
+import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
+import { ButtonComponent } from '../../../../../../shared/lib/primitives/button/button';
 
 @Component({
   selector: 'app-accounts-page',
@@ -43,6 +45,8 @@ import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.s
     AccountsListComponent,
     CreateAccountComponent,
     DismissibleAlerts,
+    LibraryTitle,
+    ButtonComponent,
   ],
   templateUrl: './accounts.html',
   styleUrl: './accounts.scss',

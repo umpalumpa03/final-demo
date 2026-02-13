@@ -1,4 +1,20 @@
 <div class="accounts-page">
+  <div class="accounts-page__header">
+    <div class="accounts-page__header-title">
+      <app-library-title
+        [title]="'my-products.accounts.title' | translate"
+        [subtitle]="'my-products.accounts.subtitle' | translate"
+      ></app-library-title>
+    </div>
+    <app-button
+      [variant]="'default'"
+      [icon]="'plus-icon.svg'"
+      (click)="handleOpenModal()"
+    >
+      {{ 'my-products.accounts.newAccount' | translate }}
+    </app-button>
+  </div>
+
   <app-accounts-list
     [accountsGrouped]="accountsGrouped$ | async"
     [isLoading]="(isLoading$ | async) || false"
