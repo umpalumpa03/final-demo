@@ -156,6 +156,16 @@ export class ExternalAmount implements OnInit {
   }
 
   public ngOnInit(): void {
+    const initialAmount = this.transferStore.amount();
+    if (initialAmount > 0) {
+      this.amountService.handleAmountInput(initialAmount);
+    }
+
+    if (!this.transferStore.hasShownAmountToast()) {
+      this.triggerToast('transfers.external.amount.accountsSelected');
+      this.transferStore.setHasShownAmountToast(true);
+    }
+
     this.amountInput.valueChanges
       .pipe(
         takeUntilDestroyed(this.destroyRef),
@@ -164,10 +174,7 @@ export class ExternalAmount implements OnInit {
         }),
       )
       .subscribe();
-
-    this.triggerToast('transfers.external.amount.accountsSelected');
   }
-
   public onGoBack(): void {
     this.amountService.handleAmountGoBack(
       Number(this.amountInput.value),
