@@ -18,10 +18,12 @@ import {
   ValidationResult,
   InputError,
 } from '../models/input.model';
-import { getValidationErrorMessage } from './utils/input.util';
+import { ValidationService } from './utils/input.util';
 
 @Directive()
 export abstract class BaseInput implements ControlValueAccessor, DoCheck {
+  protected validationService = inject(ValidationService);
+
   protected readonly ngControl = inject(NgControl, {
     self: true,
     optional: true,
@@ -56,28 +58,30 @@ export abstract class BaseInput implements ControlValueAccessor, DoCheck {
 
   public ngDoCheck(): void {
     if (this.ngControl?.control) {
-      this._controlTouched.set(this.ngControl.control.touched ?? false);
-      this._controlDirty.set(this.ngControl.control.dirty ?? false);
-      this._controlStatus.set(this.ngControl.control.status ?? '');
+      const { touched, dirty, status } = this.ngControl.control;
+      this._controlTouched.set(!!touched);
+      this._controlDirty.set(!!dirty);
+      this._controlStatus.set(status || '');
     }
   }
 
-  protected readonly hasError = computed<boolean>(() => {
-    const status = this._controlStatus();
-    const isTouched = this._controlTouched();
-    const isDirty = this._controlDirty();
-
+  protected readonly hasError = computed(() => {
     if (this.state() === 'error') return true;
-    if (!this.ngControl?.control) return false;
 
-    return status === 'INVALID' && (isTouched || isDirty);
+    if (this.internalValidationErrors().length > 0) return true;
+
+    return (
+      this._controlStatus() === 'INVALID' &&
+      (this._controlTouched() || this._controlDirty())
+    );
   });
-
   protected readonly hasWarning = computed<boolean>(() => {
     return this.state() === 'warning';
   });
 
   protected readonly hasSuccess = computed<boolean>(() => {
+    if (this.hasError()) return false;
+
     const status = this._controlStatus();
     const isTouched = this._controlTouched();
     const isDirty = this._controlDirty();
@@ -113,10 +117,6 @@ export abstract class BaseInput implements ControlValueAccessor, DoCheck {
       .join(' ');
   });
 
-  protected readonly maxCharacters = computed<number>(
-    () => this.config().validation?.maxLength || 0,
-  );
-
   protected readonly errorMessage = computed<string>(() => {
     this._controlStatus();
 
@@ -126,22 +126,25 @@ export abstract class BaseInput implements ControlValueAccessor, DoCheck {
     }
 
     const control = this.ngControl?.control;
-    if (!control?.errors) {
-      const internalErrors = this.internalValidationErrors();
-      return internalErrors.length > 0 ? internalErrors[0].message : '';
+
+    if (control?.errors) {
+      return this.validationService.getErrorMessage(control.errors);
     }
 
-    return getValidationErrorMessage(control.errors);
+    const internalErrors = this.internalValidationErrors();
+    if (internalErrors.length > 0) {
+      return internalErrors[0].message;
+    }
+
+    return '';
   });
 
   protected setValidationErrors(errors: InputError[]): void {
     this.internalValidationErrors.set(errors);
-
     const result =
       errors.length > 0
         ? ValidationResult.invalid(errors)
         : ValidationResult.valid();
-
     this.validationChange.emit(result);
   }
 
@@ -166,7 +169,6 @@ export abstract class BaseInput implements ControlValueAccessor, DoCheck {
 
   protected parseInputValue(target: HTMLInputElement): InputFieldValue {
     const { value, type, files } = target;
-
     switch (type) {
       case 'number':
         return value === '' ? null : Number(value);
@@ -180,9 +182,7 @@ export abstract class BaseInput implements ControlValueAccessor, DoCheck {
   protected handleInput(event: Event): void {
     const target = event.target as HTMLInputElement;
     if (!target) return;
-
     const parsedValue = this.parseInputValue(target);
-
     this.value.set(parsedValue);
     this.onChange(parsedValue);
     this.valueChange.emit(parsedValue);
