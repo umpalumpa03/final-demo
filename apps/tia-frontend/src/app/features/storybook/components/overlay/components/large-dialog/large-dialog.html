@@ -1,16 +1,16 @@
-<app-button [variant]="'outline'" (click)="toggle()"> Large Dialog </app-button>
+<app-button [variant]="'outline'" (click)="toggle()"> {{ 'storybook.overlays.largeDialog.openButton' | translate }} </app-button>
 
 <app-ui-modal [isOpen]="isOpen()" (closed)="toggle()">
   <div class="terms-content">
     <header class="terms-content__header">
       <app-library-title
-        [title]="pageTitle"
-        [subtitle]="pageSubtitle"
+        [title]="pageTitle()"
+        [subtitle]="pageSubtitle()"
       ></app-library-title>
     </header>
 
     <div class="terms-content__body">
-      @for (section of sections; track section.title) {
+      @for (section of sections(); track section.title) {
       <section class="terms-content__section">
         <h3 class="terms-content__section-title">{{ section.title }}</h3>
         <p class="terms-content__text">{{ section.content }}</p>
@@ -20,9 +20,9 @@
 
     <footer class="terms-content__footer">
       <app-button [variant]="'outline'" (click)="toggle()">
-        Decline
+        {{ 'storybook.overlays.largeDialog.decline' | translate }}
       </app-button>
-      <app-button (click)="toggle()"> Accept </app-button>
+      <app-button (click)="toggle()"> {{ 'storybook.overlays.largeDialog.accept' | translate }} </app-button>
     </footer>
   </div>
 </app-ui-modal>

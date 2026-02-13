@@ -2,7 +2,16 @@ import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { inject } from '@angular/core';
 import { LanguageService } from '../services/language-api.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { pipe, switchMap, tap, catchError, of, Observable } from 'rxjs';
+import {
+  pipe,
+  switchMap,
+  tap,
+  catchError,
+  of,
+  Observable,
+  EMPTY,
+  exhaustMap,
+} from 'rxjs';
 import { Language, LanguagesState } from '../models/language.model';
 
 export const initialState: LanguagesState = {
@@ -27,24 +36,33 @@ export const initialState: LanguagesState = {
     },
   ],
   isLoading: false,
+  isRefreshing: false,
   hasError: false,
+  hasLoaded: false,
 };
 
 export const LanguagesStore = signalStore(
+  { providedIn: 'root' },
   withState(initialState),
   withMethods((store) => {
     const languageService = inject(LanguageService);
 
     return {
-      fetchLanguages: rxMethod<void>(
+      fetchLanguages: rxMethod<{ force?: boolean }>(
         pipe(
-          tap(() => {
-            patchState(store, {
-              isLoading: true,
-              hasError: false,
-            });
+          tap(({ force }) => {
+            if (force) {
+              patchState(store, { isRefreshing: true, hasError: false });
+            } else {
+              patchState(store, { isLoading: true, hasError: false });
+            }
           }),
-          switchMap(() => {
+          exhaustMap(({ force }) => {
+            if (!force && store.hasLoaded()) {
+              patchState(store, { isLoading: false, isRefreshing: false });
+              return EMPTY;
+            }
+
             return languageService.getAvailableLanguages().pipe(
               tap({
                 next: (response) => {
@@ -66,12 +84,15 @@ export const LanguagesStore = signalStore(
                   patchState(store, {
                     languages: mappedLanguages,
                     isLoading: false,
+                    isRefreshing: false,
+                    hasLoaded: true,
                   });
                 },
                 error: () => {
                   patchState(store, {
                     hasError: true,
                     isLoading: false,
+                    isRefreshing: false,
                   });
                 },
               }),

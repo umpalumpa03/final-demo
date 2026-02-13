@@ -6,21 +6,34 @@ import { of } from 'rxjs';
 import { vi } from 'vitest';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { LoanManagementStore } from '../store/loan-management.store';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 describe('LoanManagementContainer', () => {
   let component: LoanManagementContainer;
   let fixture: ComponentFixture<LoanManagementContainer>;
+  let alertServiceMock: {
+    success: ReturnType<typeof vi.fn>;
+    error: ReturnType<typeof vi.fn>;
+    clearAlert: ReturnType<typeof vi.fn>;
+  };
 
   const mockTranslationLoader = {
     loadTranslations: () => of({}),
   };
 
   beforeEach(async () => {
+    alertServiceMock = {
+      success: vi.fn(),
+      error: vi.fn(),
+      clearAlert: vi.fn(),
+    };
+
     await TestBed.configureTestingModule({
       imports: [LoanManagementContainer, TranslateModule.forRoot(), HttpClientTestingModule],
       providers: [
         LoanManagementStore,
         { provide: TranslationLoaderService, useValue: mockTranslationLoader },
+        { provide: AlertService, useValue: alertServiceMock },
       ],
     }).compileComponents();
 
@@ -68,27 +81,29 @@ describe('LoanManagementContainer', () => {
     expect(spy).toHaveBeenCalledWith(rejectData);
   });
 
-  it('auto-dismiss effect should clear success message after timeout', () => {
-    vi.useFakeTimers();
+  it('success effect should call alertService.success and clear store message', () => {
     const clearSpy = vi.spyOn(component['store'], 'clearSuccessMessage');
 
     component['store'].successMessage.set('Loan approved');
     fixture.detectChanges();
-    vi.advanceTimersByTime(5000);
 
+    expect(alertServiceMock.success).toHaveBeenCalledWith(
+      'Loan approved',
+      { variant: 'dismissible', title: 'Success!' },
+    );
     expect(clearSpy).toHaveBeenCalled();
-    vi.useRealTimers();
   });
 
-  it('auto-dismiss effect should clear action error after timeout', () => {
-    vi.useFakeTimers();
+  it('error effect should call alertService.error and clear store error', () => {
     const clearSpy = vi.spyOn(component['store'], 'clearError');
 
     component['store'].actionError.set('Something went wrong');
     fixture.detectChanges();
-    vi.advanceTimersByTime(5000);
 
+    expect(alertServiceMock.error).toHaveBeenCalledWith(
+      'Something went wrong',
+      { variant: 'dismissible', title: 'Oops!' },
+    );
     expect(clearSpy).toHaveBeenCalled();
-    vi.useRealTimers();
   });
 });

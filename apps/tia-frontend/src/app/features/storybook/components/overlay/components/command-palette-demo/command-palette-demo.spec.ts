@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { CommandPaletteDemo } from './command-palette-demo';
 
 describe('CommandPaletteDemo', () => {
@@ -7,7 +8,7 @@ describe('CommandPaletteDemo', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommandPaletteDemo],
+      imports: [CommandPaletteDemo, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CommandPaletteDemo);
