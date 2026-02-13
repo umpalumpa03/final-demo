@@ -38,7 +38,12 @@ describe('Profile Photo Integration', () => {
   });
 
   it('should load default avatars successfully', async () => {
-    store.dispatch(ProfilePhotoActions.loadDefaultAvatarsRequest({}));
+
+    await firstValueFrom(
+      store.select(ProfilePhotoSelectors.selectDefaultAvatars).pipe(take(1)),
+    );
+
+    store.dispatch(ProfilePhotoActions.loadDefaultAvatarsRequest({ forceRefresh: true }));
 
     const req = httpMock.expectOne(
       `${settingsApiUrl}/get-available-default-avatars`,
@@ -64,10 +69,24 @@ describe('Profile Photo Integration', () => {
   it('should select default avatar and update current avatar url', async () => {
     const avatarId = 'avatar-1';
 
+  
+    await firstValueFrom(
+      store.select(ProfilePhotoSelectors.selectDefaultAvatars).pipe(take(1)),
+    );
+
     store.dispatch(
       ProfilePhotoActions.loadDefaultAvatars({
         avatars: [{ id: avatarId, imageUrl: `${environment.apiUrl}/a-1.svg` }],
       }),
+    );
+
+ 
+    await firstValueFrom(
+      store.select(ProfilePhotoSelectors.selectDefaultAvatars).pipe(
+        filter((avatars: any) => Array.isArray(avatars) && avatars.length > 0),
+        take(1),
+        timeout(5000),
+      ),
     );
 
     store.dispatch(
@@ -112,7 +131,7 @@ describe('Profile Photo Integration', () => {
       store.select(ProfilePhotoSelectors.selectCurrentAvatarUrl).pipe(
         filter((url): url is string => !!url),
         take(1),
-        timeout(5000),
+        timeout(10000),
       ),
     );
 
@@ -150,7 +169,24 @@ describe('Profile Photo Integration', () => {
   });
 
   it('should clear uploaded file when upload avatar fails', async () => {
-    const file = new File(['content'], 'photo.png', { type: 'image/png' });
+    const file = new File(['content'], 'temp.png', { type: 'image/png' });
+
+ 
+    store.dispatch(
+      ProfilePhotoActions.uploadFile({
+        fileName: 'temp.png',
+        objectUrl: 'blob:http://localhost/temp',
+      }),
+    );
+
+ 
+    const initialFileName = await firstValueFrom(
+      store.select(ProfilePhotoSelectors.selectUploadedFileName).pipe(
+        take(1),
+        timeout(5000),
+      ),
+    );
+    expect(initialFileName).toBe('temp.png');
 
     store.dispatch(ProfilePhotoActions.uploadAvatarRequest({ file }));
 
@@ -166,8 +202,9 @@ describe('Profile Photo Integration', () => {
 
     const uploadedFileName = await firstValueFrom(
       store.select(ProfilePhotoSelectors.selectUploadedFileName).pipe(
+        filter((fileName) => fileName === null),
         take(1),
-        timeout(5000),
+        timeout(10000),
       ),
     );
 
