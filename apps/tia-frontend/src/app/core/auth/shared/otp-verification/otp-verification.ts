@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   HostListener,
   inject,
@@ -16,6 +17,8 @@ import { Router } from '@angular/router';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Otp } from '@tia/shared/lib/forms/otp/otp';
 import {
+  catchError,
+  EMPTY,
   interval,
   map,
   startWith,
@@ -35,11 +38,13 @@ import {
   OtpVerificationType,
 } from '../../models/otp-verification.models';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 import { OTP_VERIFY_FORM } from '../../config/inputs.config';
 import { Routes } from '../../models/tokens.model';
 import { ErrorPage } from '../error-page/error-page';
+import { OtpSettingsConfiguration } from '../../models/authResponse.model';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-otp-verification',
@@ -58,8 +63,10 @@ import { ErrorPage } from '../error-page/error-page';
 })
 export class OtpVerification implements OnInit {
   private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
   private translate = inject(TranslateService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   public type = input.required<OtpVerificationType>();
   public timeLimit = input(1);
@@ -91,6 +98,17 @@ export class OtpVerification implements OnInit {
   public isResendActive = signal<boolean>(false);
   public isLimitExeeded = signal<boolean>(false);
   public isErrorPageVisible = signal<boolean>(false);
+
+
+  // Default In case of Error?
+  public defaultSettingConfig = signal<OtpSettingsConfiguration>({
+    otp: {
+      expirationMinutes: 5,
+      maxResendAttempts: 3,
+      maxVerifyAttempts: 5,
+      resendTimeoutMs: 60000,
+    },
+  });
 
   public isHeaderVisible = computed(
     () =>
@@ -234,6 +252,23 @@ export class OtpVerification implements OnInit {
   public ngOnInit(): void {
     const customAttempts = this.customRemainingAttempts();
     const parentAttempts = this.remainingAttempts();
+
+    this.authService
+      .getOtpConfig()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((res) => {
+          console.log(res, '__Res');
+          this.resendTries.set(res.otp.maxResendAttempts);
+          // ... Do Rest Same Way
+          // this.defaultSettingConfig.set(res);
+        }),
+        catchError(() => {
+          // this.defaultSettingConfig.set();
+          return EMPTY;
+        }),
+      )
+      .subscribe();
 
     if (customAttempts !== null) {
       this.internalRemainingAttempts.set(customAttempts);

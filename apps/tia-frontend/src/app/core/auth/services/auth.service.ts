@@ -18,6 +18,7 @@ import {
   IMfaVerifyResponse,
   IsAvailableBaseResponse,
   ISignUpResponse,
+  OtpSettingsConfiguration,
   phoneOtpError,
   ResendOtpResponse,
 } from '../models/authResponse.model';
@@ -405,5 +406,10 @@ export class AuthService {
     this.isAuthenticated.set(false);
     this.tokenService.clearAuthToken();
     this.stopInactivityMonitoring();
+  }
+
+
+  public getOtpConfig():Observable<OtpSettingsConfiguration> {
+    return this.http.get<OtpSettingsConfiguration>(`${environment.apiUrl}/settings/config`);
   }
 }

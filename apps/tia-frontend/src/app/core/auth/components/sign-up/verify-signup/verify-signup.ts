@@ -3,13 +3,12 @@ import {
   Component,
   DestroyRef,
   inject,
-  signal,
 } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
 import { IVerified } from '../../../models/otp-verification.models';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { take, tap } from 'rxjs';
+import { take } from 'rxjs';
 import { TokenService } from '../../../services/token.service';
 import { Router } from '@angular/router';
 import { Routes } from '../../../models/tokens.model';

@@ -66,3 +66,14 @@ export interface ILogoutResponse {
 export interface IsAvailableBaseResponse {
   available: boolean;
 }
+
+export interface OtpSettings {
+  expirationMinutes: number;
+  maxResendAttempts: number;
+  maxVerifyAttempts: number;
+  resendTimeoutMs: number;
+}
+
+export interface OtpSettingsConfiguration {
+  otp: OtpSettings;
+}
