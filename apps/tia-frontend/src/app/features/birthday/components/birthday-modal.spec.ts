@@ -3,21 +3,12 @@ import { BirthdayModalComponent } from './birthday-modal';
 import { provideMockStore } from '@ngrx/store/testing';
 import { selectUserInfo } from '../../../store/user-info/user-info.selectors';
 import { BirthdayLogicService } from '../services/birthday-logic.service';
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import confetti from 'canvas-confetti';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { signal } from '@angular/core';
-
-vi.mock('canvas-confetti', () => {
-  const mockConfetti = vi.fn(() => Promise.resolve());
-  return {
-    default: Object.assign(mockConfetti, { reset: vi.fn() })
-  };
-});
 
 describe('BirthdayModalComponent', () => {
   let component: BirthdayModalComponent;
   let fixture: ComponentFixture<BirthdayModalComponent>;
-  let birthdayLogicService: BirthdayLogicService;
 
   const mockBirthdayService = {
     shouldLaunchConfetti: signal(false),
@@ -50,31 +41,13 @@ describe('BirthdayModalComponent', () => {
       ]
     }).compileComponents();
 
-    birthdayLogicService = TestBed.inject(BirthdayLogicService);
     fixture = TestBed.createComponent(BirthdayModalComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
-  afterEach(() => {
-    vi.clearAllMocks();
-    fixture.destroy();
-  });
-
-  it('should launch confetti when shouldLaunchConfetti signal is true', () => {
-    const confettiSpy = vi.mocked(confetti);
-    
-    mockBirthdayService.shouldLaunchConfetti.set(true);
-    component.ngOnInit();
-    
-    expect(confettiSpy).toHaveBeenCalled();
-  });
-
-  it('should cleanup animations and reset confetti on destroy', () => {
-    const resetSpy = vi.mocked(confetti.reset);
-    
-    fixture.destroy();
-    
-    expect(resetSpy).toHaveBeenCalled();
+  it('should create the component', () => {
+    expect(component).toBeTruthy();
   });
 
   it('should correctly derive userName from store', () => {
@@ -85,5 +58,14 @@ describe('BirthdayModalComponent', () => {
     const spy = vi.spyOn(component.dismiss, 'emit');
     component.onDismiss();
     expect(spy).toHaveBeenCalled();
+  });
+
+  it('should correctly filter middle emojis from config', () => {
+    const hasHeader = component.middleEmojis.some(e => e.name === 'header');
+    const hasButtonIcon = component.middleEmojis.some(e => e.name === 'buttonHearth');
+    
+    expect(hasHeader).toBe(false);
+    expect(hasButtonIcon).toBe(false);
+    expect(component.middleEmojis.length).toBeGreaterThan(0);
   });
 });

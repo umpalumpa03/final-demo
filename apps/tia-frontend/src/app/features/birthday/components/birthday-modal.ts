@@ -2,7 +2,6 @@ import {
   Component, 
   inject, 
   OnInit, 
-  OnDestroy,
   output, 
   ChangeDetectorRef,
   ChangeDetectionStrategy
@@ -13,7 +12,6 @@ import { selectUserInfo } from '../../../store/user-info/user-info.selectors';
 import { ButtonComponent } from '../../../shared/lib/primitives/button/button';
 import { BIRTHDAY_EMOJIS } from '../configs/birthday-config';
 import { BirthdayLogicService } from '../services/birthday-logic.service';
-import confetti from 'canvas-confetti';
 
 @Component({
   selector: 'app-birthday-modal',
@@ -22,7 +20,7 @@ import confetti from 'canvas-confetti';
   templateUrl: './birthday-modal.html',
   styleUrl: './birthday-modal.scss',
 })
-export class BirthdayModalComponent implements OnInit, OnDestroy {
+export class BirthdayModalComponent {
   private readonly store = inject(Store);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly birthdayLogic = inject(BirthdayLogicService);
@@ -35,53 +33,8 @@ export class BirthdayModalComponent implements OnInit, OnDestroy {
   public readonly middleEmojis = BIRTHDAY_EMOJIS.filter(e => e.name !== 'header' && e.name !== 'buttonHearth');
   public readonly headerIcon = BIRTHDAY_EMOJIS.find(e => e.name === 'header')?.svgPath;
 
-  private animationFrameId?: number;
-
-  ngOnInit(): void {
-    if (this.birthdayLogic.shouldLaunchConfetti()) {
-      this.launchConfetti();
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-    }
-    confetti.reset(); 
-  }
-
   public onDismiss(): void {
     this.dismiss.emit();
     this.cdr.markForCheck(); 
-  }
-
-  private launchConfetti(): void {
-    const duration = 3000;
-    const end = Date.now() + duration;
-
-    const frame = () => {
-      confetti({
-        particleCount: 2,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0.3, y: 0.5 }, 
-        colors: ['#3b82f6', '#f472b6'],
-        zIndex: 2000 
-      });
-
-      confetti({
-        particleCount: 2,
-        angle: 120,
-        spread: 55,
-        origin: { x: 0.7, y: 0.5 },
-        colors: ['#3b82f6', '#f472b6'],
-        zIndex: 2000
-      });
-
-      if (Date.now() < end) {
-        this.animationFrameId = requestAnimationFrame(frame);
-      }
-    };
-    frame();
   }
 }
