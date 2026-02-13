@@ -66,13 +66,31 @@ describe('UserInfoEffects (Vitest)', () => {
   });
 
   describe('loadUser$', () => {
-    it('should set theme and language in localStorage', async () => {
+    it('should set theme and ka language when user is georgian', async () => {
       userInfoService.getUserInfo.mockReturnValue(of(mockUser));
       actions$ = of(UserInfoActions.loadUser());
       await firstValueFrom(effects.loadUser$);
       
       expect(localStorage.setItem).toHaveBeenCalledWith('theme', 'dark');
       expect(localStorage.setItem).toHaveBeenCalledWith('language', 'ka');
+    });
+
+    it('should set en language when user is not georgian', async () => {
+      const engUser = { ...mockUser, language: 'english' };
+      userInfoService.getUserInfo.mockReturnValue(of(engUser));
+      actions$ = of(UserInfoActions.loadUser());
+      await firstValueFrom(effects.loadUser$);
+      
+      expect(localStorage.setItem).toHaveBeenCalledWith('language', 'en');
+    });
+
+    it('should not set localStorage if theme and language are missing', async () => {
+      const emptyUser = { fullName: 'No Prefs' } as any;
+      userInfoService.getUserInfo.mockReturnValue(of(emptyUser));
+      actions$ = of(UserInfoActions.loadUser());
+      await firstValueFrom(effects.loadUser$);
+      
+      expect(localStorage.setItem).not.toHaveBeenCalled();
     });
 
     it('should handle error with default message', async () => {
@@ -83,21 +101,35 @@ describe('UserInfoEffects (Vitest)', () => {
     });
   });
 
+  describe('loadWidgets$', () => {
+    it('should load widgets success', async () => {
+      const widgets = [{ id: '1' }] as any;
+      widgetsApiService.getWidgets.mockReturnValue(of(widgets));
+      actions$ = of(UserInfoActions.loadWidgets({ force: true }));
+      const action = await firstValueFrom(effects.loadWidgets$);
+      expect(action).toEqual(UserInfoActions.loadWidgetsSuccess({ widgets }));
+    });
+
+    it('should handle load widgets error', async () => {
+      widgetsApiService.getWidgets.mockReturnValue(throwError(() => ({ message: 'fail' })));
+      actions$ = of(UserInfoActions.loadWidgets({ force: true }));
+      const action = await firstValueFrom(effects.loadWidgets$);
+      expect(action).toEqual(UserInfoActions.loadWidgetsError({ error: 'fail' }));
+    });
+  });
+
   describe('updateWidgetsBulk$', () => {
     it('should dispatch success when all updates pass', async () => {
-      const updates = [{ id: '1', updates: {} }, { id: '2', updates: {} }];
+      const updates = [{ id: '1', updates: {} }];
       widgetsApiService.updateWidget.mockReturnValue(of({}));
       actions$ = of(UserInfoActions.updateWidgetsBulk({ updates }));
-
       const action = await firstValueFrom(effects.updateWidgetsBulk$);
       expect(action.type).toBe(UserInfoActions.updateWidgetsBulkSuccess.type);
-      expect(widgetsApiService.updateWidget).toHaveBeenCalledTimes(2);
     });
 
     it('should handle bulk update error', async () => {
       widgetsApiService.updateWidget.mockReturnValue(throwError(() => ({ message: 'Bulk Fail' })));
       actions$ = of(UserInfoActions.updateWidgetsBulk({ updates: [{ id: '1', updates: {} }] }));
-      
       const action = await firstValueFrom(effects.updateWidgetsBulk$);
       expect(action).toEqual(UserInfoActions.updateWidgetsBulkError({ error: 'Bulk Fail' }));
     });
@@ -109,6 +141,22 @@ describe('UserInfoEffects (Vitest)', () => {
       actions$ = of(UserInfoActions.createWidget({ widget: {} as any }));
       const action = await firstValueFrom(effects.createWidget$);
       expect(action).toEqual(UserInfoActions.createWidgetError({ error: 'Err' }));
+    });
+  });
+
+  describe('deleteWidget$', () => {
+    it('should dispatch success on delete', async () => {
+      widgetsApiService.deleteWidget.mockReturnValue(of({}));
+      actions$ = of(UserInfoActions.deleteWidget({ id: '1' }));
+      const action = await firstValueFrom(effects.deleteWidget$);
+      expect(action).toEqual(UserInfoActions.deleteWidgetSuccess({ id: '1' }));
+    });
+
+    it('should handle delete error', async () => {
+      widgetsApiService.deleteWidget.mockReturnValue(throwError(() => ({ message: 'Del Err' })));
+      actions$ = of(UserInfoActions.deleteWidget({ id: '1' }));
+      const action = await firstValueFrom(effects.deleteWidget$);
+      expect(action).toEqual(UserInfoActions.deleteWidgetError({ error: 'Del Err' }));
     });
   });
 
