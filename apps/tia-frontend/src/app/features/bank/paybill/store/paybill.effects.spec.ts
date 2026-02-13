@@ -761,4 +761,83 @@ describe('PaybillEffect (Refactored)', () => {
       expect(paybillTemplatesService.addTemplateToGroup).not.toHaveBeenCalled();
     });
   });
+
+  describe('moveTemplate$', () => {
+    const mockTemplate = {
+      id: 'T1',
+      nickname: 'Test',
+      serviceId: 'S1',
+      identification: {},
+    } as any;
+
+    it('should only remove from group when groupId is null (Branch A)', () => {
+      paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(
+        of(mockTemplate),
+      );
+
+      actions$ = of(
+        TemplatesPageActions.moveTemplate({ groupId: null, templateId: 'T1' }),
+      );
+
+      const results: any[] = [];
+      effects.moveTemplate$.subscribe((action) => results.push(action));
+
+      expect(results[0]).toEqual(
+        TemplatesPageActions.moveTemplateSuccess({
+          message: 'Item removed successfully',
+          groupId: null,
+          templateId: 'T1',
+        }),
+      );
+      expect(paybillTemplatesService.addTemplateToGroup).not.toHaveBeenCalled();
+    });
+
+    it('should remove and then add when groupId is provided (Branch B)', () => {
+      paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(
+        of(mockTemplate),
+      );
+      paybillTemplatesService.addTemplateToGroup.mockReturnValue(
+        of(mockTemplate),
+      );
+
+      actions$ = of(
+        TemplatesPageActions.moveTemplate({ groupId: 'G1', templateId: 'T1' }),
+      );
+
+      const results: any[] = [];
+      effects.moveTemplate$.subscribe((action) => results.push(action));
+
+      expect(results[0]).toEqual(
+        TemplatesPageActions.moveTemplateSuccess({
+          message: 'Item moved successfully',
+          groupId: 'G1',
+          templateId: 'T1',
+        }),
+      );
+      expect(paybillTemplatesService.addTemplateToGroup).toHaveBeenCalledWith(
+        'G1',
+        'T1',
+      );
+    });
+
+    it('should handle errors in the chain (Branch C)', () => {
+      const errorResponse = { message: 'Move failed' };
+      paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(
+        throwError(() => errorResponse),
+      );
+
+      actions$ = of(
+        TemplatesPageActions.moveTemplate({ groupId: 'G1', templateId: 'T1' }),
+      );
+
+      const results: any[] = [];
+      effects.moveTemplate$.subscribe((action) => results.push(action));
+
+      expect(results[0]).toEqual(
+        PaybillActions.loadPaymentDetailsFailure({
+          error: 'Move failed',
+        }),
+      );
+    });
+  });
 });
