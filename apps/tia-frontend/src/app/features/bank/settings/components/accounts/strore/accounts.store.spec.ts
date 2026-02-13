@@ -5,11 +5,15 @@ import { Store } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
 import { patchState } from '@ngrx/signals';
 import { AccountType } from '@tia/shared/models/accounts/accounts.model';
+import { TranslateService } from '@ngx-translate/core';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 describe('AccountsStore', () => {
   let store: any;
   let mockService: any;
   let mockGlobalStore: any;
+  let mockTranslate: any;
+  let mockAlertService: any;
 
   beforeEach(() => {
     mockService = {
@@ -19,11 +23,15 @@ describe('AccountsStore', () => {
       updateAccountFriendlyName: vi.fn().mockReturnValue(of({})),
     };
     mockGlobalStore = { dispatch: vi.fn() };
+    mockTranslate = { instant: vi.fn().mockImplementation((k: any) => k) };
+    mockAlertService = { success: vi.fn(), error: vi.fn() };
     TestBed.configureTestingModule({
       providers: [
         AccountsStore,
         { provide: AccountManagementService, useValue: mockService },
         { provide: Store, useValue: mockGlobalStore },
+        { provide: TranslateService, useValue: mockTranslate },
+        { provide: AlertService, useValue: mockAlertService },
       ],
     });
     store = TestBed.inject(AccountsStore) as any;
@@ -121,7 +129,8 @@ describe('AccountsStore', () => {
     mockService.markAccountFavoriteStatus = vi.fn().mockReturnValue(throwError(() => new Error('err')));
     store.toggleFavorite({ id: 'f1', isFavorite: false });
     await Promise.resolve();
-    expect(store.error()).toBe('Failed to update favorite status');
+    expect(store.error()).toBeNull();
+    expect(mockAlertService.error).toHaveBeenCalled();
     expect(store.favoriteLoadingIds().has('f1')).toBeFalsy();
   });
 
@@ -131,7 +140,8 @@ describe('AccountsStore', () => {
     mockService.updateAccountVisibility = vi.fn().mockReturnValue(throwError(() => new Error('err')));
     store.toggleVisibility({ id: 'v1', isHidden: false });
     await Promise.resolve();
-    expect(store.error()).toBe('Failed to update visibility');
+    expect(store.error()).toBeNull();
+    expect(mockAlertService.error).toHaveBeenCalled();
     expect(store.visibilityLoadingIds().has('v1')).toBeFalsy();
   });
 
@@ -141,7 +151,8 @@ describe('AccountsStore', () => {
     mockService.updateAccountFriendlyName = vi.fn().mockReturnValue(throwError(() => new Error('err')));
     store.changeFriendlyName({ id: 'c1', friendlyName: 'New' });
     await Promise.resolve();
-    expect(store.error()).toBe('Failed to change friendly name');
+    expect(store.error()).toBeNull();
+    expect(mockAlertService.error).toHaveBeenCalled();
     expect(store.changeNameLoadingIds().has('c1')).toBeFalsy();
   });
 });
