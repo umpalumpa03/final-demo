@@ -10,10 +10,11 @@ import { GridLayout } from '@tia/shared/lib/layout/components/grid-layout/contai
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { GridColumns } from '@tia/shared/lib/layout/components/grid-layout/container/grid-layout.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-category-grid',
-  imports: [CategoryCard, GridLayout, LibraryTitle, Skeleton],
+  imports: [CategoryCard, GridLayout, LibraryTitle, Skeleton, TranslatePipe],
   templateUrl: './category-grid.html',
   styleUrl: './category-grid.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
