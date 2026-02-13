@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CategoryGrid } from './category-grid';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { PaybillCategory } from '../../../../shared/models/paybill.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('CategoryGrid', () => {
   let component: CategoryGrid;
@@ -21,7 +22,7 @@ describe('CategoryGrid', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CategoryGrid],
+      imports: [CategoryGrid, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CategoryGrid);
