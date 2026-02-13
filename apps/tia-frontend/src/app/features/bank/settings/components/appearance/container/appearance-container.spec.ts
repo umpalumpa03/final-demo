@@ -83,7 +83,7 @@ describe('AppearanceContainer', () => {
     it('should handle unsaved changes - modal opens and user leaves', async () => {
       (component as any).isSubmitted = signal(false);
       (component as any).activeTheme = signal('new-theme');
-      (component as any).userInfo = signal({ theme: 'old-theme' });
+      (component as any).userTheme = signal('old-theme');
 
       const dispatchSpy = vi.spyOn((component as any).store, 'dispatch');
       const result = component.canDeactivate();
@@ -107,7 +107,7 @@ describe('AppearanceContainer', () => {
     it('should handle unsaved changes - modal opens and user stays', async () => {
       (component as any).isSubmitted = signal(false);
       (component as any).activeTheme = signal('new-theme');
-      (component as any).userInfo = signal({ theme: 'old-theme' });
+      (component as any).userTheme = signal('old-theme');
 
       const result = component.canDeactivate();
 
@@ -128,7 +128,7 @@ describe('AppearanceContainer', () => {
     });
 
     it('should return true if no saved theme or no changes', () => {
-      (component as any).userInfo = signal(null);
+      (component as any).userTheme = signal(null);
       expect(component.canDeactivate()).toBe(true);
     });
   });
@@ -162,7 +162,7 @@ describe('AppearanceContainer', () => {
     it('should handle onStay - close modal and emit false', async () => {
       (component as any).isSubmitted = signal(false);
       (component as any).activeTheme = signal('new-theme');
-      (component as any).userInfo = signal({ theme: 'old-theme' });
+      (component as any).userTheme = signal('old-theme');
 
       component.isModalOpen.set(true);
       const result = component.canDeactivate();
@@ -183,7 +183,7 @@ describe('AppearanceContainer', () => {
     it('should handle onLeave - reset theme and emit true', async () => {
       (component as any).isSubmitted = signal(false);
       (component as any).activeTheme = signal('new-theme');
-      (component as any).userInfo = signal({ theme: 'old-theme' });
+      (component as any).userTheme = signal('old-theme');
 
       const dispatchSpy = vi.spyOn((component as any).store, 'dispatch');
       const result = component.canDeactivate();

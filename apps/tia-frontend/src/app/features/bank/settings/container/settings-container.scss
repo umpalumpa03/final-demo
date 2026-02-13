@@ -1,3 +1,6 @@
+@use '../../../../shared/styles/mixins' as *;
+
 .global-bank-wrapper {
     padding: 3.2rem;
+    @include custom-scrollbar();
 }

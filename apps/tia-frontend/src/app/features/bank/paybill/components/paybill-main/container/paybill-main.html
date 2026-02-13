@@ -1,12 +1,9 @@
 <div class="paybill-main">
+  @if (!facade.isRootProviderView()) {
   <div class="paybill-main__nav-container">
-    @if (!facade.isRootProviderView()) {
-    <div class="paybill-main__nav-container">
-      <app-back-navigation />
-    </div>
-    }
+    <app-back-navigation />
   </div>
-  @if (facade.showSearch()) {
+  } @if (facade.showSearch()) {
   <div class="paybill-main__search-container">
     <lib-text-input
       [formControl]="searchControl"

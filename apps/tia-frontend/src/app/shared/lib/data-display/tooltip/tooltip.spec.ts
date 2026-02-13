@@ -29,4 +29,12 @@ describe('Tooltip', () => {
     component.close();
     expect(component.isOpen()).toBe(false);
   });
+
+  it('should not open when disabled', () => {
+    fixture.componentRef.setInput('disabled', true);
+    fixture.detectChanges();
+
+    component.open();
+    expect(component.isOpen()).toBe(false);
+  });
 });

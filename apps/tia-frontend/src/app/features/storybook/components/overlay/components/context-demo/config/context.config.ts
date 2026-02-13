@@ -1,12 +1,13 @@
+import { TranslateService } from '@ngx-translate/core';
 import { ContextMenuItem } from '../../../../../../../shared/lib/overlay/ui-context/models/context.model';
 
-export const menuItems: (ContextMenuItem | 'divider')[] = [
-  { label: 'Copy', icon: 'copy', action: 'copy' },
-  { label: 'Edit', icon: 'edit', action: 'edit' },
-  { label: 'New', icon: 'new', action: 'new' },
+export const getMenuItems = (translate: TranslateService): (ContextMenuItem | 'divider')[] => [
+  { label: translate.instant('storybook.overlays.contextMenu.items.copy'), icon: 'copy', action: 'copy' },
+  { label: translate.instant('storybook.overlays.contextMenu.items.edit'), icon: 'edit', action: 'edit' },
+  { label: translate.instant('storybook.overlays.contextMenu.items.new'), icon: 'new', action: 'new' },
   'divider',
-  { label: 'Show Grid', icon: 'grid', action: 'grid' },
-  { label: 'Show Rulers', icon: 'ruler', action: 'ruler' },
+  { label: translate.instant('storybook.overlays.contextMenu.items.showGrid'), icon: 'grid', action: 'grid' },
+  { label: translate.instant('storybook.overlays.contextMenu.items.showRulers'), icon: 'ruler', action: 'ruler' },
   'divider',
-  { label: 'Delete', icon: 'delete', action: 'delete', variant: 'danger' },
-] as const;
+  { label: translate.instant('storybook.overlays.contextMenu.items.delete'), icon: 'delete', action: 'delete', variant: 'danger' },
+];

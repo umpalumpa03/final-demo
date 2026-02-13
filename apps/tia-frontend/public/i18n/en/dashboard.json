@@ -2,7 +2,9 @@
   "page": {
     "title": "Dashboard",
     "subtitle": "Welcome back! Here's your financial overview.",
-    "customize-label": "Personalize your experience"
+    "customize-label": "Personalize your experience",
+    "not-available": "No Widgets Available",
+    "not-available-subtitle": "You do not have any widgets!"
   },
   "widgets": {
     "transactions": {
