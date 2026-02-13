@@ -4,10 +4,11 @@
 .paybill-main {
   @include display-flex(column);
   width: 100%;
-  gap: 1.6rem;
+  gap: 1.2rem;
 
   &__nav-container {
     width: 100%;
+    min-height: 3rem;
     @include flex-center($align: center, $justify: flex-start);
   }
 

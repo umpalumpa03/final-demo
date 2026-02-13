@@ -45,6 +45,9 @@ import { PaymentDistribution } from '../shared/ui/payment-distribution/payment-d
 import { BillsList } from '../shared/ui/bills-list/bills-list';
 import { TotalAmount } from '../shared/ui/total-amount/total-amount';
 import { AccountSelect } from '../../shared/account-select/account-select';
+import { OtpVerification } from '@tia/core/auth/shared/otp-verification/otp-verification';
+import { SuccessModal } from '@tia/shared/lib/overlay/ui-success-modal/ui-success-modal';
+import { payBillOtpConfig } from '../configs/otp.config';
 
 @Component({
   selector: 'app-paybill-templates',
@@ -63,6 +66,8 @@ import { AccountSelect } from '../../shared/account-select/account-select';
     BillsList,
     TotalAmount,
     AccountSelect,
+    OtpVerification,
+    SuccessModal,
   ],
   templateUrl: './paybill-templates.html',
   styleUrl: './paybill-templates.scss',
@@ -263,5 +268,14 @@ export class PaybillTemplates implements OnInit {
   public calculatedDistribution = input();
   paymentTypeChanged(value: boolean): void {
     this.isDistribution.set(value);
+  }
+
+  public isOtpModalOpen = input<boolean>(false);
+  public isPaymentModalHidden = input<boolean>(false);
+
+  public otpConfig = payBillOtpConfig;
+
+  public resendOtp(event: any) {
+    console.log(event);
   }
 }
