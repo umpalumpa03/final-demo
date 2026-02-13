@@ -20,7 +20,7 @@ import { AppearanceService } from '../services/appearance-api.service';
 import { TAvailableThemes } from '../models/appearance.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
-import { selectUserInfo, selectUserLoaded } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
+import { selectUserTheme } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
 import { CanComponentDeactivate } from '../guard/unsaved-changes.guard';
 import { UserInfoActions } from 'apps/tia-frontend/src/app/store/user-info/user-info.actions';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
@@ -71,7 +71,7 @@ export class AppearanceContainer
   }
 
   public onLeave(): void {
-    const savedTheme = this.userInfo()?.theme;
+    const savedTheme = this.userTheme();
     if (savedTheme) {
       this.setActiveColor(savedTheme);
     }
@@ -86,14 +86,9 @@ export class AppearanceContainer
 
   private isSubmitted = signal(false);
 
-  private userInfo = this.store.selectSignal(selectUserInfo);
-  private userLoaded = this.store.selectSignal(selectUserLoaded);
+  private userTheme = this.store.selectSignal(selectUserTheme);
 
   public ngOnInit(): void {
-    
-    if (!this.userLoaded()) {
-      this.store.dispatch(UserInfoActions.loadUser());
-    }
     this.isSubmitted.set(false);
     const subscription = this.appearanceService
       .getAvailableThemes()
@@ -171,6 +166,7 @@ export class AppearanceContainer
             'success',
             this.translate.instant('settings.appearance.saveSuccess'),
           );
+          this.store.dispatch(UserInfoActions.loadUserTheme({theme: this.activeTheme()}));
         }),
         catchError((error) => {
           this.showAlert(
@@ -190,7 +186,7 @@ export class AppearanceContainer
     }
 
     const currentTheme = this.activeTheme();
-    const savedTheme = this.userInfo()?.theme;
+    const savedTheme = this.userTheme();
 
     if (savedTheme && currentTheme !== savedTheme) {
       this.isModalOpen.set(true);
