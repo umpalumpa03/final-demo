@@ -141,34 +141,3 @@
     </app-tooltip>
   </footer>
 </main>
-
-@if (showSuccess() && !currencyMismatchError() && !allSenderAccountsDisabled())
-{
-<div class="external-accounts__success-toast">
-  <app-alert-types-with-icons
-    [alertType]="'success'"
-    [alertMessage]="'transfers.external.accounts.recipientVerified' | translate"
-  />
-</div>
-}@if (showError()) {
-<div class="external-accounts__success-toast">
-  <app-alert-types-with-icons
-    [alertType]="'error'"
-    [alertMessage]="error() | translate"
-  />
-</div>
-}@if (currencyMismatchError()) {
-<div class="external-accounts__success-toast">
-  <app-alert-types-with-icons
-    [alertType]="'warning'"
-    [alertMessage]="'transfers.external.accounts.currencyMismatch' | translate"
-  />
-</div>
-}@if (allSenderAccountsDisabled()) {
-<div class="external-accounts__success-toast">
-  <app-alert-types-with-icons
-    [alertType]="'warning'"
-    [alertMessage]="'transfers.external.accounts.allAccountsDisabled' | translate"
-  />
-</div>
-}
