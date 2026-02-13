@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TablesLayout } from './tables-layout';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('TablesLayout', () => {
   let component: TablesLayout;
@@ -8,7 +9,7 @@ describe('TablesLayout', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TablesLayout],
+      imports: [TablesLayout, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TablesLayout);

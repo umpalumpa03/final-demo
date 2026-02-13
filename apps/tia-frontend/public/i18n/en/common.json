@@ -30,11 +30,17 @@
   },
   "validation": {
     "required": "This field is required",
-    "email": "Please enter a valid email",
-    "minLength": "Minimum {{min}} characters required",
-    "maxLength": "Maximum {{max}} characters allowed",
-    "unsavedChanges": "You have unsaved changes. Do you really want to leave?",
-    "confirmAction": "Confirm your action"
+    "email": "Invalid email address",
+    "notFound": "Email not found",
+    "pattern": "Invalid format",
+    "minLength": "Min length is {{requiredLength}}",
+    "maxLength": "Max length is {{requiredLength}}",
+    "min": "Minimum value is {{min}}",
+    "max": "Maximum value is {{max}}",
+    "passwordStrength": "Password is too weak",
+    "passwordRules": "Password does not meet requirements",
+    "passwordMismatch": "Passwords do not match",
+    "default": "Invalid value"
   },
   "navigation": {
     "dashboard": "Dashboard",

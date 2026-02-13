@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Switches } from './switches';
 import { By } from '@angular/platform-browser';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('Switches', () => {
   let component: Switches;
@@ -8,7 +9,7 @@ describe('Switches', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Switches],
+      imports: [Switches, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Switches);

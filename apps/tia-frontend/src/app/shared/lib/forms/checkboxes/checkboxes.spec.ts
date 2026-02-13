@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Checkboxes } from './checkboxes';
 import { By } from '@angular/platform-browser';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('Checkboxes', () => {
   let component: Checkboxes;
@@ -8,7 +9,7 @@ describe('Checkboxes', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Checkboxes],
+      imports: [Checkboxes, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Checkboxes);

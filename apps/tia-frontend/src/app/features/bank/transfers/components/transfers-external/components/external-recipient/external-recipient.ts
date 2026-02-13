@@ -30,10 +30,10 @@ import {
 } from '../../utils/transfers-external.utils';
 import { RecipientType } from '../../../../models/transfers.state.model';
 import { TransferStore } from '../../../../store/transfers.store';
-import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { TransferRecipientService } from '../../services/transfer-recipient.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
+import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/alert.service';
 
 @Component({
   selector: 'app-external-recipient',
@@ -42,7 +42,6 @@ import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
     TextInput,
     ButtonComponent,
     ReactiveFormsModule,
-    AlertTypesWithIcons,
     Tooltip,
   ],
   providers: [],
@@ -57,11 +56,10 @@ export class ExternalRecipient implements OnInit {
   private readonly validationService = inject(TransferValidationService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly transferStore = inject(TransferStore);
-  private breakpointService = inject(BreakpointService);
-  public isMobile = this.breakpointService.isMobile;
+  private readonly breakpointService = inject(BreakpointService);
+  private readonly alertService = inject(AlertService);
 
-  public readonly showError = signal(false);
-  public readonly errorMessage = signal('');
+  public readonly isMobile = this.breakpointService.isMobile;
   public readonly isLoading = computed(() => this.transferStore.isLoading());
   public readonly recipientInputConfig = signal<InputConfig>(
     getRecipientInputConfig(this.translate),
@@ -76,14 +74,10 @@ export class ExternalRecipient implements OnInit {
       const error = this.transferStore.error();
 
       if (error) {
-        this.showError.set(true);
-        this.errorMessage.set(error);
+        this.alertService.error(this.translate.instant(error));
         this.recipientInput.reset();
         this.clearMessages();
-        setTimeout(() => {
-          this.showError.set(false);
-          this.transferStore.setError('');
-        }, 5000);
+        this.transferStore.setError('');
       }
     });
   }

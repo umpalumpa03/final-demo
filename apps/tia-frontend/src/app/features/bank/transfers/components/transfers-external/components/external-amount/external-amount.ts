@@ -7,6 +7,7 @@ import {
   OnInit,
   DestroyRef,
   effect,
+  untracked,
 } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -17,7 +18,6 @@ import { TransferAmountService } from '../../services/transfer-amount.service';
 import { TransferExecutionService } from '../../services/transfer-execution.service';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
-import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { tap } from 'rxjs';
 import { SuccessModal } from '@tia/shared/lib/overlay/ui-success-modal/ui-success-modal';
@@ -28,6 +28,7 @@ import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { OtpVerification } from 'apps/tia-frontend/src/app/core/auth/shared/otp-verification/otp-verification';
 import { IVerified } from 'apps/tia-frontend/src/app/core/auth/models/otp-verification.models';
 import { transferOtpConfig } from '../../config/transfers-external.config';
+import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/alert.service';
 
 @Component({
   selector: 'app-external-amount',
@@ -36,7 +37,6 @@ import { transferOtpConfig } from '../../config/transfers-external.config';
     TranslatePipe,
     TextInput,
     ReactiveFormsModule,
-    AlertTypesWithIcons,
     DecimalPipe,
     SuccessModal,
     RouteLoader,
@@ -58,11 +58,10 @@ export class ExternalAmount implements OnInit {
   private readonly breakpointService = inject(BreakpointService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
+  private readonly alertService = inject(AlertService);
 
   public readonly isMobile = this.breakpointService.isMobile;
-  public readonly showSuccess = signal(false);
-  public readonly showError = signal(false);
-  public readonly currentToastMessage = signal('');
+  public readonly noAttemptsLeft = signal(false);
 
   public readonly isLoading = this.transferStore.isLoading;
   public readonly isFeeLoading = this.transferStore.isFeeLoading;
@@ -79,7 +78,6 @@ export class ExternalAmount implements OnInit {
   public readonly requiresOtp = this.transferStore.requiresOtp;
   public readonly errorFromState = this.transferStore.error;
   public readonly otpConfig = transferOtpConfig['extrenal'];
-  public readonly noAttemptsLeft = signal(false);
 
   public readonly isExternalIban = computed(
     () => this.transferStore.recipientType() === 'iban-different-bank',
@@ -130,9 +128,11 @@ export class ExternalAmount implements OnInit {
       .toUpperCase()
       .substring(0, 2);
   });
+
   private readonly amountStatus = toSignal(this.amountInput.statusChanges, {
     initialValue: this.amountInput.status,
   });
+
   public readonly isTransferDisabled = computed(() => {
     const isInvalid = this.amountStatus() !== 'VALID';
     return (
@@ -145,17 +145,29 @@ export class ExternalAmount implements OnInit {
   constructor() {
     effect(() => {
       const error = this.errorFromState();
-      if (error) {
-        this.showError.set(true);
-        setTimeout(() => {
-          this.showError.set(false);
-          // this.transferStore.setError('');
-        }, 3000);
+      if (error && !this.requiresOtp()) {
+        untracked(() => {
+          this.alertService.error(
+            this.translate.instant('transfers.external.amount.transferError'),
+          );
+        });
       }
     });
   }
 
   public ngOnInit(): void {
+    const initialAmount = this.transferStore.amount();
+    if (initialAmount > 0) {
+      this.amountService.handleAmountInput(initialAmount);
+    }
+
+    if (!this.transferStore.hasShownAmountToast()) {
+      this.alertService.success(
+        this.translate.instant('transfers.external.amount.accountsSelected'),
+      );
+      this.transferStore.setHasShownAmountToast(true);
+    }
+
     this.amountInput.valueChanges
       .pipe(
         takeUntilDestroyed(this.destroyRef),
@@ -164,8 +176,6 @@ export class ExternalAmount implements OnInit {
         }),
       )
       .subscribe();
-
-    this.triggerToast('transfers.external.amount.accountsSelected');
   }
 
   public onGoBack(): void {
@@ -174,6 +184,7 @@ export class ExternalAmount implements OnInit {
       this.descriptionInput.value || '',
     );
   }
+
   public onTransfer(): void {
     if (this.amountInput.valid) {
       this.transferStore.setDescription(this.descriptionInput.value || '');
@@ -185,30 +196,28 @@ export class ExternalAmount implements OnInit {
       }
     }
   }
-  private triggerToast(messageKey: string): void {
-    this.currentToastMessage.set(messageKey);
-    this.showSuccess.set(true);
-    setTimeout(() => this.showSuccess.set(false), 3000);
-  }
+
   public onSuccessDone(): void {
     this.transferStore.reset();
     this.router.navigate(['/bank/dashboard']);
   }
+
   public onOtpClose(): void {
     this.transferStore.setRequiresOtp(false);
     this.noAttemptsLeft.set(false);
   }
+
   public onOtpVerify(event: IVerified): void {
     const otpCode = event.otp;
     if (otpCode) {
       this.executionService.verifyTransfer(otpCode);
     }
   }
+
   public onResendOtp(): void {}
 
-  public resendOtp(isCalled: boolean): void {
-    // console.log(isCalled);
-  }
+  public resendOtp(isCalled: boolean): void {}
+
   public handleNoMoreAttempts(): void {
     this.noAttemptsLeft.set(true);
     setTimeout(() => {

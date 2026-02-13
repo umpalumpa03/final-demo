@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { BaseInput } from './base-input';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 vi.mock('@tia/shared/lib/forms/input-field/base/utils/input.util', () => ({
   getValidationErrorMessage: () => 'MOCK_ERROR',
@@ -27,7 +28,7 @@ describe('BaseInput', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TestInput],
+      imports: [TestInput, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestInput);
