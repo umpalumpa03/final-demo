@@ -1,27 +1,27 @@
-<app-button (click)="toggle()"> Right Sheet </app-button>
+<app-button (click)="toggle()"> {{ 'storybook.overlays.rightSheet.openButton' | translate }} </app-button>
 
 <app-ui-sheet-modal [isOpen]="isOpen()" direction="right" (closed)="toggle()">
   <div class="sheet-demo">
     <header class="sheet-demo__header">
       <app-library-title
-        [title]="sheetTitle"
-        [subtitle]="sheetSubtitle"
+        [title]="sheetTitle()"
+        [subtitle]="sheetSubtitle()"
       ></app-library-title>
     </header>
 
     <div class="sheet-demo__form">
       <div class="sheet-demo__field">
-        <lib-text-input [config]="usernameInput"></lib-text-input>
+        <lib-text-input [config]="usernameInput()"></lib-text-input>
       </div>
 
       <div class="sheet-demo__field">
-        <lib-textarea [config]="bioInput"></lib-textarea>
+        <lib-textarea [config]="bioInput()"></lib-textarea>
       </div>
     </div>
 
     <footer class="sheet-demo__footer">
-      <app-button variant="outline" (click)="toggle()"> Cancel </app-button>
-      <app-button (click)="toggle()"> Save Changes </app-button>
+      <app-button variant="outline" (click)="toggle()"> {{ 'storybook.overlays.rightSheet.cancel' | translate }} </app-button>
+      <app-button (click)="toggle()"> {{ 'storybook.overlays.rightSheet.saveChanges' | translate }} </app-button>
     </footer>
   </div>
 </app-ui-sheet-modal>

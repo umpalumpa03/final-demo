@@ -139,7 +139,55 @@ describe('DashboardService', () => {
       expect((service as any).dirtyIds.has('1')).toBe(true);
       expect(service.myItems()[0].isHidden).toBe(true);
       expect(dispatchSpy).toHaveBeenCalledWith(
-        UserInfoActions.loadWidgetsSuccess({ widgets: service.myItems() })
+        UserInfoActions.loadWidgetsSuccess({ widgets: service.myItems() }),
+      );
+    });
+
+    it('should always include transactions even if hidden, and obey isHidden for others', () => {
+      const mixedWidgets: IWidgetItem[] = [
+        { id: 't1', type: 'transactions', isHidden: true, title: 'T' } as any,
+        { id: 'a1', type: 'accounts', isHidden: true, title: 'A' } as any,
+        { id: 'e1', type: 'exchange', isHidden: false, title: 'E' } as any,
+      ];
+      service.myItems.set(mixedWidgets);
+
+      const visible = service.visibleItems();
+
+      expect(visible.find((w) => w.id === 't1')).toBeDefined();
+
+      expect(visible.find((w) => w.id === 'a1')).toBeUndefined();
+
+      expect(visible.find((w) => w.id === 'e1')).toBeDefined();
+    });
+
+    it('should trigger persistChanges after 1500ms debounce', () => {
+      vi.useFakeTimers();
+      const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+      (service as any).dirtyIds.add('1');
+      service.myItems.set(mockWidgets);
+      (service as any).updateStream$.next(mockWidgets);
+
+      vi.advanceTimersByTime(1500);
+
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: UserInfoActions.updateWidgetsBulk.type,
+        }),
+      );
+      vi.useRealTimers();
+    });
+
+    it('should dispatch deleteWidget when an existing item with a dbId is missing from the draft', () => {
+      const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+      service.myItems.set(mockWidgets);
+
+      const draftIds = ['1'];
+      service.syncWidgetsFromDraft(draftIds);
+
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        UserInfoActions.deleteWidget({ id: 'db-2' }),
       );
     });
   });

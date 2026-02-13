@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinancesFilters } from './finances-filters';
-import { FormGroup, FormControl, ReactiveFormsModule} from '@angular/forms';
-import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
+import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { NO_ERRORS_SCHEMA} from '@angular/core';
+import { NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('FinancesFilters', () => {
   let component: FinancesFilters;
@@ -13,15 +13,9 @@ describe('FinancesFilters', () => {
     await TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),
-        ReactiveFormsModule,
-        FinancesFilters
+        ReactiveFormsModule
       ],
-      schemas: [NO_ERRORS_SCHEMA]
-    })
-    .overrideComponent(FinancesFilters, {
-      set: {
-        imports: [ReactiveFormsModule, TranslatePipe],
-      }
+      schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
 
@@ -41,12 +35,7 @@ describe('FinancesFilters', () => {
     ]);
     fixture.componentRef.setInput('monthOptions', []);
     
-
-    
-    try {
-      fixture.detectChanges();
-    } catch (e) {
-    }
+    fixture.detectChanges();
   });
 
   it('should create the component', () => {
@@ -55,12 +44,20 @@ describe('FinancesFilters', () => {
 
   it('should return form control correctly', () => {
     const control = component.getControl('selectedMonth');
+    expect(control).toBeDefined();
     expect(control.value).toBe('1');
   });
 
-  it('should emit filterChange', () => {
+  it('should emit filterChange when an option is selected', () => {
     const spy = vi.spyOn(component.filterChange, 'emit');
+    
     component.filterChange.emit('month' as any);
+    
     expect(spy).toHaveBeenCalledWith('month');
+  });
+
+  it('should check if form control exists before returning', () => {
+    const control = component.getControl('fromDate');
+    expect(control).toBeDefined();
   });
 });

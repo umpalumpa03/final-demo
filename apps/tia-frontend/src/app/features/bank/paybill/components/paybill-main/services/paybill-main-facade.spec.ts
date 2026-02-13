@@ -127,6 +127,20 @@ describe('PaybillMainFacade', () => {
       expect(service.showSearch()).toBe(true);
     });
 
+    it('init: should dispatch selectCategory and selectProvider when URL contains category and provider', () => {
+      mockRouter.url = '/bank/paybill/pay/utilities/gas-provider';
+
+      service.init();
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.selectCategory({ categoryId: 'utilities' }),
+      );
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.selectProvider({ providerId: 'gas-provider' }),
+      );
+    });
+
     it('isRootProviderView: should be true when no sub-provider is selected', () => {
       mockRouter.url = '/bank/paybill/pay';
       routerEvents$.next(new NavigationEnd(1, mockRouter.url, '/url'));
@@ -147,6 +161,5 @@ describe('PaybillMainFacade', () => {
       );
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/paybill/pay']);
     });
-
   });
 });
