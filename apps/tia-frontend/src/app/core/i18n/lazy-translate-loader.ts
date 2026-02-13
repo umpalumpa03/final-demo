@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { TranslateLoader, TranslationObject } from '@ngx-translate/core';
 import { forkJoin, Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 const CORE_TRANSLATION_FILES = [
   'common',
   'auth',
   'sidebar',
   'header-notifications',
+  'storybook'
 ] as const;
 
 export class LazyTranslateLoader implements TranslateLoader {
