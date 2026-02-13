@@ -64,8 +64,18 @@ export class BirthdayModalComponent implements OnInit, OnDestroy {
         particleCount: 2,
         angle: 60,
         spread: 55,
-        origin: { x: 0.5, y: 0.5 },
-        colors: ['#3b82f6', '#f472b6']
+        origin: { x: 0.3, y: 0.5 }, 
+        colors: ['#3b82f6', '#f472b6'],
+        zIndex: 2000 
+      });
+
+      confetti({
+        particleCount: 2,
+        angle: 120,
+        spread: 55,
+        origin: { x: 0.7, y: 0.5 },
+        colors: ['#3b82f6', '#f472b6'],
+        zIndex: 2000
       });
 
       if (Date.now() < end) {
