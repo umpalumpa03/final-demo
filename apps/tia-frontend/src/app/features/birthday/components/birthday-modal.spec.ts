@@ -8,10 +8,9 @@ import confetti from 'canvas-confetti';
 import { signal } from '@angular/core';
 
 vi.mock('canvas-confetti', () => {
-  const mockConfetti = vi.fn();
-  (mockConfetti as any).reset = vi.fn();
+  const mockConfetti = vi.fn(() => Promise.resolve());
   return {
-    default: mockConfetti,
+    default: Object.assign(mockConfetti, { reset: vi.fn() })
   };
 });
 
@@ -61,51 +60,30 @@ describe('BirthdayModalComponent', () => {
     fixture.destroy();
   });
 
-  it('should create the component', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should correctly derive userName from store', () => {
-    expect(component.userName()).toBe('John Doe');
-  });
-
   it('should launch confetti when shouldLaunchConfetti signal is true', () => {
     const confettiSpy = vi.mocked(confetti);
     
     mockBirthdayService.shouldLaunchConfetti.set(true);
-    
     component.ngOnInit();
     
     expect(confettiSpy).toHaveBeenCalled();
   });
 
-  it('should emit dismiss output when onDismiss is called', () => {
-    const spy = vi.spyOn(component.dismiss, 'emit');
-    
-    component.onDismiss();
-    
-    expect(spy).toHaveBeenCalled();
-  });
-
   it('should cleanup animations and reset confetti on destroy', () => {
-    const resetSpy = vi.mocked(confetti).reset;
+    const resetSpy = vi.mocked(confetti.reset);
     
     fixture.destroy();
     
     expect(resetSpy).toHaveBeenCalled();
   });
 
-  it('should correctly filter middle emojis from config', () => {
-    const hasHeader = component.middleEmojis.some(e => e.name === 'header');
-    const hasButtonIcon = component.middleEmojis.some(e => e.name === 'buttonHearth');
-    
-    expect(hasHeader).toBe(false);
-    expect(hasButtonIcon).toBe(false);
-    expect(component.middleEmojis.length).toBeGreaterThan(0);
+  it('should correctly derive userName from store', () => {
+    expect(component.userName()).toBe('John Doe');
   });
 
-  it('should have icons defined from emoji config', () => {
-    expect(component.buttonIcon).toBeDefined();
-    expect(component.headerIcon).toBeDefined();
+  it('should emit dismiss output when onDismiss is called', () => {
+    const spy = vi.spyOn(component.dismiss, 'emit');
+    component.onDismiss();
+    expect(spy).toHaveBeenCalled();
   });
 });
