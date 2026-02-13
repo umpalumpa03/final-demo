@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { TransferStore } from './store/transfers.store';
 import { recipientVerifiedGuard } from './components/transfers-external/guards/recipient-verified.guard';
 import { accountsSelectedGuard } from './components/transfers-external/guards/accounts-selected.guard';
-// import { TransferExternalService } from './services/transfer.external.service';
 import { TransferInternalService } from 'apps/tia-frontend/src/app/features/bank/transfers/components/transfers-internal/services/transfer.internal.service';
 import { TransferRecipientService } from './components/transfers-external/services/transfer-recipient.service';
 import { TransferAccountSelectionService } from './components/transfers-external/services/transfer-account-selection.service';
