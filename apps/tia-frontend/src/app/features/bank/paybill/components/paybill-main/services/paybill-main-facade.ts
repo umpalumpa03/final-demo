@@ -7,8 +7,8 @@ import { CATEGORY_UI_MAP } from '../components/category-grid/config/category.con
 import { PaybillActions } from '../../../store/paybill.actions';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
-import { PaybillDynamicForm } from '../../../services/paybill-dynamic-form/paybill-dynamic-form';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
+import { PaybillProvider } from '../shared/models/paybill.model';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +16,6 @@ import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions
 export class PaybillMainFacade {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
-  private readonly dynamicFormService = inject(PaybillDynamicForm);
   public readonly searchQuery = signal('');
 
   public init(): void {
@@ -80,15 +79,41 @@ export class PaybillMainFacade {
   public readonly activeProvider = computed(() => {
     const urlId = this.selectedParentId();
     const category = this.activeCategory();
+    const storeProvider = this.storeActiveProvider();
 
-    if (urlId && category?.providers) {
-      const providerFromUrl = category.providers.find((p) => p.id === urlId);
-
-      if (providerFromUrl) return providerFromUrl;
+    if (
+      storeProvider &&
+      storeProvider.id.toLowerCase() === urlId?.toLowerCase()
+    ) {
+      return storeProvider;
     }
 
-    return this.storeActiveProvider();
+    if (urlId && category?.providers) {
+      return this.findProviderRecursive(category.providers, urlId);
+    }
+
+    return null;
   });
+
+  private findProviderRecursive(
+    providers: PaybillProvider[],
+    targetId: string,
+  ): PaybillProvider | null {
+    const lowerTarget = targetId.toLowerCase();
+
+    for (const p of providers) {
+      if (p.id?.toLowerCase() === lowerTarget) {
+        return p;
+      }
+
+      if (p.children && p.children.length > 0) {
+        const found = this.findProviderRecursive(p.children, targetId);
+        if (found) return found;
+      }
+    }
+
+    return null;
+  }
 
   public readonly urlSegments = toSignal(
     this.router.events.pipe(
@@ -98,6 +123,12 @@ export class PaybillMainFacade {
         return url.split('/').filter((p) => p);
       }),
     ),
+    {
+      initialValue: this.router.url
+        .split('?')[0]
+        .split('/')
+        .filter((p) => p),
+    },
   );
 
   public readonly selectedParentId = computed(() => {
