@@ -14,6 +14,7 @@ import { forkJoin, of } from 'rxjs';
 import { WidgetsApiService } from '../../shared/services/user-info/widgets-service.api';
 import { Store } from '@ngrx/store';
 import { selectWidgetsLoaded } from './user-info.selectors';
+import { BirthdayApiService } from '../../features/birthday/services/birthday.service';
 
 @Injectable()
 export class UserInfoEffects {
@@ -21,6 +22,7 @@ export class UserInfoEffects {
   private readonly userInfoService = inject(UserInfoService);
   private readonly widgetService = inject(WidgetsApiService);
   private readonly store = inject(Store);
+  private readonly birthdayApiService = inject(BirthdayApiService);
 
   public loadUser$ = createEffect(() =>
     this.actions$.pipe(
@@ -136,4 +138,18 @@ export class UserInfoEffects {
       ),
     ),
   );
+
+  public dismissBirthdayModal$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(UserInfoActions.dismissBirthdayModal), 
+    switchMap(({ year }: { year: number }) => 
+      this.birthdayApiService.dismissBirthdayModal(year).pipe(
+        map(() => UserInfoActions.loadBirthdayModalClosed({ colsedBirthdayModal: year })),
+        catchError((error) =>
+          of(UserInfoActions.loadUserError({ error: error.message || 'Failed to dismiss modal' }))
+        )
+      )
+    )
+  )
+);
 }

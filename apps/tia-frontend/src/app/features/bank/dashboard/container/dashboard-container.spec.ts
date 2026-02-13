@@ -15,6 +15,7 @@ import { signal } from '@angular/core';
 import { DashboardService } from '../services/dashboard.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { UserInfoActions } from 'apps/tia-frontend/src/app/store/user-info/user-info.actions';
+import { BirthdayLogicService } from 'apps/tia-frontend/src/app/features/birthday/services/birthday-logic.service';
 
 describe('DashboardContainer', () => {
   let component: DashboardContainer;
@@ -22,6 +23,7 @@ describe('DashboardContainer', () => {
   let mockRouter: any;
   let mockDashService: any;
   let mockBreakpointService: any;
+  let mockBirthdayLogic: any;
 
   const mockTranslate = {
     instant: (key: string) => key,
@@ -52,6 +54,11 @@ describe('DashboardContainer', () => {
       isXsMobile: signal(false),
     };
 
+    mockBirthdayLogic = {
+      isModalVisible: signal(false),
+      dismiss: vi.fn(),
+    };
+
     TestBed.configureTestingModule({
       providers: [
         DashboardContainer,
@@ -60,6 +67,7 @@ describe('DashboardContainer', () => {
         { provide: TranslateService, useValue: mockTranslate },
         { provide: DashboardService, useValue: mockDashService },
         { provide: BreakpointService, useValue: mockBreakpointService },
+        { provide: BirthdayLogicService, useValue: mockBirthdayLogic },
       ],
     });
 
@@ -170,5 +178,18 @@ describe('DashboardContainer', () => {
 
     const columns = component['gridColumns']();
     expect(columns.default).toBe(1);
+  });
+
+  it('should handle birthday modal dismissal', () => {
+    component.onBirthdayDismiss();
+    expect(mockBirthdayLogic.dismiss).toHaveBeenCalled();
+  });
+
+  it('should expose birthday modal visibility', () => {
+    mockBirthdayLogic.isModalVisible.set(true);
+    expect(component.isBirthdayVisible()).toBe(true);
+
+    mockBirthdayLogic.isModalVisible.set(false);
+    expect(component.isBirthdayVisible()).toBe(false);
   });
 });

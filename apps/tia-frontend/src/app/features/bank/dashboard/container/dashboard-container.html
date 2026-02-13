@@ -102,4 +102,11 @@
       </div>
     </div>
   </app-ui-sheet-modal>
+
+  <app-ui-modal 
+      [isOpen]="isBirthdayVisible()" 
+      (closed)="onBirthdayDismiss()"
+      [hideExit]="true">
+      <app-birthday-modal (dismiss)="onBirthdayDismiss()"></app-birthday-modal>
+  </app-ui-modal>
 </div>

@@ -80,6 +80,12 @@ describe('userInfoReducer', () => {
     const s3 = userInfoReducer(initialUserState, UserInfoActions.loadBirthdayModalClosed({ colsedBirthdayModal: 2020 }));
     expect(s3.birthdayModalClosedYear).toBe(2020);
   });
+
+  it('handles dismissBirthdayModal action', () => {
+    const state = userInfoReducer(initialUserState, UserInfoActions.dismissBirthdayModal({ year: 2024 }));
+    expect(state.loading).toBe(true);
+    expect(state.error).toBeNull();
+  });
 });
 
 describe('userInfoReducer', () => {
