@@ -1,11 +1,11 @@
-<app-button variant="outline" (click)="toggle()"> Bottom Sheet </app-button>
+<app-button variant="outline" (click)="toggle()"> {{ 'storybook.overlays.bottomSheet.openButton' | translate }} </app-button>
 
 <app-ui-sheet-modal [isOpen]="isOpen()" direction="bottom" (closed)="toggle()">
   <div class="bottom-sheet-demo">
     <header class="bottom-sheet-demo__header">
       <app-library-title
-        [title]="sheetTitle"
-        [subtitle]="sheetSubtitle"
+        [title]="sheetTitle()"
+        [subtitle]="sheetSubtitle()"
       ></app-library-title>
     </header>
 

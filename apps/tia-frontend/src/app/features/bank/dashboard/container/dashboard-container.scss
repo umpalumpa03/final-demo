@@ -71,3 +71,8 @@
     }
   }
 }
+
+.custom__header {
+  width: 100%;
+  @include flex-center($justify: space-between);
+}

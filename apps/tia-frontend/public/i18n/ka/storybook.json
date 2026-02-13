@@ -258,7 +258,6 @@
       "label": "უსაფრთხოების კოდი"
     }
   },
-  "forms": {},
   "cards": {
      "pageTitle": "ბარათები",
     "pageSubtitle": "ბარათის კომპონენტები სხვადასხვა განლაგებით და შინაარსის ტიპებით",
@@ -316,7 +315,6 @@
     }
 
   },
-  "alerts": {},
   "forms": {
     "formsTitle": "ფორმები",
     "formsSubtitle": "სრული ფორმის მაგალითები სხვადასხვა ტიპის ინპუტებითა და განლაგებებით",
@@ -395,7 +393,6 @@
       "layout": "ფორმის განლაგება"
     }
   },
-  "cards": {},
   "alerts": {
     "TITLES": {
       "PAGE_MAIN": "შეტყობინებები და ნოტიფიკაციები",
@@ -614,6 +611,157 @@
     }
   },
   "feedback": {},
+  "data-display": {
+    "title": "მონაცემების ჩვენება",
+    "subtitle": "ავატარები, პროპორციები, მინიშნებები და ჰოვერ-ბარათები",
+    "sections": {
+      "avatars": {
+        "title": "ავატარები",
+        "sizes": "ზომები:",
+        "withInitials": "ინიციალებით:",
+        "withColors": "ფერებით:",
+        "avatarGroup": "ავატარების ჯგუფი:",
+        "withStatus": "სტატუსით:",
+        "users": {
+          "loggedIn": { "firstName": "ნიკოლოზ", "lastName": "მაღალდაძე" },
+          "additional1": { "firstName": "ალექს", "lastName": "ბრაუნი" },
+          "additional2": { "firstName": "მია", "lastName": "ჯონსონი" },
+          "additional3": { "firstName": "სოფია", "lastName": "კინგი" }
+        },
+        "colorInitials": {
+          "0": "ჯდ",
+          "1": "აბ",
+          "2": "მჯ",
+          "3": "სკ",
+          "4": "ეუ"
+        },
+        "groupInitials": {
+          "0": "ჯც",
+          "1": "აე",
+          "2": "მს",
+          "3": "სჰ",
+          "4": "ლუ",
+          "5": "ბმ",
+          "6": "რგ",
+          "7": "თუ",
+          "8": "ნპ"
+        },
+        "statusInitials": {
+          "0": "ჯდ",
+          "1": "აბ",
+          "2": "მჯ",
+          "3": "სკ"
+        }
+      },
+      "aspectRatio": {
+        "title": "პროპორცია",
+        "noRatios": "პროპორციები არ არის ხელმისაწვდომი.",
+        "aspectRatioSuffix": "პროპორცია",
+        "descriptions": {
+          "video": "ვიდეო",
+          "standard": "სტანდარტული",
+          "square": "კვადრატული",
+          "ultrawide": "ულტრა ფართო"
+        }
+      },
+      "tooltips": {
+        "title": "მინიშნებები",
+        "items": {
+          "topDefault": "ზემოდან (ნაგულისხმევი)",
+          "bottom": "ქვემოდან",
+          "left": "მარცხნიდან",
+          "right": "მარჯვნიდან",
+          "hoverMe": "მიიტანეთ მაუსი",
+          "tooltipOnTop": "მინიშნება ზემოდან",
+          "tooltipOnBottom": "მინიშნება ქვემოდან",
+          "tooltipOnLeft": "მინიშნება მარცხნიდან",
+          "tooltipOnRight": "მინიშნება მარჯვნიდან",
+          "janeDoe": "ჯეინ დოუ",
+          "primaryAction": "მთავარი მოქმედება"
+        }
+      },
+      "hoverCards": {
+        "title": "ჰოვერ-ბარათები",
+        "items": {
+          "johndoeHandle": "@ჯონდოუ",
+          "johndoeName": "ჯონ დოუ",
+          "johndoeRole": "პროდუქტის დიზაინერი",
+          "johndoeDetail": "მონაცემების ჩვენების კომპონენტებისთვის გააზრებული UI შაბლონების შექმნა.",
+          "janedoeHandle": "@ჯეინდოუ",
+          "janedoeName": "ჯეინ ადამსი",
+          "janedoeRole": "ფრონტენდ ინჟინერი",
+          "janedoeDetail": "ხელმისაწვდომ და მრავალჯერად ჰოვერ ინტერაქციებზე ფოკუსირება.",
+          "alexHandle": "მიიტანეთ დეტალებისთვის",
+          "alexName": "ალექს დიაზი",
+          "alexRole": "დიზაინის ხელმძღვანელი",
+          "alexDetail": "დოკუმენტაციის კონტენტისთვის მდიდარი წინასწარი ნახვის შესწავლა."
+        }
+      },
+      "cards": {
+        "title": "ბარათები",
+        "items": {
+          "totalUsersLabel": "მომხმარებლების რაოდენობა",
+          "totalUsersValue": "1,234",
+          "totalUsersChange": "+12% წინა თვიდან",
+          "activeSessionsLabel": "აქტიური სესიები",
+          "activeSessionsValue": "456",
+          "activeSessionsChange": "+8% წინა საათიდან",
+          "revenueLabel": "შემოსავალი",
+          "revenueValue": "$12.5K",
+          "revenueChange": "-3% წინა კვირიდან",
+          "conversionLabel": "კონვერსია",
+          "conversionValue": "3.2%",
+          "conversionChange": "ცვლილების გარეშე"
+        }
+      },
+      "listDisplay": {
+        "title": "სიის ჩვენება",
+        "items": {
+          "johnName": "ჯონ დოუ",
+          "johnRole": "ადმინისტრატორი",
+          "johnBadge": "ადმინი",
+          "janeName": "ჯეინ სმიტი",
+          "janeRole": "რედაქტორი",
+          "janeBadge": "რედაქტორი",
+          "bobName": "ბობ ჯონსონი",
+          "bobRole": "მომხმარებელი",
+          "bobBadge": "მომხმარებელი",
+          "aliceName": "ელის ბრაუნი",
+          "aliceRole": "მომხმარებელი",
+          "aliceBadge": "მომხმარებელი"
+        }
+      },
+      "keyValueDisplay": {
+        "title": "გასაღები-მნიშვნელობის ჩვენება",
+        "userInfo": "მომხმარებლის ინფორმაცია",
+        "items": {
+          "fullNameLabel": "სრული სახელი:",
+          "fullNameValue": "ჯონ დოუ",
+          "emailLabel": "ელ. ფოსტა:",
+          "emailValue": "john@example.com",
+          "roleLabel": "როლი:",
+          "roleValue": "ადმინისტრატორი",
+          "statusLabel": "სტატუსი:",
+          "statusValue": "აქტიური",
+          "memberLabel": "წევრი:",
+          "memberValue": "იან 2024"
+        }
+      },
+      "timelineDisplay": {
+        "title": "ქრონოლოგიის ჩვენება",
+        "items": {
+          "deployTitle": "პროდაქშენზე გაშვებულია",
+          "deployTimestamp": "2 საათის წინ",
+          "reviewTitle": "კოდის განხილვა დასრულებულია",
+          "reviewTimestamp": "5 საათის წინ",
+          "prTitle": "Pull request გახსნილია",
+          "prTimestamp": "1 დღის წინ",
+          "featureTitle": "ფუნქციონალის შემუშავება დაწყებულია",
+          "featureTimestamp": "2 დღის წინ"
+        }
+      }
+    }
+  },
   "layout": {
     "title": "სტრუქტურული კომპონენტები",
     "subtitle": "სტრუქტურული კომპონენტები კონტენტის ორგანიზებისთვის",
@@ -798,8 +946,148 @@
       }
     ]
   },
-  "data-display": {},
-  "overlays": {},
+  "overlays": {
+    "title": "ოვერლეი კომპონენტები",
+    "subtitle": "მოდალური დიალოგები, პანელები, პოპოვერები და ჩამოსაშლელი მენიუ",
+    "sections": {
+      "dialogs": "დიალოგები",
+      "alertDialogs": "გამაფრთხილებელი დიალოგები",
+      "sheets": "პანელები (გვერდითი პანელები)",
+      "drawers": "დრაუერები",
+      "commandPalette": "ბრძანებების პალიტრა"
+    },
+    "editProfile": {
+      "openButton": "დიალოგის გახსნა",
+      "title": "პროფილის რედაქტირება",
+      "subtitle": "შეცვალეთ თქვენი პროფილის მონაცემები. დააჭირეთ შენახვას დასრულებისას.",
+      "nameLabel": "სახელი",
+      "namePlaceholder": "გიორგი გიორგაძე",
+      "emailLabel": "ელ. ფოსტა",
+      "emailPlaceholder": "john@example.com",
+      "cancel": "გაუქმება",
+      "saveChanges": "ცვლილებების შენახვა"
+    },
+    "formDialog": {
+      "openButton": "დიალოგი ფორმით",
+      "title": "ახალი პროექტის შექმნა",
+      "subtitle": "შეიყვანეთ თქვენი ახალი პროექტის დეტალები.",
+      "projectNameLabel": "სახელი",
+      "projectNamePlaceholder": "გიორგი გიორგაძე",
+      "descriptionLabel": "აღწერა",
+      "descriptionPlaceholder": "მოკლე აღწერა...",
+      "cancel": "გაუქმება",
+      "createProject": "პროექტის შექმნა"
+    },
+    "largeDialog": {
+      "openButton": "დიდი დიალოგი",
+      "title": "წესები და პირობები",
+      "subtitle": "გთხოვთ, წაიკითხოთ ჩვენი წესები და პირობები.",
+      "sections": {
+        "section1": {
+          "title": "სექცია 1",
+          "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        },
+        "section2": {
+          "title": "სექცია 2",
+          "content": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+        },
+        "section3": {
+          "title": "სექცია 3",
+          "content": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+        },
+        "section4": {
+          "title": "სექცია 4",
+          "content": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        }
+      },
+      "decline": "უარყოფა",
+      "accept": "მიღება"
+    },
+    "deleteAccount": {
+      "openButton": "ანგარიშის წაშლა",
+      "title": "ნამდვილად დარწმუნებული ხართ?",
+      "subtitle": "ეს მოქმედება შეუქცევადია. თქვენი ანგარიში და მონაცემები წაიშლება ჩვენი სერვერებიდან.",
+      "cancel": "გაუქმება",
+      "deleteButton": "ანგარიშის წაშლა"
+    },
+    "confirmAccount": {
+      "openButton": "მოქმედების დადასტურება",
+      "title": "დაადასტურეთ მოქმედება",
+      "subtitle": "დარწმუნებული ხართ, რომ გსურთ ამ მოქმედების გაგრძელება?",
+      "cancel": "გაუქმება",
+      "continue": "გაგრძელება"
+    },
+    "rightSheet": {
+      "openButton": "მარჯვენა პანელი",
+      "title": "პარამეტრების რედაქტირება",
+      "subtitle": "შეცვალეთ თქვენი პარამეტრები აქ.",
+      "usernameLabel": "მომხმარებლის სახელი",
+      "usernamePlaceholder": "@გიორგი",
+      "bioLabel": "ბიო",
+      "bioPlaceholder": "მოგვიყევით თქვენს შესახებ",
+      "cancel": "გაუქმება",
+      "saveChanges": "ცვლილებების შენახვა"
+    },
+    "leftSheet": {
+      "openButton": "მარცხენა პანელი",
+      "title": "ნავიგაცია",
+      "subtitle": "სწრაფი წვდომა მთავარ სექციებზე",
+      "items": {
+        "profile": "პროფილი",
+        "settings": "პარამეტრები",
+        "messages": "შეტყობინებები",
+        "logout": "გასვლა"
+      }
+    },
+    "topSheet": {
+      "openButton": "ზედა პანელი",
+      "title": "შეტყობინების ბანერი",
+      "subtitle": "მნიშვნელოვანი განცხადებები და განახლებები",
+      "message": "ჩვენ განვაახლეთ კონფიდენციალურობის პოლიტიკა. გთხოვთ, გადახედოთ ცვლილებებს."
+    },
+    "bottomSheet": {
+      "openButton": "ქვედა პანელი",
+      "title": "სწრაფი მოქმედებები",
+      "subtitle": "ხშირად გამოყენებული მოქმედებები",
+      "actions": {
+        "new": "ახალი",
+        "edit": "რედაქტირება",
+        "copy": "კოპირება",
+        "delete": "წაშლა"
+      }
+    },
+    "drawer": {
+      "openButton": "დრაუერის გახსნა",
+      "title": "დრაუერის სათაური",
+      "subtitle": "ეს არის დრაუერის კომპონენტი, ოპტიმიზირებული მობილურისთვის.",
+      "nameLabel": "სახელი",
+      "namePlaceholder": "შეიყვანეთ სახელი",
+      "emailLabel": "ელ. ფოსტა",
+      "emailPlaceholder": "შეიყვანეთ ელ. ფოსტა",
+      "submit": "გაგზავნა",
+      "cancel": "გაუქმება"
+    },
+    "contextMenu": {
+      "title": "კონტექსტური მენიუ",
+      "subtitle": "დააწკაპუნეთ მარჯვენა ღილაკით ქვემოთ მოცემულ არეალზე კონტექსტური მენიუს გასახსნელად:",
+      "hint": "დააწკაპუნეთ მარჯვენა ღილაკით",
+      "items": {
+        "copy": "კოპირება",
+        "edit": "რედაქტირება",
+        "new": "ახალი",
+        "showGrid": "ბადის ჩვენება",
+        "showRulers": "სახაზავის ჩვენება",
+        "delete": "წაშლა"
+      }
+    },
+    "commandPaletteActions": {
+      "viewProfile": "პროფილის ნახვა",
+      "settings": "პარამეტრები",
+      "messages": "შეტყობინებები",
+      "createNew": "ახლის შექმნა",
+      "copyLink": "ბმულის კოპირება"
+    }
+  },
   "drag-and-drop": {
     "title": "ელემენტების გადაადგილება",
     "subtitle": "ინტერაქციული სივრცე მასალების გადასანაცვლებლად",

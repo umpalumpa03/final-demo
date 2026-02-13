@@ -59,21 +59,21 @@ export class PaybillFormContainer {
   }
 
   // sync form data with service
-private readonly formSync = effect(() => {
-  const fields = this.paybillFacade.paymentFields();
-  const payload = this.paybillFacade.paymentPayload();
+  private readonly formSync = effect(() => {
+    const fields = this.paybillFacade.paymentFields();
+    const payload = this.paybillFacade.paymentPayload();
 
-  if (fields.length > 0) {
-    this.dynamicForm.syncFormWithPaymentFields(
-      this.paybillForm,
-      { 
-        ...payload?.identification, 
-        amount: payload?.amount ?? 0 
-      }, 
-      true,
-    );
-  }
-});
+    if (fields.length > 0) {
+      this.dynamicForm.syncFormWithPaymentFields(
+        this.paybillForm,
+        {
+          ...payload?.identification,
+          amount: payload?.amount ?? 0,
+        },
+        true,
+      );
+    }
+  });
 
   public saveAsTemplate(customNickname?: string): void {
     const provider = this.paybillFacade.activeProvider();
@@ -93,7 +93,14 @@ private readonly formSync = effect(() => {
   }
 
   public readonly paybillForm = this.fb.group({
-    amount: [0, [Validators.required, Validators.max(9999)]],
+    amount: [
+      0,
+      [
+        Validators.required,
+        Validators.max(9999),
+        Validators.pattern(/^\d+(\.\d{1,2})?$/),
+      ],
+    ],
   });
 
   public onVerifyAccount(event: PaybillFormVerifyEvent): void {

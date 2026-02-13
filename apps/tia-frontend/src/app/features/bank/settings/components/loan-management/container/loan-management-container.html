@@ -1,28 +1,8 @@
-@if (store.successMessage()) {
-  <div class="alert-toast">
-    <app-dismissible-alerts
-      alertType="success"
-      alertTitle="Success!"
-      [alertMessage]="store.successMessage()!"
-    ></app-dismissible-alerts>
+<div class="loan-card">
+  <div class="loan-header">
+    <h3 class="loan-header__title">{{ config().title }}</h3>
+    <p class="loan-header__subtitle">{{ config().subtitle }}</p>
   </div>
-}
-@if (store.actionError()) {
-  <div class="alert-toast">
-    <app-dismissible-alerts
-      alertType="error"
-      alertTitle="Oops!"
-      [alertMessage]="store.actionError()!"
-    ></app-dismissible-alerts>
-  </div>
-}
-<app-basic-card
-  maxWidth="100%"
-  height="fit-content"
-  padding="2.4rem"
-  [title]="config().title"
-  [subtitle]="config().subtitle"
->
   <div class="loan-management-container">
     <app-pending-approvals-table
       [approvals]="store.pendingApprovals()"
@@ -32,7 +12,7 @@
       (reload)="onReload()"
     ></app-pending-approvals-table>
   </div>
-</app-basic-card>
+</div>
 <app-loan-case-drawer
   [isOpen]="!!store.selectedLoanId()"
   [loanDetails]="store.selectedLoanDetails()"

@@ -10,7 +10,6 @@ import {
 import { BaseInput } from '../base/base-input';
 import { CheckboxConfig } from '../models/checkbox.model';
 import { CHECKBOX_DEFAULTS } from '../config/checkbox.config';
-import { generateUniqueId } from '../base/utils/input.util';
 
 @Component({
   selector: 'lib-checkboxes',
@@ -29,7 +28,8 @@ export class Checkboxes extends BaseInput {
 
   public readonly checkedChange = output<boolean>();
 
-  private readonly defaultId = generateUniqueId('lib-checkbox');
+  private readonly defaultId =
+    this.validationService.generateUniqueId('lib-checkbox');
 
   protected readonly mergedConfig = computed<CheckboxConfig>(() => ({
     ...CHECKBOX_DEFAULTS,
@@ -53,9 +53,8 @@ export class Checkboxes extends BaseInput {
     });
 
     effect(() => {
-      const isChecked = this.checked();
       if (!this.ngControl) {
-        this.value.set(isChecked);
+        this.value.set(this.checked());
       }
     });
   }

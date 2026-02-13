@@ -95,7 +95,7 @@ describe('PaybillDynamicForm', () => {
       amountControl?.setValue(0);
       expect(amountControl?.valid).toBe(false);
 
-      amountControl?.setValue(0.01);
+      amountControl?.setValue(10);
       expect(amountControl?.valid).toBe(true);
     });
 

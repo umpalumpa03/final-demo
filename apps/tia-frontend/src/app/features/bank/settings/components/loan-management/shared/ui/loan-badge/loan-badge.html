@@ -1,0 +1,6 @@
+<span [class]="badgeClass()">
+  @if (icon()) {
+    <img [src]="icon()" [alt]="text()" />
+  }
+  {{ text() }}
+</span>

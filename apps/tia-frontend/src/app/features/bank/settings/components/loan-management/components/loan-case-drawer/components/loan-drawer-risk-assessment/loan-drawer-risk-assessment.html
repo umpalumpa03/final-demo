@@ -1,0 +1,29 @@
+@if (loanDetails()) {
+  <section class="loan-drawer__section">
+    <div class="loan-drawer__section-header">
+      <div class="loan-drawer__section-icon loan-drawer__section-icon--risk">
+        <img src="images/svg/auth/secured-blue.svg" alt="Risk" />
+      </div>
+      <h3 class="loan-drawer__section-title">{{ labels().riskSection }}</h3>
+    </div>
+
+    @if (isLoading()) {
+      <app-skeleton [width]="'100%'" [height]="'10rem'"></app-skeleton>
+    } @else {
+      <div class="loan-drawer__risk-card">
+        <div class="loan-drawer__risk-row">
+          <span class="loan-drawer__risk-label">{{ labels().debtToIncome }}</span>
+          <span class="loan-drawer__risk-value">{{ debtToIncomeRatio() }}%</span>
+        </div>
+        <div class="loan-drawer__risk-row">
+          <span class="loan-drawer__risk-label">{{ labels().loanToIncome }}</span>
+          <span class="loan-drawer__risk-value">{{ loanToIncomeRatio() }}%</span>
+        </div>
+        <div class="loan-drawer__risk-row loan-drawer__risk-row--last">
+          <span class="loan-drawer__risk-label">{{ labels().totalInterest }}</span>
+          <span class="loan-drawer__risk-value">{{ totalInterest() | currency:'USD':'symbol':'1.0-0' }}</span>
+        </div>
+      </div>
+    }
+  </section>
+}

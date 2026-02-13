@@ -257,7 +257,6 @@
       "label": "Security PIN"
     }
   },
-  "forms": {},
   "cards": {
      "pageTitle": "Cards",
     "pageSubtitle": "Card components with various layouts and content types",
@@ -314,7 +313,6 @@
       }
     }
   },
-  "alerts": {},
   "forms": {
     "formsTitle": "Forms",
     "formsSubtitle": "Complete form examples with various input types and layouts",
@@ -393,7 +391,6 @@
       "layout": "Form Layout"
     }
   },
-  "cards": {},
   "alerts": {
     "TITLES": {
       "PAGE_MAIN": "Alerts & Notifications",
@@ -613,6 +610,157 @@
     }
   },
   "feedback": {},
+  "data-display": {
+    "title": "Data Display",
+    "subtitle": "Avatars, aspect ratios, tooltips, and hover cards",
+    "sections": {
+      "avatars": {
+        "title": "Avatars",
+        "sizes": "Sizes:",
+        "withInitials": "With Initials:",
+        "withColors": "With Colors:",
+        "avatarGroup": "Avatar Group:",
+        "withStatus": "With Status:",
+        "users": {
+          "loggedIn": { "firstName": "Nikoloz", "lastName": "Maghaldadze" },
+          "additional1": { "firstName": "Alex", "lastName": "Brown" },
+          "additional2": { "firstName": "Mia", "lastName": "Johnson" },
+          "additional3": { "firstName": "Sophia", "lastName": "King" }
+        },
+        "colorInitials": {
+          "0": "JD",
+          "1": "AB",
+          "2": "MJ",
+          "3": "SK",
+          "4": "EW"
+        },
+        "groupInitials": {
+          "0": "JC",
+          "1": "AE",
+          "2": "MS",
+          "3": "SH",
+          "4": "LW",
+          "5": "BM",
+          "6": "RG",
+          "7": "TW",
+          "8": "NP"
+        },
+        "statusInitials": {
+          "0": "JD",
+          "1": "AB",
+          "2": "MJ",
+          "3": "SK"
+        }
+      },
+      "aspectRatio": {
+        "title": "Aspect Ratio",
+        "noRatios": "No aspect ratios available.",
+        "aspectRatioSuffix": "Aspect Ratio",
+        "descriptions": {
+          "video": "Video",
+          "standard": "Standard",
+          "square": "Square",
+          "ultrawide": "Ultrawide"
+        }
+      },
+      "tooltips": {
+        "title": "Tooltips",
+        "items": {
+          "topDefault": "Top (default)",
+          "bottom": "Bottom",
+          "left": "Left",
+          "right": "Right",
+          "hoverMe": "Hover me",
+          "tooltipOnTop": "Tooltip on top",
+          "tooltipOnBottom": "Tooltip on bottom",
+          "tooltipOnLeft": "Tooltip on left",
+          "tooltipOnRight": "Tooltip on right",
+          "janeDoe": "Jane Doe",
+          "primaryAction": "Primary action"
+        }
+      },
+      "hoverCards": {
+        "title": "Hover Cards",
+        "items": {
+          "johndoeHandle": "@johndoe",
+          "johndoeName": "John Doe",
+          "johndoeRole": "Product Designer",
+          "johndoeDetail": "Building thoughtful UI patterns for the data display suite.",
+          "janedoeHandle": "@janedoe",
+          "janedoeName": "Jane Adams",
+          "janedoeRole": "Frontend Engineer",
+          "janedoeDetail": "Focused on accessible, reusable hover interactions.",
+          "alexHandle": "Hover for details",
+          "alexName": "Alex Diaz",
+          "alexRole": "Design Lead",
+          "alexDetail": "Exploring rich previews for documentation content."
+        }
+      },
+      "cards": {
+        "title": "Cards",
+        "items": {
+          "totalUsersLabel": "Total Users",
+          "totalUsersValue": "1,234",
+          "totalUsersChange": "+12% from last month",
+          "activeSessionsLabel": "Active Sessions",
+          "activeSessionsValue": "456",
+          "activeSessionsChange": "+8% from last hour",
+          "revenueLabel": "Revenue",
+          "revenueValue": "$12.5K",
+          "revenueChange": "-3% from last week",
+          "conversionLabel": "Conversion",
+          "conversionValue": "3.2%",
+          "conversionChange": "No change"
+        }
+      },
+      "listDisplay": {
+        "title": "List Display",
+        "items": {
+          "johnName": "John Doe",
+          "johnRole": "Admin",
+          "johnBadge": "Admin",
+          "janeName": "Jane Smith",
+          "janeRole": "Editor",
+          "janeBadge": "Editor",
+          "bobName": "Bob Johnson",
+          "bobRole": "User",
+          "bobBadge": "User",
+          "aliceName": "Alice Brown",
+          "aliceRole": "User",
+          "aliceBadge": "User"
+        }
+      },
+      "keyValueDisplay": {
+        "title": "Key-Value Display",
+        "userInfo": "User Information",
+        "items": {
+          "fullNameLabel": "Full Name:",
+          "fullNameValue": "John Doe",
+          "emailLabel": "Email:",
+          "emailValue": "john@example.com",
+          "roleLabel": "Role:",
+          "roleValue": "Administrator",
+          "statusLabel": "Status:",
+          "statusValue": "Active",
+          "memberLabel": "Member Since:",
+          "memberValue": "Jan 2024"
+        }
+      },
+      "timelineDisplay": {
+        "title": "Timeline Display",
+        "items": {
+          "deployTitle": "Deployed to production",
+          "deployTimestamp": "2 hours ago",
+          "reviewTitle": "Code review completed",
+          "reviewTimestamp": "5 hours ago",
+          "prTitle": "Pull request opened",
+          "prTimestamp": "1 day ago",
+          "featureTitle": "Feature development started",
+          "featureTimestamp": "2 days ago"
+        }
+      }
+    }
+  },
   "layout": {
     "title": "Layout Components",
     "subtitle": "Structural components for organizing content",
@@ -797,8 +945,148 @@
       }
     ]
   },
-  "data-display": {},
-  "overlays": {},
+  "overlays": {
+    "title": "Overlay Components",
+    "subtitle": "Modal dialogs, sheets, popovers, and dropdown menu",
+    "sections": {
+      "dialogs": "Dialogs",
+      "alertDialogs": "Alert Dialogs",
+      "sheets": "Sheets (Side Panels)",
+      "drawers": "Drawers",
+      "commandPalette": "Command Palette"
+    },
+    "editProfile": {
+      "openButton": "Open Dialog",
+      "title": "Edit Profile",
+      "subtitle": "Make changes to your profile here. Click save when you're done.",
+      "nameLabel": "Name",
+      "namePlaceholder": "John Doe",
+      "emailLabel": "Email",
+      "emailPlaceholder": "john@example.com",
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes"
+    },
+    "formDialog": {
+      "openButton": "Dialog with Form",
+      "title": "Create New Project",
+      "subtitle": "Enter the details for your new project.",
+      "projectNameLabel": "Name",
+      "projectNamePlaceholder": "John Doe",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Brief description...",
+      "cancel": "Cancel",
+      "createProject": "Create Project"
+    },
+    "largeDialog": {
+      "openButton": "Large Dialog",
+      "title": "Terms and Conditions",
+      "subtitle": "Please read and accept our terms and conditions.",
+      "sections": {
+        "section1": {
+          "title": "Section 1",
+          "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        },
+        "section2": {
+          "title": "Section 2",
+          "content": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+        },
+        "section3": {
+          "title": "Section 3",
+          "content": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+        },
+        "section4": {
+          "title": "Section 4",
+          "content": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        }
+      },
+      "decline": "Decline",
+      "accept": "Accept"
+    },
+    "deleteAccount": {
+      "openButton": "Delete Account",
+      "title": "Are you absolutely sure?",
+      "subtitle": "This action cannot be undone. This will permanently delete your account and remove your data from our servers.",
+      "cancel": "Cancel",
+      "deleteButton": "Delete Account"
+    },
+    "confirmAccount": {
+      "openButton": "Confirm Action",
+      "title": "Confirm your action",
+      "subtitle": "Are you sure you want to proceed with this action?",
+      "cancel": "Cancel",
+      "continue": "Continue"
+    },
+    "rightSheet": {
+      "openButton": "Open Right Sheet",
+      "title": "Edit Settings",
+      "subtitle": "Make changes to your settings here.",
+      "usernameLabel": "Username",
+      "usernamePlaceholder": "@johndoe",
+      "bioLabel": "Bio",
+      "bioPlaceholder": "Tell us about yourself",
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes"
+    },
+    "leftSheet": {
+      "openButton": "Left Sheet",
+      "title": "Navigation",
+      "subtitle": "Quick access to main sections",
+      "items": {
+        "profile": "Profile",
+        "settings": "Settings",
+        "messages": "Messages",
+        "logout": "Logout"
+      }
+    },
+    "topSheet": {
+      "openButton": "Top Sheet",
+      "title": "Notification Banner",
+      "subtitle": "Important announcements and updates",
+      "message": "We've updated our privacy policy. Please review the changes."
+    },
+    "bottomSheet": {
+      "openButton": "Bottom Sheet",
+      "title": "Quick Actions",
+      "subtitle": "Frequently used actions",
+      "actions": {
+        "new": "New",
+        "edit": "Edit",
+        "copy": "Copy",
+        "delete": "Delete"
+      }
+    },
+    "drawer": {
+      "openButton": "Open Drawer",
+      "title": "Drawer Title",
+      "subtitle": "This is a drawer component optimized for mobile.",
+      "nameLabel": "Name",
+      "namePlaceholder": "Enter your name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter your email",
+      "submit": "Submit",
+      "cancel": "Cancel"
+    },
+    "contextMenu": {
+      "title": "Context Menu",
+      "subtitle": "Right-click on the area below to open the context menu:",
+      "hint": "Right-click here",
+      "items": {
+        "copy": "Copy",
+        "edit": "Edit",
+        "new": "New",
+        "showGrid": "Show Grid",
+        "showRulers": "Show Rulers",
+        "delete": "Delete"
+      }
+    },
+    "commandPaletteActions": {
+      "viewProfile": "View Profile",
+      "settings": "Settings",
+      "messages": "Messages",
+      "createNew": "Create New",
+      "copyLink": "Copy Link"
+    }
+  },
   "drag-and-drop": {
     "title": "Drag & Drop Components",
     "subtitle": "Interactive drag-and-drop interfaces for reordering and organizing content",

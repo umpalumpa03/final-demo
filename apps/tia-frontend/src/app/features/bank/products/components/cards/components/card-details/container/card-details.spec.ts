@@ -12,6 +12,7 @@ import {
   closeCardDetailsModal,
   navigateToNextCard,
   navigateToPreviousCard,
+  setCurrentCardIndex,
 } from '../../../../../../../../store/products/cards/cards.actions';
 import * as CardsSelectors from '../../../../../../../../store/products/cards/cards.selectors';
 import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
@@ -193,4 +194,20 @@ describe('CardDetails', () => {
 
     expect(store.dispatch).toHaveBeenCalledWith(navigateToPreviousCard());
   });
+  it('should dispatch navigateToPreviousCard and navigate', () => {
+  const prevCardId = 'card-000';
+  store.select = vi.fn((selector) => {
+    if (selector === CardsSelectors.selectCurrentCardIndex) return of(0);
+    if (selector === CardsSelectors.selectCurrentAccountCardIds) return of([prevCardId, 'card-123']);
+    if (selector === CardsSelectors.selectAllAccounts) return of([mockAccount]);
+    return of(null);
+  });
+
+  component['handlePreviousCard']();
+
+  expect(store.dispatch).toHaveBeenCalledWith(navigateToPreviousCard());
+});
+
+
+
 });

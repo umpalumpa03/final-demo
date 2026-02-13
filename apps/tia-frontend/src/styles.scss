@@ -2,6 +2,7 @@
 @use './app/shared/styles/variables' as *;
 @use './app/shared/styles/palette' as *;
 @use './app/shared/styles/themes' as *;
+@use './app/shared/styles/mixins' as *;
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
@@ -27,4 +28,5 @@ body {
   background: $gray-25;
   overflow-y: auto;
   padding: 1.6rem;
+  @include custom-scrollbar();
 }

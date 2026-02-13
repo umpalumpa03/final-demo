@@ -23,207 +23,46 @@
     </header>
 
     <div class="loan-drawer__content">
-      <section class="loan-drawer__section">
-        <div class="loan-drawer__section-header">
-          <div class="loan-drawer__section-icon loan-drawer__section-icon--user">
-            <img src="images/svg/feature-loans/person.svg" alt="User" />
-          </div>
-          <h3 class="loan-drawer__section-title">{{ labels().applicantSection }}</h3>
-        </div>
+      <app-loan-drawer-applicant
+        [userInfo]="userInfo()"
+        [isLoading]="isUserInfoLoading()"
+        [labels]="labels()"
+      />
 
-        @if (isUserInfoLoading()) {
-          <app-skeleton [width]="'100%'" [height]="'12rem'"></app-skeleton>
-        } @else if (userInfo()) {
-          <div class="loan-drawer__fields">
-            <div class="loan-drawer__field">
-              <span class="loan-drawer__label">{{ labels().fullName }}</span>
-              <span class="loan-drawer__value">{{ userInfo()?.fullName }}</span>
-            </div>
-            <div class="loan-drawer__field">
-              <span class="loan-drawer__label">{{ labels().email }}</span>
-              <span class="loan-drawer__value">{{ userInfo()?.email }}</span>
-            </div>
-            <div class="loan-drawer__field">
-              <span class="loan-drawer__label">{{ labels().phoneNumber }}</span>
-              <span class="loan-drawer__value">{{ userInfo()?.phoneNumber }}</span>
-            </div>
-            <div class="loan-drawer__field">
-              <span class="loan-drawer__label">{{ labels().employmentStatus }}</span>
-              <span class="loan-drawer__value">{{ userInfo()?.employmentStatus }}</span>
-            </div>
-            <div class="loan-drawer__field loan-drawer__field--full">
-              <span class="loan-drawer__label">{{ labels().address }}</span>
-              <span class="loan-drawer__value">{{ userInfo()?.address }}</span>
-            </div>
-            <div class="loan-drawer__field">
-              <span class="loan-drawer__label">{{ labels().annualIncome }}</span>
-              <span class="loan-drawer__value">{{ userInfo()?.annualIncome | currency:'USD':'symbol':'1.0-0' }}</span>
-            </div>
-            <div class="loan-drawer__field">
-              <span class="loan-drawer__label">{{ labels().creditScore }}</span>
-              <span class="loan-drawer__value loan-drawer__value--with-badge">
-                {{ userInfo()?.creditScore }}
-                <app-badges
-                  [text]="userInfo()?.creditScoreBadge || ''"
-                  [customColor]="creditScoreBadgeColor()"
-                  [size]="'medium'"
-                  [shape]="'pill'"
-                />
-              </span>
-            </div>
-          </div>
-        } @else {
-          <p class="loan-drawer__empty">{{ labels().applicantUnavailable }}</p>
-        }
-      </section>
+      <app-loan-drawer-loan-details
+        [loanDetails]="loanDetails()"
+        [loanDetailsResponse]="loanDetailsResponse()"
+        [isLoading]="isLoanDetailsLoading()"
+        [labels]="labels()"
+      />
 
-      @if (loanDetails()) {
-        <section class="loan-drawer__section">
-          <div class="loan-drawer__section-header">
-            <div class="loan-drawer__section-icon loan-drawer__section-icon--loan">
-              <img src="images/svg/sidebar-nav/loans.svg" alt="Loan" />
-            </div>
-            <h3 class="loan-drawer__section-title">{{ labels().loanSection }}</h3>
-          </div>
+      <app-loan-drawer-risk-assessment
+        [loanDetails]="loanDetails()"
+        [loanDetailsResponse]="loanDetailsResponse()"
+        [isLoading]="isLoanDetailsLoading()"
+        [labels]="labels()"
+      />
 
-          @if (isLoanDetailsLoading()) {
-            <app-skeleton [width]="'100%'" [height]="'12rem'"></app-skeleton>
-          } @else {
-            <div class="loan-drawer__card">
-              <div class="loan-drawer__fields">
-                <div class="loan-drawer__field">
-                  <span class="loan-drawer__label">{{ labels().loanAmount }}</span>
-                  <span class="loan-drawer__value loan-drawer__value--bold">{{ loanDetailsResponse()?.loanDetails?.loanAmount | currency:'USD':'symbol':'1.0-0' }}</span>
-                </div>
-                <div class="loan-drawer__field">
-                  <span class="loan-drawer__label">{{ labels().loanPurpose }}</span>
-                  <span class="loan-drawer__value loan-drawer__value--capitalize">{{ loanDetailsResponse()?.loanDetails?.loanPurpose }}</span>
-                </div>
-                <div class="loan-drawer__field">
-                  <span class="loan-drawer__label">{{ labels().loanTerm }}</span>
-                  <span class="loan-drawer__value">{{ loanDetailsResponse()?.loanDetails?.loanTermMonths }} {{ labels().months }}</span>
-                </div>
-                <div class="loan-drawer__field">
-                  <span class="loan-drawer__label">{{ labels().interestRate }}</span>
-                  <span class="loan-drawer__value">{{ interestRate() }}% APR</span>
-                </div>
-                <div class="loan-drawer__field">
-                  <span class="loan-drawer__label">{{ labels().monthlyPayment }}</span>
-                  <span class="loan-drawer__value loan-drawer__value--accent">{{ monthlyPayment() | currency:'USD':'symbol':'1.0-0' }}</span>
-                </div>
-                <div class="loan-drawer__field">
-                  <span class="loan-drawer__label">{{ labels().requestDate }}</span>
-                  <span class="loan-drawer__value">{{ loanDetailsResponse()?.loanDetails?.requestDate | date:'dd/MM/yyyy' }}</span>
-                </div>
-              </div>
-            </div>
-          }
-        </section>
-      }
-
-      @if (loanDetails()) {
-        <section class="loan-drawer__section">
-          <div class="loan-drawer__section-header">
-            <div class="loan-drawer__section-icon loan-drawer__section-icon--risk">
-              <img src="images/svg/auth/secured-blue.svg" alt="Risk" />
-            </div>
-            <h3 class="loan-drawer__section-title">{{ labels().riskSection }}</h3>
-          </div>
-
-          @if (isLoanDetailsLoading()) {
-            <app-skeleton [width]="'100%'" [height]="'10rem'"></app-skeleton>
-          } @else {
-            <div class="loan-drawer__risk-card">
-              <div class="loan-drawer__risk-row">
-                <span class="loan-drawer__risk-label">{{ labels().debtToIncome }}</span>
-                <span class="loan-drawer__risk-value">{{ debtToIncomeRatio() }}%</span>
-              </div>
-              <div class="loan-drawer__risk-row">
-                <span class="loan-drawer__risk-label">{{ labels().loanToIncome }}</span>
-                <span class="loan-drawer__risk-value">{{ loanToIncomeRatio() }}%</span>
-              </div>
-              <div class="loan-drawer__risk-row loan-drawer__risk-row--last">
-                <span class="loan-drawer__risk-label">{{ labels().totalInterest }}</span>
-                <span class="loan-drawer__risk-value">{{ totalInterest() | currency:'USD':'symbol':'1.0-0' }}</span>
-              </div>
-            </div>
-          }
-        </section>
-      }
-
-      @if (showDeclineForm()) {
-        <section class="loan-drawer__section loan-drawer__section--decline">
-          <h3 class="loan-drawer__section-title">{{ labels().declineSection }}</h3>
-          <textarea
-            class="loan-drawer__textarea"
-            [placeholder]="labels().declinePlaceholder"
-            [value]="declineReason()"
-            (input)="onReasonInput($event)"
-            rows="3"
-          ></textarea>
-        </section>
-      }
+      <app-loan-drawer-decline-form
+        [showDeclineForm]="showDeclineForm()"
+        [declineReason]="declineReason()"
+        [labels]="labels()"
+        (reasonInput)="onReasonInput($event)"
+      />
     </div>
 
-    <footer class="loan-drawer__footer">
-      @if (!showDeclineForm()) {
-        <button
-          class="loan-drawer__btn loan-drawer__btn--outline"
-          (click)="onClose()"
-        >
-          {{ labels().close }}
-        </button>
-        <button
-          class="loan-drawer__decline-btn"
-          [disabled]="!loanDetails() || isActionLoading()"
-          (click)="onShowDeclineForm()"
-          aria-label="Decline"
-        >
-          <img
-            class="loan-drawer__action-icon"
-            src="images/svg/button-icons/red_X.svg"
-            alt="Decline"
-          />
-          {{ labels().decline }}
-        </button>
-        <button
-          class="loan-drawer__btn loan-drawer__btn--success"
-          [class.loan-drawer__btn--loading]="isActionLoading()"
-          [disabled]="!canApprove()"
-          (click)="onApprove()"
-        >
-          @if (isActionLoading()) {
-            <span class="loan-drawer__btn-spinner"></span>
-          } @else {
-            <img
-              class="loan-drawer__action-icon"
-              src="images/svg/button-icons/approve.svg"
-              alt="Approve"
-            />
-            {{ labels().approve }}
-          }
-        </button>
-      } @else {
-        <button
-          class="loan-drawer__btn loan-drawer__btn--outline"
-          [disabled]="isActionLoading()"
-          (click)="onCancelDecline()"
-        >
-          {{ labels().cancel }}
-        </button>
-        <button
-          class="loan-drawer__btn loan-drawer__btn--destructive"
-          [class.loan-drawer__btn--loading]="isActionLoading()"
-          [disabled]="!canDecline()"
-          (click)="onConfirmDecline()"
-        >
-          @if (isActionLoading()) {
-            <span class="loan-drawer__btn-spinner"></span>
-          } @else {
-            {{ labels().confirmDecline }}
-          }
-        </button>
-      }
-    </footer>
+    <app-loan-drawer-footer
+      [showDeclineForm]="showDeclineForm()"
+      [canApprove]="canApprove()"
+      [canDecline]="canDecline()"
+      [isActionLoading]="isActionLoading()"
+      [loanDetails]="loanDetails()"
+      [labels]="labels()"
+      (close)="onClose()"
+      (showDecline)="onShowDeclineForm()"
+      (approve)="onApprove()"
+      (cancelDecline)="onCancelDecline()"
+      (confirmDecline)="onConfirmDecline()"
+    />
   </div>
 }

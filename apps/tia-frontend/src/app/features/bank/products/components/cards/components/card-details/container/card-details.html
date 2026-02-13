@@ -28,6 +28,12 @@
       [imageBase64]="data.imageBase64"
       [cardName]="data.details.cardName"
     />
+
+       <app-pill-paging
+    [total]="(currentAccountCardIds$ | async)?.length ?? 0"
+    [currentIndex]="(currentCardIndex$ | async) ?? 0"
+    (goTo)="handleGoToCard($event)"
+  />
     <div class="card-details__btns">
       <app-button
         variant="outline"

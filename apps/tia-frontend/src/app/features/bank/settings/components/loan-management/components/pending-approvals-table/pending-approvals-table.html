@@ -2,16 +2,16 @@
   @if (isLoading()) {
     <div class="pending-approvals__loading">
       <app-spinner size="large"></app-spinner>
-      <p class="pending-approvals__loading-text">Loading pending approvals...</p>
+      <p class="pending-approvals__loading-text">{{ 'settings.loan-management.table.loading' | translate }}</p>
     </div>
   }
 
   @if (showError()) {
     <div class="pending-approvals__error">
       <app-error-states
-        [header]="'Error Loading Approvals'"
-        [message]="error() ?? 'An error occurred'"
-        [buttonMessage]="'Retry'"
+        [header]="'settings.loan-management.table.errorHeader' | translate"
+        [message]="error() ?? ('settings.loan-management.table.errorDefault' | translate)"
+        [buttonMessage]="'settings.loan-management.table.retry' | translate"
         (buttonClick)="onReload()"
       ></app-error-states>
     </div>
@@ -20,8 +20,8 @@
   @if (showEmptyState()) {
     <app-error-states
       variant="not-found"
-      [header]="'No Pending Approvals'"
-      [message]="'All loan applications have been processed.'"
+      [header]="'settings.loan-management.table.emptyHeader' | translate"
+      [message]="'settings.loan-management.table.emptyMessage' | translate"
       [showButton]="false"
       [border]="false"
       width="100%"
@@ -51,10 +51,10 @@
             <div class="pending-approvals__card-middle">
               <div class="pending-approvals__card-header-row">
                 <h3 class="pending-approvals__card-title">{{ approval.userFullName }}</h3>
-                <app-badges
-                  [status]="'pending'"
-                  [size]="'small'"
-                  [shape]="'pill'"
+                <app-loan-badge
+                  [text]="'settings.loan-management.table.pendingBadge' | translate"
+                  [variant]="'pending'"
+                  [icon]="'images/svg/feature-loans/pending.svg'"
                 />
               </div>
 
@@ -62,7 +62,7 @@
 
               <div class="pending-approvals__card-details">
                 <div>
-                  <strong>{{ approval.months }} months</strong>
+                  <strong>{{ approval.months }} {{ 'settings.loan-management.table.months' | translate }}</strong>
                 </div>
                 <div>
                   <strong>{{ approval.createdAt | date:'dd/MM/yyyy' }}</strong>

@@ -83,6 +83,9 @@
     gap: 1.6rem;
     margin-top: 0.8rem;
 
+    @media (max-width: 450px) {
+      @include flex-center(column, space-between, center);
+    }
 
     .btn-template {
       flex: 1;

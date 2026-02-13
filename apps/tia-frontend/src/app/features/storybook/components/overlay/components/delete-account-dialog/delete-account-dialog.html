@@ -1,20 +1,20 @@
 <app-button variant="destructive" (click)="toggle()">
-  Delete Account
+  {{ 'storybook.overlays.deleteAccount.openButton' | translate }}
 </app-button>
 
 <app-ui-modal [isOpen]="isOpen()" (closed)="toggle()">
   <div class="delete-account">
     <header class="delete-account__header">
       <app-library-title
-        [title]="dialogTitle"
-        [subtitle]="dialogSubtitle"
+        [title]="dialogTitle()"
+        [subtitle]="dialogSubtitle()"
       ></app-library-title>
     </header>
 
     <footer class="delete-account__footer">
-      <app-button variant="outline" (click)="toggle()"> Cancel </app-button>
+      <app-button variant="outline" (click)="toggle()"> {{ 'storybook.overlays.deleteAccount.cancel' | translate }} </app-button>
       <app-button variant="destructive" (click)="toggle()">
-        Delete Account
+        {{ 'storybook.overlays.deleteAccount.deleteButton' | translate }}
       </app-button>
     </footer>
   </div>

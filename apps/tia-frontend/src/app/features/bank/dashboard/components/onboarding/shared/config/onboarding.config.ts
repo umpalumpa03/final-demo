@@ -11,7 +11,7 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
   },
   {
     title: 'Messages',
-    desc: 'Stay connected with your banking messages. The red badge shows you have 12 unread messages waiting for your attention. Click to view, compose, and manage your inbox.',
+    desc: 'Stay connected with your banking messages. The red badge will show you unread messages counting waiting for your attention. Click to view, compose, and manage your inbox.',
   },
   {
     title: 'Notifications Center',
