@@ -2,7 +2,7 @@
     [subTitle]="'settings.appearance.subtitle' | translate">
     <div class="container">
         <h4 class="container__title">{{'settings.appearance.cardsTitle' | translate}}</h4>
-        <div class="container__cards">
+        <div class="container__cards" [class.container__cards--mobile]="isMobile()">
             @if(isLoading()) {
             <app-skeleton height="10rem"></app-skeleton>
             <app-skeleton height="10rem"></app-skeleton>

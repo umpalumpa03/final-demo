@@ -27,6 +27,7 @@ import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { AlertType } from '@tia/shared/lib/alerts/shared/models/alert.models';
 import { TranslateService } from '@ngx-translate/core';
+import { BreakpointService } from '@tia/core/services/breakpoints/breakpoint.service';
 
 @Component({
   selector: 'app-appearance-container',
@@ -46,10 +47,13 @@ import { TranslateService } from '@ngx-translate/core';
 export class AppearanceContainer
   implements OnInit, OnDestroy, CanComponentDeactivate
 {
-  private store = inject(Store);
-  private appearanceService = inject(AppearanceService);
-  private destroyRef = inject(DestroyRef);
-  private translate = inject(TranslateService);
+  private readonly store = inject(Store);
+  private readonly appearanceService = inject(AppearanceService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly translate = inject(TranslateService);
+  private readonly breakpointService = inject(BreakpointService);
+
+  public readonly isMobile = this.breakpointService.isMobile;
 
   public isModalOpen = signal(false);
   private leaveDecision$ = new Subject<boolean>();
