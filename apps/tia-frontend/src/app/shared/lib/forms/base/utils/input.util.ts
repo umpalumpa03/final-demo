@@ -45,7 +45,7 @@ export class ValidationService {
       return this.translate.instant('common.validation.passwordStrength');
     if (errors['passwordRules'])
       return this.translate.instant('common.validation.passwordRules');
-    if (errors['passwordMismatch'] || errors['passwordMismatch'] === true)
+    if (errors['passwordMismatch'])
       return this.translate.instant('common.validation.passwordMismatch');
 
     return this.translate.instant('common.validation.default');

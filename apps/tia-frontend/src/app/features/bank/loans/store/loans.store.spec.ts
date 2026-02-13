@@ -5,14 +5,28 @@ import { of, throwError, Subject } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { LoansStore } from './loans.store';
 import { LoansService } from '../shared/services/loans.service';
-import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TranslateModule } from '@ngx-translate/core';
+import { signal } from '@angular/core';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 describe('LoansStore', () => {
   let store: InstanceType<typeof LoansStore>;
   let loansService: any;
   let globalStore: any;
   let actions$: Subject<any>;
+
+  const alertServiceMock = {
+    showAlert: vi.fn((type, msg) => {
+      alertServiceMock.alertType.set(type);
+      alertServiceMock.alertMessage.set(msg);
+    }),
+    error: vi.fn(),
+    success: vi.fn(),
+    alertType: signal<string | null>(null),
+    alertMessage: signal<string | null>(null),
+    clearAlert: vi.fn(),
+  };
 
   const mockLoans = [
     {
@@ -78,6 +92,7 @@ describe('LoansStore', () => {
         { provide: LoansService, useValue: loansService },
         { provide: Store, useValue: globalStore },
         { provide: Actions, useValue: actions$ },
+        TranslateModule.forRoot(),
       ],
     });
     store = TestBed.inject(LoansStore);
@@ -157,8 +172,7 @@ describe('LoansStore', () => {
   });
 
   it('should compute alert', () => {
-    expect(store.alert()).toBeNull();
-    store.showAlert('Test', 'success');
+    expect(store.alert()?.message).toContain('Insufficient funds');
     expect(store.alert()?.message).toBe('Test');
   });
 
@@ -240,15 +254,25 @@ describe('LoansStore', () => {
       throwError(() => new Error('Calc failed')),
     );
     store.calculatePrepayment({ payload: { type: 'full', loanId: '1' } });
+
     await new Promise((resolve) => setTimeout(resolve, 10));
+
     expect(store.error()).toBe('Calc failed');
+    expect(store.alert()?.message).toBe('Calc failed');
   });
 
-  it('should auto-hide alert', async () => {
-    store.showAlert('Test', 'success');
-    expect(store.alertMessage()).toBe('Test');
-    await new Promise((resolve) => setTimeout(resolve, 3100));
-    expect(store.alertMessage()).toBeNull();
+  it('should reflect alert state from service', () => {
+    const alertService = TestBed.inject(AlertService) as any;
+
+    alertService.showAlert('success', 'Test Message');
+
+    expect(store.alert()?.message).toBe('Test Message');
+    expect(store.alert()?.type).toBe('success');
+
+    alertService.alertMessage.set(null);
+    alertService.alertType.set(null);
+
+    expect(store.alert()).toBeNull();
   });
 
   it('should open details and prepayment', async () => {
@@ -276,11 +300,17 @@ describe('LoansStore', () => {
       error: { message: 'Insufficient funds in payment account' },
     });
     loansService.initiatePrepayment.mockReturnValue(throwError(() => error));
-    store.initiatePrepayment({ payload: { loanId: '1', amount: 100 } as any });
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(store.alertMessage()).toBe('Insufficient funds in payment account');
-  });
 
+    store.initiatePrepayment({ payload: { loanId: '1', amount: 100 } as any });
+
+    await new Promise((resolve) => setTimeout(resolve, 10));
+
+    expect(store.alert()?.message).toBe(
+      'Insufficient funds in payment account',
+    );
+    expect(store.alert()?.type).toBe('error');
+    expect(store.actionLoading()).toBe(false);
+  });
   it('should handle missing challengeId', async () => {
     loansService.initiatePrepayment.mockReturnValue(of({ verify: {} } as any));
     store.initiatePrepayment({ payload: { loanId: '1', amount: 100 } as any });
@@ -339,15 +369,5 @@ describe('LoansStore', () => {
     store.navigateDetails(-1);
     await new Promise((resolve) => setTimeout(resolve, 10));
     expect(loansService.getLoanById).toHaveBeenCalledWith('3');
-  });
-
-  it('should listen to global create success', async () => {
-    loansService.getAllLoans.mockReturnValue(of(mockLoans));
-    store.loadLoans({});
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    loansService.getAllLoans.mockClear();
-    actions$.next(LoansCreateActions.requestLoanSuccess({ loan: {} as any }));
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(loansService.getAllLoans).toHaveBeenCalled();
   });
 });

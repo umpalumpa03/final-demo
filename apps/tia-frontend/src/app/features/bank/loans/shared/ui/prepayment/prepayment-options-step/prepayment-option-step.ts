@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  HostListener,
   inject,
   input,
   output,
@@ -94,5 +95,10 @@ export class PrepaymentOptionStep {
     };
 
     this.calculate.emit(payload);
+  }
+
+  @HostListener('enter')
+  onEnter() {
+    if (this.form.valid) this.onCalculate();
   }
 }

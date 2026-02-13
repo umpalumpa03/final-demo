@@ -86,13 +86,9 @@ export class LoanCard {
   }
 
   protected onSave(): void {
-    if (!this.isEditing()) {
-      return;
-    }
+    if (!this.isEditing()) return;
 
-    if (this.nameControl.invalid) {
-      return;
-    }
+    if (this.nameControl.invalid) return;
 
     const newName = toTitleCase(this.nameControl.value.trim());
     const oldName = this.loan().friendlyName || this.loan().purpose;

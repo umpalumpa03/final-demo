@@ -8,11 +8,8 @@ import { provideStore, Store } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideTranslateService } from '@ngx-translate/core';
 
-import { LoanCreateService } from '@tia/shared/services/loans/loan-create.service';
 import { LoansService } from '../shared/services/loans.service';
 import { LoansStore } from '../store/loans.store';
-import { LoanCreateEffects } from 'apps/tia-frontend/src/app/store/loans/loans.effects';
-import { loansReducer } from 'apps/tia-frontend/src/app/store/loans/loans.reducer';
 
 import { ILoan } from '../shared/models/loan.model';
 import { ILoanRequest } from '../shared/models/loan-request.model';
@@ -70,10 +67,6 @@ export async function setupLoansTest(): Promise<TestContext> {
       provideHttpClient(),
       provideHttpClientTesting(),
       provideTranslateService(),
-
-      provideStore({ loanCreate: loansReducer }),
-      provideEffects(LoanCreateEffects),
-      LoanCreateService,
 
       LoansStore,
       LoansService,

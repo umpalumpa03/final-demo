@@ -89,7 +89,10 @@ describe('Loans Integration - Prepayment Wizard Flow', () => {
 
     await vi.waitFor(() => {
       expect(ctx.loansStore.activeChallengeId()).toBe('challenge-123');
-      expect(ctx.loansStore.alertMessage()).toContain('OTP sent');
+
+      const alert = ctx.loansStore.alert();
+      expect(alert).toBeTruthy();
+      expect(alert?.message).toMatch(/otp_sent|OTP sent/i);
     });
 
     ctx.loansStore.verifyPrepayment({
@@ -147,10 +150,10 @@ describe('Loans Integration - Prepayment Wizard Flow', () => {
     );
 
     await vi.waitFor(() => {
-      expect(ctx.loansStore.alertMessage()).toBe(
-        'Insufficient funds in payment account',
-      );
-      expect(ctx.loansStore.alertType()).toBe('error');
+      const alert = ctx.loansStore.alert();
+      expect(alert).toBeTruthy();
+      expect(alert?.message).toMatch(/insufficient_funds|Insufficient funds/i);
+      expect(alert?.type).toBe('error');
       expect(ctx.loansStore.actionLoading()).toBe(false);
     });
   });
