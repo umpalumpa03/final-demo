@@ -24,7 +24,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class WidgetExchange extends BaseWidget {
   private readonly store = inject(Store);
 
-  public isLoading$ = this.store.select(selectIsLoading);
+  public isLoading$ = this.store.select(selectLoading);
   public error$ = this.store.select(selectError);
 
   public exchangeRates$ = this.store

@@ -16,31 +16,40 @@ export const mapConfirmSummaryFields = (
   summary: PaybillPayload,
   details: BillDetails,
 ): SummaryField[] => {
-  if(!summary) return [];
-  const identifierValue = summary.identification
-    ? Object.values(summary.identification)[0]
-    : '';
-  return [
+  if (!summary) return [];
+
+  const fields: SummaryField[] = [
     {
       label: 'paybill.main.confirm.summary_fields.service',
       value: providerName,
       canTranslate: true,
     },
-    {
-      label: 'paybill.main.confirm.summary_fields.account',
-      value: identifierValue || '',
-      canTranslate: true,
-    },
-    {
-      label: 'paybill.main.confirm.summary_fields.holder',
-      value: details.accountHolder ?? 'paybill.confirm.summary_fields.na',
-      canTranslate: !details.accountHolder,
-    },
-    {
-      label: 'paybill.main.confirm.summary_fields.amount',
-      value: summary.amount,
-      isTotal: true,
-      canTranslate: false,
-    },
   ];
+
+  if (summary.identification) {
+    Object.entries(summary.identification).forEach(([key, value]) => {
+      if (value) {
+        fields.push({
+          label: `paybill.main.identifiers.${key}`,
+          value: String(value),
+          canTranslate: false,
+        });
+      }
+    });
+  }
+
+  fields.push({
+    label: 'paybill.main.confirm.summary_fields.holder',
+    value: details.accountHolder || 'paybill.confirm.summary_fields.na',
+    canTranslate: !details.accountHolder,
+  });
+
+  fields.push({
+    label: 'paybill.main.confirm.summary_fields.amount',
+    value: summary.amount,
+    isTotal: true,
+    canTranslate: false,
+  });
+
+  return fields;
 };
