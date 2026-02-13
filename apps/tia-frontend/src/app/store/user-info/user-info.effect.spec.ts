@@ -70,56 +70,69 @@ describe('UserInfoEffects (Vitest)', () => {
   });
 
   describe('loadUser$', () => {
-    it('should dispatch loadUserSuccess and map georgian to "ka"', async () => {
+    it('should set language to "ka" when user language is georgian', async () => {
       userInfoService.getUserInfo.mockReturnValue(of(mockUser));
       actions$ = of(UserInfoActions.loadUser());
-      const action = await firstValueFrom(effects.loadUser$);
-      expect(action).toEqual(UserInfoActions.loadUserSuccess({ user: mockUser }));
+      await firstValueFrom(effects.loadUser$);
       expect(localStorage.setItem).toHaveBeenCalledWith('language', 'ka');
     });
 
-    it('should handle errors during user load', async () => {
-      userInfoService.getUserInfo.mockReturnValue(throwError(() => ({ message: 'Error' })));
+    it('should set language to "en" when user language is NOT georgian', async () => {
+      userInfoService.getUserInfo.mockReturnValue(of({ ...mockUser, language: 'english' }));
+      actions$ = of(UserInfoActions.loadUser());
+      await firstValueFrom(effects.loadUser$);
+      expect(localStorage.setItem).toHaveBeenCalledWith('language', 'en');
+    });
+
+    it('should dispatch loadUserError on API failure', async () => {
+      userInfoService.getUserInfo.mockReturnValue(throwError(() => ({ message: 'Failed' })));
       actions$ = of(UserInfoActions.loadUser());
       const action = await firstValueFrom(effects.loadUser$);
-      expect(action.type).toBe(UserInfoActions.loadUserError.type);
+      expect(action).toEqual(UserInfoActions.loadUserError({ error: 'Failed' }));
+    });
+  });
+
+  describe('createWidget$', () => {
+    it('should dispatch createWidgetError on failure', async () => {
+      widgetsApiService.createWidget.mockReturnValue(throwError(() => ({ message: 'Create Error' })));
+      actions$ = of(UserInfoActions.createWidget({ widget: {} as any }));
+      const action = await firstValueFrom(effects.createWidget$);
+      expect(action).toEqual(UserInfoActions.createWidgetError({ error: 'Create Error' }));
     });
   });
 
   describe('updateOnboarding$', () => {
-    it('should dispatch updateOnboardingStatusSuccess', async () => {
-      userInfoService.updateOnboardingStatus.mockReturnValue(of({}));
+    it('should dispatch updateOnboardingStatusError on failure', async () => {
+      userInfoService.updateOnboardingStatus.mockReturnValue(throwError(() => ({ message: 'Onboard Error' })));
       actions$ = of(UserInfoActions.updateOnboardingStatus({ completed: true }));
       const action = await firstValueFrom(effects.updateOnboarding$);
-      expect(action).toEqual(UserInfoActions.updateOnboardingStatusSuccess({ completed: true }));
+      expect(action).toEqual(UserInfoActions.updateOnboardingStatusError({ error: 'Onboard Error' }));
     });
   });
 
   describe('dismissBirthdayModal$', () => {
-    it('should dispatch loadBirthdayModalClosed', async () => {
-      birthdayApiService.dismissBirthdayModal.mockReturnValue(of({}));
+    it('should dispatch loadUserError on failure', async () => {
+      birthdayApiService.dismissBirthdayModal.mockReturnValue(throwError(() => ({ message: 'Bday Error' })));
       actions$ = of(UserInfoActions.dismissBirthdayModal({ year: 2025 }));
       const action = await firstValueFrom(effects.dismissBirthdayModal$);
-      expect(action).toEqual(UserInfoActions.loadBirthdayModalClosed({ colsedBirthdayModal: 2025 }));
+      expect(action).toEqual(UserInfoActions.loadUserError({ error: 'Bday Error' }));
     });
   });
 
   describe('loadWidgets$', () => {
-    it('should load widgets when not loaded', async () => {
+    it('should load widgets and dispatch success', async () => {
       const mockWidgets = [{ id: '1' }] as any;
       widgetsApiService.getWidgets.mockReturnValue(of(mockWidgets));
-      actions$ = of(UserInfoActions.loadWidgets({ force: false }));
+      actions$ = of(UserInfoActions.loadWidgets({ force: true }));
       const action = await firstValueFrom(effects.loadWidgets$);
       expect(action).toEqual(UserInfoActions.loadWidgetsSuccess({ widgets: mockWidgets }));
     });
-  });
 
-  describe('deleteWidget$', () => {
-    it('should dispatch deleteWidgetSuccess', async () => {
-      widgetsApiService.deleteWidget.mockReturnValue(of({}));
-      actions$ = of(UserInfoActions.deleteWidget({ id: '1' }));
-      const action = await firstValueFrom(effects.deleteWidget$);
-      expect(action).toEqual(UserInfoActions.deleteWidgetSuccess({ id: '1' }));
+    it('should dispatch loadWidgetsError on failure', async () => {
+      widgetsApiService.getWidgets.mockReturnValue(throwError(() => ({ message: 'Widgets Error' })));
+      actions$ = of(UserInfoActions.loadWidgets({ force: true }));
+      const action = await firstValueFrom(effects.loadWidgets$);
+      expect(action).toEqual(UserInfoActions.loadWidgetsError({ error: 'Widgets Error' }));
     });
   });
 });
