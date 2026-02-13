@@ -13,6 +13,10 @@ import { Store } from '@ngrx/store';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { selectGelAccountOptions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
+import {
+  PaybillActions,
+  TemplatesPageActions,
+} from '../../../store/paybill.actions';
 
 @Component({
   selector: 'app-account-select',
@@ -45,11 +49,22 @@ export class AccountSelect implements OnInit {
           });
         }
       }
+
+      this.store.dispatch(
+        TemplatesPageActions.setSenderId({
+          selectedSenderAccountId: this.selectedAccountId()!,
+        }),
+      );
     });
   }
 
   public handleAccountChange(id: string): void {
     this.accountChanged.emit(id);
+    this.store.dispatch(
+      TemplatesPageActions.setSenderId({
+        selectedSenderAccountId: id,
+      }),
+    );
   }
 
   ngOnInit(): void {

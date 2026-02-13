@@ -48,6 +48,7 @@
 <app-ui-modal
   class="modal"
   [isOpen]="isModalOpen()"
+  [class.modal--hidden]="isPaymentModalHidden()"
   (closed)="modalOpenAction.emit()"
 >
   @if (currentModalConfig(); as config) {
@@ -165,5 +166,25 @@
     </div>
     }
   </main>
+
   }
 </app-ui-modal>
+
+<app-ui-modal [isOpen]="isOtpModalOpen()">
+  <app-otp-verification
+    type="otp"
+    timerType="otp"
+    [timeLimit]="1"
+    [customRemainingAttempts]="3"
+    [isBtnRowDirection]="true"
+    redirectUrl="/bank/paybill/templates"
+    redirectText="Paybills Template"
+    [inputOtpConfig]="otpConfig"
+    (isResendCalled)="resendOtp($event)"
+  ></app-otp-verification>
+</app-ui-modal>
+
+<!-- (isVerifyCalled)="" -->
+<!-- (isResendCalled)="resendOtp($event)" -->
+
+<app-success-modal [isOpen]="false"></app-success-modal>

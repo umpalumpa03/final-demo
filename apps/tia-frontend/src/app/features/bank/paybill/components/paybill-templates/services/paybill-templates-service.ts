@@ -1,14 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../../../../environments/environment';
-import { Observable } from 'rxjs';
+import { filter, Observable } from 'rxjs';
 import {
+  BillPaymentRequest,
   CreateTemplateGroup,
   CreateTemplateGroupResponse,
   TemplateGroups,
   Templates,
 } from '../models/paybill-templates.model';
 import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
+import { ProceedPaymentResponse } from '../../paybill-main/shared/models/paybill.model';
 
 @Injectable({
   providedIn: 'root',
@@ -88,6 +90,15 @@ export class PaybillTemplatesService {
     );
   }
 
+  public payManyBills(
+    payload: BillPaymentRequest[],
+  ): Observable<ProceedPaymentResponse> {
+    return this.http.patch<ProceedPaymentResponse>(
+      `${this.baseUrl}/pay-many/`,
+      payload,
+    );
+  }
+
   // Filter Logic
   public filterTemplatesAndGroups(
     searchValue: string,
@@ -103,9 +114,12 @@ export class PaybillTemplatesService {
     const filteredTemplates = templates.filter((template) =>
       template.title?.toLowerCase().includes(lowerSearchTerm),
     );
-    const filteredGroups = groups.filter((group) =>
-      group.groupName?.toLowerCase().includes(lowerSearchTerm),
-    );
+    const filteredGroups = groups.filter((group) => {
+      return (
+        group.groupName?.toLowerCase().includes(lowerSearchTerm) ||
+        filteredTemplates.some((template) => template.groupId === group.id)
+      );
+    });
 
     return { templates: filteredTemplates, groups: filteredGroups };
   }
