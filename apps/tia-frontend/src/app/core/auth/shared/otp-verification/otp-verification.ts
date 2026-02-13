@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   HostListener,
   inject,
@@ -35,11 +36,12 @@ import {
   OtpVerificationType,
 } from '../../models/otp-verification.models';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 import { OTP_VERIFY_FORM } from '../../config/inputs.config';
 import { Routes } from '../../models/tokens.model';
 import { ErrorPage } from '../error-page/error-page';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-otp-verification',
@@ -83,7 +85,9 @@ export class OtpVerification implements OnInit {
   public isResendCalled = output<boolean>();
   public customError = output<void>();
 
-  public resendTries = signal<number>(3);
+  // old
+  // public resendTries = signal<number>(3);
+  public resendTries = signal<number>(0);
   public internalRemainingAttempts = signal<number | null>(null);
   public isLoading = signal(false);
   public submitError = signal<string | null>(null);
@@ -91,6 +95,12 @@ export class OtpVerification implements OnInit {
   public isResendActive = signal<boolean>(false);
   public isLimitExeeded = signal<boolean>(false);
   public isErrorPageVisible = signal<boolean>(false);
+
+  //
+  // Auth Services mtlianad shemotanis magivrad calke gavitanot settingebi? (sxva option ebi- gacachva)
+  private authService = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
+  //
 
   public isHeaderVisible = computed(
     () =>
@@ -245,6 +255,27 @@ export class OtpVerification implements OnInit {
     if (this.isTimerDisplayed()) {
       this.startTimer();
     }
+
+    /* 
+      {
+        "expirationMinutes": 5,
+        "maxResendAttempts": 3,
+        "maxVerifyAttempts": 5,
+        "resendTimeoutMs": 60000
+      }
+    */
+
+    // Otp Settings changes
+    this.authService
+      .otpSettings()
+      .pipe(
+        tap((res) => {
+          console.log(res, '__RESPONSE');
+          this.resendTries.set(res.otp.maxResendAttempts);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+    .subscribe();
   }
 
   private startTimer(): void {

@@ -8,6 +8,7 @@ import {
   CreateNewPasswordRequest,
   ResendOtpRequest,
   IRefreshTokenRequest,
+  OtpInitSettings,
 } from '../models/authRequest.models';
 import {
   CreateNewPasswordResponse,
@@ -153,6 +154,11 @@ export class AuthService {
         }
       }),
     );
+  }
+
+  public otpSettings(): Observable<OtpInitSettings>{
+
+    return this.http.get<OtpInitSettings>(`${environment.apiUrl}/settings/config`)
   }
 
   public verifyMfa(verify: IMfaVerifyRequest): Observable<IMfaVerifyResponse> {
