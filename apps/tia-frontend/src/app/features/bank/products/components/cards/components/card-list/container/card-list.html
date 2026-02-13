@@ -27,17 +27,6 @@
     buttonMessage="Retry"
   />
   } @else { 
-    
-    <!-- @for (group of data.groups; track group.account.id) {
-  <div class="card-list__group">
-    <app-card-group-item
-      [group]="group"
-      [isLoading]="data.cardImagesLoading"
-      (cardClicked)="handleCardClick($event)"
-      (viewAllClicked)="handleViewAllCards($event)"
-    />
-  </div>
-  } -->
   @for (group of data.groups; track group.account.id) {
   <div class="card-list__group">
     @if (data.cardImagesLoading) {
