@@ -3,6 +3,7 @@ import { DynamicInputs } from './dynamic-inputs';
 import { PaybillDynamicForm } from '../../../services/paybill-dynamic-form/paybill-dynamic-form';
 import { FormGroup, FormControl } from '@angular/forms';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('DynamicInputs', () => {
   let component: DynamicInputs;
@@ -18,7 +19,7 @@ describe('DynamicInputs', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [DynamicInputs],
+      imports: [DynamicInputs, TranslateModule.forRoot()],
       providers: [
         { provide: PaybillDynamicForm, useValue: mockDynamicFormService },
       ],

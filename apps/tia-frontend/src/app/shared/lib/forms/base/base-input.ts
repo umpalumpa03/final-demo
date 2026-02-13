@@ -117,6 +117,10 @@ export abstract class BaseInput implements ControlValueAccessor, DoCheck {
       .join(' ');
   });
 
+  public readonly maxCharacters = computed<number>(
+    () => this.config().validation?.maxLength || 0,
+  );
+
   protected readonly errorMessage = computed<string>(() => {
     this._controlStatus();
 

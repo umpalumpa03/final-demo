@@ -45,7 +45,7 @@ export class Textarea extends BaseInput implements AfterViewInit {
 
   protected readonly counterText = computed<string>(() => {
     const current = this.currentLength();
-    const max = this.config().validation?.maxLength || 0;
+    const max = this.maxCharacters();
     return max > 0 ? `${current} / ${max} characters` : `${current} characters`;
   });
 
