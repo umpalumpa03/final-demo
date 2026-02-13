@@ -118,7 +118,7 @@ export class Accounts implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.store.dispatch(AccountsActions.loadAccounts({}));
+    this.store.dispatch(AccountsActions.loadActiveAccounts({}));
 
     if (this.router.url.includes('/create')) {
       this.store.dispatch(AccountsActions.openCreateModal());
@@ -184,7 +184,9 @@ export class Accounts implements OnInit {
   }
 
   public handleRetry(): void {
-    this.store.dispatch(AccountsActions.loadAccounts({ forceRefresh: true }));
+    this.store.dispatch(
+      AccountsActions.loadActiveAccounts({ forceRefresh: true }),
+    );
   }
 
   public handleRenameAccount(data: {

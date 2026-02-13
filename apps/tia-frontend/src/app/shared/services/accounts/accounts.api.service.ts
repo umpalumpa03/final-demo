@@ -19,6 +19,15 @@ export class AccountsApiService {
   public getAccounts(): Observable<AccountsResponse> {
     return this.http.get<AccountsResponse>(this.apiUrl, {
       params: {
+        ignoreHiddens: 'true',
+        status: 'active',
+      },
+    });
+  }
+
+  public getActiveAccounts(): Observable<AccountsResponse> {
+    return this.http.get<AccountsResponse>(this.apiUrl, {
+      params: {
         ignoreHiddens: 'false',
         status: 'active',
       },

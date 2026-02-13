@@ -69,12 +69,12 @@ describe('Accounts Container Integration Tests', () => {
       expect(component).toBeTruthy();
     });
 
-    it('should dispatch loadAccounts on ngOnInit', () => {
+    it('should dispatch loadActiveAccounts on ngOnInit', () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
       component.ngOnInit();
 
       expect(dispatchSpy).toHaveBeenCalledWith(
-        AccountsActions.loadAccounts({}),
+        AccountsActions.loadActiveAccounts({}),
       );
     });
 
@@ -221,13 +221,13 @@ describe('Accounts Container Integration Tests', () => {
   });
 
   describe('Retry Mechanism', () => {
-    it('should dispatch loadAccounts with forceRefresh on retry', () => {
+    it('should dispatch loadActiveAccounts with forceRefresh on retry', () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
 
       component.handleRetry();
 
       expect(dispatchSpy).toHaveBeenCalledWith(
-        AccountsActions.loadAccounts({ forceRefresh: true }),
+        AccountsActions.loadActiveAccounts({ forceRefresh: true }),
       );
     });
   });

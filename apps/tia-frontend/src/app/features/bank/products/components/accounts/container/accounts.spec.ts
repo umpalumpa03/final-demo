@@ -61,7 +61,9 @@ describe('Accounts', () => {
       '/bank/products/accounts/create',
     );
     component.ngOnInit();
-    expect(dispatchSpy).toHaveBeenCalledWith(AccountsActions.loadAccounts({}));
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      AccountsActions.loadActiveAccounts({}),
+    );
     expect(dispatchSpy).toHaveBeenCalledWith(AccountsActions.openCreateModal());
   });
 
@@ -153,7 +155,7 @@ describe('Accounts', () => {
 
     component.handleRetry();
     expect(dispatchSpy).toHaveBeenCalledWith(
-      AccountsActions.loadAccounts({ forceRefresh: true }),
+      AccountsActions.loadActiveAccounts({ forceRefresh: true }),
     );
   });
 });
