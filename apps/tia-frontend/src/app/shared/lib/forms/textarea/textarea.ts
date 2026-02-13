@@ -2,18 +2,17 @@ import {
   Component,
   computed,
   ChangeDetectionStrategy,
-  ViewChild,
   ElementRef,
   AfterViewInit,
   inject,
   Renderer2,
   input,
   effect,
+  viewChild,
 } from '@angular/core';
 import { BaseInput } from '../base/base-input';
 import { TEXTAREA_DEFAULTS } from '../config/textarea.config';
 import { TextareaConfig } from '../models/textarea.model';
-import { generateUniqueId } from '../base/utils/input.util';
 
 @Component({
   selector: 'lib-textarea',
@@ -25,12 +24,13 @@ import { generateUniqueId } from '../base/utils/input.util';
 export class Textarea extends BaseInput implements AfterViewInit {
   public override readonly config = input<TextareaConfig>({});
 
-  @ViewChild('textareaRef')
-  private textareaRef!: ElementRef<HTMLTextAreaElement>;
+  private textareaRef =
+    viewChild.required<ElementRef<HTMLTextAreaElement>>('textareaRef');
 
   private readonly renderer = inject(Renderer2);
 
-  private readonly defaultId = generateUniqueId('lib-textarea');
+  private readonly defaultId =
+    this.validationService.generateUniqueId('lib-textarea');
 
   protected readonly mergedConfig = computed<TextareaConfig>(() => ({
     ...TEXTAREA_DEFAULTS,
@@ -45,7 +45,7 @@ export class Textarea extends BaseInput implements AfterViewInit {
 
   protected readonly counterText = computed<string>(() => {
     const current = this.currentLength();
-    const max = this.maxCharacters();
+    const max = this.config().validation?.maxLength || 0;
     return max > 0 ? `${current} / ${max} characters` : `${current} characters`;
   });
 
@@ -67,10 +67,10 @@ export class Textarea extends BaseInput implements AfterViewInit {
   }
 
   private adjustHeight(): void {
-    const el = this.textareaRef?.nativeElement;
-    const cfg = this.mergedConfig();
-
+    const el = this.textareaRef().nativeElement;
     if (!el) return;
+
+    const cfg = this.mergedConfig();
 
     if (cfg.resizable !== 'none' && cfg.resizable !== undefined) {
       return;
