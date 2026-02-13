@@ -13,14 +13,12 @@ import { Store } from '@ngrx/store';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { selectGelAccountOptions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
-import {
-  PaybillActions,
-  TemplatesPageActions,
-} from '../../../store/paybill.actions';
+import { TemplatesPageActions } from '../../../store/paybill.actions';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-account-select',
-  imports: [Dropdowns],
+  imports: [Dropdowns, TranslatePipe],
   templateUrl: './account-select.html',
   styleUrl: './account-select.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -2,14 +2,20 @@
   <div class="selected__container__description">
     <img src="images/svg/paybill/selected.svg" alt="selected icon" />
     @if (forModal()) {
-    <span>{{ selectedItems().length }} bill(s) selected for payment</span>
+    <span
+      >{{ selectedItems().length }} {{
+      'paybill.templates.paymentHeader.description' | translate}}</span
+    >
     }@else {
-    <span>{{ selectedItems().length }} template(s) selected</span>
+    <span
+      >{{ selectedItems().length }} {{
+      'paybill.templates.paymentHeader.description' | translate}}</span
+    >
     }
   </div>
   @if (!forModal()) {
   <app-button variant="default" (click)="onPaySelectedClick()">
-    Pay Selected
+    {{ 'paybill.templates.paymentHeader.payAction' | translate}}
   </app-button>
   }
 </div>

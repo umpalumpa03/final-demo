@@ -22,12 +22,6 @@
             <app-button (click)="onSubmit()">{{'settings.appearance.saveChanges' | translate}}</app-button>
         </div>
     </div>
-    @if(alertType()) {
-    <div class="container__alert">
-        <app-alert-types-with-icons [alertType]="alertType()!" [alertMessage]="alertMessage()">
-        </app-alert-types-with-icons>
-    </div>
-    }
 </app-settings-body>
 <app-ui-modal [isOpen]="isModalOpen()" (closed)="onLeave()">
     <div class="confirm-dialog">

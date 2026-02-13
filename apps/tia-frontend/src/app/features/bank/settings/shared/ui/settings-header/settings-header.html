@@ -3,7 +3,7 @@
   <p class="settings__desc">{{'settings.subtitle' | translate}}</p>
   <nav class="settings__header-nav">
 
-    <app-tabs [tabs]="navItems" orientation="horizontal" />
+    <app-tabs [tabs]="navItems()" orientation="horizontal" />
 
     @if (isAdmin()) {
       <app-tabs [tabs]="adminNavItems" />
