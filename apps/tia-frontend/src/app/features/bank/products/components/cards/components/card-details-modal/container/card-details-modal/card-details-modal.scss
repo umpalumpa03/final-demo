@@ -1,6 +1,11 @@
+@use '../../../../../../../../../shared/styles/mixins' as *;
+
+
 .card-details-modal {
   max-height: 90vh;
   overflow: auto;
+  @include custom-scrollbar();
+
   &__global-alert {
     position: fixed;
     top: 7rem;
