@@ -8,7 +8,7 @@ describe('CardStack', () => {
   let fixture: ComponentFixture<CardStack>;
 
   const mockCards: CardImageView[] = [
-    { cardId: 'card1', imageBase64: 'base64-1', cardAlt: 'Card 1', isStacked: false, isActive: true, zIndex: 100, index: 0 }
+    { cardId: 'card1', imageBase64: 'base64-1', cardAlt: 'Card 1', isStacked: false, isActive: true, zIndex: 100, index: 0,stackPosition: 0   }
   ];
 
   beforeEach(async () => {

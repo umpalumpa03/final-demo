@@ -1,23 +1,25 @@
 <div class="global-bank-wrapper scrollbar">
-  <app-library-title
-    [title]="pageTitle()"
-    [subtitle]="pageSubtitle()"
-  ></app-library-title>
+  <div class="custom__header">
+    <app-library-title
+      [title]="pageTitle()"
+      [subtitle]="pageSubtitle()"
+    ></app-library-title>
 
-  <!-- DROEBITIA ES WESIT GADAEWYOBA -->
+    <div class="custom__header__actions">
+      <app-customize-button
+        customMaxSize="100%"
+        label=""
+        (clicked)="openCustomization()"
+        [hideIcon]="true"
+      />
+    </div>
+  </div>
+
   <div class="bank-dashboard__onboard">
     <app-onboarding></app-onboarding>
   </div>
   <div class="bank-dashboard__banner">
     <app-banner-carousel [slides]="bannerConfig()" />
-  </div>
-
-  <div class="bank-dashboard__header-actions">
-    <app-customize-button
-      customMaxSize="18%"
-      label="dashboard.page.customize-label"
-      (clicked)="openCustomization()"
-    />
   </div>
 
   @if (isLoading()) {
@@ -32,7 +34,15 @@
     </div>
     }
   </div>
-  }@else {
+  }@else { @if (visibleItems().length === 0) {
+  <app-error-states
+    variant="not-found"
+    [header]="'dashboard.page.not-available' | translate"
+    [message]="'dashboard.page.not-available-subtitle' | translate"
+    [showButton]="false"
+    maxWidth="100%"
+  />
+  }@else{
   <app-drag-container
     [hasNoStyle]="true"
     [items]="myItems()"
@@ -73,8 +83,7 @@
     </app-draggable-card>
     }
   </app-drag-container>
-
-  }
+  } }
 
   <app-ui-sheet-modal
     [isOpen]="isCustomizing()"

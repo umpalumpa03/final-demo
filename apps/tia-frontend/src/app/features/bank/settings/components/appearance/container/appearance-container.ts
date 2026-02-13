@@ -20,13 +20,14 @@ import { AppearanceService } from '../services/appearance-api.service';
 import { TAvailableThemes } from '../models/appearance.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
-import { selectUserInfo, selectUserLoaded } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
+import { selectUserTheme } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
 import { CanComponentDeactivate } from '../guard/unsaved-changes.guard';
 import { UserInfoActions } from 'apps/tia-frontend/src/app/store/user-info/user-info.actions';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { AlertType } from '@tia/shared/lib/alerts/shared/models/alert.models';
 import { TranslateService } from '@ngx-translate/core';
+import { BreakpointService } from '@tia/core/services/breakpoints/breakpoint.service';
 
 @Component({
   selector: 'app-appearance-container',
@@ -46,10 +47,13 @@ import { TranslateService } from '@ngx-translate/core';
 export class AppearanceContainer
   implements OnInit, OnDestroy, CanComponentDeactivate
 {
-  private store = inject(Store);
-  private appearanceService = inject(AppearanceService);
-  private destroyRef = inject(DestroyRef);
-  private translate = inject(TranslateService);
+  private readonly store = inject(Store);
+  private readonly appearanceService = inject(AppearanceService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly translate = inject(TranslateService);
+  private readonly breakpointService = inject(BreakpointService);
+
+  public readonly isMobile = this.breakpointService.isMobile;
 
   public isModalOpen = signal(false);
   private leaveDecision$ = new Subject<boolean>();
@@ -71,7 +75,7 @@ export class AppearanceContainer
   }
 
   public onLeave(): void {
-    const savedTheme = this.userInfo()?.theme;
+    const savedTheme = this.userTheme();
     if (savedTheme) {
       this.setActiveColor(savedTheme);
     }
@@ -86,14 +90,9 @@ export class AppearanceContainer
 
   private isSubmitted = signal(false);
 
-  private userInfo = this.store.selectSignal(selectUserInfo);
-  private userLoaded = this.store.selectSignal(selectUserLoaded);
+  private userTheme = this.store.selectSignal(selectUserTheme);
 
   public ngOnInit(): void {
-    
-    if (!this.userLoaded()) {
-      this.store.dispatch(UserInfoActions.loadUser());
-    }
     this.isSubmitted.set(false);
     const subscription = this.appearanceService
       .getAvailableThemes()
@@ -171,6 +170,7 @@ export class AppearanceContainer
             'success',
             this.translate.instant('settings.appearance.saveSuccess'),
           );
+          this.store.dispatch(UserInfoActions.loadUserTheme({theme: this.activeTheme()}));
         }),
         catchError((error) => {
           this.showAlert(
@@ -190,7 +190,7 @@ export class AppearanceContainer
     }
 
     const currentTheme = this.activeTheme();
-    const savedTheme = this.userInfo()?.theme;
+    const savedTheme = this.userTheme();
 
     if (savedTheme && currentTheme !== savedTheme) {
       this.isModalOpen.set(true);

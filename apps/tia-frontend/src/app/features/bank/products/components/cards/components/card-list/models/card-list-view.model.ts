@@ -8,6 +8,7 @@ export interface CardImageView {
   isActive: boolean;
   zIndex: number;
   index: number;
+  stackPosition: number;
 }
 
 export interface CardGroupView {

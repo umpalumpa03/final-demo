@@ -6,7 +6,6 @@ import {
   input,
 } from '@angular/core';
 import { BaseInput } from '../base/base-input';
-import { generateUniqueId } from '../base/utils/input.util';
 import { RADIO_DEFAULTS } from '../config/radios.config';
 import {
   RadioGroupConfig,
@@ -25,7 +24,8 @@ export class Radios extends BaseInput {
   public override readonly config = input<RadioGroupConfig>({});
   public readonly options = input.required<RadioOption[]>();
 
-  protected readonly groupName = generateUniqueId('radio-group');
+  protected readonly groupName =
+    this.validationService.generateUniqueId('radio-group');
 
   protected readonly mergedConfig = computed<RadioGroupConfig>(() => ({
     ...RADIO_DEFAULTS,
