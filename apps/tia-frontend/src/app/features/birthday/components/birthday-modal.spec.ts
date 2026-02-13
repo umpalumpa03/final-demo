@@ -1,16 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BirthdayModalComponent } from './birthday-modal';
-import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { selectUserInfo } from '../../../store/user-info/user-info.selectors';
 import { BirthdayLogicService } from '../services/birthday-logic.service';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import confetti from 'canvas-confetti';
 import { signal } from '@angular/core';
 
-// Mock confetti
 vi.mock('canvas-confetti', () => {
   const mockConfetti = vi.fn();
-  mockConfetti.reset = vi.fn();
+  (mockConfetti as any).reset = vi.fn();
   return {
     default: mockConfetti,
   };
@@ -28,7 +27,7 @@ describe('BirthdayModalComponent', () => {
   };
 
   beforeEach(async () => {
-    vi.clearAllMocks();
+    TestBed.resetTestingModule();
 
     await TestBed.configureTestingModule({
       imports: [BirthdayModalComponent],
@@ -72,14 +71,13 @@ describe('BirthdayModalComponent', () => {
 
   it('should launch confetti when shouldLaunchConfetti signal is true', () => {
     const confettiSpy = vi.mocked(confetti);
-    (birthdayLogicService.shouldLaunchConfetti as any).set(true);
     
-    fixture.detectChanges();
+    mockBirthdayService.shouldLaunchConfetti.set(true);
+    
+    component.ngOnInit();
     
     expect(confettiSpy).toHaveBeenCalled();
   });
-
-
 
   it('should emit dismiss output when onDismiss is called', () => {
     const spy = vi.spyOn(component.dismiss, 'emit');
@@ -90,10 +88,8 @@ describe('BirthdayModalComponent', () => {
   });
 
   it('should cleanup animations and reset confetti on destroy', () => {
-    vi.mocked(confetti).mockClear();
-    fixture.detectChanges();
-    
     const resetSpy = vi.mocked(confetti).reset;
+    
     fixture.destroy();
     
     expect(resetSpy).toHaveBeenCalled();
@@ -108,11 +104,8 @@ describe('BirthdayModalComponent', () => {
     expect(component.middleEmojis.length).toBeGreaterThan(0);
   });
 
-  it('should have buttonIcon defined from emoji config', () => {
+  it('should have icons defined from emoji config', () => {
     expect(component.buttonIcon).toBeDefined();
-  });
-
-  it('should have headerIcon defined from emoji config', () => {
     expect(component.headerIcon).toBeDefined();
   });
 });

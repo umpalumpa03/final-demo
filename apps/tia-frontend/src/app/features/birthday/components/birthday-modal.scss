@@ -46,9 +46,7 @@
       flex-wrap: nowrap;
 
       .emoji-svg {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        @include flex-center();
         width: 4.8rem; 
         height: 4.8rem;
         transition: transform 0.3s ease;

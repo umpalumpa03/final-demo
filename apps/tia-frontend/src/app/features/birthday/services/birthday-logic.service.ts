@@ -17,7 +17,7 @@ export class BirthdayLogicService {
       if (user?.birthday) {
         this.checkBirthday(user.birthday, user.birthdayModalClosedYear);
       }
-    }, { allowSignalWrites: true });
+    });
   }
 
   private checkBirthday(birthdayStr: string, closedYear: number | null): void {
