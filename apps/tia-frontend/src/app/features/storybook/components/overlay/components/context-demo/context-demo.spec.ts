@@ -1,17 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ContextDemo } from './context-demo';
 
 describe('ContextDemo', () => {
   let component: ContextDemo;
   let fixture: ComponentFixture<ContextDemo>;
+  let translate: TranslateService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ContextDemo],
+      imports: [ContextDemo, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContextDemo);
     component = fixture.componentInstance;
+    translate = TestBed.inject(TranslateService);
     await fixture.whenStable();
   });
 
@@ -37,5 +40,16 @@ describe('ContextDemo', () => {
     component.isMenuVisible.set(true);
     component.handleAction();
     expect(component.isMenuVisible()).toBe(false);
+  });
+
+  it('should update signals when language changes', () => {
+    component.ngOnInit();
+    translate.setTranslation('ka', {});
+    translate.use('ka');
+
+    expect(component.menuItems()).toBeDefined();
+    expect(component.contextTitle()).toBeDefined();
+    expect(component.contextSubtitle()).toBeDefined();
+    expect(component.contextHint()).toBeDefined();
   });
 });

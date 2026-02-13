@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { ConfirmAccountDialog } from './confirm-account-dialog';
 
 describe('ConfirmAccountDialog', () => {
@@ -7,7 +8,7 @@ describe('ConfirmAccountDialog', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ConfirmAccountDialog],
+      imports: [ConfirmAccountDialog, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ConfirmAccountDialog);
