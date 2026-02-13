@@ -8,27 +8,26 @@ import {
   signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { CurrencyPipe, DatePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import {
-  CreditScoreBadge,
   LoanDetailsResponse,
   PendingApproval,
   UserInfo,
 } from '../../shared/models/loan-management.model';
-import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
-import { Badges } from '@tia/shared/lib/primitives/badges/badges';
-import { BadgeCustomColor } from '@tia/shared/lib/primitives/badges/models/badges.models';
 import { useLoanDrawerConfig } from '../../shared/config/loan-drawer.config';
+import { LoanDrawerApplicant } from './components/loan-drawer-applicant/loan-drawer-applicant';
+import { LoanDrawerLoanDetails } from './components/loan-drawer-loan-details/loan-drawer-loan-details';
+import { LoanDrawerRiskAssessment } from './components/loan-drawer-risk-assessment/loan-drawer-risk-assessment';
+import { LoanDrawerDeclineForm } from './components/loan-drawer-decline-form/loan-drawer-decline-form';
+import { LoanDrawerFooter } from './components/loan-drawer-footer/loan-drawer-footer';
 
 @Component({
   selector: 'app-loan-case-drawer',
   imports: [
-    Skeleton,
-    CurrencyPipe,
-    DatePipe,
-    FormsModule,
-    Badges,
+    LoanDrawerApplicant,
+    LoanDrawerLoanDetails,
+    LoanDrawerRiskAssessment,
+    LoanDrawerDeclineForm,
+    LoanDrawerFooter,
   ],
   templateUrl: './loan-case-drawer.html',
   styleUrl: './loan-case-drawer.scss',
@@ -43,6 +42,8 @@ export class LoanCaseDrawer {
       creditScore: '', applicantUnavailable: '', loanAmount: '', loanPurpose: '',
       loanTerm: '', interestRate: '', monthlyPayment: '', requestDate: '',
       months: '', debtToIncome: '', loanToIncome: '', totalInterest: '',
+      creditScorePoor: '', creditScoreFair: '', creditScoreGood: '',
+      creditScoreVeryGood: '', creditScoreExcellent: '',
       declinePlaceholder: '', close: '', decline: '', approve: '', cancel: '',
       confirmDecline: '',
     },
@@ -89,39 +90,6 @@ export class LoanCaseDrawer {
       this.showDeclineForm() &&
       this.declineReason().trim().length > 0,
   );
-
-  public readonly creditScoreBadgeColor = computed((): BadgeCustomColor => {
-    const badge = this.userInfo()?.creditScoreBadge;
-    if (!badge) return 'slate';
-    const colorMap: Record<CreditScoreBadge, BadgeCustomColor> = {
-      Poor: 'rose',
-      Fair: 'amber',
-      Good: 'teal',
-      'Very Good': 'cyan',
-      Excellent: 'lime',
-    };
-    return colorMap[badge] || 'slate';
-  });
-
-  public readonly interestRate = computed(() => {
-    return this.loanDetailsResponse()?.loanDetails.interestRate ?? 0;
-  });
-
-  public readonly monthlyPayment = computed(() => {
-    return this.loanDetailsResponse()?.loanDetails.monthlyPayment ?? 0;
-  });
-
-  public readonly totalInterest = computed(() => {
-    return this.loanDetailsResponse()?.riskAssessment.totalInterest ?? 0;
-  });
-
-  public readonly debtToIncomeRatio = computed(() => {
-    return this.loanDetailsResponse()?.riskAssessment.debtToIncomeRatio ?? 0;
-  });
-
-  public readonly loanToIncomeRatio = computed(() => {
-    return this.loanDetailsResponse()?.riskAssessment.loanToIncomeRatio ?? 0;
-  });
 
   public onClose(): void {
     this.showDeclineForm.set(false);

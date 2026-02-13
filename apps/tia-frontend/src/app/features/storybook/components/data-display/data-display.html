@@ -1,17 +1,17 @@
 <div class="data-display">
   <div class="data-display__title">
     <app-library-title
-    [title]="title"
-    [subtitle]="subtitle"
+    [title]="'storybook.data-display.title' | translate"
+    [subtitle]="'storybook.data-display.subtitle' | translate"
   ></app-library-title>
   </div>
 
 
-  <app-showcase-card title="Avatars">
+  <app-showcase-card [title]="'storybook.data-display.sections.avatars.title' | translate">
     <div class="data-display__card">
       <div class="avatars">
         <section class="avatars__section">
-          <p class="avatars__label">Sizes:</p>
+          <p class="avatars__label">{{ 'storybook.data-display.sections.avatars.sizes' | translate }}</p>
           <div class="avatars__row">
             @for (item of sizes(); track item.size) {
               <app-avatar
@@ -23,7 +23,7 @@
         </section>
 
         <section class="avatars__section">
-          <p class="avatars__label">With Initials:</p>
+          <p class="avatars__label">{{ 'storybook.data-display.sections.avatars.withInitials' | translate }}</p>
           <div class="avatars__row">
             @for (avatar of initialsAvatars(); track avatar.initials) {
               <app-avatar
@@ -37,7 +37,7 @@
         </section>
 
         <section class="avatars__section">
-          <p class="avatars__label">With Colors:</p>
+          <p class="avatars__label">{{ 'storybook.data-display.sections.avatars.withColors' | translate }}</p>
           <div class="avatars__row">
             @for (avatar of colorAvatars(); track avatar.initials) {
               <app-avatar
@@ -51,7 +51,7 @@
         </section>
 
         <section class="avatars__section">
-          <p class="avatars__label">Avatar Group:</p>
+          <p class="avatars__label">{{ 'storybook.data-display.sections.avatars.avatarGroup' | translate }}</p>
           <div class="avatars__row">
             <app-avatar-group
               [avatars]="groupAvatars()"
@@ -64,7 +64,7 @@
         </section>
 
         <section class="avatars__section">
-          <p class="avatars__label">With Status:</p>
+          <p class="avatars__label">{{ 'storybook.data-display.sections.avatars.withStatus' | translate }}</p>
           <div class="avatars__row">
             @for (avatar of statusAvatars(); track avatar.initials) {
               <app-avatar
@@ -81,20 +81,21 @@
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="Aspect Ratio">
+  <app-showcase-card [title]="'storybook.data-display.sections.aspectRatio.title' | translate">
     <div class="data-display__card">
       @if (hasRatios()) {
         <app-aspect-ratio-list
           [items]="ratios()"
+          [cardTextSuffix]="'storybook.data-display.sections.aspectRatio.aspectRatioSuffix' | translate"
           (selected)="onRatioSelected($event)"
         ></app-aspect-ratio-list>
       } @else {
-        <p class="data-display__empty">No aspect ratios available.</p>
+        <p class="data-display__empty">{{ 'storybook.data-display.sections.aspectRatio.noRatios' | translate }}</p>
       }
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="Tooltips">
+  <app-showcase-card [title]="'storybook.data-display.sections.tooltips.title' | translate">
     <div class="data-display__card">
       <div class="tooltip-demo">
         <div class="tooltip-demo__row">
@@ -118,7 +119,7 @@
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="Hover Cards">
+  <app-showcase-card [title]="'storybook.data-display.sections.hoverCards.title' | translate">
     <div class="data-display__card">
       <div class="hover-cards">
         <div class="hover-cards__row">
@@ -150,7 +151,7 @@
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="Cards">
+  <app-showcase-card [title]="'storybook.data-display.sections.cards.title' | translate">
     <div class="cards-showcase">
       <div class="cards-showcase__grid">
         @for (card of statisticCardItems(); track card.label) {
@@ -172,13 +173,13 @@
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="List Display">
+  <app-showcase-card [title]="'storybook.data-display.sections.listDisplay.title' | translate">
     <div class="data-display__card">
       <app-list-display [items]="listDisplayItems()"></app-list-display>
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="Key-Value Display">
+  <app-showcase-card [title]="'storybook.data-display.sections.keyValueDisplay.title' | translate">
     <div class="data-display__card">
       <app-key-value-display
         [title]="keyValueTitle()"
@@ -187,7 +188,7 @@
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="Timeline Display">
+  <app-showcase-card [title]="'storybook.data-display.sections.timelineDisplay.title' | translate">
     <div class="data-display__card">
       <app-timeline-display [items]="timelineItems()"></app-timeline-display>
     </div>

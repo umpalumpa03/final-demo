@@ -1,307 +1,119 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TransactionsContainer } from './transactions-container';
-import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
-import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
-import {
-  selectItems,
-  selectIsLoading,
-  selectTotalTransactions,
-  selectCategoryOptions,
-  selectCategoryOptionsForModal,
-  selectFilters,
-} from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
-import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
-import { NO_ERRORS_SCHEMA, EventEmitter, Injectable } from '@angular/core';
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.service';
-import { of } from 'rxjs';
-import { Router } from '@angular/router';
-import {
-  TranslateLoader,
-  TranslateModule,
-  TranslateService,
-} from '@ngx-translate/core';
+import { TransactionsFacadeService } from '../services/transactions-facade.service';
+import { TransactionsViewModelService } from '../services/transactions-view-model.service';
+import { TransactionsActionsService } from '../services/transactions-actions.service';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
-class FakeLoader implements TranslateLoader {
-  getTranslation(lang: string) {
-    return of({});
-  }
-}
 
 describe('TransactionsContainer', () => {
   let component: TransactionsContainer;
   let fixture: ComponentFixture<TransactionsContainer>;
-  let store: MockStore;
-  let router: Router;
 
-  const mockAccountsService = {
-    getCurrencies: vi.fn().mockReturnValue(of(['USD', 'GEL'])),
+  const mockFacade = {
+    initializePage: vi.fn(),
+    updateFilters: vi.fn(),
+    items: vi.fn(() => [] as ITransactions[]),
+    isLoading: vi.fn(() => false),
+    categoryOptions: vi.fn(() => []),
+    loadMore: vi.fn(),
+    createCategory: vi.fn(),
+    categoryOptionsForModal: vi.fn(() => []),
+    retryLoad: vi.fn(),
   };
 
-  const mockRouter = {
-    navigate: vi.fn(),
+  const mockVm = {
+    accountOptions: vi.fn(() => []),
+    currencyOptions: vi.fn(() => []),
+    totalTransactionsString: vi.fn(() => ''),
+    tableConfig: vi.fn(() => ({ headers: [], rows: [] })),
+  };
+
+  const mockActions = {
+    openCategorizeModal: vi.fn(),
+    handleRepeatAction: vi.fn(),
+    alertMessage: vi.fn(() => null),
+    alertType: vi.fn(() => 'warning'),
+    isCategorizeModalOpen: vi.fn(() => false),
+    selectedTransaction: vi.fn(() => null),
+    closeCategorizeModal: vi.fn(),
+    saveCategory: vi.fn(),
+    exportSingleTransaction: vi.fn(),
   };
 
   beforeEach(async () => {
-    mockRouter.navigate.mockClear();
-
     await TestBed.configureTestingModule({
-      imports: [
-        TransactionsContainer,
-        TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useClass: FakeLoader },
-        }),
-      ],
-      providers: [
-        provideMockStore({
-          initialState: {},
-          selectors: [
-            { selector: selectItems, value: [] },
-            { selector: selectIsLoading, value: false },
-            { selector: selectTotalTransactions, value: 0 },
-            { selector: selectCategoryOptions, value: [] },
-            { selector: selectCategoryOptionsForModal, value: [] },
-            { selector: selectAccounts, value: [] },
-            { selector: selectFilters, value: { pageLimit: 20 } },
-          ],
-        }),
-        { provide: AccountsApiService, useValue: mockAccountsService },
-        { provide: Router, useValue: mockRouter },
-      ],
+      imports: [TransactionsContainer, TranslateModule.forRoot()],
       schemas: [NO_ERRORS_SCHEMA],
-    }).compileComponents();
+    })
+      .overrideComponent(TransactionsContainer, {
+        set: {
+          providers: [
+            { provide: TransactionsFacadeService, useValue: mockFacade },
+            { provide: TransactionsViewModelService, useValue: mockVm },
+            { provide: TransactionsActionsService, useValue: mockActions },
+          ],
+        },
+      })
+      .compileComponents();
 
-    store = TestBed.inject(MockStore);
-    router = TestBed.inject(Router);
     fixture = TestBed.createComponent(TransactionsContainer);
     component = fixture.componentInstance;
 
-    vi.useFakeTimers();
+    vi.clearAllMocks();
   });
 
-  afterEach(() => {
-    vi.useRealTimers();
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
-  it('should dispatch initialization actions (enter, loadTransactions, loadAccounts) when no reset needed', () => {
-    store.overrideSelector(selectFilters, {
-      pageLimit: 20,
-      pageCursor: undefined,
-    });
-    const spy = vi.spyOn(store, 'dispatch');
-
+  it('should initialize page on init', () => {
     component.ngOnInit();
-
-    expect(spy).toHaveBeenCalledWith(TransactionActions.enter());
-    expect(spy).toHaveBeenCalledWith(TransactionActions.loadTransactions({}));
-    expect(spy).toHaveBeenCalledWith(AccountsActions.loadAccounts({}));
-    expect(spy).not.toHaveBeenCalledWith(
-      expect.objectContaining({ type: TransactionActions.updateFilters.type }),
-    );
+    expect(mockFacade.initializePage).toHaveBeenCalled();
   });
 
-  it('should dispatch updateFilters when reset is needed', () => {
-    store.overrideSelector(selectFilters, {
-      pageLimit: 50,
-      pageCursor: 'cursor',
+  it('should delegate filter updates to facade', () => {
+    const filters = { searchCriteria: 'test' };
+    component.onFiltersChange(filters);
+    expect(mockFacade.updateFilters).toHaveBeenCalledWith(filters);
+  });
+
+  it('should delegate retry load to facade', () => {
+    component.retryLoad();
+    expect(mockFacade.retryLoad).toHaveBeenCalled();
+  });
+
+  describe('onTableAction', () => {
+    const mockTrx = { id: '123', amount: 100 };
+
+    beforeEach(() => {
+      mockFacade.items.mockReturnValue([mockTrx] as any);
     });
-    const spy = vi.spyOn(store, 'dispatch');
 
-    component.ngOnInit();
-
-    expect(spy).toHaveBeenCalledWith(TransactionActions.enter());
-    expect(spy).toHaveBeenCalledWith(
-      TransactionActions.updateFilters({
-        filters: { pageLimit: 20, pageCursor: undefined },
-      }),
-    );
-    expect(spy).not.toHaveBeenCalledWith(
-      TransactionActions.loadTransactions({}),
-    );
-  });
-
-  it('should correctly derive view data from store', () => {
-    const mockItems = [
-      {
-        id: '1',
-        amount: 500,
-        currency: 'GEL',
-        createdAt: '2026-01-01',
-        description: 'Test',
-        category: { name: 'Food' },
-      } as any,
-    ];
-    const mockAccounts = [{ friendlyName: 'Bank', iban: 'GE123' } as any];
-
-    store.overrideSelector(selectItems, mockItems);
-    store.overrideSelector(selectAccounts, mockAccounts);
-    store.overrideSelector(selectTotalTransactions, 100);
-    store.refreshState();
-
-    fixture.detectChanges();
-
-    expect(component.tableConfig().rows.length).toBe(1);
-    expect(component.accountOptions()[0]).toEqual({
-      label: 'Bank',
-      value: 'GE123',
+    it('should open categorize modal if action is categorize', () => {
+      component.onTableAction({ action: 'categorize', rowId: '123' } as any);
+      expect(mockActions.openCategorizeModal).toHaveBeenCalledWith(mockTrx);
     });
-    expect(component.totalTransactionsString()).toBe(
-      'transactions.table.showing_text',
-    );
-  });
 
-  it('should dispatch loadMore on scroll bottom', () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
-
-    const mockItems = new Array(20).fill({
-      id: '1',
-      amount: 100,
-      currency: 'USD',
+    it('should handle repeat action if action is repeat', () => {
+      component.onTableAction({ action: 'repeat', rowId: '123' } as any);
+      expect(mockActions.handleRepeatAction).toHaveBeenCalledWith(mockTrx);
     });
-    store.overrideSelector(selectItems, mockItems as any);
-    store.overrideSelector(selectIsLoading, false);
-    store.refreshState();
-    fixture.detectChanges();
 
-    component.loadProducts();
-    expect(dispatchSpy).toHaveBeenCalledWith(TransactionActions.loadMore());
-  });
-
-  it('should NOT dispatch loadMore if loading or not enough items', () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
-
-    store.overrideSelector(selectIsLoading, true);
-    store.refreshState();
-    component.loadProducts();
-    expect(dispatchSpy).not.toHaveBeenCalled();
-
-    store.overrideSelector(selectIsLoading, false);
-    const mockItems = new Array(5).fill({
-      id: '1',
-      amount: 100,
-      currency: 'USD',
+    it('should handle extract action if action is extract', () => {
+      component.onTableAction({ action: 'extract', rowId: '123' } as any);
+      expect(mockActions.exportSingleTransaction).toHaveBeenCalledWith(mockTrx);
     });
-    store.overrideSelector(selectItems, mockItems as any);
-    store.refreshState();
 
-    dispatchSpy.mockClear();
-    component.loadProducts();
-    expect(dispatchSpy).not.toHaveBeenCalled();
-  });
+    it('should do nothing if transaction is not found', () => {
+      mockFacade.items.mockReturnValue([]);
+      component.onTableAction({ action: 'categorize', rowId: '999' } as any);
 
-  it('should open modal on table action "categorize"', () => {
-    const mockTrx = { id: '123', description: 'Test' } as any;
-    store.overrideSelector(selectItems, [mockTrx]);
-    store.refreshState();
-
-    component.onTableAction({ action: 'categorize', rowId: '123' } as any);
-
-    expect(component.isCategorizeModalOpen()).toBe(true);
-    expect(component.selectedTransaction()).toEqual(mockTrx);
-  });
-
-  it('should call onRepeatAction on table action "repeat"', () => {
-    const mockTrx = { id: '123', description: 'Test' } as any;
-    store.overrideSelector(selectItems, [mockTrx]);
-    store.refreshState();
-
-    const spy = vi.spyOn(component, 'onRepeatAction');
-    component.onTableAction({ action: 'repeat', rowId: '123' } as any);
-
-    expect(spy).toHaveBeenCalledWith(mockTrx);
-  });
-
-  it('should dispatch assignCategory and close modal on save', () => {
-    const spy = vi.spyOn(store, 'dispatch');
-    component.isCategorizeModalOpen.set(true);
-
-    const event = { transactionId: 'tx-1', categoryId: 'cat-1' };
-    component.onCategorizeSave(event);
-
-    expect(spy).toHaveBeenCalledWith(TransactionActions.assignCategory(event));
-    expect(component.isCategorizeModalOpen()).toBe(false);
-  });
-
-  it('should dispatch createCategory on category create', () => {
-    const spy = vi.spyOn(store, 'dispatch');
-    component.onCategoryCreate('New Cat');
-    expect(spy).toHaveBeenCalledWith(
-      TransactionActions.createCategory({ name: 'New Cat' }),
-    );
-  });
-
-  it('should show alert for credit transaction repeat', () => {
-    const trx = { transactionType: 'credit' } as ITransactions;
-    component.onRepeatAction(trx);
-
-    expect(component.alertType()).toBe('warning');
-    expect(component.alertMessage()).toBe('transactions.alerts.income_warning');
-
-    vi.advanceTimersByTime(3000);
-    expect(component.alertMessage()).toBeNull();
-  });
-
-  it('should show alert for loan transaction repeat', () => {
-    const trx = {
-      transactionType: 'debit',
-      transferType: 'Loan',
-    } as ITransactions;
-    component.onRepeatAction(trx);
-
-    expect(component.alertType()).toBe('warning');
-    expect(component.alertMessage()).toBe('transactions.alerts.loan_warning');
-  });
-
-  it('should navigate to paybill for BillPayment repeat', () => {
-    const trx = {
-      transactionType: 'debit',
-      transferType: 'BillPayment',
-    } as ITransactions;
-    const spy = vi.spyOn(store, 'dispatch');
-
-    component.onRepeatAction(trx);
-
-    expect(spy).toHaveBeenCalledWith(
-      TransactionActions.setTransactionToRepeat({ transaction: trx }),
-    );
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/paybill']);
-  });
-
-  it('should navigate to internal transfers for OwnAccount repeat', () => {
-    const trx = {
-      transactionType: 'debit',
-      transferType: 'OwnAccountSameCurrency',
-    } as ITransactions;
-
-    component.onRepeatAction(trx);
-
-    expect(mockRouter.navigate).toHaveBeenCalledWith([
-      '/bank/transfers/internal',
-    ]);
-  });
-
-  it('should navigate to external transfers for ToSomeoneSameBank repeat', () => {
-    const trx = {
-      transactionType: 'debit',
-      transferType: 'ToSomeoneSameBank',
-    } as ITransactions;
-
-    component.onRepeatAction(trx);
-
-    expect(mockRouter.navigate).toHaveBeenCalledWith([
-      '/bank/transfers/external/amount',
-    ]);
-  });
-
-  it('should navigate to transfers root for unknown type repeat', () => {
-    const trx = {
-      transactionType: 'debit',
-      transferType: 'Unknown',
-    } as ITransactions;
-
-    component.onRepeatAction(trx);
-
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/transfers/']);
+      expect(mockActions.openCategorizeModal).not.toHaveBeenCalled();
+      expect(mockActions.handleRepeatAction).not.toHaveBeenCalled();
+      expect(mockActions.exportSingleTransaction).not.toHaveBeenCalled();
+    });
   });
 });

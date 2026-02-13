@@ -6,17 +6,17 @@ import {
   output,
 } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { PendingApproval } from '../../shared/models/loan-management.model';
 import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { Avatar } from '@tia/shared/lib/data-display/avatars/avatar';
-import { Badges } from '@tia/shared/lib/primitives/badges/badges';
-import { LOAN_ICONS } from '../../../../../loans/shared/config/loan-icons.config';
+import { LoanBadge } from '../../shared/ui/loan-badge/loan-badge';
 
 @Component({
   selector: 'app-pending-approvals-table',
-  imports: [CommonModule, Spinner, ErrorStates, BasicCard, Avatar, Badges, CurrencyPipe, DatePipe],
+  imports: [CommonModule, TranslatePipe, Spinner, ErrorStates, BasicCard, Avatar, LoanBadge, CurrencyPipe, DatePipe],
   templateUrl: './pending-approvals-table.html',
   styleUrl: './pending-approvals-table.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,8 +28,6 @@ export class PendingApprovalsTable {
 
   public readonly rowClick = output<string>();
   public readonly reload = output<void>();
-
-  public readonly pendingIcon = LOAN_ICONS.pending;
 
   public readonly hasApprovals = computed(() => this.approvals().length > 0);
   public readonly showEmptyState = computed(

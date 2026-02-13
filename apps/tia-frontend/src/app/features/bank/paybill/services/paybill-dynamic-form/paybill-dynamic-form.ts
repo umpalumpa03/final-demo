@@ -66,9 +66,20 @@ export class PaybillDynamicForm {
     const amountControl = form.controls['amount'];
     if (!amountControl) return;
 
+    const amountPattern = /^\d+(\.\d{1,2})?$/;
+
     const validators = isVerified
-      ? [Validators.required, Validators.min(0.01), Validators.max(9999)]
-      : [Validators.required, Validators.max(9999)];
+      ? [
+          Validators.required,
+          Validators.min(10),
+          Validators.max(9999),
+          Validators.pattern(amountPattern),
+        ]
+      : [
+          Validators.required,
+          Validators.max(9999),
+          Validators.pattern(amountPattern),
+        ];
 
     amountControl.setValidators(validators);
     amountControl.updateValueAndValidity({ emitEvent: false });

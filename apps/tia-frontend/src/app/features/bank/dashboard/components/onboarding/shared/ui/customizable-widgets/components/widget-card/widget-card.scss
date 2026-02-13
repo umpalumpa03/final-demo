@@ -1,0 +1,57 @@
+@use "../../../../../../../../../../shared/styles/palette" as *;
+@use "../../../../../../../../../../shared/styles/mixins" as *;
+
+.widget-card {
+    @include display-flex;
+    align-items: flex-start;
+    gap: 1.2rem;
+    padding: 1.2rem;
+    border-radius: 1.2rem;
+    border-left: 0.3rem solid transparent;
+    margin-bottom: 0.6rem;
+
+    &--green {
+        background-color: $gray-25;
+        border-left-color: $green-500;
+    }
+
+    &--yellow {
+        background-color: rgba($yellow-50, 0.4);
+        border-left-color: $yellow-500;
+
+        .widget-card__title,
+        .widget-card__desc {
+            color: $yellow-700;
+        }
+    }
+
+    &__dot {
+        min-width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        margin-top: 0.5rem;
+    }
+
+    &__dot-green {
+        background-color: $green-500;
+    }
+
+    &__dot-yellow {
+        background-color: $yellow-500;
+    }
+
+    &__content {
+        @include display-flex(column);
+        gap: 0.4rem;
+    }
+
+    &__title {
+        @include font-inter(600, 1.4rem);
+        color: $blue-1000;
+    }
+
+    &__desc {
+        @include font-inter(400, 1.2rem);
+        color: $gray-600;
+    }
+}

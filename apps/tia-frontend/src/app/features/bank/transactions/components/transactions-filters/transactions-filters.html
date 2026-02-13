@@ -45,6 +45,7 @@
           [config]="{
              label: (field.uiConfig.label | translate),
              placeholder: (field.uiConfig.placeholder | translate)
+             
           }"
         >
         </lib-text-input>
@@ -61,7 +62,7 @@
         [icon]="'x-icon.svg'"
         (click)="removeFilter(filter.key)"
       >
-        {{ filter.displayText }}
+        {{ filter.label | translate }} : {{ filter.value }}
       </app-button>
       }
     </div>
