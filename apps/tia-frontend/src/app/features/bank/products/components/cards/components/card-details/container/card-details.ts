@@ -8,7 +8,7 @@ import {
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { combineLatest, map, switchMap, of, tap, take } from 'rxjs';
+import { combineLatest, map, switchMap, of, tap, take, filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   loadCardDetails,
@@ -18,6 +18,7 @@ import {
   navigateToNextCard,
   navigateToPreviousCard,
   setCurrentCardIndex,
+  loadAccountCardsPage,
 } from '../../../../../../../../store/products/cards/cards.actions';
 import {
   selectCardDetails,
@@ -29,6 +30,8 @@ import {
   selectCurrentCardIndex,
   selectCurrentAccountCardIds,
   selectAllAccounts,
+  selectIsCardDetailLoaded,
+  selectIsCardImageLoaded,
 } from '../../../../../../../../store/products/cards/cards.selectors';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -123,14 +126,16 @@ export class CardDetails implements OnInit {
     }),
   );
 
-  ngOnInit(): void {
-    this.cardId$
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap((cardId) => this.loadCardData(cardId)),
-      )
-      .subscribe();
-  }
+
+ngOnInit(): void {
+  this.cardId$
+    .pipe(
+      takeUntilDestroyed(this.destroyRef),
+      tap((cardId) => this.loadCardData(cardId)),
+    )
+    .subscribe();
+}
+
 
   protected handleBack(): void {
     combineLatest([this.cardData$, this.store.select(selectAllAccounts)])
@@ -207,11 +212,36 @@ export class CardDetails implements OnInit {
   }
 
 
+private loadCardData(cardId: string): void {
+  this.store.dispatch(loadCardAccounts({}));
+  this.store.dispatch(loadCardDetails({ cardId }));
+  
+  this.store.select(selectCardDetails).pipe(
+    map(details => details[cardId]),
+    filter(detail => !!detail?.accountId),
+    take(1),
+    tap(detail => {
+      this.store.dispatch(loadAccountCardsPage({ accountId: detail.accountId }));
+      
+      this.setCurrentIndexAfterLoad(cardId, detail.accountId);
+    })
+  ).subscribe();
+}
 
-  private loadCardData(cardId: string): void {
-    this.store.dispatch(loadCardAccounts({}));
-    this.store.dispatch(loadCardDetails({ cardId }));
-  }
+private setCurrentIndexAfterLoad(cardId: string, accountId: string): void {
+  this.store.select(selectAllAccounts).pipe(
+    map(accounts => accounts.find(a => a.id === accountId)),
+    filter(account => !!account && account.cardIds.length > 0),
+    take(1),
+    tap(account => {
+      const index = account!.cardIds.indexOf(cardId);
+      this.store.dispatch(setCurrentCardIndex({ cardIndex: index, accountId }));
+    })
+  ).subscribe();
+}
+
+
+
   protected readonly hasMultipleCards$ = combineLatest([
     this.cardData$,
     this.store.select(selectAllAccounts),
