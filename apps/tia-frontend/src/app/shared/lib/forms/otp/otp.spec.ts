@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Otp } from './otp';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('Otp', () => {
   let component: Otp;
@@ -12,7 +13,7 @@ describe('Otp', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Otp],
+      imports: [Otp, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Otp);

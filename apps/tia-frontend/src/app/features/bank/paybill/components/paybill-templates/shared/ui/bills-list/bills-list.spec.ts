@@ -8,6 +8,7 @@ import {
 } from '../../../../../store/paybill.selectors';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentRef } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('BillsList', () => {
   let component: BillsList;
@@ -22,7 +23,7 @@ describe('BillsList', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BillsList, ReactiveFormsModule],
+      imports: [BillsList, ReactiveFormsModule, TranslateModule.forRoot()],
       providers: [
         provideMockStore({
           selectors: [
