@@ -1,8 +1,7 @@
 import { DestroyRef, inject, Injectable } from '@angular/core';
 import { TransferStore } from 'apps/tia-frontend/src/app/features/bank/transfers/store/transfers.store';
-import { AccountData } from 'apps/tia-frontend/src/app/features/bank/transfers/models/transfers.state.model';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
-import { catchError, filter, of, skip, take, tap } from 'rxjs';
+import { catchError, of, tap } from 'rxjs';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Location } from '@angular/common';

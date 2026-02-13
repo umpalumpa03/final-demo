@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { TransferInternalService } from './transfer.internal.service';
-import { TransferStore } from '../store/transfers.store';
+import { TransferStore } from '../../../store/transfers.store';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { TransfersApiService } from './transfersApi.service';
+import { TransfersApiService } from '../../../services/transfersApi.service';
 import { of, throwError } from 'rxjs';
 import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -95,7 +95,9 @@ describe('TransferInternalService', () => {
     it('deselects when clicking same account', () => {
       const acc = { id: '1' } as any;
       service.handleToAccountSelect(acc, acc);
-      expect(transferStoreMock.setReceiverOwnAccount).toHaveBeenCalledWith(null);
+      expect(transferStoreMock.setReceiverOwnAccount).toHaveBeenCalledWith(
+        null,
+      );
     });
 
     it('selects when clicking different account', () => {
@@ -117,7 +119,9 @@ describe('TransferInternalService', () => {
       service.handleAmountGoBack(100, 'Test description');
 
       expect(transferStoreMock.setAmount).toHaveBeenCalledWith(100);
-      expect(transferStoreMock.setDescription).toHaveBeenCalledWith('Test description');
+      expect(transferStoreMock.setDescription).toHaveBeenCalledWith(
+        'Test description',
+      );
       expect(locationMock.back).toHaveBeenCalled();
     });
   });
@@ -127,14 +131,18 @@ describe('TransferInternalService', () => {
       service.handleAmountInput(2000);
 
       expect(transferStoreMock.setAmount).toHaveBeenCalledWith(2000);
-      expect(transferStoreMock.setInsufficientBalance).toHaveBeenCalledWith(true);
+      expect(transferStoreMock.setInsufficientBalance).toHaveBeenCalledWith(
+        true,
+      );
     });
 
     it('should set amount and clear insufficient balance when amount is valid', () => {
       service.handleAmountInput(500);
 
       expect(transferStoreMock.setAmount).toHaveBeenCalledWith(500);
-      expect(transferStoreMock.setInsufficientBalance).toHaveBeenCalledWith(false);
+      expect(transferStoreMock.setInsufficientBalance).toHaveBeenCalledWith(
+        false,
+      );
     });
   });
 
@@ -171,12 +179,14 @@ describe('TransferInternalService', () => {
 
     it('should handle error response', () => {
       transfersApiMock.transferToOwn.mockReturnValue(
-        throwError(() => ({ error: { message: 'Transfer failed' } }))
+        throwError(() => ({ error: { message: 'Transfer failed' } })),
       );
 
       service.handleToOwnTransfer();
 
-      expect(transferStoreMock.setError).toHaveBeenCalledWith('Transfer failed');
+      expect(transferStoreMock.setError).toHaveBeenCalledWith(
+        'Transfer failed',
+      );
     });
   });
 
@@ -221,7 +231,9 @@ describe('TransferInternalService', () => {
     });
 
     it('should call API with isReverse flag', () => {
-      transfersApiMock.transferCrossCurrency.mockReturnValue(of({ success: true }));
+      transfersApiMock.transferCrossCurrency.mockReturnValue(
+        of({ success: true }),
+      );
 
       service.handleCrossCurrencyTransfer(true);
 
@@ -239,7 +251,7 @@ describe('TransferInternalService', () => {
     it('should call success callback with rate', () => {
       const onSuccess = vi.fn();
       transfersApiMock.getConversionRate.mockReturnValue(
-        of({ success: true, rate: 1.5 })
+        of({ success: true, rate: 1.5 }),
       );
 
       service.fetchConversionRate('EUR', 'USD', onSuccess);
@@ -250,7 +262,7 @@ describe('TransferInternalService', () => {
     it('should call error callback on failure', () => {
       const onError = vi.fn();
       transfersApiMock.getConversionRate.mockReturnValue(
-        throwError(() => new Error('Failed'))
+        throwError(() => new Error('Failed')),
       );
 
       service.fetchConversionRate('EUR', 'USD', vi.fn(), onError);

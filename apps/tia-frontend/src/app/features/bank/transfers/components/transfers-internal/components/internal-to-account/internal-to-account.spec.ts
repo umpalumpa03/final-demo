@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { InternalToAccount } from './internal-to-account';
-import { TransferInternalService } from '../../../../services/transfer.internal.service';
+import { TransferInternalService } from '../../services/transfer.internal.service';
 import { TransferStore } from '../../../../store/transfers.store';
 import { BreakpointService } from '../../../../../../../core/services/breakpoints/breakpoint.service';
 import { Store } from '@ngrx/store';
@@ -29,7 +29,8 @@ describe('InternalToAccount', () => {
 
   beforeEach(async () => {
     mockStore = {
-      select: vi.fn()
+      select: vi
+        .fn()
         .mockReturnValueOnce(of(mockAccounts))
         .mockReturnValueOnce(of(false))
         .mockReturnValueOnce(of(null)),
@@ -65,7 +66,10 @@ describe('InternalToAccount', () => {
         { provide: Location, useValue: mockLocation },
         { provide: Router, useValue: mockRouter },
         { provide: BreakpointService, useValue: mockBreakpointService },
-        { provide: TransferInternalService, useValue: mockTransferInternalService },
+        {
+          provide: TransferInternalService,
+          useValue: mockTransferInternalService,
+        },
       ],
     }).compileComponents();
 
@@ -82,7 +86,7 @@ describe('InternalToAccount', () => {
     it('should dispatch loadAccounts action', () => {
       component.ngOnInit();
       expect(mockStore.dispatch).toHaveBeenCalledWith(
-        AccountsActions.loadAccounts({})
+        AccountsActions.loadAccounts({}),
       );
     });
   });
@@ -92,7 +96,9 @@ describe('InternalToAccount', () => {
       const account = mockAccounts[0];
       component.onAccountSelect(account as any);
 
-      expect(mockTransferInternalService.handleToAccountSelect).toHaveBeenCalled();
+      expect(
+        mockTransferInternalService.handleToAccountSelect,
+      ).toHaveBeenCalled();
     });
   });
 
@@ -101,7 +107,7 @@ describe('InternalToAccount', () => {
       mockStore.dispatch.mockClear();
       component.onRetry();
       expect(mockStore.dispatch).toHaveBeenCalledWith(
-        AccountsActions.loadAccounts({})
+        AccountsActions.loadAccounts({}),
       );
     });
   });
@@ -144,7 +150,9 @@ describe('InternalToAccount', () => {
 
       component.onContinue();
 
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/transfers/internal/amount']);
+      expect(mockRouter.navigate).toHaveBeenCalledWith([
+        '/bank/transfers/internal/amount',
+      ]);
     });
 
     it('should not navigate when no account is selected', () => {
@@ -167,5 +175,4 @@ describe('InternalToAccount', () => {
       expect(component.getLastFourDigits('')).toBe('');
     });
   });
-
 });
