@@ -1,24 +1,26 @@
-export const modalNameInput = {
-  label: 'Name',
-  placeholder: 'John Doe',
-} as const;
+import { TranslateService } from '@ngx-translate/core';
 
-export const modalEmailInput = {
-  label: 'Email',
-  placeholder: 'john@example.com',
-} as const;
+export const getModalNameInput = (translate: TranslateService) => ({
+  label: translate.instant('storybook.overlays.editProfile.nameLabel'),
+  placeholder: translate.instant('storybook.overlays.editProfile.namePlaceholder'),
+});
 
-export const modalDescriptionInput = {
-  label: 'Description',
-  placeholder: 'Brief description...',
-} as const;
+export const getModalEmailInput = (translate: TranslateService) => ({
+  label: translate.instant('storybook.overlays.editProfile.emailLabel'),
+  placeholder: translate.instant('storybook.overlays.editProfile.emailPlaceholder'),
+});
 
-export const modalUsernameInput = {
-  label: 'Username',
-  placeholder: '@johndoe',
-} as const;
+export const getModalDescriptionInput = (translate: TranslateService) => ({
+  label: translate.instant('storybook.overlays.formDialog.descriptionLabel'),
+  placeholder: translate.instant('storybook.overlays.formDialog.descriptionPlaceholder'),
+});
 
-export const modalBioInput = {
-  label: 'Bio',
-  placeholder: 'Tell us about yourself',
-} as const;
+export const getModalUsernameInput = (translate: TranslateService) => ({
+  label: translate.instant('storybook.overlays.rightSheet.usernameLabel'),
+  placeholder: translate.instant('storybook.overlays.rightSheet.usernamePlaceholder'),
+});
+
+export const getModalBioInput = (translate: TranslateService) => ({
+  label: translate.instant('storybook.overlays.rightSheet.bioLabel'),
+  placeholder: translate.instant('storybook.overlays.rightSheet.bioPlaceholder'),
+});

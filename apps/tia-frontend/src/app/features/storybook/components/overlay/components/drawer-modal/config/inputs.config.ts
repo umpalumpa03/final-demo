@@ -1,11 +1,12 @@
-export const nameConfig = {
-  label: 'Name',
-  placeholder: 'Enter your name',
-} as const;
+import { TranslateService } from '@ngx-translate/core';
 
-export const emailConfig = {
-  label: 'Email',
-  placeholder: 'Enter your email',
-  type: 'email'
-} as const;
+export const getNameConfig = (translate: TranslateService) => ({
+  label: translate.instant('storybook.overlays.drawer.nameLabel'),
+  placeholder: translate.instant('storybook.overlays.drawer.namePlaceholder'),
+});
 
+export const getEmailConfig = (translate: TranslateService) => ({
+  label: translate.instant('storybook.overlays.drawer.emailLabel'),
+  placeholder: translate.instant('storybook.overlays.drawer.emailPlaceholder'),
+  type: 'email',
+});

@@ -1,20 +1,44 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TablesLayout } from './tables-layout';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { of } from 'rxjs';
+import { EventEmitter } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { TablesLayout } from './tables-layout';
 
 describe('TablesLayout', () => {
   let component: TablesLayout;
   let fixture: ComponentFixture<TablesLayout>;
 
+  const translateServiceMock = {
+    get: vi.fn().mockReturnValue(of('')),
+    instant: vi.fn().mockImplementation((key: string) => key),
+    stream: vi.fn().mockReturnValue(of('')),
+    use: vi.fn().mockReturnValue(of('')),
+    currentLang: 'en',
+    defaultLang: 'en',
+    onTranslationChange: new EventEmitter(),
+    onLangChange: new EventEmitter(),
+    onDefaultLangChange: new EventEmitter(),
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TablesLayout],
-    }).compileComponents();
+      providers: [
+        { provide: TranslateService, useValue: translateServiceMock },
+      ],
+    })
+      .overrideComponent(TablesLayout, {
+        set: {
+          imports: [],
+          template: '',
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(TablesLayout);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    vi.useFakeTimers();
   });
 
   afterEach(() => {
@@ -43,23 +67,35 @@ describe('TablesLayout', () => {
   });
 
   it('should set loading to true when onPageChange is called', () => {
+    vi.useFakeTimers();
+
     component.onPageChange(2);
+
     expect(component.isLoading()).toBe(true);
+
+    vi.advanceTimersByTime(500);
   });
 
   it('should reset error and set loading on errorReload', () => {
+    vi.useFakeTimers();
+
     component.hasError.set(true);
 
     component.errorReload(1);
 
     expect(component.hasError()).toBe(false);
     expect(component.isLoading()).toBe(true);
+
+    vi.advanceTimersByTime(500);
   });
 
   it('should handle successful data load and update basicConfig', () => {
-    vi.spyOn(Math, 'random').mockReturnValue(0.6);
+    vi.useFakeTimers();
+
+    vi.spyOn(Math, 'random').mockReturnValue(0.6); // success
 
     component.onPageChange(2);
+
     vi.advanceTimersByTime(500);
 
     expect(component.isLoading()).toBe(false);
@@ -68,9 +104,12 @@ describe('TablesLayout', () => {
   });
 
   it('should handle error case and set error state', () => {
-    vi.spyOn(Math, 'random').mockReturnValue(0.3);
+    vi.useFakeTimers();
+
+    vi.spyOn(Math, 'random').mockReturnValue(0.3); // error
 
     component.onPageChange(2);
+
     vi.advanceTimersByTime(500);
 
     expect(component.hasError()).toBe(true);

@@ -26,9 +26,10 @@
     <lib-text-input
       [config]="{prefixIcon: '', placeholder: 'Amount to distribute',}"
       [formControl]="amountControl"
+      (keydown)="preventNegative($event)"
     />
   </div>
-  @if (distributedAmount()) {
+  @if (distributedAmount() && !amountControl.invalid) {
   <span>{{ distributedAmount() | currency }} per bill</span>
   }
 </div>

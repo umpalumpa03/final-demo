@@ -8,6 +8,7 @@ import { signal } from '@angular/core';
 import { ForgotPasswordEmail } from './forgot-password-email';
 import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 import { Routes } from '../../../models/tokens.model';
 
 describe('ForgotPasswordEmail', () => {
@@ -18,6 +19,12 @@ describe('ForgotPasswordEmail', () => {
     setChellangeId: ReturnType<typeof vi.fn>;
     isLoginLoading: ReturnType<typeof signal<boolean>>;
   };
+  let alertServiceMock: {
+    success: ReturnType<typeof vi.fn>;
+    error: ReturnType<typeof vi.fn>;
+    warning: ReturnType<typeof vi.fn>;
+    clearAlert: ReturnType<typeof vi.fn>;
+  };
   let router: Router;
 
   beforeEach(async () => {
@@ -26,6 +33,12 @@ describe('ForgotPasswordEmail', () => {
       setChellangeId: vi.fn(),
       isLoginLoading: signal(false),
     };
+    alertServiceMock = {
+      success: vi.fn(),
+      error: vi.fn(),
+      warning: vi.fn(),
+      clearAlert: vi.fn(),
+    };
 
     await TestBed.configureTestingModule({
       imports: [ForgotPasswordEmail, TranslateModule.forRoot()],
@@ -33,6 +46,7 @@ describe('ForgotPasswordEmail', () => {
         provideRouter([]),
         { provide: AuthService, useValue: authServiceMock },
         { provide: TokenService, useValue: {} },
+        { provide: AlertService, useValue: alertServiceMock },
       ],
     }).compileComponents();
 
@@ -57,6 +71,7 @@ describe('ForgotPasswordEmail', () => {
 
     component.submit();
     expect(authServiceMock.forgotPasswordRequest).not.toHaveBeenCalled();
+    expect(alertServiceMock.clearAlert).toHaveBeenCalled();
 
     component.form.controls.email.setValue('user@test.com');
     component.submit();
@@ -65,36 +80,50 @@ describe('ForgotPasswordEmail', () => {
     expect(authServiceMock.forgotPasswordRequest).toHaveBeenCalledWith('user@test.com');
     expect(authServiceMock.setChellangeId).toHaveBeenCalledWith('challenge-1');
     expect(router.navigate).toHaveBeenCalledWith([Routes.OTP_FORGOT_PASSWORD]);
-    expect(component.alertState()?.type).toBe('success');
+    expect(alertServiceMock.success).toHaveBeenCalledWith(
+      'Reset code sent to your email',
+      { variant: 'dismissible', title: 'Success!' },
+    );
 
     authServiceMock.forgotPasswordRequest.mockReturnValue(
       throwError(() => new HttpErrorResponse({ status: 404, error: { message: 'User not found' } })),
     );
     component.form.controls.email.setValue('notfound@test.com');
     component.submit();
-    expect(component.alertState()?.message).toBe('User not found');
+    expect(alertServiceMock.error).toHaveBeenCalledWith(
+      'User not found',
+      { variant: 'dismissible', title: 'Oops!' },
+    );
 
     authServiceMock.forgotPasswordRequest.mockReturnValue(
       throwError(() => new HttpErrorResponse({ status: 400, error: { message: ['email must be an email'] } })),
     );
     component.form.controls.email.setValue('bad@test.com');
     component.submit();
-    expect(component.alertState()?.message).toBe('email must be an email');
+    expect(alertServiceMock.error).toHaveBeenCalledWith(
+      'email must be an email',
+      { variant: 'dismissible', title: 'Oops!' },
+    );
 
     authServiceMock.forgotPasswordRequest.mockReturnValue(
       throwError(() => new HttpErrorResponse({ status: 400, error: { message: 'Invalid email' } })),
     );
     component.form.controls.email.setValue('another@test.com');
     component.submit();
-    expect(component.alertState()?.message).toBe('Invalid email');
+    expect(alertServiceMock.error).toHaveBeenCalledWith(
+      'Invalid email',
+      { variant: 'dismissible', title: 'Oops!' },
+    );
 
     authServiceMock.forgotPasswordRequest.mockReturnValue(
       throwError(() => new Error('boom')),
     );
     component.form.controls.email.setValue('error@test.com');
     component.submit();
-    expect(component.alertState()?.type).toBe('warning');
-    expect(component.alertState()?.message).toBe('Unable to send reset code. Please try again.');
+    expect(alertServiceMock.warning).toHaveBeenCalledWith(
+      'Unable to send reset code. Please try again.',
+      { variant: 'dismissible', title: 'Warning' },
+    );
 
     vi.useRealTimers();
   });

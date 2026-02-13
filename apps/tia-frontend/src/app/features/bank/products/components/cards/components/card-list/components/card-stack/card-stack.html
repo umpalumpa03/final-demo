@@ -8,6 +8,7 @@
         [class.card-stack__card--stacked]="card.isStacked"
         [class.card-stack__card--active]="card.isActive"
         [style.z-index]="card.zIndex"
+        [attr.data-stack-position]="card.stackPosition"
         (click)="handleCardClick(card.cardId, card.index)"
       >
         <img

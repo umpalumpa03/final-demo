@@ -11,6 +11,7 @@ import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/alert.service';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import {
   selectSelectedAccount,
@@ -29,6 +30,7 @@ describe('ExternalAccounts', () => {
   let mockSelectionService: any;
   let mockBreakpointService: any;
   let mockRouter: any;
+  let mockAlertService: any;
 
   beforeEach(async () => {
     vi.useFakeTimers();
@@ -75,6 +77,12 @@ describe('ExternalAccounts', () => {
       navigate: vi.fn(),
     };
 
+    mockAlertService = {
+      success: vi.fn(),
+      error: vi.fn(),
+      warning: vi.fn(),
+    };
+
     await TestBed.configureTestingModule({
       imports: [
         ExternalAccounts,
@@ -87,6 +95,7 @@ describe('ExternalAccounts', () => {
         { provide: BreakpointService, useValue: mockBreakpointService },
         { provide: TransferRecipientService, useValue: mockRecipientService },
         { provide: Router, useValue: mockRouter },
+        { provide: AlertService, useValue: mockAlertService },
         {
           provide: TransferAccountSelectionService,
           useValue: mockSelectionService,
@@ -128,13 +137,12 @@ describe('ExternalAccounts', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(AccountsActions.loadAccounts({}));
   });
 
-  it('should handle the verified effect correctly', async () => {
+  it('should handle the verified effect via AlertService', async () => {
     mockStoreValues.isVerified.set(true);
     TestBed.flushEffects();
-    expect(component.showSuccess()).toBe(true);
+
+    expect(mockAlertService.success).toHaveBeenCalled();
     expect(mockStoreValues.setIsVerified).toHaveBeenCalledWith(false);
-    vi.advanceTimersByTime(3000);
-    expect(component.showSuccess()).toBe(false);
   });
 
   it('should compute recipient accounts from info.accounts and sort them', () => {
@@ -161,13 +169,23 @@ describe('ExternalAccounts', () => {
     expect(component.isContinueDisabled()).toBe(false);
   });
 
-  it('should handle noPermission error effect correctly', async () => {
+  it('should handle error effects via AlertService', async () => {
     mockStoreValues.error.set('transfers.external.accounts.noPermission');
     TestBed.flushEffects();
-    expect(component.showError()).toBe(true);
-    vi.advanceTimersByTime(5000);
-    expect(component.showError()).toBe(false);
+
+    expect(mockAlertService.error).toHaveBeenCalled();
     expect(mockStoreValues.setError).toHaveBeenCalledWith('');
+  });
+
+  it('should trigger warning when all sender accounts are disabled', () => {
+    const mockAccounts = [{ id: '1', isFavorite: false }] as any;
+    store.overrideSelector(selectAccounts, mockAccounts);
+    store.refreshState();
+
+    mockRecipientService.isSenderAccountDisabled.mockReturnValue(true);
+    TestBed.flushEffects();
+
+    expect(mockAlertService.warning).toHaveBeenCalled();
   });
 
   it('should call handleRetryRecipientLookup on onRetry', () => {
@@ -197,14 +215,6 @@ describe('ExternalAccounts', () => {
     mockStoreValues.recipientType.set('iban-different-bank');
     mockStoreValues.recipientInput.set('GE00IBAN');
     expect(component.recipientName()).toBe('GE00IBAN');
-  });
-
-  it('should compute allSenderAccountsDisabled correctly', () => {
-    const mockAccounts = [{ id: '1', isFavorite: false }] as any;
-    store.overrideSelector(selectAccounts, mockAccounts);
-    store.refreshState();
-    mockRecipientService.isSenderAccountDisabled.mockReturnValue(true);
-    expect(component.allSenderAccountsDisabled()).toBe(true);
   });
 
   it('should return disabled reason from service', () => {

@@ -22,7 +22,7 @@
       >
         <app-button
           (click)="onVerify()"
-          [isDisabled]="!recipientInput.valid || !recipientInput.value "
+          [isDisabled]="!recipientInput.valid || !recipientInput.value"
           [isLoading]="isLoading()"
           [fullWidth]="isMobile()"
         >
@@ -33,12 +33,3 @@
     </div>
   </div>
 </main>
-
-@if (showError()) {
-<div class="external-recipient__error-toast">
-  <app-alert-types-with-icons
-    [alertType]="'error'"
-    [alertMessage]="errorMessage() | translate"
-  />
-</div>
-}

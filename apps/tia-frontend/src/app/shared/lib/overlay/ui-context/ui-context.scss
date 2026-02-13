@@ -4,7 +4,7 @@
 .ui-context {
   position: fixed;
   z-index: 3000;
-  width: 12.8rem;
+  min-width: 12.8rem;
   background-color: $white;
   border: 0.08rem solid $blue-400;
   border-radius: 0.8rem;

@@ -45,3 +45,9 @@
     margin-bottom: 1rem;
   }
 }
+
+.modal--hidden {
+  visibility: hidden;
+  position: absolute;
+  pointer-events: none;
+}

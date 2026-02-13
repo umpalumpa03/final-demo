@@ -18,6 +18,15 @@ export interface Templates {
   groupId: null | string;
 }
 
+export interface BillPaymentRequest {
+  serviceId: string;
+  identification: {
+    accountNumber: string;
+  };
+  amount: number;
+  senderAccountId: string;
+}
+
 export enum ModalType {
   Group = 'group',
   RenameGroup = 'renameGroup',

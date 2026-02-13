@@ -6,6 +6,8 @@ import { AccountManagementService } from '../services/acount-management.service'
 import { initialState } from './accounts.state';
 import { Store } from '@ngrx/store';
 import { AccountsActions } from '../../../../../../store/products/accounts/accounts.actions';
+import { TranslateService } from '@ngx-translate/core';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 export const AccountsStore = signalStore(
   { providedIn: 'root' },
@@ -13,6 +15,9 @@ export const AccountsStore = signalStore(
 
   withMethods((store, service = inject(AccountManagementService)) => {
     const globalStore = inject(Store);
+    const translate = inject(TranslateService);
+    const alertService = inject(AlertService);
+
     return {
       clearError(): void {
         patchState(store, { error: null });
@@ -29,7 +34,13 @@ export const AccountsStore = signalStore(
       loadAccounts: rxMethod<void>(
         pipe(
           filter(() => !store.loaded() && !store.loading()),
-          tap(() => patchState(store, { loading: true, error: null, successMessage: null })),
+          tap(() =>
+            patchState(store, {
+              loading: true,
+              error: null,
+              successMessage: null,
+            }),
+          ),
           switchMap(() =>
             service.getAllAccounts().pipe(
               tap((accounts) =>
@@ -54,7 +65,11 @@ export const AccountsStore = signalStore(
           tap(({ id }) => {
             const currentIds = new Set(store.favoriteLoadingIds());
             currentIds.add(id);
-            patchState(store, { favoriteLoadingIds: currentIds, error: null, successMessage: null });
+            patchState(store, {
+              favoriteLoadingIds: currentIds,
+              error: null,
+              successMessage: null,
+            });
           }),
           switchMap(({ id, isFavorite }) =>
             service
@@ -80,8 +95,13 @@ export const AccountsStore = signalStore(
                   patchState(store, {
                     accounts,
                     favoriteLoadingIds: currentIds,
-                    successMessage: 'Favorite status updated successfully',
                   });
+                  alertService.success(
+                    translate.instant(
+                      'settings.accounts.storeAlerts.favSuccess',
+                    ),
+                    { variant: 'dismissible', title: 'Success!' },
+                  );
                   globalStore.dispatch(
                     AccountsActions.loadAccounts({ forceRefresh: true }),
                   );
@@ -91,8 +111,13 @@ export const AccountsStore = signalStore(
                   currentIds.delete(id);
                   patchState(store, {
                     favoriteLoadingIds: currentIds,
-                    error: 'Failed to update favorite status',
                   });
+                  alertService.error(
+                    translate.instant(
+                      'settings.accounts.storeAlerts.favFailed',
+                    ),
+                    { variant: 'dismissible', title: 'Oops!' },
+                  );
                   return EMPTY;
                 }),
               ),
@@ -132,8 +157,13 @@ export const AccountsStore = signalStore(
                   patchState(store, {
                     accounts,
                     visibilityLoadingIds: currentIds,
-                    successMessage: 'Account visibility updated successfully',
                   });
+                  alertService.success(
+                    translate.instant(
+                      'settings.accounts.storeAlerts.visibilitySuccess',
+                    ),
+                    { variant: 'dismissible', title: 'Success!' },
+                  );
                   globalStore.dispatch(
                     AccountsActions.loadAccounts({ forceRefresh: true }),
                   );
@@ -143,8 +173,13 @@ export const AccountsStore = signalStore(
                   currentIds.delete(id);
                   patchState(store, {
                     visibilityLoadingIds: currentIds,
-                    error: 'Failed to update visibility',
                   });
+                  alertService.error(
+                    translate.instant(
+                      'settings.accounts.storeAlerts.visibilityFailed',
+                    ),
+                    { variant: 'dismissible', title: 'Oops!' },
+                  );
                   return EMPTY;
                 }),
               ),
@@ -184,8 +219,13 @@ export const AccountsStore = signalStore(
                   patchState(store, {
                     accounts,
                     changeNameLoadingIds: currentIds,
-                    successMessage: 'Account name changed successfully',
                   });
+                  alertService.success(
+                    translate.instant(
+                      'settings.accounts.storeAlerts.nameSuccess',
+                    ),
+                    { variant: 'dismissible', title: 'Oops!' },
+                  );
                   globalStore.dispatch(
                     AccountsActions.loadAccounts({ forceRefresh: true }),
                   );
@@ -195,8 +235,13 @@ export const AccountsStore = signalStore(
                   currentIds.delete(id);
                   patchState(store, {
                     changeNameLoadingIds: currentIds,
-                    error: 'Failed to change friendly name',
                   });
+                  alertService.error(
+                    translate.instant(
+                      'settings.accounts.storeAlerts.nameFailed',
+                    ),
+                    { variant: 'dismissible', title: 'Oops!' },
+                  );
                   return EMPTY;
                 }),
               ),

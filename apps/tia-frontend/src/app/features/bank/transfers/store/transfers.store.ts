@@ -97,6 +97,9 @@ export const TransferStore = signalStore(
     setRecipientInput(input: string) {
       patchState(store, { recipientInput: input });
     },
+    setHasShownAmountToast(hasShownAmountToast: boolean) {
+      patchState(store, { hasShownAmountToast });
+    },
     lookupRecipient: rxMethod<{ value: string; type: RecipientType }>(
       pipe(
         tap(({ value, type }) =>

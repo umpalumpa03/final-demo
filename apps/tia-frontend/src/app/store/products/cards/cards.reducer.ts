@@ -8,6 +8,7 @@ export const cardsReducer = createReducer(
     ...state,
     loading: true,
     error: null,
+    
   })),
   on(CardsActions.loadCardAccountsSuccess, (state, { accounts }) => ({
     ...state,

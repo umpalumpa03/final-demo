@@ -258,14 +258,14 @@
     }
   },
   "cards": {
-     "pageTitle": "Cards",
+    "pageTitle": "Cards",
     "pageSubtitle": "Card components with various layouts and content types",
     "basicCard": "Basic Cards",
     "StatisticsCards": "Statistics Cards",
     "categoryCards": "Category Cards",
     "cancelBtn": "Cancel",
     "submitBtn": "Submit",
-     "basic1": {
+    "basic1": {
       "title": "Card Title",
       "subtitle": "Card description goes here",
       "content": "This is the main content area of the card. You can put any content here."
@@ -538,7 +538,311 @@
       "marketing": "Marketing"
     }
   },
-  "tables": {},
+  "tables": {
+    "title": "Tables",
+    "subtitle": "Table components for displaying data",
+    "sections": {
+      "basic": {
+        "title": "Basic Table",
+        "headers": {
+          "Invoice": "Invoice",
+          "status": "Status",
+          "Method": "Method",
+          "Amount": "Amount"
+        },
+        "rows": [
+          {
+            "Invoice": "INV001",
+            "status": "Paid",
+            "Method": "Credit Card",
+            "Amount": "$250.00"
+          },
+          {
+            "Invoice": "INV002",
+            "status": "Pending",
+            "Method": "PayPal",
+            "Amount": "$150.00"
+          },
+          {
+            "Invoice": "INV003",
+            "status": "Unpaid",
+            "Method": "Bank Transfer",
+            "Amount": "$350.00"
+          }
+        ]
+      },
+      "selection": {
+        "title": "Table with Row Selection",
+        "headers": {
+          "name": "Name",
+          "email": "Email",
+          "role": "Role",
+          "status": "Status"
+        },
+        "rows": [
+          {
+            "name": "John Doe",
+            "email": "john@example.com",
+            "role": "Administrator",
+            "status": "Active"
+          },
+          {
+            "name": "Jane Smith",
+            "email": "jane@example.com",
+            "role": "User",
+            "status": "Active"
+          },
+          {
+            "name": "Bob Johnson",
+            "email": "bob@example.com",
+            "role": "Editor",
+            "status": "Pending"
+          },
+          {
+            "name": "Alice Brown",
+            "email": "alice@example.com",
+            "role": "User",
+            "status": "Inactive"
+          },
+          {
+            "name": "Charlie Wilson",
+            "email": "charlie@example.com",
+            "role": "Administrator",
+            "status": "Active"
+          }
+        ]
+      },
+      "actions": {
+        "title": "Table with Actions",
+        "headers": {
+          "name": "Name",
+          "email": "Email",
+          "role": "Role",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "rows": [
+          {
+            "name": "John Doe",
+            "email": "john@example.com",
+            "role": "Admin",
+            "status": "Active"
+          },
+          {
+            "name": "Jane Smith",
+            "email": "jane@example.com",
+            "role": "User",
+            "status": "Active"
+          },
+          {
+            "name": "Bob Johnson",
+            "email": "bob@example.com",
+            "role": "Editor",
+            "status": "Pending"
+          },
+          {
+            "name": "Alice Brown",
+            "email": "alice@example.com",
+            "role": "User",
+            "status": "Inactive"
+          },
+          {
+            "name": "Charlie Wilson",
+            "email": "charlie@example.com",
+            "role": "Admin",
+            "status": "Active"
+          }
+        ]
+      },
+      "sortable": {
+        "title": "Sortable Table",
+        "headers": {
+          "name": "Name",
+          "email": "Email",
+          "role": "Role",
+          "status": "Status"
+        },
+        "rows": [
+          {
+            "name": "John Doe",
+            "email": "john@example.com",
+            "role": "Admin",
+            "status": "Active"
+          },
+          {
+            "name": "Jane Smith",
+            "email": "jane@example.com",
+            "role": "User",
+            "status": "Active"
+          },
+          {
+            "name": "Bob Johnson",
+            "email": "bob@example.com",
+            "role": "Editor",
+            "status": "Pending"
+          },
+          {
+            "name": "Alice Brown",
+            "email": "alice@example.com",
+            "role": "User",
+            "status": "Inactive"
+          },
+          {
+            "name": "Charlie Wilson",
+            "email": "charlie@example.com",
+            "role": "Admin",
+            "status": "Active"
+          }
+        ]
+      },
+      "striped": {
+        "title": "Striped Table",
+        "headers": {
+          "product": "Product",
+          "category": "Category",
+          "price": "Price",
+          "stock": "Stock"
+        },
+        "rows": [
+          {
+            "product": "Wireless Mouse",
+            "category": "Electronics",
+            "price": "$29.99",
+            "stock": "In Stock"
+          },
+          {
+            "product": "Mechanical Keyboard",
+            "category": "Electronics",
+            "price": "$89.99",
+            "stock": "In Stock"
+          },
+          {
+            "product": "USB-C Cable",
+            "category": "Accessories",
+            "price": "$12.99",
+            "stock": "Low Stock"
+          },
+          {
+            "product": "Monitor Stand",
+            "category": "Accessories",
+            "price": "$49.99",
+            "stock": "Out of Stock"
+          },
+          {
+            "product": "Desk Lamp",
+            "category": "Furniture",
+            "price": "$39.99",
+            "stock": "In Stock"
+          }
+        ]
+      },
+      "compact": {
+        "title": "Compact Table",
+        "headers": {
+          "id": "ID",
+          "task": "Task",
+          "assignee": "Assignee",
+          "status": "Status"
+        },
+        "rows": [
+          {
+            "id": "#1",
+            "task": "Update documentation",
+            "assignee": "John Doe",
+            "status": "done"
+          },
+          {
+            "id": "#2",
+            "task": "Fix login bug",
+            "assignee": "Jane Smith",
+            "status": "in-progress"
+          },
+          {
+            "id": "#3",
+            "task": "Design new feature",
+            "assignee": "Bob Johnson",
+            "status": "todo"
+          }
+        ]
+      },
+      "states": {
+        "title": "Row States",
+        "headers": {
+          "name": "Name",
+          "description": "Description",
+          "state": "State"
+        },
+        "rows": [
+          {
+            "name": "Default Row",
+            "description": "A normal table row",
+            "state": "Default"
+          },
+          {
+            "name": "Selected Row",
+            "description": "Row with selection highlight",
+            "state": "Selected"
+          },
+          {
+            "name": "Hover Row",
+            "description": "Hovering the mouse over this row",
+            "state": "Hover"
+          },
+          {
+            "name": "Disabled Row",
+            "description": "Row in a disabled state",
+            "state": "Disabled"
+          }
+        ]
+      },
+      "transactions": {
+        "title": "Transactions Table",
+        "headers": {
+          "type": "Type",
+          "details": "Details",
+          "amount": "Amount",
+          "actions": "Actions"
+        },
+        "rows": [
+          {
+            "type": "Credit",
+            "details": "Salary Payment",
+            "date": "14/01/2026",
+            "amount": "+$5,000.00"
+          },
+          {
+            "type": "Debit",
+            "details": "Grocery Shopping",
+            "date": "13/01/2026",
+            "amount": "-€5,000.00"
+          },
+          {
+            "type": "Credit",
+            "details": "Electricity Bill",
+            "date": "12/01/2026",
+            "amount": "+$5,000.00"
+          },
+          {
+            "type": "Credit",
+            "details": "Freelance Project",
+            "date": "11/01/2026",
+            "amount": "+$5,000.00"
+          }
+        ],
+        "actions": {
+          "repeat": "repeat",
+          "extract": "extract",
+          "categorize": "categorize",
+          "tooltip": "The transaction cannot be repeated"
+        }
+      }
+    },
+    "error": {
+      "title": "Failed to Load Table Data",
+      "description": "An error occurred while fetching the transaction history. Please try again.",
+      "retry": "Reload Table"
+    }
+  },
   "navigation": {
     "title": "Navigation Components",
     "subtitle": "Navigation components including tabs, breadcrumbs, and pagination",
@@ -815,57 +1119,47 @@
     "accordionContent": [
       {
         "title": "What is this component library?",
-        "content":
-        "This is a comprehensive UI component library built with Angular, providing reusable and accessible components for building modern web applications. It includes buttons, forms, navigation, and many other essential UI elements."
+        "content": "This is a comprehensive UI component library built with Angular, providing reusable and accessible components for building modern web applications. It includes buttons, forms, navigation, and many other essential UI elements."
       },
       {
         "title": "How do I use these components?",
-        "content":
-          "Each component can be imported directly into your Angular application. Simply import the component, add it to your template, and configure it using the provided inputs and outputs. Documentation and examples are available for each component."
+        "content": "Each component can be imported directly into your Angular application. Simply import the component, add it to your template, and configure it using the provided inputs and outputs. Documentation and examples are available for each component."
       },
       {
         "title": "Are these components accessible?",
-        "content":
-          "Yes, all components are built with accessibility in mind, following WCAG guidelines. They include proper ARIA attributes, keyboard navigation support, and screen reader compatibility to ensure an inclusive user experience."
+        "content": "Yes, all components are built with accessibility in mind, following WCAG guidelines. They include proper ARIA attributes, keyboard navigation support, and screen reader compatibility to ensure an inclusive user experience."
       },
       {
         "title": "Can I customize the styling?",
-        "content":
-          "Absolutely! Components support theme customization through CSS variables and custom styling. You can override default styles using SCSS mixins and apply your brand colors to match your design system."
+        "content": "Absolutely! Components support theme customization through CSS variables and custom styling. You can override default styles using SCSS mixins and apply your brand colors to match your design system."
       },
       {
         "title": "Can I customize the styling?",
-        "content":
-          "Absolutely! Components support theme customization through CSS variables and custom styling. You can override default styles using SCSS mixins and apply your brand colors to match your design system."
+        "content": "Absolutely! Components support theme customization through CSS variables and custom styling. You can override default styles using SCSS mixins and apply your brand colors to match your design system."
       }
     ],
     "multiAccordionContent": [
       {
         "title": "Features",
-        "content":
-          "Our component library includes over 50 pre-built components, dark mode support, responsive design, TypeScript support, comprehensive documentation, and regular updates with new features and improvements."
+        "content": "Our component library includes over 50 pre-built components, dark mode support, responsive design, TypeScript support, comprehensive documentation, and regular updates with new features and improvements."
       },
       {
         "title": "Installation",
-        "content":
-          "Install the library using npm or yarn package manager. Import the required modules in your Angular application, configure the theme settings, and start using components in your templates immediately."
+        "content": "Install the library using npm or yarn package manager. Import the required modules in your Angular application, configure the theme settings, and start using components in your templates immediately."
       },
       {
         "title": "Documentation",
-        "content":
-          "Complete documentation is available online, including API references, usage examples, best practices, and migration guides. Each component has detailed documentation with live demos and code snippets."
+        "content": "Complete documentation is available online, including API references, usage examples, best practices, and migration guides. Each component has detailed documentation with live demos and code snippets."
       }
     ],
     "collapsibleContent": [
       {
         "title": "Click To Expand",
-        "content":
-          "This collapsible section contains additional information that can be shown or hidden by clicking the header. It's useful for organizing content and improving page readability."
+        "content": "This collapsible section contains additional information that can be shown or hidden by clicking the header. It's useful for organizing content and improving page readability."
       },
       {
         "title": "Default Open",
-        "content":
-          "This section is expanded by default, making important content immediately visible to users. You can configure which sections should be open on initial load."
+        "content": "This section is expanded by default, making important content immediately visible to users. You can configure which sections should be open on initial load."
       }
     ],
     "scrollAreaContent": [
@@ -894,10 +1188,7 @@
     "grid": [
       {
         "title": "Two Column Grid",
-        "items": [
-          { "label": "Column 1" },
-          { "label": "Column 2" }
-        ]
+        "items": [{ "label": "Column 1" }, { "label": "Column 2" }]
       },
       {
         "title": "Three Column Grid",
@@ -918,10 +1209,7 @@
       },
       {
         "title": "Asymmetric (2:1)",
-        "items": [
-          { "label": "Wide Column (2/3)" },
-          { "label": "Narrow (1/3)" }
-        ]
+        "items": [{ "label": "Wide Column (2/3)" }, { "label": "Narrow (1/3)" }]
       }
     ],
     "flex": [
@@ -939,13 +1227,154 @@
       },
       {
         "title": "Flex Wrap:",
-        "items": { 
-          "label": "Item" 
+        "items": {
+          "label": "Item"
         }
       }
     ]
   },
-  "overlays": {},
+  "overlays": {
+    "title": "Overlay Components",
+    "subtitle": "Modal dialogs, sheets, popovers, and dropdown menu",
+    "sections": {
+      "dialogs": "Dialogs",
+      "alertDialogs": "Alert Dialogs",
+      "sheets": "Sheets (Side Panels)",
+      "drawers": "Drawers",
+      "commandPalette": "Command Palette"
+    },
+    "editProfile": {
+      "openButton": "Open Dialog",
+      "title": "Edit Profile",
+      "subtitle": "Make changes to your profile here. Click save when you're done.",
+      "nameLabel": "Name",
+      "namePlaceholder": "John Doe",
+      "emailLabel": "Email",
+      "emailPlaceholder": "john@example.com",
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes"
+    },
+    "formDialog": {
+      "openButton": "Dialog with Form",
+      "title": "Create New Project",
+      "subtitle": "Enter the details for your new project.",
+      "projectNameLabel": "Name",
+      "projectNamePlaceholder": "John Doe",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Brief description...",
+      "cancel": "Cancel",
+      "createProject": "Create Project"
+    },
+    "largeDialog": {
+      "openButton": "Large Dialog",
+      "title": "Terms and Conditions",
+      "subtitle": "Please read and accept our terms and conditions.",
+      "sections": {
+        "section1": {
+          "title": "Section 1",
+          "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        },
+        "section2": {
+          "title": "Section 2",
+          "content": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+        },
+        "section3": {
+          "title": "Section 3",
+          "content": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+        },
+        "section4": {
+          "title": "Section 4",
+          "content": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        }
+      },
+      "decline": "Decline",
+      "accept": "Accept"
+    },
+    "deleteAccount": {
+      "openButton": "Delete Account",
+      "title": "Are you absolutely sure?",
+      "subtitle": "This action cannot be undone. This will permanently delete your account and remove your data from our servers.",
+      "cancel": "Cancel",
+      "deleteButton": "Delete Account"
+    },
+    "confirmAccount": {
+      "openButton": "Confirm Action",
+      "title": "Confirm your action",
+      "subtitle": "Are you sure you want to proceed with this action?",
+      "cancel": "Cancel",
+      "continue": "Continue"
+    },
+    "rightSheet": {
+      "openButton": "Open Right Sheet",
+      "title": "Edit Settings",
+      "subtitle": "Make changes to your settings here.",
+      "usernameLabel": "Username",
+      "usernamePlaceholder": "@johndoe",
+      "bioLabel": "Bio",
+      "bioPlaceholder": "Tell us about yourself",
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes"
+    },
+    "leftSheet": {
+      "openButton": "Left Sheet",
+      "title": "Navigation",
+      "subtitle": "Quick access to main sections",
+      "items": {
+        "profile": "Profile",
+        "settings": "Settings",
+        "messages": "Messages",
+        "logout": "Logout"
+      }
+    },
+    "topSheet": {
+      "openButton": "Top Sheet",
+      "title": "Notification Banner",
+      "subtitle": "Important announcements and updates",
+      "message": "We've updated our privacy policy. Please review the changes."
+    },
+    "bottomSheet": {
+      "openButton": "Bottom Sheet",
+      "title": "Quick Actions",
+      "subtitle": "Frequently used actions",
+      "actions": {
+        "new": "New",
+        "edit": "Edit",
+        "copy": "Copy",
+        "delete": "Delete"
+      }
+    },
+    "drawer": {
+      "openButton": "Open Drawer",
+      "title": "Drawer Title",
+      "subtitle": "This is a drawer component optimized for mobile.",
+      "nameLabel": "Name",
+      "namePlaceholder": "Enter your name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter your email",
+      "submit": "Submit",
+      "cancel": "Cancel"
+    },
+    "contextMenu": {
+      "title": "Context Menu",
+      "subtitle": "Right-click on the area below to open the context menu:",
+      "hint": "Right-click here",
+      "items": {
+        "copy": "Copy",
+        "edit": "Edit",
+        "new": "New",
+        "showGrid": "Show Grid",
+        "showRulers": "Show Rulers",
+        "delete": "Delete"
+      }
+    },
+    "commandPaletteActions": {
+      "viewProfile": "View Profile",
+      "settings": "Settings",
+      "messages": "Messages",
+      "createNew": "Create New",
+      "copyLink": "Copy Link"
+    }
+  },
   "drag-and-drop": {
     "title": "Drag & Drop Components",
     "subtitle": "Interactive drag-and-drop interfaces for reordering and organizing content",

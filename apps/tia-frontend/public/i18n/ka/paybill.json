@@ -34,6 +34,12 @@
         "date_time": "თარიღი და დრო"
       }
     },
+    "error": {
+      "verification_missing_title": "თქვენი დადასტურება ვერ მოხერხდა",
+      "payment_missing_title": "გადახდის მონაცემები ვერ მოიძებნა",
+      "missing_data_message": "გადახდის დეტალები ვერ მოიძებნა. გთხოვთ, თავიდან დაიწყოთ პროცესი.",
+      "back_to_categories": "კატეგორიებზე დაბრუნება"
+    },
     "form": {
       "subtitle": "შეიყვანეთ დეტალები",
       "account_label": "აბონენტის ნომერი / ID",

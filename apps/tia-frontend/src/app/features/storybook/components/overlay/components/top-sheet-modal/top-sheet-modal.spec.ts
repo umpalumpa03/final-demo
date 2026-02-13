@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { By } from '@angular/platform-browser';
 import { TopSheetModal } from './top-sheet-modal';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
@@ -6,14 +7,16 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 describe('TopSheetModal', () => {
   let component: TopSheetModal;
   let fixture: ComponentFixture<TopSheetModal>;
+  let translate: TranslateService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TopSheetModal],
+      imports: [TopSheetModal, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TopSheetModal);
     component = fixture.componentInstance;
+    translate = TestBed.inject(TranslateService);
     fixture.detectChanges();
   });
 
@@ -32,5 +35,16 @@ describe('TopSheetModal', () => {
     triggerBtn.triggerEventHandler('click', null);
 
     expect(toggleSpy).toHaveBeenCalled();
+  });
+
+  it('should update signals when language changes', () => {
+    component.ngOnInit();
+    translate.setTranslation('ka', {});
+    translate.use('ka');
+    fixture.detectChanges();
+
+    expect(component.modalTitle()).toBeDefined();
+    expect(component.modalSubtitle()).toBeDefined();
+    expect(component.modalMessage()).toBeDefined();
   });
 });
