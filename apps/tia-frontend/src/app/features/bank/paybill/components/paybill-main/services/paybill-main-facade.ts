@@ -20,9 +20,24 @@ export class PaybillMainFacade {
   public readonly searchQuery = signal('');
 
   public init(): void {
-    this.store.dispatch(PaybillActions.clearSelection());
     this.store.dispatch(PaybillActions.initRepeatProcess());
     this.searchQuery.set('');
+
+    const url = this.router.url.split('?')[0];
+    const segments = url.split('/').filter((s) => s);
+    const payIndex = segments.indexOf('pay');
+
+    if (payIndex !== -1 && segments.length > payIndex + 1) {
+      const categoryId = segments[payIndex + 1];
+      this.store.dispatch(PaybillActions.selectCategory({ categoryId }));
+
+      if (segments.length > payIndex + 2) {
+        const providerId = segments[segments.length - 1];
+        this.store.dispatch(PaybillActions.selectProvider({ providerId }));
+      }
+    } else {
+      this.store.dispatch(PaybillActions.clearSelection());
+    }
   }
 
   // select state from store
@@ -159,12 +174,14 @@ export class PaybillMainFacade {
   }
 
   public updateSenderAccount(senderAccountId: string | null): void {
-    if(!senderAccountId) return;
+    if (!senderAccountId) return;
     const current = this.paymentPayload();
     if (current) {
-      this.store.dispatch(PaybillActions.setPaymentPayload({
-        data: { ...current, senderAccountId }
-      }));
+      this.store.dispatch(
+        PaybillActions.setPaymentPayload({
+          data: { ...current, senderAccountId },
+        }),
+      );
     }
   }
 }
