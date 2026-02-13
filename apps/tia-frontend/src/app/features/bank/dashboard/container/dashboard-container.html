@@ -15,7 +15,6 @@
     </div>
   </div>
 
-  <!-- DROEBITIA ES WESIT GADAEWYOBA -->
   <div class="bank-dashboard__onboard">
     <app-onboarding></app-onboarding>
   </div>
@@ -35,7 +34,15 @@
     </div>
     }
   </div>
-  }@else {
+  }@else { @if (visibleItems().length === 0) {
+  <app-error-states
+    variant="not-found"
+    [header]="'dashboard.page.not-available' | translate"
+    [message]="'dashboard.page.not-available-subtitle' | translate"
+    [showButton]="false"
+    maxWidth="100%"
+  />
+  }@else{
   <app-drag-container
     [hasNoStyle]="true"
     [items]="myItems()"
@@ -76,8 +83,7 @@
     </app-draggable-card>
     }
   </app-drag-container>
-
-  }
+  } }
 
   <app-ui-sheet-modal
     [isOpen]="isCustomizing()"
