@@ -1,6 +1,10 @@
 @use '../../../../shared/styles/mixins' as *;
 @use '../../../../shared/styles/palette' as *;
 
+.scrollbar {
+  @include custom-scrollbar;
+}
+
 .products-container {
   &__section-header {
     @include flex-center(row, space-between);
