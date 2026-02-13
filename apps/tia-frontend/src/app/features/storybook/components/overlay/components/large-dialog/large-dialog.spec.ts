@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { By } from '@angular/platform-browser';
 import { LargeDialog } from './large-dialog';
 import { describe, beforeEach, it, expect } from 'vitest';
@@ -7,6 +7,7 @@ import { describe, beforeEach, it, expect } from 'vitest';
 describe('LargeDialog', () => {
   let component: LargeDialog;
   let fixture: ComponentFixture<LargeDialog>;
+  let translate: TranslateService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -15,6 +16,7 @@ describe('LargeDialog', () => {
 
     fixture = TestBed.createComponent(LargeDialog);
     component = fixture.componentInstance;
+    translate = TestBed.inject(TranslateService);
     fixture.detectChanges();
   });
 
@@ -30,5 +32,16 @@ describe('LargeDialog', () => {
     const triggerBtn = fixture.debugElement.query(By.css('app-button'));
     triggerBtn.triggerEventHandler('click', null);
     expect(component.isOpen()).toBe(true);
+  });
+
+  it('should update signals when language changes', () => {
+    component.ngOnInit();
+    translate.setTranslation('ka', {});
+    translate.use('ka');
+    fixture.detectChanges();
+
+    expect(component.pageTitle()).toBeDefined();
+    expect(component.pageSubtitle()).toBeDefined();
+    expect(component.sections()).toBeDefined();
   });
 });

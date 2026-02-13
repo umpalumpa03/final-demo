@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { By } from '@angular/platform-browser';
 import { EditProfileDialog } from './edit-profile-dialog';
 import { describe, beforeEach, it, expect } from 'vitest';
@@ -7,6 +7,7 @@ import { describe, beforeEach, it, expect } from 'vitest';
 describe('EditProfileDialog', () => {
   let component: EditProfileDialog;
   let fixture: ComponentFixture<EditProfileDialog>;
+  let translate: TranslateService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -15,6 +16,7 @@ describe('EditProfileDialog', () => {
 
     fixture = TestBed.createComponent(EditProfileDialog);
     component = fixture.componentInstance;
+    translate = TestBed.inject(TranslateService);
     fixture.detectChanges();
   });
 
@@ -30,5 +32,17 @@ describe('EditProfileDialog', () => {
     const triggerBtn = fixture.debugElement.query(By.css('app-button'));
     triggerBtn.triggerEventHandler('click', null);
     expect(component.isOpen()).toBe(true);
+  });
+
+  it('should update signals when language changes', () => {
+    component.ngOnInit();
+    translate.setTranslation('ka', {});
+    translate.use('ka');
+    fixture.detectChanges();
+
+    expect(component.profileTitle()).toBeDefined();
+    expect(component.profileSubtitle()).toBeDefined();
+    expect(component.nameInput()).toBeDefined();
+    expect(component.emailInput()).toBeDefined();
   });
 });
