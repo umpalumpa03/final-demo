@@ -6,12 +6,14 @@
     ></app-library-title>
 
     <div class="custom__header__actions">
-      <app-customize-button
-        customMaxSize="100%"
-        label=""
-        (clicked)="openCustomization()"
-        [hideIcon]="true"
-      />
+      <app-tooltip [content]="'dashboard.page.customize-tooltip'" placement="left">
+        <app-customize-button
+          customMaxSize="100%"
+          label=""
+          (clicked)="openCustomization()"
+          [hideIcon]="true"
+        />
+      </app-tooltip>
     </div>
   </div>
 
