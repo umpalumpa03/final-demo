@@ -84,6 +84,8 @@ export class DashboardContainer implements OnInit {
       : { default: 2, md: 2, sm: 1 };
   });
 
+  protected readonly draftSelection = signal<string[]>([]);
+
   protected readonly isHeroMode = computed(
     () =>
       this.visibleItems().length >= 3 && !this.breakpointService.isXsMobile(),
@@ -96,8 +98,15 @@ export class DashboardContainer implements OnInit {
     this.translate.instant('dashboard.page.subtitle'),
   );
 
-  public openCustomization = () => this.isCustomizing.set(true);
-  public closeCustomization = () => this.isCustomizing.set(false);
+  public openCustomization = () => {
+    this.draftSelection.set(this.myItems().map((w) => w.id));
+    this.isCustomizing.set(true);
+  };
+  public closeCustomization = () => {
+    this.isCustomizing.set(false);
+
+    this.dashService.syncWidgetsFromDraft(this.draftSelection());
+  };
 
   public onItemsChange(items: IWidgetItem[]): void {
     this.dashService.updateItemsOnDrag(items);
@@ -108,10 +117,19 @@ export class DashboardContainer implements OnInit {
   }
 
   public onToggleCatalogWidget(isSelected: boolean, id: string): void {
-    this.dashService.toggleCatalogWidget(isSelected, id);
+    this.draftSelection.update((currentIds) => {
+      if (isSelected) {
+        return [...currentIds, id];
+      } else {
+        return currentIds.filter((itemId) => itemId !== id);
+      }
+    });
   }
 
   protected isWidgetActive(id: string): boolean {
+    if (this.isCustomizing()) {
+      return this.draftSelection().includes(id);
+    }
     return this.myItems().some((w) => w.id === id);
   }
 

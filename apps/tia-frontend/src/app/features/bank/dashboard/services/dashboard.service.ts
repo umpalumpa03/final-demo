@@ -132,4 +132,36 @@ export class DashboardService {
       this.store.dispatch(UserInfoActions.updateWidgetsBulk({ updates }));
     }
   }
+
+  public syncWidgetsFromDraft(draftIds: string[]): void {
+    const currentItems = this.myItems();
+    const currentIds = currentItems.map((w) => w.id);
+
+    draftIds.forEach((id) => {
+      if (!currentIds.includes(id)) {
+        const catalogWidget = this.widgetCatalog().find((w) => w.id === id);
+
+        if (catalogWidget) {
+          const activeCount = currentItems.length;
+
+          this.store.dispatch(
+            UserInfoActions.createWidget({
+              widget: {
+                ...catalogWidget,
+                order: activeCount + 1,
+                hasFullWidth: !!(activeCount === 0),
+                isHidden: false,
+              },
+            }),
+          );
+        }
+      }
+    });
+
+    currentItems.forEach((item) => {
+      if (!draftIds.includes(item.id) && item.dbId) {
+        this.store.dispatch(UserInfoActions.deleteWidget({ id: item.dbId }));
+      }
+    });
+  }
 }

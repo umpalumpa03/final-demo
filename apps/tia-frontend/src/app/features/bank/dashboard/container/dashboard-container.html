@@ -1,8 +1,19 @@
 <div class="global-bank-wrapper scrollbar">
-  <app-library-title
-    [title]="pageTitle()"
-    [subtitle]="pageSubtitle()"
-  ></app-library-title>
+  <div class="custom__header">
+    <app-library-title
+      [title]="pageTitle()"
+      [subtitle]="pageSubtitle()"
+    ></app-library-title>
+
+    <div class="custom__header__actions">
+      <app-customize-button
+        customMaxSize="100%"
+        label=""
+        (clicked)="openCustomization()"
+        [hideIcon]="true"
+      />
+    </div>
+  </div>
 
   <!-- DROEBITIA ES WESIT GADAEWYOBA -->
   <div class="bank-dashboard__onboard">
@@ -10,14 +21,6 @@
   </div>
   <div class="bank-dashboard__banner">
     <app-banner-carousel [slides]="bannerConfig()" />
-  </div>
-
-  <div class="bank-dashboard__header-actions">
-    <app-customize-button
-      customMaxSize="18%"
-      label="dashboard.page.customize-label"
-      (clicked)="openCustomization()"
-    />
   </div>
 
   @if (isLoading()) {
