@@ -18,6 +18,7 @@ export class PaybillMainFacade {
   private readonly router = inject(Router);
   public readonly searchQuery = signal('');
 
+
   public init(): void {
     this.store.dispatch(PaybillActions.initRepeatProcess());
     this.searchQuery.set('');

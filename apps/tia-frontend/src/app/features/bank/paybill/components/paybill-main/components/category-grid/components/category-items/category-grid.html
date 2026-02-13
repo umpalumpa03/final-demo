@@ -1,7 +1,7 @@
 <section class="paybill-grid">
   <app-library-title title="Select Category"></app-library-title>
 
-  <app-grid-layout cols="4" class="paybill-grid__container">
+  <app-grid-layout [cols]="cols()" class="paybill-grid__container">
     @if (isLoading()) { 
       @for (item of [1,2,3,4,5]; track item) {
     <div class="paybill-grid__card-wrapper">
