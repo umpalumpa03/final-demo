@@ -47,6 +47,7 @@ import { TotalAmount } from '../shared/ui/total-amount/total-amount';
 import { AccountSelect } from '../../shared/account-select/account-select';
 import { OtpVerification } from '@tia/core/auth/shared/otp-verification/otp-verification';
 import { SuccessModal } from '@tia/shared/lib/overlay/ui-success-modal/ui-success-modal';
+import { payBillOtpConfig } from '../configs/otp.config';
 
 @Component({
   selector: 'app-paybill-templates',
@@ -271,4 +272,10 @@ export class PaybillTemplates implements OnInit {
 
   public isOtpModalOpen = input<boolean>(false);
   public isPaymentModalHidden = input<boolean>(false);
+
+  public otpConfig = payBillOtpConfig;
+
+  public resendOtp(event: any) {
+    console.log(event);
+  }
 }

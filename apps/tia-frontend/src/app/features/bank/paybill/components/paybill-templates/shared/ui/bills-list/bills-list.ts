@@ -17,6 +17,7 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TemplatesPageActions } from '../../../../../store/paybill.actions';
 import { BillPaymentRequest } from '../../../models/paybill-templates.model';
+import { startWith } from 'rxjs';
 
 @Component({
   selector: 'app-bills-list',
@@ -54,7 +55,13 @@ export class BillsList {
         );
       });
 
-      this.payForm.updateValueAndValidity({ emitEvent: true });
+      const total = items.reduce((sum, item) => sum + item.amountDue, 0);
+      this.store.dispatch(
+        TemplatesPageActions.setTotalAmount({ amount: total }),
+      );
+      this.store.dispatch(
+        TemplatesPageActions.setPaymentsForm({ payments: this.buildPayload() }),
+      );
     });
 
     effect(() => {
@@ -73,21 +80,23 @@ export class BillsList {
     });
 
     effect(() => {
-      const values = this.payForm.getRawValue();
+      this.payForm.valueChanges.pipe(startWith()).subscribe((values) => {
+        if (!values || Object.keys(values).length === 0) return;
 
-      if (!values || Object.keys(values).length === 0) return;
+        const total = Object.values(values).reduce((sum, value) => {
+          const numValue = parseFloat(value as string) || 0;
+          return +sum! + numValue;
+        }, 0);
 
-      const total = Object.values(values).reduce((sum, value) => {
-        const numValue = parseFloat(value as string) || 0;
-        return +sum! + numValue;
-      }, 0);
-
-      this.store.dispatch(
-        TemplatesPageActions.setTotalAmount({ amount: +total! }),
-      );
-      this.store.dispatch(
-        TemplatesPageActions.setPaymentsForm({ payments: this.buildPayload() }),
-      );
+        this.store.dispatch(
+          TemplatesPageActions.setTotalAmount({ amount: +total! }),
+        );
+        this.store.dispatch(
+          TemplatesPageActions.setPaymentsForm({
+            payments: this.buildPayload(),
+          }),
+        );
+      });
     });
   }
 
@@ -104,5 +113,11 @@ export class BillsList {
       amount: +formValues[item.id],
       senderAccountId: senderAccountId()!,
     }));
+  }
+
+  public preventNegative(event: KeyboardEvent) {
+    if (event.key === '-' || event.key === 'e') {
+      event.preventDefault();
+    }
   }
 }

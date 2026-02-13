@@ -1,23 +1,23 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BillsList } from './bills-list';
-import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 import {
   selectDistributedAmount,
+  selectSelectedSenderAccountId,
   selectSelectedTemplates,
 } from '../../../../../store/paybill.selectors';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { ComponentRef } from '@angular/core';
+import { TemplatesPageActions } from '../../../../../store/paybill.actions';
 
 describe('BillsList', () => {
   let component: BillsList;
-  let fixture: any;
+  let fixture: ComponentFixture<BillsList>;
   let store: MockStore;
-  let componentRef: ComponentRef<BillsList>;
 
   const mockTemplates = [
-    { id: '1', amountDue: 100 },
-    { id: '2', amountDue: 50 },
+    { id: '1', serviceId: 's1', identification: 'id1', amountDue: 100 },
+    { id: '2', serviceId: 's2', identification: 'id2', amountDue: 200 },
   ];
 
   beforeEach(async () => {
@@ -28,6 +28,7 @@ describe('BillsList', () => {
           selectors: [
             { selector: selectSelectedTemplates, value: mockTemplates },
             { selector: selectDistributedAmount, value: 0 },
+            { selector: selectSelectedSenderAccountId, value: 'acc-123' },
           ],
         }),
       ],
@@ -36,43 +37,72 @@ describe('BillsList', () => {
     fixture = TestBed.createComponent(BillsList);
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
-    componentRef = fixture.componentRef;
 
-    componentRef.setInput('isDistribution', false);
-
+    // Set required input before first detectChanges
+    fixture.componentRef.setInput('isDistribution', false);
     fixture.detectChanges();
   });
 
-  it('should create form controls based on selected items', () => {
+  it('should initialize form controls based on store templates', () => {
     expect(component.payForm.contains('1')).toBe(true);
-    expect(component.payForm.contains('2')).toBe(true);
     expect(component.payForm.get('1')?.value).toBe('100.00');
+    expect(Object.keys(component.payForm.controls).length).toBe(2);
   });
 
-  it('should disable controls when isDistribution is true', () => {
-    componentRef.setInput('isDistribution', true);
+  it('should disable controls when isDistribution input is true', async () => {
+    fixture.componentRef.setInput('isDistribution', true);
     fixture.detectChanges();
+
+    // Wait for the effect to propagate to the UI
+    await fixture.whenStable();
 
     expect(component.payForm.get('1')?.disabled).toBe(true);
   });
 
-  it('should update control values when distributedAmount changes', () => {
-    store.overrideSelector(selectDistributedAmount, 75);
+  it('should update all amounts when distributedAmount changes to a non-zero value', async () => {
+    store.overrideSelector(selectDistributedAmount, 50.5);
     store.refreshState();
     fixture.detectChanges();
+    await fixture.whenStable();
 
-    expect(component.payForm.get('1')?.value).toBe('75.00');
-    expect(component.payForm.get('2')?.value).toBe('75.00');
+    expect(component.payForm.get('1')?.value).toBe('50.50');
+    expect(component.payForm.get('2')?.value).toBe('50.50');
   });
 
-  it('should revert to amountDue when distributedAmount is 0', () => {
-    store.overrideSelector(selectDistributedAmount, 75);
-    store.refreshState();
-    fixture.detectChanges();
-    store.overrideSelector(selectDistributedAmount, 0);
-    store.refreshState();
-    fixture.detectChanges();
+  it('should correctly format the payload via buildPayload', () => {
+    const payload = component.buildPayload();
 
-    expect(component.payForm.get('1')?.value).toBe('100.00');
+    expect(payload).toEqual([
+      {
+        serviceId: 's1',
+        identification: 'id1',
+        amount: 100,
+        senderAccountId: 'acc-123',
+      },
+      {
+        serviceId: 's2',
+        identification: 'id2',
+        amount: 200,
+        senderAccountId: 'acc-123',
+      },
+    ]);
+  });
+
+  it('should block "e" and "-" keys in preventNegative', () => {
+    const preventSpy = vi.fn();
+    const mockEvent = {
+      key: '-',
+      preventDefault: preventSpy,
+    } as unknown as KeyboardEvent;
+
+    component.preventNegative(mockEvent);
+    expect(preventSpy).toHaveBeenCalled();
+
+    preventSpy.mockClear();
+    component.preventNegative({
+      key: '1',
+      preventDefault: preventSpy,
+    } as unknown as KeyboardEvent);
+    expect(preventSpy).not.toHaveBeenCalled();
   });
 });

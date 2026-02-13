@@ -166,6 +166,7 @@
     </div>
     }
   </main>
+
   }
 </app-ui-modal>
 
@@ -178,6 +179,8 @@
     [isBtnRowDirection]="true"
     redirectUrl="/bank/paybill/templates"
     redirectText="Paybills Template"
+    [inputOtpConfig]="otpConfig"
+    (isResendCalled)="resendOtp($event)"
   ></app-otp-verification>
 </app-ui-modal>
 

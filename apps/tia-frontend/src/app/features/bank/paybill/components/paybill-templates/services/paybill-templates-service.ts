@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../../../../environments/environment';
-import { Observable } from 'rxjs';
+import { filter, Observable } from 'rxjs';
 import {
   BillPaymentRequest,
   CreateTemplateGroup,
@@ -114,9 +114,12 @@ export class PaybillTemplatesService {
     const filteredTemplates = templates.filter((template) =>
       template.title?.toLowerCase().includes(lowerSearchTerm),
     );
-    const filteredGroups = groups.filter((group) =>
-      group.groupName?.toLowerCase().includes(lowerSearchTerm),
-    );
+    const filteredGroups = groups.filter((group) => {
+      return (
+        group.groupName?.toLowerCase().includes(lowerSearchTerm) ||
+        filteredTemplates.some((template) => template.groupId === group.id)
+      );
+    });
 
     return { templates: filteredTemplates, groups: filteredGroups };
   }
