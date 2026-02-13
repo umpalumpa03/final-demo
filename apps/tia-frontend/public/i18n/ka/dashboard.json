@@ -4,7 +4,8 @@
     "subtitle": "კეთილი იყოს თქვენი დაბრუნება! აქ არის თქვენი ფინანსური მიმოხილვა.",
     "customize-label": "გარემოს პერსონალიზაცია",
     "not-available": "ვიჯეტები ვერ მოიძებნა",
-    "not-available-subtitle": "თქვენ ამჯამად არ გაქვთ არცერთი ვიჯეტი"
+    "not-available-subtitle": "თქვენ ამჯამად არ გაქვთ არცერთი ვიჯეტი",
+    "customize-tooltip": "გარემოს პერსონალიზაცია"
   },
   "widgets": {
     "transactions": {

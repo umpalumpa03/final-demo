@@ -107,7 +107,12 @@
     "confirmNewPasswordPlaceholder": "Confirm new password",
     "updatePassword": "Update Password",
     "twoFactorAuth": "Two-Factor Authentication",
-    "passwordChangedSuccessfully": "Password changed successfully"
+    "passwordChangedSuccessfully": "Password changed successfully",
+    "tooltip": {
+      "passwordMismatch": "New password and confirmation do not match",
+      "passwordTooShort": "Password must be at least 8 characters long",
+      "fillAllFields": "Fill in all fields to update your password"
+    }
   },
   "user-management": {
     "title": "User Management",
@@ -242,6 +247,14 @@
     "errorBtn": "Retry",
     "warningHeader": "No Data Found",
     "warningMessage": "We couldn't find any data to display.",
-    "warningBtn": "Go Back"
+    "warningBtn": "Go Back",
+    "storeAlerts": {
+      "favSuccess": "Favorite status updated successfully",
+      "favFailed": "Failed to update favorite status",
+      "visibilitySuccess": "Account visibility updated successfully",
+      "visibilityFailed": "Failed to update visibility",
+      "nameSuccess": "Account name changed successfully",
+      "nameFailed": "Failed to change friendly name"
+    }
   }
 }

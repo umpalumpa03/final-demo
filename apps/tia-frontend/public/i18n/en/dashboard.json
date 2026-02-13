@@ -4,7 +4,8 @@
     "subtitle": "Welcome back! Here's your financial overview.",
     "customize-label": "Personalize your experience",
     "not-available": "No Widgets Available",
-    "not-available-subtitle": "You do not have any widgets!"
+    "not-available-subtitle": "You do not have any widgets!",
+    "customize-tooltip": "Customize your dashboard widgets"
   },
   "widgets": {
     "transactions": {

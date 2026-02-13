@@ -99,6 +99,34 @@ export class SecurityContainer implements OnDestroy {
     required: true,
   }));
 
+  public getUpdateDisabledReason(): string | null {
+    const form = this.changePasswordForm;
+
+    if (this.isLoading()) {
+      return null;
+    }
+
+    const newPasswordControl = form.get('newPassword');
+    const confirmPasswordControl = form.get('confirmPassword');
+    const newPasswordValue = newPasswordControl?.value ?? '';
+    const confirmPasswordValue = confirmPasswordControl?.value ?? '';
+
+
+    if (newPasswordValue && confirmPasswordValue && form.hasError('passwordMismatch')) {
+      return this.translate.instant('settings.security.tooltip.passwordMismatch');
+    }
+
+    if (newPasswordControl?.hasError('minlength')) {
+      return this.translate.instant('settings.security.tooltip.passwordTooShort');
+    }
+
+    if (form.invalid) {
+      return this.translate.instant('settings.security.tooltip.fillAllFields');
+    }
+
+    return null;
+  }
+
   public onChangePassword(event: { currentPassword: string; newPassword: string }): void {
     this.store.dispatch(
       SecurityActions.changePassword({

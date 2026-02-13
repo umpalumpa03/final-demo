@@ -6,6 +6,7 @@ import {
   PaybillProvider,
 } from '../components/paybill-main/shared/models/paybill.model';
 import {
+  BillPaymentRequest,
   TemplateGroups,
   Templates,
 } from '../components/paybill-templates/models/paybill-templates.model';
@@ -43,6 +44,7 @@ export interface PaybillState {
   distributedAmount: number;
   totalAmount: number;
   selectedSenderAccountId?: string | null;
+  paymentsForm: BillPaymentRequest[];
 }
 
 export const initialPaybillState: PaybillState = {
@@ -66,4 +68,5 @@ export const initialPaybillState: PaybillState = {
   distributedAmount: 0,
   totalAmount: 0,
   selectedSenderAccountId: null,
+  paymentsForm: [],
 };

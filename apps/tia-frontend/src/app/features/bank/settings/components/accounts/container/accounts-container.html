@@ -1,23 +1,11 @@
 @let accounts = store.accounts();
-@let error = store.error();
-@let success = store.successMessage();
-
-@if (error || success) {
-  <div class="fade-alert-container fade-alert--visible">
-    <app-dismissible-alerts
-      [alertType]="error ? 'error' : 'success'"
-      [alertTitle]="error ? 'Error!' : 'Success!'"
-      [alertMessage]="error ?? success ?? ''"
-    />
-  </div>
-}
 
 <app-settings-body
   [title]="'settings.accounts.title' | translate"
   [subTitle]="'settings.accounts.subtitle' | translate"
 >
   <app-scroll-area
-    height="62rem"
+    height="calc(100vh - 46.4rem)"
     [hideBorder]="true"
     scrollbar="hidden"
   >
