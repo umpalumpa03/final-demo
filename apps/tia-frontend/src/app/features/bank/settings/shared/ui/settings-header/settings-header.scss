@@ -24,51 +24,6 @@
         padding: 0.3rem;
         border-radius: 1.4rem;
     }
-
-    &__nav-group {
-        @include flex-center(row, space-between, center);
-        gap: 0.8rem;
-        & > * {
-            flex: 1;
-        }
-
-        &--admin {
-            @include flex-center(row, space-between, center);
-            gap: 0.8rem;
-            
-            & > * {
-                flex: 1;
-            }
-        }
-    }
-
-    &__nav-link-container {
-        
-        a {
-            @include font-inter(500, 1.4rem, 2rem);
-            @include flex-center();
-            gap: 0.8rem;
-            padding: 0.6rem 0.12rem;
-            width: 100%;
-            height: 100%;
-            border-radius: 1.4rem;
-
-            img {
-                width: 2rem;
-                height: 2rem;
-            }
-
-
-           &.active {
-            background-color: $white;
-           }
-
-           &:hover {
-            background-color: $white;
-           }
-        }
-    }
-    
 }
   
     

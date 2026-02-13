@@ -19,11 +19,6 @@
       [config]="signInConfig().checkbox"
       formControlName="checkbox"
     ></lib-checkboxes>
-    } @if(errorMessage()) {
-    <app-simple-alerts
-      [alertType]="alertTypes.error.type"
-      [alertMessage]="alertTypes.error.message"
-    />
     }
     <span class="sign-in__link" [routerLink]="[forgotPasswordRoute]"
       >{{'auth.sign-in.forgotPassword' | translate}}</span

@@ -712,4 +712,50 @@ describe('Paybill Reducer', () => {
       expect(result.error).toBeNull();
     });
   });
+
+  it('setPaymentsForm: should update the payments array in state', () => {
+    const payments = [
+      { templateId: 't1', amount: 500 },
+      { templateId: 't2', amount: 1200 },
+    ] as any;
+
+    const action = TemplatesPageActions.setPaymentsForm({ payments });
+    const result = paybillReducer(initialPaybillState, action);
+
+    expect(result.paymentsForm).toEqual(payments);
+    expect(result.paymentsForm.length).toBe(2);
+  });
+
+  it('setSenderId: should update selectedSenderAccountId', () => {
+    const accountId = 'SENDER_123';
+    const action = TemplatesPageActions.setSenderId({
+      selectedSenderAccountId: accountId,
+    });
+
+    const result = paybillReducer(initialPaybillState, action);
+
+    expect(result.selectedSenderAccountId).toBe(accountId);
+  });
+
+  it('payManyBillsSuccess: should stop loading and set challengeId from response', () => {
+    const response = {
+      verify: { challengeId: 'challenge-xyz' },
+    } as any;
+
+    const state = { ...initialPaybillState, loading: true };
+    const action = TemplatesPageActions.payManyBillsSuccess({ response });
+    const result = paybillReducer(state, action);
+
+    expect(result.loading).toBe(false);
+    expect(result.challengeId).toBe('challenge-xyz');
+  });
+
+  it('payManyBillsSuccess: should handle null verify objects safely', () => {
+    const response = { verify: null } as any;
+    const action = TemplatesPageActions.payManyBillsSuccess({ response });
+    const result = paybillReducer(initialPaybillState, action);
+
+    expect(result.challengeId).toBeNull();
+    expect(result.loading).toBe(false);
+  });
 });

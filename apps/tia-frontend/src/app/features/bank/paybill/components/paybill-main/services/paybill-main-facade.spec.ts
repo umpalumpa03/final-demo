@@ -7,6 +7,7 @@ import { Subject } from 'rxjs';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { PaybillActions } from '../../../store/paybill.actions';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 
 describe('PaybillMainFacade', () => {
   let service: PaybillMainFacade;
@@ -160,6 +161,38 @@ describe('PaybillMainFacade', () => {
         PaybillActions.clearSelection(),
       );
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/paybill/pay']);
+    });
+
+    it('resetPaymentForm: should dispatch resetPaymentForm action', () => {
+      service.resetPaymentForm();
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.resetPaymentForm(),
+      );
+    });
+
+    it('resetToDashboard: should navigate to the dashboard', () => {
+      service.resetToDashboard();
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/dashboard']);
+    });
+
+    it('backToDetails: should clear notifications and navigate to pay root', () => {
+      service.backToDetails();
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.clearAllNotifications(),
+      );
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['bank/paybill/pay']);
+    });
+    it('clearRepeatTransaction: should clear repeat data and selection in store', () => {
+      service.clearRepeatTransaction();
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        TransactionActions.clearTransactionToRepeat(),
+      );
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.clearSelection(),
+      );
     });
   });
 });

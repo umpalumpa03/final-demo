@@ -1,5 +1,6 @@
 {
   "title": "Settings",
+  "subtitle": "Manage your preferences and application settings",
   "sections": {
     "profile": "Profile",
     "security": "Security",
@@ -241,6 +242,14 @@
     "errorBtn": "Retry",
     "warningHeader": "No Data Found",
     "warningMessage": "We couldn't find any data to display.",
-    "warningBtn": "Go Back"
+    "warningBtn": "Go Back",
+    "storeAlerts": {
+      "favSuccess": "Favorite status updated successfully",
+      "favFailed": "Failed to update favorite status",
+      "visibilitySuccess": "Account visibility updated successfully",
+      "visibilityFailed": "Failed to update visibility",
+      "nameSuccess": "Account name changed successfully",
+      "nameFailed": "Failed to change friendly name"
+    }
   }
 }
