@@ -1,26 +1,26 @@
-<app-button (click)="toggle()">Open Dialog</app-button>
+<app-button (click)="toggle()">{{ 'storybook.overlays.editProfile.openButton' | translate }}</app-button>
 
 <app-ui-modal [isOpen]="isOpen()" (closed)="toggle()">
   <div class="edit-profile">
     <header class="edit-profile__header">
       <app-library-title
-        [title]="profileTitle"
-        [subtitle]="profileSubtitle"
+        [title]="profileTitle()"
+        [subtitle]="profileSubtitle()"
       ></app-library-title>
     </header>
 
     <form class="edit-profile__form">
       <div class="edit-profile__input-group">
-        <lib-text-input [config]="nameInput"></lib-text-input>
+        <lib-text-input [config]="nameInput()"></lib-text-input>
       </div>
       <div class="edit-profile__input-group">
-        <lib-text-input [config]="emailInput"></lib-text-input>
+        <lib-text-input [config]="emailInput()"></lib-text-input>
       </div>
     </form>
 
     <footer class="edit-profile__footer">
-      <app-button [variant]="'outline'" (click)="toggle()">Cancel</app-button>
-      <app-button (click)="toggle()">Save Changes</app-button>
+      <app-button [variant]="'outline'" (click)="toggle()">{{ 'storybook.overlays.editProfile.cancel' | translate }}</app-button>
+      <app-button (click)="toggle()">{{ 'storybook.overlays.editProfile.saveChanges' | translate }}</app-button>
     </footer>
   </div>
 </app-ui-modal>

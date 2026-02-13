@@ -1,30 +1,30 @@
 <section class="showcase-container">
   <header class="showcase-header">
     <app-library-title
-      [title]="pageTitle"
-      [subtitle]="pageSubtitle"
+      [title]="pageTitle()"
+      [subtitle]="pageSubtitle()"
     ></app-library-title>
   </header>
 
-  <app-showcase-card title="Dialogs">
+  <app-showcase-card [title]="sectionDialogs()">
     <app-edit-profile-dialog></app-edit-profile-dialog>
     <app-form-dialog></app-form-dialog>
     <app-large-dialog></app-large-dialog>
   </app-showcase-card>
 
-  <app-showcase-card title="Alert Dialogs">
+  <app-showcase-card [title]="sectionAlertDialogs()">
     <app-delete-account-dialog></app-delete-account-dialog>
     <app-confirm-account-dialog></app-confirm-account-dialog>
   </app-showcase-card>
 
-  <app-showcase-card title="Sheets (Side Panels)">
+  <app-showcase-card [title]="sectionSheets()">
     <app-right-sheet-demo></app-right-sheet-demo>
     <app-left-sheet-demo></app-left-sheet-demo>
     <app-top-sheet-modal></app-top-sheet-modal>
     <app-bottom-sheet-modal></app-bottom-sheet-modal>
   </app-showcase-card>
 
-  <app-showcase-card title="Drawers">
+  <app-showcase-card [title]="sectionDrawers()">
     <app-drawer-modal></app-drawer-modal>
   </app-showcase-card>
 
@@ -32,7 +32,7 @@
     <app-context-demo></app-context-demo>
   </app-showcase-card>
 
-  <app-showcase-card title="Command Palette">
+  <app-showcase-card [title]="sectionCommandPalette()">
     <app-command-palette-demo></app-command-palette-demo>
   </app-showcase-card>
 </section>

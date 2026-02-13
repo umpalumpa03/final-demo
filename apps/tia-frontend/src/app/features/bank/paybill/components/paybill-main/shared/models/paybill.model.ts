@@ -7,6 +7,7 @@ export interface PaybillProvider {
   name?: string;
   parentId?: string;
   isFinal?: string | boolean;
+  children?: PaybillProvider[];
 }
 
 export interface PaybillCategory {

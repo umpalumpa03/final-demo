@@ -1,7 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  inject,
+  OnInit,
+  signal,
 } from '@angular/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { LibraryTitle } from '../../shared/library-title/library-title';
 import { ShowcaseCard } from '../../shared/showcase-card/showcase-card';
 import { EditProfileDialog } from './components/edit-profile-dialog/edit-profile-dialog';
@@ -33,13 +37,32 @@ import { CommandPaletteDemo } from "./components/command-palette-demo/command-pa
     BottomSheetModal,
     DrawerModal,
     ContextDemo,
-    CommandPaletteDemo
+    CommandPaletteDemo,
 ],
   templateUrl: './overlay.html',
   styleUrls: ['./overlay.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Overlay {
-  public readonly pageTitle = 'Overlay Components';
-  public readonly pageSubtitle = 'Modal dialogs, sheets, popovers, and dropdown menu';
+export class Overlay implements OnInit {
+  private readonly translate = inject(TranslateService);
+
+  public readonly pageTitle = signal(this.translate.instant('storybook.overlays.title'));
+  public readonly pageSubtitle = signal(this.translate.instant('storybook.overlays.subtitle'));
+  public readonly sectionDialogs = signal(this.translate.instant('storybook.overlays.sections.dialogs'));
+  public readonly sectionAlertDialogs = signal(this.translate.instant('storybook.overlays.sections.alertDialogs'));
+  public readonly sectionSheets = signal(this.translate.instant('storybook.overlays.sections.sheets'));
+  public readonly sectionDrawers = signal(this.translate.instant('storybook.overlays.sections.drawers'));
+  public readonly sectionCommandPalette = signal(this.translate.instant('storybook.overlays.sections.commandPalette'));
+
+  ngOnInit(): void {
+    this.translate.onLangChange.subscribe(() => {
+      this.pageTitle.set(this.translate.instant('storybook.overlays.title'));
+      this.pageSubtitle.set(this.translate.instant('storybook.overlays.subtitle'));
+      this.sectionDialogs.set(this.translate.instant('storybook.overlays.sections.dialogs'));
+      this.sectionAlertDialogs.set(this.translate.instant('storybook.overlays.sections.alertDialogs'));
+      this.sectionSheets.set(this.translate.instant('storybook.overlays.sections.sheets'));
+      this.sectionDrawers.set(this.translate.instant('storybook.overlays.sections.drawers'));
+      this.sectionCommandPalette.set(this.translate.instant('storybook.overlays.sections.commandPalette'));
+    });
+  }
 }
