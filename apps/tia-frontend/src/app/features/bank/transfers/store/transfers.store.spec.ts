@@ -129,4 +129,27 @@ describe('TransferStore', () => {
     expect(store.requiresOtp()).toBe(true);
     expect(store.transferSuccess()).toBe(true);
   });
+  it('should handle manual recipient info updates and clear errors', () => {
+    store.setError('some.error');
+    store.setLoading(true);
+
+    store.setRecipientInfo(mockResponse, 'GE123', 'iban-same-bank');
+
+    expect(store.recipientInfo()).toEqual(mockResponse);
+    expect(store.recipientInput()).toBe('GE123');
+    expect(store.recipientType()).toBe('iban-same-bank');
+    expect(store.error()).toBeNull();
+    expect(store.isLoading()).toBe(false);
+  });
+
+  it('should handle fee loading and toast visibility flags', () => {
+    store.setFeeLoading(true);
+    expect(store.isFeeLoading()).toBe(true);
+
+    store.setHasShownAmountToast(true);
+    expect(store.hasShownAmountToast()).toBe(true);
+
+    store.setRecipientInput('new-input');
+    expect(store.recipientInput()).toBe('new-input');
+  });
 });
