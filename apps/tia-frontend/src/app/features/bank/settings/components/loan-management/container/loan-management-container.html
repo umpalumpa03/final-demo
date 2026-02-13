@@ -1,21 +1,3 @@
-@if (store.successMessage()) {
-  <div class="alert-toast">
-    <app-dismissible-alerts
-      alertType="success"
-      alertTitle="Success!"
-      [alertMessage]="store.successMessage()!"
-    ></app-dismissible-alerts>
-  </div>
-}
-@if (store.actionError()) {
-  <div class="alert-toast">
-    <app-dismissible-alerts
-      alertType="error"
-      alertTitle="Oops!"
-      [alertMessage]="store.actionError()!"
-    ></app-dismissible-alerts>
-  </div>
-}
 <app-basic-card
   maxWidth="100%"
   height="fit-content"
