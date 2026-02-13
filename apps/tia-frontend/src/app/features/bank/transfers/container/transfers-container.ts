@@ -79,3 +79,4 @@ export class TransfersContainer implements OnInit, OnDestroy {
     this.transferStore.reset();
   }
 }
+// bank/transfers/internal/amount

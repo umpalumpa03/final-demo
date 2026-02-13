@@ -22,7 +22,7 @@ export class TransferRepeatService {
   private readonly destroyRef = inject(DestroyRef);
 
   public initRepeatTransfer(transaction: ITransactions): void {
-    const isInternal = transaction.transferType === 'ToOwnAccount';
+    const isInternal = transaction.transferType.startsWith('OwnAccount');
 
     if (isInternal) {
       this.handleInternalTransfer(transaction);
@@ -30,7 +30,6 @@ export class TransferRepeatService {
       this.handleExternalTransfer(transaction);
     }
   }
-
   private handleInternalTransfer(transaction: ITransactions): void {
     this.store
       .select(selectAccounts)
@@ -38,10 +37,10 @@ export class TransferRepeatService {
         take(1),
         map((accounts) => ({
           senderAccount: accounts.find(
-            (acc) => acc.id === transaction.debitAccountNumber,
+            (acc) => acc.iban === transaction.debitAccountNumber,
           ),
           receiverAccount: accounts.find(
-            (acc) => acc.id === transaction.creditAccountNumber,
+            (acc) => acc.iban === transaction.creditAccountNumber,
           ),
         })),
         tap(({ senderAccount, receiverAccount }) => {
@@ -51,14 +50,19 @@ export class TransferRepeatService {
             return;
           }
 
-          if (!senderAccount.permission || (senderAccount.permission & 1) !== 1) {
+          if (
+            !senderAccount.permission ||
+            (senderAccount.permission & 1) !== 1
+          ) {
             this.transferStore.setError('transfers.repeat.senderNoPermission');
             this.router.navigate(['/bank/transfers/internal/from-account']);
             return;
           }
 
           if (!receiverAccount) {
-            this.transferStore.setError('transfers.repeat.recipientAccountNotFound');
+            this.transferStore.setError(
+              'transfers.repeat.recipientAccountNotFound',
+            );
             this.router.navigate(['/bank/transfers/internal/from-account']);
             return;
           }
@@ -74,7 +78,6 @@ export class TransferRepeatService {
       )
       .subscribe();
   }
-
   private handleExternalTransfer(transaction: ITransactions): void {
     if (!transaction.creditAccountNumber) {
       this.transferStore.setRecipientInput(
