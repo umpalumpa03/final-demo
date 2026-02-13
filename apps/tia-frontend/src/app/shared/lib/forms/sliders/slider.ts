@@ -7,7 +7,6 @@ import {
   model,
 } from '@angular/core';
 import { BaseInput } from '../base/base-input';
-import { generateUniqueId } from '../base/utils/input.util';
 import { SLIDER_DEFAULTS } from '../config/slider.config';
 import { SliderConfig } from '../models/slider.model';
 
@@ -23,7 +22,8 @@ export class Slider extends BaseInput {
 
   public override readonly value = model<number>(0);
 
-  private readonly defaultId = generateUniqueId('lib-slider');
+  private readonly defaultId =
+    this.validationService.generateUniqueId('lib-slider');
 
   protected readonly mergedConfig = computed<SliderConfig>(() => ({
     ...SLIDER_DEFAULTS,

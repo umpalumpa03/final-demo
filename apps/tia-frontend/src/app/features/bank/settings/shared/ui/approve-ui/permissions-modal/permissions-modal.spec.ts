@@ -3,6 +3,7 @@ import { PermissionsModal } from './permissions-modal';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { describe, it, expect, beforeEach } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('PermissionsModal', () => {
   let component: PermissionsModal;
@@ -10,8 +11,8 @@ describe('PermissionsModal', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PermissionsModal],
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [PermissionsModal, TranslateModule.forRoot()],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PermissionsModal);
@@ -21,16 +22,16 @@ describe('PermissionsModal', () => {
   it('should correctly count active permissions when form changes', () => {
     const form = new FormGroup({
       '1': new FormControl(false),
-      '2': new FormControl(false)
+      '2': new FormControl(false),
     });
 
     fixture.componentRef.setInput('form', form);
-    
+
     fixture.componentRef.setInput('items', [
-      { value: 1, label: 'Test 1' }, 
-      { value: 2, label: 'Test 2' }
-    ]); 
-    
+      { value: 1, label: 'Test 1' },
+      { value: 2, label: 'Test 2' },
+    ]);
+
     fixture.detectChanges();
 
     expect(component.activeCount()).toBe(0);

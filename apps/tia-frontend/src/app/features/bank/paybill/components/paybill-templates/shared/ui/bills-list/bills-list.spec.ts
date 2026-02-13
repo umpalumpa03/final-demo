@@ -8,7 +8,7 @@ import {
   selectSelectedSenderAccountId,
   selectSelectedTemplates,
 } from '../../../../../store/paybill.selectors';
-import { TemplatesPageActions } from '../../../../../store/paybill.actions';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('BillsList', () => {
   let component: BillsList;
@@ -22,7 +22,7 @@ describe('BillsList', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BillsList, ReactiveFormsModule],
+      imports: [BillsList, ReactiveFormsModule, TranslateModule.forRoot()],
       providers: [
         provideMockStore({
           selectors: [

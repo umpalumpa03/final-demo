@@ -5,10 +5,8 @@ import {
   effect,
   input,
   model,
-  output,
 } from '@angular/core';
 import { BaseInput } from '../base/base-input';
-import { generateUniqueId } from '../base/utils/input.util';
 import { SWITCH_DEFAULTS } from '../config/switches.config';
 import { SwitchConfig } from '../models/switches.model';
 
@@ -24,7 +22,8 @@ export class Switches extends BaseInput {
 
   public readonly checked = model<boolean>(false);
 
-  private readonly defaultId = generateUniqueId('lib-switch');
+  private readonly defaultId =
+    this.validationService.generateUniqueId('lib-switch');
 
   protected readonly mergedConfig = computed<SwitchConfig>(() => ({
     ...SWITCH_DEFAULTS,
@@ -43,9 +42,8 @@ export class Switches extends BaseInput {
   constructor() {
     super();
     effect(() => {
-      const isChecked = this.checked();
       if (!this.ngControl) {
-        this.value.set(isChecked);
+        this.value.set(this.checked());
       }
     });
   }

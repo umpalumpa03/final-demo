@@ -4,6 +4,7 @@ import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { selectGelAccountOptions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('AccountSelect', () => {
   let component: AccountSelect;
@@ -17,7 +18,7 @@ describe('AccountSelect', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccountSelect],
+      imports: [AccountSelect, TranslateModule.forRoot()],
       providers: [
         provideMockStore({
           selectors: [
