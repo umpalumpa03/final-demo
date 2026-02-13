@@ -40,33 +40,4 @@
     (closeModal)="handleCloseModal()"
     (submitForm)="handleCreateAccount(accountForm().value)"
   />
-
-  @if (showSuccessAlert()) {
-  <div class="accounts-page__alert accounts-page__alert--top-right">
-    <app-dismissible-alerts
-      [alertTitle]="'my-products.accounts.success' | translate"
-      [alertType]="'success'"
-      [alertMessage]="'my-products.accounts.accountNameUpdatedSuccessfully' | translate"
-      (dismissed)="handleAlertDismissed()"
-    />
-  </div>
-  } @if (showCreateAlert()) {
-  <div class="accounts-page__alert accounts-page__alert--top-right">
-    <app-dismissible-alerts
-      [alertTitle]="'my-products.accounts.information' | translate"
-      [alertType]="'information'"
-      [alertMessage]="'my-products.accounts.accountCreationRequestSent' | translate"
-      (dismissed)="handleCreateAlertDismissed()"
-    />
-  </div>
-  } @if (showCreateErrorAlert()) {
-  <div class="accounts-page__alert accounts-page__alert--top-right">
-    <app-dismissible-alerts
-      [alertTitle]="'my-products.accounts.error' | translate"
-      [alertType]="'warning'"
-      [alertMessage]="(createError$ | async) || ('my-products.accounts.failedToCreateAccount' | translate)"
-      (dismissed)="handleCreateErrorAlertDismissed()"
-    />
-  </div>
-  }
 </div>
