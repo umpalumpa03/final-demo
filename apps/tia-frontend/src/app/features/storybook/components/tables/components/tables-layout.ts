@@ -29,7 +29,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TablesLayout {
-  private translate = inject(TranslateService);
+  private readonly translate = inject(TranslateService);
   public basicConfig = signal<TableConfig>(basicTable(this.translate));
   public rowConfig = signal<TableConfig>(rowTable(this.translate));
   public actionsConfig = signal<TableConfig>(actionsTable(this.translate));
@@ -41,7 +41,6 @@ export class TablesLayout {
     transactionsTable(this.translate),
   );
 
-  // Accessing row data now requires calling the function first
   private readonly rowsPaginationData: TableConfig['rows'] = rowsForPagination(
     this.translate,
   );
