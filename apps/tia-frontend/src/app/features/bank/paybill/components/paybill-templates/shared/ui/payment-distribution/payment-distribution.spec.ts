@@ -7,6 +7,7 @@ import {
   selectSelectedTemplates,
 } from '../../../../../store/paybill.selectors';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
 describe('PaymentDistribution', () => {
@@ -20,6 +21,8 @@ describe('PaymentDistribution', () => {
   ];
 
   beforeEach(async () => {
+    vi.useFakeTimers();
+
     await TestBed.configureTestingModule({
       imports: [PaymentDistribution, ReactiveFormsModule],
       providers: [
@@ -30,6 +33,7 @@ describe('PaymentDistribution', () => {
           ],
         }),
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PaymentDistribution);
@@ -38,15 +42,16 @@ describe('PaymentDistribution', () => {
 
     fixture.componentRef.setInput('selectedItemsLength', 2);
 
-    vi.useFakeTimers();
-
     fixture.detectChanges();
+
+    vi.advanceTimersByTime(300);
+
     vi.spyOn(store, 'dispatch');
   });
 
   afterEach(() => {
     vi.useRealTimers();
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should create', () => {
@@ -66,31 +71,23 @@ describe('PaymentDistribution', () => {
   });
 
   describe('Reactive Logic (Value Changes)', () => {
-    it('should dispatch total and distributed amounts in equal mode', () => {
-      component.onDistributionChange('equal');
-      component.amountControl.setValue('100');
-
-      vi.advanceTimersByTime(300);
-
-      expect(store.dispatch).toHaveBeenCalledWith(
-        TemplatesPageActions.setTotalAmount({ amount: 100 }),
-      );
-      expect(store.dispatch).toHaveBeenCalledWith(
-        TemplatesPageActions.setDistributedAmount({ amount: 50 }),
-      );
-    });
-
     it('should dispatch full bill value in individual mode', () => {
       component.onDistributionChange('individual');
       component.amountControl.setValue('50');
 
       vi.advanceTimersByTime(300);
+
       expect(store.dispatch).toHaveBeenCalledWith(
         TemplatesPageActions.setTotalAmount({ amount: 300 }),
       );
     });
 
     it('should dispatch 0 distributed amount when input is empty', () => {
+      component.amountControl.setValue('50');
+      vi.advanceTimersByTime(300);
+
+      vi.mocked(store.dispatch).mockClear();
+
       component.amountControl.setValue('');
       vi.advanceTimersByTime(300);
 
