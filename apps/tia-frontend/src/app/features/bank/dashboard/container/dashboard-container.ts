@@ -60,7 +60,9 @@ import { ErrorStates } from "@tia/shared/lib/feedback/error-states/error-states"
     Skeleton,
     RouteLoader,
     Onboarding,
-    ErrorStates
+    ErrorStates,
+    BirthdayModalComponent,
+    UiModal
 ],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',

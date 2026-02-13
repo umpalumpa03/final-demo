@@ -12,6 +12,7 @@ import { Store } from '@ngrx/store';
 import { selectUserInfo } from '../../../store/user-info/user-info.selectors'; 
 import { ButtonComponent } from '../../../shared/lib/primitives/button/button';
 import { BIRTHDAY_EMOJIS } from '../configs/birthday-config';
+import { BirthdayLogicService } from '../services/birthday-logic.service';
 import confetti from 'canvas-confetti';
 
 @Component({
@@ -23,7 +24,9 @@ import confetti from 'canvas-confetti';
 })
 export class BirthdayModalComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);
-  private readonly cdr = inject(ChangeDetectorRef); 
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly birthdayLogic = inject(BirthdayLogicService);
+  
   public readonly dismiss = output<void>();
   public readonly userInfo = this.store.selectSignal(selectUserInfo);
   public readonly userName = () => this.userInfo()?.fullName;
@@ -35,9 +38,7 @@ export class BirthdayModalComponent implements OnInit, OnDestroy {
   private animationFrameId?: number;
 
   ngOnInit(): void {
-    const user = this.userInfo();
-    const currentYear = new Date().getFullYear();
-    if (user && user.birthdayModalClosedYear !== currentYear) {
+    if (this.birthdayLogic.shouldLaunchConfetti()) {
       this.launchConfetti();
     }
   }
