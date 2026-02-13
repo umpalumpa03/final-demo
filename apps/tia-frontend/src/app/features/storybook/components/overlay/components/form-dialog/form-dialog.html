@@ -1,28 +1,28 @@
 <app-button [variant]="'secondary'" (click)="toggle()">
-  Dialog with Form
+  {{ 'storybook.overlays.formDialog.openButton' | translate }}
 </app-button>
 
 <app-ui-modal [isOpen]="isOpen()" (closed)="toggle()">
   <div class="project-form">
     <header class="project-form__header">
       <app-library-title
-        [title]="projectTitle"
-        [subtitle]="projectSubtitle"
+        [title]="projectTitle()"
+        [subtitle]="projectSubtitle()"
       ></app-library-title>
     </header>
 
     <form class="project-form__form">
       <div class="project-form__input-group">
-        <lib-text-input [config]="projectNameInput"></lib-text-input>
+        <lib-text-input [config]="projectNameInput()"></lib-text-input>
       </div>
       <div class="project-form__input-group">
-        <lib-textarea [config]="projectDescriptionInput"></lib-textarea>
+        <lib-textarea [config]="projectDescriptionInput()"></lib-textarea>
       </div>
     </form>
 
     <footer class="project-form__footer">
-      <app-button variant="outline" (click)="toggle()"> Cancel </app-button>
-      <app-button (click)="toggle()"> Create Project </app-button>
+      <app-button variant="outline" (click)="toggle()"> {{ 'storybook.overlays.formDialog.cancel' | translate }} </app-button>
+      <app-button (click)="toggle()"> {{ 'storybook.overlays.formDialog.createProject' | translate }} </app-button>
     </footer>
   </div>
 </app-ui-modal>

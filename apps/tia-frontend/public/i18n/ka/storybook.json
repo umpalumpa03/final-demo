@@ -946,7 +946,148 @@
       }
     ]
   },
-  "overlays": {},
+  "overlays": {
+    "title": "ოვერლეი კომპონენტები",
+    "subtitle": "მოდალური დიალოგები, პანელები, პოპოვერები და ჩამოსაშლელი მენიუ",
+    "sections": {
+      "dialogs": "დიალოგები",
+      "alertDialogs": "გამაფრთხილებელი დიალოგები",
+      "sheets": "პანელები (გვერდითი პანელები)",
+      "drawers": "დრაუერები",
+      "commandPalette": "ბრძანებების პალიტრა"
+    },
+    "editProfile": {
+      "openButton": "დიალოგის გახსნა",
+      "title": "პროფილის რედაქტირება",
+      "subtitle": "შეცვალეთ თქვენი პროფილის მონაცემები. დააჭირეთ შენახვას დასრულებისას.",
+      "nameLabel": "სახელი",
+      "namePlaceholder": "გიორგი გიორგაძე",
+      "emailLabel": "ელ. ფოსტა",
+      "emailPlaceholder": "john@example.com",
+      "cancel": "გაუქმება",
+      "saveChanges": "ცვლილებების შენახვა"
+    },
+    "formDialog": {
+      "openButton": "დიალოგი ფორმით",
+      "title": "ახალი პროექტის შექმნა",
+      "subtitle": "შეიყვანეთ თქვენი ახალი პროექტის დეტალები.",
+      "projectNameLabel": "სახელი",
+      "projectNamePlaceholder": "გიორგი გიორგაძე",
+      "descriptionLabel": "აღწერა",
+      "descriptionPlaceholder": "მოკლე აღწერა...",
+      "cancel": "გაუქმება",
+      "createProject": "პროექტის შექმნა"
+    },
+    "largeDialog": {
+      "openButton": "დიდი დიალოგი",
+      "title": "წესები და პირობები",
+      "subtitle": "გთხოვთ, წაიკითხოთ ჩვენი წესები და პირობები.",
+      "sections": {
+        "section1": {
+          "title": "სექცია 1",
+          "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        },
+        "section2": {
+          "title": "სექცია 2",
+          "content": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+        },
+        "section3": {
+          "title": "სექცია 3",
+          "content": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+        },
+        "section4": {
+          "title": "სექცია 4",
+          "content": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        }
+      },
+      "decline": "უარყოფა",
+      "accept": "მიღება"
+    },
+    "deleteAccount": {
+      "openButton": "ანგარიშის წაშლა",
+      "title": "ნამდვილად დარწმუნებული ხართ?",
+      "subtitle": "ეს მოქმედება შეუქცევადია. თქვენი ანგარიში და მონაცემები წაიშლება ჩვენი სერვერებიდან.",
+      "cancel": "გაუქმება",
+      "deleteButton": "ანგარიშის წაშლა"
+    },
+    "confirmAccount": {
+      "openButton": "მოქმედების დადასტურება",
+      "title": "დაადასტურეთ მოქმედება",
+      "subtitle": "დარწმუნებული ხართ, რომ გსურთ ამ მოქმედების გაგრძელება?",
+      "cancel": "გაუქმება",
+      "continue": "გაგრძელება"
+    },
+    "rightSheet": {
+      "openButton": "მარჯვენა პანელი",
+      "title": "პარამეტრების რედაქტირება",
+      "subtitle": "შეცვალეთ თქვენი პარამეტრები აქ.",
+      "usernameLabel": "მომხმარებლის სახელი",
+      "usernamePlaceholder": "@გიორგი",
+      "bioLabel": "ბიო",
+      "bioPlaceholder": "მოგვიყევით თქვენს შესახებ",
+      "cancel": "გაუქმება",
+      "saveChanges": "ცვლილებების შენახვა"
+    },
+    "leftSheet": {
+      "openButton": "მარცხენა პანელი",
+      "title": "ნავიგაცია",
+      "subtitle": "სწრაფი წვდომა მთავარ სექციებზე",
+      "items": {
+        "profile": "პროფილი",
+        "settings": "პარამეტრები",
+        "messages": "შეტყობინებები",
+        "logout": "გასვლა"
+      }
+    },
+    "topSheet": {
+      "openButton": "ზედა პანელი",
+      "title": "შეტყობინების ბანერი",
+      "subtitle": "მნიშვნელოვანი განცხადებები და განახლებები",
+      "message": "ჩვენ განვაახლეთ კონფიდენციალურობის პოლიტიკა. გთხოვთ, გადახედოთ ცვლილებებს."
+    },
+    "bottomSheet": {
+      "openButton": "ქვედა პანელი",
+      "title": "სწრაფი მოქმედებები",
+      "subtitle": "ხშირად გამოყენებული მოქმედებები",
+      "actions": {
+        "new": "ახალი",
+        "edit": "რედაქტირება",
+        "copy": "კოპირება",
+        "delete": "წაშლა"
+      }
+    },
+    "drawer": {
+      "openButton": "დრაუერის გახსნა",
+      "title": "დრაუერის სათაური",
+      "subtitle": "ეს არის დრაუერის კომპონენტი, ოპტიმიზირებული მობილურისთვის.",
+      "nameLabel": "სახელი",
+      "namePlaceholder": "შეიყვანეთ სახელი",
+      "emailLabel": "ელ. ფოსტა",
+      "emailPlaceholder": "შეიყვანეთ ელ. ფოსტა",
+      "submit": "გაგზავნა",
+      "cancel": "გაუქმება"
+    },
+    "contextMenu": {
+      "title": "კონტექსტური მენიუ",
+      "subtitle": "დააწკაპუნეთ მარჯვენა ღილაკით ქვემოთ მოცემულ არეალზე კონტექსტური მენიუს გასახსნელად:",
+      "hint": "დააწკაპუნეთ მარჯვენა ღილაკით",
+      "items": {
+        "copy": "კოპირება",
+        "edit": "რედაქტირება",
+        "new": "ახალი",
+        "showGrid": "ბადის ჩვენება",
+        "showRulers": "სახაზავის ჩვენება",
+        "delete": "წაშლა"
+      }
+    },
+    "commandPaletteActions": {
+      "viewProfile": "პროფილის ნახვა",
+      "settings": "პარამეტრები",
+      "messages": "შეტყობინებები",
+      "createNew": "ახლის შექმნა",
+      "copyLink": "ბმულის კოპირება"
+    }
+  },
   "drag-and-drop": {
     "title": "ელემენტების გადაადგილება",
     "subtitle": "ინტერაქციული სივრცე მასალების გადასანაცვლებლად",
