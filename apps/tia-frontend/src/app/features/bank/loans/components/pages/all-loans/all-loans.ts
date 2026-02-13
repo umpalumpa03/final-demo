@@ -8,10 +8,12 @@ import { LoansStore } from '../../../store/loans.store';
 import { LoansContainer } from '../../../container/loans-container';
 import { LoansGrid } from '../../../shared/ui/loans-grid/loans-grid';
 import { LoanDashboardState } from '../../../shared/state/loan-dashboard.state';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-all-loans',
-  imports: [LoansGrid],
+  imports: [LoansGrid, ErrorStates, TranslatePipe],
   templateUrl: './all-loans.html',
   styleUrl: './all-loans.scss',
   providers: [LoanDashboardState],
@@ -23,10 +25,15 @@ export class AllLoans implements OnInit {
   public readonly emptyState = inject(LoanDashboardState);
 
   public ngOnInit(): void {
-    this.store.loadLoans({ status: null });
+    this.loadData();
   }
 
   public onRequestLoan(): void {
     this.container.isModalOpen.set(true);
+  }
+
+  // Define retry logic
+  public loadData(): void {
+    this.store.loadLoans({ status: null, forceChange: true });
   }
 }
