@@ -41,14 +41,18 @@ import { Store } from '@ngrx/store';
 import { UserInfoActions } from '../../../store/user-info/user-info.actions';
 import { MonitorInactivity } from './monitor-inacticity.service';
 import { Subscription } from 'rxjs';
+import { AlertService } from '@tia/core/services/alert/alert.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private monitorInactivity = inject(MonitorInactivity);
+  private translate = inject(TranslateService);
+  private tokenService = inject(TokenService);
+  private alertService = inject(AlertService);
   private http = inject(HttpClient);
   private router = inject(Router);
-  private tokenService = inject(TokenService);
   private store = inject(Store);
-  private monitorInactivity = inject(MonitorInactivity);
 
   public isAuthenticated = signal<boolean>(false);
   public isLoginLoading = signal<boolean>(false);
@@ -109,13 +113,24 @@ export class AuthService {
           if (res.challengeId && res.reason === 'phone_unverified') {
             this.setChellangeId(res.challengeId);
             this.router.navigate([Routes.OTP_SIGN_UP]);
+            this.alertService.warning(
+              this.translate.instant('auth.alert-errors.phoneWarn'),
+              { variant: 'dismissible', title: 'Warning!' },
+            );
           } else {
             this.router.navigate([Routes.PHONE]);
+            this.alertService.warning(
+              this.translate.instant('auth.alert-errors.phoneVerifyWarn'),
+              { variant: 'dismissible', title: 'Warning!' },
+            );
           }
         }
       }),
       catchError((err) => {
-        this.errorMessage.set(true);
+        this.alertService.error(
+          this.translate.instant('auth.alert-errors.credentials'),
+          { variant: 'dismissible', title: 'Oops!' },
+        );
         return throwError(() => err);
       }),
       finalize(() => this.isLoginLoading.set(false)),
@@ -307,9 +322,7 @@ export class AuthService {
   ): Observable<CreateNewPasswordResponse> {
     const token = this.tokenService.resetPasswordToken;
     if (!token) {
-      return throwError(
-        () => new Error('Missing reset password token'),
-      );
+      return throwError(() => new Error('Missing reset password token'));
     }
 
     this.isLoginLoading.set(true);
