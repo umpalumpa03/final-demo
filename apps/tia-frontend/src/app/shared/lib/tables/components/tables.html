@@ -142,16 +142,6 @@
         }@else if(config.type === "transactions") {
         <td class="table__body__row__item">
           <div class="table__body__row__item__transaction">
-            <app-button
-              icon="extract.svg"
-              size="small"
-              variant="outline"
-              (click)="onTransactionActionClicked('extract', row)"
-              iconHeight="16px"
-              iconWidth="16px"
-            >
-              Extract
-            </app-button>
             @if(row.hasMeta) {
             <app-button
               icon="repeat.svg"
@@ -164,6 +154,16 @@
               Repeat
             </app-button>
             }
+            <app-button
+              icon="extract.svg"
+              size="small"
+              variant="outline"
+              (click)="onTransactionActionClicked('extract', row)"
+              iconHeight="16px"
+              iconWidth="16px"
+            >
+              Extract
+            </app-button>
             <app-button
               icon="tag.svg"
               size="small"

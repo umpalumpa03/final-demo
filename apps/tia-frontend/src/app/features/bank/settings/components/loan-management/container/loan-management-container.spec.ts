@@ -29,11 +29,7 @@ describe('LoanManagementContainer', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should load pending approvals on init', () => {
+  it('ngOnInit should load pending approvals when initial data is needed', () => {
     const loadSpy = vi.spyOn(component['store'], 'loadPendingApprovals');
     const shouldLoadSpy = vi.spyOn(component['store'], 'shouldLoadInitialData');
     shouldLoadSpy.mockReturnValue(true);
@@ -41,50 +37,58 @@ describe('LoanManagementContainer', () => {
     expect(loadSpy).toHaveBeenCalled();
   });
 
-  describe('store method calls', () => {
-    it('should select loan when onRowClick is called', () => {
-      const selectSpy = vi.spyOn(component['store'], 'selectLoan');
-      component['onRowClick']('loan-123');
-      expect(selectSpy).toHaveBeenCalledWith('loan-123');
-    });
-
-    it('should reload pending approvals when onReload is called', () => {
-      const loadSpy = vi.spyOn(component['store'], 'loadPendingApprovals');
-      component['onReload']();
-      expect(loadSpy).toHaveBeenCalled();
-    });
-
-    it('should clear selection when onDrawerClose is called', () => {
-      const clearSpy = vi.spyOn(component['store'], 'clearSelection');
-      component['onDrawerClose']();
-      expect(clearSpy).toHaveBeenCalled();
-    });
-
-    it('should approve loan when onApprove is called', () => {
-      const approveSpy = vi.spyOn(component['store'], 'approveLoan');
-      component['onApprove']('loan-456');
-      expect(approveSpy).toHaveBeenCalledWith('loan-456');
-    });
-
-    it('should reject loan when onReject is called', () => {
-      const rejectSpy = vi.spyOn(component['store'], 'rejectLoan');
-      const rejectData = { loanId: 'loan-789', reason: 'High risk' };
-      component['onReject'](rejectData);
-      expect(rejectSpy).toHaveBeenCalledWith(rejectData);
-    });
+  it('onRowClick should call store.selectLoan with given ID', () => {
+    const spy = vi.spyOn(component['store'], 'selectLoan');
+    component['onRowClick']('loan-123');
+    expect(spy).toHaveBeenCalledWith('loan-123');
   });
 
-  describe('auto-dismiss effects', () => {
-    it('should have effects that clear success message', () => {
-      const clearSpy = vi.spyOn(component['store'], 'clearSuccessMessage');
-      expect(component['store']).toBeDefined();
-      expect(clearSpy).toBeDefined();
-    });
+  it('onReload should call store.loadPendingApprovals', () => {
+    const spy = vi.spyOn(component['store'], 'loadPendingApprovals');
+    component['onReload']();
+    expect(spy).toHaveBeenCalled();
+  });
 
-    it('should have effects that clear error', () => {
-      const clearSpy = vi.spyOn(component['store'], 'clearError');
-      expect(component['store']).toBeDefined();
-      expect(clearSpy).toBeDefined();
-    });
+  it('onDrawerClose should call store.clearSelection', () => {
+    const spy = vi.spyOn(component['store'], 'clearSelection');
+    component['onDrawerClose']();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('onApprove should call store.approveLoan with given ID', () => {
+    const spy = vi.spyOn(component['store'], 'approveLoan');
+    component['onApprove']('loan-456');
+    expect(spy).toHaveBeenCalledWith('loan-456');
+  });
+
+  it('onReject should call store.rejectLoan with given data', () => {
+    const spy = vi.spyOn(component['store'], 'rejectLoan');
+    const rejectData = { loanId: 'loan-789', reason: 'High risk' };
+    component['onReject'](rejectData);
+    expect(spy).toHaveBeenCalledWith(rejectData);
+  });
+
+  it('auto-dismiss effect should clear success message after timeout', () => {
+    vi.useFakeTimers();
+    const clearSpy = vi.spyOn(component['store'], 'clearSuccessMessage');
+
+    component['store'].successMessage.set('Loan approved');
+    fixture.detectChanges();
+    vi.advanceTimersByTime(5000);
+
+    expect(clearSpy).toHaveBeenCalled();
+    vi.useRealTimers();
+  });
+
+  it('auto-dismiss effect should clear action error after timeout', () => {
+    vi.useFakeTimers();
+    const clearSpy = vi.spyOn(component['store'], 'clearError');
+
+    component['store'].actionError.set('Something went wrong');
+    fixture.detectChanges();
+    vi.advanceTimersByTime(5000);
+
+    expect(clearSpy).toHaveBeenCalled();
+    vi.useRealTimers();
   });
 });

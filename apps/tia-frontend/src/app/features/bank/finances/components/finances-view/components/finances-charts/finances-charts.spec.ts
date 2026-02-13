@@ -1,9 +1,29 @@
+import { Component, Input, forwardRef, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinancesCharts } from './finances-charts';
 import { By } from '@angular/platform-browser';
-import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { TranslateModule } from '@ngx-translate/core';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { BaseChartDirective } from 'ng2-charts';
+
+@Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'canvas[baseChart]', 
+  standalone: true,
+  template: '',
+  providers: [
+    {
+      provide: BaseChartDirective,
+      useExisting: forwardRef(() => MockBaseChartDirective)
+    }
+  ]
+})
+class MockBaseChartDirective {
+  @Input() data: any;
+  @Input() options: any;
+  @Input() type: any;
+  @Input() labels: any;
+  @Input() datasets: any;
+}
 
 describe('FinancesCharts', () => {
   let component: FinancesCharts;
@@ -13,11 +33,16 @@ describe('FinancesCharts', () => {
     await TestBed.configureTestingModule({
       imports: [
         FinancesCharts, 
-        TranslateModule.forRoot() 
+        TranslateModule.forRoot(),
+        MockBaseChartDirective
       ],
-      providers: [provideCharts(withDefaultRegisterables())],
-      schemas: [NO_ERRORS_SCHEMA] 
-    }).compileComponents();
+      schemas: [NO_ERRORS_SCHEMA]
+    })
+    .overrideComponent(FinancesCharts, {
+      remove: { imports: [BaseChartDirective] },
+      add: { imports: [MockBaseChartDirective] }
+    })
+    .compileComponents();
 
     fixture = TestBed.createComponent(FinancesCharts);
     component = fixture.componentInstance;
@@ -29,6 +54,7 @@ describe('FinancesCharts', () => {
 
     fixture.componentRef.setInput('charts', mockCharts);
     fixture.componentRef.setInput('incomeVsExpensesFooter', mockFooter);
+    
     fixture.detectChanges();
 
     const incomeText = fixture.debugElement.query(By.css('.income'));

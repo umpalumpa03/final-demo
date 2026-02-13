@@ -1,4 +1,20 @@
 @use '../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../shared/styles/palette' as *;
+
+.loan-header {
+  @include display-flex(column);
+  gap: 0.6rem;
+
+  &__title {
+    @include font-inter(400, 1.6rem, 1.6rem);
+    color: var(--color-fg);
+  }
+
+  &__subtitle {
+    @include font-arimo(400, 1.4rem, 2.4rem);
+    color: $blue-600;
+  }
+}
 
 .loan-management-container {
   width: 100%;
@@ -41,5 +57,29 @@
 
   100% {
     transform: translateX(0);
+  }
+}
+
+@media (max-width: 780px) {
+  .loan-header {
+    &__title {
+      font-size: 1.5rem;
+    }
+
+    &__subtitle {
+      font-size: 1.3rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .loan-header {
+    &__title {
+      font-size: 1.4rem;
+    }
+
+    &__subtitle {
+      font-size: 1.2rem;
+    }
   }
 }

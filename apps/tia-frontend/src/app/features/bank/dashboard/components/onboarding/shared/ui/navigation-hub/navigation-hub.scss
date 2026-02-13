@@ -1,0 +1,11 @@
+@use "../../../../../../../../shared/styles/mixins" as *;
+
+.navigation-hub {
+    @include display-flex(column);
+    gap: 0.8rem;
+    max-height: 30rem;
+    overflow-y: auto;
+    padding: 0.4rem;
+    @include custom-scrollbar;
+    margin-bottom: 2rem;
+}
