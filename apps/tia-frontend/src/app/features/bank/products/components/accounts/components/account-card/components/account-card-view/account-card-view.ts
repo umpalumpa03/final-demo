@@ -17,6 +17,7 @@ import { ButtonComponent } from '../../../../../../../../../shared/lib/primitive
 import { BasicCard } from '../../../../../../../../../shared/lib/cards/basic-card/basic-card';
 import { TextInput } from '../../../../../../../../../shared/lib/forms/input-field/text-input';
 import { Badges } from '../../../../../../../../../shared/lib/primitives/badges/badges';
+import { Tooltip } from '../../../../../../../../../shared/lib/data-display/tooltip/tooltip';
 import { TRANSFER_PERMISSIONS } from '../../../../config/transfer-permissions.config';
 import { filterPermissionsByCurrency } from '../../../../utils/transfer-permissions.utils';
 @Component({
@@ -29,6 +30,7 @@ import { filterPermissionsByCurrency } from '../../../../utils/transfer-permissi
     BasicCard,
     TextInput,
     Badges,
+    Tooltip,
   ],
   templateUrl: './account-card-view.html',
   styleUrl: './account-card-view.scss',

@@ -23,22 +23,27 @@
         />
         } @else {
         <div class="account-card__header-info-title">
-          <div
-            class="account-card__header-info-title-wrapper"
-            (click)="handleRenameClick()"
-            role="button"
-            tabindex="0"
-            (keydown.enter)="handleRenameClick()"
-            (keydown.space)="handleRenameClick()"
+          <app-tooltip
+            [content]="'my-products.accounts.card.clickToRename' | translate"
+            [placement]="'bottom'"
           >
-            <h3 class="account-card__header-info-title-wrapper-name">
-              {{ displayName() }}
-            </h3>
+            <div
+              class="account-card__header-info-title-wrapper"
+              (click)="handleRenameClick()"
+              role="button"
+              tabindex="0"
+              (keydown.enter)="handleRenameClick()"
+              (keydown.space)="handleRenameClick()"
+            >
+              <h3 class="account-card__header-info-title-wrapper-name">
+                {{ displayName() }}
+              </h3>
 
-            <div class="account-card__header-info-title-wrapper-edit-icon">
-              <img src="/images/svg/account/edit.svg" alt="Edit" />
+              <div class="account-card__header-info-title-wrapper-edit-icon">
+                <img src="/images/svg/account/edit.svg" alt="Edit" />
+              </div>
             </div>
-          </div>
+          </app-tooltip>
           @if (account().isFavorite) {
           <div
             class="account-card__header-favorite account-card__header-favorite--small-screen"
