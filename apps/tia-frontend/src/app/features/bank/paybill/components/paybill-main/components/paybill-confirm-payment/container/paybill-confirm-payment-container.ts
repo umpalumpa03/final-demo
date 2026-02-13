@@ -3,10 +3,13 @@ import { PaybillConfirmPayment } from '../components/paybill-confirm-payment/pay
 import { PaybillMainFacade } from '../../../services/paybill-main-facade';
 import { Store } from '@ngrx/store';
 import { PaybillActions } from '../../../../../store/paybill.actions';
+import { BasicCard } from "@tia/shared/lib/cards/basic-card/basic-card";
+import { ErrorStates } from "@tia/shared/lib/feedback/error-states/error-states";
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-paybill-confirm-payment-container',
-  imports: [PaybillConfirmPayment],
+  imports: [PaybillConfirmPayment, BasicCard, ErrorStates,TranslatePipe],
   templateUrl: './paybill-confirm-payment-container.html',
   styleUrl: './paybill-confirm-payment-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

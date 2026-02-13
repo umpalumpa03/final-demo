@@ -5,17 +5,14 @@ import {
   inject,
   computed,
   OnInit,
-  signal,
   untracked,
 } from '@angular/core';
-import { Location } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { TransferStore } from '../../../../store/transfers.store';
-import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { VerifiedUserCard } from '../../../../ui/verified-user-card/verified-user-card';
 import { TransfersAccountCard } from '../../../../ui/account-card/transfers-account-card';
 import {
@@ -39,13 +36,13 @@ import { TransferAccountSelectionService } from '../../services/transfer-account
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 import { Router } from '@angular/router';
+import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/alert.service';
 
 @Component({
   selector: 'app-external-accounts',
   imports: [
     ButtonComponent,
     TranslatePipe,
-    AlertTypesWithIcons,
     VerifiedUserCard,
     TransfersAccountCard,
     ErrorStates,
@@ -60,7 +57,6 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExternalAccounts implements OnInit {
-  private readonly location = inject(Location);
   private readonly transferStore = inject(TransferStore);
   private readonly recipientService = inject(TransferRecipientService);
   private readonly accountSelectionService = inject(
@@ -71,10 +67,7 @@ export class ExternalAccounts implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly breakpointService = inject(BreakpointService);
   private readonly router = inject(Router);
-
-  public readonly showSuccess = signal(false);
-  public readonly showError = signal(false);
-  public readonly currencyMismatchError = signal(false);
+  private readonly alertService = inject(AlertService);
 
   public readonly hasFetchError = computed(() => {
     const error = this.transferStore.error();
@@ -199,7 +192,12 @@ export class ExternalAccounts implements OnInit {
       this.recipientAccounts,
       this.isExternalIban,
       this.preSelectedAccount,
-      () => this.currencyMismatchError.set(true),
+      () =>
+        this.alertService.warning(
+          this.translate.instant(
+            'transfers.external.accounts.currencyMismatch',
+          ),
+        ),
     );
   }
 
@@ -207,16 +205,13 @@ export class ExternalAccounts implements OnInit {
     effect(() => {
       if (this.transferStore.isVerified()) {
         untracked(() => {
-          this.showSuccess.set(true);
+          this.alertService.success(
+            this.translate.instant(
+              'transfers.external.accounts.recipientVerified',
+            ),
+          );
           this.transferStore.setIsVerified(false);
         });
-        setTimeout(() => this.showSuccess.set(false), 3000);
-      }
-    });
-
-    effect(() => {
-      if (this.currencyMismatchError()) {
-        setTimeout(() => this.currencyMismatchError.set(false), 5000);
       }
     });
 
@@ -228,11 +223,22 @@ export class ExternalAccounts implements OnInit {
         error === 'transfers.repeat.senderNotFound' ||
         error === 'transfers.repeat.senderNoPermission'
       ) {
-        untracked(() => this.showError.set(true));
-        setTimeout(() => {
-          this.showError.set(false);
+        untracked(() => {
+          this.alertService.error(this.translate.instant(error));
           this.transferStore.setError('');
-        }, 5000);
+        });
+      }
+    });
+
+    effect(() => {
+      if (this.allSenderAccountsDisabled()) {
+        untracked(() => {
+          this.alertService.warning(
+            this.translate.instant(
+              'transfers.external.accounts.allAccountsDisabled',
+            ),
+          );
+        });
       }
     });
   }

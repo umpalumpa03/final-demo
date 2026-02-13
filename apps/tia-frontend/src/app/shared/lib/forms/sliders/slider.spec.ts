@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Slider } from './slider';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('Slider', () => {
   let component: Slider;
@@ -7,7 +8,7 @@ describe('Slider', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Slider],
+      imports: [Slider, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Slider);

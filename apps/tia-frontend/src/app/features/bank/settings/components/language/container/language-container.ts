@@ -11,12 +11,7 @@ import { LanguagesStore } from '../store/languages.store';
 
 @Component({
   selector: 'app-language-container',
-  imports: [
-    TranslatePipe,
-    SettingsBody,
-    LanguageSelection,
-],
-  providers: [LanguagesStore],
+  imports: [TranslatePipe, SettingsBody, LanguageSelection],
   templateUrl: './language-container.html',
   styleUrl: './language-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,10 +20,10 @@ export class LanguageContainer implements OnInit {
   public languagesStore = inject(LanguagesStore);
 
   public isLoading = this.languagesStore.isLoading;
-  public languages = this.languagesStore.languages; 
+  public languages = this.languagesStore.languages;
   public hasError = this.languagesStore.hasError;
 
   public ngOnInit(): void {
-    this.languagesStore.fetchLanguages();
+    this.languagesStore.fetchLanguages({});
   }
 }

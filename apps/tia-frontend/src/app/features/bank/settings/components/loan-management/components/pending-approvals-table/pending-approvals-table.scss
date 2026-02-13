@@ -2,6 +2,9 @@
 @use "../../../../../../../shared/styles/mixins" as *;
 
 .pending-approvals {
+  @include display-flex(column);
+  flex: 1;
+  min-height: 0;
   width: 100%;
 
   &__loading {
@@ -21,7 +24,12 @@
 
   &__list {
     @include display-flex(column);
+    flex: 1;
+    min-height: 0;
     gap: 1rem;
+    padding: 1.5rem 0;
+    overflow-y: auto;
+    @include custom-scrollbar;
   }
 }
 

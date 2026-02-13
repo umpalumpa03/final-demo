@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { By } from '@angular/platform-browser';
 import { DeleteAccountDialog } from './delete-account-dialog';
 
@@ -8,7 +9,7 @@ describe('DeleteAccountDialog', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DeleteAccountDialog],
+      imports: [DeleteAccountDialog, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DeleteAccountDialog);

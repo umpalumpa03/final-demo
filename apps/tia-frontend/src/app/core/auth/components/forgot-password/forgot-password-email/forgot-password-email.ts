@@ -14,8 +14,7 @@ import { catchError, delay, EMPTY, finalize, merge, tap } from 'rxjs';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
-import { DismissibleAlertType } from '@tia/shared/lib/alerts/shared/models/alert.models';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 import { AuthService } from '../../../services/auth.service';
 import { Routes } from '../../../models/tokens.model';
 import { AuthHeader } from '../../../shared/auth-header/auth-header';
@@ -29,7 +28,6 @@ import { AuthHeader } from '../../../shared/auth-header/auth-header';
     RouterLink,
     TranslatePipe,
     AuthHeader,
-    DismissibleAlerts,
   ],
   templateUrl: './forgot-password-email.html',
   styleUrl: './forgot-password-email.scss',
@@ -38,6 +36,7 @@ import { AuthHeader } from '../../../shared/auth-header/auth-header';
 export class ForgotPasswordEmail {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly alertService = inject(AlertService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -47,7 +46,6 @@ export class ForgotPasswordEmail {
   public readonly isSubmitting = computed(() =>
     this.authService.isLoginLoading(),
   );
-  public readonly alertState = signal<{ type: DismissibleAlertType; title: string; message: string } | null>(null);
 
   public readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -78,7 +76,7 @@ export class ForgotPasswordEmail {
   });
 
   public submit(): void {
-    this.alertState.set(null);
+    this.alertService.clearAlert();
     this.form.markAllAsTouched();
 
     if (this.form.invalid) return;
@@ -90,10 +88,9 @@ export class ForgotPasswordEmail {
       .pipe(
         tap((response) => {
           this.authService.setChellangeId(response.challengeId);
-          this.alertState.set({
-            type: 'success',
+          this.alertService.success('Reset code sent to your email', {
+            variant: 'dismissible',
             title: 'Success!',
-            message: 'Reset code sent to your email',
           });
         }),
         delay(1500),
@@ -101,24 +98,21 @@ export class ForgotPasswordEmail {
         catchError((error) => {
           const httpError = error as HttpErrorResponse;
           if (httpError?.status === 404) {
-            this.alertState.set({
-              type: 'error',
-              title: 'Oops!',
-              message: httpError.error?.message || 'User not found',
-            });
+            this.alertService.error(
+              httpError.error?.message || 'User not found',
+              { variant: 'dismissible', title: 'Oops!' },
+            );
           } else if (httpError?.status === 400) {
             const message = httpError.error?.message;
-            this.alertState.set({
-              type: 'error',
-              title: 'Oops!',
-              message: Array.isArray(message) ? message[0] : message || 'Invalid email',
-            });
+            this.alertService.error(
+              Array.isArray(message) ? message[0] : message || 'Invalid email',
+              { variant: 'dismissible', title: 'Oops!' },
+            );
           } else {
-            this.alertState.set({
-              type: 'warning',
-              title: 'Warning',
-              message: 'Unable to send reset code. Please try again.',
-            });
+            this.alertService.warning(
+              'Unable to send reset code. Please try again.',
+              { variant: 'dismissible', title: 'Warning' },
+            );
           }
           return EMPTY;
         }),

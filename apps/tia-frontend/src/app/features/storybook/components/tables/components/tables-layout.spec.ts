@@ -30,9 +30,8 @@ describe('TablesLayout', () => {
     })
       .overrideComponent(TablesLayout, {
         set: {
-          // 🔥 remove ALL template imports to isolate logic
           imports: [],
-          template: '', // remove template completely
+          template: '',
         },
       })
       .compileComponents();
