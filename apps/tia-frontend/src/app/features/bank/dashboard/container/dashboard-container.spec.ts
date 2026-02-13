@@ -46,6 +46,7 @@ describe('DashboardContainer', () => {
       updateItemsOnDrag: vi.fn(),
       foldWidget: vi.fn(),
       toggleCatalogWidget: vi.fn(),
+      syncWidgetsFromDraft: vi.fn(),
     };
 
     mockBreakpointService = {
@@ -96,12 +97,15 @@ describe('DashboardContainer', () => {
     expect(mockDashService.foldWidget).toHaveBeenCalledWith(true, 'widget-1');
   });
 
-  it('should delegate catalog toggling to DashboardService', () => {
+  it('should update draft selection locally when toggling catalog widget', () => {
+    component.onToggleCatalogWidget(true, 'widget-2');
+
+    expect((component as any).draftSelection()).toContain('widget-2');
+
     component.onToggleCatalogWidget(false, 'widget-2');
-    expect(mockDashService.toggleCatalogWidget).toHaveBeenCalledWith(
-      false,
-      'widget-2',
-    );
+    expect((component as any).draftSelection()).not.toContain('widget-2');
+
+    expect(mockDashService.toggleCatalogWidget).not.toHaveBeenCalled();
   });
 
   it('should dispatch exchange rate actions on widget refresh', () => {
@@ -118,6 +122,24 @@ describe('DashboardContainer', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith([
       '/bank/products/accounts',
     ]);
+  });
+
+  it('should check DRAFT selection when customizing', () => {
+    (component as any).isCustomizing.set(true);
+    (component as any).draftSelection.set(['draft-1']);
+    mockDashService.myItems.set([]);
+
+    expect((component as any).isWidgetActive('draft-1')).toBe(true);
+    expect((component as any).isWidgetActive('other')).toBe(false);
+  });
+
+  it('should check MY ITEMS when NOT customizing', () => {
+    (component as any).isCustomizing.set(false);
+    (component as any).draftSelection.set([]);
+    mockDashService.myItems.set([{ id: 'live-1' }]);
+
+    expect((component as any).isWidgetActive('live-1')).toBe(true);
+    expect((component as any).isWidgetActive('other')).toBe(false);
   });
 
   it('should dispatch pagination change and reload actions', () => {

@@ -26,16 +26,21 @@
     [message]="errorMsg"
     buttonMessage="Retry"
   />
-  } @else { @for (group of data.groups; track group.account.id) {
+  } @else { 
+  @for (group of data.groups; track group.account.id) {
   <div class="card-list__group">
-    <app-card-group-item
-      [group]="group"
-      [isLoading]="data.cardImagesLoading"
-      (cardClicked)="handleCardClick($event)"
-      (viewAllClicked)="handleViewAllCards($event)"
-    />
+    @if (data.cardImagesLoading) {
+      <app-skeleton variant="rectangle" width="100%" height="28rem" />
+    } @else {
+      <app-card-group-item
+        [group]="group"
+        [isLoading]="false"
+        (cardClicked)="handleCardClick($event)"
+        (viewAllClicked)="handleViewAllCards($event)"
+      />
+    }
   </div>
-  }
+}
   <app-add-card-button (clicked)="handleOpenModal()" />
   }
 </div>

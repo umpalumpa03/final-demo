@@ -1,17 +1,17 @@
-<app-button variant="outline" (click)="toggle()"> Confirm Action </app-button>
+<app-button variant="outline" (click)="toggle()"> {{ 'storybook.overlays.confirmAccount.openButton' | translate }} </app-button>
 
 <app-ui-modal [isOpen]="isOpen()" (closed)="toggle()">
   <div class="confirm-account">
     <header class="confirm-account__header">
       <app-library-title
-        [title]="confirmTitle"
-        [subtitle]="confirmSubtitle"
+        [title]="confirmTitle()"
+        [subtitle]="confirmSubtitle()"
       ></app-library-title>
     </header>
 
     <footer class="confirm-account__footer">
-      <app-button variant="outline" (click)="toggle()"> Cancel </app-button>
-      <app-button (click)="toggle()"> Continue </app-button>
+      <app-button variant="outline" (click)="toggle()"> {{ 'storybook.overlays.confirmAccount.cancel' | translate }} </app-button>
+      <app-button (click)="toggle()"> {{ 'storybook.overlays.confirmAccount.continue' | translate }} </app-button>
     </footer>
   </div>
 </app-ui-modal>
