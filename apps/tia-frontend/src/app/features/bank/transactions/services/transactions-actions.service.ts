@@ -17,6 +17,7 @@ export class TransactionsActionsService {
   public readonly selectedTransaction = signal<ITransactions | null>(null);
   public readonly alertMessage = signal<string | null>(null);
   public readonly alertType = signal<SimpleAlertType>('warning');
+  public readonly isFiltersOpen = signal<boolean>(false);
 
   public showValidationAlert(type: SimpleAlertType, messageKey: string): void {
     this.alertType.set(type);
@@ -125,5 +126,9 @@ export class TransactionsActionsService {
       : `${fileNamePrefix}.xlsx`;
 
     XLSX.writeFile(wb, fileName);
+  }
+
+  public toggleFilters(): void {
+    this.isFiltersOpen.update((v) => !v);
   }
 }

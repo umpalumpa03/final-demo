@@ -9,6 +9,10 @@
   padding: 2.3rem;
   &__heading {
     @include flex-center(row, space-between, center);
+    @media (max-width: 480px) {
+      @include flex-center(column, center, flex-start);
+      gap: 0.8rem;
+    }
     div {
       @include display-flex(column);
       gap: 0.6rem;

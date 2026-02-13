@@ -1,9 +1,10 @@
 {
   "title": "Transactions",
+  "subtitle": "Track your recent activity",
   "filters": {
-    "search": "Search transactions",
+    "search": "Search",
     "category": "Category",
-    "all_categories": "All Categories",
+    "all_categories": "Categories",
     "min_amount": "Min Amount",
     "max_amount": "Max Amount",
     "account": "Account",
@@ -16,7 +17,8 @@
     "reset_all": "Reset All",
     "any": "Any",
     "title": "Filters",
-    "subtitle": "Apply filters to refine your transaction list"
+    "subtitle": "Apply filters to refine your transaction list",
+    "show_filters": "Show Filters"
   },
   "table": {
     "headers": {
