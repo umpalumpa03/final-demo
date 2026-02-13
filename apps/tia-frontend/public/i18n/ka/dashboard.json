@@ -5,7 +5,7 @@
     "customize-label": "გარემოს პერსონალიზაცია",
     "not-available": "ვიჯეტები ვერ მოიძებნა",
     "not-available-subtitle": "თქვენ ამჯამად არ გაქვთ არცერთი ვიჯეტი",
-    "customize-tooltip": "გამოაჩინე სასურველი ვიჯეტები"
+    "customize-tooltip": "გარემოს პერსონალიზაცია"
   },
   "widgets": {
     "transactions": {
