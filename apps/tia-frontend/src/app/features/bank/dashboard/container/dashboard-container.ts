@@ -38,6 +38,7 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
 import { DashboardService } from '../services/dashboard.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { Onboarding } from '../components/onboarding/onboarding';
+import { ErrorStates } from "@tia/shared/lib/feedback/error-states/error-states";
 @Component({
   selector: 'app-dashboard-container',
   imports: [
@@ -56,7 +57,8 @@ import { Onboarding } from '../components/onboarding/onboarding';
     Skeleton,
     RouteLoader,
     Onboarding,
-  ],
+    ErrorStates
+],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
