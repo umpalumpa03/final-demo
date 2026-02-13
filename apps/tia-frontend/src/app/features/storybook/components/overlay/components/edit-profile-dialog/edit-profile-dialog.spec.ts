@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { By } from '@angular/platform-browser';
 import { EditProfileDialog } from './edit-profile-dialog';
 import { describe, beforeEach, it, expect } from 'vitest';
@@ -9,7 +10,7 @@ describe('EditProfileDialog', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EditProfileDialog],
+      imports: [EditProfileDialog, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EditProfileDialog);

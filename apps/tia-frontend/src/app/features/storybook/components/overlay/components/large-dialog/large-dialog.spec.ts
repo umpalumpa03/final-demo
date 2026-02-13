@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { By } from '@angular/platform-browser';
 import { LargeDialog } from './large-dialog';
 import { describe, beforeEach, it, expect } from 'vitest';
@@ -9,7 +10,7 @@ describe('LargeDialog', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LargeDialog],
+      imports: [LargeDialog, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LargeDialog);

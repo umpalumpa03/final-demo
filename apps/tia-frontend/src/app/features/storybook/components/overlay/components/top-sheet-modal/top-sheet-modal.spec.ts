@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { By } from '@angular/platform-browser';
 import { TopSheetModal } from './top-sheet-modal';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
@@ -9,7 +10,7 @@ describe('TopSheetModal', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TopSheetModal],
+      imports: [TopSheetModal, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TopSheetModal);

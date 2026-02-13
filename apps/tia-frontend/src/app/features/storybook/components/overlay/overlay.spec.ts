@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { Overlay } from './overlay';
 import { describe, it, expect, beforeEach } from 'vitest';
 
@@ -8,7 +9,7 @@ describe('Overlay', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Overlay],
+      imports: [Overlay, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Overlay);

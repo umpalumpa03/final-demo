@@ -1,24 +1,21 @@
+import { TranslateService } from '@ngx-translate/core';
 import { TermsSection } from '../models/dialog.model';
 
-export const TERMS_AND_CONDITIONS: TermsSection[] = [
+export const getTermsAndConditions = (translate: TranslateService): TermsSection[] => [
   {
-    title: 'Section 1',
-    content:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    title: translate.instant('storybook.overlays.largeDialog.sections.section1.title'),
+    content: translate.instant('storybook.overlays.largeDialog.sections.section1.content'),
   },
   {
-    title: 'Section 2',
-    content:
-      'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+    title: translate.instant('storybook.overlays.largeDialog.sections.section2.title'),
+    content: translate.instant('storybook.overlays.largeDialog.sections.section2.content'),
   },
   {
-    title: 'Section 3',
-    content:
-      'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+    title: translate.instant('storybook.overlays.largeDialog.sections.section3.title'),
+    content: translate.instant('storybook.overlays.largeDialog.sections.section3.content'),
   },
   {
-    title: 'Section 4',
-    content:
-      'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+    title: translate.instant('storybook.overlays.largeDialog.sections.section4.title'),
+    content: translate.instant('storybook.overlays.largeDialog.sections.section4.content'),
   },
-] as const;
+];

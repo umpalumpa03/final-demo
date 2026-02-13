@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { By } from '@angular/platform-browser';
 import { FormDialog } from './form-dialog';
 
@@ -8,7 +9,7 @@ describe('FormDialog', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormDialog],
+      imports: [FormDialog, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FormDialog);

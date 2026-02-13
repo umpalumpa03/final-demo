@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { By } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { BottomSheetModal } from './bottom-sheet-modal';
@@ -8,7 +9,7 @@ describe('BottomSheetModal', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BottomSheetModal],
+      imports: [BottomSheetModal, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(BottomSheetModal);

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { By } from '@angular/platform-browser';
 import { RightSheetDemo } from './right-sheet-demo';
 
@@ -8,7 +9,7 @@ describe('RightSheetDemo', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RightSheetDemo],
+      imports: [RightSheetDemo, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RightSheetDemo);

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { By } from '@angular/platform-browser';
 import { LeftSheetDemo } from './left-sheet-demo';
 import { describe, it, expect, beforeEach } from 'vitest';
@@ -9,7 +10,7 @@ describe('LeftSheetDemo', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LeftSheetDemo],
+      imports: [LeftSheetDemo, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LeftSheetDemo);

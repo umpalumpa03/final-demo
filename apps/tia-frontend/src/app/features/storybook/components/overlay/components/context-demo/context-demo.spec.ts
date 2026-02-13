@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { ContextDemo } from './context-demo';
 
 describe('ContextDemo', () => {
@@ -7,7 +8,7 @@ describe('ContextDemo', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ContextDemo],
+      imports: [ContextDemo, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContextDemo);
