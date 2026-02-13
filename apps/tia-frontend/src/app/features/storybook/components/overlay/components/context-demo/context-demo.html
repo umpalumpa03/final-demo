@@ -1,18 +1,18 @@
 <section class="context">
   <section class="context-demo">
     <app-library-title
-      [title]="contextTitle"
-      [subtitle]="contextSubtitle"
+      [title]="contextTitle()"
+      [subtitle]="contextSubtitle()"
     ></app-library-title>
 
     <div class="context-demo__area" (contextmenu)="onRightClick($event)">
-      <span class="context-demo__hint">Right-click here</span>
+      <span class="context-demo__hint">{{ contextHint() }}</span>
     </div>
   </section>
   @if (isMenuVisible()) {
   <app-ui-context
     [position]="menuPosition()"
-    [items]="menuItems"
+    [items]="menuItems()"
     (menuClose)="isMenuVisible.set(false)"
     (itemClick)="handleAction()"
   ></app-ui-context>

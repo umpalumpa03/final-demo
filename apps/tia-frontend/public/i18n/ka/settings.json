@@ -155,9 +155,60 @@
   },
   "loan-management": {
     "title": "სესხების მართვა",
-    "viewLoans": "სესხების ნახვა",
-    "approveLoan": "სესხის დამტკიცება",
-    "rejectLoan": "სესხის უარყოფა"
+    "subtitle": "განიხილეთ და დაამუშავეთ სასესხო განაცხადები",
+    "drawer": {
+      "title": "სასესხო განაცხადის დეტალები",
+      "subtitle": "განიხილეთ სასესხო განაცხადი და მომხმარებლის ინფორმაცია",
+      "applicantSection": "განმცხადებლის ინფორმაცია",
+      "loanSection": "სესხის დეტალები",
+      "riskSection": "რისკის შეფასება",
+      "declineSection": "უარყოფის მიზეზი",
+      "applicantUnavailable": "განმცხადებლის ინფორმაცია მიუწვდომელია",
+      "declinePlaceholder": "გთხოვთ მიუთითეთ სასესხო განაცხადის უარყოფის მიზეზი...",
+      "fields": {
+        "fullName": "სრული სახელი",
+        "email": "ელ-ფოსტა",
+        "phoneNumber": "ტელეფონის ნომერი",
+        "employmentStatus": "დასაქმების სტატუსი",
+        "address": "მისამართი",
+        "annualIncome": "წლიური შემოსავალი",
+        "creditScore": "საკრედიტო ქულა",
+        "loanAmount": "სესხის რაოდენობა",
+        "loanPurpose": "სესხის მიზნობრიობა",
+        "loanTerm": "სესხის ვადა",
+        "interestRate": "საპროცენტო განაკვეთი",
+        "monthlyPayment": "ყოველთვიური გადასახადი",
+        "requestDate": "მოთხოვნის თარიღი",
+        "months": "თვე",
+        "debtToIncome": "ვალი-შემოსავლის თანაფარდობა",
+        "loanToIncome": "სესხი-შემოსავლის თანაფარდობა",
+        "totalInterest": "სრული პროცენტი"
+      },
+      "buttons": {
+        "close": "დახურვა",
+        "decline": "სესხის უარყოფა",
+        "approve": "სესხის დამტკიცება",
+        "cancel": "გაუქმება",
+        "confirmDecline": "უარყოფის დადასტურება"
+      },
+      "creditScoreBadge": {
+        "Poor": "დაბალი",
+        "Fair": "საშუალო",
+        "Good": "კარგი",
+        "Very Good": "ძალიან კარგი",
+        "Excellent": "შესანიშნავი"
+      }
+    },
+    "table": {
+      "pendingBadge": "განხილვაში",
+      "loading": "მოლოდინში მყოფი განაცხადების ჩატვირთვა...",
+      "errorHeader": "განაცხადების ჩატვირთვის შეცდომა",
+      "errorDefault": "მოხდა შეცდომა",
+      "retry": "ხელახლა ცდა",
+      "emptyHeader": "მოლოდინში მყოფი განაცხადები არ არის",
+      "emptyMessage": "ყველა სასესხო განაცხადი დამუშავებულია.",
+      "months": "თვე"
+    }
   },
   "accounts": {
     "changeFriendlyName": "ანგარიშის სახელის შეცვლა",
