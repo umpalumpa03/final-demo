@@ -107,7 +107,12 @@
     "confirmNewPasswordPlaceholder": "Confirm new password",
     "updatePassword": "Update Password",
     "twoFactorAuth": "Two-Factor Authentication",
-    "passwordChangedSuccessfully": "Password changed successfully"
+    "passwordChangedSuccessfully": "Password changed successfully",
+    "tooltip": {
+      "passwordMismatch": "New password and confirmation do not match",
+      "passwordTooShort": "Password must be at least 8 characters long",
+      "fillAllFields": "Fill in all fields to update your password"
+    }
   },
   "user-management": {
     "title": "User Management",
