@@ -76,7 +76,9 @@ export type formSubmitType =
   | 'rename-template'
   | 'rename-group'
   | 'create-template'
-  | 'confirm-payment';
+  | 'confirm-payment'
+  | 'delete-group'
+  | 'delete-template';
 export interface FormSubmitPayload {
   type: formSubmitType;
   values: Record<string, string>;

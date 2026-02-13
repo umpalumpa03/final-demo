@@ -100,6 +100,78 @@
     "createGroup": "Create Group",
     "payButton": "Pay Now",
     "errorHeader": "No templates yet",
-    "errorMessage": "Drag templates here or create a new one"
+    "errorMessage": "Drag templates here or create a new one",
+    "cancelButton": "Cancel",
+    "paymentHeader": {
+      "description": "template(s) selected",
+      "payAction": "Pay Selected"
+    },
+    "searchInput": {
+      "placeholder": "Search by Templates or Groups..."
+    },
+    "modals": {
+      "createTemplate": {
+        "title": "Create New Template",
+        "description": "Create a new payment template for quick access",
+        "actionButton": "Create Template"
+      },
+      "createGroup": {
+        "title": "Create New Group",
+        "description": "Create a group to organize your bill payment templates",
+        "nameLabel": "Group Name",
+        "actionButton": "Create Group"
+      },
+      "renameGroup": {
+        "title": "Rename Group",
+        "description": "Enter a new name for this group",
+        "currentNameLabel": "Current Group Name",
+        "newNameLabel": "New Group Name",
+        "placeholder": "Enter new name",
+        "actionButton": "Rename Group"
+      },
+      "deleteGroup": {
+        "title": "Delete Group",
+        "description": "Are you sure you want to delete this group?",
+        "instruction": "Templates in this group will be moved to 'Ungrouped'. This action cannot be undone.",
+        "actionButton": "Delete Group"
+      },
+      "renameTemplate": {
+        "title": "Rename Template",
+        "description": "Enter a new name for this template",
+        "currentNameLabel": "Current Template Name",
+        "newNameLabel": "New Template Name",
+        "placeholder": "Enter new name",
+        "actionButton": "Rename Template"
+      },
+      "deleteTemplate": {
+        "title": "Delete Template",
+        "description": "Are you sure you want to delete this Template?",
+        "actionButton": "Delete Template"
+      },
+      "confitmPayment": {
+        "title": "Confirm Batch Payment",
+        "description": "Review selected bills before payment",
+        "actionButton": "Confirm & Pay All",
+        "paymentDistribution": {
+          "headers": {
+            "title": "Payment Distribution",
+            "individual": "Individual Amounts",
+            "equal": "Equal Distribution"
+          },
+          "equalDistribution": {
+            "label": "Total Amount to Distribute",
+            "placeholder": "Amount to distribute",
+            "instruction": "per bill"
+          }
+        },
+        "totalAmount": {
+          "title": "Total Amount",
+          "description": "Edit amounts above if needed"
+        },
+        "paymentAccount": {
+          "label": "Payment Account"
+        }
+      }
+    }
   }
 }

@@ -13,7 +13,6 @@ import { Store } from '@ngrx/store';
 import {
   selectCategories,
   selectFilteredProviders,
-  selectFormPayload,
   selectLoading,
   selectPaymentFields,
   selectProviders,
@@ -65,10 +64,11 @@ import {
 import { paybillSearchConfig } from '../configs/search.config';
 import { PaybillTemplatesService } from '../services/paybill-templates-service';
 import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-paybill-templates-container',
-  imports: [PaybillTemplates, TextInput, ReactiveFormsModule],
+  imports: [PaybillTemplates, TextInput, ReactiveFormsModule, TranslatePipe],
   templateUrl: './paybill-templates-container.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -196,6 +196,8 @@ export class PaybillTemplatesContainer implements OnInit {
       );
     },
     'confirm-payment': (values) => {},
+    'delete-group': (values) => {},
+    'delete-template': (values) => {},
   };
 
   public readonly searchControl = new FormControl('');
