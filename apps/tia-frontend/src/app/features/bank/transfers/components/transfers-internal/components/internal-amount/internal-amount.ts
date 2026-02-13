@@ -6,14 +6,15 @@ import {
   signal,
   OnInit,
   DestroyRef,
-  effect, Signal
+  effect,
+  Signal,
 } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { TransferStore } from '../../../../store/transfers.store';
-import { TransferInternalService } from '../../../../services/transfer.internal.service';
+import { TransferInternalService } from '../../services/transfer.internal.service';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
@@ -24,7 +25,6 @@ import { Router } from '@angular/router';
 import { OtpModal } from '@tia/shared/lib/overlay/ui-otp-modal/otp-modal';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
-
 
 @Component({
   selector: 'app-internal-amount',
@@ -57,19 +57,22 @@ export class InternalAmount implements OnInit {
   public readonly showError = signal(false);
   public readonly currentToastMessage = signal('');
 
-
   public readonly isLoading = this.transferStore.isLoading;
   public readonly selectedSenderAccount = this.transferStore.senderAccount;
-  public readonly selectedRecipientAccount = this.transferStore.receiverOwnAccount;
-  public readonly hasInsufficientBalance = this.transferStore.hasInsufficientBalance;
+  public readonly selectedRecipientAccount =
+    this.transferStore.receiverOwnAccount;
+  public readonly hasInsufficientBalance =
+    this.transferStore.hasInsufficientBalance;
   public readonly successfulTransfer = this.transferStore.transferSuccess;
   public readonly requiresOtp = this.transferStore.requiresOtp;
   public readonly errorFromState = this.transferStore.error;
 
   public readonly activeInput = signal<'source' | 'destination'>('source');
   public readonly conversionRate = signal<number>(0);
-  public readonly isConversionMode = computed(() =>
-    this.selectedSenderAccount()?.currency !== this.selectedRecipientAccount()?.currency
+  public readonly isConversionMode = computed(
+    () =>
+      this.selectedSenderAccount()?.currency !==
+      this.selectedRecipientAccount()?.currency,
   );
 
   public readonly amountInput = this.fb.control(
@@ -106,8 +109,12 @@ export class InternalAmount implements OnInit {
   }));
 
   public readonly descriptionConfig = computed(() => ({
-    label: this.translate.instant('transfers.internal.amount.description.label'),
-    placeholder: this.translate.instant('transfers.internal.amount.description.placeholder'),
+    label: this.translate.instant(
+      'transfers.internal.amount.description.label',
+    ),
+    placeholder: this.translate.instant(
+      'transfers.internal.amount.description.placeholder',
+    ),
   }));
 
   public readonly availableBalance = computed(
@@ -132,7 +139,7 @@ export class InternalAmount implements OnInit {
     this.destinationAmountInput.statusChanges,
     {
       initialValue: this.destinationAmountInput.status,
-    }
+    },
   );
 
   private readonly amountValue = toSignal(this.amountInput.valueChanges, {
@@ -143,16 +150,22 @@ export class InternalAmount implements OnInit {
     this.destinationAmountInput.valueChanges,
     {
       initialValue: this.destinationAmountInput.value,
-    }
+    },
   );
 
   public readonly isTransferDisabled = computed(() => {
     if (this.isConversionMode()) {
-      const hasAmount = (this.amountValue() && Number(this.amountValue()) >= 0.01) ||
-        (this.destinationAmountValue() && Number(this.destinationAmountValue()) >= 0.01);
+      const hasAmount =
+        (this.amountValue() && Number(this.amountValue()) >= 0.01) ||
+        (this.destinationAmountValue() &&
+          Number(this.destinationAmountValue()) >= 0.01);
       return !hasAmount || this.isLoading() || this.hasInsufficientBalance();
     }
-    return this.amountStatus() !== 'VALID' || this.isLoading() || this.hasInsufficientBalance();
+    return (
+      this.amountStatus() !== 'VALID' ||
+      this.isLoading() ||
+      this.hasInsufficientBalance()
+    );
   });
 
   constructor() {
@@ -176,14 +189,13 @@ export class InternalAmount implements OnInit {
           sender.currency,
           receiver.currency,
           (rate) => this.conversionRate.set(rate),
-          () => this.conversionRate.set(0)
+          () => this.conversionRate.set(0),
         );
       }
     });
   }
 
   public ngOnInit(): void {
-
     this.amountInput.valueChanges
       .pipe(
         takeUntilDestroyed(this.destroyRef),
@@ -204,7 +216,8 @@ export class InternalAmount implements OnInit {
           if (this.isConversionMode()) {
             this.activeInput.set('destination');
             this.updateSourceAmount(Number(value));
-          }}),
+          }
+        }),
       )
       .subscribe();
 
@@ -215,20 +228,16 @@ export class InternalAmount implements OnInit {
     if (!this.conversionRate()) return;
 
     const converted = sourceAmount * this.conversionRate();
-    this.destinationAmountInput.setValue(
-      converted.toFixed(2),
-      { emitEvent: false }
-    );
+    this.destinationAmountInput.setValue(converted.toFixed(2), {
+      emitEvent: false,
+    });
   }
 
   private updateSourceAmount(destinationAmount: number): void {
     if (!this.conversionRate()) return;
 
     const converted = destinationAmount / this.conversionRate();
-    this.amountInput.setValue(
-      converted.toFixed(2),
-      { emitEvent: false }
-    );
+    this.amountInput.setValue(converted.toFixed(2), { emitEvent: false });
   }
 
   public onGoBack(): void {
@@ -250,7 +259,6 @@ export class InternalAmount implements OnInit {
       this.transferStore.setAmount(amount);
       this.transferInternalService.handleCrossCurrencyTransfer(isReverse);
     } else {
-
       if (this.amountInput.valid) {
         this.transferStore.setDescription(this.descriptionInput.value || '');
         this.transferInternalService.handleToOwnTransfer();

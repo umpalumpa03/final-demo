@@ -34,6 +34,21 @@ describe('DashboardService', () => {
     },
   ];
 
+  const mockCatalog = [
+    {
+      id: '1',
+      title: 'Widget 1',
+      subtitle: 'gela',
+      type: 'transactions',
+    },
+    {
+      id: '2',
+      title: 'Widget 2',
+      subtitle: 'gela',
+      type: 'accounts',
+    },
+  ] as const;
+
   beforeEach(() => {
     mockStoreSignal = signal(mockWidgets);
 
@@ -46,7 +61,7 @@ describe('DashboardService', () => {
     vi.spyOn(store, 'selectSignal').mockReturnValue(mockStoreSignal);
 
     service = TestBed.inject(DashboardService);
-    service.widgetCatalog.set(mockWidgets);
+    service.widgetCatalog.set(mockCatalog as any);
   });
 
   it('should be created', () => {

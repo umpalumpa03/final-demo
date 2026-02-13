@@ -11,7 +11,7 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TranslatePipe } from '@ngx-translate/core';
 import { InputConfig } from '@tia/shared/lib/forms/models/input.model';
-
+import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 
 @Component({
   selector: 'app-security',
@@ -21,6 +21,7 @@ import { InputConfig } from '@tia/shared/lib/forms/models/input.model';
     ButtonComponent,
     ReactiveFormsModule,
     TranslatePipe,
+    Tooltip,
   ],
   templateUrl: './security.component.html',
   styleUrl: './security.component.scss',
@@ -34,9 +35,12 @@ export class SecurityComponent {
   public readonly currentPasswordConfig = input.required<InputConfig>();
   public readonly newPasswordConfig = input.required<InputConfig>();
   public readonly form = input.required<FormGroup>();
+  public readonly updateDisabledReason = input<string | null>(null);
 
-
-  public readonly changePassword = output<{ currentPassword: string; newPassword: string }>();
+  public readonly changePassword = output<{
+    currentPassword: string;
+    newPassword: string;
+  }>();
 
   public constructor() {
     effect(() => {

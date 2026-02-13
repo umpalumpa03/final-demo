@@ -16,6 +16,7 @@
       "selectRecipientAccount": "Select recipient account",
       "selectSenderAccount": "Select your account",
       "selectBothAccounts": "Please select both accounts",
+      "noPermissionError": "This account does not have permission to transfer funds. Please select a different account.",
       "recipientName": {
         "label": "Recipient Name",
         "placeholder": "Enter recipient's full name"

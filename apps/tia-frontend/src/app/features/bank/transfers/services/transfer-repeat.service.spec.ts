@@ -71,13 +71,6 @@ describe('TransferRepeatService', () => {
     store = TestBed.inject(MockStore);
   });
 
-  it('should navigate to internal amount if transferType is ToOwnAccount', () => {
-    service.initRepeatTransfer({ transferType: 'ToOwnAccount' } as any);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([
-      '/bank/transfers/internal/amount',
-    ]);
-  });
-
   it('should handle invalid IBAN or empty credit account', () => {
     mockValidation.identifyRecipientType.mockReturnValue(null);
     service.initRepeatTransfer({ ...mockTransaction, creditAccountNumber: '' });

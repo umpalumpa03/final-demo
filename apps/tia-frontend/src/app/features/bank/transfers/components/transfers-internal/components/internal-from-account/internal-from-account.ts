@@ -1,13 +1,22 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
-import { selectAccounts, selectError, selectIsLoading } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
+import {
+  selectAccounts,
+  selectError,
+  selectIsLoading,
+} from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { TransferStore } from 'apps/tia-frontend/src/app/features/bank/transfers/store/transfers.store';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
-import {
-  TransfersAccountCard
-} from 'apps/tia-frontend/src/app/features/bank/transfers/ui/account-card/transfers-account-card';
+import { TransfersAccountCard } from 'apps/tia-frontend/src/app/features/bank/transfers/ui/account-card/transfers-account-card';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { AccountData } from 'apps/tia-frontend/src/app/features/bank/transfers/models/transfers.state.model';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -17,11 +26,9 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
-import {
-  TransferInternalService
-} from 'apps/tia-frontend/src/app/features/bank/transfers/services/transfer.internal.service';
+import { TransferInternalService } from 'apps/tia-frontend/src/app/features/bank/transfers/components/transfers-internal/services/transfer.internal.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
+import { DisabledReason } from 'apps/tia-frontend/src/app/features/bank/transfers/components/transfers-internal/models/transfers.internal.model';
 
 @Component({
   selector: 'app-internal-from-account',
@@ -35,59 +42,98 @@ import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/break
   ],
   templateUrl: './internal-from-account.html',
   styleUrl: './internal-from-account.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InternalFromAccount implements OnInit {
   private readonly transferStore = inject(TransferStore);
   private readonly store = inject(Store);
-  private readonly location = inject(Location);
   private readonly breakpointService = inject(BreakpointService);
   private readonly router = inject(Router);
   private readonly transferInternalService = inject(TransferInternalService);
 
   public readonly showSuccess = signal(false);
+  public readonly showError = signal(false);
 
   public readonly isFullWidth = computed(() =>
-    this.breakpointService.isMobile()
+    this.breakpointService.isMobile(),
   );
 
-  public readonly accounts = toSignal(
-    this.store.select(selectAccounts),
-    { initialValue: [] }
-  );
+  private readonly rawAccounts = toSignal(this.store.select(selectAccounts), {
+    initialValue: [],
+  });
 
-  public readonly transferableAccounts = computed(() => {
-    const allAccounts = this.accounts();
-
-    return allAccounts.filter(account =>
-      account.permission && (account.permission & 1) === 1,
+  public readonly accounts = computed(() => {
+    const allAccounts = this.rawAccounts() || [];
+    return [...allAccounts].sort(
+      (a, b) => (b.isFavorite ? 1 : 0) - (a.isFavorite ? 1 : 0),
     );
-  })
+  });
 
-  public readonly isLoading = toSignal(
-    this.store.select(selectIsLoading),
-    {initialValue: false}
+  public readonly isLoading = toSignal(this.store.select(selectIsLoading), {
+    initialValue: false,
+  });
+
+  public readonly error = toSignal(this.store.select(selectError), {
+    initialValue: null,
+  });
+
+  public readonly transferError = computed(() => this.transferStore.error());
+
+  public readonly hasRepeatError = computed(() => {
+    const error = this.transferError();
+    return (
+      error === 'transfers.repeat.senderNotFound' ||
+      error === 'transfers.repeat.senderNoPermission' ||
+      error === 'transfers.repeat.recipientAccountNotFound'
+    );
+  });
+
+  public readonly selectedFromAccount = computed(() =>
+    this.transferStore.senderAccount(),
   );
-
-  public readonly error = toSignal(
-    this.store.select(selectError),
-    { initialValue: null }
-  );
-
-  public readonly selectedFromAccount = computed(() => this.transferStore.senderAccount());
 
   public readonly isContinueDisabled = computed(() => {
     return !this.selectedFromAccount();
   });
 
+  constructor() {
+    effect(() => {
+      const error = this.transferError();
+      if (error && this.hasRepeatError()) {
+        this.showError.set(true);
+        setTimeout(() => {
+          this.showError.set(false);
+          this.transferStore.setError('');
+        }, 5000);
+      }
+    });
+  }
+
   ngOnInit() {
     this.store.dispatch(AccountsActions.loadAccounts({}));
   }
 
+  public isAccountDisabled(account: Account): boolean {
+    return !account.permission || (account.permission & 1) !== 1;
+  }
+
+  public getDisabledReason(account: Account): DisabledReason {
+    if (this.isAccountDisabled(account)) {
+      return 'PERMISSION_DENIED';
+    }
+    return null;
+  }
+
   public onAccountSelect(account: AccountData) {
+    const accountData = account as Account;
+
+    if (this.isAccountDisabled(accountData)) {
+      return;
+    }
+
     this.transferInternalService.handleFromAccountSelect(
-      account as Account,
-      this.selectedFromAccount()
+      accountData,
+      this.selectedFromAccount(),
     );
   }
 

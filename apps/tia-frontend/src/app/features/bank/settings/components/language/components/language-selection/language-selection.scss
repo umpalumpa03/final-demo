@@ -24,7 +24,6 @@
 
     &__actions {
         @include flex-center(row, flex-end, center);
-        padding-top: 1rem;
     }
 }
 
