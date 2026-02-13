@@ -3,8 +3,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { Router, RouterLink } from '@angular/router';
 import { catchError, delay, EMPTY, finalize, tap } from 'rxjs';
 import { TranslatePipe } from '@ngx-translate/core';
-import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
-import { DismissibleAlertType } from '@tia/shared/lib/alerts/shared/models/alert.models';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
 import { forgotPasswordSegments } from '../forgot-password.routes';
@@ -14,7 +13,7 @@ import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/share
 
 @Component({
   selector: 'app-reset-password',
-  imports: [RegistrationForm, RouterLink, LibraryTitle, TranslatePipe, DismissibleAlerts],
+  imports: [RegistrationForm, RouterLink, LibraryTitle, TranslatePipe],
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,10 +21,10 @@ import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/share
 export class ResetPassword implements OnInit {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
+  private readonly alertService = inject(AlertService);
   private readonly tokenService = inject(TokenService);
 
   public readonly isSubmitting = signal(false);
-  public readonly alertState = signal<{ type: DismissibleAlertType; title: string; message: string } | null>(null);
   public readonly buttonText = 'auth.reset-password.submit';
   public readonly title = 'auth.reset-password.title';
   public readonly subtitle = 'auth.reset-password.subtitle';
@@ -37,7 +36,7 @@ export class ResetPassword implements OnInit {
   }
 
   submit(formValue: IRegistrationForm): void {
-    this.alertState.set(null);
+    this.alertService.clearAlert();
     this.isSubmitting.set(true);
     const password = formValue.password;
     this.authService
@@ -45,23 +44,26 @@ export class ResetPassword implements OnInit {
       .pipe(
         finalize(() => this.isSubmitting.set(false)),
         tap(() => {
-          this.alertState.set({
-            type: 'success',
+          this.alertService.success('Password updated successfully', {
+            variant: 'dismissible',
             title: 'Success!',
-            message: 'Password updated successfully',
           });
         }),
         delay(1500),
         tap(() => this.router.navigate(['/auth', ...forgotPasswordSegments.success])),
         catchError((error) => {
           const httpError = error as HttpErrorResponse;
-          this.alertState.set({
-            type: httpError?.status === 400 ? 'error' : 'warning',
-            title: httpError?.status === 400 ? 'Oops!' : 'Warning',
-            message: httpError?.status === 400
-              ? 'Unable to reset password. Please try again.'
-              : 'Something went wrong. Please try again.',
-          });
+          if (httpError?.status === 400) {
+            this.alertService.error(
+              'Unable to reset password. Please try again.',
+              { variant: 'dismissible', title: 'Oops!' },
+            );
+          } else {
+            this.alertService.warning(
+              'Something went wrong. Please try again.',
+              { variant: 'dismissible', title: 'Warning' },
+            );
+          }
           return EMPTY;
         }),
       )
