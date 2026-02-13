@@ -1,14 +1,14 @@
 <section class="paybill-grid">
-  <app-library-title title="Select Category"></app-library-title>
+  <app-library-title
+    [title]="'paybill.main.category' | translate"
+  ></app-library-title>
 
-  <app-grid-layout cols="4" class="paybill-grid__container">
-    @if (isLoading()) { 
-      @for (item of [1,2,3,4,5]; track item) {
+  <app-grid-layout [cols]="cols()" class="paybill-grid__container">
+    @if (isLoading()) { @for (item of [1,2,3,4,5]; track item) {
     <div class="paybill-grid__card-wrapper">
       <app-skeleton variant="rectangle" width="100%" height="19rem" />
     </div>
-    } 
-  } @else { @for(category of categories(); track category.id) {
+    } } @else { @for(category of categories(); track category.id) {
     <div class="paybill-grid__card-wrapper">
       <app-category-card
         [title]="category.name"

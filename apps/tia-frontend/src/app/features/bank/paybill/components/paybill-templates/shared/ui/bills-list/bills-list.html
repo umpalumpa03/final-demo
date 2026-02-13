@@ -24,6 +24,7 @@
             type="number"
             [config]="{prefixIcon: '', placeholder: '0.00'}"
             [state]="payForm.get(item.id)?.disabled ? 'disabled' : 'default'"
+            (keydown)="preventNegative($event)"
           />
         </div>
       </div>

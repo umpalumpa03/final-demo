@@ -10,6 +10,7 @@ import { signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/alert.service';
 
 describe('ExternalAmount', () => {
   let component: ExternalAmount;
@@ -18,10 +19,12 @@ describe('ExternalAmount', () => {
   let mockRouter: any;
   let mockAmountService: any;
   let mockExecutionService: any;
+  let mockAlertService: any;
 
   beforeEach(async () => {
     vi.useFakeTimers();
     mockRouter = { navigate: vi.fn() };
+    mockAlertService = { error: vi.fn(), success: vi.fn() };
 
     mockStore = {
       isLoading: signal(false),
@@ -39,7 +42,9 @@ describe('ExternalAmount', () => {
       requiresOtp: signal(false),
       transferSuccess: signal(false),
       error: signal(''),
-      recipientInput: signal(''), 
+      recipientInput: signal(''),
+      hasShownAmountToast: signal(false), 
+      setHasShownAmountToast: vi.fn(), 
       setError: vi.fn(),
       setAmount: vi.fn(),
       setDescription: vi.fn(),
@@ -64,6 +69,7 @@ describe('ExternalAmount', () => {
         { provide: TransferStore, useValue: mockStore },
         { provide: BreakpointService, useValue: { isMobile: signal(false) } },
         { provide: Router, useValue: mockRouter },
+        { provide: AlertService, useValue: mockAlertService },
         {
           provide: ActivatedRoute,
           useValue: { snapshot: { params: {} }, queryParams: of({}) },
@@ -88,13 +94,15 @@ describe('ExternalAmount', () => {
     expect(mockAmountService.handleAmountInput).toHaveBeenCalledWith(50);
   });
 
-  it('should handle error effect and set showError signal', async () => {
-    mockStore.error.set('Something went wrong');
+  it('should call alertService error on state error change', () => {
+    mockStore.error.set('TRANSFER_ERROR');
     TestBed.flushEffects();
-    expect(component.showError()).toBe(true);
+    expect(mockAlertService.error).toHaveBeenCalled();
+  });
 
-    vi.advanceTimersByTime(3000);
-    expect(component.showError()).toBe(false);
+  it('should show success toast on init if not shown before', () => {
+    expect(mockAlertService.success).toHaveBeenCalled();
+    expect(mockStore.setHasShownAmountToast).toHaveBeenCalledWith(true);
   });
 
   it('should navigate back via service on onGoBack', () => {
@@ -123,18 +131,19 @@ describe('ExternalAmount', () => {
     expect(mockExecutionService.handleOtherBankTransfer).toHaveBeenCalled();
   });
 
-  it('should call verifyTransfer when OTP is provided', () => {
+  it('should call verifyTransfer when OTP is verified', () => {
     component.onOtpVerify({ otp: '654321', isCalled: true });
     expect(mockExecutionService.verifyTransfer).toHaveBeenCalledWith('654321');
   });
 
-  it('should handle success and navigate to dashboard', () => {
+  it('should handle success done action', () => {
     component.onSuccessDone();
     expect(mockStore.reset).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/dashboard']);
   });
 
-  it('should compute recipient initials for all types', () => {
+  it('should compute recipient initials correctly', () => {
+    mockStore.recipientType.set('phone');
     mockStore.recipientInfo.set({ fullName: 'Mariam Svanidze' });
     expect(component.recipientInitials()).toBe('MS');
 
@@ -143,8 +152,19 @@ describe('ExternalAmount', () => {
     expect(component.recipientInitials()).toBe('JD');
   });
 
-  it('should disable transfer button if amount is invalid or balance is low', () => {
-    component.amountInput.setValue('');
+  it('should handle OTP close and attempts exhaustion', () => {
+    component.onOtpClose();
+    expect(mockStore.setRequiresOtp).toHaveBeenCalledWith(false);
+    expect(component.noAttemptsLeft()).toBe(false);
+
+    component.handleNoMoreAttempts();
+    expect(component.noAttemptsLeft()).toBe(true);
+    vi.advanceTimersByTime(3000);
+    expect(mockStore.reset).toHaveBeenCalled();
+  });
+
+  it('should disable transfer button for invalid inputs', () => {
+    component.amountInput.setValue('0'); 
     expect(component.isTransferDisabled()).toBe(true);
 
     component.amountInput.setValue('10');

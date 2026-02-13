@@ -21,6 +21,8 @@ import { Pagination } from '../../navigation/pagination/pagination';
 import { ButtonComponent } from '../../primitives/button/button';
 import { Spinner } from '../../feedback/spinner/spinner';
 import { ErrorStates } from '../../feedback/error-states/error-states';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Tooltip } from '../../data-display/tooltip/tooltip';
 
 @Component({
   selector: 'app-tables',
@@ -33,6 +35,8 @@ import { ErrorStates } from '../../feedback/error-states/error-states';
     ButtonComponent,
     Spinner,
     ErrorStates,
+    TranslatePipe,
+    Tooltip,
   ],
   templateUrl: './tables.html',
   styleUrl: './tables.scss',

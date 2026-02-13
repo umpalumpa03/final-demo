@@ -34,7 +34,6 @@ import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
     ButtonComponent,
     ReactiveFormsModule,
     RouterLink,
-    SimpleAlerts,
     TranslatePipe,
     AuthHeader,
     Checkboxes,
@@ -53,10 +52,6 @@ export class SignIn {
   private translate = inject(TranslateService);
   public alertTypes = ALERTS_DISMISSIBLE_DATA;
   public isRouteLoading = signal(false);
-  public errorMessage = computed(() => {
-    this.alertTypes.error.message = 'Incorrect Credentials';
-    return this.authService.errorMessage();
-  });
 
   @HostListener('window:keydown.enter', ['$event'])
   public handleKeydownEvent(event: Event): void {

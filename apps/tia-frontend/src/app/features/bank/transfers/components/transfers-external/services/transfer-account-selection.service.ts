@@ -104,6 +104,7 @@ export class TransferAccountSelectionService {
     if (currentSelected?.id !== account.id) {
       this.transferStore.setAmount(0);
       this.transferStore.setInsufficientBalance(false);
+      this.transferStore.setHasShownAmountToast(false);
     }
 
     if (currentSelected?.id === account.id) {
@@ -120,6 +121,7 @@ export class TransferAccountSelectionService {
     if (currentSelected?.id !== account.id) {
       this.transferStore.setAmount(0);
       this.transferStore.setInsufficientBalance(false);
+      this.transferStore.setHasShownAmountToast(false);
     }
 
     if (currentSelected?.id === account.id) {

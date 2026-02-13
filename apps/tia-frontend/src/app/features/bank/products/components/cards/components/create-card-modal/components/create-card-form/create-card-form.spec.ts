@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { CreateCardForm } from './create-card-form';
 import { CardForm } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-form.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('CreateCardForm', () => {
   let component: CreateCardForm;
@@ -20,7 +21,7 @@ describe('CreateCardForm', () => {
     });
 
     TestBed.configureTestingModule({
-      imports: [CreateCardForm],
+      imports: [CreateCardForm, TranslateModule.forRoot()],
     });
 
     fixture = TestBed.createComponent(CreateCardForm);
