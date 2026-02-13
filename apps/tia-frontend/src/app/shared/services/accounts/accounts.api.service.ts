@@ -14,12 +14,12 @@ import { AccountsStore } from '../../../features/bank/settings/components/accoun
 export class AccountsApiService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/accounts`;
-  private readonly store = inject(AccountsStore)
+  private readonly store = inject(AccountsStore);
 
   public getAccounts(): Observable<AccountsResponse> {
     return this.http.get<AccountsResponse>(this.apiUrl, {
       params: {
-        ignoreHiddens: 'true',
+        ignoreHiddens: 'false',
         status: 'active',
       },
     });
@@ -55,14 +55,15 @@ export class AccountsApiService {
     accountId: string,
     friendlyName: string,
   ): Observable<Account> {
-    return this.http.put<Account>(
-      `${this.apiUrl}/update-friendly-name/${accountId}`,
-      { friendlyName },
-    ).pipe(
-      tap(() => {
-        this.store.invalidate();
-        this.store.loadAccounts();
+    return this.http
+      .put<Account>(`${this.apiUrl}/update-friendly-name/${accountId}`, {
+        friendlyName,
       })
-    );
+      .pipe(
+        tap(() => {
+          this.store.invalidate();
+          this.store.loadAccounts();
+        }),
+      );
   }
 }
