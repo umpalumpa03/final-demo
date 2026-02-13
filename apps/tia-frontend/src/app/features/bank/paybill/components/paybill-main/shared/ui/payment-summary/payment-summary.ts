@@ -6,11 +6,12 @@ import {
 } from '@angular/core';
 import { SummaryField, SummaryType } from '../../models/summary.model';
 import { TranslatePipe } from '@ngx-translate/core';
+import { CurrencySymbolPipe } from 'apps/tia-frontend/src/app/features/bank/dashboard/pipes/currency-symbols.pipe';
 import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-payment-summary',
-  imports: [TranslatePipe,CurrencyPipe],
+  imports: [TranslatePipe,CurrencySymbolPipe,CurrencyPipe],
   templateUrl: './payment-summary.html',
   styleUrl: './payment-summary.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -14,6 +14,17 @@
       "check_details": "შეყვანილი ინფორმაცია გადაამოწმეთ",
       "check_amount": "შეიყვანეთ თანხის სწორი ოდენობა"
     },
+    "identifiers": {
+      "accountNumber": "მომხმარებლის ნომერი",
+      "personalNumber": "პირადი ნომერი ",
+      "tenantId": "დამქირავებლის ანგარიშის ნომერი",
+      "customerCode": "მომხმარებლის კოდი",
+      "phoneNumber": "მობილურის ნომერი",
+      "amount": "თანხა",
+      "policyNumber": "დაზღვევის კოდი",
+      "meterNumber": "აპარატის კოდი",
+      "propertyCode": "საკადასტრო კოდი"
+    },
     "summary": {
       "customer_name": "აბონენტი:",
       "bill_period": "პერიოდი:",
