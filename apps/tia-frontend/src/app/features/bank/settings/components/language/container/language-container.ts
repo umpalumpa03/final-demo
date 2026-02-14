@@ -19,9 +19,11 @@ import { LanguagesStore } from '../store/languages.store';
 export class LanguageContainer implements OnInit {
   public languagesStore = inject(LanguagesStore);
 
-  public isLoading = this.languagesStore.isLoading;
-  public languages = this.languagesStore.languages;
-  public hasError = this.languagesStore.hasError;
+  public readonly isLoading = this.languagesStore.isLoading;
+  public readonly languages = this.languagesStore.languages;
+  public readonly hasError = this.languagesStore.hasError;
+  public readonly hasLoaded = this.languagesStore.hasLoaded;
+  public readonly isRefreshing = this.languagesStore.isRefreshing;
 
   public ngOnInit(): void {
     this.languagesStore.fetchLanguages({});

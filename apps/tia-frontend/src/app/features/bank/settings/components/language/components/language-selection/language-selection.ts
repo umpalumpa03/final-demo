@@ -42,9 +42,11 @@ export class LanguageSelection implements OnInit {
   private destroyRef = inject(DestroyRef);
   private translationLoader = inject(TranslationLoaderService);
 
-  public languages = input.required<Language[]>();
-  public isLoading = input.required<boolean>();
-  public hasError = input.required<boolean>();
+  public readonly languages = input.required<Language[]>();
+  public readonly isLoading = input.required<boolean>();
+  public readonly hasError = input.required<boolean>();
+  public readonly hasLoaded = input.required<boolean>();
+  public readonly isFetching = input.required<boolean>();
 
   public selectedLanguage = signal<Language | null>(null);
 

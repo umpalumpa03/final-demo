@@ -52,9 +52,9 @@ export const LanguagesStore = signalStore(
         pipe(
           tap(({ force }) => {
             if (force) {
-              patchState(store, { isRefreshing: true, hasError: false });
+              patchState(store, { isRefreshing: true, isLoading: true, hasError: false });
             } else {
-              patchState(store, { isLoading: true, hasError: false });
+              patchState(store, { isLoading: true, isRefreshing: false, hasError: false });
             }
           }),
           exhaustMap(({ force }) => {
@@ -105,12 +105,14 @@ export const LanguagesStore = signalStore(
         patchState(store, {
           isLoading: true,
           hasError: false,
+          isRefreshing: true,
         });
 
         return languageService.updateUserLanguage(language).pipe(
           tap(() => {
             patchState(store, {
               isLoading: false,
+              isRefreshing: false,
               hasError: false,
             });
           }),
@@ -118,6 +120,7 @@ export const LanguagesStore = signalStore(
             patchState(store, {
               hasError: true,
               isLoading: false,
+              isRefreshing: false,
             });
             throw new Error('Failed to update language');
           }),
