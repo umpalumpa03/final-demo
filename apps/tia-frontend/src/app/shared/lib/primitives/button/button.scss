@@ -54,6 +54,23 @@
     }
   }
 
+  &--celebrate {
+    background: linear-gradient(135deg, $blue-500 0%, $pink-300 100%);
+    color: $white;
+    border: none;
+    box-shadow: 0 0.4rem 1.2rem rgba($blue-500, 0.3);
+
+    &:hover:not(:disabled) {
+      filter: brightness(1.1);
+      transform: translateY(-0.1rem);
+      box-shadow: 0 0.6rem 1.6rem rgba($blue-500, 0.4);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+  }
+
   &--outline {
     background-color: var(--color-bg);
     border: 0.1rem solid var(--color-primary);
