@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { LanguagesStore, initialState } from './languages.store';
 import { LanguageService } from '../services/language-api.service';
 import { of } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('LanguagesStore', () => {
@@ -18,6 +20,10 @@ describe('LanguagesStore', () => {
       providers: [
         LanguagesStore,
         { provide: LanguageService, useValue: languageService },
+        {
+          provide: Store,
+          useValue: { selectSignal: () => signal(null), dispatch: () => {} },
+        },
       ],
     });
 

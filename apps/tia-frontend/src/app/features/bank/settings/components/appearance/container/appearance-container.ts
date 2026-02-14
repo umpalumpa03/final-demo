@@ -8,15 +8,13 @@ import {
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
-import { catchError, map, Observable, of, Subject, tap } from 'rxjs';
+import { catchError, Observable, of, Subject, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { SettingsBody } from '../../../shared/ui/settings-body/settings-body';
-import { themesConfig } from '../config/appearance.config';
 import { selectActiveTheme } from 'apps/tia-frontend/src/app/store/theme/theme.selectors';
 import { ThemeActions } from 'apps/tia-frontend/src/app/store/theme/theme.actions';
 import { AppearanceService } from '../services/appearance-api.service';
-import { TAvailableThemes } from '../models/appearance.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { selectUserTheme } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
@@ -44,7 +42,6 @@ import { AppearanceStore } from '../store/appearance.store';
 })
 export class AppearanceContainer implements OnInit, CanComponentDeactivate {
   private readonly store = inject(Store);
-  private readonly appearanceService = inject(AppearanceService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translate = inject(TranslateService);
   private readonly breakpointService = inject(BreakpointService);
