@@ -6,7 +6,7 @@
   [alignItems]="'center'"
   [justifyContent]="'center'"
   [minHeight]="'22rem'"
-  [borderColor]="'var( --color-gray-200)'"
+  [borderColor]="'--color-fg'"
   [gap]="'0.8rem'"
   (click)="handleClick()"
 >
@@ -15,11 +15,13 @@
     [variant]="'ghost'"
     [icon]="'adding.svg'"
     type="button"
-    [customWidth]="'10rem'" 
-  [customHeight]="'10rem'"
-    [iconWidth]="'8rem'"
-  [iconHeight]="'8rem'"
- 
+    [customWidth]="'20rem'"
+    [customHeight]="'20rem'"
+    [iconWidth]="'4rem'"
+    [iconHeight]="'8rem'"
   />
-  <span class="add-card-button__text">{{'my-products.card.card-list.add-card-button.getNewCard' | translate }}</span>
+  <span class="add-card-button__text"
+    >{{'my-products.card.card-list.add-card-button.getNewCard' | translate
+    }}</span
+  >
 </app-basic-card>

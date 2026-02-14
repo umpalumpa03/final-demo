@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, combineLatest, map, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, pairwise, take, tap } from 'rxjs';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { CreateCardRequest } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/create-card-request.model';
 import { CardForm } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-form.model';
@@ -107,13 +107,30 @@ private readonly translate = inject(TranslateService);
     this.cardForm.patchValue({ design });
   }
 
-  protected onFormSubmit(): void {
-    if (this.cardForm.valid) {
-      const request: CreateCardRequest = this.cardForm.getRawValue();
-      this.store.dispatch(createCard({ request }));
-    }
-  }
+  // protected onFormSubmit(): void {
+  //   if (this.cardForm.valid) {
+  //     const request: CreateCardRequest = this.cardForm.getRawValue();
+  //     this.store.dispatch(createCard({ request }));
+  //   }
+  // }
 
+  protected onFormSubmit(): void {
+  if (this.cardForm.valid) {
+    const request: CreateCardRequest = this.cardForm.getRawValue();
+    this.store.dispatch(createCard({ request }));
+    
+    this.store.select(selectIsCreating).pipe(
+      pairwise(),
+      filter(([prev, curr]) => prev === true && curr === false),
+      take(1),
+      tap(() => {
+        this.resetForm();
+        this.store.dispatch(closeCreateCardModal());
+        this.closed.emit();
+      })
+    ).subscribe();
+  }
+}
   protected onFormCancel(): void {
     this.resetForm();
     this.store.dispatch(closeCreateCardModal());

@@ -1,16 +1,5 @@
-
 @if (viewData$ | async; as data) {
 <div class="card-list">
-  @if (alertService.isVisible() && !data.isModalOpen) {
-  <div class="card-list__alert-container">
-    <app-alert-types-with-icons
-      [alertType]="alertService.alertType()!"
-      [alertMessage]="alertService.alertMessage()"
-    />
-  </div>
-  }
-  
-  
   <div class="card-list__header">
     <h1 class="card-list__title">
       {{'my-products.card.card-list.myCards' | translate }}
@@ -30,21 +19,24 @@
     [message]="errorMsg"
     [buttonMessage]="'my-products.card.card-list.retry' | translate"
   />
-  } @else { 
-  @for (group of data.groups; track group.account.id) {
+  } @else {
+  <div class="card-list__items">
+     @for (group of data.groups; track group.account.id) {
   <div class="card-list__group">
     @if (data.cardImagesLoading) {
-      <app-skeleton variant="rectangle" width="100%" height="28rem" />
+    <app-skeleton variant="rectangle" width="100%" height="28rem" />
     } @else {
-      <app-card-group-item
-        [group]="group"
-        [isLoading]="false"
-        (cardClicked)="handleCardClick($event)"
-        (viewAllClicked)="handleViewAllCards($event)"
-      />
+    <app-card-group-item
+      [group]="group"
+      [isLoading]="false"
+      (cardClicked)="handleCardClick($event)"
+      (viewAllClicked)="handleViewAllCards($event)"
+    />
     }
   </div>
-}
+  }
+  </div>
+ 
   <app-add-card-button (clicked)="handleOpenModal()" />
   }
 </div>

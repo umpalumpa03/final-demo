@@ -1,14 +1,12 @@
 <div class="card-details">
-   @if (alertService.isVisible() && !(isDetailsModalOpen$ | async)) {
+  @if (alertService.isVisible() && !(isDetailsModalOpen$ | async)) {
   <div class="card-details__alert">
     <app-alert-types-with-icons
       [alertType]="alertService.alertType()!"
       [alertMessage]="alertService.alertMessage()"
     />
   </div>
-  }
-  
-  @if (loading$ | async) {
+  } @if (loading$ | async) {
   <div class="card-details__loading">
     <app-route-loader variant="pulsing" />
   </div>
@@ -18,7 +16,6 @@
     [header]="'my-products.card.card-details.failedToLoadCard' | translate"
     [message]="errorMsg"
     [buttonMessage]="'my-products.card.card-details.retry' | translate"
-
     (buttonClick)="handleRetry()"
   />
   } @else if (cardData$ | async; as data) {
@@ -39,11 +36,11 @@
       [cardName]="data.details.cardName"
     />
 
-       <app-pill-paging
-    [total]="(currentAccountCardIds$ | async)?.length ?? 0"
-    [currentIndex]="(currentCardIndex$ | async) ?? 0"
-    (goTo)="handleGoToCard($event)"
-  />
+    <app-pill-paging
+      [total]="(currentAccountCardIds$ | async)?.length ?? 0"
+      [currentIndex]="(currentCardIndex$ | async) ?? 0"
+      (goTo)="handleGoToCard($event)"
+    />
     <div class="card-details__btns">
       <app-button
         variant="outline"
@@ -66,39 +63,45 @@
     [cardName]="data.details.cardName"
   />
   }
+  <div class="card-details__information">
+    <app-basic-card
+      title="{{'my-products.card.card-details.cardTitle' | translate }}"
+      subtitle="{{'my-products.card.card-details.manageYourCard' | translate }}"
+      maxWidth="100%"
+      padding="2rem"
+      alignItems="center"
+    >
+      <app-card-info-section
+        [cardName]="data.details.cardName"
+        [cardType]="data.details.type"
+        [currency]="data.currency"
+        [status]="data.details.status"
+        [isActiveStatus]="data.isActiveStatus"
+        [formattedBalance]="data.formattedBalance"
+        [shouldShowCreditLimit]="data.shouldShowCreditLimit"
+        [formattedCreditLimit]="data.formattedCreditLimit"
+        
+      />
+    </app-basic-card>
 
-  <app-basic-card
-   title="{{'my-products.card.card-details.cardTitle' | translate }}"
-    subtitle="{{'my-products.card.card-details.manageYourCard' | translate }}"
-    maxWidth="100%"
-    padding="2rem"
-  >
-    <app-card-info-section
-      [cardName]="data.details.cardName"
-      [cardType]="data.details.type"
-      [currency]="data.currency"
-      [status]="data.details.status"
-      [isActiveStatus]="data.isActiveStatus"
-      [formattedBalance]="data.formattedBalance"
-      [shouldShowCreditLimit]="data.shouldShowCreditLimit"
-      [formattedCreditLimit]="data.formattedCreditLimit"
-    />
-  </app-basic-card>
+    <app-basic-card
+      title="{{'my-products.card.card-details.cardInfo' | translate }}"
+      subtitle="{{'my-products.card.card-details.cardDetails' | translate }}"
+      maxWidth="100%"
+      padding="2rem"
+      alignItems="center"
+     justifyContent="space-evenly"
+    >
+      <app-quick-actions-section
+        (transferOwnClicked)="handleTransferOwn()"
+        (transferExternalClicked)="handleTransferExternal()"
+        (paybillClicked)="handlePaybill()"
+        (viewTransactionsClicked)="handleViewTransactions()"
+        (viewSensitiveDetailsClicked)="handleOpenDetailsModal()"
+      />
+    </app-basic-card>
+  </div>
 
-  <app-basic-card
-    title="{{'my-products.card.card-details.cardInfo' | translate }}"
-    subtitle="{{'my-products.card.card-details.cardDetails' | translate }}"
-    maxWidth="100%"
-    padding="2rem"
-  >
-    <app-quick-actions-section
-      (transferOwnClicked)="handleTransferOwn()"
-      (transferExternalClicked)="handleTransferExternal()"
-      (paybillClicked)="handlePaybill()"
-      (viewTransactionsClicked)="handleViewTransactions()"
-      (viewSensitiveDetailsClicked)="handleOpenDetailsModal()"
-    />
-  </app-basic-card>
   }
 </div>
 @if (isDetailsModalOpen$ | async; as isModalOpen) {

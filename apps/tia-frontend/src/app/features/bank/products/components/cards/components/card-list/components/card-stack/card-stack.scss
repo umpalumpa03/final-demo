@@ -2,16 +2,25 @@
 
 .card-stack {
   position: relative;
-  width: 44rem;
-  min-height: 40rem;
+  width: 36rem;
+  min-height: 35rem;
 
+  @media (max-width: 1280px) {
+    max-width: 30rem;
+    min-height: 32rem;
+  }
   @media (max-width: 768px) {
     max-width: 35rem;
   }
-  @media (max-width: 450px) {
+  @media (max-width: 480px) {
     max-width: 25rem;
     min-height: 26rem;
   }
+   @media (max-width: 350px) {
+    max-width: 20rem;
+    min-height: 22rem;
+  }
+
 
   &__card {
     position: absolute;

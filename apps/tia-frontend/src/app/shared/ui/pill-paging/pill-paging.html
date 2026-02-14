@@ -1,5 +1,5 @@
 <div class="pill-paging">
-  @for (item of pageArray(); track item) {
+  @for (item of pageArray(); track $index) {
   <button
     type="button"
     class="pill-paging__dot"

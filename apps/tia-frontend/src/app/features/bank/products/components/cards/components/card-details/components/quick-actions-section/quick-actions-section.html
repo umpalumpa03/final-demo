@@ -27,8 +27,14 @@
     {{'my-products.card.card-details.quick-actions-section.payPaybill' | translate }}
   </app-button> -->
 
-  <app-button variant="outline" [fullWidth]="true" icon="eye.svg" (click)="handleViewSensitiveDetails()">
-    {{'my-products.card.card-details.quick-actions-section.ViewSensitiveDetails' | translate }}
+  <app-button
+    variant="outline"
+    [fullWidth]="true"
+    icon="eye.svg"
+    (click)="handleViewSensitiveDetails()"
+  >
+    {{'my-products.card.card-details.quick-actions-section.ViewSensitiveDetails'
+    | translate }}
   </app-button>
 
   <app-button
@@ -37,6 +43,7 @@
     icon="transactions.svg"
     (click)="handleViewTransactions()"
   >
-    {{'my-products.card.card-details.quick-actions-section.ViewTransactions' | translate }}
+    {{'my-products.card.card-details.quick-actions-section.ViewTransactions' |
+    translate }}
   </app-button>
 </div>
