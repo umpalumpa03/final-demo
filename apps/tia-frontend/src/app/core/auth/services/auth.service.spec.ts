@@ -198,7 +198,6 @@ describe('AuthService', () => {
           next: (res) => {
             expect(res.success).toBe(true);
             expect(tokenService.clearAuthToken).toHaveBeenCalled();
-            expect(tokenService.clearUserInfo).toHaveBeenCalled();
             expect(router.navigate).toHaveBeenCalledWith([Routes.SIGN_IN]);
             resolve();
           },

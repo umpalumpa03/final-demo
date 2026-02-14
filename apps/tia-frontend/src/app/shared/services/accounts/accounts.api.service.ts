@@ -70,8 +70,7 @@ export class AccountsApiService {
       })
       .pipe(
         tap(() => {
-          this.store.invalidate();
-          this.store.loadAccounts();
+          this.store.resetStore();
         }),
       );
   }

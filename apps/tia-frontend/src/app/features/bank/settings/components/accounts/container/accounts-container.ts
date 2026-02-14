@@ -12,19 +12,29 @@ import { SettingsBody } from '../../../shared/ui/settings-body/settings-body';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { Router } from '@angular/router';
 import { ChangeName } from '../components/change-name/change-name';
-import { ScrollArea } from "@tia/shared/lib/layout/components/scroll-area/container/scroll-area";
+import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
 import { ERROR_STATE } from '../config/accounts.config';
+import { BreakpointService } from '@tia/core/services/breakpoints/breakpoint.service';
 
 @Component({
   selector: 'app-accounts-container',
-  imports: [AccountCard, Skeleton, SettingsBody, ErrorStates, ChangeName, ScrollArea, TranslatePipe],
+  imports: [
+    AccountCard,
+    Skeleton,
+    SettingsBody,
+    ErrorStates,
+    ChangeName,
+    ScrollArea,
+    TranslatePipe,
+  ],
   templateUrl: './accounts-container.html',
   styleUrl: './accounts-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountsContainer implements OnInit {
+  private readonly breakpointService = inject(BreakpointService);
   public readonly store = inject(AccountsStore);
   public readonly router = inject(Router);
   public readonly changeNameOpen = signal<boolean>(false);
@@ -32,6 +42,7 @@ export class AccountsContainer implements OnInit {
   public readonly changeNameInitial = signal<string>('');
   public readonly changeNameAccountNumber = signal<string | null>(null);
   public readonly errorState = ERROR_STATE;
+  public readonly isXsMobile = this.breakpointService.isXsMobile;
 
   public ngOnInit(): void {
     this.store.loadAccounts();
@@ -56,7 +67,7 @@ export class AccountsContainer implements OnInit {
   public handleVisibility(id: string, isHidden: boolean | null): void {
     this.store.toggleVisibility({ id, isHidden });
   }
-  
+
   public openChangeName(
     id: string,
     friendlyName: string,
