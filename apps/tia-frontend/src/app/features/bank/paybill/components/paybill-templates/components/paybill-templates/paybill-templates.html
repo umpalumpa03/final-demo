@@ -101,13 +101,14 @@
     (isResendCalled)="resendOtp($event)"
     (onBackOut)="onOtpClose()"
     (isVerifyCalled)="onOtpVerify($event)"
+    [isButtonLoading]="true"
   ></app-otp-verification>
 </app-ui-modal>
 
 <app-success-modal
-  [title]="'SUCCESS' | translate"
-  [description]="'SUCCESSS' | translate"
-  [buttonText]="'CLOSE' | translate"
+  [title]="'paybill.templates.success.title' | translate"
+  [description]="'paybill.templates.success.subText' | translate"
+  [buttonText]="'paybill.templates.success.submitBtnName' | translate"
   [isOpen]="succesModalHidden()"
   (closed)="onSuccessDone()"
   (done)="onSuccessDone()"

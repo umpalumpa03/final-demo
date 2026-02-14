@@ -68,6 +68,7 @@ import { paybillSearchConfig } from '../configs/search.config';
 import { PaybillTemplatesService } from '../services/paybill-templates-service';
 import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 import { TranslatePipe } from '@ngx-translate/core';
+import { IVerified } from '@tia/core/auth/models/otp-verification.models';
 
 @Component({
   selector: 'app-paybill-templates-container',
@@ -286,10 +287,11 @@ export class PaybillTemplatesContainer implements OnInit {
   public handleModalToggle(): void {
     const willClose = this.isModalOpen();
     this.isModalOpen.update((val) => !val);
+    this.resetTree.set(false);
 
     if (willClose) {
       if (this.selectAll() || this.selectedItems().length) {
-        this.selectAll.update((val) => !val);
+        this.selectAll.set(false);
         this.resetTree.set(true);
       }
 
@@ -470,7 +472,7 @@ export class PaybillTemplatesContainer implements OnInit {
   public selectedItems = this.store.selectSignal(selectSelectedTemplates);
   public originalTemplates = this.store.selectSignal(selectTemplates);
 
-  public onItemChecked(selectedIds: string[]) {
+  public onItemChecked(selectedIds: string[]): void {
     const selectedTemplates = [];
 
     for (const id of selectedIds) {
@@ -489,7 +491,7 @@ export class PaybillTemplatesContainer implements OnInit {
   }
 
   // If I select a single item
-  public onSelectedItem(selectedItemId: string) {
+  public onSelectedItem(selectedItemId: string): void {
     this.store.dispatch(TemplatesPageActions.clearPaymentInfo());
     const selectedTemplates = [];
     const template = this.originalTemplates().find(
@@ -507,14 +509,16 @@ export class PaybillTemplatesContainer implements OnInit {
   }
   // Here logic if otp is open or not
   public isOtpModalOpen = signal(false);
-  public isPaymentModalHidden = signal(false);
-  public isSuccessModalHidden = signal(false);
+  public isPaymentModalVisible = signal(false);
+  public isSuccessModalVisible = signal(false);
   public selectPaymentsForm = this.store.selectSignal(selectFormPayload);
-  public onPayAction() {
+
+  // Payment Logic
+  public onPayAction(): void {
     this.actions$
       .pipe(ofType(TemplatesPageActions.payManyBillsSuccess), take(1))
       .subscribe(() => {
-        this.isPaymentModalHidden.set(true);
+        this.isPaymentModalVisible.set(true);
         this.isOtpModalOpen.set(true);
       });
 
@@ -525,32 +529,33 @@ export class PaybillTemplatesContainer implements OnInit {
     );
   }
 
-  public onOtpClose(event: boolean) {
+  public onOtpClose(event: boolean): void {
     this.isOtpModalOpen.set(event);
-    this.isPaymentModalHidden.set(false);
+    this.isPaymentModalVisible.set(false);
   }
 
-  public onPaymentDone() {
+  public onPaymentDone(): void {
     this.isOtpModalOpen.set(false);
-    this.isPaymentModalHidden.set(true);
-    this.isSuccessModalHidden.set(true);
+    this.isPaymentModalVisible.set(true);
+    this.isSuccessModalVisible.set(false);
+    this.store.dispatch(TemplatesPageActions.clearPaymentInfo());
+    this.resetTree.set(true);
   }
 
-  public onVerifyOtp(otp: any) {
+  public onVerifyOtp(otp: IVerified): void {
     const challengeId = this.store.selectSignal(selectChallengeId);
 
     this.actions$
       .pipe(ofType(PaybillActions.confirmPaymentSuccess), take(1))
       .subscribe(() => {
-        console.log('confirmPaymentSuccess received!');
         this.isOtpModalOpen.set(false);
-        this.isSuccessModalHidden.set(true);
+        this.isSuccessModalVisible.set(true);
       });
 
     if (challengeId()) {
       this.store.dispatch(
         PaybillActions.confirmPayment({
-          payload: { challengeId: challengeId()!, code: otp.otp },
+          payload: { challengeId: challengeId()!, code: otp.otp! },
         }),
       );
     }

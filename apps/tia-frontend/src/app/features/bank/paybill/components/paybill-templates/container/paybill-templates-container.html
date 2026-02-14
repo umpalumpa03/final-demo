@@ -47,10 +47,10 @@
   (selectedItem)="onSelectedItem($event)"
   (payAction)="onPayAction()"
   [isOtpModalOpen]="isOtpModalOpen()"
-  [isPaymentModalHidden]="isPaymentModalHidden()"
+  [isPaymentModalHidden]="isPaymentModalVisible()"
   (otpCloseEmit)="onOtpClose($event)"
   [resetTreeState]="resetTree()"
   (paymentDone)="onPaymentDone()"
-  [succesModalHidden]="isSuccessModalHidden()"
+  [succesModalHidden]="isSuccessModalVisible()"
   (verifyOtp)="onVerifyOtp($event)"
 ></app-paybill-templates>

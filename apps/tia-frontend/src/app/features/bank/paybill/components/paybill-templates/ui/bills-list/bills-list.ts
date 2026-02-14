@@ -4,6 +4,8 @@ import {
   effect,
   inject,
   input,
+  OnInit,
+  untracked,
 } from '@angular/core';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import {
@@ -26,7 +28,7 @@ import { startWith } from 'rxjs';
   styleUrl: './bills-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BillsList {
+export class BillsList implements OnInit {
   private readonly store = inject(Store);
   public selectedItems = this.store.selectSignal(selectSelectedTemplates);
   public distributedAmount = this.store.selectSignal(selectDistributedAmount);
@@ -34,6 +36,10 @@ export class BillsList {
 
   public payForm = this.fb.group({});
   public isDistribution = input.required<boolean>();
+
+  public senderAccountId = this.store.selectSignal(
+    selectSelectedSenderAccountId,
+  );
 
   constructor() {
     effect(() => {
@@ -60,7 +66,9 @@ export class BillsList {
         TemplatesPageActions.setTotalAmount({ amount: total }),
       );
       this.store.dispatch(
-        TemplatesPageActions.setPaymentsForm({ payments: this.buildPayload() }),
+        TemplatesPageActions.setPaymentsForm({
+          payments: untracked(() => this.buildPayload()),
+        }),
       );
 
       this.store.dispatch(
@@ -70,13 +78,15 @@ export class BillsList {
 
     effect(() => {
       const distributed = this.distributedAmount();
+      const items = untracked(() => this.selectedItems());
+
       if (distributed !== 0) {
-        this.selectedItems().forEach((item) => {
+        items.forEach((item) => {
           const control = this.payForm.get(item.id);
           control?.setValue(distributed.toFixed(2), { emitEvent: false });
         });
       } else {
-        this.selectedItems().forEach((item) => {
+        items.forEach((item) => {
           const control = this.payForm.get(item.id);
           control?.setValue(item.amountDue.toFixed(2), { emitEvent: false });
         });
@@ -85,9 +95,7 @@ export class BillsList {
   }
 
   ngOnInit() {
-    this.payForm.valueChanges.pipe(startWith()).subscribe((values) => {
-      console.log(values);
-      console.log(this.payForm.valid);
+    this.payForm.valueChanges.pipe().subscribe((values) => {
       if (!values || Object.keys(values).length === 0) return;
 
       const total = Object.values(values).reduce((sum, value) => {
@@ -111,9 +119,6 @@ export class BillsList {
   }
 
   public buildPayload(): BillPaymentRequest[] {
-    const senderAccountId = this.store.selectSignal(
-      selectSelectedSenderAccountId,
-    );
     const items = this.selectedItems();
     const formValues = this.payForm.getRawValue() as Record<string, string>;
 
@@ -121,7 +126,7 @@ export class BillsList {
       serviceId: item.serviceId,
       identification: item.identification,
       amount: +formValues[item.id],
-      senderAccountId: senderAccountId()!,
+      senderAccountId: this.senderAccountId()!,
     }));
   }
 
@@ -138,6 +143,11 @@ export class BillsList {
     if (
       ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(key)
     ) {
+      return;
+    }
+
+    if (value === '0' && /\d/.test(key)) {
+      event.preventDefault();
       return;
     }
 

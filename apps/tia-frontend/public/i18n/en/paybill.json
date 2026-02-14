@@ -201,6 +201,16 @@
       "move_success": "Template moved successfully",
       "create_success": "Template created successfully",
       "bulk_pay_success": "Batch payment completed successfully"
+    },
+    "otp": {
+      "title": "Verify Payment",
+      "subText": "Enter the 4 digit code sent to your registered phone number",
+      "submitBtnName": "Verify and Transfer"
+    },
+    "success": {
+      "title": "Payment was successful!",
+      "subText": "Your payment was completed successfully",
+      "submitBtnName": "Close"
     }
   }
 }

@@ -89,12 +89,13 @@ export class PaymentDistribution implements OnInit {
               amount: distributedAmount,
             }),
           );
-
-          this.store.dispatch(
-            TemplatesPageActions.setFormValid({
-              isValid: this.amountControl.valid && distributedAmount > 0,
-            }),
-          );
+          if (distributedAmount) {
+            this.store.dispatch(
+              TemplatesPageActions.setFormValid({
+                isValid: distributedAmount > 0,
+              }),
+            );
+          }
         }),
       )
       .subscribe();
