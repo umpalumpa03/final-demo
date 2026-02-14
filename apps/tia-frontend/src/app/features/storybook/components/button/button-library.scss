@@ -11,6 +11,10 @@
   padding: 1.6rem;
   margin: 0 auto;
   gap: 3.2rem;
+  
+  box-sizing: border-box;
+  overflow: hidden;
+
   &__title {
     margin: 2rem 0;
   }
@@ -20,6 +24,25 @@
     flex-wrap: wrap;
     gap: 1.6rem;
     width: 100%;
+    min-width: 0; 
+  }
+
+  .button-group-overflow-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: block;
+    padding: 0.4rem 0.2rem; 
+    -webkit-overflow-scrolling: touch; 
+
+    &::-webkit-scrollbar {
+      height: 0.4rem;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: $gray-200;
+      border-radius: 0.4rem;
+    }
   }
 
   &__state-label {
@@ -27,5 +50,10 @@
     font-size: 1.4rem;
     line-height: 2rem;
     font-weight: 400;
+  }
+
+  @media (max-width: 35rem) {
+    padding: 1.2rem;
+    gap: 2.4rem;
   }
 }
