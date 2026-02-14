@@ -9,7 +9,7 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
-import { debounceTime, distinctUntilChanged, map, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
@@ -24,6 +24,7 @@ import {
 import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { TransactionsViewModelService } from '../../services/transactions-view-model.service';
 import { TransactionsActionsService } from '../../services/transactions-actions.service';
+import { maxDateValidator } from '@tia/shared/lib/forms/input-field/date-picker/date-validator/date.validator';
 
 @Component({
   selector: 'app-transactions-filters',
@@ -57,6 +58,8 @@ export class TransactionsFilters {
     ),
   );
 
+  protected readonly today = new Date().toISOString().split('T')[0];
+
   public readonly filterForm = this.fb.group({
     searchCriteria: [''],
     category: [null as string | null],
@@ -64,17 +67,24 @@ export class TransactionsFilters {
     amountTo: [null as number | null],
     accountIban: [null as string | null],
     currency: [null as Currency | null],
-    dateFrom: [null as string | null],
-    dateTo: [null as string | null],
+    dateFrom: [null as string | null, [maxDateValidator(this.today)]],
+    dateTo: [null as string | null, [maxDateValidator(this.today)]],
   });
 
-  private readonly formValues = toSignal(this.filterForm.valueChanges, {
-    initialValue: this.filterForm.value,
-  });
+  private readonly formValues = toSignal(
+    this.filterForm.valueChanges.pipe(
+      debounceTime(400),
+      filter(() => this.filterForm.valid),
+    ),
+    {
+      initialValue: this.filterForm.value,
+    },
+  );
 
   public readonly activeFilters = computed(() =>
     getActiveFilters(this.formValues(), this.filtersConfig()),
   );
+
   public readonly hasActiveFilter = computed(
     () => this.activeFilters().length > 0,
   );
@@ -86,6 +96,7 @@ export class TransactionsFilters {
         distinctUntilChanged(
           (prev, curr) => JSON.stringify(prev) === JSON.stringify(curr),
         ),
+        filter(() => this.filterForm.valid),
         map(mapFormIntoTransactionFilter),
         tap((filters) => {
           this.filterChange.emit(filters);
