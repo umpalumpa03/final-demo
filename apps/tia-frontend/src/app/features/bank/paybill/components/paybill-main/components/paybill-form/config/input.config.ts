@@ -11,5 +11,8 @@ export const paybillInputConfig = {
     max: 9999,
     required: true,
     errorMessage: 'paybill.main.form.amount_range_error',
+    validation: {
+      pattern: /^(?:[1-9]\d*|0)(?:\.\d{1,2})?$/,
+    },
   },
 } as const;
