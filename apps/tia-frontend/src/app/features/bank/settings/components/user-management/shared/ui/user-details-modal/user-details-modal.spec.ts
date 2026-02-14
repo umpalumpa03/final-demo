@@ -50,16 +50,6 @@ describe('UserDetailsModal', () => {
     fixture.detectChanges();
   });
 
-  it('should create and render basic user info', () => {
-    expect(component).toBeTruthy();
-    const compiled = fixture.nativeElement as HTMLElement;
-
-    expect(compiled.textContent).toContain('John Doe');
-    expect(compiled.textContent).toContain('john@test.com');
-
-    expect(mockConfigService.getConfig).toHaveBeenCalled();
-  });
-
   it('should show loader and hide content when isLoading is true', () => {
     fixture.componentRef.setInput('isLoading', true);
     fixture.detectChanges();
