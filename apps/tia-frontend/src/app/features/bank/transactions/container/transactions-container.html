@@ -13,7 +13,7 @@
     ></app-transactions-filters>
   </div>
 
-  <div class="transactions-table-wrapper">
+  <div class="transactions-table-wrapper horizontal-provider">
     <div class="transactions-table-wrapper__heading">
       <div>
         <h3>{{ 'transactions.title' | translate }}</h3>
@@ -34,53 +34,57 @@
       </div>
       }
     </div>
+    <div class="scroll-area-width-stretcher">
+      <app-scroll-area
+        [height]="'calc(calc(100vh - 49.8rem) - 12rem)'"
+        [hideBorder]="true"
+        (scrollBottom)="facade.loadMore()"
+        [scrollbar]="'hidden'"
+      >
+        @if(facade.isLoading() && facade.items().length === 0){
+        <app-route-loader variant="pulsing" [fillContainer]="true">
+        </app-route-loader>
 
-    <app-scroll-area
-      [height]="'calc(calc(100vh - 49.8rem) - 12rem)'"
-      [hideBorder]="true"
-      (scrollBottom)="facade.loadMore()"
-      [scrollbar]="'hidden'"
-    >
-      @if(facade.isLoading() && facade.items().length === 0){
-      <app-route-loader variant="pulsing" [fillContainer]="true">
-      </app-route-loader>
+        } @else if (facade.transactionError()) {
+        <div class="transactions-table-wrapper__widget-error">
+          <app-error-states
+            variant="failed"
+            header="Failed to load"
+            message="Could not load transactions"
+            buttonMessage="Retry"
+            (buttonClick)="retryLoad()"
+            [border]="false"
+          >
+          </app-error-states>
+        </div>
 
-      } @else if (facade.transactionError()) {
-      <div class="transactions-table-wrapper__widget-error">
-        <app-error-states
-          variant="failed"
-          header="Failed to load"
-          message="Could not load transactions"
-          buttonMessage="Retry"
-          (buttonClick)="retryLoad()"
-          [border]="false"
-        >
-        </app-error-states>
-      </div>
+        } @else if (vm.isEmpty()) {
+        <div class="transactions-table-wrapper__widget-error">
+          <app-error-states
+            variant="not-found"
+            header="No transactions"
+            message="There are no transactions available"
+            [showButton]="false"
+            [border]="false"
+          >
+          </app-error-states>
+        </div>
 
-      } @else if (vm.isEmpty()) {
-      <div class="transactions-table-wrapper__widget-error">
-        <app-error-states
-          variant="not-found"
-          header="No transactions"
-          message="There are no transactions available"
-          [showButton]="false"
-          [border]="false"
-        >
-        </app-error-states>
-      </div>
+        } @else {
+        <div class="force-max-content">
+          <app-tables
+            [tableConfig]="vm.tableConfig()"
+            (transactionClickedOutput)="onTableAction($event)"
+          ></app-tables>
+        </div>
 
-      } @else {
-      <app-tables
-        [tableConfig]="vm.tableConfig()"
-        (transactionClickedOutput)="onTableAction($event)"
-      ></app-tables>
-      } @if (facade.isLoading() && !vm.isEmpty()) {
-      <div class="loading-more">
-        <app-route-loader variant="pulsing"></app-route-loader>
-      </div>
-      }
-    </app-scroll-area>
+        } @if (facade.isLoading() && !vm.isEmpty()) {
+        <div class="loading-more">
+          <app-route-loader variant="pulsing"></app-route-loader>
+        </div>
+        }
+      </app-scroll-area>
+    </div>
   </div>
 
   <app-ui-modal

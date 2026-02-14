@@ -64,3 +64,19 @@
   @include flex-center();
   padding: 1rem 0;
 }
+.horizontal-provider {
+  overflow-x: auto;
+  overflow-y: hidden;
+  @include display-flex(column);
+}
+
+.scroll-area-width-stretcher {
+  width: max-content;
+  min-width: 100%;
+}
+
+.force-max-content {
+  display: block;
+  width: max-content;
+  min-width: 100%;
+}
