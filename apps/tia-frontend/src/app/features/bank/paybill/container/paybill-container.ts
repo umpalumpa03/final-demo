@@ -23,7 +23,6 @@ import { navConfig } from '../config/paybill.config';
 import { Tabs } from '@tia/shared/lib/navigation/tabs/tabs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import * as PAYBILL_SELECTORS from '../store/paybill.selectors';
-import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
 import { BreadcrumbService } from '../services/breadcrumb/breadcrumb';
 @Component({
   selector: 'app-paybill-container',
@@ -33,7 +32,6 @@ import { BreadcrumbService } from '../services/breadcrumb/breadcrumb';
     RouterModule,
     Tabs,
     TranslatePipe,
-    DismissibleAlerts,
   ],
   templateUrl: './paybill-container.html',
   styleUrl: './paybill-container.scss',

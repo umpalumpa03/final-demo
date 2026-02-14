@@ -216,33 +216,21 @@ export class PaybillEffect {
           mergeMap((response) => {
             if (response.success) {
               this.router.navigate(['/bank/paybill/pay/payment-success']);
+              this.alertService.success('OTP Verified Successfully');
 
-              return [
-                PaybillActions.addNotification({
-                  notificationType: 'success',
-                  message: 'OTP Verified Successfully',
-                }),
+              return of(
                 TransactionActions.loadTransactions({ forceRefresh: true }),
-              ];
+              );
             }
 
-            return of(
-              PaybillActions.addNotification({
-                notificationType: 'warning',
-                message: response.message || 'Invalid Code',
-              }),
-            );
+            this.alertService.warning(response.message || 'Invalid Code');
+            return EMPTY;
           }),
           catchError((error) => {
             const errorBody = error?.error as PaybillErrorPayload;
             const displayMessage = errorBody?.message || error.message;
-
-            return of(
-              PaybillActions.addNotification({
-                notificationType: 'warning',
-                message: displayMessage,
-              }),
-            );
+            this.alertService.error(displayMessage);
+            return EMPTY;
           }),
         ),
       ),
@@ -310,49 +298,53 @@ export class PaybillEffect {
     );
   });
 
-  actionSuccess$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(
-        TemplatesPageActions.deleteTemplateSuccess,
-        TemplatesPageActions.renameTemplateSuccess,
-        TemplatesPageActions.deleteTemplateGroupSuccess,
-        TemplatesPageActions.createTemplatesGroupsSuccess,
-        TemplatesPageActions.renameTemplateGroupSuccess,
-        TemplatesPageActions.moveTemplateSuccess,
-        TemplatesPageActions.createTemplateSuccess,
-        TemplatesPageActions.payManyBillsSuccess,
-      ),
-      tap((action) => {
-        const message =
-          this.successMessages[action.type] ?? 'Action completed successfully';
-        this.alertService.success(message);
-      }),
-    );
-  });
-
-  actionFailure$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(
-        TemplatesPageActions.deleteTemplateFailure,
-        TemplatesPageActions.renameTemplateFailure,
-        TemplatesPageActions.deleteTemplateGroupFailure,
-        TemplatesPageActions.createTemplatesGroupsFailure,
-        TemplatesPageActions.loadTemplateGroupsFailure,
-        TemplatesPageActions.loadTemplatesFailure,
-        TemplatesPageActions.checkBillForTemplateFailure,
-        PaybillActions.checkBillFailure,
-        PaybillActions.proceedPaymentFailure,
-        PaybillActions.loadCategoriesFailure,
-        PaybillActions.loadProvidersFailure,
-      ),
-      map(({ error }) =>
-        PaybillActions.addNotification({
-          notificationType: 'warning',
-          message: error,
+  actionSuccess$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(
+          TemplatesPageActions.deleteTemplateSuccess,
+          TemplatesPageActions.renameTemplateSuccess,
+          TemplatesPageActions.deleteTemplateGroupSuccess,
+          TemplatesPageActions.createTemplatesGroupsSuccess,
+          TemplatesPageActions.renameTemplateGroupSuccess,
+          TemplatesPageActions.moveTemplateSuccess,
+          TemplatesPageActions.createTemplateSuccess,
+          TemplatesPageActions.payManyBillsSuccess,
+        ),
+        tap((action) => {
+          const message =
+            this.successMessages[action.type] ??
+            'Action completed successfully';
+          this.alertService.success(message);
         }),
-      ),
-    );
-  });
+      );
+    },
+    { dispatch: false },
+  );
+
+  actionFailure$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(
+          TemplatesPageActions.deleteTemplateFailure,
+          TemplatesPageActions.renameTemplateFailure,
+          TemplatesPageActions.deleteTemplateGroupFailure,
+          TemplatesPageActions.createTemplatesGroupsFailure,
+          TemplatesPageActions.loadTemplateGroupsFailure,
+          TemplatesPageActions.loadTemplatesFailure,
+          TemplatesPageActions.checkBillForTemplateFailure,
+          PaybillActions.checkBillFailure,
+          PaybillActions.proceedPaymentFailure,
+          PaybillActions.loadCategoriesFailure,
+          PaybillActions.loadProvidersFailure,
+        ),
+        tap(({ error }) => {
+          this.alertService.error(error);
+        }),
+      );
+    },
+    { dispatch: false },
+  );
 
   createTemplatesGroup$ = createEffect(() => {
     return this.actions$.pipe(
@@ -669,9 +661,10 @@ export class PaybillEffect {
       ofType(TemplatesPageActions.payManyBills),
       switchMap(({ payments }) =>
         this.payBillTemplatesService.payManyBills(payments).pipe(
-          map((response) => {
-            return TemplatesPageActions.payManyBillsSuccess({ response });
-          }),
+          switchMap((response) => [
+            TemplatesPageActions.payManyBillsSuccess({ response }),
+            TransactionActions.loadTransactions({ forceRefresh: true }),
+          ]),
           catchError((error) =>
             of(
               TemplatesPageActions.checkBillForTemplateFailure({
