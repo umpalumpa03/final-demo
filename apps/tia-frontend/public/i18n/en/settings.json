@@ -124,7 +124,8 @@
       "edit": "Edit",
       "delete": "Delete",
       "block": "Block",
-      "unblock": "Unblock"
+      "unblock": "Unblock",
+      "retry": "Retry"
     },
     "details": {
       "title": "User Details",
@@ -154,7 +155,8 @@
         "delete_error": "Failed to delete user",
         "update_error": "Failed to update user",
         "block_error": "Failed to change user block status",
-        "network_error": "Check internet connection or try again later"
+        "network_error": "Check internet connection or try again later",
+        "title": "Error occured"
       },
       "success": {
         "delete_success": "User deleted successfully",

@@ -52,7 +52,11 @@ export const UserManagementStore = signalStore(
       ),
     );
 
-    const handleError = (err: any, key: string) => {
+    const handleError = (
+      err: any,
+      key: string,
+      shouldAutoHide: boolean = true,
+    ) => {
       if (err.status === 0) {
         const networkMsg = translate.instant(UserErrorKeys.NETWORK_ERROR);
 
@@ -63,7 +67,9 @@ export const UserManagementStore = signalStore(
         });
 
         alertService.showAlert('error', networkMsg);
-        _triggerAutoHide();
+        if (shouldAutoHide) {
+          _triggerAutoHide();
+        }
         return EMPTY;
       }
 
@@ -91,10 +97,10 @@ export const UserManagementStore = signalStore(
           tap(() => patchState(store, { loading: true, error: null })),
           switchMap(() =>
             service.getAllUsers().pipe(
-              tap((users) => {
-                patchState(store, { users, loading: false });
-              }),
-              catchError((err) => handleError(err, UserErrorKeys.LOAD_USERS)),
+              tap((users) => patchState(store, { users, loading: false })),
+              catchError((err) =>
+                handleError(err, UserErrorKeys.LOAD_USERS, false),
+              ),
             ),
           ),
         ),
