@@ -2,26 +2,27 @@ import { WidgetItem } from '../models/customizable-widgets.model';
 
 export const WIDGET_ITEMS: WidgetItem[] = [
   {
-    title: 'Recent Transactions',
+    title: 'dashboard.onboarding.customizable-widgets.transactions.title',
     description:
-      'View your latest transactions with details. Adjust display count (5-20) and use the repeat button for quick re-payments.',
+      'dashboard.onboarding.customizable-widgets.transactions.description',
     color: 'green',
   },
   {
-    title: 'Accounts Overview',
+    title: 'dashboard.onboarding.customizable-widgets.accounts.title',
     description:
-      'Monitor all account balances, see recent changes, hide/show balances with the eye icon, and add new accounts.',
+      'dashboard.onboarding.customizable-widgets.accounts.description',
     color: 'green',
   },
   {
-    title: 'Live Exchange Rates',
+    title: 'dashboard.onboarding.customizable-widgets.exchange.title',
     description:
-      'Stay updated with real-time currency and cryptocurrency values. Click refresh for the latest market data.',
+      'dashboard.onboarding.customizable-widgets.exchange.description',
     color: 'green',
   },
   {
-    title: 'Pro Tip: Grab any widget by the grip icon (⠿) and drag to reorder!',
-    description: '',
+    title: 'dashboard.onboarding.customizable-widgets.pro-tip.title',
+    description:
+      'dashboard.onboarding.customizable-widgets.pro-tip.description',
     color: 'yellow',
   },
 ] as const;

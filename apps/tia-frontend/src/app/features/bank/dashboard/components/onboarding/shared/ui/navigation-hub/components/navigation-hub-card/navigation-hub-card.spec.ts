@@ -3,6 +3,7 @@ import { NavigationHubCard } from './navigation-hub-card';
 import { By } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { NavigationHubItem } from '../../models/navigation-hub.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 const mockItem: NavigationHubItem = {
   icon: 'images/svg/onboarding/dashboard.svg',
@@ -16,7 +17,7 @@ describe('NavigationHubCard', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NavigationHubCard],
+      imports: [NavigationHubCard, TranslateModule.forRoot()],
     }).compileComponents();
     fixture = TestBed.createComponent(NavigationHubCard);
     component = fixture.componentInstance;
@@ -32,10 +33,8 @@ describe('NavigationHubCard', () => {
     const title = fixture.debugElement.query(By.css('.nav-card__title'));
     const desc = fixture.debugElement.query(By.css('.nav-card__desc'));
 
-    expect(title.nativeElement.textContent).toContain('Dashboard');
-    expect(desc.nativeElement.textContent).toContain(
-      'Your financial overview and widgets',
-    );
+    expect(title.nativeElement.textContent).toContain(mockItem.title);
+    expect(desc.nativeElement.textContent).toContain(mockItem.description);
   });
 
   it('should render the icon image', () => {
