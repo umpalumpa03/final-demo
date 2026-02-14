@@ -8,7 +8,7 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { PaybillTemplates } from '../components/paybill-templates';
+import { PaybillTemplates } from '../components/paybill-templates/paybill-templates';
 import { Store } from '@ngrx/store';
 import {
   selectCategories,
@@ -31,7 +31,7 @@ import {
 } from '../../../store/paybill.actions';
 import {
   FormSubmitPayload,
-  formSubmitType,
+  FormSubmitType,
   HeaderCtaAction,
   ModalType,
   ProviderTypeForStore,
@@ -73,13 +73,14 @@ import { TranslatePipe } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillTemplatesContainer implements OnInit {
+  // Create Forms
   private readonly fb = inject(FormBuilder);
   public createTemplateForm = createTemplateForm(this.fb);
   public editTemplateForm = createEditTemplateForm(this.fb);
   public editGroupForm = createEditGroupForm(this.fb);
   public createGroupForm = createGroupForm(this.fb);
 
-  // //////////////////
+  // inject store and services
   private readonly store = inject(Store);
   private readonly payBill = inject(PaybillDynamicForm);
   private readonly actions$ = inject(Actions);
@@ -150,7 +151,7 @@ export class PaybillTemplatesContainer implements OnInit {
 
   // Action Map
   private readonly formSubmitHandlers: Record<
-    formSubmitType,
+    FormSubmitType,
     (values: Record<string, string>) => void
   > = {
     'create-group': (values) => {
@@ -195,9 +196,6 @@ export class PaybillTemplatesContainer implements OnInit {
         }),
       );
     },
-    'confirm-payment': (values) => {},
-    'delete-group': (values) => {},
-    'delete-template': (values) => {},
   };
 
   public readonly searchControl = new FormControl('');
@@ -483,6 +481,8 @@ export class PaybillTemplatesContainer implements OnInit {
       }),
     );
   }
+
+  // If I select a single item
   public onSelectedItem(selectedItemId: string) {
     this.store.dispatch(TemplatesPageActions.clearPaymentInfo());
     const selectedTemplates = [];
@@ -499,6 +499,7 @@ export class PaybillTemplatesContainer implements OnInit {
       }),
     );
   }
+  // Here logic if otp is open or not
   public isOtpModalOpen = signal(false);
   public isPaymentModalHidden = signal(false);
 

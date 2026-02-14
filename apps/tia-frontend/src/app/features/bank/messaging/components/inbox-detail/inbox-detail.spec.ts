@@ -41,6 +41,7 @@ describe('InboxDetail', () => {
       deleteMail: vi.fn(),
       togleFavorite: vi.fn(),
       isLoading: signal(false),
+      error: signal(null),
       isFavoriteLoading: signal(false),
       isDeleting: signal(false),
       deleteSuccess: signal(false),

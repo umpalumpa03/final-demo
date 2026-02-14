@@ -76,13 +76,14 @@ export class TransactionsActionsService {
     this.facade.setTransactionToRepeat(transaction);
 
     let route = '/bank/transfers/';
-    if (transaction.transferType === 'BillPayment') route = '/bank/paybill';
-    else if (transaction.transferType === 'OwnAccount')
+
+    if (transaction.transferType === 'BillPayment') {
+      route = '/bank/paybill';
+    } else if (transaction.transferType.startsWith('OwnAccount')) {
       route = '/bank/transfers/internal';
-    else if (
-      ['ToSomeoneSameBank', 'ToSomeoneOtherBank'].includes(
-        transaction.transferType,
-      )
+    } else if (
+      transaction.transferType === 'ToSomeoneSameBank' ||
+      transaction.transferType === 'ToSomeoneOtherBank'
     ) {
       route = '/bank/transfers/external';
     }
