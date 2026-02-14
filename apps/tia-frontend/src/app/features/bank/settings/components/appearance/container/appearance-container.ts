@@ -95,6 +95,7 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
         }),
         tap((themes) => {
           this.availableThemes.set(themes);
+          console.log('Available themes:', themes);
         }),
       )
       .subscribe();
