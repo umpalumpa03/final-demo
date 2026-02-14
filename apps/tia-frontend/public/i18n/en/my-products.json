@@ -34,7 +34,8 @@
     "form": {
       "friendlyName": {
         "label": "Account Name",
-        "placeholder": "e.g., Emergency Fund"
+        "placeholder": "e.g., Emergency Fund",
+        "tooLong": "Account name is too long. Please use a shorter name."
       },
       "type": {
         "label": "Account Type",

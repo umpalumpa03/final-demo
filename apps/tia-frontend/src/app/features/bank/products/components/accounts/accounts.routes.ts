@@ -1,5 +1,5 @@
 import { Route } from '@angular/router';
-import { FormatUtils } from './utils/format-date.utils';
+import { FormatUtils } from './shared/utils/format-date.utils';
 import { AccountsApiService } from '../../../../../shared/services/accounts/accounts.api.service';
 import { AccountUtils } from '@tia/shared/utils/accounts-icons/account.utils';
 

@@ -127,15 +127,10 @@
           max-height: 2.6rem;
         }
 
-        &-buttons {
-          @include flex-center($justify: flex-start);
-          gap: 0.5rem;
-        }
-
         &-error {
           @include font-arimo(400, 1.2rem, 1.4);
           color: $red-600;
-          margin: 0.5rem 0 0 0;
+          margin: 1rem 0 0 0;
           padding: 0.5rem;
           background: $red-50;
           border-radius: 0.4rem;
@@ -215,10 +210,6 @@
   .account-card {
     &__header {
       &-info {
-        &-name {
-          @include font-arimo(500, 1.6rem, 1.2);
-        }
-
         &-number {
           @include font-arimo(400, 1.15rem, 1.5);
         }
@@ -253,10 +244,6 @@
   .account-card {
     &__header {
       &-info {
-        &-name {
-          @include font-arimo(500, 1.4rem, 1.2);
-        }
-
         &-number {
           @include font-arimo(400, 1.1rem, 1.5);
         }
@@ -320,10 +307,6 @@
           h3 {
             @include font-arimo(500, 1.8rem, 1.2);
           }
-        }
-
-        &-name {
-          @include font-arimo(500, 1.7rem, 1.2);
         }
 
         &-number {

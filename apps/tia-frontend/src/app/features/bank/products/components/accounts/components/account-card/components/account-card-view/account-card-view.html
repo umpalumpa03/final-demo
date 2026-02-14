@@ -74,8 +74,8 @@
           </div>
         </app-tooltip>
         <p class="account-card__header-info-number">{{ account().iban }}</p>
-        } @if (isEditing() && renameError()) {
-        <p class="account-card__header-info-edit-error">{{ renameError() }}</p>
+        } @if (isEditing() && displayError()) {
+        <p class="account-card__header-info-edit-error">{{ displayError() }}</p>
         }
       </div>
     </div>
