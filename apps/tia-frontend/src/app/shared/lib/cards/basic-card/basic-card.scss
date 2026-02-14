@@ -2,29 +2,27 @@
 @use '../../../styles/palette' as *;
 
 .card {
-  background-color: $white;
+  background-color: var(--color-primary);
   border: 0.16rem solid $blue-400;
   border-radius: 1.4rem;
   box-shadow:
-  0rem 0.1rem 0.3rem 0rem rgba(0, 0, 0, 0.1),
-  0rem 0.1rem 0.2rem -0.1rem rgba(0, 0, 0, 0.1);
+    0rem 0.1rem 0.3rem 0rem rgba(0, 0, 0, 0.1),
+    0rem 0.1rem 0.2rem -0.1rem rgba(0, 0, 0, 0.1);
   padding: 2.4rem 2.4rem 0;
   max-width: 33.4rem;
   width: 100%;
   min-height: 22rem;
   height: 100%;
   @include display-flex(column);
-  gap:2.4rem;
-   transition: all 0.3s ease;
+  gap: 2.4rem;
 
   &--hover {
     &:hover {
       box-shadow: 0 0.4rem 1.2rem rgba(2, 132, 199, 0.15);
       transform: translateY(-0.2rem);
       border-color: $blue-500;
-
-       }
     }
+  }
 
   @media (max-width: 480px) {
     padding: 1.6rem 1.6rem 0;
@@ -32,6 +30,8 @@
     gap: 1.8rem;
   }
   @media (max-width: 350px) {
+    padding: 0.6rem 0.6rem 0;
+
     min-height: 17rem;
     gap: 0.8rem;
   }
@@ -39,7 +39,6 @@
   &__header {
     @include display-flex(column);
     gap: 0.6rem;
-
   }
   &__title {
     @include font-inter(400, 1.6rem, 1.6rem);
@@ -59,19 +58,17 @@
       @media (max-width: 480px) {
         font-size: 1.2rem;
       }
-
     }
   }
 
   &__footer {
-    @include flex-center(row,start,center);
+    @include flex-center(row, start, center);
     gap: 0.8rem;
     padding: 1.2rem 0;
 
     @media (max-width: 480px) {
       gap: 0.5rem;
-      margin-top:0;
-      padding: 0.5rem 0 0;
+      margin-top: 0;
     }
   }
 }

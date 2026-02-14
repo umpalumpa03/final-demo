@@ -163,10 +163,7 @@ export const selectCardCreationData = createSelector(
     accounts,
   }),
 );
-export const selectShowSuccessAlert = createSelector(
-  selectCardsState,
-  (state: CardsState): boolean => state.showSuccessAlert,
-);
+
 export const selectCardCreationDataLoading = createSelector(
   selectCardsState,
   (state: CardsState): boolean => state.loading,
@@ -275,11 +272,7 @@ export const selectCardSensitiveDataById = (cardId: string) =>
     (data: Record<string, CardSensitiveData>): CardSensitiveData | null =>
       data[cardId] || null,
   );
-export const selectGlobalAlert = createSelector(
-  selectCardsState,
-  (state: CardsState): { message: string; alertType: 'success' | 'error' } | null =>
-    state.globalAlert,
-);
+
 export const selectOtpRemainingAttempts = createSelector(
   selectCardsState,
   (state: CardsState): number => state.otpRemainingAttempts,

@@ -15,7 +15,6 @@ import {
   selectCardTypes,
   selectIsCreating,
   selectCreateError,
-  selectShowSuccessAlert,
   selectCardCreationDataLoading,
   selectIsCardDetailsModalOpen,
   selectSelectedCardIdForModal,
@@ -63,7 +62,6 @@ describe('CardsSelectors - Full Coverage', () => {
   isCreating: true,
   createError: 'create failed',
   isCreateModalOpen: true,
-  showSuccessAlert: true,
   isCardDetailsModalOpen: false,
   selectedCardIdForModal: null,
   cardImagesLoading: false,
@@ -75,8 +73,7 @@ describe('CardsSelectors - Full Coverage', () => {
   selectedCardIdForOtp: null,
   otpLoading: false,
   otpError: null,
-  showOtpSuccessAlert: false,
-  globalAlert: null,
+  showOtpSuccessAlert: false,  
   otpRemainingAttempts: 3,
   currentCardIndex: 0,
   currentAccountId: 'acc-1',
@@ -160,9 +157,6 @@ it('should select all accounts', () => {
     expect(selectCreateError.projector(mockState)).toBe('create failed');
   });
 
-  it('should select showSuccessAlert', () => {
-    expect(selectShowSuccessAlert.projector(mockState)).toBe(true);
-  });
 
   it('should select cardCreationDataLoading', () => {
     expect(selectCardCreationDataLoading.projector(mockState)).toBe(false);

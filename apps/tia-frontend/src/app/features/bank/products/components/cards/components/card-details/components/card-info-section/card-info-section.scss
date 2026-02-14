@@ -4,11 +4,11 @@
 .card-details__info-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 2.4rem;
+  gap: 1.4rem;
 
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
-    gap: 1.6rem;
+    gap: 1.2rem;
   }
 }
 

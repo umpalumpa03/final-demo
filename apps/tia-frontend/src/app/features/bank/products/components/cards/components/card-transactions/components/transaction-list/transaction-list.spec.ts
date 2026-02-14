@@ -24,20 +24,21 @@ describe('TransactionList', () => {
       updatedAt: '2024-01-01T10:00:00Z',
     },
   ];
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [TransactionList],
-    }).compileComponents();
 
-    fixture = TestBed.createComponent(TransactionList);
-    component = fixture.componentInstance;
-  });
+beforeEach(async () => {
+  await TestBed.configureTestingModule({
+    imports: [TransactionList],
+  }).compileComponents();
+  
 
-  it('should create and render with transactions', () => {
-    fixture.componentRef.setInput('transactions', mockTransactions);
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
-  });
+  fixture = TestBed.createComponent(TransactionList);
+  component = fixture.componentInstance;
+  
+  fixture.componentRef.setInput('transactions', mockTransactions);
+  fixture.componentRef.setInput('uncategorizedText', 'Uncategorized');
+  fixture.componentRef.setInput('locale', 'en-US');
+  fixture.detectChanges();
+});
 
   it('should format date correctly', () => {
     const formatted = component['formatDate']('2024-01-14T10:00:00Z');

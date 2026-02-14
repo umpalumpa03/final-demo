@@ -31,7 +31,10 @@ export class CreateCardForm {
 
   readonly formSubmit = output<void>();
   readonly formCancel = output<void>();
-
+readonly formConfigs = input.required<{
+  cardName: { placeholder: string };
+  accountId: { placeholder: string };
+}>();
   protected onSubmit(): void {
     if (this.formGroup().valid) {
       this.formSubmit.emit();

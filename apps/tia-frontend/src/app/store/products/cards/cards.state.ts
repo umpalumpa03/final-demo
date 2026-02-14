@@ -19,7 +19,6 @@ export interface CardsState {
   isCreating: boolean;
   createError: string | null;
   isCreateModalOpen: boolean;
-  showSuccessAlert: boolean;
   isCardDetailsModalOpen: boolean;
   selectedCardIdForModal: string | null;
   cardImagesLoading: boolean;
@@ -32,7 +31,6 @@ export interface CardsState {
   otpLoading: boolean;
   otpError: string | null;
   showOtpSuccessAlert: boolean;
-  globalAlert: { message: string; alertType: 'success' | 'error' } | null;
   currentCardIndex: number;
   currentAccountId: string | null;
   otpRemainingAttempts: number;
@@ -56,7 +54,6 @@ export const initialCardsState: CardsState = {
   isCreating: false,
   createError: null,
   isCreateModalOpen: false,
-  showSuccessAlert: false,
   isCardDetailsModalOpen: false,
   selectedCardIdForModal: null,
   cardImagesLoading: true,
@@ -69,7 +66,6 @@ export const initialCardsState: CardsState = {
   otpLoading: false,
   otpError: null,
   showOtpSuccessAlert: false,
-  globalAlert: null,
   otpRemainingAttempts: 3,
   currentCardIndex: 0,
   currentAccountId: null,

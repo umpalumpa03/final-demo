@@ -18,6 +18,7 @@ import * as CardsSelectors from '../../../../../../../../store/products/cards/ca
 import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
 import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 import { TranslateModule } from '@ngx-translate/core';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 interface MockStore {
   select: Mock;
@@ -108,6 +109,14 @@ describe('CardDetails', () => {
         { provide: Store, useValue: storeMock },
         { provide: Router, useValue: routerMock },
         { provide: ActivatedRoute, useValue: activatedRouteMock },
+        { provide: AlertService, useValue: { 
+  isVisible: vi.fn().mockReturnValue(false),
+  alertType: vi.fn().mockReturnValue(null),
+  alertMessage: vi.fn().mockReturnValue(''),
+  success: vi.fn(),
+  error: vi.fn(),
+  clearAlert: vi.fn()
+}}
       ],
     }).compileComponents();
 
@@ -124,36 +133,15 @@ describe('CardDetails', () => {
   });
 
   it('should dispatch actions on init', () => {
+    
+    
     expect(store.dispatch).toHaveBeenCalledWith(loadCardAccounts({}));
     expect(store.dispatch).toHaveBeenCalledWith(
       loadCardDetails({ cardId: mockCardId }),
     );
   });
 
-  it('should navigate back', () => {
-    component['handleBack']();
-    expect(router.navigate).toHaveBeenCalled();
-  });
 
-  it('should navigate to internal transfer', () => {
-    component['handleTransferOwn']();
-    expect(router.navigate).toHaveBeenCalledWith(['/bank/transfers/internal']);
-  });
-
-  it('should navigate to external transfer', () => {
-    component['handleTransferExternal']();
-    expect(router.navigate).toHaveBeenCalledWith(['/bank/transfers/external']);
-  });
-
-  it('should navigate to paybill', () => {
-    component['handlePaybill']();
-    expect(router.navigate).toHaveBeenCalledWith(['/bank/paybill']);
-  });
-
-  it('should navigate to transactions', () => {
-    component['handleViewTransactions']();
-    expect(router.navigate).toHaveBeenCalled();
-  });
 
   it('should dispatch openCardDetailsModal', () => {
     component['handleOpenDetailsModal']();
@@ -208,6 +196,27 @@ describe('CardDetails', () => {
   expect(store.dispatch).toHaveBeenCalledWith(navigateToPreviousCard());
 });
 
+it('should handle view transactions', () => {
+  component['handleViewTransactions']();
+  expect(router.navigate).toHaveBeenCalledWith(['/bank/products/cards/transactions', mockCardId]);
+});
 
+it('should handle retry', () => {
+  store.dispatch = vi.fn();
+  component['handleRetry']();
+  expect(store.dispatch).toHaveBeenCalledWith(loadCardAccounts({}));
+  expect(store.dispatch).toHaveBeenCalledWith(loadCardDetails({ cardId: mockCardId }));
+});
+
+it('should handle back with multiple cards', () => {
+  store.select = vi.fn((selector) => {
+    if (selector.name?.includes('selectCardDetails')) return of(mockCardDetails);
+    if (selector === CardsSelectors.selectAllAccounts) return of([{ ...mockAccount, cardIds: ['card-1', 'card-2'] }]);
+    return of(null);
+  });
+  
+  component['handleBack']();
+  expect(router.navigate).toHaveBeenCalledWith(['/bank/products/cards/account', 'acc-123']);
+});
 
 });

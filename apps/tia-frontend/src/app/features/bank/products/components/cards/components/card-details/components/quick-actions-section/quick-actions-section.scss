@@ -1,7 +1,11 @@
-@use "../../../../../../../../../shared/styles/mixins" as *;
+@use '../../../../../../../../../shared/styles/mixins' as *;
 
 .card-details__actions-grid {
-  @include display-flex(column);
+  @include flex-center(column);
   gap: 1.2rem;
   width: 100%;
+
+  app-button {
+    width: 100%;
+  }
 }
