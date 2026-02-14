@@ -76,6 +76,7 @@ describe('PaybillEffect (Refactored)', () => {
     const routerMock = {
       navigate: vi.fn(),
       events: of(),
+      url: '/bank/paybill/pay',
     };
 
     const alertServiceMock = { success: vi.fn(), error: vi.fn() };
