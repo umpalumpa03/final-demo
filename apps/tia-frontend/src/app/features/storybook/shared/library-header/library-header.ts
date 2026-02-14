@@ -10,8 +10,6 @@ import { Store } from '@ngrx/store';
 import { selectActiveTheme } from 'apps/tia-frontend/src/app/store/theme/theme.selectors';
 import { ThemeActions } from 'apps/tia-frontend/src/app/store/theme/theme.actions';
 import { RouterLink } from '@angular/router';
-import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
-import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-library-header',
