@@ -5,6 +5,8 @@ import {
   computed,
   OnInit,
   inject,
+  effect,
+  untracked,
 } from '@angular/core';
 import { DragContainer } from '../../../../shared/lib/drag-n-drop/components/drag-container/drag-container';
 import { DraggableCard } from '../../../../shared/lib/drag-n-drop/components/draggable-card/draggable-card';
@@ -41,8 +43,9 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
 import { DashboardService } from '../services/dashboard.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { Onboarding } from '../components/onboarding/onboarding';
-import { ErrorStates } from "@tia/shared/lib/feedback/error-states/error-states";
-import { Tooltip } from "@tia/shared/lib/data-display/tooltip/tooltip";
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
+import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
+import { DraggableItemType } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 @Component({
   selector: 'app-dashboard-container',
   imports: [
@@ -64,8 +67,8 @@ import { Tooltip } from "@tia/shared/lib/data-display/tooltip/tooltip";
     ErrorStates,
     Tooltip,
     BirthdayModalComponent,
-    UiModal
-],
+    UiModal,
+  ],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -78,20 +81,16 @@ export class DashboardContainer implements OnInit {
   private readonly breakpointService = inject(BreakpointService);
 
   protected readonly myItems = this.dashService.myItems;
+  protected readonly processedVisibleItems = this.dashService.processedItems;
+  protected readonly gridColumns = this.dashService.gridColumns;
+  protected readonly dynamicColspans = this.dashService.dynamicColspans;
+  protected readonly accountsHidden = this.dashService.accountsHidden; // vaxtang fiso es gchirdeba shen inputad gaukete shen komponentshi
   protected readonly widgetCatalog = this.dashService.widgetCatalog;
   protected readonly visibleItems = this.dashService.visibleItems;
   protected readonly isLoading = this.store.selectSignal(selectWidgetsLoading);
 
   protected readonly isCustomizing = signal(false);
   protected readonly bannerConfig = signal(bannerSlides);
-  protected readonly gridColumns = computed(() => {
-    const itemCount = this.visibleItems().length;
-    const isVertical = this.breakpointService.isXsMobile() || itemCount < 3;
-
-    return isVertical
-      ? { default: 1, md: 1, sm: 1 }
-      : { default: 2, md: 2, sm: 1 };
-  });
 
   protected readonly draftSelection = signal<string[]>([]);
 
@@ -122,6 +121,12 @@ export class DashboardContainer implements OnInit {
   }
 
   public onFoldWidget(isSelected: boolean, id: string): void {
+    const item = this.myItems().find((w) => w.id === id);
+
+    if (item?.type === 'accounts') {
+      this.accountsHidden.set(!isSelected);
+    }
+
     this.dashService.foldWidget(isSelected, id);
   }
 
@@ -141,16 +146,6 @@ export class DashboardContainer implements OnInit {
     }
     return this.myItems().some((w) => w.id === id);
   }
-
-  public dynamicColspans = computed(() => {
-    const items = this.visibleItems();
-    const isVertical = this.breakpointService.isXsMobile() || items.length < 3;
-
-    return items.map((_, index) => {
-      if (isVertical) return 1;
-      return index === 0 ? 2 : 1;
-    });
-  });
 
   public onWidgetRefresh(): void {
     this.store.dispatch(clearExchangeRates());
@@ -174,7 +169,6 @@ export class DashboardContainer implements OnInit {
   protected readonly isBirthdayVisible = this.birthdayLogic.isModalVisible;
   public onBirthdayDismiss = () => this.birthdayLogic.dismiss();
 
-
   ngOnInit(): void {
     if (!this.store.selectSignal(selectWidgetsLoaded)()) {
       this.store.dispatch(UserInfoActions.loadWidgets({}));
@@ -182,6 +176,5 @@ export class DashboardContainer implements OnInit {
     this.store.dispatch(TransactionActions.enter());
     this.store.dispatch(loadExchangeRates({ baseCurrency: 'USD' }));
     this.store.dispatch(AccountsActions.loadAccounts({}));
-
   }
 }
