@@ -12,7 +12,6 @@ import { ITransactionFilter } from '@tia/shared/models/transactions/transactions
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import { CategorizeModal } from '../components/categorize-modal/categorize-modal';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
-import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
 import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { TransactionsFacadeService } from '../services/transactions-facade.service';
@@ -30,7 +29,6 @@ import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states'
     ScrollArea,
     CategorizeModal,
     UiModal,
-    SimpleAlerts,
     LibraryTitle,
     TranslatePipe,
     TranslateModule,

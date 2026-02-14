@@ -13,7 +13,6 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 import { DatePipe } from '@angular/common';
-import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 import {
   CATEGORIZE_MODAL_CONFIG,
   CATEGORY_SELECT_CONFIG,
@@ -35,7 +34,6 @@ import { AlertService } from '@tia/core/services/alert/alert.service';
     ButtonComponent,
     DatePipe,
     ReactiveFormsModule,
-    SimpleAlerts,
     TranslateModule,
     TranslatePipe,
     Tooltip,
