@@ -10,7 +10,6 @@ import { TransferUtilsService } from './transfer-utils.service';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { ITransactions } from 'apps/tia-frontend/src/app/shared/models/transactions/transactions.models';
 import { RecipientAccount } from '../models/transfers.state.model';
-import { TransferInternalService } from '../components/transfers-internal/services/transfer.internal.service';
 
 @Injectable()
 export class TransferRepeatService {
