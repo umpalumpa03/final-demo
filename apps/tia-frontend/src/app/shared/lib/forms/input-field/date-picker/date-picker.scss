@@ -1,0 +1,210 @@
+@use "../../../../styles/palette" as *;
+@use "../../../../styles/mixins" as *;
+
+.date-picker {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    left: 0;
+    background: $white;
+    border-radius: 0.8rem;
+    box-shadow: 0 0.8rem 2.4rem rgba($black, 0.12);
+    padding: 1.2rem;
+    z-index: 1000;
+    min-width: 25rem;
+    border: 1px solid var(--color-primary);
+    animation: fadeIn 0.2s ease-in-out;
+
+    &__header {
+        @include flex-center($justify: space-between);
+        margin-bottom: 1.2rem;
+    }
+
+    &__nav-btn {
+        @include flex-center;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0.4rem;
+        border-radius: 0.6rem;
+        color: $gray-550;
+        transition: background 0.2s;
+
+        &:hover {
+            background: $gray-50;
+            color: $gray-800;
+        }
+    }
+
+    &__title {
+        @include display-flex;
+        @include font-inter(600, 1.3rem);
+        gap: 0.4rem;
+        color: $gray-800;
+    }
+
+    &__title-btn {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+        color: inherit;
+        padding: 0.2rem 0.6rem;
+        border-radius: 0.4rem;
+        transition: background 0.2s;
+
+        &:hover {
+            background: $blue-royal-light;
+            color: $blue-royal;
+        }
+    }
+
+    &__weekdays {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        margin-bottom: 0.4rem;
+    }
+
+    &__weekday {
+        @include font-inter(600, 1.1rem);
+        text-align: center;
+        color: $gray-500;
+        padding: 0.4rem 0;
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.2rem;
+    }
+
+    &__day {
+        @include flex-center();
+        @include font-inter(500, 1.3rem);
+        aspect-ratio: 1;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        border-radius: 0.6rem;
+        color: $gray-800;
+        transition: background 0.2s;
+        padding: 0;
+
+        &:hover:not(&--disabled) {
+            background: $gray-50;
+        }
+
+        &--other-month {
+            color: $gray-200;
+        }
+
+        &--today {
+            color: $blue-royal;
+            font-weight: 700;
+            background: $blue-royal-light;
+        }
+
+        &--selected {
+            background: $blue-royal !important;
+            color: $white !important;
+        }
+
+        &--disabled {
+            color: $gray-200;
+            cursor: not-allowed;
+        }
+    }
+
+    &__selection-grid {
+        @include custom-scrollbar;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.8rem;
+        padding: 0.4rem 0.4rem 0.4rem 0;
+        max-height: 20rem;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    &__selection-item {
+        @include font-inter(400, 1.2rem);
+        padding: 0.8rem;
+        background: transparent;
+        border: 1px solid $gray-200;
+        border-radius: 0.6rem;
+        color: $gray-800;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover:not(&--disabled) {
+            border-color: $blue-royal;
+            color: $blue-royal;
+            background: $blue-royal-light;
+        }
+
+        &--active {
+            background: $blue-royal;
+            color: $white;
+            border-color: $blue-royal;
+
+            &:hover {
+                background: $blue-deep;
+                color: $white;
+            }
+        }
+
+        &--disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: $gray-50;
+            border-color: transparent;
+            color: $gray-400;
+        }
+    }
+
+    &__footer {
+        @include display-flex;
+        gap: 0.8rem;
+        margin-top: 1.2rem;
+        padding-top: 1.2rem;
+        border-top: 1px solid $gray-50;
+    }
+
+    &__action-btn {
+        @include font-inter(600, 1.2rem);
+        flex: 1;
+        padding: 0.8rem;
+        border-radius: 0.6rem;
+        cursor: pointer;
+        border: none;
+        transition: background 0.2s;
+
+        &--secondary {
+            background: $gray-50;
+            color: $gray-800;
+            &:hover {
+                background: $gray-200;
+            }
+        }
+
+        &--primary {
+            background: $blue-royal;
+            color: $white;
+            &:hover {
+                background: $blue-deep;
+            }
+        }
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-0.5rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
