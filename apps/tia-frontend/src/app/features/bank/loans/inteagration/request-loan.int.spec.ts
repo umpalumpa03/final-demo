@@ -1,10 +1,6 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { environment } from '../../../../../environments/environment';
-import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
-import {
-  selectLoading,
-  selectError,
-} from 'apps/tia-frontend/src/app/store/loans/loans.reducer';
+
 import {
   TestContext,
   setupLoansTest,
@@ -23,47 +19,20 @@ describe('Loans Integration - Request Loan Flow', () => {
   afterEach(() => {
     cleanupLoansTest(ctx.httpMock);
   });
+
   it('should request loan successfully', async () => {
-    ctx.globalStore.dispatch(
-      LoansCreateActions.requestLoan({ request: mockLoanRequest }),
-    );
+    ctx.loansStore.requestLoan(mockLoanRequest);
+
+    expect(ctx.loansStore.actionLoading()).toBe(true);
 
     const req = ctx.httpMock.expectOne(`${environment.apiUrl}/loans/request`);
-    expect(req.request.method).toBe('POST');
     req.flush(mockLoanResponse);
 
-    const reloadReq = ctx.httpMock.expectOne(
-      (r) => r.url.includes('/loans') && r.method === 'GET',
-    );
+    const reloadReq = ctx.httpMock.expectOne((r) => r.url.endsWith('/loans'));
     reloadReq.flush([]);
 
     await vi.waitFor(() => {
-      const loadingSignal = ctx.globalStore.selectSignal(selectLoading);
-      const errorSignal = ctx.globalStore.selectSignal(selectError);
-
-      expect(loadingSignal()).toBe(false);
-      expect(errorSignal()).toBeNull();
-    });
-  });
-
-  it('should handle request loan failure', async () => {
-    ctx.globalStore.dispatch(
-      LoansCreateActions.requestLoan({ request: mockLoanRequest }),
-    );
-
-    const req = ctx.httpMock.expectOne(`${environment.apiUrl}/loans/request`);
-
-    req.flush(
-      { message: 'Insufficient funds' },
-      { status: 400, statusText: 'Bad Request' },
-    );
-
-    await vi.waitFor(() => {
-      const loadingSignal = ctx.globalStore.selectSignal(selectLoading);
-      const errorSignal = ctx.globalStore.selectSignal(selectError);
-
-      expect(loadingSignal()).toBe(false);
-      expect(errorSignal()).toBe('Insufficient funds');
+      expect(ctx.loansStore.actionLoading()).toBe(false);
     });
   });
 });

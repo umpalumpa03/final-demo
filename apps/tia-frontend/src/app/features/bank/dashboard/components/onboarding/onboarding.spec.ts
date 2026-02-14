@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { signal } from '@angular/core';
 import { UserInfoActions } from 'apps/tia-frontend/src/app/store/user-info/user-info.actions';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('Onboarding', () => {
   let component: Onboarding;
@@ -17,7 +18,7 @@ describe('Onboarding', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [Onboarding],
+      imports: [Onboarding, TranslateModule.forRoot()],
       providers: [{ provide: Store, useValue: storeMock }],
     }).compileComponents();
 

@@ -1,7 +1,5 @@
-@use "../../../../../reset" as *;
 @use "../../../styles/palette" as *;
 @use "../../../styles/mixins" as *;
-@use "../../../styles/variables" as *;
 
 .text-input {
     @include display-flex(column);
@@ -45,6 +43,8 @@
 
         overflow-y: auto;
         transition: height 0.1s ease;
+
+        @include custom-scrollbar;
 
         &::placeholder {
             color: var(--color-fg);

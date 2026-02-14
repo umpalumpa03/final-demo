@@ -6,16 +6,15 @@ import {
 } from '@angular/common/http/testing';
 import { provideStore, Store } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
-import { provideTranslateService } from '@ngx-translate/core';
+import { provideTranslateService, TranslateModule } from '@ngx-translate/core';
 
-import { LoanCreateService } from '@tia/shared/services/loans/loan-create.service';
 import { LoansService } from '../shared/services/loans.service';
 import { LoansStore } from '../store/loans.store';
-import { LoanCreateEffects } from 'apps/tia-frontend/src/app/store/loans/loans.effects';
-import { loansReducer } from 'apps/tia-frontend/src/app/store/loans/loans.reducer';
 
 import { ILoan } from '../shared/models/loan.model';
 import { ILoanRequest } from '../shared/models/loan-request.model';
+import { provideMockStore } from '@ngrx/store/testing';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 export const mockLoanRequest: ILoanRequest = {
   loanAmount: 5000,
@@ -66,17 +65,14 @@ export interface TestContext {
 
 export async function setupLoansTest(): Promise<TestContext> {
   await TestBed.configureTestingModule({
+    imports: [TranslateModule.forRoot()],
     providers: [
       provideHttpClient(),
       provideHttpClientTesting(),
-      provideTranslateService(),
-
-      provideStore({ loanCreate: loansReducer }),
-      provideEffects(LoanCreateEffects),
-      LoanCreateService,
-
+      provideMockStore({ initialState: {} }),
       LoansStore,
       LoansService,
+      AlertService,
     ],
   }).compileComponents();
 

@@ -1,4 +1,11 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import {
+  computed,
+  effect,
+  inject,
+  Injectable,
+  signal,
+  untracked,
+} from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as PAYBILL_SELECTORS from '../../../store/paybill.selectors';
@@ -7,8 +14,9 @@ import { CATEGORY_UI_MAP } from '../components/category-grid/config/category.con
 import { PaybillActions } from '../../../store/paybill.actions';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
-import { PaybillDynamicForm } from '../../../services/paybill-dynamic-form/paybill-dynamic-form';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
+import { PaybillProvider } from '../shared/models/paybill.model';
+import { selectTransactionToRepeat } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
 
 @Injectable({
   providedIn: 'root',
@@ -16,13 +24,50 @@ import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions
 export class PaybillMainFacade {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
-  private readonly dynamicFormService = inject(PaybillDynamicForm);
   public readonly searchQuery = signal('');
 
   public init(): void {
-    this.store.dispatch(PaybillActions.clearSelection());
+    this.store.dispatch(PaybillActions.loadCategories());
     this.store.dispatch(PaybillActions.initRepeatProcess());
     this.searchQuery.set('');
+
+    const url = this.router.url.split('?')[0];
+    const segments = url.split('/').filter((s) => s);
+    const payIndex = segments.indexOf('pay');
+
+    if (payIndex !== -1 && segments.length > payIndex + 1) {
+      const categoryId = segments[payIndex + 1];
+      this.store.dispatch(PaybillActions.selectCategory({ categoryId }));
+
+      if (segments.length > payIndex + 2) {
+        const providerId = segments[segments.length - 1];
+        this.store.dispatch(PaybillActions.selectProvider({ providerId }));
+      }
+    } else {
+      if (!this.transactionToRepeat()) {
+        this.store.dispatch(PaybillActions.clearSelection());
+      }
+    }
+  }
+
+  constructor() {
+    effect(() => {
+      const provider = this.activeProvider();
+
+      if (provider?.isFinal) {
+        const fields = untracked(() => this.paymentFields());
+
+        if (!fields || fields.length === 0) {
+          untracked(() => {
+            this.store.dispatch(
+              PaybillActions.loadPaymentDetails({
+                serviceId: provider.id,
+              }),
+            );
+          });
+        }
+      }
+    });
   }
 
   // select state from store
@@ -60,20 +105,51 @@ export class PaybillMainFacade {
     PAYBILL_SELECTORS.selectSelectedSenderAccountId,
   );
 
+  public readonly transactionToRepeat = this.store.selectSignal(
+    selectTransactionToRepeat,
+  );
+
   // Computed data for smart components
 
   public readonly activeProvider = computed(() => {
     const urlId = this.selectedParentId();
     const category = this.activeCategory();
+    const storeProvider = this.storeActiveProvider();
 
-    if (urlId && category?.providers) {
-      const providerFromUrl = category.providers.find((p) => p.id === urlId);
-
-      if (providerFromUrl) return providerFromUrl;
+    if (
+      storeProvider &&
+      (!urlId || storeProvider.id.toLowerCase() === urlId.toLowerCase())
+    ) {
+      return storeProvider;
     }
 
-    return this.storeActiveProvider();
+    if (urlId && category?.providers) {
+      const found = this.findProviderRecursive(category.providers, urlId);
+      if (found) return found;
+    }
+
+    return storeProvider || null;
   });
+
+  private findProviderRecursive(
+    providers: PaybillProvider[],
+    targetId: string,
+  ): PaybillProvider | null {
+    const lowerTarget = targetId.toLowerCase();
+
+    for (const p of providers) {
+      if (p.id?.toLowerCase() === lowerTarget) {
+        return p;
+      }
+
+      if (p.children && p.children.length > 0) {
+        const found = this.findProviderRecursive(p.children, targetId);
+        if (found) return found;
+      }
+    }
+
+    return null;
+  }
 
   public readonly urlSegments = toSignal(
     this.router.events.pipe(
@@ -83,6 +159,12 @@ export class PaybillMainFacade {
         return url.split('/').filter((p) => p);
       }),
     ),
+    {
+      initialValue: this.router.url
+        .split('?')[0]
+        .split('/')
+        .filter((p) => p),
+    },
   );
 
   public readonly selectedParentId = computed(() => {
@@ -159,12 +241,14 @@ export class PaybillMainFacade {
   }
 
   public updateSenderAccount(senderAccountId: string | null): void {
-    if(!senderAccountId) return;
+    if (!senderAccountId) return;
     const current = this.paymentPayload();
     if (current) {
-      this.store.dispatch(PaybillActions.setPaymentPayload({
-        data: { ...current, senderAccountId }
-      }));
+      this.store.dispatch(
+        PaybillActions.setPaymentPayload({
+          data: { ...current, senderAccountId },
+        }),
+      );
     }
   }
 }

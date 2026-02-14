@@ -10,10 +10,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { UiModal } from '../../../../../../../../../shared/lib/overlay/ui-modal/ui-modal';
 import { ButtonComponent } from '../../../../../../../../../shared/lib/primitives/button/button';
 import { TransferPermission } from '../../../../model/transfer-permission.model';
-import {
-  TRANSFER_PERMISSIONS,
-  VALID_PERMISSION_VALUES,
-} from '../../../../config/transfer-permissions.config';
+import { TRANSFER_PERMISSIONS } from '../../../../config/transfer-permissions.config';
 import { filterPermissionsByCurrency } from '../../../../utils/transfer-permissions.utils';
 
 @Component({
@@ -37,13 +34,6 @@ export class TransferPermissionsModalComponent {
   public readonly availablePermissions = computed(() => {
     const permission = this.accountPermission();
     const currency = this.accountCurrency();
-    if (
-      !VALID_PERMISSION_VALUES.includes(
-        permission as (typeof VALID_PERMISSION_VALUES)[number],
-      )
-    ) {
-      return [];
-    }
     return filterPermissionsByCurrency(
       this.permissions(),
       permission,

@@ -34,7 +34,15 @@
     "minLength": "Minimum {{min}} characters required",
     "maxLength": "Maximum {{max}} characters allowed",
     "unsavedChanges": "You have unsaved changes. Do you really want to leave?",
-    "confirmAction": "Confirm your action"
+    "confirmAction": "Confirm your action",
+    "notFound": "Email not found",
+    "pattern": "Invalid format",
+    "min": "Minimum value is {{min}}",
+    "max": "Maximum value is {{max}}",
+    "passwordStrength": "Password is too weak",
+    "passwordRules": "Password does not meet requirements",
+    "passwordMismatch": "Passwords do not match",
+    "default": "Invalid value"
   },
   "navigation": {
     "dashboard": "Dashboard",

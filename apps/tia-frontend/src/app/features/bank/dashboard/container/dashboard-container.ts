@@ -16,6 +16,9 @@ import { WidgetExchange } from '../components/widget-exchange/widget-exchange';
 import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import { Store } from '@ngrx/store';
+import { BirthdayModalComponent } from '../../../birthday/components/birthday-modal';
+import { BirthdayLogicService } from '../../../birthday/services/birthday-logic.service';
+import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import {
   clearExchangeRates,
@@ -38,6 +41,8 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
 import { DashboardService } from '../services/dashboard.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { Onboarding } from '../components/onboarding/onboarding';
+import { ErrorStates } from "@tia/shared/lib/feedback/error-states/error-states";
+import { Tooltip } from "@tia/shared/lib/data-display/tooltip/tooltip";
 @Component({
   selector: 'app-dashboard-container',
   imports: [
@@ -56,7 +61,11 @@ import { Onboarding } from '../components/onboarding/onboarding';
     Skeleton,
     RouteLoader,
     Onboarding,
-  ],
+    ErrorStates,
+    Tooltip,
+    BirthdayModalComponent,
+    UiModal
+],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -161,6 +170,11 @@ export class DashboardContainer implements OnInit {
     );
   }
 
+  private readonly birthdayLogic = inject(BirthdayLogicService);
+  protected readonly isBirthdayVisible = this.birthdayLogic.isModalVisible;
+  public onBirthdayDismiss = () => this.birthdayLogic.dismiss();
+
+
   ngOnInit(): void {
     if (!this.store.selectSignal(selectWidgetsLoaded)()) {
       this.store.dispatch(UserInfoActions.loadWidgets({}));
@@ -168,5 +182,6 @@ export class DashboardContainer implements OnInit {
     this.store.dispatch(TransactionActions.enter());
     this.store.dispatch(loadExchangeRates({ baseCurrency: 'USD' }));
     this.store.dispatch(AccountsActions.loadAccounts({}));
+
   }
 }

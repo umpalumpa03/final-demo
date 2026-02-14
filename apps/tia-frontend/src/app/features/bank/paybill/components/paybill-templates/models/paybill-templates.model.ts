@@ -18,6 +18,15 @@ export interface Templates {
   groupId: null | string;
 }
 
+export interface BillPaymentRequest {
+  serviceId: string;
+  identification: {
+    accountNumber: string;
+  };
+  amount: number;
+  senderAccountId: string;
+}
+
 export enum ModalType {
   Group = 'group',
   RenameGroup = 'renameGroup',
@@ -67,7 +76,9 @@ export type formSubmitType =
   | 'rename-template'
   | 'rename-group'
   | 'create-template'
-  | 'confirm-payment';
+  | 'confirm-payment'
+  | 'delete-group'
+  | 'delete-template';
 export interface FormSubmitPayload {
   type: formSubmitType;
   values: Record<string, string>;

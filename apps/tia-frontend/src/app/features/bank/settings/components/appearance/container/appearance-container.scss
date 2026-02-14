@@ -3,7 +3,7 @@
 
 .container {
     @include flex-center(column, flex-start, stretch);
-    gap: 1.2rem;
+    gap: 2rem;
 
     &__title {
         @include font-inter(500, 1.4rem, 1.4rem);
@@ -11,9 +11,13 @@
     }
     
     &__cards {
-        display: flex;
-        flex-wrap: wrap;
+        @include display-flex(row, wrap);
         gap: 1.6rem;
+
+        &--mobile {
+            padding: 1.2rem;
+            @include display-flex(column);
+        }
 
         & > * {
             flex: 1;
@@ -62,26 +66,6 @@
 
     &__submit {
         @include flex-center(row, flex-end, center);
-    }
-
-    &__alert {
-        position: fixed;
-        top: 7rem;
-        right: 1rem;
-        z-index: 9999;
-        min-width: 32rem;
-        animation: slideIn 0.3s ease-out;
-    }
-}
-
-@keyframes slideIn {
-    from {
-        transform: translateX(40rem);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
     }
 }
 

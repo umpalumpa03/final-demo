@@ -29,7 +29,7 @@
       <span class="summary-row__value"
         >
 @if (item.isTotal) {
-          {{ item.value | currency: 'GEL' : 'symbol' : '1.2-2' }}
+         {{ item.value | currency: 'GEL' : ('GEL' | currencySymbol) : '1.2-2' }}
         } @else {
           {{ item.canTranslate ? (item.value.toString() | translate) : item.value }}
         }

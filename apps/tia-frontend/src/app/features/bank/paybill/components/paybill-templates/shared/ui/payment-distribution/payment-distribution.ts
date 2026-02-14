@@ -10,17 +10,27 @@ import {
 } from '@angular/core';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, startWith, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CurrencyPipe } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { TemplatesPageActions } from '../../../../../store/paybill.actions';
-import { selectDistributedAmount } from '../../../../../store/paybill.selectors';
+import {
+  selectDistributedAmount,
+  selectSelectedTemplates,
+} from '../../../../../store/paybill.selectors';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-payment-distribution',
-  imports: [ButtonComponent, TextInput, ReactiveFormsModule, CurrencyPipe],
+  imports: [
+    ButtonComponent,
+    TextInput,
+    ReactiveFormsModule,
+    CurrencyPipe,
+    TranslatePipe,
+  ],
   templateUrl: './payment-distribution.html',
   styleUrl: './payment-distribution.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,8 +52,7 @@ export class PaymentDistribution implements OnInit {
   }
 
   private readonly destroyRef = inject(DestroyRef);
-  public amountControl = new FormControl('');
-
+  public amountControl = new FormControl('', [Validators.min(5)]);
   public distributedAmount = this.store.selectSignal(selectDistributedAmount);
 
   ngOnInit(): void {
@@ -57,12 +66,24 @@ export class PaymentDistribution implements OnInit {
           const distributedAmount = value
             ? +value / (this.selectedItemsLength() ?? 1)
             : 0;
+          const billValue = this.store
+            .selectSignal(selectSelectedTemplates)()
+            .reduce((acc, cur) => acc + cur.amountDue, 0);
 
-          this.store.dispatch(
-            TemplatesPageActions.setTotalAmount({
-              amount: +value!,
-            }),
-          );
+          if (this.distributionMode() === 'equal' && distributedAmount) {
+            console.log('END___');
+            this.store.dispatch(
+              TemplatesPageActions.setTotalAmount({
+                amount: +value!,
+              }),
+            );
+          } else {
+            this.store.dispatch(
+              TemplatesPageActions.setTotalAmount({
+                amount: billValue,
+              }),
+            );
+          }
 
           this.store.dispatch(
             TemplatesPageActions.setDistributedAmount({
@@ -72,5 +93,11 @@ export class PaymentDistribution implements OnInit {
         }),
       )
       .subscribe();
+  }
+
+  public preventNegative(event: KeyboardEvent) {
+    if (event.key === '-' || event.key === 'e') {
+      event.preventDefault();
+    }
   }
 }

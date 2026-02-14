@@ -3,12 +3,15 @@ import {
   computed,
   signal,
   ChangeDetectionStrategy,
+  inject,
 } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { BaseInput } from '../base/base-input';
 import { TEXT_INPUT_CONFIGS } from '../config/text-input.config';
 import { TextInputTypeConfig } from './models/text-input.model';
 import {
   InputConfig,
+  InputError,
   InputFieldValue,
   TextInputType,
 } from '../models/input.model';
@@ -24,13 +27,13 @@ import { INPUT_ICONS } from '../config/text-input.icons';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TextInput extends BaseInput {
+  private readonly translate = inject(TranslateService);
+
   protected readonly showPasswordVisibility = signal<boolean>(false);
-
-  private static idCounter: number = 0;
-
   protected readonly icons = INPUT_ICONS;
 
-  protected readonly uniqueId: string = `text-input-${++TextInput.idCounter}`;
+  protected readonly uniqueId =
+    this.validationService.generateUniqueId('text-input');
   protected readonly isCapsLockOn = signal<boolean>(false);
 
   protected readonly labelIconUrl = computed(() => {
@@ -101,6 +104,42 @@ export class TextInput extends BaseInput {
     }
     return null;
   });
+
+  protected override handleInput(event: Event): void {
+    super.handleInput(event);
+
+    this.validateDateInput();
+  }
+
+  private validateDateInput(): void {
+    const type = this.inputType();
+    const val = this.value();
+    const config = this.mergedConfig();
+
+    if (type !== 'date' || !val) {
+      if (this.internalValidationErrors().length > 0) {
+        this.setValidationErrors([]);
+      }
+      return;
+    }
+
+    const inputDate = val.toString();
+    const min = config.min?.toString();
+    const max = config.max?.toString();
+    const errors: InputError[] = [];
+
+    if (min && inputDate < min) {
+      const msg = this.translate.instant('common.validation.min', { min });
+      errors.push(new InputError('min', msg));
+    }
+
+    if (max && inputDate > max) {
+      const msg = this.translate.instant('common.validation.max', { max });
+      errors.push(new InputError('max', msg));
+    }
+
+    this.setValidationErrors(errors);
+  }
 
   protected checkCapsLock(event: Event): void {
     if (event instanceof KeyboardEvent) {

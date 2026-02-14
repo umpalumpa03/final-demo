@@ -188,6 +188,12 @@ export const userInfoFeature = createFeature({
       }),
     ),
 
+    on(UserInfoActions.dismissBirthdayModal, (state) => ({
+    ...state,
+    loading: true, 
+    error: null,
+    })),
+
     on(UserInfoActions.logout, () => ({
       ...initialUserState,
     })),

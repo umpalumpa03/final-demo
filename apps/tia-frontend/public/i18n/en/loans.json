@@ -1,61 +1,4 @@
 {
-  "management": {
-    "title": "Loan Management",
-    "subtitle": "Review and process pending loan applications",
-    "drawer": {
-      "title": "Loan Application Details",
-      "subtitle": "Review the loan application and user information",
-      "applicantSection": "Applicant Information",
-      "loanSection": "Loan Details",
-      "riskSection": "Risk Assessment",
-      "declineSection": "Reason for Declining",
-      "applicantUnavailable": "Applicant information unavailable",
-      "declinePlaceholder": "Please provide a reason for declining this loan application...",
-      "fields": {
-        "fullName": "Full Name",
-        "email": "Email",
-        "phoneNumber": "Phone Number",
-        "employmentStatus": "Employment Status",
-        "address": "Address",
-        "annualIncome": "Annual Income",
-        "creditScore": "Credit Score",
-        "loanAmount": "Loan Amount",
-        "loanPurpose": "Loan Purpose",
-        "loanTerm": "Loan Term",
-        "interestRate": "Interest Rate",
-        "monthlyPayment": "Monthly Payment",
-        "requestDate": "Request Date",
-        "months": "months",
-        "debtToIncome": "Debt-to-Income Ratio",
-        "loanToIncome": "Loan-to-Income Ratio",
-        "totalInterest": "Total Interest"
-      },
-      "buttons": {
-        "close": "Close",
-        "decline": "Decline Loan",
-        "approve": "Approve Loan",
-        "cancel": "Cancel",
-        "confirmDecline": "Confirm Decline"
-      },
-      "creditScoreBadge": {
-        "Poor": "Poor",
-        "Fair": "Fair",
-        "Good": "Good",
-        "Very Good": "Very Good",
-        "Excellent": "Excellent"
-      }
-    },
-    "table": {
-      "pendingBadge": "Pending",
-      "loading": "Loading pending approvals...",
-      "errorHeader": "Error Loading Approvals",
-      "errorDefault": "An error occurred",
-      "retry": "Retry",
-      "emptyHeader": "No Pending Approvals",
-      "emptyMessage": "All loan applications have been processed.",
-      "months": "months"
-    }
-  },
   "dashboard": {
     "title": "My Loans",
     "description": "Manage your loan applications and track payments",
@@ -66,6 +9,10 @@
     "pending": "Pending ",
     "declined": "Declined ",
     "search": "Search loan by name...",
+    "unknown": "Unknown account",
+    "acc_loading": "Loading accounts...",
+    "error_title": "Failed to load loans",
+
     "empty": {
       "all": {
         "title": "No Loans Found",
@@ -189,7 +136,8 @@
   },
   "buttons": {
     "cancel": "Cancel",
-    "close": "Close"
+    "close": "Close",
+    "resend": "Retry"
   },
   "validation": {
     "postal_error": "Invalid postal code.",
@@ -210,5 +158,25 @@
     "email_ex": "john.doe@example.com",
     "select_type": "Select type",
     "prepayment_amount": "500"
+  },
+  "store-errors": {
+    "load_loans": "Unable to load your loans list.",
+    "load_details": "Unable to retrieve loan details.",
+    "rename": "Failed to rename the loan.",
+    "months": "Failed to load repayment periods.",
+    "purposes": "Failed to load loan purposes.",
+    "options": "Failed to load prepayment options.",
+    "calculation": "Prepayment calculation failed.",
+    "initiate_prepayment": "Could not initiate prepayment request.",
+    "verify_prepayment": "Verification failed. Please check your code.",
+    "insufficient_funds": "Insufficient funds in payment account.",
+    "challenge_missing": "Security challenge ID missing from response.",
+    "invalid_code": "Invalid verification code provided."
+  },
+  "store-success": {
+    "rename": "Loan renamed successfully!",
+    "otp_sent": "OTP sent to your registered mobile number.",
+    "payment_complete": "Prepayment executed successfully.",
+    "request": "Loan created successfully"
   }
 }

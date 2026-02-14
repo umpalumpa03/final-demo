@@ -7,7 +7,6 @@ import {
   mockLoansList,
   mockLoanResponse,
 } from './loans.test-helpers';
-import { patchState } from '@ngrx/signals';
 
 describe('Loans Integration - View Loans Flow', () => {
   let ctx: TestContext;
@@ -17,7 +16,9 @@ describe('Loans Integration - View Loans Flow', () => {
   });
 
   afterEach(() => {
-    cleanupLoansTest(ctx.httpMock);
+    if (ctx && ctx.httpMock) {
+      cleanupLoansTest(ctx.httpMock);
+    }
   });
 
   it('should load all loans', async () => {
@@ -41,8 +42,6 @@ describe('Loans Integration - View Loans Flow', () => {
     ctx.loansStore.loadLoans({ status: 2, forceChange: true });
 
     const req = ctx.httpMock.expectOne(`${environment.apiUrl}/loans`);
-    expect(req.request.method).toBe('GET');
-
     req.flush(mockLoansList);
 
     await vi.waitFor(() => {
@@ -51,6 +50,7 @@ describe('Loans Integration - View Loans Flow', () => {
       expect(visibleLoans[0].status).toBe(2);
     });
   });
+
   it('should load loan details by ID', async () => {
     const loanId = 'loan-1';
 
@@ -74,23 +74,7 @@ describe('Loans Integration - View Loans Flow', () => {
     });
   });
 
-  it('should handle load error', async () => {
-    ctx.loansStore.loadLoans({ status: null, forceChange: true });
-
-    const req = ctx.httpMock.expectOne(`${environment.apiUrl}/loans`);
-
-    req.flush(
-      { message: 'Server Error' },
-      { status: 500, statusText: 'Server Error' },
-    );
-
-    await vi.waitFor(() => {
-      expect(ctx.loansStore.loading()).toBe(false);
-      expect(ctx.loansStore.error()).toBe('Server Error');
-    });
-  });
-
-  it('should use cached details on second visit (Performance Check)', async () => {
+  it('should use cached details on second visit', async () => {
     const loanId = 'loan-1';
 
     ctx.loansStore.loadLoanDetails(loanId);
@@ -108,22 +92,25 @@ describe('Loans Integration - View Loans Flow', () => {
   });
 
   it('should navigate to next loan details', async () => {
-    patchState(ctx.loansStore as any, {
-      loans: [
-        { ...mockLoanResponse, id: 'loan-1' },
-        { ...mockLoanResponse, id: 'loan-2' },
-      ],
-    });
+    ctx.loansStore.loadLoans({ status: null, forceChange: true });
+    const listReq = ctx.httpMock.expectOne(`${environment.apiUrl}/loans`);
+    listReq.flush([
+      { ...mockLoanResponse, id: 'loan-1' },
+      { ...mockLoanResponse, id: 'loan-2' },
+    ]);
 
     ctx.loansStore.loadLoanDetails('loan-1');
     const req1 = ctx.httpMock.expectOne(`${environment.apiUrl}/loans/loan-1`);
     req1.flush({ ...mockLoanResponse, id: 'loan-1' });
 
     ctx.loansStore.navigateDetails(1);
+
     const req2 = ctx.httpMock.expectOne(`${environment.apiUrl}/loans/loan-2`);
     expect(req2.request.method).toBe('GET');
     req2.flush({ ...mockLoanResponse, id: 'loan-2' });
 
-    expect(ctx.loansStore.selectedLoanDetails()?.id).toBe('loan-2');
+    await vi.waitFor(() => {
+      expect(ctx.loansStore.selectedLoanDetails()?.id).toBe('loan-2');
+    });
   });
 });

@@ -21,6 +21,7 @@ export const UserInfoActions = createActionGroup({
     'Load Widgets Success': props<{ widgets: IWidgetItem[] }>(),
     'Load Widgets Error': props<{ error: string }>(),
     'Load has completed onboarding': props<{ onboCompleted: boolean }>(),
+    'Dismiss Birthday Modal': props<{ year: number }>(),
     'Load birthday': props<{ birthDay: string }>(),
     'Load birthday modal closed': props<{ colsedBirthdayModal: number | null }>(),
 

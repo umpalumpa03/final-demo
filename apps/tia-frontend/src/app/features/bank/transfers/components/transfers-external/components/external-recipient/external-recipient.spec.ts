@@ -5,9 +5,11 @@ import { TransferValidationService } from '../../services/transfer-validation.se
 import { TransferStore } from '../../../../store/transfers.store';
 import { TransferRecipientService } from '../../services/transfer-recipient.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
+import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/alert.service';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { of } from 'rxjs';
 
 describe('ExternalRecipient', () => {
   let component: ExternalRecipient;
@@ -15,6 +17,7 @@ describe('ExternalRecipient', () => {
   let mockStore: any;
   let mockValidationService: any;
   let mockRecipientService: any;
+  let mockAlertService: any;
 
   beforeEach(async () => {
     vi.useFakeTimers();
@@ -36,6 +39,10 @@ describe('ExternalRecipient', () => {
       verifyRecipient: vi.fn(),
     };
 
+    mockAlertService = {
+      error: vi.fn(),
+    };
+
     const mockBreakpoint = { isMobile: signal(false) };
 
     await TestBed.configureTestingModule({
@@ -49,6 +56,7 @@ describe('ExternalRecipient', () => {
         { provide: TransferStore, useValue: mockStore },
         { provide: TransferRecipientService, useValue: mockRecipientService },
         { provide: BreakpointService, useValue: mockBreakpoint },
+        { provide: AlertService, useValue: mockAlertService },
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
@@ -59,6 +67,7 @@ describe('ExternalRecipient', () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    vi.clearAllMocks();
   });
 
   it('should initialize with stored value from store', () => {
@@ -67,26 +76,27 @@ describe('ExternalRecipient', () => {
     expect(component.recipientInput.value).toBe('GE123456');
   });
 
-  it('should handle error from store and hide it after 5 seconds', async () => {
+  it('should handle error from store via effect', async () => {
     fixture.detectChanges();
-    mockStore.error.set('Something went wrong');
+    mockStore.error.set('transfers.errors.notFound');
 
-    fixture.detectChanges();
-    await Promise.resolve();
+    TestBed.flushEffects();
 
-    expect(component.showError()).toBe(true);
-
-    vi.advanceTimersByTime(5000);
-    expect(component.showError()).toBe(false);
+    expect(mockAlertService.error).toHaveBeenCalled();
+    expect(component.recipientInput.value).toBe(null); 
+    expect(mockStore.setError).toHaveBeenCalledWith('');
   });
 
   it('should call verifyRecipient only when form is valid', () => {
+    fixture.detectChanges();
+
     component.recipientInput.setValue('');
     component.onVerify();
     expect(mockRecipientService.verifyRecipient).not.toHaveBeenCalled();
 
-    vi.spyOn(component.recipientInput, 'valid', 'get').mockReturnValue(true);
     component.recipientInput.setValue('555777888');
+    vi.spyOn(component.recipientInput, 'valid', 'get').mockReturnValue(true);
+
     component.onVerify();
     expect(mockRecipientService.verifyRecipient).toHaveBeenCalledWith(
       '555777888',
@@ -95,19 +105,19 @@ describe('ExternalRecipient', () => {
 
   it('should update config with success message when type is identified', () => {
     mockValidationService.identifyRecipientType.mockReturnValue('phone');
-    mockValidationService.validatePhone.mockReturnValue(true);
-
     fixture.detectChanges();
 
     component.recipientInput.setValue('555999000');
 
-    expect(component.recipientInputConfig().successMessage).toBeDefined();
-    expect(component.recipientInputConfig().prefixIcon).toContain('phone');
+    const config = component.recipientInputConfig();
+    expect(config.successMessage).toBeDefined();
+    expect(config.prefixIcon).toContain('phone');
   });
 
   it('should clear messages and reset icon when input is empty', () => {
     fixture.detectChanges();
-    component.recipientInput.setValue('');
+    component.recipientInput.setValue('GE123');
+    component.recipientInput.setValue(''); 
 
     const config = component.recipientInputConfig();
     expect(config.successMessage).toBeUndefined();
@@ -115,13 +125,26 @@ describe('ExternalRecipient', () => {
     expect(config.prefixIcon).toContain('person.svg');
   });
 
-  it('should update config with error message when form has errors', () => {
+  it('should update config with error message when form has validation errors', () => {
     fixture.detectChanges();
     mockValidationService.identifyRecipientType.mockReturnValue(null);
 
-    component.recipientInput.setValue('invalid-val');
+    component.recipientInput.setValue('invalid');
     component.recipientInput.setErrors({ invalidRecipient: true });
-    expect(component.recipientInputConfig().errorMessage).toBeDefined();
-    expect(component.recipientInputConfig().successMessage).toBeUndefined();
+
+    component.recipientInput.updateValueAndValidity();
+
+    const config = component.recipientInputConfig();
+    expect(config.errorMessage).toBeDefined();
+    expect(config.successMessage).toBeUndefined();
+  });
+
+  it('should detect mobile state from breakpoint service', () => {
+    expect(component.isMobile()).toBe(false);
+  });
+
+  it('should reflect loading state from store', () => {
+    mockStore.isLoading.set(true);
+    expect(component.isLoading()).toBe(true);
   });
 });
