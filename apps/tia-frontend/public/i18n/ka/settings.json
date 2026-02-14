@@ -96,9 +96,8 @@
     "twoFactorAuth": "ორი ფაქტორიანი ავთენტიფიკაცია",
     "passwordChangedSuccessfully": "პაროლი წარმატებით შეიცვალა",
     "tooltip": {
-      "passwordMismatch": "ახალი პაროლი და დადასტურება არ ემთხვევა",
-      "passwordTooShort": "პაროლი უნდა შედგებოდეს მინიმუმ 8 სიმბოლოსგან",
-      "fillAllFields": "პაროლის შესაცვლელად შეავსეთ ყველა ველი"
+      "passwordMismatch": "დამადასტურებელი პაროლი არასწორია ",
+      "fillAllFields": " შეავსეთ ყველა ველი"
     }
   },
   "user-management": {

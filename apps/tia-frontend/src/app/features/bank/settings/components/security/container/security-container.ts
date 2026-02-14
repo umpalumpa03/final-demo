@@ -116,10 +116,6 @@ export class SecurityContainer implements OnDestroy {
       return this.translate.instant('settings.security.tooltip.passwordMismatch');
     }
 
-    if (newPasswordControl?.hasError('minlength')) {
-      return this.translate.instant('settings.security.tooltip.passwordTooShort');
-    }
-
     if (form.invalid) {
       return this.translate.instant('settings.security.tooltip.fillAllFields');
     }
