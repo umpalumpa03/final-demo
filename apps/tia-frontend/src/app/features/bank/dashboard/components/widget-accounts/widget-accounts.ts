@@ -10,7 +10,6 @@ import {
   selectError,
   selectIsLoading,
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
-import { selectAccountsWithTrendline } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import {
   AsyncPipe,
@@ -24,6 +23,9 @@ import { BaseWidget } from '../shared/base-widget.config';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import { CurrencySymbolPipe } from 'apps/tia-frontend/src/app/features/bank/dashboard/pipes/currency-symbols.pipe';
 import { TranslateModule } from '@ngx-translate/core';
+import {
+  selectDashboardAccountsWithTrendline
+} from 'apps/tia-frontend/src/app/features/bank/dashboard/selectors/dashboard-accounts.selectors';
 
 @Component({
   selector: 'app-widget-accounts',
@@ -50,7 +52,7 @@ export class WidgetAccounts extends BaseWidget {
     this.store.dispatch(AccountsActions.loadAccounts({}));
   }
 
-  public accounts$ = this.store.select(selectAccountsWithTrendline);
+  public accounts$ = this.store.select(selectDashboardAccountsWithTrendline);
   public isLoading$ = this.store.select(selectIsLoading);
   public error$ = this.store.select(selectError);
 
@@ -58,21 +60,17 @@ export class WidgetAccounts extends BaseWidget {
     map((accounts) => !accounts || accounts.length === 0),
   );
 
-  // Track animated balances for counting animation
   public animatedBalances = signal<Record<string, number>>({});
   private animationFrames: Record<string, number> = {};
 
   constructor() {
     super();
 
-    // Subscribe to accounts and animate balances when they have trendlines
     this.accounts$.subscribe((accounts) => {
       accounts.forEach((account) => {
         if (account.trendline) {
-          // Animate from 0 to final balance in 1 second
           this.animateBalance(account.id, 0, account.balance, 1000);
         } else {
-          // No trendline, set balance immediately without animation
           this.setAnimatedBalance(account.id, account.balance);
         }
       });
@@ -85,7 +83,6 @@ export class WidgetAccounts extends BaseWidget {
     endValue: number,
     duration: number,
   ): void {
-    // Cancel any existing animation for this account
     if (this.animationFrames[accountId]) {
       cancelAnimationFrame(this.animationFrames[accountId]);
     }
@@ -97,7 +94,6 @@ export class WidgetAccounts extends BaseWidget {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
 
-      // Strong ease-out (power of 5) - dramatic slowdown near the end
       const easeOutQuint = (t: number) => 1 - Math.pow(1 - t, 5);
       const easedProgress = easeOutQuint(progress);
 
