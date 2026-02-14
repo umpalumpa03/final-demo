@@ -26,6 +26,7 @@ import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { TranslateService } from '@ngx-translate/core';
 import { BreakpointService } from '@tia/core/services/breakpoints/breakpoint.service';
 import { AlertService } from '@tia/core/services/alert/alert.service';
+import { AppearanceStore } from '../store/appearance.store';
 
 @Component({
   selector: 'app-appearance-container',
@@ -48,6 +49,12 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
   private readonly translate = inject(TranslateService);
   private readonly breakpointService = inject(BreakpointService);
   private readonly alertService = inject(AlertService);
+  private readonly appearanceStore = inject(AppearanceStore);
+
+  public readonly isFetching = this.appearanceStore.isRefreshing;
+  public readonly isLoading = this.appearanceStore.isLoading;
+  public readonly hasLoaded = this.appearanceStore.hasLoaded;
+  public readonly availableThemes = this.appearanceStore.themes;
 
   public readonly isMobile = this.breakpointService.isMobile;
 
@@ -73,9 +80,7 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
   }
 
   private activeTheme = this.store.selectSignal(selectActiveTheme);
-  public availableThemes = signal<TAvailableThemes | null>(null);
 
-  public isLoading = this.appearanceService.isLoading;
 
   private isSubmitted = signal(false);
 
@@ -83,22 +88,8 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
 
   public ngOnInit(): void {
     this.isSubmitted.set(false);
-    this.appearanceService
-      .getAvailableThemes()
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        map((themes) => {
-          return [...themes].map((theme, index) => ({
-            ...theme,
-            subtitle: themesConfig[index].subtitle,
-          }));
-        }),
-        tap((themes) => {
-          this.availableThemes.set(themes);
-          console.log('Available themes:', themes);
-        }),
-      )
-      .subscribe();
+
+    this.appearanceStore.fetchThemes({})
   }
 
   public isCurrentTheme(theme: string) {
@@ -127,27 +118,24 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
   }
 
   public onSubmit(): void {
-    this.appearanceService
-      .updateUserTheme(this.activeTheme())
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap(() => {
-          this.isSubmitted.set(true);
-          this.alertService.success(
-            this.translate.instant('settings.appearance.saveSuccess'),
-          );
-          this.store.dispatch(
-            UserInfoActions.loadUserTheme({ theme: this.activeTheme() }),
-          );
-        }),
-        catchError(() => {
-          this.alertService.error(
-            this.translate.instant('settings.appearance.saveError'),
-          );
-          return of(null);
-        }),
-      )
-      .subscribe();
+    this.appearanceStore.updateTheme(this.activeTheme()).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      tap(() => {
+        this.isSubmitted.set(true);
+        this.alertService.success(
+          this.translate.instant('settings.appearance.saveSuccess'),
+        );
+        this.store.dispatch(
+          UserInfoActions.loadUserTheme({ theme: this.activeTheme() }),
+        );
+      }),
+      catchError(() => {
+        this.alertService.error(
+          this.translate.instant('settings.appearance.saveError'),
+        );
+        return of(null);
+      }),
+    ).subscribe();
   }
 
   public canDeactivate(): boolean | Observable<boolean> {

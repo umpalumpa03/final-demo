@@ -1,7 +1,7 @@
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { inject } from "@angular/core";
-import { EMPTY, exhaustMap, Observable, pipe, tap } from "rxjs";
+import { catchError, EMPTY, exhaustMap, Observable, of, pipe, switchMap, tap } from "rxjs";
 
 import { AppearanceState, ResponceTheme } from "../models/appearance.model";
 import { AppearanceService } from "../services/appearance-api.service";
@@ -71,9 +71,20 @@ export const AppearanceStore = signalStore(
             ),
 
             updateTheme(theme: string): Observable<void> {
-                patchState(store, { isLoading: true, hasError: false });
+                patchState(store, { isLoading: true, hasError: false, isRefreshing: true });
 
-                // return appearanceService.updateUserTheme
+                return appearanceService.updateUserTheme(theme).pipe(
+                    tap({
+                        next: () => {
+                            patchState(store, { isLoading: false, isRefreshing: false });
+                        },
+                    }),
+                    catchError(() => {
+                        patchState(store, { isLoading: false, hasError: true, isRefreshing: false });
+                        return EMPTY;
+                    }),
+                    switchMap(() => of(void 0))
+                )
             }
             
             
