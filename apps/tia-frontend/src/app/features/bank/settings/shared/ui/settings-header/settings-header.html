@@ -3,10 +3,10 @@
   <p class="settings__desc">{{'settings.subtitle' | translate}}</p>
   <nav class="settings__header-nav">
 
-    <app-tabs [tabs]="navItems()" orientation="horizontal" />
+    <app-tabs [tabs]="navItems()" orientation="horizontal" [collapsed]="isMobile()" />
 
     @if (isAdmin()) {
-      <app-tabs [tabs]="adminNavItems()" />
+      <app-tabs [tabs]="adminNavItems()" [collapsed]="isMobile()" />
     }
 
   </nav>
