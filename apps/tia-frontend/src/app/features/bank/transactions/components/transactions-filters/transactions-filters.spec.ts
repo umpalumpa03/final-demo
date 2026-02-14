@@ -5,7 +5,6 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { TransactionsViewModelService } from '../../services/transactions-view-model.service';
 import { TransactionsActionsService } from '../../services/transactions-actions.service';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('TransactionsFilters', () => {
   let component: TransactionsFilters;
@@ -26,7 +25,6 @@ describe('TransactionsFilters', () => {
       imports: [
         TransactionsFilters,
         TranslateModule.forRoot(),
-        NoopAnimationsModule,
       ],
       providers: [
         { provide: TransactionsViewModelService, useValue: mockViewModel },
@@ -48,6 +46,7 @@ describe('TransactionsFilters', () => {
 
   afterEach(() => {
     vi.clearAllTimers();
+    vi.useRealTimers(); 
   });
 
   it('should create', () => {
@@ -58,6 +57,7 @@ describe('TransactionsFilters', () => {
     vi.useFakeTimers();
     const emitSpy = vi.spyOn(component.filterChange, 'emit');
 
+
     component.filterForm.patchValue({
       searchCriteria: 'Test Search',
       accountIban: 'GE123',
@@ -66,7 +66,6 @@ describe('TransactionsFilters', () => {
     vi.advanceTimersByTime(450);
 
     expect(emitSpy).toHaveBeenCalled();
-    vi.useRealTimers();
   });
 
   it('should clear all filters on resetFilters call', () => {
