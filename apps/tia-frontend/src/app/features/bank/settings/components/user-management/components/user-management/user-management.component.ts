@@ -41,10 +41,10 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss',
-  providers: [UserManagementState, UserManagementStore, UserModalService],
+  providers: [UserManagementState, UserModalService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserManagementComponent implements OnInit, OnDestroy {
+export class UserManagementComponent implements OnInit {
   protected readonly userState = inject(UserManagementState);
   protected readonly store = inject(UserManagementStore);
   protected readonly modalService = inject(UserModalService);
@@ -99,11 +99,11 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.store.loadUsers();
+    this.store.loadUsers({});
   }
 
   public loadData(): void {
-    this.store.loadUsers();
+    this.store.loadUsers({ force: true });
   }
 
   public onSearch(query: InputFieldValue): void {
@@ -156,9 +156,5 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   public onCloseModal(): void {
     this.modalService.close();
     this.store.clearSelectedUser();
-  }
-
-  ngOnDestroy() {
-    this.store.reset();
   }
 }
