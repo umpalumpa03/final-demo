@@ -38,6 +38,7 @@ import {
   PaybillTransactionMeta,
 } from '../components/shared/models/transactions.model';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
+import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 
 @Injectable()
 export class PaybillEffect {
@@ -213,12 +214,13 @@ export class PaybillEffect {
             if (response.success) {
               this.router.navigate(['/bank/paybill/pay/payment-success']);
 
-              return of(
+              return [
                 PaybillActions.addNotification({
                   notificationType: 'success',
                   message: 'OTP Verified Successfully',
                 }),
-              );
+                TransactionActions.loadTransactions({ forceRefresh: true }),
+              ];
             }
 
             return of(
