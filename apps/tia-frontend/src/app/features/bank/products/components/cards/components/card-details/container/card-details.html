@@ -15,9 +15,10 @@
   } @else if (error$ | async; as errorMsg) {
   <app-error-states
     variant="failed"
-    header="Failed to Load Card"
+    [header]="'my-products.card.card-details.failedToLoadCard' | translate"
     [message]="errorMsg"
-    buttonMessage="Retry"
+    [buttonMessage]="'my-products.card.card-details.retry' | translate"
+
     (buttonClick)="handleRetry()"
   />
   } @else if (cardData$ | async; as data) {

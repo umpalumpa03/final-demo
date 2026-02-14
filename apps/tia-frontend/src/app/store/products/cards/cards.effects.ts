@@ -192,7 +192,7 @@ export class CardsEffects {
               catchError((error) =>
                 of(
                   CardsActions.loadCardCreationDataFailure({
-                    error: error.message || 'Failed to load card creation data',
+error: error.message || this.translate.instant('my-products.card.errors.failedToLoadCreationData')
                   }),
                 ),
               ),
@@ -211,7 +211,7 @@ export class CardsEffects {
           catchError((error) =>
             of(
               CardsActions.createCardFailure({
-                error: error.message || 'Failed to create card',
+error: error.message || this.translate.instant('my-products.card.errors.failedToCreateCard')
               }),
             ),
           ),
@@ -271,7 +271,7 @@ export class CardsEffects {
             of(
               CardsActions.updateCardNameFailure({
                 cardId,
-                error: error.message || 'Failed to update card name',
+error: error.message || this.translate.instant('my-products.card.errors.failedToUpdateCardName')
               }),
             ),
           ),
@@ -292,7 +292,7 @@ export class CardsEffects {
           catchError((error) =>
             of(
               CardsActions.requestCardOtpFailure({
-                error: error.message || 'Failed to request OTP',
+error: error.message || this.translate.instant('my-products.card.errors.failedToRequestOtp')
               }),
             ),
           ),
@@ -311,11 +311,9 @@ export class CardsEffects {
           ),
           catchError((error) => {
             const errorMessage =
-              error.status === 400 || error.error?.message === 'Invalid OTP'
-                ? 'OTP code is not correct'
-                : error.error?.message ||
-                  error.message ||
-                  'Failed to verify OTP';
+             error.status === 400 || error.error?.message === 'Invalid OTP'
+  ? this.translate.instant('my-products.card.errors.otpNotCorrect')
+  : error.error?.message || error.message || this.translate.instant('my-products.card.errors.failedToVerifyOtp')
             return of(
               CardsActions.verifyCardOtpFailure({ error: errorMessage }),
             );
