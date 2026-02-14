@@ -130,10 +130,16 @@
     "details": {
       "title": "User Details",
       "desc": "View detailed information about the user.",
+      "username": "Username",
+      "email": "Email",
+      "personal_id": "Personal ID",
+      "phone": "Phone Number",
+      "role": "Role",
+      "status": "Status",
+      "created": "Created At",
+      "phone_verified": "Phone Verified At",
       "blocked": "Blocked",
       "active": "Active",
-      "username": "Username",
-      "created": "Created At",
       "close": "Close"
     },
     "edit": {
