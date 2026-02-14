@@ -60,31 +60,25 @@ export class Accounts implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly alertService = inject(AlertService);
 
-  protected readonly accountsGrouped$ = this.store.select(
+  protected readonly accountsGrouped = this.store.selectSignal(
     selectAccountsGrouped,
   );
-  protected readonly isLoading$ = this.store.select(selectIsLoading);
-  protected readonly isFetching$ = this.store.select(selectIsFetching);
-  protected readonly isCreateModalOpen$ = this.store.select(
+  protected readonly isLoading = this.store.selectSignal(selectIsLoading);
+  protected readonly isFetching = this.store.selectSignal(selectIsFetching);
+  protected readonly isCreateModalOpen = this.store.selectSignal(
     selectIsCreateModalOpen,
   );
-  protected readonly error$ = this.store.select(selectError);
-  protected readonly isRenamingAccount$ = this.store.select(
+  protected readonly error = this.store.selectSignal(selectError);
+  protected readonly isRenamingAccount = this.store.selectSignal(
     selectIsUpdatingFriendlyName,
   );
-  protected readonly renameError$ = this.store.select(
+  protected readonly renameError = this.store.selectSignal(
     selectUpdateFriendlyNameError,
   );
-
-  protected readonly accountsGroupedSignal = this.store.selectSignal(
-    selectAccountsGrouped,
-  );
-  protected readonly accountsSignal = this.store.selectSignal(selectAccounts);
-  protected readonly isLoadingSignal = this.store.selectSignal(selectIsLoading);
-  protected readonly isCreatingAccountSignal =
+  protected readonly accounts = this.store.selectSignal(selectAccounts);
+  protected readonly isCreatingAccount =
     this.store.selectSignal(selectIsCreating);
-  protected readonly createErrorSignal =
-    this.store.selectSignal(selectCreateError);
+  protected readonly createError = this.store.selectSignal(selectCreateError);
 
   protected readonly accountSectionsData = signal(
     getAccountSections(this.translate),
@@ -101,7 +95,7 @@ export class Accounts implements OnInit {
 
   constructor() {
     effect(() => {
-      const isCreating = this.isCreatingAccountSignal();
+      const isCreating = this.isCreatingAccount();
       if (isCreating !== undefined) {
         this.handleIsCreatingAccount(isCreating);
       }
@@ -128,7 +122,7 @@ export class Accounts implements OnInit {
 
   private handleIsCreatingAccount(isCreating: boolean): void {
     if (!isCreating && this.wasCreating) {
-      const error = this.createErrorSignal();
+      const error = this.createError();
       if (error) {
         this.alertService.error(
           error ||
@@ -177,8 +171,9 @@ export class Accounts implements OnInit {
     accountId: string;
     permissionValue: number;
   }): void {
-    const accounts = this.accountsSignal();
-    const account = accounts?.find((acc) => acc.id === data.accountId) || null;
+    const accounts = this.accounts();
+    const account =
+      accounts?.find((acc: any) => acc.id === data.accountId) || null;
     this.store.dispatch(AccountsActions.selectAccount({ account }));
 
     const permissionMap: { [key: number]: string } = {
