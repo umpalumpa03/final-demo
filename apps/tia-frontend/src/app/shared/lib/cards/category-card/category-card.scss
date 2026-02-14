@@ -4,7 +4,7 @@
 .category-card {
   position: relative;
   background-color: $white;
-  border: 0.19rem solid $gray-200;
+  border: 0.19rem solid var(--color-primary);
   border-radius: 1.4rem;
   padding: 2.4rem;
   width: 100%;
