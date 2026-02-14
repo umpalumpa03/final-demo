@@ -5,7 +5,7 @@ import {
 } from '@angular/common/http/testing';
 import { LoansStore } from '../store/loans.store';
 import { LoansService } from '../shared/services/loans.service';
-import { AlertService } from '@tia/shared/services/settings-language/alert.service';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
 
