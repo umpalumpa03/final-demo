@@ -5,7 +5,6 @@ import { translationResolver } from '../../core/i18n';
 export const storybookRoutes: Routes = [
   {
     path: 'storybook',
-    resolve: { translations: translationResolver('storybook') },
     loadComponent: () =>
       import('./container/storybook.container').then((c) => c.LibraryContainer),
     // canActivate: [supportRoleGuard],

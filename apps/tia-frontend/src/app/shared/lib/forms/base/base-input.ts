@@ -61,7 +61,7 @@ export abstract class BaseInput implements ControlValueAccessor, DoCheck {
       const { touched, dirty, status } = this.ngControl.control;
       this._controlTouched.set(!!touched);
       this._controlDirty.set(!!dirty);
-      this._controlStatus.set(status || '');
+      this._controlStatus.set(status ?? '');
     }
   }
 

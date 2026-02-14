@@ -46,16 +46,17 @@ export const appConfig: ApplicationConfig = {
       UserInfoEffects,
       PersonalInfoEffects,
     ]),
-    provideStoreDevtools({
-      maxAge: 25,
-      logOnly: environment.production,
-    }),
+
     provideStore(
       {},
       {
         metaReducers: [clearStateMetaReducer],
       },
     ),
+    provideStoreDevtools({
+      maxAge: 25,
+      logOnly: environment.production,
+    }),
     provideTranslateService({
       loader: {
         provide: TranslateLoader,

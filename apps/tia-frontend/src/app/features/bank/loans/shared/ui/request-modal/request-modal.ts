@@ -7,19 +7,21 @@ import {
   OnInit,
   output,
 } from '@angular/core';
-import { NUMBER_REGEX } from '../../config/loan-request.config';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { NUMBER_REGEX } from '../../config/loan-request.config';
+import { IDropdownOption, ILoanRequest } from '../../models/loan-request.model';
+import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
+
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
-import { IDropdownOption, ILoanRequest } from '../../models/loan-request.model';
-import { Store } from '@ngrx/store';
-import { CommonModule } from '@angular/common';
-import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
-import { TranslatePipe } from '@ngx-translate/core';
+
 import { LoansStore } from '../../../store/loans.store';
-import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { LoanRequestState } from '../../state/loan-request.state';
 
 @Component({
@@ -40,15 +42,16 @@ import { LoanRequestState } from '../../state/loan-request.state';
 })
 export class RequestModal implements OnInit {
   public readonly loanState = inject(LoanRequestState);
-
   private readonly fb = inject(FormBuilder);
+
   private readonly globalStore = inject(Store);
-  private readonly store = inject(LoansStore);
+  protected readonly store = inject(LoansStore);
 
   public readonly isOpen = input.required<boolean>();
   public readonly close = output<void>();
   public readonly submit = output<ILoanRequest>();
 
+  protected readonly isLoading = this.store.loading;
   protected readonly termOptions = this.store.loanMonthsOptions;
   protected readonly purposeOptions = this.store.purposeOptions;
 
@@ -112,13 +115,14 @@ export class RequestModal implements OnInit {
         ...rawData,
         loanAmount: Number(rawData.loanAmount),
         months: Number(rawData.months),
+        contact: rawData.contact,
       } as ILoanRequest;
 
-      this.globalStore.dispatch(
-        LoansCreateActions.requestLoan({ request: payload }),
-      );
+      this.store.requestLoan(payload);
 
       this.close.emit();
+    } else {
+      this.form.markAllAsTouched();
     }
   }
 }

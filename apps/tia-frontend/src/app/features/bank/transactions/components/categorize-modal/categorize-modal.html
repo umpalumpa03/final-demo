@@ -1,11 +1,3 @@
-@if (successMessage()) {
-<div class="success">
-  <app-simple-alerts
-    [alertType]="'success'"
-    [alertMessage]="successMessage()!"
-  ></app-simple-alerts>
-</div>
-}
 <div class="categorize-modal">
   <div class="categorize-modal__heading">
     <h3>{{modalConfig.title | translate}}</h3>
@@ -46,32 +38,40 @@
             formControlName="newCategoryName"
           ></lib-text-input>
         </div>
-
-        <app-button
-          variant="default"
-          [icon]="'add-white.svg'"
-          [type]="'button'"
-          (click)="onCategoryCreate()"
+        <app-tooltip
+          [content]="'transactions.categorize_modal.labels.new-category-tooltip' | translate"
+          [disabled]="!!form.value.newCategoryName"
         >
-          {{ 'transactions.categorize_modal.buttons.add' | translate }}
-        </app-button>
+          <app-button
+            variant="default"
+            [icon]="'add-white.svg'"
+            [type]="'button'"
+            (click)="onCategoryCreate()"
+          >
+            {{ 'transactions.categorize_modal.buttons.add' | translate }}
+          </app-button>
+        </app-tooltip>
       </div>
     </div>
 
     <div class="categorize-form__actions">
-      <app-button [variant]="'outline'" (click)="onCancel()" [type]="'button'">
+      <app-button [variant]="'outline'" (click)="onCancel()">
         {{ 'transactions.categorize_modal.buttons.cancel' | translate }}
       </app-button>
-
-      <app-button
-        [variant]="'default'"
-        [icon]="'save-transaction.svg'"
-        [isDisabled]="form.invalid"
-        (click)="onSave()"
-        [type]="'button'"
+      <app-tooltip
+        [content]="'transactions.categorize_modal.labels.save-category-tooltip' | translate"
+        [disabled]="!!form.value.categoryId"
       >
-        {{ 'transactions.categorize_modal.buttons.save' | translate }}
-      </app-button>
+        <app-button
+          [variant]="'default'"
+          [icon]="'save-transaction.svg'"
+          [isDisabled]="form.invalid"
+          (click)="onSave()"
+          [type]="'button'"
+        >
+          {{ 'transactions.categorize_modal.buttons.save' | translate }}
+        </app-button>
+      </app-tooltip>
     </div>
   </form>
 </div>

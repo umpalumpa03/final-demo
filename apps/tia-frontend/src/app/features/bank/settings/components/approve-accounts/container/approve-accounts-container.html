@@ -3,8 +3,8 @@
   [minWidth]="'100%'"
   [height]="'fit-content'"
   padding="2.4rem"
-  [title]="'Approve Accounts'"
-  [subtitle]="'Review and approve account requests'"
+  [title]="config.textConfig().card.title"
+  [subtitle]="config.textConfig().card.subtitle"
 >
   <app-scroll-area [hideBorder]="true" [height]="'50rem'">
     <main class="approve-card">
@@ -25,9 +25,10 @@
       } @empty {
       <app-error-states
         variant="not-found"
-        header="No Accounts Found"
-        message="We couldn't find any pending accounts."
+        [header]="config.textConfig().errorState.header"
+        [message]="config.textConfig().errorState.message"
         (buttonClick)="retryLoading()"
+        [border]="false"
       />
 
       } }
@@ -36,9 +37,9 @@
     @if(permissionsOverlay()) {
     <app-ui-modal [isOpen]="permissionsOverlay()" (closed)="closeModal()">
       <app-permissions-modal
-        [modalTitle]="'Modify Account Permissions'"
-        [modalSubtitle]="'Configure permissions for this Account request'"
-        [title]="'Account permissions'"
+        [modalTitle]="config.textConfig().permissionsModal.modalTitle"
+        [modalSubtitle]="config.textConfig().permissionsModal.modalSubtitle"
+        [title]="config.textConfig().permissionsModal.title"
         [form]="permissionsForm"
         [items]="mappedPermissions()"
         [accOrCardName]="accountName()"
@@ -54,19 +55,21 @@
     >
       <div class="confirm-dialog">
         <header class="confirm-dialog__header">
-          <h3 class="confirm-dialog__title">Reset Changes?</h3>
+          <h3 class="confirm-dialog__title">
+            {{ config.textConfig().confirmDialog.title }}
+          </h3>
           <p class="confirm-dialog__subtitle">
-            Switching accounts will clear the permissions you selected.
+            {{ config.textConfig().confirmDialog.subtitle }}
           </p>
         </header>
 
         <footer class="confirm-dialog__footer">
-          <app-button variant="outline" (click)="onConfirmCancel()"
-            >Go back</app-button
-          >
-          <app-button variant="destructive" (click)="onConfirmAccept()"
-            >Discard and switch</app-button
-          >
+          <app-button variant="outline" (click)="onConfirmCancel()">
+            {{ config.textConfig().confirmDialog.cancelBtn }}
+          </app-button>
+          <app-button variant="destructive" (click)="onConfirmAccept()">
+            {{ config.textConfig().confirmDialog.confirmBtn }}
+          </app-button>
         </footer>
       </div>
     </app-ui-modal>

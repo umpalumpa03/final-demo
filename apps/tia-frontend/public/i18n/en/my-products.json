@@ -1,5 +1,6 @@
 {
   "title": "My Products",
+  "subtitle": "Manage your bank accounts and cards",
   "tabs": {
     "accounts": "Accounts",
     "cards": "Cards"

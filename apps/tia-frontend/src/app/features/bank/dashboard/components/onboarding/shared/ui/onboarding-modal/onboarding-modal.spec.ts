@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { OnboardingModal } from './onboarding-modal';
 import { By } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('OnboardingModal', () => {
   let component: OnboardingModal;
@@ -9,7 +10,7 @@ describe('OnboardingModal', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OnboardingModal],
+      imports: [OnboardingModal, TranslateModule.forRoot()],
     }).compileComponents();
     fixture = TestBed.createComponent(OnboardingModal);
     component = fixture.componentInstance;
@@ -54,6 +55,8 @@ describe('OnboardingModal', () => {
     const finishBtn = fixture.debugElement.query(
       By.css('app-button[variant="default"]'),
     );
-    expect(finishBtn.nativeElement.textContent).toContain('Finish');
+    expect(finishBtn.nativeElement.textContent).toContain(
+      'dashboard.onboarding.modal.finish',
+    );
   });
 });

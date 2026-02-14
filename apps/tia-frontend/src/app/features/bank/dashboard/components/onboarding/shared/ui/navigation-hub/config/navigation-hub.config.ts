@@ -3,42 +3,42 @@ import { NavigationHubItem } from '../models/navigation-hub.model';
 export const NAVIGATION_HUB_ITEMS: NavigationHubItem[] = [
   {
     icon: 'images/svg/onboarding/dashboard.svg',
-    title: 'Dashboard',
-    description: 'Your financial overview and widgets',
+    title: 'dashboard.onboarding.navigation-hub.dashboard.title',
+    description: 'dashboard.onboarding.navigation-hub.dashboard.description',
   },
   {
     icon: 'images/svg/onboarding/products.svg',
-    title: 'My Products',
-    description: 'Manage accounts, cards, and view 3D card designs',
+    title: 'dashboard.onboarding.navigation-hub.products.title',
+    description: 'dashboard.onboarding.navigation-hub.products.description',
   },
   {
     icon: 'images/svg/onboarding/transactions.svg',
-    title: 'Transactions',
-    description: 'View and filter all your transaction history',
+    title: 'dashboard.onboarding.navigation-hub.transactions.title',
+    description: 'dashboard.onboarding.navigation-hub.transactions.description',
   },
   {
     icon: 'images/svg/onboarding/transfers.svg',
-    title: 'Transfers',
-    description: 'Send money between accounts and to others',
+    title: 'dashboard.onboarding.navigation-hub.transfers.title',
+    description: 'dashboard.onboarding.navigation-hub.transfers.description',
   },
   {
     icon: 'images/svg/onboarding/loans.svg',
-    title: 'Loans',
-    description: 'Apply for and manage your loans',
+    title: 'dashboard.onboarding.navigation-hub.loans.title',
+    description: 'dashboard.onboarding.navigation-hub.loans.description',
   },
   {
     icon: 'images/svg/onboarding/finances.svg',
-    title: 'My Finances',
-    description: 'Track income, expenses, and savings with charts',
+    title: 'dashboard.onboarding.navigation-hub.finances.title',
+    description: 'dashboard.onboarding.navigation-hub.finances.description',
   },
   {
     icon: 'images/svg/onboarding/paybill.svg',
-    title: 'Paybill',
-    description: 'Pay bills, create templates, and manage groups',
+    title: 'dashboard.onboarding.navigation-hub.paybill.title',
+    description: 'dashboard.onboarding.navigation-hub.paybill.description',
   },
   {
     icon: 'images/svg/onboarding/settings.svg',
-    title: 'Settings',
-    description: 'Customize your profile and preferences',
+    title: 'dashboard.onboarding.navigation-hub.settings.title',
+    description: 'dashboard.onboarding.navigation-hub.settings.description',
   },
 ] as const;
