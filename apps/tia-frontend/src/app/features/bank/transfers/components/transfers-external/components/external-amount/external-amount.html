@@ -150,6 +150,7 @@
     </app-tooltip>
   </footer>
 </main>
+
 <app-success-modal
   [title]="'transfers.confirmation.title' | translate"
   [description]="'transfers.confirmation.success' | translate"
@@ -158,8 +159,9 @@
   (closed)="onSuccessDone()"
   (done)="onSuccessDone()"
 ></app-success-modal>
+
 <app-ui-modal [isOpen]="requiresOtp()" (closed)="onOtpClose()">
-  @if(isLoading() ) {
+  @if(isLoading() && !noAttemptsLeft()) {
   <div class="external-amount__otp-loader">
     <app-route-loader variant="pulsing"></app-route-loader>
   </div>
@@ -172,31 +174,17 @@
     (onBackOut)="onOtpClose()"
     [timeLimit]="1"
     [errorMessage]="errorFromState()"
-    [remainingAttempts]="3"
+    [customRemainingAttempts]="3"
     [inputOtpConfig]="otpConfig"
     [isBtnRowDirection]="true"
-    noMoreAttempsRedirectRoute="/bank/transfers"
     (customError)="handleNoMoreAttempts()"
+    redirectUrl="/bank/transfers"
+    redirectText="Transfers Page"
   ></app-otp-verification>
 </app-ui-modal>
-@if (showSuccess()) {
-<div class="external-amount__success-toast">
-  <app-alert-types-with-icons
-    [alertType]="'success'"
-    [alertMessage]="currentToastMessage() | translate"
-  />
-</div>
-} @if(isLoading() && !requiresOtp()) {
+
+@if(isLoading() && !requiresOtp()) {
 <div class="external-amount__loader-overlay">
   <app-route-loader variant="pulsing"></app-route-loader>
-</div>
-}
-<!-- only need to show when no otp needed// -->
-@if(showError() && errorFromState() && !requiresOtp()) {
-<div class="external-amount__error-toast">
-  <app-alert-types-with-icons
-    [alertType]="'error'"
-    [alertMessage]="'transfers.external.amount.transferError' | translate"
-  ></app-alert-types-with-icons>
 </div>
 }

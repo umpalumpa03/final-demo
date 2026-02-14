@@ -15,6 +15,7 @@ import {
 } from '../models/contact-forms.model';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
+  spaceValidator,
   passwordMatchValidator,
   passwordValidator,
 } from 'apps/tia-frontend/src/app/core/auth/utils/validators/form-validations';
@@ -41,8 +42,8 @@ export class RegistrationForm {
   private translate = inject(TranslateService);
   public readonly isRegistration = input<boolean>(true);
   public readonly buttonText = input<string>('auth.sign-up.buttonText');
-  public readonly usernameError = input<boolean | null>();
-  public readonly emailError = input<boolean | null>();
+  public readonly usernameError = input<boolean | null>(null);
+  public readonly emailError = input<boolean | null>(null);
   public readonly passwordTouched = signal<boolean>(false);
   public readonly passwordInteracted = signal<boolean>(false);
 
@@ -106,7 +107,7 @@ export class RegistrationForm {
         }
       };
 
-      ['firstName', 'lastName', 'email', 'username'].forEach(toggle);
+      ['firstName', 'lastName', 'email', 'username', 'birthday'].forEach(toggle);
     });
 
     effect(() => {
@@ -121,14 +122,15 @@ export class RegistrationForm {
 
   public registrationForm = this.fb.nonNullable.group(
     {
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      firstName: ['', [Validators.required, Validators.minLength(2), spaceValidator()]],
+      lastName: ['', [Validators.required, Validators.minLength(2), spaceValidator()]],
       email: ['', [Validators.required, Validators.email]],
+      birthday: ['', Validators.required],
       password: ['', [passwordValidator]],
       confirmPassword: ['', [Validators.required]],
       username: [
         '',
-        [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]{2,}$/)],
+        [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]{2,}$/), spaceValidator()],
       ],
     },
     {
@@ -304,7 +306,17 @@ export class RegistrationForm {
       return;
     }
 
-    const regRequest = { ...this.registrationForm.value };
+    const birthDay = this.registrationForm
+        .value.birthday
+        ?.split('-')
+        .reverse()
+        .join('-');
+
+    const regRequest = {
+      ...this.registrationForm.value,
+      birthday: birthDay,
+    };
+
     if ('confirmPassword' in regRequest) delete regRequest['confirmPassword'];
 
     this.submitRegistrationForm.emit(regRequest as IRegistrationForm);

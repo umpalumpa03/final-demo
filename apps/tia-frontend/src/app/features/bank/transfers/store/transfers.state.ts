@@ -11,6 +11,7 @@ export const initialTransferState: TransferState = {
   selectedRecipientAccount: null, //selected account by number or iban
   hasInsufficientBalance: false, //flag
   isFeeLoading: false,
+  hasShownAmountToast: false,
 
   challengeId: null,
   fee: 0,

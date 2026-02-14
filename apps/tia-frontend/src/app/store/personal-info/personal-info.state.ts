@@ -3,6 +3,11 @@ export interface personalInfoState {
     phoneNumber: string | null;
     loading: boolean;
     error: string | null;
+    phoneUpdateChallengeId: string | null;
+    phoneUpdateLoading: boolean;
+    phoneUpdateError: string | null;
+    phoneUpdatePendingPhone: string | null;
+    phoneUpdateResendCount: number;
 }
 
 export interface PersonalInfoDto {

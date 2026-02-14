@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  booleanAttribute,
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -10,7 +11,6 @@ import {
   viewChildren,
 } from '@angular/core';
 import { BaseInput } from '../base/base-input';
-import { generateUniqueId } from '../base/utils/input.util';
 import { OTP_ALLOWED_KEYS, OTP_DEFAULTS } from '../config/otp.config';
 import { OtpConfig, OtpDigit } from '../models/otp.model';
 
@@ -31,7 +31,10 @@ export class Otp extends BaseInput implements AfterViewInit {
 
   public readonly completed = output<string>();
 
-  private readonly defaultId: string = generateUniqueId('lib-otp');
+  public readonly autoFocus = input<boolean>(true);
+
+  private readonly defaultId: string =
+    this.validationService.generateUniqueId('lib-otp');
 
   protected readonly mergedConfig = computed<OtpConfig>(() => ({
     ...OTP_DEFAULTS,
@@ -155,11 +158,9 @@ export class Otp extends BaseInput implements AfterViewInit {
 
     this.checkCompletion(paddedData);
 
-    setTimeout(() => {
+    queueMicrotask(() => {
       const focusIndex = Math.min(cleanData.length, len) - 1;
-      if (focusIndex >= 0) {
-        this.otpBoxes()[focusIndex]?.nativeElement.focus();
-      }
+      this.otpBoxes()[focusIndex]?.nativeElement.focus();
     });
   }
 
@@ -190,11 +191,12 @@ export class Otp extends BaseInput implements AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
-    queueMicrotask(() => {
-      this.otpBoxes()[0]?.nativeElement.focus();
-    });
+    if (this.autoFocus()) {
+      queueMicrotask(() => {
+        this.otpBoxes()[0]?.nativeElement.focus();
+      });
+    }
   }
-
   public focusFirst(): void {
     const firstInput = this.otpBoxes()[0]?.nativeElement;
     if (firstInput) {

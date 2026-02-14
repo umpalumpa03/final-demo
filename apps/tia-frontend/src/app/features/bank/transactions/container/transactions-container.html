@@ -1,62 +1,103 @@
-<div class="global-bank-wrapper">
+<div class="global-bank-wrapper scrollbar">
   <app-library-title
     [title]="'transactions.title' | translate"
+    [subtitle]="'transactions.subtitle' | translate"
   ></app-library-title>
+
   <div class="transaction-filters-wrapper">
     <app-transactions-filters
-      [categoryOptions]="categoryOptions()"
-      [accountOptions]="accountOptions()"
-      [currencyOptions]="currencyOptions()"
-      (filterChange)="onFiltersChange($event)"
+      [categoryOptions]="facade.categoryOptions()"
+      [accountOptions]="vm.accountOptions()"
+      [currencyOptions]="vm.currencyOptions()"
+      (filterChange)="facade.updateFilters($event)"
     ></app-transactions-filters>
   </div>
-  @if (alertMessage()) {
-  <div class="alert-message">
-    <app-simple-alerts
-      [alertType]="alertType()"
-      [alertMessage]="alertMessage()!"
-    >
-    </app-simple-alerts>
-  </div>
-  }
-  <app-basic-card
-    [maxWidth]="'100%'"
-    [width]="'100%'"
-    [padding]="'2.4rem'"
-    [height]="'calc(100vh - 45.4rem)'"
-    [title]="'transactions.title' | translate"
-    [subtitle]="totalTransactionsString()"
-  >
-    <app-scroll-area
-      [height]="'calc(calc(100vh - 45.4rem) - 12rem)'"
-      [hideBorder]="true"
-      (scrollBottom)="loadProducts()"
-    >
-      @if(isLoading() && items().length === 0){
-      <app-route-loader [variant]="'full-page'"></app-route-loader>
-      } @else {
-      <app-tables
-        [tableConfig]="tableConfig()"
-        (transactionClickedOutput)="onTableAction($event)"
-      ></app-tables>
-      } @if(isLoading() && items().length > 0){
-      <app-button [isLoading]="true" [variant]="'outline'"
-        >{{ 'transactions.table.loading' | translate }}</app-button
-      >
+
+  <div class="transactions-table-wrapper horizontal-provider">
+    <div class="transactions-table-wrapper__heading">
+      <div>
+        <h3>{{ 'transactions.title' | translate }}</h3>
+        <p>{{ vm.totalTransactionsString() }}</p>
+      </div>
+
+      @if(!facade.transactionError() && !vm.isEmpty()){
+      <div class="transactions-table-wrapper__extract-all">
+        <app-button
+          variant="outline"
+          [icon]="'extract.svg'"
+          (click)="actions.exportTransactionsTable()"
+          iconHeight="16px"
+          iconWidth="16px"
+        >
+          Export Table
+        </app-button>
+      </div>
       }
-    </app-scroll-area>
-  </app-basic-card>
+    </div>
+    <div class="scroll-area-width-stretcher">
+      <app-scroll-area
+        [height]="'calc(calc(100vh - 49.8rem) - 12rem)'"
+        [hideBorder]="true"
+        (scrollBottom)="facade.loadMore()"
+        [scrollbar]="'hidden'"
+      >
+        @if(facade.isLoading() && facade.items().length === 0){
+        <app-route-loader variant="pulsing" [fillContainer]="true">
+        </app-route-loader>
+
+        } @else if (facade.transactionError()) {
+        <div class="transactions-table-wrapper__widget-error">
+          <app-error-states
+            variant="failed"
+            header="Failed to load"
+            message="Could not load transactions"
+            buttonMessage="Retry"
+            (buttonClick)="retryLoad()"
+            [border]="false"
+          >
+          </app-error-states>
+        </div>
+
+        } @else if (vm.isEmpty()) {
+        <div class="transactions-table-wrapper__widget-error">
+          <app-error-states
+            variant="not-found"
+            header="No transactions"
+            message="There are no transactions available"
+            [showButton]="false"
+            [border]="false"
+          >
+          </app-error-states>
+        </div>
+
+        } @else {
+        <div class="force-max-content">
+          <app-tables
+            [tableConfig]="vm.tableConfig()"
+            (transactionClickedOutput)="onTableAction($event)"
+          ></app-tables>
+        </div>
+
+        } @if (facade.isLoading() && !vm.isEmpty()) {
+        <div class="loading-more">
+          <app-route-loader variant="pulsing"></app-route-loader>
+        </div>
+        }
+      </app-scroll-area>
+    </div>
+  </div>
+
   <app-ui-modal
-    [isOpen]="isCategorizeModalOpen()"
-    (closed)="closeCategorizeModal()"
+    [isOpen]="actions.isCategorizeModalOpen()"
+    (closed)="actions.closeCategorizeModal()"
   >
-    @if(selectedTransaction(); as trx) {
+    @let trx = actions.selectedTransaction(); @if(trx) {
     <app-categorize-modal
       [transaction]="trx"
-      [selectCategoryOptions]="categoryOptionsForModal()"
-      (save)="onCategorizeSave($event)"
-      (cancel)="closeCategorizeModal()"
-      (createCategory)="onCategoryCreate($event)"
+      [selectCategoryOptions]="facade.categoryOptionsForModal()"
+      (save)="actions.saveCategory($event.transactionId, $event.categoryId)"
+      (cancel)="actions.closeCategorizeModal()"
+      (createCategory)="facade.createCategory($event)"
     ></app-categorize-modal>
     }
   </app-ui-modal>

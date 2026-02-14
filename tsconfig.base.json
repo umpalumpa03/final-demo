@@ -23,6 +23,7 @@
       ],
       "@org/shop/feature-products": ["libs/shop/feature-products/src/index.ts"],
       "@org/shop/shared-ui": ["libs/shop/shared-ui/src/index.ts"],
+      "@tia/core/*": ["apps/tia-frontend/src/app/core/*"],
       "@tia/shared/*": ["apps/tia-frontend/src/app/shared/*"],
       "apps/tia-frontend/src/app/*": ["apps/tia-frontend/src/app/*"]
     }

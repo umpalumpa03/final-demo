@@ -1,23 +1,34 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { map, startWith, tap } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import {
   Account,
   AccountsResponse,
   CreateAccountRequest,
 } from '../../models/accounts/accounts.model';
+import { AccountsStore } from '../../../features/bank/settings/components/accounts/store/accounts.store';
 
 @Injectable({ providedIn: 'root' })
 export class AccountsApiService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/accounts`;
+  private readonly store = inject(AccountsStore);
 
   public getAccounts(): Observable<AccountsResponse> {
     return this.http.get<AccountsResponse>(this.apiUrl, {
       params: {
         ignoreHiddens: 'true',
+        status: 'active',
+      },
+    });
+  }
+
+  public getActiveAccounts(): Observable<AccountsResponse> {
+    return this.http.get<AccountsResponse>(this.apiUrl, {
+      params: {
+        ignoreHiddens: 'false',
         status: 'active',
       },
     });
@@ -53,9 +64,14 @@ export class AccountsApiService {
     accountId: string,
     friendlyName: string,
   ): Observable<Account> {
-    return this.http.put<Account>(
-      `${this.apiUrl}/update-friendly-name/${accountId}`,
-      { friendlyName },
-    );
+    return this.http
+      .put<Account>(`${this.apiUrl}/update-friendly-name/${accountId}`, {
+        friendlyName,
+      })
+      .pipe(
+        tap(() => {
+          this.store.resetStore();
+        }),
+      );
   }
 }

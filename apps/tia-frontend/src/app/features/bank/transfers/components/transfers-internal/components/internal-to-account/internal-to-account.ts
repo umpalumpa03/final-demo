@@ -1,14 +1,22 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
 import {
-  TransferInternalService
-} from 'apps/tia-frontend/src/app/features/bank/transfers/services/transfer.internal.service';
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
+import { Router } from '@angular/router';
+import { TransferInternalService } from 'apps/tia-frontend/src/app/features/bank/transfers/components/transfers-internal/services/transfer.internal.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { Store } from '@ngrx/store';
 import { TransferStore } from 'apps/tia-frontend/src/app/features/bank/transfers/store/transfers.store';
-import { selectAccounts, selectIsLoading } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
+import {
+  selectAccounts,
+  selectError,
+  selectIsLoading,
+} from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { selectError } from 'apps/tia-frontend/src/app/store/loans/loans.reducer';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { AccountData } from 'apps/tia-frontend/src/app/features/bank/transfers/models/transfers.state.model';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
@@ -17,11 +25,9 @@ import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-typ
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
-import {
-  TransfersAccountCard
-} from 'apps/tia-frontend/src/app/features/bank/transfers/ui/account-card/transfers-account-card';
+import { TransfersAccountCard } from 'apps/tia-frontend/src/app/features/bank/transfers/ui/account-card/transfers-account-card';
 import { TranslatePipe } from '@ngx-translate/core';
-
+import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 
 @Component({
   selector: 'app-internal-to-account',
@@ -31,10 +37,12 @@ import { TranslatePipe } from '@ngx-translate/core';
     ErrorStates,
     RouteLoader,
     TransfersAccountCard,
-    TranslatePipe
+    TranslatePipe,
+    Badges,
   ],
   templateUrl: './internal-to-account.html',
   styleUrl: './internal-to-account.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InternalToAccount {
   private readonly transferStore = inject(TransferStore);
@@ -44,17 +52,45 @@ export class InternalToAccount {
   private readonly router = inject(Router);
   private readonly transferInternalService = inject(TransferInternalService);
 
-  public readonly isFullWidth = computed(() => this.breakpointService.isMobile());
-  public readonly accounts = toSignal(this.store.select(selectAccounts), { initialValue: [] });
-  public readonly isLoading = toSignal(this.store.select(selectIsLoading), { initialValue: false });
-  public readonly error = toSignal(this.store.select(selectError), { initialValue: null });
+  public readonly isFullWidth = computed(() =>
+    this.breakpointService.isMobile(),
+  );
+  public readonly accounts = toSignal(this.store.select(selectAccounts), {
+    initialValue: [],
+  });
+  public readonly isLoading = toSignal(this.store.select(selectIsLoading), {
+    initialValue: false,
+  });
+  public readonly error = toSignal(this.store.select(selectError), {
+    initialValue: null,
+  });
 
   public readonly showSuccess = signal(false);
-  public readonly selectedToAccount = computed(() => this.transferStore.receiverOwnAccount());
+  public readonly selectedToAccount = computed(() =>
+    this.transferStore.receiverOwnAccount(),
+  );
+  public readonly selectedFromAccount = computed(() =>
+    this.transferStore.senderAccount(),
+  );
 
   public readonly isContinueDisabled = computed(() => {
     return !this.selectedToAccount();
-  })
+  });
+
+  public readonly transferableAccounts = computed(() => {
+    return this.accounts().filter(
+      (account) => account.id !== this.selectedFromAccount()?.id,
+    );
+  });
+
+  constructor() {
+    effect(() => {
+      const accs = this.accounts();
+      if (accs?.length) {
+        this.transferInternalService.restoreInternalSelection(accs);
+      }
+    });
+  }
 
   ngOnInit() {
     this.store.dispatch(AccountsActions.loadAccounts({}));
@@ -63,7 +99,7 @@ export class InternalToAccount {
   public onAccountSelect(account: AccountData) {
     this.transferInternalService.handleToAccountSelect(
       account as Account,
-      this.selectedToAccount()
+      this.selectedToAccount(),
     );
   }
 
@@ -76,7 +112,25 @@ export class InternalToAccount {
   }
 
   public onContinue() {
-
+    if (this.isContinueDisabled()) {
+      return;
+    }
+    this.router.navigate(['/bank/transfers/internal/amount']);
   }
 
+  public getLastFourDigits(iban: string): string {
+    return iban.slice(-4);
+  }
+
+  public onSwapAccounts() {
+    const currentSender = this.selectedFromAccount();
+    const currentRecipient = this.selectedToAccount();
+
+    if (!currentSender || !currentRecipient) {
+      return;
+    }
+
+    this.transferStore.setSenderAccount(currentRecipient as Account);
+    this.transferStore.setReceiverOwnAccount(currentSender as Account);
+  }
 }

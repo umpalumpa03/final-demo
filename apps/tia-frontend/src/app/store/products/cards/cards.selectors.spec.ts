@@ -15,23 +15,31 @@ import {
   selectCardTypes,
   selectIsCreating,
   selectCreateError,
-  selectShowSuccessAlert,
   selectCardCreationDataLoading,
   selectIsCardDetailsModalOpen,
   selectSelectedCardIdForModal,
   selectCardDetailsModalData,
-  selectCardTransactions,
-  selectCardTransactionsLoading,
-  selectCardTransactionsError,
-  selectCardTransactionsTotalCount,
-  selectCardTransactionsByCardId,
-  selectCardTransactionsTotalByCardId,
+  selectCardImagesLoading,
+  selectIsUpdatingCardName,
+  selectUpdateCardNameError,
+  selectCardSensitiveData,
+  selectChallengeId,
+  selectIsOtpModalOpen,
+  selectSelectedCardIdForOtp,
+  selectOtpLoading,
+  selectOtpError,
+  selectShowOtpSuccessAlert,
+  selectCardSensitiveDataById,
+  selectCurrentCardIndex,
+  selectCurrentAccountId,
+  selectCurrentAccountCardIds,
 } from './cards.selectors';
 import { CardsState } from './cards.state';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 
 describe('CardsSelectors - Full Coverage', () => {
-const mockState: CardsState = {
+
+  const mockState: CardsState = {
   accounts: [
     { id: 'acc-1', iban: 'GE123', name: 'Main', balance: 1000, currency: 'GEL', status: 'ACTIVE', cardIds: ['card-1'], openedAt: '2024-01-01' },
   ],
@@ -54,16 +62,28 @@ const mockState: CardsState = {
   isCreating: true,
   createError: 'create failed',
   isCreateModalOpen: true,
-  showSuccessAlert: true,
   isCardDetailsModalOpen: false,
   selectedCardIdForModal: null,
-  cardTransactions: {},
-  cardTransactionsLoading: false,
-  cardTransactionsError: null,
-  cardTransactionsTotalCount: {},
+  cardImagesLoading: false,
+  isUpdatingCardName: false,
+  updateCardNameError: null,
+  cardSensitiveData: {},
+  challengeId: null,
+  isOtpModalOpen: false,
+  selectedCardIdForOtp: null,
+  otpLoading: false,
+  otpError: null,
+  showOtpSuccessAlert: false,  
+  otpRemainingAttempts: 3,
+  currentCardIndex: 0,
+  currentAccountId: 'acc-1',
+  accountsLoaded: true,
+  cardCreationDataLoaded: true,
+  loadedCardDetailsIds: ['card-1'],
+  loadedCardImageIds: ['card-1'],
 };
 
-  it('should select all accounts', () => {
+it('should select all accounts', () => {
     expect(selectAllAccounts.projector(mockState)).toEqual(mockState.accounts);
   });
 
@@ -137,9 +157,6 @@ const mockState: CardsState = {
     expect(selectCreateError.projector(mockState)).toBe('create failed');
   });
 
-  it('should select showSuccessAlert', () => {
-    expect(selectShowSuccessAlert.projector(mockState)).toBe(true);
-  });
 
   it('should select cardCreationDataLoading', () => {
     expect(selectCardCreationDataLoading.projector(mockState)).toBe(false);
@@ -157,30 +174,61 @@ it('should select card details modal data', () => {
   expect(result?.cardId).toBe('card-1');
   expect(result?.formattedBalance).toBeDefined();
 });
-it('should select cardTransactions', () => {
-  expect(selectCardTransactions.projector(mockState)).toEqual({});
+
+it('should select cardImagesLoading', () => {
+  expect(selectCardImagesLoading.projector({ ...mockState, cardImagesLoading: true })).toBe(true);
+});
+it('should select isUpdatingCardName', () => {
+  expect(selectIsUpdatingCardName.projector({ ...mockState, isUpdatingCardName: true })).toBe(true);
 });
 
-it('should select cardTransactionsLoading', () => {
-  expect(selectCardTransactionsLoading.projector(mockState)).toBe(false);
+it('should select updateCardNameError', () => {
+  expect(selectUpdateCardNameError.projector({ ...mockState, updateCardNameError: 'Failed' })).toBe('Failed');
+});
+it('should select cardSensitiveData', () => {
+  const data = { 'card-1': { cardNumber: '1234', cvv: '123', expiryDate: '12/28', cardholderName: 'John' } };
+  expect(selectCardSensitiveData.projector({ ...mockState, cardSensitiveData: data })).toEqual(data);
 });
 
-it('should select cardTransactionsError', () => {
-  expect(selectCardTransactionsError.projector(mockState)).toBeNull();
+it('should select challengeId', () => {
+  expect(selectChallengeId.projector({ ...mockState, challengeId: 'ch-123' })).toBe('ch-123');
 });
 
-it('should select cardTransactionsTotalCount', () => {
-  expect(selectCardTransactionsTotalCount.projector(mockState)).toEqual({});
+it('should select isOtpModalOpen', () => {
+  expect(selectIsOtpModalOpen.projector({ ...mockState, isOtpModalOpen: true })).toBe(true);
 });
 
-it('should select transactions by cardId', () => {
-  const transactions = [{ id: 'tx-1' }] as ITransactions[];
-  expect(selectCardTransactionsByCardId('card-1').projector({ 'card-1': transactions })).toEqual(transactions);
-  expect(selectCardTransactionsByCardId('unknown').projector({})).toEqual([]);
+it('should select selectedCardIdForOtp', () => {
+  expect(selectSelectedCardIdForOtp.projector({ ...mockState, selectedCardIdForOtp: 'card-1' })).toBe('card-1');
 });
 
-it('should select total by cardId', () => {
-  expect(selectCardTransactionsTotalByCardId('card-1').projector({ 'card-1': 10 })).toBe(10);
-  expect(selectCardTransactionsTotalByCardId('unknown').projector({})).toBe(0);
+it('should select otpLoading', () => {
+  expect(selectOtpLoading.projector({ ...mockState, otpLoading: true })).toBe(true);
+});
+
+it('should select otpError', () => {
+  expect(selectOtpError.projector({ ...mockState, otpError: 'Failed' })).toBe('Failed');
+});
+
+it('should select showOtpSuccessAlert', () => {
+  expect(selectShowOtpSuccessAlert.projector({ ...mockState, showOtpSuccessAlert: true })).toBe(true);
+});
+
+it('should select sensitive data by cardId', () => {
+  const data = { cardNumber: '1234', cvv: '123', expiryDate: '12/28', cardholderName: 'John' };
+  expect(selectCardSensitiveDataById('card-1').projector({ 'card-1': data })).toEqual(data);
+  expect(selectCardSensitiveDataById('unknown').projector({})).toBeNull();
+});
+it('should select currentCardIndex', () => {
+  expect(selectCurrentCardIndex.projector({ ...mockState, currentCardIndex: 2 })).toBe(2);
+});
+
+it('should select currentAccountId', () => {
+  expect(selectCurrentAccountId.projector({ ...mockState, currentAccountId: 'acc-1' })).toBe('acc-1');
+});
+
+it('should select current account card ids', () => {
+  const result = selectCurrentAccountCardIds.projector('acc-1', mockState.accounts);
+  expect(result).toEqual(['card-1']);
 });
 });

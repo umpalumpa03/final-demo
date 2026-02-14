@@ -5,7 +5,14 @@
         </lib-text-input>
     </div>
 
-    @if (store.loading()) {
+    @if (store.error() && !store.loading() && store.users().length === 0) {
+    <app-error-states variant="failed" [header]="'settings.user-management.alerts.error.title' | translate"
+        [message]="store.error() || ''" [buttonMessage]="'settings.user-management.buttons.retry' | translate"
+        (buttonClick)="loadData()">
+    </app-error-states>
+    }
+
+    @else if (store.loading()) {
     @for (item of [1, 2, 3, 4]; track item) {
     <div class="skeleton">
         <div class="skeleton__content">
@@ -25,6 +32,7 @@
     </div>
     }
     }
+
     @else {
     @for (user of pagination.visibleItems(); track user.id) {
     @let userId = user.id;
@@ -46,7 +54,9 @@
         [isLoading]="store.actionLoading()" (close)="onCloseModal()" (save)="onUpdateUser($event)">
     </app-user-edit-modal>
 
+    @if (!store.error() && !store.loading() && pagination.visibleItems().length > 0) {
     <app-pagination [currentPage]="pagination.currentPage()" [totalPages]="pagination.totalPages()"
-        (pageChange)="onPageChange($event)">>
+        [config]="pagination.paginationConfig()" (pageChange)="onPageChange($event)" [overflowHidden]="true">
     </app-pagination>
+    }
 </main>

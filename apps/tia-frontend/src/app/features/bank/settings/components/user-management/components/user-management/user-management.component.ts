@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   effect,
   inject,
   signal,
@@ -24,6 +23,8 @@ import { IUpdateUserRequest } from '../../shared/models/users.model';
 import { debounceTime, distinctUntilChanged, Subject, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UserSearchService } from '../../shared/services/user-search.service';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-management',
@@ -35,6 +36,8 @@ import { UserSearchService } from '../../shared/services/user-search.service';
     ConfirmModal,
     Skeleton,
     UserEditModal,
+    ErrorStates,
+    TranslatePipe,
   ],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss',
@@ -57,8 +60,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
 
   protected readonly isSaving = signal(false);
 
-  protected readonly pagination = usePagination(this.filteredUsers, 4);
-
+  protected readonly pagination = usePagination(this.filteredUsers);
   constructor() {
     effect(() => {
       const mode = this.modalService.modalState();
@@ -97,6 +99,10 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.store.loadUsers();
+  }
+
+  public loadData(): void {
     this.store.loadUsers();
   }
 

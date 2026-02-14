@@ -19,18 +19,18 @@ export const initialState: NotificationsState = {
     nextCursor: '',
   },
   hasUnread: false,
+  unreadCount: 0,
   isLoading: false,
   isFetching: false,
   hasError: false,
   limitPerPage: 10,
+  hasFetched: false,
 };
 
 export const NotificationsStore = signalStore(
+  { providedIn: 'root' },
   withState(initialState),
   withComputed((store) => ({
-    unreadNotificationsNumber: computed(
-      () => store.items().filter((item) => !item.isRead).length,
-    ),
     isEmpty: computed(() => !store.isLoading() && store.items().length === 0),
     isAllSelected: computed(() => {
       return (
@@ -46,6 +46,7 @@ export const NotificationsStore = signalStore(
   })),
   withMethods((store) => {
     const notificationsService = inject(Notifications);
+
     return {
       hasUnreadNotifications: rxMethod<void>(
         pipe(
@@ -61,8 +62,26 @@ export const NotificationsStore = signalStore(
         ),
       ),
 
+      fetchUnreadCount: rxMethod<void>(
+        pipe(
+          switchMap(() =>
+            notificationsService.getUnreadCount().pipe(
+              tap((response) => {
+                patchState(store, {
+                  unreadCount: response.count,
+                });
+              }),
+            ),
+          ),
+        ),
+      ),
+
       fetchNotifications: rxMethod<FetchParams>(
         pipe(
+          filter(({ cursor }) => {
+            if (cursor) return true;
+            return !store.hasFetched();
+          }),
           tap(({ cursor }) => {
             cursor
               ? patchState(store, {
@@ -84,6 +103,7 @@ export const NotificationsStore = signalStore(
                     pageInfo: response.pageInfo,
                     isLoading: false,
                     isFetching: false,
+                    hasFetched: true,
                   });
                 },
                 error: () =>
@@ -105,12 +125,22 @@ export const NotificationsStore = signalStore(
             return notificationsService.removeNotification(id).pipe(
               tap({
                 next: () => {
+                  const deletedItem = store
+                    .items()
+                    .find((item) => item.id === id);
+                  const wasUnread = deletedItem && !deletedItem.isRead;
                   const updatedItems = store
                     .items()
                     .filter((item) => item.id !== id);
                   patchState(store, {
                     items: updatedItems,
                     isLoading: false,
+                    selectedItems: store
+                      .selectedItems()
+                      .filter((itemId) => itemId !== id),
+                    unreadCount: wasUnread
+                      ? Math.max(0, store.unreadCount() - 1)
+                      : store.unreadCount(),
                   });
                 },
                 error: () => patchState(store, { hasError: true }),
@@ -137,6 +167,7 @@ export const NotificationsStore = signalStore(
                       .map((item) => ({ ...item, isRead: true })),
                     isLoading: false,
                     hasUnread: false,
+                    unreadCount: 0,
                   });
                 },
                 error: () => patchState(store, { hasError: true }),
@@ -175,6 +206,9 @@ export const NotificationsStore = signalStore(
         pipe(
           filter((ids) => ids.length > 0),
           tap((ids) => {
+            const unreadBeingMarked = store
+              .items()
+              .filter((item) => ids.includes(item.id) && !item.isRead).length;
             const updatedItems = store
               .items()
               .map((item) =>
@@ -183,6 +217,7 @@ export const NotificationsStore = signalStore(
             patchState(store, {
               items: updatedItems,
               hasUnread: updatedItems.some((item) => !item.isRead),
+              unreadCount: Math.max(0, store.unreadCount() - unreadBeingMarked),
             });
           }),
           switchMap((ids) =>
@@ -209,6 +244,12 @@ export const NotificationsStore = signalStore(
             return notificationsService.deleteMultiple(ids).pipe(
               tap({
                 next: () => {
+                  const unreadBeingDeleted = store
+                    .items()
+                    .filter(
+                      (item) => ids.includes(item.id) && !item.isRead,
+                    ).length;
+
                   const updatedItems = store
                     .items()
                     .filter((item) => !ids.includes(item.id));
@@ -217,6 +258,10 @@ export const NotificationsStore = signalStore(
                     isLoading: false,
                     selectedItems: [],
                     hasUnread: updatedItems.some((item) => !item.isRead),
+                    unreadCount: Math.max(
+                      0,
+                      store.unreadCount() - unreadBeingDeleted,
+                    ),
                   });
 
                   const { hasNext, nextCursor } = store.pageInfo();

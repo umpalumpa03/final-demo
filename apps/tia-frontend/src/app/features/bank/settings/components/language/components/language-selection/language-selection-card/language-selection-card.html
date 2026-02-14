@@ -17,11 +17,11 @@
     <div class="card__details">
         <div class="card__detail">
             <img src="images/svg/settings/language/region.svg" alt="region icon">
-            <span>{{ language().region }}</span>
+            <span>{{ language().region | translate }}</span>
         </div>
         <div class="card__detail">
             <img src="images/svg/settings/language/speakers.svg" alt="speakers icon">
-            <span>{{ language().speakerCount }} speakers</span>
+            <span>{{ language().speakerCount | translate }}</span>
         </div>
     </div>
 

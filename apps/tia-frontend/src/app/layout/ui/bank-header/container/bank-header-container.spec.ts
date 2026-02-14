@@ -8,8 +8,14 @@ import { Store } from '@ngrx/store';
 import { NotificationsStore } from '../components/header-notifications/store/notifications.store';
 import { signal, ElementRef, Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { BankHeader } from '../components/bank-header/bank-header';
+import { NotificationsContainer } from '../components/header-notifications/container/notifications-container';
 
-@Component({ selector: 'app-bank-header', standalone: true, template: '' })
+@Component({
+  selector: 'app-bank-header',
+  standalone: true,
+  template: '',
+})
 class BankHeaderStub {}
 
 @Component({
@@ -24,6 +30,7 @@ describe('BankHeaderContainer', () => {
   let fixture: ComponentFixture<BankHeaderContainer>;
   let mockNotificationsStore: any;
   let mockInbox: any;
+  let mockStore: any;
 
   beforeEach(async () => {
     mockInbox = {
@@ -42,21 +49,27 @@ describe('BankHeaderContainer', () => {
       resetState: vi.fn(),
     };
 
+    mockStore = {
+      select: vi.fn(() => of(null)),
+      selectSignal: vi.fn(() => signal(false)),
+    };
+
     await TestBed.configureTestingModule({
       imports: [BankHeaderContainer],
       providers: [
         { provide: Notifications, useValue: {} },
         { provide: InboxService, useValue: mockInbox },
-        { provide: Store, useValue: { select: vi.fn(() => of(null)) } },
+        { provide: Store, useValue: mockStore },
         { provide: ActivatedRoute, useValue: {} },
       ],
     })
       .overrideComponent(BankHeaderContainer, {
-        set: {
+        remove: { imports: [BankHeader, NotificationsContainer] },
+        add: {
+          imports: [BankHeaderStub, NotificationsContainerStub],
           providers: [
             { provide: NotificationsStore, useValue: mockNotificationsStore },
           ],
-          imports: [BankHeaderStub, NotificationsContainerStub],
         },
       })
       .compileComponents();
@@ -72,16 +85,45 @@ describe('BankHeaderContainer', () => {
     expect(mockInbox.fetchInboxCount).toHaveBeenCalled();
   });
 
-  it('should toggle modal and fetch data on notification click', () => {
+  it('should open modal and fetch notifications if closed', () => {
     const mockEl = {
       nativeElement: document.createElement('div'),
     } as ElementRef;
-    component.onNotificationClick(mockEl);
-    expect(component.isModalOpen()).toBe(true);
+    component.isModalOpen.set(false);
 
-    expect(mockNotificationsStore.fetchNotifications).toHaveBeenCalled();
     component.onNotificationClick(mockEl);
+
+    expect(component.isModalOpen()).toBe(true);
+    expect(component.anchorEl()).toBe(mockEl);
+    expect(mockNotificationsStore.fetchNotifications).toHaveBeenCalledWith({
+      limit: 10,
+    });
+  });
+
+  it('should close modal if already open', () => {
+    const mockEl = {
+      nativeElement: document.createElement('div'),
+    } as ElementRef;
+    component.isModalOpen.set(true);
+
+    component.onNotificationClick(mockEl);
+
     expect(component.isModalOpen()).toBe(false);
-    expect(mockNotificationsStore.resetState).toHaveBeenCalled();
+  });
+
+  it('should update modal state via closeAndReset', () => {
+    component.isModalOpen.set(true);
+
+    component.closeAndReset();
+
+    expect(component.isModalOpen()).toBe(false);
+  });
+
+  it('should compute inboxCount correctly from service', () => {
+    expect(component.inboxCount()).toBe(12);
+  });
+
+  it('should expose hasUnread from notificationsStore', () => {
+    expect(component.hasUnread()).toBe(true);
   });
 });

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { InternalToAccount } from './internal-to-account';
-import { TransferInternalService } from '../../../../services/transfer.internal.service';
+import { TransferInternalService } from '../../services/transfer.internal.service';
 import { TransferStore } from '../../../../store/transfers.store';
 import { BreakpointService } from '../../../../../../../core/services/breakpoints/breakpoint.service';
 import { Store } from '@ngrx/store';
@@ -29,7 +29,8 @@ describe('InternalToAccount', () => {
 
   beforeEach(async () => {
     mockStore = {
-      select: vi.fn()
+      select: vi
+        .fn()
         .mockReturnValueOnce(of(mockAccounts))
         .mockReturnValueOnce(of(false))
         .mockReturnValueOnce(of(null)),
@@ -38,6 +39,9 @@ describe('InternalToAccount', () => {
 
     mockTransferStore = {
       receiverOwnAccount: signal(null),
+      senderAccount: signal(null),
+      setSenderAccount: vi.fn(),
+      setReceiverOwnAccount: vi.fn(),
     };
 
     mockLocation = {
@@ -54,6 +58,7 @@ describe('InternalToAccount', () => {
 
     mockTransferInternalService = {
       handleToAccountSelect: vi.fn(),
+      restoreInternalSelection: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -64,7 +69,10 @@ describe('InternalToAccount', () => {
         { provide: Location, useValue: mockLocation },
         { provide: Router, useValue: mockRouter },
         { provide: BreakpointService, useValue: mockBreakpointService },
-        { provide: TransferInternalService, useValue: mockTransferInternalService },
+        {
+          provide: TransferInternalService,
+          useValue: mockTransferInternalService,
+        },
       ],
     }).compileComponents();
 
@@ -81,7 +89,7 @@ describe('InternalToAccount', () => {
     it('should dispatch loadAccounts action', () => {
       component.ngOnInit();
       expect(mockStore.dispatch).toHaveBeenCalledWith(
-        AccountsActions.loadAccounts({})
+        AccountsActions.loadAccounts({}),
       );
     });
   });
@@ -91,7 +99,9 @@ describe('InternalToAccount', () => {
       const account = mockAccounts[0];
       component.onAccountSelect(account as any);
 
-      expect(mockTransferInternalService.handleToAccountSelect).toHaveBeenCalled();
+      expect(
+        mockTransferInternalService.handleToAccountSelect,
+      ).toHaveBeenCalled();
     });
   });
 
@@ -100,7 +110,7 @@ describe('InternalToAccount', () => {
       mockStore.dispatch.mockClear();
       component.onRetry();
       expect(mockStore.dispatch).toHaveBeenCalledWith(
-        AccountsActions.loadAccounts({})
+        AccountsActions.loadAccounts({}),
       );
     });
   });
@@ -133,6 +143,80 @@ describe('InternalToAccount', () => {
 
     it('should have isFullWidth based on breakpoint', () => {
       expect(component.isFullWidth()).toBe(false);
+    });
+  });
+
+  describe('onContinue', () => {
+    it('should navigate to amount page when account is selected', () => {
+      mockTransferStore.receiverOwnAccount.set(mockAccounts[0]);
+      fixture.detectChanges();
+
+      component.onContinue();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith([
+        '/bank/transfers/internal/amount',
+      ]);
+    });
+
+    it('should not navigate when no account is selected', () => {
+      mockTransferStore.receiverOwnAccount.set(null);
+      fixture.detectChanges();
+
+      component.onContinue();
+
+      expect(mockRouter.navigate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getLastFourDigits', () => {
+    it('should return last 4 digits of IBAN', () => {
+      const iban = 'GB82WEST12345698765432';
+      expect(component.getLastFourDigits(iban)).toBe('5432');
+    });
+
+    it('should handle empty IBAN', () => {
+      expect(component.getLastFourDigits('')).toBe('');
+    });
+  });
+
+  describe('onSwapAccounts', () => {
+    it('should swap sender and receiver when both are selected', () => {
+      const sender = mockAccounts[0];
+      const recipient = mockAccounts[1];
+      mockTransferStore.senderAccount.set(sender);
+      mockTransferStore.receiverOwnAccount.set(recipient);
+      fixture.detectChanges();
+
+      component.onSwapAccounts();
+
+      expect(mockTransferStore.setSenderAccount).toHaveBeenCalledWith(
+        recipient,
+      );
+      expect(mockTransferStore.setReceiverOwnAccount).toHaveBeenCalledWith(
+        sender,
+      );
+    });
+
+    it('should not swap when sender is not selected', () => {
+      mockTransferStore.senderAccount.set(null);
+      mockTransferStore.receiverOwnAccount.set(mockAccounts[0]);
+      fixture.detectChanges();
+
+      component.onSwapAccounts();
+
+      expect(mockTransferStore.setSenderAccount).not.toHaveBeenCalled();
+      expect(mockTransferStore.setReceiverOwnAccount).not.toHaveBeenCalled();
+    });
+
+    it('should not swap when recipient is not selected', () => {
+      mockTransferStore.senderAccount.set(mockAccounts[0]);
+      mockTransferStore.receiverOwnAccount.set(null);
+      fixture.detectChanges();
+
+      component.onSwapAccounts();
+
+      expect(mockTransferStore.setSenderAccount).not.toHaveBeenCalled();
+      expect(mockTransferStore.setReceiverOwnAccount).not.toHaveBeenCalled();
     });
   });
 });

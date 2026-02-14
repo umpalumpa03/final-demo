@@ -2,7 +2,7 @@ export const REGISTATION_FORM = {
   firstName: {
     label: 'auth.sign-up.firstname',
     required: false,
-    placeholder: 'Jhon',
+    placeholder: 'John',
   },
   lastName: {
     label: 'auth.sign-up.lastname',
@@ -12,7 +12,7 @@ export const REGISTATION_FORM = {
   email: {
     label: 'auth.sign-up.email',
     required: false,
-    placeholder: 'jonh@example.com',
+    placeholder: 'john@example.com',
   },
   password: {
     label: 'auth.sign-up.password',
@@ -30,6 +30,12 @@ export const REGISTATION_FORM = {
     required: false,
     placeholder: 'Johndoe',
   },
+  birthDate: {
+    label: 'auth.sign-up.birthDate',
+    required: false,
+    min: '1990-01-01',
+    max: '2008-12-31'
+  },
 } as const;
 
 export const PASSWORD_RULE_MESSAGES = {
@@ -38,119 +44,6 @@ export const PASSWORD_RULE_MESSAGES = {
   number: 'Include at least one number',
   special: 'Include a special character',
 } as const;
-
-export const CONTACT_FORM = {
-  name: {
-    label: 'Name',
-    required: true,
-    placeholder: 'Your Name',
-  },
-  email: {
-    label: 'Email',
-    required: true,
-    placeholder: 'your.email@example.com',
-  },
-  message: {
-    label: 'Message',
-    required: true,
-    placeholder: 'Type your message here...',
-  },
-  checkbox: {
-    label: 'Subscribe to newsletter',
-    required: true,
-  },
-} as const;
-
-export const INLINE_FORM = {
-  message: {
-    required: false,
-    placeholder: 'jonh@example.com',
-  },
-} as const;
-
-export const ROW_FORM = {
-  firstName: {
-    label: 'First Name',
-    placeholder: 'Jhon',
-  },
-  lastName: {
-    label: 'Last Name',
-    placeholder: 'Doe',
-  },
-  email: {
-    label: 'Email',
-    placeholder: 'jonh@example.com',
-  },
-  phone: {
-    label: 'Phone',
-    placeholder: '+1 (555) 000-0000',
-  },
-} as const;
-
-export const HORIZONTAL_FORM = {
-  firstName: {
-    placeholder: 'Jhon',
-  },
-  message: {
-    placeholder: 'Doe',
-  },
-  email: {
-    placeholder: 'jonh@example.com',
-  },
-} as const;
-
-export const STEP_FORM = [
-  { label: 'From', key: 'from' },
-  { label: 'To', key: 'to' },
-  { label: 'Amount', key: 'amount' },
-];
-
-export const MULTI_FORM = {
-  name: {
-    label: 'Name',
-    required: true,
-    placeholder: 'Your Name',
-  },
-  bio: {
-    label: 'Message',
-    required: true,
-    placeholder: 'Type your message here...',
-  },
-} as const;
-
-export const PLAN_OPTION = [
-  {
-    label: 'Free',
-    value: 'free',
-    description: 'Basic features',
-    initialValue: true,
-  },
-  {
-    label: 'Pro',
-    value: 'pro',
-    description: 'Advanced features - $9.99/month',
-  },
-  {
-    label: 'Enterprise',
-    value: 'enterprise',
-    description: 'All features - $29.99/month',
-  },
-];
-
-export const VALIDATION_FORM = {
-  success: {
-    label: 'Valid Input',
-    successMessage: 'Email format is correct',
-  },
-  error: {
-    label: 'Invalid Input',
-    errorMessage: 'Please enter a valid email address',
-  },
-  warning: {
-    label: 'Warning Input',
-    warningMessage: 'Temporary email addresses may not receive notifications',
-  },
-};
 
 export const PASSWORD_RULES = {
   minLength: true,

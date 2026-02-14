@@ -1,0 +1,17 @@
+<app-ui-modal [isOpen]="isModalOpen()" [hideExit]="true">
+    <div class="dialog" [class.dialog--reconnected]="isReconnected()">
+        <div class="dialog__icon" [class.dialog__icon--reconnected]="isReconnected()">
+            @if (isReconnected()) {
+                <img src="images/svg/no-connection/is-connected.svg" alt="is connected icon">
+            } @else {
+                <img src="images/svg/no-connection/not-connected.svg" alt="not connected icon">
+            }
+        </div>
+        <h3 class="dialog__title">
+            {{(isReconnected() ? 'common.reconnected.title' : 'common.no-connection.title') | translate}}
+        </h3>
+        <p class="dialog__subtitle">
+            {{(isReconnected() ? 'common.reconnected.description' : 'common.no-connection.description') | translate}}
+        </p>
+    </div>
+</app-ui-modal>

@@ -48,3 +48,13 @@ export const selectSavedAvatarUrl = createSelector(
   selectProfilePhotoFeatureState,
   (state) => state.savedAvatarUrl,
 );
+
+export const selectUserInitials = createSelector(
+  selectProfilePhotoFeatureState,
+  (state) => state?.userInitials ?? null,
+);
+
+export const selectSavingChanges = createSelector(
+  selectProfilePhotoFeatureState,
+  (state) => state?.savingChanges ?? false,
+);

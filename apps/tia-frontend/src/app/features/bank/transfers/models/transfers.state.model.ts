@@ -18,30 +18,23 @@ export interface RecipientResponse {
 }
 
 export interface TransferState {
-  //form this
-  recipientInput: string; //iban or number
-  amount: number; //transfer amount
-  description: string; //optional transfer description
-  manualRecipientName: string; //for transfer in other bank
-
-  //selection state
-  senderAccount: Account | null; //selected sender account, used by both flow(g)
-  receiverOwnAccount: Account | null; //used by transfer internal(g)
-  selectedRecipientAccount: RecipientAccount | null; //for other account same bank flow
-  ///response
-  recipientInfo: RecipientResponse | null; //response after view account
-  challengeId: string | null; //needed for otp, this and transferid are unclear
-  fee: number; //repsponse from /get-fee
+  recipientInput: string; 
+  amount: number;
+  description: string;
+  manualRecipientName: string; 
+  senderAccount: Account | null; 
+  receiverOwnAccount: Account | null; 
+  selectedRecipientAccount: RecipientAccount | null;
+  recipientInfo: RecipientResponse | null; 
+  challengeId: string | null; 
+  fee: number;
   totalWithFee: number;
   hasInsufficientBalance: boolean;
   isFeeLoading: boolean;
-
-  //derived state
-  recipientType: RecipientType | null; // from validation, values: 'phone','iban-same-bank' , 'iban-different-bank'
-  requiresOtp: boolean; //if amount to be transfered is above 50GEL
+  hasShownAmountToast: boolean;
+  recipientType: RecipientType | null;
+  requiresOtp: boolean; 
   pendingTransferId: string | null;
-
-  //uistate
   currentStep: number;
   isLoading: boolean;
   error: string | null;

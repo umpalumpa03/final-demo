@@ -1,16 +1,6 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
-import {
-  BASIC_INPUT_DEMOS,
-  CHECKBOX_DEMOS,
-  RADIO_DEMOS,
-  SLIDER_DEMOS,
-  SELECT_DEMOS,
-  SPECIAL_INPUT_DEMOS,
-  SWITCH_DEMOS,
-  TEXTAREA_DEMOS,
-  OTP_DEMOS,
-} from './config/input-demos.config';
+
 import { Textarea } from '@tia/shared/lib/forms/textarea/textarea';
 import { LibraryTitle } from '../../shared/library-title/library-title';
 import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
@@ -20,6 +10,7 @@ import { Slider } from '@tia/shared/lib/forms/sliders/slider';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { Otp } from '@tia/shared/lib/forms/otp/otp';
 import { ShowcaseCard } from '../../shared/showcase-card/showcase-card';
+import { InputDemoState } from './state/input-demos.state';
 
 @Component({
   selector: 'app-input',
@@ -37,20 +28,22 @@ import { ShowcaseCard } from '../../shared/showcase-card/showcase-card';
   ],
   templateUrl: './input.html',
   styleUrl: './input.scss',
+  providers: [InputDemoState],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Input {
-  protected readonly basicInputs = signal(BASIC_INPUT_DEMOS);
-  protected readonly specialInputTypes = signal(SPECIAL_INPUT_DEMOS);
-  protected readonly textareaDemos = signal(TEXTAREA_DEMOS);
-  protected readonly checkboxDemos = signal(CHECKBOX_DEMOS);
-  protected readonly radioDemos = signal(RADIO_DEMOS);
-  protected readonly switchDemos = signal(SWITCH_DEMOS);
-  protected readonly selectDemos = signal(SELECT_DEMOS);
-  protected readonly sliderDemos = signal(SLIDER_DEMOS);
-  protected readonly otpDemos = signal(OTP_DEMOS);
+  protected readonly state = inject(InputDemoState);
 
-  public readonly title = 'Input Components';
-  public readonly subtitle =
-    'Form input components with various types and states';
+  protected readonly basicInputs = this.state.basicInputs;
+  protected readonly specialInputTypes = this.state.specialInputTypes;
+  protected readonly textareaDemos = this.state.textareaDemos;
+  protected readonly checkboxDemos = this.state.checkboxDemos;
+  protected readonly radioDemos = this.state.radioDemos;
+  protected readonly switchDemos = this.state.switchDemos;
+  protected readonly selectDemos = this.state.selectDemos;
+  protected readonly sliderDemos = this.state.sliderDemos;
+  protected readonly otpDemos = this.state.otpDemos;
+
+  protected readonly pageInfo = this.state.pageInfo;
+  protected readonly sectionTitles = this.state.titles;
 }

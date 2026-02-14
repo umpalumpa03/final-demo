@@ -1,1 +1,27 @@
-<h1>loan management container</h1>
+<div class="loan-card">
+  <div class="loan-header">
+    <h3 class="loan-header__title">{{ config().title }}</h3>
+    <p class="loan-header__subtitle">{{ config().subtitle }}</p>
+  </div>
+  <div class="loan-management-container">
+    <app-pending-approvals-table
+      [approvals]="store.pendingApprovals()"
+      [isLoading]="store.loading()"
+      [error]="store.error()"
+      (rowClick)="onRowClick($event)"
+      (reload)="onReload()"
+    ></app-pending-approvals-table>
+  </div>
+</div>
+<app-loan-case-drawer
+  [isOpen]="!!store.selectedLoanId()"
+  [loanDetails]="store.selectedLoanDetails()"
+  [loanDetailsResponse]="store.selectedLoanDetailsResponse()"
+  [userInfo]="store.selectedUserInfo()"
+  [isUserInfoLoading]="store.userInfoLoading()"
+  [isLoanDetailsLoading]="store.loanDetailsLoading()"
+  [isActionLoading]="store.actionLoading()"
+  (closed)="onDrawerClose()"
+  (approve)="onApprove($event)"
+  (reject)="onReject($event)"
+></app-loan-case-drawer>

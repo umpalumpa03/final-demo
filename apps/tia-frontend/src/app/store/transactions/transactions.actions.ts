@@ -43,5 +43,7 @@ export const TransactionActions = createActionGroup({
 
     'Set Transaction To Repeat': props<{ transaction: ITransactions }>(),
     'Clear Transaction To Repeat': emptyProps(),
+    
+    'Load Transactions Cached': emptyProps(),
   },
 });

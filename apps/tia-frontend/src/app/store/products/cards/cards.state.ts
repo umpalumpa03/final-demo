@@ -3,7 +3,7 @@ import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
 import { CardDesign } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-design.model';
 import { CardCategory } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-category.model';
 import { CardType } from '../../../features/bank/products/components/cards/models/card-type.model';
-import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
+import { CardSensitiveData } from '../../../features/bank/products/components/cards/models/card-sensitive-data.model';
 
 export interface CardsState {
   accounts: CardAccount[];
@@ -13,20 +13,31 @@ export interface CardsState {
   error: string | null;
   cardDetailsLoading: boolean;
   cardDetailsError: string | null;
-
   designs: CardDesign[];
   categories: CardCategory[];
   types: CardType[];
   isCreating: boolean;
   createError: string | null;
   isCreateModalOpen: boolean;
-  showSuccessAlert: boolean;
   isCardDetailsModalOpen: boolean;
   selectedCardIdForModal: string | null;
-  cardTransactions: Record<string, ITransactions[]>;
-  cardTransactionsLoading: boolean;
-  cardTransactionsError: string | null;
-  cardTransactionsTotalCount: Record<string, number>;
+  cardImagesLoading: boolean;
+  isUpdatingCardName: boolean;
+  updateCardNameError: string | null;
+  cardSensitiveData: Record<string, CardSensitiveData>;
+  challengeId: string | null;
+  isOtpModalOpen: boolean;
+  selectedCardIdForOtp: string | null;
+  otpLoading: boolean;
+  otpError: string | null;
+  showOtpSuccessAlert: boolean;
+  currentCardIndex: number;
+  currentAccountId: string | null;
+  otpRemainingAttempts: number;
+   accountsLoaded: boolean;
+  cardCreationDataLoaded: boolean;
+  loadedCardDetailsIds: string[];
+  loadedCardImageIds: string[];
 }
 
 export const initialCardsState: CardsState = {
@@ -37,18 +48,29 @@ export const initialCardsState: CardsState = {
   error: null,
   cardDetailsLoading: false,
   cardDetailsError: null,
-
   designs: [],
   categories: [],
   types: [],
   isCreating: false,
   createError: null,
   isCreateModalOpen: false,
-  showSuccessAlert: false,
   isCardDetailsModalOpen: false,
   selectedCardIdForModal: null,
-  cardTransactions: {},
-  cardTransactionsLoading: false,
-  cardTransactionsError: null,
-  cardTransactionsTotalCount: {},
+  cardImagesLoading: true,
+  isUpdatingCardName: false,
+  updateCardNameError: null,
+  cardSensitiveData: {},
+  challengeId: null,
+  isOtpModalOpen: false,
+  selectedCardIdForOtp: null,
+  otpLoading: false,
+  otpError: null,
+  showOtpSuccessAlert: false,
+  otpRemainingAttempts: 3,
+  currentCardIndex: 0,
+  currentAccountId: null,
+  accountsLoaded: false,
+  cardCreationDataLoaded: false,
+  loadedCardDetailsIds: [],
+  loadedCardImageIds: [],
 };

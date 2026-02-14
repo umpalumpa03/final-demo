@@ -7,10 +7,12 @@
   }@else if(hasError()) {
   <div class="table-container-error">
     <app-error-states
-      header="Failed to Load Table Data"
-      message="An error occurred while fetching the transaction history. Please try again."
-      buttonMessage="Reload Table"
+      [header]="'storybook.tables.error.title' | translate"
+      [message]="'storybook.tables.error.description' | translate"
+      [buttonMessage]="'storybook.tables.error.retry' | translate"
       width="100%"
+      maxWidth="100%"
+      [border]="false"
       (buttonClick)="onErrorReload()"
     ></app-error-states>
   </div>
@@ -26,7 +28,10 @@
           ></lib-checkboxes>
         </th>
         }@else if(config.type === 'transactions'){
-        <th class="table__header__row__item">Type</th>
+        <th class="table__header__row__item">
+          {{ 'storybook.tables.sections.transactions.headers.type' | translate
+          }}
+        </th>
         } @for (header of config.headers; track header.title) {
         <th
           class="table__header__row__item"
@@ -109,7 +114,11 @@
           @if(cell.category || cell.accountName || cell.date) {
           <div class="table__body__row__item__container">
             <div class="table__body__row__item__container__header">
-              <h3>{{ cell.value }}</h3>
+              <h3
+                class="table__body__row__item__container__header__text--ellipsis"
+              >
+                {{ cell.value }}
+              </h3>
               <span>
                 <img src="images/svg/transactions/tag.svg" alt="tag" />
                 {{ cell.category}}
@@ -138,13 +147,34 @@
         }@else if(config.type === "transactions") {
         <td class="table__body__row__item">
           <div class="table__body__row__item__transaction">
+            <app-tooltip
+              [content]="'storybook.tables.sections.transactions.actions.tooltip' | translate"
+              [disabled]="row.hasMeta!"
+            >
+              <app-button
+                icon="repeat.svg"
+                size="small"
+                variant="outline"
+                (click)="onTransactionActionClicked('repeat', row)"
+                iconHeight="16px"
+                iconWidth="16px"
+                [isDisabled]="!row.hasMeta!"
+              >
+                {{ 'storybook.tables.sections.transactions.actions.repeat' |
+                translate}}
+              </app-button>
+            </app-tooltip>
+
             <app-button
-              icon="repeat.svg"
+              icon="extract.svg"
               size="small"
               variant="outline"
-              (click)="onTransactionActionClicked('repeat', row)"
+              (click)="onTransactionActionClicked('extract', row)"
+              iconHeight="16px"
+              iconWidth="16px"
             >
-              Repeat
+              {{ 'storybook.tables.sections.transactions.actions.extract' |
+              translate}}
             </app-button>
             <app-button
               icon="tag.svg"
@@ -152,7 +182,8 @@
               variant="outline"
               (click)="onTransactionActionClicked('categorize', row)"
             >
-              categorize
+              {{ 'storybook.tables.sections.transactions.actions.categorize' |
+              translate}}
             </app-button>
           </div>
         </td>

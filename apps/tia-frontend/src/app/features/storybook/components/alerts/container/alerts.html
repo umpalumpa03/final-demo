@@ -1,84 +1,69 @@
 <div class="alerts-page">
   <div class="alerts-page__title">
-    <app-library-title [title]="pageTitle" [subtitle]="pageSubtitle" />
+    <app-library-title
+      [title]="alertsState.titleCfg().PAGE_MAIN  | translate"
+      [subtitle]="alertsState.titleCfg().PAGE_SUB  | translate"
+    />
   </div>
+
   @for (section of alertSections; track section) {
-  <app-showcase-card [title]="effectiveTitle(section)">
+  <app-showcase-card [title]="effectiveTitle(section) | translate">
     <div class="alerts-page__group">
-     @switch (section) { 
-        @case (titles.BASIC) { 
-          @for (item of alertBasicData; track item.id) {
-            <app-basic-alerts 
-                [alertType]="item.type" 
-                [alertState]="item.state"
-                [alertTitle]="item.title!" 
-                [alertMessage]="item.message!"
-              /> 
-          }
-        }
+      @switch (section) { @case (titles.BASIC) { @for (item of alertBasicData;
+      track item.id) {
+      <app-basic-alerts
+        [alertType]="item.type"
+        [alertState]="item.state"
+        [alertTitle]="item.title | translate"
+        [alertMessage]="item.message | translate"
+      />
+      } } @case(titles.ICONS) { @for(item of alertIconsData; track item.id) {
+      <app-alert-types-with-icons
+        [alertType]="item.type"
+        [alertMessage]="item.message | translate"
+      />
+      } } @case(titles.DISMISSIBLE) {
+      <section class="alerts-page__card">
+        <h3 class="alerts-page__card__subtitle">{{ section | translate }}</h3>
+        <app-button size="small" variant="outline" (click)="onResetAll()">
+          {{ 'buttons.reset_all' | translate }}
+        </app-button>
+      </section>
 
-        @case(titles.ICONS) {
-          @for(item of alertIconsData; track item.id) {
-            <app-alert-types-with-icons 
-            [alertType]="item.type" 
-            [alertMessage]="item.message" />
-          }
-        }
-
-        @case(titles.DISMISSIBLE) {
-          <section class="alerts-page__card">
-            <h3 class="alerts-page__card__subtitle">{{ section }}</h3>
-            <app-button size="small" variant="outline" (click)="onResetAll()">
-              Reset All
-            </app-button>
-          </section>
-
-          @for(item of alertDismissibleData; track item.id) {
-            <app-dismissible-alerts
-            [alertId]="item.id"
-            [alertTitle]="item.title"
-            [alertType]="item.type" 
-            [alertMessage]="item.message"
-             />
-          }
-        }
-
-        @case(titles.ACTIONS) {
-          @for(item of alertActionsData; track item.id) {
-            <app-alerts-with-actions
-            [alertType]="item.type" 
-            [alertTitle]="item.title"
-            [alertMessage]="item.message" 
-            >
-            <app-button size="small" [variant]="item.btnOneType">
-              {{ item.btnOneText }} </app-button>
-            <app-button [variant]="item.btnTwoType" size="small">
-              {{ item.btnTwoText }}
-            </app-button>
-          </app-alerts-with-actions>
-          }
-        }
-
-        @case(titles.SIMPLE) {
-          @for(item of alertSimpleData; track item.id) {
-            <app-simple-alerts
-            [alertType]="item.type" 
-            [alertMessage]="item.message" 
-            />
-          }
-        }
-
-        @case(titles.STATES) {
-          @for(item of alertStateData; track item.id) {
-            <app-basic-alerts
-            [alertType]="item.type"
-            [alertState]="item.state"
-            [alertTitle]="item.title" 
-            [alertMessage]="item.message" 
-            />
-          }
-        }
-     }
+      @for(item of alertDismissibleData; track item.id) {
+      <app-dismissible-alerts
+        [alertId]="item.id"
+        [alertTitle]="item.title | translate"
+        [alertType]="item.type"
+        [alertMessage]="item.message | translate"
+      />
+      } } @case(titles.ACTIONS) { @for(item of alertActionsData; track item.id)
+      {
+      <app-alerts-with-actions
+        [alertType]="item.type"
+        [alertTitle]="item.title | translate"
+        [alertMessage]="item.message | translate"
+      >
+        <app-button size="small" [variant]="item.btnOneType">
+          {{ item.btnOneText | translate }}
+        </app-button>
+        <app-button [variant]="item.btnTwoType" size="small">
+          {{ item.btnTwoText | translate }}
+        </app-button>
+      </app-alerts-with-actions>
+      } } @case(titles.SIMPLE) { @for(item of alertSimpleData; track item.id) {
+      <app-simple-alerts
+        [alertType]="item.type"
+        [alertMessage]="item.message | translate"
+      />
+      } } @case(titles.STATES) { @for(item of alertStateData; track item.id) {
+      <app-basic-alerts
+        [alertType]="item.type"
+        [alertState]="item.state"
+        [alertTitle]="item.title | translate"
+        [alertMessage]="item.message | translate"
+      />
+      } } }
     </div>
   </app-showcase-card>
   }

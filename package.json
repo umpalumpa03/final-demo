@@ -9,7 +9,8 @@
   "scripts": {
     "test": "nx test tia-frontend",
     "test:coverage": "nx test tia-frontend --coverage",
-    "test:pipeline": "npx nx affected --target=test --coverage --parallel=3 --skip-nx-cache && node scripts/check-coverage.js"
+    "test:pipeline": "npx nx affected --target=test --coverage --parallel=3 --skip-nx-cache && node scripts/check-coverage.js",
+    "test:integration": "nx test tia-frontend --coverage int"
   },
   "private": true,
   "dependencies": {
@@ -28,10 +29,12 @@
     "@ngrx/store-devtools": "^21.0.1",
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^17.0.0",
+    "canvas-confetti": "^1.9.4",
     "chart.js": "^4.5.1",
     "express": "^4.21.2",
     "ng2-charts": "^8.0.0",
     "rxjs": "~7.8.0",
+    "xlsx": "^0.18.5",
     "zone.js": "0.16.0"
   },
   "devDependencies": {
@@ -62,6 +65,7 @@
     "@swc-node/register": "~1.9.1",
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/express": "^4.17.21",
     "@types/node": "20.19.9",
     "@types/supertest": "^6.0.3",

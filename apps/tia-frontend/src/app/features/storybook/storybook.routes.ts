@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { translationResolver } from '../../core/i18n';
 // import { supportRoleGuard } from '../../core/guards/support-role.guard';
 
 export const storybookRoutes: Routes = [

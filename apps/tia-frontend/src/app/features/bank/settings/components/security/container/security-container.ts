@@ -3,8 +3,7 @@ import { Store } from '@ngrx/store';
 import { SecurityComponent } from '../components/security.component';
 import { SecurityActions } from '../store/security.actions';
 import * as SecuritySelectors from '../store/security.selectors';
-import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
-import { AlertType } from '@tia/shared/lib/alerts/shared/models/alert.models';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { SECURITY_FORM_CONFIG } from '../shared/config/security.config';
@@ -24,7 +23,7 @@ const passwordMatchValidator: ValidatorFn = (control: AbstractControl): Validati
 
 @Component({
   selector: 'app-security-container',
-  imports: [SecurityComponent, DismissibleAlerts],
+  imports: [SecurityComponent],
   templateUrl: './security-container.html',
   styleUrl: './security-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,6 +32,7 @@ export class SecurityContainer implements OnDestroy {
   private readonly store = inject(Store);
   private readonly translate = inject(TranslateService);
   private readonly fb = inject(FormBuilder);
+  private readonly alertService = inject(AlertService);
 
   private alertTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
@@ -46,6 +46,17 @@ export class SecurityContainer implements OnDestroy {
       const success = this.success();
 
       if (error || success) {
+        if (error) {
+          this.alertService.error(error, { variant: 'dismissible', title: 'Oops!' });
+        }
+
+        if (success) {
+          this.alertService.success(
+            this.translate.instant('settings.security.passwordChangedSuccessfully'),
+            { variant: 'dismissible', title: 'Success!' },
+          );
+        }
+
         if (this.alertTimeoutId) {
           clearTimeout(this.alertTimeoutId);
           this.alertTimeoutId = null;
@@ -88,29 +99,29 @@ export class SecurityContainer implements OnDestroy {
     required: true,
   }));
 
-  public readonly alertType = computed<AlertType | null>(() => {
-    if (this.error()) {
-      return 'error';
+  public getUpdateDisabledReason(): string | null {
+    const form = this.changePasswordForm;
+
+    if (this.isLoading()) {
+      return null;
     }
 
-    if (this.success()) {
-      return 'success';
+    const newPasswordControl = form.get('newPassword');
+    const confirmPasswordControl = form.get('confirmPassword');
+    const newPasswordValue = newPasswordControl?.value ?? '';
+    const confirmPasswordValue = confirmPasswordControl?.value ?? '';
+
+
+    if (newPasswordValue && confirmPasswordValue && form.hasError('passwordMismatch')) {
+      return this.translate.instant('settings.security.tooltip.passwordMismatch');
+    }
+
+    if (form.invalid) {
+      return this.translate.instant('settings.security.tooltip.fillAllFields');
     }
 
     return null;
-  });
-
-  public readonly alertMessage = computed<string>(() => {
-    if (this.error()) {
-      return this.error() ?? '';
-    }
-
-    if (this.success()) {
-      return this.translate.instant('Password changed successfully');
-    }
-
-    return '';
-  });
+  }
 
   public onChangePassword(event: { currentPassword: string; newPassword: string }): void {
     this.store.dispatch(
@@ -126,14 +137,5 @@ export class SecurityContainer implements OnDestroy {
       clearTimeout(this.alertTimeoutId);
       this.alertTimeoutId = null;
     }
-  }
-
-  public onAlertClose(): void {
-    if (this.alertTimeoutId) {
-      clearTimeout(this.alertTimeoutId);
-      this.alertTimeoutId = null;
-    }
-    this.store.dispatch(SecurityActions.clearError());
-    this.store.dispatch(SecurityActions.clearSuccess());
   }
 }

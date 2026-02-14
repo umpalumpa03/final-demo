@@ -1,0 +1,22 @@
+@use "../../styles/mixins" as *;
+
+.global-alert {
+  position: fixed;
+  top: 7rem;
+  right: 1.5rem;
+  z-index: 10000;
+  min-width: 30rem;
+  max-width: 50rem;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

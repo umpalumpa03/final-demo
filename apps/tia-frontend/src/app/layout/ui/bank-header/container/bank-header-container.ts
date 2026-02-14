@@ -19,7 +19,10 @@ import { NotificationsStore } from '../components/header-notifications/store/not
 import { selectSavedAvatarUrl } from '../../../../features/bank/settings/components/profile-photo/store/profile-photo/profile-photo.selectors';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NotificationsContainer } from '../components/header-notifications/container/notifications-container';
-import { selectUserFullName } from '../../../../store/user-info/user-info.selectors'; // Add this
+import {
+  selectIsTodayBirthday,
+  selectUserFullName,
+} from '../../../../store/user-info/user-info.selectors';
 
 @Component({
   selector: 'app-bank-header-container',
@@ -27,7 +30,6 @@ import { selectUserFullName } from '../../../../store/user-info/user-info.select
   templateUrl: './bank-header-container.html',
   styleUrl: './bank-header-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [NotificationsStore],
 })
 export class BankHeaderContainer implements OnInit {
   readonly notificationsStore = inject(NotificationsStore);
@@ -44,11 +46,12 @@ export class BankHeaderContainer implements OnInit {
   public avatarUrl = toSignal(this.store.select(selectSavedAvatarUrl));
   public fullName = toSignal(this.store.select(selectUserFullName), {
     initialValue: '',
-  }); // Add this
+  });
 
   readonly notificationsContainerRef = viewChild(NotificationsContainer, {
     read: ElementRef,
   });
+  public hasBirthday = this.store.selectSignal(selectIsTodayBirthday);
 
   private readonly documentClick = toSignal(
     fromEvent<MouseEvent>(document, 'click'),
@@ -74,7 +77,6 @@ export class BankHeaderContainer implements OnInit {
 
   ngOnInit(): void {
     this.notificationsStore.hasUnreadNotifications();
-
     this.inboxService.fetchInboxCount();
   }
 
@@ -95,6 +97,5 @@ export class BankHeaderContainer implements OnInit {
 
   public closeAndReset(): void {
     this.isModalOpen.set(false);
-    this.notificationsStore.resetState();
   }
 }

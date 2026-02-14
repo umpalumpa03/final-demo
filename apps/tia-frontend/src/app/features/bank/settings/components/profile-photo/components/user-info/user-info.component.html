@@ -1,0 +1,111 @@
+<div class="user-info">
+  <app-basic-card
+    title="{{ 'settings.profile-photo.personalInfo' | translate }}"
+    [hasFooter]="true"
+    [maxWidth]="'100%'"
+    [width]="'100%'"
+  >
+    <div class="user-info__content">
+      @if (personalInfoLoading() && !isEditing()) {
+        <div class="user-info__item">
+          <span class="user-info__label">{{ 'settings.profile-photo.phoneNumber' | translate }}:</span>
+          <app-skeleton variant="text" height="1.6rem" width="12rem"></app-skeleton>
+        </div>
+        <div class="user-info__item">
+          <span class="user-info__label">{{ 'settings.profile-photo.personalNumber' | translate }}:</span>
+          <app-skeleton variant="text" height="1.6rem" width="12rem"></app-skeleton>
+        </div>
+      } @else {
+        <div class="user-info__item">
+          <span class="user-info__label">{{ 'settings.profile-photo.phoneNumber' | translate }}:</span>
+          @if (isEditing()) {
+            <lib-text-input
+              [config]="{ placeholder: 'Enter phone number', validation: { minLength: 9 } }"
+              [ngModel]="editedPhoneNumber()"
+              (valueChange)="onPhoneNumberChange($event)"
+              size="medium"
+              type="tel"
+            ></lib-text-input>
+          } @else {
+            <span class="user-info__value user-info__value--phone">{{ phoneNumber() || '-' }}</span>
+          }
+        </div>
+        <div class="user-info__item">
+          <span class="user-info__label">{{ 'settings.profile-photo.personalNumber' | translate }}:</span>
+        @if (isEditing()) {
+          @if (!pId()) {
+            <lib-text-input
+              [config]="{ placeholder: 'Enter personal number', validation: { maxLength: 11, minLength: 11 } }"
+              [ngModel]="editedPId()"
+              (valueChange)="onPersonalNumberChange($event)"
+              size="medium"
+              type="number"
+            ></lib-text-input>
+          } @else {
+            <span class="user-info__value user-info__value--personal">{{ pId() }}</span>
+          }
+        } @else {
+          <span class="user-info__value user-info__value--personal">{{ pId() || '-' }}</span>
+        }
+        </div>
+      }
+    </div>
+    <div card-footer class="user-info__footer">
+      @if (isEditing()) {
+        <div class="user-info__footer-content">
+          <div class="user-info__footer-buttons">
+            <app-button
+              variant="default"
+              size="default"
+              (click)="onCancelEdit()"
+            >
+              {{ 'settings.profile-photo.cancel' | translate }}
+            </app-button>
+            @if (saveDisabledReason() && (phoneUpdateLoading() || personalInfoLoading() || (isPhoneNumberUnchanged() && isPersonalNumberUnchanged()))) {
+              <app-tooltip
+                [content]="saveDisabledReason()!"
+                placement="top"
+              >
+                <app-button
+                  variant="default"
+                  size="default"
+                  [isLoading]="phoneUpdateLoading() || personalInfoLoading()"
+                  [isDisabled]="true"
+                >
+                  {{ 'settings.profile-photo.save' | translate }}
+                </app-button>
+              </app-tooltip>
+            } @else {
+              <app-button
+                variant="default"
+                size="default"
+                (click)="onSave()"
+                [isLoading]="phoneUpdateLoading() || personalInfoLoading()"
+                [isDisabled]="phoneUpdateLoading() || personalInfoLoading() || (isPhoneNumberUnchanged() && isPersonalNumberUnchanged())"
+              >
+                {{ 'settings.profile-photo.save' | translate }}
+              </app-button>
+            }
+          </div>
+        </div>
+      } @else {
+        <div class="user-info__footer-buttons">
+          <app-button
+            variant="default"
+            size="default"
+            (click)="onEdit()"
+          >
+            {{ 'settings.profile-photo.edit' | translate }}
+          </app-button>
+          <app-button
+            variant="outline"
+            size="default"
+            (click)="onStartTour()"
+          >
+            {{ 'settings.profile-photo.startTour' | translate }}
+          </app-button>
+        </div>
+      }
+    </div>
+  </app-basic-card>
+</div>

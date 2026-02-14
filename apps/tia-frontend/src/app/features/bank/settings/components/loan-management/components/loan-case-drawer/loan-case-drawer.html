@@ -1,0 +1,68 @@
+@if (isOpen()) {
+  <div class="loan-drawer__overlay" (click)="onClose()"></div>
+  <div class="loan-drawer">
+    <header class="loan-drawer__header">
+      <div class="loan-drawer__header-content">
+        <div class="loan-drawer__header-text">
+          <div class="loan-drawer__title-row">
+            <div class="loan-drawer__header-icon">
+              <img src="images/svg/sidebar-nav/loans.svg" alt="Loan" />
+            </div>
+            <h2 class="loan-drawer__title">{{ labels().title }}</h2>
+          </div>
+          <p class="loan-drawer__subtitle">{{ labels().subtitle }}</p>
+        </div>
+      </div>
+      <button
+        class="loan-drawer__close-btn"
+        (click)="onClose()"
+        aria-label="Close"
+      >
+        <img src="images/svg/button-icons/x-icon.svg" alt="Close" />
+      </button>
+    </header>
+
+    <div class="loan-drawer__content">
+      <app-loan-drawer-applicant
+        [userInfo]="userInfo()"
+        [isLoading]="isUserInfoLoading()"
+        [labels]="labels()"
+      />
+
+      <app-loan-drawer-loan-details
+        [loanDetails]="loanDetails()"
+        [loanDetailsResponse]="loanDetailsResponse()"
+        [isLoading]="isLoanDetailsLoading()"
+        [labels]="labels()"
+      />
+
+      <app-loan-drawer-risk-assessment
+        [loanDetails]="loanDetails()"
+        [loanDetailsResponse]="loanDetailsResponse()"
+        [isLoading]="isLoanDetailsLoading()"
+        [labels]="labels()"
+      />
+
+      <app-loan-drawer-decline-form
+        [showDeclineForm]="showDeclineForm()"
+        [declineReason]="declineReason()"
+        [labels]="labels()"
+        (reasonInput)="onReasonInput($event)"
+      />
+    </div>
+
+    <app-loan-drawer-footer
+      [showDeclineForm]="showDeclineForm()"
+      [canApprove]="canApprove()"
+      [canDecline]="canDecline()"
+      [isActionLoading]="isActionLoading()"
+      [loanDetails]="loanDetails()"
+      [labels]="labels()"
+      (close)="onClose()"
+      (showDecline)="onShowDeclineForm()"
+      (approve)="onApprove()"
+      (cancelDecline)="onCancelDecline()"
+      (confirmDecline)="onConfirmDecline()"
+    />
+  </div>
+}

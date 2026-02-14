@@ -13,7 +13,6 @@ import {
   signal,
 } from '@angular/core';
 import { BaseInput } from '../base/base-input';
-import { generateUniqueId } from '../base/utils/input.util';
 import { SELECT_DEFAULTS } from '../config/dropdowns.config';
 import { SelectConfig, SelectValue } from '../models/dropdowns.model';
 import { SelectOption } from '../models/dropdowns.model';
@@ -43,7 +42,8 @@ export class Dropdowns extends BaseInput implements OnInit {
 
   public readonly isOpen = signal(false);
   protected readonly zIndex = signal(4);
-  private readonly defaultId = generateUniqueId('lib-select');
+  private readonly defaultId =
+    this.validationService.generateUniqueId('lib-select');
   private assignedZIndex: number | null = null;
 
   constructor() {
@@ -125,7 +125,6 @@ export class Dropdowns extends BaseInput implements OnInit {
     this.value.set(option.value);
 
     this.onChange(option.value);
-    this.valueChange.emit(option.value);
     this.isOpen.set(false);
   }
 }

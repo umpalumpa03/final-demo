@@ -5,7 +5,7 @@
   @include display-flex(column);
   @include custom-scrollbar();
   width: 100%;
-  max-height: calc(-26.4rem + 100vh);
+  max-height: calc(100vh - 26.4rem);
   overflow-y: auto;
   background: $white;
   border: 0.188rem solid $blue-400;

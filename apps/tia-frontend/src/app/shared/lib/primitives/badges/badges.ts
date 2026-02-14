@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import {
   BadgeSize,
   BadgeStatus,
@@ -29,6 +30,8 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Badges {
+  private readonly translate = inject(TranslateService, { optional: true });
+
   public readonly variant = input<BadgeVariant>();
   public readonly text = input<string>('');
   public readonly status = input<BadgeStatus>();
@@ -127,21 +130,63 @@ export class Badges {
   public readonly badgeText = computed(() => {
     const currentStatus = this.status();
     if (currentStatus) {
+      if (this.translate) {
+        const statusKey = currentStatus === 'in-progress' ? 'inProgress' : currentStatus;
+        const statusI18nKey = `storybook.badges.status.${statusKey}`;
+        const translatedStatus = this.translate.instant(statusI18nKey);
+
+     
+        if (translatedStatus && translatedStatus !== statusI18nKey) {
+          return translatedStatus;
+        }
+
+        return statusTextMap[currentStatus];
+      }
       return statusTextMap[currentStatus];
     }
 
     const currentDot = this.dot();
     if (currentDot) {
+      if (this.translate) {
+        const dotI18nKey = `storybook.badges.dot.${currentDot}`;
+        const translatedDot = this.translate.instant(dotI18nKey);
+
+        if (translatedDot && translatedDot !== dotI18nKey) {
+          return translatedDot;
+        }
+
+        return dotTextMap[currentDot];
+      }
       return dotTextMap[currentDot];
     }
 
     const skillKey = this.skill();
     if (skillKey) {
+      if (this.translate) {
+        const skillI18nKey = `storybook.badges.skills.${skillKey}`;
+        const translatedSkill = this.translate.instant(skillI18nKey);
+
+        if (translatedSkill && translatedSkill !== skillI18nKey) {
+          return translatedSkill;
+        }
+
+        return skillPresetMap[skillKey].text;
+      }
       return skillPresetMap[skillKey].text;
     }
 
     const categoryKey = this.category();
     if (categoryKey) {
+      if (this.translate) {
+        const categoryI18nKey = `storybook.badges.categories.${categoryKey}`;
+        const translatedCategory = this.translate.instant(categoryI18nKey);
+
+        if (translatedCategory && translatedCategory !== categoryI18nKey) {
+          return translatedCategory;
+        }
+
+        return categoryPresetMap[categoryKey].text;
+      }
       return categoryPresetMap[categoryKey].text;
     }
 

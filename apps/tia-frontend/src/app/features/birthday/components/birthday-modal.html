@@ -1,0 +1,39 @@
+<div class="birthday-content">
+  <div class="birthday-content__header">
+    <div class="birthday-content__icon">
+      <img [src]="headerIcon" alt="birthday-header">
+    </div>
+  </div>
+
+  <div class="birthday-content__body">
+    <h2 class="birthday-content__title">Happy Birthday, {{ userName() || 'Member' }}!</h2>
+    
+    <p class="birthday-content__message">
+      Wishing you a wonderful birthday filled with <br>
+      joy, success, and amazing moments!
+    </p>
+
+    <div class="birthday-content__emoji-row">
+      @for (emoji of middleEmojis; track emoji.name) {
+        <span class="emoji-svg">
+          <img [src]="emoji.svgPath" [alt]="emoji.name">
+        </span>
+      }
+    </div>
+
+    <p class="birthday-content__note">
+      From all of us at your banking family, we hope this year <br>
+      brings you prosperity and happiness!
+    </p>
+  </div>
+
+  <div class="birthday-content__actions">
+    <app-button 
+      variant="celebrate" 
+      (click)="onDismiss()"
+      icon="birthday-buttonicon.svg"
+      >
+      Thank You!
+    </app-button>
+  </div>
+</div>

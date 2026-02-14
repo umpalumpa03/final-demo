@@ -16,6 +16,8 @@ import {
   RecipientType,
 } from '../../../models/transfers.state.model';
 import { selectPhoneNumber } from 'apps/tia-frontend/src/app/store/personal-info/personal-info.selectors';
+import { DisabledReason } from '../models/transfer.external.model';
+import { PersonalInfoActions } from 'apps/tia-frontend/src/app/store/personal-info/pesronal-info.actions';
 
 @Injectable()
 export class TransferRecipientService {
@@ -31,6 +33,12 @@ export class TransferRecipientService {
   );
   private readonly userPhone = toSignal(this.store.select(selectPhoneNumber));
 
+  constructor() {
+    if (!this.userPhone()) {
+      this.store.dispatch(PersonalInfoActions.loadPersonalInfo({}));
+    }
+  }
+
   private isOwnPhoneNumber(value: string): boolean {
     const userPhone = this.userPhone() || '';
     const normalize = (phone: string) =>
@@ -44,15 +52,11 @@ export class TransferRecipientService {
     const hasExistingData = this.transferStore.recipientInfo();
     const currentType = this.validationService.identifyRecipientType(value);
 
-    // check if phone matches user's own number
     if (currentType === 'phone' && this.isOwnPhoneNumber(value)) {
-      this.transferStore.setError(
-        'transfers.external.recipient.ownPhoneError',
-      );
+      this.transferStore.setError('transfers.external.recipient.ownPhoneError');
       return;
     }
 
-    // skip api call if value and type match existing data
     if (
       value === storedValue &&
       currentType === storedType &&
@@ -63,30 +67,37 @@ export class TransferRecipientService {
     }
 
     if (currentType) {
-      // external bank iban, no api call, save locally and navigate
       if (currentType === 'iban-different-bank') {
         this.transferStore.setExternalRecipient(value, currentType);
         this.router.navigate(['/bank/transfers/external/accounts']);
         return;
       }
 
-      // phone or same bank iban, call api to lookup recipient
       this.transferStore.lookupRecipient({ value, type: currentType });
 
-      // wait for new api response and navigate
       this.recipientInfo$
         .pipe(
           skip(1),
           filter((info) => !!info),
           take(1),
           tap((info) => {
-            // auto-select single account
-            const accounts = info?.accounts || [];
-            if (accounts.length === 1) {
+            let accounts = info?.accounts || [];
+            if (accounts.length === 0 && info?.currency) {
+              accounts = [
+                {
+                  id: 'iban-recipient',
+                  iban: value,
+                  currency: info.currency,
+                },
+              ];
+              this.transferStore.setSelectedRecipientAccount(accounts[0]);
+            } else if (accounts.length === 1) {
               this.transferStore.setSelectedRecipientAccount(accounts[0]);
             }
+
             this.router.navigate(['/bank/transfers/external/accounts']);
           }),
+
           takeUntilDestroyed(this.destroyRef),
         )
         .subscribe();
@@ -109,8 +120,27 @@ export class TransferRecipientService {
     selectedSenderAccount: Account | null,
   ): boolean {
     const senderCurrency = selectedSenderAccount?.currency;
-    // disable if sender is selected and currencies don't match
     return senderCurrency ? account.currency !== senderCurrency : false;
+  }
+
+  public getDisabledReason(
+    account: Account,
+    selectedRecipientAccount: RecipientAccount | null,
+    isExternalIban: boolean,
+  ): DisabledReason {
+    const { permission, currency } = account;
+
+    if (permission === 2 && currency !== 'GEL') return 'PERMISSION_DENIED';
+    if (permission === 4 && currency === 'GEL') return 'PERMISSION_DENIED';
+    if (permission !== 2 && permission !== 4) return 'PERMISSION_DENIED';
+
+    if (!isExternalIban && selectedRecipientAccount) {
+      if (account.currency !== selectedRecipientAccount.currency) {
+        return 'CURRENCY_MISMATCH';
+      }
+    }
+
+    return null;
   }
 
   public isSenderAccountDisabled(
@@ -118,10 +148,12 @@ export class TransferRecipientService {
     selectedRecipientAccount: RecipientAccount | null,
     isExternalIban: boolean,
   ): boolean {
-    // external iban no filtering
-    if (isExternalIban) return false;
-    const recipientCurrency = selectedRecipientAccount?.currency;
-    // disable if recipient is selected and currencies don't match
-    return recipientCurrency ? account.currency !== recipientCurrency : false;
+    return (
+      this.getDisabledReason(
+        account,
+        selectedRecipientAccount,
+        isExternalIban,
+      ) !== null
+    );
   }
 }

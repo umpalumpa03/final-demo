@@ -8,9 +8,9 @@ import {
 import { ProfilePhotoActions } from './profile-photo.actions';
 import { ProfilePhotoApiService } from '../../../../../../../shared/services/profile-photo/profile-photo.service';
 import { Store } from '@ngrx/store';
-import { catchError, concat, filter, map, of, switchMap, withLatestFrom } from 'rxjs';
+import { catchError, concat, filter, map, mergeMap, of, switchMap, withLatestFrom } from 'rxjs';
 import { environment } from '../../../../../../../../environments/environment';
-import { selectDefaultAvatars } from './profile-photo.selectors';
+import { selectDefaultAvatars, selectSavedAvatarUrl, selectAvatarId, selectCurrentAvatarUrl } from './profile-photo.selectors';
 import { selectUserInfo } from '../../../../../../../store/user-info/user-info.selectors';
 import { UserInfoActions } from '../../../../../../../store/user-info/user-info.actions';
 
@@ -68,6 +68,49 @@ export class ProfilePhotoEffects {
     ),
   );
 
+
+  public resetProfilePhotoOnUserLoad$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserInfoActions.loadUserSuccess),
+      withLatestFrom(
+        this.store.select(selectUserInfo),
+        this.store.select(selectAvatarId),
+        this.store.select(selectSavedAvatarUrl),
+      ),
+      map(([, userInfo, currentAvatarId, savedAvatarUrl]) => {
+        const userAvatar = userInfo?.avatar;
+        
+     
+        if (savedAvatarUrl && !userAvatar) {
+          return ProfilePhotoActions.resetProfilePhoto();
+        }
+
+     
+        if (!userAvatar) {
+          return null;
+        }
+
+        let newAvatarId: string | null = null;
+        if (userAvatar.includes('/current-user-avatar/')) {
+          const avatarIdMatch = userAvatar.match(/\/current-user-avatar\/([^\/]+)$/);
+          if (avatarIdMatch && avatarIdMatch[1]) {
+            newAvatarId = avatarIdMatch[1];
+          }
+        } else {
+          newAvatarId = userAvatar;
+        }
+
+      
+        if (currentAvatarId && currentAvatarId !== newAvatarId) {
+          return ProfilePhotoActions.resetProfilePhoto();
+        }
+
+        return null;
+      }),
+      filter((action): action is ReturnType<typeof ProfilePhotoActions.resetProfilePhoto> => action !== null),
+    ),
+  );
+
   public loadStoredAvatar$ = createEffect(() =>
     this.actions$.pipe(
       ofType(
@@ -75,13 +118,16 @@ export class ProfilePhotoEffects {
         ProfilePhotoActions.loadStoredAvatar,
         UserInfoActions.loadUserSuccess,
         ProfilePhotoActions.loadDefaultAvatars,
+        ProfilePhotoActions.resetProfilePhoto,
       ),
       withLatestFrom(
         this.store.select(selectUserInfo),
         this.store.select(selectDefaultAvatars),
+        this.store.select(selectSavedAvatarUrl),
       ),
-      filter(([, userInfo]) => {
-        return !!userInfo?.avatar;
+      filter(([, userInfo, , savedAvatarUrl]) => {
+       
+        return !!userInfo?.avatar && !savedAvatarUrl;
       }),
       map(([, userInfo, defaultAvatars]) => {
         const avatarFromStore = userInfo!.avatar!;
@@ -178,7 +224,12 @@ export class ProfilePhotoEffects {
       ofType(ProfilePhotoActions.removeAvatarRequest),
       switchMap(() =>
         this.profilePhotoApiService.removeUserAvatar().pipe(
-          map(() => ProfilePhotoActions.removeAvatar()),
+          mergeMap(() => 
+            concat(
+              of(ProfilePhotoActions.removeAvatar()),
+              of(UserInfoActions.loadUserAvatar({ avatar: null }))
+            )
+          ),
           catchError((error) => {
             return concat(
               of(ProfilePhotoActions.clearUploadedFile()),
@@ -189,6 +240,51 @@ export class ProfilePhotoEffects {
           }),
         ),
       ),
+    ),
+  );
+
+  public loadUserInitials$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(
+        ROOT_EFFECTS_INIT,
+        UserInfoActions.loadUserSuccess,
+        ProfilePhotoActions.removeAvatar,
+        ProfilePhotoActions.resetProfilePhoto,
+      ),
+      withLatestFrom(
+        this.store.select(selectUserInfo),
+        this.store.select(selectSavedAvatarUrl),
+      ),
+      filter(([, userInfo, savedAvatarUrl]) => {
+     return !savedAvatarUrl && !!userInfo?.fullName;
+      }),
+      map(([, userInfo]) => {
+        const fullName = userInfo!.fullName!;
+        const nameParts = fullName.trim().split(/\s+/).filter(part => part.length > 0);
+        
+        if (nameParts.length === 0) {
+          return null;
+        }
+        
+        let initials: string;
+        if (nameParts.length === 1) {
+          initials = nameParts[0].charAt(0).toUpperCase();
+        } else {
+          const firstInitial = nameParts[0].charAt(0).toUpperCase();
+          const lastInitial = nameParts[nameParts.length - 1].charAt(0).toUpperCase();
+          initials = `${firstInitial}${lastInitial}`;
+        }
+        
+        return ProfilePhotoActions.setUserInitials({ initials });
+      }),
+      filter((action): action is ReturnType<typeof ProfilePhotoActions.setUserInitials> => action !== null),
+    ),
+  );
+
+  public resetProfilePhotoOnLogout$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserInfoActions.logout),
+      map(() => ProfilePhotoActions.resetProfilePhoto()),
     ),
   );
 

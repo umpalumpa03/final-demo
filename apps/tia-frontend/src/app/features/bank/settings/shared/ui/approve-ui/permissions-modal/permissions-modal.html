@@ -1,0 +1,40 @@
+<div class="modal-permission-wrapper">
+  <app-library-title
+    [title]="modalTitle()"
+    [subtitle]="modalSubtitle()"
+  ></app-library-title>
+  <app-list-display [items]="cardOrAccHolder()" [ifImage]="true">
+  </app-list-display>
+  <form class="list-container" [formGroup]="form()">
+    @if (title()) {
+    <h3>{{ title() }}</h3>
+    }
+    <div class="list-container__checkbox">
+      @for (item of items(); track item.value) {
+      <lib-checkboxes
+        [formControlName]="item.value.toString()"
+        [config]="{
+            label: item.label,
+            id: 'checkbox-' + item.value,
+            variant: 'outlined' 
+          }"
+      ></lib-checkboxes>
+      }
+    </div>
+  </form>
+  <div class="counter-text">
+    <p>
+      <span>{{activeCount()}} of {{totalCount()}} </span> permissions enabled
+    </p>
+  </div>
+  <div class="button-container">
+    <app-button
+      [variant]="'default'"
+      [icon]="'confirm-icon-white.svg'"
+      (click)="save.emit()"
+    >
+      Save Permissions
+    </app-button>
+    <app-button [variant]="'outline'" (click)="cancel.emit()">Cancel</app-button>
+  </div>
+</div>

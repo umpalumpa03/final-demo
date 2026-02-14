@@ -6,8 +6,8 @@
 
     &__alert {
         position: fixed;
-        top: 2rem;
-        right: 2rem;
+        top: 7rem;
+        right: 1rem;
         z-index: 9999;
         animation: slideIn 0.3s ease-out;
     }
@@ -24,7 +24,6 @@
 
     &__actions {
         @include flex-center(row, flex-end, center);
-        padding-top: 1rem;
     }
 }
 

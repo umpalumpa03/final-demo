@@ -67,7 +67,7 @@ export const getTransactionFiltersConfig = (
       inputType: 'date',
       uiConfig: {
         label: 'transactions.filters.date_from',
-        placeholder: 'transactions.filters.placeholder_date',
+        max: new Date().toISOString().split('T')[0],
       },
     },
     {
@@ -76,7 +76,7 @@ export const getTransactionFiltersConfig = (
       inputType: 'date',
       uiConfig: {
         label: 'transactions.filters.date_to',
-        placeholder: 'transactions.filters.placeholder_date',
+        max: new Date().toISOString().split('T')[0],
       },
     },
   ] as const;

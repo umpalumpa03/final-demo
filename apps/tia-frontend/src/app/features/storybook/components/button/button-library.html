@@ -1,21 +1,23 @@
 <div class="button-library">
   <div class="button-library__title">
-    <app-library-title
-      [title]="title"
-      [subtitle]="subtitle"
-    ></app-library-title>
+    <app-library-title 
+      [title]="pageInfo().title" 
+      [subtitle]="pageInfo().subtitle">
+    </app-library-title>
   </div>
 
-  <app-showcase-card title="Variants">
-    @for (v of variants(); track v) {
-    <app-button [variant]="v">{{ v | titlecase }}</app-button>
-    }
+  <app-showcase-card [title]="sectionTitles().variants">
+    <div class="button-library__row">
+      @for (v of variants(); track v.type) {
+        <app-button [variant]="v.type">{{ v.label }}</app-button>
+      }
+    </div>
   </app-showcase-card>
 
-  <app-showcase-card title="Sizes">
+  <app-showcase-card [title]="sectionTitles().sizes">
     <div class="button-library__row">
-      @for (s of sizes(); track s) {
-      <app-button [size]="s">{{ s | titlecase }}</app-button>
+      @for (s of sizes(); track s.type) {
+        <app-button [size]="s.type">{{ s.label }}</app-button>
       }
       <app-button
         size="icon"
@@ -25,89 +27,76 @@
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="States">
+  <app-showcase-card [title]="sectionTitles().states">
     <div class="button-library__row">
-      <span class="button-library__state-label">Default:</span>
-      <app-button>Click Me</app-button>
+      <span class="button-library__state-label">{{ labels().defaultLabel }}</span>
+      <app-button>{{ labels().clickMe }}</app-button>
     </div>
   </app-showcase-card>
 
   <app-showcase-card title="Disabled">
     <div class="button-library__row">
       @for (btn of stateExamples().disabled; track btn.label) {
-      <app-button
-        [variant]="btn.variant"
-        [isDisabled]="true"
-        [title]="btn.label"
-      >
-        {{ btn.label }}
-      </app-button>
+        <app-button 
+          [variant]="btn.variant" 
+          [isDisabled]="true"
+          [title]="btn.label">
+          {{ btn.label }}
+        </app-button>
       }
     </div>
   </app-showcase-card>
 
   <app-showcase-card title="Loading">
     <div class="button-library__row">
-      <app-button [isLoading]="true">Loading...</app-button>
+      <app-button [isLoading]="true">{{ labels().loading }}</app-button>
       <app-button
         variant="secondary"
         [isLoading]="isInteractiveLoading()"
         (click)="toggleLoading()"
       >
-        {{ isInteractiveLoading() ? 'Loading...' : 'Click to Load' }}
+        {{ isInteractiveLoading() ? labels().loading : labels().clickToLoad }}
       </app-button>
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="With Icons">
+  <app-showcase-card [title]="sectionTitles().icons">
     <div class="button-library__row">
       @for (btn of iconButtons(); track btn.label) {
-      <app-button [variant]="btn.variant" [icon]="btn.icon">
-        {{ btn.label }}
-      </app-button>
+        <app-button [variant]="btn.variant" [icon]="btn.icon ?? null">
+          {{ btn.label }}
+        </app-button>
       }
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="Icon Only">
+  <app-showcase-card [title]="sectionTitles().interactive">
     <div class="button-library__row">
-      @for (btn of iconOnlyButtons(); track btn.label) {
-      <app-button
-        [variant]="btn.variant"
-        size="icon"
-        [icon]="btn.icon"
-        [title]="btn.label"
-      ></app-button>
+      @for (item of interactiveItems(); track item.label) {
+        <app-button [variant]="item.variant" [icon]="item.icon ?? null">
+          {{ item.label }}
+        </app-button>
       }
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="Interactive Examples">
+  <app-showcase-card [title]="sectionTitles().groups">
     <div class="button-library__row">
-      @for (example of interactiveItems(); track example.label) {
-      <app-button [variant]="example.variant" [icon]="example.icon">
-        {{ example.label }}
-      </app-button>
-      }
+      <div class="button-group-overflow-wrapper">
+        <app-button-group
+          [count]="buttonGroups().simple.count"
+          [labels]="buttonGroups().simple.labels" 
+        ></app-button-group>
+      </div>
     </div>
   </app-showcase-card>
 
-<app-showcase-card title="Button Groups">
-  <div class="button-library__row">
-    <app-button-group
-      [count]="buttonGroups().simple.count"
-      [labels]="buttonGroups().simple.labels" 
-    ></app-button-group>
-  </div>
-</app-showcase-card>
-
-
-  <app-showcase-card title="Full Width">
+  <app-showcase-card [title]="sectionTitles().fullWidth">
     <app-button variant="default" [fullWidth]="true" style="width: 100%">
-      Full Width Button
+      {{ labels().fullWidthBtn }}
     </app-button>
     <app-button variant="outline" [fullWidth]="true" style="width: 100%">
-      Full Width Outline
+      {{ labels().fullWidthOutline }}
     </app-button>
   </app-showcase-card>
 </div>

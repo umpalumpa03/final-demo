@@ -13,12 +13,15 @@ export interface FilterConfig {
   uiConfig: {
     label: string;
     placeholder?: string;
+    max?: string;
+    min?: string;
   };
 }
 
 export interface ActiveFilter {
   key: string;
-  displayText: string;
+  label: string;
+  value: string | number;
 }
 
 export interface FilterFormValues {

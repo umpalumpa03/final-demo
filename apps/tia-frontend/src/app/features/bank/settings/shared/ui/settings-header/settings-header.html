@@ -1,29 +1,13 @@
 <div class="settings">
-  <h1 class="settings__title">Settings</h1>
-  <p class="settings__desc">Manage your preferences and application settings</p>
+  <h1 class="settings__title">{{'settings.title' | translate}}</h1>
+  <p class="settings__desc">{{'settings.subtitle' | translate}}</p>
   <nav class="settings__header-nav">
 
-    <div class="settings__nav-group">
-      @for(navItem of navItems; track navItem.routerLink) {
-        <div class="settings__nav-link-container">
-          <a [routerLink]="navItem.routerLink" routerLinkActive="active">
-            <img [src]="navItem.src" [alt]="navItem.alt">
-            {{ navItem.translateString | translate }}
-          </a>
-        </div>
-      }
-    </div>
+    <app-tabs [tabs]="navItems()" orientation="horizontal" [collapsed]="isMobile()" />
 
-    <div class="settings__nav-group--admin">
-      @for(navItem of adminNavItems; track navItem.routerLink) {
-        <div class="settings__nav-link-container">
-          <a [routerLink]="navItem.routerLink" routerLinkActive="active">
-            <img [src]="navItem.src" [alt]="navItem.alt">
-            {{ navItem.translateString | translate }}
-          </a>
-        </div>
-      }
-    </div>
-    
- </nav>
+    @if (isAdmin()) {
+      <app-tabs [tabs]="adminNavItems()" [collapsed]="isMobile()" />
+    }
+
+  </nav>
 </div>

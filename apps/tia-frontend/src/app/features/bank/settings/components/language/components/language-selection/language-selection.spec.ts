@@ -2,11 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LanguageSelection } from './language-selection';
 import { LanguagesStore } from '../../store/languages.store';
 import { TranslateService } from '@ngx-translate/core';
-import { AlertService } from '@tia/shared/services/settings-language/alert.service';
 import { Language } from '../../models/language.model';
 import { vi } from 'vitest';
 import { of, throwError } from 'rxjs';
-import { signal } from '@angular/core';
 import { TranslationLoaderService } from 'apps/tia-frontend/src/app/core/i18n';
 
 const mockLanguages: Language[] = [
@@ -35,7 +33,6 @@ describe('LanguageSelection', () => {
   let fixture: ComponentFixture<LanguageSelection>;
   let mockLanguagesStore: any;
   let mockTranslateService: any;
-  let mockAlertService: any;
   let mockTranslationLoader: any;
 
   beforeEach(async () => {
@@ -49,12 +46,6 @@ describe('LanguageSelection', () => {
       instant: vi.fn((key: string) => key),
     };
 
-    mockAlertService = {
-      showAlert: vi.fn(),
-      alertType: signal(null),
-      alertMessage: signal(''),
-    };
-
     mockTranslationLoader = {
       loadTranslations: vi.fn().mockReturnValue(of(void 0)),
       clearCache: vi.fn(),
@@ -65,7 +56,6 @@ describe('LanguageSelection', () => {
       providers: [
         { provide: LanguagesStore, useValue: mockLanguagesStore },
         { provide: TranslateService, useValue: mockTranslateService },
-        { provide: AlertService, useValue: mockAlertService },
         { provide: TranslationLoaderService, useValue: mockTranslationLoader },
       ],
     }).compileComponents();
@@ -140,13 +130,10 @@ describe('LanguageSelection', () => {
       );
       expect(mockTranslationLoader.clearCache).toHaveBeenCalled();
       expect(mockTranslateService.use).toHaveBeenCalledWith('ka');
-      expect(mockTranslationLoader.loadTranslations).toHaveBeenCalledWith(
+      expect(mockTranslationLoader.loadTranslations).toHaveBeenCalledWith([
         'settings',
-      );
-      expect(mockAlertService.showAlert).toHaveBeenCalledWith(
-        'success',
-        'settings.language.saveSuccess',
-      );
+        'storybook',
+      ]);
     });
 
     it('should show error alert on failure', () => {
@@ -155,11 +142,6 @@ describe('LanguageSelection', () => {
       );
       component.selectedLanguage.set(mockLanguages[1]);
       component.onSave();
-
-      expect(mockAlertService.showAlert).toHaveBeenCalledWith(
-        'error',
-        'settings.language.saveError',
-      );
     });
 
     it('should not call updateLanguage if no language is selected', () => {
@@ -167,7 +149,6 @@ describe('LanguageSelection', () => {
       component.onSave();
 
       expect(mockLanguagesStore.updateLanguage).not.toHaveBeenCalled();
-      expect(mockAlertService.showAlert).not.toHaveBeenCalled();
     });
   });
 });

@@ -6,7 +6,7 @@ import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
 import { CardDesign } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-design.model';
 import { CardCategory } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-category.model';
 import { CardType } from '../../../features/bank/products/components/cards/models/card-type.model';
-import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
+import { CardSensitiveData } from '../../../features/bank/products/components/cards/models/card-sensitive-data.model';
 
 export const selectCardsState = createFeatureSelector<CardsState>('cards');
 
@@ -163,10 +163,7 @@ export const selectCardCreationData = createSelector(
     accounts,
   }),
 );
-export const selectShowSuccessAlert = createSelector(
-  selectCardsState,
-  (state: CardsState): boolean => state.showSuccessAlert,
-);
+
 export const selectCardCreationDataLoading = createSelector(
   selectCardsState,
   (state: CardsState): boolean => state.loading,
@@ -219,36 +216,128 @@ export const selectCardDetailsModalData = createSelector(
     };
   },
 );
-export const selectCardTransactions = createSelector(
+
+export const selectCardImagesLoading = createSelector(
   selectCardsState,
-  (state: CardsState): Record<string, ITransactions[]> => state.cardTransactions,
+  (state: CardsState): boolean => state.cardImagesLoading,
+);
+export const selectIsUpdatingCardName = createSelector(
+  selectCardsState,
+  (state: CardsState): boolean => state.isUpdatingCardName,
 );
 
-export const selectCardTransactionsLoading = createSelector(
+export const selectUpdateCardNameError = createSelector(
   selectCardsState,
-  (state: CardsState): boolean => state.cardTransactionsLoading,
+  (state: CardsState): string | null => state.updateCardNameError,
+);
+export const selectCardSensitiveData = createSelector(
+  selectCardsState,
+  (state: CardsState): Record<string, CardSensitiveData> =>
+    state.cardSensitiveData,
 );
 
-export const selectCardTransactionsError = createSelector(
+export const selectChallengeId = createSelector(
   selectCardsState,
-  (state: CardsState): string | null => state.cardTransactionsError,
+  (state: CardsState): string | null => state.challengeId,
 );
 
-export const selectCardTransactionsTotalCount = createSelector(
+export const selectIsOtpModalOpen = createSelector(
   selectCardsState,
-  (state: CardsState): Record<string, number> => state.cardTransactionsTotalCount,
+  (state: CardsState): boolean => state.isOtpModalOpen,
 );
 
-export const selectCardTransactionsByCardId = (cardId: string) =>
+export const selectSelectedCardIdForOtp = createSelector(
+  selectCardsState,
+  (state: CardsState): string | null => state.selectedCardIdForOtp,
+);
+
+export const selectOtpLoading = createSelector(
+  selectCardsState,
+  (state: CardsState): boolean => state.otpLoading,
+);
+
+export const selectOtpError = createSelector(
+  selectCardsState,
+  (state: CardsState): string | null => state.otpError,
+);
+
+export const selectShowOtpSuccessAlert = createSelector(
+  selectCardsState,
+  (state: CardsState): boolean => state.showOtpSuccessAlert,
+);
+
+export const selectCardSensitiveDataById = (cardId: string) =>
   createSelector(
-    selectCardTransactions,
-    (transactions: Record<string, ITransactions[]>): ITransactions[] =>
-      transactions[cardId] || [],
+    selectCardSensitiveData,
+    (data: Record<string, CardSensitiveData>): CardSensitiveData | null =>
+      data[cardId] || null,
   );
 
-export const selectCardTransactionsTotalByCardId = (cardId: string) =>
+export const selectOtpRemainingAttempts = createSelector(
+  selectCardsState,
+  (state: CardsState): number => state.otpRemainingAttempts,
+);
+
+export const selectCurrentCardIndex = createSelector(
+  selectCardsState,
+  (state: CardsState): number => state.currentCardIndex,
+);
+
+export const selectCurrentAccountId = createSelector(
+  selectCardsState,
+  (state: CardsState): string | null => state.currentAccountId,
+);
+
+export const selectCurrentAccountCardIds = createSelector(
+  selectCurrentAccountId,
+  selectAllAccounts,
+  (accountId: string | null, accounts: CardAccount[]): string[] => {
+    if (!accountId) return [];
+    const account = accounts.find(acc => acc.id === accountId);
+    return account?.cardIds || [];
+  }
+);
+
+export const selectCanNavigateNext = createSelector(
+  selectCurrentCardIndex,
+  selectCurrentAccountCardIds,
+  (index: number, cardIds: string[]): boolean => {
+    return index < cardIds.length - 1;
+  }
+);
+
+export const selectCanNavigatePrevious = createSelector(
+  selectCurrentCardIndex,
+  (index: number): boolean => index > 0
+);
+export const selectAccountsLoaded = createSelector(
+  selectCardsState,
+  (state: CardsState): boolean => state.accountsLoaded,
+);
+
+export const selectCardCreationDataLoaded = createSelector(
+  selectCardsState,
+  (state: CardsState): boolean => state.cardCreationDataLoaded,
+);
+
+export const selectLoadedCardDetailsIds = createSelector(
+  selectCardsState,
+  (state: CardsState): string[] => state.loadedCardDetailsIds,
+);
+
+export const selectLoadedCardImageIds = createSelector(
+  selectCardsState,
+  (state: CardsState): string[] => state.loadedCardImageIds,
+);
+
+export const selectIsCardDetailLoaded = (cardId: string) =>
   createSelector(
-    selectCardTransactionsTotalCount,
-    (totals: Record<string, number>): number =>
-      totals[cardId] || 0,
+    selectLoadedCardDetailsIds,
+    (ids: string[]): boolean => ids.includes(cardId),
+  );
+
+export const selectIsCardImageLoaded = (cardId: string) =>
+  createSelector(
+    selectLoadedCardImageIds,
+    (ids: string[]): boolean => ids.includes(cardId),
   );

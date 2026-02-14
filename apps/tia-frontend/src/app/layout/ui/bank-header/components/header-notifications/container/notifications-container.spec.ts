@@ -2,7 +2,31 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NotificationsContainer } from './notifications-container';
 import { NotificationsStore } from '../store/notifications.store';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { ElementRef } from '@angular/core';
+import { ElementRef, signal } from '@angular/core';
+
+const mockNotificationsStore = {
+  // Methods
+  toggleSelectAll: vi.fn(),
+  toggleItemSelection: vi.fn(),
+  deleteNotification: vi.fn(),
+  markAllAsRead: vi.fn(),
+  deleteAll: vi.fn(),
+  deleteMultiple: vi.fn(),
+  fetchNotifications: vi.fn(),
+  fetchUnreadCount: vi.fn(),
+  markItemsRead: vi.fn(),
+  items: signal([]),
+  isLoading: signal(false),
+  hasError: signal(false),
+  unreadCount: signal(0),
+  isFetching: signal(false),
+  isEmpty: signal(true),
+  selectedItems: signal([]),
+  isAllSelected: signal(false),
+  isIndeterminate: signal(false),
+  pageInfo: vi.fn().mockReturnValue({ hasNext: false, nextCursor: null }),
+  limitPerPage: vi.fn().mockReturnValue(10),
+};
 
 describe('NotificationsContainer', () => {
   let component: NotificationsContainer;
@@ -12,7 +36,9 @@ describe('NotificationsContainer', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [NotificationsContainer],
-      providers: [NotificationsStore],
+      providers: [
+        { provide: NotificationsStore, useValue: mockNotificationsStore },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NotificationsContainer);

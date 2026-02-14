@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Collapsible } from './collapsible';
 import { describe, beforeEach, it, expect } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('Collapsible', () => {
   let component: Collapsible;
@@ -8,7 +9,7 @@ describe('Collapsible', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Collapsible],
+      imports: [Collapsible, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Collapsible);

@@ -46,6 +46,7 @@
         [header]="'transfers.external.accounts.noAccounts.header' | translate"
         [message]="'transfers.external.accounts.noAccounts.message' | translate"
         [showButton]="false"
+        [border]="false"
       />
     </div>
     } @else {
@@ -81,6 +82,7 @@
         [message]="'transfers.external.accounts.senderError.message' | translate"
         [buttonMessage]="'transfers.external.recipient.accountsError.retry' | translate"
         (buttonClick)="onRetrySenderAccounts()"
+        [maxWidth]="'100%'"
       />
     </div>
     } @else if (!senderAccounts() || senderAccounts().length === 0) {
@@ -90,6 +92,7 @@
         [header]="'transfers.external.accounts.noSenderAccounts.header' | translate"
         [message]="'transfers.external.accounts.noSenderAccounts.message' | translate"
         [showButton]="false"
+        [border]="false"
       />
     </div>
     } @else {
@@ -100,6 +103,7 @@
         [mode]="'sender'"
         [isSelected]="selectedSenderAccount()?.id === account.id"
         (cardClicked)="onSenderAccountSelect($event)"
+        [disabledReason]="getSenderDisabledReason(account)"
         [isDisabled]="isSenderAccountDisabled(account)"
       />
       }
@@ -137,19 +141,3 @@
     </app-tooltip>
   </footer>
 </main>
-
-@if (showSuccess()) {
-<div class="external-accounts__success-toast">
-  <app-alert-types-with-icons
-    [alertType]="'success'"
-    [alertMessage]="'transfers.external.accounts.recipientVerified' | translate"
-  />
-</div>
-} @if (showError()) {
-<div class="external-accounts__success-toast">
-  <app-alert-types-with-icons
-    [alertType]="'error'"
-    [alertMessage]="'transfers.external.accounts.noPermission' | translate"
-  />
-</div>
-}

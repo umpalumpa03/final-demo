@@ -19,6 +19,7 @@ import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/contai
 import { ResizablePanels } from '@tia/shared/lib/layout/components/resizable-panels/resizable-panels';
 import { GridLayout } from '@tia/shared/lib/layout/components/grid-layout/container/grid-layout';
 import { FlexLayout } from '@tia/shared/lib/layout/components/flex-layout/flex-layout';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-layout',
@@ -33,6 +34,7 @@ import { FlexLayout } from '@tia/shared/lib/layout/components/flex-layout/flex-l
     ResizablePanels,
     GridLayout,
     FlexLayout,
+    TranslatePipe
   ],
   templateUrl: './layout.html',
   styleUrls: ['./layout.scss'],

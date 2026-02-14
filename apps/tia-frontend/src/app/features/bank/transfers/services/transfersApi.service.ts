@@ -7,13 +7,20 @@ import {
   TransferResponse,
   TransferVerifyResponse,
 } from '../models/transfers.state.model';
+import {
+  TransferSameBankPayload,
+  TransferToOwnPayload,
+  TransferCrossCurrencyPayload,
+  TransferExternalBankPayload,
+  TransferVerifyPayload,
+  ConversionRateResponse,
+} from '../models/transfers.api.model';
 
 @Injectable({ providedIn: 'root' })
 export class TransfersApiService {
   private readonly baseURL = `${environment.apiUrl}/transfers`;
   private readonly http = inject(HttpClient);
 
-  // validate recipient
   public lookupByPhone(phoneNumber: string): Observable<RecipientResponse> {
     return this.http.post<RecipientResponse>(
       `${this.baseURL}/tia-transfer/lookup-recipient-by-personal-info`,
@@ -24,7 +31,6 @@ export class TransfersApiService {
     );
   }
 
-  // validate recipient by IBAN
   public lookupByIban(iban: string): Observable<RecipientResponse> {
     return this.http.post<RecipientResponse>(
       `${this.baseURL}/tia-transfer/lookup-recipient-by-iban`,
@@ -32,7 +38,6 @@ export class TransfersApiService {
     );
   }
 
-  // Get transfer fee
   public getFee(
     senderAccountId: string,
     amountToSend: number,
@@ -45,40 +50,62 @@ export class TransfersApiService {
     });
   }
 
-  public transferSameBank(payload: {
-    senderAccountId: string;
-    receiverAccountIban: string;
-    description: string;
-    amountToSend: number;
-  }): Observable<TransferResponse> {
+  public transferSameBank(
+    payload: TransferSameBankPayload,
+  ): Observable<TransferResponse> {
     return this.http.post<TransferResponse>(
       `${this.baseURL}/tia-transfers/someone`,
       payload,
     );
   }
-  public transferExternalBank(payload: {
-    senderAccountId: string;
-    receiverAccountIban: string;
-    receiverAccountCurrency: string;
-    receiverName: string;
-    amountToSend: number;
-    description: string;
-  }): Observable<TransferResponse> {
+
+  public getConversionRate(
+    from: string,
+    to: string,
+    amount: number = 1,
+  ): Observable<ConversionRateResponse> {
+    return this.http.get<ConversionRateResponse>(
+      `${environment.apiUrl}/exchange-rates/convert`,
+      {
+        params: {
+          from,
+          to,
+          amount: amount.toString(),
+        },
+      },
+    );
+  }
+
+  public transferToOwn(
+    payload: TransferToOwnPayload,
+  ): Observable<TransferResponse> {
+    return this.http.post<TransferResponse>(
+      `${this.baseURL}/between-own-accounts`,
+      payload,
+    );
+  }
+
+  public transferCrossCurrency(
+    payload: TransferCrossCurrencyPayload,
+  ): Observable<TransferResponse> {
+    return this.http.post<TransferResponse>(`${this.baseURL}/convert`, payload);
+  }
+
+  public transferExternalBank(
+    payload: TransferExternalBankPayload,
+  ): Observable<TransferResponse> {
     return this.http.post<TransferResponse>(
       `${this.baseURL}/someone/external-bank`,
       payload,
     );
   }
-  public verifyTransfer(payload: {
-    challengeId: string;
-    code?: string;
-  }): Observable<TransferVerifyResponse> {
-    return this.http.post<{ success: boolean; transferId: string }>(
-      `${this.baseURL}/verify`,
-      {
-        challengeId: payload.challengeId,
-        ...(payload.code && { code: payload.code }),
-      },
-    );
+
+  public verifyTransfer(
+    payload: TransferVerifyPayload,
+  ): Observable<TransferVerifyResponse> {
+    return this.http.post<TransferVerifyResponse>(`${this.baseURL}/verify`, {
+      challengeId: payload.challengeId,
+      ...(payload.code && { code: payload.code }),
+    });
   }
 }

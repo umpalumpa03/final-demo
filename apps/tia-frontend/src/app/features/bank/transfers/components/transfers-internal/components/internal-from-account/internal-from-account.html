@@ -40,6 +40,8 @@
             [cardData]="account"
             [mode]="'sender'"
             [isSelected]="selectedFromAccount()?.id === account.id"
+            [isDisabled]="isAccountDisabled(account)"
+            [disabledReason]="getDisabledReason(account)"
             (cardClicked)="onAccountSelect($event)"
           />
         }
@@ -48,16 +50,6 @@
   </section>
 
   <footer class="internal-accounts__footer">
-    <app-button
-      variant="outline"
-      size="default"
-      [fullWidth]="isFullWidth()"
-      (click)="onGoBack()"
-    >
-      <img src="images/svg/transfers/go-back.svg" alt="back" />
-      {{ 'common.buttons.back' | translate }}
-    </app-button>
-
     <app-button
       variant="default"
       size="default"
@@ -79,3 +71,15 @@
     />
   </div>
 }
+
+@if (showError()) {
+  <div class="internal-accounts__success-toast">
+    <app-alert-types-with-icons
+      [alertType]="'error'"
+      [alertMessage]="transferError() | translate"
+    />
+  </div>
+}
+
+
+

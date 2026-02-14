@@ -4,12 +4,13 @@ import {
   input,
   output,
 } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 
 @Component({
   selector: 'app-confirm-modal',
-  imports: [UiModal, ButtonComponent],
+  imports: [UiModal, ButtonComponent, TranslatePipe],
   templateUrl: './confirm-modal.html',
   styleUrl: './confirm-modal.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

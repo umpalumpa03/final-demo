@@ -4,7 +4,7 @@
       state="success"
       type="email"
       formControlName="valid"
-      [config]="validationConfig.success"
+      [config]="validationConfig().success"
     ></lib-text-input>
   </div>
 
@@ -13,7 +13,7 @@
       state="error"
       type="email"
       formControlName="invalid"
-      [config]="validationConfig.error"
+      [config]="validationConfig().error"
     ></lib-text-input>
   </div>
 
@@ -22,7 +22,7 @@
       state="warning"
       type="email"
       formControlName="warning"
-      [config]="validationConfig.warning"
+      [config]="validationConfig().warning"
     ></lib-text-input>
   </div>
 </form>
