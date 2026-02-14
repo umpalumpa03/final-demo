@@ -11,11 +11,11 @@ import {
   finalize,
 } from 'rxjs';
 import { AccountManagementService } from '../services/account-management.service';
+import { initialState } from './accounts.state';
 import { Store } from '@ngrx/store';
 import { AccountsActions } from '../../../../../../store/products/accounts/accounts.actions';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@tia/core/services/alert/alert.service';
-import { initialState } from '../store/accounts.state';
 
 export const AccountsStore = signalStore(
   { providedIn: 'root' },

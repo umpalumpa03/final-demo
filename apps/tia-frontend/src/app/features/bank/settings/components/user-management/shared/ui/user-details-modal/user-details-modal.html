@@ -16,6 +16,7 @@
         </div>
         }
         @else if (user) {
+
         <div class="main__icon">
             @if (user.avatarUrl) {
             <img [src]="user.avatarUrl" class="avatar avatar__pfp" alt="User Avatar">
@@ -25,31 +26,42 @@
             <div class="user-info">
                 <strong>{{ user.firstName }} {{ user.lastName }}</strong>
                 <p>{{ user.email }}</p>
-                <p>
-                    {{ user.role | lowercase }}
+                <div class="badges-row">
+                    <span class="role-badge">{{ user.role | lowercase }}</span>
                     @if(user.isBlocked) {
-                    <strong>{{'settings.user-management.details.blocked' | translate}}</strong>
+                    <span class="status-badge status-badge--blocked">
+                        {{'settings.user-management.details.blocked' | translate}}
+                    </span>
                     } @else {
-                    <strong>{{'settings.user-management.details.active' | translate}}</strong>
+                    <span class="status-badge status-badge--active">
+                        {{'settings.user-management.details.active' | translate}}
+                    </span>
                     }
-                </p>
+                </div>
             </div>
         </div>
 
-        <div>
-            <h4>{{'settings.user-management.details.username' | translate}}</h4>
-            <p>{{ user.username }}</p>
-        </div>
-
-        <div>
-            <h4>{{'settings.user-management.details.created' | translate}}</h4>
-            <p>{{ user.createdAt | date:'dd/MM/yyyy, HH:mm:ss' }}</p>
+        <div class="details-grid">
+            @for (item of userDetails(); track $index) {
+            <div class="detail-item">
+                <h4>{{ item.label }}</h4>
+                @switch (item.type) {
+                @case ('date') {
+                <p>{{ (asDate(item.value) | date:'dd/MM/yyyy, HH:mm:ss') || '-' }}</p>
+                }
+                @default {
+                <p>{{ item.value || '-' }}</p>
+                }
+                }
+            </div>
+            }
         </div>
         }
     </main>
 
     <footer>
-        <app-button variant="outline" (click)="close.emit()">{{'settings.user-management.details.close' |
-            translate}}</app-button>
+        <app-button variant="outline" (click)="close.emit()">
+            {{'settings.user-management.details.close' | translate}}
+        </app-button>
     </footer>
 </app-ui-modal>

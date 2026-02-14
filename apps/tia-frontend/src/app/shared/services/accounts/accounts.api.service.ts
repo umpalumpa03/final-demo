@@ -8,7 +8,7 @@ import {
   AccountsResponse,
   CreateAccountRequest,
 } from '../../models/accounts/accounts.model';
-import { AccountsStore } from '../../../features/bank/settings/components/accounts/strore/accounts.store';
+import { AccountsStore } from '../../../features/bank/settings/components/accounts/store/accounts.store';
 
 @Injectable({ providedIn: 'root' })
 export class AccountsApiService {
@@ -70,8 +70,7 @@ export class AccountsApiService {
       })
       .pipe(
         tap(() => {
-          this.store.invalidate();
-          this.store.loadAccounts();
+          this.store.resetStore();
         }),
       );
   }
