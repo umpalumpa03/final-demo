@@ -31,8 +31,8 @@
   "validation": {
     "required": "This field is required",
     "email": "Please enter a valid email",
-    "minLength": "Minimum {{requiredLength}} characters required",
-    "maxLength": "Maximum {{requiredLength}} characters allowed",
+    "minLength": "Minimum {{minLength}} characters required",
+    "maxLength": "Maximum {{maxLength}} characters allowed",
     "unsavedChanges": "You have unsaved changes. Do you really want to leave?",
     "confirmAction": "Confirm your action",
     "notFound": "Email not found",
