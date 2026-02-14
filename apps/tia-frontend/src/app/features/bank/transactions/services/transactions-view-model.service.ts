@@ -5,6 +5,7 @@ import { TransactionsFacadeService } from './transactions-facade.service';
 import { TRANSACTIONS_BASE_CONFIG } from '../config/transaction-data';
 import { convertTransactionData } from '../utils/data-converter.utils';
 import { TableConfig } from '@tia/shared/lib/tables/models/table.model';
+import { fromEvent, map, startWith } from 'rxjs';
 
 @Injectable()
 export class TransactionsViewModelService {
@@ -67,4 +68,12 @@ export class TransactionsViewModelService {
       }),
     };
   });
+
+  public readonly cardPadding = toSignal(
+    fromEvent(window, 'resize').pipe(
+      map(() => (window.innerWidth <= 500 ? '0.8rem' : '2.4rem')),
+      startWith(window.innerWidth <= 500 ? '0.8rem' : '2.4rem'),
+    ),
+    { requireSync: true },
+  );
 }

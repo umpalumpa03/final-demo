@@ -46,6 +46,7 @@ export const appConfig: ApplicationConfig = {
       UserInfoEffects,
       PersonalInfoEffects,
     ]),
+
     provideStore(
       {},
       {
@@ -56,7 +57,6 @@ export const appConfig: ApplicationConfig = {
       maxAge: 25,
       logOnly: environment.production,
     }),
-
     provideTranslateService({
       loader: {
         provide: TranslateLoader,
