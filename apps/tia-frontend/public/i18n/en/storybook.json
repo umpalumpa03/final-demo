@@ -1430,5 +1430,21 @@
         "step4": "For Kanban boards, drag tasks between columns to change status"
       }
     }
+  },
+  "navigationMenu": {
+    "colorPalettes": "Color Palettes",
+    "buttons": "Buttons",
+    "inputs": "Inputs",
+    "forms": "Forms",
+    "cards": "Cards",
+    "alerts": "Alerts",
+    "badges": "Badges",
+    "tables": "Tables",
+    "navigation": "Navigation",
+    "feedback": "Feedback",
+    "layout": "Layout",
+    "dataDisplay": "Data Display",
+    "overlays": "Overlays",
+    "dragAndDrop": "Drag And Drop"
   }
 }

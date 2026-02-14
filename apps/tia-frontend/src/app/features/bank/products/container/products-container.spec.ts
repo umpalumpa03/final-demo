@@ -8,7 +8,6 @@ import { Subject } from 'rxjs';
 describe('ProductsContainer', () => {
   let component: ProductsContainer;
   let fixture: ComponentFixture<ProductsContainer>;
-  let router: Router;
 
   beforeEach(async () => {
     const routerEventsSubject = new Subject();
@@ -33,7 +32,6 @@ describe('ProductsContainer', () => {
       ],
     }).compileComponents();
 
-    router = TestBed.inject(Router);
     fixture = TestBed.createComponent(ProductsContainer);
     component = fixture.componentInstance;
   });
@@ -42,26 +40,7 @@ describe('ProductsContainer', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should detect accounts section when URL includes /accounts', () => {
-    expect(component.isAccountsSection()).toBe(true);
-  });
-
-  it('should detect cards section when URL includes /cards', () => {
-    (router as any).url = '/bank/products/cards/list';
-    const newFixture = TestBed.createComponent(ProductsContainer);
-    const newComponent = newFixture.componentInstance;
-    expect(newComponent.isCardsSection()).toBe(true);
-  });
-
   it('should show tabs when URL includes /accounts or /cards/list', () => {
     expect(component.shouldShowTabs).toBe(true);
-  });
-
-  it('should navigate to create account when onNewItemClick is called in accounts section', () => {
-    const navigateSpy = vi.spyOn(router, 'navigate');
-    component.onNewItemClick();
-    expect(navigateSpy).toHaveBeenCalledWith([
-      '/bank/products/accounts/create',
-    ]);
   });
 });

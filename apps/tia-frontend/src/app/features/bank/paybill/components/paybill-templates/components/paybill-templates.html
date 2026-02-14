@@ -53,8 +53,8 @@
 >
   @if (currentModalConfig(); as config) {
   <app-library-title
-    [title]="config.title"
-    [subtitle]="config.subtitle"
+    [title]="config.title | translate"
+    [subtitle]="config.subtitle | translate"
     class="modal__header"
   />
   @let form = activeForm();
@@ -76,7 +76,7 @@
       <lib-text-input
         [formControlName]="field.controlName"
         [type]="field.type"
-        [config]="{ label: field.label, placeholder: field.placeholder }"
+        [config]="{ label: field.label | translate, placeholder: field.placeholder | translate}"
       />
       } } @if(isCategorySelected()) { @for (item of childProviderOptions();
       track $index) {
@@ -99,14 +99,14 @@
           variant="outline"
           (click)="modalOpenAction.emit()"
         >
-          Cancel
+          {{ 'paybill.templates.cancelButton' | translate}}
         </app-button>
         <app-button
           [variant]="config.submitButtonType"
           type="submit"
           [isLoading]="selectLoading()"
         >
-          {{ config.submitLabel }}
+          {{ config.submitLabel | translate }}
         </app-button>
       </div>
     </form>
@@ -129,7 +129,7 @@
           type="button"
           (click)="modalOpenAction.emit()"
         >
-          Cancel
+          {{ 'paybill.templates.cancelButton' | translate}}
         </app-button>
         <app-button
           [variant]="config.submitButtonType"
@@ -137,14 +137,14 @@
           (click)="onActionHandler(config.submitAction)"
           [isLoading]="isLoading()"
         >
-          {{ config.submitLabel }}
+          {{ config.submitLabel | translate }}
         </app-button>
       </div>
     </div>
     } @else {
     <div class="modal__identifier">{{ selectedDeleteItem() }}</div>
     @if (config.description) {
-    <p class="modal__warning">{{ config.description }}</p>
+    <p class="modal__warning">{{ config.description | translate }}</p>
     }
 
     <div class="modal__buttons">
@@ -153,7 +153,7 @@
         type="button"
         (click)="modalOpenAction.emit()"
       >
-        Cancel
+        {{ 'paybill.templates.cancelButton' | translate}}
       </app-button>
       <app-button
         [variant]="config.submitButtonType"
@@ -161,7 +161,7 @@
         (click)="onActionHandler(config.submitAction)"
         [isLoading]="isLoading()"
       >
-        {{ config.submitLabel }}
+        {{ config.submitLabel | translate}}
       </app-button>
     </div>
     }

@@ -1,9 +1,4 @@
 <div class="container">
-    @if(alertService.alertType()) {
-    <div class="container__alert">
-        <app-alert-types-with-icons [alertType]="alertService.alertType()!" [alertMessage]="alertService.alertMessage()" />
-    </div>
-    }
     @if(isLoading()) {
     <div class="container__cards">
         <app-skeleton height="10rem"></app-skeleton>
