@@ -54,3 +54,12 @@ export const getCreateAccountConfig = (
       required: true,
     },
   }) as const;
+
+export const PERMISSION_ROUTE_MAP: { [key: number]: string } = {
+  1: '/bank/transfers/internal',
+  2: '/bank/transfers/external',
+  4: '/bank/transfers/external',
+  8: '/bank/paybill',
+  16: '/bank/paybill',
+  32: '/bank/loans',
+} as const;

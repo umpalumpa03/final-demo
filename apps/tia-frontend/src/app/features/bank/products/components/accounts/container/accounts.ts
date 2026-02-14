@@ -31,7 +31,10 @@ import {
   selectIsCreating,
   selectCreateError,
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
-import { getAccountSections } from '../shared/config/accounts.config';
+import {
+  getAccountSections,
+  PERMISSION_ROUTE_MAP,
+} from '../shared/config/accounts.config';
 import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.service';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
@@ -176,16 +179,7 @@ export class Accounts implements OnInit {
       accounts?.find((acc: any) => acc.id === data.accountId) || null;
     this.store.dispatch(AccountsActions.selectAccount({ account }));
 
-    const permissionMap: { [key: number]: string } = {
-      1: '/bank/transfers/internal',
-      2: '/bank/transfers/external',
-      4: '/bank/transfers/external',
-      8: '/bank/paybill',
-      16: '/bank/paybill',
-      32: '/bank/loans',
-    };
-
-    const route = permissionMap[data.permissionValue];
+    const route = PERMISSION_ROUTE_MAP[data.permissionValue];
     if (route) {
       this.router.navigate([route], {
         queryParams: { accountId: data.accountId },

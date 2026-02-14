@@ -13,6 +13,7 @@ import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accoun
 import * as selectors from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.service';
 import { AlertService } from '@tia/core/services/alert/alert.service';
+import { PERMISSION_ROUTE_MAP } from '../shared/config/accounts.config';
 
 describe('Accounts', () => {
   let component: Accounts;
@@ -166,5 +167,36 @@ describe('Accounts', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(
       AccountsActions.loadActiveAccounts({ forceRefresh: true }),
     );
+  });
+
+  it('should use PERMISSION_ROUTE_MAP for transfer routing', () => {
+    const mockAccount = {
+      id: 'acc-456',
+      userId: 'user-1',
+      permission: 32,
+      type: AccountType.current,
+      iban: 'GE89NB0000000456789',
+      friendlyName: 'Loans Account',
+      name: 'Loans Account',
+      status: 'active',
+      balance: 5000,
+      currency: 'USD',
+      createdAt: '2026-01-01',
+      openedAt: '2026-01-01',
+      closedAt: '',
+      isFavorite: false,
+      isHidden: false,
+    };
+    store.overrideSelector(selectors.selectAccounts, [mockAccount]);
+    store.refreshState();
+
+    const navigateSpy = vi.spyOn(router, 'navigate');
+    component.handleTransfer({ accountId: 'acc-456', permissionValue: 32 });
+    expect(navigateSpy).toHaveBeenCalledWith([PERMISSION_ROUTE_MAP[32]], {
+      queryParams: { accountId: 'acc-456' },
+    });
+    expect(navigateSpy).toHaveBeenCalledWith(['/bank/loans'], {
+      queryParams: { accountId: 'acc-456' },
+    });
   });
 });
