@@ -26,10 +26,11 @@ import { BreakpointService } from '@tia/core/services/breakpoints/breakpoint.ser
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { AppearanceStore } from '../store/appearance.store';
 import { NavigationService } from 'apps/tia-frontend/src/app/core/services/navigation/navigation.service';
+import { BasicCard } from "@tia/shared/lib/cards/basic-card/basic-card";
 
 @Component({
   selector: 'app-appearance-container',
-  imports: [SettingsBody, TranslatePipe, ButtonComponent, Skeleton, UiModal],
+  imports: [SettingsBody, TranslatePipe, ButtonComponent, Skeleton, UiModal, BasicCard],
   providers: [AppearanceService],
   templateUrl: './appearance-container.html',
   styleUrl: './appearance-container.scss',

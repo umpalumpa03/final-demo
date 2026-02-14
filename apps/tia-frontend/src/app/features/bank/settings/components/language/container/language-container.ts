@@ -9,10 +9,11 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { SettingsBody } from '../../../shared/ui/settings-body/settings-body';
 import { LanguageSelection } from '../components/language-selection/language-selection';
 import { LanguagesStore } from '../store/languages.store';
+import { BasicCard } from "@tia/shared/lib/cards/basic-card/basic-card";
 
 @Component({
   selector: 'app-language-container',
-  imports: [TranslatePipe, SettingsBody, LanguageSelection],
+  imports: [TranslatePipe, SettingsBody, LanguageSelection, BasicCard],
   templateUrl: './language-container.html',
   styleUrl: './language-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
