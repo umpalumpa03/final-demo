@@ -4,7 +4,6 @@ import {
   inject,
   input,
   output,
-  signal,
 } from '@angular/core';
 import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
