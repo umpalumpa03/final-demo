@@ -4,12 +4,9 @@
 <label [for]="mergedConfig().id" class="text-input__label">
     @let labelIcon = labelIconUrl();
     @if (labelIcon) {
-    <div class="text-input__label-icon" [style.background-image]="labelIcon">
-    </div>
+    <div class="text-input__label-icon" [style.background-image]="labelIcon"></div>
     }
-
     {{ cfg.label }}
-
     @if (cfg.required) {
     <span class="text-input__required-star" aria-hidden="true">*</span>
     }
@@ -17,26 +14,24 @@
 }
 
 <div class="text-input__wrapper" [class.text-input__wrapper--has-icon]="mergedConfig().icon"
-    [class.text-input__wrapper--has-suffix]="isPasswordType()"
+    [class.text-input__wrapper--has-suffix]="isPasswordType() || isDateType()"
     [class.text-input__wrapper--disabled]="isDisabled()" [class.text-input__wrapper--readonly]="isReadonly()"
-    [style.margin]="mergedConfig().margin">
+    [style.margin]="mergedConfig().margin" style="position: relative;">
 
     @let prefixIcon = prefixIconUrl();
     @if (prefixIcon) {
     <div class="text-input__icon text-input__icon--prefix" [class.text-input__icon--error]="hasError()"
         [class.text-input__icon--success]="hasSuccess()">
-        <div class="text-input__icon-svg" aria-hidden="true" [style.background-image]="prefixIcon">
-        </div>
+        <div class="text-input__icon-svg" aria-hidden="true" [style.background-image]="prefixIcon"></div>
     </div>
     }
 
-    <input [id]="mergedConfig().id" [type]="inputType()" [value]="getDisplayValue()"
-        [placeholder]="mergedConfig().placeholder" [disabled]="isDisabled()" [readOnly]="isReadonly()"
-        [min]="mergedConfig().min" [max]="mergedConfig().max" [name]="cfg.name || ''"
+    <input [id]="mergedConfig().id" [type]="isDateType() ? 'text' : inputType()" [value]="getDisplayValue()"
+        [placeholder]="isDateType() ? 'dd/mm/yyyy' : mergedConfig().placeholder" [disabled]="isDisabled()"
+        [readOnly]="isReadonly()" [min]="mergedConfig().min" [max]="mergedConfig().max" [name]="cfg.name || ''"
         [autocomplete]="mergedConfig().autocomplete || 'off'" [class]="fieldClasses()" (input)="handleInput($event)"
         (blur)="handleBlur($event)" (focus)="handleFocus($event)" (keydown)="checkCapsLock($event)"
-        (keyup)="checkCapsLock($event)" (click)="checkCapsLock($event)" />
-
+        (keyup)="checkCapsLock($event)" [attr.maxlength]="isDateType() ? 10 : null" />
 
     @if (isPasswordType()) {
     <button type="button" class="text-input__icon text-input__icon--suffix" (click)="togglePasswordVisibility()">
@@ -44,34 +39,38 @@
             [style.-webkit-mask-image]="suffixIconUrl()">
         </div>
     </button>
+    }
+
+    @if (isDateType()) {
+    <button type="button" class="text-input__icon text-input__icon--suffix" (click)="toggleDatePicker()"
+        [disabled]="isDisabled() || isReadonly()">
+        <div class="text-input__icon-svg text-input__icon-svg--calendar" aria-hidden="true"></div>
+    </button>
+
+    <lib-date-picker [selectedDate]="getDateValue()" (click)="toggleDatePicker()" [minDate]="mergedConfig().min"
+        [maxDate]="mergedConfig().max" [isOpen]="isDatePickerOpen()" (dateSelected)="handleDateSelected($event)"
+        (closed)="closeDatePicker()" />
+    }
 
     @if(isCapsLockOn() && !isDisabled()) {
     <div class="text-input__caps-indicator" title="Caps Lock is On">
         <div class="text-input__caps-icon"></div>
     </div>
     }
-    }
 </div>
 
 <div aria-live="polite">
     @if (hasError()) {
-    <span [id]="messageId()" class="text-input__message text-input__message--error">
-        {{ errorMessage() }}
-    </span>
+    <span [id]="messageId()" class="text-input__message text-input__message--error">{{ errorMessage() }}</span>
     }
     @else if (hasWarning()) {
-    <span [id]="messageId()" class="text-input__message text-input__message--warning">
-        {{ config().warningMessage }}
-    </span>
+    <span [id]="messageId()" class="text-input__message text-input__message--warning">{{ config().warningMessage
+        }}</span>
     }
     @else if (hasSuccess() && cfg.successMessage) {
-    <span [id]="messageId()" class="text-input__message text-input__message--success">
-        {{ cfg.successMessage }}
-    </span>
+    <span [id]="messageId()" class="text-input__message text-input__message--success">{{ cfg.successMessage }}</span>
     }
     @else if (cfg.helperText) {
-    <span [id]="messageId()" class="text-input__message text-input__message--helper">
-        {{ cfg.helperText }}
-    </span>
+    <span [id]="messageId()" class="text-input__message text-input__message--helper">{{ cfg.helperText }}</span>
     }
 </div>

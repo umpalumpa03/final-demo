@@ -25,7 +25,8 @@ export const TEXT_INPUT_CONFIGS: Record<TextInputType, TextInputTypeConfig> = {
     inputmode: 'numeric',
   },
   date: {
-    icon: INPUT_ICONS.DATE,
+    min: '1926-01-01',
+    max: '2099-01-01',
     autocomplete: 'off',
   },
   time: {
@@ -53,3 +54,28 @@ export const TEXT_INPUT_CONFIGS: Record<TextInputType, TextInputTypeConfig> = {
     inputmode: 'tel',
   },
 } as const;
+
+export const WEEK_DAYS = [
+  'Sun',
+  'Mon',
+  'Tue',
+  'Wed',
+  'Thu',
+  'Fri',
+  'Sat',
+] as const;
+
+export const MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+] as const;
