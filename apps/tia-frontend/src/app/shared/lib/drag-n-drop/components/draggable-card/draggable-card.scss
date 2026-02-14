@@ -168,5 +168,7 @@
 }
 
 .min-height {
-  min-height: 44rem;
+  max-height: 44rem;
+  overflow: hidden;
+  height: 100%;
 }

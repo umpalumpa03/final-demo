@@ -77,6 +77,7 @@
       (paginationChange)="onPaginationChange($event)"
       [paginationVariants]="[5,10,15,20]"
       [itemData]="item.headerData"
+      [isViewable]="item.isViewable"
       appDragItem
     >
       @if (!item.isHidden) {

@@ -5,6 +5,8 @@ import {
   computed,
   OnInit,
   inject,
+  effect,
+  untracked,
 } from '@angular/core';
 import { DragContainer } from '../../../../shared/lib/drag-n-drop/components/drag-container/drag-container';
 import { DraggableCard } from '../../../../shared/lib/drag-n-drop/components/draggable-card/draggable-card';
@@ -65,8 +67,8 @@ import { DraggableItemType } from '@tia/shared/lib/drag-n-drop/model/drag.model'
     ErrorStates,
     Tooltip,
     BirthdayModalComponent,
-    UiModal
-],
+    UiModal,
+  ],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -87,12 +89,25 @@ export class DashboardContainer implements OnInit {
   protected readonly bannerConfig = signal(bannerSlides);
   protected readonly gridColumns = computed(() => {
     const itemCount = this.myItems().length;
-    const isVertical = this.breakpointService.isXsMobile() || itemCount < 3;
+    const isVertical = this.breakpointService.isTablet() || itemCount < 3;
 
     return isVertical
       ? { default: 1, md: 1, sm: 1 }
       : { default: 2, md: 2, sm: 1 };
   });
+
+  constructor() {
+    effect(() => {
+      const items = this.myItems();
+      const accountsWidget = items.find((w) => w.type === 'accounts');
+
+      if (accountsWidget) {
+        untracked(() => {
+          this.accountsHidden.set(accountsWidget.isHidden!);
+        });
+      }
+    });
+  }
 
   // vaxtang es shenia fiso
   public readonly accountsHidden = signal(false);
@@ -152,7 +167,7 @@ export class DashboardContainer implements OnInit {
 
   public dynamicColspans = computed(() => {
     const items = this.myItems();
-    const isVertical = this.breakpointService.isXsMobile() || items.length < 3;
+    const isVertical = this.breakpointService.isTablet() || items.length < 3;
 
     return items.map((_, index) => {
       if (isVertical) return 1;
@@ -208,7 +223,6 @@ export class DashboardContainer implements OnInit {
   protected readonly isBirthdayVisible = this.birthdayLogic.isModalVisible;
   public onBirthdayDismiss = () => this.birthdayLogic.dismiss();
 
-
   ngOnInit(): void {
     if (!this.store.selectSignal(selectWidgetsLoaded)()) {
       this.store.dispatch(UserInfoActions.loadWidgets({}));
@@ -216,6 +230,5 @@ export class DashboardContainer implements OnInit {
     this.store.dispatch(TransactionActions.enter());
     this.store.dispatch(loadExchangeRates({ baseCurrency: 'USD' }));
     this.store.dispatch(AccountsActions.loadAccounts({}));
-
   }
 }
