@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Tables } from './tables';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('Tables', () => {
   let component: Tables;
@@ -32,7 +33,7 @@ describe('Tables', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Tables],
+      imports: [Tables, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Tables);

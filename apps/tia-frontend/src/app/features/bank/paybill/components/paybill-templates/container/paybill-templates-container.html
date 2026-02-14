@@ -1,4 +1,12 @@
-<lib-text-input [formControl]="searchControl" [config]="searchInputConfig" />
+<div [style.max-width]="'60rem'" [style.margin-bottom]="'2.4rem'">
+  <lib-text-input
+    [formControl]="searchControl"
+    [config]="{ 
+    ...searchInputConfig, 
+    placeholder: (searchInputConfig.placeholder | translate) 
+  }"
+  />
+</div>
 
 <app-paybill-templates
   [templateGroups]="displayGroups()"
@@ -33,4 +41,7 @@
   [selectedItems]="selectedItems()"
   (markedCheckbox)="onItemChecked($event)"
   (selectedItem)="onSelectedItem($event)"
+  (payAction)="onPayAction()"
+  [isOtpModalOpen]="isOtpModalOpen()"
+  [isPaymentModalHidden]="isPaymentModalHidden()"
 ></app-paybill-templates>

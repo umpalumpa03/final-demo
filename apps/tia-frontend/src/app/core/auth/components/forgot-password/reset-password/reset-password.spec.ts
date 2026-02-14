@@ -7,17 +7,30 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ResetPassword } from './reset-password';
 import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 describe('ResetPassword', () => {
   let component: ResetPassword;
   let fixture: ComponentFixture<ResetPassword>;
   let authServiceMock: { createNewPassword: ReturnType<typeof vi.fn> };
+  let alertServiceMock: {
+    success: ReturnType<typeof vi.fn>;
+    error: ReturnType<typeof vi.fn>;
+    warning: ReturnType<typeof vi.fn>;
+    clearAlert: ReturnType<typeof vi.fn>;
+  };
   let tokenServiceMock: { resetPasswordToken: string | null };
   let router: Router;
 
   beforeEach(async () => {
     authServiceMock = {
       createNewPassword: vi.fn().mockReturnValue(of({})),
+    };
+    alertServiceMock = {
+      success: vi.fn(),
+      error: vi.fn(),
+      warning: vi.fn(),
+      clearAlert: vi.fn(),
     };
     tokenServiceMock = {
       resetPasswordToken: 'forgot-token',
@@ -29,6 +42,7 @@ describe('ResetPassword', () => {
         provideRouter([]),
         { provide: AuthService, useValue: authServiceMock },
         { provide: TokenService, useValue: tokenServiceMock },
+        { provide: AlertService, useValue: alertServiceMock },
       ],
     }).compileComponents();
 
@@ -53,22 +67,29 @@ describe('ResetPassword', () => {
 
     expect(authServiceMock.createNewPassword).toHaveBeenCalledWith('Aa1!aaaa');
     expect(router.navigate).toHaveBeenCalledWith(['/auth', 'success']);
-    expect(component.alertState()?.type).toBe('success');
+    expect(alertServiceMock.success).toHaveBeenCalledWith(
+      'Password updated successfully',
+      { variant: 'dismissible', title: 'Success!' },
+    );
     expect(component.isSubmitting()).toBe(false);
 
     authServiceMock.createNewPassword.mockReturnValue(
       throwError(() => new HttpErrorResponse({ status: 400 })),
     );
     component.submit(formValue);
-    expect(component.alertState()?.type).toBe('error');
-    expect(component.alertState()?.message).toBe('Unable to reset password. Please try again.');
+    expect(alertServiceMock.error).toHaveBeenCalledWith(
+      'Unable to reset password. Please try again.',
+      { variant: 'dismissible', title: 'Oops!' },
+    );
 
     authServiceMock.createNewPassword.mockReturnValue(
       throwError(() => new HttpErrorResponse({ status: 500 })),
     );
     component.submit(formValue);
-    expect(component.alertState()?.type).toBe('warning');
-    expect(component.alertState()?.message).toBe('Something went wrong. Please try again.');
+    expect(alertServiceMock.warning).toHaveBeenCalledWith(
+      'Something went wrong. Please try again.',
+      { variant: 'dismissible', title: 'Warning' },
+    );
 
     vi.useRealTimers();
   });

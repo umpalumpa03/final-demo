@@ -29,6 +29,7 @@ export function passwordValidator(
     lowercase: /[a-z]/.test(value),
     number: /[0-9]/.test(value),
     special: /[!@#$%^&*(),.?":{}|<>]/.test(value),
+    noSpaces: !/\s/.test(value),
   };
 
   const isValid = Object.values(errors).every(Boolean);
@@ -46,10 +47,31 @@ export function numberValidator(
   const errors = {
     notNineChars: value.length !== 9,
     mustStartWithFive: !value.startsWith('5'),
-    isNotNumber: isNaN(Number(value))
+    isNotNumber: isNaN(Number(value)),
   };
 
-  const hasError = Object.values(errors).some(error => error === true);
+  const hasError = Object.values(errors).some((error) => error === true);
 
   return hasError ? { numberRules: errors } : null;
 }
+
+export function spaceValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value as string;
+
+    if (!value) {
+      return { usernameEmpty: true };
+    }
+
+    if (value.trim() !== value) {
+      return { usernameSpaces: true };
+    }
+
+    if (value.endsWith('.')) {
+      return { usernameDot: true };
+    }
+
+    return null;
+  };
+}
+

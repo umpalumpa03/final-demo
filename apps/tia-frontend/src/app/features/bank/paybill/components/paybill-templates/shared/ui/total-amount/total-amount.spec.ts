@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TotalAmount } from './total-amount';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { selectTotalAmount } from '../../../../../store/paybill.selectors';
+import { TranslateModule } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('TotalAmount', () => {
@@ -11,7 +12,7 @@ describe('TotalAmount', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TotalAmount],
+      imports: [TotalAmount, TranslateModule.forRoot()],
       providers: [
         provideMockStore({
           selectors: [{ selector: selectTotalAmount, value: 123.45 }],
@@ -19,10 +20,11 @@ describe('TotalAmount', () => {
       ],
     }).compileComponents();
 
+    store = TestBed.inject(MockStore);
     fixture = TestBed.createComponent(TotalAmount);
     component = fixture.componentInstance;
-    store = TestBed.inject(MockStore);
 
+    store.refreshState();
     fixture.detectChanges();
   });
 

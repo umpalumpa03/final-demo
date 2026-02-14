@@ -27,7 +27,9 @@ describe('LanguagesStore', () => {
   it('should have initial state', () => {
     expect(store.languages()).toEqual(initialState.languages);
     expect(store.isLoading()).toBe(false);
+    expect(store.isRefreshing()).toBe(false);
     expect(store.hasError()).toBe(false);
+    expect(store.hasLoaded()).toBe(false);
   });
 
   it('should fetch languages successfully', async () => {
@@ -37,13 +39,14 @@ describe('LanguagesStore', () => {
     ];
     languageService.getAvailableLanguages.mockReturnValue(of(mockResponse));
 
-    store.fetchLanguages();
+    store.fetchLanguages({ force: false });
 
     await vi.waitFor(() => {
       expect(store.isLoading()).toBe(false);
     });
 
     expect(store.languages().length).toBe(2);
+    expect(store.hasLoaded()).toBe(true);
   });
 
   it('should update language successfully', async () => {
@@ -63,11 +66,49 @@ describe('LanguagesStore', () => {
       of([{ value: 'english', displayName: 'English' }]),
     );
 
-    store.fetchLanguages();
+    store.fetchLanguages({ force: false });
     store.resetState();
 
     expect(store.languages()).toEqual(initialState.languages);
     expect(store.isLoading()).toBe(false);
+    expect(store.isRefreshing()).toBe(false);
     expect(store.hasError()).toBe(false);
+    expect(store.hasLoaded()).toBe(false);
+  });
+
+  it('should not refetch when already loaded and force is false', async () => {
+    const mockResponse = [
+      { value: 'english', displayName: 'English' },
+      { value: 'georgian', displayName: 'ქართული' },
+    ];
+    languageService.getAvailableLanguages.mockReturnValue(of(mockResponse));
+
+    store.fetchLanguages({ force: false });
+
+    await vi.waitFor(() => {
+      expect(store.hasLoaded()).toBe(true);
+    });
+
+    store.fetchLanguages({ force: false });
+
+    expect(languageService.getAvailableLanguages).toHaveBeenCalledTimes(1);
+  });
+
+  it('should refetch when force is true', async () => {
+    const mockResponse = [
+      { value: 'english', displayName: 'English' },
+      { value: 'georgian', displayName: 'ქართული' },
+    ];
+    languageService.getAvailableLanguages.mockReturnValue(of(mockResponse));
+
+    store.fetchLanguages({ force: false });
+
+    await vi.waitFor(() => {
+      expect(store.hasLoaded()).toBe(true);
+    });
+
+    store.fetchLanguages({ force: true });
+
+    expect(languageService.getAvailableLanguages).toHaveBeenCalledTimes(2);
   });
 });

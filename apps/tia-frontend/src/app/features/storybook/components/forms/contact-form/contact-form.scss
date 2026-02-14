@@ -5,14 +5,14 @@
 
 .contact__form {
   @extend %flex-stack;
-  width: 44.8rem;
+  width: 30vw;
 
-  @media (max-width: 780px) {
-    width: 40rem;
+  @media (max-width: 768px) {
+    width: 80vw;
   }
 
   @media (max-width: 480px) {
-    width: 24rem;
+    width: 65vw;
   }
 
   &--fields {

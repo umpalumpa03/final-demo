@@ -4,15 +4,15 @@ import { map, switchMap } from 'rxjs';
 import { TranslationLoaderService } from '../../../../../../../core/i18n';
 
 export const LOAN_MANAGEMENT_TRANSLATION_KEYS = {
-  title: 'loans.management.title',
-  subtitle: 'loans.management.subtitle',
+  title: 'settings.loan-management.title',
+  subtitle: 'settings.loan-management.subtitle',
 } as const;
 
 export function useLoanManagementConfig() {
   const translate = inject(TranslateService);
   const translationLoader = inject(TranslationLoaderService);
 
-  return translationLoader.loadTranslations('loans').pipe(
+  return translationLoader.loadTranslations('settings').pipe(
     switchMap(() =>
       translate.stream([
         LOAN_MANAGEMENT_TRANSLATION_KEYS.title,

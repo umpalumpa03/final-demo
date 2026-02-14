@@ -1,13 +1,15 @@
 <div class="tables tables__wrapper">
   <header class="tables__header">
     <app-library-title
-      title="Tables"
-      subtitle="Table components for displaying structured data"
+      [title]="'storybook.tables.title' | translate"
+      [subtitle]="'storybook.tables.subtitle' | translate"
     ></app-library-title>
   </header>
   <div class="tables__section__wrapper">
     <section class="tables__basic">
-      <app-showcase-card title="Basic Table">
+      <app-showcase-card
+        [title]="'storybook.tables.sections.basic.title' | translate"
+      >
         <app-tables
           [tableConfig]="basicConfig()"
           (pageChangeOutput)="onPageChange($event)"
@@ -18,37 +20,51 @@
       </app-showcase-card>
     </section>
     <section class="tables__row--selection">
-      <app-showcase-card title="Table with Row Selection">
+      <app-showcase-card
+        [title]="'storybook.tables.sections.selection.title' | translate"
+      >
         <app-tables [tableConfig]="rowConfig()"> </app-tables>
       </app-showcase-card>
     </section>
     <section class="tables__action">
-      <app-showcase-card title="Table with Actions">
+      <app-showcase-card
+        [title]="'storybook.tables.sections.actions.title' | translate"
+      >
         <app-tables [tableConfig]="actionsConfig()"> </app-tables>
       </app-showcase-card>
     </section>
     <section class="tables__sortable">
-      <app-showcase-card title="Sortable Table">
+      <app-showcase-card
+        [title]="'storybook.tables.sections.sortable.title' | translate"
+      >
         <app-tables [tableConfig]="sortableConfig()"> </app-tables>
       </app-showcase-card>
     </section>
     <section class="tables__striped">
-      <app-showcase-card title="Striped Table">
+      <app-showcase-card
+        [title]="'storybook.tables.sections.striped.title' | translate"
+      >
         <app-tables [tableConfig]="strippedConfig()"> </app-tables>
       </app-showcase-card>
     </section>
     <section class="tables__compact">
-      <app-showcase-card title="Compact Table">
+      <app-showcase-card
+        [title]="'storybook.tables.sections.compact.title' | translate"
+      >
         <app-tables [tableConfig]="compactConfig()"> </app-tables>
       </app-showcase-card>
     </section>
     <section class="tables__states">
-      <app-showcase-card title="Row States">
+      <app-showcase-card
+        [title]="'storybook.tables.sections.states.title' | translate"
+      >
         <app-tables [tableConfig]="rowStatesConfig()"> </app-tables>
       </app-showcase-card>
     </section>
     <section class="tables__transactions">
-      <app-showcase-card title="Transactions Table">
+      <app-showcase-card
+        [title]="'storybook.tables.sections.transactions.title' | translate"
+      >
         <app-tables [tableConfig]="transactionsConfig()"> </app-tables>
       </app-showcase-card>
     </section>

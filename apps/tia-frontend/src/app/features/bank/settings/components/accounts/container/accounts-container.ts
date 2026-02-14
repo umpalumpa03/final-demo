@@ -19,7 +19,7 @@ import { ERROR_STATE } from '../config/accounts.config';
 
 @Component({
   selector: 'app-accounts-container',
-  imports: [AccountCard, Skeleton, SettingsBody, ErrorStates, ChangeName, ScrollArea, TranslatePipe, DismissibleAlerts],
+  imports: [AccountCard, Skeleton, SettingsBody, ErrorStates, ChangeName, ScrollArea, TranslatePipe],
   templateUrl: './accounts-container.html',
   styleUrl: './accounts-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

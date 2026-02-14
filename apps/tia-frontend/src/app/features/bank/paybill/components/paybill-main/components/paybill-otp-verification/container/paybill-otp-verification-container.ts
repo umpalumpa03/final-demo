@@ -10,10 +10,11 @@ import { Store } from '@ngrx/store';
 import { PaybillActions } from '../../../../../store/paybill.actions';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-paybill-otp-verification-container',
-  imports: [PaybillOtpVerification, ErrorStates, BasicCard],
+  imports: [PaybillOtpVerification, ErrorStates, BasicCard,TranslatePipe],
   templateUrl: './paybill-otp-verification-container.html',
   styleUrl: './paybill-otp-verification-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

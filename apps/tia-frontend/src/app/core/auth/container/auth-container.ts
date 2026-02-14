@@ -10,7 +10,6 @@ import {
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { updateSidePanelForRoute } from '../utils/resolve-panel-data';
-import { TokenService } from '../services/token.service';
 import { AuthService } from '../services/auth.service';
 import { IFeature } from '../models/auth.models';
 import { SidePanel } from '../shared/side-panel/side-panel';

@@ -111,7 +111,7 @@ export const bankRoutes: Routes = [
       },
       {
         path: 'settings',
-        resolve: { translations: translationResolver('settings') },
+        resolve: { translations: translationResolver(['settings', 'storybook']) },
         loadChildren: () =>
           import('../features/bank/settings/settings.routes').then(
             (r) => r.settingsRoutes,

@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Radios } from './radios';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('Radios', () => {
   let component: Radios;
@@ -11,7 +12,7 @@ describe('Radios', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Radios],
+      imports: [Radios, TranslateModule.forRoot()],
     }).compileComponents();
     fixture = TestBed.createComponent(Radios);
     component = fixture.componentInstance;
