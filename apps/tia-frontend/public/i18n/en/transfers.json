@@ -73,8 +73,8 @@
       "ownPhoneError": "You cannot transfer to your own phone number",
       "recipientNotFound": "Recipient not found. Please check the phone number or IBAN and try again.",
       "errors": {
-        "invalidFormat": "Invalid format. Enter IBAN or phone (+995...)",
-        "invalidPhone": "Invalid phone number format. Use +995XXXXXXXXX",
+        "invalidFormat": "Invalid format. Please enter a valid IBAN or phone number",
+        "invalidPhone": "Invalid format. Please enter digits only (minimum 8 symbol)",
         "invalidIban": "Invalid IBAN format (15-34 characters, starts with country code)"
       },
       "success": {
