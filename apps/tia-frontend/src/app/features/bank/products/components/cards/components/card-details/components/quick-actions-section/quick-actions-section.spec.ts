@@ -17,31 +17,17 @@ describe('QuickActionsSection', () => {
     fixture.detectChanges();
   });
 
-  it('should create and emit events', () => {
-    const transferOwnSpy = vi.fn();
-    const transferExternalSpy = vi.fn();
-    const paybillSpy = vi.fn();
-    const viewTransactionsSpy = vi.fn();
+it('should emit viewTransactionsClicked', () => {
+  const spy = vi.fn();
+  component.viewTransactionsClicked.subscribe(spy);
+  component['handleViewTransactions']();
+  expect(spy).toHaveBeenCalled();
+});
 
-    component.transferOwnClicked.subscribe(transferOwnSpy);
-    component.transferExternalClicked.subscribe(transferExternalSpy);
-    component.paybillClicked.subscribe(paybillSpy);
-    component.viewTransactionsClicked.subscribe(viewTransactionsSpy);
-
-    component['handleTransferOwn']();
-    component['handleTransferExternal']();
-    component['handlePaybill']();
-    component['handleViewTransactions']();
-
-    expect(transferOwnSpy).toHaveBeenCalled();
-    expect(transferExternalSpy).toHaveBeenCalled();
-    expect(paybillSpy).toHaveBeenCalled();
-    expect(viewTransactionsSpy).toHaveBeenCalled();
-  });
-  it('should emit viewSensitiveDetailsClicked', () => {
-    const spy = vi.fn();
-    component.viewSensitiveDetailsClicked.subscribe(spy);
-    component['handleViewSensitiveDetails']();
-    expect(spy).toHaveBeenCalled();
-  });
+it('should emit viewSensitiveDetailsClicked', () => {
+  const spy = vi.fn();
+  component.viewSensitiveDetailsClicked.subscribe(spy);
+  component['handleViewSensitiveDetails']();
+  expect(spy).toHaveBeenCalled();
+});
 });

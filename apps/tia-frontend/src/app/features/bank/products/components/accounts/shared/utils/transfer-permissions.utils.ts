@@ -1,5 +1,5 @@
-import { TransferPermission } from '../model/transfer-permission.model';
 import { VALID_PERMISSION_VALUES } from '../config/transfer-permissions.config';
+import { TransferPermission } from '../model/transfer-permission.model';
 
 export function filterPermissionsByCurrency(
   permissions: TransferPermission[],

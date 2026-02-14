@@ -16,14 +16,13 @@
   </div>
 
   <app-accounts-list
-    [accountsGrouped]="accountsGrouped$ | async"
-    [isLoading]="(isLoading$ | async) || false"
-    [isFetching]="(isFetching$ | async) || false"
-    [error]="error$ | async"
-    [errorType]="errorTypeSignal()"
+    [accountsGrouped]="accountsGrouped()"
+    [isLoading]="isLoading() || false"
+    [isFetching]="isFetching() || false"
+    [error]="error()"
     [accountSections]="accountSectionsData()"
-    [isRenamingAccount]="(isRenamingAccount$ | async) || false"
-    [renameError]="renameError$ | async"
+    [isRenamingAccount]="isRenamingAccount() || false"
+    [renameError]="renameError()"
     (openModal)="handleOpenModal()"
     (transfer)="handleTransfer($event)"
     (retry)="handleRetry()"
@@ -32,11 +31,11 @@
   />
 
   <app-create-account
-    [isOpen]="(isCreateModalOpen$ | async) || false"
+    [isOpen]="isCreateModalOpen() || false"
     [accountForm]="accountForm()"
     [accountTypes]="accountTypeValues"
     [currencies]="(currencyValues | async) ?? []"
-    [isCreating]="isCreatingAccountSignal()"
+    [isCreating]="isCreatingAccount()"
     (closeModal)="handleCloseModal()"
     (submitForm)="handleCreateAccount(accountForm().value)"
   />

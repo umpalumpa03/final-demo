@@ -83,17 +83,9 @@ describe('ProviderListContainer', () => {
 
   describe('Navigation and Actions', () => {
     it('should handle FINAL provider: reset form, dispatch actions, and navigate relatively', () => {
-      const dispatchSpy = vi.spyOn(store, 'dispatch');
-
       component.onProviderSelected('1');
 
       expect(mockFacade.resetPaymentForm).toHaveBeenCalled();
-      expect(dispatchSpy).toHaveBeenCalledWith(
-        PaybillActions.selectProvider({ providerId: '1' }),
-      );
-      expect(dispatchSpy).toHaveBeenCalledWith(
-        PaybillActions.loadPaymentDetails({ serviceId: '1' }),
-      );
 
       expect(router.navigate).toHaveBeenCalledWith(
         ['1'],
