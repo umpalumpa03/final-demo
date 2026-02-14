@@ -5,7 +5,6 @@
 >
 
   <div class="accounts">
-    <h2 class="accounts__title">{{ 'dashboard.widgets.accounts.subtitle' | translate }}</h2>
 
     @for (account of accounts$ | async; track account.id) {
     <div class="account-card">

@@ -49,7 +49,7 @@ export class BillsList {
           item.id,
           this.fb.control(
             { value: item.amountDue.toFixed(2), disabled: shouldDisable },
-            [Validators.min(0), Validators.max(999)],
+            [Validators.min(0), Validators.max(99999)],
           ),
           { emitEvent: false },
         );
@@ -116,8 +116,47 @@ export class BillsList {
   }
 
   public preventNegative(event: KeyboardEvent) {
-    if (event.key === '-' || event.key === 'e') {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+    const key = event.key;
+
+    if (key === '-') {
       event.preventDefault();
+      return;
+    }
+
+    if (
+      ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(key)
+    ) {
+      return;
+    }
+
+    const decimalSeparator =
+      [',', '.'].find((sep) => value.includes(sep)) ?? null;
+
+    const integerPart = decimalSeparator
+      ? value.split(decimalSeparator)[0]
+      : value;
+    if (
+      integerPart.length >= 5 &&
+      /\d/.test(key) &&
+      key !== '.' &&
+      key !== ','
+    ) {
+      event.preventDefault();
+      return;
+    }
+
+    if (decimalSeparator) {
+      if (key === '.' || key === ',') {
+        event.preventDefault();
+        return;
+      }
+
+      const decimals = value.split(decimalSeparator)[1] || '';
+      if (decimals.length >= 2 && /\d/.test(key)) {
+        event.preventDefault();
+      }
     }
   }
 }

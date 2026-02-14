@@ -82,10 +82,12 @@
 
   <app-showcase-card [title]="sectionTitles().groups">
     <div class="button-library__row">
-      <app-button-group
-        [count]="buttonGroups().simple.count"
-        [labels]="buttonGroups().simple.labels" 
-      ></app-button-group>
+      <div class="button-group-overflow-wrapper">
+        <app-button-group
+          [count]="buttonGroups().simple.count"
+          [labels]="buttonGroups().simple.labels" 
+        ></app-button-group>
+      </div>
     </div>
   </app-showcase-card>
 

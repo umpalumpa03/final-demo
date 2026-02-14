@@ -70,7 +70,7 @@ export class DraggableCard {
   public checkedChange = output<boolean>();
   public buttonClick = output<void>();
 
-  public isViewable = signal(true);
+  public isViewable = input<boolean>(true);
   public selectedPagination = signal<number>(10);
 
   protected readonly paginationOptions = computed<SelectOption[]>(() =>
@@ -117,9 +117,8 @@ export class DraggableCard {
   public onButtonClick(): void {
     this.buttonClick.emit();
   }
-  public onToggleView(): void {
-    this.isViewable.update((v) => !v);
-    this.viewOptionChange.emit(this.isViewable());
+public onToggleView(): void {
+    this.viewOptionChange.emit(!this.isViewable());
   }
 
   public onToggleExpanded(event: Event): void {
