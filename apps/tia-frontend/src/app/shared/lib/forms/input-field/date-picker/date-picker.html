@@ -3,10 +3,7 @@
     <div class="date-picker__header">
         @if (currentView() === 'calendar') {
         <button type="button" class="date-picker__nav-btn" (click)="previousMonth()">
-            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-                <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" />
-            </svg>
+            <img src="./images/svg/library-input/chevron-left-icon.svg" class="date-picker__nav-icon">
         </button>
         } @else {
         <div></div> }
@@ -22,10 +19,7 @@
 
         @if (currentView() === 'calendar') {
         <button type="button" class="date-picker__nav-btn" (click)="nextMonth()">
-            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-                <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" />
-            </svg>
+            <img src="./images/svg/library-input/chevron-right-icon.svg" class="date-picker__nav-icon">
         </button>
         } @else {
         <div></div> }

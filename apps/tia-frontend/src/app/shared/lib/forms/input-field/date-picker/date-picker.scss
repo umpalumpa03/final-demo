@@ -35,6 +35,22 @@
         }
     }
 
+    &__nav-icon {
+        width: 1.6rem;
+        height: 1.6rem;
+        background-color: currentColor;
+        display: inline-block;
+
+        &[src*="left"] {
+            mask: url("/images/svg/library-input/chevron-left-icon.svg") no-repeat center;
+            mask-size: contain;
+        }
+        &[src*="right"] {
+            mask: url("/images/svg/library-input/chevron-right-icon.svg") no-repeat center;
+            mask-size: contain;
+        }
+    }
+
     &__title {
         @include display-flex;
         @include font-inter(600, 1.3rem);
