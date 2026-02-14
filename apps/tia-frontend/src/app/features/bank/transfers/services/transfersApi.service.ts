@@ -5,8 +5,16 @@ import { Observable } from 'rxjs';
 import {
   RecipientResponse,
   TransferResponse,
-  TransferVerifyResponse
+  TransferVerifyResponse,
 } from '../models/transfers.state.model';
+import {
+  TransferSameBankPayload,
+  TransferToOwnPayload,
+  TransferCrossCurrencyPayload,
+  TransferExternalBankPayload,
+  TransferVerifyPayload,
+  ConversionRateResponse,
+} from '../models/transfers.api.model';
 
 @Injectable({ providedIn: 'root' })
 export class TransfersApiService {
@@ -42,12 +50,9 @@ export class TransfersApiService {
     });
   }
 
-  public transferSameBank(payload: {
-    senderAccountId: string;
-    receiverAccountIban: string;
-    description: string;
-    amountToSend: number;
-  }): Observable<TransferResponse> {
+  public transferSameBank(
+    payload: TransferSameBankPayload,
+  ): Observable<TransferResponse> {
     return this.http.post<TransferResponse>(
       `${this.baseURL}/tia-transfers/someone`,
       payload,
@@ -57,76 +62,50 @@ export class TransfersApiService {
   public getConversionRate(
     from: string,
     to: string,
-    amount: number = 1
-  ): Observable<{
-    success: boolean;
-    query: { from: string; to: string; amount: number };
-    result: number;
-    rate: number;
-  }> {
-    return this.http.get<{
-      success: boolean;
-      query: { from: string; to: string; amount: number };
-      result: number;
-      rate: number;
-    }>(`${environment.apiUrl}/exchange-rates/convert`, {
-      params: {
-        from,
-        to,
-        amount: amount.toString(),
+    amount: number = 1,
+  ): Observable<ConversionRateResponse> {
+    return this.http.get<ConversionRateResponse>(
+      `${environment.apiUrl}/exchange-rates/convert`,
+      {
+        params: {
+          from,
+          to,
+          amount: amount.toString(),
+        },
       },
-    });
+    );
   }
 
-  public transferToOwn(payload: {
-    senderAccountId: string;
-    receiverAccountId: string;
-    description: string;
-    amountToSend: number;
-  }): Observable<TransferResponse> {
+  public transferToOwn(
+    payload: TransferToOwnPayload,
+  ): Observable<TransferResponse> {
     return this.http.post<TransferResponse>(
       `${this.baseURL}/between-own-accounts`,
       payload,
-    )
+    );
   }
 
-  public transferCrossCurrency(payload: {
-    senderAccountId: string;
-    receiverAccountId: string;
-    description: string;
-    amountToSend: number;
-    isReverse: boolean;
-  }): Observable<TransferResponse> {
-    return this.http.post<TransferResponse>(
-      `${this.baseURL}/convert`,
-      payload,
-    )
+  public transferCrossCurrency(
+    payload: TransferCrossCurrencyPayload,
+  ): Observable<TransferResponse> {
+    return this.http.post<TransferResponse>(`${this.baseURL}/convert`, payload);
   }
 
-
-  public transferExternalBank(payload: {
-    senderAccountId: string;
-    receiverAccountIban: string;
-    receiverAccountCurrency: string;
-    receiverName: string;
-    amountToSend: number;
-    description: string;
-  }): Observable<TransferResponse> {
+  public transferExternalBank(
+    payload: TransferExternalBankPayload,
+  ): Observable<TransferResponse> {
     return this.http.post<TransferResponse>(
       `${this.baseURL}/someone/external-bank`,
       payload,
     );
   }
-  public verifyTransfer(payload: {
-    challengeId: string;
-    code?: string;
-  }): Observable<TransferVerifyResponse> {
-    return this.http.post<{ success: boolean; transferId: string }>(
-      `${this.baseURL}/verify`,
-      {
-        challengeId: payload.challengeId,
-        ...(payload.code && { code: payload.code }),
-      },
-    );
+
+  public verifyTransfer(
+    payload: TransferVerifyPayload,
+  ): Observable<TransferVerifyResponse> {
+    return this.http.post<TransferVerifyResponse>(`${this.baseURL}/verify`, {
+      challengeId: payload.challengeId,
+      ...(payload.code && { code: payload.code }),
+    });
   }
 }

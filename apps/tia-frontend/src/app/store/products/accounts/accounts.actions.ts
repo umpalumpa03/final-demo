@@ -11,6 +11,10 @@ export const AccountsActions = createActionGroup({
     'Load Accounts Success': props<{ accounts: Account[] }>(),
     'Load Accounts Failure': props<{ error: string }>(),
 
+    'Load Active Accounts': props<{ forceRefresh?: boolean }>(),
+    'Load Active Accounts Success': props<{ accounts: Account[] }>(),
+    'Load Active Accounts Failure': props<{ error: string }>(),
+
     'Fetch More Accounts': emptyProps(),
     'Fetch More Accounts Success': props<{ accounts: Account[] }>(),
     'Fetch More Accounts Failure': props<{ error: string }>(),

@@ -63,6 +63,8 @@
 
       app-account-card {
         flex: 0 0 calc((100% - 8rem) / 3);
+        min-width: 0;
+        max-width: calc((100% - 8rem) / 3);
       }
     }
 
@@ -83,7 +85,7 @@
     &-viewport {
       flex: 1;
       overflow: hidden;
-      padding: 0.5rem 0;
+      padding: 2rem 0;
       width: 100%;
     }
 
@@ -142,11 +144,13 @@
     }
   }
 
-  @media (max-width: 1225px) {
+  @media (max-width: 1250px) {
     &__section {
       &-grid {
         app-account-card {
           flex: 0 0 calc((100% - 5rem) / 2);
+          min-width: 0;
+          max-width: calc((100% - 5rem) / 2);
         }
       }
     }
@@ -163,7 +167,7 @@
     }
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 800px) {
     &__header {
       flex-direction: column;
       align-items: flex-start;
@@ -172,6 +176,7 @@
       &-grid {
         app-account-card {
           flex: 0 0 calc(100% - 3.6rem);
+          min-width: 0;
           max-width: 96%;
         }
       }
@@ -199,6 +204,7 @@
         gap: 2.2rem;
         app-account-card {
           flex: 0 0 calc(100% - 1rem);
+          min-width: 0;
           max-width: 94%;
         }
       }

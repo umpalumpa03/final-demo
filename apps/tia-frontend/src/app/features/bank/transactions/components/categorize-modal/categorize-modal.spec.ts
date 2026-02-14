@@ -1,34 +1,42 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CategorizeModal } from './categorize-modal';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { CATEGORIZE_MODAL_CONFIG } from '../../config/categorize-modal.config';
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { of } from 'rxjs';
-
-class FakeLoader implements TranslateLoader {
-  getTranslation(lang: string) {
-    return of({});
-  }
-}
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AlertService } from '@tia/core/services/alert/alert.service';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('CategorizeModal', () => {
   let component: CategorizeModal;
   let fixture: ComponentFixture<CategorizeModal>;
+  let alertService: AlertService;
+  let translateService: TranslateService;
+
+  const mockAlertService = {
+    success: vi.fn(),
+  };
 
   beforeEach(async () => {
     vi.useFakeTimers();
 
     await TestBed.configureTestingModule({
-      imports: [
-        CategorizeModal,
-        TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useClass: FakeLoader }
-        })
+      imports: [CategorizeModal, TranslateModule.forRoot()],
+      providers: [
+        { provide: AlertService, useValue: mockAlertService },
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CategorizeModal);
     component = fixture.componentInstance;
+    
+    alertService = TestBed.inject(AlertService);
+    translateService = TestBed.inject(TranslateService); 
+    vi.spyOn(translateService, 'instant').mockImplementation((key: string | string[], params?: any) => {
+      if (key === 'transactions.categorize_modal.messages.success_added') {
+        return `Category ${params?.name} added`;
+      }
+      return key as string;
+    });
 
     fixture.componentRef.setInput('selectCategoryOptions', [
       { label: 'Food', value: '1' },
@@ -40,6 +48,7 @@ describe('CategorizeModal', () => {
   });
 
   afterEach(() => {
+    vi.clearAllMocks();
     vi.useRealTimers();
   });
 
@@ -74,16 +83,16 @@ describe('CategorizeModal', () => {
     const name = 'Gym';
 
     component.form.controls.newCategoryName.setValue(name);
+
     component.onCategoryCreate();
 
     expect(emitSpy).toHaveBeenCalledWith(name);
+
     expect(component.form.controls.newCategoryName.value).toBe(null);
-    expect(component.successMessage()).toBeTruthy();
 
-    fixture.detectChanges();
-    vi.advanceTimersByTime(CATEGORIZE_MODAL_CONFIG.successMessageDuration);
-    fixture.detectChanges();
-
-    expect(component.successMessage()).toBeNull();
+    expect(mockAlertService.success).toHaveBeenCalledWith(
+      expect.stringContaining(name),
+      expect.any(Object),
+    );
   });
 });

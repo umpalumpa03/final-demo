@@ -11,10 +11,12 @@ import { Store } from '@ngrx/store';
 import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@tia/core/services/alert/alert.service';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
+import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 
 @Component({
   selector: 'app-sent-draft-detail',
-  imports: [EmailDetail, ButtonComponent, UiModal, LibraryTitle, RepliesCard, ReplyForm, TranslatePipe],
+  imports: [EmailDetail, ButtonComponent, UiModal, LibraryTitle, RepliesCard, ReplyForm, TranslatePipe, ErrorStates, RouteLoader],
   templateUrl: './sent-draft-detail.html',
   styleUrl: './sent-draft-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,6 +30,8 @@ export class SentDraftDetail {
   private readonly translate = inject(TranslateService);
   public readonly deleteMail = output<number>();
   public readonly isDeleteModalOpen = signal(false);
+  public readonly isLoading = this.messagingStore.isLoading;
+  public readonly error = this.messagingStore.error;
 
   private readonly emailId = this.route.snapshot.paramMap.get('id') || '';
   public readonly emailDetail = this.messagingStore.emailDetail;
@@ -76,6 +80,11 @@ export class SentDraftDetail {
 
 
   ngOnInit(): void {
+    this.messagingStore.getEmailById(+this.emailId);
+    this.messagingStore.getMailReplies(+this.emailId);
+  }
+
+  public retry(): void {
     this.messagingStore.getEmailById(+this.emailId);
     this.messagingStore.getMailReplies(+this.emailId);
   }

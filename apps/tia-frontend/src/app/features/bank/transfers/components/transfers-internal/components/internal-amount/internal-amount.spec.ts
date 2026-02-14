@@ -1,16 +1,29 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+} from '@angular/core/testing';
 import { InternalAmount } from './internal-amount';
 import { Component, signal, forwardRef, Input } from '@angular/core';
-import { ReactiveFormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+} from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { TransferStore } from '../../../../store/transfers.store';
-import { TransferInternalService } from '../../../../services/transfer.internal.service';
+import { TransferInternalService } from '../../services/transfer.internal.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
-@Component({ selector: 'app-button', standalone: true, template: '<ng-content></ng-content>' })
+@Component({
+  selector: 'app-button',
+  standalone: true,
+  template: '<ng-content></ng-content>',
+})
 class ButtonMock {
   @Input() variant?: string;
   @Input() size?: string;
@@ -53,7 +66,11 @@ class TextInputMock implements ControlValueAccessor {
   setDisabledState(isDisabled: boolean): void {}
 }
 
-@Component({ selector: 'app-alert-types-with-icons', standalone: true, template: '' })
+@Component({
+  selector: 'app-alert-types-with-icons',
+  standalone: true,
+  template: '',
+})
 class AlertMock {
   @Input() alertType?: string;
   @Input() alertMessage?: string;
@@ -72,7 +89,11 @@ class RouteLoaderMock {
   @Input() variant?: string;
 }
 
-@Component({ selector: 'app-tooltip', standalone: true, template: '<ng-content></ng-content>' })
+@Component({
+  selector: 'app-tooltip',
+  standalone: true,
+  template: '<ng-content></ng-content>',
+})
 class TooltipMock {
   @Input() content?: string;
   @Input() placement?: string;
@@ -90,7 +111,11 @@ describe('InternalAmount', () => {
   let transferStoreMock: any;
   let routerMock: any;
 
-  const mockSender = { currency: 'EUR', balance: 500, friendlyName: 'My Euro Account' };
+  const mockSender = {
+    currency: 'EUR',
+    balance: 500,
+    friendlyName: 'My Euro Account',
+  };
   const mockReceiver = { currency: 'EUR', friendlyName: 'Receiver Account' };
 
   beforeEach(async () => {
@@ -104,6 +129,7 @@ describe('InternalAmount', () => {
       handleToOwnTransfer: vi.fn(),
       handleCrossCurrencyTransfer: vi.fn(),
       fetchConversionRate: vi.fn((c1, c2, successCb) => successCb(2.0)),
+      clearInternalSelection: vi.fn(),
     };
 
     transferStoreMock = {
@@ -123,17 +149,13 @@ describe('InternalAmount', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        InternalAmount,
-        ReactiveFormsModule,
-        TranslateModule.forRoot(),
-      ],
+      imports: [InternalAmount, ReactiveFormsModule, TranslateModule.forRoot()],
       providers: [
         { provide: TransferStore, useValue: transferStoreMock },
         { provide: TransferInternalService, useValue: transferServiceMock },
         { provide: Router, useValue: routerMock },
         { provide: BreakpointService, useValue: { isMobile: signal(false) } },
-        DecimalPipe
+        DecimalPipe,
       ],
     })
       .overrideComponent(InternalAmount, {
@@ -148,9 +170,9 @@ describe('InternalAmount', () => {
             SuccessModalMock,
             RouteLoaderMock,
             TooltipMock,
-            OtpModalMock
-          ]
-        }
+            OtpModalMock,
+          ],
+        },
       })
       .compileComponents();
 
@@ -176,7 +198,10 @@ describe('InternalAmount', () => {
     });
 
     it('should compute initials for single word name', () => {
-      transferStoreMock.receiverOwnAccount.set({ currency: 'EUR', friendlyName: 'Account' });
+      transferStoreMock.receiverOwnAccount.set({
+        currency: 'EUR',
+        friendlyName: 'Account',
+      });
       fixture.detectChanges();
       expect(component.recipientInitials()).toBe('A');
     });
@@ -303,9 +328,11 @@ describe('InternalAmount', () => {
     });
 
     it('should handle conversion rate fetch error', () => {
-      transferServiceMock.fetchConversionRate = vi.fn((c1, c2, successCb, errorCb) => {
-        if (errorCb) errorCb();
-      });
+      transferServiceMock.fetchConversionRate = vi.fn(
+        (c1, c2, successCb, errorCb) => {
+          if (errorCb) errorCb();
+        },
+      );
 
       transferStoreMock.receiverOwnAccount.set({ currency: 'USD' });
       fixture.detectChanges();
@@ -320,7 +347,10 @@ describe('InternalAmount', () => {
       component.descriptionInput.setValue('Test Note');
       component.onGoBack();
 
-      expect(transferServiceMock.handleAmountGoBack).toHaveBeenCalledWith(50, 'Test Note');
+      expect(transferServiceMock.handleAmountGoBack).toHaveBeenCalledWith(
+        50,
+        'Test Note',
+      );
     });
 
     it('should handle standard transfer', () => {
@@ -340,7 +370,9 @@ describe('InternalAmount', () => {
       component.onTransfer();
 
       expect(transferStoreMock.setAmount).toHaveBeenCalledWith(50);
-      expect(transferServiceMock.handleCrossCurrencyTransfer).toHaveBeenCalledWith(false);
+      expect(
+        transferServiceMock.handleCrossCurrencyTransfer,
+      ).toHaveBeenCalledWith(false);
     });
 
     it('should handle cross currency transfer with destination input', () => {
@@ -352,7 +384,9 @@ describe('InternalAmount', () => {
       component.onTransfer();
 
       expect(transferStoreMock.setAmount).toHaveBeenCalledWith(100);
-      expect(transferServiceMock.handleCrossCurrencyTransfer).toHaveBeenCalledWith(true);
+      expect(
+        transferServiceMock.handleCrossCurrencyTransfer,
+      ).toHaveBeenCalledWith(true);
     });
   });
 
@@ -378,7 +412,9 @@ describe('InternalAmount', () => {
 
   describe('Toast Behavior', () => {
     it('should set toast message on init', () => {
-      expect(component.currentToastMessage()).toBe('transfers.internal.amount.accountsSelected');
+      expect(component.currentToastMessage()).toBe(
+        'transfers.internal.amount.accountsSelected',
+      );
     });
 
     it('should show and hide success toast with timeout', () => {
@@ -393,9 +429,10 @@ describe('InternalAmount', () => {
   });
 
   describe('Navigation', () => {
-    it('should reset store and navigate on success done', () => {
+    it('should clear selection, reset store and navigate on success done', () => {
       component.onSuccessDone();
 
+      expect(transferServiceMock.clearInternalSelection).toHaveBeenCalled();
       expect(transferStoreMock.reset).toHaveBeenCalled();
       expect(routerMock.navigate).toHaveBeenCalledWith(['/bank/dashboard']);
     });

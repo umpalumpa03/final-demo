@@ -13,6 +13,8 @@ import { initialStateAccountPermissions } from './config/aprove-accounts.state';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IUpdateAccountStatus } from '../../../shared/models/approve-models/accounts-models/pending-accounts.models';
 import { IUpdateAccountPermission } from '../../../shared/models/approve-models/accounts-models/account-permissions.models';
+import { AlertService } from '@tia/core/services/alert/alert.service';
+import { TranslateService } from '@ngx-translate/core';
 
 export const AccountPermissionsStore = signalStore(
   withState(initialStateAccountPermissions),
@@ -27,113 +29,141 @@ export const AccountPermissionsStore = signalStore(
     ),
   })),
 
-  withMethods((store, apiService = inject(ApproveAccountsApiService)) => ({
-    loadPermissions: rxMethod<void>(
-      pipe(
-        tap(() => patchState(store, { isLoading: true, error: null })),
-        switchMap(() =>
-          apiService.getAccountPermissions().pipe(
-            tap({
-              next: (permissions) => {
-                patchState(store, {
-                  permissions,
-                  isLoading: false,
-                });
-              },
-              error: (err: HttpErrorResponse) => {
-                const errorMsg = err.message || 'Unknown Error';
-                patchState(store, {
-                  isLoading: false,
-                  error: errorMsg,
-                });
-              },
-            }),
-            catchError(() => EMPTY),
+  withMethods(
+    (
+      store,
+      apiService = inject(ApproveAccountsApiService),
+      alertService = inject(AlertService),
+      translate = inject(TranslateService),
+    ) => ({
+      loadPermissions: rxMethod<void>(
+        pipe(
+          tap(() => patchState(store, { isLoading: true, error: null })),
+          switchMap(() =>
+            apiService.getAccountPermissions().pipe(
+              tap({
+                next: (permissions) => {
+                  patchState(store, {
+                    permissions,
+                    isLoading: false,
+                  });
+                },
+                error: (err: HttpErrorResponse) => {
+                  const errorMsg = err.message || 'Unknown Error';
+                  patchState(store, {
+                    isLoading: false,
+                    error: errorMsg,
+                  });
+                },
+              }),
+              catchError(() => EMPTY),
+            ),
           ),
         ),
       ),
-    ),
 
-    loadPendingAccounts: rxMethod<void>(
-      pipe(
-        tap(() => patchState(store, { isLoading: true, error: null })),
-        switchMap(() =>
-          apiService.getPendingAccounts().pipe(
-            tap({
-              next: (accounts) =>
-                patchState(store, {
-                  isLoading: false,
-                  pendingAccounts: accounts,
-                }),
-              error: (err: HttpErrorResponse) => {
-                const errMsg = err.message || 'Unknown Error';
-                patchState(store, {
-                  isLoading: false,
-                  error: errMsg,
-                });
-              },
-            }),
-            catchError(() => EMPTY),
+      loadPendingAccounts: rxMethod<void>(
+        pipe(
+          tap(() => patchState(store, { isLoading: true, error: null })),
+          switchMap(() =>
+            apiService.getPendingAccounts().pipe(
+              tap({
+                next: (accounts) =>
+                  patchState(store, {
+                    isLoading: false,
+                    pendingAccounts: accounts,
+                  }),
+                error: (err: HttpErrorResponse) => {
+                  const errMsg = err.message || 'Unknown Error';
+                  patchState(store, {
+                    isLoading: false,
+                    error: errMsg,
+                  });
+                },
+              }),
+              catchError(() => EMPTY),
+            ),
           ),
         ),
       ),
-    ),
 
-    updateStatus: rxMethod<IUpdateAccountStatus>(
-      pipe(
-        tap(() => patchState(store, { isLoading: true, error: null })),
-        switchMap((payload) =>
-          apiService.updateAccountStatus(payload).pipe(
-            tap({
-              next: () => {
-                const updatedList = store
-                  .pendingAccounts()
-                  .filter((a) => a.id !== payload.accountId);
+      updateStatus: rxMethod<IUpdateAccountStatus>(
+        pipe(
+          tap(() => patchState(store, { isLoading: true, error: null })),
+          switchMap((payload) =>
+            apiService.updateAccountStatus(payload).pipe(
+              tap({
+                next: () => {
+                  const updatedList = store
+                    .pendingAccounts()
+                    .filter((a) => a.id !== payload.accountId);
 
-                patchState(store, {
-                  pendingAccounts: updatedList,
-                  isLoading: false,
-                });
-              },
-              error: (err: HttpErrorResponse) => {
-                const errMsg = err.message || 'Unknown error';
+                  patchState(store, {
+                    pendingAccounts: updatedList,
+                    isLoading: false,
+                  });
 
-                patchState(store, {
-                  isLoading: false,
-                  error: errMsg,
-                });
-              },
-            }),
-            catchError(() => EMPTY),
+                  const messageKey =
+                    payload.updatedStatus === 'active'
+                      ? 'settings.approve-accounts.alerts.approved_success'
+                      : 'settings.approve-accounts.alerts.declined_success';
+
+                  const titleKey =
+                    payload.updatedStatus === 'active' ? 'Success' : 'Info';
+
+                  alertService.success(translate.instant(messageKey), {
+                    variant: 'dismissible',
+                    title: translate.instant(titleKey),
+                  });
+                },
+                error: (err: HttpErrorResponse) => {
+                  const errMsg = err.message || 'Unknown error';
+
+                  patchState(store, {
+                    isLoading: false,
+                    error: errMsg,
+                  });
+                },
+              }),
+              catchError(() => EMPTY),
+            ),
           ),
         ),
       ),
-    ),
 
-    savePermissions: rxMethod<IUpdateAccountPermission>(
-      pipe(
-        tap(() => patchState(store, { isLoading: true, error: null })),
-        switchMap((payload) =>
-          apiService.modifyAccountPermissions(payload).pipe(
-            tap({
-              next: () => {
-                patchState(store, { isLoading: false });
-              },
-              error: (err: HttpErrorResponse) => {
-                const errMsg = err.message || 'Unknown error';
+      savePermissions: rxMethod<IUpdateAccountPermission>(
+        pipe(
+          tap(() => patchState(store, { isLoading: true, error: null })),
+          switchMap((payload) =>
+            apiService.modifyAccountPermissions(payload).pipe(
+              tap({
+                next: () => {
+                  patchState(store, { isLoading: false });
 
-                patchState(store, { isLoading: false, error: errMsg });
-              },
-            }),
-            catchError(() => EMPTY),
+                  alertService.success(
+                    translate.instant(
+                      'settings.approve-accounts.alerts.permissions_saved',
+                    ),
+                    {
+                      variant: 'dismissible',
+                      title: translate.instant('Success'),
+                    },
+                  );
+                },
+                error: (err: HttpErrorResponse) => {
+                  const errMsg = err.message || 'Unknown error';
+                  patchState(store, { isLoading: false, error: errMsg });
+                },
+              }),
+              catchError(() => EMPTY),
+            ),
           ),
         ),
       ),
-    ),
 
-    selectAccount(accountId: string | null): void {
-      patchState(store, { selectedAccountId: accountId });
-    },
-  })),
-  
+      selectAccount(accountId: string | null): void {
+        patchState(store, { selectedAccountId: accountId });
+      },
+    }),
+  ),
 );

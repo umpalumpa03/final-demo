@@ -109,9 +109,8 @@
     "twoFactorAuth": "Two-Factor Authentication",
     "passwordChangedSuccessfully": "Password changed successfully",
     "tooltip": {
-      "passwordMismatch": "New password and confirmation do not match",
-      "passwordTooShort": "Password must be at least 8 characters long",
-      "fillAllFields": "Fill in all fields to update your password"
+      "passwordMismatch": "The confirmed password does not match",
+      "fillAllFields": "Fill in all fields "
     }
   },
   "user-management": {
@@ -151,7 +150,31 @@
   },
   "approve-accounts": {
     "title": "Approve Accounts",
-    "pendingApprovals": "Pending Approvals"
+    "pendingApprovals": "Pending Approvals",
+    "card": {
+      "title": "Approve Accounts",
+      "subtitle": "Review and approve account requests"
+    },
+    "errorState": {
+      "header": "No Accounts Found",
+      "message": "We couldn't find any pending accounts."
+    },
+    "permissionsModal": {
+      "modalTitle": "Modify Account Permissions",
+      "modalSubtitle": "Configure permissions for this Account request",
+      "title": "Account permissions"
+    },
+    "confirmDialog": {
+      "title": "Reset Changes?",
+      "subtitle": "Switching accounts will clear the permissions you selected.",
+      "cancelBtn": "Go back",
+      "confirmBtn": "Discard and switch"
+    },
+    "alerts": {
+      "approved_success": "Account approved successfully",
+      "declined_success": "Account declined successfully",
+      "permissions_saved": "Permissions saved successfully"
+    }
   },
   "approve-cards": {
     "title": "Approve Cards",

@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
+import { AlertService } from '@tia/core/services/alert/alert.service'; 
 import * as XLSX from 'xlsx';
 
 vi.mock('xlsx', () => {
@@ -17,10 +18,12 @@ vi.mock('xlsx', () => {
     writeFile: vi.fn(),
   };
 });
+
 describe('TransactionsActionsService', () => {
   let service: TransactionsActionsService;
   let router: Router;
   let facade: TransactionsFacadeService;
+  let alertService: AlertService;
 
   const mockRouter = {
     navigate: vi.fn(),
@@ -33,7 +36,13 @@ describe('TransactionsActionsService', () => {
   const mockFacade = {
     assignCategory: vi.fn(),
     setTransactionToRepeat: vi.fn(),
-    items: vi.fn(),
+    items: vi.fn().mockReturnValue([]),
+  };
+
+  const mockAlertService = {
+    success: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn(),
   };
 
   beforeEach(() => {
@@ -43,12 +52,14 @@ describe('TransactionsActionsService', () => {
         { provide: Router, useValue: mockRouter },
         { provide: TranslateService, useValue: mockTranslate },
         { provide: TransactionsFacadeService, useValue: mockFacade },
+        { provide: AlertService, useValue: mockAlertService }, 
       ],
     });
 
     service = TestBed.inject(TransactionsActionsService);
     router = TestBed.inject(Router);
     facade = TestBed.inject(TransactionsFacadeService);
+    alertService = TestBed.inject(AlertService);
 
     vi.useFakeTimers();
   });
@@ -85,11 +96,32 @@ describe('TransactionsActionsService', () => {
   });
 
   describe('Alert Logic', () => {
-    it('should show alert and clear it after 3 seconds', () => {
-      service.showValidationAlert('error', 'some.key');
-      expect(service.alertMessage()).toBe('Translated: some.key');
-      vi.advanceTimersByTime(3000);
-      expect(service.alertMessage()).toBeNull();
+    it('should call AlertService with correct parameters for success', () => {
+      service.showValidationAlert('success', 'some.key');
+      
+      expect(mockTranslate.instant).toHaveBeenCalledWith('some.key');
+      expect(mockAlertService.success).toHaveBeenCalledWith('Translated: some.key', {
+        variant: 'dismissible',
+        title: 'Success',
+      });
+    });
+
+    it('should call AlertService with correct parameters for error', () => {
+      service.showValidationAlert('error', 'error.key');
+      
+      expect(mockAlertService.error).toHaveBeenCalledWith('Translated: error.key', {
+        variant: 'dismissible',
+        title: 'Error',
+      });
+    });
+
+    it('should call AlertService with correct parameters for warning', () => {
+      service.showValidationAlert('warning', 'warning.key');
+      
+      expect(mockAlertService.warning).toHaveBeenCalledWith('Translated: warning.key', {
+        variant: 'dismissible',
+        title: 'Warning',
+      });
     });
   });
 
@@ -107,6 +139,19 @@ describe('TransactionsActionsService', () => {
       expect(mockRouter.navigate).not.toHaveBeenCalled();
     });
 
+    it('should show warning alert if transfer type is Loan', () => {
+      const trx = { transactionType: 'debit', transferType: 'Loan' } as ITransactions;
+      const spyAlert = vi.spyOn(service, 'showValidationAlert');
+
+      service.handleRepeatAction(trx);
+
+      expect(spyAlert).toHaveBeenCalledWith(
+        'warning',
+        'transactions.alerts.loan_warning',
+      );
+      expect(mockRouter.navigate).not.toHaveBeenCalled();
+    });
+
     it('should navigate to /bank/paybill for BillPayment', () => {
       const trx = {
         transactionType: 'debit',
@@ -119,6 +164,26 @@ describe('TransactionsActionsService', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/paybill']);
     });
 
+    it('should navigate to internal transfers for OwnAccount', () => {
+        const trx = {
+          transactionType: 'debit',
+          transferType: 'OwnAccount',
+        } as ITransactions;
+  
+        service.handleRepeatAction(trx);
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/transfers/internal']);
+      });
+
+    it('should navigate to external transfers for ToSomeoneSameBank', () => {
+        const trx = {
+          transactionType: 'debit',
+          transferType: 'ToSomeoneSameBank',
+        } as ITransactions;
+  
+        service.handleRepeatAction(trx);
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/transfers/external']);
+      });
+
     it('should navigate to default transfers route for other types', () => {
       const trx = {
         transactionType: 'debit',
@@ -130,6 +195,7 @@ describe('TransactionsActionsService', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/transfers/']);
     });
   });
+
   describe('Export Logic', () => {
     const mockTrx = {
       id: '123',
@@ -143,7 +209,7 @@ describe('TransactionsActionsService', () => {
     } as any;
 
     it('should show alert if there is no data to export', () => {
-      mockFacade.items.mockReturnValue([]);
+      vi.mocked(mockFacade.items).mockReturnValue([]); 
 
       const spyAlert = vi.spyOn(service, 'showValidationAlert');
 
@@ -156,7 +222,7 @@ describe('TransactionsActionsService', () => {
     });
 
     it('should export table correctly (Category as String)', () => {
-      mockFacade.items.mockReturnValue([mockTrx]);
+      vi.mocked(mockFacade.items).mockReturnValue([mockTrx]);
 
       service.exportTransactionsTable();
 
@@ -183,6 +249,16 @@ describe('TransactionsActionsService', () => {
 
       const fileNameArgs = vi.mocked(XLSX.writeFile).mock.calls[0][1];
       expect(fileNameArgs).toBe('Transaction_999.xlsx');
+    });
+  });
+  
+  describe('Filters Logic', () => {
+    it('should toggle filter state', () => {
+        expect(service.isFiltersOpen()).toBe(false);
+        service.toggleFilters();
+        expect(service.isFiltersOpen()).toBe(true);
+        service.toggleFilters();
+        expect(service.isFiltersOpen()).toBe(false);
     });
   });
 });
