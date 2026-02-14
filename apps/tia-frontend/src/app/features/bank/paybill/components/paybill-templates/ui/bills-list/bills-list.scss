@@ -39,3 +39,11 @@
     }
   }
 }
+
+@media (max-width: 550px) {
+  .bill {
+    &__item {
+      @include flex-center($direction: column, $align: flex-start);
+    }
+  }
+}

@@ -162,7 +162,7 @@
       "confitmPayment": {
         "title": "გადახდის დადასტურება",
         "description": "გადახდამდე გადახედეთ არჩეულ გადასახადებს",
-        "actionButton": "დადასტურება და ყველას გადახდა",
+        "actionButton": "გადახდა",
         "paymentDistribution": {
           "headers": {
             "title": "თანხის განაწილება",

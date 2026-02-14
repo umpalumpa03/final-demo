@@ -11,6 +11,7 @@ import { TotalAmount } from '../../../ui/total-amount/total-amount';
 import { AccountSelect } from '../../../../shared/account-select/account-select';
 import { ModalActions } from '../../../ui/modal/modal-actions';
 import { ButtonVariant } from '@tia/shared/lib/primitives/button/button.model';
+import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 
 @Component({
   selector: 'app-confirm-payment-modal',
@@ -21,6 +22,7 @@ import { ButtonVariant } from '@tia/shared/lib/primitives/button/button.model';
     TotalAmount,
     AccountSelect,
     ModalActions,
+    ScrollArea,
   ],
   templateUrl: './confirm-payment-modal.html',
   styleUrl: './confirm-payment-modal.scss',
