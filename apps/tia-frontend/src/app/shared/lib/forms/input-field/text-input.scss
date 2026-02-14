@@ -102,13 +102,13 @@ $field-height: 3.6rem;
     &-svg {
       width: 2rem;
       height: 2rem;
-      background-color: currentColor;
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
       flex-shrink: 0;
 
       &--calendar {
+        background-color: currentColor;
         mask-image: url("/images/svg/library-input/calendar-icon.svg");
         -webkit-mask-image: url("/images/svg/library-input/calendar-icon.svg");
       }
