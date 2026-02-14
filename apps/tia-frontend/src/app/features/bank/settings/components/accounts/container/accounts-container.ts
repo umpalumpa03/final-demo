@@ -6,7 +6,7 @@ import {
   signal,
 } from '@angular/core';
 import { AccountCard } from '../shared/ui/account-card/account-card';
-import { AccountsStore } from '../strore/accounts.store';
+import { AccountsStore } from '../store/accounts.store';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { SettingsBody } from '../../../shared/ui/settings-body/settings-body';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';

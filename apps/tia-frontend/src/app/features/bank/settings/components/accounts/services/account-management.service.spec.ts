@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { AccountManagementService } from './acount-management.service';
+import { AccountManagementService } from './account-management.service';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { environment } from '../../../../../../../environments/environment';

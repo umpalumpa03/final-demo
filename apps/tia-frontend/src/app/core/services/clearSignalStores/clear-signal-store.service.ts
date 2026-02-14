@@ -5,7 +5,7 @@ import { UserManagementStore } from '../../../features/bank/settings/components/
 import { LoanManagementStore } from '../../../features/bank/settings/components/loan-management/store/loan-management.store';
 import { LanguagesStore } from '../../../features/bank/settings/components/language/store/languages.store';
 import { NotificationsStore } from '../../../layout/ui/bank-header/components/header-notifications/store/notifications.store';
-import { AccountsStore } from '../../../features/bank/settings/components/accounts/strore/accounts.store';
+import { AccountsStore } from '../../../features/bank/settings/components/accounts/store/accounts.store';
 
 @Injectable({
   providedIn: 'root',

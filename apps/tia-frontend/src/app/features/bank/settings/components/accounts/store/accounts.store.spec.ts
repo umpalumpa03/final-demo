@@ -1,17 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-// Mock the accounts.state module so the real AccountsStore can be imported safely
-vi.mock('../store/accounts.state', () => ({
-  initialState: {
-    accounts: null,
-    loading: false,
-    loaded: false,
-    error: null,
-    favoriteLoadingIds: new Set(),
-    visibilityLoadingIds: new Set(),
-    changeNameLoadingIds: new Set(),
-    successMessage: null,
-  },
-}));
+import { AccountsStore } from './accounts.store';
 import { AccountManagementService } from '../services/account-management.service';
 import { Store } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
@@ -19,7 +7,6 @@ import { patchState } from '@ngrx/signals';
 import { AccountType } from '@tia/shared/models/accounts/accounts.model';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@tia/core/services/alert/alert.service';
-import { AccountsStore } from '../store/accounts.store';
 
 describe('AccountsStore', () => {
   let store: any;

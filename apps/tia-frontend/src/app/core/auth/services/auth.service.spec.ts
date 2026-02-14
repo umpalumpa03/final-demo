@@ -3,6 +3,8 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { TranslateService } from '@ngx-translate/core';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 import { AuthService } from './auth.service';
 import { firstValueFrom } from 'rxjs';
 import { TokenService } from './token.service';
@@ -50,6 +52,8 @@ describe('AuthService', () => {
         { provide: Router, useValue: routerMock },
         { provide: TokenService, useValue: tokenServiceMock },
         { provide: Store, useValue: storeMock },
+        { provide: TranslateService, useValue: { instant: (k: any) => k } },
+        { provide: AlertService, useValue: { success: vi.fn(), error: vi.fn() } },
       ],
     });
 
