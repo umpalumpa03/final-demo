@@ -12,62 +12,53 @@ import {
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TreeContainer } from '@tia/shared/lib/drag-n-drop/components/tree-container/tree-container';
-import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
-import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
-import { HeaderCtaConfig } from '../configs/cta-buttons.config';
+import { HeaderCtaConfig } from '../../configs/cta-buttons.config';
 import {
   CrudActionType,
   FormSubmitPayload,
-  formSubmitType,
+  FormSubmitType,
   HeaderCtaAction,
   HeaderCtaButton,
   MappedProviderForDropdown,
   ModalInfo,
+  ModalSubmitType,
   ModalType,
   ProviderTypeForStore,
   TemplateGroups,
   Templates,
   TreeAction,
   TreeItemMoved,
-} from '../models/paybill-templates.model';
-import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
+} from '../../models/paybill-templates.model';
 import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { distinctUntilChanged, tap } from 'rxjs';
 import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
-import { DynamicInputs } from '../../shared/dynamic-inputs/dynamic-inputs';
-import { PaybillDynamicField } from '../../../services/paybill-dynamic-form/models/dynamic-form.model';
+import { PaybillDynamicField } from '../../../../services/paybill-dynamic-form/models/dynamic-form.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { SelectedItems } from '../shared/ui/selected-items/selected-items';
-import { PaymentDistribution } from '../shared/ui/payment-distribution/payment-distribution';
-import { BillsList } from '../shared/ui/bills-list/bills-list';
-import { TotalAmount } from '../shared/ui/total-amount/total-amount';
-import { AccountSelect } from '../../shared/account-select/account-select';
 import { OtpVerification } from '@tia/core/auth/shared/otp-verification/otp-verification';
 import { SuccessModal } from '@tia/shared/lib/overlay/ui-success-modal/ui-success-modal';
-import { payBillOtpConfig } from '../configs/otp.config';
+import { payBillOtpConfig } from '../../configs/otp.config';
+import { DeleteConfirmModal } from '../modals/delete-confirm-modal/delete-confirm-modal';
+import { ConfirmPaymentModal } from '../modals/confirm-payment-modal/confirm-payment-modal';
+import { CreateTemplateModal } from '../modals/create-template-modal/create-template-modal';
+import { TemplatesHeader } from '../../ui/templates-header/templates-header';
 
 @Component({
   selector: 'app-paybill-templates',
   imports: [
     TreeContainer,
     TranslatePipe,
-    ButtonComponent,
     UiModal,
-    TextInput,
     LibraryTitle,
-    Dropdowns,
     ReactiveFormsModule,
-    DynamicInputs,
-    SelectedItems,
-    PaymentDistribution,
-    BillsList,
-    TotalAmount,
-    AccountSelect,
     OtpVerification,
     SuccessModal,
+    DeleteConfirmModal,
+    ConfirmPaymentModal,
+    CreateTemplateModal,
+    TemplatesHeader,
   ],
   templateUrl: './paybill-templates.html',
   styleUrl: './paybill-templates.scss',
@@ -185,19 +176,23 @@ export class PaybillTemplates implements OnInit {
   }
 
   // Form Submit Handler
-  public onFormSubmit(type: formSubmitType): void {
+  public onFormSubmit(type: ModalSubmitType): void {
     const form = this.activeForm();
-
-    if (form?.valid) {
-      this.formSubmit.emit({
-        type,
-        values: form.value,
-      });
+    if (form?.valid && this.isFormSubmitType(type)) {
+      this.formSubmit.emit({ type, values: form.value });
     }
   }
-  // // /////////////////////////////////////////////
-  // //  RIGHT NOW UNUSED LOGIC KEPT FOR REFERENCE //
-  // // /////////////////////////////////////////////
+
+  private isFormSubmitType(type: ModalSubmitType): type is FormSubmitType {
+    return [
+      'create-group',
+      'rename-template',
+      'rename-group',
+      'create-template',
+    ].includes(type);
+  }
+
+  // logic for dynamic selection
   public parentProviders = input.required<MappedProviderForDropdown[]>();
   public templateCategories = input.required<MappedProviderForDropdown[]>();
 
@@ -231,17 +226,14 @@ export class PaybillTemplates implements OnInit {
   }
 
   // Helper method to give me what kind of data is returned to me
-  public getDropdownOptions(controlName: string): MappedProviderForDropdown[] {
-    switch (controlName) {
-      case 'category':
-        return this.templateCategories();
-      case 'parentProvider':
-        return this.parentProviders();
-      default:
-        return [];
-    }
-  }
+  public dropdownOptionsMap = computed<
+    Record<string, MappedProviderForDropdown[]>
+  >(() => ({
+    category: this.templateCategories(),
+    parentProvider: this.parentProviders(),
+  }));
 
+  // On child provider change
   public childProviderSelected = output<ProviderTypeForStore>();
   public onChildProviderChange(providerId: InputFieldValue, index: number) {
     this.childProviderSelected.emit({ providerId, index });
@@ -255,27 +247,31 @@ export class PaybillTemplates implements OnInit {
     this.markedCheckbox.emit(event);
   }
 
-  public singleItemSelected(id: string) {
+  // Logic for multiple selection payment
+  public singleItemSelected(id: string): void {
     this.selectedItem.emit(id);
     this.headerButtonAction.emit(HeaderCtaAction.Pay);
   }
 
-  public paySelected() {
+  // payment action
+  public paySelected(): void {
     this.headerButtonAction.emit(HeaderCtaAction.Pay);
   }
-
+  // Payment Type & calculation of distribution
   public isDistribution = signal<boolean>(false);
   public calculatedDistribution = input();
-  paymentTypeChanged(value: boolean): void {
+  public paymentTypeChanged(value: boolean): void {
     this.isDistribution.set(value);
   }
 
+  // Otp Logic (Need to be fixed) WAITING
   public isOtpModalOpen = input<boolean>(false);
   public isPaymentModalHidden = input<boolean>(false);
 
   public otpConfig = payBillOtpConfig;
 
-  public resendOtp(event: any) {
+  // ANY IMITOM ROM ARVICIT RAIQNEBA BEQASGAN
+  public resendOtp(event: any): void {
     console.log(event);
   }
 }

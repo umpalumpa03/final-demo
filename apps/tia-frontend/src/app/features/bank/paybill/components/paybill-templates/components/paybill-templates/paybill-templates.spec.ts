@@ -11,7 +11,7 @@ import {
   ModalType,
   HeaderCtaAction,
   CrudActionType,
-} from '../models/paybill-templates.model';
+} from '../../models/paybill-templates.model';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { provideMockStore } from '@ngrx/store/testing';
 
@@ -104,11 +104,6 @@ describe('PaybillTemplates', () => {
   });
 
   describe('Signal Reactivity', () => {
-    it('should return empty options from getDropdownOptions for unknown controls', () => {
-      const options = component.getDropdownOptions('unknown');
-      expect(options).toEqual([]);
-    });
-
     it('should emit childProviderSelected when selection changes', () => {
       const spy = vi.spyOn(component.childProviderSelected, 'emit');
       component.onChildProviderChange('p1', 0);
@@ -120,8 +115,8 @@ describe('PaybillTemplates', () => {
       const patchSpy = vi.spyOn(activeForm, 'patchValue');
 
       fixture.componentRef.setInput('activeModal', ModalType.Group);
-      fixture.componentRef.setInput('currentModalConfig', { 
-        initialValues: null 
+      fixture.componentRef.setInput('currentModalConfig', {
+        initialValues: null,
       });
 
       fixture.detectChanges();
@@ -130,6 +125,4 @@ describe('PaybillTemplates', () => {
       expect(activeForm.pristine).toBe(true);
     });
   });
-
-  
 });
