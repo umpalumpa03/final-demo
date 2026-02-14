@@ -5,6 +5,7 @@ import { ProfilePhotoApiService } from '@tia/shared/services/profile-photo/profi
 import { of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('UserManagementStore', () => {
   let store: InstanceType<typeof UserManagementStore>;
@@ -22,6 +23,7 @@ describe('UserManagementStore', () => {
     };
     avatarService = { getCurrentUserAvatar: vi.fn() };
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         UserManagementStore,
         { provide: UserManagementService, useValue: service },
