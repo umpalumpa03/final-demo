@@ -107,6 +107,13 @@ export class InternalFromAccount implements OnInit {
         }, 5000);
       }
     });
+
+    effect(() => {
+      const accs = this.accounts();
+      if (accs?.length) {
+        this.transferInternalService.restoreInternalSelection(accs);
+      }
+    });
   }
 
   ngOnInit() {

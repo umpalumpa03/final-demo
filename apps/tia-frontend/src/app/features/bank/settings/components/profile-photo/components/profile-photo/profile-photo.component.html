@@ -11,14 +11,19 @@
       <div class="profile-photo__upload-content">
         <div class="profile-photo__avatar-wrapper">
           @if (photoUrl()) {
-          <img
-            [src]="photoUrl()!"
-            alt="Profile photo"
-            class="profile-photo__avatar-main-image"
-            (error)="onImageError()"
-          />
-          } @else if (defaultAvatarsLoading()) {
-          <app-spinner size="6rem"></app-spinner>
+          <div class="profile-photo__avatar-image-container">
+            @if (mainAvatarLoading()) {
+            <app-skeleton variant="circle" height="4.8rem" width="4.8rem" class="profile-photo__avatar-skeleton"></app-skeleton>
+            }
+            <img
+              [src]="photoUrl()!"
+              alt="Profile photo"
+              class="profile-photo__avatar-main-image"
+              [class.profile-photo__avatar-main-image--loading]="mainAvatarLoading()"
+              (error)="onImageError()"
+              (load)="onMainImageLoad()"
+            />
+          </div>
           } @else {
           <app-avatar
             [initials]="initials()"
@@ -42,9 +47,12 @@
     <div class="profile-photo__defaults-section">
       <h3 class="profile-photo__section-title">{{ 'settings.profile-photo.defaultAvatar' | translate }}</h3>
       @if (defaultAvatarsLoading()) {
-      <div class="profile-photo__defaults-loading">
-        <app-spinner size="6rem"></app-spinner>
-        <span>{{ 'settings.profile-photo.loadingDefaultAvatars' | translate }}</span>
+      <div class="profile-photo__defaults-list">
+        @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+        <div class="profile-photo__skeleton-avatar">
+          <app-skeleton variant="circle" height="4.8rem" width="4.8rem"></app-skeleton>
+        </div>
+        }
       </div>
       } @else {
       <div class="profile-photo__defaults-list">
@@ -57,11 +65,19 @@
           "
           (click)="onDefaultAvatarClick(avatar.id)"
         >
-          <img
-            [src]="avatar.imageUrl"
-            alt="Default avatar"
-            class="profile-photo__avatar-image"
-          />
+          <div class="profile-photo__avatar-image-container">
+            @if (isDefaultAvatarLoading(avatar.id)) {
+            <app-skeleton variant="circle" height="4.8rem" width="4.8rem" class="profile-photo__avatar-skeleton"></app-skeleton>
+            }
+            <img
+              [src]="avatar.imageUrl"
+              alt="Default avatar"
+              class="profile-photo__avatar-image"
+              [class.profile-photo__avatar-image--loading]="isDefaultAvatarLoading(avatar.id)"
+              (load)="onDefaultAvatarLoad(avatar.id)"
+              (error)="onDefaultAvatarError(avatar.id)"
+            />
+          </div>
         </button>
         }
       </div>

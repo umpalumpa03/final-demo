@@ -18,8 +18,11 @@ import {
 import { selectPId, selectPersonalInfo, selectPhoneNumber, selectPhoneUpdateChallengeId, selectPhoneUpdateResendCount } from '../../../../../../store/personal-info/personal-info.selectors';
 import { selectUserInfo } from '../../../../../../store/user-info/user-info.selectors';
 import { PersonalInfoActions } from '../../../../../../store/personal-info/pesronal-info.actions';
+import { UserInfoActions } from '../../../../../../store/user-info/user-info.actions';
 import { environment } from '../../../../../../../environments/environment';
 import { AlertService } from '@tia/core/services/alert/alert.service';
+import { Router } from '@angular/router';
+import { Routes } from '../../../../../../core/auth/models/tokens.model';
 
 describe('ProfilePhotoContainer', () => {
   let component: ProfilePhotoContainer;
@@ -89,8 +92,12 @@ describe('ProfilePhotoContainer', () => {
   });
 
   it('should dispatch clearCurrentAvatar on removePhoto', () => {
-    const store = TestBed.inject(Store);
     const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+  
+    store.overrideSelector(selectCurrentAvatarUrl, 'https://example.com/avatar.png');
+    store.overrideSelector(selectSavedAvatarUrl, null);
+    store.refreshState();
 
     component.onRemovePhoto();
 
@@ -112,6 +119,19 @@ describe('ProfilePhotoContainer', () => {
       ProfilePhotoActions.uploadAvatarRequest({ file }),
     );
   });
+
+  it('should revoke objectUrl when saving changes with file and objectUrl exists', () => {
+    const revokeSpy = vi.spyOn(URL, 'revokeObjectURL');
+    const file = new File(['content'], 'photo.png', { type: 'image/png' });
+    (component as any).uploadedFile = file;
+    (component as any).objectUrl = 'blob:test-url';
+
+    component.onSaveChanges();
+
+    expect(revokeSpy).toHaveBeenCalledWith('blob:test-url');
+    expect((component as any).objectUrl).toBeNull();
+  });
+
 
   it('should dispatch selectDefaultAvatarRequest when saving with selected avatar id', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
@@ -545,6 +565,23 @@ describe('ProfilePhotoContainer', () => {
       'Max resend reached',
       { variant: 'dismissible', title: 'Oops!' },
     );
+  });
+
+  
+
+
+
+  it('should start tour and navigate to dashboard', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    const router = TestBed.inject(Router);
+    const navigateSpy = vi.spyOn(router, 'navigate');
+    
+    component.onStartTour();
+    
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      UserInfoActions.updateOnboardingStatus({ completed: false })
+    );
+    expect(navigateSpy).toHaveBeenCalledWith([Routes.DASHBOARD]);
   });
 
 

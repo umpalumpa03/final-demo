@@ -49,6 +49,7 @@ describe('Draft', () => {
     mockMessagingStore = {
       mails: signal<Mail[]>([]),
       isLoading: signal(false),
+      error: signal(null),
       draftsTotal: signal(0),
       pagination: signal({ hasNextPage: false }),
 

@@ -1,0 +1,40 @@
+<form [formGroup]="form()" (ngSubmit)="formSubmit.emit()">
+  @if (fields()?.length) { @for (field of fields(); track field.controlName) {
+  @if (field.type === 'dropdown') {
+  <div class="modal__dynamic-dropdown">
+    <lib-select
+      [formControlName]="field.controlName"
+      [config]="{ label: field.label, placeholder: field.placeholder }"
+      [options]="getDropdownOptions(field.controlName)"
+      class="modal__dropdown"
+    ></lib-select>
+  </div>
+  } @else {
+  <lib-text-input
+    [formControlName]="field.controlName"
+    [type]="field.type"
+    [config]="{ label: field.label | translate, placeholder: field.placeholder | translate }"
+  />
+  } } @if (isCategorySelected()) { @for (item of childProviderOptions(); track
+  $index) {
+  <div class="modal__dynamic-dropdown">
+    <lib-select
+      [options]="childProviderOptions()[$index]"
+      (valueChange)="childProviderChange.emit({ value: $event, index: $index })"
+    ></lib-select>
+  </div>
+  } }
+
+  <app-dynamic-inputs
+    [form]="createTemplateForm()"
+    [fields]="paymentFields()"
+  ></app-dynamic-inputs>
+  }
+
+  <app-modal-actions
+    [submitVariant]="submitVariant()"
+    [submitLabel]="submitLabel()"
+    [isLoading]="isLoading()"
+    (cancel)="cancel.emit()"
+  />
+</form>

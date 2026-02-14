@@ -3,7 +3,6 @@ import { TransferInternalService } from './transfer.internal.service';
 import { TransferStore } from '../../../store/transfers.store';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
 import { TransfersApiService } from '../../../services/transfersApi.service';
 import { of, throwError } from 'rxjs';
 import { signal } from '@angular/core';
@@ -13,7 +12,6 @@ describe('TransferInternalService', () => {
   let service: TransferInternalService;
   let transferStoreMock: any;
   let routerMock: any;
-  let locationMock: any;
   let transfersApiMock: any;
   let storeMock: any;
 
@@ -40,10 +38,6 @@ describe('TransferInternalService', () => {
       navigate: vi.fn(),
     };
 
-    locationMock = {
-      back: vi.fn(),
-    };
-
     transfersApiMock = {
       transferToOwn: vi.fn(),
       verifyTransfer: vi.fn(),
@@ -61,7 +55,6 @@ describe('TransferInternalService', () => {
         { provide: TransferStore, useValue: transferStoreMock },
         { provide: Store, useValue: storeMock },
         { provide: Router, useValue: routerMock },
-        { provide: Location, useValue: locationMock },
         { provide: TransfersApiService, useValue: transfersApiMock },
       ],
     });
@@ -115,14 +108,16 @@ describe('TransferInternalService', () => {
   });
 
   describe('handleAmountGoBack', () => {
-    it('should set amount, description and navigate back', () => {
+    it('should set amount, description and navigate to to-account', () => {
       service.handleAmountGoBack(100, 'Test description');
 
       expect(transferStoreMock.setAmount).toHaveBeenCalledWith(100);
       expect(transferStoreMock.setDescription).toHaveBeenCalledWith(
         'Test description',
       );
-      expect(locationMock.back).toHaveBeenCalled();
+      expect(routerMock.navigate).toHaveBeenCalledWith([
+        '/bank/transfers/internal/to-account',
+      ]);
     });
   });
 
@@ -261,6 +256,7 @@ describe('TransferInternalService', () => {
 
     it('should call error callback on failure', () => {
       const onError = vi.fn();
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       transfersApiMock.getConversionRate.mockReturnValue(
         throwError(() => new Error('Failed')),
       );
@@ -268,6 +264,204 @@ describe('TransferInternalService', () => {
       service.fetchConversionRate('EUR', 'USD', vi.fn(), onError);
 
       expect(onError).toHaveBeenCalled();
+      consoleSpy.mockRestore();
+    });
+  });
+
+  describe('clearInternalSelection', () => {
+    it('should remove internal selection from sessionStorage', () => {
+      sessionStorage.setItem('tia.internalTransfer.selection', '{}');
+
+      service.clearInternalSelection();
+
+      expect(sessionStorage.getItem('tia.internalTransfer.selection')).toBeNull();
+    });
+  });
+
+  describe('restoreInternalSelection', () => {
+    it('should do nothing when accounts array is empty', () => {
+      service.restoreInternalSelection([]);
+
+      expect(transferStoreMock.setSenderAccount).not.toHaveBeenCalled();
+      expect(transferStoreMock.setReceiverOwnAccount).not.toHaveBeenCalled();
+    });
+
+    it('should restore sender and receiver from sessionStorage when stored', () => {
+      const accounts = [
+        { id: '1', balance: 1000, iban: 'GB1' },
+        { id: '2', balance: 2000, iban: 'GB2' },
+      ] as any;
+      sessionStorage.setItem(
+        'tia.internalTransfer.selection',
+        JSON.stringify({
+          senderAccountId: '1',
+          receiverOwnAccountId: '2',
+        }),
+      );
+
+      service.restoreInternalSelection(accounts);
+
+      expect(transferStoreMock.setSenderAccount).toHaveBeenCalledWith(
+        accounts[0],
+      );
+      expect(transferStoreMock.setReceiverOwnAccount).toHaveBeenCalledWith(
+        accounts[1],
+      );
+    });
+
+    it('should do nothing when getItem returns null', () => {
+      sessionStorage.removeItem('tia.internalTransfer.selection');
+
+      service.restoreInternalSelection([{ id: '1' }] as any);
+
+      expect(transferStoreMock.setSenderAccount).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('handleToOwnTransfer success branches', () => {
+    it('should set transferSuccess and dispatch when no verify challenge', () => {
+      transfersApiMock.transferToOwn.mockReturnValue(of({ success: true }));
+
+      service.handleToOwnTransfer();
+
+      expect(transferStoreMock.setLoading).toHaveBeenCalledWith(false);
+      expect(transferStoreMock.setTransferSuccess).toHaveBeenCalledWith(true);
+      expect(storeMock.dispatch).toHaveBeenCalled();
+    });
+
+    it('should set requiresOtp and navigate to verify when method is set', () => {
+      transfersApiMock.transferToOwn.mockReturnValue(
+        of({
+          verify: { challengeId: 'ch1', method: 'otp' },
+        }),
+      );
+
+      service.handleToOwnTransfer();
+
+      expect(transferStoreMock.setChallengeId).toHaveBeenCalledWith('ch1');
+      expect(transferStoreMock.setRequiresOtp).toHaveBeenCalledWith(true);
+      expect(routerMock.navigate).toHaveBeenCalledWith([
+        '/bank/transfers/verify',
+      ]);
+    });
+
+    it('should use default description when empty', () => {
+      transferStoreMock.description = signal('');
+      transfersApiMock.transferToOwn.mockReturnValue(of({ success: true }));
+
+      service.handleToOwnTransfer();
+
+      expect(transfersApiMock.transferToOwn).toHaveBeenCalledWith(
+        expect.objectContaining({
+          description: 'To Own transfer',
+        }),
+      );
+    });
+
+    it('should not transfer when receiver has no iban', () => {
+      transferStoreMock.receiverOwnAccount = signal({ id: '2' });
+
+      service.handleToOwnTransfer();
+
+      expect(transfersApiMock.transferToOwn).not.toHaveBeenCalled();
+    });
+
+    it('should set error with default message when error has no message', () => {
+      transfersApiMock.transferToOwn.mockReturnValue(
+        throwError(() => ({ error: {} })),
+      );
+
+      service.handleToOwnTransfer();
+
+      expect(transferStoreMock.setError).toHaveBeenCalledWith('Transfer failed');
+    });
+  });
+
+  describe('verifyTransfer success and error', () => {
+    it('should set requiresOtp false and transferSuccess true on success', () => {
+      transfersApiMock.verifyTransfer.mockReturnValue(of({ success: true }));
+
+      service.verifyTransfer('123456');
+
+      expect(transferStoreMock.setRequiresOtp).toHaveBeenCalledWith(false);
+      expect(transferStoreMock.setTransferSuccess).toHaveBeenCalledWith(true);
+      expect(storeMock.dispatch).toHaveBeenCalled();
+      expect(transferStoreMock.setLoading).toHaveBeenCalledWith(false);
+    });
+
+    it('should set error from response on verify failure', () => {
+      transfersApiMock.verifyTransfer.mockReturnValue(
+        throwError(() => ({ error: { message: 'Invalid code' } })),
+      );
+
+      service.verifyTransfer('000000');
+
+      expect(transferStoreMock.setLoading).toHaveBeenCalledWith(false);
+      expect(transferStoreMock.setError).toHaveBeenCalledWith('Invalid code');
+    });
+  });
+
+  describe('handleCrossCurrencyTransfer', () => {
+    it('should not transfer when receiver account is missing', () => {
+      transferStoreMock.receiverOwnAccount = signal(null);
+
+      service.handleCrossCurrencyTransfer(false);
+
+      expect(transfersApiMock.transferCrossCurrency).not.toHaveBeenCalled();
+    });
+
+    it('should set transferSuccess and dispatch when no verify', () => {
+      transfersApiMock.transferCrossCurrency.mockReturnValue(
+        of({ success: true }),
+      );
+
+      service.handleCrossCurrencyTransfer(false);
+
+      expect(transferStoreMock.setTransferSuccess).toHaveBeenCalledWith(true);
+      expect(storeMock.dispatch).toHaveBeenCalled();
+    });
+
+    it('should navigate to verify when method is set', () => {
+      transfersApiMock.transferCrossCurrency.mockReturnValue(
+        of({
+          verify: { challengeId: 'cx1', method: 'otp' },
+        }),
+      );
+
+      service.handleCrossCurrencyTransfer(true);
+
+      expect(transferStoreMock.setRequiresOtp).toHaveBeenCalledWith(true);
+      expect(routerMock.navigate).toHaveBeenCalledWith([
+        '/bank/transfers/verify',
+      ]);
+    });
+
+    it('should use default description when empty', () => {
+      transferStoreMock.description = signal('');
+      transfersApiMock.transferCrossCurrency.mockReturnValue(
+        of({ success: true }),
+      );
+
+      service.handleCrossCurrencyTransfer(false);
+
+      expect(transfersApiMock.transferCrossCurrency).toHaveBeenCalledWith(
+        expect.objectContaining({
+          description: 'Cross-currency transfer',
+        }),
+      );
+    });
+  });
+
+  describe('handleAmountInput', () => {
+    it('should use balance 0 when sender account is null', () => {
+      transferStoreMock.senderAccount = signal(null);
+
+      service.handleAmountInput(100);
+
+      expect(transferStoreMock.setAmount).toHaveBeenCalledWith(100);
+      expect(transferStoreMock.setInsufficientBalance).toHaveBeenCalledWith(
+        true,
+      );
     });
   });
 });

@@ -188,7 +188,13 @@ export class InternalAmount implements OnInit {
         this.transferInternalService.fetchConversionRate(
           sender.currency,
           receiver.currency,
-          (rate) => this.conversionRate.set(rate),
+          (rate) => {
+            this.conversionRate.set(rate);
+            const sourceAmount = Number(this.amountInput.value);
+            if (sourceAmount >= 0.01) {
+              this.updateDestinationAmount(sourceAmount);
+            }
+          },
           () => this.conversionRate.set(0),
         );
       }
@@ -215,7 +221,10 @@ export class InternalAmount implements OnInit {
         tap((value) => {
           if (this.isConversionMode()) {
             this.activeInput.set('destination');
-            this.updateSourceAmount(Number(value));
+            const sourceAmount = this.updateSourceAmount(Number(value));
+            if (sourceAmount !== null) {
+              this.transferInternalService.handleAmountInput(sourceAmount);
+            }
           }
         }),
       )
@@ -233,11 +242,12 @@ export class InternalAmount implements OnInit {
     });
   }
 
-  private updateSourceAmount(destinationAmount: number): void {
-    if (!this.conversionRate()) return;
+  private updateSourceAmount(destinationAmount: number): number | null {
+    if (!this.conversionRate()) return null;
 
     const converted = destinationAmount / this.conversionRate();
     this.amountInput.setValue(converted.toFixed(2), { emitEvent: false });
+    return converted;
   }
 
   public onGoBack(): void {
@@ -273,6 +283,7 @@ export class InternalAmount implements OnInit {
   }
 
   public onSuccessDone(): void {
+    this.transferInternalService.clearInternalSelection();
     this.transferStore.reset();
     this.router.navigate(['/bank/dashboard']);
   }

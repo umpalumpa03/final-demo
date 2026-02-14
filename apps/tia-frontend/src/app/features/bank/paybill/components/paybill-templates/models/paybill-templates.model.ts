@@ -52,7 +52,7 @@ export interface ModalInfo {
   submitButtonType: ButtonVariant;
   fields?: ModalField[];
   formGroupName?: string | null;
-  formSubmitType: formSubmitType;
+  formSubmitType: ModalSubmitType;
   submitAction?: CrudActionType;
   initialValues?: Record<string, string>;
   description?: string;
@@ -71,16 +71,21 @@ export interface HeaderCtaButton {
   textKey: string;
 }
 
-export type formSubmitType =
+export type FormSubmitType =
   | 'create-group'
   | 'rename-template'
   | 'rename-group'
-  | 'create-template'
+  | 'create-template';
+
+export type ActionSubmitType =
   | 'confirm-payment'
   | 'delete-group'
   | 'delete-template';
+
+export type ModalSubmitType = FormSubmitType | ActionSubmitType;
+
 export interface FormSubmitPayload {
-  type: formSubmitType;
+  type: FormSubmitType;
   values: Record<string, string>;
 }
 

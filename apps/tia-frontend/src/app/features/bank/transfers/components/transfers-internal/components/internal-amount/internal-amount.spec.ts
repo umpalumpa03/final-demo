@@ -129,6 +129,7 @@ describe('InternalAmount', () => {
       handleToOwnTransfer: vi.fn(),
       handleCrossCurrencyTransfer: vi.fn(),
       fetchConversionRate: vi.fn((c1, c2, successCb) => successCb(2.0)),
+      clearInternalSelection: vi.fn(),
     };
 
     transferStoreMock = {
@@ -428,9 +429,10 @@ describe('InternalAmount', () => {
   });
 
   describe('Navigation', () => {
-    it('should reset store and navigate on success done', () => {
+    it('should clear selection, reset store and navigate on success done', () => {
       component.onSuccessDone();
 
+      expect(transferServiceMock.clearInternalSelection).toHaveBeenCalled();
       expect(transferStoreMock.reset).toHaveBeenCalled();
       expect(routerMock.navigate).toHaveBeenCalledWith(['/bank/dashboard']);
     });

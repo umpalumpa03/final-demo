@@ -73,5 +73,10 @@
   },
   "emptyStates": {
     "noMessages": "No Messages"
+  },
+  "errorStates": {
+    "header": "Failed to Load",
+    "message": "Something went wrong while loading your messages. Please try again.",
+    "retry": "Retry"
   }
 }
