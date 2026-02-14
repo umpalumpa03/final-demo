@@ -40,6 +40,8 @@ describe('InternalToAccount', () => {
     mockTransferStore = {
       receiverOwnAccount: signal(null),
       senderAccount: signal(null),
+      setSenderAccount: vi.fn(),
+      setReceiverOwnAccount: vi.fn(),
     };
 
     mockLocation = {
@@ -56,6 +58,7 @@ describe('InternalToAccount', () => {
 
     mockTransferInternalService = {
       handleToAccountSelect: vi.fn(),
+      restoreInternalSelection: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -173,6 +176,47 @@ describe('InternalToAccount', () => {
 
     it('should handle empty IBAN', () => {
       expect(component.getLastFourDigits('')).toBe('');
+    });
+  });
+
+  describe('onSwapAccounts', () => {
+    it('should swap sender and receiver when both are selected', () => {
+      const sender = mockAccounts[0];
+      const recipient = mockAccounts[1];
+      mockTransferStore.senderAccount.set(sender);
+      mockTransferStore.receiverOwnAccount.set(recipient);
+      fixture.detectChanges();
+
+      component.onSwapAccounts();
+
+      expect(mockTransferStore.setSenderAccount).toHaveBeenCalledWith(
+        recipient,
+      );
+      expect(mockTransferStore.setReceiverOwnAccount).toHaveBeenCalledWith(
+        sender,
+      );
+    });
+
+    it('should not swap when sender is not selected', () => {
+      mockTransferStore.senderAccount.set(null);
+      mockTransferStore.receiverOwnAccount.set(mockAccounts[0]);
+      fixture.detectChanges();
+
+      component.onSwapAccounts();
+
+      expect(mockTransferStore.setSenderAccount).not.toHaveBeenCalled();
+      expect(mockTransferStore.setReceiverOwnAccount).not.toHaveBeenCalled();
+    });
+
+    it('should not swap when recipient is not selected', () => {
+      mockTransferStore.senderAccount.set(mockAccounts[0]);
+      mockTransferStore.receiverOwnAccount.set(null);
+      fixture.detectChanges();
+
+      component.onSwapAccounts();
+
+      expect(mockTransferStore.setSenderAccount).not.toHaveBeenCalled();
+      expect(mockTransferStore.setReceiverOwnAccount).not.toHaveBeenCalled();
     });
   });
 });

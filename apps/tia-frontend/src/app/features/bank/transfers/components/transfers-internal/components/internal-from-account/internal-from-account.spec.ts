@@ -64,6 +64,7 @@ describe('InternalFromAccount', () => {
 
     mockTransferInternalService = {
       handleFromAccountSelect: vi.fn(),
+      restoreInternalSelection: vi.fn(),
     };
 
     await TestBed.configureTestingModule({

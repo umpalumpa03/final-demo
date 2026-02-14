@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -81,6 +82,15 @@ export class InternalToAccount {
       (account) => account.id !== this.selectedFromAccount()?.id,
     );
   });
+
+  constructor() {
+    effect(() => {
+      const accs = this.accounts();
+      if (accs?.length) {
+        this.transferInternalService.restoreInternalSelection(accs);
+      }
+    });
+  }
 
   ngOnInit() {
     this.store.dispatch(AccountsActions.loadAccounts({}));
