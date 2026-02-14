@@ -40,6 +40,7 @@ import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/break
 import { Onboarding } from '../components/onboarding/onboarding';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
+import { DraggableItemType } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 @Component({
   selector: 'app-dashboard-container',
   imports: [
@@ -80,13 +81,16 @@ export class DashboardContainer implements OnInit {
   protected readonly isCustomizing = signal(false);
   protected readonly bannerConfig = signal(bannerSlides);
   protected readonly gridColumns = computed(() => {
-    const itemCount = this.visibleItems().length;
+    const itemCount = this.myItems().length;
     const isVertical = this.breakpointService.isXsMobile() || itemCount < 3;
 
     return isVertical
       ? { default: 1, md: 1, sm: 1 }
       : { default: 2, md: 2, sm: 1 };
   });
+
+  // vaxtang es shenia fiso
+  public readonly accountsHidden = signal(false);
 
   protected readonly draftSelection = signal<string[]>([]);
 
@@ -118,12 +122,9 @@ export class DashboardContainer implements OnInit {
 
   public onFoldWidget(isSelected: boolean, id: string): void {
     const item = this.myItems().find((w) => w.id === id);
-
     if (item?.type === 'accounts') {
-      this.dashService.foldWidget(isSelected, id);
-      return;
+      this.accountsHidden.set(!isSelected);
     }
-
     this.dashService.foldWidget(isSelected, id);
   }
 
@@ -145,7 +146,7 @@ export class DashboardContainer implements OnInit {
   }
 
   public dynamicColspans = computed(() => {
-    const items = this.visibleItems();
+    const items = this.myItems();
     const isVertical = this.breakpointService.isXsMobile() || items.length < 3;
 
     return items.map((_, index) => {
@@ -173,20 +174,27 @@ export class DashboardContainer implements OnInit {
   }
 
   protected readonly processedVisibleItems = computed(() => {
-    return this.visibleItems().map((item) => {
-      const visualHiddenStatus =
-        item.type === 'accounts' ? false : item.isHidden;
+    return this.myItems().map((item) => {
+      const isAccount = item.type === 'accounts';
+
+      const visualHiddenStatus = isAccount ? false : item.isHidden;
+
+      const visualEyeStatus = isAccount
+        ? !this.accountsHidden()
+        : !item.isHidden;
 
       return {
         ...item,
         isHidden: visualHiddenStatus,
+        isViewable: visualEyeStatus,
         headerData: {
-          ...item,
+          id: item.id,
           title: this.translate.instant(`dashboard.widgets.${item.type}.title`),
           subtitle: this.translate.instant(
             `dashboard.widgets.${item.type}.subtitle`,
           ),
-        },
+          icon: `/images/svg/dashboard/${item.type}.svg`,
+        } as DraggableItemType,
       };
     });
   });

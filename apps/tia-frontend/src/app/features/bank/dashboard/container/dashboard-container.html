@@ -62,7 +62,7 @@
     @for (item of processedVisibleItems(); track item.id) {
     <app-draggable-card
       [hasMinHeight]="!item.isHidden && (!isHeroMode() || $index !== 0)"
-      [itemData]="item"
+      [itemData]="item.headerData"
       [hasViewOption]="item.type === 'transactions' || item.type === 'accounts'"
       (viewOptionChange)="onFoldWidget($event, item.id)"
       [showHeadings]="true"
@@ -81,11 +81,13 @@
     >
       @if (!item.isHidden) {
       <div class="bank-dashboard__content">
-        @switch (item.type) { @case ('transactions') {
+        @switch (item.type) { 
+          @case ('transactions') {
         <app-widget-transactions [isLarge]="$index === 0" /> } @case
         ('accounts') { <app-widget-accounts [isLarge]="$index === 0" /> } @case
-        ('exchange') { <app-widget-exchange [isLarge]="$index === 0" /> } }
+        ('exchange') { <app-widget-exchange [isLarge]="$index === 0" /> } } 
       </div>
+      <!-- aq inputad mieci accounts ro gaigo hiddenia tu ara parentidan chagawodeb -->
       }
     </app-draggable-card>
     }
