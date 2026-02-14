@@ -29,15 +29,14 @@ import {
   ProceedPaymentResponse,
 } from '../components/paybill-main/shared/models/paybill.model';
 import { PaybillTemplatesService } from '../components/paybill-templates/services/paybill-templates-service';
-import { Router } from '@angular/router';
+import { Event, NavigationStart, Router } from '@angular/router';
 import { PaybillErrorPayload } from './paybill.state';
 import { selectTransactionToRepeat } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
-import {
-  PaybillTransactionMeta,
-} from '../components/shared/models/transactions.model';
+import { PaybillTransactionMeta } from '../components/shared/models/transactions.model';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import { AlertService } from '@tia/core/services/alert/alert.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class PaybillEffect {
@@ -47,22 +46,35 @@ export class PaybillEffect {
   public payBillTemplatesService = inject(PaybillTemplatesService);
   public router = inject(Router);
   public alertService = inject(AlertService);
+  public readonly translate = inject(TranslateService);
 
-  private successMessages: Record<string, string> = {
+  private readonly successMessages: Record<string, string> = {
     '[Paybill Templates Page] Delete Template Success':
-      'Template deleted successfully',
+      'templates.notifications.delete_success',
     '[Paybill Templates Page] Rename Template Success':
-      'Template renamed successfully',
+      'templates.notifications.rename_success',
     '[Paybill Templates Page] Delete Template Group Success':
-      'Group deleted successfully',
+      'templates.notifications.group_delete_success',
     '[Paybill Templates Page] Create Templates Groups Success':
-      'Group created successfully',
+      'templates.notifications.group_create_success',
     '[Paybill Templates Page] Rename Template Group Success':
-      'Group renamed successfully',
+      'templates.notifications.group_rename_success',
     '[Paybill Templates Page] Move Template Success':
-      'Template moved successfully',
+      'templates.notifications.move_success',
     '[Paybill Templates Page] Create Template Success':
-      'Template created successfully',
+      'templates.notifications.create_success',
+    '[Paybill Templates Page] Pay Many Bills Success':
+      'templates.notifications.bulk_pay_success',
+    '[Paybill] Proceed Payment Success': 'main.success.title',
+    '[Paybill] Confirm Payment Success': 'main.otp.verify_success',
+  };
+
+  private readonly errorMapping: Record<string, string> = {
+    'Insufficient balance': 'paybill.main.errors.insufficient_balance',
+    'Invalid account number': 'paybill.main.errors.invalid_account',
+    'Invalid code': 'paybill.main.errors.invalid_code',
+    'Account not found. Please check your account number.':
+      'paybill.main.form.account_error',
   };
 
   private getErrorMessage(error: any): string {
@@ -97,7 +109,14 @@ export class PaybillEffect {
   loadProviders$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PaybillActions.selectCategory),
-      mergeMap(({ categoryId }) =>
+      withLatestFrom(this.store.select(selectProviders)),
+      filter(([{ categoryId }, existingProviders]) => {
+        return (
+          existingProviders.length === 0 ||
+          existingProviders[0].categoryId !== categoryId
+        );
+      }),
+      switchMap(([{ categoryId }]) =>
         this.paybillService.getProviders(categoryId).pipe(
           map((providers) =>
             PaybillActions.loadProvidersSuccess({ providers }),
@@ -213,21 +232,25 @@ export class PaybillEffect {
           mergeMap((response) => {
             if (response.success) {
               this.router.navigate(['/bank/paybill/pay/payment-success']);
-              this.alertService.success('OTP Verified Successfully');
-
-              return of(
+              return [
+                PaybillActions.confirmPaymentSuccess(),
                 TransactionActions.loadTransactions({ forceRefresh: true }),
-              );
+              ];
             }
 
-            this.alertService.warning(response.message || 'Invalid Code');
-            return EMPTY;
+            return of(
+              PaybillActions.confirmPaymentFailure({
+                error: response.message || 'Invalid Code',
+              }),
+            );
           }),
           catchError((error) => {
             const errorBody = error?.error as PaybillErrorPayload;
-            const displayMessage = errorBody?.message || error.message;
-            this.alertService.error(displayMessage);
-            return EMPTY;
+            return of(
+              PaybillActions.confirmPaymentFailure({
+                error: errorBody?.message || error.message,
+              }),
+            );
           }),
         ),
       ),
@@ -282,20 +305,12 @@ export class PaybillEffect {
     () => {
       return this.actions$.pipe(
         ofType(
-          TemplatesPageActions.deleteTemplateSuccess,
-          TemplatesPageActions.renameTemplateSuccess,
-          TemplatesPageActions.deleteTemplateGroupSuccess,
-          TemplatesPageActions.createTemplatesGroupsSuccess,
-          TemplatesPageActions.renameTemplateGroupSuccess,
-          TemplatesPageActions.moveTemplateSuccess,
-          TemplatesPageActions.createTemplateSuccess,
-          TemplatesPageActions.payManyBillsSuccess,
+          ...Object.keys(this.successMessages),
+          PaybillActions.confirmPaymentSuccess,
         ),
         tap((action) => {
-          const message =
-            this.successMessages[action.type] ??
-            'Action completed successfully';
-          this.alertService.success(message);
+          const key = this.successMessages[action.type] || 'main.success.title';
+          this.alertService.success(this.translate.instant(`paybill.${key}`));
         }),
       );
     },
@@ -315,11 +330,16 @@ export class PaybillEffect {
           TemplatesPageActions.checkBillForTemplateFailure,
           PaybillActions.checkBillFailure,
           PaybillActions.proceedPaymentFailure,
+          PaybillActions.confirmPaymentFailure,
           PaybillActions.loadCategoriesFailure,
           PaybillActions.loadProvidersFailure,
         ),
         tap(({ error }) => {
-          this.alertService.error(error);
+          const translationKey =
+            this.errorMapping[error] ||
+            error ||
+            'paybill.main.errors.default_error';
+          this.alertService.error(this.translate.instant(translationKey));
         }),
       );
     },
@@ -656,4 +676,18 @@ export class PaybillEffect {
       ),
     ),
   );
+
+  clearStateOnNavigation$ = createEffect(() => {
+    return this.router.events.pipe(
+      filter(
+        (event: Event): event is NavigationStart =>
+          event instanceof NavigationStart,
+      ),
+      filter((event: NavigationStart) => {
+        const url: string = event.url;
+        return url === '/bank/paybill' || !url.includes('/bank/paybill/pay');
+      }),
+      map(() => PaybillActions.clearSelection()),
+    );
+  });
 }
