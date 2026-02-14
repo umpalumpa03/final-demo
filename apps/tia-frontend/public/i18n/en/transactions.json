@@ -36,7 +36,9 @@
       "select_category": "Select Category",
       "placeholder_category": "Select category",
       "custom_category": "Or Add Custom Category",
-      "enter_category_name": "Enter category name"
+      "enter_category_name": "Enter category name",
+      "new-category-tooltip": "Should Enter Category to add",
+      "save-category-tooltip": "Choose category to save"
     },
     "buttons": {
       "add": "Add",

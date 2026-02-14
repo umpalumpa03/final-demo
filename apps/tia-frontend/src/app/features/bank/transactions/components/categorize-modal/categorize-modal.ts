@@ -24,6 +24,7 @@ import {
   TranslatePipe,
   TranslateService,
 } from '@ngx-translate/core';
+import { Tooltip } from "@tia/shared/lib/data-display/tooltip/tooltip";
 
 @Component({
   selector: 'app-categorize-modal',
@@ -36,7 +37,8 @@ import {
     SimpleAlerts,
     TranslateModule,
     TranslatePipe,
-  ],
+    Tooltip
+],
   templateUrl: './categorize-modal.html',
   styleUrl: './categorize-modal.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

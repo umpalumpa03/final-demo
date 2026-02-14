@@ -36,7 +36,9 @@
       "select_category": "აირჩიეთ კატეგორია",
       "placeholder_category": "აირჩიეთ კატეგორია",
       "custom_category": "ან დაამატეთ ახალი",
-      "enter_category_name": "შეიყვანეთ კატეგორიის სახელი"
+      "enter_category_name": "შეიყვანეთ კატეგორიის სახელი",
+      "new-category-tooltip": "შეიყვანეთ ახალი კატეგოირა, რათა დაამატოთ",
+      "save-category-tooltip": "აირჩიეთ კატეგორია, რათა დაამატოთ"
     },
     "buttons": {
       "add": "დამატება",
