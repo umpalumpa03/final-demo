@@ -162,7 +162,7 @@
       "confitmPayment": {
         "title": "Confirm Batch Payment",
         "description": "Review selected bills before payment",
-        "actionButton": "Confirm & Pay All",
+        "actionButton": "Pay All",
         "paymentDistribution": {
           "headers": {
             "title": "Payment Distribution",

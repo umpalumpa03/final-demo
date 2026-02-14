@@ -5,6 +5,12 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { provideMockStore } from '@ngrx/store/testing';
 import { TranslateModule } from '@ngx-translate/core';
 
+import {
+  selectSelectedTemplates,
+  selectDistributedAmount,
+  selectSelectedSenderAccountId,
+} from '../../../../../store/paybill.selectors';
+
 describe('ConfirmPaymentModal', () => {
   let component: ConfirmPaymentModal;
   let fixture: ComponentFixture<ConfirmPaymentModal>;
@@ -22,7 +28,16 @@ describe('ConfirmPaymentModal', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ConfirmPaymentModal, TranslateModule.forRoot()],
-      providers: [provideMockStore({ initialState })],
+      providers: [
+        provideMockStore({
+          initialState,
+          selectors: [
+            { selector: selectSelectedTemplates, value: [] },
+            { selector: selectDistributedAmount, value: 0 },
+            { selector: selectSelectedSenderAccountId, value: 'mock-acc-id' },
+          ],
+        }),
+      ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
