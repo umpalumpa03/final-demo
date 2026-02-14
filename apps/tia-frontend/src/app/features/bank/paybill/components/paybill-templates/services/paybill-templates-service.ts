@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../../../../environments/environment';
-import { filter, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import {
   BillPaymentRequest,
   CreateTemplateGroup,

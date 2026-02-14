@@ -1,0 +1,22 @@
+<div class="templates__header">
+  <div class="templates__header__main-content">
+    <app-library-title
+      [title]="'paybill.templates.title' | translate"
+      [subtitle]="'paybill.templates.description' | translate"
+    />
+    <div class="templates__header__cta">
+      @for (button of headerButtons(); track button.action) {
+      <app-button
+        [variant]="button.variant"
+        (click)="buttonClick.emit(button.action)"
+        >{{ button.textKey | translate }}</app-button
+      >
+      }
+    </div>
+  </div>
+  @if (showSelectedItems()) {
+  <app-selected-items
+    (paySelectedClick)="paySelected.emit()"
+  ></app-selected-items>
+  }
+</div>
