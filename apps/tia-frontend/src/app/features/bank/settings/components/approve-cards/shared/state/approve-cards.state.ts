@@ -8,6 +8,11 @@ export class ApproveCardsState {
   public newConfig = signal({
     title: this.translate.instant('settings.approve-cards.title'),
     subtitle: this.translate.instant('settings.approve-cards.subtitle'),
+    permissionsModal: {
+        modalTitle: this.translate.instant('settings.approve-cards.modal.title'),
+        modalSubtitle: this.translate.instant('settings.approve-cards.modal.subtitle'),
+        title: this.translate.instant('settings.approve-cards.modal.permissionsTitle')
+    },
     alertMessages: {
       successDesc: this.translate.instant('settings.approve-cards.alertMessages.successDesc'),
       errorDesc: this.translate.instant('settings.approve-cards.alertMessages.errorDesc')

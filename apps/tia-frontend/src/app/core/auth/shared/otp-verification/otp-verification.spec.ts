@@ -19,7 +19,6 @@ describe('OtpVerification', () => {
     fixture = TestBed.createComponent(OtpVerification);
     component = fixture.componentInstance;
     
-    // Set required inputs
     fixture.componentRef.setInput('type', 'sign-in');
     
     fixture.detectChanges();
