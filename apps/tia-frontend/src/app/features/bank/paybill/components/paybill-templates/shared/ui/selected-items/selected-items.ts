@@ -8,10 +8,11 @@ import {
 import { Store } from '@ngrx/store';
 import { selectSelectedTemplates } from '../../../../../store/paybill.selectors';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-selected-items',
-  imports: [ButtonComponent],
+  imports: [ButtonComponent, TranslatePipe],
   templateUrl: './selected-items.html',
   styleUrl: './selected-items.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

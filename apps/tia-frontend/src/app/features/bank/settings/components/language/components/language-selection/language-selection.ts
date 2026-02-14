@@ -7,19 +7,19 @@ import {
   signal,
   DestroyRef,
 } from '@angular/core';
+import { tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+
 import { Language } from '../../models/language.model';
 import { LanguageSelectionCard } from './language-selection-card/language-selection-card';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { LanguagesStore } from '../../store/languages.store';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { AlertService } from '@tia/shared/services/settings-language/alert.service';
-import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { TranslationLoaderService } from 'apps/tia-frontend/src/app/core/i18n';
-import { tap } from 'rxjs';
 import { LanguageInfo } from "./language-info/language-info";
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 @Component({
   selector: 'app-language-selection',
@@ -28,7 +28,6 @@ import { LanguageInfo } from "./language-info/language-info";
     Skeleton,
     ErrorStates,
     ButtonComponent,
-    AlertTypesWithIcons,
     TranslatePipe,
     LanguageInfo
 ],
@@ -82,22 +81,14 @@ export class LanguageSelection implements OnInit {
                 .loadTranslations('settings')
                 .pipe(
                   tap(() => {
-                    this.alertService.showAlert(
-                      'success',
-                      this.translateService.instant(
-                        'settings.language.saveSuccess',
-                      ),
-                    );
+                    this.alertService.success(this.translateService.instant('settings.language.saveSuccess'));
                   }),
                 )
                 .subscribe();
             });
           },
           error: () => {
-            this.alertService.showAlert(
-              'error',
-              this.translateService.instant('settings.language.saveError'),
-            );
+            this.alertService.error(this.translateService.instant('settings.language.saveError'));
           },
         });
     }

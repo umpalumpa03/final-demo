@@ -1,36 +1,48 @@
 @if((selectedItemsLength() ?? 0) > 1) {
 <div class="payment__distribution">
-  <h3>Payment Distribution</h3>
+  <h3>
+    {{'paybill.templates.modals.confitmPayment.paymentDistribution.headers.title'
+    | translate}}
+  </h3>
   <div class="payment__distribution__buttons">
     <app-button
       [fullWidth]="true"
       [variant]="distributionMode() === 'individual' ? 'default' : 'outline'"
       (click)="onDistributionChange('individual')"
     >
-      Individual Amounts
+      {{'paybill.templates.modals.confitmPayment.paymentDistribution.headers.individual'
+      | translate}}
     </app-button>
     <app-button
       [fullWidth]="true"
       [variant]="distributionMode() === 'equal' ? 'default' : 'outline'"
       (click)="onDistributionChange('equal')"
     >
-      Equal Distribution
+      {{'paybill.templates.modals.confitmPayment.paymentDistribution.headers.equal'
+      | translate}}
     </app-button>
   </div>
 </div>
 } @if(distributionMode() === 'equal') {
 <div class="equal-distribution__container">
-  <h3>Total Amount to Distribute</h3>
+  <h3>
+    {{'paybill.templates.modals.confitmPayment.paymentDistribution.equalDistribution.label'
+    | translate}}
+  </h3>
   <div class="equal-distribution__container__input">
     <label for="">$</label>
     <lib-text-input
-      [config]="{prefixIcon: '', placeholder: 'Amount to distribute',}"
+      [config]="{prefixIcon: '', placeholder: 'paybill.templates.modals.confitmPayment.paymentDistribution.equalDistribution.placeholder' | translate}"
       [formControl]="amountControl"
       (keydown)="preventNegative($event)"
     />
   </div>
   @if (distributedAmount() && !amountControl.invalid) {
-  <span>{{ distributedAmount() | currency }} per bill</span>
+  <span
+    >{{ distributedAmount() | currency }}
+    {{'paybill.templates.modals.confitmPayment.paymentDistribution.equalDistribution.instruction'
+    | translate}}</span
+  >
   }
 </div>
 }
