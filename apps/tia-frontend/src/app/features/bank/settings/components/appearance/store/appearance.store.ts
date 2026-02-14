@@ -85,6 +85,10 @@ export const AppearanceStore = signalStore(
                     }),
                     switchMap(() => of(void 0))
                 )
+            },
+
+            resetState(): void {
+                patchState(store, initialState);
             }
             
             
