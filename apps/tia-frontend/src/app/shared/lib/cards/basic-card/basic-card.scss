@@ -2,7 +2,7 @@
 @use '../../../styles/palette' as *;
 
 .card {
-  background-color: $white;
+  background-color: var(--color-primary);
   border: 0.16rem solid $blue-400;
   border-radius: 1.4rem;
   box-shadow:
